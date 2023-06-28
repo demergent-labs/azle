@@ -1,5 +1,5 @@
 // TODO this file should be removed as soon as the robust imports epic is completed
-import { SymbolTables, SymbolTable } from '../../utils/types';
+import { AliasTables, AliasTable } from '../../utils/types';
 import {} from './get_symbol_table';
 
 export const FILES_OF_INTEREST = [
@@ -20,12 +20,12 @@ export let debug = false;
 
 export function generateTimedResults(
     files: string[],
-    funcToTime: (filename: string) => SymbolTable | undefined
-): SymbolTables {
+    funcToTime: (filename: string) => AliasTable | undefined
+): AliasTables {
     const processingTimes: number[] = []; // Array to store processing times
 
-    const symbolTables = files.reduce(
-        (accumulator: SymbolTables, filename: string) => {
+    const aliasTables = files.reduce(
+        (accumulator: AliasTables, filename: string) => {
             const startTime = Date.now(); // Start timing for each file
             const result = funcToTime(filename);
             if (result) accumulator[filename] = result;
@@ -68,7 +68,7 @@ export function generateTimedResults(
     console.log(`Median processing time: ${medianProcessingTime}ms`);
     console.log(`Mode processing time: ${modeProcessingTime}ms`);
 
-    return symbolTables;
+    return aliasTables;
 }
 
 // Helper function to calculate mode of an array

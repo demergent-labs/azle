@@ -3,10 +3,10 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 
 pub type Filename = String;
-pub type SymbolTables = HashMap<Filename, SymbolTable>;
+pub type AliasTables = HashMap<Filename, AliasTable>;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct SymbolTable {
+pub struct AliasTable {
     pub alias: Vec<String>,
     pub blob: Vec<String>,
     pub bool: Vec<String>,

@@ -39,14 +39,14 @@ impl SourceMapped<'_, ClassProp> {
                 let decorator_name = self.get_decorator_name()?[..].to_string();
                 match decorator_name.as_str() {
                     _ if self
-                        .symbol_table
+                        .alias_table
                         .service_query_decorator
                         .contains(&decorator_name) =>
                     {
                         Ok(Mode::Query)
                     }
                     _ if self
-                        .symbol_table
+                        .alias_table
                         .service_update_decorator
                         .contains(&decorator_name) =>
                     {
@@ -85,8 +85,8 @@ impl SourceMapped<'_, ClassProp> {
     }
 
     fn has_azle_decorator(&self) -> bool {
-        self.contains_decorator(&self.symbol_table.service_query_decorator)
-            || self.contains_decorator(&self.symbol_table.service_update_decorator)
+        self.contains_decorator(&self.alias_table.service_query_decorator)
+            || self.contains_decorator(&self.alias_table.service_update_decorator)
     }
 
     fn get_decorator_name(&self) -> Result<String, Vec<Error>> {
@@ -120,7 +120,7 @@ impl SourceMapped<'_, ClassProp> {
         match &*ts_fn_type.type_ann.type_ann {
             TsType::TsTypeRef(ts_type_ref) => {
                 if !self
-                    .symbol_table
+                    .alias_table
                     .call_result
                     .contains(&ts_type_ref.type_name.get_name())
                 {

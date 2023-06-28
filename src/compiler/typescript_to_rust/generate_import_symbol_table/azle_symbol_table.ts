@@ -1,63 +1,63 @@
 import * as ts from 'typescript';
-import { SymbolTable } from '../../utils/types';
+import { AliasTable } from '../../utils/types';
 import { processSymbol } from './process_symbol';
 
-export function generateAzleSymbolTableFromTsSymbolTable(
-    tsSymbolTable: ts.SymbolTable,
+export function generateAliasTableFromSymbolTable(
+    symbolTable: ts.SymbolTable,
     program: ts.Program
-): SymbolTable {
-    let symbolTable = generateEmptyAzleSymbolTable();
-    tsSymbolTable.forEach((symbol, name) => {
-        const subSymbolTable = processSymbol(name as string, symbol, program);
-        if (subSymbolTable) {
-            symbolTable = mergeSymbolTables(symbolTable, subSymbolTable);
+): AliasTable {
+    let aliasTable = generateEmptyAliasTable();
+    symbolTable.forEach((symbol, name) => {
+        const subAliasTable = processSymbol(name as string, symbol, program);
+        if (subAliasTable) {
+            aliasTable = mergeAliasTables(aliasTable, subAliasTable);
         }
     });
 
-    return symbolTable;
+    return aliasTable;
 }
 
-export function generateSingleEntryAzleSymbolTable(
+export function generateSingleEntryAliasTable(
     originalName: string,
     name: string
-): SymbolTable | undefined {
-    const symbolTable = generateEmptyAzleSymbolTable();
-    const keyResult = stringToSymbolTableKey(name);
-    if (keyResult) {
+): AliasTable | undefined {
+    const aliasTable = generateEmptyAliasTable();
+    const key = stringToAliasTableKey(name);
+    if (key) {
         return {
-            ...symbolTable,
-            [keyResult]: [...symbolTable[keyResult], originalName]
+            ...aliasTable,
+            [key]: [...aliasTable[key], originalName]
         };
     }
 }
 
-export function prependNamespaceToSymbolTable(
-    symbolTable: SymbolTable,
+export function prependNamespaceToAliasTable(
+    aliasTable: AliasTable,
     namespace: ts.NamespaceImport | ts.NamespaceExport
-): SymbolTable {
+): AliasTable {
     const prependString = namespace.name.text;
-    return Object.entries(symbolTable).reduce(
+    return Object.entries(aliasTable).reduce(
         (acc, [propertyName, propertyValue]) => {
             return {
                 ...acc,
-                [propertyName as keyof SymbolTable]: propertyValue.map(
+                [propertyName as keyof AliasTable]: propertyValue.map(
                     (value) => `${prependString}.${value}`
                 )
             };
         },
-        {} as SymbolTable
+        {} as AliasTable
     );
 }
 
-export function renameSymbolTable(
-    symbolTable: SymbolTable,
+export function renameAliasTable(
+    aliasTable: AliasTable,
     newPrefix: string
-): SymbolTable {
-    return Object.entries(symbolTable).reduce(
+): AliasTable {
+    return Object.entries(aliasTable).reduce(
         (acc, [propertyName, propertyValue]) => {
             return {
                 ...acc,
-                [propertyName as keyof SymbolTable]: propertyValue.map(
+                [propertyName as keyof AliasTable]: propertyValue.map(
                     (value) => {
                         const indexOfDotOperator = value.indexOf('.');
                         if (indexOfDotOperator !== -1) {
@@ -68,28 +68,23 @@ export function renameSymbolTable(
                 )
             };
         },
-        {} as SymbolTable
+        {} as AliasTable
     );
 }
 
-export function mergeSymbolTables(
-    symbolTable1: SymbolTable,
-    symbolTable2: SymbolTable
-): SymbolTable {
-    const mergedSymbolTable: SymbolTable = { ...symbolTable1 };
-
-    return Object.keys(symbolTable1).reduce((acc, key) => {
+export function mergeAliasTables(
+    aliasTable1: AliasTable,
+    aliasTable2: AliasTable
+): AliasTable {
+    return Object.entries(aliasTable1).reduce((acc, [key, value]) => {
         return {
             ...acc,
-            [key]: [
-                ...symbolTable1[key as keyof SymbolTable],
-                ...symbolTable2[key as keyof SymbolTable]
-            ]
+            [key]: [...value, ...aliasTable2[key as keyof AliasTable]]
         };
-    }, {} as SymbolTable);
+    }, {} as AliasTable);
 }
 
-export function generateEmptyAzleSymbolTable(): SymbolTable {
+export function generateEmptyAliasTable(): AliasTable {
     return {
         alias: [],
         call_result: [],
@@ -138,7 +133,7 @@ export function generateEmptyAzleSymbolTable(): SymbolTable {
     };
 }
 
-export function generateDefaultAzleSymbolTable(): SymbolTable {
+export function generateDefaultAliasTable(): AliasTable {
     return {
         alias: ['Alias'],
         blob: ['blob'],
@@ -186,8 +181,8 @@ export function generateDefaultAzleSymbolTable(): SymbolTable {
         void: []
     };
 }
-const SYMBOL_TABLE_KEYS: {
-    [key: string]: keyof SymbolTable;
+const ALIAS_TABLE_KEYS: {
+    [key: string]: keyof AliasTable;
 } = {
     Alias: 'alias',
     CallResult: 'call_result',
@@ -235,10 +230,10 @@ const SYMBOL_TABLE_KEYS: {
     void: 'void'
 };
 
-function stringToSymbolTableKey(name: string): keyof SymbolTable | undefined {
+function stringToAliasTableKey(name: string): keyof AliasTable | undefined {
     // Make sure that it's a name we can convert
-    if (!(name in SYMBOL_TABLE_KEYS)) {
+    if (!(name in ALIAS_TABLE_KEYS)) {
         return;
     }
-    return SYMBOL_TABLE_KEYS[name];
+    return ALIAS_TABLE_KEYS[name];
 }

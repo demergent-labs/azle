@@ -60,7 +60,7 @@ impl<'a> SourceMapped<'a, AnnotatedFnDecl> {
         SourceMapped::new(
             self.get_return_ts_type()?,
             self.source_map,
-            self.symbol_table,
+            self.alias_table,
         )
         .to_candid_type()
     }

@@ -165,7 +165,7 @@ impl SourceMapped<'_, AnnotatedFnDecl> {
 
         match return_type {
             TsType::TsTypeRef(ts_type_ref) => self
-                .symbol_table
+                .alias_table
                 .manual
                 .contains(&self.spawn(ts_type_ref).get_name()),
 

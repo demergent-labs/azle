@@ -14,7 +14,7 @@ use super::errors::WrongEnclosedType;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_record(&self) -> Result<Option<Record>, Vec<Error>> {
-        self.process_ts_type_ref(&self.symbol_table.record, |type_ref| {
+        self.process_ts_type_ref(&self.alias_table.record, |type_ref| {
             let (type_params, record_type_ref) =
                 (self.get_type_params(), type_ref.to_record()).collect_results()?;
             match record_type_ref {
@@ -32,7 +32,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_record(&self) -> Result<Option<Record>, Vec<Error>> {
-        if self.symbol_table.record.contains(&self.get_name()) {
+        if self.alias_table.record.contains(&self.get_name()) {
             Ok(Some(
                 match self.get_ts_type()?.as_ts_type_lit() {
                     Some(ts_type_lit) => ts_type_lit,

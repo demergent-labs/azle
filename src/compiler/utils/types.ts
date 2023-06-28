@@ -29,7 +29,7 @@ export type OptLevel = '0' | '1' | '2' | '3' | '4';
 
 export type CompilerInfo = {
     plugins: Plugin[];
-    symbol_tables: SymbolTables;
+    alias_tables: AliasTables;
     file_names: string[];
 };
 
@@ -38,9 +38,9 @@ export type Plugin = {
     register_function: string;
 };
 
-export type SymbolTables = { [filename: string]: SymbolTable };
+export type AliasTables = { [filename: string]: AliasTable };
 
-export type SymbolTable = {
+export type AliasTable = {
     alias: string[];
     call_result: string[];
     blob: string[];

@@ -8,7 +8,7 @@ use crate::{
     internal_error,
     traits::{GetName, GetOptionalName, GetSourceFileInfo, GetSpan},
     ts_ast::SourceMapped,
-    Error, SymbolTable,
+    AliasTable, Error,
 };
 
 #[derive(Clone)]
@@ -23,23 +23,23 @@ impl Annotation {
         name: &str,
         guard: Option<String>,
         span: Span,
-        symbol_table: &SymbolTable,
+        alias_table: &AliasTable,
     ) -> Result<Self, Error> {
         let name = name.to_string();
         let method_type = match name.as_str() {
-            _ if symbol_table.heartbeat_decorator.contains(&name) => CanisterMethodType::Heartbeat,
-            _ if symbol_table.init_decorator.contains(&name) => CanisterMethodType::Init,
-            _ if symbol_table.inspect_message_decorator.contains(&name) => {
+            _ if alias_table.heartbeat_decorator.contains(&name) => CanisterMethodType::Heartbeat,
+            _ if alias_table.init_decorator.contains(&name) => CanisterMethodType::Init,
+            _ if alias_table.inspect_message_decorator.contains(&name) => {
                 CanisterMethodType::InspectMessage
             }
-            _ if symbol_table.post_upgrade_decorator.contains(&name) => {
+            _ if alias_table.post_upgrade_decorator.contains(&name) => {
                 CanisterMethodType::PostUpgrade
             }
-            _ if symbol_table.pre_upgrade_decorator.contains(&name) => {
+            _ if alias_table.pre_upgrade_decorator.contains(&name) => {
                 CanisterMethodType::PreUpgrade
             }
-            _ if symbol_table.query_decorator.contains(&name) => CanisterMethodType::Query,
-            _ if symbol_table.update_decorator.contains(&name) => CanisterMethodType::Update,
+            _ if alias_table.query_decorator.contains(&name) => CanisterMethodType::Query,
+            _ if alias_table.update_decorator.contains(&name) => CanisterMethodType::Update,
             _ => internal_error!(),
         };
 
@@ -62,18 +62,15 @@ impl Annotation {
         };
 
         match expr {
-            Expr::Ident(ident) => Self::new(
-                &ident.get_name(),
-                None,
-                ident.span,
-                module_item.symbol_table,
-            ),
+            Expr::Ident(ident) => {
+                Self::new(&ident.get_name(), None, ident.span, module_item.alias_table)
+            }
             Expr::Member(member) => {
                 let name = match member.get_name() {
                     Some(name) => name,
                     None => internal_error!(), // If the member name can't be made into a name then it won't be recognized as annotation so it won't possibly get here
                 };
-                Self::new(&name, None, member.span, module_item.symbol_table)
+                Self::new(&name, None, member.span, module_item.alias_table)
             }
             Expr::Call(call_expr) => {
                 let method_type = match &call_expr.callee {
@@ -97,7 +94,7 @@ impl Annotation {
                 }
 
                 if call_expr.args.len() == 0 {
-                    return Self::new(&method_type, None, call_expr.span, module_item.symbol_table);
+                    return Self::new(&method_type, None, call_expr.span, module_item.alias_table);
                 }
 
                 let options_object = {
@@ -136,7 +133,7 @@ impl Annotation {
                     // TODO: Consider making this an error. If options object has no
                     // properties it should be removed and the annotation not invoked
 
-                    return Self::new(&method_type, None, call_expr.span, module_item.symbol_table);
+                    return Self::new(&method_type, None, call_expr.span, module_item.alias_table);
                 }
 
                 let option_property = match &options_object.props[0] {
@@ -235,7 +232,7 @@ impl Annotation {
                     &method_type,
                     guard_fn_name,
                     call_expr.span,
-                    module_item.symbol_table,
+                    module_item.alias_table,
                 )
             }
             _ => internal_error!(),
@@ -243,13 +240,13 @@ impl Annotation {
     }
 }
 
-pub fn is_canister_method_annotation(name: &str, symbol_table: &SymbolTable) -> bool {
+pub fn is_canister_method_annotation(name: &str, alias_table: &AliasTable) -> bool {
     let name = name.to_string();
-    symbol_table.heartbeat_decorator.contains(&name)
-        || symbol_table.init_decorator.contains(&name)
-        || symbol_table.inspect_message_decorator.contains(&name)
-        || symbol_table.post_upgrade_decorator.contains(&name)
-        || symbol_table.pre_upgrade_decorator.contains(&name)
-        || symbol_table.query_decorator.contains(&name)
-        || symbol_table.update_decorator.contains(&name)
+    alias_table.heartbeat_decorator.contains(&name)
+        || alias_table.init_decorator.contains(&name)
+        || alias_table.inspect_message_decorator.contains(&name)
+        || alias_table.post_upgrade_decorator.contains(&name)
+        || alias_table.pre_upgrade_decorator.contains(&name)
+        || alias_table.query_decorator.contains(&name)
+        || alias_table.update_decorator.contains(&name)
 }

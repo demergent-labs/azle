@@ -1,13 +1,13 @@
 import * as ts from 'typescript';
-import { SymbolTable } from '../../utils/types';
+import { AliasTable } from '../../utils/types';
 import {
-    generateAzleSymbolTableFromTsSymbolTable,
-    generateSingleEntryAzleSymbolTable,
-    generateEmptyAzleSymbolTable,
-    renameSymbolTable,
-    prependNamespaceToSymbolTable,
-    generateDefaultAzleSymbolTable,
-    mergeSymbolTables
+    generateAliasTableFromSymbolTable,
+    generateSingleEntryAliasTable,
+    generateEmptyAliasTable,
+    renameAliasTable,
+    prependNamespaceToAliasTable,
+    generateDefaultAliasTable,
+    mergeAliasTables
 } from './azle_symbol_table';
 import {
     getSymbolTable,
@@ -28,9 +28,9 @@ export function processSymbol(
     originalName: string,
     symbol: ts.Symbol,
     program: ts.Program
-): SymbolTable | undefined {
+): AliasTable | undefined {
     if (isAzleSymbol(symbol)) {
-        return generateSingleEntryAzleSymbolTable(originalName, symbol.name);
+        return generateSingleEntryAliasTable(originalName, symbol.name);
     }
     const declarations = symbol.declarations;
     if (!declarations || declarations.length === 0) {
@@ -127,7 +127,7 @@ function processImportExportSpecifierWithModuleSpecifier(
     originalName: string,
     specifier: ts.ExportSpecifier | ts.ImportSpecifier,
     program: ts.Program
-): SymbolTable | undefined {
+): AliasTable | undefined {
     const identifier = getUnderlyingIdentifierFromSpecifier(specifier);
     const declaration = getDeclarationFromSpecifier(specifier);
 
@@ -148,7 +148,7 @@ function processExportSpecifier(
     originalName: string,
     exportSpecifier: ts.ExportSpecifier,
     program: ts.Program
-): SymbolTable | undefined {
+): AliasTable | undefined {
     const exportDecl = getDeclarationFromSpecifier(exportSpecifier);
     if (exportDecl.moduleSpecifier) {
         return processImportExportSpecifierWithModuleSpecifier(
@@ -186,7 +186,7 @@ function processExportSpecifier(
     }
 
     if (exportSpecifier.propertyName) {
-        return renameSymbolTable(result, exportSpecifier.name.text);
+        return renameAliasTable(result, exportSpecifier.name.text);
     }
     return result;
 }
@@ -204,7 +204,7 @@ function processExportAssignment(
     originalName: string,
     exportAssignment: ts.ExportAssignment,
     program: ts.Program
-): SymbolTable | undefined {
+): AliasTable | undefined {
     const typeChecker = program.getTypeChecker();
     const symbol = typeChecker.getSymbolAtLocation(exportAssignment.expression);
     if (symbol) {
@@ -216,7 +216,7 @@ function processImportSpecifier(
     originalName: string,
     declaration: ts.ImportSpecifier,
     program: ts.Program
-): SymbolTable | undefined {
+): AliasTable | undefined {
     return processImportExportSpecifierWithModuleSpecifier(
         originalName,
         declaration,
@@ -228,7 +228,7 @@ function processImportClause(
     originalName: string,
     declaration: ts.ImportClause,
     program: ts.Program
-): SymbolTable | undefined {
+): AliasTable | undefined {
     return getAzleEquivalent(
         originalName,
         'default',
@@ -245,8 +245,8 @@ function processImportClause(
 function processExportDeclarations(
     declarations: ts.ExportDeclaration[],
     program: ts.Program
-): SymbolTable | undefined {
-    const symbolTables = declarations.map((declaration) => {
+): AliasTable | undefined {
+    const aliasTables = declarations.map((declaration) => {
         const moduleSpecifier = declaration.moduleSpecifier;
         if (!moduleSpecifier || !ts.isStringLiteral(moduleSpecifier)) {
             // Unreachable: An export declaration with a namespace export will always have a FromClause
@@ -259,50 +259,47 @@ function processExportDeclarations(
             return;
         }
         if (moduleSpecifier.text == 'azle') {
-            return generateDefaultAzleSymbolTable();
+            return generateDefaultAliasTable();
         }
         const symbolTable = getSymbolTableForDeclaration(declaration, program);
         if (!symbolTable) {
             return;
         }
-        return generateAzleSymbolTableFromTsSymbolTable(symbolTable, program);
+        return generateAliasTableFromSymbolTable(symbolTable, program);
     });
-    let symbolTable = generateEmptyAzleSymbolTable();
-    symbolTables.forEach((subSymbolTable) => {
-        if (subSymbolTable) {
-            symbolTable = mergeSymbolTables(symbolTable, subSymbolTable);
+    let aliasTable = generateEmptyAliasTable();
+    aliasTables.forEach((subAliasTable) => {
+        if (subAliasTable) {
+            aliasTable = mergeAliasTables(aliasTable, subAliasTable);
         }
     });
-    return symbolTable;
+    return aliasTable;
 }
 
 function processNamespaceImportExport(
     namespace: ts.NamespaceImport | ts.NamespaceExport,
     program: ts.Program
-): SymbolTable | undefined {
+): AliasTable | undefined {
     const importDeclaration = getDeclarationFromNamespace(namespace);
     const moduleSpecifier =
         importDeclaration.moduleSpecifier as ts.StringLiteral;
     if (moduleSpecifier.text == 'azle') {
         // TODO process this symbol table the same, then modify it such that every entry has name.whatever
-        return prependNamespaceToSymbolTable(
-            generateDefaultAzleSymbolTable(),
+        return prependNamespaceToAliasTable(
+            generateDefaultAliasTable(),
             namespace
         );
     }
-    const namespacedSymbolTable = getSymbolTableForDeclaration(
+    const symbolTable = getSymbolTableForDeclaration(
         importDeclaration,
         program
     );
-    if (!namespacedSymbolTable) {
+    if (!symbolTable) {
         return;
     }
     // process this symbol table the same, then modify it such that every entry has name.whatever
-    return prependNamespaceToSymbolTable(
-        generateAzleSymbolTableFromTsSymbolTable(
-            namespacedSymbolTable,
-            program
-        ),
+    return prependNamespaceToAliasTable(
+        generateAliasTableFromSymbolTable(symbolTable, program),
         namespace
     );
 }
@@ -311,7 +308,7 @@ function processTypeAliasDeclaration(
     originalName: string,
     declaration: ts.TypeAliasDeclaration,
     program: ts.Program
-): SymbolTable | undefined {
+): AliasTable | undefined {
     if (TYPE_ALIASES_ARE_STILL_UNIMPLEMENTED) {
         return; // TODO Add support for type alias declarations
         // The below code doesn't work, but it's hopefully a good starting point
@@ -347,15 +344,15 @@ function processTypeAliasDeclaration(
                     return;
                 }
                 const declaration = getDeclarationFromNamespace(namespace);
-                const namespaceSymbolTable = getSymbolTableForDeclaration(
+                const declSymbolTable = getSymbolTableForDeclaration(
                     declaration,
                     program
                 );
-                if (!namespaceSymbolTable) {
+                if (!declSymbolTable) {
                     // TODO there is no namespace symbol table
                     return;
                 }
-                const symbol = namespaceSymbolTable?.get(
+                const symbol = declSymbolTable?.get(
                     typeName.right.text as ts.__String
                 );
                 if (!symbol) {
@@ -402,9 +399,9 @@ function getAzleEquivalent(
     name: string, // TODO should this be a ts.__String or a string?
     moduleSpecifier: ts.StringLiteral,
     program: ts.Program
-): SymbolTable | undefined {
+): AliasTable | undefined {
     if (moduleSpecifier.text === 'azle') {
-        return generateSingleEntryAzleSymbolTable(originalName, name);
+        return generateSingleEntryAliasTable(originalName, name);
     }
     const symbolTable = getSymbolTableForModuleSpecifier(
         moduleSpecifier,
@@ -441,7 +438,7 @@ function findSymbolInStarExportsFromModule(
     name: string,
     moduleSpecifier: ts.StringLiteral,
     program: ts.Program
-): SymbolTable | undefined {
+): AliasTable | undefined {
     const symbolTable = getSymbolTableForModuleSpecifier(
         moduleSpecifier,
         program

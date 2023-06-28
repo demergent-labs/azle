@@ -5,7 +5,7 @@ use crate::{traits::GetName, ts_ast::SourceMapped, Error};
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_type_alias(&self) -> Result<Option<TypeAlias>, Vec<Error>> {
-        self.process_ts_type_ref(&self.symbol_table.alias, |type_ref| {
+        self.process_ts_type_ref(&self.alias_table.alias, |type_ref| {
             let (aliased_type, type_params) = (
                 type_ref.get_ts_type()?.to_candid_type(),
                 self.get_type_params(),

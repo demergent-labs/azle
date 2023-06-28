@@ -29,10 +29,10 @@ impl WrongEnclosedType {
         let original_location = sm_ts_type_ref.get_location();
         let name = sm_ts_type_ref.get_name();
         let name = match name.as_str() {
-            _ if sm_ts_type_ref.symbol_table.variant.contains(&name) => EnclosingType::Variant,
-            _ if sm_ts_type_ref.symbol_table.func.contains(&name) => EnclosingType::Func,
-            _ if sm_ts_type_ref.symbol_table.record.contains(&name) => EnclosingType::Record,
-            _ if sm_ts_type_ref.symbol_table.tuple.contains(&name) => EnclosingType::Tuple,
+            _ if sm_ts_type_ref.alias_table.variant.contains(&name) => EnclosingType::Variant,
+            _ if sm_ts_type_ref.alias_table.func.contains(&name) => EnclosingType::Func,
+            _ if sm_ts_type_ref.alias_table.record.contains(&name) => EnclosingType::Record,
+            _ if sm_ts_type_ref.alias_table.tuple.contains(&name) => EnclosingType::Tuple,
             _ => return InternalError::new().into(),
         };
         let (source, range) = match name {

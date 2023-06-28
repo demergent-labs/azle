@@ -1,26 +1,26 @@
-import { SymbolTable, SymbolTables } from '../../utils/types';
+import { AliasTable, AliasTables } from '../../utils/types';
 import * as ts from 'typescript';
-import { generateAzleSymbolTableFromTsSymbolTable } from './azle_symbol_table';
+import { generateAliasTableFromSymbolTable } from './azle_symbol_table';
 import { getSymbolTable } from './get_symbol_table';
 import { timing, generateTimedResults } from './debug';
 
-export function generateAzleSymbolTables(files: string[]): SymbolTables {
+export function generateAliasTables(files: string[]): AliasTables {
     if (timing) {
-        return generateTimedResults(files, generateAzleSymbolTable);
+        return generateTimedResults(files, generateAliasTable);
     }
-    return files.reduce((acc: SymbolTables, filename: string) => {
-        let azleSymbolTable = generateAzleSymbolTable(filename);
-        if (!azleSymbolTable) {
+    return files.reduce((acc: AliasTables, filename: string) => {
+        let aliasTable = generateAliasTable(filename);
+        if (!aliasTable) {
             return acc;
         }
         return {
             ...acc,
-            [filename]: azleSymbolTable
+            [filename]: aliasTable
         };
     }, {});
 }
 
-function generateAzleSymbolTable(filename: string): SymbolTable | undefined {
+function generateAliasTable(filename: string): AliasTable | undefined {
     const sourceFilePath = filename;
     const program = ts.createProgram([sourceFilePath], {});
     const sourceFile = program.getSourceFile(sourceFilePath);
@@ -29,9 +29,9 @@ function generateAzleSymbolTable(filename: string): SymbolTable | undefined {
         return;
     }
 
-    const tsSymbolTable = getSymbolTable(sourceFile, program);
-    if (tsSymbolTable) {
-        return generateAzleSymbolTableFromTsSymbolTable(tsSymbolTable, program);
+    const symbolTable = getSymbolTable(sourceFile, program);
+    if (symbolTable) {
+        return generateAliasTableFromSymbolTable(symbolTable, program);
     }
 
     return;

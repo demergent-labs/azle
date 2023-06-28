@@ -3,7 +3,7 @@ pub use program::Program;
 pub use source_map::SourceMapped;
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use crate::{Error, SymbolTables};
+use crate::{AliasTables, Error};
 
 pub mod expr;
 pub mod program;
@@ -20,10 +20,10 @@ impl TsAst {
     pub fn new(
         ts_file_names: &Vec<String>,
         main_js: String,
-        symbol_tables: SymbolTables,
+        alias_tables: AliasTables,
     ) -> Result<Self, Vec<Error>> {
         let file_name_to_program = |ts_file_name: &String| {
-            Program::from_file_name(ts_file_name, &symbol_tables).map_err(Into::<Vec<Error>>::into)
+            Program::from_file_name(ts_file_name, &alias_tables).map_err(Into::<Vec<Error>>::into)
         };
         let programs = ts_file_names
             .iter()

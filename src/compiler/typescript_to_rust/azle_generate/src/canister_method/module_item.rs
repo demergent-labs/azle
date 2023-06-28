@@ -16,7 +16,7 @@ impl SourceMapped<'_, ModuleItem> {
                     .and_then(|box_expr| box_expr.get_name())
                     .or(expr_stmt.expr.get_name())
                     .and_then(|name| {
-                        if is_canister_method_annotation(&name, self.symbol_table) {
+                        if is_canister_method_annotation(&name, self.alias_table) {
                             Some(Annotation::from_module_item(self))
                         } else {
                             None

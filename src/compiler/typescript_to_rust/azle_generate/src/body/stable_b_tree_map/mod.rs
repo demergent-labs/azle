@@ -40,7 +40,7 @@ impl Program {
     where
         C: Clone,
     {
-        SourceMapped::new(child, &self.source_map, &self.symbol_table)
+        SourceMapped::new(child, &self.source_map, &self.alias_table)
     }
 
     pub fn build_stable_b_tree_map_nodes(&self) -> Result<Vec<StableBTreeMapNode>, Vec<Error>> {
@@ -72,7 +72,7 @@ impl Program {
                     Expr::New(new_expr)
                         if matches!(
                             &*new_expr.callee,
-                            Expr::Ident(ident) if self.symbol_table.stable_b_tree_map.contains(&ident.get_name())
+                            Expr::Ident(ident) if self.alias_table.stable_b_tree_map.contains(&ident.get_name())
                         ) =>
                     {
                         Some(

@@ -6,7 +6,7 @@ use std::{
     process,
 };
 
-use azle_generate::{generate_canister, Plugin, SymbolTables};
+use azle_generate::{generate_canister, AliasTables, Plugin};
 
 const USAGE_ERROR: i32 = 1;
 const COMPILER_INFO_READ_ERROR: i32 = 2;
@@ -22,7 +22,7 @@ const GENERATED_LIB_WRITE_ERR: i32 = 9;
 struct CompilerInfo {
     plugins: Vec<Plugin>,
     file_names: Vec<String>,
-    symbol_tables: SymbolTables,
+    alias_tables: AliasTables,
 }
 
 fn main() {
@@ -63,7 +63,7 @@ fn main() {
     let lib_file = match generate_canister(
         &compiler_info.file_names,
         main_js,
-        compiler_info.symbol_tables,
+        compiler_info.alias_tables,
         &compiler_info.plugins,
         &environment_variables,
     ) {
