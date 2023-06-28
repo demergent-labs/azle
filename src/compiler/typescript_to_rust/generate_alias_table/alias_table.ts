@@ -22,8 +22,8 @@ export function generateAliasTableFromSymbolTable(
 }
 
 export function generateSingleEntryAliasTable(
-    alias: string,
-    name: string
+    name: string,
+    alias: string
 ): AliasTable | undefined {
     const aliasTable = generateEmptyAliasTable();
     const key = stringToAliasTableKey(name);
