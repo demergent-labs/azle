@@ -4,12 +4,15 @@ import { generateAliasTableFromSymbolTable } from './alias_table';
 import { getSymbolTable } from './get_symbol_table';
 import { timing, generateTimedResults } from './debug';
 
-export function generateAliasTables(files: string[]): AliasTables {
+export function generateAliasTables(
+    files: string[],
+    program: ts.Program
+): AliasTables {
     if (timing) {
-        return generateTimedResults(files, generateAliasTable);
+        return generateTimedResults(files, generateAliasTable, program);
     }
     return files.reduce((acc: AliasTables, filename: string) => {
-        let aliasTable = generateAliasTable(filename);
+        let aliasTable = generateAliasTable(filename, program);
         if (!aliasTable) {
             return acc;
         }
@@ -20,9 +23,10 @@ export function generateAliasTables(files: string[]): AliasTables {
     }, {});
 }
 
-function generateAliasTable(filename: string): AliasTable | undefined {
-    // TODO should we only create program for the entry point?
-    const program = ts.createProgram([filename], {});
+function generateAliasTable(
+    filename: string,
+    program: ts.Program
+): AliasTable | undefined {
     const sourceFile = program.getSourceFile(filename);
 
     if (!sourceFile) {

@@ -17,10 +17,10 @@ pub struct WrongEnclosedType {
 }
 
 // NOTE: Vec, and Opt are not included in this enum because they have much more
-// flexibility with their enclosing type. They can we any sort of TsType. On the
-// other hand Variants and Records must be TsTypeLiterals. Funcs have to be a
-// very specific form of TsFnOrConstructorType, and Tuples need to be
-// TsTupleTypes
+// flexibility with their enclosing type. Their enclosed type can be any sort of
+// TsType. On the other hand Variants and Records must be TsTypeLiterals. Funcs
+// have to be a very specific form of TsFnOrConstructorType, and Tuples need to
+// be TsTupleTypes
 #[derive(Debug, Clone, PartialEq)]
 enum EnclosingType {
     Variant,

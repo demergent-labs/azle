@@ -1,6 +1,6 @@
 // TODO this file should be removed as soon as the robust imports epic is completed
 import { AliasTables, AliasTable } from '../../utils/types';
-import {} from './get_symbol_table';
+import { Program } from 'typescript';
 
 export const FILES_OF_INTEREST = [
     '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/canister_methods/azle_coverage.ts',
@@ -20,14 +20,15 @@ export let debug: { print: boolean } = { print: false };
 
 export function generateTimedResults(
     files: string[],
-    funcToTime: (filename: string) => AliasTable | undefined
+    funcToTime: (filename: string, program: Program) => AliasTable | undefined,
+    program: Program
 ): AliasTables {
     const processingTimes: number[] = []; // Array to store processing times
 
     const aliasTables = files.reduce(
         (accumulator: AliasTables, filename: string) => {
             const startTime = Date.now(); // Start timing for each file
-            const result = funcToTime(filename);
+            const result = funcToTime(filename, program);
             if (result) accumulator[filename] = result;
             const endTime = Date.now(); // End timing for each file
             const processingTime = endTime - startTime; // Calculate processing time in milliseconds
@@ -60,10 +61,10 @@ export function generateTimedResults(
     // Print summary report
     console.log('--- Summary ---');
     console.log(
-        `Processing ${files.length} files took ${totalProcessingTime / 1000}s`
+        `Processing ${files.length} files took ${totalProcessingTime}ms`
     );
-    console.log(`Min time: ${Math.min(...processingTimes)}`);
-    console.log(`Max time: ${Math.max(...processingTimes)}`);
+    console.log(`Min time: ${Math.min(...processingTimes)}ms`);
+    console.log(`Max time: ${Math.max(...processingTimes)}ms`);
     console.log(`Mean processing time: ${meanProcessingTime.toFixed(2)}ms`);
     console.log(`Median processing time: ${medianProcessingTime}ms`);
     console.log(`Mode processing time: ${modeProcessingTime}ms`);

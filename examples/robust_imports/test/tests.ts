@@ -130,7 +130,7 @@ function getImportCoverageTests(ic: ActorSubclass<_SERVICE>): Test[] {
 }
 
 /**
- * The azle coverage tests test that stage 2 is implements correctly. These
+ * The azle coverage tests test that stage 2 is implemented correctly. These
  * tests should make sure that every possible Azle symbol is used and renamed at
  * least once so that we can make sure that Azle is reading the generated symbol
  * table correctly
