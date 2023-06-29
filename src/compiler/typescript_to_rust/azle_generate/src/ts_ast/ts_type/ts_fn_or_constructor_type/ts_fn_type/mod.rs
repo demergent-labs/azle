@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use cdk_framework::traits::CollectResults;
+use cdk_framework::traits::CollectIterResults;
 use swc_ecma_ast::{TsFnParam, TsFnType, TsType, TsTypeAnn};
 
 use crate::{
@@ -27,14 +27,14 @@ impl SourceMapped<'_, TsFnType> {
     }
 
     pub fn get_param_types(&self) -> Result<Vec<TsType>, Vec<Error>> {
+        let param_to_ts_type = |param: &TsFnParam| {
+            self.spawn(param)
+                .get_ts_type()
+                .map_err(Into::<Vec<Error>>::into)
+        };
         self.get_ts_fn_params()
             .iter()
-            .map(|param| {
-                self.spawn(param)
-                    .get_ts_type()
-                    .map_err(Into::<Vec<Error>>::into)
-            })
-            .collect::<Vec<_>>()
+            .map(param_to_ts_type)
             .collect_results()
     }
 }

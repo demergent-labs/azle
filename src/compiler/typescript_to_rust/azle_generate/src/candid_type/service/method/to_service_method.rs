@@ -1,6 +1,6 @@
 use cdk_framework::{
     act::node::{candid::service::Method, node_parts::mode::Mode, CandidType, Param},
-    traits::CollectResults,
+    traits::{CollectIterResults, CollectResults},
 };
 use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnParam, TsFnType, TsType};
 
@@ -166,40 +166,41 @@ impl SourceMapped<'_, TsFnType> {
     pub fn build_act_fn_params(&self) -> Result<Vec<Param>, Vec<Error>> {
         self.params
             .iter()
-            .map(|param| match param {
-                TsFnParam::Ident(identifier) => {
-                    let name = identifier.get_name().to_string();
-                    let candid_type = match &identifier.type_ann {
-                        Some(ts_type_ann) => {
-                            self.spawn(&ts_type_ann.get_ts_type()).to_candid_type()?
-                        }
-                        None => {
-                            return Err(vec![Into::<Error>::into(
-                                FunctionParamsMustHaveType::from_ts_fn_type(self),
-                            )])
-                        }
-                    };
-                    Ok(Param { name, candid_type })
-                }
-                TsFnParam::Array(array_pat) => {
-                    return Err(vec![Into::<Error>::into(
-                        ArrayDestructuringInParamsNotSupported::from_ts_fn_type(self, array_pat),
-                    )])
-                }
-                TsFnParam::Rest(rest_pat) => {
-                    return Err(vec![RestParametersNotSupported::from_ts_fn_type(
-                        self, rest_pat,
-                    )
-                    .into()])
-                }
-                TsFnParam::Object(object_pat) => {
-                    return Err(vec![ObjectDestructuringNotSupported::from_ts_fn_type(
-                        self, object_pat,
-                    )
-                    .into()])
-                }
-            })
-            .collect::<Vec<_>>()
+            .map(|param| self.ts_fn_param_to_param(param))
             .collect_results()
+    }
+
+    fn ts_fn_param_to_param(&self, param: &TsFnParam) -> Result<Param, Vec<Error>> {
+        match param {
+            TsFnParam::Ident(identifier) => {
+                let name = identifier.get_name().to_string();
+                let candid_type = match &identifier.type_ann {
+                    Some(ts_type_ann) => self.spawn(&ts_type_ann.get_ts_type()).to_candid_type()?,
+                    None => {
+                        return Err(vec![Into::<Error>::into(
+                            FunctionParamsMustHaveType::from_ts_fn_type(self),
+                        )])
+                    }
+                };
+                Ok(Param { name, candid_type })
+            }
+            TsFnParam::Array(array_pat) => {
+                return Err(vec![Into::<Error>::into(
+                    ArrayDestructuringInParamsNotSupported::from_ts_fn_type(self, array_pat),
+                )])
+            }
+            TsFnParam::Rest(rest_pat) => {
+                return Err(vec![RestParametersNotSupported::from_ts_fn_type(
+                    self, rest_pat,
+                )
+                .into()])
+            }
+            TsFnParam::Object(object_pat) => {
+                return Err(vec![ObjectDestructuringNotSupported::from_ts_fn_type(
+                    self, object_pat,
+                )
+                .into()])
+            }
+        }
     }
 }

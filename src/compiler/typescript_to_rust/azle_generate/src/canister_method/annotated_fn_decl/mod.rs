@@ -1,4 +1,4 @@
-use cdk_framework::{act::node::canister_method::CanisterMethodType, traits::CollectResults};
+use cdk_framework::{act::node::canister_method::CanisterMethodType, traits::CollectIterResults};
 use proc_macro2::Ident;
 use quote::format_ident;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
@@ -122,7 +122,6 @@ impl SourceMapped<'_, AnnotatedFnDecl> {
                 Pat::Invalid(_) => Err(vec![InvalidParams::from_annotated_fn_decl(self).into()]),
                 Pat::Expr(_) => Err(vec![InvalidParams::from_annotated_fn_decl(self).into()]),
             })
-            .collect::<Vec<_>>()
             .collect_results()
     }
 
@@ -139,7 +138,6 @@ impl SourceMapped<'_, AnnotatedFnDecl> {
                     ])
                 }
             })
-            .collect::<Vec<_>>()
             .collect_results()
     }
 

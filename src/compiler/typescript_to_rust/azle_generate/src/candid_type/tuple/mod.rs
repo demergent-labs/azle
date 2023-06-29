@@ -1,9 +1,9 @@
 use cdk_framework::{
     act::node::candid::{tuple::Elem, Tuple},
-    traits::CollectResults,
+    traits::{CollectIterResults, CollectResults},
 };
 use swc_common::Span;
-use swc_ecma_ast::{TsTupleType, TsTypeAliasDecl, TsTypeRef};
+use swc_ecma_ast::{TsTupleElement, TsTupleType, TsTypeAliasDecl, TsTypeRef};
 
 use crate::{
     traits::{GetName, GetNameWithError, GetSpan},
@@ -58,13 +58,13 @@ impl SourceMapped<'_, TsTupleType> {
     }
 
     fn get_elem_types(&self) -> Result<Vec<Elem>, Vec<Error>> {
+        let ts_tuple_element_to_elem = |elem: &TsTupleElement| {
+            let candid_type = self.spawn(&elem.ty).to_candid_type()?;
+            Ok(Elem { candid_type })
+        };
         self.elem_types
             .iter()
-            .map(|elem| {
-                let candid_type = self.spawn(&elem.ty).to_candid_type()?;
-                Ok(Elem { candid_type })
-            })
-            .collect::<Vec<_>>()
+            .map(ts_tuple_element_to_elem)
             .collect_results()
     }
 }

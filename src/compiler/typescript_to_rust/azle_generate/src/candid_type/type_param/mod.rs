@@ -1,6 +1,6 @@
 use cdk_framework::{
     act::node::candid::TypeParam,
-    traits::{CollectResults, ToIdent},
+    traits::{CollectIterResults, ToIdent},
 };
 use swc_ecma_ast::TsTypeAliasDecl;
 
@@ -28,7 +28,6 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                 },
             }))
         }).flatten()
-        .collect::<Vec<_>>()
         .collect_results()
     }
 }

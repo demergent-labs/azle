@@ -3,7 +3,7 @@ use cdk_framework::{
         candid::{TypeArg, TypeRef},
         CandidType,
     },
-    traits::CollectResults,
+    traits::{CollectIterResults, CollectResults},
 };
 use std::ops::Deref;
 use swc_common::Span;
@@ -44,7 +44,6 @@ impl SourceMapped<'_, TsTypeRef> {
                         .map(|param| self.spawn(param.deref()).to_candid_type())
                 })
                 .flatten()
-                .collect::<Vec<_>>()
                 .collect_results()
                 .map(|param| {
                     param

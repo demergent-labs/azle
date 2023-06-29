@@ -1,4 +1,7 @@
-use cdk_framework::{act::CandidTypes, traits::CollectResults};
+use cdk_framework::{
+    act::CandidTypes,
+    traits::{CollectIterResults, CollectResults},
+};
 use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::{
@@ -49,7 +52,6 @@ impl TsAst {
             .iter()
             .map(|ts_type_alias_decl| extractor(&ts_type_alias_decl).transpose())
             .flatten()
-            .collect::<Vec<_>>()
             .collect_results()
     }
 }

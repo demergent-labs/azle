@@ -1,4 +1,4 @@
-use cdk_framework::{act::node::candid::Service, traits::CollectResults};
+use cdk_framework::{act::node::candid::Service, traits::CollectIterResults};
 use swc_ecma_ast::ClassDecl;
 
 use crate::{
@@ -21,7 +21,6 @@ impl TsAst {
         service_class_declarations
             .iter()
             .map(|service_class_decl| service_class_decl.to_service())
-            .collect::<Vec<_>>()
             .collect_results()
     }
 }

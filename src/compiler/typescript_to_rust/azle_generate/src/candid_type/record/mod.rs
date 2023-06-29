@@ -2,7 +2,7 @@ pub mod errors;
 
 use cdk_framework::{
     act::node::candid::{record::Member, Record},
-    traits::CollectResults,
+    traits::{CollectIterResults, CollectResults},
 };
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
@@ -62,7 +62,6 @@ impl SourceMapped<'_, TsTypeLit> {
             .members
             .iter()
             .map(|member| self.spawn(member).to_record_member())
-            .collect::<Vec<_>>()
             .collect_results()?;
 
         Ok(Record {
