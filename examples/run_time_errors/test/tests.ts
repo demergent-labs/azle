@@ -9,6 +9,7 @@ import { getInvalidNumberTests } from './invalid_numbers';
 import { getInvalidFuncTests } from './invalid_funcs';
 import { getInvalidPrincipalTests } from './invalid_principals';
 import { getInvalidBlobTests } from './invalid_blobs';
+import { getInvalidVecTests } from './invalid_vecs';
 
 export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
@@ -18,7 +19,8 @@ export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
         ...getInvalidNumberTests(errorCanister),
         ...getInvalidFuncTests(errorCanister),
         ...getInvalidPrincipalTests(errorCanister),
-        ...getInvalidBlobTests(errorCanister)
+        ...getInvalidBlobTests(errorCanister),
+        ...getInvalidVecTests(errorCanister)
     ];
 }
 

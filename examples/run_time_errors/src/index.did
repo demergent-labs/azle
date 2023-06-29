@@ -33,10 +33,12 @@ service : () -> {
   returnInvalidToTextPropertyAsInvalidPrincipal : () -> (principal) query;
   returnInvalidToTextReturnValueAsInvalidPrincipal : () -> (principal) query;
   returnInvalidVoidValue : () -> () query;
+  returnNonArrayAsInvalidVec : () -> (vec text) query;
   returnNonArrayValueAsInvalidFunc : () -> (func () -> () query) query;
   returnNonNullNone : () -> (opt text) query;
   returnNonObject : () -> (opt text) query;
   returnNonObjectAsInvalidBlob : () -> (vec nat8) query;
+  returnNonObjectAsInvalidVec : () -> (vec text) query;
   returnNonPrincipalValueAsInvalidFunc : () -> (func () -> () query) query;
   returnNonStringCanisterMethodNameAsInvalidFunc : () -> (
       func () -> () query,

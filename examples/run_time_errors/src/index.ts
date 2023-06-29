@@ -77,6 +77,11 @@ export {
     returnEmptyObjectAsInvalidBlob
 } from './blob';
 
+export {
+    returnNonObjectAsInvalidVec,
+    returnNonArrayAsInvalidVec
+} from './vecs';
+
 // $query;
 // export function returnInvalidValue(): TimerId {
 //     // @ts-expect-error
