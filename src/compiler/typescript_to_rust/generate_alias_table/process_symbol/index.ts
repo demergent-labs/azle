@@ -120,7 +120,7 @@ function isAzleSymbol(symbol: ts.Symbol): boolean {
     if ('parent' in symbol) {
         const parent = symbol.parent as ts.Symbol;
         if (parent) {
-            if (parent.name.includes('azle/src/lib/index')) {
+            if (parent.name.includes('azle/src/lib')) {
                 return true;
             }
         }

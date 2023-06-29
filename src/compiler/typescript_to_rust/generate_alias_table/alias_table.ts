@@ -5,8 +5,11 @@ import { generateAliasTableForSymbol } from './process_symbol';
 export function generateAliasTableFromSymbolTable(
     symbolTable: ts.SymbolTable,
     program: ts.Program
-): AliasTable {
+): AliasTable | undefined {
     let aliasTable = generateEmptyAliasTable();
+    // s.SymbolTable does not use regular iterator conventions thus it's
+    // difficult to turn it into an array, so we have to use forEach instead of
+    // reduce here
     symbolTable.forEach((symbol, name) => {
         const subAliasTable = generateAliasTableForSymbol(
             symbol,
@@ -18,6 +21,12 @@ export function generateAliasTableFromSymbolTable(
         }
     });
 
+    if (isEmpty(aliasTable)) {
+        // If the alias table is empty return undefined.
+        // We can skip processing a file if it has no alias table. That's easier
+        // to determine with undefined than with an empty table
+        return;
+    }
     return aliasTable;
 }
 
@@ -81,6 +90,10 @@ export function mergeAliasTables(
             ]
         };
     }, {} as AliasTable);
+}
+
+function isEmpty(aliasTable: AliasTable): boolean {
+    return !Object.values(aliasTable).some((aliases) => aliases.length > 0);
 }
 
 export function generateEmptyAliasTable(): AliasTable {

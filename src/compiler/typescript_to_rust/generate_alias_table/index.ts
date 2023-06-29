@@ -21,9 +21,9 @@ export function generateAliasTables(files: string[]): AliasTables {
 }
 
 function generateAliasTable(filename: string): AliasTable | undefined {
-    const sourceFilePath = filename;
-    const program = ts.createProgram([sourceFilePath], {});
-    const sourceFile = program.getSourceFile(sourceFilePath);
+    // TODO should we only create program for the entry point?
+    const program = ts.createProgram([filename], {});
+    const sourceFile = program.getSourceFile(filename);
 
     if (!sourceFile) {
         return;

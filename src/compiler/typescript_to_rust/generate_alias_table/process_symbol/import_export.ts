@@ -161,11 +161,12 @@ export function generateAliasTableForNamespaceImportExport(
     if (!symbolTable) {
         return;
     }
+    const aliasTable = generateAliasTableFromSymbolTable(symbolTable, program);
+    if (!aliasTable) {
+        return;
+    }
     // process this symbol table the same, then modify it such that every entry has name.whatever
-    return prependNamespaceToAliasTable(
-        generateAliasTableFromSymbolTable(symbolTable, program),
-        namespace
-    );
+    return prependNamespaceToAliasTable(aliasTable, namespace);
 }
 
 // TODO make a better name for this

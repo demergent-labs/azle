@@ -16,7 +16,7 @@ export const FILES_OF_INTEREST = [
 
 export const timing = false;
 const verbose = false;
-export let debug = false;
+export let debug: { print: boolean } = { print: false };
 
 export function generateTimedResults(
     files: string[],
