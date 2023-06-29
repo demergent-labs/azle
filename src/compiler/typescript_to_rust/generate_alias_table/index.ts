@@ -2,15 +2,11 @@ import { AliasTable, AliasTables } from '../../utils/types';
 import * as ts from 'typescript';
 import { generateAliasTableFromSymbolTable } from './alias_table';
 import { getSymbolTable } from './get_symbol_table';
-import { timing, generateTimedResults } from './debug';
 
 export function generateAliasTables(
     files: string[],
     program: ts.Program
 ): AliasTables {
-    if (timing) {
-        return generateTimedResults(files, generateAliasTable, program);
-    }
     return files.reduce((acc: AliasTables, filename: string) => {
         let aliasTable = generateAliasTable(filename, program);
         if (!aliasTable) {
