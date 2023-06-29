@@ -40,50 +40,45 @@ export function prependNamespaceToAliasTable(
     namespace: ts.NamespaceImport | ts.NamespaceExport
 ): AliasTable {
     const prependString = namespace.name.text;
-    return Object.entries(aliasTable).reduce(
-        (acc, [propertyName, propertyValue]) => {
-            return {
-                ...acc,
-                [propertyName as keyof AliasTable]: propertyValue.map(
-                    (value) => `${prependString}.${value}`
-                )
-            };
-        },
-        {} as AliasTable
-    );
+    return Object.entries(aliasTable).reduce((acc, [azleName, aliases]) => {
+        return {
+            ...acc,
+            [azleName as keyof AliasTable]: aliases.map(
+                (value) => `${prependString}.${value}`
+            )
+        };
+    }, {} as AliasTable);
 }
 
 export function renameAliasTable(
     aliasTable: AliasTable,
     newPrefix: string
 ): AliasTable {
-    return Object.entries(aliasTable).reduce(
-        (acc, [propertyName, propertyValue]) => {
-            return {
-                ...acc,
-                [propertyName as keyof AliasTable]: propertyValue.map(
-                    (value) => {
-                        const indexOfDotOperator = value.indexOf('.');
-                        if (indexOfDotOperator !== -1) {
-                            return value.replace(/^[^.]+/, newPrefix);
-                        }
-                        return value;
-                    }
-                )
-            };
-        },
-        {} as AliasTable
-    );
+    return Object.entries(aliasTable).reduce((acc, [azleName, aliases]) => {
+        return {
+            ...acc,
+            [azleName as keyof AliasTable]: aliases.map((value) => {
+                const indexOfDotOperator = value.indexOf('.');
+                if (indexOfDotOperator !== -1) {
+                    return value.replace(/^[^.]+/, newPrefix);
+                }
+                return value;
+            })
+        };
+    }, {} as AliasTable);
 }
 
 export function mergeAliasTables(
     aliasTable1: AliasTable,
     aliasTable2: AliasTable
 ): AliasTable {
-    return Object.entries(aliasTable1).reduce((acc, [key, value]) => {
+    return Object.entries(aliasTable1).reduce((acc, [azleName, aliases]) => {
         return {
             ...acc,
-            [key]: [...value, ...aliasTable2[key as keyof AliasTable]]
+            [azleName]: [
+                ...aliases,
+                ...aliasTable2[azleName as keyof AliasTable]
+            ]
         };
     }, {} as AliasTable);
 }

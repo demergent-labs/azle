@@ -39,8 +39,11 @@ export function getSymbolTableForDeclaration(
         // https://262.ecma-international.org/13.0/#sec-exports
         return;
     }
+    if (!ts.isStringLiteral(declaration.moduleSpecifier)) {
+        return;
+    }
     return getSymbolTableForModuleSpecifier(
-        declaration.moduleSpecifier as ts.StringLiteral,
+        declaration.moduleSpecifier,
         program
     );
 }

@@ -76,9 +76,12 @@ export function generateAliasTableForImportClause(
     alias: string,
     program: ts.Program
 ): AliasTable | undefined {
+    if (!ts.isStringLiteral(importClause.parent.moduleSpecifier)) {
+        return;
+    }
     return generateAliasTableForNameInModule(
         'default',
-        importClause.parent.moduleSpecifier as ts.StringLiteral,
+        importClause.parent.moduleSpecifier,
         alias,
         program
     );
@@ -138,9 +141,13 @@ export function generateAliasTableForNamespaceImportExport(
     program: ts.Program
 ): AliasTable | undefined {
     const importDeclaration = getDeclarationFromNamespace(namespace);
-    const moduleSpecifier =
-        importDeclaration.moduleSpecifier as ts.StringLiteral;
-    if (moduleSpecifier.text == 'azle') {
+    if (
+        !importDeclaration.moduleSpecifier ||
+        !ts.isStringLiteral(importDeclaration.moduleSpecifier)
+    ) {
+        return;
+    }
+    if (importDeclaration.moduleSpecifier.text == 'azle') {
         // TODO process this symbol table the same, then modify it such that every entry has name.whatever
         return prependNamespaceToAliasTable(
             generateDefaultAliasTable(),
@@ -270,14 +277,18 @@ function generateAliasTableForModuleImportExportSpecifier(
     const identifier = getUnderlyingIdentifierFromSpecifier(specifier);
     const declaration = getDeclarationFromSpecifier(specifier);
 
-    if (declaration.moduleSpecifier !== undefined) {
-        return generateAliasTableForNameInModule(
-            identifier.text,
-            declaration.moduleSpecifier as ts.StringLiteral,
-            alias,
-            program
-        );
+    if (
+        !declaration.moduleSpecifier ||
+        !ts.isStringLiteral(declaration.moduleSpecifier)
+    ) {
+        return;
     }
+    return generateAliasTableForNameInModule(
+        identifier.text,
+        declaration.moduleSpecifier,
+        alias,
+        program
+    );
 }
 
 // export {thing}; or export {thing as other};
