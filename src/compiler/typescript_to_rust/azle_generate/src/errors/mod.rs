@@ -10,6 +10,7 @@ pub mod errors;
 
 use self::errors::{
     ArrayDestructuringInParamsNotSupported, FileSyntaxError, FunctionParamsMustHaveType,
+    MultipleCanisterMethodDefinitions, MultipleGuardFunctionDefinitions, MultipleTypeDefinitions,
     ObjectDestructuringNotSupported, RestParametersNotSupported, UnableToLoadFile,
     UnableToLoadPlugin, UnableToParsePlugin,
 };
@@ -116,6 +117,9 @@ pub enum Error {
     InvalidArg(InvalidArg),
     UnsupportedMemberName(UnsupportedMemberName),
     MissingArgs(MissingArgs),
+    MultipleTypeDefinitions(MultipleTypeDefinitions),
+    MultipleGuardFunctionDefinitions(MultipleGuardFunctionDefinitions),
+    MultipleCanisterMethodDefinitions(MultipleCanisterMethodDefinitions),
 }
 
 impl std::error::Error for Error {}
@@ -176,6 +180,9 @@ impl Error {
             Self::UnableToParsePlugin(e) => e,
             Self::UnableToLoadPlugin(e) => e,
             Self::MissingSbtmTypeArgument(e) => e,
+            Self::MultipleTypeDefinitions(e) => e,
+            Self::MultipleGuardFunctionDefinitions(e) => e,
+            Self::MultipleCanisterMethodDefinitions(e) => e,
         }
     }
 }
@@ -189,13 +196,17 @@ impl std::fmt::Display for Error {
 impl From<CdkfError> for crate::Error {
     fn from(value: CdkfError) -> Self {
         match value {
-            CdkfError::TypeNotFound(name) => crate::Error::TypeNotFound(TypeNotFound { name }),
-            CdkfError::GuardFunctionNotFound(name) => {
-                crate::Error::GuardFunctionNotFound(GuardFunctionNotFound { name })
+            CdkfError::TypeNotFound(name) => TypeNotFound { name }.into(),
+            CdkfError::GuardFunctionNotFound(name) => GuardFunctionNotFound { name }.into(),
+            CdkfError::MultipleTypeDefinitions(name) => {
+                MultipleCanisterMethodDefinitions { name }.into()
             }
-            CdkfError::MultipleTypeDefinitions(_) => todo!(),
-            CdkfError::MultipleGuardFunctionDefinitions(_) => todo!(),
-            CdkfError::MultipleCanisterMethodDefinitions(_) => todo!(),
+            CdkfError::MultipleGuardFunctionDefinitions(name) => {
+                MultipleGuardFunctionDefinitions { name }.into()
+            }
+            CdkfError::MultipleCanisterMethodDefinitions(name) => {
+                MultipleCanisterMethodDefinitions { name }.into()
+            }
         }
     }
 }
