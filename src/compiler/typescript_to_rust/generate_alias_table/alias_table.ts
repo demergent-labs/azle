@@ -7,7 +7,7 @@ export function generateAliasTableFromSymbolTable(
     program: ts.Program
 ): AliasTable | undefined {
     let aliasTable = generateEmptyAliasTable();
-    // s.SymbolTable does not use regular iterator conventions thus it's
+    // ts.SymbolTable does not use regular iterator conventions thus it's
     // difficult to turn it into an array, so we have to use forEach instead of
     // reduce here
     symbolTable.forEach((symbol, name) => {
@@ -93,7 +93,7 @@ export function mergeAliasTables(
 }
 
 function isEmpty(aliasTable: AliasTable): boolean {
-    return !Object.values(aliasTable).some((aliases) => aliases.length > 0);
+    return Object.values(aliasTable).every((aliases) => aliases.length === 0);
 }
 
 export function generateEmptyAliasTable(): AliasTable {

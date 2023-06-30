@@ -1,3 +1,4 @@
+// IMPORTANT: Nothing from here is used right now. (https://github.com/demergent-labs/azle/issues/1092)
 import * as ts from 'typescript';
 import { AliasTable } from '../../../utils/types';
 import {

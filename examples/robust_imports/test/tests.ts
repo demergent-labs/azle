@@ -15,13 +15,13 @@ export function getTests(
 
 /**
  * The process of robust imports is in two stages.
- * Stage 1 is making the table that tells us which aliases/symbols come from map
- * to Azle types.
+ * Stage 1 is making the table that tells us which aliases come from map to Azle
+ * types.
  * Stage 2 is using that table in azle to correctly parse each file.
  */
 
 /**
- * The import converge tests test to make sure that stage 1 is working properly,
+ * The import coverage tests test to make sure that stage 1 is working properly,
  * that means it tests that we are handling all different types of imports and
  * exports.
  *
@@ -132,7 +132,7 @@ function getImportCoverageTests(ic: ActorSubclass<_SERVICE>): Test[] {
 /**
  * The azle coverage tests test that stage 2 is implemented correctly. These
  * tests should make sure that every possible Azle symbol is used and renamed at
- * least once so that we can make sure that Azle is reading the generated symbol
+ * least once so that we can make sure that Azle is reading the generated alias
  * table correctly
  *
  * @param fruit

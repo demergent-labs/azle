@@ -8,7 +8,7 @@ export function generateAliasTables(
     program: ts.Program
 ): AliasTables {
     return files.reduce((acc: AliasTables, filename: string) => {
-        let aliasTable = generateAliasTable(filename, program);
+        const aliasTable = generateAliasTable(filename, program);
         if (aliasTable === undefined) {
             return acc;
         }

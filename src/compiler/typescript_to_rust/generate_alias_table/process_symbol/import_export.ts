@@ -127,13 +127,12 @@ export function generateAliasTableForExportDeclarations(
     const aliasTables = exportDeclarations.map((declaration) =>
         generateAliasTableForExportDeclaration(declaration, program)
     );
-    let aliasTable = generateEmptyAliasTable();
-    aliasTables.forEach((subAliasTable) => {
-        if (subAliasTable) {
-            aliasTable = mergeAliasTables(aliasTable, subAliasTable);
+    return aliasTables.reduce((acc: AliasTable, subAliasTable) => {
+        if (subAliasTable === undefined) {
+            return { ...acc };
         }
-    });
-    return aliasTable;
+        return { ...mergeAliasTables(acc, subAliasTable) };
+    }, {} as AliasTable);
 }
 
 export function generateAliasTableForNamespaceImportExport(
@@ -246,7 +245,7 @@ function generateAliasTableForNameFromStarExport(
             continue;
         }
         // TODO something is wrong here. It ought to be checking the name right?
-        let symbolTable = getSymbolTableForModuleSpecifier(
+        const symbolTable = getSymbolTableForModuleSpecifier(
             exportModSpecifier,
             program
         );
