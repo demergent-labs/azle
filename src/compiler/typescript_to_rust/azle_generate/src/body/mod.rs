@@ -13,6 +13,7 @@ use crate::{plugin::Plugin, ts_ast::TsAst, Error};
 use self::stable_b_tree_map::StableBTreeMapNode;
 
 mod ic_object;
+mod to_js_error;
 
 pub mod async_await_result_handler;
 pub mod boa_error_handlers;
@@ -54,6 +55,7 @@ pub fn generate(
     let stable_b_tree_maps = stable_b_tree_map::rust::generate(&stable_b_tree_map_nodes);
     let unwrap_or_trap = unwrap_or_trap::generate();
     let runtime_error = runtime_error::generate();
+    let to_js_errors = to_js_error::generate();
 
     let plugins_code = plugins
         .iter()
@@ -62,6 +64,7 @@ pub fn generate(
 
     Ok(quote! {
         #runtime_error
+        #to_js_errors
         #async_await_result_handler
         #boa_error_handlers
         #ic_object_functions

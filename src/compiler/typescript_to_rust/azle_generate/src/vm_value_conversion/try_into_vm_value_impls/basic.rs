@@ -60,7 +60,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             ) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok(boa_engine::object::builtins::JsArray::from_iter(
                     [
-                        self.principal.try_into_vm_value(context).unwrap(),
+                        self.principal.try_into_vm_value(context)?,
                         self.method.into(),
                     ],
                     context,
@@ -76,21 +76,28 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                let exports_js_value = context
-                    .eval_script(boa_engine::Source::from_bytes("exports"))
-                    .unwrap_or_trap(context);
-                let exports_js_object = exports_js_value.as_object().unwrap();
+                let exports_js_value =
+                    context.eval_script(boa_engine::Source::from_bytes("exports"))?;
 
-                let principal_class_js_value = exports_js_object.get("Principal", context).unwrap();
-                let principal_class_js_object = principal_class_js_value.as_object().unwrap();
+                let exports_js_object = exports_js_value
+                    .as_object()
+                    .ok_or_else(|| "TypeError: 'exports' is not an object")?;
 
-                let from_text_js_value =
-                    principal_class_js_object.get("fromText", context).unwrap();
-                let from_text_js_object = from_text_js_value.as_object().unwrap();
+                let principal_class_js_value = exports_js_object.get("Principal", context)?;
+                let principal_class_js_object = principal_class_js_value
+                    .as_object()
+                    .ok_or_else(|| "ReferenceError: Principal is not defined")?;
 
-                let principal_js_value = from_text_js_object
-                    .call(&principal_class_js_value, &[self.to_text().into()], context)
-                    .unwrap_or_trap(context);
+                let from_text_js_value = principal_class_js_object.get("fromText", context)?;
+                let from_text_js_object = from_text_js_value
+                    .as_object()
+                    .ok_or_else(|| "TypeError: Principal.fromText is not a function")?;
+
+                let principal_js_value = from_text_js_object.call(
+                    &principal_class_js_value,
+                    &[self.to_text().into()],
+                    context,
+                )?;
 
                 Ok(principal_js_value)
             }

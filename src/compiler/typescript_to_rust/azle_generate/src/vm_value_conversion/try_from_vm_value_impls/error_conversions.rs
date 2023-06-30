@@ -23,5 +23,11 @@ pub fn generate() -> proc_macro2::TokenStream {
                 Self(value)
             }
         }
+
+        impl From<boa_engine::JsError> for CdkActTryIntoVmValueError {
+            fn from(value: boa_engine::JsError) -> Self {
+                Self(value.to_string())
+            }
+        }
     }
 }
