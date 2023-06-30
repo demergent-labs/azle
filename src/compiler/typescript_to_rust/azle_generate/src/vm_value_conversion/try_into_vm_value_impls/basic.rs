@@ -156,8 +156,8 @@ pub fn generate() -> proc_macro2::TokenStream {
             ) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
                     ic_stable_structures::btreemap::InsertError::KeyTooLarge { given, max } => {
-                        let given_js_value = given.try_into_vm_value(context).unwrap();
-                        let max_js_value = max.try_into_vm_value(context).unwrap();
+                        let given_js_value = given.try_into_vm_value(context)?;
+                        let max_js_value = max.try_into_vm_value(context)?;
 
                         let key_too_large_object =
                             boa_engine::object::ObjectInitializer::new(context)
@@ -183,8 +183,8 @@ pub fn generate() -> proc_macro2::TokenStream {
                             .into())
                     }
                     ic_stable_structures::btreemap::InsertError::ValueTooLarge { given, max } => {
-                        let given_js_value = given.try_into_vm_value(context).unwrap();
-                        let max_js_value = max.try_into_vm_value(context).unwrap();
+                        let given_js_value = given.try_into_vm_value(context)?;
+                        let max_js_value = max.try_into_vm_value(context)?;
 
                         let value_too_large_object =
                             boa_engine::object::ObjectInitializer::new(context)
