@@ -6,11 +6,7 @@ use cdk_framework::{
 };
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
-use crate::{
-    traits::{GetName, GetNameWithError},
-    ts_ast::SourceMapped,
-    Error,
-};
+use crate::{traits::GetName, ts_ast::SourceMapped, Error};
 
 use self::errors::VariantPropertySignature;
 
@@ -18,9 +14,9 @@ use super::errors::WrongEnclosedType;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_variant(&self) -> Result<Option<Variant>, Vec<Error>> {
-        self.process_ts_type_ref(&self.symbol_table.variant, |type_ref| {
+        self.process_ts_type_ref(&self.alias_table.variant, |type_ref| {
             // TODO this should be undone once we put all user-defined types in their own module
-            let name_string = self.id.get_name().to_string();
+            let name_string = self.id.get_name();
             let name = Some(if name_string == "Result" {
                 "_AzleResult".to_string()
             } else {
@@ -45,11 +41,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_variant(&self) -> Result<Option<Variant>, Vec<Error>> {
-        if self
-            .symbol_table
-            .variant
-            .contains(&self.get_name()?.to_string())
-        {
+        if self.alias_table.variant.contains(&self.get_name()) {
             Ok(Some(
                 match self.get_ts_type()?.as_ts_type_lit() {
                     Some(ts_type_lit) => ts_type_lit,

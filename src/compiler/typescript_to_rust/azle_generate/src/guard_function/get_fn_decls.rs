@@ -38,7 +38,7 @@ impl GetModuleFnDecls for Module {
                 Some(SourceMapped::new(
                     fn_decl,
                     &parent.source_map,
-                    &parent.symbol_table,
+                    &parent.alias_table,
                 ))
             })
             .collect()

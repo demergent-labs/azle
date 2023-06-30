@@ -1,8 +1,6 @@
-use std::ops::Deref;
-
 use swc_ecma_ast::{ExprStmt, FnDecl, ModuleItem};
 
-use crate::{traits::GetName, ts_ast::SourceMapped, Error};
+use crate::{traits::GetOptionalName, ts_ast::SourceMapped, Error};
 
 use super::{annotation::is_canister_method_annotation, Annotation};
 
@@ -15,11 +13,10 @@ impl SourceMapped<'_, ModuleItem> {
                     .expr
                     .as_call()
                     .and_then(|call_expr| call_expr.callee.as_expr())
-                    .and_then(|box_expr| box_expr.deref().as_ident())
-                    .and_then(|ident| Some(ident))
-                    .or(expr_stmt.expr.as_ident())
-                    .and_then(|ident| {
-                        if is_canister_method_annotation(&ident.get_name(), self.symbol_table) {
+                    .and_then(|box_expr| box_expr.get_name())
+                    .or(expr_stmt.expr.get_name())
+                    .and_then(|name| {
+                        if is_canister_method_annotation(&name, self.alias_table) {
                             Some(Annotation::from_module_item(self))
                         } else {
                             None

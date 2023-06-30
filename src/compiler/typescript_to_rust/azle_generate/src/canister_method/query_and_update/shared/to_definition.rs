@@ -12,10 +12,8 @@ use crate::{
 
 impl<'a> SourceMapped<'a, AnnotatedFnDecl> {
     pub fn to_definition(&self) -> Result<QueryOrUpdateDefinition, Vec<Error>> {
-        let (body, is_async, is_manual, params, return_type) = (
+        let (body, params, return_type) = (
             query_and_update::generate_body(&self),
-            self.is_promise().map_err(Error::into),
-            self.is_manual().map_err(Error::into),
             self.build_params(),
             self.build_return_type(),
         )
@@ -25,8 +23,8 @@ impl<'a> SourceMapped<'a, AnnotatedFnDecl> {
         let name = self.get_function_name();
 
         Ok(QueryOrUpdateDefinition::new(
-            is_async,
-            is_manual,
+            self.is_promise(),
+            self.is_manual(),
             guard_function_name,
             name,
             params,
@@ -62,7 +60,7 @@ impl<'a> SourceMapped<'a, AnnotatedFnDecl> {
         SourceMapped::new(
             self.get_return_ts_type()?,
             self.source_map,
-            self.symbol_table,
+            self.alias_table,
         )
         .to_candid_type()
     }

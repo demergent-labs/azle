@@ -18,8 +18,7 @@ impl SourceMapped<'_, TsPropertySignature> {
             Some(ident) => ident,
             None => return Err(UnsupportedMemberName::from_ts_property_signature(self).into()),
         }
-        .get_name()
-        .to_string())
+        .get_name())
     }
 
     pub fn get_act_data_type(&self) -> Result<CandidType, Vec<Error>> {

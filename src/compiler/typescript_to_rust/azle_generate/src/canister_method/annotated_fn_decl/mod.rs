@@ -1,7 +1,7 @@
 use cdk_framework::{act::node::canister_method::CanisterMethodType, traits::CollectIterResults};
 use proc_macro2::Ident;
 use quote::format_ident;
-use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
+use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsType};
 
 use crate::{
     canister_method::Annotation,
@@ -17,9 +17,7 @@ use crate::{
 
 pub use get_annotated_fn_decls::GetAnnotatedFnDecls;
 
-use self::errors::{
-    InvalidParams, MissingReturnType, ParamDefaultValue, QualifiedType, UntypedParam,
-};
+use self::errors::{InvalidParams, MissingReturnType, ParamDefaultValue, UntypedParam};
 
 use super::errors::MissingReturnTypeAnnotation;
 
@@ -39,7 +37,7 @@ impl SourceMapped<'_, AnnotatedFnDecl> {
             Some(ts_type_ann) => {
                 let return_type = &*ts_type_ann.type_ann;
 
-                let promise_return_type = if self.is_promise()? {
+                let promise_return_type = if self.is_promise() {
                     let type_ref = match return_type.as_ts_type_ref() {
                         Some(type_ref) => type_ref,
                         None => internal_error!(), // Since it is a promise we know it's a type_ref
@@ -57,7 +55,7 @@ impl SourceMapped<'_, AnnotatedFnDecl> {
                     return_type
                 };
 
-                let manual_return_type = if self.is_manual()? {
+                let manual_return_type = if self.is_manual() {
                     let inner_type_ref = match promise_return_type.as_ts_type_ref() {
                         Some(inner_type_ref) => inner_type_ref,
                         None => internal_error!(), // Since it is manual we know it's a type_ref
@@ -83,7 +81,7 @@ impl SourceMapped<'_, AnnotatedFnDecl> {
     }
 
     pub fn get_function_name(&self) -> String {
-        self.fn_decl.ident.get_name().to_string()
+        self.fn_decl.ident.get_name()
     }
 
     pub fn get_param_name_idents(&self) -> Result<Vec<Ident>, Vec<Error>> {
@@ -91,7 +89,7 @@ impl SourceMapped<'_, AnnotatedFnDecl> {
 
         Ok(param_idents
             .iter()
-            .map(|ident| format_ident!("{}", ident.get_name().to_string()))
+            .map(|ident| format_ident!("{}", ident.get_name()))
             .collect())
     }
 
@@ -150,47 +148,40 @@ impl SourceMapped<'_, AnnotatedFnDecl> {
         self.annotation.method_type == canister_method_type
     }
 
-    pub fn is_manual(&self) -> Result<bool, Error> {
-        let return_type = match &self.fn_decl.function.return_type {
-            Some(ts_type_ann) => match self.is_promise()? {
-                true => match &ts_type_ann.type_ann.as_ts_type_ref() {
-                    Some(ts_type_ref) => match &ts_type_ref.type_params {
-                        Some(type_param_instantiation) => &type_param_instantiation.params[0],
-                        None => return Ok(false),
-                    },
-                    None => return Ok(false),
-                },
-                false => &*ts_type_ann.type_ann,
-            },
-            None => return Ok(false),
-        };
+    pub fn is_manual(&self) -> bool {
+        let return_type = self
+            .fn_decl
+            .function
+            .return_type
+            .as_ref()
+            .and_then(|ts_type_ann| match self.is_promise() {
+                true => ts_type_ann
+                    .type_ann
+                    .as_ts_type_ref()
+                    .and_then(|ts_type_ref| ts_type_ref.type_params.clone())
+                    .and_then(|type_param_instantiation| {
+                        Some(*type_param_instantiation.params[0].clone())
+                    }),
+                false => Some(*ts_type_ann.type_ann.clone()),
+            });
 
         match return_type {
-            TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                TsEntityName::Ident(ident) => Ok(self
-                    .symbol_table
-                    .manual
-                    .contains(&ident.get_name().to_string())),
-                TsEntityName::TsQualifiedName(_) => {
-                    return Err(QualifiedType::from_annotated_fn_decl(self, ts_type_ref).into())
-                }
-            },
-            _ => Ok(false),
+            Some(TsType::TsTypeRef(ts_type_ref)) => self
+                .alias_table
+                .manual
+                .contains(&self.spawn(&ts_type_ref).get_name()),
+
+            _ => false,
         }
     }
 
-    pub fn is_promise(&self) -> Result<bool, Error> {
+    pub fn is_promise(&self) -> bool {
         match &self.fn_decl.function.return_type {
             Some(ts_type_ann) => match &*ts_type_ann.type_ann {
-                TsType::TsTypeRef(ts_type_ref) => match &ts_type_ref.type_name {
-                    TsEntityName::Ident(ident) => Ok(ident.get_name() == "Promise"),
-                    TsEntityName::TsQualifiedName(_) => {
-                        return Err(QualifiedType::from_annotated_fn_decl(self, ts_type_ref).into())
-                    }
-                },
-                _ => Ok(false),
+                TsType::TsTypeRef(ts_type_ref) => ts_type_ref.type_name.get_name() == "Promise",
+                _ => false,
             },
-            None => Ok(false),
+            None => false,
         }
     }
 }

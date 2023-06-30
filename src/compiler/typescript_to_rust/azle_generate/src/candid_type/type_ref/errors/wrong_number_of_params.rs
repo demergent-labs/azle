@@ -5,7 +5,7 @@ use swc_ecma_ast::TsTypeRef;
 use crate::{
     errors::{CompilerOutput, InternalError, Location, Suggestion, SuggestionModifications},
     internal_error,
-    traits::{GetNameWithError, GetSourceFileInfo, GetSourceInfo},
+    traits::{GetName, GetSourceFileInfo, GetSourceInfo},
     ts_ast::SourceMapped,
     Error,
 };
@@ -74,7 +74,7 @@ impl WrongNumberOfParams {
 
     fn create_annotation(&self) -> Result<String, Error> {
         if self.param_count == 1 {
-            return Err(InternalError {}.into());
+            return Err(InternalError::new().into());
         }
         Ok(if self.param_count == 0 {
             "Needs to have an enclosed type here."
@@ -107,7 +107,7 @@ impl WrongNumberOfParams {
 
     fn create_suggestion_annotation(&self) -> Result<String, Error> {
         if self.param_count == 1 {
-            return Err(InternalError {}.into());
+            return Err(InternalError::new().into());
         }
         Ok(match self.name {
             TypeRefCandidTypes::Record => {
@@ -176,14 +176,14 @@ impl Display for WrongNumberOfParams {
 
 impl SourceMapped<'_, TsTypeRef> {
     fn get_candid_type(&self) -> Result<TypeRefCandidTypes, Error> {
-        let name = self.get_name()?.to_string();
+        let name = self.get_name();
         Ok(match name.as_str() {
-            _ if self.symbol_table.variant.contains(&name) => TypeRefCandidTypes::Variant,
-            _ if self.symbol_table.func.contains(&name) => TypeRefCandidTypes::Func,
-            _ if self.symbol_table.opt.contains(&name) => TypeRefCandidTypes::Opt,
-            _ if self.symbol_table.record.contains(&name) => TypeRefCandidTypes::Record,
-            _ if self.symbol_table.tuple.contains(&name) => TypeRefCandidTypes::Tuple,
-            _ if self.symbol_table.vec.contains(&name) => TypeRefCandidTypes::Vec,
+            _ if self.alias_table.variant.contains(&name) => TypeRefCandidTypes::Variant,
+            _ if self.alias_table.func.contains(&name) => TypeRefCandidTypes::Func,
+            _ if self.alias_table.opt.contains(&name) => TypeRefCandidTypes::Opt,
+            _ if self.alias_table.record.contains(&name) => TypeRefCandidTypes::Record,
+            _ if self.alias_table.tuple.contains(&name) => TypeRefCandidTypes::Tuple,
+            _ if self.alias_table.vec.contains(&name) => TypeRefCandidTypes::Vec,
             _ => internal_error!(),
         })
     }

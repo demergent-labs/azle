@@ -2,7 +2,7 @@ use cdk_framework::{
     act::node::{candid::service::Method, node_parts::mode::Mode, CandidType, Param},
     traits::{CollectIterResults, CollectResults},
 };
-use swc_ecma_ast::{ClassProp, Expr, TsFnOrConstructorType, TsFnParam, TsFnType, TsType};
+use swc_ecma_ast::{ClassProp, TsFnOrConstructorType, TsFnParam, TsFnType, TsType};
 
 pub use crate::canister_method::check_length_and_map::CheckLengthAndMapTwo;
 use crate::{
@@ -10,15 +10,15 @@ use crate::{
         ArrayDestructuringInParamsNotSupported, FunctionParamsMustHaveType,
         ObjectDestructuringNotSupported, RestParametersNotSupported,
     },
-    traits::{GetName, GetTsType},
+    traits::{GetName, GetOptionalName, GetTsType},
     ts_ast::SourceMapped,
     Error,
 };
 
 use super::errors::{
     ComputedPropertyNotAllowed, InvalidDecorator, InvalidReturnType, MissingCallResultAnnotation,
-    MissingDecorator, MissingTypeAnnotation, MissingTypeArguments, NamespaceQualifiedType,
-    NotExactlyOneDecorator, TooManyReturnTypes,
+    MissingDecorator, MissingTypeAnnotation, MissingTypeArguments, NotExactlyOneDecorator,
+    TooManyReturnTypes,
 };
 
 impl SourceMapped<'_, ClassProp> {
@@ -36,12 +36,20 @@ impl SourceMapped<'_, ClassProp> {
             },
             self.name().map_err(Error::into),
             {
-                let mode = self.mode()?[..].to_string();
-                match mode.as_str() {
-                    _ if self.symbol_table.service_query_decorator.contains(&mode) => {
+                let decorator_name = self.get_decorator_name()?[..].to_string();
+                match decorator_name.as_str() {
+                    _ if self
+                        .alias_table
+                        .service_query_decorator
+                        .contains(&decorator_name) =>
+                    {
                         Ok(Mode::Query)
                     }
-                    _ if self.symbol_table.service_update_decorator.contains(&mode) => {
+                    _ if self
+                        .alias_table
+                        .service_update_decorator
+                        .contains(&decorator_name) =>
+                    {
                         Ok(Mode::Update)
                     }
                     _ => Err(vec![InvalidDecorator::from_class_prop(self).into()]),
@@ -69,37 +77,33 @@ impl SourceMapped<'_, ClassProp> {
 
     fn contains_decorator(&self, names: &Vec<String>) -> bool {
         self.decorators.iter().any(|decorator| {
-            if let Expr::Ident(ident) = &*decorator.expr {
-                return names.contains(&ident.get_name().to_string());
+            if let Some(name) = decorator.expr.get_name() {
+                return names.contains(&name);
             }
             false
         })
     }
 
     fn has_azle_decorator(&self) -> bool {
-        self.contains_decorator(&self.symbol_table.service_query_decorator)
-            || self.contains_decorator(&self.symbol_table.service_update_decorator)
+        self.contains_decorator(&self.alias_table.service_query_decorator)
+            || self.contains_decorator(&self.alias_table.service_update_decorator)
     }
 
-    fn mode(&self) -> Result<String, Vec<Error>> {
+    fn get_decorator_name(&self) -> Result<String, Vec<Error>> {
         self.decorators.check_length_is_one_and_map(
             |decorators| NotExactlyOneDecorator::from_decorator_list(decorators, self).into(),
             |decorator| {
-                let mode = match decorator.expr.as_ident() {
-                    Some(ident) => ident,
-                    None => return Err(vec![InvalidDecorator::from_class_prop(self).into()]),
-                }
-                .get_name()
-                .to_string();
-
-                Ok(mode)
+                decorator
+                    .expr
+                    .get_name()
+                    .ok_or_else(|| vec![InvalidDecorator::from_class_prop(self).into()])
             },
         )
     }
 
     fn name(&self) -> Result<String, Error> {
         let name = match &self.key {
-            swc_ecma_ast::PropName::Ident(ident) => ident.get_name().to_string(),
+            swc_ecma_ast::PropName::Ident(ident) => ident.get_name(),
             swc_ecma_ast::PropName::Str(str) => str.value.to_string(),
             swc_ecma_ast::PropName::Num(num) => num.value.to_string(),
             swc_ecma_ast::PropName::Computed(_) => {
@@ -116,14 +120,9 @@ impl SourceMapped<'_, ClassProp> {
         match &*ts_fn_type.type_ann.type_ann {
             TsType::TsTypeRef(ts_type_ref) => {
                 if !self
-                    .symbol_table
+                    .alias_table
                     .call_result
-                    .contains(&match &ts_type_ref.type_name {
-                        swc_ecma_ast::TsEntityName::TsQualifiedName(_) => {
-                            return Err(NamespaceQualifiedType::from_class_prop(self).into())
-                        }
-                        swc_ecma_ast::TsEntityName::Ident(ident) => ident.get_name().to_string(),
-                    })
+                    .contains(&ts_type_ref.type_name.get_name())
                 {
                     return Err(MissingCallResultAnnotation::from_class_prop(self).into());
                 }
@@ -173,7 +172,7 @@ impl SourceMapped<'_, TsFnType> {
     fn ts_fn_param_to_param(&self, param: &TsFnParam) -> Result<Param, Vec<Error>> {
         match param {
             TsFnParam::Ident(identifier) => {
-                let name = identifier.get_name().to_string();
+                let name = identifier.get_name();
                 let candid_type = match &identifier.type_ann {
                     Some(ts_type_ann) => self.spawn(&ts_type_ann.get_ts_type()).to_candid_type()?,
                     None => {

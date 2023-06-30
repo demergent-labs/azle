@@ -14,23 +14,23 @@ mod ts_ast;
 mod ts_keywords;
 mod vm_value_conversion;
 
+pub mod alias_table;
 pub mod errors;
 pub mod plugin;
-pub mod symbol_table;
 pub mod traits;
 
+pub use alias_table::AliasTable;
+pub use alias_table::AliasTables;
 pub use plugin::Plugin;
-pub use symbol_table::SymbolTable;
-pub use symbol_table::SymbolTables;
 
 pub fn generate_canister(
     ts_file_names: &Vec<String>,
     main_js: String,
-    symbol_tables: SymbolTables,
+    alias_tables: AliasTables,
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
 ) -> Result<TokenStream, Vec<Error>> {
-    TsAst::new(ts_file_names, main_js, symbol_tables)?
+    TsAst::new(ts_file_names, main_js, alias_tables)?
         .to_act(plugins, environment_variables)?
         .to_token_stream()
         .map_err(|cdkf_errors| cdkf_errors.into_iter().map(Error::from).collect())

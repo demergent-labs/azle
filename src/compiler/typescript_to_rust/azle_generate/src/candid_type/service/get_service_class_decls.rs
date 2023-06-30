@@ -1,11 +1,11 @@
 use std::ops::Deref;
 use swc_common::SourceMap;
-use swc_ecma_ast::{ClassDecl, Decl, Expr, Module, ModuleDecl, ModuleItem, Stmt};
+use swc_ecma_ast::{ClassDecl, Decl, Module, ModuleDecl, ModuleItem, Stmt};
 
 use crate::{
-    traits::GetName,
+    traits::GetOptionalName,
     ts_ast::{Program, SourceMapped},
-    SymbolTable,
+    AliasTable,
 };
 
 pub trait GetFlattenedServiceClassDecls {
@@ -24,7 +24,7 @@ impl Program {
     fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
         match self.deref() {
             swc_ecma_ast::Program::Module(module) => {
-                module.get_service_class_declarations(&self.source_map, &self.symbol_table)
+                module.get_service_class_declarations(&self.source_map, &self.alias_table)
             }
             swc_ecma_ast::Program::Script(_) => vec![],
         }
@@ -35,7 +35,7 @@ trait GetServiceClassDecls {
     fn get_service_class_declarations<'a>(
         &'a self,
         source_map: &'a SourceMap,
-        symbol_table: &'a SymbolTable,
+        alias_table: &'a AliasTable,
     ) -> Vec<SourceMapped<ClassDecl>>;
 }
 
@@ -43,7 +43,7 @@ impl GetServiceClassDecls for Module {
     fn get_service_class_declarations<'a>(
         &'a self,
         source_map: &'a SourceMap,
-        symbol_table: &'a SymbolTable,
+        alias_table: &'a AliasTable,
     ) -> Vec<SourceMapped<ClassDecl>> {
         self.body.iter().fold(vec![], |mut acc, module_item| {
             // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
@@ -64,9 +64,9 @@ impl GetServiceClassDecls for Module {
             if let Some(decl) = decl_opt {
                 if let Decl::Class(class_decl) = decl {
                     if let Some(super_class) = &class_decl.class.super_class {
-                        if let Expr::Ident(ident) = &**super_class {
-                            if symbol_table.service.contains(&ident.get_name().to_string()) {
-                                acc.push(SourceMapped::new(class_decl, source_map, symbol_table))
+                        if let Some(name) = super_class.get_name() {
+                            if alias_table.service.contains(&name) {
+                                acc.push(SourceMapped::new(class_decl, source_map, alias_table))
                             }
                         }
                     }

@@ -6,7 +6,7 @@ use std::ops::Deref;
 use swc_ecma_ast::{TsFnOrConstructorType, TsType, TsTypeAliasDecl, TsTypeAnn, TsTypeRef};
 
 use crate::{
-    traits::{GetName, GetNameWithError, GetTsType},
+    traits::{GetName, GetTsType},
     ts_ast::SourceMapped,
     Error,
 };
@@ -17,8 +17,8 @@ mod rust;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_func(&self) -> Result<Option<Func>, Vec<Error>> {
-        self.process_ts_type_ref(&self.symbol_table.func, |ts_type_ref| {
-            ts_type_ref.to_func(Some(self.id.get_name().to_string()))
+        self.process_ts_type_ref(&self.alias_table.func, |ts_type_ref| {
+            ts_type_ref.to_func(Some(self.id.get_name()))
         })
         .map(|result| result.flatten())
     }
@@ -26,11 +26,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 
 impl SourceMapped<'_, TsTypeRef> {
     pub fn to_func(&self, name: Option<String>) -> Result<Option<Func>, Vec<Error>> {
-        if !self
-            .symbol_table
-            .func
-            .contains(&self.get_name()?.to_string())
-        {
+        if !self.alias_table.func.contains(&self.get_name()) {
             return Ok(None);
         }
         let request_type_ts_type = self.get_ts_type()?;
@@ -41,11 +37,11 @@ impl SourceMapped<'_, TsTypeRef> {
 
         let (mode, ts_type) = (
             {
-                let name = request_type_type_ref.get_name()?.to_string();
+                let name = request_type_type_ref.get_name();
                 match name.as_str() {
-                    _ if self.symbol_table.query_mode.contains(&name) => Ok(Mode::Query),
-                    _ if self.symbol_table.update_mode.contains(&name) => Ok(Mode::Update),
-                    _ if self.symbol_table.oneway_mode.contains(&name) => Ok(Mode::Oneway),
+                    _ if self.alias_table.query_mode.contains(&name) => Ok(Mode::Query),
+                    _ if self.alias_table.update_mode.contains(&name) => Ok(Mode::Update),
+                    _ if self.alias_table.oneway_mode.contains(&name) => Ok(Mode::Oneway),
                     _ => Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
                 }
             },

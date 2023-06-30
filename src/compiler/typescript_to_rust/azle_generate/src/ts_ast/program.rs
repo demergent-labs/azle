@@ -4,10 +4,10 @@ use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
-use crate::SymbolTables;
+use crate::AliasTables;
 use crate::{
     errors::errors::{FileSyntaxError, UnableToLoadFile},
-    internal_error, Error, SymbolTable,
+    internal_error, AliasTable, Error,
 };
 
 use super::SourceMapped;
@@ -16,7 +16,7 @@ pub struct Program {
     program: swc_ecma_ast::Program,
     pub source_map: SourceMap,
     pub filepath: String,
-    pub symbol_table: SymbolTable,
+    pub alias_table: AliasTable,
 }
 
 impl Deref for Program {
@@ -30,7 +30,7 @@ impl Deref for Program {
 impl Program {
     pub fn from_file_name(
         ts_file_name: &str,
-        symbol_tables: &SymbolTables,
+        alias_tables: &AliasTables,
     ) -> Result<Option<Self>, Error> {
         let filepath = Path::new(ts_file_name).to_path_buf();
 
@@ -56,16 +56,16 @@ impl Program {
         match parse_result {
             Ok(program) => {
                 if let Ok(source_map) = std::rc::Rc::try_unwrap(cm) {
-                    match symbol_tables.get(ts_file_name) {
-                        Some(symbol_table) => {
+                    match alias_tables.get(ts_file_name) {
+                        Some(alias_table) => {
                             return Ok(Some(Program {
                                 program,
                                 source_map,
                                 filepath: ts_file_name.to_string(),
-                                symbol_table: symbol_table.clone(),
+                                alias_table: alias_table.clone(),
                             }));
                         }
-                        None => internal_error!(), // If there is no symbol table for the program then we don't need to process it for candid types
+                        None => return Ok(None), // If there is no symbol table for the program then we don't need to process it for candid types
                     }
                 };
                 internal_error!()
@@ -87,7 +87,7 @@ impl Program {
                                 Some(SourceMapped::new(
                                     ts_type_alias_decl,
                                     &self.source_map,
-                                    &self.symbol_table,
+                                    &self.alias_table,
                                 ))
                             } else {
                                 None
@@ -112,7 +112,7 @@ impl Program {
                                 Some(SourceMapped::new(
                                     ts_type_alias_decl,
                                     &self.source_map,
-                                    &self.symbol_table,
+                                    &self.alias_table,
                                 ))
                             } else {
                                 None

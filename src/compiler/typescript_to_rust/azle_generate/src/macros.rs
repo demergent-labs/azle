@@ -11,6 +11,8 @@
 #[macro_export]
 macro_rules! internal_error {
     () => {
-        return Err(crate::Error::InternalError(crate::errors::InternalError {}))
+        return Err(crate::Error::InternalError(
+            crate::errors::InternalError::new(),
+        ))
     };
 }
