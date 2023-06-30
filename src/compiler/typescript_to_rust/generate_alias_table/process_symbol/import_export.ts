@@ -3,10 +3,10 @@ import { AliasTable } from '../../../utils/types';
 import {
     generateAliasTableFromSymbolTable,
     generateSingleEntryAliasTable,
-    generateEmptyAliasTable,
+    EMPTY_ALIAS_TABLE,
     renameAliasTable,
     prependNamespaceToAliasTable,
-    generateDefaultAliasTable,
+    DEFAULT_ALIAS_TABLE,
     mergeAliasTables
 } from '../alias_table';
 import {
@@ -103,7 +103,7 @@ export function generateAliasTableForExportDeclaration(
         return undefined;
     }
     if (moduleSpecifier.text == 'azle') {
-        return generateDefaultAliasTable();
+        return DEFAULT_ALIAS_TABLE;
     }
     const symbolTable = getSymbolTableForDeclaration(
         exportDeclaration,
@@ -132,7 +132,7 @@ export function generateAliasTableForExportDeclarations(
             return { ...acc };
         }
         return { ...mergeAliasTables(acc, subAliasTable) };
-    }, {} as AliasTable);
+    }, EMPTY_ALIAS_TABLE);
 }
 
 export function generateAliasTableForNamespaceImportExport(
@@ -148,10 +148,7 @@ export function generateAliasTableForNamespaceImportExport(
     }
     if (importDeclaration.moduleSpecifier.text == 'azle') {
         // TODO process this symbol table the same, then modify it such that every entry has name.whatever
-        return prependNamespaceToAliasTable(
-            generateDefaultAliasTable(),
-            namespace
-        );
+        return prependNamespaceToAliasTable(DEFAULT_ALIAS_TABLE, namespace);
     }
     const symbolTable = getSymbolTableForDeclaration(
         importDeclaration,

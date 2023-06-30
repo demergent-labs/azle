@@ -6,7 +6,7 @@ export function generateAliasTableFromSymbolTable(
     symbolTable: ts.SymbolTable,
     program: ts.Program
 ): AliasTable | undefined {
-    let aliasTable = generateEmptyAliasTable();
+    let aliasTable = EMPTY_ALIAS_TABLE;
     // ts.SymbolTable does not use regular iterator conventions thus it's
     // difficult to turn it into an array, so we have to use forEach instead of
     // reduce here
@@ -34,12 +34,11 @@ export function generateSingleEntryAliasTable(
     name: string,
     alias: string
 ): AliasTable | undefined {
-    const aliasTable = generateEmptyAliasTable();
     const key = stringToAliasTableKey(name);
     if (key) {
         return {
-            ...aliasTable,
-            [key]: [...aliasTable[key], alias]
+            ...EMPTY_ALIAS_TABLE,
+            [key]: [alias]
         };
     }
 }
@@ -56,7 +55,7 @@ export function prependNamespaceToAliasTable(
                 (value) => `${prependString}.${value}`
             )
         };
-    }, {} as AliasTable);
+    }, EMPTY_ALIAS_TABLE);
 }
 
 export function renameAliasTable(
@@ -74,7 +73,7 @@ export function renameAliasTable(
                 return value;
             })
         };
-    }, {} as AliasTable);
+    }, EMPTY_ALIAS_TABLE);
 }
 
 export function mergeAliasTables(
@@ -89,110 +88,107 @@ export function mergeAliasTables(
                 ...aliasTable2[azleName as keyof AliasTable]
             ]
         };
-    }, {} as AliasTable);
+    }, EMPTY_ALIAS_TABLE);
 }
 
 function isEmpty(aliasTable: AliasTable): boolean {
     return Object.values(aliasTable).every((aliases) => aliases.length === 0);
 }
 
-export function generateEmptyAliasTable(): AliasTable {
-    return {
-        alias: [],
-        call_result: [],
-        blob: [],
-        bool: [],
-        empty: [],
-        float32: [],
-        float64: [],
-        func: [],
-        guard_result: [],
-        heartbeat_decorator: [],
-        init_decorator: [],
-        inspect_message_decorator: [],
-        int: [],
-        int8: [],
-        int16: [],
-        int32: [],
-        int64: [],
-        manual: [],
-        nat: [],
-        nat8: [],
-        nat16: [],
-        nat32: [],
-        nat64: [],
-        null: [],
-        oneway_mode: [],
-        opt: [],
-        post_upgrade_decorator: [],
-        pre_upgrade_decorator: [],
-        principal: [],
-        query_decorator: [],
-        query_mode: [],
-        record: [],
-        reserved: [],
-        service: [],
-        service_query_decorator: [],
-        service_update_decorator: [],
-        stable_b_tree_map: [],
-        text: [],
-        tuple: [],
-        update_decorator: [],
-        update_mode: [],
-        variant: [],
-        vec: [],
-        void: []
-    };
-}
+export const EMPTY_ALIAS_TABLE: AliasTable = {
+    alias: [],
+    call_result: [],
+    blob: [],
+    bool: [],
+    empty: [],
+    float32: [],
+    float64: [],
+    func: [],
+    guard_result: [],
+    heartbeat_decorator: [],
+    init_decorator: [],
+    inspect_message_decorator: [],
+    int: [],
+    int8: [],
+    int16: [],
+    int32: [],
+    int64: [],
+    manual: [],
+    nat: [],
+    nat8: [],
+    nat16: [],
+    nat32: [],
+    nat64: [],
+    null: [],
+    oneway_mode: [],
+    opt: [],
+    post_upgrade_decorator: [],
+    pre_upgrade_decorator: [],
+    principal: [],
+    query_decorator: [],
+    query_mode: [],
+    record: [],
+    reserved: [],
+    service: [],
+    service_query_decorator: [],
+    service_update_decorator: [],
+    stable_b_tree_map: [],
+    text: [],
+    tuple: [],
+    update_decorator: [],
+    update_mode: [],
+    variant: [],
+    vec: [],
+    void: []
+};
 
-export function generateDefaultAliasTable(): AliasTable {
-    return {
-        alias: ['Alias'],
-        blob: ['blob'],
-        bool: [],
-        call_result: ['CallResult'],
-        empty: ['empty'],
-        float32: ['float32'],
-        float64: ['float64'],
-        func: ['Func'],
-        guard_result: ['GuardResult'],
-        heartbeat_decorator: ['$heartbeat'],
-        init_decorator: ['$init'],
-        inspect_message_decorator: ['$inspectMessage'],
-        int: ['int'],
-        int8: ['int8'],
-        int16: ['int16'],
-        int32: ['int32'],
-        int64: ['int64'],
-        manual: ['Manual'],
-        nat: ['nat'],
-        nat8: ['nat8'],
-        nat16: ['nat16'],
-        nat32: ['nat32'],
-        nat64: ['nat64'],
-        null: [],
-        oneway_mode: ['Oneway'],
-        opt: ['Opt'],
-        post_upgrade_decorator: ['$postUpgrade'],
-        pre_upgrade_decorator: ['$preUpgrade'],
-        principal: ['Principal'],
-        query_decorator: ['$query'],
-        query_mode: ['Query'],
-        record: ['Record'],
-        reserved: ['reserved'],
-        service: ['Service'],
-        service_query_decorator: ['serviceQuery'],
-        service_update_decorator: ['serviceUpdate'],
-        stable_b_tree_map: ['StableBTreeMap'],
-        text: ['text'],
-        tuple: ['Tuple'],
-        update_decorator: ['$update'],
-        update_mode: ['Update'],
-        variant: ['Variant'],
-        vec: ['Vec'],
-        void: []
-    };
-}
+export const DEFAULT_ALIAS_TABLE: AliasTable = {
+    alias: ['Alias'],
+    blob: ['blob'],
+    bool: [],
+    call_result: ['CallResult'],
+    empty: ['empty'],
+    float32: ['float32'],
+    float64: ['float64'],
+    func: ['Func'],
+    guard_result: ['GuardResult'],
+    heartbeat_decorator: ['$heartbeat'],
+    init_decorator: ['$init'],
+    inspect_message_decorator: ['$inspectMessage'],
+    int: ['int'],
+    int8: ['int8'],
+    int16: ['int16'],
+    int32: ['int32'],
+    int64: ['int64'],
+    manual: ['Manual'],
+    nat: ['nat'],
+    nat8: ['nat8'],
+    nat16: ['nat16'],
+    nat32: ['nat32'],
+    nat64: ['nat64'],
+    null: [],
+    oneway_mode: ['Oneway'],
+    opt: ['Opt'],
+    post_upgrade_decorator: ['$postUpgrade'],
+    pre_upgrade_decorator: ['$preUpgrade'],
+    principal: ['Principal'],
+    query_decorator: ['$query'],
+    query_mode: ['Query'],
+    record: ['Record'],
+    reserved: ['reserved'],
+    service: ['Service'],
+    service_query_decorator: ['serviceQuery'],
+    service_update_decorator: ['serviceUpdate'],
+    stable_b_tree_map: ['StableBTreeMap'],
+    text: ['text'],
+    tuple: ['Tuple'],
+    update_decorator: ['$update'],
+    update_mode: ['Update'],
+    variant: ['Variant'],
+    vec: ['Vec'],
+    void: []
+};
+
 const ALIAS_TABLE_KEYS: {
     [key: string]: keyof AliasTable;
 } = {
