@@ -1,12 +1,11 @@
 use cdk_framework::{
     act::node::{candid::Func, node_parts::mode::Mode},
-    traits::CollectResults,
+    traits::{CollectIterResults, CollectResults},
 };
 use std::ops::Deref;
 use swc_ecma_ast::{TsFnOrConstructorType, TsType, TsTypeAliasDecl, TsTypeAnn, TsTypeRef};
 
 use crate::{
-    errors::CollectResults as OtherCollectResults,
     traits::{GetName, GetNameWithError, GetTsType},
     ts_ast::SourceMapped,
     Error,
@@ -61,11 +60,13 @@ impl SourceMapped<'_, TsTypeRef> {
             _ => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
         };
 
+        let param_to_candid = |param: &TsType| self.spawn(param).to_candid_type();
+
         let (params, return_type) = (
             ts_fn_type
                 .get_param_types()?
                 .iter()
-                .map(|param| self.spawn(param).to_candid_type())
+                .map(param_to_candid)
                 .collect_results(),
             self.spawn(&ts_fn_type.get_ts_type_ann().get_ts_type())
                 .to_candid_type(),

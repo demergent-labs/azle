@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use swc_common::{source_map::Pos, BytePos, SourceMap, Span};
 
 use super::{private_get_source_file_info::PrivateGetSourceFileInfo, Range};
@@ -46,23 +48,25 @@ impl GetSourceFileInfo for SourceMap {
             range
         };
 
-        let start_line_source_file_and_line = self
-            .lookup_line(start)
-            .expect("Unable to find line in source code");
+        let start_line_source_file_and_line = match self.lookup_line(start) {
+            Ok(source_file_and_line) => source_file_and_line,
+            Err(_) => return "".to_string(), // if we can't get the start line just return an empty string because there is no source found. TODO make this more robust
+        };
         let source_file = start_line_source_file_and_line.sf;
 
         let start_line_number = start_line_source_file_and_line.line;
-        let end_line_number = self
-            .lookup_line(end)
-            .expect("Unable to find line in source code")
-            .line;
+        let end_line_number = match self.lookup_line(end) {
+            Ok(source_file_and_line) => source_file_and_line.line,
+            Err(_) => start_line_number, // if we can't get the end line just use the start line. TODO make this more robust
+        };
 
         let source_lines: Vec<String> = (start_line_number..=end_line_number)
             .map(|line_number| {
-                source_file
-                    .get_line(line_number)
-                    .expect("Unable to find line in source code")
-                    .to_string()
+                match source_file.get_line(line_number) {
+                    Some(line) => line.clone(),
+                    None => Cow::from(""), // if we can't find one of the middle lines just fill it in with a black. TODO make this more robust
+                }
+                .to_string()
             })
             .collect();
 

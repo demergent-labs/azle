@@ -1,8 +1,7 @@
-use cdk_framework::act::node::candid::Service;
+use cdk_framework::{act::node::candid::Service, traits::CollectIterResults};
 use swc_ecma_ast::ClassDecl;
 
 use crate::{
-    errors::CollectResults,
     traits::GetName,
     ts_ast::{SourceMapped, TsAst},
     Error,

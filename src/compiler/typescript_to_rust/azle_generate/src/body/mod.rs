@@ -1,20 +1,14 @@
-use cdk_framework::act::node::{
-    candid::Service,
-    canister_method::{QueryMethod, QueryOrUpdateMethod, UpdateMethod},
+use cdk_framework::{
+    act::node::{
+        candid::Service,
+        canister_method::{QueryMethod, QueryOrUpdateMethod, UpdateMethod},
+    },
+    traits::CollectIterResults,
 };
 use proc_macro2::TokenStream;
 use quote::quote;
-use std::path::PathBuf;
 
-use crate::{
-    errors::{
-        errors::{UnableToLoadPlugin, UnableToParsePlugin},
-        CollectResults,
-    },
-    plugin::Plugin,
-    ts_ast::TsAst,
-    Error,
-};
+use crate::{plugin::Plugin, ts_ast::TsAst, Error};
 
 use self::stable_b_tree_map::StableBTreeMapNode;
 
@@ -59,26 +53,7 @@ pub fn generate(
 
     let plugins_code = plugins
         .iter()
-        .map(|plugin| {
-            let plugin_file_name = PathBuf::from(&plugin.path).join("src").join("lib.rs");
-            let plugin_code = match std::fs::read_to_string(plugin_file_name.clone()) {
-                Ok(plugin_code) => plugin_code,
-                Err(err) => {
-                    return Err(vec![
-                        UnableToLoadPlugin::from_error(err, &plugin_file_name).into()
-                    ])
-                }
-            };
-
-            match syn::parse_str::<TokenStream>(&plugin_code) {
-                Ok(token_stream) => Ok(token_stream),
-                Err(err) => Err(vec![UnableToParsePlugin::from_error(
-                    err,
-                    &plugin_file_name,
-                )
-                .into()]),
-            }
-        })
+        .map(|plugin| plugin.to_code())
         .collect_results()?;
 
     Ok(quote! {

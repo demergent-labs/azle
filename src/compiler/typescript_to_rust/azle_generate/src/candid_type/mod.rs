@@ -1,8 +1,10 @@
-use cdk_framework::{act::CandidTypes, traits::CollectResults};
+use cdk_framework::{
+    act::CandidTypes,
+    traits::{CollectIterResults, CollectResults},
+};
 use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::{
-    errors::CollectResults as OtherCollectResults,
     ts_ast::{SourceMapped, TsAst},
     Error,
 };

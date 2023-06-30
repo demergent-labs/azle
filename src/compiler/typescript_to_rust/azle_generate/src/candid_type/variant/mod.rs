@@ -2,12 +2,11 @@ pub mod errors;
 
 use cdk_framework::{
     act::node::candid::{variant::Member, Variant},
-    traits::CollectResults,
+    traits::{CollectIterResults, CollectResults},
 };
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
 use crate::{
-    errors::CollectResults as OtherCollectResults,
     traits::{GetName, GetNameWithError},
     ts_ast::SourceMapped,
     Error,
@@ -68,10 +67,12 @@ impl SourceMapped<'_, TsTypeRef> {
 
 impl SourceMapped<'_, TsTypeLit> {
     pub fn to_variant(&self) -> Result<Variant, Vec<Error>> {
+        let ts_type_element_to_variant_member =
+            |member: &TsTypeElement| self.spawn(member).to_variant_member();
         let members: Vec<Member> = self
             .members
             .iter()
-            .map(|member| self.spawn(member).to_variant_member())
+            .map(ts_type_element_to_variant_member)
             .collect_results()?;
 
         Ok(Variant {

@@ -1,14 +1,14 @@
-use cdk_framework::act::node::CandidType;
+use cdk_framework::{act::node::CandidType, traits::CollectIterResults};
 use std::ops::Deref;
-use swc_ecma_ast::{Decl, Expr};
+use swc_ecma_ast::{Decl, Expr, VarDecl};
 
 use crate::{
-    errors::CollectResults,
     traits::GetName,
     ts_ast::{Program, SourceMapped, TsAst},
     Error,
 };
-use module_item::AsDecl;
+
+use self::module_item::AsDecl;
 
 mod expr;
 mod module_item;
@@ -36,6 +36,13 @@ impl TsAst {
 }
 
 impl Program {
+    pub fn spawn<C>(&self, child: &C) -> SourceMapped<C>
+    where
+        C: Clone,
+    {
+        SourceMapped::new(child, &self.source_map, &self.symbol_table)
+    }
+
     pub fn build_stable_b_tree_map_nodes(&self) -> Result<Vec<StableBTreeMapNode>, Vec<Error>> {
         match self.deref() {
             swc_ecma_ast::Program::Module(module) => module
@@ -56,10 +63,7 @@ impl Program {
         }
     }
 
-    fn process_var_decl(
-        &self,
-        var_decl: &swc_ecma_ast::VarDecl,
-    ) -> Result<Vec<StableBTreeMapNode>, Vec<Error>> {
+    fn process_var_decl(&self, var_decl: &VarDecl) -> Result<Vec<StableBTreeMapNode>, Vec<Error>> {
         var_decl
             .decls
             .iter()
@@ -72,7 +76,7 @@ impl Program {
                         ) =>
                     {
                         Some(
-                            SourceMapped::new(new_expr, &self.source_map, &self.symbol_table)
+                            self.spawn(new_expr)
                                 .to_stable_b_tree_map_node(),
                         )
                     }

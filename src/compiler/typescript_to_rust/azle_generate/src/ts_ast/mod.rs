@@ -1,8 +1,9 @@
+use cdk_framework::traits::CollectIterResults;
 pub use program::Program;
 pub use source_map::SourceMapped;
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use crate::{errors::CollectResults, Error, SymbolTables};
+use crate::{Error, SymbolTables};
 
 pub mod expr;
 pub mod program;
@@ -21,12 +22,12 @@ impl TsAst {
         main_js: String,
         symbol_tables: SymbolTables,
     ) -> Result<Self, Vec<Error>> {
+        let file_name_to_program = |ts_file_name: &String| {
+            Program::from_file_name(ts_file_name, &symbol_tables).map_err(Into::<Vec<Error>>::into)
+        };
         let programs = ts_file_names
             .iter()
-            .map(|ts_file_name| {
-                Program::from_file_name(ts_file_name, &symbol_tables)
-                    .map_err(Into::<Vec<Error>>::into)
-            })
+            .map(file_name_to_program)
             .collect_results()?
             .into_iter()
             .filter_map(|option| option)

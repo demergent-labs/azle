@@ -10,6 +10,7 @@ pub mod errors;
 
 use self::errors::{
     ArrayDestructuringInParamsNotSupported, FileSyntaxError, FunctionParamsMustHaveType,
+    MultipleCanisterMethodDefinitions, MultipleGuardFunctionDefinitions, MultipleTypeDefinitions,
     ObjectDestructuringNotSupported, RestParametersNotSupported, UnableToLoadFile,
     UnableToLoadPlugin, UnableToParsePlugin,
 };
@@ -116,6 +117,9 @@ pub enum Error {
     InvalidArg(InvalidArg),
     UnsupportedMemberName(UnsupportedMemberName),
     MissingArgs(MissingArgs),
+    MultipleTypeDefinitions(MultipleTypeDefinitions),
+    MultipleGuardFunctionDefinitions(MultipleGuardFunctionDefinitions),
+    MultipleCanisterMethodDefinitions(MultipleCanisterMethodDefinitions),
 }
 
 impl std::error::Error for Error {}
@@ -176,6 +180,9 @@ impl Error {
             Self::UnableToParsePlugin(e) => e,
             Self::UnableToLoadPlugin(e) => e,
             Self::MissingSbtmTypeArgument(e) => e,
+            Self::MultipleTypeDefinitions(e) => e,
+            Self::MultipleGuardFunctionDefinitions(e) => e,
+            Self::MultipleCanisterMethodDefinitions(e) => e,
         }
     }
 }
@@ -189,9 +196,16 @@ impl std::fmt::Display for Error {
 impl From<CdkfError> for crate::Error {
     fn from(value: CdkfError) -> Self {
         match value {
-            CdkfError::TypeNotFound(name) => crate::Error::TypeNotFound(TypeNotFound { name }),
-            CdkfError::GuardFunctionNotFound(name) => {
-                crate::Error::GuardFunctionNotFound(GuardFunctionNotFound { name })
+            CdkfError::TypeNotFound(name) => TypeNotFound { name }.into(),
+            CdkfError::GuardFunctionNotFound(name) => GuardFunctionNotFound { name }.into(),
+            CdkfError::MultipleTypeDefinitions(name) => {
+                MultipleCanisterMethodDefinitions { name }.into()
+            }
+            CdkfError::MultipleGuardFunctionDefinitions(name) => {
+                MultipleGuardFunctionDefinitions { name }.into()
+            }
+            CdkfError::MultipleCanisterMethodDefinitions(name) => {
+                MultipleCanisterMethodDefinitions { name }.into()
             }
         }
     }
@@ -200,30 +214,5 @@ impl From<CdkfError> for crate::Error {
 impl From<Error> for Vec<Error> {
     fn from(value: Error) -> Self {
         vec![value]
-    }
-}
-
-pub trait CollectResults<T> {
-    fn collect_results(self) -> Result<Vec<T>, Vec<Error>>;
-}
-
-impl<I, T> CollectResults<T> for I
-where
-    I: Iterator<Item = Result<T, Vec<Error>>>,
-{
-    fn collect_results(self) -> Result<Vec<T>, Vec<Error>> {
-        let mut errors = Vec::new();
-        let mut ok_values = Vec::new();
-
-        self.for_each(|result| match result {
-            Ok(ok_value) => ok_values.push(ok_value),
-            Err(errs) => errors.extend(errs),
-        });
-
-        if errors.is_empty() {
-            Ok(ok_values)
-        } else {
-            Err(errors)
-        }
     }
 }

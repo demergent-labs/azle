@@ -3,14 +3,13 @@ use cdk_framework::{
         candid::{TypeArg, TypeRef},
         CandidType,
     },
-    traits::CollectResults,
+    traits::{CollectIterResults, CollectResults},
 };
 use std::ops::Deref;
 use swc_common::Span;
 use swc_ecma_ast::{TsEntityName, TsType, TsTypeRef};
 
 use crate::{
-    errors::CollectResults as OtherCollectResults,
     traits::{GetName, GetNameWithError, GetSpan},
     ts_ast::SourceMapped,
     Error,

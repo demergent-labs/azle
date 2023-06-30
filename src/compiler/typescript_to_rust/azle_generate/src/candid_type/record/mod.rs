@@ -2,12 +2,11 @@ pub mod errors;
 
 use cdk_framework::{
     act::node::candid::{record::Member, Record},
-    traits::CollectResults,
+    traits::{CollectIterResults, CollectResults},
 };
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
 use crate::{
-    errors::CollectResults as OtherCollectResults,
     traits::{GetName, GetNameWithError},
     ts_ast::SourceMapped,
     Error,

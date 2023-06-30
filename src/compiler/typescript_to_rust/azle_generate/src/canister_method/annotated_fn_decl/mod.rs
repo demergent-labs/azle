@@ -1,16 +1,13 @@
-use cdk_framework::act::node::canister_method::CanisterMethodType;
+use cdk_framework::{act::node::canister_method::CanisterMethodType, traits::CollectIterResults};
 use proc_macro2::Ident;
 use quote::format_ident;
 use swc_ecma_ast::{BindingIdent, FnDecl, Pat, TsEntityName, TsType};
 
 use crate::{
     canister_method::Annotation,
-    errors::{
-        errors::{
-            ArrayDestructuringInParamsNotSupported, ObjectDestructuringNotSupported,
-            RestParametersNotSupported,
-        },
-        CollectResults,
+    errors::errors::{
+        ArrayDestructuringInParamsNotSupported, ObjectDestructuringNotSupported,
+        RestParametersNotSupported,
     },
     internal_error,
     traits::GetName,

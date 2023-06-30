@@ -1,11 +1,11 @@
 use cdk_framework::{
     act::node::{canister_method::QueryOrUpdateDefinition, CandidType, Param},
-    traits::CollectResults,
+    traits::{CollectIterResults, CollectResults},
 };
+use swc_ecma_ast::TsType;
 
 use crate::{
     canister_method::{query_and_update, AnnotatedFnDecl},
-    errors::CollectResults as OtherCollectResults,
     ts_ast::SourceMapped,
     Error,
 };
@@ -51,11 +51,10 @@ impl<'a> SourceMapped<'a, AnnotatedFnDecl> {
     // TODO why is this separated from get_name. It would be much simpler
     // imho to get the names and the params all in the same pass
     fn build_param_types(&self) -> Result<Vec<CandidType>, Vec<Error>> {
+        let ts_type_to_candid_type = |ts_type: &TsType| self.spawn(ts_type).to_candid_type();
         self.get_param_ts_types()?
             .into_iter()
-            .map(|ts_type| {
-                SourceMapped::new(ts_type, self.source_map, self.symbol_table).to_candid_type()
-            })
+            .map(ts_type_to_candid_type)
             .collect_results()
     }
 

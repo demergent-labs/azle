@@ -1,7 +1,10 @@
-use cdk_framework::{act::node::candid::TypeParam, traits::ToIdent};
+use cdk_framework::{
+    act::node::candid::TypeParam,
+    traits::{CollectIterResults, ToIdent},
+};
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use crate::{errors::CollectResults, traits::GetName, ts_ast::SourceMapped, Error};
+use crate::{traits::GetName, ts_ast::SourceMapped, Error};
 use quote::quote;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
@@ -24,6 +27,7 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                     )
                 },
             }))
-        }).flatten().collect_results()
+        }).flatten()
+        .collect_results()
     }
 }
