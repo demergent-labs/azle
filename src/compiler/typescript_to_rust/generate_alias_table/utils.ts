@@ -4,8 +4,8 @@ export function getSourceFile(node: ts.Node): ts.SourceFile | undefined {
     if (ts.isSourceFile(node)) {
         return node;
     }
-    if (!node.parent) {
-        return;
+    if (node.parent === undefined) {
+        return undefined;
     }
     return getSourceFile(node.parent);
 }
@@ -26,7 +26,7 @@ export function getUnderlyingIdentifierFromSpecifier(
     // e.g. 'thing' in '{thing}' or '{thing as other}'. 'thing' is the symbol we
     // care about. At this point we don't care what it got renamed to, only what
     // it resolves back to.
-    if (!specifier.propertyName) {
+    if (specifier.propertyName === undefined) {
         // If there is no property name then it was NOT renamed
         return specifier.name;
     } else {

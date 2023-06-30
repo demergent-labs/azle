@@ -21,8 +21,8 @@ export function generateAliasTableForSymbol(
         return generateSingleEntryAliasTable(symbol.name, alias);
     }
     const declarations = symbol.declarations;
-    if (!declarations || declarations.length === 0) {
-        return; // We need one declaration. If there isn't one then it can't be an export from azle right?
+    if (declarations === undefined || declarations.length === 0) {
+        return undefined; // We need one declaration. If there isn't one then it can't be an export from azle right?
     }
     if (symbol.name === '__export') {
         // Should look like export * from 'place';
@@ -36,7 +36,7 @@ export function generateAliasTableForSymbol(
     if (declarations.length > 1) {
         // TODO what kind of symbol has multiple declarations?
         // TODO is it possible for those declarations to be conflicting?
-        return;
+        return undefined;
     }
     return generateAliasTableForDeclaration(declarations[0], alias, program);
 }
@@ -111,7 +111,7 @@ function generateAliasTableForDeclaration(
     ) {
         // All of the cases here are known to not need handling and return
         // undefined intentionally
-        return;
+        return undefined;
     }
 }
 

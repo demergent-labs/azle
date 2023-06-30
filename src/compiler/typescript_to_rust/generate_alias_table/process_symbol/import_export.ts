@@ -77,7 +77,7 @@ export function generateAliasTableForImportClause(
     program: ts.Program
 ): AliasTable | undefined {
     if (!ts.isStringLiteral(importClause.parent.moduleSpecifier)) {
-        return;
+        return undefined;
     }
     return generateAliasTableForNameInModule(
         'default',
@@ -92,15 +92,15 @@ export function generateAliasTableForExportDeclaration(
     program: ts.Program
 ): AliasTable | undefined {
     const moduleSpecifier = exportDeclaration.moduleSpecifier;
-    if (!moduleSpecifier || !ts.isStringLiteral(moduleSpecifier)) {
+    if (moduleSpecifier === undefined || !ts.isStringLiteral(moduleSpecifier)) {
         // Unreachable: An export declaration with a namespace export will always have a FromClause
         // https://262.ecma-international.org/13.0/#sec-exports
-        return;
+        return undefined;
     }
     if (exportDeclaration.exportClause) {
         // Unreachable: An export declaration with a namespace export will never have an ExportClause
         // https://262.ecma-international.org/13.0/#sec-exports
-        return;
+        return undefined;
     }
     if (moduleSpecifier.text == 'azle') {
         return generateDefaultAliasTable();
@@ -109,8 +109,8 @@ export function generateAliasTableForExportDeclaration(
         exportDeclaration,
         program
     );
-    if (!symbolTable) {
-        return;
+    if (symbolTable === undefined) {
+        return undefined;
     }
     return generateAliasTableFromSymbolTable(symbolTable, program);
 }
@@ -145,7 +145,7 @@ export function generateAliasTableForNamespaceImportExport(
         !importDeclaration.moduleSpecifier ||
         !ts.isStringLiteral(importDeclaration.moduleSpecifier)
     ) {
-        return;
+        return undefined;
     }
     if (importDeclaration.moduleSpecifier.text == 'azle') {
         // TODO process this symbol table the same, then modify it such that every entry has name.whatever
@@ -158,12 +158,12 @@ export function generateAliasTableForNamespaceImportExport(
         importDeclaration,
         program
     );
-    if (!symbolTable) {
-        return;
+    if (symbolTable === undefined) {
+        return undefined;
     }
     const aliasTable = generateAliasTableFromSymbolTable(symbolTable, program);
-    if (!aliasTable) {
-        return;
+    if (aliasTable === undefined) {
+        return undefined;
     }
     // process this symbol table the same, then modify it such that every entry has name.whatever
     return prependNamespaceToAliasTable(aliasTable, namespace);
@@ -191,8 +191,8 @@ function generateAliasTableForNameInModule(
         moduleSpecifier,
         program
     );
-    if (!symbolTable) {
-        return;
+    if (symbolTable === undefined) {
+        return undefined;
     }
     // For any symbol it will be resolved as follows:
     // 1) if there is something in the symbol table it will override anything from a * import
@@ -236,7 +236,10 @@ function generateAliasTableForNameFromStarExport(
         }
         // Get the module specifiers from export
         const exportModSpecifier = exportDeclaration.moduleSpecifier;
-        if (!exportModSpecifier || !ts.isStringLiteral(exportModSpecifier)) {
+        if (
+            exportModSpecifier === undefined ||
+            !ts.isStringLiteral(exportModSpecifier)
+        ) {
             // If we don't have an export module specifier or it's not a string
             // literal then it can't have the name in it. We can continue
             // looking
@@ -247,7 +250,7 @@ function generateAliasTableForNameFromStarExport(
             exportModSpecifier,
             program
         );
-        if (!symbolTable) {
+        if (symbolTable === undefined) {
             // If we couldn't find the symbol table then we won't be able to
             // find the name it it
             continue;
@@ -265,7 +268,7 @@ function generateAliasTableForNameFromStarExport(
         );
     }
     // return undefined (Couldn't find it)
-    return;
+    return undefined;
 }
 
 // export {thing} from 'place'; or export {thing as other} from 'place';
@@ -282,7 +285,7 @@ function generateAliasTableForModuleImportExportSpecifier(
         !declaration.moduleSpecifier ||
         !ts.isStringLiteral(declaration.moduleSpecifier)
     ) {
-        return;
+        return undefined;
     }
     return generateAliasTableForNameInModule(
         identifier.text,
@@ -309,20 +312,20 @@ function generateAliasTableForLocalExportSpecifier(
     // }
     // console.log("========> The new way didn't work");
     const sourceFile = getSourceFile(exportSpecifier);
-    if (!sourceFile) {
-        return;
+    if (sourceFile === undefined) {
+        return undefined;
     }
     const symbolTable = getSymbolTable(sourceFile, program);
-    if (!symbolTable) {
-        return;
+    if (symbolTable === undefined) {
+        return undefined;
     }
     const symbol = symbolTable.get(identifier.text as ts.__String);
-    if (!symbol) {
-        return;
+    if (symbol === undefined) {
+        return undefined;
     }
     const result = generateAliasTableForSymbol(symbol, alias, program);
-    if (!result) {
-        return;
+    if (result === undefined) {
+        return undefined;
     }
 
     if (exportSpecifier.propertyName) {

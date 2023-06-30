@@ -9,7 +9,7 @@ export function generateAliasTables(
 ): AliasTables {
     return files.reduce((acc: AliasTables, filename: string) => {
         let aliasTable = generateAliasTable(filename, program);
-        if (!aliasTable) {
+        if (aliasTable === undefined) {
             return acc;
         }
         return {
@@ -25,8 +25,8 @@ function generateAliasTable(
 ): AliasTable | undefined {
     const sourceFile = program.getSourceFile(filename);
 
-    if (!sourceFile) {
-        return;
+    if (sourceFile === undefined) {
+        return undefined;
     }
 
     const symbolTable = getSymbolTable(sourceFile, program);
@@ -34,5 +34,5 @@ function generateAliasTable(
         return generateAliasTableFromSymbolTable(symbolTable, program);
     }
 
-    return;
+    return undefined;
 }

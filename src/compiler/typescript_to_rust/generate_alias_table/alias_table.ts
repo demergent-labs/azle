@@ -25,7 +25,7 @@ export function generateAliasTableFromSymbolTable(
         // If the alias table is empty return undefined.
         // We can skip processing a file if it has no alias table. That's easier
         // to determine with undefined than with an empty table
-        return;
+        return undefined;
     }
     return aliasTable;
 }
@@ -245,7 +245,7 @@ const ALIAS_TABLE_KEYS: {
 function stringToAliasTableKey(name: string): keyof AliasTable | undefined {
     // Make sure that it's a name we can convert
     if (!(name in ALIAS_TABLE_KEYS)) {
-        return;
+        return undefined;
     }
     return ALIAS_TABLE_KEYS[name];
 }
