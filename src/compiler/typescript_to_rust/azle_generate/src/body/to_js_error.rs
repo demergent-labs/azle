@@ -9,7 +9,19 @@ pub fn generate() -> TokenStream {
 
         impl ToJsError for CdkActTryIntoVmValueError {
             fn to_js_error(self) -> boa_engine::JsError {
-                let raw_error_message = self.0.as_str();
+                self.0.to_js_error()
+            }
+        }
+
+        impl ToJsError for CdkActTryFromVmValueError {
+            fn to_js_error(self) -> boa_engine::JsError {
+                self.0.to_js_error()
+            }
+        }
+
+        impl ToJsError for String {
+            fn to_js_error(self) -> boa_engine::JsError {
+                let raw_error_message = self.as_str();
                 let error_types = [
                     "Error: ",
                     "EvalError: ",
