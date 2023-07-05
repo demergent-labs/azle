@@ -18,6 +18,11 @@ pub fn generate() -> proc_macro2::TokenStream {
                 .map_err(|vmc_err| vmc_err.to_js_error())?;
             let delay = core::time::Duration::new(delay_as_u64, 0);
 
+
+            if !func_js_value.is_callable() {
+                return Err("TypeError: 'callback' is not a function".to_js_error());
+            }
+
             let func_js_object = func_js_value
                 .as_object()
                 .ok_or_else(|| "TypeError: 'callback' is not a function".to_js_error())?
