@@ -7,10 +7,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let candid_encoded: Vec<u8> = aargs
                 .get(0)
-                .ok_or_else(|| {
-                    boa_engine::error::JsNativeError::error()
-                        .with_message("An argument for 'candidEncoded' was not provided")
-                })?
+                .ok_or_else(|| "An argument for 'candidEncoded' was not provided".to_js_error())?
                 .clone()
                 .try_from_vm_value(&mut *context)
                 .map_err(|vmc_err| vmc_err.to_js_error())?;

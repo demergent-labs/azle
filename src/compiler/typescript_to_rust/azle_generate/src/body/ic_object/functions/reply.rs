@@ -21,9 +21,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
 
             match &method_name[..] {
                 #(#match_arms)*
-                _ => Err(boa_engine::error::JsNativeError::error()
-                    .with_message(format!("Missing reply handler for method '{method_name}'"))
-                    .into()),
+                _ => Err(format!("Missing reply handler for method '{method_name}'").to_js_error()),
             }
         }
     }
@@ -51,10 +49,7 @@ fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
         #name => {
             let reply_value: (#return_type) = aargs
                 .get(0)
-                .ok_or_else(|| {
-                    boa_engine::error::JsNativeError::error()
-                        .with_message("An argument for 'reply' was not provided")
-                })?
+                .ok_or_else(|| "An argument for 'reply' was not provided".to_js_error())?
                 .clone()
                 .try_from_vm_value(&mut *context)
                 .map_err(|vmc_err| vmc_err.to_js_error())?;

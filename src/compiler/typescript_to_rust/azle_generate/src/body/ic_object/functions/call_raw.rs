@@ -18,31 +18,19 @@ pub fn generate() -> proc_macro2::TokenStream {
 
             let canister_id_js_value = aargs
                 .get(0)
-                .ok_or_else(|| {
-                    boa_engine::error::JsNativeError::error()
-                        .with_message("An argument for 'canisterId' was not provided")
-                })?
+                .ok_or_else(|| "An argument for 'canisterId' was not provided".to_js_error())?
                 .clone();
             let method_js_value = aargs
                 .get(1)
-                .ok_or_else(|| {
-                    boa_engine::error::JsNativeError::error()
-                        .with_message("An argument for 'method' was not provided")
-                })?
+                .ok_or_else(|| "An argument for 'method' was not provided".to_js_error())?
                 .clone();
             let args_raw_js_value = aargs
                 .get(2)
-                .ok_or_else(|| {
-                    boa_engine::error::JsNativeError::error()
-                        .with_message("An argument for 'argsRaw' was not provided")
-                })?
+                .ok_or_else(|| "An argument for 'argsRaw' was not provided".to_js_error())?
                 .clone();
             let payment_js_value = aargs
                 .get(3)
-                .ok_or_else(|| {
-                    boa_engine::error::JsNativeError::error()
-                        .with_message("An argument for 'payment' was not provided")
-                })?
+                .ok_or_else(|| "An argument for 'payment' was not provided".to_js_error())?
                 .clone();
 
             let canister_id: ic_cdk::export::Principal = canister_id_js_value
