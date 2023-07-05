@@ -54,7 +54,9 @@ pub fn generate() -> proc_macro2::TokenStream {
                 payment,
             );
 
-            Ok(notify_result.try_into_vm_value(context).unwrap())
+            notify_result
+                .try_into_vm_value(context)
+                .map_err(|vmc_err| vmc_err.to_js_error())
         }
     }
 }

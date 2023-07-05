@@ -8,9 +8,19 @@ pub fn generate() -> TokenStream {
             aargs: &[boa_engine::JsValue],
             context: &mut boa_engine::Context,
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let buf_js_value: boa_engine::JsValue = aargs.get(0).unwrap().clone();
-            let buf_vec: Vec<u8> = buf_js_value.try_from_vm_value(&mut *context).unwrap();
-            Ok(ic_cdk::api::call::reply_raw(&buf_vec).try_into_vm_value(context).unwrap())
+            let buf_vec: Vec<u8> = aargs
+                .get(0)
+                .ok_or_else(|| {
+                    boa_engine::error::JsNativeError::error()
+                        .with_message("An argument for 'buf' was not provided")
+                })?
+                .clone()
+                .try_from_vm_value(&mut *context)
+                .map_err(|vmc_err| vmc_err.to_js_error())?;
+
+            ic_cdk::api::call::reply_raw(&buf_vec)
+                .try_into_vm_value(context)
+                .map_err(|vmc_err| vmc_err.to_js_error())
         }
     }
 }

@@ -5,7 +5,9 @@ pub fn generate() -> proc_macro2::TokenStream {
             _aargs: &[boa_engine::JsValue],
             context: &mut boa_engine::Context,
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            Ok(ic_cdk::api::call::reject_message().try_into_vm_value(context).unwrap())
+            ic_cdk::api::call::reject_message()
+                .try_into_vm_value(context)
+                .map_err(|vmc_err| vmc_err.to_js_error())
         }
     }
 }

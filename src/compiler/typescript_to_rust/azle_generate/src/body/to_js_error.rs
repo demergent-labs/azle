@@ -21,7 +21,13 @@ pub fn generate() -> TokenStream {
 
         impl ToJsError for String {
             fn to_js_error(self) -> boa_engine::JsError {
-                let raw_error_message = self.as_str();
+                self.as_str().to_js_error()
+            }
+        }
+
+        impl<'a> ToJsError for &'a str {
+            fn to_js_error(self) -> boa_engine::JsError {
+                let raw_error_message = self;
                 let error_types = [
                     "Error: ",
                     "EvalError: ",
