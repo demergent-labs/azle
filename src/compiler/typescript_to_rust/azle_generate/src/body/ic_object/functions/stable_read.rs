@@ -7,20 +7,24 @@ pub fn generate() -> proc_macro2::TokenStream {
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let offset: u32 = aargs
                 .get(0)
-                .unwrap()
+                .ok_or_else(|| "An argument for 'offset' was not provided".to_js_error())?
                 .clone()
                 .try_from_vm_value(&mut *context)
-                .unwrap();
+                .map_err(|vmc_err| vmc_err.to_js_error())?;
+
             let length: u32 = aargs
                 .get(1)
-                .unwrap()
+                .ok_or_else(|| "An argument for 'length' was not provided".to_js_error())?
                 .clone()
                 .try_from_vm_value(&mut *context)
-                .unwrap();
+                .map_err(|vmc_err| vmc_err.to_js_error())?;
 
             let mut buf: Vec<u8> = vec![0; length as usize];
             ic_cdk::api::stable::stable_read(offset, &mut buf);
-            Ok(buf.try_into_vm_value(context).unwrap())
+
+            buf.to_vec()
+                .try_into_vm_value(context)
+                .map_err(|vmc_err| vmc_err.to_js_error())
         }
     }
 }
