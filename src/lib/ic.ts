@@ -440,4 +440,5 @@ type ic = {
     trap: (message: string) => never;
 };
 
+/** API entrypoint for interacting with the Internet Computer */
 export const ic: ic = globalThis.ic ?? {};
