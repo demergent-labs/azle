@@ -29,6 +29,9 @@ declare var globalThis: any;
  */
 export type Duration = Alias<nat64>; // TODO: Consider modeling this after the corresponding struct in Rust
 
+/**
+ * Indicates an error was encountered during a canister method.
+ */
 export type RejectionCode = Variant<{
     NoError: null;
     SysFatal: null;
@@ -39,8 +42,11 @@ export type RejectionCode = Variant<{
     Unknown: null;
 }>;
 
+/** Indicates an error occurred when dealing with stable memory */
 export type StableMemoryError = Variant<{
+    /** No more stable memory could be allocated */
     OutOfMemory: null;
+    /** Attempted to read more stable memory than had been allocated */
     OutOfBounds: null;
 }>;
 
