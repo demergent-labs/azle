@@ -3,8 +3,8 @@ import {
     match,
     nat,
     nat64,
-    NotifyResult,
     $query,
+    RejectionCode,
     Result,
     $update
 } from 'azle';
@@ -25,7 +25,7 @@ export async function sendCycles(): Promise<Result<nat64, string>> {
 }
 
 $update;
-export function sendCyclesNotify(): NotifyResult {
+export function sendCyclesNotify(): Result<null, RejectionCode> {
     return cyclesCanister.receiveCycles().cycles(1_000_000n).notify();
 }
 
@@ -44,7 +44,7 @@ export async function sendCycles128(): Promise<Result<nat, string>> {
 }
 
 $update;
-export function sendCycles128Notify(): NotifyResult {
+export function sendCycles128Notify(): Result<null, RejectionCode> {
     return cyclesCanister.receiveCycles128().cycles128(1_000_000n).notify();
 }
 

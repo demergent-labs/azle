@@ -4,8 +4,8 @@ import {
     nat32,
     nat64,
     $query,
-    StableGrowResult,
-    Stable64GrowResult,
+    Result,
+    StableMemoryError,
     $update
 } from 'azle';
 
@@ -20,12 +20,14 @@ export function stable64Size(): nat64 {
 }
 
 $update;
-export function stableGrow(newPages: nat32): StableGrowResult {
+export function stableGrow(newPages: nat32): Result<nat32, StableMemoryError> {
     return ic.stableGrow(newPages);
 }
 
 $update;
-export function stable64Grow(newPages: nat64): Stable64GrowResult {
+export function stable64Grow(
+    newPages: nat64
+): Result<nat64, StableMemoryError> {
     return ic.stable64Grow(newPages);
 }
 

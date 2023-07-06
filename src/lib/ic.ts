@@ -29,8 +29,6 @@ declare var globalThis: any;
  */
 export type Duration = Alias<nat64>; // TODO: Consider modeling this after the corresponding struct in Rust
 
-export type NotifyResult = Alias<Result<null, RejectionCode>>;
-
 export type RejectionCode = Variant<{
     NoError: null;
     SysFatal: null;
@@ -40,10 +38,6 @@ export type RejectionCode = Variant<{
     CanisterError: null;
     Unknown: null;
 }>;
-
-export type Stable64GrowResult = Alias<Result<nat64, StableMemoryError>>;
-
-export type StableGrowResult = Alias<Result<nat32, StableMemoryError>>;
 
 export type StableMemoryError = Variant<{
     OutOfMemory: null;
@@ -218,7 +212,7 @@ type ic = {
         method: string,
         argsRaw: blob,
         payment: nat
-    ) => NotifyResult;
+    ) => Result<null, RejectionCode>;
 
     /**
      * Gets the value of the specified performance counter
@@ -359,7 +353,7 @@ type ic = {
      * @returns an error if it wasn't able to grow. Otherwise, returns the
      * previous size that was reserved.
      */
-    stableGrow: (newPages: nat32) => StableGrowResult;
+    stableGrow: (newPages: nat32) => Result<nat32, StableMemoryError>;
 
     /**
      * Reads data from the stable memory location specified by an offset
@@ -396,7 +390,7 @@ type ic = {
      * @returns an error if it wasn't able to grow. Otherwise, returns the
      * previous size that was reserved.
      */
-    stable64Grow: (newPages: nat64) => Stable64GrowResult;
+    stable64Grow: (newPages: nat64) => Result<nat64, StableMemoryError>;
 
     /**
      * Reads data from the stable memory location specified by an offset.

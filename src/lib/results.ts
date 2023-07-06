@@ -6,7 +6,7 @@
 //
 // Some documentation changed from original work.
 
-import { NotifyResult } from './ic';
+import { RejectionCode } from './ic';
 import { Alias, Variant, nat64, nat, Service } from './candid_types';
 
 /**
@@ -68,7 +68,7 @@ export type CallResult<T> = {
      * @returns a result indicating whether the call was successfully enqueued,
      * otherwise a reject code
      */
-    notify: () => NotifyResult;
+    notify: () => Result<null, RejectionCode>;
     /**
      * Specifies the number of cycles to send with the {@link Service} method
      * call. Must be <= 18_446_744_073_709_551_615 (2^64 - 1). For sending 2^64

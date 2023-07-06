@@ -1,7 +1,7 @@
-import { ic, NotifyResult, Principal, $update } from 'azle';
+import { ic, Principal, RejectionCode, Result, $update } from 'azle';
 
 $update;
-export function sendNotification(): NotifyResult {
+export function sendNotification(): Result<null, RejectionCode> {
     return ic.notifyRaw(
         Principal.fromText(
             process.env.CANISTER2_PRINCIPAL ??
