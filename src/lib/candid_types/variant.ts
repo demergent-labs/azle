@@ -71,9 +71,10 @@ type Matcher<T extends object, R> =
 type PropertyValueType<T> = T[keyof T];
 
 /**
- * Utility function for handling {@link Variant}s
- * @param variant the variant to be checked
- * @param matcher a mapping of variant tags to handler functions
+ * Compares a {@link Variant} against its possible tags, finds a match, and
+ * executes the corresponding handler function
+ * @param variant the {@link Variant} to be checked
+ * @param matcher a mapping of {@link Variant} tags to handler functions
  * @returns the return value of the matched handler function
  *
  * @example
@@ -84,6 +85,8 @@ type PropertyValueType<T> = T[keyof T];
  *   Ok: (ok) => `The ok value was ${ok}`,
  *   Err: (err) => `The error value was ${err}`
  * });
+ *
+ * assert.equal(message, 'The ok value was okValue')
  * ```
  */
 export function match<U extends Matcher<T, any>, T extends object>(
