@@ -44,10 +44,23 @@ type NectarineBasket = record {
   "nat32" : nat32;
   "nat64" : nat64;
 };
+type NumberAliases = record {
+  fifth : int;
+  first : int;
+  tenth : nat;
+  third : float64;
+  eighth : int;
+  seventh : float64;
+  second : int;
+  sixth : float32;
+  ninth : int8;
+  eleventh : nat8;
+  twelfth : float64;
+  fourth : int;
+};
 type Watermelon = variant { Seeds; Seedless };
 service : () -> {
   addSigFigs : (float32) -> (float64) query;
-  azleAliasQuery : () -> (text) query;
   checkService : (
       service { deliver : () -> (text); is_delivered : () -> (bool) query },
     ) -> (
@@ -55,10 +68,12 @@ service : () -> {
     ) query;
   checkWatermelonForSeeds : (bool, Watermelon) -> () query;
   compareApplesToOranges : (IceAppleBasket, NectarineBasket) -> (bool) query;
-  deepAliasQuery : () -> (text) query;
-  deepAliasZero : () -> (int) query;
+  deepEmptyAlias : () -> (empty) query;
   dirtyIlama : () -> ();
+  getDeepBlob : (vec nat8) -> (vec nat8) query;
   getManagementPeach : () -> (principal) query;
+  getNumberAliases : () -> (NumberAliases) query;
+  getReservedAlias : () -> (reserved) query;
   handleFarkleberries : (
       func (text) -> () oneway,
       func (text) -> (text) query,
@@ -70,15 +85,19 @@ service : () -> {
         func (text) -> (text) query;
       },
     ) query;
+  helloAzleTextAlias : () -> (text) query;
+  helloDeepTextAlias : () -> (text) query;
+  helloMixedTextAlias : () -> (text) query;
+  helloStirredTextAlias : () -> (text) query;
+  helloTextAlias : () -> (text) query;
   isFruitPrepared : () -> (bool) query;
   isMangoTrickyToEat : () -> (bool) query;
   makeCavernousRecord : () -> (MyCavernousRecord) query;
-  mixedAliasQuery : () -> (text) query;
-  mixedAliasZero : () -> (int) query;
   myFathomlessVariantToMyCavernousVariant : (MyFathomlessVariant) -> (
       MyCavernousVariant,
     ) query;
   myVariantToMyDeepVariant : (MyVariant) -> (MyDeepVariant) query;
+  passPrincipal : (principal) -> (principal) query;
   peelBanana : (vec nat8) -> (nat8) query;
   pickElderberry : () -> (empty);
   pitOlives : (opt bool) -> (bool) query;
@@ -92,6 +111,5 @@ service : () -> {
   returnFathomlessVec : () -> (vec int16) query;
   returnVec : () -> (vec vec nat8) query;
   returnWeird : () -> (int64) query;
-  simpleAliasQuery : () -> (text) query;
   typeCheck : (vec opt nat16) -> (int16) query;
 }

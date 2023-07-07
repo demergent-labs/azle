@@ -9,7 +9,8 @@ export function getTests(
 ): Test[] {
     return [
         ...getImportCoverageTests(robustImportsCanister),
-        ...getAzleCoverageTests(robustImportsCanister)
+        ...getAzleCoverageTests(robustImportsCanister),
+        ...getTypeAliasDeclTests(robustImportsCanister)
     ];
 }
 
@@ -331,6 +332,89 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                 return {
                     Ok: await fruit.isFruitPrepared()
                 };
+            }
+        }
+    ];
+}
+
+/**
+ *
+ * @param canister
+ * @returns
+ */
+function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
+    return [
+        {
+            name: 'Text Aliases',
+            test: async () => {
+                const textAliasResult = await canister.helloTextAlias();
+                const azleAliasResult = await canister.helloAzleTextAlias();
+                const mixedTextAliasResult =
+                    await canister.helloMixedTextAlias();
+                const deepTextAlias = await canister.helloDeepTextAlias();
+                const stirredTextAlias = await canister.helloStirredTextAlias();
+                return {
+                    Ok:
+                        textAliasResult === azleAliasResult &&
+                        azleAliasResult === mixedTextAliasResult &&
+                        mixedTextAliasResult === deepTextAlias &&
+                        deepTextAlias === stirredTextAlias &&
+                        stirredTextAlias === textAliasResult
+                };
+            }
+        },
+        {
+            name: 'Deep Blob Alias',
+            test: async () => {
+                const result = await canister.getDeepBlob([7]);
+                return { Ok: result[0] === 7 };
+            }
+        },
+        {
+            name: 'Deep Empty Alias',
+            test: async () => {
+                try {
+                    await canister.deepEmptyAlias();
+                    return { Ok: false };
+                } catch {}
+                return { Ok: true };
+            }
+        },
+        {
+            name: 'Number Aliases',
+            test: async () => {
+                const result = await canister.getNumberAliases();
+                return {
+                    Ok:
+                        result.first === 1n &&
+                        result.second === 2n &&
+                        result.third === 3 &&
+                        result.fourth === 4n &&
+                        result.fifth === 5n &&
+                        result.sixth === 6 &&
+                        result.seventh === 7 &&
+                        result.eighth === 8n &&
+                        result.ninth === 9 &&
+                        result.tenth === 10n &&
+                        result.eleventh === 11 &&
+                        result.twelfth === 12
+                };
+            }
+        },
+        {
+            name: 'Principal Aliases',
+            test: async () => {
+                const result = await canister.passPrincipal(
+                    Principal.fromText('aaaaa-aa')
+                );
+                return { Ok: result.toText() === 'aaaaa-aa' };
+            }
+        },
+        {
+            name: 'Reserved Alias',
+            test: async () => {
+                const result = await canister.getReservedAlias();
+                return { Ok: result === null };
             }
         }
     ];
