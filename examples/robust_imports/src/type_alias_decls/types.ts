@@ -6,12 +6,6 @@ import { deepAlias } from './deep_alias';
 import * as azle from 'azle';
 import { Record, int } from 'azle';
 
-// export type DeepRecordAlias<T extends object> =
-//     deep.deepAlias.deeperAlias.deepestAlias.Record<T>;
-export type DeepIntAlias = deep.deepAlias.deeperAlias.deepestAlias.int;
-export type DeepTextAlias = deep.deepAlias.deeperAlias.deepestAlias.text;
-export type DeepNatAlias = deepAlias.deeperAlias.deepestAlias.nat;
-
 // export type AzleRecordAlias<T extends object> = azle.Record<T>;
 export type AzleIntAlias = azle.int;
 export type AzleTextAlias = azle.text;
@@ -21,6 +15,7 @@ export type AzleTextAlias = azle.text;
 export type IntAlias = int;
 export type TextAlias = string;
 export type Float64Alias = number;
+export type VoidAlias = void;
 
 export type MixedIntAlias =
     mixed.mixedAlias.deepAlias.deeperAlias.deepestAlias.int;
@@ -28,3 +23,49 @@ export type MixedTextAlias = mixedAlias.deepAlias.deeperAlias.deepestAlias.text;
 
 export type StirredTextAlias =
     stirredAlias.deepAlias.deeperAlias.deepestAlias.text;
+export type StirredIntAlias = deepAlias.deeperAlias.deepestAlias.int;
+
+// export type DeepAliasAlias<T> =
+//     deep.deepAlias.deeperAlias.deepestAlias.Alias<T>;
+export type DeepBlobAlias = deep.deepAlias.deeperAlias.deepestAlias.blob;
+export type DeepEmptyAlias = deep.deepAlias.deeperAlias.deepestAlias.empty;
+export type DeepFloat32Alias = deep.deepAlias.deeperAlias.deepestAlias.float32;
+export type DeepFloat64Alias = deep.deepAlias.deeperAlias.deepestAlias.float64;
+// export type DeepFuncAlias<
+//     T extends
+//         | azle.Query<azle.FuncSignature>
+//         | azle.Update<azle.FuncSignature>
+//         | azle.Oneway<azle.FuncSignature>
+// > = deep.deepAlias.deeperAlias.deepestAlias.Func<T>;
+export type DeepGuardResultAlias =
+    deep.deepAlias.deeperAlias.deepestAlias.GuardResult;
+export type DeepIntAlias = deep.deepAlias.deeperAlias.deepestAlias.int;
+export type DeepInt8Alias = deep.deepAlias.deeperAlias.deepestAlias.int8;
+// export type DeepManualAlias<T> =
+//     deep.deepAlias.deeperAlias.deepestAlias.Manual<T>;
+export type DeepNatAlias = deep.deepAlias.deeperAlias.deepestAlias.nat;
+export type DeepNat8Alias = deep.deepAlias.deeperAlias.deepestAlias.nat8;
+// export type DeepOptAlias<T> = deep.deepAlias.deeperAlias.deepestAlias.Opt<T>;
+export type DeepPrincipalAlias =
+    deep.deepAlias.deeperAlias.deepestAlias.Principal;
+export const Deep$queryAlias = deep.deepAlias.deeperAlias.deepestAlias.$query;
+// export type DeepQueryAlias<T extends (...args: any[]) => any> =
+//     deep.deepAlias.deeperAlias.deepestAlias.Query<T>;
+// export type DeepRecordAlias<T extends object> =
+//     deep.deepAlias.deeperAlias.deepestAlias.Record<T>;
+export type DeepReservedAlias =
+    deep.deepAlias.deeperAlias.deepestAlias.reserved;
+// export type DeepServiceAlias = deep.deepAlias.deeperAlias.deepestAlias.Service;
+export const DeepServiceAlias = deep.deepAlias.deeperAlias.deepestAlias.Service;
+// export const DeepServiceQueryAlias =
+//     deep.deepAlias.deeperAlias.deepestAlias.serviceQuery;
+// export type DeepServiceUpdateAlias<T extends (...args: any[]) => any> =
+//     deep.deepAlias.deeperAlias.deepestAlias.Update<T>;
+// export type DeepStableBTreeMapAlias<K, V> =
+//     deep.deepAlias.deeperAlias.deepestAlias.StableBTreeMap<K, V>;
+export type DeepTextAlias = deep.deepAlias.deeperAlias.deepestAlias.text;
+// export type DeepTupleAlias<T extends unknown[]> =
+//     deep.deepAlias.deeperAlias.deepestAlias.Tuple<T>;
+// export type DeepVariantAlias<T extends object> =
+//     deep.deepAlias.deeperAlias.deepestAlias.Variant<T>;
+// export type DeepVecAlias<T> = deep.deepAlias.deeperAlias.deepestAlias.Vec<T>;
