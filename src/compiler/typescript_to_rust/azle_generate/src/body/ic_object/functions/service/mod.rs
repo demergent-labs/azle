@@ -69,23 +69,29 @@ pub fn generate(services: &Vec<Service>) -> Vec<TokenStream> {
 }
 
 pub fn generate_param_variables(method: &Method, canister_name: &String) -> Vec<TokenStream> {
-    method.params
+    method
+        .params
         .iter()
         .enumerate()
         .map(|(index, param)| {
             let param_name_js_value = format_ident!("{}_js_value", &param.get_prefixed_name());
             let param_name = format_ident!("{}", &param.get_prefixed_name());
-            let param_type = param.to_type_annotation(&Context {
-                keyword_list: ts_keywords::ts_keywords(),
-                cdk_name: "azle".to_string(),
-            }, method.create_qualified_name(canister_name));
+            let param_type = param.to_type_annotation(
+                &Context {
+                    keyword_list: ts_keywords::ts_keywords(),
+                    cdk_name: "azle".to_string(),
+                },
+                method.create_qualified_name(canister_name),
+            );
 
             quote! {
-                let #param_name_js_value = args_js_object.get(#index, context).unwrap();
-                let #param_name: #param_type = #param_name_js_value.try_from_vm_value(&mut *context).unwrap();
+                let #param_name_js_value = args_js_object.get(#index, context)?;
+                let #param_name: #param_type = #param_name_js_value
+                    .try_from_vm_value(&mut *context)
+                    .map_err(|vmc_err| vmc_err.to_js_error())?;
             }
         })
-    .collect()
+        .collect()
 }
 
 pub fn generate_args_list(method: &Method) -> TokenStream {
