@@ -116,7 +116,7 @@ function generateAliasTableForDeclaration(
 }
 
 // TODO this feels very janky to me. Is there a better way of determining this?
-function isAzleSymbol(symbol: ts.Symbol): boolean {
+export function isAzleSymbol(symbol: ts.Symbol): boolean {
     if ('parent' in symbol) {
         const parent = symbol.parent as ts.Symbol;
         if (parent) {

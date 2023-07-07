@@ -41,8 +41,8 @@ import $kiwi, {
     $ugni,
     Ugni,
     Voavanga,
-    Lime
-    // vanilla
+    Lime,
+    vanilla
 } from './fruit';
 
 import { match as marionberry, ic as lemon, int16 as coconut } from 'azle';
@@ -203,7 +203,7 @@ $kiwi;
 export function checkWatermelonForSeeds(
     shouldHaveSeeds: blackberry,
     watermelon: Watermelon
-): void {
+): vanilla {
     marionberry(watermelon, {
         Seedless: () => {
             if (shouldHaveSeeds) {
