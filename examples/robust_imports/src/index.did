@@ -47,6 +47,7 @@ type NectarineBasket = record {
 type Watermelon = variant { Seeds; Seedless };
 service : () -> {
   addSigFigs : (float32) -> (float64) query;
+  azleAliasQuery : () -> (text) query;
   checkService : (
       service { deliver : () -> (text); is_delivered : () -> (bool) query },
     ) -> (
@@ -54,6 +55,8 @@ service : () -> {
     ) query;
   checkWatermelonForSeeds : (bool, Watermelon) -> () query;
   compareApplesToOranges : (IceAppleBasket, NectarineBasket) -> (bool) query;
+  deepAliasQuery : () -> (text) query;
+  deepAliasZero : () -> (int) query;
   dirtyIlama : () -> ();
   getManagementPeach : () -> (principal) query;
   handleFarkleberries : (
@@ -70,6 +73,8 @@ service : () -> {
   isFruitPrepared : () -> (bool) query;
   isMangoTrickyToEat : () -> (bool) query;
   makeCavernousRecord : () -> (MyCavernousRecord) query;
+  mixedAliasQuery : () -> (text) query;
+  mixedAliasZero : () -> (int) query;
   myFathomlessVariantToMyCavernousVariant : (MyFathomlessVariant) -> (
       MyCavernousVariant,
     ) query;
@@ -87,5 +92,6 @@ service : () -> {
   returnFathomlessVec : () -> (vec int16) query;
   returnVec : () -> (vec vec nat8) query;
   returnWeird : () -> (int64) query;
+  simpleAliasQuery : () -> (text) query;
   typeCheck : (vec opt nat16) -> (int16) query;
 }
