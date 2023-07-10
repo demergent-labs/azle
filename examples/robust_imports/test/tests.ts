@@ -411,6 +411,31 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
+            name: '$query Aliases',
+            test: async () => {
+                await canister.simpleQuery();
+                await canister.simpleAzleQuery();
+                await canister.simpleDeepQuery();
+                // If these functions didn't compile correctly then they should
+                // fail when called
+                return { Ok: true };
+            }
+        },
+        {
+            name: 'check service alias',
+            test: async () => {
+                const result = execSync(
+                    `dfx canister call robust_imports checkServiceAlias '(service "aaaaa-aa")'`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    Ok: result === '(service "aaaaa-aa")'
+                };
+            }
+        },
+        {
             name: 'Reserved Alias',
             test: async () => {
                 const result = await canister.getReservedAlias();

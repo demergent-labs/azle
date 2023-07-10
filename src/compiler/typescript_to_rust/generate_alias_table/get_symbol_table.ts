@@ -1,4 +1,5 @@
 import * as ts from 'typescript';
+import { getSourceFile } from './utils';
 
 export function getSymbolTable(
     sourceFile: ts.SourceFile,
@@ -29,7 +30,32 @@ export function getSymbolTable(
     return valueDeclaration.locals as ts.SymbolTable;
 }
 
-// For Import/Export Declarations of namespace exports
+/**
+ * Returns the symbol table for the file that contains the given node
+ * @param node
+ * @param program
+ * @returns
+ */
+export function getSymbolTableForNode(
+    node: ts.Node,
+    program: ts.Program
+): ts.SymbolTable | undefined {
+    const sourceFile = getSourceFile(node);
+    if (sourceFile === undefined) {
+        // Couldn't find the sourceFile
+        return undefined;
+    }
+
+    return getSymbolTable(sourceFile, program);
+}
+
+/**
+ * Returns the symbol table for the file specified in the import or export declaration
+ * For Import/Export Declarations of namespace exports
+ * @param declaration
+ * @param program
+ * @returns
+ */
 export function getSymbolTableForDeclaration(
     declaration: ts.ExportDeclaration | ts.ImportDeclaration,
     program: ts.Program

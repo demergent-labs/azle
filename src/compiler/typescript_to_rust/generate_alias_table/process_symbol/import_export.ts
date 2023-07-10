@@ -10,15 +10,15 @@ import {
     mergeAliasTables
 } from '../alias_table';
 import {
-    getSymbolTable,
+    getSymbolTableForNode,
     getSymbolTableForDeclaration,
     getSymbolTableForModuleSpecifier
 } from '../get_symbol_table';
 import {
-    getSourceFile,
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
-    getUnderlyingIdentifierFromSpecifier
+    getUnderlyingIdentifierFromSpecifier,
+    getStarExportModuleSpecifierFor
 } from '../utils';
 import { generateAliasTableForSymbol } from '../process_symbol';
 
@@ -109,9 +109,8 @@ export function generateAliasTableForExportDeclaration(
         exportDeclaration,
         program
     );
-    if (symbolTable === undefined) {
-        return undefined;
-    }
+    if (symbolTable === undefined) return undefined;
+
     return generateAliasTableFromSymbolTable(symbolTable, program);
 }
 
@@ -154,13 +153,11 @@ export function generateAliasTableForNamespaceImportExport(
         importDeclaration,
         program
     );
-    if (symbolTable === undefined) {
-        return undefined;
-    }
+    if (symbolTable === undefined) return undefined;
+
     const aliasTable = generateAliasTableFromSymbolTable(symbolTable, program);
-    if (aliasTable === undefined) {
-        return undefined;
-    }
+    if (aliasTable === undefined) return undefined;
+
     // process this symbol table the same, then modify it such that every entry has name.whatever
     return prependNamespaceToAliasTable(aliasTable, namespace);
 }
@@ -223,48 +220,22 @@ function generateAliasTableForNameFromStarExport(
         moduleSpecifier,
         program
     );
-    for (const exportDeclaration of symbolTable?.get('__export' as ts.__String)
-        ?.declarations ?? []) {
-        if (!ts.isExportDeclaration(exportDeclaration)) {
-            // All of the declarations under __export should be __export. This
-            // check is here only to be super explicit
-            continue;
-        }
-        // Get the module specifiers from export
-        const exportModSpecifier = exportDeclaration.moduleSpecifier;
-        if (
-            exportModSpecifier === undefined ||
-            !ts.isStringLiteral(exportModSpecifier)
-        ) {
-            // If we don't have an export module specifier or it's not a string
-            // literal then it can't have the name in it. We can continue
-            // looking
-            continue;
-        }
-        // TODO something is wrong here. It ought to be checking the name right?
-        const symbolTable = getSymbolTableForModuleSpecifier(
-            exportModSpecifier,
-            program
-        );
-        if (symbolTable === undefined) {
-            // If we couldn't find the symbol table then we won't be able to
-            // find the name it it
-            continue;
-        }
-        if (!symbolTable.has(name as ts.__String)) {
-            // If this export declaration's module's symbol table does have the
-            // name we are looking for then move on to the next one
-            continue;
-        }
-        return generateAliasTableForNameInModule(
-            name,
-            exportModSpecifier,
-            alias,
-            program
-        );
-    }
-    // return undefined (Couldn't find it)
-    return undefined;
+    if (symbolTable === undefined) return undefined;
+
+    const subModuleSpecifier = getStarExportModuleSpecifierFor(
+        name,
+        symbolTable,
+        program
+    );
+
+    if (subModuleSpecifier === undefined) return undefined;
+
+    return generateAliasTableForNameInModule(
+        name,
+        subModuleSpecifier,
+        alias,
+        program
+    );
 }
 
 // export {thing} from 'place'; or export {thing as other} from 'place';
@@ -307,11 +278,7 @@ function generateAliasTableForLocalExportSpecifier(
     //     return processSymbol(originalName, symbol, program);
     // }
     // console.log("========> The new way didn't work");
-    const sourceFile = getSourceFile(exportSpecifier);
-    if (sourceFile === undefined) {
-        return undefined;
-    }
-    const symbolTable = getSymbolTable(sourceFile, program);
+    const symbolTable = getSymbolTableForNode(exportSpecifier, program);
     if (symbolTable === undefined) {
         return undefined;
     }
