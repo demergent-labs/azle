@@ -57,18 +57,25 @@ export function generateAliasTableForTypeAliasDeclaration(
             alias
         );
     }
-    // if (typeAliasDeclaration.typeParameters?.length ?? 0 > 0) {
-    //     return undefined; // This looks like a candid definition not a possible azle alias
-    // }
-    // TODO if there are typeParameters then can we find the corresponding type arguments and not count them against the being a candidate
-    // TODO what if we got the length of the typeParamters and if it was the same as the length of the typearguments then we are good, otherwise return?
+
     let aliasedType = typeAliasDeclaration.type;
     if (ts.isTypeReferenceNode(aliasedType)) {
-        let typeArguments = aliasedType.typeArguments;
-        if (typeArguments) {
-            if (typeArguments.length > 0) {
-                return undefined;
-            }
+        const typeParams = (typeAliasDeclaration.typeParameters ?? []).map(
+            (typeParam) => typeParam.name.text
+        );
+        const typeArguments = aliasedType.typeArguments ?? [];
+        if (typeArguments.length !== typeParams.length) {
+            return undefined;
+        }
+        const typeArgsAreGenerics = typeArguments.every((typeArgument) => {
+            return (
+                ts.isTypeReferenceNode(typeArgument) &&
+                ts.isIdentifier(typeArgument.typeName) &&
+                typeParams.includes(typeArgument.typeName.text)
+            );
+        });
+        if (!typeArgsAreGenerics) {
+            return undefined;
         }
     }
 
