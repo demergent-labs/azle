@@ -4,11 +4,12 @@ import { mixedAlias } from './mixed_alias';
 import { mixedAlias as stirredAlias } from './mixed_alias';
 import { deepAlias } from './deep_alias';
 import * as azle from 'azle';
-import { Record, int } from 'azle';
+import { Record, int, $query } from 'azle';
 
 // export type AzleRecordAlias<T extends object> = azle.Record<T>;
 export type AzleIntAlias = azle.int;
 export type AzleTextAlias = azle.text;
+export const Azle$queryAlias = azle.$query;
 // export type AzleAliasRecordAlias = azle.Alias<azle.Record>;
 
 // export type RecordAlias<T extends object> = Record<T>;
@@ -16,6 +17,7 @@ export type IntAlias = int;
 export type TextAlias = string;
 export type Float64Alias = number;
 export type VoidAlias = void;
+export const $queryAlias = $query;
 
 export type MixedIntAlias =
     mixed.mixedAlias.deepAlias.deeperAlias.deepestAlias.int;

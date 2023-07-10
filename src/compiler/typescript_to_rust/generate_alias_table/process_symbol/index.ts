@@ -10,7 +10,24 @@ import {
     generateAliasTableForImportSpecifier,
     generateAliasTableForNamespaceImportExport
 } from './import_export';
-import { generateAliasTableForTypeAliasDeclaration } from './type_alias';
+import {
+    generateAliasTableForTypeAliasDeclaration,
+    generateAliasTableForVariableDeclaration
+} from './type_alias';
+
+export function generateAliasTableForIdentifier(
+    ident: ts.Identifier | ts.MemberName,
+    alias: string,
+    symbolTable: ts.SymbolTable,
+    program: ts.Program
+): AliasTable | undefined {
+    const symbol = symbolTable.get(ident.text as ts.__String);
+    if (symbol === undefined) {
+        // TODO Couldn't find symbol
+        return undefined;
+    }
+    return generateAliasTableForSymbol(symbol, alias, program);
+}
 
 export function generateAliasTableForSymbol(
     symbol: ts.Symbol,
@@ -104,10 +121,18 @@ function generateAliasTableForDeclaration(
         // time.
         return generateAliasTableForExportDeclaration(declaration, program);
     }
+    if (ts.isVariableDeclaration(declaration)) {
+        // export const QueryAlias = azle.$query;
+        // export const ServiceAlias = azle.Service;
+        return generateAliasTableForVariableDeclaration(
+            declaration,
+            alias,
+            program
+        );
+    }
     if (
         ts.isFunctionDeclaration(declaration) ||
-        ts.isClassDeclaration(declaration) ||
-        ts.isVariableDeclaration(declaration)
+        ts.isClassDeclaration(declaration)
     ) {
         // All of the cases here are known to not need handling and return
         // undefined intentionally

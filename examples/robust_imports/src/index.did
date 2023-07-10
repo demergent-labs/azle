@@ -66,6 +66,9 @@ service : () -> {
     ) -> (
       service { deliver : () -> (text); is_delivered : () -> (bool) query },
     ) query;
+  checkServiceAlias : (service { testQuery : () -> (text) query }) -> (
+      service { testQuery : () -> (text) query },
+    ) query;
   checkWatermelonForSeeds : (bool, Watermelon) -> () query;
   compareApplesToOranges : (IceAppleBasket, NectarineBasket) -> (bool) query;
   deepEmptyAlias : () -> (empty) query;
@@ -111,5 +114,8 @@ service : () -> {
   returnFathomlessVec : () -> (vec int16) query;
   returnVec : () -> (vec vec nat8) query;
   returnWeird : () -> (int64) query;
+  simpleAzleQuery : () -> () query;
+  simpleDeepQuery : () -> () query;
+  simpleQuery : () -> () query;
   typeCheck : (vec opt nat16) -> (int16) query;
 }

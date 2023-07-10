@@ -100,11 +100,22 @@ export function simpleDeepQuery(): types.VoidAlias {
     console.log(HELLO_WORLD);
 }
 
-/*
-DeepServiceAlias
-*/
+types.Azle$queryAlias;
+export function simpleAzleQuery(): types.VoidAlias {
+    console.log(HELLO_WORLD);
+}
+
+types.$queryAlias;
+export function simpleQuery(): types.VoidAlias {
+    console.log(HELLO_WORLD);
+}
 
 class AliasedService extends types.DeepServiceAlias {
     @azle.serviceQuery
     testQuery: () => azle.CallResult<string>;
+}
+
+azle.$query;
+export function checkServiceAlias(service: AliasedService): AliasedService {
+    return service;
 }
