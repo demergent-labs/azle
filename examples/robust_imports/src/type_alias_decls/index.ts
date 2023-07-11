@@ -120,7 +120,6 @@ export function checkServiceAlias(service: AliasedService): AliasedService {
     return service;
 }
 
-export type MyLocalNumberAlias = types.DeepAliasAlias<number>;
 export type MyDeepRecordFromAlias = types.DeepRecordAlias<{ depth: azle.nat8 }>;
 export type MyDeepVariantFromAlias = types.DeepVariantAlias<{
     good: null;
@@ -149,7 +148,7 @@ export function getMyRecord(): MyRecordFromAlias {
 }
 
 azle.$query;
-export function getManualAlias(): types.DeepManualAlias<MyLocalNumberAlias> {
+export function getManualAlias(): types.DeepManualAlias<number> {
     azle.ic.reply(9.87);
 }
 

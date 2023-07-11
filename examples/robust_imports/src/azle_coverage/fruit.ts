@@ -1,8 +1,7 @@
-import { $query as $kiwi, Alias } from 'azle';
+import { $query as $kiwi } from 'azle';
 export default $kiwi;
 
 export {
-    Alias as Apple,
     blob as banana,
     CallResult as Cherry,
     empty as elderberry,

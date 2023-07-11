@@ -2,7 +2,6 @@
 // Some documentation changed from original work.
 
 import {
-    Alias,
     blob,
     nat32,
     nat64,
@@ -18,9 +17,9 @@ declare var globalThis: any;
 /**
  * Represents a duration of time in seconds.
  */
-export type Duration = Alias<nat64>; // TODO: Consider modeling this after the corresponding struct in Rust
+export type Duration = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
 
-export type NotifyResult = Alias<Result<null, RejectionCode>>;
+export type NotifyResult = Result<null, RejectionCode>;
 
 export type RejectionCode = Variant<{
     NoError: null;
@@ -32,9 +31,9 @@ export type RejectionCode = Variant<{
     Unknown: null;
 }>;
 
-export type Stable64GrowResult = Alias<Result<nat64, StableMemoryError>>;
+export type Stable64GrowResult = Result<nat64, StableMemoryError>;
 
-export type StableGrowResult = Alias<Result<nat32, StableMemoryError>>;
+export type StableGrowResult = Result<nat32, StableMemoryError>;
 
 export type StableMemoryError = Variant<{
     OutOfMemory: null;
@@ -44,7 +43,7 @@ export type StableMemoryError = Variant<{
 /**
  * Type returned by the `ic.setTimer` and `ic.setTimerInterval` functions. Pass to `ic.clearTimer` to remove the timer.
  */
-export type TimerId = Alias<nat64>; // TODO: Consider modeling this after the corresponding struct in Rust
+export type TimerId = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
 
 type ic = {
     acceptMessage: () => void;

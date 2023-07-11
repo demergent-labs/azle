@@ -1,23 +1,38 @@
-use cdk_framework::{act::node::candid::TypeAlias, traits::CollectResults};
-use swc_ecma_ast::{TsType, TsTypeAliasDecl, TsTypeRef};
+use swc_ecma_ast::{TsEntityName, TsType, TsTypeAliasDecl, TsTypeRef};
 
 use crate::{traits::GetName, ts_ast::SourceMapped, Error};
 
-impl SourceMapped<'_, TsTypeAliasDecl> {
-    pub fn to_type_alias(&self) -> Result<Option<TypeAlias>, Vec<Error>> {
-        self.process_ts_type_ref(&self.alias_table.alias, |type_ref| {
-            let (aliased_type, type_params) = (
-                type_ref.get_ts_type()?.to_candid_type(),
-                self.get_type_params(),
-            )
-                .collect_results()?;
+impl SourceMapped<'_, TsTypeAliasDecl> {}
 
-            Ok(TypeAlias {
-                name: self.id.get_name(),
-                aliased_type: Box::new(aliased_type),
-                type_params: type_params.into(),
-            })
-        })
+impl SourceMapped<'_, TsTypeAliasDecl> {
+    pub fn is_alias(&self) -> bool {
+        let type_params: Vec<_> = self
+            .type_params
+            .iter()
+            .flat_map(|ts_type_param_decl| ts_type_param_decl.params.clone())
+            .map(|ts_type_param| ts_type_param.name.get_name())
+            .collect();
+        let type_args: Vec<_> = match &*self.type_ann {
+            TsType::TsTypeRef(ts_type_ref) => ts_type_ref
+                .type_params
+                .iter()
+                .flat_map(|thing| thing.params.clone())
+                .map(|boxed_type| *boxed_type)
+                .collect(),
+            _ => vec![],
+        };
+        if type_params.len() != type_args.len() {
+            return false;
+        }
+        let type_args_are_generics = type_args.iter().all(|ts_type| {
+            if let TsType::TsTypeRef(type_ref) = ts_type {
+                if let TsEntityName::Ident(name) = &type_ref.type_name {
+                    return type_params.contains(&name.get_name());
+                }
+            }
+            false
+        });
+        type_args_are_generics
     }
 
     pub fn process_ts_type_ref<F, T>(

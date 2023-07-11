@@ -9,7 +9,6 @@ use crate::{
     Error,
 };
 
-pub mod alias;
 pub mod errors;
 pub mod func;
 pub mod opt;
@@ -25,8 +24,7 @@ pub mod vec;
 
 impl TsAst {
     pub fn build_candid_types(&self) -> Result<CandidTypes, Vec<Error>> {
-        let (type_aliases, funcs, records, services, tuples, variants) = (
-            self.extract_candid_types(|x| x.to_type_alias()),
+        let (funcs, records, services, tuples, variants) = (
             self.extract_candid_types(|x| x.to_func()),
             self.extract_candid_types(|x| x.to_record()),
             self.build_services(),
@@ -40,7 +38,6 @@ impl TsAst {
             records,
             services,
             tuples,
-            type_aliases,
             variants,
         })
     }

@@ -14,9 +14,6 @@ export { Func } from './func';
 export { Service } from './service';
 export { Variant } from './variant';
 
-/** Marks a type as being an alias to a candid type */
-export type Alias<T> = T;
-
 /**
  * Represents a sequence of bytes`.
  *

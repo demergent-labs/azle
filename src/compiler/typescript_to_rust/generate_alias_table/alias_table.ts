@@ -96,7 +96,6 @@ function isEmpty(aliasTable: AliasTable): boolean {
 }
 
 export const EMPTY_ALIAS_TABLE: AliasTable = {
-    alias: [],
     call_result: [],
     blob: [],
     bool: [],
@@ -143,7 +142,6 @@ export const EMPTY_ALIAS_TABLE: AliasTable = {
 };
 
 export const DEFAULT_ALIAS_TABLE: AliasTable = {
-    alias: ['Alias'],
     blob: ['blob'],
     bool: [],
     call_result: ['CallResult'],
@@ -192,7 +190,6 @@ export const DEFAULT_ALIAS_TABLE: AliasTable = {
 const ALIAS_TABLE_KEYS: {
     [key: string]: keyof AliasTable;
 } = {
-    Alias: 'alias',
     CallResult: 'call_result',
     blob: 'blob',
     bool: 'bool',

@@ -41,7 +41,6 @@ export type Plugin = {
 export type AliasTables = { [filename: string]: AliasTable };
 
 export type AliasTable = {
-    alias: string[];
     call_result: string[];
     blob: string[];
     bool: string[];

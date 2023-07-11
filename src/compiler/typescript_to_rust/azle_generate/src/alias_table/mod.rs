@@ -7,7 +7,6 @@ pub type AliasTables = HashMap<Filename, AliasTable>;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AliasTable {
-    pub alias: Vec<String>,
     pub blob: Vec<String>,
     pub bool: Vec<String>,
     pub call_result: Vec<String>,

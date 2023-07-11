@@ -26,8 +26,6 @@ export type StirredTextAlias =
     stirredAlias.deepAlias.deeperAlias.deepestAlias.text;
 export type StirredIntAlias = deepAlias.deeperAlias.deepestAlias.int;
 
-export type DeepAliasAlias<T> =
-    deep.deepAlias.deeperAlias.deepestAlias.Alias<T>;
 export type DeepBlobAlias = deep.deepAlias.deeperAlias.deepestAlias.blob;
 export type DeepEmptyAlias = deep.deepAlias.deeperAlias.deepestAlias.empty;
 export type DeepFloat32Alias = deep.deepAlias.deeperAlias.deepestAlias.float32;
