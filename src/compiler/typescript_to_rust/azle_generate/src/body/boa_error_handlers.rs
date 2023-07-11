@@ -21,12 +21,12 @@ pub fn generate() -> TokenStream {
             }
         }
 
-        impl UnwrapJsResultOrTrap for Result<boa_engine::JsValue, RuntimeError> {
+        impl UnwrapJsResultOrTrap for Result<boa_engine::JsValue, String> {
             fn unwrap_or_trap(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 match self {
                     Ok(js_value) => js_value,
-                    Err(runtime_error) => {
-                        ic_cdk::api::trap(&format!("Uncaught {}", runtime_error.to_string()));
+                    Err(error_string) => {
+                        ic_cdk::api::trap(&format!("Uncaught {}", error_string));
                     }
                 }
             }

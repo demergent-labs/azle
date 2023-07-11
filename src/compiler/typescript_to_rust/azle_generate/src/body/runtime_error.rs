@@ -9,6 +9,7 @@ pub fn generate() -> TokenStream {
             JsError(boa_engine::JsError),
             ReferenceError(String),
             TypeError(String),
+            String(String),
         }
 
         impl RuntimeError {
@@ -25,6 +26,7 @@ pub fn generate() -> TokenStream {
                     },
                     Self::ReferenceError(msg) => format!("ReferenceError: {msg}"),
                     Self::TypeError(msg) => format!("TypeError: {msg}"),
+                    Self::String(msg) => msg.clone(),
                 }
             }
         }
@@ -44,6 +46,12 @@ pub fn generate() -> TokenStream {
         impl From<CdkActTryIntoVmValueError> for RuntimeError {
             fn from(value: CdkActTryIntoVmValueError) -> Self {
                 Self::IntoVmValueError(value.0)
+            }
+        }
+
+        impl From<String> for RuntimeError {
+            fn from(value: String) -> Self {
+                Self::String(value)
             }
         }
     }

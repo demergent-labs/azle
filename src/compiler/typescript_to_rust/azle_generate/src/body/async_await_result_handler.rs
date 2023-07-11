@@ -16,7 +16,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
             uuid: &str,
             method_name: &str,
             manual: bool,
-        ) -> Result<boa_engine::JsValue, RuntimeError> {
+        ) -> Result<boa_engine::JsValue, String> {
             let boa_return_value_object = match boa_return_value.as_object() {
                 Some(object) => object,
                 None => return Ok(boa_return_value.clone()),
@@ -30,9 +30,19 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
 
             let js_promise = boa_engine::object::builtins::JsPromise::from_object(
                 boa_return_value_object.clone(),
-            )?;
+            ).map_err(|js_err| js_value_to_string(
+                js_err.to_opaque(&mut *boa_context),
+                &mut *boa_context
+            ))?;
 
-            return match &js_promise.state()? {
+            let state = js_promise
+                .state()
+                .map_err(|js_err| js_value_to_string(
+                    js_err.to_opaque(&mut *boa_context),
+                    &mut *boa_context
+                ))?;
+
+            return match &state {
                 boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
                     PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();
@@ -62,9 +72,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                         promise_map.remove(uuid);
                     });
 
-                    return Err(RuntimeError::JsError(boa_engine::JsError::from_opaque(
-                        js_value.clone(),
-                    )));
+                    return Err(js_value_to_string(js_value.clone(), &mut *boa_context));
                 }
                 boa_engine::builtins::promise::PromiseState::Pending => {
                     PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
@@ -102,7 +110,8 @@ fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
         #name => {
             let reply_value: (#return_type) = js_value
                 .clone()
-                .try_from_vm_value(&mut *boa_context)?;
+                .try_from_vm_value(&mut *boa_context)
+                .map_err(|vmc_err| vmc_err.0)?;
 
             ic_cdk::api::call::reply((reply_value,));
         }
