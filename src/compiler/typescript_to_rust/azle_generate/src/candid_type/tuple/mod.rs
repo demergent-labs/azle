@@ -16,6 +16,9 @@ use super::errors::WrongEnclosedType;
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_tuple(&self) -> Result<Option<Tuple>, Vec<Error>> {
         self.process_ts_type_ref(&self.alias_table.tuple, |type_ref| {
+            if self.is_alias() {
+                return Ok(None);
+            }
             let (type_params, tuple_type_ref) =
                 (self.get_type_params(), type_ref.to_tuple()).collect_results()?;
             match tuple_type_ref {

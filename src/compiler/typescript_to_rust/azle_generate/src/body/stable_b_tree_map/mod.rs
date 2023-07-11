@@ -3,7 +3,7 @@ use std::ops::Deref;
 use swc_ecma_ast::{Decl, Expr, VarDecl};
 
 use crate::{
-    traits::GetName,
+    traits::{GetName, GetOptionalName},
     ts_ast::{Program, SourceMapped, TsAst},
     Error,
 };
@@ -80,6 +80,22 @@ impl Program {
                                 .to_stable_b_tree_map_node(),
                         )
                     }
+                    Expr::New(new_expr)=> {
+                        match &*new_expr.callee {
+                            Expr::Member(member) => {
+                                member.get_name().and_then(|name| {
+                                    if self.alias_table.stable_b_tree_map.contains(&name) {
+                                        Some(
+                                            self.spawn(new_expr)
+                                                .to_stable_b_tree_map_node(),
+                                        )
+                                    } else {
+                                        None
+                                    }})
+                            },
+                            _ => None
+                        }
+                    },
                     _ => None,
                 },
                 _ => None,

@@ -17,6 +17,9 @@ mod rust;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_func(&self) -> Result<Option<Func>, Vec<Error>> {
+        if self.is_alias() {
+            return Ok(None);
+        }
         self.process_ts_type_ref(&self.alias_table.func, |ts_type_ref| {
             ts_type_ref.to_func(Some(self.id.get_name()))
         })

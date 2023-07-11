@@ -15,6 +15,9 @@ use super::errors::WrongEnclosedType;
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_variant(&self) -> Result<Option<Variant>, Vec<Error>> {
         self.process_ts_type_ref(&self.alias_table.variant, |type_ref| {
+            if self.is_alias() {
+                return Ok(None);
+            }
             // TODO this should be undone once we put all user-defined types in their own module
             let name_string = self.id.get_name();
             let name = Some(if name_string == "Result" {

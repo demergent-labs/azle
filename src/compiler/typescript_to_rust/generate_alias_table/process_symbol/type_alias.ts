@@ -49,9 +49,7 @@ export function generateAliasTableForTypeAliasDeclaration(
     program: ts.Program
 ): AliasTable | undefined {
     if (isAzleKeywordExpression(typeAliasDeclaration)) {
-        // TODO I'm not sure that this is right
-        // TODO test that we can make aliases to all sorts of azle types
-        console.log(`${alias} is a ${typeAliasDeclaration.name.text}`);
+        // TODO do we even need this?
         return generateSingleEntryAliasTable(
             typeAliasDeclaration.name.text,
             alias

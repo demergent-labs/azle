@@ -9,6 +9,7 @@ use crate::{
     Error,
 };
 
+pub mod alias;
 pub mod errors;
 pub mod func;
 pub mod opt;
