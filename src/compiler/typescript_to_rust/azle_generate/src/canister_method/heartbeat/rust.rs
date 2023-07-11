@@ -44,7 +44,7 @@ pub fn generate(
                     &uuid,
                     #function_name,
                     true
-                );
+                )?;
 
                 Ok(())
             })

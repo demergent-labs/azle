@@ -61,7 +61,8 @@ pub fn generate() -> proc_macro2::TokenStream {
                         &uuid,
                         "_AZLE_TIMER",
                         false,
-                    );
+                    )
+                    .unwrap_or_trap(&mut *boa_context);
                 });
             };
 

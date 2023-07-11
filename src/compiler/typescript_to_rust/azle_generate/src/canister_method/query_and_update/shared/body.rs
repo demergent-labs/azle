@@ -56,7 +56,7 @@ pub fn generate(
                     &uuid,
                     #function_name,
                     #manual
-                );
+                )?;
 
                 #return_expression
             })

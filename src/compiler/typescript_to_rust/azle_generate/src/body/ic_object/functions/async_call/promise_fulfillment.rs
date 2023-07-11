@@ -89,7 +89,8 @@ pub fn generate() -> proc_macro2::TokenStream {
                 &uuid,
                 &method_name,
                 manual,
-            );
+            )
+            .unwrap_or_trap(&mut *boa_context);
         });
     }
 }
