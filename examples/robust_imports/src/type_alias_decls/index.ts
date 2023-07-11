@@ -111,11 +111,72 @@ export function simpleQuery(): types.VoidAlias {
 }
 
 class AliasedService extends types.DeepServiceAlias {
-    @azle.serviceQuery
+    @types.DeepServiceQueryAlias
     testQuery: () => azle.CallResult<string>;
 }
 
 azle.$query;
 export function checkServiceAlias(service: AliasedService): AliasedService {
     return service;
+}
+
+export type MyLocalNumberAlias = types.DeepAliasAlias<number>;
+export type MyDeepRecordFromAlias = types.DeepRecordAlias<{ depth: azle.nat8 }>;
+export type MyDeepVariantFromAlias = types.DeepVariantAlias<{
+    good: null;
+    bad: null;
+    ugly: null;
+}>;
+export type MyRecordFromAlias = types.RecordAlias<{
+    id: azle.nat;
+    name: types.DeepOptAlias<string>;
+    depth: MyDeepRecordFromAlias;
+    tups: types.DeepTupleAlias<[string, types.Float64Alias]>;
+    description: MyDeepVariantFromAlias;
+    list: types.DeepVecAlias<azle.nat16>;
+}>;
+
+azle.$query;
+export function getMyRecord(): MyRecordFromAlias {
+    return {
+        id: 7n,
+        name: azle.Opt.Some('Bob'),
+        depth: { depth: 3 },
+        tups: ['Hello', 1.23],
+        description: { ugly: null },
+        list: [1, 2, 3, 4, 5, 6, 7]
+    };
+}
+
+azle.$query;
+export function getManualAlias(): types.DeepManualAlias<MyLocalNumberAlias> {
+    azle.ic.reply(9.87);
+}
+
+type MyFuncFromAlias = types.DeepFuncAlias<
+    types.DeepQueryAlias<(param1: azle.text) => azle.text>
+>;
+
+azle.$query;
+export function returnFuncAlias(func: MyFuncFromAlias): MyFuncFromAlias {
+    return func;
+}
+
+let stableMap = new types.DeepStableBTreeMapAlias<azle.nat16, azle.text>(
+    1,
+    10,
+    1_000
+);
+
+azle.$update;
+export function setStable(
+    key: azle.nat16,
+    value: azle.text
+): types.DeepOptAlias<azle.text> {
+    return stableMap.insert(key, value);
+}
+
+azle.$query;
+export function getStable(key: azle.nat16): types.DeepOptAlias<azle.text> {
+    return stableMap.get(key);
 }

@@ -237,7 +237,7 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'Handle Farkleberries',
             test: async () => {
-                let func: [Principal, string] = [
+                const func: [Principal, string] = [
                     Principal.fromText('aaaaa-aa'),
                     'create_canister'
                 ];
@@ -440,6 +440,51 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await canister.getReservedAlias();
                 return { Ok: result === null };
+            }
+        },
+        {
+            name: 'Check My Record',
+            test: async () => {
+                const result = await canister.getMyRecord();
+                return {
+                    Ok:
+                        result.id === 7n &&
+                        result.name[0] === 'Bob' &&
+                        result.depth.depth === 3 &&
+                        result.tups[0] === 'Hello' &&
+                        result.tups[1] === 1.23 &&
+                        'ugly' in result.description &&
+                        result.list[0] === 1
+                };
+            }
+        },
+        {
+            name: 'Return Func Alias',
+
+            test: async () => {
+                const func: [Principal, string] = [
+                    Principal.fromText('aaaaa-aa'),
+                    'create_canister'
+                ];
+                const result = await canister.returnFuncAlias(func);
+                return { Ok: result[0].toText() === 'aaaaa-aa' };
+            }
+        },
+        {
+            name: 'Check Stable',
+            test: async () => {
+                await canister.setStable(0, 'Hello');
+                const getResult = await canister.getStable(0);
+                return {
+                    Ok: getResult[0] === 'Hello'
+                };
+            }
+        },
+        {
+            name: 'Check Manual Alias',
+            test: async () => {
+                const result = await canister.getManualAlias();
+                return { Ok: result === 9.87 };
             }
         }
     ];

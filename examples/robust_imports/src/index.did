@@ -21,7 +21,9 @@ type MyCoveredRecord = record {
   count : int8;
   greeting : opt text;
 };
+type MyDeepRecordFromAlias = record { depth : nat8 };
 type MyDeepVariant = variant { Thing : int8 };
+type MyDeepVariantFromAlias = variant { bad; good; ugly };
 type MyFathomlessRecord = record { mytext : text };
 type MyFathomlessVariant = variant { MyInt16 : int16; MyInt8 : int8 };
 type MyRecord = record {
@@ -34,6 +36,14 @@ type MyRecord = record {
   int7 : int8;
   "int8" : int8;
   int9 : int16;
+};
+type MyRecordFromAlias = record {
+  id : nat;
+  list : vec nat16;
+  name : opt text;
+  tups : record { text; float64 };
+  description : MyDeepVariantFromAlias;
+  depth : MyDeepRecordFromAlias;
 };
 type MyVariant = variant { String : text; Thing : int8 };
 type NectarineBasket = record {
@@ -75,8 +85,11 @@ service : () -> {
   dirtyIlama : () -> ();
   getDeepBlob : (vec nat8) -> (vec nat8) query;
   getManagementPeach : () -> (principal) query;
+  getManualAlias : () -> (float64) query;
+  getMyRecord : () -> (MyRecordFromAlias) query;
   getNumberAliases : () -> (NumberAliases) query;
   getReservedAlias : () -> (reserved) query;
+  getStable : (nat16) -> (opt text) query;
   handleFarkleberries : (
       func (text) -> () oneway,
       func (text) -> (text) query,
@@ -112,8 +125,12 @@ service : () -> {
       service { query1 : () -> (bool) query; update1 : () -> (text) },
     ) query;
   returnFathomlessVec : () -> (vec int16) query;
+  returnFuncAlias : (func (text) -> (text) query) -> (
+      func (text) -> (text) query,
+    ) query;
   returnVec : () -> (vec vec nat8) query;
   returnWeird : () -> (int64) query;
+  setStable : (nat16, text) -> (opt text);
   simpleAzleQuery : () -> () query;
   simpleDeepQuery : () -> () query;
   simpleQuery : () -> () query;
