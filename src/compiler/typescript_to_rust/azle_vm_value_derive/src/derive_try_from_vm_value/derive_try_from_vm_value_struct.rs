@@ -7,6 +7,16 @@ pub fn derive_try_from_vm_value_struct(
     data_struct: &DataStruct,
     generics: &Generics,
 ) -> proc_macro2::TokenStream {
+    let struct_name_string = struct_name.to_string();
+    let value_is_not_of_struct_type_error_message =
+        format!("TypeError: value is not of type '{}'", &struct_name_string);
+
+    let value_is_not_an_object_error_message =
+        format!("[TypeError: value is not of type '{}'] {{\n  [cause]: TypeError: value is not an object\n}}", &struct_name_string);
+
+    let value_is_missing_properties_error_message =
+        format!("[TypeError: value is not of type '{}'] {{\n  [cause]: TypeError: one or more properties are of an incorrect type\n}}", &struct_name_string);
+
     let field_js_value_result_variable_definitions =
         derive_field_js_value_result_variable_definitions(struct_name, data_struct);
     let field_js_value_result_names = derive_field_js_value_result_names(struct_name, data_struct);
@@ -26,32 +36,33 @@ pub fn derive_try_from_vm_value_struct(
     quote! {
         impl #impl_generics CdkActTryFromVmValue<#struct_name #ty_generics, &mut boa_engine::Context<'_>> for boa_engine::JsValue #where_clause {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#struct_name #ty_generics, CdkActTryFromVmValueError> {
-                let object_option = self.as_object();
+                let object = self
+                    .as_object()
+                    .ok_or_else(|| #value_is_not_an_object_error_message.to_string())?;
 
-                if let Some(object) = object_option {
-                    #(#field_js_value_result_variable_definitions)*
+                #(#field_js_value_result_variable_definitions)*
 
-                    match (#(#field_js_value_result_names),*) {
-                        (#(#field_js_value_oks),*) => {
-                            #(#field_result_variable_definitions)*
+                match (#(#field_js_value_result_names),*) {
+                    (#(#field_js_value_oks),*) => {
+                        #(#field_result_variable_definitions)*
 
-                            match (#(#field_result_names),*) {
-                                (#(#field_oks),*) => {
-                                    return Ok(#struct_instantiation);
-                                },
-                                _ => {
-                                    return Err(CdkActTryFromVmValueError("Could not convert JsValue to Rust type".to_string()));
-                                }
-                            };
-                        },
-                        _ => {
-                            return Err(CdkActTryFromVmValueError("Struct field does not exist".to_string()));
-                        }
-                    };
-                }
-                else {
-                    return Err(CdkActTryFromVmValueError("JsValue is not an object".to_string()));
-                }
+                        match (#(#field_result_names),*) {
+                            (#(#field_oks),*) => {
+                                return Ok(#struct_instantiation);
+                            },
+                            _ => {
+                                return Err(CdkActTryFromVmValueError(
+                                    #value_is_missing_properties_error_message.to_string()
+                                ));
+                            }
+                        };
+                    },
+                    _ => {
+                        return Err(CdkActTryFromVmValueError(
+                            #value_is_not_of_struct_type_error_message.to_string()
+                        ));
+                    }
+                };
             }
         }
 
@@ -85,7 +96,7 @@ pub fn derive_try_from_vm_value_struct(
                                         }
                                     },
                                     Err(_) => {
-                                        return Err(CdkActTryFromVmValueError("Item at array index does not exist".to_string()))
+                                        return Err(CdkActTryFromVmValueError(format!("RangeError: Item at array index {} does not exist", index)))
                                     }
                                 }
                             }
@@ -93,10 +104,10 @@ pub fn derive_try_from_vm_value_struct(
                             Ok(result)
                         }
                         else {
-                            Err(CdkActTryFromVmValueError("JsObject is not an array".to_string()))
+                            Err(CdkActTryFromVmValueError("TypeError: value is not of type 'Vec'".to_string()))
                         }
                     },
-                    None => Err(CdkActTryFromVmValueError("JsValue is not an object".to_string()))
+                    None => Err(CdkActTryFromVmValueError("TypeError: value is not of type 'Vec'".to_string()))
                 }
             }
         }
