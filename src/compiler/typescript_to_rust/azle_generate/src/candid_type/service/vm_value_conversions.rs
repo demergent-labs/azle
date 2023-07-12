@@ -18,8 +18,7 @@ pub fn to_vm_value(name: String) -> TokenStream {
                         "new {}(Principal.fromText(\"{}\"))",
                         stringify!(#service_name),
                         self.0.principal.to_string()
-                    )))
-                    .unwrap_or_trap(context))
+                    )))?)
             }
         }
     }
@@ -45,6 +44,13 @@ pub fn list_to_vm_value(name: String) -> TokenStream {
 
 pub fn from_vm_value(name: String) -> TokenStream {
     let service_name = name.to_ident();
+    let service_name_string = service_name.to_string();
+
+    let not_an_object_err_msg =
+        format!("[TypeError: value is not of type '{}'] {{\n  [cause]: TypeError: value is not an object\n}}", &service_name_string);
+
+    let canister_id_not_a_principal_err_msg =
+        format!("[TypeError: value is not of type '{}'] {{{{\n  [cause]: TypeError: property 'canisterId' is not of type 'Principal' {{{{\n    [cause]: {{}}\n  }}}}\n}}}}", &service_name_string);
 
     quote! {
         impl CdkActTryFromVmValue<#service_name, &mut boa_engine::Context<'_>>
@@ -54,26 +60,23 @@ pub fn from_vm_value(name: String) -> TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<#service_name, CdkActTryFromVmValueError> {
-                let js_object = self.as_object().unwrap();
-                let canister_id_js_value = js_object
-                    .get("canisterId", context)
-                    .unwrap_or_trap(context);
-                let canister_id_js_object = canister_id_js_value.as_object().unwrap();
-                let canister_id_to_string_js_value = canister_id_js_object
-                    .get("toText", context)
-                    .unwrap_or_trap(context);
-                let canister_id_to_string_js_object = canister_id_to_string_js_value
+                let js_object = self
                     .as_object()
-                    .unwrap();
-                let canister_id_string_js_value = canister_id_to_string_js_object
-                    .call(&canister_id_js_value, &[], context)
-                    .unwrap_or_trap(context);
-                let canister_id_js_string = canister_id_string_js_value.to_string(context).unwrap();
-                let canister_id_string = canister_id_js_string.to_std_string_escaped();
+                    .ok_or_else(|| #not_an_object_err_msg)?;
 
-                Ok(#service_name::new(
-                    ic_cdk::export::Principal::from_str(&canister_id_string).unwrap(),
-                ))
+                let canister_id_js_value = js_object
+                    .get("canisterId", context)?;
+
+                let principal = canister_id_js_value
+                    .try_from_vm_value(context)
+                    .map_err(|principal_err| {
+                        format!(
+                            #canister_id_not_a_principal_err_msg,
+                            principal_err.0
+                        )
+                    })?;
+
+                Ok(#service_name::new(principal))
             }
         }
     }
