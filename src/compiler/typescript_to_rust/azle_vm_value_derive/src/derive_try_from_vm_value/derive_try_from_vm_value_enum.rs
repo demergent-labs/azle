@@ -151,7 +151,7 @@ fn derive_property_for_named_fields(
             quote! {
                 let #variable_name = #object_variant_js_value_var_name
                     .as_object()
-                    .ok_or_else(|| "TypeError: value is not an object")?
+                    .ok_or_else(|| "TypeError: Value is not an object")?
                     .get(stringify!(#field_name), context);
             }
         });

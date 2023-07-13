@@ -4,23 +4,23 @@ import { _SERVICE } from './dfx_generated/run_time_errors/run_time_errors.did';
 import { expectError } from './tests';
 
 const valueIsNotAPrincipalErrorMessage =
-    "TypeError: value is not of type 'Principal'";
+    "TypeError: Value is not of type 'Principal'";
 
-const toTextNotAFunctionErrorMessage = `[TypeError: value is not of type 'Principal'] {
-  [cause]: TypeError: property 'toText' of object is not a function
+const toTextNotAFunctionErrorMessage = `[TypeError: Value is not of type 'Principal'] {
+  [cause]: TypeError: Property 'toText' of object is not a function
 }`;
 
-const customToTextErrorMessage = `[TypeError: value is not of type 'Principal'] {
-  [cause]: Error: custom error from toText method
+const customToTextErrorMessage = `[TypeError: Value is not of type 'Principal'] {
+  [cause]: Error: Custom error from toText method
 }`;
 
-const valueIsNotAStringErrorMessage = `[TypeError: value is not of type 'Principal'] {
-  [cause]: TypeError: return value of method 'toText' is not of type 'string'
+const valueIsNotAStringErrorMessage = `[TypeError: Value is not of type 'Principal'] {
+  [cause]: TypeError: Return value of method 'toText' is not of type 'string'
 }`;
 
 const invalidChecksumErrorMessage = `Error: Principal "aaaaa-aa" does not have a valid checksum (original value "aa" may not be a valid Principal ID).`;
 
-const textTooShortErrorMessage = `[TypeError: value is not of type 'Principal'] {
+const textTooShortErrorMessage = `[TypeError: Value is not of type 'Principal'] {
   [cause]: TextTooShortError: Text is too short.
 }`;
 

@@ -10,12 +10,12 @@ export function getInvalidVecTests(
         expectError(
             'return non-object as invalid Vec',
             errorCanister.returnNonObjectAsInvalidVec,
-            "TypeError: value is not of type 'Vec'"
+            "TypeError: Value is not of type 'Vec'"
         ),
         expectError(
             'return an empty object as invalid Vec',
             errorCanister.returnNonArrayAsInvalidVec,
-            "TypeError: value is not of type 'Vec'"
+            "TypeError: Value is not of type 'Vec'"
         )
     ];
 }

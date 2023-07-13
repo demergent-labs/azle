@@ -35,7 +35,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<Option<T>, CdkActTryFromVmValueError> {
-                let js_object = self.as_object().ok_or_else(|| "TypeError: value is not of type 'Opt'")?;
+                let js_object = self.as_object().ok_or_else(|| "TypeError: Value is not of type 'Opt'")?;
 
                 let has_none_property = js_object
                     .has_own_property("None", context)
@@ -46,7 +46,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                     .map_err(|err| err.to_string())?;
 
                 if has_none_property && has_some_property {
-                    return Err("TypeError: value is not of type 'Opt'")?;
+                    return Err("TypeError: Value is not of type 'Opt'")?;
                 }
 
                 if has_none_property {
@@ -57,7 +57,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                     return if none_value.is_null() {
                         Ok(None)
                     } else {
-                        Err("TypeError: value is not of type 'null'")?
+                        Err("TypeError: Value is not of type 'null'")?
                     };
                 }
 
@@ -69,7 +69,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                         .map(Some);
                 }
 
-                Err("TypeError: value is not of type 'Opt'")?
+                Err("TypeError: Value is not of type 'Opt'")?
             }
         }
     }

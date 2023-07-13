@@ -10,27 +10,27 @@ export function getInvalidOptTests(
         expectError(
             'return non object',
             errorCanister.returnNonObject,
-            "TypeError: value is not of type 'Opt'"
+            "TypeError: Value is not of type 'Opt'"
         ),
         expectError(
             'return object with both Some and None',
             errorCanister.returnBothSomeAndNone,
-            "TypeError: value is not of type 'Opt'"
+            "TypeError: Value is not of type 'Opt'"
         ),
         expectError(
             'return object with neither Some nor None',
             errorCanister.returnObjectWithNeitherSomeNorNone,
-            "TypeError: value is not of type 'Opt'"
+            "TypeError: Value is not of type 'Opt'"
         ),
         expectError(
             'return object with non null None value',
             errorCanister.returnNonNullNone,
-            "TypeError: value is not of type 'null'"
+            "TypeError: Value is not of type 'null'"
         ),
         expectError(
             'return object with invalid Some value',
             errorCanister.returnInvalidSomeValue,
-            "TypeError: value is not of type 'string'"
+            "TypeError: Value is not of type 'string'"
         )
     ];
 }

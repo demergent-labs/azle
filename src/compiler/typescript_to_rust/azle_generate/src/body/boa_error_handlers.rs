@@ -44,12 +44,12 @@ pub fn generate() -> TokenStream {
                 boa_engine::JsValue::Object(object) => {
                     let to_string_js_value = match object.get("toString", context) {
                         Ok(to_string_js_value) => to_string_js_value,
-                        Err(err) => return "TypeError: property 'toString' of object is not a function".to_string(),
+                        Err(err) => return "TypeError: Property 'toString' of object is not a function".to_string(),
                     };
 
                     let to_string_js_object = match to_string_js_value.as_object() {
                       Some(to_string_js_object) => to_string_js_object,
-                      None => return "TypeError: property 'toString' of object is not a function".to_string() ,
+                      None => return "TypeError: Property 'toString' of object is not a function".to_string() ,
                     };
 
                     let string_js_value = match to_string_js_object.call(&error_value, &[], context) {

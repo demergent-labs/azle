@@ -54,7 +54,7 @@ pub fn generate(
                             compiled_js = MAIN_JS
                         )
                     )
-                ).unwrap_or_trap(&mut boa_context);
+                )?;
 
                 #call_to_post_upgrade_js_function
 

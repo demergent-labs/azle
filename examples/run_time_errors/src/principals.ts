@@ -25,7 +25,7 @@ export function throwInPrincipalToTextMethodAsInvalidPrincipal(): Principal {
     // @ts-expect-error
     return {
         toText: () => {
-            throw new Error('custom error from toText method');
+            throw new Error('Custom error from toText method');
         }
     };
 }

@@ -3,38 +3,38 @@ import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/run_time_errors/run_time_errors.did';
 import { expectError } from './tests';
 
-const valueIsNotAFuncErrorMessage = "TypeError: value is not of type 'Func'";
+const valueIsNotAFuncErrorMessage = "TypeError: Value is not of type 'Func'";
 
-const expectedArrayErrorMessage = `[TypeError: value is not of type 'Func'] {
-  [cause]: TypeError: expected 'Array', given 'Object'
+const expectedArrayErrorMessage = `[TypeError: Value is not of type 'Func'] {
+  [cause]: TypeError: Expected 'Array', given 'Object'
 }`;
 
-const index0IsUndefinedErrorMessage = `[TypeError: value is not of type 'Func'] {
-  [cause]: TypeError: index '0' is undefined
+const index0IsUndefinedErrorMessage = `[TypeError: Value is not of type 'Func'] {
+  [cause]: TypeError: Index '0' is undefined
 }`;
 
-const valueIsNotOfTypePrincipalErrorMessage = `[TypeError: value is not of type 'Func'] {
-  [cause]: TypeError: index '0' is not of type 'Principal' {
-    [cause]: TypeError: value is not of type 'Principal'
+const valueIsNotOfTypePrincipalErrorMessage = `[TypeError: Value is not of type 'Func'] {
+  [cause]: TypeError: Index '0' is not of type 'Principal' {
+    [cause]: TypeError: Value is not of type 'Principal'
   }
 }`;
 
 // TODO: We need a more robust error nesting. Notice how "[TypeError: value is
 // not of type 'Principal']" has square brackets and its inner error's
 // indentation is not correct.
-const propertyToTextIsNotAFunctionErrorMessage = `[TypeError: value is not of type 'Func'] {
-  [cause]: TypeError: index '0' is not of type 'Principal' {
-    [cause]: [TypeError: value is not of type 'Principal'] {
-  [cause]: TypeError: property 'toText' of object is not a function
+const propertyToTextIsNotAFunctionErrorMessage = `[TypeError: Value is not of type 'Func'] {
+  [cause]: TypeError: Index '0' is not of type 'Principal' {
+    [cause]: [TypeError: Value is not of type 'Principal'] {
+  [cause]: TypeError: Property 'toText' of object is not a function
 }`;
 
-const index1IsUndefinedErrorMessage = `[TypeError: value is not of type 'Func'] {
-  [cause]: TypeError: index '1' is undefined
+const index1IsUndefinedErrorMessage = `[TypeError: Value is not of type 'Func'] {
+  [cause]: TypeError: Index '1' is undefined
 }`;
 
-const valueIsNotAStringErrorMessage = `[TypeError: value is not of type 'Func'] {
-  [cause]: TypeError: index '1' is not of type 'string' {
-    [cause]: TypeError: value is not of type 'string'
+const valueIsNotAStringErrorMessage = `[TypeError: Value is not of type 'Func'] {
+  [cause]: TypeError: Index '1' is not of type 'string' {
+    [cause]: TypeError: Value is not of type 'string'
   }
 }`;
 

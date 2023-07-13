@@ -52,18 +52,18 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                 Ok(self
                         .as_object()
-                        .ok_or_else(|| "TypeError: value is not of type 'blob'")?
+                        .ok_or_else(|| "TypeError: Value is not of type 'blob'")?
                         .borrow()
                         .as_typed_array()
-                        .ok_or_else(|| "[TypeError: value is not of type 'blob'] {\n  [cause]: TypeError: value is not an instance of 'TypedArray'\n}")?
+                        .ok_or_else(|| "[TypeError: Value is not of type 'blob'] {\n  [cause]: TypeError: Value is not an instance of 'TypedArray'\n}")?
                         .viewed_array_buffer()
-                        .ok_or_else(|| "[TypeError: value is not of type 'blob'] {\n  [cause]: InternalError: TypedArray does not have an associated DataView\n}")?
+                        .ok_or_else(|| "[TypeError: Value is not of type 'blob'] {\n  [cause]: InternalError: TypedArray does not have an associated DataView\n}")?
                         .borrow()
                         .as_array_buffer()
-                        .ok_or_else(|| "[TypeError: value is not of type 'blob'] {\n  [cause]: InternalError: TypedArray does not have an associated ArrayBuffer\n}")?
+                        .ok_or_else(|| "[TypeError: Value is not of type 'blob'] {\n  [cause]: InternalError: TypedArray does not have an associated ArrayBuffer\n}")?
                         .array_buffer_data
                         .clone()
-                        .ok_or_else(|| "[TypeError: value is not of type 'blob'] {\n  [cause]: InternalError: no data in ArrayBuffer\n}")?
+                        .ok_or_else(|| "[TypeError: Value is not of type 'blob'] {\n  [cause]: InternalError: No data in ArrayBuffer\n}")?
                 )
             }
         }
@@ -79,11 +79,11 @@ pub fn generate() -> proc_macro2::TokenStream {
         {
             let js_object = js_value
                 .as_object()
-                .ok_or_else(|| "TypeError: value is not of type 'Vec'")?;
+                .ok_or_else(|| "TypeError: Value is not of type 'Vec'")?;
 
             if !js_object.is_array() {
                 return Err(CdkActTryFromVmValueError(
-                    "TypeError: value is not of type 'Vec'".to_string(),
+                    "TypeError: Value is not of type 'Vec'".to_string(),
                 ));
             }
 

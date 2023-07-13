@@ -107,7 +107,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             ) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok(boa_engine::JsValue::BigInt(
                     boa_engine::bigint::JsBigInt::from_string(&self.0.to_string())
-                        .ok_or_else(|| "TypeError: value is not of type 'bigint'")?,
+                        .ok_or_else(|| "TypeError: Value is not of type 'bigint'")?,
                 ))
             }
         }

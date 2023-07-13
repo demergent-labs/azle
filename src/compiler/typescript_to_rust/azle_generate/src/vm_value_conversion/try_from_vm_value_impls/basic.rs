@@ -11,7 +11,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                     return Ok(());
                 }
 
-                Err("TypeError: value is not of type 'null' or 'undefined'")?
+                Err("TypeError: Value is not of type 'null' or 'undefined'")?
             }
         }
 
@@ -22,7 +22,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             ) -> Result<bool, CdkActTryFromVmValueError> {
                 Ok(self
                     .as_boolean()
-                    .ok_or_else(|| "TypeError: value is not of type 'boolean'")?)
+                    .ok_or_else(|| "TypeError: Value is not of type 'boolean'")?)
             }
         }
 
@@ -33,7 +33,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             ) -> Result<String, CdkActTryFromVmValueError> {
                 Ok(self
                     .as_string()
-                    .ok_or_else(|| "TypeError: value is not of type 'string'")?
+                    .ok_or_else(|| "TypeError: Value is not of type 'string'")?
                     .to_std_string()
                     .map_err(|err| format!("SystemError: {err}"))?)
             }
@@ -46,7 +46,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<ic_cdk::export::candid::Empty, CdkActTryFromVmValueError> {
-                Err("TypeError: value cannot be converted into type 'empty'")?
+                Err("TypeError: Value cannot be converted into type 'empty'")?
             }
         }
 
@@ -70,10 +70,10 @@ pub fn generate() -> proc_macro2::TokenStream {
             ) -> Result<ic_cdk::export::candid::Func, CdkActTryFromVmValueError> {
                 let js_object = self
                     .as_object()
-                    .ok_or_else(|| "TypeError: value is not of type 'Func'")?;
+                    .ok_or_else(|| "TypeError: Value is not of type 'Func'")?;
 
                 if !js_object.is_array() {
-                    return Err("[TypeError: value is not of type 'Func'] {\n  [cause]: TypeError: expected 'Array', given 'Object'\n}")?;
+                    return Err("[TypeError: Value is not of type 'Func'] {\n  [cause]: TypeError: Expected 'Array', given 'Object'\n}")?;
                 }
 
                 let index0 = js_object
@@ -81,14 +81,14 @@ pub fn generate() -> proc_macro2::TokenStream {
                     .map_err(|err| format!("InternalError: {err}"))?;
 
                 if index0.is_undefined() {
-                    return Err("[TypeError: value is not of type 'Func'] {\n  [cause]: TypeError: index '0' is undefined\n}")?;
+                    return Err("[TypeError: Value is not of type 'Func'] {\n  [cause]: TypeError: Index '0' is undefined\n}")?;
                 }
 
                 let principal = index0
                     .try_from_vm_value(&mut *context)
                     .map_err(|principal_err| {
                         format!(
-                            "[TypeError: value is not of type 'Func'] {{\n  [cause]: TypeError: index '0' is not of type 'Principal' {{\n    [cause]: {}\n  }}\n}}",
+                            "[TypeError: Value is not of type 'Func'] {{\n  [cause]: TypeError: Index '0' is not of type 'Principal' {{\n    [cause]: {}\n  }}\n}}",
                             principal_err.0
                         )
                     })?;
@@ -98,14 +98,14 @@ pub fn generate() -> proc_macro2::TokenStream {
                     .map_err(|err| format!("InternalError: {err}"))?;
 
                 if index1.is_undefined() {
-                    return Err("[TypeError: value is not of type 'Func'] {\n  [cause]: TypeError: index '1' is undefined\n}")?;
+                    return Err("[TypeError: Value is not of type 'Func'] {\n  [cause]: TypeError: Index '1' is undefined\n}")?;
                 }
 
                 let method = index1
                     .try_from_vm_value(&mut *context)
                     .map_err(|str_err| {
                         format!(
-                            "[TypeError: value is not of type 'Func'] {{\n  [cause]: TypeError: index '1' is not of type 'string' {{\n    [cause]: {}\n  }}\n}}",
+                            "[TypeError: Value is not of type 'Func'] {{\n  [cause]: TypeError: Index '1' is not of type 'string' {{\n    [cause]: {}\n  }}\n}}",
                             str_err.0
                         )
                     })?;
@@ -123,21 +123,21 @@ pub fn generate() -> proc_macro2::TokenStream {
             ) -> Result<ic_cdk::export::Principal, CdkActTryFromVmValueError> {
                 let principal_js_object = self
                     .as_object()
-                    .ok_or_else(|| "TypeError: value is not of type 'Principal'")?;
+                    .ok_or_else(|| "TypeError: Value is not of type 'Principal'")?;
 
                 let principal_to_text_function_js_value = principal_js_object
                     .get("toText", context)
-                    .map_err(|err| "[TypeError: value is not of type 'Principal'] {\n  [cause]: TypeError: property 'toText' of object is not a function\n}")?;
+                    .map_err(|err| "[TypeError: Value is not of type 'Principal'] {\n  [cause]: TypeError: Property 'toText' of object is not a function\n}")?;
 
                 let principal_to_text_function_js_object = principal_to_text_function_js_value
                     .as_object()
-                    .ok_or_else(|| "[TypeError: value is not of type 'Principal'] {\n  [cause]: TypeError: property 'toText' of object is not a function\n}")?;
+                    .ok_or_else(|| "[TypeError: Value is not of type 'Principal'] {\n  [cause]: TypeError: Property 'toText' of object is not a function\n}")?;
 
                 let principal_text = principal_to_text_function_js_object
                     .call(&self, &[], context)
-                    .map_err(|js_err| format!("[TypeError: value is not of type 'Principal'] {{\n  [cause]: {}\n}}", js_err.to_string()))?
+                    .map_err(|js_err| format!("[TypeError: Value is not of type 'Principal'] {{\n  [cause]: {}\n}}", js_err.to_string()))?
                     .as_string()
-                    .ok_or_else(|| "[TypeError: value is not of type 'Principal'] {\n  [cause]: TypeError: return value of method 'toText' is not of type 'string'\n}")?
+                    .ok_or_else(|| "[TypeError: Value is not of type 'Principal'] {\n  [cause]: TypeError: Return value of method 'toText' is not of type 'string'\n}")?
                     .to_std_string()
                     .map_err(|err| format!("InternalError: {err}"))?;
 
@@ -174,7 +174,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                         let inner_error = format!("{inner_error_name}: {inner_error_message}");
 
-                        format!("[TypeError: value is not of type 'Principal'] {{\n  [cause]: {}\n}}", inner_error)
+                        format!("[TypeError: Value is not of type 'Principal'] {{\n  [cause]: {}\n}}", inner_error)
                     },
                 )?;
 

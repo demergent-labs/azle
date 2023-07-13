@@ -9,13 +9,13 @@ pub fn derive_try_from_vm_value_struct(
 ) -> proc_macro2::TokenStream {
     let struct_name_string = struct_name.to_string();
     let value_is_not_of_struct_type_error_message =
-        format!("TypeError: value is not of type '{}'", &struct_name_string);
+        format!("TypeError: Value is not of type '{}'", &struct_name_string);
 
     let value_is_not_an_object_error_message =
-        format!("[TypeError: value is not of type '{}'] {{\n  [cause]: TypeError: value is not an object\n}}", &struct_name_string);
+        format!("[TypeError: Value is not of type '{}'] {{\n  [cause]: TypeError: Value is not an object\n}}", &struct_name_string);
 
     let value_is_missing_properties_error_message =
-        format!("[TypeError: value is not of type '{}'] {{\n  [cause]: TypeError: one or more properties are of an incorrect type\n}}", &struct_name_string);
+        format!("[TypeError: Value is not of type '{}'] {{\n  [cause]: TypeError: One or more properties are of an incorrect type\n}}", &struct_name_string);
 
     let field_js_value_result_variable_definitions =
         derive_field_js_value_result_variable_definitions(struct_name, data_struct);
@@ -104,10 +104,10 @@ pub fn derive_try_from_vm_value_struct(
                             Ok(result)
                         }
                         else {
-                            Err(CdkActTryFromVmValueError("TypeError: value is not of type 'Vec'".to_string()))
+                            Err(CdkActTryFromVmValueError("TypeError: Value is not of type 'Vec'".to_string()))
                         }
                     },
-                    None => Err(CdkActTryFromVmValueError("TypeError: value is not of type 'Vec'".to_string()))
+                    None => Err(CdkActTryFromVmValueError("TypeError: Value is not of type 'Vec'".to_string()))
                 }
             }
         }

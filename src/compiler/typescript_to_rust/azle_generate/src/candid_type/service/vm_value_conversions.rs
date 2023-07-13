@@ -47,10 +47,10 @@ pub fn from_vm_value(name: String) -> TokenStream {
     let service_name_string = service_name.to_string();
 
     let not_an_object_err_msg =
-        format!("[TypeError: value is not of type '{}'] {{\n  [cause]: TypeError: value is not an object\n}}", &service_name_string);
+        format!("[TypeError: Value is not of type '{}'] {{\n  [cause]: TypeError: Value is not an object\n}}", &service_name_string);
 
     let canister_id_not_a_principal_err_msg =
-        format!("[TypeError: value is not of type '{}'] {{{{\n  [cause]: TypeError: property 'canisterId' is not of type 'Principal' {{{{\n    [cause]: {{}}\n  }}}}\n}}}}", &service_name_string);
+        format!("[TypeError: Value is not of type '{}'] {{{{\n  [cause]: TypeError: Property 'canisterId' is not of type 'Principal' {{{{\n    [cause]: {{}}\n  }}}}\n}}}}", &service_name_string);
 
     quote! {
         impl CdkActTryFromVmValue<#service_name, &mut boa_engine::Context<'_>>
