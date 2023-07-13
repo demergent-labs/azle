@@ -135,6 +135,8 @@ export type MyRecordFromAlias = types.RecordAlias<{
     description: MyDeepVariantFromAlias;
     list: types.DeepVecAlias<azle.nat16>;
 }>;
+export type MyRecordFromAliasAlias = MyRecordFromAlias;
+export type SuperAlias = MyRecordFromAliasAlias;
 
 azle.$query;
 export function getMyRecord(): MyRecordFromAlias {
@@ -149,7 +151,31 @@ export function getMyRecord(): MyRecordFromAlias {
 }
 
 azle.$query;
-export function getManualAlias(): types.DeepManualAlias<MyLocalNumberAlias> {
+export function getMyRecordAlias(): MyRecordFromAliasAlias {
+    return {
+        id: 8n,
+        name: azle.Opt.Some('Alice'),
+        depth: { depth: 3 },
+        tups: ['Hello', 1.23],
+        description: { ugly: null },
+        list: [1, 2, 3, 4, 5, 6, 7]
+    };
+}
+
+azle.$query;
+export function getSuperAlias(): SuperAlias {
+    return {
+        id: 9n,
+        name: azle.Opt.Some('Eve'),
+        depth: { depth: 3 },
+        tups: ['Hello', 1.23],
+        description: { ugly: null },
+        list: [1, 2, 3, 4, 5, 6, 7]
+    };
+}
+
+azle.$query;
+export function getManualAlias(): types.DeepManualAlias<number> {
     azle.ic.reply(9.87);
 }
 
