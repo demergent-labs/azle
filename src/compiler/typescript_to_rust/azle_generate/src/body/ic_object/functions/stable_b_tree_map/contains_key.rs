@@ -25,10 +25,11 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
 
             match memory_id {
                 #(#match_arms)*
-                _ => panic!(
-                    "memory_id {} does not have an associated StableBTreeMap",
+                _ => Err(format!(
+                    "Memory id {} does not have an associated StableBTreeMap",
                     memory_id
-                ),
+                )
+                .to_js_error()),
             }
         }
     }
