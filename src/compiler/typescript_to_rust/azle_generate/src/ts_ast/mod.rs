@@ -3,7 +3,7 @@ pub use program::Program;
 pub use source_map::SourceMapped;
 use swc_ecma_ast::TsTypeAliasDecl;
 
-use crate::{AliasTables, Error};
+use crate::{alias_table::AliasLists, AliasTables, Error};
 
 pub mod expr;
 pub mod program;
@@ -21,9 +21,11 @@ impl TsAst {
         ts_file_names: &Vec<String>,
         main_js: String,
         alias_tables: AliasTables,
+        alias_list: AliasLists,
     ) -> Result<Self, Vec<Error>> {
         let file_name_to_program = |ts_file_name: &String| {
-            Program::from_file_name(ts_file_name, &alias_tables).map_err(Into::<Vec<Error>>::into)
+            Program::from_file_name(ts_file_name, &alias_tables, &alias_list)
+                .map_err(Into::<Vec<Error>>::into)
         };
         let programs = ts_file_names
             .iter()

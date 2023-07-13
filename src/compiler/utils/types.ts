@@ -30,6 +30,7 @@ export type OptLevel = '0' | '1' | '2' | '3' | '4';
 export type CompilerInfo = {
     plugins: Plugin[];
     alias_tables: AliasTables;
+    alias_lists: AliasLists;
     file_names: string[];
 };
 
@@ -39,6 +40,7 @@ export type Plugin = {
 };
 
 export type AliasTables = { [filename: string]: AliasTable };
+export type AliasLists = { [filename: string]: string[] };
 
 export type AliasTable = {
     alias: string[];

@@ -1,5 +1,4 @@
 import $kiwi, {
-    Apple,
     banana,
     blackberry,
     Cherry,
@@ -95,7 +94,7 @@ export type IceAppleBasket = Raspberry<{
     starInt: starFruit.iceApple;
 }>;
 
-export type boysenberry = Apple<boolean>;
+export type boysenberry = boolean;
 
 export type Watermelon = Voavanga<{
     Seeds: nutmeg;

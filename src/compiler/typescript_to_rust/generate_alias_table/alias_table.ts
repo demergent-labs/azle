@@ -215,6 +215,8 @@ const ALIAS_TABLE_KEYS: {
     nat16: 'nat16',
     nat32: 'nat32',
     nat64: 'nat64',
+    Duration: 'nat64',
+    TimerId: 'nat64',
     null: 'null',
     Oneway: 'oneway_mode',
     Opt: 'opt',

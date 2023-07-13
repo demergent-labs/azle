@@ -15,11 +15,13 @@ pub trait ModuleHelperMethods {
         &'a self,
         source_map: &'a SourceMap,
         alias_table: &'a AliasTable,
+        alias_list: &'a Vec<String>,
     ) -> (Vec<SourceMapped<AnnotatedFnDecl>>, Vec<Error>);
     fn get_fn_decls<'a>(
         &'a self,
         source_map: &'a SourceMap,
         alias_table: &'a AliasTable,
+        alias_list: &'a Vec<String>,
     ) -> Vec<SourceMapped<'a, FnDecl>>;
 }
 
@@ -51,11 +53,12 @@ impl ModuleHelperMethods for Module {
         &'a self,
         source_map: &'a SourceMap,
         alias_table: &'a AliasTable,
+        alias_list: &'a Vec<String>,
     ) -> (Vec<SourceMapped<AnnotatedFnDecl>>, Vec<Error>) {
         let source_mapped_body: Vec<_> = self
             .body
             .iter()
-            .map(|module_item| SourceMapped::new(module_item, source_map, alias_table))
+            .map(|module_item| SourceMapped::new(module_item, source_map, alias_table, alias_list))
             .collect();
 
         source_mapped_body.clone()
@@ -74,7 +77,7 @@ impl ModuleHelperMethods for Module {
                                                 annotation,
                                                 fn_decl: fn_decl.clone(),
                                             };
-                                            let sm_annotated_fn_decl = SourceMapped::new(&annotated_fn_decl, source_map, alias_table);
+                                            let sm_annotated_fn_decl = SourceMapped::new(&annotated_fn_decl, source_map, alias_table, alias_list);
 
                                             match &fn_decl.function.return_type {
                                                 Some(_) => {
@@ -115,6 +118,7 @@ impl ModuleHelperMethods for Module {
         &'a self,
         source_map: &'a SourceMap,
         alias_table: &'a AliasTable,
+        alias_list: &'a Vec<String>,
     ) -> Vec<SourceMapped<'a, FnDecl>> {
         self.body
             .iter()
@@ -123,6 +127,7 @@ impl ModuleHelperMethods for Module {
                     module_item.as_decl()?.as_fn_decl()?,
                     source_map,
                     alias_table,
+                    alias_list,
                 ))
             })
             .collect()

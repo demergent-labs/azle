@@ -6,7 +6,7 @@ use std::{
     process,
 };
 
-use azle_generate::{generate_canister, AliasTables, Plugin};
+use azle_generate::{alias_table::AliasLists, generate_canister, AliasTables, Plugin};
 
 const USAGE_ERROR: i32 = 1;
 const COMPILER_INFO_READ_ERROR: i32 = 2;
@@ -23,6 +23,7 @@ struct CompilerInfo {
     plugins: Vec<Plugin>,
     file_names: Vec<String>,
     alias_tables: AliasTables,
+    alias_lists: AliasLists,
 }
 
 fn main() {
@@ -64,6 +65,7 @@ fn main() {
         &compiler_info.file_names,
         main_js,
         compiler_info.alias_tables,
+        compiler_info.alias_lists,
         &compiler_info.plugins,
         &environment_variables,
     ) {

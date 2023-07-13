@@ -110,24 +110,45 @@ export function simpleQuery(): types.VoidAlias {
     console.log(HELLO_WORLD);
 }
 
-class AliasedService extends types.DeepServiceAlias {
+// class AliasedService extends types.DeepServiceAlias {
+//     @types.DeepServiceQueryAlias
+//     testQuery: () => azle.CallResult<string>;
+// }
+
+class AliasedService extends azle.Service {
     @types.DeepServiceQueryAlias
     testQuery: () => azle.CallResult<string>;
 }
+
+export type AliasedServiceAlias = AliasedService;
 
 azle.$query;
 export function checkServiceAlias(service: AliasedService): AliasedService {
     return service;
 }
 
-export type MyLocalNumberAlias = types.DeepAliasAlias<number>;
-export type MyDeepRecordFromAlias = types.DeepRecordAlias<{ depth: azle.nat8 }>;
-export type MyDeepVariantFromAlias = types.DeepVariantAlias<{
+export type MyLocalNumberAlias = number;
+// export type MyDeepRecordFromAlias = types.DeepRecordAlias<{ depth: azle.nat8 }>;
+// export type MyDeepVariantFromAlias = types.DeepVariantAlias<{
+//     good: null;
+//     bad: null;
+//     ugly: null;
+// }>;
+// export type MyRecordFromAlias = types.RecordAlias<{
+//     id: azle.nat;
+//     name: types.DeepOptAlias<string>;
+//     depth: MyDeepRecordFromAlias;
+//     tups: types.DeepTupleAlias<[string, types.Float64Alias]>;
+//     description: MyDeepVariantFromAlias;
+//     list: types.DeepVecAlias<azle.nat16>;
+// }>;
+export type MyDeepRecordFromAlias = azle.Record<{ depth: azle.nat8 }>;
+export type MyDeepVariantFromAlias = azle.Variant<{
     good: null;
     bad: null;
     ugly: null;
 }>;
-export type MyRecordFromAlias = types.RecordAlias<{
+export type MyRecordFromAlias = azle.Record<{
     id: azle.nat;
     name: types.DeepOptAlias<string>;
     depth: MyDeepRecordFromAlias;

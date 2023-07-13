@@ -87,9 +87,11 @@ service : () -> {
   getManagementPeach : () -> (principal) query;
   getManualAlias : () -> (float64) query;
   getMyRecord : () -> (MyRecordFromAlias) query;
+  getMyRecordAlias : () -> (MyRecordFromAlias) query;
   getNumberAliases : () -> (NumberAliases) query;
   getReservedAlias : () -> (reserved) query;
   getStable : (nat16) -> (opt text) query;
+  getSuperAlias : () -> (MyRecordFromAlias) query;
   handleFarkleberries : (
       func (text) -> () oneway,
       func (text) -> (text) query,

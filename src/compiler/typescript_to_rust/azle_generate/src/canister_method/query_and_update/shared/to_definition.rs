@@ -57,11 +57,6 @@ impl<'a> SourceMapped<'a, AnnotatedFnDecl> {
     }
 
     fn build_return_type(&self) -> Result<CandidType, Vec<Error>> {
-        SourceMapped::new(
-            self.get_return_ts_type()?,
-            self.source_map,
-            self.alias_table,
-        )
-        .to_candid_type()
+        self.spawn(self.get_return_ts_type()?).to_candid_type()
     }
 }

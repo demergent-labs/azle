@@ -1,3 +1,4 @@
+use alias_table::AliasLists;
 use cdk_framework::{traits::CollectResults, AbstractCanisterTree};
 use proc_macro2::TokenStream;
 
@@ -27,10 +28,11 @@ pub fn generate_canister(
     ts_file_names: &Vec<String>,
     main_js: String,
     alias_tables: AliasTables,
+    alias_lists: AliasLists,
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
 ) -> Result<TokenStream, Vec<Error>> {
-    TsAst::new(ts_file_names, main_js, alias_tables)?
+    TsAst::new(ts_file_names, main_js, alias_tables, alias_lists)?
         .to_act(plugins, environment_variables)?
         .to_token_stream()
         .map_err(|cdkf_errors| cdkf_errors.into_iter().map(Error::from).collect())

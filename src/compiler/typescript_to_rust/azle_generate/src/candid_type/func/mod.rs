@@ -17,7 +17,7 @@ mod rust;
 
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_func(&self) -> Result<Option<Func>, Vec<Error>> {
-        if self.is_alias() {
+        if self.is_something_that_could_be_in_the_alias_table() {
             return Ok(None);
         }
         self.process_ts_type_ref(&self.alias_table.func, |ts_type_ref| {
@@ -28,8 +28,12 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 }
 
 impl SourceMapped<'_, TsTypeRef> {
+    pub fn is_func(&self) -> bool {
+        self.alias_table.func.contains(&self.get_name())
+    }
+
     pub fn to_func(&self, name: Option<String>) -> Result<Option<Func>, Vec<Error>> {
-        if !self.alias_table.func.contains(&self.get_name()) {
+        if !self.is_func() {
             return Ok(None);
         }
         let request_type_ts_type = self.get_ts_type()?;

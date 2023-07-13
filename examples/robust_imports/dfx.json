@@ -2,7 +2,7 @@
     "canisters": {
         "robust_imports": {
             "type": "custom",
-            "build": "npx azle robust_imports",
+            "build": "npx azle robust_imports --verbose",
             "root": "src",
             "ts": "src/index.ts",
             "candid": "src/index.did",

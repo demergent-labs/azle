@@ -15,7 +15,7 @@ use super::errors::WrongEnclosedType;
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_variant(&self) -> Result<Option<Variant>, Vec<Error>> {
         self.process_ts_type_ref(&self.alias_table.variant, |type_ref| {
-            if self.is_alias() {
+            if self.is_something_that_could_be_in_the_alias_table() {
                 return Ok(None);
             }
             // TODO this should be undone once we put all user-defined types in their own module
@@ -43,20 +43,21 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 }
 
 impl SourceMapped<'_, TsTypeRef> {
+    pub fn is_variant(&self) -> bool {
+        self.alias_table.variant.contains(&self.get_name())
+    }
+
     pub fn to_variant(&self) -> Result<Option<Variant>, Vec<Error>> {
-        if self.alias_table.variant.contains(&self.get_name()) {
-            Ok(Some(
-                match self.get_ts_type()?.as_ts_type_lit() {
-                    Some(ts_type_lit) => ts_type_lit,
-                    None => {
-                        return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()])
-                    }
-                }
-                .to_variant()?,
-            ))
-        } else {
-            Ok(None)
+        if !self.is_variant() {
+            return Ok(None);
         }
+        Ok(Some(
+            match self.get_ts_type()?.as_ts_type_lit() {
+                Some(ts_type_lit) => ts_type_lit,
+                None => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
+            }
+            .to_variant()?,
+        ))
     }
 }
 

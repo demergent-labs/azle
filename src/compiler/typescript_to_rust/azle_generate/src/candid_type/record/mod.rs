@@ -15,7 +15,7 @@ use super::errors::WrongEnclosedType;
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_record(&self) -> Result<Option<Record>, Vec<Error>> {
         self.process_ts_type_ref(&self.alias_table.record, |type_ref| {
-            if self.is_alias() {
+            if self.is_something_that_could_be_in_the_alias_table() {
                 return Ok(None);
             }
             let (type_params, record_type_ref) =
@@ -34,20 +34,21 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 }
 
 impl SourceMapped<'_, TsTypeRef> {
+    pub fn is_record(&self) -> bool {
+        return self.alias_table.record.contains(&self.get_name());
+    }
+
     pub fn to_record(&self) -> Result<Option<Record>, Vec<Error>> {
-        if self.alias_table.record.contains(&self.get_name()) {
-            Ok(Some(
-                match self.get_ts_type()?.as_ts_type_lit() {
-                    Some(ts_type_lit) => ts_type_lit,
-                    None => {
-                        return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()])
-                    }
-                }
-                .to_record()?,
-            ))
-        } else {
-            Ok(None)
+        if !self.is_record() {
+            return Ok(None);
         }
+        Ok(Some(
+            match self.get_ts_type()?.as_ts_type_lit() {
+                Some(ts_type_lit) => ts_type_lit,
+                None => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
+            }
+            .to_record()?,
+        ))
     }
 }
 

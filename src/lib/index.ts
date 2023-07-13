@@ -19,7 +19,6 @@ export {
     TimerId
 } from './ic';
 export {
-    Alias,
     blob,
     empty,
     float32,

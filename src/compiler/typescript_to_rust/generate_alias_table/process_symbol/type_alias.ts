@@ -2,16 +2,10 @@ import * as ts from 'typescript';
 import { AliasTable } from '../../../utils/types';
 import {
     getSymbolTableForNode,
-    getSymbolTableForDeclaration,
-    getSymbolTableForModuleSpecifier
+    getSymbolTableForEntityName,
+    getSymbolTableForExpression
 } from '../get_symbol_table';
-import {
-    getSourceFile,
-    getDeclarationFromNamespace,
-    getDeclarationFromSpecifier,
-    getUnderlyingIdentifierFromSpecifier,
-    getStarExportModuleSpecifierFor
-} from '../utils';
+import { getSourceFile } from '../utils';
 import { generateAliasTableForIdentifier } from '../process_symbol';
 import { generateSingleEntryAliasTable } from '../alias_table';
 
@@ -56,7 +50,7 @@ export function generateAliasTableForTypeAliasDeclaration(
         );
     }
 
-    let aliasedType = typeAliasDeclaration.type;
+    const aliasedType = typeAliasDeclaration.type;
     if (ts.isTypeReferenceNode(aliasedType)) {
         const typeParams = (typeAliasDeclaration.typeParameters ?? []).map(
             (typeParam) => typeParam.name.text
@@ -75,10 +69,7 @@ export function generateAliasTableForTypeAliasDeclaration(
         if (!typeArgsAreGenerics) {
             return undefined;
         }
-    }
 
-    const typeReference = typeAliasDeclaration.type;
-    if (ts.isTypeReferenceNode(typeReference)) {
         const symbolTable = getSymbolTableForNode(
             typeAliasDeclaration,
             program
@@ -87,7 +78,7 @@ export function generateAliasTableForTypeAliasDeclaration(
             // TODO couldn't get a symbol table
             return undefined;
         }
-        const typeName = typeReference.typeName;
+        const typeName = aliasedType.typeName;
         if (ts.isIdentifier(typeName)) {
             return generateAliasTableForIdentifier(
                 typeName,
@@ -114,12 +105,12 @@ export function generateAliasTableForTypeAliasDeclaration(
         }
     }
     // TODO make tests for all of these possibilities test all of these
-    if (typeReference.kind === ts.SyntaxKind.BooleanKeyword) {
+    if (aliasedType.kind === ts.SyntaxKind.BooleanKeyword) {
         return generateSingleEntryAliasTable('bool', alias);
     }
-    if (typeReference.kind === ts.SyntaxKind.LiteralType) {
-        if ('literal' in typeReference) {
-            let literal = typeReference.literal;
+    if (aliasedType.kind === ts.SyntaxKind.LiteralType) {
+        if ('literal' in aliasedType) {
+            let literal = aliasedType.literal;
             if (
                 typeof literal === 'object' &&
                 literal !== null &&
@@ -131,22 +122,22 @@ export function generateAliasTableForTypeAliasDeclaration(
             }
         }
     }
-    if (typeReference.kind === ts.SyntaxKind.StringKeyword) {
+    if (aliasedType.kind === ts.SyntaxKind.StringKeyword) {
         return generateSingleEntryAliasTable('text', alias);
     }
     // TODO (https://github.com/demergent-labs/azle/issues/1099)
     // if (typeReference.kind === ts.SyntaxKind.BigIntKeyword) {
     //     return generateSingleEntryAliasTable('int', alias);
     // }
-    if (typeReference.kind === ts.SyntaxKind.NumberKeyword) {
+    if (aliasedType.kind === ts.SyntaxKind.NumberKeyword) {
         return generateSingleEntryAliasTable('float64', alias);
     }
-    if (typeReference.kind === ts.SyntaxKind.VoidKeyword) {
+    if (aliasedType.kind === ts.SyntaxKind.VoidKeyword) {
         return generateSingleEntryAliasTable('void', alias);
     }
     if (
-        typeReference.kind === ts.SyntaxKind.FunctionType ||
-        typeReference.kind === ts.SyntaxKind.UnionType
+        aliasedType.kind === ts.SyntaxKind.FunctionType ||
+        aliasedType.kind === ts.SyntaxKind.UnionType
     ) {
         // We do not yet have azle types that map to these types
         return undefined;
@@ -211,161 +202,4 @@ export function generateAliasTableForVariableDeclaration(
     }
     // The expression is something we haven't planned on
     return undefined;
-}
-
-function getSymbolTableForEntityName(
-    left: ts.EntityName,
-    symbolTable: ts.SymbolTable,
-    program: ts.Program
-): ts.SymbolTable | undefined {
-    if (ts.isIdentifier(left)) {
-        return getSymbolTableForLeftIdentifier(left, symbolTable, program);
-    }
-    if (ts.isQualifiedName(left)) {
-        let leftSymbolTable = getSymbolTableForEntityName(
-            left.left,
-            symbolTable,
-            program
-        );
-        if (leftSymbolTable === undefined) {
-            return undefined;
-        }
-        return getSymbolTableForRightIdentifier(
-            left.right,
-            leftSymbolTable,
-            program
-        );
-    }
-    // Unreachable ts.EntityName = ts.Identifier | ts.QualifiedName
-}
-
-function getSymbolTableForExpression(
-    left: ts.Expression,
-    symbolTable: ts.SymbolTable,
-    program: ts.Program
-): ts.SymbolTable | undefined {
-    if (ts.isIdentifier(left)) {
-        return getSymbolTableForLeftIdentifier(left, symbolTable, program);
-    }
-    if (ts.isPropertyAccessExpression(left)) {
-        let leftSymbolTable = getSymbolTableForExpression(
-            left.expression,
-            symbolTable,
-            program
-        );
-        if (leftSymbolTable === undefined) {
-            return undefined;
-        }
-        return getSymbolTableForRightIdentifier(
-            left.name,
-            leftSymbolTable,
-            program
-        );
-    }
-}
-
-function getSymbolTableForRightIdentifier(
-    right: ts.Identifier | ts.MemberName,
-    symbolTable: ts.SymbolTable,
-    program: ts.Program
-): ts.SymbolTable | undefined {
-    const rightSymbol = getSymbolForRightIdentifier(
-        right,
-        symbolTable,
-        program
-    );
-    if (rightSymbol === undefined) {
-        return undefined;
-    }
-    if (rightSymbol.declarations?.length != 1) {
-        return undefined;
-    }
-    const namespace = rightSymbol.declarations[0];
-    // NOTE: My assumption here is that the only way you can get a qualified
-    // name that could resolve back to azle is if it's part of a namespace
-    // import or export
-    if (!ts.isNamespaceImport(namespace) && !ts.isNamespaceExport(namespace)) {
-        return undefined;
-    }
-    const declaration = getDeclarationFromNamespace(namespace);
-    return getSymbolTableForDeclaration(declaration, program);
-}
-
-function getSymbolTableForLeftIdentifier(
-    left: ts.Identifier,
-    symbolTable: ts.SymbolTable,
-    program: ts.Program
-) {
-    const leftSymbol = symbolTable.get(left.text as ts.__String);
-    if (leftSymbol === undefined) {
-        return undefined;
-    }
-    if (leftSymbol.declarations?.length != 1) {
-        return undefined;
-    }
-    const declaration = leftSymbol.declarations[0];
-    // NOTE: My assumption here is that the only way you can get a left hand
-    // side of a qualified name that would resolved back to azle is if it's
-    // some sort of import declaration
-    if (ts.isNamespaceImport(declaration)) {
-        const importDeclaration = getDeclarationFromNamespace(declaration);
-        return getSymbolTableForDeclaration(importDeclaration, program);
-    }
-    if (ts.isImportSpecifier(declaration)) {
-        const importDeclaration = getDeclarationFromSpecifier(declaration);
-        let result = getSymbolTableForDeclaration(importDeclaration, program);
-        const identifier = getUnderlyingIdentifierFromSpecifier(declaration);
-        const leftSymbol = result?.get(identifier.text as ts.__String);
-        if (leftSymbol === undefined) {
-            return undefined;
-        }
-        if (leftSymbol.declarations?.length != 1) {
-            return undefined;
-        }
-        const subDeclaration = leftSymbol.declarations[0];
-        // NOTE: My assumption here is that the only way you can get a left hand
-        // side of a qualified name that would resolved back to azle is if it's
-        // some sort of import declaration
-        if (ts.isNamespaceExport(subDeclaration)) {
-            const importDeclaration =
-                getDeclarationFromNamespace(subDeclaration);
-            return getSymbolTableForDeclaration(importDeclaration, program);
-        }
-    }
-    // TODO are there other types of imports that could be here?
-}
-
-function getSymbolForRightIdentifier(
-    right: ts.Identifier | ts.MemberName,
-    symbolTable: ts.SymbolTable,
-    program: ts.Program
-): ts.Symbol | undefined {
-    const rightSymbol = symbolTable.get(right.text as ts.__String);
-    if (rightSymbol === undefined) {
-        // We couldn't find the symbol. There is a chance it's in a start export. Look through all of them to see
-        return getStarExportSymbolTableFor(
-            right.text,
-            symbolTable,
-            program
-        )?.get(right.text as ts.__String);
-    }
-    return rightSymbol;
-}
-
-// Get all of the * exports
-// get the symbol tables for all of those and check which one has the name we are looking for
-function getStarExportSymbolTableFor(
-    keyToFind: string,
-    symbolTable: ts.SymbolTable,
-    program: ts.Program
-): ts.SymbolTable | undefined {
-    const exportModSpecifier = getStarExportModuleSpecifierFor(
-        keyToFind,
-        symbolTable,
-        program
-    );
-
-    if (exportModSpecifier === undefined) return undefined;
-
-    return getSymbolTableForModuleSpecifier(exportModSpecifier, program);
 }

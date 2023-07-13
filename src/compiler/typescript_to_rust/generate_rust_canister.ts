@@ -13,7 +13,8 @@ import {
     JSCanisterConfig,
     Plugin,
     SpawnSyncError,
-    AliasTables
+    AliasTables,
+    AliasLists
 } from '../utils/types';
 import { isVerboseMode } from '../utils';
 import { version as azleVersion } from '../../../package.json';
@@ -24,13 +25,15 @@ export function generateRustCanister(
     fileNames: string[],
     plugins: Plugin[],
     aliasTables: AliasTables,
+    aliasLists: AliasLists,
     canisterPath: string,
     canisterConfig: JSCanisterConfig
 ): Result<null, SpawnSyncError> {
     const compilerInfo: CompilerInfo = {
         plugins,
         file_names: fileNames,
-        alias_tables: aliasTables
+        alias_tables: aliasTables,
+        alias_lists: aliasLists
     };
 
     const compilerInfoPath = join(

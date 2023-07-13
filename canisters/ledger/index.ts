@@ -7,7 +7,6 @@
 // Some documentation changed from original work.
 
 import {
-    Alias,
     blob,
     CallResult,
     Func,
@@ -46,19 +45,19 @@ export type TimeStamp = Record<{
 
 // AccountIdentifier is a 32-byte array.
 // The first 4 bytes is big-endian encoding of a CRC32 checksum of the last 28 bytes.
-export type AccountIdentifier = Alias<blob>;
+export type AccountIdentifier = blob;
 
 // Subaccount is an arbitrary 32-byte byte array.
 // Ledger uses subaccounts to compute the source address, which enables one
 // principal to control multiple ledger accounts.
-export type SubAccount = Alias<blob>;
+export type SubAccount = blob;
 
 // Sequence number of a block produced by the ledger.
-export type BlockIndex = Alias<nat64>;
+export type BlockIndex = nat64;
 
 // An arbitrary number associated with a transaction.
 // The caller can set it in a `transfer` call as a correlation identifier.
-export type Memo = Alias<nat64>;
+export type Memo = nat64;
 
 // Arguments for the `transfer` call.
 export type TransferArgs = Record<{
@@ -278,7 +277,7 @@ export type DecimalsResult = Record<{
     decimals: nat32;
 }>;
 
-export type Address = Alias<string>;
+export type Address = string;
 
 export class Ledger extends Service {
     // Transfers tokens from a subaccount of the caller to the destination address.

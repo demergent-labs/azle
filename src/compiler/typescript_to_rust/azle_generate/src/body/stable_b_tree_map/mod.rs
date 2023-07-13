@@ -40,7 +40,7 @@ impl Program {
     where
         C: Clone,
     {
-        SourceMapped::new(child, &self.source_map, &self.alias_table)
+        SourceMapped::new(child, &self.source_map, &self.alias_table, &self.alias_list)
     }
 
     pub fn build_stable_b_tree_map_nodes(&self) -> Result<Vec<StableBTreeMapNode>, Vec<Error>> {

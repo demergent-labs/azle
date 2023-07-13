@@ -39,6 +39,7 @@ impl GetModuleFnDecls for Module {
                     fn_decl,
                     &parent.source_map,
                     &parent.alias_table,
+                    &parent.alias_list,
                 ))
             })
             .collect()
