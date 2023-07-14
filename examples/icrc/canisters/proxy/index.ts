@@ -14,11 +14,11 @@ import {
     Vec
 } from 'azle';
 import {
-    ICRCAccount,
+    ICRC1Account,
     ICRC,
-    ICRCTransferArgs,
-    ICRCTransferError,
-    ICRCValue
+    ICRC1TransferArgs,
+    ICRC1TransferError,
+    ICRC1Value
 } from 'azle/canisters/icrc';
 
 const icrc = new ICRC(
@@ -29,7 +29,9 @@ const icrc = new ICRC(
 );
 
 $query;
-export async function icrc1_metadata(): Promise<Vec<Tuple<[text, ICRCValue]>>> {
+export async function icrc1_metadata(): Promise<
+    Vec<Tuple<[text, ICRC1Value]>>
+> {
     const result = await icrc.icrc1_metadata().call();
 
     return match(result, {
@@ -89,7 +91,7 @@ export async function icrc1_total_supply(): Promise<nat> {
 }
 
 $query;
-export async function icrc1_minting_account(): Promise<Opt<ICRCAccount>> {
+export async function icrc1_minting_account(): Promise<Opt<ICRC1Account>> {
     const result = await icrc.icrc1_minting_account().call();
 
     return match(result, {
@@ -99,7 +101,7 @@ export async function icrc1_minting_account(): Promise<Opt<ICRCAccount>> {
 }
 
 $query;
-export async function icrc1_balance_of(account: ICRCAccount): Promise<nat> {
+export async function icrc1_balance_of(account: ICRC1Account): Promise<nat> {
     const result = await icrc.icrc1_balance_of(account).call();
 
     return match(result, {
@@ -110,8 +112,8 @@ export async function icrc1_balance_of(account: ICRCAccount): Promise<nat> {
 
 $update;
 export async function icrc1_transfer(
-    transferArgs: ICRCTransferArgs
-): Promise<Variant<{ Ok: nat; Err: ICRCTransferError }>> {
+    transferArgs: ICRC1TransferArgs
+): Promise<Variant<{ Ok: nat; Err: ICRC1TransferError }>> {
     const result = await icrc.icrc1_transfer(transferArgs).call();
 
     return match(result, {
