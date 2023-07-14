@@ -28,10 +28,10 @@ import {
     Vec
 } from '../../src/lib';
 import {
-    ICRCAccount,
-    ICRCTransferArgs,
-    ICRCTransferError,
-    ICRCValue
+    ICRC1Account,
+    ICRC1TransferArgs,
+    ICRC1TransferError,
+    ICRC1Value
 } from '../icrc';
 
 // Amount of tokens, measured in 10^-8 of a token.
@@ -320,7 +320,7 @@ export class Ledger extends Service {
     archives: () => CallResult<Archives>;
 
     @serviceQuery
-    icrc1_metadata: () => CallResult<Vec<Tuple<[text, ICRCValue]>>>;
+    icrc1_metadata: () => CallResult<Vec<Tuple<[text, ICRC1Value]>>>;
 
     @serviceQuery
     icrc1_name: () => CallResult<text>;
@@ -338,15 +338,15 @@ export class Ledger extends Service {
     icrc1_total_supply: () => CallResult<nat>;
 
     @serviceQuery
-    icrc1_minting_account: () => CallResult<Opt<ICRCAccount>>;
+    icrc1_minting_account: () => CallResult<Opt<ICRC1Account>>;
 
     @serviceQuery
-    icrc1_balance_of: (account: ICRCAccount) => CallResult<nat>;
+    icrc1_balance_of: (account: ICRC1Account) => CallResult<nat>;
 
     @serviceUpdate
     icrc1_transfer: (
-        transferArgs: ICRCTransferArgs
-    ) => CallResult<Variant<{ Ok: nat; Err: ICRCTransferError }>>;
+        transferArgs: ICRC1TransferArgs
+    ) => CallResult<Variant<{ Ok: nat; Err: ICRC1TransferError }>>;
 
     @serviceQuery
     icrc1_supported_standards: () => CallResult<
