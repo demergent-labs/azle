@@ -7,15 +7,15 @@ TypeScript `[]` array syntax corresponds to the [Candid type vec](https://intern
 TypeScript:
 
 ```typescript
-import { int32, $query } from 'azle';
+import { int32, $query, Vec } from 'azle';
 
 $query;
-export function getNumbers(): int32[] {
+export function getNumbers(): Vec<int32> {
     return [0, 1, 2, 3];
 }
 
 $query;
-export function printNumbers(numbers: int32[]): int32[] {
+export function printNumbers(numbers: Vec<int32>): Vec<int32> {
     console.log(typeof numbers);
     return numbers;
 }

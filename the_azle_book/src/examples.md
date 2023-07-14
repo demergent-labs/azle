@@ -18,3 +18,5 @@ We'll highlight a few of them and some others here:
 -   [Multisig Vault](https://github.com/demergent-labs/multisig_vault)
 -   [ICRC-1](https://github.com/demergent-labs/ICRC-1)
 -   [IC Chainlink Data Feeds](https://github.com/demergent-labs/ic_chainlink_data_feeds)
+-   [Bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/basic_bitcoin)
+-   [ckBTC](https://github.com/demergent-labs/azle/tree/main/examples/ckbtc)

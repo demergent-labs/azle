@@ -185,7 +185,7 @@ SOFTWARE.
 <li><a href="https://www.npmjs.com/package/azle">npm package</a></li>
 </ul>
 <h2 id="disclaimer"><a class="header" href="#disclaimer">Disclaimer</a></h2>
-<p>Things to keep in mind:</p>
+<p>Things to keep in mind (see the <a href="./caveats.html">caveats</a> section for more):</p>
 <ul>
 <li>Azle does not yet have many live, successful, continuously operating applications deployed to the IC</li>
 <li>Azle does not yet have extensive automated property tests</li>
@@ -225,11 +225,11 @@ SOFTWARE.
 <p>Because most web APIs are owned and operated by individual entities, their fate is tied to that of their owners. If their owners go out of business, then those APIs may cease to exist. If their owners decide that they do not like or agree with certain users, they may restrict their access. In the end, they may decide to shut down or restrict access for arbitrary reasons.</p>
 <p>Because the IC allows for group and autonomous ownership of cloud software, the IC is able to produce potentially permanent web APIs. A decentralized group of independent entities will find it difficult to censor API consumers or shut down an API. An autonomous API would take those difficulties to the extreme, as it would continue operating as long as consumers were willing to pay for it.</p>
 <h5 id="credible-neutrality"><a class="header" href="#credible-neutrality">Credible neutrality</a></h5>
-<p>Group and autonomous ownership makes it is possible to build neutral cloud software on the IC. This type of software would allow independent parties to coordinate with reduced trust in each other or a single third-party coordinator.</p>
+<p>Group and autonomous ownership makes it possible to build neutral cloud software on the IC. This type of software would allow independent parties to coordinate with reduced trust in each other or a single third-party coordinator.</p>
 <p>This removes the risk of the third-party coordinator acting in its own self-interest against the interests of the coordinating participants. The coordinating participants would also find it difficult to implement changes that would benefit themselves to the detriment of other participants.</p>
 <p>Examples could include mobile app stores, ecommerce marketplaces, and podcast directories.</p>
 <h5 id="reduced-platform-risk"><a class="header" href="#reduced-platform-risk">Reduced platform risk</a></h5>
-<p>Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is reduced. This is in opposition to most cloud platforms, where the cloud provider itself generally has the power to arbitrarily remove users from its platform. While deplatforming can still occur on the IC, the only endongenous means of forcefully taking down an application is through an NNS vote.</p>
+<p>Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is reduced. This is in opposition to most cloud platforms, where the cloud provider itself generally has the power to arbitrarily remove users from its platform. While deplatforming can still occur on the IC, the only endogenous means of forcefully taking down an application is through an NNS vote.</p>
 <h4 id="security"><a class="header" href="#security">Security</a></h4>
 <ul>
 <li><a href="azle.html#built-in-replication">Built-in replication</a></li>
@@ -281,12 +281,12 @@ SOFTWARE.
 <li><a href="azle.html#missing-javascript-features">Missing JavaScript features</a></li>
 </ul>
 <h5 id="beta"><a class="header" href="#beta">Beta</a></h5>
-<p>Azle reached beta in April of 2022. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2023. The following are the major blockers to 1.0:</p>
+<p>Azle reached beta in April of 2022. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:</p>
 <ul>
-<li>Extensive automated property testing (~Q1 2023)</li>
-<li>Performance improvements if necessary (~Q2 2023)</li>
-<li>Boa production-ready, JS Engine swapout, or risks accepted (~Q2 2023)</li>
-<li>Multiple independent security reviews/audits (~Q2 2023)</li>
+<li>QuickJS/SpiderMonkey integration for performance, security, and stability</li>
+<li>Broad npm package support</li>
+<li>Extensive automated property testing</li>
+<li>Multiple independent security reviews/audits</li>
 </ul>
 <h5 id="security-risks"><a class="header" href="#security-risks">Security risks</a></h5>
 <p>As discussed earlier, these are some things to keep in mind:</p>
@@ -322,7 +322,7 @@ SOFTWARE.
 <h5 id="limited-scalability"><a class="header" href="#limited-scalability">Limited scalability</a></h5>
 <p>The IC might not be able to scale to the needs of your application. It is constantly seeking to improve scalability bottlenecks, but it will probably not be able to onboard millions of users to your traditional web application.</p>
 <h5 id="lack-of-privacy"><a class="header" href="#lack-of-privacy">Lack of privacy</a></h5>
-<p>You should assume that all of your application data is accessible to multiple third-parties with no direct relationship and limited commitment to you. Currently all canister state sits unencrypted on node operator's machines. Application-layer access controls for data are possible, but motivated node operators will have an easy time getting access to your data.</p>
+<p>You should assume that all of your application data (unless it is end-to-end encrypted) is accessible to multiple third-parties with no direct relationship and limited commitment to you. Currently all canister state sits unencrypted on node operator's machines. Application-layer access controls for data are possible, but motivated node operators will have an easy time getting access to your data.</p>
 <h5 id="nns-risk"><a class="header" href="#nns-risk">NNS risk</a></h5>
 <p>The NNS has the ability to uninstall any canister and can generally change anything about the IC. As of the time of this writing, DFINITY effectively controls much of the NNS through its follower relationships. The NNS must mature and decentralize to provide practical and realistic guarantees to canisters and their users.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
@@ -330,7 +330,7 @@ SOFTWARE.
 <p>You should be using a *nix environment (Linux, Mac OS, <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL if using Windows</a>) with bash and have the following installed on your system:</p>
 <ul>
 <li>Node.js 18</li>
-<li>dfx 0.14.0</li>
+<li>dfx 0.14.2</li>
 </ul>
 <h2 id="nodejs"><a class="header" href="#nodejs">Node.js</a></h2>
 <p>We highly recommend using <a href="https://github.com/nvm-sh/nvm">nvm</a> to install Node.js (and npm, which is included with Node.js). Run the following commands to install Node.js and npm with nvm:</p>
@@ -340,8 +340,8 @@ SOFTWARE.
 <pre><code class="language-bash">nvm install 18
 </code></pre>
 <h2 id="dfx"><a class="header" href="#dfx">dfx</a></h2>
-<p>Run the following command to install dfx 0.14.0:</p>
-<pre><code class="language-bash">DFX_VERSION=0.14.0 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
+<p>Run the following command to install dfx 0.14.2:</p>
+<pre><code class="language-bash">DFX_VERSION=0.14.2 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
 </code></pre>
 <p>If after trying to run <code>dfx</code> commands you encounter an error such as <code>dfx: command not found</code>, you might need to add <code>$HOME/bin</code> to your path. Here's an example of doing this in your <code>.bashrc</code>:</p>
 <pre><code class="language-bash">echo 'export PATH=&quot;$PATH:$HOME/bin&quot;' &gt;&gt; &quot;$HOME/.bashrc&quot;
@@ -580,7 +580,7 @@ URLs:
 <li><a href="https://crates.io/crates/ic-agent">Rust</a></li>
 </ul>
 <h2 id="deploying-to-mainnet"><a class="header" href="#deploying-to-mainnet">Deploying to mainnet</a></h2>
-<p>Assuming you have <a href="https://internetcomputer.org/docs/current/developer-docs/quickstart/network-quickstart">created a cycles wallet</a> and funded it with cycles, then you are ready to deploy to mainnet.</p>
+<p>Assuming you are <a href="https://internetcomputer.org/docs/current/developer-docs/setup/cycles/">setup with cycles</a>, then you are ready to deploy to mainnet.</p>
 <p>To deploy all canisters defined in your dfx.json:</p>
 <pre><code class="language-bash">dfx deploy --network ic
 </code></pre>
@@ -605,18 +605,20 @@ URLs:
 <li><a href="https://github.com/demergent-labs/multisig_vault">Multisig Vault</a></li>
 <li><a href="https://github.com/demergent-labs/ICRC-1">ICRC-1</a></li>
 <li><a href="https://github.com/demergent-labs/ic_chainlink_data_feeds">IC Chainlink Data Feeds</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/basic_bitcoin">Bitcoin</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ckbtc">ckBTC</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="internet-computer-overview"><a class="header" href="#internet-computer-overview">Internet Computer Overview</a></h1>
 <p>The <a href="https://internetcomputer.org/">Internet Computer</a> (IC) is a decentralized cloud platform. Actually, it is better thought of as a progressively decentralizing cloud platform. Its full vision is yet to be fulfilled.</p>
 <p>It aims to be owned and operated by many independent entities in many geographies and legal jurisdictions throughout the world. This is in opposition to most traditional cloud platforms today, which are generally owned and operated by one overarching legal entity.</p>
 <p>The IC is composed of computer hardware nodes running the IC protocol software. Each running IC protocol software process is known as a replica.</p>
-<p>Nodes are assigned into groups known as subnets. Each subnet attempts to maximum its decentralization of nodes according to factors such as data center location and node operator independence.</p>
+<p>Nodes are assigned into groups known as subnets. Each subnet attempts to maximize its decentralization of nodes according to factors such as data center location and node operator independence.</p>
 <p>The subnets vary in size. Generally speaking the larger the size of the subnet the more secure it will be. Subnets currently range in size from 13 to 40 nodes, with most subnets having 13 nodes.</p>
 <p>IC applications, known as canisters, are deployed to specific subnets. They are then accessible through Internet Protocol requests such as HTTP. Each subnet replicates all canisters across all of its replicas. A consensus protocol is run by the replicas to ensure <a href="https://en.wikipedia.org/wiki/Byzantine_fault">Byzantine Fault Tolerance</a>.</p>
 <p>View the <a href="https://dashboard.internetcomputer.org/subnets">IC Dashboard</a> to explore all data centers, subnets, node operators, and many other aspects of the IC.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canisters-overview"><a class="header" href="#canisters-overview">Canisters Overview</a></h1>
 <p>Canisters are <a href="https://internetcomputer.org/">Internet Computer</a> (IC) applications. They are the encapsulation of your code and state, and are essentially Wasm modules.</p>
-<p>State can be stored on the 4 GiB heap or in a larger 48 GiB location called stable memory. You can store state on the heap using your language's native global variables. You can store state in stable memory using low-level APIs or special stable data structures that behave similarly to native language data structures.</p>
+<p>State can be stored on the 4 GiB heap or in a larger 64 GiB location called stable memory. You can store state on the heap using your language's native global variables. You can store state in stable memory using low-level APIs or special stable data structures that behave similarly to native language data structures.</p>
 <p>State changes must go through a process called consensus. The consensus process ensures that state changes are <a href="https://en.wikipedia.org/wiki/Byzantine_fault">Byzantine Fault Tolerant</a>. This process takes a few seconds to complete.</p>
 <p>Operations on canister state are exposed to users through canister methods. These methods can be invoked through HTTP requests. Query methods allow state to be read and are low-latency. Update methods allow state to be changed and are higher-latency. Update methods take a few seconds to complete because of the consensus process.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="query-methods"><a class="header" href="#query-methods">Query Methods</a></h1>
@@ -753,7 +755,7 @@ export function set(key: string, value: string): void {
 <p>So far we have only seen how state changes can be persisted. State changes can also be discarded by implicit or explicit traps. A trap is an immediate stop to execution with the ability to provide a message to the execution environment.</p>
 <p>Traps can be useful for ensuring that multiple operations are either all completed or all disregarded, or in other words atomic. Keep in mind that these guarantees do not hold once cross-canister calls are introduced, but that's a more advanced topic <a href="./cross_canister.html">covered later</a>.</p>
 <p>Here's an example of how to trap and ensure atomic changes to your database:</p>
-<pre><code class="language-typescript">import { Opt, $query, Record, StableBTreeMap, $update } from 'azle';
+<pre><code class="language-typescript">import { ic, Opt, $query, Record, StableBTreeMap, $update } from 'azle';
 
 type Entry = Record&lt;{
     key: string;
@@ -775,12 +777,16 @@ export function set(key: string, value: string): void {
 $update;
 export function setMany(entries: Entry[]): void {
     entries.forEach((entry) =&gt; {
+        if (entry.key === 'trap') {
+            ic.trap('explicit trap');
+        }
+
         db.insert(entry.key, entry.value);
     });
 }
 </code></pre>
 <p>In addition to <code>ic.trap</code>, an explicit JavaScript <code>throw</code> or any unhandled exception will also trap.</p>
-<p>There is a limit to how much computation can be done in a single call to an update method. The current update call limit is <a href="https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits">20 billion Wasm instructions</a>. If we modify our database example, we can introduce an update method that runs the risk reaching the limit:</p>
+<p>There is a limit to how much computation can be done in a single call to an update method. The current update call limit is <a href="https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits">20 billion Wasm instructions</a>. If we modify our database example, we can introduce an update method that runs the risk of reaching the limit:</p>
 <pre><code class="language-typescript">import { nat64, Opt, $query, StableBTreeMap, $update } from 'azle';
 
 let db = new StableBTreeMap&lt;string, string&gt;(0, 1_000, 1_000);
@@ -1382,15 +1388,15 @@ export function printNull(null_: null): null {
 <h3 id="vec"><a class="header" href="#vec">vec</a></h3>
 <p>TypeScript <code>[]</code> array syntax corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>nat8[]</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>nat8[]</code>). Only the <code>[]</code> array syntax is supported at this time (i.e. not <code>Array</code> or <code>ReadonlyArray</code> etc).</p>
 <p>TypeScript:</p>
-<pre><code class="language-typescript">import { int32, $query } from 'azle';
+<pre><code class="language-typescript">import { int32, $query, Vec } from 'azle';
 
 $query;
-export function getNumbers(): int32[] {
+export function getNumbers(): Vec&lt;int32&gt; {
     return [0, 1, 2, 3];
 }
 
 $query;
-export function printNumbers(numbers: int32[]): int32[] {
+export function printNumbers(numbers: Vec&lt;int32&gt;): Vec&lt;int32&gt; {
     console.log(typeof numbers);
     return numbers;
 }
@@ -2121,7 +2127,7 @@ export async function payout(
 </code></pre>
 <p>Azle provides a <code>match</code> function that will help you handle variant branches. This provides some benefits over using <code>in</code>, such as <code>if ('Err' in result)</code> or <code>if ('Ok' in result)</code>. There are other ways to check for the <code>Ok</code> or <code>Err</code> properties as well, feel free to experiment with the way that you prefer. They all have trade-offs.</p>
 <p>So far we have only shown a cross-canister call from an update method. Update methods can call other update methods or query methods (but not composite query methods as discussed below). If an update method calls a query method, that query method will be called in replicated mode. Replicated mode engages the consensus process, but for queries the state will still be discarded.</p>
-<p>Cross-canister calls can also be initiated from query methods (not yet live on IC mainnet but this works locally). These are known as composite queries, and in Azle they are simply <code>async</code> query methods. Composite queries can call other composite query methods and regular query methods. Composite queries cannot call update methods.</p>
+<p>Cross-canister calls can also be initiated from query methods. These are known as composite queries, and in Azle they are simply <code>async</code> query methods. Composite queries can call other composite query methods and regular query methods. Composite queries cannot call update methods.</p>
 <p>Here's an example of a composite query method:</p>
 <pre><code class="language-typescript">import {
     CallResult,
@@ -3910,15 +3916,15 @@ service : () -&gt; {
 <p>This section is a work in progress.</p>
 <p>TypeScript <code>[]</code> array syntax corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>nat8[]</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>nat8[]</code>). Only the <code>[]</code> array syntax is supported at this time (i.e. not <code>Array</code> or <code>ReadonlyArray</code> etc).</p>
 <p>TypeScript:</p>
-<pre><code class="language-typescript">import { int32, $query } from 'azle';
+<pre><code class="language-typescript">import { int32, $query, Vec } from 'azle';
 
 $query;
-export function getNumbers(): int32[] {
+export function getNumbers(): Vec&lt;int32&gt; {
     return [0, 1, 2, 3];
 }
 
 $query;
-export function printNumbers(numbers: int32[]): int32[] {
+export function printNumbers(numbers: Vec&lt;int32&gt;): Vec&lt;int32&gt; {
     console.log(typeof numbers);
     return numbers;
 }
