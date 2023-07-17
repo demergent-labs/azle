@@ -11,9 +11,9 @@ pub fn generate() -> TokenStream {
             fn unwrap_or_trap(self, context: &mut boa_engine::Context) -> boa_engine::JsValue {
                 match self {
                     Ok(js_value) => js_value,
-                    Err(boa_error) => {
+                    Err(js_error) => {
                         let error_message =
-                            js_value_to_string(boa_error.to_opaque(context), context);
+                            js_value_to_string(js_error.to_opaque(context), context);
 
                         ic_cdk::api::trap(&format!("Uncaught {}", error_message));
                     }
