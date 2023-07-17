@@ -16,14 +16,26 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                 impl boa_engine::context::HostHooks for Hooks {
                     fn utc_now(&self) -> chrono::NaiveDateTime {
-                        chrono::NaiveDateTime::from_timestamp_opt((ic_cdk::api::time() / 1_000_000_000) as i64, 0).unwrap_or_else(|| {
-                            ic_cdk::trap("InternalError: Unable to determine host time")
+                        unwrap_or_trap(|| {
+                            chrono::NaiveDateTime::from_timestamp_opt(
+                                (ic_cdk::api::time() / 1_000_000_000) as i64,
+                                0,
+                            )
+                            .ok_or_else(|| {
+                                RuntimeError::String(
+                                    "InternalError: Unable to determine host time".to_string(),
+                                )
+                            })
                         })
                     }
 
                     fn tz_offset(&self) -> chrono::FixedOffset {
-                        chrono::FixedOffset::east_opt(0).unwrap_or_else(|| {
-                            ic_cdk::trap("InternalError: Unable to determine host timezone")
+                        unwrap_or_trap(|| {
+                            chrono::FixedOffset::east_opt(0).ok_or_else(|| {
+                                RuntimeError::String(
+                                    "InternalError: Unable to determine host timezone".to_string(),
+                                )
+                            })
                         })
                     }
                 }
