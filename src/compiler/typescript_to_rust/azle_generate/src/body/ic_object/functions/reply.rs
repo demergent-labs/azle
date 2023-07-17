@@ -16,11 +16,12 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
             aargs: &[boa_engine::JsValue],
             context: &mut boa_engine::Context
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let method_name = METHOD_NAME_REF_CELL.with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
+            let method_name = METHOD_NAME_REF_CELL
+                .with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
 
             match &method_name[..] {
                 #(#match_arms)*
-                _ => panic!("This cannot happen")
+                _ => Err(format!("Missing reply handler for method '{method_name}'").to_js_error()),
             }
         }
     }
@@ -46,8 +47,16 @@ fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
 
     quote!(
         #name => {
-            let reply_value: (#return_type) = aargs.get(0).unwrap().clone().try_from_vm_value(&mut *context).unwrap();
-            Ok(ic_cdk::api::call::reply((reply_value,)).try_into_vm_value(context).unwrap())
+            let reply_value: (#return_type) = aargs
+                .get(0)
+                .ok_or_else(|| "An argument for 'reply' was not provided".to_js_error())?
+                .clone()
+                .try_from_vm_value(&mut *context)
+                .map_err(|vmc_err| vmc_err.to_js_error())?;
+
+            ic_cdk::api::call::reply((reply_value,))
+                .try_into_vm_value(context)
+                .map_err(|vmc_err| vmc_err.to_js_error())
         }
     )
 }

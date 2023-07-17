@@ -183,7 +183,7 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `TypeError: value is not a GuardResult`
+                            `TypeError: Value is not of type 'GuardResult'`
                         )
                     };
                 }
@@ -201,7 +201,7 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `TypeError: value is not a GuardResult`
+                            `TypeError: Value is not of type 'GuardResult'`
                         )
                     };
                 }
@@ -219,7 +219,7 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `TypeError: value is not null`
+                            `TypeError: Value is not of type 'null'`
                         )
                     };
                 }
@@ -237,7 +237,7 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `TypeError: value is not a string`
+                            `TypeError: Value is not of type 'string'`
                         )
                     };
                 }

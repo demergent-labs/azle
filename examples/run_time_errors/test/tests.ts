@@ -2,70 +2,30 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/run_time_errors/run_time_errors.did';
 
+import { getThrownErrorTests } from './thrown_errors';
+import { getInvalidOptTests } from './invalid_opts';
+import { getInvalidPrimitiveTests } from './invalid_primitives';
+import { getInvalidNumberTests } from './invalid_numbers';
+import { getInvalidFuncTests } from './invalid_funcs';
+import { getInvalidPrincipalTests } from './invalid_principals';
+import { getInvalidBlobTests } from './invalid_blobs';
+import { getInvalidVecTests } from './invalid_vecs';
+
 export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
-        expectError('throw big int', errorCanister.throwBigint, '3'),
-        expectError('throw boolean', errorCanister.throwBoolean, 'false'),
-        expectError(
-            'throw class',
-            errorCanister.throwClass,
-            'CustomClass toString'
-        ),
-        expectError(
-            'throw custom error',
-            errorCanister.throwCustomError,
-            'Error: This is a custom error'
-        ),
-        expectError('throw int', errorCanister.throwInt, '3'),
-        expectError('throw null', errorCanister.throwNull, 'null'),
-        expectError(
-            'throw null reference',
-            errorCanister.throwNullReference,
-            "TypeError: cannot convert 'null' or 'undefined' to object"
-        ),
-        expectError(
-            'throw object',
-            errorCanister.throwObject,
-            '[object Object]'
-        ),
-        expectError('throw rational', errorCanister.throwRational, '3.14'),
-        expectError('throw string', errorCanister.throwString, 'Hello World'),
-        expectError('throw symbol', errorCanister.throwSymbol, 'Symbol()'),
-        expectError(
-            'throw undefined',
-            errorCanister.throwUndefined,
-            'undefined'
-        ),
-        expectError(
-            'return non object',
-            errorCanister.returnNonObject,
-            'TypeError: value is not an Opt'
-        ),
-        expectError(
-            'return object with both Some and None',
-            errorCanister.returnBothSomeAndNone,
-            'TypeError: value is not an Opt'
-        ),
-        expectError(
-            'return object with neither Some nor None',
-            errorCanister.returnObjectWithNeitherSomeNorNone,
-            'TypeError: value is not an Opt'
-        ),
-        expectError(
-            'return object with non null None value',
-            errorCanister.returnNonNullNone,
-            'TypeError: value is not null'
-        ),
-        expectError(
-            'return object with invalid Some value',
-            errorCanister.returnInvalidSomeValue,
-            'TypeError: JsValue is not a string'
-        )
+        ...getThrownErrorTests(errorCanister),
+        ...getInvalidOptTests(errorCanister),
+        ...getInvalidPrimitiveTests(errorCanister),
+        ...getInvalidNumberTests(errorCanister),
+        ...getInvalidFuncTests(errorCanister),
+        ...getInvalidPrincipalTests(errorCanister),
+        ...getInvalidBlobTests(errorCanister),
+        ...getInvalidVecTests(errorCanister)
     ];
 }
 
 /** Creates a test that asserts the provided method throws the provided value */
-function expectError(
+export function expectError(
     /** The name of the test */
     name: string,
     /** The method to call */
@@ -74,7 +34,7 @@ function expectError(
     expectedValue: any
 ): Test {
     return {
-        name: `throw ${name}`,
+        name,
         test: async () => {
             return {
                 Ok: await testThrow(canisterMethod, expectedValue)

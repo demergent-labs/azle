@@ -30,6 +30,10 @@ export class StableBTreeMap<Key, Value> {
      * @returns `true` if the key exists in the map, `false` otherwise.
      */
     containsKey(key: Key): boolean {
+        if (arguments.length === 0) {
+            throw new Error("An argument for 'key' was not provided");
+        }
+
         // @ts-ignore
         return ic.stableBTreeMapContainsKey(this.memoryId, key);
     }
@@ -40,6 +44,10 @@ export class StableBTreeMap<Key, Value> {
      * @returns the value associated with the given key, if it exists.
      */
     get(key: Key): Opt<Value> {
+        if (arguments.length === 0) {
+            throw new Error("An argument for 'key' was not provided");
+        }
+
         // @ts-ignore
         return ic.stableBTreeMapGet<Key, Value>(this.memoryId, key);
     }
@@ -51,6 +59,14 @@ export class StableBTreeMap<Key, Value> {
      * @returns the previous value of the key, if present.
      */
     insert(key: Key, value: Value): Opt<Value> {
+        if (arguments.length === 0) {
+            throw new Error("An argument for 'key' was not provided");
+        }
+
+        if (arguments.length === 1) {
+            throw new Error("An argument for 'value' was not provided");
+        }
+
         // @ts-ignore
         return ic.stableBTreeMapInsert(this.memoryId, key, value);
     }
@@ -97,6 +113,10 @@ export class StableBTreeMap<Key, Value> {
      * @returns the previous value at the key if it exists, `null` otherwise.
      */
     remove(key: Key): Opt<Value> {
+        if (arguments.length === 0) {
+            throw new Error("An argument for 'key' was not provided");
+        }
+
         // @ts-ignore
         return ic.stableBTreeMapRemove(this.memoryId, key);
     }

@@ -29,7 +29,7 @@ pub fn derive_try_into_vm_value_struct(
         // TODO the body of this function is repeated in azle_into_js_value_trait.ts
         impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Vec<#struct_name #ty_generics> #where_clause {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                let js_values = self.into_iter().map(|item| item.try_into_vm_value(context).unwrap()).collect::<Vec<boa_engine::JsValue>>();
+                let js_values: Vec<_> = self.into_iter().map(|item| item.try_into_vm_value(context)).collect::<Result<_, _>>()?;
                 Ok(boa_engine::object::builtins::JsArray::from_iter(js_values, context).into())
             }
         }
@@ -48,7 +48,7 @@ fn derive_struct_fields_variable_definitions(
                 let variable_name = format_ident!("{}_js_value", field_name);
 
                 quote! {
-                    let #variable_name = self.#field_name.try_into_vm_value(context).unwrap();
+                    let #variable_name = self.#field_name.try_into_vm_value(context)?;
                 }
             })
             .collect(),
@@ -61,7 +61,7 @@ fn derive_struct_fields_variable_definitions(
                 let syn_index = Index::from(index);
 
                 quote! {
-                    let #variable_name = self.#syn_index.try_into_vm_value(context).unwrap();
+                    let #variable_name = self.#syn_index.try_into_vm_value(context)?;
                 }
             })
             .collect(),

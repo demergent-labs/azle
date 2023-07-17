@@ -143,14 +143,18 @@ fn derive_property_for_named_fields(
         }
     });
 
-    let named_field_js_value_result_variable_declarations = named_fields.iter().map(|named_field| {
-        let field_name = named_field.try_get_ident(enum_name, variant_name);
-        let variable_name = format_ident!("{}_js_value_result", field_name);
+    let named_field_js_value_result_variable_declarations =
+        named_fields.iter().map(|named_field| {
+            let field_name = named_field.try_get_ident(enum_name, variant_name);
+            let variable_name = format_ident!("{}_js_value_result", field_name);
 
-        quote! {
-            let #variable_name = #object_variant_js_value_var_name.as_object().unwrap().get(stringify!(#field_name), context);
-        }
-    });
+            quote! {
+                let #variable_name = #object_variant_js_value_var_name
+                    .as_object()
+                    .ok_or_else(|| "TypeError: Value is not an object")?
+                    .get(stringify!(#field_name), context);
+            }
+        });
 
     let named_field_js_value_oks = named_fields.iter().map(|named_field| {
         let field_name = named_field.try_get_ident(enum_name, variant_name);

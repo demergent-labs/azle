@@ -15,21 +15,31 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
             boa_return_value: &boa_engine::JsValue,
             uuid: &str,
             method_name: &str,
-            manual: bool
-        ) -> boa_engine::JsValue {
-            if
-                !boa_return_value.is_object() ||
-                !boa_return_value.as_object().unwrap().is_promise()
-            {
-                return boa_return_value.clone();
+            manual: bool,
+        ) -> Result<boa_engine::JsValue, String> {
+            let boa_return_value_object = match boa_return_value.as_object() {
+                Some(object) => object,
+                None => return Ok(boa_return_value.clone()),
+            };
+
+            if !boa_return_value_object.is_promise() {
+                return Ok(boa_return_value.clone());
             }
 
             boa_context.run_jobs();
 
-            let object = boa_return_value.as_object().unwrap();
-            let js_promise = boa_engine::object::builtins::JsPromise::from_object(object.clone()).unwrap();
+            let js_promise = boa_engine::object::builtins::JsPromise::from_object(
+                boa_return_value_object.clone(),
+            )
+            .map_err(|js_err| {
+                js_value_to_string(js_err.to_opaque(&mut *boa_context), &mut *boa_context)
+            })?;
 
-            return match &js_promise.state().unwrap() {
+            let state = js_promise.state().map_err(|js_err| {
+                js_value_to_string(js_err.to_opaque(&mut *boa_context), &mut *boa_context)
+            })?;
+
+            return match &state {
                 boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
                     PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();
@@ -38,17 +48,20 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                     });
 
                     if manual == true {
-                        return boa_return_value.clone();
+                        return Ok(boa_return_value.clone());
                     }
 
                     match method_name {
                         #(#match_arms)*
-                        "_AZLE_TIMER" => {},
-                        _ => panic!("method name was not found")
+                        "_AZLE_TIMER" => {}
+                        _ => return Err(format!(
+                            "Uncaught ReferenceError: {} is not defined",
+                            method_name
+                        )),
                     };
 
-                    return boa_return_value.clone();
-                },
+                    return Ok(boa_return_value.clone());
+                }
                 boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
                     PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();
@@ -56,10 +69,8 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                         promise_map.remove(uuid);
                     });
 
-                    let error_message = js_value_to_string(js_value.clone(), boa_context);
-
-                    ic_cdk::api::trap(&format!("Uncaught {}", error_message));
-                },
+                    return Err(js_value_to_string(js_value.clone(), &mut *boa_context));
+                }
                 boa_engine::builtins::promise::PromiseState::Pending => {
                     PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();
@@ -67,7 +78,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                         promise_map.insert(uuid.to_string(), boa_return_value.clone());
                     });
 
-                    return boa_return_value.clone();
+                    return Ok(boa_return_value.clone());
                 }
             };
         }
@@ -94,7 +105,11 @@ fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
 
     quote!(
         #name => {
-            let reply_value: (#return_type) = js_value.clone().try_from_vm_value(&mut *boa_context).unwrap();
+            let reply_value: (#return_type) = js_value
+                .clone()
+                .try_from_vm_value(&mut *boa_context)
+                .map_err(|vmc_err| vmc_err.0)?;
+
             ic_cdk::api::call::reply((reply_value,));
         }
     )

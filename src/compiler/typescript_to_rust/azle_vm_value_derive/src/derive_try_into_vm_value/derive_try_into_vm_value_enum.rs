@@ -23,7 +23,11 @@ pub fn derive_try_into_vm_value_enum(
 
         impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Vec<#enum_name #ty_generics> #where_clause {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                let js_values = self.into_iter().map(|item| item.try_into_vm_value(context).unwrap()).collect::<Vec<boa_engine::JsValue>>();
+                let js_values: Vec<_> = self
+                    .into_iter()
+                    .map(|item| item.try_into_vm_value(context))
+                    .collect::<Result<_, _>>()?;
+
                 Ok(boa_engine::object::builtins::JsArray::from_iter(js_values, context).into())
             }
         }
@@ -82,7 +86,7 @@ fn derive_variant_branches_named_fields(
         let variable_name = format_ident!("{}_js_value", field_name);
 
         quote! {
-            let #variable_name = #field_name.try_into_vm_value(context).unwrap();
+            let #variable_name = #field_name.try_into_vm_value(context)?;
         }
     });
 
@@ -144,7 +148,7 @@ fn derive_variant_branches_unnamed_fields(
     } else {
         quote! {
             #enum_name::#variant_name(value) => {
-                let js_value = value.try_into_vm_value(context).unwrap();
+                let js_value = value.try_into_vm_value(context)?;
 
                 let object = boa_engine::object::ObjectInitializer::new(context)
                     .property(

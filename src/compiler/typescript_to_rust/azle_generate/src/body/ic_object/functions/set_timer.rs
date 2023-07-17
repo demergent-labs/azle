@@ -3,14 +3,30 @@ pub fn generate() -> proc_macro2::TokenStream {
         fn set_timer(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
-            context: &mut boa_engine::Context
+            context: &mut boa_engine::Context,
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let delay_js_value = aargs.get(0).unwrap().clone();
-            let delay_as_u64: u64 = delay_js_value.try_from_vm_value(&mut *context).unwrap();
+            let delay_js_value = aargs
+                .get(0)
+                .ok_or_else(|| "An argument for 'delay' was not provided".to_js_error())?
+                .clone();
+            let func_js_value = aargs
+                .get(1)
+                .ok_or_else(|| "An argument for 'callback' was not provided".to_js_error())?;
+
+            let delay_as_u64: u64 = delay_js_value
+                .try_from_vm_value(&mut *context)
+                .map_err(|vmc_err| vmc_err.to_js_error())?;
             let delay = core::time::Duration::new(delay_as_u64, 0);
 
-            let func_js_value = aargs.get(1).unwrap();
-            let func_js_object = func_js_value.as_object().unwrap().clone();
+
+            if !func_js_value.is_callable() {
+                return Err("TypeError: 'callback' is not a function".to_js_error());
+            }
+
+            let func_js_object = func_js_value
+                .as_object()
+                .ok_or_else(|| "TypeError: 'callback' is not a function".to_js_error())?
+                .clone();
 
             let closure = move || {
                 BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
@@ -36,28 +52,26 @@ pub fn generate() -> proc_macro2::TokenStream {
                         *manual_mut = false;
                     });
 
-                    let boa_return_value = unwrap_boa_result(
-                        func_js_object.call(
-                            &boa_engine::JsValue::Null,
-                            &[],
-                            &mut *boa_context
-                        ),
-                        &mut *boa_context
-                    );
+                    let boa_return_value = func_js_object
+                        .call(&boa_engine::JsValue::Null, &[], &mut *boa_context)
+                        .unwrap_or_trap(&mut *boa_context);
 
                     async_await_result_handler(
                         &mut boa_context,
                         &boa_return_value,
                         &uuid,
                         "_AZLE_TIMER",
-                        false
-                    );
+                        false,
+                    )
+                    .unwrap_or_trap(&mut *boa_context);
                 });
             };
 
             let timer_id = ic_cdk_timers::set_timer(delay, closure);
 
-            Ok(timer_id.try_into_vm_value(context).unwrap())
+            timer_id
+                .try_into_vm_value(context)
+                .map_err(|vmc_err| vmc_err.to_js_error())
         }
     }
 }

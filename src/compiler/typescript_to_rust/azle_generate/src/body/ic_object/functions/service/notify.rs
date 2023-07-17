@@ -13,22 +13,36 @@ pub fn generate(service: &Service, method: &Method) -> TokenStream {
         fn #wrapper_fn_name(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
-            context: &mut boa_engine::Context
+            context: &mut boa_engine::Context,
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let canister_id_js_value = aargs.get(0).unwrap().clone();
-            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *context).unwrap();
+            let canister_id_js_value = aargs
+                .get(0)
+                .ok_or_else(|| "An argument for 'canisterId' was not provided".to_js_error())?
+                .clone();
 
-            let args_js_value = aargs.get(1).unwrap().clone();
-            let args_js_object = args_js_value.as_object().unwrap();
+            let args_js_value = aargs
+                .get(1)
+                .ok_or_else(|| "An argument for 'args' was not provided".to_js_error())?
+                .clone();
+
+            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value
+                .try_from_vm_value(&mut *context)
+                .map_err(|vmc_err| vmc_err.to_js_error())?;
+
+            let args_js_object = args_js_value
+                .as_object()
+                .ok_or_else(|| "'args' is not an object".to_js_error())?;
 
             #(#param_variables)*
 
             let notify_result = #real_function_name(
                 canister_id_principal,
-                #args
+                #args,
             );
 
-            Ok(notify_result.try_into_vm_value(context).unwrap())
+            notify_result
+                .try_into_vm_value(context)
+                .map_err(|vmc_err| vmc_err.to_js_error())
         }
     }
 }
