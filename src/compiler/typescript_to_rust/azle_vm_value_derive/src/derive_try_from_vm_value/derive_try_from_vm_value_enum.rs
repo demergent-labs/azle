@@ -167,6 +167,42 @@ fn derive_properties(enum_name: &Ident, data_enum: &DataEnum) -> Result<Vec<Toke
         .collect::<Result<_, _>>()
 }
 
+trait MapTo {
+    fn map_to<T>(
+        &self,
+        enum_name: &Ident,
+        variant_name: &Ident,
+        callback: T,
+    ) -> Result<Vec<TokenStream>, Error>
+    where
+        T: Fn(&Ident, Ident) -> TokenStream;
+}
+
+impl MapTo for Vec<&Field> {
+    fn map_to<T>(
+        &self,
+        enum_name: &Ident,
+        variant_name: &Ident,
+        callback: T,
+    ) -> Result<Vec<TokenStream>, Error>
+    where
+        T: Fn(&Ident, Ident) -> TokenStream,
+    {
+        let named_field_js_value_result_variable_names = self
+            .iter()
+            .enumerate()
+            .map(|(field_index, named_field)| -> Result<TokenStream, Error> {
+                let field_name = named_field.try_get_ident(enum_name, variant_name, field_index)?;
+                let variable_name = format_ident!("{}_js_value_result", field_name);
+
+                Ok(callback(&field_name, variable_name))
+            })
+            .collect::<Result<Vec<_>, _>>();
+
+        named_field_js_value_result_variable_names
+    }
+}
+
 fn derive_property_for_named_fields(
     named_fields: Vec<&Field>,
     enum_name: &Ident,
@@ -174,100 +210,50 @@ fn derive_property_for_named_fields(
     object_variant_js_value_result_var_name: &Ident,
     object_variant_js_value_var_name: &Ident,
 ) -> Result<TokenStream, Error> {
-    let named_field_js_value_result_variable_names = named_fields
-        .iter()
-        .enumerate()
-        .map(|(field_index, named_field)| -> Result<TokenStream, Error> {
-            let field_name = named_field.try_get_ident(enum_name, variant_name, field_index)?;
-            let variable_name = format_ident!("{}_js_value_result", field_name);
+    let named_field_js_value_result_variable_names =
+        named_fields.map_to(enum_name, variant_name, |_, variable_name| {
+            quote! { #variable_name }
+        })?;
 
-            Ok(quote! {
-                #variable_name
-            })
-        })
-        .collect::<Result<Vec<_>, _>>()?;
-
-    let named_field_js_value_result_variable_declarations = named_fields
-        .iter()
-        .enumerate()
-        .map(|(field_index, named_field)| -> Result<TokenStream, Error> {
-            let field_name = named_field.try_get_ident(enum_name, variant_name, field_index)?;
-            let variable_name = format_ident!("{}_js_value_result", field_name);
-
-            Ok(quote! {
+    let named_field_js_value_result_variable_declarations =
+        named_fields.map_to(enum_name, variant_name, |field_name, variable_name| {
+            quote! {
                 let #variable_name = #object_variant_js_value_var_name
                     .as_object()
                     .ok_or_else(|| "TypeError: Value is not an object")?
                     .get(stringify!(#field_name), context);
-            })
-        })
-        .collect::<Result<Vec<_>, _>>()?;
+            }
+        })?;
 
-    let named_field_js_value_oks = named_fields
-        .iter()
-        .enumerate()
-        .map(|(field_index, named_field)| -> Result<TokenStream, Error> {
-            let field_name = named_field.try_get_ident(enum_name, variant_name, field_index)?;
-            let variable_name = format_ident!("{}_js_value", field_name);
+    let named_field_js_value_oks =
+        named_fields.map_to(enum_name, variant_name, |_, variable_name| {
+            quote! { Ok(#variable_name) }
+        })?;
 
-            Ok(quote! {
-                Ok(#variable_name)
-            })
-        })
-        .collect::<Result<Vec<_>, _>>()?;
-
-    let named_field_variable_declarations = named_fields
-        .iter()
-        .enumerate()
-        .map(|(field_index, named_field)| -> Result<TokenStream, Error> {
-            let field_name = named_field.try_get_ident(enum_name, variant_name, field_index)?;
-            let variable_name = format_ident!("{}_result", field_name);
-
+    let named_field_variable_declarations =
+        named_fields.map_to(enum_name, variant_name, |field_name, variable_name| {
             let named_field_js_value_variable_name = format_ident!("{}_js_value", field_name);
 
-            Ok(quote! {
+            quote! {
                 let #variable_name = #named_field_js_value_variable_name
                     .try_from_vm_value(&mut *context);
-            })
-        })
-        .collect::<Result<Vec<_>, _>>()?;
+            }
+        })?;
 
-    let named_field_variable_oks = named_fields
-        .iter()
-        .enumerate()
-        .map(|(field_index, named_field)| -> Result<TokenStream, Error> {
-            let field_name = named_field.try_get_ident(enum_name, variant_name, field_index)?;
-            let variable_name = format_ident!("{}_result", field_name);
+    let named_field_variable_oks =
+        named_fields.map_to(enum_name, variant_name, |_, variable_name| {
+            quote! { #variable_name }
+        })?;
 
-            Ok(quote! {
-                #variable_name
-            })
-        })
-        .collect::<Result<Vec<_>, _>>()?;
+    let named_field_variable_names =
+        named_fields.map_to(enum_name, variant_name, |field_name, _| {
+            quote! { Ok(#field_name) }
+        })?;
 
-    let named_field_variable_names = named_fields
-        .iter()
-        .enumerate()
-        .map(|(field_index, named_field)| -> Result<TokenStream, Error> {
-            let field_name = named_field.try_get_ident(enum_name, variant_name, field_index)?;
-
-            Ok(quote! {
-                Ok(#field_name)
-            })
-        })
-        .collect::<Result<Vec<_>, _>>()?;
-
-    let tuple_struct_field_definition = named_fields
-        .iter()
-        .enumerate()
-        .map(|(field_index, named_field)| -> Result<TokenStream, Error> {
-            let field_name = named_field.try_get_ident(enum_name, variant_name, field_index)?;
-
-            Ok(quote! {
-                #field_name: #field_name
-            })
-        })
-        .collect::<Result<Vec<_>, _>>()?;
+    let tuple_struct_field_definition =
+        named_fields.map_to(enum_name, variant_name, |field_name, _| {
+            quote! { #field_name: #field_name }
+        })?;
 
     Ok(quote! {
         let #object_variant_js_value_result_var_name =
