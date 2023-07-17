@@ -15,9 +15,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                                     &[vmc_err.to_js_error().to_opaque(&mut *boa_context)],
                                     &mut *boa_context,
                                 )
-                                .unwrap_or_trap(&mut *boa_context);
-
-                            return;
+                                .unwrap_or_trap(&mut *boa_context)
                         }
                     };
 
@@ -47,9 +45,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                                     &[vmc_err.to_js_error().to_opaque(&mut *boa_context)],
                                     &mut *boa_context,
                                 )
-                                .unwrap_or_trap(&mut *boa_context);
-
-                            return;
+                                .unwrap_or_trap(&mut *boa_context)
                         }
                     };
 
@@ -76,9 +72,9 @@ pub fn generate() -> proc_macro2::TokenStream {
             let main_promise = PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                 let promise_map = promise_map_ref_cell.borrow().clone();
 
-                let main_promise = promise_map.get(&uuid).unwrap_or_else(|| {
-                    ic_cdk::api::trap("ReferenceError: top-level promise is not defined")
-                });
+                let main_promise = promise_map
+                    .get(&uuid)
+                    .unwrap_or_trap("ReferenceError: top-level promise is not defined");
 
                 main_promise.clone()
             });

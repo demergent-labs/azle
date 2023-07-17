@@ -40,6 +40,21 @@ pub fn generate() -> TokenStream {
             }
         }
 
+        pub trait UnwrapOrTrapWithMessage<T> {
+            fn unwrap_or_trap(self, err_message: &str) -> T;
+        }
+
+        impl<T> UnwrapOrTrapWithMessage<T> for Option<T> {
+            fn unwrap_or_trap(self, err_message: &str) -> T {
+                match self {
+                    Some(some) => some,
+                    None => {
+                        ic_cdk::trap(&format!("Uncaught {}", err_message))
+                    }
+                }
+            }
+        }
+
         fn js_value_to_string(
             error_value: boa_engine::JsValue,
             context: &mut boa_engine::Context,
