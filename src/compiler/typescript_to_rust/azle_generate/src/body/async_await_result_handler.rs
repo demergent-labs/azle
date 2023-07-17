@@ -30,17 +30,14 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
 
             let js_promise = boa_engine::object::builtins::JsPromise::from_object(
                 boa_return_value_object.clone(),
-            ).map_err(|js_err| js_value_to_string(
-                js_err.to_opaque(&mut *boa_context),
-                &mut *boa_context
-            ))?;
+            )
+            .map_err(|js_err| {
+                js_value_to_string(js_err.to_opaque(&mut *boa_context), &mut *boa_context)
+            })?;
 
-            let state = js_promise
-                .state()
-                .map_err(|js_err| js_value_to_string(
-                    js_err.to_opaque(&mut *boa_context),
-                    &mut *boa_context
-                ))?;
+            let state = js_promise.state().map_err(|js_err| {
+                js_value_to_string(js_err.to_opaque(&mut *boa_context), &mut *boa_context)
+            })?;
 
             return match &state {
                 boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
@@ -57,7 +54,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                     match method_name {
                         #(#match_arms)*
                         "_AZLE_TIMER" => {}
-                        _ => ic_cdk::api::trap(&format!(
+                        _ => return Err(format!(
                             "Uncaught ReferenceError: {} is not defined",
                             method_name
                         )),
