@@ -16,7 +16,6 @@ mod ic_object;
 mod to_js_error;
 
 pub mod async_await_result_handler;
-pub mod boa_error_handlers;
 pub mod runtime_error;
 pub mod stable_b_tree_map;
 pub mod unwrap_or_trap;
@@ -45,7 +44,6 @@ pub fn generate(
 
     let async_await_result_handler =
         async_await_result_handler::generate(&query_and_update_methods);
-    let boa_error_handlers = boa_error_handlers::generate();
     let ic_object_functions = ic_object::functions::generate(
         &query_and_update_methods,
         services,
@@ -66,7 +64,6 @@ pub fn generate(
         #runtime_error
         #to_js_errors
         #async_await_result_handler
-        #boa_error_handlers
         #ic_object_functions
         #register_ic_object_function
         #stable_b_tree_maps
