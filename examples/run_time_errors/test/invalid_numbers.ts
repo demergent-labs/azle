@@ -11,6 +11,7 @@ export function getInvalidNumberTests(
             'return invalid number',
             errorCanister.returnInvalidNumber,
             // TODO: change this to "TypeError: Value is not of type 'number'"
+            // See https://github.com/demergent-labs/azle/issues/1108
             "TypeError: Value is not of type 'float64'"
         ),
         expectError(

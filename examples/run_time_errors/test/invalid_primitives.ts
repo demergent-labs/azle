@@ -31,6 +31,7 @@ export function getInvalidPrimitiveTests(
             'return invalid text value',
             errorCanister.returnInvalidTextValue,
             // TODO: Consider saying "Value is not of type 'text'"
+            // See https://github.com/demergent-labs/azle/issues/1108
             "TypeError: Value is not of type 'string'"
         ),
         expectError(
