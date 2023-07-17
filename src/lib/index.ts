@@ -8,7 +8,16 @@ export {
     $update,
     CanisterMethodOptions
 } from './annotations';
-export { Duration, ic, RejectionCode, StableMemoryError, TimerId } from './ic';
+export {
+    Duration,
+    ic,
+    NotifyResult,
+    RejectionCode,
+    Stable64GrowResult,
+    StableGrowResult,
+    StableMemoryError,
+    TimerId
+} from './ic';
 export {
     Alias,
     blob,

@@ -1,9 +1,9 @@
 import {
     ic,
     nat64,
+    NotifyResult,
     Opt,
     Principal,
-    RejectionCode,
     Result,
     $update,
     Vec
@@ -49,6 +49,6 @@ export async function trap(): Promise<Result<string, string>> {
 }
 
 $update;
-export function sendNotification(): Result<null, RejectionCode> {
+export function sendNotification(): NotifyResult {
     return canister2.receiveNotification('This is the notification').notify();
 }
