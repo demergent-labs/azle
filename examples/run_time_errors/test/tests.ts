@@ -10,6 +10,8 @@ import { getInvalidFuncTests } from './invalid_funcs';
 import { getInvalidPrincipalTests } from './invalid_principals';
 import { getInvalidBlobTests } from './invalid_blobs';
 import { getInvalidVecTests } from './invalid_vecs';
+import { getInvalidRecordTests } from './invalid_records';
+import { getInvalidVariantTests } from './invalid_variants';
 
 export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
@@ -20,7 +22,9 @@ export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
         ...getInvalidFuncTests(errorCanister),
         ...getInvalidPrincipalTests(errorCanister),
         ...getInvalidBlobTests(errorCanister),
-        ...getInvalidVecTests(errorCanister)
+        ...getInvalidVecTests(errorCanister),
+        ...getInvalidRecordTests(errorCanister),
+        ...getInvalidVariantTests(errorCanister)
     ];
 }
 

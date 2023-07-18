@@ -1,14 +1,35 @@
+type OtherUserDefinedRecord = record { id : text };
+type UserDefinedRecord = record {
+  "int" : int;
+  string : text;
+  boolean : bool;
+  otherUserDefinedRecord : OtherUserDefinedRecord;
+};
+type UserDefinedVariant = variant {
+  Gamma : int;
+  Beta : bool;
+  Delta : text;
+  Epsilon : UserDefinedRecord;
+  Alpha;
+};
 service : () -> {
   accessible : () -> (bool);
   alsoInaccessible : () -> (bool);
   getInitialized : () -> (bool) query;
   inaccessible : () -> (bool);
+  returnArrayWithInvalidUserDefinedVariant : () -> (
+      vec UserDefinedVariant,
+    ) query;
   returnArrayWithOnlyPrincipalAsInvalidFunc : () -> (func () -> () query) query;
   returnBothSomeAndNone : () -> (opt text) query;
   returnEmptyArrayAsInvalidFunc : () -> (func () -> () query) query;
   returnEmptyObjectAsInvalidBlob : () -> (vec nat8) query;
   returnEmptyObjectAsInvalidFunc : () -> (func () -> () query) query;
   returnEmptyObjectAsInvalidPrincipal : () -> (principal) query;
+  returnEmptyObjectAsInvalidUserDefinedRecord : () -> (UserDefinedRecord) query;
+  returnEmptyObjectAsInvalidUserDefinedVariant : () -> (
+      UserDefinedVariant,
+    ) query;
   returnEmptyObjectPrincipalAsInvalidFunc : () -> (func () -> () query) query;
   returnInvalidBooleanValue : () -> (bool) query;
   returnInvalidEmptyValue : () -> (empty) query;
@@ -43,8 +64,28 @@ service : () -> {
   returnNonStringCanisterMethodNameAsInvalidFunc : () -> (
       func () -> () query,
     ) query;
+  returnObjectAsInvalidVecUserDefinedRecord : () -> (
+      vec UserDefinedRecord,
+    ) query;
+  returnObjectAsInvalidVecUserDefinedVariant : () -> (
+      vec UserDefinedVariant,
+    ) query;
+  returnObjectWithInvalidTagAsInvalidUserDefinedVariant : () -> (
+      UserDefinedVariant,
+    ) query;
+  returnObjectWithMultipleTagsAsInvalidUserDefinedVariant : () -> (
+      UserDefinedVariant,
+    ) query;
   returnObjectWithNeitherSomeNorNone : () -> (opt text) query;
   returnStringAsInvalidPrincipal : () -> (principal) query;
+  returnStringAsInvalidUserDefinedRecord : () -> (UserDefinedRecord) query;
+  returnStringAsInvalidUserDefinedVariant : () -> (UserDefinedVariant) query;
+  returnStringAsInvalidVecUserDefinedRecord : () -> (
+      vec UserDefinedRecord,
+    ) query;
+  returnStringAsInvalidVecUserDefinedVariant : () -> (
+      vec UserDefinedVariant,
+    ) query;
   throwBigint : () -> () query;
   throwBoolean : () -> () query;
   throwClass : () -> () query;

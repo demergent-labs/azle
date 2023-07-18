@@ -35,6 +35,30 @@ pub fn derive_try_from_vm_value_enum(
     data_enum: &DataEnum,
     generics: &Generics,
 ) -> Result<TokenStream, Error> {
+    let enum_name_string = enum_name.to_string();
+
+    let value_is_not_an_object_error_message = format!(
+        "[TypeError: Value is not of type '{}'] {{\n  \
+            [cause]: TypeError: Value is not an object\n}}",
+        &enum_name_string
+    );
+
+    let variant_names = data_enum
+        .variants
+        .iter()
+        .map(|variant| format!("'{}'", variant.ident))
+        .collect::<Vec<_>>();
+
+    let variant_names_vec_string = format!("[{}]", variant_names.join(", "));
+
+    let missing_valid_variant_error_message =
+        format!(
+            "[TypeError: Value is not of type '{}'] {{\n  \
+                [cause]: TypeError: Value must contain exactly one of the following properties: {}\n}}",
+            &enum_name_string,
+            variant_names_vec_string,
+        );
+
     let properties = derive_properties(enum_name, data_enum)?;
 
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
@@ -51,23 +75,21 @@ pub fn derive_try_from_vm_value_enum(
                 self,
                 context: &mut boa_engine::Context
             ) -> Result<#enum_name #ty_generics, CdkActTryFromVmValueError> {
-                let object_option = self.as_object();
+                let object = self
+                    .as_object()
+                    .ok_or_else(|| #value_is_not_an_object_error_message.to_string())?;
 
-                if let Some(object) = object_option {
-                    #(#properties)*
+                #(#properties)*
 
-                    return Err(CdkActTryFromVmValueError(
-                        "Enum variant does not exist".to_string()
-                    ));
-                }
-                else {
-                    return Err(CdkActTryFromVmValueError(
-                        "JsValue is not an object".to_string()
-                    ));
-                }
+                return Err(CdkActTryFromVmValueError(
+                    #missing_valid_variant_error_message.to_string()
+                ));
             }
         }
 
+        // TODO: The implementation for this is the same as for Records and
+        // any other vec as seen in vm_value_conversion/try_from.../vec.rs
+        // We should pull all this code together
         impl #impl_generics CdkActTryFromVmValue<
             Vec<#enum_name #ty_generics>,
             &mut boa_engine::Context<'_>
@@ -79,50 +101,41 @@ pub fn derive_try_from_vm_value_enum(
                 self,
                 context: &mut boa_engine::Context
             ) -> Result<Vec<#enum_name #ty_generics>, CdkActTryFromVmValueError> {
-                match self.as_object() {
-                    Some(js_object) => {
-                        if js_object.is_array() {
-                            let mut processing: bool = true;
-                            let mut index: usize = 0;
+                let js_object = self
+                    .as_object()
+                    .ok_or_else(|| "TypeError: Value is not of type 'Vec'")?;
 
-                            let mut result = vec![];
-
-                            while processing == true {
-                                match js_object.get(index, context) {
-                                    Ok(js_value) => {
-                                        if js_value.is_undefined() {
-                                            processing = false;
-                                        } else {
-                                            match js_value.try_from_vm_value(&mut *context) {
-                                                Ok(value) => {
-                                                    result.push(value);
-                                                    index += 1;
-                                                }
-                                                Err(err) => {
-                                                    return Err(err);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    Err(_) => {
-                                        return Err(CdkActTryFromVmValueError(
-                                            "Item at array index does not exist".to_string(),
-                                        ))
-                                    }
-                                }
-                            }
-
-                            Ok(result)
-                        } else {
-                            Err(CdkActTryFromVmValueError(
-                                "JsObject is not an array".to_string(),
-                            ))
-                        }
-                    }
-                    None => Err(CdkActTryFromVmValueError(
-                        "JsValue is not an object".to_string(),
-                    )),
+                if !js_object.is_array() {
+                    return Err(CdkActTryFromVmValueError(
+                        "TypeError: Value is not of type 'Vec'".to_string(),
+                    ));
                 }
+
+
+                let mut index: usize = 0;
+                let mut result = vec![];
+
+                loop {
+                    let js_value = js_object
+                        .get(index, context)
+                        .map_err(|err| err.to_string())?;
+
+                    if js_value.is_undefined() {
+                        break;
+                    }
+
+                    result.push(js_value
+                        .try_from_vm_value(&mut *context)
+                        .map_err(|variant_err| {
+                            format!(
+                                "[TypeError: Value is not of type 'Vec'] {{\n  [cause]: {}\n}}",
+                                variant_err.0
+                            )
+                        })?);
+                    index += 1;
+                }
+
+                Ok(result)
             }
         }
     })
@@ -274,6 +287,7 @@ fn derive_property_for_named_fields(
                                 });
                             },
                             _ => {
+                                // TODO: Update this error message
                                 return Err(CdkActTryFromVmValueError(
                                     "Could not convert JsValue to Rust type".to_string()
                                 ));
@@ -281,6 +295,7 @@ fn derive_property_for_named_fields(
                         };
                     },
                     _ => {
+                        // TODO: Update this error message
                         return Err(CdkActTryFromVmValueError(
                             "Could not convert JsValue to Rust type".to_string()
                         ));
