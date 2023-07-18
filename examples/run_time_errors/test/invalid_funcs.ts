@@ -19,9 +19,7 @@ const valueIsNotOfTypePrincipalErrorMessage = `[TypeError: Value is not of type 
   }
 }`;
 
-// TODO: We need a more robust error nesting. Notice how "[TypeError: value is
-// not of type 'Principal']" has square brackets and its inner error's
-// indentation is not correct.
+// TODO: Fix the formatting. See https://github.com/demergent-labs/azle/issues/1111
 const propertyToTextIsNotAFunctionErrorMessage = `[TypeError: Value is not of type 'Func'] {
   [cause]: TypeError: Index '0' is not of type 'Principal' {
     [cause]: [TypeError: Value is not of type 'Principal'] {

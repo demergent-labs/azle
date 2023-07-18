@@ -1,4 +1,4 @@
-import { $query, Variant, Vec, int } from 'azle';
+import { $query, Tuple, Variant, Vec, int } from 'azle';
 import { UserDefinedRecord } from './records';
 
 export type UserDefinedVariant = Variant<{
@@ -7,6 +7,7 @@ export type UserDefinedVariant = Variant<{
     Gamma: int;
     Delta: string;
     Epsilon: UserDefinedRecord;
+    Zeta: Tuple<[int, string]>;
 }>;
 
 // #region UserDefinedVariant
@@ -36,6 +37,14 @@ export function returnObjectWithMultipleTagsAsInvalidUserDefinedVariant(): UserD
     return {
         Alpha: null,
         Beta: true
+    };
+}
+
+$query;
+export function returnObjectWithInvalidFieldsAsInvalidUserDefinedVariant(): UserDefinedVariant {
+    return {
+        // @ts-ignore
+        Zeta: [true, true]
     };
 }
 // #endregion UserDefinedVariant

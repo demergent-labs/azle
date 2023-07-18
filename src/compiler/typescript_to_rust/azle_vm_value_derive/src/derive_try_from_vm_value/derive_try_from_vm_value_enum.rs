@@ -223,6 +223,11 @@ fn derive_property_for_named_fields(
     object_variant_js_value_result_var_name: &Ident,
     object_variant_js_value_var_name: &Ident,
 ) -> Result<TokenStream, Error> {
+    let enum_name_string = enum_name.to_string();
+
+    let value_is_not_of_variant_type_error_message =
+        format!("TypeError: Value is not of type '{}'", &enum_name_string);
+
     let named_field_js_value_result_variable_names =
         named_fields.map_to(enum_name, variant_name, |_, variable_name| {
             quote! { #variable_name }
@@ -289,7 +294,7 @@ fn derive_property_for_named_fields(
                             _ => {
                                 // TODO: Update this error message
                                 return Err(CdkActTryFromVmValueError(
-                                    "Could not convert JsValue to Rust type".to_string()
+                                    #value_is_not_of_variant_type_error_message.to_string()
                                 ));
                             }
                         };
@@ -297,13 +302,12 @@ fn derive_property_for_named_fields(
                     _ => {
                         // TODO: Update this error message
                         return Err(CdkActTryFromVmValueError(
-                            "Could not convert JsValue to Rust type".to_string()
+                            value_is_not_of_variant_type_error_message.to_string()
                         ));
                     }
                 };
             }
         }
-
     })
 }
 
@@ -314,6 +318,14 @@ fn derive_property_for_unnamed_fields(
     object_variant_js_value_result_var_name: &Ident,
     object_variant_js_value_var_name: &Ident,
 ) -> TokenStream {
+    let enum_name_string = enum_name.to_string();
+    let variant_name_string = variant_name.to_string();
+
+    let todo_rename_this_error_message = format!(
+        "[TypeError: Value is not of type '{}'] {{{{\n  [cause]: TypeError: Property '{{}}' is not of the correct type {{{{\n    [cause]: {{}}\n  }}}}\n}}}}",
+        &enum_name_string
+    );
+
     if unnamed_fields.len() == 0 {
         quote! {
             let #object_variant_js_value_result_var_name =
@@ -328,9 +340,6 @@ fn derive_property_for_unnamed_fields(
             }
         }
     } else {
-        let object_variant_result_var_name = format_ident!("object_{}_result", variant_name);
-        let object_variant_var_name = format_ident!("object_{}", variant_name);
-
         quote! {
             let #object_variant_js_value_result_var_name =
                 object.get(stringify!(#variant_name), context);
@@ -339,17 +348,15 @@ fn derive_property_for_unnamed_fields(
                 #object_variant_js_value_result_var_name
             {
                 if #object_variant_js_value_var_name.is_undefined() == false {
-                    let #object_variant_result_var_name =
-                        #object_variant_js_value_var_name.try_from_vm_value(&mut *context);
-
-                    match #object_variant_result_var_name {
-                        Ok(#object_variant_var_name) => {
-                            return Ok(#enum_name::#variant_name(#object_variant_var_name));
-                        },
-                        Err(err) => {
-                            return Err(err);
-                        }
-                    };
+                    return Ok(#enum_name::#variant_name(
+                        #object_variant_js_value_var_name
+                            .try_from_vm_value(&mut *context)
+                            .map_err(|err| format!(
+                                #todo_rename_this_error_message,
+                                #variant_name_string,
+                                err.0
+                            ))?
+                    ));
                 }
             }
         }

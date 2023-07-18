@@ -17,5 +17,8 @@ export function getInvalidVecTests(
             errorCanister.returnNonArrayAsInvalidVec,
             "TypeError: Value is not of type 'Vec'"
         )
+        // TODO: Add test here for returning a vec with an invalid item
+        // I believe it only says the error of the inner item, not that
+        // it's not of type 'Vec'
     ];
 }

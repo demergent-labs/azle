@@ -8,15 +8,19 @@ const valueIsNotAnObjectErrorMessage = `[TypeError: Value is not of type 'UserDe
 }`;
 
 const variantMustContainExactlyOnePropertyErrorMessage = `[TypeError: Value is not of type 'UserDefinedVariant'] {
-  [cause]: TypeError: Value must contain exactly one of the following properties: ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon']
+  [cause]: TypeError: Value must contain exactly one of the following properties: ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta']
 }`;
 
-// TODO: The formatting on this should be better like the following comment.
-// const vecInnerValueIsNotAUserDefinedTypeErrorMessage = `[TypeError: Value is not of type 'Vec'] {
-//   [cause]: TypeError: Value is not of type 'UserDefinedVariant' {
-//     [cause]: TypeError: Value is not an object
-//   }
-// }`;
+// TODO: Fix the formatting. See https://github.com/demergent-labs/azle/issues/1111
+const fieldIsNotOfCorrectTypeErrorMessage = `[TypeError: Value is not of type 'UserDefinedVariant'] {
+  [cause]: TypeError: Property 'Zeta' is not of the correct type {
+    [cause]: [TypeError: Value is not of type '_InlineUserDefinedVariantZeta'] {
+  [cause]: TypeError: One or more properties are of an incorrect type
+}
+  }
+}`;
+
+// TODO: Fix the formatting. See https://github.com/demergent-labs/azle/issues/1111
 const vecInnerValueIsNotAUserDefinedTypeErrorMessage = `[TypeError: Value is not of type 'Vec'] {
   [cause]: [TypeError: Value is not of type 'UserDefinedVariant'] {
   [cause]: TypeError: Value is not an object
@@ -49,17 +53,22 @@ export function getInvalidVariantTests(
         //     variantMustContainExactlyOnePropertyErrorMessage
         // ),
         expectError(
-            'returnStringAsInvalidVecUserDefinedVariant',
+            'return a field with invalid types',
+            errorCanister.returnObjectWithInvalidFieldsAsInvalidUserDefinedVariant,
+            fieldIsNotOfCorrectTypeErrorMessage
+        ),
+        expectError(
+            'return a string as an invalid vec of user-defined variant',
             errorCanister.returnStringAsInvalidVecUserDefinedVariant,
             "TypeError: Value is not of type 'Vec'"
         ),
         expectError(
-            'returnObjectAsInvalidVecUserDefinedVariant',
+            'return an object as an invalid vec of user-defined variant',
             errorCanister.returnObjectAsInvalidVecUserDefinedVariant,
             "TypeError: Value is not of type 'Vec'"
         ),
         expectError(
-            'returnArrayWithInvalidUserDefinedVariant',
+            'return an array with an invalid user-defined variant',
             errorCanister.returnArrayWithInvalidUserDefinedVariant,
             vecInnerValueIsNotAUserDefinedTypeErrorMessage
         )

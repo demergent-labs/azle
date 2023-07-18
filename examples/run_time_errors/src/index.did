@@ -8,6 +8,7 @@ type UserDefinedRecord = record {
 type UserDefinedVariant = variant {
   Gamma : int;
   Beta : bool;
+  Zeta : record { int; text };
   Delta : text;
   Epsilon : UserDefinedRecord;
   Alpha;
@@ -69,6 +70,9 @@ service : () -> {
     ) query;
   returnObjectAsInvalidVecUserDefinedVariant : () -> (
       vec UserDefinedVariant,
+    ) query;
+  returnObjectWithInvalidFieldsAsInvalidUserDefinedVariant : () -> (
+      UserDefinedVariant,
     ) query;
   returnObjectWithInvalidTagAsInvalidUserDefinedVariant : () -> (
       UserDefinedVariant,
