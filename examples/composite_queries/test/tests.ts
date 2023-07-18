@@ -74,17 +74,9 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'inc_canister1 test',
             test: async () => {
-                try {
-                    const result = await canister1.incCanister1();
-                } catch (err: any) {
-                    return {
-                        Ok:
-                            err?.result?.reject_message ===
-                            'IC0517: Query calls re-entering the same canister are not allowed yet.'
-                    };
-                }
+                const result = await canister1.incCanister1();
                 return {
-                    Ok: false
+                    Ok: 'Ok' in result && result.Ok === 3n
                 };
             }
         },
