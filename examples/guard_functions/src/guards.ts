@@ -23,7 +23,7 @@ export function allowAll(): GuardResult {
 
 export function acceptAllThenRejectAll(): GuardResult {
     console.log('acceptAllThenRejectAll called');
-    if (++state.heartbeatTick > 20) {
+    if (++state.heartbeatTick > 30) {
         console.log(`Heartbeat suppressed`);
         return { Err: 'This error message will never be seen' };
     }

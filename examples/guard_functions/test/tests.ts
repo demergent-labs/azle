@@ -23,8 +23,8 @@ export function getTests(
 
                 return {
                     Ok:
-                        initialState.heartbeatTick < 20 &&
-                        stateAfterRest.heartbeatTick === 20
+                        initialState.heartbeatTick < 30 &&
+                        stateAfterRest.heartbeatTick === 30
                 };
             }
         },
