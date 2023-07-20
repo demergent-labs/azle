@@ -37,30 +37,8 @@ pub fn derive_try_from_vm_value_enum(
     data_enum: &DataEnum,
     generics: &Generics,
 ) -> Result<TokenStream, Error> {
-    let enum_name_string = enum_name.to_string();
-
-    let value_is_not_an_object_error_message = format!(
-        "[TypeError: Value is not of type '{}'] {{\n  \
-            [cause]: TypeError: Value is not an object\n\
-        }}",
-        &enum_name_string
-    );
-
-    let variant_names = data_enum
-        .variants
-        .iter()
-        .map(|variant| format!("'{}'", variant.ident))
-        .collect::<Vec<_>>();
-
-    let variant_names_vec_string = format!("[{}]", variant_names.join(", "));
-
-    let missing_valid_variant_error_message = format!(
-        "[TypeError: Value is not of type '{}'] {{\n  \
-            [cause]: TypeError: Value must contain exactly one of the following properties: \
-                {}\n\
-        }}",
-        &enum_name_string, variant_names_vec_string,
-    );
+    let (value_is_not_an_object_error_message, missing_valid_variant_error_message) =
+        derive_error_messages(enum_name, data_enum);
 
     let properties = derive_properties(enum_name, data_enum)?;
 
@@ -94,6 +72,38 @@ pub fn derive_try_from_vm_value_enum(
 
         #try_from_vm_value_vec_impl
     })
+}
+
+fn derive_error_messages(enum_name: &Ident, data_enum: &DataEnum) -> (String, String) {
+    let enum_name_string = enum_name.to_string();
+
+    let value_is_not_an_object_error_message = format!(
+        "[TypeError: Value is not of type '{}'] {{\n  \
+            [cause]: TypeError: Value is not an object\n\
+        }}",
+        &enum_name_string
+    );
+
+    let variant_names = data_enum
+        .variants
+        .iter()
+        .map(|variant| format!("'{}'", variant.ident))
+        .collect::<Vec<_>>();
+
+    let variant_names_vec_string = format!("[{}]", variant_names.join(", "));
+
+    let missing_valid_variant_error_message = format!(
+        "[TypeError: Value is not of type '{}'] {{\n  \
+            [cause]: TypeError: Value must contain exactly one of the following properties: \
+                {}\n\
+        }}",
+        &enum_name_string, variant_names_vec_string,
+    );
+
+    (
+        value_is_not_an_object_error_message,
+        missing_valid_variant_error_message,
+    )
 }
 
 fn derive_properties(enum_name: &Ident, data_enum: &DataEnum) -> Result<Vec<TokenStream>, Error> {
