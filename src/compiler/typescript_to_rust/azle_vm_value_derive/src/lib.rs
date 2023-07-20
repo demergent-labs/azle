@@ -17,9 +17,9 @@ pub fn derive_azle_try_into_vm_value(tokens: TokenStream) -> TokenStream {
     let generics = input.generics;
 
     let generated_code = match input.data {
-        Data::Enum(data_enum) => Ok(derive_try_into_vm_value_enum::generate(
-            &name, &data_enum, &generics,
-        )),
+        Data::Enum(data_enum) => {
+            derive_try_into_vm_value_enum::generate(&name, &data_enum, &generics)
+        }
         Data::Struct(data_struct) => Ok(derive_try_into_vm_value_struct::generate(
             &name,
             &data_struct,
