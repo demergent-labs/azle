@@ -10,6 +10,7 @@ import {
 import { writeCodeToFileSystem } from './write_code_to_file_system';
 import { generateRustCanister } from './generate_rust_canister';
 import { generateAliasLists } from './generate_alias_table/generate_alias_list';
+import { generateAliasLists as cool } from './generate_alias_list_test';
 import { generateAliasTables } from './generate_alias_table';
 import { Err, ok, unwrap } from '../utils/result';
 import {
@@ -56,10 +57,19 @@ export function compileTypeScriptToRust(
         const program = ts.createProgram([canisterConfig.ts], {});
         const importSymbolTables = generateAliasTables(fileNames, program);
         const aliasList = generateAliasLists(fileNames, program);
+        const coolListBro = cool(fileNames, program);
         // console.log(aliasList);
         console.log(
+            'Alias List for /azle/examples/rust_type_conversions/src/index.ts:'
+        );
+        console.log(
             aliasList[
-                '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/type_alias_decls/index.ts'
+                '/home/bdemann/code/demergent_labs/azle/examples/rust_type_conversions/src/index.ts'
+            ]
+        );
+        console.log(
+            coolListBro[
+                '/home/bdemann/code/demergent_labs/azle/examples/rust_type_conversions/src/index.ts'
             ]
         );
 
@@ -94,7 +104,7 @@ export function compileTypeScriptToRust(
             fileNames,
             plugins,
             importSymbolTables,
-            aliasList,
+            coolListBro,
             canisterPath,
             canisterConfig
         );

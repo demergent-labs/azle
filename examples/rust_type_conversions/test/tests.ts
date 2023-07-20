@@ -292,10 +292,9 @@ export function getTests(
                 const result =
                     await rustTypeConversionsCanister.voidAliasTest();
 
+                console.log(result);
                 return {
-                    // TODO: This is a bug! Void aliases become null, not void
-                    // Ok: result === undefined
-                    Ok: result === null
+                    Ok: result === undefined
                 };
             }
         },
