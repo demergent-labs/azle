@@ -2,6 +2,8 @@ use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::{DataStruct, Fields, Generics, Index};
 
+use crate::derive_try_into_vm_value::derive_try_into_vm_value_vec;
+
 pub fn generate(
     struct_name: &Ident,
     data_struct: &DataStruct,
@@ -12,6 +14,8 @@ pub fn generate(
 
     // Capture generic parameters and their bounds
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+
+    let try_into_vm_value_vec_impl = derive_try_into_vm_value_vec::generate(struct_name, generics);
 
     quote! {
         impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for #struct_name #ty_generics #where_clause {
@@ -26,13 +30,7 @@ pub fn generate(
             }
         }
 
-        // TODO the body of this function is repeated in azle_into_js_value_trait.ts
-        impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Vec<#struct_name #ty_generics> #where_clause {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                let js_values: Vec<_> = self.into_iter().map(|item| item.try_into_vm_value(context)).collect::<Result<_, _>>()?;
-                Ok(boa_engine::object::builtins::JsArray::from_iter(js_values, context).into())
-            }
-        }
+        #try_into_vm_value_vec_impl
     }
 }
 
