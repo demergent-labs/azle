@@ -2,7 +2,7 @@ use proc_macro2::{Ident, TokenStream};
 use quote::quote;
 use syn::Generics;
 
-pub fn derive_try_from_vm_value_vec(name: &Ident, generics: &Generics) -> TokenStream {
+pub fn generate(name: &Ident, generics: &Generics) -> TokenStream {
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
     quote! {

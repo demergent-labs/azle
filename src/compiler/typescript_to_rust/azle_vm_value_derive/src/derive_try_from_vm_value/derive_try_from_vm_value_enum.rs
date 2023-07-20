@@ -1,38 +1,10 @@
-use proc_macro2::{Ident, Span, TokenStream};
+use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use syn::{DataEnum, Error, Field, Fields, Generics};
 
-use crate::derive_try_from_vm_value::derive_try_from_vm_value_vec::derive_try_from_vm_value_vec;
+use crate::{derive_try_from_vm_value::derive_try_from_vm_value_vec, traits::MapTo};
 
-trait TryGetEnumVariantFieldIdent {
-    fn try_get_ident(
-        &self,
-        enum_name: &Ident,
-        variant_name: &Ident,
-        field_index: usize,
-    ) -> Result<&Ident, Error>;
-}
-
-impl TryGetEnumVariantFieldIdent for Field {
-    fn try_get_ident(
-        &self,
-        enum_name: &Ident,
-        variant_name: &Ident,
-        field_index: usize,
-    ) -> Result<&Ident, Error> {
-        self.ident.as_ref().ok_or_else(|| {
-            Error::new(
-                Span::call_site(),
-                format!(
-                    "Internal Error: expected field {field_index} in \
-                        {enum_name}::{variant_name} to have a name but received None"
-                ),
-            )
-        })
-    }
-}
-
-pub fn derive_try_from_vm_value_enum(
+pub fn generate(
     enum_name: &Ident,
     data_enum: &DataEnum,
     generics: &Generics,
@@ -44,7 +16,7 @@ pub fn derive_try_from_vm_value_enum(
 
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
-    let try_from_vm_value_vec_impl = derive_try_from_vm_value_vec(enum_name, generics);
+    let try_from_vm_value_vec_impl = derive_try_from_vm_value_vec::generate(enum_name, generics);
 
     Ok(quote! {
         impl #impl_generics CdkActTryFromVmValue<
@@ -143,42 +115,6 @@ fn derive_properties(enum_name: &Ident, data_enum: &DataEnum) -> Result<Vec<Toke
             }
         })
         .collect::<Result<_, _>>()
-}
-
-trait MapTo {
-    fn map_to<T>(
-        &self,
-        enum_name: &Ident,
-        variant_name: &Ident,
-        callback: T,
-    ) -> Result<Vec<TokenStream>, Error>
-    where
-        T: Fn(&Ident, Ident) -> TokenStream;
-}
-
-impl MapTo for Vec<&Field> {
-    fn map_to<T>(
-        &self,
-        enum_name: &Ident,
-        variant_name: &Ident,
-        callback: T,
-    ) -> Result<Vec<TokenStream>, Error>
-    where
-        T: Fn(&Ident, Ident) -> TokenStream,
-    {
-        let named_field_js_value_result_variable_names = self
-            .iter()
-            .enumerate()
-            .map(|(field_index, named_field)| -> Result<TokenStream, Error> {
-                let field_name = named_field.try_get_ident(enum_name, variant_name, field_index)?;
-                let variable_name = format_ident!("{}_js_value_result", field_name);
-
-                Ok(callback(&field_name, variable_name))
-            })
-            .collect::<Result<Vec<_>, _>>();
-
-        named_field_js_value_result_variable_names
-    }
 }
 
 fn derive_property_for_named_fields(

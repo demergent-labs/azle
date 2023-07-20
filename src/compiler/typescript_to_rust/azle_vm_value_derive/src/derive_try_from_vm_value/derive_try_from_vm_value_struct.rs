@@ -2,9 +2,9 @@ use proc_macro2::{Ident, Span, TokenStream};
 use quote::{format_ident, quote};
 use syn::{DataStruct, Error, Fields, Generics, Index};
 
-use crate::derive_try_from_vm_value::derive_try_from_vm_value_vec::derive_try_from_vm_value_vec;
+use crate::derive_try_from_vm_value::derive_try_from_vm_value_vec;
 
-pub fn derive_try_from_vm_value_struct(
+pub fn generate(
     struct_name: &Ident,
     data_struct: &DataStruct,
     generics: &Generics,
@@ -15,7 +15,7 @@ pub fn derive_try_from_vm_value_struct(
 
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
-    let try_from_vm_value_vec_impl = derive_try_from_vm_value_vec(struct_name, generics);
+    let try_from_vm_value_vec_impl = derive_try_from_vm_value_vec::generate(struct_name, generics);
 
     Ok(quote! {
         impl #impl_generics CdkActTryFromVmValue<

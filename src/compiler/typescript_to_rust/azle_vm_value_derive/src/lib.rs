@@ -1,26 +1,13 @@
-use proc_macro2::Span;
-use syn::Error;
-
-mod derive_try_into_vm_value {
-    pub mod derive_try_into_vm_value_enum;
-    pub mod derive_try_into_vm_value_struct;
-}
-mod derive_try_from_vm_value {
-    pub mod derive_try_from_vm_value_enum;
-    pub mod derive_try_from_vm_value_struct;
-    pub mod derive_try_from_vm_value_vec;
-}
-
-use derive_try_from_vm_value::{
-    derive_try_from_vm_value_enum::derive_try_from_vm_value_enum,
-    derive_try_from_vm_value_struct::derive_try_from_vm_value_struct,
-};
-use derive_try_into_vm_value::{
-    derive_try_into_vm_value_enum::derive_try_into_vm_value_enum,
-    derive_try_into_vm_value_struct::derive_try_into_vm_value_struct,
-};
 use proc_macro::TokenStream;
-use syn::{parse_macro_input, Data, DeriveInput};
+use proc_macro2::Span;
+use syn::{parse_macro_input, Data, DeriveInput, Error};
+
+use derive_try_from_vm_value::{derive_try_from_vm_value_enum, derive_try_from_vm_value_struct};
+use derive_try_into_vm_value::{derive_try_into_vm_value_enum, derive_try_into_vm_value_struct};
+
+mod derive_try_from_vm_value;
+mod derive_try_into_vm_value;
+mod traits;
 
 #[proc_macro_derive(CdkActTryIntoVmValue)]
 pub fn derive_azle_try_into_vm_value(tokens: TokenStream) -> TokenStream {
@@ -30,8 +17,10 @@ pub fn derive_azle_try_into_vm_value(tokens: TokenStream) -> TokenStream {
     let generics = input.generics;
 
     let generated_code = match input.data {
-        Data::Enum(data_enum) => Ok(derive_try_into_vm_value_enum(&name, &data_enum, &generics)),
-        Data::Struct(data_struct) => Ok(derive_try_into_vm_value_struct(
+        Data::Enum(data_enum) => Ok(derive_try_into_vm_value_enum::generate(
+            &name, &data_enum, &generics,
+        )),
+        Data::Struct(data_struct) => Ok(derive_try_into_vm_value_struct::generate(
             &name,
             &data_struct,
             &generics,
@@ -56,9 +45,11 @@ pub fn derive_azle_try_from_vm_value(tokens: TokenStream) -> TokenStream {
     let generics = input.generics;
 
     let generated_code = match input.data {
-        Data::Enum(data_enum) => derive_try_from_vm_value_enum(&name, &data_enum, &generics),
+        Data::Enum(data_enum) => {
+            derive_try_from_vm_value_enum::generate(&name, &data_enum, &generics)
+        }
         Data::Struct(data_struct) => {
-            derive_try_from_vm_value_struct(&name, &data_struct, &generics)
+            derive_try_from_vm_value_struct::generate(&name, &data_struct, &generics)
         }
         Data::Union(_) => Err(Error::new(
             Span::call_site(),
