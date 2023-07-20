@@ -11,3 +11,9 @@ export function returnNonArrayAsInvalidVec(): Vec<string> {
     // @ts-expect-error
     return {};
 }
+
+$query;
+export function returnArrayWithInvalidVecItem(): Vec<string> {
+    // @ts-expect-error
+    return [true];
+}

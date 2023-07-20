@@ -32,9 +32,12 @@ pub fn generate(name: &Ident, generics: &Generics) -> TokenStream {
                 let mut result = vec![];
 
                 loop {
-                    let js_value = js_object
-                        .get(index, context)
-                        .map_err(|err| err.to_string())?;
+                    let js_value = js_object.get(index, context).map_err(|err| {
+                        format!(
+                            "[TypeError: Value is not of type 'Vec'] {{\n  [cause]: {}\n}}",
+                            err.to_string()
+                        )
+                    })?;
 
                     if js_value.is_undefined() {
                         break;

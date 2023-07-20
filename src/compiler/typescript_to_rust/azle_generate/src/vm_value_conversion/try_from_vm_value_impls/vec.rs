@@ -91,15 +91,23 @@ pub fn generate() -> proc_macro2::TokenStream {
             let mut result = vec![];
 
             loop {
-                let js_value = js_object
-                    .get(index, context)
-                    .map_err(|err| err.to_string())?;
+                let js_value = js_object.get(index, context).map_err(|err| {
+                    format!(
+                        "[TypeError: Value is not of type 'Vec'] {{\n  [cause]: {}\n}}",
+                        err.to_string()
+                    )
+                })?;
 
                 if js_value.is_undefined() {
                     break;
                 }
 
-                result.push(js_value.try_from_vm_value(context)?);
+                result.push(js_value.try_from_vm_value(context).map_err(|err| {
+                    format!(
+                        "[TypeError: Value is not of type 'Vec'] {{\n  [cause]: {}\n}}",
+                        err.0
+                    )
+                })?);
                 index += 1;
             }
 

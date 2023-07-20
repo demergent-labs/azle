@@ -22,6 +22,7 @@ service : () -> {
   returnArrayWithInvalidUserDefinedVariant : () -> (
       vec UserDefinedVariant,
     ) query;
+  returnArrayWithInvalidVecItem : () -> (vec text) query;
   returnArrayWithOnlyPrincipalAsInvalidFunc : () -> (func () -> () query) query;
   returnBothSomeAndNone : () -> (opt text) query;
   returnEmptyArrayAsInvalidFunc : () -> (func () -> () query) query;
