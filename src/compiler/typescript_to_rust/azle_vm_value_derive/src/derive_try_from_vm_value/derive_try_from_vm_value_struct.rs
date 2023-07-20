@@ -13,13 +13,15 @@ pub fn derive_try_from_vm_value_struct(
 
     let value_is_not_an_object_error_message = format!(
         "[TypeError: Value is not of type '{}'] {{\n  \
-            [cause]: TypeError: Value is not an object\n}}",
+            [cause]: TypeError: Value is not an object\n\
+        }}",
         &struct_name_string
     );
 
     let value_is_missing_properties_error_message = format!(
         "[TypeError: Value is not of type '{}'] {{\n  \
-            [cause]: TypeError: One or more properties are of an incorrect type\n}}",
+            [cause]: TypeError: One or more properties are of an incorrect type\n\
+        }}",
         &struct_name_string
     );
 
@@ -53,7 +55,7 @@ pub fn derive_try_from_vm_value_struct(
             ) -> Result<#struct_name #ty_generics, CdkActTryFromVmValueError> {
                 let object = self
                     .as_object()
-                    .ok_or_else(|| #value_is_not_an_object_error_message.to_string())?;
+                    .ok_or_else(|| #value_is_not_an_object_error_message)?;
 
                 #(#field_js_value_result_variable_definitions)*
 
@@ -93,53 +95,40 @@ pub fn derive_try_from_vm_value_struct(
                 self,
                 context: &mut boa_engine::Context
             ) -> Result<Vec<#struct_name #ty_generics>, CdkActTryFromVmValueError> {
-                match self.as_object() {
-                    Some(js_object) => {
-                        if js_object.is_array() {
-                            let mut processing: bool = true;
-                            let mut index: usize = 0;
+                let js_object = self
+                    .as_object()
+                    .ok_or_else(|| "TypeError: Value is not of type 'Vec'")?;
 
-                            let mut result = vec![];
-
-                            while processing == true {
-                                match js_object.get(index, context) {
-                                    Ok(js_value) => {
-                                        if js_value.is_undefined() {
-                                            processing = false;
-                                        }
-                                        else {
-                                            match js_value.try_from_vm_value(&mut *context) {
-                                                Ok(value) => {
-                                                    result.push(value);
-                                                    index += 1;
-                                                }
-                                                Err(err) => {
-                                                    return Err(err);
-                                                }
-                                            }
-                                        }
-                                    },
-                                    Err(_) => {
-                                        return Err(CdkActTryFromVmValueError(format!(
-                                            "RangeError: Item at array index {} does not exist",
-                                            index
-                                        )))
-                                    }
-                                }
-                            }
-
-                            Ok(result)
-                        }
-                        else {
-                            Err(CdkActTryFromVmValueError(
-                                "TypeError: Value is not of type 'Vec'".to_string()
-                            ))
-                        }
-                    },
-                    None => Err(CdkActTryFromVmValueError(
-                        "TypeError: Value is not of type 'Vec'".to_string()
-                    ))
+                if !js_object.is_array() {
+                    return Err(CdkActTryFromVmValueError(
+                        "TypeError: Value is not of type 'Vec'".to_string(),
+                    ));
                 }
+
+                let mut index: usize = 0;
+                let mut result = vec![];
+
+                loop {
+                    let js_value = js_object
+                        .get(index, context)
+                        .map_err(|err| err.to_string())?;
+
+                    if js_value.is_undefined() {
+                        break;
+                    }
+
+                    result.push(js_value
+                        .try_from_vm_value(&mut *context)
+                        .map_err(|variant_err| {
+                            format!(
+                                "[TypeError: Value is not of type 'Vec'] {{\n  [cause]: {}\n}}",
+                                variant_err.0
+                            )
+                        })?);
+                    index += 1;
+                }
+
+                Ok(result)
             }
         }
     }

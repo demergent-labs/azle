@@ -23,7 +23,7 @@ impl TryGetEnumVariantFieldIdent for Field {
                 Span::call_site(),
                 format!(
                     "Internal Error: expected field {field_index} in \
-                    {enum_name}::{variant_name} to have a name but received None"
+                        {enum_name}::{variant_name} to have a name but received None"
                 ),
             )
         })
@@ -39,7 +39,8 @@ pub fn derive_try_from_vm_value_enum(
 
     let value_is_not_an_object_error_message = format!(
         "[TypeError: Value is not of type '{}'] {{\n  \
-            [cause]: TypeError: Value is not an object\n}}",
+            [cause]: TypeError: Value is not an object\n\
+        }}",
         &enum_name_string
     );
 
@@ -51,13 +52,13 @@ pub fn derive_try_from_vm_value_enum(
 
     let variant_names_vec_string = format!("[{}]", variant_names.join(", "));
 
-    let missing_valid_variant_error_message =
-        format!(
-            "[TypeError: Value is not of type '{}'] {{\n  \
-                [cause]: TypeError: Value must contain exactly one of the following properties: {}\n}}",
-            &enum_name_string,
-            variant_names_vec_string,
-        );
+    let missing_valid_variant_error_message = format!(
+        "[TypeError: Value is not of type '{}'] {{\n  \
+            [cause]: TypeError: Value must contain exactly one of the following properties: \
+                {}\n\
+        }}",
+        &enum_name_string, variant_names_vec_string,
+    );
 
     let properties = derive_properties(enum_name, data_enum)?;
 
@@ -322,7 +323,11 @@ fn derive_property_for_unnamed_fields(
     let variant_name_string = variant_name.to_string();
 
     let todo_rename_this_error_message = format!(
-        "[TypeError: Value is not of type '{}'] {{{{\n  [cause]: TypeError: Property '{{}}' is not of the correct type {{{{\n    [cause]: {{}}\n  }}}}\n}}}}",
+        "[TypeError: Value is not of type '{}'] {{{{\n  \
+            [cause]: TypeError: Property '{{}}' is not of the correct type {{{{\n    \
+                [cause]: {{}}\n  \
+            }}}}\n\
+        }}}}",
         &enum_name_string
     );
 

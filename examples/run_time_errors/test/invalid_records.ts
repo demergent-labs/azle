@@ -11,6 +11,13 @@ const invalidPropertiesErrorMessage = `[TypeError: Value is not of type 'UserDef
   [cause]: TypeError: One or more properties are of an incorrect type
 }`;
 
+// TODO: Fix the formatting. See https://github.com/demergent-labs/azle/issues/1111
+const vecInnerValueIsNotAUserDefinedRecordErrorMessage = `[TypeError: Value is not of type 'Vec'] {
+  [cause]: [TypeError: Value is not of type 'UserDefinedRecord'] {
+  [cause]: TypeError: Value is not an object
+}
+}`;
+
 export function getInvalidRecordTests(
     errorCanister: ActorSubclass<_SERVICE>
 ): Test[] {
@@ -24,6 +31,11 @@ export function getInvalidRecordTests(
             'return an empty object as an invalid user-defined record',
             errorCanister.returnEmptyObjectAsInvalidUserDefinedRecord,
             invalidPropertiesErrorMessage
+        ),
+        expectError(
+            'return an array with an invalid user-defined record',
+            errorCanister.returnArrayWithInvalidUserDefinedRecord,
+            vecInnerValueIsNotAUserDefinedRecordErrorMessage
         )
     ];
 }

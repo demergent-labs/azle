@@ -37,4 +37,10 @@ export function returnObjectAsInvalidVecUserDefinedRecord(): Vec<UserDefinedReco
     // @ts-ignore
     return {};
 }
+
+$query;
+export function returnArrayWithInvalidUserDefinedRecord(): Vec<UserDefinedRecord> {
+    // @ts-ignore
+    return ['invalid type'];
+}
 // #endregion Vec<UserDefinedRecord>

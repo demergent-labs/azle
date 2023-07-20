@@ -18,6 +18,7 @@ service : () -> {
   alsoInaccessible : () -> (bool);
   getInitialized : () -> (bool) query;
   inaccessible : () -> (bool);
+  returnArrayWithInvalidUserDefinedRecord : () -> (vec UserDefinedRecord) query;
   returnArrayWithInvalidUserDefinedVariant : () -> (
       vec UserDefinedVariant,
     ) query;

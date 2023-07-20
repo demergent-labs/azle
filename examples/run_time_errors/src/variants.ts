@@ -53,7 +53,7 @@ export function returnObjectWithInvalidFieldsAsInvalidUserDefinedVariant(): User
 $query;
 export function returnStringAsInvalidVecUserDefinedVariant(): Vec<UserDefinedVariant> {
     // @ts-ignore
-    return '';
+    return 'invalid type';
 }
 
 $query;
