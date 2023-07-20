@@ -43,6 +43,17 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
         if !self.alias_table.is_aliasable(&type_ref.get_name()) {
             return Ok(None);
         }
+        // We also want to make sure that the type_alias name is not in the
+        // alias table. If it is in the alias table then the right hand side doesn't really matter
+        // because it means that the right hand side mapped to a azle type.
+        // This comes into play if the right hand side is something like a
+        // qualified name. In this case the right hand side itself might not
+        // have made it into table because it was only ever an intermediate step
+        // on the path to determining if the type_alias_name should have been in
+        // the alias table
+        if self.alias_table.search(&type_alias_name) {
+            return Ok(None);
+        }
         let type_params = self.get_type_params()?.into();
         // TODO: This isn't quite working because we are pulling in stuff that are azle things that we don't want
         // Specifically blob and RequireExactlyOne. blob isn't in the alias table because we don't use it in this file. Require exactly one is a partial variant that we don't finish defining...
