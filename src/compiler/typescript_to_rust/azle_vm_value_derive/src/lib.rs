@@ -49,14 +49,12 @@ pub fn derive_azle_try_from_vm_value(tokens: TokenStream) -> TokenStream {
 
     let generated_code = match input.data {
         Data::Enum(data_enum) => derive_try_from_vm_value_enum(&name, &data_enum, &generics),
-        Data::Struct(data_struct) => Ok(derive_try_from_vm_value_struct(
-            &name,
-            &data_struct,
-            &generics,
-        )),
+        Data::Struct(data_struct) => {
+            derive_try_from_vm_value_struct(&name, &data_struct, &generics)
+        }
         Data::Union(_) => Err(Error::new(
             Span::call_site(),
-            format!("CdkActTryIntoVmValue not supported for Unions"),
+            format!("CdkActTryFromVmValue not supported for Unions"),
         )),
     };
 
