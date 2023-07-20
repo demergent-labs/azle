@@ -11,11 +11,17 @@ pub fn derive_try_from_vm_value_struct(
     let value_is_not_of_struct_type_error_message =
         format!("TypeError: Value is not of type '{}'", &struct_name_string);
 
-    let value_is_not_an_object_error_message =
-        format!("[TypeError: Value is not of type '{}'] {{\n  [cause]: TypeError: Value is not an object\n}}", &struct_name_string);
+    let value_is_not_an_object_error_message = format!(
+        "[TypeError: Value is not of type '{}'] {{\n  \
+            [cause]: TypeError: Value is not an object\n}}",
+        &struct_name_string
+    );
 
-    let value_is_missing_properties_error_message =
-        format!("[TypeError: Value is not of type '{}'] {{\n  [cause]: TypeError: One or more properties are of an incorrect type\n}}", &struct_name_string);
+    let value_is_missing_properties_error_message = format!(
+        "[TypeError: Value is not of type '{}'] {{\n  \
+            [cause]: TypeError: One or more properties are of an incorrect type\n}}",
+        &struct_name_string
+    );
 
     let field_js_value_result_variable_definitions =
         derive_field_js_value_result_variable_definitions(struct_name, data_struct);
@@ -34,8 +40,17 @@ pub fn derive_try_from_vm_value_struct(
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
     quote! {
-        impl #impl_generics CdkActTryFromVmValue<#struct_name #ty_generics, &mut boa_engine::Context<'_>> for boa_engine::JsValue #where_clause {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#struct_name #ty_generics, CdkActTryFromVmValueError> {
+        impl #impl_generics CdkActTryFromVmValue<
+            #struct_name #ty_generics,
+            &mut boa_engine::Context<'_>
+        >
+            for boa_engine::JsValue
+            #where_clause
+        {
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context
+            ) -> Result<#struct_name #ty_generics, CdkActTryFromVmValueError> {
                 let object = self
                     .as_object()
                     .ok_or_else(|| #value_is_not_an_object_error_message.to_string())?;
@@ -67,8 +82,17 @@ pub fn derive_try_from_vm_value_struct(
         }
 
         // TODO the body of this function is repeated in try_from_vm_value_trait.ts
-        impl #impl_generics CdkActTryFromVmValue<Vec<#struct_name #ty_generics>, &mut boa_engine::Context<'_>> for boa_engine::JsValue #where_clause {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<#struct_name #ty_generics>, CdkActTryFromVmValueError> {
+        impl #impl_generics CdkActTryFromVmValue<
+            Vec<#struct_name #ty_generics>,
+            &mut boa_engine::Context<'_>
+        >
+            for boa_engine::JsValue
+            #where_clause
+        {
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context
+            ) -> Result<Vec<#struct_name #ty_generics>, CdkActTryFromVmValueError> {
                 match self.as_object() {
                     Some(js_object) => {
                         if js_object.is_array() {
@@ -96,7 +120,10 @@ pub fn derive_try_from_vm_value_struct(
                                         }
                                     },
                                     Err(_) => {
-                                        return Err(CdkActTryFromVmValueError(format!("RangeError: Item at array index {} does not exist", index)))
+                                        return Err(CdkActTryFromVmValueError(format!(
+                                            "RangeError: Item at array index {} does not exist",
+                                            index
+                                        )))
                                     }
                                 }
                             }
@@ -104,10 +131,14 @@ pub fn derive_try_from_vm_value_struct(
                             Ok(result)
                         }
                         else {
-                            Err(CdkActTryFromVmValueError("TypeError: Value is not of type 'Vec'".to_string()))
+                            Err(CdkActTryFromVmValueError(
+                                "TypeError: Value is not of type 'Vec'".to_string()
+                            ))
                         }
                     },
-                    None => Err(CdkActTryFromVmValueError("TypeError: Value is not of type 'Vec'".to_string()))
+                    None => Err(CdkActTryFromVmValueError(
+                        "TypeError: Value is not of type 'Vec'".to_string()
+                    ))
                 }
             }
         }
