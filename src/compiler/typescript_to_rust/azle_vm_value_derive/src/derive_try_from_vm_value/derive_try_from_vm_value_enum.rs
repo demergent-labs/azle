@@ -2,6 +2,8 @@ use proc_macro2::{Ident, Span, TokenStream};
 use quote::{format_ident, quote};
 use syn::{DataEnum, Error, Field, Fields, Generics};
 
+use crate::derive_try_from_vm_value::derive_try_from_vm_value_vec::derive_try_from_vm_value_vec;
+
 trait TryGetEnumVariantFieldIdent {
     fn try_get_ident(
         &self,
@@ -64,6 +66,8 @@ pub fn derive_try_from_vm_value_enum(
 
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
+    let try_from_vm_value_vec_impl = derive_try_from_vm_value_vec(enum_name, generics);
+
     Ok(quote! {
         impl #impl_generics CdkActTryFromVmValue<
             #enum_name #ty_generics,
@@ -88,57 +92,7 @@ pub fn derive_try_from_vm_value_enum(
             }
         }
 
-        // TODO: The implementation for this is the same as for Records and
-        // any other vec as seen in vm_value_conversion/try_from.../vec.rs
-        // We should pull all this code together
-        impl #impl_generics CdkActTryFromVmValue<
-            Vec<#enum_name #ty_generics>,
-            &mut boa_engine::Context<'_>
-        >
-            for boa_engine::JsValue
-            #where_clause
-        {
-            fn try_from_vm_value(
-                self,
-                context: &mut boa_engine::Context
-            ) -> Result<Vec<#enum_name #ty_generics>, CdkActTryFromVmValueError> {
-                let js_object = self
-                    .as_object()
-                    .ok_or_else(|| "TypeError: Value is not of type 'Vec'")?;
-
-                if !js_object.is_array() {
-                    return Err(CdkActTryFromVmValueError(
-                        "TypeError: Value is not of type 'Vec'".to_string(),
-                    ));
-                }
-
-
-                let mut index: usize = 0;
-                let mut result = vec![];
-
-                loop {
-                    let js_value = js_object
-                        .get(index, context)
-                        .map_err(|err| err.to_string())?;
-
-                    if js_value.is_undefined() {
-                        break;
-                    }
-
-                    result.push(js_value
-                        .try_from_vm_value(&mut *context)
-                        .map_err(|variant_err| {
-                            format!(
-                                "[TypeError: Value is not of type 'Vec'] {{\n  [cause]: {}\n}}",
-                                variant_err.0
-                            )
-                        })?);
-                    index += 1;
-                }
-
-                Ok(result)
-            }
-        }
+        #try_from_vm_value_vec_impl
     })
 }
 
