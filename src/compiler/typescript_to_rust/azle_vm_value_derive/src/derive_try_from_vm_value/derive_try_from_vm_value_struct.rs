@@ -2,7 +2,9 @@ use proc_macro2::{Ident, Span, TokenStream};
 use quote::{format_ident, quote};
 use syn::{DataStruct, Error, Fields, Generics, Index};
 
-use crate::derive_try_from_vm_value::derive_try_from_vm_value_vec;
+use crate::{
+    derive_try_from_vm_value::derive_try_from_vm_value_vec, traits::TryGetStructFieldIdent,
+};
 
 pub fn generate(
     struct_name: &Ident,
@@ -145,15 +147,7 @@ where
             .iter()
             .enumerate()
             .map(|(index, field)| {
-                let field_name = field.ident.as_ref().ok_or_else(|| {
-                    Error::new(
-                        Span::call_site(),
-                        format!(
-                            "Internal Error: expected field {index} in \
-                                {struct_name} to have a name but received None"
-                        ),
-                    )
-                })?;
+                let field_name = field.try_get_ident(struct_name, index)?;
 
                 Ok(named_field_closure(field_name))
             })

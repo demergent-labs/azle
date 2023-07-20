@@ -2,7 +2,7 @@ use proc_macro2::{Ident, TokenStream};
 use quote::format_ident;
 use syn::{Error, Field};
 
-use crate::traits::TryGetIdent;
+use crate::traits::TryGetEnumFieldIdent;
 
 pub trait MapTo {
     fn map_to<T>(

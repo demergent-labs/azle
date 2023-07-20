@@ -1,7 +1,7 @@
 use proc_macro2::{Ident, Span};
 use syn::{Error, Field};
 
-pub trait TryGetIdent {
+pub trait TryGetEnumFieldIdent {
     fn try_get_ident(
         &self,
         enum_name: &Ident,
@@ -10,7 +10,7 @@ pub trait TryGetIdent {
     ) -> Result<&Ident, Error>;
 }
 
-impl TryGetIdent for Field {
+impl TryGetEnumFieldIdent for Field {
     fn try_get_ident(
         &self,
         enum_name: &Ident,

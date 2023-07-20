@@ -2,7 +2,7 @@ use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use syn::{DataEnum, Error, Field, Fields, Generics};
 
-use crate::{derive_try_into_vm_value::derive_try_into_vm_value_vec, traits::TryGetIdent};
+use crate::{derive_try_into_vm_value::derive_try_into_vm_value_vec, traits::TryGetEnumFieldIdent};
 
 pub fn generate(
     enum_name: &Ident,
