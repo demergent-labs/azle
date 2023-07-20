@@ -1,4 +1,4 @@
-use proc_macro2::Ident;
+use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
 use syn::{DataStruct, Fields, Generics, Index};
 
@@ -8,26 +8,10 @@ pub fn derive_try_from_vm_value_struct(
     struct_name: &Ident,
     data_struct: &DataStruct,
     generics: &Generics,
-) -> proc_macro2::TokenStream {
-    let (
-        value_is_not_of_struct_type_error_message,
-        value_is_not_an_object_error_message,
-        value_is_missing_properties_error_message,
-    ) = derive_error_messages(struct_name);
+) -> TokenStream {
+    let (_, value_is_not_an_object_error_message, _) = derive_error_messages(struct_name);
 
-    let field_js_value_result_variable_definitions =
-        derive_field_js_value_result_variable_definitions(struct_name, data_struct);
-    let field_js_value_result_names = derive_field_js_value_result_names(struct_name, data_struct);
-    let field_js_value_oks = derive_field_js_value_oks(struct_name, data_struct);
-
-    let field_result_variable_definitions =
-        derive_field_result_variable_definitions(struct_name, data_struct);
-    let field_result_names = derive_field_result_names(struct_name, data_struct);
-    let field_oks = derive_field_oks(struct_name, data_struct);
-
-    let field_initializers = derive_field_initializers(struct_name, data_struct);
-    let struct_instantiation =
-        derive_struct_instantiation(struct_name, data_struct, &field_initializers);
+    let properties = derive_properties(struct_name, data_struct);
 
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
@@ -49,29 +33,7 @@ pub fn derive_try_from_vm_value_struct(
                     .as_object()
                     .ok_or_else(|| #value_is_not_an_object_error_message)?;
 
-                #(#field_js_value_result_variable_definitions)*
-
-                match (#(#field_js_value_result_names),*) {
-                    (#(#field_js_value_oks),*) => {
-                        #(#field_result_variable_definitions)*
-
-                        match (#(#field_result_names),*) {
-                            (#(#field_oks),*) => {
-                                return Ok(#struct_instantiation);
-                            },
-                            _ => {
-                                return Err(CdkActTryFromVmValueError(
-                                    #value_is_missing_properties_error_message.to_string()
-                                ));
-                            }
-                        };
-                    },
-                    _ => {
-                        return Err(CdkActTryFromVmValueError(
-                            #value_is_not_of_struct_type_error_message.to_string()
-                        ));
-                    }
-                };
+                #properties
             }
         }
 
@@ -106,13 +68,58 @@ fn derive_error_messages(struct_name: &Ident) -> (String, String, String) {
     )
 }
 
+fn derive_properties(struct_name: &Ident, data_struct: &DataStruct) -> TokenStream {
+    let (value_is_not_of_struct_type_error_message, _, value_is_missing_properties_error_message) =
+        derive_error_messages(struct_name);
+
+    let field_js_value_result_variable_definitions =
+        derive_field_js_value_result_variable_definitions(struct_name, data_struct);
+    let field_js_value_result_names = derive_field_js_value_result_names(struct_name, data_struct);
+    let field_js_value_oks = derive_field_js_value_oks(struct_name, data_struct);
+
+    let field_result_variable_definitions =
+        derive_field_result_variable_definitions(struct_name, data_struct);
+    let field_result_names = derive_field_result_names(struct_name, data_struct);
+    let field_oks = derive_field_oks(struct_name, data_struct);
+
+    let field_initializers = derive_field_initializers(struct_name, data_struct);
+    let struct_instantiation =
+        derive_struct_instantiation(struct_name, data_struct, &field_initializers);
+
+    quote! {
+        #(#field_js_value_result_variable_definitions)*
+
+        match (#(#field_js_value_result_names),*) {
+            (#(#field_js_value_oks),*) => {
+                #(#field_result_variable_definitions)*
+
+                match (#(#field_result_names),*) {
+                    (#(#field_oks),*) => {
+                        return Ok(#struct_instantiation);
+                    },
+                    _ => {
+                        return Err(CdkActTryFromVmValueError(
+                            #value_is_missing_properties_error_message.to_string()
+                        ));
+                    }
+                };
+            },
+            _ => {
+                return Err(CdkActTryFromVmValueError(
+                    #value_is_not_of_struct_type_error_message.to_string()
+                ));
+            }
+        };
+    }
+}
+
 fn uniformly_map_fields<F>(
     struct_name: &Ident,
     data_struct: &DataStruct,
     closure: F,
-) -> Vec<proc_macro2::TokenStream>
+) -> Vec<TokenStream>
 where
-    F: Fn(&Ident) -> proc_macro2::TokenStream,
+    F: Fn(&Ident) -> TokenStream,
 {
     map_fields(
         struct_name,
@@ -127,10 +134,10 @@ fn map_fields<F, G>(
     data_struct: &DataStruct,
     named_field_closure: F,
     unnamed_field_closure: G,
-) -> Vec<proc_macro2::TokenStream>
+) -> Vec<TokenStream>
 where
-    F: Fn(&Ident) -> proc_macro2::TokenStream,
-    G: Fn(&Ident, usize) -> proc_macro2::TokenStream,
+    F: Fn(&Ident) -> TokenStream,
+    G: Fn(&Ident, usize) -> TokenStream,
 {
     let field_must_be_named = format!("Named fields of struct {} must be named", struct_name);
     match &data_struct.fields {
@@ -160,7 +167,7 @@ where
 fn derive_field_js_value_result_variable_definitions(
     struct_name: &Ident,
     data_struct: &DataStruct,
-) -> Vec<proc_macro2::TokenStream> {
+) -> Vec<TokenStream> {
     map_fields(
         struct_name,
         data_struct,
@@ -186,7 +193,7 @@ fn derive_field_js_value_result_variable_definitions(
 fn derive_field_js_value_result_names(
     struct_name: &Ident,
     data_struct: &DataStruct,
-) -> Vec<proc_macro2::TokenStream> {
+) -> Vec<TokenStream> {
     uniformly_map_fields(struct_name, data_struct, |field_name| {
         let field_js_value_result_name = format_ident!("object_{}_js_value_result", field_name);
 
@@ -194,10 +201,7 @@ fn derive_field_js_value_result_names(
     })
 }
 
-fn derive_field_js_value_oks(
-    struct_name: &Ident,
-    data_struct: &DataStruct,
-) -> Vec<proc_macro2::TokenStream> {
+fn derive_field_js_value_oks(struct_name: &Ident, data_struct: &DataStruct) -> Vec<TokenStream> {
     uniformly_map_fields(struct_name, data_struct, |field_name| {
         let field_js_value_name = format_ident!("object_{}_js_value", field_name);
 
@@ -208,7 +212,7 @@ fn derive_field_js_value_oks(
 fn derive_field_result_variable_definitions(
     struct_name: &Ident,
     data_struct: &DataStruct,
-) -> Vec<proc_macro2::TokenStream> {
+) -> Vec<TokenStream> {
     uniformly_map_fields(struct_name, data_struct, |field_name| {
         let field_js_value_name = format_ident!("object_{}_js_value", field_name);
         let field_result_name = format_ident!("object_{}_result", field_name);
@@ -217,10 +221,7 @@ fn derive_field_result_variable_definitions(
     })
 }
 
-fn derive_field_result_names(
-    struct_name: &Ident,
-    data_struct: &DataStruct,
-) -> Vec<proc_macro2::TokenStream> {
+fn derive_field_result_names(struct_name: &Ident, data_struct: &DataStruct) -> Vec<TokenStream> {
     uniformly_map_fields(struct_name, data_struct, |field_name| {
         let field_result_name = format_ident!("object_{}_result", field_name);
 
@@ -228,10 +229,7 @@ fn derive_field_result_names(
     })
 }
 
-fn derive_field_oks(
-    struct_name: &Ident,
-    data_struct: &DataStruct,
-) -> Vec<proc_macro2::TokenStream> {
+fn derive_field_oks(struct_name: &Ident, data_struct: &DataStruct) -> Vec<TokenStream> {
     uniformly_map_fields(struct_name, data_struct, |field_name| {
         let field_var_name = format_ident!("object_{}", field_name);
 
@@ -239,10 +237,7 @@ fn derive_field_oks(
     })
 }
 
-fn derive_field_initializers(
-    struct_name: &Ident,
-    data_struct: &DataStruct,
-) -> Vec<proc_macro2::TokenStream> {
+fn derive_field_initializers(struct_name: &Ident, data_struct: &DataStruct) -> Vec<TokenStream> {
     map_fields(
         struct_name,
         data_struct,
@@ -262,8 +257,8 @@ fn derive_field_initializers(
 fn derive_struct_instantiation(
     struct_name: &Ident,
     data_struct: &DataStruct,
-    field_initializers: &Vec<proc_macro2::TokenStream>,
-) -> proc_macro2::TokenStream {
+    field_initializers: &Vec<TokenStream>,
+) -> TokenStream {
     match &data_struct.fields {
         Fields::Named(_) => {
             quote! {
