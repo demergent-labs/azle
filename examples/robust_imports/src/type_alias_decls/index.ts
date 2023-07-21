@@ -1,14 +1,9 @@
 import * as types from './types';
 import * as azle from 'azle';
 
-// TODO this doesn't work. Why not?
-// function offDuty(): types.DeepGuardResultAlias {
-//     return { Ok: null };
-// }
-
-// function offDuty(): azle.GuardResult {
-//     return { Ok: null };
-// }
+function offDuty(): types.DeepGuardResultAlias {
+    return { Ok: null };
+}
 
 const HELLO_WORLD = 'Hello, World!';
 
@@ -64,8 +59,7 @@ export function deepEmptyAlias(): types.DeepEmptyAlias {
     throw 'empty';
 }
 
-// azle.$query({ guard: offDuty });
-azle.$query;
+azle.$query({ guard: offDuty });
 export function getNumberAliases(): NumberAliases {
     return {
         first: 1n,
@@ -110,12 +104,7 @@ export function simpleQuery(): types.VoidAlias {
     console.log(HELLO_WORLD);
 }
 
-// class AliasedService extends types.DeepServiceAlias {
-//     @types.DeepServiceQueryAlias
-//     testQuery: () => azle.CallResult<string>;
-// }
-
-class AliasedService extends azle.Service {
+class AliasedService extends types.DeepServiceAlias {
     @types.DeepServiceQueryAlias
     testQuery: () => azle.CallResult<string>;
 }
@@ -128,27 +117,13 @@ export function checkServiceAlias(service: AliasedService): AliasedService {
 }
 
 export type MyLocalNumberAlias = number;
-// export type MyDeepRecordFromAlias = types.DeepRecordAlias<{ depth: azle.nat8 }>;
-// export type MyDeepVariantFromAlias = types.DeepVariantAlias<{
-//     good: null;
-//     bad: null;
-//     ugly: null;
-// }>;
-// export type MyRecordFromAlias = types.RecordAlias<{
-//     id: azle.nat;
-//     name: types.DeepOptAlias<string>;
-//     depth: MyDeepRecordFromAlias;
-//     tups: types.DeepTupleAlias<[string, types.Float64Alias]>;
-//     description: MyDeepVariantFromAlias;
-//     list: types.DeepVecAlias<azle.nat16>;
-// }>;
-export type MyDeepRecordFromAlias = azle.Record<{ depth: azle.nat8 }>;
-export type MyDeepVariantFromAlias = azle.Variant<{
+export type MyDeepRecordFromAlias = types.DeepRecordAlias<{ depth: azle.nat8 }>;
+export type MyDeepVariantFromAlias = types.DeepVariantAlias<{
     good: null;
     bad: null;
     ugly: null;
 }>;
-export type MyRecordFromAlias = azle.Record<{
+export type MyRecordFromAlias = types.RecordAlias<{
     id: azle.nat;
     name: types.DeepOptAlias<string>;
     depth: MyDeepRecordFromAlias;
