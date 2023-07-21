@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { AliasTable } from '../../../utils/types';
+import { AliasTable } from '../';
 import { generateSingleEntryAliasTable } from '../alias_table';
 import {
     generateAliasTableForExportAssignment,
@@ -14,6 +14,7 @@ import {
     generateAliasTableForTypeAliasDeclaration,
     generateAliasTableForVariableDeclaration
 } from './type_alias';
+import { isAzleSymbol } from '../../utils';
 
 export function generateAliasTableForIdentifier(
     ident: ts.Identifier | ts.MemberName,
@@ -138,17 +139,4 @@ function generateAliasTableForDeclaration(
         // undefined intentionally
         return undefined;
     }
-}
-
-// TODO this feels very janky to me. Is there a better way of determining this?
-export function isAzleSymbol(symbol: ts.Symbol): boolean {
-    if ('parent' in symbol) {
-        const parent = symbol.parent as ts.Symbol;
-        if (parent) {
-            if (parent.name.includes('azle/src/lib')) {
-                return true;
-            }
-        }
-    }
-    return false;
 }

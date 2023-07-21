@@ -1,6 +1,19 @@
 import * as ts from 'typescript';
 import { getSymbolTableForModuleSpecifier } from './get_symbol_table';
 
+// TODO this feels very janky to me. Is there a better way of determining this?
+export function isAzleSymbol(symbol: ts.Symbol): boolean {
+    if ('parent' in symbol) {
+        const parent = symbol.parent as ts.Symbol;
+        if (parent) {
+            if (parent.name.includes('azle/src/lib')) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 export function getSourceFile(node: ts.Node): ts.SourceFile | undefined {
     if (ts.isSourceFile(node)) {
         return node;

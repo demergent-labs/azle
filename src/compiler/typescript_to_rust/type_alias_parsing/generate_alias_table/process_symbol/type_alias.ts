@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { AliasTable } from '../../../utils/types';
+import { AliasTable } from '../';
 import {
     getSymbolTableForNode,
     getSymbolTableForEntityName,

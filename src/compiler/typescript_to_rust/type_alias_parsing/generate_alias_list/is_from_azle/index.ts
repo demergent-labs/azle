@@ -2,8 +2,8 @@ import * as ts from 'typescript';
 import { debug } from '../../utils/debug';
 import {
     isExportAssignmentFromAzle,
-    isAzleExportDeclaration,
-    isAzleExportDeclarations,
+    isExportDeclarationFromAzle,
+    areExportDeclarationsFromAzle,
     isExportSpecifierFromAzle,
     isImportClauseFromAzle,
     isImportSpecifierFromAzle,
@@ -13,6 +13,7 @@ import {
     isAzleTypeAliasDeclaration as isTypeAliasDeclarationFromAzle,
     isAzleVariableDeclaration as isVariableDeclarationFromAzle
 } from './type_alias';
+import { isAzleSymbol } from '../../utils';
 
 export function isIdentFromAzle(
     ident: ts.Identifier | ts.MemberName,
@@ -110,7 +111,7 @@ function isDeclarationFromAzle(
         // 'place' and export * from 'otherPlace' would both be in the list of
         // declarations) and this function is only meant to process one at a
         // time.
-        return isAzleExportDeclaration(declaration, program);
+        return isExportDeclarationFromAzle(declaration, program);
     }
     if (ts.isVariableDeclaration(declaration)) {
         // export const QueryAlias = azle.$query;
@@ -124,40 +125,6 @@ function isDeclarationFromAzle(
         // All of the cases here are known to not need handling and return
         // undefined intentionally
         return false;
-    }
-    return false;
-}
-
-// TODO this feels very janky to me. Is there a better way of determining this?
-export function isAzleSymbol(symbol: ts.Symbol): boolean {
-    if (debug.print) {
-        console.log(`determining if ${symbol.name} is an azle symbol`);
-    }
-    if ('parent' in symbol) {
-        const parent = symbol.parent as ts.Symbol;
-        if (parent) {
-            if (parent.name.includes('azle/src/lib')) {
-                return true;
-            } else {
-                if (debug.print) {
-                    console.log(
-                        `parent name was ${parent.name} which doesn't include azle`
-                    );
-                }
-            }
-        } else {
-            if (debug.print) {
-                console.log(`no parent`);
-                // console.log(symbol);
-            }
-        }
-    } else {
-        if (debug.print) {
-            console.log(`parent wasnt in the symbol`);
-        }
-    }
-    if (debug.print) {
-        console.log(`${symbol.name} wasn't an azle symbol`);
     }
     return false;
 }

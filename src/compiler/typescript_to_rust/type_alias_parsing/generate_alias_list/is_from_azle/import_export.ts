@@ -72,7 +72,7 @@ export function isImportClauseFromAzle(
     );
 }
 
-export function isAzleExportDeclaration(
+export function isExportDeclarationFromAzle(
     exportDeclaration: ts.ExportDeclaration,
     program: ts.Program
 ): boolean {
@@ -106,7 +106,7 @@ export function isAzleExportDeclaration(
 // My understanding is all other export declarations will be processed in other
 // functions because they will fall into the more specific export clause or
 // export specifier cases
-export function isAzleExportDeclarations(
+export function areExportDeclarationsFromAzle(
     exportDeclarations: ts.ExportDeclaration[],
     program: ts.Program
 ): boolean {
