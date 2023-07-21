@@ -4,7 +4,7 @@ import {
     getSymbolTableForEntityName,
     getSymbolTableForExpression
 } from '../../utils/get_symbol_table';
-import { getSourceFile } from '../../utils';
+import { getSourceFile, isNullKeyword } from '../../utils';
 import { isIdentFromAzle } from '.';
 
 function isAzleKeywordExpression(
@@ -80,19 +80,8 @@ export function isAzleTypeAliasDeclaration(
     if (aliasedType.kind === ts.SyntaxKind.BooleanKeyword) {
         return true;
     }
-    if (aliasedType.kind === ts.SyntaxKind.LiteralType) {
-        if ('literal' in aliasedType) {
-            let literal = aliasedType.literal;
-            if (
-                typeof literal === 'object' &&
-                literal !== null &&
-                'kind' in literal
-            ) {
-                if (literal.kind === ts.SyntaxKind.NullKeyword) {
-                    return true;
-                }
-            }
-        }
+    if (isNullKeyword(aliasedType)) {
+        return true;
     }
     if (aliasedType.kind === ts.SyntaxKind.StringKeyword) {
         return true;

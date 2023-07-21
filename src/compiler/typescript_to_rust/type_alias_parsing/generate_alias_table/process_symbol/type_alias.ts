@@ -5,7 +5,7 @@ import {
     getSymbolTableForEntityName,
     getSymbolTableForExpression
 } from '../../utils/get_symbol_table';
-import { getSourceFile } from '../../utils';
+import { getSourceFile, isNullKeyword } from '../../utils';
 import { generateAliasTableForIdentifier } from '../process_symbol';
 import { generateSingleEntryAliasTable } from '../alias_table';
 
@@ -108,19 +108,8 @@ export function generateAliasTableForTypeAliasDeclaration(
     if (aliasedType.kind === ts.SyntaxKind.BooleanKeyword) {
         return generateSingleEntryAliasTable('bool', alias);
     }
-    if (aliasedType.kind === ts.SyntaxKind.LiteralType) {
-        if ('literal' in aliasedType) {
-            let literal = aliasedType.literal;
-            if (
-                typeof literal === 'object' &&
-                literal !== null &&
-                'kind' in literal
-            ) {
-                if (literal.kind === ts.SyntaxKind.NullKeyword) {
-                    return generateSingleEntryAliasTable('null', alias);
-                }
-            }
-        }
+    if (isNullKeyword(aliasedType)) {
+        return generateSingleEntryAliasTable('null', alias);
     }
     if (aliasedType.kind === ts.SyntaxKind.StringKeyword) {
         return generateSingleEntryAliasTable('text', alias);

@@ -111,3 +111,21 @@ export function getStarExportModuleSpecifierFor(
         return exportModSpecifier;
     }
 }
+
+export function isNullKeyword(node: ts.Node): boolean {
+    if (node.kind === ts.SyntaxKind.LiteralType) {
+        if ('literal' in node) {
+            let literal = node.literal;
+            if (
+                typeof literal === 'object' &&
+                literal !== null &&
+                'kind' in literal
+            ) {
+                if (literal.kind === ts.SyntaxKind.NullKeyword) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
