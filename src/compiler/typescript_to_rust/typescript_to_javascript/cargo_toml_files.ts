@@ -477,7 +477,7 @@ export function generateWorkspaceCargoLock(): Toml {
         [[package]]
         name = "cdk_framework"
         version = "0.0.0"
-        source = "git+https://github.com/demergent-labs/cdk_framework?rev=7fc83361e03290bdaafa1f7b9d20ad0350aaa574#7fc83361e03290bdaafa1f7b9d20ad0350aaa574"
+        source = "git+https://github.com/demergent-labs/cdk_framework?rev=19d11ae4c31c9755398ef54bd8e61ad8e7918dd4#19d11ae4c31c9755398ef54bd8e61ad8e7918dd4"
         dependencies = [
         "proc-macro2",
         "quote",
