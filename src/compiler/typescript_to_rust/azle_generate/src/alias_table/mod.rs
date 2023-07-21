@@ -68,7 +68,7 @@ impl AliasTable {
     // export type MyBoolVec = azle.Vec<boolean>;
     // should be parsed as a type alias.
     // You will notice that self.vec is not included in this list.
-    // You will notice that the only things not on this list are Vec and Opt
+    // In fact you will notice that the only things not on this list are Vec and Opt
     pub fn is_aliasable(&self, alias: &String) -> bool {
         ![
             &self.alias,
