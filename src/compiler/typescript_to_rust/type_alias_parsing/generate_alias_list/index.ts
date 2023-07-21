@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { generateAliasListFromSymbolTable } from './alias_list';
-import { getSymbolTable } from './get_symbol_table';
-import { debug } from './debug';
+import { getSymbolTable } from '../utils/get_symbol_table';
+import { debug } from '../utils/debug';
 
 export function generateAliasLists(
     files: string[],

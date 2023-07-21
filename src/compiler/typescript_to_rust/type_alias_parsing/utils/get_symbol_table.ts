@@ -5,7 +5,7 @@ import {
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier,
     getStarExportModuleSpecifierFor
-} from './utils';
+} from '.';
 
 export function getSymbolTable(
     sourceFile: ts.SourceFile,

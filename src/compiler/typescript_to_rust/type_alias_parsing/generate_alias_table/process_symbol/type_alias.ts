@@ -4,8 +4,8 @@ import {
     getSymbolTableForNode,
     getSymbolTableForEntityName,
     getSymbolTableForExpression
-} from '../get_symbol_table';
-import { getSourceFile } from '../utils';
+} from '../../utils/get_symbol_table';
+import { getSourceFile } from '../../utils';
 import { generateAliasTableForIdentifier } from '../process_symbol';
 import { generateSingleEntryAliasTable } from '../alias_table';
 

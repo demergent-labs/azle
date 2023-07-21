@@ -3,9 +3,9 @@ import {
     getSymbolTableForNode,
     getSymbolTableForEntityName,
     getSymbolTableForExpression
-} from '../get_symbol_table';
-import { getSourceFile } from '../utils';
-import { isIdentFromAzle } from '../process_symbol';
+} from '../../utils/get_symbol_table';
+import { getSourceFile } from '../../utils';
+import { isIdentFromAzle } from '.';
 
 function isAzleKeywordExpression(
     typeAliasDeclaration: ts.TypeAliasDeclaration | ts.VariableDeclaration

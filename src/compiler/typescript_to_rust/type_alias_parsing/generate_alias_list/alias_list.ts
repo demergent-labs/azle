@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
-import { isSymbolFromAzle } from './process_symbol';
-import { debug } from './debug';
+import { isSymbolFromAzle } from './is_from_azle';
+import { debug } from '../utils/debug';
 
 export function generateAliasListFromSymbolTable(
     symbolTable: ts.SymbolTable,

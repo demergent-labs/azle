@@ -1,42 +1,29 @@
 import * as ts from 'typescript';
-import { AliasTable } from '../../../utils/types';
-import {
-    generateAliasTableFromSymbolTable,
-    generateSingleEntryAliasTable,
-    EMPTY_ALIAS_TABLE,
-    renameAliasTable,
-    prependNamespaceToAliasTable,
-    DEFAULT_ALIAS_TABLE,
-    mergeAliasTables
-} from '../alias_table';
+import { generateAliasListFromSymbolTable } from '../alias_list';
 import {
     getSymbolTableForNode,
     getSymbolTableForDeclaration,
     getSymbolTableForModuleSpecifier
-} from '../get_symbol_table';
+} from '../../utils/get_symbol_table';
 import {
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier,
     getStarExportModuleSpecifierFor
-} from '../utils';
-import { generateAliasTableForSymbol } from '../process_symbol';
+} from '../../utils';
+import { isSymbolFromAzle } from '.';
 
 // {thing} or {thing as other}
 // as in `export {thing};` or
 // `export {thing as other} from 'place';`
-export function generateAliasTableForExportSpecifier(
+export function isExportSpecifierFromAzle(
     exportSpecifier: ts.ExportSpecifier,
     alias: string,
     program: ts.Program
-): AliasTable | undefined {
+): boolean {
     const exportDecl = getDeclarationFromSpecifier(exportSpecifier);
     if (exportDecl.moduleSpecifier) {
-        return generateAliasTableForModuleImportExportSpecifier(
-            exportSpecifier,
-            alias,
-            program
-        );
+        return isImportExportSpecifierFromAzle(exportSpecifier, alias, program);
     }
 
     // Symbol is not from another module so we will find it locally
@@ -47,39 +34,37 @@ export function generateAliasTableForExportSpecifier(
     );
 }
 
-export function generateAliasTableForExportAssignment(
+// export default thing
+export function isExportAssignmentFromAzle(
     exportAssignment: ts.ExportAssignment,
     alias: string,
     program: ts.Program
-): AliasTable | undefined {
+): boolean {
     const typeChecker = program.getTypeChecker();
     const symbol = typeChecker.getSymbolAtLocation(exportAssignment.expression);
     if (symbol) {
-        return generateAliasTableForSymbol(symbol, alias, program);
+        return isSymbolFromAzle(symbol, alias, program);
     }
+    return false;
 }
 
-export function generateAliasTableForImportSpecifier(
+export function isImportSpecifierFromAzle(
     importSpecifier: ts.ImportSpecifier,
     alias: string,
     program: ts.Program
-): AliasTable | undefined {
-    return generateAliasTableForModuleImportExportSpecifier(
-        importSpecifier,
-        alias,
-        program
-    );
+): boolean {
+    return isImportExportSpecifierFromAzle(importSpecifier, alias, program);
 }
 
-export function generateAliasTableForImportClause(
+export function isImportClauseFromAzle(
     importClause: ts.ImportClause,
     alias: string,
     program: ts.Program
-): AliasTable | undefined {
+): boolean {
     if (!ts.isStringLiteral(importClause.parent.moduleSpecifier)) {
-        return undefined;
+        return false;
     }
-    return generateAliasTableForNameInModule(
+    return isNameInModuleFromAzle(
         'default',
         importClause.parent.moduleSpecifier,
         alias,
@@ -87,31 +72,33 @@ export function generateAliasTableForImportClause(
     );
 }
 
-export function generateAliasTableForExportDeclaration(
+export function isAzleExportDeclaration(
     exportDeclaration: ts.ExportDeclaration,
     program: ts.Program
-): AliasTable | undefined {
-    const moduleSpecifier = exportDeclaration.moduleSpecifier;
-    if (moduleSpecifier === undefined || !ts.isStringLiteral(moduleSpecifier)) {
-        // Unreachable: An export declaration with a namespace export will always have a FromClause
-        // https://262.ecma-international.org/13.0/#sec-exports
-        return undefined;
-    }
-    if (exportDeclaration.exportClause) {
-        // Unreachable: An export declaration with a namespace export will never have an ExportClause
-        // https://262.ecma-international.org/13.0/#sec-exports
-        return undefined;
-    }
-    if (moduleSpecifier.text == 'azle') {
-        return DEFAULT_ALIAS_TABLE;
-    }
-    const symbolTable = getSymbolTableForDeclaration(
-        exportDeclaration,
-        program
-    );
-    if (symbolTable === undefined) return undefined;
+): boolean {
+    return false;
+    // TODO I am having a hard time imagining what this looks like.. so I'll save it for later
+    // const moduleSpecifier = exportDeclaration.moduleSpecifier;
+    // if (moduleSpecifier === undefined || !ts.isStringLiteral(moduleSpecifier)) {
+    //     // Unreachable: An export declaration with a namespace export will always have a FromClause
+    //     // https://262.ecma-international.org/13.0/#sec-exports
+    //     return false;
+    // }
+    // if (exportDeclaration.exportClause) {
+    //     // Unreachable: An export declaration with a namespace export will never have an ExportClause
+    //     // https://262.ecma-international.org/13.0/#sec-exports
+    //     return false;
+    // }
+    // if (moduleSpecifier.text == 'azle') {
+    //     return true;
+    // }
+    // const symbolTable = getSymbolTableForDeclaration(
+    //     exportDeclaration,
+    //     program
+    // );
+    // if (symbolTable === undefined) return false;
 
-    return generateAliasTableFromSymbolTable(symbolTable, program);
+    // return generateAliasListFromSymbolTable(symbolTable, program);
 }
 
 // My expectation is that this will only be called for export declarations in the form:
@@ -119,47 +106,40 @@ export function generateAliasTableForExportDeclaration(
 // My understanding is all other export declarations will be processed in other
 // functions because they will fall into the more specific export clause or
 // export specifier cases
-export function generateAliasTableForExportDeclarations(
+export function isAzleExportDeclarations(
     exportDeclarations: ts.ExportDeclaration[],
     program: ts.Program
-): AliasTable | undefined {
-    const aliasTables = exportDeclarations.map((declaration) =>
-        generateAliasTableForExportDeclaration(declaration, program)
-    );
-    return aliasTables.reduce((acc: AliasTable, subAliasTable) => {
-        if (subAliasTable === undefined) {
-            return { ...acc };
-        }
-        return { ...mergeAliasTables(acc, subAliasTable) };
-    }, EMPTY_ALIAS_TABLE);
+): boolean {
+    // TODO I  don't know what this looks like right now
+    return false;
 }
 
-export function generateAliasTableForNamespaceImportExport(
+export function isNamespaceImportExportFromAzle(
     namespace: ts.NamespaceImport | ts.NamespaceExport,
     program: ts.Program
-): AliasTable | undefined {
+): boolean {
     const importDeclaration = getDeclarationFromNamespace(namespace);
     if (
         !importDeclaration.moduleSpecifier ||
         !ts.isStringLiteral(importDeclaration.moduleSpecifier)
     ) {
-        return undefined;
+        return false;
     }
     if (importDeclaration.moduleSpecifier.text == 'azle') {
         // TODO process this symbol table the same, then modify it such that every entry has name.whatever
-        return prependNamespaceToAliasTable(DEFAULT_ALIAS_TABLE, namespace);
+        return true;
     }
     const symbolTable = getSymbolTableForDeclaration(
         importDeclaration,
         program
     );
-    if (symbolTable === undefined) return undefined;
+    if (symbolTable === undefined) return false;
 
-    const aliasTable = generateAliasTableFromSymbolTable(symbolTable, program);
-    if (aliasTable === undefined) return undefined;
+    const aliasTable = generateAliasListFromSymbolTable(symbolTable, program);
+    if (aliasTable === undefined) return false;
 
     // process this symbol table the same, then modify it such that every entry has name.whatever
-    return prependNamespaceToAliasTable(aliasTable, namespace);
+    return true;
 }
 
 // TODO make a better name for this
@@ -167,16 +147,16 @@ export function generateAliasTableForNamespaceImportExport(
 // It's called from import/export specifier and from import clause
 // The process symbol does a similar thing
 // Here we are getting a module. And finding the name in the module so we can get it's symbol
-function generateAliasTableForNameInModule(
+function isNameInModuleFromAzle(
     name: string,
     moduleSpecifier: ts.StringLiteral,
     alias: string,
     program: ts.Program
-): AliasTable | undefined {
+): boolean {
     // If the name is from the azle module then we can simply return a single
     // entry alias table here.
     if (moduleSpecifier.text === 'azle') {
-        return generateSingleEntryAliasTable(name, alias);
+        return true;
     }
     // Otherwise get the symbol table for the module so we can find the name in
     // there.
@@ -185,7 +165,7 @@ function generateAliasTableForNameInModule(
         program
     );
     if (symbolTable === undefined) {
-        return undefined;
+        return false;
     }
     // For any symbol it will be resolved as follows:
     // 1) if there is something in the symbol table it will override anything from a * import
@@ -195,7 +175,7 @@ function generateAliasTableForNameInModule(
     // So 1) Start by seeing if the symbol is in the list of exports. If so use that symbol
     const symbol = symbolTable.get(name as ts.__String);
     if (symbol) {
-        return generateAliasTableForSymbol(symbol, alias, program);
+        return isSymbolFromAzle(symbol, alias, program);
     } else {
         // We couldn't find the symbol in the symbol table for this file
         // So 2) Check if it came from an `export * from 'thing'` declaration
@@ -215,12 +195,12 @@ function generateAliasTableForNameFromStarExport(
     moduleSpecifier: ts.StringLiteral,
     alias: string,
     program: ts.Program
-): AliasTable | undefined {
+): boolean {
     const symbolTable = getSymbolTableForModuleSpecifier(
         moduleSpecifier,
         program
     );
-    if (symbolTable === undefined) return undefined;
+    if (symbolTable === undefined) return false;
 
     const subModuleSpecifier = getStarExportModuleSpecifierFor(
         name,
@@ -228,23 +208,18 @@ function generateAliasTableForNameFromStarExport(
         program
     );
 
-    if (subModuleSpecifier === undefined) return undefined;
+    if (subModuleSpecifier === undefined) return false;
 
-    return generateAliasTableForNameInModule(
-        name,
-        subModuleSpecifier,
-        alias,
-        program
-    );
+    return isNameInModuleFromAzle(name, subModuleSpecifier, alias, program);
 }
 
 // export {thing} from 'place'; or export {thing as other} from 'place';
 // import {thing} from 'place'; or import {thing as other} from 'place';
-function generateAliasTableForModuleImportExportSpecifier(
+function isImportExportSpecifierFromAzle(
     specifier: ts.ExportSpecifier | ts.ImportSpecifier,
     alias: string,
     program: ts.Program
-): AliasTable | undefined {
+): boolean {
     const identifier = getUnderlyingIdentifierFromSpecifier(specifier);
     const declaration = getDeclarationFromSpecifier(specifier);
 
@@ -252,9 +227,9 @@ function generateAliasTableForModuleImportExportSpecifier(
         !declaration.moduleSpecifier ||
         !ts.isStringLiteral(declaration.moduleSpecifier)
     ) {
-        return undefined;
+        return false;
     }
-    return generateAliasTableForNameInModule(
+    return isNameInModuleFromAzle(
         identifier.text,
         declaration.moduleSpecifier,
         alias,
@@ -267,7 +242,7 @@ function generateAliasTableForLocalExportSpecifier(
     exportSpecifier: ts.ExportSpecifier,
     alias: string,
     program: ts.Program
-): AliasTable | undefined {
+): boolean {
     const identifier = getUnderlyingIdentifierFromSpecifier(exportSpecifier);
     // TODO investigate trying to get the original symbol from the above identifier.
     // The commented out code bellow just gets the current symbol instead of the
@@ -280,19 +255,19 @@ function generateAliasTableForLocalExportSpecifier(
     // console.log("========> The new way didn't work");
     const symbolTable = getSymbolTableForNode(exportSpecifier, program);
     if (symbolTable === undefined) {
-        return undefined;
+        return false;
     }
     const symbol = symbolTable.get(identifier.text as ts.__String);
     if (symbol === undefined) {
-        return undefined;
+        return false;
     }
-    const result = generateAliasTableForSymbol(symbol, alias, program);
+    const result = isSymbolFromAzle(symbol, alias, program);
     if (result === undefined) {
-        return undefined;
+        return false;
     }
 
     if (exportSpecifier.propertyName) {
-        return renameAliasTable(result, exportSpecifier.name.text);
+        return true;
     }
     return result;
 }

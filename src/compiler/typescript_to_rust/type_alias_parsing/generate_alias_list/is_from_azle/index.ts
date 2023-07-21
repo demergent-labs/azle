@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { debug } from '../debug';
+import { debug } from '../../utils/debug';
 import {
     isExportAssignmentFromAzle,
     isAzleExportDeclaration,

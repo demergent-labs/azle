@@ -1,8 +1,8 @@
-import { AliasTable, AliasTables } from '../../utils/types';
+import { AliasTable, AliasTables } from '../../../utils/types';
 import * as ts from 'typescript';
 import { generateAliasTableFromSymbolTable } from './alias_table';
-import { getSymbolTable } from './get_symbol_table';
-import { debug } from './debug';
+import { getSymbolTable } from '../utils/get_symbol_table';
+import { debug } from '../utils/debug';
 
 export function generateAliasTables(
     files: string[],

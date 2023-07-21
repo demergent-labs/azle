@@ -9,9 +9,8 @@ import {
 } from './typescript_to_javascript/cargo_toml_files';
 import { writeCodeToFileSystem } from './write_code_to_file_system';
 import { generateRustCanister } from './generate_rust_canister';
-import { generateAliasLists } from './generate_alias_table/generate_alias_list';
-import { generateAliasLists as cool } from './generate_alias_list_test';
-import { generateAliasTables } from './generate_alias_table';
+import { generateAliasLists } from './type_alias_parsing/generate_alias_list';
+import { generateAliasTables } from './type_alias_parsing/generate_alias_table';
 import { Err, ok, unwrap } from '../utils/result';
 import {
     AzleError,
@@ -57,21 +56,6 @@ export function compileTypeScriptToRust(
         const program = ts.createProgram([canisterConfig.ts], {});
         const importSymbolTables = generateAliasTables(fileNames, program);
         const aliasList = generateAliasLists(fileNames, program);
-        const coolListBro = cool(fileNames, program);
-        // console.log(aliasList);
-        console.log(
-            'Alias List for /azle/examples/rust_type_conversions/src/index.ts:'
-        );
-        console.log(
-            aliasList[
-                '/home/bdemann/code/demergent_labs/azle/examples/rust_type_conversions/src/index.ts'
-            ]
-        );
-        console.log(
-            coolListBro[
-                '/home/bdemann/code/demergent_labs/azle/examples/rust_type_conversions/src/index.ts'
-            ]
-        );
 
         const pluginsDependencies = plugins
             .map((plugin) => {
@@ -104,7 +88,7 @@ export function compileTypeScriptToRust(
             fileNames,
             plugins,
             importSymbolTables,
-            coolListBro,
+            aliasList,
             canisterPath,
             canisterConfig
         );
