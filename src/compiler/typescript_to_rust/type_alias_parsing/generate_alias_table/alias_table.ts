@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { AliasTable } from '../../utils/types';
+import { AliasTable } from '../types';
 import { generateAliasTableForSymbol } from './process_symbol';
 
 export function generateAliasTableFromSymbolTable(
