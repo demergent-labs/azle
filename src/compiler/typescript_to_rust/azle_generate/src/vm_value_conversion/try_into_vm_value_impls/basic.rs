@@ -28,7 +28,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue>
-            for ic_cdk::export::candid::Empty
+            for candid::Empty
         {
             fn try_into_vm_value(
                 self,
@@ -41,7 +41,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue>
-            for ic_cdk::export::candid::Reserved
+            for candid::Reserved
         {
             fn try_into_vm_value(
                 self,
@@ -52,7 +52,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue>
-            for ic_cdk::export::candid::Func
+            for candid::Func
         {
             fn try_into_vm_value(
                 self,
@@ -70,7 +70,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue>
-            for ic_cdk::export::Principal
+            for candid::Principal
         {
             fn try_into_vm_value(
                 self,

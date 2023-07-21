@@ -31,7 +31,7 @@ pub fn generate(
                 .ok_or_else(|| "An argument for 'args' was not provided".to_js_error())?
                 .clone();
 
-            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value
+            let canister_id_principal: candid::Principal = canister_id_js_value
                 .try_from_vm_value(&mut *context)
                 .map_err(|vmc_err| vmc_err.to_js_error())?;
 

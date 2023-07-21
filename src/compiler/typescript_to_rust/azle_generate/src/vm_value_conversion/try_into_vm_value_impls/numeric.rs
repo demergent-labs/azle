@@ -37,7 +37,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         }
 
         impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue>
-            for ic_cdk::export::candid::Int
+            for candid::Int
         {
             fn try_into_vm_value(
                 self,
@@ -99,7 +99,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         // TODO a non-string conversion might be better
         impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue>
-            for ic_cdk::export::candid::Nat
+            for candid::Nat
         {
             fn try_into_vm_value(
                 self,

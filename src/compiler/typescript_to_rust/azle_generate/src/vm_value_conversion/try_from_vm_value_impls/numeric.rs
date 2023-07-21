@@ -43,20 +43,20 @@ pub fn generate() -> proc_macro2::TokenStream {
         // TODO it would probably be better to get the BigInt out of the JsValue and convert it more
         // TODO directly but we might run into problems with Nat and BigUint, thus I am doing a
         // TODO string conversion for now
-        impl CdkActTryFromVmValue<ic_cdk::export::candid::Int, &mut boa_engine::Context<'_>>
+        impl CdkActTryFromVmValue<candid::Int, &mut boa_engine::Context<'_>>
             for boa_engine::JsValue
         {
             fn try_from_vm_value(
                 self,
                 context: &mut boa_engine::Context,
-            ) -> Result<ic_cdk::export::candid::Int, CdkActTryFromVmValueError> {
+            ) -> Result<candid::Int, CdkActTryFromVmValueError> {
                 let int_string = self
                     .as_bigint()
                     .ok_or_else(|| "TypeError: Value is not of type 'int'")?
                     .to_string();
 
                 // TODO probably not the best conversion
-                Ok(ic_cdk::export::candid::Int::from_str(&int_string)
+                Ok(candid::Int::from_str(&int_string)
                     .map_err(|err| err.to_string())?)
             }
         }
@@ -118,20 +118,20 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryFromVmValue<ic_cdk::export::candid::Nat, &mut boa_engine::Context<'_>>
+        impl CdkActTryFromVmValue<candid::Nat, &mut boa_engine::Context<'_>>
             for boa_engine::JsValue
         {
             fn try_from_vm_value(
                 self,
                 context: &mut boa_engine::Context,
-            ) -> Result<ic_cdk::export::candid::Nat, CdkActTryFromVmValueError> {
+            ) -> Result<candid::Nat, CdkActTryFromVmValueError> {
                 let bigint_string = self
                     .as_bigint()
                     .ok_or_else(|| "TypeError: Value is not of type 'nat'")?
                     .to_string();
 
                 // TODO probably not the best conversion
-                Ok(ic_cdk::export::candid::Nat::from_str(&bigint_string)
+                Ok(candid::Nat::from_str(&bigint_string)
                     .map_err(|err| err.to_string())?)
             }
         }

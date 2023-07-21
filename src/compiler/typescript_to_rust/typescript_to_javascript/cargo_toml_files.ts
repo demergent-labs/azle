@@ -56,11 +56,11 @@ export function generateLibCargoToml(
         crate-type = ["cdylib"]
 
         [dependencies]
-        ic-cdk = "=0.8.0-beta.0"
+        ic-cdk = "=0.10.0"
         ic-cdk-macros = "=0.6.10"
         ic-cdk-timers = "=0.1.2"
         ic-stable-structures = "=0.5.2"
-        candid = { version = "=0.9.0-beta.3", features = ["parser"] }
+        candid = { version = "=0.9.1", features = ["parser"] }
         boa_engine = { git = "https://github.com/boa-dev/boa", rev = "08a72387ba5cd185f657e98d984ff2ce328da69e" }
         # boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "2613202fdc2757691ba1a20e568e5b8740e0c233" }
         # boa_engine = { path = "/home/boa/boa_engine" }
