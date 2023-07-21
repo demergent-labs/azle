@@ -1,4 +1,5 @@
 use cdk_framework::traits::CollectResults;
+use proc_macro2::TokenStream;
 use quote::quote;
 use swc_ecma_ast::{
     TsKeywordTypeKind::{TsNullKeyword, TsVoidKeyword},
@@ -7,6 +8,7 @@ use swc_ecma_ast::{
 
 use crate::{
     canister_method::{rust, AnnotatedFnDecl},
+    traits::GetName,
     ts_ast::SourceMapped,
     Error,
 };
@@ -84,18 +86,28 @@ fn generate_return_expression(
 
     let null_and_void_handler = match return_type {
         TsType::TsKeywordType(keyword) => match keyword.kind {
-            TsNullKeyword => quote! {
-                if !final_return_value.is_null() {
-                    return Err(RuntimeError::TypeError("Value is not of type 'null'".to_string()));
-                }
-            },
-            TsVoidKeyword => quote! {
-                if !final_return_value.is_undefined() {
-                    return Err(RuntimeError::TypeError("Value is not of type 'void'".to_string()));
-                }
-            },
+            TsNullKeyword => check_for_not_null_return_value(),
+            TsVoidKeyword => check_for_not_void_return_value(),
             _ => quote! {},
         },
+        TsType::TsTypeRef(type_ref) => {
+            let sm_type_ref = annotated_fn_decl.spawn(type_ref);
+            if sm_type_ref
+                .alias_table
+                .void
+                .contains(&sm_type_ref.get_name())
+            {
+                check_for_not_void_return_value()
+            } else if sm_type_ref
+                .alias_table
+                .null
+                .contains(&sm_type_ref.get_name())
+            {
+                check_for_not_null_return_value()
+            } else {
+                quote! {}
+            }
+        }
         _ => quote! {},
     };
 
@@ -105,4 +117,20 @@ fn generate_return_expression(
         Ok(final_return_value
             .try_from_vm_value(&mut *boa_context)?)
     })
+}
+
+fn check_for_not_null_return_value() -> TokenStream {
+    quote! {
+        if !final_return_value.is_null() {
+            return Err(RuntimeError::TypeError("Value is not of type 'null'".to_string()));
+        }
+    }
+}
+
+fn check_for_not_void_return_value() -> TokenStream {
+    quote! {
+        if !final_return_value.is_undefined() {
+            return Err(RuntimeError::TypeError("Value is not of type 'void'".to_string()));
+        }
+    }
 }
