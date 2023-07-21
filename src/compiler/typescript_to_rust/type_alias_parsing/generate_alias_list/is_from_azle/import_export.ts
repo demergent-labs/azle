@@ -27,11 +27,7 @@ export function isExportSpecifierFromAzle(
     }
 
     // Symbol is not from another module so we will find it locally
-    return generateAliasTableForLocalExportSpecifier(
-        exportSpecifier,
-        alias,
-        program
-    );
+    return isLocalExportSpecifierFromAzle(exportSpecifier, alias, program);
 }
 
 // export default thing
@@ -238,21 +234,12 @@ function isImportExportSpecifierFromAzle(
 }
 
 // export {thing}; or export {thing as other};
-function generateAliasTableForLocalExportSpecifier(
+function isLocalExportSpecifierFromAzle(
     exportSpecifier: ts.ExportSpecifier,
     alias: string,
     program: ts.Program
 ): boolean {
     const identifier = getUnderlyingIdentifierFromSpecifier(exportSpecifier);
-    // TODO investigate trying to get the original symbol from the above identifier.
-    // The commented out code bellow just gets the current symbol instead of the
-    // symbol that it comes from. So it literally just goes in circles until we
-    // run out of heap
-    // const symbol = program.getTypeChecker().getSymbolAtLocation(identifier);
-    // if (symbol) {
-    //     return processSymbol(originalName, symbol, program);
-    // }
-    // console.log("========> The new way didn't work");
     const symbolTable = getSymbolTableForNode(exportSpecifier, program);
     if (symbolTable === undefined) {
         return false;
@@ -261,13 +248,5 @@ function generateAliasTableForLocalExportSpecifier(
     if (symbol === undefined) {
         return false;
     }
-    const result = isSymbolFromAzle(symbol, alias, program);
-    if (result === undefined) {
-        return false;
-    }
-
-    if (exportSpecifier.propertyName) {
-        return true;
-    }
-    return result;
+    return isSymbolFromAzle(symbol, alias, program);
 }

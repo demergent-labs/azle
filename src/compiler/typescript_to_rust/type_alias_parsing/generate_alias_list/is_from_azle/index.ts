@@ -1,5 +1,4 @@
 import * as ts from 'typescript';
-import { debug } from '../../utils/debug';
 import {
     isExportAssignmentFromAzle,
     isExportDeclarationFromAzle,
@@ -65,10 +64,6 @@ function isDeclarationFromAzle(
     alias: string,
     program: ts.Program
 ): boolean {
-    if (debug.print) {
-        console.log('This is the kind we are expecting');
-        console.log(ts.SyntaxKind[declaration.kind]);
-    }
     if (ts.isExportSpecifier(declaration)) {
         // {thing} or {thing as other}
         // as in `export {thing};` or

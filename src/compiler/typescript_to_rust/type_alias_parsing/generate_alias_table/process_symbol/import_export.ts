@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { AliasTable } from '../../../utils/types';
+import { AliasTable } from '../';
 import {
     generateAliasTableFromSymbolTable,
     generateSingleEntryAliasTable,
@@ -19,7 +19,7 @@ import {
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier,
     getStarExportModuleSpecifierFor
-} from '../../utils';
+} from '../../utils/';
 import { generateAliasTableForSymbol } from '../process_symbol';
 
 // {thing} or {thing as other}
