@@ -27,9 +27,9 @@ function generateAliasList(filename: string, program: ts.Program): string[] {
 
     if (
         filename ===
-        '/home/bdemann/code/demergent_labs/azle/examples/robust_imports/src/type_alias_decls/index.ts'
+        '/home/bdemann/code/demergent_labs/azle/examples/rust_type_conversions/src/index.ts'
     ) {
-        debug.print = true;
+        debug.print = false;
     }
 
     if (sourceFile === undefined) {
@@ -94,11 +94,6 @@ export function isSymbolAzleAlias(
         return false;
     }
     let declaration = declarations[0];
-    if (debug.print) {
-        console.log(1);
-        console.log('Here at the top');
-        console.log(`Syntax Kind ${ts.SyntaxKind[declaration.kind]}`);
-    }
     if (
         ts.isTypeAliasDeclaration(declaration) &&
         ts.isTypeReferenceNode(declaration.type)
@@ -106,14 +101,8 @@ export function isSymbolAzleAlias(
         return isAzleName(declaration.type.typeName, symbolTable, program);
     }
 
-    if (debug.print) {
-        console.log(2);
-    }
     if (ts.isTypeAliasDeclaration(declaration)) {
         // TODO
-        console.log('===== TypeAliasDeclaration that isnt a type reference');
-        console.log(declaration.type);
-        console.log('=====================================================');
         return false;
     }
 
@@ -128,26 +117,12 @@ export function isSymbolAzleAlias(
             );
         });
     }
-    if (debug.print) {
-        console.log(3);
-    }
     if (ts.isVariableDeclaration(declaration)) {
         if (declaration.initializer === undefined) {
             // If the variable doesn't have an initializer then the initializer can't be an azle type
             return false;
         }
-        console.log(`looking for ${declaration.name.getText()}`);
         return isAzleExpression(declaration.initializer, symbolTable, program);
-    }
-
-    if (debug.print) {
-        console.log('vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv');
-        console.log(declaration);
-        console.log(ts.SyntaxKind[declaration.kind]);
-        console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
-    }
-    if (debug.print) {
-        console.log(4);
     }
     return false;
 }
@@ -169,19 +144,11 @@ function isAzleExpression(
     symbolTable: ts.SymbolTable,
     program: ts.Program
 ): boolean {
-    if (debug.print) {
-        console.log('Here we go');
-    }
     const symbol = getSymbolForExpression(typeRef, symbolTable, program);
     if (symbol === undefined) {
-        console.log('symbol was undefinded');
         return false;
     }
-    if (debug.print) {
-        console.log(symbol.declarations);
-    }
     const result = isSymbolAzleAlias(symbol, symbolTable, program);
-    console.log(`Is ${typeRef.getText()} an azle expression? ${result}`);
     return result;
 }
 
@@ -190,10 +157,7 @@ function getSymbolForExpression(
     symbolTable: ts.SymbolTable,
     program: ts.Program
 ): ts.Symbol | undefined {
-    console.log('++++++++++++++++++ THIS IS THE GOOD STUFF');
     if (ts.isIdentifier(typeRef)) {
-        console.log(`We are looking for ${typeRef.text} in:`);
-        console.log(symbolTable);
         return symbolTable.get(typeRef.text as ts.__String);
     }
     if (ts.isPropertyAccessExpression(typeRef)) {
@@ -203,21 +167,10 @@ function getSymbolForExpression(
             program
         );
         if (declSymbolTable === undefined) {
-            console.log(
-                'did you ever consider that we might not be able to find the symbol table?'
-            );
-            console.log(typeRef.expression.getText());
             return undefined;
         }
-        console.log(`We are looking for ${typeRef.name.text} in:`);
-        console.log(declSymbolTable);
         return declSymbolTable.get(typeRef.name.text as ts.__String);
     }
-    console.log(
-        `Did you ever consider that we were looking at a ${
-            ts.SyntaxKind[typeRef.kind]
-        }`
-    );
 }
 
 function getSymbolForEntityName(
