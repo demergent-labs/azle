@@ -43,3 +43,19 @@ export function returnInvalidVoidValue(): void {
     // @ts-expect-error
     return 'invalid type';
 }
+
+type MyVoid = void;
+
+$query;
+export function returnInvalidVoidAliasValue(): MyVoid {
+    // @ts-expect-error
+    return null;
+}
+
+type MyNull = null;
+
+$query;
+export function returnInvalidNullAliasValue(): MyNull {
+    // @ts-expect-error
+    return undefined;
+}

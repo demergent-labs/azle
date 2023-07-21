@@ -38,6 +38,16 @@ export function getInvalidPrimitiveTests(
             'return invalid void value',
             errorCanister.returnInvalidVoidValue,
             "TypeError: Value is not of type 'void'"
+        ),
+        expectError(
+            'return invalid void alias value',
+            errorCanister.returnInvalidVoidAliasValue,
+            "TypeError: Value is not of type 'void'"
+        ),
+        expectError(
+            'return invalid null alias value',
+            errorCanister.returnInvalidNullAliasValue,
+            "TypeError: Value is not of type 'null'"
         )
     ];
 }
