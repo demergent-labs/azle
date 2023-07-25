@@ -13,10 +13,9 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let memory_id: u8 = aargs
                 .get(0)
-                .ok_or_else(|| "An argument for 'memoryId' was not provided".to_js_error())?
+                .ok_or_else(|| "An argument for 'memoryId' was not provided".to_js_error(None))?
                 .clone()
-                .try_from_vm_value(&mut *context)
-                .map_err(|vmc_err| vmc_err.to_js_error())?;
+                .try_from_vm_value(&mut *context)?;
 
             match memory_id {
                 #(#match_arms)*
@@ -24,7 +23,7 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
                     "Memory id {} does not have an associated StableBTreeMap",
                     memory_id
                 )
-                .to_js_error()),
+                .to_js_error(None)),
             }
         }
     }
@@ -47,16 +46,29 @@ fn generate_match_arms(
                             .borrow()
                             .iter()
                             .map(|(key_wrapper_type, value_wrapper_type)| {
-                                let key = key_wrapper_type.0.try_into_vm_value(&mut *context).map_err(|vmc_err| vmc_err.to_js_error())?;
-                                let value = value_wrapper_type.0.try_into_vm_value(&mut *context).map_err(|vmc_err| vmc_err.to_js_error())?;
+                                let key = key_wrapper_type
+                                    .0
+                                    .try_into_vm_value(&mut *context)
+                                    .map_err(|vmc_err| vmc_err.to_js_error(None))?;
+                                let value = value_wrapper_type
+                                    .0
+                                    .try_into_vm_value(&mut *context)
+                                    .map_err(|vmc_err| vmc_err.to_js_error(None))?;
                                 let tuple = vec![key, value];
 
-                                Ok(boa_engine::object::builtins::JsArray::from_iter(tuple, &mut *context).into())
+                                Ok(boa_engine::object::builtins::JsArray::from_iter(
+                                    tuple,
+                                    &mut *context,
+                                )
+                                .into())
                             })
-                            .collect::<Result<Vec<_>,boa_engine::JsError>>()
+                            .collect::<Result<Vec<_>, boa_engine::JsError>>()
                     })?;
 
-                    Ok(boa_engine::object::builtins::JsArray::from_iter(items, &mut *context).into())
+                    Ok(
+                        boa_engine::object::builtins::JsArray::from_iter(items, &mut *context)
+                            .into(),
+                    )
                 }
             }
         })

@@ -12,7 +12,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                                 .reject
                                 .call(
                                     &boa_engine::JsValue::undefined(),
-                                    &[vmc_err.to_js_error().to_opaque(&mut *boa_context)],
+                                    &[vmc_err.to_js_error(None).to_opaque(&mut *boa_context)],
                                     &mut *boa_context,
                                 )
                                 .unwrap_or_trap(&mut *boa_context)
@@ -42,7 +42,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                                 .reject
                                 .call(
                                     &boa_engine::JsValue::undefined(),
-                                    &[vmc_err.to_js_error().to_opaque(&mut *boa_context)],
+                                    &[vmc_err.to_js_error(None).to_opaque(&mut *boa_context)],
                                     &mut *boa_context,
                                 )
                                 .unwrap_or_trap(&mut *boa_context)

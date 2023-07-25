@@ -7,24 +7,22 @@ pub fn generate() -> proc_macro2::TokenStream {
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let interval_js_value = aargs
                 .get(0)
-                .ok_or_else(|| "An argument for 'interval' was not provided".to_js_error())?
+                .ok_or_else(|| "An argument for 'interval' was not provided".to_js_error(None))?
                 .clone();
             let func_js_value = aargs
                 .get(1)
-                .ok_or_else(|| "An argument for 'callback' was not provided".to_js_error())?;
+                .ok_or_else(|| "An argument for 'callback' was not provided".to_js_error(None))?;
 
-            let interval_as_u64: u64 = interval_js_value
-                .try_from_vm_value(&mut *context)
-                .map_err(|vmc_err| vmc_err.to_js_error())?;
+            let interval_as_u64: u64 = interval_js_value.try_from_vm_value(&mut *context)?;
             let interval = core::time::Duration::new(interval_as_u64, 0);
 
             if !func_js_value.is_callable() {
-                return Err("TypeError: 'callback' is not a function".to_js_error());
+                return Err("TypeError: 'callback' is not a function".to_js_error(None));
             }
 
             let func_js_object = func_js_value
                 .as_object()
-                .ok_or_else(|| "TypeError: 'callback' is not a function".to_js_error())?
+                .ok_or_else(|| "TypeError: 'callback' is not a function".to_js_error(None))?
                 .clone();
 
             let closure = move || {
@@ -70,7 +68,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
             timer_id
                 .try_into_vm_value(context)
-                .map_err(|vmc_err| vmc_err.to_js_error())
+                .map_err(|vmc_err| vmc_err.to_js_error(None))
         }
     }
 }

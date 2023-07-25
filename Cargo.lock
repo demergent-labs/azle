@@ -105,7 +105,7 @@ checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 [[package]]
 name = "cdk_framework"
 version = "0.0.0"
-source = "git+https://github.com/demergent-labs/cdk_framework?rev=e811c6d7bbb59cbdf82c9370511afd57a2b2a35a#e811c6d7bbb59cbdf82c9370511afd57a2b2a35a"
+source = "git+https://github.com/demergent-labs/cdk_framework?rev=4e8e258046f9fb4e92e0e5015e14682d7d13d970#4e8e258046f9fb4e92e0e5015e14682d7d13d970"
 dependencies = [
  "proc-macro2",
  "quote",

@@ -27,8 +27,8 @@ pub fn generate_list_into_vm_value_impl(function_name: String) -> TokenStream {
 pub fn generate_from_vm_value_impl(function_name: String) -> TokenStream {
     let function_name = function_name.to_ident().to_token_stream();
     quote! {
-        impl CdkActTryFromVmValue<#function_name, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#function_name, CdkActTryFromVmValueError> {
+        impl CdkActTryFromVmValue<#function_name, boa_engine::JsError, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#function_name, boa_engine::JsError> {
                 let candid_func: candid::Func = self.try_from_vm_value(context)?;
                 Ok(#function_name::new(candid_func.principal, candid_func.method))
             }
@@ -39,8 +39,8 @@ pub fn generate_from_vm_value_impl(function_name: String) -> TokenStream {
 pub fn generate_list_from_vm_value_impl(function_name: String) -> TokenStream {
     let function_name = function_name.to_ident().to_token_stream();
     quote! {
-        impl CdkActTryFromVmValue<Vec<#function_name>, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<#function_name>, CdkActTryFromVmValueError> {
+        impl CdkActTryFromVmValue<Vec<#function_name>, boa_engine::JsError, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
+            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<#function_name>, boa_engine::JsError> {
                 try_from_vm_value_generic_array(self, context)
             }
         }

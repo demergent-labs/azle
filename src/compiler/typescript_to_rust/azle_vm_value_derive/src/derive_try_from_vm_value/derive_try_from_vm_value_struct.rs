@@ -11,7 +11,7 @@ pub fn generate(
     data_struct: &DataStruct,
     generics: &Generics,
 ) -> Result<TokenStream, Error> {
-    let (_, value_is_not_an_object_error_message, _) = derive_error_messages(struct_name);
+    let value_is_not_of_struct_type_error_message = derive_error_message(struct_name);
 
     let properties = derive_properties(struct_name, data_struct)?;
 
@@ -22,6 +22,7 @@ pub fn generate(
     Ok(quote! {
         impl #impl_generics CdkActTryFromVmValue<
             #struct_name #ty_generics,
+            boa_engine::JsError,
             &mut boa_engine::Context<'_>
         >
             for boa_engine::JsValue
@@ -30,10 +31,14 @@ pub fn generate(
             fn try_from_vm_value(
                 self,
                 context: &mut boa_engine::Context
-            ) -> Result<#struct_name #ty_generics, CdkActTryFromVmValueError> {
+            ) -> Result<#struct_name #ty_generics, boa_engine::JsError> {
                 let object = self
                     .as_object()
-                    .ok_or_else(|| #value_is_not_an_object_error_message)?;
+                    .ok_or_else(|| {
+                        let cause = "TypeError: Value is not an object".to_js_error(None);
+
+                        #value_is_not_of_struct_type_error_message.to_js_error(Some(cause))
+                    })?;
 
                 #properties
             }
@@ -43,36 +48,14 @@ pub fn generate(
     })
 }
 
-fn derive_error_messages(struct_name: &Ident) -> (String, String, String) {
+fn derive_error_message(struct_name: &Ident) -> String {
     let struct_name_string = struct_name.to_string();
 
-    let value_is_not_of_struct_type_error_message =
-        format!("TypeError: Value is not of type '{}'", &struct_name_string);
-
-    let value_is_not_an_object_error_message = format!(
-        "[TypeError: Value is not of type '{}'] {{\n  \
-            [cause]: TypeError: Value is not an object\n\
-        }}",
-        &struct_name_string
-    );
-
-    let value_is_missing_properties_error_message = format!(
-        "[TypeError: Value is not of type '{}'] {{\n  \
-            [cause]: TypeError: One or more properties are of an incorrect type\n\
-        }}",
-        &struct_name_string
-    );
-
-    (
-        value_is_not_of_struct_type_error_message,
-        value_is_not_an_object_error_message,
-        value_is_missing_properties_error_message,
-    )
+    format!("TypeError: Value is not of type '{}'", &struct_name_string)
 }
 
 fn derive_properties(struct_name: &Ident, data_struct: &DataStruct) -> Result<TokenStream, Error> {
-    let (value_is_not_of_struct_type_error_message, _, value_is_missing_properties_error_message) =
-        derive_error_messages(struct_name);
+    let value_is_not_of_struct_type_error_message = derive_error_message(struct_name);
 
     let field_js_value_result_variable_definitions =
         derive_field_js_value_result_variable_definitions(struct_name, data_struct)?;
@@ -100,16 +83,16 @@ fn derive_properties(struct_name: &Ident, data_struct: &DataStruct) -> Result<To
                         return Ok(#struct_instantiation);
                     },
                     _ => {
-                        return Err(CdkActTryFromVmValueError(
-                            #value_is_missing_properties_error_message.to_string()
-                        ));
+                        let cause = "TypeError: One or more properties are of an incorrect type".to_js_error(None);
+
+                        return Err(#value_is_not_of_struct_type_error_message.to_js_error(Some(cause)));
                     }
                 };
             },
             _ => {
-                return Err(CdkActTryFromVmValueError(
-                    #value_is_not_of_struct_type_error_message.to_string()
-                ));
+                return Err(
+                    #value_is_not_of_struct_type_error_message.to_js_error(None)
+                );
             }
         };
     })

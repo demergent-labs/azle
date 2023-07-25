@@ -4,7 +4,6 @@ use quote::quote;
 pub fn generate() -> TokenStream {
     quote! {
         enum RuntimeError {
-            FromVmValueError(String), // TODO: Consider this might be the same as TypeError
             IntoVmValueError(String), // TODO: Consider this might be the same as TypeError
             JsError(boa_engine::JsError),
             ReferenceError(String),
@@ -15,7 +14,6 @@ pub fn generate() -> TokenStream {
         impl RuntimeError {
             pub fn to_string(&self) -> String {
                 match self {
-                    Self::FromVmValueError(msg) => msg.to_string(),
                     Self::IntoVmValueError(msg) => msg.to_string(),
                     Self::JsError(js_error_value) => {
                         BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
@@ -34,12 +32,6 @@ pub fn generate() -> TokenStream {
         impl From<boa_engine::JsError> for RuntimeError {
             fn from(value: boa_engine::JsError) -> Self {
                 Self::JsError(value)
-            }
-        }
-
-        impl From<CdkActTryFromVmValueError> for RuntimeError {
-            fn from(value: CdkActTryFromVmValueError) -> Self {
-                Self::FromVmValueError(value.0)
             }
         }
 

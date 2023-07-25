@@ -13,14 +13,13 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let memory_id: u8 = aargs
                 .get(0)
-                .ok_or_else(|| "An argument for 'memoryId' was not provided".to_js_error())?
+                .ok_or_else(|| "An argument for 'memoryId' was not provided".to_js_error(None))?
                 .clone()
-                .try_from_vm_value(&mut *context)
-                .map_err(|vmc_err| vmc_err.to_js_error())?;
+                .try_from_vm_value(&mut *context)?;
 
             let key_js_value = aargs
                 .get(1)
-                .ok_or_else(|| "An argument for 'key' was not provided".to_js_error())?
+                .ok_or_else(|| "An argument for 'key' was not provided".to_js_error(None))?
                 .clone();
 
             match memory_id {
@@ -29,7 +28,7 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
                     "Memory id {} does not have an associated StableBTreeMap",
                     memory_id
                 )
-                .to_js_error()),
+                .to_js_error(None)),
             }
         }
     }
@@ -53,11 +52,8 @@ fn generate_match_arms(
 
             quote! {
                 #memory_id => {
-                    let wrapped_key = &#key_wrapper_type_name(
-                        key_js_value
-                            .try_from_vm_value(&mut *context)
-                            .map_err(|vmc_err| vmc_err.to_js_error())?,
-                    );
+                    let wrapped_key =
+                        &#key_wrapper_type_name(key_js_value.try_from_vm_value(&mut *context)?);
 
                     #map_name_ident
                         .with(|stable_b_tree_map_ref_cell| {
@@ -66,7 +62,7 @@ fn generate_match_arms(
                                 .contains_key(wrapped_key)
                         })
                         .try_into_vm_value(&mut *context)
-                        .map_err(|vmc_err| vmc_err.to_js_error())
+                        .map_err(|vmc_err| vmc_err.to_js_error(None))
                 }
             }
         })

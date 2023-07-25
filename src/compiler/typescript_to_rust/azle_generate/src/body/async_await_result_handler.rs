@@ -108,7 +108,9 @@ fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
             let reply_value: (#return_type) = js_value
                 .clone()
                 .try_from_vm_value(&mut *boa_context)
-                .map_err(|vmc_err| vmc_err.0)?;
+                .map_err(|js_error: boa_engine::JsError| {
+                    js_error.to_std_string(&mut *boa_context)
+                })?;
 
             ic_cdk::api::call::reply((reply_value,));
         }

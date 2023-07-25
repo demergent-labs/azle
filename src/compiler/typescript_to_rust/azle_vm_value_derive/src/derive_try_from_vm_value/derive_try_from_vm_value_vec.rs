@@ -8,6 +8,7 @@ pub fn generate(name: &Ident, generics: &Generics) -> TokenStream {
     quote! {
         impl #impl_generics CdkActTryFromVmValue<
             Vec<#name #ty_generics>,
+            boa_engine::JsError,
             &mut boa_engine::Context<'_>
         >
             for boa_engine::JsValue
@@ -16,15 +17,15 @@ pub fn generate(name: &Ident, generics: &Generics) -> TokenStream {
             fn try_from_vm_value(
                 self,
                 context: &mut boa_engine::Context
-            ) -> Result<Vec<#name #ty_generics>, CdkActTryFromVmValueError> {
+            ) -> Result<Vec<#name #ty_generics>, boa_engine::JsError> {
+                let error_message = "TypeError: Value is not of type 'Vec'";
+
                 let js_object = self
                     .as_object()
-                    .ok_or_else(|| "TypeError: Value is not of type 'Vec'")?;
+                    .ok_or_else(|| error_message.to_js_error(None))?;
 
                 if !js_object.is_array() {
-                    return Err(CdkActTryFromVmValueError(
-                        "TypeError: Value is not of type 'Vec'".to_string(),
-                    ));
+                    return Err(error_message.to_js_error(None));
                 }
 
 
@@ -33,10 +34,7 @@ pub fn generate(name: &Ident, generics: &Generics) -> TokenStream {
 
                 loop {
                     let js_value = js_object.get(index, context).map_err(|err| {
-                        format!(
-                            "[TypeError: Value is not of type 'Vec'] {{\n  [cause]: {}\n}}",
-                            err.to_string()
-                        )
+                        error_message.to_js_error(Some(err))
                     })?;
 
                     if js_value.is_undefined() {
@@ -45,12 +43,7 @@ pub fn generate(name: &Ident, generics: &Generics) -> TokenStream {
 
                     result.push(js_value
                         .try_from_vm_value(&mut *context)
-                        .map_err(|variant_err| {
-                            format!(
-                                "[TypeError: Value is not of type 'Vec'] {{\n  [cause]: {}\n}}",
-                                variant_err.0
-                            )
-                        })?);
+                        .map_err(|variant_err| error_message.to_js_error(Some(variant_err)))?);
                     index += 1;
                 }
 

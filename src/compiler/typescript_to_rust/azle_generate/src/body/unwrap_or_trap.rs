@@ -82,7 +82,7 @@ pub fn generate() -> TokenStream {
 
                     match string_js_value.try_from_vm_value(context) {
                         Ok(string) => string,
-                        Err(vmc_err) => vmc_err.0
+                        Err(js_error) => return format!("SystemError: {}", js_error)
                     }
                 }
                 boa_engine::JsValue::Rational(rational) => rational.to_string(),
