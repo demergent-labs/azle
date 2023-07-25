@@ -22,8 +22,8 @@ import {
 } from '../../utils/';
 import { generateAliasTableForSymbol } from '../process_symbol';
 
-// {thing} or {thing as other}
-// as in `export {thing};` or
+// Generates an alias table for 'thing' in {thing} or {other as thing} as in:
+// `export {thing};` or
 // `export {thing as other} from 'place';`
 export function generateAliasTableForExportSpecifier(
     exportSpecifier: ts.ExportSpecifier,
@@ -32,6 +32,7 @@ export function generateAliasTableForExportSpecifier(
 ): AliasTable | undefined {
     const exportDecl = getDeclarationFromSpecifier(exportSpecifier);
     if (exportDecl.moduleSpecifier) {
+        // If there is a module specifier (ie `export {thing} from 'place'`)
         return generateAliasTableForModuleImportExportSpecifier(
             exportSpecifier,
             alias,
@@ -40,6 +41,7 @@ export function generateAliasTableForExportSpecifier(
     }
 
     // Symbol is not from another module so we will find it locally
+    // ie there is no module specifier (ie `export {thing}`)
     return generateAliasTableForLocalExportSpecifier(
         exportSpecifier,
         alias,
@@ -47,6 +49,8 @@ export function generateAliasTableForExportSpecifier(
     );
 }
 
+// Generates an alias table for 'thing' as in:
+// `export default thing`
 export function generateAliasTableForExportAssignment(
     exportAssignment: ts.ExportAssignment,
     alias: string,
@@ -59,6 +63,9 @@ export function generateAliasTableForExportAssignment(
     }
 }
 
+// Generates an alias table for 'thing' in {thing} or {other as thing} as in:
+// `import {thing} from 'place'` or
+// `import {other as thing} from 'place'`
 export function generateAliasTableForImportSpecifier(
     importSpecifier: ts.ImportSpecifier,
     alias: string,
@@ -71,6 +78,8 @@ export function generateAliasTableForImportSpecifier(
     );
 }
 
+// Generates an alias table for 'thing' as in:
+// `import thing from 'place'`
 export function generateAliasTableForImportClause(
     importClause: ts.ImportClause,
     alias: string,
@@ -87,18 +96,33 @@ export function generateAliasTableForImportClause(
     );
 }
 
+// Generates an alias table for an export declaration as in:
+// export * from 'place'
+// CAUTION: Export Declarations like this often come in groups (eg export * from
+// 'place' and export * from 'otherPlace' would both be in the list of
+// declarations) and this function is only meant to process one at a time.
+// generateAliasTableForExportDeclarations() should be called for a list of
+// Export Declarations.
 export function generateAliasTableForExportDeclaration(
     exportDeclaration: ts.ExportDeclaration,
     program: ts.Program
 ): AliasTable | undefined {
     const moduleSpecifier = exportDeclaration.moduleSpecifier;
     if (moduleSpecifier === undefined || !ts.isStringLiteral(moduleSpecifier)) {
-        // Unreachable: An export declaration with a namespace export will always have a FromClause
+        // Unreachable: An export declaration with a ExportFromClause will
+        // always have a FromClause. That FromClause will be `from
+        // ModuleSpecifier` and that ModuleSpecifier will always be a
+        // StringLiteral
         // https://262.ecma-international.org/13.0/#sec-exports
         return undefined;
     }
     if (exportDeclaration.exportClause) {
-        // Unreachable: An export declaration with a namespace export will never have an ExportClause
+        // Unreachable: An export declaration with a * export will never have an
+        // exportClause.
+        // I don't understand why I thought this was an important check to make.
+        // It seems completely unecessary as is. If anything we would want to
+        // raise an error here because we shouldn't have gotten here. If we
+        // aren't going to do that then there is no reason to have this here
         // https://262.ecma-international.org/13.0/#sec-exports
         return undefined;
     }
@@ -134,6 +158,10 @@ export function generateAliasTableForExportDeclarations(
     }, EMPTY_ALIAS_TABLE);
 }
 
+// The simplest example of this is `export * as namespace from 'azle';` and it
+// would generate an alias table that looked like this `{blob: [namespace.blob],
+// float32: [namespace.float32], ... vec: [namespace.vec]} which is the
+// DEFAULT_ALIAS_TABLE prefixed with the namespace
 export function generateAliasTableForNamespaceImportExport(
     namespace: ts.NamespaceImport | ts.NamespaceExport,
     program: ts.Program
