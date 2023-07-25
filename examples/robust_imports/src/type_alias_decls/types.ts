@@ -17,14 +17,36 @@ export type TextAlias = string;
 export type Float64Alias = number;
 export type VoidAlias = void;
 export const $queryAlias = $query;
+export type UserDefinedAlias = Record<{ num: Float64Alias }>;
 
 export type MixedIntAlias =
     mixed.mixedAlias.deepAlias.deeperAlias.deepestAlias.int;
 export type MixedTextAlias = mixedAlias.deepAlias.deeperAlias.deepestAlias.text;
+export type MixedRecordAlias<T extends object> =
+    mixedAlias.deepAlias.deeperAlias.deepestAlias.Record<T>;
+export type MixedUserDefinedAlias =
+    mixedAlias.deepAlias.deeperAlias.deepestAlias.Record<{
+        num: MixedIntAlias;
+    }>;
+export type MixedStarRecord = mixed.mixedAlias.StarRecord;
+export type MixedConcreteStar = mixed.mixedAlias.StartRecordAlias<{
+    star: boolean;
+}>;
 
 export type StirredTextAlias =
     stirredAlias.deepAlias.deeperAlias.deepestAlias.text;
 export type StirredIntAlias = deepAlias.deeperAlias.deepestAlias.int;
+export type StirredRecordAlias<T extends object> =
+    stirredAlias.deepAlias.deeperAlias.deepestAlias.Record<T>;
+// TODO figure out why this one isn't working
+// export type StirredUserDefinedAlias =
+//     stirredAlias.deepAlias.deeperAlias.deepestAlias.Record<{
+//         num: StirredIntAlias;
+//     }>;
+export type StirredUserDefinedAlias =
+    mixedAlias.deepAlias.deeperAlias.deepestAlias.Record<{
+        num: StirredIntAlias;
+    }>;
 
 export type DeepBlobAlias = deep.deepAlias.deeperAlias.deepestAlias.blob;
 export type DeepEmptyAlias = deep.deepAlias.deeperAlias.deepestAlias.empty;

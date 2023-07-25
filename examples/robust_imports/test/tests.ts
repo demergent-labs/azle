@@ -3,6 +3,7 @@ import { Principal } from '@dfinity/principal';
 import { execSync } from 'child_process';
 import { _SERVICE } from '../dfx_generated/robust_imports/robust_imports.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { match } from 'azle';
 
 export function getTests(
     robustImportsCanister: ActorSubclass<_SERVICE>
@@ -305,6 +306,7 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
             name: "Is Fruit Prepared? It shouldn't be yet",
             test: async () => {
                 await fruit.removeRambutanSkins();
+                // TODO MAKE SURE THIS DOESN'T END UP GETTING MERGED!!!!!!
                 // try {
                 //     await fruit.dirtyIlama();
                 //     return { Ok: false };
@@ -485,6 +487,32 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await canister.getManualAlias();
                 return { Ok: result === 9.87 };
+            }
+        },
+        {
+            name: 'TODO make this a better name',
+            test: async () => {
+                const input = { name: 'Bob', age: { num: 7n } };
+                const height = 1.23;
+                const result = await canister.addHeight(input, height);
+                return {
+                    Ok:
+                        result.name == input.name &&
+                        result.age.num === input.age.num &&
+                        result.height.num === height
+                };
+            }
+        },
+        {
+            name: 'Check * exports for aliases',
+            test: async () => {
+                const result = await canister.compareStars(
+                    { star: true },
+                    { star: true }
+                );
+                return {
+                    Ok: match(result, { Ok: () => true, Err: () => false })
+                };
             }
         }
     ];

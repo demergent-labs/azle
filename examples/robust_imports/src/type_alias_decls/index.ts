@@ -24,6 +24,86 @@ type NumberAliases = azle.Record<{
     twelfth: LocalIntAlias;
 }>;
 
+// TODO can we have aliases like this? I mean imagine using azle.Result. We want
+// that, but will it work?
+// type MyMixedRecord = types.MixedRecordAlias<{
+//     name: azle.text;
+//     age: types.MixedUserDefinedAlias;
+// }>;
+// type MyStirredRecord = types.StirredRecordAlias<{
+//     name: azle.text;
+//     age: types.StirredUserDefinedAlias;
+//     height: types.UserDefinedAlias;
+// }>;
+
+import {
+    MixedUserDefinedAlias,
+    UserDefinedAlias,
+    StirredUserDefinedAlias
+} from './types';
+
+type MyMixedRecord = types.MixedRecordAlias<{
+    name: azle.text;
+    age: MixedUserDefinedAlias;
+}>;
+type MyStirredRecord = types.StirredRecordAlias<{
+    name: azle.text;
+    age: StirredUserDefinedAlias;
+    height: UserDefinedAlias;
+}>;
+
+azle.$query;
+export function addHeight(
+    mixed: MyMixedRecord,
+    height: azle.float64
+): MyStirredRecord {
+    return {
+        name: mixed.name,
+        age: { num: mixed.age.num },
+        height: { num: height }
+    };
+}
+
+// TODO get this more robust test working
+// import { MixedStarRecord, MixedConcreteStar } from './types';
+// import {
+//     MixedStarRecord as ImportedRecord,
+//     MixedConcreteStar as ImportedConcrete
+// } from './types';
+// type FakeConcreteStar = MixedConcreteStar;
+// type FakeMixedStarRecord = MixedStarRecord;
+// azle.$query;
+// export function compareStars(
+//     record: MixedStarRecord,
+//     concrete: MixedConcreteStar,
+//     fakeRecord: FakeMixedStarRecord,
+//     fakeConcrete: FakeConcreteStar,
+//     typeRecord: types.MixedStarRecord,
+//     typeConcrete: types.MixedConcreteStar,
+//     importedRecord: ImportedRecord,
+//     importedConcrete: ImportedConcrete
+// ): azle.Result<boolean, string> {
+//     return azle.Result.Ok(
+//         record.star === concrete.star &&
+//             fakeRecord.star === fakeConcrete.star &&
+//             typeRecord.star === typeConcrete.star &&
+//             importedRecord.star === importedConcrete.star &&
+//             record.star === fakeRecord.star &&
+//             record.star === typeRecord.star &&
+//             record.star === importedRecord.star
+//     );
+// }
+
+import { MixedConcreteStar } from './types';
+import { Result } from 'azle'; // TODO replace this below with azle.Result and make sure that works
+azle.$query;
+export function compareStars(
+    record: MixedConcreteStar,
+    concrete: MixedConcreteStar
+): Result<boolean, string> {
+    return azle.Result.Ok(record.star === concrete.star);
+}
+
 azle.$query;
 export function helloTextAlias(): types.TextAlias {
     return HELLO_WORLD;
