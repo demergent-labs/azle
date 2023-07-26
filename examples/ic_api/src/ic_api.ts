@@ -88,6 +88,12 @@ export function canisterBalance128(): nat {
     return ic.canisterBalance128();
 }
 
+// returns the canister's version number
+$query;
+export function canisterVersion(): nat {
+    return ic.canisterVersion();
+}
+
 // When called from a query call, returns the data certificate authenticating certified data set by this canister. Returns None if not called from a query call.
 $query;
 export function dataCertificate(): Opt<blob> {
@@ -104,6 +110,19 @@ export function dataCertificateNull(): Opt<blob> {
 $query;
 export function id(): Principal {
     return ic.id();
+}
+
+// Returns the number of instructions that the canister executed since the last
+// entry point.
+$query;
+export function instructionCounter(): nat64 {
+    return ic.instructionCounter();
+}
+
+// determines whether the given principal is a controller of the canister
+$query;
+export function isController(principal: Principal): boolean {
+    return ic.isController(principal);
 }
 
 $query;

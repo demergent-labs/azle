@@ -9,15 +9,32 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
         fn stable_b_tree_map_insert(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
-            context: &mut boa_engine::Context
+            context: &mut boa_engine::Context,
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let memory_id: u8 = aargs.get(0).unwrap().clone().try_from_vm_value(&mut *context).unwrap();
-            let key_js_value = aargs.get(1).unwrap().clone();
-            let value_js_value = aargs.get(2).unwrap().clone();
+            let memory_id: u8 = aargs
+                .get(0)
+                .ok_or_else(|| "An argument for 'memoryId' was not provided".to_js_error())?
+                .clone()
+                .try_from_vm_value(&mut *context)
+                .map_err(|vmc_err| vmc_err.to_js_error())?;
+
+            let key_js_value = aargs
+                .get(1)
+                .ok_or_else(|| "An argument for 'key' was not provided".to_js_error())?
+                .clone();
+
+            let value_js_value = aargs
+                .get(2)
+                .ok_or_else(|| "An argument for 'value' was not provided".to_js_error())?
+                .clone();
 
             match memory_id {
                 #(#match_arms)*
-                _ => panic!("memory_id {} does not have an associated StableBTreeMap", memory_id)
+                _ => Err(format!(
+                    "Memory id {} does not have an associated StableBTreeMap",
+                    memory_id
+                )
+                .to_js_error()),
             }
         }
     }
@@ -48,17 +65,22 @@ fn generate_match_arms(
             quote! {
                 #memory_id => {
                     let key = #key_wrapper_type_name(
-                        key_js_value.try_from_vm_value(&mut *context).unwrap()
+                        key_js_value
+                            .try_from_vm_value(&mut *context)
+                            .map_err(|vmc_err| vmc_err.to_js_error())?,
                     );
                     let value = #value_wrapper_type_name(
-                        value_js_value.try_from_vm_value(&mut *context).unwrap()
+                        value_js_value
+                            .try_from_vm_value(&mut *context)
+                            .map_err(|vmc_err| vmc_err.to_js_error())?,
                     );
 
-                    let insert_result = #map_name_ident.with(|stable_b_tree_map_ref_cell| {
-                        stable_b_tree_map_ref_cell.borrow_mut().insert(key, value)
-                    });
-
-                    Ok(insert_result.try_into_vm_value(&mut *context).unwrap())
+                    #map_name_ident
+                        .with(|stable_b_tree_map_ref_cell| {
+                            stable_b_tree_map_ref_cell.borrow_mut().insert(key, value)
+                        })
+                        .try_into_vm_value(&mut *context)
+                        .map_err(|vmc_err| vmc_err.to_js_error())
                 }
             }
         })

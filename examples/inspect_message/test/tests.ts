@@ -33,7 +33,7 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: ((error as any).message as string).includes(
-                            'Code: 403'
+                            'IC0516'
                         )
                     };
                 }
@@ -52,7 +52,7 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: ((error as any).message as string).includes(
-                            'Code: 500'
+                            'IC0503'
                         )
                     };
                 }

@@ -24,20 +24,35 @@ pub fn generate(
         fn #call_with_payment_wrapper_fn_name(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
-            context: &mut boa_engine::Context
+            context: &mut boa_engine::Context,
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let canister_id_js_value = aargs.get(0).unwrap().clone();
-            let canister_id_principal: ic_cdk::export::Principal = canister_id_js_value.try_from_vm_value(&mut *context).unwrap();
+            let canister_id_js_value = aargs
+                .get(0)
+                .ok_or_else(|| "An argument for 'canisterId' was not provided".to_js_error())?
+                .clone();
 
-            let args_js_value = aargs.get(1).unwrap().clone();
-            let args_js_object = args_js_value.as_object().unwrap();
+            let args_js_value = aargs
+                .get(1)
+                .ok_or_else(|| "An argument for 'args' was not provided".to_js_error())?
+                .clone();
+
+            let canister_id_principal: candid::Principal = canister_id_js_value
+                .try_from_vm_value(&mut *context)
+                .map_err(|vmc_err| vmc_err.to_js_error())?;
+
+            let args_js_object = args_js_value
+                .as_object()
+                .ok_or_else(|| "'args' is not an object".to_js_error())?;
 
             #(#param_variables)*
 
-            let cycles_js_value = args_js_object.get(#index_string, context).unwrap();
-            let cycles: u64 = cycles_js_value.try_from_vm_value(&mut *context).unwrap();
+            let cycles_js_value = args_js_object.get(#index_string, context)?;
+            let cycles: u64 = cycles_js_value
+                .try_from_vm_value(&mut *context)
+                .map_err(|vmc_err| vmc_err.to_js_error())?;
 
-            let (js_promise, js_promise_resolvers) = boa_engine::object::builtins::JsPromise::new_pending(context);
+            let (js_promise, js_promise_resolvers) =
+                boa_engine::object::builtins::JsPromise::new_pending(context);
 
             ic_cdk::spawn(async move {
                 #pre_await_state_management
@@ -45,8 +60,9 @@ pub fn generate(
                 let call_result = #call_with_payment_function_name_ident(
                     canister_id_principal,
                     #args,
-                    cycles
-                ).await;
+                    cycles,
+                )
+                .await;
 
                 #post_await_state_management
 

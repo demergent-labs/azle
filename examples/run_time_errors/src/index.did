@@ -1,17 +1,102 @@
+type OtherUserDefinedRecord = record { id : text };
+type UserDefinedRecord = record {
+  "int" : int;
+  string : text;
+  boolean : bool;
+  otherUserDefinedRecord : OtherUserDefinedRecord;
+};
+type UserDefinedVariant = variant {
+  Gamma : int;
+  Beta : bool;
+  Zeta : record { int; text };
+  Delta : text;
+  Epsilon : UserDefinedRecord;
+  Alpha;
+};
 service : () -> {
   accessible : () -> (bool);
   alsoInaccessible : () -> (bool);
   getInitialized : () -> (bool) query;
   inaccessible : () -> (bool);
+  returnArrayWithInvalidUserDefinedRecord : () -> (vec UserDefinedRecord) query;
+  returnArrayWithInvalidUserDefinedVariant : () -> (
+      vec UserDefinedVariant,
+    ) query;
+  returnArrayWithInvalidVecItem : () -> (vec text) query;
+  returnArrayWithOnlyPrincipalAsInvalidFunc : () -> (func () -> () query) query;
   returnBothSomeAndNone : () -> (opt text) query;
+  returnEmptyArrayAsInvalidFunc : () -> (func () -> () query) query;
+  returnEmptyObjectAsInvalidBlob : () -> (vec nat8) query;
+  returnEmptyObjectAsInvalidFunc : () -> (func () -> () query) query;
+  returnEmptyObjectAsInvalidPrincipal : () -> (principal) query;
+  returnEmptyObjectAsInvalidUserDefinedRecord : () -> (UserDefinedRecord) query;
+  returnEmptyObjectAsInvalidUserDefinedVariant : () -> (
+      UserDefinedVariant,
+    ) query;
+  returnEmptyObjectPrincipalAsInvalidFunc : () -> (func () -> () query) query;
+  returnInvalidBooleanValue : () -> (bool) query;
+  returnInvalidEmptyValue : () -> (empty) query;
+  returnInvalidFloat32 : () -> (float32) query;
+  returnInvalidFloat64 : () -> (float64) query;
+  returnInvalidInt : () -> (int) query;
+  returnInvalidInt16 : () -> (int16) query;
+  returnInvalidInt32 : () -> (int32) query;
+  returnInvalidInt64 : () -> (int64) query;
+  returnInvalidInt8 : () -> (int8) query;
+  returnInvalidNat : () -> (nat) query;
+  returnInvalidNat16 : () -> (nat16) query;
+  returnInvalidNat32 : () -> (nat32) query;
+  returnInvalidNat64 : () -> (nat64) query;
+  returnInvalidNat8 : () -> (nat8) query;
+  returnInvalidNullValue : () -> (null) query;
+  returnInvalidNumber : () -> (float64) query;
+  returnInvalidPrincipalFromTooShortOfText : () -> (principal) query;
   returnInvalidSomeValue : () -> (opt text) query;
+  returnInvalidStringValue : () -> (text) query;
+  returnInvalidTextValue : () -> (text) query;
+  returnInvalidToTextPropertyAsInvalidPrincipal : () -> (principal) query;
+  returnInvalidToTextReturnValueAsInvalidPrincipal : () -> (principal) query;
+  returnInvalidVoidValue : () -> () query;
+  returnNonArrayAsInvalidVec : () -> (vec text) query;
+  returnNonArrayValueAsInvalidFunc : () -> (func () -> () query) query;
   returnNonNullNone : () -> (opt text) query;
   returnNonObject : () -> (opt text) query;
+  returnNonObjectAsInvalidBlob : () -> (vec nat8) query;
+  returnNonObjectAsInvalidVec : () -> (vec text) query;
+  returnNonPrincipalValueAsInvalidFunc : () -> (func () -> () query) query;
+  returnNonStringCanisterMethodNameAsInvalidFunc : () -> (
+      func () -> () query,
+    ) query;
+  returnObjectAsInvalidVecUserDefinedRecord : () -> (
+      vec UserDefinedRecord,
+    ) query;
+  returnObjectAsInvalidVecUserDefinedVariant : () -> (
+      vec UserDefinedVariant,
+    ) query;
+  returnObjectWithInvalidFieldsAsInvalidUserDefinedVariant : () -> (
+      UserDefinedVariant,
+    ) query;
+  returnObjectWithInvalidTagAsInvalidUserDefinedVariant : () -> (
+      UserDefinedVariant,
+    ) query;
+  returnObjectWithMultipleTagsAsInvalidUserDefinedVariant : () -> (
+      UserDefinedVariant,
+    ) query;
   returnObjectWithNeitherSomeNorNone : () -> (opt text) query;
+  returnStringAsInvalidPrincipal : () -> (principal) query;
+  returnStringAsInvalidUserDefinedRecord : () -> (UserDefinedRecord) query;
+  returnStringAsInvalidUserDefinedVariant : () -> (UserDefinedVariant) query;
+  returnStringAsInvalidVecUserDefinedRecord : () -> (
+      vec UserDefinedRecord,
+    ) query;
+  returnStringAsInvalidVecUserDefinedVariant : () -> (
+      vec UserDefinedVariant,
+    ) query;
   throwBigint : () -> () query;
   throwBoolean : () -> () query;
   throwClass : () -> () query;
   throwCustomError : () -> () query;
+  throwInPrincipalToTextMethodAsInvalidPrincipal : () -> (principal) query;
   throwInt : () -> () query;
   throwNull : () -> () query;
   throwNullReference : () -> () query;
@@ -20,4 +105,5 @@ service : () -> {
   throwString : () -> () query;
   throwSymbol : () -> () query;
   throwUndefined : () -> () query;
+  throwWhenCallingPrincipalFromText : () -> (principal) query;
 }

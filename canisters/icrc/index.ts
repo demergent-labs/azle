@@ -1,13 +1,9 @@
 import {
-    Alias,
-    blob,
     CallResult,
-    int,
     nat,
     nat8,
     nat64,
     Opt,
-    Principal,
     Record,
     Service,
     serviceQuery,
@@ -17,47 +13,23 @@ import {
     Variant,
     Vec
 } from '../../src/lib';
-
-// Number of nanoseconds since the UNIX epoch in UTC timezone.
-export type ICRCTimestamp = Alias<nat64>;
-
-export type ICRCSubaccount = Alias<blob>;
-
-export type ICRCAccount = Record<{
-    owner: Principal;
-    subaccount: Opt<ICRCSubaccount>;
-}>;
-
-export type ICRCTransferArgs = Record<{
-    from_subaccount: Opt<ICRCSubaccount>;
-    to: ICRCAccount;
-    amount: nat;
-    fee: Opt<nat>;
-    memo: Opt<blob>;
-    created_at_time: Opt<ICRCTimestamp>;
-}>;
-
-export type ICRCTransferError = Variant<{
-    BadFee: Record<{ expected_fee: nat }>;
-    BadBurn: Record<{ min_burn_amount: nat }>;
-    InsufficientFunds: Record<{ balance: nat }>;
-    TooOld: null;
-    CreatedInFuture: Record<{ ledger_time: ICRCTimestamp }>;
-    Duplicate: Record<{ duplicate_of: nat }>;
-    TemporarilyUnavailable: null;
-    GenericError: Record<{ error_code: nat; message: text }>;
-}>;
-
-export type ICRCValue = Variant<{
-    Nat: nat;
-    Int: int;
-    Text: text;
-    Blob: blob;
-}>;
+import {
+    ICRC1Account,
+    ICRC1TransferArgs,
+    ICRC1TransferError,
+    ICRC1Value
+} from './icrc_1';
+import {
+    ICRC2AllowanceArgs,
+    ICRC2ApproveArgs,
+    ICRC2ApproveError,
+    ICRC2TransferFromArgs,
+    ICRC2TransferFromError
+} from './icrc_2';
 
 export class ICRC extends Service {
     @serviceQuery
-    icrc1_metadata: () => CallResult<Vec<Tuple<[text, ICRCValue]>>>;
+    icrc1_metadata: () => CallResult<Vec<Tuple<[text, ICRC1Value]>>>;
 
     @serviceQuery
     icrc1_name: () => CallResult<text>;
@@ -75,18 +47,36 @@ export class ICRC extends Service {
     icrc1_total_supply: () => CallResult<nat>;
 
     @serviceQuery
-    icrc1_minting_account: () => CallResult<Opt<ICRCAccount>>;
+    icrc1_minting_account: () => CallResult<Opt<ICRC1Account>>;
 
     @serviceQuery
-    icrc1_balance_of: (account: ICRCAccount) => CallResult<nat>;
+    icrc1_balance_of: (account: ICRC1Account) => CallResult<nat>;
 
     @serviceUpdate
     icrc1_transfer: (
-        transferArgs: ICRCTransferArgs
-    ) => CallResult<Variant<{ Ok: nat; Err: ICRCTransferError }>>;
+        transferArgs: ICRC1TransferArgs
+    ) => CallResult<Variant<{ Ok: nat; Err: ICRC1TransferError }>>;
 
     @serviceQuery
     icrc1_supported_standards: () => CallResult<
         Vec<Record<{ name: text; url: text }>>
     >;
+
+    @serviceUpdate
+    icrc2_approve: (
+        args: ICRC2ApproveArgs
+    ) => CallResult<Variant<{ Ok: nat; Err: ICRC2ApproveError }>>;
+
+    @serviceUpdate
+    icrc2_transfer_from: (
+        args: ICRC2TransferFromArgs
+    ) => CallResult<Variant<{ Ok: nat; Err: ICRC2TransferFromError }>>;
+
+    @serviceQuery
+    icrc2_allowance: (
+        args: ICRC2AllowanceArgs
+    ) => CallResult<Record<{ allowance: nat; expires_at: Opt<nat64> }>>;
 }
+
+export * from './icrc_1';
+export * from './icrc_2';

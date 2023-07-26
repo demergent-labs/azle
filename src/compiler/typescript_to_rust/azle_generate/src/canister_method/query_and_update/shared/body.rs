@@ -24,40 +24,42 @@ pub fn generate(
     let function_name = fn_decl.get_function_name();
 
     Ok(quote! {
-        BOA_CONTEXT_REF_CELL.with(|box_context_ref_cell| {
-            let mut boa_context = box_context_ref_cell.borrow_mut();
+        unwrap_or_trap(|| {
+            BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
+                let mut boa_context = boa_context_ref_cell.borrow_mut();
 
-            let uuid = uuid::Uuid::new_v4().to_string();
+                let uuid = uuid::Uuid::new_v4().to_string();
 
-            UUID_REF_CELL.with(|uuid_ref_cell| {
-                let mut uuid_mut = uuid_ref_cell.borrow_mut();
+                UUID_REF_CELL.with(|uuid_ref_cell| {
+                    let mut uuid_mut = uuid_ref_cell.borrow_mut();
 
-                *uuid_mut = uuid.clone();
-            });
+                    *uuid_mut = uuid.clone();
+                });
 
-            METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
-                let mut method_name_mut = method_name_ref_cell.borrow_mut();
+                METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                    let mut method_name_mut = method_name_ref_cell.borrow_mut();
 
-                *method_name_mut = #function_name.to_string()
-            });
+                    *method_name_mut = #function_name.to_string()
+                });
 
-            MANUAL_REF_CELL.with(|manual_ref_cell| {
-                let mut manual_mut = manual_ref_cell.borrow_mut();
+                MANUAL_REF_CELL.with(|manual_ref_cell| {
+                    let mut manual_mut = manual_ref_cell.borrow_mut();
 
-                *manual_mut = #manual;
-            });
+                    *manual_mut = #manual;
+                });
 
-            #call_to_js_function
+                #call_to_js_function
 
-            let final_return_value = async_await_result_handler(
-                &mut boa_context,
-                &boa_return_value,
-                &uuid,
-                #function_name,
-                #manual
-            );
+                let final_return_value = async_await_result_handler(
+                    &mut boa_context,
+                    &boa_return_value,
+                    &uuid,
+                    #function_name,
+                    #manual
+                )?;
 
-            #return_expression
+                #return_expression
+            })
         })
     })
 }
@@ -74,7 +76,7 @@ fn generate_return_expression(
 ) -> Result<proc_macro2::TokenStream, Error> {
     if annotated_fn_decl.is_manual() || annotated_fn_decl.is_promise() {
         return Ok(quote! {
-            ic_cdk::api::call::ManualReply::empty()
+            Ok(ic_cdk::api::call::ManualReply::empty())
         });
     }
 
@@ -84,12 +86,12 @@ fn generate_return_expression(
         TsType::TsKeywordType(keyword) => match keyword.kind {
             TsNullKeyword => quote! {
                 if !final_return_value.is_null() {
-                    ic_cdk::api::trap("Uncaught TypeError: value is not of type 'null'");
+                    return Err(RuntimeError::TypeError("Value is not of type 'null'".to_string()));
                 }
             },
             TsVoidKeyword => quote! {
                 if !final_return_value.is_undefined() {
-                    ic_cdk::api::trap("Uncaught TypeError: value is not of type 'void'");
+                    return Err(RuntimeError::TypeError("Value is not of type 'void'".to_string()));
                 }
             },
             _ => quote! {},
@@ -99,9 +101,8 @@ fn generate_return_expression(
 
     Ok(quote! {
         #null_and_void_handler
-        match final_return_value.try_from_vm_value(&mut *boa_context) {
-            Ok(return_value) => return_value,
-            Err(e) => ic_cdk::api::trap(&format!("Uncaught TypeError: {}",&e.0))
-        }
+
+        Ok(final_return_value
+            .try_from_vm_value(&mut *boa_context)?)
     })
 }

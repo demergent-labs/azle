@@ -3,11 +3,18 @@ pub fn generate() -> proc_macro2::TokenStream {
         fn set_certified_data(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
-            context: &mut boa_engine::Context
+            context: &mut boa_engine::Context,
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let data_js_value: boa_engine::JsValue = aargs.get(0).unwrap().clone();
-            let data_vec: Vec<u8> = data_js_value.try_from_vm_value(&mut *context).unwrap();
-            Ok(ic_cdk::api::set_certified_data(&data_vec).try_into_vm_value(context).unwrap())
+            let data: Vec<u8> = aargs
+                .get(0)
+                .ok_or_else(|| "An argument for 'data' was not provided".to_js_error())?
+                .clone()
+                .try_from_vm_value(&mut *context)
+                .map_err(|vmc_err| vmc_err.to_js_error())?;
+
+            ic_cdk::api::set_certified_data(&data)
+                .try_into_vm_value(context)
+                .map_err(|vmc_err| vmc_err.to_js_error())
         }
     }
 }

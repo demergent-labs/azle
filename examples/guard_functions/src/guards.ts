@@ -67,20 +67,24 @@ export function preventUpgrades(): GuardResult {
 
 export function returnInvalidType(): GuardResult {
     console.log('returnInvalidType called');
+    // @ts-ignore
     return 'Something other than a guard result';
 }
 
 export function returnNonGuardResultObject(): GuardResult {
     console.log('returnNonGuardResultObject called');
+    // @ts-ignore
     return { badProp: 'Something other than a guard result' };
 }
 
 export function returnNonNullOkValue(): GuardResult {
     console.log('nonNullOkValue called');
+    // @ts-ignore
     return { Ok: 'Something other than null' };
 }
 
 export function returnNonStringErrValue(): GuardResult {
     console.log('nonStringErrValue called');
+    // @ts-ignore
     return { Err: { badProp: 'Something other than a string' } };
 }

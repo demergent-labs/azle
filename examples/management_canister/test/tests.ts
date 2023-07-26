@@ -272,7 +272,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                 return {
                     Ok:
                         'running' in canisterStatus.status &&
-                        canisterStatus.memory_size === 0n &&
+                        canisterStatus.memory_size === 342n &&
                         canisterStatus.cycles >= 800_000_000_000n &&
                         canisterStatus.settings.freezing_threshold ===
                             2_000_000n &&

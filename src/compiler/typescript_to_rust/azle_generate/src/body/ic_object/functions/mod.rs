@@ -13,9 +13,12 @@ mod candid_decode;
 mod candid_encode;
 mod canister_balance;
 mod canister_balance128;
+mod canister_version;
 mod clear_timer;
 mod data_certificate;
 mod id;
+mod instruction_counter;
+mod is_controller;
 mod method_name;
 mod msg_cycles_accept;
 mod msg_cycles_accept128;
@@ -63,9 +66,12 @@ pub fn generate(
     let candid_encode = candid_encode::generate();
     let canister_balance = canister_balance::generate();
     let canister_balance128 = canister_balance128::generate();
+    let canister_version = canister_version::generate();
     let clear_timer = clear_timer::generate();
     let data_certificate = data_certificate::generate();
     let id = id::generate();
+    let instruction_counter = instruction_counter::generate();
+    let is_controller = is_controller::generate();
     let method_name = method_name::generate();
     let msg_cycles_accept = msg_cycles_accept::generate();
     let msg_cycles_accept128 = msg_cycles_accept128::generate();
@@ -109,9 +115,12 @@ pub fn generate(
         #candid_encode
         #canister_balance
         #canister_balance128
+        #canister_version
         #clear_timer
         #data_certificate
         #id
+        #instruction_counter
+        #is_controller
         #method_name
         #msg_cycles_accept
         #msg_cycles_accept128

@@ -13,10 +13,12 @@ use crate::{plugin::Plugin, ts_ast::TsAst, Error};
 use self::stable_b_tree_map::StableBTreeMapNode;
 
 mod ic_object;
+mod to_js_error;
 
 pub mod async_await_result_handler;
-pub mod boa_error_handlers;
+pub mod runtime_error;
 pub mod stable_b_tree_map;
+pub mod unwrap_or_trap;
 
 pub fn generate(
     ts_ast: &TsAst,
@@ -42,7 +44,6 @@ pub fn generate(
 
     let async_await_result_handler =
         async_await_result_handler::generate(&query_and_update_methods);
-    let boa_error_handlers = boa_error_handlers::generate();
     let ic_object_functions = ic_object::functions::generate(
         &query_and_update_methods,
         services,
@@ -50,6 +51,9 @@ pub fn generate(
     );
 
     let stable_b_tree_maps = stable_b_tree_map::rust::generate(&stable_b_tree_map_nodes);
+    let unwrap_or_trap = unwrap_or_trap::generate();
+    let runtime_error = runtime_error::generate();
+    let to_js_errors = to_js_error::generate();
 
     let plugins_code = plugins
         .iter()
@@ -57,11 +61,13 @@ pub fn generate(
         .collect_results()?;
 
     Ok(quote! {
+        #runtime_error
+        #to_js_errors
         #async_await_result_handler
-        #boa_error_handlers
         #ic_object_functions
         #register_ic_object_function
         #stable_b_tree_maps
+        #unwrap_or_trap
         #(#plugins_code)*
 
         // TODO this is temporary until this issue is resolved: https://github.com/demergent-labs/azle/issues/1029

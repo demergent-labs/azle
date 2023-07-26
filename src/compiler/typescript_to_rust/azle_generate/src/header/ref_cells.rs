@@ -16,11 +16,27 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                 impl boa_engine::context::HostHooks for Hooks {
                     fn utc_now(&self) -> chrono::NaiveDateTime {
-                        chrono::NaiveDateTime::from_timestamp_opt((ic_cdk::api::time() / 1_000_000_000) as i64, 0).unwrap()
+                        unwrap_or_trap(|| {
+                            chrono::NaiveDateTime::from_timestamp_opt(
+                                (ic_cdk::api::time() / 1_000_000_000) as i64,
+                                0,
+                            )
+                            .ok_or_else(|| {
+                                RuntimeError::String(
+                                    "InternalError: Unable to determine host time".to_string(),
+                                )
+                            })
+                        })
                     }
 
                     fn tz_offset(&self) -> chrono::FixedOffset {
-                        chrono::FixedOffset::east_opt(0).unwrap()
+                        unwrap_or_trap(|| {
+                            chrono::FixedOffset::east_opt(0).ok_or_else(|| {
+                                RuntimeError::String(
+                                    "InternalError: Unable to determine host timezone".to_string(),
+                                )
+                            })
+                        })
                     }
                 }
 
@@ -29,7 +45,8 @@ pub fn generate() -> proc_macro2::TokenStream {
                 let context = boa_engine::context::ContextBuilder::new()
                     .host_hooks(hooks)
                     .build()
-                    .unwrap();
+                    .unwrap_or_else(|err| ic_cdk::trap(err.to_string().as_str()));
+
                 std::cell::RefCell::new(context)
             };
             static PROMISE_MAP_REF_CELL: std::cell::RefCell<
