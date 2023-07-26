@@ -108,9 +108,7 @@ export function getTests(
                     };
                 } catch (error) {
                     return {
-                        Ok: (error as AgentError).message.includes(
-                            'Code: 403 (Forbidden)'
-                        )
+                        Ok: (error as AgentError).message.includes('IC0516')
                     };
                 }
             }
