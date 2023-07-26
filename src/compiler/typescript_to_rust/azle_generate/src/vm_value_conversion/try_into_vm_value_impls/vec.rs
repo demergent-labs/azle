@@ -8,13 +8,13 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         impl AzleTryIntoVec for String {}
 
-        impl AzleTryIntoVec for ic_cdk::export::candid::Empty {}
+        impl AzleTryIntoVec for candid::Empty {}
 
-        impl AzleTryIntoVec for ic_cdk::export::candid::Reserved {}
+        impl AzleTryIntoVec for candid::Reserved {}
 
-        impl AzleTryIntoVec for ic_cdk::export::candid::Func {}
+        impl AzleTryIntoVec for candid::Func {}
 
-        impl AzleTryIntoVec for ic_cdk::export::Principal {}
+        impl AzleTryIntoVec for candid::Principal {}
 
         impl AzleTryIntoVec for ic_cdk_timers::TimerId {}
 
@@ -32,7 +32,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         impl AzleTryIntoVec for _CdkFloat32 {}
 
-        impl AzleTryIntoVec for ic_cdk::export::candid::Int {}
+        impl AzleTryIntoVec for candid::Int {}
 
         impl AzleTryIntoVec for i128 {}
 
@@ -44,7 +44,7 @@ pub fn generate() -> proc_macro2::TokenStream {
 
         impl AzleTryIntoVec for i8 {}
 
-        impl AzleTryIntoVec for ic_cdk::export::candid::Nat {}
+        impl AzleTryIntoVec for candid::Nat {}
 
         impl AzleTryIntoVec for u128 {}
 

@@ -39,35 +39,35 @@ pub fn generate() -> proc_macro2::TokenStream {
             }
         }
 
-        impl CdkActTryFromVmValue<ic_cdk::export::candid::Empty, &mut boa_engine::Context<'_>>
+        impl CdkActTryFromVmValue<candid::Empty, &mut boa_engine::Context<'_>>
             for boa_engine::JsValue
         {
             fn try_from_vm_value(
                 self,
                 context: &mut boa_engine::Context,
-            ) -> Result<ic_cdk::export::candid::Empty, CdkActTryFromVmValueError> {
+            ) -> Result<candid::Empty, CdkActTryFromVmValueError> {
                 Err("TypeError: Value cannot be converted into type 'empty'")?
             }
         }
 
-        impl CdkActTryFromVmValue<ic_cdk::export::candid::Reserved, &mut boa_engine::Context<'_>>
+        impl CdkActTryFromVmValue<candid::Reserved, &mut boa_engine::Context<'_>>
             for boa_engine::JsValue
         {
             fn try_from_vm_value(
                 self,
                 context: &mut boa_engine::Context,
-            ) -> Result<ic_cdk::export::candid::Reserved, CdkActTryFromVmValueError> {
-                Ok(ic_cdk::export::candid::Reserved)
+            ) -> Result<candid::Reserved, CdkActTryFromVmValueError> {
+                Ok(candid::Reserved)
             }
         }
 
-        impl CdkActTryFromVmValue<ic_cdk::export::candid::Func, &mut boa_engine::Context<'_>>
+        impl CdkActTryFromVmValue<candid::Func, &mut boa_engine::Context<'_>>
             for boa_engine::JsValue
         {
             fn try_from_vm_value(
                 self,
                 context: &mut boa_engine::Context,
-            ) -> Result<ic_cdk::export::candid::Func, CdkActTryFromVmValueError> {
+            ) -> Result<candid::Func, CdkActTryFromVmValueError> {
                 let js_object = self
                     .as_object()
                     .ok_or_else(|| "TypeError: Value is not of type 'Func'")?;
@@ -110,17 +110,17 @@ pub fn generate() -> proc_macro2::TokenStream {
                         )
                     })?;
 
-                Ok(ic_cdk::export::candid::Func { principal, method })
+                Ok(candid::Func { principal, method })
             }
         }
 
-        impl CdkActTryFromVmValue<ic_cdk::export::Principal, &mut boa_engine::Context<'_>>
+        impl CdkActTryFromVmValue<candid::Principal, &mut boa_engine::Context<'_>>
             for boa_engine::JsValue
         {
             fn try_from_vm_value(
                 self,
                 context: &mut boa_engine::Context,
-            ) -> Result<ic_cdk::export::Principal, CdkActTryFromVmValueError> {
+            ) -> Result<candid::Principal, CdkActTryFromVmValueError> {
                 let principal_js_object = self
                     .as_object()
                     .ok_or_else(|| "TypeError: Value is not of type 'Principal'")?;
@@ -147,7 +147,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 // throw before we can even return an invalid Principal. And if somehow they are
                 // able to return an invalid principal, `principal_to_text_function_js_object.call`
                 // above should error out.
-                let principal = ic_cdk::export::Principal::from_text(principal_text).map_err(
+                let principal = candid::Principal::from_text(principal_text).map_err(
                     |principal_error| {
                         let inner_error_name = match principal_error {
                             candid::types::principal::PrincipalError::BytesTooLong() => {

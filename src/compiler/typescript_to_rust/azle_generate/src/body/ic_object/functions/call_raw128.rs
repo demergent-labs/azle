@@ -33,7 +33,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 .ok_or_else(|| "An argument for 'payment' was not provided".to_js_error())?
                 .clone();
 
-            let canister_id: ic_cdk::export::Principal = canister_id_js_value
+            let canister_id: candid::Principal = canister_id_js_value
                 .try_from_vm_value(&mut *context)
                 .map_err(|vmc_err| vmc_err.to_js_error())?;
             let method: String = method_js_value

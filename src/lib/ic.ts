@@ -153,6 +153,12 @@ type ic = {
     canisterBalance128: () => nat;
 
     /**
+     * Returns the canister version number
+     *
+     * @returns the version number
+     */
+    canisterVersion: () => nat64;
+    /**
      * Cancels an existing timer. Does nothing if the timer has already been canceled.
      * @param id The ID of the timer to be cancelled.
      */
@@ -171,6 +177,19 @@ type ic = {
      * @returns the canister id
      */
     id: () => Principal;
+
+    /**
+     * Returns the number of instructions that the canister executed since the
+     * last [entry point](
+     *   https://internetcomputer.org/docs/current/references/ic-interface-spec/#entry-points
+     * )
+     *
+     * @returns the number of instructions
+     */
+    instructionCounter: () => nat64;
+
+    /** Determine if a {@link Principal} is a controller of the canister. */
+    isController: (principal: Principal) => boolean;
 
     /**
      * Returns the name of the current canister methods

@@ -5,22 +5,22 @@ pub fn generate() -> proc_macro2::TokenStream {
         impl AzleTryFromVec for () {}
         impl AzleTryFromVec for bool {}
         impl AzleTryFromVec for String {}
-        impl AzleTryFromVec for ic_cdk::export::candid::Empty {}
-        impl AzleTryFromVec for ic_cdk::export::candid::Reserved {}
-        impl AzleTryFromVec for ic_cdk::export::candid::Func {}
-        impl AzleTryFromVec for ic_cdk::export::Principal {}
+        impl AzleTryFromVec for candid::Empty {}
+        impl AzleTryFromVec for candid::Reserved {}
+        impl AzleTryFromVec for candid::Func {}
+        impl AzleTryFromVec for candid::Principal {}
         impl AzleTryFromVec for ic_cdk_timers::TimerId {}
         impl AzleTryFromVec for f64 {}
         impl AzleTryFromVec for _CdkFloat64 {}
         impl AzleTryFromVec for f32 {}
         impl AzleTryFromVec for _CdkFloat32 {}
-        impl AzleTryFromVec for ic_cdk::export::candid::Int {}
+        impl AzleTryFromVec for candid::Int {}
         impl AzleTryFromVec for i128 {}
         impl AzleTryFromVec for i64 {}
         impl AzleTryFromVec for i32 {}
         impl AzleTryFromVec for i16 {}
         impl AzleTryFromVec for i8 {}
-        impl AzleTryFromVec for ic_cdk::export::candid::Nat {}
+        impl AzleTryFromVec for candid::Nat {}
         impl AzleTryFromVec for u128 {}
         impl AzleTryFromVec for u64 {}
         impl AzleTryFromVec for u32 {}
