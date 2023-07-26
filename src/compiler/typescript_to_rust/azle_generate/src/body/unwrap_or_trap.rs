@@ -20,10 +20,9 @@ pub fn generate() -> TokenStream {
                 match self {
                     Ok(js_value) => js_value,
                     Err(js_error) => {
-                        let error_message =
-                            js_value_to_string(js_error.to_opaque(context), context);
+                        let error_message = js_error.to_std_string(context);
 
-                        ic_cdk::api::trap(&format!("Uncaught {}", error_message));
+                        ic_cdk::api::trap(&format!("Uncaught {error_message}"));
                     }
                 }
             }
@@ -34,7 +33,7 @@ pub fn generate() -> TokenStream {
                 match self {
                     Ok(js_value) => js_value,
                     Err(error_string) => {
-                        ic_cdk::api::trap(&format!("Uncaught {}", error_string));
+                        ic_cdk::api::trap(&format!("Uncaught {error_string}"));
                     }
                 }
             }
@@ -48,51 +47,68 @@ pub fn generate() -> TokenStream {
             fn unwrap_or_trap(self, err_message: &str) -> T {
                 match self {
                     Some(some) => some,
-                    None => {
-                        ic_cdk::trap(&format!("Uncaught {}", err_message))
-                    }
+                    None => ic_cdk::trap(&format!("Uncaught {err_message}")),
                 }
             }
         }
 
-        fn js_value_to_string(
-            error_value: boa_engine::JsValue,
+        trait ToStdString {
+            fn to_std_string(self, context: &mut boa_engine::Context) -> String;
+        }
+
+        impl ToStdString for boa_engine::JsError {
+            fn to_std_string(self, context: &mut boa_engine::Context) -> String {
+                self.to_opaque(context).to_std_string(context)
+            }
+        }
+
+        impl ToStdString for boa_engine::JsValue {
+            fn to_std_string(self, context: &mut boa_engine::Context) -> String {
+                match &self {
+                    boa_engine::JsValue::BigInt(bigint) => bigint.to_string(),
+                    boa_engine::JsValue::Boolean(boolean) => boolean.to_string(),
+                    boa_engine::JsValue::Integer(integer) => integer.to_string(),
+                    boa_engine::JsValue::Null => "null".to_string(),
+                    boa_engine::JsValue::Object(object) => {
+                        js_object_to_string(&self, &object, context)
+                    }
+                    boa_engine::JsValue::Rational(rational) => rational.to_string(),
+                    boa_engine::JsValue::String(string) => string
+                        .to_std_string()
+                        .unwrap_or_else(|err| format!("InternalError: {err}")),
+                    boa_engine::JsValue::Symbol(symbol) => symbol.to_string(),
+                    boa_engine::JsValue::Undefined => "undefined".to_string(),
+                }
+            }
+        }
+
+        fn js_object_to_string(
+            error_value: &boa_engine::JsValue,
+            js_object: &boa_engine::JsObject,
             context: &mut boa_engine::Context,
         ) -> String {
-            match &error_value {
-                boa_engine::JsValue::BigInt(bigint) => bigint.to_string(),
-                boa_engine::JsValue::Boolean(boolean) => boolean.to_string(),
-                boa_engine::JsValue::Integer(integer) => integer.to_string(),
-                boa_engine::JsValue::Null => "null".to_string(),
-                boa_engine::JsValue::Object(object) => {
-                    let to_string_js_value = match object.get("toString", context) {
-                        Ok(to_string_js_value) => to_string_js_value,
-                        Err(err) => return "TypeError: Property 'toString' of object is not a function".to_string(),
-                    };
-
-                    let to_string_js_object = match to_string_js_value.as_object() {
-                      Some(to_string_js_object) => to_string_js_object,
-                      None => return "TypeError: Property 'toString' of object is not a function".to_string() ,
-                    };
-
-                    let string_js_value = match to_string_js_object.call(&error_value, &[], context) {
-                        Ok(string_js_value) => string_js_value,
-                        Err(js_error) => return format!("SystemError: {}", js_error)
-                    };
-
-                    match string_js_value.try_from_vm_value(context) {
-                        Ok(string) => string,
-                        Err(js_error) => return format!("SystemError: {}", js_error)
-                    }
+            let to_string_js_value = match js_object.get("toString", context) {
+                Ok(to_string_js_value) => to_string_js_value,
+                Err(err) => {
+                    return "TypeError: Property 'toString' of object is not a function".to_string()
                 }
-                boa_engine::JsValue::Rational(rational) => rational.to_string(),
-                boa_engine::JsValue::String(string) => match string.to_std_string() {
-                    Ok(string) => string,
-                    Err(js_error) => return format!("SystemError: {}", js_error)
+            };
+
+            let to_string_js_object = match to_string_js_value.as_object() {
+                Some(to_string_js_object) => to_string_js_object,
+                None => {
+                    return "TypeError: Property 'toString' of object is not a function".to_string()
                 }
-                boa_engine::JsValue::Symbol(symbol) => symbol.to_string(),
-                boa_engine::JsValue::Undefined => "undefined".to_string(),
-            }
+            };
+
+            let string_js_value = match to_string_js_object.call(error_value, &[], context) {
+                Ok(string_js_value) => string_js_value,
+                Err(js_error) => return format!("InternalError: {js_error}"),
+            };
+
+            string_js_value
+                .try_from_vm_value(context)
+                .unwrap_or_else(|js_error| format!("InternalError: {js_error}"))
         }
     }
 }
