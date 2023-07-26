@@ -18,7 +18,6 @@ import {
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier,
-    getStarExportModuleSpecifierFor,
     getSymbol
 } from '../../utils/';
 import { generateAliasTableForSymbol } from '../process_symbol';

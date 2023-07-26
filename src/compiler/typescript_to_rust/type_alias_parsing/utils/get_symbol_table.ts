@@ -4,7 +4,6 @@ import {
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier,
-    getStarExportModuleSpecifierFor,
     getSymbol
 } from '.';
 

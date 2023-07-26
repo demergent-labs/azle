@@ -9,7 +9,6 @@ import {
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier,
-    getStarExportModuleSpecifierFor,
     getSymbol
 } from '../../utils';
 import { isSymbolFromAzle } from '.';
@@ -175,31 +174,6 @@ export function isNameInModuleFromAzle(
         return isSymbolFromAzle(symbol, alias, program);
     }
     return false;
-}
-
-// Get all of the * exports
-// get the symbol tables for all of those and check which one has the name we are looking for
-function isNameInModulesStarExportFromAzle(
-    name: string,
-    moduleSpecifier: ts.StringLiteral,
-    alias: string,
-    program: ts.Program
-): boolean {
-    const symbolTable = getSymbolTableForModuleSpecifier(
-        moduleSpecifier,
-        program
-    );
-    if (symbolTable === undefined) return false;
-
-    const subModuleSpecifier = getStarExportModuleSpecifierFor(
-        name,
-        symbolTable,
-        program
-    );
-
-    if (subModuleSpecifier === undefined) return false;
-
-    return isNameInModuleFromAzle(name, subModuleSpecifier, alias, program);
 }
 
 // export {thing} from 'place'; or export {thing as other} from 'place';

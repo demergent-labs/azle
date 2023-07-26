@@ -2,12 +2,10 @@ import * as ts from 'typescript';
 import {
     isExportAssignmentFromAzle,
     isExportDeclarationFromAzle,
-    areExportDeclarationsFromAzle,
     isExportSpecifierFromAzle,
     isImportClauseFromAzle,
     isImportSpecifierFromAzle,
-    isNamespaceImportExportFromAzle,
-    isNameInModuleFromAzle
+    isNamespaceImportExportFromAzle
 } from './import_export';
 import {
     isAzleTypeAliasDeclaration as isTypeAliasDeclarationFromAzle,
