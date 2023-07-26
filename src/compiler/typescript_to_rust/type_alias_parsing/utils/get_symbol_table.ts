@@ -4,7 +4,8 @@ import {
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier,
-    getStarExportModuleSpecifierFor
+    getStarExportModuleSpecifierFor,
+    getSymbol
 } from '.';
 
 export function getSymbolTable(
@@ -148,11 +149,7 @@ function getSymbolTableForRightIdentifier(
     symbolTable: ts.SymbolTable,
     program: ts.Program
 ): ts.SymbolTable | undefined {
-    const rightSymbol = getSymbolForRightIdentifier(
-        right,
-        symbolTable,
-        program
-    );
+    const rightSymbol = getSymbol(right.text, symbolTable, program);
     if (rightSymbol === undefined) {
         return undefined;
     }
@@ -175,7 +172,7 @@ function getSymbolTableForLeftIdentifier(
     symbolTable: ts.SymbolTable,
     program: ts.Program
 ) {
-    const leftSymbol = symbolTable.get(left.text as ts.__String);
+    const leftSymbol = getSymbol(left.text, symbolTable, program);
     if (leftSymbol === undefined) {
         return undefined;
     }
@@ -212,39 +209,4 @@ function getSymbolTableForLeftIdentifier(
         }
     }
     // TODO are there other types of imports that could be here?
-}
-
-function getSymbolForRightIdentifier(
-    right: ts.Identifier | ts.MemberName,
-    symbolTable: ts.SymbolTable,
-    program: ts.Program
-): ts.Symbol | undefined {
-    const rightSymbol = symbolTable.get(right.text as ts.__String);
-    if (rightSymbol === undefined) {
-        // We couldn't find the symbol. There is a chance it's in a start export. Look through all of them to see
-        return getStarExportSymbolTableFor(
-            right.text,
-            symbolTable,
-            program
-        )?.get(right.text as ts.__String);
-    }
-    return rightSymbol;
-}
-
-// Get all of the * exports
-// get the symbol tables for all of those and check which one has the name we are looking for
-function getStarExportSymbolTableFor(
-    keyToFind: string,
-    symbolTable: ts.SymbolTable,
-    program: ts.Program
-): ts.SymbolTable | undefined {
-    const exportModSpecifier = getStarExportModuleSpecifierFor(
-        keyToFind,
-        symbolTable,
-        program
-    );
-
-    if (exportModSpecifier === undefined) return undefined;
-
-    return getSymbolTableForModuleSpecifier(exportModSpecifier, program);
 }

@@ -14,7 +14,7 @@ import {
     generateAliasTableForTypeAliasDeclaration,
     generateAliasTableForVariableDeclaration
 } from './type_alias';
-import { isAzleSymbol } from '../../utils';
+import { isAzleSymbol, getSymbol } from '../../utils';
 
 export function generateAliasTableForIdentifier(
     ident: ts.Identifier | ts.MemberName,
@@ -22,9 +22,9 @@ export function generateAliasTableForIdentifier(
     symbolTable: ts.SymbolTable,
     program: ts.Program
 ): AliasTable | undefined {
-    const symbol = symbolTable.get(ident.text as ts.__String);
+    const symbol = getSymbol(ident.text, symbolTable, program);
     if (symbol === undefined) {
-        // TODO Couldn't find symbol
+        // Couldn't find symbol
         return undefined;
     }
     return generateAliasTableForSymbol(symbol, alias, program);

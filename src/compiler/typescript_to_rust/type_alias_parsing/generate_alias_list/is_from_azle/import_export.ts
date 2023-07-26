@@ -9,7 +9,8 @@ import {
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier,
-    getStarExportModuleSpecifierFor
+    getStarExportModuleSpecifierFor,
+    getSymbol
 } from '../../utils';
 import { isSymbolFromAzle } from '.';
 
@@ -169,19 +170,11 @@ export function isNameInModuleFromAzle(
     //      a) if there are two things from two different * exports then that will cause a compiler error
 
     // So 1) Start by seeing if the symbol is in the list of exports. If so use that symbol
-    const symbol = symbolTable.get(name as ts.__String);
+    const symbol = getSymbol(name, symbolTable, program);
     if (symbol) {
         return isSymbolFromAzle(symbol, alias, program);
-    } else {
-        // We couldn't find the symbol in the symbol table for this file
-        // So 2) Check if it came from an `export * from 'thing'` declaration
-        return isNameInModulesStarExportFromAzle(
-            name,
-            moduleSpecifier,
-            alias,
-            program
-        );
     }
+    return false;
 }
 
 // Get all of the * exports
@@ -244,6 +237,9 @@ function isLocalExportSpecifierFromAzle(
     if (symbolTable === undefined) {
         return false;
     }
+    // Given `export * from 'moduleThatHasThingFromStarExport'` It is impossible
+    // to `export {thingFromStarExport}` so we don't need to consider the
+    // __export symbols
     const symbol = symbolTable.get(identifier.text as ts.__String);
     if (symbol === undefined) {
         return false;

@@ -60,6 +60,64 @@ export function getDeclarationFromSpecifier(
 }
 
 /**
+ * Helper method to find a symbol in a symbol table.
+ *
+ * When trying to find a symbol in a symbol table it may be in one of two
+ * locations.
+ *
+ * 1) In the main list of symbols
+ * 2) In another module that has had all of it's exports dumped into the symbol
+ *    table via a `export * from 'place'`
+ *
+ * Any symbol that is part of the module from 2) will be in the '__export'
+ * portions of the symbol table
+ *
+ * Any symbol directly in the symbol table will override any symbol in the
+ * '__export' portion. For example. If a file has `export * from 'azle'` and
+ * `type Record = number`, then Record will show up in the main list of symbols
+ * as an alias to the number keyword and it will override the definition of
+ * Record that comes from azle.
+ *
+ * So when trying to get a symbol from a symbol table we should first look in
+ * the main symbol table to see if we can find a symbol with the name
+ * `symbolName`. If we can't then we should look through all of the modules that
+ * have been reexported to see if it is defined there.
+ *
+ * If it is in neither of those spots then undefined is returned to signify that
+ * the symbol could not be found.
+ *
+ * @param symbolName The name of the symbol to look for
+ * @param symbolTable the Symbol Table to look in
+ * @param program The program associated with the given symbol table
+ * @returns The symbol with the given name in the given symbol table if it
+ * exists, otherwise undefined
+ */
+export function getSymbol(
+    symbolName: string,
+    symbolTable: ts.SymbolTable,
+    program: ts.Program
+): ts.Symbol | undefined {
+    const symbol = symbolTable.get(symbolName as ts.__String);
+    if (symbol === undefined) {
+        const exportModSpecifier = getStarExportModuleSpecifierFor(
+            symbolName,
+            symbolTable,
+            program
+        );
+
+        if (exportModSpecifier === undefined) return undefined;
+
+        const subSymbolTable = getSymbolTableForModuleSpecifier(
+            exportModSpecifier,
+            program
+        );
+
+        return subSymbolTable?.get(symbolName as ts.__String);
+    }
+    return symbol;
+}
+
+/**
  * This function helps to find the original module that a symbol comes from. If
  * a file has multiple export * from 'place' then we may have to look through
  * all of them to find the symbol. This function does that by looping through

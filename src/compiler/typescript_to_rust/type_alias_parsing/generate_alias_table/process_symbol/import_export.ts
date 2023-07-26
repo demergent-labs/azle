@@ -18,7 +18,8 @@ import {
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier,
-    getStarExportModuleSpecifierFor
+    getStarExportModuleSpecifierFor,
+    getSymbol
 } from '../../utils/';
 import { generateAliasTableForSymbol } from '../process_symbol';
 
@@ -215,55 +216,11 @@ function generateAliasTableForNameInModule(
     if (symbolTable === undefined) {
         return undefined;
     }
-    // For any symbol it will be resolved as follows:
-    // 1) if there is something in the symbol table it will override anything from a * import
-    // 2) if not then the symbol will be in the list of start exports
-    //      a) if there are two things from two different * exports then that will cause a compiler error
-
-    // So 1) Start by seeing if the symbol is in the list of exports. If so use that symbol
-    const symbol = symbolTable.get(name as ts.__String);
+    const symbol = getSymbol(name, symbolTable, program);
     if (symbol) {
         return generateAliasTableForSymbol(symbol, alias, program);
-    } else {
-        // We couldn't find the symbol in the symbol table for this file
-        // So 2) Check if it came from an `export * from 'thing'` declaration
-        return generateAliasTableForNameFromStarExport(
-            name,
-            moduleSpecifier,
-            alias,
-            program
-        );
     }
-}
-
-// Get all of the * exports
-// get the symbol tables for all of those and check which one has the name we are looking for
-function generateAliasTableForNameFromStarExport(
-    name: string,
-    moduleSpecifier: ts.StringLiteral,
-    alias: string,
-    program: ts.Program
-): AliasTable | undefined {
-    const symbolTable = getSymbolTableForModuleSpecifier(
-        moduleSpecifier,
-        program
-    );
-    if (symbolTable === undefined) return undefined;
-
-    const subModuleSpecifier = getStarExportModuleSpecifierFor(
-        name,
-        symbolTable,
-        program
-    );
-
-    if (subModuleSpecifier === undefined) return undefined;
-
-    return generateAliasTableForNameInModule(
-        name,
-        subModuleSpecifier,
-        alias,
-        program
-    );
+    return undefined;
 }
 
 // export {thing} from 'place'; or export {thing as other} from 'place';
@@ -310,6 +267,9 @@ function generateAliasTableForLocalExportSpecifier(
     if (symbolTable === undefined) {
         return undefined;
     }
+    // Given `export * from 'moduleThatHasThingFromStarExport'` It is impossible
+    // to `export {thingFromStarExport}` so we don't need to consider the
+    // __export symbols
     const symbol = symbolTable.get(identifier.text as ts.__String);
     if (symbol === undefined) {
         return undefined;

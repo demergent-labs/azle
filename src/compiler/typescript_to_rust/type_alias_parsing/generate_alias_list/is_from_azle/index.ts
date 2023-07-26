@@ -13,7 +13,7 @@ import {
     isAzleTypeAliasDeclaration as isTypeAliasDeclarationFromAzle,
     isAzleVariableDeclaration as isVariableDeclarationFromAzle
 } from './type_alias';
-import { isAzleSymbol } from '../../utils';
+import { isAzleSymbol, getSymbol } from '../../utils';
 
 const ROBUST_TYPE_ALIASES_IMPLEMENTED = false;
 
@@ -23,39 +23,19 @@ export function isIdentFromAzle(
     symbolTable: ts.SymbolTable,
     program: ts.Program
 ): boolean {
+    // TODO replace everything outside of this if block with everything inside
+    // it when working on https://github.com/demergent-labs/azle/issues/1116
+    // The feature in that ticket will not work if this is still here
+    if (ROBUST_TYPE_ALIASES_IMPLEMENTED) {
+        const symbol = getSymbol(ident.text, symbolTable, program);
+        if (symbol === undefined) {
+            return false;
+        }
+        return isSymbolFromAzle(symbol, alias, program);
+    }
     const symbol = symbolTable.get(ident.text as ts.__String);
-    // TODO could we make a get function for symbolTable that looked through the
-    // __exports as well as get? Then we could just call that every time we are trying to get a symbol
     if (symbol === undefined) {
-        if (!ROBUST_TYPE_ALIASES_IMPLEMENTED) {
-            // TODO remove this when working on https://github.com/demergent-labs/azle/issues/1116
-            // The feature in that ticket will not work if this is still here
-            return false;
-        }
-        const exportSymbols = symbolTable.get('__export' as ts.__String);
-        if (
-            exportSymbols === undefined ||
-            exportSymbols.declarations === undefined
-        ) {
-            return false;
-        }
-        const declarations =
-            exportSymbols.declarations as ts.ExportDeclaration[];
-        return declarations.some((declaration) => {
-            if (
-                declaration.moduleSpecifier === undefined ||
-                !ts.isStringLiteral(declaration.moduleSpecifier)
-            ) {
-                return false;
-            }
-            const result = isNameInModuleFromAzle(
-                ident.text,
-                declaration.moduleSpecifier,
-                alias,
-                program
-            );
-            return result;
-        });
+        return false;
     }
     return isSymbolFromAzle(symbol, alias, program);
 }
@@ -76,7 +56,7 @@ export function isSymbolFromAzle(
         // Should look like export * from 'place';
         // There are other export declarations, but the only ones that will
         // be a symbol are these unnamed export from clauses
-        // TODO I don't know what this looks like. I am having a hard time evitioning this so I'll leave it a lone until it become importatnt
+        // TODO I don't know what this looks like. I am having a hard time envisioning this so I'll leave it a lone until it become important
         return false;
         // return isAzleExportDeclarations(
         //     declarations as ts.ExportDeclaration[],
