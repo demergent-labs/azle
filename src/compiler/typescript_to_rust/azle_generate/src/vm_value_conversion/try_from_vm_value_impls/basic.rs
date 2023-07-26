@@ -217,6 +217,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                         // Currently the inner error will be the base `Error` type. We should
                         // consider making a PrincipalError type and having each of these errors as
                         // children of that type.
+                        // See https://github.com/demergent-labs/azle/issues/1121
 
                         let inner_error_message = principal_error.to_string();
 
