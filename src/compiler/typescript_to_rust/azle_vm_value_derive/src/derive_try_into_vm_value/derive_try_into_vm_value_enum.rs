@@ -1,43 +1,47 @@
-use proc_macro2::Ident;
+use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
-use syn::{DataEnum, Field, Fields, Generics};
+use syn::{DataEnum, Error, Field, Fields, Generics};
 
-pub fn derive_try_into_vm_value_enum(
+use crate::{derive_try_into_vm_value::derive_try_into_vm_value_vec, traits::TryGetEnumFieldIdent};
+
+pub fn generate(
     enum_name: &Ident,
     data_enum: &DataEnum,
     generics: &Generics,
-) -> proc_macro2::TokenStream {
-    let variant_branches = derive_variant_branches(&enum_name, &data_enum);
+) -> Result<TokenStream, Error> {
+    let variant_branches = derive_variant_branches(&enum_name, &data_enum)?;
 
     // Capture generic parameters and their bounds
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
-    quote! {
-        impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for #enum_name #ty_generics #where_clause {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
+    let try_into_vm_value_vec_impl = derive_try_into_vm_value_vec::generate(enum_name, generics);
+
+    Ok(quote! {
+        impl #impl_generics CdkActTryIntoVmValue<
+            &mut boa_engine::Context<'_>,
+            boa_engine::JsValue
+        >
+            for #enum_name #ty_generics
+            #where_clause
+        {
+            fn try_into_vm_value(
+                self,
+                context: &mut boa_engine::Context
+            ) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 match self {
                     #(#variant_branches)*,
                 }
             }
         }
 
-        impl #impl_generics CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Vec<#enum_name #ty_generics> #where_clause {
-            fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                let js_values: Vec<_> = self
-                    .into_iter()
-                    .map(|item| item.try_into_vm_value(context))
-                    .collect::<Result<_, _>>()?;
-
-                Ok(boa_engine::object::builtins::JsArray::from_iter(js_values, context).into())
-            }
-        }
-    }
+        #try_into_vm_value_vec_impl
+    })
 }
 
 fn derive_variant_branches(
     enum_name: &Ident,
     data_enum: &DataEnum,
-) -> Vec<proc_macro2::TokenStream> {
+) -> Result<Vec<TokenStream>, Error> {
     data_enum
         .variants
         .iter()
@@ -50,62 +54,71 @@ fn derive_variant_branches(
                     variant_name,
                     fields_named.named.iter().collect(),
                 ),
-                Fields::Unnamed(fields_unnamed) => derive_variant_branches_unnamed_fields(
+                Fields::Unnamed(fields_unnamed) => Ok(derive_variant_branches_unnamed_fields(
                     enum_name,
                     variant_name,
                     fields_unnamed.unnamed.iter().collect(),
-                ),
-                Fields::Unit => {
-                    derive_variant_branches_unnamed_fields(enum_name, variant_name, vec![])
-                }
+                )),
+                Fields::Unit => Ok(derive_variant_branches_unnamed_fields(
+                    enum_name,
+                    variant_name,
+                    vec![],
+                )),
             }
         })
-        .collect()
+        .collect::<Result<Vec<_>, _>>()
 }
 
 fn derive_variant_branches_named_fields(
     enum_name: &Ident,
     variant_name: &Ident,
     named_fields: Vec<&Field>,
-) -> proc_macro2::TokenStream {
-    let fields_must_be_named = format!(
-        "All fields of variant {} in enum {} must be named",
-        variant_name, enum_name
-    );
+) -> Result<TokenStream, Error> {
+    let field_names = named_fields
+        .iter()
+        .enumerate()
+        .map(|(field_index, named_field)| {
+            let field_name = named_field.try_get_ident(enum_name, variant_name, field_index)?;
 
-    let field_names = named_fields.iter().map(|named_field| {
-        let field_name = &named_field.ident.as_ref().expect(&fields_must_be_named);
+            Ok(quote! {
+                #field_name
+            })
+        })
+        .collect::<Result<Vec<_>, Error>>()?;
 
-        quote! {
-            #field_name
-        }
-    });
+    let named_field_variable_declarations = named_fields
+        .iter()
+        .enumerate()
+        .map(|(field_index, named_field)| {
+            let field_name = named_field.try_get_ident(enum_name, variant_name, field_index)?;
+            let variable_name = format_ident!("{}_js_value", field_name);
 
-    let named_field_variable_declarations = named_fields.iter().map(|named_field| {
-        let field_name = &named_field.ident.as_ref().expect(&fields_must_be_named);
-        let variable_name = format_ident!("{}_js_value", field_name);
+            Ok(quote! {
+                let #variable_name = #field_name.try_into_vm_value(context)?;
+            })
+        })
+        .collect::<Result<Vec<_>, Error>>()?;
 
-        quote! {
-            let #variable_name = #field_name.try_into_vm_value(context)?;
-        }
-    });
+    let named_field_property_definitions = named_fields
+        .iter()
+        .enumerate()
+        .map(|(field_index, named_field)| {
+            let field_name = named_field.try_get_ident(enum_name, variant_name, field_index)?;
+            let variable_name = format_ident!("{}_js_value", field_name);
 
-    let named_field_property_definitions = named_fields.iter().map(|named_field| {
-        let field_name = &named_field.ident.as_ref().expect(&fields_must_be_named);
-        let variable_name = format_ident!("{}_js_value", field_name);
-
-        quote! {
-            .property(
-                stringify!(#field_name),
-                #variable_name,
-                boa_engine::property::Attribute::all()
-            )
-        }
-    });
+            Ok(quote! {
+                .property(
+                    stringify!(#field_name),
+                    #variable_name,
+                    boa_engine::property::Attribute::all()
+                )
+            })
+        })
+        .collect::<Result<Vec<_>, Error>>()?;
 
     let variant_object_variable_name = format_ident!("{}_js_object", variant_name);
 
-    quote! {
+    Ok(quote! {
         #enum_name::#variant_name { #(#field_names),* } => {
             #(#named_field_variable_declarations)*
 
@@ -123,14 +136,14 @@ fn derive_variant_branches_named_fields(
 
             Ok(object.into())
         }
-    }
+    })
 }
 
 fn derive_variant_branches_unnamed_fields(
     enum_name: &Ident,
     variant_name: &Ident,
     unnamed_fields: Vec<&Field>,
-) -> proc_macro2::TokenStream {
+) -> TokenStream {
     if unnamed_fields.len() == 0 {
         quote! {
             #enum_name::#variant_name => {

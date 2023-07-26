@@ -6,3 +6,5 @@ export * from './primitives';
 export * from './principals';
 export * from './throws';
 export * from './vecs';
+export * from './records';
+export * from './variants';

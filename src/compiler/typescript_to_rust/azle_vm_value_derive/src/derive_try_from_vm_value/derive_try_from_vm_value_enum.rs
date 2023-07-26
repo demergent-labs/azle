@@ -1,94 +1,84 @@
-use proc_macro2::Ident;
+use proc_macro2::{Ident, TokenStream};
 use quote::{format_ident, quote};
-use syn::{DataEnum, Field, Fields, Generics};
+use syn::{DataEnum, Error, Field, Fields, Generics};
 
-trait TryGetEnumVariantFieldIdent {
-    fn try_get_ident(&self, enum_name: &Ident, variant_name: &Ident) -> &Ident;
-}
+use crate::{derive_try_from_vm_value::derive_try_from_vm_value_vec, traits::MapTo};
 
-impl TryGetEnumVariantFieldIdent for Field {
-    fn try_get_ident(&self, enum_name: &Ident, variant_name: &Ident) -> &Ident {
-        let field_must_be_named = format!(
-            "All fields of variant {} in enum {} must be named. Note: If you hit this case something went very wrong.",
-            variant_name, enum_name
-        );
-        self.ident.as_ref().expect(&field_must_be_named)
-    }
-}
-
-pub fn derive_try_from_vm_value_enum(
+pub fn generate(
     enum_name: &Ident,
     data_enum: &DataEnum,
     generics: &Generics,
-) -> proc_macro2::TokenStream {
-    let properties = derive_properties(enum_name, data_enum);
+) -> Result<TokenStream, Error> {
+    let (value_is_not_an_object_error_message, missing_valid_variant_error_message) =
+        derive_error_messages(enum_name, data_enum);
+
+    let properties = derive_properties(enum_name, data_enum)?;
 
     let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
-    quote! {
-        impl #impl_generics CdkActTryFromVmValue<#enum_name #ty_generics, &mut boa_engine::Context<'_>> for boa_engine::JsValue #where_clause {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<#enum_name #ty_generics, CdkActTryFromVmValueError> {
-                let object_option = self.as_object();
+    let try_from_vm_value_vec_impl = derive_try_from_vm_value_vec::generate(enum_name, generics);
 
-                if let Some(object) = object_option {
-                    #(#properties)*
+    Ok(quote! {
+        impl #impl_generics CdkActTryFromVmValue<
+            #enum_name #ty_generics,
+            &mut boa_engine::Context<'_>
+        >
+            for boa_engine::JsValue
+            #where_clause
+        {
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context
+            ) -> Result<#enum_name #ty_generics, CdkActTryFromVmValueError> {
+                let object = self
+                    .as_object()
+                    .ok_or_else(|| #value_is_not_an_object_error_message.to_string())?;
 
-                    return Err(CdkActTryFromVmValueError("Enum variant does not exist".to_string()));
-                }
-                else {
-                    return Err(CdkActTryFromVmValueError("JsValue is not an object".to_string()));
-                }
+                #(#properties)*
+
+                return Err(CdkActTryFromVmValueError(
+                    #missing_valid_variant_error_message.to_string()
+                ));
             }
         }
 
-        impl #impl_generics CdkActTryFromVmValue<Vec<#enum_name #ty_generics>, &mut boa_engine::Context<'_>> for boa_engine::JsValue #where_clause {
-            fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<#enum_name #ty_generics>, CdkActTryFromVmValueError> {
-                match self.as_object() {
-                    Some(js_object) => {
-                        if js_object.is_array() {
-                            let mut processing: bool = true;
-                            let mut index: usize = 0;
-
-                            let mut result = vec![];
-
-                            while processing == true {
-                                match js_object.get(index, context) {
-                                    Ok(js_value) => {
-                                        if js_value.is_undefined() {
-                                            processing = false;
-                                        }
-                                        else {
-                                            match js_value.try_from_vm_value(&mut *context) {
-                                                Ok(value) => {
-                                                    result.push(value);
-                                                    index += 1;
-                                                }
-                                                Err(err) => {
-                                                    return Err(err);
-                                                }
-                                            }
-                                        }
-                                    },
-                                    Err(_) => {
-                                        return Err(CdkActTryFromVmValueError("Item at array index does not exist".to_string()))
-                                    }
-                                }
-                            }
-
-                            Ok(result)
-                        }
-                        else {
-                            Err(CdkActTryFromVmValueError("JsObject is not an array".to_string()))
-                        }
-                    },
-                    None => Err(CdkActTryFromVmValueError("JsValue is not an object".to_string()))
-                }
-            }
-        }
-    }
+        #try_from_vm_value_vec_impl
+    })
 }
 
-fn derive_properties(enum_name: &Ident, data_enum: &DataEnum) -> Vec<proc_macro2::TokenStream> {
+fn derive_error_messages(enum_name: &Ident, data_enum: &DataEnum) -> (String, String) {
+    let enum_name_string = enum_name.to_string();
+
+    let value_is_not_an_object_error_message = format!(
+        "[TypeError: Value is not of type '{}'] {{\n  \
+            [cause]: TypeError: Value is not an object\n\
+        }}",
+        &enum_name_string
+    );
+
+    let variant_names = data_enum
+        .variants
+        .iter()
+        .map(|variant| format!("'{}'", variant.ident))
+        .collect::<Vec<_>>();
+
+    let variant_names_vec_string = format!("[{}]", variant_names.join(", "));
+
+    let missing_valid_variant_error_message = format!(
+        "[TypeError: Value is not of type '{}'] {{\n  \
+            [cause]: TypeError: Value must contain exactly one of the following properties: \
+                {}\n\
+        }}",
+        &enum_name_string, variant_names_vec_string,
+    );
+
+    (
+        value_is_not_an_object_error_message,
+        missing_valid_variant_error_message,
+    )
+}
+
+fn derive_properties(enum_name: &Ident, data_enum: &DataEnum) -> Result<Vec<TokenStream>, Error> {
     data_enum
         .variants
         .iter()
@@ -108,23 +98,23 @@ fn derive_properties(enum_name: &Ident, data_enum: &DataEnum) -> Vec<proc_macro2
                     &object_variant_js_value_result_var_name,
                     &object_variant_js_value_var_name,
                 ),
-                Fields::Unnamed(fields_unnamed) => derive_property_for_unnamed_fields(
+                Fields::Unnamed(fields_unnamed) => Ok(derive_property_for_unnamed_fields(
                     fields_unnamed.unnamed.iter().collect(),
                     enum_name,
                     variant_name,
                     &object_variant_js_value_result_var_name,
                     &object_variant_js_value_var_name,
-                ),
-                Fields::Unit => derive_property_for_unnamed_fields(
+                )),
+                Fields::Unit => Ok(derive_property_for_unnamed_fields(
                     vec![],
                     enum_name,
                     variant_name,
                     &object_variant_js_value_result_var_name,
                     &object_variant_js_value_var_name,
-                ),
+                )),
             }
         })
-        .collect()
+        .collect::<Result<_, _>>()
 }
 
 fn derive_property_for_named_fields(
@@ -133,76 +123,60 @@ fn derive_property_for_named_fields(
     variant_name: &Ident,
     object_variant_js_value_result_var_name: &Ident,
     object_variant_js_value_var_name: &Ident,
-) -> proc_macro2::TokenStream {
-    let named_field_js_value_result_variable_names = named_fields.iter().map(|named_field| {
-        let field_name = named_field.try_get_ident(enum_name, variant_name);
-        let variable_name = format_ident!("{}_js_value_result", field_name);
+) -> Result<TokenStream, Error> {
+    let enum_name_string = enum_name.to_string();
 
-        quote! {
-            #variable_name
-        }
-    });
+    let value_is_not_of_variant_type_error_message =
+        format!("TypeError: Value is not of type '{}'", &enum_name_string);
+
+    let named_field_js_value_result_variable_names =
+        named_fields.map_to(enum_name, variant_name, |_, variable_name| {
+            quote! { #variable_name }
+        })?;
 
     let named_field_js_value_result_variable_declarations =
-        named_fields.iter().map(|named_field| {
-            let field_name = named_field.try_get_ident(enum_name, variant_name);
-            let variable_name = format_ident!("{}_js_value_result", field_name);
-
+        named_fields.map_to(enum_name, variant_name, |field_name, variable_name| {
             quote! {
                 let #variable_name = #object_variant_js_value_var_name
                     .as_object()
                     .ok_or_else(|| "TypeError: Value is not an object")?
                     .get(stringify!(#field_name), context);
             }
-        });
+        })?;
 
-    let named_field_js_value_oks = named_fields.iter().map(|named_field| {
-        let field_name = named_field.try_get_ident(enum_name, variant_name);
-        let variable_name = format_ident!("{}_js_value", field_name);
+    let named_field_js_value_oks =
+        named_fields.map_to(enum_name, variant_name, |_, variable_name| {
+            quote! { Ok(#variable_name) }
+        })?;
 
-        quote! {
-            Ok(#variable_name)
-        }
-    });
+    let named_field_variable_declarations =
+        named_fields.map_to(enum_name, variant_name, |field_name, variable_name| {
+            let named_field_js_value_variable_name = format_ident!("{}_js_value", field_name);
 
-    let named_field_variable_declarations = named_fields.iter().map(|named_field| {
-        let field_name = named_field.try_get_ident(enum_name, variant_name);
-        let variable_name = format_ident!("{}_result", field_name);
+            quote! {
+                let #variable_name = #named_field_js_value_variable_name
+                    .try_from_vm_value(&mut *context);
+            }
+        })?;
 
-        let named_field_js_value_variable_name = format_ident!("{}_js_value", field_name);
+    let named_field_variable_oks =
+        named_fields.map_to(enum_name, variant_name, |_, variable_name| {
+            quote! { #variable_name }
+        })?;
 
-        quote! {
-            let #variable_name = #named_field_js_value_variable_name.try_from_vm_value(&mut *context);
-        }
-    });
+    let named_field_variable_names =
+        named_fields.map_to(enum_name, variant_name, |field_name, _| {
+            quote! { Ok(#field_name) }
+        })?;
 
-    let named_field_variable_oks = named_fields.iter().map(|named_field| {
-        let field_name = named_field.try_get_ident(enum_name, variant_name);
-        let variable_name = format_ident!("{}_result", field_name);
+    let tuple_struct_field_definition =
+        named_fields.map_to(enum_name, variant_name, |field_name, _| {
+            quote! { #field_name: #field_name }
+        })?;
 
-        quote! {
-            #variable_name
-        }
-    });
-
-    let named_field_variable_names = named_fields.iter().map(|named_field| {
-        let field_name = named_field.try_get_ident(enum_name, variant_name);
-
-        quote! {
-            Ok(#field_name)
-        }
-    });
-
-    let tuple_struct_field_definition = named_fields.iter().map(|named_field| {
-        let field_name = named_field.try_get_ident(enum_name, variant_name);
-
-        quote! {
-            #field_name: #field_name
-        }
-    });
-
-    quote! {
-        let #object_variant_js_value_result_var_name = object.get(stringify!(#variant_name), context);
+    Ok(quote! {
+        let #object_variant_js_value_result_var_name =
+            object.get(stringify!(#variant_name), context);
 
         if let Ok(#object_variant_js_value_var_name) = #object_variant_js_value_result_var_name {
             if #object_variant_js_value_var_name.is_undefined() == false {
@@ -219,17 +193,23 @@ fn derive_property_for_named_fields(
                                 });
                             },
                             _ => {
-                                return Err(CdkActTryFromVmValueError("Could not convert JsValue to Rust type".to_string()));
+                                // TODO: Update this error message
+                                return Err(CdkActTryFromVmValueError(
+                                    #value_is_not_of_variant_type_error_message.to_string()
+                                ));
                             }
                         };
                     },
                     _ => {
-                        return Err(CdkActTryFromVmValueError("Could not convert JsValue to Rust type".to_string()));
+                        // TODO: Update this error message
+                        return Err(CdkActTryFromVmValueError(
+                            value_is_not_of_variant_type_error_message.to_string()
+                        ));
                     }
                 };
             }
         }
-    }
+    })
 }
 
 fn derive_property_for_unnamed_fields(
@@ -238,36 +218,50 @@ fn derive_property_for_unnamed_fields(
     variant_name: &Ident,
     object_variant_js_value_result_var_name: &Ident,
     object_variant_js_value_var_name: &Ident,
-) -> proc_macro2::TokenStream {
+) -> TokenStream {
+    let enum_name_string = enum_name.to_string();
+    let variant_name_string = variant_name.to_string();
+
+    let todo_rename_this_error_message = format!(
+        "[TypeError: Value is not of type '{}'] {{{{\n  \
+            [cause]: TypeError: Property '{{}}' is not of the correct type {{{{\n    \
+                [cause]: {{}}\n  \
+            }}}}\n\
+        }}}}",
+        &enum_name_string
+    );
+
     if unnamed_fields.len() == 0 {
         quote! {
-            let #object_variant_js_value_result_var_name = object.get(stringify!(#variant_name), context);
+            let #object_variant_js_value_result_var_name =
+                object.get(stringify!(#variant_name), context);
 
-            if let Ok(#object_variant_js_value_var_name) = #object_variant_js_value_result_var_name {
+            if let Ok(#object_variant_js_value_var_name) =
+                #object_variant_js_value_result_var_name
+            {
                 if #object_variant_js_value_var_name.is_undefined() == false {
                     return Ok(#enum_name::#variant_name);
                 }
             }
         }
     } else {
-        let object_variant_result_var_name = format_ident!("object_{}_result", variant_name);
-        let object_variant_var_name = format_ident!("object_{}", variant_name);
-
         quote! {
-            let #object_variant_js_value_result_var_name = object.get(stringify!(#variant_name), context);
+            let #object_variant_js_value_result_var_name =
+                object.get(stringify!(#variant_name), context);
 
-            if let Ok(#object_variant_js_value_var_name) = #object_variant_js_value_result_var_name {
+            if let Ok(#object_variant_js_value_var_name) =
+                #object_variant_js_value_result_var_name
+            {
                 if #object_variant_js_value_var_name.is_undefined() == false {
-                    let #object_variant_result_var_name = #object_variant_js_value_var_name.try_from_vm_value(&mut *context);
-
-                    match #object_variant_result_var_name {
-                        Ok(#object_variant_var_name) => {
-                            return Ok(#enum_name::#variant_name(#object_variant_var_name));
-                        },
-                        Err(err) => {
-                            return Err(err);
-                        }
-                    };
+                    return Ok(#enum_name::#variant_name(
+                        #object_variant_js_value_var_name
+                            .try_from_vm_value(&mut *context)
+                            .map_err(|err| format!(
+                                #todo_rename_this_error_message,
+                                #variant_name_string,
+                                err.0
+                            ))?
+                    ));
                 }
             }
         }
