@@ -143,7 +143,7 @@ export function isNamespaceImportExportFromAzle(
 // It's called from import/export specifier and from import clause
 // The process symbol does a similar thing
 // Here we are getting a module. And finding the name in the module so we can get it's symbol
-function isNameInModuleFromAzle(
+export function isNameInModuleFromAzle(
     name: string,
     moduleSpecifier: ts.StringLiteral,
     alias: string,
@@ -175,7 +175,7 @@ function isNameInModuleFromAzle(
     } else {
         // We couldn't find the symbol in the symbol table for this file
         // So 2) Check if it came from an `export * from 'thing'` declaration
-        return generateAliasTableForNameFromStarExport(
+        return isNameInModulesStarExportFromAzle(
             name,
             moduleSpecifier,
             alias,
@@ -186,7 +186,7 @@ function isNameInModuleFromAzle(
 
 // Get all of the * exports
 // get the symbol tables for all of those and check which one has the name we are looking for
-function generateAliasTableForNameFromStarExport(
+function isNameInModulesStarExportFromAzle(
     name: string,
     moduleSpecifier: ts.StringLiteral,
     alias: string,

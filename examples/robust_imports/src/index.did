@@ -7,7 +7,6 @@ type IceAppleBasket = record {
   "int64" : int64;
 };
 type MixedConcreteStar = record { star : bool };
-type MixedUserDefinedAlias = record { num : int };
 type MyCavernousRecord = record {
   myRecord : MyRecord;
   myDeepTuple : record { text };
@@ -28,7 +27,6 @@ type MyDeepVariant = variant { Thing : int8 };
 type MyDeepVariantFromAlias = variant { bad; good; ugly };
 type MyFathomlessRecord = record { mytext : text };
 type MyFathomlessVariant = variant { MyInt16 : int16; MyInt8 : int8 };
-type MyMixedRecord = record { age : MixedUserDefinedAlias; name : text };
 type MyRecord = record {
   int1 : int16;
   int2 : int16;
@@ -47,11 +45,6 @@ type MyRecordFromAlias = record {
   tups : record { text; float64 };
   description : MyDeepVariantFromAlias;
   depth : MyDeepRecordFromAlias;
-};
-type MyStirredRecord = record {
-  age : MixedUserDefinedAlias;
-  height : UserDefinedAlias;
-  name : text;
 };
 type MyVariant = variant { String : text; Thing : int8 };
 type NectarineBasket = record {
@@ -76,11 +69,9 @@ type NumberAliases = record {
   twelfth : float64;
   fourth : int;
 };
-type UserDefinedAlias = record { num : float64 };
 type Watermelon = variant { Seeds; Seedless };
 type _AzleResult = variant { Ok : bool; Err : text };
 service : () -> {
-  addHeight : (MyMixedRecord, float64) -> (MyStirredRecord) query;
   addSigFigs : (float32) -> (float64) query;
   checkService : (
       service { deliver : () -> (text); is_delivered : () -> (bool) query },

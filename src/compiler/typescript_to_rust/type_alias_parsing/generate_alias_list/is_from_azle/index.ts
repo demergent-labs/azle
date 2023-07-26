@@ -6,13 +6,16 @@ import {
     isExportSpecifierFromAzle,
     isImportClauseFromAzle,
     isImportSpecifierFromAzle,
-    isNamespaceImportExportFromAzle
+    isNamespaceImportExportFromAzle,
+    isNameInModuleFromAzle
 } from './import_export';
 import {
     isAzleTypeAliasDeclaration as isTypeAliasDeclarationFromAzle,
     isAzleVariableDeclaration as isVariableDeclarationFromAzle
 } from './type_alias';
 import { isAzleSymbol } from '../../utils';
+
+const ROBUST_TYPE_ALIASES_IMPLEMENTED = false;
 
 export function isIdentFromAzle(
     ident: ts.Identifier | ts.MemberName,
@@ -21,9 +24,38 @@ export function isIdentFromAzle(
     program: ts.Program
 ): boolean {
     const symbol = symbolTable.get(ident.text as ts.__String);
+    // TODO could we make a get function for symbolTable that looked through the
+    // __exports as well as get? Then we could just call that every time we are trying to get a symbol
     if (symbol === undefined) {
-        // TODO Couldn't find symbol
-        return false;
+        if (!ROBUST_TYPE_ALIASES_IMPLEMENTED) {
+            // TODO remove this when working on https://github.com/demergent-labs/azle/issues/1116
+            // The feature in that ticket will not work if this is still here
+            return false;
+        }
+        const exportSymbols = symbolTable.get('__export' as ts.__String);
+        if (
+            exportSymbols === undefined ||
+            exportSymbols.declarations === undefined
+        ) {
+            return false;
+        }
+        const declarations =
+            exportSymbols.declarations as ts.ExportDeclaration[];
+        return declarations.some((declaration) => {
+            if (
+                declaration.moduleSpecifier === undefined ||
+                !ts.isStringLiteral(declaration.moduleSpecifier)
+            ) {
+                return false;
+            }
+            const result = isNameInModuleFromAzle(
+                ident.text,
+                declaration.moduleSpecifier,
+                alias,
+                program
+            );
+            return result;
+        });
     }
     return isSymbolFromAzle(symbol, alias, program);
 }

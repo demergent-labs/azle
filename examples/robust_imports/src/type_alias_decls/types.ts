@@ -38,11 +38,6 @@ export type StirredTextAlias =
 export type StirredIntAlias = deepAlias.deeperAlias.deepestAlias.int;
 export type StirredRecordAlias<T extends object> =
     stirredAlias.deepAlias.deeperAlias.deepestAlias.Record<T>;
-// TODO figure out why this one isn't working
-// export type StirredUserDefinedAlias =
-//     stirredAlias.deepAlias.deeperAlias.deepestAlias.Record<{
-//         num: StirredIntAlias;
-//     }>;
 export type StirredUserDefinedAlias =
     mixedAlias.deepAlias.deeperAlias.deepestAlias.Record<{
         num: StirredIntAlias;

@@ -490,20 +490,6 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'TODO make this a better name',
-            test: async () => {
-                const input = { name: 'Bob', age: { num: 7n } };
-                const height = 1.23;
-                const result = await canister.addHeight(input, height);
-                return {
-                    Ok:
-                        result.name == input.name &&
-                        result.age.num === input.age.num &&
-                        result.height.num === height
-                };
-            }
-        },
-        {
             name: 'Check * exports for aliases',
             test: async () => {
                 const result = await canister.compareStars(
