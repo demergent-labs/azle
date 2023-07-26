@@ -112,8 +112,8 @@ export function id(): Principal {
     return ic.id();
 }
 
-// Returns the number of instructions executed just getting into JS and back to
-// make the call to the counter.
+// Returns the number of instructions that the canister executed since the last
+// entry point.
 $query;
 export function instructionCounter(): nat64 {
     return ic.instructionCounter();
