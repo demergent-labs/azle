@@ -97,7 +97,7 @@ Traps can be useful for ensuring that multiple operations are either all complet
 Here's an example of how to trap and ensure atomic changes to your database:
 
 ```typescript
-import { ic, Opt, $query, Record, StableBTreeMap, $update } from 'azle';
+import { ic, Opt, $query, Record, StableBTreeMap, $update, Vec } from 'azle';
 
 type Entry = Record<{
     key: string;
@@ -117,7 +117,7 @@ export function set(key: string, value: string): void {
 }
 
 $update;
-export function setMany(entries: Entry[]): void {
+export function setMany(entries: Vec<Entry>): void {
     entries.forEach((entry) => {
         if (entry.key === 'trap') {
             ic.trap('explicit trap');

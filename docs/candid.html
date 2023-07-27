@@ -717,7 +717,7 @@ export function printNull(null_: null): null {
 (null : null)
 </code></pre>
 <h3 id="vec"><a class="header" href="#vec">vec</a></h3>
-<p>TypeScript <code>[]</code> array syntax corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>nat8[]</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>nat8[]</code>). Only the <code>[]</code> array syntax is supported at this time (i.e. not <code>Array</code> or <code>ReadonlyArray</code> etc).</p>
+<p>The Azle type <code>Vec</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>Vec&lt;nat8&gt;</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>Vec&lt;nat8&gt;</code>).</p>
 <p>TypeScript:</p>
 <pre><code class="language-typescript">import { int32, $query, Vec } from 'azle';
 

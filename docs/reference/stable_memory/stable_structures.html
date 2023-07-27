@@ -158,17 +158,18 @@
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_structures">stable_structures</a></li>
 </ul>
 <pre><code class="language-typescript">import {
+    Alias,
     nat64,
     nat8,
     Opt,
     $query,
     StableBTreeMap,
     $update,
-    Variant
+    Vec
 } from 'azle';
 
-type Key = nat8;
-type Value = string;
+type Key = Alias&lt;nat8&gt;;
+type Value = Alias&lt;string&gt;;
 
 let map = new StableBTreeMap&lt;Key, Value&gt;(0, 100, 1_000);
 
@@ -193,12 +194,12 @@ export function isEmpty(): boolean {
 }
 
 $query;
-export function items(): [Key, Value][] {
+export function items(): Vec&lt;[Key, Value]&gt; {
     return map.items();
 }
 
 $query;
-export function keys(): Key[] {
+export function keys(): Vec&lt;Key&gt; {
     return map.keys();
 }
 
@@ -213,7 +214,7 @@ export function remove(key: Key): Opt&lt;Value&gt; {
 }
 
 $query;
-export function values(): Value[] {
+export function values(): Vec&lt;Value&gt; {
     return map.values();
 }
 </code></pre>

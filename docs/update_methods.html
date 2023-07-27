@@ -223,7 +223,7 @@ export function set(key: string, value: string): void {
 <p>So far we have only seen how state changes can be persisted. State changes can also be discarded by implicit or explicit traps. A trap is an immediate stop to execution with the ability to provide a message to the execution environment.</p>
 <p>Traps can be useful for ensuring that multiple operations are either all completed or all disregarded, or in other words atomic. Keep in mind that these guarantees do not hold once cross-canister calls are introduced, but that's a more advanced topic <a href="./cross_canister.html">covered later</a>.</p>
 <p>Here's an example of how to trap and ensure atomic changes to your database:</p>
-<pre><code class="language-typescript">import { ic, Opt, $query, Record, StableBTreeMap, $update } from 'azle';
+<pre><code class="language-typescript">import { ic, Opt, $query, Record, StableBTreeMap, $update, Vec } from 'azle';
 
 type Entry = Record&lt;{
     key: string;
@@ -243,7 +243,7 @@ export function set(key: string, value: string): void {
 }
 
 $update;
-export function setMany(entries: Entry[]): void {
+export function setMany(entries: Vec&lt;Entry&gt;): void {
     entries.forEach((entry) =&gt; {
         if (entry.key === 'trap') {
             ic.trap('explicit trap');

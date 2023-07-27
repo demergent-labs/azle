@@ -15,17 +15,18 @@ Examples:
 
 ```typescript
 import {
+    Alias,
     nat64,
     nat8,
     Opt,
     $query,
     StableBTreeMap,
     $update,
-    Variant
+    Vec
 } from 'azle';
 
-type Key = nat8;
-type Value = string;
+type Key = Alias<nat8>;
+type Value = Alias<string>;
 
 let map = new StableBTreeMap<Key, Value>(0, 100, 1_000);
 
@@ -50,12 +51,12 @@ export function isEmpty(): boolean {
 }
 
 $query;
-export function items(): [Key, Value][] {
+export function items(): Vec<[Key, Value]> {
     return map.items();
 }
 
 $query;
-export function keys(): Key[] {
+export function keys(): Vec<Key> {
     return map.keys();
 }
 
@@ -70,7 +71,7 @@ export function remove(key: Key): Opt<Value> {
 }
 
 $query;
-export function values(): Value[] {
+export function values(): Vec<Value> {
     return map.values();
 }
 ```

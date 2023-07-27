@@ -16,19 +16,20 @@ import {
     Record,
     Tuple,
     $update,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 
 type HttpRequest = Record<{
     method: string;
     url: string;
-    headers: Header[];
+    headers: Vec<Header>;
     body: blob;
 }>;
 
 type HttpResponse = Record<{
     status_code: nat16;
-    headers: Header[];
+    headers: Vec<Header>;
     body: blob;
     streaming_strategy: Opt<StreamingStrategy>;
     upgrade: Opt<boolean>;

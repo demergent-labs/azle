@@ -183,14 +183,23 @@ SOFTWARE.
 <ul>
 <li><a href="https://github.com/demergent-labs/azle">GitHub repo</a></li>
 <li><a href="https://www.npmjs.com/package/azle">npm package</a></li>
+<li><a href="https://discord.gg/5Hb6rM2QUM">Discord channel</a></li>
 </ul>
 <h2 id="disclaimer"><a class="header" href="#disclaimer">Disclaimer</a></h2>
-<p>Things to keep in mind (see the <a href="./caveats.html">caveats</a> section for more):</p>
+<p>Azle may have unknown security vulnerabilities due to the following:</p>
 <ul>
 <li>Azle does not yet have many live, successful, continuously operating applications deployed to the IC</li>
 <li>Azle does not yet have extensive automated property tests</li>
 <li>Azle does not yet have multiple independent security reviews/audits</li>
 <li>Azle heavily relies on Boa which is <a href="https://github.com/boa-dev/boa#boa">self-proclaimed to be experimental</a></li>
+</ul>
+<h2 id="roadmap"><a class="header" href="#roadmap">Roadmap</a></h2>
+<p>We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:</p>
+<ul>
+<li>QuickJS/SpiderMonkey integration for performance, security, and stability</li>
+<li>Broad npm package support</li>
+<li>Extensive automated property testing</li>
+<li>Multiple independent security reviews/audits</li>
 </ul>
 <h2 id="demergent-labs"><a class="header" href="#demergent-labs">Demergent Labs</a></h2>
 <p>Azle is currently developed by <a href="https://github.com/demergent-labs">Demergent Labs</a>, a for-profit company with a <a href="https://dfinity.org/grants">grant</a> from <a href="https://dfinity.org/">DFINITY</a>.</p>
@@ -755,7 +764,7 @@ export function set(key: string, value: string): void {
 <p>So far we have only seen how state changes can be persisted. State changes can also be discarded by implicit or explicit traps. A trap is an immediate stop to execution with the ability to provide a message to the execution environment.</p>
 <p>Traps can be useful for ensuring that multiple operations are either all completed or all disregarded, or in other words atomic. Keep in mind that these guarantees do not hold once cross-canister calls are introduced, but that's a more advanced topic <a href="./cross_canister.html">covered later</a>.</p>
 <p>Here's an example of how to trap and ensure atomic changes to your database:</p>
-<pre><code class="language-typescript">import { ic, Opt, $query, Record, StableBTreeMap, $update } from 'azle';
+<pre><code class="language-typescript">import { ic, Opt, $query, Record, StableBTreeMap, $update, Vec } from 'azle';
 
 type Entry = Record&lt;{
     key: string;
@@ -775,7 +784,7 @@ export function set(key: string, value: string): void {
 }
 
 $update;
-export function setMany(entries: Entry[]): void {
+export function setMany(entries: Vec&lt;Entry&gt;): void {
     entries.forEach((entry) =&gt; {
         if (entry.key === 'trap') {
             ic.trap('explicit trap');
@@ -1386,7 +1395,7 @@ export function printNull(null_: null): null {
 (null : null)
 </code></pre>
 <h3 id="vec"><a class="header" href="#vec">vec</a></h3>
-<p>TypeScript <code>[]</code> array syntax corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>nat8[]</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>nat8[]</code>). Only the <code>[]</code> array syntax is supported at this time (i.e. not <code>Array</code> or <code>ReadonlyArray</code> etc).</p>
+<p>The Azle type <code>Vec</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>Vec&lt;nat8&gt;</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>Vec&lt;nat8&gt;</code>).</p>
 <p>TypeScript:</p>
 <pre><code class="language-typescript">import { int32, $query, Vec } from 'azle';
 
@@ -1662,13 +1671,13 @@ let map = new StableBTreeMap&lt;nat8, string&gt;(0, 100, 1_000);
     nat8,
     Opt,
     $query,
-    Result,
     StableBTreeMap,
-    $update
+    $update,
+    Vec
 } from 'azle';
 
-type Key = nat8;
-type Value = string;
+type Key = Alias&lt;nat8&gt;;
+type Value = Alias&lt;string&gt;;
 
 let map = new StableBTreeMap&lt;Key, Value&gt;(0, 100, 1_000);
 
@@ -1693,12 +1702,12 @@ export function isEmpty(): boolean {
 }
 
 $query;
-export function items(): [Key, Value][] {
+export function items(): Vec&lt;[Key, Value]&gt; {
     return map.items();
 }
 
 $query;
-export function keys(): Key[] {
+export function keys(): Vec&lt;Key&gt; {
     return map.keys();
 }
 
@@ -1713,7 +1722,7 @@ export function remove(key: Key): Opt&lt;Value&gt; {
 }
 
 $query;
-export function values(): Value[] {
+export function values(): Vec&lt;Value&gt; {
     return map.values();
 }
 </code></pre>
@@ -1912,12 +1921,12 @@ function generateId(): Principal {
 </code></pre>
 <p>The example above shows a very basic audio recording backend application. There are two types of entities that need to be stored, <code>User</code> and <code>Recording</code>. These are represented as <code>Candid</code> records.</p>
 <p>Each entity gets its own <code>StableBTreeMap</code>:</p>
-<pre><code class="language-typescript">import { blob, nat64, Principal, Record, StableBTreeMap } from 'azle';
+<pre><code class="language-typescript">import { blob, nat64, Principal, Record, StableBTreeMap, Vec } from 'azle';
 
 type User = Record&lt;{
     id: Principal;
     createdAt: nat64;
-    recordingIds: Principal[];
+    recordingIds: Vec&lt;Principal&gt;;
     username: string;
 }&gt;;
 
@@ -2219,19 +2228,20 @@ export function sendNotification(): Result&lt;null, RejectionCode&gt; {
     Query,
     Record,
     Tuple,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 
 type HttpRequest = Record&lt;{
     method: string;
     url: string;
-    headers: Header[];
+    headers: Vec&lt;Header&gt;;
     body: blob;
 }&gt;;
 
 type HttpResponse = Record&lt;{
     status_code: nat16;
-    headers: Header[];
+    headers: Vec&lt;Header&gt;;
     body: blob;
     streaming_strategy: Opt&lt;StreamingStrategy&gt;;
     upgrade: Opt&lt;boolean&gt;;
@@ -3914,7 +3924,7 @@ service : () -&gt; {
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="vec-1"><a class="header" href="#vec-1">vec</a></h1>
 <p>This section is a work in progress.</p>
-<p>TypeScript <code>[]</code> array syntax corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>nat8[]</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>nat8[]</code>). Only the <code>[]</code> array syntax is supported at this time (i.e. not <code>Array</code> or <code>ReadonlyArray</code> etc).</p>
+<p>The Azle type <code>Vec</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>Vec&lt;nat8&gt;</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>Vec&lt;nat8&gt;</code>).</p>
 <p>TypeScript:</p>
 <pre><code class="language-typescript">import { int32, $query, Vec } from 'azle';
 
@@ -4155,19 +4165,20 @@ export function heartbeat(): void {
     Query,
     Record,
     Tuple,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 
 type HttpRequest = Record&lt;{
     method: string;
     url: string;
-    headers: Header[];
+    headers: Vec&lt;Header&gt;;
     body: blob;
 }&gt;;
 
 type HttpResponse = Record&lt;{
     status_code: nat16;
-    headers: Header[];
+    headers: Vec&lt;Header&gt;;
     body: blob;
     streaming_strategy: Opt&lt;StreamingStrategy&gt;;
     upgrade: Opt&lt;boolean&gt;;
@@ -4221,19 +4232,20 @@ export function http_request(req: HttpRequest): HttpResponse {
     Record,
     Tuple,
     $update,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 
 type HttpRequest = Record&lt;{
     method: string;
     url: string;
-    headers: Header[];
+    headers: Vec&lt;Header&gt;;
     body: blob;
 }&gt;;
 
 type HttpResponse = Record&lt;{
     status_code: nat16;
-    headers: Header[];
+    headers: Vec&lt;Header&gt;;
     body: blob;
     streaming_strategy: Opt&lt;StreamingStrategy&gt;;
     upgrade: Opt&lt;boolean&gt;;
@@ -4481,7 +4493,7 @@ export async function getBalance(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
 </ul>
-<pre><code class="language-typescript">import { Result, $update } from 'azle';
+<pre><code class="language-typescript">import { Result, $update, Vec } from 'azle';
 import {
     BitcoinNetwork,
     managementCanister,
@@ -4492,7 +4504,7 @@ const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
 $update;
 export async function getCurrentFeePercentiles(): Promise&lt;
-    Result&lt;MillisatoshiPerByte[], string&gt;
+    Result&lt;Vec&lt;MillisatoshiPerByte&gt;, string&gt;
 &gt; {
     return await managementCanister
         .bitcoin_get_current_fee_percentiles({
@@ -4882,7 +4894,7 @@ export async function getRandomness(): Promise&lt;blob&gt; {
 <p>This section is a work in progress.</p>
 <p>Examples:</p>
 <ul>
-<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
+<li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
 </ul>
 <pre><code class="language-typescript">import { blob, ic, match, Record, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
@@ -5057,17 +5069,18 @@ export async function executeUpdateSettings(
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_structures">stable_structures</a></li>
 </ul>
 <pre><code class="language-typescript">import {
+    Alias,
     nat64,
     nat8,
     Opt,
     $query,
     StableBTreeMap,
     $update,
-    Variant
+    Vec
 } from 'azle';
 
-type Key = nat8;
-type Value = string;
+type Key = Alias&lt;nat8&gt;;
+type Value = Alias&lt;string&gt;;
 
 let map = new StableBTreeMap&lt;Key, Value&gt;(0, 100, 1_000);
 
@@ -5092,12 +5105,12 @@ export function isEmpty(): boolean {
 }
 
 $query;
-export function items(): [Key, Value][] {
+export function items(): Vec&lt;[Key, Value]&gt; {
     return map.items();
 }
 
 $query;
-export function keys(): Key[] {
+export function keys(): Vec&lt;Key&gt; {
     return map.keys();
 }
 
@@ -5112,7 +5125,7 @@ export function remove(key: Key): Opt&lt;Value&gt; {
 }
 
 $query;
-export function values(): Value[] {
+export function values(): Vec&lt;Value&gt; {
     return map.values();
 }
 </code></pre>

@@ -4,15 +4,25 @@ Azle is a [TypeScript](https://www.typescriptlang.org/) [Canister Development Ki
 
 -   [GitHub repo](https://github.com/demergent-labs/azle)
 -   [npm package](https://www.npmjs.com/package/azle)
+-   [Discord channel](https://discord.gg/5Hb6rM2QUM)
 
 ## Disclaimer
 
-Things to keep in mind (see the [caveats](./caveats.md) section for more):
+Azle may have unknown security vulnerabilities due to the following:
 
 -   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 -   Azle does not yet have extensive automated property tests
 -   Azle does not yet have multiple independent security reviews/audits
 -   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa#boa)
+
+## Roadmap
+
+We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:
+
+-   QuickJS/SpiderMonkey integration for performance, security, and stability
+-   Broad npm package support
+-   Extensive automated property testing
+-   Multiple independent security reviews/audits
 
 ## Demergent Labs
 
