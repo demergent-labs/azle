@@ -61,11 +61,11 @@ export function generateLibCargoToml(
         ic-cdk-timers = "=0.4.0"
         ic-stable-structures = "=0.5.6"
         candid = { version = "=0.9.1", features = ["parser"] }
-        boa_engine = { git = "https://github.com/boa-dev/boa", rev = "08a72387ba5cd185f657e98d984ff2ce328da69e" }
+        boa_engine = { git = "https://github.com/boa-dev/boa", rev = "93e3b2f629a98049ce24c8b4e82d63fd01a85604" }
         # boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "2613202fdc2757691ba1a20e568e5b8740e0c233" }
         # boa_engine = { path = "/home/boa/boa_engine" }
         getrandom = { version = "=0.2.3", features = ["custom"] }
-        chrono = { version = "=0.4.24", default-features = false }
+        chrono = { version = "0.4.26", default-features = false }
         serde = "1.0.137"
         azle-vm-value-derive = { path = "./azle_vm_value_derive" }
         uuid = { version = "=1.2.2", features = ["v4"] }

@@ -25,7 +25,7 @@ pub fn generate_call_to_js_function(
 
     Ok(quote! {
         let exports_js_value = boa_context
-            .eval_script(boa_engine::Source::from_bytes("exports"))?;
+            .eval(boa_engine::Source::from_bytes("exports"))?;
         let exports_js_object = exports_js_value
             .as_object()
             .ok_or_else(|| RuntimeError::TypeError("'exports' is not an object".to_string()))?;

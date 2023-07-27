@@ -77,7 +77,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 context: &mut boa_engine::Context,
             ) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 let exports_js_value =
-                    context.eval_script(boa_engine::Source::from_bytes("exports"))?;
+                    context.eval(boa_engine::Source::from_bytes("exports"))?;
 
                 let exports_js_object = exports_js_value
                     .as_object()
