@@ -1,46 +1,37 @@
 import * as ts from 'typescript';
 import { generateAliasTableFromSymbolTable } from './alias_table';
 import { getSymbolTable } from '../utils/get_symbol_table';
-import { AliasTable, AliasTables, GenerationType, AliasLists } from '../types';
+import {
+    AliasTable,
+    AliasTables,
+    GenerationType,
+    AliasLists,
+    AliasListsOrTables
+} from '../types';
 
 export function generateAliasTables(
     files: string[],
     program: ts.Program,
     generationType: GenerationType
 ): AliasTables | AliasLists {
-    if (generationType === 'LIST') {
-        return files.reduce(
-            (acc: { [key: string]: string[] }, filename: string) => {
-                const aliasList = generateAliasTable(
-                    filename,
-                    program,
-                    generationType
-                );
-                if (!Array.isArray(aliasList)) {
-                    return acc;
-                }
-                return {
-                    ...acc,
-                    [filename]: aliasList
-                };
-            },
-            {}
-        );
-    }
-    return files.reduce((acc: AliasTables, filename: string) => {
-        const aliasTable = generateAliasTable(
+    const result = files.reduce((acc: AliasListsOrTables, filename: string) => {
+        const aliasTableOrList = generateAliasTable(
             filename,
             program,
             generationType
         );
-        if (aliasTable === null || Array.isArray(aliasTable)) {
+        if (aliasTableOrList === null) {
             return acc;
         }
         return {
             ...acc,
-            [filename]: aliasTable
+            [filename]: aliasTableOrList
         };
     }, {});
+    if (generationType === 'TABLE') {
+        return result as AliasTables;
+    }
+    return result as AliasLists;
 }
 
 function generateAliasTable(

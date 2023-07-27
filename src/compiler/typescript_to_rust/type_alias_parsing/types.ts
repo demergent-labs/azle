@@ -3,6 +3,8 @@ export type AliasLists = { [filename: string]: string[] };
 
 export type AliasTables = { [filename: string]: AliasTable };
 
+export type AliasListsOrTables = { [filename: string]: AliasTable | string[] };
+
 export type AliasTable = {
     alias: string[];
     call_result: string[];
