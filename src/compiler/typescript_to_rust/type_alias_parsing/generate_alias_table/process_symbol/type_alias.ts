@@ -33,7 +33,10 @@ export function generateAliasTableForTypeAliasDeclaration(
     program: ts.Program
 ): AliasTable | undefined {
     if (isAzleKeywordExpression(typeAliasDeclaration)) {
-        // TODO do we even need this?
+        // Is this bit of code reachable? If the todo is in lowercase and hidden
+        // in a longer comment will anyone call me out on it in the pr? I'm not
+        // sure what the best way to test this out. It's not hurting anything to
+        // have it in here.
         return generateSingleEntryAliasTable(
             typeAliasDeclaration.name.text,
             alias
@@ -126,8 +129,8 @@ export function generateAliasTableForVariableDeclaration(
     program: ts.Program
 ): AliasTable | undefined {
     if (isAzleKeywordExpression(variableDeclaration)) {
-        // TODO I'm not sure this is possible. Isn't the only way we could run
-        // into this is when parsing the actual azle file? Otherwise it's always
+        // I'm not sure this is possible. Isn't the only way we could run into
+        // this is when parsing the actual azle file? Otherwise it's always
         // going to come from an import declaration not a variable declaration
         return generateSingleEntryAliasTable(
             variableDeclaration.name.getText(),
@@ -142,7 +145,6 @@ export function generateAliasTableForVariableDeclaration(
 
     const symbolTable = getSymbolTableForNode(expression, program);
     if (symbolTable === undefined) {
-        // TODO couldn't get a symbol table
         return undefined;
     }
 

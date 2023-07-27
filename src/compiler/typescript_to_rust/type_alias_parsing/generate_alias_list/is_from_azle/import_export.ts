@@ -72,29 +72,8 @@ export function isExportDeclarationFromAzle(
     exportDeclaration: ts.ExportDeclaration,
     program: ts.Program
 ): boolean {
+    // TODO https://github.com/demergent-labs/azle/issues/1122
     return false;
-    // TODO I am having a hard time imagining what this looks like.. so I'll save it for later
-    // const moduleSpecifier = exportDeclaration.moduleSpecifier;
-    // if (moduleSpecifier === undefined || !ts.isStringLiteral(moduleSpecifier)) {
-    //     // Unreachable: An export declaration with a namespace export will always have a FromClause
-    //     // https://262.ecma-international.org/13.0/#sec-exports
-    //     return false;
-    // }
-    // if (exportDeclaration.exportClause) {
-    //     // Unreachable: An export declaration with a namespace export will never have an ExportClause
-    //     // https://262.ecma-international.org/13.0/#sec-exports
-    //     return false;
-    // }
-    // if (moduleSpecifier.text == 'azle') {
-    //     return true;
-    // }
-    // const symbolTable = getSymbolTableForDeclaration(
-    //     exportDeclaration,
-    //     program
-    // );
-    // if (symbolTable === undefined) return false;
-
-    // return generateAliasListFromSymbolTable(symbolTable, program);
 }
 
 // My expectation is that this will only be called for export declarations in the form:
@@ -106,7 +85,7 @@ export function areExportDeclarationsFromAzle(
     exportDeclarations: ts.ExportDeclaration[],
     program: ts.Program
 ): boolean {
-    // TODO I  don't know what this looks like right now
+    // TODO https://github.com/demergent-labs/azle/issues/1122
     return false;
 }
 
@@ -122,7 +101,6 @@ export function isNamespaceImportExportFromAzle(
         return false;
     }
     if (importDeclaration.moduleSpecifier.text == 'azle') {
-        // TODO process this symbol table the same, then modify it such that every entry has name.whatever
         return true;
     }
     const symbolTable = getSymbolTableForDeclaration(
@@ -138,11 +116,6 @@ export function isNamespaceImportExportFromAzle(
     return true;
 }
 
-// TODO make a better name for this
-// What is this doing? Where all are we calling it?
-// It's called from import/export specifier and from import clause
-// The process symbol does a similar thing
-// Here we are getting a module. And finding the name in the module so we can get it's symbol
 export function isNameInModuleFromAzle(
     name: string,
     moduleSpecifier: ts.StringLiteral,

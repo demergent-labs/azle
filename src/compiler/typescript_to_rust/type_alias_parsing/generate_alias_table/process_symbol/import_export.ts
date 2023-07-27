@@ -174,7 +174,7 @@ export function generateAliasTableForNamespaceImportExport(
         return undefined;
     }
     if (importDeclaration.moduleSpecifier.text == 'azle') {
-        // TODO process this symbol table the same, then modify it such that every entry has name.whatever
+        // Process this symbol table the same, then modify it such that every entry has name.whatever
         return prependNamespaceToAliasTable(DEFAULT_ALIAS_TABLE, namespace);
     }
     const symbolTable = getSymbolTableForDeclaration(
