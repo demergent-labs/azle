@@ -33,7 +33,7 @@ export function generateAliasTableForTypeAliasDeclaration(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined {
+): AliasTable | undefined | boolean {
     if (isAzleKeywordExpression(typeAliasDeclaration)) {
         // Is this bit of code reachable? If the todo is in lowercase and hidden
         // in a longer comment will anyone call me out on it in the pr? I'm not
@@ -132,7 +132,7 @@ export function generateAliasTableForVariableDeclaration(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined {
+): AliasTable | undefined | boolean {
     if (isAzleKeywordExpression(variableDeclaration)) {
         // I'm not sure this is possible. Isn't the only way we could run into
         // this is when parsing the actual azle file? Otherwise it's always

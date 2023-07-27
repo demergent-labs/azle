@@ -9,14 +9,14 @@ export function generateAliasTables(
     files: string[],
     program: ts.Program,
     generationType: GenerationType
-): AliasTables {
+): AliasTables | boolean {
     return files.reduce((acc: AliasTables, filename: string) => {
         const aliasTable = generateAliasTable(
             filename,
             program,
             generationType
         );
-        if (aliasTable === undefined) {
+        if (aliasTable === undefined || typeof aliasTable === 'boolean') {
             return acc;
         }
         return {
@@ -30,7 +30,7 @@ function generateAliasTable(
     filename: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined {
+): AliasTable | undefined | boolean {
     const sourceFile = program.getSourceFile(filename);
 
     if (sourceFile === undefined) {

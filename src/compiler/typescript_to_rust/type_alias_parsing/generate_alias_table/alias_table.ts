@@ -6,7 +6,7 @@ export function generateAliasTableFromSymbolTable(
     symbolTable: ts.SymbolTable,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined {
+): AliasTable | undefined | boolean {
     let aliasTable = EMPTY_ALIAS_TABLE;
     // ts.SymbolTable does not use regular iterator conventions thus it's
     // difficult to turn it into an array, so we have to use forEach instead of
@@ -18,7 +18,7 @@ export function generateAliasTableFromSymbolTable(
             program,
             generationType
         );
-        if (subAliasTable) {
+        if (subAliasTable && typeof subAliasTable !== 'boolean') {
             aliasTable = mergeAliasTables(aliasTable, subAliasTable);
         }
     });

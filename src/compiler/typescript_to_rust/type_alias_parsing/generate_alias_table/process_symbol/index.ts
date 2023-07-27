@@ -23,7 +23,7 @@ export function generateAliasTableForIdentifier(
     symbolTable: ts.SymbolTable,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined {
+): AliasTable | undefined | boolean {
     const symbol = getSymbol(ident.text, symbolTable, program);
     if (symbol === undefined) {
         // Couldn't find symbol
@@ -37,7 +37,7 @@ export function generateAliasTableForSymbol(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined {
+): AliasTable | undefined | boolean {
     if (isAzleSymbol(symbol)) {
         return generateSingleEntryAliasTable(symbol.name, alias);
     }
@@ -73,7 +73,7 @@ function generateAliasTableForDeclaration(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined {
+): AliasTable | undefined | boolean {
     if (ts.isExportSpecifier(declaration)) {
         // {thing} or {thing as other}
         // as in `export {thing};` or
