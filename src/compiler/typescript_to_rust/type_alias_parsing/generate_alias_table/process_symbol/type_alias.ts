@@ -36,13 +36,12 @@ export function generateForTypeAliasDeclaration(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
+): AliasTable | null {
     if (isAzleKeywordExpression(typeAliasDeclaration)) {
         // Is this bit of code reachable? If the todo is in lowercase and hidden
         // in a longer comment will anyone call me out on it in the pr? I'm not
         // sure what the best way to test this out. It's not hurting anything to
         // have it in here.
-        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable(
             typeAliasDeclaration.name.text,
             alias
@@ -106,27 +105,21 @@ export function generateForTypeAliasDeclaration(
         }
     }
     if (aliasedType.kind === ts.SyntaxKind.BooleanKeyword) {
-        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable('bool', alias);
     }
     if (isNullKeyword(aliasedType)) {
-        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable('null', alias);
     }
     if (aliasedType.kind === ts.SyntaxKind.StringKeyword) {
-        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable('text', alias);
     }
     if (aliasedType.kind === ts.SyntaxKind.BigIntKeyword) {
-        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable('int', alias);
     }
     if (aliasedType.kind === ts.SyntaxKind.NumberKeyword) {
-        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable('float64', alias);
     }
     if (aliasedType.kind === ts.SyntaxKind.VoidKeyword) {
-        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable('void', alias);
     }
     if (
@@ -145,12 +138,11 @@ export function generateForVariableDeclaration(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
+): AliasTable | null {
     if (isAzleKeywordExpression(variableDeclaration)) {
         // I'm not sure this is possible. Isn't the only way we could run into
         // this is when parsing the actual azle file? Otherwise it's always
         // going to come from an import declaration not a variable declaration
-        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable(
             variableDeclaration.name.getText(),
             alias

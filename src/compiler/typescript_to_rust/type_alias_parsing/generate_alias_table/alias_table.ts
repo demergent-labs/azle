@@ -21,7 +21,7 @@ export function generateFromSymbolTable(
                     program,
                     generationType
                 );
-                if (typeof result === 'boolean' && result) {
+                if (!isEmpty(result)) {
                     aliasList = [...aliasList, name as string];
                 }
             }
@@ -137,7 +137,10 @@ export function mergeAliasTables(
     }, EMPTY_ALIAS_TABLE);
 }
 
-function isEmpty(aliasTable: AliasTable): boolean {
+function isEmpty(aliasTable: AliasTable | null): boolean {
+    if (aliasTable === null) {
+        return true;
+    }
     return Object.values(aliasTable).every((aliases) => aliases.length === 0);
 }
 

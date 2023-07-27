@@ -24,14 +24,14 @@ export function generateForIdentifier(
     symbolTable: ts.SymbolTable,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
+): AliasTable | null {
     if (generationType === 'LIST' && !ROBUST_TYPE_ALIASES_IMPLEMENTED) {
         // TODO get rid of this if block it when working on
         // https://github.com/demergent-labs/azle/issues/1116
         // The feature in that ticket will not work if this is still here
         const symbol = symbolTable.get(ident.text as ts.__String);
         if (symbol === undefined) {
-            return false;
+            return null;
         }
         return generateForSymbol(symbol, alias, program, generationType);
     }
@@ -48,9 +48,8 @@ export function generateForSymbol(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
+): AliasTable | null {
     if (isAzleSymbol(symbol)) {
-        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable(symbol.name, alias);
     }
     const declarations = symbol.declarations;
@@ -83,7 +82,7 @@ function generateForDeclaration(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
+): AliasTable | null {
     if (ts.isExportSpecifier(declaration)) {
         // {thing} or {thing as other}
         // as in `export {thing};` or

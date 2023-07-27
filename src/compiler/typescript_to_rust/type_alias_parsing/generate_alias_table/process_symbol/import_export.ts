@@ -29,7 +29,7 @@ export function generateForExportSpecifier(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
+): AliasTable | null {
     const exportDecl = getDeclarationFromSpecifier(exportSpecifier);
     if (exportDecl.moduleSpecifier) {
         // If there is a module specifier (ie `export {thing} from 'place'`)
@@ -58,7 +58,7 @@ export function generateForExportAssignment(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
+): AliasTable | null {
     const typeChecker = program.getTypeChecker();
     const symbol = typeChecker.getSymbolAtLocation(exportAssignment.expression);
     if (symbol === undefined) {
@@ -75,7 +75,7 @@ export function generateForImportSpecifier(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
+): AliasTable | null {
     return generateForModuleImportExportSpecifier(
         importSpecifier,
         alias,
@@ -91,7 +91,7 @@ export function generateForImportClause(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
+): AliasTable | null {
     if (!ts.isStringLiteral(importClause.parent.moduleSpecifier)) {
         return returnFalseOrNull(generationType);
     }
@@ -117,8 +117,8 @@ export function generateForExportDeclaration(
     exportDeclaration: ts.ExportDeclaration,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
-    if (generationType === 'LIST') return false; // TODO https://github.com/demergent-labs/azle/issues/1122
+): AliasTable | null {
+    if (generationType === 'LIST') return null; // TODO https://github.com/demergent-labs/azle/issues/1122
     const moduleSpecifier = exportDeclaration.moduleSpecifier;
     if (moduleSpecifier === undefined || !ts.isStringLiteral(moduleSpecifier)) {
         // Unreachable: An export declaration with a ExportFromClause will
@@ -167,8 +167,8 @@ export function generateForExportDeclarations(
     exportDeclarations: ts.ExportDeclaration[],
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
-    if (generationType === 'LIST') return false; // TODO https://github.com/demergent-labs/azle/issues/1122
+): AliasTable | null {
+    if (generationType === 'LIST') return null; // TODO https://github.com/demergent-labs/azle/issues/1122
     const aliasTables = exportDeclarations.map((declaration) =>
         generateForExportDeclaration(declaration, program, generationType)
     );
@@ -188,7 +188,7 @@ export function generateForNamespaceImportExport(
     namespace: ts.NamespaceImport | ts.NamespaceExport,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
+): AliasTable | null {
     const importDeclaration = getDeclarationFromNamespace(namespace);
     if (
         !importDeclaration.moduleSpecifier ||
@@ -197,7 +197,6 @@ export function generateForNamespaceImportExport(
         return returnFalseOrNull(generationType);
     }
     if (importDeclaration.moduleSpecifier.text == 'azle') {
-        if (generationType === 'LIST') return true;
         // Process this symbol table the same, then modify it such that every entry has name.whatever
         return prependNamespaceToAliasTable(DEFAULT_ALIAS_TABLE, namespace);
     }
@@ -217,7 +216,6 @@ export function generateForNamespaceImportExport(
         (Array.isArray(aliasTable) && aliasTable.length === 0)
     )
         return returnFalseOrNull(generationType);
-    if (generationType === 'LIST') return true;
     if (Array.isArray(aliasTable)) return null;
 
     // process this symbol table the same, then modify it such that every entry has name.whatever
@@ -231,7 +229,7 @@ function generateForModuleImportExportSpecifier(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
+): AliasTable | null {
     const identifier = getUnderlyingIdentifierFromSpecifier(specifier);
     const declaration = getDeclarationFromSpecifier(specifier);
 
@@ -258,7 +256,7 @@ function generateForLocalExportSpecifier(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | boolean {
+): AliasTable | null {
     const identifier = getUnderlyingIdentifierFromSpecifier(exportSpecifier);
 
     const symbolTable = getSymbolTableForNode(exportSpecifier, program);
