@@ -6,7 +6,7 @@ It aims to be owned and operated by many independent entities in many geographie
 
 The IC is composed of computer hardware nodes running the IC protocol software. Each running IC protocol software process is known as a replica.
 
-Nodes are assigned into groups known as subnets. Each subnet attempts to maximum its decentralization of nodes according to factors such as data center location and node operator independence.
+Nodes are assigned into groups known as subnets. Each subnet attempts to maximize its decentralization of nodes according to factors such as data center location and node operator independence.
 
 The subnets vary in size. Generally speaking the larger the size of the subnet the more secure it will be. Subnets currently range in size from 13 to 40 nodes, with most subnets having 13 nodes.
 

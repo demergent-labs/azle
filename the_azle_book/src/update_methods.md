@@ -97,7 +97,7 @@ Traps can be useful for ensuring that multiple operations are either all complet
 Here's an example of how to trap and ensure atomic changes to your database:
 
 ```typescript
-import { Opt, $query, Record, StableBTreeMap, $update } from 'azle';
+import { ic, Opt, $query, Record, StableBTreeMap, $update, Vec } from 'azle';
 
 type Entry = Record<{
     key: string;
@@ -117,8 +117,12 @@ export function set(key: string, value: string): void {
 }
 
 $update;
-export function setMany(entries: Entry[]): void {
+export function setMany(entries: Vec<Entry>): void {
     entries.forEach((entry) => {
+        if (entry.key === 'trap') {
+            ic.trap('explicit trap');
+        }
+
         db.insert(entry.key, entry.value);
     });
 }
@@ -126,7 +130,7 @@ export function setMany(entries: Entry[]): void {
 
 In addition to `ic.trap`, an explicit JavaScript `throw` or any unhandled exception will also trap.
 
-There is a limit to how much computation can be done in a single call to an update method. The current update call limit is [20 billion Wasm instructions](https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits). If we modify our database example, we can introduce an update method that runs the risk reaching the limit:
+There is a limit to how much computation can be done in a single call to an update method. The current update call limit is [20 billion Wasm instructions](https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits). If we modify our database example, we can introduce an update method that runs the risk of reaching the limit:
 
 ```typescript
 import { nat64, Opt, $query, StableBTreeMap, $update } from 'azle';

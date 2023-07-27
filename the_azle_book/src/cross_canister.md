@@ -209,7 +209,7 @@ Azle provides a `match` function that will help you handle variant branches. Thi
 
 So far we have only shown a cross-canister call from an update method. Update methods can call other update methods or query methods (but not composite query methods as discussed below). If an update method calls a query method, that query method will be called in replicated mode. Replicated mode engages the consensus process, but for queries the state will still be discarded.
 
-Cross-canister calls can also be initiated from query methods (not yet live on IC mainnet but this works locally). These are known as composite queries, and in Azle they are simply `async` query methods. Composite queries can call other composite query methods and regular query methods. Composite queries cannot call update methods.
+Cross-canister calls can also be initiated from query methods. These are known as composite queries, and in Azle they are simply `async` query methods. Composite queries can call other composite query methods and regular query methods. Composite queries cannot call update methods.
 
 Here's an example of a composite query method:
 

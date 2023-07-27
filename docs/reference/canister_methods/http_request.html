@@ -159,19 +159,20 @@
     Query,
     Record,
     Tuple,
-    Variant
+    Variant,
+    Vec
 } from 'azle';
 
 type HttpRequest = Record&lt;{
     method: string;
     url: string;
-    headers: Header[];
+    headers: Vec&lt;Header&gt;;
     body: blob;
 }&gt;;
 
 type HttpResponse = Record&lt;{
     status_code: nat16;
-    headers: Header[];
+    headers: Vec&lt;Header&gt;;
     body: blob;
     streaming_strategy: Opt&lt;StreamingStrategy&gt;;
     upgrade: Opt&lt;boolean&gt;;

@@ -4,15 +4,25 @@ Azle is a [TypeScript](https://www.typescriptlang.org/) [Canister Development Ki
 
 -   [GitHub repo](https://github.com/demergent-labs/azle)
 -   [npm package](https://www.npmjs.com/package/azle)
+-   [Discord channel](https://discord.gg/5Hb6rM2QUM)
 
 ## Disclaimer
 
-Things to keep in mind:
+Azle may have unknown security vulnerabilities due to the following:
 
 -   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 -   Azle does not yet have extensive automated property tests
 -   Azle does not yet have multiple independent security reviews/audits
 -   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa#boa)
+
+## Roadmap
+
+We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:
+
+-   QuickJS/SpiderMonkey integration for performance, security, and stability
+-   Broad npm package support
+-   Extensive automated property testing
+-   Multiple independent security reviews/audits
 
 ## Demergent Labs
 
@@ -66,7 +76,7 @@ Because the IC allows for group and autonomous ownership of cloud software, the 
 
 ##### Credible neutrality
 
-Group and autonomous ownership makes it is possible to build neutral cloud software on the IC. This type of software would allow independent parties to coordinate with reduced trust in each other or a single third-party coordinator.
+Group and autonomous ownership makes it possible to build neutral cloud software on the IC. This type of software would allow independent parties to coordinate with reduced trust in each other or a single third-party coordinator.
 
 This removes the risk of the third-party coordinator acting in its own self-interest against the interests of the coordinating participants. The coordinating participants would also find it difficult to implement changes that would benefit themselves to the detriment of other participants.
 
@@ -74,7 +84,7 @@ Examples could include mobile app stores, ecommerce marketplaces, and podcast di
 
 ##### Reduced platform risk
 
-Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is reduced. This is in opposition to most cloud platforms, where the cloud provider itself generally has the power to arbitrarily remove users from its platform. While deplatforming can still occur on the IC, the only endongenous means of forcefully taking down an application is through an NNS vote.
+Because the IC is not owned or controlled by any one entity or individual, the risk of being deplatformed is reduced. This is in opposition to most cloud platforms, where the cloud provider itself generally has the power to arbitrarily remove users from its platform. While deplatforming can still occur on the IC, the only endogenous means of forcefully taking down an application is through an NNS vote.
 
 #### Security
 
@@ -155,12 +165,12 @@ Some of Azle's main drawbacks can be summarized as follows:
 
 ##### Beta
 
-Azle reached beta in April of 2022. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2023. The following are the major blockers to 1.0:
+Azle reached beta in April of 2022. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:
 
--   Extensive automated property testing (~Q1 2023)
--   Performance improvements if necessary (~Q2 2023)
--   Boa production-ready, JS Engine swapout, or risks accepted (~Q2 2023)
--   Multiple independent security reviews/audits (~Q2 2023)
+-   QuickJS/SpiderMonkey integration for performance, security, and stability
+-   Broad npm package support
+-   Extensive automated property testing
+-   Multiple independent security reviews/audits
 
 ##### Security risks
 
@@ -214,7 +224,7 @@ The IC might not be able to scale to the needs of your application. It is consta
 
 ##### Lack of privacy
 
-You should assume that all of your application data is accessible to multiple third-parties with no direct relationship and limited commitment to you. Currently all canister state sits unencrypted on node operator's machines. Application-layer access controls for data are possible, but motivated node operators will have an easy time getting access to your data.
+You should assume that all of your application data (unless it is end-to-end encrypted) is accessible to multiple third-parties with no direct relationship and limited commitment to you. Currently all canister state sits unencrypted on node operator's machines. Application-layer access controls for data are possible, but motivated node operators will have an easy time getting access to your data.
 
 ##### NNS risk
 
