@@ -3,6 +3,7 @@ import {
     ic,
     Principal,
     $query,
+    Record,
     Service,
     serviceQuery,
     serviceUpdate,
@@ -32,6 +33,20 @@ export function serviceReturnType(): SomeService {
                 ic.trap('process.env.SOME_SERVICE_PRINCIPAL is undefined')
         )
     );
+}
+
+$update;
+export function serviceNestedReturnType(): Record<{
+    someService: SomeService;
+}> {
+    return {
+        someService: new SomeService(
+            Principal.fromText(
+                process.env.SOME_SERVICE_PRINCIPAL ??
+                    ic.trap('process.env.SOME_SERVICE_PRINCIPAL is undefined')
+            )
+        )
+    };
 }
 
 $update;

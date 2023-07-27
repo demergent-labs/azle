@@ -84,7 +84,7 @@ dependencies = [
  "swc_common",
  "swc_ecma_ast",
  "swc_ecma_parser",
- "syn 2.0.15",
+ "syn 2.0.27",
 ]
 
 [[package]]
@@ -489,23 +489,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1ceca8aaf45b5c46ec7ed39fff75f57290368c1846d33d24a122ca81416ab058"
 dependencies = [
  "proc-macro2",
- "syn 2.0.15",
+ "syn 2.0.27",
 ]
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.56"
+version = "1.0.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2b63bdb0cd06f1f4dedf69b254734f9b45af66e4a031e42a7480257d9898b435"
+checksum = "18fb31db3f9bddb2ea821cde30a9f70117e3f119938b5ee630b7403aa6e2ead9"
 dependencies = [
  "unicode-ident",
 ]
 
 [[package]]
 name = "quote"
-version = "1.0.26"
+version = "1.0.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4424af4bf778aae2051a77b60283332f386554255d722233d09fbfc7e30da2fc"
+checksum = "50f3b39ccfb720540debaa0164757101c08ecb8d326b15358ce76a62c7e85965"
 dependencies = [
  "proc-macro2",
 ]
@@ -592,22 +592,22 @@ checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 
 [[package]]
 name = "serde"
-version = "1.0.160"
+version = "1.0.176"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bb2f3770c8bce3bcda7e149193a069a0f4365bda1fa5cd88e03bca26afc1216c"
+checksum = "76dc28c9523c5d70816e393136b86d48909cfb27cecaa902d338c19ed47164dc"
 dependencies = [
  "serde_derive",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.160"
+version = "1.0.176"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "291a097c63d8497e00160b166a967a4a79c64f3facdd01cbd7502231688d77df"
+checksum = "a4e7b8c5dc823e3b90651ff1d3808419cd14e5ad76de04feaf37da114e7a306f"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.15",
+ "syn 2.0.27",
 ]
 
 [[package]]
@@ -699,9 +699,9 @@ dependencies = [
 
 [[package]]
 name = "swc_common"
-version = "0.27.13"
+version = "0.27.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cba38a2f1291fcf3f78f357802b8cec72ecf5e95808e9d937783e60cd3570b93"
+checksum = "946c5151d7b786f5f40876b269592a7a152673fbf8cf88a2828eaf2519ded9ec"
 dependencies = [
  "ahash",
  "ast_node",
@@ -726,9 +726,9 @@ dependencies = [
 
 [[package]]
 name = "swc_ecma_ast"
-version = "0.90.15"
+version = "0.90.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "571989e199094be58d107e032c0b868f7b04a59a238e0a31bc9df8faf537dcd3"
+checksum = "e4d9cb0825962e9f9baabec6270aeb6e7c21ade1a16d707916186ad5f13126d1"
 dependencies = [
  "bitflags",
  "is-macro",
@@ -743,9 +743,9 @@ dependencies = [
 
 [[package]]
 name = "swc_ecma_parser"
-version = "0.117.7"
+version = "0.117.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d88ffca99514bc8bfa8bf4f2d74fb673caa844e521b55035b8cfd10472b801d4"
+checksum = "b8a8ef64367f4f84c49599c94426254fcc2a4bfbc446c422b6208ee685f72f1b"
 dependencies = [
  "either",
  "enum_kind",
@@ -821,9 +821,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.15"
+version = "2.0.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a34fcf3e8b60f57e6a14301a2e916d323af98b0ea63c599441eec8558660c822"
+checksum = "b60f673f44a8255b9c8c657daf66a596d435f2da81a555b06dc644d080ba45e0"
 dependencies = [
  "proc-macro2",
  "quote",
