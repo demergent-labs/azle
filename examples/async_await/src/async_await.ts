@@ -1,60 +1,73 @@
-import {
-    Alias,
-    nat64,
-    nat8,
-    Opt,
-    $query,
-    StableBTreeMap,
-    $update,
-    Vec
-} from 'azle';
+import { blob, match, Result, $update } from 'azle';
+import { managementCanister } from 'azle/canisters/management';
 
-type Key = Alias<nat8>;
-type Value = Alias<string>;
+$update;
+export async function getRandomnessDirectly(): Promise<blob> {
+    const randomnessResult = await managementCanister.raw_rand().call();
 
-let map = new StableBTreeMap<Key, Value>(0, 100, 1_000);
-
-$query;
-export function containsKey(key: Key): boolean {
-    return map.containsKey(key);
-}
-
-$query;
-export function get(key: Key): Opt<Value> {
-    return map.get(key);
+    return match(randomnessResult, {
+        Ok: (randomness) => randomness,
+        Err: () => Uint8Array.from([])
+    });
 }
 
 $update;
-export function insert(key: Key, value: Value): Opt<Value> {
-    return map.insert(key, value);
-}
+export async function getRandomnessIndirectly(): Promise<blob> {
+    const indirectRandomnessResult = await getRandomness();
 
-$query;
-export function isEmpty(): boolean {
-    return map.isEmpty();
-}
-
-$query;
-export function items(): Vec<[Key, Value]> {
-    return map.items();
-}
-
-$query;
-export function keys(): Vec<Key> {
-    return map.keys();
-}
-
-$query;
-export function len(): nat64 {
-    return map.len();
+    return match(indirectRandomnessResult, {
+        Ok: (indirectRandomness) => indirectRandomness,
+        Err: () => Uint8Array.from([])
+    });
 }
 
 $update;
-export function remove(key: Key): Opt<Value> {
-    return map.remove(key);
+export async function getRandomnessSuperIndirectly(): Promise<blob> {
+    const randomnessResult0 = await getRandomnessLevel0();
+
+    return match(randomnessResult0, {
+        Ok: async (randomness0) => {
+            const randomnessResult1 = await getRandomnessLevel1();
+
+            return match(randomnessResult1, {
+                Ok: async (randomness1) => {
+                    const randomnessResult2 = await getRandomnessLevel2();
+
+                    return match(randomnessResult2, {
+                        Ok: (randomness2) => {
+                            return Uint8Array.from([
+                                ...randomness0,
+                                ...randomness1,
+                                ...randomness2
+                            ]);
+                        },
+                        Err: () => Uint8Array.from([])
+                    });
+                },
+                Err: () => Uint8Array.from([])
+            });
+        },
+        Err: () => Uint8Array.from([])
+    });
 }
 
-$query;
-export function values(): Vec<Value> {
-    return map.values();
+async function getRandomnessLevel0(): Promise<Result<blob, string>> {
+    return await getRandomnessLevel1();
+}
+
+async function getRandomnessLevel1(): Promise<Result<blob, string>> {
+    return await getRandomnessLevel2();
+}
+
+async function getRandomnessLevel2(): Promise<Result<blob, string>> {
+    return await getRandomness();
+}
+
+async function getRandomness(): Promise<Result<blob, string>> {
+    return await managementCanister.raw_rand().call();
+}
+
+$update;
+export async function returnPromiseVoid(): Promise<void> {
+    await managementCanister.raw_rand().call();
 }
