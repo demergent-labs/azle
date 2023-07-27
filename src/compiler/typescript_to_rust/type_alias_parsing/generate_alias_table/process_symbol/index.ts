@@ -1,6 +1,5 @@
 import * as ts from 'typescript';
-import { AliasTable } from '../';
-import { GenerationType } from '../../types';
+import { AliasTable, GenerationType } from '../../types';
 import { generateSingleEntryAliasTable } from '../alias_table';
 import {
     generateAliasTableForExportAssignment,

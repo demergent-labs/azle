@@ -1,5 +1,4 @@
 import * as ts from 'typescript';
-import { AliasTable } from '../';
 import {
     getSymbolTableForNode,
     getSymbolTableForEntityName,
@@ -12,7 +11,7 @@ import {
 } from '../../utils';
 import { generateAliasTableForIdentifier } from '../process_symbol';
 import { generateSingleEntryAliasTable } from '../alias_table';
-import { GenerationType } from '../../types';
+import { AliasTable, GenerationType } from '../../types';
 
 /*
 export type AzleIntAlias = azle.int;

@@ -1,9 +1,7 @@
 import * as ts from 'typescript';
 import { generateAliasTableFromSymbolTable } from './alias_table';
 import { getSymbolTable } from '../utils/get_symbol_table';
-import { AliasTable, AliasTables } from './types';
-export { AliasTable, AliasTables } from './types';
-import { GenerationType, AliasLists } from '../types';
+import { AliasTable, AliasTables, GenerationType, AliasLists } from '../types';
 
 export function generateAliasTables(
     files: string[],
