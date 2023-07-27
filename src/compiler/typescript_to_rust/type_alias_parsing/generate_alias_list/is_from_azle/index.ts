@@ -5,7 +5,8 @@ import {
     isExportSpecifierFromAzle,
     isImportClauseFromAzle,
     isImportSpecifierFromAzle,
-    isNamespaceImportExportFromAzle
+    isNamespaceImportExportFromAzle,
+    areExportDeclarationsFromAzle
 } from './import_export';
 import {
     isAzleTypeAliasDeclaration as isTypeAliasDeclarationFromAzle,
@@ -54,12 +55,10 @@ export function isSymbolFromAzle(
         // Should look like export * from 'place';
         // There are other export declarations, but the only ones that will
         // be a symbol are these unnamed export from clauses
-        // TODO I don't know what this looks like. I am having a hard time envisioning this so I'll leave it a lone until it become important
-        return false;
-        // return isAzleExportDeclarations(
-        //     declarations as ts.ExportDeclaration[],
-        //     program
-        // );
+        return areExportDeclarationsFromAzle(
+            declarations as ts.ExportDeclaration[],
+            program
+        );
     }
     if (declarations.length > 1) {
         // TODO what kind of symbol has multiple declarations?

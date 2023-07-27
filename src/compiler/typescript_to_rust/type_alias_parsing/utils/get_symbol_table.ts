@@ -101,7 +101,7 @@ export function getSymbolTableForEntityName(
         return getSymbolTableForLeftIdentifier(left, symbolTable, program);
     }
     if (ts.isQualifiedName(left)) {
-        let leftSymbolTable = getSymbolTableForEntityName(
+        const leftSymbolTable = getSymbolTableForEntityName(
             left.left,
             symbolTable,
             program
@@ -127,7 +127,7 @@ export function getSymbolTableForExpression(
         return getSymbolTableForLeftIdentifier(left, symbolTable, program);
     }
     if (ts.isPropertyAccessExpression(left)) {
-        let leftSymbolTable = getSymbolTableForExpression(
+        const leftSymbolTable = getSymbolTableForExpression(
             left.expression,
             symbolTable,
             program
@@ -188,7 +188,7 @@ function getSymbolTableForLeftIdentifier(
     }
     if (ts.isImportSpecifier(declaration)) {
         const importDeclaration = getDeclarationFromSpecifier(declaration);
-        let result = getSymbolTableForDeclaration(importDeclaration, program);
+        const result = getSymbolTableForDeclaration(importDeclaration, program);
         const identifier = getUnderlyingIdentifierFromSpecifier(declaration);
         const leftSymbol = result?.get(identifier.text as ts.__String);
         if (leftSymbol === undefined) {

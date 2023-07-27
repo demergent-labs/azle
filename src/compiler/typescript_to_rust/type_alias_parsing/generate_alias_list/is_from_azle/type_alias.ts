@@ -4,18 +4,8 @@ import {
     getSymbolTableForEntityName,
     getSymbolTableForExpression
 } from '../../utils/get_symbol_table';
-import { getSourceFile, isNullKeyword } from '../../utils';
+import { isNullKeyword, isAzleKeywordExpression } from '../../utils';
 import { isIdentFromAzle } from '.';
-
-function isAzleKeywordExpression(
-    typeAliasDeclaration: ts.TypeAliasDeclaration | ts.VariableDeclaration
-): boolean {
-    let sourceFile = getSourceFile(typeAliasDeclaration);
-    if (!sourceFile) {
-        return false;
-    }
-    return sourceFile.fileName.includes('azle/src/lib');
-}
 
 /*
 export type AzleIntAlias = azle.int;

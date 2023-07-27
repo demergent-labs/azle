@@ -5,19 +5,9 @@ import {
     getSymbolTableForEntityName,
     getSymbolTableForExpression
 } from '../../utils/get_symbol_table';
-import { getSourceFile, isNullKeyword } from '../../utils';
+import { isNullKeyword, isAzleKeywordExpression } from '../../utils';
 import { generateAliasTableForIdentifier } from '../process_symbol';
 import { generateSingleEntryAliasTable } from '../alias_table';
-
-function isAzleKeywordExpression(
-    typeAliasDeclaration: ts.TypeAliasDeclaration | ts.VariableDeclaration
-): boolean {
-    let sourceFile = getSourceFile(typeAliasDeclaration);
-    if (!sourceFile) {
-        return false;
-    }
-    return sourceFile.fileName.includes('azle/src/lib');
-}
 
 /*
 export type AzleIntAlias = azle.int;
@@ -69,7 +59,6 @@ export function generateAliasTableForTypeAliasDeclaration(
         if (!typeArgsAreGenerics) {
             return undefined;
         }
-
         const symbolTable = getSymbolTableForNode(
             typeAliasDeclaration,
             program

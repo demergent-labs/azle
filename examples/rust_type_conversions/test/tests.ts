@@ -292,7 +292,6 @@ export function getTests(
                 const result =
                     await rustTypeConversionsCanister.voidAliasTest();
 
-                console.log(result);
                 return {
                     Ok: result === undefined
                 };

@@ -306,11 +306,10 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
             name: "Is Fruit Prepared? It shouldn't be yet",
             test: async () => {
                 await fruit.removeRambutanSkins();
-                // TODO MAKE SURE THIS DOESN'T END UP GETTING MERGED!!!!!!
-                // try {
-                //     await fruit.dirtyIlama();
-                //     return { Ok: false };
-                // } catch {}
+                try {
+                    await fruit.dirtyIlama();
+                    return { Ok: false };
+                } catch {}
                 try {
                     await fruit.pickElderberry();
                     return { Ok: false };

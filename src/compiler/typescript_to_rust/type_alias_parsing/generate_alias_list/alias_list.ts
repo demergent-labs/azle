@@ -6,19 +6,19 @@ export function generateAliasListFromSymbolTable(
     symbolTable: ts.SymbolTable,
     program: ts.Program
 ): string[] {
-    let aliasTable: string[] = [];
+    let aliasList: string[] = [];
     // ts.SymbolTable does not use regular iterator conventions thus it's
     // difficult to turn it into an array, so we have to use forEach instead of
     // reduce here
     symbolTable.forEach((symbol, name) => {
         if (isSymbolTypeAliasDeclaration(symbol)) {
             if (isSymbolFromAzle(symbol, name as string, program)) {
-                aliasTable = [...aliasTable, name as string];
+                aliasList = [...aliasList, name as string];
             }
         }
     });
 
-    return aliasTable;
+    return aliasList;
 }
 
 function isSymbolTypeAliasDeclaration(symbol: ts.Symbol): boolean {

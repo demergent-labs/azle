@@ -9,7 +9,6 @@ use crate::{
     Error,
 };
 
-pub mod alias;
 pub mod errors;
 pub mod func;
 pub mod opt;
@@ -34,16 +33,6 @@ impl TsAst {
             self.extract_candid_types(|x| x.to_variant()),
         )
             .collect_results()?;
-
-        for type_alias in &type_aliases {
-            println!("TA: {}:  {:#?}", type_alias.name, type_alias.aliased_type)
-        }
-        for record in &records {
-            println!(
-                "R: {}",
-                record.name.clone().unwrap_or("default".to_string())
-            )
-        }
 
         Ok(CandidTypes {
             funcs,

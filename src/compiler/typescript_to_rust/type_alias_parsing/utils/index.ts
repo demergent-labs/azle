@@ -14,6 +14,16 @@ export function isAzleSymbol(symbol: ts.Symbol): boolean {
     return false;
 }
 
+export function isAzleKeywordExpression(
+    typeAliasDeclaration: ts.TypeAliasDeclaration | ts.VariableDeclaration
+): boolean {
+    const sourceFile = getSourceFile(typeAliasDeclaration);
+    if (!sourceFile) {
+        return false;
+    }
+    return sourceFile.fileName.includes('azle/src/lib');
+}
+
 export function getSourceFile(node: ts.Node): ts.SourceFile | undefined {
     if (ts.isSourceFile(node)) {
         return node;
