@@ -119,7 +119,7 @@ pub fn generate() -> TokenStream {
             js_object: &boa_engine::JsObject,
             context: &mut boa_engine::Context,
         ) -> String {
-            js_error_object_maybe_to_string(js_object, context).unwrap_or_else(|js_error| {
+            try_js_error_object_to_string(js_object, context).unwrap_or_else(|js_error| {
                 let cause = js_error.to_std_string(&mut *context);
 
                 format!(
@@ -129,7 +129,7 @@ pub fn generate() -> TokenStream {
             })
         }
 
-        fn js_error_object_maybe_to_string(
+        fn try_js_error_object_to_string(
             js_object: &boa_engine::JsObject,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
