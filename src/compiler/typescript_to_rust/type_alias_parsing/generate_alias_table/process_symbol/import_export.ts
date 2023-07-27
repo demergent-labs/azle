@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import { AliasTable } from '../';
+import { GenerationType } from '../../types';
 import {
     generateAliasTableFromSymbolTable,
     generateSingleEntryAliasTable,
@@ -28,7 +29,8 @@ import { generateAliasTableForSymbol } from '../process_symbol';
 export function generateAliasTableForExportSpecifier(
     exportSpecifier: ts.ExportSpecifier,
     alias: string,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     const exportDecl = getDeclarationFromSpecifier(exportSpecifier);
     if (exportDecl.moduleSpecifier) {
@@ -36,7 +38,8 @@ export function generateAliasTableForExportSpecifier(
         return generateAliasTableForModuleImportExportSpecifier(
             exportSpecifier,
             alias,
-            program
+            program,
+            generationType
         );
     }
 
@@ -45,7 +48,8 @@ export function generateAliasTableForExportSpecifier(
     return generateAliasTableForLocalExportSpecifier(
         exportSpecifier,
         alias,
-        program
+        program,
+        generationType
     );
 }
 
@@ -54,12 +58,18 @@ export function generateAliasTableForExportSpecifier(
 export function generateAliasTableForExportAssignment(
     exportAssignment: ts.ExportAssignment,
     alias: string,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     const typeChecker = program.getTypeChecker();
     const symbol = typeChecker.getSymbolAtLocation(exportAssignment.expression);
     if (symbol) {
-        return generateAliasTableForSymbol(symbol, alias, program);
+        return generateAliasTableForSymbol(
+            symbol,
+            alias,
+            program,
+            generationType
+        );
     }
 }
 
@@ -69,12 +79,14 @@ export function generateAliasTableForExportAssignment(
 export function generateAliasTableForImportSpecifier(
     importSpecifier: ts.ImportSpecifier,
     alias: string,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     return generateAliasTableForModuleImportExportSpecifier(
         importSpecifier,
         alias,
-        program
+        program,
+        generationType
     );
 }
 
@@ -83,7 +95,8 @@ export function generateAliasTableForImportSpecifier(
 export function generateAliasTableForImportClause(
     importClause: ts.ImportClause,
     alias: string,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     if (!ts.isStringLiteral(importClause.parent.moduleSpecifier)) {
         return undefined;
@@ -92,7 +105,8 @@ export function generateAliasTableForImportClause(
         'default',
         importClause.parent.moduleSpecifier,
         alias,
-        program
+        program,
+        generationType
     );
 }
 
@@ -105,7 +119,8 @@ export function generateAliasTableForImportClause(
 // Export Declarations.
 export function generateAliasTableForExportDeclaration(
     exportDeclaration: ts.ExportDeclaration,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     const moduleSpecifier = exportDeclaration.moduleSpecifier;
     if (moduleSpecifier === undefined || !ts.isStringLiteral(moduleSpecifier)) {
@@ -135,7 +150,11 @@ export function generateAliasTableForExportDeclaration(
     );
     if (symbolTable === undefined) return undefined;
 
-    return generateAliasTableFromSymbolTable(symbolTable, program);
+    return generateAliasTableFromSymbolTable(
+        symbolTable,
+        program,
+        generationType
+    );
 }
 
 // My expectation is that this will only be called for export declarations in the form:
@@ -145,10 +164,15 @@ export function generateAliasTableForExportDeclaration(
 // export specifier cases
 export function generateAliasTableForExportDeclarations(
     exportDeclarations: ts.ExportDeclaration[],
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     const aliasTables = exportDeclarations.map((declaration) =>
-        generateAliasTableForExportDeclaration(declaration, program)
+        generateAliasTableForExportDeclaration(
+            declaration,
+            program,
+            generationType
+        )
     );
     return aliasTables.reduce((acc: AliasTable, subAliasTable) => {
         if (subAliasTable === undefined) {
@@ -164,7 +188,8 @@ export function generateAliasTableForExportDeclarations(
 // DEFAULT_ALIAS_TABLE prefixed with the namespace
 export function generateAliasTableForNamespaceImportExport(
     namespace: ts.NamespaceImport | ts.NamespaceExport,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     const importDeclaration = getDeclarationFromNamespace(namespace);
     if (
@@ -183,7 +208,11 @@ export function generateAliasTableForNamespaceImportExport(
     );
     if (symbolTable === undefined) return undefined;
 
-    const aliasTable = generateAliasTableFromSymbolTable(symbolTable, program);
+    const aliasTable = generateAliasTableFromSymbolTable(
+        symbolTable,
+        program,
+        generationType
+    );
     if (aliasTable === undefined) return undefined;
 
     // process this symbol table the same, then modify it such that every entry has name.whatever
@@ -199,7 +228,8 @@ function generateAliasTableForNameInModule(
     name: string,
     moduleSpecifier: ts.StringLiteral,
     alias: string,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     // If the name is from the azle module then we can simply return a single
     // entry alias table here.
@@ -217,7 +247,12 @@ function generateAliasTableForNameInModule(
     }
     const symbol = getSymbol(name, symbolTable, program);
     if (symbol) {
-        return generateAliasTableForSymbol(symbol, alias, program);
+        return generateAliasTableForSymbol(
+            symbol,
+            alias,
+            program,
+            generationType
+        );
     }
     return undefined;
 }
@@ -227,7 +262,8 @@ function generateAliasTableForNameInModule(
 function generateAliasTableForModuleImportExportSpecifier(
     specifier: ts.ExportSpecifier | ts.ImportSpecifier,
     alias: string,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     const identifier = getUnderlyingIdentifierFromSpecifier(specifier);
     const declaration = getDeclarationFromSpecifier(specifier);
@@ -242,7 +278,8 @@ function generateAliasTableForModuleImportExportSpecifier(
         identifier.text,
         declaration.moduleSpecifier,
         alias,
-        program
+        program,
+        generationType
     );
 }
 
@@ -250,7 +287,8 @@ function generateAliasTableForModuleImportExportSpecifier(
 function generateAliasTableForLocalExportSpecifier(
     exportSpecifier: ts.ExportSpecifier,
     alias: string,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     const identifier = getUnderlyingIdentifierFromSpecifier(exportSpecifier);
     // TODO investigate trying to get the original symbol from the above identifier.
@@ -273,7 +311,12 @@ function generateAliasTableForLocalExportSpecifier(
     if (symbol === undefined) {
         return undefined;
     }
-    const result = generateAliasTableForSymbol(symbol, alias, program);
+    const result = generateAliasTableForSymbol(
+        symbol,
+        alias,
+        program,
+        generationType
+    );
     if (result === undefined) {
         return undefined;
     }

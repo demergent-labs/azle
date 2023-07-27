@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import { AliasTable } from '../';
+import { GenerationType } from '../../types';
 import { generateSingleEntryAliasTable } from '../alias_table';
 import {
     generateAliasTableForExportAssignment,
@@ -20,20 +21,22 @@ export function generateAliasTableForIdentifier(
     ident: ts.Identifier | ts.MemberName,
     alias: string,
     symbolTable: ts.SymbolTable,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     const symbol = getSymbol(ident.text, symbolTable, program);
     if (symbol === undefined) {
         // Couldn't find symbol
         return undefined;
     }
-    return generateAliasTableForSymbol(symbol, alias, program);
+    return generateAliasTableForSymbol(symbol, alias, program, generationType);
 }
 
 export function generateAliasTableForSymbol(
     symbol: ts.Symbol,
     alias: string,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     if (isAzleSymbol(symbol)) {
         return generateSingleEntryAliasTable(symbol.name, alias);
@@ -48,7 +51,8 @@ export function generateAliasTableForSymbol(
         // be a symbol are these unnamed export from clauses
         return generateAliasTableForExportDeclarations(
             declarations as ts.ExportDeclaration[],
-            program
+            program,
+            generationType
         );
     }
     if (declarations.length > 1) {
@@ -56,13 +60,19 @@ export function generateAliasTableForSymbol(
         // TODO is it possible for those declarations to be conflicting?
         return undefined;
     }
-    return generateAliasTableForDeclaration(declarations[0], alias, program);
+    return generateAliasTableForDeclaration(
+        declarations[0],
+        alias,
+        program,
+        generationType
+    );
 }
 
 function generateAliasTableForDeclaration(
     declaration: ts.Declaration,
     alias: string,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     if (ts.isExportSpecifier(declaration)) {
         // {thing} or {thing as other}
@@ -71,7 +81,8 @@ function generateAliasTableForDeclaration(
         return generateAliasTableForExportSpecifier(
             declaration,
             alias,
-            program
+            program,
+            generationType
         );
     }
     if (ts.isExportAssignment(declaration)) {
@@ -79,13 +90,19 @@ function generateAliasTableForDeclaration(
         return generateAliasTableForExportAssignment(
             declaration,
             alias,
-            program
+            program,
+            generationType
         );
     }
     if (ts.isImportClause(declaration)) {
         // thing
         // as in `import thing from 'place'`
-        return generateAliasTableForImportClause(declaration, alias, program);
+        return generateAliasTableForImportClause(
+            declaration,
+            alias,
+            program,
+            generationType
+        );
     }
     if (ts.isImportSpecifier(declaration)) {
         // {thing} or {thing as other}
@@ -94,7 +111,8 @@ function generateAliasTableForDeclaration(
         return generateAliasTableForImportSpecifier(
             declaration,
             alias,
-            program
+            program,
+            generationType
         );
     }
     if (ts.isTypeAliasDeclaration(declaration)) {
@@ -103,16 +121,25 @@ function generateAliasTableForDeclaration(
         return generateAliasTableForTypeAliasDeclaration(
             declaration,
             alias,
-            program
+            program,
+            generationType
         );
     }
     if (ts.isNamespaceImport(declaration)) {
         // import * as thing from 'place'
-        return generateAliasTableForNamespaceImportExport(declaration, program);
+        return generateAliasTableForNamespaceImportExport(
+            declaration,
+            program,
+            generationType
+        );
     }
     if (ts.isNamespaceExport(declaration)) {
         // export * as thing from 'place';
-        return generateAliasTableForNamespaceImportExport(declaration, program);
+        return generateAliasTableForNamespaceImportExport(
+            declaration,
+            program,
+            generationType
+        );
     }
     if (ts.isExportDeclaration(declaration)) {
         // export * from 'place'
@@ -120,7 +147,11 @@ function generateAliasTableForDeclaration(
         // 'place' and export * from 'otherPlace' would both be in the list of
         // declarations) and this function is only meant to process one at a
         // time.
-        return generateAliasTableForExportDeclaration(declaration, program);
+        return generateAliasTableForExportDeclaration(
+            declaration,
+            program,
+            generationType
+        );
     }
     if (ts.isVariableDeclaration(declaration)) {
         // export const QueryAlias = azle.$query;
@@ -128,7 +159,8 @@ function generateAliasTableForDeclaration(
         return generateAliasTableForVariableDeclaration(
             declaration,
             alias,
-            program
+            program,
+            generationType
         );
     }
     if (

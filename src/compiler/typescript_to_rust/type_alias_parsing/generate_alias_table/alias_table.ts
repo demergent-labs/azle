@@ -1,10 +1,11 @@
 import * as ts from 'typescript';
-import { AliasTable } from '../types';
+import { AliasTable, GenerationType } from '../types';
 import { generateAliasTableForSymbol } from './process_symbol';
 
 export function generateAliasTableFromSymbolTable(
     symbolTable: ts.SymbolTable,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     let aliasTable = EMPTY_ALIAS_TABLE;
     // ts.SymbolTable does not use regular iterator conventions thus it's
@@ -14,7 +15,8 @@ export function generateAliasTableFromSymbolTable(
         const subAliasTable = generateAliasTableForSymbol(
             symbol,
             name as string,
-            program
+            program,
+            generationType
         );
         if (subAliasTable) {
             aliasTable = mergeAliasTables(aliasTable, subAliasTable);

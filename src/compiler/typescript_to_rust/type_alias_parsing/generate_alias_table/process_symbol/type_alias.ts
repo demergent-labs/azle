@@ -8,6 +8,7 @@ import {
 import { isNullKeyword, isAzleKeywordExpression } from '../../utils';
 import { generateAliasTableForIdentifier } from '../process_symbol';
 import { generateSingleEntryAliasTable } from '../alias_table';
+import { GenerationType } from '../../types';
 
 /*
 export type AzleIntAlias = azle.int;
@@ -30,7 +31,8 @@ step 2, get that symbol from the symbol table we have, look up the next one
 export function generateAliasTableForTypeAliasDeclaration(
     typeAliasDeclaration: ts.TypeAliasDeclaration,
     alias: string,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     if (isAzleKeywordExpression(typeAliasDeclaration)) {
         // Is this bit of code reachable? If the todo is in lowercase and hidden
@@ -75,7 +77,8 @@ export function generateAliasTableForTypeAliasDeclaration(
                 typeName,
                 alias,
                 symbolTable,
-                program
+                program,
+                generationType
             );
         }
         if (ts.isQualifiedName(typeName)) {
@@ -91,7 +94,8 @@ export function generateAliasTableForTypeAliasDeclaration(
                 typeName.right,
                 alias,
                 declSymbolTable,
-                program
+                program,
+                generationType
             );
         }
     }
@@ -126,7 +130,8 @@ export function generateAliasTableForTypeAliasDeclaration(
 export function generateAliasTableForVariableDeclaration(
     variableDeclaration: ts.VariableDeclaration,
     alias: string,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     if (isAzleKeywordExpression(variableDeclaration)) {
         // I'm not sure this is possible. Isn't the only way we could run into
@@ -153,7 +158,8 @@ export function generateAliasTableForVariableDeclaration(
             expression,
             alias,
             symbolTable,
-            program
+            program,
+            generationType
         );
     }
     if (ts.isPropertyAccessExpression(expression)) {
@@ -170,7 +176,8 @@ export function generateAliasTableForVariableDeclaration(
             expression.name,
             alias,
             declSymbolTable,
-            program
+            program,
+            generationType
         );
     }
     if (ts.isStringLiteral(expression) || ts.isNewExpression(expression)) {

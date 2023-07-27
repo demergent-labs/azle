@@ -3,13 +3,19 @@ import { generateAliasTableFromSymbolTable } from './alias_table';
 import { getSymbolTable } from '../utils/get_symbol_table';
 import { AliasTable, AliasTables } from './types';
 export { AliasTable, AliasTables } from './types';
+import { GenerationType } from '../types';
 
 export function generateAliasTables(
     files: string[],
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTables {
     return files.reduce((acc: AliasTables, filename: string) => {
-        const aliasTable = generateAliasTable(filename, program);
+        const aliasTable = generateAliasTable(
+            filename,
+            program,
+            generationType
+        );
         if (aliasTable === undefined) {
             return acc;
         }
@@ -22,7 +28,8 @@ export function generateAliasTables(
 
 function generateAliasTable(
     filename: string,
-    program: ts.Program
+    program: ts.Program,
+    generationType: GenerationType
 ): AliasTable | undefined {
     const sourceFile = program.getSourceFile(filename);
 
@@ -32,7 +39,11 @@ function generateAliasTable(
 
     const symbolTable = getSymbolTable(sourceFile, program);
     if (symbolTable) {
-        return generateAliasTableFromSymbolTable(symbolTable, program);
+        return generateAliasTableFromSymbolTable(
+            symbolTable,
+            program,
+            generationType
+        );
     }
 
     return undefined;
