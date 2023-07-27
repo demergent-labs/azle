@@ -1,9 +1,12 @@
 export type GenerationType = 'LIST' | 'TABLE';
-export type AliasLists = { [filename: string]: string[] };
+export type AliasList = string[];
+export type AliasLists = { [filename: string]: AliasList };
 
 export type AliasTables = { [filename: string]: AliasTable };
 
-export type AliasListsOrTables = { [filename: string]: AliasTable | string[] };
+export type AliasListsOrTables = {
+    [filename: string]: AliasTable | AliasList;
+};
 
 export type AliasTable = {
     alias: string[];

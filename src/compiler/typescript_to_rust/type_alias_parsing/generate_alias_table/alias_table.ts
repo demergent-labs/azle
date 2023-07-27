@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { AliasTable, GenerationType } from '../types';
+import { AliasTable, AliasList, GenerationType } from '../types';
 import { generateAliasTableForSymbol } from './process_symbol';
 import { isNullKeyword } from '../utils';
 
@@ -7,9 +7,9 @@ export function generateAliasTableFromSymbolTable(
     symbolTable: ts.SymbolTable,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | string[] {
+): AliasTable | null | AliasList {
     if (generationType === 'LIST') {
-        let aliasList: string[] = [];
+        let aliasList: AliasList = [];
         // ts.SymbolTable does not use regular iterator conventions thus it's
         // difficult to turn it into an array, so we have to use forEach instead of
         // reduce here

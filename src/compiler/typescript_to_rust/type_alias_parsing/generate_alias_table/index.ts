@@ -5,6 +5,7 @@ import {
     AliasTable,
     AliasTables,
     GenerationType,
+    AliasList,
     AliasLists,
     AliasListsOrTables
 } from '../types';
@@ -38,7 +39,7 @@ function generateAliasTable(
     filename: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | string[] {
+): AliasTable | null | AliasList {
     const sourceFile = program.getSourceFile(filename);
 
     if (sourceFile === undefined) {
