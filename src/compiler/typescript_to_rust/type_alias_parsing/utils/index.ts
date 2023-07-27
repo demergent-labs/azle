@@ -2,7 +2,6 @@ import * as ts from 'typescript';
 import { getSymbolTableForModuleSpecifier } from './get_symbol_table';
 import { GenerationType } from '../types';
 
-// TODO this feels very janky to me. Is there a better way of determining this?
 export function isAzleSymbol(symbol: ts.Symbol): boolean {
     if ('parent' in symbol) {
         const parent = symbol.parent as ts.Symbol;
@@ -128,6 +127,21 @@ export function getSymbol(
     return symbol;
 }
 
+export function getSymbolFromModule(
+    name: string,
+    moduleSpecifier: ts.StringLiteral,
+    program: ts.Program
+): ts.Symbol | undefined {
+    const symbolTable = getSymbolTableForModuleSpecifier(
+        moduleSpecifier,
+        program
+    );
+    if (symbolTable === undefined) {
+        return undefined;
+    }
+    return getSymbol(name, symbolTable, program);
+}
+
 /**
  * This function helps to find the original module that a symbol comes from. If
  * a file has multiple export * from 'place' then we may have to look through
@@ -162,7 +176,6 @@ export function getStarExportModuleSpecifierFor(
             // looking
             continue;
         }
-        // TODO something is wrong here. It ought to be checking the name right?
         const subSymbolTable = getSymbolTableForModuleSpecifier(
             exportModSpecifier,
             program

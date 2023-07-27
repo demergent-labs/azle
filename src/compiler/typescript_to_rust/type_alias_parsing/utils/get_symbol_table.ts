@@ -15,7 +15,7 @@ export function getSymbolTable(
     const sourceFileSymbol = typeChecker.getSymbolAtLocation(sourceFile);
 
     if (sourceFileSymbol === undefined) {
-        // TODO could not make source file symbol from source file
+        // could not make source file symbol from source file
         return undefined;
     }
 
@@ -170,7 +170,7 @@ function getSymbolTableForLeftIdentifier(
     left: ts.Identifier,
     symbolTable: ts.SymbolTable,
     program: ts.Program
-) {
+): ts.SymbolTable | undefined {
     const leftSymbol = getSymbol(left.text, symbolTable, program);
     if (leftSymbol === undefined) {
         return undefined;
@@ -207,5 +207,5 @@ function getSymbolTableForLeftIdentifier(
             return getSymbolTableForDeclaration(importDeclaration, program);
         }
     }
-    // TODO are there other types of imports that could be here?
+    return undefined;
 }

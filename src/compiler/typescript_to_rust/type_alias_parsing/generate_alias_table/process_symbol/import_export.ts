@@ -2,7 +2,6 @@ import * as ts from 'typescript';
 import { AliasTable, GenerationType } from '../../types';
 import {
     generateAliasTableFromSymbolTable,
-    generateSingleEntryAliasTable,
     EMPTY_ALIAS_TABLE,
     renameAliasTable,
     prependNamespaceToAliasTable,
@@ -11,14 +10,13 @@ import {
 } from '../alias_table';
 import {
     getSymbolTableForNode,
-    getSymbolTableForDeclaration,
-    getSymbolTableForModuleSpecifier
+    getSymbolTableForDeclaration
 } from '../../utils/get_symbol_table';
 import {
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier,
-    getSymbol,
+    getSymbolFromModule,
     returnFalseOrNull
 } from '../../utils/';
 import { generateAliasTableForSymbol } from '../process_symbol';
@@ -63,15 +61,10 @@ export function generateAliasTableForExportAssignment(
 ): AliasTable | null | boolean {
     const typeChecker = program.getTypeChecker();
     const symbol = typeChecker.getSymbolAtLocation(exportAssignment.expression);
-    if (symbol) {
-        return generateAliasTableForSymbol(
-            symbol,
-            alias,
-            program,
-            generationType
-        );
+    if (symbol === undefined) {
+        return returnFalseOrNull(generationType);
     }
-    return returnFalseOrNull(generationType);
+    return generateAliasTableForSymbol(symbol, alias, program, generationType);
 }
 
 // Generates an alias table for 'thing' in {thing} or {other as thing} as in:
@@ -102,13 +95,15 @@ export function generateAliasTableForImportClause(
     if (!ts.isStringLiteral(importClause.parent.moduleSpecifier)) {
         return returnFalseOrNull(generationType);
     }
-    return generateAliasTableForNameInModule(
+    let symbol = getSymbolFromModule(
         'default',
         importClause.parent.moduleSpecifier,
-        alias,
-        program,
-        generationType
+        program
     );
+    if (symbol === undefined) {
+        return returnFalseOrNull(generationType);
+    }
+    return generateAliasTableForSymbol(symbol, alias, program, generationType);
 }
 
 // Generates an alias table for an export declaration as in:
@@ -221,61 +216,16 @@ export function generateAliasTableForNamespaceImportExport(
         program,
         generationType
     );
-    // TODO this feels incorrect. If the generation type is List then aliasTable
-    // will be of type list and checking to make sure it's undefined will always
-    // be false. We should be checking to see if it's empty. But that's how it
-    // is so I'll fix it after I finish this refactor. The proposed change is
-    // commend bellow
-    if (aliasTable === null) return returnFalseOrNull(generationType);
-    // if (
-    //     aliasTable === undefined ||
-    //     (Array.isArray(aliasTable) && aliasTable.length === 0)
-    // )
-    //     return returnFalseOrUndefined(generationType);
+    if (
+        aliasTable === null ||
+        (Array.isArray(aliasTable) && aliasTable.length === 0)
+    )
+        return returnFalseOrNull(generationType);
     if (generationType === 'LIST') return true;
     if (Array.isArray(aliasTable)) return null;
 
     // process this symbol table the same, then modify it such that every entry has name.whatever
     return prependNamespaceToAliasTable(aliasTable, namespace);
-}
-
-// TODO make a better name for this
-// What is this doing? Where all are we calling it?
-// It's called from import/export specifier and from import clause
-// The process symbol does a similar thing
-// Here we are getting a module. And finding the name in the module so we can get it's symbol
-function generateAliasTableForNameInModule(
-    name: string,
-    moduleSpecifier: ts.StringLiteral,
-    alias: string,
-    program: ts.Program,
-    generationType: GenerationType
-): AliasTable | null | boolean {
-    // If the name is from the azle module then we can simply return a single
-    // entry alias table here.
-    if (moduleSpecifier.text === 'azle') {
-        if (generationType === 'LIST') return true;
-        return generateSingleEntryAliasTable(name, alias);
-    }
-    // Otherwise get the symbol table for the module so we can find the name in
-    // there.
-    const symbolTable = getSymbolTableForModuleSpecifier(
-        moduleSpecifier,
-        program
-    );
-    if (symbolTable === undefined) {
-        return returnFalseOrNull(generationType);
-    }
-    const symbol = getSymbol(name, symbolTable, program);
-    if (symbol !== undefined) {
-        return generateAliasTableForSymbol(
-            symbol,
-            alias,
-            program,
-            generationType
-        );
-    }
-    return returnFalseOrNull(generationType);
 }
 
 // export {thing} from 'place'; or export {thing as other} from 'place';
@@ -295,13 +245,15 @@ function generateAliasTableForModuleImportExportSpecifier(
     ) {
         return returnFalseOrNull(generationType);
     }
-    return generateAliasTableForNameInModule(
+    const symbol = getSymbolFromModule(
         identifier.text,
         declaration.moduleSpecifier,
-        alias,
-        program,
-        generationType
+        program
     );
+    if (symbol === undefined) {
+        return returnFalseOrNull(generationType);
+    }
+    return generateAliasTableForSymbol(symbol, alias, program, generationType);
 }
 
 // export {thing}; or export {thing as other};
@@ -312,15 +264,7 @@ function generateAliasTableForLocalExportSpecifier(
     generationType: GenerationType
 ): AliasTable | null | boolean {
     const identifier = getUnderlyingIdentifierFromSpecifier(exportSpecifier);
-    // TODO investigate trying to get the original symbol from the above identifier.
-    // The commented out code bellow just gets the current symbol instead of the
-    // symbol that it comes from. So it literally just goes in circles until we
-    // run out of heap
-    // const symbol = program.getTypeChecker().getSymbolAtLocation(identifier);
-    // if (symbol) {
-    //     return processSymbol(originalName, symbol, program);
-    // }
-    // console.log("========> The new way didn't work");
+
     const symbolTable = getSymbolTableForNode(exportSpecifier, program);
     if (symbolTable === undefined) {
         return returnFalseOrNull(generationType);
