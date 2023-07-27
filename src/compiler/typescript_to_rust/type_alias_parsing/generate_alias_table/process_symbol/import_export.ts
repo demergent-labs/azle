@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { AliasTable, GenerationType } from '../../types';
 import {
-    generateAliasTableFromSymbolTable,
+    generateFromSymbolTable,
     EMPTY_ALIAS_TABLE,
     renameAliasTable,
     prependNamespaceToAliasTable,
@@ -19,12 +19,12 @@ import {
     getSymbolFromModule,
     returnFalseOrNull
 } from '../../utils/';
-import { generateAliasTableForSymbol } from '../process_symbol';
+import { generateForSymbol } from '../process_symbol';
 
 // Generates an alias table for 'thing' in {thing} or {other as thing} as in:
 // `export {thing};` or
 // `export {thing as other} from 'place';`
-export function generateAliasTableForExportSpecifier(
+export function generateForExportSpecifier(
     exportSpecifier: ts.ExportSpecifier,
     alias: string,
     program: ts.Program,
@@ -33,7 +33,7 @@ export function generateAliasTableForExportSpecifier(
     const exportDecl = getDeclarationFromSpecifier(exportSpecifier);
     if (exportDecl.moduleSpecifier) {
         // If there is a module specifier (ie `export {thing} from 'place'`)
-        return generateAliasTableForModuleImportExportSpecifier(
+        return generateForModuleImportExportSpecifier(
             exportSpecifier,
             alias,
             program,
@@ -43,7 +43,7 @@ export function generateAliasTableForExportSpecifier(
 
     // Symbol is not from another module so we will find it locally
     // ie there is no module specifier (ie `export {thing}`)
-    return generateAliasTableForLocalExportSpecifier(
+    return generateForLocalExportSpecifier(
         exportSpecifier,
         alias,
         program,
@@ -53,7 +53,7 @@ export function generateAliasTableForExportSpecifier(
 
 // Generates an alias table for 'thing' as in:
 // `export default thing`
-export function generateAliasTableForExportAssignment(
+export function generateForExportAssignment(
     exportAssignment: ts.ExportAssignment,
     alias: string,
     program: ts.Program,
@@ -64,19 +64,19 @@ export function generateAliasTableForExportAssignment(
     if (symbol === undefined) {
         return returnFalseOrNull(generationType);
     }
-    return generateAliasTableForSymbol(symbol, alias, program, generationType);
+    return generateForSymbol(symbol, alias, program, generationType);
 }
 
 // Generates an alias table for 'thing' in {thing} or {other as thing} as in:
 // `import {thing} from 'place'` or
 // `import {other as thing} from 'place'`
-export function generateAliasTableForImportSpecifier(
+export function generateForImportSpecifier(
     importSpecifier: ts.ImportSpecifier,
     alias: string,
     program: ts.Program,
     generationType: GenerationType
 ): AliasTable | null | boolean {
-    return generateAliasTableForModuleImportExportSpecifier(
+    return generateForModuleImportExportSpecifier(
         importSpecifier,
         alias,
         program,
@@ -86,7 +86,7 @@ export function generateAliasTableForImportSpecifier(
 
 // Generates an alias table for 'thing' as in:
 // `import thing from 'place'`
-export function generateAliasTableForImportClause(
+export function generateForImportClause(
     importClause: ts.ImportClause,
     alias: string,
     program: ts.Program,
@@ -103,7 +103,7 @@ export function generateAliasTableForImportClause(
     if (symbol === undefined) {
         return returnFalseOrNull(generationType);
     }
-    return generateAliasTableForSymbol(symbol, alias, program, generationType);
+    return generateForSymbol(symbol, alias, program, generationType);
 }
 
 // Generates an alias table for an export declaration as in:
@@ -111,9 +111,9 @@ export function generateAliasTableForImportClause(
 // CAUTION: Export Declarations like this often come in groups (eg export * from
 // 'place' and export * from 'otherPlace' would both be in the list of
 // declarations) and this function is only meant to process one at a time.
-// generateAliasTableForExportDeclarations() should be called for a list of
-// Export Declarations.
-export function generateAliasTableForExportDeclaration(
+// generateForExportDeclarations() should be called for a list of Export
+// Declarations.
+export function generateForExportDeclaration(
     exportDeclaration: ts.ExportDeclaration,
     program: ts.Program,
     generationType: GenerationType
@@ -147,7 +147,7 @@ export function generateAliasTableForExportDeclaration(
     );
     if (symbolTable === undefined) return returnFalseOrNull(generationType);
 
-    const result = generateAliasTableFromSymbolTable(
+    const result = generateFromSymbolTable(
         symbolTable,
         program,
         generationType
@@ -163,18 +163,14 @@ export function generateAliasTableForExportDeclaration(
 // My understanding is all other export declarations will be processed in other
 // functions because they will fall into the more specific export clause or
 // export specifier cases
-export function generateAliasTableForExportDeclarations(
+export function generateForExportDeclarations(
     exportDeclarations: ts.ExportDeclaration[],
     program: ts.Program,
     generationType: GenerationType
 ): AliasTable | null | boolean {
     if (generationType === 'LIST') return false; // TODO https://github.com/demergent-labs/azle/issues/1122
     const aliasTables = exportDeclarations.map((declaration) =>
-        generateAliasTableForExportDeclaration(
-            declaration,
-            program,
-            generationType
-        )
+        generateForExportDeclaration(declaration, program, generationType)
     );
     return aliasTables.reduce((acc: AliasTable, subAliasTable) => {
         if (subAliasTable === null || typeof subAliasTable === 'boolean') {
@@ -188,7 +184,7 @@ export function generateAliasTableForExportDeclarations(
 // would generate an alias table that looked like this `{blob: [namespace.blob],
 // float32: [namespace.float32], ... vec: [namespace.vec]} which is the
 // DEFAULT_ALIAS_TABLE prefixed with the namespace
-export function generateAliasTableForNamespaceImportExport(
+export function generateForNamespaceImportExport(
     namespace: ts.NamespaceImport | ts.NamespaceExport,
     program: ts.Program,
     generationType: GenerationType
@@ -211,7 +207,7 @@ export function generateAliasTableForNamespaceImportExport(
     );
     if (symbolTable === undefined) return returnFalseOrNull(generationType);
 
-    const aliasTable = generateAliasTableFromSymbolTable(
+    const aliasTable = generateFromSymbolTable(
         symbolTable,
         program,
         generationType
@@ -230,7 +226,7 @@ export function generateAliasTableForNamespaceImportExport(
 
 // export {thing} from 'place'; or export {thing as other} from 'place';
 // import {thing} from 'place'; or import {thing as other} from 'place';
-function generateAliasTableForModuleImportExportSpecifier(
+function generateForModuleImportExportSpecifier(
     specifier: ts.ExportSpecifier | ts.ImportSpecifier,
     alias: string,
     program: ts.Program,
@@ -253,11 +249,11 @@ function generateAliasTableForModuleImportExportSpecifier(
     if (symbol === undefined) {
         return returnFalseOrNull(generationType);
     }
-    return generateAliasTableForSymbol(symbol, alias, program, generationType);
+    return generateForSymbol(symbol, alias, program, generationType);
 }
 
 // export {thing}; or export {thing as other};
-function generateAliasTableForLocalExportSpecifier(
+function generateForLocalExportSpecifier(
     exportSpecifier: ts.ExportSpecifier,
     alias: string,
     program: ts.Program,
@@ -276,12 +272,7 @@ function generateAliasTableForLocalExportSpecifier(
     if (symbol === undefined) {
         return returnFalseOrNull(generationType);
     }
-    const result = generateAliasTableForSymbol(
-        symbol,
-        alias,
-        program,
-        generationType
-    );
+    const result = generateForSymbol(symbol, alias, program, generationType);
     if (result === null || typeof result === 'boolean') {
         return result;
     }

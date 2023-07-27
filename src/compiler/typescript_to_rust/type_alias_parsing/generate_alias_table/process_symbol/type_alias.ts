@@ -9,7 +9,7 @@ import {
     isAzleKeywordExpression,
     returnFalseOrNull
 } from '../../utils';
-import { generateAliasTableForIdentifier } from '../process_symbol';
+import { generateForIdentifier } from '../process_symbol';
 import { generateSingleEntryAliasTable } from '../alias_table';
 import { AliasTable, GenerationType } from '../../types';
 
@@ -31,7 +31,7 @@ step 1, get all the way back to the identifier
 step 2, get that symbol from the symbol table we have, look up the next one
 */
 
-export function generateAliasTableForTypeAliasDeclaration(
+export function generateForTypeAliasDeclaration(
     typeAliasDeclaration: ts.TypeAliasDeclaration,
     alias: string,
     program: ts.Program,
@@ -79,7 +79,7 @@ export function generateAliasTableForTypeAliasDeclaration(
         }
         const typeName = aliasedType.typeName;
         if (ts.isIdentifier(typeName)) {
-            return generateAliasTableForIdentifier(
+            return generateForIdentifier(
                 typeName,
                 alias,
                 symbolTable,
@@ -96,7 +96,7 @@ export function generateAliasTableForTypeAliasDeclaration(
             if (declSymbolTable === undefined) {
                 return returnFalseOrNull(generationType);
             }
-            return generateAliasTableForIdentifier(
+            return generateForIdentifier(
                 typeName.right,
                 alias,
                 declSymbolTable,
@@ -140,7 +140,7 @@ export function generateAliasTableForTypeAliasDeclaration(
     return returnFalseOrNull(generationType);
 }
 
-export function generateAliasTableForVariableDeclaration(
+export function generateForVariableDeclaration(
     variableDeclaration: ts.VariableDeclaration,
     alias: string,
     program: ts.Program,
@@ -168,7 +168,7 @@ export function generateAliasTableForVariableDeclaration(
     }
 
     if (ts.isIdentifier(expression)) {
-        return generateAliasTableForIdentifier(
+        return generateForIdentifier(
             expression,
             alias,
             symbolTable,
@@ -186,7 +186,7 @@ export function generateAliasTableForVariableDeclaration(
         if (declSymbolTable === undefined) {
             return returnFalseOrNull(generationType);
         }
-        return generateAliasTableForIdentifier(
+        return generateForIdentifier(
             expression.name,
             alias,
             declSymbolTable,

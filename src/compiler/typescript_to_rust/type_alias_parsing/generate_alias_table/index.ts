@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { generateAliasTableFromSymbolTable } from './alias_table';
+import { generateFromSymbolTable } from './alias_table';
 import { getSymbolTable } from '../utils/get_symbol_table';
 import {
     AliasTable,
@@ -10,17 +10,13 @@ import {
     AliasListsOrTables
 } from '../types';
 
-export function generateAliasTables(
+export function generateAll(
     files: string[],
     program: ts.Program,
     generationType: GenerationType
 ): AliasTables | AliasLists {
     const result = files.reduce((acc: AliasListsOrTables, filename: string) => {
-        const aliasTableOrList = generateAliasTable(
-            filename,
-            program,
-            generationType
-        );
+        const aliasTableOrList = generate(filename, program, generationType);
         if (aliasTableOrList === null) {
             return acc;
         }
@@ -35,7 +31,7 @@ export function generateAliasTables(
     return result as AliasLists;
 }
 
-function generateAliasTable(
+function generate(
     filename: string,
     program: ts.Program,
     generationType: GenerationType
@@ -49,11 +45,7 @@ function generateAliasTable(
 
     const symbolTable = getSymbolTable(sourceFile, program);
     if (symbolTable !== undefined) {
-        return generateAliasTableFromSymbolTable(
-            symbolTable,
-            program,
-            generationType
-        );
+        return generateFromSymbolTable(symbolTable, program, generationType);
     }
 
     if (generationType === 'LIST') return [];

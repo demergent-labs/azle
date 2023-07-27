@@ -2,23 +2,23 @@ import * as ts from 'typescript';
 import { AliasTable, GenerationType } from '../../types';
 import { generateSingleEntryAliasTable } from '../alias_table';
 import {
-    generateAliasTableForExportAssignment,
-    generateAliasTableForExportDeclaration,
-    generateAliasTableForExportDeclarations,
-    generateAliasTableForExportSpecifier,
-    generateAliasTableForImportClause,
-    generateAliasTableForImportSpecifier,
-    generateAliasTableForNamespaceImportExport
+    generateForExportAssignment,
+    generateForExportDeclaration,
+    generateForExportDeclarations,
+    generateForExportSpecifier,
+    generateForImportClause,
+    generateForImportSpecifier,
+    generateForNamespaceImportExport
 } from './import_export';
 import {
-    generateAliasTableForTypeAliasDeclaration,
-    generateAliasTableForVariableDeclaration
+    generateForTypeAliasDeclaration,
+    generateForVariableDeclaration
 } from './type_alias';
 import { isAzleSymbol, getSymbol, returnFalseOrNull } from '../../utils';
 
 const ROBUST_TYPE_ALIASES_IMPLEMENTED = false;
 
-export function generateAliasTableForIdentifier(
+export function generateForIdentifier(
     ident: ts.Identifier | ts.MemberName,
     alias: string,
     symbolTable: ts.SymbolTable,
@@ -33,22 +33,17 @@ export function generateAliasTableForIdentifier(
         if (symbol === undefined) {
             return false;
         }
-        return generateAliasTableForSymbol(
-            symbol,
-            alias,
-            program,
-            generationType
-        );
+        return generateForSymbol(symbol, alias, program, generationType);
     }
     const symbol = getSymbol(ident.text, symbolTable, program);
     if (symbol === undefined) {
         // Couldn't find symbol
         return returnFalseOrNull(generationType);
     }
-    return generateAliasTableForSymbol(symbol, alias, program, generationType);
+    return generateForSymbol(symbol, alias, program, generationType);
 }
 
-export function generateAliasTableForSymbol(
+export function generateForSymbol(
     symbol: ts.Symbol,
     alias: string,
     program: ts.Program,
@@ -66,7 +61,7 @@ export function generateAliasTableForSymbol(
         // Should look like export * from 'place';
         // There are other export declarations, but the only ones that will
         // be a symbol are these unnamed export from clauses
-        return generateAliasTableForExportDeclarations(
+        return generateForExportDeclarations(
             declarations as ts.ExportDeclaration[],
             program,
             generationType
@@ -75,7 +70,7 @@ export function generateAliasTableForSymbol(
     if (declarations.length > 1) {
         return returnFalseOrNull(generationType);
     }
-    return generateAliasTableForDeclaration(
+    return generateForDeclaration(
         declarations[0],
         alias,
         program,
@@ -83,7 +78,7 @@ export function generateAliasTableForSymbol(
     );
 }
 
-function generateAliasTableForDeclaration(
+function generateForDeclaration(
     declaration: ts.Declaration,
     alias: string,
     program: ts.Program,
@@ -93,7 +88,7 @@ function generateAliasTableForDeclaration(
         // {thing} or {thing as other}
         // as in `export {thing};` or
         // `export {thing as other};`
-        return generateAliasTableForExportSpecifier(
+        return generateForExportSpecifier(
             declaration,
             alias,
             program,
@@ -102,7 +97,7 @@ function generateAliasTableForDeclaration(
     }
     if (ts.isExportAssignment(declaration)) {
         // export default thing
-        return generateAliasTableForExportAssignment(
+        return generateForExportAssignment(
             declaration,
             alias,
             program,
@@ -112,7 +107,7 @@ function generateAliasTableForDeclaration(
     if (ts.isImportClause(declaration)) {
         // thing
         // as in `import thing from 'place'`
-        return generateAliasTableForImportClause(
+        return generateForImportClause(
             declaration,
             alias,
             program,
@@ -123,7 +118,7 @@ function generateAliasTableForDeclaration(
         // {thing} or {thing as other}
         // as in `import {thing} from 'place'` or
         // `import {thing as other} from 'place'`
-        return generateAliasTableForImportSpecifier(
+        return generateForImportSpecifier(
             declaration,
             alias,
             program,
@@ -133,7 +128,7 @@ function generateAliasTableForDeclaration(
     if (ts.isTypeAliasDeclaration(declaration)) {
         // export type AliasName = TypeName;
         // type AliasName = TypeName;
-        return generateAliasTableForTypeAliasDeclaration(
+        return generateForTypeAliasDeclaration(
             declaration,
             alias,
             program,
@@ -142,7 +137,7 @@ function generateAliasTableForDeclaration(
     }
     if (ts.isNamespaceImport(declaration)) {
         // import * as thing from 'place'
-        return generateAliasTableForNamespaceImportExport(
+        return generateForNamespaceImportExport(
             declaration,
             program,
             generationType
@@ -150,7 +145,7 @@ function generateAliasTableForDeclaration(
     }
     if (ts.isNamespaceExport(declaration)) {
         // export * as thing from 'place';
-        return generateAliasTableForNamespaceImportExport(
+        return generateForNamespaceImportExport(
             declaration,
             program,
             generationType
@@ -162,7 +157,7 @@ function generateAliasTableForDeclaration(
         // 'place' and export * from 'otherPlace' would both be in the list of
         // declarations) and this function is only meant to process one at a
         // time.
-        return generateAliasTableForExportDeclaration(
+        return generateForExportDeclaration(
             declaration,
             program,
             generationType
@@ -171,7 +166,7 @@ function generateAliasTableForDeclaration(
     if (ts.isVariableDeclaration(declaration)) {
         // export const QueryAlias = azle.$query;
         // export const ServiceAlias = azle.Service;
-        return generateAliasTableForVariableDeclaration(
+        return generateForVariableDeclaration(
             declaration,
             alias,
             program,
