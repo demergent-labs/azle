@@ -149,7 +149,7 @@
 <p>You should be using a *nix environment (Linux, Mac OS, <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL if using Windows</a>) with bash and have the following installed on your system:</p>
 <ul>
 <li>Node.js 18</li>
-<li>dfx 0.14.0</li>
+<li>dfx 0.14.2</li>
 </ul>
 <h2 id="nodejs"><a class="header" href="#nodejs">Node.js</a></h2>
 <p>We highly recommend using <a href="https://github.com/nvm-sh/nvm">nvm</a> to install Node.js (and npm, which is included with Node.js). Run the following commands to install Node.js and npm with nvm:</p>
@@ -159,8 +159,8 @@
 <pre><code class="language-bash">nvm install 18
 </code></pre>
 <h2 id="dfx"><a class="header" href="#dfx">dfx</a></h2>
-<p>Run the following command to install dfx 0.14.0:</p>
-<pre><code class="language-bash">DFX_VERSION=0.14.0 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
+<p>Run the following command to install dfx 0.14.2:</p>
+<pre><code class="language-bash">DFX_VERSION=0.14.2 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
 </code></pre>
 <p>If after trying to run <code>dfx</code> commands you encounter an error such as <code>dfx: command not found</code>, you might need to add <code>$HOME/bin</code> to your path. Here's an example of doing this in your <code>.bashrc</code>:</p>
 <pre><code class="language-bash">echo 'export PATH=&quot;$PATH:$HOME/bin&quot;' &gt;&gt; &quot;$HOME/.bashrc&quot;
