@@ -1,3 +1,5 @@
+// TODO let's try to fix this example and make sure large bigints are supported
+
 import { ic, nat, nat64, Opt, $query, Record, $update } from 'azle';
 
 //#region Performance
