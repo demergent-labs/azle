@@ -64,7 +64,6 @@ export function generateAliasTableForTypeAliasDeclaration(
             program
         );
         if (symbolTable === undefined) {
-            // TODO couldn't get a symbol table
             return undefined;
         }
         const typeName = aliasedType.typeName;
@@ -93,7 +92,6 @@ export function generateAliasTableForTypeAliasDeclaration(
             );
         }
     }
-    // TODO make tests for all of these possibilities test all of these
     if (aliasedType.kind === ts.SyntaxKind.BooleanKeyword) {
         return generateSingleEntryAliasTable('bool', alias);
     }
@@ -103,10 +101,9 @@ export function generateAliasTableForTypeAliasDeclaration(
     if (aliasedType.kind === ts.SyntaxKind.StringKeyword) {
         return generateSingleEntryAliasTable('text', alias);
     }
-    // TODO (https://github.com/demergent-labs/azle/issues/1099)
-    // if (typeReference.kind === ts.SyntaxKind.BigIntKeyword) {
-    //     return generateSingleEntryAliasTable('int', alias);
-    // }
+    if (aliasedType.kind === ts.SyntaxKind.BigIntKeyword) {
+        return generateSingleEntryAliasTable('int', alias);
+    }
     if (aliasedType.kind === ts.SyntaxKind.NumberKeyword) {
         return generateSingleEntryAliasTable('float64', alias);
     }

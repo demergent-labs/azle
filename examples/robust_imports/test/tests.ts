@@ -11,7 +11,8 @@ export function getTests(
     return [
         ...getImportCoverageTests(robustImportsCanister),
         ...getAzleCoverageTests(robustImportsCanister),
-        ...getTypeAliasDeclTests(robustImportsCanister)
+        ...getTypeAliasDeclTests(robustImportsCanister),
+        ...getTsPrimAliasTest(robustImportsCanister)
     ];
 }
 
@@ -333,6 +334,24 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                 return {
                     Ok: await fruit.isFruitPrepared()
                 };
+            }
+        }
+    ];
+}
+
+function getTsPrimAliasTest(canister: ActorSubclass<_SERVICE>): Test[] {
+    return [
+        {
+            name: 'Test TS Prim Aliases',
+            test: async () => {
+                const result = await canister.checkPrimAliases(
+                    true,
+                    null,
+                    'Hello',
+                    7n,
+                    1.23
+                );
+                return { Ok: result === undefined };
             }
         }
     ];

@@ -73,6 +73,7 @@ type Watermelon = variant { Seeds; Seedless };
 type _AzleResult = variant { Ok : bool; Err : text };
 service : () -> {
   addSigFigs : (float32) -> (float64) query;
+  checkPrimAliases : (bool, null, text, int, float64) -> () query;
   checkService : (
       service { deliver : () -> (text); is_delivered : () -> (bool) query },
     ) -> (
