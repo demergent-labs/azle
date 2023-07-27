@@ -8,7 +8,7 @@ pub fn generate() -> TokenStream {
             Callback: FnOnce() -> Result<SuccessValue, RuntimeError>,
         {
             callback()
-                .unwrap_or_else(|err| ic_cdk::api::trap(&format!("Uncaught {}", err.to_string())))
+                .unwrap_or_else(|err| ic_cdk::api::trap(&format!("\nUncaught {}", err.to_string())))
         }
 
         pub trait UnwrapJsResultOrTrap {
@@ -22,7 +22,7 @@ pub fn generate() -> TokenStream {
                     Err(js_error) => {
                         let error_message = js_error.to_std_string(context);
 
-                        ic_cdk::api::trap(&format!("Uncaught {error_message}"));
+                        ic_cdk::api::trap(&format!("\nUncaught {error_message}"));
                     }
                 }
             }
@@ -33,7 +33,7 @@ pub fn generate() -> TokenStream {
                 match self {
                     Ok(js_value) => js_value,
                     Err(error_string) => {
-                        ic_cdk::api::trap(&format!("Uncaught {error_string}"));
+                        ic_cdk::api::trap(&format!("\nUncaught {error_string}"));
                     }
                 }
             }
@@ -47,7 +47,7 @@ pub fn generate() -> TokenStream {
             fn unwrap_or_trap(self, err_message: &str) -> T {
                 match self {
                     Some(some) => some,
-                    None => ic_cdk::trap(&format!("Uncaught {err_message}")),
+                    None => ic_cdk::trap(&format!("\nUncaught {err_message}")),
                 }
             }
         }

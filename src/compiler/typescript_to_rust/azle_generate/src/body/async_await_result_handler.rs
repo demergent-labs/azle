@@ -54,7 +54,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                         "_AZLE_TIMER" => {}
                         _ => {
                             return Err(format!(
-                                "Uncaught ReferenceError: {} is not defined",
+                                "\nUncaught ReferenceError: {} is not defined",
                                 method_name
                             ))
                         }
