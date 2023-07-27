@@ -54,8 +54,8 @@ export function compileTypeScriptToRust(
         );
 
         const program = ts.createProgram([canisterConfig.ts], {});
-        const aliasTables = generateAliasTables(fileNames, program);
-        const aliasLists = generateAliasLists(fileNames, program);
+        const aliasTables = generateAliasTables(fileNames, program, 'TABLE');
+        const aliasLists = generateAliasLists(fileNames, program, 'LIST');
 
         const pluginsDependencies = plugins
             .map((plugin) => {
