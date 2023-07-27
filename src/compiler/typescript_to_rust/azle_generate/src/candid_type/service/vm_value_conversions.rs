@@ -14,7 +14,7 @@ pub fn to_vm_value(name: String) -> TokenStream {
                 context: &mut boa_engine::Context,
             ) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
                 Ok(context
-                    .eval_script(boa_engine::Source::from_bytes(&format!(
+                    .eval(boa_engine::Source::from_bytes(&format!(
                         "new {}(Principal.fromText(\"{}\"))",
                         stringify!(#service_name),
                         self.0.principal.to_string()

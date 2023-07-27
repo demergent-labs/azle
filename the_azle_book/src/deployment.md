@@ -125,7 +125,7 @@ There are other agents for other languages as well:
 
 ## Deploying to mainnet
 
-Assuming you have [created a cycles wallet](https://internetcomputer.org/docs/current/developer-docs/quickstart/network-quickstart) and funded it with cycles, then you are ready to deploy to mainnet.
+Assuming you are [setup with cycles](https://internetcomputer.org/docs/current/developer-docs/setup/cycles/), then you are ready to deploy to mainnet.
 
 To deploy all canisters defined in your dfx.json:
 

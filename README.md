@@ -19,12 +19,21 @@ TypeScript CDK for the [Internet Computer](https://internetcomputer.org/).
 
 ## Disclaimer
 
-Things to keep in mind:
+Azle may have unknown security vulnerabilities due to the following:
 
 -   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 -   Azle does not yet have extensive automated property tests
 -   Azle does not yet have multiple independent security reviews/audits
 -   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa#boa)
+
+## Roadmap
+
+We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:
+
+-   QuickJS/SpiderMonkey integration for performance, security, and stability
+-   Broad npm package support
+-   Extensive automated property testing
+-   Multiple independent security reviews/audits
 
 ## Documentation
 
@@ -33,30 +42,6 @@ See [The Azle Book](https://demergent-labs.github.io/azle/).
 ## Discussion
 
 Feel free to open issues or join us in the [Discord channel](https://discord.gg/5Hb6rM2QUM).
-
-## Quick Start
-
-```bash
-npx azle new hello_world
-cd hello_world
-
-npm install
-npm run dfx_install
-npm run replica_start
-npm run canister_deploy_local
-
-npm run canister_call_set_message
-npm run canister_call_get_message
-```
-
-## Roadmap
-
-The following are the major blockers to 1.0:
-
--   Extensive automated property testing (~Q1 2023)
--   Performance improvements if necessary (~Q2 2023)
--   Boa production-ready, JS Engine swapout, or risks accepted (~Q2 2023)
--   Multiple independent security reviews/audits (~Q2 2023)
 
 ## Contributing
 

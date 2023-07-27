@@ -174,13 +174,13 @@ let map = new StableBTreeMap&lt;nat8, string&gt;(0, 100, 1_000);
     nat8,
     Opt,
     $query,
-    Result,
     StableBTreeMap,
-    $update
+    $update,
+    Vec
 } from 'azle';
 
-type Key = nat8;
-type Value = string;
+type Key = Alias&lt;nat8&gt;;
+type Value = Alias&lt;string&gt;;
 
 let map = new StableBTreeMap&lt;Key, Value&gt;(0, 100, 1_000);
 
@@ -205,12 +205,12 @@ export function isEmpty(): boolean {
 }
 
 $query;
-export function items(): [Key, Value][] {
+export function items(): Vec&lt;[Key, Value]&gt; {
     return map.items();
 }
 
 $query;
-export function keys(): Key[] {
+export function keys(): Vec&lt;Key&gt; {
     return map.keys();
 }
 
@@ -225,7 +225,7 @@ export function remove(key: Key): Opt&lt;Value&gt; {
 }
 
 $query;
-export function values(): Value[] {
+export function values(): Vec&lt;Value&gt; {
     return map.values();
 }
 </code></pre>
@@ -424,12 +424,12 @@ function generateId(): Principal {
 </code></pre>
 <p>The example above shows a very basic audio recording backend application. There are two types of entities that need to be stored, <code>User</code> and <code>Recording</code>. These are represented as <code>Candid</code> records.</p>
 <p>Each entity gets its own <code>StableBTreeMap</code>:</p>
-<pre><code class="language-typescript">import { blob, nat64, Principal, Record, StableBTreeMap } from 'azle';
+<pre><code class="language-typescript">import { blob, nat64, Principal, Record, StableBTreeMap, Vec } from 'azle';
 
 type User = Record&lt;{
     id: Principal;
     createdAt: nat64;
-    recordingIds: Principal[];
+    recordingIds: Vec&lt;Principal&gt;;
     username: string;
 }&gt;;
 

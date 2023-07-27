@@ -1,4 +1,7 @@
 type ManualReply = variant { Ok : text; Err : text };
+type _InlineServiceNestedReturnTypeReturnType = record {
+  someService : service { query1 : () -> (bool) query; update1 : () -> (text) };
+};
 service : () -> {
   serviceCrossCanisterCall : (
       service { query1 : () -> (bool) query; update1 : () -> (text) },
@@ -6,6 +9,7 @@ service : () -> {
   serviceList : (
       vec service { query1 : () -> (bool) query; update1 : () -> (text) },
     ) -> (vec service { query1 : () -> (bool) query; update1 : () -> (text) });
+  serviceNestedReturnType : () -> (_InlineServiceNestedReturnTypeReturnType);
   serviceParam : (
       service { query1 : () -> (bool) query; update1 : () -> (text) },
     ) -> (

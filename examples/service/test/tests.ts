@@ -41,6 +41,26 @@ export function getTests(serviceCanister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
+            name: 'serviceNestedReturnType',
+            test: async () => {
+                const result = execSync(
+                    `dfx canister call service serviceNestedReturnType`
+                )
+                    .toString()
+                    .trim();
+
+                console.log(result);
+
+                return {
+                    Ok:
+                        result ===
+                        `(record { someService = service "${getCanisterId(
+                            'some_service'
+                        )}" })`
+                };
+            }
+        },
+        {
             name: 'serviceList',
             test: async () => {
                 const result = execSync(

@@ -47,7 +47,7 @@ pub fn generate(
 
                 #(#register_plugins)*
 
-                boa_context.eval_script(
+                boa_context.eval(
                     boa_engine::Source::from_bytes(
                         &format!(
                             "let exports = {{}}; {compiled_js}",
