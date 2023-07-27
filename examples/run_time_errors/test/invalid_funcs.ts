@@ -5,36 +5,27 @@ import { expectError } from './tests';
 
 const valueIsNotAFuncErrorMessage = "TypeError: Value is not of type 'Func'";
 
-const expectedArrayErrorMessage = `[TypeError: Value is not of type 'Func'] {
-  [cause]: TypeError: Expected 'Array', given 'Object'
-}`;
+const expectedArrayErrorMessage = `TypeError: Value is not of type 'Func'
+  [cause]: TypeError: Expected 'Array', given 'Object'`;
 
-const index0IsUndefinedErrorMessage = `[TypeError: Value is not of type 'Func'] {
-  [cause]: TypeError: Index '0' is undefined
-}`;
+const index0IsUndefinedErrorMessage = `TypeError: Value is not of type 'Func'
+  [cause]: TypeError: Index '0' is undefined`;
 
-const valueIsNotOfTypePrincipalErrorMessage = `[TypeError: Value is not of type 'Func'] {
-  [cause]: TypeError: Index '0' is not of type 'Principal' {
-    [cause]: TypeError: Value is not of type 'Principal'
-  }
-}`;
+const valueIsNotOfTypePrincipalErrorMessage = `TypeError: Value is not of type 'Func'
+  [cause]: TypeError: Index '0' is not of type 'Principal'
+  [cause]: TypeError: Value is not of type 'Principal'`;
 
-// TODO: Fix the formatting. See https://github.com/demergent-labs/azle/issues/1111
-const propertyToTextIsNotAFunctionErrorMessage = `[TypeError: Value is not of type 'Func'] {
-  [cause]: TypeError: Index '0' is not of type 'Principal' {
-    [cause]: [TypeError: Value is not of type 'Principal'] {
-  [cause]: TypeError: Property 'toText' of object is not a function
-}`;
+const propertyToTextIsNotAFunctionErrorMessage = `TypeError: Value is not of type 'Func'
+  [cause]: TypeError: Index '0' is not of type 'Principal'
+  [cause]: TypeError: Value is not of type 'Principal'
+  [cause]: TypeError: Property 'toText' of object is not a function`;
 
-const index1IsUndefinedErrorMessage = `[TypeError: Value is not of type 'Func'] {
-  [cause]: TypeError: Index '1' is undefined
-}`;
+const index1IsUndefinedErrorMessage = `TypeError: Value is not of type 'Func'
+  [cause]: TypeError: Index '1' is undefined`;
 
-const valueIsNotAStringErrorMessage = `[TypeError: Value is not of type 'Func'] {
-  [cause]: TypeError: Index '1' is not of type 'string' {
-    [cause]: TypeError: Value is not of type 'string'
-  }
-}`;
+const valueIsNotAStringErrorMessage = `TypeError: Value is not of type 'Func'
+  [cause]: TypeError: Index '1' is not of type 'string'
+  [cause]: TypeError: Value is not of type 'string'`;
 
 export function getInvalidFuncTests(
     errorCanister: ActorSubclass<_SERVICE>

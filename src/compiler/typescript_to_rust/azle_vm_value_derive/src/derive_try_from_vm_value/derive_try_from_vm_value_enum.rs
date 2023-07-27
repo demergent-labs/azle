@@ -9,52 +9,8 @@ pub fn generate(
     data_enum: &DataEnum,
     generics: &Generics,
 ) -> Result<TokenStream, Error> {
-    let (value_is_not_an_object_error_message, missing_valid_variant_error_message) =
-        derive_error_messages(enum_name, data_enum);
-
-    let properties = derive_properties(enum_name, data_enum)?;
-
-    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
-
-    let try_from_vm_value_vec_impl = derive_try_from_vm_value_vec::generate(enum_name, generics);
-
-    Ok(quote! {
-        impl #impl_generics CdkActTryFromVmValue<
-            #enum_name #ty_generics,
-            &mut boa_engine::Context<'_>
-        >
-            for boa_engine::JsValue
-            #where_clause
-        {
-            fn try_from_vm_value(
-                self,
-                context: &mut boa_engine::Context
-            ) -> Result<#enum_name #ty_generics, CdkActTryFromVmValueError> {
-                let object = self
-                    .as_object()
-                    .ok_or_else(|| #value_is_not_an_object_error_message.to_string())?;
-
-                #(#properties)*
-
-                return Err(CdkActTryFromVmValueError(
-                    #missing_valid_variant_error_message.to_string()
-                ));
-            }
-        }
-
-        #try_from_vm_value_vec_impl
-    })
-}
-
-fn derive_error_messages(enum_name: &Ident, data_enum: &DataEnum) -> (String, String) {
-    let enum_name_string = enum_name.to_string();
-
-    let value_is_not_an_object_error_message = format!(
-        "[TypeError: Value is not of type '{}'] {{\n  \
-            [cause]: TypeError: Value is not an object\n\
-        }}",
-        &enum_name_string
-    );
+    let value_is_not_of_enum_type_error_message =
+        derive_value_is_not_of_enum_type_error_message(enum_name);
 
     let variant_names = data_enum
         .variants
@@ -65,16 +21,53 @@ fn derive_error_messages(enum_name: &Ident, data_enum: &DataEnum) -> (String, St
     let variant_names_vec_string = format!("[{}]", variant_names.join(", "));
 
     let missing_valid_variant_error_message = format!(
-        "[TypeError: Value is not of type '{}'] {{\n  \
-            [cause]: TypeError: Value must contain exactly one of the following properties: \
-                {}\n\
-        }}",
-        &enum_name_string, variant_names_vec_string,
+        "TypeError: Value must contain exactly one of the following properties: {}",
+        variant_names_vec_string
     );
 
-    (
-        value_is_not_an_object_error_message,
-        missing_valid_variant_error_message,
+    let properties = derive_properties(enum_name, data_enum)?;
+
+    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+
+    let try_from_vm_value_vec_impl = derive_try_from_vm_value_vec::generate(enum_name, generics);
+
+    Ok(quote! {
+        impl #impl_generics CdkActTryFromVmValue<
+            #enum_name #ty_generics,
+            boa_engine::JsError,
+            &mut boa_engine::Context<'_>
+        >
+            for boa_engine::JsValue
+            #where_clause
+        {
+            fn try_from_vm_value(
+                self,
+                context: &mut boa_engine::Context
+            ) -> Result<#enum_name #ty_generics, boa_engine::JsError> {
+                let object = self
+                    .as_object()
+                    .ok_or_else(|| {
+                        let cause = "TypeError: Value is not an object".to_js_error(None);
+
+                        #value_is_not_of_enum_type_error_message.to_js_error(Some(cause))
+                    })?;
+
+                #(#properties)*
+
+                let cause = #missing_valid_variant_error_message.to_js_error(None);
+
+                return Err(#value_is_not_of_enum_type_error_message.to_js_error(Some(cause)));
+            }
+        }
+
+        #try_from_vm_value_vec_impl
+    })
+}
+
+fn derive_value_is_not_of_enum_type_error_message(enum_name: &Ident) -> String {
+    format!(
+        "TypeError: Value is not of type '{}'",
+        enum_name.to_string()
     )
 }
 
@@ -124,10 +117,8 @@ fn derive_property_for_named_fields(
     object_variant_js_value_result_var_name: &Ident,
     object_variant_js_value_var_name: &Ident,
 ) -> Result<TokenStream, Error> {
-    let enum_name_string = enum_name.to_string();
-
-    let value_is_not_of_variant_type_error_message =
-        format!("TypeError: Value is not of type '{}'", &enum_name_string);
+    let value_is_not_of_enum_type_error_message =
+        derive_value_is_not_of_enum_type_error_message(enum_name);
 
     let named_field_js_value_result_variable_names =
         named_fields.map_to(enum_name, variant_name, |_, variable_name| {
@@ -139,7 +130,11 @@ fn derive_property_for_named_fields(
             quote! {
                 let #variable_name = #object_variant_js_value_var_name
                     .as_object()
-                    .ok_or_else(|| "TypeError: Value is not an object")?
+                    .ok_or_else(|| {
+                        let cause = "TypeError: Value is not an object".to_js_error(None);
+
+                        #value_is_not_of_enum_type_error_message.to_js_error(Some(cause))
+                    })?
                     .get(stringify!(#field_name), context);
             }
         })?;
@@ -194,17 +189,17 @@ fn derive_property_for_named_fields(
                             },
                             _ => {
                                 // TODO: Update this error message
-                                return Err(CdkActTryFromVmValueError(
-                                    #value_is_not_of_variant_type_error_message.to_string()
-                                ));
+                                return Err(
+                                    #value_is_not_of_enum_type_error_message.to_js_error(None)
+                                );
                             }
                         };
                     },
                     _ => {
                         // TODO: Update this error message
-                        return Err(CdkActTryFromVmValueError(
-                            value_is_not_of_variant_type_error_message.to_string()
-                        ));
+                        return Err(
+                            #value_is_not_of_enum_type_error_message.to_js_error(None)
+                        );
                     }
                 };
             }
@@ -219,16 +214,12 @@ fn derive_property_for_unnamed_fields(
     object_variant_js_value_result_var_name: &Ident,
     object_variant_js_value_var_name: &Ident,
 ) -> TokenStream {
-    let enum_name_string = enum_name.to_string();
-    let variant_name_string = variant_name.to_string();
+    let value_is_not_of_enum_type_error_message =
+        derive_value_is_not_of_enum_type_error_message(enum_name);
 
-    let todo_rename_this_error_message = format!(
-        "[TypeError: Value is not of type '{}'] {{{{\n  \
-            [cause]: TypeError: Property '{{}}' is not of the correct type {{{{\n    \
-                [cause]: {{}}\n  \
-            }}}}\n\
-        }}}}",
-        &enum_name_string
+    let property_is_not_of_variant_type_error_message = format!(
+        "TypeError: Property '{}' is not of the correct type",
+        variant_name.to_string()
     );
 
     if unnamed_fields.len() == 0 {
@@ -256,11 +247,11 @@ fn derive_property_for_unnamed_fields(
                     return Ok(#enum_name::#variant_name(
                         #object_variant_js_value_var_name
                             .try_from_vm_value(&mut *context)
-                            .map_err(|err| format!(
-                                #todo_rename_this_error_message,
-                                #variant_name_string,
-                                err.0
-                            ))?
+                            .map_err(|err| {
+                                let cause = #property_is_not_of_variant_type_error_message.to_js_error(Some(err));
+
+                                #value_is_not_of_enum_type_error_message.to_js_error(Some(cause))
+                            })?
                     ));
                 }
             }

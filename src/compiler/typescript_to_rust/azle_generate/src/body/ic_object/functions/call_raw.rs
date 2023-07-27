@@ -18,33 +18,26 @@ pub fn generate() -> proc_macro2::TokenStream {
 
             let canister_id_js_value = aargs
                 .get(0)
-                .ok_or_else(|| "An argument for 'canisterId' was not provided".to_js_error())?
+                .ok_or_else(|| "An argument for 'canisterId' was not provided".to_js_error(None))?
                 .clone();
             let method_js_value = aargs
                 .get(1)
-                .ok_or_else(|| "An argument for 'method' was not provided".to_js_error())?
+                .ok_or_else(|| "An argument for 'method' was not provided".to_js_error(None))?
                 .clone();
             let args_raw_js_value = aargs
                 .get(2)
-                .ok_or_else(|| "An argument for 'argsRaw' was not provided".to_js_error())?
+                .ok_or_else(|| "An argument for 'argsRaw' was not provided".to_js_error(None))?
                 .clone();
             let payment_js_value = aargs
                 .get(3)
-                .ok_or_else(|| "An argument for 'payment' was not provided".to_js_error())?
+                .ok_or_else(|| "An argument for 'payment' was not provided".to_js_error(None))?
                 .clone();
 
             let canister_id: candid::Principal = canister_id_js_value
-                .try_from_vm_value(&mut *context)
-                .map_err(|vmc_err| vmc_err.to_js_error())?;
-            let method: String = method_js_value
-                .try_from_vm_value(&mut *context)
-                .map_err(|vmc_err| vmc_err.to_js_error())?;
-            let args_raw: Vec<u8> = args_raw_js_value
-                .try_from_vm_value(&mut *context)
-                .map_err(|vmc_err| vmc_err.to_js_error())?;
-            let payment: u64 = payment_js_value
-                .try_from_vm_value(&mut *context)
-                .map_err(|vmc_err| vmc_err.to_js_error())?;
+                .try_from_vm_value(&mut *context)?;
+            let method: String = method_js_value.try_from_vm_value(&mut *context)?;
+            let args_raw: Vec<u8> = args_raw_js_value.try_from_vm_value(&mut *context)?;
+            let payment: u64 = payment_js_value.try_from_vm_value(&mut *context)?;
 
             ic_cdk::spawn(async move {
                 #pre_await_state_management

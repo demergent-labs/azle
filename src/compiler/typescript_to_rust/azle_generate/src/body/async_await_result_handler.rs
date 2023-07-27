@@ -31,13 +31,11 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
             let js_promise = boa_engine::object::builtins::JsPromise::from_object(
                 boa_return_value_object.clone(),
             )
-            .map_err(|js_err| {
-                js_value_to_string(js_err.to_opaque(&mut *boa_context), &mut *boa_context)
-            })?;
+            .map_err(|js_error| js_error.to_std_string(&mut *boa_context))?;
 
-            let state = js_promise.state().map_err(|js_err| {
-                js_value_to_string(js_err.to_opaque(&mut *boa_context), &mut *boa_context)
-            })?;
+            let state = js_promise
+                .state()
+                .map_err(|js_error| js_error.to_std_string(&mut *boa_context))?;
 
             return match &state {
                 boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
@@ -54,10 +52,12 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                     match method_name {
                         #(#match_arms)*
                         "_AZLE_TIMER" => {}
-                        _ => return Err(format!(
-                            "Uncaught ReferenceError: {} is not defined",
-                            method_name
-                        )),
+                        _ => {
+                            return Err(format!(
+                                "\nUncaught ReferenceError: {} is not defined",
+                                method_name
+                            ))
+                        }
                     };
 
                     return Ok(boa_return_value.clone());
@@ -69,7 +69,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                         promise_map.remove(uuid);
                     });
 
-                    return Err(js_value_to_string(js_value.clone(), &mut *boa_context));
+                    return Err(js_value.clone().to_std_string(&mut *boa_context));
                 }
                 boa_engine::builtins::promise::PromiseState::Pending => {
                     PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
@@ -108,7 +108,9 @@ fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
             let reply_value: (#return_type) = js_value
                 .clone()
                 .try_from_vm_value(&mut *boa_context)
-                .map_err(|vmc_err| vmc_err.0)?;
+                .map_err(|js_error: boa_engine::JsError| {
+                    js_error.to_std_string(&mut *boa_context)
+                })?;
 
             ic_cdk::api::call::reply((reply_value,));
         }

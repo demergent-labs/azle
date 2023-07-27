@@ -13,10 +13,9 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let memory_id: u8 = aargs
                 .get(0)
-                .ok_or_else(|| "An argument for 'memoryId' was not provided".to_js_error())?
+                .ok_or_else(|| "An argument for 'memoryId' was not provided".to_js_error(None))?
                 .clone()
-                .try_from_vm_value(&mut *context)
-                .map_err(|vmc_err| vmc_err.to_js_error())?;
+                .try_from_vm_value(&mut *context)?;
 
             match memory_id {
                 #(#match_arms)*
@@ -24,7 +23,7 @@ pub fn generate(stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>) -> proc_macro
                     "Memory id {} does not have an associated StableBTreeMap",
                     memory_id
                 )
-                .to_js_error()),
+                .to_js_error(None)),
             }
         }
     }
@@ -46,7 +45,7 @@ fn generate_match_arms(
                         stable_b_tree_map_ref_cell.borrow().len()
                     })
                     .try_into_vm_value(&mut *context)
-                    .map_err(|vmc_err| vmc_err.to_js_error())
+                    .map_err(|vmc_err| vmc_err.to_js_error(None))
                 }
             }
         })

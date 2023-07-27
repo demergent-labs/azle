@@ -4,29 +4,23 @@ use quote::quote;
 pub fn generate() -> TokenStream {
     quote! {
         trait ToJsError {
-            fn to_js_error(self) -> boa_engine::JsError;
+            fn to_js_error(self, opt_cause: Option<boa_engine::JsError>) -> boa_engine::JsError;
         }
 
         impl ToJsError for CdkActTryIntoVmValueError {
-            fn to_js_error(self) -> boa_engine::JsError {
-                self.0.to_js_error()
-            }
-        }
-
-        impl ToJsError for CdkActTryFromVmValueError {
-            fn to_js_error(self) -> boa_engine::JsError {
-                self.0.to_js_error()
+            fn to_js_error(self, opt_cause: Option<boa_engine::JsError>) -> boa_engine::JsError {
+                self.0.to_js_error(opt_cause)
             }
         }
 
         impl ToJsError for String {
-            fn to_js_error(self) -> boa_engine::JsError {
-                self.as_str().to_js_error()
+            fn to_js_error(self, opt_cause: Option<boa_engine::JsError>) -> boa_engine::JsError {
+                self.as_str().to_js_error(opt_cause)
             }
         }
 
         impl<'a> ToJsError for &'a str {
-            fn to_js_error(self) -> boa_engine::JsError {
+            fn to_js_error(self, opt_cause: Option<boa_engine::JsError>) -> boa_engine::JsError {
                 let raw_error_message = self;
                 let error_types = [
                     "Error: ",
@@ -44,7 +38,7 @@ pub fn generate() -> TokenStream {
                             .splitn(2, error_type)
                             .collect::<Vec<&str>>()[1];
 
-                        return match *error_type {
+                        let js_native_error = match *error_type {
                             "Error: " => boa_engine::error::JsNativeError::error(),
                             "EvalError: " => boa_engine::error::JsNativeError::eval(),
                             "RangeError: " => boa_engine::error::JsNativeError::range(),
@@ -54,7 +48,12 @@ pub fn generate() -> TokenStream {
                             "UriError: " => boa_engine::error::JsNativeError::uri(),
                             _ => unreachable!(),
                         }
-                        .with_message(message)
+                        .with_message(message);
+
+                        return match opt_cause {
+                            Some(cause) => js_native_error.with_cause(cause),
+                            None => js_native_error,
+                        }
                         .into();
                     }
                 }

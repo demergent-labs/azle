@@ -196,11 +196,14 @@ export function getTests(
                     return {
                         Err: 'Expected badObjectGuarded function to throw'
                     };
-                } catch (error) {
+                } catch (error: any) {
                     return {
-                        Ok: (error as AgentError).message.includes(
-                            `TypeError: Value is not of type 'GuardResult'`
-                        )
+                        Ok:
+                            'result' in error &&
+                            'reject_message' in error.result &&
+                            error.result.reject_message.includes(
+                                `Uncaught TypeError: Value is not of type 'GuardResult'\n  [cause]: TypeError: Value must contain exactly one of the following properties: ['Ok', 'Err']`
+                            )
                     };
                 }
             }
@@ -214,11 +217,14 @@ export function getTests(
                     return {
                         Err: 'Expected nonNullOkValueGuarded function to throw'
                     };
-                } catch (error) {
+                } catch (error: any) {
                     return {
-                        Ok: (error as AgentError).message.includes(
-                            `TypeError: Value is not of type 'null'`
-                        )
+                        Ok:
+                            'result' in error &&
+                            'reject_message' in error.result &&
+                            error.result.reject_message.includes(
+                                `TypeError: Value is not of type 'GuardResult'\n  [cause]: TypeError: Value is not of type 'null'`
+                            )
                     };
                 }
             }

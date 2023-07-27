@@ -2,29 +2,31 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/run_time_errors/run_time_errors.did';
 
-import { getThrownErrorTests } from './thrown_errors';
+import { getInvalidBlobTests } from './invalid_blobs';
+import { getInvalidFuncTests } from './invalid_funcs';
+import { getInvalidNumberTests } from './invalid_numbers';
 import { getInvalidOptTests } from './invalid_opts';
 import { getInvalidPrimitiveTests } from './invalid_primitives';
-import { getInvalidNumberTests } from './invalid_numbers';
-import { getInvalidFuncTests } from './invalid_funcs';
 import { getInvalidPrincipalTests } from './invalid_principals';
-import { getInvalidBlobTests } from './invalid_blobs';
-import { getInvalidVecTests } from './invalid_vecs';
 import { getInvalidRecordTests } from './invalid_records';
+import { getInvalidResultTests } from './invalid_results';
 import { getInvalidVariantTests } from './invalid_variants';
+import { getInvalidVecTests } from './invalid_vecs';
+import { getThrownErrorTests } from './thrown_errors';
 
 export function getTests(errorCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
-        ...getThrownErrorTests(errorCanister),
+        ...getInvalidBlobTests(errorCanister),
+        ...getInvalidFuncTests(errorCanister),
+        ...getInvalidNumberTests(errorCanister),
         ...getInvalidOptTests(errorCanister),
         ...getInvalidPrimitiveTests(errorCanister),
-        ...getInvalidNumberTests(errorCanister),
-        ...getInvalidFuncTests(errorCanister),
         ...getInvalidPrincipalTests(errorCanister),
-        ...getInvalidBlobTests(errorCanister),
-        ...getInvalidVecTests(errorCanister),
         ...getInvalidRecordTests(errorCanister),
-        ...getInvalidVariantTests(errorCanister)
+        ...getInvalidResultTests(errorCanister),
+        ...getInvalidVariantTests(errorCanister),
+        ...getInvalidVecTests(errorCanister),
+        ...getThrownErrorTests(errorCanister)
     ];
 }
 

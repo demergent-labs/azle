@@ -87,8 +87,7 @@ pub fn generate_param_variables(method: &Method, canister_name: &String) -> Vec<
             quote! {
                 let #param_name_js_value = args_js_object.get(#index, context)?;
                 let #param_name: #param_type = #param_name_js_value
-                    .try_from_vm_value(&mut *context)
-                    .map_err(|vmc_err| vmc_err.to_js_error())?;
+                    .try_from_vm_value(&mut *context)?;
             }
         })
         .collect()
