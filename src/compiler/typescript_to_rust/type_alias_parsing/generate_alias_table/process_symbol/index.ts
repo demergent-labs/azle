@@ -15,7 +15,7 @@ import {
     generateAliasTableForTypeAliasDeclaration,
     generateAliasTableForVariableDeclaration
 } from './type_alias';
-import { isAzleSymbol, getSymbol, returnFalseOrUndefined } from '../../utils';
+import { isAzleSymbol, getSymbol, returnFalseOrNull } from '../../utils';
 
 const ROBUST_TYPE_ALIASES_IMPLEMENTED = false;
 
@@ -25,7 +25,7 @@ export function generateAliasTableForIdentifier(
     symbolTable: ts.SymbolTable,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     if (generationType === 'LIST' && !ROBUST_TYPE_ALIASES_IMPLEMENTED) {
         // TODO get rid of this if block it when working on
         // https://github.com/demergent-labs/azle/issues/1116
@@ -44,7 +44,7 @@ export function generateAliasTableForIdentifier(
     const symbol = getSymbol(ident.text, symbolTable, program);
     if (symbol === undefined) {
         // Couldn't find symbol
-        return returnFalseOrUndefined(generationType);
+        return returnFalseOrNull(generationType);
     }
     return generateAliasTableForSymbol(symbol, alias, program, generationType);
 }
@@ -54,14 +54,14 @@ export function generateAliasTableForSymbol(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     if (isAzleSymbol(symbol)) {
         if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable(symbol.name, alias);
     }
     const declarations = symbol.declarations;
     if (declarations === undefined || declarations.length === 0) {
-        return returnFalseOrUndefined(generationType); // We need one declaration. If there isn't one then it can't be an export from azle right?
+        return returnFalseOrNull(generationType); // We need one declaration. If there isn't one then it can't be an export from azle right?
     }
     if (symbol.name === '__export') {
         // Should look like export * from 'place';
@@ -74,7 +74,7 @@ export function generateAliasTableForSymbol(
         );
     }
     if (declarations.length > 1) {
-        return returnFalseOrUndefined(generationType);
+        return returnFalseOrNull(generationType);
     }
     return generateAliasTableForDeclaration(
         declarations[0],
@@ -89,7 +89,7 @@ function generateAliasTableForDeclaration(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     if (ts.isExportSpecifier(declaration)) {
         // {thing} or {thing as other}
         // as in `export {thing};` or
@@ -185,7 +185,7 @@ function generateAliasTableForDeclaration(
     ) {
         // All of the cases here are known to not need handling and return
         // undefined intentionally
-        return returnFalseOrUndefined(generationType);
+        return returnFalseOrNull(generationType);
     }
-    return returnFalseOrUndefined(generationType);
+    return returnFalseOrNull(generationType);
 }

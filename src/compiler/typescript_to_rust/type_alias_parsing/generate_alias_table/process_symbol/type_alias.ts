@@ -8,7 +8,7 @@ import {
 import {
     isNullKeyword,
     isAzleKeywordExpression,
-    returnFalseOrUndefined
+    returnFalseOrNull
 } from '../../utils';
 import { generateAliasTableForIdentifier } from '../process_symbol';
 import { generateSingleEntryAliasTable } from '../alias_table';
@@ -37,7 +37,7 @@ export function generateAliasTableForTypeAliasDeclaration(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     if (isAzleKeywordExpression(typeAliasDeclaration)) {
         // Is this bit of code reachable? If the todo is in lowercase and hidden
         // in a longer comment will anyone call me out on it in the pr? I'm not
@@ -58,7 +58,7 @@ export function generateAliasTableForTypeAliasDeclaration(
             );
             const typeArguments = aliasedType.typeArguments ?? [];
             if (typeArguments.length !== typeParams.length) {
-                return undefined;
+                return null;
             }
             const typeArgsAreGenerics = typeArguments.every((typeArgument) => {
                 return (
@@ -68,7 +68,7 @@ export function generateAliasTableForTypeAliasDeclaration(
                 );
             });
             if (!typeArgsAreGenerics) {
-                return undefined;
+                return null;
             }
         }
         const symbolTable = getSymbolTableForNode(
@@ -76,7 +76,7 @@ export function generateAliasTableForTypeAliasDeclaration(
             program
         );
         if (symbolTable === undefined) {
-            return returnFalseOrUndefined(generationType);
+            return returnFalseOrNull(generationType);
         }
         const typeName = aliasedType.typeName;
         if (ts.isIdentifier(typeName)) {
@@ -95,7 +95,7 @@ export function generateAliasTableForTypeAliasDeclaration(
                 program
             );
             if (declSymbolTable === undefined) {
-                return returnFalseOrUndefined(generationType);
+                return returnFalseOrNull(generationType);
             }
             return generateAliasTableForIdentifier(
                 typeName.right,
@@ -135,10 +135,10 @@ export function generateAliasTableForTypeAliasDeclaration(
         aliasedType.kind === ts.SyntaxKind.UnionType
     ) {
         // We do not yet have azle types that map to these types
-        return returnFalseOrUndefined(generationType);
+        return returnFalseOrNull(generationType);
     }
     // The type is something we hadn't planned on
-    return returnFalseOrUndefined(generationType);
+    return returnFalseOrNull(generationType);
 }
 
 export function generateAliasTableForVariableDeclaration(
@@ -146,7 +146,7 @@ export function generateAliasTableForVariableDeclaration(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     if (isAzleKeywordExpression(variableDeclaration)) {
         // I'm not sure this is possible. Isn't the only way we could run into
         // this is when parsing the actual azle file? Otherwise it's always
@@ -160,12 +160,12 @@ export function generateAliasTableForVariableDeclaration(
 
     const expression = variableDeclaration.initializer;
     if (expression === undefined) {
-        return returnFalseOrUndefined(generationType);
+        return returnFalseOrNull(generationType);
     }
 
     const symbolTable = getSymbolTableForNode(expression, program);
     if (symbolTable === undefined) {
-        return returnFalseOrUndefined(generationType);
+        return returnFalseOrNull(generationType);
     }
 
     if (ts.isIdentifier(expression)) {
@@ -185,7 +185,7 @@ export function generateAliasTableForVariableDeclaration(
             program
         );
         if (declSymbolTable === undefined) {
-            return returnFalseOrUndefined(generationType);
+            return returnFalseOrNull(generationType);
         }
         return generateAliasTableForIdentifier(
             expression.name,
@@ -197,8 +197,8 @@ export function generateAliasTableForVariableDeclaration(
     }
     if (ts.isStringLiteral(expression) || ts.isNewExpression(expression)) {
         // We do not yet have azle types that map to these types
-        return returnFalseOrUndefined(generationType);
+        return returnFalseOrNull(generationType);
     }
     // The expression is something we haven't planned on
-    return returnFalseOrUndefined(generationType);
+    return returnFalseOrNull(generationType);
 }

@@ -7,7 +7,7 @@ export function generateAliasTableFromSymbolTable(
     symbolTable: ts.SymbolTable,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | string[] {
+): AliasTable | null | string[] {
     if (generationType === 'LIST') {
         let aliasList: string[] = [];
         // ts.SymbolTable does not use regular iterator conventions thus it's
@@ -40,7 +40,7 @@ export function generateAliasTableFromSymbolTable(
             program,
             generationType
         );
-        if (subAliasTable !== undefined && typeof subAliasTable !== 'boolean') {
+        if (subAliasTable !== null && typeof subAliasTable !== 'boolean') {
             aliasTable = mergeAliasTables(aliasTable, subAliasTable);
         }
     });
@@ -49,7 +49,7 @@ export function generateAliasTableFromSymbolTable(
         // If the alias table is empty return undefined.
         // We can skip processing a file if it has no alias table. That's easier
         // to determine with undefined than with an empty table
-        return undefined;
+        return null;
     }
     return aliasTable;
 }
@@ -78,7 +78,7 @@ function isSymbolTypeAliasDeclaration(symbol: ts.Symbol): boolean {
 export function generateSingleEntryAliasTable(
     name: string,
     alias: string
-): AliasTable | undefined {
+): AliasTable | null {
     const key = stringToAliasTableKey(name);
     if (key) {
         return {
@@ -86,6 +86,7 @@ export function generateSingleEntryAliasTable(
             [key]: [alias]
         };
     }
+    return null;
 }
 
 export function prependNamespaceToAliasTable(
@@ -285,10 +286,10 @@ const ALIAS_TABLE_KEYS: {
     void: 'void'
 };
 
-function stringToAliasTableKey(name: string): keyof AliasTable | undefined {
+function stringToAliasTableKey(name: string): keyof AliasTable | null {
     // Make sure that it's a name we can convert
     if (!(name in ALIAS_TABLE_KEYS)) {
-        return undefined;
+        return null;
     }
     return ALIAS_TABLE_KEYS[name];
 }

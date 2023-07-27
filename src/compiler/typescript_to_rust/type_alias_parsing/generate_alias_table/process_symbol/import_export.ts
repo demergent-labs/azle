@@ -20,7 +20,7 @@ import {
     getDeclarationFromSpecifier,
     getUnderlyingIdentifierFromSpecifier,
     getSymbol,
-    returnFalseOrUndefined
+    returnFalseOrNull
 } from '../../utils/';
 import { generateAliasTableForSymbol } from '../process_symbol';
 
@@ -32,7 +32,7 @@ export function generateAliasTableForExportSpecifier(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     const exportDecl = getDeclarationFromSpecifier(exportSpecifier);
     if (exportDecl.moduleSpecifier) {
         // If there is a module specifier (ie `export {thing} from 'place'`)
@@ -61,7 +61,7 @@ export function generateAliasTableForExportAssignment(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     const typeChecker = program.getTypeChecker();
     const symbol = typeChecker.getSymbolAtLocation(exportAssignment.expression);
     if (symbol) {
@@ -72,7 +72,7 @@ export function generateAliasTableForExportAssignment(
             generationType
         );
     }
-    return returnFalseOrUndefined(generationType);
+    return returnFalseOrNull(generationType);
 }
 
 // Generates an alias table for 'thing' in {thing} or {other as thing} as in:
@@ -83,7 +83,7 @@ export function generateAliasTableForImportSpecifier(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     return generateAliasTableForModuleImportExportSpecifier(
         importSpecifier,
         alias,
@@ -99,9 +99,9 @@ export function generateAliasTableForImportClause(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     if (!ts.isStringLiteral(importClause.parent.moduleSpecifier)) {
-        return returnFalseOrUndefined(generationType);
+        return returnFalseOrNull(generationType);
     }
     return generateAliasTableForNameInModule(
         'default',
@@ -123,7 +123,7 @@ export function generateAliasTableForExportDeclaration(
     exportDeclaration: ts.ExportDeclaration,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     if (generationType === 'LIST') return false; // TODO https://github.com/demergent-labs/azle/issues/1122
     const moduleSpecifier = exportDeclaration.moduleSpecifier;
     if (moduleSpecifier === undefined || !ts.isStringLiteral(moduleSpecifier)) {
@@ -132,7 +132,7 @@ export function generateAliasTableForExportDeclaration(
         // ModuleSpecifier` and that ModuleSpecifier will always be a
         // StringLiteral
         // https://262.ecma-international.org/13.0/#sec-exports
-        return undefined;
+        return null;
     }
     if (exportDeclaration.exportClause) {
         // Unreachable: An export declaration with a * export will never have an
@@ -142,7 +142,7 @@ export function generateAliasTableForExportDeclaration(
         // raise an error here because we shouldn't have gotten here. If we
         // aren't going to do that then there is no reason to have this here
         // https://262.ecma-international.org/13.0/#sec-exports
-        return undefined;
+        return null;
     }
     if (moduleSpecifier.text == 'azle') {
         return DEFAULT_ALIAS_TABLE;
@@ -151,7 +151,7 @@ export function generateAliasTableForExportDeclaration(
         exportDeclaration,
         program
     );
-    if (symbolTable === undefined) return undefined;
+    if (symbolTable === undefined) return returnFalseOrNull(generationType);
 
     const result = generateAliasTableFromSymbolTable(
         symbolTable,
@@ -159,7 +159,7 @@ export function generateAliasTableForExportDeclaration(
         generationType
     );
     if (Array.isArray(result)) {
-        return undefined;
+        return null;
     }
     return result;
 }
@@ -173,7 +173,7 @@ export function generateAliasTableForExportDeclarations(
     exportDeclarations: ts.ExportDeclaration[],
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     if (generationType === 'LIST') return false; // TODO https://github.com/demergent-labs/azle/issues/1122
     const aliasTables = exportDeclarations.map((declaration) =>
         generateAliasTableForExportDeclaration(
@@ -183,7 +183,7 @@ export function generateAliasTableForExportDeclarations(
         )
     );
     return aliasTables.reduce((acc: AliasTable, subAliasTable) => {
-        if (subAliasTable === undefined || typeof subAliasTable === 'boolean') {
+        if (subAliasTable === null || typeof subAliasTable === 'boolean') {
             return { ...acc };
         }
         return { ...mergeAliasTables(acc, subAliasTable) };
@@ -198,13 +198,13 @@ export function generateAliasTableForNamespaceImportExport(
     namespace: ts.NamespaceImport | ts.NamespaceExport,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     const importDeclaration = getDeclarationFromNamespace(namespace);
     if (
         !importDeclaration.moduleSpecifier ||
         !ts.isStringLiteral(importDeclaration.moduleSpecifier)
     ) {
-        return returnFalseOrUndefined(generationType);
+        return returnFalseOrNull(generationType);
     }
     if (importDeclaration.moduleSpecifier.text == 'azle') {
         if (generationType === 'LIST') return true;
@@ -215,8 +215,7 @@ export function generateAliasTableForNamespaceImportExport(
         importDeclaration,
         program
     );
-    if (symbolTable === undefined)
-        return returnFalseOrUndefined(generationType);
+    if (symbolTable === undefined) return returnFalseOrNull(generationType);
 
     const aliasTable = generateAliasTableFromSymbolTable(
         symbolTable,
@@ -228,14 +227,14 @@ export function generateAliasTableForNamespaceImportExport(
     // be false. We should be checking to see if it's empty. But that's how it
     // is so I'll fix it after I finish this refactor. The proposed change is
     // commend bellow
-    if (aliasTable === undefined) return returnFalseOrUndefined(generationType);
+    if (aliasTable === null) return returnFalseOrNull(generationType);
     // if (
     //     aliasTable === undefined ||
     //     (Array.isArray(aliasTable) && aliasTable.length === 0)
     // )
     //     return returnFalseOrUndefined(generationType);
     if (generationType === 'LIST') return true;
-    if (Array.isArray(aliasTable)) return undefined;
+    if (Array.isArray(aliasTable)) return null;
 
     // process this symbol table the same, then modify it such that every entry has name.whatever
     return prependNamespaceToAliasTable(aliasTable, namespace);
@@ -252,7 +251,7 @@ function generateAliasTableForNameInModule(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     // If the name is from the azle module then we can simply return a single
     // entry alias table here.
     if (moduleSpecifier.text === 'azle') {
@@ -266,10 +265,10 @@ function generateAliasTableForNameInModule(
         program
     );
     if (symbolTable === undefined) {
-        return returnFalseOrUndefined(generationType);
+        return returnFalseOrNull(generationType);
     }
     const symbol = getSymbol(name, symbolTable, program);
-    if (symbol) {
+    if (symbol !== undefined) {
         return generateAliasTableForSymbol(
             symbol,
             alias,
@@ -277,7 +276,7 @@ function generateAliasTableForNameInModule(
             generationType
         );
     }
-    return returnFalseOrUndefined(generationType);
+    return returnFalseOrNull(generationType);
 }
 
 // export {thing} from 'place'; or export {thing as other} from 'place';
@@ -287,7 +286,7 @@ function generateAliasTableForModuleImportExportSpecifier(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     const identifier = getUnderlyingIdentifierFromSpecifier(specifier);
     const declaration = getDeclarationFromSpecifier(specifier);
 
@@ -295,7 +294,7 @@ function generateAliasTableForModuleImportExportSpecifier(
         !declaration.moduleSpecifier ||
         !ts.isStringLiteral(declaration.moduleSpecifier)
     ) {
-        return returnFalseOrUndefined(generationType);
+        return returnFalseOrNull(generationType);
     }
     return generateAliasTableForNameInModule(
         identifier.text,
@@ -312,7 +311,7 @@ function generateAliasTableForLocalExportSpecifier(
     alias: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | null | boolean {
     const identifier = getUnderlyingIdentifierFromSpecifier(exportSpecifier);
     // TODO investigate trying to get the original symbol from the above identifier.
     // The commented out code bellow just gets the current symbol instead of the
@@ -325,14 +324,14 @@ function generateAliasTableForLocalExportSpecifier(
     // console.log("========> The new way didn't work");
     const symbolTable = getSymbolTableForNode(exportSpecifier, program);
     if (symbolTable === undefined) {
-        return returnFalseOrUndefined(generationType);
+        return returnFalseOrNull(generationType);
     }
     // Given `export * from 'moduleThatHasThingFromStarExport'` It is impossible
     // to `export {thingFromStarExport}` so we don't need to consider the
     // __export symbols
     const symbol = symbolTable.get(identifier.text as ts.__String);
     if (symbol === undefined) {
-        return returnFalseOrUndefined(generationType);
+        return returnFalseOrNull(generationType);
     }
     const result = generateAliasTableForSymbol(
         symbol,
@@ -340,7 +339,7 @@ function generateAliasTableForLocalExportSpecifier(
         program,
         generationType
     );
-    if (result === undefined || typeof result === 'boolean') {
+    if (result === null || typeof result === 'boolean') {
         return result;
     }
 

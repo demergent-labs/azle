@@ -19,7 +19,7 @@ export function isAzleKeywordExpression(
     typeAliasDeclaration: ts.TypeAliasDeclaration | ts.VariableDeclaration
 ): boolean {
     const sourceFile = getSourceFile(typeAliasDeclaration);
-    if (!sourceFile) {
+    if (sourceFile === undefined) {
         return false;
     }
     return sourceFile.fileName.includes('azle/src/lib');
@@ -116,7 +116,7 @@ export function getSymbol(
             program
         );
 
-        if (exportModSpecifier === undefined) return undefined;
+        if (exportModSpecifier === null) return undefined;
 
         const subSymbolTable = getSymbolTableForModuleSpecifier(
             exportModSpecifier,
@@ -143,7 +143,7 @@ export function getStarExportModuleSpecifierFor(
     keyToFind: string,
     symbolTable: ts.SymbolTable,
     program: ts.Program
-): ts.StringLiteral | undefined {
+): ts.StringLiteral | null {
     for (const exportDeclaration of symbolTable.get('__export' as ts.__String)
         ?.declarations ?? []) {
         if (!ts.isExportDeclaration(exportDeclaration)) {
@@ -179,6 +179,7 @@ export function getStarExportModuleSpecifierFor(
         }
         return exportModSpecifier;
     }
+    return null;
 }
 
 export function isNullKeyword(node: ts.Node): boolean {
@@ -199,9 +200,9 @@ export function isNullKeyword(node: ts.Node): boolean {
     return false;
 }
 
-export function returnFalseOrUndefined(
+export function returnFalseOrNull(
     generationType: GenerationType
-): boolean | undefined {
+): boolean | null {
     if (generationType === 'LIST') return false;
-    return undefined;
+    return null;
 }

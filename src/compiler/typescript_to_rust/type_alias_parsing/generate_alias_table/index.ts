@@ -35,7 +35,7 @@ export function generateAliasTables(
             program,
             generationType
         );
-        if (aliasTable === undefined || Array.isArray(aliasTable)) {
+        if (aliasTable === null || Array.isArray(aliasTable)) {
             return acc;
         }
         return {
@@ -49,16 +49,16 @@ function generateAliasTable(
     filename: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | string[] {
+): AliasTable | null | string[] {
     const sourceFile = program.getSourceFile(filename);
 
     if (sourceFile === undefined) {
         if (generationType === 'LIST') return [];
-        return undefined;
+        return null;
     }
 
     const symbolTable = getSymbolTable(sourceFile, program);
-    if (symbolTable) {
+    if (symbolTable !== undefined) {
         return generateAliasTableFromSymbolTable(
             symbolTable,
             program,
@@ -67,5 +67,5 @@ function generateAliasTable(
     }
 
     if (generationType === 'LIST') return [];
-    return undefined;
+    return null;
 }
