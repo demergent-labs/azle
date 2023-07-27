@@ -6,23 +6,20 @@ import { expectError } from './tests';
 const valueIsNotAPrincipalErrorMessage =
     "TypeError: Value is not of type 'Principal'";
 
-const toTextNotAFunctionErrorMessage = `[TypeError: Value is not of type 'Principal'] {
-  [cause]: TypeError: Property 'toText' of object is not a function
-}`;
+const toTextNotAFunctionErrorMessage = `TypeError: Value is not of type 'Principal'
+  [cause]: TypeError: Property 'toText' of object is not a function`;
 
-const customToTextErrorMessage = `[TypeError: Value is not of type 'Principal'] {
-  [cause]: Error: Custom error from toText method
-}`;
+const customToTextErrorMessage = `TypeError: Value is not of type 'Principal'
+  [cause]: Error: Custom error from toText method`;
 
-const valueIsNotAStringErrorMessage = `[TypeError: Value is not of type 'Principal'] {
-  [cause]: TypeError: Return value of method 'toText' is not of type 'string'
-}`;
+const valueIsNotAStringErrorMessage = `TypeError: Value is not of type 'Principal'
+  [cause]: TypeError: Return value of method 'toText' is not of type 'string'`;
 
-const invalidChecksumErrorMessage = `Error: Principal "aaaaa-aa" does not have a valid checksum (original value "aa" may not be a valid Principal ID).`;
+const invalidChecksumErrorMessage =
+    'Error: Principal "aaaaa-aa" does not have a valid checksum (original value "aa" may not be a valid Principal ID).';
 
-const textTooShortErrorMessage = `[TypeError: Value is not of type 'Principal'] {
-  [cause]: TextTooShortError: Text is too short.
-}`;
+const textTooShortErrorMessage = `TypeError: Value is not of type 'Principal'
+  [cause]: Error: TextTooShortError: Text is too short.`;
 
 export function getInvalidPrincipalTests(
     errorCanister: ActorSubclass<_SERVICE>

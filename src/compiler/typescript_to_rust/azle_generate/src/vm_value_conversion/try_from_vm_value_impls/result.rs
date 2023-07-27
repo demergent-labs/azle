@@ -11,8 +11,7 @@ pub fn generate() -> proc_macro2::TokenStream {
             fn try_from_vm_value(
                 self,
                 context: &mut boa_engine::Context,
-            ) -> Result<Result<(), String>, boa_engine::JsError>
-            {
+            ) -> Result<Result<(), String>, boa_engine::JsError> {
                 let error_message = "TypeError: Value is not of type 'GuardResult'";
 
                 let js_object = self
@@ -33,8 +32,9 @@ pub fn generate() -> proc_macro2::TokenStream {
                     })?;
 
                 if has_ok_property && has_err_property {
-                    let cause = "TypeError: Invalid object properties. \
-                        Cannot specify both 'Ok' and 'Err'.".to_js_error(None);
+                    let cause = "TypeError: TypeError: Value must contain exactly one of the \
+                        following properties: ['Ok', 'Err']"
+                        .to_js_error(None);
 
                     return Err(error_message.to_js_error(Some(cause)));
                 }
@@ -65,8 +65,9 @@ pub fn generate() -> proc_macro2::TokenStream {
                         .try_from_vm_value(context)?));
                 }
 
-                let cause = "TypeError: Invalid object properties. \
-                    Either 'Ok' or 'Err' must be specified.".to_js_error(None);
+                let cause = "TypeError: Value must contain exactly one of the \
+                    following properties: ['Ok', 'Err']"
+                    .to_js_error(None);
 
                 Err(error_message.to_js_error(Some(cause)))
             }

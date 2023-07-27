@@ -58,8 +58,8 @@ pub fn generate() -> proc_macro2::TokenStream {
                 let has_some_property = js_object.has_own_property("Some", context)?;
 
                 if has_none_property && has_some_property {
-                    let cause = "TypeError: Invalid object properties. \
-                        Cannot specify both 'Some' and 'None'."
+                    let cause = "TypeError: Value must contain exactly one of the \
+                        following properties: ['Some', 'None']"
                         .to_js_error(None);
 
                     return Err(error_message.to_js_error(Some(cause)))?;
@@ -82,19 +82,21 @@ pub fn generate() -> proc_macro2::TokenStream {
                 }
 
                 if has_some_property {
-                    return js_object
-                        .get("Some", context)
-                        .map_err(|err| {
-                            let cause = err.to_string().to_js_error(None);
+                    return Ok(Some(
+                        js_object
+                            .get("Some", context)
+                            .map_err(|err| {
+                                let cause = err.to_string().to_js_error(None);
 
-                            error_message.to_js_error(Some(cause))
-                        })?
-                        .try_from_vm_value(context)
-                        .map(Some);
+                                error_message.to_js_error(Some(cause))
+                            })?
+                            .try_from_vm_value(context)
+                            .map_err(|js_error| error_message.to_js_error(Some(js_error)))?,
+                    ));
                 }
 
-                let cause = "TypeError: Invalid object properties. \
-                    Either 'Some' or 'None' must be specified."
+                let cause = "TypeError: Value must contain exactly one of the \
+                    following properties: ['Some', 'None']"
                     .to_js_error(None);
 
                 Err(error_message.to_js_error(Some(cause)))?

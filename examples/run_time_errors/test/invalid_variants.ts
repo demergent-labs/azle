@@ -3,29 +3,20 @@ import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/run_time_errors/run_time_errors.did';
 import { expectError } from './tests';
 
-const valueIsNotAnObjectErrorMessage = `[TypeError: Value is not of type 'UserDefinedVariant'] {
-  [cause]: TypeError: Value is not an object
-}`;
+const valueIsNotAnObjectErrorMessage = `TypeError: Value is not of type 'UserDefinedVariant'
+  [cause]: TypeError: Value is not an object`;
 
-const variantMustContainExactlyOnePropertyErrorMessage = `[TypeError: Value is not of type 'UserDefinedVariant'] {
-  [cause]: TypeError: Value must contain exactly one of the following properties: ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta']
-}`;
+const variantMustContainExactlyOnePropertyErrorMessage = `TypeError: Value is not of type 'UserDefinedVariant'
+  [cause]: TypeError: Value must contain exactly one of the following properties: ['Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta']`;
 
-// TODO: Fix the formatting. See https://github.com/demergent-labs/azle/issues/1111
-const fieldIsNotOfCorrectTypeErrorMessage = `[TypeError: Value is not of type 'UserDefinedVariant'] {
-  [cause]: TypeError: Property 'Zeta' is not of the correct type {
-    [cause]: [TypeError: Value is not of type '_InlineUserDefinedVariantZeta'] {
-  [cause]: TypeError: One or more properties are of an incorrect type
-}
-  }
-}`;
+const fieldIsNotOfCorrectTypeErrorMessage = `TypeError: Value is not of type 'UserDefinedVariant'
+  [cause]: TypeError: Property 'Zeta' is not of the correct type
+  [cause]: TypeError: Value is not of type '_InlineUserDefinedVariantZeta'
+  [cause]: TypeError: One or more properties are of an incorrect type`;
 
-// TODO: Fix the formatting. See https://github.com/demergent-labs/azle/issues/1111
-const vecInnerValueIsNotAUserDefinedTypeErrorMessage = `[TypeError: Value is not of type 'Vec'] {
-  [cause]: [TypeError: Value is not of type 'UserDefinedVariant'] {
-  [cause]: TypeError: Value is not an object
-}
-}`;
+const vecInnerValueIsNotAUserDefinedTypeErrorMessage = `TypeError: Value is not of type 'Vec'
+  [cause]: TypeError: Value is not of type 'UserDefinedVariant'
+  [cause]: TypeError: Value is not an object`;
 
 export function getInvalidVariantTests(
     errorCanister: ActorSubclass<_SERVICE>
@@ -47,6 +38,7 @@ export function getInvalidVariantTests(
             variantMustContainExactlyOnePropertyErrorMessage
         ),
         // TODO: We should return an error if multiple-tags are included in a type
+        // See https://github.com/demergent-labs/azle/issues/1128
         // expectError(
         //     'return an object with multiple tags as an invalid user-defined variant',
         //     errorCanister.returnObjectWithMultipleTagsAsInvalidUserDefinedVariant,

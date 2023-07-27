@@ -6,9 +6,8 @@ import { expectError } from './tests';
 const valueIsNotOfTypeBlobErrorMessage =
     "TypeError: Value is not of type 'blob'";
 
-const valueIsNotATypedArrayErrorMessage = `[TypeError: Value is not of type 'blob'] {
-  [cause]: TypeError: Value is not an instance of 'TypedArray'
-}`;
+const valueIsNotATypedArrayErrorMessage = `TypeError: Value is not of type 'blob'
+  [cause]: TypeError: Value is not an instance of 'TypedArray'`;
 
 export function getInvalidBlobTests(
     errorCanister: ActorSubclass<_SERVICE>

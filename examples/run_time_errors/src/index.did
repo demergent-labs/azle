@@ -13,6 +13,7 @@ type UserDefinedVariant = variant {
   Epsilon : UserDefinedRecord;
   Alpha;
 };
+type _AzleResult = variant { Ok : text; Err : text };
 service : () -> {
   accessible : () -> (bool);
   alsoInaccessible : () -> (bool);
@@ -24,6 +25,7 @@ service : () -> {
     ) query;
   returnArrayWithInvalidVecItem : () -> (vec text) query;
   returnArrayWithOnlyPrincipalAsInvalidFunc : () -> (func () -> () query) query;
+  returnBothOkAndErr : () -> (_AzleResult) query;
   returnBothSomeAndNone : () -> (opt text) query;
   returnEmptyArrayAsInvalidFunc : () -> (func () -> () query) query;
   returnEmptyObjectAsInvalidBlob : () -> (vec nat8) query;
@@ -36,6 +38,7 @@ service : () -> {
   returnEmptyObjectPrincipalAsInvalidFunc : () -> (func () -> () query) query;
   returnInvalidBooleanValue : () -> (bool) query;
   returnInvalidEmptyValue : () -> (empty) query;
+  returnInvalidErrValue : () -> (_AzleResult) query;
   returnInvalidFloat32 : () -> (float32) query;
   returnInvalidFloat64 : () -> (float64) query;
   returnInvalidInt : () -> (int) query;
@@ -50,6 +53,7 @@ service : () -> {
   returnInvalidNat8 : () -> (nat8) query;
   returnInvalidNullValue : () -> (null) query;
   returnInvalidNumber : () -> (float64) query;
+  returnInvalidOkValue : () -> (_AzleResult) query;
   returnInvalidPrincipalFromTooShortOfText : () -> (principal) query;
   returnInvalidSomeValue : () -> (opt text) query;
   returnInvalidStringValue : () -> (text) query;
@@ -62,6 +66,7 @@ service : () -> {
   returnNonNullNone : () -> (opt text) query;
   returnNonObject : () -> (opt text) query;
   returnNonObjectAsInvalidBlob : () -> (vec nat8) query;
+  returnNonObjectAsInvalidResult : () -> (_AzleResult) query;
   returnNonObjectAsInvalidVec : () -> (vec text) query;
   returnNonPrincipalValueAsInvalidFunc : () -> (func () -> () query) query;
   returnNonStringCanisterMethodNameAsInvalidFunc : () -> (
@@ -82,6 +87,7 @@ service : () -> {
   returnObjectWithMultipleTagsAsInvalidUserDefinedVariant : () -> (
       UserDefinedVariant,
     ) query;
+  returnObjectWithNeitherOkNorErr : () -> (_AzleResult) query;
   returnObjectWithNeitherSomeNorNone : () -> (opt text) query;
   returnStringAsInvalidPrincipal : () -> (principal) query;
   returnStringAsInvalidUserDefinedRecord : () -> (UserDefinedRecord) query;
