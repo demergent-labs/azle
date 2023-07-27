@@ -3,20 +3,39 @@ import { generateAliasTableFromSymbolTable } from './alias_table';
 import { getSymbolTable } from '../utils/get_symbol_table';
 import { AliasTable, AliasTables } from './types';
 export { AliasTable, AliasTables } from './types';
-import { GenerationType } from '../types';
+import { GenerationType, AliasLists } from '../types';
 
 export function generateAliasTables(
     files: string[],
     program: ts.Program,
     generationType: GenerationType
-): AliasTables | boolean {
+): AliasTables | AliasLists {
+    if (generationType === 'LIST') {
+        return files.reduce(
+            (acc: { [key: string]: string[] }, filename: string) => {
+                const aliasList = generateAliasTable(
+                    filename,
+                    program,
+                    generationType
+                );
+                if (!Array.isArray(aliasList)) {
+                    return acc;
+                }
+                return {
+                    ...acc,
+                    [filename]: aliasList
+                };
+            },
+            {}
+        );
+    }
     return files.reduce((acc: AliasTables, filename: string) => {
         const aliasTable = generateAliasTable(
             filename,
             program,
             generationType
         );
-        if (aliasTable === undefined || typeof aliasTable === 'boolean') {
+        if (aliasTable === undefined || Array.isArray(aliasTable)) {
             return acc;
         }
         return {
@@ -30,10 +49,11 @@ function generateAliasTable(
     filename: string,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | undefined | boolean {
+): AliasTable | undefined | string[] {
     const sourceFile = program.getSourceFile(filename);
 
     if (sourceFile === undefined) {
+        if (generationType === 'LIST') return [];
         return undefined;
     }
 
@@ -46,5 +66,6 @@ function generateAliasTable(
         );
     }
 
+    if (generationType === 'LIST') return [];
     return undefined;
 }

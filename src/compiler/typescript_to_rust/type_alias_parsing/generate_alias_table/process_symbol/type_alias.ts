@@ -5,7 +5,11 @@ import {
     getSymbolTableForEntityName,
     getSymbolTableForExpression
 } from '../../utils/get_symbol_table';
-import { isNullKeyword, isAzleKeywordExpression } from '../../utils';
+import {
+    isNullKeyword,
+    isAzleKeywordExpression,
+    returnFalseOrUndefined
+} from '../../utils';
 import { generateAliasTableForIdentifier } from '../process_symbol';
 import { generateSingleEntryAliasTable } from '../alias_table';
 import { GenerationType } from '../../types';
@@ -39,6 +43,7 @@ export function generateAliasTableForTypeAliasDeclaration(
         // in a longer comment will anyone call me out on it in the pr? I'm not
         // sure what the best way to test this out. It's not hurting anything to
         // have it in here.
+        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable(
             typeAliasDeclaration.name.text,
             alias
@@ -47,29 +52,31 @@ export function generateAliasTableForTypeAliasDeclaration(
 
     const aliasedType = typeAliasDeclaration.type;
     if (ts.isTypeReferenceNode(aliasedType)) {
-        const typeParams = (typeAliasDeclaration.typeParameters ?? []).map(
-            (typeParam) => typeParam.name.text
-        );
-        const typeArguments = aliasedType.typeArguments ?? [];
-        if (typeArguments.length !== typeParams.length) {
-            return undefined;
-        }
-        const typeArgsAreGenerics = typeArguments.every((typeArgument) => {
-            return (
-                ts.isTypeReferenceNode(typeArgument) &&
-                ts.isIdentifier(typeArgument.typeName) &&
-                typeParams.includes(typeArgument.typeName.text)
+        if (generationType === 'TABLE') {
+            const typeParams = (typeAliasDeclaration.typeParameters ?? []).map(
+                (typeParam) => typeParam.name.text
             );
-        });
-        if (!typeArgsAreGenerics) {
-            return undefined;
+            const typeArguments = aliasedType.typeArguments ?? [];
+            if (typeArguments.length !== typeParams.length) {
+                return undefined;
+            }
+            const typeArgsAreGenerics = typeArguments.every((typeArgument) => {
+                return (
+                    ts.isTypeReferenceNode(typeArgument) &&
+                    ts.isIdentifier(typeArgument.typeName) &&
+                    typeParams.includes(typeArgument.typeName.text)
+                );
+            });
+            if (!typeArgsAreGenerics) {
+                return undefined;
+            }
         }
         const symbolTable = getSymbolTableForNode(
             typeAliasDeclaration,
             program
         );
         if (symbolTable === undefined) {
-            return undefined;
+            return returnFalseOrUndefined(generationType);
         }
         const typeName = aliasedType.typeName;
         if (ts.isIdentifier(typeName)) {
@@ -88,7 +95,7 @@ export function generateAliasTableForTypeAliasDeclaration(
                 program
             );
             if (declSymbolTable === undefined) {
-                return undefined;
+                return returnFalseOrUndefined(generationType);
             }
             return generateAliasTableForIdentifier(
                 typeName.right,
@@ -100,21 +107,27 @@ export function generateAliasTableForTypeAliasDeclaration(
         }
     }
     if (aliasedType.kind === ts.SyntaxKind.BooleanKeyword) {
+        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable('bool', alias);
     }
     if (isNullKeyword(aliasedType)) {
+        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable('null', alias);
     }
     if (aliasedType.kind === ts.SyntaxKind.StringKeyword) {
+        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable('text', alias);
     }
     if (aliasedType.kind === ts.SyntaxKind.BigIntKeyword) {
+        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable('int', alias);
     }
     if (aliasedType.kind === ts.SyntaxKind.NumberKeyword) {
+        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable('float64', alias);
     }
     if (aliasedType.kind === ts.SyntaxKind.VoidKeyword) {
+        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable('void', alias);
     }
     if (
@@ -122,9 +135,10 @@ export function generateAliasTableForTypeAliasDeclaration(
         aliasedType.kind === ts.SyntaxKind.UnionType
     ) {
         // We do not yet have azle types that map to these types
-        return undefined;
+        return returnFalseOrUndefined(generationType);
     }
     // The type is something we hadn't planned on
+    return returnFalseOrUndefined(generationType);
 }
 
 export function generateAliasTableForVariableDeclaration(
@@ -137,6 +151,7 @@ export function generateAliasTableForVariableDeclaration(
         // I'm not sure this is possible. Isn't the only way we could run into
         // this is when parsing the actual azle file? Otherwise it's always
         // going to come from an import declaration not a variable declaration
+        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable(
             variableDeclaration.name.getText(),
             alias
@@ -145,12 +160,12 @@ export function generateAliasTableForVariableDeclaration(
 
     const expression = variableDeclaration.initializer;
     if (expression === undefined) {
-        return undefined;
+        return returnFalseOrUndefined(generationType);
     }
 
     const symbolTable = getSymbolTableForNode(expression, program);
     if (symbolTable === undefined) {
-        return undefined;
+        return returnFalseOrUndefined(generationType);
     }
 
     if (ts.isIdentifier(expression)) {
@@ -170,7 +185,7 @@ export function generateAliasTableForVariableDeclaration(
             program
         );
         if (declSymbolTable === undefined) {
-            return undefined;
+            return returnFalseOrUndefined(generationType);
         }
         return generateAliasTableForIdentifier(
             expression.name,
@@ -182,8 +197,8 @@ export function generateAliasTableForVariableDeclaration(
     }
     if (ts.isStringLiteral(expression) || ts.isNewExpression(expression)) {
         // We do not yet have azle types that map to these types
-        return undefined;
+        return returnFalseOrUndefined(generationType);
     }
     // The expression is something we haven't planned on
-    return undefined;
+    return returnFalseOrUndefined(generationType);
 }

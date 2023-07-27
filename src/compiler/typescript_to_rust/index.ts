@@ -9,7 +9,6 @@ import {
 } from './typescript_to_javascript/cargo_toml_files';
 import { writeCodeToFileSystem } from './write_code_to_file_system';
 import { generateRustCanister } from './generate_rust_canister';
-import { generateAliasLists } from './type_alias_parsing/generate_alias_list';
 import { generateAliasTables } from './type_alias_parsing/generate_alias_table';
 import { Err, ok, unwrap } from '../utils/result';
 import {
@@ -55,7 +54,7 @@ export function compileTypeScriptToRust(
 
         const program = ts.createProgram([canisterConfig.ts], {});
         const aliasTables = generateAliasTables(fileNames, program, 'TABLE');
-        const aliasLists = generateAliasLists(fileNames, program, 'LIST');
+        const aliasLists = generateAliasTables(fileNames, program, 'LIST');
 
         const pluginsDependencies = plugins
             .map((plugin) => {

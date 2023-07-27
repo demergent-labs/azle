@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import { getSymbolTableForModuleSpecifier } from './get_symbol_table';
+import { GenerationType } from '../types';
 
 // TODO this feels very janky to me. Is there a better way of determining this?
 export function isAzleSymbol(symbol: ts.Symbol): boolean {
@@ -196,4 +197,11 @@ export function isNullKeyword(node: ts.Node): boolean {
         }
     }
     return false;
+}
+
+export function returnFalseOrUndefined(
+    generationType: GenerationType
+): boolean | undefined {
+    if (generationType === 'LIST') return false;
+    return undefined;
 }

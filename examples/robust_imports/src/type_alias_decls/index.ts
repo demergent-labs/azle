@@ -7,7 +7,7 @@ function offDuty(): types.DeepGuardResultAlias {
 
 const HELLO_WORLD = 'Hello, World!';
 
-type LocalIntAlias = types.Float64Alias;
+type LocalNumberAlias = types.Float64Alias;
 
 type NumberAliases = azle.Record<{
     first: types.AzleIntAlias;
@@ -21,7 +21,7 @@ type NumberAliases = azle.Record<{
     ninth: types.DeepInt8Alias;
     tenth: types.DeepNatAlias;
     eleventh: types.DeepNat8Alias;
-    twelfth: LocalIntAlias;
+    twelfth: LocalNumberAlias;
 }>;
 
 import { MixedConcreteStar } from './types';
@@ -133,10 +133,11 @@ export type MyDeepVariantFromAlias = types.DeepVariantAlias<{
     bad: null;
     ugly: null;
 }>;
+export type MyAliasToMyDeepRecordFromAlias = MyDeepRecordFromAlias;
 export type MyRecordFromAlias = types.RecordAlias<{
     id: azle.nat;
     name: types.DeepOptAlias<string>;
-    depth: MyDeepRecordFromAlias;
+    depth: MyAliasToMyDeepRecordFromAlias;
     tups: types.DeepTupleAlias<[string, types.Float64Alias]>;
     description: MyDeepVariantFromAlias;
     list: types.DeepVecAlias<azle.nat16>;

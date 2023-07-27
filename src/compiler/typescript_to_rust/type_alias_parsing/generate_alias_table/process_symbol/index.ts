@@ -15,7 +15,9 @@ import {
     generateAliasTableForTypeAliasDeclaration,
     generateAliasTableForVariableDeclaration
 } from './type_alias';
-import { isAzleSymbol, getSymbol } from '../../utils';
+import { isAzleSymbol, getSymbol, returnFalseOrUndefined } from '../../utils';
+
+const ROBUST_TYPE_ALIASES_IMPLEMENTED = false;
 
 export function generateAliasTableForIdentifier(
     ident: ts.Identifier | ts.MemberName,
@@ -24,10 +26,25 @@ export function generateAliasTableForIdentifier(
     program: ts.Program,
     generationType: GenerationType
 ): AliasTable | undefined | boolean {
+    if (generationType === 'LIST' && !ROBUST_TYPE_ALIASES_IMPLEMENTED) {
+        // TODO get rid of this if block it when working on
+        // https://github.com/demergent-labs/azle/issues/1116
+        // The feature in that ticket will not work if this is still here
+        const symbol = symbolTable.get(ident.text as ts.__String);
+        if (symbol === undefined) {
+            return false;
+        }
+        return generateAliasTableForSymbol(
+            symbol,
+            alias,
+            program,
+            generationType
+        );
+    }
     const symbol = getSymbol(ident.text, symbolTable, program);
     if (symbol === undefined) {
         // Couldn't find symbol
-        return undefined;
+        return returnFalseOrUndefined(generationType);
     }
     return generateAliasTableForSymbol(symbol, alias, program, generationType);
 }
@@ -39,11 +56,12 @@ export function generateAliasTableForSymbol(
     generationType: GenerationType
 ): AliasTable | undefined | boolean {
     if (isAzleSymbol(symbol)) {
+        if (generationType === 'LIST') return true;
         return generateSingleEntryAliasTable(symbol.name, alias);
     }
     const declarations = symbol.declarations;
     if (declarations === undefined || declarations.length === 0) {
-        return undefined; // We need one declaration. If there isn't one then it can't be an export from azle right?
+        return returnFalseOrUndefined(generationType); // We need one declaration. If there isn't one then it can't be an export from azle right?
     }
     if (symbol.name === '__export') {
         // Should look like export * from 'place';
@@ -56,9 +74,7 @@ export function generateAliasTableForSymbol(
         );
     }
     if (declarations.length > 1) {
-        // TODO what kind of symbol has multiple declarations?
-        // TODO is it possible for those declarations to be conflicting?
-        return undefined;
+        return returnFalseOrUndefined(generationType);
     }
     return generateAliasTableForDeclaration(
         declarations[0],
@@ -169,6 +185,7 @@ function generateAliasTableForDeclaration(
     ) {
         // All of the cases here are known to not need handling and return
         // undefined intentionally
-        return undefined;
+        return returnFalseOrUndefined(generationType);
     }
+    return returnFalseOrUndefined(generationType);
 }

@@ -76,10 +76,9 @@ export function isAzleTypeAliasDeclaration(
     if (aliasedType.kind === ts.SyntaxKind.StringKeyword) {
         return true;
     }
-    // TODO (https://github.com/demergent-labs/azle/issues/1099)
-    // if (typeReference.kind === ts.SyntaxKind.BigIntKeyword) {
-    //     return generateSingleEntryAliasTable('int', alias);
-    // }
+    if (aliasedType.kind === ts.SyntaxKind.BigIntKeyword) {
+        return true;
+    }
     if (aliasedType.kind === ts.SyntaxKind.NumberKeyword) {
         return true;
     }
