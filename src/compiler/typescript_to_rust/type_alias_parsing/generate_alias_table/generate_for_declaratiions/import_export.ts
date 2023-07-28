@@ -12,7 +12,7 @@ import {
     getOriginalNameFromSpecifier,
     getModuleSpecifier,
     isAzleDeclaration
-} from '../../utils/';
+} from '../../utils';
 import {
     getSymbolFromExportAssignment,
     getSymbolFromImportExportSpecifier,

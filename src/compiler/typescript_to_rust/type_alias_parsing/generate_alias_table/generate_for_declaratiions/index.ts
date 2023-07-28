@@ -1,9 +1,6 @@
 import * as ts from 'typescript';
 import * as aliasTable from './alias_table';
 import { AliasTable, GenerationType } from '../../types';
-import { getSymbol } from '../../utils/get_symbol';
-
-// TODO I feel like this grouping of functions no longer makes sense and I'm not sure the file structure here makes sense either
 
 export function generateForDeclaration(
     declaration: ts.Declaration,

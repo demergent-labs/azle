@@ -1,8 +1,8 @@
 import * as ts from 'typescript';
-import * as aliasTable from './process_symbol/alias_table';
+import * as aliasTable from './generate_for_declaratiions/alias_table';
 import { isAzleSymbol } from '../utils';
 import { AliasTable, GenerationType } from '../types';
-import { generateForDeclaration } from './process_symbol';
+import { generateForDeclaration } from './generate_for_declaratiions';
 
 export function generateForSymbol(
     symbol: ts.Symbol,
