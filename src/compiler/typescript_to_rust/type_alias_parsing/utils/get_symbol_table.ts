@@ -3,9 +3,9 @@ import {
     getSourceFile,
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
-    getUnderlyingIdentifierFromSpecifier,
-    getSymbol
+    getOriginalNameFromSpecifier
 } from '.';
+import { getSymbol } from './get_symbol';
 
 export function getSymbolTable(
     sourceFile: ts.SourceFile,
@@ -189,7 +189,7 @@ function getSymbolTableForLeftIdentifier(
     if (ts.isImportSpecifier(declaration)) {
         const importDeclaration = getDeclarationFromSpecifier(declaration);
         const result = getSymbolTableForDeclaration(importDeclaration, program);
-        const identifier = getUnderlyingIdentifierFromSpecifier(declaration);
+        const identifier = getOriginalNameFromSpecifier(declaration);
         const leftSymbol = result?.get(identifier.text as ts.__String);
         if (leftSymbol === undefined) {
             return undefined;

@@ -1,13 +1,13 @@
 import * as ts from 'typescript';
 import { AliasTable, GenerationType } from '../../types';
 import {
-    generateFromSymbolTable,
     EMPTY_ALIAS_TABLE,
     renameAliasTable,
     prependNamespaceToAliasTable,
     DEFAULT_ALIAS_TABLE,
     mergeAliasTables
 } from '../alias_table';
+import * as aliasTable from '../alias_table';
 import {
     getSymbolTableForNode,
     getSymbolTableForDeclaration
@@ -15,10 +15,14 @@ import {
 import {
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
-    getUnderlyingIdentifierFromSpecifier,
-    getSymbolFromModule,
+    getOriginalNameFromSpecifier,
     returnFalseOrNull
 } from '../../utils/';
+import {
+    getSymbolFromModule,
+    getSymbolFromExportAssignment,
+    getSymbolForImportExportSpecifier
+} from '../../utils/get_symbol';
 import { generateForSymbol } from '../process_symbol';
 
 // Generates an alias table for 'thing' in {thing} or {other as thing} as in:
@@ -59,8 +63,7 @@ export function generateForExportAssignment(
     program: ts.Program,
     generationType: GenerationType
 ): AliasTable | null {
-    const typeChecker = program.getTypeChecker();
-    const symbol = typeChecker.getSymbolAtLocation(exportAssignment.expression);
+    const symbol = getSymbolFromExportAssignment(exportAssignment, program);
     if (symbol === undefined) {
         return returnFalseOrNull(generationType);
     }
@@ -147,7 +150,7 @@ export function generateForExportDeclaration(
     );
     if (symbolTable === undefined) return returnFalseOrNull(generationType);
 
-    const result = generateFromSymbolTable(
+    const result = aliasTable.generateFromSymbolTable(
         symbolTable,
         program,
         generationType
@@ -206,20 +209,20 @@ export function generateForNamespaceImportExport(
     );
     if (symbolTable === undefined) return returnFalseOrNull(generationType);
 
-    const aliasTable = generateFromSymbolTable(
+    const aliasTableResult = aliasTable.generateFromSymbolTable(
         symbolTable,
         program,
         generationType
     );
     if (
-        aliasTable === null ||
-        (Array.isArray(aliasTable) && aliasTable.length === 0)
+        aliasTableResult === null ||
+        (Array.isArray(aliasTableResult) && aliasTableResult.length === 0)
     )
         return returnFalseOrNull(generationType);
-    if (Array.isArray(aliasTable)) return null;
+    if (Array.isArray(aliasTableResult)) return null;
 
     // process this symbol table the same, then modify it such that every entry has name.whatever
-    return prependNamespaceToAliasTable(aliasTable, namespace);
+    return prependNamespaceToAliasTable(aliasTableResult, namespace);
 }
 
 // export {thing} from 'place'; or export {thing as other} from 'place';
@@ -230,20 +233,7 @@ function generateForModuleImportExportSpecifier(
     program: ts.Program,
     generationType: GenerationType
 ): AliasTable | null {
-    const identifier = getUnderlyingIdentifierFromSpecifier(specifier);
-    const declaration = getDeclarationFromSpecifier(specifier);
-
-    if (
-        !declaration.moduleSpecifier ||
-        !ts.isStringLiteral(declaration.moduleSpecifier)
-    ) {
-        return returnFalseOrNull(generationType);
-    }
-    const symbol = getSymbolFromModule(
-        identifier.text,
-        declaration.moduleSpecifier,
-        program
-    );
+    const symbol = getSymbolForImportExportSpecifier(specifier, program);
     if (symbol === undefined) {
         return returnFalseOrNull(generationType);
     }
@@ -257,26 +247,41 @@ function generateForLocalExportSpecifier(
     program: ts.Program,
     generationType: GenerationType
 ): AliasTable | null {
-    const identifier = getUnderlyingIdentifierFromSpecifier(exportSpecifier);
-
     const symbolTable = getSymbolTableForNode(exportSpecifier, program);
     if (symbolTable === undefined) {
         return returnFalseOrNull(generationType);
     }
+
+    const name = getOriginalNameFromSpecifier(exportSpecifier);
     // Given `export * from 'moduleThatHasThingFromStarExport'` It is impossible
     // to `export {thingFromStarExport}` so we don't need to consider the
     // __export symbols
-    const symbol = symbolTable.get(identifier.text as ts.__String);
+    const symbol = symbolTable.get(name.text as ts.__String);
     if (symbol === undefined) {
         return returnFalseOrNull(generationType);
     }
+
     const result = generateForSymbol(symbol, alias, program, generationType);
-    if (result === null || typeof result === 'boolean') {
-        return result;
+    if (result === null) {
+        return null;
     }
 
-    if (exportSpecifier.propertyName) {
+    if (isRenamedExport(exportSpecifier)) {
         return renameAliasTable(result, exportSpecifier.name.text);
     }
     return result;
+}
+
+/**
+ * For `export {thing};` or `export {thing as other};`
+ * Returns true if the export was renamed (ie `export {thing as other};`)
+ * Otherwise false (ie `export {thing};`)
+ * Detail: The exportSpecifier.name will be the name that is used in the file.
+ * If the export was renamed the original name will be stored in property name
+ * and the name used in the file will be stored in exportSpecifier.name. If the export was not
+ * @param exportSpecifier
+ * @returns
+ */
+function isRenamedExport(exportSpecifier: ts.ExportSpecifier): boolean {
+    return exportSpecifier.propertyName !== undefined;
 }
