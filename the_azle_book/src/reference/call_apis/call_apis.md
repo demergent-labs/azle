@@ -19,7 +19,6 @@
 -   [notify](./notify.md)
 -   [notify raw](./notify_raw.md)
 -   [notify with payment 128](./notify_with_payment_128.md)
--   [performance counter](./performance_counter.md)
 -   [reject](./reject.md)
 -   [reject code](./reject_code.md)
 -   [reject message](./reject_message.md)

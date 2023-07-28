@@ -90,7 +90,7 @@ export function canisterBalance128(): nat {
 
 // returns the canister's version number
 $query;
-export function canisterVersion(): nat {
+export function canisterVersion(): nat64 {
     return ic.canisterVersion();
 }
 
