@@ -3,7 +3,7 @@ import * as aliasTable from './process_symbol/alias_table';
 import * as aliasTableForSymbol from './generate_for_symbol';
 import { AliasTable, GenerationType } from '../types';
 
-export * from './generate_for_declaratiions/alias_table';
+export * from './generate_for_declarations/alias_table';
 
 export function generateFromSymbolTable(
     symbolTable: ts.SymbolTable,

@@ -1,10 +1,10 @@
 import * as ts from 'typescript';
-import * as aliasTable from './generate_for_declaratiions/alias_table';
+import * as aliasTable from './generate_for_declarations/alias_table';
 import { isAzleSymbol } from '../utils';
 import { AliasTable, GenerationType } from '../types';
-import { generateForDeclaration } from './generate_for_declaratiions';
+import { generateForDeclaration } from './generate_for_declarations';
 
-export * from './generate_for_declaratiions/alias_table';
+export * from './generate_for_declarations/alias_table';
 
 export function generateFromSymbolTable(
     symbolTable: ts.SymbolTable,

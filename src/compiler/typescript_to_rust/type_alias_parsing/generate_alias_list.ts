@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import * as aliasTable from './generate_alias_table/generate_for_declaratiions/alias_table';
+import * as aliasTable from './generate_alias_table/generate_for_declarations/alias_table';
 import * as aliasTableForSymbol from './generate_alias_table/generate_for_symbol';
 import { AliasList, GenerationType } from './types';
 import { isNullKeyword } from './utils';
