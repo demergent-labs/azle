@@ -178,10 +178,13 @@ function getSymbolTableForLeftIdentifier(
     // NOTE: My assumption here is that the only way you can get a left hand
     // side of a qualified name that would resolved back to azle is if it's
     // some sort of import declaration
+
+    // import * as thing from 'place'
     if (ts.isNamespaceImport(declaration)) {
         const importDeclaration = getDeclarationFromNamespace(declaration);
         return getSymbolTableForDeclaration(importDeclaration, program);
     }
+    // import {thing as other} from 'place'
     if (ts.isImportSpecifier(declaration)) {
         const importDeclaration = getDeclarationFromSpecifier(declaration);
         const subSymbolTable = getSymbolTableForDeclaration(

@@ -36,7 +36,7 @@ export function generateForTypeAliasDeclaration(
     generationType: GenerationType
 ): AliasTable | null {
     if (isAzleKeywordExpression(typeAliasDeclaration)) {
-        if (generationType === 'LIST') return aliasTable.DEFAULT; // https://github.com/demergent-labs/azle/issues/1136
+        if (generationType === 'LIST') return aliasTable.DEFAULT; // TODO https://github.com/demergent-labs/azle/issues/1136
         return aliasTable.generateSingleEntryAliasTable(
             typeAliasDeclaration.name.text,
             alias
@@ -44,41 +44,45 @@ export function generateForTypeAliasDeclaration(
     }
 
     const aliasedType = typeAliasDeclaration.type;
-    if (aliasedType.kind === ts.SyntaxKind.BooleanKeyword) {
-        return aliasTable.generateSingleEntryAliasTable('bool', alias);
+
+    const aliasTableResult = checkForAndGenerateAliasTableForPrimitives(
+        aliasedType,
+        alias
+    );
+
+    if (aliasTableResult !== 'NOTHING_TO_RETURN') {
+        return aliasTableResult;
     }
-    if (isNullKeyword(aliasedType)) {
-        return aliasTable.generateSingleEntryAliasTable('null', alias);
-    }
-    if (aliasedType.kind === ts.SyntaxKind.StringKeyword) {
-        return aliasTable.generateSingleEntryAliasTable('text', alias);
-    }
-    if (aliasedType.kind === ts.SyntaxKind.BigIntKeyword) {
-        return aliasTable.generateSingleEntryAliasTable('int', alias);
-    }
-    if (aliasedType.kind === ts.SyntaxKind.NumberKeyword) {
-        return aliasTable.generateSingleEntryAliasTable('float64', alias);
-    }
-    if (aliasedType.kind === ts.SyntaxKind.VoidKeyword) {
-        return aliasTable.generateSingleEntryAliasTable('void', alias);
-    }
+
     if (
-        aliasedType.kind === ts.SyntaxKind.FunctionType ||
-        aliasedType.kind === ts.SyntaxKind.UnionType
+        !shouldGenerateAliasTableAsTypeReference(
+            typeAliasDeclaration,
+            aliasedType,
+            generationType
+        )
     ) {
-        // We do not yet have azle types that map to these types
         return null;
     }
+
+    return generateAliasTableForTypeRef(
+        typeAliasDeclaration,
+        alias,
+        program,
+        generationType
+    );
+}
+
+function generateAliasTableForTypeRef(
+    typeAliasDeclaration: ts.TypeAliasDeclaration,
+    alias: string,
+    program: ts.Program,
+    generationType: GenerationType
+): AliasTable | null {
+    const aliasedType = typeAliasDeclaration.type;
     if (!ts.isTypeReferenceNode(aliasedType)) {
         return null;
     }
-    if (generationType === 'TABLE') {
-        // For the alias table we want to include generics like
-        // `type MyRecordDecorator<T> = azle.Record<T>;` and not things like
-        // `type MyRecord = azle.Record<{}>;`
-        // For alias list we want to include both
-        if (!isGeneric(typeAliasDeclaration, aliasedType)) return null;
-    }
+
     const symbolTable = getSymbolTableForNode(typeAliasDeclaration, program);
     if (symbolTable === undefined) {
         return null;
@@ -92,24 +96,85 @@ export function generateForTypeAliasDeclaration(
             program,
             generationType
         );
-    } else {
-        // typeName is a QualifiedName
-        const declSymbolTable = getSymbolTableForEntityName(
-            typeName.left,
-            symbolTable,
-            program
-        );
-        if (declSymbolTable === undefined) {
-            return null;
-        }
-        return generateForIdentifier(
-            typeName.right,
-            alias,
-            declSymbolTable,
-            program,
-            generationType
-        );
     }
+    // typeName is a QualifiedName
+    const declSymbolTable = getSymbolTableForEntityName(
+        typeName.left,
+        symbolTable,
+        program
+    );
+    if (declSymbolTable === undefined) {
+        return null;
+    }
+    return generateForIdentifier(
+        typeName.right,
+        alias,
+        declSymbolTable,
+        program,
+        generationType
+    );
+}
+
+function shouldGenerateAliasTableAsTypeReference(
+    typeAliasDeclaration: ts.TypeAliasDeclaration,
+    aliasedType: ts.TypeNode,
+    generationType: GenerationType
+): boolean {
+    // We do not yet have azle types that map to these types
+    const isIgnorable =
+        aliasedType.kind === ts.SyntaxKind.FunctionType ||
+        aliasedType.kind === ts.SyntaxKind.UnionType;
+    if (isIgnorable) {
+        return false;
+    }
+
+    if (!ts.isTypeReferenceNode(aliasedType)) {
+        return false;
+    }
+
+    // For the alias table we want to include generics like
+    // `type MyRecordDecorator<T> = azle.Record<T>;` and not things like
+    // `type MyRecord = azle.Record<{}>;`
+    // For alias list we want to include both
+    if (
+        generationType === 'TABLE' &&
+        !isGeneric(typeAliasDeclaration, aliasedType)
+    ) {
+        return false;
+    }
+
+    return true;
+}
+
+function checkForAndGenerateAliasTableForPrimitives(
+    aliasedType: ts.TypeNode,
+    alias: string
+): AliasTable | null | 'NOTHING_TO_RETURN' {
+    if (aliasedType.kind === ts.SyntaxKind.BooleanKeyword) {
+        return aliasTable.generateSingleEntryAliasTable('bool', alias);
+    }
+
+    if (isNullKeyword(aliasedType)) {
+        return aliasTable.generateSingleEntryAliasTable('null', alias);
+    }
+
+    if (aliasedType.kind === ts.SyntaxKind.StringKeyword) {
+        return aliasTable.generateSingleEntryAliasTable('text', alias);
+    }
+
+    if (aliasedType.kind === ts.SyntaxKind.BigIntKeyword) {
+        return aliasTable.generateSingleEntryAliasTable('int', alias);
+    }
+
+    if (aliasedType.kind === ts.SyntaxKind.NumberKeyword) {
+        return aliasTable.generateSingleEntryAliasTable('float64', alias);
+    }
+
+    if (aliasedType.kind === ts.SyntaxKind.VoidKeyword) {
+        return aliasTable.generateSingleEntryAliasTable('void', alias);
+    }
+
+    return 'NOTHING_TO_RETURN';
 }
 
 export function generateForVariableDeclaration(
