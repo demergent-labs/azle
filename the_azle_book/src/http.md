@@ -80,7 +80,6 @@ Examples:
 
 ```typescript
 import {
-    Alias,
     ic,
     $init,
     match,
@@ -98,7 +97,7 @@ import {
 import decodeUtf8 from 'decode-utf8';
 import encodeUtf8 from 'encode-utf8';
 
-type JSON = Alias<string>;
+type JSON = string;
 
 let stableStorage = new StableBTreeMap<string, string>(0, 25, 1_000);
 
