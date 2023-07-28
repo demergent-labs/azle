@@ -35,7 +35,7 @@ function isSymbolTypeAliasDeclaration(symbol: ts.Symbol): boolean {
     if (declarations === undefined || declarations.length !== 1) {
         return false;
     }
-    let declaration = declarations[0];
+    const declaration = declarations[0];
     if (
         ts.isTypeAliasDeclaration(declaration) &&
         (ts.isTypeReferenceNode(declaration.type) ||

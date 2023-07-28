@@ -131,7 +131,7 @@ export function getStarExportModuleSpecifierFor(
 export function isNullKeyword(node: ts.Node): boolean {
     if (node.kind === ts.SyntaxKind.LiteralType) {
         if ('literal' in node) {
-            let literal = node.literal;
+            const literal = node.literal;
             if (
                 typeof literal === 'object' &&
                 literal !== null &&

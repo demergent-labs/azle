@@ -92,7 +92,7 @@ export function generateForImportClause(
     if (moduleSpecifier === null) {
         return null;
     }
-    let symbol = getSymbolFromModule('default', moduleSpecifier, program);
+    const symbol = getSymbolFromModule('default', moduleSpecifier, program);
     if (symbol === undefined) {
         return null;
     }
