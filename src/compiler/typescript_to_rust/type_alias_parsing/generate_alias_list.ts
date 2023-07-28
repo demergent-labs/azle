@@ -1,6 +1,5 @@
 import * as ts from 'typescript';
-import * as aliasTable from './generate_alias_table/generate_for_declarations/alias_table';
-import * as aliasTableForSymbol from './generate_alias_table/generate_for_symbol';
+import * as aliasTable from './generate_alias_table/';
 import { AliasList, GenerationType } from './types';
 import { isNullKeyword } from './utils';
 
@@ -15,7 +14,7 @@ export function generateAliasListFromSymbolTable(
     // reduce here
     symbolTable.forEach((symbol, name) => {
         if (isSymbolTypeAliasDeclaration(symbol)) {
-            const result = aliasTableForSymbol.generateForSymbol(
+            const result = aliasTable.generateForSymbol(
                 symbol,
                 name as string,
                 program,

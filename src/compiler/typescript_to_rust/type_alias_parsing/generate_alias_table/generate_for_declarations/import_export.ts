@@ -1,6 +1,5 @@
 import * as ts from 'typescript';
-import * as aliasTable from '../alias_table';
-import * as aliasTableForSymbol from '../generate_for_symbol';
+import * as aliasTable from '../';
 import { AliasTable, GenerationType } from '../../types';
 import {
     getSymbolTableForDeclaration,
@@ -61,12 +60,7 @@ export function generateForExportAssignment(
     if (symbol === undefined) {
         return null;
     }
-    return aliasTableForSymbol.generateForSymbol(
-        symbol,
-        alias,
-        program,
-        generationType
-    );
+    return aliasTable.generateForSymbol(symbol, alias, program, generationType);
 }
 
 // Generates an alias table for 'thing' in {thing} or {other as thing} as in:
@@ -102,12 +96,7 @@ export function generateForImportClause(
     if (symbol === undefined) {
         return null;
     }
-    return aliasTableForSymbol.generateForSymbol(
-        symbol,
-        alias,
-        program,
-        generationType
-    );
+    return aliasTable.generateForSymbol(symbol, alias, program, generationType);
 }
 
 // Generates an alias table for an export declaration as in:
@@ -205,12 +194,7 @@ function generateForModuleImportExportSpecifier(
     if (symbol === undefined) {
         return null;
     }
-    return aliasTableForSymbol.generateForSymbol(
-        symbol,
-        alias,
-        program,
-        generationType
-    );
+    return aliasTable.generateForSymbol(symbol, alias, program, generationType);
 }
 
 // export {thing}; or export {thing as other};
@@ -234,7 +218,7 @@ function generateForLocalExportSpecifier(
         return null;
     }
 
-    const aliasTableResult = aliasTableForSymbol.generateForSymbol(
+    const aliasTableResult = aliasTable.generateForSymbol(
         symbol,
         alias,
         program,

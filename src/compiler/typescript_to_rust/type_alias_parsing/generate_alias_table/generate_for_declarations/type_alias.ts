@@ -1,6 +1,5 @@
 import * as ts from 'typescript';
-import * as aliasTable from './alias_table';
-import * as aliasTableForSymbol from '../generate_for_symbol';
+import * as aliasTable from '../';
 import {
     getSymbolTableForEntityName,
     getSymbolTableForExpression,
@@ -218,7 +217,7 @@ function generateForIdentifier(
         if (symbol === undefined) {
             return null;
         }
-        return aliasTableForSymbol.generateForSymbol(
+        return aliasTable.generateForSymbol(
             symbol,
             alias,
             program,
@@ -230,10 +229,5 @@ function generateForIdentifier(
         // Couldn't find symbol
         return null;
     }
-    return aliasTableForSymbol.generateForSymbol(
-        symbol,
-        alias,
-        program,
-        generationType
-    );
+    return aliasTable.generateForSymbol(symbol, alias, program, generationType);
 }

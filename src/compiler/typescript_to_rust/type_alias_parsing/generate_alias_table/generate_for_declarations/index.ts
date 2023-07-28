@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import * as aliasTable from './alias_table';
+import * as aliasTable from '../';
 import { AliasTable, GenerationType } from '../../types';
 
 export function generateForDeclaration(

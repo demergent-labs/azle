@@ -9,7 +9,7 @@ import {
 } from './typescript_to_javascript/cargo_toml_files';
 import { writeCodeToFileSystem } from './write_code_to_file_system';
 import { generateRustCanister } from './generate_rust_canister';
-import { generateForFiles } from './type_alias_parsing';
+import { generateAliasStructures } from './type_alias_parsing';
 import { Err, ok, unwrap } from '../utils/result';
 import {
     AzleError,
@@ -53,8 +53,12 @@ export function compileTypeScriptToRust(
         );
 
         const program = ts.createProgram([canisterConfig.ts], {});
-        const aliasTables = generateForFiles(fileNames, program, 'TABLE');
-        const aliasLists = generateForFiles(fileNames, program, 'LIST');
+        const aliasTables = generateAliasStructures(
+            fileNames,
+            program,
+            'TABLE'
+        );
+        const aliasLists = generateAliasStructures(fileNames, program, 'LIST');
 
         const pluginsDependencies = plugins
             .map((plugin) => {
