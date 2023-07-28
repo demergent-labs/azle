@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import * as aliasTable from './process_symbol/alias_table';
+import * as aliasTableForSymbol from './generate_for_symbol';
 import { AliasTable, GenerationType } from '../types';
 
 export * from './process_symbol/alias_table';
@@ -14,7 +15,7 @@ export function generateFromSymbolTable(
     // difficult to turn it into an array, so we have to use forEach instead of
     // reduce here
     symbolTable.forEach((symbol, name) => {
-        const subAliasTable = aliasTable.generateForSymbol(
+        const subAliasTable = aliasTableForSymbol.generateForSymbol(
             symbol,
             name as string,
             program,

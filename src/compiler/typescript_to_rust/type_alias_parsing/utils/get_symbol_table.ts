@@ -162,7 +162,6 @@ function getSymbolTableForRightIdentifier(
     return getSymbolTableForDeclaration(declaration, program);
 }
 
-// TODO Make more declarative
 function getSymbolTableForLeftIdentifier(
     left: ts.Identifier,
     symbolTable: ts.SymbolTable,

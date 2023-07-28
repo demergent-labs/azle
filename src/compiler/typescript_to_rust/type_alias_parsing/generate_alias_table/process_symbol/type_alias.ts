@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import * as aliasTable from './alias_table';
+import * as aliasTableForSymbol from '../generate_for_symbol';
 import {
     getSymbolTableForEntityName,
     getSymbolTableForExpression,
@@ -7,6 +8,9 @@ import {
 } from '../../utils/get_symbol_table';
 import { isAzleKeywordExpression, isNullKeyword } from '../../utils';
 import { AliasTable, GenerationType } from '../../types';
+import { getSymbol } from '../../utils/get_symbol';
+
+const ROBUST_TYPE_ALIASES_IMPLEMENTED = false;
 
 /*
 export type AzleIntAlias = azle.int;
@@ -82,7 +86,7 @@ export function generateForTypeAliasDeclaration(
     }
     const typeName = aliasedType.typeName;
     if (ts.isIdentifier(typeName)) {
-        return aliasTable.generateForIdentifier(
+        return generateForIdentifier(
             typeName,
             alias,
             symbolTable,
@@ -99,7 +103,7 @@ export function generateForTypeAliasDeclaration(
         if (declSymbolTable === undefined) {
             return null;
         }
-        return aliasTable.generateForIdentifier(
+        return generateForIdentifier(
             typeName.right,
             alias,
             declSymbolTable,
@@ -137,7 +141,7 @@ export function generateForVariableDeclaration(
     }
 
     if (ts.isIdentifier(expression)) {
-        return aliasTable.generateForIdentifier(
+        return generateForIdentifier(
             expression,
             alias,
             symbolTable,
@@ -155,7 +159,7 @@ export function generateForVariableDeclaration(
         if (declSymbolTable === undefined) {
             return null;
         }
-        return aliasTable.generateForIdentifier(
+        return generateForIdentifier(
             expression.name,
             alias,
             declSymbolTable,
@@ -197,4 +201,39 @@ function isGeneric(
         );
     });
     return typeArgsAreGenerics;
+}
+
+function generateForIdentifier(
+    ident: ts.Identifier | ts.MemberName,
+    alias: string,
+    symbolTable: ts.SymbolTable,
+    program: ts.Program,
+    generationType: GenerationType
+): AliasTable | null {
+    if (generationType === 'LIST' && !ROBUST_TYPE_ALIASES_IMPLEMENTED) {
+        // TODO get rid of this if block it when working on
+        // https://github.com/demergent-labs/azle/issues/1116
+        // The feature in that ticket will not work if this is still here
+        const symbol = symbolTable.get(ident.text as ts.__String);
+        if (symbol === undefined) {
+            return null;
+        }
+        return aliasTableForSymbol.generateForSymbol(
+            symbol,
+            alias,
+            program,
+            generationType
+        );
+    }
+    const symbol = getSymbol(ident.text, symbolTable, program);
+    if (symbol === undefined) {
+        // Couldn't find symbol
+        return null;
+    }
+    return aliasTableForSymbol.generateForSymbol(
+        symbol,
+        alias,
+        program,
+        generationType
+    );
 }
