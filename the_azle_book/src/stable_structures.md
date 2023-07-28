@@ -36,7 +36,6 @@ Here's an example showing all of the basic `StableBTreeMap` operations:
 
 ```typescript
 import {
-    Alias,
     nat64,
     nat8,
     Opt,
@@ -47,8 +46,8 @@ import {
     Vec
 } from 'azle';
 
-type Key = Alias<nat8>;
-type Value = Alias<string>;
+type Key = nat8;
+type Value = string;
 
 let map = new StableBTreeMap<Key, Value>(0, 100, 1_000);
 
