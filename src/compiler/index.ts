@@ -15,18 +15,28 @@ import {
     unwrap
 } from './utils';
 import { green } from './utils/colors';
+import { GLOBAL_AZLE_CONFIG_DIR } from './utils';
 import {
     version as azleVersion,
     dfx_version as dfxVersion,
     rust_version as rustVersion
 } from '../../package.json';
 import { gzipWasmBinary } from './gzip';
+import { rmSync } from 'fs-extra';
 
 azle();
 
 function azle() {
     if (process.argv[2] === 'new') {
         generateNewAzleProject(azleVersion, dfxVersion);
+        return;
+    }
+
+    if (process.argv[2] === 'clean') {
+        rmSync(GLOBAL_AZLE_CONFIG_DIR, {
+            recursive: true,
+            force: true
+        });
         return;
     }
 

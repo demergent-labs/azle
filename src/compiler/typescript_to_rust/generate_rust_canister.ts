@@ -3,7 +3,7 @@ import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import {
     GLOBAL_AZLE_BIN_DIR,
-    GLOBAL_AZLE_CONFIG_DIR,
+    GLOBAL_AZLE_RUST_BIN_DIR,
     GLOBAL_AZLE_RUST_DIR,
     GLOBAL_AZLE_TARGET_DIR
 } from '../utils';
@@ -17,7 +17,6 @@ import {
     AliasLists
 } from '../utils/types';
 import { isVerboseMode } from '../utils';
-import { version as azleVersion } from '../../../package.json';
 
 // TODO I think we should use the official Azle Result and match everywhere
 // TODO we should get rid of the custom ones created here
@@ -60,12 +59,7 @@ function runAzleGenerate(
     canisterPath: string,
     canisterConfig: JSCanisterConfig
 ): Result<null, SpawnSyncError> {
-    const azleGenerateBinPath = join(
-        GLOBAL_AZLE_CONFIG_DIR,
-        'azle_generate',
-        azleVersion,
-        'azle_generate'
-    );
+    const azleGenerateBinPath = join(GLOBAL_AZLE_BIN_DIR, 'azle_generate');
     const azleGenerateBinPathDebug = join(
         GLOBAL_AZLE_TARGET_DIR,
         'debug',
@@ -105,24 +99,28 @@ function buildBinary(
     azleGenerateBinPathDebug: string,
     azleGenerateDir: string
 ): Result<null, SpawnSyncError> {
-    mkdirSync(join(GLOBAL_AZLE_CONFIG_DIR, 'azle_generate', azleVersion), {
+    mkdirSync(join(GLOBAL_AZLE_BIN_DIR), {
         recursive: true
     });
 
-    const buildResult = spawnSync(`${GLOBAL_AZLE_BIN_DIR}/cargo`, ['build'], {
-        cwd: azleGenerateDir,
-        stdio: [
-            'inherit',
-            isVerboseMode() ? 'inherit' : 'pipe',
-            isVerboseMode() ? 'inherit' : 'pipe'
-        ],
-        env: {
-            ...process.env,
-            CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-            CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
-            RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR
+    const buildResult = spawnSync(
+        `${GLOBAL_AZLE_RUST_BIN_DIR}/cargo`,
+        ['build'],
+        {
+            cwd: azleGenerateDir,
+            stdio: [
+                'inherit',
+                isVerboseMode() ? 'inherit' : 'pipe',
+                isVerboseMode() ? 'inherit' : 'pipe'
+            ],
+            env: {
+                ...process.env,
+                CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
+                CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
+                RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR
+            }
         }
-    });
+    );
 
     if (buildResult.error) {
         return Result.Err({

@@ -1,9 +1,8 @@
 import { execSync, IOType } from 'child_process';
 
 import {
-    GLOBAL_AZLE_BIN_DIR,
-    GLOBAL_AZLE_CONFIG_DIR,
     GLOBAL_AZLE_RUST_DIR,
+    GLOBAL_AZLE_RUST_BIN_DIR,
     GLOBAL_AZLE_TARGET_DIR,
     time
 } from './utils';
@@ -15,7 +14,7 @@ export function compileRustCode(
 ) {
     time(`[2/2] 🚧 Building Wasm binary...`, 'inline', () => {
         execSync(
-            `cd ${canisterPath} && ${GLOBAL_AZLE_BIN_DIR}/cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
+            `cd ${canisterPath} && ${GLOBAL_AZLE_RUST_BIN_DIR}/cargo build --target wasm32-unknown-unknown --package ${canisterName} --release`,
             {
                 stdio,
                 env: {
@@ -27,7 +26,7 @@ export function compileRustCode(
             }
         );
 
-        const wasmTargetFilePath = `${GLOBAL_AZLE_CONFIG_DIR}/target/wasm32-unknown-unknown/release/${canisterName}.wasm`;
+        const wasmTargetFilePath = `${GLOBAL_AZLE_TARGET_DIR}/wasm32-unknown-unknown/release/${canisterName}.wasm`;
 
         execSync(`cp ${wasmTargetFilePath} ${canisterPath}`);
     });

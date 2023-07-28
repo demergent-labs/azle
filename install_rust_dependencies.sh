@@ -6,13 +6,13 @@ azle_version="$1"
 rust_version="$2"
 
 global_azle_config_dir=~/.config/azle
-global_azle_rust_dir="$global_azle_config_dir"/"$rust_version"
-global_azle_bin_dir="$global_azle_rust_dir"/bin
+global_azle_rust_dir="$global_azle_config_dir"/rust/"$rust_version"
+global_azle_rust_bin_dir="$global_azle_rust_dir"/bin
 global_azle_logs_dir="$global_azle_rust_dir"/logs
-global_azle_cargo_bin="$global_azle_bin_dir"/cargo
-global_azle_rustup_bin="$global_azle_bin_dir"/rustup
+global_azle_cargo_bin="$global_azle_rust_bin_dir"/cargo
+global_azle_rustup_bin="$global_azle_rust_bin_dir"/rustup
 
-export CARGO_TARGET_DIR="$global_azle_config_dir"/target
+export CARGO_TARGET_DIR="$global_azle_config_dir"/rust/target
 export CARGO_HOME="$global_azle_rust_dir"
 export RUSTUP_HOME="$global_azle_rust_dir"
 
