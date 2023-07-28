@@ -139,8 +139,3 @@ export function isNullKeyword(node: ts.Node): boolean {
     }
     return false;
 }
-
-export function returnFalseOrNull(generationType: GenerationType): null {
-    if (generationType === 'LIST') return null;
-    return null;
-}

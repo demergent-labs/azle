@@ -4,11 +4,7 @@ import {
     getSymbolTableForEntityName,
     getSymbolTableForExpression
 } from '../../utils/get_symbol_table';
-import {
-    isNullKeyword,
-    isAzleKeywordExpression,
-    returnFalseOrNull
-} from '../../utils';
+import { isNullKeyword, isAzleKeywordExpression } from '../../utils';
 import { generateForIdentifier } from '../process_symbol';
 import { generateSingleEntryAliasTable } from '../alias_table';
 import { AliasTable, GenerationType } from '../../types';
@@ -74,7 +70,7 @@ export function generateForTypeAliasDeclaration(
             program
         );
         if (symbolTable === undefined) {
-            return returnFalseOrNull(generationType);
+            return null;
         }
         const typeName = aliasedType.typeName;
         if (ts.isIdentifier(typeName)) {
@@ -93,7 +89,7 @@ export function generateForTypeAliasDeclaration(
                 program
             );
             if (declSymbolTable === undefined) {
-                return returnFalseOrNull(generationType);
+                return null;
             }
             return generateForIdentifier(
                 typeName.right,
@@ -127,10 +123,10 @@ export function generateForTypeAliasDeclaration(
         aliasedType.kind === ts.SyntaxKind.UnionType
     ) {
         // We do not yet have azle types that map to these types
-        return returnFalseOrNull(generationType);
+        return null;
     }
     // The type is something we hadn't planned on
-    return returnFalseOrNull(generationType);
+    return null;
 }
 
 export function generateForVariableDeclaration(
@@ -151,12 +147,12 @@ export function generateForVariableDeclaration(
 
     const expression = variableDeclaration.initializer;
     if (expression === undefined) {
-        return returnFalseOrNull(generationType);
+        return null;
     }
 
     const symbolTable = getSymbolTableForNode(expression, program);
     if (symbolTable === undefined) {
-        return returnFalseOrNull(generationType);
+        return null;
     }
 
     if (ts.isIdentifier(expression)) {
@@ -176,7 +172,7 @@ export function generateForVariableDeclaration(
             program
         );
         if (declSymbolTable === undefined) {
-            return returnFalseOrNull(generationType);
+            return null;
         }
         return generateForIdentifier(
             expression.name,
@@ -188,8 +184,8 @@ export function generateForVariableDeclaration(
     }
     if (ts.isStringLiteral(expression) || ts.isNewExpression(expression)) {
         // We do not yet have azle types that map to these types
-        return returnFalseOrNull(generationType);
+        return null;
     }
     // The expression is something we haven't planned on
-    return returnFalseOrNull(generationType);
+    return null;
 }

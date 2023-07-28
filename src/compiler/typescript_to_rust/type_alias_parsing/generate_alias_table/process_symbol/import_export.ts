@@ -15,8 +15,7 @@ import {
 import {
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
-    getOriginalNameFromSpecifier,
-    returnFalseOrNull
+    getOriginalNameFromSpecifier
 } from '../../utils/';
 import {
     getSymbolFromModule,
@@ -65,7 +64,7 @@ export function generateForExportAssignment(
 ): AliasTable | null {
     const symbol = getSymbolFromExportAssignment(exportAssignment, program);
     if (symbol === undefined) {
-        return returnFalseOrNull(generationType);
+        return null;
     }
     return generateForSymbol(symbol, alias, program, generationType);
 }
@@ -96,7 +95,7 @@ export function generateForImportClause(
     generationType: GenerationType
 ): AliasTable | null {
     if (!ts.isStringLiteral(importClause.parent.moduleSpecifier)) {
-        return returnFalseOrNull(generationType);
+        return null;
     }
     let symbol = getSymbolFromModule(
         'default',
@@ -104,7 +103,7 @@ export function generateForImportClause(
         program
     );
     if (symbol === undefined) {
-        return returnFalseOrNull(generationType);
+        return null;
     }
     return generateForSymbol(symbol, alias, program, generationType);
 }
@@ -148,7 +147,7 @@ export function generateForExportDeclaration(
         exportDeclaration,
         program
     );
-    if (symbolTable === undefined) return returnFalseOrNull(generationType);
+    if (symbolTable === undefined) return null;
 
     const result = aliasTable.generateFromSymbolTable(
         symbolTable,
@@ -197,7 +196,7 @@ export function generateForNamespaceImportExport(
         !importDeclaration.moduleSpecifier ||
         !ts.isStringLiteral(importDeclaration.moduleSpecifier)
     ) {
-        return returnFalseOrNull(generationType);
+        return null;
     }
     if (importDeclaration.moduleSpecifier.text == 'azle') {
         // Process this symbol table the same, then modify it such that every entry has name.whatever
@@ -207,7 +206,7 @@ export function generateForNamespaceImportExport(
         importDeclaration,
         program
     );
-    if (symbolTable === undefined) return returnFalseOrNull(generationType);
+    if (symbolTable === undefined) return null;
 
     const aliasTableResult = aliasTable.generateFromSymbolTable(
         symbolTable,
@@ -218,7 +217,7 @@ export function generateForNamespaceImportExport(
         aliasTableResult === null ||
         (Array.isArray(aliasTableResult) && aliasTableResult.length === 0)
     )
-        return returnFalseOrNull(generationType);
+        return null;
     if (Array.isArray(aliasTableResult)) return null;
 
     // process this symbol table the same, then modify it such that every entry has name.whatever
@@ -235,7 +234,7 @@ function generateForModuleImportExportSpecifier(
 ): AliasTable | null {
     const symbol = getSymbolForImportExportSpecifier(specifier, program);
     if (symbol === undefined) {
-        return returnFalseOrNull(generationType);
+        return null;
     }
     return generateForSymbol(symbol, alias, program, generationType);
 }
@@ -249,7 +248,7 @@ function generateForLocalExportSpecifier(
 ): AliasTable | null {
     const symbolTable = getSymbolTableForNode(exportSpecifier, program);
     if (symbolTable === undefined) {
-        return returnFalseOrNull(generationType);
+        return null;
     }
 
     const name = getOriginalNameFromSpecifier(exportSpecifier);
@@ -258,7 +257,7 @@ function generateForLocalExportSpecifier(
     // __export symbols
     const symbol = symbolTable.get(name.text as ts.__String);
     if (symbol === undefined) {
-        return returnFalseOrNull(generationType);
+        return null;
     }
 
     const result = generateForSymbol(symbol, alias, program, generationType);

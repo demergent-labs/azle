@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { AliasTable, GenerationType } from '../../types';
 import { generateSingleEntryAliasTable } from '../alias_table';
 import * as aliasTable from './alias_table';
-import { isAzleSymbol, returnFalseOrNull } from '../../utils';
+import { isAzleSymbol } from '../../utils';
 import { getSymbol } from '../../utils/get_symbol';
 
 const ROBUST_TYPE_ALIASES_IMPLEMENTED = false;
@@ -27,7 +27,7 @@ export function generateForIdentifier(
     const symbol = getSymbol(ident.text, symbolTable, program);
     if (symbol === undefined) {
         // Couldn't find symbol
-        return returnFalseOrNull(generationType);
+        return null;
     }
     return generateForSymbol(symbol, alias, program, generationType);
 }
@@ -43,7 +43,7 @@ export function generateForSymbol(
     }
     const declarations = symbol.declarations;
     if (declarations === undefined || declarations.length === 0) {
-        return returnFalseOrNull(generationType); // We need one declaration. If there isn't one then it can't be an export from azle right?
+        return null; // We need one declaration. If there isn't one then it can't be an export from azle right?
     }
     if (symbol.name === '__export') {
         // Should look like export * from 'place';
@@ -56,7 +56,7 @@ export function generateForSymbol(
         );
     }
     if (declarations.length > 1) {
-        return returnFalseOrNull(generationType);
+        return null;
     }
     return generateForDeclaration(
         declarations[0],
@@ -167,7 +167,7 @@ function generateForDeclaration(
     ) {
         // All of the cases here are known to not need handling and return
         // undefined intentionally
-        return returnFalseOrNull(generationType);
+        return null;
     }
-    return returnFalseOrNull(generationType);
+    return null;
 }
