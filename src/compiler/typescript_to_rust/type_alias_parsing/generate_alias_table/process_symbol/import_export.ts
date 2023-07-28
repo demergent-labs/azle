@@ -1,27 +1,21 @@
 import * as ts from 'typescript';
-import { AliasTable, GenerationType, ModuleSpecifier } from '../../types';
-import {
-    EMPTY_ALIAS_TABLE,
-    renameAliasTable,
-    prependNamespaceToAliasTable,
-    DEFAULT_ALIAS_TABLE,
-    mergeAliasTables
-} from '../alias_table';
 import * as aliasTable from '../alias_table';
+import { AliasTable, GenerationType } from '../../types';
 import {
-    getSymbolTableForNode,
-    getSymbolTableForDeclaration
+    getSymbolTableForDeclaration,
+    getSymbolTableForNode
 } from '../../utils/get_symbol_table';
 import {
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
     getOriginalNameFromSpecifier,
-    getModuleSpecifier
+    getModuleSpecifier,
+    isAzleDeclaration
 } from '../../utils/';
 import {
-    getSymbolFromModule,
     getSymbolFromExportAssignment,
-    getSymbolFromImportExportSpecifier
+    getSymbolFromImportExportSpecifier,
+    getSymbolFromModule
 } from '../../utils/get_symbol';
 
 // Generates an alias table for 'thing' in {thing} or {other as thing} as in:
@@ -121,7 +115,7 @@ export function generateForExportDeclaration(
     if (generationType === 'LIST') return null;
 
     if (isAzleDeclaration(exportDeclaration)) {
-        return DEFAULT_ALIAS_TABLE;
+        return aliasTable.DEFAULT;
     }
 
     const symbolTable = getSymbolTableForDeclaration(
@@ -155,8 +149,8 @@ export function generateForExportDeclarations(
         if (subAliasTable === null) {
             return { ...acc };
         }
-        return { ...mergeAliasTables(acc, subAliasTable) };
-    }, EMPTY_ALIAS_TABLE);
+        return { ...aliasTable.merge(acc, subAliasTable) };
+    }, aliasTable.EMPTY);
 }
 
 // The simplest example of this is `export * as namespace from 'azle';` and it
@@ -170,8 +164,7 @@ export function generateForNamespaceImportExport(
 ): AliasTable | null {
     const importDeclaration = getDeclarationFromNamespace(namespace);
     if (isAzleDeclaration(importDeclaration)) {
-        // Process this symbol table the same, then modify it such that every entry has name.whatever
-        return prependNamespaceToAliasTable(DEFAULT_ALIAS_TABLE, namespace);
+        return aliasTable.prependNamespace(aliasTable.DEFAULT, namespace);
     }
     const symbolTable = getSymbolTableForDeclaration(
         importDeclaration,
@@ -186,8 +179,7 @@ export function generateForNamespaceImportExport(
     );
     if (aliasTableResult === null) return null;
 
-    // process this symbol table the same, then modify it such that every entry has name.whatever
-    return prependNamespaceToAliasTable(aliasTableResult, namespace);
+    return aliasTable.prependNamespace(aliasTableResult, namespace);
 }
 
 // export {thing} from 'place'; or export {thing as other} from 'place';
@@ -237,7 +229,7 @@ function generateForLocalExportSpecifier(
     }
 
     if (isRenamedExport(exportSpecifier)) {
-        return renameAliasTable(aliasTableResult, exportSpecifier.name.text);
+        return aliasTable.rename(aliasTableResult, exportSpecifier.name.text);
     }
     return aliasTableResult;
 }
@@ -259,18 +251,4 @@ function generateForLocalExportSpecifier(
  */
 function isRenamedExport(exportSpecifier: ts.ExportSpecifier): boolean {
     return exportSpecifier.propertyName !== undefined;
-}
-
-function isAzleModule(moduleSpecifier: ModuleSpecifier) {
-    return moduleSpecifier.text === 'azle';
-}
-
-function isAzleDeclaration(
-    declaration: ts.ExportDeclaration | ts.ImportDeclaration
-): boolean {
-    const moduleSpecifier = getModuleSpecifier(declaration);
-    if (moduleSpecifier === null) {
-        return false;
-    }
-    return isAzleModule(moduleSpecifier);
 }

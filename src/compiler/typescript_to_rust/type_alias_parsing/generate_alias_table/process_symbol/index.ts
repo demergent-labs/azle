@@ -1,14 +1,11 @@
 import * as ts from 'typescript';
-import { AliasTable, GenerationType } from '../../types';
-import {
-    generateSingleEntryAliasTable,
-    DEFAULT_ALIAS_TABLE
-} from '../alias_table';
 import * as aliasTable from './alias_table';
+import { AliasTable, GenerationType } from '../../types';
 import { isAzleSymbol } from '../../utils';
 import { getSymbol } from '../../utils/get_symbol';
 
 const ROBUST_TYPE_ALIASES_IMPLEMENTED = false;
+// TODO I feel like this grouping of functions no longer makes sense and I'm not sure the file structure here makes sense either
 
 export function generateForIdentifier(
     ident: ts.Identifier | ts.MemberName,
@@ -42,8 +39,8 @@ export function generateForSymbol(
     generationType: GenerationType
 ): AliasTable | null {
     if (isAzleSymbol(symbol)) {
-        if (generationType === 'LIST') return DEFAULT_ALIAS_TABLE; // TODO https://github.com/demergent-labs/azle/issues/1136
-        return generateSingleEntryAliasTable(symbol.name, alias);
+        if (generationType === 'LIST') return aliasTable.DEFAULT; // TODO https://github.com/demergent-labs/azle/issues/1136
+        return aliasTable.generateSingleEntryAliasTable(symbol.name, alias);
     }
     const declarations = symbol.declarations;
     if (declarations === undefined || declarations.length === 0) {

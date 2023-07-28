@@ -3,8 +3,10 @@ import {
     getSourceFile,
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
-    getOriginalNameFromSpecifier
+    getOriginalNameFromSpecifier,
+    getModuleSpecifier
 } from '.';
+import { ModuleSpecifier } from '../types';
 import { getSymbol } from './get_symbol';
 
 export function getSymbolTable(
@@ -66,22 +68,17 @@ export function getSymbolTableForDeclaration(
     declaration: ts.ExportDeclaration | ts.ImportDeclaration,
     program: ts.Program
 ): ts.SymbolTable | undefined {
-    if (declaration.moduleSpecifier === undefined) {
+    const moduleSpecifier = getModuleSpecifier(declaration);
+    if (moduleSpecifier === null) {
         // Unreachable: An export declaration with a namespace export will always have a FromClause
         // https://262.ecma-international.org/13.0/#sec-exports
         return undefined;
     }
-    if (!ts.isStringLiteral(declaration.moduleSpecifier)) {
-        return undefined;
-    }
-    return getSymbolTableForModuleSpecifier(
-        declaration.moduleSpecifier,
-        program
-    );
+    return getSymbolTableForModuleSpecifier(moduleSpecifier, program);
 }
 
 export function getSymbolTableForModuleSpecifier(
-    moduleSpecifier: ts.StringLiteral,
+    moduleSpecifier: ModuleSpecifier,
     program: ts.Program
 ): ts.SymbolTable | undefined {
     const typeChecker = program.getTypeChecker();
@@ -99,8 +96,7 @@ export function getSymbolTableForEntityName(
 ): ts.SymbolTable | undefined {
     if (ts.isIdentifier(left)) {
         return getSymbolTableForLeftIdentifier(left, symbolTable, program);
-    }
-    if (ts.isQualifiedName(left)) {
+    } else {
         const leftSymbolTable = getSymbolTableForEntityName(
             left.left,
             symbolTable,
@@ -115,7 +111,6 @@ export function getSymbolTableForEntityName(
             program
         );
     }
-    // Unreachable ts.EntityName = ts.Identifier | ts.QualifiedName
 }
 
 export function getSymbolTableForExpression(
@@ -141,6 +136,7 @@ export function getSymbolTableForExpression(
             program
         );
     }
+    return undefined;
 }
 
 function getSymbolTableForRightIdentifier(
@@ -166,6 +162,7 @@ function getSymbolTableForRightIdentifier(
     return getSymbolTableForDeclaration(declaration, program);
 }
 
+// TODO Make more declarative
 function getSymbolTableForLeftIdentifier(
     left: ts.Identifier,
     symbolTable: ts.SymbolTable,
@@ -188,9 +185,12 @@ function getSymbolTableForLeftIdentifier(
     }
     if (ts.isImportSpecifier(declaration)) {
         const importDeclaration = getDeclarationFromSpecifier(declaration);
-        const result = getSymbolTableForDeclaration(importDeclaration, program);
+        const subSymbolTable = getSymbolTableForDeclaration(
+            importDeclaration,
+            program
+        );
         const identifier = getOriginalNameFromSpecifier(declaration);
-        const leftSymbol = result?.get(identifier.text as ts.__String);
+        const leftSymbol = subSymbolTable?.get(identifier.text as ts.__String);
         if (leftSymbol === undefined) {
             return undefined;
         }

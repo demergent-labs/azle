@@ -24,6 +24,20 @@ export function isAzleKeywordExpression(
     return sourceFile.fileName.includes('azle/src/lib');
 }
 
+export function isAzleDeclaration(
+    declaration: ts.ExportDeclaration | ts.ImportDeclaration
+): boolean {
+    const moduleSpecifier = getModuleSpecifier(declaration);
+    if (moduleSpecifier === null) {
+        return false;
+    }
+    return isAzleModule(moduleSpecifier);
+}
+
+export function isAzleModule(moduleSpecifier: ModuleSpecifier) {
+    return moduleSpecifier.text === 'azle';
+}
+
 export function getSourceFile(node: ts.Node): ts.SourceFile | undefined {
     if (ts.isSourceFile(node)) {
         return node;
@@ -144,3 +158,6 @@ export function getModuleSpecifier(
     }
     return declaration.moduleSpecifier;
 }
+
+// TODO this should be removed as soon as the robust imports epic is completed (https://github.com/demergent-labs/azle/issues/1096)
+export let debug: { print: boolean } = { print: false };

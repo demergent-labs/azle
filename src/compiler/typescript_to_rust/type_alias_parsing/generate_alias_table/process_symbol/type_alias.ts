@@ -1,15 +1,11 @@
 import * as ts from 'typescript';
+import * as aliasTable from './alias_table';
 import {
-    getSymbolTableForNode,
     getSymbolTableForEntityName,
-    getSymbolTableForExpression
+    getSymbolTableForExpression,
+    getSymbolTableForNode
 } from '../../utils/get_symbol_table';
-import { isNullKeyword, isAzleKeywordExpression } from '../../utils';
-import { generateForIdentifier } from '../process_symbol';
-import {
-    generateSingleEntryAliasTable,
-    DEFAULT_ALIAS_TABLE
-} from '../alias_table';
+import { isAzleKeywordExpression, isNullKeyword } from '../../utils';
 import { AliasTable, GenerationType } from '../../types';
 
 /*
@@ -37,90 +33,31 @@ export function generateForTypeAliasDeclaration(
     generationType: GenerationType
 ): AliasTable | null {
     if (isAzleKeywordExpression(typeAliasDeclaration)) {
-        // Is this bit of code reachable? If the todo is in lowercase and hidden
-        // in a longer comment will anyone call me out on it in the pr? I'm not
-        // sure what the best way to test this out. It's not hurting anything to
-        // have it in here.
-        if (generationType === 'LIST') return DEFAULT_ALIAS_TABLE; // https://github.com/demergent-labs/azle/issues/1136
-        return generateSingleEntryAliasTable(
+        if (generationType === 'LIST') return aliasTable.DEFAULT; // https://github.com/demergent-labs/azle/issues/1136
+        return aliasTable.generateSingleEntryAliasTable(
             typeAliasDeclaration.name.text,
             alias
         );
     }
 
     const aliasedType = typeAliasDeclaration.type;
-    if (ts.isTypeReferenceNode(aliasedType)) {
-        if (generationType === 'TABLE') {
-            const typeParams = (typeAliasDeclaration.typeParameters ?? []).map(
-                (typeParam) => typeParam.name.text
-            );
-            const typeArguments = aliasedType.typeArguments ?? [];
-            if (typeArguments.length !== typeParams.length) {
-                return null;
-            }
-            const typeArgsAreGenerics = typeArguments.every((typeArgument) => {
-                return (
-                    ts.isTypeReferenceNode(typeArgument) &&
-                    ts.isIdentifier(typeArgument.typeName) &&
-                    typeParams.includes(typeArgument.typeName.text)
-                );
-            });
-            if (!typeArgsAreGenerics) {
-                return null;
-            }
-        }
-        const symbolTable = getSymbolTableForNode(
-            typeAliasDeclaration,
-            program
-        );
-        if (symbolTable === undefined) {
-            return null;
-        }
-        const typeName = aliasedType.typeName;
-        if (ts.isIdentifier(typeName)) {
-            return generateForIdentifier(
-                typeName,
-                alias,
-                symbolTable,
-                program,
-                generationType
-            );
-        }
-        if (ts.isQualifiedName(typeName)) {
-            const declSymbolTable = getSymbolTableForEntityName(
-                typeName.left,
-                symbolTable,
-                program
-            );
-            if (declSymbolTable === undefined) {
-                return null;
-            }
-            return generateForIdentifier(
-                typeName.right,
-                alias,
-                declSymbolTable,
-                program,
-                generationType
-            );
-        }
-    }
     if (aliasedType.kind === ts.SyntaxKind.BooleanKeyword) {
-        return generateSingleEntryAliasTable('bool', alias);
+        return aliasTable.generateSingleEntryAliasTable('bool', alias);
     }
     if (isNullKeyword(aliasedType)) {
-        return generateSingleEntryAliasTable('null', alias);
+        return aliasTable.generateSingleEntryAliasTable('null', alias);
     }
     if (aliasedType.kind === ts.SyntaxKind.StringKeyword) {
-        return generateSingleEntryAliasTable('text', alias);
+        return aliasTable.generateSingleEntryAliasTable('text', alias);
     }
     if (aliasedType.kind === ts.SyntaxKind.BigIntKeyword) {
-        return generateSingleEntryAliasTable('int', alias);
+        return aliasTable.generateSingleEntryAliasTable('int', alias);
     }
     if (aliasedType.kind === ts.SyntaxKind.NumberKeyword) {
-        return generateSingleEntryAliasTable('float64', alias);
+        return aliasTable.generateSingleEntryAliasTable('float64', alias);
     }
     if (aliasedType.kind === ts.SyntaxKind.VoidKeyword) {
-        return generateSingleEntryAliasTable('void', alias);
+        return aliasTable.generateSingleEntryAliasTable('void', alias);
     }
     if (
         aliasedType.kind === ts.SyntaxKind.FunctionType ||
@@ -129,8 +66,47 @@ export function generateForTypeAliasDeclaration(
         // We do not yet have azle types that map to these types
         return null;
     }
-    // The type is something we hadn't planned on
-    return null;
+    if (!ts.isTypeReferenceNode(aliasedType)) {
+        return null;
+    }
+    if (generationType === 'TABLE') {
+        // For the alias table we want to include generics like
+        // `type MyRecordDecorator<T> = azle.Record<T>;` and not things like
+        // `type MyRecord = azle.Record<{}>;`
+        // For alias list we want to include both
+        if (!isGeneric(typeAliasDeclaration, aliasedType)) return null;
+    }
+    const symbolTable = getSymbolTableForNode(typeAliasDeclaration, program);
+    if (symbolTable === undefined) {
+        return null;
+    }
+    const typeName = aliasedType.typeName;
+    if (ts.isIdentifier(typeName)) {
+        return aliasTable.generateForIdentifier(
+            typeName,
+            alias,
+            symbolTable,
+            program,
+            generationType
+        );
+    } else {
+        // typeName is a QualifiedName
+        const declSymbolTable = getSymbolTableForEntityName(
+            typeName.left,
+            symbolTable,
+            program
+        );
+        if (declSymbolTable === undefined) {
+            return null;
+        }
+        return aliasTable.generateForIdentifier(
+            typeName.right,
+            alias,
+            declSymbolTable,
+            program,
+            generationType
+        );
+    }
 }
 
 export function generateForVariableDeclaration(
@@ -143,8 +119,8 @@ export function generateForVariableDeclaration(
         // I'm not sure this is possible. Isn't the only way we could run into
         // this is when parsing the actual azle file? Otherwise it's always
         // going to come from an import declaration not a variable declaration
-        if (generationType === 'LIST') return DEFAULT_ALIAS_TABLE; //TODO https://github.com/demergent-labs/azle/issues/1136
-        return generateSingleEntryAliasTable(
+        if (generationType === 'LIST') return aliasTable.DEFAULT; //TODO https://github.com/demergent-labs/azle/issues/1136
+        return aliasTable.generateSingleEntryAliasTable(
             variableDeclaration.name.getText(),
             alias
         );
@@ -161,7 +137,7 @@ export function generateForVariableDeclaration(
     }
 
     if (ts.isIdentifier(expression)) {
-        return generateForIdentifier(
+        return aliasTable.generateForIdentifier(
             expression,
             alias,
             symbolTable,
@@ -179,7 +155,7 @@ export function generateForVariableDeclaration(
         if (declSymbolTable === undefined) {
             return null;
         }
-        return generateForIdentifier(
+        return aliasTable.generateForIdentifier(
             expression.name,
             alias,
             declSymbolTable,
@@ -193,4 +169,32 @@ export function generateForVariableDeclaration(
     }
     // The expression is something we haven't planned on
     return null;
+}
+
+/**
+ * Are the type arguments and the type params arrays the same length and are
+ * each element equal.
+ *
+ * @param declaration
+ * @returns
+ */
+function isGeneric(
+    declaration: ts.TypeAliasDeclaration,
+    aliasedType: ts.TypeReferenceNode
+): boolean {
+    const typeParams = (declaration.typeParameters ?? []).map(
+        (typeParam) => typeParam.name.text
+    );
+    const typeArguments = aliasedType.typeArguments ?? [];
+    if (typeArguments.length !== typeParams.length) {
+        return false;
+    }
+    const typeArgsAreGenerics = typeArguments.every((typeArgument) => {
+        return (
+            ts.isTypeReferenceNode(typeArgument) &&
+            ts.isIdentifier(typeArgument.typeName) &&
+            typeParams.includes(typeArgument.typeName.text)
+        );
+    });
+    return typeArgsAreGenerics;
 }

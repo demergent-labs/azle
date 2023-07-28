@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import * as aliasTable from './alias_table';
+import * as aliasList from './alias_list';
 import { getSymbolTable } from '../utils/get_symbol_table';
 import {
     AliasTable,
@@ -50,7 +51,7 @@ function generate(
     }
 
     if (generationType === 'LIST') {
-        return aliasTable.generateAliasListFromSymbolTable(
+        return aliasList.generateAliasListFromSymbolTable(
             symbolTable,
             program,
             generationType
