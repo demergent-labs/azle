@@ -4,6 +4,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { execSync } from 'child_process';
 
 // TODO these tests should be rewritten to use @dfinity/agent once this issue is resolved: https://github.com/dfinity/agent-js/issues/702
+// TODO this issue also needs to be resolved: https://forum.dfinity.org/t/services-wont-deserialize-properly-if-functions-arent-in-alphabetical-order/20885
 export function getTests(serviceCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
@@ -14,8 +15,6 @@ export function getTests(serviceCanister: ActorSubclass<_SERVICE>): Test[] {
                 )
                     .toString()
                     .trim();
-
-                console.log(result);
 
                 return {
                     Ok: result === '(service "aaaaa-aa")'
@@ -30,8 +29,6 @@ export function getTests(serviceCanister: ActorSubclass<_SERVICE>): Test[] {
                 )
                     .toString()
                     .trim();
-
-                console.log(result);
 
                 return {
                     Ok:
@@ -48,8 +45,6 @@ export function getTests(serviceCanister: ActorSubclass<_SERVICE>): Test[] {
                 )
                     .toString()
                     .trim();
-
-                console.log(result);
 
                 return {
                     Ok:
@@ -68,8 +63,6 @@ export function getTests(serviceCanister: ActorSubclass<_SERVICE>): Test[] {
                 )
                     .toString()
                     .trim();
-
-                console.log(result);
 
                 return {
                     Ok:
@@ -93,8 +86,6 @@ export function getTests(serviceCanister: ActorSubclass<_SERVICE>): Test[] {
                 )
                     .toString()
                     .trim();
-
-                console.log(result);
 
                 return {
                     Ok: result === '(variant { Ok = "SomeService update1" })'
