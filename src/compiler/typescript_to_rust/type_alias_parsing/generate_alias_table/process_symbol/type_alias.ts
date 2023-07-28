@@ -6,7 +6,10 @@ import {
 } from '../../utils/get_symbol_table';
 import { isNullKeyword, isAzleKeywordExpression } from '../../utils';
 import { generateForIdentifier } from '../process_symbol';
-import { generateSingleEntryAliasTable } from '../alias_table';
+import {
+    generateSingleEntryAliasTable,
+    DEFAULT_ALIAS_TABLE
+} from '../alias_table';
 import { AliasTable, GenerationType } from '../../types';
 
 /*
@@ -38,6 +41,7 @@ export function generateForTypeAliasDeclaration(
         // in a longer comment will anyone call me out on it in the pr? I'm not
         // sure what the best way to test this out. It's not hurting anything to
         // have it in here.
+        if (generationType === 'LIST') return DEFAULT_ALIAS_TABLE; // https://github.com/demergent-labs/azle/issues/1136
         return generateSingleEntryAliasTable(
             typeAliasDeclaration.name.text,
             alias
@@ -139,6 +143,7 @@ export function generateForVariableDeclaration(
         // I'm not sure this is possible. Isn't the only way we could run into
         // this is when parsing the actual azle file? Otherwise it's always
         // going to come from an import declaration not a variable declaration
+        if (generationType === 'LIST') return DEFAULT_ALIAS_TABLE; //TODO https://github.com/demergent-labs/azle/issues/1136
         return generateSingleEntryAliasTable(
             variableDeclaration.name.getText(),
             alias

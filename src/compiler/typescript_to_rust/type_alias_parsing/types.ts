@@ -1,3 +1,4 @@
+export { StringLiteral as ModuleSpecifier } from 'typescript';
 export type GenerationType = 'LIST' | 'TABLE';
 export type AliasList = string[];
 export type AliasLists = { [filename: string]: AliasList };

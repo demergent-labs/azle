@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { generateFromSymbolTable } from './alias_table';
+import * as aliasTable from './alias_table';
 import { getSymbolTable } from '../utils/get_symbol_table';
 import {
     AliasTable,
@@ -44,10 +44,21 @@ function generate(
     }
 
     const symbolTable = getSymbolTable(sourceFile, program);
-    if (symbolTable !== undefined) {
-        return generateFromSymbolTable(symbolTable, program, generationType);
+    if (symbolTable === undefined) {
+        if (generationType === 'LIST') return [];
+        return null;
     }
 
-    if (generationType === 'LIST') return [];
-    return null;
+    if (generationType === 'LIST') {
+        return aliasTable.generateAliasListFromSymbolTable(
+            symbolTable,
+            program,
+            generationType
+        );
+    }
+    return aliasTable.generateFromSymbolTable(
+        symbolTable,
+        program,
+        generationType
+    );
 }

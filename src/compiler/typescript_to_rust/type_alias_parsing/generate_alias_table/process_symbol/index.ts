@@ -1,6 +1,9 @@
 import * as ts from 'typescript';
 import { AliasTable, GenerationType } from '../../types';
-import { generateSingleEntryAliasTable } from '../alias_table';
+import {
+    generateSingleEntryAliasTable,
+    DEFAULT_ALIAS_TABLE
+} from '../alias_table';
 import * as aliasTable from './alias_table';
 import { isAzleSymbol } from '../../utils';
 import { getSymbol } from '../../utils/get_symbol';
@@ -39,6 +42,7 @@ export function generateForSymbol(
     generationType: GenerationType
 ): AliasTable | null {
     if (isAzleSymbol(symbol)) {
+        if (generationType === 'LIST') return DEFAULT_ALIAS_TABLE; // TODO https://github.com/demergent-labs/azle/issues/1136
         return generateSingleEntryAliasTable(symbol.name, alias);
     }
     const declarations = symbol.declarations;

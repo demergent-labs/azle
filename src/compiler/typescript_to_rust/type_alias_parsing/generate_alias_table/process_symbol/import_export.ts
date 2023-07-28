@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { AliasTable, GenerationType } from '../../types';
+import { AliasTable, GenerationType, ModuleSpecifier } from '../../types';
 import {
     EMPTY_ALIAS_TABLE,
     renameAliasTable,
@@ -15,14 +15,14 @@ import {
 import {
     getDeclarationFromNamespace,
     getDeclarationFromSpecifier,
-    getOriginalNameFromSpecifier
+    getOriginalNameFromSpecifier,
+    getModuleSpecifier
 } from '../../utils/';
 import {
     getSymbolFromModule,
     getSymbolFromExportAssignment,
-    getSymbolForImportExportSpecifier
+    getSymbolFromImportExportSpecifier
 } from '../../utils/get_symbol';
-import { generateForSymbol } from '../process_symbol';
 
 // Generates an alias table for 'thing' in {thing} or {other as thing} as in:
 // `export {thing};` or
@@ -44,8 +44,8 @@ export function generateForExportSpecifier(
         );
     }
 
-    // Symbol is not from another module so we will find it locally
-    // ie there is no module specifier (ie `export {thing}`)
+    // If there is no module specifier (ie `export {thing}`) then the symbol is
+    // must be defined locally
     return generateForLocalExportSpecifier(
         exportSpecifier,
         alias,
@@ -66,7 +66,7 @@ export function generateForExportAssignment(
     if (symbol === undefined) {
         return null;
     }
-    return generateForSymbol(symbol, alias, program, generationType);
+    return aliasTable.generateForSymbol(symbol, alias, program, generationType);
 }
 
 // Generates an alias table for 'thing' in {thing} or {other as thing} as in:
@@ -94,18 +94,15 @@ export function generateForImportClause(
     program: ts.Program,
     generationType: GenerationType
 ): AliasTable | null {
-    if (!ts.isStringLiteral(importClause.parent.moduleSpecifier)) {
+    const moduleSpecifier = getModuleSpecifier(importClause.parent);
+    if (moduleSpecifier === null) {
         return null;
     }
-    let symbol = getSymbolFromModule(
-        'default',
-        importClause.parent.moduleSpecifier,
-        program
-    );
+    let symbol = getSymbolFromModule('default', moduleSpecifier, program);
     if (symbol === undefined) {
         return null;
     }
-    return generateForSymbol(symbol, alias, program, generationType);
+    return aliasTable.generateForSymbol(symbol, alias, program, generationType);
 }
 
 // Generates an alias table for an export declaration as in:
@@ -120,44 +117,24 @@ export function generateForExportDeclaration(
     program: ts.Program,
     generationType: GenerationType
 ): AliasTable | null {
-    if (generationType === 'LIST') return null; // TODO https://github.com/demergent-labs/azle/issues/1122
-    const moduleSpecifier = exportDeclaration.moduleSpecifier;
-    if (moduleSpecifier === undefined || !ts.isStringLiteral(moduleSpecifier)) {
-        // Unreachable: An export declaration with a ExportFromClause will
-        // always have a FromClause. That FromClause will be `from
-        // ModuleSpecifier` and that ModuleSpecifier will always be a
-        // StringLiteral
-        // https://262.ecma-international.org/13.0/#sec-exports
-        return null;
-    }
-    if (exportDeclaration.exportClause) {
-        // Unreachable: An export declaration with a * export will never have an
-        // exportClause.
-        // I don't understand why I thought this was an important check to make.
-        // It seems completely unecessary as is. If anything we would want to
-        // raise an error here because we shouldn't have gotten here. If we
-        // aren't going to do that then there is no reason to have this here
-        // https://262.ecma-international.org/13.0/#sec-exports
-        return null;
-    }
-    if (moduleSpecifier.text == 'azle') {
+    // TODO https://github.com/demergent-labs/azle/issues/1122
+    if (generationType === 'LIST') return null;
+
+    if (isAzleDeclaration(exportDeclaration)) {
         return DEFAULT_ALIAS_TABLE;
     }
+
     const symbolTable = getSymbolTableForDeclaration(
         exportDeclaration,
         program
     );
     if (symbolTable === undefined) return null;
 
-    const result = aliasTable.generateFromSymbolTable(
+    return aliasTable.generateFromSymbolTable(
         symbolTable,
         program,
         generationType
     );
-    if (Array.isArray(result)) {
-        return null;
-    }
-    return result;
 }
 
 // My expectation is that this will only be called for export declarations in the form:
@@ -175,7 +152,7 @@ export function generateForExportDeclarations(
         generateForExportDeclaration(declaration, program, generationType)
     );
     return aliasTables.reduce((acc: AliasTable, subAliasTable) => {
-        if (subAliasTable === null || typeof subAliasTable === 'boolean') {
+        if (subAliasTable === null) {
             return { ...acc };
         }
         return { ...mergeAliasTables(acc, subAliasTable) };
@@ -192,13 +169,7 @@ export function generateForNamespaceImportExport(
     generationType: GenerationType
 ): AliasTable | null {
     const importDeclaration = getDeclarationFromNamespace(namespace);
-    if (
-        !importDeclaration.moduleSpecifier ||
-        !ts.isStringLiteral(importDeclaration.moduleSpecifier)
-    ) {
-        return null;
-    }
-    if (importDeclaration.moduleSpecifier.text == 'azle') {
+    if (isAzleDeclaration(importDeclaration)) {
         // Process this symbol table the same, then modify it such that every entry has name.whatever
         return prependNamespaceToAliasTable(DEFAULT_ALIAS_TABLE, namespace);
     }
@@ -213,12 +184,7 @@ export function generateForNamespaceImportExport(
         program,
         generationType
     );
-    if (
-        aliasTableResult === null ||
-        (Array.isArray(aliasTableResult) && aliasTableResult.length === 0)
-    )
-        return null;
-    if (Array.isArray(aliasTableResult)) return null;
+    if (aliasTableResult === null) return null;
 
     // process this symbol table the same, then modify it such that every entry has name.whatever
     return prependNamespaceToAliasTable(aliasTableResult, namespace);
@@ -232,11 +198,11 @@ function generateForModuleImportExportSpecifier(
     program: ts.Program,
     generationType: GenerationType
 ): AliasTable | null {
-    const symbol = getSymbolForImportExportSpecifier(specifier, program);
+    const symbol = getSymbolFromImportExportSpecifier(specifier, program);
     if (symbol === undefined) {
         return null;
     }
-    return generateForSymbol(symbol, alias, program, generationType);
+    return aliasTable.generateForSymbol(symbol, alias, program, generationType);
 }
 
 // export {thing}; or export {thing as other};
@@ -260,15 +226,20 @@ function generateForLocalExportSpecifier(
         return null;
     }
 
-    const result = generateForSymbol(symbol, alias, program, generationType);
-    if (result === null) {
+    const aliasTableResult = aliasTable.generateForSymbol(
+        symbol,
+        alias,
+        program,
+        generationType
+    );
+    if (aliasTableResult === null) {
         return null;
     }
 
     if (isRenamedExport(exportSpecifier)) {
-        return renameAliasTable(result, exportSpecifier.name.text);
+        return renameAliasTable(aliasTableResult, exportSpecifier.name.text);
     }
-    return result;
+    return aliasTableResult;
 }
 
 /**
@@ -276,11 +247,30 @@ function generateForLocalExportSpecifier(
  * Returns true if the export was renamed (ie `export {thing as other};`)
  * Otherwise false (ie `export {thing};`)
  * Detail: The exportSpecifier.name will be the name that is used in the file.
- * If the export was renamed the original name will be stored in property name
- * and the name used in the file will be stored in exportSpecifier.name. If the export was not
+ * If the export was renamed the original name will be stored in
+ * exportSpecifier.propertyName and the name used in the file will be stored in
+ * exportSpecifier.name. If the export was not renamed the original name and the
+ * named used in the file will be the same, that name will be in
+ * exportSpecifier.name and the exportSpecifier.propertyName will be undefined.
+ * So a quick way to tell if the export was renamed is to check to see if
+ * exportSpecifier.propertyName is not undefined.
  * @param exportSpecifier
  * @returns
  */
 function isRenamedExport(exportSpecifier: ts.ExportSpecifier): boolean {
     return exportSpecifier.propertyName !== undefined;
+}
+
+function isAzleModule(moduleSpecifier: ModuleSpecifier) {
+    return moduleSpecifier.text === 'azle';
+}
+
+function isAzleDeclaration(
+    declaration: ts.ExportDeclaration | ts.ImportDeclaration
+): boolean {
+    const moduleSpecifier = getModuleSpecifier(declaration);
+    if (moduleSpecifier === null) {
+        return false;
+    }
+    return isAzleModule(moduleSpecifier);
 }

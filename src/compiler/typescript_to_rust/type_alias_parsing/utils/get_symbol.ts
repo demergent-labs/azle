@@ -2,9 +2,11 @@ import * as ts from 'typescript';
 import {
     getStarExportModuleSpecifierFor,
     getOriginalNameFromSpecifier,
-    getDeclarationFromSpecifier
+    getDeclarationFromSpecifier,
+    getModuleSpecifier
 } from './index';
 import { getSymbolTableForModuleSpecifier } from './get_symbol_table';
+import { ModuleSpecifier } from '../types';
 
 /**
  * Helper method to find a symbol in a symbol table.
@@ -66,7 +68,7 @@ export function getSymbol(
 
 export function getSymbolFromModule(
     name: string,
-    moduleSpecifier: ts.StringLiteral,
+    moduleSpecifier: ModuleSpecifier,
     program: ts.Program
 ): ts.Symbol | undefined {
     const symbolTable = getSymbolTableForModuleSpecifier(
@@ -89,22 +91,16 @@ export function getSymbolFromExportAssignment(
 
 // export {thing} from 'place'; or export {thing as other} from 'place';
 // import {thing} from 'place'; or import {thing as other} from 'place';
-export function getSymbolForImportExportSpecifier(
+export function getSymbolFromImportExportSpecifier(
     specifier: ts.ExportSpecifier | ts.ImportSpecifier,
     program: ts.Program
 ): ts.Symbol | undefined {
     const identifier = getOriginalNameFromSpecifier(specifier);
     const declaration = getDeclarationFromSpecifier(specifier);
+    const moduleSpecifier = getModuleSpecifier(declaration);
 
-    if (
-        !declaration.moduleSpecifier ||
-        !ts.isStringLiteral(declaration.moduleSpecifier)
-    ) {
+    if (moduleSpecifier === null) {
         return undefined;
     }
-    const symbol = getSymbolFromModule(
-        identifier.text,
-        declaration.moduleSpecifier,
-        program
-    );
+    return getSymbolFromModule(identifier.text, moduleSpecifier, program);
 }

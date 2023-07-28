@@ -1,57 +1,69 @@
 import * as ts from 'typescript';
 import { AliasTable, AliasList, GenerationType } from '../types';
-import { generateForSymbol } from './process_symbol';
+import * as aliasTable from './process_symbol/alias_table';
 import { isNullKeyword } from '../utils';
+export * from './process_symbol/alias_table';
+import { debug } from '../utils/debug';
+
+// TODO move this out to somewhere else
+export function generateAliasListFromSymbolTable(
+    symbolTable: ts.SymbolTable,
+    program: ts.Program,
+    generationType: GenerationType
+): AliasList {
+    let aliasList: AliasList = [];
+    // ts.SymbolTable does not use regular iterator conventions thus it's
+    // difficult to turn it into an array, so we have to use forEach instead of
+    // reduce here
+    symbolTable.forEach((symbol, name) => {
+        if (isSymbolTypeAliasDeclaration(symbol)) {
+            const result = aliasTable.generateForSymbol(
+                symbol,
+                name as string,
+                program,
+                generationType
+            );
+            if (!isEmpty(result)) {
+                aliasList = [...aliasList, name as string];
+            }
+        }
+        debug.print = false;
+    });
+
+    return aliasList;
+}
 
 export function generateFromSymbolTable(
     symbolTable: ts.SymbolTable,
     program: ts.Program,
     generationType: GenerationType
-): AliasTable | null | AliasList {
-    if (generationType === 'LIST') {
-        let aliasList: AliasList = [];
-        // ts.SymbolTable does not use regular iterator conventions thus it's
-        // difficult to turn it into an array, so we have to use forEach instead of
-        // reduce here
-        symbolTable.forEach((symbol, name) => {
-            if (isSymbolTypeAliasDeclaration(symbol)) {
-                const result = generateForSymbol(
-                    symbol,
-                    name as string,
-                    program,
-                    generationType
-                );
-                if (!isEmpty(result)) {
-                    aliasList = [...aliasList, name as string];
-                }
-            }
-        });
-
-        return aliasList;
-    }
-    let aliasTable = EMPTY_ALIAS_TABLE;
+): AliasTable | null {
+    let aliasTableResult = EMPTY_ALIAS_TABLE;
     // ts.SymbolTable does not use regular iterator conventions thus it's
     // difficult to turn it into an array, so we have to use forEach instead of
     // reduce here
     symbolTable.forEach((symbol, name) => {
-        const subAliasTable = generateForSymbol(
+        const subAliasTable = aliasTable.generateForSymbol(
             symbol,
             name as string,
             program,
             generationType
         );
-        if (subAliasTable !== null && typeof subAliasTable !== 'boolean') {
-            aliasTable = mergeAliasTables(aliasTable, subAliasTable);
+        if (subAliasTable !== null) {
+            aliasTableResult = mergeAliasTables(
+                aliasTableResult,
+                subAliasTable
+            );
         }
     });
 
-    if (isEmpty(aliasTable)) {
+    if (isEmpty(aliasTableResult)) {
         // If the alias table is empty return undefined.
         // We can skip processing a file if it has no alias table. That's easier
         // to determine with undefined than with an empty table
         return null;
     }
-    return aliasTable;
+    return aliasTableResult;
 }
 
 function isSymbolTypeAliasDeclaration(symbol: ts.Symbol): boolean {

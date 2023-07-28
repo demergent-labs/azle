@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { getSymbolTableForModuleSpecifier } from './get_symbol_table';
-import { GenerationType } from '../types';
+import { ModuleSpecifier } from '../types';
 
 export function isAzleSymbol(symbol: ts.Symbol): boolean {
     if ('parent' in symbol) {
@@ -84,7 +84,7 @@ export function getStarExportModuleSpecifierFor(
     keyToFind: string,
     symbolTable: ts.SymbolTable,
     program: ts.Program
-): ts.StringLiteral | null {
+): ModuleSpecifier | null {
     for (const exportDeclaration of symbolTable.get('__export' as ts.__String)
         ?.declarations ?? []) {
         if (!ts.isExportDeclaration(exportDeclaration)) {
@@ -93,14 +93,8 @@ export function getStarExportModuleSpecifierFor(
             continue;
         }
         // Get the module specifiers from export
-        const exportModSpecifier = exportDeclaration.moduleSpecifier;
-        if (
-            exportModSpecifier === undefined ||
-            !ts.isStringLiteral(exportModSpecifier)
-        ) {
-            // If we don't have an export module specifier or it's not a string
-            // literal then it can't have the name in it. We can continue
-            // looking
+        const exportModSpecifier = getModuleSpecifier(exportDeclaration);
+        if (exportModSpecifier === null) {
             continue;
         }
         const subSymbolTable = getSymbolTableForModuleSpecifier(
@@ -108,8 +102,6 @@ export function getStarExportModuleSpecifierFor(
             program
         );
         if (subSymbolTable === undefined) {
-            // If we couldn't find the symbol table then we won't be able to
-            // find the name it it
             continue;
         }
         if (!subSymbolTable.has(keyToFind as ts.__String)) {
@@ -138,4 +130,17 @@ export function isNullKeyword(node: ts.Node): boolean {
         }
     }
     return false;
+}
+
+export function getModuleSpecifier(
+    declaration: ts.ExportDeclaration | ts.ImportDeclaration
+): ModuleSpecifier | null {
+    // Valid moduleSpecifiers will not be undefined and will be string literals
+    if (
+        declaration.moduleSpecifier === undefined ||
+        !ts.isStringLiteral(declaration.moduleSpecifier)
+    ) {
+        return null;
+    }
+    return declaration.moduleSpecifier;
 }
