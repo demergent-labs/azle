@@ -2,7 +2,7 @@
 
 ## TLDR
 
--   48 GiB of stable memory
+-   64 GiB of stable memory
 -   Persistent across upgrades
 -   Familiar API
 -   Must specify memory id
@@ -10,7 +10,7 @@
 -   Must specify maximum value size
 -   No migrations per memory id
 
-Stable structures are data structures with familiar APIs that allow access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 48 GiB of storage. Stable memory persists automatically across upgrades.
+Stable structures are data structures with familiar APIs that allow access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 64 GiB of storage. Stable memory persists automatically across upgrades.
 
 Persistence on the Internet Computer (IC) is very important to understand. When a canister is upgraded (its code is changed after being initially deployed) its heap is wiped. This includes all global variables.
 
@@ -42,6 +42,7 @@ import {
     Opt,
     $query,
     StableBTreeMap,
+    Tuple,
     $update,
     Vec
 } from 'azle';
@@ -72,7 +73,7 @@ export function isEmpty(): boolean {
 }
 
 $query;
-export function items(): Vec<[Key, Value]> {
+export function items(): Vec<Tuple<[Key, Value]>> {
     return map.items();
 }
 
@@ -112,7 +113,8 @@ import {
     StableBTreeMap,
     $update,
     Variant,
-    Vec
+    Vec,
+    match
 } from 'azle';
 
 type User = Record<{
@@ -167,23 +169,26 @@ export function deleteUser(id: Principal): Result<
 > {
     const user = users.get(id);
 
-    if (user === null) {
-        return {
-            Err: {
-                UserDoesNotExist: id
-            }
-        };
-    }
+    return match(user, {
+        Some: (user) => {
+            user.recordingIds.forEach((recordingId) => {
+                recordings.remove(recordingId);
+            });
 
-    user.recordingIds.forEach((recordingId) => {
-        recordings.remove(recordingId);
+            users.remove(user.id);
+
+            return {
+                Ok: user
+            };
+        },
+        None: () => {
+            return {
+                Err: {
+                    UserDoesNotExist: id
+                }
+            };
+        }
     });
-
-    users.remove(user.id);
-
-    return {
-        Ok: user
-    };
 }
 
 $update;
@@ -199,35 +204,38 @@ export function createRecording(
 > {
     const user = users.get(userId);
 
-    if (user === null) {
-        return {
-            Err: {
-                UserDoesNotExist: userId
-            }
-        };
-    }
+    return match(user, {
+        Some: (user) => {
+            const id = generateId();
+            const recording: Recording = {
+                id,
+                audio,
+                createdAt: ic.time(),
+                name,
+                userId
+            };
 
-    const id = generateId();
-    const recording: Recording = {
-        id,
-        audio,
-        createdAt: ic.time(),
-        name,
-        userId
-    };
+            recordings.insert(recording.id, recording);
 
-    recordings.insert(recording.id, recording);
+            const updatedUser: User = {
+                ...user,
+                recordingIds: [...user.recordingIds, recording.id]
+            };
 
-    const updatedUser: User = {
-        ...user,
-        recordingIds: [...user.recordingIds, recording.id]
-    };
+            users.insert(updatedUser.id, updatedUser);
 
-    users.insert(updatedUser.id, updatedUser);
-
-    return {
-        Ok: recording
-    };
+            return {
+                Ok: recording
+            };
+        },
+        None: () => {
+            return {
+                Err: {
+                    UserDoesNotExist: userId
+                }
+            };
+        }
+    });
 }
 
 $query;
@@ -250,38 +258,45 @@ export function deleteRecording(id: Principal): Result<
 > {
     const recording = recordings.get(id);
 
-    if (recording === null) {
-        return {
-            Err: {
-                RecordingDoesNotExist: id
-            }
-        };
-    }
+    return match(recording, {
+        Some: (recording) => {
+            const user = users.get(recording.userId);
 
-    const user = users.get(recording.userId);
+            return match(user, {
+                Some: (user) => {
+                    const updatedUser: User = {
+                        ...user,
+                        recordingIds: user.recordingIds.filter(
+                            (recordingId) =>
+                                recordingId.toText() !== recording.id.toText()
+                        )
+                    };
 
-    if (user === null) {
-        return {
-            Err: {
-                UserDoesNotExist: recording.userId
-            }
-        };
-    }
+                    users.insert(updatedUser.id, updatedUser);
 
-    const updatedUser: User = {
-        ...user,
-        recordingIds: user.recordingIds.filter(
-            (recordingId) => recordingId.toText() !== recording.id.toText()
-        )
-    };
+                    recordings.remove(id);
 
-    users.insert(updatedUser.id, updatedUser);
-
-    recordings.remove(id);
-
-    return {
-        Ok: recording
-    };
+                    return {
+                        Ok: recording
+                    };
+                },
+                None: () => {
+                    return {
+                        Err: {
+                            UserDoesNotExist: recording.userId
+                        }
+                    };
+                }
+            });
+        },
+        None: () => {
+            return {
+                Err: {
+                    RecordingDoesNotExist: id
+                }
+            };
+        }
+    });
 }
 
 function generateId(): Principal {
@@ -339,4 +354,4 @@ As you can see, finding the correct maximum key and value sizes is a bit of an a
 
 ### Keys
 
-You should be wary when using `float64`, `float32`, `service`, or `func` in any type that is a key for a stable structure. These types do not have the ability to be strictly ordered in all cases. `service` and `func` will have no order. `float64` and `float32` will treat `NaN` as less than any other type. These caveats may impact key performance.
+You should be wary when using a `float64`, `float32`, `Service`, or `Func` in any type that is a key for a stable structure. These types do not have the ability to be strictly ordered in all cases. `Service` and `Func` will have no order. `float64` and `float32` will treat `NaN` as less than any other type. These caveats may impact key performance.

@@ -24,7 +24,7 @@ export async function sign(
         .sign_with_ecdsa({
             message_hash: messageHash,
             derivation_path: [caller],
-            key_id: { curve: { secp256k1: null }, name: 'dfxTestKey' }
+            key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
         })
         .cycles(10_000_000_000n)
         .call();

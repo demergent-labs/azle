@@ -10,7 +10,7 @@ Examples:
 import { ic, nat64, Stable64GrowResult, $update } from 'azle';
 
 $update;
-export function stableGrow(newPages: nat64): Stable64GrowResult {
-    return ic.stableGrow(newPages);
+export function stable64Grow(newPages: nat64): Stable64GrowResult {
+    return ic.stable64Grow(newPages);
 }
 ```

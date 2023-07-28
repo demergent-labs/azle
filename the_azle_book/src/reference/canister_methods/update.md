@@ -9,11 +9,11 @@ let message = '';
 
 $query;
 export function getMessage(): string {
-    return mesage;
+    return message;
 }
 
 $update;
-export function setMessage(newMessage): void {
+export function setMessage(newMessage: string): void {
     message = newMessage;
 }
 ```

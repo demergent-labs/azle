@@ -180,25 +180,30 @@
 <p>The following is a simple example showing how to import and use most of the Candid types available in Azle:</p>
 <pre><code class="language-typescript">import {
     blob,
-    nat,
-    nat64,
-    nat32,
-    nat16,
-    nat8,
-    int,
-    int64,
-    int32,
-    int16,
-    int8,
+    CallResult,
     float64,
     float32,
-    Opt,
-    Variant,
     Func,
+    int,
+    int8,
+    int16,
+    int32,
+    int64,
+    nat,
+    nat8,
+    nat16,
+    nat32,
+    nat64,
+    Opt,
     Principal,
     $query,
     Query,
-    Record
+    Record,
+    Service,
+    serviceQuery,
+    serviceUpdate,
+    Variant,
+    Vec
 } from 'azle';
 
 type Candid = Record&lt;{
@@ -217,6 +222,8 @@ type Candid = Record&lt;{
     float64: float64;
     float32: float32;
     bool: boolean;
+    null: null;
+    vec: Vec&lt;string&gt;;
     opt: Opt&lt;nat&gt;;
     record: Record&lt;{
         firstName: string;
@@ -229,8 +236,17 @@ type Candid = Record&lt;{
         Tag3: int;
     }&gt;;
     func: Func&lt;Query&lt;() =&gt; Candid&gt;&gt;;
+    service: MyService;
     principal: Principal;
 }&gt;;
+
+class MyService extends Service {
+    @serviceQuery
+    query1: () =&gt; CallResult&lt;boolean&gt;;
+
+    @serviceUpdate
+    update1: () =&gt; CallResult&lt;string&gt;;
+}
 
 $query;
 export function candidTypes(): Candid {
@@ -250,6 +266,8 @@ export function candidTypes(): Candid {
         float64: Math.E,
         float32: Math.PI,
         bool: true,
+        null: null,
+        vec: ['has one element'],
         opt: Opt.None,
         record: {
             firstName: 'John',
@@ -263,6 +281,7 @@ export function candidTypes(): Candid {
             Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
             'candidTypes'
         ],
+        service: new MyService(Principal.fromText('aaaaa-aa')),
         principal: Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
     };
 }
@@ -273,12 +292,15 @@ export function candidTypes(): Candid {
     &quot;int&quot; = 170_141_183_460_469_231_731_687_303_715_884_105_727 : int;
     &quot;nat&quot; = 340_282_366_920_938_463_463_374_607_431_768_211_455 : nat;
     &quot;opt&quot; = null;
+    &quot;vec&quot; = vec { &quot;has one element&quot; };
+    &quot;service&quot; = service &quot;aaaaa-aa&quot;;
     &quot;principal&quot; = principal &quot;ryjl3-tyaaa-aaaaa-aaaba-cai&quot;;
     &quot;blob&quot; = vec {};
     &quot;bool&quot; = true;
     &quot;func&quot; = func &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;.candidTypes;
     &quot;int8&quot; = 127 : int8;
     &quot;nat8&quot; = 255 : nat8;
+    &quot;null&quot; = null : null;
     &quot;text&quot; = &quot;text&quot;;
     &quot;nat16&quot; = 65_535 : nat16;
     &quot;nat32&quot; = 4_294_967_295 : nat32;
@@ -287,18 +309,14 @@ export function candidTypes(): Candid {
     &quot;int32&quot; = 2_147_483_647 : int32;
     &quot;int64&quot; = 9_223_372_036_854_775_807 : int64;
     &quot;variant&quot; = variant { Tag1 };
-    &quot;float32&quot; = 0 : float32;
-    &quot;float64&quot; = 0 : float64;
-    &quot;record&quot; = record {
-      age = 35 : nat8;
-      firstName = &quot;John&quot;;
-      lastName = &quot;Doe&quot;;
-    };
+    &quot;float32&quot; = 3.1415927 : float32;
+    &quot;float64&quot; = 2.718281828459045 : float64;
+    &quot;record&quot; = record { age = 35 : nat8; lastName = &quot;Doe&quot;; firstName = &quot;John&quot; };
   },
 )
 </code></pre>
 <h3 id="text"><a class="header" href="#text">text</a></h3>
-<p>The TypeScript type <code>string</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-text">Candid type text</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript String</a> at runtime.</p>
+<p>The TypeScript type <code>string</code> and the Azle type <code>text</code> both correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-text">Candid type text</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript String</a> at runtime.</p>
 <p>TypeScript:</p>
 <pre><code class="language-typescript">import { $query } from 'azle';
 
@@ -613,7 +631,7 @@ export function printInt8(int8: int8): int8 {
 (127 : int8)
 </code></pre>
 <h3 id="float64"><a class="header" href="#float64">float64</a></h3>
-<p>The Azle type <code>float64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>The Azle type <code>float64</code> and the TypeScript type <code>number</code> both correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
 <p>TypeScript:</p>
 <pre><code class="language-typescript">import { float64, $query } from 'azle';
 
@@ -743,7 +761,7 @@ export function printNumbers(numbers: Vec&lt;int32&gt;): Vec&lt;int32&gt; {
 (vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })
 </code></pre>
 <h3 id="opt"><a class="header" href="#opt">opt</a></h3>
-<p>The Azle type <code>Opt</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t">Candid type opt</a> and will become the enclosed JavaScript type or null at runtime.</p>
+<p>The Azle type <code>Opt</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t">Candid type opt</a>. It is a <a href="#variant">variant</a> with <code>Some</code> and <code>None</code> cases. At runtime if the value of the variant is <code>Some</code>, the <code>Some</code> property of the variant object will have a value of the enclosed <code>Opt</code> type at runtime.</p>
 <p>TypeScript:</p>
 <pre><code class="language-typescript">import { Opt, $query } from 'azle';
 
@@ -848,7 +866,7 @@ service : () -&gt; {
 (variant { Fire })
 </code></pre>
 <h3 id="func"><a class="header" href="#func">func</a></h3>
-<p>The Azle type <code>func</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-func---">Candid type func</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> with two elements at runtime.</p>
+<p>The Azle type <code>Func</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-func---">Candid type func</a>. It is a <a href="https://www.tutorialsteacher.com/typescript/typescript-tuple">TypeScript Tuple</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> with two elements at runtime.</p>
 <p>The first element is an <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal</a> and the second is a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript string</a>. The <code>@dfinity/principal</code> represents the <code>principal</code> of the canister/service where the function exists, and the <code>string</code> represents the function's name.</p>
 <p>A <code>func</code> acts as a callback, allowing the <code>func</code> receiver to know which canister instance and method must be used to call back.</p>
 <p>TypeScript:</p>
@@ -880,7 +898,54 @@ export function printBasicFunc(basicFunc: BasicFunc): BasicFunc {
 (func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.getBasicFunc)
 </code></pre>
 <h3 id="service"><a class="header" href="#service">service</a></h3>
-<p><a href="https://github.com/demergent-labs/azle/issues/445">Not yet implemented.</a></p>
+<p>JavaScript classes that inherit from the Azle type <code>Service</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-service-">Candid service type</a> and will become child classes capable of creating instances that can perform cross-canister calls at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import {
+    CallResult,
+    Principal,
+    $query,
+    Result,
+    Service,
+    serviceQuery,
+    serviceUpdate,
+    $update
+} from 'azle';
+
+class SomeService extends Service {
+    @serviceQuery
+    query1: () =&gt; CallResult&lt;boolean&gt;;
+
+    @serviceUpdate
+    update1: () =&gt; CallResult&lt;string&gt;;
+}
+
+$query;
+export function getService(): SomeService {
+    return new SomeService(Principal.fromText('aaaaa-aa'));
+}
+
+$update;
+export async function callService(
+    service: SomeService
+): Promise&lt;Result&lt;string, string&gt;&gt; {
+    return await service.update1().call();
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>type ManualReply = variant { Ok : text; Err : text };
+service : () -&gt; {
+  callService : (
+      service { query1 : () -&gt; (bool) query; update1 : () -&gt; (text) },
+    ) -&gt; (ManualReply);
+  getService : () -&gt; (
+      service { query1 : () -&gt; (bool) query; update1 : () -&gt; (text) },
+    ) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister getService
+(service &quot;aaaaa-aa&quot;)
+</code></pre>
 <h3 id="principal"><a class="header" href="#principal">principal</a></h3>
 <p>The Azle type <code>Principal</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-principal">Candid type principal</a> and will become an <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal</a> at runtime.</p>
 <p>TypeScript:</p>

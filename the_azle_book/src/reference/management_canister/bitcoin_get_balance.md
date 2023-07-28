@@ -7,7 +7,7 @@ Examples:
 -   [bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/bitcoin)
 
 ```typescript
-import { Result, $update } from 'azle';
+import { Opt, Result, $update } from 'azle';
 import {
     BitcoinNetwork,
     managementCanister,
@@ -23,7 +23,7 @@ export async function getBalance(
     return await managementCanister
         .bitcoin_get_balance({
             address,
-            min_confirmations: null,
+            min_confirmations: Opt.None,
             network: BitcoinNetwork.Regtest
         })
         .cycles(BITCOIN_API_CYCLE_COST)

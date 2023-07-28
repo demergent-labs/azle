@@ -2,7 +2,7 @@
 
 This section is a work in progress.
 
-The Azle type `Opt` corresponds to the [Candid type opt](https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t) and will become the Azle `Opt` variant at runtime.
+The Azle type `Opt` corresponds to the [Candid type opt](https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t). It is a [variant](#variant) with `Some` and `None` cases. At runtime if the value of the variant is `Some`, the `Some` property of the variant object will have a value of the enclosed `Opt` type at runtime.
 
 TypeScript:
 

@@ -150,7 +150,7 @@
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { match, Opt, Result, $update } from 'azle';
 import {
     CreateCanisterResult,
     managementCanister
@@ -162,19 +162,15 @@ export async function executeCreateCanister(): Promise&lt;
 &gt; {
     const createCanisterResultCallResult = await managementCanister
         .create_canister({
-            settings: null
+            settings: Opt.None
         })
         .cycles(50_000_000_000_000n)
         .call();
 
     return match(createCanisterResultCallResult, {
-        Ok: (createCanisterResult) =&gt; {
-            state.createdCanisterId = createCanisterResult.canister_id;
-
-            return {
-                Ok: createCanisterResult
-            };
-        },
+        Ok: (createCanisterResult) =&gt; ({
+            Ok: createCanisterResult
+        }),
         Err: (err) =&gt; ({ Err: err })
     });
 }

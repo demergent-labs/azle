@@ -150,10 +150,10 @@
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/timers">timers</a></li>
 </ul>
-<pre><code class="language-typescript">import { Duration, ic, TimerId, $update } from 'azle';
+<pre><code class="language-typescript">import { Duration, ic, TimerId, Tuple, $update } from 'azle';
 
 $update;
-export function setTimers(delay: Duration): [TimerId, TimerId] {
+export function setTimers(delay: Duration): Tuple&lt;[TimerId, TimerId]&gt; {
     const functionTimerId = ic.setTimer(delay, callback);
 
     const capturedValue = '🚩';

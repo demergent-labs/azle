@@ -41,25 +41,30 @@ The following is a simple example showing how to import and use most of the Cand
 ```typescript
 import {
     blob,
-    nat,
-    nat64,
-    nat32,
-    nat16,
-    nat8,
-    int,
-    int64,
-    int32,
-    int16,
-    int8,
+    CallResult,
     float64,
     float32,
-    Opt,
-    Variant,
     Func,
+    int,
+    int8,
+    int16,
+    int32,
+    int64,
+    nat,
+    nat8,
+    nat16,
+    nat32,
+    nat64,
+    Opt,
     Principal,
     $query,
     Query,
-    Record
+    Record,
+    Service,
+    serviceQuery,
+    serviceUpdate,
+    Variant,
+    Vec
 } from 'azle';
 
 type Candid = Record<{
@@ -78,6 +83,8 @@ type Candid = Record<{
     float64: float64;
     float32: float32;
     bool: boolean;
+    null: null;
+    vec: Vec<string>;
     opt: Opt<nat>;
     record: Record<{
         firstName: string;
@@ -90,8 +97,17 @@ type Candid = Record<{
         Tag3: int;
     }>;
     func: Func<Query<() => Candid>>;
+    service: MyService;
     principal: Principal;
 }>;
+
+class MyService extends Service {
+    @serviceQuery
+    query1: () => CallResult<boolean>;
+
+    @serviceUpdate
+    update1: () => CallResult<string>;
+}
 
 $query;
 export function candidTypes(): Candid {
@@ -111,6 +127,8 @@ export function candidTypes(): Candid {
         float64: Math.E,
         float32: Math.PI,
         bool: true,
+        null: null,
+        vec: ['has one element'],
         opt: Opt.None,
         record: {
             firstName: 'John',
@@ -124,6 +142,7 @@ export function candidTypes(): Candid {
             Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
             'candidTypes'
         ],
+        service: new MyService(Principal.fromText('aaaaa-aa')),
         principal: Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
     };
 }
@@ -137,12 +156,15 @@ Calling `candidTypes` with `dfx` will return:
     "int" = 170_141_183_460_469_231_731_687_303_715_884_105_727 : int;
     "nat" = 340_282_366_920_938_463_463_374_607_431_768_211_455 : nat;
     "opt" = null;
+    "vec" = vec { "has one element" };
+    "service" = service "aaaaa-aa";
     "principal" = principal "ryjl3-tyaaa-aaaaa-aaaba-cai";
     "blob" = vec {};
     "bool" = true;
     "func" = func "rrkah-fqaaa-aaaaa-aaaaq-cai".candidTypes;
     "int8" = 127 : int8;
     "nat8" = 255 : nat8;
+    "null" = null : null;
     "text" = "text";
     "nat16" = 65_535 : nat16;
     "nat32" = 4_294_967_295 : nat32;
@@ -151,20 +173,16 @@ Calling `candidTypes` with `dfx` will return:
     "int32" = 2_147_483_647 : int32;
     "int64" = 9_223_372_036_854_775_807 : int64;
     "variant" = variant { Tag1 };
-    "float32" = 0 : float32;
-    "float64" = 0 : float64;
-    "record" = record {
-      age = 35 : nat8;
-      firstName = "John";
-      lastName = "Doe";
-    };
+    "float32" = 3.1415927 : float32;
+    "float64" = 2.718281828459045 : float64;
+    "record" = record { age = 35 : nat8; lastName = "Doe"; firstName = "John" };
   },
 )
 ```
 
 ### text
 
-The TypeScript type `string` corresponds to the [Candid type text](https://internetcomputer.org/docs/current/references/candid-ref#type-text) and will become a [JavaScript String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) at runtime.
+The TypeScript type `string` and the Azle type `text` both correspond to the [Candid type text](https://internetcomputer.org/docs/current/references/candid-ref#type-text) and will become a [JavaScript String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) at runtime.
 
 TypeScript:
 
@@ -611,7 +629,7 @@ dfx canister call candid_canister printInt8 '(127 : int8)'
 
 ### float64
 
-The Azle type `float64` corresponds to the [Candid type float64](https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
+The Azle type `float64` and the TypeScript type `number` both correspond to the [Candid type float64](https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
 
 TypeScript:
 
@@ -796,7 +814,7 @@ dfx canister call candid_canister printNumbers '(vec { 0 : int32; 1 : int32; 2 :
 
 ### opt
 
-The Azle type `Opt` corresponds to the [Candid type opt](https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t) and will become the enclosed JavaScript type or null at runtime.
+The Azle type `Opt` corresponds to the [Candid type opt](https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t). It is a [variant](#variant) with `Some` and `None` cases. At runtime if the value of the variant is `Some`, the `Some` property of the variant object will have a value of the enclosed `Opt` type at runtime.
 
 TypeScript:
 
@@ -934,7 +952,7 @@ dfx canister call candid_canister printReaction '(variant { Fire })'
 
 ### func
 
-The Azle type `func` corresponds to the [Candid type func](https://internetcomputer.org/docs/current/references/candid-ref#type-func---) and will become a [JavaScript array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) with two elements at runtime.
+The Azle type `Func` corresponds to the [Candid type func](https://internetcomputer.org/docs/current/references/candid-ref#type-func---). It is a [TypeScript Tuple](https://www.tutorialsteacher.com/typescript/typescript-tuple) and will become a [JavaScript array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) with two elements at runtime.
 
 The first element is an [@dfinity/principal](https://www.npmjs.com/package/@dfinity/principal) and the second is a [JavaScript string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String). The `@dfinity/principal` represents the `principal` of the canister/service where the function exists, and the `string` represents the function's name.
 
@@ -979,7 +997,63 @@ dfx canister call candid_canister printBasicFunc '(func "r7inp-6aaaa-aaaaa-aaabq
 
 ### service
 
-[Not yet implemented.](https://github.com/demergent-labs/azle/issues/445)
+JavaScript classes that inherit from the Azle type `Service` correspond to the [Candid service type](https://internetcomputer.org/docs/current/references/candid-ref#type-service-) and will become child classes capable of creating instances that can perform cross-canister calls at runtime.
+
+TypeScript:
+
+```typescript
+import {
+    CallResult,
+    Principal,
+    $query,
+    Result,
+    Service,
+    serviceQuery,
+    serviceUpdate,
+    $update
+} from 'azle';
+
+class SomeService extends Service {
+    @serviceQuery
+    query1: () => CallResult<boolean>;
+
+    @serviceUpdate
+    update1: () => CallResult<string>;
+}
+
+$query;
+export function getService(): SomeService {
+    return new SomeService(Principal.fromText('aaaaa-aa'));
+}
+
+$update;
+export async function callService(
+    service: SomeService
+): Promise<Result<string, string>> {
+    return await service.update1().call();
+}
+```
+
+Candid:
+
+```
+type ManualReply = variant { Ok : text; Err : text };
+service : () -> {
+  callService : (
+      service { query1 : () -> (bool) query; update1 : () -> (text) },
+    ) -> (ManualReply);
+  getService : () -> (
+      service { query1 : () -> (bool) query; update1 : () -> (text) },
+    ) query;
+}
+```
+
+dfx:
+
+```bash
+dfx canister call candid_canister getService
+(service "aaaaa-aa")
+```
 
 ### principal
 

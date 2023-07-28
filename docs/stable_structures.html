@@ -147,7 +147,7 @@
                         <h1 id="stable-structures"><a class="header" href="#stable-structures">Stable Structures</a></h1>
 <h2 id="tldr"><a class="header" href="#tldr">TLDR</a></h2>
 <ul>
-<li>48 GiB of stable memory</li>
+<li>64 GiB of stable memory</li>
 <li>Persistent across upgrades</li>
 <li>Familiar API</li>
 <li>Must specify memory id</li>
@@ -155,7 +155,7 @@
 <li>Must specify maximum value size</li>
 <li>No migrations per memory id</li>
 </ul>
-<p>Stable structures are data structures with familiar APIs that allow access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 48 GiB of storage. Stable memory persists automatically across upgrades.</p>
+<p>Stable structures are data structures with familiar APIs that allow access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 64 GiB of storage. Stable memory persists automatically across upgrades.</p>
 <p>Persistence on the Internet Computer (IC) is very important to understand. When a canister is upgraded (its code is changed after being initially deployed) its heap is wiped. This includes all global variables.</p>
 <p>On the other hand, anything stored in stable memory will be preserved. Writing and reading to and from stable memory can be done with a <a href="./reference/stable_memory/stable_memory.html">low-level API</a>, but it is generally easier and preferable to use stable structures.</p>
 <p>Azle currently provides one stable structure called <code>StableBTreeMap</code>. It's similar to a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">JavaScript Map</a> and has most of the common operations you'd expect such as reading, inserting, and removing values.</p>
@@ -175,6 +175,7 @@ let map = new StableBTreeMap&lt;nat8, string&gt;(0, 100, 1_000);
     Opt,
     $query,
     StableBTreeMap,
+    Tuple,
     $update,
     Vec
 } from 'azle';
@@ -205,7 +206,7 @@ export function isEmpty(): boolean {
 }
 
 $query;
-export function items(): Vec&lt;[Key, Value]&gt; {
+export function items(): Vec&lt;Tuple&lt;[Key, Value]&gt;&gt; {
     return map.items();
 }
 
@@ -242,7 +243,8 @@ export function values(): Vec&lt;Value&gt; {
     StableBTreeMap,
     $update,
     Variant,
-    Vec
+    Vec,
+    match
 } from 'azle';
 
 type User = Record&lt;{
@@ -297,23 +299,26 @@ export function deleteUser(id: Principal): Result&lt;
 &gt; {
     const user = users.get(id);
 
-    if (user === null) {
-        return {
-            Err: {
-                UserDoesNotExist: id
-            }
-        };
-    }
+    return match(user, {
+        Some: (user) =&gt; {
+            user.recordingIds.forEach((recordingId) =&gt; {
+                recordings.remove(recordingId);
+            });
 
-    user.recordingIds.forEach((recordingId) =&gt; {
-        recordings.remove(recordingId);
+            users.remove(user.id);
+
+            return {
+                Ok: user
+            };
+        },
+        None: () =&gt; {
+            return {
+                Err: {
+                    UserDoesNotExist: id
+                }
+            };
+        }
     });
-
-    users.remove(user.id);
-
-    return {
-        Ok: user
-    };
 }
 
 $update;
@@ -329,35 +334,38 @@ export function createRecording(
 &gt; {
     const user = users.get(userId);
 
-    if (user === null) {
-        return {
-            Err: {
-                UserDoesNotExist: userId
-            }
-        };
-    }
+    return match(user, {
+        Some: (user) =&gt; {
+            const id = generateId();
+            const recording: Recording = {
+                id,
+                audio,
+                createdAt: ic.time(),
+                name,
+                userId
+            };
 
-    const id = generateId();
-    const recording: Recording = {
-        id,
-        audio,
-        createdAt: ic.time(),
-        name,
-        userId
-    };
+            recordings.insert(recording.id, recording);
 
-    recordings.insert(recording.id, recording);
+            const updatedUser: User = {
+                ...user,
+                recordingIds: [...user.recordingIds, recording.id]
+            };
 
-    const updatedUser: User = {
-        ...user,
-        recordingIds: [...user.recordingIds, recording.id]
-    };
+            users.insert(updatedUser.id, updatedUser);
 
-    users.insert(updatedUser.id, updatedUser);
-
-    return {
-        Ok: recording
-    };
+            return {
+                Ok: recording
+            };
+        },
+        None: () =&gt; {
+            return {
+                Err: {
+                    UserDoesNotExist: userId
+                }
+            };
+        }
+    });
 }
 
 $query;
@@ -380,38 +388,45 @@ export function deleteRecording(id: Principal): Result&lt;
 &gt; {
     const recording = recordings.get(id);
 
-    if (recording === null) {
-        return {
-            Err: {
-                RecordingDoesNotExist: id
-            }
-        };
-    }
+    return match(recording, {
+        Some: (recording) =&gt; {
+            const user = users.get(recording.userId);
 
-    const user = users.get(recording.userId);
+            return match(user, {
+                Some: (user) =&gt; {
+                    const updatedUser: User = {
+                        ...user,
+                        recordingIds: user.recordingIds.filter(
+                            (recordingId) =&gt;
+                                recordingId.toText() !== recording.id.toText()
+                        )
+                    };
 
-    if (user === null) {
-        return {
-            Err: {
-                UserDoesNotExist: recording.userId
-            }
-        };
-    }
+                    users.insert(updatedUser.id, updatedUser);
 
-    const updatedUser: User = {
-        ...user,
-        recordingIds: user.recordingIds.filter(
-            (recordingId) =&gt; recordingId.toText() !== recording.id.toText()
-        )
-    };
+                    recordings.remove(id);
 
-    users.insert(updatedUser.id, updatedUser);
-
-    recordings.remove(id);
-
-    return {
-        Ok: recording
-    };
+                    return {
+                        Ok: recording
+                    };
+                },
+                None: () =&gt; {
+                    return {
+                        Err: {
+                            UserDoesNotExist: recording.userId
+                        }
+                    };
+                }
+            });
+        },
+        None: () =&gt; {
+            return {
+                Err: {
+                    RecordingDoesNotExist: id
+                }
+            };
+        }
+    });
 }
 
 function generateId(): Principal {
@@ -454,7 +469,7 @@ let recordings = new StableBTreeMap&lt;Principal, Recording&gt;(1, 38, 5_000_000
 <p>As you can see, finding the correct maximum key and value sizes is a bit of an art right now. Combining some trial and error with reasoning about your specific application should get you a working solution in most cases. It's our hope that the need to specify maximum key and value sizes will be removed in the future.</p>
 <h2 id="caveats"><a class="header" href="#caveats">Caveats</a></h2>
 <h3 id="keys"><a class="header" href="#keys">Keys</a></h3>
-<p>You should be wary when using <code>float64</code>, <code>float32</code>, <code>service</code>, or <code>func</code> in any type that is a key for a stable structure. These types do not have the ability to be strictly ordered in all cases. <code>service</code> and <code>func</code> will have no order. <code>float64</code> and <code>float32</code> will treat <code>NaN</code> as less than any other type. These caveats may impact key performance.</p>
+<p>You should be wary when using a <code>float64</code>, <code>float32</code>, <code>Service</code>, or <code>Func</code> in any type that is a key for a stable structure. These types do not have the ability to be strictly ordered in all cases. <code>Service</code> and <code>Func</code> will have no order. <code>float64</code> and <code>float32</code> will treat <code>NaN</code> as less than any other type. These caveats may impact key performance.</p>
 
                     </main>
 

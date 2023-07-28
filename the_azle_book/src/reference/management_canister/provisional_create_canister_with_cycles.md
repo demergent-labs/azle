@@ -7,7 +7,7 @@ Examples:
 -   [management_canister](https://github.com/demergent-labs/azle/tree/main/examples/management_canister)
 
 ```typescript
-import { match, $update, Variant } from 'azle';
+import { match, Opt, $update, Variant } from 'azle';
 import {
     CreateCanisterResult,
     managementCanister
@@ -22,8 +22,8 @@ export async function provisionalCreateCanisterWithCycles(): Promise<
 > {
     const callResult = await managementCanister
         .provisional_create_canister_with_cycles({
-            amount: null,
-            settings: null
+            amount: Opt.None,
+            settings: Opt.None
         })
         .call();
 

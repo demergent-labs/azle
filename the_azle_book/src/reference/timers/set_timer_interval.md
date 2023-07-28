@@ -7,10 +7,12 @@ Examples:
 -   [timers](https://github.com/demergent-labs/azle/tree/main/examples/timers)
 
 ```typescript
-import { Duration, ic, TimerId, $update } from 'azle';
+import { Duration, ic, TimerId, Tuple, $update } from 'azle';
 
 $update;
-export function setTimerIntervals(interval: Duration): [TimerId, TimerId] {
+export function setTimerIntervals(
+    interval: Duration
+): Tuple<[TimerId, TimerId]> {
     const functionTimerId = ic.setTimerInterval(interval, callback);
 
     const capturedValue = '🚩';

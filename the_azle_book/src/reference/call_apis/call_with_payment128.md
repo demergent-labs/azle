@@ -8,7 +8,7 @@ Examples:
 
 ```typescript
 import { blob, match, Principal, Result, $update } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+import { managementCanister } from 'azle/canisters/management';
 
 $update;
 export async function executeInstallCode(

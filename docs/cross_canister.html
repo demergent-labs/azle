@@ -168,7 +168,7 @@
 <p>Canisters are generally able to call the query or update methods of other canisters in any subnet. We refer to these types of calls as cross-canister calls.</p>
 <p>A cross-canister call begins with a definition of the canister to be called, referred to as a service.</p>
 <p>Imagine a simple service called <code>token_canister</code>:</p>
-<pre><code class="language-typescript">import { ic, nat64, Principal, StableBTreeMap, $update } from 'azle';
+<pre><code class="language-typescript">import { ic, match, nat64, Principal, StableBTreeMap, $update } from 'azle';
 
 let accounts = new StableBTreeMap&lt;Principal, nat64&gt;(0, 38, 15);
 
@@ -176,8 +176,14 @@ $update;
 export function transfer(to: Principal, amount: nat64): nat64 {
     const from = ic.caller();
 
-    const fromBalance = accounts.get(from) ?? 0n;
-    const toBalance = accounts.get(to) ?? 0n;
+    const fromBalance = match(accounts.get(from), {
+        Some: (some) =&gt; some,
+        None: () =&gt; 0n
+    });
+    const toBalance = match(accounts.get(to), {
+        Some: (some) =&gt; some,
+        None: () =&gt; 0n
+    });
 
     accounts.insert(from, fromBalance - amount);
     accounts.insert(to, toBalance + amount);
@@ -227,12 +233,13 @@ export async function payout(
     return await tokenCanister.transfer(to, amount).call();
 }
 </code></pre>
-<p>Notice that the <code>token_canister.transfer</code> method, because it is a cross-canister method, returns a <code>CallResult</code>. All cross-canister calls return <code>CallResult</code>, which has an <code>Ok</code> or <code>Err</code> property depending on if the cross-canister call was successful or not.</p>
+<p>Notice that the <code>tokenCanister.transfer</code> method, because it is a cross-canister method, returns a <code>CallResult</code>. All cross-canister calls return <code>CallResult</code>, which has an <code>Ok</code> or <code>Err</code> property depending on if the cross-canister call was successful or not.</p>
 <p>The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a <code>CallResult</code>. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a <code>try...catch</code> most likely won't do anything useful.</p>
 <p>Let's add to our example code and explore adding some practical result-based error-handling to stop people from stealing tokens.</p>
 <p><code>token_canister</code>:</p>
 <pre><code class="language-typescript">import {
     ic,
+    match,
     nat64,
     Principal,
     Result,
@@ -257,7 +264,10 @@ export function transfer(
 &gt; {
     const from = ic.caller();
 
-    const fromBalance = accounts.get(from) ?? 0n;
+    const fromBalance = match(accounts.get(from), {
+        Some: (some) =&gt; some,
+        None: () =&gt; 0n
+    });
 
     if (fromBalance &lt; amount) {
         return {
@@ -267,7 +277,10 @@ export function transfer(
         };
     }
 
-    const toBalance = accounts.get(to) ?? 0n;
+    const toBalance = match(accounts.get(to), {
+        Some: (some) =&gt; some,
+        None: () =&gt; 0n
+    });
 
     accounts.insert(from, fromBalance - amount);
     accounts.insert(to, toBalance + amount);
@@ -314,9 +327,9 @@ export async function payout(
     to: Principal,
     amount: nat64
 ): Promise&lt;Result&lt;nat64, string&gt;&gt; {
-    const CallResult = await tokenCanister.transfer(to, amount).call();
+    const callResult = await tokenCanister.transfer(to, amount).call();
 
-    return match(CallResult, {
+    return match(callResult, {
         Ok: (transferResult) =&gt;
             match(transferResult, {
                 Ok: (ok) =&gt; ({ Ok: ok }),
