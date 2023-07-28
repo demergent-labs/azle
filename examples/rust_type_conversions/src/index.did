@@ -210,5 +210,5 @@ service : () -> {
     ) -> () query;
   ultimateSelfReferenceTest : (UltimateSelfRef) -> ();
   variousVariants : (Yes, Reaction) -> (text) query;
-  voidAliasTest : () -> (null) query;
+  voidAliasTest : () -> () query;
 }

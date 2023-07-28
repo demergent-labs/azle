@@ -20,6 +20,7 @@ impl SourceMapped<'_, TsKeywordType> {
             TsKeywordTypeKind::TsVoidKeyword => Primitive::Void,
             TsKeywordTypeKind::TsNullKeyword => Primitive::Null,
             TsKeywordTypeKind::TsNumberKeyword => Primitive::Float64,
+            TsKeywordTypeKind::TsBigIntKeyword => Primitive::Int,
             _ => return Err(UnsupportedType::error_from_ts_keyword_type(self).into()),
         })
     }

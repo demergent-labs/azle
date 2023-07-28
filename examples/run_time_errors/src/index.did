@@ -51,6 +51,7 @@ service : () -> {
   returnInvalidNat32 : () -> (nat32) query;
   returnInvalidNat64 : () -> (nat64) query;
   returnInvalidNat8 : () -> (nat8) query;
+  returnInvalidNullAliasValue : () -> (null) query;
   returnInvalidNullValue : () -> (null) query;
   returnInvalidNumber : () -> (float64) query;
   returnInvalidOkValue : () -> (_AzleResult) query;
@@ -60,6 +61,7 @@ service : () -> {
   returnInvalidTextValue : () -> (text) query;
   returnInvalidToTextPropertyAsInvalidPrincipal : () -> (principal) query;
   returnInvalidToTextReturnValueAsInvalidPrincipal : () -> (principal) query;
+  returnInvalidVoidAliasValue : () -> () query;
   returnInvalidVoidValue : () -> () query;
   returnNonArrayAsInvalidVec : () -> (vec text) query;
   returnNonArrayValueAsInvalidFunc : () -> (func () -> () query) query;

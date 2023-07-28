@@ -23,9 +23,11 @@ impl GetFlattenedServiceClassDecls for Vec<Program> {
 impl Program {
     fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
         match self.deref() {
-            swc_ecma_ast::Program::Module(module) => {
-                module.get_service_class_declarations(&self.source_map, &self.alias_table)
-            }
+            swc_ecma_ast::Program::Module(module) => module.get_service_class_declarations(
+                &self.source_map,
+                &self.alias_table,
+                &self.alias_list,
+            ),
             swc_ecma_ast::Program::Script(_) => vec![],
         }
     }
@@ -36,6 +38,7 @@ trait GetServiceClassDecls {
         &'a self,
         source_map: &'a SourceMap,
         alias_table: &'a AliasTable,
+        alias_list: &'a Vec<String>,
     ) -> Vec<SourceMapped<ClassDecl>>;
 }
 
@@ -44,6 +47,7 @@ impl GetServiceClassDecls for Module {
         &'a self,
         source_map: &'a SourceMap,
         alias_table: &'a AliasTable,
+        alias_list: &'a Vec<String>,
     ) -> Vec<SourceMapped<ClassDecl>> {
         self.body.iter().fold(vec![], |mut acc, module_item| {
             // acc is mut because SourceMapped<FnDecl> can't be cloned, which is
@@ -66,7 +70,12 @@ impl GetServiceClassDecls for Module {
                     if let Some(super_class) = &class_decl.class.super_class {
                         if let Some(name) = super_class.get_name() {
                             if alias_table.service.contains(&name) {
-                                acc.push(SourceMapped::new(class_decl, source_map, alias_table))
+                                acc.push(SourceMapped::new(
+                                    class_decl,
+                                    source_map,
+                                    alias_table,
+                                    alias_list,
+                                ))
                             }
                         }
                     }

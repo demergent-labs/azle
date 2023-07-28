@@ -10,17 +10,24 @@ pub struct SourceMapped<'a, T> {
     inner: T,
     pub source_map: &'a SourceMap,
     pub alias_table: &'a AliasTable,
+    pub alias_list: &'a Vec<String>,
 }
 
 impl<'a, T> SourceMapped<'a, T>
 where
     T: Clone,
 {
-    pub fn new(inner: &T, source_map: &'a SourceMap, alias_table: &'a AliasTable) -> Self {
+    pub fn new(
+        inner: &T,
+        source_map: &'a SourceMap,
+        alias_table: &'a AliasTable,
+        alias_list: &'a Vec<String>,
+    ) -> Self {
         Self {
             inner: inner.clone(),
             source_map,
             alias_table,
+            alias_list,
         }
     }
 
@@ -32,6 +39,7 @@ where
             inner: inner.clone(),
             source_map: self.source_map,
             alias_table: self.alias_table,
+            alias_list: self.alias_list,
         }
     }
 }
@@ -45,6 +53,7 @@ where
             inner: self.inner.clone(),
             source_map: self.source_map,
             alias_table: self.alias_table,
+            alias_list: self.alias_list,
         }
     }
 }

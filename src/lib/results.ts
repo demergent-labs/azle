@@ -7,7 +7,7 @@
 // Some documentation changed from original work.
 
 import { NotifyResult } from './ic';
-import { Alias, Variant, nat64, nat, Service } from './candid_types';
+import { Variant, nat64, nat, Service } from './candid_types';
 
 /**
  * Represents either success (`Ok`) or failure (`Err`)
@@ -97,4 +97,4 @@ export type CallResult<T> = {
  * function should halt or proceed. Functionally equivalent to
  * `Result<null, string>`.
  */
-export type GuardResult = Alias<Result<null, string>>;
+export type GuardResult = Result<null, string>;

@@ -1,6 +1,6 @@
 use cdk_framework::act::node::GuardFunction;
 use std::ops::Deref;
-use swc_ecma_ast::FnDecl;
+use swc_ecma_ast::{FnDecl, TsEntityName};
 
 use crate::{traits::GetName, ts_ast::SourceMapped, TsAst};
 use get_fn_decls::GetProgramFnDecls;
@@ -30,8 +30,13 @@ impl SourceMapped<'_, FnDecl> {
             .return_type
             .as_ref()
             .and_then(|ts_type_ann| ts_type_ann.type_ann.deref().as_ts_type_ref())
-            .and_then(|ts_type_ref| ts_type_ref.type_name.as_ident())
-            .map(|ident| self.alias_table.guard_result.contains(&ident.get_name()))
+            .map(|ts_type_ref| {
+                let name = match &ts_type_ref.type_name {
+                    TsEntityName::TsQualifiedName(qualified_name) => qualified_name.get_name(),
+                    TsEntityName::Ident(ident) => ident.get_name(),
+                };
+                self.alias_table.guard_result.contains(&name)
+            })
             .unwrap_or(false)
     }
 }

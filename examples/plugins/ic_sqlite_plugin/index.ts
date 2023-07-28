@@ -1,4 +1,4 @@
-import { Alias, Record, registerPlugin, Result, Variant, Vec } from 'azle';
+import { Record, registerPlugin, Result, Variant, Vec } from 'azle';
 
 type SQLite = {
     execute: (sql: string) => ExecuteResult;
@@ -14,9 +14,9 @@ export type SQLiteCanisterError = Record<{
     message: string;
 }>;
 
-export type QueryResult = Alias<Result<Vec<Vec<string>>, SQLiteError>>;
+export type QueryResult = Result<Vec<Vec<string>>, SQLiteError>;
 
-export type ExecuteResult = Alias<Result<string, SQLiteError>>;
+export type ExecuteResult = Result<string, SQLiteError>;
 
 export const SQLite: SQLite = registerPlugin({
     globalObjectName: 'SQLite',

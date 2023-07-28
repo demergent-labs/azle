@@ -1,49 +1,21 @@
 import * as ts from 'typescript';
-import { AliasTable } from '../../utils/types';
-import { generateAliasTableForSymbol } from './process_symbol';
-
-export function generateAliasTableFromSymbolTable(
-    symbolTable: ts.SymbolTable,
-    program: ts.Program
-): AliasTable | undefined {
-    let aliasTable = EMPTY_ALIAS_TABLE;
-    // ts.SymbolTable does not use regular iterator conventions thus it's
-    // difficult to turn it into an array, so we have to use forEach instead of
-    // reduce here
-    symbolTable.forEach((symbol, name) => {
-        const subAliasTable = generateAliasTableForSymbol(
-            symbol,
-            name as string,
-            program
-        );
-        if (subAliasTable) {
-            aliasTable = mergeAliasTables(aliasTable, subAliasTable);
-        }
-    });
-
-    if (isEmpty(aliasTable)) {
-        // If the alias table is empty return undefined.
-        // We can skip processing a file if it has no alias table. That's easier
-        // to determine with undefined than with an empty table
-        return undefined;
-    }
-    return aliasTable;
-}
+import { AliasTable } from '../types';
 
 export function generateSingleEntryAliasTable(
     name: string,
     alias: string
-): AliasTable | undefined {
+): AliasTable | null {
     const key = stringToAliasTableKey(name);
     if (key) {
         return {
-            ...EMPTY_ALIAS_TABLE,
+            ...EMPTY,
             [key]: [alias]
         };
     }
+    return null;
 }
 
-export function prependNamespaceToAliasTable(
+export function prependNamespace(
     aliasTable: AliasTable,
     namespace: ts.NamespaceImport | ts.NamespaceExport
 ): AliasTable {
@@ -55,13 +27,10 @@ export function prependNamespaceToAliasTable(
                 (value) => `${prependString}.${value}`
             )
         };
-    }, EMPTY_ALIAS_TABLE);
+    }, EMPTY);
 }
 
-export function renameAliasTable(
-    aliasTable: AliasTable,
-    newPrefix: string
-): AliasTable {
+export function rename(aliasTable: AliasTable, newPrefix: string): AliasTable {
     return Object.entries(aliasTable).reduce((acc, [azleName, aliases]) => {
         return {
             ...acc,
@@ -73,10 +42,10 @@ export function renameAliasTable(
                 return value;
             })
         };
-    }, EMPTY_ALIAS_TABLE);
+    }, EMPTY);
 }
 
-export function mergeAliasTables(
+export function merge(
     aliasTable1: AliasTable,
     aliasTable2: AliasTable
 ): AliasTable {
@@ -88,14 +57,25 @@ export function mergeAliasTables(
                 ...aliasTable2[azleName as keyof AliasTable]
             ]
         };
-    }, EMPTY_ALIAS_TABLE);
+    }, EMPTY);
 }
 
-function isEmpty(aliasTable: AliasTable): boolean {
+export function isEmpty(aliasTable: AliasTable | null): boolean {
+    if (aliasTable === null) {
+        return true;
+    }
     return Object.values(aliasTable).every((aliases) => aliases.length === 0);
 }
 
-export const EMPTY_ALIAS_TABLE: AliasTable = {
+function stringToAliasTableKey(name: string): keyof AliasTable | null {
+    // Make sure that it's a name we can convert
+    if (!(name in ALIAS_TABLE_KEYS)) {
+        return null;
+    }
+    return ALIAS_TABLE_KEYS[name];
+}
+
+export const EMPTY: AliasTable = {
     alias: [],
     call_result: [],
     blob: [],
@@ -142,7 +122,7 @@ export const EMPTY_ALIAS_TABLE: AliasTable = {
     void: []
 };
 
-export const DEFAULT_ALIAS_TABLE: AliasTable = {
+export const DEFAULT: AliasTable = {
     alias: ['Alias'],
     blob: ['blob'],
     bool: [],
@@ -215,6 +195,8 @@ const ALIAS_TABLE_KEYS: {
     nat16: 'nat16',
     nat32: 'nat32',
     nat64: 'nat64',
+    Duration: 'nat64',
+    TimerId: 'nat64',
     null: 'null',
     Oneway: 'oneway_mode',
     Opt: 'opt',
@@ -237,11 +219,3 @@ const ALIAS_TABLE_KEYS: {
     Vec: 'vec',
     void: 'void'
 };
-
-function stringToAliasTableKey(name: string): keyof AliasTable | undefined {
-    // Make sure that it's a name we can convert
-    if (!(name in ALIAS_TABLE_KEYS)) {
-        return undefined;
-    }
-    return ALIAS_TABLE_KEYS[name];
-}

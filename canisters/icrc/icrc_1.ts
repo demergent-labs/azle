@@ -1,5 +1,4 @@
 import {
-    Alias,
     blob,
     int,
     nat,
@@ -12,9 +11,9 @@ import {
 } from '../../src/lib';
 
 // Number of nanoseconds since the UNIX epoch in UTC timezone.
-export type ICRC1Timestamp = Alias<nat64>;
+export type ICRC1Timestamp = nat64;
 
-export type ICRC1Subaccount = Alias<blob>;
+export type ICRC1Subaccount = blob;
 
 export type ICRC1Account = Record<{
     owner: Principal;

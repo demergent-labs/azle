@@ -16,6 +16,9 @@ use super::errors::WrongEnclosedType;
 impl SourceMapped<'_, TsTypeAliasDecl> {
     pub fn to_tuple(&self) -> Result<Option<Tuple>, Vec<Error>> {
         self.process_ts_type_ref(&self.alias_table.tuple, |type_ref| {
+            if self.is_something_that_could_be_in_the_alias_table() {
+                return Ok(None);
+            }
             let (type_params, tuple_type_ref) =
                 (self.get_type_params(), type_ref.to_tuple()).collect_results()?;
             match tuple_type_ref {
@@ -32,14 +35,17 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
 }
 
 impl SourceMapped<'_, TsTypeRef> {
+    pub fn is_tuple(&self) -> bool {
+        self.alias_table.tuple.contains(&self.get_name())
+    }
+
     pub fn to_tuple(&self) -> Result<Option<Tuple>, Vec<Error>> {
-        if self.alias_table.tuple.contains(&self.get_name()) {
-            match self.get_ts_type()?.as_ts_tuple_type() {
-                Some(ts_tuple_type) => Ok(Some(ts_tuple_type.to_tuple()?)),
-                None => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
-            }
-        } else {
-            Ok(None)
+        if !self.is_tuple() {
+            return Ok(None);
+        }
+        match self.get_ts_type()?.as_ts_tuple_type() {
+            Some(ts_tuple_type) => Ok(Some(ts_tuple_type.to_tuple()?)),
+            None => return Err(vec![WrongEnclosedType::error_from_ts_type_ref(self).into()]),
         }
     }
 }

@@ -1,15 +1,6 @@
-import {
-    Alias,
-    nat64,
-    $query,
-    Record,
-    Result,
-    Tuple,
-    Variant,
-    Vec
-} from 'azle';
+import { nat64, $query, Record, Result, Tuple, Variant, Vec } from 'azle';
 
-type SimpleResult = Alias<Result<string, number>>;
+type SimpleResult = Result<string, number>;
 
 $query;
 export function simpleResult(): SimpleResult {
@@ -18,7 +9,7 @@ export function simpleResult(): SimpleResult {
     };
 }
 
-type NonGenericResultAlias = Alias<Result<string, boolean>>;
+type NonGenericResultAlias = Result<string, boolean>;
 
 $query;
 export function nonGenericResultAlias(): NonGenericResultAlias {
@@ -27,7 +18,7 @@ export function nonGenericResultAlias(): NonGenericResultAlias {
     };
 }
 
-type GenericResultAlias<T, E> = Alias<Result<T, E>>;
+type GenericResultAlias<T, E> = Result<T, E>;
 
 $query;
 export function genericResultAlias(): GenericResultAlias<number, string> {
@@ -91,7 +82,7 @@ type MyVariant<T> = Variant<{
     Arm2: nat64;
 }>;
 
-type MyVariantAlias<T> = Alias<MyVariant<T>>;
+type MyVariantAlias<T> = MyVariant<T>;
 
 $query;
 export function myVariantAlias(): MyVariantAlias<string> {
@@ -108,7 +99,7 @@ type GenericAliasVariant<T> = Variant<{
     Arm2: KeyValuePair<T, nat64>;
 }>;
 
-type GenericAliasVariantAlias<T> = Alias<GenericAliasVariant<T>>;
+type GenericAliasVariantAlias<T> = GenericAliasVariant<T>;
 
 $query;
 export function genericAliasVariantAlias(): GenericAliasVariantAlias<string> {
@@ -173,7 +164,7 @@ type MyRecord<T> = Record<{
     prop2: nat64;
 }>;
 
-type MyRecordAlias<T> = Alias<MyRecord<T>>;
+type MyRecordAlias<T> = MyRecord<T>;
 
 $query;
 export function myRecordAlias(): MyRecordAlias<string> {
@@ -190,7 +181,7 @@ type GenericAliasRecord<T> = Record<{
     arm2: KeyValuePairRecord<T, nat64>;
 }>;
 
-type GenericAliasRecordAlias<T> = Alias<GenericAliasRecord<T>>;
+type GenericAliasRecordAlias<T> = GenericAliasRecord<T>;
 
 $query;
 export function genericAliasRecordAlias(): GenericAliasRecordAlias<string> {
@@ -246,7 +237,7 @@ export function threeGenericTypeParamsTuple(): ThreeGenericTypeParamsTuple<
 
 type MyTuple<T> = Tuple<[T, nat64]>;
 
-type MyTupleAlias<T> = Alias<MyTuple<T>>;
+type MyTupleAlias<T> = MyTuple<T>;
 
 $query;
 export function myTupleAlias(): MyTupleAlias<string> {
@@ -257,7 +248,7 @@ type KeyValuePairTuple<K, V> = Tuple<[K, V]>;
 
 type GenericAliasTuple<T> = Tuple<[string, KeyValuePairTuple<T, nat64>]>;
 
-type GenericAliasTupleAlias<T> = Alias<GenericAliasTuple<T>>;
+type GenericAliasTupleAlias<T> = GenericAliasTuple<T>;
 
 $query;
 export function genericAliasTupleAlias(): GenericAliasTupleAlias<string> {
@@ -279,16 +270,16 @@ export function inlineTypesGenericTuple(): GenericTuple<
     ];
 }
 
-type OneGenericTypeParamVec<T> = Alias<Vec<T>>;
+type OneGenericTypeParamVec<T> = Vec<T>;
 
 $query;
 export function oneGenericTypeParamVec(): OneGenericTypeParamVec<string> {
     return ['One generic type parameter', 'example 1'];
 }
 
-type MyVec<T> = Alias<Vec<T>>;
+type MyVec<T> = Vec<T>;
 
-type MyVecAlias<T> = Alias<MyVec<T>>;
+type MyVecAlias<T> = MyVec<T>;
 
 $query;
 export function myVecAlias(): MyVecAlias<string> {

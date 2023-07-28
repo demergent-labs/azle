@@ -4,6 +4,7 @@ use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
+use crate::alias_table::AliasLists;
 use crate::AliasTables;
 use crate::{
     errors::errors::{FileSyntaxError, UnableToLoadFile},
@@ -17,6 +18,7 @@ pub struct Program {
     pub source_map: SourceMap,
     pub filepath: String,
     pub alias_table: AliasTable,
+    pub alias_list: Vec<String>,
 }
 
 impl Deref for Program {
@@ -31,6 +33,7 @@ impl Program {
     pub fn from_file_name(
         ts_file_name: &str,
         alias_tables: &AliasTables,
+        alias_lists: &AliasLists,
     ) -> Result<Option<Self>, Error> {
         let filepath = Path::new(ts_file_name).to_path_buf();
 
@@ -56,17 +59,21 @@ impl Program {
         match parse_result {
             Ok(program) => {
                 if let Ok(source_map) = std::rc::Rc::try_unwrap(cm) {
-                    match alias_tables.get(ts_file_name) {
-                        Some(alias_table) => {
-                            return Ok(Some(Program {
-                                program,
-                                source_map,
-                                filepath: ts_file_name.to_string(),
-                                alias_table: alias_table.clone(),
-                            }));
-                        }
+                    let alias_table = match alias_tables.get(ts_file_name) {
+                        Some(alias_table) => alias_table,
                         None => return Ok(None), // If there is no symbol table for the program then we don't need to process it for candid types
-                    }
+                    };
+                    let alias_list = match alias_lists.get(ts_file_name) {
+                        Some(alias_lists) => alias_lists.clone(),
+                        None => vec![],
+                    };
+                    return Ok(Some(Program {
+                        program,
+                        source_map,
+                        filepath: ts_file_name.to_string(),
+                        alias_table: alias_table.clone(),
+                        alias_list: alias_list.clone(),
+                    }));
                 };
                 internal_error!()
             }
@@ -88,6 +95,7 @@ impl Program {
                                     ts_type_alias_decl,
                                     &self.source_map,
                                     &self.alias_table,
+                                    &self.alias_list,
                                 ))
                             } else {
                                 None
@@ -113,6 +121,7 @@ impl Program {
                                     ts_type_alias_decl,
                                     &self.source_map,
                                     &self.alias_table,
+                                    &self.alias_list,
                                 ))
                             } else {
                                 None

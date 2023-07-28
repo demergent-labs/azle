@@ -1,5 +1,4 @@
 import $kiwi, {
-    Apple,
     banana,
     blackberry,
     Cherry,
@@ -41,8 +40,8 @@ import $kiwi, {
     $ugni,
     Ugni,
     Voavanga,
-    Lime
-    // vanilla
+    Lime,
+    vanilla
 } from './fruit';
 
 import { match as marionberry, ic as lemon, int16 as coconut } from 'azle';
@@ -95,7 +94,7 @@ export type IceAppleBasket = Raspberry<{
     starInt: starFruit.iceApple;
 }>;
 
-export type boysenberry = Apple<boolean>;
+export type boysenberry = boolean;
 
 export type Watermelon = Voavanga<{
     Seeds: nutmeg;
@@ -203,7 +202,7 @@ $kiwi;
 export function checkWatermelonForSeeds(
     shouldHaveSeeds: blackberry,
     watermelon: Watermelon
-): void {
+): vanilla {
     marionberry(watermelon, {
         Seedless: () => {
             if (shouldHaveSeeds) {
