@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { AliasTable } from '../../types';
+import { AliasTable } from '../types';
 
 export function generateSingleEntryAliasTable(
     name: string,

@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
-import * as aliasTable from './alias_table';
-import * as aliasList from './alias_list';
-import { getSymbolTable } from '../utils/get_symbol_table';
+import * as aliasTable from './generate_alias_table/alias_table';
+import * as aliasList from './generate_alias_list';
+import { getSymbolTable } from './utils/get_symbol_table';
 import {
     AliasTable,
     AliasTables,
@@ -9,15 +9,19 @@ import {
     AliasList,
     AliasLists,
     AliasListsOrTables
-} from '../types';
+} from './types';
 
-export function generateAll(
+export function generateForFiles(
     files: string[],
     program: ts.Program,
     generationType: GenerationType
 ): AliasTables | AliasLists {
     const result = files.reduce((acc: AliasListsOrTables, filename: string) => {
-        const aliasTableOrList = generate(filename, program, generationType);
+        const aliasTableOrList = generateForFile(
+            filename,
+            program,
+            generationType
+        );
         if (aliasTableOrList === null) {
             return acc;
         }
@@ -32,7 +36,7 @@ export function generateAll(
     return result as AliasLists;
 }
 
-function generate(
+function generateForFile(
     filename: string,
     program: ts.Program,
     generationType: GenerationType
