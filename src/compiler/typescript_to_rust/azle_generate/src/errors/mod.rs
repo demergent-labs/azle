@@ -43,7 +43,7 @@ use crate::{
         annotated_fn_decl::errors::{MissingReturnType, ParamDefaultValue, UntypedParam},
         errors::{
             AsyncNotAllowed, DuplicateSystemMethod, ExtraneousCanisterMethodAnnotation,
-            MissingReturnTypeAnnotation, VoidReturnTypeRequired,
+            MismatchedPostDeployParams, MissingReturnTypeAnnotation, VoidReturnTypeRequired,
         },
     },
     ts_ast::{
@@ -114,6 +114,7 @@ pub enum Error {
     MultipleTypeDefinitions(MultipleTypeDefinitions),
     MultipleGuardFunctionDefinitions(MultipleGuardFunctionDefinitions),
     MultipleCanisterMethodDefinitions(MultipleCanisterMethodDefinitions),
+    MismatchedPostDeployParams(MismatchedPostDeployParams),
 }
 
 impl std::error::Error for Error {}
@@ -174,6 +175,7 @@ impl Error {
             Self::MultipleTypeDefinitions(e) => e,
             Self::MultipleGuardFunctionDefinitions(e) => e,
             Self::MultipleCanisterMethodDefinitions(e) => e,
+            Self::MismatchedPostDeployParams(e) => e,
         }
     }
 }

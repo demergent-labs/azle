@@ -5,12 +5,14 @@ use crate::{canister_method::AnnotatedFnDecl, ts_ast::SourceMapped};
 pub use async_not_allowed::AsyncNotAllowed;
 pub use duplicate_system_method::DuplicateSystemMethod;
 pub use extraneous_canister_method_annotation::ExtraneousCanisterMethodAnnotation;
+pub use mismatched_post_deploy_params::MismatchedPostDeployParams;
 pub use missing_return_type::MissingReturnTypeAnnotation;
 pub use void_return_type_required::VoidReturnTypeRequired;
 
 mod async_not_allowed;
 mod duplicate_system_method;
 mod extraneous_canister_method_annotation;
+mod mismatched_post_deploy_params;
 mod missing_return_type;
 mod void_return_type_required;
 
