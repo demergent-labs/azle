@@ -87,7 +87,8 @@ import {
     nat32,
     $query,
     StableBTreeMap,
-    $update
+    $update,
+    Opt
 } from 'azle';
 import {
     HttpResponse,
@@ -108,83 +109,79 @@ export function init(ethereumUrl: string): void {
 
 $update;
 export async function ethGetBalance(ethereumAddress: string): Promise<JSON> {
-    const maxResponseBytes = 200n;
-
-    // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
-    const cycleCostBase = 400_000_000n;
-    const cycleCostPerByte = 300_000n; // TODO not sure on this exact cost
-    const cycleCostTotal = cycleCostBase + cycleCostPerByte * maxResponseBytes;
-
     const httpResult = await managementCanister
         .http_request({
-            url: stableStorage.get('ethereumUrl') ?? '',
-            max_response_bytes: maxResponseBytes,
+            url: match(stableStorage.get('ethereumUrl'), {
+                Some: (url) => url,
+                None: () => ''
+            }),
+            max_response_bytes: Opt.Some(2_000n),
             method: {
                 post: null
             },
             headers: [],
-            body: new Uint8Array(
-                encodeUtf8(
-                    JSON.stringify({
-                        jsonrpc: '2.0',
-                        method: 'eth_getBalance',
-                        params: [ethereumAddress, 'earliest'],
-                        id: 1
-                    })
+            body: Opt.Some(
+                new Uint8Array(
+                    encodeUtf8(
+                        JSON.stringify({
+                            jsonrpc: '2.0',
+                            method: 'eth_getBalance',
+                            params: [ethereumAddress, 'earliest'],
+                            id: 1
+                        })
+                    )
                 )
             ),
-            transform: {
+            transform: Opt.Some({
                 function: [ic.id(), 'ethTransform'],
                 context: Uint8Array.from([])
-            }
+            })
         })
-        .cycles(cycleCostTotal)
+        .cycles(50_000_000n)
         .call();
 
     return match(httpResult, {
         Ok: (httpResponse) => decodeUtf8(Uint8Array.from(httpResponse.body)),
-        Err: (err) => ic.trap(err ?? 'httpResult had an error')
+        Err: (err) => ic.trap(err)
     });
 }
 
 $update;
 export async function ethGetBlockByNumber(number: nat32): Promise<JSON> {
-    const maxResponseBytes = 2_000n;
-
-    // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
-    const cycleCostBase = 400_000_000n;
-    const cycleCostPerByte = 300_000n; // TODO not sure on this exact cost
-    const cycleCostTotal = cycleCostBase + cycleCostPerByte * maxResponseBytes;
-
     const httpResult = await managementCanister
         .http_request({
-            url: stableStorage.get('ethereumUrl') ?? '',
-            max_response_bytes: maxResponseBytes,
+            url: match(stableStorage.get('ethereumUrl'), {
+                Some: (url) => url,
+                None: () => ''
+            }),
+            max_response_bytes: Opt.Some(2_000n),
             method: {
                 post: null
             },
             headers: [],
-            body: new Uint8Array(
-                encodeUtf8(
-                    JSON.stringify({
-                        jsonrpc: '2.0',
-                        method: 'eth_getBlockByNumber',
-                        params: [`0x${number.toString(16)}`, false],
-                        id: 1
-                    })
+            body: Opt.Some(
+                new Uint8Array(
+                    encodeUtf8(
+                        JSON.stringify({
+                            jsonrpc: '2.0',
+                            method: 'eth_getBlockByNumber',
+                            params: [`0x${number.toString(16)}`, false],
+                            id: 1
+                        })
+                    )
                 )
             ),
-            transform: {
+            transform: Opt.Some({
                 function: [ic.id(), 'ethTransform'],
                 context: Uint8Array.from([])
-            }
+            })
         })
-        .cycles(cycleCostTotal)
+        .cycles(50_000_000n)
         .call();
 
     return match(httpResult, {
         Ok: (httpResponse) => decodeUtf8(Uint8Array.from(httpResponse.body)),
-        Err: (err) => ic.trap(err ?? 'httpResult had an error')
+        Err: (err) => ic.trap(err)
     });
 }
 

@@ -146,7 +146,54 @@
                     <main>
                         <h1 id="service"><a class="header" href="#service">service</a></h1>
 <p>This section is a work in progress.</p>
-<p><a href="https://github.com/demergent-labs/azle/issues/445">Not yet implemented.</a></p>
+<p>JavaScript classes that inherit from the Azle type <code>Service</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-service-">Candid service type</a> and will become child classes capable of creating instances that can perform cross-canister calls at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import {
+    CallResult,
+    Principal,
+    $query,
+    Result,
+    Service,
+    serviceQuery,
+    serviceUpdate,
+    $update
+} from 'azle';
+
+class SomeService extends Service {
+    @serviceQuery
+    query1: () =&gt; CallResult&lt;boolean&gt;;
+
+    @serviceUpdate
+    update1: () =&gt; CallResult&lt;string&gt;;
+}
+
+$query;
+export function getService(): SomeService {
+    return new SomeService(Principal.fromText('aaaaa-aa'));
+}
+
+$update;
+export async function callService(
+    service: SomeService
+): Promise&lt;Result&lt;string, string&gt;&gt; {
+    return await service.update1().call();
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>type ManualReply = variant { Ok : text; Err : text };
+service : () -&gt; {
+  callService : (
+      service { query1 : () -&gt; (bool) query; update1 : () -&gt; (text) },
+    ) -&gt; (ManualReply);
+  getService : () -&gt; (
+      service { query1 : () -&gt; (bool) query; update1 : () -&gt; (text) },
+    ) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister getService
+(service &quot;aaaaa-aa&quot;)
+</code></pre>
 
                     </main>
 

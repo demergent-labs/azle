@@ -8,7 +8,7 @@ Examples:
 -   [manual_reply](https://github.com/demergent-labs/azle/tree/main/examples/manual_reply)
 
 ```typescript
-import { ic, Manual, $update } from 'azle';
+import { blob, ic, Manual, $update } from 'azle';
 
 $update;
 export function updateBlob(): Manual<blob> {

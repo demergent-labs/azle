@@ -6,11 +6,11 @@ Azle is a beta project using an experimental JS engine. See [the disclaimer](/az
 
 ## High instruction/cycle count
 
-Azle canisters will generally use more Wasm instructions and thus cycles than Motoko or Rust canisters. Azle's efficiency should increase dramatically over time as Boa improves its performance.
+Azle canisters will generally use more Wasm instructions and thus cycles than Motoko or Rust canisters. A good rule of thumb for now would be 2-4x the cycles. Azle's efficiency should increase dramatically with the upcoming JS engine swapout.
 
 ## JavaScript syntax and features
 
-You may encounter various missing JavaScript syntax or features. Azle general has better conformance than that of its [underlying JS engine](https://boajs.dev/boa/test262/).
+You may encounter various missing JavaScript syntax or features. Azle generally has better conformance than that of its [underlying JS engine](https://boajs.dev/boa/test262/).
 
 ## npm packages
 
@@ -20,36 +20,6 @@ Some npm packages will work and some will not work. It is our long-term goal to 
 
 Though promises are implemented, the underlying queue that handles asynchronous operations is very simple. This queue will not behave exactly as queues from the major JS engines. The queue can be thought of as a simple queue that executes tasks sequentially without reporting errors.
 
-## Azle types
+## Treat Azle types as unique keywords
 
-### Imports
-
-Make sure to use types directly without renaming them:
-
-Correct:
-
-```typescript
-import { Record } from 'azle';
-
-type MyRecord = Record<{
-    prop1: string;
-    prop2: number;
-}>;
-```
-
-Incorrect:
-
-```typescript
-import * as Azle from 'azle';
-
-type MyRecord = Azle.Record<{
-    prop1: string;
-    prop2: number;
-}>;
-```
-
-We wish to improve this situation in the future to handle the many various ways of importing.
-
-### Treatment as keywords
-
-You should treat Azle types essentially as keywords, not creating types of the same name elsewhere in your codebase or in other libraries. Any types exported from [this file](https://github.com/demergent-labs/azle/blob/main/index.ts) should be treated thusly.
+You should treat Azle types essentially as unique keywords, not creating types of the same name elsewhere in your codebase or in other libraries. Any types exported from [this file](https://github.com/demergent-labs/azle/blob/main/index.ts) should be treated thusly.

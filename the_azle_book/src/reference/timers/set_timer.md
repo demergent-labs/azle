@@ -7,10 +7,10 @@ Examples:
 -   [timers](https://github.com/demergent-labs/azle/tree/main/examples/timers)
 
 ```typescript
-import { Duration, ic, TimerId, $update } from 'azle';
+import { Duration, ic, TimerId, Tuple, $update } from 'azle';
 
 $update;
-export function setTimers(delay: Duration): [TimerId, TimerId] {
+export function setTimers(delay: Duration): Tuple<[TimerId, TimerId]> {
     const functionTimerId = ic.setTimer(delay, callback);
 
     const capturedValue = '🚩';

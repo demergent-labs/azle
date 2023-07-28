@@ -8,7 +8,13 @@ Examples:
 -   [outgoing_http_requests](https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests)
 
 ```typescript
-import { ic, Manual, $update } from 'azle';
+import { blob, ic, int, Manual, Record, $update, Variant } from 'azle';
+
+type Options = Variant<{
+    High: null;
+    Medium: null;
+    Low: null;
+}>;
 
 $update;
 export function replyRaw(): Manual<

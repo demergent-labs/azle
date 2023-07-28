@@ -148,35 +148,15 @@
 <h2 id="unknown-security-vulnerabilities"><a class="header" href="#unknown-security-vulnerabilities">Unknown security vulnerabilities</a></h2>
 <p>Azle is a beta project using an experimental JS engine. See <a href="/azle.html#disclaimer">the disclaimer</a> for more information.</p>
 <h2 id="high-instructioncycle-count"><a class="header" href="#high-instructioncycle-count">High instruction/cycle count</a></h2>
-<p>Azle canisters will generally use more Wasm instructions and thus cycles than Motoko or Rust canisters. Azle's efficiency should increase dramatically over time as Boa improves its performance.</p>
+<p>Azle canisters will generally use more Wasm instructions and thus cycles than Motoko or Rust canisters. A good rule of thumb for now would be 2-4x the cycles. Azle's efficiency should increase dramatically with the upcoming JS engine swapout.</p>
 <h2 id="javascript-syntax-and-features"><a class="header" href="#javascript-syntax-and-features">JavaScript syntax and features</a></h2>
-<p>You may encounter various missing JavaScript syntax or features. Azle general has better conformance than that of its <a href="https://boajs.dev/boa/test262/">underlying JS engine</a>.</p>
+<p>You may encounter various missing JavaScript syntax or features. Azle generally has better conformance than that of its <a href="https://boajs.dev/boa/test262/">underlying JS engine</a>.</p>
 <h2 id="npm-packages"><a class="header" href="#npm-packages">npm packages</a></h2>
 <p>Some npm packages will work and some will not work. It is our long-term goal to support as many npm packages as possible. There are many reasons why an npm package may not currently work, including the small Wasm binary limit of the IC, bugs in Azle's JS engine <a href="https://github.com/boa-dev/boa">Boa</a>, or unimplemented web or Node.js APIs. Feel free to open issues if your npm package does not work in Azle.</p>
 <h2 id="promises"><a class="header" href="#promises">Promises</a></h2>
 <p>Though promises are implemented, the underlying queue that handles asynchronous operations is very simple. This queue will not behave exactly as queues from the major JS engines. The queue can be thought of as a simple queue that executes tasks sequentially without reporting errors.</p>
-<h2 id="azle-types"><a class="header" href="#azle-types">Azle types</a></h2>
-<h3 id="imports"><a class="header" href="#imports">Imports</a></h3>
-<p>Make sure to use types directly without renaming them:</p>
-<p>Correct:</p>
-<pre><code class="language-typescript">import { Record } from 'azle';
-
-type MyRecord = Record&lt;{
-    prop1: string;
-    prop2: number;
-}&gt;;
-</code></pre>
-<p>Incorrect:</p>
-<pre><code class="language-typescript">import * as Azle from 'azle';
-
-type MyRecord = Azle.Record&lt;{
-    prop1: string;
-    prop2: number;
-}&gt;;
-</code></pre>
-<p>We wish to improve this situation in the future to handle the many various ways of importing.</p>
-<h3 id="treatment-as-keywords"><a class="header" href="#treatment-as-keywords">Treatment as keywords</a></h3>
-<p>You should treat Azle types essentially as keywords, not creating types of the same name elsewhere in your codebase or in other libraries. Any types exported from <a href="https://github.com/demergent-labs/azle/blob/main/index.ts">this file</a> should be treated thusly.</p>
+<h2 id="treat-azle-types-as-unique-keywords"><a class="header" href="#treat-azle-types-as-unique-keywords">Treat Azle types as unique keywords</a></h2>
+<p>You should treat Azle types essentially as unique keywords, not creating types of the same name elsewhere in your codebase or in other libraries. Any types exported from <a href="https://github.com/demergent-labs/azle/blob/main/index.ts">this file</a> should be treated thusly.</p>
 
                     </main>
 

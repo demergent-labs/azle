@@ -27,7 +27,7 @@ A cross-canister call begins with a definition of the canister to be called, ref
 Imagine a simple service called `token_canister`:
 
 ```typescript
-import { ic, nat64, Principal, StableBTreeMap, $update } from 'azle';
+import { ic, match, nat64, Principal, StableBTreeMap, $update } from 'azle';
 
 let accounts = new StableBTreeMap<Principal, nat64>(0, 38, 15);
 
@@ -35,8 +35,14 @@ $update;
 export function transfer(to: Principal, amount: nat64): nat64 {
     const from = ic.caller();
 
-    const fromBalance = accounts.get(from) ?? 0n;
-    const toBalance = accounts.get(to) ?? 0n;
+    const fromBalance = match(accounts.get(from), {
+        Some: (some) => some,
+        None: () => 0n
+    });
+    const toBalance = match(accounts.get(to), {
+        Some: (some) => some,
+        None: () => 0n
+    });
 
     accounts.insert(from, fromBalance - amount);
     accounts.insert(to, toBalance + amount);
@@ -97,7 +103,7 @@ export async function payout(
 }
 ```
 
-Notice that the `token_canister.transfer` method, because it is a cross-canister method, returns a `CallResult`. All cross-canister calls return `CallResult`, which has an `Ok` or `Err` property depending on if the cross-canister call was successful or not.
+Notice that the `tokenCanister.transfer` method, because it is a cross-canister method, returns a `CallResult`. All cross-canister calls return `CallResult`, which has an `Ok` or `Err` property depending on if the cross-canister call was successful or not.
 
 The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a `CallResult`. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a `try...catch` most likely won't do anything useful.
 
@@ -108,6 +114,7 @@ Let's add to our example code and explore adding some practical result-based err
 ```typescript
 import {
     ic,
+    match,
     nat64,
     Principal,
     Result,
@@ -132,7 +139,10 @@ export function transfer(
 > {
     const from = ic.caller();
 
-    const fromBalance = accounts.get(from) ?? 0n;
+    const fromBalance = match(accounts.get(from), {
+        Some: (some) => some,
+        None: () => 0n
+    });
 
     if (fromBalance < amount) {
         return {
@@ -142,7 +152,10 @@ export function transfer(
         };
     }
 
-    const toBalance = accounts.get(to) ?? 0n;
+    const toBalance = match(accounts.get(to), {
+        Some: (some) => some,
+        None: () => 0n
+    });
 
     accounts.insert(from, fromBalance - amount);
     accounts.insert(to, toBalance + amount);
@@ -192,9 +205,9 @@ export async function payout(
     to: Principal,
     amount: nat64
 ): Promise<Result<nat64, string>> {
-    const CallResult = await tokenCanister.transfer(to, amount).call();
+    const callResult = await tokenCanister.transfer(to, amount).call();
 
-    return match(CallResult, {
+    return match(callResult, {
         Ok: (transferResult) =>
             match(transferResult, {
                 Ok: (ok) => ({ Ok: ok }),

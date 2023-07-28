@@ -858,25 +858,30 @@ export function setMany(numEntries: nat64): void {
 <p>The following is a simple example showing how to import and use most of the Candid types available in Azle:</p>
 <pre><code class="language-typescript">import {
     blob,
-    nat,
-    nat64,
-    nat32,
-    nat16,
-    nat8,
-    int,
-    int64,
-    int32,
-    int16,
-    int8,
+    CallResult,
     float64,
     float32,
-    Opt,
-    Variant,
     Func,
+    int,
+    int8,
+    int16,
+    int32,
+    int64,
+    nat,
+    nat8,
+    nat16,
+    nat32,
+    nat64,
+    Opt,
     Principal,
     $query,
     Query,
-    Record
+    Record,
+    Service,
+    serviceQuery,
+    serviceUpdate,
+    Variant,
+    Vec
 } from 'azle';
 
 type Candid = Record&lt;{
@@ -895,6 +900,8 @@ type Candid = Record&lt;{
     float64: float64;
     float32: float32;
     bool: boolean;
+    null: null;
+    vec: Vec&lt;string&gt;;
     opt: Opt&lt;nat&gt;;
     record: Record&lt;{
         firstName: string;
@@ -907,8 +914,17 @@ type Candid = Record&lt;{
         Tag3: int;
     }&gt;;
     func: Func&lt;Query&lt;() =&gt; Candid&gt;&gt;;
+    service: MyService;
     principal: Principal;
 }&gt;;
+
+class MyService extends Service {
+    @serviceQuery
+    query1: () =&gt; CallResult&lt;boolean&gt;;
+
+    @serviceUpdate
+    update1: () =&gt; CallResult&lt;string&gt;;
+}
 
 $query;
 export function candidTypes(): Candid {
@@ -928,6 +944,8 @@ export function candidTypes(): Candid {
         float64: Math.E,
         float32: Math.PI,
         bool: true,
+        null: null,
+        vec: ['has one element'],
         opt: Opt.None,
         record: {
             firstName: 'John',
@@ -941,6 +959,7 @@ export function candidTypes(): Candid {
             Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
             'candidTypes'
         ],
+        service: new MyService(Principal.fromText('aaaaa-aa')),
         principal: Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
     };
 }
@@ -951,12 +970,15 @@ export function candidTypes(): Candid {
     &quot;int&quot; = 170_141_183_460_469_231_731_687_303_715_884_105_727 : int;
     &quot;nat&quot; = 340_282_366_920_938_463_463_374_607_431_768_211_455 : nat;
     &quot;opt&quot; = null;
+    &quot;vec&quot; = vec { &quot;has one element&quot; };
+    &quot;service&quot; = service &quot;aaaaa-aa&quot;;
     &quot;principal&quot; = principal &quot;ryjl3-tyaaa-aaaaa-aaaba-cai&quot;;
     &quot;blob&quot; = vec {};
     &quot;bool&quot; = true;
     &quot;func&quot; = func &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;.candidTypes;
     &quot;int8&quot; = 127 : int8;
     &quot;nat8&quot; = 255 : nat8;
+    &quot;null&quot; = null : null;
     &quot;text&quot; = &quot;text&quot;;
     &quot;nat16&quot; = 65_535 : nat16;
     &quot;nat32&quot; = 4_294_967_295 : nat32;
@@ -965,18 +987,14 @@ export function candidTypes(): Candid {
     &quot;int32&quot; = 2_147_483_647 : int32;
     &quot;int64&quot; = 9_223_372_036_854_775_807 : int64;
     &quot;variant&quot; = variant { Tag1 };
-    &quot;float32&quot; = 0 : float32;
-    &quot;float64&quot; = 0 : float64;
-    &quot;record&quot; = record {
-      age = 35 : nat8;
-      firstName = &quot;John&quot;;
-      lastName = &quot;Doe&quot;;
-    };
+    &quot;float32&quot; = 3.1415927 : float32;
+    &quot;float64&quot; = 2.718281828459045 : float64;
+    &quot;record&quot; = record { age = 35 : nat8; lastName = &quot;Doe&quot;; firstName = &quot;John&quot; };
   },
 )
 </code></pre>
 <h3 id="text"><a class="header" href="#text">text</a></h3>
-<p>The TypeScript type <code>string</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-text">Candid type text</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript String</a> at runtime.</p>
+<p>The TypeScript type <code>string</code> and the Azle type <code>text</code> both correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-text">Candid type text</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript String</a> at runtime.</p>
 <p>TypeScript:</p>
 <pre><code class="language-typescript">import { $query } from 'azle';
 
@@ -1291,7 +1309,7 @@ export function printInt8(int8: int8): int8 {
 (127 : int8)
 </code></pre>
 <h3 id="float64"><a class="header" href="#float64">float64</a></h3>
-<p>The Azle type <code>float64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>The Azle type <code>float64</code> and the TypeScript type <code>number</code> both correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
 <p>TypeScript:</p>
 <pre><code class="language-typescript">import { float64, $query } from 'azle';
 
@@ -1421,7 +1439,7 @@ export function printNumbers(numbers: Vec&lt;int32&gt;): Vec&lt;int32&gt; {
 (vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })
 </code></pre>
 <h3 id="opt"><a class="header" href="#opt">opt</a></h3>
-<p>The Azle type <code>Opt</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t">Candid type opt</a> and will become the enclosed JavaScript type or null at runtime.</p>
+<p>The Azle type <code>Opt</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t">Candid type opt</a>. It is a <a href="candid.html#variant">variant</a> with <code>Some</code> and <code>None</code> cases. At runtime if the value of the variant is <code>Some</code>, the <code>Some</code> property of the variant object will have a value of the enclosed <code>Opt</code> type at runtime.</p>
 <p>TypeScript:</p>
 <pre><code class="language-typescript">import { Opt, $query } from 'azle';
 
@@ -1526,7 +1544,7 @@ service : () -&gt; {
 (variant { Fire })
 </code></pre>
 <h3 id="func"><a class="header" href="#func">func</a></h3>
-<p>The Azle type <code>func</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-func---">Candid type func</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> with two elements at runtime.</p>
+<p>The Azle type <code>Func</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-func---">Candid type func</a>. It is a <a href="https://www.tutorialsteacher.com/typescript/typescript-tuple">TypeScript Tuple</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> with two elements at runtime.</p>
 <p>The first element is an <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal</a> and the second is a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript string</a>. The <code>@dfinity/principal</code> represents the <code>principal</code> of the canister/service where the function exists, and the <code>string</code> represents the function's name.</p>
 <p>A <code>func</code> acts as a callback, allowing the <code>func</code> receiver to know which canister instance and method must be used to call back.</p>
 <p>TypeScript:</p>
@@ -1558,7 +1576,54 @@ export function printBasicFunc(basicFunc: BasicFunc): BasicFunc {
 (func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.getBasicFunc)
 </code></pre>
 <h3 id="service"><a class="header" href="#service">service</a></h3>
-<p><a href="https://github.com/demergent-labs/azle/issues/445">Not yet implemented.</a></p>
+<p>JavaScript classes that inherit from the Azle type <code>Service</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-service-">Candid service type</a> and will become child classes capable of creating instances that can perform cross-canister calls at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import {
+    CallResult,
+    Principal,
+    $query,
+    Result,
+    Service,
+    serviceQuery,
+    serviceUpdate,
+    $update
+} from 'azle';
+
+class SomeService extends Service {
+    @serviceQuery
+    query1: () =&gt; CallResult&lt;boolean&gt;;
+
+    @serviceUpdate
+    update1: () =&gt; CallResult&lt;string&gt;;
+}
+
+$query;
+export function getService(): SomeService {
+    return new SomeService(Principal.fromText('aaaaa-aa'));
+}
+
+$update;
+export async function callService(
+    service: SomeService
+): Promise&lt;Result&lt;string, string&gt;&gt; {
+    return await service.update1().call();
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>type ManualReply = variant { Ok : text; Err : text };
+service : () -&gt; {
+  callService : (
+      service { query1 : () -&gt; (bool) query; update1 : () -&gt; (text) },
+    ) -&gt; (ManualReply);
+  getService : () -&gt; (
+      service { query1 : () -&gt; (bool) query; update1 : () -&gt; (text) },
+    ) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister getService
+(service &quot;aaaaa-aa&quot;)
+</code></pre>
 <h3 id="principal"><a class="header" href="#principal">principal</a></h3>
 <p>The Azle type <code>Principal</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-principal">Candid type principal</a> and will become an <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal</a> at runtime.</p>
 <p>TypeScript:</p>
@@ -1644,7 +1709,7 @@ Caused by: Failed to create argument blob.
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-structures"><a class="header" href="#stable-structures">Stable Structures</a></h1>
 <h2 id="tldr-2"><a class="header" href="#tldr-2">TLDR</a></h2>
 <ul>
-<li>48 GiB of stable memory</li>
+<li>64 GiB of stable memory</li>
 <li>Persistent across upgrades</li>
 <li>Familiar API</li>
 <li>Must specify memory id</li>
@@ -1652,7 +1717,7 @@ Caused by: Failed to create argument blob.
 <li>Must specify maximum value size</li>
 <li>No migrations per memory id</li>
 </ul>
-<p>Stable structures are data structures with familiar APIs that allow access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 48 GiB of storage. Stable memory persists automatically across upgrades.</p>
+<p>Stable structures are data structures with familiar APIs that allow access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 64 GiB of storage. Stable memory persists automatically across upgrades.</p>
 <p>Persistence on the Internet Computer (IC) is very important to understand. When a canister is upgraded (its code is changed after being initially deployed) its heap is wiped. This includes all global variables.</p>
 <p>On the other hand, anything stored in stable memory will be preserved. Writing and reading to and from stable memory can be done with a <a href="./reference/stable_memory/stable_memory.html">low-level API</a>, but it is generally easier and preferable to use stable structures.</p>
 <p>Azle currently provides one stable structure called <code>StableBTreeMap</code>. It's similar to a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">JavaScript Map</a> and has most of the common operations you'd expect such as reading, inserting, and removing values.</p>
@@ -1672,6 +1737,7 @@ let map = new StableBTreeMap&lt;nat8, string&gt;(0, 100, 1_000);
     Opt,
     $query,
     StableBTreeMap,
+    Tuple,
     $update,
     Vec
 } from 'azle';
@@ -1702,7 +1768,7 @@ export function isEmpty(): boolean {
 }
 
 $query;
-export function items(): Vec&lt;[Key, Value]&gt; {
+export function items(): Vec&lt;Tuple&lt;[Key, Value]&gt;&gt; {
     return map.items();
 }
 
@@ -1739,7 +1805,8 @@ export function values(): Vec&lt;Value&gt; {
     StableBTreeMap,
     $update,
     Variant,
-    Vec
+    Vec,
+    match
 } from 'azle';
 
 type User = Record&lt;{
@@ -1794,23 +1861,26 @@ export function deleteUser(id: Principal): Result&lt;
 &gt; {
     const user = users.get(id);
 
-    if (user === null) {
-        return {
-            Err: {
-                UserDoesNotExist: id
-            }
-        };
-    }
+    return match(user, {
+        Some: (user) =&gt; {
+            user.recordingIds.forEach((recordingId) =&gt; {
+                recordings.remove(recordingId);
+            });
 
-    user.recordingIds.forEach((recordingId) =&gt; {
-        recordings.remove(recordingId);
+            users.remove(user.id);
+
+            return {
+                Ok: user
+            };
+        },
+        None: () =&gt; {
+            return {
+                Err: {
+                    UserDoesNotExist: id
+                }
+            };
+        }
     });
-
-    users.remove(user.id);
-
-    return {
-        Ok: user
-    };
 }
 
 $update;
@@ -1826,35 +1896,38 @@ export function createRecording(
 &gt; {
     const user = users.get(userId);
 
-    if (user === null) {
-        return {
-            Err: {
-                UserDoesNotExist: userId
-            }
-        };
-    }
+    return match(user, {
+        Some: (user) =&gt; {
+            const id = generateId();
+            const recording: Recording = {
+                id,
+                audio,
+                createdAt: ic.time(),
+                name,
+                userId
+            };
 
-    const id = generateId();
-    const recording: Recording = {
-        id,
-        audio,
-        createdAt: ic.time(),
-        name,
-        userId
-    };
+            recordings.insert(recording.id, recording);
 
-    recordings.insert(recording.id, recording);
+            const updatedUser: User = {
+                ...user,
+                recordingIds: [...user.recordingIds, recording.id]
+            };
 
-    const updatedUser: User = {
-        ...user,
-        recordingIds: [...user.recordingIds, recording.id]
-    };
+            users.insert(updatedUser.id, updatedUser);
 
-    users.insert(updatedUser.id, updatedUser);
-
-    return {
-        Ok: recording
-    };
+            return {
+                Ok: recording
+            };
+        },
+        None: () =&gt; {
+            return {
+                Err: {
+                    UserDoesNotExist: userId
+                }
+            };
+        }
+    });
 }
 
 $query;
@@ -1877,38 +1950,45 @@ export function deleteRecording(id: Principal): Result&lt;
 &gt; {
     const recording = recordings.get(id);
 
-    if (recording === null) {
-        return {
-            Err: {
-                RecordingDoesNotExist: id
-            }
-        };
-    }
+    return match(recording, {
+        Some: (recording) =&gt; {
+            const user = users.get(recording.userId);
 
-    const user = users.get(recording.userId);
+            return match(user, {
+                Some: (user) =&gt; {
+                    const updatedUser: User = {
+                        ...user,
+                        recordingIds: user.recordingIds.filter(
+                            (recordingId) =&gt;
+                                recordingId.toText() !== recording.id.toText()
+                        )
+                    };
 
-    if (user === null) {
-        return {
-            Err: {
-                UserDoesNotExist: recording.userId
-            }
-        };
-    }
+                    users.insert(updatedUser.id, updatedUser);
 
-    const updatedUser: User = {
-        ...user,
-        recordingIds: user.recordingIds.filter(
-            (recordingId) =&gt; recordingId.toText() !== recording.id.toText()
-        )
-    };
+                    recordings.remove(id);
 
-    users.insert(updatedUser.id, updatedUser);
-
-    recordings.remove(id);
-
-    return {
-        Ok: recording
-    };
+                    return {
+                        Ok: recording
+                    };
+                },
+                None: () =&gt; {
+                    return {
+                        Err: {
+                            UserDoesNotExist: recording.userId
+                        }
+                    };
+                }
+            });
+        },
+        None: () =&gt; {
+            return {
+                Err: {
+                    RecordingDoesNotExist: id
+                }
+            };
+        }
+    });
 }
 
 function generateId(): Principal {
@@ -1951,7 +2031,7 @@ let recordings = new StableBTreeMap&lt;Principal, Recording&gt;(1, 38, 5_000_000
 <p>As you can see, finding the correct maximum key and value sizes is a bit of an art right now. Combining some trial and error with reasoning about your specific application should get you a working solution in most cases. It's our hope that the need to specify maximum key and value sizes will be removed in the future.</p>
 <h2 id="caveats"><a class="header" href="#caveats">Caveats</a></h2>
 <h3 id="keys"><a class="header" href="#keys">Keys</a></h3>
-<p>You should be wary when using <code>float64</code>, <code>float32</code>, <code>service</code>, or <code>func</code> in any type that is a key for a stable structure. These types do not have the ability to be strictly ordered in all cases. <code>service</code> and <code>func</code> will have no order. <code>float64</code> and <code>float32</code> will treat <code>NaN</code> as less than any other type. These caveats may impact key performance.</p>
+<p>You should be wary when using a <code>float64</code>, <code>float32</code>, <code>Service</code>, or <code>Func</code> in any type that is a key for a stable structure. These types do not have the ability to be strictly ordered in all cases. <code>Service</code> and <code>Func</code> will have no order. <code>float64</code> and <code>float32</code> will treat <code>NaN</code> as less than any other type. These caveats may impact key performance.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cross-canister"><a class="header" href="#cross-canister">Cross-canister</a></h1>
 <p>Examples:</p>
 <ul>
@@ -1976,7 +2056,7 @@ let recordings = new StableBTreeMap&lt;Principal, Recording&gt;(1, 38, 5_000_000
 <p>Canisters are generally able to call the query or update methods of other canisters in any subnet. We refer to these types of calls as cross-canister calls.</p>
 <p>A cross-canister call begins with a definition of the canister to be called, referred to as a service.</p>
 <p>Imagine a simple service called <code>token_canister</code>:</p>
-<pre><code class="language-typescript">import { ic, nat64, Principal, StableBTreeMap, $update } from 'azle';
+<pre><code class="language-typescript">import { ic, match, nat64, Principal, StableBTreeMap, $update } from 'azle';
 
 let accounts = new StableBTreeMap&lt;Principal, nat64&gt;(0, 38, 15);
 
@@ -1984,8 +2064,14 @@ $update;
 export function transfer(to: Principal, amount: nat64): nat64 {
     const from = ic.caller();
 
-    const fromBalance = accounts.get(from) ?? 0n;
-    const toBalance = accounts.get(to) ?? 0n;
+    const fromBalance = match(accounts.get(from), {
+        Some: (some) =&gt; some,
+        None: () =&gt; 0n
+    });
+    const toBalance = match(accounts.get(to), {
+        Some: (some) =&gt; some,
+        None: () =&gt; 0n
+    });
 
     accounts.insert(from, fromBalance - amount);
     accounts.insert(to, toBalance + amount);
@@ -2035,12 +2121,13 @@ export async function payout(
     return await tokenCanister.transfer(to, amount).call();
 }
 </code></pre>
-<p>Notice that the <code>token_canister.transfer</code> method, because it is a cross-canister method, returns a <code>CallResult</code>. All cross-canister calls return <code>CallResult</code>, which has an <code>Ok</code> or <code>Err</code> property depending on if the cross-canister call was successful or not.</p>
+<p>Notice that the <code>tokenCanister.transfer</code> method, because it is a cross-canister method, returns a <code>CallResult</code>. All cross-canister calls return <code>CallResult</code>, which has an <code>Ok</code> or <code>Err</code> property depending on if the cross-canister call was successful or not.</p>
 <p>The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a <code>CallResult</code>. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a <code>try...catch</code> most likely won't do anything useful.</p>
 <p>Let's add to our example code and explore adding some practical result-based error-handling to stop people from stealing tokens.</p>
 <p><code>token_canister</code>:</p>
 <pre><code class="language-typescript">import {
     ic,
+    match,
     nat64,
     Principal,
     Result,
@@ -2065,7 +2152,10 @@ export function transfer(
 &gt; {
     const from = ic.caller();
 
-    const fromBalance = accounts.get(from) ?? 0n;
+    const fromBalance = match(accounts.get(from), {
+        Some: (some) =&gt; some,
+        None: () =&gt; 0n
+    });
 
     if (fromBalance &lt; amount) {
         return {
@@ -2075,7 +2165,10 @@ export function transfer(
         };
     }
 
-    const toBalance = accounts.get(to) ?? 0n;
+    const toBalance = match(accounts.get(to), {
+        Some: (some) =&gt; some,
+        None: () =&gt; 0n
+    });
 
     accounts.insert(from, fromBalance - amount);
     accounts.insert(to, toBalance + amount);
@@ -2122,9 +2215,9 @@ export async function payout(
     to: Principal,
     amount: nat64
 ): Promise&lt;Result&lt;nat64, string&gt;&gt; {
-    const CallResult = await tokenCanister.transfer(to, amount).call();
+    const callResult = await tokenCanister.transfer(to, amount).call();
 
-    return match(CallResult, {
+    return match(callResult, {
         Ok: (transferResult) =&gt;
             match(transferResult, {
                 Ok: (ok) =&gt; ({ Ok: ok }),
@@ -2294,7 +2387,8 @@ export function http_request(req: HttpRequest): HttpResponse {
     nat32,
     $query,
     StableBTreeMap,
-    $update
+    $update,
+    Opt
 } from 'azle';
 import {
     HttpResponse,
@@ -2315,83 +2409,79 @@ export function init(ethereumUrl: string): void {
 
 $update;
 export async function ethGetBalance(ethereumAddress: string): Promise&lt;JSON&gt; {
-    const maxResponseBytes = 200n;
-
-    // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
-    const cycleCostBase = 400_000_000n;
-    const cycleCostPerByte = 300_000n; // TODO not sure on this exact cost
-    const cycleCostTotal = cycleCostBase + cycleCostPerByte * maxResponseBytes;
-
     const httpResult = await managementCanister
         .http_request({
-            url: stableStorage.get('ethereumUrl') ?? '',
-            max_response_bytes: maxResponseBytes,
+            url: match(stableStorage.get('ethereumUrl'), {
+                Some: (url) =&gt; url,
+                None: () =&gt; ''
+            }),
+            max_response_bytes: Opt.Some(2_000n),
             method: {
                 post: null
             },
             headers: [],
-            body: new Uint8Array(
-                encodeUtf8(
-                    JSON.stringify({
-                        jsonrpc: '2.0',
-                        method: 'eth_getBalance',
-                        params: [ethereumAddress, 'earliest'],
-                        id: 1
-                    })
+            body: Opt.Some(
+                new Uint8Array(
+                    encodeUtf8(
+                        JSON.stringify({
+                            jsonrpc: '2.0',
+                            method: 'eth_getBalance',
+                            params: [ethereumAddress, 'earliest'],
+                            id: 1
+                        })
+                    )
                 )
             ),
-            transform: {
+            transform: Opt.Some({
                 function: [ic.id(), 'ethTransform'],
                 context: Uint8Array.from([])
-            }
+            })
         })
-        .cycles(cycleCostTotal)
+        .cycles(50_000_000n)
         .call();
 
     return match(httpResult, {
         Ok: (httpResponse) =&gt; decodeUtf8(Uint8Array.from(httpResponse.body)),
-        Err: (err) =&gt; ic.trap(err ?? 'httpResult had an error')
+        Err: (err) =&gt; ic.trap(err)
     });
 }
 
 $update;
 export async function ethGetBlockByNumber(number: nat32): Promise&lt;JSON&gt; {
-    const maxResponseBytes = 2_000n;
-
-    // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
-    const cycleCostBase = 400_000_000n;
-    const cycleCostPerByte = 300_000n; // TODO not sure on this exact cost
-    const cycleCostTotal = cycleCostBase + cycleCostPerByte * maxResponseBytes;
-
     const httpResult = await managementCanister
         .http_request({
-            url: stableStorage.get('ethereumUrl') ?? '',
-            max_response_bytes: maxResponseBytes,
+            url: match(stableStorage.get('ethereumUrl'), {
+                Some: (url) =&gt; url,
+                None: () =&gt; ''
+            }),
+            max_response_bytes: Opt.Some(2_000n),
             method: {
                 post: null
             },
             headers: [],
-            body: new Uint8Array(
-                encodeUtf8(
-                    JSON.stringify({
-                        jsonrpc: '2.0',
-                        method: 'eth_getBlockByNumber',
-                        params: [`0x${number.toString(16)}`, false],
-                        id: 1
-                    })
+            body: Opt.Some(
+                new Uint8Array(
+                    encodeUtf8(
+                        JSON.stringify({
+                            jsonrpc: '2.0',
+                            method: 'eth_getBlockByNumber',
+                            params: [`0x${number.toString(16)}`, false],
+                            id: 1
+                        })
+                    )
                 )
             ),
-            transform: {
+            transform: Opt.Some({
                 function: [ic.id(), 'ethTransform'],
                 context: Uint8Array.from([])
-            }
+            })
         })
-        .cycles(cycleCostTotal)
+        .cycles(50_000_000n)
         .call();
 
     return match(httpResult, {
         Ok: (httpResponse) =&gt; decodeUtf8(Uint8Array.from(httpResponse.body)),
-        Err: (err) =&gt; ic.trap(err ?? 'httpResult had an error')
+        Err: (err) =&gt; ic.trap(err)
     });
 }
 
@@ -2414,7 +2504,7 @@ export async function randomBytes(): Promise&lt;Result&lt;blob, string&gt;&gt; {
     return await managementCanister.raw_rand().call();
 }
 </code></pre>
-<p>See the <a href="https://github.com/demergent-labs/azle/blob/main/canisters/management/index.ts">management canister types</a> for all methods and their parameter and return types.</p>
+<p>See the <a href="./reference/management_canister/management_canister.html">management canister reference section</a> for more information.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister-lifecycle"><a class="header" href="#canister-lifecycle">Canister Lifecycle</a></h1>
 <p>This chapter is a work in progress.</p>
 <pre><code class="language-typescript">import { $init, $postUpgrade, $preUpgrade } from 'azle';
@@ -2564,7 +2654,7 @@ async function repeatCrossCanisterTimerCallback(): Promise&lt;void&gt; {
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cycles"><a class="header" href="#cycles">Cycles</a></h1>
 <p>This chapter is a work in progress.</p>
-<p>Cycles are essentially units of computational resources such as bandwidth, memory, and CPU instructions. Costs are generally metered on the Internet Computer (IC) by cycles. You can see a breakdown of all cycle costs here: https://internetcomputer.org/docs/current/developer-docs/production/computation-and-storage-costs</p>
+<p>Cycles are essentially units of computational resources such as bandwidth, memory, and CPU instructions. Costs are generally metered on the Internet Computer (IC) by cycles. You can see <a href="https://internetcomputer.org/docs/current/developer-docs/production/computation-and-storage-costs">a breakdown of all cycle costs here</a>.</p>
 <p>Currently queries do not have any cycle costs.</p>
 <p>Most important to you will probably be update costs.</p>
 <p>TODO break down some cycle scenarios maybe? Perhaps we should show some of our analyses for different types of applications. Maybe show how to send and receive cycles, exactly how to do it.</p>
@@ -2575,35 +2665,15 @@ async function repeatCrossCanisterTimerCallback(): Promise&lt;void&gt; {
 <h2 id="unknown-security-vulnerabilities"><a class="header" href="#unknown-security-vulnerabilities">Unknown security vulnerabilities</a></h2>
 <p>Azle is a beta project using an experimental JS engine. See <a href="/azle.html#disclaimer">the disclaimer</a> for more information.</p>
 <h2 id="high-instructioncycle-count"><a class="header" href="#high-instructioncycle-count">High instruction/cycle count</a></h2>
-<p>Azle canisters will generally use more Wasm instructions and thus cycles than Motoko or Rust canisters. Azle's efficiency should increase dramatically over time as Boa improves its performance.</p>
+<p>Azle canisters will generally use more Wasm instructions and thus cycles than Motoko or Rust canisters. A good rule of thumb for now would be 2-4x the cycles. Azle's efficiency should increase dramatically with the upcoming JS engine swapout.</p>
 <h2 id="javascript-syntax-and-features"><a class="header" href="#javascript-syntax-and-features">JavaScript syntax and features</a></h2>
-<p>You may encounter various missing JavaScript syntax or features. Azle general has better conformance than that of its <a href="https://boajs.dev/boa/test262/">underlying JS engine</a>.</p>
+<p>You may encounter various missing JavaScript syntax or features. Azle generally has better conformance than that of its <a href="https://boajs.dev/boa/test262/">underlying JS engine</a>.</p>
 <h2 id="npm-packages"><a class="header" href="#npm-packages">npm packages</a></h2>
 <p>Some npm packages will work and some will not work. It is our long-term goal to support as many npm packages as possible. There are many reasons why an npm package may not currently work, including the small Wasm binary limit of the IC, bugs in Azle's JS engine <a href="https://github.com/boa-dev/boa">Boa</a>, or unimplemented web or Node.js APIs. Feel free to open issues if your npm package does not work in Azle.</p>
 <h2 id="promises"><a class="header" href="#promises">Promises</a></h2>
 <p>Though promises are implemented, the underlying queue that handles asynchronous operations is very simple. This queue will not behave exactly as queues from the major JS engines. The queue can be thought of as a simple queue that executes tasks sequentially without reporting errors.</p>
-<h2 id="azle-types"><a class="header" href="#azle-types">Azle types</a></h2>
-<h3 id="imports"><a class="header" href="#imports">Imports</a></h3>
-<p>Make sure to use types directly without renaming them:</p>
-<p>Correct:</p>
-<pre><code class="language-typescript">import { Record } from 'azle';
-
-type MyRecord = Record&lt;{
-    prop1: string;
-    prop2: number;
-}&gt;;
-</code></pre>
-<p>Incorrect:</p>
-<pre><code class="language-typescript">import * as Azle from 'azle';
-
-type MyRecord = Azle.Record&lt;{
-    prop1: string;
-    prop2: number;
-}&gt;;
-</code></pre>
-<p>We wish to improve this situation in the future to handle the many various ways of importing.</p>
-<h3 id="treatment-as-keywords"><a class="header" href="#treatment-as-keywords">Treatment as keywords</a></h3>
-<p>You should treat Azle types essentially as keywords, not creating types of the same name elsewhere in your codebase or in other libraries. Any types exported from <a href="https://github.com/demergent-labs/azle/blob/main/index.ts">this file</a> should be treated thusly.</p>
+<h2 id="treat-azle-types-as-unique-keywords"><a class="header" href="#treat-azle-types-as-unique-keywords">Treat Azle types as unique keywords</a></h2>
+<p>You should treat Azle types essentially as unique keywords, not creating types of the same name elsewhere in your codebase or in other libraries. Any types exported from <a href="https://github.com/demergent-labs/azle/blob/main/index.ts">this file</a> should be treated thusly.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reference"><a class="header" href="#reference">Reference</a></h1>
 <ul>
 <li><a href="reference/./bitcoin.html">Bitcoin</a></li>
@@ -2851,8 +2921,8 @@ export async function executeCallRaw128(
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, Principal, Result, $update } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+<pre><code class="language-typescript">import { blob, match, Principal, Result, $update } from 'azle';
+import { managementCanister } from 'azle/canisters/management';
 
 $update;
 export async function executeInstallCode(
@@ -2884,7 +2954,7 @@ export async function executeInstallCode(
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
 <pre><code class="language-typescript">import { blob, match, Principal, Result, $update } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+import { managementCanister } from 'azle/canisters/management';
 
 $update;
 export async function executeInstallCode(
@@ -2971,7 +3041,9 @@ export function alsoInaccessible(): boolean {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">// Moves all transferred cycles to the canister
+<pre><code class="language-typescript">import { ic, nat64, $update } from 'azle';
+
+// Moves all transferred cycles to the canister
 $update;
 export function receiveCycles(): nat64 {
     return ic.msgCyclesAccept(ic.msgCyclesAvailable() / 2n);
@@ -3108,7 +3180,7 @@ export function sendNotification(): NotifyResult {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { NotifyResult, $update } from 'azle';
 import { cyclesCanister } from '../cycles';
 
 $update;
@@ -3197,7 +3269,7 @@ export async function getRejectionMessage(message: string): Promise&lt;string&gt
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/composite_queries">composite_queries</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/manual_reply">manual_reply</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, Manual, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, ic, Manual, $update } from 'azle';
 
 $update;
 export function updateBlob(): Manual&lt;blob&gt; {
@@ -3211,7 +3283,13 @@ export function updateBlob(): Manual&lt;blob&gt; {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/manual_reply">manual_reply</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, Manual, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, ic, int, Manual, Record, $update, Variant } from 'azle';
+
+type Options = Variant&lt;{
+    High: null;
+    Medium: null;
+    Low: null;
+}&gt;;
 
 $update;
 export function replyRaw(): Manual&lt;
@@ -3375,7 +3453,7 @@ export function printFloat32(float32: float32): float32 {
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="float64-1"><a class="header" href="#float64-1">float64</a></h1>
 <p>This section is a work in progress.</p>
-<p>The Azle type <code>float64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>The Azle type <code>float64</code> and the TypeScript type <code>number</code> both correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
 <p>TypeScript:</p>
 <pre><code class="language-typescript">import { float64, $query } from 'azle';
 
@@ -3402,7 +3480,7 @@ export function printFloat64(float64: float64): float64 {
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="func-1"><a class="header" href="#func-1">func</a></h1>
 <p>This section is a work in progress.</p>
-<p>The Azle type <code>func</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-func---">Candid type func</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> with two elements at runtime.</p>
+<p>The Azle type <code>Func</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-func---">Candid type func</a>. It is a <a href="https://www.tutorialsteacher.com/typescript/typescript-tuple">TypeScript Tuple</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> with two elements at runtime.</p>
 <p>The first element is an <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal</a> and the second is a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript string</a>. The <code>@dfinity/principal</code> represents the <code>principal</code> of the canister/service where the function exists, and the <code>string</code> represents the function's name.</p>
 <p>A <code>func</code> acts as a callback, allowing the <code>func</code> receiver to know which canister instance and method must be used to call back.</p>
 <p>TypeScript:</p>
@@ -3732,7 +3810,7 @@ export function printNull(null_: null): null {
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="opt-1"><a class="header" href="#opt-1">opt</a></h1>
 <p>This section is a work in progress.</p>
-<p>The Azle type <code>Opt</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t">Candid type opt</a> and will become the Azle <code>Opt</code> variant at runtime.</p>
+<p>The Azle type <code>Opt</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t">Candid type opt</a>. It is a <a href="reference/candid/opt.html#variant">variant</a> with <code>Some</code> and <code>None</code> cases. At runtime if the value of the variant is <code>Some</code>, the <code>Some</code> property of the variant object will have a value of the enclosed <code>Opt</code> type at runtime.</p>
 <p>TypeScript:</p>
 <pre><code class="language-typescript">import { Opt, $query } from 'azle';
 
@@ -3851,10 +3929,57 @@ export function printReserved(reserved: reserved): reserved {
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="service-1"><a class="header" href="#service-1">service</a></h1>
 <p>This section is a work in progress.</p>
-<p><a href="https://github.com/demergent-labs/azle/issues/445">Not yet implemented.</a></p>
+<p>JavaScript classes that inherit from the Azle type <code>Service</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-service-">Candid service type</a> and will become child classes capable of creating instances that can perform cross-canister calls at runtime.</p>
+<p>TypeScript:</p>
+<pre><code class="language-typescript">import {
+    CallResult,
+    Principal,
+    $query,
+    Result,
+    Service,
+    serviceQuery,
+    serviceUpdate,
+    $update
+} from 'azle';
+
+class SomeService extends Service {
+    @serviceQuery
+    query1: () =&gt; CallResult&lt;boolean&gt;;
+
+    @serviceUpdate
+    update1: () =&gt; CallResult&lt;string&gt;;
+}
+
+$query;
+export function getService(): SomeService {
+    return new SomeService(Principal.fromText('aaaaa-aa'));
+}
+
+$update;
+export async function callService(
+    service: SomeService
+): Promise&lt;Result&lt;string, string&gt;&gt; {
+    return await service.update1().call();
+}
+</code></pre>
+<p>Candid:</p>
+<pre><code>type ManualReply = variant { Ok : text; Err : text };
+service : () -&gt; {
+  callService : (
+      service { query1 : () -&gt; (bool) query; update1 : () -&gt; (text) },
+    ) -&gt; (ManualReply);
+  getService : () -&gt; (
+      service { query1 : () -&gt; (bool) query; update1 : () -&gt; (text) },
+    ) query;
+}
+</code></pre>
+<p>dfx:</p>
+<pre><code class="language-bash">dfx canister call candid_canister getService
+(service &quot;aaaaa-aa&quot;)
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="text-1"><a class="header" href="#text-1">text</a></h1>
 <p>This section is a work in progress.</p>
-<p>The TypeScript type <code>string</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-text">Candid type text</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript String</a> at runtime.</p>
+<p>The TypeScript type <code>string</code> and the Azle type <code>text</code> both correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-text">Candid type text</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript String</a> at runtime.</p>
 <p>TypeScript:</p>
 <pre><code class="language-typescript">import { $query } from 'azle';
 
@@ -4386,11 +4511,11 @@ let message = '';
 
 $query;
 export function getMessage(): string {
-    return mesage;
+    return message;
 }
 
 $update;
-export function setMessage(newMessage): void {
+export function setMessage(newMessage: string): void {
     message = newMessage;
 }
 </code></pre>
@@ -4464,7 +4589,7 @@ export function canister2PrincipalEnvVar(): string {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
 </ul>
-<pre><code class="language-typescript">import { Result, $update } from 'azle';
+<pre><code class="language-typescript">import { Opt, Result, $update } from 'azle';
 import {
     BitcoinNetwork,
     managementCanister,
@@ -4480,7 +4605,7 @@ export async function getBalance(
     return await managementCanister
         .bitcoin_get_balance({
             address,
-            min_confirmations: null,
+            min_confirmations: Opt.None,
             network: BitcoinNetwork.Regtest
         })
         .cycles(BITCOIN_API_CYCLE_COST)
@@ -4520,7 +4645,7 @@ export async function getCurrentFeePercentiles(): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
 </ul>
-<pre><code class="language-typescript">import { Result, $update } from 'azle';
+<pre><code class="language-typescript">import { Opt, Result, $update } from 'azle';
 import {
     BitcoinNetwork,
     GetUtxosResult,
@@ -4536,7 +4661,7 @@ export async function getUtxos(
     return await managementCanister
         .bitcoin_get_utxos({
             address,
-            filter: null,
+            filter: Opt.None,
             network: BitcoinNetwork.Regtest
         })
         .cycles(BITCOIN_API_CYCLE_COST)
@@ -4609,7 +4734,7 @@ export async function getCanisterStatus(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { match, Opt, Result, $update } from 'azle';
 import {
     CreateCanisterResult,
     managementCanister
@@ -4621,19 +4746,15 @@ export async function executeCreateCanister(): Promise&lt;
 &gt; {
     const createCanisterResultCallResult = await managementCanister
         .create_canister({
-            settings: null
+            settings: Opt.None
         })
         .cycles(50_000_000_000_000n)
         .call();
 
     return match(createCanisterResultCallResult, {
-        Ok: (createCanisterResult) =&gt; {
-            state.createdCanisterId = createCanisterResult.canister_id;
-
-            return {
-                Ok: createCanisterResult
-            };
-        },
+        Ok: (createCanisterResult) =&gt; ({
+            Ok: createCanisterResult
+        }),
         Err: (err) =&gt; ({ Err: err })
     });
 }
@@ -4695,7 +4816,7 @@ export async function executeDepositCycles(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, match, Record, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, ic, match, Opt, Record, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
@@ -4705,9 +4826,9 @@ export async function publicKey(): Promise&lt;
     const caller = ic.caller().toUint8Array();
     const publicKeyResult = await managementCanister
         .ecdsa_public_key({
-            canister_id: null,
+            canister_id: Opt.None,
             derivation_path: [caller],
-            key_id: { curve: { secp256k1: null }, name: 'dfxTestKey' }
+            key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
         })
         .call();
 
@@ -4728,7 +4849,7 @@ export async function publicKey(): Promise&lt;
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ethereum_json_rpc">ethereum_json_rpc</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, match, $query, $update } from 'azle';
+<pre><code class="language-typescript">import { ic, match, Opt, $query, $update } from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
@@ -4737,33 +4858,26 @@ import {
 
 $update;
 export async function xkcd(): Promise&lt;HttpResponse&gt; {
-    const maxResponseBytes = 1_000n;
-
-    // TODO this is just a hueristic for cost, might change when the feature is officially released: https://forum.dfinity.org/t/enable-canisters-to-make-http-s-requests/9670/130
-    const cycleCostBase = 400_000_000n;
-    const cycleCostPerByte = 300_000n; // TODO not sure on this exact cost
-    const cycleCostTotal = cycleCostBase + cycleCostPerByte * maxResponseBytes;
-
     const httpResult = await managementCanister
         .http_request({
             url: `https://xkcd.com/642/info.0.json`,
-            max_response_bytes: maxResponseBytes,
+            max_response_bytes: Opt.Some(2_000n),
             method: {
                 get: null
             },
             headers: [],
-            body: null,
-            transform: {
+            body: Opt.None,
+            transform: Opt.Some({
                 function: [ic.id(), 'xkcdTransform'],
                 context: Uint8Array.from([])
-            }
+            })
         })
-        .cycles(cycleCostTotal)
+        .cycles(50_000_000n)
         .call();
 
     return match(httpResult, {
         Ok: (httpResponse) =&gt; httpResponse,
-        Err: (err) =&gt; ic.trap(err ?? 'httpResult had an error')
+        Err: (err) =&gt; ic.trap(err)
     });
 }
 
@@ -4813,7 +4927,7 @@ export async function executeInstallCode(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { match, Opt, $update, Variant } from 'azle';
 import {
     CreateCanisterResult,
     managementCanister
@@ -4828,8 +4942,8 @@ export async function provisionalCreateCanisterWithCycles(): Promise&lt;
 &gt; {
     const callResult = await managementCanister
         .provisional_create_canister_with_cycles({
-            amount: null,
-            settings: null
+            amount: Opt.None,
+            settings: Opt.None
         })
         .call();
 
@@ -4913,7 +5027,7 @@ export async function sign(
         .sign_with_ecdsa({
             message_hash: messageHash,
             derivation_path: [caller],
-            key_id: { curve: { secp256k1: null }, name: 'dfxTestKey' }
+            key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
         })
         .cycles(10_000_000_000n)
         .call();
@@ -5009,7 +5123,7 @@ export async function executeUninstallCode(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Principal, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { match, Opt, Principal, Result, $update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 $update;
@@ -5020,10 +5134,10 @@ export async function executeUpdateSettings(
         .update_settings({
             canister_id: canisterId,
             settings: {
-                controllers: null,
-                compute_allocation: 1n,
-                memory_allocation: 3_000_000n,
-                freezing_threshold: 2_000_000n
+                controllers: Opt.None,
+                compute_allocation: Opt.Some(1n),
+                memory_allocation: Opt.Some(3_000_000n),
+                freezing_threshold: Opt.Some(2_000_000n)
             }
         })
         .call();
@@ -5075,6 +5189,7 @@ export async function executeUpdateSettings(
     Opt,
     $query,
     StableBTreeMap,
+    Tuple,
     $update,
     Vec
 } from 'azle';
@@ -5105,7 +5220,7 @@ export function isEmpty(): boolean {
 }
 
 $query;
-export function items(): Vec&lt;[Key, Value]&gt; {
+export function items(): Vec&lt;Tuple&lt;[Key, Value]&gt;&gt; {
     return map.items();
 }
 
@@ -5203,8 +5318,8 @@ export function stableWrite(offset: nat32, buf: blob): void {
 <pre><code class="language-typescript">import { ic, nat64, Stable64GrowResult, $update } from 'azle';
 
 $update;
-export function stableGrow(newPages: nat64): Stable64GrowResult {
-    return ic.stableGrow(newPages);
+export function stable64Grow(newPages: nat64): Stable64GrowResult {
+    return ic.stable64Grow(newPages);
 }
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable64-read"><a class="header" href="#stable64-read">stable64 read</a></h1>
@@ -5271,10 +5386,10 @@ export function clearTimer(timerId: TimerId): void {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/timers">timers</a></li>
 </ul>
-<pre><code class="language-typescript">import { Duration, ic, TimerId, $update } from 'azle';
+<pre><code class="language-typescript">import { Duration, ic, TimerId, Tuple, $update } from 'azle';
 
 $update;
-export function setTimers(delay: Duration): [TimerId, TimerId] {
+export function setTimers(delay: Duration): Tuple&lt;[TimerId, TimerId]&gt; {
     const functionTimerId = ic.setTimer(delay, callback);
 
     const capturedValue = '🚩';
@@ -5296,10 +5411,12 @@ function callback(): void {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/timers">timers</a></li>
 </ul>
-<pre><code class="language-typescript">import { Duration, ic, TimerId, $update } from 'azle';
+<pre><code class="language-typescript">import { Duration, ic, TimerId, Tuple, $update } from 'azle';
 
 $update;
-export function setTimerIntervals(interval: Duration): [TimerId, TimerId] {
+export function setTimerIntervals(
+    interval: Duration
+): Tuple&lt;[TimerId, TimerId]&gt; {
     const functionTimerId = ic.setTimerInterval(interval, callback);
 
     const capturedValue = '🚩';

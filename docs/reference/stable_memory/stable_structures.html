@@ -164,6 +164,7 @@
     Opt,
     $query,
     StableBTreeMap,
+    Tuple,
     $update,
     Vec
 } from 'azle';
@@ -194,7 +195,7 @@ export function isEmpty(): boolean {
 }
 
 $query;
-export function items(): Vec&lt;[Key, Value]&gt; {
+export function items(): Vec&lt;Tuple&lt;[Key, Value]&gt;&gt; {
     return map.items();
 }
 

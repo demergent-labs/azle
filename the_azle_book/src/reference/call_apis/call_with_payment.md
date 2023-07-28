@@ -12,8 +12,8 @@ Examples:
 -   [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa)
 
 ```typescript
-import { blob, Principal, Result, $update } from 'azle';
-import { management_canister } from 'azle/canisters/management';
+import { blob, match, Principal, Result, $update } from 'azle';
+import { managementCanister } from 'azle/canisters/management';
 
 $update;
 export async function executeInstallCode(
