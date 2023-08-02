@@ -1,6 +1,7 @@
 use cdk_framework::{act::CanisterMethods, traits::CollectResults};
 
 use crate::{plugin::Plugin, ts_ast::TsAst, Error};
+use validations::ensure_init_and_post_upgrade_params_match;
 
 pub use annotated_fn_decl::{AnnotatedFnDecl, GetAnnotatedFnDecls};
 pub use annotation::Annotation;
@@ -16,6 +17,7 @@ mod post_upgrade;
 mod pre_upgrade;
 mod query_and_update;
 mod rust;
+mod validations;
 
 pub mod errors;
 pub mod module;
@@ -55,6 +57,8 @@ impl TsAst {
                     query_methods,
                     update_methods,
                 ) = canister_methods;
+
+                ensure_init_and_post_upgrade_params_match(&annotated_fn_decls)?;
 
                 Ok(CanisterMethods {
                     heartbeat_method,
