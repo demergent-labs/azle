@@ -1,51 +1,50 @@
+use cdk_framework::act::node::canister_method::CanisterMethodType;
+use swc_ecma_ast::Param;
+
 use crate::{
     canister_method::{errors::MismatchedPostDeployParams, AnnotatedFnDecl},
     ts_ast::SourceMapped,
 };
-use swc_ecma_ast::Param;
 
 pub fn ensure_init_and_post_upgrade_params_match(
-    annotated_fn_decls: &Vec<SourceMapped<AnnotatedFnDecl>>,
+    fn_decls: &Vec<SourceMapped<AnnotatedFnDecl>>,
 ) -> Result<(), MismatchedPostDeployParams> {
-    let init_params = get_init_params(&annotated_fn_decls);
-    let post_upgrade_params = get_post_upgrade_params(&annotated_fn_decls);
+    let init_fn_decl_opt = fn_decls
+        .iter()
+        .find(|fn_decl| fn_decl.is_canister_method_type(CanisterMethodType::Init));
 
-    if are_param_vecs_equivalent(&init_params, &post_upgrade_params) {
-        return Ok(());
-    } else {
-        Err(create_err(&annotated_fn_decls))
+    let post_upgrade_fn_decl_opt = fn_decls
+        .iter()
+        .find(|fn_decl| fn_decl.is_canister_method_type(CanisterMethodType::PostUpgrade));
+
+    if let (Some(init_fn_decl), Some(post_upgrade_fn_decl)) =
+        (init_fn_decl_opt, post_upgrade_fn_decl_opt)
+    {
+        let init_params = &init_fn_decl.fn_decl.function.params;
+        let post_upgrade_params = &post_upgrade_fn_decl.fn_decl.function.params;
+
+        if !are_param_vecs_equivalent(&init_params, &post_upgrade_params) {
+            return Err(MismatchedPostDeployParams::from_annotated_fn_decls(
+                &init_fn_decl,
+                &post_upgrade_fn_decl,
+            ));
+        }
     }
+
+    Ok(())
 }
 
-fn get_init_params(_annotated_fn_decls: &Vec<SourceMapped<AnnotatedFnDecl>>) -> Vec<Param> {
-    vec![]
-}
+fn are_param_vecs_equivalent(a: &Vec<Param>, b: &Vec<Param>) -> bool {
+    if a.len() != b.len() {
+        return false;
+    }
 
-fn get_post_upgrade_params(_annotated_fn_decls: &Vec<SourceMapped<AnnotatedFnDecl>>) -> Vec<Param> {
-    vec![]
-}
+    true
 
-fn create_err(
-    annotated_fn_decls: &Vec<SourceMapped<AnnotatedFnDecl>>,
-) -> MismatchedPostDeployParams {
-    MismatchedPostDeployParams::from_annotated_fn_decls(
-        &annotated_fn_decls[0],
-        &annotated_fn_decls[1],
-    )
-}
-
-fn are_param_vecs_equivalent(_a: &Vec<Param>, _b: &Vec<Param>) -> bool {
-    return false;
-
-    // if a.len() != b.len() {
-    //     return false;
-    // }
+    // TODO: Do deep comparison of types.
+    // See https://github.com/demergent-labs/azle/issues/1095#issuecomment-1663364443
 
     // a.iter()
     //     .zip(b.iter())
     //     .all(|(a_param, b_param)| are_params_equivalent(a_param, b_param))
 }
-
-// fn are_params_equivalent(a: &Param, b: &Param) -> bool {
-//     false
-// }
