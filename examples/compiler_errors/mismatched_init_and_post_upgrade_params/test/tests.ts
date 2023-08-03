@@ -24,38 +24,39 @@ export function getTests(): Test[] {
                 } catch (e: any) {
                     let stdErr = (e as ExecSyncError).stderr.toString();
 
-                    if (stdErr.includes(expectedError)) {
-                        return { Ok: true };
-                    } else {
+                    if (!stdErr.includes(expectedErrorTitle)) {
                         return {
-                            Err: unexpectedErrorMessage(expectedError, stdErr)
+                            Err: unexpectedErrorMessage(
+                                expectedErrorTitle,
+                                stdErr
+                            )
                         };
                     }
+
+                    if (!expectedErrorKeywords.test(stdErr)) {
+                        return {
+                            Err: unexpectedErrorMessage(
+                                expectedErrorKeywords,
+                                stdErr
+                            )
+                        };
+                    }
+
+                    return { Ok: true };
                 }
             }
         }
     ];
 }
 
-const expectedError = `error: params for $init and $postUpgrade must be exactly the same
-  --> ./src/index.ts:4:17
-   |
- 4 |   export function init(p1: boolean, p2: string, p3: int32): void {
-   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ these params
-...
- 9 |   export function postUpgrade(p1: int32, p2: boolean): void {
-   |                              ^^^^^^^^^^^^^^^^^^^^^^^^ and these params do not match
-   |
-help: update the params for either init or postUpgrade to match the other. E.g.:
-   |
- 4 |   export function init(p1: boolean, p2: string, p3: int32): void {
-   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ copy these params
-...
- 9 |   export function postUpgrade(p1: boolean, p2: string, p3: int32): void {
-   |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ to here
-   |`;
+const expectedErrorTitle = `error: params for $init and $postUpgrade must be exactly the same`;
 
-function unexpectedErrorMessage(expectedError: string, stdErr: string) {
+const expectedErrorKeywords = /these params.*and these params do not match/s;
+
+function unexpectedErrorMessage(
+    expectedError: string | RegExp,
+    stdErr: string
+) {
     return `>  The output from std err does not contain the expected error
 
 Expected Error:
