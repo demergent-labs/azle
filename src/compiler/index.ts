@@ -27,6 +27,11 @@ import { rmSync } from 'fs-extra';
 azle();
 
 function azle() {
+    if (process.argv[2] === '--version') {
+        console.log(azleVersion);
+        return;
+    }
+
     if (process.argv[2] === 'new') {
         generateNewAzleProject(azleVersion, dfxVersion);
         return;
