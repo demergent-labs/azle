@@ -65,14 +65,24 @@ pub fn generate() -> TokenStream {
         impl ToStdString for boa_engine::JsValue {
             fn to_std_string(self, context: &mut boa_engine::Context) -> String {
                 match &self {
-                    boa_engine::JsValue::BigInt(bigint) => bigint.to_string(),
+                    boa_engine::JsValue::BigInt(bigint) => format!("{}n", bigint.to_string()),
                     boa_engine::JsValue::Boolean(boolean) => boolean.to_string(),
                     boa_engine::JsValue::Integer(integer) => integer.to_string(),
                     boa_engine::JsValue::Null => "null".to_string(),
                     boa_engine::JsValue::Object(object) => {
                         js_object_to_string(&self, &object, context)
                     }
-                    boa_engine::JsValue::Rational(rational) => rational.to_string(),
+                    boa_engine::JsValue::Rational(rational) => {
+                        if rational.is_infinite() {
+                            return if rational.is_sign_negative() {
+                                "-Infinity".to_string()
+                            } else {
+                                "Infinity".to_string()
+                            };
+                        }
+
+                        rational.to_string()
+                    }
                     boa_engine::JsValue::String(string) => string
                         .to_std_string()
                         .unwrap_or_else(|err| format!("InternalError: {err}")),
@@ -89,6 +99,10 @@ pub fn generate() -> TokenStream {
         ) -> String {
             if js_object.is_error() {
                 return js_error_object_to_string(js_object, context);
+            }
+
+            if js_object.is_promise() {
+                return js_promise_object_to_string(js_object, context);
             }
 
             let to_string_js_value = match js_object.get("toString", context) {
@@ -115,6 +129,49 @@ pub fn generate() -> TokenStream {
                 .unwrap_or_else(|js_error| format!("InternalError: {js_error}"))
         }
 
+        fn js_promise_object_to_string(
+            js_object: &boa_engine::JsObject,
+            context: &mut boa_engine::Context,
+        ) -> String {
+            try_js_promise_object_to_string(js_object, context).unwrap_or_else(|js_error| {
+                let cause = js_error.to_std_string(&mut *context);
+
+                format!(
+                    "InternalError: Encountered an error while serializing a Promise\n  \
+                        [cause]: {cause}"
+                )
+            })
+        }
+
+        fn try_js_promise_object_to_string(
+            js_object: &boa_engine::JsObject,
+            context: &mut boa_engine::Context,
+        ) -> Result<String, boa_engine::JsError> {
+            let js_promise =
+                boa_engine::object::builtins::JsPromise::from_object(js_object.clone())?;
+            let state = js_promise.state()?;
+
+            let promise_string_representation = match state {
+                boa_engine::builtins::promise::PromiseState::Pending => {
+                    "Promise {<pending>}".to_string()
+                }
+                boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
+                    format!(
+                        "Promise {{<fulfilled>: {}}}",
+                        js_value.to_std_string(&mut *context)
+                    )
+                }
+                boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
+                    format!(
+                        "Promise {{<rejected>: {}}}",
+                        js_value.to_std_string(&mut *context)
+                    )
+                }
+            };
+
+            Ok(promise_string_representation)
+        }
+
         fn js_error_object_to_string(
             js_object: &boa_engine::JsObject,
             context: &mut boa_engine::Context,
@@ -138,9 +195,7 @@ pub fn generate() -> TokenStream {
             let cause_opt = get_js_error_cause(js_object, context)?;
 
             let error_string = match cause_opt {
-                Some(cause) => format!(
-                    "{error_name}: {error_message}\n  [cause]: {cause}"
-                ),
+                Some(cause) => format!("{error_name}: {error_message}\n  [cause]: {cause}"),
                 None => format!("{error_name}: {error_message}"),
             };
 
@@ -179,7 +234,7 @@ pub fn generate() -> TokenStream {
                     } else {
                         Ok(Some(cause_js_value.to_std_string(&mut *context)))
                     }
-                },
+                }
                 Err(js_error) => Err(js_error),
             }
         }

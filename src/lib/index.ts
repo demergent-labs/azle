@@ -1,3 +1,5 @@
+import { ic } from './ic';
+
 export {
     $heartbeat,
     $init,
@@ -60,3 +62,13 @@ export function registerPlugin(props: {
         return (globalThis as any)[props.globalObjectName] ?? {};
     }
 }
+
+// TODO we should centralize/standardize where we add global variables to the
+// JS, we are doing this in multiple places (i.e. the exports variable is not
+// here, found in init/post_upgrade)
+globalThis.console = {
+    ...globalThis.console,
+    log: (...args) => {
+        ic.print(...args);
+    }
+};

@@ -3,9 +3,15 @@ pub fn generate() -> proc_macro2::TokenStream {
         fn print(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
-            _context: &mut boa_engine::Context
+            context: &mut boa_engine::Context,
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            ic_cdk::println!("{:#?}", aargs);
+            let output_string = aargs
+                .iter()
+                .map(|val| val.clone().to_std_string(&mut *context))
+                .collect::<Vec<String>>()
+                .join(" ");
+
+            ic_cdk::println!("{}", output_string);
 
             return Ok(boa_engine::JsValue::Undefined);
         }

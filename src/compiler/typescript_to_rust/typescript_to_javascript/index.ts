@@ -7,22 +7,10 @@ export function compileTypeScriptToJavaScript(
     tsPath: string
 ): Result<JavaScript, unknown> {
     try {
-        const jsBundledAndTranspiled = bundleAndTranspileJs(`
+        const mainJs: JavaScript = bundleAndTranspileJs(`
             export { Principal } from '@dfinity/principal';
             export * from './${tsPath}';
         `);
-
-        const mainJs: JavaScript = `
-            // TODO we should centralize/standardize where we add global variables to the JS, we are doing this in multiple places (i.e. the exports variable is not here, found in init/post_upgrade)
-            globalThis.console = {
-                ...globalThis.console,
-                log: (...args) => {
-                    ic.print(...args);
-                }
-            };
-
-            ${jsBundledAndTranspiled}
-        `;
 
         return { ok: mainJs };
     } catch (err) {
