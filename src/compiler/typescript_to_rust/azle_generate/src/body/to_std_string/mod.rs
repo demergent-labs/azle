@@ -27,23 +27,27 @@ pub fn generate() -> TokenStream {
                     boa_engine::JsValue::Object(object) => {
                         js_object_to_string(&self, &object, context)
                     }
-                    boa_engine::JsValue::Rational(rational) => {
-                        if rational.is_infinite() {
-                            return if rational.is_sign_negative() {
-                                "-Infinity".to_string()
-                            } else {
-                                "Infinity".to_string()
-                            };
-                        }
-
-                        rational.to_string()
-                    }
+                    boa_engine::JsValue::Rational(rational) => rational.to_std_string(context),
                     boa_engine::JsValue::String(string) => string
                         .to_std_string()
                         .unwrap_or_else(|err| format!("InternalError: {err}")),
                     boa_engine::JsValue::Symbol(symbol) => symbol.to_string(),
                     boa_engine::JsValue::Undefined => "undefined".to_string(),
                 }
+            }
+        }
+
+        impl ToStdString for f64 {
+            fn to_std_string(self, context: &mut boa_engine::Context) -> String {
+                if self.is_infinite() {
+                    return if self.is_sign_negative() {
+                        "-Infinity".to_string()
+                    } else {
+                        "Infinity".to_string()
+                    };
+                }
+
+                self.to_string()
             }
         }
 
