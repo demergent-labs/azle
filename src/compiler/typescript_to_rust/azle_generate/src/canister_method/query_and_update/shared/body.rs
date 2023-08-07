@@ -24,43 +24,53 @@ pub fn generate(
     let function_name = fn_decl.get_function_name();
 
     Ok(quote! {
-        unwrap_or_trap(|| {
-            BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
-                let mut boa_context = boa_context_ref_cell.borrow_mut();
+        use quickjs_wasm_rs::{JSContextRef, JSValueRef};
+        use std::convert::TryFrom;
 
-                let uuid = uuid::Uuid::new_v4().to_string();
+        // TODO begin to swap out boa for quickjs
+        let context = JSContextRef::default();
 
-                UUID_REF_CELL.with(|uuid_ref_cell| {
-                    let mut uuid_mut = uuid_ref_cell.borrow_mut();
+        let result = context.eval_global("test.js", "4 + 5").unwrap();
 
-                    *uuid_mut = uuid.clone();
-                });
+        result.as_u32_unchecked()
 
-                METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
-                    let mut method_name_mut = method_name_ref_cell.borrow_mut();
+        // unwrap_or_trap(|| {
+        //     BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
+        //         let mut boa_context = boa_context_ref_cell.borrow_mut();
 
-                    *method_name_mut = #function_name.to_string()
-                });
+        //         let uuid = uuid::Uuid::new_v4().to_string();
 
-                MANUAL_REF_CELL.with(|manual_ref_cell| {
-                    let mut manual_mut = manual_ref_cell.borrow_mut();
+        //         UUID_REF_CELL.with(|uuid_ref_cell| {
+        //             let mut uuid_mut = uuid_ref_cell.borrow_mut();
 
-                    *manual_mut = #manual;
-                });
+        //             *uuid_mut = uuid.clone();
+        //         });
 
-                #call_to_js_function
+        //         METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+        //             let mut method_name_mut = method_name_ref_cell.borrow_mut();
 
-                let final_return_value = async_await_result_handler(
-                    &mut boa_context,
-                    &boa_return_value,
-                    &uuid,
-                    #function_name,
-                    #manual
-                )?;
+        //             *method_name_mut = #function_name.to_string()
+        //         });
 
-                #return_expression
-            })
-        })
+        //         MANUAL_REF_CELL.with(|manual_ref_cell| {
+        //             let mut manual_mut = manual_ref_cell.borrow_mut();
+
+        //             *manual_mut = #manual;
+        //         });
+
+        //         #call_to_js_function
+
+        //         let final_return_value = async_await_result_handler(
+        //             &mut boa_context,
+        //             &boa_return_value,
+        //             &uuid,
+        //             #function_name,
+        //             #manual
+        //         )?;
+
+        //         #return_expression
+        //     })
+        // })
     })
 }
 

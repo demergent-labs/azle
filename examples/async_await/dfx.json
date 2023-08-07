@@ -2,7 +2,7 @@
     "canisters": {
         "async_await": {
             "type": "custom",
-            "build": "npx azle async_await",
+            "build": "npx azle async_await --verbose",
             "root": "src",
             "ts": "src/async_await.ts",
             "candid": "src/async_await.did",

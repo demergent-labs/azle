@@ -70,6 +70,18 @@ pub fn generate(
         #unwrap_or_trap
         #(#plugins_code)*
 
+        use quickjs_wasm_rs::{JSContextRef, JSValueRef};
+        use std::convert::TryFrom;
+
+        #[ic_cdk_macros::query]
+        fn quickjs_test() -> u32 {
+            let context = JSContextRef::default();
+
+            let result = context.eval_global("test.js", "4 + 5").unwrap();
+
+            result.as_u32_unchecked()
+        }
+
         // TODO this is temporary until this issue is resolved: https://github.com/demergent-labs/azle/issues/1029
         #[ic_cdk_macros::query]
         fn __get_candid_interface_tmp_hack() -> String {

@@ -56,24 +56,25 @@ export function generateLibCargoToml(
         crate-type = ["cdylib"]
 
         [dependencies]
-        ic-cdk = "=0.10.0"
-        ic-cdk-macros = "=0.7.0"
-        ic-cdk-timers = "=0.4.0"
-        ic-stable-structures = "=0.5.6"
-        candid = { version = "=0.9.1", features = ["parser"] }
+        ic-cdk = "0.10.0"
+        ic-cdk-macros = "0.7.0"
+        ic-cdk-timers = "0.4.0"
+        ic-stable-structures = "0.5.6"
+        candid = { version = "0.9.1", features = ["parser"] }
         boa_engine = { git = "https://github.com/boa-dev/boa", rev = "93e3b2f629a98049ce24c8b4e82d63fd01a85604" }
         # boa_engine = { git = "https://github.com/demergent-labs/boa", rev = "2613202fdc2757691ba1a20e568e5b8740e0c233" }
         # boa_engine = { path = "/home/boa/boa_engine" }
-        getrandom = { version = "=0.2.3", features = ["custom"] }
-        chrono = { version = "0.4.26", default-features = false }
         serde = "1.0.137"
         azle-vm-value-derive = { path = "./azle_vm_value_derive" }
         uuid = { version = "=1.2.2", features = ["v4"] }
         rand = "=0.8.5"
         slotmap = "=1.0.6"
-
+        
         # TODO for now we must turn on the transient feature (no stable storage file system) or we can't generate the Candid file
         ic-wasi-polyfill = { git = "https://github.com/demergent-labs/ic-wasi-polyfill", rev = "f3812b879c096faf930331e76441fadf2ebe6586", features = ["transient"] }
+        
+        quickjs-wasm-rs = {git = "https://github.com/ulan/javy.git", branch="ulan/local-changes"}
+        futures-core = "=0.3.27"
 
         ${pluginsDependencies}
     `;
