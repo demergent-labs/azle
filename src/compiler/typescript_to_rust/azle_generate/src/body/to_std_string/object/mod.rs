@@ -1,12 +1,14 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 
+mod array;
 mod error;
 mod promise;
 
 pub fn generate() -> TokenStream {
     let js_error_object_to_string_function_definition = error::generate();
     let js_promise_object_to_string_function_definition = promise::generate();
+    let js_array_object_to_string_function_definition = array::generate();
 
     quote! {
         fn js_object_to_string(
@@ -14,6 +16,10 @@ pub fn generate() -> TokenStream {
             js_object: &boa_engine::JsObject,
             context: &mut boa_engine::Context,
         ) -> String {
+            if js_object.is_array() {
+                return js_array_object_to_string(js_object, context);
+            }
+
             if js_object.is_error() {
                 return js_error_object_to_string(js_object, context);
             }
@@ -48,5 +54,6 @@ pub fn generate() -> TokenStream {
 
         #js_error_object_to_string_function_definition
         #js_promise_object_to_string_function_definition
+        #js_array_object_to_string_function_definition
     }
 }

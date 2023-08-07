@@ -14,6 +14,7 @@ use self::stable_b_tree_map::StableBTreeMapNode;
 
 mod ic_object;
 mod to_js_error;
+mod traits;
 
 pub mod async_await_result_handler;
 pub mod runtime_error;
@@ -29,6 +30,8 @@ pub fn generate(
     stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
     plugins: &Vec<Plugin>,
 ) -> Result<TokenStream, Vec<Error>> {
+    let traits = traits::generate();
+
     let register_ic_object_function = ic_object::register_function::generate(ts_ast)?;
 
     let query_and_update_methods = vec![
@@ -63,6 +66,7 @@ pub fn generate(
         .collect_results()?;
 
     Ok(quote! {
+        #traits
         #runtime_error
         #to_js_errors
         #async_await_result_handler
