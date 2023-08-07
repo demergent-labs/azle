@@ -5,7 +5,7 @@ pub fn generate() -> TokenStream {
     quote! {
         fn unwrap_or_trap<SuccessValue, Callback>(callback: Callback) -> SuccessValue
         where
-            Callback: FnOnce() -> Result<SuccessValue, RuntimeError>,
+            Callback: FnOnce() -> Result<SuccessValue, crate::RuntimeError>,
         {
             callback()
                 .unwrap_or_else(|err| ic_cdk::api::trap(&format!("\nUncaught {}", err.to_string())))

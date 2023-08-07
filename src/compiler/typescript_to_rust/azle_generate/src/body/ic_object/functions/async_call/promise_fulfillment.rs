@@ -1,6 +1,6 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
-        BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
+        crate::BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
             let mut boa_context = boa_context_ref_cell.borrow_mut();
 
             let call_result_js_value = match call_result {
@@ -79,7 +79,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 main_promise.clone()
             });
 
-            async_await_result_handler(
+            crate::async_await_result_handler(
                 &mut *boa_context,
                 &main_promise,
                 &uuid,

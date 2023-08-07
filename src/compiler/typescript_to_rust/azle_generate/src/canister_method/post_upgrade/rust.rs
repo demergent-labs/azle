@@ -32,16 +32,16 @@ pub fn generate(
 
     Ok(quote! {
         unwrap_or_trap(|| {
-            BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
+            crate::BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
                 let mut boa_context = boa_context_ref_cell.borrow_mut();
 
-                METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                crate::METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
                     let mut method_name_mut = method_name_ref_cell.borrow_mut();
 
                     *method_name_mut = #function_name.to_string()
                 });
 
-                register_ic_object(&mut boa_context);
+                crate::register_ic_object(&mut boa_context);
 
                 #register_process_object
 
@@ -51,14 +51,14 @@ pub fn generate(
                     boa_engine::Source::from_bytes(
                         &format!(
                             "let exports = {{}}; {compiled_js}",
-                            compiled_js = MAIN_JS
+                            compiled_js = crate::MAIN_JS
                         )
                     )
                 )?;
 
                 #call_to_post_upgrade_js_function
 
-                ic_cdk_timers::set_timer(core::time::Duration::new(0, 0), rng_seed);
+                ic_cdk_timers::set_timer(core::time::Duration::new(0, 0), crate::rng_seed);
 
                 Ok(())
             })

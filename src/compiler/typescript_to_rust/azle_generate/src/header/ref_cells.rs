@@ -22,7 +22,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                                 0,
                             )
                             .ok_or_else(|| {
-                                RuntimeError::String(
+                                crate::RuntimeError::String(
                                     "InternalError: Unable to determine host time".to_string(),
                                 )
                             })

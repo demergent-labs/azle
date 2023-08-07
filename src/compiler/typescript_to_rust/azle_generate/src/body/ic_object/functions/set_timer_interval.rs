@@ -26,7 +26,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 .clone();
 
             let closure = move || {
-                BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
+                crate::BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
                     let mut boa_context = boa_context_ref_cell.borrow_mut();
 
                     let uuid = uuid::Uuid::new_v4().to_string();
@@ -53,7 +53,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                         .call(&boa_engine::JsValue::Null, &[], &mut *boa_context)
                         .unwrap_or_trap(&mut *boa_context);
 
-                    async_await_result_handler(
+                    crate::async_await_result_handler(
                         &mut boa_context,
                         &boa_return_value,
                         &uuid,

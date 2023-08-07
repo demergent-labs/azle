@@ -7,7 +7,7 @@ pub fn generate(wrapper_type_name: &Ident) -> TokenStream {
                 unwrap_or_trap(|| {
                     Ok(std::borrow::Cow::Owned(candid::Encode!(self).map_err(
                         |candid_error| {
-                            RuntimeError::String(format!(
+                            crate::RuntimeError::String(format!(
                                 "CandidError: {}",
                                 candid_error.to_string()
                             ))
@@ -19,7 +19,7 @@ pub fn generate(wrapper_type_name: &Ident) -> TokenStream {
             fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
                 unwrap_or_trap(|| {
                     candid::Decode!(&bytes, Self).map_err(|candid_error| {
-                        RuntimeError::String(format!("CandidError: {}", candid_error.to_string()))
+                        crate::RuntimeError::String(format!("CandidError: {}", candid_error.to_string()))
                     })
                 })
             }

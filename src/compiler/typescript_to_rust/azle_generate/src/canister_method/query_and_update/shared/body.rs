@@ -27,24 +27,24 @@ pub fn generate(
 
     Ok(quote! {
         unwrap_or_trap(|| {
-            BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
+            crate::BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
                 let mut boa_context = boa_context_ref_cell.borrow_mut();
 
                 let uuid = uuid::Uuid::new_v4().to_string();
 
-                UUID_REF_CELL.with(|uuid_ref_cell| {
+                crate::UUID_REF_CELL.with(|uuid_ref_cell| {
                     let mut uuid_mut = uuid_ref_cell.borrow_mut();
 
                     *uuid_mut = uuid.clone();
                 });
 
-                METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                crate::METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
                     let mut method_name_mut = method_name_ref_cell.borrow_mut();
 
                     *method_name_mut = #function_name.to_string()
                 });
 
-                MANUAL_REF_CELL.with(|manual_ref_cell| {
+                crate::MANUAL_REF_CELL.with(|manual_ref_cell| {
                     let mut manual_mut = manual_ref_cell.borrow_mut();
 
                     *manual_mut = #manual;
@@ -52,7 +52,7 @@ pub fn generate(
 
                 #call_to_js_function
 
-                let final_return_value = async_await_result_handler(
+                let final_return_value = crate::async_await_result_handler(
                     &mut boa_context,
                     &boa_return_value,
                     &uuid,
@@ -122,7 +122,7 @@ fn generate_return_expression(
 fn check_for_not_null_return_value() -> TokenStream {
     quote! {
         if !final_return_value.is_null() {
-            return Err(RuntimeError::TypeError("Value is not of type 'null'".to_string()));
+            return Err(crate::RuntimeError::TypeError("Value is not of type 'null'".to_string()));
         }
     }
 }
@@ -130,7 +130,7 @@ fn check_for_not_null_return_value() -> TokenStream {
 fn check_for_not_void_return_value() -> TokenStream {
     quote! {
         if !final_return_value.is_undefined() {
-            return Err(RuntimeError::TypeError("Value is not of type 'void'".to_string()));
+            return Err(crate::RuntimeError::TypeError("Value is not of type 'void'".to_string()));
         }
     }
 }

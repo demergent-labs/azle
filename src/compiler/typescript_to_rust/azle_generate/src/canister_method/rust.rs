@@ -28,11 +28,11 @@ pub fn generate_call_to_js_function(
             .eval(boa_engine::Source::from_bytes("exports"))?;
         let exports_js_object = exports_js_value
             .as_object()
-            .ok_or_else(|| RuntimeError::TypeError("'exports' is not an object".to_string()))?;
+            .ok_or_else(|| crate::RuntimeError::TypeError("'exports' is not an object".to_string()))?;
 
         let function_js_value = exports_js_object.get(#function_name, &mut boa_context)?;
         let function_js_object = function_js_value.as_object()
-            .ok_or_else(|| RuntimeError::ReferenceError(format!("{} is not defined", #function_name)))?;
+            .ok_or_else(|| crate::RuntimeError::ReferenceError(format!("{} is not defined", #function_name)))?;
 
         let boa_return_value = function_js_object
             .call(

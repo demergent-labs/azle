@@ -13,7 +13,7 @@ pub fn generate(
 
     Ok(quote::quote! {
         unwrap_or_trap(|| {
-            BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
+            crate::BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
                 let mut boa_context = boa_context_ref_cell.borrow_mut();
 
                 let uuid = uuid::Uuid::new_v4().to_string();
@@ -38,7 +38,7 @@ pub fn generate(
 
                 #call_to_heartbeat_js_function
 
-                async_await_result_handler(
+                crate::async_await_result_handler(
                     &mut boa_context,
                     &boa_return_value,
                     &uuid,
