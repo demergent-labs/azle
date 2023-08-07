@@ -1,5 +1,7 @@
 use alias_table::AliasLists;
-use cdk_framework::{traits::CollectResults, AbstractCanisterTree};
+use cdk_framework::{
+    act::abstract_canister_tree::Module, traits::CollectResults, AbstractCanisterTree,
+};
 use proc_macro2::TokenStream;
 
 pub use crate::errors::{Error, GuardFunctionNotFound};
@@ -67,13 +69,16 @@ impl TsAst {
 
         Ok(AbstractCanisterTree {
             body,
-            canister_methods,
             cdk_name,
-            candid_types,
-            guard_functions,
             header,
             keywords,
             vm_value_conversion,
+            modules: vec![Module {
+                path: vec!["src".to_string(), "index".to_string()],
+                canister_methods,
+                candid_types,
+                guard_functions,
+            }],
         })
     }
 }

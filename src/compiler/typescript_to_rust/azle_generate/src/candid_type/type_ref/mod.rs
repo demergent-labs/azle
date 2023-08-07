@@ -6,7 +6,7 @@ use cdk_framework::{
     traits::CollectIterResults,
 };
 use std::ops::Deref;
-use swc_common::Span;
+use swc_common::{BytePos, Span};
 use swc_ecma_ast::{TsType, TsTypeRef};
 
 use crate::{
@@ -54,6 +54,10 @@ impl SourceMapped<'_, TsTypeRef> {
 
         let name_string = self.get_name();
 
+        let temp = self.source_map.lookup_char_pos(BytePos(1));
+
+        println!("ts_module_path: {}", temp.file.name);
+
         Ok(TypeRef {
             name: if name_string == "Result" {
                 "_AzleResult".to_string()
@@ -61,6 +65,7 @@ impl SourceMapped<'_, TsTypeRef> {
                 name_string.to_string()
             },
             type_arguments,
+            crate_path: vec!["crate".to_string(), "src_index".to_string()],
         })
     }
 

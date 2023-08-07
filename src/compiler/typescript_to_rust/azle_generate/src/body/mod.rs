@@ -61,6 +61,8 @@ pub fn generate(
         .collect_results()?;
 
     Ok(quote! {
+        use src_index::User;
+
         #runtime_error
         #to_js_errors
         #async_await_result_handler

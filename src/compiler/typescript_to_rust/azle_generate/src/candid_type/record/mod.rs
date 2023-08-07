@@ -4,6 +4,7 @@ use cdk_framework::{
     act::node::candid::{record::Member, Record},
     traits::{CollectIterResults, CollectResults},
 };
+use swc_common::BytePos;
 use swc_ecma_ast::{TsPropertySignature, TsTypeAliasDecl, TsTypeElement, TsTypeLit, TsTypeRef};
 
 use crate::{traits::GetName, ts_ast::SourceMapped, Error};
@@ -60,10 +61,15 @@ impl SourceMapped<'_, TsTypeLit> {
             .map(|member| self.spawn(member).to_record_member())
             .collect_results()?;
 
+        let temp = self.source_map.lookup_char_pos(BytePos(1));
+
+        println!("ts_module_path: {}", temp.file.name);
+
         Ok(Record {
             name: None,
             members,
             type_params: vec![].into(),
+            crate_path: vec!["crate".to_string(), "src_index".to_string()],
         })
     }
 }
