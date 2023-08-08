@@ -46,6 +46,7 @@ fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
             cdk_name: "azle".to_string(),
         },
         name.clone(),
+        &None,
     );
 
     quote!(

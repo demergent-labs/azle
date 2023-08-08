@@ -22,6 +22,7 @@ pub fn generate(
             cdk_name: "azle".to_string(),
         },
         wrapper_struct_name.clone(),
+        &None,
     );
     let wrapper_struct_name_ident = wrapper_struct_name.to_ident();
 
@@ -31,6 +32,7 @@ pub fn generate(
             cdk_name: "azle".to_string(),
         },
         wrapper_struct_name.clone(),
+        &None,
     );
 
     (

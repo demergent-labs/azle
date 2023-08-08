@@ -82,6 +82,7 @@ pub fn generate_param_variables(method: &Method, canister_name: &String) -> Vec<
                     cdk_name: "azle".to_string(),
                 },
                 method.create_qualified_name(canister_name),
+                &None,
             );
 
             quote! {

@@ -69,7 +69,6 @@ impl SourceMapped<'_, TsTypeLit> {
             name: None,
             members,
             type_params: vec![].into(),
-            crate_path: vec!["crate".to_string(), "src_index".to_string()],
         })
     }
 }
