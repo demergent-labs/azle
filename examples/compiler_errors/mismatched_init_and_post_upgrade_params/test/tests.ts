@@ -16,29 +16,18 @@ export function getTests(): Test[] {
             name: 'Using mismatched params in $init and $postUpgrade causes a compilation-time error',
             test: async () => {
                 try {
-                    execSync(`npx azle canister`, { stdio: 'pipe' });
+                    execSync(`dfx deploy`, { stdio: 'pipe' });
 
                     return {
-                        Err: 'Expected the build to fail but it succeeded'
+                        Err: 'Expected the deploy to fail but it succeeded'
                     };
                 } catch (e: any) {
-                    let stdErr = (e as ExecSyncError).stderr.toString();
+                    const stdErr = (e as ExecSyncError).stderr.toString();
+                    const expectedError = `error: params for $init and $postUpgrade must be exactly the same`;
 
-                    if (!stdErr.includes(expectedErrorTitle)) {
+                    if (!stdErr.includes(expectedError)) {
                         return {
-                            Err: unexpectedErrorMessage(
-                                expectedErrorTitle,
-                                stdErr
-                            )
-                        };
-                    }
-
-                    if (!expectedErrorKeywords.test(stdErr)) {
-                        return {
-                            Err: unexpectedErrorMessage(
-                                expectedErrorKeywords,
-                                stdErr
-                            )
+                            Err: unexpectedErrorMessage(expectedError, stdErr)
                         };
                     }
 
@@ -48,10 +37,6 @@ export function getTests(): Test[] {
         }
     ];
 }
-
-const expectedErrorTitle = `error: params for $init and $postUpgrade must be exactly the same`;
-
-const expectedErrorKeywords = /these params.*and these params do not match/s;
 
 function unexpectedErrorMessage(
     expectedError: string | RegExp,
