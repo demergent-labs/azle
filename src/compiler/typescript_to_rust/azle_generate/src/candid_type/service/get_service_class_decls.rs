@@ -21,7 +21,7 @@ impl GetFlattenedServiceClassDecls for Vec<Program> {
 }
 
 impl Program {
-    fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
+    pub fn get_service_class_declarations(&self) -> Vec<SourceMapped<ClassDecl>> {
         match self.deref() {
             swc_ecma_ast::Program::Module(module) => module.get_service_class_declarations(
                 &self.source_map,

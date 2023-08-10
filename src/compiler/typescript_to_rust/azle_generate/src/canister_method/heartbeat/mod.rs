@@ -8,13 +8,15 @@ use super::{
     errors::{DuplicateSystemMethod, VoidReturnTypeRequired},
     AnnotatedFnDecl,
 };
-use crate::{ts_ast::SourceMapped, Error, TsAst};
+use crate::{
+    ts_ast::{Program, SourceMapped},
+    Error,
+};
 
 mod rust;
 
-impl TsAst {
+impl Program {
     pub fn build_heartbeat_method(
-        &self,
         annotated_fn_decls: &Vec<SourceMapped<AnnotatedFnDecl>>,
     ) -> Result<Option<HeartbeatMethod>, Vec<Error>> {
         let heartbeat_fn_decls: Vec<_> = annotated_fn_decls

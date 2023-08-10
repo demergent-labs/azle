@@ -5,7 +5,7 @@ use cdk_framework::{
 use swc_ecma_ast::TsTypeAliasDecl;
 
 use crate::{
-    ts_ast::{SourceMapped, TsAst},
+    ts_ast::{Program, SourceMapped},
     Error,
 };
 
@@ -22,7 +22,7 @@ pub mod type_ref;
 pub mod variant;
 pub mod vec;
 
-impl TsAst {
+impl Program {
     pub fn build_candid_types(&self) -> Result<CandidTypes, Vec<Error>> {
         let (type_aliases, funcs, records, services, tuples, variants) = (
             self.extract_candid_types(|x| x.to_type_alias()),

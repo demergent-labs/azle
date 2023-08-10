@@ -16,7 +16,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
             aargs: &[boa_engine::JsValue],
             context: &mut boa_engine::Context,
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
-            let method_name = METHOD_NAME_REF_CELL
+            let method_name = crate::METHOD_NAME_REF_CELL
                 .with(|method_name_ref_cell| method_name_ref_cell.borrow().clone());
 
             match &method_name[..] {

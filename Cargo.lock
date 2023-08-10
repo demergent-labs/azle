@@ -76,6 +76,7 @@ version = "0.0.0"
 dependencies = [
  "annotate-snippets",
  "cdk_framework",
+ "path-clean",
  "prettyplease",
  "proc-macro2",
  "quote",
@@ -105,7 +106,7 @@ checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 [[package]]
 name = "cdk_framework"
 version = "0.0.0"
-source = "git+https://github.com/demergent-labs/cdk_framework?rev=4ece398685e4995044c045aafa0c2d8dbdbd38d5#4ece398685e4995044c045aafa0c2d8dbdbd38d5"
+source = "git+https://github.com/demergent-labs/cdk_framework?rev=85144f00bf8a8245aa7e3666d7ddaa736295db9c#85144f00bf8a8245aa7e3666d7ddaa736295db9c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -428,6 +429,12 @@ dependencies = [
  "smallvec",
  "windows-sys",
 ]
+
+[[package]]
+name = "path-clean"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "17359afc20d7ab31fdb42bb844c8b3bb1dabd7dcf7e68428492da7f16966fcef"
 
 [[package]]
 name = "percent-encoding"

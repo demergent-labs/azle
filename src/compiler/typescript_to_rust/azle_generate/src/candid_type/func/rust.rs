@@ -18,7 +18,7 @@ pub fn generate_list_into_vm_value_impl(function_name: String) -> TokenStream {
     quote! {
         impl CdkActTryIntoVmValue<&mut boa_engine::Context<'_>, boa_engine::JsValue> for Vec<#function_name> {
             fn try_into_vm_value(self, context: &mut boa_engine::Context) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                try_into_vm_value_generic_array(self, context)
+                crate::try_into_vm_value_generic_array(self, context)
             }
         }
     }
@@ -41,7 +41,7 @@ pub fn generate_list_from_vm_value_impl(function_name: String) -> TokenStream {
     quote! {
         impl CdkActTryFromVmValue<Vec<#function_name>, boa_engine::JsError, &mut boa_engine::Context<'_>> for boa_engine::JsValue {
             fn try_from_vm_value(self, context: &mut boa_engine::Context) -> Result<Vec<#function_name>, boa_engine::JsError> {
-                try_from_vm_value_generic_array(self, context)
+                crate::try_from_vm_value_generic_array(self, context)
             }
         }
     }

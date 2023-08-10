@@ -21,7 +21,7 @@ pub fn generate(
     let index_string = param_variables.len().to_string();
 
     quote! {
-        fn #call_with_payment_wrapper_fn_name(
+        pub fn #call_with_payment_wrapper_fn_name(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
             context: &mut boa_engine::Context,

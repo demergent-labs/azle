@@ -52,7 +52,7 @@ pub fn generate(
 
                 #call_to_js_function
 
-                let final_return_value = crate::async_await_result_handler(
+                let final_return_value = crate::_azle_async_await_result_handler::async_await_result_handler(
                     &mut boa_context,
                     &boa_return_value,
                     &uuid,

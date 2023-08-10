@@ -1,17 +1,34 @@
-use cdk_framework::act::node::candid::Service;
+use cdk_framework::{
+    act::abstract_canister_tree::{convert_module_path_to_name, Module},
+    act::node::candid::Service,
+    traits::ToIdent,
+};
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
 
-use crate::{ts_ast::TsAst, Error};
+use crate::Error;
 
-pub fn generate(ts_ast: &TsAst) -> Result<TokenStream, Vec<Error>> {
-    let services = ts_ast.build_services()?;
+pub fn generate(modules: &Vec<Module>) -> Result<TokenStream, Vec<Error>> {
+    let cross_canister_functions: Vec<TokenStream> = modules.iter().fold(vec![], |acc, module| {
+        let module_name = convert_module_path_to_name(&module.path);
 
-    let notify_functions = generate_notify_functions(&services);
-    let cross_canister_functions = generate_cross_canister_functions(&services);
+        let cross_canister_functions =
+            generate_cross_canister_functions(&module_name, &module.candid_types.services);
+
+        vec![acc, cross_canister_functions].concat()
+    });
+
+    let notify_functions: Vec<TokenStream> = modules.iter().fold(vec![], |acc, module| {
+        let module_name = convert_module_path_to_name(&module.path);
+
+        let notify_functions =
+            generate_notify_functions(&module_name, &module.candid_types.services);
+
+        vec![acc, notify_functions].concat()
+    });
 
     Ok(quote::quote! {
-        fn register_ic_object(boa_context: &mut boa_engine::Context) {
+        pub fn register_ic_object(boa_context: &mut boa_engine::Context) {
             let ic = boa_engine::object::ObjectInitializer::new(boa_context)
                 .function(boa_engine::NativeFunction::from_fn_ptr(accept_message), "acceptMessage", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(arg_data_raw), "argDataRaw", 0)
@@ -44,21 +61,21 @@ pub fn generate(ts_ast: &TsAst) -> Result<TokenStream, Vec<Error>> {
                 .function(boa_engine::NativeFunction::from_fn_ptr(reject), "reject", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(reject_code), "rejectCode", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(reject_message), "rejectMessage", 0)
-                .function(boa_engine::NativeFunction::from_fn_ptr(reply), "reply", 0)
+                // .function(boa_engine::NativeFunction::from_fn_ptr(reply), "reply", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(reply_raw), "replyRaw", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(set_certified_data), "setCertifiedData", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(set_timer), "setTimer", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(set_timer_interval), "setTimerInterval", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(stable_bytes), "stableBytes", 0)
-                .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_contains_key), "stableBTreeMapContainsKey", 0)
-                .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_get), "stableBTreeMapGet", 0)
-                .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_insert), "stableBTreeMapInsert", 0)
-                .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_is_empty), "stableBTreeMapIsEmpty", 0)
-                .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_items), "stableBTreeMapItems", 0)
-                .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_keys), "stableBTreeMapKeys", 0)
-                .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_values), "stableBTreeMapValues", 0)
-                .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_len), "stableBTreeMapLen", 0)
-                .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_remove), "stableBTreeMapRemove", 0)
+                // .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_contains_key), "stableBTreeMapContainsKey", 0)
+                // .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_get), "stableBTreeMapGet", 0)
+                // .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_insert), "stableBTreeMapInsert", 0)
+                // .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_is_empty), "stableBTreeMapIsEmpty", 0)
+                // .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_items), "stableBTreeMapItems", 0)
+                // .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_keys), "stableBTreeMapKeys", 0)
+                // .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_values), "stableBTreeMapValues", 0)
+                // .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_len), "stableBTreeMapLen", 0)
+                // .function(boa_engine::NativeFunction::from_fn_ptr(stable_b_tree_map_remove), "stableBTreeMapRemove", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(stable_grow), "stableGrow", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(stable_read), "stableRead", 0)
                 .function(boa_engine::NativeFunction::from_fn_ptr(stable_size), "stableSize", 0)
@@ -80,7 +97,9 @@ pub fn generate(ts_ast: &TsAst) -> Result<TokenStream, Vec<Error>> {
     })
 }
 
-fn generate_notify_functions(services: &Vec<Service>) -> Vec<TokenStream> {
+fn generate_notify_functions(module_name: &str, services: &Vec<Service>) -> Vec<TokenStream> {
+    let module_name_ident = module_name.to_string().to_ident();
+
     services.iter().map(|canister| {
         canister.methods.iter().map(|method| {
             let notify_function_name_string = format!("notify_{}_{}", canister.name, method.name);
@@ -90,14 +109,19 @@ fn generate_notify_functions(services: &Vec<Service>) -> Vec<TokenStream> {
             let notify_with_payment128_wrapper_function_name = format_ident!("{}_wrapper", notify_with_payment128_function_name_string);
 
             quote! {
-                .function(boa_engine::NativeFunction::from_fn_ptr(#notify_wrapper_function_name), #notify_function_name_string, 0)
-                .function(boa_engine::NativeFunction::from_fn_ptr(#notify_with_payment128_wrapper_function_name), #notify_with_payment128_function_name_string, 0)
+                .function(boa_engine::NativeFunction::from_fn_ptr(crate::#module_name_ident::#notify_wrapper_function_name), #notify_function_name_string, 0)
+                .function(boa_engine::NativeFunction::from_fn_ptr(crate::#module_name_ident::#notify_with_payment128_wrapper_function_name), #notify_with_payment128_function_name_string, 0)
             }
         }).collect()
     }).collect::<Vec<Vec<TokenStream>>>().concat()
 }
 
-fn generate_cross_canister_functions(services: &Vec<Service>) -> Vec<TokenStream> {
+fn generate_cross_canister_functions(
+    module_name: &str,
+    services: &Vec<Service>,
+) -> Vec<TokenStream> {
+    let module_name_ident = module_name.to_string().to_ident();
+
     services
         .iter()
         .map(|canister| {
@@ -121,9 +145,9 @@ fn generate_cross_canister_functions(services: &Vec<Service>) -> Vec<TokenStream
                         format_ident!("{}_wrapper", call_with_payment128_function_name_string);
 
                     quote! {
-                        .function(boa_engine::NativeFunction::from_fn_ptr(#call_wrapper_function_name), #call_function_name_string, 0)
-                        .function(boa_engine::NativeFunction::from_fn_ptr(#call_with_payment_wrapper_function_name), #call_with_payment_function_name_string, 0)
-                        .function(boa_engine::NativeFunction::from_fn_ptr(#call_with_payment128_wrapper_function_name), #call_with_payment128_function_name_string, 0)
+                        .function(boa_engine::NativeFunction::from_fn_ptr(crate::#module_name_ident::#call_wrapper_function_name), #call_function_name_string, 0)
+                        .function(boa_engine::NativeFunction::from_fn_ptr(crate::#module_name_ident::#call_with_payment_wrapper_function_name), #call_with_payment_function_name_string, 0)
+                        .function(boa_engine::NativeFunction::from_fn_ptr(crate::#module_name_ident::#call_with_payment128_wrapper_function_name), #call_with_payment128_function_name_string, 0)
                     }
                 })
                 .collect()

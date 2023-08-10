@@ -19,6 +19,8 @@ impl SourceMapped<'_, TsTypeAliasDecl> {
                 return Ok(None);
             }
             // TODO this should be undone once we put all user-defined types in their own module
+            // TODO _AzleResult probably isn't good enough, we should probably rename it with
+            // TODO the module as part of the name or something
             let name_string = self.id.get_name();
             let name = Some(if name_string == "Result" {
                 "_AzleResult".to_string()

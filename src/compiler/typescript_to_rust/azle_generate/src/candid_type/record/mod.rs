@@ -61,10 +61,6 @@ impl SourceMapped<'_, TsTypeLit> {
             .map(|member| self.spawn(member).to_record_member())
             .collect_results()?;
 
-        let temp = self.source_map.lookup_char_pos(BytePos(1));
-
-        println!("ts_module_path: {}", temp.file.name);
-
         Ok(Record {
             name: None,
             members,

@@ -1,7 +1,7 @@
 use std::ops::Deref;
 use std::path::Path;
 use swc_common::{sync::Lrc, SourceMap};
-use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
+use swc_ecma_ast::{Decl, ImportDecl, ModuleDecl, ModuleItem, NamedExport, Stmt, TsTypeAliasDecl};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 use crate::alias_table::AliasLists;
@@ -78,6 +78,42 @@ impl Program {
                 internal_error!()
             }
             Err(_error) => return Err(FileSyntaxError::from_file_name(ts_file_name, _error).into()),
+        }
+    }
+
+    pub fn get_import_decls(&self) -> Vec<SourceMapped<ImportDecl>> {
+        if let swc_ecma_ast::Program::Module(module) = self.deref() {
+            module
+                .body
+                .iter()
+                .filter_map(|module_item| match module_item {
+                    ModuleItem::ModuleDecl(decl) => match decl {
+                        ModuleDecl::Import(import) => Some(self.spawn(import)),
+                        _ => None,
+                    },
+                    _ => None,
+                })
+                .collect()
+        } else {
+            vec![]
+        }
+    }
+
+    pub fn get_named_exports(&self) -> Vec<SourceMapped<NamedExport>> {
+        if let swc_ecma_ast::Program::Module(module) = self.deref() {
+            module
+                .body
+                .iter()
+                .filter_map(|module_item| match module_item {
+                    ModuleItem::ModuleDecl(decl) => match decl {
+                        ModuleDecl::ExportNamed(named_export) => Some(self.spawn(named_export)),
+                        _ => None,
+                    },
+                    _ => None,
+                })
+                .collect()
+        } else {
+            vec![]
         }
     }
 

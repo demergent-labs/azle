@@ -16,7 +16,7 @@ pub fn generate(
     let args = super::generate_args_list(method);
 
     quote! {
-        fn #call_wrapper_fn_name(
+        pub fn #call_wrapper_fn_name(
             _this: &boa_engine::JsValue,
             aargs: &[boa_engine::JsValue],
             context: &mut boa_engine::Context,

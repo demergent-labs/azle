@@ -41,7 +41,7 @@ pub fn generate(
                     *method_name_mut = #function_name.to_string()
                 });
 
-                crate::register_ic_object(&mut boa_context);
+                crate::_azle_ic_object::register_ic_object(&mut boa_context);
 
                 #register_process_object
 

@@ -3,11 +3,14 @@ use cdk_framework::{
     traits::CollectIterResults,
 };
 
-use crate::{canister_method::AnnotatedFnDecl, ts_ast::SourceMapped, Error, TsAst};
+use crate::{
+    canister_method::AnnotatedFnDecl,
+    ts_ast::{Program, SourceMapped},
+    Error,
+};
 
-impl TsAst {
+impl Program {
     pub fn build_update_methods(
-        &self,
         annotated_fn_decls: &Vec<SourceMapped<AnnotatedFnDecl>>,
     ) -> Result<Vec<UpdateMethod>, Vec<Error>> {
         let update_methods = annotated_fn_decls

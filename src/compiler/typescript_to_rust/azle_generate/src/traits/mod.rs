@@ -1,6 +1,6 @@
-mod get_name;
+pub mod get_name;
 mod get_param_range;
-mod get_source_file_info;
+pub mod get_source_file_info;
 mod get_source_info;
 mod get_source_text;
 mod get_span;

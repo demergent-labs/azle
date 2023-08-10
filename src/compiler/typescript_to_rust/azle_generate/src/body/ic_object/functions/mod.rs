@@ -34,7 +34,7 @@ mod reject_code;
 mod reject_message;
 mod reply;
 mod reply_raw;
-mod service;
+pub mod service;
 mod set_certified_data;
 mod set_timer;
 mod set_timer_interval;
@@ -51,10 +51,9 @@ mod stable_write;
 mod time;
 mod trap;
 
-pub fn generate(
-    query_and_update_methods: &Vec<QueryOrUpdateMethod>,
-    services: &Vec<Service>,
-    stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
+pub fn generate(// query_and_update_methods: &Vec<QueryOrUpdateMethod>,
+    // services: &Vec<Service>,
+    // stable_b_tree_map_nodes: &Vec<StableBTreeMapNode>,
 ) -> proc_macro2::TokenStream {
     let accept_message = accept_message::generate();
     let arg_data_raw = arg_data_raw::generate();
@@ -85,9 +84,9 @@ pub fn generate(
     let reject = reject::generate();
     let reject_code = reject_code::generate();
     let reject_message = reject_message::generate();
-    let reply = reply::generate(query_and_update_methods);
+    // let reply = reply::generate(query_and_update_methods);
     let reply_raw = reply_raw::generate();
-    let service_functions = service::generate(services);
+    // let service_functions = service::generate(services);
     let set_certified_data = set_certified_data::generate();
     let set_timer = set_timer::generate();
     let set_timer_interval = set_timer_interval::generate();
@@ -95,7 +94,7 @@ pub fn generate(
     let stable64_read = stable64_read::generate();
     let stable64_size = stable64_size::generate();
     let stable64_write = stable64_write::generate();
-    let stable_b_tree_map = stable_b_tree_map::generate(stable_b_tree_map_nodes);
+    // let stable_b_tree_map = stable_b_tree_map::generate(stable_b_tree_map_nodes);
     let stable_bytes = stable_bytes::generate();
     let stable_grow = stable_grow::generate();
     let stable_read = stable_read::generate();
@@ -134,9 +133,8 @@ pub fn generate(
         #reject
         #reject_code
         #reject_message
-        #reply
+        // #reply
         #reply_raw
-        #(#service_functions)*
         #set_certified_data
         #set_timer
         #set_timer_interval
@@ -144,7 +142,7 @@ pub fn generate(
         #stable64_read
         #stable64_size
         #stable64_write
-        #stable_b_tree_map
+        // #stable_b_tree_map
         #stable_bytes
         #stable_grow
         #stable_read

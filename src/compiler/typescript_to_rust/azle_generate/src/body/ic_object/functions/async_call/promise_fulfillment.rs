@@ -69,7 +69,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 )
                 .unwrap_or_trap(&mut *boa_context);
 
-            let main_promise = PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+            let main_promise = crate::PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                 let promise_map = promise_map_ref_cell.borrow().clone();
 
                 let main_promise = promise_map
@@ -79,7 +79,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                 main_promise.clone()
             });
 
-            crate::async_await_result_handler(
+            crate::_azle_async_await_result_handler::async_await_result_handler(
                 &mut *boa_context,
                 &main_promise,
                 &uuid,

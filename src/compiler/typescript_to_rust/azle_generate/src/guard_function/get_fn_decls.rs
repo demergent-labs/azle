@@ -16,7 +16,7 @@ impl GetProgramFnDecls for Vec<Program> {
 }
 
 impl Program {
-    fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>> {
+    pub fn get_fn_decls(&self) -> Vec<SourceMapped<FnDecl>> {
         match self.deref() {
             swc_ecma_ast::Program::Module(module) => module.get_fn_decls(&self),
             swc_ecma_ast::Program::Script(_) => vec![],

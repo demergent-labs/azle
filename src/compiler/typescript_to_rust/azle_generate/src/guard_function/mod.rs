@@ -2,16 +2,17 @@ use cdk_framework::act::node::GuardFunction;
 use std::ops::Deref;
 use swc_ecma_ast::{FnDecl, TsEntityName};
 
-use crate::{traits::GetName, ts_ast::SourceMapped, TsAst};
-use get_fn_decls::GetProgramFnDecls;
+use crate::{
+    traits::GetName,
+    ts_ast::{Program, SourceMapped},
+};
 
 mod get_fn_decls;
 mod rust;
 
-impl TsAst {
+impl Program {
     pub fn build_guard_functions(&self) -> Vec<GuardFunction> {
-        self.programs
-            .get_fn_decls()
+        self.get_fn_decls()
             .iter()
             .filter(|fn_decl| fn_decl.has_guard_result_return_type())
             .map(|fn_decl| {

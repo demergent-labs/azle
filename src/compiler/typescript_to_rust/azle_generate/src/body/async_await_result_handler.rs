@@ -1,5 +1,8 @@
 use cdk_framework::{
-    act::node::{canister_method::QueryOrUpdateMethod, Context},
+    act::{
+        abstract_canister_tree::{convert_module_path_to_name, Module},
+        node::{canister_method::QueryOrUpdateMethod, Context},
+    },
     traits::ToTypeAnnotation,
 };
 use proc_macro2::TokenStream;
@@ -7,10 +10,42 @@ use quote::quote;
 
 use crate::ts_keywords;
 
-pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
-    let match_arms = generate_match_arms(methods);
+pub fn generate(modules: &Vec<Module>) -> TokenStream {
+    let methods = modules.iter().fold(vec![], |acc, module| {
+        let module_name = convert_module_path_to_name(&module.path);
+
+        let query_methods = &module.canister_methods.query_methods;
+        let update_methods = &module.canister_methods.update_methods;
+
+        let query_or_update_methods = vec![
+            query_methods
+                .iter()
+                .map(|query_method| {
+                    (
+                        QueryOrUpdateMethod::Query(query_method.clone()),
+                        module_name.clone(),
+                    )
+                })
+                .collect::<Vec<_>>(),
+            update_methods
+                .iter()
+                .map(|update_methods| {
+                    (
+                        QueryOrUpdateMethod::Update(update_methods.clone()),
+                        module_name.clone(),
+                    )
+                })
+                .collect::<Vec<_>>(),
+        ]
+        .concat();
+
+        vec![acc, query_or_update_methods].concat()
+    });
+
+    let match_arms = generate_match_arms(&methods);
+
     quote! {
-        fn async_await_result_handler(
+        pub fn async_await_result_handler(
             boa_context: &mut boa_engine::Context,
             boa_return_value: &boa_engine::JsValue,
             uuid: &str,
@@ -39,7 +74,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
 
             return match &state {
                 boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
-                    PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+                    crate::PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();
 
                         promise_map.remove(uuid);
@@ -63,7 +98,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                     return Ok(boa_return_value.clone());
                 }
                 boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
-                    PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+                    crate::PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();
 
                         promise_map.remove(uuid);
@@ -72,7 +107,7 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                     return Err(js_value.clone().to_std_string(&mut *boa_context));
                 }
                 boa_engine::builtins::promise::PromiseState::Pending => {
-                    PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
+                    crate::PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
                         let mut promise_map = promise_map_ref_cell.borrow_mut();
 
                         promise_map.insert(uuid.to_string(), boa_return_value.clone());
@@ -85,15 +120,15 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
     }
 }
 
-fn generate_match_arms(methods: &Vec<QueryOrUpdateMethod>) -> Vec<TokenStream> {
+fn generate_match_arms(methods: &Vec<(QueryOrUpdateMethod, String)>) -> Vec<TokenStream> {
     methods
         .iter()
-        .filter(|method| method.is_async)
-        .map(|method| generate_match_arm(method))
+        .filter(|method| method.0.is_async)
+        .map(|method| generate_match_arm(&method.0, &method.1))
         .collect()
 }
 
-fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
+fn generate_match_arm(method: &QueryOrUpdateMethod, module_name: &str) -> TokenStream {
     let name = &method.name;
     let return_type = method.return_type.to_type_annotation(
         &Context {
@@ -101,7 +136,7 @@ fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
             cdk_name: "azle".to_string(),
         },
         name.clone(),
-        &None,
+        &Some(module_name.to_string()),
     );
 
     quote!(

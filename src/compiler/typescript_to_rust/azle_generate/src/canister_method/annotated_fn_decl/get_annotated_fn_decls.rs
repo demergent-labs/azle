@@ -22,7 +22,7 @@ impl GetAnnotatedFnDecls for Vec<Program> {
 }
 
 impl Program {
-    fn get_annotated_fn_decls(&self) -> (Vec<SourceMapped<AnnotatedFnDecl>>, Vec<Error>) {
+    pub fn get_annotated_fn_decls(&self) -> (Vec<SourceMapped<AnnotatedFnDecl>>, Vec<Error>) {
         match self.deref() {
             swc_ecma_ast::Program::Module(module) => {
                 module.get_annotated_fn_decls(&self.source_map, &self.alias_table, &self.alias_list)

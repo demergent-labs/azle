@@ -9,18 +9,20 @@ use super::{
     AnnotatedFnDecl,
 };
 use crate::{
-    canister_method::errors::AsyncNotAllowed, plugin::Plugin, ts_ast::SourceMapped, Error, TsAst,
+    canister_method::errors::AsyncNotAllowed,
+    plugin::Plugin,
+    ts_ast::{Program, SourceMapped},
+    Error,
 };
 
 mod rust;
 
-impl TsAst {
+impl Program {
     pub fn build_init_method(
-        &self,
         annotated_fn_decls: &Vec<SourceMapped<AnnotatedFnDecl>>,
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
-    ) -> Result<InitMethod, Vec<Error>> {
+    ) -> Result<Option<InitMethod>, Vec<Error>> {
         let init_fn_decls: Vec<_> = annotated_fn_decls
             .iter()
             .filter(|annotated_fn_decl| {
@@ -70,15 +72,6 @@ impl TsAst {
             .collect_results()?
             .pop();
 
-        match init_method_option {
-            Some(init_fn_decl) => Ok(init_fn_decl),
-            None => {
-                Ok(InitMethod {
-                    params: vec![],
-                    body: rust::generate(None, plugins, environment_variables)?,
-                    guard_function_name: None, // Unsupported. See https://github.com/demergent-labs/azle/issues/954
-                })
-            }
-        }
+        Ok(init_method_option)
     }
 }

@@ -32,19 +32,19 @@ pub fn generate() -> proc_macro2::TokenStream {
 
                     let uuid = uuid::Uuid::new_v4().to_string();
 
-                    UUID_REF_CELL.with(|uuid_ref_cell| {
+                    crate::UUID_REF_CELL.with(|uuid_ref_cell| {
                         let mut uuid_mut = uuid_ref_cell.borrow_mut();
 
                         *uuid_mut = uuid.clone();
                     });
 
-                    METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
+                    crate::METHOD_NAME_REF_CELL.with(|method_name_ref_cell| {
                         let mut method_name_mut = method_name_ref_cell.borrow_mut();
 
                         *method_name_mut = "_AZLE_TIMER".to_string();
                     });
 
-                    MANUAL_REF_CELL.with(|manual_ref_cell| {
+                    crate::MANUAL_REF_CELL.with(|manual_ref_cell| {
                         let mut manual_mut = manual_ref_cell.borrow_mut();
 
                         *manual_mut = false;
@@ -54,7 +54,7 @@ pub fn generate() -> proc_macro2::TokenStream {
                         .call(&boa_engine::JsValue::Null, &[], &mut *boa_context)
                         .unwrap_or_trap(&mut *boa_context);
 
-                    crate::async_await_result_handler(
+                    crate::_azle_async_await_result_handler::async_await_result_handler(
                         &mut boa_context,
                         &boa_return_value,
                         &uuid,

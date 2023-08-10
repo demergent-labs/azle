@@ -35,7 +35,7 @@ pub fn list_to_vm_value(name: String) -> TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<boa_engine::JsValue, CdkActTryIntoVmValueError> {
-                try_into_vm_value_generic_array(self, context)
+                crate::try_into_vm_value_generic_array(self, context)
             }
         }
 
@@ -95,7 +95,7 @@ pub fn list_from_vm_value(name: String) -> TokenStream {
                 self,
                 context: &mut boa_engine::Context,
             ) -> Result<Vec<#service_name>, boa_engine::JsError> {
-                try_from_vm_value_generic_array(self, context)
+                crate::try_from_vm_value_generic_array(self, context)
             }
         }
     }

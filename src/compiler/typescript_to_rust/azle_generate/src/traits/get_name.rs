@@ -5,6 +5,8 @@ pub trait GetName {
 }
 
 impl GetName for Ident {
+    // If you use .to_string() on an Ident you will get a String with #0 at the end of it
+    // This method should be used to turn an Ident into a String
     fn get_name(&self) -> String {
         self.sym.chars().as_str().to_string()
     }

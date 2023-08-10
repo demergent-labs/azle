@@ -8,17 +8,20 @@ use super::{
     errors::{AsyncNotAllowed, DuplicateSystemMethod, VoidReturnTypeRequired},
     AnnotatedFnDecl,
 };
-use crate::{plugin::Plugin, ts_ast::SourceMapped, Error, TsAst};
+use crate::{
+    plugin::Plugin,
+    ts_ast::{Program, SourceMapped},
+    Error,
+};
 
 mod rust;
 
-impl TsAst {
+impl Program {
     pub fn build_post_upgrade_method(
-        &self,
         annotated_fn_decls: &Vec<SourceMapped<AnnotatedFnDecl>>,
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
-    ) -> Result<PostUpgradeMethod, Vec<Error>> {
+    ) -> Result<Option<PostUpgradeMethod>, Vec<Error>> {
         let post_upgrade_fn_decls: Vec<_> = annotated_fn_decls
             .iter()
             .filter(|annotated_fn_decl| {
@@ -69,15 +72,6 @@ impl TsAst {
             .collect_results()?
             .pop();
 
-        match post_upgrade_method_option {
-            Some(post_upgrade_method) => Ok(post_upgrade_method),
-            None => {
-                Ok(PostUpgradeMethod {
-                    params: vec![],
-                    body: rust::generate(None, plugins, environment_variables)?,
-                    guard_function_name: None, // Unsupported. See https://github.com/demergent-labs/azle/issues/954,
-                })
-            }
-        }
+        Ok(post_upgrade_method_option)
     }
 }

@@ -3,11 +3,14 @@ use cdk_framework::{
     traits::CollectIterResults,
 };
 
-use crate::{canister_method::AnnotatedFnDecl, ts_ast::SourceMapped, Error, TsAst};
+use crate::{
+    canister_method::AnnotatedFnDecl,
+    ts_ast::{Program, SourceMapped},
+    Error,
+};
 
-impl TsAst {
+impl Program {
     pub fn build_query_methods(
-        &self,
         annotated_fn_decls: &Vec<SourceMapped<AnnotatedFnDecl>>,
     ) -> Result<Vec<QueryMethod>, Vec<Error>> {
         Ok(annotated_fn_decls
