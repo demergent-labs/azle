@@ -15,7 +15,7 @@ use crate::{
     Error,
 };
 
-mod rust;
+pub mod rust;
 
 impl Program {
     pub fn build_init_method(

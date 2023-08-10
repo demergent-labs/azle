@@ -16,7 +16,7 @@ mod heartbeat;
 pub mod init;
 mod inspect_message;
 mod module_item;
-mod post_upgrade;
+pub mod post_upgrade;
 mod pre_upgrade;
 mod query_and_update;
 mod rust;

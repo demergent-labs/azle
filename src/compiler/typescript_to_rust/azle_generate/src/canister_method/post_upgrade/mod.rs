@@ -14,7 +14,7 @@ use crate::{
     Error,
 };
 
-mod rust;
+pub mod rust;
 
 impl Program {
     pub fn build_post_upgrade_method(

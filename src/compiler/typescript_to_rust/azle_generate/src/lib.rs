@@ -1,10 +1,6 @@
 use alias_table::AliasLists;
-use cdk_framework::act::node::canister_method::QueryOrUpdateMethod;
-use cdk_framework::{
-    act::abstract_canister_tree::{Import, Module},
-    traits::CollectResults,
-    AbstractCanisterTree,
-};
+use cdk_framework::act::node::canister_method::{InitMethod, PostUpgradeMethod};
+use cdk_framework::{act::abstract_canister_tree::Module, AbstractCanisterTree};
 use proc_macro2::TokenStream;
 
 use crate::body::{async_await_result_handler, ic_object, stable_b_tree_map};
@@ -71,20 +67,6 @@ impl TsAst {
 
                 let stable_b_tree_map_nodes = program.build_stable_b_tree_map_nodes().unwrap();
 
-                let query_and_update_methods = vec![
-                    canister_methods
-                        .query_methods
-                        .iter()
-                        .map(|query_method| QueryOrUpdateMethod::Query(query_method.clone()))
-                        .collect::<Vec<_>>(),
-                    canister_methods
-                        .update_methods
-                        .iter()
-                        .map(|update_methods| QueryOrUpdateMethod::Update(update_methods.clone()))
-                        .collect::<Vec<_>>(),
-                ]
-                .concat();
-
                 let stable_b_tree_maps =
                     stable_b_tree_map::rust::generate(&stable_b_tree_map_nodes);
                 let service_functions =
@@ -147,15 +129,24 @@ impl TsAst {
             keywords,
             vm_value_conversion,
             modules,
-            // default_init_method: InitMethod {
-            //     params: vec![],
-            //     body: crate::canister_method::init::rust::generate(
-            //         None,
-            //         plugins,
-            //         environment_variables,
-            //     )?,
-            //     guard_function: None,
-            // },
+            default_init_method: InitMethod {
+                params: vec![],
+                body: crate::canister_method::init::rust::generate(
+                    None,
+                    plugins,
+                    environment_variables,
+                )?,
+                guard_function_name: None,
+            },
+            default_post_upgrade_method: PostUpgradeMethod {
+                params: vec![],
+                body: crate::canister_method::post_upgrade::rust::generate(
+                    None,
+                    plugins,
+                    environment_variables,
+                )?,
+                guard_function_name: None,
+            },
         })
     }
 }
