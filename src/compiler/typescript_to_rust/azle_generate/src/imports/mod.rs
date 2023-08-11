@@ -35,7 +35,7 @@ impl SourceMapped<'_, ImportDecl> {
         let names = self
             .specifiers
             .iter()
-            .map(|specifier| match specifier {
+            .filter_map(|specifier| match specifier {
                 swc_ecma_ast::ImportSpecifier::Named(named) => {
                     let unnormalized_name = named.local.get_name();
 
@@ -45,13 +45,13 @@ impl SourceMapped<'_, ImportDecl> {
                     // TODO though we might not run into the problems that Result has because
                     // TODO our macros or other dependencies were using Result and it was messing them up
                     if unnormalized_name == "Result" {
-                        "_AzleResult".to_string()
+                        Some("_AzleResult".to_string())
                     } else {
-                        unnormalized_name
+                        Some(unnormalized_name)
                     }
                 }
-                swc_ecma_ast::ImportSpecifier::Default(_) => todo!(),
-                swc_ecma_ast::ImportSpecifier::Namespace(_) => todo!(),
+                swc_ecma_ast::ImportSpecifier::Default(_) => None,
+                swc_ecma_ast::ImportSpecifier::Namespace(_) => None,
             })
             .collect::<Vec<_>>();
 
