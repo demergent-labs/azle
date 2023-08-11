@@ -5,7 +5,7 @@ type PerfResult = Record<{
     wasmIncludingPrelude: nat64;
 }>;
 
-export let perfResult: Opt<PerfResult> = null;
+export let perfResult: Opt<PerfResult> = Opt.None;
 
 $query;
 export function getPerfResult(): Opt<PerfResult> {
@@ -17,10 +17,10 @@ export function getBytes(bytes: blob): blob {
     const perfStart = ic.performanceCounter(0);
     const perfEnd = ic.performanceCounter(0);
 
-    perfResult = {
+    perfResult = Opt.Some({
         wasmBodyOnly: perfEnd - perfStart,
         wasmIncludingPrelude: ic.performanceCounter(0)
-    };
+    });
 
     return bytes;
 }

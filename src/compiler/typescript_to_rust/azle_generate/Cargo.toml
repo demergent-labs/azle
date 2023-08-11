@@ -11,7 +11,7 @@ swc_common = "0.27.10"
 swc_ecma_parser = "0.117.4"
 swc_ecma_ast = "0.90.10"
 annotate-snippets = "0.9.1"
-cdk_framework = { git = "https://github.com/demergent-labs/cdk_framework", rev = "4f3862d67b50f204aed59a794e4a0c4a73035a81" }
+cdk_framework = { git = "https://github.com/demergent-labs/cdk_framework", rev = "2f4916de177c53cf6faf2fb2979fedb196ac67bf" }
 # cdk_framework = { path = "/home/cdk_framework" }
 serde = "1.0.160"
 serde_json = "1.0.96"
