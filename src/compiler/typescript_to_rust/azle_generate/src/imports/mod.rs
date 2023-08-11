@@ -1,3 +1,5 @@
+use std::iter::FromIterator;
+
 use crate::traits::get_name::GetName;
 use crate::traits::get_source_file_info::GetSourceFileInfo;
 use crate::ts_ast::{Program, SourceMapped};
@@ -88,18 +90,60 @@ impl SourceMapped<'_, ImportDecl> {
             return Import { names, path };
         }
 
-        // TODO we should probably pass in the root from the dfx.json compiler_info.json???
-        // TODO instead of this relative path maybe?
-        return Import {
-            names,
-            path: crate::convert_module_name_to_path(
-                &node_resolve::resolve_from(&name, std::path::PathBuf::from("../../../.."))
-                    .unwrap()
-                    .to_str()
-                    .unwrap()
-                    .to_string(),
-            ),
-        };
+        let bare_specifier_first_part = std::path::Path::new(&name);
+
+        let components: Vec<std::path::Component> =
+            bare_specifier_first_part.components().collect();
+
+        if components.len() > 1 {
+            let final_bare_specifier_name_part_one =
+                components[0].as_os_str().to_string_lossy().to_string();
+
+            let remaining = std::path::PathBuf::from_iter(components[1..].iter());
+
+            let bare_specifier_path = node_resolve::resolve_from(
+                &final_bare_specifier_name_part_one,
+                std::path::PathBuf::from("../../../.."),
+            )
+            .unwrap()
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .join(remaining);
+
+            let bare_specifier_path = if bare_specifier_path.is_dir() {
+                bare_specifier_path.join("index")
+            } else {
+                bare_specifier_path
+            };
+
+            println!("bare_specifier_path: {:#?}", bare_specifier_path);
+
+            // TODO we should probably pass in the root from the dfx.json compiler_info.json???
+            // TODO instead of this relative path maybe?
+            return Import {
+                names,
+                path: crate::convert_module_name_to_path(
+                    &bare_specifier_path.to_str().unwrap().to_string(),
+                ),
+            };
+        } else {
+            // TODO we should probably pass in the root from the dfx.json compiler_info.json???
+            // TODO instead of this relative path maybe?
+            return Import {
+                names,
+                path: crate::convert_module_name_to_path(
+                    &node_resolve::resolve_from(&name, std::path::PathBuf::from("../../../.."))
+                        .unwrap()
+                        .to_str()
+                        .unwrap()
+                        .to_string(),
+                ),
+            };
+        }
     }
 }
 
