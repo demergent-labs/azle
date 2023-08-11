@@ -76,6 +76,7 @@ version = "0.0.0"
 dependencies = [
  "annotate-snippets",
  "cdk_framework",
+ "node-resolve",
  "path-clean",
  "prettyplease",
  "proc-macro2",
@@ -106,7 +107,7 @@ checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
 [[package]]
 name = "cdk_framework"
 version = "0.0.0"
-source = "git+https://github.com/demergent-labs/cdk_framework?rev=c2a686bc421cab489f792fc444e040960e68dda4#c2a686bc421cab489f792fc444e040960e68dda4"
+source = "git+https://github.com/demergent-labs/cdk_framework?rev=4f3862d67b50f204aed59a794e4a0c4a73035a81#4f3862d67b50f204aed59a794e4a0c4a73035a81"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -369,6 +370,22 @@ name = "new_debug_unreachable"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e4a24736216ec316047a1fc4252e27dabb04218aa4a3f37c6e7ddbf1f9782b54"
+
+[[package]]
+name = "node-builtins"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "237ad7a9faa3cd869e4bb27d19c2c8a3127d66401cdc4c724640cac9be340761"
+
+[[package]]
+name = "node-resolve"
+version = "2.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f6a90e3b24b73097866f78daad37dba3bc693222b3b59fbdc4dd5adb3c8e2399"
+dependencies = [
+ "node-builtins",
+ "serde_json",
+]
 
 [[package]]
 name = "num-bigint"

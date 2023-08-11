@@ -55,6 +55,9 @@ impl SourceMapped<'_, ImportDecl> {
             })
             .collect::<Vec<_>>();
 
+        // TODO are these / and . checks robust enough?
+        // TODO I would think not because urls can also be used
+
         if name.starts_with("/") {
             let path = crate::convert_module_name_to_path(&name);
             return Import { names, path };
@@ -85,10 +88,18 @@ impl SourceMapped<'_, ImportDecl> {
             return Import { names, path };
         }
 
-        Import {
-            names: vec![],
-            path: vec![],
-        }
+        // TODO we should probably pass in the root from the dfx.json compiler_info.json???
+        // TODO instead of this relative path maybe?
+        return Import {
+            names,
+            path: crate::convert_module_name_to_path(
+                &node_resolve::resolve_from(&name, std::path::PathBuf::from("../../../.."))
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+                    .to_string(),
+            ),
+        };
     }
 }
 
