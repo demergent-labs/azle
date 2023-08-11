@@ -34,9 +34,10 @@ pub fn generate_canister(
     alias_lists: AliasLists,
     plugins: &Vec<Plugin>,
     environment_variables: &Vec<(String, String)>,
+    node_cwd: &str,
 ) -> Result<TokenStream, Vec<Error>> {
     TsAst::new(ts_file_names, main_js, alias_tables, alias_lists)?
-        .to_act(plugins, environment_variables)?
+        .to_act(plugins, environment_variables, node_cwd)?
         .to_token_stream()
         .map_err(|cdkf_errors| cdkf_errors.into_iter().map(Error::from).collect())
 }
@@ -46,6 +47,7 @@ impl TsAst {
         &self,
         plugins: &Vec<Plugin>,
         environment_variables: &Vec<(String, String)>,
+        node_cwd: &str,
     ) -> Result<AbstractCanisterTree, Vec<Error>> {
         let modules = self
             .programs
@@ -57,7 +59,7 @@ impl TsAst {
                     .build_canister_methods(plugins, environment_variables)
                     .unwrap();
 
-                let imports = program.build_imports();
+                let imports = program.build_imports(node_cwd);
 
                 let exports = program.build_exports();
 

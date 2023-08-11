@@ -7,10 +7,10 @@ use cdk_framework::act::abstract_canister_tree::{Export, Import};
 use swc_ecma_ast::{ImportDecl, NamedExport};
 
 impl Program {
-    pub fn build_imports(&self) -> Vec<Import> {
+    pub fn build_imports(&self, node_cwd: &str) -> Vec<Import> {
         self.get_import_decls()
             .iter()
-            .map(|import_decl| import_decl.to_import())
+            .map(|import_decl| import_decl.to_import(node_cwd))
             .collect()
     }
 
@@ -31,7 +31,7 @@ impl Program {
 // TODO we will have to deal with all ./index.ts implicit directory stuff
 // TODO if you import a directory it implicitly imports index.ts
 impl SourceMapped<'_, ImportDecl> {
-    fn to_import(&self) -> Import {
+    fn to_import(&self, node_cwd: &str) -> Import {
         let name = self.src.value.to_string();
 
         let names = self
@@ -103,7 +103,7 @@ impl SourceMapped<'_, ImportDecl> {
 
             let bare_specifier_path = node_resolve::resolve_from(
                 &final_bare_specifier_name_part_one,
-                std::path::PathBuf::from("../../../.."),
+                std::path::PathBuf::from(node_cwd),
             )
             .unwrap()
             .parent()
@@ -136,7 +136,7 @@ impl SourceMapped<'_, ImportDecl> {
             return Import {
                 names,
                 path: crate::convert_module_name_to_path(
-                    &node_resolve::resolve_from(&name, std::path::PathBuf::from("../../../.."))
+                    &node_resolve::resolve_from(&name, std::path::PathBuf::from(node_cwd))
                         .unwrap()
                         .to_str()
                         .unwrap()
@@ -147,6 +147,7 @@ impl SourceMapped<'_, ImportDecl> {
     }
 }
 
+// TODO make sure exports has all of the nice stuff that imports has with bare specifiers etc
 impl SourceMapped<'_, NamedExport> {
     fn to_export(&self) -> Export {
         let names = self

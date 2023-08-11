@@ -4,6 +4,11 @@ import {
     AliasLists
 } from '../typescript_to_rust/type_alias_parsing/types';
 
+export {
+    AliasTables,
+    AliasLists
+} from '../typescript_to_rust/type_alias_parsing/types';
+
 export type AzleError = {
     error?: string;
     suggestion?: string;
@@ -36,6 +41,7 @@ export type CompilerInfo = {
     alias_tables: AliasTables;
     alias_lists: AliasLists;
     file_names: string[];
+    node_cwd: string;
 };
 
 export type Plugin = {

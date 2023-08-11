@@ -24,6 +24,7 @@ struct CompilerInfo {
     file_names: Vec<String>,
     alias_tables: AliasTables,
     alias_lists: AliasLists,
+    node_cwd: String,
 }
 
 fn main() {
@@ -68,6 +69,7 @@ fn main() {
         compiler_info.alias_lists,
         &compiler_info.plugins,
         &environment_variables,
+        &compiler_info.node_cwd,
     ) {
         Ok(lib_file) => lib_file.to_string(),
         Err(errors) => {

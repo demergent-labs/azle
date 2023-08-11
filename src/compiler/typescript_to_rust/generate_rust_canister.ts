@@ -32,7 +32,8 @@ export function generateRustCanister(
         plugins,
         file_names: fileNames,
         alias_tables: aliasTables,
-        alias_lists: aliasLists
+        alias_lists: aliasLists,
+        node_cwd: process.cwd()
     };
 
     const compilerInfoPath = join(
