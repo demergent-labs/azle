@@ -19,7 +19,6 @@ mod traits;
 pub mod async_await_result_handler;
 pub mod runtime_error;
 pub mod stable_b_tree_map;
-pub mod to_std_string;
 pub mod unwrap_or_trap;
 
 pub fn generate(
@@ -56,7 +55,6 @@ pub fn generate(
 
     let stable_b_tree_maps = stable_b_tree_map::rust::generate(&stable_b_tree_map_nodes);
     let unwrap_or_trap = unwrap_or_trap::generate();
-    let to_std_string = to_std_string::generate();
     let runtime_error = runtime_error::generate();
     let to_js_errors = to_js_error::generate();
 
@@ -74,7 +72,6 @@ pub fn generate(
         #register_ic_object_function
         #stable_b_tree_maps
         #unwrap_or_trap
-        #to_std_string
         #(#plugins_code)*
 
         // TODO this is temporary until this issue is resolved: https://github.com/demergent-labs/azle/issues/1029
