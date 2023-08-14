@@ -13,19 +13,20 @@ pub fn generate() -> TokenStream {
     quote! {
         fn js_object_to_string(
             error_value: &boa_engine::JsValue,
+            nesting_level: usize,
             js_object: &boa_engine::JsObject,
             context: &mut boa_engine::Context,
         ) -> String {
             if js_object.is_array() {
-                return js_array_object_to_string(js_object, context);
+                return js_array_object_to_string(js_object, nesting_level, context);
             }
 
             if js_object.is_error() {
-                return js_error_object_to_string(js_object, context);
+                return js_error_object_to_string(js_object, nesting_level, context);
             }
 
             if js_object.is_promise() {
-                return js_promise_object_to_string(js_object, context);
+                return js_promise_object_to_string(js_object, nesting_level, context);
             }
 
             let to_string_js_value = match js_object.get("toString", context) {

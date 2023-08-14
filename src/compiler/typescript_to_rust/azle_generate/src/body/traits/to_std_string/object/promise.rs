@@ -5,20 +5,24 @@ pub fn generate() -> TokenStream {
     quote! {
         fn js_promise_object_to_string(
             js_object: &boa_engine::JsObject,
+            nesting_level: usize,
             context: &mut boa_engine::Context,
         ) -> String {
-            try_js_promise_object_to_string(js_object, context).unwrap_or_else(|js_error| {
-                let cause = js_error.to_std_string(&mut *context);
+            try_js_promise_object_to_string(js_object, nesting_level, context).unwrap_or_else(
+                |js_error| {
+                    let cause = js_error.to_std_string(0, &mut *context);
 
-                format!(
-                    "InternalError: Encountered an error while serializing a Promise\n  \
+                    format!(
+                        "InternalError: Encountered an error while serializing a Promise\n  \
                         [cause]: {cause}"
-                )
-            })
+                    )
+                },
+            )
         }
 
         fn try_js_promise_object_to_string(
             js_object: &boa_engine::JsObject,
+            nesting_level: usize,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
             let js_promise =
@@ -32,13 +36,13 @@ pub fn generate() -> TokenStream {
                 boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
                     format!(
                         "Promise {{<fulfilled>: {}}}",
-                        js_value.to_std_string(&mut *context)
+                        js_value.to_std_string(nesting_level, &mut *context)
                     )
                 }
                 boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
                     format!(
                         "Promise {{<rejected>: {}}}",
-                        js_value.to_std_string(&mut *context)
+                        js_value.to_std_string(nesting_level, &mut *context)
                     )
                 }
             };

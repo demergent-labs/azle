@@ -5,20 +5,24 @@ pub fn generate() -> TokenStream {
     quote! {
         fn js_error_object_to_string(
             js_object: &boa_engine::JsObject,
+            nesting_level: usize,
             context: &mut boa_engine::Context,
         ) -> String {
-            try_js_error_object_to_string(js_object, context).unwrap_or_else(|js_error| {
-                let cause = js_error.to_std_string(&mut *context);
+            try_js_error_object_to_string(js_object, nesting_level, context).unwrap_or_else(
+                |js_error| {
+                    let cause = js_error.to_std_string(0, &mut *context);
 
-                format!(
-                    "InternalError: Encountered an error while serializing an error\n  \
+                    format!(
+                        "InternalError: Encountered an error while serializing an error\n  \
                         [cause]: {cause}"
-                )
-            })
+                    )
+                },
+            )
         }
 
         fn try_js_error_object_to_string(
             js_object: &boa_engine::JsObject,
+            nesting_level: usize,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
             let error_name = get_js_error_name(js_object, context)?;
@@ -63,7 +67,7 @@ pub fn generate() -> TokenStream {
                     if cause_js_value.is_undefined() {
                         Ok(None)
                     } else {
-                        Ok(Some(cause_js_value.to_std_string(&mut *context)))
+                        Ok(Some(cause_js_value.to_std_string(0, &mut *context)))
                     }
                 }
                 Err(js_error) => Err(js_error),
