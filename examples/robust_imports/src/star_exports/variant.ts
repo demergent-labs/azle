@@ -1,0 +1,1 @@
+export { Variant } from 'azle';

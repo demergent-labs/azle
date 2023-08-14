@@ -12,7 +12,8 @@ export function getTests(
         ...getImportCoverageTests(robustImportsCanister),
         ...getAzleCoverageTests(robustImportsCanister),
         ...getTypeAliasDeclTests(robustImportsCanister),
-        ...getTsPrimAliasTest(robustImportsCanister)
+        ...getTsPrimAliasTest(robustImportsCanister),
+        ...getExportStarTests(robustImportsCanister)
     ];
 }
 
@@ -516,6 +517,63 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 return {
                     Ok: match(result, { Ok: () => true, Err: () => false })
+                };
+            }
+        }
+    ];
+}
+
+function getExportStarTests(canister: ActorSubclass<_SERVICE>): Test[] {
+    return [
+        {
+            name: 'IntegersToSignedNaturals',
+            test: async () => {
+                const result = await canister.integersToSignedNaturals({
+                    int: 1n,
+                    int8: -2,
+                    int16: 3,
+                    int32: -4,
+                    int64: 5n
+                });
+                return {
+                    Ok:
+                        result.snat[0] === 1n &&
+                        'Positive' in result.snat[1] &&
+                        result.snat8[0] === 2 &&
+                        'Negative' in result.snat8[1] &&
+                        result.snat16[0] === 3 &&
+                        'Positive' in result.snat16[1] &&
+                        result.snat32[0] === 4 &&
+                        'Negative' in result.snat32[1] &&
+                        result.snat64[0] === 5n &&
+                        'Positive' in result.snat64[1]
+                };
+            }
+        },
+        {
+            name: 'To Signed Nat',
+            test: async () => {
+                const naturals = {
+                    nat: 1n,
+                    nat8: 1,
+                    nat16: 2,
+                    nat32: 3,
+                    nat64: 5n
+                };
+                const sign = { Negative: null };
+                const result = await canister.toSignedNat(naturals, sign);
+                return {
+                    Ok:
+                        result.snat[0] === naturals.nat &&
+                        result.snat8[0] === naturals.nat8 &&
+                        result.snat16[0] === naturals.nat16 &&
+                        result.snat32[0] === naturals.nat32 &&
+                        result.snat64[0] === naturals.nat64 &&
+                        'Negative' in result.snat[1] &&
+                        'Negative' in result.snat8[1] &&
+                        'Negative' in result.snat16[1] &&
+                        'Negative' in result.snat32[1] &&
+                        'Negative' in result.snat64[1]
                 };
             }
         }

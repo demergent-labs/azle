@@ -6,6 +6,13 @@ type IceAppleBasket = record {
   "int32" : int32;
   "int64" : int64;
 };
+type Integers = record {
+  "int" : int;
+  "int8" : int8;
+  "int16" : int16;
+  "int32" : int32;
+  "int64" : int64;
+};
 type MixedConcreteStar = record { star : bool };
 type MyCavernousRecord = record {
   myRecord : MyRecord;
@@ -47,6 +54,13 @@ type MyRecordFromAlias = record {
   depth : MyDeepRecordFromAlias;
 };
 type MyVariant = variant { String : text; Thing : int8 };
+type Naturals = record {
+  "nat" : nat;
+  "nat8" : nat8;
+  "nat16" : nat16;
+  "nat32" : nat32;
+  "nat64" : nat64;
+};
 type NectarineBasket = record {
   "nat" : nat;
   starNat : nat;
@@ -68,6 +82,14 @@ type NumberAliases = record {
   eleventh : nat8;
   twelfth : float64;
   fourth : int;
+};
+type Sign = variant { Negative; Positive };
+type SignedNaturals = record {
+  snat : record { nat; Sign };
+  snat8 : record { nat8; Sign };
+  snat16 : record { nat16; Sign };
+  snat32 : record { nat32; Sign };
+  snat64 : record { nat64; Sign };
 };
 type Watermelon = variant { Seeds; Seedless };
 type _AzleResult = variant { Ok : bool; Err : text };
@@ -112,6 +134,7 @@ service : () -> {
   helloMixedTextAlias : () -> (text) query;
   helloStirredTextAlias : () -> (text) query;
   helloTextAlias : () -> (text) query;
+  integersToSignedNaturals : (Integers) -> (SignedNaturals) query;
   isFruitPrepared : () -> (bool) query;
   isMangoTrickyToEat : () -> (bool) query;
   makeCavernousRecord : () -> (MyCavernousRecord) query;
@@ -140,5 +163,6 @@ service : () -> {
   simpleAzleQuery : () -> () query;
   simpleDeepQuery : () -> () query;
   simpleQuery : () -> () query;
+  toSignedNat : (Naturals, Sign) -> (SignedNaturals);
   typeCheck : (vec opt nat16) -> (int16) query;
 }
