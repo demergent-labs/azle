@@ -2,9 +2,11 @@ use proc_macro2::TokenStream;
 use quote::quote;
 
 mod object;
+mod string;
 
 pub fn generate() -> TokenStream {
     let js_object_to_string_function_definition = object::generate();
+    let string_to_std_string_function_definition = string::generate();
 
     quote! {
         trait ToStdString {
@@ -41,9 +43,7 @@ pub fn generate() -> TokenStream {
                         js_object_to_string(&self, nesting_level, &object, context)
                     }
                     boa_engine::JsValue::Rational(rational) => rational.to_std_string(0, context),
-                    boa_engine::JsValue::String(string) => string
-                        .to_std_string() // TODO: Wrap these in single quotes, double, or backticks
-                        .unwrap_or_else(|err| format!("InternalError: {err}")),
+                    boa_engine::JsValue::String(string) => string_to_std_string(string, nesting_level),
                     boa_engine::JsValue::Symbol(symbol) => symbol.to_string(),
                     boa_engine::JsValue::Undefined => "undefined".to_string(),
                 }
@@ -69,5 +69,6 @@ pub fn generate() -> TokenStream {
         }
 
         #js_object_to_string_function_definition
+        #string_to_std_string_function_definition
     }
 }
