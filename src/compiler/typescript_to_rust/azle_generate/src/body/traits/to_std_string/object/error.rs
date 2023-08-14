@@ -30,7 +30,11 @@ pub fn generate() -> TokenStream {
             let cause_opt = get_js_error_cause(js_object, context)?;
 
             let error_string = match cause_opt {
-                Some(cause) => format!("{error_name}: {error_message}\n  [cause]: {cause}"),
+                Some(cause) => {
+                    let indent = "  ".repeat(nesting_level + 1);
+
+                    format!("{error_name}: {error_message}\n{indent}[cause]: {cause}")
+                }
                 None => format!("{error_name}: {error_message}"),
             };
 
