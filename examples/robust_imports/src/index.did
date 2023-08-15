@@ -94,6 +94,7 @@ type SignedNaturals = record {
 type Watermelon = variant { Seeds; Seedless };
 type _AzleResult = variant { Ok : bool; Err : text };
 service : () -> {
+  add : (vec nat8, float64, float64) -> (int) query;
   addSigFigs : (float32) -> (float64) query;
   checkPrimAliases : (bool, null, text, int, float64) -> () query;
   checkService : (
@@ -109,6 +110,9 @@ service : () -> {
   compareStars : (MixedConcreteStar, MixedConcreteStar) -> (_AzleResult) query;
   deepEmptyAlias : () -> (empty) query;
   dirtyIlama : () -> ();
+  echo_bool : (bool) -> (bool) query;
+  echo_float64 : (float64) -> (float64) query;
+  echo_int : (int) -> (int) query;
   getDeepBlob : (vec nat8) -> (vec nat8) query;
   getManagementPeach : () -> (principal) query;
   getManualAlias : () -> (float64) query;
