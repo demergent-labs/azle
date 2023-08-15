@@ -40,7 +40,7 @@ pub fn generate() -> TokenStream {
                     boa_engine::JsValue::Integer(integer) => integer.to_string().yellow(),
                     boa_engine::JsValue::Null => "null".bold(),
                     boa_engine::JsValue::Object(object) => {
-                        js_object_to_string(&self, nesting_level, &object, context)
+                        js_object_to_string(&self, &object, nesting_level, context)
                     }
                     boa_engine::JsValue::Rational(rational) => rational.to_std_string(0, context).yellow(),
                     boa_engine::JsValue::String(string) => string_to_std_string(string, nesting_level).green(),
