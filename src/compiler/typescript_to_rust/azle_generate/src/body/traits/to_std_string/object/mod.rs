@@ -2,13 +2,15 @@ use proc_macro2::TokenStream;
 use quote::quote;
 
 mod array;
+mod date;
 mod error;
 mod promise;
 
 pub fn generate() -> TokenStream {
+    let js_array_object_to_string_function_definition = array::generate();
+    let js_date_object_to_string_function_definition = date::generate();
     let js_error_object_to_string_function_definition = error::generate();
     let js_promise_object_to_string_function_definition = promise::generate();
-    let js_array_object_to_string_function_definition = array::generate();
 
     quote! {
         fn js_object_to_string(
@@ -45,6 +47,10 @@ pub fn generate() -> TokenStream {
 
             if js_object.is_promise() {
                 return Ok(js_promise_object_to_string(js_object, nesting_level, context));
+            }
+
+            if js_object.is_date() {
+                return Ok(js_date_object_to_string(js_value, js_object, nesting_level, context));
             }
 
             try_regular_js_object_to_string(js_value, js_object, nesting_level, context)
@@ -115,8 +121,9 @@ pub fn generate() -> TokenStream {
             }
         }
 
+        #js_array_object_to_string_function_definition
+        #js_date_object_to_string_function_definition
         #js_error_object_to_string_function_definition
         #js_promise_object_to_string_function_definition
-        #js_array_object_to_string_function_definition
     }
 }
