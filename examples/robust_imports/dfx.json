@@ -12,6 +12,18 @@
                 "node_compatibility": true
             },
             "opt_level": "1"
+        },
+        "not_azle": {
+            "type": "custom",
+            "build": "npx azle not_azle",
+            "root": "src",
+            "ts": "src/not_azle/missing_type.ts",
+            "candid": "src/missing_type.did",
+            "wasm": ".azle/not_azle/not_azle.wasm.gz",
+            "declarations": {
+                "output": "dfx_generated/not_azle",
+                "node_compatibility": true
+            }
         }
     }
 }

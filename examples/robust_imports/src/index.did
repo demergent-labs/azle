@@ -138,6 +138,7 @@ service : () -> {
   isFruitPrepared : () -> (bool) query;
   isMangoTrickyToEat : () -> (bool) query;
   makeCavernousRecord : () -> (MyCavernousRecord) query;
+  makeRealRecord : () -> (float64) query;
   myFathomlessVariantToMyCavernousVariant : (MyFathomlessVariant) -> (
       MyCavernousVariant,
     ) query;

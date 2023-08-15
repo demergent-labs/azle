@@ -5,6 +5,15 @@ import { _SERVICE } from '../dfx_generated/robust_imports/robust_imports.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { match } from 'azle';
 
+interface ExecSyncError extends Error {
+    status: number;
+    signal: string;
+    output: Buffer[];
+    pid: number;
+    stdout: Buffer;
+    stderr: Buffer;
+}
+
 export function getTests(
     robustImportsCanister: ActorSubclass<_SERVICE>
 ): Test[] {
@@ -13,7 +22,8 @@ export function getTests(
         ...getAzleCoverageTests(robustImportsCanister),
         ...getTypeAliasDeclTests(robustImportsCanister),
         ...getTsPrimAliasTest(robustImportsCanister),
-        ...getExportStarTests(robustImportsCanister)
+        ...getExportStarTests(robustImportsCanister),
+        ...getNotAzleTests(robustImportsCanister)
     ];
 }
 
@@ -324,7 +334,7 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'deploy',
             prep: async () => {
-                execSync(`dfx deploy`, {
+                execSync(`dfx deploy robust_imports`, {
                     stdio: 'inherit'
                 });
             }
@@ -578,4 +588,90 @@ function getExportStarTests(canister: ActorSubclass<_SERVICE>): Test[] {
             }
         }
     ];
+}
+
+function getNotAzleTests(canister: ActorSubclass<_SERVICE>): Test[] {
+    return [
+        {
+            name: "Try calling function that shouldn't exist because nothing is right",
+            test: async () => {
+                try {
+                    // @ts-ignore
+                    canister.fakeEverything();
+                } catch (e: any) {
+                    return {
+                        Ok: e
+                            .toString()
+                            .includes(
+                                'TypeError: canister.fakeEverything is not a function'
+                            )
+                    };
+                }
+                return { Ok: false };
+            }
+        },
+        {
+            name: "Try calling function that shouldn't exist because the decorator isn't right",
+            test: async () => {
+                try {
+                    // @ts-ignore
+                    canister.fakeDecorator();
+                } catch (e: any) {
+                    return {
+                        Ok: e
+                            .toString()
+                            .includes(
+                                'TypeError: canister.fakeDecorator is not a function'
+                            )
+                    };
+                }
+                return { Ok: false };
+            }
+        },
+        {
+            name: "Call one function from not_azle to make sure it's compiled",
+            test: async () => {
+                const result = await canister.makeRealRecord();
+                return { Ok: result === 3 };
+            }
+        },
+        {
+            name: "Try to compile a function that has a type that looks like azle but isn't",
+            test: async () => {
+                try {
+                    execSync(`dfx deploy not_azle`, { stdio: 'pipe' });
+
+                    return {
+                        Err: 'Expected the deploy to fail but it succeeded'
+                    };
+                } catch (e: any) {
+                    const stdErr = (e as ExecSyncError).stderr.toString();
+                    const expectedError = `The type FakeVariant is used, but never defined.`;
+
+                    if (!stdErr.includes(expectedError)) {
+                        return {
+                            Err: unexpectedErrorMessage(expectedError, stdErr)
+                        };
+                    }
+
+                    return { Ok: true };
+                }
+            }
+        }
+    ];
+}
+
+function unexpectedErrorMessage(
+    expectedError: string | RegExp,
+    stdErr: string
+) {
+    return `>  The output from std err does not contain the expected error
+
+Expected Error:
+
+${expectedError}
+
+ActualError:
+
+${stdErr}`;
 }
