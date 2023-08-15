@@ -6,23 +6,24 @@ pub fn generate() -> proc_macro2::TokenStream {
         ) -> String {
             match string.to_std_string() {
                 Ok(string) => {
-                    let green_start = "\x1B[32m";
-                    let green_end = "\x1B[0m";
-
                     if nesting_level == 0 {
                         return string;
                     }
+
+                    // TODO: Consider finding which delimiter is used least and
+                    // using it.
+
                     if !string.contains("'") {
-                        return format!("{green_start}'{}'{green_end}", string);
+                        return format!("'{string}'");
                     }
                     if !string.contains("\"") {
-                        return format!("{green_start}\"{}\"{green_end}", string.replace("\"", "\\\""));
+                        return format!("\"{string}\"");
                     }
                     if !string.contains("`") {
-                        return format!("{green_start}`{}`{green_end}", string);
+                        return format!("`{string}`");
                     }
 
-                    format!("{green_start}'{}'{green_end}", string.replace("'", "\\'"))
+                    format!("'{}'", string.replace("'", "\\'"))
 
                     // Alternatively, we could get rid of most of this logic by
                     // using the debug formatter. It just always uses double

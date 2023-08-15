@@ -35,17 +35,17 @@ pub fn generate() -> TokenStream {
                 context: &mut boa_engine::Context,
             ) -> String {
                 match &self {
-                    boa_engine::JsValue::BigInt(bigint) => format!("{}n", bigint.to_string()),
-                    boa_engine::JsValue::Boolean(boolean) => boolean.to_string(),
-                    boa_engine::JsValue::Integer(integer) => integer.to_string(),
-                    boa_engine::JsValue::Null => "null".to_string(),
+                    boa_engine::JsValue::BigInt(bigint) => format!("{}n", bigint.to_string()).yellow(),
+                    boa_engine::JsValue::Boolean(boolean) => boolean.to_string().yellow(),
+                    boa_engine::JsValue::Integer(integer) => integer.to_string().yellow(),
+                    boa_engine::JsValue::Null => "null".bold(),
                     boa_engine::JsValue::Object(object) => {
                         js_object_to_string(&self, nesting_level, &object, context)
                     }
-                    boa_engine::JsValue::Rational(rational) => rational.to_std_string(0, context),
-                    boa_engine::JsValue::String(string) => string_to_std_string(string, nesting_level),
-                    boa_engine::JsValue::Symbol(symbol) => symbol.to_string(),
-                    boa_engine::JsValue::Undefined => "undefined".to_string(),
+                    boa_engine::JsValue::Rational(rational) => rational.to_std_string(0, context).yellow(),
+                    boa_engine::JsValue::String(string) => string_to_std_string(string, nesting_level).green(),
+                    boa_engine::JsValue::Symbol(symbol) => symbol.to_string().green(),
+                    boa_engine::JsValue::Undefined => "undefined".dim(),
                 }
             }
         }

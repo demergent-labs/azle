@@ -31,18 +31,20 @@ pub fn generate() -> TokenStream {
 
             let promise_string_representation = match state {
                 boa_engine::builtins::promise::PromiseState::Pending => {
-                    "Promise {<pending>}".to_string()
+                    format!("Promise {{{status}}}", status="<pending>".dim())
                 }
                 boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
                     format!(
-                        "Promise {{<fulfilled>: {}}}",
-                        js_value.to_std_string(nesting_level, &mut *context)
+                        "Promise {{{status}: {value}}}",
+                        status="<fulfilled>".green(),
+                        value=js_value.to_std_string(nesting_level, &mut *context)
                     )
                 }
                 boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
                     format!(
-                        "Promise {{<rejected>: {}}}",
-                        js_value.to_std_string(nesting_level, &mut *context)
+                        "Promise {{{status}: {value}}}",
+                        status="<rejected>".red(),
+                        value=js_value.to_std_string(nesting_level, &mut *context)
                     )
                 }
             };
