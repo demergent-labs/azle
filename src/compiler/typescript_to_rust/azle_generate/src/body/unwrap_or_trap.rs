@@ -20,7 +20,9 @@ pub fn generate() -> TokenStream {
                 match self {
                     Ok(js_value) => js_value,
                     Err(js_error) => {
-                        let error_message = js_error.to_std_string(0, context);
+                        let error_message = js_error
+                            .to_std_string(0, context)
+                            .unwrap_or_else(|e| e.to_string());
 
                         ic_cdk::api::trap(&format!("\nUncaught {error_message}"));
                     }

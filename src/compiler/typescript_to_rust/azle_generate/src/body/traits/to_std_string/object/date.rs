@@ -8,15 +8,10 @@ pub fn generate() -> TokenStream {
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
             context: &mut boa_engine::Context,
-        ) -> String {
-            try_js_date_object_to_string(js_value, js_object, nesting_level, context).unwrap_or_else(
-                |js_error| {
-                    let cause = js_error.to_std_string(0, &mut *context);
-
-                    format!(
-                        "InternalError: Encountered an error while serializing an array\n  \
-                        [cause]: {cause}"
-                    )
+        ) -> Result<String, boa_engine::JsError> {
+            try_js_date_object_to_string(js_value, js_object, nesting_level, context).map_err(
+                |cause| {
+                    "Encountered an error while serializing a Date".to_js_error(Some(cause))
                 },
             )
         }

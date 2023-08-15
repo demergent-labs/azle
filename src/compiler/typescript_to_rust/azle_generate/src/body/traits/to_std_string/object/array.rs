@@ -7,15 +7,10 @@ pub fn generate() -> TokenStream {
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
             context: &mut boa_engine::Context,
-        ) -> String {
-            try_js_array_object_to_string(js_object, nesting_level, context).unwrap_or_else(
-                |js_error| {
-                    let cause = js_error.to_std_string(0, &mut *context);
-
-                    format!(
-                        "InternalError: Encountered an error while serializing an array\n  \
-                        [cause]: {cause}"
-                    )
+        ) -> Result<String, boa_engine::JsError> {
+            try_js_array_object_to_string(js_object, nesting_level, context).map_err(
+                |cause| {
+                    "Encountered an error while serializing an Array".to_js_error(Some(cause))
                 },
             )
         }
@@ -31,7 +26,7 @@ pub fn generate() -> TokenStream {
                 .map(|index| -> Result<String, boa_engine::JsError> {
                     let js_value = js_object.get(index, context)?;
 
-                    Ok(js_value.to_std_string(nesting_level + 1, context))
+                    js_value.to_std_string(nesting_level + 1, context)
                 })
                 .collect::<Result<Vec<_>, _>>()?;
 

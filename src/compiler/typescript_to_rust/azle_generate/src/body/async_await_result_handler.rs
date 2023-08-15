@@ -31,11 +31,17 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
             let js_promise = boa_engine::object::builtins::JsPromise::from_object(
                 boa_return_value_object.clone(),
             )
-            .map_err(|js_error| js_error.to_std_string(0, &mut *boa_context))?;
+            .map_err(|js_error| {
+                js_error
+                    .to_std_string(0, &mut *boa_context)
+                    .unwrap_or_else(|e| e.to_string())
+            })?;
 
-            let state = js_promise
-                .state()
-                .map_err(|js_error| js_error.to_std_string(0, &mut *boa_context))?;
+            let state = js_promise.state().map_err(|js_error| {
+                js_error
+                    .to_std_string(0, &mut *boa_context)
+                    .unwrap_or_else(|e| e.to_string())
+            })?;
 
             return match &state {
                 boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
@@ -69,7 +75,10 @@ pub fn generate(methods: &Vec<QueryOrUpdateMethod>) -> TokenStream {
                         promise_map.remove(uuid);
                     });
 
-                    return Err(js_value.clone().to_std_string(0, &mut *boa_context));
+                    return Err(js_value
+                        .clone()
+                        .to_std_string(0, &mut *boa_context)
+                        .unwrap_or_else(|e| e.to_string()));
                 }
                 boa_engine::builtins::promise::PromiseState::Pending => {
                     PROMISE_MAP_REF_CELL.with(|promise_map_ref_cell| {
@@ -109,7 +118,7 @@ fn generate_match_arm(method: &QueryOrUpdateMethod) -> TokenStream {
                 .clone()
                 .try_from_vm_value(&mut *boa_context)
                 .map_err(|js_error: boa_engine::JsError| {
-                    js_error.to_std_string(0, &mut *boa_context)
+                    js_error.to_std_string(0, &mut *boa_context).unwrap_or_else(|e| e.to_string())
                 })?;
 
             ic_cdk::api::call::reply((reply_value,));

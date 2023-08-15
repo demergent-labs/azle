@@ -14,7 +14,7 @@ pub fn generate() -> TokenStream {
                 self,
                 nesting_level: usize,
                 context: &mut boa_engine::Context,
-            ) -> String;
+            ) -> Result<String, boa_engine::JsError>;
         }
 
         impl ToStdString for boa_engine::JsError {
@@ -22,7 +22,7 @@ pub fn generate() -> TokenStream {
                 self,
                 nesting_level: usize,
                 context: &mut boa_engine::Context,
-            ) -> String {
+            ) -> Result<String, boa_engine::JsError> {
                 self.to_opaque(context)
                     .to_std_string(nesting_level, context)
             }
@@ -33,20 +33,26 @@ pub fn generate() -> TokenStream {
                 self,
                 nesting_level: usize,
                 context: &mut boa_engine::Context,
-            ) -> String {
-                match &self {
-                    boa_engine::JsValue::BigInt(bigint) => format!("{}n", bigint.to_string()).yellow(),
+            ) -> Result<String, boa_engine::JsError> {
+                Ok(match &self {
+                    boa_engine::JsValue::BigInt(bigint) => {
+                        format!("{}n", bigint.to_string()).yellow()
+                    }
                     boa_engine::JsValue::Boolean(boolean) => boolean.to_string().yellow(),
                     boa_engine::JsValue::Integer(integer) => integer.to_string().yellow(),
                     boa_engine::JsValue::Null => "null".bold(),
                     boa_engine::JsValue::Object(object) => {
-                        js_object_to_string(&self, &object, nesting_level, context)
+                        js_object_to_string(&self, &object, nesting_level, context)?
                     }
-                    boa_engine::JsValue::Rational(rational) => rational.to_std_string(0, context).yellow(),
-                    boa_engine::JsValue::String(string) => string_to_std_string(string, nesting_level),
+                    boa_engine::JsValue::Rational(rational) => {
+                        rational.to_std_string(0, context)?.yellow()
+                    }
+                    boa_engine::JsValue::String(string) => {
+                        string_to_std_string(string, nesting_level)?
+                    }
                     boa_engine::JsValue::Symbol(symbol) => symbol.to_string().green(),
                     boa_engine::JsValue::Undefined => "undefined".dim(),
-                }
+                })
             }
         }
 
@@ -55,16 +61,16 @@ pub fn generate() -> TokenStream {
                 self,
                 nesting_level: usize,
                 context: &mut boa_engine::Context,
-            ) -> String {
+            ) -> Result<String, boa_engine::JsError> {
                 if self.is_infinite() {
-                    return if self.is_sign_negative() {
+                    return Ok(if self.is_sign_negative() {
                         "-Infinity".to_string()
                     } else {
                         "Infinity".to_string()
-                    };
+                    });
                 }
 
-                self.to_string()
+                Ok(self.to_string())
             }
         }
 
