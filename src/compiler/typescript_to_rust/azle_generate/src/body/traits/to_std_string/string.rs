@@ -14,16 +14,16 @@ pub fn generate() -> proc_macro2::TokenStream {
                     // using it.
 
                     if !string.contains("'") {
-                        return format!("'{string}'");
+                        return format!("'{string}'").green();
                     }
                     if !string.contains("\"") {
-                        return format!("\"{string}\"");
+                        return format!("\"{string}\"").green();
                     }
                     if !string.contains("`") {
-                        return format!("`{string}`");
+                        return format!("`{string}`").green();
                     }
 
-                    format!("'{}'", string.replace("'", "\\'"))
+                    format!("'{}'", string.replace("'", "\\'")).green()
 
                     // Alternatively, we could get rid of most of this logic by
                     // using the debug formatter. It just always uses double

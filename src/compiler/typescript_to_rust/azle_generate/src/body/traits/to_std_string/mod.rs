@@ -43,7 +43,7 @@ pub fn generate() -> TokenStream {
                         js_object_to_string(&self, &object, nesting_level, context)
                     }
                     boa_engine::JsValue::Rational(rational) => rational.to_std_string(0, context).yellow(),
-                    boa_engine::JsValue::String(string) => string_to_std_string(string, nesting_level).green(),
+                    boa_engine::JsValue::String(string) => string_to_std_string(string, nesting_level),
                     boa_engine::JsValue::Symbol(symbol) => symbol.to_string().green(),
                     boa_engine::JsValue::Undefined => "undefined".dim(),
                 }
