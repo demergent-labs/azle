@@ -29,20 +29,26 @@ pub fn generate() -> TokenStream {
                 boa_engine::object::builtins::JsPromise::from_object(js_object.clone())?;
             let state = js_promise.state()?;
 
+            // TODO: Consider indenting one level to better match node
+            // - The way the value is nested is different
+            // - At the second level of indentation it just shows the value's
+            //   type, not the actual data
+            // - at the third+ level it just shows [Promise] in blue
+
             let promise_string_representation = match state {
                 boa_engine::builtins::promise::PromiseState::Pending => {
-                    format!("Promise {{{status}}}", status="<pending>".dim())
+                    format!("Promise {{ {status} }}", status="<pending>".dim())
                 }
                 boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
                     format!(
-                        "Promise {{{status}: {value}}}",
+                        "Promise {{ {status} : {value}}}",
                         status="<fulfilled>".green(),
                         value=js_value.to_std_string(nesting_level, &mut *context)
                     )
                 }
                 boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
                     format!(
-                        "Promise {{{status}: {value}}}",
+                        "Promise {{ {status} : {value}}}",
                         status="<rejected>".red(),
                         value=js_value.to_std_string(nesting_level, &mut *context)
                     )
