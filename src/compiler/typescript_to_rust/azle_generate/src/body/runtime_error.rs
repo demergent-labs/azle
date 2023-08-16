@@ -18,7 +18,7 @@ pub fn generate() -> TokenStream {
                     Self::JsError(js_error) => BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
                         let mut boa_context = boa_context_ref_cell.borrow_mut();
 
-                        js_error.clone().to_console_string(&mut boa_context)
+                        js_error.clone().to_std_string(&mut boa_context)
                     }),
                     Self::ReferenceError(msg) => format!("ReferenceError: {msg}"),
                     Self::TypeError(msg) => format!("TypeError: {msg}"),

@@ -13,6 +13,7 @@ pub fn generate() -> TokenStream {
             fn serialize(
                 self,
                 nesting_level: usize,
+                colorize: bool,
                 context: &mut boa_engine::Context,
             ) -> Result<String, boa_engine::JsError>;
         }
@@ -21,9 +22,11 @@ pub fn generate() -> TokenStream {
             fn serialize(
                 self,
                 nesting_level: usize,
+                colorize: bool,
                 context: &mut boa_engine::Context,
             ) -> Result<String, boa_engine::JsError> {
-                self.to_opaque(context).serialize(nesting_level, context)
+                self.to_opaque(context)
+                    .serialize(nesting_level, colorize, context)
             }
         }
 
@@ -31,24 +34,73 @@ pub fn generate() -> TokenStream {
             fn serialize(
                 self,
                 nesting_level: usize,
+                colorize: bool,
                 context: &mut boa_engine::Context,
             ) -> Result<String, boa_engine::JsError> {
                 Ok(match &self {
                     boa_engine::JsValue::BigInt(bigint) => {
-                        format!("{}n", bigint.to_string()).yellow()
+                        let output = format!("{}n", bigint.to_string());
+
+                        if colorize {
+                            output.yellow()
+                        } else {
+                            output
+                        }
                     }
-                    boa_engine::JsValue::Boolean(boolean) => boolean.to_string().yellow(),
-                    boa_engine::JsValue::Integer(integer) => integer.to_string().yellow(),
-                    boa_engine::JsValue::Null => "null".bold(),
+                    boa_engine::JsValue::Boolean(boolean) => {
+                        let output = boolean.to_string();
+
+                        if colorize {
+                            output.yellow()
+                        } else {
+                            output
+                        }
+                    }
+                    boa_engine::JsValue::Integer(integer) => {
+                        let output = integer.to_string();
+
+                        if colorize {
+                            output.yellow()
+                        } else {
+                            output
+                        }
+                    }
+                    boa_engine::JsValue::Null => {
+                        let output = "null";
+
+                        if colorize {
+                            output.bold()
+                        } else {
+                            output.to_string()
+                        }
+                    }
                     boa_engine::JsValue::Object(object) => {
-                        serialize_js_object(&self, &object, nesting_level, context)?
+                        serialize_js_object(&self, &object, nesting_level, colorize, context)?
                     }
                     boa_engine::JsValue::Rational(rational) => {
-                        rational.serialize(0, context)?.yellow()
+                        rational.serialize(0, colorize, context)?
                     }
-                    boa_engine::JsValue::String(string) => serialize_string(string, nesting_level)?,
-                    boa_engine::JsValue::Symbol(symbol) => symbol.to_string().green(),
-                    boa_engine::JsValue::Undefined => "undefined".dim(),
+                    boa_engine::JsValue::String(string) => {
+                        serialize_string(string, nesting_level, colorize)?
+                    }
+                    boa_engine::JsValue::Symbol(symbol) => {
+                        let output = symbol.to_string();
+
+                        if colorize {
+                            output.green()
+                        } else {
+                            output
+                        }
+                    }
+                    boa_engine::JsValue::Undefined => {
+                        let output = "undefined";
+
+                        if colorize {
+                            output.dim()
+                        } else {
+                            output.to_string()
+                        }
+                    }
                 })
             }
         }
@@ -57,17 +109,20 @@ pub fn generate() -> TokenStream {
             fn serialize(
                 self,
                 nesting_level: usize,
+                colorize: bool,
                 context: &mut boa_engine::Context,
             ) -> Result<String, boa_engine::JsError> {
-                if self.is_infinite() {
-                    return Ok(if self.is_sign_negative() {
+                let output = if self.is_infinite() {
+                    if self.is_sign_negative() {
                         "-Infinity".to_string()
                     } else {
                         "Infinity".to_string()
-                    });
-                }
+                    }
+                } else {
+                    self.to_string()
+                };
 
-                Ok(self.to_string())
+                Ok(if colorize { output.yellow() } else { output })
             }
         }
 

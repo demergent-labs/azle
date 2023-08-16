@@ -3,6 +3,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         fn serialize_string(
             string: &boa_engine::JsString,
             nesting_level: usize,
+            colorize: bool,
         ) -> Result<String, boa_engine::JsError> {
             let std_string = string.to_std_string().map_err(|err| {
                 let cause = err.to_string().to_js_error(None);
@@ -18,16 +19,24 @@ pub fn generate() -> proc_macro2::TokenStream {
             // using it.
 
             if !std_string.contains("'") {
-                return Ok(format!("'{std_string}'").green());
+                let output = format!("'{std_string}'");
+
+                return Ok(if colorize { output.green() } else { output });
             }
             if !std_string.contains("\"") {
-                return Ok(format!("\"{std_string}\"").green());
+                let output = format!("\"{std_string}\"");
+
+                return Ok(if colorize { output.green() } else { output });
             }
             if !std_string.contains("`") {
-                return Ok(format!("`{std_string}`").green());
+                let output = format!("`{std_string}`");
+
+                return Ok(if colorize { output.green() } else { output });
             }
 
-            Ok(format!("'{}'", std_string.replace("'", "\\'")).green())
+            let output = format!("'{}'", std_string.replace("'", "\\'"));
+
+            Ok(if colorize { output.green() } else { output })
 
             // Alternatively, we could get rid of most of this logic by
             // using the debug formatter. It just always uses double

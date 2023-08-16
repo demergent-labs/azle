@@ -6,21 +6,23 @@ pub fn generate() -> TokenStream {
         fn serialize_js_error_object(
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
+            colorize: bool,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
-            try_serialize_js_error_object(js_object, nesting_level, context).map_err(|cause| {
-                "Encountered an error while serializing an Error".to_js_error(Some(cause))
-            })
+            try_serialize_js_error_object(js_object, nesting_level, colorize, context).map_err(
+                |cause| "Encountered an error while serializing an Error".to_js_error(Some(cause)),
+            )
         }
 
         fn try_serialize_js_error_object(
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
+            colorize: bool,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
             let error_name = get_js_error_name(js_object, context)?;
             let error_message = get_js_error_message(js_object, context)?;
-            let cause_opt = get_js_error_cause(js_object, context)?;
+            let cause_opt = get_js_error_cause(js_object, colorize, context)?;
 
             let error_string = match cause_opt {
                 Some(cause) => {
@@ -57,6 +59,7 @@ pub fn generate() -> TokenStream {
 
         fn get_js_error_cause(
             js_object: &boa_engine::JsObject,
+            colorize: bool,
             context: &mut boa_engine::Context,
         ) -> Result<Option<String>, boa_engine::JsError> {
             match js_object.get("cause", &mut *context) {
@@ -64,7 +67,11 @@ pub fn generate() -> TokenStream {
                     if cause_js_value.is_undefined() {
                         Ok(None)
                     } else {
-                        Ok(Some(cause_js_value.serialize(0, &mut *context)?))
+                        Ok(Some(cause_js_value.serialize(
+                            0,
+                            colorize,
+                            &mut *context,
+                        )?))
                     }
                 }
                 Err(js_error) => Err(js_error),

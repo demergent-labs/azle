@@ -6,16 +6,18 @@ pub fn generate() -> TokenStream {
         fn serialize_js_array_object(
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
+            colorize: bool,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
-            try_serialize_js_array_object(js_object, nesting_level, context).map_err(|cause| {
-                "Encountered an error while serializing an Array".to_js_error(Some(cause))
-            })
+            try_serialize_js_array_object(js_object, nesting_level, colorize, context).map_err(
+                |cause| "Encountered an error while serializing an Array".to_js_error(Some(cause)),
+            )
         }
 
         fn try_serialize_js_array_object(
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
+            colorize: bool,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
             let length = js_object.get_length(context)?;
@@ -24,7 +26,7 @@ pub fn generate() -> TokenStream {
                 .map(|index| -> Result<String, boa_engine::JsError> {
                     let js_value = js_object.get(index, context)?;
 
-                    js_value.serialize(nesting_level + 1, context)
+                    js_value.serialize(nesting_level + 1, colorize, context)
                 })
                 .collect::<Result<Vec<_>, _>>()?;
 

@@ -13,14 +13,14 @@ pub fn generate(function_name: &String) -> TokenStream {
                 .map_err(|js_error: boa_engine::JsError| {
                     format!(
                         "\nUncaught {}",
-                        js_error.to_console_string(&mut *boa_context)
+                        js_error.to_std_string(&mut *boa_context)
                     )
                 })?
                 .try_from_vm_value(&mut *boa_context)
                 .map_err(|js_error: boa_engine::JsError| {
                     format!(
                         "\nUncaught {}",
-                        js_error.to_console_string(&mut *boa_context)
+                        js_error.to_std_string(&mut *boa_context)
                     )
                 })?
         })

@@ -7,17 +7,20 @@ pub fn generate() -> TokenStream {
             js_value: &boa_engine::JsValue,
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
+            colorize: bool,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
-            try_serialize_js_date_object(js_value, js_object, nesting_level, context).map_err(
-                |cause| "Encountered an error while serializing a Date".to_js_error(Some(cause)),
-            )
+            try_serialize_js_date_object(js_value, js_object, nesting_level, colorize, context)
+                .map_err(|cause| {
+                    "Encountered an error while serializing a Date".to_js_error(Some(cause))
+                })
         }
 
         fn try_serialize_js_date_object(
             js_value: &boa_engine::JsValue,
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
+            colorize: bool,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
             let to_iso_string_js_value = js_object.get("toISOString", context)?;
@@ -31,7 +34,11 @@ pub fn generate() -> TokenStream {
 
             let date_iso_string: String = date_iso_string_js_value.try_from_vm_value(context)?;
 
-            Ok(date_iso_string.magenta())
+            Ok(if colorize {
+                date_iso_string.magenta()
+            } else {
+                date_iso_string
+            })
         }
     }
 }

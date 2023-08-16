@@ -6,16 +6,18 @@ pub fn generate() -> TokenStream {
         fn serialize_js_promise_object(
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
+            colorize: bool,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
-            try_serialize_js_promise_object(js_object, nesting_level, context).map_err(|cause| {
-                "Encountered an error while serializing a Promise".to_js_error(Some(cause))
-            })
+            try_serialize_js_promise_object(js_object, nesting_level, colorize, context).map_err(
+                |cause| "Encountered an error while serializing a Promise".to_js_error(Some(cause)),
+            )
         }
 
         fn try_serialize_js_promise_object(
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
+            colorize: bool,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
             let js_promise =
@@ -30,20 +32,36 @@ pub fn generate() -> TokenStream {
 
             let promise_string_representation = match state {
                 boa_engine::builtins::promise::PromiseState::Pending => {
-                    format!("Promise {{ {status} }}", status = "<pending>".dim())
+                    let status = if colorize {
+                        "<pending>".dim()
+                    } else {
+                        "<pending>".to_string()
+                    };
+
+                    format!("Promise {{ {status} }}")
                 }
                 boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
+                    let status = if colorize {
+                        "<fulfilled>".green()
+                    } else {
+                        "<fulfilled>".to_string()
+                    };
+
                     format!(
                         "Promise {{ {status} : {value}}}",
-                        status = "<fulfilled>".green(),
-                        value = js_value.serialize(nesting_level, &mut *context)?
+                        value = js_value.serialize(nesting_level, colorize, &mut *context)?
                     )
                 }
                 boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
+                    let status = if colorize {
+                        "<rejected>".red()
+                    } else {
+                        "<rejected>".to_string()
+                    };
+
                     format!(
                         "Promise {{ {status} : {value}}}",
-                        status = "<rejected>".red(),
-                        value = js_value.serialize(nesting_level, &mut *context)?
+                        value = js_value.serialize(nesting_level, colorize, &mut *context)?
                     )
                 }
             };

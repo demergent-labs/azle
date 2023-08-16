@@ -17,33 +17,42 @@ pub fn generate() -> TokenStream {
             js_value: &boa_engine::JsValue,
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
+            colorize: bool,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
             if js_object.is_array() {
-                return serialize_js_array_object(js_object, nesting_level, context);
+                return serialize_js_array_object(js_object, nesting_level, colorize, context);
             }
 
             if js_object.is_error() {
-                return serialize_js_error_object(js_object, nesting_level, context);
+                return serialize_js_error_object(js_object, nesting_level, colorize, context);
             }
 
             if js_object.is_promise() {
-                return serialize_js_promise_object(js_object, nesting_level, context);
+                return serialize_js_promise_object(js_object, nesting_level, colorize, context);
             }
 
             if js_object.is_date() {
-                return serialize_js_date_object(js_value, js_object, nesting_level, context);
+                return serialize_js_date_object(
+                    js_value,
+                    js_object,
+                    nesting_level,
+                    colorize,
+                    context,
+                );
             }
 
-            try_serialize_regular_js_object(js_value, js_object, nesting_level, context).map_err(
-                |cause| "Encountered an error while serializing an Object".to_js_error(Some(cause)),
-            )
+            try_serialize_regular_js_object(js_value, js_object, nesting_level, colorize, context)
+                .map_err(|cause| {
+                    "Encountered an error while serializing an Object".to_js_error(Some(cause))
+                })
         }
 
         fn try_serialize_regular_js_object(
             js_value: &boa_engine::JsValue,
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
+            colorize: bool,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
             let own_property_names = boa_engine::builtins::object::Object::get_own_property_names(
@@ -64,7 +73,7 @@ pub fn generate() -> TokenStream {
                                 js_object.get(property_name.as_str(), &mut *context)?;
 
                             let property_value_string_representation = property_js_value
-                                .serialize(nesting_level + 1, &mut *context)?;
+                                .serialize(nesting_level + 1, colorize, &mut *context)?;
 
                             Ok(format!(
                                 "{property_name}: {property_value_string_representation}"
