@@ -7,40 +7,40 @@ mod error;
 mod promise;
 
 pub fn generate() -> TokenStream {
-    let js_array_object_to_string_function_definition = array::generate();
-    let js_date_object_to_string_function_definition = date::generate();
-    let js_error_object_to_string_function_definition = error::generate();
-    let js_promise_object_to_string_function_definition = promise::generate();
+    let serialize_js_array_object_function_definition = array::generate();
+    let serialize_js_date_object_function_definition = date::generate();
+    let serialize_js_error_object_function_definition = error::generate();
+    let serialize_js_promise_object_function_definition = promise::generate();
 
     quote! {
-        fn js_object_to_string(
+        fn serialize_js_object(
             js_value: &boa_engine::JsValue,
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
             if js_object.is_array() {
-                return js_array_object_to_string(js_object, nesting_level, context);
+                return serialize_js_array_object(js_object, nesting_level, context);
             }
 
             if js_object.is_error() {
-                return js_error_object_to_string(js_object, nesting_level, context);
+                return serialize_js_error_object(js_object, nesting_level, context);
             }
 
             if js_object.is_promise() {
-                return js_promise_object_to_string(js_object, nesting_level, context);
+                return serialize_js_promise_object(js_object, nesting_level, context);
             }
 
             if js_object.is_date() {
-                return js_date_object_to_string(js_value, js_object, nesting_level, context);
+                return serialize_js_date_object(js_value, js_object, nesting_level, context);
             }
 
-            try_regular_js_object_to_string(js_value, js_object, nesting_level, context).map_err(
+            try_serialize_regular_js_object(js_value, js_object, nesting_level, context).map_err(
                 |cause| "Encountered an error while serializing an Object".to_js_error(Some(cause)),
             )
         }
 
-        fn try_regular_js_object_to_string(
+        fn try_serialize_regular_js_object(
             js_value: &boa_engine::JsValue,
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
@@ -64,7 +64,7 @@ pub fn generate() -> TokenStream {
                                 js_object.get(property_name.as_str(), &mut *context)?;
 
                             let property_value_string_representation = property_js_value
-                                .to_std_string(nesting_level + 1, &mut *context)?;
+                                .serialize(nesting_level + 1, &mut *context)?;
 
                             Ok(format!(
                                 "{property_name}: {property_value_string_representation}"
@@ -106,9 +106,9 @@ pub fn generate() -> TokenStream {
             }
         }
 
-        #js_array_object_to_string_function_definition
-        #js_date_object_to_string_function_definition
-        #js_error_object_to_string_function_definition
-        #js_promise_object_to_string_function_definition
+        #serialize_js_array_object_function_definition
+        #serialize_js_date_object_function_definition
+        #serialize_js_error_object_function_definition
+        #serialize_js_promise_object_function_definition
     }
 }

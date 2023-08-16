@@ -1,6 +1,6 @@
 pub fn generate() -> proc_macro2::TokenStream {
     quote::quote! {
-        fn string_to_std_string(
+        fn serialize_string(
             string: &boa_engine::JsString,
             nesting_level: usize,
         ) -> Result<String, boa_engine::JsError> {

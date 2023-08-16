@@ -3,18 +3,18 @@ use quote::quote;
 
 pub fn generate() -> TokenStream {
     quote! {
-        fn js_date_object_to_string(
+        fn serialize_js_date_object(
             js_value: &boa_engine::JsValue,
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
-            try_js_date_object_to_string(js_value, js_object, nesting_level, context).map_err(
+            try_serialize_js_date_object(js_value, js_object, nesting_level, context).map_err(
                 |cause| "Encountered an error while serializing a Date".to_js_error(Some(cause)),
             )
         }
 
-        fn try_js_date_object_to_string(
+        fn try_serialize_js_date_object(
             js_value: &boa_engine::JsValue,
             js_object: &boa_engine::JsObject,
             nesting_level: usize,

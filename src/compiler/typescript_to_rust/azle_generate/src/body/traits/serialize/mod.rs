@@ -5,31 +5,30 @@ mod object;
 mod string;
 
 pub fn generate() -> TokenStream {
-    let js_object_to_string_function_definition = object::generate();
-    let string_to_std_string_function_definition = string::generate();
+    let serialize_js_object_function_definition = object::generate();
+    let serialize_string_function_definition = string::generate();
 
     quote! {
-        trait ToStdString {
-            fn to_std_string(
+        trait Serialize {
+            fn serialize(
                 self,
                 nesting_level: usize,
                 context: &mut boa_engine::Context,
             ) -> Result<String, boa_engine::JsError>;
         }
 
-        impl ToStdString for boa_engine::JsError {
-            fn to_std_string(
+        impl Serialize for boa_engine::JsError {
+            fn serialize(
                 self,
                 nesting_level: usize,
                 context: &mut boa_engine::Context,
             ) -> Result<String, boa_engine::JsError> {
-                self.to_opaque(context)
-                    .to_std_string(nesting_level, context)
+                self.to_opaque(context).serialize(nesting_level, context)
             }
         }
 
-        impl ToStdString for boa_engine::JsValue {
-            fn to_std_string(
+        impl Serialize for boa_engine::JsValue {
+            fn serialize(
                 self,
                 nesting_level: usize,
                 context: &mut boa_engine::Context,
@@ -42,22 +41,20 @@ pub fn generate() -> TokenStream {
                     boa_engine::JsValue::Integer(integer) => integer.to_string().yellow(),
                     boa_engine::JsValue::Null => "null".bold(),
                     boa_engine::JsValue::Object(object) => {
-                        js_object_to_string(&self, &object, nesting_level, context)?
+                        serialize_js_object(&self, &object, nesting_level, context)?
                     }
                     boa_engine::JsValue::Rational(rational) => {
-                        rational.to_std_string(0, context)?.yellow()
+                        rational.serialize(0, context)?.yellow()
                     }
-                    boa_engine::JsValue::String(string) => {
-                        string_to_std_string(string, nesting_level)?
-                    }
+                    boa_engine::JsValue::String(string) => serialize_string(string, nesting_level)?,
                     boa_engine::JsValue::Symbol(symbol) => symbol.to_string().green(),
                     boa_engine::JsValue::Undefined => "undefined".dim(),
                 })
             }
         }
 
-        impl ToStdString for f64 {
-            fn to_std_string(
+        impl Serialize for f64 {
+            fn serialize(
                 self,
                 nesting_level: usize,
                 context: &mut boa_engine::Context,
@@ -74,7 +71,7 @@ pub fn generate() -> TokenStream {
             }
         }
 
-        #js_object_to_string_function_definition
-        #string_to_std_string_function_definition
+        #serialize_js_object_function_definition
+        #serialize_string_function_definition
     }
 }

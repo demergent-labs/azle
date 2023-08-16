@@ -3,17 +3,17 @@ use quote::quote;
 
 pub fn generate() -> TokenStream {
     quote! {
-        fn js_array_object_to_string(
+        fn serialize_js_array_object(
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
-            try_js_array_object_to_string(js_object, nesting_level, context).map_err(|cause| {
+            try_serialize_js_array_object(js_object, nesting_level, context).map_err(|cause| {
                 "Encountered an error while serializing an Array".to_js_error(Some(cause))
             })
         }
 
-        fn try_js_array_object_to_string(
+        fn try_serialize_js_array_object(
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
             context: &mut boa_engine::Context,
@@ -24,7 +24,7 @@ pub fn generate() -> TokenStream {
                 .map(|index| -> Result<String, boa_engine::JsError> {
                     let js_value = js_object.get(index, context)?;
 
-                    js_value.to_std_string(nesting_level + 1, context)
+                    js_value.serialize(nesting_level + 1, context)
                 })
                 .collect::<Result<Vec<_>, _>>()?;
 

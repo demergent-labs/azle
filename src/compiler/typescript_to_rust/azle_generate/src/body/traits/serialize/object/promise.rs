@@ -3,17 +3,17 @@ use quote::quote;
 
 pub fn generate() -> TokenStream {
     quote! {
-        fn js_promise_object_to_string(
+        fn serialize_js_promise_object(
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
-            try_js_promise_object_to_string(js_object, nesting_level, context).map_err(|cause| {
+            try_serialize_js_promise_object(js_object, nesting_level, context).map_err(|cause| {
                 "Encountered an error while serializing a Promise".to_js_error(Some(cause))
             })
         }
 
-        fn try_js_promise_object_to_string(
+        fn try_serialize_js_promise_object(
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
             context: &mut boa_engine::Context,
@@ -36,14 +36,14 @@ pub fn generate() -> TokenStream {
                     format!(
                         "Promise {{ {status} : {value}}}",
                         status = "<fulfilled>".green(),
-                        value = js_value.to_std_string(nesting_level, &mut *context)?
+                        value = js_value.serialize(nesting_level, &mut *context)?
                     )
                 }
                 boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
                     format!(
                         "Promise {{ {status} : {value}}}",
                         status = "<rejected>".red(),
-                        value = js_value.to_std_string(nesting_level, &mut *context)?
+                        value = js_value.serialize(nesting_level, &mut *context)?
                     )
                 }
             };

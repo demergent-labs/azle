@@ -3,17 +3,17 @@ use quote::quote;
 
 pub fn generate() -> TokenStream {
     quote! {
-        fn js_error_object_to_string(
+        fn serialize_js_error_object(
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
-            try_js_error_object_to_string(js_object, nesting_level, context).map_err(|cause| {
+            try_serialize_js_error_object(js_object, nesting_level, context).map_err(|cause| {
                 "Encountered an error while serializing an Error".to_js_error(Some(cause))
             })
         }
 
-        fn try_js_error_object_to_string(
+        fn try_serialize_js_error_object(
             js_object: &boa_engine::JsObject,
             nesting_level: usize,
             context: &mut boa_engine::Context,
@@ -64,7 +64,7 @@ pub fn generate() -> TokenStream {
                     if cause_js_value.is_undefined() {
                         Ok(None)
                     } else {
-                        Ok(Some(cause_js_value.to_std_string(0, &mut *context)?))
+                        Ok(Some(cause_js_value.serialize(0, &mut *context)?))
                     }
                 }
                 Err(js_error) => Err(js_error),
