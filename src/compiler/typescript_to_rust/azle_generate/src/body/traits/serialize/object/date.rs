@@ -25,12 +25,11 @@ pub fn generate() -> TokenStream {
         ) -> Result<String, boa_engine::JsError> {
             let to_iso_string_js_value = js_object.get("toISOString", context)?;
 
-            let to_iso_string_js_value_js_object = to_iso_string_js_value
+            let to_iso_string_js_object = to_iso_string_js_value
                 .as_object()
                 .ok_or_else(|| "TypeError: toISOString is not a function".to_js_error(None))?;
 
-            let date_iso_string_js_value =
-                to_iso_string_js_value_js_object.call(&js_value, &[], context)?;
+            let date_iso_string_js_value = to_iso_string_js_object.call(&js_value, &[], context)?;
 
             let date_iso_string: String = date_iso_string_js_value.try_from_vm_value(context)?;
 
