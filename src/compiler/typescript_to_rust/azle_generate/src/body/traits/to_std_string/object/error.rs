@@ -8,11 +8,9 @@ pub fn generate() -> TokenStream {
             nesting_level: usize,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
-            try_js_error_object_to_string(js_object, nesting_level, context).map_err(
-                |cause| {
-                    "Encountered an error while serializing an Error".to_js_error(Some(cause))
-                },
-            )
+            try_js_error_object_to_string(js_object, nesting_level, context).map_err(|cause| {
+                "Encountered an error while serializing an Error".to_js_error(Some(cause))
+            })
         }
 
         fn try_js_error_object_to_string(

@@ -4,14 +4,11 @@ pub fn generate() -> proc_macro2::TokenStream {
             string: &boa_engine::JsString,
             nesting_level: usize,
         ) -> Result<String, boa_engine::JsError> {
-            let std_string = string
-                .to_std_string()
-                .map_err(|err| {
-                    let cause = err.to_string().to_js_error(None);
+            let std_string = string.to_std_string().map_err(|err| {
+                let cause = err.to_string().to_js_error(None);
 
-                    "Encountered an error while serializing a String".to_js_error(Some(cause))
-                })?;
-
+                "Encountered an error while serializing a String".to_js_error(Some(cause))
+            })?;
 
             if nesting_level == 0 {
                 return Ok(std_string);

@@ -8,11 +8,9 @@ pub fn generate() -> TokenStream {
             nesting_level: usize,
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
-            try_js_promise_object_to_string(js_object, nesting_level, context).map_err(
-                |cause| {
-                    "Encountered an error while serializing a Promise".to_js_error(Some(cause))
-                },
-            )
+            try_js_promise_object_to_string(js_object, nesting_level, context).map_err(|cause| {
+                "Encountered an error while serializing a Promise".to_js_error(Some(cause))
+            })
         }
 
         fn try_js_promise_object_to_string(
@@ -32,20 +30,20 @@ pub fn generate() -> TokenStream {
 
             let promise_string_representation = match state {
                 boa_engine::builtins::promise::PromiseState::Pending => {
-                    format!("Promise {{ {status} }}", status="<pending>".dim())
+                    format!("Promise {{ {status} }}", status = "<pending>".dim())
                 }
                 boa_engine::builtins::promise::PromiseState::Fulfilled(js_value) => {
                     format!(
                         "Promise {{ {status} : {value}}}",
-                        status="<fulfilled>".green(),
-                        value=js_value.to_std_string(nesting_level, &mut *context)?
+                        status = "<fulfilled>".green(),
+                        value = js_value.to_std_string(nesting_level, &mut *context)?
                     )
                 }
                 boa_engine::builtins::promise::PromiseState::Rejected(js_value) => {
                     format!(
                         "Promise {{ {status} : {value}}}",
-                        status="<rejected>".red(),
-                        value=js_value.to_std_string(nesting_level, &mut *context)?
+                        status = "<rejected>".red(),
+                        value = js_value.to_std_string(nesting_level, &mut *context)?
                     )
                 }
             };

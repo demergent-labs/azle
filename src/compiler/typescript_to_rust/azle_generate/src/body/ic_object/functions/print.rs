@@ -7,11 +7,7 @@ pub fn generate() -> proc_macro2::TokenStream {
         ) -> boa_engine::JsResult<boa_engine::JsValue> {
             let output_string = aargs
                 .iter()
-                .map(|val| {
-                    val.clone()
-                        .to_std_string(0, &mut *context)
-                        .unwrap_or_else(|e| e.to_string())
-                })
+                .map(|val| val.clone().to_console_string(context))
                 .collect::<Vec<String>>()
                 .join(" ");
 

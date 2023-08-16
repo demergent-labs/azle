@@ -10,9 +10,7 @@ pub fn generate() -> TokenStream {
             context: &mut boa_engine::Context,
         ) -> Result<String, boa_engine::JsError> {
             try_js_date_object_to_string(js_value, js_object, nesting_level, context).map_err(
-                |cause| {
-                    "Encountered an error while serializing a Date".to_js_error(Some(cause))
-                },
+                |cause| "Encountered an error while serializing a Date".to_js_error(Some(cause)),
             )
         }
 
@@ -28,11 +26,8 @@ pub fn generate() -> TokenStream {
                 .as_object()
                 .ok_or_else(|| "TypeError: toISOString is not a function".to_js_error(None))?;
 
-            let date_iso_string_js_value = to_iso_string_js_value_js_object.call(
-                &js_value,
-                &[],
-                context,
-            )?;
+            let date_iso_string_js_value =
+                to_iso_string_js_value_js_object.call(&js_value, &[], context)?;
 
             let date_iso_string: String = date_iso_string_js_value.try_from_vm_value(context)?;
 
