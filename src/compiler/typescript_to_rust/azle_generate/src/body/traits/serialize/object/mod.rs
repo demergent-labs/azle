@@ -4,12 +4,14 @@ use quote::quote;
 mod array;
 mod date;
 mod error;
+mod function;
 mod promise;
 
 pub fn generate() -> TokenStream {
     let serialize_js_array_object_function_definition = array::generate();
     let serialize_js_date_object_function_definition = date::generate();
     let serialize_js_error_object_function_definition = error::generate();
+    let serialize_js_function_object_function_definition = function::generate();
     let serialize_js_promise_object_function_definition = promise::generate();
 
     quote! {
@@ -26,6 +28,10 @@ pub fn generate() -> TokenStream {
 
             if js_object.is_error() {
                 return serialize_js_error_object(js_object, nesting_level, colorize, context);
+            }
+
+            if js_object.is_function() {
+                return serialize_js_function_object(js_value, js_object, nesting_level, colorize, context);
             }
 
             if js_object.is_promise() {
@@ -118,6 +124,7 @@ pub fn generate() -> TokenStream {
         #serialize_js_array_object_function_definition
         #serialize_js_date_object_function_definition
         #serialize_js_error_object_function_definition
+        #serialize_js_function_object_function_definition
         #serialize_js_promise_object_function_definition
     }
 }
