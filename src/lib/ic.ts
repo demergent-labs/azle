@@ -464,5 +464,8 @@ type ic = {
     trap: (message: string) => never;
 };
 
-/** API entrypoint for interacting with the Internet Computer */
-export const ic: ic = globalThis.ic ?? {};
+/** API entrypoint for interacting with the Internet Computer.
+ *
+ * **Note:** In runtimes other than the Internet Computer, it is `undefined`.
+ */
+export const ic: ic = globalThis.ic;
