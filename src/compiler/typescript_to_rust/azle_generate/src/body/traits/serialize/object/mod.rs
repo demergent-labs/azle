@@ -7,6 +7,7 @@ mod error;
 mod function;
 mod object;
 mod promise;
+mod regexp;
 
 pub fn generate() -> TokenStream {
     let serialize_js_array_object_function_definition = array::generate();
@@ -15,6 +16,7 @@ pub fn generate() -> TokenStream {
     let serialize_js_function_object_function_definition = function::generate();
     let try_serialize_regular_js_object_function_definition = object::generate();
     let serialize_js_promise_object_function_definition = promise::generate();
+    let serialize_regexp_object_function_definition = regexp::generate();
 
     quote! {
         fn serialize_js_object(
@@ -50,6 +52,16 @@ pub fn generate() -> TokenStream {
                 );
             }
 
+            if js_object.is_regexp() {
+                return serialize_regexp_object(
+                    js_value,
+                    js_object,
+                    nesting_level,
+                    colorize,
+                    context,
+                );
+            }
+
             try_serialize_regular_js_object(js_value, js_object, nesting_level, colorize, context)
                 .map_err(|cause| {
                     "Encountered an error while serializing an Object".to_js_error(Some(cause))
@@ -62,5 +74,6 @@ pub fn generate() -> TokenStream {
         #serialize_js_function_object_function_definition
         #try_serialize_regular_js_object_function_definition
         #serialize_js_promise_object_function_definition
+        #serialize_regexp_object_function_definition
     }
 }
