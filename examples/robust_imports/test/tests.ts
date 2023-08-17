@@ -23,7 +23,8 @@ export function getTests(
         ...getTypeAliasDeclTests(robustImportsCanister),
         ...getTsPrimAliasTest(robustImportsCanister),
         ...getExportStarTests(robustImportsCanister),
-        ...getNotAzleTests(robustImportsCanister)
+        ...getNotAzleTests(robustImportsCanister),
+        ...getConflictTests(robustImportsCanister)
     ];
 }
 
@@ -674,4 +675,44 @@ ${expectedError}
 ActualError:
 
 ${stdErr}`;
+}
+
+function getConflictTests(canister: ActorSubclass<_SERVICE>): Test[] {
+    return [
+        {
+            name: 'echo bool',
+            test: async () => {
+                const result = await canister.echo_bool(true);
+                return { Ok: result };
+            }
+        },
+        {
+            name: 'echo float64',
+            test: async () => {
+                const result = await canister.echo_float64(1.23);
+                return { Ok: result === 1.23 };
+            }
+        },
+        {
+            name: 'echo int',
+            test: async () => {
+                const result = await canister.echo_int(7n);
+                return { Ok: result === 7n };
+            }
+        },
+        {
+            name: 'Non conflicting concat',
+            test: async () => {
+                const result = await canister.concat('Hello ', 'World ', 1);
+                return { Ok: result === 'Hello World 1' };
+            }
+        },
+        {
+            name: 'Non conflicting add',
+            test: async () => {
+                const result = await canister.add(2, 2);
+                return { Ok: result === 4n };
+            }
+        }
+    ];
 }

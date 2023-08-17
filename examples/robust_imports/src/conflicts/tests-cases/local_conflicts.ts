@@ -9,6 +9,7 @@
 // 5. bool === bigint
 export * from 'azle';
 export * from '../everything_is_number';
-export type int64 = boolean;
-export type blob = number;
-export type bool = bigint;
+export type int64 = string;
+export type nat8 = string;
+export type bool = string;
+export type blob = string;
