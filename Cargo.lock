@@ -92,6 +92,9 @@ name = "cc"
 version = "1.0.82"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "305fe645edc1442a0fa8b6726ba61d422798d37a52e12eaecf4b022ebbb88f01"
+name = "cdk_framework"
+version = "0.0.0"
+source = "git+https://github.com/demergent-labs/cdk_framework?rev=fcdbad3e85d8566a7e0f7a8afdbdfc4463fb03c8#fcdbad3e85d8566a7e0f7a8afdbdfc4463fb03c8"
 dependencies = [
  "libc",
 ]

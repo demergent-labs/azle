@@ -8,8 +8,8 @@ RUSTUP_HOME=~/.config/azle/1.68.2 CARGO_HOME=~/.config/azle/1.68.2 CARGO_TARGET_
 # revert to the stable compiler
 RUSTUP_HOME=~/.config/azle/1.68.2 CARGO_HOME=~/.config/azle/1.68.2 CARGO_TARGET_DIR=~/.config/azle/target/ ~/.config/azle/1.68.2/bin/rustup default stable
 
-# install wasm32-unknown-unknown
-RUSTUP_HOME=~/.config/azle/1.68.2 CARGO_HOME=~/.config/azle/1.68.2 CARGO_TARGET_DIR=~/.config/azle/target/ ~/.config/azle/1.68.2/bin/rustup target add wasm32-unknown-unknown
+# install wasm32-wasi
+RUSTUP_HOME=~/.config/azle/1.68.2 CARGO_HOME=~/.config/azle/1.68.2 CARGO_TARGET_DIR=~/.config/azle/target/ ~/.config/azle/1.68.2/bin/rustup target add wasm32-wasi
 
 # run cargo expand
-RUSTUP_HOME=~/.config/azle/1.68.2 CARGO_HOME=~/.config/azle/1.68.2 CARGO_TARGET_DIR=~/.config/azle/target/ ~/.config/azle/1.68.2/bin/cargo expand --target wasm32-unknown-unknown
+RUSTUP_HOME=~/.config/azle/1.68.2 CARGO_HOME=~/.config/azle/1.68.2 CARGO_TARGET_DIR=~/.config/azle/target/ ~/.config/azle/1.68.2/bin/cargo expand --target wasm32-wasi

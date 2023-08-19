@@ -93,7 +93,8 @@ export function compileTypeScriptToRust(
             aliasTables,
             aliasLists,
             canisterPath,
-            canisterConfig
+            canisterConfig,
+            canisterName
         );
 
         match(generateRustCanisterResult, {
@@ -118,6 +119,20 @@ export function compileTypeScriptToRust(
             },
             _: () => {}
         });
+
+        // const compilationResult2 = compileTypeScriptToJavaScript(
+        //     `.azle/${canisterName}/src/azle_generate_rearchitecture/transformed/home/lastmjs/development/azle/examples/${canisterName}/` +
+        //         canisterConfig.ts
+        // );
+
+        // if (!ok(compilationResult2)) {
+        //     const azleErrorResult = compilationErrorToAzleErrorResult(
+        //         compilationResult2.err
+        //     );
+        //     unwrap(azleErrorResult);
+        // }
+
+        // const newMainJs = compilationResult2.ok;
 
         if (isCompileOnlyMode()) {
             console.log('Compilation complete!');

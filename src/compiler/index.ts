@@ -54,7 +54,7 @@ function azle() {
         compileTypeScriptToRust(canisterName, canisterPath, canisterConfig);
         compileRustCode(canisterName, canisterPath, stdioType);
         gzipWasmBinary(wasmFilePath, stdioType);
-        generateCandidFile(candidPath, wasmFilePath);
+        // generateCandidFile(candidPath, wasmFilePath);
     });
 
     logSuccess(canisterPath, canisterName);

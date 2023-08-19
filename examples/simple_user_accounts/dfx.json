@@ -2,11 +2,12 @@
     "canisters": {
         "simple_user_accounts": {
             "type": "custom",
-            "build": "npx azle simple_user_accounts",
+            "build": "npx azle simple_user_accounts --verbose",
             "root": "src",
             "ts": "src/simple_user_accounts.ts",
             "candid": "src/simple_user_accounts.did",
             "wasm": ".azle/simple_user_accounts/simple_user_accounts.wasm.gz",
+            "opt_level": "1",
             "declarations": {
                 "output": "test/dfx_generated/simple_user_accounts",
                 "node_compatibility": true

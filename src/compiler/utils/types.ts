@@ -4,6 +4,11 @@ import {
     AliasLists
 } from '../typescript_to_rust/type_alias_parsing/types';
 
+export {
+    AliasTables,
+    AliasLists
+} from '../typescript_to_rust/type_alias_parsing/types';
+
 export type AzleError = {
     error?: string;
     suggestion?: string;

@@ -52,4 +52,15 @@ export function writeCodeToFileSystem(
         `${canisterPath}/${rootPath}/azle_generate/src/main.js`,
         mainJs
     );
+
+    if (
+        !existsSync(`${canisterPath}/${rootPath}/azle_generate_rearchitecture`)
+    ) {
+        mkdirSync(`${canisterPath}/${rootPath}/azle_generate_rearchitecture`);
+    }
+
+    copySync(
+        `${__dirname}/azle_generate_rearchitecture`,
+        `${canisterPath}/${rootPath}/azle_generate_rearchitecture`
+    );
 }

@@ -3,4 +3,5 @@ service : () -> {
   createUser : (text) -> (User);
   getAllUsers : () -> (vec User) query;
   getUserById : (text) -> (opt User) query;
+  test : () -> (User) query;
 }

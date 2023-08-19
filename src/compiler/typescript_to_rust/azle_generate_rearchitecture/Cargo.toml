@@ -1,0 +1,17 @@
+[package]
+name = "azle_generate_rearchitecture"
+version = "0.0.0"
+edition = "2018"
+
+[dependencies]
+swc_common = "0.31.21"
+swc_ecma_ast = "0.107.7"
+swc_ecma_visit = "0.93.7"
+serde = "1.0.183"
+serde_json = "1.0.105"
+swc_ecma_parser = "0.137.15"
+swc_ecma_codegen = "0.142.17"
+swc_ecmascript = "0.231.59"
+quote = "1.0.33"
+syn = "2.0.29"
+prettyplease = "0.2.12"

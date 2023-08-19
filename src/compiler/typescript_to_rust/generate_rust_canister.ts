@@ -7,7 +7,7 @@ import {
     GLOBAL_AZLE_RUST_DIR,
     GLOBAL_AZLE_TARGET_DIR
 } from '../utils';
-import { Result } from '../../lib';
+import { match, Result } from '../../lib';
 import {
     CompilerInfo,
     JSCanisterConfig,
@@ -17,6 +17,7 @@ import {
     AliasLists
 } from '../utils/types';
 import { isVerboseMode } from '../utils';
+import { compileTypeScriptToJavaScript } from './typescript_to_javascript';
 
 // TODO I think we should use the official Azle Result and match everywhere
 // TODO we should get rid of the custom ones created here
@@ -26,7 +27,8 @@ export function generateRustCanister(
     aliasTables: AliasTables,
     aliasLists: AliasLists,
     canisterPath: string,
-    canisterConfig: JSCanisterConfig
+    canisterConfig: JSCanisterConfig,
+    canisterName: string
 ): Result<null, SpawnSyncError> {
     const compilerInfo: CompilerInfo = {
         plugins,
@@ -38,7 +40,7 @@ export function generateRustCanister(
     const compilerInfoPath = join(
         canisterPath,
         canisterConfig.root,
-        'azle_generate',
+        'azle_generate_rearchitecture',
         'compiler_info.json'
     );
 
@@ -51,7 +53,36 @@ export function generateRustCanister(
         canisterConfig
     );
 
-    return result;
+    return match(result, {
+        Ok: () => {
+            const editedTypeScriptPath = join(
+                canisterPath,
+                canisterConfig.root,
+                'azle_generate_rearchitecture',
+                'transformed',
+                'home',
+                'lastmjs',
+                'development',
+                'azle',
+                'examples',
+                canisterName,
+                canisterConfig.ts
+            );
+
+            const compilationResult =
+                compileTypeScriptToJavaScript(editedTypeScriptPath);
+
+            writeFileSync(
+                join(canisterPath, canisterConfig.root, 'src', 'main.js'),
+                compilationResult.ok
+            );
+
+            return { Ok: null };
+        },
+        Err: (err) => ({
+            Err: err
+        })
+    });
 }
 
 function runAzleGenerate(
@@ -59,16 +90,19 @@ function runAzleGenerate(
     canisterPath: string,
     canisterConfig: JSCanisterConfig
 ): Result<null, SpawnSyncError> {
-    const azleGenerateBinPath = join(GLOBAL_AZLE_BIN_DIR, 'azle_generate');
+    const azleGenerateBinPath = join(
+        GLOBAL_AZLE_BIN_DIR,
+        'azle_generate_rearchitecture'
+    );
     const azleGenerateBinPathDebug = join(
         GLOBAL_AZLE_TARGET_DIR,
         'debug',
-        'azle_generate'
+        'azle_generate_rearchitecture'
     );
     const azleGenerateDir = join(
         canisterPath,
         canisterConfig.root,
-        'azle_generate'
+        'azle_generate_rearchitecture'
     );
 
     const shouldRebuild =
