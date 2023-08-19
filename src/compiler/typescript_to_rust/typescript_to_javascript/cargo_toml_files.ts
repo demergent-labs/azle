@@ -32,7 +32,8 @@ export function generateWorkspaceCargoToml(
         [workspace]
         members = [
             "${rootPath}",
-            "${rootPath}/azle_generate"
+            "${rootPath}/azle_generate",
+            "${rootPath}/azle_generate_rearchitecture"
         ]
 
         [profile.release]
