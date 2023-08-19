@@ -46,7 +46,7 @@ function isWasm32TargetInstalled(): boolean {
                     }
                 }
             );
-            return stdout.includes('wasm32-unknown-unknown (installed)');
+            return stdout.includes('wasm32-wasi (installed)');
         } catch (error) {
             console.error(`execSync error: ${error}`);
             return false;

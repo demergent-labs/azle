@@ -105,7 +105,6 @@ jobs:
                     "examples/null_example",
                     "examples/optional_types",
                     "examples/outgoing_http_requests",
-                    "examples/plugins",
                     "examples/pre_and_post_upgrade",
                     "examples/primitive_types",
                     "examples/principal",

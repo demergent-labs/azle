@@ -72,6 +72,9 @@ export function generateLibCargoToml(
         rand = "=0.8.5"
         slotmap = "=1.0.6"
 
+        # TODO for now we must turn on the transient feature (no stable storage file system) or we can't generate the Candid file
+        ic-wasi-polyfill = { git = "https://github.com/demergent-labs/ic-wasi-polyfill", rev = "f3812b879c096faf930331e76441fadf2ebe6586", features = ["transient"] }
+
         ${pluginsDependencies}
     `;
 }

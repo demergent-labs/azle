@@ -28,6 +28,8 @@ pub fn generate(
     let register_process_object = rust::generate_register_process_object(environment_variables);
 
     Ok(quote! {
+        unsafe { ic_wasi_polyfill::init(&[], &[]); }
+
         unwrap_or_trap(|| {
             BOA_CONTEXT_REF_CELL.with(|boa_context_ref_cell| {
                 let mut boa_context = boa_context_ref_cell.borrow_mut();
