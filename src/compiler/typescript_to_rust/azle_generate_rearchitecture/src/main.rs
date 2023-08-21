@@ -78,15 +78,9 @@ fn main() -> Result<(), String> {
 
         std::fs::create_dir_all(&transformed_path.parent().unwrap()).unwrap();
 
-        println!("transformed_path: {:#?}", &transformed_path);
-
         let mut file = File::create(&transformed_path).unwrap();
         file.write_all(output.as_bytes()).unwrap();
         file.flush().unwrap();
-
-        println!("cwd: {:#?}", std::env::current_dir());
-
-        // println!("output: {}", output);
     }
 
     // for mut program in programs {
@@ -119,8 +113,73 @@ fn main() -> Result<(), String> {
     // }
 
     let lib_file = quote! {
-        fn test() {
+        use quickjs_wasm_rs::{JSContextRef, JSValueRef, JSValue, to_qjs_value};
+        use std::convert::TryFrom;
+        use std::cell::RefCell;
 
+        const MAIN_JS: &[u8] = include_bytes!("main.js");
+
+        thread_local! {
+            static CONTEXT: RefCell<Option<JSContextRef>> = RefCell::new(None);
+        }
+
+        #[ic_cdk_macros::init]
+        fn init() {
+            unsafe { ic_wasi_polyfill::init(&[], &[]); }
+
+            let context = JSContextRef::default();
+
+            context.eval_global("exports.js", "globalThis.exports = {};").unwrap();
+            context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();
+
+            CONTEXT.with(|ctx| {
+                let mut ctx = ctx.borrow_mut();
+                *ctx = Some(context);
+            });
+        }
+
+        #[ic_cdk_macros::post_upgrade]
+        fn post_upgrade() {
+            unsafe { ic_wasi_polyfill::init(&[], &[]); }
+
+            let context = JSContextRef::default();
+
+            context.eval_global("exports.js", "globalThis.exports = {}").unwrap();
+            context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();
+
+            CONTEXT.with(|ctx| {
+                let mut ctx = ctx.borrow_mut();
+                *ctx = Some(context);
+            });
+        }
+
+        // TODO this part is kind of simple
+        // TODO we need to gather all of the functions and put them here
+        // TODO and then we just do the exact some thing for each function
+        #[ic_cdk_macros::query(manual_reply = true)]
+        fn test() {
+            execute_js("test");
+        }
+
+        fn execute_js(function_name: &str) {
+            CONTEXT.with(|context| {
+                let mut context = context.borrow_mut();
+                let context = context.as_mut().unwrap();
+    
+                let global = context.global_object().unwrap();
+                let exports = global.get_property("exports").unwrap();
+                let method = exports.get_property(function_name).unwrap();
+    
+                let candid_args = ic_cdk::api::call::arg_data_raw();
+    
+                let candid_args_js_value: JSValue = candid_args.into();
+                let candid_args_js_value_ref = to_qjs_value(&context, &candid_args_js_value).unwrap();
+    
+                // TODO I am not sure what the first parameter to call is supposed to be
+                let result = method.call(&method, &[candid_args_js_value_ref]).unwrap();
+    
+                ic_cdk::api::call::reply_raw(result.as_bytes().unwrap());
+            });
         }
     }
     .to_string();
@@ -163,13 +222,59 @@ impl VisitMut for MyVisitor {
         // if item.is_canister_query_method() {
         //     *item = item.as_canister_query_method_idl();
         // }
+
+        swc_ecma_visit::visit_mut_module_item(self, item);
     }
 
-    fn visit_mut_fn_decl(&mut self, fn_decl: &mut FnDecl) {
-        if !fn_decl.is_canister_query_method() {
-            return;
+    fn visit_mut_export_decl(&mut self, export_decl: &mut ExportDecl) {
+        if let Decl::Fn(fn_decl) = &mut export_decl.decl {
+            // if !fn_decl.is_canister_query_method() {
+            //     return;
+            // }
+
+            let param_decoders = fn_decl.function.params.iter().map(|param| {
+                // TODO check the type of the param and decode with it
+                // TODO create the AST nodes to do this
+                // TODO add these into the body of the function
+            });
+
+            fn_decl.function.params = vec![Param {
+                span: DUMMY_SP,
+                decorators: vec![],
+                pat: Pat::Ident(BindingIdent::from(Ident::new("candidEncodedArgs".into(), DUMMY_SP))),
+            }];
+
+            // TODO now we need to generate all of the param decoders
+            // TODO we need to analyze the original params to create these decoders
         }
+
+        swc_ecma_visit::visit_mut_export_decl(self, export_decl);
     }
+
+    // fn visit_mut_fn_decl(&mut self, fn_decl: &mut FnDecl) {
+    //     // if !fn_decl.is_canister_query_method() {
+    //     //     return;
+    //     // }
+
+    //     fn_decl.function.params = vec![Param {
+    //         span: DUMMY_SP,
+    //         decorators: vec![],
+    //         pat: Pat::Ident(BindingIdent::from(Ident::new("candidEncodedArgs".into(), DUMMY_SP))),
+    //     }];
+
+    //     // *fn_decl = FnDecl {
+    //     //     function: Box::new(Function {
+    //     //         params: vec![Param {
+    //     //             span: DUMMY_SP,
+    //     //             decorators: vec![],
+    //     //             pat: Pat::Ident(BindingIdent::from(Ident::new("candidEncodedArgs".into(), DUMMY_SP))),
+    //     //         }],
+    //     //         body: todo!(),
+    //     //         ..*fn_decl.function.clone()
+    //     //     }),
+    //     //     ..fn_decl.clone()
+    //     // };
+    // }
 
     // fn visit_mut_module_items(&mut self, items: &mut Vec<ModuleItem>) {}
 
