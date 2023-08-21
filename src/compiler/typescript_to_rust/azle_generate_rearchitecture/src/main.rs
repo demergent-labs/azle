@@ -13,6 +13,8 @@ use swc_ecma_ast::{Decl, ModuleDecl, ModuleItem, Stmt, TsTypeAliasDecl};
 use swc_ecma_codegen::{text_writer::JsWriter, Emitter};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
+mod visit_mut_export_decl;
+
 #[derive(Debug, Serialize, Deserialize)]
 struct CompilerInfo {
     file_names: Vec<String>,
@@ -209,7 +211,7 @@ use swc_ecma_ast::*;
 // use swc_ecma_transforms_base::fixer;
 use swc_ecma_visit::{noop_visit_mut_type, Fold, FoldWith, VisitMut, VisitMutWith};
 
-struct MyVisitor;
+pub struct MyVisitor;
 
 impl VisitMut for MyVisitor {
     // noop_visit_mut_type!();
@@ -227,28 +229,7 @@ impl VisitMut for MyVisitor {
     }
 
     fn visit_mut_export_decl(&mut self, export_decl: &mut ExportDecl) {
-        if let Decl::Fn(fn_decl) = &mut export_decl.decl {
-            // if !fn_decl.is_canister_query_method() {
-            //     return;
-            // }
-
-            let param_decoders = fn_decl.function.params.iter().map(|param| {
-                // TODO check the type of the param and decode with it
-                // TODO create the AST nodes to do this
-                // TODO add these into the body of the function
-            });
-
-            fn_decl.function.params = vec![Param {
-                span: DUMMY_SP,
-                decorators: vec![],
-                pat: Pat::Ident(BindingIdent::from(Ident::new("candidEncodedArgs".into(), DUMMY_SP))),
-            }];
-
-            // TODO now we need to generate all of the param decoders
-            // TODO we need to analyze the original params to create these decoders
-        }
-
-        swc_ecma_visit::visit_mut_export_decl(self, export_decl);
+        visit_mut_export_decl::visit_mut_export_decl(self, export_decl)
     }
 
     // fn visit_mut_fn_decl(&mut self, fn_decl: &mut FnDecl) {
