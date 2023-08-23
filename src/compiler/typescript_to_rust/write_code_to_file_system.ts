@@ -48,10 +48,7 @@ export function writeCodeToFileSystem(
         `${canisterPath}/${rootPath}/azle_generate`
     );
 
-    writeFileSync(
-        `${canisterPath}/${rootPath}/azle_generate/src/main.js`,
-        mainJs
-    );
+    writeFileSync(`${canisterPath}/${rootPath}/src/main.js`, mainJs);
 
     if (
         !existsSync(`${canisterPath}/${rootPath}/azle_generate_rearchitecture`)

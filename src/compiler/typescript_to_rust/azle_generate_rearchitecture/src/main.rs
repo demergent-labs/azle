@@ -7,6 +7,7 @@ use std::{
     io::Write,
 };
 use swc_common::{sync::Lrc, SourceMap};
+use swc_ecma_ast::Program;
 use swc_ecma_codegen::{text_writer::JsWriter, Emitter};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
@@ -28,55 +29,35 @@ fn main() -> Result<(), String> {
 
     let compiler_info = get_compiler_info(&args[1])?;
 
-    for file_name in compiler_info.file_names {
-        let filepath = Path::new(&file_name).to_path_buf();
+    let programs = compiler_info
+        .file_names
+        .iter()
+        .map(|file_name| {
+            let filepath = Path::new(&file_name).to_path_buf();
 
-        let cm: Lrc<SourceMap> = Default::default();
+            let cm: Lrc<SourceMap> = Default::default();
 
-        let fm = cm.load_file(&filepath).map_err(|err| err.to_string())?;
+            let fm = cm.load_file(&filepath).map_err(|err| err.to_string())?;
 
-        let lexer = Lexer::new(
-            Syntax::Typescript(TsConfig {
-                decorators: true,
-                ..TsConfig::default()
-            }),
-            Default::default(),
-            StringInput::from(&*fm),
-            None,
-        );
+            let lexer = Lexer::new(
+                Syntax::Typescript(TsConfig {
+                    decorators: true,
+                    ..TsConfig::default()
+                }),
+                Default::default(),
+                StringInput::from(&*fm),
+                None,
+            );
 
-        let mut parser = Parser::new_from(lexer);
+            let mut parser = Parser::new_from(lexer);
 
-        let parse_result = parser.parse_program();
+            let parse_result = parser.parse_program();
 
-        let program = parse_result.map_err(|err| format!("{:#?}", err))?;
+            let program = parse_result.map_err(|err| format!("{:#?}", err))?;
 
-        let mut buf = Vec::new();
-
-        let mut emitter: Emitter<_, SourceMap> = Emitter {
-            cfg: Default::default(),
-            cm,
-            comments: None,
-            wr: Box::new(JsWriter::new(Default::default(), "\n", &mut buf, None)),
-        };
-        emitter.emit_program(&program).unwrap();
-
-        let output = String::from_utf8(buf).expect("failed to convert to string");
-
-        let transformed_dir = Path::new("transformed");
-
-        let mut transformed_path = transformed_dir.to_path_buf();
-        for component in filepath.components().skip(1) {
-            // Skip the root component
-            transformed_path.push(component);
-        }
-
-        std::fs::create_dir_all(&transformed_path.parent().unwrap()).unwrap();
-
-        let mut file = File::create(&transformed_path).unwrap();
-        file.write_all(output.as_bytes()).unwrap();
-        file.flush().unwrap();
-    }
+            Ok(program)
+        })
+        .collect::<Result<Vec<Program>, String>>()?;
 
     let lib_file = quote! {
         use quickjs_wasm_rs::{JSContextRef, JSValueRef, JSValue, to_qjs_value};
