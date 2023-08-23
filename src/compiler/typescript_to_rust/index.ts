@@ -1,5 +1,6 @@
 import { dirname, join } from 'path';
 import * as ts from 'typescript';
+import { BuildFailure } from 'esbuild';
 
 import { match } from '../../lib';
 import { compileTypeScriptToJavaScript } from './typescript_to_javascript';
@@ -134,37 +135,17 @@ function isCompileOnlyMode(): boolean {
     );
 }
 
-function compilationErrorToAzleErrorResult(error: unknown): AzleError {
-    if (isTsCompilationError(error)) {
-        const firstError = error.errors[0];
-        const codeSnippet = generateVisualDisplayOfErrorLocation(
-            firstError.location
-        );
-        return {
-            error: `There's something wrong in your TypeScript: ${firstError.text}`,
-            suggestion: codeSnippet,
-            exitCode: 5
-        };
-    } else {
-        return {
-            error: `Unable to compile TS to JS: ${error}`,
-            exitCode: 6
-        };
-    }
-}
-
-function isTsCompilationError(error: unknown): error is TsCompilationError {
-    if (
-        error &&
-        typeof error === 'object' &&
-        'stack' in error &&
-        'message' in error &&
-        'errors' in error &&
-        'warnings' in error
-    ) {
-        return true;
-    }
-    return false;
+function compilationErrorToAzleErrorResult(error: BuildFailure): AzleError {
+    const firstError = error.errors[0];
+    const codeSnippet =
+        firstError.location !== null
+            ? generateVisualDisplayOfErrorLocation(firstError.location)
+            : undefined;
+    return {
+        error: `There's something wrong in your TypeScript: ${firstError.text}`,
+        suggestion: codeSnippet,
+        exitCode: 5
+    };
 }
 
 function generateVisualDisplayOfErrorLocation(
