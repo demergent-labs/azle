@@ -1,5 +1,6 @@
 type User = record { id : text; username : text };
 type MyRecord = record { myInt: int; myNat32: nat32; myText: text; myBool: bool };
+type Temperature = variant { Cool; Warm; Hot; Cold};
 service : () -> {
   createUser : (text) -> (User);
   getAllUsers : () -> (vec User) query;
