@@ -1,37 +1,33 @@
+import { Result, match, Err, Ok } from '../../lib';
 import { red } from './colors';
 import { AzleError } from './types';
 
-export type Ok<T> = {
-    ok: T;
-};
+export function isErr<T, V>(result: Result<T, V>): result is Err<V> {
+    return result.hasOwnProperty('Err');
+}
 
-export type Err<T> = {
-    err: T;
-};
+export function isOk<T, V>(result: Result<T, V>): result is Ok<T> {
+    return result.hasOwnProperty('Ok');
+}
 
-export type Result<Ok, Err> = Partial<{
-    ok: Ok;
-    err: Err;
-}>;
-
-export function ok<T, V>(result: Result<T, V>): result is Ok<T> {
-    return result.err === undefined;
+export function mapErr<Ok, OriginalErr, NewErr>(
+    result: Result<Ok, OriginalErr>,
+    mapper: (err: OriginalErr) => NewErr
+): Result<Ok, NewErr> {
+    return match(result, {
+        Ok: (okValue) => Ok<Ok, NewErr>(okValue as Ok),
+        Err: (originalErrValue) => {
+            const newErr = mapper(originalErrValue as OriginalErr);
+            return Err<Ok, NewErr>(newErr);
+        }
+    });
 }
 
 export function unwrap<Ok>(result: Result<Ok, AzleError>): Ok | never {
-    if (!ok(result)) {
-        const err = result.err as NonNullable<typeof result.err>;
-        exitWithError(err);
-    }
-    return result.ok;
-}
-
-export function Err<T>(err: T): Err<T> {
-    return { err };
-}
-
-export function Ok<T>(ok: T): Ok<T> {
-    return { ok };
+    return match(result, {
+        Ok: (okValue) => okValue as Ok,
+        Err: (errValue) => exitWithError(errValue)
+    });
 }
 
 function exitWithError(payload: AzleError): never {

@@ -1,73 +1,87 @@
 import * as swc from '@swc/core';
-import { buildSync } from 'esbuild';
+import { buildSync, BuildFailure } from 'esbuild';
+
+import { Result, Ok, Err, match } from '../../../lib';
 import { JavaScript, TypeScript } from '../../utils/types';
-import { Result } from '../../utils/result';
 
 export function compileTypeScriptToJavaScript(
     tsPath: string
-): Result<JavaScript, unknown> {
-    try {
-        const jsBundledAndTranspiled = bundleAndTranspileJs(`
-            export { Principal } from '@dfinity/principal';
-            export * from './${tsPath}';
-        `);
+): Result<JavaScript, BuildFailure> {
+    const jsBundledAndTranspiledResult = bundleAndTranspileJs(`
+        export { Principal } from '@dfinity/principal';
+        export * from './${tsPath}';
+    `);
 
-        const mainJs: JavaScript = `
-            // TODO we should centralize/standardize where we add global variables to the JS, we are doing this in multiple places (i.e. the exports variable is not here, found in init/post_upgrade)
-            globalThis.console = {
-                ...globalThis.console,
-                log: (...args) => {
-                    ic.print(...args);
-                }
-            };
+    return match(jsBundledAndTranspiledResult, {
+        Ok: (jsBundledAndTranspiled) => {
+            const mainJs: JavaScript = `
+                // TODO we should centralize/standardize where we add global variables to the JS, we are doing this in multiple places (i.e. the exports variable is not here, found in init/post_upgrade)
+                globalThis.console = {
+                    ...globalThis.console,
+                    log: (...args) => {
+                        ic.print(...args);
+                    }
+                };
 
-            ${jsBundledAndTranspiled}
-        `;
+                ${jsBundledAndTranspiled}
+            `;
 
-        return { ok: mainJs };
-    } catch (err) {
-        return { err };
-    }
+            return Ok<JavaScript, BuildFailure>(mainJs);
+        },
+        Err: (buildFailure) => Err<JavaScript, BuildFailure>(buildFailure)
+    });
 }
 
-export function bundleAndTranspileJs(ts: TypeScript): JavaScript {
-    const jsBundled: JavaScript = bundleFromString(ts);
-    const jsTranspiled: JavaScript = transpile(jsBundled);
+export function bundleAndTranspileJs(
+    ts: TypeScript
+): Result<JavaScript, BuildFailure> {
+    return match(bundleFromString(ts), {
+        Ok: (jsBundled) => {
+            const jsTranspiled: JavaScript = transpile(jsBundled);
 
-    // TODO enabling strict mode is causing lots of issues
-    // TODO it would be nice if I could remove strict mode code in esbuild or swc
-    // TODO look into the implications of this, but since we are trying to transpile to es3 to cope with missing features in boa, I do not think we need strict mode
-    const jsStrictModeRemoved: JavaScript = jsTranspiled.replace(
-        /"use strict";/g,
-        ''
-    );
+            // TODO enabling strict mode is causing lots of issues
+            // TODO it would be nice if I could remove strict mode code in esbuild or swc
+            // TODO look into the implications of this, but since we are trying to transpile to es3 to cope with missing features in boa, I do not think we need strict mode
+            const jsStrictModeRemoved: JavaScript = jsTranspiled.replace(
+                /"use strict";/g,
+                ''
+            );
 
-    return jsStrictModeRemoved;
+            return Ok<JavaScript, BuildFailure>(jsStrictModeRemoved);
+        },
+        Err: (buildFailure) => Err<JavaScript, BuildFailure>(buildFailure)
+    });
 }
 
 // TODO there is a lot of minification/transpiling etc we could do with esbuild or with swc
 // TODO we need to decide which to use for what
-export function bundleFromString(ts: TypeScript): JavaScript {
-    // TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
-    const buildResult = buildSync({
-        stdin: {
-            contents: ts,
-            resolveDir: process.cwd()
-        },
-        format: 'esm',
-        bundle: true,
-        treeShaking: true,
-        write: false,
-        logLevel: 'silent'
-        // TODO tsconfig was here to attempt to set importsNotUsedAsValues to true to force Principal to always be bundled
-        // TODO now we always bundle Principal for all code, but I am keeping this here in case we run into the problem elsewhere
-        // tsconfig: path.join( __dirname, './esbuild-tsconfig.json') // TODO this path resolution may cause problems on non-Linux systems, beware...might not be necessary now that we are using stdin
-    });
+export function bundleFromString(
+    ts: TypeScript
+): Result<JavaScript, BuildFailure> {
+    try {
+        // TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
+        const buildResult = buildSync({
+            stdin: {
+                contents: ts,
+                resolveDir: process.cwd()
+            },
+            format: 'esm',
+            bundle: true,
+            treeShaking: true,
+            write: false,
+            logLevel: 'silent'
+            // TODO tsconfig was here to attempt to set importsNotUsedAsValues to true to force Principal to always be bundled
+            // TODO now we always bundle Principal for all code, but I am keeping this here in case we run into the problem elsewhere
+            // tsconfig: path.join( __dirname, './esbuild-tsconfig.json') // TODO this path resolution may cause problems on non-Linux systems, beware...might not be necessary now that we are using stdin
+        });
 
-    const bundleArray = buildResult.outputFiles[0].contents;
-    const bundleString = Buffer.from(bundleArray).toString('utf-8');
+        const bundleArray = buildResult.outputFiles[0].contents;
+        const bundleString = Buffer.from(bundleArray).toString('utf-8');
 
-    return bundleString;
+        return Ok(bundleString);
+    } catch (error) {
+        return Err(error as BuildFailure);
+    }
 }
 
 // TODO I have left the code for bundleFromPath

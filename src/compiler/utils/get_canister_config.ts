@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'fs';
 
+import { Result, Ok, Err } from '../../lib';
 import { red, yellow, green, blue, purple } from './colors';
-import { Err, Ok, Result } from './result';
 import { AzleError, DfxJson, JSCanisterConfig } from './types';
 
 export function getCanisterConfig(

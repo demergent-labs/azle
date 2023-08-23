@@ -35,6 +35,8 @@ export {
     nat64,
     nat8,
     Opt,
+    Some,
+    None,
     Principal,
     Record,
     reserved,
@@ -47,7 +49,7 @@ export {
 export { Oneway, Query, Update, FuncSignature } from './candid_types/func';
 export { match } from './candid_types/variant';
 export { serviceQuery, serviceUpdate } from './candid_types/service';
-export { CallResult, GuardResult, Result } from './results';
+export { CallResult, GuardResult, Result, Ok, Err } from './results';
 export { StableBTreeMap } from './stable_b_tree_map';
 
 export type Manual<T> = void;

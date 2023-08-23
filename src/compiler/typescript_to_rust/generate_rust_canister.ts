@@ -1,13 +1,15 @@
 import { spawnSync } from 'child_process';
 import { copyFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
+
+import { Result, Ok, Err } from '../../lib';
 import {
     GLOBAL_AZLE_BIN_DIR,
     GLOBAL_AZLE_RUST_BIN_DIR,
     GLOBAL_AZLE_RUST_DIR,
-    GLOBAL_AZLE_TARGET_DIR
+    GLOBAL_AZLE_TARGET_DIR,
+    isVerboseMode
 } from '../utils';
-import { Result } from '../../lib';
 import {
     CompilerInfo,
     JSCanisterConfig,
@@ -16,10 +18,7 @@ import {
     AliasTables,
     AliasLists
 } from '../utils/types';
-import { isVerboseMode } from '../utils';
 
-// TODO I think we should use the official Azle Result and match everywhere
-// TODO we should get rid of the custom ones created here
 export function generateRustCanister(
     fileNames: string[],
     plugins: Plugin[],
@@ -45,13 +44,7 @@ export function generateRustCanister(
     // TODO why not just write the dfx.json file here as well?
     writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
 
-    const result = runAzleGenerate(
-        'compiler_info.json',
-        canisterPath,
-        canisterConfig
-    );
-
-    return result;
+    return runAzleGenerate('compiler_info.json', canisterPath, canisterConfig);
 }
 
 function runAzleGenerate(
@@ -82,7 +75,7 @@ function runAzleGenerate(
         );
 
         if (buildResult.Err !== undefined) {
-            return Result.Err(buildResult.Err);
+            return Err(buildResult.Err);
         }
     }
 
@@ -123,26 +116,26 @@ function buildBinary(
     );
 
     if (buildResult.error) {
-        return Result.Err({
+        return Err({
             Error: buildResult.error.message
         });
     }
 
     if (buildResult.signal) {
-        return Result.Err({
+        return Err({
             Signal: buildResult.signal
         });
     }
 
     if (buildResult.status !== null && buildResult.status !== 0) {
-        return Result.Err({
+        return Err({
             Status: buildResult.status
         });
     }
 
     copyFileSync(azleGenerateBinPathDebug, azleGenerateBinPath);
 
-    return Result.Ok(null);
+    return Ok(null);
 }
 
 function runBinary(
@@ -167,22 +160,22 @@ function runBinary(
     );
 
     if (runResult.error) {
-        return Result.Err({
+        return Err({
             Error: runResult.error.message
         });
     }
 
     if (runResult.signal) {
-        return Result.Err({
+        return Err({
             Signal: runResult.signal
         });
     }
 
     if (runResult.status !== null && runResult.status !== 0) {
-        return Result.Err({
+        return Err({
             Status: runResult.status
         });
     }
 
-    return Result.Ok(null);
+    return Ok(null);
 }

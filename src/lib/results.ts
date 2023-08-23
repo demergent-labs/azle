@@ -22,23 +22,49 @@ export type Result<Ok, Err> = Variant<{
     Err: Err;
 }>;
 
+/**
+ * Wraps the provided value in an `Ok` {@link Result}
+ * @param value - the success value to be wrapped
+ * @returns a successful {@link Result} containing the provided value
+ */
+export function Ok<Ok, Err>(value: Ok): Result<Ok, Err> {
+    return {
+        Ok: value
+    };
+}
+
+/**
+ * Wraps the provided value in an `Err` {@link Result}
+ * @param value - the error value to be wrapped
+ * @returns an error {@link Result} containing the provided value
+ */
+export function Err<Ok, Err>(value: Err): Result<Ok, Err> {
+    return {
+        Err: value
+    };
+}
+
+export type Ok<T> = {
+    Ok: T;
+};
+
+export type Err<T> = {
+    Err: T;
+};
+
 export const Result = {
     /**
      * Wraps the provided value in an `Ok` {@link Result}
      * @param value - the success value to be wrapped
      * @returns a successful {@link Result} containing the provided value
      */
-    Ok: <Ok, Err>(value: Ok): Result<Ok, Err> => ({
-        Ok: value
-    }),
+    Ok,
     /**
      * Wraps the provided value in an `Err` {@link Result}
      * @param value - the error value to be wrapped
      * @returns an error {@link Result} containing the provided value
      */
-    Err: <Ok, Err>(value: Err): Result<Ok, Err> => ({
-        Err: value
-    })
+    Err
 };
 
 /**

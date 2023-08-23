@@ -1,6 +1,7 @@
 import { dirname, join } from 'path';
 import * as ts from 'typescript';
 
+import { match } from '../../lib';
 import { compileTypeScriptToJavaScript } from './typescript_to_javascript';
 import {
     generateLibCargoToml,
@@ -10,17 +11,18 @@ import {
 import { writeCodeToFileSystem } from './write_code_to_file_system';
 import { generateRustCanister } from './generate_rust_canister';
 import { generateAliasStructures } from './type_alias_parsing';
-import { Err, ok, unwrap } from '../utils/result';
+import { time } from '../utils';
+import { unwrap, mapErr } from '../utils/result';
 import {
     AzleError,
+    AliasLists,
+    AliasTables,
     JSCanisterConfig,
     Plugin,
     Toml,
     TsCompilationError,
     TsSyntaxErrorLocation
 } from '../utils/types';
-import { time } from '../utils';
-import { match } from '../../lib';
 import { red, dim } from '../utils/colors';
 import { readFileSync } from 'fs';
 
@@ -34,14 +36,10 @@ export function compileTypeScriptToRust(
             canisterConfig.ts
         );
 
-        if (!ok(compilationResult)) {
-            const azleErrorResult = compilationErrorToAzleErrorResult(
-                compilationResult.err
-            );
-            unwrap(azleErrorResult);
-        }
+        const mainJs = unwrap(
+            mapErr(compilationResult, compilationErrorToAzleErrorResult)
+        );
 
-        const mainJs = compilationResult.ok;
         const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
             canisterConfig.root,
             canisterConfig.opt_level ?? '0'
@@ -57,8 +55,12 @@ export function compileTypeScriptToRust(
             fileNames,
             program,
             'TABLE'
-        );
-        const aliasLists = generateAliasStructures(fileNames, program, 'LIST');
+        ) as AliasTables;
+        const aliasLists = generateAliasStructures(
+            fileNames,
+            program,
+            'LIST'
+        ) as AliasLists;
 
         const pluginsDependencies = plugins
             .map((plugin) => {
@@ -132,22 +134,22 @@ function isCompileOnlyMode(): boolean {
     );
 }
 
-function compilationErrorToAzleErrorResult(error: unknown): Err<AzleError> {
+function compilationErrorToAzleErrorResult(error: unknown): AzleError {
     if (isTsCompilationError(error)) {
         const firstError = error.errors[0];
         const codeSnippet = generateVisualDisplayOfErrorLocation(
             firstError.location
         );
-        return Err({
+        return {
             error: `There's something wrong in your TypeScript: ${firstError.text}`,
             suggestion: codeSnippet,
             exitCode: 5
-        });
+        };
     } else {
-        return Err({
+        return {
             error: `Unable to compile TS to JS: ${error}`,
             exitCode: 6
-        });
+        };
     }
 }
 

@@ -147,17 +147,39 @@ export type Opt<Value> = Variant<{
     None: null;
 }>;
 
+/**
+ * Wraps the provided value in a `Some` {@link Opt}
+ * @param value - the value to be wrapped
+ * @returns a `Some` {@link Opt} containing the provided value
+ */
+export function Some<Value>(value: Value): Opt<Value> {
+    return {
+        Some: value
+    };
+}
+
+/** An {@link Opt} representing the absence of a value */
+export function None() {
+    return Object.freeze({ None: null }) as Opt<never>;
+}
+
+export type Some<T> = {
+    Some: T;
+};
+
+export type None<T> = {
+    None: T;
+};
+
 export const Opt = {
     /**
      * Wraps the provided value in a `Some` {@link Opt}
      * @param value - the value to be wrapped
      * @returns a `Some` {@link Opt} containing the provided value
      */
-    Some: <Value>(value: Value): Opt<Value> => ({
-        Some: value
-    }),
+    Some,
     /** An {@link Opt} representing the absence of a value */
-    None: Object.freeze({ None: null }) as Opt<never>
+    None
 };
 
 /**
