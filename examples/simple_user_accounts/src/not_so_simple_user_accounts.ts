@@ -10,9 +10,6 @@ import {
     Variant
 } from 'azle';
 
-globalThis.TextDecoder = require('text-encoding').TextDecoder;
-globalThis.TextEncoder = require('text-encoding').TextEncoder;
-
 class Temperature extends Variant {
     @candid(candidNull)
     Cool?: bigint;

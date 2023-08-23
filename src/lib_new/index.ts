@@ -1,3 +1,4 @@
+import './globals';
 import { IDL } from '@dfinity/candid';
 
 export * from './method_decorators';

@@ -1,11 +1,6 @@
-type User = record { id : text; username : text };
-type MyRecord = record { myInt: int; myNat32: nat32; myText: text; myBool: bool };
-type Temperature = variant { Cool; Warm; Hot; Cold};
-service : () -> {
-  createUser : (text) -> (User);
-  getAllUsers : () -> (vec User) query;
-  getUserById : (text) -> (opt User) query;
-  test : (text, text) -> (text) query;
-  simpleQuery : (text,  text) -> (text) query;
-  echoRecord : (MyRecord) -> (MyRecord) query;
+service: () -> {
+    test: (text, text) -> (text) query;
+    simpleQuery: (text, text) -> (text) query;
+    echoRecord: (record {myInt:int; myNat32:nat32; myBool:bool; myText:text}) -> (record {myInt:int; myNat32:nat32; myBool:bool; myText:text}) query;
+    echoVariant: (record {Hot:null; Cold:null; Cool:null; Warm:null}) -> (record {Hot:null; Cold:null; Cool:null; Warm:null}) query;
 }
