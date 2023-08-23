@@ -10,6 +10,8 @@ export function compileTypeScriptToJavaScript(
         const jsBundledAndTranspiled = bundleAndTranspileJs(`
             export { Principal } from '@dfinity/principal';
             export * from './${tsPath}';
+            import CanisterClass from './${tsPath}';
+            export const canisterClass = new CanisterClass();
         `);
 
         const mainJs: JavaScript = `

@@ -77,7 +77,7 @@ class MyRecord extends Record {
     // }
 }
 
-class Test {
+export default class {
     @query([IDL.Text, IDL.Text], IDL.Text)
     test(param1: string, param2: string): string {
         return param1 + param2;
@@ -143,8 +143,6 @@ function query(paramsIdls, returnIdl) {
 //         return descriptor;
 //     };
 // }
-
-export const test = new Test();
 
 // TODO when the decorator runs do something like make a instance property object that holds a map of name to idl type and then reference that in the serialze method in record
 // class MyTemplate extends Record {
