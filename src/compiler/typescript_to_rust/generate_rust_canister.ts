@@ -47,43 +47,7 @@ export function generateRustCanister(
     // TODO why not just write the dfx.json file here as well?
     writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
 
-    const result = runAzleGenerate(
-        'compiler_info.json',
-        canisterPath,
-        canisterConfig
-    );
-
-    return match(result, {
-        Ok: () => {
-            const editedTypeScriptPath = join(
-                canisterPath,
-                canisterConfig.root,
-                'azle_generate_rearchitecture',
-                'transformed',
-                'home',
-                'bdemann',
-                'code',
-                'demergent_labs',
-                'azle',
-                'examples',
-                canisterName,
-                canisterConfig.ts
-            );
-
-            const compilationResult =
-                compileTypeScriptToJavaScript(editedTypeScriptPath);
-
-            writeFileSync(
-                join(canisterPath, canisterConfig.root, 'src', 'main.js'),
-                compilationResult.ok
-            );
-
-            return { Ok: null };
-        },
-        Err: (err) => ({
-            Err: err
-        })
-    });
+    return runAzleGenerate('compiler_info.json', canisterPath, canisterConfig);
 }
 
 function runAzleGenerate(
