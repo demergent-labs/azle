@@ -1,4 +1,3 @@
-import { IDL } from '@dfinity/candid';
 import {
     Record,
     candid,
@@ -43,11 +42,11 @@ class MyRecord extends Record {
 }
 
 export default class {
-    @query([IDL.Text, IDL.Text], IDL.Text)
+    @query([text, text], text)
     test(param1: string, param2: string): string {
         return param1 + param2;
     }
-    @query([IDL.Text, IDL.Text], IDL.Text)
+    @query([text, text], text)
     simpleQuery(param1: string, param2: string): string {
         return param1 + param2;
     }
