@@ -12,7 +12,7 @@
     "bin": {
         "azle": "./bin.js"
     },
-    "main": "./src/lib/index.ts",
+    "main": "./src/lib_new/index.ts",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/demergent-labs/azle.git"
@@ -25,7 +25,8 @@
     },
     "homepage": "https://github.com/demergent-labs/azle#readme",
     "dependencies": {
-        "@dfinity/principal": "0.11.2",
+        "@dfinity/candid": "^0.19.0",
+        "@dfinity/principal": "^0.19.0",
         "@swc/core": "1.2.151",
         "azle-syn": "0.0.0",
         "esbuild": "0.14.25",

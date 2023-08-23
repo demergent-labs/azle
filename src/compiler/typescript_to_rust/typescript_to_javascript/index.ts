@@ -8,8 +8,13 @@ export function compileTypeScriptToJavaScript(
 ): Result<JavaScript, unknown> {
     try {
         const jsBundledAndTranspiled = bundleAndTranspileJs(`
+            globalThis.TextDecoder = require('text-encoding').TextDecoder;
+            globalThis.TextEncoder = require('text-encoding').TextEncoder;
+
             export { Principal } from '@dfinity/principal';
             export * from './${tsPath}';
+            import CanisterClass from './${tsPath}';
+            export const canisterClass = new CanisterClass();
         `);
 
         const mainJs: JavaScript = `
