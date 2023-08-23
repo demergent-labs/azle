@@ -1,41 +1,95 @@
 import { IDL } from '@dfinity/candid';
-import { Record, int, nat32, text, bool, query } from 'azle';
 
-globalThis.TextDecoder = require('text-encoding').TextDecoder;
-globalThis.TextEncoder = require('text-encoding').TextEncoder;
+export class Record {
+    // @ts-ignore
+    constructor(args) {
+        // @ts-ignore
+        console.log(this.constructor._azleCandidMap);
+        // @ts-ignore
+        if (
+            Object.entries(this.constructor._azleCandidMap).length !==
+            Object.entries(args).length
+        ) {
+            throw 'Wrong number of properties';
+        }
 
-class MyRecord extends Record {
-    @int
-    myInt: bigint;
+        // @ts-ignore
+        for (const propertyName in this.constructor._azleCandidMap) {
+            if (!args[propertyName]) {
+                throw `Missing property: ${propertyName}`;
+            }
+            this[propertyName] = args[propertyName];
+        }
+    }
 
-    @nat32
-    myNat32: number;
+    makeObjectLit() {
+        let result = {};
+        // @ts-ignore
+        for (const propertyName in this.constructor._azleCandidMap) {
+            if (!this[propertyName]) {
+                throw `Missing property: ${propertyName}`;
+            }
+            result = {
+                ...result,
+                [propertyName]: this[propertyName]
+            };
+        }
+        return result;
+    }
 
-    @text
-    myText: string;
+    encode(): ArrayBuffer {
+        // @ts-ignore
+        return IDL.encode(
+            [this.constructor._azleEncoder],
+            [this.makeObjectLit()]
+        );
+    }
 
-    @bool
-    myBool: boolean;
+    static decode(encoded: ArrayBuffer) {
+        // @ts-ignore
+        const objectLitArray = IDL.decode([this._azleEncoder], encoded);
+        return new this(objectLitArray[0]);
+    }
 
-    // constructor(myInt: bigint, myNat32: bigint) {
-    //     super({myInt: myInt, myNat32: myNat32})
-    // }
+    static getIDL() {
+        // @ts-ignore
+        return this._azleEncoder;
+    }
 }
 
-export default class {
-    @query([IDL.Text, IDL.Text], IDL.Text)
-    test(param1: string, param2: string): string {
-        return param1 + param2;
-    }
-    @query([IDL.Text, IDL.Text], IDL.Text)
-    simpleQuery(param1: string, param2: string): string {
-        return param1 + param2;
-    }
+export function query(paramsIdls, returnIdl) {
+    return (target, key, descriptor) => {
+        const originalMethod = descriptor.value;
 
-    @query([MyRecord.getIDL()], MyRecord.getIDL())
-    echoRecord(record: MyRecord): MyRecord {
-        return record;
-    }
+        descriptor.value = function (...args) {
+            const decoded = IDL.decode(paramsIdls, args[0]);
+            // throw new Error(JSON.stringify(paramsIdls));
+            // const decoded = IDL.decode(
+            //     [
+            //         IDL.Record({
+            //             myNat32: IDL.Nat32,
+            //             myInt: IDL.Int,
+            //             myBool: IDL.Bool,
+            //             myText: IDL.Text
+            //         })
+            //     ],
+            //     args[0]
+            // );
+
+            // returnIdl = IDL.Record({
+            //     myNat32: IDL.Nat32,
+            //     myInt: IDL.Int,
+            //     myBool: IDL.Bool,
+            //     myText: IDL.Text
+            // });
+
+            return new Uint8Array(
+                IDL.encode([returnIdl], [originalMethod(...decoded)])
+            ).buffer;
+        };
+
+        return descriptor;
+    };
 }
 
 // function update(paramsIdls, returnIdl) {
@@ -117,6 +171,40 @@ export default class {
 //         return descriptor;
 //     };
 // }
+
+// @ts-ignore
+function addToAzleCandidMap(target, idl, name) {
+    // TODO I forsee an issue where we have naming conflicts
+    if (!target.constructor._azleCandidMap) {
+        target.constructor._azleCandidMap = {};
+    }
+
+    target.constructor._azleCandidMap = {
+        ...target.constructor._azleCandidMap,
+        [name]: idl
+    };
+    target.constructor._azleEncoder = IDL.Record(
+        target.constructor._azleCandidMap
+    );
+}
+
+// @ts-ignore
+export function int(target, key) {
+    addToAzleCandidMap(target, IDL.Int, key);
+}
+
+// @ts-ignore
+export function nat32(target, key) {
+    addToAzleCandidMap(target, IDL.Nat32, key);
+}
+
+export function text(target, key) {
+    addToAzleCandidMap(target, IDL.Text, key);
+}
+
+export function bool(target, key) {
+    addToAzleCandidMap(target, IDL.Bool, key);
+}
 
 // class SimpleQuery {
 //     @query([IDL.Text, IDL.Text], IDL.Text)

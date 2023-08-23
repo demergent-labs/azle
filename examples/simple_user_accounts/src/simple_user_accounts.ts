@@ -16,10 +16,10 @@ export function test<query>(candidBytes: CandidBytes): CandidBytes {
 
 @record
 class MyRecord {
-    @candid((type = 'text'))
+    @candid('text')
     id: string;
 
-    @candid((type = 'float32'))
+    @candid('float32')
     fav_num: number;
 
     @nat32
