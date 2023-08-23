@@ -51,10 +51,14 @@ function azle() {
 
         printFirstBuildWarning();
         installRustDependencies(azleVersion, rustVersion);
-        compileTypeScriptToRust(canisterName, canisterPath, canisterConfig);
+        const mainJs = compileTypeScriptToRust(
+            canisterName,
+            canisterPath,
+            canisterConfig
+        );
         compileRustCode(canisterName, canisterPath, stdioType);
         gzipWasmBinary(wasmFilePath, stdioType);
-        // generateCandidFile(candidPath, wasmFilePath);
+        generateCandidFile(mainJs, candidPath);
     });
 
     logSuccess(canisterPath, canisterName);

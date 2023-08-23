@@ -8,26 +8,22 @@ export function compileTypeScriptToJavaScript(
 ): Result<JavaScript, unknown> {
     try {
         const jsBundledAndTranspiled = bundleAndTranspileJs(`
-            globalThis.TextDecoder = require('text-encoding').TextDecoder;
-            globalThis.TextEncoder = require('text-encoding').TextEncoder;
-
+            // Trying to make sure that all globalThis dependencies are defined
+            // Before the developer imports azle on their own
+            import 'azle';
             export { Principal } from '@dfinity/principal';
             export * from './${tsPath}';
             import CanisterClass from './${tsPath}';
             export const canisterClass = new CanisterClass();
+
+globalThis._azleCandidService = \`service: (\${globalThis._azleCandidInitParams.join(
+    ', '
+)}) -> {
+    \${globalThis._azleCandidMethods.join('\\n    ')}
+}\n\`
         `);
 
-        const mainJs: JavaScript = `
-            // TODO we should centralize/standardize where we add global variables to the JS, we are doing this in multiple places (i.e. the exports variable is not here, found in init/post_upgrade)
-            globalThis.console = {
-                ...globalThis.console,
-                log: (...args) => {
-                    ic.print(...args);
-                }
-            };
-
-            ${jsBundledAndTranspiled}
-        `;
+        const mainJs: JavaScript = jsBundledAndTranspiled;
 
         return { ok: mainJs };
     } catch (err) {

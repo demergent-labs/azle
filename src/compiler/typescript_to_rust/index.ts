@@ -28,8 +28,8 @@ export function compileTypeScriptToRust(
     canisterName: string,
     canisterPath: string,
     canisterConfig: JSCanisterConfig
-): void | never {
-    time('[1/2] 🔨 Compiling TypeScript...', 'inline', () => {
+): string | never {
+    return time('[1/2] 🔨 Compiling TypeScript...', 'inline', () => {
         const compilationResult = compileTypeScriptToJavaScript(
             canisterConfig.ts
         );
@@ -41,7 +41,7 @@ export function compileTypeScriptToRust(
             unwrap(azleErrorResult);
         }
 
-        const mainJs = compilationResult.ok;
+        const mainJs = compilationResult.ok as string;
         const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
             canisterConfig.root,
             canisterConfig.opt_level ?? '0'
@@ -124,6 +124,8 @@ export function compileTypeScriptToRust(
             console.log('Compilation complete!');
             process.exit(0);
         }
+
+        return mainJs;
     });
 }
 
