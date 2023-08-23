@@ -4,7 +4,7 @@
             "type": "custom",
             "build": "npx azle simple_user_accounts --verbose",
             "root": "src",
-            "ts": "src/simple_user_accounts.ts",
+            "ts": "src/not_so_simple_user_accounts.ts",
             "candid": "src/simple_user_accounts.did",
             "wasm": ".azle/simple_user_accounts/simple_user_accounts.wasm.gz",
             "opt_level": "1",

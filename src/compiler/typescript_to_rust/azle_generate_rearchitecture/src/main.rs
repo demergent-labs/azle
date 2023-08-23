@@ -163,23 +163,34 @@ fn main() -> Result<(), String> {
             execute_js("test");
         }
 
+        #[ic_cdk_macros::query(manual_reply = true)]
+        fn simpleQuery() {
+            execute_js("simpleQuery");
+        }
+
+        #[ic_cdk_macros::query(manual_reply = true)]
+        fn echoRecord() {
+            execute_js("echoRecord");
+        }
+
         fn execute_js(function_name: &str) {
             CONTEXT.with(|context| {
                 let mut context = context.borrow_mut();
                 let context = context.as_mut().unwrap();
-    
+
                 let global = context.global_object().unwrap();
                 let exports = global.get_property("exports").unwrap();
-                let method = exports.get_property(function_name).unwrap();
-    
+                let class = exports.get_property("test").unwrap();
+                let method = class.get_property(function_name).unwrap();
+
                 let candid_args = ic_cdk::api::call::arg_data_raw();
-    
+
                 let candid_args_js_value: JSValue = candid_args.into();
                 let candid_args_js_value_ref = to_qjs_value(&context, &candid_args_js_value).unwrap();
-    
+
                 // TODO I am not sure what the first parameter to call is supposed to be
                 let result = method.call(&method, &[candid_args_js_value_ref]).unwrap();
-    
+
                 ic_cdk::api::call::reply_raw(result.as_bytes().unwrap());
             });
         }
@@ -216,21 +227,21 @@ pub struct MyVisitor;
 impl VisitMut for MyVisitor {
     // noop_visit_mut_type!();
 
-    fn visit_mut_module_item(&mut self, item: &mut ModuleItem) {
-        if item.is_candid_record() {
-            *item = item.as_candid_record_idl();
-        }
+    // fn visit_mut_module_item(&mut self, item: &mut ModuleItem) {
+    //     if item.is_candid_record() {
+    //         *item = item.as_candid_record_idl();
+    //     }
 
-        // if item.is_canister_query_method() {
-        //     *item = item.as_canister_query_method_idl();
-        // }
+    //     // if item.is_canister_query_method() {
+    //     //     *item = item.as_canister_query_method_idl();
+    //     // }
 
-        swc_ecma_visit::visit_mut_module_item(self, item);
-    }
+    //     swc_ecma_visit::visit_mut_module_item(self, item);
+    // }
 
-    fn visit_mut_export_decl(&mut self, export_decl: &mut ExportDecl) {
-        visit_mut_export_decl::visit_mut_export_decl(self, export_decl)
-    }
+    // fn visit_mut_export_decl(&mut self, export_decl: &mut ExportDecl) {
+    //     visit_mut_export_decl::visit_mut_export_decl(self, export_decl)
+    // }
 
     // fn visit_mut_fn_decl(&mut self, fn_decl: &mut FnDecl) {
     //     // if !fn_decl.is_canister_query_method() {

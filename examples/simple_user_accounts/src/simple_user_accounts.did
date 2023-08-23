@@ -1,7 +1,10 @@
 type User = record { id : text; username : text };
+type MyRecord = record { myInt: int; myNat32: nat32; myText: text; myBool: bool };
 service : () -> {
   createUser : (text) -> (User);
   getAllUsers : () -> (vec User) query;
   getUserById : (text) -> (opt User) query;
-  test : () -> (User) query;
+  test : (text, text) -> (text) query;
+  simpleQuery : (text,  text) -> (text) query;
+  echoRecord : (MyRecord) -> (MyRecord) query;
 }

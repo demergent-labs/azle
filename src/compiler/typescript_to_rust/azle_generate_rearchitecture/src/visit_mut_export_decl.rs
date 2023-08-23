@@ -18,7 +18,7 @@ pub fn visit_mut_export_decl(my_visitor: &mut MyVisitor, export_decl: &mut Expor
             span: DUMMY_SP,
             decorators: vec![],
             pat: Pat::Ident(BindingIdent::from(Ident::new(
-                "candidEncodedArgs".into(),
+                "candidEncodedArgsCoolboy".into(),
                 DUMMY_SP,
             ))),
         }];
