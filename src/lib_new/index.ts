@@ -4,6 +4,7 @@ import { IDL } from '@dfinity/candid';
 export * from './method_decorators';
 export * from './record';
 export * from './variant';
+export * from './func';
 export * from './property_decorators';
 
 export const bool = IDL.Bool;

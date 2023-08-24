@@ -3,12 +3,21 @@ import { Record, Variant } from '.';
 
 export function candid(type: CandidType | CandidClass) {
     return function (target, key) {
-        if (typeof type === 'string') {
-            addToAzleCandidMap(target, candidToIdl[type], key);
-        } else {
-            addToAzleCandidMap(target, type, key);
-        }
+        addToAzleCandidMap(target, toCandidClass(type), key);
     };
+}
+
+export function toCandidClass(idl: CandidType | CandidClass): CandidClass {
+    if (typeof idl === 'string') {
+        return candidToIdl[idl];
+    }
+    return idl;
+}
+
+export function toCandidClasses(
+    paramIdls: (CandidType | CandidClass)[]
+): CandidClass[] {
+    return paramIdls.map((value) => toCandidClass(value));
 }
 
 export type CandidType =
@@ -44,8 +53,8 @@ export type CandidClass =
     | IDL.TextClass
     | IDL.FloatClass
     | IDL.PrincipalClass
-    | IDL.VecClass<CandidClass>
-    | IDL.OptClass<CandidClass>
+    | IDL.VecClass<any>
+    | IDL.OptClass<any>
     | IDL.VecClass<number | bigint>; // blob
 
 // @ts-ignore
@@ -71,7 +80,7 @@ function addToAzleCandidMap(target, idl, name) {
     }
 }
 
-const candidToIdl = {
+export const candidToIdl = {
     bool: IDL.Bool,
     empty: IDL.Empty,
     int: IDL.Int,
@@ -92,23 +101,3 @@ const candidToIdl = {
     principal: IDL.Principal,
     blob: IDL.Vec(IDL.Nat8)
 };
-
-// // @ts-ignore
-// export function int(target, key) {
-//     addToAzleCandidMap(target, IDL.Int, key);
-// }
-
-// // @ts-ignore
-// export function nat32(target, key) {
-//     addToAzleCandidMap(target, IDL.Nat32, key);
-// }
-
-// // @ts-ignore
-// export function text(target, key) {
-//     addToAzleCandidMap(target, IDL.Text, key);
-// }
-
-// // @ts-ignore
-// export function bool(target, key) {
-//     addToAzleCandidMap(target, IDL.Bool, key);
-// }

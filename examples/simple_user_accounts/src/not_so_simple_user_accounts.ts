@@ -9,8 +9,14 @@ import {
     bool,
     query,
     Variant,
-    blob
+    blob,
+    func,
+    Opt,
+    Vec
 } from 'azle';
+
+@func([text, text], int, 'query')
+class MyFunc {}
 
 class Temperature extends Variant {
     @candid('null')
@@ -41,6 +47,12 @@ class MyRecord extends Record {
 
     @candid(blob)
     myBlob: number[];
+
+    @candid(Opt(bool))
+    myOptBool;
+
+    @candid(Vec(int))
+    myVecInt;
 }
 
 export default class {
@@ -61,5 +73,10 @@ export default class {
     @query([Temperature.getIDL()], Temperature.getIDL())
     echoVariant(temp: Temperature): Temperature {
         return temp;
+    }
+
+    @query([MyFunc.getIDL()], MyFunc.getIDL())
+    echoFunc(myFunc: MyFunc): MyFunc {
+        return myFunc;
     }
 }
