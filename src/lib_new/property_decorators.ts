@@ -1,4 +1,5 @@
 import { IDL } from '@dfinity/candid';
+import { Record, Variant } from '.';
 
 export function candid(type: CandidType | CandidClass) {
     return function (target, key) {
@@ -11,6 +12,7 @@ export function candid(type: CandidType | CandidClass) {
 }
 
 export type CandidType =
+    | 'blob'
     | 'bool'
     | 'empty'
     | 'int'
@@ -41,7 +43,10 @@ export type CandidClass =
     | IDL.ReservedClass
     | IDL.TextClass
     | IDL.FloatClass
-    | IDL.PrincipalClass;
+    | IDL.PrincipalClass
+    | IDL.VecClass<CandidClass>
+    | IDL.OptClass<CandidClass>
+    | IDL.VecClass<number | bigint>; // blob
 
 // @ts-ignore
 function addToAzleCandidMap(target, idl, name) {
@@ -54,9 +59,16 @@ function addToAzleCandidMap(target, idl, name) {
         ...target.constructor._azleCandidMap,
         [name]: idl
     };
-    target.constructor._azleEncoder = IDL.Record(
-        target.constructor._azleCandidMap
-    );
+    if (target instanceof Record) {
+        target.constructor._azleEncoder = IDL.Record(
+            target.constructor._azleCandidMap
+        );
+    }
+    if (target instanceof Variant) {
+        target.constructor._azleEncoder = IDL.Variant(
+            target.constructor._azleCandidMap
+        );
+    }
 }
 
 const candidToIdl = {
@@ -77,7 +89,8 @@ const candidToIdl = {
     text: IDL.Text,
     float32: IDL.Float32,
     float64: IDL.Float64,
-    principal: IDL.Principal
+    principal: IDL.Principal,
+    blob: IDL.Vec(IDL.Nat8)
 };
 
 // // @ts-ignore

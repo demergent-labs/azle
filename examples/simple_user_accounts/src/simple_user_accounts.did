@@ -2,5 +2,5 @@ service: () -> {
     test: (text, text) -> (text) query;
     simpleQuery: (text, text) -> (text) query;
     echoRecord: (record {myInt:int; myNat32:nat32; myBool:bool; myText:text}) -> (record {myInt:int; myNat32:nat32; myBool:bool; myText:text}) query;
-    echoVariant: (record {Hot:null; Cold:null; Cool:null; Warm:null}) -> (record {Hot:null; Cold:null; Cool:null; Warm:null}) query;
+    echoVariant: (variant {Hot:nat; Cold; Cool; Warm:int}) -> (variant {Hot:nat; Cold; Cool; Warm:int}) query;
 }

@@ -1,6 +1,11 @@
 import { IDL } from '@dfinity/candid';
 
-export function query(paramsIdls, returnIdl) {
+import { CandidClass, CandidType } from './property_decorators';
+
+export function query(
+    paramsIdls: (CandidType | CandidClass)[],
+    returnIdl: CandidType | CandidClass
+) {
     return (target, key, descriptor) => {
         globalThis._azleCandidMethods.push(
             `${key}: (${paramsIdls

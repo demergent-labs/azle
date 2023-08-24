@@ -24,3 +24,6 @@ export const text = IDL.Text;
 export const float32 = IDL.Float32;
 export const float64 = IDL.Float64;
 export const principal = IDL.Principal;
+export const blob = IDL.Vec(IDL.Nat8);
+export const Vec = IDL.Vec;
+export const Opt = IDL.Opt;

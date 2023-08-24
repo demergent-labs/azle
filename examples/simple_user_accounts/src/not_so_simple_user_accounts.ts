@@ -3,21 +3,23 @@ import {
     candid,
     candidNull,
     int,
+    nat,
     nat32,
     text,
     bool,
     query,
-    Variant
+    Variant,
+    blob
 } from 'azle';
 
 class Temperature extends Variant {
-    @candid(candidNull)
+    @candid('null')
     Cool?: bigint;
 
-    @candid(candidNull)
+    @candid(int)
     Warm?: bigint;
 
-    @candid(candidNull)
+    @candid(nat)
     Hot?: bigint;
 
     @candid(candidNull)
@@ -36,14 +38,17 @@ class MyRecord extends Record {
 
     @candid(bool)
     myBool: boolean;
+
+    @candid(blob)
+    myBlob: number[];
 }
 
 export default class {
-    @query([text, text], text)
+    @query(['text', text], text)
     test(param1: string, param2: string): string {
         return param1 + param2;
     }
-    @query([text, text], text)
+    @query([text, text], 'text')
     simpleQuery(param1: string, param2: string): string {
         return param1 + param2;
     }
