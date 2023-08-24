@@ -1,120 +1,29 @@
-// Some JS docs licensed under https://github.com/dfinity/cdk-rs/blob/main/LICENSE
-// Some documentation changed from original work.
+import { Principal } from '@dfinity/principal';
 
-import { Manual } from './';
-import {
-    $init,
-    $inspectMessage,
-    $query,
-    $preUpgrade,
-    $postUpgrade,
-    $update
-} from './annotations';
-import {
-    blob,
-    nat32,
-    nat64,
-    nat,
-    Opt,
-    Principal,
-    Variant
-} from './candid_types';
-import { Result } from './results';
+// declare var globalThis: {
+//     ic: Ic;
+// };
 
 declare var globalThis: any;
 
-/**
- * Represents a duration of time in seconds.
- */
-export type Duration = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
-
-export type NotifyResult = Result<null, RejectionCode>;
-
-/**
- * Indicates an error was encountered during a canister method.
- */
-export type RejectionCode = Variant<{
-    NoError: null;
-    SysFatal: null;
-    SysTransient: null;
-    DestinationInvalid: null;
-    CanisterReject: null;
-    CanisterError: null;
-    Unknown: null;
-}>;
-
-export type Stable64GrowResult = Result<nat64, StableMemoryError>;
-
-export type StableGrowResult = Result<nat32, StableMemoryError>;
-
-/** Indicates an error occurred when dealing with stable memory */
-export type StableMemoryError = Variant<{
-    /** No more stable memory could be allocated */
-    OutOfMemory: null;
-    /** Attempted to read more stable memory than had been allocated */
-    OutOfBounds: null;
-}>;
-
-/**
- * Type returned by the {@link ic.setTimer} and {@link ic.setTimerInterval}
- * functions. Pass to {@link ic.clearTimer} to remove the timer.
- */
-export type TimerId = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
-
-type ic = {
+type Ic = {
     /**
      * Accepts the ingress message. Calling from outside the
      * {@link $inspectMessage} context will cause the canister to trap.
      */
     acceptMessage: () => void;
 
-    // argData: () => any[]; // TODO: See https://github.com/demergent-labs/azle/issues/496
-
     /**
      * Returns the argument data as bytes.
      * @returns the argument data
      */
-    argDataRaw: () => blob;
+    argDataRaw: () => Uint8Array;
 
     /**
      * Gets the length of the raw-argument-data-bytes
      * @returns the data size
      */
-    argDataRawSize: () => nat32;
-
-    /**
-     * Performs an asynchronous call to another canister using the [System API](
-     * https://internetcomputer.org/docs/current/references/ic-interface-spec/#system-api-call)
-     * and returns the payload without serialization
-     * @param canisterId the principal of the canister to call
-     * @param method the method to call
-     * @param argsRaw the args to pass to the canister method
-     * @param payment the number of cycles to send with the call
-     * @returns
-     */
-    callRaw: (
-        canisterId: Principal,
-        method: string,
-        argsRaw: blob,
-        payment: nat64
-    ) => Promise<Result<blob, string>>;
-
-    /**
-     * Performs an asynchronous call to another canister using the [System API](
-     * https://internetcomputer.org/docs/current/references/ic-interface-spec/#system-api-call)
-     * and returns the payload without serialization
-     * @param canisterId the principal of the canister to call
-     * @param method the method to call
-     * @param argsRaw the args to pass to the canister method
-     * @param payment the number of cycles to send with the call
-     * @returns
-     */
-    callRaw128: (
-        canisterId: Principal,
-        method: string,
-        argsRaw: blob,
-        payment: nat
-    ) => Promise<Result<blob, string>>;
+    argDataRawSize: () => number;
 
     /**
      * Returns the caller of the current call
@@ -127,51 +36,39 @@ type ic = {
      * @param candidEncoded a raw Candid value
      * @returns the Candid string
      */
-    candidDecode: (candidEncoded: blob) => string;
+    candidDecode: (candidEncoded: Uint8Array) => string;
 
     /**
      * Converts a Candid string into bytes
      * @param candidString a valid Candid string
      * @returns the candid value as bytes
      */
-    candidEncode: (candidString: string) => blob;
-
-    canisters: {
-        [canisterName: string]: <T>(canisterId: Principal) => T;
-    };
+    candidEncode: (candidString: string) => Uint8Array;
 
     /**
      * Gets the amount of funds available in the canister
      * @returns the number of cycles in the canister
      */
-    canisterBalance: () => nat64;
+    canisterBalance: () => bigint;
 
     /**
      * Gets the amount of funds available in the canister
      * @returns the number of cycles in the canister
      */
-    canisterBalance128: () => nat;
+    canisterBalance128: () => bigint;
 
     /**
      * Returns the canister version number
      *
      * @returns the version number
      */
-    canisterVersion: () => nat64;
+    canisterVersion: () => bigint;
 
     /**
      * Cancels an existing timer. Does nothing if the timer has already been canceled.
      * @param id The ID of the timer to be cancelled.
      */
-    clearTimer: (id: TimerId) => void;
-
-    /**
-     * When called from a query call, returns the data certificate
-     * authenticating `certifiedData` set by this canister. Returns `None` if
-     * called from a query call.
-     * @returns the data certificate or None
-     */
-    dataCertificate: () => Opt<blob>;
+    clearTimer: (id: bigint) => void;
 
     /**
      * Gets the id of this canister
@@ -187,7 +84,7 @@ type ic = {
      *
      * @returns the number of instructions
      */
-    instructionCounter: () => nat64;
+    instructionCounter: () => bigint;
 
     /** Determine if a {@link Principal} is a controller of the canister. */
     isController: (principal: Principal) => boolean;
@@ -203,49 +100,42 @@ type ic = {
      * @param maxAmount the max amount of cycles to move
      * @returns the actual amount moved
      */
-    msgCyclesAccept: (maxAmount: nat64) => nat64;
+    msgCyclesAccept: (maxAmount: bigint) => bigint;
 
     /**
      * Moves cycles from the call to the canister balance
      * @param maxAmount the max amount of cycles to move
      * @returns the actual amount moved
      */
-    msgCyclesAccept128: (maxAmount: nat) => nat;
+    msgCyclesAccept128: (maxAmount: bigint) => bigint;
 
     /**
      * Returns the amount of cycles that were transferred by the caller of the
      * current call, and is still available in this message
      * @returns the amount of cycles
      */
-    msgCyclesAvailable: () => nat64;
+    msgCyclesAvailable: () => bigint;
 
     /**
      * Returns the amount of cycles that were transferred by the caller of the
      * current call, and is still available in this message
      * @returns the amount of cycles
      */
-    msgCyclesAvailable128: () => nat;
+    msgCyclesAvailable128: () => bigint;
 
     /**
      * Returns the amount of cycles that came back with the response as a refund.
      * The refund has already been added to the canister balance automatically.
      * @returns the amount of cycles
      */
-    msgCyclesRefunded: () => nat64;
+    msgCyclesRefunded: () => bigint;
 
     /**
      * Returns the amount of cycles that came back with the response as a refund.
      * The refund has already been added to the canister balance automatically.
      * @returns the amount of cycles
      */
-    msgCyclesRefunded128: () => nat;
-
-    notifyRaw: (
-        canisterId: Principal,
-        method: string,
-        argsRaw: blob,
-        payment: nat
-    ) => NotifyResult;
+    msgCyclesRefunded128: () => bigint;
 
     /**
      * Gets the value of the specified performance counter
@@ -256,7 +146,7 @@ type ic = {
      * has executed.
      * @returns the performance counter metric
      */
-    performanceCounter: (counterType: nat32) => nat64;
+    performanceCounter: (counterType: number) => bigint;
 
     /**
      * Prints the given message
@@ -271,13 +161,6 @@ type ic = {
     reject: (message: string) => void;
 
     /**
-     * Returns the rejection code from the most recently executed cross-canister
-     * call
-     * @returns the rejection code
-     */
-    rejectCode: () => RejectionCode;
-
-    /**
      * Returns the rejection message from the most recently executed
      * cross-canister call
      *
@@ -287,15 +170,6 @@ type ic = {
      * @returns the rejection message
      */
     rejectMessage: () => string;
-
-    /**
-     * Used to manually reply to an ingress message. Intended to be used in
-     * canister methods with a {@link Manual} return type.
-     * @param reply the value with which to reply. Must by of type `T` where `T`
-     * is the generic type supplied to `Manual<T>`. Otherwise will result in an
-     * uncaught `TypeError`.
-     */
-    reply: (reply: any) => void;
 
     /**
      * Used to manually reply to an ingress message. Intended to be used in
@@ -314,7 +188,7 @@ type ic = {
      * }
      * ```
      */
-    replyRaw: (buf: blob) => void;
+    replyRaw: (buf: Uint8Array) => void;
 
     /**
      * Sets the certified data of this canister.
@@ -338,35 +212,7 @@ type ic = {
      * @param data the data to be set
      * @returns
      */
-    setCertifiedData: (data: blob) => void;
-
-    /**
-     * Sets callback to be executed later, after delay. Panics if `delay` + time() is more than 2^64 - 1.
-     * To cancel the timer before it executes, pass the returned `TimerId` to `clearTimer`.
-     * Note that timers are not persisted across canister upgrades.
-     *
-     * @param delay The time (in seconds) to wait before executing the provided callback.
-     * @param callback the function to invoke after the specified delay has passed.
-     * @returns the ID of the created timer. Used to cancel the timer.
-     */
-    setTimer: (
-        delay: Duration,
-        callback: () => void | Promise<void>
-    ) => TimerId;
-
-    /**
-     * Sets callback to be executed every interval. Panics if `interval` + time() is more than 2^64 - 1.
-     * To cancel the interval timer, pass the returned `TimerId` to `clearTimer`.
-     * Note that timers are not persisted across canister upgrades.
-     *
-     * @param interval The interval (in seconds) between each callback execution.
-     * @param callback the function to invoke after the specified delay has passed.
-     * @returns the ID of the created timer. Used to cancel the timer.
-     */
-    setTimerInterval: (
-        interval: Duration,
-        callback: () => void | Promise<void>
-    ) => TimerId;
+    setCertifiedData: (data: Uint8Array) => void;
 
     /**
      * Gets a copy of stable memory
@@ -375,18 +221,7 @@ type ic = {
      * been written to.
      * @returns a copy of the stable memory
      */
-    stableBytes: () => blob;
-
-    /**
-     * Attempts to grow the stable memory by `newPages` (added pages)
-     *
-     * **Note:** Pages are 64KiB in WASM
-     *
-     * @param newPages the number of pages to add
-     * @returns an error if it wasn't able to grow. Otherwise, returns the
-     * previous size that was reserved.
-     */
-    stableGrow: (newPages: nat32) => StableGrowResult;
+    stableBytes: () => Uint8Array;
 
     /**
      * Reads data from the stable memory location specified by an offset
@@ -394,13 +229,13 @@ type ic = {
      * @param length the length of buffer to read
      * @returns the raw bytes in stable memory
      */
-    stableRead: (offset: nat32, length: nat32) => blob;
+    stableRead: (offset: number, length: number) => Uint8Array;
 
     /**
      * Gets current size of the stable memory (in WASM pages)
      * @returns the current memory size
      */
-    stableSize: () => nat32;
+    stableSize: () => number;
 
     /**
      * Writes data to the stable memory location specified by an offset
@@ -411,19 +246,7 @@ type ic = {
      * @param offset the location at which to write
      * @param buffer the data to write
      */
-    stableWrite: (offset: nat32, buffer: blob) => void;
-
-    /**
-     * Attempts to grow the stable memory by `newPages` (added pages). Supports
-     * 64-bit addressed memory.
-     *
-     * **Note:** Pages are 64KiB in WASM
-     *
-     * @param newPages the number of pages to add
-     * @returns an error if it wasn't able to grow. Otherwise, returns the
-     * previous size that was reserved.
-     */
-    stable64Grow: (newPages: nat64) => Stable64GrowResult;
+    stableWrite: (offset: number, buffer: Uint8Array) => void;
 
     /**
      * Reads data from the stable memory location specified by an offset.
@@ -432,14 +255,14 @@ type ic = {
      * @param length the length of buffer to read
      * @returns the raw bytes in stable memory
      */
-    stable64Read: (offset: nat64, length: nat64) => blob;
+    stable64Read: (offset: bigint, length: bigint) => Uint8Array;
 
     /**
      * Gets current size of the stable memory (in WASM pages). Supports 64-bit
      * addressed memory.
      * @returns the current memory size
      */
-    stable64Size: () => nat64;
+    stable64Size: () => bigint;
 
     /**
      * Writes data to the stable memory location specified by an offset.
@@ -451,13 +274,13 @@ type ic = {
      * @param offset the location at which to write
      * @param buffer the data to write
      */
-    stable64Write: (offset: nat64, buffer: blob) => void;
+    stable64Write: (offset: bigint, buffer: Uint8Array) => void;
 
     /**
      * Gets current timestamp, in nanoseconds since the epoch (1970-01-01)
      * @returns the current timestamp
      */
-    time: () => nat64;
+    time: () => bigint;
 
     /**
      * Stops execution and rejects the current request with a `CANISTER_ERROR`
@@ -468,4 +291,17 @@ type ic = {
 };
 
 /** API entrypoint for interacting with the Internet Computer */
-export const ic: ic = globalThis.ic ?? {};
+export const ic: Ic = globalThis.ic
+    ? {
+          ...globalThis.ic,
+          id: () => {
+              const idString = globalThis.ic.id();
+              return Principal.fromText(idString);
+          }
+      }
+    : {
+          acceptMessage: () => {},
+          argDataRaw: () => {},
+          id: () => {},
+          print: () => {}
+      };

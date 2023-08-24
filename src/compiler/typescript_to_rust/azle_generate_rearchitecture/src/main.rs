@@ -11,6 +11,8 @@ use swc_ecma_ast::Program;
 use swc_ecma_codegen::{text_writer::JsWriter, Emitter};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
+mod ic;
+
 #[derive(Debug, Serialize, Deserialize)]
 struct CompilerInfo {
     file_names: Vec<String>,
@@ -59,8 +61,10 @@ fn main() -> Result<(), String> {
         })
         .collect::<Result<Vec<Program>, String>>()?;
 
+    let ic = ic::generate();
+
     let lib_file = quote! {
-        use quickjs_wasm_rs::{JSContextRef, JSValueRef, JSValue, to_qjs_value};
+        use quickjs_wasm_rs::{JSContextRef, JSValueRef, JSValue, to_qjs_value, CallbackArg};
         use std::convert::TryFrom;
         use std::cell::RefCell;
 
@@ -76,6 +80,8 @@ fn main() -> Result<(), String> {
 
             let context = JSContextRef::default();
 
+            #ic
+
             context.eval_global("exports.js", "globalThis.exports = {};").unwrap();
             context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();
 
@@ -90,6 +96,8 @@ fn main() -> Result<(), String> {
             unsafe { ic_wasi_polyfill::init(&[], &[]); }
 
             let context = JSContextRef::default();
+
+            #ic
 
             context.eval_global("exports.js", "globalThis.exports = {}").unwrap();
             context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();

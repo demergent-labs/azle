@@ -78,6 +78,7 @@ export function generateLibCargoToml(
 
         quickjs-wasm-rs = {git = "https://github.com/ulan/javy.git", branch="ulan/local-changes"}
         futures-core = "=0.3.27"
+        anyhow = "1.0.75"
 
         ${pluginsDependencies}
     `;

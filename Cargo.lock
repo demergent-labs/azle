@@ -54,6 +54,7 @@ name = "azle_generate_rearchitecture"
 version = "0.0.0"
 dependencies = [
  "prettyplease",
+ "proc-macro2",
  "quote",
  "serde",
  "serde_json",

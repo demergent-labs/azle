@@ -1,6 +1,8 @@
 import './globals';
 import { IDL } from '@dfinity/candid';
+export { Principal } from '@dfinity/principal';
 
+export * from './ic';
 export * from './method_decorators';
 export * from './record';
 export * from './variant';
