@@ -1,7 +1,7 @@
 use quote::quote;
-use swc_ecma_ast::Program;
+use swc_ecma_ast::Module;
 
-pub fn generate(_programs: &Vec<Program>) -> Vec<proc_macro2::TokenStream> {
+pub fn generate(_modules: &Vec<Module>) -> Vec<proc_macro2::TokenStream> {
     vec![quote! {
         #[ic_cdk_macros::query(manual_reply = true)]
         fn test() {

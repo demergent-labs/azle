@@ -62,7 +62,15 @@ fn main() -> Result<(), String> {
         })
         .collect::<Result<Vec<Program>, String>>()?;
 
-    let canister_methods = canister_methods::generate(&programs);
+    let modules = programs
+        .into_iter()
+        .filter_map(|program| match program {
+            Program::Module(module) => Some(module),
+            Program::Script(_) => None,
+        })
+        .collect::<Vec<_>>();
+
+    let canister_methods = canister_methods::generate(&modules);
 
     let ic = ic::generate();
 
