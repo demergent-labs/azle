@@ -1,6 +1,6 @@
-use proc_macro2::TokenStream;
+use proc_macro2::{Ident, TokenStream};
 use quote::quote;
-use swc_ecma_ast::{Class, ClassMember, ClassMethod, Module};
+use swc_ecma_ast::{Class, ClassMember, ClassMethod, Decorator, Module};
 
 use crate::traits::{IdentValue, ToIdent};
 
@@ -85,29 +85,48 @@ fn try_to_wrapper_functions(
 }
 
 fn try_to_wrapper_function(class_member: &ClassMember) -> Result<Option<TokenStream>, String> {
-    let class_method = match class_member {
-        ClassMember::Method(class_method) => class_method,
-        _ => return Ok(None),
+    let class_method = match class_member.as_method() {
+        Some(class_method) => class_method,
+        None => return Ok(None),
     };
 
-    if contains_multiple_azle_decorators(&class_method) {
-        return Err("Canister methods must only contain a single Azle decorator.".to_string());
-    }
+    let method_type = match get_method_type(class_method)? {
+        Some(method_type) => method_type,
+        None => return Ok(None),
+    };
 
     let js_function_name = get_name(class_method)?;
     let rust_function_name = js_function_name.to_ident();
 
     Ok(Some(quote! {
-        #[ic_cdk_macros::query(manual_reply = true)]
+        #[ic_cdk_macros::#method_type(manual_reply = true)]
         fn #rust_function_name() {
             execute_js(#js_function_name);
         }
     }))
 }
 
-fn contains_multiple_azle_decorators(_class_method: &&ClassMethod) -> bool {
-    // TODO: Actually check for multiple azle decorators
-    false
+fn get_method_type(class_method: &ClassMethod) -> Result<Option<Ident>, String> {
+    let azle_decorators = class_method
+        .function
+        .decorators
+        .iter()
+        .map(decorator_to_azle_type)
+        .collect::<Vec<_>>();
+
+    if azle_decorators.len() == 0 {
+        return Ok(None);
+    }
+
+    if azle_decorators.len() > 1 {
+        return Err("Canister methods must only contain a single Azle decorator.".to_string());
+    }
+
+    Ok(azle_decorators[0].clone())
+}
+
+fn decorator_to_azle_type(_decorator: &Decorator) -> Option<Ident> {
+    Some("query".to_string().to_ident())
 }
 
 fn get_name(class_method: &ClassMethod) -> Result<String, String> {
