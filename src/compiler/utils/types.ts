@@ -41,6 +41,7 @@ export type CompilerInfo = {
     alias_tables: AliasTables;
     alias_lists: AliasLists;
     file_names: string[];
+    ts_root: string;
 };
 
 export type Plugin = {

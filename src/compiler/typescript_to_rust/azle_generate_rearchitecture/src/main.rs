@@ -8,15 +8,16 @@ use std::{
 };
 use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_ast::Program;
-use swc_ecma_codegen::{text_writer::JsWriter, Emitter};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
 mod canister_methods;
 mod ic;
+mod traits;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CompilerInfo {
     file_names: Vec<String>,
+    ts_root: String,
 }
 
 fn main() -> Result<(), String> {
@@ -32,9 +33,12 @@ fn main() -> Result<(), String> {
 
     let compiler_info = get_compiler_info(&args[1])?;
 
+    let entry_point_file_name = compiler_info.ts_root;
+
     let programs = compiler_info
         .file_names
-        .iter()
+        .into_iter()
+        .filter(|file_name| file_name == &entry_point_file_name)
         .map(|file_name| {
             let filepath = Path::new(&file_name).to_path_buf();
 
@@ -70,13 +74,16 @@ fn main() -> Result<(), String> {
         })
         .collect::<Vec<_>>();
 
-    let canister_methods = canister_methods::generate(&modules);
+    let entry_point = &modules[0];
+
+    let canister_methods = canister_methods::generate(entry_point)?;
 
     let ic = ic::generate();
 
     let lib_file = quote! {
+        #![allow(non_snake_case)]
         use quickjs_wasm_rs::{JSContextRef, JSValueRef, JSValue, to_qjs_value, CallbackArg};
-        use std::convert::TryFrom;
+
         use std::cell::RefCell;
 
         const MAIN_JS: &[u8] = include_bytes!("main.js");
