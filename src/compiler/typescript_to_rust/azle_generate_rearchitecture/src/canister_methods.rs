@@ -27,29 +27,15 @@ use crate::traits::{IdentValue, ToIdent};
 pub fn generate(ts_entry_point: &Module) -> Result<Vec<TokenStream>, String> {
     let canister_class = get_default_export_class_expr(ts_entry_point)?;
 
-    let decorated_class_methods = canister_class
+    Ok(canister_class
         .body
         .iter()
-        .filter_map(as_class_method)
-        .filter(is_decorated)
-        .collect::<Vec<_>>();
-
-    // TODO: Grab only the ones that have a single azle decorator
-    // let canister_methods = decorated_class_methods.iter.filter()
-
-    if decorated_class_methods
-        .iter()
-        .any(contains_multiple_azle_decorators)
-    {
-        return Err("Canister methods must only contain a single Azle decorator.".to_string());
-    };
-
-    let wrapper_functions = decorated_class_methods
-        .iter()
-        .map(to_wrapper_function)
-        .collect::<Result<Vec<_>, String>>()?;
-
-    Ok(wrapper_functions)
+        .fold(vec![], try_to_wrapper_functions)
+        .into_iter()
+        .collect::<Result<Vec<Option<TokenStream>>, String>>()?
+        .into_iter()
+        .flatten()
+        .collect::<Vec<TokenStream>>())
 }
 
 fn get_default_export_class_expr(module: &Module) -> Result<&Class, String> {
@@ -90,15 +76,33 @@ fn get_default_export_class_expr(module: &Module) -> Result<&Class, String> {
     Ok(class)
 }
 
-fn as_class_method(class_member: &ClassMember) -> Option<&ClassMethod> {
-    match class_member {
-        swc_ecma_ast::ClassMember::Method(class_method) => Some(class_method),
-        _ => None,
-    }
+fn try_to_wrapper_functions(
+    mut acc: Vec<Result<Option<TokenStream>, String>>,
+    class_member: &ClassMember,
+) -> Vec<Result<Option<TokenStream>, String>> {
+    acc.push(try_to_wrapper_function(class_member));
+    acc
 }
 
-fn is_decorated(class_method: &&ClassMethod) -> bool {
-    class_method.function.decorators.len() != 0
+fn try_to_wrapper_function(class_member: &ClassMember) -> Result<Option<TokenStream>, String> {
+    let class_method = match class_member {
+        ClassMember::Method(class_method) => class_method,
+        _ => return Ok(None),
+    };
+
+    if contains_multiple_azle_decorators(&class_method) {
+        return Err("Canister methods must only contain a single Azle decorator.".to_string());
+    }
+
+    let js_function_name = get_name(class_method)?;
+    let rust_function_name = js_function_name.to_ident();
+
+    Ok(Some(quote! {
+        #[ic_cdk_macros::query(manual_reply = true)]
+        fn #rust_function_name() {
+            execute_js(#js_function_name);
+        }
+    }))
 }
 
 fn contains_multiple_azle_decorators(_class_method: &&ClassMethod) -> bool {
@@ -106,8 +110,8 @@ fn contains_multiple_azle_decorators(_class_method: &&ClassMethod) -> bool {
     false
 }
 
-fn to_wrapper_function(class_method: &&ClassMethod) -> Result<TokenStream, String> {
-    let js_function_name = match &class_method.key {
+fn get_name(class_method: &ClassMethod) -> Result<String, String> {
+    let method_name = match &class_method.key {
         swc_ecma_ast::PropName::Ident(ident) => ident.value(),
         swc_ecma_ast::PropName::Str(str) => str.value.to_string(),
         swc_ecma_ast::PropName::Num(num) => num.value.to_string(),
@@ -120,12 +124,5 @@ fn to_wrapper_function(class_method: &&ClassMethod) -> Result<TokenStream, Strin
         swc_ecma_ast::PropName::BigInt(big_int) => big_int.value.to_string(),
     };
 
-    let rust_function_name = js_function_name.to_ident();
-
-    Ok(quote! {
-        #[ic_cdk_macros::query(manual_reply = true)]
-        fn #rust_function_name() {
-            execute_js(#js_function_name);
-        }
-    })
+    Ok(method_name)
 }
