@@ -11,6 +11,7 @@ use swc_ecma_ast::Program;
 use swc_ecma_codegen::{text_writer::JsWriter, Emitter};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
+mod canister_methods;
 mod ic;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -61,6 +62,8 @@ fn main() -> Result<(), String> {
         })
         .collect::<Result<Vec<Program>, String>>()?;
 
+    let canister_methods = canister_methods::generate(&programs);
+
     let ic = ic::generate();
 
     let lib_file = quote! {
@@ -108,25 +111,7 @@ fn main() -> Result<(), String> {
             });
         }
 
-        #[ic_cdk_macros::query(manual_reply = true)]
-        fn test() {
-            execute_js("test");
-        }
-
-        #[ic_cdk_macros::query(manual_reply = true)]
-        fn simpleQuery() {
-            execute_js("simpleQuery");
-        }
-
-        #[ic_cdk_macros::query(manual_reply = true)]
-        fn echoRecord() {
-            execute_js("echoRecord");
-        }
-
-        #[ic_cdk_macros::query(manual_reply = true)]
-        fn echoVariant() {
-            execute_js("echoVariant");
-        }
+        #(#canister_methods)*
 
         fn execute_js(function_name: &str) {
             CONTEXT.with(|context| {
