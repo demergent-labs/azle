@@ -6,6 +6,7 @@ import {
     toCandidClass,
     toCandidClasses
 } from './property_decorators';
+import { display } from './utils';
 
 type Mode = 'query' | 'update';
 
@@ -58,8 +59,8 @@ function setupCanisterMethod(
     returnIdl = toCandidClass(returnIdl);
     globalThis._azleCandidMethods.push(
         `${key}: (${paramsIdls
-            .map((paramIdl) => paramIdl.display())
-            .join(', ')}) -> (${returnIdl.display()})${modeToCandid[mode]};`
+            .map((paramIdl) => display(paramIdl))
+            .join(', ')}) -> (${display(returnIdl)})${modeToCandid[mode]};`
     );
 
     const originalMethod = descriptor.value;

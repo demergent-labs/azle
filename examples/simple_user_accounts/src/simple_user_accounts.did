@@ -3,5 +3,5 @@ service: () -> {
     simpleQuery: (text, text) -> (text) query;
     echoRecord: (record {myInt:int; myNat32:nat32; myBlob:vec nat8; myBool:bool; myOptBool:opt bool; myText:text; myVecInt:vec int}) -> (record {myInt:int; myNat32:nat32; myBlob:vec nat8; myBool:bool; myOptBool:opt bool; myText:text; myVecInt:vec int}) query;
     echoVariant: (variant {Hot:nat; Cold; Cool; Warm:int}) -> (variant {Hot:nat; Cold; Cool; Warm:int}) query;
-    echoFunc: ((text, text) → (int) query) -> ((text, text) → (int) query) query;
+    echoFunc: (func (text, text) -> (int) query) -> (func (text, text) -> (int) query) query;
 }
