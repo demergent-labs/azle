@@ -126,22 +126,18 @@ fn get_method_type(class_method: &ClassMethod) -> Result<Option<Ident>, String> 
 }
 
 fn decorator_to_azle_type(decorator: &Decorator) -> Option<Ident> {
-    let decorator_name = match &*decorator.expr {
-        swc_ecma_ast::Expr::Call(call_expr) => match &call_expr.callee {
-            swc_ecma_ast::Callee::Expr(expr) => match &**expr {
-                swc_ecma_ast::Expr::Ident(ident) => ident.value(),
-                _ => return None,
-            },
-            _ => return None,
-        },
-        _ => return None,
-    };
-
-    return if decorator_name == "query" || decorator_name == "update" {
-        Some(decorator_name.to_ident())
-    } else {
-        None
-    };
+    (&*decorator.expr)
+        .as_call()
+        .and_then(|call_expr| call_expr.callee.as_expr())
+        .and_then(|expr| expr.as_ident())
+        .and_then(|ident| Some(ident.value()))
+        .and_then(|value| {
+            if value == "query" || value == "update" {
+                Some(value.to_ident())
+            } else {
+                None
+            }
+        })
 }
 
 fn get_name(class_method: &ClassMethod) -> Result<String, String> {
