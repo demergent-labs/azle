@@ -1,3 +1,5 @@
+import { ic } from './ic';
+
 globalThis.TextDecoder = require('text-encoding').TextDecoder;
 globalThis.TextEncoder = require('text-encoding').TextEncoder;
 

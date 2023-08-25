@@ -102,6 +102,6 @@ pub fn generate() -> TokenStream {
         ic.set_property("instructionCounter", context.wrap_callback2(instruction_counter).unwrap()).unwrap();
 
         let global = context.global_object().unwrap();
-        global.set_property("ic", ic).unwrap();
+        global.set_property("_azleIc", ic).unwrap();
     }
 }

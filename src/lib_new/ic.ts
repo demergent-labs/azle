@@ -292,30 +292,30 @@ type Ic = {
 };
 
 /** API entrypoint for interacting with the Internet Computer */
-export const ic: Ic = globalThis.ic
+export const ic: Ic = globalThis._azleIc
     ? {
-          ...globalThis.ic,
+          ...globalThis._azleIc,
           caller: () => {
-              const callerBytes = globalThis.ic.caller();
+              const callerBytes = globalThis._azleIc.caller();
               return Principal.fromUint8Array(callerBytes);
           },
           canisterBalance: () => {
               const canisterBalanceCandidBytes =
-                  globalThis.ic.canisterBalance();
+                  globalThis._azleIc.canisterBalance();
               return IDL.decode([IDL.Nat64], canisterBalanceCandidBytes)[0];
           },
           canisterBalance128: () => {
               const canisterBalance128CandidBytes =
-                  globalThis.ic.canisterBalance128();
+                  globalThis._azleIc.canisterBalance128();
               return IDL.decode([IDL.Nat], canisterBalance128CandidBytes)[0];
           },
           id: () => {
-              const idString = globalThis.ic.id();
+              const idString = globalThis._azleIc.id();
               return Principal.fromText(idString);
           },
           instructionCounter: () => {
               const instructionCounterCandidBytes =
-                  globalThis.ic.instructionCounter();
+                  globalThis._azleIc.instructionCounter();
               return IDL.decode([IDL.Nat64], instructionCounterCandidBytes)[0];
           }
       }
