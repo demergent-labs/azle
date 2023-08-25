@@ -67,6 +67,7 @@ fn main() -> Result<(), String> {
         use quickjs_wasm_rs::{JSContextRef, JSValueRef, JSValue, to_qjs_value, CallbackArg};
         use std::convert::TryFrom;
         use std::cell::RefCell;
+        use std::convert::TryInto;
 
         const MAIN_JS: &[u8] = include_bytes!("main.js");
 

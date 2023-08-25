@@ -1,3 +1,4 @@
+import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 
 // declare var globalThis: {
@@ -294,14 +295,64 @@ type Ic = {
 export const ic: Ic = globalThis.ic
     ? {
           ...globalThis.ic,
+          caller: () => {
+              const callerBytes = globalThis.ic.caller();
+              return Principal.fromUint8Array(callerBytes);
+          },
+          canisterBalance: () => {
+              const canisterBalanceCandidBytes =
+                  globalThis.ic.canisterBalance();
+              return IDL.decode([IDL.Nat64], canisterBalanceCandidBytes)[0];
+          },
+          canisterBalance128: () => {
+              const canisterBalance128CandidBytes =
+                  globalThis.ic.canisterBalance128();
+              return IDL.decode([IDL.Nat], canisterBalance128CandidBytes)[0];
+          },
           id: () => {
               const idString = globalThis.ic.id();
               return Principal.fromText(idString);
+          },
+          instructionCounter: () => {
+              const instructionCounterCandidBytes =
+                  globalThis.ic.instructionCounter();
+              return IDL.decode([IDL.Nat64], instructionCounterCandidBytes)[0];
           }
       }
     : {
           acceptMessage: () => {},
           argDataRaw: () => {},
+          argDataRawSize: () => {},
+          caller: () => {},
+          candidDecode: () => {},
+          candidEncode: () => {},
+          canisterBalance: () => {},
+          canisterBalance128: () => {},
+          canisterVersion: () => {},
+          clearTimer: () => {},
           id: () => {},
-          print: () => {}
+          instructionCounter: () => {},
+          isController: () => {},
+          methodName: () => {},
+          msgCyclesAccept: () => {},
+          msgCyclesAccept128: () => {},
+          msgCyclesAvailable: () => {},
+          msgCyclesAvailable128: () => {},
+          msgCyclesRefunded: () => {},
+          msgCyclesRefunded128: () => {},
+          performanceCounter: () => {},
+          print: () => {},
+          reject: () => {},
+          rejectMessage: () => {},
+          replyRaw: () => {},
+          setCertifiedData: () => {},
+          stableBytes: () => {},
+          stableRead: () => {},
+          stableSize: () => {},
+          stableWrite: () => {},
+          stable64Read: () => {},
+          stable64Size: () => {},
+          stable64Write: () => {},
+          time: () => {},
+          trap: () => {}
       };
