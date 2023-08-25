@@ -43,27 +43,32 @@ class MyRecord extends Record {
 }
 
 export default class {
-    @query(['text', text], text)
+    @query(['text', text], [text])
     test(param1: string, param2: string): string {
         return param1 + param2;
     }
-    @query([text, text], 'text')
+    @query([text, text], ['text'])
     simpleQuery(param1: string, param2: string): string {
         return param1 + param2;
     }
 
-    @query([MyRecord.getIDL()], MyRecord.getIDL())
+    @query([MyRecord.getIDL()], [MyRecord.getIDL()])
     echoRecord(record: MyRecord): MyRecord {
         return record;
     }
 
-    @query([Temperature.getIDL()], Temperature.getIDL())
+    @query([Temperature.getIDL()], [Temperature.getIDL()])
     echoVariant(temp: Temperature): Temperature {
         return temp;
     }
 
-    @query([MyFunc.getIDL()], MyFunc.getIDL())
+    @query([MyFunc.getIDL()], [MyFunc.getIDL()])
     echoFunc(myFunc: MyFunc): MyFunc {
         return myFunc;
+    }
+
+    @query([], [])
+    returnVoid(): void {
+        return;
     }
 }

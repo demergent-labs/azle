@@ -21,3 +21,4 @@ export const principal = IDL.Principal;
 export const blob = IDL.Vec(IDL.Nat8);
 export const Vec = IDL.Vec;
 export const Opt = IDL.Opt;
+export const Void = [];

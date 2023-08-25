@@ -17,12 +17,12 @@ const modeToCandid = {
 
 export function query(
     paramsIdls: (CandidType | CandidClass)[],
-    returnIdl: CandidType | CandidClass
+    returnIdls: (CandidType | CandidClass)[]
 ) {
     return (target, key, descriptor) => {
         return setupCanisterMethod(
             paramsIdls,
-            returnIdl,
+            returnIdls,
             'query',
             target,
             key,
@@ -33,12 +33,12 @@ export function query(
 
 export function update(
     paramsIdls: (CandidType | CandidClass)[],
-    returnIdl: CandidType | CandidClass
+    returnIdls: (CandidType | CandidClass)[]
 ) {
     return (target, key, descriptor) => {
         return setupCanisterMethod(
             paramsIdls,
-            returnIdl,
+            returnIdls,
             'update',
             target,
             key,
@@ -49,18 +49,20 @@ export function update(
 
 function setupCanisterMethod(
     paramsIdls: (CandidType | CandidClass)[],
-    returnIdl: CandidType | CandidClass,
+    returnIdls: (CandidType | CandidClass)[],
     mode: Mode,
     target,
     key,
     descriptor
 ) {
     paramsIdls = toCandidClasses(paramsIdls);
-    returnIdl = toCandidClass(returnIdl);
+    returnIdls = toCandidClasses(returnIdls);
     globalThis._azleCandidMethods.push(
         `${key}: (${paramsIdls
             .map((paramIdl) => display(paramIdl))
-            .join(', ')}) -> (${display(returnIdl)})${modeToCandid[mode]};`
+            .join(', ')}) -> (${returnIdls.map((returnIdl) =>
+            display(returnIdl)
+        )})${modeToCandid[mode]};`
     );
 
     const originalMethod = descriptor.value;
@@ -69,7 +71,7 @@ function setupCanisterMethod(
         const decoded = IDL.decode(paramsIdls, args[0]);
 
         return new Uint8Array(
-            IDL.encode([returnIdl], [originalMethod(...decoded)])
+            IDL.encode(returnIdls, [originalMethod(...decoded)])
         ).buffer;
     };
 
