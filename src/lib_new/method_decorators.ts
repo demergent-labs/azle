@@ -5,7 +5,7 @@ import {
     ReturnCandidClass,
     toCandidClasses,
     toReturnCandidClass
-} from './property_decorators';
+} from './utils';
 import { display } from './utils';
 
 type Mode = 'query' | 'update';
@@ -15,7 +15,9 @@ const modeToCandid = {
     update: ''
 };
 
-export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
+// Until we can figure how how to type check Funcs, Variants, and Records we are just going to have to use any here
+// export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
+export function query(paramsIdls: any[], returnIdl: any) {
     return (target: any, key: string, descriptor: PropertyDescriptor) => {
         return setupCanisterMethod(
             paramsIdls,
@@ -64,13 +66,9 @@ function setupCanisterMethod(
     descriptor.value = function (...args: any[]) {
         const decoded = IDL.decode(paramsIdls, args[0]);
 
-        if (returnIdls.length === 0) {
-            originalMethod(...decoded);
-            return;
-        }
-        return new Uint8Array(
-            IDL.encode(returnIdls, [originalMethod(...decoded)])
-        ).buffer;
+        const result = originalMethod(...decoded) ?? [];
+
+        return new Uint8Array(IDL.encode(returnIdls, [...result])).buffer;
     };
 
     return descriptor;

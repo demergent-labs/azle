@@ -1,6 +1,14 @@
 import { IDL } from '@dfinity/candid';
 
-export function record<T extends new (...args: any[]) => any>(target: T) {
+// Without this default constructor we get errors when initializing variants and
+// records. While the decorators are able to add constructors they are not
+// communicating that change to the type checker. If we can get it to do that
+// then we can get rid of this class
+export class Record {
+    constructor(throwAway: any) {}
+}
+
+export function record<T extends new (...args: any[]) => any>(target: T): T {
     return class extends target {
         constructor(...args: any[]) {
             super(...args);

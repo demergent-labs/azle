@@ -13,7 +13,9 @@ import {
     blob,
     record,
     variant,
-    Void
+    Void,
+    Record,
+    Variant
 } from 'azle';
 
 @func([text, text], int, 'query')
@@ -23,7 +25,7 @@ class MyFunc {}
 class NewFunc {}
 
 @variant
-class Temperature {
+class Temperature extends Variant {
     @candid(Null)
     Cool?: Null;
 
@@ -38,13 +40,13 @@ class Temperature {
 }
 
 @record
-class MySimpleRecord {
+class MySimpleRecord extends Record {
     @candid(int)
     myInt: int;
 }
 
 @record
-class MyRecord {
+class MyRecord extends Record {
     @candid(int)
     myInt: int;
 
@@ -97,7 +99,7 @@ export default class {
     returnFunc(): NewFunc {
         return [];
     }
-    @query([], [])
+    @query([], Void)
     returnVoid(): Void {
         return;
     }
