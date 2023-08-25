@@ -29,10 +29,10 @@ export function query(paramsIdls: any[], returnIdl: any) {
     };
 }
 
-export function update(
-    paramsIdls: CandidClass[],
-    returnIdl: ReturnCandidClass
-) {
+// export function update(
+//     paramsIdls: CandidClass[],
+//     returnIdl: ReturnCandidClass
+export function update(paramsIdls: any[], returnIdl: any) {
     return (target: any, key: string, descriptor: PropertyDescriptor) => {
         return setupCanisterMethod(
             paramsIdls,
