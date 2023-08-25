@@ -27,6 +27,7 @@ export type nat32 = number;
 export const nat64 = IDL.Nat64;
 export type nat64 = bigint;
 export const Null = IDL.Null;
+export type Null = null;
 export const reserved = IDL.Reserved;
 export type reserved = any;
 export const text = IDL.Text;
@@ -42,6 +43,7 @@ export type Vec<T> = T[];
 export type Opt<Value> = Value[];
 export const Opt = IDL.Opt;
 export const Void = [];
+export type Void = void;
 
 export function Some<T>(value: T): T[] {
     return [value];

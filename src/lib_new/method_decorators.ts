@@ -2,9 +2,9 @@ import { IDL } from '@dfinity/candid';
 
 import {
     CandidClass,
-    CandidType,
-    toCandidClass,
-    toCandidClasses
+    ReturnCandidClass,
+    toCandidClasses,
+    toReturnCandidClass
 } from './property_decorators';
 import { display } from './utils';
 
@@ -15,16 +15,12 @@ const modeToCandid = {
     update: ''
 };
 
-export function query(
-    paramsIdls: (CandidType | CandidClass)[],
-    returnIdls: (CandidType | CandidClass)[]
-) {
-    return (target, key, descriptor) => {
+export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
+    return (target: any, key: string, descriptor: PropertyDescriptor) => {
         return setupCanisterMethod(
             paramsIdls,
-            returnIdls,
+            returnIdl,
             'query',
-            target,
             key,
             descriptor
         );
@@ -32,15 +28,14 @@ export function query(
 }
 
 export function update(
-    paramsIdls: (CandidType | CandidClass)[],
-    returnIdls: (CandidType | CandidClass)[]
+    paramsIdls: CandidClass[],
+    returnIdl: ReturnCandidClass
 ) {
-    return (target, key, descriptor) => {
+    return (target: any, key: string, descriptor: PropertyDescriptor) => {
         return setupCanisterMethod(
             paramsIdls,
-            returnIdls,
+            returnIdl,
             'update',
-            target,
             key,
             descriptor
         );
@@ -48,15 +43,14 @@ export function update(
 }
 
 function setupCanisterMethod(
-    paramsIdls: (CandidType | CandidClass)[],
-    returnIdls: (CandidType | CandidClass)[],
+    paramsIdls: CandidClass[],
+    returnIdl: ReturnCandidClass,
     mode: Mode,
-    target,
-    key,
-    descriptor
+    key: string,
+    descriptor: PropertyDescriptor
 ) {
     paramsIdls = toCandidClasses(paramsIdls);
-    returnIdls = toCandidClasses(returnIdls);
+    const returnIdls = toReturnCandidClass(returnIdl);
     globalThis._azleCandidMethods.push(
         `${key}: (${paramsIdls
             .map((paramIdl) => display(paramIdl))
@@ -67,9 +61,13 @@ function setupCanisterMethod(
 
     const originalMethod = descriptor.value;
 
-    descriptor.value = function (...args) {
+    descriptor.value = function (...args: any[]) {
         const decoded = IDL.decode(paramsIdls, args[0]);
 
+        if (returnIdls.length === 0) {
+            originalMethod(...decoded);
+            return;
+        }
         return new Uint8Array(
             IDL.encode(returnIdls, [originalMethod(...decoded)])
         ).buffer;

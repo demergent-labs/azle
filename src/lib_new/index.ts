@@ -7,4 +7,4 @@ export * from './record';
 export * from './variant';
 export * from './func';
 export * from './property_decorators';
-export * from './types';
+export * from './primitives';

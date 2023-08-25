@@ -1,45 +1,33 @@
 import { IDL } from '@dfinity/candid';
-import { Record, Variant } from '.';
 
-export function candid(type: CandidType | CandidClass) {
-    return function (target, key) {
+export function candid(type: CandidClass) {
+    return function (target: any, key: string) {
         addToAzleCandidMap(target, toCandidClass(type), key);
     };
 }
 
-export function toCandidClass(idl: CandidType | CandidClass): CandidClass {
-    if (typeof idl === 'string') {
-        return candidToIdl[idl];
+export function toCandidClass(idl: CandidClass): CandidClass {
+    if (idl.getIDL !== undefined) {
+        return idl.getIDL();
     }
     return idl;
 }
 
-export function toCandidClasses(
-    paramIdls: (CandidType | CandidClass)[]
-): CandidClass[] {
-    return paramIdls.map((value) => toCandidClass(value));
+export function toCandidClasses(idl: CandidClass[]): CandidClass[] {
+    return idl.map((value) => toCandidClass(value));
 }
 
-export type CandidType =
-    | 'blob'
-    | 'bool'
-    | 'empty'
-    | 'int'
-    | 'int8'
-    | 'int16'
-    | 'int32'
-    | 'int64'
-    | 'nat'
-    | 'nat8'
-    | 'nat16'
-    | 'nat32'
-    | 'nat64'
-    | 'null'
-    | 'reserved'
-    | 'text'
-    | 'float32'
-    | 'float64'
-    | 'principal';
+export function toReturnCandidClass(
+    returnIdl: ReturnCandidClass
+): CandidClass[] {
+    if (Array.isArray(returnIdl)) {
+        if (returnIdl.length === 0) {
+            return [];
+        }
+        return [];
+    }
+    return [toCandidClass(returnIdl)];
+}
 
 export type CandidClass =
     | IDL.BoolClass
@@ -57,6 +45,8 @@ export type CandidClass =
     | IDL.OptClass<any>
     | IDL.VecClass<number | bigint>; // blob
 
+export type ReturnCandidClass = CandidClass | [];
+
 // @ts-ignore
 function addToAzleCandidMap(target, idl, name) {
     // TODO I forsee an issue where we have naming conflicts
@@ -68,16 +58,6 @@ function addToAzleCandidMap(target, idl, name) {
         ...target.constructor._azleCandidMap,
         [name]: idl
     };
-    if (target instanceof Record) {
-        target.constructor._azleEncoder = IDL.Record(
-            target.constructor._azleCandidMap
-        );
-    }
-    if (target instanceof Variant) {
-        target.constructor._azleEncoder = IDL.Variant(
-            target.constructor._azleCandidMap
-        );
-    }
 }
 
 export const candidToIdl = {
