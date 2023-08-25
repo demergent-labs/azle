@@ -309,7 +309,13 @@ export const ic: Ic = globalThis._azleIc
                   globalThis._azleIc.canisterBalance128();
               return IDL.decode([IDL.Nat], canisterBalance128CandidBytes)[0];
           },
+          canisterVersion: () => {
+              const canisterVersionCandidBytes =
+                  globalThis._azleIc.canisterVersion();
+              return IDL.decode([IDL.Nat64], canisterVersionCandidBytes)[0];
+          },
           id: () => {
+              // TODO consider bytes instead of string, just like with caller
               const idString = globalThis._azleIc.id();
               return Principal.fromText(idString);
           },
@@ -317,6 +323,9 @@ export const ic: Ic = globalThis._azleIc
               const instructionCounterCandidBytes =
                   globalThis._azleIc.instructionCounter();
               return IDL.decode([IDL.Nat64], instructionCounterCandidBytes)[0];
+          },
+          isController: (principal) => {
+              return globalThis._azleIc.isController(principal.toUint8Array());
           }
       }
     : {
