@@ -33,6 +33,7 @@ export function generateRustCanister(
     const compilerInfo: CompilerInfo = {
         plugins,
         file_names: fileNames,
+        ts_root: join(process.cwd(), canisterConfig.ts),
         alias_tables: aliasTables,
         alias_lists: aliasLists
     };

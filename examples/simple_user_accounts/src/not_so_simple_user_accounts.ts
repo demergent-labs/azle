@@ -3,21 +3,29 @@ import {
     candid,
     candidNull,
     int,
+    nat,
     nat32,
     text,
     bool,
     query,
-    Variant
+    Variant,
+    blob,
+    func,
+    Opt,
+    Vec
 } from 'azle';
 
+@func([text, text], int, 'query')
+class MyFunc {}
+
 class Temperature extends Variant {
-    @candid(candidNull)
+    @candid('null')
     Cool?: bigint;
 
-    @candid(candidNull)
+    @candid(int)
     Warm?: bigint;
 
-    @candid(candidNull)
+    @candid(nat)
     Hot?: bigint;
 
     @candid(candidNull)
@@ -36,14 +44,23 @@ class MyRecord extends Record {
 
     @candid(bool)
     myBool: boolean;
+
+    @candid(blob)
+    myBlob: number[];
+
+    @candid(Opt(bool))
+    myOptBool;
+
+    @candid(Vec(int))
+    myVecInt;
 }
 
 export default class {
-    @query([text, text], text)
+    @query(['text', text], text)
     test(param1: string, param2: string): string {
         return param1 + param2;
     }
-    @query([text, text], text)
+    @query([text, text], 'text')
     simpleQuery(param1: string, param2: string): string {
         return param1 + param2;
     }
@@ -56,5 +73,10 @@ export default class {
     @query([Temperature.getIDL()], Temperature.getIDL())
     echoVariant(temp: Temperature): Temperature {
         return temp;
+    }
+
+    @query([MyFunc.getIDL()], MyFunc.getIDL())
+    echoFunc(myFunc: MyFunc): MyFunc {
+        return myFunc;
     }
 }

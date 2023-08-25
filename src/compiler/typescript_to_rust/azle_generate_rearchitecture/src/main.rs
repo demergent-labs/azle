@@ -8,14 +8,16 @@ use std::{
 };
 use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_ast::Program;
-use swc_ecma_codegen::{text_writer::JsWriter, Emitter};
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 
+mod canister_methods;
 mod ic;
+mod traits;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CompilerInfo {
     file_names: Vec<String>,
+    ts_root: String,
 }
 
 fn main() -> Result<(), String> {
@@ -31,9 +33,12 @@ fn main() -> Result<(), String> {
 
     let compiler_info = get_compiler_info(&args[1])?;
 
+    let entry_point_file_name = compiler_info.ts_root;
+
     let programs = compiler_info
         .file_names
-        .iter()
+        .into_iter()
+        .filter(|file_name| file_name == &entry_point_file_name)
         .map(|file_name| {
             let filepath = Path::new(&file_name).to_path_buf();
 
@@ -61,11 +66,24 @@ fn main() -> Result<(), String> {
         })
         .collect::<Result<Vec<Program>, String>>()?;
 
+    let modules = programs
+        .into_iter()
+        .filter_map(|program| match program {
+            Program::Module(module) => Some(module),
+            Program::Script(_) => None,
+        })
+        .collect::<Vec<_>>();
+
+    let entry_point = &modules[0];
+
+    let canister_methods = canister_methods::generate(entry_point)?;
+
     let ic = ic::generate();
 
     let lib_file = quote! {
+        #![allow(non_snake_case)]
         use quickjs_wasm_rs::{JSContextRef, JSValueRef, JSValue, to_qjs_value, CallbackArg};
-        use std::convert::TryFrom;
+
         use std::cell::RefCell;
         use std::convert::TryInto;
 
@@ -109,25 +127,7 @@ fn main() -> Result<(), String> {
             });
         }
 
-        #[ic_cdk_macros::query(manual_reply = true)]
-        fn test() {
-            execute_js("test");
-        }
-
-        #[ic_cdk_macros::query(manual_reply = true)]
-        fn simpleQuery() {
-            execute_js("simpleQuery");
-        }
-
-        #[ic_cdk_macros::query(manual_reply = true)]
-        fn echoRecord() {
-            execute_js("echoRecord");
-        }
-
-        #[ic_cdk_macros::query(manual_reply = true)]
-        fn echoVariant() {
-            execute_js("echoVariant");
-        }
+        #(#canister_methods)*
 
         fn execute_js(function_name: &str) {
             CONTEXT.with(|context| {

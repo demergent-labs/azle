@@ -1,7 +1,19 @@
 import { IDL } from '@dfinity/candid';
 
-export function query(paramsIdls, returnIdl) {
+import {
+    CandidClass,
+    CandidType,
+    toCandidClass,
+    toCandidClasses
+} from './property_decorators';
+
+export function query(
+    paramsIdls: (CandidType | CandidClass)[],
+    returnIdl: CandidType | CandidClass
+) {
     return (target, key, descriptor) => {
+        paramsIdls = toCandidClasses(paramsIdls);
+        returnIdl = toCandidClass(returnIdl);
         globalThis._azleCandidMethods.push(
             `${key}: (${paramsIdls
                 .map((paramIdl) => paramIdl.display())
@@ -22,7 +34,7 @@ export function query(paramsIdls, returnIdl) {
     };
 }
 
-export function update(paramsIdls, returnIdl) {
+export function update(paramsIdls: CandidClass[], returnIdl: CandidClass) {
     return (target, key, descriptor) => {
         globalThis._azleCandidMethods.push(
             `${key}: (${paramsIdls
