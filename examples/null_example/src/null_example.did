@@ -1,21 +1,10 @@
-type PartiallyNullRecord = record {
-  thirdItem : int;
-  secondItem : null;
-  firstItem : int;
-};
-type ThreeNullRecord = record {
-  thirdItem : null;
-  secondItem : null;
-  firstItem : null;
-};
-type TwoNullRecord = record { secondItem : null; firstItem : null };
-service : () -> {
-  getLargeNullRecord : () -> (ThreeNullRecord) query;
-  getPartiallyNullRecord : () -> (PartiallyNullRecord) query;
-  getSmallNullRecord : () -> (TwoNullRecord) query;
-  nullFunction : (null) -> (null) query;
-  setLargeNullRecord : (ThreeNullRecord) -> (ThreeNullRecord);
-  setPartiallyNullRecord : (PartiallyNullRecord) -> (PartiallyNullRecord);
-  setSmallNullRecord : (TwoNullRecord) -> (TwoNullRecord);
-  voidIsNotNull : () -> () query;
+service: () -> {
+    nullFunction: (null) -> (null) query;
+    voidIsNotNull: () -> () query;
+    getPartiallyNullRecord: () -> (record {thirdItem:int; secondItem:null; firstItem:int}) query;
+    setPartiallyNullRecord: (record {thirdItem:int; secondItem:null; firstItem:int}) -> (record {thirdItem:int; secondItem:null; firstItem:int});
+    getSmallNullRecord: () -> (record {secondItem:null; firstItem:null}) query;
+    setSmallNullRecord: (record {secondItem:null; firstItem:null}) -> (record {secondItem:null; firstItem:null});
+    getLargeNullRecord: () -> (record {thirdItem:null; secondItem:null; firstItem:null}) query;
+    setLargeNullRecord: (record {thirdItem:null; secondItem:null; firstItem:null}) -> (record {thirdItem:null; secondItem:null; firstItem:null});
 }
