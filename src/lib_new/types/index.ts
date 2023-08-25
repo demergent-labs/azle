@@ -140,12 +140,13 @@ export type nat8 = number;
  * Represents an optional value: every {@link Opt} is either `Some` and contains
  * a value, or `None` and does not.
  */
-export type Opt<Value> = Variant<{
-    /** Indicates there is a value */
-    Some: Value;
-    /** Indicates there is no value */
-    None: null;
-}>;
+export type Opt<Value> = Value[];
+
+export function Some<T>(value: T): T[] {
+    return [value];
+}
+
+export const None: [] = [];
 
 export const Opt = {
     /**
@@ -153,11 +154,9 @@ export const Opt = {
      * @param value - the value to be wrapped
      * @returns a `Some` {@link Opt} containing the provided value
      */
-    Some: <Value>(value: Value): Opt<Value> => ({
-        Some: value
-    }),
+    Some,
     /** An {@link Opt} representing the absence of a value */
-    None: Object.freeze({ None: null }) as Opt<never>
+    None
 };
 
 /**
