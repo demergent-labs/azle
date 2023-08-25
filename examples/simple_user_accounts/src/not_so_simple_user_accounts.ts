@@ -1,7 +1,7 @@
 import {
     Record,
     candid,
-    candidNull,
+    Null,
     int,
     nat,
     nat32,
@@ -28,7 +28,7 @@ class Temperature extends Variant {
     @candid(nat)
     Hot?: bigint;
 
-    @candid(candidNull)
+    @candid(Null)
     Cold?: bigint;
 }
 
