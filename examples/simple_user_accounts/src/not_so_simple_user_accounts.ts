@@ -1,19 +1,6 @@
-import {
-    Record,
-    candid,
-    candidNull,
-    int,
-    nat,
-    nat32,
-    text,
-    bool,
-    query,
-    Variant,
-    blob,
-    func,
-    Opt,
-    Vec
-} from 'azle';
+import { Record, candid, query, Variant, func, Opt, Vec } from 'azle';
+import { Null, int, nat, nat32, text, bool, blob } from 'azle/candid';
+import * as Candid from 'azle/candid';
 
 @func([text, text], int, 'query')
 class MyFunc {}
@@ -28,7 +15,7 @@ class Temperature extends Variant {
     @candid(nat)
     Hot?: bigint;
 
-    @candid(candidNull)
+    @candid(Null)
     Cold?: bigint;
 }
 
@@ -48,35 +35,40 @@ class MyRecord extends Record {
     @candid(blob)
     myBlob: number[];
 
-    @candid(Opt(bool))
-    myOptBool;
+    @candid(Candid.Opt(bool))
+    myOptBool: Opt<boolean>;
 
-    @candid(Vec(int))
-    myVecInt;
+    @candid(Candid.Vec(int))
+    myVecInt: Vec<bigint>;
 }
 
 export default class {
-    @query(['text', text], text)
+    @query(['text', text], [text])
     test(param1: string, param2: string): string {
         return param1 + param2;
     }
-    @query([text, text], 'text')
+    @query([text, text], ['text'])
     simpleQuery(param1: string, param2: string): string {
         return param1 + param2;
     }
 
-    @query([MyRecord.getIDL()], MyRecord.getIDL())
+    @query([MyRecord.getIDL()], [MyRecord.getIDL()])
     echoRecord(record: MyRecord): MyRecord {
         return record;
     }
 
-    @query([Temperature.getIDL()], Temperature.getIDL())
+    @query([Temperature.getIDL()], [Temperature.getIDL()])
     echoVariant(temp: Temperature): Temperature {
         return temp;
     }
 
-    @query([MyFunc.getIDL()], MyFunc.getIDL())
+    @query([MyFunc.getIDL()], [MyFunc.getIDL()])
     echoFunc(myFunc: MyFunc): MyFunc {
         return myFunc;
+    }
+
+    @query([], [])
+    returnVoid(): void {
+        return;
     }
 }
