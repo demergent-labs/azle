@@ -1,10 +1,5 @@
 import { IDL } from '@dfinity/candid';
-import {
-    CandidClass,
-    ReturnCandidClass,
-    toReturnCandidClass,
-    toCandidClasses
-} from './property_decorators';
+import { CandidClass, toReturnCandidClass, toCandidClasses } from './utils';
 
 type Mode = 'query' | 'update' | 'oneway';
 
