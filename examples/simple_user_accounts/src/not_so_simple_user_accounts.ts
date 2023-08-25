@@ -1,82 +1,109 @@
 import {
-    Record,
     candid,
-    candidNull,
+    query,
+    func,
+    Opt,
+    Vec,
+    Null,
     int,
     nat,
     nat32,
     text,
     bool,
-    query,
-    Variant,
     blob,
-    func,
-    Opt,
-    Vec
+    record,
+    variant,
+    Void
 } from 'azle';
 
 @func([text, text], int, 'query')
 class MyFunc {}
 
-class Temperature extends Variant {
-    @candid('null')
-    Cool?: bigint;
+@func([text, bool], int, 'update')
+class NewFunc {}
+
+@variant
+class Temperature {
+    @candid(Null)
+    Cool?: Null;
 
     @candid(int)
-    Warm?: bigint;
+    Warm?: int;
 
     @candid(nat)
-    Hot?: bigint;
+    Hot?: nat;
 
-    @candid(candidNull)
-    Cold?: bigint;
+    @candid(Null)
+    Cold?: Null;
 }
 
-class MyRecord extends Record {
+@record
+class MySimpleRecord {
     @candid(int)
-    myInt: bigint;
+    myInt: int;
+}
+
+@record
+class MyRecord {
+    @candid(int)
+    myInt: int;
 
     @candid(nat32)
-    myNat32: number;
+    myNat32: nat32;
 
     @candid(text)
-    myText: string;
+    myText: text;
 
     @candid(bool)
-    myBool: boolean;
+    myBool: bool;
 
     @candid(blob)
-    myBlob: number[];
+    myBlob: blob;
 
     @candid(Opt(bool))
-    myOptBool;
+    myOptBool: Opt<boolean>;
 
     @candid(Vec(int))
-    myVecInt;
+    myVecInt: Vec<bigint>;
 }
 
 export default class {
-    @query(['text', text], text)
-    test(param1: string, param2: string): string {
+    @query([text, text], text)
+    test(param1: text, param2: text): text {
         return param1 + param2;
     }
-    @query([text, text], 'text')
-    simpleQuery(param1: string, param2: string): string {
+    @query([text, text], text)
+    simpleQuery(param1: text, param2: text): text {
         return param1 + param2;
     }
-
-    @query([MyRecord.getIDL()], MyRecord.getIDL())
+    @query([MyRecord], MyRecord)
     echoRecord(record: MyRecord): MyRecord {
         return record;
     }
-
-    @query([Temperature.getIDL()], Temperature.getIDL())
+    @query([MySimpleRecord], MySimpleRecord)
+    echoSimpleRecord(record: MySimpleRecord): MySimpleRecord {
+        return record;
+    }
+    @query([Temperature], Temperature)
     echoVariant(temp: Temperature): Temperature {
         return temp;
     }
-
-    @query([MyFunc.getIDL()], MyFunc.getIDL())
+    @query([MyFunc], MyFunc)
     echoFunc(myFunc: MyFunc): MyFunc {
+        console.log(myFunc);
         return myFunc;
+    }
+    @query([], NewFunc)
+    returnFunc(): NewFunc {
+        return [];
+    }
+    @query([], [])
+    returnVoid(): Void {
+        return;
+    }
+    @query([], int)
+    returnInt(): int {
+        let thing = new MySimpleRecord({ myInt: 3n });
+        return thing.myInt;
     }
 }

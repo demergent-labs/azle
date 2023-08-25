@@ -2,56 +2,76 @@ import { IDL } from '@dfinity/candid';
 
 import {
     CandidClass,
-    CandidType,
-    toCandidClass,
-    toCandidClasses
+    ReturnCandidClass,
+    toCandidClasses,
+    toReturnCandidClass
 } from './property_decorators';
+import { display } from './utils';
 
-export function query(
-    paramsIdls: (CandidType | CandidClass)[],
-    returnIdl: CandidType | CandidClass
-) {
-    return (target, key, descriptor) => {
-        paramsIdls = toCandidClasses(paramsIdls);
-        returnIdl = toCandidClass(returnIdl);
-        globalThis._azleCandidMethods.push(
-            `${key}: (${paramsIdls
-                .map((paramIdl) => paramIdl.display())
-                .join(', ')}) -> (${returnIdl.display()}) query;`
+type Mode = 'query' | 'update';
+
+const modeToCandid = {
+    query: ' query',
+    update: ''
+};
+
+export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
+    return (target: any, key: string, descriptor: PropertyDescriptor) => {
+        return setupCanisterMethod(
+            paramsIdls,
+            returnIdl,
+            'query',
+            key,
+            descriptor
         );
-
-        const originalMethod = descriptor.value;
-
-        descriptor.value = function (...args) {
-            const decoded = IDL.decode(paramsIdls, args[0]);
-
-            return new Uint8Array(
-                IDL.encode([returnIdl], [originalMethod(...decoded)])
-            ).buffer;
-        };
-
-        return descriptor;
     };
 }
 
-export function update(paramsIdls: CandidClass[], returnIdl: CandidClass) {
-    return (target, key, descriptor) => {
-        globalThis._azleCandidMethods.push(
-            `${key}: (${paramsIdls
-                .map((paramIdl) => paramIdl.display())
-                .join(', ')}) -> (${returnIdl.display()});`
+export function update(
+    paramsIdls: CandidClass[],
+    returnIdl: ReturnCandidClass
+) {
+    return (target: any, key: string, descriptor: PropertyDescriptor) => {
+        return setupCanisterMethod(
+            paramsIdls,
+            returnIdl,
+            'update',
+            key,
+            descriptor
         );
-
-        const originalMethod = descriptor.value;
-
-        descriptor.value = function (...args) {
-            const decoded = IDL.decode(paramsIdls, args[0]);
-
-            return new Uint8Array(
-                IDL.encode([returnIdl], [originalMethod(...decoded)])
-            ).buffer;
-        };
-
-        return descriptor;
     };
+}
+
+function setupCanisterMethod(
+    paramsIdls: CandidClass[],
+    returnIdl: ReturnCandidClass,
+    mode: Mode,
+    key: string,
+    descriptor: PropertyDescriptor
+) {
+    paramsIdls = toCandidClasses(paramsIdls);
+    const returnIdls = toReturnCandidClass(returnIdl);
+    globalThis._azleCandidMethods.push(
+        `${key}: (${paramsIdls
+            .map((paramIdl) => display(paramIdl))
+            .join(', ')}) -> (${returnIdls.map((returnIdl) =>
+            display(returnIdl)
+        )})${modeToCandid[mode]};`
+    );
+
+    const originalMethod = descriptor.value;
+
+    descriptor.value = function (...args: any[]) {
+        const decoded = IDL.decode(paramsIdls, args[0]);
+
+        if (returnIdls.length === 0) {
+            originalMethod(...decoded);
+            return;
+        }
+        return new Uint8Array(
+            IDL.encode(returnIdls, [originalMethod(...decoded)])
+        ).buffer;
+    };
+
+    return descriptor;
 }
