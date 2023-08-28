@@ -98,6 +98,7 @@ pub fn generate() -> TokenStream {
         #print
         #reject
         #reject_message
+        #reply_raw
 
         let ic = context.object_value().unwrap();
 
@@ -110,7 +111,6 @@ pub fn generate() -> TokenStream {
         ic.set_property("canisterBalance", context.wrap_callback2(canister_balance).unwrap()).unwrap();
         ic.set_property("canisterBalance128", context.wrap_callback2(canister_balance128).unwrap()).unwrap();
         ic.set_property("canisterVersion", context.wrap_callback2(canister_version).unwrap()).unwrap();
-        ic.set_property("print", context.wrap_callback2(print).unwrap()).unwrap();
         ic.set_property("id", context.wrap_callback2(id).unwrap()).unwrap();
         ic.set_property("instructionCounter", context.wrap_callback2(instruction_counter).unwrap()).unwrap();
         ic.set_property("isController", context.wrap_callback2(is_controller).unwrap()).unwrap();
@@ -125,6 +125,7 @@ pub fn generate() -> TokenStream {
         ic.set_property("print", context.wrap_callback2(print).unwrap()).unwrap();
         ic.set_property("reject", context.wrap_callback2(reject).unwrap()).unwrap();
         ic.set_property("rejectMessage", context.wrap_callback2(reject_message).unwrap()).unwrap();
+        ic.set_property("replyRaw", context.wrap_callback2(reply_raw).unwrap()).unwrap();
 
         let global = context.global_object().unwrap();
         global.set_property("_azleIc", ic).unwrap();

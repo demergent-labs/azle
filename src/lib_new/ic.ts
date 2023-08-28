@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
-import { nat32, nat64 } from './primitives';
+import { blob, nat32, nat64 } from './primitives';
 
 // declare var globalThis: {
 //     ic: Ic;
@@ -381,6 +381,9 @@ export const ic: Ic = globalThis._azleIc
                   globalThis._azleIc.performanceCounter(counterTypeCandidBytes);
 
               return IDL.decode([IDL.Nat64], performanceCounterCandidBytes)[0];
+          },
+          replyRaw: (counterType: blob) => {
+              return globalThis._azleIc.replyRaw(counterType.buffer);
           }
       }
     : {
