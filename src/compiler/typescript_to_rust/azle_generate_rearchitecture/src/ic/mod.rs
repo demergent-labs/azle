@@ -60,8 +60,8 @@ pub fn generate() -> TokenStream {
     let msg_cycles_refunded128 = msg_cycles_refunded128::generate();
     let performance_counter = performance_counter::generate();
     let print = print::generate();
-    let reject_message = reject_message::generate();
     let reject = reject::generate();
+    let reject_message = reject_message::generate();
     let reply_raw = reply_raw::generate();
     let set_certified_data = set_certified_data::generate();
     let stable_bytes = stable_bytes::generate();
@@ -84,11 +84,22 @@ pub fn generate() -> TokenStream {
         #canister_balance
         #canister_balance128
         #canister_version
+        #clear_timer
         #id
         #instruction_counter
         #is_controller
         #method_name
+        #msg_cycles_accept
+        #msg_cycles_accept128
+        #msg_cycles_available
+        #msg_cycles_available128
+        #msg_cycles_refunded
+        #msg_cycles_refunded128
+        #performance_counter
         #print
+        #reject
+        #reject_message
+        #reply_raw
 
         let ic = context.object_value().unwrap();
 
@@ -101,11 +112,22 @@ pub fn generate() -> TokenStream {
         ic.set_property("canisterBalance", context.wrap_callback2(canister_balance).unwrap()).unwrap();
         ic.set_property("canisterBalance128", context.wrap_callback2(canister_balance128).unwrap()).unwrap();
         ic.set_property("canisterVersion", context.wrap_callback2(canister_version).unwrap()).unwrap();
-        ic.set_property("print", context.wrap_callback2(print).unwrap()).unwrap();
+        ic.set_property("clearTimer", context.wrap_callback2(clear_timer).unwrap()).unwrap();
         ic.set_property("id", context.wrap_callback2(id).unwrap()).unwrap();
         ic.set_property("instructionCounter", context.wrap_callback2(instruction_counter).unwrap()).unwrap();
         ic.set_property("isController", context.wrap_callback2(is_controller).unwrap()).unwrap();
         ic.set_property("methodName", context.wrap_callback2(method_name).unwrap()).unwrap();
+        ic.set_property("msgCyclesAccept", context.wrap_callback2(msg_cycles_accept).unwrap()).unwrap();
+        ic.set_property("msgCyclesAccept128", context.wrap_callback2(msg_cycles_accept128).unwrap()).unwrap();
+        ic.set_property("msgCyclesAvailable", context.wrap_callback2(msg_cycles_available).unwrap()).unwrap();
+        ic.set_property("msgCyclesAvailable128", context.wrap_callback2(msg_cycles_available128).unwrap()).unwrap();
+        ic.set_property("msgCyclesRefunded", context.wrap_callback2(msg_cycles_refunded).unwrap()).unwrap();
+        ic.set_property("msgCyclesRefunded128", context.wrap_callback2(msg_cycles_refunded128).unwrap()).unwrap();
+        ic.set_property("performanceCounter", context.wrap_callback2(performance_counter).unwrap()).unwrap();
+        ic.set_property("print", context.wrap_callback2(print).unwrap()).unwrap();
+        ic.set_property("reject", context.wrap_callback2(reject).unwrap()).unwrap();
+        ic.set_property("rejectMessage", context.wrap_callback2(reject_message).unwrap()).unwrap();
+        ic.set_property("replyRaw", context.wrap_callback2(reply_raw).unwrap()).unwrap();
 
         let global = context.global_object().unwrap();
         global.set_property("_azleIc", ic).unwrap();
