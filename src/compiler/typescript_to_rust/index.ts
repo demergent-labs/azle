@@ -22,111 +22,126 @@ import {
 import { time } from '../utils';
 import { match } from '../../lib';
 import { red, dim } from '../utils/colors';
-import { readFileSync } from 'fs';
+import { readFileSync, rmSync, mkdirSync } from 'fs';
 
-export function compileTypeScriptToRust(
+export async function compileTypeScriptToRust(
     canisterName: string,
     canisterPath: string,
     canisterConfig: JSCanisterConfig
-): string | never {
-    return time('[1/2] 🔨 Compiling TypeScript...', 'inline', () => {
-        const compilationResult = compileTypeScriptToJavaScript(
-            canisterConfig.ts
-        );
+): Promise<string | never> {
+    return await time(
+        '[1/2] 🔨 Compiling TypeScript...',
+        'inline',
+        async () => {
+            rmSync(canisterPath, { recursive: true, force: true });
+            mkdirSync(`${canisterPath}/${canisterConfig.root}/src`, {
+                recursive: true
+            });
 
-        if (!ok(compilationResult)) {
-            const azleErrorResult = compilationErrorToAzleErrorResult(
-                compilationResult.err
+            const compilationResult = await compileTypeScriptToJavaScript(
+                canisterConfig.ts,
+                canisterPath,
+                canisterConfig.root
             );
-            unwrap(azleErrorResult);
+
+            if (!ok(compilationResult)) {
+                const azleErrorResult = compilationErrorToAzleErrorResult(
+                    compilationResult.err
+                );
+                unwrap(azleErrorResult);
+            }
+
+            const mainJs = compilationResult.ok as string;
+            const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
+                canisterConfig.root,
+                canisterConfig.opt_level ?? '0'
+            );
+            const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
+
+            const { fileNames, plugins } = getFileNamesAndPlugins(
+                canisterConfig.ts
+            );
+
+            const program = ts.createProgram([canisterConfig.ts], {});
+            const aliasTables = generateAliasStructures(
+                fileNames,
+                program,
+                'TABLE'
+            );
+            const aliasLists = generateAliasStructures(
+                fileNames,
+                program,
+                'LIST'
+            );
+
+            const pluginsDependencies = plugins
+                .map((plugin) => {
+                    const cargoTomlPath = join(plugin.path, 'Cargo.toml');
+
+                    // TODO Toml parser
+                    const cargoTomlString = readFileSync(cargoTomlPath)
+                        .toString()
+                        .replace('[dependencies]', '');
+
+                    return cargoTomlString;
+                })
+                .join('');
+
+            const libCargoToml: Toml = generateLibCargoToml(
+                canisterName,
+                pluginsDependencies
+            );
+
+            writeCodeToFileSystem(
+                canisterConfig.root,
+                canisterPath,
+                workspaceCargoToml,
+                workspaceCargoLock,
+                libCargoToml,
+                mainJs as any
+            );
+
+            const generateRustCanisterResult = generateRustCanister(
+                fileNames,
+                plugins,
+                aliasTables,
+                aliasLists,
+                canisterPath,
+                canisterConfig,
+                canisterName
+            );
+
+            match(generateRustCanisterResult, {
+                Err: (err) => {
+                    match(err, {
+                        Error: (err) => {
+                            console.error(`Compilation failed: ${err}`);
+                        },
+                        Signal: (signal) => {
+                            console.error(
+                                `Compilation failed with signal: ${signal}`
+                            );
+                        },
+                        Status: (status) => {
+                            console.error(
+                                `Compilation failed with status: ${status}`
+                            );
+                        }
+                    });
+
+                    process.exit(1);
+                },
+                _: () => {}
+            });
+
+            if (isCompileOnlyMode()) {
+                console.log('Compilation complete!');
+                process.exit(0);
+            }
+
+            return mainJs;
         }
-
-        const mainJs = compilationResult.ok as string;
-        const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
-            canisterConfig.root,
-            canisterConfig.opt_level ?? '0'
-        );
-        const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
-
-        const { fileNames, plugins } = getFileNamesAndPlugins(
-            canisterConfig.ts
-        );
-
-        const program = ts.createProgram([canisterConfig.ts], {});
-        const aliasTables = generateAliasStructures(
-            fileNames,
-            program,
-            'TABLE'
-        );
-        const aliasLists = generateAliasStructures(fileNames, program, 'LIST');
-
-        const pluginsDependencies = plugins
-            .map((plugin) => {
-                const cargoTomlPath = join(plugin.path, 'Cargo.toml');
-
-                // TODO Toml parser
-                const cargoTomlString = readFileSync(cargoTomlPath)
-                    .toString()
-                    .replace('[dependencies]', '');
-
-                return cargoTomlString;
-            })
-            .join('');
-
-        const libCargoToml: Toml = generateLibCargoToml(
-            canisterName,
-            pluginsDependencies
-        );
-
-        writeCodeToFileSystem(
-            canisterConfig.root,
-            canisterPath,
-            workspaceCargoToml,
-            workspaceCargoLock,
-            libCargoToml,
-            mainJs as any
-        );
-
-        const generateRustCanisterResult = generateRustCanister(
-            fileNames,
-            plugins,
-            aliasTables,
-            aliasLists,
-            canisterPath,
-            canisterConfig,
-            canisterName
-        );
-
-        match(generateRustCanisterResult, {
-            Err: (err) => {
-                match(err, {
-                    Error: (err) => {
-                        console.error(`Compilation failed: ${err}`);
-                    },
-                    Signal: (signal) => {
-                        console.error(
-                            `Compilation failed with signal: ${signal}`
-                        );
-                    },
-                    Status: (status) => {
-                        console.error(
-                            `Compilation failed with status: ${status}`
-                        );
-                    }
-                });
-
-                process.exit(1);
-            },
-            _: () => {}
-        });
-
-        if (isCompileOnlyMode()) {
-            console.log('Compilation complete!');
-            process.exit(0);
-        }
-
-        return mainJs;
-    });
+    );
 }
 
 function isCompileOnlyMode(): boolean {

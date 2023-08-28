@@ -10,9 +10,6 @@ export function writeCodeToFileSystem(
     libCargoToml: Toml,
     mainJs: JavaScript
 ) {
-    rmSync(canisterPath, { recursive: true, force: true });
-    mkdirSync(canisterPath, { recursive: true });
-
     writeFileSync(`${canisterPath}/Cargo.toml`, workspaceCargoToml);
     writeFileSync(`${canisterPath}/Cargo.lock`, workspaceCargoLock);
 
@@ -48,7 +45,7 @@ export function writeCodeToFileSystem(
         `${canisterPath}/${rootPath}/azle_generate`
     );
 
-    writeFileSync(`${canisterPath}/${rootPath}/src/main.js`, mainJs);
+    // writeFileSync(`${canisterPath}/${rootPath}/src/main.js`, mainJs);
 
     if (
         !existsSync(`${canisterPath}/${rootPath}/azle_generate_rearchitecture`)

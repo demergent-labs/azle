@@ -1,12 +1,53 @@
+import { webpack } from 'webpack';
+
 import * as swc from '@swc/core';
 import { buildSync } from 'esbuild';
 import { JavaScript, TypeScript } from '../../utils/types';
 import { Result } from '../../utils/result';
+import * as path from 'path';
+import { writeFileSync } from 'fs';
 
-export function compileTypeScriptToJavaScript(
-    tsPath: string
-): Result<JavaScript, unknown> {
+export async function compileTypeScriptToJavaScript(
+    tsPath: string,
+    canisterPath: string,
+    rootPath: string
+): Promise<Result<JavaScript, unknown>> {
     try {
+        const userTsPathAbsolute = path.resolve(tsPath);
+
+        writeFileSync(
+            path.resolve(
+                process.cwd(),
+                canisterPath,
+                rootPath,
+                'src',
+                'index.ts'
+            ),
+            `
+            // Trying to make sure that all globalThis dependencies are defined
+            // Before the developer imports azle on their own
+            import 'azle';
+            export { Principal } from '@dfinity/principal';
+            export * from '${userTsPathAbsolute}';
+            import CanisterClass from '${userTsPathAbsolute}';
+            globalThis.canisterClass = new CanisterClass();
+
+            import * as Testing from '${userTsPathAbsolute}';
+
+            import { exportCanisterMethods } from 'azle/src/lib_new/export_canister_methods';
+
+            exportCanisterMethods(Testing);
+
+globalThis._azleCandidService = \`service: (\${globalThis._azleCandidInitParams.join(
+    ', '
+)}) -> {
+    \${globalThis._azleCandidMethods.join('\\n    ')}
+}\n\`
+        `
+        );
+
+        await runWebpack(tsPath, canisterPath, rootPath);
+
         const jsBundledAndTranspiled = bundleAndTranspileJs(`
             // Trying to make sure that all globalThis dependencies are defined
             // Before the developer imports azle on their own
@@ -27,8 +68,102 @@ globalThis._azleCandidService = \`service: (\${globalThis._azleCandidInitParams.
 
         return { ok: mainJs };
     } catch (err) {
+        console.log(err);
         return { err };
     }
+}
+
+function runWebpack(tsPath: string, canisterPath: string, rootPath: string) {
+    const typeCompiler = require('@deepkit/type-compiler');
+
+    return new Promise<void>((resolve, reject) => {
+        webpack(
+            {
+                entry: path.resolve(
+                    process.cwd(),
+                    canisterPath,
+                    rootPath,
+                    'src',
+                    'index.ts'
+                ),
+                mode: 'development',
+                devtool: false,
+                output: {
+                    filename: 'main.js',
+                    path: path.resolve(
+                        process.cwd(),
+                        canisterPath,
+                        rootPath,
+                        'src'
+                    )
+                },
+                resolve: {
+                    extensions: ['.ts', '.js']
+                },
+                module: {
+                    rules: [
+                        {
+                            test: /\.ts?$/,
+                            use: [
+                                {
+                                    loader: 'ts-loader',
+                                    options: {
+                                        transpileOnly: true,
+                                        configFile: false,
+                                        compilerOptions: {
+                                            // module: 'commonjs'
+                                            target: 'ES2020'
+                                        },
+                                        getCustomTransformers: (
+                                            program,
+                                            getProgram
+                                        ) => ({
+                                            before: [
+                                                (context) =>
+                                                    new typeCompiler.ReflectionTransformer(
+                                                        context
+                                                    ).withReflectionMode(
+                                                        'always'
+                                                    )
+                                            ],
+                                            afterDeclarations: [
+                                                typeCompiler.declarationTransformer
+                                            ]
+                                        })
+                                    }
+                                }
+                            ],
+                            exclude: /node_modules/
+                        }
+                    ]
+                }
+            },
+            (err, stats) => {
+                if (err) {
+                    console.error('Fatal webpack errors:', err);
+                    // return;
+                    reject(err);
+                }
+
+                const info = stats.toJson();
+
+                if (stats.hasErrors()) {
+                    console.error('Webpack errors:', info.errors);
+                    reject(info.errors);
+                }
+
+                if (stats.hasWarnings()) {
+                    console.warn('Webpack warnings:', info.warnings);
+                    // reject(info.warnings)
+                }
+
+                // If you're using memory-fs to write the output in-memory
+                // You'd retrieve the assets here.
+
+                resolve();
+            }
+        );
+    });
 }
 
 export function bundleAndTranspileJs(ts: TypeScript): JavaScript {

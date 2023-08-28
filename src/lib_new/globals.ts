@@ -5,6 +5,12 @@ declare var globalThis: {
     TextEncoder: any;
     _azleCandidInitParams: any[];
     _azleCandidMethods: any[];
+    _azleCanisterMethods: {
+        [key: string]: any;
+    };
+    _azleCanisterMethodMeta: {
+        [key: string]: any;
+    };
     console: any;
 };
 
@@ -13,6 +19,12 @@ globalThis.TextEncoder = require('text-encoding').TextEncoder;
 
 globalThis._azleCandidInitParams = [];
 globalThis._azleCandidMethods = [];
+
+globalThis._azleCanisterMethods = {};
+
+globalThis._azleCanisterMethodMeta = {
+    testRoomba: 'update'
+};
 
 globalThis.console = {
     ...globalThis.console,

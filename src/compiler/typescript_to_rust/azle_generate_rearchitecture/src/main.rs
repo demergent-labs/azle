@@ -135,9 +135,8 @@ fn main() -> Result<(), String> {
                 let context = context.as_mut().unwrap();
 
                 let global = context.global_object().unwrap();
-                let exports = global.get_property("exports").unwrap();
-                let class = exports.get_property("canisterClass").unwrap();
-                let method = class.get_property(function_name).unwrap();
+                let azle_canister_methods = global.get_property("_azleCanisterMethods").unwrap();
+                let method = azle_canister_methods.get_property(function_name).unwrap();
 
                 let candid_args = ic_cdk::api::call::arg_data_raw();
 

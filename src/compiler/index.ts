@@ -26,7 +26,7 @@ import { rmSync } from 'fs-extra';
 
 azle();
 
-function azle() {
+async function azle() {
     if (process.argv[2] === 'new') {
         generateNewAzleProject(azleVersion, dfxVersion);
         return;
@@ -45,21 +45,25 @@ function azle() {
     const canisterPath = join('.azle', canisterName);
     const wasmFilePath = join(canisterPath, `${canisterName}.wasm`);
 
-    time(`\nBuilding canister ${green(canisterName)}\n`, 'default', () => {
-        const canisterConfig = unwrap(getCanisterConfig(canisterName));
-        const candidPath = canisterConfig.candid;
+    await time(
+        `\nBuilding canister ${green(canisterName)}\n`,
+        'default',
+        async () => {
+            const canisterConfig = unwrap(getCanisterConfig(canisterName));
+            const candidPath = canisterConfig.candid;
 
-        printFirstBuildWarning();
-        installRustDependencies(azleVersion, rustVersion);
-        const mainJs = compileTypeScriptToRust(
-            canisterName,
-            canisterPath,
-            canisterConfig
-        );
-        compileRustCode(canisterName, canisterPath, stdioType);
-        gzipWasmBinary(wasmFilePath, stdioType);
-        generateCandidFile(mainJs, candidPath);
-    });
+            printFirstBuildWarning();
+            await installRustDependencies(azleVersion, rustVersion);
+            const mainJs = await compileTypeScriptToRust(
+                canisterName,
+                canisterPath,
+                canisterConfig
+            );
+            await compileRustCode(canisterName, canisterPath, stdioType);
+            gzipWasmBinary(wasmFilePath, stdioType);
+            generateCandidFile(mainJs, candidPath);
+        }
+    );
 
     logSuccess(canisterPath, canisterName);
 }

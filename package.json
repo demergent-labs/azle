@@ -25,6 +25,8 @@
     },
     "homepage": "https://github.com/demergent-labs/azle#readme",
     "dependencies": {
+        "@deepkit/type": "1.0.1-alpha.97",
+        "@deepkit/type-compiler": "1.0.1-alpha.97",
         "@dfinity/candid": "^0.19.0",
         "@dfinity/principal": "^0.19.0",
         "@swc/core": "1.2.151",
@@ -33,8 +35,10 @@
         "fs-extra": "10.0.1",
         "js-sha256": "0.9.0",
         "text-encoding": "0.7.0",
+        "ts-loader": "9.4.4",
         "ts-node": "10.3.1",
-        "typescript": "4.4.4"
+        "typescript": "5.2.2",
+        "webpack": "5.88.2"
     },
     "devDependencies": {
         "@types/fs-extra": "9.0.13",
