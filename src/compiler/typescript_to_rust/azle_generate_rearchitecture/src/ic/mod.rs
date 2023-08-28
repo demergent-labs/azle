@@ -90,6 +90,7 @@ pub fn generate() -> TokenStream {
         #method_name
         #msg_cycles_accept
         #msg_cycles_accept128
+        #msg_cycles_available
         #print
 
         let ic = context.object_value().unwrap();
@@ -110,6 +111,7 @@ pub fn generate() -> TokenStream {
         ic.set_property("methodName", context.wrap_callback2(method_name).unwrap()).unwrap();
         ic.set_property("msgCyclesAccept", context.wrap_callback2(msg_cycles_accept).unwrap()).unwrap();
         ic.set_property("msgCyclesAccept128", context.wrap_callback2(msg_cycles_accept128).unwrap()).unwrap();
+        ic.set_property("msgCyclesAvailable", context.wrap_callback2(msg_cycles_available).unwrap()).unwrap();
 
         let global = context.global_object().unwrap();
         global.set_property("_azleIc", ic).unwrap();

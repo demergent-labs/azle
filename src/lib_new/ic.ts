@@ -346,6 +346,12 @@ export const ic: Ic = globalThis._azleIc
                   globalThis._azleIc.msgCyclesAccept128(maxAmountCandidBytes);
 
               return IDL.decode([IDL.Nat], msgCyclesAcceptCandidBytes)[0];
+          },
+          msgCyclesAvailable: () => {
+              const msgCyclesAcceptCandidBytes =
+                  globalThis._azleIc.msgCyclesAvailable();
+
+              return IDL.decode([IDL.Nat64], msgCyclesAcceptCandidBytes)[0];
           }
       }
     : {
