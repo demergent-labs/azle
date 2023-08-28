@@ -336,6 +336,16 @@ export const ic: Ic = globalThis._azleIc
                   globalThis._azleIc.msgCyclesAccept(maxAmountCandidBytes);
 
               return IDL.decode([IDL.Nat64], msgCyclesAcceptCandidBytes)[0];
+          },
+          msgCyclesAccept128: (maxAmount: bigint) => {
+              const maxAmountCandidBytes = new Uint8Array(
+                  IDL.encode([IDL.Nat], [maxAmount])
+              ).buffer;
+
+              const msgCyclesAcceptCandidBytes =
+                  globalThis._azleIc.msgCyclesAccept128(maxAmountCandidBytes);
+
+              return IDL.decode([IDL.Nat], msgCyclesAcceptCandidBytes)[0];
           }
       }
     : {
