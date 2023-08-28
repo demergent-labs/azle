@@ -62,7 +62,6 @@ pub fn generate() -> TokenStream {
     let print = print::generate();
     let reject = reject::generate();
     let reject_message = reject_message::generate();
-    let reject = reject::generate();
     let reply_raw = reply_raw::generate();
     let set_certified_data = set_certified_data::generate();
     let stable_bytes = stable_bytes::generate();
