@@ -92,6 +92,7 @@ pub fn generate() -> TokenStream {
         #msg_cycles_accept128
         #msg_cycles_available
         #msg_cycles_available128
+        #msg_cycles_refunded
         #print
 
         let ic = context.object_value().unwrap();
@@ -114,6 +115,7 @@ pub fn generate() -> TokenStream {
         ic.set_property("msgCyclesAccept128", context.wrap_callback2(msg_cycles_accept128).unwrap()).unwrap();
         ic.set_property("msgCyclesAvailable", context.wrap_callback2(msg_cycles_available).unwrap()).unwrap();
         ic.set_property("msgCyclesAvailable128", context.wrap_callback2(msg_cycles_available128).unwrap()).unwrap();
+        ic.set_property("msgCyclesRefunded", context.wrap_callback2(msg_cycles_refunded).unwrap()).unwrap();
 
         let global = context.global_object().unwrap();
         global.set_property("_azleIc", ic).unwrap();
