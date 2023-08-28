@@ -315,6 +315,13 @@ export const ic: Ic = globalThis._azleIc
                   globalThis._azleIc.canisterVersion();
               return IDL.decode([IDL.Nat64], canisterVersionCandidBytes)[0];
           },
+          clearTimer: (timerId: nat64) => {
+              const timerIdCandidBytes = new Uint8Array(
+                  IDL.encode([IDL.Nat64], [timerId])
+              ).buffer;
+
+              return globalThis._azleIc.clearTimer(timerIdCandidBytes);
+          },
           id: () => {
               // TODO consider bytes instead of string, just like with caller
               const idString = globalThis._azleIc.id();
