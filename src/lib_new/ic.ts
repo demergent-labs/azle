@@ -1,5 +1,6 @@
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
+import { nat32, nat64 } from './primitives';
 
 // declare var globalThis: {
 //     ic: Ic;
@@ -327,7 +328,7 @@ export const ic: Ic = globalThis._azleIc
           isController: (principal) => {
               return globalThis._azleIc.isController(principal.toUint8Array());
           },
-          msgCyclesAccept: (maxAmount: bigint) => {
+          msgCyclesAccept: (maxAmount: nat64) => {
               const maxAmountCandidBytes = new Uint8Array(
                   IDL.encode([IDL.Nat64], [maxAmount])
               ).buffer;
@@ -337,39 +338,49 @@ export const ic: Ic = globalThis._azleIc
 
               return IDL.decode([IDL.Nat64], msgCyclesAcceptCandidBytes)[0];
           },
-          msgCyclesAccept128: (maxAmount: bigint) => {
+          msgCyclesAccept128: (maxAmount: nat64) => {
               const maxAmountCandidBytes = new Uint8Array(
                   IDL.encode([IDL.Nat], [maxAmount])
               ).buffer;
 
-              const msgCyclesAcceptCandidBytes =
+              const msgCyclesAccept128CandidBytes =
                   globalThis._azleIc.msgCyclesAccept128(maxAmountCandidBytes);
 
-              return IDL.decode([IDL.Nat], msgCyclesAcceptCandidBytes)[0];
+              return IDL.decode([IDL.Nat], msgCyclesAccept128CandidBytes)[0];
           },
           msgCyclesAvailable: () => {
-              const msgCyclesAcceptCandidBytes =
+              const msgCyclesAvailableCandidBytes =
                   globalThis._azleIc.msgCyclesAvailable();
 
-              return IDL.decode([IDL.Nat64], msgCyclesAcceptCandidBytes)[0];
+              return IDL.decode([IDL.Nat64], msgCyclesAvailableCandidBytes)[0];
           },
           msgCyclesAvailable128: () => {
-              const msgCyclesAcceptCandidBytes =
+              const msgCyclesAvailable128CandidBytes =
                   globalThis._azleIc.msgCyclesAvailable128();
 
-              return IDL.decode([IDL.Nat], msgCyclesAcceptCandidBytes)[0];
+              return IDL.decode([IDL.Nat], msgCyclesAvailable128CandidBytes)[0];
           },
           msgCyclesRefunded: () => {
-              const msgCyclesAcceptCandidBytes =
+              const msgCyclesRefundedCandidBytes =
                   globalThis._azleIc.msgCyclesRefunded();
 
-              return IDL.decode([IDL.Nat64], msgCyclesAcceptCandidBytes)[0];
+              return IDL.decode([IDL.Nat64], msgCyclesRefundedCandidBytes)[0];
           },
           msgCyclesRefunded128: () => {
-              const msgCyclesAcceptCandidBytes =
+              const msgCyclesRefunded128CandidBytes =
                   globalThis._azleIc.msgCyclesRefunded128();
 
-              return IDL.decode([IDL.Nat], msgCyclesAcceptCandidBytes)[0];
+              return IDL.decode([IDL.Nat], msgCyclesRefunded128CandidBytes)[0];
+          },
+          performanceCounter: (counterType: nat32) => {
+              const counterTypeCandidBytes = new Uint8Array(
+                  IDL.encode([IDL.Nat32], [counterType])
+              ).buffer;
+
+              const performanceCounterCandidBytes =
+                  globalThis._azleIc.performanceCounter(counterTypeCandidBytes);
+
+              return IDL.decode([IDL.Nat64], performanceCounterCandidBytes)[0];
           }
       }
     : {
