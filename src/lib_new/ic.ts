@@ -326,6 +326,16 @@ export const ic: Ic = globalThis._azleIc
           },
           isController: (principal) => {
               return globalThis._azleIc.isController(principal.toUint8Array());
+          },
+          msgCyclesAccept: (maxAmount: bigint) => {
+              const maxAmountCandidBytes = new Uint8Array(
+                  IDL.encode([IDL.Nat64], [maxAmount])
+              ).buffer;
+
+              const msgCyclesAcceptCandidBytes =
+                  globalThis._azleIc.msgCyclesAccept(maxAmountCandidBytes);
+
+              return IDL.decode([IDL.Nat64], msgCyclesAcceptCandidBytes)[0];
           }
       }
     : {
