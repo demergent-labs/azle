@@ -3,11 +3,19 @@ use quote::quote;
 
 pub fn generate() -> TokenStream {
     quote! {
-        fn NAME<'a>(
+        fn reject<'a>(
             context: &'a JSContextRef,
             _this: &CallbackArg,
-            _args: &[CallbackArg],
+            args: &[CallbackArg],
         ) -> Result<JSValueRef<'a>, anyhow::Error> {
+            let message: String = args
+                .get(0)
+                .expect("reject must have one argument")
+                .to_js_value()?
+                .try_into()?;
+
+            ic_cdk::api::call::reject(&message);
+            context.undefined_value()
         }
     }
 }
