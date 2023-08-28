@@ -27,10 +27,12 @@ mod reject;
 mod reject_message;
 mod reply_raw;
 mod set_certified_data;
+mod stable64_grow;
 mod stable64_read;
 mod stable64_size;
 mod stable64_write;
 mod stable_bytes;
+mod stable_grow;
 mod stable_read;
 mod stable_size;
 mod stable_write;
@@ -65,9 +67,11 @@ pub fn generate() -> TokenStream {
     let reply_raw = reply_raw::generate();
     let set_certified_data = set_certified_data::generate();
     let stable_bytes = stable_bytes::generate();
+    let stable_grow = stable_grow::generate();
     let stable_read = stable_read::generate();
     let stable_size = stable_size::generate();
     let stable_write = stable_write::generate();
+    let stable64_grow = stable64_grow::generate();
     let stable64_read = stable64_read::generate();
     let stable64_size = stable64_size::generate();
     let stable64_write = stable64_write::generate();
@@ -100,6 +104,18 @@ pub fn generate() -> TokenStream {
         #reject
         #reject_message
         #reply_raw
+        #set_certified_data
+        #stable_bytes
+        #stable_grow
+        #stable_read
+        #stable_size
+        #stable_write
+        #stable64_grow
+        #stable64_read
+        #stable64_size
+        #stable64_write
+        #time
+        #trap
 
         let ic = context.object_value().unwrap();
 
@@ -128,6 +144,18 @@ pub fn generate() -> TokenStream {
         ic.set_property("reject", context.wrap_callback2(reject).unwrap()).unwrap();
         ic.set_property("rejectMessage", context.wrap_callback2(reject_message).unwrap()).unwrap();
         ic.set_property("replyRaw", context.wrap_callback2(reply_raw).unwrap()).unwrap();
+        ic.set_property("setCertifiedData", context.wrap_callback2(set_certified_data).unwrap()).unwrap();
+        ic.set_property("stable64Grow", context.wrap_callback2(stable64_grow).unwrap()).unwrap();
+        ic.set_property("stable64Read", context.wrap_callback2(stable64_read).unwrap()).unwrap();
+        ic.set_property("stable64Size", context.wrap_callback2(stable64_size).unwrap()).unwrap();
+        ic.set_property("stable64Write", context.wrap_callback2(stable64_write).unwrap()).unwrap();
+        ic.set_property("stableBytes", context.wrap_callback2(stable_bytes).unwrap()).unwrap();
+        ic.set_property("stableGrow", context.wrap_callback2(stable_grow).unwrap()).unwrap();
+        ic.set_property("stableRead", context.wrap_callback2(stable_read).unwrap()).unwrap();
+        ic.set_property("stableSize", context.wrap_callback2(stable_size).unwrap()).unwrap();
+        ic.set_property("stableWrite", context.wrap_callback2(stable_write).unwrap()).unwrap();
+        ic.set_property("time", context.wrap_callback2(time).unwrap()).unwrap();
+        ic.set_property("trap", context.wrap_callback2(trap).unwrap()).unwrap();
 
         let global = context.global_object().unwrap();
         global.set_property("_azleIc", ic).unwrap();

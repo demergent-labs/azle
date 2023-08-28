@@ -1,4 +1,5 @@
 import {
+    ic,
     candid,
     query,
     func,
@@ -15,7 +16,10 @@ import {
     variant,
     Void,
     Record,
-    Variant
+    Variant,
+    nat64,
+    update,
+    nat8
 } from 'azle';
 
 @func([text, text], int, 'query')
@@ -102,6 +106,55 @@ export default class {
     @query([], Void)
     returnVoid(): Void {
         return;
+    }
+    @query([text], Void)
+    returnTrap(message: text): Void {
+        ic.trap(message);
+        return;
+    }
+    @query([], nat64)
+    returnTime(): nat64 {
+        return ic.time();
+    }
+    @update([], [])
+    stableWrite(): Void {
+        ic.stableWrite(0, new Uint8Array([0, 1, 2, 3, 4]));
+    }
+    @update([], [])
+    stable64Write(): Void {
+        ic.stable64Write(0n, new Uint8Array([0, 1, 2, 3, 4]));
+    }
+    @update([], [])
+    setCertData(): Void {
+        ic.setCertifiedData(new Uint8Array([1, 2, 3]));
+    }
+    @query([], blob)
+    stableBytes(): blob {
+        return ic.stableBytes();
+    }
+    @query([], blob)
+    stableRead(): blob {
+        return ic.stableRead(0, 1);
+    }
+    @query([], blob)
+    stable64Read(): blob {
+        return ic.stable64Read(0n, 1n);
+    }
+    @update([], nat32)
+    stableGrow(): nat32 {
+        return ic.stableGrow(10);
+    }
+    @update([], nat64)
+    stable64Grow(): nat64 {
+        return ic.stable64Grow(10n);
+    }
+    @update([], nat32)
+    stableSize(): nat32 {
+        return ic.stableSize();
+    }
+    @update([], nat64)
+    stable64Size(): nat64 {
+        return ic.stable64Size();
     }
     @query([], int)
     returnInt(): int {

@@ -7,5 +7,17 @@ service: () -> {
     echoFunc: (func (text, text) -> (int) query) -> (func (text, text) -> (int) query) query;
     returnFunc: () -> (func (text, bool) -> (int) ) query;
     returnVoid: () -> () query;
+    returnTrap: (text) -> () query;
+    returnTime: () -> (nat64) query;
+    stableWrite: () -> ();
+    stable64Write: () -> ();
+    setCertData: () -> ();
+    stableBytes: () -> (vec nat8) query;
+    stableRead: () -> (vec nat8) query;
+    stable64Read: () -> (vec nat8) query;
+    stableGrow: () -> (nat32);
+    stable64Grow: () -> (nat64);
+    stableSize: () -> (nat32);
+    stable64Size: () -> (nat64);
     returnInt: () -> (int) query;
 }
