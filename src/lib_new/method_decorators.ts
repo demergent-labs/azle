@@ -66,9 +66,10 @@ function setupCanisterMethod(
     descriptor.value = function (...args: any[]) {
         const decoded = IDL.decode(paramsIdls, args[0]);
 
-        const result = originalMethod(...decoded) ?? [];
+        const result = originalMethod(...decoded);
+        const encodeReadyResult = result === undefined ? [] : [result];
 
-        return new Uint8Array(IDL.encode(returnIdls, [...result])).buffer;
+        return new Uint8Array(IDL.encode(returnIdls, encodeReadyResult)).buffer;
     };
 
     return descriptor;
