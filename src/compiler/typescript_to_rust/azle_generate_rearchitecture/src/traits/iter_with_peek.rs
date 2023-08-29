@@ -42,7 +42,7 @@ impl<T, U> IterWithPeek<T> for U
 where
     U: AsRef<[T]>,
 {
-    /// Returns an iterator over the slice.
+    /// Returns a PeekAheadIterator.
     ///
     /// The iterator yields a tuple containing the current item and an
     /// optional next item.
