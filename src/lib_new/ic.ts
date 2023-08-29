@@ -226,6 +226,13 @@ type Ic = {
     stableBytes: () => Uint8Array;
 
     /**
+     * Attempts to grow the stable memory by `newPages`.
+     * @param newPages
+     * @returns the previous size that was reserved.
+     */
+    stableGrow: (newPages: number) => number;
+
+    /**
      * Reads data from the stable memory location specified by an offset
      * @param offset the location from which to read
      * @param length the length of buffer to read
@@ -249,6 +256,14 @@ type Ic = {
      * @param buffer the data to write
      */
     stableWrite: (offset: number, buffer: Uint8Array) => void;
+
+    /**
+     * Attempts to grow the stable memory by `newPages`.
+     * Supports 64-bit addressed memory.
+     * @param newPages
+     * @returns the previous size that was reserved.
+     */
+    stable64Grow: (newPages: bigint) => bigint;
 
     /**
      * Reads data from the stable memory location specified by an offset.
@@ -391,6 +406,84 @@ export const ic: Ic = globalThis._azleIc
           },
           replyRaw: (counterType: blob) => {
               return globalThis._azleIc.replyRaw(counterType.buffer);
+          },
+          setCertifiedData: (data) => {
+              const dataBytes = new Uint8Array(
+                  IDL.encode([IDL.Vec(IDL.Nat8)], [data])
+              ).buffer;
+
+              return globalThis._azleIc.setCertifiedData(dataBytes);
+          },
+          stableBytes: () => {
+              return new Uint8Array(globalThis._azleIc.stableBytes());
+          },
+          stableGrow: (newPages) => {
+              const newPagesCandidBytes = new Uint8Array(
+                  IDL.encode([IDL.Nat32], [newPages])
+              ).buffer;
+
+              return IDL.decode(
+                  [IDL.Nat32],
+                  globalThis._azleIc.stableGrow(newPagesCandidBytes)
+              )[0];
+          },
+          stableRead: (offset, buffer) => {
+              const paramsCandidBytes = new Uint8Array(
+                  IDL.encode([IDL.Nat32, IDL.Nat32], [offset, buffer])
+              ).buffer;
+
+              return new Uint8Array(
+                  globalThis._azleIc.stableRead(paramsCandidBytes)
+              );
+          },
+          stableSize: () => {
+              return IDL.decode(
+                  [IDL.Nat32],
+                  globalThis._azleIc.stableSize()
+              )[0];
+          },
+          stableWrite: (offset, buffer) => {
+              const paramsCandidBytes = new Uint8Array(
+                  IDL.encode([IDL.Nat32, IDL.Vec(IDL.Nat8)], [offset, buffer])
+              ).buffer;
+
+              return globalThis._azleIc.stableWrite(paramsCandidBytes);
+          },
+          stable64Grow: (newPages) => {
+              const newPagesCandidBytes = new Uint8Array(
+                  IDL.encode([IDL.Nat64], [newPages])
+              ).buffer;
+
+              return IDL.decode(
+                  [IDL.Nat64],
+                  globalThis._azleIc.stable64Grow(newPagesCandidBytes)
+              )[0];
+          },
+          stable64Read: (offset, buffer) => {
+              const paramsCandidBytes = new Uint8Array(
+                  IDL.encode([IDL.Nat64, IDL.Nat64], [offset, buffer])
+              ).buffer;
+
+              return new Uint8Array(
+                  globalThis._azleIc.stable64Read(paramsCandidBytes)
+              );
+          },
+          stable64Size: () => {
+              return IDL.decode(
+                  [IDL.Nat64],
+                  globalThis._azleIc.stable64Size()
+              )[0];
+          },
+          stable64Write: (offset, buffer) => {
+              const paramsCandidBytes = new Uint8Array(
+                  IDL.encode([IDL.Nat64, IDL.Vec(IDL.Nat8)], [offset, buffer])
+              ).buffer;
+
+              return globalThis._azleIc.stable64Write(paramsCandidBytes);
+          },
+          time: () => {
+              const timeCandidBytes = globalThis._azleIc.time();
+              return IDL.decode([IDL.Nat64], timeCandidBytes)[0];
           }
       }
     : {
