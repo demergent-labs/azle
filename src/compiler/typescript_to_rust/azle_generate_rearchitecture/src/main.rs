@@ -76,7 +76,10 @@ fn main() -> Result<(), String> {
 
     let entry_point = &modules[0];
 
-    let canister_methods = canister_methods::generate(entry_point)?;
+    let canister_methods = match canister_methods::generate(entry_point) {
+        Ok(canister_methods) => canister_methods,
+        Err(errors) => return Err(errors[0].clone()),
+    };
 
     let ic = ic::generate();
 

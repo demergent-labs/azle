@@ -1,158 +1,124 @@
-use proc_macro2::{Ident, TokenStream};
+use proc_macro2::TokenStream;
 use quote::quote;
-use swc_ecma_ast::{Class, ClassMember, ClassMethod, Decorator, Module};
+use swc_ecma_ast::{FnDecl, Module, ModuleItem};
 
-use crate::traits::{IdentValue, ToIdent};
+use crate::traits::{IdentValue, IterWithPeek, ToIdent};
 
-/// Returns a list of canister method signatures to be interpolated into the
-/// generated lib file.
-///
-/// # Arguments
-///
-/// * ts_entry_point - The file specified in the `ts` property of their canister
-///                    definition in the dfx.json.
-/// # Returns
-///
-/// Returns a list of rust code snippets representing the canister methods
-/// declared in the entry point file. These are all of the following format:
-///
-/// ```rust
-/// #[ic_cdk_macros::QUERY_OR_UPDATE(manual_reply = true)]
-/// fn FUNCTION_NAME() {
-///     execute_js("FUNCTION_NAME");
-/// }
-/// ```
-/// where `QUERY_OR_UPDATE` is either `query` or `update` and `FUNCTION_NAME` is
-/// the name of the canister method.
-pub fn generate(ts_entry_point: &Module) -> Result<Vec<TokenStream>, String> {
-    let canister_class = get_default_export_class_expr(ts_entry_point)?;
-
-    Ok(canister_class
-        .body
-        .iter()
-        .fold(vec![], try_to_wrapper_functions)
-        .into_iter()
-        .collect::<Result<Vec<Option<TokenStream>>, String>>()?
-        .into_iter()
-        .flatten()
-        .collect::<Vec<TokenStream>>())
+trait AsCanisterMethodAnnotation {
+    fn as_canister_method_annotation(&self) -> Option<String>;
 }
 
-fn get_default_export_class_expr(module: &Module) -> Result<&Class, String> {
-    let default_export_decls = module
-        .body
-        .iter()
-        .filter_map(|module_item| match module_item {
-            swc_ecma_ast::ModuleItem::ModuleDecl(module_decl) => match module_decl {
-                swc_ecma_ast::ModuleDecl::ExportDefaultDecl(export_default_decl) => {
-                    Some(export_default_decl)
+impl AsCanisterMethodAnnotation for ModuleItem {
+    fn as_canister_method_annotation(&self) -> Option<String> {
+        todo!()
+
+        // self.as_stmt()
+        //     .and_then(|stmt| stmt.as_expr())
+        //     .and_then(|expr_stmt| {
+        //         expr_stmt
+        //             .expr
+        //             .as_call()
+        //             .and_then(|call_expr| call_expr.callee.as_expr())
+        //             .and_then(|box_expr| box_expr.get_name())
+        //             .or(expr_stmt.expr.get_name())
+        //             .and_then(|name| {
+        //                 if is_canister_method_annotation(&name, self.alias_table) {
+        //                     Some(Annotation::from_module_item(self))
+        //                 } else {
+        //                     None
+        //                 }
+        //             })
+        //     })
+    }
+}
+
+trait AsExportedFnDecl {
+    fn as_exported_fn_decl(&self) -> Option<FnDecl>;
+}
+
+impl AsExportedFnDecl for ModuleItem {
+    fn as_exported_fn_decl(&self) -> Option<FnDecl> {
+        Some(
+            self.as_module_decl()?
+                .as_export_decl()?
+                .decl
+                .as_fn_decl()?
+                .clone(),
+        )
+    }
+}
+
+struct Accumulator {
+    pub token_streams: Vec<TokenStream>,
+    pub errors: Vec<String>,
+}
+
+impl Accumulator {
+    pub fn new() -> Self {
+        Self {
+            token_streams: Default::default(),
+            errors: Default::default(),
+        }
+    }
+
+    pub fn add_error(self, error: String) -> Self {
+        Self {
+            token_streams: self.token_streams,
+            errors: vec![self.errors, vec![error]].concat(),
+        }
+    }
+
+    pub fn add_token_stream(self, token_stream: TokenStream) -> Self {
+        Self {
+            token_streams: vec![self.token_streams, vec![token_stream]].concat(),
+            errors: self.errors,
+        }
+    }
+}
+
+pub fn generate(ts_entry_point: &Module) -> Result<Vec<TokenStream>, Vec<String>> {
+    let accumulation = ts_entry_point
+        .iter_with_peek()
+        .fold(Accumulator::new(), collect_annotated_fn_decls);
+
+    if !accumulation.errors.is_empty() {
+        return Err(accumulation.errors);
+    }
+
+    Ok(accumulation.token_streams)
+}
+
+fn collect_annotated_fn_decls(
+    accumulator: Accumulator,
+    element: (&ModuleItem, Option<&ModuleItem>),
+) -> Accumulator {
+    let (current, next) = element;
+
+    let error_message =
+        "All $query and $update annotations must be followed by an exported function".to_string();
+
+    if let Some(query_or_update_string) = current.as_canister_method_annotation() {
+        match next {
+            Some(module_item) => match module_item.as_exported_fn_decl() {
+                Some(fn_decl) => {
+                    let method_type = query_or_update_string.to_ident();
+                    let js_function_name = fn_decl.ident.value();
+                    let rust_function_name = js_function_name.to_ident();
+
+                    let wrapper_function = quote! {
+                        #[ic_cdk_macros::#method_type(manual_reply = true)]
+                        fn #rust_function_name() {
+                            execute_js(js_function_name);
+                        }
+                    };
+
+                    return accumulator.add_token_stream(wrapper_function);
                 }
-                _ => None,
+                None => return accumulator.add_error(error_message),
             },
-            swc_ecma_ast::ModuleItem::Stmt(_) => None,
-        })
-        .collect::<Vec<_>>();
-
-    if default_export_decls.len() > 1 {
-        return Err(
-            "Your entrypoint contains multiple default export declarations. Remove one."
-                .to_string(),
-        );
-    }
-
-    if default_export_decls.len() == 0 {
-        return Err("Your entrypoint does not have a default export. Add one".to_string());
-    }
-
-    let default_export = default_export_decls[0];
-
-    let class_expr = match &default_export.decl {
-        swc_ecma_ast::DefaultDecl::Class(class_expr) => class_expr,
-        _ => return Err("Default export must be a class".to_string()),
-    };
-
-    let class = &*class_expr.class;
-
-    Ok(class)
-}
-
-fn try_to_wrapper_functions(
-    mut acc: Vec<Result<Option<TokenStream>, String>>,
-    class_member: &ClassMember,
-) -> Vec<Result<Option<TokenStream>, String>> {
-    acc.push(try_to_wrapper_function(class_member));
-    acc
-}
-
-fn try_to_wrapper_function(class_member: &ClassMember) -> Result<Option<TokenStream>, String> {
-    let class_method = match class_member.as_method() {
-        Some(class_method) => class_method,
-        None => return Ok(None),
-    };
-
-    let method_type = match get_method_type(class_method)? {
-        Some(method_type) => method_type,
-        None => return Ok(None),
-    };
-
-    let js_function_name = get_name(class_method)?;
-    let rust_function_name = js_function_name.to_ident();
-
-    Ok(Some(quote! {
-        #[ic_cdk_macros::#method_type(manual_reply = true)]
-        fn #rust_function_name() {
-            execute_js(#js_function_name);
+            None => return accumulator.add_error(error_message),
         }
-    }))
-}
-
-fn get_method_type(class_method: &ClassMethod) -> Result<Option<Ident>, String> {
-    let azle_decorators = class_method
-        .function
-        .decorators
-        .iter()
-        .map(decorator_to_azle_type)
-        .collect::<Vec<_>>();
-
-    if azle_decorators.len() == 0 {
-        return Ok(None);
     }
 
-    if azle_decorators.len() > 1 {
-        return Err("Canister methods must only contain a single Azle decorator.".to_string());
-    }
-
-    Ok(azle_decorators[0].clone())
-}
-
-fn decorator_to_azle_type(decorator: &Decorator) -> Option<Ident> {
-    (&*decorator.expr)
-        .as_call()
-        .and_then(|call_expr| call_expr.callee.as_expr())
-        .and_then(|expr| expr.as_ident())
-        .and_then(|ident| Some(ident.value()))
-        .and_then(|value| {
-            if value == "query" || value == "update" {
-                Some(value.to_ident())
-            } else {
-                None
-            }
-        })
-}
-
-fn get_name(class_method: &ClassMethod) -> Result<String, String> {
-    let method_name = match &class_method.key {
-        swc_ecma_ast::PropName::Ident(ident) => ident.value(),
-        swc_ecma_ast::PropName::Str(str) => str.value.to_string(),
-        swc_ecma_ast::PropName::Num(num) => num.value.to_string(),
-        swc_ecma_ast::PropName::Computed(_) => {
-            return Err(
-                "Canister method names cannot be computed. Give your method a concrete name"
-                    .to_string(),
-            )
-        }
-        swc_ecma_ast::PropName::BigInt(big_int) => big_int.value.to_string(),
-    };
-
-    Ok(method_name)
+    accumulator
 }
