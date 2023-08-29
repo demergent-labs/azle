@@ -1,80 +1,13 @@
 use proc_macro2::TokenStream;
 use quote::quote;
-use swc_ecma_ast::{FnDecl, Module, ModuleItem};
+use swc_ecma_ast::{Module, ModuleItem};
 
-use crate::traits::{IdentValue, IterWithPeek, ToIdent};
+use crate::traits::{
+    AsCanisterMethodAnnotation, AsExportedFnDecl, IdentValue, IterWithPeek, ToIdent,
+};
+use accumulator::Accumulator;
 
-trait AsCanisterMethodAnnotation {
-    fn as_canister_method_annotation(&self) -> Option<String>;
-}
-
-impl AsCanisterMethodAnnotation for ModuleItem {
-    fn as_canister_method_annotation(&self) -> Option<String> {
-        todo!()
-
-        // self.as_stmt()
-        //     .and_then(|stmt| stmt.as_expr())
-        //     .and_then(|expr_stmt| {
-        //         expr_stmt
-        //             .expr
-        //             .as_call()
-        //             .and_then(|call_expr| call_expr.callee.as_expr())
-        //             .and_then(|box_expr| box_expr.get_name())
-        //             .or(expr_stmt.expr.get_name())
-        //             .and_then(|name| {
-        //                 if is_canister_method_annotation(&name, self.alias_table) {
-        //                     Some(Annotation::from_module_item(self))
-        //                 } else {
-        //                     None
-        //                 }
-        //             })
-        //     })
-    }
-}
-
-trait AsExportedFnDecl {
-    fn as_exported_fn_decl(&self) -> Option<FnDecl>;
-}
-
-impl AsExportedFnDecl for ModuleItem {
-    fn as_exported_fn_decl(&self) -> Option<FnDecl> {
-        Some(
-            self.as_module_decl()?
-                .as_export_decl()?
-                .decl
-                .as_fn_decl()?
-                .clone(),
-        )
-    }
-}
-
-struct Accumulator {
-    pub token_streams: Vec<TokenStream>,
-    pub errors: Vec<String>,
-}
-
-impl Accumulator {
-    pub fn new() -> Self {
-        Self {
-            token_streams: Default::default(),
-            errors: Default::default(),
-        }
-    }
-
-    pub fn add_error(self, error: String) -> Self {
-        Self {
-            token_streams: self.token_streams,
-            errors: vec![self.errors, vec![error]].concat(),
-        }
-    }
-
-    pub fn add_token_stream(self, token_stream: TokenStream) -> Self {
-        Self {
-            token_streams: vec![self.token_streams, vec![token_stream]].concat(),
-            errors: self.errors,
-        }
-    }
-}
+mod accumulator;
 
 pub fn generate(ts_entry_point: &Module) -> Result<Vec<TokenStream>, Vec<String>> {
     let accumulation = ts_entry_point
