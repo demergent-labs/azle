@@ -78,6 +78,7 @@ impl Accumulator {
 
 pub fn generate(ts_entry_point: &Module) -> Result<Vec<TokenStream>, Vec<String>> {
     let accumulation = ts_entry_point
+        .body
         .iter_with_peek()
         .fold(Accumulator::new(), collect_annotated_fn_decls);
 

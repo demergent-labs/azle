@@ -1,5 +1,3 @@
-use swc_ecma_ast::{Module, ModuleItem};
-
 pub struct Pairs<I>
 where
     I: Iterator,
@@ -40,12 +38,21 @@ where
     }
 }
 
-pub trait IterWithPeek {
-    fn iter_with_peek(&self) -> Pairs<std::slice::Iter<'_, ModuleItem>>;
+pub trait IterWithPeek<T> {
+    fn iter_with_peek(&self) -> Pairs<std::slice::Iter<'_, T>>
+    where
+        T: Clone;
 }
 
-impl IterWithPeek for Module {
-    fn iter_with_peek(&self) -> Pairs<std::slice::Iter<'_, ModuleItem>> {
-        Pairs::new(self.body.iter())
+impl<T, U> IterWithPeek<T> for U
+where
+    U: AsRef<[T]>,
+    T: Clone,
+{
+    fn iter_with_peek(&self) -> Pairs<std::slice::Iter<'_, T>>
+    where
+        T: Clone,
+    {
+        Pairs::new(self.as_ref().iter())
     }
 }
