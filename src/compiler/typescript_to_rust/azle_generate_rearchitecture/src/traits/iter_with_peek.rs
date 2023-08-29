@@ -9,7 +9,7 @@ where
     last: Option<I::Item>,
 }
 
-impl<'a, I> Pairs<I>
+impl<I> Pairs<I>
 where
     I: Iterator,
     I::Item: Clone,
@@ -23,7 +23,7 @@ where
     }
 }
 
-impl<'a, I> Iterator for Pairs<I>
+impl<I> Iterator for Pairs<I>
 where
     I: Iterator,
     I::Item: Clone,
