@@ -13,7 +13,7 @@ pub fn generate(ts_entry_point: &Module) -> Result<Vec<TokenStream>, Vec<String>
     let accumulation = ts_entry_point
         .body
         .iter_with_peek()
-        .fold(Accumulator::new(), collect_annotated_fn_decls);
+        .fold(Accumulator::default(), collect_annotated_fn_decls);
 
     if !accumulation.errors.is_empty() {
         return Err(accumulation.errors);
@@ -42,7 +42,7 @@ fn collect_annotated_fn_decls(
                     let wrapper_function = quote! {
                         #[ic_cdk_macros::#method_type(manual_reply = true)]
                         fn #rust_function_name() {
-                            execute_js(js_function_name);
+                            execute_js(#js_function_name);
                         }
                     };
 
