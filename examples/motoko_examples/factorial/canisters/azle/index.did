@@ -1,5 +1,0 @@
-type PerfResult = record { wasmBodyOnly : nat64; wasmIncludingPrelude : nat64 };
-service : () -> {
-  fac : (nat) -> (nat);
-  getPerfResult : () -> (opt PerfResult) query;
-}
