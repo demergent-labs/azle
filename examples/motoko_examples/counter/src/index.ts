@@ -1,10 +1,9 @@
-import { query, update } from 'azle';
-import { nat, Void } from 'azle/candid';
+import { nat, query, update, Void } from 'azle';
 
 let counter: bigint = 0n;
 
 export default class {
-    @query([], [nat])
+    @query([], nat)
     get(): bigint {
         return counter;
     }
