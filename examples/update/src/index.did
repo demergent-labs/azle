@@ -1,6 +1,4 @@
-type PerfResult = record { wasmBodyOnly : nat64; wasmIncludingPrelude : nat64 };
-service : () -> {
-  getCurrentMessage : () -> (text) query;
-  getPerfResult : () -> (opt PerfResult) query;
-  simpleUpdate : (text) -> ();
+service: () -> {
+    getCurrentMessage: () -> (text) query;
+    simpleUpdate: (text) -> ();
 }
