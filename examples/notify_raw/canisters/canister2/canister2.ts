@@ -1,13 +1,15 @@
-import { $query, $update } from 'azle';
+import { bool, query, Service, update, Void } from 'azle';
 
 let notified: boolean = false;
 
-$update;
-export function receiveNotification(): void {
-    notified = true;
-}
+export default class extends Service {
+    @update([], Void)
+    receiveNotification(): Void {
+        notified = true;
+    }
 
-$query;
-export function getNotified(): boolean {
-    return notified;
+    @query([], bool)
+    getNotified(): bool {
+        return notified;
+    }
 }

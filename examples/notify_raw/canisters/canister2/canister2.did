@@ -1,4 +1,4 @@
-service : () -> {
-  getNotified : () -> (bool) query;
-  receiveNotification : () -> ();
+service: () -> {
+    receiveNotification: () -> ();
+    getNotified: () -> (bool) query;
 }
