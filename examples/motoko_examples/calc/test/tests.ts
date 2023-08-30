@@ -1,5 +1,5 @@
 import { Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
+import { _SERVICE } from './dfx_generated/calc/calc.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(calcCanister: ActorSubclass<_SERVICE>): Test[] {

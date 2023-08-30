@@ -35,7 +35,7 @@ export default class {
         }
     }
 
-    @update([], [])
+    @update([], Void)
     clearall(): void {
         cell = 0n;
     }
