@@ -12,7 +12,7 @@
     "bin": {
         "azle": "./bin.js"
     },
-    "main": "./src/lib_new/index.ts",
+    "main": "./src/lib/index.ts",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/demergent-labs/azle.git"
@@ -37,6 +37,9 @@
         "text-encoding": "0.7.0",
         "ts-loader": "9.4.4",
         "ts-node": "10.3.1",
+        "tst-reflect": "^0.12.0",
+        "tst-reflect-transformer": "^1.0.0-alpha.11",
+        "ttypescript": "^1.5.15",
         "typescript": "5.2.2",
         "webpack": "5.88.2"
     },

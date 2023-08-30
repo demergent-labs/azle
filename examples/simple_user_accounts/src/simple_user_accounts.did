@@ -1,11 +1,3 @@
 service: () -> {
-    test: (text, text) -> (text) query;
-    simpleQuery: (text, text) -> (text) query;
-    echoRecord: (record {myInt:int; myNat32:nat32; myBlob:vec nat8; myBool:bool; myOptBool:opt bool; myText:text; myVecInt:vec int}) -> (record {myInt:int; myNat32:nat32; myBlob:vec nat8; myBool:bool; myOptBool:opt bool; myText:text; myVecInt:vec int}) query;
-    echoSimpleRecord: (record {myInt:int}) -> (record {myInt:int}) query;
-    echoVariant: (variant {Hot:nat; Cold; Cool; Warm:int}) -> (variant {Hot:nat; Cold; Cool; Warm:int}) query;
-    echoFunc: (func (text, text) -> (int) query) -> (func (text, text) -> (int) query) query;
-    returnFunc: () -> (func (text, bool) -> (int) ) query;
-    returnVoid: () -> () query;
-    returnInt: () -> (int) query;
+    
 }

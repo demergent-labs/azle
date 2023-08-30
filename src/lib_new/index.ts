@@ -1,4 +1,3 @@
-import './globals';
 export { Principal } from '@dfinity/principal';
 
 export * from './ic';

@@ -1,3 +1,5 @@
+import './globals';
+
 export {
     $heartbeat,
     $init,
@@ -5,12 +7,13 @@ export {
     $postUpgrade,
     $preUpgrade,
     $query,
-    $update,
-    CanisterMethodOptions
+    $update
 } from './annotations';
-export {
+export type { CanisterMethodOptions } from './annotations';
+
+export { ic } from './ic';
+export type {
     Duration,
-    ic,
     NotifyResult,
     RejectionCode,
     Stable64GrowResult,
@@ -18,7 +21,9 @@ export {
     StableMemoryError,
     TimerId
 } from './ic';
-export {
+
+export { Opt } from './candid_types';
+export type {
     blob,
     empty,
     float32,
@@ -31,24 +36,29 @@ export {
     int8,
     nat,
     nat16,
-    nat32,
+    // nat32,
     nat64,
     nat8,
-    Opt,
     Principal,
     Record,
     reserved,
     Service,
     text,
     Tuple,
-    Variant,
-    Vec
+    Variant // Vec
 } from './candid_types';
-export { Oneway, Query, Update, FuncSignature } from './candid_types/func';
+
+export type nat32 = number;
+export type Vec<T> = T[];
+
+export type { Oneway, Query, Update, FuncSignature } from './candid_types/func';
 export { match } from './candid_types/variant';
 export { serviceQuery, serviceUpdate } from './candid_types/service';
-export { CallResult, GuardResult, Result } from './results';
-export { StableBTreeMap } from './stable_b_tree_map';
+
+export { Result } from './results';
+export type { CallResult, GuardResult } from './results';
+
+export type { StableBTreeMap } from './stable_b_tree_map';
 
 export type Manual<T> = void;
 

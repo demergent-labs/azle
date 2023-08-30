@@ -10,9 +10,9 @@
 import { Variant } from './variant';
 
 export { Principal } from '@dfinity/principal';
-export { Func } from './func';
+export type { Func } from './func';
 export { Service } from './service';
-export { Variant } from './variant';
+export type { Variant } from './variant';
 
 /** Marks a type as being an alias to a candid type */
 export type Alias<T> = T;

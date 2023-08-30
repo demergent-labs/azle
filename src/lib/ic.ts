@@ -1,6 +1,7 @@
 // Some JS docs licensed under https://github.com/dfinity/cdk-rs/blob/main/LICENSE
 // Some documentation changed from original work.
 
+import { IDL } from '@dfinity/candid';
 import { Manual } from './';
 import {
     $init,
@@ -61,7 +62,7 @@ export type StableMemoryError = Variant<{
  */
 export type TimerId = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
 
-type ic = {
+type Ic = {
     /**
      * Accepts the ingress message. Calling from outside the
      * {@link $inspectMessage} context will cause the canister to trap.
@@ -468,4 +469,77 @@ type ic = {
 };
 
 /** API entrypoint for interacting with the Internet Computer */
-export const ic: ic = globalThis.ic ?? {};
+/** API entrypoint for interacting with the Internet Computer */
+export const ic: Ic = globalThis._azleIc
+    ? {
+          ...globalThis._azleIc,
+          caller: () => {
+              const callerBytes = globalThis._azleIc.caller();
+              return Principal.fromUint8Array(callerBytes);
+          },
+          canisterBalance: () => {
+              const canisterBalanceCandidBytes =
+                  globalThis._azleIc.canisterBalance();
+              return IDL.decode([IDL.Nat64], canisterBalanceCandidBytes)[0];
+          },
+          canisterBalance128: () => {
+              const canisterBalance128CandidBytes =
+                  globalThis._azleIc.canisterBalance128();
+              return IDL.decode([IDL.Nat], canisterBalance128CandidBytes)[0];
+          },
+          canisterVersion: () => {
+              const canisterVersionCandidBytes =
+                  globalThis._azleIc.canisterVersion();
+              return IDL.decode([IDL.Nat64], canisterVersionCandidBytes)[0];
+          },
+          id: () => {
+              // TODO consider bytes instead of string, just like with caller
+              const idString = globalThis._azleIc.id();
+              return Principal.fromText(idString);
+          },
+          instructionCounter: () => {
+              const instructionCounterCandidBytes =
+                  globalThis._azleIc.instructionCounter();
+              return IDL.decode([IDL.Nat64], instructionCounterCandidBytes)[0];
+          },
+          isController: (principal) => {
+              return globalThis._azleIc.isController(principal.toUint8Array());
+          }
+      }
+    : {
+          acceptMessage: () => {},
+          argDataRaw: () => {},
+          argDataRawSize: () => {},
+          caller: () => {},
+          candidDecode: () => {},
+          candidEncode: () => {},
+          canisterBalance: () => {},
+          canisterBalance128: () => {},
+          canisterVersion: () => {},
+          clearTimer: () => {},
+          id: () => {},
+          instructionCounter: () => {},
+          isController: () => {},
+          methodName: () => {},
+          msgCyclesAccept: () => {},
+          msgCyclesAccept128: () => {},
+          msgCyclesAvailable: () => {},
+          msgCyclesAvailable128: () => {},
+          msgCyclesRefunded: () => {},
+          msgCyclesRefunded128: () => {},
+          performanceCounter: () => {},
+          print: () => {},
+          reject: () => {},
+          rejectMessage: () => {},
+          replyRaw: () => {},
+          setCertifiedData: () => {},
+          stableBytes: () => {},
+          stableRead: () => {},
+          stableSize: () => {},
+          stableWrite: () => {},
+          stable64Read: () => {},
+          stable64Size: () => {},
+          stable64Write: () => {},
+          time: () => {},
+          trap: () => {}
+      };

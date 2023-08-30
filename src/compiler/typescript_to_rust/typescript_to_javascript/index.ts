@@ -29,8 +29,6 @@ export async function compileTypeScriptToJavaScript(
             import 'azle';
             export { Principal } from '@dfinity/principal';
             export * from '${userTsPathAbsolute}';
-            import CanisterClass from '${userTsPathAbsolute}';
-            globalThis.canisterClass = new CanisterClass();
 
             import * as Testing from '${userTsPathAbsolute}';
 
@@ -54,8 +52,6 @@ globalThis._azleCandidService = \`service: (\${globalThis._azleCandidInitParams.
             import 'azle';
             export { Principal } from '@dfinity/principal';
             export * from './${tsPath}';
-            import CanisterClass from './${tsPath}';
-            export const canisterClass = new CanisterClass();
 
 globalThis._azleCandidService = \`service: (\${globalThis._azleCandidInitParams.join(
     ', '
@@ -75,6 +71,7 @@ globalThis._azleCandidService = \`service: (\${globalThis._azleCandidInitParams.
 
 function runWebpack(tsPath: string, canisterPath: string, rootPath: string) {
     const typeCompiler = require('@deepkit/type-compiler');
+    // const tstReflectTransform = require('tst-reflect-transformer').default;
 
     return new Promise<void>((resolve, reject) => {
         webpack(
@@ -111,9 +108,16 @@ function runWebpack(tsPath: string, canisterPath: string, rootPath: string) {
                                         transpileOnly: true,
                                         configFile: false,
                                         compilerOptions: {
-                                            // module: 'commonjs'
                                             target: 'ES2020'
+                                            // moduleResolution: 'node'
                                         },
+                                        // getCustomTransformers: (
+                                        //     program: any
+                                        // ) => ({
+                                        //     before: [
+                                        //         tstReflectTransform(program, {})
+                                        //     ]
+                                        // })
                                         getCustomTransformers: (
                                             program,
                                             getProgram
@@ -132,8 +136,8 @@ function runWebpack(tsPath: string, canisterPath: string, rootPath: string) {
                                         })
                                     }
                                 }
-                            ],
-                            exclude: /node_modules/
+                            ]
+                            // exclude: /node_modules/
                         }
                     ]
                 }
@@ -145,16 +149,18 @@ function runWebpack(tsPath: string, canisterPath: string, rootPath: string) {
                     reject(err);
                 }
 
-                const info = stats.toJson();
+                if (stats) {
+                    const info = stats.toJson();
 
-                if (stats.hasErrors()) {
-                    console.error('Webpack errors:', info.errors);
-                    reject(info.errors);
-                }
+                    if (stats.hasErrors()) {
+                        console.error('Webpack errors:', info.errors);
+                        reject(info.errors);
+                    }
 
-                if (stats.hasWarnings()) {
-                    console.warn('Webpack warnings:', info.warnings);
-                    // reject(info.warnings)
+                    if (stats.hasWarnings()) {
+                        console.warn('Webpack warnings:', info.warnings);
+                        // reject(info.warnings)
+                    }
                 }
 
                 // If you're using memory-fs to write the output in-memory

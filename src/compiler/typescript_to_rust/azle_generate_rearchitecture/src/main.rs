@@ -76,7 +76,7 @@ fn main() -> Result<(), String> {
 
     let entry_point = &modules[0];
 
-    let canister_methods = canister_methods::generate(entry_point)?;
+    // let canister_methods = canister_methods::generate(entry_point)?;
 
     let ic = ic::generate();
 
@@ -127,7 +127,10 @@ fn main() -> Result<(), String> {
             });
         }
 
-        #(#canister_methods)*
+        #[ic_cdk_macros::query(manual_reply = true)]
+        fn testRoomba() {
+            execute_js("testRoomba");
+        }
 
         fn execute_js(function_name: &str) {
             CONTEXT.with(|context| {
