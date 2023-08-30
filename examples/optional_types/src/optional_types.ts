@@ -1,63 +1,85 @@
 // TODO let's add more examples here, really test it out
 
-import { match, Opt, $query, Record, Vec } from 'azle';
+import {
+    Opt,
+    query,
+    Record,
+    Vec,
+    text,
+    bool,
+    candid,
+    record,
+    Null
+} from 'azle';
 
-type Html = Record<{
-    head: Opt<Head>;
-}>;
-
-type Head = Record<{
-    elements: Vec<Element>;
-}>;
-
-type Element = Record<{
+@record
+class Element extends Record {
+    @candid(text)
     id: string;
-}>;
-
-$query;
-export function getHtml(): Html {
-    return {
-        head: Opt.None
-    };
 }
 
-$query;
-export function getHead(): Opt<Head> {
-    return Opt.Some({
-        elements: []
-    });
+@record
+class Head extends Record {
+    @candid(Vec(Element))
+    elements: Vec<Element>;
 }
 
-$query;
-export function getHeadWithElements(): Opt<Head> {
-    return Opt.Some({
-        elements: [
-            {
-                id: '0'
-            }
-        ]
-    });
+@record
+class Html extends Record {
+    @candid(Opt(Head))
+    head: Opt<Head>;
 }
 
-$query;
-export function getElement(element: Opt<Opt<Element>>): Opt<Opt<Element>> {
-    return element;
-}
+export default class {
+    @query([], Html)
+    getHtml(): Html {
+        return {
+            head: []
+        };
+    }
 
-$query;
-export function getNull(): null {
-    return null;
-}
+    @query([], Opt(Head))
+    getHead(): Opt<Head> {
+        return [
+            new Head({
+                elements: []
+            })
+        ];
+    }
 
-$query;
-export function getOptNull(): Opt<string> {
-    return Opt.None;
-}
+    @query([], Opt(Head))
+    getHeadWithElements(): Opt<Head> {
+        return [
+            new Head({
+                elements: [
+                    {
+                        id: '0'
+                    }
+                ]
+            })
+        ];
+    }
 
-$query;
-export function stringToBoolean(optString: Opt<string>): boolean {
-    return match(optString, {
-        Some: (_) => true,
-        None: () => false
-    });
+    @query([Opt(Opt(Element))], Opt(Opt(Element)))
+    getElement(element: Opt<Opt<Element>>): Opt<Opt<Element>> {
+        return element;
+    }
+
+    @query([], Null)
+    getNull(): Null {
+        return null;
+    }
+
+    @query([], Opt(text))
+    getOptNull(): Opt<string> {
+        return [];
+    }
+
+    @query([Opt(text)], bool)
+    stringToBoolean(optString: Opt<string>): boolean {
+        if (optString.length > 0) {
+            return true;
+        }
+        return false;
+    }
 }

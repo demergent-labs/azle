@@ -1,12 +1,9 @@
-type Element = record { id : text };
-type Head = record { elements : vec Element };
-type Html = record { head : opt Head };
-service : () -> {
-  getElement : (opt opt Element) -> (opt opt Element) query;
-  getHead : () -> (opt Head) query;
-  getHeadWithElements : () -> (opt Head) query;
-  getHtml : () -> (Html) query;
-  getNull : () -> (null) query;
-  getOptNull : () -> (opt text) query;
-  stringToBoolean : (opt text) -> (bool) query;
+service: () -> {
+    getHtml: () -> (record {head:opt record {elements:vec record {id:text}}}) query;
+    getHead: () -> (opt record {elements:vec record {id:text}}) query;
+    getHeadWithElements: () -> (opt record {elements:vec record {id:text}}) query;
+    getElement: (opt opt record {id:text}) -> (opt opt record {id:text}) query;
+    getNull: () -> (null) query;
+    getOptNull: () -> (opt text) query;
+    stringToBoolean: (opt text) -> (bool) query;
 }

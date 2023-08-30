@@ -1,4 +1,5 @@
 import { IDL } from '@dfinity/candid';
+import { toCandidClass } from './utils';
 
 export const bool = IDL.Bool;
 export type bool = boolean;
@@ -38,10 +39,8 @@ export const float64 = IDL.Float64;
 export type float64 = number;
 export const principal = IDL.Principal;
 export { Principal } from '@dfinity/principal';
-export const Vec = IDL.Vec;
 export type Vec<T> = T[];
 export type Opt<Value> = Value[];
-export const Opt = IDL.Opt;
 export const Void = [];
 export type Void = void;
 
@@ -49,3 +48,12 @@ export function Some<T>(value: T): T[] {
     return [value];
 }
 export const None: [] = [];
+
+// TODO what happens if we pass something to Opt() that can't be converted to CandidClass?
+export function Opt<T>(t: IDL.Type<T> | any): IDL.OptClass<T> {
+    return IDL.Opt(toCandidClass(t));
+}
+
+export function Vec<T>(t: IDL.Type<T> | any): IDL.VecClass<T> {
+    return IDL.Vec(toCandidClass(t));
+}
