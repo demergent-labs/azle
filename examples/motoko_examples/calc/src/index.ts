@@ -1,31 +1,30 @@
-import { Some, None, update } from 'azle';
-import { int, Opt, Void } from 'azle/candid';
+import { int, update, Opt, Void, Some, None } from 'azle';
 
 let cell: bigint = 0n;
 
 export default class {
-    @update([int], [int])
+    @update([int], int)
     add(n: bigint): bigint {
         cell += n;
 
         return cell;
     }
 
-    @update([int], [int])
+    @update([int], int)
     sub(n: bigint): bigint {
         cell -= n;
 
         return cell;
     }
 
-    @update([int], [int])
+    @update([int], int)
     mul(n: bigint): bigint {
         cell *= n;
 
         return cell;
     }
 
-    @update([int], [Opt(int)])
+    @update([int], Opt(int))
     div(n: bigint) {
         if (n === 0n) {
             return None;
