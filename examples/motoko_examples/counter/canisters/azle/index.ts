@@ -1,49 +1,21 @@
-import { ic, nat, nat64, Opt, $query, Record, $update } from 'azle';
+import { query, update } from 'azle';
+import { nat, Void } from 'azle/candid';
 
-//#region Performance
-type PerfResult = Record<{
-    wasmBodyOnly: nat64;
-    wasmIncludingPrelude: nat64;
-}>;
+let counter: bigint = 0n;
 
-let perfResult: Opt<PerfResult> = null;
+export default class {
+    @query([], [nat])
+    get(): bigint {
+        return counter;
+    }
 
-$query;
-export function getPerfResult(): Opt<PerfResult> {
-    return perfResult;
-}
+    @update([nat], Void)
+    set(n: bigint): void {
+        counter = n;
+    }
 
-function recordPerformance(start: nat64, end: nat64): void {
-    perfResult = {
-        wasmBodyOnly: end - start,
-        wasmIncludingPrelude: ic.performanceCounter(0)
-    };
-}
-//#endregion
-
-let counter: nat = 0n;
-
-$query;
-export function get(): nat {
-    return counter;
-}
-
-$update;
-export function set(n: nat): void {
-    const perfStart = ic.performanceCounter(0);
-
-    counter = n;
-
-    const perfEnd = ic.performanceCounter(0);
-    recordPerformance(perfStart, perfEnd);
-}
-
-$update;
-export function inc(): void {
-    const perfStart = ic.performanceCounter(0);
-
-    counter += 1n;
-
-    const perfEnd = ic.performanceCounter(0);
-    recordPerformance(perfStart, perfEnd);
+    @update([], Void)
+    inc(): void {
+        counter += 1n;
+    }
 }
