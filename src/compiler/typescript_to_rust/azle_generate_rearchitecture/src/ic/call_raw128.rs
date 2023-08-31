@@ -1,11 +1,11 @@
-// TODO basically copied into call_raw128
+// TODO basically copied from call_raw
 
 use proc_macro2::TokenStream;
 use quote::quote;
 
 pub fn generate() -> TokenStream {
     quote! {
-        fn call_raw<'a>(
+        fn call_raw128<'a>(
             context: &'a JSContextRef,
             _this: &CallbackArg,
             args: &[CallbackArg],
@@ -16,10 +16,10 @@ pub fn generate() -> TokenStream {
             let method: String = args.get(2).expect("call_raw method argument is undefined").to_js_value()?.try_into()?;
             let args_raw: Vec<u8> = args.get(3).expect("call_raw args_raw argument is undefined").to_js_value()?.try_into()?;
             let payment_candid_bytes: Vec<u8> = args.get(4).expect("call_raw payment_candid_bytes argument is undefined").to_js_value()?.try_into()?;
-            let payment: u64 = candid::decode_one(&payment_candid_bytes)?;
+            let payment: u128 = candid::decode_one(&payment_candid_bytes)?;
 
             ic_cdk::spawn(async move {
-                let call_result = ic_cdk::api::call::call_raw(canister_id, &method, &args_raw, payment).await;
+                let call_result = ic_cdk::api::call::call_raw128(canister_id, &method, &args_raw, payment).await;
 
                 let (should_resolve, js_value) = match call_result {
                     Ok(candid_bytes) => {

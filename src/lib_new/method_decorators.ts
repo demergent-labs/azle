@@ -69,15 +69,27 @@ function setupCanisterMethod(
 
         const result = originalMethod(...decoded);
 
-        Promise.resolve(result)
-            .then((result) => {
-                const encodeReadyResult = result === undefined ? [] : [result];
+        if (typeof result.then === 'function') {
+            result
+                .then((result) => {
+                    const encodeReadyResult =
+                        result === undefined ? [] : [result];
 
-                const encoded = IDL.encode(returnIdls, encodeReadyResult);
+                    const encoded = IDL.encode(returnIdls, encodeReadyResult);
 
-                ic.replyRaw(new Uint8Array(encoded));
-            })
-            .catch((error) => ic.trap(error));
+                    ic.replyRaw(new Uint8Array(encoded));
+                })
+                .catch((error) => {
+                    console.log('I am attempting to trap in here');
+                    ic.trap(error.toString());
+                });
+        } else {
+            const encodeReadyResult = result === undefined ? [] : [result];
+
+            const encoded = IDL.encode(returnIdls, encodeReadyResult);
+
+            ic.replyRaw(new Uint8Array(encoded));
+        }
     };
 
     return descriptor;

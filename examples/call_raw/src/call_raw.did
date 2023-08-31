@@ -1,5 +1,4 @@
-type ManualReply = variant { Ok : text; Err : text };
-service : () -> {
-  executeCallRaw : (principal, text, text, nat64) -> (ManualReply);
-  executeCallRaw128 : (principal, text, text, nat) -> (ManualReply);
+service: () -> {
+    executeCallRaw: (principal, text, text, nat64) -> (variant {Ok:text; Err:text});
+    executeCallRaw128: (principal, text, text, nat) -> (variant {Ok:text; Err:text});
 }

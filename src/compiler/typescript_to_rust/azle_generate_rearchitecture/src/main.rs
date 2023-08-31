@@ -146,6 +146,8 @@ fn main() -> Result<(), String> {
 
                 // TODO I am not sure what the first parameter to call is supposed to be
                 method.call(&method, &[candid_args_js_value_ref]).unwrap();
+
+                context.execute_pending().unwrap();
             });
         }
     }

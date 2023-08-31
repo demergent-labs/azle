@@ -1,45 +1,62 @@
-import { ic, match, nat, nat64, Principal, Result, $update } from 'azle';
+// TODO use Result in here
 
-$update;
-export async function executeCallRaw(
-    canisterId: Principal,
-    method: string,
-    candidArgs: string,
-    payment: nat64
-): Promise<Result<string, string>> {
-    const callResult = await ic.callRaw(
-        canisterId,
-        method,
-        ic.candidEncode(candidArgs),
-        payment
-    );
+import { ic, nat, nat64, principal, Principal, text, update } from 'azle';
+import { IDL } from '@dfinity/candid';
 
-    return match(callResult, {
-        Ok: (ok) => ({
-            Ok: ic.candidDecode(ok)
-        }),
-        Err: (err) => ({ Err: err })
-    });
-}
+export default class {
+    @update(
+        [principal, text, text, nat64],
+        IDL.Variant({
+            Ok: IDL.Text,
+            Err: IDL.Text
+        })
+    )
+    async executeCallRaw(
+        canisterId: Principal,
+        method: string,
+        candidArgs: string,
+        payment: nat64
+    ): Promise<{
+        Ok?: string;
+        Err?: string;
+    }> {
+        const result = await ic.callRaw(
+            canisterId,
+            method,
+            ic.candidEncode(candidArgs),
+            payment
+        );
 
-$update;
-export async function executeCallRaw128(
-    canisterId: Principal,
-    method: string,
-    candidArgs: string,
-    payment: nat
-): Promise<Result<string, string>> {
-    const callResult = await ic.callRaw128(
-        canisterId,
-        method,
-        ic.candidEncode(candidArgs),
-        payment
-    );
+        return {
+            Ok: ic.candidDecode(result)
+        };
+    }
 
-    return match(callResult, {
-        Ok: (ok) => ({
-            Ok: ic.candidDecode(ok)
-        }),
-        Err: (err) => ({ Err: err })
-    });
+    @update(
+        [principal, text, text, nat],
+        IDL.Variant({
+            Ok: IDL.Text,
+            Err: IDL.Text
+        })
+    )
+    async executeCallRaw128(
+        canisterId: Principal,
+        method: string,
+        candidArgs: string,
+        payment: nat
+    ): Promise<{
+        Ok?: string;
+        Err?: string;
+    }> {
+        const result = await ic.callRaw128(
+            canisterId,
+            method,
+            ic.candidEncode(candidArgs),
+            payment
+        );
+
+        return {
+            Ok: ic.candidDecode(result)
+        };
+    }
 }
