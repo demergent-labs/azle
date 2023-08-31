@@ -1,9 +1,11 @@
-import { nat, $update } from 'azle';
+import { nat, update } from 'azle';
 
-// Calculate the product of all positive integers less than or equal to `n`.
-$update;
-export function fac(n: nat): nat {
-    return go(n);
+export default class {
+    // Calculate the product of all positive integers less than or equal to `n`.
+    @update([nat], nat)
+    fac(n: nat): nat {
+        return go(n);
+    }
 }
 
 // We implement the recursion in a helper function.

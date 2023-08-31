@@ -1,1 +1,3 @@
-service : () -> { main : () -> () query }
+service: () -> {
+    main: () -> () query;
+}

@@ -1,31 +1,31 @@
 import { int, update, Opt, Void, Some, None } from 'azle';
 
-let cell: bigint = 0n;
+let cell: int = 0n;
 
 export default class {
     @update([int], int)
-    add(n: bigint): bigint {
+    add(n: int): int {
         cell += n;
 
         return cell;
     }
 
     @update([int], int)
-    sub(n: bigint): bigint {
+    sub(n: int): int {
         cell -= n;
 
         return cell;
     }
 
     @update([int], int)
-    mul(n: bigint): bigint {
+    mul(n: int): int {
         cell *= n;
 
         return cell;
     }
 
     @update([int], Opt(int))
-    div(n: bigint) {
+    div(n: int) {
         if (n === 0n) {
             return None;
         } else {

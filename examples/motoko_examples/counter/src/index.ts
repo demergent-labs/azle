@@ -1,15 +1,15 @@
 import { nat, query, update, Void } from 'azle';
 
-let counter: bigint = 0n;
+let counter: nat = 0n;
 
 export default class {
     @query([], nat)
-    get(): bigint {
+    get(): nat {
         return counter;
     }
 
     @update([nat], Void)
-    set(n: bigint): void {
+    set(n: nat): void {
         counter = n;
     }
 

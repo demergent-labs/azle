@@ -1,7 +1,9 @@
-import { $query } from 'azle';
+import { query, text } from 'azle';
 
-// Say the given phrase.
-$query;
-export function say(phrase: string): string {
-    return phrase;
+export default class {
+    // Say the given phrase.
+    @query([text], text)
+    say(phrase: text): text {
+        return phrase;
+    }
 }

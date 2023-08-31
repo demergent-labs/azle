@@ -1,6 +1,8 @@
-import { $query } from 'azle';
+import { query, Void } from 'azle';
 
-$query;
-export function main(): void {
-    console.log('Hello World!');
+export default class {
+    @query([], Void)
+    main(): void {
+        console.log('Hello World!');
+    }
 }
