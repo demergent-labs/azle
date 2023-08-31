@@ -1,4 +1,4 @@
-import { azle as hello } from '../../declarations/azle';
+import { hello } from '../../../dfx_generated/hello';
 
 document.querySelector('form').addEventListener('submit', async (e) => {
     e.preventDefault();
