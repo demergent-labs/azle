@@ -145,13 +145,7 @@ fn main() -> Result<(), String> {
                 let candid_args_js_value_ref = to_qjs_value(&context, &candid_args_js_value).unwrap();
 
                 // TODO I am not sure what the first parameter to call is supposed to be
-                let result = method.call(&method, &[candid_args_js_value_ref]).unwrap();
-
-                let result_bytes = result.as_bytes().unwrap();
-
-                ic_cdk::println!("final instructions: {}", ic_cdk::api::instruction_counter());
-
-                ic_cdk::api::call::reply_raw(result_bytes);
+                method.call(&method, &[candid_args_js_value_ref]).unwrap();
             });
         }
     }

@@ -20,3 +20,17 @@ globalThis.console = {
         ic.print(...args);
     }
 };
+
+// TODO be careful we are using a random seed of 0 I think
+// TODO the randomness is predictable
+globalThis.crypto = {
+    getRandomValues: () => {
+        let array = new Uint8Array(32);
+
+        for (let i = 0; i < array.length; i++) {
+            array[i] = Math.floor(Math.random() * 256);
+        }
+
+        return array;
+    }
+};

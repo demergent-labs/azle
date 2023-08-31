@@ -4,6 +4,7 @@ use quote::quote;
 mod accept_message;
 mod arg_data_raw;
 mod arg_data_raw_size;
+mod call_raw;
 mod caller;
 mod candid_decode;
 mod candid_encode;
@@ -43,6 +44,7 @@ pub fn generate() -> TokenStream {
     let accept_message = accept_message::generate();
     let arg_data_raw_size = arg_data_raw_size::generate();
     let arg_data_raw = arg_data_raw::generate();
+    let call_raw = call_raw::generate();
     let caller = caller::generate();
     let candid_decode = candid_decode::generate();
     let candid_encode = candid_encode::generate();
@@ -82,6 +84,7 @@ pub fn generate() -> TokenStream {
         #accept_message
         #arg_data_raw_size
         #arg_data_raw
+        #call_raw
         #caller
         #candid_decode
         #candid_encode
@@ -122,6 +125,7 @@ pub fn generate() -> TokenStream {
         ic.set_property("acceptMessage", context.wrap_callback2(accept_message).unwrap()).unwrap();
         ic.set_property("argDataRawSize", context.wrap_callback2(arg_data_raw_size).unwrap()).unwrap();
         ic.set_property("argDataRaw", context.wrap_callback2(arg_data_raw).unwrap()).unwrap();
+        ic.set_property("callRaw", context.wrap_callback2(call_raw).unwrap()).unwrap();
         ic.set_property("caller", context.wrap_callback2(caller).unwrap()).unwrap();
         ic.set_property("candidDecode", context.wrap_callback2(candid_decode).unwrap()).unwrap();
         ic.set_property("candidEncode", context.wrap_callback2(candid_encode).unwrap()).unwrap();

@@ -1,6 +1,7 @@
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 import { blob, nat32, nat64 } from './primitives';
+import { v4 } from 'uuid';
 
 // declare var globalThis: {
 //     ic: Ic;
@@ -26,6 +27,23 @@ type Ic = {
      * @returns the data size
      */
     argDataRawSize: () => number;
+
+    /**
+     * Performs an asynchronous call to another canister using the [System API](
+     * https://internetcomputer.org/docs/current/references/ic-interface-spec/#system-api-call)
+     * and returns the payload without serialization
+     * @param canisterId the principal of the canister to call
+     * @param method the method to call
+     * @param argsRaw the args to pass to the canister method
+     * @param payment the number of cycles to send with the call
+     * @returns
+     */
+    callRaw: (
+        canisterId: Principal,
+        method: string,
+        argsRaw: blob,
+        payment: nat64
+    ) => Promise<blob>; // TODO this should use a Result remember
 
     /**
      * Returns the caller of the current call
@@ -311,6 +329,28 @@ type Ic = {
 export const ic: Ic = globalThis._azleIc
     ? {
           ...globalThis._azleIc,
+          callRaw: (...args) => {
+              // TODO deal with error handling better
+              return new Promise((resolve, reject) => {
+                  const resolveId = v4();
+
+                  console.log(`resolveId: ${resolveId}`);
+
+                  globalThis[`_resolve_${resolveId}`] = (
+                      bytes: ArrayBuffer
+                  ) => {
+                      resolve(new Uint8Array(bytes));
+                  };
+
+                  // TODO why can't I pass in resolve and have it act like a function?
+                  globalThis._azleIc.callRaw(
+                      resolve, // TODO get this to work
+                      reject, // TODO get this to work
+                      resolveId,
+                      ...args
+                  );
+              });
+          },
           caller: () => {
               const callerBytes = globalThis._azleIc.caller();
               return Principal.fromUint8Array(callerBytes);
@@ -490,6 +530,7 @@ export const ic: Ic = globalThis._azleIc
           acceptMessage: () => {},
           argDataRaw: () => {},
           argDataRawSize: () => {},
+          callRaw: () => {},
           caller: () => {},
           candidDecode: () => {},
           candidEncode: () => {},
