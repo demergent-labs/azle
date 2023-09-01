@@ -1,14 +1,29 @@
 import { RequireExactlyOne } from '../lib/candid_types/variant';
 import { IDL } from './index';
+import { CandidClass, Parent, toCandidClass } from './utils';
 
-export function Result<Ok extends IDL.Type, Err extends IDL.Type>(
+export class AzleResult {
+    constructor(ok: any, err: any) {
+        this._azleOk = ok;
+        this._azleErr = err;
+    }
+
+    _azleOk: any;
+    _azleErr: any;
+
+    getIDL(parents: Parent[]) {
+        return IDL.Variant({
+            Ok: toCandidClass(this._azleOk, parents),
+            Err: toCandidClass(this._azleErr, parents)
+        });
+    }
+}
+
+export function Result<Ok extends CandidClass, Err extends IDL.Type>(
     ok: Ok,
     err: Err
 ) {
-    return IDL.Variant({
-        Ok: ok,
-        Err: err
-    });
+    return new AzleResult(ok, err);
 }
 
 export type Result<Ok, Err> = RequireExactlyOne<{

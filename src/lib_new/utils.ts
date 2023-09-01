@@ -71,6 +71,17 @@ export function display(
         );
         return [`record {${fields.join('; ')}}`, candid[1]];
     }
+    if (idl instanceof IDL.VariantClass) {
+        const candidFields = idl._fields.map(([key, value]) =>
+            display(value, candidTypeDefs)
+        );
+        const candid = extractCandid(candidFields, candidTypeDefs);
+        const fields = idl._fields.map(
+            ([key, value], index) =>
+                key + (value.name === 'null' ? '' : ':' + candid[0][index])
+        );
+        return [`variant {${fields.join('; ')}}`, candid[1]];
+    }
     if (idl instanceof IDL.FuncClass) {
         return [`func ${idl.display().replace(/→/g, '->')}`, candidTypeDefs];
     }
