@@ -1,0 +1,4 @@
+service: () -> {
+    getCurrentMessage: () -> (text) query;
+    simpleUpdate: (text) -> ();
+}

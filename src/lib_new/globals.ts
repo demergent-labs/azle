@@ -6,6 +6,7 @@ declare var globalThis: {
     TextEncoder: any;
     _azleCandidInitParams: any[];
     _azleCandidMethods: any[];
+    _azleCandidTypes: any[];
     console: any;
 };
 
@@ -14,6 +15,7 @@ globalThis.TextEncoder = require('text-encoding').TextEncoder;
 
 globalThis._azleCandidInitParams = [];
 globalThis._azleCandidMethods = [];
+globalThis._azleCandidTypes = [];
 
 globalThis.console = {
     ...globalThis.console,

@@ -1,8 +1,8 @@
-import { toCandidClass, CandidClass } from './utils';
+import { CandidClass } from './utils';
 
 export function candid(type: CandidClass) {
     return function (target: any, key: string) {
-        addToAzleCandidMap(target, toCandidClass(type), key);
+        addToAzleCandidMap(target, type, key);
     };
 }
 

@@ -1,4 +1,4 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from './index';
 import { Principal } from '@dfinity/principal';
 import { blob, nat, nat32, nat64 } from './primitives';
 import { v4 } from 'uuid';

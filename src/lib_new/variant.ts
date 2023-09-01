@@ -1,4 +1,5 @@
 import { IDL } from './index';
+import { Parent, processMap } from './utils';
 
 // Without this default constructor we get errors when initializing variants and
 // records. While the decorators are able to add constructors they are not
@@ -18,28 +19,34 @@ export class Variant {
 type Constructor<T = {}> = new (...args: any[]) => T;
 
 export function variant<T extends new (...args: any[]) => any>(target: T) {
-    return class extends target {
-        constructor(...args: any[]) {
-            super(...args);
-            if (Object.entries(args).length !== 1) {
-                throw 'Wrong number of properties. Variant should only have one';
-            }
-
-            const variant = Object.keys(args)[0];
-
-            // @ts-ignore
-            if (!this.constructor._azleCandidMap[variant]) {
-                throw `${variant} is not a valid option for this variant`;
-            }
-
-            // @ts-ignore
-            this[variant] = args[variant];
+    target.constructor = (...args: any[]) => {
+        if (Object.entries(args).length !== 1) {
+            throw 'Wrong number of properties. Variant should only have one';
         }
 
-        static getIDL() {
-            return IDL.Variant(target._azleCandidMap);
+        const variant = Object.keys(args)[0];
+
+        // @ts-ignore
+        if (!this.constructor._azleCandidMap[variant]) {
+            throw `${variant} is not a valid option for this variant`;
         }
+
+        // @ts-ignore
+        this[variant] = args[variant];
     };
+    target.getIDL = (parents: Parent[]) => {
+        const idl = IDL.Rec();
+        const processedMap = processMap(target._azleCandidMap, [
+            ...parents,
+            {
+                idl: idl,
+                name: target.name
+            }
+        ]);
+        idl.fill(IDL.Variant(processedMap));
+        return idl;
+    };
+    return target;
 }
 
 export type RequireExactlyOne<
