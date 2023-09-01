@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { azle as superheroes } from '../../declarations';
+import { superheroes } from '../../declarations';
 
 const $ = document.getElementById.bind(document);
 
