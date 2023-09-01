@@ -24,13 +24,15 @@ export function record<T extends new (...args: any[]) => any>(target: T): T {
             super(...args);
             if (
                 Object.entries(target._azleCandidMap).length !==
-                Object.entries(args).length
+                Object.entries(args[0]).length
             ) {
-                throw 'Wrong number of properties';
+                throw `Wrong number of properties: expected ${
+                    Object.entries(target._azleCandidMap).length
+                } got ${Object.entries(args[0]).length}`;
             }
 
             for (const propertyName in target._azleCandidMap) {
-                if (!args[0][propertyName]) {
+                if (!(propertyName in args[0])) {
                     throw `Missing property: ${propertyName}`;
                 }
                 this[propertyName] = args[0][propertyName];
