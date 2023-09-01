@@ -1,7 +1,6 @@
 // TODO use Result in here
 
-import { ic, nat, nat64, principal, Principal, text, update } from 'azle';
-import { IDL } from '@dfinity/candid';
+import { ic, IDL, nat, nat64, principal, Principal, text, update } from 'azle';
 
 export default class {
     @update(

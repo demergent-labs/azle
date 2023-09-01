@@ -441,6 +441,11 @@ export const ic: Ic = globalThis._azleIc
           candidDecode: (candidEncoded) => {
               return globalThis._azleIc.candidDecode(candidEncoded.buffer);
           },
+          candidEncode: (candidString) => {
+              return new Uint8Array(
+                  globalThis._azleIc.candidEncode(candidString)
+              );
+          },
           canisterBalance: () => {
               const canisterBalanceCandidBytes =
                   globalThis._azleIc.canisterBalance();
