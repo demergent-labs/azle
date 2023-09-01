@@ -1,0 +1,79 @@
+import {
+    blob,
+    candid,
+    ic,
+    // None,
+    record,
+    Record,
+    Result,
+    text,
+    update
+} from 'azle';
+import { managementCanister } from 'azle/canisters/management';
+
+// TODO: Replace this with None from azle once management canister has been updated
+const None = { None: null };
+
+@record
+class PublicKeyHolder extends Record {
+    @candid(blob)
+    publicKey: blob;
+}
+
+@record
+class SignatureHolder extends Record {
+    @candid(blob)
+    signature: blob;
+}
+
+export default class {
+    @update([], Result(Record, text))
+    async publicKey(): Promise<Result<PublicKeyHolder, text>> {
+        const caller = ic.caller().toUint8Array();
+        const publicKeyResult = await managementCanister
+            .ecdsa_public_key({
+                canister_id: None,
+                derivation_path: [caller],
+                key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
+            })
+            .call();
+
+        // TODO: Replace this match statement
+        return match(publicKeyResult, {
+            Ok: (ecdsaPublicKeyResult) => ({
+                Ok: {
+                    publicKey: ecdsaPublicKeyResult.public_key
+                }
+            }),
+            Err: (err) => ({ Err: err })
+        });
+    }
+
+    @update([blob], Result(SignatureHolder, text))
+    async sign(messageHash: blob): Promise<Result<SignatureHolder, text>> {
+        if (messageHash.length !== 32) {
+            ic.trap('messageHash must be 32 bytes');
+        }
+
+        const caller = ic.caller().toUint8Array();
+
+        const signatureResult = await managementCanister
+            .sign_with_ecdsa({
+                message_hash: messageHash,
+                derivation_path: [caller],
+                key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
+            })
+            .cycles(10_000_000_000n)
+            .call();
+
+        // TODO: Replace this match statement
+        return match(signatureResult, {
+            Ok: (signWithEcdsaResult) => ({
+                Ok: {
+                    signature: signWithEcdsaResult.signature
+                }
+            }),
+            Err: (err) => ({ Err: err })
+        });
+    }
+}

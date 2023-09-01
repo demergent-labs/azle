@@ -1,8 +1,8 @@
 import { getCanisterId, runTests } from 'azle/test';
-import { createActor } from '../dfx_generated/azle/';
+import { createActor } from './dfx_generated/threshold_ecdsa/';
 import { getTests } from './tests';
 
-const tEcdsaCanister = createActor(getCanisterId('azle'), {
+const tEcdsaCanister = createActor(getCanisterId('threshold_ecdsa'), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
