@@ -1,99 +1,57 @@
-type Box = variant {
-  Bad : record {
-    record { text; nat64 };
-    record { id : text; primitiveTwoTuple : record { text; nat64 } };
-    Box;
-  };
-  Good;
-};
-type HttpResponse = record { headers : vec record { text; text } };
-type Reaction = variant {
-  Bad : record { record { text; nat64 }; User; Box };
-  Good;
-};
-type StreamingCallbackType = variant {
-  WithHeaders : vec record { text; text };
-  WithoutHeaders;
-};
-type User = record { id : text; primitiveTwoTuple : record { text; nat64 } };
-type _InlineTwoTupleWithInlineRecordsParam0 = record { hello : nat64 };
-type _InlineTwoTupleWithInlineRecordsParam1 = record { goodbye : nat64 };
-service : () -> {
-  complexOneTupleInlineParam : (record { record { text; nat64 } }) -> (
-      record { record { text; nat64 } },
-    ) query;
-  complexOneTupleInlineReturnType : () -> (
-      record { record { text; nat64 } },
-    ) query;
-  complexOneTupleParam : (record { record { text; nat64 } }) -> (
-      record { record { text; nat64 } },
-    ) query;
-  complexOneTupleReturnType : () -> (record { record { text; nat64 } }) query;
-  complexThreeTupleInlineParam : (
-      record { record { text; nat64 }; User; Reaction },
-    ) -> (record { record { text; nat64 }; User; Reaction }) query;
-  complexThreeTupleInlineReturnType : () -> (
-      record { record { text; nat64 }; User; Reaction },
-    ) query;
-  complexThreeTupleParam : (record { record { text; nat64 }; User; Box }) -> (
-      record { record { text; nat64 }; User; Box },
-    ) query;
-  complexThreeTupleReturnType : () -> (
-      record { record { text; nat64 }; User; Box },
-    ) query;
-  complexTwoTupleInlineParam : (record { record { text; nat64 }; User }) -> (
-      record { record { text; nat64 }; User },
-    ) query;
-  complexTwoTupleInlineReturnType : () -> (
-      record { record { text; nat64 }; User },
-    ) query;
-  complexTwoTupleParam : (record { record { text; nat64 }; User }) -> (
-      record { record { text; nat64 }; User },
-    ) query;
-  complexTwoTupleReturnType : () -> (
-      record { record { text; nat64 }; User },
-    ) query;
-  nestedTupleQuery : (
-      record { record { text; record { nat8; nat8 } }; int },
-    ) -> (record { record { text; record { nat8; nat8 } }; int }) query;
-  primitiveOneTupleInlineParam : (record { text }) -> (record { text }) query;
-  primitiveOneTupleInlineReturnType : () -> (record { text }) query;
-  primitiveOneTupleParam : (record { text }) -> (record { text }) query;
-  primitiveOneTupleReturnType : () -> (record { text }) query;
-  primitiveThreeTupleInlineParam : (record { text; nat64; principal }) -> (
-      record { text; nat64; principal },
-    ) query;
-  primitiveThreeTupleInlineReturnType : () -> (
-      record { text; nat64; principal },
-    ) query;
-  primitiveThreeTupleParam : (record { text; nat64; principal }) -> (
-      record { text; nat64; principal },
-    ) query;
-  primitiveThreeTupleReturnType : () -> (
-      record { text; nat64; principal },
-    ) query;
-  primitiveTwoTupleInlineParam : (record { text; text }) -> (
-      record { text; text },
-    ) query;
-  primitiveTwoTupleInlineReturnType : () -> (record { text; text }) query;
-  primitiveTwoTupleParam : (record { text; nat64 }) -> (
-      record { text; nat64 },
-    ) query;
-  primitiveTwoTupleReturnType : () -> (record { text; nat64 }) query;
-  tupleArrayParamsAndReturnType : (vec record { text; text }) -> (
-      vec record { text; text },
-    ) query;
-  tupleArrayRecordField : () -> (HttpResponse) query;
-  tupleArrayVariantField : () -> (StreamingCallbackType) query;
-  twoTupleWithInlineRecords : (
-      record {
-        _InlineTwoTupleWithInlineRecordsParam0;
-        _InlineTwoTupleWithInlineRecordsParam1;
-      },
-    ) -> (
-      record {
-        _InlineTwoTupleWithInlineRecordsParam0;
-        _InlineTwoTupleWithInlineRecordsParam1;
-      },
-    ) query;
+type rec_0 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_1 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_2 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_3 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_4 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_5 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_6 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_8 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_7 = variant {Bad:record {record {text; nat64}; rec_8; rec_7}; Good};
+type rec_9 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_11 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_10 = variant {Bad:record {record {text; nat64}; rec_11; rec_10}; Good};
+type rec_12 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_14 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_13 = variant {Bad:record {record {text; nat64}; rec_14; rec_13}; Good};
+type rec_15 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_17 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_16 = variant {Bad:record {record {text; nat64}; rec_17; rec_16}; Good};
+type rec_18 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_20 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_19 = variant {Bad:record {record {text; nat64}; rec_20; rec_19}; Good};
+type rec_21 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_23 = record {id:text; primitiveTwoTuple:record {text; nat64}};
+type rec_22 = variant {Bad:record {record {text; nat64}; rec_23; rec_22}; Good};
+type rec_24 = record {headers:vec record {text; text}};
+type rec_25 = variant {WithHeaders:vec record {text; text}; WithoutHeaders};
+service: () -> {
+    primitiveOneTupleReturnType: () -> (record {text}) query;
+    primitiveOneTupleParam: (record {text}) -> (record {text}) query;
+    primitiveOneTupleInlineReturnType: () -> (record {text}) query;
+    primitiveOneTupleInlineParam: (record {text}) -> (record {text}) query;
+    primitiveTwoTupleReturnType: () -> (record {text; nat64}) query;
+    primitiveTwoTupleParam: (record {text; nat64}) -> (record {text; nat64}) query;
+    primitiveTwoTupleInlineReturnType: () -> (record {text; text}) query;
+    primitiveTwoTupleInlineParam: (record {text; text}) -> (record {text; text}) query;
+    primitiveThreeTupleReturnType: () -> (record {text; nat64; principal}) query;
+    primitiveThreeTupleParam: (record {text; nat64; principal}) -> (record {text; nat64; principal}) query;
+    primitiveThreeTupleInlineReturnType: () -> (record {text; nat64; principal}) query;
+    primitiveThreeTupleInlineParam: (record {text; nat64; principal}) -> (record {text; nat64; principal}) query;
+    complexOneTupleReturnType: () -> (record {record {text; nat64}}) query;
+    complexOneTupleParam: (record {record {text; nat64}}) -> (record {record {text; nat64}}) query;
+    complexOneTupleInlineReturnType: () -> (record {record {text; nat64}}) query;
+    complexOneTupleInlineParam: (record {record {text; nat64}}) -> (record {record {text; nat64}}) query;
+    complexTwoTupleReturnType: () -> (record {record {text; nat64}; rec_0}) query;
+    complexTwoTupleParam: (record {record {text; nat64}; rec_1}) -> (record {record {text; nat64}; rec_2}) query;
+    complexTwoTupleInlineReturnType: () -> (record {record {text; nat64}; rec_3}) query;
+    complexTwoTupleInlineParam: (record {record {text; nat64}; rec_4}) -> (record {record {text; nat64}; rec_5}) query;
+    complexThreeTupleReturnType: () -> (record {record {text; nat64}; rec_6; rec_7}) query;
+    complexThreeTupleParam: (record {record {text; nat64}; rec_9; rec_10}) -> (record {record {text; nat64}; rec_12; rec_13}) query;
+    complexThreeTupleInlineReturnType: () -> (record {record {text; nat64}; rec_15; rec_16}) query;
+    complexThreeTupleInlineParam: (record {record {text; nat64}; rec_18; rec_19}) -> (record {record {text; nat64}; rec_21; rec_22}) query;
+    tupleArrayParamsAndReturnType: (vec record {text; text}) -> (vec record {text; text}) query;
+    tupleArrayRecordField: () -> (rec_24) query;
+    tupleArrayVariantField: () -> (rec_25) query;
+    twoTupleWithInlineRecords: (record {record {hello:nat64}; record {goodbye:nat64}}) -> (record {record {hello:nat64}; record {goodbye:nat64}}) query;
+    nestedTupleQuery: (record {record {text; record {nat8; nat8}}; int}) -> (record {record {text; record {nat8; nat8}}; int}) query;
 }
