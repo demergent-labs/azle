@@ -10,3 +10,4 @@ export * from './func';
 export * from './property_decorators';
 export * from './primitives';
 export * from './service';
+export * from './result';

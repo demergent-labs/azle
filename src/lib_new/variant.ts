@@ -8,7 +8,7 @@ type ExactlyOneKey<T> = {
 // records. While the decorators are able to add constructors they are not
 // communicating that change to the type checker. If we can get it to do that
 // then we can get rid of this class
-export class Variant {
+export class Variant<Ok, Err> {
     constructor(throwAway: any) {}
 
     static create<T extends Constructor>(

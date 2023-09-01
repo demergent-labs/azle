@@ -1,24 +1,22 @@
-// TODO use Result in here
-
-import { ic, IDL, nat, nat64, principal, Principal, text, update } from 'azle';
+import {
+    ic,
+    nat,
+    nat64,
+    principal,
+    Principal,
+    Result,
+    text,
+    update
+} from 'azle';
 
 export default class {
-    @update(
-        [principal, text, text, nat64],
-        IDL.Variant({
-            Ok: IDL.Text,
-            Err: IDL.Text
-        })
-    )
+    @update([principal, text, text, nat64], Result(text, text))
     async executeCallRaw(
         canisterId: Principal,
-        method: string,
-        candidArgs: string,
+        method: text,
+        candidArgs: text,
         payment: nat64
-    ): Promise<{
-        Ok?: string;
-        Err?: string;
-    }> {
+    ): Promise<Result<text, text>> {
         const result = await ic.callRaw(
             canisterId,
             method,
@@ -26,27 +24,16 @@ export default class {
             payment
         );
 
-        return {
-            Ok: ic.candidDecode(result)
-        };
+        return Result.Ok(ic.candidDecode(result));
     }
 
-    @update(
-        [principal, text, text, nat],
-        IDL.Variant({
-            Ok: IDL.Text,
-            Err: IDL.Text
-        })
-    )
+    @update([principal, text, text, nat], Result(text, text))
     async executeCallRaw128(
         canisterId: Principal,
-        method: string,
-        candidArgs: string,
+        method: text,
+        candidArgs: text,
         payment: nat
-    ): Promise<{
-        Ok?: string;
-        Err?: string;
-    }> {
+    ): Promise<Result<text, text>> {
         const result = await ic.callRaw128(
             canisterId,
             method,
@@ -54,8 +41,6 @@ export default class {
             payment
         );
 
-        return {
-            Ok: ic.candidDecode(result)
-        };
+        return Result.Ok(ic.candidDecode(result));
     }
 }
