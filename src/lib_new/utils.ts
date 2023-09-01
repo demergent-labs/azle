@@ -1,4 +1,5 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from './index';
+import { Record } from './record';
 
 export function display(paramIdl: CandidClass) {
     if (paramIdl instanceof IDL.FuncClass) {
@@ -31,6 +32,7 @@ export function toReturnCandidClass(
 }
 
 export type CandidClass =
+    | Record
     | IDL.BoolClass
     | IDL.EmptyClass
     | IDL.IntClass

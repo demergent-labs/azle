@@ -1,10 +1,9 @@
-import { nat32, $query, $update, Vec } from 'azle';
-import { Thread } from './candid_types';
+import { nat32, Vec } from 'azle';
+import { Thread } from './candid_types/thread';
 import { getPostFromStatePost } from './posts';
 import { state, StateThread, StateUser } from './state';
 import { getUserFromStateUser } from './users';
 
-$update;
 export function createThread(
     title: string,
     authorId: string,
@@ -28,7 +27,6 @@ export function createThread(
     return thread;
 }
 
-$query;
 export function getAllThreads(joinDepth: nat32): Vec<Thread> {
     return Object.values(state.threads).map((stateThread) =>
         getThreadFromStateThread(stateThread, joinDepth)
@@ -54,12 +52,12 @@ export function getThreadFromStateThread(
             .map((postId) => state.posts[postId])
             .map((statePost) => getPostFromStatePost(statePost, joinDepth - 1));
 
-        return {
+        return Thread.create({
             id: stateThread.id,
             author,
             posts,
             title: stateThread.title
-        };
+        });
     }
 }
 

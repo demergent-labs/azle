@@ -1,5 +1,5 @@
 import { Vec } from 'azle';
-import { ReactionType } from './candid_types';
+import { ReactionType } from './candid_types/reaction_type';
 
 export let state: State = {
     posts: {},

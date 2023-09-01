@@ -1,11 +1,10 @@
-import { nat32, $query, $update, Vec } from 'azle';
-import { User } from './candid_types';
+import { nat32, Vec } from 'azle';
+import { User } from './candid_types/user';
 import { getPostFromStatePost } from './posts';
 import { getReactionFromStateReaction } from './reactions';
 import { state, StateUser } from './state';
 import { getThreadFromStateThread } from './threads';
 
-$update;
 export function createUser(username: string, joinDepth: nat32): User {
     const id = Object.keys(state.users).length.toString();
 
@@ -24,7 +23,6 @@ export function createUser(username: string, joinDepth: nat32): User {
     return user;
 }
 
-$query;
 export function getAllUsers(joinDepth: nat32): Vec<User> {
     return Object.values(state.users).map((stateUser) =>
         getUserFromStateUser(stateUser, joinDepth)
@@ -60,12 +58,12 @@ export function getUserFromStateUser(
                 getThreadFromStateThread(stateThread, joinDepth - 1)
             );
 
-        return {
+        return User.create({
             id: stateUser.id,
             posts,
             reactions,
             threads,
             username: stateUser.username
-        };
+        });
     }
 }
