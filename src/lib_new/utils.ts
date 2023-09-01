@@ -1,6 +1,5 @@
-import { IDL } from './index';
+import { IDL, Record, Variant } from './index';
 import { AzleTuple, AzleVec, AzleOpt } from './primitives';
-import { Record } from './record';
 
 /*
  * Look at each type,
@@ -165,25 +164,26 @@ export function processMap(targetMap: CandidMap, parent: Parent[]): CandidMap {
 }
 
 export type CandidClass =
-    | Record
-    | IDL.BoolClass
-    | IDL.EmptyClass
-    | IDL.IntClass
-    | IDL.FixedIntClass
-    | IDL.NatClass
-    | IDL.FixedNatClass
-    | IDL.NullClass
-    | IDL.ReservedClass
-    | IDL.TextClass
-    | IDL.FloatClass
-    | IDL.PrincipalClass
-    | IDL.TupleClass<any>
-    | IDL.VecClass<any>
-    | IDL.OptClass<any>
+    | AzleOpt
     | AzleTuple
     | AzleVec
-    | AzleOpt
+    | IDL.BoolClass
+    | IDL.EmptyClass
+    | IDL.FixedIntClass
+    | IDL.FixedNatClass
+    | IDL.FloatClass
+    | IDL.IntClass
+    | IDL.NatClass
+    | IDL.NullClass
+    | IDL.OptClass<any>
+    | IDL.PrincipalClass
     | IDL.RecClass
-    | IDL.VecClass<number | bigint>; // blob
+    | IDL.ReservedClass
+    | IDL.TextClass
+    | IDL.TupleClass<any>
+    | IDL.VecClass<any>
+    | IDL.VecClass<number | bigint> // blob
+    | Record
+    | Variant;
 
 export type ReturnCandidClass = CandidClass | never[];
