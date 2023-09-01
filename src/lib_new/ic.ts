@@ -375,6 +375,7 @@ export const ic: Ic = globalThis._azleIc
                       IDL.encode([IDL.Nat64], [payment])
                   ).buffer;
 
+                  // TODO consider finally, what if deletion goes wrong
                   try {
                       globalThis._azleIc.callRaw(
                           promiseId,
@@ -419,6 +420,7 @@ export const ic: Ic = globalThis._azleIc
                       IDL.encode([IDL.Nat], [payment])
                   ).buffer;
 
+                  // TODO consider finally, what if deletion goes wrong
                   try {
                       globalThis._azleIc.callRaw128(
                           promiseId,

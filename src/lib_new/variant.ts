@@ -1,19 +1,15 @@
-import { IDL } from '@dfinity/candid';
-
-type ExactlyOneKey<T> = {
-    [K in keyof T]: Pick<T, K> & Omit<T, Exclude<keyof T, K>>;
-}[keyof T];
+import { IDL } from './index';
 
 // Without this default constructor we get errors when initializing variants and
 // records. While the decorators are able to add constructors they are not
 // communicating that change to the type checker. If we can get it to do that
 // then we can get rid of this class
-export class Variant<Ok, Err> {
+export class Variant {
     constructor(throwAway: any) {}
 
     static create<T extends Constructor>(
         this: T,
-        props: ExactlyOneKey<InstanceType<T>>
+        props: RequireExactlyOne<InstanceType<T>>
     ): InstanceType<T> {
         return new this(props) as InstanceType<T>;
     }
@@ -45,3 +41,12 @@ export function variant<T extends new (...args: any[]) => any>(target: T) {
         }
     };
 }
+
+export type RequireExactlyOne<
+    ObjectType,
+    KeysType extends keyof ObjectType = keyof ObjectType
+> = {
+    [Key in KeysType]: Required<Pick<ObjectType, Key>> &
+        Partial<Record<Exclude<KeysType, Key>, never>>;
+}[KeysType] &
+    Omit<ObjectType, KeysType>;

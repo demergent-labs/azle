@@ -1,14 +1,5 @@
-import { blob, Principal, Service, update, Void } from 'azle';
-
-// TODO use the actual management canister from azle/canisters/management
-class ManagementCanister extends Service {
-    @update([], blob)
-    raw_rand: () => Promise<blob>;
-}
-
-const managementCanister = new ManagementCanister(
-    Principal.fromText('aaaaa-aa')
-);
+import { blob, update, Void } from 'azle';
+import { managementCanister } from 'azle/canisters/management';
 
 export default class {
     @update([], blob)

@@ -1,3 +1,4 @@
+import { RequireExactlyOne } from '../lib/candid_types/variant';
 import { IDL } from './index';
 
 export function Result<Ok extends IDL.Type, Err extends IDL.Type>(
@@ -24,12 +25,3 @@ export namespace Result {
         return { Err: value };
     }
 }
-
-type RequireExactlyOne<
-    ObjectType,
-    KeysType extends keyof ObjectType = keyof ObjectType
-> = {
-    [Key in KeysType]: Required<Pick<ObjectType, Key>> &
-        Partial<Record<Exclude<KeysType, Key>, never>>;
-}[KeysType] &
-    Omit<ObjectType, KeysType>;

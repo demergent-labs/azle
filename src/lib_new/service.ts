@@ -13,7 +13,7 @@ export class Service {
 
     static create<T extends Constructor>(
         this: T,
-        props: InstanceType<T>
+        props: { canisterId: Principal }
     ): InstanceType<T> {
         return new this(props) as InstanceType<T>;
     }
