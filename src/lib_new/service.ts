@@ -3,6 +3,7 @@ import { CandidClass, toReturnCandidClass } from './utils';
 
 type Constructor<T = {}> = new (...args: any[]) => T;
 
+// TODO allow turning this into an IDL
 export class Service {
     canisterId: Principal;
 

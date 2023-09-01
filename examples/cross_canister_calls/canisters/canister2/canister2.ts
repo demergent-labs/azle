@@ -1,4 +1,15 @@
-import { ic, nat64, Opt, query, text, update, Vec, Void } from 'azle';
+import {
+    ic,
+    nat64,
+    None,
+    Opt,
+    query,
+    Some,
+    text,
+    update,
+    Vec,
+    Void
+} from 'azle';
 import { State, Account, AccountArgs } from './types';
 
 let state: State = {
@@ -13,34 +24,27 @@ let state: State = {
 
 export default class {
     @update([text, text, nat64], nat64)
-    transfer(from: string, to: string, amount: nat64): nat64 {
+    transfer(from: text, to: text, amount: nat64): nat64 {
         const fromAccount: Account | undefined = state.accounts[from];
-
         if (fromAccount === undefined) {
             state.accounts[from] = {
                 id: from,
                 balance: 0n
             };
         }
-
         const fromBalance = state.accounts[from].balance;
-
         if (fromBalance < amount) {
             return 0n;
         }
-
         const toBalance: nat64 | undefined = state.accounts[to]?.balance;
-
         if (toBalance === undefined) {
             state.accounts[to] = {
                 id: to,
                 balance: 0n
             };
         }
-
         state.accounts[from].balance -= amount;
         state.accounts[to].balance += amount;
-
         return amount;
     }
 
@@ -49,14 +53,13 @@ export default class {
         return state.accounts[id]?.balance ?? 0n;
     }
 
-    // TODO use Some and None
-    @query([AccountArgs], Opt(Account as any))
+    @query([AccountArgs], Opt(Account))
     account(accountArgs: AccountArgs): Opt<Account> {
         const account = state.accounts[accountArgs.id];
-        return account ? [account] : [];
+        return account ? Some(account) : None;
     }
 
-    @query([], Vec(Account as any))
+    @query([], Vec(Account))
     accounts(): Vec<Account> {
         return Object.values(state.accounts);
     }
@@ -68,7 +71,7 @@ export default class {
     }
 
     @update([text], Void)
-    receiveNotification(message: text): void {
+    receiveNotification(message: text): Void {
         state.notification = message;
     }
 

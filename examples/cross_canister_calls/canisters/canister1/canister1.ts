@@ -10,6 +10,7 @@ import {
 } from 'azle';
 import { Account, AccountArgs, Canister2 } from '../canister2/types';
 
+// TODO figure out environment variables
 const canister2 = new Canister2(
     Principal.fromText(
         process.env.CANISTER2_PRINCIPAL ??
@@ -18,7 +19,7 @@ const canister2 = new Canister2(
 );
 
 export default class {
-    @update([text, text], nat64)
+    @update([text, text, nat64], nat64)
     async transfer(from: text, to: text, amount: nat64): Promise<nat64> {
         return await ic.call(canister2.transfer, {
             args: [from, to, amount]
@@ -32,14 +33,14 @@ export default class {
         });
     }
 
-    @update([AccountArgs], Opt(Account as any))
+    @update([AccountArgs], Opt(Account))
     async account(args: AccountArgs): Promise<Opt<Account>> {
         return await ic.call(canister2.account, {
             args: [args]
         });
     }
 
-    @update([], Vec(Account as any))
+    @update([], Vec(Account))
     async accounts(): Promise<Vec<Account>> {
         return await ic.call(canister2.accounts, {
             args: []

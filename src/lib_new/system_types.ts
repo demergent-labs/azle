@@ -30,5 +30,5 @@ export class RejectionCode extends Variant {
     Unknown?: null;
 }
 
-export const NotifyResult = Result(Null, RejectionCode.getIDL());
+export const NotifyResult = Result(Null, RejectionCode.getIDL([]));
 export type NotifyResult = Result<Null, RejectionCode>;

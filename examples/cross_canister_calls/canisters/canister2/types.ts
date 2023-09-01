@@ -2,6 +2,7 @@ import {
     candid,
     nat64,
     Opt,
+    record,
     Record,
     query,
     Service,
@@ -20,6 +21,7 @@ export type State = {
     notification: string;
 };
 
+@record
 export class Account extends Record {
     @candid(text)
     id: text;
@@ -28,6 +30,7 @@ export class Account extends Record {
     balance: nat64;
 }
 
+@record
 export class AccountArgs extends Record {
     @candid(text)
     id: text;
