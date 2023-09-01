@@ -39,7 +39,7 @@ export function record<T extends new (...args: any[]) => any>(target: T): T {
 
         static getIDL(parents: Parent[]) {
             const idl = IDL.Rec();
-            return idl.fill(
+            idl.fill(
                 IDL.Record(
                     processMap(target._azleCandidMap, [
                         ...parents,
@@ -50,6 +50,7 @@ export function record<T extends new (...args: any[]) => any>(target: T): T {
                     ])
                 )
             );
+            return idl;
         }
     };
 }

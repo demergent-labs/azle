@@ -90,7 +90,10 @@ function setupCanisterMethod(
     const paramCandid = handleRecursiveParams(paramsIdls);
     const returnCandid = handleRecursiveReturn(returnIdl, paramCandid[2]);
 
-    globalThis._azleCandidTypes = newTypesToStingArr(returnCandid[2]);
+    globalThis._azleCandidTypes = [
+        ...globalThis._azleCandidTypes,
+        ...newTypesToStingArr(returnCandid[2])
+    ];
     globalThis._azleCandidMethods.push(
         `${key}: (${paramCandid[1].join(', ')}) -> (${returnCandid[1]})${
             modeToCandid[mode]

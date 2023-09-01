@@ -1,4 +1,4 @@
-import { IDL } from './index';
+import { IDL, candid } from './index';
 import { AzleTuple, AzleVec, AzleOpt } from './primitives';
 
 /*
@@ -40,10 +40,11 @@ export function display(
         // reference the actual definition which will be added to the list of
         // candid type defs that will get put at the top of the candid file
         // Everything else will just be the normal inline candid def
-        return [
-            idl.name,
-            { ...candidTypeDefs, [idl.name]: idl.getType()?.display() ?? '' }
-        ];
+        const candid = extractCandid(
+            [display(idl.getType(), candidTypeDefs)],
+            candidTypeDefs
+        );
+        return [idl.name, { ...candid[1], [idl.name]: candid[0][0] }];
     }
     if (idl instanceof IDL.TupleClass) {
         const fields = idl._components.map((value) =>
@@ -51,6 +52,23 @@ export function display(
         );
         const candid = extractCandid(fields, candidTypeDefs);
         return [`record {${candid[0].join('; ')}}`, candid[1]];
+    }
+    if (idl instanceof IDL.OptClass) {
+        const candid = extractCandid(
+            [display(idl._type, candidTypeDefs)],
+            candidTypeDefs
+        );
+        return [`opt ${candid[0]}`, candid[1]];
+    }
+    if (idl instanceof IDL.RecordClass) {
+        const candidFields = idl._fields.map(([key, value]) =>
+            display(value, candidTypeDefs)
+        );
+        const candid = extractCandid(candidFields, candidTypeDefs);
+        const fields = idl._fields.map(
+            ([key, value], index) => key + ':' + candid[0][index]
+        );
+        return [`record {${fields.join('; ')}}`, candid[1]];
     }
     if (idl instanceof IDL.FuncClass) {
         return [`func ${idl.display().replace(/→/g, '->')}`, candidTypeDefs];
