@@ -4,12 +4,12 @@ let currentMessage: string = '';
 
 export default class {
     @query([], text)
-    getCurrentMessage(): string {
+    getCurrentMessage(): text {
         return currentMessage;
     }
 
     @update([text], Void)
-    simpleUpdate(message: string): void {
+    simpleUpdate(message: text): Void {
         currentMessage = message;
     }
 }

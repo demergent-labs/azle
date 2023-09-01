@@ -1,4 +1,4 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from './index';
 import { Parent, processMap } from './utils';
 
 // Without this default constructor we get errors when initializing variants and

@@ -1,5 +1,5 @@
 import { ic } from './ic';
-import { IDL } from '@dfinity/candid';
+import { IDL } from './index';
 
 import {
     CandidClass,
@@ -64,19 +64,20 @@ function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
 }
 
 function handleRecursiveParams(
-    paramIdls: CandidClass[]
-): [CandidDef[], CandidTypesDefs] {
+    idls: CandidClass[]
+): [CandidClass[], CandidDef[], CandidTypesDefs] {
+    const paramIdls = toParamCandidClasses(idls);
     const paramInfo = paramIdls.map((paramIdl) => display(paramIdl, {}));
-    return extractCandid(paramInfo, {});
+    return [paramIdls, ...extractCandid(paramInfo, {})];
 }
 
 function handleRecursiveReturn(
     returnIdl: ReturnCandidClass,
     paramCandidTypeDefs: CandidTypesDefs
-): [CandidDef[], CandidTypesDefs] {
+): [CandidClass[], CandidDef[], CandidTypesDefs] {
     const returnIdls = toReturnCandidClass(returnIdl);
     const returnInfo = returnIdls.map((returnIdl) => display(returnIdl, {}));
-    return extractCandid(returnInfo, paramCandidTypeDefs);
+    return [returnIdls, ...extractCandid(returnInfo, paramCandidTypeDefs)];
 }
 
 function setupCanisterMethod(
@@ -86,13 +87,12 @@ function setupCanisterMethod(
     key: string,
     descriptor: PropertyDescriptor
 ) {
-    paramsIdls = toParamCandidClasses(paramsIdls);
     const paramCandid = handleRecursiveParams(paramsIdls);
-    const returnCandid = handleRecursiveReturn(returnIdl, paramCandid[1]);
+    const returnCandid = handleRecursiveReturn(returnIdl, paramCandid[2]);
 
-    globalThis._azleCandidTypes = newTypesToStingArr(returnCandid[1]);
+    globalThis._azleCandidTypes = newTypesToStingArr(returnCandid[2]);
     globalThis._azleCandidMethods.push(
-        `${key}: (${paramCandid[0].join(', ')}) -> (${returnCandid[0]})${
+        `${key}: (${paramCandid[1].join(', ')}) -> (${returnCandid[1]})${
             modeToCandid[mode]
         };`
     );
@@ -100,17 +100,24 @@ function setupCanisterMethod(
     const originalMethod = descriptor.value;
 
     descriptor.value = function (...args: any[]) {
-        const decoded = IDL.decode(paramsIdls, args[0]);
+        const decoded = IDL.decode(paramCandid[0], args[0]);
 
         const result = originalMethod(...decoded);
 
-        if (typeof result.then === 'function') {
+        if (
+            result !== undefined &&
+            result !== null &&
+            typeof result.then === 'function'
+        ) {
             result
                 .then((result) => {
                     const encodeReadyResult =
                         result === undefined ? [] : [result];
 
-                    const encoded = IDL.encode(returnIdls, encodeReadyResult);
+                    const encoded = IDL.encode(
+                        returnCandid[0],
+                        encodeReadyResult
+                    );
 
                     console.log(
                         `final instructions: ${ic.instructionCounter()}`
@@ -124,7 +131,7 @@ function setupCanisterMethod(
         } else {
             const encodeReadyResult = result === undefined ? [] : [result];
 
-            const encoded = IDL.encode(returnIdls, encodeReadyResult);
+            const encoded = IDL.encode(returnCandid[0], encodeReadyResult);
 
             console.log(`final instructions: ${ic.instructionCounter()}`);
 

@@ -1,6 +1,5 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from './index';
 import { AzleTuple, AzleVec, AzleOpt } from './primitives';
-import { RecClass } from '@dfinity/candid/lib/cjs/idl';
 
 /*
  * Look at each type,
@@ -66,7 +65,7 @@ export function display(
 }
 
 export type Parent = {
-    idl: RecClass;
+    idl: IDL.RecClass;
     name: string;
 };
 
@@ -146,7 +145,7 @@ export type CandidClass =
     | AzleTuple
     | AzleVec
     | AzleOpt
-    | RecClass
+    | IDL.RecClass
     | IDL.VecClass<number | bigint>; // blob
 
 export type ReturnCandidClass = CandidClass | never[];

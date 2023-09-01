@@ -8,7 +8,7 @@
             "candid": "src/index.did",
             "wasm": ".azle/update/update.wasm.gz",
             "declarations": {
-                "output": "dfx_generated/update",
+                "output": "test/dfx_generated/update",
                 "node_compatibility": true
             }
         }

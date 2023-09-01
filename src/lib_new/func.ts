@@ -1,4 +1,4 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from './index';
 import {
     CandidClass,
     toReturnCandidClass,

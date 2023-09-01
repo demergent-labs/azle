@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle null_example",
             "root": "src",
-            "ts": "src/null_example.ts",
-            "candid": "src/null_example.did",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
             "wasm": ".azle/null_example/null_example.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/null_example",
