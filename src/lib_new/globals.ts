@@ -1,4 +1,5 @@
 import { ic } from './ic';
+import { Buffer } from 'buffer';
 
 declare var globalThis: {
     TextDecoder: any;
@@ -34,3 +35,5 @@ globalThis.crypto = {
         return array;
     }
 };
+
+globalThis.Buffer = Buffer;
