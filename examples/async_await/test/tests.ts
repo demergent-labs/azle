@@ -45,9 +45,7 @@ export function get_tests(
                 const result = await async_await_canister.returnPromiseVoid();
 
                 return {
-                    // The candid return type is generated incorrectly so the
-                    // agent converts the returned `undefined` value to `null`
-                    Ok: result === null
+                    Ok: result === undefined
                 };
             }
         }

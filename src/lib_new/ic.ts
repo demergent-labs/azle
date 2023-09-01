@@ -370,6 +370,7 @@ export const ic: Ic = globalThis._azleIc
                   };
 
                   const canisterIdBytes = canisterId.toUint8Array().buffer;
+                  const argsRawBuffer = argsRaw.buffer;
                   const paymentCandidBytes = new Uint8Array(
                       IDL.encode([IDL.Nat64], [payment])
                   ).buffer;
@@ -379,12 +380,13 @@ export const ic: Ic = globalThis._azleIc
                           promiseId,
                           canisterIdBytes,
                           method,
-                          argsRaw,
+                          argsRawBuffer,
                           paymentCandidBytes
                       );
                   } catch (error) {
                       delete globalThis[globalResolveId];
                       delete globalThis[globalRejectId];
+                      throw error;
                   }
               });
           },
@@ -411,9 +413,8 @@ export const ic: Ic = globalThis._azleIc
                       delete globalThis[globalRejectId];
                   };
 
-                  // TODO implement reject
-
                   const canisterIdBytes = canisterId.toUint8Array().buffer;
+                  const argsRawBuffer = argsRaw.buffer;
                   const paymentCandidBytes = new Uint8Array(
                       IDL.encode([IDL.Nat], [payment])
                   ).buffer;
@@ -423,12 +424,13 @@ export const ic: Ic = globalThis._azleIc
                           promiseId,
                           canisterIdBytes,
                           method,
-                          argsRaw,
+                          argsRawBuffer,
                           paymentCandidBytes
                       );
                   } catch (error) {
                       delete globalThis[globalResolveId];
                       delete globalThis[globalRejectId];
+                      throw error;
                   }
               });
           },

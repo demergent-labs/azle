@@ -8,6 +8,7 @@ import {
     toReturnCandidClass
 } from './utils';
 import { display } from './utils';
+import { serviceDecorator } from './service';
 
 type Mode = 'query' | 'update';
 
@@ -18,30 +19,38 @@ const modeToCandid = {
 
 // Until we can figure how how to type check Funcs, Variants, and Records we are just going to have to use any here
 // export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
-export function query(paramsIdls: any[], returnIdl: any) {
-    return (target: any, key: string, descriptor: PropertyDescriptor) => {
-        return setupCanisterMethod(
-            paramsIdls,
-            returnIdl,
-            'query',
-            key,
-            descriptor
-        );
+export function query(paramsIdls: any[], returnIdl: any): any {
+    return (target: any, key: string, descriptor?: PropertyDescriptor) => {
+        if (descriptor === undefined) {
+            serviceDecorator(target, key, paramsIdls, returnIdl);
+        } else {
+            return setupCanisterMethod(
+                paramsIdls,
+                returnIdl,
+                'query',
+                key,
+                descriptor
+            );
+        }
     };
 }
 
 // export function update(
 //     paramsIdls: CandidClass[],
 //     returnIdl: ReturnCandidClass
-export function update(paramsIdls: any[], returnIdl: any) {
-    return (target: any, key: string, descriptor: PropertyDescriptor) => {
-        return setupCanisterMethod(
-            paramsIdls,
-            returnIdl,
-            'update',
-            key,
-            descriptor
-        );
+export function update(paramsIdls: any[], returnIdl: any): any {
+    return (target: any, key: string, descriptor?: PropertyDescriptor) => {
+        if (descriptor === undefined) {
+            serviceDecorator(target, key, paramsIdls, returnIdl);
+        } else {
+            return setupCanisterMethod(
+                paramsIdls,
+                returnIdl,
+                'update',
+                key,
+                descriptor
+            );
+        }
     };
 }
 
@@ -80,7 +89,6 @@ function setupCanisterMethod(
                     ic.replyRaw(new Uint8Array(encoded));
                 })
                 .catch((error) => {
-                    console.log('I am attempting to trap in here');
                     ic.trap(error.toString());
                 });
         } else {
