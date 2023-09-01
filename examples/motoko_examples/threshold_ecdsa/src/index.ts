@@ -1,14 +1,4 @@
-import {
-    blob,
-    candid,
-    ic,
-    None,
-    record,
-    Record,
-    Result,
-    text,
-    update
-} from 'azle';
+import { blob, candid, ic, None, record, Record, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 @record
@@ -24,7 +14,7 @@ class Signature extends Record {
 }
 
 export default class {
-    @update([], Result(PublicKey, text))
+    @update([], PublicKey)
     async publicKey(): Promise<PublicKey> {
         const caller = ic.caller().toUint8Array();
         const publicKeyResult = await managementCanister.ecdsa_public_key({
