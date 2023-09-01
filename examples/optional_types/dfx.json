@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle optional_types",
             "root": "src",
-            "ts": "src/optional_types.ts",
-            "candid": "src/optional_types.did",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
             "wasm": ".azle/optional_types/optional_types.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/optional_types",

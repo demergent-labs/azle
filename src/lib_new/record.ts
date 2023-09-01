@@ -1,4 +1,5 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from './index';
+import { Parent, processMap } from './utils';
 
 // Without this default constructor we get errors when initializing variants and
 // records. While the decorators are able to add constructors they are not
@@ -36,8 +37,20 @@ export function record<T extends new (...args: any[]) => any>(target: T): T {
             }
         }
 
-        static getIDL() {
-            return IDL.Record(target._azleCandidMap);
+        static getIDL(parents: Parent[]) {
+            const idl = IDL.Rec();
+            idl.fill(
+                IDL.Record(
+                    processMap(target._azleCandidMap, [
+                        ...parents,
+                        {
+                            idl: idl,
+                            name: target.name
+                        }
+                    ])
+                )
+            );
+            return idl;
         }
     };
 }
