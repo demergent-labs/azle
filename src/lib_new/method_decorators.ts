@@ -86,6 +86,10 @@ function setupCanisterMethod(
 
                     const encoded = IDL.encode(returnIdls, encodeReadyResult);
 
+                    console.log(
+                        `final instructions: ${ic.instructionCounter()}`
+                    );
+
                     ic.replyRaw(new Uint8Array(encoded));
                 })
                 .catch((error) => {
@@ -95,6 +99,8 @@ function setupCanisterMethod(
             const encodeReadyResult = result === undefined ? [] : [result];
 
             const encoded = IDL.encode(returnIdls, encodeReadyResult);
+
+            console.log(`final instructions: ${ic.instructionCounter()}`);
 
             ic.replyRaw(new Uint8Array(encoded));
         }
