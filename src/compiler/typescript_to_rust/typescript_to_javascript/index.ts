@@ -16,7 +16,8 @@ export function compileTypeScriptToJavaScript(
             import CanisterClass from './${tsPath}';
             export const canisterClass = new CanisterClass();
 
-globalThis._azleCandidService = \`service: (\${globalThis._azleCandidInitParams.join(
+globalThis._azleCandidService = \`\${globalThis._azleCandidTypes.join('\\n')}\n
+service: (\${globalThis._azleCandidInitParams.join(
     ', '
 )}) -> {
     \${globalThis._azleCandidMethods.join('\\n    ')}

@@ -1,5 +1,5 @@
 import { IDL } from '@dfinity/candid';
-import { toCandidClass } from './utils';
+import { CandidClass, Parent, toCandidClass } from './utils';
 
 export const bool = IDL.Bool;
 export type bool = boolean;
@@ -40,6 +40,7 @@ export type float64 = number;
 export const principal = IDL.Principal;
 export { Principal } from '@dfinity/principal';
 export type Vec<T> = T[];
+export type Tuple<T> = T;
 export type Opt<Value> = Value[];
 export const Void = [];
 export type Void = void;
@@ -50,10 +51,54 @@ export function Some<T>(value: T): T[] {
 export const None: [] = [];
 
 // TODO what happens if we pass something to Opt() that can't be converted to CandidClass?
-export function Opt<T>(t: IDL.Type<T> | any): IDL.OptClass<T> {
-    return IDL.Opt(toCandidClass(t));
+export function Opt<T>(t: IDL.Type<T> | any): AzleOpt {
+    // return IDL.Opt(toCandidClass(t));
+    return new AzleOpt(t);
 }
 
-export function Vec<T>(t: IDL.Type<T> | any): IDL.VecClass<T> {
-    return IDL.Vec(toCandidClass(t));
+export class AzleOpt {
+    constructor(t: any) {
+        this._azleType = t;
+    }
+    _azleType: any;
+    getIDL(parents: Parent[]) {
+        return IDL.Opt(toCandidClass(this._azleType, []));
+    }
+}
+
+export class AzleVec {
+    constructor(t: any) {
+        this._azleType = t;
+    }
+    _azleType: any;
+    getIDL(parents: Parent[]) {
+        return IDL.Vec(toCandidClass(this._azleType, []));
+    }
+}
+
+export class AzleTuple {
+    constructor(t: any[]) {
+        this._azleTypes = t;
+    }
+    _azleTypes: any[];
+    getIDL(parents: Parent[]) {
+        const candidTypes = this._azleTypes.map((value) => {
+            return toCandidClass(value, parents);
+        });
+        return IDL.Tuple(...candidTypes);
+    }
+}
+
+export function Vec<T>(t: IDL.Type<T> | any): AzleOpt {
+    // return IDL.Vec(toCandidClass(t));
+    return new AzleOpt(t);
+}
+
+// TODO I am not sure of any of these types... but its working so...
+export function Tuple<T extends any[]>(...types: T): AzleTuple {
+    // const candidTypes = types.map((value) => {
+    //     return toCandidClass(value);
+    // });
+    // return IDL.Tuple(...candidTypes);
+    return new AzleTuple(types);
 }

@@ -1,5 +1,9 @@
 import { IDL } from '@dfinity/candid';
-import { CandidClass, toReturnCandidClass, toCandidClasses } from './utils';
+import {
+    CandidClass,
+    toReturnCandidClass,
+    toParamCandidClasses
+} from './utils';
 
 type Mode = 'query' | 'update' | 'oneway';
 
@@ -18,7 +22,7 @@ export function func(
         return class extends target {
             static getIDL() {
                 return IDL.Func(
-                    toCandidClasses(paramsIdls),
+                    toParamCandidClasses(paramsIdls),
                     toReturnCandidClass(returnIdl),
                     modeToCandid[mode]
                 );
