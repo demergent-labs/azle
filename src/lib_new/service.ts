@@ -5,6 +5,7 @@ type Constructor<T = {}> = new (...args: any[]) => T;
 
 export class Service {
     canisterId: Principal;
+
     [key: string]: any;
 
     constructor(canisterId: Principal) {

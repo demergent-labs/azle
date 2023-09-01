@@ -1,12 +1,15 @@
 import {
-    CallResult,
+    candid,
     nat64,
     Opt,
     Record,
+    query,
     Service,
-    serviceQuery,
-    serviceUpdate,
-    Vec
+    text,
+    update,
+    Vec,
+    Void,
+    NotifyResult
 } from 'azle';
 
 // TODO start using principals instead of strings for ids
@@ -17,31 +20,35 @@ export type State = {
     notification: string;
 };
 
-export type Account = Record<{
-    id: string;
-    balance: nat64;
-}>;
+export class Account extends Record {
+    @candid(text)
+    id: text;
 
-export type AccountArgs = Record<{
-    id: string;
-}>;
+    @candid(nat64)
+    balance: nat64;
+}
+
+export class AccountArgs extends Record {
+    @candid(text)
+    id: text;
+}
 
 export class Canister2 extends Service {
-    @serviceUpdate
-    transfer: (from: string, to: string, amount: nat64) => CallResult<nat64>;
+    @update([text, text, nat64], nat64)
+    transfer: (from: text, to: text, amount: nat64) => nat64;
 
-    @serviceQuery
-    balance: (id: string) => CallResult<nat64>;
+    @query([text], nat64)
+    balance: (id: text) => nat64;
 
-    @serviceQuery
-    account: (accountArgs: AccountArgs) => CallResult<Opt<Account>>;
+    @query([AccountArgs], Opt(Account as any))
+    account: (accountArgs: AccountArgs) => Opt<Account>;
 
-    @serviceQuery
-    accounts: () => CallResult<Vec<Account>>;
+    @query([], Vec(Account as any))
+    accounts: () => Vec<Account>;
 
-    @serviceQuery
-    trap: () => CallResult<string>;
+    @query([], text)
+    trap: () => text;
 
-    @serviceUpdate
-    receiveNotification: (message: string) => CallResult<void>;
+    @update([text], Void)
+    receiveNotification: (message: text) => NotifyResult;
 }

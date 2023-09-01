@@ -1,0 +1,4 @@
+service: () -> {
+    readCount: () -> (nat64) query;
+    incrementCount: () -> (nat64);
+}
