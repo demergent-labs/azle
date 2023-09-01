@@ -33,15 +33,15 @@ class Html extends Record {
 export default class {
     @query([], Html)
     getHtml(): Html {
-        return {
+        return Html.create({
             head: []
-        };
+        });
     }
 
     @query([], Opt(Head))
     getHead(): Opt<Head> {
         return [
-            new Head({
+            Head.create({
                 elements: []
             })
         ];
@@ -50,7 +50,7 @@ export default class {
     @query([], Opt(Head))
     getHeadWithElements(): Opt<Head> {
         return [
-            new Head({
+            Head.create({
                 elements: [
                     {
                         id: '0'

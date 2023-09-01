@@ -58,11 +58,11 @@ export default class {
 
     @query([], PartiallyNullRecord)
     getPartiallyNullRecord(): PartiallyNullRecord {
-        return {
+        return PartiallyNullRecord.create({
             firstItem: 1n,
             secondItem: null,
             thirdItem: 3n
-        };
+        });
     }
 
     @update([PartiallyNullRecord], PartiallyNullRecord)
@@ -72,10 +72,10 @@ export default class {
 
     @query([], TwoNullRecord)
     getSmallNullRecord(): TwoNullRecord {
-        return {
+        return TwoNullRecord.create({
             firstItem: null,
             secondItem: null
-        };
+        });
     }
 
     @update([TwoNullRecord], TwoNullRecord)
@@ -85,11 +85,11 @@ export default class {
 
     @query([], ThreeNullRecord)
     getLargeNullRecord(): ThreeNullRecord {
-        return {
+        return ThreeNullRecord.create({
             firstItem: null,
             secondItem: null,
             thirdItem: null
-        };
+        });
     }
 
     @update([ThreeNullRecord], ThreeNullRecord)
