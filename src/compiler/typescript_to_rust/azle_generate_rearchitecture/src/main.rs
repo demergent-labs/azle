@@ -145,9 +145,9 @@ fn main() -> Result<(), String> {
                 let candid_args_js_value_ref = to_qjs_value(&context, &candid_args_js_value).unwrap();
 
                 // TODO I am not sure what the first parameter to call is supposed to be
-                let result = method.call(&method, &[candid_args_js_value_ref]).unwrap();
+                method.call(&method, &[candid_args_js_value_ref]).unwrap();
 
-                ic_cdk::api::call::reply_raw(result.as_bytes().unwrap());
+                context.execute_pending().unwrap();
             });
         }
     }

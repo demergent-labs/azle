@@ -1,3 +1,4 @@
+import { ic } from './ic';
 import { IDL } from '@dfinity/candid';
 
 import {
@@ -67,9 +68,28 @@ function setupCanisterMethod(
         const decoded = IDL.decode(paramsIdls, args[0]);
 
         const result = originalMethod(...decoded);
-        const encodeReadyResult = result === undefined ? [] : [result];
 
-        return new Uint8Array(IDL.encode(returnIdls, encodeReadyResult)).buffer;
+        if (typeof result.then === 'function') {
+            result
+                .then((result) => {
+                    const encodeReadyResult =
+                        result === undefined ? [] : [result];
+
+                    const encoded = IDL.encode(returnIdls, encodeReadyResult);
+
+                    ic.replyRaw(new Uint8Array(encoded));
+                })
+                .catch((error) => {
+                    console.log('I am attempting to trap in here');
+                    ic.trap(error.toString());
+                });
+        } else {
+            const encodeReadyResult = result === undefined ? [] : [result];
+
+            const encoded = IDL.encode(returnIdls, encodeReadyResult);
+
+            ic.replyRaw(new Uint8Array(encoded));
+        }
     };
 
     return descriptor;

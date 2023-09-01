@@ -1,6 +1,7 @@
 import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
-import { blob, nat32, nat64 } from './primitives';
+import { blob, nat, nat32, nat64 } from './primitives';
+import { v4 } from 'uuid';
 
 // declare var globalThis: {
 //     ic: Ic;
@@ -26,6 +27,40 @@ type Ic = {
      * @returns the data size
      */
     argDataRawSize: () => number;
+
+    /**
+     * Performs an asynchronous call to another canister using the [System API](
+     * https://internetcomputer.org/docs/current/references/ic-interface-spec/#system-api-call)
+     * and returns the payload without serialization
+     * @param canisterId the principal of the canister to call
+     * @param method the method to call
+     * @param argsRaw the args to pass to the canister method
+     * @param payment the number of cycles to send with the call
+     * @returns
+     */
+    callRaw: (
+        canisterId: Principal,
+        method: string,
+        argsRaw: blob,
+        payment: nat64
+    ) => Promise<blob>; // TODO this should use a Result remember
+
+    /**
+     * Performs an asynchronous call to another canister using the [System API](
+     * https://internetcomputer.org/docs/current/references/ic-interface-spec/#system-api-call)
+     * and returns the payload without serialization
+     * @param canisterId the principal of the canister to call
+     * @param method the method to call
+     * @param argsRaw the args to pass to the canister method
+     * @param payment the number of cycles to send with the call
+     * @returns
+     */
+    callRaw128: (
+        canisterId: Principal,
+        method: string,
+        argsRaw: blob,
+        payment: nat
+    ) => Promise<blob>; // TODO this should use a Result remember
 
     /**
      * Returns the caller of the current call
@@ -311,9 +346,98 @@ type Ic = {
 export const ic: Ic = globalThis._azleIc
     ? {
           ...globalThis._azleIc,
+          callRaw: (canisterId, method, argsRaw, payment) => {
+              return new Promise((resolve, reject) => {
+                  const promiseId = v4();
+                  const globalResolveId = `_resolve_${promiseId}`;
+                  const globalRejectId = `_reject_${promiseId}`;
+
+                  // TODO perhaps we should be more robust
+                  // TODO for example, we can keep the time with these
+                  // TODO if they are over a certain amount old we can delete them
+                  globalThis[globalResolveId] = (bytes: ArrayBuffer) => {
+                      resolve(new Uint8Array(bytes));
+
+                      delete globalThis[globalResolveId];
+                      delete globalThis[globalRejectId];
+                  };
+
+                  globalThis[globalRejectId] = (error: any) => {
+                      reject(error);
+
+                      delete globalThis[globalResolveId];
+                      delete globalThis[globalRejectId];
+                  };
+
+                  const canisterIdBytes = canisterId.toUint8Array().buffer;
+                  const paymentCandidBytes = new Uint8Array(
+                      IDL.encode([IDL.Nat64], [payment])
+                  ).buffer;
+
+                  try {
+                      globalThis._azleIc.callRaw(
+                          promiseId,
+                          canisterIdBytes,
+                          method,
+                          argsRaw,
+                          paymentCandidBytes
+                      );
+                  } catch (error) {
+                      delete globalThis[globalResolveId];
+                      delete globalThis[globalRejectId];
+                  }
+              });
+          },
+          callRaw128: (canisterId, method, argsRaw, payment) => {
+              return new Promise((resolve, reject) => {
+                  const promiseId = v4();
+                  const globalResolveId = `_resolve_${promiseId}`;
+                  const globalRejectId = `_reject_${promiseId}`;
+
+                  // TODO perhaps we should be more robust
+                  // TODO for example, we can keep the time with these
+                  // TODO if they are over a certain amount old we can delete them
+                  globalThis[globalResolveId] = (bytes: ArrayBuffer) => {
+                      resolve(new Uint8Array(bytes));
+
+                      delete globalThis[globalResolveId];
+                      delete globalThis[globalRejectId];
+                  };
+
+                  globalThis[globalRejectId] = (error: any) => {
+                      reject(error);
+
+                      delete globalThis[globalResolveId];
+                      delete globalThis[globalRejectId];
+                  };
+
+                  // TODO implement reject
+
+                  const canisterIdBytes = canisterId.toUint8Array().buffer;
+                  const paymentCandidBytes = new Uint8Array(
+                      IDL.encode([IDL.Nat], [payment])
+                  ).buffer;
+
+                  try {
+                      globalThis._azleIc.callRaw128(
+                          promiseId,
+                          canisterIdBytes,
+                          method,
+                          argsRaw,
+                          paymentCandidBytes
+                      );
+                  } catch (error) {
+                      delete globalThis[globalResolveId];
+                      delete globalThis[globalRejectId];
+                  }
+              });
+          },
           caller: () => {
               const callerBytes = globalThis._azleIc.caller();
               return Principal.fromUint8Array(callerBytes);
+          },
+          candidDecode: (candidEncoded) => {
+              return globalThis._azleIc.candidDecode(candidEncoded.buffer);
           },
           canisterBalance: () => {
               const canisterBalanceCandidBytes =
@@ -490,6 +614,7 @@ export const ic: Ic = globalThis._azleIc
           acceptMessage: () => {},
           argDataRaw: () => {},
           argDataRawSize: () => {},
+          callRaw: () => {},
           caller: () => {},
           candidDecode: () => {},
           candidEncode: () => {},
