@@ -370,21 +370,24 @@ export const ic: Ic = globalThis._azleIc
                   };
 
                   const canisterIdBytes = canisterId.toUint8Array().buffer;
+                  const argsRawBuffer = argsRaw.buffer;
                   const paymentCandidBytes = new Uint8Array(
                       IDL.encode([IDL.Nat64], [payment])
                   ).buffer;
 
+                  // TODO consider finally, what if deletion goes wrong
                   try {
                       globalThis._azleIc.callRaw(
                           promiseId,
                           canisterIdBytes,
                           method,
-                          argsRaw,
+                          argsRawBuffer,
                           paymentCandidBytes
                       );
                   } catch (error) {
                       delete globalThis[globalResolveId];
                       delete globalThis[globalRejectId];
+                      throw error;
                   }
               });
           },
@@ -411,24 +414,25 @@ export const ic: Ic = globalThis._azleIc
                       delete globalThis[globalRejectId];
                   };
 
-                  // TODO implement reject
-
                   const canisterIdBytes = canisterId.toUint8Array().buffer;
+                  const argsRawBuffer = argsRaw.buffer;
                   const paymentCandidBytes = new Uint8Array(
                       IDL.encode([IDL.Nat], [payment])
                   ).buffer;
 
+                  // TODO consider finally, what if deletion goes wrong
                   try {
                       globalThis._azleIc.callRaw128(
                           promiseId,
                           canisterIdBytes,
                           method,
-                          argsRaw,
+                          argsRawBuffer,
                           paymentCandidBytes
                       );
                   } catch (error) {
                       delete globalThis[globalResolveId];
                       delete globalThis[globalRejectId];
+                      throw error;
                   }
               });
           },
@@ -438,6 +442,11 @@ export const ic: Ic = globalThis._azleIc
           },
           candidDecode: (candidEncoded) => {
               return globalThis._azleIc.candidDecode(candidEncoded.buffer);
+          },
+          candidEncode: (candidString) => {
+              return new Uint8Array(
+                  globalThis._azleIc.candidEncode(candidString)
+              );
           },
           canisterBalance: () => {
               const canisterBalanceCandidBytes =

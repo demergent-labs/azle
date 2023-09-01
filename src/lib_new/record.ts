@@ -6,7 +6,16 @@ import { IDL } from '@dfinity/candid';
 // then we can get rid of this class
 export class Record {
     constructor(throwAway: any) {}
+
+    static create<T extends Constructor>(
+        this: T,
+        props: InstanceType<T>
+    ): InstanceType<T> {
+        return new this(props) as InstanceType<T>;
+    }
 }
+
+type Constructor<T = {}> = new (...args: any[]) => T;
 
 export function record<T extends new (...args: any[]) => any>(target: T): T {
     return class extends target {
