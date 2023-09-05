@@ -1,24 +1,24 @@
-import { nat, query, update } from 'azle';
+import { Service, nat, query, update } from 'azle';
 
-let counter: nat = 0n;
+export default class extends Service {
+    counter: nat = 0n;
 
-export default class {
     @update([], nat)
     count(): nat {
-        counter += 1n;
+        this.counter += 1n;
 
-        return counter;
+        return this.counter;
     }
 
     @query([], nat)
     getCount(): nat {
-        return counter;
+        return this.counter;
     }
 
     @update([], nat)
     reset(): nat {
-        counter = 0n;
+        this.counter = 0n;
 
-        return counter;
+        return this.counter;
     }
 }

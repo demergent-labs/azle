@@ -1,6 +1,6 @@
-import { nat, update } from 'azle';
+import { Service, nat, update } from 'azle';
 
-export default class {
+export default class extends Service {
     // Calculate the product of all positive integers less than or equal to `n`.
     @update([nat], nat)
     fac(n: nat): nat {

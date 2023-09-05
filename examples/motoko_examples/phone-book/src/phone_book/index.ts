@@ -5,6 +5,7 @@ import {
     query,
     record,
     Record,
+    Service,
     Some,
     text,
     update,
@@ -20,17 +21,17 @@ export class Entry extends Record {
     phone: text;
 }
 
-let phoneBook = new Map<string, Entry>();
+export default class extends Service {
+    phoneBook = new Map<string, Entry>();
 
-export default class {
     @update([text, Entry], Void)
     insert(name: text, entry: Entry): void {
-        phoneBook.set(name, entry);
+        this.phoneBook.set(name, entry);
     }
 
     @query([text], Opt(Entry))
     lookup(name: text): Opt<Entry> {
-        const entryOrUndefined = phoneBook.get(name);
+        const entryOrUndefined = this.phoneBook.get(name);
 
         return entryOrUndefined ? Some(entryOrUndefined) : None;
     }

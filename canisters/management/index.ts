@@ -48,6 +48,23 @@ export class EcdsaPublicKeyResult extends Record {
     chain_code: blob;
 }
 
+@record
+export class SignWithEcdsaArgs extends Record {
+    @candid(blob)
+    message_hash: blob;
+
+    @candid(Vec(blob))
+    derivation_path: Vec<blob>;
+
+    @candid(KeyId)
+    key_id: KeyId;
+}
+
+@record
+export class SignWithEcdsaResult extends Record {
+    signature: blob;
+}
+
 class ManagementCanister extends Service {
     @update([], blob)
     raw_rand: () => Promise<blob>;
@@ -56,6 +73,9 @@ class ManagementCanister extends Service {
     ecdsa_public_key: (
         args: EcdsaPublicKeyArgs
     ) => Promise<EcdsaPublicKeyResult>;
+
+    @update([SignWithEcdsaArgs], SignWithEcdsaResult)
+    sign_with_ecdsa: (args: SignWithEcdsaArgs) => Promise<SignWithEcdsaResult>;
 }
 
 /**

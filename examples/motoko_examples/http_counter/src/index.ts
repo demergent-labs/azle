@@ -18,7 +18,8 @@ import {
     variant,
     Some,
     None,
-    bool
+    bool,
+    Service
 } from 'azle';
 import encodeUtf8 from 'encode-utf8';
 
@@ -107,7 +108,7 @@ function encode(string: string): blob {
     return new Uint8Array(encodeUtf8(string));
 }
 
-export default class {
+export default class extends Service {
     @query([HttpRequest], HttpResponse)
     http_request(req: HttpRequest): HttpResponse {
         console.log('Hello from http_request');

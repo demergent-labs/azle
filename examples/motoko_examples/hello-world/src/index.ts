@@ -1,6 +1,6 @@
-import { query, Void } from 'azle';
+import { query, Service, Void } from 'azle';
 
-export default class {
+export default class extends Service {
     @query([], Void)
     main(): void {
         console.log('Hello World!');

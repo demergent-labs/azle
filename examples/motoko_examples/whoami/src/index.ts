@@ -17,17 +17,17 @@ class WhoAmICanister extends Service {
     idQuick: () => Promise<Principal>;
 }
 
-// Initialize the variables to ensure that they aren't `undefined`.
-// We use the zero principal but any principal could be used.
-let install: Principal = Principal.fromText('aaaaa-aa');
-let someone: Principal = Principal.fromText('aaaaa-aa');
+export default class extends Service {
+    // Initialize the variables to ensure that they aren't `undefined`.
+    // We use the zero principal but any principal could be used.
+    install: Principal = Principal.fromText('aaaaa-aa');
+    someone: Principal = Principal.fromText('aaaaa-aa');
 
-export default class {
     // TODO: Implement this
     // // Manually save the calling principal and argument for later access.
     // @init([Principal], Void)
     // init(somebody: Principal): void {
-    //     install = ic.caller();
+    //     this.install = ic.caller();
     //     someone = somebody;
     // }
 
@@ -35,7 +35,7 @@ export default class {
     // // Manually re-save these variables after new deploys.
     // @postUpgrade([Principal], Void)
     // postUpgrade(somebody: Principal): void {
-    //     install = ic.caller();
+    //     this.install = ic.caller();
     //     someone = somebody;
     // }
 
@@ -43,14 +43,14 @@ export default class {
     // canister.
     @query([], Principal)
     installer(): Principal {
-        return install;
+        return this.install;
     }
 
     // Return the principal identifier that was provided as an installation
     // argument to this canister.
     @query([], Principal)
     argument(): Principal {
-        return someone;
+        return this.someone;
     }
 
     // Return the principal identifier of the caller of this method.

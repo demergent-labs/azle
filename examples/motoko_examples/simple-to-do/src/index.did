@@ -1,5 +1,6 @@
+type rec_0 = record {completed:bool; description:text};
 service: () -> {
-    getTodos: () -> (vec record {completed:bool; description:text}) query;
+    getTodos: () -> (vec rec_0) query;
     addTodo: (text) -> (nat);
     completeTodo: (nat) -> ();
     showTodos: () -> (text) query;

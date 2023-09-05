@@ -1,27 +1,27 @@
-import { int, update, Opt, Void, Some, None } from 'azle';
+import { int, update, Opt, Void, Some, None, Service } from 'azle';
 
-let cell: int = 0n;
+export default class extends Service {
+    cell: int = 0n;
 
-export default class {
     @update([int], int)
     add(n: int): int {
-        cell += n;
+        this.cell += n;
 
-        return cell;
+        return this.cell;
     }
 
     @update([int], int)
     sub(n: int): int {
-        cell -= n;
+        this.cell -= n;
 
-        return cell;
+        return this.cell;
     }
 
     @update([int], int)
     mul(n: int): int {
-        cell *= n;
+        this.cell *= n;
 
-        return cell;
+        return this.cell;
     }
 
     @update([int], Opt(int))
@@ -29,13 +29,13 @@ export default class {
         if (n === 0n) {
             return None;
         } else {
-            cell /= n;
-            return Some(cell);
+            this.cell /= n;
+            return Some(this.cell);
         }
     }
 
     @update([], Void)
     clearall(): void {
-        cell = 0n;
+        this.cell = 0n;
     }
 }

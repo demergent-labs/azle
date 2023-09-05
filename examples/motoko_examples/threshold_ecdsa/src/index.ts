@@ -1,4 +1,4 @@
-import { blob, candid, ic, None, record, Record, update } from 'azle';
+import { blob, candid, ic, None, record, Record, Service, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 @record
@@ -13,15 +13,26 @@ class Signature extends Record {
     signature: blob;
 }
 
-export default class {
+export default class extends Service {
     @update([], PublicKey)
     async publicKey(): Promise<PublicKey> {
         const caller = ic.caller().toUint8Array();
-        const publicKeyResult = await managementCanister.ecdsa_public_key({
-            canister_id: None,
-            derivation_path: [caller],
-            key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
-        });
+
+        const publicKeyResult = await ic.call(
+            managementCanister.ecdsa_public_key,
+            {
+                args: [
+                    {
+                        canister_id: None,
+                        derivation_path: [caller],
+                        key_id: {
+                            curve: { secp256k1: null },
+                            name: 'dfx_test_key'
+                        }
+                    }
+                ]
+            }
+        );
 
         return PublicKey.create({
             publicKey: publicKeyResult.public_key
@@ -36,13 +47,22 @@ export default class {
 
         const caller = ic.caller().toUint8Array();
 
-        const signatureResult = await managementCanister.sign_with_ecdsa({
-            message_hash: messageHash,
-            derivation_path: [caller],
-            key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
-        });
-        // .cycles(10_000_000_000n)
-        // .call();
+        const signatureResult = await ic.call(
+            managementCanister.sign_with_ecdsa,
+            {
+                args: [
+                    {
+                        message_hash: messageHash,
+                        derivation_path: [caller],
+                        key_id: {
+                            curve: { secp256k1: null },
+                            name: 'dfx_test_key'
+                        }
+                    }
+                ],
+                cycles: 10_000_000_000n
+            }
+        );
 
         return Signature.create({
             signature: signatureResult.signature

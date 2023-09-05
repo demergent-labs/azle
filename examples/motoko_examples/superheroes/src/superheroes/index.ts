@@ -7,6 +7,7 @@ import {
     query,
     record,
     Record,
+    Service,
     Some,
     text,
     Tuple,
@@ -16,6 +17,9 @@ import {
 // Note: This won't be reflected in the candid until
 export type SuperheroId = nat32;
 const SuperheroId = nat32;
+
+export type List = [text, Opt<List>];
+const List: List = Tuple(text, Opt(List));
 
 // The type of a superhero.
 @record
@@ -27,29 +31,26 @@ class Superhero extends Record {
     superpowers: Opt<List>;
 }
 
-export type List = [text, Opt<List>];
-const List: List = Tuple(text, Opt(List));
-
-/**
- * Application State
- */
-
-// The next available superhero identifier.
-let next: SuperheroId = 0;
-
-// The superhero data store.
-let superheroes: Map<SuperheroId, Superhero> = new Map();
-
 /**
  * High-Level API
  */
-export default class {
+export default class extends Service {
+    /**
+     * Application State
+     */
+
+    // The next available superhero identifier.
+    next: SuperheroId = 0;
+
+    // The superhero data store.
+    superheroes: Map<SuperheroId, Superhero> = new Map();
+
     // Create a superhero.
     @update([Superhero], SuperheroId)
     create(superhero: Superhero): SuperheroId {
-        let superheroId = next;
-        next += 1;
-        superheroes.set(superheroId, superhero);
+        let superheroId = this.next;
+        this.next += 1;
+        this.superheroes.set(superheroId, superhero);
 
         return superheroId;
     }
@@ -57,16 +58,16 @@ export default class {
     // Read a superhero.
     @query([SuperheroId], Opt(Superhero))
     read(superheroId: SuperheroId): Opt<Superhero> {
-        const superheroOrUndefined = superheroes.get(superheroId);
+        const superheroOrUndefined = this.superheroes.get(superheroId);
         return superheroOrUndefined ? Some(superheroOrUndefined) : None;
     }
 
     // Update a superhero.
     @update([SuperheroId, Superhero], bool)
     update(superheroId: SuperheroId, superhero: Superhero): bool {
-        let result = superheroes.get(superheroId);
+        let result = this.superheroes.get(superheroId);
         if (result) {
-            superheroes.set(superheroId, superhero);
+            this.superheroes.set(superheroId, superhero);
         }
 
         return !!result;
@@ -75,9 +76,9 @@ export default class {
     // Delete a superhero.
     @update([SuperheroId], bool)
     deleteHero(superheroId: SuperheroId): bool {
-        let result = superheroes.get(superheroId);
+        let result = this.superheroes.get(superheroId);
         if (result) {
-            superheroes.delete(superheroId);
+            this.superheroes.delete(superheroId);
         }
 
         return !!result;
