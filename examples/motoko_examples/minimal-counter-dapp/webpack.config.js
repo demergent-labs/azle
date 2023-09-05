@@ -41,12 +41,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 
 const frontendDirectory = 'minimal_dapp_assets';
 
-const asset_entry = path.join(
-    'canisters',
-    frontendDirectory,
-    'src',
-    'index.html'
-);
+const asset_entry = path.join('src', frontendDirectory, 'src', 'index.html');
 
 module.exports = {
     target: 'web',
@@ -113,7 +108,7 @@ module.exports = {
             }
         },
         hot: true,
-        watchFiles: [path.resolve(__dirname, 'canisters', frontendDirectory)],
+        watchFiles: [path.resolve(__dirname, 'src', frontendDirectory)],
         liveReload: true
     }
 };

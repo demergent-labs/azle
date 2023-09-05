@@ -1,7 +1,0 @@
-type Entry = record { desc : text; phone : text };
-type PerfResult = record { wasmBodyOnly : nat64; wasmIncludingPrelude : nat64 };
-service : () -> {
-  getPerfResult : () -> (opt PerfResult) query;
-  insert : (text, Entry) -> ();
-  lookup : (text) -> (opt Entry) query;
-}

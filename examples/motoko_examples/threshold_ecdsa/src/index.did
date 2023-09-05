@@ -1,0 +1,6 @@
+type rec_0 = record {publicKey:vec nat8};
+type rec_1 = record {signature:vec nat8};
+service: () -> {
+    publicKey: () -> (rec_0);
+    sign: (vec nat8) -> (rec_1);
+}
