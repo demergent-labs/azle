@@ -51,7 +51,7 @@ export function serviceDecorator(
             | typeof ic.callRaw
             | typeof ic.callRaw128
             | typeof ic.notifyRaw,
-        cycles?: bigint,
+        cycles: bigint,
         ...args: any[]
     ) {
         const encodedArgs = new Uint8Array(
@@ -60,12 +60,7 @@ export function serviceDecorator(
 
         if (notify) {
             try {
-                return callFunction(
-                    this.canisterId,
-                    key,
-                    encodedArgs,
-                    cycles ?? 0n
-                );
+                return callFunction(this.canisterId, key, encodedArgs, cycles);
             } catch (error) {
                 throw error;
             }
@@ -74,7 +69,7 @@ export function serviceDecorator(
                 this.canisterId,
                 key,
                 encodedArgs,
-                cycles ?? 0n
+                cycles
             );
 
             const returnIdls = toReturnCandidClass(returnIdl);

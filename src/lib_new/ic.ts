@@ -31,7 +31,7 @@ type Ic = {
 
     call<T extends (...args: any[]) => any>(
         method: T,
-        config: {
+        config?: {
             args?: ArgsType<T>;
             cycles?: bigint;
         }
@@ -39,8 +39,8 @@ type Ic = {
 
     call128<T extends (...args: any[]) => any>(
         method: T,
-        config: {
-            args: ArgsType<T>;
+        config?: {
+            args?: ArgsType<T>;
             cycles?: bigint;
         }
     ): ReturnTypeOfPromise<T>;
@@ -193,7 +193,7 @@ type Ic = {
 
     notify<T extends (...args: any[]) => any>(
         method: T,
-        config: {
+        config?: {
             args?: ArgsType<T>;
             cycles?: bigint;
         }
@@ -388,16 +388,16 @@ export const ic: Ic = globalThis._azleIc
               return method(
                   false,
                   ic.callRaw,
-                  config.cycles,
-                  ...(config.args ?? [])
+                  config?.cycles ?? 0n,
+                  ...(config?.args ?? [])
               );
           },
           call128: (method, config) => {
               return method(
                   false,
                   ic.callRaw128,
-                  config.cycles,
-                  ...config.args
+                  config?.cycles ?? 0n,
+                  ...(config?.args ?? [])
               );
           },
           callRaw: (canisterId, method, argsRaw, payment) => {
@@ -585,8 +585,8 @@ export const ic: Ic = globalThis._azleIc
               return method(
                   true,
                   ic.notifyRaw,
-                  config.cycles,
-                  ...(config.args ?? [])
+                  config?.cycles ?? 0n,
+                  ...(config?.args ?? [])
               );
           },
           notifyRaw: (canisterId, method, argsRaw, payment) => {
