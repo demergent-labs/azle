@@ -89,9 +89,9 @@ export class AzleTuple {
     }
 }
 
-export function Vec<T>(t: IDL.Type<T> | any): AzleOpt {
+export function Vec<T>(t: IDL.Type<T> | any): AzleVec {
     // return IDL.Vec(toCandidClass(t));
-    return new AzleOpt(t);
+    return new AzleVec(t);
 }
 
 // TODO I am not sure of any of these types... but its working so...

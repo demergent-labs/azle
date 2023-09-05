@@ -1,31 +1,72 @@
 import * as swc from '@swc/core';
 import { buildSync } from 'esbuild';
-import { JavaScript, TypeScript } from '../../utils/types';
+import { JSCanisterConfig, JavaScript, TypeScript } from '../../utils/types';
 import { Result } from '../../utils/result';
 
 export function compileTypeScriptToJavaScript(
-    tsPath: string
-): Result<JavaScript, unknown> {
+    tsPath: string,
+    canisterConfig: JSCanisterConfig
+): Result<
+    {
+        canisterJavaScript: JavaScript;
+        candidJavaScript: JavaScript;
+    },
+    unknown
+> {
     try {
-        const jsBundledAndTranspiled = bundleAndTranspileJs(`
+        const globalThisProcess = `
+            globalThis.process = {
+                env: {
+                    ${(canisterConfig.env ?? [])
+                        .map((envVarName) => {
+                            return `'${envVarName}': '${process.env[envVarName]}'`;
+                        })
+                        .join(',')}
+                }
+            };
+        `;
+
+        const imports = `
             // Trying to make sure that all globalThis dependencies are defined
             // Before the developer imports azle on their own
             import 'azle';
+            import { ic } from 'azle';
             export { Principal } from '@dfinity/principal';
             export * from './${tsPath}';
             import CanisterClass from './${tsPath}';
-            export const canisterClass = new CanisterClass();
+        `;
 
+        const canisterClassInstantiation = `
+            export const canisterClass = new CanisterClass(ic.id());
+        `;
+
+        const candidGeneration = `
 globalThis._azleCandidService = \`\${globalThis._azleCandidTypes.length > 0 ? globalThis._azleCandidTypes.join(';\\n') + ';\\n' : ''}service: (\${globalThis._azleCandidInitParams.join(
     ', '
 )}) -> {
     \${globalThis._azleCandidMethods.join('\\n    ')}
 }\n\`
-        `);
+        `;
 
-        const mainJs: JavaScript = jsBundledAndTranspiled;
+        const canisterJavaScript = bundleAndTranspileJs(`
+            ${globalThisProcess}
+            ${imports}
+            ${canisterClassInstantiation}
+${candidGeneration}
+`);
 
-        return { ok: mainJs };
+        const candidJavaScript = bundleAndTranspileJs(`
+            ${globalThisProcess}
+            ${imports}
+${candidGeneration}
+`);
+
+        return {
+            ok: {
+                canisterJavaScript,
+                candidJavaScript
+            }
+        };
     } catch (err) {
         return { err };
     }

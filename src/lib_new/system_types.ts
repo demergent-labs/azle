@@ -30,5 +30,9 @@ export class RejectionCode extends Variant {
     Unknown?: null;
 }
 
-export const NotifyResult = Result(Null, RejectionCode.getIDL([]));
-export type NotifyResult = Result<Null, RejectionCode>;
+// TODO we have decided to not use callresult or notifyresult
+// TODO remove once we are more mature in the project
+// TODO just keeping this so that we can see how to do a result
+// TODO with a system method thing
+// export const NotifyResult = Result(Null, RejectionCode);
+// export type NotifyResult = Result<Null, RejectionCode>;

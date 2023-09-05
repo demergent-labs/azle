@@ -102,10 +102,12 @@ function setupCanisterMethod(
 
     const originalMethod = descriptor.value;
 
+    // This must remain a function and not an arrow function
+    // in order to set the context (this) correctly
     descriptor.value = function (...args: any[]) {
         const decoded = IDL.decode(paramCandid[0], args[0]);
 
-        const result = originalMethod(...decoded);
+        const result = originalMethod.apply(this, decoded);
 
         if (
             result !== undefined &&
@@ -122,6 +124,8 @@ function setupCanisterMethod(
                         encodeReadyResult
                     );
 
+                    // TODO this won't be accurate because we have most likely had
+                    // TODO cross-canister calls
                     console.log(
                         `final instructions: ${ic.instructionCounter()}`
                     );

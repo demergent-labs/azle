@@ -8,7 +8,7 @@ import {
     time
 } from './utils';
 
-export function installRustDependencies(
+export async function installRustDependencies(
     azleVersion: string,
     rustVersion: string
 ) {
@@ -16,7 +16,7 @@ export function installRustDependencies(
         return;
     }
 
-    time('[0/2] 🏗️  Preparing prerequisites...', 'inline', () => {
+    await time('[0/2] 🏗️  Preparing prerequisites...', 'inline', async () => {
         const installRustDependenciesPath = resolve(
             __dirname,
             '../../install_rust_dependencies.sh'

@@ -9,8 +9,7 @@ import {
     text,
     update,
     Vec,
-    Void,
-    NotifyResult
+    Void
 } from 'azle';
 
 // TODO start using principals instead of strings for ids
@@ -53,5 +52,5 @@ export class Canister2 extends Service {
     trap: () => text;
 
     @update([text], Void)
-    receiveNotification: (message: text) => NotifyResult;
+    receiveNotification: (message: text) => Void;
 }

@@ -61,6 +61,13 @@ export function display(
         );
         return [`opt ${candid[0]}`, candid[1]];
     }
+    if (idl instanceof IDL.VecClass) {
+        const candid = extractCandid(
+            [display(idl._type, candidTypeDefs)],
+            candidTypeDefs
+        );
+        return [`vec ${candid[0]}`, candid[1]];
+    }
     if (idl instanceof IDL.RecordClass) {
         const candidFields = idl._fields.map(([key, value]) =>
             display(value, candidTypeDefs)

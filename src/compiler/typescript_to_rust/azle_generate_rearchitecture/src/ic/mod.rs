@@ -23,6 +23,7 @@ mod msg_cycles_available;
 mod msg_cycles_available128;
 mod msg_cycles_refunded;
 mod msg_cycles_refunded128;
+mod notify_raw;
 mod performance_counter;
 mod print;
 mod reject;
@@ -64,6 +65,7 @@ pub fn generate() -> TokenStream {
     let msg_cycles_available128 = msg_cycles_available128::generate();
     let msg_cycles_refunded = msg_cycles_refunded::generate();
     let msg_cycles_refunded128 = msg_cycles_refunded128::generate();
+    let notify_raw = notify_raw::generate();
     let performance_counter = performance_counter::generate();
     let print = print::generate();
     let reject = reject::generate();
@@ -105,6 +107,7 @@ pub fn generate() -> TokenStream {
         #msg_cycles_available128
         #msg_cycles_refunded
         #msg_cycles_refunded128
+        #notify_raw
         #performance_counter
         #print
         #reject
@@ -147,6 +150,7 @@ pub fn generate() -> TokenStream {
         ic.set_property("msgCyclesAvailable128", context.wrap_callback2(msg_cycles_available128).unwrap()).unwrap();
         ic.set_property("msgCyclesRefunded", context.wrap_callback2(msg_cycles_refunded).unwrap()).unwrap();
         ic.set_property("msgCyclesRefunded128", context.wrap_callback2(msg_cycles_refunded128).unwrap()).unwrap();
+        ic.set_property("notifyRaw", context.wrap_callback2(notify_raw).unwrap()).unwrap();
         ic.set_property("performanceCounter", context.wrap_callback2(performance_counter).unwrap()).unwrap();
         ic.set_property("print", context.wrap_callback2(print).unwrap()).unwrap();
         ic.set_property("reject", context.wrap_callback2(reject).unwrap()).unwrap();
