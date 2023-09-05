@@ -1,4 +1,4 @@
-import { nat64, $query, $update } from 'azle';
+import { bool, nat64, query, Service, text, update } from 'azle';
 
 type Account = {
     address: string;
@@ -21,64 +21,62 @@ let state: State = {
     totalSupply: 0n
 };
 
-$update;
-export function initializeSupply(
-    name: string,
-    originalAddress: string,
-    ticker: string,
-    totalSupply: nat64
-): boolean {
-    state = {
-        ...state,
-        accounts: {
-            [originalAddress]: {
-                address: originalAddress,
-                balance: totalSupply
-            }
-        },
-        name,
-        ticker,
-        totalSupply
-    };
-
-    return true;
-}
-
-$update;
-export function transfer(
-    fromAddress: string,
-    toAddress: string,
-    amount: nat64
-): boolean {
-    if (state.accounts[toAddress] === undefined) {
-        state.accounts[toAddress] = {
-            address: toAddress,
-            balance: 0n
+export default class extends Service {
+    @update([text, text, text, nat64], bool)
+    initializeSupply(
+        name: text,
+        originalAddress: text,
+        ticker: text,
+        totalSupply: nat64
+    ): bool {
+        state = {
+            ...state,
+            accounts: {
+                [originalAddress]: {
+                    address: originalAddress,
+                    balance: totalSupply
+                }
+            },
+            name,
+            ticker,
+            totalSupply
         };
+
+        return true;
     }
 
-    state.accounts[fromAddress].balance -= amount;
-    state.accounts[toAddress].balance += amount;
+    @update([text, text, nat64], bool)
+    transfer(fromAddress: text, toAddress: text, amount: nat64): bool {
+        if (state.accounts[toAddress] === undefined) {
+            state.accounts[toAddress] = {
+                address: toAddress,
+                balance: 0n
+            };
+        }
 
-    return true;
-}
+        state.accounts[fromAddress].balance -= amount;
+        state.accounts[toAddress].balance += amount;
 
-$query;
-export function balance(address: string): nat64 {
-    return state.accounts[address]?.balance ?? 0n;
-}
+        return true;
+    }
 
-$query;
-export function ticker(): string {
-    return state.ticker;
-}
+    @query([text], nat64)
+    balance(address: text): nat64 {
+        return state.accounts[address]?.balance ?? 0n;
+    }
 
-$query;
-export function name(): string {
-    return state.name;
-}
+    @query([], text)
+    ticker(): text {
+        return state.ticker;
+    }
 
-$query;
-export function totalSupply(): nat64 {
-    return state.totalSupply;
+    @query([], text)
+    name(): text {
+        return state.name;
+    }
+
+    @query([], nat64)
+    totalSupply(): nat64 {
+        return state.totalSupply;
+    }
 }
