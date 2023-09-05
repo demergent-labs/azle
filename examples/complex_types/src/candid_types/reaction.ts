@@ -1,9 +1,8 @@
-import { candid, record, Record, text } from 'azle';
+import { candid, Record, text } from 'azle';
 import { Post } from './post';
 import { ReactionType } from './reaction_type';
 import { User } from './user';
 
-@record
 export class Reaction extends Record {
     @candid(text)
     id: text;

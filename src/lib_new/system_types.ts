@@ -1,12 +1,11 @@
 import { candid } from './index';
 import { Null } from './primitives';
 import { Result } from './result';
-import { variant, Variant } from './variant';
+import { Variant } from './variant';
 
 /**
  * Indicates an error was encountered during a canister method.
  */
-@variant
 export class RejectionCode extends Variant {
     @candid(Null)
     NoError?: null;

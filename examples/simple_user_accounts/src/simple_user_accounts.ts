@@ -14,7 +14,6 @@ export function test<query>(candidBytes: CandidBytes): CandidBytes {
         .buffer;
 }
 
-@record
 class MyRecord {
     @candid('text')
     id: string;
@@ -29,7 +28,6 @@ class MyRecord {
     fav_int: bigint;
 }
 
-@variant
 class Temperature {
     @candid.null
     Hot: null;
