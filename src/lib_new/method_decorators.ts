@@ -13,12 +13,26 @@ import {
 import { display } from './utils';
 import { serviceDecorator } from './service';
 
-type Mode = 'query' | 'update';
+type Mode = 'init' | 'postUpgrade' | 'query' | 'update';
 
 const modeToCandid = {
     query: ' query',
     update: ''
 };
+
+// Until we can figure how how to type check Funcs, Variants, and Records we are just going to have to use any here
+// export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
+export function init(paramsIdls: any[], returnIdl: any): any {
+    return (target: any, key: string, descriptor?: PropertyDescriptor) => {
+        return setupCanisterMethod(
+            paramsIdls,
+            returnIdl,
+            'init',
+            key,
+            descriptor
+        );
+    };
+}
 
 // Until we can figure how how to type check Funcs, Variants, and Records we are just going to have to use any here
 // export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
@@ -90,15 +104,22 @@ function setupCanisterMethod(
     const paramCandid = handleRecursiveParams(paramsIdls);
     const returnCandid = handleRecursiveReturn(returnIdl, paramCandid[2]);
 
+    if (mode === 'init' || mode === 'postUpgrade') {
+        globalThis._azleCandidInitParams = paramCandid[1];
+    }
+
     globalThis._azleCandidTypes = [
         ...globalThis._azleCandidTypes,
         ...newTypesToStingArr(returnCandid[2])
     ];
-    globalThis._azleCandidMethods.push(
-        `${key}: (${paramCandid[1].join(', ')}) -> (${returnCandid[1]})${
-            modeToCandid[mode]
-        };`
-    );
+
+    if (mode === 'query' || mode === 'update') {
+        globalThis._azleCandidMethods.push(
+            `${key}: (${paramCandid[1].join(', ')}) -> (${returnCandid[1]})${
+                modeToCandid[mode]
+            };`
+        );
+    }
 
     const originalMethod = descriptor.value;
 
@@ -108,6 +129,10 @@ function setupCanisterMethod(
         const decoded = IDL.decode(paramCandid[0], args[0]);
 
         const result = originalMethod.apply(this, decoded);
+
+        if (mode === 'init' || mode === 'postUpgrade') {
+            return;
+        }
 
         if (
             result !== undefined &&
@@ -145,6 +170,14 @@ function setupCanisterMethod(
             ic.replyRaw(new Uint8Array(encoded));
         }
     };
+
+    if (mode === 'init') {
+        globalThis._azleInitName = key;
+    }
+
+    if (mode === 'postUpgrade') {
+        globalThis._azlePostUpgradeName = key;
+    }
 
     return descriptor;
 }

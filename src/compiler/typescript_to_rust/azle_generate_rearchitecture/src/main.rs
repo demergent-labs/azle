@@ -82,7 +82,7 @@ fn main() -> Result<(), String> {
 
     let lib_file = quote! {
         #![allow(non_snake_case)]
-        use quickjs_wasm_rs::{JSContextRef, JSValueRef, JSValue, to_qjs_value, CallbackArg};
+        use quickjs_wasm_rs::{JSContextRef, JSValueRef, JSValue, from_qjs_value, to_qjs_value, CallbackArg};
 
         use std::cell::RefCell;
         use std::convert::TryInto;
@@ -104,10 +104,20 @@ fn main() -> Result<(), String> {
             context.eval_global("exports.js", "globalThis.exports = {};").unwrap();
             context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();
 
+            let _azle_init_name = global.get_property("_azleInitName").unwrap();
+            let _azle_init_name_string = if !_azle_init_name.is_undefined() {
+                let _azle_init_name_js_value: JSValue = from_qjs_value(&_azle_init_name).unwrap();
+                _azle_init_name_js_value.try_into().unwrap()
+            } else { "".to_string() };
+            
             CONTEXT.with(|ctx| {
                 let mut ctx = ctx.borrow_mut();
                 *ctx = Some(context);
             });
+
+            if _azle_init_name_string != "" {
+                execute_js(&_azle_init_name_string);
+            }
         }
 
         #[ic_cdk_macros::post_upgrade]
@@ -121,10 +131,20 @@ fn main() -> Result<(), String> {
             context.eval_global("exports.js", "globalThis.exports = {}").unwrap();
             context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();
 
+            let _azle_post_upgrade_name = global.get_property("_azlePostUpgradeName").unwrap();
+            let _azle_post_upgrade_name_string = if !_azle_post_upgrade_name.is_undefined() {
+                let _azle_post_upgrade_name_js_value: JSValue = from_qjs_value(&_azle_post_upgrade_name).unwrap();
+                _azle_post_upgrade_name_js_value.try_into().unwrap()
+            } else { "".to_string() };
+
             CONTEXT.with(|ctx| {
                 let mut ctx = ctx.borrow_mut();
                 *ctx = Some(context);
             });
+
+            if _azle_post_upgrade_name_string != "" {
+                execute_js(&_azle_post_upgrade_name_string);
+            }
         }
 
         #(#canister_methods)*

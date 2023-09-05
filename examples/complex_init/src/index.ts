@@ -1,19 +1,34 @@
-import { $init, Opt, $query, Record, Tuple } from 'azle';
+import {
+    candid,
+    init,
+    Opt,
+    query,
+    record,
+    Record,
+    Service,
+    text,
+    Tuple,
+    Void
+} from 'azle';
 
-type User = Record<{
-    id: string;
-}>;
-
-let greeting: string = 'Hello User';
-let user: Opt<User> = null;
-
-$init;
-export function init(tuple: Tuple<[string, User]>): void {
-    greeting = tuple[0];
-    user = tuple[1];
+@record
+class User extends Record {
+    @candid(text)
+    id: text;
 }
 
-$query;
-export function greetUser(): string {
-    return `${greeting} ${user?.id ?? '??'}`;
+export default class extends Service {
+    greeting: text = 'Hello User';
+    user: Opt<User> = [];
+
+    @init([Tuple(text, User)], Void)
+    init(tuple: Tuple<[string, User]>): Void {
+        this.greeting = tuple[0];
+        this.user = [tuple[1]];
+    }
+
+    @query([], text)
+    greetUser(): text {
+        return `${this.greeting} ${this.user[0]?.id ?? '??'}`;
+    }
 }

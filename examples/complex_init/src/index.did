@@ -1,2 +1,4 @@
-type User = record { id : text };
-service : (record { text; User }) -> { greetUser : () -> (text) query }
+type rec_0 = record {id:text};
+service: (record {text; rec_0}) -> {
+    greetUser: () -> (text) query;
+}
