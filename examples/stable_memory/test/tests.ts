@@ -39,17 +39,8 @@ export function getTests(
                 const result = await stableMemoryCanister.stableGrow(newPages);
                 const newSize = await stableMemoryCanister.stableSize();
 
-                if ('Err' in result) {
-                    return {
-                        Err: JSON.stringify(result.Err)
-                    };
-                }
-
                 return {
-                    Ok:
-                        'Ok' in result &&
-                        result.Ok === oldSize &&
-                        newPages + oldSize === newSize
+                    Ok: result === oldSize && newPages + oldSize === newSize
                 };
             }
         },
@@ -63,17 +54,8 @@ export function getTests(
                 );
                 const newSize = await stableMemoryCanister.stable64Size();
 
-                if ('Err' in result) {
-                    return {
-                        Err: JSON.stringify(result.Err)
-                    };
-                }
-
                 return {
-                    Ok:
-                        'Ok' in result &&
-                        result.Ok === oldSize &&
-                        newPages + oldSize === newSize
+                    Ok: result === oldSize && newPages + oldSize === newSize
                 };
             }
         },
@@ -210,27 +192,25 @@ export function getTests(
                 const result = await stableMemoryCanister.stableGrow(newPages);
                 const newSize = await stableMemoryCanister.stableSize();
 
-                if ('Err' in result) {
-                    return {
-                        Err: JSON.stringify(result.Err)
-                    };
-                }
-
                 return {
-                    Ok:
-                        'Ok' in result &&
-                        result.Ok === oldSize &&
-                        newPages + oldSize === newSize
+                    Ok: result === oldSize && newPages + oldSize === newSize
                 };
             }
         },
         {
             name: 'stable grow out of memory',
             test: async () => {
-                const result = await stableMemoryCanister.stableGrow(1);
-
+                try {
+                    const result = await stableMemoryCanister.stableGrow(1);
+                } catch (e: any) {
+                    return {
+                        Ok: e
+                            .toString()
+                            .includes('Uncaught InternalError: Out of memory')
+                    };
+                }
                 return {
-                    Ok: 'Err' in result && 'OutOfMemory' in result.Err
+                    Err: 'canister did run out of memory'
                 };
             }
         },
@@ -244,33 +224,31 @@ export function getTests(
                 );
                 const newSize = await stableMemoryCanister.stable64Size();
 
-                if ('Err' in result) {
-                    return {
-                        Err: JSON.stringify(result.Err)
-                    };
-                }
-
                 return {
-                    Ok:
-                        'Ok' in result &&
-                        result.Ok === oldSize &&
-                        newPages + oldSize === newSize
+                    Ok: result === oldSize && newPages + oldSize === newSize
                 };
             }
         },
         {
             name: 'stable64 grow out of memory',
             test: async () => {
-                const result = await stableMemoryCanister.stable64Grow(1n);
-
+                try {
+                    const result = await stableMemoryCanister.stable64Grow(1n);
+                } catch (e: any) {
+                    return {
+                        Ok: e
+                            .toString()
+                            .includes('Uncaught InternalError: Out of memory')
+                    };
+                }
                 return {
-                    Ok: 'Err' in result && 'OutOfMemory' in result.Err
+                    Err: 'canister did run out of memory'
                 };
             }
         }
     ];
 }
 
-function arrayEquals(a: any[], b: any[]): boolean {
+function arrayEquals(a: any[] | Uint8Array, b: any[] | Uint8Array): boolean {
     return a.length === b.length && a.every((item, index) => item === b[index]);
 }

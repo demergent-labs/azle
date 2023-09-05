@@ -8,10 +8,7 @@ import {
     Some,
     text,
     update,
-    Variant,
-    Null,
-    Vec,
-    float64
+    Vec
 } from 'azle';
 
 type Db = {
@@ -20,28 +17,12 @@ type Db = {
     };
 };
 
-class Degrees extends Record {
-    @candid(float64)
-    degrees: float64;
-}
-
-class Temp extends Variant {
-    @candid(Degrees)
-    Hot: Degrees;
-
-    @candid(Degrees)
-    Cold: Degrees;
-}
-
 class User extends Record {
     @candid(text)
     id: text;
 
     @candid(text)
     username: text;
-
-    @candid(Temp)
-    temp: Temp;
 }
 
 export default class extends Service {
@@ -67,8 +48,7 @@ export default class extends Service {
 
         const user = {
             id,
-            username,
-            temp: Temp.create({ Hot: Degrees.create({ degrees: 1.23 }) })
+            username
         };
 
         this.db.users[id] = user;
