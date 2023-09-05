@@ -1,52 +1,58 @@
-import { IDL } from '@dfinity/candid';
+import {
+    candid,
+    None,
+    Opt,
+    query,
+    Record,
+    Service,
+    Some,
+    text,
+    update,
+    Vec
+} from 'azle';
 
-globalThis.TextDecoder = require('text-encoding').TextDecoder;
-globalThis.TextEncoder = require('text-encoding').TextEncoder;
+type Db = {
+    users: {
+        [id: string]: User;
+    };
+};
 
-type CandidBytes = ArrayBuffer;
+class User extends Record {
+    @candid(text)
+    id: text;
 
-export function test<query>(candidBytes: CandidBytes): CandidBytes {
-    const decoded = IDL.decode([IDL.Text, IDL.Text], candidBytes);
-    const param1 = decoded[0];
-    const param2 = decoded[1];
-    // return IDL.Text.encodeValue(param1 + param2).buffer;
-    return new Uint8Array(IDL.encode([IDL.Text], [`${param1} ${param2}`]))
-        .buffer;
+    @candid(text)
+    username: text;
 }
 
-class MyRecord {
-    @candid('text')
-    id: string;
+export default class extends Service {
+    db: Db = {
+        users: {}
+    };
 
-    @candid('float32')
-    fav_num: number;
+    @query([text], Opt(User))
+    getUserById(id: text): Opt<User> {
+        const userOrUndefined = this.db.users[id];
 
-    @nat32
-    fav_nat: number;
+        return userOrUndefined ? Some(userOrUndefined) : None;
+    }
 
-    @int
-    fav_int: bigint;
-}
+    @query([], Vec(User))
+    getAllUsers(): Vec<User> {
+        return Object.values(this.db.users);
+    }
 
-class Temperature {
-    @candid.null
-    Hot: null;
+    @update([text], User)
+    createUser(username: text): User {
+        const id = Object.keys(this.db.users).length.toString();
 
-    @candid.null
-    Warm: null;
+        const user = {
+            id,
+            username
+        };
 
-    @candid.null
-    LukeWarm: null;
+        this.db.users[id] = user;
 
-    @candid.null
-    RoomTemp: null;
-
-    @candid.null
-    Cool: null;
-
-    @candid.null
-    Cold: null;
-
-    @candid.null
-    Freezing: null;
+        return user;
+    }
 }
