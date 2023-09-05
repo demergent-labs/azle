@@ -1,13 +1,13 @@
 import { dim } from './colors';
 
-export function time<T>(
+export async function time<T>(
     label: string,
     mode: 'inline' | 'default',
-    callback: () => T
-): T {
+    callback: () => Promise<T>
+): Promise<T> {
     const startTime = process.hrtime();
     console.info(label);
-    const result = callback();
+    const result = await callback();
     const endTime = process.hrtime(startTime);
     const duration = parseHrTimeToSeconds(endTime);
 

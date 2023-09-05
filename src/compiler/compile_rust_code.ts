@@ -7,12 +7,12 @@ import {
     time
 } from './utils';
 
-export function compileRustCode(
+export async function compileRustCode(
     canisterName: string,
     canisterPath: string,
     stdio: IOType
 ) {
-    time(`[2/2] 🚧 Building Wasm binary...`, 'inline', () => {
+    await time(`[2/2] 🚧 Building Wasm binary...`, 'inline', async () => {
         execSync(
             `cd ${canisterPath} && ${GLOBAL_AZLE_RUST_BIN_DIR}/cargo build --target wasm32-wasi --package ${canisterName} --release`,
             {

@@ -19,7 +19,7 @@ export class AzleResult {
     }
 }
 
-export function Result<Ok extends CandidClass, Err extends IDL.Type>(
+export function Result<Ok extends CandidClass, Err extends CandidClass>(
     ok: Ok,
     err: Err
 ) {

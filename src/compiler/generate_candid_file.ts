@@ -1,10 +1,18 @@
 import { writeFileSync } from 'fs';
 
 export function generateCandidFile(mainJs: string, candidPath: string) {
-    // TODO probably a very bad idea
-    // TODO move into its own process or something
-    // TODO sufficient for prototyping
-    eval(mainJs);
+    const vm = require('vm');
 
-    writeFileSync(candidPath, globalThis._azleCandidService);
+    const sandbox = {
+        globalThis: {},
+        exports: {},
+        TextDecoder,
+        TextEncoder
+    };
+    const context = new vm.createContext(sandbox);
+
+    const script = new vm.Script(mainJs);
+    script.runInContext(context);
+
+    writeFileSync(candidPath, (sandbox.globalThis as any)._azleCandidService);
 }

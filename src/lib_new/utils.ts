@@ -1,5 +1,6 @@
-import { IDL, candid } from './index';
+import { IDL } from './index';
 import { AzleTuple, AzleVec, AzleOpt } from './primitives';
+import { Record } from './record';
 
 /*
  * Look at each type,
@@ -59,6 +60,13 @@ export function display(
             candidTypeDefs
         );
         return [`opt ${candid[0]}`, candid[1]];
+    }
+    if (idl instanceof IDL.VecClass) {
+        const candid = extractCandid(
+            [display(idl._type, candidTypeDefs)],
+            candidTypeDefs
+        );
+        return [`vec ${candid[0]}`, candid[1]];
     }
     if (idl instanceof IDL.RecordClass) {
         const candidFields = idl._fields.map(([key, value]) =>
@@ -157,6 +165,7 @@ export function processMap(targetMap: CandidMap, parent: Parent[]): CandidMap {
 }
 
 export type CandidClass =
+    | Record
     | IDL.BoolClass
     | IDL.EmptyClass
     | IDL.IntClass

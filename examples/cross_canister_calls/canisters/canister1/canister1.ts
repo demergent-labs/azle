@@ -1,54 +1,64 @@
 import {
     ic,
     nat64,
-    NotifyResult,
     Opt,
     Principal,
-    Result,
-    $update,
-    Vec
+    Service,
+    text,
+    update,
+    Vec,
+    Void
 } from 'azle';
 import { Account, AccountArgs, Canister2 } from '../canister2/types';
 
-const canister2 = new Canister2(
-    Principal.fromText(
-        process.env.CANISTER2_PRINCIPAL ??
-            ic.trap('process.env.CANISTER2_PRINCIPAL is undefined')
-    )
-);
+export default class extends Service {
+    canister2 = new Canister2(
+        Principal.fromText(
+            process.env.CANISTER2_PRINCIPAL ??
+                ic.trap('process.env.CANISTER2_PRINCIPAL is undefined')
+        )
+    );
 
-$update;
-export async function transfer(
-    from: string,
-    to: string,
-    amount: nat64
-): Promise<Result<nat64, string>> {
-    return await canister2.transfer(from, to, amount).call();
-}
+    @update([text, text, nat64], nat64)
+    async transfer(from: text, to: text, amount: nat64): Promise<nat64> {
+        return await ic.call(this.canister2.transfer, {
+            args: [from, to, amount]
+        });
+    }
 
-$update;
-export async function balance(id: string): Promise<Result<nat64, string>> {
-    return await canister2.balance(id).call();
-}
+    @update([text], nat64)
+    async balance(id: text): Promise<nat64> {
+        return await ic.call(this.canister2.balance, {
+            args: [id]
+        });
+    }
 
-$update;
-export async function account(
-    args: AccountArgs
-): Promise<Result<Opt<Account>, string>> {
-    return await canister2.account(args).call();
-}
+    @update([AccountArgs], Opt(Account))
+    async account(args: AccountArgs): Promise<Opt<Account>> {
+        return await ic.call(this.canister2.account, {
+            args: [args]
+        });
+    }
 
-$update;
-export async function accounts(): Promise<Result<Vec<Account>, string>> {
-    return await canister2.accounts().call();
-}
+    @update([], Vec(Account))
+    async accounts(): Promise<Vec<Account>> {
+        return await ic.call(this.canister2.accounts, {
+            args: []
+        });
+    }
 
-$update;
-export async function trap(): Promise<Result<string, string>> {
-    return await canister2.trap().call();
-}
+    @update([], text)
+    async trap(): Promise<text> {
+        return await ic.call(this.canister2.trap, {
+            args: []
+        });
+    }
 
-$update;
-export function sendNotification(): NotifyResult {
-    return canister2.receiveNotification('This is the notification').notify();
+    @update([], Void)
+    sendNotification(): Void {
+        return ic.notify(this.canister2.receiveNotification, {
+            args: ['This is the notification'],
+            cycles: 10n
+        });
+    }
 }

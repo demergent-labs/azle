@@ -1,7 +1,8 @@
 import { IDL } from './index';
 import { Principal } from '@dfinity/principal';
-import { blob, nat, nat32, nat64 } from './primitives';
+import { blob, nat, nat32, nat64, Void } from './primitives';
 import { v4 } from 'uuid';
+import { toReturnCandidClass } from './utils';
 
 // declare var globalThis: {
 //     ic: Ic;
@@ -27,6 +28,22 @@ type Ic = {
      * @returns the data size
      */
     argDataRawSize: () => number;
+
+    call<T extends (...args: any[]) => any>(
+        method: T,
+        config: {
+            args?: ArgsType<T>;
+            cycles?: bigint;
+        }
+    ): ReturnTypeOfPromise<T>;
+
+    call128<T extends (...args: any[]) => any>(
+        method: T,
+        config: {
+            args: ArgsType<T>;
+            cycles?: bigint;
+        }
+    ): ReturnTypeOfPromise<T>;
 
     /**
      * Performs an asynchronous call to another canister using the [System API](
@@ -173,6 +190,21 @@ type Ic = {
      * @returns the amount of cycles
      */
     msgCyclesRefunded128: () => bigint;
+
+    notify<T extends (...args: any[]) => any>(
+        method: T,
+        config: {
+            args?: ArgsType<T>;
+            cycles?: bigint;
+        }
+    ): ReturnTypeOf<T>;
+
+    notifyRaw: (
+        canisterId: Principal,
+        method: string,
+        argsRaw: blob,
+        payment: nat
+    ) => Void;
 
     /**
      * Gets the value of the specified performance counter
@@ -342,10 +374,32 @@ type Ic = {
     trap: (message: string) => never;
 };
 
+type ArgsType<T> = T extends (...args: infer U) => any ? U : never;
+type ReturnTypeOf<T> = T extends (...args: any[]) => infer R ? R : never;
+type ReturnTypeOfPromise<T> = T extends (...args: any[]) => infer R
+    ? Promise<R>
+    : never;
+
 /** API entrypoint for interacting with the Internet Computer */
 export const ic: Ic = globalThis._azleIc
     ? {
           ...globalThis._azleIc,
+          call: (method, config) => {
+              return method(
+                  false,
+                  ic.callRaw,
+                  config.cycles,
+                  ...(config.args ?? [])
+              );
+          },
+          call128: (method, config) => {
+              return method(
+                  false,
+                  ic.callRaw128,
+                  config.cycles,
+                  ...config.args
+              );
+          },
           callRaw: (canisterId, method, argsRaw, payment) => {
               return new Promise((resolve, reject) => {
                   const promiseId = v4();
@@ -526,6 +580,28 @@ export const ic: Ic = globalThis._azleIc
                   globalThis._azleIc.msgCyclesRefunded128();
 
               return IDL.decode([IDL.Nat], msgCyclesRefunded128CandidBytes)[0];
+          },
+          notify(method, config) {
+              return method(
+                  true,
+                  ic.notifyRaw,
+                  config.cycles,
+                  ...(config.args ?? [])
+              );
+          },
+          notifyRaw: (canisterId, method, argsRaw, payment) => {
+              const canisterIdBytes = canisterId.toUint8Array().buffer;
+              const argsRawBuffer = argsRaw.buffer;
+              const paymentCandidBytes = new Uint8Array(
+                  IDL.encode([IDL.Nat], [payment])
+              ).buffer;
+
+              return globalThis._azleIc.notifyRaw(
+                  canisterIdBytes,
+                  method,
+                  argsRawBuffer,
+                  paymentCandidBytes
+              );
           },
           performanceCounter: (counterType: nat32) => {
               const counterTypeCandidBytes = new Uint8Array(

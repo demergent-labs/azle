@@ -1,10 +1,10 @@
-import { nat32, $query, $update, Vec } from 'azle';
-import { Reaction, ReactionType } from './candid_types';
+import { nat32, Vec } from 'azle';
+import { Reaction } from './candid_types/reaction';
+import { ReactionType } from './candid_types/reaction_type';
 import { getPostFromStatePost } from './posts';
 import { state, StatePost, StateReaction, StateUser } from './state';
 import { getUserFromStateUser } from './users';
 
-$update;
 export function createReaction(
     authorId: string,
     postId: string,
@@ -34,7 +34,6 @@ export function createReaction(
     return reaction;
 }
 
-$query;
 export function getAllReactions(joinDepth: nat32): Vec<Reaction> {
     return Object.values(state.reactions).map((stateReaction) =>
         getReactionFromStateReaction(stateReaction, joinDepth)
@@ -51,12 +50,12 @@ export function getReactionFromStateReaction(
     const statePost = state.posts[stateReaction.postId];
     const post = getPostFromStatePost(statePost, joinDepth);
 
-    return {
+    return Reaction.create({
         id: stateReaction.id,
         author,
         post,
         reactionType: stateReaction.reactionType
-    };
+    });
 }
 
 function getUpdatedStateAuthor(
