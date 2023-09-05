@@ -50,11 +50,6 @@ export class Record {
 
 type Constructor<T = {}> = new (...args: any[]) => T;
 
-export function record<T extends new (...args: any[]) => any>(target: T): T {
-    // return class extends target {};
-    return target;
-}
-
 // makeObjectLit() {
 //     let result = {};
 //     // @ts-ignore

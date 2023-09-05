@@ -1,6 +1,5 @@
-import { candid, Null, variant, Variant } from 'azle';
+import { candid, Null, Variant } from 'azle';
 
-@variant
 export class ReactionType extends Variant {
     @candid(Null)
     Fire?: null;

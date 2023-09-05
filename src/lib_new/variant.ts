@@ -44,22 +44,6 @@ export class Variant {
 
 type Constructor<T = {}> = new (...args: any[]) => T;
 
-export function variant<T extends new (...args: any[]) => any>(target: T) {
-    // target.getIDL = (parents: Parent[]) => {
-    //     const idl = IDL.Rec();
-    //     const processedMap = processMap(target._azleCandidMap, [
-    //         ...parents,
-    //         {
-    //             idl: idl,
-    //             name: target.name
-    //         }
-    //     ]);
-    //     idl.fill(IDL.Variant(processedMap));
-    //     return idl;
-    // };
-    return target;
-}
-
 export type RequireExactlyOne<
     ObjectType,
     KeysType extends keyof ObjectType = keyof ObjectType

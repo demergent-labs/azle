@@ -1,16 +1,5 @@
-import {
-    ic,
-    candid,
-    query,
-    Record,
-    update,
-    int,
-    Null,
-    record,
-    Void
-} from 'azle';
+import { ic, candid, query, Record, update, int, Null, Void } from 'azle';
 
-@record
 class PartiallyNullRecord extends Record {
     @candid(int)
     firstItem: int;
@@ -22,7 +11,6 @@ class PartiallyNullRecord extends Record {
     thirdItem: int;
 }
 
-@record
 class TwoNullRecord extends Record {
     @candid(Null)
     firstItem: Null;
@@ -31,7 +19,6 @@ class TwoNullRecord extends Record {
     secondItem: Null;
 }
 
-@record
 class ThreeNullRecord extends Record {
     @candid(Null)
     firstItem: null;

@@ -1,30 +1,17 @@
 // TODO let's add more examples here, really test it out
 
-import {
-    Opt,
-    query,
-    Record,
-    Vec,
-    text,
-    bool,
-    candid,
-    record,
-    Null
-} from 'azle';
+import { Opt, query, Record, Vec, text, bool, candid, Null } from 'azle';
 
-@record
 class Element extends Record {
     @candid(text)
     id: string;
 }
 
-@record
 class Head extends Record {
     @candid(Vec(Element))
     elements: Vec<Element>;
 }
 
-@record
 class Html extends Record {
     @candid(Opt(Head))
     head: Opt<Head>;
