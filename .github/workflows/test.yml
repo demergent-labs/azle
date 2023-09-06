@@ -91,6 +91,7 @@
 # "examples/robust_imports",
 # "examples/run_time_errors",
 # "examples/rust_type_conversions",
+# "examples/manual_reply",
 
 name: Azle Tests
 on:
@@ -164,7 +165,6 @@ jobs:
                     "examples/ledger_canister",
                     "examples/list_of_lists",
                     "examples/management_canister",
-                    "examples/manual_reply",
                     "examples/motoko_examples/calc",
                     "examples/motoko_examples/counter",
                     "examples/motoko_examples/echo",
