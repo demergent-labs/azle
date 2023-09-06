@@ -1,6 +1,8 @@
-import { float64, $update } from 'azle';
+import { float64, Service, update } from 'azle';
 
-$update;
-export function randomNumber(): float64 {
-    return Math.random();
+export default class extends Service {
+    @update([], float64)
+    randomNumber(): float64 {
+        return Math.random();
+    }
 }
