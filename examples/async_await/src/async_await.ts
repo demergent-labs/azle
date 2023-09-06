@@ -1,10 +1,10 @@
-import { blob, update, Void } from 'azle';
+import { blob, ic, Service, update, Void } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-export default class {
+export default class extends Service {
     @update([], blob)
     async getRandomnessDirectly(): Promise<blob> {
-        return await managementCanister.raw_rand();
+        return await ic.call(managementCanister.raw_rand);
     }
 
     @update([], blob)
@@ -27,7 +27,7 @@ export default class {
 
     @update([], Void)
     async returnPromiseVoid(): Promise<void> {
-        await managementCanister.raw_rand();
+        await ic.call(managementCanister.raw_rand);
     }
 }
 
@@ -44,5 +44,5 @@ async function getRandomnessLevel2(): Promise<blob> {
 }
 
 async function getRandomness(): Promise<blob> {
-    return await managementCanister.raw_rand();
+    return await ic.call(managementCanister.raw_rand);
 }

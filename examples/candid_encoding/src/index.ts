@@ -1,6 +1,6 @@
-import { blob, ic, query, text } from 'azle';
+import { blob, ic, query, Service, text } from 'azle';
 
-export default class {
+export default class extends Service {
     // encodes a Candid string to Candid bytes
     @query([text], blob)
     candidEncode(candidString: text): blob {

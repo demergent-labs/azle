@@ -1,6 +1,7 @@
 import { Vec } from 'azle';
 import { ReactionType } from './candid_types/reaction_type';
 
+// TODO this state should go on the class
 export let state: State = {
     posts: {},
     reactions: {},

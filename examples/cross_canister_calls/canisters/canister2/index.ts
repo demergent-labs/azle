@@ -4,6 +4,7 @@ import {
     None,
     Opt,
     query,
+    Service,
     Some,
     text,
     update,
@@ -22,7 +23,7 @@ let state: State = {
     notification: ''
 };
 
-export default class {
+export default class extends Service {
     @update([text, text, nat64], nat64)
     transfer(from: text, to: text, amount: nat64): nat64 {
         const fromAccount: Account | undefined = state.accounts[from];

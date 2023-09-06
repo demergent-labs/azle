@@ -1,17 +1,17 @@
-import { nat64, query, update } from 'azle';
+import { nat64, query, Service, update } from 'azle';
 
-let count: nat64 = 0n;
+export default class extends Service {
+    count: nat64 = 0n;
 
-export default class {
     @query([], nat64)
     readCount(): nat64 {
-        return count;
+        return this.count;
     }
 
     @update([], nat64)
     incrementCount(): nat64 {
-        count += 1n;
+        this.count += 1n;
 
-        return count;
+        return this.count;
     }
 }
