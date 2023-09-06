@@ -1,72 +1,93 @@
-import { blob, Principal, $query, Record, Variant } from 'azle';
+import {
+    blob,
+    candid,
+    Null,
+    Principal,
+    query,
+    Record,
+    Variant,
+    Service,
+    principal,
+    text
+} from 'azle';
 
-type User = Record<{
+class User extends Record {
+    @candid(principal)
     id: Principal;
-    username: string;
-}>;
 
-type Status = Variant<{
-    WaitingOn: Principal;
-    Online: null;
-    Offline: null;
-}>;
-
-$query;
-export function principalReturnType(): Principal {
-    return Principal.fromText('aaaaa-aa');
+    @candid(text)
+    username: text;
 }
 
-$query;
-export function principalParam(principal: Principal): Principal {
-    return principal;
+class Status extends Variant {
+    @candid(principal)
+    WaitingOn?: Principal;
+
+    @candid(Null)
+    Online?: Null;
+
+    @candid(Null)
+    Offline?: Null;
 }
 
-$query;
-export function principalInRecord(): User {
-    return {
-        id: Principal.fromText('aaaaa-aa'),
-        username: 'lastmjs'
-    };
-}
+export default class extends Service {
+    @query([], principal)
+    principalReturnType(): Principal {
+        return Principal.fromText('aaaaa-aa');
+    }
 
-$query;
-export function principalInVariant(): Status {
-    return {
-        WaitingOn: Principal.fromText('aaaaa-aa')
-    };
-}
+    @query([principal], principal)
+    principalParam(principal: Principal): Principal {
+        return principal;
+    }
 
-$query;
-export function principalFromHex(principalHex: string): Principal {
-    return Principal.fromHex(principalHex);
-}
+    @query([], User)
+    principalInRecord(): User {
+        return {
+            id: Principal.fromText('aaaaa-aa'),
+            username: 'lastmjs'
+        };
+    }
 
-$query;
-export function principalFromText(principalText: string): Principal {
-    return Principal.fromText(principalText);
-}
+    @query([], Status)
+    principalInVariant(): Status {
+        return {
+            WaitingOn: Principal.fromText('aaaaa-aa')
+        };
+    }
 
-$query;
-export function principalFromBlob(principalBytes: blob): Principal {
-    return Principal.fromUint8Array(Uint8Array.from(principalBytes));
-}
+    @query([text], principal)
+    principalFromHex(principalHex: text): Principal {
+        return Principal.fromHex(principalHex);
+    }
 
-$query;
-export function principalToHex(principal: Principal): string {
-    return principal.toHex();
-}
+    @query([text], principal)
+    principalFromText(principalText: text): Principal {
+        return Principal.fromText(principalText);
+    }
 
-$query;
-export function principalToText(principal: Principal): string {
-    return principal.toText();
-}
+    @query([blob], principal)
+    principalFromBlob(principalBytes: blob): Principal {
+        return Principal.fromUint8Array(Uint8Array.from(principalBytes));
+    }
 
-$query;
-export function principalToBlob(principal: Principal): blob {
-    return principal.toUint8Array();
-}
+    @query([principal], text)
+    principalToHex(principal: Principal): text {
+        return principal.toHex();
+    }
 
-$query;
-export function principalSelfAuthenticating(publicKey: blob): Principal {
-    return Principal.selfAuthenticating(publicKey);
+    @query([principal], text)
+    principalToText(principal: Principal): text {
+        return principal.toText();
+    }
+
+    @query([principal], blob)
+    principalToBlob(principal: Principal): blob {
+        return principal.toUint8Array();
+    }
+
+    @query([blob], principal)
+    principalSelfAuthenticating(publicKey: blob): Principal {
+        return Principal.selfAuthenticating(publicKey);
+    }
 }
