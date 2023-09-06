@@ -1,4 +1,5 @@
 import { ic } from 'azle';
+import RunTimeErrorService from './index';
 
 // throw 'Uncomment this to test that errors are handled during the eval process.';
 
@@ -63,6 +64,11 @@ export function throwUndefined(): void {
 
 export function getInitialized(inititalized: boolean): boolean {
     return inititalized;
+}
+
+export function heartbeat(canister: RunTimeErrorService): void {
+    canister.heartbeating = true;
+    throw 'We are throwing in the heartbeat';
 }
 
 export function inspectMessage(): void {

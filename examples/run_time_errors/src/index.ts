@@ -377,8 +377,7 @@ export default class extends Service {
     // https://github.com/demergent-labs/azle/issues/1192
     // @heartbeat
     // heartbeat(): void {
-    //     this.heartbeating = true;
-    //     throw 'We are throwing in the heartbeat';
+    //     _throws.heartbeat(this);
     // }
 
     // @inspectMessage
