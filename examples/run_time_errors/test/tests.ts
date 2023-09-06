@@ -93,5 +93,5 @@ function checkErrorMessage(actualError: any, expectedError: string) {
     console.log('Expecting:');
     console.log(expectedError);
     console.log('=========================================================');
-    return true;
+    return false;
 }

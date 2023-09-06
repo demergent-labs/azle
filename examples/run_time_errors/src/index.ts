@@ -370,7 +370,7 @@ export default class extends Service {
     }
 
     getInitialized(): boolean {
-        return this.inititalized;
+        return _throws.getInitialized(this);
     }
 
     // TODO add these back in when heartbeat and inspect message are added

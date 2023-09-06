@@ -62,8 +62,8 @@ export function throwUndefined(): void {
 // The functions below demonstrate that heartbeat, init, etc are also handled
 // but they are all handled with the same code.
 
-export function getInitialized(inititalized: boolean): boolean {
-    return inititalized;
+export function getInitialized(canister: RunTimeErrorService): boolean {
+    return canister.inititalized;
 }
 
 export function heartbeat(canister: RunTimeErrorService): void {
