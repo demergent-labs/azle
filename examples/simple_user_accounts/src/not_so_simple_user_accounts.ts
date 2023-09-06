@@ -12,8 +12,6 @@ import {
     text,
     bool,
     blob,
-    record,
-    variant,
     Void,
     Record,
     Variant,
@@ -28,7 +26,6 @@ class MyFunc {}
 @func([text, bool], int, 'update')
 class NewFunc {}
 
-@variant
 class Temperature extends Variant {
     @candid(Null)
     Cool?: Null;
@@ -43,13 +40,11 @@ class Temperature extends Variant {
     Cold?: Null;
 }
 
-@record
 class MySimpleRecord extends Record {
     @candid(int)
     myInt: int;
 }
 
-@record
 class MyRecord extends Record {
     @candid(int)
     myInt: int;

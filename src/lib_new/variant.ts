@@ -6,20 +6,13 @@ import { Parent, processMap } from './utils';
 // communicating that change to the type checker. If we can get it to do that
 // then we can get rid of this class
 export class Variant {
-    constructor(throwAway: any) {}
-
     static create<T extends Constructor>(
         this: T,
         props: RequireExactlyOne<InstanceType<T>>
     ): InstanceType<T> {
         return new this(props) as InstanceType<T>;
     }
-}
-
-type Constructor<T = {}> = new (...args: any[]) => T;
-
-export function variant<T extends new (...args: any[]) => any>(target: T) {
-    target.constructor = (...args: any[]) => {
+    constructor(args: any) {
         if (Object.entries(args).length !== 1) {
             throw 'Wrong number of properties. Variant should only have one';
         }
@@ -33,21 +26,23 @@ export function variant<T extends new (...args: any[]) => any>(target: T) {
 
         // @ts-ignore
         this[variant] = args[variant];
-    };
-    target.getIDL = (parents: Parent[]) => {
+    }
+
+    static getIDL(parents: Parent[]) {
         const idl = IDL.Rec();
-        const processedMap = processMap(target._azleCandidMap, [
+        const processedMap = processMap(this._azleCandidMap, [
             ...parents,
             {
                 idl: idl,
-                name: target.name
+                name: this.name
             }
         ]);
         idl.fill(IDL.Variant(processedMap));
         return idl;
-    };
-    return target;
+    }
 }
+
+type Constructor<T = {}> = new (...args: any[]) => T;
 
 export type RequireExactlyOne<
     ObjectType,

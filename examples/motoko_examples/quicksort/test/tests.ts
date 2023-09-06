@@ -1,6 +1,6 @@
 import { Ok, Test } from 'azle/test';
 import { int } from 'azle';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
+import { _SERVICE } from './dfx_generated/quicksort/quicksort.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(quicksortCanister: ActorSubclass<_SERVICE>): Test[] {

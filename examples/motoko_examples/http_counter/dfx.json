@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle http_counter",
             "root": "src",
-            "ts": "src/main.ts",
-            "candid": "src/main.did",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
             "wasm": ".azle/http_counter/http_counter.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/http_counter",

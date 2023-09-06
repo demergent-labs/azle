@@ -8,15 +8,18 @@ export const someonePrincipal = someoneIdentity.getPrincipal().toString();
 async function pretest() {
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
-    execSync(`dfx canister uninstall-code azle || true`, {
+    execSync(`dfx canister uninstall-code whoami || true`, {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy azle --argument '(principal "${someonePrincipal}")'`, {
-        stdio: 'inherit'
-    });
+    execSync(
+        `dfx deploy whoami --argument '(principal "${someonePrincipal}")'`,
+        {
+            stdio: 'inherit'
+        }
+    );
 
-    execSync(`dfx generate azle`, {
+    execSync(`dfx generate whoami`, {
         stdio: 'inherit'
     });
 }

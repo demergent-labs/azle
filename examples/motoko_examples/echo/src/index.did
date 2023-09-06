@@ -1,0 +1,3 @@
+service: () -> {
+    say: (text) -> (text) query;
+}

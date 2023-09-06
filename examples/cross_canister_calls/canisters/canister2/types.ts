@@ -1,4 +1,4 @@
-import { candid, nat64, record, Record, text } from 'azle';
+import { candid, nat64, Record, text } from 'azle';
 
 // TODO start using principals instead of strings for ids
 export type State = {
@@ -8,7 +8,6 @@ export type State = {
     notification: string;
 };
 
-@record
 export class Account extends Record {
     @candid(text)
     id: text;
@@ -17,7 +16,6 @@ export class Account extends Record {
     balance: nat64;
 }
 
-@record
 export class AccountArgs extends Record {
     @candid(text)
     id: text;

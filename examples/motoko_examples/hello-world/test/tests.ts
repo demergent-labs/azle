@@ -1,5 +1,5 @@
 import { Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
+import { _SERVICE } from './dfx_generated/hello_world/hello_world.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(

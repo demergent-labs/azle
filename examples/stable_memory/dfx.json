@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle stable_memory",
             "root": "src",
-            "ts": "src/stable_memory.ts",
-            "candid": "src/stable_memory.did",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
             "wasm": ".azle/stable_memory/stable_memory.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/stable_memory",

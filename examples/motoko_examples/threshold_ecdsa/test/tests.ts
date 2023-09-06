@@ -1,5 +1,5 @@
 import { Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
+import { _SERVICE } from './dfx_generated/threshold_ecdsa/threshold_ecdsa.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(tEcdsaCanister: ActorSubclass<_SERVICE>): Test[] {
@@ -9,7 +9,7 @@ export function getTests(tEcdsaCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await tEcdsaCanister.publicKey();
                 return {
-                    Ok: 'Ok' in result && result.Ok.publicKey.length === 33
+                    Ok: result.publicKey.length === 33
                 };
             }
         },
@@ -22,7 +22,7 @@ export function getTests(tEcdsaCanister: ActorSubclass<_SERVICE>): Test[] {
                 ];
                 const result = await tEcdsaCanister.sign(messageHash as any);
                 return {
-                    Ok: 'Ok' in result && result.Ok.signature.length === 64
+                    Ok: result.signature.length === 64
                 };
             }
         }

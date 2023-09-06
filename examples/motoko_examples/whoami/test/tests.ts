@@ -1,5 +1,5 @@
 import { getCanisterId, Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
+import { _SERVICE } from './dfx_generated/whoami/whoami.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { execSync } from 'child_process';
 import { Ed25519KeyIdentity } from '@dfinity/identity';

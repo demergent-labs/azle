@@ -1,0 +1,8 @@
+type rec_0 = record {completed:bool; description:text};
+service: () -> {
+    getTodos: () -> (vec rec_0) query;
+    addTodo: (text) -> (nat);
+    completeTodo: (nat) -> ();
+    showTodos: () -> (text) query;
+    clearCompleted: () -> ();
+}

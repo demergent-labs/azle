@@ -7,7 +7,6 @@ type rec_5 = record {secondItem:null; firstItem:null};
 type rec_6 = record {thirdItem:null; secondItem:null; firstItem:null};
 type rec_7 = record {thirdItem:null; secondItem:null; firstItem:null};
 type rec_8 = record {thirdItem:null; secondItem:null; firstItem:null};
-
 service: () -> {
     nullFunction: (null) -> (null) query;
     voidIsNotNull: () -> () query;

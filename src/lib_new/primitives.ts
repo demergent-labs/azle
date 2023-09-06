@@ -41,13 +41,25 @@ export const principal = IDL.Principal;
 export { Principal } from '@dfinity/principal';
 export type Vec<T> = T[];
 export type Tuple<T> = T;
-export type Opt<Value> = Value[];
+
+/**
+ * Represents an optional value: every {@link Opt} is either `Some` and contains
+ * a value, or `None` and does not.
+ */
+export type Opt<Value> = [Value] | [];
 export const Void = [];
 export type Void = void;
 
-export function Some<T>(value: T): T[] {
+/**
+ * Wraps the provided value in a `Some` {@link Opt}
+ * @param value - the value to be wrapped
+ * @returns a `Some` {@link Opt} containing the provided value
+ */
+export function Some<T>(value: T): [T] {
     return [value];
 }
+
+/** An {@link Opt} representing the absence of a value */
 export const None: [] = [];
 
 // TODO what happens if we pass something to Opt() that can't be converted to CandidClass?
