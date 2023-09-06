@@ -1,6 +1,8 @@
-import { $query } from 'azle';
+import { query, Service, text } from 'azle';
 
-$query;
-export function simpleQuery(): string {
-    return 'This is a query function';
+export default class extends Service {
+    @query([], text)
+    simpleQuery(): text {
+        return 'This is a query function';
+    }
 }
