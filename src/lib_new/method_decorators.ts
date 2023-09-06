@@ -37,6 +37,21 @@ export function init(paramsIdls: any[], returnIdl: any): any {
 
 // Until we can figure how how to type check Funcs, Variants, and Records we are just going to have to use any here
 // export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
+export function postUpgrade(paramsIdls: any[], returnIdl: any): any {
+    return (target: any, key: string, descriptor?: PropertyDescriptor) => {
+        return setupCanisterMethod(
+            target,
+            paramsIdls,
+            returnIdl,
+            'postUpgrade',
+            key,
+            descriptor
+        );
+    };
+}
+
+// Until we can figure how how to type check Funcs, Variants, and Records we are just going to have to use any here
+// export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
 export function query(paramsIdls: any[], returnIdl: any): any {
     return (target: any, key: string, descriptor?: PropertyDescriptor) => {
         if (descriptor === undefined) {
