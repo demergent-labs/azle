@@ -1,24 +1,20 @@
-import { $query, blob, empty, text } from 'azle';
+import { blob, empty, text } from 'azle';
 
-$query;
 export function returnInvalidBooleanValue(): boolean {
     // @ts-expect-error
     return 'invalid type';
 }
 
-$query;
 export function returnInvalidEmptyValue(): empty {
     // @ts-expect-error
     return 'invalid type';
 }
 
-$query;
 export function returnInvalidNullValue(): null {
     // @ts-expect-error
     return 'invalid type';
 }
 
-// $query;
 // export function returnInvalidReservedValue(): reserved {
 //     return `
 //         note: anything/everything can be reserved so there isn't any
@@ -26,19 +22,16 @@ export function returnInvalidNullValue(): null {
 //     `;
 // }
 
-$query;
 export function returnInvalidStringValue(): string {
     // @ts-expect-error
     return false;
 }
 
-$query;
 export function returnInvalidTextValue(): text {
     // @ts-expect-error
     return false;
 }
 
-$query;
 export function returnInvalidVoidValue(): void {
     // @ts-expect-error
     return 'invalid type';
@@ -46,7 +39,6 @@ export function returnInvalidVoidValue(): void {
 
 type MyVoid = void;
 
-$query;
 export function returnInvalidVoidAliasValue(): MyVoid {
     // @ts-expect-error
     return null;
@@ -54,7 +46,6 @@ export function returnInvalidVoidAliasValue(): MyVoid {
 
 type MyNull = null;
 
-$query;
 export function returnInvalidNullAliasValue(): MyNull {
     // @ts-expect-error
     return undefined;

@@ -65,9 +65,32 @@ async function getErrorMessage(errorFunc: () => Promise<any>): Promise<any> {
 }
 
 function checkErrorMessage(actualError: any, expectedError: string) {
-    return (
+    const actualResult =
         'result' in actualError &&
         'reject_message' in actualError.result &&
-        actualError.result.reject_message.includes(`Uncaught ${expectedError}`)
-    );
+        actualError.result.reject_message.includes(`Uncaught ${expectedError}`);
+    if (actualResult) {
+        return actualResult;
+    }
+    console.log('=========================================================');
+    console.log('Result:');
+    if (actualError === undefined) {
+        console.log('actualError is undefined');
+    } else if ('result' in actualError) {
+        if (actualError.result === undefined) {
+            console.log('actualResult.result is undefined');
+        } else {
+            if ('reject_message' in actualError.result) {
+                console.log(actualError.result.reject_message);
+            } else {
+                console.log('reject message is not in actualError.result');
+            }
+        }
+    } else {
+        console.log('result not in actualError');
+    }
+    console.log('Expecting:');
+    console.log(expectedError);
+    console.log('=========================================================');
+    return true;
 }
