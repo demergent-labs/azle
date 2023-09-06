@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle primitive_types",
             "root": "src",
-            "ts": "src/primitive_types.ts",
-            "candid": "src/primitive_types.did",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
             "wasm": ".azle/primitive_types/primitive_types.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/primitive_types",

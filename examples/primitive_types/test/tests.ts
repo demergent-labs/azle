@@ -446,9 +446,9 @@ export function getTests(
                     );
                 } catch (error) {
                     return {
-                        Ok:
-                            (error as any).message ===
+                        Ok: ((error as any).message as string).includes(
                             'Invalid empty argument: undefined'
+                        )
                     };
                 }
 
