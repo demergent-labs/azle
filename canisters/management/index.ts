@@ -1,13 +1,11 @@
 import {
     blob,
     Principal,
-    record,
     Record,
     Service,
     update,
     Opt,
     Vec,
-    variant,
     Variant,
     candid,
     principal,
@@ -15,13 +13,11 @@ import {
     Null
 } from '../../src/lib_new';
 
-@variant
 export class EcdsaCurve extends Variant {
     @candid(Null)
     secp256k1: Null;
 }
 
-@record
 export class KeyId extends Record {
     @candid(EcdsaCurve)
     curve: EcdsaCurve;
@@ -30,7 +26,6 @@ export class KeyId extends Record {
     name: text;
 }
 
-@record
 export class EcdsaPublicKeyArgs extends Record {
     @candid(Opt(principal))
     canister_id: Opt<Principal>;
@@ -42,13 +37,11 @@ export class EcdsaPublicKeyArgs extends Record {
     key_id: KeyId;
 }
 
-@record
 export class EcdsaPublicKeyResult extends Record {
     public_key: blob;
     chain_code: blob;
 }
 
-@record
 export class SignWithEcdsaArgs extends Record {
     @candid(blob)
     message_hash: blob;
@@ -60,7 +53,6 @@ export class SignWithEcdsaArgs extends Record {
     key_id: KeyId;
 }
 
-@record
 export class SignWithEcdsaResult extends Record {
     signature: blob;
 }
