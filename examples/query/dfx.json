@@ -8,7 +8,7 @@
             "candid": "src/index.did",
             "wasm": ".azle/azle/azle.wasm.gz",
             "declarations": {
-                "output": "dfx_generated/query",
+                "output": "test/dfx_generated/query",
                 "node_compatibility": true
             }
         }

@@ -1,5 +1,5 @@
 import { getCanisterId, runTests } from 'azle/test';
-import { createActor } from '../dfx_generated/azle';
+import { createActor } from './dfx_generated/query';
 import { getTests } from './tests';
 
 const queryCanister = createActor(getCanisterId('query'), {
