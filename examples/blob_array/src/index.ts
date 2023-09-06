@@ -1,6 +1,6 @@
-import { blob, query, Vec } from 'azle';
+import { blob, query, Service, Vec } from 'azle';
 
-export default class {
+export default class extends Service {
     @query([], blob)
     getBlob(): blob {
         return stringToBlob('hello');

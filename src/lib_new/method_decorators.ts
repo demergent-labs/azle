@@ -11,7 +11,7 @@ import {
     extractCandid
 } from './utils';
 import { display } from './utils';
-import { serviceDecorator } from './service';
+import { serviceCall, serviceDecorator } from './service';
 
 type Mode = 'init' | 'postUpgrade' | 'query' | 'update';
 
@@ -25,6 +25,7 @@ const modeToCandid = {
 export function init(paramsIdls: any[], returnIdl: any): any {
     return (target: any, key: string, descriptor?: PropertyDescriptor) => {
         return setupCanisterMethod(
+            target,
             paramsIdls,
             returnIdl,
             'init',
@@ -42,6 +43,7 @@ export function query(paramsIdls: any[], returnIdl: any): any {
             serviceDecorator(target, key, paramsIdls, returnIdl);
         } else {
             return setupCanisterMethod(
+                target,
                 paramsIdls,
                 returnIdl,
                 'query',
@@ -61,6 +63,7 @@ export function update(paramsIdls: any[], returnIdl: any): any {
             serviceDecorator(target, key, paramsIdls, returnIdl);
         } else {
             return setupCanisterMethod(
+                target,
                 paramsIdls,
                 returnIdl,
                 'update',
@@ -95,6 +98,7 @@ function handleRecursiveReturn(
 }
 
 function setupCanisterMethod(
+    target: any,
     paramsIdls: CandidClass[],
     returnIdl: ReturnCandidClass,
     mode: Mode,
@@ -104,17 +108,29 @@ function setupCanisterMethod(
     const paramCandid = handleRecursiveParams(paramsIdls);
     const returnCandid = handleRecursiveReturn(returnIdl, paramCandid[2]);
 
-    if (mode === 'init' || mode === 'postUpgrade') {
-        globalThis._azleCandidInitParams = paramCandid[1];
+    if (target.constructor._azleCandidInitParams === undefined) {
+        target.constructor._azleCandidInitParams = [];
     }
 
-    globalThis._azleCandidTypes = [
-        ...globalThis._azleCandidTypes,
+    if (mode === 'init' || mode === 'postUpgrade') {
+        target.constructor._azleCandidInitParams = paramCandid[1];
+    }
+
+    if (target.constructor._azleCandidTypes === undefined) {
+        target.constructor._azleCandidTypes = [];
+    }
+
+    target.constructor._azleCandidTypes = [
+        ...target.constructor._azleCandidTypes,
         ...newTypesToStingArr(returnCandid[2])
     ];
 
     if (mode === 'query' || mode === 'update') {
-        globalThis._azleCandidMethods.push(
+        if (target.constructor._azleCandidMethods === undefined) {
+            target.constructor._azleCandidMethods = [];
+        }
+
+        target.constructor._azleCandidMethods.push(
             `${key}: (${paramCandid[1].join(', ')}) -> (${returnCandid[1]})${
                 modeToCandid[mode]
             };`
@@ -126,6 +142,11 @@ function setupCanisterMethod(
     // This must remain a function and not an arrow function
     // in order to set the context (this) correctly
     descriptor.value = function (...args: any[]) {
+        if (args[0] === '_AZLE_CROSS_CANISTER_CALL') {
+            const serviceCallInner = serviceCall(key, paramsIdls, returnIdl);
+            return serviceCallInner.call(this, ...args);
+        }
+
         const decoded = IDL.decode(paramCandid[0], args[0]);
 
         const result = originalMethod.apply(this, decoded);

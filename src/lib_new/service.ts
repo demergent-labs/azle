@@ -43,9 +43,18 @@ export function serviceDecorator(
     paramsIdls: any[],
     returnIdl: CandidClass
 ) {
+    target[key] = serviceCall(key, paramsIdls, returnIdl);
+}
+
+export function serviceCall(
+    methodName: string,
+    paramsIdls: any[],
+    returnIdl: CandidClass
+) {
     // This must remain a function and not an arrow function
     // in order to set the context (this) correctly
-    target[key] = async function (
+    return async function (
+        _: '_AZLE_CROSS_CANISTER_CALL',
         notify: boolean,
         callFunction:
             | typeof ic.callRaw
@@ -60,14 +69,19 @@ export function serviceDecorator(
 
         if (notify) {
             try {
-                return callFunction(this.canisterId, key, encodedArgs, cycles);
+                return callFunction(
+                    this.canisterId,
+                    methodName,
+                    encodedArgs,
+                    cycles
+                );
             } catch (error) {
                 throw error;
             }
         } else {
             const encodedResult = await callFunction(
                 this.canisterId,
-                key,
+                methodName,
                 encodedArgs,
                 cycles
             );

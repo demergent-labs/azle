@@ -6,6 +6,7 @@ export function generateCandidFile(mainJs: string, candidPath: string) {
     const sandbox = {
         globalThis: {},
         exports: {},
+        console,
         TextDecoder,
         TextEncoder
     };

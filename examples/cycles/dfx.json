@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle cycles",
             "root": "canisters/cycles",
-            "ts": "canisters/cycles/cycles.ts",
-            "candid": "canisters/cycles/cycles.did",
+            "ts": "canisters/cycles/index.ts",
+            "candid": "canisters/cycles/index.did",
             "wasm": ".azle/cycles/cycles.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/cycles",
@@ -16,8 +16,8 @@
             "type": "custom",
             "build": "npx azle intermediary",
             "root": "canisters/intermediary",
-            "ts": "canisters/intermediary/intermediary.ts",
-            "candid": "canisters/intermediary/intermediary.did",
+            "ts": "canisters/intermediary/index.ts",
+            "candid": "canisters/intermediary/index.did",
             "wasm": ".azle/intermediary/intermediary.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/intermediary",

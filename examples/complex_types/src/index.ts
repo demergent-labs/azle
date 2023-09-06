@@ -1,4 +1,4 @@
-import { nat32, query, text, update, Vec } from 'azle';
+import { nat32, query, Service, text, update, Vec } from 'azle';
 import { Post } from './candid_types/post';
 import { Reaction } from './candid_types/reaction';
 import { ReactionType } from './candid_types/reaction_type';
@@ -9,7 +9,7 @@ import { createReaction, getAllReactions } from './reactions';
 import { createThread, getAllThreads } from './threads';
 import { createUser, getAllUsers } from './users';
 
-export default class {
+export default class extends Service {
     @update([text, text, text, nat32], Post)
     createPost(
         authorId: text,

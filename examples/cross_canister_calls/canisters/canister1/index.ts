@@ -9,7 +9,8 @@ import {
     Vec,
     Void
 } from 'azle';
-import { Account, AccountArgs, Canister2 } from '../canister2/types';
+import Canister2 from '../canister2';
+import { Account, AccountArgs } from '../canister2/types';
 
 export default class extends Service {
     canister2 = new Canister2(

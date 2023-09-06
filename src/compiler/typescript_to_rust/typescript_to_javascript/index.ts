@@ -41,10 +41,10 @@ export function compileTypeScriptToJavaScript(
         `;
 
         const candidGeneration = `
-globalThis._azleCandidService = \`\${globalThis._azleCandidTypes.length > 0 ? globalThis._azleCandidTypes.join(';\\n') + ';\\n' : ''}service: (\${globalThis._azleCandidInitParams.join(
+globalThis._azleCandidService = \`\${CanisterClass._azleCandidTypes.length > 0 ? CanisterClass._azleCandidTypes.join(';\\n') + ';\\n' : ''}service: (\${CanisterClass._azleCandidInitParams.join(
     ', '
 )}) -> {
-    \${globalThis._azleCandidMethods.join('\\n    ')}
+    \${CanisterClass._azleCandidMethods.join('\\n    ')}
 }\n\`
         `;
 

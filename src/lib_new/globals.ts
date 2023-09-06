@@ -13,10 +13,6 @@ declare var globalThis: {
 globalThis.TextDecoder = require('text-encoding').TextDecoder;
 globalThis.TextEncoder = require('text-encoding').TextEncoder;
 
-globalThis._azleCandidInitParams = [];
-globalThis._azleCandidMethods = [];
-globalThis._azleCandidTypes = [];
-
 globalThis.console = {
     ...globalThis.console,
     log: (...args: any[]) => {

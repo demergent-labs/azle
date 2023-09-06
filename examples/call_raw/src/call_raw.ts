@@ -5,11 +5,12 @@ import {
     principal,
     Principal,
     Result,
+    Service,
     text,
     update
 } from 'azle';
 
-export default class {
+export default class extends Service {
     @update([principal, text, text, nat64], Result(text, text))
     async executeCallRaw(
         canisterId: Principal,

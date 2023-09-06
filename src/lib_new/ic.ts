@@ -197,7 +197,7 @@ type Ic = {
             args?: ArgsType<T>;
             cycles?: bigint;
         }
-    ): ReturnTypeOf<T>;
+    ): Void;
 
     notifyRaw: (
         canisterId: Principal,
@@ -386,6 +386,7 @@ export const ic: Ic = globalThis._azleIc
           ...globalThis._azleIc,
           call: (method, config) => {
               return method(
+                  '_AZLE_CROSS_CANISTER_CALL',
                   false,
                   ic.callRaw,
                   config?.cycles ?? 0n,
@@ -394,6 +395,7 @@ export const ic: Ic = globalThis._azleIc
           },
           call128: (method, config) => {
               return method(
+                  '_AZLE_CROSS_CANISTER_CALL',
                   false,
                   ic.callRaw128,
                   config?.cycles ?? 0n,
@@ -583,6 +585,7 @@ export const ic: Ic = globalThis._azleIc
           },
           notify(method, config) {
               return method(
+                  '_AZLE_CROSS_CANISTER_CALL',
                   true,
                   ic.notifyRaw,
                   config?.cycles ?? 0n,
