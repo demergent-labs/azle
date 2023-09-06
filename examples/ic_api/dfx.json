@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle ic_api",
             "root": "src",
-            "ts": "src/ic_api.ts",
-            "candid": "src/ic_api.did",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
             "wasm": ".azle/ic_api/ic_api.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/ic_api",
