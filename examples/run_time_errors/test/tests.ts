@@ -72,6 +72,7 @@ function checkErrorMessage(actualError: any, expectedError: string) {
     if (actualResult) {
         return actualResult;
     }
+    // TODO reword all of the errors and make sure the tests match https://github.com/demergent-labs/azle/issues/1192
     console.log('=========================================================');
     console.log('Result:');
     if (actualError === undefined) {

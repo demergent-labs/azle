@@ -45,6 +45,10 @@ import {
 } from 'azle';
 
 export default class extends Service {
+    inititalized = false;
+
+    heartbeating = false;
+
     @query([], blob)
     returnNonObjectAsInvalidBlob(): blob {
         return _blob.returnNonObjectAsInvalidBlob();
@@ -365,14 +369,12 @@ export default class extends Service {
         return _throws.throwUndefined();
     }
 
-    inititalized = false;
-    heartbeating = false;
-
     getInitialized(): boolean {
         return this.inititalized;
     }
 
     // TODO add these back in when heartbeat and inspect message are added
+    // https://github.com/demergent-labs/azle/issues/1192
     // @heartbeat
     // heartbeat(): void {
     //     this.heartbeating = true;
@@ -386,17 +388,17 @@ export default class extends Service {
 
     @update([], bool)
     accessible(): bool {
-        return true;
+        return _throws.accessible();
     }
 
     @update([], bool)
     inaccessible(): bool {
-        return false;
+        return _throws.inaccessible();
     }
 
     @update([], bool)
     alsoInaccessible(): bool {
-        return false;
+        return _throws.alsoInaccessible();
     }
 
     @query([], UserDefinedVariant)
