@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle principal",
             "root": "src",
-            "ts": "src/principal.ts",
-            "candid": "src/principal.did",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
             "wasm": ".azle/principal/principal.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/principal",

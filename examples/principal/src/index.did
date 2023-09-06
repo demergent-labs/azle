@@ -1,0 +1,15 @@
+type rec_0 = record {id:principal; username:text};
+type rec_1 = variant {Online; WaitingOn:principal; Offline};
+service: () -> {
+    principalReturnType: () -> (principal) query;
+    principalParam: (principal) -> (principal) query;
+    principalInRecord: () -> (rec_0) query;
+    principalInVariant: () -> (rec_1) query;
+    principalFromHex: (text) -> (principal) query;
+    principalFromText: (text) -> (principal) query;
+    principalFromBlob: (vec nat8) -> (principal) query;
+    principalToHex: (principal) -> (text) query;
+    principalToText: (principal) -> (text) query;
+    principalToBlob: (principal) -> (vec nat8) query;
+    principalSelfAuthenticating: (vec nat8) -> (principal) query;
+}

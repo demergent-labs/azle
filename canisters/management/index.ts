@@ -12,6 +12,9 @@ import {
     text,
     Null
 } from '../../src/lib_new';
+import { HttpRequestArgs, HttpResponse } from './http_request';
+
+export * from './http_request';
 
 export class EcdsaCurve extends Variant {
     @candid(Null)
@@ -38,7 +41,10 @@ export class EcdsaPublicKeyArgs extends Record {
 }
 
 export class EcdsaPublicKeyResult extends Record {
+    @candid(blob)
     public_key: blob;
+
+    @candid(blob)
     chain_code: blob;
 }
 
@@ -58,13 +64,16 @@ export class SignWithEcdsaResult extends Record {
 }
 
 class ManagementCanister extends Service {
-    @update([], blob)
-    raw_rand: () => Promise<blob>;
-
     @update([EcdsaPublicKeyArgs], EcdsaPublicKeyResult)
     ecdsa_public_key: (
         args: EcdsaPublicKeyArgs
     ) => Promise<EcdsaPublicKeyResult>;
+
+    @update([HttpRequestArgs], HttpResponse)
+    http_request: (args: HttpRequestArgs) => Promise<HttpResponse>;
+
+    @update([], blob)
+    raw_rand: () => Promise<blob>;
 
     @update([SignWithEcdsaArgs], SignWithEcdsaResult)
     sign_with_ecdsa: (args: SignWithEcdsaArgs) => Promise<SignWithEcdsaResult>;
