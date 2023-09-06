@@ -3,9 +3,6 @@ import { Principal } from '@dfinity/principal';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/tuple_types/tuple_types.did';
 
-// TODO remove when https://github.com/demergent-labs/azle/issues/1192 is resolved
-const BROKEN_TESTS = true;
-
 export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
@@ -293,9 +290,6 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'complexThreeTupleReturnType',
             test: async () => {
-                if (BROKEN_TESTS) {
-                    return { Ok: true };
-                }
                 const result =
                     await tupleTypesCanister.complexThreeTupleReturnType();
 
@@ -320,9 +314,6 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'complexThreeTupleParam',
             test: async () => {
-                if (BROKEN_TESTS) {
-                    return { Ok: true };
-                }
                 const result = await tupleTypesCanister.complexThreeTupleParam([
                     ['Content-Type', 64n],
                     {
@@ -364,9 +355,6 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'complexThreeTupleInlineReturnType',
             test: async () => {
-                if (BROKEN_TESTS) {
-                    return { Ok: true };
-                }
                 const result =
                     await tupleTypesCanister.complexThreeTupleInlineReturnType();
 
@@ -391,9 +379,6 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'complexThreeTupleInlineParam',
             test: async () => {
-                if (BROKEN_TESTS) {
-                    return { Ok: true };
-                }
                 const result =
                     await tupleTypesCanister.complexThreeTupleInlineParam([
                         ['Content-Type', 64n],
@@ -484,11 +469,6 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'twoTupleWithInlineRecords',
             test: async () => {
-                if (BROKEN_TESTS) {
-                    return {
-                        Ok: true
-                    };
-                }
                 const result =
                     await tupleTypesCanister.twoTupleWithInlineRecords([
                         {
