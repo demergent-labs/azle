@@ -1,18 +1,15 @@
-import { $query, Principal } from 'azle';
+import { Principal } from 'azle';
 
-$query;
 export function returnStringAsInvalidPrincipal(): Principal {
     // @ts-expect-error
     return 'invalid type';
 }
 
-$query;
 export function returnEmptyObjectAsInvalidPrincipal(): Principal {
     // @ts-expect-error
     return {};
 }
 
-$query;
 export function returnInvalidToTextPropertyAsInvalidPrincipal(): Principal {
     return {
         // @ts-expect-error
@@ -20,7 +17,6 @@ export function returnInvalidToTextPropertyAsInvalidPrincipal(): Principal {
     };
 }
 
-$query;
 export function throwInPrincipalToTextMethodAsInvalidPrincipal(): Principal {
     // @ts-expect-error
     return {
@@ -30,7 +26,6 @@ export function throwInPrincipalToTextMethodAsInvalidPrincipal(): Principal {
     };
 }
 
-$query;
 export function returnInvalidToTextReturnValueAsInvalidPrincipal(): Principal {
     return {
         // @ts-expect-error
@@ -38,14 +33,12 @@ export function returnInvalidToTextReturnValueAsInvalidPrincipal(): Principal {
     };
 }
 
-$query;
 export function throwWhenCallingPrincipalFromText(): Principal {
     const principal = Principal.fromText('aa');
     // Note: `fromText` will throw if the text representation is invalid
     return principal;
 }
 
-$query;
 export function returnInvalidPrincipalFromTooShortOfText(): Principal {
     // @ts-expect-error
     return {

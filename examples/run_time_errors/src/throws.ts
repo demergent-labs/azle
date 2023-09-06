@@ -1,4 +1,5 @@
-import { $heartbeat, ic, $inspectMessage, $query, $update } from 'azle';
+import { ic } from 'azle';
+import RunTimeErrorService from './index';
 
 // throw 'Uncomment this to test that errors are handled during the eval process.';
 
@@ -8,63 +9,51 @@ class CustomClass {
     };
 }
 
-$query;
 export function throwBigint(): void {
     throw 3n;
 }
 
-$query;
 export function throwBoolean(): void {
     throw false;
 }
 
-$query;
 export function throwClass(): void {
     throw new CustomClass();
 }
 
-$query;
 export function throwCustomError(): void {
     throw Error('This is a custom error');
 }
 
-$query;
 export function throwInt(): void {
     throw 3;
 }
 
-$query;
 export function throwNull(): void {
     throw null;
 }
 
-$query;
 export function throwNullReference(): void {
     const nullObject: any = null;
     nullObject.firstField;
 }
 
-$query;
 export function throwObject(): void {
     throw { thing: 1 };
 }
 
-$query;
 export function throwRational(): void {
     throw 3.14;
 }
 
-$query;
 export function throwString(): void {
     throw 'Hello World';
 }
 
-$query;
 export function throwSymbol(): void {
     throw Symbol();
 }
 
-$query;
 export function throwUndefined(): void {
     throw undefined;
 }
@@ -73,21 +62,15 @@ export function throwUndefined(): void {
 // The functions below demonstrate that heartbeat, init, etc are also handled
 // but they are all handled with the same code.
 
-let inititalized = false;
-let heartbeating = false;
-
-$query;
-export function getInitialized(): boolean {
-    return inititalized;
+export function getInitialized(canister: RunTimeErrorService): boolean {
+    return canister.inititalized;
 }
 
-$heartbeat;
-export function heartbeat(): void {
-    heartbeating = true;
+export function heartbeat(canister: RunTimeErrorService): void {
+    canister.heartbeating = true;
     throw 'We are throwing in the heartbeat';
 }
 
-$inspectMessage;
 export function inspectMessage(): void {
     console.log('inspectMessage called');
 
@@ -106,17 +89,14 @@ export function inspectMessage(): void {
     throw `Method "${ic.methodName()}" not allowed`;
 }
 
-$update;
 export function accessible(): boolean {
     return true;
 }
 
-$update;
 export function inaccessible(): boolean {
     return false;
 }
 
-$update;
 export function alsoInaccessible(): boolean {
     return false;
 }

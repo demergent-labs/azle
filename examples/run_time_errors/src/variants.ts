@@ -1,29 +1,37 @@
-import { $query, Tuple, Variant, Vec, int } from 'azle';
+import { Tuple, Null, Variant, Vec, bool, candid, int, text } from 'azle';
 import { UserDefinedRecord } from './records';
 
-export type UserDefinedVariant = Variant<{
-    Alpha: null;
-    Beta: boolean;
+export class UserDefinedVariant extends Variant {
+    @candid(Null)
+    Alpha: Null;
+
+    @candid(bool)
+    Beta: bool;
+
+    @candid(int)
     Gamma: int;
-    Delta: string;
+
+    @candid(text)
+    Delta: text;
+
+    @candid(UserDefinedRecord)
     Epsilon: UserDefinedRecord;
-    Zeta: Tuple<[int, string]>;
-}>;
+
+    @candid(Tuple(int, text))
+    Zeta: [int, text];
+}
 
 // #region UserDefinedVariant
-$query;
 export function returnStringAsInvalidUserDefinedVariant(): UserDefinedVariant {
     // @ts-ignore
     return 'invalid type';
 }
 
-$query;
 export function returnEmptyObjectAsInvalidUserDefinedVariant(): UserDefinedVariant {
     // @ts-ignore
     return {};
 }
 
-$query;
 export function returnObjectWithInvalidTagAsInvalidUserDefinedVariant(): UserDefinedVariant {
     return {
         // @ts-ignore
@@ -31,7 +39,6 @@ export function returnObjectWithInvalidTagAsInvalidUserDefinedVariant(): UserDef
     };
 }
 
-$query;
 export function returnObjectWithMultipleTagsAsInvalidUserDefinedVariant(): UserDefinedVariant {
     // @ts-ignore
     return {
@@ -40,7 +47,6 @@ export function returnObjectWithMultipleTagsAsInvalidUserDefinedVariant(): UserD
     };
 }
 
-$query;
 export function returnObjectWithInvalidFieldsAsInvalidUserDefinedVariant(): UserDefinedVariant {
     return {
         // @ts-ignore
@@ -50,19 +56,16 @@ export function returnObjectWithInvalidFieldsAsInvalidUserDefinedVariant(): User
 // #endregion UserDefinedVariant
 
 // #region Vec<UserDefinedVariant>
-$query;
 export function returnStringAsInvalidVecUserDefinedVariant(): Vec<UserDefinedVariant> {
     // @ts-ignore
     return 'invalid type';
 }
 
-$query;
 export function returnObjectAsInvalidVecUserDefinedVariant(): Vec<UserDefinedVariant> {
     // @ts-ignore
     return {};
 }
 
-$query;
 export function returnArrayWithInvalidUserDefinedVariant(): Vec<UserDefinedVariant> {
     // @ts-ignore
     return ['invalid type'];

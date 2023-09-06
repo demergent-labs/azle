@@ -1,24 +1,30 @@
-import { $query, Record, Vec, int } from 'azle';
+import { bool, Record, Vec, candid, int, text } from 'azle';
 
-export type OtherUserDefinedRecord = Record<{
-    id: string;
-}>;
+export class OtherUserDefinedRecord extends Record {
+    @candid(text)
+    id: text;
+}
 
-export type UserDefinedRecord = Record<{
-    boolean: boolean;
+export class UserDefinedRecord extends Record {
+    @candid(bool)
+    boolean: bool;
+
+    @candid(int)
     int: int;
-    string: string;
+
+    @candid(text)
+    string: text;
+
+    @candid(OtherUserDefinedRecord)
     otherUserDefinedRecord: OtherUserDefinedRecord;
-}>;
+}
 
 // #region UserDefinedRecord
-$query;
 export function returnStringAsInvalidUserDefinedRecord(): UserDefinedRecord {
     // @ts-ignore
     return 'invalid type';
 }
 
-$query;
 export function returnEmptyObjectAsInvalidUserDefinedRecord(): UserDefinedRecord {
     // @ts-ignore
     return {};
@@ -26,19 +32,16 @@ export function returnEmptyObjectAsInvalidUserDefinedRecord(): UserDefinedRecord
 // #endregion UserDefinedRecord
 
 // #region Vec<UserDefinedRecord>
-$query;
 export function returnStringAsInvalidVecUserDefinedRecord(): Vec<UserDefinedRecord> {
     // @ts-ignore
     return '';
 }
 
-$query;
 export function returnObjectAsInvalidVecUserDefinedRecord(): Vec<UserDefinedRecord> {
     // @ts-ignore
     return {};
 }
 
-$query;
 export function returnArrayWithInvalidUserDefinedRecord(): Vec<UserDefinedRecord> {
     // @ts-ignore
     return ['invalid type'];
