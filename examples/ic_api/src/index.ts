@@ -149,7 +149,7 @@ export default class extends Service {
     }
 
     // TODO: See https://github.com/demergent-labs/azle/issues/1200
-    @manual
+    // @manual
     @query([text], empty)
     reject(message: text): Manual<empty> {
         ic.reject(message);
@@ -168,7 +168,7 @@ export default class extends Service {
     }
 
     // traps with a message, stopping execution and discarding all state within the call
-    @query([], bool)
+    @query([text], bool)
     trap(message: text): bool {
         ic.trap(message);
 
