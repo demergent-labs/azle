@@ -1,81 +1,80 @@
 import {
-    CallResult,
     nat,
     nat8,
-    nat64,
     Opt,
     Record,
     Service,
-    serviceQuery,
-    serviceUpdate,
+    query,
+    update,
     text,
     Tuple,
-    Variant,
-    Vec
-} from '../../src/lib';
+    Vec,
+    candid
+} from '../../src/lib_new';
 import {
     ICRC1Account,
     ICRC1TransferArgs,
-    ICRC1TransferError,
+    ICRC1TransferResult,
     ICRC1Value
 } from './icrc_1';
 import {
     ICRC2AllowanceArgs,
+    ICRC2AllowanceResults,
     ICRC2ApproveArgs,
-    ICRC2ApproveError,
+    ICRC2ApproveResult,
     ICRC2TransferFromArgs,
-    ICRC2TransferFromError
+    ICRC2TransferFromResult
 } from './icrc_2';
 
+export class ICRC1SupportedStandard extends Record {
+    @candid(text)
+    name: text;
+
+    @candid(text)
+    url: text;
+}
+
 export class ICRC extends Service {
-    @serviceQuery
-    icrc1_metadata: () => CallResult<Vec<Tuple<[text, ICRC1Value]>>>;
+    @query([], Vec(Tuple(text, ICRC1Value)))
+    icrc1_metadata: () => [text, ICRC1Value][];
 
-    @serviceQuery
-    icrc1_name: () => CallResult<text>;
+    @query([], text)
+    icrc1_name: () => text;
 
-    @serviceQuery
-    icrc1_symbol: () => CallResult<text>;
+    @query([], text)
+    icrc1_symbol: () => text;
 
-    @serviceQuery
-    icrc1_decimals: () => CallResult<nat8>;
+    @query([], nat8)
+    icrc1_decimals: () => nat8;
 
-    @serviceQuery
-    icrc1_fee: () => CallResult<nat>;
+    @query([], nat)
+    icrc1_fee: () => nat;
 
-    @serviceQuery
-    icrc1_total_supply: () => CallResult<nat>;
+    @query([], nat)
+    icrc1_total_supply: () => nat;
 
-    @serviceQuery
-    icrc1_minting_account: () => CallResult<Opt<ICRC1Account>>;
+    @query([], Opt(ICRC1Account))
+    icrc1_minting_account: () => Opt<ICRC1Account>;
 
-    @serviceQuery
-    icrc1_balance_of: (account: ICRC1Account) => CallResult<nat>;
+    @query([ICRC1Account], nat)
+    icrc1_balance_of: (account: ICRC1Account) => nat;
 
-    @serviceUpdate
-    icrc1_transfer: (
-        transferArgs: ICRC1TransferArgs
-    ) => CallResult<Variant<{ Ok: nat; Err: ICRC1TransferError }>>;
+    @update([ICRC1TransferArgs], ICRC1TransferResult)
+    icrc1_transfer: (transferArgs: ICRC1TransferArgs) => ICRC1TransferResult;
 
-    @serviceQuery
-    icrc1_supported_standards: () => CallResult<
-        Vec<Record<{ name: text; url: text }>>
-    >;
+    @query([], Vec(ICRC1SupportedStandard))
+    icrc1_supported_standards: () => Vec<ICRC1SupportedStandard>;
 
-    @serviceUpdate
-    icrc2_approve: (
-        args: ICRC2ApproveArgs
-    ) => CallResult<Variant<{ Ok: nat; Err: ICRC2ApproveError }>>;
+    @update([ICRC2ApproveArgs], ICRC2ApproveResult)
+    icrc2_approve: (args: ICRC2ApproveArgs) => ICRC2ApproveResult;
 
-    @serviceUpdate
+    @update([ICRC2TransferFromArgs], ICRC2TransferFromResult)
     icrc2_transfer_from: (
         args: ICRC2TransferFromArgs
-    ) => CallResult<Variant<{ Ok: nat; Err: ICRC2TransferFromError }>>;
+    ) => ICRC2TransferFromResult;
 
-    @serviceQuery
-    icrc2_allowance: (
-        args: ICRC2AllowanceArgs
-    ) => CallResult<Record<{ allowance: nat; expires_at: Opt<nat64> }>>;
+    @query([ICRC2AllowanceArgs], ICRC2AllowanceResults)
+    icrc2_allowance: (args: ICRC2AllowanceArgs) => ICRC2AllowanceResults;
 }
 
 export * from './icrc_1';

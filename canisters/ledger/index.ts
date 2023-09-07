@@ -8,160 +8,224 @@
 
 import {
     blob,
-    CallResult,
-    Func,
+    func,
     nat,
     nat8,
     nat32,
     nat64,
+    Null,
     Opt,
     Principal,
-    Query,
     Record,
     Service,
-    serviceQuery,
-    serviceUpdate,
+    query,
+    update,
     text,
     Tuple,
     Variant,
-    Vec
-} from '../../src/lib';
+    Vec,
+    candid,
+    principal
+} from '../../src/lib_new';
 import {
     ICRC1Account,
+    ICRC1SupportedStandard,
     ICRC1TransferArgs,
-    ICRC1TransferError,
+    ICRC1TransferResult,
     ICRC1Value
 } from '../icrc';
 
 // Amount of tokens, measured in 10^-8 of a token.
-export type Tokens = Record<{
+export class Tokens extends Record {
+    @candid(nat64)
     e8s: nat64;
-}>;
+}
 
 // Number of nanoseconds from the UNIX epoch in UTC timezone.
-export type TimeStamp = Record<{
+export class TimeStamp extends Record {
+    @candid(nat64)
     timestamp_nanos: nat64;
-}>;
+}
 
 // AccountIdentifier is a 32-byte array.
 // The first 4 bytes is big-endian encoding of a CRC32 checksum of the last 28 bytes.
 export type AccountIdentifier = blob;
+export const AccountIdentifier = blob;
 
 // Subaccount is an arbitrary 32-byte byte array.
 // Ledger uses subaccounts to compute the source address, which enables one
 // principal to control multiple ledger accounts.
 export type SubAccount = blob;
+export const SubAccount = blob;
 
 // Sequence number of a block produced by the ledger.
 export type BlockIndex = nat64;
+export const BlockIndex = nat64;
 
 // An arbitrary number associated with a transaction.
 // The caller can set it in a `transfer` call as a correlation identifier.
 export type Memo = nat64;
+export const Memo = nat64;
 
 // Arguments for the `transfer` call.
-export type TransferArgs = Record<{
+export class TransferArgs extends Record {
     // Transaction memo.
     // See comments for the `Memo` type.
+    @candid(Memo)
     memo: Memo;
     // The amount that the caller wants to transfer to the destination address.
+    @candid(Tokens)
     amount: Tokens;
     // The amount that the caller pays for the transaction.
     // Must be 10000 e8s.
+    @candid(Tokens)
     fee: Tokens;
     // The subaccount from which the caller wants to transfer funds.
     // If null, the ledger uses the default (all zeros) subaccount to compute the source address.
     // See comments for the `SubAccount` type.
+    @candid(Opt(SubAccount))
     from_subaccount: Opt<SubAccount>;
     // The destination account.
     // If the transfer is successful, the balance of this address increases by `amount`.
+    @candid(AccountIdentifier)
     to: AccountIdentifier;
     // The point in time when the caller created this request.
     // If null, the ledger uses current IC time as the timestamp.
+    @candid(Opt(TimeStamp))
     created_at_time: Opt<TimeStamp>;
-}>;
+}
 
-export type TransferError = Variant<{
+class BadFee extends Record {
+    @candid(Tokens)
+    expected_fee: Tokens;
+}
+class InsufficientFunds extends Record {
+    @candid(Tokens)
+    balance: Tokens;
+}
+class TxTooOld extends Record {
+    @candid(nat64)
+    allowed_window_nanos: nat64;
+}
+class TxDuplicate extends Record {
+    @candid(BlockIndex)
+    duplicate_of: BlockIndex;
+}
+export class TransferError extends Variant {
     // The fee that the caller specified in the transfer request was not the one that ledger expects.
     // The caller can change the transfer fee to the `expected_fee` and retry the request.
-    BadFee: Record<{
-        expected_fee: Tokens;
-    }>;
+    @candid(BadFee)
+    BadFee: BadFee;
     // The account specified by the caller doesn't have enough funds.
-    InsufficientFunds: Record<{
-        balance: Tokens;
-    }>;
+    @candid(InsufficientFunds)
+    InsufficientFunds: InsufficientFunds;
     // The request is too old.
     // The ledger only accepts requests created within 24 hours window.
     // This is a non-recoverable error.
-    TxTooOld: Record<{
-        allowed_window_nanos: nat64;
-    }>;
+    @candid(TxTooOld)
+    TxTooOld: TxTooOld;
     // The caller specified `created_at_time` that is too far in future.
     // The caller can retry the request later.
-    TxCreatedInFuture: null;
+    @candid(Null)
+    TxCreatedInFuture: Null;
     // The ledger has already executed the request.
     // `duplicate_of` field is equal to the index of the block containing the original transaction.
-    TxDuplicate: Record<{
-        duplicate_of: BlockIndex;
-    }>;
-}>;
+    @candid(TxDuplicate)
+    TxDuplicate: TxDuplicate;
+}
 
-export type TransferResult = Variant<{
+export class TransferResult extends Variant {
+    @candid(nat64)
     Ok: nat64;
+    @candid(TransferError)
     Err: TransferError;
-}>;
+}
 
 // Arguments for the `account_balance` call.
-export type AccountBalanceArgs = Record<{
+export class AccountBalanceArgs extends Record {
+    @candid(AccountIdentifier)
     account: AccountIdentifier;
-}>;
+}
 
-export type TransferFeeArg = Record<{}>;
+export class TransferFeeArg extends Record {}
 
-export type TransferFee = Record<{
+export class TransferFee extends Record {
     // The fee to pay to perform a transfer
+    @candid(Tokens)
     transfer_fee: Tokens;
-}>;
+}
 
-export type GetBlocksArgs = Record<{
+export class GetBlocksArgs extends Record {
     // The index of the first block to fetch.
+    @candid(BlockIndex)
     start: BlockIndex;
     // Max number of blocks to fetch.
+    @candid(nat64)
     length: nat64;
-}>;
+}
 
-export type Operation = Variant<{
-    Mint: Record<{
-        to: AccountIdentifier;
-        amount: Tokens;
-    }>;
-    Burn: Record<{
-        from: AccountIdentifier;
-        amount: Tokens;
-    }>;
-    Transfer: Record<{
-        from: AccountIdentifier;
-        to: AccountIdentifier;
-        amount: Tokens;
-        fee: Tokens;
-    }>;
-}>;
+class Mint extends Record {
+    @candid(AccountIdentifier)
+    to: AccountIdentifier;
 
-export type Transaction = Record<{
+    @candid(Tokens)
+    amount: Tokens;
+}
+class Burn extends Record {
+    @candid(AccountIdentifier)
+    from: AccountIdentifier;
+
+    @candid(Tokens)
+    amount: Tokens;
+}
+class Transfer extends Record {
+    @candid(AccountIdentifier)
+    from: AccountIdentifier;
+
+    @candid(AccountIdentifier)
+    to: AccountIdentifier;
+
+    @candid(Tokens)
+    amount: Tokens;
+
+    @candid(Tokens)
+    fee: Tokens;
+}
+export class Operation extends Variant {
+    @candid(Mint)
+    Mint: Mint;
+
+    @candid(Burn)
+    Burn: Burn;
+
+    @candid(Transfer)
+    Transfer: Transfer;
+}
+
+export class Transaction extends Record {
+    @candid(Memo)
     memo: Memo;
-    operation: Opt<Operation>;
-    created_at_time: TimeStamp;
-}>;
 
-export type Block = Record<{
+    @candid(Opt(Operation))
+    operation: Opt<Operation>;
+
+    @candid(TimeStamp)
+    created_at_time: TimeStamp;
+}
+
+export class Block extends Record {
+    @candid(Opt(blob))
     parent_hash: Opt<blob>;
+
+    @candid(Transaction)
     transaction: Transaction;
+
+    @candid(TimeStamp)
     timestamp: TimeStamp;
-}>;
+}
 
 // A prefix of the block range specified in the [GetBlocksArgs] request.
-export type BlockRange = Record<{
+export class BlockRange extends Record {
     // A prefix of the requested block range.
     // The index of the first block is equal to [GetBlocksArgs.from].
     //
@@ -175,37 +239,63 @@ export type BlockRange = Record<{
     // NOTE: the list of blocks can be empty if:
     // 1. [GetBlocksArgs.len] was zero.
     // 2. [GetBlocksArgs.from] was larger than the last block known to the canister.
+    @candid(Vec(Block))
     blocks: Vec<Block>;
-}>;
+}
 
+class BadFirstBlockIndex extends Record {
+    @candid(BlockIndex)
+    requested_index: BlockIndex;
+
+    @candid(BlockIndex)
+    first_valid_index: BlockIndex;
+}
+class Other extends Record {
+    @candid(nat64)
+    error_code: nat64;
+    @candid(text)
+    error_message: text;
+}
 // An error indicating that the arguments passed to [QueryArchiveFn] were invalid.
-export type QueryArchiveError = Variant<{
+export class QueryArchiveError extends Variant {
     // [GetBlocksArgs.from] argument was smaller than the first block
     // served by the canister that received the request.
-    BadFirstBlockIndex: Record<{
-        requested_index: BlockIndex;
-        first_valid_index: BlockIndex;
-    }>;
+    @candid(BadFirstBlockIndex)
+    BadFirstBlockIndex: BadFirstBlockIndex;
 
     // Reserved for future use.
-    Other: Record<{
-        error_code: nat64;
-        error_message: string;
-    }>;
-}>;
+    @candid(Other)
+    Other: Other;
+}
 
-export type QueryArchiveResult = Variant<{
+export class QueryArchiveResult extends Variant {
     // Successfully fetched zero or more blocks.
+    @candid(BlockRange)
     Ok: BlockRange;
     // The [GetBlocksArgs] request was invalid.
+    @candid(QueryArchiveError)
     Err: QueryArchiveError;
-}>;
+}
 
 // A function that is used for fetching archived ledger blocks.
-type QueryArchiveFn = Func<
-    Query<(get_blocks_args: GetBlocksArgs) => QueryArchiveResult>
->;
+@func([GetBlocksArgs], QueryArchiveResult, 'query')
+class QueryArchiveFn {}
 
+class ArchivedBlock extends Record {
+    // The index of the first archived block that can be fetched using the callback.
+    @candid(BlockIndex)
+    start: BlockIndex;
+
+    // The number of blocks that can be fetch using the callback.
+    @candid(nat64)
+    length: nat64;
+
+    // The function that should be called to fetch the archived blocks.
+    // The range of the blocks accessible using this function is given by [from]
+    // and [len] fields above.
+    @candid(QueryArchiveFn)
+    callback: QueryArchiveFn;
+}
 // The result of a "query_blocks" call.
 //
 // The structure of the result is somewhat complicated because the main ledger canister might
@@ -214,13 +304,15 @@ type QueryArchiveFn = Func<
 //
 // Note: as of Q4 2021 when this interface is authored, the IC doesn't support making nested
 // query calls within a query call.
-export type QueryBlocksResponse = Record<{
+export class QueryBlocksResponse extends Record {
     // The total number of blocks in the chain.
     // If the chain length is positive, the index of the last block is `chain_len - 1`.
+    @candid(nat64)
     chain_length: nat64;
 
     // System certificate for the hash of the latest block in the chain.
     // Only present if `query_blocks` is called in a non-replicated query context.
+    @candid(Opt(blob))
     certificate: Opt<blob>;
 
     // List of blocks that were available in the ledger when it processed the call.
@@ -230,10 +322,12 @@ export type QueryBlocksResponse = Record<{
     // [first_block_index] + len(blocks) - 1.
     //
     // The block range can be an arbitrary sub-range of the originally requested range.
+    @candid(Vec(Block))
     blocks: Vec<Block>;
 
     // The index of the first block in "blocks".
     // If the blocks vector is empty, the exact value of this field is not specified.
+    @candid(BlockIndex)
     first_block_index: BlockIndex;
 
     // Encoding of instructions for fetching archived blocks whose indices fall into the
@@ -241,116 +335,102 @@ export type QueryBlocksResponse = Record<{
     //
     // For each entry `e` in [archived_blocks], `[e.from, e.from + len)` is a sub-range
     // of the originally requested block range.
-    archived_blocks: Vec<
-        Record<{
-            // The index of the first archived block that can be fetched using the callback.
-            start: BlockIndex;
+    @candid(Vec(ArchivedBlock))
+    archived_blocks: Vec<ArchivedBlock>;
+}
 
-            // The number of blocks that can be fetch using the callback.
-            length: nat64;
-
-            // The function that should be called to fetch the archived blocks.
-            // The range of the blocks accessible using this function is given by [from]
-            // and [len] fields above.
-            callback: QueryArchiveFn;
-        }>
-    >;
-}>;
-
-export type Archive = Record<{
+export class Archive extends Record {
+    @candid(principal)
     canister_id: Principal;
-}>;
+}
 
-export type Archives = Record<{
+export class Archives extends Record {
+    @candid(Vec(Archive))
     archives: Vec<Archive>;
-}>;
+}
 
-export type SymbolResult = Record<{
-    symbol: string;
-}>;
+export class SymbolResult extends Record {
+    @candid(text)
+    symbol: text;
+}
 
-export type NameResult = Record<{
-    name: string;
-}>;
+export class NameResult extends Record {
+    @candid(text)
+    name: text;
+}
 
-export type DecimalsResult = Record<{
+export class DecimalsResult extends Record {
+    @candid(nat32)
     decimals: nat32;
-}>;
+}
 
-export type Address = string;
+export type Address = text;
+export const Address = text;
 
 export class Ledger extends Service {
     // Transfers tokens from a subaccount of the caller to the destination address.
     // The source address is computed from the principal of the caller and the specified subaccount.
     // When successful, returns the index of the block containing the transaction.
-    @serviceUpdate
-    transfer: (transfer_args: TransferArgs) => CallResult<TransferResult>;
+    @update([TransferArgs], TransferResult)
+    transfer: (transfer_args: TransferArgs) => TransferResult;
 
     // Returns the amount of Tokens on the specified account.
-    @serviceQuery
-    account_balance: (
-        accountBalanceArgs: AccountBalanceArgs
-    ) => CallResult<Tokens>;
+    @query([AccountBalanceArgs], Tokens)
+    account_balance: (accountBalanceArgs: AccountBalanceArgs) => Tokens;
 
     // Returns the current transfer_fee.
-    @serviceQuery
-    transfer_fee: (transfer_fee_arg: TransferFeeArg) => CallResult<TransferFee>;
+    @query([TransferFeeArg], TransferFee)
+    transfer_fee: (transfer_fee_arg: TransferFeeArg) => TransferFee;
 
     // Queries blocks in the specified range.
-    @serviceQuery
-    query_blocks: (
-        get_blocks_args: GetBlocksArgs
-    ) => CallResult<QueryBlocksResponse>;
+    @query([GetBlocksArgs], QueryBlocksResponse)
+    query_blocks: (get_blocks_args: GetBlocksArgs) => QueryBlocksResponse;
 
     // Returns token symbol.
-    @serviceQuery
-    symbol: () => CallResult<SymbolResult>;
+    @query([], SymbolResult)
+    symbol: () => SymbolResult;
 
     // Returns token name.
-    @serviceQuery
-    name: () => CallResult<NameResult>;
+    @query([], NameResult)
+    name: () => NameResult;
 
     // Returns token decimals.
-    @serviceQuery
-    decimals: () => CallResult<DecimalsResult>;
+    @query([], DecimalsResult)
+    decimals: () => DecimalsResult;
 
     // Returns the existing archive canisters information.
-    @serviceQuery
-    archives: () => CallResult<Archives>;
+    @query([], Archives)
+    archives: () => Archives;
 
-    @serviceQuery
-    icrc1_metadata: () => CallResult<Vec<Tuple<[text, ICRC1Value]>>>;
+    @query([], Vec(Tuple(text, ICRC1Value)))
+    icrc1_metadata: () => [text, ICRC1Value][];
 
-    @serviceQuery
-    icrc1_name: () => CallResult<text>;
+    @query([], text)
+    icrc1_name: () => text;
 
-    @serviceQuery
-    icrc1_symbol: () => CallResult<text>;
+    @query([], text)
+    icrc1_symbol: () => text;
 
-    @serviceQuery
-    icrc1_decimals: () => CallResult<nat8>;
+    @query([], nat8)
+    icrc1_decimals: () => nat8;
 
-    @serviceQuery
-    icrc1_fee: () => CallResult<nat>;
+    @query([], nat)
+    icrc1_fee: () => nat;
 
-    @serviceQuery
-    icrc1_total_supply: () => CallResult<nat>;
+    @query([], nat)
+    icrc1_total_supply: () => nat;
 
-    @serviceQuery
-    icrc1_minting_account: () => CallResult<Opt<ICRC1Account>>;
+    @query([], Opt(ICRC1Account))
+    icrc1_minting_account: () => Opt<ICRC1Account>;
 
-    @serviceQuery
-    icrc1_balance_of: (account: ICRC1Account) => CallResult<nat>;
+    @query([ICRC1Account], nat)
+    icrc1_balance_of: (account: ICRC1Account) => nat;
 
-    @serviceUpdate
-    icrc1_transfer: (
-        transferArgs: ICRC1TransferArgs
-    ) => CallResult<Variant<{ Ok: nat; Err: ICRC1TransferError }>>;
+    @update([ICRC1TransferArgs], ICRC1TransferResult)
+    icrc1_transfer: (transferArgs: ICRC1TransferArgs) => ICRC1TransferResult;
 
-    @serviceQuery
-    icrc1_supported_standards: () => CallResult<
-        Vec<Record<{ name: text; url: text }>>
-    >;
+    @query([], Vec(ICRC1SupportedStandard))
+    icrc1_supported_standards: () => Vec<ICRC1SupportedStandard>;
 }
 
 export {

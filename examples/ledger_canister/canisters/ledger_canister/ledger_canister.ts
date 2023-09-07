@@ -1,13 +1,16 @@
 import {
     ic,
-    match,
     nat32,
     nat64,
+    None,
     Opt,
+    principal,
     Principal,
-    $query,
-    Result,
-    $update
+    query,
+    Service,
+    Some,
+    text,
+    update
 } from 'azle';
 import {
     Address,
@@ -22,98 +25,95 @@ import {
     TransferResult
 } from 'azle/canisters/ledger';
 
-const icpCanister = new Ledger(
-    Principal.fromText(
-        process.env.ICP_CANISTER_PRINCIPAL ??
-            ic.trap('process.env.ICP_CANISTER_PRINCIPAL is undefined')
-    )
-);
+export default class extends Service {
+    icpCanister = new Ledger(
+        Principal.fromText(
+            process.env.ICP_CANISTER_PRINCIPAL ??
+                ic.trap('process.env.ICP_CANISTER_PRINCIPAL is undefined')
+        )
+    );
 
-$update;
-export async function executeTransfer(
-    to: Address,
-    amount: nat64,
-    fee: nat64,
-    createdAtTime: Opt<nat64>
-): Promise<Result<TransferResult, string>> {
-    return await icpCanister
-        .transfer({
-            memo: 0n,
-            amount: {
-                e8s: amount
-            },
-            fee: {
-                e8s: fee
-            },
-            from_subaccount: Opt.None,
-            to: binaryAddressFromAddress(to),
-            created_at_time: match(createdAtTime, {
-                Some: (time) => Opt.Some({ timestamp_nanos: time }),
-                None: () => Opt.None
-            })
-        })
-        .call();
-}
+    @update([Address, nat64, nat64, Opt(nat64)], TransferResult)
+    async executeTransfer(
+        to: Address,
+        amount: nat64,
+        fee: nat64,
+        createdAtTime: Opt<nat64>
+    ): Promise<TransferResult> {
+        return await ic.call(this.icpCanister.transfer, {
+            args: [
+                {
+                    memo: 0n,
+                    amount: {
+                        e8s: amount
+                    },
+                    fee: {
+                        e8s: fee
+                    },
+                    from_subaccount: None,
+                    to: binaryAddressFromAddress(to),
+                    created_at_time:
+                        createdAtTime.length === 1
+                            ? Some({ timestamp_nanos: createdAtTime[0] })
+                            : None
+                }
+            ]
+        });
+    }
 
-$update;
-export async function getAccountBalance(
-    address: Address
-): Promise<Result<Tokens, string>> {
-    return await icpCanister
-        .account_balance({
-            account: binaryAddressFromAddress(address)
-        })
-        .call();
-}
+    @update([Address], Tokens)
+    async getAccountBalance(address: Address): Promise<Tokens> {
+        return await ic.call(this.icpCanister.account_balance, {
+            args: [
+                {
+                    account: binaryAddressFromAddress(address)
+                }
+            ]
+        });
+    }
 
-$update;
-export async function getTransferFee(): Promise<Result<TransferFee, string>> {
-    return await icpCanister.transfer_fee({}).call();
-}
+    @update([], TransferFee)
+    async getTransferFee(): Promise<TransferFee> {
+        return await ic.call(this.icpCanister.transfer_fee, { args: [{}] });
+    }
 
-$update;
-export async function getBlocks(
-    getBlocksArgs: GetBlocksArgs
-): Promise<Result<QueryBlocksResponse, string>> {
-    return await icpCanister.query_blocks(getBlocksArgs).call();
-}
+    @update([GetBlocksArgs], QueryBlocksResponse)
+    async getBlocks(
+        getBlocksArgs: GetBlocksArgs
+    ): Promise<QueryBlocksResponse> {
+        return await ic.call(this.icpCanister.query_blocks, {
+            args: [getBlocksArgs]
+        });
+    }
 
-$update;
-export async function getSymbol(): Promise<Result<string, string>> {
-    const symbolResultCallResult = await icpCanister.symbol().call();
+    @update([], text)
+    async getSymbol(): Promise<text> {
+        const symbolResult = await ic.call(this.icpCanister.symbol, {});
 
-    return match(symbolResultCallResult, {
-        Ok: (symbolResult) => ({ Ok: symbolResult.symbol }),
-        Err: (err) => ({ Err: err })
-    });
-}
+        return symbolResult.symbol;
+    }
 
-$update;
-export async function getName(): Promise<Result<string, string>> {
-    const nameResultCallResult = await icpCanister.name().call();
+    @update([], text)
+    async getName(): Promise<text> {
+        const nameResult = await ic.call(this.icpCanister.name, {});
 
-    return match(nameResultCallResult, {
-        Ok: (nameResult) => ({ Ok: nameResult.name }),
-        Err: (err) => ({ Err: err })
-    });
-}
+        return nameResult.name;
+    }
 
-$update;
-export async function getDecimals(): Promise<Result<nat32, string>> {
-    const decimalsResultCallResult = await icpCanister.decimals().call();
+    @update([], nat32)
+    async getDecimals(): Promise<nat32> {
+        const decimalsResult = await ic.call(this.icpCanister.decimals, {});
 
-    return match(decimalsResultCallResult, {
-        Ok: (decimalsResult) => ({ Ok: decimalsResult.decimals }),
-        Err: (err) => ({ Err: err })
-    });
-}
+        return decimalsResult.decimals;
+    }
 
-$update;
-export async function getArchives(): Promise<Result<Archives, string>> {
-    return await icpCanister.archives().call();
-}
+    @update([], Archives)
+    async getArchives(): Promise<Archives> {
+        return await ic.call(this.icpCanister.archives, {});
+    }
 
-$query;
-export function getAddressFromPrincipal(principal: Principal): string {
-    return hexAddressFromPrincipal(principal, 0);
+    @query([principal], text)
+    getAddressFromPrincipal(principal: Principal): string {
+        return hexAddressFromPrincipal(principal, 0);
+    }
 }
