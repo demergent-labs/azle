@@ -28,7 +28,8 @@ import {
     DeleteCanisterArgs,
     ProvisionalCreateCanisterWithCyclesArgs,
     ProvisionalTopUpCanisterArgs,
-    DepositCyclesArgs
+    DepositCyclesArgs,
+    ProvisionalCreateCanisterWithCyclesResult
 } from 'azle/canisters/management';
 
 type State = {
@@ -181,8 +182,8 @@ export default class extends Service {
     }
 
     // TODO we should test this like we test depositCycles
-    @update([], CreateCanisterResult)
-    async provisionalCreateCanisterWithCycles(): Promise<CreateCanisterResult> {
+    @update([], ProvisionalCreateCanisterWithCyclesResult)
+    async provisionalCreateCanisterWithCycles(): Promise<ProvisionalCreateCanisterWithCyclesResult> {
         return await ic.call(
             managementCanister.provisional_create_canister_with_cycles,
             {

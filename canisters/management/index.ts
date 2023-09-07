@@ -23,6 +23,7 @@ import {
     DepositCyclesArgs,
     InstallCodeArgs,
     ProvisionalCreateCanisterWithCyclesArgs,
+    ProvisionalCreateCanisterWithCyclesResult,
     ProvisionalTopUpCanisterArgs,
     StartCanisterArgs,
     StopCanisterArgs,
@@ -124,10 +125,13 @@ class ManagementCanister extends Service {
     @update([DepositCyclesArgs], Void)
     deposit_cycles: (args: DepositCyclesArgs) => Void;
 
-    @update([ProvisionalCreateCanisterWithCyclesArgs], CreateCanisterResult)
+    @update(
+        [ProvisionalCreateCanisterWithCyclesArgs],
+        ProvisionalCreateCanisterWithCyclesArgs
+    )
     provisional_create_canister_with_cycles: (
         args: ProvisionalCreateCanisterWithCyclesArgs
-    ) => CreateCanisterResult;
+    ) => ProvisionalCreateCanisterWithCyclesResult;
 
     @update([ProvisionalTopUpCanisterArgs], Void)
     provisional_top_up_canister: (args: ProvisionalTopUpCanisterArgs) => Void;
