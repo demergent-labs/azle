@@ -565,7 +565,9 @@ export const ic: Ic = globalThis._azleIc
               return IDL.decode([IDL.Nat64], instructionCounterCandidBytes)[0];
           },
           isController: (principal) => {
-              return globalThis._azleIc.isController(principal.toUint8Array());
+              return globalThis._azleIc.isController(
+                  principal.toUint8Array().buffer
+              );
           },
           msgCyclesAccept: (maxAmount: nat64) => {
               const maxAmountCandidBytes = new Uint8Array(
