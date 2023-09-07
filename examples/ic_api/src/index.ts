@@ -100,21 +100,21 @@ export default class extends Service {
         return ic.canisterVersion();
     }
 
-    // // When called from a query call, returns the data certificate
-    // // authenticating certified data set by this canister. Returns None if not
-    // // called from a query call.
-    // @query([], Opt(blob))
-    // dataCertificate(): Opt<blob> {
-    //     return ic.dataCertificate();
-    // }
+    // When called from a query call, returns the data certificate
+    // authenticating certified data set by this canister. Otherwise returns
+    // None.
+    @query([], Opt(blob))
+    dataCertificate(): Opt<blob> {
+        return ic.dataCertificate();
+    }
 
-    // // When called from a query call, returns the data certificate
-    // // authenticating certified data set by this canister. Returns None if
-    // // called not from a query call.
-    // @update([], Opt(blob))
-    // dataCertificateNull(): Opt<blob> {
-    //     return ic.dataCertificate();
-    // }
+    // When called from a query call, returns the data certificate
+    // authenticating certified data set by this canister. Otherwise returns
+    // None.
+    @update([], Opt(blob))
+    dataCertificateNull(): Opt<blob> {
+        return ic.dataCertificate();
+    }
 
     // returns this canister's id
     @query([], principal)

@@ -1,6 +1,6 @@
 import { IDL } from './index';
 import { Principal } from '@dfinity/principal';
-import { blob, nat, nat32, nat64, Void } from './primitives';
+import { blob, nat, nat32, nat64, Void, Opt } from './primitives';
 import { v4 } from 'uuid';
 import { CandidClass, toCandidClass, toReturnCandidClass } from './utils';
 
@@ -123,6 +123,14 @@ type Ic = {
      * @param id The ID of the timer to be cancelled.
      */
     clearTimer: (id: bigint) => void;
+
+    /**
+     * When called from a query call, returns the data certificate
+     * authenticating `certifiedData` set by this canister. Otherwise returns
+     * `None`.
+     * @returns the data certificate or None
+     */
+    dataCertificate: () => Opt<blob>;
 
     /**
      * Gets the id of this canister
@@ -537,6 +545,14 @@ export const ic: Ic = globalThis._azleIc
               ).buffer;
 
               return globalThis._azleIc.clearTimer(timerIdCandidBytes);
+          },
+          dataCertificate: () => {
+              const rawRustValue: ArrayBuffer | undefined =
+                  globalThis._azleIc.dataCertificate();
+
+              return rawRustValue === undefined
+                  ? []
+                  : [new Uint8Array(rawRustValue)];
           },
           id: () => {
               // TODO consider bytes instead of string, just like with caller

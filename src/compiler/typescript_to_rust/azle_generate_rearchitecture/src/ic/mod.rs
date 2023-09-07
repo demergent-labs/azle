@@ -13,6 +13,7 @@ mod canister_balance;
 mod canister_balance128;
 mod canister_version;
 mod clear_timer;
+mod data_certificate;
 mod id;
 mod instruction_counter;
 mod is_controller;
@@ -55,6 +56,7 @@ pub fn generate() -> TokenStream {
     let canister_balance128 = canister_balance128::generate();
     let canister_version = canister_version::generate();
     let clear_timer = clear_timer::generate();
+    let data_certificate = data_certificate::generate();
     let id = id::generate();
     let instruction_counter = instruction_counter::generate();
     let is_controller = is_controller::generate();
@@ -97,6 +99,7 @@ pub fn generate() -> TokenStream {
         #canister_balance128
         #canister_version
         #clear_timer
+        #data_certificate
         #id
         #instruction_counter
         #is_controller
@@ -140,6 +143,7 @@ pub fn generate() -> TokenStream {
         ic.set_property("canisterBalance128", context.wrap_callback2(canister_balance128).unwrap()).unwrap();
         ic.set_property("canisterVersion", context.wrap_callback2(canister_version).unwrap()).unwrap();
         ic.set_property("clearTimer", context.wrap_callback2(clear_timer).unwrap()).unwrap();
+        ic.set_property("dataCertificate", context.wrap_callback2(data_certificate).unwrap()).unwrap();
         ic.set_property("id", context.wrap_callback2(id).unwrap()).unwrap();
         ic.set_property("instructionCounter", context.wrap_callback2(instruction_counter).unwrap()).unwrap();
         ic.set_property("isController", context.wrap_callback2(is_controller).unwrap()).unwrap();
