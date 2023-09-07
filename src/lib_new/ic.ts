@@ -393,6 +393,9 @@ type ReturnTypeOfPromise<T> = T extends (...args: any[]) => infer R
 export const ic: Ic = globalThis._azleIc
     ? {
           ...globalThis._azleIc,
+          argDataRaw: () => {
+              return new Uint8Array(globalThis._azleIc.argDataRaw());
+          },
           call: (method, config) => {
               return method(
                   '_AZLE_CROSS_CANISTER_CALL',
