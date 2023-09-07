@@ -1,13 +1,16 @@
-import { blob, candid, ic, None, record, Record, Service, update } from 'azle';
-import { managementCanister } from 'azle/canisters/management';
+import { blob, candid, ic, None, Record, Service, update } from 'azle';
+import {
+    EcdsaCurve,
+    EcdsaPublicKeyArgs,
+    KeyId,
+    managementCanister
+} from 'azle/canisters/management';
 
-@record
 class PublicKey extends Record {
     @candid(blob)
     publicKey: blob;
 }
 
-@record
 class Signature extends Record {
     @candid(blob)
     signature: blob;
@@ -22,14 +25,14 @@ export default class extends Service {
             managementCanister.ecdsa_public_key,
             {
                 args: [
-                    {
+                    EcdsaPublicKeyArgs.create({
                         canister_id: None,
                         derivation_path: [caller],
-                        key_id: {
-                            curve: { secp256k1: null },
+                        key_id: KeyId.create({
+                            curve: EcdsaCurve.create({ secp256k1: null }),
                             name: 'dfx_test_key'
-                        }
-                    }
+                        })
+                    })
                 ]
             }
         );
