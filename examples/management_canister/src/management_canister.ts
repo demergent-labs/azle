@@ -2,19 +2,33 @@
 
 import {
     blob,
-    match,
+    bool,
+    ic,
     nat,
-    Opt,
+    None,
+    principal,
     Principal,
-    $query,
-    Result,
-    $update
+    query,
+    Service,
+    Some,
+    update
 } from 'azle';
 import {
     CanisterStatusArgs,
     CanisterStatusResult,
     CreateCanisterResult,
-    managementCanister
+    managementCanister,
+    CreateCanisterArgs,
+    UpdateSettingsArgs,
+    InstallCodeArgs,
+    InstallCodeMode,
+    UninstallCodeArgs,
+    StartCanisterArgs,
+    StopCanisterArgs,
+    DeleteCanisterArgs,
+    ProvisionalCreateCanisterWithCyclesArgs,
+    ProvisionalTopUpCanisterArgs,
+    DepositCyclesArgs
 } from 'azle/canisters/management';
 
 type State = {
@@ -25,221 +39,183 @@ let state: State = {
     createdCanisterId: Principal.fromText('aaaaa-aa')
 };
 
-$update;
-export async function executeCreateCanister(): Promise<
-    Result<CreateCanisterResult, string>
-> {
-    const createCanisterResultCallResult = await managementCanister
-        .create_canister({
-            settings: Opt.None
-        })
-        .cycles(50_000_000_000_000n)
-        .call();
-
-    return match(createCanisterResultCallResult, {
-        Ok: (createCanisterResult) => {
-            state.createdCanisterId = createCanisterResult.canister_id;
-
-            return {
-                Ok: createCanisterResult
-            };
-        },
-        Err: (err) => ({ Err: err })
-    });
-}
-
-$update;
-export async function executeUpdateSettings(
-    canisterId: Principal
-): Promise<Result<boolean, string>> {
-    const callResult = await managementCanister
-        .update_settings({
-            canister_id: canisterId,
-            settings: {
-                controllers: Opt.None,
-                compute_allocation: Opt.Some(1n),
-                memory_allocation: Opt.Some(3_000_000n),
-                freezing_threshold: Opt.Some(2_000_000n)
+export default class extends Service {
+    @update([], CreateCanisterResult)
+    async executeCreateCanister(): Promise<CreateCanisterResult> {
+        const createCanisterResult = await ic.call(
+            managementCanister.create_canister,
+            {
+                args: [CreateCanisterArgs.create({ settings: None })],
+                cycles: 50_000_000_000_000n
             }
-        })
-        .call();
+        );
 
-    return match(callResult, {
-        Ok: () => ({ Ok: true }),
-        Err: (err) => ({ Err: err })
-    });
-}
+        state.createdCanisterId = createCanisterResult.canister_id;
 
-$update;
-export async function executeInstallCode(
-    canisterId: Principal,
-    wasmModule: blob
-): Promise<Result<boolean, string>> {
-    const callResult = await managementCanister
-        .install_code({
-            mode: {
-                install: null
-            },
-            canister_id: canisterId,
-            wasm_module: wasmModule,
-            arg: Uint8Array.from([])
-        })
-        .cycles(100_000_000_000n)
-        .call();
+        return createCanisterResult;
+    }
 
-    return match(callResult, {
-        Ok: () => ({ Ok: true }),
-        Err: (err) => ({ Err: err })
-    });
-}
+    @update([principal], bool)
+    async executeUpdateSettings(canisterId: Principal): Promise<bool> {
+        await ic.call(managementCanister.update_settings, {
+            args: [
+                UpdateSettingsArgs.create({
+                    canister_id: canisterId,
+                    settings: {
+                        controllers: None,
+                        compute_allocation: Some(1n),
+                        memory_allocation: Some(3_000_000n),
+                        freezing_threshold: Some(2_000_000n)
+                    }
+                })
+            ]
+        });
 
-$update;
-export async function executeUninstallCode(
-    canisterId: Principal
-): Promise<Result<boolean, string>> {
-    const callResult = await managementCanister
-        .uninstall_code({
-            canister_id: canisterId
-        })
-        .call();
+        return true;
+    }
 
-    return match(callResult, {
-        Ok: () => ({ Ok: true }),
-        Err: (err) => ({ Err: err })
-    });
-}
+    @update([principal, blob], bool)
+    async executeInstallCode(
+        canisterId: Principal,
+        wasmModule: blob
+    ): Promise<bool> {
+        await ic.call(managementCanister.install_code, {
+            args: [
+                InstallCodeArgs.create({
+                    mode: InstallCodeMode.create({
+                        install: null
+                    }),
+                    canister_id: canisterId,
+                    wasm_module: wasmModule,
+                    arg: Uint8Array.from([])
+                })
+            ],
+            cycles: 100_000_000_000n
+        });
 
-$update;
-export async function executeStartCanister(
-    canisterId: Principal
-): Promise<Result<boolean, string>> {
-    const callResult = await managementCanister
-        .start_canister({
-            canister_id: canisterId
-        })
-        .call();
+        return true;
+    }
 
-    return match(callResult, {
-        Ok: () => ({ Ok: true }),
-        Err: (err) => ({ Err: err })
-    });
-}
+    @update([principal], bool)
+    async executeUninstallCode(canisterId: Principal): Promise<boolean> {
+        await ic.call(managementCanister.uninstall_code, {
+            args: [
+                UninstallCodeArgs.create({
+                    canister_id: canisterId
+                })
+            ]
+        });
 
-$update;
-export async function executeStopCanister(
-    canisterId: Principal
-): Promise<Result<boolean, string>> {
-    const callResult = await managementCanister
-        .stop_canister({
-            canister_id: canisterId
-        })
-        .call();
+        return true;
+    }
 
-    return match(callResult, {
-        Ok: () => ({ Ok: true }),
-        Err: (err) => ({ Err: err })
-    });
-}
+    @update([principal], bool)
+    async executeStartCanister(canisterId: Principal): Promise<boolean> {
+        await ic.call(managementCanister.start_canister, {
+            args: [
+                StartCanisterArgs.create({
+                    canister_id: canisterId
+                })
+            ]
+        });
 
-$update;
-export async function getCanisterStatus(
-    args: CanisterStatusArgs
-): Promise<Result<CanisterStatusResult, string>> {
-    const canisterStatusResultCallResult = await managementCanister
-        .canister_status({
-            canister_id: args.canister_id
-        })
-        .call();
+        return true;
+    }
 
-    return match(canisterStatusResultCallResult, {
-        Ok: (canisterStatusResult) => ({ Ok: canisterStatusResult }),
-        Err: (err) => ({ Err: err })
-    });
-}
+    @update([principal], bool)
+    async executeStopCanister(canisterId: Principal): Promise<boolean> {
+        await ic.call(managementCanister.stop_canister, {
+            args: [
+                StopCanisterArgs.create({
+                    canister_id: canisterId
+                })
+            ]
+        });
 
-$update;
-export async function executeDeleteCanister(
-    canisterId: Principal
-): Promise<Result<boolean, string>> {
-    const callResult = await managementCanister
-        .delete_canister({
-            canister_id: canisterId
-        })
-        .call();
+        return true;
+    }
 
-    return match(callResult, {
-        Ok: () => ({ Ok: true }),
-        Err: (err) => ({ Err: err })
-    });
-}
+    @update([CanisterStatusArgs], CanisterStatusResult)
+    async getCanisterStatus(
+        args: CanisterStatusArgs
+    ): Promise<CanisterStatusResult> {
+        return await ic.call(managementCanister.canister_status, {
+            args: [
+                CanisterStatusArgs.create({
+                    canister_id: args.canister_id
+                })
+            ]
+        });
+    }
 
-$update;
-export async function executeDepositCycles(
-    canisterId: Principal
-): Promise<Result<boolean, string>> {
-    const callResult = await managementCanister
-        .deposit_cycles({
-            canister_id: canisterId
-        })
-        .cycles(1_000_000n)
-        .call();
+    @update([principal], bool)
+    async executeDeleteCanister(canisterId: Principal): Promise<bool> {
+        await ic.call(managementCanister.delete_canister, {
+            args: [
+                DeleteCanisterArgs.create({
+                    canister_id: canisterId
+                })
+            ]
+        });
 
-    return match(callResult, {
-        Ok: () => ({ Ok: true }),
-        Err: (err) => ({ Err: err })
-    });
-}
+        return true;
+    }
 
-$update;
-export async function getRawRand(): Promise<Result<blob, string>> {
-    const rawRandcallResult = await managementCanister.raw_rand().call();
+    @update([principal], bool)
+    async executeDepositCycles(canisterId: Principal): Promise<bool> {
+        await ic.call(managementCanister.deposit_cycles, {
+            args: [
+                DepositCyclesArgs.create({
+                    canister_id: canisterId
+                })
+            ],
+            cycles: 10_000_000n
+        });
 
-    return match(rawRandcallResult, {
-        Ok: (rawRandomness) => ({ Ok: rawRandomness }),
-        Err: (err) => ({ Err: err })
-    });
-}
+        return true;
+    }
 
-// TODO we should test this like we test depositCycles
-$update;
-export async function provisionalCreateCanisterWithCycles(): Promise<
-    Result<CreateCanisterResult, string>
-> {
-    const callResult = await managementCanister
-        .provisional_create_canister_with_cycles({
-            amount: Opt.None,
-            settings: Opt.None
-        })
-        .call();
+    @update([], blob)
+    async getRawRand(): Promise<blob> {
+        return await ic.call(managementCanister.raw_rand);
+    }
 
-    return match(callResult, {
-        Ok: (provisionalCreateCanisterWithCyclesResult) => ({
-            Ok: provisionalCreateCanisterWithCyclesResult
-        }),
-        Err: (err) => ({ Err: err })
-    });
-}
+    // TODO we should test this like we test depositCycles
+    @update([], CreateCanisterResult)
+    async provisionalCreateCanisterWithCycles(): Promise<CreateCanisterResult> {
+        return await ic.call(
+            managementCanister.provisional_create_canister_with_cycles,
+            {
+                args: [
+                    ProvisionalCreateCanisterWithCyclesArgs.create({
+                        amount: None,
+                        settings: None
+                    })
+                ]
+            }
+        );
+    }
 
-// TODO we should test this like we test depositCycles
-$update;
-export async function provisionalTopUpCanister(
-    canisterId: Principal,
-    amount: nat
-): Promise<Result<boolean, string>> {
-    const callResult = await managementCanister
-        .provisional_top_up_canister({
-            canister_id: canisterId,
-            amount
-        })
-        .call();
+    // TODO we should test this like we test depositCycles
+    @update([], bool)
+    async provisionalTopUpCanister(
+        canisterId: Principal,
+        amount: nat
+    ): Promise<boolean> {
+        await ic.call(managementCanister.provisional_top_up_canister, {
+            args: [
+                ProvisionalTopUpCanisterArgs.create({
+                    canister_id: canisterId,
+                    amount
+                })
+            ]
+        });
 
-    return match(callResult, {
-        Ok: () => ({ Ok: true }),
-        Err: (err) => ({ Err: err })
-    });
-}
+        return true;
+    }
 
-$query;
-export function getCreatedCanisterId(): Principal {
-    return state.createdCanisterId;
+    @query([], principal)
+    getCreatedCanisterId(): Principal {
+        return state.createdCanisterId;
+    }
 }

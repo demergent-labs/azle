@@ -10,11 +10,28 @@ import {
     candid,
     principal,
     text,
-    Null
+    Null,
+    Void
 } from '../../src/lib_new';
 import { HttpRequestArgs, HttpResponse } from './http_request';
+import {
+    CanisterStatusArgs,
+    CanisterStatusResult,
+    CreateCanisterArgs,
+    CreateCanisterResult,
+    DeleteCanisterArgs,
+    DepositCyclesArgs,
+    InstallCodeArgs,
+    ProvisionalCreateCanisterWithCyclesArgs,
+    ProvisionalTopUpCanisterArgs,
+    StartCanisterArgs,
+    StopCanisterArgs,
+    UninstallCodeArgs,
+    UpdateSettingsArgs
+} from './canister_management';
 
 export * from './http_request';
+export * from './canister_management';
 
 export class EcdsaCurve extends Variant {
     @candid(Null)
@@ -77,6 +94,43 @@ class ManagementCanister extends Service {
 
     @update([SignWithEcdsaArgs], SignWithEcdsaResult)
     sign_with_ecdsa: (args: SignWithEcdsaArgs) => Promise<SignWithEcdsaResult>;
+
+    @update([CreateCanisterArgs], CreateCanisterResult)
+    create_canister: (
+        args: CreateCanisterArgs
+    ) => Promise<CreateCanisterResult>;
+
+    @update([UpdateSettingsArgs], Void)
+    update_settings: (args: UpdateSettingsArgs) => Void;
+
+    @update([InstallCodeArgs], Void)
+    install_code: (args: InstallCodeArgs) => Void;
+
+    @update([UninstallCodeArgs], Void)
+    uninstall_code: (args: UninstallCodeArgs) => Void;
+
+    @update([StartCanisterArgs], Void)
+    start_canister: (args: StartCanisterArgs) => Void;
+
+    @update([StopCanisterArgs], Void)
+    stop_canister: (args: StopCanisterArgs) => Void;
+
+    @update([CanisterStatusArgs], CanisterStatusResult)
+    canister_status: (args: CanisterStatusArgs) => CanisterStatusResult;
+
+    @update([DeleteCanisterArgs], Void)
+    delete_canister: (args: DeleteCanisterArgs) => Void;
+
+    @update([DepositCyclesArgs], Void)
+    deposit_cycles: (args: DepositCyclesArgs) => Void;
+
+    @update([ProvisionalCreateCanisterWithCyclesArgs], CreateCanisterResult)
+    provisional_create_canister_with_cycles: (
+        args: ProvisionalCreateCanisterWithCyclesArgs
+    ) => CreateCanisterResult;
+
+    @update([ProvisionalTopUpCanisterArgs], Void)
+    provisional_top_up_canister: (args: ProvisionalTopUpCanisterArgs) => Void;
 }
 
 /**

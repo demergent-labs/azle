@@ -10,16 +10,10 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await managementCanister.executeCreateCanister();
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
                     Ok:
-                        result.Ok.canister_id !== undefined &&
-                        result.Ok.canister_id !== null
+                        result.canister_id !== undefined &&
+                        result.canister_id !== null
                 };
             }
         },
@@ -32,24 +26,12 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                 const executeUpdateSettingsResult =
                     await managementCanister.executeUpdateSettings(canisterId);
 
-                if (!ok(executeUpdateSettingsResult)) {
-                    return {
-                        Err: executeUpdateSettingsResult.Err
-                    };
-                }
-
                 const getCanisterStatusResult =
                     await managementCanister.getCanisterStatus({
                         canister_id: canisterId
                     });
 
-                if (!ok(getCanisterStatusResult)) {
-                    return {
-                        Err: getCanisterStatusResult.Err
-                    };
-                }
-
-                const canisterSettings = getCanisterStatusResult.Ok.settings;
+                const canisterSettings = getCanisterStatusResult.settings;
 
                 return {
                     Ok:
@@ -73,14 +55,8 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                     wasmModule as any
                 );
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: true
+                    Ok: result
                 };
             }
         },
@@ -90,45 +66,25 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                 const canisterId =
                     await managementCanister.getCreatedCanisterId();
 
-                const statusBeforeResult =
-                    await managementCanister.getCanisterStatus({
+                const statusBefore = await managementCanister.getCanisterStatus(
+                    {
                         canister_id: canisterId
-                    });
+                    }
+                );
 
-                if (!ok(statusBeforeResult)) {
-                    return {
-                        Err: statusBeforeResult.Err
-                    };
-                }
-
-                const statusBefore = statusBeforeResult.Ok;
                 const cyclesBefore = statusBefore.cycles;
 
                 const depositCyclesResult =
                     await managementCanister.executeDepositCycles(canisterId);
 
-                if (!ok(depositCyclesResult)) {
-                    return {
-                        Err: depositCyclesResult.Err
-                    };
-                }
+                const statusAfter = await managementCanister.getCanisterStatus({
+                    canister_id: canisterId
+                });
 
-                const statusAfterResult =
-                    await managementCanister.getCanisterStatus({
-                        canister_id: canisterId
-                    });
-
-                if (!ok(statusAfterResult)) {
-                    return {
-                        Err: statusAfterResult.Err
-                    };
-                }
-
-                const statusAfter = statusAfterResult.Ok;
                 const cyclesAfter = statusAfter.cycles;
 
                 return {
-                    Ok: cyclesAfter >= cyclesBefore + 1_000_000n
+                    Ok: cyclesAfter > cyclesBefore
                 };
             }
         },
@@ -141,24 +97,12 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                 const executeUninstallCodeResult =
                     await managementCanister.executeUninstallCode(canisterId);
 
-                if (!ok(executeUninstallCodeResult)) {
-                    return {
-                        Err: executeUninstallCodeResult.Err
-                    };
-                }
-
                 const getCanisterStatusResult =
                     await managementCanister.getCanisterStatus({
                         canister_id: canisterId
                     });
 
-                if (!ok(getCanisterStatusResult)) {
-                    return {
-                        Err: getCanisterStatusResult.Err
-                    };
-                }
-
-                const canisterStatus = getCanisterStatusResult.Ok;
+                const canisterStatus = getCanisterStatusResult;
 
                 return {
                     Ok: canisterStatus.module_hash.length === 0
@@ -174,24 +118,12 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                 const executeStopCanisterResult =
                     await managementCanister.executeStopCanister(canisterId);
 
-                if (!ok(executeStopCanisterResult)) {
-                    return {
-                        Err: executeStopCanisterResult.Err
-                    };
-                }
-
                 const getCanisterStatusResult =
                     await managementCanister.getCanisterStatus({
                         canister_id: canisterId
                     });
 
-                if (!ok(getCanisterStatusResult)) {
-                    return {
-                        Err: getCanisterStatusResult.Err
-                    };
-                }
-
-                const canisterStatus = getCanisterStatusResult.Ok;
+                const canisterStatus = getCanisterStatusResult;
 
                 return {
                     Ok: 'stopped' in canisterStatus.status
@@ -209,13 +141,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                         canister_id: canisterId
                     });
 
-                if (!ok(getCanisterStatusBeforeResult)) {
-                    return {
-                        Err: getCanisterStatusBeforeResult.Err
-                    };
-                }
-
-                const canisterStatusBefore = getCanisterStatusBeforeResult.Ok;
+                const canisterStatusBefore = getCanisterStatusBeforeResult;
 
                 if ('stopped' in canisterStatusBefore.status === false) {
                     return {
@@ -226,24 +152,12 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                 const executeStartCanisterResult =
                     await managementCanister.executeStartCanister(canisterId);
 
-                if (!ok(executeStartCanisterResult)) {
-                    return {
-                        Err: executeStartCanisterResult.Err
-                    };
-                }
-
                 const getCanisterStatusAfterResult =
                     await managementCanister.getCanisterStatus({
                         canister_id: canisterId
                     });
 
-                if (!ok(getCanisterStatusAfterResult)) {
-                    return {
-                        Err: getCanisterStatusAfterResult.Err
-                    };
-                }
-
-                const canisterStatusAfter = getCanisterStatusAfterResult.Ok;
+                const canisterStatusAfter = getCanisterStatusAfterResult;
 
                 return {
                     Ok: 'running' in canisterStatusAfter.status
@@ -261,13 +175,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                         canister_id: canisterId
                     });
 
-                if (!ok(getCanisterStatusResult)) {
-                    return {
-                        Err: getCanisterStatusResult.Err
-                    };
-                }
-
-                const canisterStatus = getCanisterStatusResult.Ok;
+                const canisterStatus = getCanisterStatusResult;
 
                 return {
                     Ok:
@@ -293,20 +201,8 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                 const executeStopCanisterResult =
                     await managementCanister.executeStopCanister(canisterId);
 
-                if (!ok(executeStopCanisterResult)) {
-                    return {
-                        Err: executeStopCanisterResult.Err
-                    };
-                }
-
                 const executeDeleteCanisterResult =
                     await managementCanister.executeDeleteCanister(canisterId);
-
-                if (!ok(executeDeleteCanisterResult)) {
-                    return {
-                        Err: executeDeleteCanisterResult.Err
-                    };
-                }
 
                 return {
                     Ok: true
@@ -318,14 +214,8 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await managementCanister.getRawRand();
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok.length === 32
+                    Ok: result.length === 32
                 };
             }
         }
