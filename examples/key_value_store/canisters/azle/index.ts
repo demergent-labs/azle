@@ -1,42 +1,29 @@
-import { ic, nat64, Opt, $query, Record, $update } from 'azle';
+import {
+    ic,
+    nat64,
+    None,
+    Opt,
+    query,
+    Record,
+    Service,
+    Some,
+    text,
+    update,
+    Void
+} from 'azle';
 
-//#region Performance
-type PerfResult = Record<{
-    wasmBodyOnly: nat64;
-    wasmIncludingPrelude: nat64;
-}>;
+export default class extends Service {
+    store: Map<string, string> = new Map();
 
-let perfResult: Opt<PerfResult> = Opt.None;
+    @query([text], Opt(text))
+    get(key: string): Opt<string> {
+        const keyOrUndefined = this.store.get(key);
 
-$query;
-export function getPerfResult(): Opt<PerfResult> {
-    return perfResult;
-}
+        return keyOrUndefined ? Some(keyOrUndefined) : None;
+    }
 
-function recordPerformance(start: nat64, end: nat64): void {
-    perfResult = Opt.Some({
-        wasmBodyOnly: end - start,
-        wasmIncludingPrelude: ic.performanceCounter(0)
-    });
-}
-//#endregion
-
-let store: Map<string, string> = new Map();
-
-$query;
-export function get(key: string): Opt<string> {
-    const keyOrUndefined = store.get(key);
-
-    return keyOrUndefined ? Opt.Some(keyOrUndefined) : Opt.None;
-}
-
-$update;
-export function set(key: string, value: string): void {
-    const perfStart = ic.performanceCounter(0);
-
-    store.set(key, value);
-
-    const perfEnd = ic.performanceCounter(0);
-
-    recordPerformance(perfStart, perfEnd);
+    @update([text, text], Void)
+    set(key: string, value: string): Void {
+        this.store.set(key, value);
+    }
 }
