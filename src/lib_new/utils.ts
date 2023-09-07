@@ -89,7 +89,18 @@ export function display(
         return [`variant {${fields.join('; ')}}`, candid[1]];
     }
     if (idl instanceof IDL.FuncClass) {
-        return [`func ${idl.display().replace(/→/g, '->')}`, candidTypeDefs];
+        const argsTypes = idl.argTypes.map((value) =>
+            display(value, candidTypeDefs)
+        );
+        const candidArgs = extractCandid(argsTypes, candidTypeDefs);
+        const retsTypes = idl.retTypes.map((value) =>
+            display(value, candidArgs[1])
+        );
+        const candidRets = extractCandid(retsTypes, candidArgs[1]);
+        const args = candidArgs[0].join(', ');
+        const rets = candidRets[0].join(', ');
+        const annon = ' ' + idl.annotations.join(' ');
+        return [`func (${args}) -> (${rets})${annon}`, candidRets[1]];
     }
     if (idl !== undefined && !('display' in idl)) {
         throw Error(`${JSON.stringify(idl)} is not a candid type`);
