@@ -11,11 +11,9 @@ import {
     Variant,
     Vec,
     update,
-    record,
     text,
     candid,
     func,
-    variant,
     Some,
     None,
     bool,
@@ -23,7 +21,12 @@ import {
 } from 'azle';
 import encodeUtf8 from 'encode-utf8';
 
-@record
+class Token extends Record {
+    // add whatever fields you'd like
+    @candid(text)
+    arbitrary_data: text;
+}
+
 class StreamingCallbackHttpResponse extends Record {
     @candid(blob)
     body: blob;
@@ -32,14 +35,9 @@ class StreamingCallbackHttpResponse extends Record {
     token: Opt<Token>;
 }
 
-@record
-class Token extends Record {
-    // add whatever fields you'd like
-    @candid(text)
-    arbitrary_data: text;
-}
+@func([text], StreamingCallbackHttpResponse, 'query')
+class Callback {}
 
-@record
 class CallbackStrategy extends Record {
     @candid(Callback)
     callback: Callback;
@@ -48,10 +46,6 @@ class CallbackStrategy extends Record {
     token: Token;
 }
 
-@func([text], StreamingCallbackHttpResponse, 'query')
-class Callback {}
-
-@variant
 class StreamingStrategy extends Variant {
     @candid(CallbackStrategy)
     Callback?: CallbackStrategy;
@@ -60,7 +54,6 @@ class StreamingStrategy extends Variant {
 type HeaderField = [text, text];
 const HeaderField = Tuple(text, text);
 
-@record
 class HttpResponse extends Record {
     @candid(nat16)
     status_code: nat16;
@@ -78,7 +71,6 @@ class HttpResponse extends Record {
     upgrade: Opt<bool>;
 }
 
-@record
 class HttpRequest extends Record {
     @candid(text)
     method: text;
