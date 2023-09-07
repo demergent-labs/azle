@@ -714,10 +714,27 @@ export const ic: Ic = globalThis._azleIc
                   IDL.encode([IDL.Nat64], [delay])
               ).buffer;
 
-              const setTimerCandidBytes =
-                  globalThis._azleIc.setTimer(delayCandidBytes);
+              const timerIdCandidBytes = globalThis._azleIc.setTimer(
+                  delayCandidBytes,
+                  callback
+              );
 
-              return IDL.decode([IDL.Nat64], setTimerCandidBytes)[0];
+              return IDL.decode([IDL.Nat64], timerIdCandidBytes)[0];
+          },
+          setTimerInterval: (
+              interval: nat64,
+              callback: () => void | Promise<void>
+          ) => {
+              const intervalCandidBytes = new Uint8Array(
+                  IDL.encode([IDL.Nat64], [interval])
+              ).buffer;
+
+              const timerIdCandidBytes = globalThis._azleIc.setTimerInterval(
+                  intervalCandidBytes,
+                  callback
+              );
+
+              return IDL.decode([IDL.Nat64], timerIdCandidBytes)[0];
           },
           stableBytes: () => {
               return new Uint8Array(globalThis._azleIc.stableBytes());
