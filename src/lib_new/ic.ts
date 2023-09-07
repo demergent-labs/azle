@@ -1,14 +1,28 @@
-import { IDL } from './index';
+import { Nat64 } from '@dfinity/candid/lib/esm/idl'; // Note: Importing IDL from './index' instead causes the build to fail
 import { Principal } from '@dfinity/principal';
+import { IDL } from './index';
 import { blob, nat, nat32, nat64, Void, Opt } from './primitives';
 import { v4 } from 'uuid';
-import { CandidClass, toCandidClass, toReturnCandidClass } from './utils';
+import { CandidClass, toCandidClass } from './utils';
 
 // declare var globalThis: {
 //     ic: Ic;
 // };
 
 declare var globalThis: any;
+
+/**
+ * Represents a duration of time in seconds.
+ */
+export type Duration = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
+export const Duration = Nat64; // Note: using IDL.Nat64 from './index' causes the build to fail
+
+/**
+ * Type returned by the {@link ic.setTimer} and {@link ic.setTimerInterval}
+ * functions. Pass to {@link ic.clearTimer} to remove the timer.
+ */
+export type TimerId = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
+export const TimerId = Nat64; // Note: using IDL.Nat64 from './index' causes the build to fail
 
 type Ic = {
     /**
@@ -299,6 +313,34 @@ type Ic = {
      * @returns
      */
     setCertifiedData: (data: Uint8Array) => void;
+
+    /**
+     * Sets callback to be executed later, after delay. Panics if `delay` + time() is more than 2^64 - 1.
+     * To cancel the timer before it executes, pass the returned `TimerId` to `clearTimer`.
+     * Note that timers are not persisted across canister upgrades.
+     *
+     * @param delay The time (in seconds) to wait before executing the provided callback.
+     * @param callback the function to invoke after the specified delay has passed.
+     * @returns the ID of the created timer. Used to cancel the timer.
+     */
+    setTimer: (
+        delay: Duration,
+        callback: () => void | Promise<void>
+    ) => TimerId;
+
+    /**
+     * Sets callback to be executed every interval. Panics if `interval` + time() is more than 2^64 - 1.
+     * To cancel the interval timer, pass the returned `TimerId` to `clearTimer`.
+     * Note that timers are not persisted across canister upgrades.
+     *
+     * @param interval The interval (in seconds) between each callback execution.
+     * @param callback the function to invoke after the specified delay has passed.
+     * @returns the ID of the created timer. Used to cancel the timer.
+     */
+    setTimerInterval: (
+        interval: Duration,
+        callback: () => void | Promise<void>
+    ) => TimerId;
 
     /**
      * Gets a copy of stable memory
@@ -666,6 +708,16 @@ export const ic: Ic = globalThis._azleIc
               ).buffer;
 
               return globalThis._azleIc.setCertifiedData(dataBytes);
+          },
+          setTimer: (delay: nat64, callback: () => void | Promise<void>) => {
+              const delayCandidBytes = new Uint8Array(
+                  IDL.encode([IDL.Nat64], [delay])
+              ).buffer;
+
+              const setTimerCandidBytes =
+                  globalThis._azleIc.setTimer(delayCandidBytes);
+
+              return IDL.decode([IDL.Nat64], setTimerCandidBytes)[0];
           },
           stableBytes: () => {
               return new Uint8Array(globalThis._azleIc.stableBytes());
