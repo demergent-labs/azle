@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle imports",
             "root": "src",
-            "ts": "src/imports.ts",
-            "candid": "src/imports.did",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
             "wasm": ".azle/imports/imports.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/imports",
