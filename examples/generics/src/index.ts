@@ -10,6 +10,7 @@ import {
     Variant,
     Vec
 } from 'azle';
+import { CandidClass, Parent } from '../../../src/lib_new/utils';
 
 type SimpleResult = Result<string, number>;
 
@@ -17,8 +18,24 @@ type NonGenericResultAlias = Result<string, boolean>;
 
 type GenericResultAlias<T, E> = Result<T, E>;
 
+export class AzleGeneric {
+    constructor(generic: any) {
+        this._azleGeneric = generic;
+    }
+
+    _azleGeneric: any;
+
+    getIDL(parents: Parent[]) {
+        return;
+    }
+}
+
+function Generic<generic extends CandidClass>(generic: generic) {
+    return new AzleGeneric(generic);
+}
+
 class OneGenericTypeParamVariant<T> extends Variant {
-    @candid(T)
+    @candid(Generic())
     A: T;
 
     @candid(float64)
