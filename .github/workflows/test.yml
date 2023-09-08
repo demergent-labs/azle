@@ -81,7 +81,6 @@
 # "examples/update"
 
 # These are the ones that don't work
-# "examples/timers",
 # "examples/tuple_types",
 # "examples/stable_structures",
 # "examples/service",
@@ -190,6 +189,7 @@ jobs:
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",
                     "examples/stable_memory",
+                    "examples/timers",
                     "examples/update"
                   ]
                   END
