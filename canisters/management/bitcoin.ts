@@ -1,73 +1,120 @@
 // TODO I am thinking we should use the same names as ic-btc-types
 
-import { blob, nat32, nat64, Opt, Record, Variant, Vec } from '../../src/lib';
+import {
+    blob,
+    candid,
+    nat32,
+    nat64,
+    Null,
+    Opt,
+    Record,
+    text,
+    Variant,
+    Vec
+} from '../../src/lib_new';
 
-export type BitcoinAddress = string;
+export type BitcoinAddress = text;
+export const BitcoinAddress = text;
 export type BlockHash = blob;
-
-export type GetBalanceArgs = Record<{
-    address: BitcoinAddress;
-    min_confirmations: Opt<nat32>;
-    network: BitcoinNetwork;
-}>;
-
-export type GetCurrentFeePercentilesArgs = Record<{
-    network: BitcoinNetwork;
-}>;
-
-export type GetUtxosArgs = Record<{
-    address: BitcoinAddress;
-    filter: Opt<UtxosFilter>;
-    network: BitcoinNetwork;
-}>;
-
-export type GetUtxosResult = Record<{
-    next_page: Opt<Page>;
-    tip_block_hash: BlockHash;
-    tip_height: nat32;
-    utxos: Vec<Utxo>;
-}>;
-
-export type MillisatoshiPerByte = nat64;
-
-export const BitcoinNetwork = {
-    Mainnet: { Mainnet: null },
-    Regtest: { Regtest: null },
-    Testnet: { Testnet: null }
-};
-
-export type BitcoinNetwork = Variant<{
-    Mainnet: null;
-    Regtest: null;
-    Testnet: null;
-}>;
-
-export type Outpoint = Record<{
-    txid: blob;
-    vout: nat32;
-}>;
-
+export const BlockHash = blob;
 export type Page = blob;
-
-export type Utxo = Record<{
-    height: nat32;
-    outpoint: Outpoint;
-    value: Satoshi;
-}>;
-
-export type UtxosFilter = Variant<{
-    MinConfirmations: nat32;
-    Page: Page;
-}>;
-
+export const Page = blob;
+export type MillisatoshiPerByte = nat64;
+export const MillisatoshiPerByte = nat64;
 export type Satoshi = nat64;
+export const Satoshi = nat64;
 
-export type SendTransactionArgs = Record<{
-    transaction: blob;
+export class BitcoinNetwork extends Variant {
+    @candid(Null)
+    Mainnet?: Null;
+
+    @candid(Null)
+    Regtest?: Null;
+
+    @candid(Null)
+    Testnet?: Null;
+}
+
+export class Outpoint extends Record {
+    @candid(blob)
+    txid: blob;
+
+    @candid(nat32)
+    vout: nat32;
+}
+
+export class Utxo extends Record {
+    @candid(nat32)
+    height: nat32;
+
+    @candid(Outpoint)
+    outpoint: Outpoint;
+
+    @candid(Satoshi)
+    value: Satoshi;
+}
+
+export class UtxosFilter extends Variant {
+    @candid(nat32)
+    MinConfirmations?: nat32;
+
+    @candid(Page)
+    Page?: Page;
+}
+
+export class GetBalanceArgs extends Record {
+    @candid(BitcoinAddress)
+    address: BitcoinAddress;
+
+    @candid(Opt(nat32))
+    min_confirmations: Opt<nat32>;
+
+    @candid(BitcoinNetwork)
     network: BitcoinNetwork;
-}>;
+}
 
-export type SendTransactionError = Variant<{
-    MalformedTransaction: null;
-    QueueFull: null;
-}>;
+export class GetCurrentFeePercentilesArgs extends Record {
+    @candid(BitcoinNetwork)
+    network: BitcoinNetwork;
+}
+
+export class GetUtxosArgs extends Record {
+    @candid(BitcoinAddress)
+    address: BitcoinAddress;
+
+    @candid(Opt(UtxosFilter))
+    filter: Opt<UtxosFilter>;
+
+    @candid(BitcoinNetwork)
+    network: BitcoinNetwork;
+}
+
+export class GetUtxosResult extends Record {
+    @candid(Opt(Page))
+    next_page: Opt<Page>;
+
+    @candid(BlockHash)
+    tip_block_hash: BlockHash;
+
+    @candid(nat32)
+    tip_height: nat32;
+
+    @candid(Vec(Utxo))
+    utxos: Vec<Utxo>;
+}
+
+export class SendTransactionArgs extends Record {
+    @candid(blob)
+    transaction: blob;
+
+    @candid(BitcoinNetwork)
+    network: BitcoinNetwork;
+}
+
+export class SendTransactionError extends Variant {
+    @candid(Null)
+    MalformedTransaction?: Null;
+
+    @candid(Null)
+    QueueFull?: Null;
+}
