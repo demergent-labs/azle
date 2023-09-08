@@ -31,7 +31,9 @@ pub fn generate() -> TokenStream {
 
                     let global = context.global_object().unwrap();
 
-                    let timer_callback = global.get_property(callback_id.as_str()).unwrap();
+                    let timer_callback = global
+                        .get_property(callback_id.as_str())
+                        .unwrap_or_else(|e| ic_cdk::api::trap(e.to_string().as_str()));
 
                     // TODO I am not sure what the first parameter to call is supposed to be
                     let callback_result = timer_callback.call(&timer_callback, &[]);
@@ -44,8 +46,15 @@ pub fn generate() -> TokenStream {
 
             let timer_id: ic_cdk_timers::TimerId = ic_cdk_timers::set_timer(delay, closure);
             let timer_id_as_u64: u64 = timer_id.data().as_ffi();
-            let timer_id_candid_encoded_bytes: JSValue =
-                candid::encode_one(timer_id_as_u64)?.into();
+            let timer_id_candid_encoded_bytes: JSValue = candid::encode_one(timer_id_as_u64)
+                .unwrap_or_else(|e| {
+                    // If something goes wrong we need to clear the timer before
+                    // throwing to the JS above.
+                    ic_cdk_timers::clear_timer(timer_id);
+                    ic_cdk::api::trap(e.to_string().as_str());
+                })
+                .into();
+
             to_qjs_value(&context, &timer_id_candid_encoded_bytes)
         }
     }

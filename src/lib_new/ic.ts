@@ -734,6 +734,7 @@ export const ic: Ic = globalThis._azleIc
                   return IDL.decode([IDL.Nat64], timerIdCandidBytes)[0];
               } catch (error) {
                   delete globalThis[timerCallbackId];
+                  throw error;
               }
           },
           setTimerInterval: (
@@ -759,10 +760,8 @@ export const ic: Ic = globalThis._azleIc
 
                   return IDL.decode([IDL.Nat64], timerIdCandidBytes)[0];
               } catch (error) {
-                  // TODO: If the rust code returns an error after registering
-                  // the timer then we will be deleting the timer callback,
-                  // which means the rust closure will error out.
                   delete globalThis[timerCallbackId];
+                  throw error;
               }
           },
           stableBytes: () => {
