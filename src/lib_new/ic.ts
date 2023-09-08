@@ -582,6 +582,7 @@ export const ic: Ic = globalThis._azleIc
               return IDL.decode([IDL.Nat64], canisterVersionCandidBytes)[0];
           },
           clearTimer: (timerId: nat64) => {
+              // TODO: We need to delete the callback from the global scope as well
               const timerIdCandidBytes = new Uint8Array(
                   IDL.encode([IDL.Nat64], [timerId])
               ).buffer;
@@ -710,31 +711,59 @@ export const ic: Ic = globalThis._azleIc
               return globalThis._azleIc.setCertifiedData(dataBytes);
           },
           setTimer: (delay: nat64, callback: () => void | Promise<void>) => {
+              const timerCallbackId = `_timer_${v4()}`;
+
+              globalThis[timerCallbackId] = () => {
+                  try {
+                      callback();
+                  } finally {
+                      delete globalThis[timerCallbackId];
+                  }
+              };
+
               const delayCandidBytes = new Uint8Array(
                   IDL.encode([IDL.Nat64], [delay])
               ).buffer;
 
-              const timerIdCandidBytes = globalThis._azleIc.setTimer(
-                  delayCandidBytes,
-                  callback
-              );
+              try {
+                  const timerIdCandidBytes = globalThis._azleIc.setTimer(
+                      delayCandidBytes,
+                      timerCallbackId
+                  );
 
-              return IDL.decode([IDL.Nat64], timerIdCandidBytes)[0];
+                  return IDL.decode([IDL.Nat64], timerIdCandidBytes)[0];
+              } catch (error) {
+                  delete globalThis[timerCallbackId];
+              }
           },
           setTimerInterval: (
               interval: nat64,
               callback: () => void | Promise<void>
           ) => {
+              const timerCallbackId = `_interval_timer_${v4()}`;
+
+              // We don't delete this even if the callback throws because
+              // it still needs to be here for the next tick
+              globalThis[timerCallbackId] = callback;
+
               const intervalCandidBytes = new Uint8Array(
                   IDL.encode([IDL.Nat64], [interval])
               ).buffer;
 
-              const timerIdCandidBytes = globalThis._azleIc.setTimerInterval(
-                  intervalCandidBytes,
-                  callback
-              );
+              try {
+                  const timerIdCandidBytes =
+                      globalThis._azleIc.setTimerInterval(
+                          intervalCandidBytes,
+                          timerCallbackId
+                      );
 
-              return IDL.decode([IDL.Nat64], timerIdCandidBytes)[0];
+                  return IDL.decode([IDL.Nat64], timerIdCandidBytes)[0];
+              } catch (error) {
+                  // TODO: If the rust code returns an error after registering
+                  // the timer then we will be deleting the timer callback,
+                  // which means the rust closure will error out.
+                  delete globalThis[timerCallbackId];
+              }
           },
           stableBytes: () => {
               return new Uint8Array(globalThis._azleIc.stableBytes());

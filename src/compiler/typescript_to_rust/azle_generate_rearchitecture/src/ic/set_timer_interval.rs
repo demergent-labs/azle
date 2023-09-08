@@ -18,17 +18,28 @@ pub fn generate() -> TokenStream {
 
             let interval = core::time::Duration::new(interval_as_u64, 0);
 
-            // TODO: Get the callback they passed in somehow
-
-            // let callback: u64 args
-            //     .get(1)
-            //     .expect("An argument for 'callback' was not provided")
-            //     .to_js_value()?
-            //     .try_into()?;
+            let callback_id: String = args
+                .get(1)
+                .expect("An argument for 'callback' was not provided")
+                .to_js_value()?
+                .try_into()?;
 
             let closure = move || {
-                // TODO: Hook this up to the callback they passed
-                ic_cdk::println!("Callback was called on an interval");
+                CONTEXT.with(|context| {
+                    let mut context = context.borrow_mut();
+                    let context = context.as_mut().unwrap();
+
+                    let global = context.global_object().unwrap();
+
+                    let timer_callback = global.get_property(callback_id.as_str()).unwrap();
+
+                    // TODO I am not sure what the first parameter to call is supposed to be
+                    let callback_result = timer_callback.call(&timer_callback, &[]);
+
+                    if let Err(e) = callback_result {
+                        ic_cdk::api::trap(e.to_string().as_str())
+                    }
+                });
             };
 
             let timer_id: ic_cdk_timers::TimerId = ic_cdk_timers::set_timer_interval(interval, closure);
