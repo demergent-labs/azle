@@ -20,15 +20,32 @@ pub fn generate() -> TokenStream {
 
             // TODO: Get the callback they passed in somehow
 
-            // let callback: u64 args
-            //     .get(1)
-            //     .expect("An argument for 'callback' was not provided")
-            //     .to_js_value()?
-            //     .try_into()?;
+            let callback: JSValue = args
+                .get(1)
+                .expect("An argument for 'callback' was not provided")
+                .to_js_value()?;
 
             let closure = move || {
-                // TODO: Hook this up to the callback they passed
                 ic_cdk::println!("The timer was called!!!");
+
+                CONTEXT.with(|context| {
+                    let mut context = context.borrow_mut();
+                    let context = context.as_mut().unwrap();
+
+                    let callback_js_value_ref = to_qjs_value(&context, &callback).unwrap();
+
+                    if callback_js_value_ref.is_function() {
+                        ic_cdk::println!("and the callback seems to be a function...");
+                    } else {
+                        ic_cdk::println!("BUT THE CALLBACK ISN'T A FUNCTION!!!");
+                        if callback_js_value_ref.is_object() {
+                            ic_cdk::println!("Callback is an object");
+                        }
+                    }
+
+                    // TODO I am not sure what the first parameter to call is supposed to be
+                    callback_js_value_ref.call(&callback_js_value_ref, &[]).unwrap();
+                });
             };
 
             let timer_id: ic_cdk_timers::TimerId = ic_cdk_timers::set_timer(delay, closure);
