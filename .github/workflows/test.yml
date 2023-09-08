@@ -166,6 +166,7 @@ jobs:
                     "examples/complex_init",
                     "examples/cross_canister_calls",
                     "examples/cycles",
+                    "examples/date",
                     "examples/init",
                     "examples/key_value_store",
                     "examples/ledger_canister",
