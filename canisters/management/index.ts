@@ -30,9 +30,19 @@ import {
     UninstallCodeArgs,
     UpdateSettingsArgs
 } from './canister_management';
+import {
+    GetBalanceArgs,
+    GetCurrentFeePercentilesArgs,
+    GetUtxosArgs,
+    GetUtxosResult,
+    MillisatoshiPerByte,
+    Satoshi,
+    SendTransactionArgs
+} from './bitcoin';
 
 export * from './http_request';
 export * from './canister_management';
+export * from './bitcoin';
 
 export class EcdsaCurve extends Variant {
     @candid(Null)
@@ -135,6 +145,20 @@ class ManagementCanister extends Service {
 
     @update([ProvisionalTopUpCanisterArgs], Void)
     provisional_top_up_canister: (args: ProvisionalTopUpCanisterArgs) => Void;
+
+    @update([GetBalanceArgs], Satoshi)
+    bitcoin_get_balance: (args: GetBalanceArgs) => Satoshi;
+
+    @update([GetCurrentFeePercentilesArgs], Vec(MillisatoshiPerByte))
+    bitcoin_get_current_fee_percentiles: (
+        args: GetCurrentFeePercentilesArgs
+    ) => Vec<MillisatoshiPerByte>;
+
+    @update([GetUtxosArgs], GetUtxosResult)
+    bitcoin_get_utxos: (args: GetUtxosArgs) => GetUtxosResult;
+
+    @update([SendTransactionArgs], Void)
+    bitcoin_send_transaction: (args: SendTransactionArgs) => Void;
 }
 
 /**
