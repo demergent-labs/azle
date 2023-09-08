@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle ledger_canister",
             "root": "canisters/ledger_canister",
-            "ts": "canisters/ledger_canister/ledger_canister.ts",
-            "candid": "canisters/ledger_canister/ledger_canister.did",
+            "ts": "canisters/ledger_canister/index.ts",
+            "candid": "canisters/ledger_canister/index.did",
             "wasm": ".azle/ledger_canister/ledger_canister.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/ledger_canister",

@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle management_canister",
             "root": "src",
-            "ts": "src/management_canister.ts",
-            "candid": "src/management_canister.did",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
             "wasm": ".azle/management_canister/management_canister.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/management_canister",
