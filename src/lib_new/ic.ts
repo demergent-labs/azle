@@ -582,12 +582,17 @@ export const ic: Ic = globalThis._azleIc
               return IDL.decode([IDL.Nat64], canisterVersionCandidBytes)[0];
           },
           clearTimer: (timerId: nat64) => {
-              // TODO: We need to delete the callback from the global scope as well
-              const timerIdCandidBytes = new Uint8Array(
-                  IDL.encode([IDL.Nat64], [timerId])
-              ).buffer;
+              const encode = (value: nat64) => {
+                  return new Uint8Array(IDL.encode([IDL.Nat64], [value]))
+                      .buffer;
+              };
 
-              return globalThis._azleIc.clearTimer(timerIdCandidBytes);
+              globalThis._azleIc.clearTimer(encode(timerId));
+
+              const timerCallbackId = globalThis.icTimers[timerId.toString()];
+
+              delete globalThis.icTimers[timerId.toString()];
+              delete globalThis[timerCallbackId];
           },
           dataCertificate: () => {
               const rawRustValue: ArrayBuffer | undefined =
@@ -711,58 +716,63 @@ export const ic: Ic = globalThis._azleIc
               return globalThis._azleIc.setCertifiedData(dataBytes);
           },
           setTimer: (delay: nat64, callback: () => void | Promise<void>) => {
+              const encode = (value: nat64) => {
+                  return new Uint8Array(IDL.encode([IDL.Nat64], [value]))
+                      .buffer;
+              };
+
+              const decode = (value: ArrayBufferLike) => {
+                  return BigInt(IDL.decode([IDL.Nat64], value)[0] as number);
+              };
+
               const timerCallbackId = `_timer_${v4()}`;
+
+              const timerId = decode(
+                  globalThis._azleIc.setTimer(encode(delay), timerCallbackId)
+              );
+
+              globalThis.icTimers[timerId.toString()] = timerCallbackId;
 
               globalThis[timerCallbackId] = () => {
                   try {
                       callback();
                   } finally {
+                      delete globalThis.icTimers[timerId.toString()];
                       delete globalThis[timerCallbackId];
                   }
               };
 
-              const delayCandidBytes = new Uint8Array(
-                  IDL.encode([IDL.Nat64], [delay])
-              ).buffer;
-
-              try {
-                  const timerIdCandidBytes = globalThis._azleIc.setTimer(
-                      delayCandidBytes,
-                      timerCallbackId
-                  );
-
-                  return IDL.decode([IDL.Nat64], timerIdCandidBytes)[0];
-              } catch (error) {
-                  delete globalThis[timerCallbackId];
-                  throw error;
-              }
+              return timerId;
           },
           setTimerInterval: (
               interval: nat64,
               callback: () => void | Promise<void>
           ) => {
+              const encode = (value: nat64) => {
+                  return new Uint8Array(IDL.encode([IDL.Nat64], [value]))
+                      .buffer;
+              };
+
+              const decode = (value: ArrayBufferLike) => {
+                  return BigInt(IDL.decode([IDL.Nat64], value)[0] as number);
+              };
+
               const timerCallbackId = `_interval_timer_${v4()}`;
+
+              const timerId = decode(
+                  globalThis._azleIc.setTimerInterval(
+                      encode(interval),
+                      timerCallbackId
+                  )
+              );
+
+              globalThis.icTimers[timerId.toString()] = timerCallbackId;
 
               // We don't delete this even if the callback throws because
               // it still needs to be here for the next tick
               globalThis[timerCallbackId] = callback;
 
-              const intervalCandidBytes = new Uint8Array(
-                  IDL.encode([IDL.Nat64], [interval])
-              ).buffer;
-
-              try {
-                  const timerIdCandidBytes =
-                      globalThis._azleIc.setTimerInterval(
-                          intervalCandidBytes,
-                          timerCallbackId
-                      );
-
-                  return IDL.decode([IDL.Nat64], timerIdCandidBytes)[0];
-              } catch (error) {
-                  delete globalThis[timerCallbackId];
-                  throw error;
-              }
+              return timerId;
           },
           stableBytes: () => {
               return new Uint8Array(globalThis._azleIc.stableBytes());
