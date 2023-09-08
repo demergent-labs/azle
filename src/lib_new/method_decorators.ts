@@ -13,12 +13,16 @@ import {
 import { display } from './utils';
 import { serviceCall, serviceDecorator } from './service';
 
+export type Manual<T> = void;
+
 type Mode = 'init' | 'postUpgrade' | 'query' | 'update';
 
 const modeToCandid = {
     query: ' query',
     update: ''
 };
+
+type MethodArgs = { manual: boolean };
 
 // Until we can figure how how to type check Funcs, Variants, and Records we are just going to have to use any here
 // export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
@@ -29,6 +33,7 @@ export function init(paramsIdls: any[]): any {
             paramsIdls,
             [],
             'init',
+            false,
             key,
             descriptor
         );
@@ -44,6 +49,7 @@ export function postUpgrade(paramsIdls: any[]): any {
             paramsIdls,
             [],
             'postUpgrade',
+            false,
             key,
             descriptor
         );
@@ -52,7 +58,11 @@ export function postUpgrade(paramsIdls: any[]): any {
 
 // Until we can figure how how to type check Funcs, Variants, and Records we are just going to have to use any here
 // export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
-export function query(paramsIdls: any[], returnIdl: any): any {
+export function query(
+    paramsIdls: any[],
+    returnIdl: any,
+    args: MethodArgs = { manual: false }
+): any {
     return (target: any, key: string, descriptor?: PropertyDescriptor) => {
         if (descriptor === undefined) {
             serviceDecorator(target, key, paramsIdls, returnIdl);
@@ -62,6 +72,7 @@ export function query(paramsIdls: any[], returnIdl: any): any {
                 paramsIdls,
                 returnIdl,
                 'query',
+                args.manual,
                 key,
                 descriptor
             );
@@ -72,7 +83,11 @@ export function query(paramsIdls: any[], returnIdl: any): any {
 // export function update(
 //     paramsIdls: CandidClass[],
 //     returnIdl: ReturnCandidClass
-export function update(paramsIdls: any[], returnIdl: any): any {
+export function update(
+    paramsIdls: any[],
+    returnIdl: any,
+    args: MethodArgs = { manual: false }
+): any {
     return (target: any, key: string, descriptor?: PropertyDescriptor) => {
         if (descriptor === undefined) {
             serviceDecorator(target, key, paramsIdls, returnIdl);
@@ -82,6 +97,7 @@ export function update(paramsIdls: any[], returnIdl: any): any {
                 paramsIdls,
                 returnIdl,
                 'update',
+                args.manual,
                 key,
                 descriptor
             );
@@ -117,6 +133,7 @@ function setupCanisterMethod(
     paramsIdls: CandidClass[],
     returnIdl: ReturnCandidClass,
     mode: Mode,
+    manual: boolean,
     key: string,
     descriptor: PropertyDescriptor
 ) {
@@ -191,7 +208,9 @@ function setupCanisterMethod(
                         `final instructions: ${ic.instructionCounter()}`
                     );
 
-                    ic.replyRaw(new Uint8Array(encoded));
+                    if (!manual) {
+                        ic.replyRaw(new Uint8Array(encoded));
+                    }
                 })
                 .catch((error) => {
                     ic.trap(error.toString());
@@ -199,11 +218,12 @@ function setupCanisterMethod(
         } else {
             const encodeReadyResult = result === undefined ? [] : [result];
 
-            const encoded = IDL.encode(returnCandid[0], encodeReadyResult);
+            if (!manual) {
+                const encoded = IDL.encode(returnCandid[0], encodeReadyResult);
+                ic.replyRaw(new Uint8Array(encoded));
+            }
 
             console.log(`final instructions: ${ic.instructionCounter()}`);
-
-            ic.replyRaw(new Uint8Array(encoded));
         }
     };
 

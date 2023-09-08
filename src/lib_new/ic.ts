@@ -2,7 +2,7 @@ import { IDL } from './index';
 import { Principal } from '@dfinity/principal';
 import { blob, nat, nat32, nat64, Void } from './primitives';
 import { v4 } from 'uuid';
-import { toReturnCandidClass } from './utils';
+import { CandidClass, toCandidClass, toReturnCandidClass } from './utils';
 
 // declare var globalThis: {
 //     ic: Ic;
@@ -239,6 +239,15 @@ type Ic = {
      * @returns the rejection message
      */
     rejectMessage: () => string;
+
+    /**
+     * Used to manually reply to an ingress message. Intended to be used in
+     * canister methods with a {@link Manual} return type.
+     * @param reply the value with which to reply. Must by of type `T` where `T`
+     * is the generic type supplied to `Manual<T>`. Otherwise will result in an
+     * uncaught `TypeError`.
+     */
+    reply: (reply: any, type: CandidClass) => void;
 
     /**
      * Used to manually reply to an ingress message. Intended to be used in
@@ -616,6 +625,17 @@ export const ic: Ic = globalThis._azleIc
 
               return IDL.decode([IDL.Nat64], performanceCounterCandidBytes)[0];
           },
+          reply: (reply: any, type: CandidClass): void => {
+              if (Array.isArray(type) && type.length === 0) {
+                  // return type is void
+                  const bytes = new Uint8Array(IDL.encode([], [])).buffer;
+                  return globalThis._azleIc.replyRaw(bytes);
+              }
+              const candidType = toCandidClass(type, []);
+              const bytes = new Uint8Array(IDL.encode([candidType], [reply]))
+                  .buffer;
+              return globalThis._azleIc.replyRaw(bytes);
+          },
           replyRaw: (counterType: blob) => {
               return globalThis._azleIc.replyRaw(counterType.buffer);
           },
@@ -724,6 +744,7 @@ export const ic: Ic = globalThis._azleIc
           print: () => {},
           reject: () => {},
           rejectMessage: () => {},
+          reply: () => {},
           replyRaw: () => {},
           setCertifiedData: () => {},
           stableBytes: () => {},
