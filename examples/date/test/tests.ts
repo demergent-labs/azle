@@ -2,6 +2,10 @@ import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/date/date.did.d';
 import { ActorSubclass } from '@dfinity/agent';
 
+// NOTE: The IC has not concept of a timezone since it's a world computer. It
+// uses UTC so getUTCDate and getDate will be the same. So when comparing times
+// the tests always have to use getUTCDate, or getUTCFullYear, etc or else you
+// will end up comparing your local time to UTC time.
 export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
@@ -10,7 +14,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const date = new Date();
 
                 const result = await dateCanister.getDate(date.toISOString());
-                const expected = date.getDate();
+                const expected = date.getUTCDate();
 
                 return {
                     Ok: result === expected
@@ -23,7 +27,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const date = new Date();
 
                 const result = await dateCanister.getDay(date.toISOString());
-                const expected = date.getDay();
+                const expected = date.getUTCDay();
 
                 return {
                     Ok: result === expected
@@ -38,7 +42,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.getFullYear(
                     date.toISOString()
                 );
-                const expected = date.getFullYear();
+                const expected = date.getUTCFullYear();
 
                 return {
                     Ok: result === expected
@@ -66,7 +70,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.getMilliseconds(
                     date.toISOString()
                 );
-                const expected = date.getMilliseconds();
+                const expected = date.getUTCMilliseconds();
 
                 return {
                     Ok: result === expected
@@ -81,7 +85,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.getMinutes(
                     date.toISOString()
                 );
-                const expected = date.getMinutes();
+                const expected = date.getUTCMinutes();
 
                 return {
                     Ok: result === expected
@@ -94,7 +98,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const date = new Date();
 
                 const result = await dateCanister.getMonth(date.toISOString());
-                const expected = date.getMonth();
+                const expected = date.getUTCMonth();
 
                 return {
                     Ok: result === expected
@@ -109,7 +113,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.getSeconds(
                     date.toISOString()
                 );
-                const expected = date.getSeconds();
+                const expected = date.getUTCSeconds();
 
                 return {
                     Ok: result === expected
@@ -571,7 +575,23 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.toDateString(
                     date.toISOString()
                 );
-                const expected = date.toDateString();
+                type Options = {
+                    timeZone: 'UTC';
+                    weekday: 'short';
+                    month: 'short';
+                    day: '2-digit';
+                    year: 'numeric';
+                };
+                const options: Options = {
+                    timeZone: 'UTC',
+                    weekday: 'short',
+                    month: 'short',
+                    day: '2-digit',
+                    year: 'numeric'
+                };
+                const expected = date
+                    .toLocaleDateString('en-US', options)
+                    .replace(/,/g, '');
 
                 return {
                     Ok: result === expected
