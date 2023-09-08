@@ -22,12 +22,12 @@ const modeToCandid = {
 
 // Until we can figure how how to type check Funcs, Variants, and Records we are just going to have to use any here
 // export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
-export function init(paramsIdls: any[], returnIdl: any): any {
+export function init(paramsIdls: any[]): any {
     return (target: any, key: string, descriptor?: PropertyDescriptor) => {
         return setupCanisterMethod(
             target,
             paramsIdls,
-            returnIdl,
+            [],
             'init',
             key,
             descriptor
@@ -37,12 +37,12 @@ export function init(paramsIdls: any[], returnIdl: any): any {
 
 // Until we can figure how how to type check Funcs, Variants, and Records we are just going to have to use any here
 // export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
-export function postUpgrade(paramsIdls: any[], returnIdl: any): any {
+export function postUpgrade(paramsIdls: any[]): any {
     return (target: any, key: string, descriptor?: PropertyDescriptor) => {
         return setupCanisterMethod(
             target,
             paramsIdls,
-            returnIdl,
+            [],
             'postUpgrade',
             key,
             descriptor

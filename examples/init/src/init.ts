@@ -1,40 +1,56 @@
-import { $init, Opt, Principal, $query, Record, Variant } from 'azle';
+import {
+    candid,
+    init,
+    None,
+    Null,
+    Opt,
+    principal,
+    Principal,
+    query,
+    Record,
+    Service,
+    Some,
+    text,
+    Variant
+} from 'azle';
 
-type User = Record<{
-    id: string;
-}>;
-
-type Reaction = Variant<{
-    Fire: null;
-    Wave: null;
-}>;
-
-let user: Opt<User> = Opt.None;
-let reaction: Opt<Reaction> = Opt.None;
-let owner: Opt<Principal> = Opt.None;
-
-$init;
-export function init(
-    initUser: User,
-    initReaction: Reaction,
-    initOwner: Principal
-): void {
-    user = Opt.Some(initUser);
-    reaction = Opt.Some(initReaction);
-    owner = Opt.Some(initOwner);
+class User extends Record {
+    @candid(text)
+    id: text;
 }
 
-$query;
-export function getUser(): Opt<User> {
-    return user;
+class Reaction extends Variant {
+    @candid(Null)
+    Fire: Null;
+
+    @candid(Null)
+    Wave: Null;
 }
 
-$query;
-export function getReaction(): Opt<Reaction> {
-    return reaction;
-}
+export default class extends Service {
+    user: Opt<User> = None;
+    reaction: Opt<Reaction> = None;
+    owner: Opt<Principal> = None;
 
-$query;
-export function getOwner(): Opt<Principal> {
-    return owner;
+    @init([User, Reaction, principal])
+    init(initUser: User, initReaction: Reaction, initOwner: Principal): void {
+        this.user = Some(initUser);
+        this.reaction = Some(initReaction);
+        this.owner = Some(initOwner);
+    }
+
+    @query([], Opt(User))
+    getUser(): Opt<User> {
+        return this.user;
+    }
+
+    @query([], Opt(Reaction))
+    getReaction(): Opt<Reaction> {
+        return this.reaction;
+    }
+
+    @query([], Opt(principal))
+    getOwner(): Opt<Principal> {
+        return this.owner;
+    }
 }

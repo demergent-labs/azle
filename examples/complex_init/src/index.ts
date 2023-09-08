@@ -3,7 +3,6 @@ import {
     init,
     Opt,
     query,
-    record,
     Record,
     Service,
     text,
@@ -11,7 +10,6 @@ import {
     Void
 } from 'azle';
 
-@record
 class User extends Record {
     @candid(text)
     id: text;
@@ -21,7 +19,7 @@ export default class extends Service {
     greeting: text = 'Hello User';
     user: Opt<User> = [];
 
-    @init([Tuple(text, User)], Void)
+    @init([Tuple(text, User)])
     init(tuple: Tuple<[string, User]>): Void {
         this.greeting = tuple[0];
         this.user = [tuple[1]];
