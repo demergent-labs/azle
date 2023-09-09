@@ -1,32 +1,34 @@
-import { ic, $inspectMessage, $update } from 'azle';
+import { bool, ic, inspectMessage, Service, update } from 'azle';
 
-$inspectMessage;
-export function inspectMessage(): void {
-    console.log('inspectMessage called');
+export default class extends Service {
+    @inspectMessage
+    inspectMessage() {
+        console.log('inspectMessage called');
 
-    if (ic.methodName() === 'accessible') {
-        ic.acceptMessage();
-        return;
+        if (ic.methodName() === 'accessible') {
+            ic.acceptMessage();
+            return;
+        }
+
+        if (ic.methodName() === 'inaccessible') {
+            return;
+        }
+
+        throw `Method "${ic.methodName()}" not allowed`;
     }
 
-    if (ic.methodName() === 'inaccessible') {
-        return;
+    @update([], bool)
+    accessible(): bool {
+        return true;
     }
 
-    throw `Method "${ic.methodName()}" not allowed`;
-}
+    @update([], bool)
+    inaccessible(): bool {
+        return false;
+    }
 
-$update;
-export function accessible(): boolean {
-    return true;
-}
-
-$update;
-export function inaccessible(): boolean {
-    return false;
-}
-
-$update;
-export function alsoInaccessible(): boolean {
-    return false;
+    @update([], bool)
+    alsoInaccessible(): bool {
+        return false;
+    }
 }

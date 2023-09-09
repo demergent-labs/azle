@@ -127,8 +127,19 @@ fn main() -> Result<(), String> {
         quote! {
             #[ic_cdk_macros::heartbeat]
             fn #rust_function_name() {
-                ic_cdk::println!("inside of the heartbeat");
                 execute_js(#js_function_name, false);
+            }
+        }
+    });
+
+    let inspect_message_method = compiler_info.canister_methods.inspect_message.map(|canister_method| {
+        let rust_function_name = canister_method.name.to_ident();
+        let js_function_name = &canister_method.name;
+
+        quote! {
+            #[ic_cdk_macros::inspect_message]
+            fn #rust_function_name() {
+                execute_js(#js_function_name, true);
             }
         }
     });
@@ -201,6 +212,8 @@ fn main() -> Result<(), String> {
         }
 
         #heartbeat_method
+
+        #inspect_message_method
 
         #(#query_methods)*
 
