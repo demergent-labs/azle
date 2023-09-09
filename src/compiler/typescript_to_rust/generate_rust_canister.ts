@@ -7,17 +7,17 @@ import {
     GLOBAL_AZLE_RUST_DIR,
     GLOBAL_AZLE_TARGET_DIR
 } from '../utils';
-import { match, Result } from '../../lib';
+import { Result } from '../../lib';
 import {
     CompilerInfo,
     JSCanisterConfig,
     Plugin,
     SpawnSyncError,
     AliasTables,
-    AliasLists
+    AliasLists,
+    CanisterMethods
 } from '../utils/types';
 import { isVerboseMode } from '../utils';
-import { compileTypeScriptToJavaScript } from './typescript_to_javascript';
 
 // TODO I think we should use the official Azle Result and match everywhere
 // TODO we should get rid of the custom ones created here
@@ -28,14 +28,16 @@ export function generateRustCanister(
     aliasLists: AliasLists,
     canisterPath: string,
     canisterConfig: JSCanisterConfig,
-    canisterName: string
+    canisterName: string,
+    canisterMethods: CanisterMethods
 ): Result<null, SpawnSyncError> {
     const compilerInfo: CompilerInfo = {
         plugins,
         file_names: fileNames,
         ts_root: join(process.cwd(), canisterConfig.ts),
         alias_tables: aliasTables,
-        alias_lists: aliasLists
+        alias_lists: aliasLists,
+        canister_methods: canisterMethods
     };
 
     const compilerInfoPath = join(

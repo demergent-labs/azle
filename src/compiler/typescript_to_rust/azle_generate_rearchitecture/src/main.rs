@@ -9,6 +9,7 @@ use std::{
 use swc_common::{sync::Lrc, SourceMap};
 use swc_ecma_ast::Program;
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
+use crate::traits::to_ident::ToIdent;
 
 mod canister_methods;
 mod ic;
@@ -18,6 +19,23 @@ mod traits;
 struct CompilerInfo {
     file_names: Vec<String>,
     ts_root: String,
+    canister_methods: CanisterMethods
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct CanisterMethods {
+    queries: Vec<CanisterMethod>,
+    updates: Vec<CanisterMethod>,
+    init: Option<CanisterMethod>,
+    pre_upgrade: Option<CanisterMethod>,
+    post_upgrade: Option<CanisterMethod>,
+    heartbeat: Option<CanisterMethod>,
+    inspect_message: Option<CanisterMethod>
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct CanisterMethod {
+    name: String
 }
 
 fn main() -> Result<(), String> {
@@ -76,9 +94,31 @@ fn main() -> Result<(), String> {
 
     let entry_point = &modules[0];
 
-    let canister_methods = canister_methods::generate(entry_point)?;
-
     let ic = ic::generate();
+
+    let query_methods = compiler_info.canister_methods.queries.iter().map(|canister_method| {
+        let rust_function_name = canister_method.name.to_ident();
+        let js_function_name = &canister_method.name;
+
+        quote! {
+            #[ic_cdk_macros::query(manual_reply = true)]
+            fn #rust_function_name() {
+                execute_js(#js_function_name);
+            }
+        }
+    });
+
+    let update_methods = compiler_info.canister_methods.updates.iter().map(|canister_method| {
+        let rust_function_name = canister_method.name.to_ident();
+        let js_function_name = &canister_method.name;
+
+        quote! {
+            #[ic_cdk_macros::update(manual_reply = true)]
+            fn #rust_function_name() {
+                execute_js(#js_function_name);
+            }
+        }
+    });
 
     let lib_file = quote! {
         #![allow(non_snake_case)]
@@ -147,7 +187,9 @@ fn main() -> Result<(), String> {
             }
         }
 
-        #(#canister_methods)*
+        #(#query_methods)*
+
+        #(#update_methods)*
 
         fn execute_js(function_name: &str) {
             CONTEXT.with(|context| {

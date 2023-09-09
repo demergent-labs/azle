@@ -46,6 +46,8 @@ globalThis._azleCandidService = \`\${CanisterClass._azleCandidTypes.length > 0 ?
 )}) -> {
     \${CanisterClass._azleCandidMethods.join('\\n    ')}
 }\n\`
+
+globalThis._azleCanisterMethods = CanisterClass._azleCanisterMethods;
         `;
 
         const canisterJavaScript = bundleAndTranspileJs(`

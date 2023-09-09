@@ -25,12 +25,14 @@ import { time } from '../utils';
 import { match } from '../../lib';
 import { red, dim } from '../utils/colors';
 import { readFileSync } from 'fs';
+import { generateCandidAndCanisterMethods } from '../generate_candid_and_canister_methods';
 
 export async function compileTypeScriptToRust(
     canisterName: string,
     canisterPath: string,
-    canisterConfig: JSCanisterConfig
-): Promise<string | never> {
+    canisterConfig: JSCanisterConfig,
+    candidPath: string
+) {
     return await time(
         '[1/2] 🔨 Compiling TypeScript...',
         'inline',
@@ -92,13 +94,18 @@ export async function compileTypeScriptToRust(
                 pluginsDependencies
             );
 
+            const { candid, canisterMethods } =
+                generateCandidAndCanisterMethods(candidJavaScript);
+
             writeCodeToFileSystem(
                 canisterConfig.root,
                 canisterPath,
                 workspaceCargoToml,
                 workspaceCargoLock,
                 libCargoToml,
-                canisterJavaScript
+                canisterJavaScript,
+                candidPath,
+                candid
             );
 
             const generateRustCanisterResult = generateRustCanister(
@@ -108,7 +115,8 @@ export async function compileTypeScriptToRust(
                 aliasLists,
                 canisterPath,
                 canisterConfig,
-                canisterName
+                canisterName,
+                canisterMethods
             );
 
             match(generateRustCanisterResult, {
@@ -138,8 +146,6 @@ export async function compileTypeScriptToRust(
                 console.log('Compilation complete!');
                 process.exit(0);
             }
-
-            return candidJavaScript;
         }
     );
 }

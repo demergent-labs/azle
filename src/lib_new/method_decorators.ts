@@ -140,6 +140,13 @@ function setupCanisterMethod(
     const paramCandid = handleRecursiveParams(paramsIdls);
     const returnCandid = handleRecursiveReturn(returnIdl, paramCandid[2]);
 
+    if (target.constructor._azleCanisterMethods === undefined) {
+        target.constructor._azleCanisterMethods = {
+            queries: [],
+            updates: []
+        };
+    }
+
     if (target.constructor._azleCandidInitParams === undefined) {
         target.constructor._azleCandidInitParams = [];
     }
@@ -167,6 +174,18 @@ function setupCanisterMethod(
                 modeToCandid[mode]
             };`
         );
+    }
+
+    if (mode === 'query') {
+        target.constructor._azleCanisterMethods.queries.push({
+            name: key
+        });
+    }
+
+    if (mode === 'update') {
+        target.constructor._azleCanisterMethods.updates.push({
+            name: key
+        });
     }
 
     const originalMethod = descriptor.value;
