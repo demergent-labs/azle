@@ -1,5 +1,7 @@
 import {
     blob,
+    bool,
+    candid,
     float32,
     ic,
     int,
@@ -7,230 +9,274 @@ import {
     Manual,
     nat,
     nat8,
-    $query,
+    Null,
+    query,
     Record,
     reserved,
+    Service,
+    text,
     Tuple,
-    $update,
+    update,
     Variant,
-    Vec
+    Vec,
+    Void
 } from 'azle';
 
-type Options = Variant<{
-    Small: null;
-    Medium: null;
-    Large: null;
-}>;
+class Options extends Variant {
+    @candid(Null)
+    Small?: Null;
 
-type RawReply = Record<{
+    @candid(Null)
+    Medium?: Null;
+
+    @candid(Null)
+    Large?: Null;
+}
+
+class RawReply extends Record {
+    @candid(int)
     int: int;
-    text: string;
-    bool: boolean;
-    blob: blob;
-    variant: Options;
-}>;
 
-type Element = Record<{
-    id: string;
-    orbitals: Vec<Orbital>;
-    state: State;
-}>;
+    @candid(text)
+    text: text;
 
-type Orbital = Record<{
+    @candid(bool)
+    bool: bool;
+
+    @candid(blob)
+    myBlob: blob;
+
+    @candid(Options)
+    myVariant: Options;
+}
+
+class Orbital extends Record {
+    @candid(nat8)
     layer: nat8;
+
+    @candid(nat8)
     electrons: nat8;
-}>;
+}
 
-type State = Variant<{
-    Gas: Gas;
-    Liquid: null;
-    Solid: Solid;
-}>;
+class Solid extends Record {
+    @candid(text)
+    element: text;
+}
 
-type Solid = Record<{
-    element: string;
-}>;
+class Gas extends Variant {
+    @candid(Null)
+    Elemental?: Null;
 
-type Gas = Variant<{
-    Elemental: null;
-    Mixed: null;
-    Toxic: null;
-}>;
+    @candid(Null)
+    Mixed?: Null;
 
-// Updates
+    @candid(Null)
+    Toxic?: Null;
+}
 
-$update;
-export function manualUpdate(message: string): Manual<string> {
-    if (message === 'reject') {
-        ic.reject(message);
-        return;
+class State extends Variant {
+    @candid(Gas)
+    Gas?: Gas;
+
+    @candid(Null)
+    Liquid?: Null;
+
+    @candid(Solid)
+    Solid?: Solid;
+}
+
+class Element extends Record {
+    @candid(text)
+    id: text;
+
+    @candid(Vec(Orbital))
+    orbitals: Vec<Orbital>;
+
+    @candid(State)
+    state: State;
+}
+
+export default class extends Service {
+    // Updates
+    @update([text], text, { manual: true })
+    manualUpdate(message: text): Manual<text> {
+        if (message === 'reject') {
+            ic.reject(message);
+            return;
+        }
+
+        ic.reply(message, text);
     }
 
-    ic.reply(message);
-}
-
-$update;
-export function updateBlob(): Manual<blob> {
-    ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
-}
-
-$update;
-export function updateFloat32(): Manual<float32> {
-    ic.reply(1245.678);
-}
-
-$update;
-export function updateInlineType(): Manual<Tuple<[string, string]>> {
-    ic.reply(['Hello', 'World']);
-}
-
-$update;
-export function updateInt8(): Manual<int8> {
-    ic.reply(-100);
-}
-
-$update;
-export function updateNat(): Manual<nat> {
-    ic.reply(184467440737095516150n);
-}
-
-$update;
-export function updateNull(): Manual<null> {
-    ic.reply(null);
-}
-
-$update;
-export function updateVoid(): Manual<void> {
-    ic.reply(undefined);
-}
-
-$update;
-export function updateRecord(): Manual<Element> {
-    const element: Element = {
-        id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
-        orbitals: [
-            {
-                electrons: 2,
-                layer: 1
-            },
-            {
-                electrons: 8,
-                layer: 2
-            }
-        ],
-        state: {
-            Gas: { Elemental: null }
-        }
-    };
-    ic.reply(element);
-}
-
-$update;
-export function updateReserved(): Manual<reserved> {
-    ic.reply(undefined);
-}
-
-$update;
-export function updateString(): Manual<string> {
-    ic.reply('hello');
-}
-
-$update;
-export function updateVariant(): Manual<Gas> {
-    const gas = { Toxic: null };
-    ic.reply(gas);
-}
-
-$update;
-export function replyRaw(): Manual<RawReply> {
-    ic.replyRaw(
-        ic.candidEncode(
-            '(record { "int" = 42; "text" = "text"; "bool" = true; "blob" = blob "Surprise!"; "variant" = variant { Medium } })'
-        )
-    );
-}
-
-// Queries
-
-$query;
-export function manualQuery(message: string): Manual<string> {
-    if (message === 'reject') {
-        ic.reject(message);
-        return;
+    @update([], blob, { manual: true })
+    updateBlob(): Manual<blob> {
+        ic.reply(
+            new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
+            blob
+        );
     }
 
-    ic.reply(message);
-}
+    @update([], float32, { manual: true })
+    updateFloat32(): Manual<float32> {
+        ic.reply(1245.678, float32);
+    }
 
-$query;
-export function queryBlob(): Manual<blob> {
-    ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
-}
+    @update([], Tuple(text, text), { manual: true })
+    updateInlineType(): Manual<[text, text]> {
+        ic.reply(['Hello', 'World'], Tuple(text, text));
+    }
 
-$query;
-export function queryFloat32(): Manual<float32> {
-    ic.reply(1245.678);
-}
+    @update([], int8, { manual: true })
+    updateInt8(): Manual<int8> {
+        ic.reply(-100, int8);
+    }
 
-// TODO: Inline Types not currently supported.
-// See https://github.com/demergent-labs/azle/issues/474
-// export function queryInlineType(): Manual<{> prop: string } {
-//     ic.reply({ prop: 'prop' });
-// }
+    @update([], nat, { manual: true })
+    updateNat(): Manual<nat> {
+        ic.reply(184467440737095516150n, nat);
+    }
 
-$query;
-export function queryInt8(): Manual<int8> {
-    ic.reply(-100);
-}
+    @update([], Null, { manual: true })
+    updateNull(): Manual<Null> {
+        ic.reply(null, Null);
+    }
 
-$query;
-export function queryNat(): Manual<nat> {
-    ic.reply(184_467_440_737_095_516_150n);
-}
+    @update([], Void, { manual: true })
+    updateVoid(): Manual<Void> {
+        ic.reply(undefined, Void);
+    }
 
-$query;
-export function queryNull(): Manual<null> {
-    ic.reply(null);
-}
-
-$query;
-export function queryVoid(): Manual<void> {
-    ic.reply(undefined);
-}
-
-$query;
-export function queryRecord(): Manual<Element> {
-    const element: Element = {
-        id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
-        orbitals: [
-            {
-                electrons: 2,
-                layer: 1
-            },
-            {
-                electrons: 8,
-                layer: 2
+    @update([], Element, { manual: true })
+    updateRecord(): Manual<Element> {
+        const element: Element = {
+            id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
+            orbitals: [
+                {
+                    electrons: 2,
+                    layer: 1
+                },
+                {
+                    electrons: 8,
+                    layer: 2
+                }
+            ],
+            state: {
+                Gas: { Elemental: null }
             }
-        ],
-        state: {
-            Gas: { Elemental: null }
+        };
+        ic.reply(element, Element);
+    }
+
+    @update([], reserved, { manual: true })
+    updateReserved(): Manual<reserved> {
+        ic.reply(undefined, reserved);
+    }
+
+    @update([], text, { manual: true })
+    updateString(): Manual<text> {
+        ic.reply('hello', text);
+    }
+
+    @update([], Gas, { manual: true })
+    updateVariant(): Manual<Gas> {
+        const gas = { Toxic: null };
+        ic.reply(gas, Gas);
+    }
+
+    @update([], RawReply, { manual: true })
+    replyRaw(): Manual<RawReply> {
+        ic.replyRaw(
+            ic.candidEncode(
+                '(record { "int" = 42; "text" = "text"; "bool" = true; "myBlob" = blob "Surprise!"; "myVariant" = variant { Medium } })'
+            )
+        );
+    }
+
+    // Queries
+
+    @query([text], text, { manual: true })
+    manualQuery(message: text): Manual<text> {
+        if (message === 'reject') {
+            ic.reject(message);
+            return;
         }
-    };
-    ic.reply(element);
-}
 
-$query;
-export function queryReserved(): Manual<reserved> {
-    ic.reply(undefined);
-}
+        ic.reply(message, text);
+    }
 
-$query;
-export function queryString(): Manual<string> {
-    ic.reply('hello');
-}
+    @query([], blob, { manual: true })
+    queryBlob(): Manual<blob> {
+        ic.reply(
+            new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
+            blob
+        );
+    }
 
-$query;
-export function queryVariant(): Manual<Gas> {
-    const gas = { Toxic: null };
-    ic.reply(gas);
+    @query([], float32, { manual: true })
+    queryFloat32(): Manual<float32> {
+        ic.reply(1245.678, float32);
+    }
+
+    // TODO: Inline Types not currently supported.
+    // See https://github.com/demergent-labs/azle/issues/474
+    // queryInlineType(): Manual<{> prop: string } {
+    //     ic.reply({ prop: 'prop' });
+    // }
+
+    @query([], int8, { manual: true })
+    queryInt8(): Manual<int8> {
+        ic.reply(-100, int8);
+    }
+
+    @query([], nat, { manual: true })
+    queryNat(): Manual<nat> {
+        ic.reply(184_467_440_737_095_516_150n, nat);
+    }
+
+    @query([], Null, { manual: true })
+    queryNull(): Manual<Null> {
+        ic.reply(null, Null);
+    }
+
+    @query([], Void, { manual: true })
+    queryVoid(): Manual<Void> {
+        ic.reply(undefined, Void);
+    }
+
+    @query([], Element, { manual: true })
+    queryRecord(): Manual<Element> {
+        const element: Element = {
+            id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
+            orbitals: [
+                {
+                    electrons: 2,
+                    layer: 1
+                },
+                {
+                    electrons: 8,
+                    layer: 2
+                }
+            ],
+            state: {
+                Gas: { Elemental: null }
+            }
+        };
+        ic.reply(element, Element);
+    }
+
+    @query([], reserved, { manual: true })
+    queryReserved(): Manual<reserved> {
+        ic.reply(undefined, reserved);
+    }
+
+    @query([], text, { manual: true })
+    queryString(): Manual<text> {
+        ic.reply('hello', text);
+    }
+
+    @query([], Gas, { manual: true })
+    queryVariant(): Manual<Gas> {
+        const gas = { Toxic: null };
+        ic.reply(gas, Gas);
+    }
 }
