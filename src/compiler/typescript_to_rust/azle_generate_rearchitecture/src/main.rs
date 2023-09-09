@@ -103,7 +103,7 @@ fn main() -> Result<(), String> {
         quote! {
             #[ic_cdk_macros::query(manual_reply = true)]
             fn #rust_function_name() {
-                execute_js(#js_function_name);
+                execute_js(#js_function_name, true);
             }
         }
     });
@@ -115,7 +115,20 @@ fn main() -> Result<(), String> {
         quote! {
             #[ic_cdk_macros::update(manual_reply = true)]
             fn #rust_function_name() {
-                execute_js(#js_function_name);
+                execute_js(#js_function_name, true);
+            }
+        }
+    });
+
+    let heartbeat_method = compiler_info.canister_methods.heartbeat.map(|canister_method| {
+        let rust_function_name = canister_method.name.to_ident();
+        let js_function_name = &canister_method.name;
+
+        quote! {
+            #[ic_cdk_macros::heartbeat]
+            fn #rust_function_name() {
+                ic_cdk::println!("inside of the heartbeat");
+                execute_js(#js_function_name, false);
             }
         }
     });
@@ -156,7 +169,7 @@ fn main() -> Result<(), String> {
             });
 
             if _azle_init_name_string != "" {
-                execute_js(&_azle_init_name_string);
+                execute_js(&_azle_init_name_string, true);
             }
         }
 
@@ -183,15 +196,17 @@ fn main() -> Result<(), String> {
             });
 
             if _azle_post_upgrade_name_string != "" {
-                execute_js(&_azle_post_upgrade_name_string);
+                execute_js(&_azle_post_upgrade_name_string, true);
             }
         }
+
+        #heartbeat_method
 
         #(#query_methods)*
 
         #(#update_methods)*
 
-        fn execute_js(function_name: &str) {
+        fn execute_js(function_name: &str, pass_arg_data: bool) {
             CONTEXT.with(|context| {
                 let mut context = context.borrow_mut();
                 let context = context.as_mut().unwrap();
@@ -201,7 +216,7 @@ fn main() -> Result<(), String> {
                 let class = exports.get_property("canisterClass").unwrap();
                 let method = class.get_property(function_name).unwrap();
 
-                let candid_args = ic_cdk::api::call::arg_data_raw();
+                let candid_args = if pass_arg_data { ic_cdk::api::call::arg_data_raw() } else { vec![] };
 
                 let candid_args_js_value: JSValue = candid_args.into();
                 let candid_args_js_value_ref = to_qjs_value(&context, &candid_args_js_value).unwrap();
