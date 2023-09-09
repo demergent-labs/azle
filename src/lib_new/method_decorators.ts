@@ -15,7 +15,7 @@ import { serviceCall, serviceDecorator } from './service';
 
 export type Manual<T> = void;
 
-type Mode = 'init' | 'postUpgrade' | 'query' | 'update';
+type Mode = 'init' | 'postUpgrade' | 'query' | 'update' | 'heartbeat';
 
 const modeToCandid = {
     query: ' query',
@@ -54,6 +54,22 @@ export function postUpgrade(paramsIdls: any[]): any {
             descriptor
         );
     };
+}
+
+export function heartbeat(
+    target: any,
+    key: string,
+    descriptor?: PropertyDescriptor
+) {
+    return setupCanisterMethod(
+        target,
+        [],
+        [],
+        'heartbeat',
+        false,
+        key,
+        descriptor
+    );
 }
 
 // Until we can figure how how to type check Funcs, Variants, and Records we are just going to have to use any here
@@ -188,6 +204,12 @@ function setupCanisterMethod(
         });
     }
 
+    if (mode === 'heartbeat') {
+        target.constructor._azleCanisterMethods.heartbeat = {
+            name: key
+        };
+    }
+
     const originalMethod = descriptor.value;
 
     // This must remain a function and not an arrow function
@@ -196,6 +218,11 @@ function setupCanisterMethod(
         if (args[0] === '_AZLE_CROSS_CANISTER_CALL') {
             const serviceCallInner = serviceCall(key, paramsIdls, returnIdl);
             return serviceCallInner.call(this, ...args);
+        }
+
+        if (mode === 'heartbeat') {
+            originalMethod.call(this);
+            return;
         }
 
         const decoded = IDL.decode(paramCandid[0], args[0]);

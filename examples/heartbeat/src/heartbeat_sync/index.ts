@@ -1,14 +1,16 @@
-import { $heartbeat, $query } from 'azle';
+import { bool, heartbeat, query, Service } from 'azle';
 
-let initialized = false;
+export default class extends Service {
+    initialized = false;
 
-$heartbeat;
-export function heartbeat(): void {
-    initialized = true;
-    console.log('heartbeat initialized', initialized);
-}
+    @heartbeat
+    heartbeat() {
+        this.initialized = true;
+        console.log('heartbeat initialized', this.initialized);
+    }
 
-$query;
-export function getInitialized(): boolean {
-    return initialized;
+    @query([], bool)
+    getInitialized(): bool {
+        return this.initialized;
+    }
 }
