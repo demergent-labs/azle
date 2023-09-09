@@ -1,7 +1,6 @@
 import { join } from 'path';
 
 import { compileRustCode } from './compile_rust_code';
-import { generateCandidFile } from './generate_candid_file';
 import { installRustDependencies } from './install_rust_dependencies';
 import { generateNewAzleProject } from './new';
 import { compileTypeScriptToRust } from './typescript_to_rust';
@@ -54,14 +53,14 @@ async function azle() {
 
             printFirstBuildWarning();
             await installRustDependencies(azleVersion, rustVersion);
-            const candidJavaScript = await compileTypeScriptToRust(
+            await compileTypeScriptToRust(
                 canisterName,
                 canisterPath,
-                canisterConfig
+                canisterConfig,
+                candidPath
             );
             await compileRustCode(canisterName, canisterPath, stdioType);
             gzipWasmBinary(wasmFilePath, stdioType);
-            generateCandidFile(candidJavaScript, candidPath);
         }
     );
 

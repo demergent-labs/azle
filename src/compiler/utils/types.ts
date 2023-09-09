@@ -42,6 +42,22 @@ export type CompilerInfo = {
     alias_lists: AliasLists;
     file_names: string[];
     ts_root: string;
+    canister_methods: CanisterMethods;
+};
+
+export type CanisterMethods = {
+    queries: CanisterMethod[];
+    updates: CanisterMethod[];
+    init?: CanisterMethod;
+    pre_upgrade?: CanisterMethod;
+    post_upgrade?: CanisterMethod;
+    heartbeat?: CanisterMethod;
+    inspect_message?: CanisterMethod;
+};
+
+// TODO things like guard might also go in here
+export type CanisterMethod = {
+    name: string;
 };
 
 export type Plugin = {
