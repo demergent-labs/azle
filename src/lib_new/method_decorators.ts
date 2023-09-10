@@ -15,7 +15,13 @@ import { serviceCall, serviceDecorator } from './service';
 
 export type Manual<T> = void;
 
-type Mode = 'init' | 'postUpgrade' | 'query' | 'update' | 'heartbeat';
+type Mode =
+    | 'init'
+    | 'postUpgrade'
+    | 'query'
+    | 'update'
+    | 'heartbeat'
+    | 'inspectMessage';
 
 const modeToCandid = {
     query: ' query',
@@ -66,6 +72,22 @@ export function heartbeat(
         [],
         [],
         'heartbeat',
+        false,
+        key,
+        descriptor
+    );
+}
+
+export function inspectMessage(
+    target: any,
+    key: string,
+    descriptor?: PropertyDescriptor
+) {
+    return setupCanisterMethod(
+        target,
+        [],
+        [],
+        'inspectMessage',
         false,
         key,
         descriptor
@@ -210,6 +232,12 @@ function setupCanisterMethod(
         };
     }
 
+    if (mode === 'inspectMessage') {
+        target.constructor._azleCanisterMethods.inspect_message = {
+            name: key
+        };
+    }
+
     const originalMethod = descriptor.value;
 
     // This must remain a function and not an arrow function
@@ -229,7 +257,11 @@ function setupCanisterMethod(
 
         const result = originalMethod.apply(this, decoded);
 
-        if (mode === 'init' || mode === 'postUpgrade') {
+        if (
+            mode === 'init' ||
+            mode === 'postUpgrade' ||
+            mode === 'inspectMessage'
+        ) {
             return;
         }
 
