@@ -2,6 +2,7 @@ import { Nat64 } from '@dfinity/candid/lib/esm/idl'; // Note: Importing IDL from
 import { Principal } from '@dfinity/principal';
 import { IDL } from './index';
 import { blob, nat, nat32, nat64, Void, Opt } from './primitives';
+import { RejectionCode } from './system_types';
 import { v4 } from 'uuid';
 import { CandidClass, toCandidClass } from './utils';
 
@@ -250,6 +251,13 @@ type Ic = {
      * @param message the rejection message
      */
     reject: (message: string) => void;
+
+    /**
+     * Returns the rejection code from the most recently executed cross-canister
+     * call
+     * @returns the rejection code
+     */
+    rejectCode: () => RejectionCode;
 
     /**
      * Returns the rejection message from the most recently executed
@@ -694,6 +702,30 @@ export const ic: Ic = globalThis._azleIc
 
               return IDL.decode([IDL.Nat64], performanceCounterCandidBytes)[0];
           },
+          rejectCode: () => {
+              const rejectCodeNumber = globalThis._azleIc.rejectCode();
+
+              switch (rejectCodeNumber) {
+                  case 0:
+                      return { NoError: null };
+                  case 1:
+                      return { SysFatal: null };
+                  case 2:
+                      return { SysTransient: null };
+                  case 3:
+                      return { DestinationInvalid: null };
+                  case 4:
+                      return { CanisterReject: null };
+                  case 5:
+                      return { CanisterError: null };
+                  case 6:
+                      return { Unknown: null };
+                  default:
+                      throw Error(
+                          `Unknown rejection code: ${rejectCodeNumber}`
+                      );
+              }
+          },
           reply: (reply: any, type: CandidClass): void => {
               if (Array.isArray(type) && type.length === 0) {
                   // return type is void
@@ -871,6 +903,7 @@ export const ic: Ic = globalThis._azleIc
           performanceCounter: () => {},
           print: () => {},
           reject: () => {},
+          rejectCode: () => {},
           rejectMessage: () => {},
           reply: () => {},
           replyRaw: () => {},

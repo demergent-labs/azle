@@ -35,28 +35,36 @@ export default class extends Service {
 
     @update([], RejectionCode)
     async getRejectionCodeDestinationInvalid(): Promise<RejectionCode> {
-        await ic.call(this.nonexistentCanister.method);
+        try {
+            await ic.call(this.nonexistentCanister.method);
+        } catch (error) {}
 
         return ic.rejectCode();
     }
 
     @update([], RejectionCode)
     async getRejectionCodeCanisterReject(): Promise<RejectionCode> {
-        await ic.call(this.someService.reject, { args: ['reject'] });
+        try {
+            await ic.call(this.someService.reject, { args: ['reject'] });
+        } catch (error) {}
 
         return ic.rejectCode();
     }
 
     @update([], RejectionCode)
     async getRejectionCodeCanisterError(): Promise<RejectionCode> {
-        await ic.call(this.someService.error);
+        try {
+            await ic.call(this.someService.error);
+        } catch (error) {}
 
         return ic.rejectCode();
     }
 
     @update([text], text)
     async getRejectionMessage(message: text): Promise<text> {
-        await ic.call(this.someService.reject, { args: [message] });
+        try {
+            await ic.call(this.someService.reject, { args: [message] });
+        } catch (error) {}
 
         return ic.rejectMessage();
     }

@@ -28,6 +28,7 @@ mod notify_raw;
 mod performance_counter;
 mod print;
 mod reject;
+mod reject_code;
 mod reject_message;
 mod reply_raw;
 mod set_certified_data;
@@ -73,6 +74,7 @@ pub fn generate() -> TokenStream {
     let performance_counter = performance_counter::generate();
     let print = print::generate();
     let reject = reject::generate();
+    let reject_code = reject_code::generate();
     let reject_message = reject_message::generate();
     let reply_raw = reply_raw::generate();
     let set_certified_data = set_certified_data::generate();
@@ -118,6 +120,7 @@ pub fn generate() -> TokenStream {
         #performance_counter
         #print
         #reject
+        #reject_code
         #reject_message
         #reply_raw
         #set_certified_data
@@ -164,6 +167,7 @@ pub fn generate() -> TokenStream {
         ic.set_property("performanceCounter", context.wrap_callback2(performance_counter).unwrap()).unwrap();
         ic.set_property("print", context.wrap_callback2(print).unwrap()).unwrap();
         ic.set_property("reject", context.wrap_callback2(reject).unwrap()).unwrap();
+        ic.set_property("rejectCode", context.wrap_callback2(reject_code).unwrap()).unwrap();
         ic.set_property("rejectMessage", context.wrap_callback2(reject_message).unwrap()).unwrap();
         ic.set_property("replyRaw", context.wrap_callback2(reply_raw).unwrap()).unwrap();
         ic.set_property("setCertifiedData", context.wrap_callback2(set_certified_data).unwrap()).unwrap();
