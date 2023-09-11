@@ -3,6 +3,7 @@ import {
     empty,
     ic,
     int8,
+    Manual,
     nat,
     nat32,
     nat64,
@@ -16,17 +17,6 @@ import {
     principal,
     Void
 } from 'azle';
-
-// TODO: Actually implement manual. See https://github.com/demergent-labs/azle/issues/1200
-type Manual<T> = Void;
-
-function manual(
-    _target: Service,
-    _name: string,
-    descriptor: PropertyDescriptor
-): any {
-    return descriptor;
-}
 
 // TODO: See https://github.com/demergent-labs/azle/issues/496
 // type ArgDataMultipleParamsResult = {
@@ -148,9 +138,7 @@ export default class extends Service {
         return true;
     }
 
-    // TODO: See https://github.com/demergent-labs/azle/issues/1200
-    // @manual
-    @query([text], empty)
+    @query([text], empty, { manual: true })
     reject(message: text): Manual<empty> {
         ic.reject(message);
     }

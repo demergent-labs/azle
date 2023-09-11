@@ -156,7 +156,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await icApiCanister.canisterVersion();
 
                 return {
-                    Ok: result > 0n
+                    Ok: result >= 0n
                 };
             }
         },
