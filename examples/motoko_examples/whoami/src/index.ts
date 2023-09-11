@@ -1,21 +1,14 @@
-import { ic, Principal, query, Service, update, principal } from 'azle';
-
-class WhoAmICanister extends Service {
-    @query([], principal)
-    installer: () => Promise<Principal>;
-
-    @query([], principal)
-    argument: () => Promise<Principal>;
-
-    @update([], principal)
-    whoami: () => Promise<Principal>;
-
-    @update([], principal)
-    id: () => Promise<Principal>;
-
-    @query([], principal)
-    idQuick: () => Promise<Principal>;
-}
+import {
+    ic,
+    init,
+    postUpgrade,
+    principal,
+    Principal,
+    query,
+    Service,
+    update,
+    Void
+} from 'azle';
 
 export default class extends Service {
     // Initialize the variables to ensure that they aren't `undefined`.
@@ -23,55 +16,53 @@ export default class extends Service {
     install: Principal = Principal.fromText('aaaaa-aa');
     someone: Principal = Principal.fromText('aaaaa-aa');
 
-    // TODO: Implement this
-    // // Manually save the calling principal and argument for later access.
-    // @init([Principal], Void)
-    // init(somebody: Principal): void {
-    //     this.install = ic.caller();
-    //     someone = somebody;
-    // }
+    // Manually save the calling principal and argument for later access.
+    @init([principal], Void)
+    init(somebody: Principal): Void {
+        this.install = ic.caller();
+        this.someone = somebody;
+    }
 
-    // TODO: Implement this
-    // // Manually re-save these variables after new deploys.
-    // @postUpgrade([Principal], Void)
-    // postUpgrade(somebody: Principal): void {
-    //     this.install = ic.caller();
-    //     someone = somebody;
-    // }
+    // Manually re-save these variables after new deploys.
+    @postUpgrade([principal], Void)
+    postUpgrade(somebody: Principal): Void {
+        this.install = ic.caller();
+        this.someone = somebody;
+    }
 
     // Return the principal identifier of the wallet canister that installed this
     // canister.
-    @query([], Principal)
+    @query([], principal)
     installer(): Principal {
         return this.install;
     }
 
     // Return the principal identifier that was provided as an installation
     // argument to this canister.
-    @query([], Principal)
+    @query([], principal)
     argument(): Principal {
         return this.someone;
     }
 
     // Return the principal identifier of the caller of this method.
-    @update([], Principal)
+    @update([], principal)
     whoami(): Principal {
         return ic.caller();
     }
 
     // Return the principal identifier of this canister.
-    @update([], Principal)
+    @update([], principal)
     async id(): Promise<Principal> {
-        const thisCanister = new WhoAmICanister(ic.id());
-
-        return await thisCanister.whoami();
+        return await ic.call(this.whoami, {
+            args: []
+        });
     }
 
     // Return the principal identifier of this canister via the global `ic` object.
     // This is much quicker than `id()` above because it isn't making a cross-
     // canister call to itself. Additionally, it can now be a `Query` which means it
     // doesn't have to go through consensus.
-    @query([], Principal)
+    @query([], principal)
     idQuick(): Principal {
         return ic.id();
     }

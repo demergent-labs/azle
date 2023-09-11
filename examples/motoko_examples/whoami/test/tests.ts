@@ -10,7 +10,7 @@ function createIdentity(seed: number): SignIdentity {
     return Ed25519KeyIdentity.generate(Uint8Array.from(seed1));
 }
 
-export const canisterId = getCanisterId('azle');
+export const canisterId = getCanisterId('whoami');
 
 const installationPrincipal = execSync(`dfx identity get-principal`)
     .toString()

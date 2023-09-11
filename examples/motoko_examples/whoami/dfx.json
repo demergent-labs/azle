@@ -8,7 +8,7 @@
             "candid": "src/index.did",
             "wasm": ".azle/whoami/whoami.wasm.gz",
             "declarations": {
-                "output": "./dfx_generated/whoami",
+                "output": "test/dfx_generated/whoami",
                 "node_compatibility": true
             }
         }

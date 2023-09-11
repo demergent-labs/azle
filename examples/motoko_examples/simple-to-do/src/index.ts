@@ -3,7 +3,6 @@ import {
     candid,
     nat,
     query,
-    record,
     Record,
     Service,
     text,
@@ -12,7 +11,6 @@ import {
     Void
 } from 'azle';
 
-@record
 export class ToDo extends Record {
     @candid(text)
     description: text;

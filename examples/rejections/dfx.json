@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle rejections",
             "root": "canisters/rejections",
-            "ts": "canisters/rejections/rejections.ts",
-            "candid": "canisters/rejections/rejections.did",
+            "ts": "canisters/rejections/index.ts",
+            "candid": "canisters/rejections/index.did",
             "wasm": ".azle/rejections/rejections.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/rejections",
@@ -17,8 +17,8 @@
             "type": "custom",
             "build": "npx azle some_service",
             "root": "canisters/some_service",
-            "ts": "canisters/some_service/some_service.ts",
-            "candid": "canisters/some_service/some_service.did",
+            "ts": "canisters/some_service/index.ts",
+            "candid": "canisters/some_service/index.did",
             "wasm": ".azle/some_service/some_service.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/some_service",

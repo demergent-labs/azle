@@ -3,7 +3,6 @@ import {
     None,
     Opt,
     query,
-    record,
     Record,
     Service,
     Some,
@@ -12,7 +11,6 @@ import {
     Void
 } from 'azle';
 
-@record
 export class Entry extends Record {
     @candid(text)
     desc: text;

@@ -147,7 +147,7 @@ fn main() -> Result<(), String> {
     let lib_file = quote! {
         #![allow(non_snake_case)]
         use quickjs_wasm_rs::{JSContextRef, JSValueRef, JSValue, from_qjs_value, to_qjs_value, CallbackArg};
-
+        use slotmap::Key;
         use std::cell::RefCell;
         use std::convert::TryInto;
 
@@ -173,7 +173,7 @@ fn main() -> Result<(), String> {
                 let _azle_init_name_js_value: JSValue = from_qjs_value(&_azle_init_name).unwrap();
                 _azle_init_name_js_value.try_into().unwrap()
             } else { "".to_string() };
-            
+
             CONTEXT.with(|ctx| {
                 let mut ctx = ctx.borrow_mut();
                 *ctx = Some(context);

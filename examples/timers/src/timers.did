@@ -1,21 +1,7 @@
-type StatusReport = record {
-  repeat : int8;
-  repeatCrossCanister : vec nat8;
-  inline : int8;
-  capture : text;
-  single : bool;
-  singleCrossCanister : vec nat8;
-};
-type TimerIds = record {
-  repeat : nat64;
-  repeatCrossCanister : nat64;
-  inline : nat64;
-  capture : nat64;
-  single : nat64;
-  singleCrossCanister : nat64;
-};
-service : () -> {
-  clearTimer : (nat64) -> ();
-  setTimers : (nat64, nat64) -> (TimerIds);
-  statusReport : () -> (StatusReport) query;
+type rec_0 = record {repeat:nat64; repeatCrossCanister:nat64; inline:nat64; capture:nat64; single:nat64; singleCrossCanister:nat64};
+type rec_1 = record {repeat:int8; repeatCrossCanister:vec nat8; inline:int8; capture:text; single:bool; singleCrossCanister:vec nat8};
+service: () -> {
+    clearTimer: (nat64) -> ();
+    setTimers: (nat64, nat64) -> (rec_0);
+    statusReport: () -> (rec_1) query;
 }

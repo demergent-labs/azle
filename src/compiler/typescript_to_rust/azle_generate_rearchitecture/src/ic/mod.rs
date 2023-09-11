@@ -13,6 +13,7 @@ mod canister_balance;
 mod canister_balance128;
 mod canister_version;
 mod clear_timer;
+mod data_certificate;
 mod id;
 mod instruction_counter;
 mod is_controller;
@@ -27,9 +28,12 @@ mod notify_raw;
 mod performance_counter;
 mod print;
 mod reject;
+mod reject_code;
 mod reject_message;
 mod reply_raw;
 mod set_certified_data;
+mod set_timer;
+mod set_timer_interval;
 mod stable64_grow;
 mod stable64_read;
 mod stable64_size;
@@ -55,6 +59,7 @@ pub fn generate() -> TokenStream {
     let canister_balance128 = canister_balance128::generate();
     let canister_version = canister_version::generate();
     let clear_timer = clear_timer::generate();
+    let data_certificate = data_certificate::generate();
     let id = id::generate();
     let instruction_counter = instruction_counter::generate();
     let is_controller = is_controller::generate();
@@ -69,9 +74,12 @@ pub fn generate() -> TokenStream {
     let performance_counter = performance_counter::generate();
     let print = print::generate();
     let reject = reject::generate();
+    let reject_code = reject_code::generate();
     let reject_message = reject_message::generate();
     let reply_raw = reply_raw::generate();
     let set_certified_data = set_certified_data::generate();
+    let set_timer = set_timer::generate();
+    let set_timer_interval = set_timer_interval::generate();
     let stable_bytes = stable_bytes::generate();
     let stable_grow = stable_grow::generate();
     let stable_read = stable_read::generate();
@@ -97,6 +105,7 @@ pub fn generate() -> TokenStream {
         #canister_balance128
         #canister_version
         #clear_timer
+        #data_certificate
         #id
         #instruction_counter
         #is_controller
@@ -111,9 +120,12 @@ pub fn generate() -> TokenStream {
         #performance_counter
         #print
         #reject
+        #reject_code
         #reject_message
         #reply_raw
         #set_certified_data
+        #set_timer
+        #set_timer_interval
         #stable_bytes
         #stable_grow
         #stable_read
@@ -140,6 +152,7 @@ pub fn generate() -> TokenStream {
         ic.set_property("canisterBalance128", context.wrap_callback2(canister_balance128).unwrap()).unwrap();
         ic.set_property("canisterVersion", context.wrap_callback2(canister_version).unwrap()).unwrap();
         ic.set_property("clearTimer", context.wrap_callback2(clear_timer).unwrap()).unwrap();
+        ic.set_property("dataCertificate", context.wrap_callback2(data_certificate).unwrap()).unwrap();
         ic.set_property("id", context.wrap_callback2(id).unwrap()).unwrap();
         ic.set_property("instructionCounter", context.wrap_callback2(instruction_counter).unwrap()).unwrap();
         ic.set_property("isController", context.wrap_callback2(is_controller).unwrap()).unwrap();
@@ -154,9 +167,12 @@ pub fn generate() -> TokenStream {
         ic.set_property("performanceCounter", context.wrap_callback2(performance_counter).unwrap()).unwrap();
         ic.set_property("print", context.wrap_callback2(print).unwrap()).unwrap();
         ic.set_property("reject", context.wrap_callback2(reject).unwrap()).unwrap();
+        ic.set_property("rejectCode", context.wrap_callback2(reject_code).unwrap()).unwrap();
         ic.set_property("rejectMessage", context.wrap_callback2(reject_message).unwrap()).unwrap();
         ic.set_property("replyRaw", context.wrap_callback2(reply_raw).unwrap()).unwrap();
         ic.set_property("setCertifiedData", context.wrap_callback2(set_certified_data).unwrap()).unwrap();
+        ic.set_property("setTimer", context.wrap_callback2(set_timer).unwrap()).unwrap();
+        ic.set_property("setTimerInterval", context.wrap_callback2(set_timer_interval).unwrap()).unwrap();
         ic.set_property("stable64Grow", context.wrap_callback2(stable64_grow).unwrap()).unwrap();
         ic.set_property("stable64Read", context.wrap_callback2(stable64_read).unwrap()).unwrap();
         ic.set_property("stable64Size", context.wrap_callback2(stable64_size).unwrap()).unwrap();
