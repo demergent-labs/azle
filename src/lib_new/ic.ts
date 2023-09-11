@@ -737,8 +737,8 @@ export const ic: Ic = globalThis._azleIc
                   .buffer;
               return globalThis._azleIc.replyRaw(bytes);
           },
-          replyRaw: (counterType: blob) => {
-              return globalThis._azleIc.replyRaw(counterType.buffer);
+          replyRaw: (replyBuffer: blob) => {
+              return globalThis._azleIc.replyRaw(replyBuffer.buffer);
           },
           setCertifiedData: (data) => {
               const dataBytes = new Uint8Array(

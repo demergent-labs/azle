@@ -1,3 +1,4 @@
+use crate::traits::to_ident::ToIdent;
 use quote::quote;
 use serde::{Deserialize, Serialize};
 use std::{
@@ -5,7 +6,6 @@ use std::{
     fs::{self, File},
     io::Write,
 };
-use crate::traits::to_ident::ToIdent;
 
 mod ic;
 mod traits;
@@ -14,7 +14,7 @@ mod traits;
 struct CompilerInfo {
     file_names: Vec<String>,
     ts_root: String,
-    canister_methods: CanisterMethods
+    canister_methods: CanisterMethods,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -30,7 +30,8 @@ struct CanisterMethods {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CanisterMethod {
-    name: String
+    name: String,
+    composite: Option<bool>,
 }
 
 fn main() -> Result<(), String> {
@@ -46,68 +47,86 @@ fn main() -> Result<(), String> {
 
     let compiler_info = get_compiler_info(&args[1])?;
 
-
     let ic = ic::generate();
 
-    let pre_upgrade_method = compiler_info.canister_methods.pre_upgrade.map(|canister_method| {
-        let rust_function_name = canister_method.name.to_ident();
-        let js_function_name = &canister_method.name;
+    let pre_upgrade_method = compiler_info
+        .canister_methods
+        .pre_upgrade
+        .map(|canister_method| {
+            let rust_function_name = canister_method.name.to_ident();
+            let js_function_name = &canister_method.name;
 
-        quote! {
-            #[ic_cdk_macros::pre_upgrade]
-            fn #rust_function_name() {
-                execute_js(#js_function_name, false);
+            quote! {
+                #[ic_cdk_macros::pre_upgrade]
+                fn #rust_function_name() {
+                    execute_js(#js_function_name, false);
+                }
             }
-        }
-    });
+        });
 
-    let inspect_message_method = compiler_info.canister_methods.inspect_message.map(|canister_method| {
-        let rust_function_name = canister_method.name.to_ident();
-        let js_function_name = &canister_method.name;
+    let inspect_message_method =
+        compiler_info
+            .canister_methods
+            .inspect_message
+            .map(|canister_method| {
+                let rust_function_name = canister_method.name.to_ident();
+                let js_function_name = &canister_method.name;
 
-        quote! {
-            #[ic_cdk_macros::inspect_message]
-            fn #rust_function_name() {
-                execute_js(#js_function_name, true);
+                quote! {
+                    #[ic_cdk_macros::inspect_message]
+                    fn #rust_function_name() {
+                        execute_js(#js_function_name, true);
+                    }
+                }
+            });
+
+    let heartbeat_method = compiler_info
+        .canister_methods
+        .heartbeat
+        .map(|canister_method| {
+            let rust_function_name = canister_method.name.to_ident();
+            let js_function_name = &canister_method.name;
+
+            quote! {
+                #[ic_cdk_macros::heartbeat]
+                fn #rust_function_name() {
+                    execute_js(#js_function_name, false);
+                }
             }
-        }
-    });
+        });
 
-    let heartbeat_method = compiler_info.canister_methods.heartbeat.map(|canister_method| {
-        let rust_function_name = canister_method.name.to_ident();
-        let js_function_name = &canister_method.name;
+    let query_methods = compiler_info
+        .canister_methods
+        .queries
+        .iter()
+        .map(|canister_method| {
+            let rust_function_name = canister_method.name.to_ident();
+            let js_function_name = &canister_method.name;
+            let is_composite = canister_method.composite.unwrap_or(false);
 
-        quote! {
-            #[ic_cdk_macros::heartbeat]
-            fn #rust_function_name() {
-                execute_js(#js_function_name, false);
+            quote! {
+                #[ic_cdk_macros::query(manual_reply = true, composite = #is_composite)]
+                fn #rust_function_name() {
+                    execute_js(#js_function_name, true);
+                }
             }
-        }
-    });
+        });
 
-    let query_methods = compiler_info.canister_methods.queries.iter().map(|canister_method| {
-        let rust_function_name = canister_method.name.to_ident();
-        let js_function_name = &canister_method.name;
+    let update_methods = compiler_info
+        .canister_methods
+        .updates
+        .iter()
+        .map(|canister_method| {
+            let rust_function_name = canister_method.name.to_ident();
+            let js_function_name = &canister_method.name;
 
-        quote! {
-            #[ic_cdk_macros::query(manual_reply = true)]
-            fn #rust_function_name() {
-                execute_js(#js_function_name, true);
+            quote! {
+                #[ic_cdk_macros::update(manual_reply = true)]
+                fn #rust_function_name() {
+                    execute_js(#js_function_name, true);
+                }
             }
-        }
-    });
-
-    let update_methods = compiler_info.canister_methods.updates.iter().map(|canister_method| {
-        let rust_function_name = canister_method.name.to_ident();
-        let js_function_name = &canister_method.name;
-
-        quote! {
-            #[ic_cdk_macros::update(manual_reply = true)]
-            fn #rust_function_name() {
-                execute_js(#js_function_name, true);
-            }
-        }
-    });
+        });
 
     let lib_file = quote! {
         #![allow(non_snake_case)]
@@ -165,7 +184,7 @@ fn main() -> Result<(), String> {
             static CONTEXT: RefCell<Option<JSContextRef>> = RefCell::new(None);
 
             static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
-        
+
             static STABLE_B_TREE_MAPS: RefCell<BTreeMap<u8, AzleStableBTreeMap>> = RefCell::new(BTreeMap::new());
         }
 

@@ -58,7 +58,7 @@ export default class {
     }
 
     @query([], Opt(text))
-    getOptNull(): Opt<string> {
+    getOptNull(): Opt<text> {
         return [];
     }
 

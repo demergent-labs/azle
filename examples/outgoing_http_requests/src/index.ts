@@ -1,4 +1,13 @@
-import { ic, Principal, query, update, Service, Some, None } from 'azle';
+import {
+    ic,
+    Principal,
+    query,
+    update,
+    Service,
+    Some,
+    None,
+    Manual
+} from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
@@ -28,9 +37,8 @@ export default class extends Service {
         });
     }
 
-    // TODO: Figure out how to do manuals in new syntax
     // TODO the replica logs give some concerning output: https://forum.dfinity.org/t/fix-me-in-http-outcalls-call-raw/19435
-    @query([HttpResponse], HttpResponse, { manual: true })
+    @update([], HttpResponse, { manual: true })
     async xkcdRaw(): Promise<Manual<HttpResponse>> {
         const httpResponse = await ic.callRaw(
             Principal.fromText('aaaaa-aa'),

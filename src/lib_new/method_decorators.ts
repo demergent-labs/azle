@@ -231,9 +231,12 @@ function setupCanisterMethod(
         );
     }
 
+    const originalMethod = descriptor.value;
+
     if (mode === 'query') {
         target.constructor._azleCanisterMethods.queries.push({
-            name: key
+            name: key,
+            composite: isAsync(originalMethod, key)
         });
     }
 
@@ -260,8 +263,6 @@ function setupCanisterMethod(
             name: key
         };
     }
-
-    const originalMethod = descriptor.value;
 
     // This must remain a function and not an arrow function
     // in order to set the context (this) correctly
@@ -295,14 +296,6 @@ function setupCanisterMethod(
         ) {
             result
                 .then((result) => {
-                    const encodeReadyResult =
-                        result === undefined ? [] : [result];
-
-                    const encoded = IDL.encode(
-                        returnCandid[0],
-                        encodeReadyResult
-                    );
-
                     // TODO this won't be accurate because we have most likely had
                     // TODO cross-canister calls
                     console.log(
@@ -310,6 +303,12 @@ function setupCanisterMethod(
                     );
 
                     if (!manual) {
+                        const encodeReadyResult =
+                            result === undefined ? [] : [result];
+                        const encoded = IDL.encode(
+                            returnCandid[0],
+                            encodeReadyResult
+                        );
                         ic.replyRaw(new Uint8Array(encoded));
                     }
                 })
@@ -337,4 +336,16 @@ function setupCanisterMethod(
     }
 
     return descriptor;
+}
+
+function isAsync(originalFunction: any, key: string) {
+    if (originalFunction[Symbol.toStringTag] === 'AsyncFunction') {
+        return true;
+    } else if (originalFunction.constructor.name === 'AsyncFunction') {
+        return true;
+    } else if (originalFunction.toString().includes('async ')) {
+        return true;
+    } else {
+        return false;
+    }
 }
