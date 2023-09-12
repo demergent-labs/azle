@@ -12,3 +12,4 @@ export * from './primitives';
 export * from './service';
 export * from './result';
 export * from './system_types';
+export * from './stable_b_tree_map';

@@ -1,45 +1,21 @@
-type Recording = record {
-  id : principal;
-  audio : vec nat8;
-  userId : principal;
-  name : text;
-  createdAt : nat64;
-};
-type User = record {
-  id : principal;
-  username : text;
-  recordingIds : vec principal;
-  createdAt : nat64;
-};
-type _AzleResult = variant {
-  Ok : Recording;
-  Err : _InlineCreateRecordingReturnTypeTypeArg1;
-};
-type _AzleResult_1 = variant {
-  Ok : Recording;
-  Err : _InlineDeleteRecordingReturnTypeTypeArg1;
-};
-type _AzleResult_2 = variant {
-  Ok : User;
-  Err : _InlineDeleteUserReturnTypeTypeArg1;
-};
-type _InlineCreateRecordingReturnTypeTypeArg1 = variant {
-  UserDoesNotExist : principal;
-};
-type _InlineDeleteRecordingReturnTypeTypeArg1 = variant {
-  RecordingDoesNotExist : principal;
-  UserDoesNotExist : principal;
-};
-type _InlineDeleteUserReturnTypeTypeArg1 = variant {
-  UserDoesNotExist : principal;
-};
-service : () -> {
-  createRecording : (vec nat8, text, principal) -> (_AzleResult);
-  createUser : (text) -> (User);
-  deleteRecording : (principal) -> (_AzleResult_1);
-  deleteUser : (principal) -> (_AzleResult_2);
-  readRecordingById : (principal) -> (opt Recording) query;
-  readRecordings : () -> (vec Recording) query;
-  readUserById : (principal) -> (opt User) query;
-  readUsers : () -> (vec User) query;
+type rec_0 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
+type rec_1 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
+type rec_2 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
+type rec_3 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
+type rec_4 = variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal};
+type rec_5 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
+type rec_6 = variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal};
+type rec_7 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
+type rec_8 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
+type rec_9 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
+type rec_10 = variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal};
+service: () -> {
+    createUser: (text) -> (rec_0);
+    readUsers: () -> (vec rec_1) query;
+    readUserById: (principal) -> (opt rec_2) query;
+    deleteUser: (principal) -> (variant {Ok:rec_3; Err:rec_4});
+    createRecording: (vec nat8, text, principal) -> (variant {Ok:rec_5; Err:rec_6});
+    readRecordings: () -> (vec rec_7) query;
+    readRecordingById: (principal) -> (opt rec_8) query;
+    deleteRecording: (principal) -> (variant {Ok:rec_9; Err:rec_10});
 }
