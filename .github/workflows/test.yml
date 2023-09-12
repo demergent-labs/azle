@@ -89,7 +89,6 @@
 # "examples/robust_imports",
 # "examples/run_time_errors",
 # "examples/rust_type_conversions",
-# "examples/audio_recorder",
 # "examples/complex_types",
 # "examples/composite_queries",
 # "examples/ethereum_json_rpc",
@@ -146,6 +145,7 @@ jobs:
               run: |
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
+                    "examples/audio_recorder",
                     "examples/async_await",
                     "examples/bitcoin",
                     "examples/blob_array",

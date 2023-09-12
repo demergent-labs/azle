@@ -1,17 +1,12 @@
 use quote::quote;
 use serde::{Deserialize, Serialize};
-use std::path::Path;
 use std::{
     env,
     fs::{self, File},
     io::Write,
 };
-use swc_common::{sync::Lrc, SourceMap};
-use swc_ecma_ast::Program;
-use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax, TsConfig};
 use crate::traits::to_ident::ToIdent;
 
-mod canister_methods;
 mod ic;
 mod traits;
 
@@ -51,48 +46,6 @@ fn main() -> Result<(), String> {
 
     let compiler_info = get_compiler_info(&args[1])?;
 
-    let entry_point_file_name = compiler_info.ts_root;
-
-    let programs = compiler_info
-        .file_names
-        .into_iter()
-        .filter(|file_name| file_name == &entry_point_file_name)
-        .map(|file_name| {
-            let filepath = Path::new(&file_name).to_path_buf();
-
-            let cm: Lrc<SourceMap> = Default::default();
-
-            let fm = cm.load_file(&filepath).map_err(|err| err.to_string())?;
-
-            let lexer = Lexer::new(
-                Syntax::Typescript(TsConfig {
-                    decorators: true,
-                    ..TsConfig::default()
-                }),
-                Default::default(),
-                StringInput::from(&*fm),
-                None,
-            );
-
-            let mut parser = Parser::new_from(lexer);
-
-            let parse_result = parser.parse_program();
-
-            let program = parse_result.map_err(|err| format!("{:#?}", err))?;
-
-            Ok(program)
-        })
-        .collect::<Result<Vec<Program>, String>>()?;
-
-    let modules = programs
-        .into_iter()
-        .filter_map(|program| match program {
-            Program::Module(module) => Some(module),
-            Program::Script(_) => None,
-        })
-        .collect::<Vec<_>>();
-
-    let entry_point = &modules[0];
 
     let ic = ic::generate();
 
@@ -150,11 +103,58 @@ fn main() -> Result<(), String> {
         use slotmap::Key;
         use std::cell::RefCell;
         use std::convert::TryInto;
+        use std::collections::BTreeMap;
+        use ic_stable_structures::{ DefaultMemoryImpl, memory_manager::{ MemoryId, MemoryManager, VirtualMemory }, StableBTreeMap, storable::Bound, Storable };
 
         const MAIN_JS: &[u8] = include_bytes!("main.js");
 
+        type Memory = VirtualMemory<DefaultMemoryImpl>;
+        type AzleStableBTreeMap = StableBTreeMap<AzleStableBTreeMapKey, AzleStableBTreeMapValue, Memory>;
+
+        #[derive(Ord, PartialOrd, Eq, PartialEq, Clone)]
+        struct AzleStableBTreeMapKey {
+            candid_bytes: Vec<u8>
+        }
+
+        impl Storable for AzleStableBTreeMapKey {
+            fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
+                std::borrow::Cow::Borrowed(&self.candid_bytes)
+            }
+
+            fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
+                AzleStableBTreeMapKey {
+                    candid_bytes: bytes.to_vec()
+                }
+            }
+
+            const BOUND: Bound = Bound::Unbounded;
+        }
+
+        #[derive(Ord, PartialOrd, Eq, PartialEq, Clone)]
+        struct AzleStableBTreeMapValue {
+            candid_bytes: Vec<u8>
+        }
+
+        impl Storable for AzleStableBTreeMapValue {
+            fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
+                std::borrow::Cow::Borrowed(&self.candid_bytes)
+            }
+
+            fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
+                AzleStableBTreeMapValue {
+                    candid_bytes: bytes.to_vec()
+                }
+            }
+
+            const BOUND: Bound = Bound::Unbounded;
+        }
+
         thread_local! {
             static CONTEXT: RefCell<Option<JSContextRef>> = RefCell::new(None);
+
+            static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+        
+            static STABLE_B_TREE_MAPS: RefCell<Vec<AzleStableBTreeMap>> = RefCell::new(vec![]);
         }
 
         #[ic_cdk_macros::init]

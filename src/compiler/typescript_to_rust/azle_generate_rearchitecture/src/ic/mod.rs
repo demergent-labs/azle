@@ -38,6 +38,11 @@ mod stable64_grow;
 mod stable64_read;
 mod stable64_size;
 mod stable64_write;
+mod stable_b_tree_map_get;
+mod stable_b_tree_map_init;
+mod stable_b_tree_map_insert;
+mod stable_b_tree_map_remove;
+mod stable_b_tree_map_values;
 mod stable_bytes;
 mod stable_grow;
 mod stable_read;
@@ -89,6 +94,11 @@ pub fn generate() -> TokenStream {
     let stable64_read = stable64_read::generate();
     let stable64_size = stable64_size::generate();
     let stable64_write = stable64_write::generate();
+    let stable_b_tree_map_get = stable_b_tree_map_get::generate();
+    let stable_b_tree_map_init = stable_b_tree_map_init::generate();
+    let stable_b_tree_map_insert = stable_b_tree_map_insert::generate();
+    let stable_b_tree_map_remove = stable_b_tree_map_remove::generate();
+    let stable_b_tree_map_values = stable_b_tree_map_values::generate();
     let time = time::generate();
     let trap = trap::generate();
 
@@ -135,6 +145,11 @@ pub fn generate() -> TokenStream {
         #stable64_read
         #stable64_size
         #stable64_write
+        #stable_b_tree_map_get
+        #stable_b_tree_map_init
+        #stable_b_tree_map_insert
+        #stable_b_tree_map_remove
+        #stable_b_tree_map_values
         #time
         #trap
 
@@ -182,6 +197,11 @@ pub fn generate() -> TokenStream {
         ic.set_property("stableRead", context.wrap_callback2(stable_read).unwrap()).unwrap();
         ic.set_property("stableSize", context.wrap_callback2(stable_size).unwrap()).unwrap();
         ic.set_property("stableWrite", context.wrap_callback2(stable_write).unwrap()).unwrap();
+        ic.set_property("stableBTreeMapGet", context.wrap_callback2(stable_b_tree_map_get).unwrap()).unwrap();
+        ic.set_property("stableBTreeMapInit", context.wrap_callback2(stable_b_tree_map_init).unwrap()).unwrap();
+        ic.set_property("stableBTreeMapInsert", context.wrap_callback2(stable_b_tree_map_insert).unwrap()).unwrap();
+        ic.set_property("stableBTreeMapRemove", context.wrap_callback2(stable_b_tree_map_remove).unwrap()).unwrap();
+        ic.set_property("stableBTreeMapValues", context.wrap_callback2(stable_b_tree_map_values).unwrap()).unwrap();
         ic.set_property("time", context.wrap_callback2(time).unwrap()).unwrap();
         ic.set_property("trap", context.wrap_callback2(trap).unwrap()).unwrap();
 
