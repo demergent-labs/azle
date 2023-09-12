@@ -88,7 +88,7 @@ export function getTests(serviceCanister: ActorSubclass<_SERVICE>): Test[] {
                     .trim();
 
                 return {
-                    Ok: result === '(variant { Ok = "SomeService update1" })'
+                    Ok: result === '("SomeService update1")'
                 };
             }
         }

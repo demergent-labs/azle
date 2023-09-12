@@ -1,67 +1,59 @@
 import {
-    CallResult,
+    candid,
     ic,
     Principal,
-    $query,
+    query,
     Record,
     Service,
-    serviceQuery,
-    serviceUpdate,
-    $update,
-    Variant,
+    text,
+    update,
     Vec
 } from 'azle';
 
-class SomeService extends Service {
-    @serviceQuery
-    query1: () => CallResult<boolean>;
+import { default as SomeService } from './some_service';
 
-    @serviceUpdate
-    update1: () => CallResult<string>;
-}
-
-$query;
-export function serviceParam(someService: SomeService): SomeService {
-    return someService;
-}
-
-$query;
-export function serviceReturnType(): SomeService {
-    return new SomeService(
-        Principal.fromText(
-            process.env.SOME_SERVICE_PRINCIPAL ??
-                ic.trap('process.env.SOME_SERVICE_PRINCIPAL is undefined')
-        )
-    );
-}
-
-$update;
-export function serviceNestedReturnType(): Record<{
+class Wrapper extends Record {
+    @candid(SomeService)
     someService: SomeService;
-}> {
-    return {
-        someService: new SomeService(
+}
+
+export default class extends Service {
+    @query([SomeService], SomeService)
+    serviceParam(someService: SomeService): SomeService {
+        return someService;
+    }
+
+    @query([], SomeService)
+    serviceReturnType(): SomeService {
+        return new SomeService(
             Principal.fromText(
                 process.env.SOME_SERVICE_PRINCIPAL ??
                     ic.trap('process.env.SOME_SERVICE_PRINCIPAL is undefined')
             )
-        )
-    };
-}
+        );
+    }
 
-$update;
-export function serviceList(someServices: Vec<SomeService>): Vec<SomeService> {
-    return someServices;
-}
+    @update([], Wrapper)
+    serviceNestedReturnType(): Wrapper {
+        return {
+            someService: new SomeService(
+                Principal.fromText(
+                    process.env.SOME_SERVICE_PRINCIPAL ??
+                        ic.trap(
+                            'process.env.SOME_SERVICE_PRINCIPAL is undefined'
+                        )
+                )
+            )
+        };
+    }
 
-$update;
-export async function serviceCrossCanisterCall(
-    someService: SomeService
-): Promise<
-    Variant<{
-        Ok: string;
-        Err: string;
-    }>
-> {
-    return await someService.update1().call();
+    @update([Vec(SomeService)], Vec(SomeService))
+    serviceList(someServices: Vec<SomeService>): Vec<SomeService> {
+        return someServices;
+    }
+
+    @update([SomeService], text)
+    async serviceCrossCanisterCall(someService: SomeService): Promise<text> {
+        return await ic.call(someService.update1);
+    }
 }

@@ -1,11 +1,13 @@
-import { $query, $update } from 'azle';
+import { bool, query, Service, text, update } from 'azle';
 
-$query;
-export function query1(): boolean {
-    return true;
-}
+export default class extends Service {
+    @query([], bool)
+    query1(): bool {
+        return true;
+    }
 
-$update;
-export function update1(): string {
-    return 'SomeService update1';
+    @update([], text)
+    update1(): text {
+        return 'SomeService update1';
+    }
 }
