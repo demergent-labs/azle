@@ -7,5 +7,6 @@ service: () -> {
     simpleQuery: () -> (text) query;
     simpleUpdate: () -> (text);
     incCounter: () -> (nat) query;
+    incCanister1: () -> (nat) query;
     incCanister2: () -> (nat) query;
 }

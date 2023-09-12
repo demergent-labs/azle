@@ -28,7 +28,7 @@ export default class extends Service {
         return 'Hello from a Canister 2 update';
     }
 
-    @query([], text)
+    @query([], text, { manual: true })
     manualQuery(): Manual<text> {
         ic.reply('Hello from Canister 2 manual query', text);
     }

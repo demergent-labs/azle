@@ -11,7 +11,11 @@
                 "output": "test/dfx_generated/canister1",
                 "node_compatibility": true
             },
-            "env": ["CANISTER1_PRINCIPAL", "CANISTER2_PRINCIPAL"]
+            "env": [
+                "CANISTER1_PRINCIPAL",
+                "CANISTER2_PRINCIPAL",
+                "CANISTER3_PRINCIPAL"
+            ]
         },
         "canister2": {
             "type": "custom",

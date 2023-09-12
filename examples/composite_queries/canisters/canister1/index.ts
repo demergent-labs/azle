@@ -3,13 +3,6 @@ import Canister2 from '../canister2';
 
 // Composite query calling a query
 class Canister1 extends Service {
-    // canister1 = new Canister1(
-    //     Principal.fromText(
-    //         process.env.CANISTER1_PRINCIPAL ??
-    //             ic.trap('process.env.CANISTER1_PRINCIPAL is undefined')
-    //     )
-    // );
-
     canister2 = new Canister2(
         Principal.fromText(
             process.env.CANISTER2_PRINCIPAL ??
@@ -31,7 +24,7 @@ class Canister1 extends Service {
     }
 
     // Manual composite query calling a manual query
-    @query([], text)
+    @query([], text, { manual: true })
     async totallyManualQuery(): Promise<Manual<text>> {
         ic.reply(await ic.call(this.canister2.manualQuery), text);
     }
@@ -64,23 +57,32 @@ class Canister1 extends Service {
     @query([], nat)
     async incCounter(): Promise<nat> {
         this.counter += 1n;
+
         return this.counter;
     }
 
-    // Composite query calling queries on the same canister. SHOULDN'T WORK
-    // @query([], nat)
-    // async incCanister1(): Promise<nat> {
-    //     this.counter += 1n;
+    // Composite query calling queries on the same canister
+    @query([], nat)
+    async incCanister1(): Promise<nat> {
+        this.counter += 1n;
 
-    //     return await ic.call(this.canister1.incCounter);
-    // }
+        const canister1AResult = await ic.call(this.incCounter);
+
+        const canister1BResult = await ic.call(this.incCounter);
+
+        return this.counter + canister1AResult + canister1BResult;
+    }
 
     // Composite query calling queries that modify the state
     @query([], nat)
     async incCanister2(): Promise<nat> {
         this.counter += 1n;
 
-        return await ic.call(this.canister2.incCounter);
+        const canister2AResult = await ic.call(this.canister2.incCounter);
+
+        const canister2BResult = await ic.call(this.canister2.incCounter);
+
+        return this.counter + canister2AResult + canister2BResult;
     }
 }
 
