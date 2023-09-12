@@ -1,5 +1,5 @@
 import { ic, Manual, nat, Principal, query, Service, text, update } from 'azle';
-import Canister3 from '../canister3/canister3';
+import Canister3 from '../canister3';
 
 export default class extends Service {
     canister3 = new Canister3(

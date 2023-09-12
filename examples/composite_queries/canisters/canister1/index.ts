@@ -1,5 +1,5 @@
 import { ic, Manual, nat, Principal, query, Service, text, update } from 'azle';
-import Canister2 from '../canister2/canister2';
+import Canister2 from '../canister2';
 
 // Composite query calling a query
 class Canister1 extends Service {
