@@ -1,141 +1,87 @@
-import {
-    ic,
-    Manual,
-    match,
-    nat,
-    Principal,
-    $query,
-    Result,
-    $update
-} from 'azle';
-import { Canister1 } from '../canister1/types';
-import { Canister2 } from '../canister2/types';
-
-const canister1 = new Canister1(
-    Principal.fromText(
-        process.env.CANISTER1_PRINCIPAL ??
-            ic.trap('process.env.CANISTER1_PRINCIPAL is undefined')
-    )
-);
-
-const canister2 = new Canister2(
-    Principal.fromText(
-        process.env.CANISTER2_PRINCIPAL ??
-            ic.trap('process.env.CANISTER2_PRINCIPAL is undefined')
-    )
-);
-
-let counter: nat = 0n;
+import { ic, Manual, nat, Principal, query, Service, text, update } from 'azle';
+import Canister2 from '../canister2/canister2';
 
 // Composite query calling a query
-$query;
-export async function simpleCompositeQuery(): Promise<Result<string, string>> {
-    return await canister2.simpleQuery().call();
+class Canister1 extends Service {
+    // canister1 = new Canister1(
+    //     Principal.fromText(
+    //         process.env.CANISTER1_PRINCIPAL ??
+    //             ic.trap('process.env.CANISTER1_PRINCIPAL is undefined')
+    //     )
+    // );
+
+    canister2 = new Canister2(
+        Principal.fromText(
+            process.env.CANISTER2_PRINCIPAL ??
+                ic.trap('process.env.CANISTER2_PRINCIPAL is undefined')
+        )
+    );
+
+    counter: nat = 0n;
+
+    @query([], text)
+    async simpleCompositeQuery(): Promise<text> {
+        return await ic.call(this.canister2.simpleQuery);
+    }
+
+    // Composite query calling a manual query
+    @query([], text)
+    async manualQuery(): Promise<text> {
+        return await ic.call(this.canister2.manualQuery);
+    }
+
+    // Manual composite query calling a manual query
+    @query([], text)
+    async totallyManualQuery(): Promise<Manual<text>> {
+        ic.reply(await ic.call(this.canister2.manualQuery), text);
+    }
+
+    // Composite query calling another composite query
+    @query([], text)
+    async deepQuery(): Promise<text> {
+        return await ic.call(this.canister2.deepQuery);
+    }
+
+    // Composite query calling an update method. SHOULDN'T WORK
+    @query([], text)
+    async updateQuery(): Promise<text> {
+        return await ic.call(this.canister2.updateQuery);
+    }
+
+    // Composite query being called by a query method. SHOULDN'T WORK
+    @query([], text)
+    async simpleQuery(): Promise<text> {
+        return await ic.call(this.canister2.simpleQuery);
+    }
+
+    // Composite query being called by an update method. SHOULDN'T WORK
+    @update([], text)
+    async simpleUpdate(): Promise<text> {
+        return await ic.call(this.canister2.deepQuery);
+    }
+
+    // Composite query that modifies the state. Should revert after the call is done
+    @query([], nat)
+    async incCounter(): Promise<nat> {
+        this.counter += 1n;
+        return this.counter;
+    }
+
+    // Composite query calling queries on the same canister. SHOULDN'T WORK
+    // @query([], nat)
+    // async incCanister1(): Promise<nat> {
+    //     this.counter += 1n;
+
+    //     return await ic.call(this.canister1.incCounter);
+    // }
+
+    // Composite query calling queries that modify the state
+    @query([], nat)
+    async incCanister2(): Promise<nat> {
+        this.counter += 1n;
+
+        return await ic.call(this.canister2.incCounter);
+    }
 }
 
-// Composite query calling a manual query
-$query;
-export async function manualQuery(): Promise<Result<string, string>> {
-    return await canister2.manualQuery().call();
-}
-
-// Manual composite query calling a manual query
-$query;
-export async function totallyManualQuery(): Promise<
-    Manual<Result<string, string>>
-> {
-    ic.reply(await canister2.manualQuery().call());
-}
-
-// Composite query calling another composite query
-$query;
-export async function deepQuery(): Promise<Result<string, string>> {
-    const callResult = await canister2.deepQuery().call();
-
-    return match(callResult, {
-        Ok: (stringQueryResult) =>
-            match(stringQueryResult, {
-                Ok: (stringQuery) => ({ Ok: stringQuery }),
-                Err: (err) => ({ Err: err })
-            }),
-        Err: (err) => ({ Err: err })
-    });
-}
-
-// Composite query calling an update method. SHOULDN'T WORK
-$query;
-export async function updateQuery(): Promise<Result<string, string>> {
-    return await canister2.updateQuery().call();
-}
-
-// Composite query being called by a query method. SHOULDN'T WORK
-$query;
-export async function simpleQuery(): Promise<Result<string, string>> {
-    return await canister2.simpleQuery().call();
-}
-
-// Composite query being called by an update method. SHOULDN'T WORK
-$update;
-export async function simpleUpdate(): Promise<Result<string, string>> {
-    const callResult = await canister2.deepQuery().call();
-
-    return match(callResult, {
-        Ok: (stringQueryResult) =>
-            match(stringQueryResult, {
-                Ok: (stringQuery) => ({ Ok: stringQuery }),
-                Err: (err) => ({ Err: err })
-            }),
-        Err: (err) => ({ Err: err })
-    });
-}
-
-// Composite query that modifies the state. Should revert after the call is done
-$query;
-export async function incCounter(): Promise<nat> {
-    counter += 1n;
-    return counter;
-}
-
-// Composite query calling queries on the same canister. SHOULDN'T WORK
-$query;
-export async function incCanister1(): Promise<Result<nat, string>> {
-    counter += 1n;
-
-    const canister1AResult = await canister1.incCounter().call();
-
-    return match(canister1AResult, {
-        Ok: async (canister1AOk) => {
-            const canister1BResult = await canister1.incCounter().call();
-
-            return match(canister1BResult, {
-                Ok: (canister1BOk) => ({
-                    Ok: counter + canister1AOk + canister1BOk
-                }),
-                Err: (err) => ({ Err: err })
-            });
-        },
-        Err: (err) => ({ Err: err })
-    });
-}
-
-// Composite query calling queries that modify the state
-$query;
-export async function incCanister2(): Promise<Result<nat, string>> {
-    counter += 1n;
-
-    const canister2AResult = await canister2.incCounter().call();
-
-    return match(canister2AResult, {
-        Ok: async (canister2AOk) => {
-            const canister2BResult = await canister2.incCounter().call();
-
-            return match(canister2BResult, {
-                Ok: (canister2BOk) => ({
-                    Ok: counter + canister2AOk + canister2BOk
-                }),
-                Err: (err) => ({ Err: err })
-            });
-        },
-        Err: (err) => ({ Err: err })
-    });
-}
+export default Canister1;

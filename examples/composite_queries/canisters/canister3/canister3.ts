@@ -1,6 +1,8 @@
-import { $query } from 'azle';
+import { Service, query, text } from 'azle';
 
-$query;
-export function deepQuery(): string {
-    return 'Hello from Canister 3';
+export default class extends Service {
+    @query([], text)
+    deepQuery(): text {
+        return 'Hello from Canister 3';
+    }
 }
