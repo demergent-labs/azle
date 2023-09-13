@@ -18,6 +18,7 @@ export type Manual<T> = void;
 type Mode =
     | 'init'
     | 'postUpgrade'
+    | 'preUpgrade'
     | 'query'
     | 'update'
     | 'heartbeat'
@@ -60,6 +61,22 @@ export function postUpgrade(paramsIdls: any[]): any {
             descriptor
         );
     };
+}
+
+export function preUpgrade(
+    target: any,
+    key: string,
+    descriptor?: PropertyDescriptor
+) {
+    return setupCanisterMethod(
+        target,
+        [],
+        [],
+        'preUpgrade',
+        false,
+        key,
+        descriptor
+    );
 }
 
 export function heartbeat(
@@ -238,6 +255,12 @@ function setupCanisterMethod(
         };
     }
 
+    if (mode === 'preUpgrade') {
+        target.constructor._azleCanisterMethods.pre_upgrade = {
+            name: key
+        };
+    }
+
     const originalMethod = descriptor.value;
 
     // This must remain a function and not an arrow function
@@ -248,7 +271,7 @@ function setupCanisterMethod(
             return serviceCallInner.call(this, ...args);
         }
 
-        if (mode === 'heartbeat') {
+        if (mode === 'heartbeat' || mode === 'preUpgrade') {
             originalMethod.call(this);
             return;
         }

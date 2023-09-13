@@ -19,13 +19,13 @@ struct CompilerInfo {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CanisterMethods {
+    init: Option<CanisterMethod>,
+    post_upgrade: Option<CanisterMethod>,
+    pre_upgrade: Option<CanisterMethod>,
+    inspect_message: Option<CanisterMethod>,
+    heartbeat: Option<CanisterMethod>,
     queries: Vec<CanisterMethod>,
     updates: Vec<CanisterMethod>,
-    init: Option<CanisterMethod>,
-    pre_upgrade: Option<CanisterMethod>,
-    post_upgrade: Option<CanisterMethod>,
-    heartbeat: Option<CanisterMethod>,
-    inspect_message: Option<CanisterMethod>
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -49,24 +49,24 @@ fn main() -> Result<(), String> {
 
     let ic = ic::generate();
 
-    let query_methods = compiler_info.canister_methods.queries.iter().map(|canister_method| {
+    let pre_upgrade_method = compiler_info.canister_methods.pre_upgrade.map(|canister_method| {
         let rust_function_name = canister_method.name.to_ident();
         let js_function_name = &canister_method.name;
 
         quote! {
-            #[ic_cdk_macros::query(manual_reply = true)]
+            #[ic_cdk_macros::pre_upgrade]
             fn #rust_function_name() {
-                execute_js(#js_function_name, true);
+                execute_js(#js_function_name, false);
             }
         }
     });
 
-    let update_methods = compiler_info.canister_methods.updates.iter().map(|canister_method| {
+    let inspect_message_method = compiler_info.canister_methods.inspect_message.map(|canister_method| {
         let rust_function_name = canister_method.name.to_ident();
         let js_function_name = &canister_method.name;
 
         quote! {
-            #[ic_cdk_macros::update(manual_reply = true)]
+            #[ic_cdk_macros::inspect_message]
             fn #rust_function_name() {
                 execute_js(#js_function_name, true);
             }
@@ -85,12 +85,24 @@ fn main() -> Result<(), String> {
         }
     });
 
-    let inspect_message_method = compiler_info.canister_methods.inspect_message.map(|canister_method| {
+    let query_methods = compiler_info.canister_methods.queries.iter().map(|canister_method| {
         let rust_function_name = canister_method.name.to_ident();
         let js_function_name = &canister_method.name;
 
         quote! {
-            #[ic_cdk_macros::inspect_message]
+            #[ic_cdk_macros::query(manual_reply = true)]
+            fn #rust_function_name() {
+                execute_js(#js_function_name, true);
+            }
+        }
+    });
+
+    let update_methods = compiler_info.canister_methods.updates.iter().map(|canister_method| {
+        let rust_function_name = canister_method.name.to_ident();
+        let js_function_name = &canister_method.name;
+
+        quote! {
+            #[ic_cdk_macros::update(manual_reply = true)]
             fn #rust_function_name() {
                 execute_js(#js_function_name, true);
             }
@@ -210,6 +222,8 @@ fn main() -> Result<(), String> {
                 execute_js(&_azle_post_upgrade_name_string, true);
             }
         }
+
+        #pre_upgrade_method
 
         #heartbeat_method
 
