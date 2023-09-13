@@ -1,12 +1,10 @@
-type HttpHeader = record { value : text; name : text };
-type HttpResponse = record {
-  status : nat;
-  body : vec nat8;
-  headers : vec HttpHeader;
-};
-type HttpTransformArgs = record { context : vec nat8; response : HttpResponse };
-service : (text) -> {
-  ethGetBalance : (text) -> (text);
-  ethGetBlockByNumber : (nat32) -> (text);
-  ethTransform : (HttpTransformArgs) -> (HttpResponse) query;
+type rec_2 = record {value:text; name:text};
+type rec_1 = record {status:nat; body:vec nat8; headers:vec rec_2};
+type rec_0 = record {context:vec nat8; response:rec_1};
+type rec_4 = record {value:text; name:text};
+type rec_3 = record {status:nat; body:vec nat8; headers:vec rec_4};
+service: (text) -> {
+    ethGetBalance: (text) -> (text);
+    ethGetBlockByNumber: (nat32) -> (text);
+    ethTransform: (rec_0) -> (rec_3) query;
 }

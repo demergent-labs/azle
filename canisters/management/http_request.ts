@@ -12,12 +12,12 @@ import {
     func
 } from '../../src/lib_new';
 
-export class HttpHeader extends Variant {
+export class HttpHeader extends Record {
     @candid(text)
-    name?: text;
+    name: text;
 
     @candid(text)
-    value?: text;
+    value: text;
 }
 
 export class HttpMethod extends Variant {
