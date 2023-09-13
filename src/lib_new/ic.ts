@@ -1,14 +1,29 @@
-import { IDL } from './index';
+import { Nat64 } from '@dfinity/candid/lib/esm/idl'; // Note: Importing IDL from './index' instead causes the build to fail
 import { Principal } from '@dfinity/principal';
-import { blob, nat, nat32, nat64, Void } from './primitives';
+import { IDL } from './index';
+import { blob, nat, nat32, nat64, Void, Opt } from './primitives';
+import { RejectionCode } from './system_types';
 import { v4 } from 'uuid';
-import { CandidClass, toCandidClass, toReturnCandidClass } from './utils';
+import { CandidClass, toCandidClass } from './utils';
 
 // declare var globalThis: {
 //     ic: Ic;
 // };
 
 declare var globalThis: any;
+
+/**
+ * Represents a duration of time in seconds.
+ */
+export type Duration = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
+export const Duration = Nat64; // Note: using IDL.Nat64 from './index' causes the build to fail
+
+/**
+ * Type returned by the {@link ic.setTimer} and {@link ic.setTimerInterval}
+ * functions. Pass to {@link ic.clearTimer} to remove the timer.
+ */
+export type TimerId = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
+export const TimerId = Nat64; // Note: using IDL.Nat64 from './index' causes the build to fail
 
 type Ic = {
     /**
@@ -125,6 +140,14 @@ type Ic = {
     clearTimer: (id: bigint) => void;
 
     /**
+     * When called from a query call, returns the data certificate
+     * authenticating `certifiedData` set by this canister. Otherwise returns
+     * `None`.
+     * @returns the data certificate or None
+     */
+    dataCertificate: () => Opt<blob>;
+
+    /**
      * Gets the id of this canister
      * @returns the canister id
      */
@@ -230,6 +253,13 @@ type Ic = {
     reject: (message: string) => void;
 
     /**
+     * Returns the rejection code from the most recently executed cross-canister
+     * call
+     * @returns the rejection code
+     */
+    rejectCode: () => RejectionCode;
+
+    /**
      * Returns the rejection message from the most recently executed
      * cross-canister call
      *
@@ -291,6 +321,34 @@ type Ic = {
      * @returns
      */
     setCertifiedData: (data: Uint8Array) => void;
+
+    /**
+     * Sets callback to be executed later, after delay. Panics if `delay` + time() is more than 2^64 - 1.
+     * To cancel the timer before it executes, pass the returned `TimerId` to `clearTimer`.
+     * Note that timers are not persisted across canister upgrades.
+     *
+     * @param delay The time (in seconds) to wait before executing the provided callback.
+     * @param callback the function to invoke after the specified delay has passed.
+     * @returns the ID of the created timer. Used to cancel the timer.
+     */
+    setTimer: (
+        delay: Duration,
+        callback: () => void | Promise<void>
+    ) => TimerId;
+
+    /**
+     * Sets callback to be executed every interval. Panics if `interval` + time() is more than 2^64 - 1.
+     * To cancel the interval timer, pass the returned `TimerId` to `clearTimer`.
+     * Note that timers are not persisted across canister upgrades.
+     *
+     * @param interval The interval (in seconds) between each callback execution.
+     * @param callback the function to invoke after the specified delay has passed.
+     * @returns the ID of the created timer. Used to cancel the timer.
+     */
+    setTimerInterval: (
+        interval: Duration,
+        callback: () => void | Promise<void>
+    ) => TimerId;
 
     /**
      * Gets a copy of stable memory
@@ -393,6 +451,9 @@ type ReturnTypeOfPromise<T> = T extends (...args: any[]) => infer R
 export const ic: Ic = globalThis._azleIc
     ? {
           ...globalThis._azleIc,
+          argDataRaw: () => {
+              return new Uint8Array(globalThis._azleIc.argDataRaw());
+          },
           call: (method, config) => {
               return method(
                   '_AZLE_CROSS_CANISTER_CALL',
@@ -529,11 +590,25 @@ export const ic: Ic = globalThis._azleIc
               return IDL.decode([IDL.Nat64], canisterVersionCandidBytes)[0];
           },
           clearTimer: (timerId: nat64) => {
-              const timerIdCandidBytes = new Uint8Array(
-                  IDL.encode([IDL.Nat64], [timerId])
-              ).buffer;
+              const encode = (value: nat64) => {
+                  return new Uint8Array(IDL.encode([IDL.Nat64], [value]))
+                      .buffer;
+              };
 
-              return globalThis._azleIc.clearTimer(timerIdCandidBytes);
+              globalThis._azleIc.clearTimer(encode(timerId));
+
+              const timerCallbackId = globalThis.icTimers[timerId.toString()];
+
+              delete globalThis.icTimers[timerId.toString()];
+              delete globalThis[timerCallbackId];
+          },
+          dataCertificate: () => {
+              const rawRustValue: ArrayBuffer | undefined =
+                  globalThis._azleIc.dataCertificate();
+
+              return rawRustValue === undefined
+                  ? []
+                  : [new Uint8Array(rawRustValue)];
           },
           id: () => {
               // TODO consider bytes instead of string, just like with caller
@@ -546,7 +621,9 @@ export const ic: Ic = globalThis._azleIc
               return IDL.decode([IDL.Nat64], instructionCounterCandidBytes)[0];
           },
           isController: (principal) => {
-              return globalThis._azleIc.isController(principal.toUint8Array());
+              return globalThis._azleIc.isController(
+                  principal.toUint8Array().buffer
+              );
           },
           msgCyclesAccept: (maxAmount: nat64) => {
               const maxAmountCandidBytes = new Uint8Array(
@@ -625,6 +702,30 @@ export const ic: Ic = globalThis._azleIc
 
               return IDL.decode([IDL.Nat64], performanceCounterCandidBytes)[0];
           },
+          rejectCode: () => {
+              const rejectCodeNumber = globalThis._azleIc.rejectCode();
+
+              switch (rejectCodeNumber) {
+                  case 0:
+                      return { NoError: null };
+                  case 1:
+                      return { SysFatal: null };
+                  case 2:
+                      return { SysTransient: null };
+                  case 3:
+                      return { DestinationInvalid: null };
+                  case 4:
+                      return { CanisterReject: null };
+                  case 5:
+                      return { CanisterError: null };
+                  case 6:
+                      return { Unknown: null };
+                  default:
+                      throw Error(
+                          `Unknown rejection code: ${rejectCodeNumber}`
+                      );
+              }
+          },
           reply: (reply: any, type: CandidClass): void => {
               if (Array.isArray(type) && type.length === 0) {
                   // return type is void
@@ -645,6 +746,65 @@ export const ic: Ic = globalThis._azleIc
               ).buffer;
 
               return globalThis._azleIc.setCertifiedData(dataBytes);
+          },
+          setTimer: (delay: nat64, callback: () => void | Promise<void>) => {
+              const encode = (value: nat64) => {
+                  return new Uint8Array(IDL.encode([IDL.Nat64], [value]))
+                      .buffer;
+              };
+
+              const decode = (value: ArrayBufferLike) => {
+                  return BigInt(IDL.decode([IDL.Nat64], value)[0] as number);
+              };
+
+              const timerCallbackId = `_timer_${v4()}`;
+
+              const timerId = decode(
+                  globalThis._azleIc.setTimer(encode(delay), timerCallbackId)
+              );
+
+              globalThis.icTimers[timerId.toString()] = timerCallbackId;
+
+              globalThis[timerCallbackId] = () => {
+                  try {
+                      callback();
+                  } finally {
+                      delete globalThis.icTimers[timerId.toString()];
+                      delete globalThis[timerCallbackId];
+                  }
+              };
+
+              return timerId;
+          },
+          setTimerInterval: (
+              interval: nat64,
+              callback: () => void | Promise<void>
+          ) => {
+              const encode = (value: nat64) => {
+                  return new Uint8Array(IDL.encode([IDL.Nat64], [value]))
+                      .buffer;
+              };
+
+              const decode = (value: ArrayBufferLike) => {
+                  return BigInt(IDL.decode([IDL.Nat64], value)[0] as number);
+              };
+
+              const timerCallbackId = `_interval_timer_${v4()}`;
+
+              const timerId = decode(
+                  globalThis._azleIc.setTimerInterval(
+                      encode(interval),
+                      timerCallbackId
+                  )
+              );
+
+              globalThis.icTimers[timerId.toString()] = timerCallbackId;
+
+              // We don't delete this even if the callback throws because
+              // it still needs to be here for the next tick
+              globalThis[timerCallbackId] = callback;
+
+              return timerId;
           },
           stableBytes: () => {
               return new Uint8Array(globalThis._azleIc.stableBytes());
@@ -743,6 +903,7 @@ export const ic: Ic = globalThis._azleIc
           performanceCounter: () => {},
           print: () => {},
           reject: () => {},
+          rejectCode: () => {},
           rejectMessage: () => {},
           reply: () => {},
           replyRaw: () => {},

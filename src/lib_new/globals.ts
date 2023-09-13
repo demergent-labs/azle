@@ -1,17 +1,25 @@
 import { ic } from './ic';
 import { Buffer } from 'buffer';
 
-declare var globalThis: {
-    TextDecoder: any;
-    TextEncoder: any;
+export declare var globalThis: {
     _azleCandidInitParams: any[];
     _azleCandidMethods: any[];
     _azleCandidTypes: any[];
+    Buffer: BufferConstructor;
     console: any;
+    crypto: {
+        getRandomValues: () => Uint8Array;
+    };
+    icTimers: {
+        [key: string]: string;
+    };
+    TextDecoder: any;
+    TextEncoder: any;
 };
 
 globalThis.TextDecoder = require('text-encoding').TextDecoder;
 globalThis.TextEncoder = require('text-encoding').TextEncoder;
+globalThis.icTimers ||= {};
 
 globalThis.console = {
     ...globalThis.console,
