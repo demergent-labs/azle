@@ -10,7 +10,7 @@ import {
     Vec
 } from 'azle';
 
-import { default as SomeService } from './some_service';
+import SomeService from './some_service';
 
 class Wrapper extends Record {
     @candid(SomeService)
