@@ -1,0 +1,19 @@
+service: () -> {
+    argDataRaw: (vec nat8, int8, bool, text) -> (vec nat8) query;
+    argDataRawSize: (vec nat8, int8, bool, text) -> (nat32) query;
+    caller: () -> (principal) query;
+    canisterBalance: () -> (nat64) query;
+    canisterBalance128: () -> (nat) query;
+    canisterVersion: () -> (nat64) query;
+    dataCertificate: () -> (opt vec nat8) query;
+    dataCertificateNull: () -> (opt vec nat8);
+    id: () -> (principal) query;
+    instructionCounter: () -> (nat64) query;
+    isController: (principal) -> (bool) query;
+    performanceCounter: () -> (nat64) query;
+    print: (text) -> (bool) query;
+    reject: (text) -> (empty) query;
+    setCertifiedData: (vec nat8) -> ();
+    time: () -> (nat64) query;
+    trap: (text) -> (bool) query;
+}

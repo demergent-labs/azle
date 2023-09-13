@@ -6,9 +6,13 @@ pub fn generate() -> TokenStream {
         fn is_controller<'a>(
             context: &'a JSContextRef,
             _this: &CallbackArg,
-            _args: &[CallbackArg],
+            args: &[CallbackArg],
         ) -> Result<JSValueRef<'a>, anyhow::Error> {
-            let principal_bytes: Vec<u8> = _args.get(0).expect("isController must have at least one argument").to_js_value()?.try_into()?;
+            let principal_bytes: Vec<u8> = args
+                .get(0)
+                .expect("isController must have at least one argument")
+                .to_js_value()?
+                .try_into()?;
 
             let principal = candid::Principal::from_slice(&principal_bytes);
 

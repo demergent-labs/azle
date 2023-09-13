@@ -1,0 +1,11 @@
+type rec_0 = variant {NoError; CanisterError; SysTransient; DestinationInvalid; Unknown; SysFatal; CanisterReject};
+type rec_1 = variant {NoError; CanisterError; SysTransient; DestinationInvalid; Unknown; SysFatal; CanisterReject};
+type rec_2 = variant {NoError; CanisterError; SysTransient; DestinationInvalid; Unknown; SysFatal; CanisterReject};
+type rec_3 = variant {NoError; CanisterError; SysTransient; DestinationInvalid; Unknown; SysFatal; CanisterReject};
+service: () -> {
+    getRejectionCodeNoError: () -> (rec_0);
+    getRejectionCodeDestinationInvalid: () -> (rec_1);
+    getRejectionCodeCanisterReject: () -> (rec_2);
+    getRejectionCodeCanisterError: () -> (rec_3);
+    getRejectionMessage: (text) -> (text);
+}

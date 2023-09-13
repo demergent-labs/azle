@@ -5,7 +5,6 @@ import {
     None,
     Opt,
     query,
-    record,
     Record,
     Service,
     Some,
@@ -22,7 +21,6 @@ export type List = [text, Opt<List>];
 const List: List = Tuple(text, Opt(List));
 
 // The type of a superhero.
-@record
 class Superhero extends Record {
     @candid(text)
     name: text;
