@@ -4,8 +4,8 @@ import { GuardResult, IDL } from './index';
 import {
     CandidClass,
     ReturnCandidClass,
-    toParamCandidClasses,
-    toReturnCandidClass,
+    toParamIDLTypes,
+    toReturnIDLType,
     CandidTypesDefs,
     CandidDef,
     extractCandid
@@ -181,8 +181,8 @@ function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
 
 function handleRecursiveParams(
     idls: CandidClass[]
-): [CandidClass[], CandidDef[], CandidTypesDefs] {
-    const paramIdls = toParamCandidClasses(idls);
+): [IDL.Type<any>[], CandidDef[], CandidTypesDefs] {
+    const paramIdls = toParamIDLTypes(idls);
     const paramInfo = paramIdls.map((paramIdl) => display(paramIdl, {}));
     return [paramIdls, ...extractCandid(paramInfo, {})];
 }
@@ -190,8 +190,8 @@ function handleRecursiveParams(
 function handleRecursiveReturn(
     returnIdl: ReturnCandidClass,
     paramCandidTypeDefs: CandidTypesDefs
-): [CandidClass[], CandidDef[], CandidTypesDefs] {
-    const returnIdls = toReturnCandidClass(returnIdl);
+): [IDL.Type<any>[], CandidDef[], CandidTypesDefs] {
+    const returnIdls = toReturnIDLType(returnIdl);
     const returnInfo = returnIdls.map((returnIdl) => display(returnIdl, {}));
     return [returnIdls, ...extractCandid(returnInfo, paramCandidTypeDefs)];
 }

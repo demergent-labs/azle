@@ -5,7 +5,7 @@ import { Parent, processMap } from './utils';
 // records. While the decorators are able to add constructors they are not
 // communicating that change to the type checker. If we can get it to do that
 // then we can get rid of this class
-export class Record {
+export abstract class Record {
     constructor(args: any) {
         if (
             Object.entries(this.constructor._azleCandidMap).length !==

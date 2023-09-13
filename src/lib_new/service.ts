@@ -3,8 +3,8 @@ import {
     CandidClass,
     Parent,
     ReturnCandidClass,
-    toParamCandidClasses,
-    toReturnCandidClass
+    toParamIDLTypes,
+    toReturnIDLType
 } from './utils';
 
 export type FunctionInfo = {
@@ -58,12 +58,8 @@ export abstract class Service {
 
         const record = Object.entries(serviceFunctionInfo).reduce(
             (accumulator, [methodName, functionInfo]) => {
-                const paramRealIdls = toParamCandidClasses(
-                    functionInfo.paramIdls
-                );
-                const returnRealIdl = toReturnCandidClass(
-                    functionInfo.returnIdl
-                );
+                const paramRealIdls = toParamIDLTypes(functionInfo.paramIdls);
+                const returnRealIdl = toReturnIDLType(functionInfo.returnIdl);
 
                 const annotations =
                     functionInfo.mode === 'update' ? [] : ['query'];
@@ -101,6 +97,7 @@ export function serviceCall(
     // This must remain a function and not an arrow function
     // in order to set the context (this) correctly
     return async function (
+        this: Service,
         _: '_AZLE_CROSS_CANISTER_CALL',
         notify: boolean,
         callFunction:
@@ -111,7 +108,7 @@ export function serviceCall(
         ...args: any[]
     ) {
         const encodedArgs = new Uint8Array(
-            IDL.encode(toParamCandidClasses(paramsIdls), args)
+            IDL.encode(toParamIDLTypes(paramsIdls), args)
         );
 
         if (notify) {
@@ -133,7 +130,7 @@ export function serviceCall(
                 cycles
             );
 
-            const returnIdls = toReturnCandidClass(returnIdl);
+            const returnIdls = toReturnIDLType(returnIdl);
             const decodedResult = IDL.decode(returnIdls, encodedResult)[0];
 
             return decodedResult;

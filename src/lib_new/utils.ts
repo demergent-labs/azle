@@ -1,5 +1,5 @@
-import { IDL, Record, Variant } from './index';
-import { AzleTuple, AzleVec, AzleOpt } from './primitives';
+import { IDL, Record, Service, Variant } from './index';
+import { GetIDL } from './primitives';
 
 /*
  * Look at each type,
@@ -32,7 +32,7 @@ export function extractCandid(
 }
 
 export function display(
-    idl: CandidClass,
+    idl: IDL.Type<any>,
     candidTypeDefs: CandidTypesDefs
 ): [CandidDef, CandidTypesDefs] {
     if (idl instanceof IDL.RecClass) {
@@ -116,15 +116,7 @@ export type Parent = {
     name: string;
 };
 
-type IDLable = {
-    getIDL: () => CandidClass;
-    name: string;
-};
-
-export function toCandidClass(
-    idl: CandidClass | IDLable,
-    parents: Parent[]
-): CandidClass {
+export function toIDLType(idl: CandidClass, parents: Parent[]): IDL.Type<any> {
     if ('getIDL' in idl) {
         if ('name' in idl) {
             const parent = parents.find((parent) => parent.name === idl.name);
@@ -140,13 +132,11 @@ export function toCandidClass(
     return idl;
 }
 
-export function toParamCandidClasses(idl: CandidClass[]): CandidClass[] {
-    return idl.map((value) => toCandidClass(value, []));
+export function toParamIDLTypes(idl: CandidClass[]): IDL.Type<any>[] {
+    return idl.map((value) => toIDLType(value, []));
 }
 
-export function toReturnCandidClass(
-    returnIdl: ReturnCandidClass
-): CandidClass[] {
+export function toReturnIDLType(returnIdl: ReturnCandidClass): IDL.Type<any>[] {
     if (Array.isArray(returnIdl)) {
         // If Void
         if (returnIdl.length === 0) {
@@ -155,7 +145,7 @@ export function toReturnCandidClass(
         // Should be unreachable
         return [];
     }
-    return [toCandidClass(returnIdl, [])];
+    return [toIDLType(returnIdl, [])];
 }
 
 type CandidMap = { [key: string]: any };
@@ -166,7 +156,7 @@ export function processMap(targetMap: CandidMap, parent: Parent[]): CandidMap {
     for (const key in targetMap) {
         if (targetMap.hasOwnProperty(key)) {
             const value = targetMap[key];
-            const newValue = toCandidClass(value, parent);
+            const newValue = toIDLType(value, parent);
             newMap[key] = newValue;
         }
     }
@@ -175,9 +165,7 @@ export function processMap(targetMap: CandidMap, parent: Parent[]): CandidMap {
 }
 
 export type CandidClass =
-    | AzleOpt
-    | AzleTuple
-    | AzleVec
+    | GetIDL
     | IDL.BoolClass
     | IDL.EmptyClass
     | IDL.FixedIntClass
@@ -194,7 +182,8 @@ export type CandidClass =
     | IDL.TupleClass<any>
     | IDL.VecClass<any>
     | IDL.VecClass<number | bigint> // blob
-    | Record
-    | Variant;
+    | typeof Record
+    | typeof Variant
+    | typeof Service;
 
 export type ReturnCandidClass = CandidClass | never[];

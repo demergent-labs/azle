@@ -1,9 +1,5 @@
 import { IDL } from './index';
-import {
-    CandidClass,
-    toReturnCandidClass,
-    toParamCandidClasses
-} from './utils';
+import { CandidClass, toReturnIDLType, toParamIDLTypes } from './utils';
 
 type Mode = 'query' | 'update' | 'oneway';
 
@@ -22,8 +18,8 @@ export function func(
         return class extends target {
             static getIDL() {
                 return IDL.Func(
-                    toParamCandidClasses(paramsIdls),
-                    toReturnCandidClass(returnIdl),
+                    toParamIDLTypes(paramsIdls),
+                    toReturnIDLType(returnIdl),
                     modeToCandid[mode]
                 );
             }

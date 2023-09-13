@@ -1,5 +1,5 @@
 import { IDL, nat8, nat64, Opt } from './index';
-import { CandidClass, toCandidClass } from './utils';
+import { CandidClass, toIDLType } from './utils';
 
 // TODO something like this is how we would do the inference
 // TODO but there seems to be a problem with the fixed int and nat classes
@@ -8,13 +8,13 @@ import { CandidClass, toCandidClass } from './utils';
 // type IDLToCandid<T> = T extends nat64 ? bigint : T extends nat32 ? number : T;
 
 export class StableBTreeMap<Key, Value> {
-    keyIdl: CandidClass;
-    valueIdl: CandidClass;
+    keyIdl: IDL.Type;
+    valueIdl: IDL.Type;
     memoryId: nat8;
 
-    constructor(keyIdl: IDL.Type, valueIdl: IDL.Type, memoryId: nat8) {
-        this.keyIdl = toCandidClass(keyIdl, []);
-        this.valueIdl = toCandidClass(valueIdl, []);
+    constructor(keyIdl: CandidClass, valueIdl: CandidClass, memoryId: nat8) {
+        this.keyIdl = toIDLType(keyIdl, []);
+        this.valueIdl = toIDLType(valueIdl, []);
         this.memoryId = memoryId;
 
         const candidEncodedMemoryId = new Uint8Array(
