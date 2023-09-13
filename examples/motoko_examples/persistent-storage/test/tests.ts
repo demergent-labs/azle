@@ -1,5 +1,6 @@
 import { Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
+import { execSync } from 'child_process';
+import { _SERVICE } from './dfx_generated/persistent_storage/persistent_storage.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(
@@ -33,15 +34,14 @@ export function getTests(
                 };
             }
         },
-        // TODO: upgrade to DFX v0.10.x
-        // {
-        //     name: 'deploy (upgrade)',
-        //     prep: async () => {
-        //         execSync(`dfx deploy --upgrade-unchanged`, {
-        //             stdio: 'inherit'
-        //         });
-        //     }
-        // },
+        {
+            name: 'deploy',
+            prep: async () => {
+                execSync(`dfx deploy`, {
+                    stdio: 'inherit'
+                });
+            }
+        },
         {
             name: 'get',
             test: async () => {
