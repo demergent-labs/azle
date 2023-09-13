@@ -11,7 +11,12 @@ import {
     extractCandid
 } from './utils';
 import { display } from './utils';
-import { serviceCall, serviceDecorator } from './service';
+import {
+    Service,
+    serviceCall,
+    ServiceConstructor,
+    serviceDecorator
+} from './service';
 
 export type Manual<T> = void;
 
@@ -238,6 +243,16 @@ function setupCanisterMethod(
                 modeToCandid[mode]
             };`
         );
+
+        if (target instanceof Service) {
+            addIDLForMethodToServiceConstructor(
+                target.constructor,
+                key,
+                paramsIdls,
+                returnIdl,
+                mode
+            );
+        }
     }
 
     const originalMethod = descriptor.value;
@@ -374,4 +389,39 @@ function createGlobalGuard(
     (globalThis as any)[guardName] = guard;
 
     return guardName;
+}
+
+/**
+ * Stores an IDL representation of the canister method into a private
+ * `_azleFunctionInfo` object on the provided constructor. If that property doesn't
+ * exist, then it will be added as a side-effect.
+ *
+ * @param constructor The class on which to store the IDL information. This
+ *   should probably be a Service. This type should probably be tightened down.
+ * @param methodName The public name of the canister method
+ * @param paramIdls The IDLs of the parameters, coming from the `@query` and
+ *   `@update` decorators.
+ * @param returnIdl The IDL of the return type, coming from the `@query` and
+ *   `@update` decorators.
+ * @param mode The mode in which the method should be executed.
+ */
+function addIDLForMethodToServiceConstructor<T>(
+    constructor: T & ServiceConstructor,
+    methodName: string,
+    paramIdls: CandidClass[],
+    returnIdl: ReturnCandidClass,
+    mode: 'query' | 'update'
+): void {
+    if (constructor._azleFunctionInfo === undefined) {
+        constructor._azleFunctionInfo = {};
+    }
+
+    //  TODO: Technically, there is a possibility that the method name already
+    // exists. We may want to handle that case.
+
+    constructor._azleFunctionInfo[methodName] = {
+        mode,
+        paramIdls,
+        returnIdl
+    };
 }

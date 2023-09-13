@@ -1,14 +1,29 @@
 import { ic, IDL, Principal } from './index';
 import {
     CandidClass,
+    Parent,
+    ReturnCandidClass,
     toParamCandidClasses,
     toReturnCandidClass
 } from './utils';
 
+export type FunctionInfo = {
+    mode: 'query' | 'update';
+    paramIdls: CandidClass[];
+    returnIdl: ReturnCandidClass;
+};
+
+export interface ServiceFunctionInfo {
+    [key: string]: FunctionInfo;
+}
+
+export interface ServiceConstructor {
+    _azleFunctionInfo?: ServiceFunctionInfo;
+}
+
 type Constructor<T = {}> = new (...args: any[]) => T;
 
-// TODO allow turning this into an IDL
-export class Service {
+export abstract class Service {
     canisterId: Principal;
 
     [key: string]: any;
@@ -34,6 +49,38 @@ export class Service {
         props: { canisterId: Principal }
     ): InstanceType<T> {
         return new this(props) as InstanceType<T>;
+    }
+
+    static getIDL(parents: Parent[]): IDL.ServiceClass {
+        const serviceFunctionInfo: ServiceFunctionInfo =
+            // @ts-ignore - may be added by @query and @update decorators
+            this._azleFunctionInfo || {};
+
+        const record = Object.entries(serviceFunctionInfo).reduce(
+            (accumulator, [methodName, functionInfo]) => {
+                const paramRealIdls = toParamCandidClasses(
+                    functionInfo.paramIdls
+                );
+                const returnRealIdl = toReturnCandidClass(
+                    functionInfo.returnIdl
+                );
+
+                const annotations =
+                    functionInfo.mode === 'update' ? [] : ['query'];
+
+                return {
+                    ...accumulator,
+                    [methodName]: IDL.Func(
+                        paramRealIdls,
+                        returnRealIdl,
+                        annotations
+                    )
+                };
+            },
+            {} as Record<string, IDL.FuncClass>
+        );
+
+        return IDL.Service(record);
     }
 }
 

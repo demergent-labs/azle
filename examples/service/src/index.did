@@ -1,21 +1,8 @@
-type ManualReply = variant { Ok : text; Err : text };
-type _InlineServiceNestedReturnTypeReturnType = record {
-  someService : service { query1 : () -> (bool) query; update1 : () -> (text) };
-};
-service : () -> {
-  serviceCrossCanisterCall : (
-      service { query1 : () -> (bool) query; update1 : () -> (text) },
-    ) -> (ManualReply);
-  serviceList : (
-      vec service { query1 : () -> (bool) query; update1 : () -> (text) },
-    ) -> (vec service { query1 : () -> (bool) query; update1 : () -> (text) });
-  serviceNestedReturnType : () -> (_InlineServiceNestedReturnTypeReturnType);
-  serviceParam : (
-      service { query1 : () -> (bool) query; update1 : () -> (text) },
-    ) -> (
-      service { query1 : () -> (bool) query; update1 : () -> (text) },
-    ) query;
-  serviceReturnType : () -> (
-      service { query1 : () -> (bool) query; update1 : () -> (text) },
-    ) query;
+type rec_0 = record {someService:service {update1:() -> (text) ; query1:() -> (bool) query}};
+service: () -> {
+    serviceParam: (service {update1:() -> (text) ; query1:() -> (bool) query}) -> (service {update1:() -> (text) ; query1:() -> (bool) query}) query;
+    serviceReturnType: () -> (service {update1:() -> (text) ; query1:() -> (bool) query}) query;
+    serviceNestedReturnType: () -> (rec_0);
+    serviceList: (vec service {update1:() -> (text) ; query1:() -> (bool) query}) -> (vec service {update1:() -> (text) ; query1:() -> (bool) query});
+    serviceCrossCanisterCall: (service {update1:() -> (text) ; query1:() -> (bool) query}) -> (text);
 }

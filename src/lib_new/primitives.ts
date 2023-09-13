@@ -68,7 +68,11 @@ export function Opt<T>(t: IDL.Type<T> | any): AzleOpt {
     return new AzleOpt(t);
 }
 
-export class AzleOpt {
+export interface GetIDL {
+    getIDL(parents: Parent[]): IDL.Type<any>;
+}
+
+export class AzleOpt implements GetIDL {
     constructor(t: any) {
         this._azleType = t;
     }
@@ -78,7 +82,7 @@ export class AzleOpt {
     }
 }
 
-export class AzleVec {
+export class AzleVec implements GetIDL {
     constructor(t: any) {
         this._azleType = t;
     }
@@ -88,7 +92,7 @@ export class AzleVec {
     }
 }
 
-export class AzleTuple {
+export class AzleTuple implements GetIDL {
     constructor(t: any[]) {
         this._azleTypes = t;
     }
