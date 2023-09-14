@@ -4,13 +4,11 @@
         "test": "ETHEREUM_URL=https://rpc.ankr.com/eth ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
-        "azle": "0.17.1",
-        "decode-utf8": "1.0.1",
-        "encode-utf8": "2.0.0"
+        "azle": "0.17.1"
     },
     "devDependencies": {
-        "@dfinity/agent": "0.11.1",
-        "ts-node": "10.7.0",
-        "typescript": "4.6.3"
+        "@dfinity/agent": "^0.19.2",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
     }
 }
