@@ -1,6 +1,7 @@
 import {
     blob,
     ic,
+    init,
     nat,
     nat16,
     Opt,
@@ -19,7 +20,6 @@ import {
     bool,
     Service
 } from 'azle';
-import encodeUtf8 from 'encode-utf8';
 
 class Token extends Record {
     // add whatever fields you'd like
@@ -85,22 +85,14 @@ class HttpRequest extends Record {
     body: blob;
 }
 
-let stableStorage = new StableBTreeMap<text, nat>(0, 25, 1_000);
-
-stableStorage.insert('counter', 0n);
-
-function isGzip(x: HeaderField): boolean {
-    return (
-        x[0].toLowerCase() === 'accept-encoding' &&
-        x[1].toLowerCase().includes('gzip')
-    );
-}
-
-function encode(string: string): blob {
-    return new Uint8Array(encodeUtf8(string));
-}
-
 export default class extends Service {
+    stableStorage = new StableBTreeMap<text, nat>(text, nat, 0);
+
+    @init([])
+    init() {
+        this.stableStorage.insert('counter', 0n);
+    }
+
     @query([HttpRequest], HttpResponse)
     http_request(req: HttpRequest): HttpResponse {
         console.log('Hello from http_request');
@@ -123,15 +115,17 @@ export default class extends Service {
                         upgrade: Some(false)
                     };
                 }
+
+                const counterOpt = this.stableStorage.get('counter');
+                const counter =
+                    counterOpt.length === 0
+                        ? ic.trap('counter does not exist')
+                        : counterOpt[0];
+
                 return {
                     status_code: 200,
                     headers: [['content-type', 'text/plain']],
-                    body: encode(
-                        `Counter is ${match(stableStorage.get('counter'), {
-                            Some: (x) => x,
-                            None: () => 0n
-                        })}\n${req.url}\n`
-                    ),
+                    body: encode(`Counter is ${counter}\n${req.url}\n`),
                     streaming_strategy: None,
                     upgrade: None
                 };
@@ -179,26 +173,25 @@ export default class extends Service {
     @update([HttpRequest], HttpResponse)
     http_request_update(req: HttpRequest): HttpResponse {
         if (req.method === 'POST') {
-            const counter = match(stableStorage.get('counter'), {
-                Some: (x) => x,
-                None: () => 0n
-            });
+            const counterOpt = this.stableStorage.get('counter');
+            const counter =
+                counterOpt.length === 0
+                    ? ic.trap('counter does not exist')
+                    : counterOpt[0];
 
-            stableStorage.insert('counter', counter + 1n);
+            this.stableStorage.insert('counter', counter + 1n);
 
             if (req.headers.find(isGzip) === undefined) {
+                const counterOpt = this.stableStorage.get('counter');
+                const counter =
+                    counterOpt.length === 0
+                        ? ic.trap('counter does not exist')
+                        : counterOpt[0];
+
                 return {
                     status_code: 201,
                     headers: [['content-type', 'text/plain']],
-                    body: encode(
-                        `Counter updated to ${match(
-                            stableStorage.get('counter'),
-                            {
-                                Some: (x) => x,
-                                None: () => 0n
-                            }
-                        )}\n`
-                    ),
+                    body: encode(`Counter updated to ${counter}\n`),
                     streaming_strategy: None,
                     upgrade: None
                 };
@@ -244,13 +237,14 @@ export default class extends Service {
                 };
             }
             case 'next': {
+                const counterOpt = this.stableStorage.get('counter');
+                const counter =
+                    counterOpt.length === 0
+                        ? ic.trap('counter does not exist')
+                        : counterOpt[0];
+
                 return {
-                    body: encode(
-                        `${match(stableStorage.get('counter'), {
-                            Some: (x) => x,
-                            None: () => 0n
-                        })}`
-                    ),
+                    body: encode(`${counter}`),
                     token: Some({ arbitrary_data: 'last' })
                 };
             }
@@ -265,4 +259,15 @@ export default class extends Service {
             }
         }
     }
+}
+
+function isGzip(x: HeaderField): boolean {
+    return (
+        x[0].toLowerCase() === 'accept-encoding' &&
+        x[1].toLowerCase().includes('gzip')
+    );
+}
+
+function encode(string: string): blob {
+    return Buffer.from(string, 'utf-8');
 }

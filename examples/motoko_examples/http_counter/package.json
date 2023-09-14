@@ -13,11 +13,11 @@
         "test": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
-        "azle": "0.17.1",
-        "encode-utf8": "2.0.0"
+        "azle": "0.17.1"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.0",
-        "ts-node": "^10.9.1"
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
     }
 }
