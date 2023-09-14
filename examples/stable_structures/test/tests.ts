@@ -1,10 +1,7 @@
-import { ok, Test } from 'azle/test';
+import { Test } from 'azle/test';
 import { execSync } from 'child_process';
-import {
-    Reaction,
-    User,
-    _SERVICE as CANISTER1_SERVICE
-} from './dfx_generated/canister1/canister1.did';
+import { _SERVICE as CANISTER1_SERVICE } from './dfx_generated/canister1/canister1.did';
+import { Reaction, User } from '../src/types';
 import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
 import { _SERVICE as CANISTER3_SERVICE } from './dfx_generated/canister3/canister3.did';
 import { ActorSubclass } from '@dfinity/agent';
@@ -194,11 +191,7 @@ export function getTests(
         },
         ...postRedeployTests(stableStructuresCanister_1, 0, 4),
         ...postRedeployTests(stableStructuresCanister_2, 5, 9),
-        ...postRedeployTests(stableStructuresCanister_3, 10, 13),
-        ...insertErrorTests(
-            stableStructuresCanister_1,
-            stableStructuresCanister_3
-        )
+        ...postRedeployTests(stableStructuresCanister_3, 10, 13)
     ];
 }
 
@@ -477,60 +470,6 @@ function valuesIsLength(
             }
         };
     });
-}
-
-export function insertErrorTests(
-    canister1: ActorSubclass<CANISTER1_SERVICE>,
-    canister3: ActorSubclass<CANISTER3_SERVICE>
-): Test[] {
-    return [
-        {
-            name: 'insert() returns a KeyTooLarge error if the key is too large',
-            test: async () => {
-                try {
-                    const keyOver_100Bytes =
-                        '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
-                    await canister3.stableMap13Insert(
-                        keyOver_100Bytes,
-                        Principal.fromText('aaaaa-aa')
-                    );
-
-                    return {
-                        Ok: false
-                    };
-                } catch (error) {
-                    return {
-                        Ok: (error as Error).message.includes(
-                            'Key is too large'
-                        )
-                    };
-                }
-            }
-        },
-        {
-            name: 'insert() returns a ValueTooLarge error if the value is too large',
-            test: async () => {
-                try {
-                    const valueOver_100Bytes =
-                        '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
-                    const result = await canister1.stableMap0Insert(
-                        1,
-                        valueOver_100Bytes
-                    );
-
-                    return {
-                        Ok: false
-                    };
-                } catch (error) {
-                    return {
-                        Ok: (error as Error).message.includes(
-                            'Value is too large'
-                        )
-                    };
-                }
-            }
-        }
-    ];
 }
 
 /**

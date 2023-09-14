@@ -1,4 +1,4 @@
-import { IDL, nat8, Opt, Vec } from './index';
+import { IDL, nat8, nat64, Opt } from './index';
 import { CandidClass, toCandidClass } from './utils';
 
 // TODO something like this is how we would do the inference
@@ -22,6 +22,26 @@ export class StableBTreeMap<Key, Value> {
         ).buffer;
 
         (globalThis as any)._azleIc.stableBTreeMapInit(candidEncodedMemoryId);
+    }
+
+    /**
+     * Checks if the given key exists in the map.
+     * @param key the key to check.
+     * @returns `true` if the key exists in the map, `false` otherwise.
+     */
+    containsKey(key: Key): boolean {
+        const candidEncodedMemoryId = new Uint8Array(
+            IDL.encode([IDL.Nat8], [this.memoryId])
+        ).buffer;
+
+        const candidEncodedKey = new Uint8Array(
+            IDL.encode([this.keyIdl as any], [key])
+        ).buffer;
+
+        return (globalThis as any)._azleIc.stableBTreeMapContainsKey(
+            candidEncodedMemoryId,
+            candidEncodedKey
+        );
     }
 
     /**
@@ -91,6 +111,77 @@ export class StableBTreeMap<Key, Value> {
 
             return [candidDecodedValue as any];
         }
+    }
+
+    /**
+     * Checks if the map is empty.
+     * @returns `true` if the map contains no elements, `false` otherwise.
+     */
+    isEmpty(): boolean {
+        const candidEncodedMemoryId = new Uint8Array(
+            IDL.encode([IDL.Nat8], [this.memoryId])
+        ).buffer;
+
+        return (globalThis as any)._azleIc.stableBTreeMapIsEmpty(
+            candidEncodedMemoryId
+        );
+    }
+
+    /**
+     * Retrieves the items in the map in sorted order.
+     * @returns tuples representing key/value pairs.
+     */
+    items(): [Key, Value][] {
+        const candidEncodedMemoryId = new Uint8Array(
+            IDL.encode([IDL.Nat8], [this.memoryId])
+        ).buffer;
+
+        const candidEncodedItems = (
+            globalThis as any
+        )._azleIc.stableBTreeMapItems(candidEncodedMemoryId);
+
+        // TODO too much copying
+        return candidEncodedItems.map((candidEncodedItem: any) => {
+            return [
+                IDL.decode([this.keyIdl as any], candidEncodedItem[0])[0],
+                IDL.decode([this.valueIdl as any], candidEncodedItem[1])[0]
+            ];
+        });
+    }
+
+    /**
+     * The keys for each element in the map in sorted order.
+     * @returns they keys in the map.
+     */
+    keys(): Key[] {
+        const candidEncodedMemoryId = new Uint8Array(
+            IDL.encode([IDL.Nat8], [this.memoryId])
+        ).buffer;
+
+        const candidEncodedKeys = (
+            globalThis as any
+        )._azleIc.stableBTreeMapKeys(candidEncodedMemoryId);
+
+        // TODO too much copying
+        return candidEncodedKeys.map((candidEncodedKey: any) => {
+            return IDL.decode([this.keyIdl as any], candidEncodedKey)[0];
+        });
+    }
+
+    /**
+     * Checks to see how many elements are in the map.
+     * @returns the number of elements in the map.
+     */
+    len(): nat64 {
+        const candidEncodedMemoryId = new Uint8Array(
+            IDL.encode([IDL.Nat8], [this.memoryId])
+        ).buffer;
+
+        const candidEncodedLen = (globalThis as any)._azleIc.stableBTreeMapLen(
+            candidEncodedMemoryId
+        );
+
+        return IDL.decode([IDL.Nat64], candidEncodedLen)[0] as any;
     }
 
     /**

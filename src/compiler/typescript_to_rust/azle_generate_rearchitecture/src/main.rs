@@ -166,7 +166,7 @@ fn main() -> Result<(), String> {
 
             static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
         
-            static STABLE_B_TREE_MAPS: RefCell<Vec<AzleStableBTreeMap>> = RefCell::new(vec![]);
+            static STABLE_B_TREE_MAPS: RefCell<BTreeMap<u8, AzleStableBTreeMap>> = RefCell::new(BTreeMap::new());
         }
 
         #[ic_cdk_macros::init]

@@ -1,15 +1,22 @@
-import { Record, Variant, Vec } from 'azle';
+import { candid, Null, Record, text, Variant, Vec } from 'azle';
 
-export type BlogPost = Record<{
-    title: string;
-}>;
+export class BlogPost extends Record {
+    @candid(text)
+    title: text;
+}
 
-export type Reaction = Variant<{
-    Happy: null;
-    Sad: null;
-}>;
+export class Reaction extends Variant {
+    @candid(Null)
+    Happy?: Null;
 
-export type User = Record<{
-    username: string;
+    @candid(Null)
+    Sad?: Null;
+}
+
+export class User extends Record {
+    @candid(text)
+    username: text;
+
+    @candid(Vec(BlogPost))
     posts: Vec<BlogPost>;
-}>;
+}
