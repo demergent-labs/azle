@@ -82,7 +82,6 @@
 
 # These are the ones that don't work
 # "examples/tuple_types",
-# "examples/stable_structures",
 # "examples/service",
 # "examples/outgoing_http_requests",
 # "examples/robust_imports",
@@ -94,7 +93,6 @@
 # "examples/generics",
 # "examples/guard_functions",
 # "examples/inline_types",
-# "examples/motoko_examples/persistent-storage",
 # "examples/motoko_examples/superheroes",
 # "examples/motoko_examples/threshold_ecdsa",
 
@@ -173,6 +171,7 @@ jobs:
                     "examples/motoko_examples/hello-world",
                     "examples/motoko_examples/http_counter",
                     "examples/motoko_examples/minimal-counter-dapp",
+                    "examples/motoko_examples/persistent-storage",
                     "examples/motoko_examples/phone-book",
                     "examples/motoko_examples/quicksort",
                     "examples/motoko_examples/simple-to-do",
@@ -189,6 +188,7 @@ jobs:
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",
                     "examples/stable_memory",
+                    "examples/stable_structures",
                     "examples/timers",
                     "examples/update"
                   ]
