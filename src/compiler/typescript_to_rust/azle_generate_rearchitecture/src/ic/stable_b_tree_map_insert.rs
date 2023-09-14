@@ -17,13 +17,11 @@ pub fn generate() -> TokenStream {
             let value_option = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
                 let mut stable_b_tree_maps = stable_b_tree_maps.borrow_mut();
 
-                let result = stable_b_tree_maps[memory_id as usize].insert(AzleStableBTreeMapKey {
+                let result = stable_b_tree_maps.get_mut(&memory_id).unwrap().insert(AzleStableBTreeMapKey {
                     candid_bytes: key
                 }, AzleStableBTreeMapValue {
                     candid_bytes: value
                 });
-
-                ic_cdk::println!("insert values: {:#?}", stable_b_tree_maps[memory_id as usize].len());
 
                 result
             });

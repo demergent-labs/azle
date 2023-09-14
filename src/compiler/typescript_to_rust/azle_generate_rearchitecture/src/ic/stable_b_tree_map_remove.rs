@@ -16,7 +16,7 @@ pub fn generate() -> TokenStream {
             let value_option = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
                 let mut stable_b_tree_maps = stable_b_tree_maps.borrow_mut();
 
-                stable_b_tree_maps[memory_id as usize].remove(&AzleStableBTreeMapKey {
+                stable_b_tree_maps.get_mut(&memory_id).unwrap().remove(&AzleStableBTreeMapKey {
                     candid_bytes: key
                 })
             });
