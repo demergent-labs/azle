@@ -9,7 +9,7 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await canister1.simpleCompositeQuery();
                 return {
-                    Ok: 'Ok' in result && result.Ok === 'Hello from Canister 2'
+                    Ok: result === 'Hello from Canister 2'
                 };
             }
         },
@@ -18,9 +18,7 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await canister1.manualQuery();
                 return {
-                    Ok:
-                        'Ok' in result &&
-                        result.Ok === 'Hello from Canister 2 manual query'
+                    Ok: result === 'Hello from Canister 2 manual query'
                 };
             }
         },
@@ -29,9 +27,7 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await canister1.totallyManualQuery();
                 return {
-                    Ok:
-                        'Ok' in result &&
-                        result.Ok === 'Hello from Canister 2 manual query'
+                    Ok: result === 'Hello from Canister 2 manual query'
                 };
             }
         },
@@ -40,35 +36,48 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await canister1.deepQuery();
                 return {
-                    Ok: 'Ok' in result && result.Ok === 'Hello from Canister 3'
+                    Ok: result === 'Hello from Canister 3'
                 };
             }
         },
         {
             name: 'update_query test',
             test: async () => {
-                const result = await canister1.updateQuery();
-                return {
-                    Ok:
-                        'Err' in result &&
-                        result.Err.includes(
-                            `Rejection code 3, Canister ${getCanisterId(
-                                'canister2'
-                            )} has no query method`
-                        )
-                };
+                try {
+                    await canister1.updateQuery();
+                    return {
+                        Ok: false
+                    };
+                } catch (error: any) {
+                    return {
+                        Ok: error
+                            .toString()
+                            .includes(
+                                `Rejection code 3, Canister ${getCanisterId(
+                                    'canister2'
+                                )} has no query method`
+                            )
+                    };
+                }
             }
         },
         {
             name: 'simple_update test',
             test: async () => {
-                const result = await canister1.simpleUpdate();
-                return {
-                    Ok:
-                        'Err' in result &&
-                        result.Err ===
-                            'Rejection code 5, IC0527: Composite query cannot be called in replicated mode'
-                };
+                try {
+                    await canister1.simpleUpdate();
+                    return {
+                        Ok: false
+                    };
+                } catch (error: any) {
+                    return {
+                        Ok: error
+                            .toString()
+                            .includes(
+                                'Rejection code 5, IC0527: Composite query cannot be called in replicated mode'
+                            )
+                    };
+                }
             }
         },
         {
@@ -77,7 +86,7 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
                 const result = await canister1.incCanister1();
 
                 return {
-                    Ok: 'Ok' in result && result.Ok === 3n
+                    Ok: result === 3n
                 };
             }
         },
@@ -86,7 +95,7 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await canister1.incCanister2();
                 return {
-                    Ok: 'Ok' in result && result.Ok === 3n
+                    Ok: result === 3n
                 };
             }
         }

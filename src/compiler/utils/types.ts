@@ -58,6 +58,7 @@ export type CanisterMethods = {
 // TODO things like guard might also go in here
 export type CanisterMethod = {
     name: string;
+    composite?: boolean;
 };
 
 export type Plugin = {
