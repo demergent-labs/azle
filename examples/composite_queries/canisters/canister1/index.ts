@@ -1,7 +1,6 @@
 import { ic, Manual, nat, Principal, query, Service, text, update } from 'azle';
 import Canister2 from '../canister2';
 
-// Composite query calling a query
 class Canister1 extends Service {
     canister2 = new Canister2(
         Principal.fromText(
@@ -12,6 +11,7 @@ class Canister1 extends Service {
 
     counter: nat = 0n;
 
+    // Composite query calling a query
     @query([], text)
     async simpleCompositeQuery(): Promise<text> {
         return await ic.call(this.canister2.simpleQuery);

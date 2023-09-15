@@ -9,6 +9,6 @@ type rec_8 = record {value:text; name:text};
 type rec_7 = record {status:nat; body:vec nat8; headers:vec rec_8};
 service: () -> {
     xkcd: () -> (rec_0);
-    xkcdRaw: () -> (rec_2) query;
+    xkcdRaw: () -> (rec_2);
     xkcdTransform: (rec_4) -> (rec_7) query;
 }
