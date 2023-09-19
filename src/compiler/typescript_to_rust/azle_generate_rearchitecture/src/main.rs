@@ -32,6 +32,7 @@ struct CanisterMethods {
 struct CanisterMethod {
     name: String,
     composite: Option<bool>,
+    guard_name: Option<String>,
 }
 
 fn main() -> Result<(), String> {
@@ -104,11 +105,20 @@ fn main() -> Result<(), String> {
             let js_function_name = &canister_method.name;
             let is_composite = canister_method.composite.unwrap_or(false);
 
+            let (guard_attribute, guard_function) = if let Some(guard_name) = &canister_method.guard_name
+            {
+                get_guard_token_stream(guard_name)
+            } else {
+                (quote!(), quote!())
+            };
+
             quote! {
-                #[ic_cdk_macros::query(manual_reply = true, composite = #is_composite)]
+                #[ic_cdk_macros::query(manual_reply = true, composite = #is_composite #guard_attribute)]
                 fn #rust_function_name() {
                     execute_js(#js_function_name, true);
                 }
+
+                #guard_function
             }
         });
 
@@ -120,11 +130,20 @@ fn main() -> Result<(), String> {
             let rust_function_name = canister_method.name.to_ident();
             let js_function_name = &canister_method.name;
 
+            let (guard_attribute, guard_function) =
+                if let Some(guard_name) = &canister_method.guard_name {
+                    get_guard_token_stream(guard_name)
+                } else {
+                    (quote!(), quote!())
+                };
+
             quote! {
-                #[ic_cdk_macros::update(manual_reply = true)]
+                #[ic_cdk_macros::update(manual_reply = true #guard_attribute)]
                 fn #rust_function_name() {
                     execute_js(#js_function_name, true);
                 }
+
+                #guard_function
             }
         });
 
@@ -293,4 +312,40 @@ fn get_compiler_info(compiler_info_path: &str) -> Result<CompilerInfo, String> {
         .map_err(|err| format!("Error parsing {compiler_info_path}: {err}"))?;
 
     Ok(compiler_info)
+}
+
+fn get_guard_token_stream(
+    guard_name: &str,
+) -> (proc_macro2::TokenStream, proc_macro2::TokenStream) {
+    let guard_name_ident = guard_name.to_string().to_ident();
+
+    (
+        quote!(, guard = #guard_name),
+        quote! {
+            // TODO should the guard function have access to the raw args?
+            fn #guard_name_ident() -> Result<(), String> {
+                CONTEXT.with(|context| {
+                    let mut context = context.borrow_mut();
+                    let context = context.as_mut().unwrap();
+
+                    let global = context.global_object().unwrap();
+                    let guard_function = global.get_property(#guard_name).unwrap();
+
+                    // TODO I am not sure what the first parameter to call is supposed to be
+                    let result = guard_function.call(&guard_function, &[]);
+
+                    match result {
+                        Ok(_) => {
+                            Ok(())
+                        },
+                        Err(err_js_value_ref) => {
+                            let err: String = err_js_value_ref.to_string();
+
+                            Err(err)
+                        }
+                    }
+                })
+            }
+        },
+    )
 }

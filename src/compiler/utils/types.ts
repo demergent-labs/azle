@@ -55,10 +55,10 @@ export type CanisterMethods = {
     inspect_message?: CanisterMethod;
 };
 
-// TODO things like guard might also go in here
 export type CanisterMethod = {
     name: string;
     composite?: boolean;
+    guard?: () => void;
 };
 
 export type Plugin = {

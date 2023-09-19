@@ -9,26 +9,6 @@ export function getTests(
 ): Test[] {
     return [
         {
-            name: 'heartbeat guard',
-            test: async () => {
-                const initialState = await guardFunctionsCanister.getState();
-                console.log(
-                    `Value at initial check was: ${initialState.heartbeatTick}`
-                );
-                await sleep(15_000);
-                const stateAfterRest = await guardFunctionsCanister.getState();
-                console.log(
-                    `Value after 15s delay was: ${stateAfterRest.heartbeatTick}`
-                );
-
-                return {
-                    Ok:
-                        initialState.heartbeatTick < 20 &&
-                        stateAfterRest.heartbeatTick === 20
-                };
-            }
-        },
-        {
             name: 'identifierAnnotation',
             test: async () => {
                 const result =
@@ -84,33 +64,17 @@ export function getTests(
         {
             name: 'modifyStateGuarded',
             test: async () => {
-                const stateBefore = await guardFunctionsCanister.getState();
+                const counterBefore = await guardFunctionsCanister.getCounter();
                 const methodExecuted =
                     await guardFunctionsCanister.modifyStateGuarded();
-                const stateAfter = await guardFunctionsCanister.getState();
+                const counterAfter = await guardFunctionsCanister.getCounter();
 
                 return {
                     Ok:
-                        stateBefore.counter === 0 &&
+                        counterBefore === 0 &&
                         methodExecuted &&
-                        stateAfter.counter === 1
+                        counterAfter === 1
                 };
-            }
-        },
-        {
-            name: 'unallowedMethod',
-            test: async () => {
-                try {
-                    const result =
-                        await guardFunctionsCanister.unallowedMethod();
-                    return {
-                        Err: 'Expected unallowedMethod function to throw'
-                    };
-                } catch (error) {
-                    return {
-                        Ok: (error as AgentError).message.includes('IC0516')
-                    };
-                }
             }
         },
         {
@@ -125,7 +89,7 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `"Message": "Execution halted by \\"unpassable\\" guard function"`
+                            `"Message": "Uncaught Execution halted by \\"unpassable\\" guard function"`
                         )
                     };
                 }
@@ -143,7 +107,7 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `Execution halted by \\"throw string\\" guard function`
+                            `Uncaught Execution halted by \\"throw string\\" guard function`
                         )
                     };
                 }
@@ -159,72 +123,10 @@ export function getTests(
                         Err: 'Expected customErrorGuarded function to throw'
                     };
                 } catch (error) {
-                    // TODO: I actually expect this to say "Uncaught CustomError: Execution..."
-                    // Why it only says "Error" not "CustomError" I don't understand.
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `Execution halted by \\"throw custom error\\" guard function`
+                            `Uncaught CustomError: Execution halted by \\"throw custom error\\" guard function`
                         )
-                    };
-                }
-            }
-        },
-        {
-            name: 'invalidReturnTypeGuarded',
-            test: async () => {
-                try {
-                    const result =
-                        await guardFunctionsCanister.invalidReturnTypeGuarded();
-                    return {
-                        Err: 'Expected invalidReturnTypeGuarded function to throw'
-                    };
-                } catch (error) {
-                    return {
-                        Ok: (error as AgentError).message.includes(
-                            `TypeError: Value is not of type 'GuardResult'`
-                        )
-                    };
-                }
-            }
-        },
-        {
-            name: 'badObjectGuarded',
-            test: async () => {
-                try {
-                    const result =
-                        await guardFunctionsCanister.badObjectGuarded();
-                    return {
-                        Err: 'Expected badObjectGuarded function to throw'
-                    };
-                } catch (error: any) {
-                    return {
-                        Ok:
-                            'result' in error &&
-                            'reject_message' in error.result &&
-                            error.result.reject_message.includes(
-                                `Uncaught TypeError: Value is not of type 'GuardResult'\n  [cause]: TypeError: Value must contain exactly one of the following properties: ['Ok', 'Err']`
-                            )
-                    };
-                }
-            }
-        },
-        {
-            name: 'nonNullOkValueGuarded',
-            test: async () => {
-                try {
-                    const result =
-                        await guardFunctionsCanister.nonNullOkValueGuarded();
-                    return {
-                        Err: 'Expected nonNullOkValueGuarded function to throw'
-                    };
-                } catch (error: any) {
-                    return {
-                        Ok:
-                            'result' in error &&
-                            'reject_message' in error.result &&
-                            error.result.reject_message.includes(
-                                `TypeError: Value is not of type 'GuardResult'\n  [cause]: TypeError: Value is not of type 'null'`
-                            )
                     };
                 }
             }
@@ -241,26 +143,11 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `TypeError: Value is not of type 'string'`
+                            `Uncaught [object Object]`
                         )
                     };
                 }
             }
-        },
-        {
-            name: 'preventUpgrades',
-            test: async () => {
-                try {
-                    execSync('dfx deploy');
-                    return { Err: "Guard function didn't prevent upgrades" };
-                } catch (error) {
-                    return { Ok: true };
-                }
-            }
         }
     ];
-}
-
-function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
 }

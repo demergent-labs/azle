@@ -1,19 +1,14 @@
-type State = record { counter : int32; heartbeatTick : int32 };
-service : () -> {
-  badObjectGuarded : () -> (bool) query;
-  callExpressionWithEmptyOptionsObject : () -> (bool) query;
-  callExpressionWithoutOptionsObject : () -> (bool) query;
-  customErrorGuarded : () -> (bool) query;
-  errorStringGuarded : () -> (bool) query;
-  getState : () -> (State) query;
-  identifierAnnotation : () -> (bool) query;
-  invalidReturnTypeGuarded : () -> (bool) query;
-  looselyGuarded : () -> (bool) query;
-  looselyGuardedManual : () -> (bool) query;
-  looselyGuardedWithGuardOptionKeyAsString : () -> (bool) query;
-  modifyStateGuarded : () -> (bool);
-  nonNullOkValueGuarded : () -> (bool) query;
-  nonStringErrValueGuarded : () -> (bool) query;
-  tightlyGuarded : () -> (bool) query;
-  unallowedMethod : () -> (bool);
+service: () -> {
+    getCounter: () -> (nat32) query;
+    identifierAnnotation: () -> (bool) query;
+    callExpressionWithoutOptionsObject: () -> (bool) query;
+    callExpressionWithEmptyOptionsObject: () -> (bool) query;
+    looselyGuarded: () -> (bool) query;
+    looselyGuardedManual: () -> (bool) query;
+    looselyGuardedWithGuardOptionKeyAsString: () -> (bool) query;
+    modifyStateGuarded: () -> (bool);
+    tightlyGuarded: () -> (bool) query;
+    errorStringGuarded: () -> (bool) query;
+    customErrorGuarded: () -> (bool) query;
+    nonStringErrValueGuarded: () -> (bool) query;
 }
