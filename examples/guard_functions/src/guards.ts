@@ -42,11 +42,6 @@ export function throwCustomError() {
     );
 }
 
-export function preventUpgrades() {
-    console.log('preventUpgrades called');
-    return 'Upgrades to this canister are disabled';
-}
-
 export function returnNonStringErrValue() {
     console.log('nonStringErrValue called');
     throw { badProp: 'Something other than a string' };
