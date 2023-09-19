@@ -1,148 +1,88 @@
+import { bool, ic, Manual, nat32, query, Service, update } from 'azle';
 import {
-    $heartbeat,
-    $inspectMessage,
-    $preUpgrade,
-    $query,
-    $update,
-    ic,
-    Manual
-} from 'azle';
-import {
-    acceptAllThenRejectAll,
     allowAll,
-    allowModifyStateGuarded,
-    unpassable,
     incrementCounterAndAllowAll,
-    preventUpgrades,
-    returnInvalidType,
-    returnNonGuardResultObject,
-    returnNonNullOkValue,
     returnNonStringErrValue,
     throwCustomError,
-    throwString
+    throwString,
+    unpassable
 } from './guards';
-import { State, state } from './state';
 
-$query;
-export function getState(): State {
-    return state;
-}
+export let state = {
+    counter: 0,
+    heartbeatTick: 0
+};
 
-// #region Guarded functions are called
-$inspectMessage({ guard: allowModifyStateGuarded });
-export function inspectMessage(): void {
-    console.log('inspectMessage called');
+export default class extends Service {
+    @query([], nat32)
+    getCounter(): nat32 {
+        return state.counter;
+    }
 
-    if (ic.methodName() === 'modifyStateGuarded') {
-        console.log(`Method ${ic.methodName()} allowed by inspectMessage`);
-        ic.acceptMessage();
-    } else {
-        console.log(`Method ${ic.methodName()} rejected by inspectMessage`);
+    @query([], bool)
+    identifierAnnotation(): bool {
+        console.log('identifierAnnotation called');
+        return true;
+    }
+
+    @query([], bool)
+    callExpressionWithoutOptionsObject(): bool {
+        console.log('callExpressionWithoutOptionsObject called');
+        return true;
+    }
+
+    @query([], bool, {})
+    callExpressionWithEmptyOptionsObject(): bool {
+        console.log('callExpressionWithEmptyOptionsObject called');
+        return true;
+    }
+
+    @query([], bool, { guard: allowAll })
+    looselyGuarded(): bool {
+        console.log('looselyGuarded called');
+        return true;
+    }
+
+    @query([], bool, { manual: true, guard: allowAll })
+    looselyGuardedManual(): Manual<bool> {
+        console.log('looselyGuardedManual called');
+        ic.reply(true, bool);
+    }
+
+    // prettier-ignore
+    @query([], bool, { "guard": allowAll })
+    looselyGuardedWithGuardOptionKeyAsString(): bool {
+        console.log('looselyGuardedWithGuardOptionKeyAsString called');
+        return true;
+    }
+
+    @update([], bool, { guard: incrementCounterAndAllowAll })
+    modifyStateGuarded(): bool {
+        console.log('modifyStateGuarded called');
+        return true;
+    }
+
+    @query([], bool, { guard: unpassable })
+    tightlyGuarded(): bool {
+        console.log('tightlyGuarded called');
+        return true;
+    }
+
+    @query([], bool, { guard: throwString })
+    errorStringGuarded(): bool {
+        console.log('errorStringGuarded called');
+        return true;
+    }
+
+    @query([], bool, { guard: throwCustomError })
+    customErrorGuarded(): bool {
+        console.log('customErrorGuarded called');
+        return true;
+    }
+
+    @query([], bool, { guard: returnNonStringErrValue })
+    nonStringErrValueGuarded(): bool {
+        console.log('nonStringErrValueGuarded called');
+        return true;
     }
 }
-
-$heartbeat({ guard: acceptAllThenRejectAll });
-export function heartbeat(): void {
-    console.log('heartbeat called');
-}
-
-$preUpgrade({ guard: preventUpgrades });
-export function preUpgrade(): void {
-    console.log('preUpgrade called');
-}
-
-$query;
-export function identifierAnnotation(): boolean {
-    console.log('identifierAnnotation called');
-    return true;
-}
-
-$query();
-export function callExpressionWithoutOptionsObject(): boolean {
-    console.log('callExpressionWithoutOptionsObject called');
-    return true;
-}
-
-$query({});
-export function callExpressionWithEmptyOptionsObject(): boolean {
-    console.log('callExpressionWithEmptyOptionsObject called');
-    return true;
-}
-
-$query({ guard: allowAll });
-export function looselyGuarded(): boolean {
-    console.log('looselyGuarded called');
-    return true;
-}
-
-$query({ guard: allowAll });
-export function looselyGuardedManual(): Manual<boolean> {
-    console.log('looselyGuardedManual called');
-    ic.reply(true);
-}
-
-// prettier-ignore
-$query({ "guard": allowAll });
-export function looselyGuardedWithGuardOptionKeyAsString(): boolean {
-    console.log('looselyGuardedWithGuardOptionKeyAsString called');
-    return true;
-}
-
-$update({ guard: incrementCounterAndAllowAll });
-export function modifyStateGuarded(): boolean {
-    console.log('modifyStateGuarded called');
-    return true;
-}
-
-$update({ guard: incrementCounterAndAllowAll });
-export function unallowedMethod(): boolean {
-    console.log('modifyStateGuarded called');
-    return true;
-}
-// #endregion Guarded functions are called
-
-// #region Execution halted by guard function
-$query({ guard: unpassable });
-export function tightlyGuarded(): boolean {
-    console.log('tightlyGuarded called');
-    return true;
-}
-
-$query({ guard: throwString });
-export function errorStringGuarded(): boolean {
-    console.log('errorStringGuarded called');
-    return true;
-}
-
-$query({ guard: throwCustomError });
-export function customErrorGuarded(): boolean {
-    console.log('customErrorGuarded called');
-    return true;
-}
-// #endregion Execution halted by guard functions
-
-// #region Execution halted by runtime error
-$query({ guard: returnInvalidType });
-export function invalidReturnTypeGuarded(): boolean {
-    console.log('invalidReturnTypeGuarded called');
-    return true;
-}
-
-$query({ guard: returnNonGuardResultObject });
-export function badObjectGuarded(): boolean {
-    console.log('badObjectGuarded called');
-    return true;
-}
-
-$query({ guard: returnNonNullOkValue });
-export function nonNullOkValueGuarded(): boolean {
-    console.log('nonNullOkValueGuarded called');
-    return true;
-}
-
-$query({ guard: returnNonStringErrValue });
-export function nonStringErrValueGuarded(): boolean {
-    console.log('nonStringErrValueGuarded called');
-    return true;
-}
-// #endregion Execution halted by runtime error

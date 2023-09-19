@@ -1,5 +1,5 @@
 import { ic } from './ic';
-import { IDL } from './index';
+import { GuardResult, IDL } from './index';
 
 import {
     CandidClass,
@@ -29,7 +29,8 @@ const modeToCandid = {
     update: ''
 };
 
-type MethodArgs = { manual: boolean };
+// TODO add the GuardResult return type
+type MethodArgs = { manual?: boolean; guard?: () => void };
 
 // Until we can figure how how to type check Funcs, Variants, and Records we are just going to have to use any here
 // export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
@@ -41,6 +42,7 @@ export function init(paramsIdls: any[]): any {
             [],
             'init',
             false,
+            undefined,
             key,
             descriptor
         );
@@ -57,6 +59,7 @@ export function postUpgrade(paramsIdls: any[]): any {
             [],
             'postUpgrade',
             false,
+            undefined,
             key,
             descriptor
         );
@@ -74,6 +77,7 @@ export function preUpgrade(
         [],
         'preUpgrade',
         false,
+        undefined,
         key,
         descriptor
     );
@@ -90,6 +94,7 @@ export function heartbeat(
         [],
         'heartbeat',
         false,
+        undefined,
         key,
         descriptor
     );
@@ -106,6 +111,7 @@ export function inspectMessage(
         [],
         'inspectMessage',
         false,
+        undefined,
         key,
         descriptor
     );
@@ -128,6 +134,7 @@ export function query(
                 returnIdl,
                 'query',
                 args.manual,
+                args.guard,
                 key,
                 descriptor
             );
@@ -153,6 +160,7 @@ export function update(
                 returnIdl,
                 'update',
                 args.manual,
+                args.guard,
                 key,
                 descriptor
             );
@@ -189,6 +197,7 @@ function setupCanisterMethod(
     returnIdl: ReturnCandidClass,
     mode: Mode,
     manual: boolean,
+    guard: (() => GuardResult) | undefined,
     key: string,
     descriptor: PropertyDescriptor
 ) {
@@ -236,13 +245,15 @@ function setupCanisterMethod(
     if (mode === 'query') {
         target.constructor._azleCanisterMethods.queries.push({
             name: key,
-            composite: isAsync(originalMethod, key)
+            composite: isAsync(originalMethod, key),
+            guard_name: createGlobalGuard(guard, key)
         });
     }
 
     if (mode === 'update') {
         target.constructor._azleCanisterMethods.updates.push({
-            name: key
+            name: key,
+            guard_name: createGlobalGuard(guard, key)
         });
     }
 
@@ -348,4 +359,19 @@ function isAsync(originalFunction: any, key: string) {
     } else {
         return false;
     }
+}
+
+function createGlobalGuard(
+    guard: (() => GuardResult) | undefined,
+    functionName: string
+): string | undefined {
+    if (guard === undefined) {
+        return undefined;
+    }
+
+    const guardName = `_azleGuard_${functionName}`;
+
+    (globalThis as any)[guardName] = guard;
+
+    return guardName;
 }

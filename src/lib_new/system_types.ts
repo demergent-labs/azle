@@ -1,6 +1,5 @@
 import { candid } from './index';
 import { Null } from './primitives';
-import { Result } from './result';
 import { Variant } from './variant';
 
 /**
