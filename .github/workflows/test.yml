@@ -85,11 +85,9 @@
 # "examples/service",
 # "examples/robust_imports",
 # "examples/run_time_errors",
-# "examples/rust_type_conversions",
 # "examples/complex_types",
 # "examples/func_types",
 # "examples/generics",
-# "examples/inline_types",
 # "examples/motoko_examples/superheroes",
 # "examples/motoko_examples/threshold_ecdsa",
 
