@@ -1,10 +1,5 @@
 import { CanisterMethods } from '../../../compiler/utils/types';
-import { CanisterMethodInfo, query } from '../../canister_methods/query';
-
-// type CanisterMethodType = 'query';
-// type CanisterMethods = (typeof query & {
-//     canisterMethodType: CanisterMethodType;
-// })[];
+import { CanisterMethodInfo } from '../../canister_methods';
 
 type ServiceOptions = {
     [key: string]: CanisterMethodInfo;
@@ -37,6 +32,22 @@ export function Service(serviceOptions: ServiceOptions): CanisterMethods {
             };
         });
 
+    const updates = Object.entries(serviceOptions)
+        .filter((entry) => {
+            const key = entry[0];
+            const value = entry[1];
+
+            return value.type === 'update';
+        })
+        .map((entry) => {
+            const key = entry[0];
+            const value = entry[1];
+
+            return {
+                name: key
+            };
+        });
+
     // TODO loop through each key and simply grab the candid off
     // TODO grab the init/post_upgrade candid as well
     return {
@@ -45,11 +56,11 @@ export function Service(serviceOptions: ServiceOptions): CanisterMethods {
         .map((entry) => {
             return `${entry[0]}: ${entry[1].candid}`;
         })
-        .join('')}
+        .join('\n    ')}
 }
 `,
         queries,
-        updates: [],
+        updates,
         callbacks
     };
 }

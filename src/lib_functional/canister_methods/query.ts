@@ -2,15 +2,7 @@ import {
     handleRecursiveParams,
     handleRecursiveReturn
 } from '../../lib_new/method_decorators';
-import { IDL } from '../../lib_new/index';
-import { ic } from '../../lib_new/ic';
-import { executeMethod } from '.';
-
-export type CanisterMethodInfo = {
-    type: 'query';
-    callback: (...args: any) => any;
-    candid: string;
-};
+import { CanisterMethodInfo, executeMethod } from '.';
 
 // TODO execute the candid stuff and just store it on the function itself?
 export function query(

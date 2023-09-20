@@ -2,6 +2,13 @@ import { IDL } from '../../lib_new/index';
 import { ic } from '../../lib_new/ic';
 
 export * from './query';
+export * from './update';
+
+export type CanisterMethodInfo = {
+    type: 'query' | 'update';
+    callback: (...args: any) => any;
+    candid: string;
+};
 
 export function executeMethod(
     paramCandid: any,
@@ -11,7 +18,7 @@ export function executeMethod(
 ) {
     const decoded = IDL.decode(paramCandid[0] as any, args[0]);
 
-    const result = callback(decoded);
+    const result = callback(...decoded);
 
     if (
         result !== undefined &&

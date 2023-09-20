@@ -77,7 +77,6 @@
 # "examples/stable_structures",
 # "examples/timers",
 # "examples/tuple_types",
-# "examples/update"
 
 name: Azle Tests
 on:
@@ -123,7 +122,8 @@ jobs:
               run: |
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
-                    "examples/query"
+                    "examples/query",
+                    "examples/update"
                   ]
                   END
                   )

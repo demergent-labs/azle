@@ -1,15 +1,12 @@
-import { query, text, update, Void } from 'azle';
+import { query, Service, text, update, Void } from 'azle';
 
 let currentMessage: string = '';
 
-export default class {
-    @query([], text)
-    getCurrentMessage(): text {
+export default Service({
+    getCurrentMessage: query([], text, () => {
         return currentMessage;
-    }
-
-    @update([text], Void)
-    simpleUpdate(message: text): Void {
+    }),
+    simpleUpdate: update([text], Void, (message) => {
         currentMessage = message;
-    }
-}
+    })
+});
