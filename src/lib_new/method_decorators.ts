@@ -168,9 +168,9 @@ export function update(
     };
 }
 
-function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
+export function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
     return Object.entries(newTypes).map(
-        ([name, candid]) => `type ${name} = ${candid}`
+        ([name, candid]) => `type ${name} = ${candid};`
     );
 }
 

@@ -1,6 +1,7 @@
 import {
     handleRecursiveParams,
-    handleRecursiveReturn
+    handleRecursiveReturn,
+    newTypesToStingArr
 } from '../../lib_new/method_decorators';
 import { Callback, CanisterMethodInfo, executeMethod } from '.';
 
@@ -20,6 +21,7 @@ export function update<Params extends any[], Return>(
         callback: (...args) => {
             executeMethod(paramCandid, returnCandid, args, callback);
         },
-        candid: `(${paramCandid[1].join(', ')}) -> (${returnCandid[1]});`
+        candid: `(${paramCandid[1].join(', ')}) -> (${returnCandid[1]});`,
+        candidTypes: newTypesToStingArr(returnCandid[2])
     };
 }

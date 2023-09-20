@@ -1,5 +1,4 @@
 import {
-    candid,
     None,
     Opt,
     query,
@@ -13,46 +12,36 @@ import {
 
 type Db = {
     users: {
-        [id: string]: User;
+        [id: string]: typeof User;
     };
 };
 
-class User extends Record {
-    @candid(text)
-    id: text;
+let db: Db = {
+    users: {}
+};
 
-    @candid(text)
-    username: text;
-}
+const User = Record({
+    id: text,
+    username: text
+});
 
-export default class extends Service {
-    db: Db = {
-        users: {}
-    };
-
-    @query([text], Opt(User))
-    getUserById(id: text): Opt<User> {
-        const userOrUndefined = this.db.users[id];
-
+export default Service({
+    getUserById: query([text], Opt(User), (id) => {
+        const userOrUndefined = db.users[id];
         return userOrUndefined ? Some(userOrUndefined) : None;
-    }
-
-    @query([], Vec(User))
-    getAllUsers(): Vec<User> {
-        return Object.values(this.db.users);
-    }
-
-    @update([text], User)
-    createUser(username: text): User {
-        const id = Object.keys(this.db.users).length.toString();
-
-        const user = {
+    }),
+    getAllUsers: query([], Vec(User), () => {
+        return Object.values(db.users);
+    }),
+    createUser: update([text], User, (username) => {
+        const id = Object.keys(db.users).length.toString();
+        const user: typeof User = {
             id,
             username
         };
 
-        this.db.users[id] = user;
+        db.users[id] = user;
 
         return user;
-    }
-}
+    })
+});

@@ -63,12 +63,12 @@ export function Some<T>(value: T): [T] {
 export const None: [] = [];
 
 // TODO what happens if we pass something to Opt() that can't be converted to CandidClass?
-export function Opt<T>(t: IDL.Type<T> | any): AzleOpt {
+export function Opt<T>(t: T): AzleOpt<T> {
     // return IDL.Opt(toCandidClass(t));
     return new AzleOpt(t);
 }
 
-export class AzleOpt {
+export class AzleOpt<T> {
     constructor(t: any) {
         this._azleType = t;
     }
@@ -78,7 +78,7 @@ export class AzleOpt {
     }
 }
 
-export class AzleVec {
+export class AzleVec<T> {
     constructor(t: any) {
         this._azleType = t;
     }
@@ -101,7 +101,7 @@ export class AzleTuple {
     }
 }
 
-export function Vec<T>(t: IDL.Type<T> | any): AzleVec {
+export function Vec<T>(t: T): AzleVec<T> {
     // return IDL.Vec(toCandidClass(t));
     return new AzleVec(t);
 }

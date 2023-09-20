@@ -9,6 +9,7 @@ export type CanisterMethodInfo = {
     type: 'query' | 'update';
     callback: (...args: any) => any;
     candid: string;
+    candidTypes: string[];
 };
 
 // TODO this doesn't produce a TS error when the user returns a non-void value in a void function

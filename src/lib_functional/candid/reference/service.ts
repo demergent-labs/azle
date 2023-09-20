@@ -16,6 +16,13 @@ export function Service(serviceOptions: ServiceOptions): CanisterMethods {
         };
     }, {});
 
+    const candidTypes = Object.values(serviceOptions).reduce(
+        (acc: string[], canisterMethodInfo) => {
+            return [...acc, ...canisterMethodInfo.candidTypes];
+        },
+        []
+    );
+
     const queries = Object.entries(serviceOptions)
         .filter((entry) => {
             const key = entry[0];
@@ -51,7 +58,9 @@ export function Service(serviceOptions: ServiceOptions): CanisterMethods {
     // TODO loop through each key and simply grab the candid off
     // TODO grab the init/post_upgrade candid as well
     return {
-        candid: `service: () -> {
+        candid: `${
+            candidTypes.length === 0 ? '' : candidTypes.join('\n') + '\n'
+        }service: () -> {
     ${Object.entries(serviceOptions)
         .map((entry) => {
             return `${entry[0]}: ${entry[1].candid}`;
