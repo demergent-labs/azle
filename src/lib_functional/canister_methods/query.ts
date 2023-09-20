@@ -2,16 +2,18 @@ import {
     handleRecursiveParams,
     handleRecursiveReturn
 } from '../../lib_new/method_decorators';
-import { CanisterMethodInfo, executeMethod } from '.';
+import { Callback, CanisterMethodInfo, executeMethod } from '.';
 
-// TODO execute the candid stuff and just store it on the function itself?
-export function query(
-    paramsIdls: any,
-    returnIdl: any,
-    callback: any
+export function query<Params extends any[], Return>(
+    paramsIdls: Params,
+    returnIdl: Return,
+    callback: Callback<Params, Return>
 ): CanisterMethodInfo {
     const paramCandid = handleRecursiveParams(paramsIdls);
-    const returnCandid = handleRecursiveReturn(returnIdl, paramCandid[2]);
+    const returnCandid = handleRecursiveReturn(
+        returnIdl as any,
+        paramCandid[2]
+    );
 
     return {
         type: 'query',

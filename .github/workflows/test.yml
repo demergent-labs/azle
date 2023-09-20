@@ -77,8 +77,6 @@
 # "examples/stable_structures",
 # "examples/timers",
 # "examples/tuple_types",
-# "examples/update"
-
 
 name: Azle Tests
 on:

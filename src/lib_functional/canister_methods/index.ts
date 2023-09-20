@@ -1,5 +1,6 @@
 import { IDL } from '../../lib_new/index';
 import { ic } from '../../lib_new/ic';
+import { TypeMapping } from '..';
 
 export * from './query';
 export * from './update';
@@ -9,6 +10,11 @@ export type CanisterMethodInfo = {
     callback: (...args: any) => any;
     candid: string;
 };
+
+// TODO this doesn't produce a TS error when the user returns a non-void value in a void function
+export type Callback<Params extends any[], Return> = (
+    ...args: { [K in keyof Params]: TypeMapping<Params[K]> }
+) => TypeMapping<Return>;
 
 export function executeMethod(
     paramCandid: any,
