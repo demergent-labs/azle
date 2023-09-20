@@ -19,7 +19,7 @@ export function generateCandidAndCanisterMethods(mainJs: string): {
     script.runInContext(context);
 
     return {
-        candid: (sandbox.globalThis as any)._azleCandidService,
-        canisterMethods: (sandbox.globalThis as any)._azleCanisterMethods
+        candid: (sandbox.exports as any).canisterMethods.candid,
+        canisterMethods: (sandbox.exports as any).canisterMethods
     };
 }

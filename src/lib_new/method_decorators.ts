@@ -174,7 +174,7 @@ function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
     );
 }
 
-function handleRecursiveParams(
+export function handleRecursiveParams(
     idls: CandidClass[]
 ): [CandidClass[], CandidDef[], CandidTypesDefs] {
     const paramIdls = toParamCandidClasses(idls);
@@ -182,7 +182,7 @@ function handleRecursiveParams(
     return [paramIdls, ...extractCandid(paramInfo, {})];
 }
 
-function handleRecursiveReturn(
+export function handleRecursiveReturn(
     returnIdl: ReturnCandidClass,
     paramCandidTypeDefs: CandidTypesDefs
 ): [CandidClass[], CandidDef[], CandidTypesDefs] {

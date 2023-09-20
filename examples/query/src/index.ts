@@ -1,8 +1,7 @@
 import { query, Service, text } from 'azle';
 
-export default class extends Service {
-    @query([], text)
-    simpleQuery(): text {
+export default Service({
+    simpleQuery: query([], text, () => {
         return 'This is a query function';
-    }
-}
+    })
+});
