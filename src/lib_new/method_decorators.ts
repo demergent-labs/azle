@@ -17,6 +17,7 @@ import {
     ServiceConstructor,
     serviceDecorator
 } from './service';
+import { DecodeVisitor } from './visitors/decode_visitor';
 
 export type Manual<T> = void;
 
@@ -304,8 +305,14 @@ function setupCanisterMethod(
         }
 
         const decoded = IDL.decode(paramCandid[0], args[0]);
+        const myDecodedObject = paramCandid[0].map((idl, index) => {
+            return idl.accept(new DecodeVisitor(), {
+                js_class: paramsIdls[index],
+                js_data: decoded[index]
+            });
+        });
 
-        const result = originalMethod.apply(this, decoded);
+        const result = originalMethod.apply(this, myDecodedObject);
 
         if (
             mode === 'init' ||
