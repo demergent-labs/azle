@@ -15,7 +15,7 @@ pub fn generate() -> TokenStream {
                 let mut stable_b_tree_maps = stable_b_tree_maps.borrow_mut();
                 stable_b_tree_maps.insert(
                     memory_id,
-                    StableBTreeMap::init_v2(MEMORY_MANAGER_REF_CELL.with(|m| m.borrow().get(MemoryId::new(memory_id))),)
+                    StableBTreeMap::init(MEMORY_MANAGER_REF_CELL.with(|m| m.borrow().get(MemoryId::new(memory_id))),)
                 );
             });
 
