@@ -315,11 +315,12 @@ function setupCanisterMethod(
             return;
         }
 
-        if (
+        const is_promise =
             result !== undefined &&
             result !== null &&
-            typeof result.then === 'function'
-        ) {
+            typeof result.then === 'function';
+
+        if (is_promise) {
             result
                 .then((result) => {
                     // TODO this won't be accurate because we have most likely had
