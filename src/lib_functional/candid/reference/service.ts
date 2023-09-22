@@ -1,19 +1,48 @@
-import { CanisterMethods } from '../../../compiler/utils/types';
+import { Principal, TypeMapping } from '../../';
+import { serviceCall } from '../../../lib_new';
 import { CanisterMethodInfo } from '../../canister_methods';
 
 type ServiceOptions = {
-    [key: string]: CanisterMethodInfo;
+    [key: string]: CanisterMethodInfo<any, any>;
 };
 
-export function Service(serviceOptions: ServiceOptions): CanisterMethods {
+type ServiceReturn<T extends ServiceOptions> = {
+    [EndpointName in keyof T]: T[EndpointName] extends CanisterMethodInfo<
+        infer Params,
+        infer Return
+    >
+        ? (
+              ...args: { [K in keyof Params]: TypeMapping<Params[K]> }
+          ) => Promise<TypeMapping<Return>>
+        : never;
+};
+
+export function Service<T extends ServiceOptions>(
+    serviceOptions: T,
+    principal?: Principal
+): ServiceReturn<T> {
     const callbacks = Object.entries(serviceOptions).reduce((acc, entry) => {
         const key = entry[0];
         const value = entry[1];
 
-        return {
-            ...acc,
-            [key]: value.callback
-        };
+        if (value.callback === undefined) {
+            return {
+                ...acc,
+                [key]: (...args: any[]) => {
+                    return serviceCall(
+                        principal as any,
+                        key,
+                        value.paramsIdls,
+                        value.returnIdl
+                    )(...args);
+                }
+            };
+        } else {
+            return {
+                ...acc,
+                [key]: value.callback
+            };
+        }
     }, {});
 
     const candidTypes = Object.values(serviceOptions).reduce(
@@ -70,6 +99,7 @@ export function Service(serviceOptions: ServiceOptions): CanisterMethods {
 `,
         queries,
         updates,
-        callbacks
-    };
+        callbacks,
+        ...callbacks // TODO then we can't use any names that could collide in this object
+    } as any;
 }

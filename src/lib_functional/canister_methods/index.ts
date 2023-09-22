@@ -5,17 +5,18 @@ import { TypeMapping } from '..';
 export * from './query';
 export * from './update';
 
-export type CanisterMethodInfo = {
+export type CanisterMethodInfo<T extends ReadonlyArray<any>, K> = {
     type: 'query' | 'update';
-    callback: (...args: any) => any;
+    callback?: (...args: any) => any;
     candid: string;
     candidTypes: string[];
+    paramsIdls: any[];
+    returnIdl: any;
 };
 
-// TODO this doesn't produce a TS error when the user returns a non-void value in a void function
 export type Callback<Params extends ReadonlyArray<any>, Return> = (
     ...args: { [K in keyof Params]: TypeMapping<Params[K]> }
-) => TypeMapping<Return>;
+) => TypeMapping<Return> | Promise<TypeMapping<Return>>;
 
 export function executeMethod(
     paramCandid: any,

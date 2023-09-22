@@ -1,3 +1,4 @@
+import '@dfinity/candid/lib/esm/idl'; // This must remain or the build fails
 import { Principal } from '@dfinity/principal';
 import { IDL } from './index';
 import { blob, nat, nat32, nat64, AzleNat64, Void, Opt } from './primitives';
@@ -49,7 +50,7 @@ type Ic = {
             args?: ArgsType<T>;
             cycles?: bigint;
         }
-    ): ReturnTypeOfPromise<T>;
+    ): ReturnTypeOf<T>;
 
     call128<T extends (...args: any[]) => any>(
         method: T,
@@ -57,7 +58,7 @@ type Ic = {
             args?: ArgsType<T>;
             cycles?: bigint;
         }
-    ): ReturnTypeOfPromise<T>;
+    ): ReturnTypeOf<T>;
 
     /**
      * Performs an asynchronous call to another canister using the [System API](

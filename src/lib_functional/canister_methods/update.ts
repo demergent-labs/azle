@@ -13,22 +13,29 @@ export function update<
 >(
     paramsIdls: Params,
     returnIdl: Return,
-    callback: ReturnType<GenericCallback> extends TypeMapping<Return>
+    callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Return>
         ? GenericCallback
         : never
-): CanisterMethodInfo {
+): CanisterMethodInfo<Params, Return> {
     const paramCandid = handleRecursiveParams(paramsIdls as any);
     const returnCandid = handleRecursiveReturn(
         returnIdl as any,
         paramCandid[2]
     );
 
+    const finalCallback =
+        callback === undefined
+            ? undefined
+            : (...args: any[]) => {
+                  executeMethod(paramCandid, returnCandid, args, callback);
+              };
+
     return {
         type: 'update',
-        callback: (...args) => {
-            executeMethod(paramCandid, returnCandid, args, callback);
-        },
+        callback: finalCallback,
         candid: `(${paramCandid[1].join(', ')}) -> (${returnCandid[1]});`,
-        candidTypes: newTypesToStingArr(returnCandid[2])
+        candidTypes: newTypesToStingArr(returnCandid[2]),
+        paramsIdls: paramsIdls as any,
+        returnIdl
     };
 }
