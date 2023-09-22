@@ -18,7 +18,7 @@ import {
     Void,
     Null
 } from 'azle';
-import Notifier, { NotifierFunc } from '../notifiers/notifiers';
+import Notifier, { NotifierFunc } from '../notifiers';
 
 @func([text], text, 'query')
 class BasicFunc extends Func {}
