@@ -16,7 +16,6 @@ service: () -> {
     manualUpdate: (text) -> (text);
     updateBlob: () -> (vec nat8);
     updateFloat32: () -> (float32);
-    updateInlineType: () -> (record {text; text});
     updateInt8: () -> (int8);
     updateNat: () -> (nat);
     updateNull: () -> (null);

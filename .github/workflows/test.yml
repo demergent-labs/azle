@@ -81,15 +81,14 @@
 # "examples/update"
 
 # These are the ones that don't work
-# "examples/tuple_types",
-# "examples/service",
-# "examples/robust_imports",
-# "examples/run_time_errors",
-# "examples/complex_types",
 # "examples/func_types",
 # "examples/generics",
+# "examples/tuple_types",
+# "examples/complex_types",
 # "examples/motoko_examples/superheroes",
 # "examples/motoko_examples/threshold_ecdsa",
+# "examples/run_time_errors",
+# "examples/robust_imports",
 
 name: Azle Tests
 on:
@@ -183,6 +182,7 @@ jobs:
                     "examples/query",
                     "examples/randomness",
                     "examples/rejections",
+                    "examples/service",
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",
                     "examples/stable_memory",

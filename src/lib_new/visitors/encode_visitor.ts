@@ -56,6 +56,9 @@ export class EncodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         ty: IDL.Type<T>,
         data: VisitorData
     ): VisitorResult {
+        if (ty instanceof IDL.PrimitiveType) {
+            return data.js_data;
+        }
         const vec_elems = data.js_data.map((array_elem: any) => {
             return ty.accept(this, {
                 js_data: array_elem,
