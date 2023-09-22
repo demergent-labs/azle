@@ -8,7 +8,9 @@ import {
     AzleInt8,
     int8,
     AzleNat64,
-    AzleNat32
+    AzleNat32,
+    AzleFloat64,
+    float64
 } from '../../lib_new';
 
 export type TypeMapping<T> = T extends IDL.TextClass
@@ -29,4 +31,6 @@ export type TypeMapping<T> = T extends IDL.TextClass
     ? blob
     : T extends AzleInt8
     ? int8
+    : T extends AzleFloat64
+    ? float64
     : T;

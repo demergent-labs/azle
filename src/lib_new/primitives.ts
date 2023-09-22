@@ -22,6 +22,13 @@ export class AzleInt8 {
     }
 }
 
+export class AzleFloat64 {
+    _kind: 'AzleFloat64' = 'AzleFloat64';
+    static getIDL() {
+        return IDL.Float64;
+    }
+}
+
 export class AzleBlob {
     _kind: 'AzleBlob' = 'AzleBlob';
     static getIDL() {
@@ -63,7 +70,7 @@ export const text = IDL.Text;
 export type text = string;
 export const float32 = IDL.Float32;
 export type float32 = number;
-export const float64 = IDL.Float64;
+export const float64: AzleFloat64 = AzleFloat64 as any;
 export type float64 = number;
 export const principal = IDL.Principal;
 export { Principal } from '@dfinity/principal';
