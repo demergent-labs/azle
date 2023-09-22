@@ -564,7 +564,7 @@ export const ic: Ic = globalThis._azleIc
           },
           caller: () => {
               const callerBytes = globalThis._azleIc.caller();
-              return Principal.fromUint8Array(callerBytes);
+              return Principal.fromUint8Array(new Uint8Array(callerBytes));
           },
           candidDecode: (candidEncoded) => {
               return globalThis._azleIc.candidDecode(candidEncoded.buffer);
