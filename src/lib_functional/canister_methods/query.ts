@@ -13,7 +13,7 @@ export function query<
 >(
     paramsIdls: Params,
     returnIdl: Return,
-    callback: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Return>
+    callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Return>
         ? GenericCallback
         : never
 ): CanisterMethodInfo<Params, Return> {

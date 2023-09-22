@@ -10,7 +10,8 @@ import {
     AzleNat64,
     AzleNat32,
     AzleFloat64,
-    float64
+    float64,
+    Principal
 } from '../../lib_new';
 
 export type TypeMapping<T> = T extends IDL.TextClass
@@ -33,4 +34,6 @@ export type TypeMapping<T> = T extends IDL.TextClass
     ? int8
     : T extends AzleFloat64
     ? float64
+    : T extends IDL.PrincipalClass
+    ? Principal
     : T;

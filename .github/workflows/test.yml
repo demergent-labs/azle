@@ -63,7 +63,6 @@
 # "examples/outgoing_http_requests",
 # "examples/pre_and_post_upgrade",
 # "examples/primitive_types",
-# "examples/principal",
 # "examples/rejections",
 # "examples/robust_imports",
 # "examples/run_time_errors",
@@ -117,6 +116,7 @@ jobs:
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
                     "examples/async_await",
+                    "examples/principal",
                     "examples/query",
                     "examples/randomness",
                     "examples/simple_erc20",
