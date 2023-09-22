@@ -1,7 +1,8 @@
 import { IDL } from '@dfinity/candid';
-import { DecodeVisitor } from '../decode_visitor';
-import { EncodeVisitor } from '../encode_visitor';
+import { DecodeVisitor } from './decode_visitor';
+import { EncodeVisitor } from './encode_visitor';
 import { AzleResult, Result } from '../../result';
+export { EncodeVisitor, DecodeVisitor };
 
 /*
  * The VisitorData gives us js_data which is the data that is about to be

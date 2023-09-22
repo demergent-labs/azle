@@ -1,5 +1,5 @@
 import { ic } from './ic';
-import { GuardResult, IDL, Record } from './index';
+import { GuardResult, IDL } from './index';
 
 import {
     CandidClass,
@@ -17,8 +17,7 @@ import {
     ServiceConstructor,
     serviceDecorator
 } from './service';
-import { DecodeVisitor } from './visitors/decode_visitor';
-import { EncodeVisitor } from './visitors/encode_visitor';
+import { DecodeVisitor, EncodeVisitor } from './visitors/encode_decode/';
 
 export type Manual<T> = void;
 

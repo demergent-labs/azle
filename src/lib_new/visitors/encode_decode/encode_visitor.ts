@@ -1,4 +1,5 @@
 import { IDL } from '@dfinity/candid';
+import { Principal } from '@dfinity/principal';
 import {
     VisitorData,
     VisitorResult,
@@ -8,20 +9,21 @@ import {
     visitTuple,
     visitVariant,
     visitVec
-} from './encode_decode';
+} from '.';
 
 /**
- * When we decode a Service we are given a principal. We need to use that
- * principal to create a Service class. Same things applies to Funcs except
- * that it has a principal and a name.
+ * When we encode a Service we have a service class and we need it to be only
+ * a principal. As a Service is visited the canisterId needs to be extracted so
+ * it will be encoded correctly. Same thing with Funcs except we need to extract
+ * the principal and name and put it into a tuple.
  */
 
-export class DecodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
+export class EncodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
     visitService(t: IDL.ServiceClass, data: VisitorData): VisitorResult {
-        return new data.js_class(data.js_data);
+        return data.js_data.canisterId;
     }
     visitFunc(t: IDL.FuncClass, data: VisitorData): VisitorResult {
-        return new data.js_class(data.js_data.principal, data.js_data.name);
+        return [Principal.fromText(data.js_data.principal), data.js_data.name];
     }
     visitPrimitive<T>(
         t: IDL.PrimitiveType<T>,
