@@ -107,7 +107,10 @@ export default class extends Service {
                         body: encode('Counter'),
                         streaming_strategy: Some({
                             Callback: {
-                                callback: [ic.id(), 'http_streaming'],
+                                callback: new Callback(
+                                    ic.id(),
+                                    'http_streaming'
+                                ),
                                 token: {
                                     arbitrary_data: 'start'
                                 }
