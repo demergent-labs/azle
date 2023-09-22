@@ -18,6 +18,7 @@ import {
     serviceDecorator
 } from './service';
 import { DecodeVisitor } from './visitors/decode_visitor';
+import { EncodeVisitor } from './visitors/encode_visitor';
 
 export type Manual<T> = void;
 
@@ -350,7 +351,12 @@ function setupCanisterMethod(
                     ic.trap(error.toString());
                 });
         } else {
-            const encodeReadyResult = result === undefined ? [] : [result];
+            const encodeReadyResult = returnCandid[0].map((idl) => {
+                return idl.accept(new EncodeVisitor(), {
+                    js_class: returnIdl,
+                    js_data: result
+                });
+            });
 
             if (!manual) {
                 const encoded = IDL.encode(returnCandid[0], encodeReadyResult);
