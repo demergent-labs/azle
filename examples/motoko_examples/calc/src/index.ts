@@ -1,41 +1,36 @@
-import { int, update, Opt, Void, Some, None, Service } from 'azle';
+import { int, None, Opt, Service, Some, update, Void } from 'azle';
 
-export default class extends Service {
-    cell: int = 0n;
+let cell: int = 0n;
 
-    @update([int], int)
-    add(n: int): int {
-        this.cell += n;
+export default Service({
+    add: update([int], int, (n) => {
+        cell += n;
 
-        return this.cell;
-    }
+        return cell;
+    }),
 
-    @update([int], int)
-    sub(n: int): int {
-        this.cell -= n;
+    sub: update([int], int, (n) => {
+        cell -= n;
 
-        return this.cell;
-    }
+        return cell;
+    }),
 
-    @update([int], int)
-    mul(n: int): int {
-        this.cell *= n;
+    mul: update([int], int, (n) => {
+        cell *= n;
 
-        return this.cell;
-    }
+        return cell;
+    }),
 
-    @update([int], Opt(int))
-    div(n: int) {
+    div: update([int], Opt(int), (n) => {
         if (n === 0n) {
             return None;
         } else {
-            this.cell /= n;
-            return Some(this.cell);
+            cell /= n;
+            return Some(cell);
         }
-    }
+    }),
 
-    @update([], Void)
-    clearall(): void {
-        this.cell = 0n;
-    }
-}
+    clearall: update([], Void, () => {
+        cell = 0n;
+    })
+});
