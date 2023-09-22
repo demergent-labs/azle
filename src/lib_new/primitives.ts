@@ -15,7 +15,15 @@ export class AzleNat32 {
     }
 }
 
+export class AzleInt8 {
+    _kind: 'AzleInt8' = 'AzleInt8';
+    static getIDL() {
+        return IDL.Int8;
+    }
+}
+
 export class AzleBlob {
+    _kind: 'AzleBlob' = 'AzleBlob';
     static getIDL() {
         return IDL.Vec(IDL.Nat8);
     }
@@ -23,13 +31,13 @@ export class AzleBlob {
 
 export const bool = IDL.Bool;
 export type bool = boolean;
-export const blob: AzleBlob = AzleBlob;
+export const blob: AzleBlob = AzleBlob as any;
 export type blob = Uint8Array;
 export const empty = IDL.Empty;
 export type empty = never;
 export const int = IDL.Int;
 export type int = bigint;
-export const int8 = IDL.Int8;
+export const int8: AzleInt8 = AzleInt8 as any;
 export type int8 = number;
 export const int16 = IDL.Int16;
 export type int16 = number;

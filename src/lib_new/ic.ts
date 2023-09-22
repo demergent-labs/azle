@@ -1,7 +1,6 @@
-import { Nat64 } from '@dfinity/candid/lib/esm/idl'; // Note: Importing IDL from './index' instead causes the build to fail
 import { Principal } from '@dfinity/principal';
 import { IDL } from './index';
-import { blob, nat, nat32, nat64, Void, Opt } from './primitives';
+import { blob, nat, nat32, nat64, AzleNat64, Void, Opt } from './primitives';
 import { RejectionCode } from './system_types';
 import { v4 } from 'uuid';
 import { CandidClass, toCandidClass } from './utils';
@@ -16,14 +15,14 @@ declare var globalThis: any;
  * Represents a duration of time in seconds.
  */
 export type Duration = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
-export const Duration = Nat64; // Note: using IDL.Nat64 from './index' causes the build to fail
+export const Duration: AzleNat64 = AzleNat64 as any;
 
 /**
  * Type returned by the {@link ic.setTimer} and {@link ic.setTimerInterval}
  * functions. Pass to {@link ic.clearTimer} to remove the timer.
  */
 export type TimerId = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
-export const TimerId = Nat64; // Note: using IDL.Nat64 from './index' causes the build to fail
+export const TimerId: AzleNat64 = AzleNat64 as any;
 
 type Ic = {
     /**
