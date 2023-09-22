@@ -18,7 +18,8 @@ import {
     Some,
     None,
     bool,
-    Service
+    Service,
+    Func
 } from 'azle';
 
 class Token extends Record {
@@ -36,7 +37,7 @@ class StreamingCallbackHttpResponse extends Record {
 }
 
 @func([text], StreamingCallbackHttpResponse, 'query')
-class Callback {}
+class Callback extends Func {}
 
 class CallbackStrategy extends Record {
     @candid(Callback)

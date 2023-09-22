@@ -1,5 +1,10 @@
 import { IDL, Principal } from './index';
-import { CandidClass, toReturnIDLType, toParamIDLTypes } from './utils';
+import {
+    CandidClass,
+    toReturnIDLType,
+    toParamIDLTypes,
+    ReturnCandidClass
+} from './utils';
 
 type Mode = 'query' | 'update' | 'oneway';
 
@@ -9,9 +14,13 @@ const modeToCandid = {
     update: [] // TODO what is the proper way to do updates
 };
 
+export class Func {
+    constructor(principal: Principal, name: string) {}
+}
+
 export function func(
     paramsIdls: CandidClass[],
-    returnIdl: CandidClass,
+    returnIdl: ReturnCandidClass,
     mode: Mode
 ) {
     return (target: any) => {

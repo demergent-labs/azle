@@ -1,4 +1,4 @@
-import { IDL, Record, Service, Variant } from './index';
+import { Func, IDL, Record, Service, Variant } from './index';
 import { GetIDL } from './primitives';
 
 /*
@@ -184,6 +184,7 @@ export type CandidClass =
     | IDL.VecClass<number | bigint> // blob
     | typeof Record
     | typeof Variant
-    | typeof Service;
+    | typeof Service
+    | typeof Func;
 
 export type ReturnCandidClass = CandidClass | never[];

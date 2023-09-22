@@ -1,13 +1,17 @@
-import { ic, Principal, $query } from 'azle';
-import { NotifierFunc } from './types';
+import { ic, Principal, query, blob, Func, Service, Void, func } from 'azle';
 
-$query;
-export function getNotifier(): NotifierFunc {
-    return [
-        Principal.fromText(
-            process.env.NOTIFIERS_PRINCIPAL ??
-                ic.trap('process.env.NOTIFIERS_PRINCIPAL is undefined')
-        ),
-        'notify'
-    ];
+@func([blob], Void, 'oneway')
+export class NotifierFunc extends Func {}
+
+export default class extends Service {
+    @query([], NotifierFunc)
+    getNotifier(): NotifierFunc {
+        return new NotifierFunc(
+            Principal.fromText(
+                process.env.NOTIFIERS_PRINCIPAL ??
+                    ic.trap('process.env.NOTIFIERS_PRINCIPAL is undefined')
+            ),
+            'notify'
+        );
+    }
 }
