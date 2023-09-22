@@ -1,8 +1,8 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
-import { _SERVICE, TimerIds } from './dfx_generated/timers/timers.did';
+import { _SERVICE, rec_0 } from './dfx_generated/timers/timers.did';
 
-let timerIds: TimerIds = {
+let timerIds: rec_0 = {
     single: 0n,
     inline: 0n,
     capture: 0n,
@@ -83,11 +83,11 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'cancel the repeated timers',
             test: async () => {
                 if (timerIds.repeat === undefined) {
-                    return { err: 'repeatedTimerId was never stored' };
+                    return { Err: 'repeatedTimerId was never stored' };
                 }
 
                 if (timerIds.repeatCrossCanister === undefined) {
-                    return { err: 'repeatCrossCanisterId was never stored' };
+                    return { Err: 'repeatCrossCanisterId was never stored' };
                 }
 
                 await Promise.all([

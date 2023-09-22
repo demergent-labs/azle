@@ -63,7 +63,7 @@ export default Service({
 
         const repeatId = ic.setTimerInterval(interval, () => {
             statusReport.repeat++;
-            console.log(`Repeating timer. Call ${status.repeat}`);
+            console.log(`Repeating timer. Call ${statusReport.repeat}`);
         });
 
         const singleCrossCanisterId = ic.setTimer(
