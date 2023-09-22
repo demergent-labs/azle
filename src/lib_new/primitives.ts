@@ -1,6 +1,12 @@
 import { IDL } from './index';
 import { CandidClass, Parent, toCandidClass } from './utils';
 
+export class AzleNat64 {
+    static getIDL() {
+        return IDL.Nat64;
+    }
+}
+
 export const bool = IDL.Bool;
 export type bool = boolean;
 export const blob = IDL.Vec(IDL.Nat8);
@@ -25,7 +31,7 @@ export const nat16 = IDL.Nat16;
 export type nat16 = number;
 export const nat32 = IDL.Nat32;
 export type nat32 = number;
-export const nat64 = IDL.Nat64;
+export const nat64: AzleNat64 = AzleNat64;
 export type nat64 = bigint;
 export const Null = IDL.Null;
 export type Null = null;
