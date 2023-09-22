@@ -21,62 +21,54 @@ let state: State = {
     totalSupply: 0n
 };
 
-export default class extends Service {
-    @update([text, text, text, nat64], bool)
-    initializeSupply(
-        name: text,
-        originalAddress: text,
-        ticker: text,
-        totalSupply: nat64
-    ): bool {
-        state = {
-            ...state,
-            accounts: {
-                [originalAddress]: {
-                    address: originalAddress,
-                    balance: totalSupply
-                }
-            },
-            name,
-            ticker,
-            totalSupply
-        };
-
-        return true;
-    }
-
-    @update([text, text, nat64], bool)
-    transfer(fromAddress: text, toAddress: text, amount: nat64): bool {
-        if (state.accounts[toAddress] === undefined) {
-            state.accounts[toAddress] = {
-                address: toAddress,
-                balance: 0n
+export default Service({
+    initializeSupply: update(
+        [text, text, text, nat64],
+        bool,
+        (name, originalAddress, ticker, totalSupply) => {
+            state = {
+                ...state,
+                accounts: {
+                    [originalAddress]: {
+                        address: originalAddress,
+                        balance: totalSupply
+                    }
+                },
+                name,
+                ticker,
+                totalSupply
             };
+
+            return true;
         }
+    ),
+    transfer: update(
+        [text, text, nat64],
+        bool,
+        (fromAddress, toAddress, amount) => {
+            if (state.accounts[toAddress] === undefined) {
+                state.accounts[toAddress] = {
+                    address: toAddress,
+                    balance: 0n
+                };
+            }
 
-        state.accounts[fromAddress].balance -= amount;
-        state.accounts[toAddress].balance += amount;
+            state.accounts[fromAddress].balance -= amount;
+            state.accounts[toAddress].balance += amount;
 
-        return true;
-    }
-
-    @query([text], nat64)
-    balance(address: text): nat64 {
+            return true;
+        }
+    ),
+    balance: query([text], nat64, (address) => {
         return state.accounts[address]?.balance ?? 0n;
-    }
-
-    @query([], text)
-    ticker(): text {
+    }),
+    ticker: query([], text, () => {
         return state.ticker;
-    }
-
-    @query([], text)
-    name(): text {
+    }),
+    name: query([], text, () => {
         return state.name;
-    }
-
-    @query([], nat64)
-    totalSupply(): nat64 {
+    }),
+    totalSupply: query([], nat64, () => {
         return state.totalSupply;
-    }
-}
+    })
+});

@@ -174,13 +174,13 @@ export function update(
     };
 }
 
-function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
+export function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
     return Object.entries(newTypes).map(
-        ([name, candid]) => `type ${name} = ${candid}`
+        ([name, candid]) => `type ${name} = ${candid};`
     );
 }
 
-function handleRecursiveParams(
+export function handleRecursiveParams(
     idls: CandidClass[]
 ): [IDL.Type<any>[], CandidDef[], CandidTypesDefs] {
     const paramIdls = toParamIDLTypes(idls);
@@ -188,7 +188,7 @@ function handleRecursiveParams(
     return [paramIdls, ...extractCandid(paramInfo, {})];
 }
 
-function handleRecursiveReturn(
+export function handleRecursiveReturn(
     returnIdl: ReturnCandidClass,
     paramCandidTypeDefs: CandidTypesDefs
 ): [IDL.Type<any>[], CandidDef[], CandidTypesDefs] {

@@ -278,8 +278,9 @@ fn main() -> Result<(), String> {
 
                 let global = context.global_object().unwrap();
                 let exports = global.get_property("exports").unwrap();
-                let class = exports.get_property("canisterClass").unwrap();
-                let method = class.get_property(function_name).unwrap();
+                let canister_methods = exports.get_property("canisterMethods").unwrap();
+                let callbacks = canister_methods.get_property("callbacks").unwrap();
+                let method = callbacks.get_property(function_name).unwrap();
 
                 let candid_args = if pass_arg_data { ic_cdk::api::call::arg_data_raw() } else { vec![] };
 

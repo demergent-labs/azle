@@ -8,6 +8,17 @@ export function generateCandidAndCanisterMethods(mainJs: string): {
 
     const sandbox = {
         globalThis: {},
+        crypto: {
+            getRandomValues: () => {
+                let array = new Uint8Array(32);
+
+                for (let i = 0; i < array.length; i++) {
+                    array[i] = Math.floor(Math.random() * 256);
+                }
+
+                return array;
+            }
+        },
         exports: {},
         console,
         TextDecoder,
@@ -19,7 +30,7 @@ export function generateCandidAndCanisterMethods(mainJs: string): {
     script.runInContext(context);
 
     return {
-        candid: (sandbox.globalThis as any)._azleCandidService,
-        canisterMethods: (sandbox.globalThis as any)._azleCanisterMethods
+        candid: (sandbox.exports as any).canisterMethods.candid,
+        canisterMethods: (sandbox.exports as any).canisterMethods
     };
 }

@@ -46,6 +46,7 @@ export type CompilerInfo = {
 };
 
 export type CanisterMethods = {
+    candid: string;
     queries: CanisterMethod[];
     updates: CanisterMethod[];
     init?: CanisterMethod;
@@ -53,6 +54,9 @@ export type CanisterMethods = {
     post_upgrade?: CanisterMethod;
     heartbeat?: CanisterMethod;
     inspect_message?: CanisterMethod;
+    callbacks: {
+        [key: string]: (...args: any) => any;
+    };
 };
 
 export type CanisterMethod = {

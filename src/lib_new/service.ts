@@ -90,6 +90,7 @@ export function serviceDecorator(
 }
 
 export function serviceCall(
+    canisterId: Principal,
     methodName: string,
     paramsIdls: any[],
     returnIdl: CandidClass
@@ -114,7 +115,7 @@ export function serviceCall(
         if (notify) {
             try {
                 return callFunction(
-                    this.canisterId,
+                    canisterId,
                     methodName,
                     encodedArgs,
                     cycles
@@ -124,7 +125,7 @@ export function serviceCall(
             }
         } else {
             const encodedResult = await callFunction(
-                this.canisterId,
+                canisterId,
                 methodName,
                 encodedArgs,
                 cycles

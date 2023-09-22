@@ -33,34 +33,19 @@ export function compileTypeScriptToJavaScript(
             import { ic } from 'azle';
             export { Principal } from '@dfinity/principal';
             export * from './${tsPath}';
-            import CanisterClass from './${tsPath}';
-        `;
+            import CanisterMethods from './${tsPath}';
 
-        const canisterClassInstantiation = `
-            export const canisterClass = new CanisterClass(ic.id());
-        `;
-
-        const candidGeneration = `
-globalThis._azleCandidService = \`\${CanisterClass._azleCandidTypes.length > 0 ? CanisterClass._azleCandidTypes.join(';\\n') + ';\\n' : ''}service: (\${CanisterClass._azleCandidInitParams.join(
-    ', '
-)}) -> {
-    \${CanisterClass._azleCandidMethods.join('\\n    ')}
-}\n\`
-
-globalThis._azleCanisterMethods = CanisterClass._azleCanisterMethods;
+            export const canisterMethods = CanisterMethods;
         `;
 
         const canisterJavaScript = bundleAndTranspileJs(`
             ${globalThisProcess}
             ${imports}
-            ${canisterClassInstantiation}
-${candidGeneration}
 `);
 
         const candidJavaScript = bundleAndTranspileJs(`
             ${globalThisProcess}
             ${imports}
-${candidGeneration}
 `);
 
         return {
