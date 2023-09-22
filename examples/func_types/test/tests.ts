@@ -126,7 +126,6 @@ export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'getNotifierFromNotifiersCanister',
             test: async () => {
-                // TODO agent-js seems to be creating incorrect types here: https://github.com/dfinity/agent-js/issues/583
                 const result =
                     await funcTypesCanister.getNotifierFromNotifiersCanister();
 
