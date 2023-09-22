@@ -1,8 +1,7 @@
 import { query, Service, Void } from 'azle';
 
-export default class extends Service {
-    @query([], Void)
-    main(): void {
+export default Service({
+    main: query([], Void, () => {
         console.log('Hello World!');
-    }
-}
+    })
+});
