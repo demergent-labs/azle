@@ -1,5 +1,5 @@
 import { IDL } from './index';
-import { Parent, toCandidClass } from './utils';
+import { CandidClass, Parent, toIDLType } from './utils';
 
 export class AzleNat {
     _kind: 'AzleNat' = 'AzleNat';
@@ -198,9 +198,9 @@ export class AzleOpt<T> {
     constructor(t: any) {
         this._azleType = t;
     }
-    _azleType: any;
+    _azleType: CandidClass;
     getIDL(parents: Parent[]) {
-        return IDL.Opt(toCandidClass(this._azleType, []));
+        return IDL.Opt(toIDLType(this._azleType, []));
     }
 }
 
@@ -208,20 +208,20 @@ export class AzleVec<T> {
     constructor(t: any) {
         this._azleType = t;
     }
-    _azleType: any;
+    _azleType: CandidClass;
     getIDL(parents: Parent[]) {
-        return IDL.Vec(toCandidClass(this._azleType, []));
+        return IDL.Vec(toIDLType(this._azleType, []));
     }
 }
 
 export class AzleTuple {
-    constructor(t: any[]) {
+    constructor(t: CandidClass[]) {
         this._azleTypes = t;
     }
-    _azleTypes: any[];
+    _azleTypes: CandidClass[];
     getIDL(parents: Parent[]) {
         const candidTypes = this._azleTypes.map((value) => {
-            return toCandidClass(value, parents);
+            return toIDLType(value, parents);
         });
         return IDL.Tuple(...candidTypes);
     }
@@ -233,10 +233,10 @@ export function Vec<T>(t: T): AzleVec<T> {
 }
 
 // TODO I am not sure of any of these types... but its working so...
-export function Tuple<T extends any[]>(...types: T): AzleTuple {
-    // const candidTypes = types.map((value) => {
-    //     return toCandidClass(value);
+export function Tuple(...types: CandidClass[]): AzleTuple {
+    // const idlTypes = types.map((value) => {
+    //     return toIDLType(value);
     // });
-    // return IDL.Tuple(...candidTypes);
+    // return IDL.Tuple(...idlTypes);
     return new AzleTuple(types);
 }

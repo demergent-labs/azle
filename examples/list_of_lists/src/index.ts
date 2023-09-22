@@ -5,6 +5,7 @@ import {
     empty,
     float32,
     float64,
+    Func,
     func,
     int,
     int16,
@@ -49,7 +50,7 @@ class State extends Variant {
 }
 
 @func([text], text, 'query')
-class BasicFunc {}
+class BasicFunc extends Func {}
 
 export default class extends Service {
     @query([Vec(text)], Vec(text))

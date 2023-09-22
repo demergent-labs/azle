@@ -1,6 +1,6 @@
 import { RequireExactlyOne } from '../lib/candid_types/variant';
 import { IDL } from './index';
-import { CandidClass, Parent, toCandidClass } from './utils';
+import { CandidClass, Parent, toIDLType } from './utils';
 
 export class AzleResult {
     constructor(ok: any, err: any) {
@@ -13,8 +13,8 @@ export class AzleResult {
 
     getIDL(parents: Parent[]) {
         return IDL.Variant({
-            Ok: toCandidClass(this._azleOk, parents),
-            Err: toCandidClass(this._azleErr, parents)
+            Ok: toIDLType(this._azleOk, parents),
+            Err: toIDLType(this._azleErr, parents)
         });
     }
 }

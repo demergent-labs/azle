@@ -4,14 +4,20 @@ import { GuardResult, IDL } from './index';
 import {
     CandidClass,
     ReturnCandidClass,
-    toParamCandidClasses,
-    toReturnCandidClass,
+    toParamIDLTypes,
+    toReturnIDLType,
     CandidTypesDefs,
     CandidDef,
     extractCandid
 } from './utils';
 import { display } from './utils';
-import { serviceCall, serviceDecorator } from './service';
+import {
+    Service,
+    serviceCall,
+    ServiceConstructor,
+    serviceDecorator
+} from './service';
+import { DecodeVisitor, EncodeVisitor } from './visitors/encode_decode/';
 
 export type Manual<T> = void;
 
@@ -176,8 +182,8 @@ export function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
 
 export function handleRecursiveParams(
     idls: CandidClass[]
-): [CandidClass[], CandidDef[], CandidTypesDefs] {
-    const paramIdls = toParamCandidClasses(idls);
+): [IDL.Type<any>[], CandidDef[], CandidTypesDefs] {
+    const paramIdls = toParamIDLTypes(idls);
     const paramInfo = paramIdls.map((paramIdl) => display(paramIdl, {}));
     return [paramIdls, ...extractCandid(paramInfo, {})];
 }
@@ -185,8 +191,8 @@ export function handleRecursiveParams(
 export function handleRecursiveReturn(
     returnIdl: ReturnCandidClass,
     paramCandidTypeDefs: CandidTypesDefs
-): [CandidClass[], CandidDef[], CandidTypesDefs] {
-    const returnIdls = toReturnCandidClass(returnIdl);
+): [IDL.Type<any>[], CandidDef[], CandidTypesDefs] {
+    const returnIdls = toReturnIDLType(returnIdl);
     const returnInfo = returnIdls.map((returnIdl) => display(returnIdl, {}));
     return [returnIdls, ...extractCandid(returnInfo, paramCandidTypeDefs)];
 }
@@ -238,6 +244,16 @@ function setupCanisterMethod(
                 modeToCandid[mode]
             };`
         );
+
+        if (target instanceof Service) {
+            addIDLForMethodToServiceConstructor(
+                target.constructor,
+                key,
+                paramsIdls,
+                returnIdl,
+                mode
+            );
+        }
     }
 
     const originalMethod = descriptor.value;
@@ -289,8 +305,14 @@ function setupCanisterMethod(
         }
 
         const decoded = IDL.decode(paramCandid[0], args[0]);
+        const myDecodedObject = paramCandid[0].map((idl, index) => {
+            return idl.accept(new DecodeVisitor(), {
+                js_class: paramsIdls[index],
+                js_data: decoded[index]
+            });
+        });
 
-        const result = originalMethod.apply(this, decoded);
+        const result = originalMethod.apply(this, myDecodedObject);
 
         if (
             mode === 'init' ||
@@ -300,11 +322,12 @@ function setupCanisterMethod(
             return;
         }
 
-        if (
+        const is_promise =
             result !== undefined &&
             result !== null &&
-            typeof result.then === 'function'
-        ) {
+            typeof result.then === 'function';
+
+        if (is_promise) {
             result
                 .then((result) => {
                     // TODO this won't be accurate because we have most likely had
@@ -327,9 +350,13 @@ function setupCanisterMethod(
                     ic.trap(error.toString());
                 });
         } else {
-            const encodeReadyResult = result === undefined ? [] : [result];
-
             if (!manual) {
+                const encodeReadyResult = returnCandid[0].map((idl) => {
+                    return idl.accept(new EncodeVisitor(), {
+                        js_class: returnIdl,
+                        js_data: result
+                    });
+                });
                 const encoded = IDL.encode(returnCandid[0], encodeReadyResult);
                 ic.replyRaw(new Uint8Array(encoded));
             }
@@ -374,4 +401,39 @@ function createGlobalGuard(
     (globalThis as any)[guardName] = guard;
 
     return guardName;
+}
+
+/**
+ * Stores an IDL representation of the canister method into a private
+ * `_azleFunctionInfo` object on the provided constructor. If that property doesn't
+ * exist, then it will be added as a side-effect.
+ *
+ * @param constructor The class on which to store the IDL information. This
+ *   should probably be a Service. This type should probably be tightened down.
+ * @param methodName The public name of the canister method
+ * @param paramIdls The IDLs of the parameters, coming from the `@query` and
+ *   `@update` decorators.
+ * @param returnIdl The IDL of the return type, coming from the `@query` and
+ *   `@update` decorators.
+ * @param mode The mode in which the method should be executed.
+ */
+function addIDLForMethodToServiceConstructor<T>(
+    constructor: T & ServiceConstructor,
+    methodName: string,
+    paramIdls: CandidClass[],
+    returnIdl: ReturnCandidClass,
+    mode: 'query' | 'update'
+): void {
+    if (constructor._azleFunctionInfo === undefined) {
+        constructor._azleFunctionInfo = {};
+    }
+
+    //  TODO: Technically, there is a possibility that the method name already
+    // exists. We may want to handle that case.
+
+    constructor._azleFunctionInfo[methodName] = {
+        mode,
+        paramIdls,
+        returnIdl
+    };
 }
