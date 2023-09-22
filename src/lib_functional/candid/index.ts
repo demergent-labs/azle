@@ -1,6 +1,13 @@
 export * from './reference';
 import { IDL } from '@dfinity/candid';
-import { AzleVec, AzleOpt, AzleNat64 } from '../../lib_new';
+import {
+    AzleBlob,
+    blob,
+    AzleVec,
+    AzleOpt,
+    AzleNat64,
+    AzleNat32
+} from '../../lib_new';
 
 export type TypeMapping<T> = T extends IDL.TextClass
     ? string
@@ -14,4 +21,8 @@ export type TypeMapping<T> = T extends IDL.TextClass
     ? TypeMapping<U>[]
     : T extends AzleOpt<infer U>
     ? [TypeMapping<U>] | []
+    : T extends AzleNat32
+    ? number
+    : T extends AzleBlob
+    ? blob
     : never;

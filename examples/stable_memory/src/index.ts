@@ -1,48 +1,31 @@
-import { blob, ic, nat32, nat64, query, update, Void } from 'azle';
+import { blob, ic, nat32, nat64, query, Service, update, Void } from 'azle';
 
-export default class {
-    @query([], nat32)
-    stableSize(): nat32 {
+export default Service({
+    stableSize: query([], nat32, () => {
         return ic.stableSize();
-    }
-
-    @query([], nat64)
-    stable64Size(): nat64 {
+    }),
+    stable64Size: query([], nat64, () => {
         return ic.stable64Size();
-    }
-
-    @update([nat32], nat32)
-    stableGrow(newPages: nat32): nat32 {
+    }),
+    stableGrow: update([nat32], nat32, (newPages) => {
         return ic.stableGrow(newPages);
-    }
-
-    @update([nat64], nat64)
-    stable64Grow(newPages: nat64): nat64 {
+    }),
+    stable64Grow: update([nat64], nat64, (newPages) => {
         return ic.stable64Grow(newPages);
-    }
-
-    @update([nat32, blob], Void)
-    stableWrite(offset: nat32, buf: blob): Void {
+    }),
+    stableWrite: update([nat32, blob], Void, (offset, buf) => {
         ic.stableWrite(offset, buf);
-    }
-
-    @update([nat64, blob], Void)
-    stable64Write(offset: nat64, buf: blob): Void {
+    }),
+    stable64Write: update([nat64, blob], Void, (offset, buf) => {
         ic.stable64Write(offset, buf);
-    }
-
-    @query([nat32, nat32], blob)
-    stableRead(offset: nat32, length: nat32): blob {
+    }),
+    stableRead: query([nat32, nat32], blob, (offset, length) => {
         return ic.stableRead(offset, length);
-    }
-
-    @query([nat64, nat64], blob)
-    stable64Read(offset: nat64, length: nat64): blob {
+    }),
+    stable64Read: query([nat64, nat64], blob, (offset, length) => {
         return ic.stable64Read(offset, length);
-    }
-
-    @query([], blob)
-    stableBytes(): blob {
+    }),
+    stableBytes: query([], blob, () => {
         return ic.stableBytes();
-    }
-}
+    })
+});

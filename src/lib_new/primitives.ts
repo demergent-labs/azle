@@ -2,14 +2,28 @@ import { IDL } from './index';
 import { CandidClass, Parent, toCandidClass } from './utils';
 
 export class AzleNat64 {
+    _kind: 'AzleNat64' = 'AzleNat64';
     static getIDL() {
         return IDL.Nat64;
     }
 }
 
+export class AzleNat32 {
+    _kind: 'AzleNat32' = 'AzleNat32';
+    static getIDL() {
+        return IDL.Nat32;
+    }
+}
+
+export class AzleBlob {
+    static getIDL() {
+        return IDL.Vec(IDL.Nat8);
+    }
+}
+
 export const bool = IDL.Bool;
 export type bool = boolean;
-export const blob = IDL.Vec(IDL.Nat8);
+export const blob: AzleBlob = AzleBlob;
 export type blob = Uint8Array;
 export const empty = IDL.Empty;
 export type empty = never;
@@ -29,9 +43,9 @@ export const nat8 = IDL.Nat8;
 export type nat8 = number;
 export const nat16 = IDL.Nat16;
 export type nat16 = number;
-export const nat32 = IDL.Nat32;
+export const nat32: AzleNat32 = AzleNat32 as any;
 export type nat32 = number;
-export const nat64: AzleNat64 = AzleNat64;
+export const nat64: AzleNat64 = AzleNat64 as any;
 export type nat64 = bigint;
 export const Null = IDL.Null;
 export type Null = null;
