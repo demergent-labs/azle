@@ -71,7 +71,6 @@
 # "examples/run_time_errors",
 # "examples/rust_type_conversions",
 # "examples/service",
-# "examples/simple_erc20",
 # "examples/stable_memory",
 # "examples/stable_structures",
 # "examples/timers",
@@ -122,6 +121,7 @@ jobs:
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
                     "examples/query",
+                    "examples/simple_erc20",
                     "examples/simple_user_accounts",
                     "examples/update"
                   ]
