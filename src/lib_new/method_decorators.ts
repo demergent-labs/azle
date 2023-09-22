@@ -351,14 +351,13 @@ function setupCanisterMethod(
                     ic.trap(error.toString());
                 });
         } else {
-            const encodeReadyResult = returnCandid[0].map((idl) => {
-                return idl.accept(new EncodeVisitor(), {
-                    js_class: returnIdl,
-                    js_data: result
-                });
-            });
-
             if (!manual) {
+                const encodeReadyResult = returnCandid[0].map((idl) => {
+                    return idl.accept(new EncodeVisitor(), {
+                        js_class: returnIdl,
+                        js_data: result
+                    });
+                });
                 const encoded = IDL.encode(returnCandid[0], encodeReadyResult);
                 ic.replyRaw(new Uint8Array(encoded));
             }
