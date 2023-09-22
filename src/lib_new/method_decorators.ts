@@ -1,5 +1,5 @@
 import { ic } from './ic';
-import { GuardResult, IDL } from './index';
+import { GuardResult, IDL, Record } from './index';
 
 import {
     CandidClass,
