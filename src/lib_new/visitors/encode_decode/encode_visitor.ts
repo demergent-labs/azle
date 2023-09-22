@@ -1,5 +1,4 @@
 import { IDL } from '@dfinity/candid';
-import { Principal } from '@dfinity/principal';
 import {
     VisitorData,
     VisitorResult,
@@ -23,7 +22,7 @@ export class EncodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         return data.js_data.canisterId;
     }
     visitFunc(t: IDL.FuncClass, data: VisitorData): VisitorResult {
-        return [Principal.fromText(data.js_data.principal), data.js_data.name];
+        return [data.js_data.principal, data.js_data.name];
     }
     visitPrimitive<T>(
         t: IDL.PrimitiveType<T>,

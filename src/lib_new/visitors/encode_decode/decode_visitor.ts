@@ -21,7 +21,7 @@ export class DecodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         return new data.js_class(data.js_data);
     }
     visitFunc(t: IDL.FuncClass, data: VisitorData): VisitorResult {
-        return new data.js_class(data.js_data.principal, data.js_data.name);
+        return new data.js_class(data.js_data[0], data.js_data[1]);
     }
     visitPrimitive<T>(
         t: IDL.PrimitiveType<T>,
