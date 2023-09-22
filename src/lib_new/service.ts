@@ -1,14 +1,29 @@
 import { ic, IDL, Principal } from './index';
 import {
     CandidClass,
-    toParamCandidClasses,
-    toReturnCandidClass
+    Parent,
+    ReturnCandidClass,
+    toParamIDLTypes,
+    toReturnIDLType
 } from './utils';
+
+export type FunctionInfo = {
+    mode: 'query' | 'update';
+    paramIdls: CandidClass[];
+    returnIdl: ReturnCandidClass;
+};
+
+export interface ServiceFunctionInfo {
+    [key: string]: FunctionInfo;
+}
+
+export interface ServiceConstructor {
+    _azleFunctionInfo?: ServiceFunctionInfo;
+}
 
 type Constructor<T = {}> = new (...args: any[]) => T;
 
-// TODO allow turning this into an IDL
-export class Service {
+export abstract class Service {
     canisterId: Principal;
 
     [key: string]: any;
@@ -35,6 +50,34 @@ export class Service {
     ): InstanceType<T> {
         return new this(props) as InstanceType<T>;
     }
+
+    static getIDL(parents: Parent[]): IDL.ServiceClass {
+        const serviceFunctionInfo: ServiceFunctionInfo =
+            // @ts-ignore - may be added by @query and @update decorators
+            this._azleFunctionInfo || {};
+
+        const record = Object.entries(serviceFunctionInfo).reduce(
+            (accumulator, [methodName, functionInfo]) => {
+                const paramRealIdls = toParamIDLTypes(functionInfo.paramIdls);
+                const returnRealIdl = toReturnIDLType(functionInfo.returnIdl);
+
+                const annotations =
+                    functionInfo.mode === 'update' ? [] : ['query'];
+
+                return {
+                    ...accumulator,
+                    [methodName]: IDL.Func(
+                        paramRealIdls,
+                        returnRealIdl,
+                        annotations
+                    )
+                };
+            },
+            {} as Record<string, IDL.FuncClass>
+        );
+
+        return IDL.Service(record);
+    }
 }
 
 export function serviceDecorator(
@@ -54,6 +97,7 @@ export function serviceCall(
     // This must remain a function and not an arrow function
     // in order to set the context (this) correctly
     return async function (
+        this: Service,
         _: '_AZLE_CROSS_CANISTER_CALL',
         notify: boolean,
         callFunction:
@@ -64,7 +108,7 @@ export function serviceCall(
         ...args: any[]
     ) {
         const encodedArgs = new Uint8Array(
-            IDL.encode(toParamCandidClasses(paramsIdls), args)
+            IDL.encode(toParamIDLTypes(paramsIdls), args)
         );
 
         if (notify) {
@@ -86,7 +130,7 @@ export function serviceCall(
                 cycles
             );
 
-            const returnIdls = toReturnCandidClass(returnIdl);
+            const returnIdls = toReturnIDLType(returnIdl);
             const decodedResult = IDL.decode(returnIdls, encodedResult)[0];
 
             return decodedResult;

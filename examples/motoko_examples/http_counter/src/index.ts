@@ -18,7 +18,8 @@ import {
     Some,
     None,
     bool,
-    Service
+    Service,
+    Func
 } from 'azle';
 
 class Token extends Record {
@@ -36,7 +37,7 @@ class StreamingCallbackHttpResponse extends Record {
 }
 
 @func([text], StreamingCallbackHttpResponse, 'query')
-class Callback {}
+class Callback extends Func {}
 
 class CallbackStrategy extends Record {
     @candid(Callback)
@@ -106,7 +107,10 @@ export default class extends Service {
                         body: encode('Counter'),
                         streaming_strategy: Some({
                             Callback: {
-                                callback: [ic.id(), 'http_streaming'],
+                                callback: new Callback(
+                                    ic.id(),
+                                    'http_streaming'
+                                ),
                                 token: {
                                     arbitrary_data: 'start'
                                 }

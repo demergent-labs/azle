@@ -4,7 +4,7 @@ import { IDL } from './index';
 import { blob, nat, nat32, nat64, Void, Opt } from './primitives';
 import { RejectionCode } from './system_types';
 import { v4 } from 'uuid';
-import { CandidClass, toCandidClass } from './utils';
+import { CandidClass, toIDLType } from './utils';
 
 // declare var globalThis: {
 //     ic: Ic;
@@ -732,8 +732,8 @@ export const ic: Ic = globalThis._azleIc
                   const bytes = new Uint8Array(IDL.encode([], [])).buffer;
                   return globalThis._azleIc.replyRaw(bytes);
               }
-              const candidType = toCandidClass(type, []);
-              const bytes = new Uint8Array(IDL.encode([candidType], [reply]))
+              const idlType = toIDLType(type, []);
+              const bytes = new Uint8Array(IDL.encode([idlType], [reply]))
                   .buffer;
               return globalThis._azleIc.replyRaw(bytes);
           },

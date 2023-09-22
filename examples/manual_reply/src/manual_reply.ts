@@ -121,11 +121,6 @@ export default class extends Service {
         ic.reply(1245.678, float32);
     }
 
-    @update([], Tuple(text, text), { manual: true })
-    updateInlineType(): Manual<[text, text]> {
-        ic.reply(['Hello', 'World'], Tuple(text, text));
-    }
-
     @update([], int8, { manual: true })
     updateInt8(): Manual<int8> {
         ic.reply(-100, int8);
@@ -216,12 +211,6 @@ export default class extends Service {
     queryFloat32(): Manual<float32> {
         ic.reply(1245.678, float32);
     }
-
-    // TODO: Inline Types not currently supported.
-    // See https://github.com/demergent-labs/azle/issues/474
-    // queryInlineType(): Manual<{> prop: string } {
-    //     ic.reply({ prop: 'prop' });
-    // }
 
     @query([], int8, { manual: true })
     queryInt8(): Manual<int8> {

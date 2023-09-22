@@ -25,7 +25,8 @@ import {
     Variant,
     Vec,
     candid,
-    principal
+    principal,
+    Func
 } from '../../src/lib_new';
 import {
     ICRC1Account,
@@ -279,7 +280,7 @@ export class QueryArchiveResult extends Variant {
 
 // A function that is used for fetching archived ledger blocks.
 @func([GetBlocksArgs], QueryArchiveResult, 'query')
-class QueryArchiveFn {}
+class QueryArchiveFn extends Func {}
 
 class ArchivedBlock extends Record {
     // The index of the first archived block that can be fetched using the callback.

@@ -9,7 +9,8 @@ import {
     Null,
     nat64,
     nat,
-    func
+    func,
+    Func
 } from '../../src/lib_new';
 
 export class HttpHeader extends Record {
@@ -63,7 +64,7 @@ export class HttpTransformArgs extends Record {
 }
 
 @func([HttpTransformArgs], HttpResponse, 'query')
-export class HttpTransformFunc {}
+export class HttpTransformFunc extends Func {}
 
 export class HttpTransform extends Record {
     /**

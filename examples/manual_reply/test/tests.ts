@@ -64,16 +64,6 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'update reply with inlineType',
-            test: async () => {
-                const result = await manualReplyCanister.updateInlineType();
-
-                return {
-                    Ok: result[0] === 'Hello' && result[1] === 'World'
-                };
-            }
-        },
-        {
             name: 'update reply with int8',
             test: async () => {
                 const result = await manualReplyCanister.updateInt8();
