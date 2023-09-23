@@ -9,6 +9,7 @@ export function Variant<T>(obj: T): RequireExactlyOne<{
     const name = v4();
 
     return {
+        ...obj,
         getIDL(parents: any) {
             const idl = IDL.Rec();
             idl.fill(

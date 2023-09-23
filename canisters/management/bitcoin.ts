@@ -2,7 +2,6 @@
 
 import {
     blob,
-    candid,
     nat32,
     nat64,
     Null,
@@ -11,7 +10,7 @@ import {
     text,
     Variant,
     Vec
-} from '../../src/lib_new';
+} from '../../src/lib_functional';
 
 export type BitcoinAddress = text;
 export const BitcoinAddress = text;
@@ -24,97 +23,57 @@ export const MillisatoshiPerByte = nat64;
 export type Satoshi = nat64;
 export const Satoshi = nat64;
 
-export class BitcoinNetwork extends Variant {
-    @candid(Null)
-    Mainnet?: Null;
+export const BitcoinNetwork = Variant({
+    Mainnet: Null,
+    Regtest: Null,
+    Testnet: Null
+});
 
-    @candid(Null)
-    Regtest?: Null;
+export const Outpoint = Record({
+    txid: blob,
+    vout: nat32
+});
 
-    @candid(Null)
-    Testnet?: Null;
-}
+export const Utxo = Record({
+    height: nat32,
+    outpoint: Outpoint,
+    value: Satoshi
+});
 
-export class Outpoint extends Record {
-    @candid(blob)
-    txid: blob;
+export const UtxosFilter = Variant({
+    MinConfirmations: nat32,
+    Page: Page
+});
 
-    @candid(nat32)
-    vout: nat32;
-}
+export const GetBalanceArgs = Record({
+    address: BitcoinAddress,
+    min_confirmations: Opt(nat32),
+    network: BitcoinNetwork
+});
 
-export class Utxo extends Record {
-    @candid(nat32)
-    height: nat32;
+export const GetCurrentFeePercentilesArgs = Record({
+    network: BitcoinNetwork
+});
 
-    @candid(Outpoint)
-    outpoint: Outpoint;
+export const GetUtxosArgs = Record({
+    address: BitcoinAddress,
+    filter: Opt(UtxosFilter),
+    network: BitcoinNetwork
+});
 
-    @candid(Satoshi)
-    value: Satoshi;
-}
+export const GetUtxosResult = Record({
+    next_page: Opt(Page),
+    tip_block_hash: BlockHash,
+    tip_height: nat32,
+    utxos: Vec(Utxo)
+});
 
-export class UtxosFilter extends Variant {
-    @candid(nat32)
-    MinConfirmations?: nat32;
+export const SendTransactionArgs = Record({
+    transaction: blob,
+    network: BitcoinNetwork
+});
 
-    @candid(Page)
-    Page?: Page;
-}
-
-export class GetBalanceArgs extends Record {
-    @candid(BitcoinAddress)
-    address: BitcoinAddress;
-
-    @candid(Opt(nat32))
-    min_confirmations: Opt<nat32>;
-
-    @candid(BitcoinNetwork)
-    network: BitcoinNetwork;
-}
-
-export class GetCurrentFeePercentilesArgs extends Record {
-    @candid(BitcoinNetwork)
-    network: BitcoinNetwork;
-}
-
-export class GetUtxosArgs extends Record {
-    @candid(BitcoinAddress)
-    address: BitcoinAddress;
-
-    @candid(Opt(UtxosFilter))
-    filter: Opt<UtxosFilter>;
-
-    @candid(BitcoinNetwork)
-    network: BitcoinNetwork;
-}
-
-export class GetUtxosResult extends Record {
-    @candid(Opt(Page))
-    next_page: Opt<Page>;
-
-    @candid(BlockHash)
-    tip_block_hash: BlockHash;
-
-    @candid(nat32)
-    tip_height: nat32;
-
-    @candid(Vec(Utxo))
-    utxos: Vec<Utxo>;
-}
-
-export class SendTransactionArgs extends Record {
-    @candid(blob)
-    transaction: blob;
-
-    @candid(BitcoinNetwork)
-    network: BitcoinNetwork;
-}
-
-export class SendTransactionError extends Variant {
-    @candid(Null)
-    MalformedTransaction?: Null;
-
-    @candid(Null)
-    QueueFull?: Null;
-}
+export const SendTransactionError = Variant({
+    MalformedTransaction: Null,
+    QueueFull: Null
+});

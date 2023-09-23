@@ -10,9 +10,8 @@ const BITCOIN_API_CYCLE_COST = 100_000_000n;
 const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
 const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
-export default class extends Service {
-    @update([text], Satoshi)
-    async getBalance(address: string): Promise<Satoshi> {
+export default Service({
+    getBalance: update([text], Satoshi, async (address) => {
         return await ic.call(managementCanister.bitcoin_get_balance, {
             args: [
                 {
@@ -23,10 +22,8 @@ export default class extends Service {
             ],
             cycles: BITCOIN_API_CYCLE_COST
         });
-    }
-
-    @update([], Vec(MillisatoshiPerByte))
-    async getCurrentFeePercentiles(): Promise<Vec<MillisatoshiPerByte>> {
+    }),
+    getCurrentFeePercentiles: update([], Vec(MillisatoshiPerByte), async () => {
         return await ic.call(
             managementCanister.bitcoin_get_current_fee_percentiles,
             {
@@ -38,10 +35,8 @@ export default class extends Service {
                 cycles: BITCOIN_API_CYCLE_COST
             }
         );
-    }
-
-    @update([text], GetUtxosResult)
-    async getUtxos(address: text): Promise<GetUtxosResult> {
+    }),
+    getUtxos: update([text], GetUtxosResult, async (address) => {
         return await ic.call(managementCanister.bitcoin_get_utxos, {
             args: [
                 {
@@ -52,10 +47,8 @@ export default class extends Service {
             ],
             cycles: BITCOIN_API_CYCLE_COST
         });
-    }
-
-    @update([blob], bool)
-    async sendTransaction(transaction: blob): Promise<bool> {
+    }),
+    sendTransaction: update([blob], bool, async (transaction) => {
         const transactionFee =
             BITCOIN_BASE_TRANSACTION_COST +
             BigInt(transaction.length) *
@@ -72,5 +65,5 @@ export default class extends Service {
         });
 
         return true;
-    }
-}
+    })
+});
