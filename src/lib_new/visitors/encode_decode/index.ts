@@ -119,7 +119,7 @@ export function visitVariant(
     }
     const candidFields = fields.reduce((acc, [memberName, memberIdl]) => {
         const fieldData = data.js_data[memberName];
-        const fieldClass = data.js_class._azleCandidMap[memberName];
+        const fieldClass = data.js_class[memberName];
         if (fieldData === undefined) {
             // If the field data is undefined then it is not the variant that was used
             return acc;
@@ -132,7 +132,8 @@ export function visitVariant(
             })
         };
     }, {});
-    return data.js_class.create(candidFields);
+
+    return candidFields;
 }
 
 export function visitRec<T>(

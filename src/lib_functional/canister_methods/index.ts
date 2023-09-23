@@ -32,7 +32,7 @@ export function executeMethod(
 ) {
     const decoded = IDL.decode(paramCandid[0] as any, args[0]);
 
-    const myDecodedObject = paramCandid[0].map((idl, index) => {
+    const myDecodedObject = paramCandid[0].map((idl: any, index: any) => {
         return idl.accept(new DecodeVisitor(), {
             js_class: paramsIdls[index],
             js_data: decoded[index]
@@ -54,7 +54,7 @@ export function executeMethod(
 
                 // if (!manual) {
                 // const encodeReadyResult = result === undefined ? [] : [result];
-                const encodeReadyResult = returnCandid[0].map((idl) => {
+                const encodeReadyResult = returnCandid[0].map((idl: any) => {
                     return idl.accept(new EncodeVisitor(), {
                         js_class: returnIdl,
                         js_data: result
@@ -72,7 +72,7 @@ export function executeMethod(
             });
     } else {
         // const encodeReadyResult = result === undefined ? [] : [result];
-        const encodeReadyResult = returnCandid[0].map((idl) => {
+        const encodeReadyResult = returnCandid[0].map((idl: any) => {
             return idl.accept(new EncodeVisitor(), {
                 js_class: returnIdl,
                 js_data: result

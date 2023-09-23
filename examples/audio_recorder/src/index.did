@@ -1,21 +1,21 @@
-type rec_0 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
-type rec_1 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
 type rec_2 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
 type rec_3 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
-type rec_4 = variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal};
-type rec_5 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
+type rec_4 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
+type rec_5 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
 type rec_6 = variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal};
 type rec_7 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
-type rec_8 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
+type rec_8 = variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal};
 type rec_9 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
-type rec_10 = variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal};
+type rec_10 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
+type rec_11 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
+type rec_12 = variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal};
 service: () -> {
-    createUser: (text) -> (rec_0);
-    readUsers: () -> (vec rec_1) query;
-    readUserById: (principal) -> (opt rec_2) query;
-    deleteUser: (principal) -> (variant {Ok:rec_3; Err:rec_4});
-    createRecording: (vec nat8, text, principal) -> (variant {Ok:rec_5; Err:rec_6});
-    readRecordings: () -> (vec rec_7) query;
-    readRecordingById: (principal) -> (opt rec_8) query;
-    deleteRecording: (principal) -> (variant {Ok:rec_9; Err:rec_10});
+    createUser: (text) -> (rec_2);
+    readUsers: () -> (vec rec_3) query;
+    readUserById: (principal) -> (opt rec_4) query;
+    deleteUser: (principal) -> (variant {Ok:rec_5; Err:rec_6});
+    createRecording: (vec nat8, text, principal) -> (variant {Ok:rec_7; Err:rec_8});
+    readRecordings: () -> (vec rec_9) query;
+    readRecordingById: (principal) -> (opt rec_10) query;
+    deleteRecording: (principal) -> (variant {Ok:rec_11; Err:rec_12});
 }
