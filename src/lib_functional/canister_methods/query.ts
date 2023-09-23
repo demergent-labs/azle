@@ -23,15 +23,23 @@ export function query<
         paramCandid[2]
     );
 
+    // TODO maybe the cross canister callback should be made here?
     const finalCallback =
         callback === undefined
             ? undefined
             : (...args: any[]) => {
-                  executeMethod(paramCandid, returnCandid, args, callback);
+                  executeMethod(
+                      paramCandid,
+                      returnCandid,
+                      args,
+                      callback,
+                      paramsIdls as any,
+                      returnIdl
+                  );
               };
 
     return {
-        type: 'query',
+        mode: 'query',
         callback: finalCallback,
         candid: `(${paramCandid[1].join(', ')}) -> (${returnCandid[1]}) query;`,
         candidTypes: newTypesToStingArr(returnCandid[2]),

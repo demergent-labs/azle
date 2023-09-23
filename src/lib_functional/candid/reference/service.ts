@@ -1,5 +1,10 @@
 import { Principal, TypeMapping } from '../../';
-import { serviceCall } from '../../../lib_new';
+import { IDL, ServiceFunctionInfo, serviceCall } from '../../../lib_new';
+import {
+    Parent,
+    toParamIDLTypes,
+    toReturnIDLType
+} from '../../../lib_new/utils';
 import { CanisterMethodInfo } from '../../canister_methods';
 
 type ServiceOptions = {
@@ -17,32 +22,45 @@ type ServiceReturn<T extends ServiceOptions> = {
         : never;
 };
 
+type CallableObject<T extends ServiceOptions> = {
+    (principal: Principal): CallableObject<T>;
+} & ServiceReturn<T>;
+
 export function Service<T extends ServiceOptions>(
-    serviceOptions: T,
-    principal?: Principal
-): ServiceReturn<T> {
+    serviceOptions: T
+): CallableObject<T> {
     const callbacks = Object.entries(serviceOptions).reduce((acc, entry) => {
         const key = entry[0];
         const value = entry[1];
 
-        if (value.callback === undefined) {
-            return {
-                ...acc,
-                [key]: (...args: any[]) => {
+        // if (principal === undefined) {
+        //     return {
+        //         ...acc,
+        //         [key]: (...args: any[]) => {
+        //             return serviceCall(
+        //                 principal as any,
+        //                 key,
+        //                 value.paramsIdls,
+        //                 value.returnIdl
+        //             )(...args);
+        //         }
+        //     };
+        // } else {
+        return {
+            ...acc,
+            [key]: {
+                canisterCallback: value.callback,
+                crossCanisterCallback: (...args: any[]) => {
                     return serviceCall(
-                        principal as any,
+                        this.principal as any,
                         key,
                         value.paramsIdls,
                         value.returnIdl
                     )(...args);
                 }
-            };
-        } else {
-            return {
-                ...acc,
-                [key]: value.callback
-            };
-        }
+            }
+        };
+        // }
     }, {});
 
     const candidTypes = Object.values(serviceOptions).reduce(
@@ -57,7 +75,7 @@ export function Service<T extends ServiceOptions>(
             const key = entry[0];
             const value = entry[1];
 
-            return value.type === 'query';
+            return value.mode === 'query';
         })
         .map((entry) => {
             const key = entry[0];
@@ -73,7 +91,7 @@ export function Service<T extends ServiceOptions>(
             const key = entry[0];
             const value = entry[1];
 
-            return value.type === 'update';
+            return value.mode === 'update';
         })
         .map((entry) => {
             const key = entry[0];
@@ -84,22 +102,134 @@ export function Service<T extends ServiceOptions>(
             };
         });
 
-    // TODO loop through each key and simply grab the candid off
-    // TODO grab the init/post_upgrade candid as well
-    return {
-        candid: `${
-            candidTypes.length === 0 ? '' : candidTypes.join('\n') + '\n'
-        }service: () -> {
+    let returnFunction = (principal: Principal) => {
+        const callbacks = Object.entries(serviceOptions).reduce(
+            (acc, entry) => {
+                const key = entry[0];
+                const value = entry[1];
+
+                // if (principal === undefined) {
+                //     return {
+                //         ...acc,
+                //         [key]: (...args: any[]) => {
+                //             return serviceCall(
+                //                 principal as any,
+                //                 key,
+                //                 value.paramsIdls,
+                //                 value.returnIdl
+                //             )(...args);
+                //         }
+                //     };
+                // } else {
+                return {
+                    ...acc,
+                    [key]: {
+                        canisterCallback: value.callback,
+                        crossCanisterCallback: (...args: any[]) => {
+                            return serviceCall(
+                                principal as any,
+                                key,
+                                value.paramsIdls,
+                                value.returnIdl
+                            )(...args);
+                        }
+                    }
+                };
+                // }
+            },
+            {}
+        );
+
+        return {
+            ...callbacks,
+            principal
+        };
+    };
+
+    returnFunction.candid = `${
+        candidTypes.length === 0 ? '' : candidTypes.join('\n') + '\n'
+    }service: () -> {
     ${Object.entries(serviceOptions)
         .map((entry) => {
             return `${entry[0]}: ${entry[1].candid}`;
         })
         .join('\n    ')}
 }
-`,
-        queries,
-        updates,
-        callbacks,
-        ...callbacks // TODO then we can't use any names that could collide in this object
-    } as any;
+`;
+
+    returnFunction.queries = queries;
+    returnFunction.updates = updates;
+    returnFunction.callbacks = callbacks;
+    returnFunction.getIDL = (parents: Parent[]): IDL.ServiceClass => {
+        const serviceFunctionInfo: ServiceFunctionInfo = serviceOptions;
+
+        const record = Object.entries(serviceFunctionInfo).reduce(
+            (accumulator, [methodName, functionInfo]) => {
+                const paramRealIdls = toParamIDLTypes(functionInfo.paramsIdls);
+                const returnRealIdl = toReturnIDLType(functionInfo.returnIdl);
+
+                const annotations =
+                    functionInfo.mode === 'update' ? [] : ['query'];
+
+                return {
+                    ...accumulator,
+                    [methodName]: IDL.Func(
+                        paramRealIdls,
+                        returnRealIdl,
+                        annotations
+                    )
+                };
+            },
+            {} as Record<string, IDL.FuncClass>
+        );
+
+        return IDL.Service(record);
+    };
+
+    return returnFunction;
+
+    // TODO loop through each key and simply grab the candid off
+    // TODO grab the init/post_upgrade candid as well
+    //     return {
+    //         candid: `${
+    //             candidTypes.length === 0 ? '' : candidTypes.join('\n') + '\n'
+    //         }service: () -> {
+    //     ${Object.entries(serviceOptions)
+    //         .map((entry) => {
+    //             return `${entry[0]}: ${entry[1].candid}`;
+    //         })
+    //         .join('\n    ')}
+    // }
+    // `,
+    //         queries,
+    //         updates,
+    //         callbacks,
+    //         principal,
+    //         ...callbacks, // TODO then we can't use any names that could collide in this object
+    //         getIDL(parents: Parent[]): IDL.ServiceClass {
+    //             const serviceFunctionInfo: ServiceFunctionInfo = serviceOptions;
+
+    //             const record = Object.entries(serviceFunctionInfo).reduce(
+    //                 (accumulator, [methodName, functionInfo]) => {
+    //                     const paramRealIdls = toParamIDLTypes(functionInfo.paramsIdls);
+    //                     const returnRealIdl = toReturnIDLType(functionInfo.returnIdl);
+
+    //                     const annotations =
+    //                         functionInfo.mode === 'update' ? [] : ['query'];
+
+    //                     return {
+    //                         ...accumulator,
+    //                         [methodName]: IDL.Func(
+    //                             paramRealIdls,
+    //                             returnRealIdl,
+    //                             annotations
+    //                         )
+    //                     };
+    //                 },
+    //                 {} as Record<string, IDL.FuncClass>
+    //             );
+
+    //             return IDL.Service(record);
+    //         }
+    //     } as any;
 }

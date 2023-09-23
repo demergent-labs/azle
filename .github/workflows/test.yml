@@ -66,7 +66,6 @@
 # "examples/robust_imports",
 # "examples/run_time_errors",
 # "examples/rust_type_conversions",
-# "examples/service",
 # "examples/stable_structures",
 # "examples/tuple_types",
 
@@ -119,6 +118,7 @@ jobs:
                     "examples/principal",
                     "examples/query",
                     "examples/randomness",
+                    "examples/service",
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",
                     "examples/stable_memory",

@@ -455,7 +455,7 @@ export const ic: Ic = globalThis._azleIc
               return new Uint8Array(globalThis._azleIc.argDataRaw());
           },
           call: (method, config) => {
-              return method(
+              return method.crossCanisterCallback(
                   '_AZLE_CROSS_CANISTER_CALL',
                   false,
                   ic.callRaw,

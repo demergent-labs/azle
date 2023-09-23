@@ -59,13 +59,12 @@ export function visitVec(
     if (ty instanceof IDL.PrimitiveType) {
         return data.js_data;
     }
-    const vec_elems = data.js_data.map((array_elem: any) => {
+    return data.js_data.map((array_elem: any) => {
         return ty.accept(visitor, {
             js_data: array_elem,
             js_class: data.js_class._azleType
         });
     });
-    return [...vec_elems];
 }
 
 export function visitRecord(
@@ -75,7 +74,7 @@ export function visitRecord(
 ): VisitorResult {
     const candidFields = fields.reduce((acc, [memberName, memberIdl]) => {
         const fieldData = data.js_data[memberName];
-        const fieldClass = data.js_class._azleCandidMap[memberName];
+        const fieldClass = data.js_class[memberName];
 
         return {
             ...acc,
@@ -85,7 +84,8 @@ export function visitRecord(
             })
         };
     }, {});
-    return data.js_class.create(candidFields);
+
+    return candidFields;
 }
 
 export function visitVariant(

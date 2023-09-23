@@ -1,12 +1,16 @@
 import { IDL } from '../../lib_new/index';
 import { ic } from '../../lib_new/ic';
 import { TypeMapping } from '..';
+import {
+    DecodeVisitor,
+    EncodeVisitor
+} from '../../lib_new/visitors/encode_decode';
 
 export * from './query';
 export * from './update';
 
 export type CanisterMethodInfo<T extends ReadonlyArray<any>, K> = {
-    type: 'query' | 'update';
+    mode: 'query' | 'update';
     callback?: (...args: any) => any;
     candid: string;
     candidTypes: string[];
@@ -22,11 +26,20 @@ export function executeMethod(
     paramCandid: any,
     returnCandid: any,
     args: any[],
-    callback: any
+    callback: any,
+    paramsIdls: any[],
+    returnIdl: any
 ) {
     const decoded = IDL.decode(paramCandid[0] as any, args[0]);
 
-    const result = callback(...decoded);
+    const myDecodedObject = paramCandid[0].map((idl, index) => {
+        return idl.accept(new DecodeVisitor(), {
+            js_class: paramsIdls[index],
+            js_data: decoded[index]
+        });
+    });
+
+    const result = callback(...myDecodedObject);
 
     if (
         result !== undefined &&
@@ -40,7 +53,13 @@ export function executeMethod(
                 console.log(`final instructions: ${ic.instructionCounter()}`);
 
                 // if (!manual) {
-                const encodeReadyResult = result === undefined ? [] : [result];
+                // const encodeReadyResult = result === undefined ? [] : [result];
+                const encodeReadyResult = returnCandid[0].map((idl) => {
+                    return idl.accept(new EncodeVisitor(), {
+                        js_class: returnIdl,
+                        js_data: result
+                    });
+                });
                 const encoded = IDL.encode(
                     returnCandid[0] as any,
                     encodeReadyResult
@@ -52,7 +71,13 @@ export function executeMethod(
                 ic.trap(error.toString());
             });
     } else {
-        const encodeReadyResult = result === undefined ? [] : [result];
+        // const encodeReadyResult = result === undefined ? [] : [result];
+        const encodeReadyResult = returnCandid[0].map((idl) => {
+            return idl.accept(new EncodeVisitor(), {
+                js_class: returnIdl,
+                js_data: result
+            });
+        });
 
         // if (!manual) {
         const encoded = IDL.encode(returnCandid[0] as any, encodeReadyResult);
