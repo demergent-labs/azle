@@ -37,7 +37,10 @@ export function generateRustCanister(
         ts_root: join(process.cwd(), canisterConfig.ts),
         alias_tables: aliasTables,
         alias_lists: aliasLists,
-        canister_methods: canisterMethods
+        // TODO The spread is because canisterMethods is a function with properties
+        canister_methods: {
+            ...canisterMethods
+        } // TODO we should probably just grab the props out that we need
     };
 
     const compilerInfoPath = join(

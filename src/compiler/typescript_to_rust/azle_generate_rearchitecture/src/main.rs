@@ -280,7 +280,8 @@ fn main() -> Result<(), String> {
                 let exports = global.get_property("exports").unwrap();
                 let canister_methods = exports.get_property("canisterMethods").unwrap();
                 let callbacks = canister_methods.get_property("callbacks").unwrap();
-                let method = callbacks.get_property(function_name).unwrap();
+                let methodCallbacks = callbacks.get_property(function_name).unwrap();
+                let canisterMethodCallback = methodCallbacks.get_property("canisterCallback").unwrap();
 
                 let candid_args = if pass_arg_data { ic_cdk::api::call::arg_data_raw() } else { vec![] };
 
@@ -288,7 +289,7 @@ fn main() -> Result<(), String> {
                 let candid_args_js_value_ref = to_qjs_value(&context, &candid_args_js_value).unwrap();
 
                 // TODO I am not sure what the first parameter to call is supposed to be
-                method.call(&method, &[candid_args_js_value_ref]).unwrap();
+                canisterMethodCallback.call(&canisterMethodCallback, &[candid_args_js_value_ref]).unwrap();
 
                 context.execute_pending().unwrap();
             });

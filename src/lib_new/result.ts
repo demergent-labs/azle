@@ -2,7 +2,7 @@ import { RequireExactlyOne } from '../lib/candid_types/variant';
 import { IDL } from './index';
 import { CandidClass, Parent, toIDLType } from './utils';
 
-export class AzleResult {
+export class AzleResult<T, K> {
     constructor(ok: any, err: any) {
         this._azleOk = ok;
         this._azleErr = err;

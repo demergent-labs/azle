@@ -18,7 +18,7 @@ import {
 
 export class DecodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
     visitService(t: IDL.ServiceClass, data: VisitorData): VisitorResult {
-        return new data.js_class(data.js_data);
+        return data.js_class(data.js_data);
     }
     visitFunc(t: IDL.FuncClass, data: VisitorData): VisitorResult {
         return new data.js_class(data.js_data[0], data.js_data[1]);

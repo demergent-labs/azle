@@ -19,7 +19,7 @@ import {
 
 export class EncodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
     visitService(t: IDL.ServiceClass, data: VisitorData): VisitorResult {
-        return data.js_data.canisterId;
+        return data.js_data.principal;
     }
     visitFunc(t: IDL.FuncClass, data: VisitorData): VisitorResult {
         return [data.js_data.principal, data.js_data.name];

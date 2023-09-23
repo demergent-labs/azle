@@ -1,6 +1,5 @@
 import {
     blob,
-    candid,
     ic,
     nat64,
     Opt,
@@ -17,194 +16,161 @@ import {
     Vec
 } from 'azle';
 
-class User extends Record {
-    @candid(principal)
-    id: Principal;
+const User = Record({
+    id: principal,
+    createdAt: nat64,
+    recordingIds: Vec(principal),
+    username: text
+});
 
-    @candid(nat64)
-    createdAt: nat64;
+const Recording = Record({
+    id: principal,
+    audio: blob,
+    createdAt: nat64,
+    name: text,
+    userId: principal
+});
 
-    @candid(Vec(principal))
-    recordingIds: Vec<Principal>;
+const AudioRecorderError = Variant({
+    RecordingDoesNotExist: principal,
+    UserDoesNotExist: principal
+});
 
-    @candid(text)
-    username: text;
-}
+let users = StableBTreeMap(principal, User, 0);
+let recordings = StableBTreeMap(principal, Recording, 1);
 
-class Recording extends Record {
-    @candid(principal)
-    id: Principal;
-
-    @candid(blob)
-    audio: blob;
-
-    @candid(nat64)
-    createdAt: nat64;
-
-    @candid(text)
-    name: text;
-
-    @candid(principal)
-    userId: Principal;
-}
-
-class AudioRecorderError extends Variant {
-    @candid(principal)
-    RecordingDoesNotExist: Principal;
-
-    @candid(principal)
-    UserDoesNotExist: Principal;
-}
-
-export default class extends Service {
-    users = new StableBTreeMap<Principal, User>(principal, User as any, 0);
-    recordings = new StableBTreeMap<Principal, Recording>(
-        principal,
-        Recording as any,
-        1
-    );
-
-    @update([text], User)
-    createUser(username: text): User {
+export default Service({
+    createUser: update([text], User, (username) => {
         const id = generateId();
-        const user: User = {
+        const user: typeof User = {
             id,
             createdAt: ic.time(),
             recordingIds: [],
             username
         };
 
-        this.users.insert(user.id, user);
+        users.insert(user.id, user);
 
         return user;
-    }
-
-    @query([], Vec(User))
-    readUsers(): Vec<User> {
-        return this.users.values();
-    }
-
-    @query([principal], Opt(User))
-    readUserById(id: Principal): Opt<User> {
-        return this.users.get(id);
-    }
-
-    @update([principal], Result(User, AudioRecorderError))
-    deleteUser(id: Principal): Result<User, AudioRecorderError> {
-        const userOpt = this.users.get(id);
+    }),
+    readUsers: query([], Vec(User), () => {
+        return users.values();
+    }),
+    readUserById: query([principal], Opt(User), (id) => {
+        return users.get(id);
+    }),
+    deleteUser: update([principal], Result(User, AudioRecorderError), (id) => {
+        const userOpt = users.get(id);
 
         if (userOpt.length === 0) {
             return {
-                Err: AudioRecorderError.create({
+                Err: {
                     UserDoesNotExist: id
-                })
+                }
             };
         }
 
         const user = userOpt[0];
 
         user.recordingIds.forEach((recordingId) => {
-            this.recordings.remove(recordingId);
+            recordings.remove(recordingId);
         });
 
-        this.users.remove(user.id);
+        users.remove(user.id);
 
         return {
             Ok: user
         };
-    }
+    }),
+    createRecording: update(
+        [blob, text, principal],
+        Result(Recording, AudioRecorderError),
+        (audio: blob, name: text, userId: Principal) => {
+            const userOpt = users.get(userId);
 
-    @update([blob, text, principal], Result(Recording, AudioRecorderError))
-    createRecording(
-        audio: blob,
-        name: text,
-        userId: Principal
-    ): Result<Recording, AudioRecorderError> {
-        const userOpt = this.users.get(userId);
+            if (userOpt.length === 0) {
+                return {
+                    Err: {
+                        UserDoesNotExist: userId
+                    }
+                };
+            }
 
-        if (userOpt.length === 0) {
+            const user = userOpt[0];
+
+            const id = generateId();
+            const recording: typeof Recording = {
+                id,
+                audio,
+                createdAt: ic.time(),
+                name,
+                userId
+            };
+
+            recordings.insert(recording.id, recording);
+
+            const updatedUser: typeof User = {
+                ...user,
+                recordingIds: [...user.recordingIds, recording.id]
+            };
+
+            users.insert(updatedUser.id, updatedUser);
+
             return {
-                Err: AudioRecorderError.create({
-                    UserDoesNotExist: userId
-                })
+                Ok: recording
             };
         }
+    ),
+    readRecordings: query([], Vec(Recording), () => {
+        return recordings.values();
+    }),
+    readRecordingById: query([principal], Opt(Recording), (id) => {
+        return recordings.get(id);
+    }),
+    deleteRecording: update(
+        [principal],
+        Result(Recording, AudioRecorderError),
+        (id) => {
+            const recordingOpt = recordings.get(id);
 
-        const user = userOpt[0];
+            if (recordingOpt.length === 0) {
+                return {
+                    Err: { RecordingDoesNotExist: id }
+                };
+            }
 
-        const id = generateId();
-        const recording: Recording = {
-            id,
-            audio,
-            createdAt: ic.time(),
-            name,
-            userId
-        };
+            const recording = recordingOpt[0];
 
-        this.recordings.insert(recording.id, recording);
+            const userOpt = users.get(recording.userId);
 
-        const updatedUser: User = {
-            ...user,
-            recordingIds: [...user.recordingIds, recording.id]
-        };
+            if (userOpt.length === 0) {
+                return {
+                    Err: {
+                        UserDoesNotExist: recording.userId
+                    }
+                };
+            }
 
-        this.users.insert(updatedUser.id, updatedUser);
+            const user = userOpt[0];
 
-        return {
-            Ok: recording
-        };
-    }
+            const updatedUser: typeof User = {
+                ...user,
+                recordingIds: user.recordingIds.filter(
+                    (recordingId) =>
+                        recordingId.toText() !== recording.id.toText()
+                )
+            };
 
-    @query([], Vec(Recording))
-    readRecordings(): Vec<Recording> {
-        return this.recordings.values();
-    }
+            users.insert(updatedUser.id, updatedUser);
 
-    @query([principal], Opt(Recording))
-    readRecordingById(id: Principal): Opt<Recording> {
-        return this.recordings.get(id);
-    }
+            recordings.remove(id);
 
-    @update([principal], Result(Recording, AudioRecorderError))
-    deleteRecording(id: Principal): Result<Recording, AudioRecorderError> {
-        const recordingOpt = this.recordings.get(id);
-
-        if (recordingOpt.length === 0) {
             return {
-                Err: AudioRecorderError.create({ RecordingDoesNotExist: id })
+                Ok: recording
             };
         }
-
-        const recording = recordingOpt[0];
-
-        const userOpt = this.users.get(recording.userId);
-
-        if (userOpt.length === 0) {
-            return {
-                Err: AudioRecorderError.create({
-                    UserDoesNotExist: recording.userId
-                })
-            };
-        }
-
-        const user = userOpt[0];
-
-        const updatedUser: User = {
-            ...user,
-            recordingIds: user.recordingIds.filter(
-                (recordingId) => recordingId.toText() !== recording.id.toText()
-            )
-        };
-
-        this.users.insert(updatedUser.id, updatedUser);
-
-        this.recordings.remove(id);
-
-        return {
-            Ok: recording
-        };
-    }
-}
+    )
+});
 
 function generateId(): Principal {
     const randomBytes = new Array(29)
