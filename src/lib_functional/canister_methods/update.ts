@@ -1,6 +1,8 @@
 import {
+    MethodArgs,
     handleRecursiveParams,
     handleRecursiveReturn,
+    isAsync,
     newTypesToStingArr
 } from '../../lib_new/method_decorators';
 import { Callback, CanisterMethodInfo, executeMethod } from '.';
@@ -15,7 +17,8 @@ export function update<
     returnIdl: Return,
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Return>
         ? GenericCallback
-        : never
+        : never,
+    methodArgs?: MethodArgs
 ): CanisterMethodInfo<Params, Return> {
     const paramCandid = handleRecursiveParams(paramsIdls as any);
     const returnCandid = handleRecursiveReturn(
@@ -34,7 +37,8 @@ export function update<
                       args,
                       callback,
                       paramsIdls as any,
-                      returnIdl
+                      returnIdl,
+                      methodArgs?.manual ?? false
                   );
               };
 
@@ -44,6 +48,7 @@ export function update<
         candid: `(${paramCandid[1].join(', ')}) -> (${returnCandid[1]});`,
         candidTypes: newTypesToStingArr(returnCandid[2]),
         paramsIdls: paramsIdls as any,
-        returnIdl
+        returnIdl,
+        async: callback === undefined ? false : isAsync(callback)
     };
 }

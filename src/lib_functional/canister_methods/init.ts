@@ -30,7 +30,8 @@ export function init<
                       args,
                       callback,
                       paramsIdls as any,
-                      Void
+                      Void,
+                      false
                   );
               };
 
@@ -40,6 +41,7 @@ export function init<
         candid: paramCandid[1].join(', '),
         candidTypes: newTypesToStingArr(returnCandid[2]),
         paramsIdls: paramsIdls as any,
-        returnIdl: Void
+        returnIdl: Void,
+        async: false
     };
 }

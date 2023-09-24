@@ -240,3 +240,7 @@ export function Tuple(...types: CandidClass[]): AzleTuple {
     // return IDL.Tuple(...idlTypes);
     return new AzleTuple(types);
 }
+
+export function Manual(t: any): void {
+    return t;
+}

@@ -36,7 +36,7 @@ const modeToCandid = {
 };
 
 // TODO add the GuardResult return type
-type MethodArgs = { manual?: boolean; guard?: () => void };
+export type MethodArgs = { manual?: boolean; guard?: () => void };
 
 // Until we can figure how how to type check Funcs, Variants, and Records we are just going to have to use any here
 // export function query(paramsIdls: CandidClass[], returnIdl: ReturnCandidClass) {
@@ -376,7 +376,7 @@ function setupCanisterMethod(
     return descriptor;
 }
 
-function isAsync(originalFunction: any, key: string) {
+export function isAsync(originalFunction: any) {
     if (originalFunction[Symbol.toStringTag] === 'AsyncFunction') {
         return true;
     } else if (originalFunction.constructor.name === 'AsyncFunction') {

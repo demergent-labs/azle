@@ -92,7 +92,8 @@ export function Service<T extends ServiceOptions>(
             const value = entry[1];
 
             return {
-                name: key
+                name: key,
+                composite: value.async
             };
         });
 
