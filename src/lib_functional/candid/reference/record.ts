@@ -9,6 +9,7 @@ export function Record<T>(obj: T): {
     const name = v4();
 
     return {
+        ...obj,
         getIDL(parents: any) {
             const idl = IDL.Rec();
             idl.fill(
