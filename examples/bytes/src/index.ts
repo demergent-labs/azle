@@ -1,8 +1,7 @@
 import { blob, Service, update } from 'azle';
 
-export default class extends Service {
-    @update([blob], blob)
-    getBytes(bytes: blob): blob {
+export default Service({
+    getBytes: update([blob], blob, (bytes) => {
         return bytes;
-    }
-}
+    })
+});
