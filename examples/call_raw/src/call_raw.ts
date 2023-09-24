@@ -1,47 +1,32 @@
-import {
-    ic,
-    nat,
-    nat64,
-    principal,
-    Principal,
-    Result,
-    Service,
-    text,
-    update
-} from 'azle';
+import { ic, nat, nat64, principal, Result, Service, text, update } from 'azle';
 
-export default class extends Service {
-    @update([principal, text, text, nat64], Result(text, text))
-    async executeCallRaw(
-        canisterId: Principal,
-        method: text,
-        candidArgs: text,
-        payment: nat64
-    ): Promise<Result<text, text>> {
-        const result = await ic.callRaw(
-            canisterId,
-            method,
-            ic.candidEncode(candidArgs),
-            payment
-        );
+export default Service({
+    executeCallRaw: update(
+        [principal, text, text, nat64],
+        Result(text, text),
+        async (canisterId, method, candidArgs, payment) => {
+            const result = await ic.callRaw(
+                canisterId,
+                method,
+                ic.candidEncode(candidArgs),
+                payment
+            );
 
-        return Result.Ok(ic.candidDecode(result));
-    }
+            return Result.Ok(ic.candidDecode(result));
+        }
+    ),
+    executeCallRaw128: update(
+        [principal, text, text, nat],
+        Result(text, text),
+        async (canisterId, method, candidArgs, payment) => {
+            const result = await ic.callRaw128(
+                canisterId,
+                method,
+                ic.candidEncode(candidArgs),
+                payment
+            );
 
-    @update([principal, text, text, nat], Result(text, text))
-    async executeCallRaw128(
-        canisterId: Principal,
-        method: text,
-        candidArgs: text,
-        payment: nat
-    ): Promise<Result<text, text>> {
-        const result = await ic.callRaw128(
-            canisterId,
-            method,
-            ic.candidEncode(candidArgs),
-            payment
-        );
-
-        return Result.Ok(ic.candidDecode(result));
-    }
-}
+            return Result.Ok(ic.candidDecode(result));
+        }
+    )
+});
