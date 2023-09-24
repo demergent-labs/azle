@@ -6,7 +6,8 @@
             "root": "src",
             "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/bytes_canister/bytes_canister.wasm.gz",
+            "wasm": ".azle/bytes_canister/bytes_canister.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/bytes_canister",
                 "node_compatibility": true

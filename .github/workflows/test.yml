@@ -14,7 +14,6 @@
 # The check-basic-integration-tests-success job is designed to ensure that all jobs spun up from the matrix in the basic-integration-tests have succeeded
 
 # All Examples TODO restore when https://github.com/demergent-labs/azle/issues/1192 is resolved
-# "examples/bytes",
 # "examples/call_raw",
 # "examples/candid_encoding",
 # "examples/complex_init",
@@ -114,6 +113,7 @@ jobs:
                     "examples/audio_recorder",
                     "examples/bitcoin",
                     "examples/blob_array",
+                    "examples/bytes",
                     "examples/primitive_types",
                     "examples/principal",
                     "examples/query",
