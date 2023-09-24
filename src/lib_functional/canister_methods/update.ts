@@ -28,6 +28,7 @@ export function update<
             ? undefined
             : (...args: any[]) => {
                   executeMethod(
+                      'update',
                       paramCandid,
                       returnCandid,
                       args,

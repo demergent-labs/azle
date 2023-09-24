@@ -50,6 +50,12 @@ fn main() -> Result<(), String> {
 
     let ic = ic::generate();
 
+    let init_method_call = compiler_info.canister_methods.init.map(|init_method| {
+        let js_function_name = &init_method.name;
+
+        quote!(execute_js(#js_function_name, true);)
+    });
+
     let pre_upgrade_method = compiler_info
         .canister_methods
         .pre_upgrade
@@ -218,20 +224,12 @@ fn main() -> Result<(), String> {
             context.eval_global("exports.js", "globalThis.exports = {};").unwrap();
             context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();
 
-            let _azle_init_name = global.get_property("_azleInitName").unwrap();
-            let _azle_init_name_string = if !_azle_init_name.is_undefined() {
-                let _azle_init_name_js_value: JSValue = from_qjs_value(&_azle_init_name).unwrap();
-                _azle_init_name_js_value.try_into().unwrap()
-            } else { "".to_string() };
-
             CONTEXT.with(|ctx| {
                 let mut ctx = ctx.borrow_mut();
                 *ctx = Some(context);
             });
 
-            if _azle_init_name_string != "" {
-                execute_js(&_azle_init_name_string, true);
-            }
+            #init_method_call
         }
 
         #[ic_cdk_macros::post_upgrade]

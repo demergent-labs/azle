@@ -5,46 +5,41 @@ import {
 } from '../../lib_new/method_decorators';
 import { Callback, CanisterMethodInfo, executeMethod } from '.';
 import { TypeMapping } from '../candid';
+import { Void } from '../../lib_new';
 
-export function query<
+export function init<
     const Params extends ReadonlyArray<any>,
-    Return,
-    GenericCallback extends Callback<Params, Return>
+    GenericCallback extends Callback<Params, Void>
 >(
     paramsIdls: Params,
-    returnIdl: Return,
-    callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Return>
+    callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Void>
         ? GenericCallback
         : never
-): CanisterMethodInfo<Params, Return> {
+): CanisterMethodInfo<Params, Void> {
     const paramCandid = handleRecursiveParams(paramsIdls as any);
-    const returnCandid = handleRecursiveReturn(
-        returnIdl as any,
-        paramCandid[2]
-    );
+    const returnCandid = handleRecursiveReturn(Void as any, paramCandid[2]);
 
-    // TODO maybe the cross canister callback should be made here?
     const finalCallback =
         callback === undefined
             ? undefined
             : (...args: any[]) => {
                   executeMethod(
-                      'query',
+                      'init',
                       paramCandid,
                       returnCandid,
                       args,
                       callback,
                       paramsIdls as any,
-                      returnIdl
+                      Void
                   );
               };
 
     return {
-        mode: 'query',
+        mode: 'init',
         callback: finalCallback,
-        candid: `(${paramCandid[1].join(', ')}) -> (${returnCandid[1]}) query;`,
+        candid: paramCandid[1].join(', '),
         candidTypes: newTypesToStingArr(returnCandid[2]),
         paramsIdls: paramsIdls as any,
-        returnIdl
+        returnIdl: Void
     };
 }

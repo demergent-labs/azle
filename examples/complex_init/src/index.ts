@@ -1,32 +1,20 @@
-import {
-    candid,
-    init,
-    Opt,
-    query,
-    Record,
-    Service,
-    text,
-    Tuple,
-    Void
-} from 'azle';
+import { init, Opt, query, Record, Service, text, Tuple } from 'azle';
 
-class User extends Record {
-    @candid(text)
-    id: text;
-}
+const User = Record({
+    id: text
+});
 
-export default class extends Service {
-    greeting: text = 'Hello User';
-    user: Opt<User> = [];
+let greeting: text = 'Hello User';
+let user: Opt<typeof User> = [];
 
-    @init([Tuple(text, User)])
-    init(tuple: Tuple<[string, User]>): Void {
-        this.greeting = tuple[0];
-        this.user = [tuple[1]];
-    }
-
-    @query([], text)
-    greetUser(): text {
-        return `${this.greeting} ${this.user[0]?.id ?? '??'}`;
-    }
-}
+// TODO tuple types aren't done, they don't have TypeScript types
+export default Service({
+    init: init([Tuple(text, User)], (tuple) => {
+        greeting = tuple[0];
+        user = [tuple[1]];
+        return undefined;
+    }),
+    greetUser: query([], text, () => {
+        return `${greeting} ${user[0]?.id ?? '??'}`;
+    })
+});

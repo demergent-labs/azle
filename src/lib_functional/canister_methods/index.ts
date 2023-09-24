@@ -6,11 +6,12 @@ import {
     EncodeVisitor
 } from '../../lib_new/visitors/encode_decode';
 
+export * from './init';
 export * from './query';
 export * from './update';
 
 export type CanisterMethodInfo<T extends ReadonlyArray<any>, K> = {
-    mode: 'query' | 'update';
+    mode: 'query' | 'update' | 'init';
     callback?: (...args: any) => any;
     candid: string;
     candidTypes: string[];
@@ -23,6 +24,7 @@ export type Callback<Params extends ReadonlyArray<any>, Return> = (
 ) => TypeMapping<Return> | Promise<TypeMapping<Return>>;
 
 export function executeMethod(
+    mode: CanisterMethodInfo<any, any>['mode'],
     paramCandid: any,
     returnCandid: any,
     args: any[],
@@ -40,6 +42,10 @@ export function executeMethod(
     });
 
     const result = callback(...myDecodedObject);
+
+    if (mode === 'init') {
+        return;
+    }
 
     if (
         result !== undefined &&
