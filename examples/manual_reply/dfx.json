@@ -6,7 +6,8 @@
             "root": "src",
             "ts": "src/manual_reply.ts",
             "candid": "src/manual_reply.did",
-            "wasm": ".azle/manual_reply/manual_reply.wasm.gz",
+            "wasm": ".azle/manual_reply/manual_reply.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/manual_reply",
                 "node_compatibility": true
