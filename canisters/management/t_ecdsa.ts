@@ -1,0 +1,40 @@
+import {
+    blob,
+    Null,
+    Opt,
+    principal,
+    Record,
+    text,
+    Variant,
+    Vec
+} from '../../src/lib_functional';
+
+export const EcdsaCurve = Variant({
+    secp256k1: Null
+});
+
+export const KeyId = Record({
+    curve: EcdsaCurve,
+    name: text
+});
+
+export const EcdsaPublicKeyArgs = Record({
+    canister_id: Opt(principal),
+    derivation_path: Vec(blob),
+    key_id: KeyId
+});
+
+export const EcdsaPublicKeyResult = Record({
+    public_key: blob,
+    chain_code: blob
+});
+
+export const SignWithEcdsaArgs = Record({
+    message_hash: blob,
+    derivation_path: Vec(blob),
+    key_id: KeyId
+});
+
+export const SignWithEcdsaResult = Record({
+    signature: blob
+});

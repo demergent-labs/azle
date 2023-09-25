@@ -32,10 +32,17 @@ import {
     UpdateSettingsArgs
 } from './canister_management';
 import { HttpRequestArgs, HttpResponse } from './http_request';
+import {
+    EcdsaPublicKeyArgs,
+    EcdsaPublicKeyResult,
+    SignWithEcdsaArgs,
+    SignWithEcdsaResult
+} from './t_ecdsa';
 
 export * from './bitcoin';
 export * from './canister_management';
 export * from './http_request';
+export * from './t_ecdsa';
 
 export const managementCanister = Service({
     // bitcoin
@@ -64,5 +71,8 @@ export const managementCanister = Service({
     // http
     http_request: update([HttpRequestArgs], HttpResponse),
     // randomness
-    raw_rand: update([], blob)
+    raw_rand: update([], blob),
+    // tEcdsa
+    ecdsa_public_key: update([EcdsaPublicKeyArgs], EcdsaPublicKeyResult),
+    sign_with_ecdsa: update([SignWithEcdsaArgs], SignWithEcdsaResult)
 })(Principal.fromText('aaaaa-aa'));

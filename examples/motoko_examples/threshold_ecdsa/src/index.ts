@@ -1,49 +1,39 @@
-import { blob, candid, ic, None, Record, Service, update } from 'azle';
-import {
-    EcdsaCurve,
-    EcdsaPublicKeyArgs,
-    KeyId,
-    managementCanister
-} from 'azle/canisters/management';
+import { blob, ic, None, Record, Service, update } from 'azle';
+import { managementCanister } from 'azle/canisters/management';
 
-class PublicKey extends Record {
-    @candid(blob)
-    publicKey: blob;
-}
+const PublicKey = Record({
+    publicKey: blob
+});
 
-class Signature extends Record {
-    @candid(blob)
-    signature: blob;
-}
+const Signature = Record({
+    signature: blob
+});
 
-export default class extends Service {
-    @update([], PublicKey)
-    async publicKey(): Promise<PublicKey> {
+export default Service({
+    publicKey: update([], PublicKey, async () => {
         const caller = ic.caller().toUint8Array();
 
         const publicKeyResult = await ic.call(
             managementCanister.ecdsa_public_key,
             {
                 args: [
-                    EcdsaPublicKeyArgs.create({
+                    {
                         canister_id: None,
                         derivation_path: [caller],
-                        key_id: KeyId.create({
-                            curve: EcdsaCurve.create({ secp256k1: null }),
+                        key_id: {
+                            curve: { secp256k1: null },
                             name: 'dfx_test_key'
-                        })
-                    })
+                        }
+                    }
                 ]
             }
         );
 
-        return PublicKey.create({
+        return {
             publicKey: publicKeyResult.public_key
-        });
-    }
-
-    @update([blob], Signature)
-    async sign(messageHash: blob): Promise<Signature> {
+        };
+    }),
+    sign: update([blob], Signature, async (messageHash) => {
         if (messageHash.length !== 32) {
             ic.trap('messageHash must be 32 bytes');
         }
@@ -67,8 +57,8 @@ export default class extends Service {
             }
         );
 
-        return Signature.create({
+        return {
             signature: signatureResult.signature
-        });
-    }
-}
+        };
+    })
+});
