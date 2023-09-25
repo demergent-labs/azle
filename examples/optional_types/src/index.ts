@@ -1,72 +1,62 @@
 // TODO let's add more examples here, really test it out
 
-import { Opt, query, Record, Vec, text, bool, candid, Null } from 'azle';
+import { bool, Null, Opt, query, Record, Service, text, Vec } from 'azle';
 
-class Element extends Record {
-    @candid(text)
-    id: string;
-}
+const Element = Record({
+    id: text
+});
 
-class Head extends Record {
-    @candid(Vec(Element))
-    elements: Vec<Element>;
-}
+const Head = Record({
+    elements: Vec(Element)
+});
 
-class Html extends Record {
-    @candid(Opt(Head))
-    head: Opt<Head>;
-}
+const Html = Record({
+    head: Opt(Head)
+});
 
-export default class {
-    @query([], Html)
-    getHtml(): Html {
-        return Html.create({
+export default Service({
+    getHtml: query([], Html, () => {
+        return {
             head: []
-        });
-    }
+        };
+    }),
 
-    @query([], Opt(Head))
-    getHead(): Opt<Head> {
+    getHead: query([], Opt(Head), () => {
         return [
-            Head.create({
+            {
                 elements: []
-            })
+            }
         ];
-    }
+    }),
 
-    @query([], Opt(Head))
-    getHeadWithElements(): Opt<Head> {
+    getHeadWithElements: query([], Opt(Head), () => {
         return [
-            Head.create({
+            {
                 elements: [
                     {
                         id: '0'
                     }
                 ]
-            })
+            }
         ];
-    }
+    }),
 
-    @query([Opt(Opt(Element))], Opt(Opt(Element)))
-    getElement(element: Opt<Opt<Element>>): Opt<Opt<Element>> {
+    getElement: query([Opt(Opt(Element))], Opt(Opt(Element)), (element) => {
         return element;
-    }
+    }),
 
-    @query([], Null)
-    getNull(): Null {
+    getNull: query([], Null, () => {
         return null;
-    }
+    }),
 
-    @query([], Opt(text))
-    getOptNull(): Opt<text> {
+    getOptNull: query([], Opt(text), () => {
         return [];
-    }
+    }),
 
-    @query([Opt(text)], bool)
-    stringToBoolean(optString: Opt<string>): boolean {
+    stringToBoolean: query([Opt(text)], bool, (optString) => {
         if (optString.length > 0) {
             return true;
         }
         return false;
-    }
-}
+    })
+});
