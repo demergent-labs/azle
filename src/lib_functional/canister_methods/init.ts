@@ -42,6 +42,7 @@ export function init<
         candidTypes: newTypesToStingArr(returnCandid[2]),
         paramsIdls: paramsIdls as any,
         returnIdl: Void,
-        async: false
+        async: false,
+        guard: undefined
     };
 }

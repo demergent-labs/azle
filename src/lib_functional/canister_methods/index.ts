@@ -6,12 +6,13 @@ import {
     EncodeVisitor
 } from '../../lib_new/visitors/encode_decode';
 
+export * from './heartbeat';
 export * from './init';
 export * from './query';
 export * from './update';
 
 export type CanisterMethodInfo<T extends ReadonlyArray<any>, K> = {
-    mode: 'query' | 'update' | 'init';
+    mode: 'query' | 'update' | 'init' | 'heartbeat';
     async: boolean;
     callback?: (...args: any) => any;
     candid: string;
@@ -35,6 +36,22 @@ export function executeMethod(
     returnIdl: any,
     manual: boolean
 ) {
+    if (mode === 'heartbeat') {
+        const result = callback();
+
+        if (
+            result !== undefined &&
+            result !== null &&
+            typeof result.then === 'function'
+        ) {
+            result.catch((error: any) => {
+                ic.trap(error.toString());
+            });
+        }
+
+        return;
+    }
+
     const decoded = IDL.decode(paramCandid[0] as any, args[0]);
 
     const myDecodedObject = paramCandid[0].map((idl: any, index: any) => {

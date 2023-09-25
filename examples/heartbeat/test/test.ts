@@ -3,7 +3,7 @@ import { createActor as create_actor_heartbeat_async } from './dfx_generated/hea
 import { createActor as create_actor_heartbeat_sync } from './dfx_generated/heartbeat_sync';
 import { getTests } from './tests';
 
-const heartbeat_async_canister = create_actor_heartbeat_async(
+const heartbeatAsyncCanister = create_actor_heartbeat_async(
     getCanisterId('heartbeat_async'),
     {
         agentOptions: {
@@ -12,7 +12,7 @@ const heartbeat_async_canister = create_actor_heartbeat_async(
     }
 );
 
-const heartbeat_sync_canister = create_actor_heartbeat_sync(
+const heartbeatSyncCanister = create_actor_heartbeat_sync(
     getCanisterId('heartbeat_sync'),
     {
         agentOptions: {
@@ -21,4 +21,4 @@ const heartbeat_sync_canister = create_actor_heartbeat_sync(
     }
 );
 
-runTests(getTests(heartbeat_async_canister, heartbeat_sync_canister));
+runTests(getTests(heartbeatAsyncCanister, heartbeatSyncCanister));
