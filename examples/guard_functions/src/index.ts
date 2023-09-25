@@ -13,76 +13,97 @@ export let state = {
     heartbeatTick: 0
 };
 
-export default class extends Service {
-    @query([], nat32)
-    getCounter(): nat32 {
+export default Service({
+    getCounter: query([], nat32, () => {
         return state.counter;
-    }
-
-    @query([], bool)
-    identifierAnnotation(): bool {
+    }),
+    identifierAnnotation: query([], bool, () => {
         console.log('identifierAnnotation called');
         return true;
-    }
-
-    @query([], bool)
-    callExpressionWithoutOptionsObject(): bool {
+    }),
+    callExpressionWithoutOptionsObject: query([], bool, () => {
         console.log('callExpressionWithoutOptionsObject called');
         return true;
-    }
-
-    @query([], bool, {})
-    callExpressionWithEmptyOptionsObject(): bool {
-        console.log('callExpressionWithEmptyOptionsObject called');
-        return true;
-    }
-
-    @query([], bool, { guard: allowAll })
-    looselyGuarded(): bool {
-        console.log('looselyGuarded called');
-        return true;
-    }
-
-    @query([], bool, { manual: true, guard: allowAll })
-    looselyGuardedManual(): Manual<bool> {
-        console.log('looselyGuardedManual called');
-        ic.reply(true, bool);
-    }
-
-    // prettier-ignore
-    @query([], bool, { "guard": allowAll })
-    looselyGuardedWithGuardOptionKeyAsString(): bool {
-        console.log('looselyGuardedWithGuardOptionKeyAsString called');
-        return true;
-    }
-
-    @update([], bool, { guard: incrementCounterAndAllowAll })
-    modifyStateGuarded(): bool {
-        console.log('modifyStateGuarded called');
-        return true;
-    }
-
-    @query([], bool, { guard: unpassable })
-    tightlyGuarded(): bool {
-        console.log('tightlyGuarded called');
-        return true;
-    }
-
-    @query([], bool, { guard: throwString })
-    errorStringGuarded(): bool {
-        console.log('errorStringGuarded called');
-        return true;
-    }
-
-    @query([], bool, { guard: throwCustomError })
-    customErrorGuarded(): bool {
-        console.log('customErrorGuarded called');
-        return true;
-    }
-
-    @query([], bool, { guard: returnNonStringErrValue })
-    nonStringErrValueGuarded(): bool {
-        console.log('nonStringErrValueGuarded called');
-        return true;
-    }
-}
+    }),
+    callExpressionWithEmptyOptionsObject: query(
+        [],
+        bool,
+        () => {
+            console.log('callExpressionWithEmptyOptionsObject called');
+            return true;
+        },
+        {}
+    ),
+    looselyGuarded: query(
+        [],
+        bool,
+        () => {
+            console.log('looselyGuarded called');
+            return true;
+        },
+        { guard: allowAll }
+    ),
+    looselyGuardedManual: query(
+        [],
+        Manual(bool),
+        () => {
+            console.log('looselyGuardedManual called');
+            ic.reply(true, bool);
+        },
+        { manual: true, guard: allowAll }
+    ),
+    looselyGuardedWithGuardOptionKeyAsString: query(
+        [],
+        bool,
+        () => {
+            console.log('looselyGuardedWithGuardOptionKeyAsString called');
+            return true;
+        },
+        { guard: allowAll }
+    ),
+    modifyStateGuarded: update(
+        [],
+        bool,
+        () => {
+            console.log('modifyStateGuarded called');
+            return true;
+        },
+        { guard: incrementCounterAndAllowAll }
+    ),
+    tightlyGuarded: query(
+        [],
+        bool,
+        () => {
+            console.log('tightlyGuarded called');
+            return true;
+        },
+        { guard: unpassable }
+    ),
+    errorStringGuarded: query(
+        [],
+        bool,
+        () => {
+            console.log('errorStringGuarded called');
+            return true;
+        },
+        { guard: throwString }
+    ),
+    customErrorGuarded: query(
+        [],
+        bool,
+        () => {
+            console.log('customErrorGuarded called');
+            return true;
+        },
+        { guard: throwCustomError }
+    ),
+    nonStringErrValueGuarded: query(
+        [],
+        bool,
+        () => {
+            console.log('nonStringErrValueGuarded called');
+            return true;
+        },
+        { guard: returnNonStringErrValue }
+    )
+});

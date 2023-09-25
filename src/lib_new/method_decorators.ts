@@ -388,7 +388,7 @@ export function isAsync(originalFunction: any) {
     }
 }
 
-function createGlobalGuard(
+export function createGlobalGuard(
     guard: (() => GuardResult) | undefined,
     functionName: string
 ): string | undefined {
