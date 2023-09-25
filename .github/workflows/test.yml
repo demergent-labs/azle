@@ -20,7 +20,6 @@
 # "examples/motoko_examples/superheroes", # blocked by recursive
 # "examples/robust_imports",
 # "examples/run_time_errors",
-# "examples/rust_type_conversions",
 # "examples/tuple_types",
 
 name: Azle Tests
