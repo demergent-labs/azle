@@ -5,6 +5,7 @@ import { blob, nat, nat32, nat64, AzleNat64, Void, Opt } from './primitives';
 import { RejectionCode } from './system_types';
 import { v4 } from 'uuid';
 import { CandidClass, toIDLType } from './utils';
+import { EncodeVisitor } from './visitors/encode_decode';
 
 // declare var globalThis: {
 //     ic: Ic;
@@ -727,15 +728,22 @@ export const ic: Ic = globalThis._azleIc
                       );
               }
           },
-          reply: (reply: any, type: CandidClass): void => {
+          reply: (data: any, type: CandidClass): void => {
               if (Array.isArray(type) && type.length === 0) {
                   // return type is void
                   const bytes = new Uint8Array(IDL.encode([], [])).buffer;
                   return globalThis._azleIc.replyRaw(bytes);
               }
               const idlType = toIDLType(type, []);
-              const bytes = new Uint8Array(IDL.encode([idlType], [reply]))
-                  .buffer;
+
+              const encodeReadyResult = idlType.accept(new EncodeVisitor(), {
+                  js_class: type,
+                  js_data: data
+              });
+
+              const bytes = new Uint8Array(
+                  IDL.encode([idlType], [encodeReadyResult])
+              ).buffer;
               return globalThis._azleIc.replyRaw(bytes);
           },
           replyRaw: (replyBuffer: blob) => {
