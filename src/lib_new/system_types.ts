@@ -1,32 +1,17 @@
-import { candid } from './index';
-import { Null } from './primitives';
-import { Variant } from './variant';
+import { RequireExactlyOne } from './variant';
 
 /**
  * Indicates an error was encountered during a canister method.
  */
-export class RejectionCode extends Variant {
-    @candid(Null)
-    NoError?: null;
-
-    @candid(Null)
-    SysFatal?: null;
-
-    @candid(Null)
-    SysTransient?: null;
-
-    @candid(Null)
-    DestinationInvalid?: null;
-
-    @candid(Null)
-    CanisterReject?: null;
-
-    @candid(Null)
-    CanisterError?: null;
-
-    @candid(Null)
-    Unknown?: null;
-}
+export type RejectionCode = RequireExactlyOne<{
+    NoError: null;
+    SysFatal: null;
+    SysTransient: null;
+    DestinationInvalid: null;
+    CanisterReject: null;
+    CanisterError: null;
+    Unknown: null;
+}>;
 
 // TODO we have decided to not use callresult or notifyresult
 // TODO remove once we are more mature in the project

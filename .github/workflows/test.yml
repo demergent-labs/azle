@@ -18,7 +18,6 @@
 # "examples/func_types",
 # "examples/generics",
 # "examples/motoko_examples/superheroes", # blocked by recursive
-# "examples/rejections",
 # "examples/robust_imports",
 # "examples/run_time_errors",
 # "examples/rust_type_conversions",
@@ -116,6 +115,7 @@ jobs:
                     "examples/principal",
                     "examples/query",
                     "examples/randomness",
+                    "examples/rejections",
                     "examples/service",
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",
