@@ -100,15 +100,15 @@ export function executeMethod(
                 ic.trap(error.toString());
             });
     } else {
-        // const encodeReadyResult = result === undefined ? [] : [result];
-        const encodeReadyResult = returnCandid[0].map((idl: any) => {
-            return idl.accept(new EncodeVisitor(), {
-                js_class: returnIdl,
-                js_data: result
-            });
-        });
-
         if (!manual) {
+            // const encodeReadyResult = result === undefined ? [] : [result];
+            const encodeReadyResult = returnCandid[0].map((idl: any) => {
+                return idl.accept(new EncodeVisitor(), {
+                    js_class: returnIdl,
+                    js_data: result
+                });
+            });
+
             const encoded = IDL.encode(
                 returnCandid[0] as any,
                 encodeReadyResult

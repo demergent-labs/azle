@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle manual_reply",
             "root": "src",
-            "ts": "src/manual_reply.ts",
-            "candid": "src/manual_reply.did",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
             "wasm": ".azle/manual_reply/manual_reply.wasm",
             "gzip": true,
             "declarations": {
