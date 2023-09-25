@@ -10,6 +10,7 @@ export function Variant<T>(obj: T): RequireExactlyOne<{
 
     return {
         ...obj,
+        _azleName: name,
         getIDL(parents: any) {
             const idl = IDL.Rec();
             idl.fill(

@@ -1,5 +1,5 @@
 import { Func, IDL, Record, Service, Variant } from './index';
-import { GetIDL } from './primitives';
+// import { GetIDL } from './primitives';
 
 /*
  * Look at each type,
@@ -118,13 +118,68 @@ export type Parent = {
 
 export function toIDLType(idl: CandidClass, parents: Parent[]): IDL.Type<any> {
     if ('getIDL' in idl) {
-        if ('name' in idl) {
-            const parent = parents.find((parent) => parent.name === idl.name);
+        if ('_azleName' in idl) {
+            const parent = parents.find(
+                (parent) => parent.name === idl._azleName
+            );
             if (parent !== undefined) {
-                return { display: () => parent.idl.name };
+                return {
+                    ...parent.idl,
+                    _azleName: idl._azleName,
+                    name: parent.idl.name,
+                    valueToString: (x): string => {
+                        return parent.idl.valueToString(x);
+                    },
+                    buildTypeTable: (typeTable): void => {
+                        return parent.idl.buildTypeTable(typeTable);
+                    },
+                    covariant: (x): x is any => {
+                        return parent.idl.covariant(x);
+                    },
+                    encodeType: (typeTable): ArrayBuffer => {
+                        return parent.idl.encodeType(typeTable);
+                    },
+                    checkType: (t) => {
+                        return parent.idl.checkType(t);
+                    },
+                    _buildTypeTableImpl: (typeTable): void => {
+                        return parent.idl._buildTypeTableImpl(typeTable);
+                    },
+                    display: () => parent.idl.name,
+                    decodeValue: (b, t) => {
+                        return parent.idl.decodeValue(b, t);
+                    },
+                    encodeValue: (b) => {
+                        return parent.idl.encodeValue(b);
+                    },
+                    accept: (v, d) => {
+                        return parent.idl.accept(v, d);
+                    },
+                    _id: parent.idl._id,
+                    _type: parent.idl._type,
+                    fill: (t: any): void => {
+                        parent.idl.fill(t);
+                    },
+                    getType: () => {
+                        return parent.idl.getType();
+                    }
+                };
             }
         }
         return idl.getIDL(parents);
+    }
+    if (idl._azleRecLambda) {
+        // console.log(
+        //     'WE ARE LOOKING AT A RECURSIVE THING',
+        //     `"${idl.name}"`,
+        //     JSON.stringify(idl)
+        // );
+        // idl._azleRecLambda = false;
+        // console.log(idl);
+        // console.log(idl());
+        return toIDLType(idl(), [...parents, idl._azleName]);
+        // return idl().getIDL([...parents, idl.name]);
+        // throw 'hmm';
     }
     // if (idl.display === undefined || idl.getIDL === undefined) {
     //     throw Error(`${JSON.stringify(idl)} is not a candid type`);
@@ -165,7 +220,6 @@ export function processMap(targetMap: CandidMap, parent: Parent[]): CandidMap {
 }
 
 export type CandidClass =
-    | GetIDL
     | IDL.BoolClass
     | IDL.EmptyClass
     | IDL.FixedIntClass
