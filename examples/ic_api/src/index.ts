@@ -26,7 +26,7 @@ import {
 //     string: text;
 // };
 
-export default class extends Service {
+export default Service({
     // // returns the argument data as an array.
     // argDataZeroParams(): Vec<null> {
     //     return ic.argData();
@@ -55,111 +55,91 @@ export default class extends Service {
     // }
 
     // returns the argument data as bytes.
-    @query([blob, int8, bool, text], blob)
-    argDataRaw(arg1: blob, arg2: int8, arg3: bool, arg4: text): blob {
-        return ic.argDataRaw();
-    }
-
+    argDataRaw: query(
+        [blob, int8, bool, text],
+        blob,
+        (arg1, arg2, arg3, arg4) => {
+            return ic.argDataRaw();
+        }
+    ),
     // returns the length of the argument data in bytes
-    @query([blob, int8, bool, text], nat32)
-    argDataRawSize(arg1: blob, arg2: int8, arg3: bool, arg4: text): nat32 {
-        return ic.argDataRawSize();
-    }
-
+    argDataRawSize: query(
+        [blob, int8, bool, text],
+        nat32,
+        (arg1, arg2, arg3, arg4) => {
+            return ic.argDataRawSize();
+        }
+    ),
     // returns the principal of the identity that called this function
-    @query([], principal)
-    caller(): Principal {
+    caller: query([], principal, () => {
         return ic.caller();
-    }
-
+    }),
     // returns the amount of cycles available in the canister
-    @query([], nat64)
-    canisterBalance(): nat64 {
+    canisterBalance: query([], nat64, () => {
         return ic.canisterBalance();
-    }
-
+    }),
     // returns the amount of cycles available in the canister
-    @query([], nat)
-    canisterBalance128(): nat {
+    canisterBalance128: query([], nat, () => {
         return ic.canisterBalance128();
-    }
-
+    }),
     // returns the canister's version number
-    @query([], nat64)
-    canisterVersion(): nat64 {
+    canisterVersion: query([], nat64, () => {
         return ic.canisterVersion();
-    }
-
+    }),
     // When called from a query call, returns the data certificate
     // authenticating certified data set by this canister. Otherwise returns
     // None.
-    @query([], Opt(blob))
-    dataCertificate(): Opt<blob> {
+    dataCertificate: query([], Opt(blob), () => {
         return ic.dataCertificate();
-    }
-
+    }),
     // When called from a query call, returns the data certificate
     // authenticating certified data set by this canister. Otherwise returns
     // None.
-    @update([], Opt(blob))
-    dataCertificateNull(): Opt<blob> {
+    dataCertificateNull: update([], Opt(blob), () => {
         return ic.dataCertificate();
-    }
-
+    }),
     // returns this canister's id
-    @query([], principal)
-    id(): Principal {
+    id: query([], principal, () => {
         return ic.id();
-    }
-
+    }),
     // Returns the number of instructions that the canister executed since the last
     // entry point.
-    @query([], nat64)
-    instructionCounter(): nat64 {
+    instructionCounter: query([], nat64, () => {
         return ic.instructionCounter();
-    }
-
+    }),
     // determines whether the given principal is a controller of the canister
-    @query([principal], bool)
-    isController(principal: Principal): bool {
+    isController: query([principal], bool, (principal) => {
         return ic.isController(principal);
-    }
-
-    @query([], nat64)
-    performanceCounter(): nat64 {
+    }),
+    performanceCounter: query([], nat64, () => {
         return ic.performanceCounter(0);
-    }
-
+    }),
     // prints a message through the local replica's output
-    @query([text], bool)
-    print(message: text): bool {
+    print: query([text], bool, (message) => {
         ic.print(message);
 
         return true;
-    }
-
-    @query([text], empty, { manual: true })
-    reject(message: text): Manual<empty> {
-        ic.reject(message);
-    }
-
+    }),
+    reject: query(
+        [text],
+        Manual(empty),
+        (message) => {
+            ic.reject(message);
+        },
+        { manual: true }
+    ),
     // sets up to 32 bytes of certified data
-    @update([blob], Void)
-    setCertifiedData(data: blob): Void {
+    setCertifiedData: update([blob], Void, (data) => {
         ic.setCertifiedData(data);
-    }
-
+    }),
     // returns the current timestamp
-    @query([], nat64)
-    time(): nat64 {
+    time: query([], nat64, () => {
         return ic.time();
-    }
-
+    }),
     // traps with a message, stopping execution and discarding all state within the call
-    @query([text], bool)
-    trap(message: text): bool {
+    trap: query([text], bool, (message) => {
         ic.trap(message);
 
         return true;
-    }
-}
+    })
+});
