@@ -1,8 +1,7 @@
-import { ic, Principal, update, Void } from 'azle';
+import { ic, Principal, Service, update, Void } from 'azle';
 
-export default class {
-    @update([], Void)
-    sendNotification(): Void {
+export default Service({
+    sendNotification: update([], Void, () => {
         return ic.notifyRaw(
             Principal.fromText(
                 process.env.CANISTER2_PRINCIPAL ??
@@ -12,5 +11,5 @@ export default class {
             Uint8Array.from(ic.candidEncode('()')),
             0n
         );
-    }
-}
+    })
+});
