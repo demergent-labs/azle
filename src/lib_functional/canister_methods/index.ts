@@ -9,11 +9,20 @@ import {
 export * from './heartbeat';
 export * from './init';
 export * from './inspect_message';
+export * from './post_upgrade';
+export * from './pre_upgrade';
 export * from './query';
 export * from './update';
 
 export type CanisterMethodInfo<T extends ReadonlyArray<any>, K> = {
-    mode: 'query' | 'update' | 'init' | 'heartbeat' | 'inspectMessage';
+    mode:
+        | 'query'
+        | 'update'
+        | 'init'
+        | 'heartbeat'
+        | 'inspectMessage'
+        | 'postUpgrade'
+        | 'preUpgrade';
     async: boolean;
     callback?: (...args: any) => any;
     candid: string;
@@ -50,6 +59,11 @@ export function executeMethod(
             });
         }
 
+        return;
+    }
+
+    if (mode === 'preUpgrade') {
+        callback();
         return;
     }
 
