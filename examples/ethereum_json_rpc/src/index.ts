@@ -14,17 +14,14 @@ import {
     managementCanister
 } from 'azle/canisters/management';
 
-export default class extends Service {
-    stableStorage = new StableBTreeMap<text, text>(text, text, 0);
+let stableStorage = StableBTreeMap(text, text, 0);
 
-    @init([text])
-    init(ethereumUrl: text) {
-        this.stableStorage.insert('ethereumUrl', ethereumUrl);
-    }
-
-    @update([text], text)
-    async ethGetBalance(ethereumAddress: string): Promise<string> {
-        const urlOpt = this.stableStorage.get('ethereumUrl');
+export default Service({
+    init: init([text], (ethereumUrl) => {
+        stableStorage.insert('ethereumUrl', ethereumUrl);
+    }),
+    ethGetBalance: update([text], text, async (ethereumAddress) => {
+        const urlOpt = stableStorage.get('ethereumUrl');
 
         if (urlOpt.length === 0) {
             throw new Error('ethereumUrl is not defined');
@@ -64,11 +61,9 @@ export default class extends Service {
         });
 
         return Buffer.from(httpResponse.body.buffer).toString('utf-8');
-    }
-
-    @update([nat32], text)
-    async ethGetBlockByNumber(number: nat32): Promise<string> {
-        const urlOpt = this.stableStorage.get('ethereumUrl');
+    }),
+    ethGetBlockByNumber: update([nat32], text, async (number) => {
+        const urlOpt = stableStorage.get('ethereumUrl');
 
         if (urlOpt.length === 0) {
             throw new Error('ethereumUrl is not defined');
@@ -108,13 +103,11 @@ export default class extends Service {
         });
 
         return Buffer.from(httpResponse.body.buffer).toString('utf-8');
-    }
-
-    @query([HttpTransformArgs], HttpResponse)
-    ethTransform(args: HttpTransformArgs): HttpResponse {
+    }),
+    ethTransform: query([HttpTransformArgs], HttpResponse, (args) => {
         return {
             ...args.response,
             headers: []
         };
-    }
-}
+    })
+});
