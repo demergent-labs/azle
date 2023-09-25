@@ -95,6 +95,16 @@ export function Service<T extends ServiceOptions>(
                   name: heartbeatOption[0]
               };
 
+    const inspectMessageOption = Object.entries(serviceOptions).find(
+        ([key, value]) => value.mode === 'inspectMessage'
+    );
+    const inspectMessage =
+        inspectMessageOption === undefined
+            ? undefined
+            : {
+                  name: inspectMessageOption[0]
+              };
+
     const queries = Object.entries(serviceOptions)
         .filter((entry) => {
             const key = entry[0];
@@ -190,6 +200,7 @@ export function Service<T extends ServiceOptions>(
 
     returnFunction.init = init;
     returnFunction.heartbeat = heartbeat;
+    returnFunction.inspect_message = inspectMessage;
     returnFunction.queries = queries;
     returnFunction.updates = updates;
     returnFunction.callbacks = callbacks;
