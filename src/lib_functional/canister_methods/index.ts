@@ -6,11 +6,13 @@ import {
     EncodeVisitor
 } from '../../lib_new/visitors/encode_decode';
 
+export * from './init';
 export * from './query';
 export * from './update';
 
 export type CanisterMethodInfo<T extends ReadonlyArray<any>, K> = {
-    mode: 'query' | 'update';
+    mode: 'query' | 'update' | 'init';
+    async: boolean;
     callback?: (...args: any) => any;
     candid: string;
     candidTypes: string[];
@@ -23,12 +25,14 @@ export type Callback<Params extends ReadonlyArray<any>, Return> = (
 ) => TypeMapping<Return> | Promise<TypeMapping<Return>>;
 
 export function executeMethod(
+    mode: CanisterMethodInfo<any, any>['mode'],
     paramCandid: any,
     returnCandid: any,
     args: any[],
     callback: any,
     paramsIdls: any[],
-    returnIdl: any
+    returnIdl: any,
+    manual: boolean
 ) {
     const decoded = IDL.decode(paramCandid[0] as any, args[0]);
 
@@ -41,6 +45,10 @@ export function executeMethod(
 
     const result = callback(...myDecodedObject);
 
+    if (mode === 'init') {
+        return;
+    }
+
     if (
         result !== undefined &&
         result !== null &&
@@ -52,20 +60,22 @@ export function executeMethod(
                 // TODO cross-canister calls
                 console.log(`final instructions: ${ic.instructionCounter()}`);
 
-                // if (!manual) {
-                // const encodeReadyResult = result === undefined ? [] : [result];
-                const encodeReadyResult = returnCandid[0].map((idl: any) => {
-                    return idl.accept(new EncodeVisitor(), {
-                        js_class: returnIdl,
-                        js_data: result
-                    });
-                });
-                const encoded = IDL.encode(
-                    returnCandid[0] as any,
-                    encodeReadyResult
-                );
-                ic.replyRaw(new Uint8Array(encoded));
-                // }
+                if (!manual) {
+                    // const encodeReadyResult = result === undefined ? [] : [result];
+                    const encodeReadyResult = returnCandid[0].map(
+                        (idl: any) => {
+                            return idl.accept(new EncodeVisitor(), {
+                                js_class: returnIdl,
+                                js_data: result
+                            });
+                        }
+                    );
+                    const encoded = IDL.encode(
+                        returnCandid[0] as any,
+                        encodeReadyResult
+                    );
+                    ic.replyRaw(new Uint8Array(encoded));
+                }
             })
             .catch((error: any) => {
                 ic.trap(error.toString());
@@ -79,10 +89,13 @@ export function executeMethod(
             });
         });
 
-        // if (!manual) {
-        const encoded = IDL.encode(returnCandid[0] as any, encodeReadyResult);
-        ic.replyRaw(new Uint8Array(encoded));
-        // }
+        if (!manual) {
+            const encoded = IDL.encode(
+                returnCandid[0] as any,
+                encodeReadyResult
+            );
+            ic.replyRaw(new Uint8Array(encoded));
+        }
 
         console.log(`final instructions: ${ic.instructionCounter()}`);
     }

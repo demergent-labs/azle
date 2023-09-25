@@ -40,7 +40,9 @@ import {
     bool,
     AzlePrincipal,
     AzleResult,
-    Result
+    Result,
+    AzleTuple,
+    Tuple
 } from '../../lib_new';
 
 export type TypeMapping<T> = T extends IDL.TextClass
@@ -73,7 +75,13 @@ export type TypeMapping<T> = T extends IDL.TextClass
     ? float32
     : T extends never[]
     ? void
-    : T extends AzleVec<infer U>
+    : T extends AzleTuple
+    ? any
+    : // : T extends AzleTuple<[infer U]>
+    // ? [TypeMapping<U>]
+    // : T extends AzleTuple<[infer U, infer W]>
+    // ? [TypeMapping<U>, TypeMapping<W>]
+    T extends AzleVec<infer U>
     ? TypeMapping<U>[]
     : T extends AzleOpt<infer U>
     ? [TypeMapping<U>] | []

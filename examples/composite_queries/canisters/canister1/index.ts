@@ -1,89 +1,92 @@
-import { ic, Manual, nat, Principal, query, Service, text, update } from 'azle';
+import {
+    ic,
+    init,
+    Manual,
+    nat,
+    Principal,
+    query,
+    Service,
+    text,
+    update
+} from 'azle';
 import Canister2 from '../canister2';
 
-class Canister1 extends Service {
-    canister2 = new Canister2(
-        Principal.fromText(
-            process.env.CANISTER2_PRINCIPAL ??
-                ic.trap('process.env.CANISTER2_PRINCIPAL is undefined')
-        )
-    );
+let canister2: typeof Canister2;
+let counter: nat = 0n;
 
-    counter: nat = 0n;
+const incCounter = query([], nat, async () => {
+    counter += 1n;
 
+    return counter;
+});
+
+const service = Service({
+    init: init([], () => {
+        canister2 = Canister2(
+            Principal.fromText(
+                process.env.CANISTER2_PRINCIPAL ??
+                    ic.trap('process.env.CANISTER2_PRINCIPAL is undefined')
+            )
+        );
+    }),
     // Composite query calling a query
-    @query([], text)
-    async simpleCompositeQuery(): Promise<text> {
-        return await ic.call(this.canister2.simpleQuery);
-    }
-
+    simpleCompositeQuery: query([], text, async () => {
+        return await ic.call(canister2.simpleQuery);
+    }),
     // Composite query calling a manual query
-    @query([], text)
-    async manualQuery(): Promise<text> {
-        return await ic.call(this.canister2.manualQuery);
-    }
-
+    manualQuery: query([], text, async () => {
+        return (await ic.call(canister2.manualQuery)) as unknown as string; // TODO is this the best we can do for the types in this situation?
+    }),
     // Manual composite query calling a manual query
-    @query([], text, { manual: true })
-    async totallyManualQuery(): Promise<Manual<text>> {
-        ic.reply(await ic.call(this.canister2.manualQuery), text);
-    }
-
+    totallyManualQuery: query(
+        [],
+        Manual(text),
+        async () => {
+            ic.reply(await ic.call(canister2.manualQuery), text);
+        },
+        { manual: true }
+    ),
     // Composite query calling another composite query
-    @query([], text)
-    async deepQuery(): Promise<text> {
-        return await ic.call(this.canister2.deepQuery);
-    }
-
+    deepQuery: query([], text, async () => {
+        return await ic.call(canister2.deepQuery);
+    }),
     // Composite query calling an update method. SHOULDN'T WORK
-    @query([], text)
-    async updateQuery(): Promise<text> {
-        return await ic.call(this.canister2.updateQuery);
-    }
-
+    updateQuery: query([], text, async () => {
+        return await ic.call(canister2.updateQuery);
+    }),
     // Composite query being called by a query method. SHOULDN'T WORK
-    @query([], text)
-    async simpleQuery(): Promise<text> {
-        return await ic.call(this.canister2.simpleQuery);
-    }
-
+    simpleQuery: query([], text, async () => {
+        return await ic.call(canister2.simpleQuery);
+    }),
     // Composite query being called by an update method. SHOULDN'T WORK
-    @update([], text)
-    async simpleUpdate(): Promise<text> {
-        return await ic.call(this.canister2.deepQuery);
-    }
-
+    simpleUpdate: update([], text, async () => {
+        return await ic.call(canister2.deepQuery);
+    }),
     // Composite query that modifies the state. Should revert after the call is done
-    @query([], nat)
-    async incCounter(): Promise<nat> {
-        this.counter += 1n;
-
-        return this.counter;
-    }
-
+    incCounter,
     // Composite query calling queries on the same canister
-    @query([], nat)
-    async incCanister1(): Promise<nat> {
-        this.counter += 1n;
+    incCanister1: query([], nat, async () => {
+        // TODO This is not an ideal solution but will work for now
+        const self = Service({
+            incCounter
+        })(ic.id());
 
-        const canister1AResult = await ic.call(this.incCounter);
+        counter += 1n;
 
-        const canister1BResult = await ic.call(this.incCounter);
+        const canister1AResult = await ic.call(self.incCounter);
+        const canister1BResult = await ic.call(self.incCounter);
 
-        return this.counter + canister1AResult + canister1BResult;
-    }
-
+        return counter + canister1AResult + canister1BResult;
+    }),
     // Composite query calling queries that modify the state
-    @query([], nat)
-    async incCanister2(): Promise<nat> {
-        this.counter += 1n;
+    incCanister2: query([], nat, async () => {
+        counter += 1n;
 
-        const canister2AResult = await ic.call(this.canister2.incCounter);
+        const canister2AResult = await ic.call(canister2.incCounter);
+        const canister2BResult = await ic.call(canister2.incCounter);
 
-        const canister2BResult = await ic.call(this.canister2.incCounter);
+        return counter + canister2AResult + canister2BResult;
+    })
+});
 
-        return this.counter + canister2AResult + canister2BResult;
-    }
-}
-
-export default Canister1;
+export default service;

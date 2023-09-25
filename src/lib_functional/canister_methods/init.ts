@@ -1,54 +1,47 @@
 import {
-    MethodArgs,
     handleRecursiveParams,
     handleRecursiveReturn,
-    isAsync,
     newTypesToStingArr
 } from '../../lib_new/method_decorators';
 import { Callback, CanisterMethodInfo, executeMethod } from '.';
 import { TypeMapping } from '../candid';
+import { Void } from '../../lib_new';
 
-export function update<
+export function init<
     const Params extends ReadonlyArray<any>,
-    Return,
-    GenericCallback extends Callback<Params, Return>
+    GenericCallback extends Callback<Params, Void>
 >(
     paramsIdls: Params,
-    returnIdl: Return,
-    callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Return>
+    callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Void>
         ? GenericCallback
-        : never,
-    methodArgs?: MethodArgs
-): CanisterMethodInfo<Params, Return> {
+        : never
+): CanisterMethodInfo<Params, Void> {
     const paramCandid = handleRecursiveParams(paramsIdls as any);
-    const returnCandid = handleRecursiveReturn(
-        returnIdl as any,
-        paramCandid[2]
-    );
+    const returnCandid = handleRecursiveReturn(Void as any, paramCandid[2]);
 
     const finalCallback =
         callback === undefined
             ? undefined
             : (...args: any[]) => {
                   executeMethod(
-                      'update',
+                      'init',
                       paramCandid,
                       returnCandid,
                       args,
                       callback,
                       paramsIdls as any,
-                      returnIdl,
-                      methodArgs?.manual ?? false
+                      Void,
+                      false
                   );
               };
 
     return {
-        mode: 'update',
+        mode: 'init',
         callback: finalCallback,
-        candid: `(${paramCandid[1].join(', ')}) -> (${returnCandid[1]});`,
+        candid: paramCandid[1].join(', '),
         candidTypes: newTypesToStingArr(returnCandid[2]),
         paramsIdls: paramsIdls as any,
-        returnIdl,
-        async: callback === undefined ? false : isAsync(callback)
+        returnIdl: Void,
+        async: false
     };
 }

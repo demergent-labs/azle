@@ -70,6 +70,16 @@ export function Service<T extends ServiceOptions>(
         []
     );
 
+    const initOption = Object.entries(serviceOptions).find(
+        ([key, value]) => value.mode === 'init'
+    );
+    const init =
+        initOption === undefined
+            ? undefined
+            : {
+                  name: initOption[0]
+              };
+
     const queries = Object.entries(serviceOptions)
         .filter((entry) => {
             const key = entry[0];
@@ -82,7 +92,8 @@ export function Service<T extends ServiceOptions>(
             const value = entry[1];
 
             return {
-                name: key
+                name: key,
+                composite: value.async
             };
         });
 
@@ -148,8 +159,11 @@ export function Service<T extends ServiceOptions>(
 
     returnFunction.candid = `${
         candidTypes.length === 0 ? '' : candidTypes.join('\n') + '\n'
-    }service: () -> {
+    }service: (${initOption?.[1].candid ?? ''}) -> {
     ${Object.entries(serviceOptions)
+        .filter(
+            ([_, value]) => value.mode === 'query' || value.mode === 'update'
+        )
         .map((entry) => {
             return `${entry[0]}: ${entry[1].candid}`;
         })
@@ -157,6 +171,7 @@ export function Service<T extends ServiceOptions>(
 }
 `;
 
+    returnFunction.init = init;
     returnFunction.queries = queries;
     returnFunction.updates = updates;
     returnFunction.callbacks = callbacks;
