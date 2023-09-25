@@ -50,6 +50,7 @@ export function query<
         candidTypes: newTypesToStingArr(returnCandid[2]),
         paramsIdls: paramsIdls as any,
         returnIdl,
-        async: callback === undefined ? false : isAsync(callback)
+        async: callback === undefined ? false : isAsync(callback),
+        guard: methodArgs?.guard
     };
 }

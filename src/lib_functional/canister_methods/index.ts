@@ -18,6 +18,7 @@ export type CanisterMethodInfo<T extends ReadonlyArray<any>, K> = {
     candidTypes: string[];
     paramsIdls: any[];
     returnIdl: any;
+    guard: (() => any) | undefined;
 };
 
 export type Callback<Params extends ReadonlyArray<any>, Return> = (

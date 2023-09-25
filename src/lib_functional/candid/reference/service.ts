@@ -1,5 +1,10 @@
 import { Principal, TypeMapping } from '../../';
-import { IDL, ServiceFunctionInfo, serviceCall } from '../../../lib_new';
+import {
+    IDL,
+    ServiceFunctionInfo,
+    createGlobalGuard,
+    serviceCall
+} from '../../../lib_new';
 import {
     Parent,
     toParamIDLTypes,
@@ -93,7 +98,8 @@ export function Service<T extends ServiceOptions>(
 
             return {
                 name: key,
-                composite: value.async
+                composite: value.async,
+                guard_name: createGlobalGuard(value.guard, key)
             };
         });
 
@@ -109,7 +115,8 @@ export function Service<T extends ServiceOptions>(
             const value = entry[1];
 
             return {
-                name: key
+                name: key,
+                guard_name: createGlobalGuard(value.guard, key)
             };
         });
 
