@@ -4,8 +4,8 @@
             "type": "custom",
             "build": "npx azle init",
             "root": "src",
-            "ts": "src/init.ts",
-            "candid": "src/init.did",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
             "wasm": ".azle/init/init.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/init",
