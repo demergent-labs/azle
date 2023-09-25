@@ -55,7 +55,7 @@ export default Service({
             Object.entries(entries).map((entry) => {
                 return {
                     key: entry[0],
-                    value: entry[1]
+                    value: entry[1] + 1n
                 };
             })
         );

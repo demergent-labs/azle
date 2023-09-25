@@ -78,7 +78,11 @@ export function executeMethod(
 
     const result = callback(...myDecodedObject);
 
-    if (mode === 'init' || mode === 'inspectMessage') {
+    if (
+        mode === 'init' ||
+        mode === 'postUpgrade' ||
+        mode === 'inspectMessage'
+    ) {
         return;
     }
 
