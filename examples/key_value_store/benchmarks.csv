@@ -1,8 +1,0 @@
-Description,Azle Wasm Instructions (function body only),Azle Wasm Instructions (function prelude and body),Motoko Wasm Instructions (function body only),Motoko Wasm Instructions (function prelude and body),Rust Wasm Instructions (function body only),Rust Wasm Instructions (function prelude and body),Azle/Motoko Change Multiplier (function body only),Azle/Motoko Change Multiplier (function prelude and body),Azle/Rust Change Multiplier (function body only),Azle/Rust Change Multiplier (function prelude and body),Motoko/Azle Change Multiplier (function body only),Motoko/Azle Change Multiplier (function prelude and body),Motoko/Rust Change Multiplier (function body only),Motoko/Rust Change Multiplier (function prelude and body),Rust/Azle Change Multiplier (function body only),Rust/Azle Change Multiplier (function prelude and body),Rust/Motoko Change Multiplier (function body only),Rust/Motoko Change Multiplier (function prelude and body)
-set,141234,738171,2442,5257,2474,50137,58,140,59,15,-58,-140,1,-10,-59,-15,-1,10
-set: medium key,146296,964443,34226,38523,8614,57212,4,25,18,17,-4,-25,4,-1,-18,-17,-4,1
-set: medium value,141641,743494,17774,22103,3534,51854,8,34,40,14,-8,-34,5,-2,-40,-14,-5,2
-set: medium value and medium key,147243,755393,52802,58745,9750,58833,3,13,15,13,-3,-13,5,1,-15,-13,-5,-1
-set: big key,181496,803569,256387,270542,47479,105661,-1,3,4,8,1,-3,6,3,-4,-8,-6,-3
-set: big value,142266,764733,17610,31988,8046,65514,8,24,18,12,-8,-24,2,-2,-18,-12,-2,2
-set: big value and big key,182140,825612,257596,283161,52668,122613,-1,3,4,7,1,-3,5,2,-4,-7,-5,-2
