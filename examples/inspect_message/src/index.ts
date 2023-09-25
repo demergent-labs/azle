@@ -1,8 +1,7 @@
 import { bool, ic, inspectMessage, Service, update } from 'azle';
 
-export default class extends Service {
-    @inspectMessage
-    inspectMessage() {
+export default Service({
+    inspectMessage: inspectMessage(() => {
         console.log('inspectMessage called');
 
         if (ic.methodName() === 'accessible') {
@@ -15,20 +14,14 @@ export default class extends Service {
         }
 
         throw `Method "${ic.methodName()}" not allowed`;
-    }
-
-    @update([], bool)
-    accessible(): bool {
+    }),
+    accessible: update([], bool, () => {
         return true;
-    }
-
-    @update([], bool)
-    inaccessible(): bool {
+    }),
+    inaccessible: update([], bool, () => {
         return false;
-    }
-
-    @update([], bool)
-    alsoInaccessible(): bool {
+    }),
+    alsoInaccessible: update([], bool, () => {
         return false;
-    }
-}
+    })
+});

@@ -8,11 +8,12 @@ import {
 
 export * from './heartbeat';
 export * from './init';
+export * from './inspect_message';
 export * from './query';
 export * from './update';
 
 export type CanisterMethodInfo<T extends ReadonlyArray<any>, K> = {
-    mode: 'query' | 'update' | 'init' | 'heartbeat';
+    mode: 'query' | 'update' | 'init' | 'heartbeat' | 'inspectMessage';
     async: boolean;
     callback?: (...args: any) => any;
     candid: string;
@@ -63,7 +64,7 @@ export function executeMethod(
 
     const result = callback(...myDecodedObject);
 
-    if (mode === 'init') {
+    if (mode === 'init' || mode === 'inspectMessage') {
         return;
     }
 
