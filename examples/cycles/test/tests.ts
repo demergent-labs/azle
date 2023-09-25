@@ -1,4 +1,4 @@
-import { ok, Test } from 'azle/test';
+import { Test } from 'azle/test';
 import { _SERVICE as CYCLESCANISTERSERVICE } from './dfx_generated/cycles/cycles.did';
 import { _SERVICE as INTERMEDIARYCANISTERSERVICE } from './dfx_generated/intermediary/intermediary.did';
 import { ActorSubclass } from '@dfinity/agent';

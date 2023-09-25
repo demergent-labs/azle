@@ -1,53 +1,55 @@
-import { ic, nat, nat64, Principal, query, Service, update, Void } from 'azle';
+import {
+    ic,
+    init,
+    nat,
+    nat64,
+    Principal,
+    query,
+    Service,
+    update,
+    Void
+} from 'azle';
 import Cycles from '../cycles';
 
-export default class extends Service {
-    cyclesCanister = new Cycles(
-        Principal.fromText(
-            process.env.CYCLES_PRINCIPAL ??
-                ic.trap('process.env.CYCLES_PRINCIPAL is undefined')
-        )
-    );
+let cyclesCanister: typeof Cycles;
 
+export default Service({
+    init: init([], () => {
+        cyclesCanister = Cycles(
+            Principal.fromText(
+                process.env.CYCLES_PRINCIPAL ??
+                    ic.trap('process.env.CYCLES_PRINCIPAL is undefined')
+            )
+        );
+    }),
     // Reports the number of cycles returned from the Cycles canister
-    @update([], nat64)
-    async sendCycles(): Promise<nat64> {
-        return await ic.call(this.cyclesCanister.receiveCycles, {
+    sendCycles: update([], nat64, async () => {
+        return await ic.call(cyclesCanister.receiveCycles, {
             cycles: 1_000_000n
         });
-    }
-
-    @update([], Void)
-    sendCyclesNotify(): Void {
-        return ic.notify(this.cyclesCanister.receiveCycles, {
+    }),
+    sendCyclesNotify: update([], Void, () => {
+        return ic.notify(cyclesCanister.receiveCycles, {
             cycles: 1_000_000n
         });
-    }
-
+    }),
     // Reports the number of cycles returned from the Cycles canister
-    @update([], nat)
-    async sendCycles128(): Promise<nat> {
-        await ic.call(this.cyclesCanister.receiveCycles128, {
+    sendCycles128: update([], nat, async () => {
+        await ic.call(cyclesCanister.receiveCycles128, {
             cycles: 1_000_000n
         });
 
         return ic.msgCyclesRefunded128();
-    }
-
-    @update([], Void)
-    sendCycles128Notify(): Void {
-        return ic.notify(this.cyclesCanister.receiveCycles128, {
+    }),
+    sendCycles128Notify: update([], Void, () => {
+        return ic.notify(cyclesCanister.receiveCycles128, {
             cycles: 1_000_000n
         });
-    }
-
-    @query([], nat64)
-    getCanisterBalance(): nat64 {
+    }),
+    getCanisterBalance: query([], nat64, () => {
         return ic.canisterBalance();
-    }
-
-    @query([], nat)
-    getCanisterBalance128(): nat {
+    }),
+    getCanisterBalance128: query([], nat, () => {
         return ic.canisterBalance128();
-    }
-}
+    })
+});
