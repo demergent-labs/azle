@@ -6,7 +6,8 @@
             "root": "azle",
             "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/key_value_store/key_value_store.wasm.gz",
+            "wasm": ".azle/key_value_store/key_value_store.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/key_value_store",
                 "node_compatibility": true
