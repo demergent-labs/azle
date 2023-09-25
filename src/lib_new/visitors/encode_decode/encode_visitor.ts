@@ -22,7 +22,7 @@ export class EncodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         return data.js_data.principal;
     }
     visitFunc(t: IDL.FuncClass, data: VisitorData): VisitorResult {
-        return [data.js_data.principal, data.js_data.name];
+        return data.js_data;
     }
     visitPrimitive<T>(
         t: IDL.PrimitiveType<T>,
