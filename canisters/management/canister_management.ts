@@ -1,21 +1,19 @@
 import {
-    Principal,
     Record,
     Opt,
     Vec,
-    candid,
     principal,
     nat,
     Variant,
     Null,
     blob
-} from '../../src/lib_new';
+} from '../../src/lib_functional';
 
-export type CanisterId = Principal;
-export type UserId = Principal;
-export type WasmModule = blob;
+export const CanisterId = principal;
+export const UserId = principal;
+export const WasmModule = blob;
 
-export class CanisterSettings extends Record {
+export const CanisterSettings = Record({
     /**
      * A list of principals. Must be between 0 and 10 in size. This
      * value is assigned to the controllers attribute of the canister.
@@ -23,155 +21,97 @@ export class CanisterSettings extends Record {
      * Default value: A list containing only the caller of the
      * {@link Management.create_canister} call
      */
-    @candid(Opt(Vec(principal)))
-    controllers: Opt<Vec<Principal>>;
-
-    @candid(Opt(nat))
-    compute_allocation: Opt<nat>;
-
-    @candid(Opt(nat))
-    memory_allocation: Opt<nat>;
-
-    @candid(Opt(nat))
-    freezing_threshold: Opt<nat>;
-}
+    controllers: Opt(Vec(principal)),
+    compute_allocation: Opt(nat),
+    memory_allocation: Opt(nat),
+    freezing_threshold: Opt(nat)
+});
 
 /**
  * The arguments to provide to the management canister's create_canister
  * method
  */
-export class CreateCanisterArgs extends Record {
-    @candid(Opt(CanisterSettings))
-    settings: Opt<CanisterSettings>;
-}
+export const CreateCanisterArgs = Record({
+    settings: Opt(CanisterSettings)
+});
 
-export class CreateCanisterResult extends Record {
-    @candid(principal)
-    canister_id: Principal;
-}
+export const CreateCanisterResult = Record({
+    canister_id: principal
+});
 
-export class CanisterStatus extends Variant {
-    @candid(Null)
-    running?: Null;
+export const CanisterStatus = Variant({
+    running: Null,
+    stopping: Null,
+    stopped: Null
+});
 
-    @candid(Null)
-    stopping?: null;
+export const DefiniteCanisterSettings = Record({
+    controllers: Vec(principal),
+    compute_allocation: nat,
+    memory_allocation: nat,
+    freezing_threshold: nat
+});
 
-    @candid(Null)
-    stopped?: null;
-}
+export const CanisterStatusResult = Record({
+    status: CanisterStatus,
+    settings: DefiniteCanisterSettings,
+    module_hash: Opt(blob),
+    memory_size: nat,
+    cycles: nat
+});
 
-export class DefiniteCanisterSettings extends Record {
-    @candid(Vec(principal))
-    controllers: Vec<Principal>;
+export const CanisterStatusArgs = Record({
+    canister_id: principal
+});
 
-    @candid(nat)
-    compute_allocation: nat;
+export const UpdateSettingsArgs = Record({
+    canister_id: CanisterId,
+    settings: CanisterSettings
+});
 
-    @candid(nat)
-    memory_allocation: nat;
+export const InstallCodeMode = Variant({
+    install: Null,
+    reinstall: Null,
+    upgrade: Null
+});
 
-    @candid(nat)
-    freezing_threshold: nat;
-}
+export const InstallCodeArgs = Record({
+    mode: InstallCodeMode,
+    canister_id: CanisterId,
+    wasm_module: WasmModule,
+    arg: blob
+});
 
-export class CanisterStatusResult extends Record {
-    @candid(CanisterStatus)
-    status: CanisterStatus;
+export const UninstallCodeArgs = Record({
+    canister_id: CanisterId
+});
 
-    @candid(DefiniteCanisterSettings)
-    settings: DefiniteCanisterSettings;
+export const StartCanisterArgs = Record({
+    canister_id: CanisterId
+});
 
-    @candid(Opt(blob))
-    module_hash: Opt<blob>;
+export const StopCanisterArgs = Record({
+    canister_id: CanisterId
+});
 
-    @candid(nat)
-    memory_size: nat;
+export const DeleteCanisterArgs = Record({
+    canister_id: CanisterId
+});
 
-    @candid(nat)
-    cycles: nat;
-}
+export const ProvisionalCreateCanisterWithCyclesArgs = Record({
+    amount: Opt(nat),
+    settings: Opt(CanisterSettings)
+});
 
-export class CanisterStatusArgs extends Record {
-    @candid(principal)
-    canister_id: Principal;
-}
+export const ProvisionalCreateCanisterWithCyclesResult = Record({
+    canister_id: CanisterId
+});
 
-export class UpdateSettingsArgs extends Record {
-    @candid(principal)
-    canister_id: CanisterId;
+export const ProvisionalTopUpCanisterArgs = Record({
+    canister_id: CanisterId,
+    amount: nat
+});
 
-    @candid(CanisterSettings)
-    settings: CanisterSettings;
-}
-
-export class InstallCodeMode extends Variant {
-    @candid(Null)
-    install?: Null;
-
-    @candid(Null)
-    reinstall?: Null;
-
-    @candid(Null)
-    upgrade?: Null;
-}
-
-export class InstallCodeArgs extends Record {
-    @candid(InstallCodeMode)
-    mode: InstallCodeMode;
-
-    @candid(principal)
-    canister_id: CanisterId;
-
-    @candid(blob)
-    wasm_module: WasmModule;
-
-    @candid(blob)
-    arg: blob;
-}
-
-export class UninstallCodeArgs extends Record {
-    @candid(principal)
-    canister_id: CanisterId;
-}
-
-export class StartCanisterArgs extends Record {
-    @candid(principal)
-    canister_id: CanisterId;
-}
-
-export class StopCanisterArgs extends Record {
-    @candid(principal)
-    canister_id: CanisterId;
-}
-
-export class DeleteCanisterArgs extends Record {
-    @candid(principal)
-    canister_id: CanisterId;
-}
-
-export class ProvisionalCreateCanisterWithCyclesArgs extends Record {
-    @candid(Opt(nat))
-    amount: Opt<nat>;
-
-    @candid(Opt(CanisterSettings))
-    settings: Opt<CanisterSettings>;
-}
-
-export class ProvisionalCreateCanisterWithCyclesResult extends Record {
-    @candid(principal)
-    canister_id: CanisterId;
-}
-
-export class ProvisionalTopUpCanisterArgs extends Record {
-    @candid(principal)
-    canister_id: CanisterId;
-
-    @candid(nat)
-    amount: nat;
-}
-
-export class DepositCyclesArgs extends Record {
-    @candid(principal)
-    canister_id: CanisterId;
-}
+export const DepositCyclesArgs = Record({
+    canister_id: CanisterId
+});
