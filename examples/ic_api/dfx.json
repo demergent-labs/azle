@@ -6,7 +6,8 @@
             "root": "src",
             "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/ic_api/ic_api.wasm.gz",
+            "wasm": ".azle/ic_api/ic_api.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/ic_api",
                 "node_compatibility": true
