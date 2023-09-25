@@ -6,7 +6,8 @@
             "root": "canisters/cycles",
             "ts": "canisters/cycles/index.ts",
             "candid": "canisters/cycles/index.did",
-            "wasm": ".azle/cycles/cycles.wasm.gz",
+            "wasm": ".azle/cycles/cycles.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/cycles",
                 "node_compatibility": true
@@ -18,7 +19,8 @@
             "root": "canisters/intermediary",
             "ts": "canisters/intermediary/index.ts",
             "candid": "canisters/intermediary/index.did",
-            "wasm": ".azle/intermediary/intermediary.wasm.gz",
+            "wasm": ".azle/intermediary/intermediary.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/intermediary",
                 "node_compatibility": true

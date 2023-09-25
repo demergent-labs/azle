@@ -15,7 +15,6 @@
 
 # All Examples TODO restore when https://github.com/demergent-labs/azle/issues/1192 is resolved
 # "examples/complex_types",
-# "examples/cycles",
 # "examples/date",
 # "examples/ethereum_json_rpc",
 # "examples/func_types",
@@ -114,6 +113,7 @@ jobs:
                     "examples/composite_queries",
                     "examples/counter",
                     "examples/cross_canister_calls",
+                    "examples/cycles",
                     "examples/primitive_types",
                     "examples/principal",
                     "examples/query",
