@@ -6,7 +6,8 @@
             "root": "canisters/ledger_canister",
             "ts": "canisters/ledger_canister/index.ts",
             "candid": "canisters/ledger_canister/index.did",
-            "wasm": ".azle/ledger_canister/ledger_canister.wasm.gz",
+            "wasm": ".azle/ledger_canister/ledger_canister.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/ledger_canister",
                 "node_compatibility": true
