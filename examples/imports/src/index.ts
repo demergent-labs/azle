@@ -2,29 +2,20 @@ import { query, int, Service, text } from 'azle';
 import { one, two, three } from './library';
 import { sha224 } from 'js-sha256';
 
-export default class extends Service {
-    @query([], text)
-    getOne(): text {
+export default Service({
+    getOne: query([], text, () => {
         return one();
-    }
-
-    @query([], text)
-    getTwo(): text {
+    }),
+    getTwo: query([], text, () => {
         return two();
-    }
-
-    @query([], text)
-    getThree(): text {
+    }),
+    getThree: query([], text, () => {
         return three();
-    }
-
-    @query([text], text)
-    sha224Hash(message: text): text {
+    }),
+    sha224Hash: query([text], text, (message) => {
         return sha224.update(message).hex();
-    }
-
-    @query([], int)
-    getMathMessage(): int {
+    }),
+    getMathMessage: query([], int, () => {
         return BigInt(Math.ceil(10.4));
-    }
-}
+    })
+});
