@@ -6,7 +6,8 @@
             "root": "src",
             "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/ethereum_json_rpc/ethereum_json_rpc.wasm.gz",
+            "wasm": ".azle/ethereum_json_rpc/ethereum_json_rpc.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/ethereum_json_rpc",
                 "node_compatibility": true

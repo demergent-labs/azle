@@ -15,8 +15,10 @@ import {
     Satoshi,
     SendTransactionArgs
 } from './bitcoin';
+import { HttpRequestArgs, HttpResponse } from './http_request';
 
 export * from './bitcoin';
+export * from './http_request';
 
 export const managementCanister = Service({
     bitcoin_get_balance: update([GetBalanceArgs], Satoshi),
@@ -26,5 +28,6 @@ export const managementCanister = Service({
     ),
     bitcoin_get_utxos: update([GetUtxosArgs], GetUtxosResult),
     bitcoin_send_transaction: update([SendTransactionArgs], Void),
+    http_request: update([HttpRequestArgs], HttpResponse),
     raw_rand: update([], blob)
 })(Principal.fromText('aaaaa-aa'));

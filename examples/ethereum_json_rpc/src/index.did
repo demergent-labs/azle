@@ -1,10 +1,10 @@
-type rec_2 = record {value:text; name:text};
-type rec_1 = record {status:nat; body:vec nat8; headers:vec rec_2};
-type rec_0 = record {context:vec nat8; response:rec_1};
-type rec_4 = record {value:text; name:text};
-type rec_3 = record {status:nat; body:vec nat8; headers:vec rec_4};
+type rec_25 = record {value:text; name:text};
+type rec_24 = record {status:nat; body:vec nat8; headers:vec rec_25};
+type rec_23 = record {context:vec nat8; response:rec_24};
+type rec_27 = record {value:text; name:text};
+type rec_26 = record {status:nat; body:vec nat8; headers:vec rec_27};
 service: (text) -> {
     ethGetBalance: (text) -> (text);
     ethGetBlockByNumber: (nat32) -> (text);
-    ethTransform: (rec_0) -> (rec_3) query;
+    ethTransform: (rec_23) -> (rec_26) query;
 }
