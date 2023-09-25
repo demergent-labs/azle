@@ -1,6 +1,0 @@
-type rec_0 = record {key:text; value:nat64};
-type rec_1 = record {key:text; value:nat64};
-service: () -> {
-    setEntry: (rec_0) -> ();
-    getEntries: () -> (vec rec_1) query;
-}

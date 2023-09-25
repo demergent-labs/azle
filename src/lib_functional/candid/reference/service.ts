@@ -68,6 +68,7 @@ export function Service<T extends ServiceOptions>(
         // }
     }, {});
 
+    // TODO Once types have names we should deduplicate the init and post_upgrade param types
     const candidTypes = Object.values(serviceOptions).reduce(
         (acc: string[], canisterMethodInfo) => {
             return [...acc, ...canisterMethodInfo.candidTypes];
@@ -83,6 +84,26 @@ export function Service<T extends ServiceOptions>(
             ? undefined
             : {
                   name: initOption[0]
+              };
+
+    const postUpgradeOption = Object.entries(serviceOptions).find(
+        ([key, value]) => value.mode === 'postUpgrade'
+    );
+    const postUpgrade =
+        postUpgradeOption === undefined
+            ? undefined
+            : {
+                  name: postUpgradeOption[0]
+              };
+
+    const preUpgradeOption = Object.entries(serviceOptions).find(
+        ([key, value]) => value.mode === 'preUpgrade'
+    );
+    const preUpgrade =
+        preUpgradeOption === undefined
+            ? undefined
+            : {
+                  name: preUpgradeOption[0]
               };
 
     const heartbeatOption = Object.entries(serviceOptions).find(
@@ -199,6 +220,8 @@ export function Service<T extends ServiceOptions>(
 `;
 
     returnFunction.init = init;
+    returnFunction.postUpgrade = postUpgrade;
+    returnFunction.preUpgrade = preUpgrade;
     returnFunction.heartbeat = heartbeat;
     returnFunction.inspect_message = inspectMessage;
     returnFunction.queries = queries;
