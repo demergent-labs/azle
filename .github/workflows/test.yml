@@ -18,7 +18,6 @@
 # "examples/func_types",
 # "examples/generics",
 # "examples/motoko_examples/superheroes", # blocked by recursive
-# "examples/null_example",
 # "examples/optional_types",
 # "examples/outgoing_http_requests",
 # "examples/rejections",
@@ -111,6 +110,7 @@ jobs:
                     "examples/motoko_examples/threshold_ecdsa",
                     "examples/motoko_examples/whoami",
                     "examples/notify_raw",
+                    "examples/null_example",
                     "examples/pre_and_post_upgrade",
                     "examples/primitive_types",
                     "examples/principal",
