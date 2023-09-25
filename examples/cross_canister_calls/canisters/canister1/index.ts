@@ -1,5 +1,6 @@
 import {
     ic,
+    init,
     nat64,
     Opt,
     Principal,
@@ -12,54 +13,46 @@ import {
 import Canister2 from '../canister2';
 import { Account, AccountArgs } from '../canister2/types';
 
-export default class extends Service {
-    canister2 = new Canister2(
-        Principal.fromText(
-            process.env.CANISTER2_PRINCIPAL ??
-                ic.trap('process.env.CANISTER2_PRINCIPAL is undefined')
-        )
-    );
+let canister2: typeof Canister2;
 
-    @update([text, text, nat64], nat64)
-    async transfer(from: text, to: text, amount: nat64): Promise<nat64> {
-        return await ic.call(this.canister2.transfer, {
+export default Service({
+    init: init([], () => {
+        canister2 = Canister2(
+            Principal.fromText(
+                process.env.CANISTER2_PRINCIPAL ??
+                    ic.trap('process.env.CANISTER2_PRINCIPAL is undefined')
+            )
+        );
+    }),
+    transfer: update([text, text, nat64], nat64, async (from, to, amount) => {
+        return await ic.call(canister2.transfer, {
             args: [from, to, amount]
         });
-    }
-
-    @update([text], nat64)
-    async balance(id: text): Promise<nat64> {
-        return await ic.call(this.canister2.balance, {
+    }),
+    balance: update([text], nat64, async (id) => {
+        return await ic.call(canister2.balance, {
             args: [id]
         });
-    }
-
-    @update([AccountArgs], Opt(Account))
-    async account(args: AccountArgs): Promise<Opt<Account>> {
-        return await ic.call(this.canister2.account, {
+    }),
+    account: update([AccountArgs], Opt(Account), async (args) => {
+        return await ic.call(canister2.account, {
             args: [args]
         });
-    }
-
-    @update([], Vec(Account))
-    async accounts(): Promise<Vec<Account>> {
-        return await ic.call(this.canister2.accounts, {
+    }),
+    accounts: update([], Vec(Account), async () => {
+        return await ic.call(canister2.accounts, {
             args: []
         });
-    }
-
-    @update([], text)
-    async trap(): Promise<text> {
-        return await ic.call(this.canister2.trap, {
+    }),
+    trap: update([], text, async () => {
+        return await ic.call(canister2.trap, {
             args: []
         });
-    }
-
-    @update([], Void)
-    sendNotification(): Void {
-        return ic.notify(this.canister2.receiveNotification, {
+    }),
+    sendNotification: update([], Void, () => {
+        return ic.notify(canister2.receiveNotification, {
             args: ['This is the notification'],
             cycles: 10n
         });
-    }
-}
+    })
+});

@@ -455,6 +455,7 @@ export const ic: Ic = globalThis._azleIc
               return new Uint8Array(globalThis._azleIc.argDataRaw());
           },
           call: (method, config) => {
+              // TODO probably get rid of .crossCanisterCallback
               return method.crossCanisterCallback(
                   '_AZLE_CROSS_CANISTER_CALL',
                   false,
@@ -464,7 +465,7 @@ export const ic: Ic = globalThis._azleIc
               );
           },
           call128: (method, config) => {
-              return method(
+              return method.crossCanisterCallback(
                   '_AZLE_CROSS_CANISTER_CALL',
                   false,
                   ic.callRaw128,
@@ -669,8 +670,8 @@ export const ic: Ic = globalThis._azleIc
 
               return IDL.decode([IDL.Nat], msgCyclesRefunded128CandidBytes)[0];
           },
-          notify(method, config) {
-              return method(
+          notify: (method, config) => {
+              return method.crossCanisterCallback(
                   '_AZLE_CROSS_CANISTER_CALL',
                   true,
                   ic.notifyRaw,
