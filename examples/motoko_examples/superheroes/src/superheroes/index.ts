@@ -1,11 +1,11 @@
 import {
     bool,
-    candid,
     nat32,
     None,
     Opt,
     query,
     Record,
+    Recursive,
     Service,
     Some,
     text,
@@ -13,72 +13,67 @@ import {
     update
 } from 'azle';
 
-// Note: This won't be reflected in the candid until
+// Note: This won't be reflected in the candid
 export type SuperheroId = nat32;
 const SuperheroId = nat32;
 
-export type List = [text, Opt<List>];
-const List: List = Tuple(text, Opt(List));
+const List = Tuple(
+    text,
+    Recursive(() => Opt(List))
+);
 
 // The type of a superhero.
-class Superhero extends Record {
-    @candid(text)
-    name: text;
+const Superhero = Record({
+    name: text,
+    superpowers: Opt(List)
+});
 
-    @candid(Opt(List))
-    superpowers: Opt<List>;
-}
+/**
+ * Application State
+ */
+
+// The next available superhero identifier.
+let next: SuperheroId = 0;
+
+// The superhero data store.
+let superheroes: Map<SuperheroId, typeof Superhero> = new Map();
 
 /**
  * High-Level API
  */
-export default class extends Service {
-    /**
-     * Application State
-     */
-
-    // The next available superhero identifier.
-    next: SuperheroId = 0;
-
-    // The superhero data store.
-    superheroes: Map<SuperheroId, Superhero> = new Map();
-
+export default Service({
     // Create a superhero.
-    @update([Superhero], SuperheroId)
-    create(superhero: Superhero): SuperheroId {
-        let superheroId = this.next;
-        this.next += 1;
-        this.superheroes.set(superheroId, superhero);
+    create: update([Superhero], SuperheroId, (superhero) => {
+        let superheroId = next;
+        next += 1;
+        superheroes.set(superheroId, superhero);
 
         return superheroId;
-    }
+    }),
 
     // Read a superhero.
-    @query([SuperheroId], Opt(Superhero))
-    read(superheroId: SuperheroId): Opt<Superhero> {
-        const superheroOrUndefined = this.superheroes.get(superheroId);
+    read: query([SuperheroId], Opt(Superhero), (superheroId) => {
+        const superheroOrUndefined = superheroes.get(superheroId);
         return superheroOrUndefined ? Some(superheroOrUndefined) : None;
-    }
+    }),
 
     // Update a superhero.
-    @update([SuperheroId, Superhero], bool)
-    update(superheroId: SuperheroId, superhero: Superhero): bool {
-        let result = this.superheroes.get(superheroId);
+    update: update([SuperheroId, Superhero], bool, (superheroId, superhero) => {
+        let result = superheroes.get(superheroId);
         if (result) {
-            this.superheroes.set(superheroId, superhero);
+            superheroes.set(superheroId, superhero);
         }
 
         return !!result;
-    }
+    }),
 
     // Delete a superhero.
-    @update([SuperheroId], bool)
-    deleteHero(superheroId: SuperheroId): bool {
-        let result = this.superheroes.get(superheroId);
+    deleteHero: update([SuperheroId], bool, (superheroId) => {
+        let result = superheroes.get(superheroId);
         if (result) {
-            this.superheroes.delete(superheroId);
+            superheroes.delete(superheroId);
         }
 
         return !!result;
-    }
-}
+    })
+});

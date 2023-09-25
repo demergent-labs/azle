@@ -17,7 +17,7 @@
 # "examples/complex_types",
 # "examples/func_types",
 # "examples/generics",
-# "examples/motoko_examples/superheroes",
+# "examples/motoko_examples/superheroes", # blocked by recursive
 # "examples/motoko_examples/whoami",
 # "examples/notify_raw",
 # "examples/null_example",
