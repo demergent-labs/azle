@@ -6,7 +6,8 @@
             "root": "src",
             "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/simple_to_do/simple_to_do.wasm.gz",
+            "wasm": ".azle/simple_to_do/simple_to_do.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/simple_to_do",
                 "node_compatibility": true
