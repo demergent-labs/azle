@@ -85,6 +85,16 @@ export function Service<T extends ServiceOptions>(
                   name: initOption[0]
               };
 
+    const heartbeatOption = Object.entries(serviceOptions).find(
+        ([key, value]) => value.mode === 'heartbeat'
+    );
+    const heartbeat =
+        heartbeatOption === undefined
+            ? undefined
+            : {
+                  name: heartbeatOption[0]
+              };
+
     const queries = Object.entries(serviceOptions)
         .filter((entry) => {
             const key = entry[0];
@@ -179,6 +189,7 @@ export function Service<T extends ServiceOptions>(
 `;
 
     returnFunction.init = init;
+    returnFunction.heartbeat = heartbeat;
     returnFunction.queries = queries;
     returnFunction.updates = updates;
     returnFunction.callbacks = callbacks;
