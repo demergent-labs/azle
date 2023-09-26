@@ -37,11 +37,6 @@ export type JSCanisterConfig = Readonly<{
 export type OptLevel = '0' | '1' | '2' | '3' | '4';
 
 export type CompilerInfo = {
-    plugins: Plugin[];
-    alias_tables: AliasTables;
-    alias_lists: AliasLists;
-    file_names: string[];
-    ts_root: string;
     canister_methods: CanisterMethods;
 };
 

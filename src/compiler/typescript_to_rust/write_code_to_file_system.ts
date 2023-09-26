@@ -16,62 +16,30 @@ export function writeCodeToFileSystem(
     mkdirSync(canisterPath, { recursive: true });
 
     writeFileSync(`${canisterPath}/Cargo.toml`, workspaceCargoToml);
-    writeFileSync(`${canisterPath}/Cargo.lock`, workspaceCargoLock);
 
-    if (!existsSync(`${canisterPath}/${rootPath}`)) {
-        mkdirSync(`${canisterPath}/${rootPath}`, { recursive: true });
-    }
+    // TODO not sure what to do about the cargo.lock
+    // writeFileSync(`${canisterPath}/Cargo.lock`, workspaceCargoLock);
 
-    writeFileSync(`${canisterPath}/${rootPath}/Cargo.toml`, libCargoToml);
-
-    if (!existsSync(`${canisterPath}/${rootPath}/src`)) {
-        mkdirSync(`${canisterPath}/${rootPath}/src`);
-    }
-
-    if (!existsSync(`${canisterPath}/${rootPath}/src/lib.rs`)) {
-        writeFileSync(`${canisterPath}/${rootPath}/src/lib.rs`, '');
-    }
-
-    if (!existsSync(`${canisterPath}/${rootPath}/azle_vm_value_derive`)) {
-        mkdirSync(`${canisterPath}/${rootPath}/azle_vm_value_derive`);
-    }
-
-    copySync(
-        `${__dirname}/azle_vm_value_derive`,
-        `${canisterPath}/${rootPath}/azle_vm_value_derive`
-    );
-
-    if (!existsSync(`${canisterPath}/${rootPath}/azle_generate`)) {
-        mkdirSync(`${canisterPath}/${rootPath}/azle_generate`);
-    }
-
-    copySync(
-        `${__dirname}/azle_generate`,
-        `${canisterPath}/${rootPath}/azle_generate`
-    );
-
-    if (
-        !existsSync(`${canisterPath}/${rootPath}/azle_generate_rearchitecture`)
-    ) {
-        mkdirSync(`${canisterPath}/${rootPath}/azle_generate_rearchitecture`);
+    if (!existsSync(`${canisterPath}/azle_generate_rearchitecture`)) {
+        mkdirSync(`${canisterPath}/azle_generate_rearchitecture`);
     }
 
     copySync(
         `${__dirname}/azle_generate_rearchitecture`,
-        `${canisterPath}/${rootPath}/azle_generate_rearchitecture`
+        `${canisterPath}/azle_generate_rearchitecture`
     );
 
-    if (!existsSync(`${canisterPath}/${rootPath}/canister_methods`)) {
-        mkdirSync(`${canisterPath}/${rootPath}/canister_methods`);
+    if (!existsSync(`${canisterPath}/canister_methods`)) {
+        mkdirSync(`${canisterPath}/canister_methods`);
     }
 
     copySync(
         `${__dirname}/canister_methods`,
-        `${canisterPath}/${rootPath}/canister_methods`
+        `${canisterPath}/canister_methods`
     );
 
     writeFileSync(
-        `${canisterPath}/${rootPath}/azle_generate_rearchitecture/src/main.js`,
+        `${canisterPath}/azle_generate_rearchitecture/src/main.js`,
         mainJs
     );
 

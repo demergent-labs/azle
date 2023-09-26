@@ -1,6 +1,4 @@
-import { dirname, join } from 'path';
-import * as ts from 'typescript';
-
+import { join } from 'path';
 import { compileTypeScriptToJavaScript } from './typescript_to_javascript';
 import {
     generateLibCargoToml,
@@ -8,23 +6,18 @@ import {
     generateWorkspaceCargoToml
 } from './typescript_to_javascript/cargo_toml_files';
 import { writeCodeToFileSystem } from './write_code_to_file_system';
-import { generateRustCanister } from './generate_rust_canister';
-import { generateAliasStructures } from './type_alias_parsing';
 import { Err, ok, unwrap } from '../utils/result';
 import {
-    AliasLists,
-    AliasTables,
     AzleError,
+    CompilerInfo,
     JSCanisterConfig,
-    Plugin,
     Toml,
     TsCompilationError,
     TsSyntaxErrorLocation
 } from '../utils/types';
 import { time } from '../utils';
-import { match } from '../../lib';
+import { writeFileSync } from 'fs';
 import { red, dim } from '../utils/colors';
-import { readFileSync } from 'fs';
 import { generateCandidAndCanisterMethods } from '../generate_candid_and_canister_methods';
 
 export async function compileTypeScriptToRust(
@@ -59,40 +52,7 @@ export async function compileTypeScriptToRust(
                 canisterConfig.opt_level ?? '0'
             );
             const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
-
-            const { fileNames, plugins } = getFileNamesAndPlugins(
-                canisterConfig.ts
-            );
-
-            const program = ts.createProgram([canisterConfig.ts], {});
-            const aliasTables = generateAliasStructures(
-                fileNames,
-                program,
-                'TABLE'
-            ) as AliasTables;
-            const aliasLists = generateAliasStructures(
-                fileNames,
-                program,
-                'LIST'
-            ) as AliasLists;
-
-            const pluginsDependencies = plugins
-                .map((plugin) => {
-                    const cargoTomlPath = join(plugin.path, 'Cargo.toml');
-
-                    // TODO Toml parser
-                    const cargoTomlString = readFileSync(cargoTomlPath)
-                        .toString()
-                        .replace('[dependencies]', '');
-
-                    return cargoTomlString;
-                })
-                .join('');
-
-            const libCargoToml: Toml = generateLibCargoToml(
-                canisterName,
-                pluginsDependencies
-            );
+            const libCargoToml: Toml = generateLibCargoToml(canisterName, '');
 
             const { candid, canisterMethods } =
                 generateCandidAndCanisterMethods(candidJavaScript);
@@ -108,39 +68,17 @@ export async function compileTypeScriptToRust(
                 candid
             );
 
-            const generateRustCanisterResult = generateRustCanister(
-                fileNames,
-                plugins,
-                aliasTables,
-                aliasLists,
-                canisterPath,
-                canisterConfig,
-                canisterName,
-                canisterMethods
-            );
+            const compilerInfo: CompilerInfo = {
+                // TODO The spread is because canisterMethods is a function with properties
+                canister_methods: {
+                    ...canisterMethods
+                } // TODO we should probably just grab the props out that we need
+            };
 
-            match(generateRustCanisterResult, {
-                Err: (err) => {
-                    match(err, {
-                        Error: (err) => {
-                            console.error(`Compilation failed: ${err}`);
-                        },
-                        Signal: (signal) => {
-                            console.error(
-                                `Compilation failed with signal: ${signal}`
-                            );
-                        },
-                        Status: (status) => {
-                            console.error(
-                                `Compilation failed with status: ${status}`
-                            );
-                        }
-                    });
+            const compilerInfoPath = join(canisterPath, 'compiler_info.json');
 
-                    process.exit(1);
-                },
-                _: () => {}
-            });
+            // TODO why not just write the dfx.json file here as well?
+            writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
 
             if (isCompileOnlyMode()) {
                 console.log('Compilation complete!');
@@ -204,98 +142,4 @@ function generateVisualDisplayOfErrorLocation(
         `${(line + 1).toString().padStart(line.toString().length)}| `
     )}${marker}`;
     return `${preciseLocation}\n${previousLine}\n${offendingLine}\n${subsequentLine}`;
-}
-
-function getFileNamesAndPlugins(tsPath: string): {
-    fileNames: string[];
-    plugins: Plugin[];
-} {
-    const program = ts.createProgram([tsPath], {});
-    const sourceFiles = program.getSourceFiles();
-
-    const fileNames = sourceFiles.map((sourceFile) => {
-        if (!sourceFile.fileName.startsWith('/')) {
-            return join(process.cwd(), sourceFile.fileName);
-        } else {
-            return sourceFile.fileName;
-        }
-    });
-
-    const registerPlugins = findRegisterPlugins(sourceFiles);
-
-    return {
-        fileNames,
-        plugins: registerPlugins.map((registerPlugin) => {
-            return {
-                path: dirname(registerPlugin.sourceFile.fileName),
-                register_function: getRustRegisterFunctionName(
-                    registerPlugin.node,
-                    registerPlugin.sourceFile
-                )
-            };
-        })
-    };
-}
-
-type RegisterPluginNodeInfo = {
-    node: ts.CallExpression;
-    sourceFile: ts.SourceFile;
-};
-
-function findRegisterPlugins(
-    sourceFiles: readonly ts.SourceFile[]
-): RegisterPluginNodeInfo[] {
-    return sourceFiles
-        .filter((sourceFile) => !sourceFile.isDeclarationFile)
-        .flatMap((sourceFile) => {
-            const registerPluginNodes = findRegisterPlugin(
-                sourceFile,
-                sourceFile
-            );
-            return registerPluginNodes.map((node) => ({ node, sourceFile }));
-        });
-}
-
-function findRegisterPlugin(
-    node: ts.Node,
-    sourceFile: ts.SourceFile
-): ts.CallExpression[] {
-    if (sourceFile === undefined) {
-        return [];
-    }
-
-    const childNodes = node
-        .getChildren(sourceFile)
-        .map((child) => findRegisterPlugin(child, sourceFile))
-        .reduce((acc, cur) => [...acc, ...cur], []);
-
-    return ts.isCallExpression(node) &&
-        node.expression.getText(sourceFile) === 'registerPlugin'
-        ? [node, ...childNodes]
-        : childNodes;
-}
-
-function getRustRegisterFunctionName(
-    node: ts.CallExpression,
-    sourceFile: ts.SourceFile
-): string {
-    const [arg] = node.arguments;
-    if (ts.isObjectLiteralExpression(arg)) {
-        const rustRegisterFunctionNameProperty = arg.properties.find(
-            (property) =>
-                ts.isPropertyAssignment(property) &&
-                property.name.getText(sourceFile) === 'rustRegisterFunctionName'
-        ) as ts.PropertyAssignment | undefined;
-
-        if (
-            rustRegisterFunctionNameProperty &&
-            ts.isStringLiteralLike(rustRegisterFunctionNameProperty.initializer)
-        ) {
-            return rustRegisterFunctionNameProperty.initializer.text;
-        }
-    }
-
-    throw new Error(
-        'registerPlugin function must have a rustRegisterFunctionName property with a string literal value'
-    );
 }

@@ -31,9 +31,7 @@ export function generateWorkspaceCargoToml(
 
         [workspace]
         members = [
-            "${rootPath}",
-            "${rootPath}/azle_generate",
-            "${rootPath}/azle_generate_rearchitecture"
+            "azle_generate_rearchitecture"
         ]
 
         [profile.release]
@@ -68,7 +66,6 @@ export function generateLibCargoToml(
         getrandom = { version = "=0.2.3", features = ["custom"] }
         chrono = { version = "0.4.26", default-features = false }
         serde = "1.0.137"
-        azle-vm-value-derive = { path = "./azle_vm_value_derive" }
         uuid = { version = "=1.2.2", features = ["v4"] }
         rand = "=0.8.5"
         slotmap = "=1.0.6"

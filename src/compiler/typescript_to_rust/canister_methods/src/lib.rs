@@ -20,8 +20,6 @@ impl ToIdent for String {
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CompilerInfo {
-    file_names: Vec<String>,
-    ts_root: String,
     canister_methods: CanisterMethods,
 }
 

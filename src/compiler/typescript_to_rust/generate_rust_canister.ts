@@ -32,11 +32,6 @@ export function generateRustCanister(
     canisterMethods: CanisterMethods
 ): Result<null, SpawnSyncError> {
     const compilerInfo: CompilerInfo = {
-        plugins,
-        file_names: fileNames,
-        ts_root: join(process.cwd(), canisterConfig.ts),
-        alias_tables: aliasTables,
-        alias_lists: aliasLists,
         // TODO The spread is because canisterMethods is a function with properties
         canister_methods: {
             ...canisterMethods

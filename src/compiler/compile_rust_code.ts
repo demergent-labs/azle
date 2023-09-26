@@ -14,7 +14,7 @@ export async function compileRustCode(
 ) {
     await time(`[2/2] 🚧 Building Wasm binary...`, 'inline', async () => {
         execSync(
-            `cd ${canisterPath} && ${GLOBAL_AZLE_RUST_BIN_DIR}/cargo build --target wasm32-wasi --package azle_generate_rearchitecture --release`,
+            `cd ${canisterPath} && ${GLOBAL_AZLE_RUST_BIN_DIR}/cargo build --target wasm32-wasi --manifest-path azle_generate_rearchitecture/Cargo.toml --release`,
             {
                 stdio,
                 env: {

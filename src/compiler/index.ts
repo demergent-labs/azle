@@ -60,7 +60,6 @@ async function azle() {
                 candidPath
             );
             await compileRustCode(canisterName, canisterPath, stdioType);
-            gzipWasmBinary(wasmFilePath, stdioType);
         }
     );
 
