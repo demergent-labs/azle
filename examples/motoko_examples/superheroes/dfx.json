@@ -6,7 +6,8 @@
             "root": "src/superheroes",
             "ts": "src/superheroes/index.ts",
             "candid": "src/superheroes/index.did",
-            "wasm": ".azle/superheroes/superheroes.wasm.gz",
+            "wasm": ".azle/superheroes/superheroes.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "src/declarations",
                 "node_compatibility": true

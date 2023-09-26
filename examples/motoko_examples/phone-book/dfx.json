@@ -6,7 +6,8 @@
             "root": "src/phone_book",
             "ts": "src/phone_book/index.ts",
             "candid": "src/phone_book/index.did",
-            "wasm": ".azle/phone_book/phone_book.wasm.gz",
+            "wasm": ".azle/phone_book/phone_book.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "src/declarations/phone_book",
                 "node_compatibility": false

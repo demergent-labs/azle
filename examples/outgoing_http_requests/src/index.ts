@@ -1,12 +1,12 @@
 import {
     ic,
+    Manual,
+    None,
     Principal,
     query,
-    update,
     Service,
     Some,
-    None,
-    Manual
+    update
 } from 'azle';
 import {
     HttpResponse,
@@ -14,9 +14,8 @@ import {
     managementCanister
 } from 'azle/canisters/management';
 
-export default class extends Service {
-    @update([], HttpResponse)
-    async xkcd(): Promise<HttpResponse> {
+export default Service({
+    xkcd: update([], HttpResponse, async () => {
         return await ic.call(managementCanister.http_request, {
             args: [
                 {
@@ -28,22 +27,26 @@ export default class extends Service {
                     headers: [],
                     body: None,
                     transform: Some({
-                        function: [ic.id(), 'xkcdTransform'],
+                        function: [ic.id(), 'xkcdTransform'] as [
+                            Principal,
+                            string
+                        ],
                         context: Uint8Array.from([])
                     })
                 }
             ],
             cycles: 50_000_000n
         });
-    }
-
+    }),
     // TODO the replica logs give some concerning output: https://forum.dfinity.org/t/fix-me-in-http-outcalls-call-raw/19435
-    @update([], HttpResponse, { manual: true })
-    async xkcdRaw(): Promise<Manual<HttpResponse>> {
-        const httpResponse = await ic.callRaw(
-            Principal.fromText('aaaaa-aa'),
-            'http_request',
-            ic.candidEncode(`
+    xkcdRaw: update(
+        [],
+        Manual(HttpResponse),
+        async () => {
+            const httpResponse = await ic.callRaw(
+                Principal.fromText('aaaaa-aa'),
+                'http_request',
+                ic.candidEncode(`
                 (
                     record {
                         url = "https://xkcd.com/642/info.0.json";
@@ -57,17 +60,17 @@ export default class extends Service {
                     }
                 )
             `),
-            50_000_000n
-        );
+                50_000_000n
+            );
 
-        ic.replyRaw(httpResponse);
-    }
-
-    @query([HttpTransformArgs], HttpResponse)
-    xkcdTransform(args: HttpTransformArgs): HttpResponse {
+            ic.replyRaw(httpResponse);
+        },
+        { manual: true }
+    ),
+    xkcdTransform: query([HttpTransformArgs], HttpResponse, (args) => {
         return {
             ...args.response,
             headers: []
         };
-    }
-}
+    })
+});

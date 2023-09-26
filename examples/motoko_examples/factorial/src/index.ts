@@ -1,12 +1,11 @@
-import { Service, nat, update } from 'azle';
+import { nat, Service, update } from 'azle';
 
-export default class extends Service {
+export default Service({
     // Calculate the product of all positive integers less than or equal to `n`.
-    @update([nat], nat)
-    fac(n: nat): nat {
+    fac: update([nat], nat, (n) => {
         return go(n);
-    }
-}
+    })
+});
 
 // We implement the recursion in a helper function.
 function go(m: nat): nat {

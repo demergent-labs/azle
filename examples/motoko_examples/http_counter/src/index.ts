@@ -1,101 +1,71 @@
 import {
     blob,
+    bool,
+    Func,
     ic,
     init,
     nat,
     nat16,
+    None,
     Opt,
     query,
     Record,
-    StableBTreeMap,
-    Tuple,
-    Variant,
-    Vec,
-    update,
-    text,
-    candid,
-    func,
-    Some,
-    None,
-    bool,
     Service,
-    Func
+    Some,
+    StableBTreeMap,
+    text,
+    Tuple,
+    update,
+    Variant,
+    Vec
 } from 'azle';
 
-class Token extends Record {
+const Token = Record({
     // add whatever fields you'd like
-    @candid(text)
-    arbitrary_data: text;
-}
+    arbitrary_data: text
+});
 
-class StreamingCallbackHttpResponse extends Record {
-    @candid(blob)
-    body: blob;
+const StreamingCallbackHttpResponse = Record({
+    body: blob,
+    token: Opt(Token)
+});
 
-    @candid(Opt(Token))
-    token: Opt<Token>;
-}
+export const Callback = Func([text], StreamingCallbackHttpResponse, 'query');
 
-@func([text], StreamingCallbackHttpResponse, 'query')
-class Callback extends Func {}
+const CallbackStrategy = Record({
+    callback: Callback,
+    token: Token
+});
 
-class CallbackStrategy extends Record {
-    @candid(Callback)
-    callback: Callback;
-
-    @candid(Token)
-    token: Token;
-}
-
-class StreamingStrategy extends Variant {
-    @candid(CallbackStrategy)
-    Callback?: CallbackStrategy;
-}
+const StreamingStrategy = Variant({
+    Callback: CallbackStrategy
+});
 
 type HeaderField = [text, text];
 const HeaderField = Tuple(text, text);
 
-class HttpResponse extends Record {
-    @candid(nat16)
-    status_code: nat16;
+const HttpResponse = Record({
+    status_code: nat16,
+    headers: Vec(HeaderField),
+    body: blob,
+    streaming_strategy: Opt(StreamingStrategy),
+    upgrade: Opt(bool)
+});
 
-    @candid(Vec(HeaderField))
-    headers: Vec<HeaderField>;
+const HttpRequest = Record({
+    method: text,
+    url: text,
+    headers: Vec(HeaderField),
+    body: blob
+});
 
-    @candid(blob)
-    body: blob;
+let stableStorage = StableBTreeMap(text, nat, 0);
 
-    @candid(Opt(StreamingStrategy))
-    streaming_strategy: Opt<StreamingStrategy>;
-
-    @candid(Opt(bool))
-    upgrade: Opt<bool>;
-}
-
-class HttpRequest extends Record {
-    @candid(text)
-    method: text;
-
-    @candid(text)
-    url: text;
-
-    @candid(Vec(HeaderField))
-    headers: Vec<HeaderField>;
-
-    @candid(blob)
-    body: blob;
-}
-
-export default class extends Service {
-    stableStorage = new StableBTreeMap<text, nat>(text, nat, 0);
-
-    @init([])
-    init() {
-        this.stableStorage.insert('counter', 0n);
-    }
-
-    @query([HttpRequest], HttpResponse)
-    http_request(req: HttpRequest): HttpResponse {
+export default Service({
+    init: init([], () => {
+        stableStorage.insert('counter', 0n);
+    }),
+    http_request: query([HttpRequest], HttpResponse, (req) => {
         console.log('Hello from http_request');
 
         if (req.method === 'GET') {
@@ -107,10 +77,7 @@ export default class extends Service {
                         body: encode('Counter'),
                         streaming_strategy: Some({
                             Callback: {
-                                callback: new Callback(
-                                    ic.id(),
-                                    'http_streaming'
-                                ),
+                                callback: [ic.id(), 'http_streaming'],
                                 token: {
                                     arbitrary_data: 'start'
                                 }
@@ -120,7 +87,7 @@ export default class extends Service {
                     };
                 }
 
-                const counterOpt = this.stableStorage.get('counter');
+                const counterOpt = stableStorage.get('counter');
                 const counter =
                     counterOpt.length === 0
                         ? ic.trap('counter does not exist')
@@ -172,21 +139,19 @@ export default class extends Service {
             streaming_strategy: None,
             upgrade: None
         };
-    }
-
-    @update([HttpRequest], HttpResponse)
-    http_request_update(req: HttpRequest): HttpResponse {
+    }),
+    http_request_update: update([HttpRequest], HttpResponse, (req) => {
         if (req.method === 'POST') {
-            const counterOpt = this.stableStorage.get('counter');
+            const counterOpt = stableStorage.get('counter');
             const counter =
                 counterOpt.length === 0
                     ? ic.trap('counter does not exist')
                     : counterOpt[0];
 
-            this.stableStorage.insert('counter', counter + 1n);
+            stableStorage.insert('counter', counter + 1n);
 
             if (req.headers.find(isGzip) === undefined) {
-                const counterOpt = this.stableStorage.get('counter');
+                const counterOpt = stableStorage.get('counter');
                 const counter =
                     counterOpt.length === 0
                         ? ic.trap('counter does not exist')
@@ -228,10 +193,8 @@ export default class extends Service {
             streaming_strategy: None,
             upgrade: None
         };
-    }
-
-    @query([Token], StreamingCallbackHttpResponse)
-    http_streaming(token: Token): StreamingCallbackHttpResponse {
+    }),
+    http_streaming: query([Token], StreamingCallbackHttpResponse, (token) => {
         console.log('Hello from http_streaming');
         switch (token.arbitrary_data) {
             case 'start': {
@@ -241,7 +204,7 @@ export default class extends Service {
                 };
             }
             case 'next': {
-                const counterOpt = this.stableStorage.get('counter');
+                const counterOpt = stableStorage.get('counter');
                 const counter =
                     counterOpt.length === 0
                         ? ic.trap('counter does not exist')
@@ -262,8 +225,8 @@ export default class extends Service {
                 return ic.trap('unreachable');
             }
         }
-    }
-}
+    })
+});
 
 function isGzip(x: HeaderField): boolean {
     return (

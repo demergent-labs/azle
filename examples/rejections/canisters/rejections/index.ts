@@ -1,5 +1,6 @@
 import {
     ic,
+    init,
     Principal,
     RejectionCode,
     Service,
@@ -7,65 +8,59 @@ import {
     update,
     Void
 } from 'azle';
-import { default as SomeService } from '../some_service';
+import SomeService from '../some_service';
 
-class Nonexistent extends Service {
-    @update([], Void)
-    method: () => Void;
-}
+const Nonexistent = Service({
+    method: update([], Void)
+});
 
-export default class extends Service {
-    nonexistentCanister = new Nonexistent(
-        Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
-    );
+let someService: typeof SomeService;
+let nonexistentCanister: typeof Nonexistent;
 
-    someService = new SomeService(
-        Principal.fromText(
-            process.env.SOME_SERVICE_PRINCIPAL ??
-                ic.trap('process.env.SOME_SERVICE_PRINCIPAL is undefined')
-        )
-    );
+export default Service({
+    init: init([], () => {
+        someService = SomeService(
+            Principal.fromText(
+                process.env.SOME_SERVICE_PRINCIPAL ??
+                    ic.trap('process.env.SOME_SERVICE_PRINCIPAL is undefined')
+            )
+        );
 
-    @update([], RejectionCode)
-    async getRejectionCodeNoError(): Promise<RejectionCode> {
-        await ic.call(this.someService.accept);
+        nonexistentCanister = Nonexistent(
+            Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
+        );
+    }),
+    getRejectionCodeNoError: update([], RejectionCode, async () => {
+        await ic.call(someService.accept);
 
         return ic.rejectCode();
-    }
-
-    @update([], RejectionCode)
-    async getRejectionCodeDestinationInvalid(): Promise<RejectionCode> {
+    }),
+    getRejectionCodeDestinationInvalid: update([], RejectionCode, async () => {
         try {
-            await ic.call(this.nonexistentCanister.method);
+            await ic.call(nonexistentCanister.method);
         } catch (error) {}
 
         return ic.rejectCode();
-    }
-
-    @update([], RejectionCode)
-    async getRejectionCodeCanisterReject(): Promise<RejectionCode> {
+    }),
+    getRejectionCodeCanisterReject: update([], RejectionCode, async () => {
         try {
-            await ic.call(this.someService.reject, { args: ['reject'] });
+            await ic.call(someService.reject, { args: ['reject'] });
         } catch (error) {}
 
         return ic.rejectCode();
-    }
-
-    @update([], RejectionCode)
-    async getRejectionCodeCanisterError(): Promise<RejectionCode> {
+    }),
+    getRejectionCodeCanisterError: update([], RejectionCode, async () => {
         try {
-            await ic.call(this.someService.error);
+            await ic.call(someService.error);
         } catch (error) {}
 
         return ic.rejectCode();
-    }
-
-    @update([text], text)
-    async getRejectionMessage(message: text): Promise<text> {
+    }),
+    getRejectionMessage: update([text], text, async (message: text) => {
         try {
-            await ic.call(this.someService.reject, { args: [message] });
+            await ic.call(someService.reject, { args: [message] });
         } catch (error) {}
 
         return ic.rejectMessage();
-    }
-}
+    })
+});

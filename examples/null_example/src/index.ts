@@ -1,86 +1,62 @@
-import { ic, candid, query, Record, update, int, Null, Void } from 'azle';
+import { ic, int, Null, query, Record, Service, update, Void } from 'azle';
 
-class PartiallyNullRecord extends Record {
-    @candid(int)
-    firstItem: int;
+const PartiallyNullRecord = Record({
+    firstItem: int,
+    secondItem: Null,
+    thirdItem: int
+});
 
-    @candid(Null)
-    secondItem: Null;
+const TwoNullRecord = Record({
+    firstItem: Null,
+    secondItem: Null
+});
 
-    @candid(int)
-    thirdItem: int;
-}
+const ThreeNullRecord = Record({
+    firstItem: Null,
+    secondItem: Null,
+    thirdItem: Null
+});
 
-class TwoNullRecord extends Record {
-    @candid(Null)
-    firstItem: Null;
-
-    @candid(Null)
-    secondItem: Null;
-}
-
-class ThreeNullRecord extends Record {
-    @candid(Null)
-    firstItem: null;
-
-    @candid(Null)
-    secondItem: null;
-
-    @candid(Null)
-    thirdItem: null;
-}
-
-export default class {
-    @query([Null], Null)
-    nullFunction(param: null): null {
+export default Service({
+    nullFunction: query([Null], Null, (param) => {
         return param;
-    }
-
-    @query([], Void)
-    voidIsNotNull(): void {
+    }),
+    voidIsNotNull: query([], Void, () => {
         ic.print(
             'Even though they are both None in Python, for Candid null and void are different.'
         );
-    }
-
-    @query([], PartiallyNullRecord)
-    getPartiallyNullRecord(): PartiallyNullRecord {
-        return PartiallyNullRecord.create({
+    }),
+    getPartiallyNullRecord: query([], PartiallyNullRecord, () => {
+        return {
             firstItem: 1n,
             secondItem: null,
             thirdItem: 3n
-        });
-    }
-
-    @update([PartiallyNullRecord], PartiallyNullRecord)
-    setPartiallyNullRecord(param: PartiallyNullRecord): PartiallyNullRecord {
-        return param;
-    }
-
-    @query([], TwoNullRecord)
-    getSmallNullRecord(): TwoNullRecord {
-        return TwoNullRecord.create({
+        };
+    }),
+    setPartiallyNullRecord: update(
+        [PartiallyNullRecord],
+        PartiallyNullRecord,
+        (param) => {
+            return param;
+        }
+    ),
+    getSmallNullRecord: query([], TwoNullRecord, () => {
+        return {
             firstItem: null,
             secondItem: null
-        });
-    }
-
-    @update([TwoNullRecord], TwoNullRecord)
-    setSmallNullRecord(param: TwoNullRecord): TwoNullRecord {
+        };
+    }),
+    setSmallNullRecord: update([TwoNullRecord], TwoNullRecord, (param) => {
         return param;
-    }
-
-    @query([], ThreeNullRecord)
-    getLargeNullRecord(): ThreeNullRecord {
-        return ThreeNullRecord.create({
+    }),
+    getLargeNullRecord: query([], ThreeNullRecord, () => {
+        return {
             firstItem: null,
             secondItem: null,
             thirdItem: null
-        });
-    }
-
-    @update([ThreeNullRecord], ThreeNullRecord)
-    setLargeNullRecord(param: ThreeNullRecord): ThreeNullRecord {
+        };
+    }),
+    setLargeNullRecord: update([ThreeNullRecord], ThreeNullRecord, (param) => {
         return param;
-    }
-}
+    })
+});
