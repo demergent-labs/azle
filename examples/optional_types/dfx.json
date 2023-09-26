@@ -6,7 +6,8 @@
             "root": "src",
             "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/optional_types/optional_types.wasm.gz",
+            "wasm": ".azle/optional_types/optional_types.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/optional_types",
                 "node_compatibility": true

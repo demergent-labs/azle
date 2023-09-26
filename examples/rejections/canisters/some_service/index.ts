@@ -1,20 +1,25 @@
-import { bool, empty, ic, query, Service, text } from 'azle';
+import { bool, empty, ic, Manual, query, Service, text } from 'azle';
 
-type Manual<T> = void;
+export default Service({
+    reject: query(
+        [text],
+        Manual(empty),
+        (message) => {
+            ic.reject(message);
+        },
+        { manual: true }
+    ),
 
-export default class extends Service {
-    @query([text], empty, { manual: true })
-    reject(message: text): Manual<empty> {
-        ic.reject(message);
-    }
-
-    @query([], bool)
-    accept(): bool {
+    accept: query([], bool, () => {
         return true;
-    }
+    }),
 
-    @query([], empty, { manual: true })
-    error(): Manual<empty> {
-        // This errors because neither ic.reject nor ic.reply were called
-    }
-}
+    error: query(
+        [],
+        Manual(empty),
+        () => {
+            // This errors because neither ic.reject nor ic.reply were called
+        },
+        { manual: true }
+    )
+});

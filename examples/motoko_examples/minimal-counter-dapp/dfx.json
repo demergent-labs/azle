@@ -6,7 +6,8 @@
             "root": "src/minimal_dapp",
             "ts": "src/minimal_dapp/index.ts",
             "candid": "src/minimal_dapp/index.did",
-            "wasm": ".azle/minimal_dapp/minimal_dapp.wasm.gz",
+            "wasm": ".azle/minimal_dapp/minimal_dapp.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "src/declarations/minimal_dapp",
                 "node_compatibility": true

@@ -81,7 +81,7 @@ export function getTests(
             name: 'redeploy',
             prep: async () => {
                 execSync(
-                    `dfx deploy ${canisterName} --argument '(principal "${callingPrincipal}")'`,
+                    `dfx deploy --upgrade-unchanged ${canisterName} --argument '(principal "${callingPrincipal}")'`,
                     {
                         stdio: 'inherit'
                     }

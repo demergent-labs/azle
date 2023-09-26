@@ -1,6 +1,8 @@
 import { Test } from 'azle/test';
-import { Entry } from '../src/phone_book/index.ts.dont';
-import { _SERVICE } from '../src/declarations/phone_book/phone_book.did';
+import {
+    _SERVICE,
+    rec_0 as Entry
+} from '../src/declarations/phone_book/phone_book.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 const TEST_PHONE_BOOK_RECORD: Entry = {

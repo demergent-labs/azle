@@ -1,5 +1,4 @@
 import {
-    candid,
     None,
     Opt,
     query,
@@ -11,26 +10,20 @@ import {
     Void
 } from 'azle';
 
-export class Entry extends Record {
-    @candid(text)
-    desc: text;
+export const Entry = Record({
+    desc: text,
+    phone: text
+});
 
-    @candid(text)
-    phone: text;
-}
+let phoneBook = new Map<string, typeof Entry>();
 
-export default class extends Service {
-    phoneBook = new Map<string, Entry>();
-
-    @update([text, Entry], Void)
-    insert(name: text, entry: Entry): void {
-        this.phoneBook.set(name, entry);
-    }
-
-    @query([text], Opt(Entry))
-    lookup(name: text): Opt<Entry> {
-        const entryOrUndefined = this.phoneBook.get(name);
+export default Service({
+    insert: update([text, Entry], Void, (name, entry) => {
+        phoneBook.set(name, entry);
+    }),
+    lookup: query([text], Opt(Entry), (name) => {
+        const entryOrUndefined = phoneBook.get(name);
 
         return entryOrUndefined ? Some(entryOrUndefined) : None;
-    }
-}
+    })
+});

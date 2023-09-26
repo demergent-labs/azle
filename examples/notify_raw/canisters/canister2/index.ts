@@ -2,14 +2,11 @@ import { bool, query, Service, update, Void } from 'azle';
 
 let notified: boolean = false;
 
-export default class extends Service {
-    @update([], Void)
-    receiveNotification(): Void {
+export default Service({
+    receiveNotification: update([], Void, () => {
         notified = true;
-    }
-
-    @query([], bool)
-    getNotified(): bool {
+    }),
+    getNotified: query([], bool, () => {
         return notified;
-    }
-}
+    })
+});

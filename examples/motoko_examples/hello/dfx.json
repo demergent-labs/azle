@@ -6,7 +6,8 @@
             "root": "src/hello",
             "ts": "src/hello/index.ts",
             "candid": "src/hello/index.did",
-            "wasm": ".azle/hello/hello.wasm.gz",
+            "wasm": ".azle/hello/hello.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "dfx_generated/hello",
                 "node_compatibility": true

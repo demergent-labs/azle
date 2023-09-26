@@ -6,7 +6,8 @@
             "root": "canisters/rejections",
             "ts": "canisters/rejections/index.ts",
             "candid": "canisters/rejections/index.did",
-            "wasm": ".azle/rejections/rejections.wasm.gz",
+            "wasm": ".azle/rejections/rejections.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/rejections",
                 "node_compatibility": true
@@ -19,7 +20,8 @@
             "root": "canisters/some_service",
             "ts": "canisters/some_service/index.ts",
             "candid": "canisters/some_service/index.did",
-            "wasm": ".azle/some_service/some_service.wasm.gz",
+            "wasm": ".azle/some_service/some_service.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/some_service",
                 "node_compatibility": true

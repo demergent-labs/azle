@@ -2,7 +2,7 @@ import '@dfinity/candid/lib/esm/idl'; // This must remain or the build fails
 import { Principal } from '@dfinity/principal';
 import { IDL } from './index';
 import { blob, nat, nat32, nat64, AzleNat64, Void, Opt } from './primitives';
-import { RejectionCode } from './system_types';
+import { RejectionCode } from '../lib_functional';
 import { v4 } from 'uuid';
 import { CandidClass, toIDLType } from './utils';
 import { EncodeVisitor } from './visitors/encode_decode';
@@ -258,7 +258,7 @@ type Ic = {
      * call
      * @returns the rejection code
      */
-    rejectCode: () => RejectionCode;
+    rejectCode: () => typeof RejectionCode;
 
     /**
      * Returns the rejection message from the most recently executed

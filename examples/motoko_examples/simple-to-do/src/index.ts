@@ -1,6 +1,5 @@
 import {
     bool,
-    candid,
     nat,
     query,
     Record,
@@ -11,72 +10,58 @@ import {
     Void
 } from 'azle';
 
-export class ToDo extends Record {
-    @candid(text)
-    description: text;
+export const ToDo = Record({
+    description: text,
+    completed: bool
+});
 
-    @candid(bool)
-    completed: bool;
-}
+let todos: Map<nat, typeof ToDo> = new Map();
+let nextId: nat = 0n;
 
-export default class extends Service {
-    todos: Map<nat, ToDo> = new Map();
-    nextId: nat = 0n;
-
-    @query([], Vec(ToDo))
-    getTodos(): Vec<ToDo> {
-        return Array.from(this.todos.values());
-    }
-
+export default Service({
+    getTodos: query([], Vec(ToDo), () => {
+        return Array.from(todos.values());
+    }),
     // Returns the ID that was given to the ToDo item
-    @update([text], nat)
-    addTodo(description: text): nat {
-        const id = this.nextId;
-        this.todos.set(id, {
+    addTodo: update([text], nat, (description) => {
+        const id = nextId;
+        todos.set(id, {
             description: description,
             completed: false
         });
-        this.nextId += 1n;
+        nextId += 1n;
 
         return id;
-    }
-
-    @update([nat], Void)
-    completeTodo(id: nat): void {
-        let todo = this.todos.get(id);
+    }),
+    completeTodo: update([nat], Void, (id) => {
+        let todo = todos.get(id);
 
         if (todo !== undefined) {
-            this.todos.set(id, {
+            todos.set(id, {
                 description: todo.description,
                 completed: true
             });
         }
-    }
-
-    @query([], text)
-    showTodos(): text {
+    }),
+    showTodos: query([], text, () => {
         let output = '\n___TO-DOs___';
-        for (const todoEntry of [...this.todos]) {
+        for (const todoEntry of [...todos]) {
             output += `\n${todoEntry[1].description}`;
             if (todoEntry[1].completed) {
                 output += ' ✔';
             }
         }
         return output;
-    }
-
-    @update([], Void)
-    clearCompleted(): void {
+    }),
+    clearCompleted: update([], Void, () => {
         // NOTE: this syntax isn't supported in Boa. If we revert to using Boa
         // we'll need to revert the syntax to:
         // ```ts
-        // this.todos = new Map(
-        //     [...this.todos].filter((value) => !value[1].completed)
+        // todos = new Map(
+        //     [...todos].filter((value) => !value[1].completed)
         // );
         // ```
         //  See: https://github.com/demergent-labs/azle/issues/574
-        this.todos = new Map(
-            [...this.todos].filter(([key, value]) => !value.completed)
-        );
-    }
-}
+        todos = new Map([...todos].filter(([key, value]) => !value.completed));
+    })
+});

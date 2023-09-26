@@ -1,8 +1,7 @@
-import { Service, query, text } from 'azle';
+import { query, Service, text } from 'azle';
 
-export default class extends Service {
-    @query([text], text)
-    greet(name: string): string {
+export default Service({
+    greet: query([text], text, (name) => {
         return `Hello, ${name}!`;
-    }
-}
+    })
+});

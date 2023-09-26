@@ -6,7 +6,8 @@
             "root": "src",
             "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/quicksort/quicksort.wasm.gz",
+            "wasm": ".azle/quicksort/quicksort.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/quicksort",
                 "node_compatibility": true
