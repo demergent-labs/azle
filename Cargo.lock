@@ -39,22 +39,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
-name = "azle_generate_rearchitecture"
-version = "0.0.0"
-dependencies = [
- "anyhow",
- "candid 0.9.7",
- "canister_methods",
- "ic-cdk 0.10.0",
- "ic-cdk-macros 0.7.1",
- "ic-cdk-timers",
- "ic-stable-structures 0.6.0-beta.1",
- "ic-wasi-polyfill",
- "quickjs-wasm-rs",
- "slotmap",
-]
-
-[[package]]
 name = "beef"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -235,6 +219,22 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.37",
+]
+
+[[package]]
+name = "canister"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "candid 0.9.7",
+ "canister_methods",
+ "ic-cdk 0.10.0",
+ "ic-cdk-macros 0.7.1",
+ "ic-cdk-timers",
+ "ic-stable-structures 0.6.0-beta.1",
+ "ic-wasi-polyfill",
+ "quickjs-wasm-rs",
+ "slotmap",
 ]
 
 [[package]]

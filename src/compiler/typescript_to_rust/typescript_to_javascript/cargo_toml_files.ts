@@ -31,7 +31,7 @@ export function generateWorkspaceCargoToml(
 
         [workspace]
         members = [
-            "azle_generate_rearchitecture"
+            "canister"
         ]
 
         [profile.release]

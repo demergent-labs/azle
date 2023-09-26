@@ -75,7 +75,12 @@ export async function compileTypeScriptToRust(
                 } // TODO we should probably just grab the props out that we need
             };
 
-            const compilerInfoPath = join(canisterPath, 'compiler_info.json');
+            const compilerInfoPath = join(
+                canisterPath,
+                'canister',
+                'src',
+                'compiler_info.json'
+            );
 
             // TODO why not just write the dfx.json file here as well?
             writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));

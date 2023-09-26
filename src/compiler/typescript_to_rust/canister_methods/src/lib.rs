@@ -43,7 +43,7 @@ struct CanisterMethod {
 
 #[proc_macro]
 pub fn canister_methods(_: TokenStream) -> TokenStream {
-    let compiler_info = get_compiler_info("compiler_info.json").unwrap();
+    let compiler_info = get_compiler_info("canister/src/compiler_info.json").unwrap();
 
     let init_method_call = compiler_info.canister_methods.init.map(|init_method| {
         let js_function_name = &init_method.name;

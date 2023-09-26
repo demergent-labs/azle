@@ -38,7 +38,12 @@ export function generateRustCanister(
         } // TODO we should probably just grab the props out that we need
     };
 
-    const compilerInfoPath = join(canisterPath, 'compiler_info.json');
+    const compilerInfoPath = join(
+        canisterPath,
+        'canister',
+        'src',
+        'compiler_info.json'
+    );
 
     // TODO why not just write the dfx.json file here as well?
     writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
@@ -51,20 +56,13 @@ function runAzleGenerate(
     canisterPath: string,
     canisterConfig: JSCanisterConfig
 ): Result<null, SpawnSyncError> {
-    const azleGenerateBinPath = join(
-        GLOBAL_AZLE_BIN_DIR,
-        'azle_generate_rearchitecture'
-    );
+    const azleGenerateBinPath = join(GLOBAL_AZLE_BIN_DIR, 'canister');
     const azleGenerateBinPathDebug = join(
         GLOBAL_AZLE_TARGET_DIR,
         'debug',
-        'azle_generate_rearchitecture'
+        'canister'
     );
-    const azleGenerateDir = join(
-        canisterPath,
-        canisterConfig.root,
-        'azle_generate_rearchitecture'
-    );
+    const azleGenerateDir = join(canisterPath, canisterConfig.root, 'canister');
 
     const shouldRebuild =
         !existsSync(azleGenerateBinPath) || process.env.AZLE_REBUILD === 'true';

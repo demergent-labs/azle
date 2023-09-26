@@ -1,5 +1,5 @@
 [package]
-name = "azle_generate_rearchitecture"
+name = "canister"
 version = "0.0.0"
 edition = "2018"
 

@@ -20,14 +20,11 @@ export function writeCodeToFileSystem(
     // TODO not sure what to do about the cargo.lock
     // writeFileSync(`${canisterPath}/Cargo.lock`, workspaceCargoLock);
 
-    if (!existsSync(`${canisterPath}/azle_generate_rearchitecture`)) {
-        mkdirSync(`${canisterPath}/azle_generate_rearchitecture`);
+    if (!existsSync(`${canisterPath}/canister`)) {
+        mkdirSync(`${canisterPath}/canister`);
     }
 
-    copySync(
-        `${__dirname}/azle_generate_rearchitecture`,
-        `${canisterPath}/azle_generate_rearchitecture`
-    );
+    copySync(`${__dirname}/canister`, `${canisterPath}/canister`);
 
     if (!existsSync(`${canisterPath}/canister_methods`)) {
         mkdirSync(`${canisterPath}/canister_methods`);
@@ -38,10 +35,7 @@ export function writeCodeToFileSystem(
         `${canisterPath}/canister_methods`
     );
 
-    writeFileSync(
-        `${canisterPath}/azle_generate_rearchitecture/src/main.js`,
-        mainJs
-    );
+    writeFileSync(`${canisterPath}/canister/src/main.js`, mainJs);
 
     writeFileSync(candidPath, candid);
 }

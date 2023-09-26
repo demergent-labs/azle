@@ -6,7 +6,8 @@
             "root": "src",
             "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/principal/principal.wasm.gz",
+            "wasm": ".azle/principal/principal.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/principal",
                 "node_compatibility": true
