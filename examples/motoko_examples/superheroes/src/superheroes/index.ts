@@ -50,13 +50,11 @@ export default Service({
 
         return superheroId;
     }),
-
     // Read a superhero.
     read: query([SuperheroId], Opt(Superhero), (superheroId) => {
         const superheroOrUndefined = superheroes.get(superheroId);
         return superheroOrUndefined ? Some(superheroOrUndefined) : None;
     }),
-
     // Update a superhero.
     update: update([SuperheroId, Superhero], bool, (superheroId, superhero) => {
         let result = superheroes.get(superheroId);
@@ -66,7 +64,6 @@ export default Service({
 
         return !!result;
     }),
-
     // Delete a superhero.
     deleteHero: update([SuperheroId], bool, (superheroId) => {
         let result = superheroes.get(superheroId);

@@ -22,7 +22,6 @@ export default Service({
     getTodos: query([], Vec(ToDo), () => {
         return Array.from(todos.values());
     }),
-
     // Returns the ID that was given to the ToDo item
     addTodo: update([text], nat, (description) => {
         const id = nextId;
@@ -34,7 +33,6 @@ export default Service({
 
         return id;
     }),
-
     completeTodo: update([nat], Void, (id) => {
         let todo = todos.get(id);
 
@@ -45,7 +43,6 @@ export default Service({
             });
         }
     }),
-
     showTodos: query([], text, () => {
         let output = '\n___TO-DOs___';
         for (const todoEntry of [...todos]) {
@@ -56,7 +53,6 @@ export default Service({
         }
         return output;
     }),
-
     clearCompleted: update([], Void, () => {
         // NOTE: this syntax isn't supported in Boa. If we revert to using Boa
         // we'll need to revert the syntax to:

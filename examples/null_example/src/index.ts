@@ -21,13 +21,11 @@ export default Service({
     nullFunction: query([Null], Null, (param) => {
         return param;
     }),
-
     voidIsNotNull: query([], Void, () => {
         ic.print(
             'Even though they are both None in Python, for Candid null and void are different.'
         );
     }),
-
     getPartiallyNullRecord: query([], PartiallyNullRecord, () => {
         return {
             firstItem: 1n,
@@ -35,7 +33,6 @@ export default Service({
             thirdItem: 3n
         };
     }),
-
     setPartiallyNullRecord: update(
         [PartiallyNullRecord],
         PartiallyNullRecord,
@@ -43,18 +40,15 @@ export default Service({
             return param;
         }
     ),
-
     getSmallNullRecord: query([], TwoNullRecord, () => {
         return {
             firstItem: null,
             secondItem: null
         };
     }),
-
     setSmallNullRecord: update([TwoNullRecord], TwoNullRecord, (param) => {
         return param;
     }),
-
     getLargeNullRecord: query([], ThreeNullRecord, () => {
         return {
             firstItem: null,
@@ -62,7 +56,6 @@ export default Service({
             thirdItem: null
         };
     }),
-
     setLargeNullRecord: update([ThreeNullRecord], ThreeNullRecord, (param) => {
         return param;
     })

@@ -38,7 +38,6 @@ export default Service({
             cycles: 50_000_000n
         });
     }),
-
     // TODO the replica logs give some concerning output: https://forum.dfinity.org/t/fix-me-in-http-outcalls-call-raw/19435
     xkcdRaw: update(
         [],
@@ -68,7 +67,6 @@ export default Service({
         },
         { manual: true }
     ),
-
     xkcdTransform: query([HttpTransformArgs], HttpResponse, (args) => {
         return {
             ...args.response,

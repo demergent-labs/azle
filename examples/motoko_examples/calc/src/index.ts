@@ -8,19 +8,16 @@ export default Service({
 
         return cell;
     }),
-
     sub: update([int], int, (n) => {
         cell -= n;
 
         return cell;
     }),
-
     mul: update([int], int, (n) => {
         cell *= n;
 
         return cell;
     }),
-
     div: update([int], Opt(int), (n) => {
         if (n === 0n) {
             return None;
@@ -29,7 +26,6 @@ export default Service({
             return Some(cell);
         }
     }),
-
     clearall: update([], Void, () => {
         cell = 0n;
     })

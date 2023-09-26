@@ -15,7 +15,6 @@ export default Service({
     init: init([], () => {
         stableStorage.insert('counter', 0n);
     }),
-
     increment: update([], nat, () => {
         const counterOpt = stableStorage.get('counter');
         const counter =
@@ -27,7 +26,6 @@ export default Service({
 
         return counter;
     }),
-
     get: query([], nat, () => {
         const counterOpt = stableStorage.get('counter');
         const counter =
@@ -37,7 +35,6 @@ export default Service({
 
         return counter;
     }),
-
     reset: update([], nat, () => {
         stableStorage.insert('counter', 0n);
 

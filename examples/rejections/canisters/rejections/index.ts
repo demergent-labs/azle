@@ -30,13 +30,11 @@ export default Service({
             Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
         );
     }),
-
     getRejectionCodeNoError: update([], RejectionCode, async () => {
         await ic.call(someService.accept);
 
         return ic.rejectCode();
     }),
-
     getRejectionCodeDestinationInvalid: update([], RejectionCode, async () => {
         try {
             await ic.call(nonexistentCanister.method);
@@ -44,7 +42,6 @@ export default Service({
 
         return ic.rejectCode();
     }),
-
     getRejectionCodeCanisterReject: update([], RejectionCode, async () => {
         try {
             await ic.call(someService.reject, { args: ['reject'] });
@@ -52,7 +49,6 @@ export default Service({
 
         return ic.rejectCode();
     }),
-
     getRejectionCodeCanisterError: update([], RejectionCode, async () => {
         try {
             await ic.call(someService.error);
@@ -60,7 +56,6 @@ export default Service({
 
         return ic.rejectCode();
     }),
-
     getRejectionMessage: update([text], text, async (message: text) => {
         try {
             await ic.call(someService.reject, { args: [message] });

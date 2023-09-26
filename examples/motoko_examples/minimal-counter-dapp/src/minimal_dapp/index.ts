@@ -8,11 +8,9 @@ export default Service({
 
         return counter;
     }),
-
     getCount: query([], nat, () => {
         return counter;
     }),
-
     reset: update([], nat, () => {
         counter = 0n;
 

@@ -20,7 +20,6 @@ export default Service({
             head: []
         };
     }),
-
     getHead: query([], Opt(Head), () => {
         return [
             {
@@ -28,7 +27,6 @@ export default Service({
             }
         ];
     }),
-
     getHeadWithElements: query([], Opt(Head), () => {
         return [
             {
@@ -40,19 +38,15 @@ export default Service({
             }
         ];
     }),
-
     getElement: query([Opt(Opt(Element))], Opt(Opt(Element)), (element) => {
         return element;
     }),
-
     getNull: query([], Null, () => {
         return null;
     }),
-
     getOptNull: query([], Opt(text), () => {
         return [];
     }),
-
     stringToBoolean: query([Opt(text)], bool, (optString) => {
         if (optString.length > 0) {
             return true;

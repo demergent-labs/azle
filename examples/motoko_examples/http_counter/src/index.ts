@@ -65,7 +65,6 @@ export default Service({
     init: init([], () => {
         stableStorage.insert('counter', 0n);
     }),
-
     http_request: query([HttpRequest], HttpResponse, (req) => {
         console.log('Hello from http_request');
 
@@ -141,7 +140,6 @@ export default Service({
             upgrade: None
         };
     }),
-
     http_request_update: update([HttpRequest], HttpResponse, (req) => {
         if (req.method === 'POST') {
             const counterOpt = stableStorage.get('counter');
@@ -196,7 +194,6 @@ export default Service({
             upgrade: None
         };
     }),
-
     http_streaming: query([Token], StreamingCallbackHttpResponse, (token) => {
         console.log('Hello from http_streaming');
         switch (token.arbitrary_data) {

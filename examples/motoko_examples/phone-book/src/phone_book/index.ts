@@ -21,7 +21,6 @@ export default Service({
     insert: update([text, Entry], Void, (name, entry) => {
         phoneBook.set(name, entry);
     }),
-
     lookup: query([text], Opt(Entry), (name) => {
         const entryOrUndefined = phoneBook.get(name);
 

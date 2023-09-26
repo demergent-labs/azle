@@ -23,28 +23,23 @@ export default Service({
         install = ic.caller();
         someone = somebody;
     }),
-
     // Manually re-save these variables after new deploys.
     postUpgrade: postUpgrade([principal], (somebody) => {
         install = ic.caller();
         someone = somebody;
     }),
-
     // Return the principal identifier of the wallet canister that installed this
     // canister.
     installer: query([], principal, () => {
         return install;
     }),
-
     // Return the principal identifier that was provided as an installation
     // argument to this canister.
     argument: query([], principal, () => {
         return someone;
     }),
-
     // Return the principal identifier of the caller of this method.
     whoami,
-
     // Return the principal identifier of this canister.
     id: update([], principal, async () => {
         // TODO This is not an ideal solution but will work for now
@@ -54,7 +49,6 @@ export default Service({
 
         return await ic.call(self.whoami);
     }),
-
     // Return the principal identifier of this canister via the global `ic` object.
     // This is much quicker than `id()` above because it isn't making a cross-
     // canister call to itself. Additionally, it can now be a `Query` which means it
