@@ -77,6 +77,7 @@ export function generateLibCargoToml(
         ic-wasi-polyfill = { git = "https://github.com/demergent-labs/ic-wasi-polyfill", rev = "f3812b879c096faf930331e76441fadf2ebe6586", features = ["transient"] }
 
         quickjs-wasm-rs = {git = "https://github.com/ulan/javy.git", branch="ulan/local-changes"}
+        # rquickjs = "0.3.1"
         futures-core = "=0.3.27"
         anyhow = "1.0.75"
 

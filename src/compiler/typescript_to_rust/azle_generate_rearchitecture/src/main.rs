@@ -1,3 +1,6 @@
+// TODO So I'm going to create a macro for the dynamic portion of the code here
+// TODO Then I'm going to integrate rquickjs
+
 use crate::traits::to_ident::ToIdent;
 use quote::quote;
 use serde::{Deserialize, Serialize};
@@ -55,6 +58,16 @@ fn main() -> Result<(), String> {
 
         quote!(execute_js(#js_function_name, true);)
     });
+
+    let post_upgrade_method_call =
+        compiler_info
+            .canister_methods
+            .post_upgrade
+            .map(|post_upgrade_method| {
+                let js_function_name = &post_upgrade_method.name;
+
+                quote!(execute_js(#js_function_name, true);)
+            });
 
     let pre_upgrade_method = compiler_info
         .canister_methods
@@ -243,20 +256,12 @@ fn main() -> Result<(), String> {
             context.eval_global("exports.js", "globalThis.exports = {}").unwrap();
             context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();
 
-            let _azle_post_upgrade_name = global.get_property("_azlePostUpgradeName").unwrap();
-            let _azle_post_upgrade_name_string = if !_azle_post_upgrade_name.is_undefined() {
-                let _azle_post_upgrade_name_js_value: JSValue = from_qjs_value(&_azle_post_upgrade_name).unwrap();
-                _azle_post_upgrade_name_js_value.try_into().unwrap()
-            } else { "".to_string() };
-
             CONTEXT.with(|ctx| {
                 let mut ctx = ctx.borrow_mut();
                 *ctx = Some(context);
             });
 
-            if _azle_post_upgrade_name_string != "" {
-                execute_js(&_azle_post_upgrade_name_string, true);
-            }
+            #post_upgrade_method_call
         }
 
         #pre_upgrade_method

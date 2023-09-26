@@ -220,8 +220,8 @@ export function Service<T extends ServiceOptions>(
 `;
 
     returnFunction.init = init;
-    returnFunction.postUpgrade = postUpgrade;
-    returnFunction.preUpgrade = preUpgrade;
+    returnFunction.post_upgrade = postUpgrade;
+    returnFunction.pre_upgrade = preUpgrade;
     returnFunction.heartbeat = heartbeat;
     returnFunction.inspect_message = inspectMessage;
     returnFunction.queries = queries;
