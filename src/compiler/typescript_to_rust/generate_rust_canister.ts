@@ -43,17 +43,12 @@ export function generateRustCanister(
         } // TODO we should probably just grab the props out that we need
     };
 
-    const compilerInfoPath = join(
-        canisterPath,
-        canisterConfig.root,
-        'azle_generate_rearchitecture',
-        'compiler_info.json'
-    );
+    const compilerInfoPath = join(canisterPath, 'compiler_info.json');
 
     // TODO why not just write the dfx.json file here as well?
     writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
 
-    return runAzleGenerate('compiler_info.json', canisterPath, canisterConfig);
+    return Result.Ok(null);
 }
 
 function runAzleGenerate(

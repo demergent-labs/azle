@@ -1,17 +1,22 @@
-// TODO So I'm going to create a macro for the dynamic portion of the code here
-// TODO Then I'm going to integrate rquickjs
+// TODO we need an easy way to see the expanded file now
+// TODO perhaps we should automatically do this and store it in the filesystem for easy retrieval?
 
-use crate::traits::to_ident::ToIdent;
-use quote::quote;
+use std::fs;
+
+use proc_macro::TokenStream;
+use proc_macro2::Ident;
+use quote::{format_ident, quote};
 use serde::{Deserialize, Serialize};
-use std::{
-    env,
-    fs::{self, File},
-    io::Write,
-};
 
-mod ic;
-mod traits;
+trait ToIdent {
+    fn to_ident(&self) -> Ident;
+}
+
+impl ToIdent for String {
+    fn to_ident(&self) -> Ident {
+        format_ident!("{}", self)
+    }
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CompilerInfo {
@@ -38,20 +43,9 @@ struct CanisterMethod {
     guard_name: Option<String>,
 }
 
-fn main() -> Result<(), String> {
-    let args: Vec<String> = env::args().collect();
-
-    if args.len() < 2 {
-        let executable_name = &args[0];
-
-        return Err(format!(
-            "Usage: {executable_name} <path/to/compiler_info.json> [env_vars_csv]"
-        ));
-    }
-
-    let compiler_info = get_compiler_info(&args[1])?;
-
-    let ic = ic::generate();
+#[proc_macro]
+pub fn canister_methods(_: TokenStream) -> TokenStream {
+    let compiler_info = get_compiler_info("compiler_info.json").unwrap();
 
     let init_method_call = compiler_info.canister_methods.init.map(|init_method| {
         let js_function_name = &init_method.name;
@@ -59,7 +53,28 @@ fn main() -> Result<(), String> {
         quote!(execute_js(#js_function_name, true);)
     });
 
-    let post_upgrade_method_call =
+    let init_method = quote! {
+        #[ic_cdk_macros::init]
+        fn init() {
+            unsafe { ic_wasi_polyfill::init(&[], &[]); }
+
+            let context = JSContextRef::default();
+
+            ic::register(&context);
+
+            context.eval_global("exports.js", "globalThis.exports = {};").unwrap();
+            context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();
+
+            CONTEXT.with(|ctx| {
+                let mut ctx = ctx.borrow_mut();
+                *ctx = Some(context);
+            });
+
+            #init_method_call
+        }
+    };
+
+    let post_update_method_call =
         compiler_info
             .canister_methods
             .post_upgrade
@@ -68,6 +83,27 @@ fn main() -> Result<(), String> {
 
                 quote!(execute_js(#js_function_name, true);)
             });
+
+    let post_update_method = quote! {
+        #[ic_cdk_macros::post_upgrade]
+        fn post_upgrade() {
+            unsafe { ic_wasi_polyfill::init(&[], &[]); }
+
+            let context = JSContextRef::default();
+
+            ic::register(&context);
+
+            context.eval_global("exports.js", "globalThis.exports = {}").unwrap();
+            context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();
+
+            CONTEXT.with(|ctx| {
+                let mut ctx = ctx.borrow_mut();
+                *ctx = Some(context);
+            });
+
+            #post_update_method_call
+        }
+    };
 
     let pre_upgrade_method = compiler_info
         .canister_methods
@@ -166,148 +202,22 @@ fn main() -> Result<(), String> {
             }
         });
 
-    let lib_file = quote! {
-        #![allow(non_snake_case)]
-        use quickjs_wasm_rs::{JSContextRef, JSValueRef, JSValue, from_qjs_value, to_qjs_value, CallbackArg};
-        use slotmap::Key;
-        use std::cell::RefCell;
-        use std::convert::TryInto;
-        use std::collections::BTreeMap;
-        use ic_stable_structures::{ DefaultMemoryImpl, memory_manager::{ MemoryId, MemoryManager, VirtualMemory }, StableBTreeMap, storable::Bound, Storable };
+    quote! {
+        #init_method
 
-        const MAIN_JS: &[u8] = include_bytes!("main.js");
-
-        type Memory = VirtualMemory<DefaultMemoryImpl>;
-        type AzleStableBTreeMap = StableBTreeMap<AzleStableBTreeMapKey, AzleStableBTreeMapValue, Memory>;
-
-        #[derive(Ord, PartialOrd, Eq, PartialEq, Clone)]
-        struct AzleStableBTreeMapKey {
-            candid_bytes: Vec<u8>
-        }
-
-        impl Storable for AzleStableBTreeMapKey {
-            fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
-                std::borrow::Cow::Borrowed(&self.candid_bytes)
-            }
-
-            fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
-                AzleStableBTreeMapKey {
-                    candid_bytes: bytes.to_vec()
-                }
-            }
-
-            const BOUND: Bound = Bound::Unbounded;
-        }
-
-        #[derive(Ord, PartialOrd, Eq, PartialEq, Clone)]
-        struct AzleStableBTreeMapValue {
-            candid_bytes: Vec<u8>
-        }
-
-        impl Storable for AzleStableBTreeMapValue {
-            fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
-                std::borrow::Cow::Borrowed(&self.candid_bytes)
-            }
-
-            fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
-                AzleStableBTreeMapValue {
-                    candid_bytes: bytes.to_vec()
-                }
-            }
-
-            const BOUND: Bound = Bound::Unbounded;
-        }
-
-        thread_local! {
-            static CONTEXT: RefCell<Option<JSContextRef>> = RefCell::new(None);
-
-            static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
-
-            static STABLE_B_TREE_MAPS: RefCell<BTreeMap<u8, AzleStableBTreeMap>> = RefCell::new(BTreeMap::new());
-        }
-
-        #[ic_cdk_macros::init]
-        fn init() {
-            unsafe { ic_wasi_polyfill::init(&[], &[]); }
-
-            let context = JSContextRef::default();
-
-            #ic
-
-            context.eval_global("exports.js", "globalThis.exports = {};").unwrap();
-            context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();
-
-            CONTEXT.with(|ctx| {
-                let mut ctx = ctx.borrow_mut();
-                *ctx = Some(context);
-            });
-
-            #init_method_call
-        }
-
-        #[ic_cdk_macros::post_upgrade]
-        fn post_upgrade() {
-            unsafe { ic_wasi_polyfill::init(&[], &[]); }
-
-            let context = JSContextRef::default();
-
-            #ic
-
-            context.eval_global("exports.js", "globalThis.exports = {}").unwrap();
-            context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();
-
-            CONTEXT.with(|ctx| {
-                let mut ctx = ctx.borrow_mut();
-                *ctx = Some(context);
-            });
-
-            #post_upgrade_method_call
-        }
+        #post_update_method
 
         #pre_upgrade_method
 
-        #heartbeat_method
-
         #inspect_message_method
+
+        #heartbeat_method
 
         #(#query_methods)*
 
         #(#update_methods)*
-
-        fn execute_js(function_name: &str, pass_arg_data: bool) {
-            CONTEXT.with(|context| {
-                let mut context = context.borrow_mut();
-                let context = context.as_mut().unwrap();
-
-                let global = context.global_object().unwrap();
-                let exports = global.get_property("exports").unwrap();
-                let canister_methods = exports.get_property("canisterMethods").unwrap();
-                let callbacks = canister_methods.get_property("callbacks").unwrap();
-                let methodCallbacks = callbacks.get_property(function_name).unwrap();
-                let canisterMethodCallback = methodCallbacks.get_property("canisterCallback").unwrap();
-
-                let candid_args = if pass_arg_data { ic_cdk::api::call::arg_data_raw() } else { vec![] };
-
-                let candid_args_js_value: JSValue = candid_args.into();
-                let candid_args_js_value_ref = to_qjs_value(&context, &candid_args_js_value).unwrap();
-
-                // TODO I am not sure what the first parameter to call is supposed to be
-                canisterMethodCallback.call(&canisterMethodCallback, &[candid_args_js_value_ref]).unwrap();
-
-                context.execute_pending().unwrap();
-            });
-        }
     }
-    .to_string();
-
-    let syntax_tree = syn::parse_file(&lib_file).map_err(|err| err.to_string())?;
-    let formatted = prettyplease::unparse(&syntax_tree);
-
-    let mut f = File::create("../src/lib.rs").map_err(|err| err.to_string())?;
-    f.write_all(formatted.as_bytes())
-        .map_err(|err| err.to_string())?;
-
-    Ok(())
+    .into()
 }
 
 fn get_compiler_info(compiler_info_path: &str) -> Result<CompilerInfo, String> {

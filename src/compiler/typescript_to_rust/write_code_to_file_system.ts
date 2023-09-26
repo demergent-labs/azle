@@ -50,8 +50,6 @@ export function writeCodeToFileSystem(
         `${canisterPath}/${rootPath}/azle_generate`
     );
 
-    writeFileSync(`${canisterPath}/${rootPath}/src/main.js`, mainJs);
-
     if (
         !existsSync(`${canisterPath}/${rootPath}/azle_generate_rearchitecture`)
     ) {
@@ -61,6 +59,20 @@ export function writeCodeToFileSystem(
     copySync(
         `${__dirname}/azle_generate_rearchitecture`,
         `${canisterPath}/${rootPath}/azle_generate_rearchitecture`
+    );
+
+    if (!existsSync(`${canisterPath}/${rootPath}/canister_methods`)) {
+        mkdirSync(`${canisterPath}/${rootPath}/canister_methods`);
+    }
+
+    copySync(
+        `${__dirname}/canister_methods`,
+        `${canisterPath}/${rootPath}/canister_methods`
+    );
+
+    writeFileSync(
+        `${canisterPath}/${rootPath}/azle_generate_rearchitecture/src/main.js`,
+        mainJs
     );
 
     writeFileSync(candidPath, candid);

@@ -1,6 +1,3 @@
-use proc_macro2::TokenStream;
-use quote::quote;
-
 mod accept_message;
 mod arg_data_raw;
 mod arg_data_raw_size;
@@ -56,176 +53,368 @@ mod stable_write;
 mod time;
 mod trap;
 
-pub fn generate() -> TokenStream {
-    let accept_message = accept_message::generate();
-    let arg_data_raw_size = arg_data_raw_size::generate();
-    let arg_data_raw = arg_data_raw::generate();
-    let call_raw = call_raw::generate();
-    let call_raw128 = call_raw128::generate();
-    let caller = caller::generate();
-    let candid_decode = candid_decode::generate();
-    let candid_encode = candid_encode::generate();
-    let canister_balance = canister_balance::generate();
-    let canister_balance128 = canister_balance128::generate();
-    let canister_version = canister_version::generate();
-    let clear_timer = clear_timer::generate();
-    let data_certificate = data_certificate::generate();
-    let id = id::generate();
-    let instruction_counter = instruction_counter::generate();
-    let is_controller = is_controller::generate();
-    let method_name = method_name::generate();
-    let msg_cycles_accept = msg_cycles_accept::generate();
-    let msg_cycles_accept128 = msg_cycles_accept128::generate();
-    let msg_cycles_available = msg_cycles_available::generate();
-    let msg_cycles_available128 = msg_cycles_available128::generate();
-    let msg_cycles_refunded = msg_cycles_refunded::generate();
-    let msg_cycles_refunded128 = msg_cycles_refunded128::generate();
-    let notify_raw = notify_raw::generate();
-    let performance_counter = performance_counter::generate();
-    let print = print::generate();
-    let reject = reject::generate();
-    let reject_code = reject_code::generate();
-    let reject_message = reject_message::generate();
-    let reply_raw = reply_raw::generate();
-    let set_certified_data = set_certified_data::generate();
-    let set_timer = set_timer::generate();
-    let set_timer_interval = set_timer_interval::generate();
-    let stable_bytes = stable_bytes::generate();
-    let stable_grow = stable_grow::generate();
-    let stable_read = stable_read::generate();
-    let stable_size = stable_size::generate();
-    let stable_write = stable_write::generate();
-    let stable64_grow = stable64_grow::generate();
-    let stable64_read = stable64_read::generate();
-    let stable64_size = stable64_size::generate();
-    let stable64_write = stable64_write::generate();
-    let stable_b_tree_map_contains_key = stable_b_tree_map_contains_key::generate();
-    let stable_b_tree_map_get = stable_b_tree_map_get::generate();
-    let stable_b_tree_map_init = stable_b_tree_map_init::generate();
-    let stable_b_tree_map_insert = stable_b_tree_map_insert::generate();
-    let stable_b_tree_map_is_empty = stable_b_tree_map_is_empty::generate();
-    let stable_b_tree_map_items = stable_b_tree_map_items::generate();
-    let stable_b_tree_map_keys = stable_b_tree_map_keys::generate();
-    let stable_b_tree_map_len = stable_b_tree_map_len::generate();
-    let stable_b_tree_map_remove = stable_b_tree_map_remove::generate();
-    let stable_b_tree_map_values = stable_b_tree_map_values::generate();
-    let time = time::generate();
-    let trap = trap::generate();
+use quickjs_wasm_rs::JSContextRef;
 
-    quote! {
-        #accept_message
-        #arg_data_raw_size
-        #arg_data_raw
-        #call_raw
-        #call_raw128
-        #caller
-        #candid_decode
-        #candid_encode
-        #canister_balance
-        #canister_balance128
-        #canister_version
-        #clear_timer
-        #data_certificate
-        #id
-        #instruction_counter
-        #is_controller
-        #method_name
-        #msg_cycles_accept
-        #msg_cycles_accept128
-        #msg_cycles_available
-        #msg_cycles_available128
-        #msg_cycles_refunded
-        #msg_cycles_refunded128
-        #notify_raw
-        #performance_counter
-        #print
-        #reject
-        #reject_code
-        #reject_message
-        #reply_raw
-        #set_certified_data
-        #set_timer
-        #set_timer_interval
-        #stable_bytes
-        #stable_grow
-        #stable_read
-        #stable_size
-        #stable_write
-        #stable64_grow
-        #stable64_read
-        #stable64_size
-        #stable64_write
-        #stable_b_tree_map_contains_key
-        #stable_b_tree_map_get
-        #stable_b_tree_map_init
-        #stable_b_tree_map_insert
-        #stable_b_tree_map_is_empty
-        #stable_b_tree_map_items
-        #stable_b_tree_map_keys
-        #stable_b_tree_map_len
-        #stable_b_tree_map_remove
-        #stable_b_tree_map_values
-        #time
-        #trap
+#[allow(unused)]
+pub fn register(context: &JSContextRef) {
+    let ic = context.object_value().unwrap();
 
-        let ic = context.object_value().unwrap();
+    ic.set_property(
+        "acceptMessage",
+        context
+            .wrap_callback2(accept_message::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "argDataRawSize",
+        context
+            .wrap_callback2(arg_data_raw_size::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "argDataRaw",
+        context
+            .wrap_callback2(arg_data_raw::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "callRaw",
+        context.wrap_callback2(call_raw::native_function).unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "callRaw128",
+        context
+            .wrap_callback2(call_raw128::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "caller",
+        context.wrap_callback2(caller::native_function).unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "candidDecode",
+        context
+            .wrap_callback2(candid_decode::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "candidEncode",
+        context
+            .wrap_callback2(candid_encode::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "canisterBalance",
+        context
+            .wrap_callback2(canister_balance::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "canisterBalance128",
+        context
+            .wrap_callback2(canister_balance128::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "canisterVersion",
+        context
+            .wrap_callback2(canister_version::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "clearTimer",
+        context
+            .wrap_callback2(clear_timer::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "dataCertificate",
+        context
+            .wrap_callback2(data_certificate::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property("id", context.wrap_callback2(id::native_function).unwrap())
+        .unwrap();
+    ic.set_property(
+        "instructionCounter",
+        context
+            .wrap_callback2(instruction_counter::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "isController",
+        context
+            .wrap_callback2(is_controller::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "methodName",
+        context
+            .wrap_callback2(method_name::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "msgCyclesAccept",
+        context
+            .wrap_callback2(msg_cycles_accept::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "msgCyclesAccept128",
+        context
+            .wrap_callback2(msg_cycles_accept128::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "msgCyclesAvailable",
+        context
+            .wrap_callback2(msg_cycles_available::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "msgCyclesAvailable128",
+        context
+            .wrap_callback2(msg_cycles_available128::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "msgCyclesRefunded",
+        context
+            .wrap_callback2(msg_cycles_refunded::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "msgCyclesRefunded128",
+        context
+            .wrap_callback2(msg_cycles_refunded128::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "notifyRaw",
+        context.wrap_callback2(notify_raw::native_function).unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "performanceCounter",
+        context
+            .wrap_callback2(performance_counter::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "print",
+        context.wrap_callback2(print::native_function).unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "reject",
+        context.wrap_callback2(reject::native_function).unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "rejectCode",
+        context
+            .wrap_callback2(reject_code::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "rejectMessage",
+        context
+            .wrap_callback2(reject_message::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "replyRaw",
+        context.wrap_callback2(reply_raw::native_function).unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "setCertifiedData",
+        context
+            .wrap_callback2(set_certified_data::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "setTimer",
+        context.wrap_callback2(set_timer::native_function).unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "setTimerInterval",
+        context
+            .wrap_callback2(set_timer_interval::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stable64Grow",
+        context
+            .wrap_callback2(stable64_grow::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stable64Read",
+        context
+            .wrap_callback2(stable64_read::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stable64Size",
+        context
+            .wrap_callback2(stable64_size::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stable64Write",
+        context
+            .wrap_callback2(stable64_write::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableBytes",
+        context
+            .wrap_callback2(stable_bytes::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableGrow",
+        context
+            .wrap_callback2(stable_grow::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableRead",
+        context
+            .wrap_callback2(stable_read::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableSize",
+        context
+            .wrap_callback2(stable_size::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableWrite",
+        context
+            .wrap_callback2(stable_write::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableBTreeMapContainsKey",
+        context
+            .wrap_callback2(stable_b_tree_map_contains_key::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableBTreeMapGet",
+        context
+            .wrap_callback2(stable_b_tree_map_get::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableBTreeMapInit",
+        context
+            .wrap_callback2(stable_b_tree_map_init::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableBTreeMapInsert",
+        context
+            .wrap_callback2(stable_b_tree_map_insert::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableBTreeMapIsEmpty",
+        context
+            .wrap_callback2(stable_b_tree_map_is_empty::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableBTreeMapItems",
+        context
+            .wrap_callback2(stable_b_tree_map_items::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableBTreeMapKeys",
+        context
+            .wrap_callback2(stable_b_tree_map_keys::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableBTreeMapLen",
+        context
+            .wrap_callback2(stable_b_tree_map_len::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableBTreeMapRemove",
+        context
+            .wrap_callback2(stable_b_tree_map_remove::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "stableBTreeMapValues",
+        context
+            .wrap_callback2(stable_b_tree_map_values::native_function)
+            .unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "time",
+        context.wrap_callback2(time::native_function).unwrap(),
+    )
+    .unwrap();
+    ic.set_property(
+        "trap",
+        context.wrap_callback2(trap::native_function).unwrap(),
+    )
+    .unwrap();
 
-        ic.set_property("acceptMessage", context.wrap_callback2(accept_message).unwrap()).unwrap();
-        ic.set_property("argDataRawSize", context.wrap_callback2(arg_data_raw_size).unwrap()).unwrap();
-        ic.set_property("argDataRaw", context.wrap_callback2(arg_data_raw).unwrap()).unwrap();
-        ic.set_property("callRaw", context.wrap_callback2(call_raw).unwrap()).unwrap();
-        ic.set_property("callRaw128", context.wrap_callback2(call_raw128).unwrap()).unwrap();
-        ic.set_property("caller", context.wrap_callback2(caller).unwrap()).unwrap();
-        ic.set_property("candidDecode", context.wrap_callback2(candid_decode).unwrap()).unwrap();
-        ic.set_property("candidEncode", context.wrap_callback2(candid_encode).unwrap()).unwrap();
-        ic.set_property("canisterBalance", context.wrap_callback2(canister_balance).unwrap()).unwrap();
-        ic.set_property("canisterBalance128", context.wrap_callback2(canister_balance128).unwrap()).unwrap();
-        ic.set_property("canisterVersion", context.wrap_callback2(canister_version).unwrap()).unwrap();
-        ic.set_property("clearTimer", context.wrap_callback2(clear_timer).unwrap()).unwrap();
-        ic.set_property("dataCertificate", context.wrap_callback2(data_certificate).unwrap()).unwrap();
-        ic.set_property("id", context.wrap_callback2(id).unwrap()).unwrap();
-        ic.set_property("instructionCounter", context.wrap_callback2(instruction_counter).unwrap()).unwrap();
-        ic.set_property("isController", context.wrap_callback2(is_controller).unwrap()).unwrap();
-        ic.set_property("methodName", context.wrap_callback2(method_name).unwrap()).unwrap();
-        ic.set_property("msgCyclesAccept", context.wrap_callback2(msg_cycles_accept).unwrap()).unwrap();
-        ic.set_property("msgCyclesAccept128", context.wrap_callback2(msg_cycles_accept128).unwrap()).unwrap();
-        ic.set_property("msgCyclesAvailable", context.wrap_callback2(msg_cycles_available).unwrap()).unwrap();
-        ic.set_property("msgCyclesAvailable128", context.wrap_callback2(msg_cycles_available128).unwrap()).unwrap();
-        ic.set_property("msgCyclesRefunded", context.wrap_callback2(msg_cycles_refunded).unwrap()).unwrap();
-        ic.set_property("msgCyclesRefunded128", context.wrap_callback2(msg_cycles_refunded128).unwrap()).unwrap();
-        ic.set_property("notifyRaw", context.wrap_callback2(notify_raw).unwrap()).unwrap();
-        ic.set_property("performanceCounter", context.wrap_callback2(performance_counter).unwrap()).unwrap();
-        ic.set_property("print", context.wrap_callback2(print).unwrap()).unwrap();
-        ic.set_property("reject", context.wrap_callback2(reject).unwrap()).unwrap();
-        ic.set_property("rejectCode", context.wrap_callback2(reject_code).unwrap()).unwrap();
-        ic.set_property("rejectMessage", context.wrap_callback2(reject_message).unwrap()).unwrap();
-        ic.set_property("replyRaw", context.wrap_callback2(reply_raw).unwrap()).unwrap();
-        ic.set_property("setCertifiedData", context.wrap_callback2(set_certified_data).unwrap()).unwrap();
-        ic.set_property("setTimer", context.wrap_callback2(set_timer).unwrap()).unwrap();
-        ic.set_property("setTimerInterval", context.wrap_callback2(set_timer_interval).unwrap()).unwrap();
-        ic.set_property("stable64Grow", context.wrap_callback2(stable64_grow).unwrap()).unwrap();
-        ic.set_property("stable64Read", context.wrap_callback2(stable64_read).unwrap()).unwrap();
-        ic.set_property("stable64Size", context.wrap_callback2(stable64_size).unwrap()).unwrap();
-        ic.set_property("stable64Write", context.wrap_callback2(stable64_write).unwrap()).unwrap();
-        ic.set_property("stableBytes", context.wrap_callback2(stable_bytes).unwrap()).unwrap();
-        ic.set_property("stableGrow", context.wrap_callback2(stable_grow).unwrap()).unwrap();
-        ic.set_property("stableRead", context.wrap_callback2(stable_read).unwrap()).unwrap();
-        ic.set_property("stableSize", context.wrap_callback2(stable_size).unwrap()).unwrap();
-        ic.set_property("stableWrite", context.wrap_callback2(stable_write).unwrap()).unwrap();
-        ic.set_property("stableBTreeMapContainsKey", context.wrap_callback2(stable_b_tree_map_contains_key).unwrap()).unwrap();
-        ic.set_property("stableBTreeMapGet", context.wrap_callback2(stable_b_tree_map_get).unwrap()).unwrap();
-        ic.set_property("stableBTreeMapInit", context.wrap_callback2(stable_b_tree_map_init).unwrap()).unwrap();
-        ic.set_property("stableBTreeMapInsert", context.wrap_callback2(stable_b_tree_map_insert).unwrap()).unwrap();
-        ic.set_property("stableBTreeMapIsEmpty", context.wrap_callback2(stable_b_tree_map_is_empty).unwrap()).unwrap();
-        ic.set_property("stableBTreeMapItems", context.wrap_callback2(stable_b_tree_map_items).unwrap()).unwrap();
-        ic.set_property("stableBTreeMapKeys", context.wrap_callback2(stable_b_tree_map_keys).unwrap()).unwrap();
-        ic.set_property("stableBTreeMapLen", context.wrap_callback2(stable_b_tree_map_len).unwrap()).unwrap();
-        ic.set_property("stableBTreeMapRemove", context.wrap_callback2(stable_b_tree_map_remove).unwrap()).unwrap();
-        ic.set_property("stableBTreeMapValues", context.wrap_callback2(stable_b_tree_map_values).unwrap()).unwrap();
-        ic.set_property("time", context.wrap_callback2(time).unwrap()).unwrap();
-        ic.set_property("trap", context.wrap_callback2(trap).unwrap()).unwrap();
-
-        let global = context.global_object().unwrap();
-        global.set_property("_azleIc", ic).unwrap();
-    }
+    let global = context.global_object().unwrap();
+    global.set_property("_azleIc", ic).unwrap();
 }

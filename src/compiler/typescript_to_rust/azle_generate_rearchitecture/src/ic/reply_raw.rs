@@ -1,21 +1,18 @@
-use proc_macro2::TokenStream;
-use quote::quote;
+use std::convert::TryInto;
 
-pub fn generate() -> TokenStream {
-    quote! {
-        fn reply_raw<'a>(
-            context: &'a JSContextRef,
-            _this: &CallbackArg,
-            args: &[CallbackArg],
-        ) -> Result<JSValueRef<'a>, anyhow::Error> {
-            let buf: Vec<u8> = args
-                .get(0)
-                .expect("replyRaw must have one argument")
-                .to_js_value()?
-                .try_into()?;
+use quickjs_wasm_rs::{CallbackArg, JSContextRef, JSValueRef};
 
-            ic_cdk::api::call::reply_raw(&buf);
-            context.undefined_value()
-        }
-    }
+pub fn native_function<'a>(
+    context: &'a JSContextRef,
+    _this: &CallbackArg,
+    args: &[CallbackArg],
+) -> Result<JSValueRef<'a>, anyhow::Error> {
+    let buf: Vec<u8> = args
+        .get(0)
+        .expect("replyRaw must have one argument")
+        .to_js_value()?
+        .try_into()?;
+
+    ic_cdk::api::call::reply_raw(&buf);
+    context.undefined_value()
 }

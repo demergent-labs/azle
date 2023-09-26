@@ -1,27 +1,35 @@
-use proc_macro2::TokenStream;
-use quote::quote;
+use std::convert::TryInto;
 
-pub fn generate() -> TokenStream {
-    quote! {
-        fn stable_b_tree_map_contains_key<'a>(
-            context: &'a JSContextRef,
-            _this: &CallbackArg,
-            args: &[CallbackArg],
-        ) -> Result<JSValueRef<'a>, anyhow::Error> {
-            let memory_id_candid_bytes: Vec<u8> = args.get(0).expect("stable_b_tree_map_get argument 0 is undefined").to_js_value()?.try_into()?;
-            let memory_id: u8 = candid::decode_one(&memory_id_candid_bytes)?;
+use quickjs_wasm_rs::{to_qjs_value, CallbackArg, JSContextRef, JSValue, JSValueRef};
 
-            let key: Vec<u8> = args.get(1).expect("stable_b_tree_map_get argument 1 is undefined").to_js_value()?.try_into()?;
+use crate::{AzleStableBTreeMapKey, STABLE_B_TREE_MAPS};
 
-            let result_js_value: JSValue = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
-                let stable_b_tree_maps = stable_b_tree_maps.borrow();
+pub fn native_function<'a>(
+    context: &'a JSContextRef,
+    _this: &CallbackArg,
+    args: &[CallbackArg],
+) -> Result<JSValueRef<'a>, anyhow::Error> {
+    let memory_id_candid_bytes: Vec<u8> = args
+        .get(0)
+        .expect("stable_b_tree_map_get argument 0 is undefined")
+        .to_js_value()?
+        .try_into()?;
+    let memory_id: u8 = candid::decode_one(&memory_id_candid_bytes)?;
 
-                stable_b_tree_maps[&memory_id].contains_key(&AzleStableBTreeMapKey {
-                    candid_bytes: key
-                })
-            }).into();
+    let key: Vec<u8> = args
+        .get(1)
+        .expect("stable_b_tree_map_get argument 1 is undefined")
+        .to_js_value()?
+        .try_into()?;
 
-            to_qjs_value(&context, &result_js_value)
-        }
-    }
+    let result_js_value: JSValue = STABLE_B_TREE_MAPS
+        .with(|stable_b_tree_maps| {
+            let stable_b_tree_maps = stable_b_tree_maps.borrow();
+
+            stable_b_tree_maps[&memory_id]
+                .contains_key(&AzleStableBTreeMapKey { candid_bytes: key })
+        })
+        .into();
+
+    to_qjs_value(&context, &result_js_value)
 }

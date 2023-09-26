@@ -1,20 +1,17 @@
-use proc_macro2::TokenStream;
-use quote::quote;
+use std::convert::TryInto;
 
-pub fn generate() -> TokenStream {
-    quote! {
-        fn trap<'a>(
-            context: &'a JSContextRef,
-            _this: &CallbackArg,
-            args: &[CallbackArg],
-        ) -> Result<JSValueRef<'a>, anyhow::Error> {
-            let message: String = args
-                .get(0)
-                .expect("trap must have one argument")
-                .to_js_value()?
-                .try_into()?;
+use quickjs_wasm_rs::{CallbackArg, JSContextRef, JSValueRef};
 
-            ic_cdk::api::trap(&message);
-        }
-    }
+pub fn native_function<'a>(
+    _context: &'a JSContextRef,
+    _this: &CallbackArg,
+    args: &[CallbackArg],
+) -> Result<JSValueRef<'a>, anyhow::Error> {
+    let message: String = args
+        .get(0)
+        .expect("trap must have one argument")
+        .to_js_value()?
+        .try_into()?;
+
+    ic_cdk::api::trap(&message);
 }
