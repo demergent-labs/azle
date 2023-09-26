@@ -80,28 +80,17 @@ export function StableBTreeMap<Key, Value>(
             key: TypeMapping<Key>,
             value: TypeMapping<Value>
         ): Opt<TypeMapping<Value>> {
-            console.log('keyIdl');
-            console.log(keyIdl);
-            console.log('valueIdl');
-            console.log(valueIdl);
-
             const candidEncodedMemoryId = new Uint8Array(
                 IDL.encode([IDL.Nat8], [memoryId])
             ).buffer;
-
-            console.log(0);
 
             const candidEncodedKey = new Uint8Array(
                 IDL.encode([keyIdl as any], [key])
             ).buffer;
 
-            console.log(1);
-
             const candidEncodedValue = new Uint8Array(
                 IDL.encode([valueIdl as any], [value])
             ).buffer;
-
-            console.log(2);
 
             const candidEncodedResultValue = (
                 globalThis as any
@@ -110,8 +99,6 @@ export function StableBTreeMap<Key, Value>(
                 candidEncodedKey,
                 candidEncodedValue
             );
-
-            console.log(3);
 
             if (candidEncodedResultValue === undefined) {
                 return [];
