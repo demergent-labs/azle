@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "recursion": {
+            "type": "custom",
+            "build": "npx azle recursion",
+            "root": "src",
+            "ts": "src/index.ts",
+            "candid": "src/index.did",
+            "wasm": ".azle/recursion/recursion.wasm.gz",
+            "declarations": {
+                "output": "test/dfx_generated/recursion",
+                "node_compatibility": true
+            }
+        }
+    }
+}

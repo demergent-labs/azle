@@ -1,6 +1,6 @@
 import { TypeMapping } from '..';
 import { IDL } from '@dfinity/candid';
-import { processMap } from '../../../lib_new/utils';
+import { Parent, processMap } from '../../../lib_new/utils';
 import { v4 } from 'uuid';
 
 export function Record<T>(obj: T): {
@@ -10,7 +10,8 @@ export function Record<T>(obj: T): {
 
     return {
         ...obj,
-        getIDL(parents: any) {
+        _azleName: name,
+        getIDL(parents: Parent[]) {
             const idl = IDL.Rec();
             idl.fill(
                 IDL.Record(

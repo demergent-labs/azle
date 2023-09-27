@@ -233,7 +233,7 @@ export function Vec<T>(t: T): AzleVec<T> {
 }
 
 // TODO I am not sure of any of these types... but its working so...
-export function Tuple(...types: CandidClass[]): AzleTuple {
+export function Tuple(...types: any[]): AzleTuple {
     // const idlTypes = types.map((value) => {
     //     return toIDLType(value);
     // });

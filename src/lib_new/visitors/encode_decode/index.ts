@@ -22,6 +22,13 @@ export type VisitorResult = any;
  * is extracted into these helper methods.
  */
 
+function handleRecursiveClass(type: any) {
+    if (type._azleRecLambda) {
+        return type();
+    }
+    return type;
+}
+
 export function visitTuple(
     visitor: DecodeVisitor | EncodeVisitor,
     components: IDL.Type<any>[],
@@ -30,7 +37,7 @@ export function visitTuple(
     const fields = components.map((value, index) =>
         value.accept(visitor, {
             js_data: data.js_data[index],
-            js_class: data.js_class._azleTypes[index]
+            js_class: handleRecursiveClass(data.js_class._azleTypes[index])
         })
     );
     return [...fields];
@@ -46,7 +53,7 @@ export function visitOpt(
     }
     const candid = ty.accept(visitor, {
         js_data: data.js_data[0],
-        js_class: data.js_class._azleType
+        js_class: handleRecursiveClass(data.js_class._azleType)
     });
     return [candid];
 }
@@ -62,7 +69,7 @@ export function visitVec(
     return data.js_data.map((array_elem: any) => {
         return ty.accept(visitor, {
             js_data: array_elem,
-            js_class: data.js_class._azleType
+            js_class: handleRecursiveClass(data.js_class._azleType)
         });
     });
 }
@@ -74,7 +81,7 @@ export function visitRecord(
 ): VisitorResult {
     const candidFields = fields.reduce((acc, [memberName, memberIdl]) => {
         const fieldData = data.js_data[memberName];
-        const fieldClass = data.js_class[memberName];
+        const fieldClass = handleRecursiveClass(data.js_class[memberName]);
 
         return {
             ...acc,
@@ -97,7 +104,8 @@ export function visitVariant(
         if ('Ok' in data.js_data) {
             const okField = fields[0];
             const okData = data.js_data['Ok'];
-            const okClass = data.js_class._azleOk;
+            const okClass = handleRecursiveClass(data.js_class._azleOk);
+
             return Result.Ok(
                 okField[1].accept(visitor, {
                     js_data: okData,
@@ -108,7 +116,7 @@ export function visitVariant(
         if ('Err' in data.js_data) {
             const errField = fields[0];
             const errData = data.js_data['Err'];
-            const errClass = data.js_class._azleErr;
+            const errClass = handleRecursiveClass(data.js_class._azleErr);
             return Result.Err(
                 errField[1].accept(visitor, {
                     js_data: errData,
@@ -119,7 +127,7 @@ export function visitVariant(
     }
     const candidFields = fields.reduce((acc, [memberName, memberIdl]) => {
         const fieldData = data.js_data[memberName];
-        const fieldClass = data.js_class[memberName];
+        const fieldClass = handleRecursiveClass(data.js_class[memberName]);
         if (fieldData === undefined) {
             // If the field data is undefined then it is not the variant that was used
             return acc;
@@ -141,7 +149,5 @@ export function visitRec<T>(
     ty: IDL.ConstructType<T>,
     data: VisitorData
 ): VisitorResult {
-    // TODO I imagine that this will be the spot of much torment when we get
-    // to doing actual recursive types, maybe
     return ty.accept(visitor, data);
 }
