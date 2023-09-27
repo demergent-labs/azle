@@ -1,4 +1,4 @@
-import { OptLevel, Toml } from '../../utils/types';
+import { OptLevel, Toml } from '../utils/types';
 
 export function generateWorkspaceCargoToml(
     rootPath: string,

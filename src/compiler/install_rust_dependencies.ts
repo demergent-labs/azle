@@ -4,11 +4,10 @@ import { resolve } from 'path';
 import {
     GLOBAL_AZLE_RUST_DIR,
     GLOBAL_AZLE_RUST_BIN_DIR,
-    GLOBAL_AZLE_TARGET_DIR,
-    time
+    GLOBAL_AZLE_TARGET_DIR
 } from './utils';
 
-export async function installRustDependencies(
+export function installRustDependencies(
     azleVersion: string,
     rustVersion: string
 ) {
@@ -16,19 +15,20 @@ export async function installRustDependencies(
         return;
     }
 
-    await time('[0/2] 🏗️  Preparing prerequisites...', 'inline', async () => {
-        const installRustDependenciesPath = resolve(
-            __dirname,
-            '../../install_rust_dependencies.sh'
-        );
+    const installRustDependenciesPath = resolve(
+        __dirname,
+        '../../install_rust_dependencies.sh'
+    );
 
-        execSync(
-            `"${installRustDependenciesPath}" ${azleVersion} ${rustVersion}`,
-            {
-                stdio: 'inherit'
-            }
-        );
+    const timerId = setInterval(() => {
+        console.log('installing dependencies...');
+    }, 10_000);
+
+    execSync(`"${installRustDependenciesPath}" ${azleVersion} ${rustVersion}`, {
+        stdio: 'inherit'
     });
+
+    clearTimeout(timerId);
 }
 
 function isWasm32TargetInstalled(): boolean {
