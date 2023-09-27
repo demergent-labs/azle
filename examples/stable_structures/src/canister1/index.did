@@ -17,6 +17,7 @@ type rec_17 = record {username:text; posts:vec rec_18};
 type rec_20 = record {title:text};
 type rec_19 = record {username:text; posts:vec rec_20};
 service: () -> {
+    getRedeployed: () -> (bool) query;
     stableMap0ContainsKey: (nat8) -> (bool) query;
     stableMap0Get: (nat8) -> (opt text) query;
     stableMap0Insert: (nat8, text) -> (opt text);
