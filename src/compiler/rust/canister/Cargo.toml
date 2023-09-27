@@ -1,0 +1,22 @@
+[package]
+name = "canister"
+version = "0.0.0"
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+anyhow = "1.0.75"
+candid = { version = "0.9.1", features = ["parser"] }
+ic-cdk-timers = "0.4.0"
+ic-stable-structures = "0.6.0-beta.1"
+canister_methods = { path = "../canister_methods" }
+quickjs-wasm-rs = { git = "https://github.com/ulan/javy.git", branch = "ulan/local-changes" }
+slotmap = "=1.0.6"
+ic-cdk = "0.10.0"
+ic-cdk-macros = "0.7.0"
+# TODO for now we must turn on the transient feature (no stable storage file system) or we can't generate the Candid file
+ic-wasi-polyfill = { git = "https://github.com/demergent-labs/ic-wasi-polyfill", rev = "f3812b879c096faf930331e76441fadf2ebe6586", features = [
+    "transient",
+] }

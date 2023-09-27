@@ -6,7 +6,8 @@
             "root": "src",
             "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/simple_user_accounts/simple_user_accounts.wasm.gz",
+            "wasm": ".azle/simple_user_accounts/simple_user_accounts.wasm",
+            "gzip": true,
             "opt_level": "1",
             "declarations": {
                 "output": "test/dfx_generated/simple_user_accounts",

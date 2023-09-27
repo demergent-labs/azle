@@ -1,13 +1,4 @@
 import { Variant } from '../../lib';
-import {
-    AliasTables,
-    AliasLists
-} from '../typescript_to_rust/type_alias_parsing/types';
-
-export {
-    AliasTables,
-    AliasLists
-} from '../typescript_to_rust/type_alias_parsing/types';
 
 export type AzleError = {
     error?: string;
@@ -37,11 +28,6 @@ export type JSCanisterConfig = Readonly<{
 export type OptLevel = '0' | '1' | '2' | '3' | '4';
 
 export type CompilerInfo = {
-    plugins: Plugin[];
-    alias_tables: AliasTables;
-    alias_lists: AliasLists;
-    file_names: string[];
-    ts_root: string;
     canister_methods: CanisterMethods;
 };
 
