@@ -18,7 +18,6 @@
 # "examples/func_types",
 # "examples/generics",
 # "examples/motoko_examples/superheroes", # blocked by recursive
-# "examples/robust_imports",
 # "examples/run_time_errors",
 # "examples/tuple_types",
 
@@ -83,8 +82,8 @@ jobs:
                     "examples/guard_functions",
                     "examples/heartbeat",
                     "examples/ic_api",
-                    "examples/init",
                     "examples/imports",
+                    "examples/init",
                     "examples/inspect_message",
                     "examples/key_value_store",
                     "examples/ledger_canister",
@@ -115,6 +114,7 @@ jobs:
                     "examples/query",
                     "examples/randomness",
                     "examples/rejections",
+                    "examples/robust_imports",
                     "examples/service",
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",

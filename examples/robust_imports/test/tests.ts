@@ -3,7 +3,6 @@ import { Principal } from '@dfinity/principal';
 import { execSync } from 'child_process';
 import { _SERVICE } from '../dfx_generated/robust_imports/robust_imports.did';
 import { ActorSubclass } from '@dfinity/agent';
-import { match } from 'azle';
 
 export function getTests(
     robustImportsCanister: ActorSubclass<_SERVICE>
@@ -323,7 +322,7 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'deploy',
             prep: async () => {
-                execSync(`dfx deploy`, {
+                execSync(`dfx deploy --upgrade-unchanged`, {
                     stdio: 'inherit'
                 });
             }
@@ -514,9 +513,12 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
                     { star: true },
                     { star: true }
                 );
-                return {
-                    Ok: match(result, { Ok: () => true, Err: () => false })
-                };
+
+                if ('Ok' in result) {
+                    return { Ok: true };
+                }
+
+                return { Ok: false };
             }
         }
     ];

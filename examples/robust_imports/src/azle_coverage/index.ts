@@ -1,15 +1,13 @@
-import $kiwi, {
+import kiwi, {
     banana,
     blackberry,
-    Cherry,
     elderberry,
     fig32,
     fig64,
     Farkleberry,
-    Grapes,
-    $honeydew,
-    $icaco,
-    $ilama,
+    honeydew,
+    icaco,
+    ilama,
     iceApple,
     iceApple8,
     iceApple16,
@@ -21,107 +19,96 @@ import $kiwi, {
     nectarine16,
     nectarine32,
     nectarine64,
-    nutmeg,
-    Orange,
+    Nutmeg,
     Olive,
-    $pomegranate,
-    $pineapple,
+    pomegranate,
+    pineapple,
+    peach,
     Peach,
-    $quince,
-    Quince,
+    quince,
     Raspberry,
     rambutan,
     Strawberry,
-    santol,
-    sapodilla,
     Soncoya,
     tangerine,
     Tamarind,
-    $ugni,
-    Ugni,
+    ugni,
     Voavanga,
     Lime,
-    vanilla
+    Vanilla
 } from './fruit';
 
-import { match as marionberry, ic as lemon, int16 as coconut } from 'azle';
+import { ic as lemon, int16 as coconut } from 'azle';
 import * as starFruit from './fruit';
 
-class FruitDeliveryService extends Strawberry {
-    @sapodilla
-    deliver: () => Cherry<string>;
+const FruitDeliveryService = Strawberry({
+    deliver: ugni([], tangerine),
+    is_delivered: quince([], blackberry)
+});
 
-    @santol
-    is_delivered: () => Cherry<boolean>;
+export const boysenberry = blackberry;
+
+export const PreparedFruit = Raspberry({
+    honeydewCount: nectarine16,
+    areIcacosCollected: boysenberry,
+    isPineappleCut: boysenberry,
+    arePomegranateArilsSeparated: boysenberry,
+    areGrapesGathered: boysenberry,
+    isIlamaWashed: boysenberry,
+    areRambutanSkinsRemoved: boysenberry,
+    haveElderberriesBeenPicked: boysenberry
+});
+
+const OrangeAndFarkleberry = Farkleberry([tangerine], Vanilla, 'oneway');
+const QuinceAndFarkleberry = Farkleberry([tangerine], tangerine, 'query');
+const UgniAndFarkleberry = Farkleberry([tangerine], tangerine, 'update');
+
+const TamarindAndFarkleberry = Tamarind(
+    UgniAndFarkleberry,
+    OrangeAndFarkleberry,
+    QuinceAndFarkleberry
+);
+
+export const NectarineBasket = Raspberry({
+    nat: nectarine,
+    nat8: nectarine8,
+    nat16: nectarine16,
+    nat32: nectarine32,
+    nat64: nectarine64,
+    starNat: starFruit.nectarine
+});
+
+export const IceAppleBasket = Raspberry({
+    int: iceApple,
+    int8: iceApple8,
+    int16: iceApple16,
+    int32: iceApple32,
+    int64: iceApple64,
+    starInt: starFruit.iceApple
+});
+
+export const Watermelon = Voavanga({
+    Seeds: Nutmeg,
+    Seedless: Nutmeg
+});
+
+let soncoya = Soncoya(nectarine8, PreparedFruit, 0);
+
+function gatherGrapes() {
+    const opt = soncoya.get(0);
+
+    if (opt.length !== 0) {
+        const preparedFruit = opt[0];
+        soncoya.remove(0);
+        soncoya.insert(0, {
+            ...preparedFruit,
+            areGrapesGathered: true
+        });
+    }
 }
 
-export type PreparedFruit = Raspberry<{
-    honeydewCount: nectarine16;
-    areIcacosCollected: boysenberry;
-    isPineappleCut: boysenberry;
-    arePomegranateArilsSeparated: boysenberry;
-    areGrapesGathered: boysenberry;
-    isIlamaWashed: boysenberry;
-    areRambutanSkinsRemoved: boysenberry;
-    haveElderberriesBeenPicked: boysenberry;
-}>;
-
-type OrangeAndFarkleberry = Farkleberry<Orange<(param1: tangerine) => void>>;
-type QuinceAndFarkleberry = Farkleberry<
-    Quince<(param1: tangerine) => tangerine>
->;
-type UgniAndFarkleberry = Farkleberry<Ugni<(param1: tangerine) => tangerine>>;
-
-type TamarindAndFarkleberry = Tamarind<
-    [UgniAndFarkleberry, OrangeAndFarkleberry, QuinceAndFarkleberry]
->;
-
-export type NectarineBasket = Raspberry<{
-    nat: nectarine;
-    nat8: nectarine8;
-    nat16: nectarine16;
-    nat32: nectarine32;
-    nat64: nectarine64;
-    starNat: starFruit.nectarine;
-}>;
-
-export type IceAppleBasket = Raspberry<{
-    int: iceApple;
-    int8: iceApple8;
-    int16: iceApple16;
-    int32: iceApple32;
-    int64: iceApple64;
-    starInt: starFruit.iceApple;
-}>;
-
-export type boysenberry = boolean;
-
-export type Watermelon = Voavanga<{
-    Seeds: nutmeg;
-    Seedless: nutmeg;
-}>;
-
-let soncoya = new Soncoya<nectarine8, PreparedFruit>(0, 10, 1_000);
-
-function gatherGrapes(): Grapes {
-    marionberry(soncoya.get(0), {
-        Some: (preparedFruit) => {
-            soncoya.remove(0);
-            soncoya.insert(0, {
-                ...preparedFruit,
-                areGrapesGathered: true
-            });
-        },
-        None: () => {}
-    });
-    return {
-        Ok: null
-    };
-}
-
-$icaco;
-export function collectIcaco(): void {
-    let preparedFruit: PreparedFruit = {
+export const collectIcaco = icaco([], () => {
+    const preparedFruit: typeof PreparedFruit = {
         honeydewCount: 0,
         areIcacosCollected: true,
         isPineappleCut: false,
@@ -133,212 +120,212 @@ export function collectIcaco(): void {
     };
 
     soncoya.insert(0, preparedFruit);
-}
+});
 
-$pineapple;
-export function cutPineapple(): void {
-    marionberry(soncoya.get(0), {
-        Some: (preparedFruit) => {
-            soncoya.remove(0);
-            soncoya.insert(0, {
-                ...preparedFruit,
-                isPineappleCut: true
-            });
-        },
-        None: () => {}
-    });
-}
+export const cutPineapple = pineapple(() => {
+    const opt = soncoya.get(0);
 
-$pomegranate;
-export function separateArilsFromPith(): void {
-    marionberry(soncoya.get(0), {
-        Some: (preparedFruit) => {
-            soncoya.remove(0);
-            soncoya.insert(0, {
-                ...preparedFruit,
-                arePomegranateArilsSeparated: true
-            });
-        },
-        None: () => {}
-    });
-}
+    if (opt.length !== 0) {
+        const preparedFruit = opt[0];
+        soncoya.remove(0);
+        soncoya.insert(0, {
+            ...preparedFruit,
+            isPineappleCut: true
+        });
+    }
+});
 
-$honeydew;
-export function buyHoneydew(): void {
-    marionberry(soncoya.get(0), {
-        Some: (preparedFruit) => {
-            soncoya.remove(0);
-            soncoya.insert(0, {
-                ...preparedFruit,
-                honeydewCount: preparedFruit.honeydewCount + 1
-            });
-        },
-        None: () => {}
-    });
-}
+export const separateArilsFromPith = pomegranate([], () => {
+    const opt = soncoya.get(0);
 
-$ilama;
-export function keepIlamaClean(): void {
+    if (opt.length !== 0) {
+        const preparedFruit = opt[0];
+        soncoya.remove(0);
+        soncoya.insert(0, {
+            ...preparedFruit,
+            arePomegranateArilsSeparated: true
+        });
+    }
+});
+
+export const buyHoneydew = honeydew(() => {
+    const opt = soncoya.get(0);
+
+    if (opt.length !== 0) {
+        const preparedFruit = opt[0];
+        soncoya.remove(0);
+        soncoya.insert(0, {
+            ...preparedFruit,
+            honeydewCount: preparedFruit.honeydewCount + 1
+        });
+    }
+});
+
+export const keepIlamaClean = ilama(() => {
     console.log(`Method "${lemon.methodName()}" was called`);
     if (lemon.methodName() === 'dirtyIlama') {
         return;
     }
     lemon.acceptMessage();
-}
+});
 
-$kiwi;
-export function addSigFigs(figs: fig32): fig64 {
+export const addSigFigs = kiwi([fig32], fig64, (figs) => {
     return figs;
-}
+});
 
-$kiwi;
-export function checkService(
-    service: FruitDeliveryService
-): FruitDeliveryService {
-    return service;
-}
+export const checkService = kiwi(
+    [FruitDeliveryService],
+    FruitDeliveryService,
+    (service) => {
+        return service;
+    }
+);
 
-$kiwi;
-export function checkWatermelonForSeeds(
-    shouldHaveSeeds: blackberry,
-    watermelon: Watermelon
-): vanilla {
-    marionberry(watermelon, {
-        Seedless: () => {
+export const checkWatermelonForSeeds = kiwi(
+    [blackberry, Watermelon],
+    Vanilla,
+    (shouldHaveSeeds, watermelon) => {
+        if ('Seedless' in watermelon) {
             if (shouldHaveSeeds) {
                 lemon.trap('Watermelon is seedless when it should have seeds');
             }
-        },
-        Seeds: () => {
+        }
+        if ('Seeds' in watermelon) {
             if (!shouldHaveSeeds) {
                 lemon.trap(
                     'Watermelon is has seeds when it should be seedless'
                 );
             }
         }
-    });
-}
+    }
+);
 
-$kiwi;
-export function compareApplesToOranges(
-    apples: IceAppleBasket,
-    oranges: NectarineBasket
-): boysenberry {
-    return (
-        apples.int === oranges.nat &&
-        apples.int8 === oranges.nat8 &&
-        apples.int16 === oranges.nat16 &&
-        apples.int32 === oranges.nat32 &&
-        apples.int64 === oranges.nat64 &&
-        apples.starInt === oranges.starNat
-    );
-}
+export const compareApplesToOranges = kiwi(
+    [IceAppleBasket, NectarineBasket],
+    boysenberry,
+    (apples, oranges) => {
+        return (
+            apples.int === oranges.nat &&
+            apples.int8 === oranges.nat8 &&
+            apples.int16 === oranges.nat16 &&
+            apples.int32 === oranges.nat32 &&
+            apples.int64 === oranges.nat64 &&
+            apples.starInt === oranges.starNat
+        );
+    }
+);
 
-$kiwi;
-export function handleFarkleberries(
-    orange: OrangeAndFarkleberry,
-    quince: QuinceAndFarkleberry,
-    ugni: UgniAndFarkleberry
-): TamarindAndFarkleberry {
-    return [ugni, orange, quince];
-}
+export const handleFarkleberries = kiwi(
+    [OrangeAndFarkleberry, QuinceAndFarkleberry, UgniAndFarkleberry],
+    TamarindAndFarkleberry,
+    (orange, quince, ugni) => {
+        return [ugni, orange, quince];
+    }
+);
 
-$kiwi;
-export function getManagementPeach(): Peach {
+export const getManagementPeach = kiwi([], peach, () => {
     return Peach.fromText('aaaaa-aa');
-}
+});
 
-$kiwi;
-export function pitOlives(olive: Olive<boysenberry>): boysenberry {
-    return marionberry(olive, {
-        Some: (berry) => {
-            return berry;
-        },
-        None: () => {
-            return false;
-        }
-    });
-}
+export const pitOlives = kiwi([Olive(boysenberry)], boysenberry, (olive) => {
+    if (olive.length === 0) {
+        return false;
+    }
 
-$kiwi;
-export function peelBanana(banana: banana): nectarine8 {
+    const berry = olive[0];
+
+    return berry;
+});
+
+export const peelBanana = kiwi([banana], nectarine8, (banana) => {
     if (banana.length < 1) {
         return 0;
     }
     return banana[0];
-}
+});
 
-$kiwi;
-export function putTheCoconutInTheLime(coconut: coconut): Lime<coconut> {
-    return [coconut];
-}
+export const putTheCoconutInTheLime = kiwi(
+    [coconut],
+    Lime(coconut),
+    (coconut) => {
+        return [coconut];
+    }
+);
 
-$kiwi;
-export function isMangoTrickyToEat(): Mango<boysenberry> {
-    lemon.reply(true);
-}
+export const isMangoTrickyToEat = kiwi(
+    [],
+    Mango(boysenberry),
+    () => {
+        lemon.reply(true, blackberry);
+    },
+    { manual: true }
+);
 
-$quince({ guard: gatherGrapes });
-export function isFruitPrepared(): boysenberry {
-    return marionberry(soncoya.get(0), {
-        Some: (pf) => {
-            return (
-                pf.honeydewCount > 0 &&
-                pf.areIcacosCollected &&
-                pf.isPineappleCut &&
-                pf.arePomegranateArilsSeparated &&
-                pf.areGrapesGathered &&
-                pf.isIlamaWashed &&
-                pf.areRambutanSkinsRemoved &&
-                !pf.haveElderberriesBeenPicked
-            );
-        },
-        None: () => {
+export const isFruitPrepared = quince(
+    [],
+    boysenberry,
+    () => {
+        const opt = soncoya.get(0);
+
+        if (opt.length === 0) {
             return false;
         }
-    });
-}
 
-$ugni;
-export function removeRambutanSkins(): rambutan {
-    marionberry(soncoya.get(0), {
-        Some: (preparedFruit) => {
-            soncoya.remove(0);
-            soncoya.insert(0, {
-                ...preparedFruit,
-                areRambutanSkinsRemoved: true
-            });
-        },
-        None: () => {}
-    });
+        const pf = opt[0];
+
+        return (
+            pf.honeydewCount > 0 &&
+            pf.areIcacosCollected &&
+            pf.isPineappleCut &&
+            pf.arePomegranateArilsSeparated &&
+            pf.areGrapesGathered &&
+            pf.isIlamaWashed &&
+            pf.areRambutanSkinsRemoved &&
+            !pf.haveElderberriesBeenPicked
+        );
+    },
+    { guard: gatherGrapes }
+);
+
+export const removeRambutanSkins = ugni([], rambutan, () => {
+    const opt = soncoya.get(0);
+
+    if (opt.length !== 0) {
+        const preparedFruit = opt[0];
+        soncoya.remove(0);
+        soncoya.insert(0, {
+            ...preparedFruit,
+            areRambutanSkinsRemoved: true
+        });
+    }
+
     return 'rambutan skins';
-}
+});
 
-$ugni;
-export function dirtyIlama(): void {
-    marionberry(soncoya.get(0), {
-        Some: (preparedFruit) => {
-            soncoya.remove(0);
-            soncoya.insert(0, {
-                ...preparedFruit,
-                isIlamaWashed: false
-            });
-        },
-        None: () => {}
-    });
-}
+export const dirtyIlama = ugni([], Vanilla, () => {
+    const opt = soncoya.get(0);
 
-$ugni;
-export function pickElderberry(): elderberry {
-    marionberry(soncoya.get(0), {
-        Some: (preparedFruit) => {
-            soncoya.remove(0);
-            soncoya.insert(0, {
-                ...preparedFruit,
-                haveElderberriesBeenPicked: true
-            });
-        },
-        None: () => {}
-    });
+    if (opt.length !== 0) {
+        const preparedFruit = opt[0];
+        soncoya.remove(0);
+        soncoya.insert(0, {
+            ...preparedFruit,
+            isIlamaWashed: false
+        });
+    }
+});
+
+export const pickElderberry = ugni([], elderberry, () => {
+    const opt = soncoya.get(0);
+
+    if (opt.length !== 0) {
+        const preparedFruit = opt[0];
+        soncoya.remove(0);
+        soncoya.insert(0, {
+            ...preparedFruit,
+            haveElderberriesBeenPicked: true
+        });
+    }
+
     throw 'All out of elderberries';
-}
+});

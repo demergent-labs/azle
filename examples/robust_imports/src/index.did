@@ -1,144 +1,70 @@
-type IceAppleBasket = record {
-  "int" : int;
-  starInt : int;
-  "int8" : int8;
-  "int16" : int16;
-  "int32" : int32;
-  "int64" : int64;
-};
-type MixedConcreteStar = record { star : bool };
-type MyCavernousRecord = record {
-  myRecord : MyRecord;
-  myDeepTuple : record { text };
-  myCavernousTuple : record { text };
-  fathomlessRecord : MyFathomlessRecord;
-  coveredRecord : MyCoveredRecord;
-  myTuple : record { text };
-};
-type MyCavernousVariant = variant { sixteen; eight };
-type MyCoveredRecord = record {
-  type_name : text;
-  name : text;
-  count : int8;
-  greeting : opt text;
-};
-type MyDeepRecordFromAlias = record { depth : nat8 };
-type MyDeepVariant = variant { Thing : int8 };
-type MyDeepVariantFromAlias = variant { bad; good; ugly };
-type MyFathomlessRecord = record { mytext : text };
-type MyFathomlessVariant = variant { MyInt16 : int16; MyInt8 : int8 };
-type MyRecord = record {
-  int1 : int16;
-  int2 : int16;
-  int3 : int16;
-  int4 : int8;
-  int5 : int8;
-  int6 : int8;
-  int7 : int8;
-  "int8" : int8;
-  int9 : int16;
-};
-type MyRecordFromAlias = record {
-  id : nat;
-  list : vec nat16;
-  name : opt text;
-  tups : record { text; float64 };
-  description : MyDeepVariantFromAlias;
-  depth : MyDeepRecordFromAlias;
-};
-type MyVariant = variant { String : text; Thing : int8 };
-type NectarineBasket = record {
-  "nat" : nat;
-  starNat : nat;
-  "nat8" : nat8;
-  "nat16" : nat16;
-  "nat32" : nat32;
-  "nat64" : nat64;
-};
-type NumberAliases = record {
-  fifth : int;
-  first : int;
-  tenth : nat;
-  third : float64;
-  eighth : int;
-  seventh : float64;
-  second : int;
-  sixth : float32;
-  ninth : int8;
-  eleventh : nat8;
-  twelfth : float64;
-  fourth : int;
-};
-type Watermelon = variant { Seeds; Seedless };
-type _AzleResult = variant { Ok : bool; Err : text };
-service : () -> {
-  addSigFigs : (float32) -> (float64) query;
-  checkPrimAliases : (bool, null, text, int, float64) -> () query;
-  checkService : (
-      service { deliver : () -> (text); is_delivered : () -> (bool) query },
-    ) -> (
-      service { deliver : () -> (text); is_delivered : () -> (bool) query },
-    ) query;
-  checkServiceAlias : (service { testQuery : () -> (text) query }) -> (
-      service { testQuery : () -> (text) query },
-    ) query;
-  checkWatermelonForSeeds : (bool, Watermelon) -> () query;
-  compareApplesToOranges : (IceAppleBasket, NectarineBasket) -> (bool) query;
-  compareStars : (MixedConcreteStar, MixedConcreteStar) -> (_AzleResult) query;
-  deepEmptyAlias : () -> (empty) query;
-  dirtyIlama : () -> ();
-  getDeepBlob : (vec nat8) -> (vec nat8) query;
-  getManagementPeach : () -> (principal) query;
-  getManualAlias : () -> (float64) query;
-  getMyRecord : () -> (MyRecordFromAlias) query;
-  getMyRecordAlias : () -> (MyRecordFromAlias) query;
-  getNumberAliases : () -> (NumberAliases) query;
-  getReservedAlias : () -> (reserved) query;
-  getStable : (nat16) -> (opt text) query;
-  getSuperAlias : () -> (MyRecordFromAlias) query;
-  handleFarkleberries : (
-      func (text) -> () oneway,
-      func (text) -> (text) query,
-      func (text) -> (text),
-    ) -> (
-      record {
-        func (text) -> (text);
-        func (text) -> () oneway;
-        func (text) -> (text) query;
-      },
-    ) query;
-  helloAzleTextAlias : () -> (text) query;
-  helloDeepTextAlias : () -> (text) query;
-  helloMixedTextAlias : () -> (text) query;
-  helloStirredTextAlias : () -> (text) query;
-  helloTextAlias : () -> (text) query;
-  isFruitPrepared : () -> (bool) query;
-  isMangoTrickyToEat : () -> (bool) query;
-  makeCavernousRecord : () -> (MyCavernousRecord) query;
-  myFathomlessVariantToMyCavernousVariant : (MyFathomlessVariant) -> (
-      MyCavernousVariant,
-    ) query;
-  myVariantToMyDeepVariant : (MyVariant) -> (MyDeepVariant) query;
-  passPrincipal : (principal) -> (principal) query;
-  peelBanana : (vec nat8) -> (nat8) query;
-  pickElderberry : () -> (empty);
-  pitOlives : (opt bool) -> (bool) query;
-  putTheCoconutInTheLime : (int16) -> (vec int16) query;
-  removeRambutanSkins : () -> (reserved);
-  returnFathomlessService : (
-      service { query1 : () -> (bool) query; update1 : () -> (text) },
-    ) -> (
-      service { query1 : () -> (bool) query; update1 : () -> (text) },
-    ) query;
-  returnFathomlessVec : () -> (vec int16) query;
-  returnFuncAlias : (func (text) -> (text) query) -> (
-      func (text) -> (text) query,
-    ) query;
-  returnVec : () -> (vec vec nat8) query;
-  returnWeird : () -> (int64) query;
-  setStable : (nat16, text) -> (opt text);
-  simpleAzleQuery : () -> () query;
-  simpleDeepQuery : () -> () query;
-  simpleQuery : () -> () query;
-  typeCheck : (vec opt nat16) -> (int16) query;
+type rec_0 = variant {String:text; Thing:int8};
+type rec_1 = variant {Thing:int8};
+type rec_2 = variant {MyInt16:int16; MyInt8:int8};
+type rec_3 = variant {sixteen; eight};
+type rec_6 = record {int1:int16; int2:int16; int3:int16; int4:int8; int5:int8; int6:int8; int7:int8; int8:int8; int9:int16};
+type rec_7 = record {mytext:text};
+type rec_5 = record {type_name:text; name:text; count:int8; greeting:opt text};
+type rec_4 = record {myRecord:rec_6; myDeepTuple:record {text}; myCavernousTuple:record {text}; fathomlessRecord:rec_7; coveredRecord:rec_5; myTuple:record {text}};
+type rec_9 = variant {Seeds; Seedless};
+type rec_10 = record {int:int; starInt:int; int8:int8; int16:int16; int32:int32; int64:int64};
+type rec_11 = record {nat:nat; starNat:nat; nat8:nat8; nat16:nat16; nat32:nat32; nat64:nat64};
+type rec_12 = record {star:bool};
+type rec_13 = record {star:bool};
+type rec_14 = record {fifth:int; first:int; tenth:nat; third:float64; eighth:int; seventh:float64; second:int; sixth:float32; ninth:int8; eleventh:nat8; twelfth:float64; fourth:int};
+type rec_17 = variant {bad; good; ugly};
+type rec_16 = record {depth:nat8};
+type rec_15 = record {id:nat; list:vec nat16; name:opt text; tups:record {text; float64}; description:rec_17; depth:rec_16};
+type rec_20 = variant {bad; good; ugly};
+type rec_19 = record {depth:nat8};
+type rec_18 = record {id:nat; list:vec nat16; name:opt text; tups:record {text; float64}; description:rec_20; depth:rec_19};
+type rec_23 = variant {bad; good; ugly};
+type rec_22 = record {depth:nat8};
+type rec_21 = record {id:nat; list:vec nat16; name:opt text; tups:record {text; float64}; description:rec_23; depth:rec_22};
+service: () -> {
+    myVariantToMyDeepVariant: (rec_0) -> (rec_1) query;
+    myFathomlessVariantToMyCavernousVariant: (rec_2) -> (rec_3) query;
+    returnVec: () -> (vec vec nat8) query;
+    returnFathomlessVec: () -> (vec int16) query;
+    returnWeird: () -> (int64) query;
+    returnFathomlessService: (service {query1:() -> (bool) query; update1:() -> (text) }) -> (service {query1:() -> (bool) query; update1:() -> (text) }) query;
+    makeCavernousRecord: () -> (rec_4) query;
+    typeCheck: (vec opt nat16) -> (int16) query;
+    addSigFigs: (float32) -> (float64) query;
+    checkService: (service {deliver:() -> (text) ; is_delivered:() -> (bool) query}) -> (service {deliver:() -> (text) ; is_delivered:() -> (bool) query}) query;
+    checkWatermelonForSeeds: (bool, rec_9) -> () query;
+    compareApplesToOranges: (rec_10, rec_11) -> (bool) query;
+    handleFarkleberries: (func (text) -> () oneway, func (text) -> (text) query, func (text) -> (text) ) -> (record {func (text) -> (text) ; func (text) -> () oneway; func (text) -> (text) query}) query;
+    getManagementPeach: () -> (principal) query;
+    pitOlives: (opt bool) -> (bool) query;
+    peelBanana: (vec nat8) -> (nat8) query;
+    putTheCoconutInTheLime: (int16) -> (vec int16) query;
+    isMangoTrickyToEat: () -> (bool) query;
+    isFruitPrepared: () -> (bool) query;
+    removeRambutanSkins: () -> (reserved);
+    dirtyIlama: () -> ();
+    pickElderberry: () -> (empty);
+    compareStars: (rec_12, rec_13) -> (variant {Ok:bool; Err:text}) query;
+    helloTextAlias: () -> (text) query;
+    helloAzleTextAlias: () -> (text) query;
+    helloMixedTextAlias: () -> (text) query;
+    helloDeepTextAlias: () -> (text) query;
+    helloStirredTextAlias: () -> (text) query;
+    getDeepBlob: (vec nat8) -> (vec nat8) query;
+    deepEmptyAlias: () -> (empty) query;
+    getNumberAliases: () -> (rec_14) query;
+    passPrincipal: (principal) -> (principal) query;
+    getReservedAlias: () -> (reserved) query;
+    simpleDeepQuery: () -> () query;
+    simpleAzleQuery: () -> () query;
+    simpleQuery: () -> () query;
+    checkServiceAlias: (service {testQuery:() -> (text) query}) -> (service {testQuery:() -> (text) query}) query;
+    getMyRecord: () -> (rec_15) query;
+    getMyRecordAlias: () -> (rec_18) query;
+    getSuperAlias: () -> (rec_21) query;
+    getManualAlias: () -> (float64) query;
+    returnFuncAlias: (func (text) -> (text) query) -> (func (text) -> (text) query) query;
+    setStable: (nat16, text) -> (opt text);
+    getStable: (nat16) -> (opt text) query;
+    checkPrimAliases: (bool, null, text, int, float64) -> () query;
 }

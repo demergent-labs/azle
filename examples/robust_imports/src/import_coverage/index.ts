@@ -1,152 +1,156 @@
-import $icQuery, * as ic from './types';
+import icQuery, * as ic from './types';
 import { text, text as mT, text as mDT, text as mCT } from './types';
 import dollarSignQuery from './types';
-import query, { int8, int8 as variInt, match } from './types';
-import type { CoveredOpt, CoveredVec, coveredInt16 } from './types';
+import query, { int8, int8 as variInt } from './types';
+import { CoveredOpt, CoveredVec, coveredInt16 } from './types';
 
-export type MyCavernousRecord = ic.CavernousRecord<{
-    coveredRecord: MyCoveredRecord;
-    myRecord: MyRecord;
-    fathomlessRecord: MyFathomlessRecord;
-    myTuple: MyTuple;
-    myDeepTuple: MyDeepTuple;
-    myCavernousTuple: MyCavernousTuple;
-}>;
-export type MyCoveredRecord = ic.CoveredRecord<{
-    count: ic.fathomlessStar.DeepInt8;
-    name: ic.text;
-    type_name: ic.azle.text;
-    greeting: ic.FathomlessOpt<ic.text>;
-}>;
-export type MyRecord = ic.Record<{
-    int1: ic.cavernousDefault;
-    int2: ic.profoundDefault;
-    int3: ic.bottomlessDefault;
-    int4: ic.DeepInt8;
-    int5: ic.FathomlessInt8;
-    int6: ic.profoundStar.DeepInt8;
-    int7: ic.FathomlessInt;
-    int8: ic.ProfoundInt;
-    int9: ic.fathomlessStar.default;
-}>;
-export type MyFathomlessRecord = ic.FathomlessRecord<{
-    mytext: text;
-}>;
-export type MyTuple = ic.CoveredTuple<[mT]>;
-export type MyDeepTuple = ic.DeepTuple<[mDT]>;
-export type MyCavernousTuple = ic.CavernousTuple<[mCT]>;
+export const MyCoveredRecord = ic.CoveredRecord({
+    count: ic.fathomlessStar.DeepInt8,
+    name: ic.text,
+    type_name: ic.azle.text,
+    greeting: ic.FathomlessOpt(ic.text)
+});
+export const MyRecord = ic.Record({
+    int1: ic.cavernousDefault,
+    int2: ic.profoundDefault,
+    int3: ic.bottomlessDefault,
+    int4: ic.DeepInt8,
+    int5: ic.FathomlessInt8,
+    int6: ic.profoundStar.DeepInt8,
+    int7: ic.FathomlessInt,
+    int8: ic.ProfoundInt,
+    int9: ic.fathomlessStar.default
+});
+export const MyFathomlessRecord = ic.FathomlessRecord({
+    mytext: text
+});
+export const MyTuple = ic.CoveredTuple(mT);
+export const MyDeepTuple = ic.DeepTuple(mDT);
+export const MyCavernousTuple = ic.CavernousTuple(mCT);
 
-export type MyVariant = ic.CoveredVariant<{
-    Thing: variInt;
-    String: ic.text;
-}>;
-export type MyDeepVariant = ic.DeepVariant<{
-    Thing: int8;
-}>;
-export type MyFathomlessVariant = ic.FathomlessVariant<{
-    MyInt8: ic.int8;
-    MyInt16: ic.int16;
-}>;
-export type MyCavernousVariant = ic.CavernousVariant<{
-    eight: null;
-    sixteen: null;
-}>;
+export const MyCavernousRecord = ic.CavernousRecord({
+    coveredRecord: MyCoveredRecord,
+    myRecord: MyRecord,
+    fathomlessRecord: MyFathomlessRecord,
+    myTuple: MyTuple,
+    myDeepTuple: MyDeepTuple,
+    myCavernousTuple: MyCavernousTuple
+});
 
-class SomeService extends ic.fathomlessService {
-    @ic.serviceQuery
-    query1: () => ic.azle.CallResult<boolean>;
+export const MyVariant = ic.CoveredVariant({
+    Thing: variInt,
+    String: ic.text
+});
+export const MyDeepVariant = ic.DeepVariant({
+    Thing: int8
+});
+export const MyFathomlessVariant = ic.FathomlessVariant({
+    MyInt8: ic.int8,
+    MyInt16: ic.int16
+});
+export const MyCavernousVariant = ic.CavernousVariant({
+    eight: ic.Null,
+    sixteen: ic.Null
+});
 
-    @ic.azle.serviceUpdate
-    update1: () => ic.CallResult<string>;
-}
+const SomeService = ic.fathomlessService({
+    query1: ic.query([], ic.bool),
+    update1: ic.azle.update([], ic.text)
+});
 
-query;
-export function myVariantToMyDeepVariant(mV: MyVariant): MyDeepVariant {
-    return match(mV, {
-        Thing: (thing) => {
-            let result: MyDeepVariant = { Thing: thing };
+export const myVariantToMyDeepVariant = query(
+    [MyVariant],
+    MyDeepVariant,
+    (mV) => {
+        if (mV.Thing !== undefined) {
+            const thing = mV.Thing;
+            let result: typeof MyDeepVariant = { Thing: thing };
             return result;
-        },
-        String: () => {
-            throw 'Cannot convert to MyDeepVariant';
         }
-    });
-}
 
-query;
-export function myFathomlessVariantToMyCavernousVariant(
-    mV: MyFathomlessVariant
-): MyCavernousVariant {
-    return match(mV, {
-        MyInt8: () => {
+        throw 'Cannot convert to MyDeepVariant';
+    }
+);
+
+export const myFathomlessVariantToMyCavernousVariant = query(
+    [MyFathomlessVariant],
+    MyCavernousVariant,
+    (mV) => {
+        if ('MyInt8' in mV) {
             return { eight: null };
-        },
-        MyInt16: () => {
-            return { sixteen: null };
         }
-    });
-}
 
-ic.$query;
-export function returnVec(): ic.Vec<ic.azle.blob> {
+        return { sixteen: null };
+    }
+);
+
+export const returnVec = ic.query([], ic.Vec(ic.azle.blob), () => {
     return [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6, 7])];
-}
+});
 
-$icQuery;
-export function returnFathomlessVec(): ic.FathomlessVec<ic.azle.int16> {
-    return [1, 2, 3, 4, 5, 6, 7];
-}
+export const returnFathomlessVec = icQuery(
+    [],
+    ic.FathomlessVec(ic.azle.int16),
+    () => {
+        return [1, 2, 3, 4, 5, 6, 7];
+    }
+);
 
-ic.azle.$query;
-export function returnWeird(): ic.nat8 {
+export const returnWeird = ic.azle.query([], ic.nat8, () => {
     return -10_000n;
-}
+});
 
-ic.azle.$query;
-export function returnFathomlessService(service: SomeService): SomeService {
-    return service;
-}
+export const returnFathomlessService = ic.azle.query(
+    [SomeService],
+    SomeService,
+    (service) => {
+        return service;
+    }
+);
 
-dollarSignQuery;
-export function makeCavernousRecord(): MyCavernousRecord {
-    return {
-        coveredRecord: {
-            count: 10,
-            name: 'Bob',
-            type_name: 'Imported Record',
-            greeting: ic.Opt.Some('Hello there')
-        },
-        myRecord: {
-            int1: 20,
-            int2: 30,
-            int3: 40,
-            int4: 50,
-            int5: 60,
-            int6: 70,
-            int7: 80,
-            int8: 90,
-            int9: 100
-        },
-        fathomlessRecord: {
-            mytext: 'my text in a fathomless record'
-        },
-        myTuple: ['my tuple'],
-        myDeepTuple: ['my deep tuple'],
-        myCavernousTuple: ['my cavernous tuple']
-    };
-}
-
-dollarSignQuery;
-export function typeCheck(vec: CoveredVec<CoveredOpt<ic.nat16>>): coveredInt16 {
-    if (vec.length === 1) {
-        return match(vec[0], {
-            Some: (nat16) => {
-                return nat16;
+export const makeCavernousRecord = dollarSignQuery(
+    [],
+    MyCavernousRecord,
+    () => {
+        return {
+            coveredRecord: {
+                count: 10,
+                name: 'Bob',
+                type_name: 'Imported Record',
+                greeting: ic.Some('Hello there')
             },
-            None: () => {
+            myRecord: {
+                int1: 20,
+                int2: 30,
+                int3: 40,
+                int4: 50,
+                int5: 60,
+                int6: 70,
+                int7: 80,
+                int8: 90,
+                int9: 100
+            },
+            fathomlessRecord: {
+                mytext: 'my text in a fathomless record'
+            },
+            myTuple: ['my tuple'],
+            myDeepTuple: ['my deep tuple'],
+            myCavernousTuple: ['my cavernous tuple']
+        };
+    }
+);
+
+export const typeCheck = dollarSignQuery(
+    [CoveredVec(CoveredOpt(ic.nat16))],
+    coveredInt16,
+    (vec) => {
+        if (vec.length === 1) {
+            if (vec[0].length === 0) {
                 return -1;
             }
-        });
+
+            return vec[0][0];
+        }
+        return -2;
     }
-    return -2;
-}
+);
