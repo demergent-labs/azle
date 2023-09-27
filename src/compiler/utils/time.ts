@@ -16,7 +16,7 @@ export async function time<T>(
         const cursorUp = `\x1b[${1 + leadingNewLinesCount}A`;
         process.stdout.write(`${cursorUp}${label} ${dim(`${duration}s`)}\n`);
     } else {
-        console.info(`\nDone in ${duration}s.`);
+        console.info(`\nDone in ${duration}s`);
     }
 
     return result;

@@ -20,15 +20,11 @@ export function installRustDependencies(
         '../../install_rust_dependencies.sh'
     );
 
-    const timerId = setInterval(() => {
-        console.log('installing dependencies...');
-    }, 10_000);
-
     execSync(`"${installRustDependenciesPath}" ${azleVersion} ${rustVersion}`, {
         stdio: 'inherit'
     });
 
-    clearTimeout(timerId);
+    console.log('[4/4] 🚀 Launching...');
 }
 
 function isWasm32TargetInstalled(): boolean {

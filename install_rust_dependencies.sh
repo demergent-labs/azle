@@ -30,6 +30,7 @@ function run() {
 }
 
 function install_rustup() {
+    echo -e "\n[1/4] 🔬 Performing initial research..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --no-modify-path -y --default-toolchain="$rust_version" --profile=minimal &> "$global_azle_logs_dir"/install_rustup
 }
 
@@ -38,10 +39,12 @@ function update_rustup() {
 }
 
 function install_wasm32() {
+    echo -e "[2/4] 🛠️  Commencing development..."
     "$global_azle_rustup_bin" target add wasm32-wasi &> "$global_azle_logs_dir"/install_wasm32_wasi
 }
 
 function install_wasi2ic() {
+    echo -e "[3/4] 🖥️  Deploying..."
     "$global_azle_cargo_bin" install --git https://github.com/wasm-forge/wasi2ic --rev 806c3558aad24224852a9582f018178402cb3679 &> "$global_azle_logs_dir"/install_wasi2ic
 }
 
