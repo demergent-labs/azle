@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { compileRustCode } from './compile_rust_code';
 import { installRustDependencies } from './install_rust_dependencies';
-import { generateNewAzleProject } from './new';
+import { generateNewAzleProject } from './new_command';
 import {
     getCanisterConfig,
     getCanisterName,
@@ -18,7 +18,7 @@ import {
     dfx_version as dfxVersion,
     rust_version as rustVersion
 } from '../../package.json';
-import { compileTypeScriptToJavaScript } from './typescript_to_javascript';
+import { compileTypeScriptToJavaScript } from './compile_typescript_code';
 import { Err, ok } from './utils/result';
 import {
     AzleError,
@@ -31,7 +31,7 @@ import {
     generateLibCargoToml,
     generateWorkspaceCargoLock,
     generateWorkspaceCargoToml
-} from './typescript_to_javascript/cargo_toml_files';
+} from './generate_cargo_toml_files';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 import { copySync } from 'fs-extra';
