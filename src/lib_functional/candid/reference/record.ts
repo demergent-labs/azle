@@ -12,19 +12,7 @@ export function Record<T>(obj: T): {
         ...obj,
         _azleName: name,
         getIDL(parents: Parent[]) {
-            const idl = IDL.Rec();
-            idl.fill(
-                IDL.Record(
-                    processMap(obj as any, [
-                        ...parents,
-                        {
-                            idl: idl,
-                            name
-                        }
-                    ])
-                )
-            );
-            return idl;
+            return IDL.Record(processMap(obj as any, parents));
         }
     } as any;
 }

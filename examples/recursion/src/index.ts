@@ -1,31 +1,22 @@
-import { query, Service, text, Tuple, Vec, Void } from 'azle';
+import { None, query, Service, Some, text, Tuple, Vec, Void } from 'azle';
 import { Record, Recursive, int8, Variant, Opt } from 'azle';
 
 // These are the types that can be recursive
 // Record
 //     Record can't be recursive by itself. It needs something to be able to terminate it. It needs to work with Variants, Opts, and Vec
-// const optRecord = Record({ myOpt: Opt(Recursive(() => optRecord)) });
-// const vecRecord = Record({ myVecRecords: Vec(Recursive(() => vecRecord)) });
-const varRecord = Record({ myVar: Recursive(() => myVar) });
-// TODO I would prefer this syntax
-// const varRecord = Recursive(() => Record({ myVar: myVar }));
-// const vecRecord = Recursive(() => Record({ myVecRecords: Vec(vecRecord) }));
-// const optRecord = Recursive(() => Record({ myOpt: Opt(optRecord) }));
+const varRecord = Recursive(() => Record({ myVar: myVar }));
+const vecRecord = Recursive(() => Record({ myVecRecords: Vec(vecRecord) }));
+const optRecord = Recursive(() => Record({ myOpt: Opt(optRecord) }));
 const myVar = Variant({ num: int8, varRec: varRecord });
 // Variant
 //     Variant is the only type that can be recursive all by itself but it does need a way to end the recursion
-const recVariant = Variant({
-    num: int8,
-    recVariant: Recursive(() => recVariant)
-});
+const recVariant = Recursive(() =>
+    Variant({ num: int8, recVariant: recVariant })
+);
 // Tuple
 const optTuple = Recursive(() => Tuple(Opt(optTuple), Opt(optTuple)));
-const vecTuple = Recursive(() => Vec(vecTuple));
-// const varTuple = Recursive(() => Tuple(myTupleVar, myTupleVar));
-const varTuple = Tuple(
-    Recursive(() => myTupleVar),
-    Recursive(() => myTupleVar)
-);
+const vecTuple = Recursive(() => Tuple(Vec(vecTuple), Vec(vecTuple)));
+const varTuple = Recursive(() => Tuple(myTupleVar, myTupleVar));
 const myTupleVar = Variant({ num: int8, varTuple: varTuple });
 // Vec
 //      Vec can't be recursive by itself. At the end of it all it needs to have a concrete type.
@@ -34,18 +25,29 @@ const myTupleVar = Variant({ num: int8, varTuple: varTuple });
 // Func
 
 export default Service({
-    // optRecord: query([optRecord], optRecord, (param) => param),
-    // vecRecord: query([vecRecord], vecRecord, (param) => param),
+    testRecRecordWithOpt: query([optRecord], optRecord, (param) => param),
+    testRecRecordWithVec: query([vecRecord], vecRecord, (param) => param),
     testRecRecordWithVariant: query([varRecord], varRecord, (param) => param),
     testRecVariant: query([recVariant], recVariant, (param) => param),
-    // optTuple: query([optTuple], optTuple, (param) => param),
-    // vecTuple: query([vecTuple], vecTuple, (param) => param),
-    // optRecordReturn: query([], optRecord, () => {
-    //     throw '';
-    // }),
-    // vecRecordReturn: query([], vecRecord, () => {
-    //     throw '';
-    // }),
+    testRecTupleWithOpt: query([optTuple], optTuple, (param) => param),
+    testRecTupleWithVec: query([vecTuple], vecTuple, (param) => param),
+    testRecRecordWithOptReturn: query([], optRecord, () => {
+        return { myOpt: Some({ myOpt: Some({ myOpt: None }) }) };
+    }),
+    testRecRecordWithVecReturn: query([], vecRecord, () => {
+        return {
+            myVecRecords: [
+                { myVecRecords: [{ myVecRecords: [] }] },
+                {
+                    myVecRecords: [
+                        { myVecRecords: [] },
+                        { myVecRecords: [{ myVecRecords: [] }] }
+                    ]
+                },
+                { myVecRecords: [] }
+            ]
+        };
+    }),
     testRecRecordWithVariantReturn: query([], varRecord, () => {
         return {
             myVar: {
@@ -58,12 +60,20 @@ export default Service({
             recVariant: { recVariant: { recVariant: { num: 12 } } }
         };
     }),
-    // optTupleReturn: query([], optTuple, () => {
-    //     throw '';
-    // }),
-    // vecTupleReturn: query([], vecTuple, () => {
-    //     throw '';
-    // }),
+    testRecTupleWithOptReturn: query([], optTuple, () => {
+        return [None, Some([None, None])];
+    }),
+    testRecTupleWithVecReturn: query([], vecTuple, () => {
+        return [
+            [[[], [[[], []]]]],
+            [
+                [[], []],
+                [[], []],
+                [[], []],
+                [[], []]
+            ]
+        ];
+    }),
     testRecTupleWithVariant: query([varTuple], varTuple, (param) => param),
     testRecTupleWithVariantReturn: query([], varTuple, () => {
         return [

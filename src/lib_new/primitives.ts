@@ -200,7 +200,7 @@ export class AzleOpt<T> {
     }
     _azleType: CandidClass;
     getIDL(parents: Parent[]) {
-        return IDL.Opt(toIDLType(this._azleType, []));
+        return IDL.Opt(toIDLType(this._azleType, parents));
     }
 }
 
@@ -210,7 +210,7 @@ export class AzleVec<T> {
     }
     _azleType: CandidClass;
     getIDL(parents: Parent[]) {
-        return IDL.Vec(toIDLType(this._azleType, []));
+        return IDL.Vec(toIDLType(this._azleType, parents));
     }
 }
 
