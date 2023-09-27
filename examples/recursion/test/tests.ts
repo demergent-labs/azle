@@ -5,6 +5,7 @@ import {
     rec_8
 } from './dfx_generated/recursion/recursion.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
 
 export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
     return [
@@ -117,6 +118,33 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 return {
                     Ok: result.myOpt[0]?.myOpt.length === 0
+                };
+            }
+        },
+        {
+            name: 'recursive funcs',
+            test: async () => {
+                const result = await recursion_canister.testRecFunc([
+                    Principal.fromText('aaaaa-aa'),
+                    'delete_canister'
+                ]);
+
+                return {
+                    Ok:
+                        result[0].toString() === 'aaaaa-aa' &&
+                        result[1] === 'delete_canister'
+                };
+            }
+        },
+        {
+            name: 'recursive funcs return',
+            test: async () => {
+                const result = await recursion_canister.testRecFuncReturn();
+
+                return {
+                    Ok:
+                        result[0].toString() === 'aaaaa-aa' &&
+                        result[1] === 'create_canister'
                 };
             }
         },
