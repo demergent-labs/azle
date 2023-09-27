@@ -13,14 +13,11 @@ type rec_11 = variant {num:int8; varTuple:record {rec_11; rec_11}};
 type rec_12 = variant {num:int8; varTuple:record {rec_12; rec_12}};
 type rec_13 = variant {num:int8; varTuple:record {rec_13; rec_13}};
 type rec_14 = variant {num:int8; varTuple:record {rec_14; rec_14}};
-type rec_15 = variant {num:int8; varTuple:record {rec_15; rec_15}};
-type rec_16 = variant {num:int8; varTuple:record {rec_16; rec_16}};
 service: () -> {
-    varRecord: (rec_0) -> (rec_2) query;
-    recVariant: (rec_4) -> (rec_5) query;
-    varRecordReturn: () -> (rec_6) query;
-    recVariantReturn: () -> (rec_8) query;
-    varTuple: (record {rec_9; rec_10}) -> (record {rec_11; rec_12}) query;
-    varTupleReturnSimple: () -> (record {rec_13; rec_14}) query;
-    varTupleReturn: () -> (record {rec_15; rec_16}) query;
+    testRecRecordWithVariant: (rec_0) -> (rec_2) query;
+    testRecVariant: (rec_4) -> (rec_5) query;
+    testRecRecordWithVariantReturn: () -> (rec_6) query;
+    testRecVariantReturn: () -> (rec_8) query;
+    testRecTupleWithVariant: (record {rec_9; rec_10}) -> (record {rec_11; rec_12}) query;
+    testRecTupleWithVariantReturn: () -> (record {rec_13; rec_14}) query;
 }

@@ -30,12 +30,14 @@ const myTupleVar = Variant({ num: int8, varTuple: varTuple });
 // Vec
 //      Vec can't be recursive by itself. At the end of it all it needs to have a concrete type.
 // Opt
+// Service
+// Func
 
 export default Service({
     // optRecord: query([optRecord], optRecord, (param) => param),
     // vecRecord: query([vecRecord], vecRecord, (param) => param),
-    varRecord: query([varRecord], varRecord, (param) => param),
-    recVariant: query([recVariant], recVariant, (param) => param),
+    testRecRecordWithVariant: query([varRecord], varRecord, (param) => param),
+    testRecVariant: query([recVariant], recVariant, (param) => param),
     // optTuple: query([optTuple], optTuple, (param) => param),
     // vecTuple: query([vecTuple], vecTuple, (param) => param),
     // optRecordReturn: query([], optRecord, () => {
@@ -44,14 +46,14 @@ export default Service({
     // vecRecordReturn: query([], vecRecord, () => {
     //     throw '';
     // }),
-    varRecordReturn: query([], varRecord, () => {
+    testRecRecordWithVariantReturn: query([], varRecord, () => {
         return {
             myVar: {
                 varRec: { myVar: { varRec: { myVar: { num: 7 } } } }
             }
         };
     }),
-    recVariantReturn: query([], recVariant, () => {
+    testRecVariantReturn: query([], recVariant, () => {
         return {
             recVariant: { recVariant: { recVariant: { num: 12 } } }
         };
@@ -62,11 +64,8 @@ export default Service({
     // vecTupleReturn: query([], vecTuple, () => {
     //     throw '';
     // }),
-    varTuple: query([varTuple], varTuple, (param) => param),
-    varTupleReturnSimple: query([], varTuple, () => {
-        return [{ num: 7 }, { num: 3 }];
-    }),
-    varTupleReturn: query([], varTuple, () => {
+    testRecTupleWithVariant: query([varTuple], varTuple, (param) => param),
+    testRecTupleWithVariantReturn: query([], varTuple, () => {
         return [
             {
                 varTuple: [
