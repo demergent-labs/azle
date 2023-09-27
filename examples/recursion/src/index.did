@@ -1,0 +1,26 @@
+type rec_1 = variant {num:int8; varRec:rec_0};
+type rec_0 = record {myVar:rec_1};
+type rec_3 = variant {num:int8; varRec:rec_2};
+type rec_2 = record {myVar:rec_3};
+type rec_4 = variant {num:int8; recVariant:rec_4};
+type rec_5 = variant {num:int8; recVariant:rec_5};
+type rec_7 = variant {num:int8; varRec:rec_6};
+type rec_6 = record {myVar:rec_7};
+type rec_8 = variant {num:int8; recVariant:rec_8};
+type rec_9 = variant {num:int8; varTuple:record {rec_9; rec_9}};
+type rec_10 = variant {num:int8; varTuple:record {rec_10; rec_10}};
+type rec_11 = variant {num:int8; varTuple:record {rec_11; rec_11}};
+type rec_12 = variant {num:int8; varTuple:record {rec_12; rec_12}};
+type rec_13 = variant {num:int8; varTuple:record {rec_13; rec_13}};
+type rec_14 = variant {num:int8; varTuple:record {rec_14; rec_14}};
+type rec_15 = variant {num:int8; varTuple:record {rec_15; rec_15}};
+type rec_16 = variant {num:int8; varTuple:record {rec_16; rec_16}};
+service: () -> {
+    varRecord: (rec_0) -> (rec_2) query;
+    recVariant: (rec_4) -> (rec_5) query;
+    varRecordReturn: () -> (rec_6) query;
+    recVariantReturn: () -> (rec_8) query;
+    varTuple: (record {rec_9; rec_10}) -> (record {rec_11; rec_12}) query;
+    varTupleReturnSimple: () -> (record {rec_13; rec_14}) query;
+    varTupleReturn: () -> (record {rec_15; rec_16}) query;
+}
