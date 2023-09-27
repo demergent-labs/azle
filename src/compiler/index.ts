@@ -107,14 +107,14 @@ async function azle() {
                 mkdirSync(`${canisterPath}/canister`);
             }
 
-            copySync(`${__dirname}/canister`, `${canisterPath}/canister`);
+            copySync(`${__dirname}/rust/canister`, `${canisterPath}/canister`);
 
             if (!existsSync(`${canisterPath}/canister_methods`)) {
                 mkdirSync(`${canisterPath}/canister_methods`);
             }
 
             copySync(
-                `${__dirname}/canister_methods`,
+                `${__dirname}/rust/canister_methods`,
                 `${canisterPath}/canister_methods`
             );
 
