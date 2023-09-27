@@ -10,8 +10,7 @@
             "declarations": {
                 "output": "dfx_generated/robust_imports",
                 "node_compatibility": true
-            },
-            "opt_level": "1"
+            }
         }
     }
 }
