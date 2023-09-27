@@ -7,7 +7,6 @@ const User = Record({
 let greeting: text = 'Hello User';
 let user: Opt<typeof User> = [];
 
-// TODO tuple types aren't done, they don't have TypeScript types
 export default Canister({
     init: init([Tuple(text, User)], (tuple) => {
         greeting = tuple[0];

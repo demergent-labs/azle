@@ -1,7 +1,7 @@
 import {
     blob,
+    Canister,
     Principal,
-    Service,
     update,
     Vec,
     Void
@@ -44,7 +44,7 @@ export * from './canister_management';
 export * from './http_request';
 export * from './t_ecdsa';
 
-export const managementCanister = Service({
+export const managementCanister = Canister({
     // bitcoin
     bitcoin_get_balance: update([GetBalanceArgs], Satoshi),
     bitcoin_get_current_fee_percentiles: update(

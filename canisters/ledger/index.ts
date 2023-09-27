@@ -8,15 +8,14 @@
 
 import {
     blob,
+    Canister,
     nat,
     nat8,
     nat32,
     nat64,
     Null,
     Opt,
-    Principal,
     Record,
-    Service,
     query,
     update,
     text,
@@ -298,7 +297,7 @@ export const DecimalsResult = Record({
 export type Address = text;
 export const Address = text;
 
-export const Ledger = Service({
+export const Ledger = Canister({
     // Transfers tokens from a subaccount of the caller to the destination address.
     // The source address is computed from the principal of the caller and the specified subaccount.
     // When successful, returns the index of the block containing the transaction.

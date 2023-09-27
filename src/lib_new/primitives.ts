@@ -214,7 +214,7 @@ export class AzleVec<T> {
     }
 }
 
-export class AzleTuple {
+export class AzleTuple<T extends any[]> {
     constructor(t: CandidClass[]) {
         this._azleTypes = t;
     }
@@ -233,7 +233,7 @@ export function Vec<T>(t: T): AzleVec<T> {
 }
 
 // TODO I am not sure of any of these types... but its working so...
-export function Tuple(...types: any[]): AzleTuple {
+export function Tuple<T extends any[]>(...types: T): AzleTuple<T> {
     // const idlTypes = types.map((value) => {
     //     return toIDLType(value);
     // });
