@@ -13,19 +13,7 @@ export function Variant<T>(obj: T): RequireExactlyOne<{
         ...obj,
         _azleName: name,
         getIDL(parents: any) {
-            const idl = IDL.Rec();
-            idl.fill(
-                IDL.Variant(
-                    processMap(obj as any, [
-                        ...parents,
-                        {
-                            idl: idl,
-                            name
-                        }
-                    ])
-                )
-            );
-            return idl;
+            return IDL.Variant(processMap(obj as any, parents));
         }
     } as any;
 }
