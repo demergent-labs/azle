@@ -12,18 +12,18 @@
                 "output": "test/dfx_generated/rejections",
                 "node_compatibility": true
             },
-            "env": ["SOME_SERVICE_PRINCIPAL"]
+            "env": ["SOME_CANISTER_PRINCIPAL"]
         },
-        "some_service": {
+        "some_canister": {
             "type": "custom",
-            "build": "npx azle some_service",
-            "root": "canisters/some_service",
-            "ts": "canisters/some_service/index.ts",
-            "candid": "canisters/some_service/index.did",
-            "wasm": ".azle/some_service/some_service.wasm",
+            "build": "npx azle some_canister",
+            "root": "canisters/some_canister",
+            "ts": "canisters/some_canister/index.ts",
+            "candid": "canisters/some_canister/index.did",
+            "wasm": ".azle/some_canister/some_canister.wasm",
             "gzip": true,
             "declarations": {
-                "output": "test/dfx_generated/some_service",
+                "output": "test/dfx_generated/some_canister",
                 "node_compatibility": true
             }
         }
