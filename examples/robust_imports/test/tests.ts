@@ -322,7 +322,7 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'deploy',
             prep: async () => {
-                execSync(`dfx deploy`, {
+                execSync(`dfx deploy --upgrade-unchanged`, {
                     stdio: 'inherit'
                 });
             }
@@ -514,7 +514,7 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
                     { star: true }
                 );
 
-                if (result.Ok !== undefined) {
+                if ('Ok' in result) {
                     return { Ok: true };
                 }
 

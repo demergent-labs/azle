@@ -196,7 +196,8 @@ export const getManualAlias = azle.query(
     types.DeepManualAlias(azle.float64),
     () => {
         azle.ic.reply(9.87, azle.float64);
-    }
+    },
+    { manual: true }
 );
 
 const MyFuncFromAlias = types.DeepFuncAlias([azle.text], azle.text, 'query');

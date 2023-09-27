@@ -1,4 +1,5 @@
 // Named Imports
+import { Service } from 'azle';
 import {
     myVariantToMyDeepVariant,
     myFathomlessVariantToMyCavernousVariant,
@@ -59,7 +60,7 @@ import { checkPrimAliases } from './ts_primitives';
 // Not Named Imports
 import './azle_coverage/fruit'; // Shouldn't do anything. It's just here to make sure it doesn't do anything
 
-export default {
+export default Service({
     myVariantToMyDeepVariant,
     myFathomlessVariantToMyCavernousVariant,
     returnVec,
@@ -110,4 +111,4 @@ export default {
     setStable,
     getStable,
     checkPrimAliases
-};
+});

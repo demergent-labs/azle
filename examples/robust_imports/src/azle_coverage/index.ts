@@ -252,9 +252,14 @@ export const putTheCoconutInTheLime = kiwi(
     }
 );
 
-export const isMangoTrickyToEat = kiwi([], Mango(boysenberry), () => {
-    lemon.reply(true, blackberry);
-});
+export const isMangoTrickyToEat = kiwi(
+    [],
+    Mango(boysenberry),
+    () => {
+        lemon.reply(true, blackberry);
+    },
+    { manual: true }
+);
 
 export const isFruitPrepared = quince(
     [],

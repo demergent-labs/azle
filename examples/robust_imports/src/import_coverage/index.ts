@@ -49,8 +49,8 @@ export const MyFathomlessVariant = ic.FathomlessVariant({
     MyInt16: ic.int16
 });
 export const MyCavernousVariant = ic.CavernousVariant({
-    eight: null,
-    sixteen: null
+    eight: ic.Null,
+    sixteen: ic.Null
 });
 
 const SomeService = ic.fathomlessService({
