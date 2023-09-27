@@ -149,8 +149,5 @@ export function visitRec<T>(
     ty: IDL.ConstructType<T>,
     data: VisitorData
 ): VisitorResult {
-    // return data.js_data;
-    // TODO I imagine that this will be the spot of much torment when we get
-    // to doing actual recursive types, maybe
     return ty.accept(visitor, data);
 }

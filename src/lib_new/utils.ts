@@ -169,17 +169,7 @@ export function toIDLType(idl: CandidClass, parents: Parent[]): IDL.Type<any> {
         return idl.getIDL(parents);
     }
     if (idl._azleRecLambda) {
-        // console.log(
-        //     'WE ARE LOOKING AT A RECURSIVE THING',
-        //     `"${idl.name}"`,
-        //     JSON.stringify(idl)
-        // );
-        // idl._azleRecLambda = false;
-        // console.log(idl);
-        // console.log(idl());
         return toIDLType(idl(), [...parents, idl._azleName]);
-        // return idl().getIDL([...parents, idl.name]);
-        // throw 'hmm';
     }
     // if (idl.display === undefined || idl.getIDL === undefined) {
     //     throw Error(`${JSON.stringify(idl)} is not a candid type`);
