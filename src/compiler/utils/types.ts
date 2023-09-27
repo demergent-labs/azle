@@ -16,9 +16,8 @@ export type JavaScript = string;
 
 export type JSCanisterConfig = Readonly<{
     type: 'custom';
+    main: string;
     build: string;
-    root: string;
-    ts: string;
     candid: string;
     wasm: string;
     env?: string[];

@@ -1,9 +1,6 @@
 import { OptLevel, Toml } from './utils/types';
 
-export function generateWorkspaceCargoToml(
-    rootPath: string,
-    optLevel: OptLevel
-): Toml {
+export function generateWorkspaceCargoToml(optLevel: OptLevel): Toml {
     const optLevels = {
         '0': `opt-level = 'z'`,
         '1': `
