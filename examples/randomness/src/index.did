@@ -1,3 +1,4 @@
 service: () -> {
+    getRedeployed: () -> (bool) query;
     randomNumber: () -> (float64);
 }

@@ -1,4 +1,5 @@
 service: () -> {
+    getRedeployed: () -> (bool) query;
     stableMap5ContainsKey: (opt text) -> (bool) query;
     stableMap5Get: (opt text) -> (opt float64) query;
     stableMap5Insert: (opt text, float64) -> (opt float64);

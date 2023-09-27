@@ -25,8 +25,8 @@ const STABLE_MAP_KEYS: [
     nat8,
     nat16,
     nat32,
-    Reaction,
-    User,
+    typeof Reaction,
+    typeof User,
     string[], //Opt?
     BigUint64Array,
     null,
@@ -66,8 +66,8 @@ const STABLE_MAP_KEYSCOMPS: [
     (a: nat8 | undefined, b: nat8) => boolean,
     (a: nat16 | undefined, b: nat16) => boolean,
     (a: nat32 | undefined, b: nat32) => boolean,
-    (a: Reaction | undefined, b: Reaction) => boolean,
-    (a: User | undefined, b: User) => boolean,
+    (a: typeof Reaction | undefined, b: typeof Reaction) => boolean,
+    (a: typeof User | undefined, b: typeof User) => boolean,
     (a: string[] | undefined, b: string[]) => boolean,
     (a: BigUint64Array | undefined, b: BigInt64Array) => boolean,
     (a: null | undefined, b: null) => boolean,
@@ -110,8 +110,8 @@ const STABLEMAPVALUES: [
     null,
     string[],
     boolean[],
-    User,
-    Reaction,
+    typeof User,
+    typeof Reaction,
     Principal
 ] = [
     'hello',
@@ -149,8 +149,8 @@ const STABLEMAPVALUECOMPS: [
     (a: null | undefined, b: null) => boolean,
     (a: string[] | undefined, b: string[]) => boolean,
     (a: boolean[] | undefined, b: boolean[]) => boolean,
-    (a: User | undefined, b: User) => boolean,
-    (a: Reaction | undefined, b: Reaction) => boolean,
+    (a: typeof User | undefined, b: typeof User) => boolean,
+    (a: typeof Reaction | undefined, b: typeof Reaction) => boolean,
     (a: Principal | undefined, b: Principal) => boolean
 ] = [
     simpleEquals,
@@ -186,7 +186,23 @@ export function getTests(
         {
             name: 'redeploy canisters',
             prep: async () => {
-                execSync('dfx deploy', { stdio: 'inherit' });
+                execSync('dfx deploy --upgrade-unchanged', {
+                    stdio: 'inherit'
+                });
+            }
+        },
+        {
+            name: 'getRedeployed',
+            test: async () => {
+                const result1 =
+                    await stableStructuresCanister_1.getRedeployed();
+                const result2 =
+                    await stableStructuresCanister_2.getRedeployed();
+                const result3 =
+                    await stableStructuresCanister_3.getRedeployed();
+                return {
+                    Ok: result1 === true && result2 === true && result3 === true
+                };
             }
         },
         ...postRedeployTests(stableStructuresCanister_1, 0, 4),

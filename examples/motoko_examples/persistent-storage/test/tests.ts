@@ -37,9 +37,18 @@ export function getTests(
         {
             name: 'deploy',
             prep: async () => {
-                execSync(`dfx deploy`, {
+                execSync(`dfx deploy --upgrade-unchanged`, {
                     stdio: 'inherit'
                 });
+            }
+        },
+        {
+            name: 'getRedeployed',
+            test: async () => {
+                const result = await persistentStorageCanister.getRedeployed();
+                return {
+                    Ok: result === true
+                };
             }
         },
         {

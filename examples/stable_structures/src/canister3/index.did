@@ -17,6 +17,7 @@ type rec_18 = variant {Sad; Happy};
 type rec_19 = variant {Sad; Happy};
 type rec_20 = variant {Sad; Happy};
 service: () -> {
+    getRedeployed: () -> (bool) query;
     stableMap10ContainsKey: (float32) -> (bool) query;
     stableMap10Get: (float32) -> (opt opt bool) query;
     stableMap10Insert: (float32, opt bool) -> (opt opt bool);

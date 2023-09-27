@@ -1,7 +1,9 @@
 import {
+    bool,
     ic,
     init,
     nat,
+    postUpgrade,
     query,
     Service,
     StableBTreeMap,
@@ -10,10 +12,17 @@ import {
 } from 'azle';
 
 let stableStorage = StableBTreeMap(text, nat, 0);
+let redeployed = false;
 
 export default Service({
     init: init([], () => {
         stableStorage.insert('counter', 0n);
+    }),
+    postUpgrade: postUpgrade([], () => {
+        redeployed = true;
+    }),
+    getRedeployed: query([], bool, () => {
+        return redeployed;
     }),
     increment: update([], nat, () => {
         const counterOpt = stableStorage.get('counter');
