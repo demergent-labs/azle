@@ -1,6 +1,6 @@
-import { bool, empty, ic, Manual, query, Service, text } from 'azle';
+import { bool, Canister, empty, ic, Manual, query, text } from 'azle';
 
-export default Service({
+export default Canister({
     reject: query(
         [text],
         Manual(empty),

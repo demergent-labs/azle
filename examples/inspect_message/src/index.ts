@@ -1,6 +1,6 @@
-import { bool, ic, inspectMessage, Service, update } from 'azle';
+import { bool, Canister, ic, inspectMessage, update } from 'azle';
 
-export default Service({
+export default Canister({
     inspectMessage: inspectMessage(() => {
         console.log('inspectMessage called');
 

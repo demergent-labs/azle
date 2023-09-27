@@ -1,9 +1,9 @@
-import { blob, ic, heartbeat, query, Service } from 'azle';
+import { blob, Canister, ic, heartbeat, query } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 let initialized: blob = Uint8Array.from([]);
 
-export default Service({
+export default Canister({
     heartbeat: heartbeat(async () => {
         const randomness = await ic.call(managementCanister.raw_rand);
 

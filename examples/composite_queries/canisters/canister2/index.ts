@@ -1,11 +1,11 @@
 import {
+    Canister,
     ic,
     init,
     Manual,
     nat,
     Principal,
     query,
-    Service,
     text,
     update
 } from 'azle';
@@ -14,7 +14,7 @@ import Canister3 from '../canister3';
 let canister3: typeof Canister3;
 let counter: nat = 0n;
 
-export default Service({
+export default Canister({
     init: init([], () => {
         canister3 = Canister3(
             Principal.fromText(

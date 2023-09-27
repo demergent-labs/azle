@@ -123,17 +123,17 @@ export const simpleQuery = types.$queryAlias([], types.VoidAlias, () => {
     console.log(HELLO_WORLD);
 });
 
-const AliasedService = types.DeepServiceAlias({
+const AliasedCanister = types.DeepCanisterAlias({
     testQuery: types.$queryAlias([], azle.text)
 });
 
-export const AliasedServiceAlias = AliasedService;
+export const AliasedCanisterAlias = AliasedCanister;
 
-export const checkServiceAlias = azle.query(
-    [AliasedService],
-    AliasedService,
-    (service) => {
-        return service;
+export const checkCanisterAlias = azle.query(
+    [AliasedCanister],
+    AliasedCanister,
+    (canister) => {
+        return canister;
     }
 );
 

@@ -1,8 +1,8 @@
-import { None, Opt, query, Service, Some, text, update, Void } from 'azle';
+import { Canister, None, Opt, query, Some, text, update, Void } from 'azle';
 
 let store: Map<string, string> = new Map();
 
-export default Service({
+export default Canister({
     get: query([text], Opt(text), (key) => {
         const keyOrUndefined = store.get(key);
 

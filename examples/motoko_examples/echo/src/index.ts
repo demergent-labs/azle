@@ -1,6 +1,6 @@
-import { query, Service, text } from 'azle';
+import { Canister, query, text } from 'azle';
 
-export default Service({
+export default Canister({
     say: query([text], text, (phrase) => {
         return phrase;
     })

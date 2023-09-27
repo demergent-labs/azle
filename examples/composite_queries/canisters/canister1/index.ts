@@ -1,11 +1,11 @@
 import {
+    Canister,
     ic,
     init,
     Manual,
     nat,
     Principal,
     query,
-    Service,
     text,
     update
 } from 'azle';
@@ -20,7 +20,7 @@ const incCounter = query([], nat, async () => {
     return counter;
 });
 
-const service = Service({
+export default Canister({
     init: init([], () => {
         canister2 = Canister2(
             Principal.fromText(
@@ -67,7 +67,7 @@ const service = Service({
     // Composite query calling queries on the same canister
     incCanister1: query([], nat, async () => {
         // TODO This is not an ideal solution but will work for now
-        const self = Service({
+        const self = Canister({
             incCounter
         })(ic.id());
 
@@ -88,5 +88,3 @@ const service = Service({
         return counter + canister2AResult + canister2BResult;
     })
 });
-
-export default service;

@@ -1,4 +1,4 @@
-import { ic, int, Null, query, Record, Service, update, Void } from 'azle';
+import { Canister, ic, int, Null, query, Record, update, Void } from 'azle';
 
 const PartiallyNullRecord = Record({
     firstItem: int,
@@ -17,7 +17,7 @@ const ThreeNullRecord = Record({
     thirdItem: Null
 });
 
-export default Service({
+export default Canister({
     nullFunction: query([Null], Null, (param) => {
         return param;
     }),

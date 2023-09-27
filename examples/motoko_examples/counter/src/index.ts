@@ -1,8 +1,8 @@
-import { nat, query, Service, update, Void } from 'azle';
+import { Canister, nat, query, update, Void } from 'azle';
 
 let counter: nat = 0n;
 
-export default Service({
+export default Canister({
     get: query([], nat, () => {
         return counter;
     }),

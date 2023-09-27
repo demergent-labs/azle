@@ -1,12 +1,12 @@
 import {
     bool,
+    Canister,
     nat32,
     None,
     Opt,
     query,
     Record,
     Recursive,
-    Service,
     Some,
     text,
     Tuple,
@@ -41,7 +41,7 @@ let superheroes: Map<SuperheroId, typeof Superhero> = new Map();
 /**
  * High-Level API
  */
-export default Service({
+export default Canister({
     // Create a superhero.
     create: update([Superhero], SuperheroId, (superhero) => {
         let superheroId = next;

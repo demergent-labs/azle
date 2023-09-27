@@ -1,4 +1,4 @@
-import { init, Opt, query, Record, Service, text, Tuple } from 'azle';
+import { Canister, init, Opt, query, Record, text, Tuple } from 'azle';
 
 const User = Record({
     id: text
@@ -7,8 +7,7 @@ const User = Record({
 let greeting: text = 'Hello User';
 let user: Opt<typeof User> = [];
 
-// TODO tuple types aren't done, they don't have TypeScript types
-export default Service({
+export default Canister({
     init: init([Tuple(text, User)], (tuple) => {
         greeting = tuple[0];
         user = [tuple[1]];

@@ -1,7 +1,7 @@
-import { blob, ic, Service, update, Void } from 'azle';
+import { blob, Canister, ic, update, Void } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-export default Service({
+export default Canister({
     getRandomnessDirectly: update([], blob, async () => {
         return await ic.call(managementCanister.raw_rand);
     }),

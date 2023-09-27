@@ -12,11 +12,11 @@ import {
 } from '../../../lib_new/utils';
 import { CanisterMethodInfo } from '../../canister_methods';
 
-type ServiceOptions = {
+type CanisterOptions = {
     [key: string]: CanisterMethodInfo<any, any>;
 };
 
-type ServiceReturn<T extends ServiceOptions> = {
+type CanisterReturn<T extends CanisterOptions> = {
     [EndpointName in keyof T]: T[EndpointName] extends CanisterMethodInfo<
         infer Params,
         infer Return
@@ -27,11 +27,11 @@ type ServiceReturn<T extends ServiceOptions> = {
         : never;
 };
 
-type CallableObject<T extends ServiceOptions> = {
+type CallableObject<T extends CanisterOptions> = {
     (principal: Principal): CallableObject<T>;
-} & ServiceReturn<T>;
+} & CanisterReturn<T>;
 
-export function Service<T extends ServiceOptions>(
+export function Canister<T extends CanisterOptions>(
     serviceOptions: T
 ): CallableObject<T> {
     const callbacks = Object.entries(serviceOptions).reduce((acc, entry) => {

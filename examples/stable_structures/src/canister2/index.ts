@@ -1,4 +1,4 @@
-import { Service, bool, postUpgrade, query } from 'azle';
+import { bool, Canister, postUpgrade, query } from 'azle';
 import { stableMap5Methods } from './stable_map_5';
 import { stableMap6Methods } from './stable_map_6';
 import { stableMap7Methods } from './stable_map_7';
@@ -7,7 +7,7 @@ import { stableMap9Methods } from './stable_map_9';
 
 let redeployed = false;
 
-export default Service({
+export default Canister({
     postUpgrade: postUpgrade([], () => {
         redeployed = true;
     }),

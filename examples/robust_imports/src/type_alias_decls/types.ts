@@ -61,7 +61,8 @@ export const Deep$queryAlias = deep.deepAlias.deeperAlias.deepestAlias.query;
 export const DeepRecordAlias = deep.deepAlias.deeperAlias.deepestAlias.Record;
 export const DeepReservedAlias =
     deep.deepAlias.deeperAlias.deepestAlias.reserved;
-export const DeepServiceAlias = deep.deepAlias.deeperAlias.deepestAlias.Service;
+export const DeepCanisterAlias =
+    deep.deepAlias.deeperAlias.deepestAlias.Canister;
 export const DeepStableBTreeMapAlias =
     deep.deepAlias.deeperAlias.deepestAlias.StableBTreeMap;
 export const DeepTextAlias = deep.deepAlias.deeperAlias.deepestAlias.text;

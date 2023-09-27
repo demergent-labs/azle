@@ -1,4 +1,5 @@
 import {
+    Canister,
     ic,
     init,
     nat32,
@@ -8,7 +9,6 @@ import {
     principal,
     Principal,
     query,
-    Service,
     Some,
     text,
     update
@@ -28,7 +28,7 @@ import {
 
 let icpCanister: typeof Ledger;
 
-export default Service({
+export default Canister({
     init: init([], () => {
         icpCanister = Ledger(
             Principal.fromText(

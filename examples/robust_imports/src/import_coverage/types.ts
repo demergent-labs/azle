@@ -111,7 +111,7 @@ export {};
 export { DeepVariant };
 export { ProfoundInt8 as DeepInt8 };
 export {
-    deepDefault as fathomlessService,
+    deepDefault as fathomlessCanister,
     deepStar as fathomlessStar,
     DeepRecord as CoveredRecord,
     CavernousRecord,

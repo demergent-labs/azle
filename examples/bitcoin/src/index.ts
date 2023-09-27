@@ -1,4 +1,4 @@
-import { blob, bool, ic, None, Service, text, update, Vec } from 'azle';
+import { blob, bool, Canister, ic, None, text, update, Vec } from 'azle';
 import {
     GetUtxosResult,
     managementCanister,
@@ -10,7 +10,7 @@ const BITCOIN_API_CYCLE_COST = 100_000_000n;
 const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
 const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
-export default Service({
+export default Canister({
     getBalance: update([text], Satoshi, async (address) => {
         return await ic.call(managementCanister.bitcoin_get_balance, {
             args: [

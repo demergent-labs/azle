@@ -1,4 +1,4 @@
-import { bool, nat64, query, Service, text, update } from 'azle';
+import { bool, Canister, nat64, query, text, update } from 'azle';
 
 type Account = {
     address: string;
@@ -21,7 +21,7 @@ let state: State = {
     totalSupply: 0n
 };
 
-export default Service({
+export default Canister({
     initializeSupply: update(
         [text, text, text, nat64],
         bool,

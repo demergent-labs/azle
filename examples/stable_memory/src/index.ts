@@ -1,6 +1,6 @@
-import { blob, ic, nat32, nat64, query, Service, update, Void } from 'azle';
+import { blob, Canister, ic, nat32, nat64, query, update, Void } from 'azle';
 
-export default Service({
+export default Canister({
     stableSize: query([], nat32, () => {
         return ic.stableSize();
     }),

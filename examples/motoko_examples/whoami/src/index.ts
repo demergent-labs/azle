@@ -1,11 +1,11 @@
 import {
+    Canister,
     ic,
     init,
     postUpgrade,
     principal,
     Principal,
     query,
-    Service,
     update
 } from 'azle';
 
@@ -17,7 +17,7 @@ const whoami = update([], principal, () => {
     return ic.caller();
 });
 
-export default Service({
+export default Canister({
     // Manually save the calling principal and argument for later access.
     init: init([principal], (somebody) => {
         install = ic.caller();
@@ -43,7 +43,7 @@ export default Service({
     // Return the principal identifier of this canister.
     id: update([], principal, async () => {
         // TODO This is not an ideal solution but will work for now
-        const self = Service({
+        const self = Canister({
             whoami
         })(ic.id());
 

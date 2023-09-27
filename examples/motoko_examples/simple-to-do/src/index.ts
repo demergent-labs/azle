@@ -1,9 +1,9 @@
 import {
     bool,
+    Canister,
     nat,
     query,
     Record,
-    Service,
     text,
     update,
     Vec,
@@ -18,7 +18,7 @@ export const ToDo = Record({
 let todos: Map<nat, typeof ToDo> = new Map();
 let nextId: nat = 0n;
 
-export default Service({
+export default Canister({
     getTodos: query([], Vec(ToDo), () => {
         return Array.from(todos.values());
     }),

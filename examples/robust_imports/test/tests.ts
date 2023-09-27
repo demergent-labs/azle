@@ -79,10 +79,10 @@ function getImportCoverageTests(ic: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'returnFathomlessService',
+            name: 'returnFathomlessCanister',
             test: async () => {
                 const result = execSync(
-                    `dfx canister call robust_imports returnFathomlessService '(service "aaaaa-aa")'`
+                    `dfx canister call robust_imports returnFathomlessCanister '(service "aaaaa-aa")'`
                 )
                     .toString()
                     .trim();
@@ -152,10 +152,10 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'check service',
+            name: 'check canister',
             test: async () => {
                 const result = execSync(
-                    `dfx canister call robust_imports checkService '(service "aaaaa-aa")'`
+                    `dfx canister call robust_imports checkCanister '(service "aaaaa-aa")'`
                 )
                     .toString()
                     .trim();
@@ -441,10 +441,10 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'check service alias',
+            name: 'check canister alias',
             test: async () => {
                 const result = execSync(
-                    `dfx canister call robust_imports checkServiceAlias '(service "aaaaa-aa")'`
+                    `dfx canister call robust_imports checkCanisterAlias '(service "aaaaa-aa")'`
                 )
                     .toString()
                     .trim();

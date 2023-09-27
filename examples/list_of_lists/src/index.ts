@@ -1,6 +1,7 @@
 import {
     blob,
     bool,
+    Canister,
     empty,
     float32,
     float64,
@@ -21,7 +22,6 @@ import {
     query,
     Record,
     reserved,
-    Service,
     text,
     Variant,
     Vec
@@ -40,7 +40,7 @@ const State = Variant({
 
 const BasicFunc = Func([text], text, 'query');
 
-export default Service({
+export default Canister({
     listOfStringOne: query([Vec(text)], Vec(text), (param) => {
         return param;
     }),

@@ -1,8 +1,8 @@
-import { query, Service, text, update, Void } from 'azle';
+import { Canister, query, text, update, Void } from 'azle';
 
 let currentMessage: string = '';
 
-export default Service({
+export default Canister({
     getCurrentMessage: query([], text, () => {
         return currentMessage;
     }),

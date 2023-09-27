@@ -45,7 +45,9 @@ import {
     Tuple
 } from '../../lib_new';
 
-export type TypeMapping<T> = T extends IDL.TextClass
+export type TypeMapping<T> = T extends () => any
+    ? ReturnType<T>
+    : T extends IDL.TextClass
     ? string
     : T extends AzleBool
     ? bool
@@ -75,13 +77,9 @@ export type TypeMapping<T> = T extends IDL.TextClass
     ? float32
     : T extends never[]
     ? void
-    : T extends AzleTuple
-    ? any
-    : // : T extends AzleTuple<[infer U]>
-    // ? [TypeMapping<U>]
-    // : T extends AzleTuple<[infer U, infer W]>
-    // ? [TypeMapping<U>, TypeMapping<W>]
-    T extends AzleVec<infer U>
+    : T extends AzleTuple<infer U>
+    ? { [K in keyof U]: TypeMapping<U[K]> }
+    : T extends AzleVec<infer U>
     ? TypeMapping<U>[]
     : T extends AzleOpt<infer U>
     ? [TypeMapping<U>] | []

@@ -1,8 +1,8 @@
-import { bool, heartbeat, query, Service } from 'azle';
+import { bool, Canister, heartbeat, query } from 'azle';
 
 let initialized = false;
 
-export default Service({
+export default Canister({
     heartbeat: heartbeat(() => {
         initialized = true;
         console.log('heartbeat initialized', initialized);

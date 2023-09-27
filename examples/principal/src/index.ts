@@ -1,11 +1,11 @@
 import {
     blob,
+    Canister,
     Null,
     Principal,
     principal,
     query,
     Record,
-    Service,
     text,
     Variant
 } from 'azle';
@@ -21,7 +21,7 @@ const Status = Variant({
     Offline: Null
 });
 
-export default Service({
+export default Canister({
     principalReturnType: query([], principal, () => {
         return Principal.fromText('aaaaa-aa');
     }),

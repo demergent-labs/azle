@@ -27,11 +27,11 @@ service: () -> {
     returnVec: () -> (vec vec nat8) query;
     returnFathomlessVec: () -> (vec int16) query;
     returnWeird: () -> (int64) query;
-    returnFathomlessService: (service {query1:() -> (bool) query; update1:() -> (text) }) -> (service {query1:() -> (bool) query; update1:() -> (text) }) query;
+    returnFathomlessCanister: (service {query1:() -> (bool) query; update1:() -> (text) }) -> (service {query1:() -> (bool) query; update1:() -> (text) }) query;
     makeCavernousRecord: () -> (rec_4) query;
     typeCheck: (vec opt nat16) -> (int16) query;
     addSigFigs: (float32) -> (float64) query;
-    checkService: (service {deliver:() -> (text) ; is_delivered:() -> (bool) query}) -> (service {deliver:() -> (text) ; is_delivered:() -> (bool) query}) query;
+    checkCanister: (service {deliver:() -> (text) ; is_delivered:() -> (bool) query}) -> (service {deliver:() -> (text) ; is_delivered:() -> (bool) query}) query;
     checkWatermelonForSeeds: (bool, rec_9) -> () query;
     compareApplesToOranges: (rec_10, rec_11) -> (bool) query;
     handleFarkleberries: (func (text) -> () oneway, func (text) -> (text) query, func (text) -> (text) ) -> (record {func (text) -> (text) ; func (text) -> () oneway; func (text) -> (text) query}) query;
@@ -58,7 +58,7 @@ service: () -> {
     simpleDeepQuery: () -> () query;
     simpleAzleQuery: () -> () query;
     simpleQuery: () -> () query;
-    checkServiceAlias: (service {testQuery:() -> (text) query}) -> (service {testQuery:() -> (text) query}) query;
+    checkCanisterAlias: (service {testQuery:() -> (text) query}) -> (service {testQuery:() -> (text) query}) query;
     getMyRecord: () -> (rec_15) query;
     getMyRecordAlias: () -> (rec_18) query;
     getSuperAlias: () -> (rec_21) query;

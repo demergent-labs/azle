@@ -1,12 +1,12 @@
 import {
     blob,
     bool,
+    Canister,
     Duration,
     ic,
     int8,
     query,
     Record,
-    Service,
     text,
     TimerId,
     update,
@@ -41,7 +41,7 @@ let statusReport: typeof StatusReport = {
     repeatCrossCanister: Uint8Array.from([])
 };
 
-export default Service({
+export default Canister({
     clearTimer: update([TimerId], Void, (timerId) => {
         ic.clearTimer(timerId);
         console.log(`timer ${timerId} cancelled`);
