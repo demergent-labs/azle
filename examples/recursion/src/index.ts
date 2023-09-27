@@ -110,6 +110,11 @@ export default Service({
         Principal.fromText('aaaaa-aa'),
         'create_canister'
     ])
+    // testRecService: query([myService], myService, (param) => param),
+    // testRecServiceReturn: query([], myService, () => {}),
+    // testRecServiceCall: update([myService], myService, (myService) => {
+    //     return await ic.call(myService.serviceQuery(myService));
+    // })
 });
 
 // Below we have a bunch of different configurations of where to put the the
