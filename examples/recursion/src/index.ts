@@ -1,4 +1,17 @@
-import { None, query, Service, Some, text, Tuple, Vec, Void } from 'azle';
+import {
+    Func,
+    ic,
+    None,
+    Principal,
+    query,
+    Service,
+    Some,
+    text,
+    Tuple,
+    update,
+    Vec,
+    Void
+} from 'azle';
 import { Record, Recursive, int8, Variant, Opt } from 'azle';
 
 // These are the types that can be recursive
@@ -22,7 +35,13 @@ const myTupleVar = Variant({ num: int8, varTuple: varTuple });
 //      Vec can't be recursive by itself. At the end of it all it needs to have a concrete type.
 // Opt
 // Service
+const myService = Recursive(() =>
+    Service({
+        serviceQuery: query([myService], myService, (param) => param)
+    })
+);
 // Func
+const myFunc = Recursive(() => Func([myFunc], myFunc, 'query'));
 
 export default Service({
     testRecRecordWithOpt: query([optRecord], optRecord, (param) => param),
@@ -85,7 +104,12 @@ export default Service({
             },
             { varTuple: [{ num: 40 }, { varTuple: [{ num: 5 }, { num: 10 }] }] }
         ];
-    })
+    }),
+    testRecFunc: query([myFunc], myFunc, (param) => param),
+    testRecFuncReturn: query([], myFunc, () => [
+        Principal.fromText('aaaaa-aa'),
+        'create_canister'
+    ])
 });
 
 // Below we have a bunch of different configurations of where to put the the

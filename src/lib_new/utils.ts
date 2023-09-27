@@ -174,12 +174,18 @@ export function toIDLType(idl: CandidClass, parents: Parent[]): IDL.Type<any> {
     return idl;
 }
 
-export function toParamIDLTypes(idl: CandidClass[]): IDL.Type<any>[] {
-    return idl.map((value) => toIDLType(value, []));
+export function toParamIDLTypes(
+    idl: CandidClass[],
+    parents: Parent[] = []
+): IDL.Type<any>[] {
+    return idl.map((value) => toIDLType(value, parents));
 }
 
-export function toReturnIDLType(returnIdl: ReturnCandidClass): IDL.Type<any>[] {
-    const idlType = toIDLType(returnIdl, []);
+export function toReturnIDLType(
+    returnIdl: ReturnCandidClass,
+    parents: Parent[]
+): IDL.Type<any>[] {
+    const idlType = toIDLType(returnIdl, parents);
 
     if (Array.isArray(idlType)) {
         return [...idlType];
