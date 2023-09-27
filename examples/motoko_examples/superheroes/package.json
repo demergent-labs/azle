@@ -5,8 +5,8 @@
         "start": "webpack serve --mode development --env development",
         "prestart": "npm run generate",
         "generate": "dfx generate superheroes",
-        "pretest": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/pretest.ts",
-        "test": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/test.ts"
+        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "test": "ts-node --transpile-only --ignore=false test/test.ts"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.0",
