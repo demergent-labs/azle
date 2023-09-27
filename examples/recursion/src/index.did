@@ -19,6 +19,9 @@ type rec_17 = record {vec rec_17; vec rec_17};
 type rec_18 = record {variant {num:int8; varTuple:rec_18}; variant {num:int8; varTuple:rec_18}};
 type rec_19 = record {variant {num:int8; varTuple:rec_19}; variant {num:int8; varTuple:rec_19}};
 type rec_20 = record {variant {num:int8; varTuple:rec_20}; variant {num:int8; varTuple:rec_20}};
+type rec_21 = func (rec_21) -> (rec_21) query;
+type rec_22 = func (rec_22) -> (rec_22) query;
+type rec_23 = func (rec_23) -> (rec_23) query;
 service: () -> {
     testRecRecordWithOpt: (rec_0) -> (rec_1) query;
     testRecRecordWithVec: (rec_2) -> (rec_3) query;
@@ -34,4 +37,6 @@ service: () -> {
     testRecTupleWithVecReturn: () -> (rec_17) query;
     testRecTupleWithVariant: (rec_18) -> (rec_19) query;
     testRecTupleWithVariantReturn: () -> (rec_20) query;
+    testRecFunc: (rec_21) -> (rec_22) query;
+    testRecFuncReturn: () -> (rec_23) query;
 }

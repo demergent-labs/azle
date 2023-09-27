@@ -174,11 +174,17 @@ export function toIDLType(idl: CandidClass, parents: Parent[]): IDL.Type<any> {
     return idl;
 }
 
-export function toParamIDLTypes(idl: CandidClass[]): IDL.Type<any>[] {
-    return idl.map((value) => toIDLType(value, []));
+export function toParamIDLTypes(
+    idl: CandidClass[],
+    parents: Parent[] = []
+): IDL.Type<any>[] {
+    return idl.map((value) => toIDLType(value, parents));
 }
 
-export function toReturnIDLType(returnIdl: ReturnCandidClass): IDL.Type<any>[] {
+export function toReturnIDLType(
+    returnIdl: ReturnCandidClass,
+    parents: Parent[] = []
+): IDL.Type<any>[] {
     if (Array.isArray(returnIdl)) {
         // If Void
         if (returnIdl.length === 0) {
@@ -187,7 +193,7 @@ export function toReturnIDLType(returnIdl: ReturnCandidClass): IDL.Type<any>[] {
         // Should be unreachable
         return [];
     }
-    return [toIDLType(returnIdl, [])];
+    return [toIDLType(returnIdl, parents)];
 }
 
 type CandidMap = { [key: string]: any };
