@@ -1,6 +1,6 @@
 // TODO let's add more examples here, really test it out
 
-import { bool, Null, Opt, query, Record, Service, text, Vec } from 'azle';
+import { bool, Canister, Null, Opt, query, Record, text, Vec } from 'azle';
 
 const Element = Record({
     id: text
@@ -14,7 +14,7 @@ const Html = Record({
     head: Opt(Head)
 });
 
-export default Service({
+export default Canister({
     getHtml: query([], Html, () => {
         return {
             head: []

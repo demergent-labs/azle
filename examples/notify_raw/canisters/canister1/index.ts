@@ -1,6 +1,6 @@
-import { ic, Principal, Service, update, Void } from 'azle';
+import { Canister, ic, Principal, update, Void } from 'azle';
 
-export default Service({
+export default Canister({
     sendNotification: update([], Void, () => {
         return ic.notifyRaw(
             Principal.fromText(

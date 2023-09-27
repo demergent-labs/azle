@@ -3,13 +3,13 @@
 import {
     blob,
     bool,
+    Canister,
     ic,
     nat,
     None,
     principal,
     Principal,
     query,
-    Service,
     Some,
     update
 } from 'azle';
@@ -29,7 +29,7 @@ let state: State = {
     createdCanisterId: Principal.fromText('aaaaa-aa')
 };
 
-export default Service({
+export default Canister({
     executeCreateCanister: update([], CreateCanisterResult, async () => {
         const createCanisterResult = await ic.call(
             managementCanister.create_canister,

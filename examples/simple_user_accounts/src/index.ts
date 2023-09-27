@@ -1,9 +1,9 @@
 import {
+    Canister,
     None,
     Opt,
     query,
     Record,
-    Service,
     Some,
     text,
     update,
@@ -25,7 +25,7 @@ const User = Record({
     username: text
 });
 
-export default Service({
+export default Canister({
     getUserById: query([text], Opt(User), (id) => {
         const userOrUndefined = db.users[id];
         return userOrUndefined ? Some(userOrUndefined) : None;

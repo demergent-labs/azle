@@ -1,6 +1,7 @@
 import {
     blob,
     bool,
+    Canister,
     Func,
     ic,
     init,
@@ -10,7 +11,6 @@ import {
     Opt,
     query,
     Record,
-    Service,
     Some,
     StableBTreeMap,
     text,
@@ -61,7 +61,7 @@ const HttpRequest = Record({
 
 let stableStorage = StableBTreeMap(text, nat, 0);
 
-export default Service({
+export default Canister({
     init: init([], () => {
         stableStorage.insert('counter', 0n);
     }),

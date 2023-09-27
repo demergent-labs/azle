@@ -1,8 +1,0 @@
-type rec_0 = record {someService:service {query1:() -> (bool) query; update1:() -> (text) }};
-service: () -> {
-    serviceParam: (service {query1:() -> (bool) query; update1:() -> (text) }) -> (service {query1:() -> (bool) query; update1:() -> (text) }) query;
-    serviceReturnType: () -> (service {query1:() -> (bool) query; update1:() -> (text) }) query;
-    serviceNestedReturnType: () -> (rec_0);
-    serviceList: (vec service {query1:() -> (bool) query; update1:() -> (text) }) -> (vec service {query1:() -> (bool) query; update1:() -> (text) });
-    serviceCrossCanisterCall: (service {query1:() -> (bool) query; update1:() -> (text) }) -> (text);
-}

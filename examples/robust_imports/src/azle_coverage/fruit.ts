@@ -31,7 +31,7 @@ export {
     query as quince,
     Record as Raspberry,
     reserved as rambutan,
-    Service as Strawberry,
+    Canister as Strawberry,
     StableBTreeMap as Soncoya,
     text as tangerine,
     Tuple as Tamarind,

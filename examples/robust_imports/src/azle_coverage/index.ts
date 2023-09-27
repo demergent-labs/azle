@@ -41,7 +41,7 @@ import kiwi, {
 import { ic as lemon, int16 as coconut } from 'azle';
 import * as starFruit from './fruit';
 
-const FruitDeliveryService = Strawberry({
+const FruitDeliveryCanister = Strawberry({
     deliver: ugni([], tangerine),
     is_delivered: quince([], blackberry)
 });
@@ -173,11 +173,11 @@ export const addSigFigs = kiwi([fig32], fig64, (figs) => {
     return figs;
 });
 
-export const checkService = kiwi(
-    [FruitDeliveryService],
-    FruitDeliveryService,
-    (service) => {
-        return service;
+export const checkCanister = kiwi(
+    [FruitDeliveryCanister],
+    FruitDeliveryCanister,
+    (canister) => {
+        return canister;
     }
 );
 

@@ -1,10 +1,10 @@
 import {
+    Canister,
     ic,
     Manual,
     None,
     Principal,
     query,
-    Service,
     Some,
     update
 } from 'azle';
@@ -14,7 +14,7 @@ import {
     managementCanister
 } from 'azle/canisters/management';
 
-export default Service({
+export default Canister({
     xkcd: update([], HttpResponse, async () => {
         return await ic.call(managementCanister.http_request, {
             args: [

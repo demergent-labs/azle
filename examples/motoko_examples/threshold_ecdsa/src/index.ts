@@ -1,4 +1,4 @@
-import { blob, ic, None, Record, Service, update } from 'azle';
+import { blob, Canister, ic, None, Record, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 const PublicKey = Record({
@@ -9,7 +9,7 @@ const Signature = Record({
     signature: blob
 });
 
-export default Service({
+export default Canister({
     publicKey: update([], PublicKey, async () => {
         const caller = ic.caller().toUint8Array();
 

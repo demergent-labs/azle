@@ -1,12 +1,12 @@
 // Named Imports
-import { Service } from 'azle';
+import { Canister } from 'azle';
 import {
     myVariantToMyDeepVariant,
     myFathomlessVariantToMyCavernousVariant,
     returnVec,
     returnFathomlessVec,
     returnWeird,
-    returnFathomlessService,
+    returnFathomlessCanister,
     makeCavernousRecord,
     typeCheck
 } from './import_coverage';
@@ -17,7 +17,7 @@ import {
     buyHoneydew,
     keepIlamaClean,
     addSigFigs,
-    checkService,
+    checkCanister,
     checkWatermelonForSeeds,
     compareApplesToOranges,
     handleFarkleberries,
@@ -46,7 +46,7 @@ import {
     simpleDeepQuery,
     simpleAzleQuery,
     simpleQuery,
-    checkServiceAlias,
+    checkCanisterAlias,
     getMyRecord,
     getMyRecordAlias,
     getSuperAlias,
@@ -60,13 +60,13 @@ import { checkPrimAliases } from './ts_primitives';
 // Not Named Imports
 import './azle_coverage/fruit'; // Shouldn't do anything. It's just here to make sure it doesn't do anything
 
-export default Service({
+export default Canister({
     myVariantToMyDeepVariant,
     myFathomlessVariantToMyCavernousVariant,
     returnVec,
     returnFathomlessVec,
     returnWeird,
-    returnFathomlessService,
+    returnFathomlessCanister,
     makeCavernousRecord,
     typeCheck,
     collectIcaco,
@@ -75,7 +75,7 @@ export default Service({
     buyHoneydew,
     keepIlamaClean,
     addSigFigs,
-    checkService,
+    checkCanister,
     checkWatermelonForSeeds,
     compareApplesToOranges,
     handleFarkleberries,
@@ -102,7 +102,7 @@ export default Service({
     simpleDeepQuery,
     simpleAzleQuery,
     simpleQuery,
-    checkServiceAlias,
+    checkCanisterAlias,
     getMyRecord,
     getMyRecordAlias,
     getSuperAlias,

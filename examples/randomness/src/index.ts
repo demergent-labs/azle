@@ -1,8 +1,8 @@
-import { bool, float64, postUpgrade, query, Service, update } from 'azle';
+import { bool, Canister, float64, postUpgrade, query, update } from 'azle';
 
 let redeployed = false;
 
-export default Service({
+export default Canister({
     postUpgrade: postUpgrade([], () => {
         redeployed = true;
     }),

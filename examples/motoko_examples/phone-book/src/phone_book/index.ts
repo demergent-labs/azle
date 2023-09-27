@@ -1,9 +1,9 @@
 import {
+    Canister,
     None,
     Opt,
     query,
     Record,
-    Service,
     Some,
     text,
     update,
@@ -17,7 +17,7 @@ export const Entry = Record({
 
 let phoneBook = new Map<string, typeof Entry>();
 
-export default Service({
+export default Canister({
     insert: update([text, Entry], Void, (name, entry) => {
         phoneBook.set(name, entry);
     }),

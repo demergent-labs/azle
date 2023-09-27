@@ -1,8 +1,8 @@
-import { bool, query, Service, update, Void } from 'azle';
+import { bool, Canister, query, update, Void } from 'azle';
 
 let notified: boolean = false;
 
-export default Service({
+export default Canister({
     receiveNotification: update([], Void, () => {
         notified = true;
     }),

@@ -1,6 +1,6 @@
-import { blob, Service, update } from 'azle';
+import { blob, Canister, update } from 'azle';
 
-export default Service({
+export default Canister({
     getBytes: update([blob], blob, (bytes) => {
         return bytes;
     })

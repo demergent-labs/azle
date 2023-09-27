@@ -1,6 +1,6 @@
-import { blob, query, Service, Vec } from 'azle';
+import { blob, Canister, query, Vec } from 'azle';
 
-export default Service({
+export default Canister({
     getBlob: query([], blob, () => {
         return stringToBlob('hello');
     }),

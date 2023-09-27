@@ -1,6 +1,6 @@
-import { query, Service, Void } from 'azle';
+import { Canister, query, Void } from 'azle';
 
-export default Service({
+export default Canister({
     main: query([], Void, () => {
         console.log('Hello World!');
     })

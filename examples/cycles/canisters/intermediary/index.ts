@@ -1,11 +1,11 @@
 import {
+    Canister,
     ic,
     init,
     nat,
     nat64,
     Principal,
     query,
-    Service,
     update,
     Void
 } from 'azle';
@@ -13,7 +13,7 @@ import Cycles from '../cycles';
 
 let cyclesCanister: typeof Cycles;
 
-export default Service({
+export default Canister({
     init: init([], () => {
         cyclesCanister = Cycles(
             Principal.fromText(

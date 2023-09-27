@@ -53,7 +53,7 @@ export const MyCavernousVariant = ic.CavernousVariant({
     sixteen: ic.Null
 });
 
-const SomeService = ic.fathomlessService({
+const SomeCanister = ic.fathomlessCanister({
     query1: ic.query([], ic.bool),
     update1: ic.azle.update([], ic.text)
 });
@@ -100,11 +100,11 @@ export const returnWeird = ic.azle.query([], ic.nat8, () => {
     return -10_000n;
 });
 
-export const returnFathomlessService = ic.azle.query(
-    [SomeService],
-    SomeService,
-    (service) => {
-        return service;
+export const returnFathomlessCanister = ic.azle.query(
+    [SomeCanister],
+    SomeCanister,
+    (canister) => {
+        return canister;
     }
 );
 

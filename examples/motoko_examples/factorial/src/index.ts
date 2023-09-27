@@ -1,6 +1,6 @@
-import { nat, Service, update } from 'azle';
+import { Canister, nat, update } from 'azle';
 
-export default Service({
+export default Canister({
     // Calculate the product of all positive integers less than or equal to `n`.
     fac: update([nat], nat, (n) => {
         return go(n);

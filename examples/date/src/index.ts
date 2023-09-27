@@ -1,6 +1,6 @@
-import { nat32, nat64, query, Service, text } from 'azle';
+import { Canister, nat32, nat64, query, text } from 'azle';
 
-export default Service({
+export default Canister({
     getDate: query([text], nat32, (isoString) => {
         return new Date(isoString).getDate();
     }),

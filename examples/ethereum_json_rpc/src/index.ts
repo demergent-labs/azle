@@ -1,9 +1,9 @@
 import {
+    Canister,
     ic,
     init,
     nat32,
     query,
-    Service,
     StableBTreeMap,
     text,
     update
@@ -16,7 +16,7 @@ import {
 
 let stableStorage = StableBTreeMap(text, text, 0);
 
-export default Service({
+export default Canister({
     init: init([text], (ethereumUrl) => {
         stableStorage.insert('ethereumUrl', ethereumUrl);
     }),

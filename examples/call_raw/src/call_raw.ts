@@ -1,6 +1,15 @@
-import { ic, nat, nat64, principal, Result, Service, text, update } from 'azle';
+import {
+    Canister,
+    ic,
+    nat,
+    nat64,
+    principal,
+    Result,
+    text,
+    update
+} from 'azle';
 
-export default Service({
+export default Canister({
     executeCallRaw: update(
         [principal, text, text, nat64],
         Result(text, text),

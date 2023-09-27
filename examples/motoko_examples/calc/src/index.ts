@@ -1,8 +1,8 @@
-import { int, None, Opt, Service, Some, update, Void } from 'azle';
+import { Canister, int, None, Opt, Some, update, Void } from 'azle';
 
 let cell: int = 0n;
 
-export default Service({
+export default Canister({
     add: update([int], int, (n) => {
         cell += n;
 

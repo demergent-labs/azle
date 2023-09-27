@@ -1,5 +1,6 @@
 import {
     bool,
+    Canister,
     empty,
     float32,
     float64,
@@ -18,11 +19,10 @@ import {
     Principal,
     query,
     reserved,
-    Service,
     text
 } from 'azle';
 
-export default Service({
+export default Canister({
     getString: query([], text, () => {
         return 'string';
     }),

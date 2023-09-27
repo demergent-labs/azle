@@ -1,4 +1,4 @@
-import { bool, ic, Manual, nat32, query, Service, update } from 'azle';
+import { bool, Canister, ic, Manual, nat32, query, update } from 'azle';
 import {
     allowAll,
     incrementCounterAndAllowAll,
@@ -13,7 +13,7 @@ export let state = {
     heartbeatTick: 0
 };
 
-export default Service({
+export default Canister({
     getCounter: query([], nat32, () => {
         return state.counter;
     }),

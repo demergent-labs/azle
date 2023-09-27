@@ -1,6 +1,7 @@
 import {
     blob,
     bool,
+    Canister,
     float32,
     ic,
     int,
@@ -12,9 +13,7 @@ import {
     query,
     Record,
     reserved,
-    Service,
     text,
-    Tuple,
     update,
     Variant,
     Vec,
@@ -62,7 +61,7 @@ const Element = Record({
     state: State
 });
 
-export default Service({
+export default Canister({
     // Updates
     manualUpdate: update(
         [text],

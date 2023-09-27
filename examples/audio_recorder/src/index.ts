@@ -1,5 +1,6 @@
 import {
     blob,
+    Canister,
     ic,
     nat64,
     Opt,
@@ -8,7 +9,6 @@ import {
     query,
     Record,
     Result,
-    Service,
     StableBTreeMap,
     text,
     update,
@@ -39,7 +39,7 @@ const AudioRecorderError = Variant({
 let users = StableBTreeMap(principal, User, 0);
 let recordings = StableBTreeMap(principal, Recording, 1);
 
-export default Service({
+export default Canister({
     createUser: update([text], User, (username) => {
         const id = generateId();
         const user: typeof User = {

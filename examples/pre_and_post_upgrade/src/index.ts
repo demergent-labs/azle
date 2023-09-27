@@ -1,11 +1,11 @@
 import {
+    Canister,
     init,
     nat64,
     postUpgrade,
     preUpgrade,
     query,
     Record,
-    Service,
     StableBTreeMap,
     text,
     update,
@@ -24,7 +24,7 @@ let entries: {
     [key: string]: nat64;
 } = {};
 
-export default Service({
+export default Canister({
     init: init([], () => {
         console.log('init');
 

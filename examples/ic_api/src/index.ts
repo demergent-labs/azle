@@ -1,5 +1,6 @@
 import {
     blob,
+    Canister,
     empty,
     ic,
     int8,
@@ -8,10 +9,8 @@ import {
     nat32,
     nat64,
     Opt,
-    Principal,
     query,
     update,
-    Service,
     bool,
     text,
     principal,
@@ -26,7 +25,7 @@ import {
 //     string: text;
 // };
 
-export default Service({
+export default Canister({
     // // returns the argument data as an array.
     // argDataZeroParams(): Vec<null> {
     //     return ic.argData();

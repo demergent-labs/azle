@@ -1,10 +1,10 @@
 import {
+    Canister,
     ic,
     init,
     nat64,
     Opt,
     Principal,
-    Service,
     text,
     update,
     Vec,
@@ -15,7 +15,7 @@ import { Account, AccountArgs } from '../canister2/types';
 
 let canister2: typeof Canister2;
 
-export default Service({
+export default Canister({
     init: init([], () => {
         canister2 = Canister2(
             Principal.fromText(

@@ -1,28 +1,28 @@
 import {
+    Canister,
     ic,
     init,
     Principal,
     RejectionCode,
-    Service,
     text,
     update,
     Void
 } from 'azle';
-import SomeService from '../some_service';
+import SomeCanister from '../some_canister';
 
-const Nonexistent = Service({
+const Nonexistent = Canister({
     method: update([], Void)
 });
 
-let someService: typeof SomeService;
+let someCanister: typeof SomeCanister;
 let nonexistentCanister: typeof Nonexistent;
 
-export default Service({
+export default Canister({
     init: init([], () => {
-        someService = SomeService(
+        someCanister = SomeCanister(
             Principal.fromText(
-                process.env.SOME_SERVICE_PRINCIPAL ??
-                    ic.trap('process.env.SOME_SERVICE_PRINCIPAL is undefined')
+                process.env.SOME_CANISTER_PRINCIPAL ??
+                    ic.trap('process.env.SOME_CANISTER_PRINCIPAL is undefined')
             )
         );
 
@@ -31,7 +31,7 @@ export default Service({
         );
     }),
     getRejectionCodeNoError: update([], RejectionCode, async () => {
-        await ic.call(someService.accept);
+        await ic.call(someCanister.accept);
 
         return ic.rejectCode();
     }),
@@ -44,21 +44,21 @@ export default Service({
     }),
     getRejectionCodeCanisterReject: update([], RejectionCode, async () => {
         try {
-            await ic.call(someService.reject, { args: ['reject'] });
+            await ic.call(someCanister.reject, { args: ['reject'] });
         } catch (error) {}
 
         return ic.rejectCode();
     }),
     getRejectionCodeCanisterError: update([], RejectionCode, async () => {
         try {
-            await ic.call(someService.error);
+            await ic.call(someCanister.error);
         } catch (error) {}
 
         return ic.rejectCode();
     }),
     getRejectionMessage: update([text], text, async (message: text) => {
         try {
-            await ic.call(someService.reject, { args: [message] });
+            await ic.call(someCanister.reject, { args: [message] });
         } catch (error) {}
 
         return ic.rejectMessage();

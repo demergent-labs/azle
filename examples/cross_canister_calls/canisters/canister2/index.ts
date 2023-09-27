@@ -1,10 +1,10 @@
 import {
+    Canister,
     ic,
     nat64,
     None,
     Opt,
     query,
-    Service,
     Some,
     text,
     update,
@@ -23,7 +23,7 @@ let state: State = {
     notification: ''
 };
 
-export default Service({
+export default Canister({
     transfer: update([text, text, nat64], nat64, (from, to, amount) => {
         const fromAccount: typeof Account | undefined = state.accounts[from];
         if (fromAccount === undefined) {

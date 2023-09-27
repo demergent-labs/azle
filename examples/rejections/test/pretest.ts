@@ -8,16 +8,16 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(`dfx canister uninstall-code some_service || true`, {
+    execSync(`dfx canister uninstall-code some_canister || true`, {
         stdio: 'inherit'
     });
 
-    execSync(`dfx canister create some_service`, {
+    execSync(`dfx canister create some_canister`, {
         stdio: 'inherit'
     });
 
     execSync(
-        `SOME_SERVICE_PRINCIPAL=${getCanisterId('some_service')} dfx deploy`,
+        `SOME_CANISTER_PRINCIPAL=${getCanisterId('some_canister')} dfx deploy`,
         {
             stdio: 'inherit'
         }

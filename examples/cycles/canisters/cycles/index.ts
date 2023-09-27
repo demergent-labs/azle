@@ -1,6 +1,6 @@
-import { ic, nat, nat64, query, Service, update } from 'azle';
+import { Canister, ic, nat, nat64, query, update } from 'azle';
 
-export default Service({
+export default Canister({
     receiveCycles: update([], nat64, () => {
         return ic.msgCyclesAccept(ic.msgCyclesAvailable() / 2n);
     }),

@@ -1,6 +1,6 @@
-import { query, Service, text } from 'azle';
+import { Canister, query, text } from 'azle';
 
-export default Service({
+export default Canister({
     simpleQuery: query([], text, () => {
         return 'This is a query function';
     })

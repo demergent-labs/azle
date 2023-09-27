@@ -1,4 +1,5 @@
 import {
+    Canister,
     init,
     None,
     Null,
@@ -7,7 +8,6 @@ import {
     Principal,
     query,
     Record,
-    Service,
     Some,
     text,
     Variant
@@ -26,7 +26,7 @@ let user: Opt<typeof User> = None;
 let reaction: Opt<typeof Reaction> = None;
 let owner: Opt<Principal> = None;
 
-export default Service({
+export default Canister({
     init: init(
         [User, Reaction, principal],
         (initUser, initReaction, initOwner) => {

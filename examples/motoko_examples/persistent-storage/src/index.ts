@@ -1,11 +1,11 @@
 import {
     bool,
+    Canister,
     ic,
     init,
     nat,
     postUpgrade,
     query,
-    Service,
     StableBTreeMap,
     text,
     update
@@ -14,7 +14,7 @@ import {
 let stableStorage = StableBTreeMap(text, nat, 0);
 let redeployed = false;
 
-export default Service({
+export default Canister({
     init: init([], () => {
         stableStorage.insert('counter', 0n);
     }),
