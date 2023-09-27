@@ -4,7 +4,7 @@ import { JSCanisterConfig, JavaScript, TypeScript } from './utils/types';
 import { Result } from './utils/result';
 
 export function compileTypeScriptToJavaScript(
-    tsPath: string,
+    main: string,
     canisterConfig: JSCanisterConfig
 ): Result<
     {
@@ -32,8 +32,8 @@ export function compileTypeScriptToJavaScript(
             import 'azle';
             import { ic } from 'azle';
             export { Principal } from '@dfinity/principal';
-            export * from './${tsPath}';
-            import CanisterMethods from './${tsPath}';
+            export * from './${main}';
+            import CanisterMethods from './${main}';
 
             export const canisterMethods = CanisterMethods;
         `;

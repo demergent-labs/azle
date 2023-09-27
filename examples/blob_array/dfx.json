@@ -2,9 +2,8 @@
     "canisters": {
         "blob_array": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle blob_array",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/blob_array/blob_array.wasm",
             "gzip": true,

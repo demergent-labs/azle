@@ -2,9 +2,8 @@
     "canisters": {
         "whoami": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle whoami",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/whoami/whoami.wasm",
             "gzip": true,

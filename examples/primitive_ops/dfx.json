@@ -2,9 +2,8 @@
     "canisters": {
         "azle": {
             "type": "custom",
+            "main": "canisters/azle/index.ts",
             "build": "npx azle azle",
-            "root": "canisters/azle",
-            "ts": "canisters/azle/index.ts",
             "candid": "canisters/azle/index.did",
             "wasm": ".azle/azle/azle.wasm.gz",
             "declarations": {

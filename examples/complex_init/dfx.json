@@ -2,9 +2,8 @@
     "canisters": {
         "complex_init": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle complex_init",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/complex_init/complex_init.wasm",
             "gzip": true,

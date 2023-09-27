@@ -2,9 +2,8 @@
     "canisters": {
         "pre_and_post_upgrade": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle pre_and_post_upgrade",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/pre_and_post_upgrade/pre_and_post_upgrade.wasm",
             "gzip": true,

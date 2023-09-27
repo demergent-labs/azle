@@ -2,9 +2,8 @@
     "canisters": {
         "imports": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle imports",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/imports/imports.wasm",
             "gzip": true,

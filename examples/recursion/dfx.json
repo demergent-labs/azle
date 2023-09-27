@@ -2,9 +2,8 @@
     "canisters": {
         "recursion": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle recursion",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/recursion/recursion.wasm.gz",
             "declarations": {

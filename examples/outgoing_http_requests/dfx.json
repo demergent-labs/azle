@@ -2,9 +2,8 @@
     "canisters": {
         "outgoing_http_requests": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle outgoing_http_requests",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/outgoing_http_requests/outgoing_http_requests.wasm",
             "gzip": true,

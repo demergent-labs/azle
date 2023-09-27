@@ -2,9 +2,8 @@
     "canisters": {
         "cycles": {
             "type": "custom",
+            "main": "src/cycles/index.ts",
             "build": "npx azle cycles",
-            "root": "src/cycles",
-            "ts": "src/cycles/index.ts",
             "candid": "src/cycles/index.did",
             "wasm": ".azle/cycles/cycles.wasm",
             "gzip": true,
@@ -15,9 +14,8 @@
         },
         "intermediary": {
             "type": "custom",
+            "main": "src/intermediary/index.ts",
             "build": "npx azle intermediary",
-            "root": "src/intermediary",
-            "ts": "src/intermediary/index.ts",
             "candid": "src/intermediary/index.did",
             "wasm": ".azle/intermediary/intermediary.wasm",
             "gzip": true,

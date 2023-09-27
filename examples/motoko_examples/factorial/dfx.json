@@ -2,9 +2,8 @@
     "canisters": {
         "factorial": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle factorial",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/factorial/factorial.wasm",
             "gzip": true,

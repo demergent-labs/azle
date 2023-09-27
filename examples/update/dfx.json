@@ -2,9 +2,8 @@
     "canisters": {
         "update": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle update",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/update/update.wasm",
             "gzip": true,

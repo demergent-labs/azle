@@ -2,9 +2,8 @@
     "canisters": {
         "canister": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle canister",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/canister/canister.wasm",
             "gzip": true,
@@ -16,9 +15,8 @@
         },
         "some_canister": {
             "type": "custom",
+            "main": "src/some_canister.ts",
             "build": "npx azle some_canister",
-            "root": "src",
-            "ts": "src/some_canister.ts",
             "candid": "src/some_canister.did",
             "wasm": ".azle/some_canister/some_canister.wasm",
             "gzip": true,

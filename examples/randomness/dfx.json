@@ -2,9 +2,8 @@
     "canisters": {
         "randomness": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle randomness",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/randomness/randomness.wasm",
             "gzip": true,

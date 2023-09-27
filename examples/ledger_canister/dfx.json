@@ -2,9 +2,8 @@
     "canisters": {
         "ledger_canister": {
             "type": "custom",
+            "main": "src/ledger_canister/index.ts",
             "build": "npx azle ledger_canister",
-            "root": "src/ledger_canister",
-            "ts": "src/ledger_canister/index.ts",
             "candid": "src/ledger_canister/index.did",
             "wasm": ".azle/ledger_canister/ledger_canister.wasm",
             "gzip": true,

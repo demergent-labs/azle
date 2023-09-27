@@ -68,7 +68,7 @@ async function azle() {
             installRustDependencies(azleVersion, rustVersion);
 
             const compilationResult = compileTypeScriptToJavaScript(
-                canisterConfig.ts,
+                canisterConfig.main,
                 canisterConfig
             );
 
@@ -86,7 +86,6 @@ async function azle() {
                 };
 
             const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
-                canisterConfig.root,
                 canisterConfig.opt_level ?? '0'
             );
             const workspaceCargoLock: Toml = generateWorkspaceCargoLock();

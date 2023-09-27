@@ -2,9 +2,8 @@
     "canisters": {
         "echo": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle echo",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/echo/echo.wasm",
             "gzip": true,
