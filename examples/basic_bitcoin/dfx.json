@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/basic_bitcoin",
                 "node_compatibility": true
-            }
+            },
+            "opt_level": "1"
         }
     }
 }
