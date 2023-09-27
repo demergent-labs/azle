@@ -2,9 +2,8 @@
     "canisters": {
         "persistent_storage": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle persistent_storage",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/persistent_storage/persistent_storage.wasm",
             "gzip": true,

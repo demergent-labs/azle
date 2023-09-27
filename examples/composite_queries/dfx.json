@@ -2,9 +2,8 @@
     "canisters": {
         "canister1": {
             "type": "custom",
+            "main": "src/canister1/index.ts",
             "build": "npx azle canister1",
-            "root": "src/canister1",
-            "ts": "src/canister1/index.ts",
             "candid": "src/canister1/index.did",
             "wasm": ".azle/canister1/canister1.wasm",
             "gzip": true,
@@ -20,9 +19,8 @@
         },
         "canister2": {
             "type": "custom",
+            "main": "src/canister2/index.ts",
             "build": "npx azle canister2",
-            "root": "src/canister2",
-            "ts": "src/canister2/index.ts",
             "candid": "src/canister2/index.did",
             "wasm": ".azle/canister2/canister2.wasm",
             "gzip": true,
@@ -34,9 +32,8 @@
         },
         "canister3": {
             "type": "custom",
+            "main": "src/canister3/index.ts",
             "build": "npx azle canister3",
-            "root": "src/canister3",
-            "ts": "src/canister3/index.ts",
             "candid": "src/canister3/index.did",
             "wasm": ".azle/canister3/canister3.wasm",
             "gzip": true,

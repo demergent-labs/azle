@@ -2,9 +2,8 @@
     "canisters": {
         "key_value_store": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle key_value_store",
-            "root": "azle",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/key_value_store/key_value_store.wasm",
             "gzip": true,

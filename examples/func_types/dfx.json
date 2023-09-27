@@ -2,9 +2,8 @@
     "canisters": {
         "func_types": {
             "type": "custom",
+            "main": "canisters/func_types/index.ts",
             "build": "npx azle func_types",
-            "root": "src",
-            "ts": "canisters/func_types/index.ts",
             "candid": "canisters/func_types/index.did",
             "wasm": ".azle/func_types/func_types.wasm.gz",
             "declarations": {
@@ -15,9 +14,8 @@
         },
         "notifiers": {
             "type": "custom",
+            "main": "canisters/notifiers/index.ts",
             "build": "npx azle notifiers",
-            "root": "src",
-            "ts": "canisters/notifiers/index.ts",
             "candid": "canisters/notifiers/index.did",
             "wasm": ".azle/notifiers/notifiers.wasm.gz",
             "declarations": {

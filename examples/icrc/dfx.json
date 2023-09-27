@@ -2,9 +2,8 @@
     "canisters": {
         "proxy": {
             "type": "custom",
+            "main": "canisters/proxy/index.ts",
             "build": "npx azle proxy",
-            "root": "canisters/proxy",
-            "ts": "canisters/proxy/index.ts",
             "candid": "canisters/proxy/index.did",
             "wasm": ".azle/proxy/proxy.wasm.gz",
             "declarations": {

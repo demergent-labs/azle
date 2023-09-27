@@ -22,9 +22,8 @@
         },
         "wallet_backend": {
             "type": "custom",
+            "main": "wallet/backend/index.ts",
             "build": "npx azle wallet_backend",
-            "root": "wallet/backend",
-            "ts": "wallet/backend/index.ts",
             "candid": "wallet/backend/index.did",
             "wasm": ".azle/wallet_backend/wallet_backend.wasm.gz",
             "declarations": {
