@@ -2,8 +2,3 @@
 members = [
     "canisters/rust",
 ]
-
-[profile.release]
-lto = true
-opt-level = 'z'
-codegen-units = 1

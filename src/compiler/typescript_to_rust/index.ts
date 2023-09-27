@@ -55,8 +55,7 @@ export async function compileTypeScriptToRust(
                     candidJavaScript: string;
                 };
             const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
-                canisterConfig.root,
-                canisterConfig.opt_level ?? '0'
+                canisterConfig.root
             );
             const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
 
