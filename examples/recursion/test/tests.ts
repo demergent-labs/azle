@@ -1,5 +1,9 @@
 import { Test } from 'azle/test';
-import { _SERVICE, rec_1 } from './dfx_generated/recursion/recursion.did';
+import {
+    _SERVICE,
+    rec_10,
+    rec_8
+} from './dfx_generated/recursion/recursion.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
@@ -105,6 +109,136 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
+            name: 'recursive records with opts',
+            test: async () => {
+                const result = await recursion_canister.testRecRecordWithOpt({
+                    myOpt: [{ myOpt: [] }]
+                });
+
+                return {
+                    Ok: result.myOpt[0]?.myOpt.length === 0
+                };
+            }
+        },
+        {
+            name: 'recursive records with vec',
+            test: async () => {
+                const input = {
+                    myVecRecords: [
+                        { myVecRecords: [{ myVecRecords: [] }] },
+                        {
+                            myVecRecords: [
+                                { myVecRecords: [] },
+                                { myVecRecords: [{ myVecRecords: [] }] }
+                            ]
+                        },
+                        { myVecRecords: [] },
+                        { myVecRecords: [] },
+                        { myVecRecords: [] },
+                        { myVecRecords: [] },
+                        { myVecRecords: [] },
+                        { myVecRecords: [] }
+                    ]
+                };
+                const result =
+                    await recursion_canister.testRecRecordWithVec(input);
+
+                return {
+                    Ok: deepCompare(result, input)
+                };
+            }
+        },
+        {
+            name: 'recursive tuples with vec',
+            test: async () => {
+                const input: rec_10 = [[[[], [[[], []]]]], []];
+                const result =
+                    await recursion_canister.testRecTupleWithVec(input);
+
+                return {
+                    Ok: deepCompare(result, input)
+                };
+            }
+        },
+        {
+            name: 'recursive tuples with vec return',
+            test: async () => {
+                const input = [
+                    [[[], [[[], []]]]],
+                    [
+                        [[], []],
+                        [[], []],
+                        [[], []],
+                        [[], []]
+                    ]
+                ];
+                const result =
+                    await recursion_canister.testRecTupleWithVecReturn();
+
+                return {
+                    Ok: deepCompare(result, input)
+                };
+            }
+        },
+        {
+            name: 'recursive tuples with opt',
+            test: async () => {
+                const input: rec_8 = [[[[], [[[], []]]]], []];
+                const result =
+                    await recursion_canister.testRecTupleWithOpt(input);
+
+                return {
+                    Ok: deepCompare(result, input)
+                };
+            }
+        },
+        {
+            name: 'recursive tuples with opt return',
+            test: async () => {
+                const input = [[], [[[], []]]];
+                const result =
+                    await recursion_canister.testRecTupleWithOptReturn();
+
+                return {
+                    Ok: deepCompare(result, input)
+                };
+            }
+        },
+        {
+            name: 'recursive records with vec return',
+            test: async () => {
+                const input = {
+                    myVecRecords: [
+                        { myVecRecords: [{ myVecRecords: [] }] },
+                        {
+                            myVecRecords: [
+                                { myVecRecords: [] },
+                                { myVecRecords: [{ myVecRecords: [] }] }
+                            ]
+                        },
+                        { myVecRecords: [] }
+                    ]
+                };
+                const result =
+                    await recursion_canister.testRecRecordWithVecReturn();
+
+                return {
+                    Ok: deepCompare(result, input)
+                };
+            }
+        },
+        {
+            name: 'recursive records with opts return type',
+            test: async () => {
+                const result =
+                    await recursion_canister.testRecRecordWithOptReturn();
+
+                return {
+                    Ok: result.myOpt[0]?.myOpt[0]?.myOpt.length === 0
+                };
+            }
+        },
+        {
             name: 'recursive tuples with variants',
             test: async () => {
                 const result = await recursion_canister.testRecTupleWithVariant(
@@ -149,4 +283,29 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
             }
         }
     ];
+}
+
+function deepCompare(obj1: any, obj2: any): boolean {
+    // Check if both objects are of type object
+    if (typeof obj1 !== 'object' || typeof obj2 !== 'object') {
+        return obj1 === obj2;
+    }
+
+    // Get the keys of both objects
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    // Check if they have the same keys
+    if (keys1.length !== keys2.length) {
+        return false;
+    }
+
+    // Check if each key's value is deeply equal
+    for (const key of keys1) {
+        if (!deepCompare(obj1[key], obj2[key])) {
+            return false;
+        }
+    }
+
+    return true;
 }
