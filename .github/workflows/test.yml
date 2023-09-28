@@ -114,6 +114,7 @@ jobs:
                     "examples/principal",
                     "examples/query",
                     "examples/randomness",
+                    "examples/recursion",
                     "examples/rejections",
                     "examples/robust_imports",
                     "examples/simple_erc20",
