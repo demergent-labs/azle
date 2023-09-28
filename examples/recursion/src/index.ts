@@ -4,7 +4,7 @@ import {
     None,
     Principal,
     query,
-    Service,
+    Canister,
     Some,
     text,
     Tuple,
@@ -35,15 +35,15 @@ const myTupleVar = Variant({ num: int8, varTuple: varTuple });
 //      Vec can't be recursive by itself. At the end of it all it needs to have a concrete type.
 // Opt
 // Service
-const myService = Recursive(() =>
-    Service({
-        serviceQuery: query([myService], myService, (param) => param)
+const MyCanister = Recursive(() =>
+    Canister({
+        myQuery: query([MyCanister], MyCanister, (param) => param)
     })
 );
 // Func
 const myFunc = Recursive(() => Func([myFunc], myFunc, 'query'));
 
-export default Service({
+export default Canister({
     testRecRecordWithOpt: query([optRecord], optRecord, (param) => param),
     testRecRecordWithVec: query([vecRecord], vecRecord, (param) => param),
     testRecRecordWithVariant: query([varRecord], varRecord, (param) => param),
