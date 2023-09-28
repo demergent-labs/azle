@@ -5,7 +5,8 @@
             "main": "canisters/azle/index.ts",
             "build": "npx azle azle",
             "candid": "canisters/azle/index.did",
-            "wasm": ".azle/azle/azle.wasm.gz",
+            "wasm": ".azle/azle/azle.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "dfx_generated/azle"
             }
