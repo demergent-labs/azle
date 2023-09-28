@@ -5,7 +5,7 @@
             "main": "src/index.ts",
             "build": "npx azle recursion",
             "candid": "src/index.did",
-            "wasm": ".azle/recursion/recursion.wasm.gz",
+            "wasm": ".azle/recursion/recursion.wasm",
             "declarations": {
                 "output": "test/dfx_generated/recursion",
                 "node_compatibility": true
