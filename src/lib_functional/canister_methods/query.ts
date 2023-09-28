@@ -20,37 +20,46 @@ export function query<
         : never,
     methodArgs?: MethodArgs
 ): CanisterMethodInfo<Params, Return> {
-    const paramCandid = handleRecursiveParams(paramsIdls as any);
-    const returnCandid = handleRecursiveReturn(
-        returnIdl as any,
-        paramCandid[2]
-    );
+    return (parent: any) => {
+        const parents =
+            parent === undefined
+                ? []
+                : [{ idl: parent, name: parent._azleName }];
+        const paramCandid = handleRecursiveParams(paramsIdls as any, parents);
+        const returnCandid = handleRecursiveReturn(
+            returnIdl as any,
+            paramCandid[2],
+            parents
+        );
 
-    // TODO maybe the cross canister callback should be made here?
-    const finalCallback =
-        callback === undefined
-            ? undefined
-            : (...args: any[]) => {
-                  executeMethod(
-                      'query',
-                      paramCandid,
-                      returnCandid,
-                      args,
-                      callback,
-                      paramsIdls as any,
-                      returnIdl,
-                      methodArgs?.manual ?? false
-                  );
-              };
+        // TODO maybe the cross canister callback should be made here?
+        const finalCallback =
+            callback === undefined
+                ? undefined
+                : (...args: any[]) => {
+                      executeMethod(
+                          'query',
+                          paramCandid,
+                          returnCandid,
+                          args,
+                          callback,
+                          paramsIdls as any,
+                          returnIdl,
+                          methodArgs?.manual ?? false
+                      );
+                  };
 
-    return {
-        mode: 'query',
-        callback: finalCallback,
-        candid: `(${paramCandid[1].join(', ')}) -> (${returnCandid[1]}) query;`,
-        candidTypes: newTypesToStingArr(returnCandid[2]),
-        paramsIdls: paramsIdls as any,
-        returnIdl,
-        async: callback === undefined ? false : isAsync(callback),
-        guard: methodArgs?.guard
+        return {
+            mode: 'query',
+            callback: finalCallback,
+            candid: `(${paramCandid[1].join(', ')}) -> (${
+                returnCandid[1]
+            }) query;`,
+            candidTypes: newTypesToStingArr(returnCandid[2]),
+            paramsIdls: paramsIdls as any,
+            returnIdl,
+            async: callback === undefined ? false : isAsync(callback),
+            guard: methodArgs?.guard
+        };
     };
 }

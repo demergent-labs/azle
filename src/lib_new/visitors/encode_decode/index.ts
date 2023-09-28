@@ -142,8 +142,12 @@ export function visitRec<T>(
     ty: IDL.ConstructType<T>,
     data: VisitorData
 ): VisitorResult {
+    let js_class = data.js_class.idlCallback();
+    if (js_class._azleIsCanister) {
+        js_class = js_class([]);
+    }
     return ty.accept(visitor, {
         ...data,
-        js_class: data.js_class.idlCallback()
+        js_class
     });
 }

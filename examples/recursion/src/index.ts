@@ -109,13 +109,18 @@ export default Canister({
     testRecFuncReturn: query([], myFunc, () => [
         Principal.fromText('aaaaa-aa'),
         'create_canister'
-    ])
-    // testRecService: query([myService], myService, (param) => param),
-    // testRecServiceReturn: query([], myService, () => {}),
-    // testRecServiceCall: update([myService], myService, (myService) => {
-    //     return await ic.call(myService.serviceQuery(myService));
-    // })
-});
+    ]),
+    testRecService: query([MyCanister], MyCanister, (param) => param),
+    testRecServiceReturn: query([], MyCanister, () => {
+        MyCanister(
+            Principal.fromText(process.env.MY_CANISTER_PRINCIPAL) ??
+                ic.trap('process.env.MY_CANISTER_PRINCIPAL is undefined')
+        );
+    }),
+    testRecServiceCall: update([MyCanister], MyCanister, async (myCanister) => {
+        return await ic.call(myCanister.myQuery(myCanister));
+    })
+})();
 
 // Below we have a bunch of different configurations of where to put the the
 // recursive class and how to put them all together

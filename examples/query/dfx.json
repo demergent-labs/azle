@@ -3,7 +3,7 @@
         "query": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle query",
+            "build": "npx azle query --verbose",
             "candid": "src/index.did",
             "wasm": ".azle/query/query.wasm",
             "gzip": true,

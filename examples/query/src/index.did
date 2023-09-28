@@ -1,3 +1,8 @@
+type rec_5 = service {myQuery:(rec_5) -> (rec_5) query};
+type rec_6 = service {myQuery:(rec_6) -> (rec_6) query};
+type rec_7 = service {myQuery:(rec_7) -> (rec_7) query};
+type rec_8 = variant {boy:rec_8; cool:nat};
+type rec_9 = variant {boy:rec_9; cool:nat};
 service: () -> {
-    simpleQuery: () -> (text) query;
+    
 }
