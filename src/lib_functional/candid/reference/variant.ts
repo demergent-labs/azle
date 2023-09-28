@@ -6,7 +6,7 @@ import { Null } from '../../../lib_new/primitives';
 
 export function Variant<T>(obj: T): RequireExactlyOne<{
     [K in keyof T]: TypeMapping<T[K]>;
-}> {
+}> & { _azleCandidType?: '_azleCandidType' } {
     const name = v4();
 
     return {

@@ -1,12 +1,11 @@
-import { TypeMapping } from '../lib_functional';
+import { CandidType, TypeMapping } from '../lib_functional';
 import { IDL, nat8, nat64, Opt } from './index';
 import { toIDLType } from './utils';
 
-export function StableBTreeMap<Key, Value>(
-    key: Key,
-    value: Value,
-    memoryId: nat8
-) {
+export function StableBTreeMap<
+    Key extends CandidType,
+    Value extends CandidType
+>(key: Key, value: Value, memoryId: nat8) {
     const keyIdl = toIDLType(key, []);
     const valueIdl = toIDLType(value, []);
 

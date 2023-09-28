@@ -85,7 +85,7 @@ export default Canister({
     createRecording: update(
         [blob, text, principal],
         Result(Recording, AudioRecorderError),
-        (audio: blob, name: text, userId: Principal) => {
+        (audio, name, userId) => {
             const userOpt = users.get(userId);
 
             if (userOpt.length === 0) {
