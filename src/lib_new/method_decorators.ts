@@ -8,7 +8,8 @@ import {
     toReturnIDLType,
     CandidTypesDefs,
     CandidDef,
-    extractCandid
+    extractCandid,
+    Parent
 } from './utils';
 import { display } from './utils';
 import {
@@ -181,18 +182,20 @@ export function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
 }
 
 export function handleRecursiveParams(
-    idls: CandidClass[]
+    idls: CandidClass[],
+    parents: Parent[] = []
 ): [IDL.Type<any>[], CandidDef[], CandidTypesDefs] {
-    const paramIdls = toParamIDLTypes(idls);
+    const paramIdls = toParamIDLTypes(idls, parents);
     const paramInfo = paramIdls.map((paramIdl) => display(paramIdl, {}));
     return [paramIdls, ...extractCandid(paramInfo, {})];
 }
 
 export function handleRecursiveReturn(
     returnIdl: ReturnCandidClass,
-    paramCandidTypeDefs: CandidTypesDefs
+    paramCandidTypeDefs: CandidTypesDefs,
+    parents: Parent[] = []
 ): [IDL.Type<any>[], CandidDef[], CandidTypesDefs] {
-    const returnIdls = toReturnIDLType(returnIdl);
+    const returnIdls = toReturnIDLType(returnIdl, parents);
     const returnInfo = returnIdls.map((returnIdl) => display(returnIdl, {}));
     return [returnIdls, ...extractCandid(returnInfo, paramCandidTypeDefs)];
 }
