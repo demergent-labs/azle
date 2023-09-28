@@ -4,11 +4,11 @@ import {
     newTypesToStingArr
 } from '../../lib_new/method_decorators';
 import { Callback, CanisterMethodInfo, executeMethod } from '.';
-import { TypeMapping } from '../candid';
+import { CandidType, TypeMapping } from '../candid';
 import { Void } from '../../lib_new';
 
 export function postUpgrade<
-    const Params extends ReadonlyArray<any>,
+    const Params extends ReadonlyArray<CandidType>,
     GenericCallback extends Callback<Params, Void>
 >(
     paramsIdls: Params,

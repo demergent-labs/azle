@@ -42,12 +42,12 @@ import {
     AzleResult,
     Result,
     AzleTuple,
-    Tuple
+    AzleText
 } from '../../lib_new';
 
 export type TypeMapping<T> = T extends () => any
     ? ReturnType<T>
-    : T extends IDL.TextClass
+    : T extends AzleText
     ? string
     : T extends AzleBool
     ? bool
@@ -96,3 +96,7 @@ export type TypeMapping<T> = T extends () => any
     : T extends AzleEmpty
     ? empty
     : T;
+
+export type CandidType = {
+    _azleCandidType?: '_azleCandidType';
+};

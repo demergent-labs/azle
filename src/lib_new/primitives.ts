@@ -3,6 +3,8 @@ import { CandidClass, Parent, toIDLType } from './utils';
 
 export class AzleNat {
     _kind: 'AzleNat' = 'AzleNat';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Nat;
     }
@@ -10,6 +12,8 @@ export class AzleNat {
 
 export class AzleNat64 {
     _kind: 'AzleNat64' = 'AzleNat64';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Nat64;
     }
@@ -17,6 +21,8 @@ export class AzleNat64 {
 
 export class AzleNat32 {
     _kind: 'AzleNat32' = 'AzleNat32';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Nat32;
     }
@@ -24,6 +30,8 @@ export class AzleNat32 {
 
 export class AzleNat16 {
     _kind: 'AzleNat16' = 'AzleNat16';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Nat16;
     }
@@ -31,6 +39,8 @@ export class AzleNat16 {
 
 export class AzleNat8 {
     _kind: 'AzleNat8' = 'AzleNat8';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Nat8;
     }
@@ -38,6 +48,8 @@ export class AzleNat8 {
 
 export class AzleInt {
     _kind: 'AzleInt' = 'AzleInt';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Int;
     }
@@ -45,6 +57,8 @@ export class AzleInt {
 
 export class AzleInt64 {
     _kind: 'AzleInt64' = 'AzleInt64';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Int64;
     }
@@ -52,6 +66,8 @@ export class AzleInt64 {
 
 export class AzleInt32 {
     _kind: 'AzleInt32' = 'AzleInt32';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Int32;
     }
@@ -59,6 +75,8 @@ export class AzleInt32 {
 
 export class AzleInt16 {
     _kind: 'AzleInt16' = 'AzleInt16';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Int16;
     }
@@ -66,6 +84,8 @@ export class AzleInt16 {
 
 export class AzleInt8 {
     _kind: 'AzleInt8' = 'AzleInt8';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Int8;
     }
@@ -73,6 +93,8 @@ export class AzleInt8 {
 
 export class AzleFloat64 {
     _kind: 'AzleFloat64' = 'AzleFloat64';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Float64;
     }
@@ -80,6 +102,8 @@ export class AzleFloat64 {
 
 export class AzleFloat32 {
     _kind: 'AzleFloat32' = 'AzleFloat32';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Float32;
     }
@@ -87,6 +111,8 @@ export class AzleFloat32 {
 
 export class AzleBlob {
     _kind: 'AzleBlob' = 'AzleBlob';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Vec(IDL.Nat8);
     }
@@ -94,6 +120,8 @@ export class AzleBlob {
 
 export class AzleNull {
     _kind: 'AzleNull' = 'AzleNull';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Null;
     }
@@ -101,6 +129,8 @@ export class AzleNull {
 
 export class AzleReserved {
     _kind: 'AzleReserved' = 'AzleReserved';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Reserved;
     }
@@ -108,6 +138,8 @@ export class AzleReserved {
 
 export class AzleEmpty {
     _kind: 'AzleEmpty' = 'AzleEmpty';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Empty;
     }
@@ -120,8 +152,19 @@ export class AzleBool {
     }
 }
 
+export class AzleText {
+    _kind: 'AzleText' = 'AzleText';
+    _azleCandidType?: '_azleCandidType';
+
+    static getIDL() {
+        return IDL.Text;
+    }
+}
+
 export class AzlePrincipal {
     _kind: 'AzlePrincipal' = 'AzlePrincipal';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Principal;
     }
@@ -157,7 +200,7 @@ export const Null: AzleNull = AzleNull as any;
 export type Null = null;
 export const reserved: AzleReserved = AzleReserved as any;
 export type reserved = any;
-export const text = IDL.Text;
+export const text: AzleText = AzleText as any;
 export type text = string;
 export const float32: AzleFloat32 = AzleFloat32 as any;
 export type float32 = number;
@@ -198,7 +241,10 @@ export class AzleOpt<T> {
     constructor(t: any) {
         this._azleType = t;
     }
+
     _azleType: CandidClass;
+    _azleCandidType?: '_azleCandidType';
+
     getIDL(parents: Parent[]) {
         return IDL.Opt(toIDLType(this._azleType, []));
     }
@@ -208,7 +254,10 @@ export class AzleVec<T> {
     constructor(t: any) {
         this._azleType = t;
     }
+
     _azleType: CandidClass;
+    _azleCandidType?: '_azleCandidType';
+
     getIDL(parents: Parent[]) {
         return IDL.Vec(toIDLType(this._azleType, []));
     }
@@ -218,7 +267,10 @@ export class AzleTuple<T extends any[]> {
     constructor(t: CandidClass[]) {
         this._azleTypes = t;
     }
+
     _azleTypes: CandidClass[];
+    _azleCandidType?: '_azleCandidType';
+
     getIDL(parents: Parent[]) {
         const candidTypes = this._azleTypes.map((value) => {
             return toIDLType(value, parents);
