@@ -14,7 +14,6 @@
 # The check-basic-integration-tests-success job is designed to ensure that all jobs spun up from the matrix in the basic-integration-tests have succeeded
 
 # All Examples TODO restore when https://github.com/demergent-labs/azle/issues/1192 is resolved
-# "examples/func_types",
 # "examples/generics",
 # "examples/motoko_examples/superheroes", # blocked by recursive
 # "examples/run_time_errors",
@@ -80,6 +79,7 @@ jobs:
                     "examples/cycles",
                     "examples/date",
                     "examples/ethereum_json_rpc",
+                    "examples/func_types",
                     "examples/guard_functions",
                     "examples/heartbeat",
                     "examples/ic_api",
