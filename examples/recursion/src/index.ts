@@ -6,11 +6,9 @@ import {
     query,
     Canister,
     Some,
-    text,
     Tuple,
     update,
-    Vec,
-    Void
+    Vec
 } from 'azle';
 import { Record, Recursive, int8, Variant, Opt } from 'azle';
 
