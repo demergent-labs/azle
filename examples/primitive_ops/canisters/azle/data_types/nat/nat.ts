@@ -1,10 +1,10 @@
-import { ic, nat, nat32, Update } from 'azle';
-import { PerfResult } from 'azle/benchmark';
+import { ic, nat, nat32, update } from 'azle';
+import { PerfResult } from '../../perf_result';
 
 let nat_init_heap_storage: { [key: string]: nat | undefined } = {};
 
-export function nat_init_stack(num_inits: nat32): Update<PerfResult> {
-    const perf_start = ic.performance_counter(0);
+export const nat_init_stack = update([nat32], PerfResult, (num_inits) => {
+    const perf_start = ic.performanceCounter(0);
 
     let i = 0;
 
@@ -17,16 +17,16 @@ export function nat_init_stack(num_inits: nat32): Update<PerfResult> {
         i += 1;
     }
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
 
     return {
         wasm_body_only: perf_end - perf_start,
-        wasm_including_prelude: ic.performance_counter(0)
+        wasm_including_prelude: ic.performanceCounter(0)
     };
-}
+});
 
-export function nat_init_heap(num_inits: nat32): Update<PerfResult> {
-    const perf_start = ic.performance_counter(0);
+export const nat_init_heap = update([nat32], PerfResult, (num_inits) => {
+    const perf_start = ic.performanceCounter(0);
 
     let i = 0;
 
@@ -38,10 +38,10 @@ export function nat_init_heap(num_inits: nat32): Update<PerfResult> {
         i += 1;
     }
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
 
     return {
         wasm_body_only: perf_end - perf_start,
-        wasm_including_prelude: ic.performance_counter(0)
+        wasm_including_prelude: ic.performanceCounter(0)
     };
-}
+});
