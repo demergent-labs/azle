@@ -110,8 +110,11 @@ export default Canister({
     ]),
     testRecService: query([MyCanister], MyCanister, (param) => param),
     testRecServiceReturn: query([], MyCanister, () => {
-        MyCanister(
-            Principal.fromText(process.env.MY_CANISTER_PRINCIPAL) ??
+        MyCanister.idlCallback(
+            Principal.fromText('asrmz-lmaaa-aaaaa-qaaeq-cai')
+        )(
+            // Principal.fromText(process.env.MY_CANISTER_PRINCIPAL) ??
+            Principal.fromText('asrmz-lmaaa-aaaaa-qaaeq-cai') ??
                 ic.trap('process.env.MY_CANISTER_PRINCIPAL is undefined')
         );
     }),

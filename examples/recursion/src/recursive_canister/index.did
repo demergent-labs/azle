@@ -1,0 +1,9 @@
+type rec_16 = service {
+	myQuery: (rec_16) -> (rec_16) query;
+};
+type rec_19 = service {
+	myQuery: (rec_19) -> (rec_19) query;
+};
+service: () -> {
+	myQuery: (rec_16) -> (rec_19) query;
+}
