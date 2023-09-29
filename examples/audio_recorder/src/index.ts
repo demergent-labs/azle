@@ -2,7 +2,9 @@ import {
     blob,
     Canister,
     ic,
+    Err,
     nat64,
+    Ok,
     Opt,
     Principal,
     query,
@@ -62,11 +64,9 @@ export default Canister({
         const userOpt = users.get(id);
 
         if (userOpt.length === 0) {
-            return {
-                Err: {
-                    UserDoesNotExist: id
-                }
-            };
+            return Err({
+                UserDoesNotExist: id
+            });
         }
 
         const user = userOpt[0];
@@ -77,9 +77,7 @@ export default Canister({
 
         users.remove(user.id);
 
-        return {
-            Ok: user
-        };
+        return Ok(user);
     }),
     createRecording: update(
         [blob, text, Principal],
@@ -88,11 +86,9 @@ export default Canister({
             const userOpt = users.get(userId);
 
             if (userOpt.length === 0) {
-                return {
-                    Err: {
-                        UserDoesNotExist: userId
-                    }
-                };
+                return Err({
+                    UserDoesNotExist: userId
+                });
             }
 
             const user = userOpt[0];
@@ -115,9 +111,7 @@ export default Canister({
 
             users.insert(updatedUser.id, updatedUser);
 
-            return {
-                Ok: recording
-            };
+            return Ok(recording);
         }
     ),
     readRecordings: query([], Vec(Recording), () => {
@@ -133,9 +127,7 @@ export default Canister({
             const recordingOpt = recordings.get(id);
 
             if (recordingOpt.length === 0) {
-                return {
-                    Err: { RecordingDoesNotExist: id }
-                };
+                return Err({ RecordingDoesNotExist: id });
             }
 
             const recording = recordingOpt[0];
@@ -143,11 +135,9 @@ export default Canister({
             const userOpt = users.get(recording.userId);
 
             if (userOpt.length === 0) {
-                return {
-                    Err: {
-                        UserDoesNotExist: recording.userId
-                    }
-                };
+                return Err({
+                    UserDoesNotExist: recording.userId
+                });
             }
 
             const user = userOpt[0];
@@ -164,9 +154,7 @@ export default Canister({
 
             recordings.remove(id);
 
-            return {
-                Ok: recording
-            };
+            return Ok(recording);
         }
     )
 });
