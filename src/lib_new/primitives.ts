@@ -225,7 +225,7 @@ export class Principal extends DfinityPrincipal {
  * a value, or `None` and does not.
  */
 export type Opt<Value> = [Value] | [];
-export const Void: [] = [];
+export const Void: AzleVoid = AzleVoid as any;
 export type Void = void;
 
 /**
@@ -302,6 +302,6 @@ export function Tuple<T extends any[]>(...types: T): AzleTuple<T> {
     return new AzleTuple(types);
 }
 
-export function Manual(t: any): void {
+export function Manual(t: any): AzleVoid {
     return t;
 }

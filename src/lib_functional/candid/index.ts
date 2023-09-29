@@ -40,7 +40,8 @@ import {
     AzleResult,
     Result,
     AzleTuple,
-    AzleText
+    AzleText,
+    AzleVoid
 } from '../../lib_new';
 
 export type TypeMapping<T> = T extends () => any
@@ -73,7 +74,7 @@ export type TypeMapping<T> = T extends () => any
     ? float64
     : T extends AzleFloat32
     ? float32
-    : T extends never[]
+    : T extends AzleVoid
     ? void
     : T extends AzleTuple<infer U>
     ? { [K in keyof U]: TypeMapping<U[K]> }
