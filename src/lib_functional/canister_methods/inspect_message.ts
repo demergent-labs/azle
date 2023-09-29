@@ -4,11 +4,11 @@ import {
     handleRecursiveParams,
     handleRecursiveReturn
 } from '../../lib_new';
-import { RecursiveResult } from '../candid';
+import { RecursiveType } from '../candid';
 
 export function inspectMessage(
     callback: () => void | Promise<void>
-): (parent: RecursiveResult) => CanisterMethodInfo<[], Void> {
+): CanisterMethodInfo<[], Void> {
     return (parent: any) => {
         const parents = createParents(parent);
         // TODO why are we doing this handle recursive params when there are none?
