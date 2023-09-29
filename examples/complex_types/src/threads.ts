@@ -1,5 +1,5 @@
 import { nat32, Vec } from 'azle';
-import { Thread } from './candid_types/thread';
+import { Thread } from './candid_types';
 import { getPostFromStatePost } from './posts';
 import { state, StateThread, StateUser } from './state';
 import { getUserFromStateUser } from './users';
@@ -8,7 +8,7 @@ export function createThread(
     title: string,
     authorId: string,
     joinDepth: nat32
-): Thread {
+): typeof Thread {
     const id = Object.keys(state.threads).length.toString();
 
     const stateThread: StateThread = {
@@ -27,7 +27,7 @@ export function createThread(
     return thread;
 }
 
-export function getAllThreads(joinDepth: nat32): Vec<Thread> {
+export function getAllThreads(joinDepth: nat32): (typeof Thread)[] {
     return Object.values(state.threads).map((stateThread) =>
         getThreadFromStateThread(stateThread, joinDepth)
     );
@@ -36,7 +36,7 @@ export function getAllThreads(joinDepth: nat32): Vec<Thread> {
 export function getThreadFromStateThread(
     stateThread: StateThread,
     joinDepth: nat32
-): Thread {
+): typeof Thread {
     const stateAuthor = state.users[stateThread.authorId];
     const author = getUserFromStateUser(stateAuthor, joinDepth);
 
@@ -52,12 +52,12 @@ export function getThreadFromStateThread(
             .map((postId) => state.posts[postId])
             .map((statePost) => getPostFromStatePost(statePost, joinDepth - 1));
 
-        return Thread.create({
+        return {
             id: stateThread.id,
             author,
             posts,
             title: stateThread.title
-        });
+        };
     }
 }
 

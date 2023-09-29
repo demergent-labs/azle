@@ -5,7 +5,8 @@
             "main": "src/index.ts",
             "build": "npx azle complex_types",
             "candid": "src/index.did",
-            "wasm": ".azle/complex_types/complex_types.wasm.gz",
+            "wasm": ".azle/complex_types/complex_types.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/complex_types",
                 "node_compatibility": true
