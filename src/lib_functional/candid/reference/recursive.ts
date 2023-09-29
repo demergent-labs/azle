@@ -11,19 +11,24 @@ export interface RecursiveType {
 export function Recursive(idlCallback: () => any): RecursiveType {
     const name = v4();
 
-    const result = {
-        idlCallback,
-        _azleName: name,
-        _azleIsRecursive: true,
-        getIDL(parents: Parent[]) {
-            const idl = IDL.Rec();
-            let filler = idlCallback();
-            if (filler._azleIsCanister) {
-                filler = filler(result);
-            }
-            idl.fill(filler.getIDL([...parents, { idl: idl, name }]));
-            return idl;
+    let result = (...args: any[]) => {
+        const idl = idlCallback();
+        if (idl._azleIsCanister) {
+            return idl(...args);
         }
+        return idl;
+    };
+
+    result._azleName = name;
+    result._azleIsRecursive = true;
+    result.getIDL = (parents: Parent[]) => {
+        const idl = IDL.Rec();
+        let filler = idlCallback();
+        if (filler._azleIsCanister) {
+            filler = filler(result);
+        }
+        idl.fill(filler.getIDL([...parents, { idl: idl, name }]));
+        return idl;
     };
 
     return result;
