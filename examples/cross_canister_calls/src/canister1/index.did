@@ -1,11 +1,9 @@
-type rec_3 = record {id:text};
-type rec_4 = record {id:text; balance:nat64};
-type rec_5 = record {id:text; balance:nat64};
 service: () -> {
-    transfer: (text, text, nat64) -> (nat64);
-    balance: (text) -> (nat64);
-    account: (rec_3) -> (opt rec_4);
-    accounts: () -> (vec rec_5);
-    trap: () -> (text);
-    sendNotification: () -> ();
+	account: (record {id:text}) -> (opt record {id:text; balance:nat64}) ;
+	accounts: () -> (vec record {id:text; balance:nat64}) ;
+	balance: (text) -> (nat64) ;
+	init: () -> () query;
+	sendNotification: () -> () ;
+	transfer: (text, text, nat64) -> (nat64) ;
+	trap: () -> (text) ;
 }
