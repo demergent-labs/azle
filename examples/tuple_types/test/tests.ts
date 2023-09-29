@@ -467,33 +467,14 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'twoTupleWithInlineRecords',
-            test: async () => {
-                const result =
-                    await tupleTypesCanister.twoTupleWithInlineRecords([
-                        {
-                            hello: 0n
-                        },
-                        {
-                            goodbye: 1n
-                        }
-                    ]);
-
-                return {
-                    Ok: result[0].hello === 0n && result[1].goodbye === 1n
-                };
-            }
-        },
-        {
             name: 'nested tuple test',
             test: async () => {
                 const expectedResult: [[string, [number, number]], bigint] = [
                     ['hello', [5, 10]],
                     123n
                 ];
-                const result = await tupleTypesCanister.nestedTupleQuery(
-                    expectedResult
-                );
+                const result =
+                    await tupleTypesCanister.nestedTupleQuery(expectedResult);
 
                 return {
                     Ok:

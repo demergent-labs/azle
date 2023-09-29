@@ -1,0 +1,36 @@
+type rec_72 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_72}; Good};
+type rec_75 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_75}; Good};
+type rec_68 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_68}; Good};
+type rec_60 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_60}; Good};
+type rec_63 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_63}; Good};
+type rec_56 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_56}; Good};
+service: () -> {
+    complexOneTupleInlineParam: (record {record {text; nat64}}) -> (record {record {text; nat64}}) query;
+    complexOneTupleInlineReturnType: () -> (record {record {text; nat64}}) query;
+    complexOneTupleParam: (record {record {text; nat64}}) -> (record {record {text; nat64}}) query;
+    complexOneTupleReturnType: () -> (record {record {text; nat64}}) query;
+    complexThreeTupleInlineParam: (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_72}) -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_75}) query;
+    complexThreeTupleInlineReturnType: () -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_68}) query;
+    complexThreeTupleParam: (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_60}) -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_63}) query;
+    complexThreeTupleReturnType: () -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_56}) query;
+    complexTwoTupleInlineParam: (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}}) -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}}) query;
+    complexTwoTupleInlineReturnType: () -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}}) query;
+    complexTwoTupleParam: (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}}) -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}}) query;
+    complexTwoTupleReturnType: () -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}}) query;
+    nestedTupleQuery: (record {record {text; record {nat8; nat8}}; int}) -> (record {record {text; record {nat8; nat8}}; int}) query;
+    primitiveOneTupleInlineParam: (record {text}) -> (record {text}) query;
+    primitiveOneTupleInlineReturnType: () -> (record {text}) query;
+    primitiveOneTupleParam: (record {text}) -> (record {text}) query;
+    primitiveOneTupleReturnType: () -> (record {text}) query;
+    primitiveThreeTupleInlineParam: (record {text; nat64; principal}) -> (record {text; nat64; principal}) query;
+    primitiveThreeTupleInlineReturnType: () -> (record {text; nat64; principal}) query;
+    primitiveThreeTupleParam: (record {text; nat64; principal}) -> (record {text; nat64; principal}) query;
+    primitiveThreeTupleReturnType: () -> (record {text; nat64; principal}) query;
+    primitiveTwoTupleInlineParam: (record {text; text}) -> (record {text; text}) query;
+    primitiveTwoTupleInlineReturnType: () -> (record {text; text}) query;
+    primitiveTwoTupleParam: (record {text; nat64}) -> (record {text; nat64}) query;
+    primitiveTwoTupleReturnType: () -> (record {text; nat64}) query;
+    tupleArrayParamsAndReturnType: (vec record {text; text}) -> (vec record {text; text}) query;
+    tupleArrayRecordField: () -> (record {headers:vec record {text; text}}) query;
+    tupleArrayVariantField: () -> (variant {WithHeaders:vec record {text; text}; WithoutHeaders}) query;
+}
