@@ -77,17 +77,6 @@ export function Canister<T extends CanisterOptions>(
             {}
         );
 
-        // TODO Once types have names we should deduplicate the init and post_upgrade param types
-        const candidTypes = Object.values(serviceOptions).reduce(
-            (acc: string[], canisterMethodInfo) => {
-                return [
-                    ...acc,
-                    ...canisterMethodInfo(parentOrUndefined).candidTypes
-                ];
-            },
-            []
-        );
-
         const initOption = Object.entries(serviceOptions).find(
             ([key, value]) => value(parentOrUndefined).mode === 'init'
         );
@@ -216,22 +205,6 @@ export function Canister<T extends CanisterOptions>(
                 principal
             };
         };
-
-        returnFunction.candid = `${
-            candidTypes.length === 0 ? '' : candidTypes.join('\n') + '\n'
-        }service: (${initOption?.[1].candid ?? ''}) -> {
-    ${Object.entries(serviceOptions)
-        .filter(
-            ([_, value]) =>
-                value(parentOrUndefined).mode === 'query' ||
-                value(parentOrUndefined).mode === 'update'
-        )
-        .map((entry) => {
-            return `${entry[0]}: ${entry[1](parentOrUndefined).candid}`;
-        })
-        .join('\n    ')}
-}
-`;
 
         returnFunction.init = init;
         returnFunction.post_upgrade = postUpgrade;

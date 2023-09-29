@@ -1,4 +1,4 @@
-import { isAsync } from '../../lib_new/method_decorators';
+import { isAsync } from '../../lib_new/utils';
 import { CanisterMethodInfo, executeMethod } from '.';
 import { Void } from '../../lib_new';
 
@@ -22,8 +22,6 @@ export function preUpgrade(
         return {
             mode: 'preUpgrade',
             callback: finalCallback,
-            candid: '',
-            candidTypes: [],
             paramsIdls: [],
             returnIdl: Void,
             async: isAsync(callback),

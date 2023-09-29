@@ -7,6 +7,13 @@ type VisitorData = {
 };
 type VisitorResult = [CandidDef, CandidTypesDefs];
 
+// TODO it would be nice to have names for the rec types instead of rec_1, rec_2 etc
+// TODO Once types have names we should deduplicate the init and post_upgrade param types
+// TODO maybe even before we have names we should deduplicate all sorts of types
+// The rust to candid converter we were using did have names, but if two things
+// had the same shape they got merged into one type that had one of the names.
+// That might not be the ideal situation, but it is the expected behavior in rust
+
 export const DEFAULT_VISITOR_DATA: VisitorData = {
     usedRecClasses: [],
     isOnService: false,
@@ -14,17 +21,21 @@ export const DEFAULT_VISITOR_DATA: VisitorData = {
 };
 
 export function DidResultToCandidString(result: VisitorResult): string {
-    const candid = result[0];
-    const candidTypes = Object.values(result[1]);
-    const candidTypesString =
-        candidTypes.length > 0
-            ? Object.entries(result[1])
-                  .map(([name, type]) => `type ${name} = ${type};`)
-                  .join('\n') + '\n'
-            : '';
-    const candidTypesStringOld =
-        candidTypes.length > 0 ? candidTypes.join(';\n') + ';\n' : '';
+    const [candid, candidTypeDefs] = result;
+    const candidTypesString = newTypeToCandidString(candidTypeDefs);
     return candidTypesString + candid;
+}
+
+function newTypeToCandidString(newTypes: CandidTypesDefs): string {
+    return Object.entries(newTypes).length > 0
+        ? newTypesToStingArr(newTypes).join('\n') + '\n'
+        : '';
+}
+
+function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
+    return Object.entries(newTypes).map(
+        ([name, candid]) => `type ${name} = ${candid};`
+    );
 }
 
 type TypeName = string;
