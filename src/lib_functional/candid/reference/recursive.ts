@@ -2,13 +2,13 @@ import { v4 } from 'uuid';
 import { IDL } from '@dfinity/candid';
 import { Parent } from '../../../lib_new/utils';
 
-export interface RecursiveResult {
+export interface RecursiveType {
     idlCallback: () => any;
     _azleName: string;
     getIDL(parents: Parent[]): any;
 }
 
-export function Recursive(idlCallback: any): RecursiveResult {
+export function Recursive(idlCallback: any): RecursiveType {
     const name = v4();
 
     const result = {

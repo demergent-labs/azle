@@ -4,7 +4,7 @@ import {
     newTypesToStingArr
 } from '../../lib_new/method_decorators';
 import { Callback, CanisterMethodInfo, createParents, executeMethod } from '.';
-import { CandidType, RecursiveResult, TypeMapping } from '../candid';
+import { CandidType, RecursiveType, TypeMapping } from '../candid';
 import { Void } from '../../lib_new';
 
 export function init<
@@ -15,7 +15,7 @@ export function init<
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Void>
         ? GenericCallback
         : never
-): (parent: RecursiveResult) => CanisterMethodInfo<Params, Void> {
+): (parent: RecursiveType) => CanisterMethodInfo<Params, Void> {
     return (parent: any) => {
         const parents = createParents(parent);
         const paramCandid = handleRecursiveParams(paramsIdls as any, parents);

@@ -1,4 +1,4 @@
-import { Principal, RecursiveResult, TypeMapping } from '../../';
+import { Principal, RecursiveType, TypeMapping } from '../../';
 import {
     IDL,
     ServiceFunctionInfo,
@@ -13,7 +13,7 @@ import {
 import { CanisterMethodInfo } from '../../canister_methods';
 
 type CanisterOptions = {
-    [key: string]: CanisterMethodInfo<any, any>;
+    [key: string]: (param: any) => CanisterMethodInfo<any, any>;
 };
 
 type CanisterReturn<T extends CanisterOptions> = {
@@ -34,7 +34,7 @@ type CallableObject<T extends CanisterOptions> = {
 export function Canister<T extends CanisterOptions>(
     serviceOptions: T
 ): CallableObject<T> {
-    let result = (parentOrPrincipal: RecursiveResult | Principal) => {
+    let result = (parentOrPrincipal: RecursiveType | Principal) => {
         const originalPrincipal = parentOrPrincipal;
         const parentOrUndefined =
             parentOrPrincipal instanceof Principal
