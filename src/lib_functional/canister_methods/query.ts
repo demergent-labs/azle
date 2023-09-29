@@ -1,12 +1,13 @@
+import { isAsync } from '../../lib_new/utils';
 import {
+    Callback,
+    CanisterMethodInfo,
     MethodArgs,
-    handleRecursiveParams,
-    handleRecursiveReturn,
-    isAsync,
-    newTypesToStingArr
-} from '../../lib_new/method_decorators';
-import { Callback, CanisterMethodInfo, createParents, executeMethod } from '.';
+    createParents,
+    executeMethod
+} from '.';
 import { CandidType, RecursiveType, TypeMapping } from '../candid';
+import { toParamIDLTypes, toReturnIDLType } from '../../lib_new/utils';
 
 export function query<
     const Params extends ReadonlyArray<CandidType>,
@@ -22,12 +23,8 @@ export function query<
 ): (parent: RecursiveType) => CanisterMethodInfo<Params, Return> {
     return (parent: any) => {
         const parents = createParents(parent);
-        const paramCandid = handleRecursiveParams(paramsIdls as any, parents);
-        const returnCandid = handleRecursiveReturn(
-            returnIdl as any,
-            paramCandid[2],
-            parents
-        );
+        const paramCandid = toParamIDLTypes(paramsIdls as any, parents);
+        const returnCandid = toReturnIDLType(returnIdl as any, parents);
 
         // TODO maybe the cross canister callback should be made here?
         const finalCallback =
@@ -49,10 +46,6 @@ export function query<
         return {
             mode: 'query',
             callback: finalCallback,
-            candid: `(${paramCandid[1].join(', ')}) -> (${
-                returnCandid[1]
-            }) query;`,
-            candidTypes: newTypesToStingArr(returnCandid[2]),
             paramsIdls: paramsIdls as any,
             returnIdl,
             async: callback === undefined ? false : isAsync(callback),

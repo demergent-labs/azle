@@ -1,12 +1,13 @@
+import { isAsync } from '../../lib_new/utils';
 import {
+    Callback,
+    CanisterMethodInfo,
     MethodArgs,
-    handleRecursiveParams,
-    handleRecursiveReturn,
-    isAsync,
-    newTypesToStingArr
-} from '../../lib_new/method_decorators';
-import { Callback, CanisterMethodInfo, createParents, executeMethod } from '.';
+    createParents,
+    executeMethod
+} from '.';
 import { CandidType, RecursiveType, TypeMapping } from '../candid';
+import { toParamIDLTypes, toReturnIDLType } from '../../lib_new/utils';
 
 export function update<
     const Params extends ReadonlyArray<CandidType>,
@@ -22,12 +23,8 @@ export function update<
 ): (parent: RecursiveType) => CanisterMethodInfo<Params, Return> {
     return (parent: any) => {
         const parents = createParents(parent);
-        const paramCandid = handleRecursiveParams(paramsIdls as any, parents);
-        const returnCandid = handleRecursiveReturn(
-            returnIdl as any,
-            paramCandid[2],
-            parents
-        );
+        const paramCandid = toParamIDLTypes(paramsIdls as any, parents);
+        const returnCandid = toReturnIDLType(returnIdl as any, parents);
 
         const finalCallback =
             callback === undefined
@@ -48,8 +45,6 @@ export function update<
         return {
             mode: 'update',
             callback: finalCallback,
-            candid: `(${paramCandid[1].join(', ')}) -> (${returnCandid[1]});`,
-            candidTypes: newTypesToStingArr(returnCandid[2]),
             paramsIdls: paramsIdls as any,
             returnIdl,
             async: callback === undefined ? false : isAsync(callback),

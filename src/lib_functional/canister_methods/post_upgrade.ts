@@ -1,11 +1,7 @@
-import {
-    handleRecursiveParams,
-    handleRecursiveReturn,
-    newTypesToStingArr
-} from '../../lib_new/method_decorators';
 import { Callback, CanisterMethodInfo, createParents, executeMethod } from '.';
 import { CandidType, RecursiveType, TypeMapping } from '../candid';
 import { Void } from '../../lib_new';
+import { toParamIDLTypes, toReturnIDLType } from '../../lib_new/utils';
 
 export function postUpgrade<
     const Params extends ReadonlyArray<CandidType>,
@@ -18,12 +14,8 @@ export function postUpgrade<
 ): (parent: RecursiveType) => CanisterMethodInfo<Params, Void> {
     return (parent: any) => {
         const parents = createParents(parent);
-        const paramCandid = handleRecursiveParams(paramsIdls as any, parents);
-        const returnCandid = handleRecursiveReturn(
-            Void as any,
-            paramCandid[2],
-            parents
-        );
+        const paramCandid = toParamIDLTypes(paramsIdls as any, parents);
+        const returnCandid = toReturnIDLType(Void as any, parents);
 
         const finalCallback =
             callback === undefined
@@ -44,8 +36,6 @@ export function postUpgrade<
         return {
             mode: 'postUpgrade',
             callback: finalCallback,
-            candid: paramCandid[1].join(', '),
-            candidTypes: newTypesToStingArr(returnCandid[2]),
             paramsIdls: paramsIdls as any,
             returnIdl: Void,
             async: false,
