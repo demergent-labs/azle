@@ -1,56 +1,70 @@
-type rec_198 = func (rec_198) -> (rec_198) query;
-type rec_201 = func (rec_201) -> (rec_201) query;
-type rec_206 = func (rec_206) -> (rec_206) query;
-type rec_114 = record {myOpt:opt rec_114};
-type rec_117 = record {myOpt:opt rec_117};
-type rec_162 = record {myOpt:opt rec_162};
-type rec_130 = record {myVar:variant {num:int8; varRec:rec_130}};
-type rec_133 = record {myVar:variant {num:int8; varRec:rec_133}};
-type rec_170 = record {myVar:variant {num:int8; varRec:rec_170}};
-type rec_122 = record {myVecRecords:vec rec_122};
-type rec_125 = record {myVecRecords:vec rec_125};
-type rec_166 = record {myVecRecords:vec rec_166};
-type rec_218 = service {
-	myQuery: (rec_218) -> (rec_218) query;
+type rec_214 = func (rec_214) -> (rec_214) query;
+type rec_217 = func (rec_217) -> (rec_217) query;
+type rec_222 = func (rec_222) -> (rec_222) query;
+type rec_130 = record {myOpt:opt rec_130};
+type rec_133 = record {myOpt:opt rec_133};
+type rec_178 = record {myOpt:opt rec_178};
+type rec_146 = record {myVar:variant {num:int8; varRec:rec_146}};
+type rec_149 = record {myVar:variant {num:int8; varRec:rec_149}};
+type rec_186 = record {myVar:variant {num:int8; varRec:rec_186}};
+type rec_138 = record {myVecRecords:vec rec_138};
+type rec_141 = record {myVecRecords:vec rec_141};
+type rec_182 = record {myVecRecords:vec rec_182};
+type rec_234 = service {
+	myQuery: (rec_234) -> (rec_234) query;
 };
-type rec_221 = service {
-	myQuery: (rec_221) -> (rec_221) query;
+type rec_237 = service {
+	myQuery: (rec_237) -> (rec_237) query;
 };
-type rec_210 = service {
-	myQuery: (rec_210) -> (rec_210) query;
+type rec_247 = service {
+	myQuery: (rec_247) -> (rec_247) query;
 };
-type rec_213 = service {
-	myQuery: (rec_213) -> (rec_213) query;
+type rec_248 = service {
+	myQuery: (rec_248) -> (rec_248) query;
 };
-type rec_146 = record {opt rec_146; opt rec_146};
-type rec_149 = record {opt rec_149; opt rec_149};
-type rec_178 = record {opt rec_178; opt rec_178};
-type rec_186 = record {variant {num:int8; varTuple:rec_186}; variant {num:int8; varTuple:rec_186}};
-type rec_189 = record {variant {num:int8; varTuple:rec_189}; variant {num:int8; varTuple:rec_189}};
-type rec_194 = record {variant {num:int8; varTuple:rec_194}; variant {num:int8; varTuple:rec_194}};
-type rec_154 = record {vec rec_154; vec rec_154};
-type rec_157 = record {vec rec_157; vec rec_157};
-type rec_182 = record {vec rec_182; vec rec_182};
-type rec_138 = variant {num:int8; recVariant:rec_138};
-type rec_141 = variant {num:int8; recVariant:rec_141};
-type rec_174 = variant {num:int8; recVariant:rec_174};
+type rec_252 = service {
+	myQuery: (rec_252) -> (rec_252) query;
+};
+type rec_242 = service {
+	myQuery: (rec_242) -> (rec_242) query;
+};
+type rec_226 = service {
+	myQuery: (rec_226) -> (rec_226) query;
+};
+type rec_229 = service {
+	myQuery: (rec_229) -> (rec_229) query;
+};
+type rec_162 = record {opt rec_162; opt rec_162};
+type rec_165 = record {opt rec_165; opt rec_165};
+type rec_194 = record {opt rec_194; opt rec_194};
+type rec_202 = record {variant {num:int8; varTuple:rec_202}; variant {num:int8; varTuple:rec_202}};
+type rec_205 = record {variant {num:int8; varTuple:rec_205}; variant {num:int8; varTuple:rec_205}};
+type rec_210 = record {variant {num:int8; varTuple:rec_210}; variant {num:int8; varTuple:rec_210}};
+type rec_170 = record {vec rec_170; vec rec_170};
+type rec_173 = record {vec rec_173; vec rec_173};
+type rec_198 = record {vec rec_198; vec rec_198};
+type rec_154 = variant {num:int8; recVariant:rec_154};
+type rec_157 = variant {num:int8; recVariant:rec_157};
+type rec_190 = variant {num:int8; recVariant:rec_190};
 service: () -> {
-	testRecFunc: (rec_198) -> (rec_201) query;
-	testRecFuncReturn: () -> (rec_206) query;
-	testRecRecordWithOpt: (rec_114) -> (rec_117) query;
-	testRecRecordWithOptReturn: () -> (rec_162) query;
-	testRecRecordWithVariant: (rec_130) -> (rec_133) query;
-	testRecRecordWithVariantReturn: () -> (rec_170) query;
-	testRecRecordWithVec: (rec_122) -> (rec_125) query;
-	testRecRecordWithVecReturn: () -> (rec_166) query;
-	testRecService: (rec_218) -> (rec_221) query;
-	testRecServiceSimple: (rec_210) -> (rec_213) query;
-	testRecTupleWithOpt: (rec_146) -> (rec_149) query;
-	testRecTupleWithOptReturn: () -> (rec_178) query;
-	testRecTupleWithVariant: (rec_186) -> (rec_189) query;
-	testRecTupleWithVariantReturn: () -> (rec_194) query;
-	testRecTupleWithVec: (rec_154) -> (rec_157) query;
-	testRecTupleWithVecReturn: () -> (rec_182) query;
-	testRecVariant: (rec_138) -> (rec_141) query;
-	testRecVariantReturn: () -> (rec_174) query;
+	testRecFunc: (rec_214) -> (rec_217) query;
+	testRecFuncReturn: () -> (rec_222) query;
+	testRecRecordWithOpt: (rec_130) -> (rec_133) query;
+	testRecRecordWithOptReturn: () -> (rec_178) query;
+	testRecRecordWithVariant: (rec_146) -> (rec_149) query;
+	testRecRecordWithVariantReturn: () -> (rec_186) query;
+	testRecRecordWithVec: (rec_138) -> (rec_141) query;
+	testRecRecordWithVecReturn: () -> (rec_182) query;
+	testRecService: (rec_234) -> (rec_237) query;
+	testRecServiceCall: (rec_247, rec_248) -> (rec_252) ;
+	testRecServiceReturn: () -> (rec_242) query;
+	testRecServiceSimple: (rec_226) -> (rec_229) query;
+	testRecTupleWithOpt: (rec_162) -> (rec_165) query;
+	testRecTupleWithOptReturn: () -> (rec_194) query;
+	testRecTupleWithVariant: (rec_202) -> (rec_205) query;
+	testRecTupleWithVariantReturn: () -> (rec_210) query;
+	testRecTupleWithVec: (rec_170) -> (rec_173) query;
+	testRecTupleWithVecReturn: () -> (rec_198) query;
+	testRecVariant: (rec_154) -> (rec_157) query;
+	testRecVariantReturn: () -> (rec_190) query;
 }

@@ -8,7 +8,7 @@ export interface RecursiveType {
     getIDL(parents: Parent[]): any;
 }
 
-export function Recursive(idlCallback: any): RecursiveType {
+export function Recursive(idlCallback: () => any): RecursiveType {
     const name = v4();
 
     const result = {

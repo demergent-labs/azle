@@ -114,21 +114,23 @@ export default Canister({
         'create_canister'
     ]),
     testRecServiceSimple: query([MyCanister], MyCanister, (param) => param),
-    testRecService: query([MyFullCanister], MyFullCanister, (param) => param)
-    // testRecServiceReturn: query([], MyFullCanister, () => {
-    //     MyFullCanister(
-    //         // Principal.fromText(process.env.MY_CANISTER_PRINCIPAL) ??
-    //         Principal.fromText('asrmz-lmaaa-aaaaa-qaaeq-cai') ??
-    //             ic.trap('process.env.MY_CANISTER_PRINCIPAL is undefined')
-    //     );
-    // }),
-    // testRecServiceCall: update(
-    //     [MyFullCanister],
-    //     MyFullCanister,
-    //     async (myCanister) => {
-    //         return await ic.call(myCanister.myQuery(myCanister));
-    //     }
-    // )
+    testRecService: query([MyFullCanister], MyFullCanister, (param) => param),
+    testRecServiceReturn: query([], MyFullCanister, () => {
+        return MyFullCanister.idlCallback()(
+            // Principal.fromText(process.env.MY_CANISTER_PRINCIPAL) ??
+            Principal.fromText('asrmz-lmaaa-aaaaa-qaaeq-cai') ??
+                ic.trap('process.env.MY_CANISTER_PRINCIPAL is undefined')
+        );
+    }),
+    testRecServiceCall: update(
+        [MyFullCanister],
+        MyFullCanister,
+        async (myFullCanister) => {
+            return await ic.call(myFullCanister.myQuery, {
+                args: [myFullCanister]
+            });
+        }
+    )
 });
 
 // Below we have a bunch of different configurations of where to put the the
