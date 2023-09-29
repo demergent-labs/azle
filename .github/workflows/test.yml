@@ -17,7 +17,6 @@
 # "examples/generics",
 # "examples/motoko_examples/superheroes", # blocked by recursive
 # "examples/run_time_errors",
-# "examples/tuple_types",
 
 name: Azle Tests
 on:
@@ -122,6 +121,7 @@ jobs:
                     "examples/stable_memory",
                     "examples/stable_structures",
                     "examples/timers",
+                    "examples/tuple_types",
                     "examples/update"
                   ]
                   END
