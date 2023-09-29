@@ -8,9 +8,14 @@ import {
     Some,
     Tuple,
     update,
-    Vec
+    Vec,
+    Record,
+    Recursive,
+    int8,
+    Variant,
+    Opt
 } from 'azle';
-import { Record, Recursive, int8, Variant, Opt } from 'azle';
+import MyFullCanister from '../recursive_canister';
 
 // These are the types that can be recursive
 // Record
@@ -108,19 +113,22 @@ export default Canister({
         Principal.fromText('aaaaa-aa'),
         'create_canister'
     ]),
-    testRecService: query([MyCanister], MyCanister, (param) => param),
-    testRecServiceReturn: query([], MyCanister, () => {
-        MyCanister.idlCallback(
-            Principal.fromText('asrmz-lmaaa-aaaaa-qaaeq-cai')
-        )(
-            // Principal.fromText(process.env.MY_CANISTER_PRINCIPAL) ??
-            Principal.fromText('asrmz-lmaaa-aaaaa-qaaeq-cai') ??
-                ic.trap('process.env.MY_CANISTER_PRINCIPAL is undefined')
-        );
-    }),
-    testRecServiceCall: update([MyCanister], MyCanister, async (myCanister) => {
-        return await ic.call(myCanister.myQuery(myCanister));
-    })
+    testRecServiceSimple: query([MyCanister], MyCanister, (param) => param)
+    // testRecService: query([MyFullCanister], MyFullCanister, (param) => param)
+    // testRecServiceReturn: query([], MyFullCanister, () => {
+    //     MyFullCanister(
+    //         // Principal.fromText(process.env.MY_CANISTER_PRINCIPAL) ??
+    //         Principal.fromText('asrmz-lmaaa-aaaaa-qaaeq-cai') ??
+    //             ic.trap('process.env.MY_CANISTER_PRINCIPAL is undefined')
+    //     );
+    // }),
+    // testRecServiceCall: update(
+    //     [MyFullCanister],
+    //     MyFullCanister,
+    //     async (myCanister) => {
+    //         return await ic.call(myCanister.myQuery(myCanister));
+    //     }
+    // )
 });
 
 // Below we have a bunch of different configurations of where to put the the
