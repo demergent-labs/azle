@@ -78,7 +78,7 @@ export function Canister<T extends CanisterOptions>(
         );
 
         const initOption = Object.entries(serviceOptions).find(
-            ([key, value]) => value.mode === 'init'
+            ([key, value]) => value(parentOrUndefined).mode === 'init'
         );
         const init =
             initOption === undefined
@@ -88,7 +88,7 @@ export function Canister<T extends CanisterOptions>(
                   };
 
         const postUpgradeOption = Object.entries(serviceOptions).find(
-            ([key, value]) => value.mode === 'postUpgrade'
+            ([key, value]) => value(parentOrUndefined).mode === 'postUpgrade'
         );
         const postUpgrade =
             postUpgradeOption === undefined
@@ -98,7 +98,7 @@ export function Canister<T extends CanisterOptions>(
                   };
 
         const preUpgradeOption = Object.entries(serviceOptions).find(
-            ([key, value]) => value.mode === 'preUpgrade'
+            ([key, value]) => value(parentOrUndefined).mode === 'preUpgrade'
         );
         const preUpgrade =
             preUpgradeOption === undefined
@@ -108,7 +108,7 @@ export function Canister<T extends CanisterOptions>(
                   };
 
         const heartbeatOption = Object.entries(serviceOptions).find(
-            ([key, value]) => value.mode === 'heartbeat'
+            ([key, value]) => value(parentOrUndefined).mode === 'heartbeat'
         );
         const heartbeat =
             heartbeatOption === undefined
@@ -118,7 +118,7 @@ export function Canister<T extends CanisterOptions>(
                   };
 
         const inspectMessageOption = Object.entries(serviceOptions).find(
-            ([key, value]) => value.mode === 'inspectMessage'
+            ([key, value]) => value(parentOrUndefined).mode === 'inspectMessage'
         );
         const inspectMessage =
             inspectMessageOption === undefined
