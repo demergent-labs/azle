@@ -6,7 +6,6 @@ import {
     nat64,
     Null,
     Opt,
-    principal,
     Principal,
     Record,
     text,
@@ -28,7 +27,7 @@ export type ICRC1Subaccount = blob;
 export const ICRC1Subaccount = blob;
 
 export class ICRC1Account extends Record {
-    @candid(principal)
+    @candid(Principal)
     owner: Principal;
 
     @candid(Opt(ICRC1Subaccount))
