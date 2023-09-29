@@ -1,11 +1,11 @@
 import { nat32, Vec } from 'azle';
-import { User } from './candid_types/user';
+import { User } from './candid_types';
 import { getPostFromStatePost } from './posts';
 import { getReactionFromStateReaction } from './reactions';
 import { state, StateUser } from './state';
 import { getThreadFromStateThread } from './threads';
 
-export function createUser(username: string, joinDepth: nat32): User {
+export function createUser(username: string, joinDepth: nat32): typeof User {
     const id = Object.keys(state.users).length.toString();
 
     const stateUser: StateUser = {
@@ -23,7 +23,7 @@ export function createUser(username: string, joinDepth: nat32): User {
     return user;
 }
 
-export function getAllUsers(joinDepth: nat32): Vec<User> {
+export function getAllUsers(joinDepth: nat32): (typeof User)[] {
     return Object.values(state.users).map((stateUser) =>
         getUserFromStateUser(stateUser, joinDepth)
     );
@@ -32,7 +32,7 @@ export function getAllUsers(joinDepth: nat32): Vec<User> {
 export function getUserFromStateUser(
     stateUser: StateUser,
     joinDepth: nat32
-): User {
+): typeof User {
     if (joinDepth === 0) {
         return {
             id: stateUser.id,
@@ -58,12 +58,12 @@ export function getUserFromStateUser(
                 getThreadFromStateThread(stateThread, joinDepth - 1)
             );
 
-        return User.create({
+        return {
             id: stateUser.id,
             posts,
             reactions,
             threads,
             username: stateUser.username
-        });
+        };
     }
 }

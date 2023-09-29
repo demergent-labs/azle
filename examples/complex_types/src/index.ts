@@ -1,62 +1,52 @@
-import { nat32, query, Service, text, update, Vec } from 'azle';
-import { Post } from './candid_types/post';
-import { Reaction } from './candid_types/reaction';
-import { ReactionType } from './candid_types/reaction_type';
-import { Thread } from './candid_types/thread';
-import { User } from './candid_types/user';
+import { nat32, query, Canister, text, update, Vec } from 'azle';
+import { Post, Reaction, ReactionType, Thread, User } from './candid_types';
 import { createPost, getAllPosts } from './posts';
 import { createReaction, getAllReactions } from './reactions';
 import { createThread, getAllThreads } from './threads';
 import { createUser, getAllUsers } from './users';
 
-export default class extends Service {
-    @update([text, text, text, nat32], Post)
-    createPost(
-        authorId: text,
-        text: text,
-        threadId: text,
-        joinDepth: nat32
-    ): Post {
-        return createPost(authorId, text, threadId, joinDepth);
-    }
+export default Canister({
+    createPost: update(
+        [text, text, text, nat32],
+        Post,
+        (authorId, text, threadId, joinDepth) => {
+            return createPost(authorId, text, threadId, joinDepth);
+        }
+    ),
 
-    @query([nat32], Vec(Post))
-    getAllPosts(joinDepth: nat32): Vec<Post> {
+    getAllPosts: query([nat32], Vec(Post), (joinDepth) => {
         return getAllPosts(joinDepth);
-    }
+    }),
 
-    @update([text, text, ReactionType, nat32], Reaction)
-    createReaction(
-        authorId: string,
-        postId: string,
-        reactionType: ReactionType,
-        joinDepth: nat32
-    ): Reaction {
-        return createReaction(authorId, postId, reactionType, joinDepth);
-    }
+    createReaction: update(
+        [text, text, ReactionType, nat32],
+        Reaction,
+        (authorId, postId, reactionType, joinDepth) => {
+            return createReaction(authorId, postId, reactionType, joinDepth);
+        }
+    ),
 
-    @query([nat32], Vec(Reaction))
-    getAllReactions(joinDepth: nat32): Vec<Reaction> {
+    getAllReactions: query([nat32], Vec(Reaction), (joinDepth) => {
         return getAllReactions(joinDepth);
-    }
+    }),
 
-    @update([text, text, nat32], Thread)
-    createThread(title: text, authorId: text, joinDepth: nat32): Thread {
-        return createThread(title, authorId, joinDepth);
-    }
+    createThread: update(
+        [text, text, nat32],
+        Thread,
+        (title, authorId, joinDepth) => {
+            return createThread(title, authorId, joinDepth);
+        }
+    ),
 
-    @query([nat32], Vec(Thread))
-    getAllThreads(joinDepth: nat32): Vec<Thread> {
+    getAllThreads: query([nat32], Vec(Thread), (joinDepth) => {
         return getAllThreads(joinDepth);
-    }
+    }),
 
-    @update([text, nat32], User)
-    createUser(username: string, joinDepth: nat32): User {
+    createUser: update([text, nat32], User, (username, joinDepth) => {
         return createUser(username, joinDepth);
-    }
+    }),
 
-    @query([nat32], Vec(User))
-    getAllUsers(joinDepth: nat32): Vec<User> {
+    getAllUsers: query([nat32], Vec(User), (joinDepth) => {
         return getAllUsers(joinDepth);
-    }
-}
+    })
+});

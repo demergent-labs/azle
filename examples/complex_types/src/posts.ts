@@ -1,5 +1,5 @@
 import { nat32, Vec } from 'azle';
-import { Post } from './candid_types/post';
+import { Post } from './candid_types';
 import { getReactionFromStateReaction } from './reactions';
 import { state, StatePost, StateThread, StateUser } from './state';
 import { getThreadFromStateThread } from './threads';
@@ -10,7 +10,7 @@ export function createPost(
     text: string,
     threadId: string,
     joinDepth: nat32
-): Post {
+): typeof Post {
     const id = Object.keys(state.posts).length.toString();
 
     const statePost: StatePost = {
@@ -32,7 +32,7 @@ export function createPost(
     return post;
 }
 
-export function getAllPosts(joinDepth: nat32): Vec<Post> {
+export function getAllPosts(joinDepth: nat32): (typeof Post)[] {
     return Object.values(state.posts).map((statePost) =>
         getPostFromStatePost(statePost, joinDepth)
     );
@@ -41,7 +41,7 @@ export function getAllPosts(joinDepth: nat32): Vec<Post> {
 export function getPostFromStatePost(
     statePost: StatePost,
     joinDepth: nat32
-): Post {
+): typeof Post {
     const stateAuthor = state.users[statePost.authorId];
     const author = getUserFromStateUser(stateAuthor, joinDepth);
 
@@ -63,13 +63,13 @@ export function getPostFromStatePost(
                 getReactionFromStateReaction(stateReaction, joinDepth - 1)
             );
 
-        return Post.create({
+        return {
             id: statePost.id,
             author,
             reactions,
             text: statePost.text,
             thread
-        });
+        };
     }
 }
 
