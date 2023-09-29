@@ -2,15 +2,15 @@ import {
     Record,
     Opt,
     Vec,
-    principal,
+    Principal,
     nat,
     Variant,
     Null,
     blob
 } from '../../src/lib_functional';
 
-export const CanisterId = principal;
-export const UserId = principal;
+export const CanisterId = Principal;
+export const UserId = Principal;
 export const WasmModule = blob;
 
 export const CanisterSettings = Record({
@@ -21,7 +21,7 @@ export const CanisterSettings = Record({
      * Default value: A list containing only the caller of the
      * {@link Management.create_canister} call
      */
-    controllers: Opt(Vec(principal)),
+    controllers: Opt(Vec(Principal)),
     compute_allocation: Opt(nat),
     memory_allocation: Opt(nat),
     freezing_threshold: Opt(nat)
@@ -36,7 +36,7 @@ export const CreateCanisterArgs = Record({
 });
 
 export const CreateCanisterResult = Record({
-    canister_id: principal
+    canister_id: Principal
 });
 
 export const CanisterStatus = Variant({
@@ -46,7 +46,7 @@ export const CanisterStatus = Variant({
 });
 
 export const DefiniteCanisterSettings = Record({
-    controllers: Vec(principal),
+    controllers: Vec(Principal),
     compute_allocation: nat,
     memory_allocation: nat,
     freezing_threshold: nat
@@ -61,7 +61,7 @@ export const CanisterStatusResult = Record({
 });
 
 export const CanisterStatusArgs = Record({
-    canister_id: principal
+    canister_id: Principal
 });
 
 export const UpdateSettingsArgs = Record({

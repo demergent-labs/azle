@@ -22,7 +22,7 @@ import {
     Tuple,
     Variant,
     Vec,
-    principal,
+    Principal,
     Func
 } from '../../src/lib_functional';
 import {
@@ -275,7 +275,7 @@ export const QueryBlocksResponse = Record({
 });
 
 export const Archive = Record({
-    canister_id: principal
+    canister_id: Principal
 });
 
 export const Archives = Record({

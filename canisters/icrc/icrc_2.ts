@@ -5,7 +5,6 @@ import {
     nat64,
     Null,
     Opt,
-    principal,
     Principal,
     Record,
     text,
@@ -21,7 +20,7 @@ import {
 } from './errors';
 
 export class ICRC2Account extends Record {
-    @candid(principal)
+    @candid(Principal)
     owner: Principal;
 
     @candid(Opt(blob))
