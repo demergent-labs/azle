@@ -15,7 +15,6 @@
 
 # All Examples TODO restore when https://github.com/demergent-labs/azle/issues/1192 is resolved
 # "examples/generics",
-# "examples/motoko_examples/superheroes", # blocked by recursive
 # "examples/run_time_errors",
 
 name: Azle Tests
@@ -103,6 +102,7 @@ jobs:
                     "examples/motoko_examples/phone-book",
                     "examples/motoko_examples/quicksort",
                     "examples/motoko_examples/simple-to-do",
+                    "examples/motoko_examples/superheroes",
                     "examples/motoko_examples/threshold_ecdsa",
                     "examples/motoko_examples/whoami",
                     "examples/notify_raw",
