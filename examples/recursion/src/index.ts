@@ -35,7 +35,7 @@ const myTupleVar = Variant({ num: int8, varTuple: varTuple });
 // Service
 const MyCanister = Recursive(() =>
     Canister({
-        myQuery: query([MyCanister], MyCanister, (param) => param)
+        myQuery: query([MyCanister], MyCanister)
     })
 );
 // Func
