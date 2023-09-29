@@ -113,8 +113,8 @@ export default Canister({
         Principal.fromText('aaaaa-aa'),
         'create_canister'
     ]),
-    testRecServiceSimple: query([MyCanister], MyCanister, (param) => param)
-    // testRecService: query([MyFullCanister], MyFullCanister, (param) => param)
+    testRecServiceSimple: query([MyCanister], MyCanister, (param) => param),
+    testRecService: query([MyFullCanister], MyFullCanister, (param) => param)
     // testRecServiceReturn: query([], MyFullCanister, () => {
     //     MyFullCanister(
     //         // Principal.fromText(process.env.MY_CANISTER_PRINCIPAL) ??

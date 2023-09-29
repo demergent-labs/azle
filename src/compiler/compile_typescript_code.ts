@@ -35,7 +35,17 @@ export function compileTypeScriptToJavaScript(
             export * from './${main}';
             import CanisterMethods from './${main}';
 
-            export const canisterMethods = CanisterMethods();
+            const getCanisterMethods = () => {
+                if (CanisterMethods._azleIsRecursive) {
+                    return CanisterMethods.idlCallback();
+                } else {
+                    return CanisterMethods;
+                }
+            }
+
+            const getCanisterMethodsResult = getCanisterMethods();
+            export const canisterMethods = getCanisterMethodsResult();
+
         `;
 
         const canisterJavaScript = bundleAndTranspileJs(`

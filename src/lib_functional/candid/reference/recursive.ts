@@ -8,6 +8,7 @@ export function Recursive<T extends () => any>(idlCallback: T): T {
     const result = {
         idlCallback,
         _azleName: name,
+        _azleIsRecursive: true,
         getIDL(parents: Parent[]) {
             const idl = IDL.Rec();
             let filler = idlCallback();
