@@ -7,7 +7,6 @@ import {
     ic,
     nat,
     None,
-    principal,
     Principal,
     query,
     Some,
@@ -43,7 +42,7 @@ export default Canister({
 
         return createCanisterResult;
     }),
-    executeUpdateSettings: update([principal], bool, async (canisterId) => {
+    executeUpdateSettings: update([Principal], bool, async (canisterId) => {
         await ic.call(managementCanister.update_settings, {
             args: [
                 {
@@ -61,7 +60,7 @@ export default Canister({
         return true;
     }),
     executeInstallCode: update(
-        [principal, blob],
+        [Principal, blob],
         bool,
         async (canisterId, wasmModule) => {
             await ic.call(managementCanister.install_code, {
@@ -81,7 +80,7 @@ export default Canister({
             return true;
         }
     ),
-    executeUninstallCode: update([principal], bool, async (canisterId) => {
+    executeUninstallCode: update([Principal], bool, async (canisterId) => {
         await ic.call(managementCanister.uninstall_code, {
             args: [
                 {
@@ -92,7 +91,7 @@ export default Canister({
 
         return true;
     }),
-    executeStartCanister: update([principal], bool, async (canisterId) => {
+    executeStartCanister: update([Principal], bool, async (canisterId) => {
         await ic.call(managementCanister.start_canister, {
             args: [
                 {
@@ -103,7 +102,7 @@ export default Canister({
 
         return true;
     }),
-    executeStopCanister: update([principal], bool, async (canisterId) => {
+    executeStopCanister: update([Principal], bool, async (canisterId) => {
         await ic.call(managementCanister.stop_canister, {
             args: [
                 {
@@ -127,7 +126,7 @@ export default Canister({
             });
         }
     ),
-    executeDeleteCanister: update([principal], bool, async (canisterId) => {
+    executeDeleteCanister: update([Principal], bool, async (canisterId) => {
         await ic.call(managementCanister.delete_canister, {
             args: [
                 {
@@ -138,7 +137,7 @@ export default Canister({
 
         return true;
     }),
-    executeDepositCycles: update([principal], bool, async (canisterId) => {
+    executeDepositCycles: update([Principal], bool, async (canisterId) => {
         await ic.call(managementCanister.deposit_cycles, {
             args: [
                 {
@@ -173,7 +172,7 @@ export default Canister({
     ),
     // TODO we should test this like we test depositCycles
     provisionalTopUpCanister: update(
-        [principal, nat],
+        [Principal, nat],
         bool,
         async (canisterId, amount) => {
             await ic.call(managementCanister.provisional_top_up_canister, {
@@ -188,7 +187,7 @@ export default Canister({
             return true;
         }
     ),
-    getCreatedCanisterId: query([], principal, () => {
+    getCreatedCanisterId: query([], Principal, () => {
         return state.createdCanisterId;
     })
 });

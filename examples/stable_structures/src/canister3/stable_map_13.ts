@@ -2,7 +2,7 @@ import {
     bool,
     nat64,
     Opt,
-    principal,
+    Principal,
     query,
     StableBTreeMap,
     text,
@@ -11,18 +11,18 @@ import {
     Vec
 } from 'azle';
 
-let stableMap13 = StableBTreeMap(text, principal, 13);
+let stableMap13 = StableBTreeMap(text, Principal, 13);
 
 export const stableMap13Methods = {
     stableMap13ContainsKey: query([text], bool, (key) => {
         return stableMap13.containsKey(key);
     }),
-    stableMap13Get: query([text], Opt(principal), (key) => {
+    stableMap13Get: query([text], Opt(Principal), (key) => {
         return stableMap13.get(key);
     }),
     stableMap13Insert: update(
-        [text, principal],
-        Opt(principal),
+        [text, Principal],
+        Opt(Principal),
         (key, value) => {
             return stableMap13.insert(key, value);
         }
@@ -30,7 +30,7 @@ export const stableMap13Methods = {
     stableMap13IsEmpty: query([], bool, () => {
         return stableMap13.isEmpty();
     }),
-    stableMap13Items: query([], Vec(Tuple(text, principal)), () => {
+    stableMap13Items: query([], Vec(Tuple(text, Principal)), () => {
         return stableMap13.items();
     }),
     stableMap13Keys: query([], Vec(text), () => {
@@ -39,10 +39,10 @@ export const stableMap13Methods = {
     stableMap13Len: query([], nat64, () => {
         return stableMap13.len();
     }),
-    stableMap13Remove: update([text], Opt(principal), (key) => {
+    stableMap13Remove: update([text], Opt(Principal), (key) => {
         return stableMap13.remove(key);
     }),
-    stableMap13Values: query([], Vec(principal), () => {
+    stableMap13Values: query([], Vec(Principal), () => {
         return stableMap13.values();
     })
 };

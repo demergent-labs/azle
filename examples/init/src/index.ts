@@ -4,7 +4,6 @@ import {
     None,
     Null,
     Opt,
-    principal,
     Principal,
     query,
     Record,
@@ -28,7 +27,7 @@ let owner: Opt<Principal> = None;
 
 export default Canister({
     init: init(
-        [User, Reaction, principal],
+        [User, Reaction, Principal],
         (initUser, initReaction, initOwner) => {
             user = Some(initUser);
             reaction = Some(initReaction);
@@ -41,7 +40,7 @@ export default Canister({
     getReaction: query([], Opt(Reaction), () => {
         return reaction;
     }),
-    getOwner: query([], Opt(principal), () => {
+    getOwner: query([], Opt(Principal), () => {
         return owner;
     })
 });

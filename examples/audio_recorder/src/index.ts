@@ -4,7 +4,6 @@ import {
     ic,
     nat64,
     Opt,
-    principal,
     Principal,
     query,
     Record,
@@ -17,27 +16,27 @@ import {
 } from 'azle';
 
 const User = Record({
-    id: principal,
+    id: Principal,
     createdAt: nat64,
-    recordingIds: Vec(principal),
+    recordingIds: Vec(Principal),
     username: text
 });
 
 const Recording = Record({
-    id: principal,
+    id: Principal,
     audio: blob,
     createdAt: nat64,
     name: text,
-    userId: principal
+    userId: Principal
 });
 
 const AudioRecorderError = Variant({
-    RecordingDoesNotExist: principal,
-    UserDoesNotExist: principal
+    RecordingDoesNotExist: Principal,
+    UserDoesNotExist: Principal
 });
 
-let users = StableBTreeMap(principal, User, 0);
-let recordings = StableBTreeMap(principal, Recording, 1);
+let users = StableBTreeMap(Principal, User, 0);
+let recordings = StableBTreeMap(Principal, Recording, 1);
 
 export default Canister({
     createUser: update([text], User, (username) => {
@@ -56,10 +55,10 @@ export default Canister({
     readUsers: query([], Vec(User), () => {
         return users.values();
     }),
-    readUserById: query([principal], Opt(User), (id) => {
+    readUserById: query([Principal], Opt(User), (id) => {
         return users.get(id);
     }),
-    deleteUser: update([principal], Result(User, AudioRecorderError), (id) => {
+    deleteUser: update([Principal], Result(User, AudioRecorderError), (id) => {
         const userOpt = users.get(id);
 
         if (userOpt.length === 0) {
@@ -83,7 +82,7 @@ export default Canister({
         };
     }),
     createRecording: update(
-        [blob, text, principal],
+        [blob, text, Principal],
         Result(Recording, AudioRecorderError),
         (audio, name, userId) => {
             const userOpt = users.get(userId);
@@ -124,11 +123,11 @@ export default Canister({
     readRecordings: query([], Vec(Recording), () => {
         return recordings.values();
     }),
-    readRecordingById: query([principal], Opt(Recording), (id) => {
+    readRecordingById: query([Principal], Opt(Recording), (id) => {
         return recordings.get(id);
     }),
     deleteRecording: update(
-        [principal],
+        [Principal],
         Result(Recording, AudioRecorderError),
         (id) => {
             const recordingOpt = recordings.get(id);

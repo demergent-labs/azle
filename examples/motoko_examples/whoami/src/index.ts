@@ -3,7 +3,6 @@ import {
     ic,
     init,
     postUpgrade,
-    principal,
     Principal,
     query,
     update
@@ -13,35 +12,35 @@ import {
 let install: Principal = Principal.fromText('aaaaa-aa');
 let someone: Principal = Principal.fromText('aaaaa-aa');
 
-const whoami = update([], principal, () => {
+const whoami = update([], Principal, () => {
     return ic.caller();
 });
 
 export default Canister({
     // Manually save the calling principal and argument for later access.
-    init: init([principal], (somebody) => {
+    init: init([Principal], (somebody) => {
         install = ic.caller();
         someone = somebody;
     }),
     // Manually re-save these variables after new deploys.
-    postUpgrade: postUpgrade([principal], (somebody) => {
+    postUpgrade: postUpgrade([Principal], (somebody) => {
         install = ic.caller();
         someone = somebody;
     }),
     // Return the principal identifier of the wallet canister that installed this
     // canister.
-    installer: query([], principal, () => {
+    installer: query([], Principal, () => {
         return install;
     }),
     // Return the principal identifier that was provided as an installation
     // argument to this canister.
-    argument: query([], principal, () => {
+    argument: query([], Principal, () => {
         return someone;
     }),
     // Return the principal identifier of the caller of this method.
     whoami,
     // Return the principal identifier of this canister.
-    id: update([], principal, async () => {
+    id: update([], Principal, async () => {
         // TODO This is not an ideal solution but will work for now
         const self = Canister({
             whoami
@@ -53,7 +52,7 @@ export default Canister({
     // This is much quicker than `id()` above because it isn't making a cross-
     // canister call to itself. Additionally, it can now be a `Query` which means it
     // doesn't have to go through consensus.
-    idQuick: query([], principal, () => {
+    idQuick: query([], Principal, () => {
         return ic.id();
     })
 });

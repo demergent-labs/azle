@@ -1,5 +1,6 @@
 import { IDL } from './index';
 import { CandidClass, Parent, toIDLType } from './utils';
+import { Principal as DfinityPrincipal } from '@dfinity/principal';
 
 export class AzleNat {
     _kind: 'AzleNat' = 'AzleNat';
@@ -147,6 +148,8 @@ export class AzleEmpty {
 
 export class AzleBool {
     _kind: 'AzleBool' = 'AzleBool';
+    _azleCandidType?: '_azleCandidType';
+
     static getIDL() {
         return IDL.Bool;
     }
@@ -161,12 +164,12 @@ export class AzleText {
     }
 }
 
-export class AzlePrincipal {
-    _kind: 'AzlePrincipal' = 'AzlePrincipal';
+export class AzleVoid {
+    _kind: 'AzleVoid' = 'AzleVoid';
     _azleCandidType?: '_azleCandidType';
 
     static getIDL() {
-        return IDL.Principal;
+        return [];
     }
 }
 
@@ -206,17 +209,23 @@ export const float32: AzleFloat32 = AzleFloat32 as any;
 export type float32 = number;
 export const float64: AzleFloat64 = AzleFloat64 as any;
 export type float64 = number;
-export const principal: AzlePrincipal = AzlePrincipal as any;
-export { Principal } from '@dfinity/principal';
 export type Vec<T> = T[];
 export type Tuple<T> = T;
+
+export class Principal extends DfinityPrincipal {
+    static _azleCandidType?: '_azleCandidType';
+
+    static getIDL?() {
+        return IDL.Principal;
+    }
+}
 
 /**
  * Represents an optional value: every {@link Opt} is either `Some` and contains
  * a value, or `None` and does not.
  */
 export type Opt<Value> = [Value] | [];
-export const Void = [];
+export const Void: [] = [];
 export type Void = void;
 
 /**

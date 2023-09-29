@@ -26,7 +26,7 @@ export {
     Opt as Olive,
     postUpgrade as pomegranate,
     preUpgrade as pineapple,
-    principal as peach,
+    Principal as peach,
     Principal as Peach,
     query as quince,
     Record as Raspberry,

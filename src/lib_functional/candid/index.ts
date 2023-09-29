@@ -1,5 +1,4 @@
 export * from './reference';
-import { IDL } from '@dfinity/candid';
 import {
     AzleBlob,
     blob,
@@ -29,7 +28,6 @@ import {
     int8,
     float64,
     float32,
-    Principal,
     AzleNull,
     Null,
     AzleReserved,
@@ -38,7 +36,7 @@ import {
     empty,
     AzleBool,
     bool,
-    AzlePrincipal,
+    Principal,
     AzleResult,
     Result,
     AzleTuple,
@@ -87,7 +85,7 @@ export type TypeMapping<T> = T extends () => any
     ? Result<U, W>
     : T extends AzleBlob
     ? blob
-    : T extends AzlePrincipal
+    : T extends typeof Principal
     ? Principal
     : T extends AzleNull
     ? Null

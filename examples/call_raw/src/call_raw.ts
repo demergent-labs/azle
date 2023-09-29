@@ -3,7 +3,7 @@ import {
     ic,
     nat,
     nat64,
-    principal,
+    Principal,
     Result,
     text,
     update
@@ -11,7 +11,7 @@ import {
 
 export default Canister({
     executeCallRaw: update(
-        [principal, text, text, nat64],
+        [Principal, text, text, nat64],
         Result(text, text),
         async (canisterId, method, candidArgs, payment) => {
             const result = await ic.callRaw(
@@ -25,7 +25,7 @@ export default Canister({
         }
     ),
     executeCallRaw128: update(
-        [principal, text, text, nat],
+        [Principal, text, text, nat],
         Result(text, text),
         async (canisterId, method, candidArgs, payment) => {
             const result = await ic.callRaw128(
