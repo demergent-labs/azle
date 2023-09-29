@@ -1,5 +1,5 @@
 import { Callback, CanisterMethodInfo, createParents, executeMethod } from '.';
-import { CandidType, RecursiveType, TypeMapping } from '../candid';
+import { CandidType, TypeMapping } from '../candid';
 import { Void } from '../../lib_new';
 import { toParamIDLTypes, toReturnIDLType } from '../../lib_new/utils';
 
@@ -11,7 +11,7 @@ export function postUpgrade<
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Void>
         ? GenericCallback
         : never
-): (parent: RecursiveType) => CanisterMethodInfo<Params, Void> {
+): CanisterMethodInfo<Params, Void> {
     return (parent: any) => {
         const parents = createParents(parent);
         const paramCandid = toParamIDLTypes(paramsIdls as any, parents);

@@ -6,7 +6,7 @@ import {
     createParents,
     executeMethod
 } from '.';
-import { CandidType, RecursiveType, TypeMapping } from '../candid';
+import { CandidType, TypeMapping } from '../candid';
 import { toParamIDLTypes, toReturnIDLType } from '../../lib_new/utils';
 
 export function update<
@@ -20,7 +20,7 @@ export function update<
         ? GenericCallback
         : never,
     methodArgs?: MethodArgs
-): (parent: RecursiveType) => CanisterMethodInfo<Params, Return> {
+): CanisterMethodInfo<Params, Return> {
     return (parent: any) => {
         const parents = createParents(parent);
         const paramCandid = toParamIDLTypes(paramsIdls as any, parents);

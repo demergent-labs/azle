@@ -44,7 +44,6 @@ import {
     AzleTuple,
     AzleText
 } from '../../lib_new';
-import { RecursiveType } from './reference';
 
 export type TypeMapping<T> = T extends () => any
     ? ReturnType<T>
@@ -98,8 +97,6 @@ export type TypeMapping<T> = T extends () => any
     ? empty
     : T;
 
-export type CandidType =
-    | {
-          _azleCandidType?: '_azleCandidType';
-      }
-    | RecursiveType;
+export type CandidType = {
+    _azleCandidType?: '_azleCandidType';
+};
