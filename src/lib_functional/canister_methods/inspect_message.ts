@@ -1,37 +1,46 @@
-import { CanisterMethodInfo, executeMethod } from '.';
+import { CanisterMethodInfo, createParents, executeMethod } from '.';
 import {
     Void,
     handleRecursiveParams,
     handleRecursiveReturn
 } from '../../lib_new';
+import { RecursiveResult } from '../candid';
 
 export function inspectMessage(
     callback: () => void | Promise<void>
-): CanisterMethodInfo<[], Void> {
-    const paramCandid = handleRecursiveParams([]);
-    const returnCandid = handleRecursiveReturn(Void as any, paramCandid[2]);
-
-    const finalCallback = (...args: any[]) => {
-        executeMethod(
-            'inspectMessage',
-            paramCandid,
-            returnCandid,
-            args,
-            callback,
-            [],
-            Void,
-            false
+): (parent: RecursiveResult) => CanisterMethodInfo<[], Void> {
+    return (parent: any) => {
+        const parents = createParents(parent);
+        // TODO why are we doing this handle recursive params when there are none?
+        const paramCandid = handleRecursiveParams([], parents);
+        const returnCandid = handleRecursiveReturn(
+            Void as any,
+            paramCandid[2],
+            parents
         );
-    };
 
-    return {
-        mode: 'inspectMessage',
-        callback: finalCallback,
-        candid: '',
-        candidTypes: [],
-        paramsIdls: [],
-        returnIdl: Void,
-        async: false,
-        guard: undefined
+        const finalCallback = (...args: any[]) => {
+            executeMethod(
+                'inspectMessage',
+                paramCandid,
+                returnCandid,
+                args,
+                callback,
+                [],
+                Void,
+                false
+            );
+        };
+
+        return {
+            mode: 'inspectMessage',
+            callback: finalCallback,
+            candid: '',
+            candidTypes: [],
+            paramsIdls: [],
+            returnIdl: Void,
+            async: false,
+            guard: undefined
+        };
     };
 }

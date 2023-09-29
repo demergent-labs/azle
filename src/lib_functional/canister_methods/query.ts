@@ -5,8 +5,8 @@ import {
     isAsync,
     newTypesToStingArr
 } from '../../lib_new/method_decorators';
-import { Callback, CanisterMethodInfo, executeMethod } from '.';
-import { CandidType, TypeMapping } from '../candid';
+import { Callback, CanisterMethodInfo, createParents, executeMethod } from '.';
+import { CandidType, RecursiveResult, TypeMapping } from '../candid';
 
 export function query<
     const Params extends ReadonlyArray<CandidType>,
@@ -19,12 +19,9 @@ export function query<
         ? GenericCallback
         : never,
     methodArgs?: MethodArgs
-): CanisterMethodInfo<Params, Return> {
+): (parent: RecursiveResult) => CanisterMethodInfo<Params, Return> {
     return (parent: any) => {
-        const parents =
-            parent === undefined
-                ? []
-                : [{ idl: parent, name: parent._azleName }];
+        const parents = createParents(parent);
         const paramCandid = handleRecursiveParams(paramsIdls as any, parents);
         const returnCandid = handleRecursiveReturn(
             returnIdl as any,

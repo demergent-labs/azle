@@ -120,7 +120,7 @@ export default Canister({
     testRecServiceCall: update([MyCanister], MyCanister, async (myCanister) => {
         return await ic.call(myCanister.myQuery(myCanister));
     })
-})();
+});
 
 // Below we have a bunch of different configurations of where to put the the
 // recursive class and how to put them all together

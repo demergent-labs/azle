@@ -36,4 +36,4 @@ export default Canister({
         return 'This is a query function';
     }),
     simpleVariant: query([MyVariant], MyVariant, (param) => param)
-})();
+});

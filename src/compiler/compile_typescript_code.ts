@@ -35,7 +35,7 @@ export function compileTypeScriptToJavaScript(
             export * from './${main}';
             import CanisterMethods from './${main}';
 
-            export const canisterMethods = CanisterMethods;
+            export const canisterMethods = CanisterMethods();
         `;
 
         const canisterJavaScript = bundleAndTranspileJs(`

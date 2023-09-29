@@ -1,4 +1,4 @@
-import { Principal, TypeMapping } from '../../';
+import { Principal, RecursiveResult, TypeMapping } from '../../';
 import {
     IDL,
     ServiceFunctionInfo,
@@ -34,11 +34,16 @@ type CallableObject<T extends CanisterOptions> = {
 export function Canister<T extends CanisterOptions>(
     serviceOptions: T
 ): CallableObject<T> {
-    let result = (parent) => {
+    let result = (parentOrPrincipal: RecursiveResult | Principal) => {
+        const originalPrincipal = parentOrPrincipal;
+        const parentOrUndefined =
+            parentOrPrincipal instanceof Principal
+                ? undefined
+                : parentOrPrincipal;
         const callbacks = Object.entries(serviceOptions).reduce(
             (acc, entry) => {
                 const key = entry[0];
-                const value = entry[1](parent);
+                const value = entry[1](parentOrUndefined);
 
                 // if (principal === undefined) {
                 //     return {
@@ -75,7 +80,10 @@ export function Canister<T extends CanisterOptions>(
         // TODO Once types have names we should deduplicate the init and post_upgrade param types
         const candidTypes = Object.values(serviceOptions).reduce(
             (acc: string[], canisterMethodInfo) => {
-                return [...acc, ...canisterMethodInfo(parent).candidTypes];
+                return [
+                    ...acc,
+                    ...canisterMethodInfo(parentOrUndefined).candidTypes
+                ];
             },
             []
         );
@@ -133,13 +141,13 @@ export function Canister<T extends CanisterOptions>(
         const queries = Object.entries(serviceOptions)
             .filter((entry) => {
                 const key = entry[0];
-                const value = entry[1](parent);
+                const value = entry[1](parentOrUndefined);
 
                 return value.mode === 'query';
             })
             .map((entry) => {
                 const key = entry[0];
-                const value = entry[1](parent);
+                const value = entry[1](parentOrUndefined);
 
                 return {
                     name: key,
@@ -151,13 +159,13 @@ export function Canister<T extends CanisterOptions>(
         const updates = Object.entries(serviceOptions)
             .filter((entry) => {
                 const key = entry[0];
-                const value = entry[1](parent);
+                const value = entry[1](parentOrUndefined);
 
                 return value.mode === 'update';
             })
             .map((entry) => {
                 const key = entry[0];
-                const value = entry[1](parent);
+                const value = entry[1](parentOrUndefined);
 
                 return {
                     name: key,
@@ -169,7 +177,7 @@ export function Canister<T extends CanisterOptions>(
             const callbacks = Object.entries(serviceOptions).reduce(
                 (acc, entry) => {
                     const key = entry[0];
-                    const value = entry[1](parent);
+                    const value = entry[1](parentOrUndefined);
 
                     // if (principal === undefined) {
                     //     return {
@@ -214,10 +222,12 @@ export function Canister<T extends CanisterOptions>(
         }service: (${initOption?.[1].candid ?? ''}) -> {
     ${Object.entries(serviceOptions)
         .filter(
-            ([_, value]) => value.mode === 'query' || value.mode === 'update'
+            ([_, value]) =>
+                value(parentOrUndefined).mode === 'query' ||
+                value(parentOrUndefined).mode === 'update'
         )
         .map((entry) => {
-            return `${entry[0]}: ${entry[1](parent).candid}`;
+            return `${entry[0]}: ${entry[1](parentOrUndefined).candid}`;
         })
         .join('\n    ')}
 }
@@ -237,16 +247,18 @@ export function Canister<T extends CanisterOptions>(
             const record = Object.entries(serviceFunctionInfo).reduce(
                 (accumulator, [methodName, functionInfo]) => {
                     const paramRealIdls = toParamIDLTypes(
-                        functionInfo(parent).paramsIdls,
+                        functionInfo(parentOrUndefined).paramsIdls,
                         parents
                     );
                     const returnRealIdl = toReturnIDLType(
-                        functionInfo(parent).returnIdl,
+                        functionInfo(parentOrUndefined).returnIdl,
                         parents
                     );
 
                     const annotations =
-                        functionInfo(parent).mode === 'update' ? [] : ['query'];
+                        functionInfo(parentOrUndefined).mode === 'update'
+                            ? []
+                            : ['query'];
 
                     return {
                         ...accumulator,
@@ -262,6 +274,10 @@ export function Canister<T extends CanisterOptions>(
 
             return IDL.Service(record);
         };
+
+        if (originalPrincipal instanceof Principal) {
+            return returnFunction(originalPrincipal);
+        }
 
         return returnFunction;
 

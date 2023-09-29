@@ -1,9 +1,14 @@
 import { v4 } from 'uuid';
 import { IDL } from '@dfinity/candid';
 import { Parent } from '../../../lib_new/utils';
-import { func } from '../../../lib_new';
 
-export function Recursive(idlCallback: any) {
+export interface RecursiveResult {
+    idlCallback: () => any;
+    _azleName: string;
+    getIDL(parents: Parent[]): any;
+}
+
+export function Recursive(idlCallback: any): RecursiveResult {
     const name = v4();
 
     const result = {
