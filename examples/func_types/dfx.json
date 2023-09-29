@@ -5,7 +5,8 @@
             "main": "canisters/func_types/index.ts",
             "build": "npx azle func_types",
             "candid": "canisters/func_types/index.did",
-            "wasm": ".azle/func_types/func_types.wasm.gz",
+            "wasm": ".azle/func_types/func_types.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/func_types",
                 "node_compatibility": true
@@ -17,7 +18,8 @@
             "main": "canisters/notifiers/index.ts",
             "build": "npx azle notifiers",
             "candid": "canisters/notifiers/index.did",
-            "wasm": ".azle/notifiers/notifiers.wasm.gz",
+            "wasm": ".azle/notifiers/notifiers.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/notifiers",
                 "node_compatibility": true

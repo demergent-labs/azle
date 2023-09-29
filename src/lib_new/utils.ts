@@ -104,7 +104,7 @@ export function toParamIDLTypes(
 
 export function toReturnIDLType(
     returnIdl: ReturnCandidClass,
-    parents: Parent[]
+    parents: Parent[] = []
 ): IDL.Type<any>[] {
     const idlType = toIDLType(returnIdl, parents);
 
