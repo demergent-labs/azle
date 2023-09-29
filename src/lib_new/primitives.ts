@@ -1,4 +1,4 @@
-import { IDL } from './index';
+import { IDL, RequireExactlyOne } from './index';
 import { CandidClass, Parent, toIDLType } from './utils';
 import { Principal as DfinityPrincipal } from '@dfinity/principal';
 
@@ -224,7 +224,7 @@ export class Principal extends DfinityPrincipal {
  * Represents an optional value: every {@link Opt} is either `Some` and contains
  * a value, or `None` and does not.
  */
-export type Opt<Value> = [Value] | [];
+export type Opt<T> = RequireExactlyOne<{ Some: T; None: null }>;
 export const Void: AzleVoid = AzleVoid as any;
 export type Void = void;
 
@@ -233,12 +233,12 @@ export type Void = void;
  * @param value - the value to be wrapped
  * @returns a `Some` {@link Opt} containing the provided value
  */
-export function Some<T>(value: T): [T] {
-    return [value];
+export function Some<T>(value: T) {
+    return { Some: value };
 }
 
 /** An {@link Opt} representing the absence of a value */
-export const None: [] = [];
+export const None = { None: null };
 
 // TODO what happens if we pass something to Opt() that can't be converted to CandidClass?
 export function Opt<T>(t: T): AzleOpt<T> {
@@ -253,6 +253,7 @@ export class AzleOpt<T> {
 
     _azleType: CandidClass;
     _azleCandidType?: '_azleCandidType';
+    _kind: 'AzleOpt' = 'AzleOpt';
 
     getIDL(parents: Parent[]) {
         return IDL.Opt(toIDLType(this._azleType, parents));

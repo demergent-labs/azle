@@ -1,4 +1,4 @@
-import { CandidType, TypeMapping } from '../lib_functional';
+import { CandidType, None, Some, TypeMapping } from '../lib_functional';
 import { IDL, nat8, nat64, Opt } from './index';
 import { toIDLType } from './utils';
 
@@ -59,14 +59,14 @@ export function StableBTreeMap<
             );
 
             if (candidEncodedValue === undefined) {
-                return [];
+                return None;
             } else {
                 const candidDecodedValue = IDL.decode(
                     [valueIdl as any],
                     candidEncodedValue
                 )[0];
 
-                return [candidDecodedValue as any];
+                return Some(candidDecodedValue as any);
             }
         },
         /**
@@ -100,14 +100,14 @@ export function StableBTreeMap<
             );
 
             if (candidEncodedResultValue === undefined) {
-                return [];
+                return None;
             } else {
                 const candidDecodedValue = IDL.decode(
                     [valueIdl as any],
                     candidEncodedResultValue
                 );
 
-                return [candidDecodedValue as any];
+                return Some(candidDecodedValue as any);
             }
         },
         /**
@@ -199,14 +199,14 @@ export function StableBTreeMap<
             );
 
             if (candidEncodedValue === undefined) {
-                return [];
+                return None;
             } else {
                 const candidDecodedValue = IDL.decode(
                     [valueIdl as any],
                     candidEncodedValue
                 )[0];
 
-                return [candidDecodedValue as any];
+                return Some(candidDecodedValue as any);
             }
         },
         /**

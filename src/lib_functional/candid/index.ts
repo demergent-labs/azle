@@ -41,7 +41,8 @@ import {
     Result,
     AzleTuple,
     AzleText,
-    AzleVoid
+    AzleVoid,
+    Opt
 } from '../../lib_new';
 
 export type TypeMapping<T> = T extends () => any
@@ -80,8 +81,8 @@ export type TypeMapping<T> = T extends () => any
     ? { [K in keyof U]: U[K] extends any ? any : TypeMapping<U[K]> }
     : T extends AzleVec<infer U>
     ? TypeMapping<U>[]
-    : T extends AzleOpt<infer U>
-    ? [TypeMapping<U>] | []
+    : T extends AzleOpt<infer Some>
+    ? Opt<TypeMapping<Some>>
     : T extends AzleResult<infer U, infer W>
     ? Result<TypeMapping<U>, TypeMapping<W>>
     : T extends AzleBlob

@@ -1,8 +1,8 @@
 import { IDL } from '@dfinity/candid';
 import {
+    hch,
     VisitorData,
     VisitorResult,
-    visitOpt,
     visitRec,
     visitRecord,
     visitTuple,
@@ -37,12 +37,34 @@ export class EncodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
     ): VisitorResult {
         return visitTuple(this, components, data);
     }
+    /**
+     * Converts `Some` values (`{Some: value}`) to `[value]` and `None` values
+     * (`{None: null}`) to `[]` (the empty array), transforming any `Some`
+     * values.
+     *
+     * @param t the IDL of the Opt class.
+     * @param ty the IDL type of the `Some` value.
+     * @param data {VisitorData<Variant<{Some: CandidType; None: null;}>,
+     * AzleOpt<CandidType>>} `data.js_data` is the raw Some/None object.
+     * `data.js_class` is an `AzleOpt<T>`.
+     * @returns an array representation of an opt with a transformed some value
+     * if necessary.
+     */
     visitOpt<T>(
         t: IDL.OptClass<T>,
         ty: IDL.Type<T>,
         data: VisitorData
-    ): VisitorResult {
-        return visitOpt(this, ty, data);
+    ): [] | [any] {
+        if ('Some' in data.js_data) {
+            const candid = hch(ty).accept(this, {
+                js_data: data.js_data.Some,
+                js_class: data.js_class._azleType
+            });
+
+            return [candid];
+        }
+
+        return [];
     }
     visitVec<T>(
         t: IDL.VecClass<T>,
