@@ -3,7 +3,9 @@ import {
     ic,
     init,
     nat32,
+    Principal,
     query,
+    Some,
     StableBTreeMap,
     text,
     update
@@ -23,22 +25,22 @@ export default Canister({
     ethGetBalance: update([text], text, async (ethereumAddress) => {
         const urlOpt = stableStorage.get('ethereumUrl');
 
-        if (urlOpt.length === 0) {
+        if (urlOpt.Some === undefined) {
             throw new Error('ethereumUrl is not defined');
         }
 
-        const url = urlOpt[0];
+        const url = urlOpt.Some;
 
         const httpResponse = await ic.call(managementCanister.http_request, {
             args: [
                 {
                     url,
-                    max_response_bytes: [2_000n],
+                    max_response_bytes: Some(2_000n),
                     method: {
                         post: null
                     },
                     headers: [],
-                    body: [
+                    body: Some(
                         Buffer.from(
                             JSON.stringify({
                                 jsonrpc: '2.0',
@@ -48,13 +50,14 @@ export default Canister({
                             }),
                             'utf-8'
                         )
-                    ],
-                    transform: [
-                        {
-                            function: [ic.id(), 'ethTransform'],
-                            context: Uint8Array.from([])
-                        }
-                    ]
+                    ),
+                    transform: Some({
+                        function: [ic.id(), 'ethTransform'] as [
+                            Principal,
+                            string
+                        ],
+                        context: Uint8Array.from([])
+                    })
                 }
             ],
             cycles: 50_000_000n
@@ -65,22 +68,22 @@ export default Canister({
     ethGetBlockByNumber: update([nat32], text, async (number) => {
         const urlOpt = stableStorage.get('ethereumUrl');
 
-        if (urlOpt.length === 0) {
+        if (urlOpt.Some === undefined) {
             throw new Error('ethereumUrl is not defined');
         }
 
-        const url = urlOpt[0];
+        const url = urlOpt.Some;
 
         const httpResponse = await ic.call(managementCanister.http_request, {
             args: [
                 {
                     url,
-                    max_response_bytes: [2_000n],
+                    max_response_bytes: Some(2_000n),
                     method: {
                         post: null
                     },
                     headers: [],
-                    body: [
+                    body: Some(
                         Buffer.from(
                             JSON.stringify({
                                 jsonrpc: '2.0',
@@ -90,13 +93,14 @@ export default Canister({
                             }),
                             'utf-8'
                         )
-                    ],
-                    transform: [
-                        {
-                            function: [ic.id(), 'ethTransform'],
-                            context: Uint8Array.from([])
-                        }
-                    ]
+                    ),
+                    transform: Some({
+                        function: [ic.id(), 'ethTransform'] as [
+                            Principal,
+                            string
+                        ],
+                        context: Uint8Array.from([])
+                    })
                 }
             ],
             cycles: 50_000_000n

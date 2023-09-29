@@ -56,8 +56,8 @@ export default Canister({
 
     getStableFunc: query([], StableFunc, () => {
         const stableFuncOpt = stableStorage.get('stableFunc');
-        if (stableFuncOpt.length === 1) {
-            return stableFuncOpt[0];
+        if (stableFuncOpt.Some !== undefined) {
+            return stableFuncOpt.Some;
         }
         return [Principal.from('aaaaa-aa'), 'raw_rand'];
     }),

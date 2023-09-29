@@ -9,6 +9,7 @@ import {
     visitVariant,
     visitVec
 } from '.';
+import { Opt } from '../../primitives';
 
 /**
  * When we decode a Service we are given a principal. We need to use that
@@ -51,7 +52,7 @@ export class DecodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         t: IDL.OptClass<T>,
         ty: IDL.Type<T>,
         data: VisitorData
-    ): { Some: any } | { None: null } {
+    ): Opt<T> {
         if (data.js_data.length === 0) {
             return { None: null };
         }

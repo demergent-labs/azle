@@ -1,6 +1,17 @@
 // TODO let's add more examples here, really test it out
 
-import { bool, Canister, Null, Opt, query, Record, text, Vec } from 'azle';
+import {
+    bool,
+    Canister,
+    None,
+    Null,
+    Opt,
+    query,
+    Record,
+    Some,
+    text,
+    Vec
+} from 'azle';
 
 const Element = Record({
     id: text
@@ -17,26 +28,22 @@ const Html = Record({
 export default Canister({
     getHtml: query([], Html, () => {
         return {
-            head: []
+            head: None
         };
     }),
     getHead: query([], Opt(Head), () => {
-        return [
-            {
-                elements: []
-            }
-        ];
+        return Some({
+            elements: []
+        });
     }),
     getHeadWithElements: query([], Opt(Head), () => {
-        return [
-            {
-                elements: [
-                    {
-                        id: '0'
-                    }
-                ]
-            }
-        ];
+        return Some({
+            elements: [
+                {
+                    id: '0'
+                }
+            ]
+        });
     }),
     getElement: query([Opt(Opt(Element))], Opt(Opt(Element)), (element) => {
         return element;
@@ -45,10 +52,10 @@ export default Canister({
         return null;
     }),
     getOptNull: query([], Opt(text), () => {
-        return [];
+        return None;
     }),
     stringToBoolean: query([Opt(text)], bool, (optString) => {
-        if (optString.length > 0) {
+        if (optString.Some !== undefined) {
             return true;
         }
         return false;

@@ -97,8 +97,8 @@ let soncoya = Soncoya(nectarine8, PreparedFruit, 0);
 function gatherGrapes() {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
+    if (opt.Some !== undefined) {
+        const preparedFruit = opt.Some;
         soncoya.remove(0);
         soncoya.insert(0, {
             ...preparedFruit,
@@ -125,8 +125,8 @@ export const collectIcaco = icaco([], () => {
 export const cutPineapple = pineapple(() => {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
+    if (opt.Some !== undefined) {
+        const preparedFruit = opt.Some;
         soncoya.remove(0);
         soncoya.insert(0, {
             ...preparedFruit,
@@ -138,8 +138,8 @@ export const cutPineapple = pineapple(() => {
 export const separateArilsFromPith = pomegranate([], () => {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
+    if (opt.Some !== undefined) {
+        const preparedFruit = opt.Some;
         soncoya.remove(0);
         soncoya.insert(0, {
             ...preparedFruit,
@@ -151,8 +151,8 @@ export const separateArilsFromPith = pomegranate([], () => {
 export const buyHoneydew = honeydew(() => {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
+    if (opt.Some !== undefined) {
+        const preparedFruit = opt.Some;
         soncoya.remove(0);
         soncoya.insert(0, {
             ...preparedFruit,
@@ -228,11 +228,11 @@ export const getManagementPeach = kiwi([], peach, () => {
 });
 
 export const pitOlives = kiwi([Olive(boysenberry)], boysenberry, (olive) => {
-    if (olive.length === 0) {
+    if (olive.Some === undefined) {
         return false;
     }
 
-    const berry = olive[0];
+    const berry = olive.Some;
 
     return berry;
 });
@@ -267,11 +267,11 @@ export const isFruitPrepared = quince(
     () => {
         const opt = soncoya.get(0);
 
-        if (opt.length === 0) {
+        if (opt.Some === undefined) {
             return false;
         }
 
-        const pf = opt[0];
+        const pf = opt.Some;
 
         return (
             pf.honeydewCount > 0 &&
@@ -290,8 +290,8 @@ export const isFruitPrepared = quince(
 export const removeRambutanSkins = ugni([], rambutan, () => {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
+    if (opt.Some !== undefined) {
+        const preparedFruit = opt.Some;
         soncoya.remove(0);
         soncoya.insert(0, {
             ...preparedFruit,
@@ -305,8 +305,8 @@ export const removeRambutanSkins = ugni([], rambutan, () => {
 export const dirtyIlama = ugni([], Vanilla, () => {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
+    if (opt.Some !== undefined) {
+        const preparedFruit = opt.Some;
         soncoya.remove(0);
         soncoya.insert(0, {
             ...preparedFruit,
@@ -318,8 +318,8 @@ export const dirtyIlama = ugni([], Vanilla, () => {
 export const pickElderberry = ugni([], elderberry, () => {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
+    if (opt.Some !== undefined) {
+        const preparedFruit = opt.Some;
         soncoya.remove(0);
         soncoya.insert(0, {
             ...preparedFruit,

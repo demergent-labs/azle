@@ -63,13 +63,13 @@ export default Canister({
     deleteUser: update([Principal], Result(User, AudioRecorderError), (id) => {
         const userOpt = users.get(id);
 
-        if (userOpt.length === 0) {
+        if ('None' in userOpt) {
             return Err({
                 UserDoesNotExist: id
             });
         }
 
-        const user = userOpt[0];
+        const user = userOpt.Some;
 
         user.recordingIds.forEach((recordingId) => {
             recordings.remove(recordingId);
@@ -85,13 +85,13 @@ export default Canister({
         (audio, name, userId) => {
             const userOpt = users.get(userId);
 
-            if (userOpt.length === 0) {
+            if ('None' in userOpt) {
                 return Err({
                     UserDoesNotExist: userId
                 });
             }
 
-            const user = userOpt[0];
+            const user = userOpt.Some;
 
             const id = generateId();
             const recording: typeof Recording = {
@@ -126,21 +126,21 @@ export default Canister({
         (id) => {
             const recordingOpt = recordings.get(id);
 
-            if (recordingOpt.length === 0) {
+            if ('None' in recordingOpt) {
                 return Err({ RecordingDoesNotExist: id });
             }
 
-            const recording = recordingOpt[0];
+            const recording = recordingOpt.Some;
 
             const userOpt = users.get(recording.userId);
 
-            if (userOpt.length === 0) {
+            if ('None' in userOpt) {
                 return Err({
                     UserDoesNotExist: recording.userId
                 });
             }
 
-            const user = userOpt[0];
+            const user = userOpt.Some;
 
             const updatedUser: typeof User = {
                 ...user,

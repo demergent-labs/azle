@@ -89,9 +89,9 @@ export default Canister({
 
                 const counterOpt = stableStorage.get('counter');
                 const counter =
-                    counterOpt.length === 0
-                        ? ic.trap('counter does not exist')
-                        : counterOpt[0];
+                    counterOpt.Some !== undefined
+                        ? counterOpt.Some
+                        : ic.trap('counter does not exist');
 
                 return {
                     status_code: 200,
@@ -144,18 +144,18 @@ export default Canister({
         if (req.method === 'POST') {
             const counterOpt = stableStorage.get('counter');
             const counter =
-                counterOpt.length === 0
-                    ? ic.trap('counter does not exist')
-                    : counterOpt[0];
+                counterOpt.Some !== undefined
+                    ? counterOpt.Some
+                    : ic.trap('counter does not exist');
 
             stableStorage.insert('counter', counter + 1n);
 
             if (req.headers.find(isGzip) === undefined) {
                 const counterOpt = stableStorage.get('counter');
                 const counter =
-                    counterOpt.length === 0
-                        ? ic.trap('counter does not exist')
-                        : counterOpt[0];
+                    counterOpt.Some !== undefined
+                        ? counterOpt.Some
+                        : ic.trap('counter does not exist');
 
                 return {
                     status_code: 201,
@@ -206,9 +206,9 @@ export default Canister({
             case 'next': {
                 const counterOpt = stableStorage.get('counter');
                 const counter =
-                    counterOpt.length === 0
-                        ? ic.trap('counter does not exist')
-                        : counterOpt[0];
+                    counterOpt.Some !== undefined
+                        ? counterOpt.Some
+                        : ic.trap('counter does not exist');
 
                 return {
                     body: encode(`${counter}`),
