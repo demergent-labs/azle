@@ -1,7 +1,31 @@
 import { IDL } from '@dfinity/candid';
 
-type VisitorData = { usedRecClasses: IDL.RecClass[]; is_on_service: boolean };
+type VisitorData = {
+    usedRecClasses: IDL.RecClass[];
+    is_on_service: boolean;
+    isFirstService: boolean;
+};
 type VisitorResult = [CandidDef, CandidTypesDefs];
+
+export const DEFAULT_VISITOR_DATA: VisitorData = {
+    usedRecClasses: [],
+    is_on_service: false,
+    isFirstService: false
+};
+
+export function DidResultToCandidString(result: VisitorResult): string {
+    const candid = result[0];
+    const candidTypes = Object.values(result[1]);
+    const candidTypesString =
+        candidTypes.length > 0
+            ? Object.entries(result[1])
+                  .map(([name, type]) => `type ${name} = ${type};`)
+                  .join('\n') + '\n'
+            : '';
+    const candidTypesStringOld =
+        candidTypes.length > 0 ? candidTypes.join(';\n') + ';\n' : '';
+    return candidTypesString + candid;
+}
 
 type TypeName = string;
 export type CandidDef = string;
@@ -21,7 +45,7 @@ export function extractCandid(
     return [paramCandid, candidTypeDefs];
 }
 
-class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
+export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
     visitService(t: IDL.ServiceClass, data: VisitorData): VisitorResult {
         const stuff = t._fields.map(([_name, func]) =>
             func.accept(this, { ...data, is_on_service: true })
@@ -29,9 +53,12 @@ class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         const candid = extractCandid(stuff);
         const funcStrings = candid[0]
             .map((value, index) => {
-                return `\t${t._fields[index][0]}: ${value}`;
+                return `\t${t._fields[index][0]}: ${value};`;
             })
             .join('\n');
+        if (data.isFirstService) {
+            return [`service: () -> {\n${funcStrings}\n}`, candid[1]];
+        }
         return [`service {\n${funcStrings}\n}`, candid[1]];
     }
     visitPrimitive<T>(
@@ -97,11 +124,12 @@ class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         // Everything else will just be the normal inline candid def
         const usedRecClasses = data.usedRecClasses;
         if (!usedRecClasses.includes(t)) {
-            const candid = t.accept(this, {
+            const candid = ty.accept(this, {
                 usedRecClasses: [...usedRecClasses, t],
-                is_on_service: false
+                is_on_service: false,
+                isFirstService: false
             });
-            return [t.name, { ...candid[1], [t.name]: candid[0][0] }];
+            return [t.name, { ...candid[1], [t.name]: candid[0] }];
         }
         // If our list already includes this rec class then just return, we don't
         // need the list because we will get it when we go through the arm above

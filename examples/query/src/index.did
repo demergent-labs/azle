@@ -1,8 +1,16 @@
-type rec_5 = service {myQuery:(rec_5) -> (rec_5) query};
-type rec_6 = service {myQuery:(rec_6) -> (rec_6) query};
-type rec_7 = service {myQuery:(rec_7) -> (rec_7) query};
-type rec_8 = variant {boy:rec_8; cool:nat};
-type rec_9 = variant {boy:rec_9; cool:nat};
+type rec_41 = service {
+	myQuery: (rec_41) -> (rec_41) query;
+};
+type rec_44 = service {
+	myQuery: (rec_44) -> (rec_44) query;
+};
+type rec_36 = service {
+	myQuery: (rec_36) -> (rec_36) query;
+};
+type rec_49 = variant {boy:rec_49; cool:nat};
+type rec_52 = variant {boy:rec_52; cool:nat};
 service: () -> {
-    
+	simpleCanister: (rec_41) -> (rec_44) query;
+	simpleQuery: (rec_36) -> (text) query;
+	simpleVariant: (rec_49) -> (rec_52) query;
 }
