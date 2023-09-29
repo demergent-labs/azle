@@ -2,14 +2,14 @@ import { IDL } from '@dfinity/candid';
 
 type VisitorData = {
     usedRecClasses: IDL.RecClass[];
-    is_on_service: boolean;
+    isOnService: boolean;
     isFirstService: boolean;
 };
 type VisitorResult = [CandidDef, CandidTypesDefs];
 
 export const DEFAULT_VISITOR_DATA: VisitorData = {
     usedRecClasses: [],
-    is_on_service: false,
+    isOnService: false,
     isFirstService: false
 };
 
@@ -48,7 +48,7 @@ export function extractCandid(
 export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
     visitService(t: IDL.ServiceClass, data: VisitorData): VisitorResult {
         const stuff = t._fields.map(([_name, func]) =>
-            func.accept(this, { ...data, is_on_service: true })
+            func.accept(this, { ...data, isOnService: true })
         );
         const candid = extractCandid(stuff);
         const funcStrings = candid[0]
@@ -73,7 +73,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         data: VisitorData
     ): VisitorResult {
         const fields = components.map((value) =>
-            value.accept(this, { ...data, is_on_service: false })
+            value.accept(this, { ...data, isOnService: false })
         );
         const candid = extractCandid(fields);
         return [`record {${candid[0].join('; ')}}`, candid[1]];
@@ -83,7 +83,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         ty: IDL.Type<T>,
         data: VisitorData
     ): VisitorResult {
-        const candid = ty.accept(this, { ...data, is_on_service: false });
+        const candid = ty.accept(this, { ...data, isOnService: false });
         return [`opt ${candid[0]}`, candid[1]];
     }
     visitVec<T>(
@@ -91,25 +91,23 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         ty: IDL.Type<T>,
         data: VisitorData
     ): VisitorResult {
-        const candid = ty.accept(this, { ...data, is_on_service: false });
+        const candid = ty.accept(this, { ...data, isOnService: false });
         return [`vec ${candid[0]}`, candid[1]];
     }
     visitFunc(t: IDL.FuncClass, data: VisitorData): VisitorResult {
         const argsTypes = t.argTypes.map((value) =>
-            value.accept(this, { ...data, is_on_service: false })
+            value.accept(this, { ...data, isOnService: false })
         );
         const candidArgs = extractCandid(argsTypes);
         const retsTypes = t.retTypes.map((value) =>
-            value.accept(this, { ...data, is_on_service: false })
+            value.accept(this, { ...data, isOnService: false })
         );
         const candidRets = extractCandid(retsTypes);
         const args = candidArgs[0].join(', ');
         const rets = candidRets[0].join(', ');
         const annon = ' ' + t.annotations.join(' ');
         return [
-            `${
-                data.is_on_service ? '' : 'func '
-            }(${args}) -> (${rets})${annon}`,
+            `${data.isOnService ? '' : 'func '}(${args}) -> (${rets})${annon}`,
             { ...candidArgs[1], ...candidRets[1] }
         ];
     }
@@ -126,7 +124,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         if (!usedRecClasses.includes(t)) {
             const candid = ty.accept(this, {
                 usedRecClasses: [...usedRecClasses, t],
-                is_on_service: false,
+                isOnService: false,
                 isFirstService: false
             });
             return [t.name, { ...candid[1], [t.name]: candid[0] }];
@@ -141,7 +139,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         data: VisitorData
     ): VisitorResult {
         const candidFields = fields.map(([key, value]) =>
-            value.accept(this, { ...data, is_on_service: false })
+            value.accept(this, { ...data, isOnService: false })
         );
         const candid = extractCandid(candidFields);
         const field_strings = fields.map(
@@ -155,7 +153,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         data: VisitorData
     ): VisitorResult {
         const candidFields = fields.map(([key, value]) =>
-            value.accept(this, { ...data, is_on_service: false })
+            value.accept(this, { ...data, isOnService: false })
         );
         const candid = extractCandid(candidFields);
         const fields_string = fields.map(
