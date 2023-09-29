@@ -6,4 +6,4 @@ const MyCanister = Recursive(() =>
     })
 );
 
-export default MyCanister.idlCallback();
+export default MyCanister;

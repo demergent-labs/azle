@@ -14,6 +14,7 @@ export function Recursive(idlCallback: any): RecursiveType {
     const result = {
         idlCallback,
         _azleName: name,
+        _azleIsRecursive: true,
         getIDL(parents: Parent[]) {
             const idl = IDL.Rec();
             let filler = idlCallback();
