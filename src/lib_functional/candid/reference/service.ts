@@ -33,7 +33,7 @@ type CallableObject<T extends CanisterOptions> = {
 
 export function Canister<T extends CanisterOptions>(
     serviceOptions: T
-): CallableObject<T> {
+): CallableObject<T> & { _azleCandidType?: '_azleCandidType' } {
     const callbacks = Object.entries(serviceOptions).reduce((acc, entry) => {
         const key = entry[0];
         const value = entry[1];

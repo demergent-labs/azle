@@ -26,7 +26,7 @@ export function Result<Ok extends CandidType, Err extends CandidType>(
     ok: Ok,
     err: Err
 ) {
-    return new AzleResult(ok, err);
+    return new AzleResult<Ok, Err>(ok, err);
 }
 
 export type Result<Ok, Err> = RequireExactlyOne<{
@@ -35,11 +35,19 @@ export type Result<Ok, Err> = RequireExactlyOne<{
 }>;
 
 export namespace Result {
-    export function Ok<Ok>(value: Ok): Result<Ok, never> {
+    export function Ok<T>(value: T) {
         return { Ok: value };
     }
 
-    export function Err<Err>(value: Err): Result<never, Err> {
+    export function Err<T>(value: T) {
         return { Err: value };
     }
+}
+
+export function Ok<T>(value: T) {
+    return { Ok: value };
+}
+
+export function Err<T>(value: T) {
+    return { Err: value };
 }

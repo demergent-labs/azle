@@ -182,15 +182,13 @@ export function toParamIDLTypes(idl: CandidClass[]): IDL.Type<any>[] {
 }
 
 export function toReturnIDLType(returnIdl: ReturnCandidClass): IDL.Type<any>[] {
-    if (Array.isArray(returnIdl)) {
-        // If Void
-        if (returnIdl.length === 0) {
-            return [];
-        }
-        // Should be unreachable
-        return [];
+    const idlType = toIDLType(returnIdl, []);
+
+    if (Array.isArray(idlType)) {
+        return [...idlType];
     }
-    return [toIDLType(returnIdl, [])];
+
+    return [idlType];
 }
 
 type CandidMap = { [key: string]: any };

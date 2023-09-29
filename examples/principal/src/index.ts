@@ -3,7 +3,6 @@ import {
     Canister,
     Null,
     Principal,
-    principal,
     query,
     Record,
     text,
@@ -11,21 +10,21 @@ import {
 } from 'azle';
 
 const User = Record({
-    id: principal,
+    id: Principal,
     username: text
 });
 
 const Status = Variant({
-    WaitingOn: principal,
+    WaitingOn: Principal,
     Online: Null,
     Offline: Null
 });
 
 export default Canister({
-    principalReturnType: query([], principal, () => {
+    principalReturnType: query([], Principal, () => {
         return Principal.fromText('aaaaa-aa');
     }),
-    principalParam: query([principal], principal, (principal) => {
+    principalParam: query([Principal], Principal, (principal) => {
         return principal;
     }),
     principalInRecord: query([], User, () => {
@@ -39,25 +38,25 @@ export default Canister({
             WaitingOn: Principal.fromText('aaaaa-aa')
         };
     }),
-    principalFromHex: query([text], principal, (principalHex) => {
+    principalFromHex: query([text], Principal, (principalHex) => {
         return Principal.fromHex(principalHex);
     }),
-    principalFromText: query([text], principal, (principalText) => {
+    principalFromText: query([text], Principal, (principalText) => {
         return Principal.fromText(principalText);
     }),
-    principalFromBlob: query([blob], principal, (principalBytes) => {
+    principalFromBlob: query([blob], Principal, (principalBytes) => {
         return Principal.fromUint8Array(Uint8Array.from(principalBytes));
     }),
-    principalToHex: query([principal], text, (principal) => {
+    principalToHex: query([Principal], text, (principal) => {
         return principal.toHex();
     }),
-    principalToText: query([principal], text, (principal) => {
+    principalToText: query([Principal], text, (principal) => {
         return principal.toText();
     }),
-    principalToBlob: query([principal], blob, (principal) => {
+    principalToBlob: query([Principal], blob, (principal) => {
         return principal.toUint8Array();
     }),
-    principalSelfAuthenticating: query([blob], principal, (publicKey) => {
+    principalSelfAuthenticating: query([blob], Principal, (publicKey) => {
         return Principal.selfAuthenticating(publicKey);
     })
 });
