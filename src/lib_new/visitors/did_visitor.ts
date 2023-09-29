@@ -2,14 +2,14 @@ import { IDL } from '@dfinity/candid';
 
 type VisitorData = {
     usedRecClasses: IDL.RecClass[];
-    is_on_service: boolean;
+    isOnService: boolean;
     isFirstService: boolean;
 };
 type VisitorResult = [CandidDef, CandidTypesDefs];
 
 export const DEFAULT_VISITOR_DATA: VisitorData = {
     usedRecClasses: [],
-    is_on_service: false,
+    isOnService: false,
     isFirstService: false
 };
 
@@ -107,9 +107,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         const rets = candidRets[0].join(', ');
         const annon = ' ' + t.annotations.join(' ');
         return [
-            `${
-                data.is_on_service ? '' : 'func '
-            }(${args}) -> (${rets})${annon}`,
+            `${data.isOnService ? '' : 'func '}(${args}) -> (${rets})${annon}`,
             { ...candidArgs[1], ...candidRets[1] }
         ];
     }
