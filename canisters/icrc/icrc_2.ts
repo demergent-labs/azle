@@ -1,15 +1,13 @@
 import {
     blob,
-    candid,
     nat,
     nat64,
     Null,
     Opt,
     Principal,
     Record,
-    text,
     Variant
-} from '../../src/lib_new';
+} from '../../src/lib_functional';
 
 import {
     BadFee,
@@ -19,163 +17,87 @@ import {
     GenericError
 } from './errors';
 
-export class ICRC2Account extends Record {
-    @candid(Principal)
-    owner: Principal;
+export const ICRC2Account = Record({
+    owner: Principal,
+    subaccount: Opt(blob)
+});
 
-    @candid(Opt(blob))
-    subaccount: Opt<blob>;
-}
+export const ICRC2ApproveArgs = Record({
+    from_subaccount: Opt(blob),
+    spender: ICRC2Account,
+    amount: nat,
+    expected_allowance: Opt(nat),
+    expires_at: Opt(nat64),
+    fee: Opt(nat),
+    memo: Opt(blob),
+    created_at_time: Opt(nat64)
+});
 
-export class ICRC2ApproveArgs extends Record {
-    @candid(Opt(blob))
-    from_subaccount: Opt<blob>;
+export const AllowanceChanged = Record({
+    current_allowance: nat
+});
 
-    @candid(ICRC2Account)
-    spender: ICRC2Account;
+export const Expired = Record({
+    ledger_time: nat64
+});
 
-    @candid(nat)
-    amount: nat;
+export const CreatedInFuture = Record({
+    ledger_time: nat64
+});
 
-    @candid(Opt(nat))
-    expected_allowance: Opt<nat>;
+export const InsufficientAllowance = Record({
+    allowance: nat
+});
 
-    @candid(Opt(nat64))
-    expires_at: Opt<nat64>;
+export const ICRC2ApproveError = Variant({
+    BadFee,
+    InsufficientFunds,
+    AllowanceChanged,
+    Expired,
+    TooOld: Null,
+    CreatedInFuture,
+    Duplicate,
+    TemporarilyUnavailable: Null,
+    GenericError: GenericError
+});
 
-    @candid(Opt(nat))
-    fee: Opt<nat>;
+export const ICRC2TransferFromArgs = Record({
+    from: ICRC2Account,
+    to: ICRC2Account,
+    amount: nat,
+    fee: Opt(nat),
+    memo: Opt(blob),
+    created_at_time: Opt(nat64)
+});
 
-    @candid(Opt(blob))
-    memo: Opt<blob>;
+export const ICRC2TransferFromError = Variant({
+    BadFee,
+    BadBurn,
+    InsufficientFunds,
+    InsufficientAllowance,
+    TooOld: Null,
+    CreatedInFuture,
+    Duplicate,
+    TemporarilyUnavailable: Null,
+    GenericError
+});
 
-    @candid(Opt(nat64))
-    created_at_time: Opt<nat64>;
-}
+export const ICRC2AllowanceArgs = Record({
+    account: ICRC2Account,
+    spender: ICRC2Account
+});
 
-class AllowanceChanged extends Record {
-    @candid(nat)
-    current_allowance: nat;
-}
-class Expired extends Record {
-    @candid(nat64)
-    ledger_time: nat64;
-}
-class CreatedInFuture extends Record {
-    @candid(nat64)
-    ledger_time: nat64;
-}
-class InsufficientAllowance extends Record {
-    @candid(nat)
-    allowance: nat;
-}
+export const ICRC2ApproveResult = Variant({
+    Ok: nat,
+    Err: ICRC2ApproveError
+});
 
-export class ICRC2ApproveError extends Variant {
-    @candid(BadFee)
-    BadFee: BadFee;
+export const ICRC2TransferFromResult = Variant({
+    Ok: nat,
+    Err: ICRC2TransferFromError
+});
 
-    @candid(InsufficientFunds)
-    InsufficientFunds: InsufficientFunds;
-
-    @candid(AllowanceChanged)
-    AllowanceChanged: AllowanceChanged;
-
-    @candid(Expired)
-    Expired: Expired;
-
-    @candid(Null)
-    TooOld: Null;
-
-    @candid(CreatedInFuture)
-    CreatedInFuture: CreatedInFuture;
-
-    @candid(Duplicate)
-    Duplicate: Duplicate;
-
-    @candid(Null)
-    TemporarilyUnavailable: Null;
-
-    @candid(GenericError)
-    GenericError: GenericError;
-}
-
-export class ICRC2TransferFromArgs extends Record {
-    @candid(ICRC2Account)
-    from: ICRC2Account;
-
-    @candid(ICRC2Account)
-    to: ICRC2Account;
-
-    @candid(nat)
-    amount: nat;
-
-    @candid(Opt(nat))
-    fee: Opt<nat>;
-
-    @candid(Opt(blob))
-    memo: Opt<blob>;
-
-    @candid(Opt(nat64))
-    created_at_time: Opt<nat64>;
-}
-
-export class ICRC2TransferFromError extends Variant {
-    @candid(BadFee)
-    BadFee: BadFee;
-
-    @candid(BadBurn)
-    BadBurn: BadBurn;
-
-    @candid(InsufficientFunds)
-    InsufficientFunds: InsufficientFunds;
-
-    @candid(InsufficientAllowance)
-    InsufficientAllowance: InsufficientAllowance;
-
-    @candid(Null)
-    TooOld: Null;
-
-    @candid(CreatedInFuture)
-    CreatedInFuture: CreatedInFuture;
-
-    @candid(Duplicate)
-    Duplicate: Duplicate;
-
-    @candid(Null)
-    TemporarilyUnavailable: null;
-
-    @candid(GenericError)
-    GenericError: GenericError;
-}
-
-export class ICRC2AllowanceArgs extends Record {
-    @candid(ICRC2Account)
-    account: ICRC2Account;
-
-    @candid(ICRC2Account)
-    spender: ICRC2Account;
-}
-
-export class ICRC2ApproveResult extends Variant {
-    @candid(nat)
-    Ok: nat;
-
-    @candid(ICRC2ApproveError)
-    Err: ICRC2ApproveError;
-}
-
-export class ICRC2TransferFromResult extends Variant {
-    @candid(nat)
-    Ok: nat;
-
-    @candid(ICRC2TransferFromError)
-    Err: ICRC2TransferFromError;
-}
-
-export class ICRC2AllowanceResults extends Record {
-    @candid(nat)
-    allowance: nat;
-
-    @candid(Opt(nat64))
-    expires_at: Opt<nat64>;
-}
+export const ICRC2AllowanceResults = Record({
+    allowance: nat,
+    expires_at: Opt(nat64)
+});

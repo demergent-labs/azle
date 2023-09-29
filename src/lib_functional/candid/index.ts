@@ -83,7 +83,7 @@ export type TypeMapping<T> = T extends () => any
     : T extends AzleOpt<infer U>
     ? [TypeMapping<U>] | []
     : T extends AzleResult<infer U, infer W>
-    ? Result<U, W>
+    ? Result<TypeMapping<U>, TypeMapping<W>>
     : T extends AzleBlob
     ? blob
     : T extends typeof Principal

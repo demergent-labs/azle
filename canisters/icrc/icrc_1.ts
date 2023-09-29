@@ -1,6 +1,5 @@
 import {
     blob,
-    candid,
     int,
     nat,
     nat64,
@@ -10,7 +9,7 @@ import {
     Record,
     text,
     Variant
-} from '../../src/lib_new';
+} from '../../src/lib_functional';
 import {
     BadBurn,
     BadFee,
@@ -26,83 +25,43 @@ export const ICRC1Timestamp = nat64;
 export type ICRC1Subaccount = blob;
 export const ICRC1Subaccount = blob;
 
-export class ICRC1Account extends Record {
-    @candid(Principal)
-    owner: Principal;
+export const ICRC1Account = Record({
+    owner: Principal,
+    subaccount: Opt(ICRC1Subaccount)
+});
 
-    @candid(Opt(ICRC1Subaccount))
-    subaccount: Opt<ICRC1Subaccount>;
-}
+export const ICRC1TransferArgs = Record({
+    from_subaccount: Opt(ICRC1Subaccount),
+    to: ICRC1Account,
+    amount: nat,
+    fee: Opt(nat),
+    memo: Opt(blob),
+    created_at_time: Opt(ICRC1Timestamp)
+});
 
-export class ICRC1TransferArgs extends Record {
-    @candid(Opt(ICRC1Subaccount))
-    from_subaccount: Opt<ICRC1Subaccount>;
+const CreatedInFuture = Record({
+    ledger_time: ICRC1Timestamp
+});
 
-    @candid(ICRC1Account)
-    to: ICRC1Account;
+export const ICRC1TransferError = Variant({
+    BadFee,
+    BadBurn,
+    InsufficientFunds,
+    TooOld: Null,
+    CreatedInFuture: CreatedInFuture,
+    Duplicate: Duplicate,
+    TemporarilyUnavailable: Null,
+    GenericError: GenericError
+});
 
-    @candid(nat)
-    amount: nat;
+export const ICRC1TransferResult = Variant({
+    Ok: nat,
+    Err: ICRC1TransferError
+});
 
-    @candid(Opt(nat))
-    fee: Opt<nat>;
-
-    @candid(Opt(blob))
-    memo: Opt<blob>;
-
-    @candid(Opt(ICRC1Timestamp))
-    created_at_time: Opt<ICRC1Timestamp>;
-}
-
-class CreatedInFuture extends Record {
-    @candid(ICRC1Timestamp)
-    ledger_time: ICRC1Timestamp;
-}
-
-export class ICRC1TransferError extends Variant {
-    @candid(BadFee)
-    BadFee: BadFee;
-
-    @candid(BadBurn)
-    BadBurn: BadBurn;
-
-    @candid(InsufficientFunds)
-    InsufficientFunds: InsufficientFunds;
-
-    @candid(Null)
-    TooOld: Null;
-
-    @candid(CreatedInFuture)
-    CreatedInFuture: CreatedInFuture;
-
-    @candid(Duplicate)
-    Duplicate: Duplicate;
-
-    @candid(Null)
-    TemporarilyUnavailable: Null;
-
-    @candid(GenericError)
-    GenericError: GenericError;
-}
-
-export class ICRC1TransferResult extends Variant {
-    @candid(nat)
-    Ok: nat;
-
-    @candid(ICRC1TransferError)
-    Err: ICRC1TransferError;
-}
-
-export class ICRC1Value extends Variant {
-    @candid(nat)
-    Nat: nat;
-
-    @candid(int)
-    Int: int;
-
-    @candid(text)
-    Text: text;
-
-    @candid(blob)
-    Blob: blob;
-}
+export const ICRC1Value = Variant({
+    Nat: nat,
+    Int: int,
+    Text: text,
+    Blob: blob
+});

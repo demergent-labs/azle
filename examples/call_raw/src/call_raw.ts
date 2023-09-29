@@ -1,6 +1,7 @@
 import {
     Canister,
     ic,
+    Ok,
     nat,
     nat64,
     Principal,
@@ -21,7 +22,7 @@ export default Canister({
                 payment
             );
 
-            return Result.Ok(ic.candidDecode(result));
+            return Ok(ic.candidDecode(result));
         }
     ),
     executeCallRaw128: update(
@@ -35,7 +36,7 @@ export default Canister({
                 payment
             );
 
-            return Result.Ok(ic.candidDecode(result));
+            return Ok(ic.candidDecode(result));
         }
     )
 });

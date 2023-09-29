@@ -2,7 +2,7 @@ import '@dfinity/candid/lib/esm/idl'; // This must remain or the build fails
 import { Principal } from '@dfinity/principal';
 import { IDL } from './index';
 import { blob, nat, nat32, nat64, AzleNat64, Void, Opt } from './primitives';
-import { RejectionCode } from '../lib_functional';
+import { CandidType, RejectionCode } from '../lib_functional';
 import { v4 } from 'uuid';
 import { CandidClass, toIDLType } from './utils';
 import { EncodeVisitor } from './visitors/encode_decode';
@@ -278,7 +278,7 @@ type Ic = {
      * is the generic type supplied to `Manual<T>`. Otherwise will result in an
      * uncaught `TypeError`.
      */
-    reply: (reply: any, type: CandidClass) => void;
+    reply: (reply: any, type: CandidType) => void;
 
     /**
      * Used to manually reply to an ingress message. Intended to be used in
