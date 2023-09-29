@@ -2,7 +2,7 @@ import {
     blob,
     Null,
     Opt,
-    principal,
+    Principal,
     Record,
     text,
     Variant,
@@ -19,7 +19,7 @@ export const KeyId = Record({
 });
 
 export const EcdsaPublicKeyArgs = Record({
-    canister_id: Opt(principal),
+    canister_id: Opt(Principal),
     derivation_path: Vec(blob),
     key_id: KeyId
 });
