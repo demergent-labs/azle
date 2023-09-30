@@ -1,7 +1,7 @@
 service: () -> {
+    deepQuery: () -> (text) query;
     incCounter: () -> (nat) query;
+    manualQuery: () -> (text) query;
     simpleQuery: () -> (text) query;
     updateQuery: () -> (text);
-    manualQuery: () -> (text) query;
-    deepQuery: () -> (text) query;
 }
