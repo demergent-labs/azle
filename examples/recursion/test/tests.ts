@@ -1,12 +1,15 @@
-import { Test } from 'azle/test';
+import { Test, getCanisterId } from 'azle/test';
 import {
     _SERVICE,
-    rec_10,
-    rec_8
+    rec_313,
+    rec_321
 } from './dfx_generated/recursion/recursion.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
+import { execSync } from 'child_process';
 
+// TODO these tests should be rewritten to use @dfinity/agent once this issue is resolved: https://github.com/dfinity/agent-js/issues/702
+// TODO this issue also needs to be resolved: https://forum.dfinity.org/t/services-wont-deserialize-properly-if-functions-arent-in-alphabetical-order/20885
 export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
@@ -179,7 +182,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'recursive tuples with vec',
             test: async () => {
-                const input: rec_10 = [[[[], [[[], []]]]], []];
+                const input: rec_321 = [[[[], [[[], []]]]], []];
                 const result =
                     await recursion_canister.testRecTupleWithVec(input);
 
@@ -211,7 +214,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'recursive tuples with opt',
             test: async () => {
-                const input: rec_8 = [[[[], [[[], []]]]], []];
+                const input: rec_313 = [[[[], [[[], []]]]], []];
                 const result =
                     await recursion_canister.testRecTupleWithOpt(input);
 
@@ -307,6 +310,67 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                         result[1].varTuple[0].num === 40 &&
                         result[1].varTuple[1].varTuple[0].num === 5 &&
                         result[1].varTuple[1].varTuple[1].num === 10
+                };
+            }
+        },
+        {
+            name: 'test rec service simple',
+            test: async () => {
+                const principalId = getCanisterId('recursive_canister');
+                const result = execSync(
+                    `dfx canister call recursion testRecServiceSimple '(service "${principalId}")'`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    Ok: result === `(service "${principalId}")`
+                };
+            }
+        },
+        {
+            name: 'test rec service',
+            test: async () => {
+                const principalId = getCanisterId('recursive_canister');
+                const result = execSync(
+                    `dfx canister call recursion testRecService '(service "${principalId}")'`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    Ok: result === `(service "${principalId}")`
+                };
+            }
+        },
+        {
+            name: 'test rec service return',
+            test: async () => {
+                const principalId = getCanisterId('recursive_canister');
+                const result = execSync(
+                    `dfx canister call recursion testRecServiceReturn`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    Ok: result === `(service "${principalId}")`
+                };
+            }
+        },
+        {
+            name: 'test rec service call',
+            skip: true, // TODO waiting for azle.encode and azle.decode to be implemented
+            test: async () => {
+                const principalId = getCanisterId('recursive_canister');
+                const result = execSync(
+                    `dfx canister call recursion testRecServiceCall '(service "${principalId}")'`
+                )
+                    .toString()
+                    .trim();
+
+                return {
+                    Ok: result === `(service "${principalId}")`
                 };
             }
         }

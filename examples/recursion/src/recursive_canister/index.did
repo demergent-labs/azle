@@ -1,9 +1,5 @@
-type rec_20 = service {
-	myQuery: (rec_20) -> (rec_20) query;
-};
-type rec_23 = service {
-	myQuery: (rec_23) -> (rec_23) query;
-};
+type rec_20 = service {myQuery: (rec_20) -> (rec_20) query;};
+type rec_23 = service {myQuery: (rec_23) -> (rec_23) query;};
 service: () -> {
-	myQuery: (rec_20) -> (rec_23) query;
+    myQuery: (rec_20) -> (rec_23) query;
 }

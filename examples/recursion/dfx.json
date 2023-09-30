@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/recursion",
                 "node_compatibility": true
-            }
+            },
+            "env": ["MY_CANISTER_PRINCIPAL"]
         },
         "recursive_canister": {
             "type": "custom",

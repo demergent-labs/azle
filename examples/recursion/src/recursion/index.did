@@ -1,5 +1,3 @@
-type rec_397 = service {myQuery: (rec_397) -> (rec_397) query;};
-type rec_400 = service {myQuery: (rec_400) -> (rec_400) query;};
 type rec_365 = func (rec_365) -> (rec_365) query;
 type rec_368 = func (rec_368) -> (rec_368) query;
 type rec_373 = func (rec_373) -> (rec_373) query;
@@ -14,6 +12,8 @@ type rec_292 = record {myVecRecords:vec rec_292};
 type rec_333 = record {myVecRecords:vec rec_333};
 type rec_385 = service {myQuery: (rec_385) -> (rec_385) query;};
 type rec_388 = service {myQuery: (rec_388) -> (rec_388) query;};
+type rec_397 = service {myQuery: (rec_397) -> (rec_397) query;};
+type rec_400 = service {myQuery: (rec_400) -> (rec_400) query;};
 type rec_393 = service {myQuery: (rec_393) -> (rec_393) query;};
 type rec_377 = service {myQuery: (rec_377) -> (rec_377) query;};
 type rec_380 = service {myQuery: (rec_380) -> (rec_380) query;};
