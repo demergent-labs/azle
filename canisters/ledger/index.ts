@@ -25,13 +25,7 @@ import {
     Principal,
     Func
 } from '../../src/lib_functional';
-import {
-    ICRC1Account,
-    ICRC1SupportedStandard,
-    ICRC1TransferArgs,
-    ICRC1TransferResult,
-    ICRC1Value
-} from '../icrc';
+import * as icrc from '../icrc';
 
 // Amount of tokens, measured in 10^-8 of a token.
 export const Tokens = Record({
@@ -316,16 +310,16 @@ export const Ledger = Canister({
     decimals: query([], DecimalsResult),
     // Returns the existing archive canisters information.
     archives: query([], Archives),
-    icrc1_metadata: query([], Vec(Tuple(text, ICRC1Value))),
+    icrc1_metadata: query([], Vec(Tuple(text, icrc.Value))),
     icrc1_name: query([], text),
     icrc1_symbol: query([], text),
     icrc1_decimals: query([], nat8),
     icrc1_fee: query([], nat),
     icrc1_total_supply: query([], nat),
-    icrc1_minting_account: query([], Opt(ICRC1Account)),
-    icrc1_balance_of: query([ICRC1Account], nat),
-    icrc1_transfer: update([ICRC1TransferArgs], ICRC1TransferResult),
-    icrc1_supported_standards: query([], Vec(ICRC1SupportedStandard))
+    icrc1_minting_account: query([], Opt(icrc.Account)),
+    icrc1_balance_of: query([icrc.Account], nat),
+    icrc1_transfer: update([icrc.TransferArgs], icrc.TransferResult),
+    icrc1_supported_standards: query([], Vec(icrc.SupportedStandard))
 });
 
 export {

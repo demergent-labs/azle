@@ -1,4 +1,4 @@
-import { TypeMapping } from '..';
+import { CandidType } from '..';
 import { IDL } from '@dfinity/candid';
 import {
     processMap,
@@ -17,8 +17,8 @@ const modeToCandid = {
 };
 
 export function Func(
-    paramsIdls: any[],
-    returnIdl: any,
+    paramsIdls: CandidType[],
+    returnIdl: CandidType,
     mode: Mode
 ): [Principal, string] & { _azleCandidType?: '_azleCandidType' } {
     // TODO can't Func be recursive?

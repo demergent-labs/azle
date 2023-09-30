@@ -16,15 +16,11 @@ import {
     Duplicate,
     GenericError
 } from './errors';
+import { Account } from './icrc_1';
 
-export const ICRC2Account = Record({
-    owner: Principal,
-    subaccount: Opt(blob)
-});
-
-export const ICRC2ApproveArgs = Record({
+export const ApproveArgs = Record({
     from_subaccount: Opt(blob),
-    spender: ICRC2Account,
+    spender: Account,
     amount: nat,
     expected_allowance: Opt(nat),
     expires_at: Opt(nat64),
@@ -49,7 +45,7 @@ export const InsufficientAllowance = Record({
     allowance: nat
 });
 
-export const ICRC2ApproveError = Variant({
+export const ApproveError = Variant({
     BadFee,
     InsufficientFunds,
     AllowanceChanged,
@@ -61,16 +57,16 @@ export const ICRC2ApproveError = Variant({
     GenericError: GenericError
 });
 
-export const ICRC2TransferFromArgs = Record({
-    from: ICRC2Account,
-    to: ICRC2Account,
+export const TransferFromArgs = Record({
+    from: Account,
+    to: Account,
     amount: nat,
     fee: Opt(nat),
     memo: Opt(blob),
     created_at_time: Opt(nat64)
 });
 
-export const ICRC2TransferFromError = Variant({
+export const TransferFromError = Variant({
     BadFee,
     BadBurn,
     InsufficientFunds,
@@ -82,22 +78,22 @@ export const ICRC2TransferFromError = Variant({
     GenericError
 });
 
-export const ICRC2AllowanceArgs = Record({
-    account: ICRC2Account,
-    spender: ICRC2Account
+export const AllowanceArgs = Record({
+    account: Account,
+    spender: Account
 });
 
-export const ICRC2ApproveResult = Variant({
+export const ApproveResult = Variant({
     Ok: nat,
-    Err: ICRC2ApproveError
+    Err: ApproveError
 });
 
-export const ICRC2TransferFromResult = Variant({
+export const TransferFromResult = Variant({
     Ok: nat,
-    Err: ICRC2TransferFromError
+    Err: TransferFromError
 });
 
-export const ICRC2AllowanceResults = Record({
+export const AllowanceResult = Record({
     allowance: nat,
     expires_at: Opt(nat64)
 });

@@ -5,7 +5,8 @@
             "main": "canisters/proxy/index.ts",
             "build": "npx azle proxy",
             "candid": "canisters/proxy/index.did",
-            "wasm": ".azle/proxy/proxy.wasm.gz",
+            "wasm": ".azle/proxy/proxy.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/proxy",
                 "node_compatibility": true

@@ -1,135 +1,102 @@
 import {
+    Canister,
     ic,
-    match,
+    init,
     nat,
     nat8,
     Opt,
     Principal,
-    $query,
-    Record,
+    query,
     text,
     Tuple,
-    $update,
-    Variant,
+    update,
     Vec
 } from 'azle';
 import {
-    ICRC1Account,
+    Account,
     ICRC,
-    ICRC1TransferArgs,
-    ICRC1TransferError,
-    ICRC1Value
+    TransferArgs,
+    TransferResult,
+    Value,
+    SupportedStandard,
+    ApproveArgs,
+    ApproveResult,
+    TransferFromArgs,
+    TransferFromResult,
+    AllowanceArgs,
+    AllowanceResult
 } from 'azle/canisters/icrc';
 
-const icrc = new ICRC(
-    Principal.fromText(
-        process.env.ICRC_PRINCIPAL ??
-            ic.trap('process.env.ICRC_PRINCIPAL is undefined')
+let icrc: typeof ICRC;
+
+export default Canister({
+    init: init([], () => {
+        icrc = ICRC(
+            Principal.fromText(
+                process.env.ICRC_PRINCIPAL ??
+                    ic.trap('process.env.ICRC_PRINCIPAL is undefined')
+            )
+        );
+    }),
+    icrc1_metadata: query([], Vec(Tuple(text, Value)), async () => {
+        return await ic.call(icrc.icrc1_metadata);
+    }),
+    icrc1_name: query([], text, async () => {
+        return await ic.call(icrc.icrc1_name);
+    }),
+    icrc1_decimals: query([], nat8, async () => {
+        return await ic.call(icrc.icrc1_decimals);
+    }),
+    icrc1_symbol: query([], text, async () => {
+        return await ic.call(icrc.icrc1_symbol);
+    }),
+    icrc1_fee: query([], nat, async () => {
+        return await ic.call(icrc.icrc1_fee);
+    }),
+    icrc1_total_supply: query([], nat, async () => {
+        return await ic.call(icrc.icrc1_total_supply);
+    }),
+    icrc1_minting_account: query([], Opt(Account), async () => {
+        return await ic.call(icrc.icrc1_minting_account);
+    }),
+    icrc1_balance_of: query([Account], nat, async (account) => {
+        return await ic.call(icrc.icrc1_balance_of, {
+            args: [account]
+        });
+    }),
+    icrc1_transfer: update(
+        [TransferArgs],
+        TransferResult,
+        async (transferArgs) => {
+            return await ic.call(icrc.icrc1_transfer, {
+                args: [transferArgs]
+            });
+        }
+    ),
+    icrc1_supported_standards: query([], Vec(SupportedStandard), async () => {
+        return await ic.call(icrc.icrc1_supported_standards);
+    }),
+    icrc2_approve: update([ApproveArgs], ApproveResult, async (approveArgs) => {
+        return await ic.call(icrc.icrc2_approve, {
+            args: [approveArgs]
+        });
+    }),
+    icrc2_transfer_from: update(
+        [TransferFromArgs],
+        TransferFromResult,
+        async (transferFromArgs) => {
+            return await ic.call(icrc.icrc2_transfer_from, {
+                args: [transferFromArgs]
+            });
+        }
+    ),
+    icrc2_allowance: update(
+        [AllowanceArgs],
+        AllowanceResult,
+        async (allowanceArgs) => {
+            return await ic.call(icrc.icrc2_allowance, {
+                args: [allowanceArgs]
+            });
+        }
     )
-);
-
-$query;
-export async function icrc1_metadata(): Promise<
-    Vec<Tuple<[text, ICRC1Value]>>
-> {
-    const result = await icrc.icrc1_metadata().call();
-
-    return match(result, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
-    });
-}
-
-$query;
-export async function icrc1_name(): Promise<text> {
-    const result = await icrc.icrc1_name().call();
-
-    return match(result, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
-    });
-}
-
-$query;
-export async function icrc1_symbol(): Promise<text> {
-    const result = await icrc.icrc1_symbol().call();
-
-    return match(result, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
-    });
-}
-
-$query;
-export async function icrc1_decimals(): Promise<nat8> {
-    const result = await icrc.icrc1_decimals().call();
-
-    return match(result, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
-    });
-}
-
-$query;
-export async function icrc1_fee(): Promise<nat> {
-    const result = await icrc.icrc1_fee().call();
-
-    return match(result, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
-    });
-}
-
-$query;
-export async function icrc1_total_supply(): Promise<nat> {
-    const result = await icrc.icrc1_total_supply().call();
-
-    return match(result, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
-    });
-}
-
-$query;
-export async function icrc1_minting_account(): Promise<Opt<ICRC1Account>> {
-    const result = await icrc.icrc1_minting_account().call();
-
-    return match(result, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
-    });
-}
-
-$query;
-export async function icrc1_balance_of(account: ICRC1Account): Promise<nat> {
-    const result = await icrc.icrc1_balance_of(account).call();
-
-    return match(result, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
-    });
-}
-
-$update;
-export async function icrc1_transfer(
-    transferArgs: ICRC1TransferArgs
-): Promise<Variant<{ Ok: nat; Err: ICRC1TransferError }>> {
-    const result = await icrc.icrc1_transfer(transferArgs).call();
-
-    return match(result, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
-    });
-}
-
-$query;
-export async function icrc1_supported_standards(): Promise<
-    Vec<Record<{ name: text; url: text }>>
-> {
-    const result = await icrc.icrc1_supported_standards().call();
-
-    return match(result, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
-    });
-}
+});

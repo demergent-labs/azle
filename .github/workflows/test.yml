@@ -83,6 +83,7 @@ jobs:
                     "examples/guard_functions",
                     "examples/heartbeat",
                     "examples/ic_api",
+                    "examples/icrc",
                     "examples/imports",
                     "examples/init",
                     "examples/inspect_message",
