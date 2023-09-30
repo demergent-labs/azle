@@ -5,6 +5,7 @@ import {
     DecodeVisitor,
     EncodeVisitor
 } from '../../lib_new/visitors/encode_decode';
+import { Parent } from '../../lib_new/utils';
 
 export * from './heartbeat';
 export * from './init';
@@ -13,6 +14,8 @@ export * from './post_upgrade';
 export * from './pre_upgrade';
 export * from './query';
 export * from './update';
+
+export type MethodArgs = { manual?: boolean; guard?: () => void };
 
 export type CanisterMethodInfo<T extends ReadonlyArray<any>, K> = {
     mode:
@@ -25,8 +28,6 @@ export type CanisterMethodInfo<T extends ReadonlyArray<any>, K> = {
         | 'preUpgrade';
     async: boolean;
     callback?: (...args: any) => any;
-    candid: string;
-    candidTypes: string[];
     paramsIdls: any[];
     returnIdl: any;
     guard: (() => any) | undefined;
@@ -38,12 +39,12 @@ export type Callback<Params extends ReadonlyArray<any>, Return> = (
 
 export function executeMethod(
     mode: CanisterMethodInfo<any, any>['mode'],
-    paramCandid: any,
-    returnCandid: any,
+    finalParamIdls: any,
+    finalReturnIdl: any,
     args: any[],
     callback: any,
-    paramsIdls: any[],
-    returnIdl: any,
+    userMadeParamsIdls: any[],
+    userMadeReturnIdl: any,
     manual: boolean
 ) {
     if (mode === 'heartbeat') {
@@ -67,11 +68,11 @@ export function executeMethod(
         return;
     }
 
-    const decoded = IDL.decode(paramCandid[0] as any, args[0]);
+    const decoded = IDL.decode(finalParamIdls as any, args[0]);
 
-    const myDecodedObject = paramCandid[0].map((idl: any, index: any) => {
+    const myDecodedObject = finalParamIdls.map((idl: any, index: any) => {
         return idl.accept(new DecodeVisitor(), {
-            js_class: paramsIdls[index],
+            js_class: userMadeParamsIdls[index],
             js_data: decoded[index]
         });
     });
@@ -99,16 +100,14 @@ export function executeMethod(
 
                 if (!manual) {
                     // const encodeReadyResult = result === undefined ? [] : [result];
-                    const encodeReadyResult = returnCandid[0].map(
-                        (idl: any) => {
-                            return idl.accept(new EncodeVisitor(), {
-                                js_class: returnIdl,
-                                js_data: result
-                            });
-                        }
-                    );
+                    const encodeReadyResult = finalReturnIdl.map((idl: any) => {
+                        return idl.accept(new EncodeVisitor(), {
+                            js_class: userMadeReturnIdl,
+                            js_data: result
+                        });
+                    });
                     const encoded = IDL.encode(
-                        returnCandid[0] as any,
+                        finalReturnIdl as any,
                         encodeReadyResult
                     );
                     ic.replyRaw(new Uint8Array(encoded));
@@ -120,15 +119,15 @@ export function executeMethod(
     } else {
         if (!manual) {
             // const encodeReadyResult = result === undefined ? [] : [result];
-            const encodeReadyResult = returnCandid[0].map((idl: any) => {
+            const encodeReadyResult = finalReturnIdl.map((idl: any) => {
                 return idl.accept(new EncodeVisitor(), {
-                    js_class: returnIdl,
+                    js_class: userMadeReturnIdl,
                     js_data: result
                 });
             });
 
             const encoded = IDL.encode(
-                returnCandid[0] as any,
+                finalReturnIdl as any,
                 encodeReadyResult
             );
             ic.replyRaw(new Uint8Array(encoded));
@@ -136,4 +135,10 @@ export function executeMethod(
 
         console.log(`final instructions: ${ic.instructionCounter()}`);
     }
+}
+
+export function createParents(parent: any): Parent[] {
+    return parent === undefined
+        ? []
+        : [{ idl: parent, name: parent._azleName }];
 }

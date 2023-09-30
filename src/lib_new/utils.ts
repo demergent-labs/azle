@@ -31,86 +31,6 @@ export function extractCandid(
     return [paramCandid, candidTypeDefs];
 }
 
-export function display(
-    idl: IDL.Type<any>,
-    candidTypeDefs: CandidTypesDefs
-): [CandidDef, CandidTypesDefs] {
-    if (idl instanceof IDL.RecClass) {
-        // For RecClasses the definition will be the name, that name will
-        // reference the actual definition which will be added to the list of
-        // candid type defs that will get put at the top of the candid file
-        // Everything else will just be the normal inline candid def
-        const candid = extractCandid(
-            [display(idl.getType(), candidTypeDefs)],
-            candidTypeDefs
-        );
-        return [idl.name, { ...candid[1], [idl.name]: candid[0][0] }];
-    }
-    if (idl instanceof IDL.TupleClass) {
-        const fields = idl._components.map((value) =>
-            display(value, candidTypeDefs)
-        );
-        const candid = extractCandid(fields, candidTypeDefs);
-        return [`record {${candid[0].join('; ')}}`, candid[1]];
-    }
-    if (idl instanceof IDL.OptClass) {
-        const candid = extractCandid(
-            [display(idl._type, candidTypeDefs)],
-            candidTypeDefs
-        );
-        return [`opt ${candid[0]}`, candid[1]];
-    }
-    if (idl instanceof IDL.VecClass) {
-        const candid = extractCandid(
-            [display(idl._type, candidTypeDefs)],
-            candidTypeDefs
-        );
-        return [`vec ${candid[0]}`, candid[1]];
-    }
-    if (idl instanceof IDL.RecordClass) {
-        const candidFields = idl._fields.map(([key, value]) =>
-            display(value, candidTypeDefs)
-        );
-        const candid = extractCandid(candidFields, candidTypeDefs);
-        const fields = idl._fields.map(
-            ([key, value], index) => key + ':' + candid[0][index]
-        );
-        return [`record {${fields.join('; ')}}`, candid[1]];
-    }
-    if (idl instanceof IDL.VariantClass) {
-        const candidFields = idl._fields.map(([key, value]) =>
-            display(value, candidTypeDefs)
-        );
-        const candid = extractCandid(candidFields, candidTypeDefs);
-        const fields = idl._fields.map(
-            ([key, value], index) =>
-                key + (value.name === 'null' ? '' : ':' + candid[0][index])
-        );
-        return [`variant {${fields.join('; ')}}`, candid[1]];
-    }
-    if (idl instanceof IDL.FuncClass) {
-        const argsTypes = idl.argTypes.map((value) =>
-            display(value, candidTypeDefs)
-        );
-        const candidArgs = extractCandid(argsTypes, candidTypeDefs);
-        const retsTypes = idl.retTypes.map((value) =>
-            display(value, candidArgs[1])
-        );
-        const candidRets = extractCandid(retsTypes, candidArgs[1]);
-        const args = candidArgs[0].join(', ');
-        const rets = candidRets[0].join(', ');
-        const annon = ' ' + idl.annotations.join(' ');
-        return [`func (${args}) -> (${rets})${annon}`, candidRets[1]];
-    }
-    if (idl !== undefined && !('display' in idl)) {
-        throw Error(`${JSON.stringify(idl)} is not a candid type`);
-    }
-    if (idl === undefined) {
-        throw Error('cannot convert undefined to candid');
-    }
-    return [idl.display(), candidTypeDefs];
-}
-
 export type Parent = {
     idl: IDL.RecClass;
     name: string;
@@ -145,6 +65,7 @@ export function toIDLType(idl: CandidClass, parents: Parent[]): IDL.Type<any> {
                     _buildTypeTableImpl: (typeTable): void => {
                         return parent.idl._buildTypeTableImpl(typeTable);
                     },
+                    // TODO check if this is still being called. maybe by adding a throw here and see if we hit it
                     display: () => parent.idl.name,
                     decodeValue: (b, t) => {
                         return parent.idl.decodeValue(b, t);
@@ -168,8 +89,8 @@ export function toIDLType(idl: CandidClass, parents: Parent[]): IDL.Type<any> {
         }
         return idl.getIDL(parents);
     }
-    if (idl._azleRecLambda) {
-        return toIDLType(idl(), [...parents, idl._azleName]);
+    if (idl._azleIsCanister) {
+        return toIDLType(idl(), parents);
     }
     // if (idl.display === undefined || idl.getIDL === undefined) {
     //     throw Error(`${JSON.stringify(idl)} is not a candid type`);
@@ -177,18 +98,36 @@ export function toIDLType(idl: CandidClass, parents: Parent[]): IDL.Type<any> {
     return idl;
 }
 
-export function toParamIDLTypes(idl: CandidClass[]): IDL.Type<any>[] {
-    return idl.map((value) => toIDLType(value, []));
+export function toParamIDLTypes(
+    idl: CandidClass[],
+    parents: Parent[] = []
+): IDL.Type<any>[] {
+    return idl.map((value) => toIDLType(value, parents));
 }
 
-export function toReturnIDLType(returnIdl: ReturnCandidClass): IDL.Type<any>[] {
-    const idlType = toIDLType(returnIdl, []);
+export function toReturnIDLType(
+    returnIdl: ReturnCandidClass,
+    parents: Parent[] = []
+): IDL.Type<any>[] {
+    const idlType = toIDLType(returnIdl, parents);
 
     if (Array.isArray(idlType)) {
         return [...idlType];
     }
 
     return [idlType];
+}
+
+export function isAsync(originalFunction: any) {
+    if (originalFunction[Symbol.toStringTag] === 'AsyncFunction') {
+        return true;
+    } else if (originalFunction.constructor.name === 'AsyncFunction') {
+        return true;
+    } else if (originalFunction.toString().includes('async ')) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 type CandidMap = { [key: string]: any };

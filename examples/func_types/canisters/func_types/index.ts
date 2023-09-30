@@ -1,4 +1,5 @@
 import {
+    Canister,
     Func,
     init,
     ic,
@@ -7,115 +8,98 @@ import {
     Principal,
     query,
     Record,
-    Service,
     StableBTreeMap,
     update,
     Variant,
     Vec,
-    candid,
     text,
-    func,
     Void,
-    Null
+    Null,
+    Recursive
 } from 'azle';
 import Notifier, { NotifierFunc } from '../notifiers';
 
-@func([text], text, 'query')
-class BasicFunc extends Func {}
+const BasicFunc = Func([text], text, 'query');
 
-@func([User, Reaction], nat64, 'update')
-class ComplexFunc extends Func {}
+const ComplexFunc = Recursive(() => Func([User, Reaction], nat64, 'update'));
 
-class User extends Record {
-    @candid(text)
-    id: text;
+const User = Record({
+    id: text,
+    basicFunc: BasicFunc,
+    complexFunc: ComplexFunc
+});
 
-    @candid(BasicFunc)
-    basicFunc: BasicFunc;
+const Reaction = Variant({
+    Good: Null,
+    Bad: Null,
+    BasicFunc: BasicFunc,
+    ComplexFunc: ComplexFunc
+});
 
-    @candid(ComplexFunc)
-    complexFunc: ComplexFunc;
-}
+const StableFunc = Func([nat64, text], Void, 'query');
 
-class Reaction extends Variant {
-    Good: null;
-    Bad: null;
-    BasicFunc: BasicFunc;
-    ComplexFunc: ComplexFunc;
-}
-
-@func([nat64, text], Void, 'query')
-class StableFunc extends Func {}
-
-@func(
+const NullFunc = Func(
     [Opt(Null), Vec(Null), Null, Vec(Vec(Null)), Vec(Opt(Null))],
     Null,
     'query'
-)
-class NullFunc extends Func {}
+);
 
-export default class extends Service {
-    stableStorage = new StableBTreeMap<text, StableFunc>(text, StableFunc, 0);
+let stableStorage = StableBTreeMap(text, StableFunc, 0);
 
-    @init([])
-    init() {
-        this.stableStorage.insert(
-            'stableFunc',
-            new StableFunc(Principal.from('aaaaa-aa'), 'start_canister')
-        );
-    }
+export default Canister({
+    init: init([], () => {
+        stableStorage.insert('stableFunc', [
+            Principal.from('aaaaa-aa'),
+            'start_canister'
+        ]);
+    }),
 
-    @query([], StableFunc)
-    getStableFunc(): StableFunc {
-        const stableFuncOpt = this.stableStorage.get('stableFunc');
+    getStableFunc: query([], StableFunc, () => {
+        const stableFuncOpt = stableStorage.get('stableFunc');
         if (stableFuncOpt.length === 1) {
             return stableFuncOpt[0];
         }
-        return new StableFunc(Principal.from('aaaaa-aa'), 'raw_rand');
-    }
+        return [Principal.from('aaaaa-aa'), 'raw_rand'];
+    }),
 
-    @query([BasicFunc], BasicFunc)
-    basicFuncParam(basicFunc: BasicFunc): BasicFunc {
+    basicFuncParam: query([BasicFunc], BasicFunc, (basicFunc) => {
         return basicFunc;
-    }
+    }),
 
-    @query([NullFunc], NullFunc)
-    nullFuncParam(nullFunc: NullFunc): NullFunc {
+    nullFuncParam: query([NullFunc], NullFunc, (nullFunc) => {
         return nullFunc;
-    }
+    }),
 
-    @query([Vec(BasicFunc)], Vec(BasicFunc))
-    basicFuncParamArray(basicFunc: Vec<BasicFunc>): Vec<BasicFunc> {
-        return basicFunc;
-    }
+    basicFuncParamArray: query(
+        [Vec(BasicFunc)],
+        Vec(BasicFunc),
+        (basicFunc) => {
+            return basicFunc;
+        }
+    ),
 
-    @query([], BasicFunc)
-    basicFuncReturnType(): BasicFunc {
-        return new BasicFunc(Principal.fromText('aaaaa-aa'), 'create_canister');
-    }
+    basicFuncReturnType: query([], BasicFunc, () => {
+        return [Principal.fromText('aaaaa-aa'), 'create_canister'];
+    }),
 
-    @query([], Vec(BasicFunc))
-    basicFuncReturnTypeArray(): Vec<BasicFunc> {
+    basicFuncReturnTypeArray: query([], Vec(BasicFunc), () => {
         return [
-            new BasicFunc(Principal.fromText('aaaaa-aa'), 'create_canister'),
-            new BasicFunc(Principal.fromText('aaaaa-aa'), 'update_settings'),
-            new BasicFunc(Principal.fromText('aaaaa-aa'), 'install_code')
+            [Principal.fromText('aaaaa-aa'), 'create_canister'],
+            [Principal.fromText('aaaaa-aa'), 'update_settings'],
+            [Principal.fromText('aaaaa-aa'), 'install_code']
         ];
-    }
+    }),
 
-    @query([ComplexFunc], ComplexFunc)
-    complexFuncParam(complexFunc: ComplexFunc): ComplexFunc {
+    complexFuncParam: query([ComplexFunc], ComplexFunc, (complexFunc) => {
         return complexFunc;
-    }
+    }),
 
-    @query([], ComplexFunc)
-    complexFuncReturnType(): ComplexFunc {
+    complexFuncReturnType: query([], ComplexFunc, () => {
         return [Principal.fromText('aaaaa-aa'), 'stop_canister'];
-    }
+    }),
 
-    @update([], NotifierFunc)
-    async getNotifierFromNotifiersCanister(): Promise<NotifierFunc> {
-        const notifiersCanister: Notifier = new Notifier(
+    getNotifierFromNotifiersCanister: update([], NotifierFunc, async () => {
+        const notifiersCanister = Notifier(
             Principal.fromText(
                 process.env.NOTIFIERS_PRINCIPAL ??
                     ic.trap('process.env.NOTIFIERS_PRINCIPAL is undefined')
@@ -123,5 +107,5 @@ export default class extends Service {
         );
 
         return await ic.call(notifiersCanister.getNotifier);
-    }
-}
+    })
+});

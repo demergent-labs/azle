@@ -1,14 +1,5 @@
-type rec_52 = record {value:text; name:text};
-type rec_51 = record {status:nat; body:vec nat8; headers:vec rec_52};
-type rec_54 = record {value:text; name:text};
-type rec_53 = record {status:nat; body:vec nat8; headers:vec rec_54};
-type rec_57 = record {value:text; name:text};
-type rec_56 = record {status:nat; body:vec nat8; headers:vec rec_57};
-type rec_55 = record {context:vec nat8; response:rec_56};
-type rec_59 = record {value:text; name:text};
-type rec_58 = record {status:nat; body:vec nat8; headers:vec rec_59};
 service: () -> {
-    xkcd: () -> (rec_51);
-    xkcdRaw: () -> (rec_53);
-    xkcdTransform: (rec_55) -> (rec_58) query;
+    xkcd: () -> (record {status:nat; body:vec nat8; headers:vec record {value:text; name:text}});
+    xkcdRaw: () -> (record {status:nat; body:vec nat8; headers:vec record {value:text; name:text}});
+    xkcdTransform: (record {context:vec nat8; response:record {status:nat; body:vec nat8; headers:vec record {value:text; name:text}}}) -> (record {status:nat; body:vec nat8; headers:vec record {value:text; name:text}}) query;
 }

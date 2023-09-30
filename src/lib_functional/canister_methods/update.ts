@@ -1,12 +1,13 @@
+import { isAsync } from '../../lib_new/utils';
 import {
+    Callback,
+    CanisterMethodInfo,
     MethodArgs,
-    handleRecursiveParams,
-    handleRecursiveReturn,
-    isAsync,
-    newTypesToStingArr
-} from '../../lib_new/method_decorators';
-import { Callback, CanisterMethodInfo, executeMethod } from '.';
+    createParents,
+    executeMethod
+} from '.';
 import { CandidType, TypeMapping } from '../candid';
+import { toParamIDLTypes, toReturnIDLType } from '../../lib_new/utils';
 
 export function update<
     const Params extends ReadonlyArray<CandidType>,
@@ -20,36 +21,34 @@ export function update<
         : never,
     methodArgs?: MethodArgs
 ): CanisterMethodInfo<Params, Return> {
-    const paramCandid = handleRecursiveParams(paramsIdls as any);
-    const returnCandid = handleRecursiveReturn(
-        returnIdl as any,
-        paramCandid[2]
-    );
+    return (parent: any) => {
+        const parents = createParents(parent);
+        const paramCandid = toParamIDLTypes(paramsIdls as any, parents);
+        const returnCandid = toReturnIDLType(returnIdl as any, parents);
 
-    const finalCallback =
-        callback === undefined
-            ? undefined
-            : (...args: any[]) => {
-                  executeMethod(
-                      'update',
-                      paramCandid,
-                      returnCandid,
-                      args,
-                      callback,
-                      paramsIdls as any,
-                      returnIdl,
-                      methodArgs?.manual ?? false
-                  );
-              };
+        const finalCallback =
+            callback === undefined
+                ? undefined
+                : (...args: any[]) => {
+                      executeMethod(
+                          'update',
+                          paramCandid,
+                          returnCandid,
+                          args,
+                          callback,
+                          paramsIdls as any,
+                          returnIdl,
+                          methodArgs?.manual ?? false
+                      );
+                  };
 
-    return {
-        mode: 'update',
-        callback: finalCallback,
-        candid: `(${paramCandid[1].join(', ')}) -> (${returnCandid[1]});`,
-        candidTypes: newTypesToStingArr(returnCandid[2]),
-        paramsIdls: paramsIdls as any,
-        returnIdl,
-        async: callback === undefined ? false : isAsync(callback),
-        guard: methodArgs?.guard
+        return {
+            mode: 'update',
+            callback: finalCallback,
+            paramsIdls: paramsIdls as any,
+            returnIdl,
+            async: callback === undefined ? false : isAsync(callback),
+            guard: methodArgs?.guard
+        };
     };
 }

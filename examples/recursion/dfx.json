@@ -2,12 +2,26 @@
     "canisters": {
         "recursion": {
             "type": "custom",
-            "main": "src/index.ts",
+            "main": "src/recursion/index.ts",
             "build": "npx azle recursion",
-            "candid": "src/index.did",
-            "wasm": ".azle/recursion/recursion.wasm.gz",
+            "candid": "src/recursion/index.did",
+            "wasm": ".azle/recursion/recursion.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/recursion",
+                "node_compatibility": true
+            },
+            "env": ["MY_CANISTER_PRINCIPAL"]
+        },
+        "recursive_canister": {
+            "type": "custom",
+            "main": "src/recursive_canister/index.ts",
+            "build": "npx azle recursive_canister",
+            "candid": "src/recursive_canister/index.did",
+            "wasm": ".azle/recursive_canister/recursive_canister.wasm",
+            "gzip": true,
+            "declarations": {
+                "output": "test/dfx_generated/recursive_canister",
                 "node_compatibility": true
             }
         }

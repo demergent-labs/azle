@@ -1,4 +1,9 @@
 import { CanisterMethods } from './utils/types';
+import {
+    DEFAULT_VISITOR_DATA,
+    DidResultToCandidString,
+    DidVisitor
+} from '../lib_new/visitors/did_visitor';
 
 export function generateCandidAndCanisterMethods(mainJs: string): {
     candid: string;
@@ -29,8 +34,16 @@ export function generateCandidAndCanisterMethods(mainJs: string): {
     const script = new vm.Script(mainJs);
     script.runInContext(context);
 
+    const canisterMethods = (sandbox.exports as any).canisterMethods;
+
+    const candidInfo = canisterMethods.getIDL([]).accept(new DidVisitor(), {
+        ...DEFAULT_VISITOR_DATA,
+        isFirstService: true,
+        systemFuncs: canisterMethods.getSystemFunctionIDLs()
+    });
+
     return {
-        candid: (sandbox.exports as any).canisterMethods.candid,
-        canisterMethods: (sandbox.exports as any).canisterMethods
+        candid: DidResultToCandidString(candidInfo),
+        canisterMethods: canisterMethods
     };
 }

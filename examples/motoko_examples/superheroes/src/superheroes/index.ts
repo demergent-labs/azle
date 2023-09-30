@@ -17,10 +17,7 @@ import {
 export type SuperheroId = nat32;
 const SuperheroId = nat32;
 
-const List = Tuple(
-    text,
-    Recursive(() => Opt(List))
-);
+const List = Recursive(() => Tuple(text, Opt(List)));
 
 // The type of a superhero.
 const Superhero = Record({

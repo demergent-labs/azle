@@ -1,31 +1,31 @@
-import { isAsync } from '../../lib_new/method_decorators';
+import { isAsync } from '../../lib_new/utils';
 import { CanisterMethodInfo, executeMethod } from '.';
 import { Void } from '../../lib_new';
 
 export function heartbeat(
     callback: () => void | Promise<void>
-): CanisterMethodInfo<[], Void> {
-    const finalCallback = (...args: any[]) => {
-        executeMethod(
-            'heartbeat',
-            undefined,
-            undefined,
-            args,
-            callback,
-            [],
-            Void,
-            false
-        );
-    };
+): () => CanisterMethodInfo<[], Void> {
+    return () => {
+        const finalCallback = (...args: any[]) => {
+            executeMethod(
+                'heartbeat',
+                undefined,
+                undefined,
+                args,
+                callback,
+                [],
+                Void,
+                false
+            );
+        };
 
-    return {
-        mode: 'heartbeat',
-        callback: finalCallback,
-        candid: '',
-        candidTypes: [],
-        paramsIdls: [],
-        returnIdl: Void,
-        async: isAsync(callback),
-        guard: undefined
+        return {
+            mode: 'heartbeat',
+            callback: finalCallback,
+            paramsIdls: [],
+            returnIdl: Void,
+            async: isAsync(callback),
+            guard: undefined
+        };
     };
 }

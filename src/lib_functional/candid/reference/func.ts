@@ -1,7 +1,7 @@
 import { CandidType } from '..';
 import { IDL } from '@dfinity/candid';
 import {
-    processMap,
+    Parent,
     toParamIDLTypes,
     toReturnIDLType
 } from '../../../lib_new/utils';
@@ -26,10 +26,10 @@ export function Func(
     // const name = v4();
 
     return {
-        getIDL() {
+        getIDL(parents: Parent[]) {
             return IDL.Func(
-                toParamIDLTypes(paramsIdls),
-                toReturnIDLType(returnIdl),
+                toParamIDLTypes(paramsIdls, parents),
+                toReturnIDLType(returnIdl, parents),
                 modeToCandid[mode]
             );
         }

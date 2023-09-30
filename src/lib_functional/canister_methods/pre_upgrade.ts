@@ -1,31 +1,31 @@
-import { isAsync } from '../../lib_new/method_decorators';
+import { isAsync } from '../../lib_new/utils';
 import { CanisterMethodInfo, executeMethod } from '.';
 import { Void } from '../../lib_new';
 
 export function preUpgrade(
     callback: () => void | Promise<void>
-): CanisterMethodInfo<[], Void> {
-    const finalCallback = (...args: any[]) => {
-        executeMethod(
-            'preUpgrade',
-            undefined,
-            undefined,
-            args,
-            callback,
-            [],
-            Void,
-            false
-        );
-    };
+): () => CanisterMethodInfo<[], Void> {
+    return () => {
+        const finalCallback = (...args: any[]) => {
+            executeMethod(
+                'preUpgrade',
+                undefined,
+                undefined,
+                args,
+                callback,
+                [],
+                Void,
+                false
+            );
+        };
 
-    return {
-        mode: 'preUpgrade',
-        callback: finalCallback,
-        candid: '',
-        candidTypes: [],
-        paramsIdls: [],
-        returnIdl: Void,
-        async: isAsync(callback),
-        guard: undefined
+        return {
+            mode: 'preUpgrade',
+            callback: finalCallback,
+            paramsIdls: [],
+            returnIdl: Void,
+            async: isAsync(callback),
+            guard: undefined
+        };
     };
 }
