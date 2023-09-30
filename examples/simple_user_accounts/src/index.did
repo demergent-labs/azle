@@ -1,8 +1,5 @@
-type rec_0 = record {id:text; username:text};
-type rec_1 = record {id:text; username:text};
-type rec_2 = record {id:text; username:text};
 service: () -> {
-    getUserById: (text) -> (opt rec_0) query;
-    getAllUsers: () -> (vec rec_1) query;
-    createUser: (text) -> (rec_2);
+    getUserById: (text) -> (opt record {id:text; username:text}) query;
+    getAllUsers: () -> (vec record {id:text; username:text}) query;
+    createUser: (text) -> (record {id:text; username:text});
 }

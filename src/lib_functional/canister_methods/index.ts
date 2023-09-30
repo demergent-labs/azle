@@ -5,6 +5,7 @@ import {
     DecodeVisitor,
     EncodeVisitor
 } from '../../lib_new/visitors/encode_decode';
+import { Parent } from '../../lib_new/utils';
 
 export * from './heartbeat';
 export * from './init';
@@ -136,4 +137,10 @@ export function executeMethod(
 
         console.log(`final instructions: ${ic.instructionCounter()}`);
     }
+}
+
+export function createParents(parent: any): Parent[] {
+    return parent === undefined
+        ? []
+        : [{ idl: parent, name: parent._azleName }];
 }
