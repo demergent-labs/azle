@@ -58,19 +58,104 @@ export function extractCandid(
 
 export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
     visitService(t: IDL.ServiceClass, data: VisitorData): VisitorResult {
-        const stuff = t._fields.map(([_name, func]) =>
-            func.accept(this, { ...data, isOnService: true })
+        // To get all of the candid types we need to look at all of the methods
+        const isOtherFunction = (func: IDL.FuncClass) => {
+            return (
+                !func.annotations.includes('update') &&
+                !func.annotations.includes('query') &&
+                !func.annotations.includes('init') &&
+                !func.annotations.includes('postUpgrade')
+            );
+        };
+        const otherCandidTypes = extractCandid(
+            t._fields
+                .filter(([_name, func]) => isOtherFunction(func))
+                .map(([_name, func]) =>
+                    func.accept(this, { ...data, isOnService: true })
+                )
+        )[1];
+
+        const isQueryOrUpdateFunction = (func: IDL.FuncClass) => {
+            return (
+                func.annotations.includes('update') ||
+                func.annotations.includes('query')
+            );
+        };
+        // To get all of the canister methods we need to only look at update and query
+        const canisterMethods = extractCandid(
+            t._fields
+                .filter(([_name, func]) => isQueryOrUpdateFunction(func))
+                .map(([_name, func]) =>
+                    func.accept(this, { ...data, isOnService: true })
+                )
         );
-        const candid = extractCandid(stuff);
-        const funcStrings = candid[0]
+        const canisterMethodsNames = t._fields
+            .filter(([_name, func]) => isQueryOrUpdateFunction(func))
+            .map(([name, _func]) => name);
+
+        const isInitFunction = (func: IDL.FuncClass) =>
+            func.annotations.includes('init');
+        const isPostUpgradeFunction = (func: IDL.FuncClass) =>
+            func.annotations.includes('postUpgrade');
+        // To get the service params we need to look at the init function
+        const initMethod = extractCandid(
+            t._fields
+                .filter(([_name, func]) => isInitFunction(func))
+                .map(([_name, initFunc]) =>
+                    initFunc.accept(this, { ...data, isOnService: true })
+                )
+        );
+        const postMethod = extractCandid(
+            t._fields
+                .filter(([_name, func]) => isPostUpgradeFunction(func))
+                .map(([_name, initFunc]) =>
+                    initFunc.accept(this, { ...data, isOnService: true })
+                )
+        );
+        const initMethodCandidString = initMethod[0];
+        const postMethodCandidString = postMethod[0];
+        function getFunctionParams(
+            initFuncString: string[],
+            postFuncString: string[]
+        ) {
+            if (initFuncString.length === 0) {
+                if (postFuncString.length === 0) {
+                    return '()';
+                }
+                const parts = postFuncString[0].split('->');
+                if (parts.length >= 2) {
+                    return parts[0].trim();
+                }
+            }
+            const parts = initFuncString[0].split('->');
+            if (parts.length >= 2) {
+                return parts[0].trim();
+            }
+        }
+        const canisterParamsString = getFunctionParams(
+            initMethodCandidString,
+            postMethodCandidString
+        );
+
+        const candidTypes = {
+            ...otherCandidTypes,
+            ...canisterMethods[1],
+            ...initMethod[1],
+            ...postMethod[1]
+        };
+
+        const funcStrings = canisterMethods[0]
             .map((value, index) => {
-                return `\t${t._fields[index][0]}: ${value};`;
+                return `    ${canisterMethodsNames[index]}: ${value};`;
             })
             .join('\n');
         if (data.isFirstService) {
-            return [`service: () -> {\n${funcStrings}\n}`, candid[1]];
+            return [
+                `service: ${canisterParamsString} -> {\n${funcStrings}\n}`,
+                candidTypes
+            ];
         }
-        return [`service {\n${funcStrings}\n}`, candid[1]];
+        return [`service {\n${funcStrings}\n}`, candidTypes];
     }
     visitPrimitive<T>(
         t: IDL.PrimitiveType<T>,
@@ -116,7 +201,9 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         const candidRets = extractCandid(retsTypes);
         const args = candidArgs[0].join(', ');
         const rets = candidRets[0].join(', ');
-        const annon = ' ' + t.annotations.join(' ');
+        const annon = t.annotations.includes('update')
+            ? ''
+            : ' ' + t.annotations.join(' ');
         return [
             `${data.isOnService ? '' : 'func '}(${args}) -> (${rets})${annon}`,
             { ...candidArgs[1], ...candidRets[1] }

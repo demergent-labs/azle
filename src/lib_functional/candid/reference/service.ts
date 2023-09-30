@@ -228,10 +228,7 @@ export function Canister<T extends CanisterOptions>(
                         parents
                     );
 
-                    const annotations =
-                        functionInfo(parentOrUndefined).mode === 'update'
-                            ? []
-                            : ['query'];
+                    const annotations = [functionInfo(parentOrUndefined).mode];
 
                     return {
                         ...accumulator,
