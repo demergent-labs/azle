@@ -19,31 +19,31 @@ import {
 } from './errors';
 
 // Number of nanoseconds since the UNIX epoch in UTC timezone.
-export type ICRC1Timestamp = nat64;
-export const ICRC1Timestamp = nat64;
+export type Timestamp = nat64;
+export const Timestamp = nat64;
 
-export type ICRC1Subaccount = blob;
-export const ICRC1Subaccount = blob;
+export type Subaccount = blob;
+export const Subaccount = blob;
 
-export const ICRC1Account = Record({
+export const Account = Record({
     owner: Principal,
-    subaccount: Opt(ICRC1Subaccount)
+    subaccount: Opt(Subaccount)
 });
 
-export const ICRC1TransferArgs = Record({
-    from_subaccount: Opt(ICRC1Subaccount),
-    to: ICRC1Account,
+export const TransferArgs = Record({
+    from_subaccount: Opt(Subaccount),
+    to: Account,
     amount: nat,
     fee: Opt(nat),
     memo: Opt(blob),
-    created_at_time: Opt(ICRC1Timestamp)
+    created_at_time: Opt(Timestamp)
 });
 
 const CreatedInFuture = Record({
-    ledger_time: ICRC1Timestamp
+    ledger_time: Timestamp
 });
 
-export const ICRC1TransferError = Variant({
+export const TransferError = Variant({
     BadFee,
     BadBurn,
     InsufficientFunds,
@@ -54,12 +54,12 @@ export const ICRC1TransferError = Variant({
     GenericError: GenericError
 });
 
-export const ICRC1TransferResult = Variant({
+export const TransferResult = Variant({
     Ok: nat,
-    Err: ICRC1TransferError
+    Err: TransferError
 });
 
-export const ICRC1Value = Variant({
+export const Value = Variant({
     Nat: nat,
     Int: int,
     Text: text,

@@ -1,48 +1,56 @@
-type ICRCAccount = record { owner : principal; subaccount : opt vec nat8 };
-type ICRCTransferArgs = record {
-  to : ICRCAccount;
-  fee : opt nat;
-  memo : opt vec nat8;
-  from_subaccount : opt vec nat8;
-  created_at_time : opt nat64;
-  amount : nat;
-};
-type ICRCTransferError = variant {
-  GenericError : _InlineICRCTransferErrorGenericError;
-  TemporarilyUnavailable;
-  BadBurn : _InlineICRCTransferErrorBadBurn;
-  Duplicate : _InlineICRCTransferErrorDuplicate;
-  BadFee : _InlineICRCTransferErrorBadFee;
-  CreatedInFuture : _InlineICRCTransferErrorCreatedInFuture;
-  TooOld;
-  InsufficientFunds : _InlineICRCTransferErrorInsufficientFunds;
-};
-type ICRCValue = variant { Int : int; Nat : nat; Blob : vec nat8; Text : text };
-type ManualReply = variant { Ok : nat; Err : ICRCTransferError };
-type _InlineICRCTransferErrorBadBurn = record { min_burn_amount : nat };
-type _InlineICRCTransferErrorBadFee = record { expected_fee : nat };
-type _InlineICRCTransferErrorCreatedInFuture = record { ledger_time : nat64 };
-type _InlineICRCTransferErrorDuplicate = record { duplicate_of : nat };
-type _InlineICRCTransferErrorGenericError = record {
-  message : text;
-  error_code : nat;
-};
-type _InlineICRCTransferErrorInsufficientFunds = record { balance : nat };
-type _InlineIcrc1SupportedStandardsReturnType = record {
-  url : text;
-  name : text;
-};
-service : () -> {
-  icrc1_balance_of : (ICRCAccount) -> (nat) query;
-  icrc1_decimals : () -> (nat8) query;
-  icrc1_fee : () -> (nat) query;
-  icrc1_metadata : () -> (vec record { text; ICRCValue }) query;
-  icrc1_minting_account : () -> (opt ICRCAccount) query;
-  icrc1_name : () -> (text) query;
-  icrc1_supported_standards : () -> (
-      vec _InlineIcrc1SupportedStandardsReturnType,
-    ) query;
-  icrc1_symbol : () -> (text) query;
-  icrc1_total_supply : () -> (nat) query;
-  icrc1_transfer : (ICRCTransferArgs) -> (ManualReply);
+type rec_41 = variant {Int:int; Nat:nat; Blob:vec nat8; Text:text};
+type rec_42 = record {owner:principal; subaccount:opt vec nat8};
+type rec_43 = record {owner:principal; subaccount:opt vec nat8};
+type rec_45 = record {owner:principal; subaccount:opt vec nat8};
+type rec_44 = record {to:rec_45; fee:opt nat; memo:opt vec nat8; from_subaccount:opt vec nat8; created_at_time:opt nat64; amount:nat};
+type rec_53 = record {message:text; error_code:nat};
+type rec_49 = record {min_burn_amount:nat};
+type rec_52 = record {duplicate_of:nat};
+type rec_48 = record {expected_fee:nat};
+type rec_51 = record {ledger_time:nat64};
+type rec_50 = record {balance:nat};
+type rec_47 = variant {GenericError:rec_53; TemporarilyUnavailable; BadBurn:rec_49; Duplicate:rec_52; BadFee:rec_48; CreatedInFuture:rec_51; TooOld; InsufficientFunds:rec_50};
+type rec_46 = variant {Ok:nat; Err:rec_47};
+type rec_54 = record {url:text; name:text};
+type rec_56 = record {owner:principal; subaccount:opt vec nat8};
+type rec_55 = record {fee:opt nat; memo:opt vec nat8; from_subaccount:opt vec nat8; created_at_time:opt nat64; amount:nat; expected_allowance:opt nat; expires_at:opt nat64; spender:rec_56};
+type rec_65 = record {message:text; error_code:nat};
+type rec_64 = record {duplicate_of:nat};
+type rec_59 = record {expected_fee:nat};
+type rec_61 = record {current_allowance:nat};
+type rec_63 = record {ledger_time:nat64};
+type rec_62 = record {ledger_time:nat64};
+type rec_60 = record {balance:nat};
+type rec_58 = variant {GenericError:rec_65; TemporarilyUnavailable; Duplicate:rec_64; BadFee:rec_59; AllowanceChanged:rec_61; CreatedInFuture:rec_63; TooOld; Expired:rec_62; InsufficientFunds:rec_60};
+type rec_57 = variant {Ok:nat; Err:rec_58};
+type rec_68 = record {owner:principal; subaccount:opt vec nat8};
+type rec_67 = record {owner:principal; subaccount:opt vec nat8};
+type rec_66 = record {to:rec_68; fee:opt nat; from:rec_67; memo:opt vec nat8; created_at_time:opt nat64; amount:nat};
+type rec_77 = record {message:text; error_code:nat};
+type rec_74 = record {allowance:nat};
+type rec_72 = record {min_burn_amount:nat};
+type rec_76 = record {duplicate_of:nat};
+type rec_71 = record {expected_fee:nat};
+type rec_75 = record {ledger_time:nat64};
+type rec_73 = record {balance:nat};
+type rec_70 = variant {GenericError:rec_77; TemporarilyUnavailable; InsufficientAllowance:rec_74; BadBurn:rec_72; Duplicate:rec_76; BadFee:rec_71; CreatedInFuture:rec_75; TooOld; InsufficientFunds:rec_73};
+type rec_69 = variant {Ok:nat; Err:rec_70};
+type rec_79 = record {owner:principal; subaccount:opt vec nat8};
+type rec_80 = record {owner:principal; subaccount:opt vec nat8};
+type rec_78 = record {account:rec_79; spender:rec_80};
+type rec_81 = record {allowance:nat; expires_at:opt nat64};
+service: () -> {
+    icrc1_metadata: () -> (vec record {text; rec_41}) query;
+    icrc1_name: () -> (text) query;
+    icrc1_decimals: () -> (nat8) query;
+    icrc1_symbol: () -> (text) query;
+    icrc1_fee: () -> (nat) query;
+    icrc1_total_supply: () -> (nat) query;
+    icrc1_minting_account: () -> (opt rec_42) query;
+    icrc1_balance_of: (rec_43) -> (nat) query;
+    icrc1_transfer: (rec_44) -> (rec_46);
+    icrc1_supported_standards: () -> (vec rec_54) query;
+    icrc2_approve: (rec_55) -> (rec_57);
+    icrc2_transfer_from: (rec_66) -> (rec_69);
+    icrc2_allowance: (rec_78) -> (rec_81);
 }

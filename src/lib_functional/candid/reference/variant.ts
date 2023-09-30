@@ -1,10 +1,16 @@
-import { TypeMapping } from '..';
+import { CandidType, TypeMapping } from '..';
 import { IDL } from '@dfinity/candid';
 import { processMap } from '../../../lib_new/utils';
 import { v4 } from 'uuid';
 import { Null } from '../../../lib_new/primitives';
 
-export function Variant<T>(obj: T): RequireExactlyOne<{
+export function Variant<
+    T extends {
+        [K in keyof T]: CandidType;
+    }
+>(
+    obj: T
+): RequireExactlyOne<{
     [K in keyof T]: TypeMapping<T[K]>;
 }> & { _azleCandidType?: '_azleCandidType' } {
     const name = v4();
