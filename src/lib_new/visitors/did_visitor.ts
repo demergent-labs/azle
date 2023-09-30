@@ -4,6 +4,7 @@ type VisitorData = {
     usedRecClasses: IDL.RecClass[];
     isOnService: boolean;
     isFirstService: boolean;
+    systemFuncs: IDL.FuncClass[];
 };
 type VisitorResult = [CandidDef, CandidTypesDefs];
 
@@ -17,7 +18,8 @@ type VisitorResult = [CandidDef, CandidTypesDefs];
 export const DEFAULT_VISITOR_DATA: VisitorData = {
     usedRecClasses: [],
     isOnService: false,
-    isFirstService: false
+    isFirstService: false,
+    systemFuncs: []
 };
 
 export function DidResultToCandidString(result: VisitorResult): string {
@@ -56,42 +58,24 @@ export function extractCandid(
     return [paramCandid, candidTypeDefs];
 }
 
+function hch(value: any) {
+    if (value._azleIsCanister) {
+        return value().getIDL();
+    }
+    return value;
+}
+
 export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
     visitService(t: IDL.ServiceClass, data: VisitorData): VisitorResult {
-        // To get all of the candid types we need to look at all of the methods
-        const isOtherFunction = (func: IDL.FuncClass) => {
-            return (
-                !func.annotations.includes('update') &&
-                !func.annotations.includes('query') &&
-                !func.annotations.includes('init') &&
-                !func.annotations.includes('postUpgrade')
-            );
-        };
-        const otherCandidTypes = extractCandid(
-            t._fields
-                .filter(([_name, func]) => isOtherFunction(func))
-                .map(([_name, func]) =>
-                    func.accept(this, { ...data, isOnService: true })
-                )
-        )[1];
-
-        const isQueryOrUpdateFunction = (func: IDL.FuncClass) => {
-            return (
-                func.annotations.includes('update') ||
-                func.annotations.includes('query')
-            );
-        };
-        // To get all of the canister methods we need to only look at update and query
         const canisterMethods = extractCandid(
-            t._fields
-                .filter(([_name, func]) => isQueryOrUpdateFunction(func))
-                .map(([_name, func]) =>
-                    func.accept(this, { ...data, isOnService: true })
-                )
+            t._fields.map(([_name, func]) =>
+                func.accept(this, {
+                    ...data,
+                    isOnService: true,
+                    isFirstService: false
+                })
+            )
         );
-        const canisterMethodsNames = t._fields
-            .filter(([_name, func]) => isQueryOrUpdateFunction(func))
-            .map(([name, _func]) => name);
 
         const isInitFunction = (func: IDL.FuncClass) =>
             func.annotations.includes('init');
@@ -99,17 +83,25 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
             func.annotations.includes('postUpgrade');
         // To get the service params we need to look at the init function
         const initMethod = extractCandid(
-            t._fields
-                .filter(([_name, func]) => isInitFunction(func))
-                .map(([_name, initFunc]) =>
-                    initFunc.accept(this, { ...data, isOnService: true })
+            data.systemFuncs
+                .filter((func) => isInitFunction(func))
+                .map((initFunc) =>
+                    initFunc.accept(this, {
+                        ...data,
+                        isOnService: true,
+                        isFirstService: false
+                    })
                 )
         );
         const postMethod = extractCandid(
-            t._fields
-                .filter(([_name, func]) => isPostUpgradeFunction(func))
-                .map(([_name, initFunc]) =>
-                    initFunc.accept(this, { ...data, isOnService: true })
+            data.systemFuncs
+                .filter((func) => isPostUpgradeFunction(func))
+                .map((initFunc) =>
+                    initFunc.accept(this, {
+                        ...data,
+                        isOnService: true,
+                        isFirstService: false
+                    })
                 )
         );
         const initMethodCandidString = initMethod[0];
@@ -138,24 +130,26 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         );
 
         const candidTypes = {
-            ...otherCandidTypes,
             ...canisterMethods[1],
             ...initMethod[1],
             ...postMethod[1]
         };
 
+        const tab = data.isFirstService ? '    ' : '';
+        const func_separator = data.isFirstService ? '\n' : ' ';
+
         const funcStrings = canisterMethods[0]
             .map((value, index) => {
-                return `    ${canisterMethodsNames[index]}: ${value};`;
+                return `${tab}${t._fields[index][0]}: ${value};`;
             })
-            .join('\n');
+            .join(func_separator);
         if (data.isFirstService) {
             return [
                 `service: ${canisterParamsString} -> {\n${funcStrings}\n}`,
                 candidTypes
             ];
         }
-        return [`service {\n${funcStrings}\n}`, candidTypes];
+        return [`service {${funcStrings}}`, candidTypes];
     }
     visitPrimitive<T>(
         t: IDL.PrimitiveType<T>,
@@ -169,7 +163,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         data: VisitorData
     ): VisitorResult {
         const fields = components.map((value) =>
-            value.accept(this, { ...data, isOnService: false })
+            hch(value).accept(this, { ...data, isOnService: false })
         );
         const candid = extractCandid(fields);
         return [`record {${candid[0].join('; ')}}`, candid[1]];
@@ -179,7 +173,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         ty: IDL.Type<T>,
         data: VisitorData
     ): VisitorResult {
-        const candid = ty.accept(this, { ...data, isOnService: false });
+        const candid = hch(ty).accept(this, { ...data, isOnService: false });
         return [`opt ${candid[0]}`, candid[1]];
     }
     visitVec<T>(
@@ -187,16 +181,16 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         ty: IDL.Type<T>,
         data: VisitorData
     ): VisitorResult {
-        const candid = ty.accept(this, { ...data, isOnService: false });
+        const candid = hch(ty).accept(this, { ...data, isOnService: false });
         return [`vec ${candid[0]}`, candid[1]];
     }
     visitFunc(t: IDL.FuncClass, data: VisitorData): VisitorResult {
         const argsTypes = t.argTypes.map((value) =>
-            value.accept(this, { ...data, isOnService: false })
+            hch(value).accept(this, { ...data, isOnService: false })
         );
         const candidArgs = extractCandid(argsTypes);
         const retsTypes = t.retTypes.map((value) =>
-            value.accept(this, { ...data, isOnService: false })
+            hch(value).accept(this, { ...data, isOnService: false })
         );
         const candidRets = extractCandid(retsTypes);
         const args = candidArgs[0].join(', ');
@@ -220,7 +214,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         // Everything else will just be the normal inline candid def
         const usedRecClasses = data.usedRecClasses;
         if (!usedRecClasses.includes(t)) {
-            const candid = ty.accept(this, {
+            const candid = hch(ty).accept(this, {
                 usedRecClasses: [...usedRecClasses, t],
                 isOnService: false,
                 isFirstService: false
@@ -237,7 +231,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         data: VisitorData
     ): VisitorResult {
         const candidFields = fields.map(([key, value]) =>
-            value.accept(this, { ...data, isOnService: false })
+            hch(value).accept(this, { ...data, isOnService: false })
         );
         const candid = extractCandid(candidFields);
         const field_strings = fields.map(
@@ -251,7 +245,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         data: VisitorData
     ): VisitorResult {
         const candidFields = fields.map(([key, value]) =>
-            value.accept(this, { ...data, isOnService: false })
+            hch(value).accept(this, { ...data, isOnService: false })
         );
         const candid = extractCandid(candidFields);
         const fields_string = fields.map(

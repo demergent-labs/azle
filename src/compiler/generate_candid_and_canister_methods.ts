@@ -34,15 +34,16 @@ export function generateCandidAndCanisterMethods(mainJs: string): {
     const script = new vm.Script(mainJs);
     script.runInContext(context);
 
-    const candidInfo = (sandbox.exports as any).canisterMethods
-        .getIDL([])
-        .accept(new DidVisitor(), {
-            ...DEFAULT_VISITOR_DATA,
-            isFirstService: true
-        });
+    const canisterMethods = (sandbox.exports as any).canisterMethods;
+
+    const candidInfo = canisterMethods.getIDL([]).accept(new DidVisitor(), {
+        ...DEFAULT_VISITOR_DATA,
+        isFirstService: true,
+        systemFuncs: canisterMethods.getSystemFunctionIDLs()
+    });
 
     return {
         candid: DidResultToCandidString(candidInfo),
-        canisterMethods: (sandbox.exports as any).canisterMethods
+        canisterMethods: canisterMethods
     };
 }

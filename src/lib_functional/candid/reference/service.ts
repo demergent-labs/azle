@@ -214,11 +214,19 @@ export function Canister<T extends CanisterOptions>(
         returnFunction.queries = queries;
         returnFunction.updates = updates;
         returnFunction.callbacks = callbacks;
-        returnFunction.getIDL = (parents: Parent[]): IDL.ServiceClass => {
+        (returnFunction.getSystemFunctionIDLs = (
+            parents: Parent[]
+        ): IDL.FuncClass[] => {
             const serviceFunctionInfo: ServiceFunctionInfo = serviceOptions;
 
-            const record = Object.entries(serviceFunctionInfo).reduce(
-                (accumulator, [methodName, functionInfo]) => {
+            return Object.entries(serviceFunctionInfo).reduce(
+                (accumulator, [_methodName, functionInfo]) => {
+                    const mode = functionInfo(parentOrUndefined).mode;
+                    if (mode === 'update' || mode === 'query') {
+                        // We don't want init, post upgrade, etc showing up in the idl
+                        return accumulator;
+                    }
+
                     const paramRealIdls = toParamIDLTypes(
                         functionInfo(parentOrUndefined).paramsIdls,
                         parents
@@ -227,23 +235,53 @@ export function Canister<T extends CanisterOptions>(
                         functionInfo(parentOrUndefined).returnIdl,
                         parents
                     );
-
-                    const annotations = [functionInfo(parentOrUndefined).mode];
-
-                    return {
+                    return [
                         ...accumulator,
-                        [methodName]: IDL.Func(
-                            paramRealIdls,
-                            returnRealIdl,
-                            annotations
-                        )
-                    };
+                        IDL.Func(paramRealIdls, returnRealIdl, [mode])
+                    ];
                 },
-                {} as Record<string, IDL.FuncClass>
+                [] as IDL.FuncClass[]
             );
+        }),
+            (returnFunction.getIDL = (parents: Parent[]): IDL.ServiceClass => {
+                const serviceFunctionInfo: ServiceFunctionInfo = serviceOptions;
 
-            return IDL.Service(record);
-        };
+                const record = Object.entries(serviceFunctionInfo).reduce(
+                    (accumulator, [methodName, functionInfo]) => {
+                        const paramRealIdls = toParamIDLTypes(
+                            functionInfo(parentOrUndefined).paramsIdls,
+                            parents
+                        );
+                        const returnRealIdl = toReturnIDLType(
+                            functionInfo(parentOrUndefined).returnIdl,
+                            parents
+                        );
+
+                        const mode = functionInfo(parentOrUndefined).mode;
+                        let annotations: string[] = [];
+                        if (mode === 'update') {
+                            // do nothing
+                        } else if (mode === 'query') {
+                            annotations = ['query'];
+                        } else {
+                            // We don't want init, post upgrade, etc showing up in the idl
+                            return accumulator;
+                        }
+
+                        return {
+                            ...accumulator,
+                            [methodName]: IDL.Func(
+                                paramRealIdls,
+                                returnRealIdl,
+                                annotations
+                            )
+                        };
+                    },
+                    {} as Record<string, IDL.FuncClass>
+                );
+
+                return IDL.Service(record);
+            });
 
         if (originalPrincipal !== undefined && originalPrincipal._isPrincipal) {
             return returnFunction(originalPrincipal);

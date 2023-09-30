@@ -89,6 +89,9 @@ export function toIDLType(idl: CandidClass, parents: Parent[]): IDL.Type<any> {
         }
         return idl.getIDL(parents);
     }
+    if (idl._azleIsCanister) {
+        return toIDLType(idl(), parents);
+    }
     // if (idl.display === undefined || idl.getIDL === undefined) {
     //     throw Error(`${JSON.stringify(idl)} is not a candid type`);
     // }
