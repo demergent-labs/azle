@@ -1,6 +1,4 @@
-type rec_51 = record {publicKey:vec nat8};
-type rec_52 = record {signature:vec nat8};
 service: () -> {
-    publicKey: () -> (rec_51);
-    sign: (vec nat8) -> (rec_52);
+    publicKey: () -> (record {publicKey:vec nat8});
+    sign: (vec nat8) -> (record {signature:vec nat8});
 }

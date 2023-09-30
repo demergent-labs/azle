@@ -23,7 +23,7 @@ export const DEFAULT_VISITOR_DATA: VisitorData = {
 export function DidResultToCandidString(result: VisitorResult): string {
     const [candid, candidTypeDefs] = result;
     const candidTypesString = newTypeToCandidString(candidTypeDefs);
-    return candidTypesString + candid;
+    return candidTypesString + candid + '\n';
 }
 
 function newTypeToCandidString(newTypes: CandidTypesDefs): string {
