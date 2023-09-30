@@ -1,36 +1,41 @@
-import { nat32, Vec } from 'azle';
+import { nat32, text, update, Vec } from 'azle';
 import { Post } from './candid_types';
 import { getReactionFromStateReaction } from './reactions';
 import { state, StatePost, StateThread, StateUser } from './state';
 import { getThreadFromStateThread } from './threads';
 import { getUserFromStateUser } from './users';
 
-export function createPost(
-    authorId: string,
-    text: string,
-    threadId: string,
-    joinDepth: nat32
-): typeof Post {
-    const id = Object.keys(state.posts).length.toString();
+export const createPost = update(
+    [text, text, text, nat32],
+    Post,
+    (authorId, text, threadId, joinDepth) => {
+        const id = Object.keys(state.posts).length.toString();
 
-    const statePost: StatePost = {
-        id,
-        authorId,
-        reactionIds: [],
-        text,
-        threadId
-    };
-    const updatedStateAuthor = getUpdatedStateAuthor(authorId, statePost.id);
-    const updatedStateThread = getUpdatedStateThread(threadId, statePost.id);
+        const statePost: StatePost = {
+            id,
+            authorId,
+            reactionIds: [],
+            text,
+            threadId
+        };
+        const updatedStateAuthor = getUpdatedStateAuthor(
+            authorId,
+            statePost.id
+        );
+        const updatedStateThread = getUpdatedStateThread(
+            threadId,
+            statePost.id
+        );
 
-    state.posts[id] = statePost;
-    state.users[authorId] = updatedStateAuthor;
-    state.threads[threadId] = updatedStateThread;
+        state.posts[id] = statePost;
+        state.users[authorId] = updatedStateAuthor;
+        state.threads[threadId] = updatedStateThread;
 
-    const post = getPostFromStatePost(statePost, joinDepth);
+        const post = getPostFromStatePost(statePost, joinDepth);
 
-    return post;
-}
+        return post;
+    }
+);
 
 export function getAllPosts(joinDepth: nat32): (typeof Post)[] {
     return Object.values(state.posts).map((statePost) =>

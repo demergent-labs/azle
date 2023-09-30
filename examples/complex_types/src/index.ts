@@ -6,13 +6,7 @@ import { createThread, getAllThreads } from './threads';
 import { createUser, getAllUsers } from './users';
 
 export default Canister({
-    createPost: update(
-        [text, text, text, nat32],
-        Post,
-        (authorId, text, threadId, joinDepth) => {
-            return createPost(authorId, text, threadId, joinDepth);
-        }
-    ),
+    createPost,
 
     getAllPosts: query([nat32], Vec(Post), (joinDepth) => {
         return getAllPosts(joinDepth);

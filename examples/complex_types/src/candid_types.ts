@@ -19,24 +19,17 @@ export const User = Recursive(() =>
 export const Post = Recursive(() =>
     Record({
         id: text,
-
         author: User,
-
         reactions: Vec(Reaction),
-
         text: text,
-
         thread: Thread
     })
 );
 
 export const Thread = Record({
     id: text,
-
     author: User,
-
     posts: Vec(Post),
-
     title: text
 });
 
