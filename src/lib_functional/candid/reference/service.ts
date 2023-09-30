@@ -37,7 +37,7 @@ export function Canister<T extends CanisterOptions>(
     let result = (parentOrPrincipal: any) => {
         const originalPrincipal = parentOrPrincipal;
         const parentOrUndefined =
-            parentOrPrincipal instanceof Principal
+            parentOrPrincipal !== undefined && parentOrPrincipal._isPrincipal
                 ? undefined
                 : parentOrPrincipal;
         const callbacks = Object.entries(serviceOptions).reduce(
@@ -245,7 +245,7 @@ export function Canister<T extends CanisterOptions>(
             return IDL.Service(record);
         };
 
-        if (originalPrincipal instanceof Principal) {
+        if (originalPrincipal !== undefined && originalPrincipal._isPrincipal) {
             return returnFunction(originalPrincipal);
         }
 
