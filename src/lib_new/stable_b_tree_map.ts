@@ -1,29 +1,7 @@
 import { CandidType, None, Some, TypeMapping } from '../lib_functional';
 import { IDL, nat8, nat64, Opt } from './index';
-import { CandidClass, toIDLType } from './utils';
-import { DecodeVisitor, EncodeVisitor } from './visitors/encode_decode';
-
-function visitAndEncode<T>(fakeIdl: CandidClass, data: T): Uint8Array {
-    const realIDL = toIDLType(fakeIdl, []);
-
-    const encodeReadyKey = realIDL.accept(new EncodeVisitor(), {
-        js_class: fakeIdl,
-        js_data: data
-    });
-
-    return new Uint8Array(IDL.encode([realIDL], [encodeReadyKey]));
-}
-
-function decodeAndVisit<T>(fakeIdl: CandidClass, data: ArrayBuffer): any {
-    const realIDL = toIDLType(fakeIdl, []);
-
-    const candidDecodedValue = IDL.decode([realIDL], data)[0] as any;
-
-    return realIDL.accept(new DecodeVisitor(), {
-        js_class: fakeIdl,
-        js_data: candidDecodedValue
-    });
-}
+import { toIDLType } from './utils';
+import { encode, decode } from '../lib_functional/candid/serde';
 
 export function StableBTreeMap<
     Key extends CandidType,
@@ -47,11 +25,8 @@ export function StableBTreeMap<
          * @returns `true` if the key exists in the map, `false` otherwise.
          */
         containsKey(key: TypeMapping<Key>): boolean {
-            const candidEncodedMemoryId = visitAndEncode(
-                IDL.Nat8,
-                memoryId
-            ).buffer;
-            const candidEncodedKey = visitAndEncode(keyType, key).buffer;
+            const candidEncodedMemoryId = encode(memoryId, IDL.Nat8).buffer;
+            const candidEncodedKey = encode(key, keyType).buffer;
 
             return (globalThis as any)._azleIc.stableBTreeMapContainsKey(
                 candidEncodedMemoryId,
@@ -64,11 +39,8 @@ export function StableBTreeMap<
          * @returns the value associated with the given key, if it exists.
          */
         get(key: TypeMapping<Key>): Opt<TypeMapping<Value>> {
-            const candidEncodedMemoryId = visitAndEncode(
-                IDL.Nat8,
-                memoryId
-            ).buffer;
-            const candidEncodedKey = visitAndEncode(keyType, key).buffer;
+            const candidEncodedMemoryId = encode(memoryId, IDL.Nat8).buffer;
+            const candidEncodedKey = encode(key, keyType).buffer;
 
             const candidEncodedValue = (
                 globalThis as any
@@ -80,7 +52,7 @@ export function StableBTreeMap<
             if (candidEncodedValue === undefined) {
                 return None;
             } else {
-                return Some(decodeAndVisit(valueType, candidEncodedValue));
+                return Some(decode(candidEncodedValue, valueType));
             }
         },
         /**
@@ -93,12 +65,9 @@ export function StableBTreeMap<
             key: TypeMapping<Key>,
             value: TypeMapping<Value>
         ): Opt<TypeMapping<Value>> {
-            const candidEncodedMemoryId = visitAndEncode(
-                IDL.Nat8,
-                memoryId
-            ).buffer;
-            const candidEncodedKey = visitAndEncode(keyType, key).buffer;
-            const candidEncodedValue = visitAndEncode(valueType, value).buffer;
+            const candidEncodedMemoryId = encode(memoryId, IDL.Nat8).buffer;
+            const candidEncodedKey = encode(key, keyType).buffer;
+            const candidEncodedValue = encode(value, valueType).buffer;
 
             const candidEncodedResultValue = (
                 globalThis as any
@@ -111,9 +80,7 @@ export function StableBTreeMap<
             if (candidEncodedResultValue === undefined) {
                 return None;
             } else {
-                return Some(
-                    decodeAndVisit(valueType, candidEncodedResultValue)
-                );
+                return Some(decode(candidEncodedResultValue, valueType));
             }
         },
         /**
@@ -121,10 +88,7 @@ export function StableBTreeMap<
          * @returns `true` if the map contains no elements, `false` otherwise.
          */
         isEmpty(): boolean {
-            const candidEncodedMemoryId = visitAndEncode(
-                IDL.Nat8,
-                memoryId
-            ).buffer;
+            const candidEncodedMemoryId = encode(memoryId, IDL.Nat8).buffer;
 
             return (globalThis as any)._azleIc.stableBTreeMapIsEmpty(
                 candidEncodedMemoryId
@@ -135,10 +99,7 @@ export function StableBTreeMap<
          * @returns tuples representing key/value pairs.
          */
         items(): [TypeMapping<Key>, TypeMapping<Value>][] {
-            const candidEncodedMemoryId = visitAndEncode(
-                IDL.Nat8,
-                memoryId
-            ).buffer;
+            const candidEncodedMemoryId = encode(memoryId, IDL.Nat8).buffer;
 
             const candidEncodedItems = (
                 globalThis as any
@@ -147,8 +108,8 @@ export function StableBTreeMap<
             // TODO too much copying
             return candidEncodedItems.map((candidEncodedItem: any) => {
                 return [
-                    decodeAndVisit(keyType, candidEncodedItem[0]),
-                    decodeAndVisit(valueType, candidEncodedItem[1])
+                    decode(candidEncodedItem[0], keyType),
+                    decode(candidEncodedItem[1], valueType)
                 ];
             });
         },
@@ -157,10 +118,7 @@ export function StableBTreeMap<
          * @returns they keys in the map.
          */
         keys(): TypeMapping<Key>[] {
-            const candidEncodedMemoryId = visitAndEncode(
-                IDL.Nat8,
-                memoryId
-            ).buffer;
+            const candidEncodedMemoryId = encode(memoryId, IDL.Nat8).buffer;
 
             const candidEncodedKeys = (
                 globalThis as any
@@ -168,7 +126,7 @@ export function StableBTreeMap<
 
             // TODO too much copying
             return candidEncodedKeys.map((candidEncodedKey: any) => {
-                return decodeAndVisit(keyType, candidEncodedKey);
+                return decode(candidEncodedKey, keyType);
             });
         },
         /**
@@ -176,16 +134,13 @@ export function StableBTreeMap<
          * @returns the number of elements in the map.
          */
         len(): nat64 {
-            const candidEncodedMemoryId = visitAndEncode(
-                IDL.Nat8,
-                memoryId
-            ).buffer;
+            const candidEncodedMemoryId = encode(memoryId, IDL.Nat8).buffer;
 
             const candidEncodedLen = (
                 globalThis as any
             )._azleIc.stableBTreeMapLen(candidEncodedMemoryId);
 
-            return decodeAndVisit(IDL.Nat64, candidEncodedLen);
+            return decode(candidEncodedLen, IDL.Nat64);
         },
         /**
          * Removes a key from the map.
@@ -193,11 +148,8 @@ export function StableBTreeMap<
          * @returns the previous value at the key if it exists, `null` otherwise.
          */
         remove(key: TypeMapping<Key>): Opt<TypeMapping<Value>> {
-            const candidEncodedMemoryId = visitAndEncode(
-                IDL.Nat8,
-                memoryId
-            ).buffer;
-            const candidEncodedKey = visitAndEncode(keyType, key).buffer;
+            const candidEncodedMemoryId = encode(memoryId, IDL.Nat8).buffer;
+            const candidEncodedKey = encode(key, keyType).buffer;
 
             const candidEncodedValue = (
                 globalThis as any
@@ -209,7 +161,7 @@ export function StableBTreeMap<
             if (candidEncodedValue === undefined) {
                 return None;
             } else {
-                return Some(decodeAndVisit(valueType, candidEncodedValue));
+                return Some(decode(candidEncodedValue, valueType));
             }
         },
         /**
@@ -217,10 +169,7 @@ export function StableBTreeMap<
          * @returns the values in the map.
          */
         values(): TypeMapping<Value>[] {
-            const candidEncodedMemoryId = visitAndEncode(
-                IDL.Nat8,
-                memoryId
-            ).buffer;
+            const candidEncodedMemoryId = encode(memoryId, IDL.Nat8).buffer;
 
             const candidEncodedValues = (
                 globalThis as any
@@ -228,7 +177,7 @@ export function StableBTreeMap<
 
             // TODO too much copying
             return candidEncodedValues.map((candidEncodedValue: any) => {
-                return decodeAndVisit(valueType, candidEncodedValue);
+                return decode(candidEncodedValue, valueType);
             });
         }
     };
