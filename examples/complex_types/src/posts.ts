@@ -1,4 +1,4 @@
-import { nat32, text, update, Vec } from 'azle';
+import { nat32, query, text, update, Vec } from 'azle';
 import { Post } from './candid_types';
 import { getReactionFromStateReaction } from './reactions';
 import { state, StatePost, StateThread, StateUser } from './state';
@@ -37,11 +37,11 @@ export const createPost = update(
     }
 );
 
-export function getAllPosts(joinDepth: nat32): (typeof Post)[] {
+export const getAllPosts = query([nat32], Vec(Post), (joinDepth) => {
     return Object.values(state.posts).map((statePost) =>
         getPostFromStatePost(statePost, joinDepth)
     );
-}
+});
 
 export function getPostFromStatePost(
     statePost: StatePost,

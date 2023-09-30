@@ -1,43 +1,42 @@
-import { nat32, Vec } from 'azle';
+import { nat32, query, text, update, Vec } from 'azle';
 import { Reaction, ReactionType } from './candid_types';
 import { getPostFromStatePost } from './posts';
 import { state, StatePost, StateReaction, StateUser } from './state';
 import { getUserFromStateUser } from './users';
 
-export function createReaction(
-    authorId: string,
-    postId: string,
-    reactionType: typeof ReactionType,
-    joinDepth: nat32
-): typeof Reaction {
-    const id = Object.keys(state.reactions).length.toString();
+export const createReaction = update(
+    [text, text, ReactionType, nat32],
+    Reaction,
+    (authorId, postId, reactionType, joinDepth) => {
+        const id = Object.keys(state.reactions).length.toString();
 
-    const stateReaction: StateReaction = {
-        id,
-        authorId,
-        postId,
-        reactionType
-    };
-    const updatedStateAuthor = getUpdatedStateAuthor(
-        authorId,
-        stateReaction.id
-    );
-    const updatedStatePost = getUpdatedStatePost(postId, stateReaction.id);
+        const stateReaction: StateReaction = {
+            id,
+            authorId,
+            postId,
+            reactionType
+        };
+        const updatedStateAuthor = getUpdatedStateAuthor(
+            authorId,
+            stateReaction.id
+        );
+        const updatedStatePost = getUpdatedStatePost(postId, stateReaction.id);
 
-    state.reactions[id] = stateReaction;
-    state.users[authorId] = updatedStateAuthor;
-    state.posts[postId] = updatedStatePost;
+        state.reactions[id] = stateReaction;
+        state.users[authorId] = updatedStateAuthor;
+        state.posts[postId] = updatedStatePost;
 
-    const reaction = getReactionFromStateReaction(stateReaction, joinDepth);
+        const reaction = getReactionFromStateReaction(stateReaction, joinDepth);
 
-    return reaction;
-}
+        return reaction;
+    }
+);
 
-export function getAllReactions(joinDepth: nat32): (typeof Reaction)[] {
+export const getAllReactions = query([nat32], Vec(Reaction), (joinDepth) => {
     return Object.values(state.reactions).map((stateReaction) =>
         getReactionFromStateReaction(stateReaction, joinDepth)
     );
-}
+});
 
 export function getReactionFromStateReaction(
     stateReaction: StateReaction,

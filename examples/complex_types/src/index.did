@@ -47,12 +47,12 @@ type rec_617 = record {id:text; text:text; author:rec_616; thread:record {id:tex
 type rec_618 = record {id:text; text:text; author:rec_616; thread:record {id:text; title:text; author:rec_616; posts:vec rec_618}; reactions:vec record {id:text; post:rec_618; author:rec_616; reactionType:variant {Fire; ThumbsDown; ThumbsUp}}};
 type rec_616 = record {id:text; username:text; threads:vec record {id:text; title:text; author:rec_616; posts:vec rec_619}; posts:vec rec_617; reactions:vec record {id:text; post:rec_618; author:rec_616; reactionType:variant {Fire; ThumbsDown; ThumbsUp}}};
 service: () -> {
-	createPost: (text, text, text, nat32) -> (rec_440) ;
-	createReaction: (text, text, variant {Fire; ThumbsDown; ThumbsUp}, nat32) -> (record {id:text; post:rec_484; author:rec_480; reactionType:variant {Fire; ThumbsDown; ThumbsUp}}) ;
-	createThread: (text, text, nat32) -> (record {id:text; title:text; author:rec_544; posts:vec rec_548}) ;
-	createUser: (text, nat32) -> (rec_600) ;
-	getAllPosts: (nat32) -> (vec rec_456) query;
-	getAllReactions: (nat32) -> (vec record {id:text; post:rec_516; author:rec_512; reactionType:variant {Fire; ThumbsDown; ThumbsUp}}) query;
-	getAllThreads: (nat32) -> (vec record {id:text; title:text; author:rec_576; posts:vec rec_580}) query;
-	getAllUsers: (nat32) -> (vec rec_616) query;
+    createPost: (text, text, text, nat32) -> (rec_440);
+    createReaction: (text, text, variant {Fire; ThumbsDown; ThumbsUp}, nat32) -> (record {id:text; post:rec_484; author:rec_480; reactionType:variant {Fire; ThumbsDown; ThumbsUp}});
+    createThread: (text, text, nat32) -> (record {id:text; title:text; author:rec_544; posts:vec rec_548});
+    createUser: (text, nat32) -> (rec_600);
+    getAllPosts: (nat32) -> (vec rec_456) query;
+    getAllReactions: (nat32) -> (vec record {id:text; post:rec_516; author:rec_512; reactionType:variant {Fire; ThumbsDown; ThumbsUp}}) query;
+    getAllThreads: (nat32) -> (vec record {id:text; title:text; author:rec_576; posts:vec rec_580}) query;
+    getAllUsers: (nat32) -> (vec rec_616) query;
 }
