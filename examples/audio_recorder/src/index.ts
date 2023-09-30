@@ -2,9 +2,10 @@ import {
     blob,
     Canister,
     ic,
+    Err,
     nat64,
+    Ok,
     Opt,
-    principal,
     Principal,
     query,
     Record,
@@ -17,27 +18,27 @@ import {
 } from 'azle';
 
 const User = Record({
-    id: principal,
+    id: Principal,
     createdAt: nat64,
-    recordingIds: Vec(principal),
+    recordingIds: Vec(Principal),
     username: text
 });
 
 const Recording = Record({
-    id: principal,
+    id: Principal,
     audio: blob,
     createdAt: nat64,
     name: text,
-    userId: principal
+    userId: Principal
 });
 
 const AudioRecorderError = Variant({
-    RecordingDoesNotExist: principal,
-    UserDoesNotExist: principal
+    RecordingDoesNotExist: Principal,
+    UserDoesNotExist: Principal
 });
 
-let users = StableBTreeMap(principal, User, 0);
-let recordings = StableBTreeMap(principal, Recording, 1);
+let users = StableBTreeMap(Principal, User, 0);
+let recordings = StableBTreeMap(Principal, Recording, 1);
 
 export default Canister({
     createUser: update([text], User, (username) => {
@@ -56,18 +57,16 @@ export default Canister({
     readUsers: query([], Vec(User), () => {
         return users.values();
     }),
-    readUserById: query([principal], Opt(User), (id) => {
+    readUserById: query([Principal], Opt(User), (id) => {
         return users.get(id);
     }),
-    deleteUser: update([principal], Result(User, AudioRecorderError), (id) => {
+    deleteUser: update([Principal], Result(User, AudioRecorderError), (id) => {
         const userOpt = users.get(id);
 
         if (userOpt.length === 0) {
-            return {
-                Err: {
-                    UserDoesNotExist: id
-                }
-            };
+            return Err({
+                UserDoesNotExist: id
+            });
         }
 
         const user = userOpt[0];
@@ -78,22 +77,18 @@ export default Canister({
 
         users.remove(user.id);
 
-        return {
-            Ok: user
-        };
+        return Ok(user);
     }),
     createRecording: update(
-        [blob, text, principal],
+        [blob, text, Principal],
         Result(Recording, AudioRecorderError),
         (audio, name, userId) => {
             const userOpt = users.get(userId);
 
             if (userOpt.length === 0) {
-                return {
-                    Err: {
-                        UserDoesNotExist: userId
-                    }
-                };
+                return Err({
+                    UserDoesNotExist: userId
+                });
             }
 
             const user = userOpt[0];
@@ -116,27 +111,23 @@ export default Canister({
 
             users.insert(updatedUser.id, updatedUser);
 
-            return {
-                Ok: recording
-            };
+            return Ok(recording);
         }
     ),
     readRecordings: query([], Vec(Recording), () => {
         return recordings.values();
     }),
-    readRecordingById: query([principal], Opt(Recording), (id) => {
+    readRecordingById: query([Principal], Opt(Recording), (id) => {
         return recordings.get(id);
     }),
     deleteRecording: update(
-        [principal],
+        [Principal],
         Result(Recording, AudioRecorderError),
         (id) => {
             const recordingOpt = recordings.get(id);
 
             if (recordingOpt.length === 0) {
-                return {
-                    Err: { RecordingDoesNotExist: id }
-                };
+                return Err({ RecordingDoesNotExist: id });
             }
 
             const recording = recordingOpt[0];
@@ -144,11 +135,9 @@ export default Canister({
             const userOpt = users.get(recording.userId);
 
             if (userOpt.length === 0) {
-                return {
-                    Err: {
-                        UserDoesNotExist: recording.userId
-                    }
-                };
+                return Err({
+                    UserDoesNotExist: recording.userId
+                });
             }
 
             const user = userOpt[0];
@@ -165,9 +154,7 @@ export default Canister({
 
             recordings.remove(id);
 
-            return {
-                Ok: recording
-            };
+            return Ok(recording);
         }
     )
 });

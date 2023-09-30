@@ -33,7 +33,7 @@ type CallableObject<T extends CanisterOptions> = {
 
 export function Canister<T extends CanisterOptions>(
     serviceOptions: T
-): CallableObject<T> {
+): CallableObject<T> & { _azleCandidType?: '_azleCandidType' } {
     let result = (parentOrPrincipal: any) => {
         const originalPrincipal = parentOrPrincipal;
         const parentOrUndefined =

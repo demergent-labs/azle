@@ -102,21 +102,6 @@ export function toParamIDLTypes(
     return idl.map((value) => toIDLType(value, parents));
 }
 
-export function toReturnIDLType(
-    returnIdl: ReturnCandidClass,
-    parents: Parent[] = []
-): IDL.Type<any>[] {
-    if (Array.isArray(returnIdl)) {
-        // If Void
-        if (returnIdl.length === 0) {
-            return [];
-        }
-        // Should be unreachable
-        return [];
-    }
-    return [toIDLType(returnIdl, parents)];
-}
-
 export function isAsync(originalFunction: any) {
     if (originalFunction[Symbol.toStringTag] === 'AsyncFunction') {
         return true;
@@ -127,6 +112,19 @@ export function isAsync(originalFunction: any) {
     } else {
         return false;
     }
+}
+
+export function toReturnIDLType(
+    returnIdl: ReturnCandidClass,
+    parents: Parent[]
+): IDL.Type<any>[] {
+    const idlType = toIDLType(returnIdl, parents);
+
+    if (Array.isArray(idlType)) {
+        return [...idlType];
+    }
+
+    return [idlType];
 }
 
 type CandidMap = { [key: string]: any };

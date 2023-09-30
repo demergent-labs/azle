@@ -15,7 +15,6 @@ import {
     nat64,
     nat8,
     Null,
-    principal,
     Principal,
     query,
     reserved,
@@ -135,10 +134,10 @@ export default Canister({
         console.log(typeof bool);
         return bool;
     }),
-    getPrincipal: query([], principal, () => {
+    getPrincipal: query([], Principal, () => {
         return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
     }),
-    printPrincipal: query([principal], principal, (principal) => {
+    printPrincipal: query([Principal], Principal, (principal) => {
         console.log(typeof principal);
         return principal;
     }),

@@ -56,7 +56,7 @@ export const DeepNatAlias = deep.deepAlias.deeperAlias.deepestAlias.nat;
 export const DeepNat8Alias = deep.deepAlias.deeperAlias.deepestAlias.nat8;
 export const DeepOptAlias = deep.deepAlias.deeperAlias.deepestAlias.Opt;
 export const DeepPrincipalAlias =
-    deep.deepAlias.deeperAlias.deepestAlias.principal;
+    deep.deepAlias.deeperAlias.deepestAlias.Principal;
 export const Deep$queryAlias = deep.deepAlias.deeperAlias.deepestAlias.query;
 export const DeepRecordAlias = deep.deepAlias.deeperAlias.deepestAlias.Record;
 export const DeepReservedAlias =

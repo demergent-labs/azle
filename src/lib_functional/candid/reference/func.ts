@@ -20,7 +20,7 @@ export function Func(
     paramsIdls: any[],
     returnIdl: any,
     mode: Mode
-): [Principal, string] {
+): [Principal, string] & { _azleCandidType?: '_azleCandidType' } {
     // TODO can't Func be recursive?
     // TODO can't Opt be recursive?
     // const name = v4();

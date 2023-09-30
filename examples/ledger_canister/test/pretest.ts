@@ -56,4 +56,4 @@ async function pretest(icp_ledger_path: string) {
     });
 }
 
-pretest('canisters/icp_ledger');
+pretest('src/icp_ledger');

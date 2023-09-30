@@ -13,7 +13,7 @@ import {
     update,
     bool,
     text,
-    principal,
+    Principal,
     Void
 } from 'azle';
 
@@ -70,7 +70,7 @@ export default Canister({
         }
     ),
     // returns the principal of the identity that called this function
-    caller: query([], principal, () => {
+    caller: query([], Principal, () => {
         return ic.caller();
     }),
     // returns the amount of cycles available in the canister
@@ -98,7 +98,7 @@ export default Canister({
         return ic.dataCertificate();
     }),
     // returns this canister's id
-    id: query([], principal, () => {
+    id: query([], Principal, () => {
         return ic.id();
     }),
     // Returns the number of instructions that the canister executed since the last
@@ -107,7 +107,7 @@ export default Canister({
         return ic.instructionCounter();
     }),
     // determines whether the given principal is a controller of the canister
-    isController: query([principal], bool, (principal) => {
+    isController: query([Principal], bool, (principal) => {
         return ic.isController(principal);
     }),
     performanceCounter: query([], nat64, () => {

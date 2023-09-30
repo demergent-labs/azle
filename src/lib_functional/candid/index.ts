@@ -1,5 +1,4 @@
 export * from './reference';
-import { IDL } from '@dfinity/candid';
 import {
     AzleBlob,
     blob,
@@ -29,7 +28,6 @@ import {
     int8,
     float64,
     float32,
-    Principal,
     AzleNull,
     Null,
     AzleReserved,
@@ -38,11 +36,12 @@ import {
     empty,
     AzleBool,
     bool,
-    AzlePrincipal,
+    Principal,
     AzleResult,
     Result,
     AzleTuple,
-    AzleText
+    AzleText,
+    AzleVoid
 } from '../../lib_new';
 
 export type TypeMapping<T> = T extends () => any
@@ -75,7 +74,7 @@ export type TypeMapping<T> = T extends () => any
     ? float64
     : T extends AzleFloat32
     ? float32
-    : T extends never[]
+    : T extends AzleVoid
     ? void
     : T extends AzleTuple<infer U>
     ? { [K in keyof U]: TypeMapping<U[K]> }
@@ -84,10 +83,10 @@ export type TypeMapping<T> = T extends () => any
     : T extends AzleOpt<infer U>
     ? [TypeMapping<U>] | []
     : T extends AzleResult<infer U, infer W>
-    ? Result<U, W>
+    ? Result<TypeMapping<U>, TypeMapping<W>>
     : T extends AzleBlob
     ? blob
-    : T extends AzlePrincipal
+    : T extends typeof Principal
     ? Principal
     : T extends AzleNull
     ? Null

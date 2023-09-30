@@ -18,7 +18,7 @@ import {
     nat8,
     Null,
     Opt,
-    principal,
+    Principal,
     query,
     Record,
     reserved,
@@ -113,8 +113,8 @@ export default Canister({
         }
     ),
     listOfPrincipal: query(
-        [Vec(Vec(Vec(principal)))],
-        Vec(Vec(Vec(principal))),
+        [Vec(Vec(Vec(Principal)))],
+        Vec(Vec(Vec(Principal))),
         (param) => {
             return param;
         }
