@@ -195,9 +195,8 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         const candidRets = extractCandid(retsTypes);
         const args = candidArgs[0].join(', ');
         const rets = candidRets[0].join(', ');
-        const annon = t.annotations.includes('update')
-            ? ''
-            : ' ' + t.annotations.join(' ');
+        const annon =
+            t.annotations.length === 0 ? '' : ' ' + t.annotations.join(' ');
         return [
             `${data.isOnService ? '' : 'func '}(${args}) -> (${rets})${annon}`,
             { ...candidArgs[1], ...candidRets[1] }
