@@ -215,6 +215,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         const usedRecClasses = data.usedRecClasses;
         if (!usedRecClasses.includes(t)) {
             const candid = hch(ty).accept(this, {
+                ...data,
                 usedRecClasses: [...usedRecClasses, t],
                 isOnService: false,
                 isFirstService: false
