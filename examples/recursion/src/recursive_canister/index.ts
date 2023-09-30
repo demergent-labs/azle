@@ -1,8 +1,14 @@
-import { query, Canister, Recursive } from 'azle';
+import { query, Canister, Recursive, text, init } from 'azle';
+
+let myMessage = '';
 
 const MyCanister = Recursive(() =>
     Canister({
-        myQuery: query([MyCanister], MyCanister, (param) => param)
+        init: init([text], (message) => {
+            myMessage = message;
+        }),
+        myQuery: query([MyCanister], MyCanister, (param) => param),
+        getMessage: query([], text, () => myMessage)
     })
 );
 

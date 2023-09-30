@@ -4,12 +4,29 @@ import {
     rec_313,
     rec_321
 } from './dfx_generated/recursion/recursion.did';
+import { _SERVICE as _REC_SERVICE } from './dfx_generated/recursive_canister/recursive_canister.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { execSync } from 'child_process';
 
 // TODO these tests should be rewritten to use @dfinity/agent once this issue is resolved: https://github.com/dfinity/agent-js/issues/702
 // TODO this issue also needs to be resolved: https://forum.dfinity.org/t/services-wont-deserialize-properly-if-functions-arent-in-alphabetical-order/20885
+export function getRecursiveCanisterTests(
+    recursive_canister: ActorSubclass<_REC_SERVICE>
+): Test[] {
+    return [
+        {
+            name: 'test recursive canister init method',
+            test: async () => {
+                const result = await recursive_canister.getMessage();
+
+                return {
+                    Ok: result === 'hello'
+                };
+            }
+        }
+    ];
+}
 export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {

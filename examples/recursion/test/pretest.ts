@@ -8,7 +8,7 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy recursive_canister`, {
+    execSync(`dfx deploy recursive_canister --argument '("hello")'`, {
         stdio: 'inherit'
     });
 
