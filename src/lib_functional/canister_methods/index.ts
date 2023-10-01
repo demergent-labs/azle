@@ -1,6 +1,6 @@
 import { IDL } from '../../lib_new/index';
 import { ic } from '../../lib_new/ic';
-import { TypeMapping } from '..';
+import { CandidType, TypeMapping } from '..';
 import {
     DecodeVisitor,
     EncodeVisitor
@@ -33,7 +33,10 @@ export type CanisterMethodInfo<T extends ReadonlyArray<any>, K> = {
     guard: (() => any) | undefined;
 };
 
-export type Callback<Params extends ReadonlyArray<any>, Return> = (
+export type Callback<
+    Params extends ReadonlyArray<CandidType>,
+    Return extends CandidType
+> = (
     ...args: { [K in keyof Params]: TypeMapping<Params[K]> }
 ) => TypeMapping<Return> | Promise<TypeMapping<Return>>;
 

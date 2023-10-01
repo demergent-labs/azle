@@ -64,12 +64,11 @@ const CompQueryCanister = Canister({
     }),
     // Composite query calling queries on the same canister
     incCanister1: query([], nat, async () => {
-        // TODO This is not an ideal solution but will work for now
         const self: any = CompQueryCanister(ic.id());
 
         counter += 1n;
 
-        const canister1AResult: any = await ic.call(self.incCounter);
+        const canister1AResult = await ic.call(self.incCounter);
         const canister1BResult = await ic.call(self.incCounter);
 
         return counter + canister1AResult + canister1BResult;

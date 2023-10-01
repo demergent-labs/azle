@@ -77,7 +77,7 @@ export type TypeMapping<T> = T extends () => any
     : T extends AzleVoid
     ? void
     : T extends AzleTuple<infer U>
-    ? { [K in keyof U]: TypeMapping<U[K]> }
+    ? { [K in keyof U]: U[K] extends any ? any : TypeMapping<U[K]> }
     : T extends AzleVec<infer U>
     ? TypeMapping<U>[]
     : T extends AzleOpt<infer U>

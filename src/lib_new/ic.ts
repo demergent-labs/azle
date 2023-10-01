@@ -442,8 +442,8 @@ type Ic = {
     trap: (message: string) => never;
 };
 
-type ArgsType<T> = T extends (...args: infer U) => any ? U : never;
-type ReturnTypeOf<T> = T extends (...args: any[]) => infer R ? R : never;
+type ArgsType<T> = T extends (...args: infer U) => any ? U : any;
+type ReturnTypeOf<T> = T extends (...args: any[]) => infer R ? R : any;
 type ReturnTypeOfPromise<T> = T extends (...args: any[]) => infer R
     ? Promise<R>
     : never;
