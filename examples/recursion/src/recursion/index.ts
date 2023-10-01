@@ -20,7 +20,7 @@ import MyFullCanister from '../recursive_canister';
 // These are the types that can be recursive
 // Record
 //     Record can't be recursive by itself. It needs something to be able to terminate it. It needs to work with Variants, Opts, and Vec
-const varRecord = Recursive(() => Record({ myVar: myVar }));
+const varRecord = Recursive(() => Record({ myVar }));
 const vecRecord = Recursive(() => Record({ myVecRecords: Vec(vecRecord) }));
 const optRecord = Recursive(() => Record({ myOpt: Opt(optRecord) }));
 const myVar = Variant({ num: int8, varRec: varRecord });
@@ -33,7 +33,7 @@ const recVariant = Recursive(() =>
 const optTuple = Recursive(() => Tuple(Opt(optTuple), Opt(optTuple)));
 const vecTuple = Recursive(() => Tuple(Vec(vecTuple), Vec(vecTuple)));
 const varTuple = Recursive(() => Tuple(myTupleVar, myTupleVar));
-const myTupleVar = Variant({ num: int8, varTuple: varTuple });
+const myTupleVar = Variant({ num: int8, varTuple });
 // Vec
 //      Vec can't be recursive by itself. At the end of it all it needs to have a concrete type.
 // Opt

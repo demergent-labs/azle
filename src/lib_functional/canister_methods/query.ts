@@ -6,7 +6,7 @@ import {
     createParents,
     executeMethod
 } from '.';
-import { CandidType, RecursiveType, TypeMapping } from '../candid';
+import { CandidType, TypeMapping } from '../candid';
 import { toParamIDLTypes, toReturnIDLType } from '../../lib_new/utils';
 
 export function query<

@@ -2,7 +2,7 @@ import { v4 } from 'uuid';
 import { IDL } from '@dfinity/candid';
 import { Parent } from '../../../lib_new/utils';
 
-export function Recursive<T extends () => any>(idlCallback: T): T {
+export function Recursive(idlCallback: any): any {
     const name = v4();
 
     let result = (...args: any[]) => {
