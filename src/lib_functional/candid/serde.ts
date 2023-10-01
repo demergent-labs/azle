@@ -60,10 +60,44 @@ export function decode(
     // Azle-augmented ones
     const realIDL = toIDLType(fakeIdl, []);
 
+    const idlIsAzleVoid = Array.isArray(realIDL);
+
+    if (idlIsAzleVoid) {
+        return undefined;
+    }
+
     const candidDecodedValue = IDL.decode([realIDL], data)[0] as any;
 
     return realIDL.accept(new DecodeVisitor(), {
         js_class: fakeIdl,
         js_data: candidDecodedValue
     });
+}
+
+export function encodeMultiple(
+    data: any[],
+    fakeIdls: (IDL.Type<any> | CandidType)[]
+): Uint8Array {
+    const { values, idls } = data.reduce<{
+        values: any[];
+        idls: IDL.Type<any>[];
+    }>(
+        (acc, datum, index) => {
+            const fakeIdl = fakeIdls[index];
+            const realIDL = toIDLType(fakeIdl, []);
+
+            const encodeReadyValue = realIDL.accept(new EncodeVisitor(), {
+                js_class: fakeIdl,
+                js_data: datum
+            });
+
+            return {
+                values: [...acc.values, encodeReadyValue],
+                idls: [...acc.idls, realIDL]
+            };
+        },
+        { values: [], idls: [] }
+    );
+
+    return new Uint8Array(IDL.encode(idls, values));
 }

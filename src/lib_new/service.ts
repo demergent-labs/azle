@@ -1,3 +1,4 @@
+import { decode, encodeMultiple } from '../lib_functional/candid/serde';
 import { ic, IDL, Principal } from './index';
 import {
     CandidClass,
@@ -108,9 +109,7 @@ export function serviceCall(
         cycles: bigint,
         ...args: any[]
     ) {
-        const encodedArgs = new Uint8Array(
-            IDL.encode(toParamIDLTypes(paramsIdls), args)
-        );
+        const encodedArgs = encodeMultiple(args, paramsIdls);
 
         if (notify) {
             try {
@@ -131,10 +130,7 @@ export function serviceCall(
                 cycles
             );
 
-            const returnIdls = toReturnIDLType(returnIdl);
-            const decodedResult = IDL.decode(returnIdls, encodedResult)[0];
-
-            return decodedResult;
+            return decode(encodedResult, returnIdl);
         }
     };
 }
