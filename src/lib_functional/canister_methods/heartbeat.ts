@@ -4,7 +4,7 @@ import { Void } from '../../lib_new';
 
 export function heartbeat(
     callback: () => void | Promise<void>
-): () => CanisterMethodInfo<[], Void> {
+): CanisterMethodInfo<[], Void> {
     return () => {
         const finalCallback = (...args: any[]) => {
             executeMethod(

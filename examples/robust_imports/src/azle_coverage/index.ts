@@ -38,7 +38,7 @@ import kiwi, {
     Vanilla
 } from './fruit';
 
-import { ic as lemon, int16 as coconut } from 'azle';
+import { ic as lemon, int16 as coconut, ic } from 'azle';
 import * as starFruit from './fruit';
 
 const FruitDeliveryCanister = Strawberry({
@@ -97,14 +97,16 @@ let soncoya = Soncoya(nectarine8, PreparedFruit, 0);
 function gatherGrapes() {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
-        soncoya.remove(0);
-        soncoya.insert(0, {
-            ...preparedFruit,
-            areGrapesGathered: true
-        });
+    if ('None' in opt) {
+        return;
     }
+
+    const preparedFruit = opt.Some;
+    soncoya.remove(0);
+    soncoya.insert(0, {
+        ...preparedFruit,
+        areGrapesGathered: true
+    });
 }
 
 export const collectIcaco = icaco([], () => {
@@ -125,40 +127,46 @@ export const collectIcaco = icaco([], () => {
 export const cutPineapple = pineapple(() => {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
-        soncoya.remove(0);
-        soncoya.insert(0, {
-            ...preparedFruit,
-            isPineappleCut: true
-        });
+    if ('None' in opt) {
+        return;
     }
+
+    const preparedFruit = opt.Some;
+    soncoya.remove(0);
+    soncoya.insert(0, {
+        ...preparedFruit,
+        isPineappleCut: true
+    });
 });
 
 export const separateArilsFromPith = pomegranate([], () => {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
-        soncoya.remove(0);
-        soncoya.insert(0, {
-            ...preparedFruit,
-            arePomegranateArilsSeparated: true
-        });
+    if ('None' in opt) {
+        return;
     }
+
+    const preparedFruit = opt.Some;
+    soncoya.remove(0);
+    soncoya.insert(0, {
+        ...preparedFruit,
+        arePomegranateArilsSeparated: true
+    });
 });
 
 export const buyHoneydew = honeydew(() => {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
-        soncoya.remove(0);
-        soncoya.insert(0, {
-            ...preparedFruit,
-            honeydewCount: preparedFruit.honeydewCount + 1
-        });
+    if ('None' in opt) {
+        return;
     }
+
+    const preparedFruit = opt.Some;
+    soncoya.remove(0);
+    soncoya.insert(0, {
+        ...preparedFruit,
+        honeydewCount: preparedFruit.honeydewCount + 1
+    });
 });
 
 export const keepIlamaClean = ilama(() => {
@@ -228,11 +236,11 @@ export const getManagementPeach = kiwi([], peach, () => {
 });
 
 export const pitOlives = kiwi([Olive(boysenberry)], boysenberry, (olive) => {
-    if (olive.length === 0) {
+    if ('None' in olive) {
         return false;
     }
 
-    const berry = olive[0];
+    const berry = olive.Some;
 
     return berry;
 });
@@ -267,11 +275,11 @@ export const isFruitPrepared = quince(
     () => {
         const opt = soncoya.get(0);
 
-        if (opt.length === 0) {
+        if ('None' in opt) {
             return false;
         }
 
-        const pf = opt[0];
+        const pf = opt.Some;
 
         return (
             pf.honeydewCount > 0 &&
@@ -290,14 +298,16 @@ export const isFruitPrepared = quince(
 export const removeRambutanSkins = ugni([], rambutan, () => {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
-        soncoya.remove(0);
-        soncoya.insert(0, {
-            ...preparedFruit,
-            areRambutanSkinsRemoved: true
-        });
+    if ('None' in opt) {
+        ic.trap('soncoya is None');
     }
+
+    const preparedFruit = opt.Some;
+    soncoya.remove(0);
+    soncoya.insert(0, {
+        ...preparedFruit,
+        areRambutanSkinsRemoved: true
+    });
 
     return 'rambutan skins';
 });
@@ -305,27 +315,31 @@ export const removeRambutanSkins = ugni([], rambutan, () => {
 export const dirtyIlama = ugni([], Vanilla, () => {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
-        soncoya.remove(0);
-        soncoya.insert(0, {
-            ...preparedFruit,
-            isIlamaWashed: false
-        });
+    if ('None' in opt) {
+        return;
     }
+
+    const preparedFruit = opt.Some;
+    soncoya.remove(0);
+    soncoya.insert(0, {
+        ...preparedFruit,
+        isIlamaWashed: false
+    });
 });
 
 export const pickElderberry = ugni([], elderberry, () => {
     const opt = soncoya.get(0);
 
-    if (opt.length !== 0) {
-        const preparedFruit = opt[0];
-        soncoya.remove(0);
-        soncoya.insert(0, {
-            ...preparedFruit,
-            haveElderberriesBeenPicked: true
-        });
+    if ('None' in opt) {
+        ic.trap('soncoya is None');
     }
+
+    const preparedFruit = opt.Some;
+    soncoya.remove(0);
+    soncoya.insert(0, {
+        ...preparedFruit,
+        haveElderberriesBeenPicked: true
+    });
 
     throw 'All out of elderberries';
 });

@@ -1,11 +1,11 @@
 import { Callback, CanisterMethodInfo, createParents, executeMethod } from '.';
 import { CandidType, TypeMapping } from '../candid';
-import { Void } from '../../lib_new';
+import { Void } from '../../lib_functional';
 import { toParamIDLTypes, toReturnIDLType } from '../../lib_new/utils';
 
 export function init<
     const Params extends ReadonlyArray<CandidType>,
-    GenericCallback extends Callback<Params, Void>
+    GenericCallback extends Callback<Params, typeof Void>
 >(
     paramsIdls: Params,
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Void>

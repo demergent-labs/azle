@@ -36,9 +36,7 @@ export default Canister({
         const stableEntriesOpt = stableStorage.get('entries');
 
         const stableEntries =
-            stableEntriesOpt.length === 0
-                ? stableEntriesOpt
-                : stableEntriesOpt[0];
+            'None' in stableEntriesOpt ? [] : stableEntriesOpt.Some;
 
         entries = stableEntries.reduce((result, entry) => {
             return {

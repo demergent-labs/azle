@@ -111,11 +111,7 @@ export function toReturnIDLType(
 ): IDL.Type<any>[] {
     const idlType = toIDLType(returnIdl, parents);
 
-    if (Array.isArray(idlType)) {
-        return [...idlType];
-    }
-
-    return [idlType];
+    return Array.isArray(idlType) ? idlType : [idlType];
 }
 
 export function isAsync(originalFunction: any) {
