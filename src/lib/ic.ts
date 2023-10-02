@@ -11,11 +11,10 @@ import {
     Opt,
     Some,
     Void
-} from './candid/reference/primitives';
-import { CandidType, RejectionCode } from '.';
+} from './candid';
+import { CandidType, RejectionCode, toIDLType } from '.';
 import { v4 } from 'uuid';
-import { toIDLType } from './utils';
-import { EncodeVisitor } from './visitors/encode_decode';
+import { EncodeVisitor } from './candid/serde/visitors';
 
 // declare var globalThis: {
 //     ic: Ic;

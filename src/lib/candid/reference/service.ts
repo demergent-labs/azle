@@ -1,6 +1,12 @@
-import { IDL, Principal, TypeMapping } from '../..';
-import { ic } from '../../';
-import { Parent, toParamIDLTypes, toReturnIDLType } from '../../utils';
+import {
+    IDL,
+    Principal,
+    TypeMapping,
+    Parent,
+    toParamIDLTypes,
+    toReturnIDLType,
+    ic
+} from '../..';
 import { CanisterMethodInfo } from '../../canister_methods';
 import { decode, encodeMultiple } from '../serde';
 

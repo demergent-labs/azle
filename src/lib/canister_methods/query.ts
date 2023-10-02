@@ -1,13 +1,17 @@
-import { isAsync } from '../utils';
 import {
     Callback,
     CanisterMethodInfo,
     MethodArgs,
     createParents,
-    executeMethod
+    executeMethod,
+    isAsync
 } from '.';
-import { CandidType, TypeMapping } from '../candid';
-import { toParamIDLTypes, toReturnIDLType } from '../utils';
+import {
+    CandidType,
+    TypeMapping,
+    toParamIDLTypes,
+    toReturnIDLType
+} from '../candid';
 
 export function query<
     const Params extends ReadonlyArray<CandidType>,

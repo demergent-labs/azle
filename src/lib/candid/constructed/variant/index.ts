@@ -1,8 +1,10 @@
-import { CandidType, TypeMapping } from '..';
+import { CandidType, TypeMapping } from '../..';
 import { IDL } from '@dfinity/candid';
-import { processMap } from '../../utils';
+import { processMap } from '../';
 import { v4 } from 'uuid';
-import { Null } from './primitives';
+import { Null } from '../..';
+
+export * from './result';
 
 export function Variant<
     T extends {

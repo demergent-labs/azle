@@ -8,6 +8,10 @@ type VisitorData = {
 };
 type VisitorResult = [CandidDef, CandidTypesDefs];
 
+type TypeName = string;
+type CandidDef = string;
+type CandidTypesDefs = { [key: TypeName]: CandidDef };
+
 // TODO it would be nice to have names for the rec types instead of rec_1, rec_2 etc
 // TODO Once types have names we should deduplicate the init and post_upgrade param types
 // TODO maybe even before we have names we should deduplicate all sorts of types
@@ -22,47 +26,10 @@ export const DEFAULT_VISITOR_DATA: VisitorData = {
     systemFuncs: []
 };
 
-export function DidResultToCandidString(result: VisitorResult): string {
+export function didResultToCandidString(result: VisitorResult): string {
     const [candid, candidTypeDefs] = result;
     const candidTypesString = newTypeToCandidString(candidTypeDefs);
     return candidTypesString + candid + '\n';
-}
-
-function newTypeToCandidString(newTypes: CandidTypesDefs): string {
-    return Object.entries(newTypes).length > 0
-        ? newTypesToStingArr(newTypes).join('\n') + '\n'
-        : '';
-}
-
-function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
-    return Object.entries(newTypes).map(
-        ([name, candid]) => `type ${name} = ${candid};`
-    );
-}
-
-type TypeName = string;
-export type CandidDef = string;
-export type CandidTypesDefs = { [key: TypeName]: CandidDef };
-export function extractCandid(
-    paramInfo: [CandidDef, CandidTypesDefs][]
-): [CandidDef[], CandidTypesDefs] {
-    const paramCandid = paramInfo.map(([candid, _candidTypeDefs]) => {
-        return candid;
-    });
-    const candidTypeDefs = paramInfo.reduce(
-        (acc, [_candid, candidTypeDefs]) => {
-            return { ...acc, ...candidTypeDefs };
-        },
-        {}
-    );
-    return [paramCandid, candidTypeDefs];
-}
-
-function hch(value: any) {
-    if (value._azleIsCanister) {
-        return value().getIDL();
-    }
-    return value;
 }
 
 export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
@@ -254,4 +221,38 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         );
         return [`variant {${fields_string.join('; ')}}`, candid[1]];
     }
+}
+
+function newTypeToCandidString(newTypes: CandidTypesDefs): string {
+    return Object.entries(newTypes).length > 0
+        ? newTypesToStingArr(newTypes).join('\n') + '\n'
+        : '';
+}
+
+function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
+    return Object.entries(newTypes).map(
+        ([name, candid]) => `type ${name} = ${candid};`
+    );
+}
+
+function extractCandid(
+    paramInfo: [CandidDef, CandidTypesDefs][]
+): [CandidDef[], CandidTypesDefs] {
+    const paramCandid = paramInfo.map(([candid, _candidTypeDefs]) => {
+        return candid;
+    });
+    const candidTypeDefs = paramInfo.reduce(
+        (acc, [_candid, candidTypeDefs]) => {
+            return { ...acc, ...candidTypeDefs };
+        },
+        {}
+    );
+    return [paramCandid, candidTypeDefs];
+}
+
+function hch(value: any) {
+    if (value._azleIsCanister) {
+        return value().getIDL();
+    }
+    return value;
 }

@@ -1,7 +1,7 @@
 import { IDL } from '@dfinity/candid';
 import { DecodeVisitor } from './decode_visitor';
 import { EncodeVisitor } from './encode_visitor';
-import { AzleResult, Result } from '../../candid/reference/result';
+import { AzleResult, Result } from '../../';
 export { EncodeVisitor, DecodeVisitor };
 
 /*

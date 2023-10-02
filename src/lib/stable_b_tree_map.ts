@@ -1,6 +1,14 @@
-import { CandidType, None, Opt, Some, TypeMapping, nat64, nat8 } from '.';
-import { IDL } from './index';
-import { toIDLType } from './utils';
+import {
+    CandidType,
+    None,
+    Opt,
+    Some,
+    TypeMapping,
+    nat64,
+    nat8,
+    IDL,
+    toIDLType
+} from '.';
 import { encode, decode } from './candid/serde';
 
 export function StableBTreeMap<

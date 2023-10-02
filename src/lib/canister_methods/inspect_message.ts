@@ -1,6 +1,5 @@
 import { CanisterMethodInfo, createParents, executeMethod } from '.';
-import { Void } from '../candid/reference/primitives';
-import { toParamIDLTypes, toReturnIDLType } from '../utils';
+import { Void, toParamIDLTypes, toReturnIDLType } from '../candid/';
 
 export function inspectMessage(
     callback: () => void | Promise<void>

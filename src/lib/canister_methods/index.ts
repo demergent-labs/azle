@@ -1,8 +1,8 @@
-import { IDL } from '../';
+import { AzleVoid, IDL } from '../';
 import { ic } from '../ic';
 import { CandidType, TypeMapping } from '..';
-import { DecodeVisitor, EncodeVisitor } from '../visitors/encode_decode';
-import { Parent } from '../utils';
+import { DecodeVisitor, EncodeVisitor } from '../candid/serde/visitors';
+import { Parent } from '../to_idl_type';
 
 export * from './heartbeat';
 export * from './init';
@@ -11,6 +11,10 @@ export * from './post_upgrade';
 export * from './pre_upgrade';
 export * from './query';
 export * from './update';
+
+export function Manual(t: any): AzleVoid {
+    return t;
+}
 
 export type MethodArgs = { manual?: boolean; guard?: () => void };
 
@@ -141,4 +145,16 @@ export function createParents(parent: any): Parent[] {
     return parent === undefined
         ? []
         : [{ idl: parent, name: parent._azleName }];
+}
+
+export function isAsync(originalFunction: any) {
+    if (originalFunction[Symbol.toStringTag] === 'AsyncFunction') {
+        return true;
+    } else if (originalFunction.constructor.name === 'AsyncFunction') {
+        return true;
+    } else if (originalFunction.toString().includes('async ')) {
+        return true;
+    } else {
+        return false;
+    }
 }

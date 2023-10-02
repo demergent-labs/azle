@@ -1,6 +1,7 @@
 import { CandidType, TypeMapping } from '..';
 import { IDL } from '@dfinity/candid';
-import { Parent, processMap } from '../../utils';
+import { Parent } from '../../to_idl_type';
+import { processMap } from '..';
 import { v4 } from 'uuid';
 
 export function Record<

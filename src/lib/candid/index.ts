@@ -1,4 +1,4 @@
-export * from './reference';
+import { IDL } from '..';
 import {
     AzleBlob,
     blob,
@@ -16,6 +16,7 @@ import {
     AzleNat8,
     AzleFloat64,
     AzleFloat32,
+    AzleResult,
     nat,
     nat64,
     nat32,
@@ -40,9 +41,13 @@ import {
     AzleTuple,
     AzleText,
     AzleVoid,
-    Opt
-} from '../candid/reference/primitives';
-import { AzleResult, Result } from './reference/result';
+    Opt,
+    Result
+} from './';
+
+export * from './constructed';
+export * from './primitive';
+export * from './reference';
 
 export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? T
@@ -124,3 +129,86 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
 export type CandidType = {
     _azleCandidType?: '_azleCandidType';
 };
+
+export type Parent = {
+    idl: IDL.RecClass;
+    name: string;
+};
+
+export function toIDLType(idl: CandidType, parents: Parent[]): IDL.Type<any> {
+    if ('getIDL' in idl) {
+        if ('_azleName' in idl) {
+            const parent = parents.find(
+                (parent) => parent.name === idl._azleName
+            );
+            if (parent !== undefined) {
+                return {
+                    ...parent.idl,
+                    _azleName: idl._azleName,
+                    name: parent.idl.name,
+                    valueToString: (x): string => {
+                        return parent.idl.valueToString(x);
+                    },
+                    buildTypeTable: (typeTable): void => {
+                        return parent.idl.buildTypeTable(typeTable);
+                    },
+                    covariant: (x): x is any => {
+                        return parent.idl.covariant(x);
+                    },
+                    encodeType: (typeTable): ArrayBuffer => {
+                        return parent.idl.encodeType(typeTable);
+                    },
+                    checkType: (t) => {
+                        return parent.idl.checkType(t);
+                    },
+                    _buildTypeTableImpl: (typeTable): void => {
+                        return parent.idl._buildTypeTableImpl(typeTable);
+                    },
+                    // TODO check if this is still being called. maybe by adding a throw here and see if we hit it
+                    display: () => parent.idl.name,
+                    decodeValue: (b, t) => {
+                        return parent.idl.decodeValue(b, t);
+                    },
+                    encodeValue: (b) => {
+                        return parent.idl.encodeValue(b);
+                    },
+                    accept: (v, d) => {
+                        return parent.idl.accept(v, d);
+                    },
+                    _id: parent.idl._id,
+                    _type: parent.idl._type,
+                    fill: (t: any): void => {
+                        parent.idl.fill(t);
+                    },
+                    getType: () => {
+                        return parent.idl.getType();
+                    }
+                };
+            }
+        }
+        return idl.getIDL(parents);
+    }
+    if (idl._azleIsCanister) {
+        return toIDLType(idl(), parents);
+    }
+    // if (idl.display === undefined || idl.getIDL === undefined) {
+    //     throw Error(`${JSON.stringify(idl)} is not a candid type`);
+    // }
+    return idl;
+}
+
+export function toParamIDLTypes(
+    idl: CandidType[],
+    parents: Parent[] = []
+): IDL.Type<any>[] {
+    return idl.map((value) => toIDLType(value, parents));
+}
+
+export function toReturnIDLType(
+    returnIdl: CandidType,
+    parents: Parent[] = []
+): IDL.Type<any>[] {
+    const idlType = toIDLType(returnIdl, parents);
+
+    return Array.isArray(idlType) ? idlType : [idlType];
+}

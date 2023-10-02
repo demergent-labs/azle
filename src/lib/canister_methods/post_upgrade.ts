@@ -1,7 +1,11 @@
 import { Callback, CanisterMethodInfo, createParents, executeMethod } from '.';
-import { CandidType, TypeMapping } from '../candid';
-import { Void } from '../candid/reference/primitives';
-import { toParamIDLTypes, toReturnIDLType } from '../utils';
+import {
+    CandidType,
+    TypeMapping,
+    Void,
+    toParamIDLTypes,
+    toReturnIDLType
+} from '../candid';
 
 export function postUpgrade<
     const Params extends ReadonlyArray<CandidType>,

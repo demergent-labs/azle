@@ -1,8 +1,12 @@
 import { CandidType } from '..';
-import { IDL } from '@dfinity/candid';
-import { Parent, toParamIDLTypes, toReturnIDLType } from '../../utils';
 import { v4 } from 'uuid';
-import { Principal } from '../../';
+import {
+    Principal,
+    Parent,
+    toParamIDLTypes,
+    toReturnIDLType,
+    IDL
+} from '../../';
 
 type Mode = 'query' | 'update' | 'oneway';
 
