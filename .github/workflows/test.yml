@@ -17,6 +17,8 @@
 # "examples/generics",
 # "examples/run_time_errors",
 
+# TODO http_counter tests are being skipped until this is resolved: https://forum.dfinity.org/t/lookuppathabsent/23461
+
 name: Azle Tests
 on:
     push:
@@ -169,7 +171,7 @@ jobs:
               with:
                   node-version: 18
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              run: DFX_VERSION=0.14.2 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+              run: DFX_VERSION=0.15.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/cache@v3
               with:
