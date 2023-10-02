@@ -56,7 +56,8 @@ const HttpRequest = Record({
     method: text,
     url: text,
     headers: Vec(HeaderField),
-    body: blob
+    body: blob,
+    certificate_version: Opt(nat16)
 });
 
 let stableStorage = StableBTreeMap(text, nat, 0);

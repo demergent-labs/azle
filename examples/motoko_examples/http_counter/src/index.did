@@ -1,22 +1,5 @@
-type rec_0 = record {url:text; method:text; body:vec nat8; headers:vec record {text; text}};
-type rec_6 = record {arbitrary_data:text};
-type rec_5 = record {arbitrary_data:text};
-type rec_4 = record {token:opt rec_5; body:vec nat8};
-type rec_3 = record {token:rec_6; callback:func (text) -> (rec_4) query};
-type rec_2 = variant {Callback:rec_3};
-type rec_1 = record {body:vec nat8; headers:vec record {text; text}; upgrade:opt bool; streaming_strategy:opt rec_2; status_code:nat16};
-type rec_7 = record {url:text; method:text; body:vec nat8; headers:vec record {text; text}};
-type rec_13 = record {arbitrary_data:text};
-type rec_12 = record {arbitrary_data:text};
-type rec_11 = record {token:opt rec_12; body:vec nat8};
-type rec_10 = record {token:rec_13; callback:func (text) -> (rec_11) query};
-type rec_9 = variant {Callback:rec_10};
-type rec_8 = record {body:vec nat8; headers:vec record {text; text}; upgrade:opt bool; streaming_strategy:opt rec_9; status_code:nat16};
-type rec_14 = record {arbitrary_data:text};
-type rec_16 = record {arbitrary_data:text};
-type rec_15 = record {token:opt rec_16; body:vec nat8};
 service: () -> {
-    http_request: (rec_0) -> (rec_1) query;
-    http_request_update: (rec_7) -> (rec_8);
-    http_streaming: (rec_14) -> (rec_15) query;
+    http_request: (record {url:text; method:text; body:vec nat8; headers:vec record {text; text}; certificate_version:opt nat16}) -> (record {body:vec nat8; headers:vec record {text; text}; upgrade:opt bool; streaming_strategy:opt variant {Callback:record {token:record {arbitrary_data:text}; callback:func (text) -> (record {token:opt record {arbitrary_data:text}; body:vec nat8}) query}}; status_code:nat16}) query;
+    http_request_update: (record {url:text; method:text; body:vec nat8; headers:vec record {text; text}; certificate_version:opt nat16}) -> (record {body:vec nat8; headers:vec record {text; text}; upgrade:opt bool; streaming_strategy:opt variant {Callback:record {token:record {arbitrary_data:text}; callback:func (text) -> (record {token:opt record {arbitrary_data:text}; body:vec nat8}) query}}; status_code:nat16});
+    http_streaming: (record {arbitrary_data:text}) -> (record {token:opt record {arbitrary_data:text}; body:vec nat8}) query;
 }
