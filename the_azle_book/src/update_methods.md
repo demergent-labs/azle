@@ -2,7 +2,7 @@
 
 ## TLDR
 
--   Annotate functions with `$update`
+-   Annotate functions with `update`
 -   Read-write
 -   Executed on many nodes
 -   Consensus
@@ -15,14 +15,15 @@
 Update methods are similar to query methods, but state changes can be persisted. Here's an example of a simple update method:
 
 ```typescript
-import { nat64, $update } from 'azle';
+import { Canister, nat64, update } from 'azle';
 
 let counter = 0n;
 
-$update;
-export function increment(): nat64 {
-    return counter++;
-}
+export default Canister({
+    increment: update([], nat64, () => {
+        return counter++;
+    })
+});
 ```
 
 Calling `increment` will return the current value of `counter` and then increase its value by 1. Because `counter` is a global variable, the change will be persisted to the heap, and subsequent query and update calls will have access to the new `counter` value.
@@ -32,19 +33,18 @@ Because the Internet Computer (IC) persists changes with certain fault tolerance
 Due to the latency and other expenses involved with update methods, it is best to use them only when necessary. Look at the following example:
 
 ```typescript
-import { $query, $update } from 'azle';
+import { Canister, Void, query, text, update } from 'azle';
 
 let message = '';
 
-$query;
-export function getMessage(): string {
-    return message;
-}
-
-$update;
-export function setMessage(newMessage: string): void {
-    message = newMessage;
-}
+export default Canister({
+    getMessage: query([], text, () => {
+        return message;
+    }),
+    setMessage: update([text], Void, (newMessage) => {
+        message = newMessage;
+    })
+});
 ```
 
 You'll notice that we use an update method, `setMessage`, only to perform the change to the global `message` variable. We use `getMessage`, a query method, to read the message.
@@ -52,7 +52,7 @@ You'll notice that we use an update method, `setMessage`, only to perform the ch
 Keep in mind that the heap is limited to 4 GiB, and thus there is an upper bound to global variable storage capacity. You can imagine how a simple database like the following would eventually run out of memory with too many entries:
 
 ```typescript
-import { Opt, $query, $update } from 'azle';
+import { Canister, None, Opt, Some, Void, query, text, update } from 'azle';
 
 type Db = {
     [key: string]: string;
@@ -60,34 +60,32 @@ type Db = {
 
 let db: Db = {};
 
-$query;
-export function get(key: string): Opt<string> {
-    const value = db[key];
-    return value !== undefined ? Opt.Some(value) : Opt.None;
-}
-
-$update;
-export function set(key: string, value: string): void {
-    db[key] = value;
-}
+export default Canister({
+    get: query([text], Opt(text), (key) => {
+        const value = db[key];
+        return value !== undefined ? Some(value) : None;
+    }),
+    set: update([text, text], Void, (key, value) => {
+        db[key] = value;
+    })
+});
 ```
 
 If you need more than 4 GiB of storage, consider taking advantage of the 48 GiB of stable memory. Stable structures like `StableBTreeMap` give you a nice API for interacting with stable memory. These data structures will be [covered in more detail later](./stable_structures.md). Here's a simple example:
 
 ```typescript
-import { Opt, $query, StableBTreeMap, $update } from 'azle';
+import { Canister, Opt, StableBTreeMap, Void, query, text, update } from 'azle';
 
-let db = new StableBTreeMap<string, string>(0, 10, 10);
+let db = StableBTreeMap(text, text, 0);
 
-$query;
-export function get(key: string): Opt<string> {
-    return db.get(key);
-}
-
-$update;
-export function set(key: string, value: string): void {
-    db.insert(key, value);
-}
+export default Canister({
+    get: query([text], Opt(text), (key) => {
+        return db.get(key);
+    }),
+    set: update([text, text], Void, (key, value) => {
+        db.insert(key, value);
+    })
+});
 ```
 
 So far we have only seen how state changes can be persisted. State changes can also be discarded by implicit or explicit traps. A trap is an immediate stop to execution with the ability to provide a message to the execution environment.
@@ -97,35 +95,43 @@ Traps can be useful for ensuring that multiple operations are either all complet
 Here's an example of how to trap and ensure atomic changes to your database:
 
 ```typescript
-import { ic, Opt, $query, Record, StableBTreeMap, $update, Vec } from 'azle';
+import {
+    Canister,
+    Opt,
+    Record,
+    StableBTreeMap,
+    Vec,
+    Void,
+    ic,
+    query,
+    text,
+    update
+} from 'azle';
 
-type Entry = Record<{
-    key: string;
-    value: string;
-}>;
+const Entry = Record({
+    key: text,
+    value: text
+});
 
-let db = new StableBTreeMap<string, string>(0, 10, 10);
+let db = StableBTreeMap(text, text, 0);
 
-$query;
-export function get(key: string): Opt<string> {
-    return db.get(key);
-}
+export default Canister({
+    get: query([text], Opt(text), (key) => {
+        return db.get(key);
+    }),
+    set: update([text, text], Void, (key, value) => {
+        db.insert(key, value);
+    }),
+    setMany: update([Vec(Entry)], Void, (entries) => {
+        entries.forEach((entry) => {
+            if (entry.key === 'trap') {
+                ic.trap('explicit trap');
+            }
 
-$update;
-export function set(key: string, value: string): void {
-    db.insert(key, value);
-}
-
-$update;
-export function setMany(entries: Vec<Entry>): void {
-    entries.forEach((entry) => {
-        if (entry.key === 'trap') {
-            ic.trap('explicit trap');
-        }
-
-        db.insert(entry.key, entry.value);
-    });
-}
+            db.insert(entry.key, entry.value);
+        });
+    })
+});
 ```
 
 In addition to `ic.trap`, an explicit JavaScript `throw` or any unhandled exception will also trap.
@@ -133,26 +139,32 @@ In addition to `ic.trap`, an explicit JavaScript `throw` or any unhandled except
 There is a limit to how much computation can be done in a single call to an update method. The current update call limit is [20 billion Wasm instructions](https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits). If we modify our database example, we can introduce an update method that runs the risk of reaching the limit:
 
 ```typescript
-import { nat64, Opt, $query, StableBTreeMap, $update } from 'azle';
+import {
+    Canister,
+    Opt,
+    StableBTreeMap,
+    Void,
+    nat64,
+    query,
+    text,
+    update
+} from 'azle';
 
-let db = new StableBTreeMap<string, string>(0, 1_000, 1_000);
+let db = StableBTreeMap(text, text, 0);
 
-$query;
-export function get(key: string): Opt<string> {
-    return db.get(key);
-}
-
-$update;
-export function set(key: string, value: string): void {
-    db.insert(key, value);
-}
-
-$update;
-export function setMany(numEntries: nat64): void {
-    for (let i = 0; i < numEntries; i++) {
-        db.insert(i.toString(), i.toString());
-    }
-}
+export default Canister({
+    get: query([text], Opt(text), (key) => {
+        return db.get(key);
+    }),
+    set: update([text, text], Void, (key, value) => {
+        db.insert(key, value);
+    }),
+    setMany: update([nat64], Void, (numEntries) => {
+        for (let i = 0; i < numEntries; i++) {
+            db.insert(i.toString(), i.toString());
+        }
+    })
+});
 ```
 
 From the `dfx command line` you can call `setMany` like this:

@@ -2,7 +2,7 @@
 
 ## TLDR
 
--   Annotate functions with `$query`
+-   Annotate functions with `query`
 -   Read-only
 -   Executed on a single node
 -   No consensus
@@ -14,12 +14,13 @@
 The most basic way to expose your canister's functionality publicly is through a query method. Here's an example of a simple query method:
 
 ```typescript
-import { $query } from 'azle';
+import { Canister, query, text } from 'azle';
 
-$query;
-export function getString(): string {
-    return 'This is a query method!';
-}
+export default Canister({
+    getString: query([], text, () => {
+        return 'This is a query method!';
+    })
+});
 ```
 
 `getString` can be called from the outside world through the IC's HTTP API. You'll usually invoke this API from the [`dfx command line`, `dfx web UI`, or an agent](./deployment.md#interacting-with-your-canister).
@@ -33,16 +34,17 @@ dfx canister call my_canister getString
 Query methods are read-only. They do not persist any state changes. Take a look at the following example:
 
 ```typescript
-import { $query } from 'azle';
+import { Canister, Void, query, text } from 'azle';
 
 let db: {
     [key: string]: string;
 } = {};
 
-$query;
-export function set(key: string, value: string): void {
-    db[key] = value;
-}
+export default Canister({
+    set: query([text, text], Void, (key, value) => {
+        db[key] = value;
+    })
+});
 ```
 
 Calling `set` will perform the operation of setting the `key` property on the `db` object to `value`, but after the call finishes that change will be discarded.
@@ -52,15 +54,16 @@ This is because query methods are executed on a single node machine and do not g
 There is a limit to how much computation can be done in a single call to a query method. The current query call limit is [5 billion Wasm instructions](https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits). Here's an example of a query method that runs the risk of reaching the limit:
 
 ```typescript
-import { nat32, $query } from 'azle';
+import { Canister, nat32, query, text } from 'azle';
 
-$query;
-export function pyramid(levels: nat32): string {
-    return new Array(levels).fill(0).reduce((acc, _, index) => {
-        const asterisks = new Array(index + 1).fill('*').join('');
-        return `${acc}${asterisks}\n`;
-    }, '');
-}
+export default Canister({
+    pyramid: query([nat32], text, (levels) => {
+        return new Array(levels).fill(0).reduce((acc, _, index) => {
+            const asterisks = new Array(index + 1).fill('*').join('');
+            return `${acc}${asterisks}\n`;
+        }, '');
+    })
+});
 ```
 
 From the `dfx command line` you can call `pyramid` like this:

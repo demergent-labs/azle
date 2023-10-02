@@ -40,112 +40,112 @@ The following is a simple example showing how to import and use most of the Cand
 
 ```typescript
 import {
-    blob,
-    CallResult,
-    float64,
-    float32,
+    Canister,
     Func,
+    None,
+    Null,
+    Opt,
+    Principal,
+    Record,
+    Recursive,
+    Variant,
+    Vec,
+    blob,
+    bool,
+    float32,
+    float64,
     int,
-    int8,
     int16,
     int32,
     int64,
+    int8,
     nat,
-    nat8,
     nat16,
     nat32,
     nat64,
-    Opt,
-    Principal,
-    $query,
-    Query,
-    Record,
-    Service,
-    serviceQuery,
-    serviceUpdate,
-    Variant,
-    Vec
+    nat8,
+    query,
+    text,
+    update
 } from 'azle';
 
-type Candid = Record<{
-    text: string;
-    blob: blob;
-    nat: nat;
-    nat64: nat64;
-    nat32: nat32;
-    nat16: nat16;
-    nat8: nat8;
-    int: int;
-    int64: int64;
-    int32: int32;
-    int16: int16;
-    int8: int8;
-    float64: float64;
-    float32: float32;
-    bool: boolean;
-    null: null;
-    vec: Vec<string>;
-    opt: Opt<nat>;
-    record: Record<{
-        firstName: string;
-        lastName: string;
-        age: nat8;
-    }>;
-    variant: Variant<{
-        Tag1: null;
-        Tag2: null;
-        Tag3: int;
-    }>;
-    func: Func<Query<() => Candid>>;
-    service: MyService;
-    principal: Principal;
-}>;
+const MyCanister = Canister({
+    query1: query([], bool),
+    update1: update([], text)
+});
 
-class MyService extends Service {
-    @serviceQuery
-    query1: () => CallResult<boolean>;
+const Candid = Record({
+    text: text,
+    blob: blob,
+    nat: nat,
+    nat64: nat64,
+    nat32: nat32,
+    nat16: nat16,
+    nat8: nat8,
+    int: int,
+    int64: int64,
+    int32: int32,
+    int16: int16,
+    int8: int8,
+    float64: float64,
+    float32: float32,
+    bool: bool,
+    null: Null,
+    vec: Vec(text),
+    opt: Opt(nat),
+    record: Record({
+        firstName: text,
+        lastName: text,
+        age: nat8
+    }),
+    variant: Variant({
+        Tag1: Null,
+        Tag2: Null,
+        Tag3: int
+    }),
+    func: Recursive(() => Func([], Candid, 'query')),
+    canister: MyCanister,
+    principal: Principal
+});
 
-    @serviceUpdate
-    update1: () => CallResult<string>;
-}
-
-$query;
-export function candidTypes(): Candid {
-    return {
-        text: 'text',
-        blob: Uint8Array.from([]),
-        nat: 340_282_366_920_938_463_463_374_607_431_768_211_455n,
-        nat64: 18_446_744_073_709_551_615n,
-        nat32: 4_294_967_295,
-        nat16: 65_535,
-        nat8: 255,
-        int: 170_141_183_460_469_231_731_687_303_715_884_105_727n,
-        int64: 9_223_372_036_854_775_807n,
-        int32: 2_147_483_647,
-        int16: 32_767,
-        int8: 127,
-        float64: Math.E,
-        float32: Math.PI,
-        bool: true,
-        null: null,
-        vec: ['has one element'],
-        opt: Opt.None,
-        record: {
-            firstName: 'John',
-            lastName: 'Doe',
-            age: 35
-        },
-        variant: {
-            Tag1: null
-        },
-        func: [
-            Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
-            'candidTypes'
-        ],
-        service: new MyService(Principal.fromText('aaaaa-aa')),
-        principal: Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
-    };
-}
+export default Canister({
+    candidTypes: query([], Candid, () => {
+        return {
+            text: 'text',
+            blob: Uint8Array.from([]),
+            nat: 340_282_366_920_938_463_463_374_607_431_768_211_455n,
+            nat64: 18_446_744_073_709_551_615n,
+            nat32: 4_294_967_295,
+            nat16: 65_535,
+            nat8: 255,
+            int: 170_141_183_460_469_231_731_687_303_715_884_105_727n,
+            int64: 9_223_372_036_854_775_807n,
+            int32: 2_147_483_647,
+            int16: 32_767,
+            int8: 127,
+            float64: Math.E,
+            float32: Math.PI,
+            bool: true,
+            null: null,
+            vec: ['has one element'],
+            opt: None,
+            record: {
+                firstName: 'John',
+                lastName: 'Doe',
+                age: 35
+            },
+            variant: {
+                Tag1: null
+            },
+            func: [
+                Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
+                'candidTypes'
+            ],
+            canister: MyCanister(Principal.fromText('aaaaa-aa')),
+            principal: Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
+        };
+    })
+});
 ```
 
 Calling `candidTypes` with `dfx` will return:
@@ -187,18 +187,17 @@ The TypeScript type `string` and the Azle type `text` both correspond to the [Ca
 TypeScript:
 
 ```typescript
-import { $query } from 'azle';
+import { Canister, query, text } from 'azle';
 
-$query;
-export function getString(): string {
-    return 'Hello world!';
-}
-
-$query;
-export function printString(string: string): string {
-    console.log(typeof string);
-    return string;
-}
+export default Canister({
+    getString: query([], text, () => {
+        return 'Hello world!';
+    }),
+    printString: query([text], text, (string) => {
+        console.log(typeof string);
+        return string;
+    })
+});
 ```
 
 Candid:
@@ -224,18 +223,17 @@ The Azle type `blob` corresponds to the [Candid type blob](https://internetcompu
 TypeScript:
 
 ```typescript
-import { blob, $query } from 'azle';
+import { Canister, blob, query } from 'azle';
 
-$query;
-export function getBlob(): blob {
-    return Uint8Array.from([68, 73, 68, 76, 0, 0]);
-}
-
-$query;
-export function printBlob(blob: blob): blob {
-    console.log(typeof blob);
-    return blob;
-}
+export default Canister({
+    getBlob: query([], blob, () => {
+        return Uint8Array.from([68, 73, 68, 76, 0, 0]);
+    }),
+    printBlob: query([blob], blob, (blob) => {
+        console.log(typeof blob);
+        return blob;
+    })
+});
 ```
 
 Candid:
@@ -264,18 +262,17 @@ The Azle type `nat` corresponds to the [Candid type nat](https://internetcompute
 TypeScript:
 
 ```typescript
-import { nat, $query } from 'azle';
+import { Canister, nat, query } from 'azle';
 
-$query;
-export function getNat(): nat {
-    return 340_282_366_920_938_463_463_374_607_431_768_211_455n;
-}
-
-$query;
-export function printNat(nat: nat): nat {
-    console.log(typeof nat);
-    return nat;
-}
+export default Canister({
+    getNat: query([], nat, () => {
+        return 340_282_366_920_938_463_463_374_607_431_768_211_455n;
+    }),
+    printNat: query([nat], nat, (nat) => {
+        console.log(typeof nat);
+        return nat;
+    })
+});
 ```
 
 Candid:
@@ -301,18 +298,17 @@ The Azle type `nat64` corresponds to the [Candid type nat64](https://internetcom
 TypeScript:
 
 ```typescript
-import { nat64, $query } from 'azle';
+import { Canister, nat64, query } from 'azle';
 
-$query;
-export function getNat64(): nat64 {
-    return 18_446_744_073_709_551_615n;
-}
-
-$query;
-export function printNat64(nat64: nat64): nat64 {
-    console.log(typeof nat64);
-    return nat64;
-}
+export default Canister({
+    getNat64: query([], nat64, () => {
+        return 18_446_744_073_709_551_615n;
+    }),
+    printNat64: query([nat64], nat64, (nat64) => {
+        console.log(typeof nat64);
+        return nat64;
+    })
+});
 ```
 
 Candid:
@@ -338,18 +334,17 @@ The Azle type `nat32` corresponds to the [Candid type nat32](https://internetcom
 TypeScript:
 
 ```typescript
-import { nat32, $query } from 'azle';
+import { Canister, nat32, query } from 'azle';
 
-$query;
-export function getNat32(): nat32 {
-    return 4_294_967_295;
-}
-
-$query;
-export function printNat32(nat32: nat32): nat32 {
-    console.log(typeof nat32);
-    return nat32;
-}
+export default Canister({
+    getNat32: query([], nat32, () => {
+        return 4_294_967_295;
+    }),
+    printNat32: query([nat32], nat32, (nat32) => {
+        console.log(typeof nat32);
+        return nat32;
+    })
+});
 ```
 
 Candid:
@@ -375,18 +370,17 @@ The Azle type `nat16` corresponds to the [Candid type nat16](https://internetcom
 TypeScript:
 
 ```typescript
-import { nat16, $query } from 'azle';
+import { Canister, nat16, query } from 'azle';
 
-$query;
-export function getNat16(): nat16 {
-    return 65_535;
-}
-
-$query;
-export function printNat16(nat16: nat16): nat16 {
-    console.log(typeof nat16);
-    return nat16;
-}
+export default Canister({
+    getNat16: query([], nat16, () => {
+        return 65_535;
+    }),
+    printNat16: query([nat16], nat16, (nat16) => {
+        console.log(typeof nat16);
+        return nat16;
+    })
+});
 ```
 
 Candid:
@@ -412,18 +406,17 @@ The Azle type `nat8` corresponds to the [Candid type nat8](https://internetcompu
 TypeScript:
 
 ```typescript
-import { nat8, $query } from 'azle';
+import { Canister, nat8, query } from 'azle';
 
-$query;
-export function getNat8(): nat8 {
-    return 255;
-}
-
-$query;
-export function printNat8(nat8: nat8): nat8 {
-    console.log(typeof nat8);
-    return nat8;
-}
+export default Canister({
+    getNat8: query([], nat8, () => {
+        return 255;
+    }),
+    printNat8: query([nat8], nat8, (nat8) => {
+        console.log(typeof nat8);
+        return nat8;
+    })
+});
 ```
 
 Candid:
@@ -449,18 +442,17 @@ The Azle type `int` corresponds to the [Candid type int](https://internetcompute
 TypeScript:
 
 ```typescript
-import { int, $query } from 'azle';
+import { Canister, int, query } from 'azle';
 
-$query;
-export function getInt(): int {
-    return 170_141_183_460_469_231_731_687_303_715_884_105_727n;
-}
-
-$query;
-export function printInt(int: int): int {
-    console.log(typeof int);
-    return int;
-}
+export default Canister({
+    getInt: query([], int, () => {
+        return 170_141_183_460_469_231_731_687_303_715_884_105_727n;
+    }),
+    printInt: query([int], int, (int) => {
+        console.log(typeof int);
+        return int;
+    })
+});
 ```
 
 Candid:
@@ -486,18 +478,17 @@ The Azle type `int64` corresponds to the [Candid type int64](https://internetcom
 TypeScript:
 
 ```typescript
-import { int64, $query } from 'azle';
+import { Canister, int64, query } from 'azle';
 
-$query;
-export function getInt64(): int64 {
-    return 9_223_372_036_854_775_807n;
-}
-
-$query;
-export function printInt64(int64: int64): int64 {
-    console.log(typeof int64);
-    return int64;
-}
+export default Canister({
+    getInt64: query([], int64, () => {
+        return 9_223_372_036_854_775_807n;
+    }),
+    printInt64: query([int64], int64, (int64) => {
+        console.log(typeof int64);
+        return int64;
+    })
+});
 ```
 
 Candid:
@@ -523,18 +514,17 @@ The Azle type `int32` corresponds to the [Candid type int32](https://internetcom
 TypeScript:
 
 ```typescript
-import { int32, $query } from 'azle';
+import { Canister, int32, query } from 'azle';
 
-$query;
-export function getInt32(): int32 {
-    return 2_147_483_647;
-}
-
-$query;
-export function printInt32(int32: int32): int32 {
-    console.log(typeof int32);
-    return int32;
-}
+export default Canister({
+    getInt32: query([], int32, () => {
+        return 2_147_483_647;
+    }),
+    printInt32: query([int32], int32, (int32) => {
+        console.log(typeof int32);
+        return int32;
+    })
+});
 ```
 
 Candid:
@@ -560,18 +550,17 @@ The Azle type `int16` corresponds to the [Candid type int16](https://internetcom
 TypeScript:
 
 ```typescript
-import { int16, $query } from 'azle';
+import { Canister, int16, query } from 'azle';
 
-$query;
-export function getInt16(): int16 {
-    return 32_767;
-}
-
-$query;
-export function printInt16(int16: int16): int16 {
-    console.log(typeof int16);
-    return int16;
-}
+export default Canister({
+    getInt16: query([], int16, () => {
+        return 32_767;
+    }),
+    printInt16: query([int16], int16, (int16) => {
+        console.log(typeof int16);
+        return int16;
+    })
+});
 ```
 
 Candid:
@@ -597,18 +586,17 @@ The Azle type `int8` corresponds to the [Candid type int8](https://internetcompu
 TypeScript:
 
 ```typescript
-import { int8, $query } from 'azle';
+import { Canister, int8, query } from 'azle';
 
-$query;
-export function getInt8(): int8 {
-    return 127;
-}
-
-$query;
-export function printInt8(int8: int8): int8 {
-    console.log(typeof int8);
-    return int8;
-}
+export default Canister({
+    getInt8: query([], int8, () => {
+        return 127;
+    }),
+    printInt8: query([int8], int8, (int8) => {
+        console.log(typeof int8);
+        return int8;
+    })
+});
 ```
 
 Candid:
@@ -634,18 +622,17 @@ The Azle type `float64` and the TypeScript type `number` both correspond to the 
 TypeScript:
 
 ```typescript
-import { float64, $query } from 'azle';
+import { Canister, float64, query } from 'azle';
 
-$query;
-export function getFloat64(): float64 {
-    return Math.E;
-}
-
-$query;
-export function printFloat64(float64: float64): float64 {
-    console.log(typeof float64);
-    return float64;
-}
+export default Canister({
+    getFloat64: query([], float64, () => {
+        return Math.E;
+    }),
+    printFloat64: query([float64], float64, (float64) => {
+        console.log(typeof float64);
+        return float64;
+    })
+});
 ```
 
 Candid:
@@ -671,18 +658,17 @@ The Azle type `float32` corresponds to the [Candid type float32](https://interne
 TypeScript:
 
 ```typescript
-import { float32, $query } from 'azle';
+import { Canister, float32, query } from 'azle';
 
-$query;
-export function getFloat32(): float32 {
-    return Math.PI;
-}
-
-$query;
-export function printFloat32(float32: float32): float32 {
-    console.log(typeof float32);
-    return float32;
-}
+export default Canister({
+    getFloat32: query([], float32, () => {
+        return Math.PI;
+    }),
+    printFloat32: query([float32], float32, (float32) => {
+        console.log(typeof float32);
+        return float32;
+    })
+});
 ```
 
 Candid:
@@ -708,18 +694,17 @@ The TypeScript type `boolean` corresponds to the [Candid type bool](https://inte
 TypeScript:
 
 ```typescript
-import { $query } from 'azle';
+import { Canister, bool, query } from 'azle';
 
-$query;
-export function getBool(): boolean {
-    return true;
-}
-
-$query;
-export function printBool(bool: boolean): boolean {
-    console.log(typeof bool);
-    return bool;
-}
+export default Canister({
+    getBool: query([], bool, () => {
+        return true;
+    }),
+    printBool: query([bool], bool, (bool) => {
+        console.log(typeof bool);
+        return bool;
+    })
+});
 ```
 
 Candid:
@@ -745,18 +730,17 @@ The TypeScript type `null` corresponds to the [Candid type null](https://interne
 TypeScript:
 
 ```typescript
-import { $query } from 'azle';
+import { Canister, Null, query } from 'azle';
 
-$query;
-export function getNull(): null {
-    return null;
-}
-
-$query;
-export function printNull(null_: null): null {
-    console.log(typeof null_);
-    return null_;
-}
+export default Canister({
+    getNull: query([], Null, () => {
+        return null;
+    }),
+    printNull: query([Null], Null, (null_) => {
+        console.log(typeof null_);
+        return null_;
+    })
+});
 ```
 
 Candid:
@@ -782,18 +766,17 @@ The Azle type `Vec` corresponds to the [Candid type vec](https://internetcompute
 TypeScript:
 
 ```typescript
-import { int32, $query, Vec } from 'azle';
+import { Canister, Vec, int32, query } from 'azle';
 
-$query;
-export function getNumbers(): Vec<int32> {
-    return [0, 1, 2, 3];
-}
-
-$query;
-export function printNumbers(numbers: Vec<int32>): Vec<int32> {
-    console.log(typeof numbers);
-    return numbers;
-}
+export default Canister({
+    getNumbers: query([], Vec(int32), () => {
+        return [0, 1, 2, 3];
+    }),
+    printNumbers: query([Vec(int32)], Vec(int32), (numbers) => {
+        console.log(typeof numbers);
+        return numbers;
+    })
+});
 ```
 
 Candid:
@@ -819,17 +802,16 @@ The Azle type `Opt` corresponds to the [Candid type opt](https://internetcompute
 TypeScript:
 
 ```typescript
-import { Opt, $query } from 'azle';
+import { Canister, None, Opt, Some, bool, query } from 'azle';
 
-$query;
-export function getOptSome(): Opt<boolean> {
-    return Opt.Some(true);
-}
-
-$query;
-export function getOptNone(): Opt<boolean> {
-    return Opt.None;
-}
+export default Canister({
+    getOptSome: query([], Opt(bool), () => {
+        return Some(true);
+    }),
+    getOptNone: query([], Opt(bool), () => {
+        return None;
+    })
+});
 ```
 
 Candid:
@@ -858,26 +840,25 @@ TypeScript type aliases referring to object literals wrapped in the `Record` Azl
 TypeScript:
 
 ```typescript
-import { Principal, $query, Record } from 'azle';
+import { Canister, Principal, Record, query, text } from 'azle';
 
-type User = Record<{
-    id: Principal;
-    username: string;
-}>;
+const User = Record({
+    id: Principal,
+    username: text
+});
 
-$query;
-export function getUser(): User {
-    return {
-        id: Principal.fromUint8Array(Uint8Array.from([0])),
-        username: 'lastmjs'
-    };
-}
-
-$query;
-export function printUser(user: User): User {
-    console.log(typeof user);
-    return user;
-}
+export default Canister({
+    getUser: query([], User, () => {
+        return {
+            id: Principal.fromUint8Array(Uint8Array.from([0])),
+            username: 'lastmjs'
+        };
+    }),
+    printUser: query([User], User, (user) => {
+        console.log(typeof user);
+        return user;
+    })
+});
 ```
 
 Candid:
@@ -904,32 +885,31 @@ TypeScript type aliases referring to object literals wrapped in the `Variant` Az
 TypeScript:
 
 ```typescript
-import { $query, Variant } from 'azle';
+import { Canister, Null, Variant, query } from 'azle';
 
-type Reaction = Variant<{
-    Fire: null;
-    ThumbsUp: null;
-    Emotion: Emotion;
-}>;
+const Emotion = Variant({
+    Happy: Null,
+    Indifferent: Null,
+    Sad: Null
+});
 
-type Emotion = Variant<{
-    Happy: null;
-    Indifferent: null;
-    Sad: null;
-}>;
+const Reaction = Variant({
+    Fire: Null,
+    ThumbsUp: Null,
+    Emotion: Emotion
+});
 
-$query;
-export function getReaction(): Reaction {
-    return {
-        Fire: null
-    };
-}
-
-$query;
-export function printReaction(reaction: Reaction): Reaction {
-    console.log(typeof reaction);
-    return reaction;
-}
+export default Canister({
+    getReaction: query([], Reaction, () => {
+        return {
+            Fire: null
+        };
+    }),
+    printReaction: query([Reaction], Reaction, (reaction) => {
+        console.log(typeof reaction);
+        return reaction;
+    })
+});
 ```
 
 Candid:
@@ -961,20 +941,22 @@ A `func` acts as a callback, allowing the `func` receiver to know which canister
 TypeScript:
 
 ```typescript
-import { Func, Principal, $query, Query } from 'azle';
+import { Canister, Func, Principal, query, text } from 'azle';
 
-type BasicFunc = Func<Query<(param1: string) => string>>;
+const BasicFunc = Func([text], text, 'query');
 
-$query;
-export function getBasicFunc(): BasicFunc {
-    return [Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'), 'getBasicFunc'];
-}
-
-$query;
-export function printBasicFunc(basicFunc: BasicFunc): BasicFunc {
-    console.log(typeof basicFunc);
-    return basicFunc;
-}
+export default Canister({
+    getBasicFunc: query([], BasicFunc, () => {
+        return [
+            Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
+            'getBasicFunc'
+        ];
+    }),
+    printBasicFunc: query([BasicFunc], BasicFunc, (basicFunc) => {
+        console.log(typeof basicFunc);
+        return basicFunc;
+    })
+});
 ```
 
 Candid:
@@ -1002,36 +984,21 @@ JavaScript classes that inherit from the Azle type `Service` correspond to the [
 TypeScript:
 
 ```typescript
-import {
-    CallResult,
-    Principal,
-    $query,
-    Result,
-    Service,
-    serviceQuery,
-    serviceUpdate,
-    $update
-} from 'azle';
+import { Canister, Principal, bool, ic, query, text, update } from 'azle';
 
-class SomeService extends Service {
-    @serviceQuery
-    query1: () => CallResult<boolean>;
+const SomeCanister = Canister({
+    query1: query([], bool),
+    update1: update([], text)
+});
 
-    @serviceUpdate
-    update1: () => CallResult<string>;
-}
-
-$query;
-export function getService(): SomeService {
-    return new SomeService(Principal.fromText('aaaaa-aa'));
-}
-
-$update;
-export async function callService(
-    service: SomeService
-): Promise<Result<string, string>> {
-    return await service.update1().call();
-}
+export default Canister({
+    getService: query([], SomeCanister, () => {
+        return SomeCanister(Principal.fromText('aaaaa-aa'));
+    }),
+    callService: update([SomeCanister], text, (service) => {
+        return ic.call(service.update1);
+    })
+});
 ```
 
 Candid:
@@ -1062,18 +1029,17 @@ The Azle type `Principal` corresponds to the [Candid type principal](https://int
 TypeScript:
 
 ```typescript
-import { Principal, $query } from 'azle';
+import { Canister, Principal, query } from 'azle';
 
-$query;
-export function getPrincipal(): Principal {
-    return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
-}
-
-$query;
-export function printPrincipal(principal: Principal): Principal {
-    console.log(typeof principal);
-    return principal;
-}
+export default Canister({
+    getPrincipal: query([], Principal, () => {
+        return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
+    }),
+    printPrincipal: query([Principal], Principal, (principal) => {
+        console.log(typeof principal);
+        return principal;
+    })
+});
 ```
 
 Candid:
@@ -1099,18 +1065,17 @@ The Azle type `reserved` corresponds to the [Candid type reserved](https://inter
 TypeScript:
 
 ```typescript
-import { $query, reserved } from 'azle';
+import { Canister, query, reserved } from 'azle';
 
-$query;
-export function getReserved(): reserved {
-    return 'anything';
-}
-
-$query;
-export function printReserved(reserved: reserved): reserved {
-    console.log(typeof reserved);
-    return reserved;
-}
+export default Canister({
+    getReserved: query([], reserved, () => {
+        return 'anything';
+    }),
+    printReserved: query([reserved], reserved, (reserved) => {
+        console.log(typeof reserved);
+        return reserved;
+    })
+});
 ```
 
 Candid:
@@ -1136,20 +1101,19 @@ The Azle type `empty` corresponds to the [Candid type empty](https://internetcom
 TypeScript:
 
 ```typescript
-import { empty, $query } from 'azle';
+import { Canister, empty, query } from 'azle';
 
-$query;
-export function getEmpty(): empty {
-    throw 'Anything you want';
-}
-
-// Note: It is impossible to call this function because it requires an argument
-// but there is no way to pass an "empty" value as an argument.
-$query;
-export function printEmpty(empty: empty): empty {
-    console.log(typeof empty);
-    throw 'Anything you want';
-}
+export default Canister({
+    getEmpty: query([], empty, () => {
+        throw 'Anything you want';
+    }),
+    // Note: It is impossible to call this function because it requires an argument
+    // but there is no way to pass an "empty" value as an argument.
+    printEmpty: query([empty], empty, (empty) => {
+        console.log(typeof empty);
+        throw 'Anything you want';
+    })
+});
 ```
 
 Candid:

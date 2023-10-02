@@ -63,32 +63,31 @@ Open up `azle_hello_world` in your text editor (we recommend [VS Code](https://c
 Here's the main code of the project, which you should put in the `azle_hello_world/src/index.ts` file of your canister:
 
 ```typescript
-import { $query, $update } from 'azle';
+import { Canister, Void, query, text, update } from 'azle';
 
 // This is a global variable that is stored on the heap
 let message: string = '';
 
-// Query calls complete quickly because they do not go through consensus
-$query;
-export function getMessage(): string {
-    return message;
-}
-
-// Update calls take a few seconds to complete
-// This is because they persist state changes and go through consensus
-$update;
-export function setMessage(newMessage: string): void {
-    message = newMessage; // This change will be persisted
-}
+export default Canister({
+    // Query calls complete quickly because they do not go through consensus
+    getMessage: query([], text, () => {
+        return message;
+    }),
+    // Update calls take a few seconds to complete
+    // This is because they persist state changes and go through consensus
+    setMessage: update([text], Void, (newMessage) => {
+        message = newMessage; // This change will be persisted
+    })
+});
 ```
 
 Let's discuss each section of the code.
 
 ```typescript
-import { $query, $update } from 'azle';
+import { Canister, Void, query, text, update } from 'azle';
 ```
 
-The code starts off by importing the `$query` and `$update` annotations from `azle`. The `azle` module provides most of the Internet Computer (IC) APIs for your canister.
+The code starts off by importing the `query` and `update` annotations from `azle`. The `azle` module provides most of the Internet Computer (IC) APIs for your canister.
 
 ```typescript
 // This is a global variable that is stored on the heap
@@ -99,10 +98,9 @@ We have created a global variable to store the state of our application. This va
 
 ```typescript
 // Query calls complete quickly because they do not go through consensus
-$query;
-export function getMessage(): string {
+getMessage: query([], text, () => {
     return message;
-}
+}),
 ```
 
 We are exposing a canister query method here. When query methods are called they execute quickly because they do not have to go through consensus. This method simply returns our global `message` variable.
@@ -110,10 +108,9 @@ We are exposing a canister query method here. When query methods are called they
 ```typescript
 // Update calls take a few seconds to complete
 // This is because they persist state changes and go through consensus
-$update;
-export function setMessage(newMessage: string): void {
+setMessage: update([text], Void, (newMessage) => {
     message = newMessage; // This change will be persisted
-}
+});
 ```
 
 We are exposing an update method here. When update methods are called they take a few seconds to complete. This is because they persist changes and go through consensus. A majority of nodes in a subnet must agree on all state changes introduced in calls to update methods. This method accepts a `string` from the caller and will store it in our global `message` variable.
@@ -149,9 +146,8 @@ Create the following in `azle_hello_world/dfx.json`:
     "canisters": {
         "azle_hello_world": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle azle_hello_world",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/azle_hello_world/azle_hello_world.wasm.gz"
         }
