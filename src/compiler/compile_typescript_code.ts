@@ -6,13 +6,7 @@ import { Result } from './utils/result';
 export function compileTypeScriptToJavaScript(
     main: string,
     canisterConfig: JSCanisterConfig
-): Result<
-    {
-        canisterJavaScript: JavaScript;
-        candidJavaScript: JavaScript;
-    },
-    unknown
-> {
+): Result<JavaScript, unknown> {
     try {
         const globalThisProcess = `
             globalThis.process = {
@@ -39,21 +33,28 @@ export function compileTypeScriptToJavaScript(
 
         `;
 
-        const canisterJavaScript = bundleAndTranspileJs(`
+        const bundledJavaScript = bundleAndTranspileJs(`
             ${globalThisProcess}
             ${imports}
 `);
 
-        const candidJavaScript = bundleAndTranspileJs(`
-            ${globalThisProcess}
-            ${imports}
-`);
+        const javaScriptCodeWithRandom = `
+        globalThis.crypto = {
+            getRandomValues: () => {
+                let array = new Uint8Array(32);
+
+                for (let i = 0; i < array.length; i++) {
+                    array[i] = Math.floor(Math.random() * 256);
+                }
+
+                return array;
+            }
+        };
+        ${bundledJavaScript}
+        `;
 
         return {
-            ok: {
-                canisterJavaScript,
-                candidJavaScript
-            }
+            ok: javaScriptCodeWithRandom
         };
     } catch (err) {
         return { err };
