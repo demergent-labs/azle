@@ -1,7 +1,7 @@
 import { Callback, CanisterMethodInfo, createParents, executeMethod } from '.';
 import { CandidType, TypeMapping } from '../candid';
 import { Void } from '../../lib_functional';
-import { toParamIDLTypes, toReturnIDLType } from '../../lib_new/utils';
+import { toParamIDLTypes, toReturnIDLType } from '../utils';
 
 export function init<
     const Params extends ReadonlyArray<CandidType>,

@@ -1,11 +1,8 @@
 import { IDL } from '../../lib_new/index';
-import { ic } from '../../lib_new/ic';
+import { ic } from '../ic';
 import { CandidType, TypeMapping } from '..';
-import {
-    DecodeVisitor,
-    EncodeVisitor
-} from '../../lib_new/visitors/encode_decode';
-import { Parent } from '../../lib_new/utils';
+import { DecodeVisitor, EncodeVisitor } from '../visitors/encode_decode';
+import { Parent } from '../utils';
 
 export * from './heartbeat';
 export * from './init';

@@ -1,4 +1,4 @@
-import { Func, IDL, Record, Service, Variant } from './index';
+import { IDL } from '../lib_new/index';
 // import { GetIDL } from './primitives';
 
 /*
@@ -15,28 +15,12 @@ type TypeName = string;
 export type CandidDef = string;
 export type CandidTypesDefs = { [key: TypeName]: CandidDef };
 
-export function extractCandid(
-    paramInfo: [CandidDef, CandidTypesDefs][],
-    additionalCandidDefs: CandidTypesDefs
-): [CandidDef[], CandidTypesDefs] {
-    const paramCandid = paramInfo.map(([candid, _candidTypeDefs]) => {
-        return candid;
-    });
-    const candidTypeDefs = paramInfo.reduce(
-        (acc, [_candid, candidTypeDefs]) => {
-            return { ...acc, ...candidTypeDefs };
-        },
-        additionalCandidDefs
-    );
-    return [paramCandid, candidTypeDefs];
-}
-
 export type Parent = {
     idl: IDL.RecClass;
     name: string;
 };
 
-export function toIDLType(idl: CandidClass, parents: Parent[]): IDL.Type<any> {
+export function toIDLType(idl: any, parents: Parent[]): IDL.Type<any> {
     if ('getIDL' in idl) {
         if ('_azleName' in idl) {
             const parent = parents.find(
@@ -99,14 +83,14 @@ export function toIDLType(idl: CandidClass, parents: Parent[]): IDL.Type<any> {
 }
 
 export function toParamIDLTypes(
-    idl: CandidClass[],
+    idl: any[],
     parents: Parent[] = []
 ): IDL.Type<any>[] {
     return idl.map((value) => toIDLType(value, parents));
 }
 
 export function toReturnIDLType(
-    returnIdl: ReturnCandidClass,
+    returnIdl: any,
     parents: Parent[] = []
 ): IDL.Type<any>[] {
     const idlType = toIDLType(returnIdl, parents);
@@ -141,27 +125,3 @@ export function processMap(targetMap: CandidMap, parent: Parent[]): CandidMap {
 
     return newMap;
 }
-
-export type CandidClass =
-    | IDL.BoolClass
-    | IDL.EmptyClass
-    | IDL.FixedIntClass
-    | IDL.FixedNatClass
-    | IDL.FloatClass
-    | IDL.IntClass
-    | IDL.NatClass
-    | IDL.NullClass
-    | IDL.OptClass<any>
-    | IDL.PrincipalClass
-    | IDL.RecClass
-    | IDL.ReservedClass
-    | IDL.TextClass
-    | IDL.TupleClass<any>
-    | IDL.VecClass<any>
-    | IDL.VecClass<number | bigint> // blob
-    | typeof Record
-    | typeof Variant
-    | typeof Service
-    | typeof Func;
-
-export type ReturnCandidClass = CandidClass | never[];

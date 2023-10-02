@@ -1,4 +1,4 @@
-import { ic } from './ic';
+import { ic } from '../lib_functional/ic';
 import { Buffer } from 'buffer';
 
 export declare var globalThis: {

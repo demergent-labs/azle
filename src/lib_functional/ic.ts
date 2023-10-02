@@ -1,6 +1,6 @@
 import '@dfinity/candid/lib/esm/idl'; // This must remain or the build fails
 import { Principal } from '@dfinity/principal';
-import { IDL } from './index';
+import { IDL } from '../lib_new/index';
 import {
     AzleNat64,
     blob,
@@ -11,10 +11,10 @@ import {
     Opt,
     Some,
     Void
-} from './primitives';
-import { CandidType, RejectionCode } from '../lib_functional';
+} from './candid/reference/primitives';
+import { CandidType, RejectionCode } from '.';
 import { v4 } from 'uuid';
-import { CandidClass, toIDLType } from './utils';
+import { toIDLType } from './utils';
 import { EncodeVisitor } from './visitors/encode_decode';
 
 // declare var globalThis: {

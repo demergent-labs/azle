@@ -1,6 +1,6 @@
 import { v4 } from 'uuid';
 import { IDL } from '@dfinity/candid';
-import { Parent } from '../../../lib_new/utils';
+import { Parent } from '../../utils';
 
 export function Recursive(idlCallback: any): any {
     const name = v4();

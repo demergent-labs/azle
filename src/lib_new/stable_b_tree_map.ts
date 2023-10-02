@@ -1,6 +1,14 @@
-import { CandidType, None, Some, TypeMapping } from '../lib_functional';
-import { IDL, nat8, nat64, Opt } from './index';
-import { toIDLType } from './utils';
+import {
+    CandidType,
+    None,
+    Opt,
+    Some,
+    TypeMapping,
+    nat64,
+    nat8
+} from '../lib_functional';
+import { IDL } from './index';
+import { toIDLType } from '../lib_functional/utils';
 import { encode, decode } from '../lib_functional/candid/serde';
 
 export function StableBTreeMap<

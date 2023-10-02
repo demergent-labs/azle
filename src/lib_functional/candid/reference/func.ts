@@ -1,10 +1,6 @@
 import { CandidType } from '..';
 import { IDL } from '@dfinity/candid';
-import {
-    Parent,
-    toParamIDLTypes,
-    toReturnIDLType
-} from '../../../lib_new/utils';
+import { Parent, toParamIDLTypes, toReturnIDLType } from '../../utils';
 import { v4 } from 'uuid';
 import { Principal } from '../../';
 

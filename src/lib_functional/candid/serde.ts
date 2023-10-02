@@ -1,11 +1,8 @@
 import { IDL } from '@dfinity/candid';
 
 import { AzleVec, AzleOpt, AzleTuple } from '../../lib_new';
-import { toIDLType } from '../../lib_new/utils';
-import {
-    DecodeVisitor,
-    EncodeVisitor
-} from '../../lib_new/visitors/encode_decode';
+import { toIDLType } from '../utils';
+import { DecodeVisitor, EncodeVisitor } from '../visitors/encode_decode';
 import { CandidType } from '../';
 
 /**

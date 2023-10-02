@@ -1,6 +1,6 @@
 import { CanisterMethodInfo, createParents, executeMethod } from '.';
 import { Void } from '../../lib_new';
-import { toParamIDLTypes, toReturnIDLType } from '../../lib_new/utils';
+import { toParamIDLTypes, toReturnIDLType } from '../utils';
 import { RecursiveType } from '../candid';
 
 export function inspectMessage(

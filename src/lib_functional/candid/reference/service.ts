@@ -1,16 +1,8 @@
 import { Principal, TypeMapping } from '../../';
-import {
-    IDL,
-    ServiceFunctionInfo,
-    createGlobalGuard,
-    serviceCall
-} from '../../../lib_new';
-import {
-    Parent,
-    toParamIDLTypes,
-    toReturnIDLType
-} from '../../../lib_new/utils';
+import { ic, IDL, ServiceFunctionInfo } from '../../../lib_new';
+import { Parent, toParamIDLTypes, toReturnIDLType } from '../../utils';
 import { CanisterMethodInfo } from '../../canister_methods';
+import { decode, encodeMultiple } from '../serde';
 
 type CanisterOptions = {
     [key: string]: CanisterMethodInfo<any, any>;
@@ -336,4 +328,73 @@ export function Canister<T extends CanisterOptions>(
     };
     result._azleIsCanister = true;
     return result;
+}
+
+function serviceCall(
+    canisterId: Principal,
+    methodName: string,
+    paramsIdls: any[],
+    returnIdl: any
+) {
+    // This must remain a function and not an arrow function
+    // in order to set the context (this) correctly
+    return async function (
+        this: any, // TODO in lib_new this was Service, I'm not sure we need this anymore
+        _: '_AZLE_CROSS_CANISTER_CALL',
+        notify: boolean,
+        callFunction:
+            | typeof ic.callRaw
+            | typeof ic.callRaw128
+            | typeof ic.notifyRaw,
+        cycles: bigint,
+        ...args: any[]
+    ) {
+        const encodedArgs = encodeMultiple(args, paramsIdls);
+
+        if (notify) {
+            try {
+                return callFunction(
+                    canisterId,
+                    methodName,
+                    encodedArgs,
+                    cycles
+                );
+            } catch (error) {
+                throw error;
+            }
+        } else {
+            const encodedResult = await callFunction(
+                canisterId,
+                methodName,
+                encodedArgs,
+                cycles
+            );
+
+            return decode(encodedResult, returnIdl);
+        }
+    };
+}
+function createGlobalGuard(
+    guard: (() => any) | undefined,
+    functionName: string
+): string | undefined {
+    if (guard === undefined) {
+        return undefined;
+    }
+
+    const guardName = `_azleGuard_${functionName}`;
+
+    (globalThis as any)[guardName] = guard;
+
+    return guardName;
+}
+
+type FunctionInfo = {
+    mode: 'query' | 'update';
+    paramIdls: any[];
+    returnIdl: any;
+};
+
+interface ServiceFunctionInfo {
+    [key: string]: FunctionInfo;
 }

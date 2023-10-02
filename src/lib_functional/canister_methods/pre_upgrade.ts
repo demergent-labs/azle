@@ -1,4 +1,4 @@
-import { isAsync } from '../../lib_new/utils';
+import { isAsync } from '../utils';
 import { CanisterMethodInfo, executeMethod } from '.';
 import { Void } from '../../lib_new';
 

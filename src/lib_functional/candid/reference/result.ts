@@ -1,7 +1,7 @@
-import { RequireExactlyOne } from '../lib/candid_types/variant';
-import { CandidType } from '../lib_functional';
-import { IDL } from './index';
-import { Parent, toIDLType } from './utils';
+import { RequireExactlyOne } from '../../../lib/candid_types/variant';
+import { CandidType } from '../..';
+import { IDL } from '../../../lib_new/index';
+import { Parent, toIDLType } from '../../utils';
 
 export class AzleResult<T, K> {
     constructor(ok: any, err: any) {

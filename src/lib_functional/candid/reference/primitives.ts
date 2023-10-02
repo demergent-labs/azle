@@ -1,5 +1,5 @@
-import { IDL, RequireExactlyOne } from './index';
-import { CandidClass, Parent, toIDLType } from './utils';
+import { IDL, RequireExactlyOne } from '../../../lib_new/index';
+import { CandidClass, Parent, toIDLType } from '../../utils';
 import { Principal as DfinityPrincipal } from '@dfinity/principal';
 
 export class AzleNat {
@@ -306,3 +306,23 @@ export function Tuple<T extends any[]>(...types: T): AzleTuple<T> {
 export function Manual(t: any): AzleVoid {
     return t;
 }
+
+type CandidClass =
+    | IDL.BoolClass
+    | IDL.EmptyClass
+    | IDL.FixedIntClass
+    | IDL.FixedNatClass
+    | IDL.FloatClass
+    | IDL.IntClass
+    | IDL.NatClass
+    | IDL.NullClass
+    | IDL.OptClass<any>
+    | IDL.PrincipalClass
+    | IDL.RecClass
+    | IDL.ReservedClass
+    | IDL.TextClass
+    | IDL.TupleClass<any>
+    | IDL.VecClass<any>
+    | IDL.VecClass<number | bigint>; // blob
+
+type ReturnCandidClass = CandidClass | never[];
