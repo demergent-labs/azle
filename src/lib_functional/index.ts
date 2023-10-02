@@ -1,4 +1,4 @@
-import '../lib_new/globals';
+import './globals';
 export * from './canister_methods';
 export * from './candid';
 export * from './candid/reference/primitives';
