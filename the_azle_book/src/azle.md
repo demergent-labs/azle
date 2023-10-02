@@ -165,41 +165,27 @@ Some of Azle's main drawbacks can be summarized as follows:
 
 -   [Beta](#beta)
 -   [Security risks](#security-risks)
--   [High cycle usage](#high-cycle-usage)
 -   [Missing APIs](#missing-apis)
--   [Missing JavaScript features](#missing-javascript-features)
 
 ##### Beta
 
 Azle reached beta in April of 2022. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:
 
--   QuickJS/SpiderMonkey integration for performance, security, and stability
--   Broad npm package support
--   Extensive automated property testing
+-   Extensive automated property test coverage
 -   Multiple independent security reviews/audits
+-   Broad npm package support
 
 ##### Security risks
 
 As discussed earlier, these are some things to keep in mind:
 
--   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 -   Azle does not yet have extensive automated property tests
 -   Azle does not yet have multiple independent security reviews/audits
--   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa#boa)
-
-##### High cycle usage
-
-We have done some preliminary benchmarking, and based on that our rough heuristic is that Azle will cost 2-4x more cycles than the equivalent project in Motoko or Rust. The performance of your application depends on many factors, and this should just be a rough estimate.
-
-There is evidence to suggest that a 30x improvement in performance is possible in our [underlying JS engine](https://github.com/boa-dev/boa).
+-   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 
 ##### Missing APIs
 
-Azle is not Node.js nor is it V8 running in a web browser. It is using a new JavaScript interpreter running in a very new and very different environment. APIs from the Node.js and web browser ecosystems may not be present in Azle. Our goal is to support as many of these APIs as possible over time.
-
-##### Missing JavaScript features
-
-There may be some missing JavaScript language features. You can track our language feature support based on [Boa's conformance with the ECMAScript test suite](https://boa-dev.github.io/boa/test262/). We also use multiple underlying compilers and bundlers before we execute your JavaScript, thus we may support more language features than the test suite conformance shows.
+Azle is not Node.js nor is it V8 running in a web browser. It is using a JavaScript interpreter running in a very new and very different environment. APIs from the Node.js and web browser ecosystems may not be present in Azle. Our goal is to support as many of these APIs as possible over time.
 
 #### IC
 
@@ -234,4 +220,4 @@ You should assume that all of your application data (unless it is end-to-end enc
 
 ##### NNS risk
 
-The NNS has the ability to uninstall any canister and can generally change anything about the IC. As of the time of this writing, DFINITY effectively controls much of the NNS through its follower relationships. The NNS must mature and decentralize to provide practical and realistic guarantees to canisters and their users.
+The NNS has the ability to uninstall any canister and can generally change anything about the IC protocol. The NNS uses a simple liquid democracy based on coin/token voting and follower relationships. At the time of this writing most of the voting power on the NNS follows DFINITY for protocol changes, effectively giving DFINITY write control to the protocol while those follower relationships remain in place. The NNS must mature and decentralize to provide practical and realistic protections to canisters and their users.

@@ -290,33 +290,24 @@ SOFTWARE.
 <ul>
 <li><a href="azle.html#beta">Beta</a></li>
 <li><a href="azle.html#security-risks">Security risks</a></li>
-<li><a href="azle.html#high-cycle-usage">High cycle usage</a></li>
 <li><a href="azle.html#missing-apis">Missing APIs</a></li>
-<li><a href="azle.html#missing-javascript-features">Missing JavaScript features</a></li>
 </ul>
 <h5 id="beta"><a class="header" href="#beta">Beta</a></h5>
 <p>Azle reached beta in April of 2022. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:</p>
 <ul>
-<li>QuickJS/SpiderMonkey integration for performance, security, and stability</li>
-<li>Broad npm package support</li>
-<li>Extensive automated property testing</li>
+<li>Extensive automated property test coverage</li>
 <li>Multiple independent security reviews/audits</li>
+<li>Broad npm package support</li>
 </ul>
 <h5 id="security-risks"><a class="header" href="#security-risks">Security risks</a></h5>
 <p>As discussed earlier, these are some things to keep in mind:</p>
 <ul>
-<li>Azle does not yet have many live, successful, continuously operating applications deployed to the IC</li>
 <li>Azle does not yet have extensive automated property tests</li>
 <li>Azle does not yet have multiple independent security reviews/audits</li>
-<li>Azle heavily relies on Boa which is <a href="https://github.com/boa-dev/boa#boa">self-proclaimed to be experimental</a></li>
+<li>Azle does not yet have many live, successful, continuously operating applications deployed to the IC</li>
 </ul>
-<h5 id="high-cycle-usage"><a class="header" href="#high-cycle-usage">High cycle usage</a></h5>
-<p>We have done some preliminary benchmarking, and based on that our rough heuristic is that Azle will cost 2-4x more cycles than the equivalent project in Motoko or Rust. The performance of your application depends on many factors, and this should just be a rough estimate.</p>
-<p>There is evidence to suggest that a 30x improvement in performance is possible in our <a href="https://github.com/boa-dev/boa">underlying JS engine</a>.</p>
 <h5 id="missing-apis"><a class="header" href="#missing-apis">Missing APIs</a></h5>
-<p>Azle is not Node.js nor is it V8 running in a web browser. It is using a new JavaScript interpreter running in a very new and very different environment. APIs from the Node.js and web browser ecosystems may not be present in Azle. Our goal is to support as many of these APIs as possible over time.</p>
-<h5 id="missing-javascript-features"><a class="header" href="#missing-javascript-features">Missing JavaScript features</a></h5>
-<p>There may be some missing JavaScript language features. You can track our language feature support based on <a href="https://boa-dev.github.io/boa/test262/">Boa's conformance with the ECMAScript test suite</a>. We also use multiple underlying compilers and bundlers before we execute your JavaScript, thus we may support more language features than the test suite conformance shows.</p>
+<p>Azle is not Node.js nor is it V8 running in a web browser. It is using a JavaScript interpreter running in a very new and very different environment. APIs from the Node.js and web browser ecosystems may not be present in Azle. Our goal is to support as many of these APIs as possible over time.</p>
 <h4 id="ic"><a class="header" href="#ic">IC</a></h4>
 <p>Some of the IC's main drawbacks can be summarized as follows:</p>
 <ul>
@@ -338,7 +329,7 @@ SOFTWARE.
 <h5 id="lack-of-privacy"><a class="header" href="#lack-of-privacy">Lack of privacy</a></h5>
 <p>You should assume that all of your application data (unless it is end-to-end encrypted) is accessible to multiple third-parties with no direct relationship and limited commitment to you. Currently all canister state sits unencrypted on node operator's machines. Application-layer access controls for data are possible, but motivated node operators will have an easy time getting access to your data.</p>
 <h5 id="nns-risk"><a class="header" href="#nns-risk">NNS risk</a></h5>
-<p>The NNS has the ability to uninstall any canister and can generally change anything about the IC. As of the time of this writing, DFINITY effectively controls much of the NNS through its follower relationships. The NNS must mature and decentralize to provide practical and realistic guarantees to canisters and their users.</p>
+<p>The NNS has the ability to uninstall any canister and can generally change anything about the IC protocol. The NNS uses a simple liquid democracy based on coin/token voting and follower relationships. At the time of this writing most of the voting power on the NNS follows DFINITY for protocol changes, effectively giving DFINITY write control to the protocol while those follower relationships remain in place. The NNS must mature and decentralize to provide practical and realistic protections to canisters and their users.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="internet-computer-overview"><a class="header" href="#internet-computer-overview">Internet Computer Overview</a></h1>
 <p>The <a href="https://internetcomputer.org/">Internet Computer</a> (IC) is a decentralized cloud platform. Actually, it is better thought of as a progressively decentralizing cloud platform. Its full vision is yet to be fulfilled.</p>
 <p>It aims to be owned and operated by many independent entities in many geographies and legal jurisdictions throughout the world. This is in opposition to most traditional cloud platforms today, which are generally owned and operated by one overarching legal entity.</p>
@@ -356,8 +347,9 @@ SOFTWARE.
 <p>Follow the instructions exactly as stated below to avoid issues.</p>
 <p>You should be using a *nix environment (Linux, Mac OS, <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL if using Windows</a>) with bash and have the following installed on your system:</p>
 <ul>
-<li>Node.js 18</li>
-<li>dfx 0.15.0</li>
+<li><a href="installation.html#nodejs">Node.js 18</a></li>
+<li><a href="installation.html#dfx-0150">dfx 0.15.0</a></li>
+<li><a href="installation.html#build-dependencies">Build dependencies</a></li>
 </ul>
 <h2 id="nodejs"><a class="header" href="#nodejs">Node.js</a></h2>
 <p>We highly recommend using <a href="https://github.com/nvm-sh/nvm">nvm</a> to install Node.js (and npm, which is included with Node.js). Run the following commands to install Node.js and npm with nvm:</p>
@@ -366,12 +358,23 @@ SOFTWARE.
 <p>Now restart your terminal and run the following command:</p>
 <pre><code class="language-bash">nvm install 18
 </code></pre>
-<h2 id="dfx"><a class="header" href="#dfx">dfx</a></h2>
+<h2 id="dfx-0150"><a class="header" href="#dfx-0150">dfx 0.15.0</a></h2>
 <p>Run the following command to install dfx 0.15.0:</p>
 <pre><code class="language-bash">DFX_VERSION=0.15.0 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
 </code></pre>
 <p>If after trying to run <code>dfx</code> commands you encounter an error such as <code>dfx: command not found</code>, you might need to add <code>$HOME/bin</code> to your path. Here's an example of doing this in your <code>.bashrc</code>:</p>
 <pre><code class="language-bash">echo 'export PATH=&quot;$PATH:$HOME/bin&quot;' &gt;&gt; &quot;$HOME/.bashrc&quot;
+</code></pre>
+<h2 id="build-dependencies"><a class="header" href="#build-dependencies">Build dependencies</a></h2>
+<p>You may need one or more of the following build dependencies depending on your OS:</p>
+<h3 id="ubuntuwsl"><a class="header" href="#ubuntuwsl">Ubuntu/WSL</a></h3>
+<pre><code class="language-bash">sudo apt install clang
+sudo apt install build-essential
+sudo apt install libssl-dev
+</code></pre>
+<h3 id="mac"><a class="header" href="#mac">Mac</a></h3>
+<pre><code class="language-bash"># Install the Xcode Command Line Tools
+xcode-select --install
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="hello-world"><a class="header" href="#hello-world">Hello World</a></h1>
 <ul>

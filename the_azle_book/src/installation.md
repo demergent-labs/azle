@@ -4,8 +4,9 @@ Follow the instructions exactly as stated below to avoid issues.
 
 You should be using a \*nix environment (Linux, Mac OS, [WSL if using Windows](https://learn.microsoft.com/en-us/windows/wsl/install)) with bash and have the following installed on your system:
 
--   Node.js 18
--   dfx 0.15.0
+-   [Node.js 18](#nodejs)
+-   [dfx 0.15.0](#dfx-0150)
+-   [Build dependencies](#build-dependencies)
 
 ## Node.js
 
@@ -21,7 +22,7 @@ Now restart your terminal and run the following command:
 nvm install 18
 ```
 
-## dfx
+## dfx 0.15.0
 
 Run the following command to install dfx 0.15.0:
 
@@ -33,4 +34,23 @@ If after trying to run `dfx` commands you encounter an error such as `dfx: comma
 
 ```bash
 echo 'export PATH="$PATH:$HOME/bin"' >> "$HOME/.bashrc"
+```
+
+## Build dependencies
+
+You may need one or more of the following build dependencies depending on your OS:
+
+### Ubuntu/WSL
+
+```bash
+sudo apt install clang
+sudo apt install build-essential
+sudo apt install libssl-dev
+```
+
+### Mac
+
+```bash
+# Install the Xcode Command Line Tools
+xcode-select --install
 ```
