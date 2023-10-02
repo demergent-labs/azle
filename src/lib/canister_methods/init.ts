@@ -1,6 +1,6 @@
 import { Callback, CanisterMethodInfo, createParents, executeMethod } from '.';
 import { CandidType, TypeMapping } from '../candid';
-import { Void } from '../../lib_functional';
+import { Void } from '../';
 import { toParamIDLTypes, toReturnIDLType } from '../utils';
 
 export function init<

@@ -1,4 +1,4 @@
-import { nat, Record, text } from '../../src/lib_functional';
+import { nat, Record, text } from '../../src/lib';
 
 export const BadFee = Record({
     expected_fee: nat

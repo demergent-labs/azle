@@ -4,14 +4,7 @@
 //
 // Some documentation changed from original work.
 
-import {
-    blob,
-    Canister,
-    Principal,
-    update,
-    Vec,
-    Void
-} from '../../src/lib_functional';
+import { blob, Canister, Principal, update, Vec, Void } from '../../src/lib';
 import {
     GetBalanceArgs,
     GetCurrentFeePercentilesArgs,
