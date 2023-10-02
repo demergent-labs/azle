@@ -37,13 +37,12 @@ import {
     AzleBool,
     bool,
     Principal,
-    AzleResult,
-    Result,
     AzleTuple,
     AzleText,
     AzleVoid,
     Opt
-} from '../../lib_new';
+} from '../candid/reference/primitives';
+import { AzleResult, Result } from './reference/result';
 
 export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? T

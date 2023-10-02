@@ -9,7 +9,7 @@ import {
     visitVariant,
     visitVec
 } from '.';
-import { Opt } from '../../primitives';
+import { Opt } from '../../candid/reference/primitives';
 
 /**
  * When we decode a Service we are given a principal. We need to use that
