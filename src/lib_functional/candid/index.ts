@@ -44,7 +44,9 @@ import {
     AzleVoid
 } from '../../lib_new';
 
-export type TypeMapping<T> = T extends () => any
+export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
+    ? T
+    : T extends () => any
     ? ReturnType<T>
     : T extends AzleText
     ? string
@@ -77,7 +79,30 @@ export type TypeMapping<T> = T extends () => any
     : T extends AzleVoid
     ? void
     : T extends AzleTuple<infer U>
-    ? { [K in keyof U]: U[K] extends any ? any : TypeMapping<U[K]> }
+    ? {
+          [K in keyof U]: TypeMapping<
+              U[K],
+              RecursionLevel extends 0
+                  ? 1
+                  : RecursionLevel extends 1
+                  ? 2
+                  : RecursionLevel extends 2
+                  ? 3
+                  : RecursionLevel extends 3
+                  ? 4
+                  : RecursionLevel extends 4
+                  ? 5
+                  : RecursionLevel extends 5
+                  ? 6
+                  : RecursionLevel extends 6
+                  ? 7
+                  : RecursionLevel extends 8
+                  ? 9
+                  : RecursionLevel extends 9
+                  ? 10
+                  : 10
+          >;
+      }
     : T extends AzleVec<infer U>
     ? TypeMapping<U>[]
     : T extends AzleOpt<infer U>
