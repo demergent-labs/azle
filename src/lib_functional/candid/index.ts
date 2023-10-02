@@ -41,7 +41,8 @@ import {
     Result,
     AzleTuple,
     AzleText,
-    AzleVoid
+    AzleVoid,
+    Opt
 } from '../../lib_new';
 
 export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
@@ -105,8 +106,8 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
       }
     : T extends AzleVec<infer U>
     ? TypeMapping<U>[]
-    : T extends AzleOpt<infer U>
-    ? [TypeMapping<U>] | []
+    : T extends AzleOpt<infer Some>
+    ? Opt<TypeMapping<Some>>
     : T extends AzleResult<infer U, infer W>
     ? Result<TypeMapping<U>, TypeMapping<W>>
     : T extends AzleBlob

@@ -22,7 +22,7 @@ export type VisitorResult = any;
  * is extracted into these helper methods.
  */
 
-function hch(value: any) {
+export function hch(value: any) {
     if (value._azleIsCanister) {
         return value().getIDL();
     }
@@ -41,21 +41,6 @@ export function visitTuple(
         })
     );
     return [...fields];
-}
-
-export function visitOpt(
-    visitor: DecodeVisitor | EncodeVisitor,
-    ty: IDL.Type<any>,
-    data: VisitorData
-): VisitorResult {
-    if (data.js_data.length === 0) {
-        return data.js_data;
-    }
-    const candid = hch(ty).accept(visitor, {
-        js_data: data.js_data[0],
-        js_class: data.js_class._azleType
-    });
-    return [candid];
 }
 
 export function visitVec(

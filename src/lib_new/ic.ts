@@ -1,7 +1,17 @@
 import '@dfinity/candid/lib/esm/idl'; // This must remain or the build fails
 import { Principal } from '@dfinity/principal';
 import { IDL } from './index';
-import { blob, nat, nat32, nat64, AzleNat64, Void, Opt } from './primitives';
+import {
+    AzleNat64,
+    blob,
+    nat,
+    nat32,
+    nat64,
+    None,
+    Opt,
+    Some,
+    Void
+} from './primitives';
 import { CandidType, RejectionCode } from '../lib_functional';
 import { v4 } from 'uuid';
 import { CandidClass, toIDLType } from './utils';
@@ -609,8 +619,8 @@ export const ic: Ic = globalThis._azleIc
                   globalThis._azleIc.dataCertificate();
 
               return rawRustValue === undefined
-                  ? []
-                  : [new Uint8Array(rawRustValue)];
+                  ? None
+                  : Some(new Uint8Array(rawRustValue));
           },
           id: () => {
               // TODO consider bytes instead of string, just like with caller
