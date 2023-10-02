@@ -18,8 +18,8 @@ export function update<
     Return extends CandidType,
     GenericCallback extends Callback<Params, Return>
 >(
-    paramsIdls: Params,
-    returnIdl: Return,
+    paramCandidTypes: Params,
+    returnCandidType: Return,
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Return>
         ? GenericCallback
         : never,
@@ -27,8 +27,8 @@ export function update<
 ): CanisterMethodInfo<Params, Return> {
     return (parent: any) => {
         const parents = createParents(parent);
-        const paramCandid = toParamIDLTypes(paramsIdls as any, parents);
-        const returnCandid = toReturnIDLType(returnIdl as any, parents);
+        const paramIdls = toParamIDLTypes(paramCandidTypes as any, parents);
+        const returnIdls = toReturnIDLType(returnCandidType as any, parents);
 
         const finalCallback =
             callback === undefined
@@ -36,12 +36,12 @@ export function update<
                 : (...args: any[]) => {
                       executeMethod(
                           'update',
-                          paramCandid,
-                          returnCandid,
+                          paramIdls,
+                          returnIdls,
                           args,
                           callback,
-                          paramsIdls as any,
-                          returnIdl,
+                          paramCandidTypes as any,
+                          returnCandidType,
                           methodArgs?.manual ?? false
                       );
                   };
@@ -49,8 +49,8 @@ export function update<
         return {
             mode: 'update',
             callback: finalCallback,
-            paramsIdls: paramsIdls as any,
-            returnIdl,
+            paramsIdls: paramCandidTypes as any,
+            returnIdl: returnCandidType,
             async: callback === undefined ? false : isAsync(callback),
             guard: methodArgs?.guard
         };
