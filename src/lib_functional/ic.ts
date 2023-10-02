@@ -1,6 +1,6 @@
 import '@dfinity/candid/lib/esm/idl'; // This must remain or the build fails
 import { Principal } from '@dfinity/principal';
-import { IDL } from '../lib_new/index';
+import { IDL } from './';
 import {
     AzleNat64,
     blob,

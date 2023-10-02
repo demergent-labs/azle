@@ -1,4 +1,4 @@
-import { IDL } from '../../lib_new/index';
+import { IDL } from '../';
 import { ic } from '../ic';
 import { CandidType, TypeMapping } from '..';
 import { DecodeVisitor, EncodeVisitor } from '../visitors/encode_decode';

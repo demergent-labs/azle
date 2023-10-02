@@ -1,4 +1,4 @@
-import { Principal, TypeMapping } from '../../';
+import { IDL } from '../..';
 import { ic, IDL, ServiceFunctionInfo } from '../../../lib_new';
 import { Parent, toParamIDLTypes, toReturnIDLType } from '../../utils';
 import { CanisterMethodInfo } from '../../canister_methods';

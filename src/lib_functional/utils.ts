@@ -1,4 +1,4 @@
-import { IDL } from '../lib_new/index';
+import { IDL } from './index';
 // import { GetIDL } from './primitives';
 
 /*

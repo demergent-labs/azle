@@ -1,4 +1,4 @@
-import { IDL, RequireExactlyOne } from '../../../lib_new/index';
+import { IDL } from '../../';
 import { Parent, toIDLType } from '../../utils';
 import { Principal as DfinityPrincipal } from '@dfinity/principal';
 
