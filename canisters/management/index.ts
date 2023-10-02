@@ -16,6 +16,8 @@ import {
     SendTransactionArgs
 } from './bitcoin';
 import {
+    CanisterInfoArgs,
+    CanisterInfoResult,
     CanisterStatusArgs,
     CanisterStatusResult,
     CreateCanisterArgs,
@@ -60,6 +62,8 @@ export const managementCanister = Canister({
     uninstall_code: update([UninstallCodeArgs], Void),
     start_canister: update([StartCanisterArgs], Void),
     stop_canister: update([StopCanisterArgs], Void),
+    /** Get public information about the canister. */
+    canister_info: update([CanisterInfoArgs], CanisterInfoResult),
     canister_status: update([CanisterStatusArgs], CanisterStatusResult),
     delete_canister: update([DeleteCanisterArgs], Void),
     deposit_cycles: update([DepositCyclesArgs], Void),
