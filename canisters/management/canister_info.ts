@@ -1,3 +1,9 @@
+// JS docs licensed under:
+//
+// - https://github.com/dfinity/cdk-rs/blob/main/LICENSE
+//
+// Some documentation changed from original work.
+
 import {
     Record,
     Opt,

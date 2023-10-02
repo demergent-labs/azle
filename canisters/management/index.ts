@@ -1,3 +1,9 @@
+// Some JS docs licensed under:
+//
+// - https://github.com/dfinity/cdk-rs/blob/main/LICENSE
+//
+// Some documentation changed from original work.
+
 import {
     blob,
     Canister,
@@ -15,9 +21,8 @@ import {
     Satoshi,
     SendTransactionArgs
 } from './bitcoin';
+import { CanisterInfoArgs, CanisterInfoResult } from './canister_info';
 import {
-    CanisterInfoArgs,
-    CanisterInfoResult,
     CanisterStatusArgs,
     CanisterStatusResult,
     CreateCanisterArgs,
@@ -42,6 +47,7 @@ import {
 } from './t_ecdsa';
 
 export * from './bitcoin';
+export * from './canister_info';
 export * from './canister_management';
 export * from './http_request';
 export * from './t_ecdsa';

@@ -120,12 +120,7 @@ export default Canister({
         CanisterInfoResult,
         async (args) => {
             const result = await ic.call(managementCanister.canister_info, {
-                args: [
-                    {
-                        canister_id: args.canister_id,
-                        num_requested_changes: args.num_requested_changes
-                    }
-                ]
+                args: [args]
             });
             return result;
         }
@@ -135,11 +130,7 @@ export default Canister({
         CanisterStatusResult,
         async (args) => {
             return await ic.call(managementCanister.canister_status, {
-                args: [
-                    {
-                        canister_id: args.canister_id
-                    }
-                ]
+                args: [args]
             });
         }
     ),

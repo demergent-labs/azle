@@ -9,20 +9,6 @@ import {
     blob
 } from '../../src/lib_functional';
 
-export {
-    CanisterInfoArgs,
-    CreationRecord,
-    CanisterInstallMode,
-    CodeDeploymentRecord,
-    ControllersChangeRecord,
-    CanisterChangeDetails,
-    FromUserRecord,
-    FromCanisterRecord,
-    CanisterChangeOrigin,
-    CanisterChange,
-    CanisterInfoResult
-} from './canister_info';
-
 export const CanisterId = Principal;
 export const UserId = Principal;
 export const WasmModule = blob;
