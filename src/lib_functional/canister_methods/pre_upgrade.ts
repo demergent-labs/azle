@@ -1,6 +1,6 @@
 import { isAsync } from '../utils';
 import { CanisterMethodInfo, executeMethod } from '.';
-import { Void } from '../../lib_new';
+import { Void } from '../candid/reference/primitives';
 
 export function preUpgrade(
     callback: () => void | Promise<void>

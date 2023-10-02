@@ -1,5 +1,5 @@
 import { IDL, RequireExactlyOne } from '../../../lib_new/index';
-import { CandidClass, Parent, toIDLType } from '../../utils';
+import { Parent, toIDLType } from '../../utils';
 import { Principal as DfinityPrincipal } from '@dfinity/principal';
 
 export class AzleNat {

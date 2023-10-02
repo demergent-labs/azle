@@ -1,6 +1,6 @@
 import { Callback, CanisterMethodInfo, createParents, executeMethod } from '.';
 import { CandidType, TypeMapping } from '../candid';
-import { Void } from '../../lib_new';
+import { Void } from '../candid/reference/primitives';
 import { toParamIDLTypes, toReturnIDLType } from '../utils';
 
 export function postUpgrade<
