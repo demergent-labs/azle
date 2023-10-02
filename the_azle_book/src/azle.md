@@ -1,28 +1,34 @@
 # Azle (Beta)
 
-Azle is a [TypeScript](https://www.typescriptlang.org/) [Canister Development Kit](https://internetcomputer.org/docs/current/developer-docs/backend/choosing-language) (CDK) for the [Internet Computer](https://internetcomputer.org/) (IC). In other words, it's a TypeScript/JavaScript runtime for building applications ([canisters](https://internetcomputer.org/docs/current/concepts/canisters-code)) on the IC.
+Azle is a [TypeScript](https://www.typescriptlang.org/) and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) [Canister Development Kit](https://internetcomputer.org/docs/current/developer-docs/backend/choosing-language) (CDK) for the [Internet Computer](https://internetcomputer.org/) (IC). In other words, it's a TypeScript/JavaScript runtime for building applications ([canisters](https://internetcomputer.org/docs/current/concepts/canisters-code)) on the IC.
 
--   [GitHub repo](https://github.com/demergent-labs/azle)
 -   [npm package](https://www.npmjs.com/package/azle)
+-   [GitHub repo](https://github.com/demergent-labs/azle)
 -   [Discord channel](https://discord.gg/5Hb6rM2QUM)
 
 ## Disclaimer
 
 Azle may have unknown security vulnerabilities due to the following:
 
--   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 -   Azle does not yet have extensive automated property tests
 -   Azle does not yet have multiple independent security reviews/audits
--   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa#boa)
+-   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 
 ## Roadmap
 
-We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:
+We hope to move Azle from beta to release candidates by the end of 2023, and to move from release candidates to 1.0 in early 2024.
 
--   QuickJS/SpiderMonkey integration for performance, security, and stability
--   Broad npm package support
--   Extensive automated property testing
+### Blockers for release candidates
+
+-   Good automated property test coverage
+-   Settling of API/syntax
+-   Good npm package support
+
+### Blockers for 1.0
+
+-   Extensive automated property test coverage
 -   Multiple independent security reviews/audits
+-   Broad npm package support
 
 ## Demergent Labs
 
@@ -38,9 +44,9 @@ The following information will help you to determine when Azle and the IC might 
 
 ### Benefits
 
-Azle intends to be a full TypeScript/JavaScript environment for the IC (a decentralized cloud platform), with support for all of the TypeScript/JavaScript language and as many relevant host APIs as possible. These host APIs will be similar to those available in the Node.js and web browser environments.
+Azle intends to be a full TypeScript and JavaScript environment for the IC (a decentralized cloud platform), with support for all of the TypeScript and JavaScript language and as many relevant environment APIs as possible. These environment APIs will be similar to those available in the Node.js and web browser environments.
 
-One of the core benefits of Azle is that it allows web developers to bring their TypeScript/JavaScript skills to the IC. For example, Azle allows the use of various npm packages and VS Code intellisense.
+One of the core benefits of Azle is that it allows web developers to bring their TypeScript or JavaScript skills to the IC. For example, Azle allows the use of various npm packages and VS Code intellisense.
 
 As for the IC, we believe its main benefits can be broken down into the following categories:
 
@@ -66,7 +72,7 @@ In the blockchain world, group-owned applications are known as [DAOs](https://en
 
 ##### Autonomous ownership
 
-In addition to allowing applications to be owned by groups of people, the IC also allows applications to be owned by no one. This essentially creates autonomous applications or everlasting processes that execute indefinitely. The IC will allow such an application to run until it depletes its balance of cycles, or until the [NNS](https://internetcomputer.org/nns) votes to shut it down.
+In addition to allowing applications to be owned by groups of people, the IC also allows applications to be owned by no one. This essentially creates autonomous applications or everlasting processes that execute indefinitely. The IC will essentially allow such an application to run indefinitely, unless it depletes its balance of cycles, or the [NNS](https://internetcomputer.org/nns) votes to shut it down, neither of which is inevitable.
 
 ##### Permanent APIs
 
