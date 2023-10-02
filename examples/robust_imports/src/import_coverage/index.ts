@@ -145,7 +145,7 @@ export const typeCheck = dollarSignQuery(
     coveredInt16,
     (vec) => {
         if (vec.length === 1) {
-            if (vec[0].Some === undefined) {
+            if ('None' in vec[0]) {
                 return -1;
             }
 

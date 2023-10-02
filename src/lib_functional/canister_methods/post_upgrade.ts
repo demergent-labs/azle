@@ -5,7 +5,7 @@ import { toParamIDLTypes, toReturnIDLType } from '../../lib_new/utils';
 
 export function postUpgrade<
     const Params extends ReadonlyArray<CandidType>,
-    GenericCallback extends Callback<Params, Void>
+    GenericCallback extends Callback<Params, typeof Void>
 >(
     paramsIdls: Params,
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Void>

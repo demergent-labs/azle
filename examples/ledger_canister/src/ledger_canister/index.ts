@@ -53,9 +53,9 @@ export default Canister({
                         from_subaccount: None,
                         to: binaryAddressFromAddress(to),
                         created_at_time:
-                            createdAtTime.Some !== undefined
-                                ? Some({ timestamp_nanos: createdAtTime.Some })
-                                : None
+                            'None' in createdAtTime
+                                ? None
+                                : Some({ timestamp_nanos: createdAtTime.Some })
                     }
                 ]
             });

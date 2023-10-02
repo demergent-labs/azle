@@ -25,7 +25,7 @@ export default Canister({
     ethGetBalance: update([text], text, async (ethereumAddress) => {
         const urlOpt = stableStorage.get('ethereumUrl');
 
-        if (urlOpt.Some === undefined) {
+        if ('None' in urlOpt) {
             throw new Error('ethereumUrl is not defined');
         }
 
@@ -68,7 +68,7 @@ export default Canister({
     ethGetBlockByNumber: update([nat32], text, async (number) => {
         const urlOpt = stableStorage.get('ethereumUrl');
 
-        if (urlOpt.Some === undefined) {
+        if ('None' in urlOpt) {
             throw new Error('ethereumUrl is not defined');
         }
 

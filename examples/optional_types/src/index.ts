@@ -55,9 +55,9 @@ export default Canister({
         return None;
     }),
     stringToBoolean: query([Opt(text)], bool, (optString) => {
-        if (optString.Some !== undefined) {
-            return true;
+        if ('None' in optString) {
+            return false;
         }
-        return false;
+        return true;
     })
 });
