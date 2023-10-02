@@ -38,7 +38,7 @@ echo 'export PATH="$PATH:$HOME/bin"' >> "$HOME/.bashrc"
 
 ## Build dependencies
 
-You may need one or more of the following build dependencies depending on your OS:
+You may or may not need these dependencies based on your OS. If you run into errors while deploying, try the following:
 
 ### Ubuntu/WSL
 
@@ -46,6 +46,7 @@ You may need one or more of the following build dependencies depending on your O
 sudo apt install clang
 sudo apt install build-essential
 sudo apt install libssl-dev
+sudo apt install pkg-config
 ```
 
 ### Mac

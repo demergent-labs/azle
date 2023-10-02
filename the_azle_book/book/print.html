@@ -366,11 +366,12 @@ SOFTWARE.
 <pre><code class="language-bash">echo 'export PATH=&quot;$PATH:$HOME/bin&quot;' &gt;&gt; &quot;$HOME/.bashrc&quot;
 </code></pre>
 <h2 id="build-dependencies"><a class="header" href="#build-dependencies">Build dependencies</a></h2>
-<p>You may need one or more of the following build dependencies depending on your OS:</p>
+<p>You may or may not need these dependencies based on your OS. If you run into errors while deploying, try the following:</p>
 <h3 id="ubuntuwsl"><a class="header" href="#ubuntuwsl">Ubuntu/WSL</a></h3>
 <pre><code class="language-bash">sudo apt install clang
 sudo apt install build-essential
 sudo apt install libssl-dev
+sudo apt install pkg-config
 </code></pre>
 <h3 id="mac"><a class="header" href="#mac">Mac</a></h3>
 <pre><code class="language-bash"># Install the Xcode Command Line Tools
@@ -425,10 +426,10 @@ touch dfx.json
 <p>Open up <code>azle_hello_world</code> in your text editor (we recommend <a href="https://code.visualstudio.com/">VS Code</a>).</p>
 <h3 id="indexts"><a class="header" href="#indexts">index.ts</a></h3>
 <p>Here's the main code of the project, which you should put in the <code>azle_hello_world/src/index.ts</code> file of your canister:</p>
-<pre><code class="language-typescript">import { Canister, Void, query, text, update } from 'azle';
+<pre><code class="language-typescript">import { Canister, query, text, update, Void } from 'azle';
 
 // This is a global variable that is stored on the heap
-let message: string = '';
+let message = '';
 
 export default Canister({
     // Query calls complete quickly because they do not go through consensus
@@ -443,26 +444,32 @@ export default Canister({
 });
 </code></pre>
 <p>Let's discuss each section of the code.</p>
-<pre><code class="language-typescript">import { Canister, Void, query, text, update } from 'azle';
+<pre><code class="language-typescript">import { Canister, query, text, update, Void } from 'azle';
 </code></pre>
-<p>The code starts off by importing the <code>query</code> and <code>update</code> annotations from <code>azle</code>. The <code>azle</code> module provides most of the Internet Computer (IC) APIs for your canister.</p>
+<p>The code starts off by importing <code>Canister</code>, <code>query</code>, <code>text</code>, <code>update</code> and <code>Void</code> from <code>azle</code>. The <code>azle</code> module provides most of the Internet Computer (IC) APIs for your canister.</p>
 <pre><code class="language-typescript">// This is a global variable that is stored on the heap
-let message: string = '';
+let message = '';
 </code></pre>
-<p>We have created a global variable to store the state of our application. This variable is in scope to all of the functions defined in this module. We have annotated it with a type and set it equal to an empty string.</p>
+<p>We have created a global variable to store the state of our application. This variable is in scope to all of the functions defined in this module. We have set it equal to an empty string.</p>
+<pre><code class="language-typescript">export default Canister({
+    ...
+});
+</code></pre>
+<p>The <code>Canister</code> function allows us to export our canister's definition to the Azle IC environment.</p>
 <pre><code class="language-typescript">// Query calls complete quickly because they do not go through consensus
 getMessage: query([], text, () =&gt; {
     return message;
 }),
 </code></pre>
-<p>We are exposing a canister query method here. When query methods are called they execute quickly because they do not have to go through consensus. This method simply returns our global <code>message</code> variable.</p>
+<p>We are exposing a canister query method here. This method simply returns our global <code>message</code> variable. We use a <code>CandidType</code> object called <code>text</code> to instruct Azle to encode the return value as a Candid <code>text</code> value. When query methods are called they execute quickly because they do not have to go through consensus.</p>
 <pre><code class="language-typescript">// Update calls take a few seconds to complete
 // This is because they persist state changes and go through consensus
 setMessage: update([text], Void, (newMessage) =&gt; {
     message = newMessage; // This change will be persisted
 });
 </code></pre>
-<p>We are exposing an update method here. When update methods are called they take a few seconds to complete. This is because they persist changes and go through consensus. A majority of nodes in a subnet must agree on all state changes introduced in calls to update methods. This method accepts a <code>string</code> from the caller and will store it in our global <code>message</code> variable.</p>
+<p>We are exposing an update method here. This method accepts a <code>string</code> from the caller and will store it in our global <code>message</code> variable. We use a <code>CandidType</code> object called <code>text</code> to instruct Azle to decode the <code>newMessage</code> parameter from a Candid <code>text</code> value to a JavaScript string value. Azle will infer the TypeScript type for <code>newMessage</code>. We use a <code>CandidType</code> object called <code>Void</code> to instruct Azle to encode the return value as the absence of a Candid value.</p>
+<p>When update methods are called they take a few seconds to complete. This is because they persist changes and go through consensus. A majority of nodes in a subnet must agree on all state changes introduced in calls to update methods.</p>
 <p>That's it! We've created a very simple getter/setter <code>Hello World</code> application. But no <code>Hello World</code> project is complete without actually yelling <code>Hello world</code>!</p>
 <p>To do that, we'll need to setup the rest of our project.</p>
 <h3 id="tsconfigjson"><a class="header" href="#tsconfigjson">tsconfig.json</a></h3>
@@ -471,8 +478,6 @@ setMessage: update([text], Void, (newMessage) =&gt; {
     &quot;compilerOptions&quot;: {
         &quot;strict&quot;: true,
         &quot;target&quot;: &quot;ES2020&quot;,
-        &quot;experimentalDecorators&quot;: true,
-        &quot;strictPropertyInitialization&quot;: false,
         &quot;moduleResolution&quot;: &quot;node&quot;,
         &quot;allowJs&quot;: true,
         &quot;outDir&quot;: &quot;HACK_BECAUSE_OF_ALLOW_JS&quot;
@@ -486,9 +491,10 @@ setMessage: update([text], Void, (newMessage) =&gt; {
         &quot;azle_hello_world&quot;: {
             &quot;type&quot;: &quot;custom&quot;,
             &quot;main&quot;: &quot;src/index.ts&quot;,
-            &quot;build&quot;: &quot;npx azle azle_hello_world&quot;,
             &quot;candid&quot;: &quot;src/index.did&quot;,
-            &quot;wasm&quot;: &quot;.azle/azle_hello_world/azle_hello_world.wasm.gz&quot;
+            &quot;build&quot;: &quot;npx azle azle_hello_world&quot;,
+            &quot;wasm&quot;: &quot;.azle/azle_hello_world/azle_hello_world.wasm&quot;,
+            &quot;gzip&quot;: true
         }
     }
 }

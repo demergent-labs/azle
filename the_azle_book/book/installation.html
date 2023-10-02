@@ -167,11 +167,12 @@
 <pre><code class="language-bash">echo 'export PATH=&quot;$PATH:$HOME/bin&quot;' &gt;&gt; &quot;$HOME/.bashrc&quot;
 </code></pre>
 <h2 id="build-dependencies"><a class="header" href="#build-dependencies">Build dependencies</a></h2>
-<p>You may need one or more of the following build dependencies depending on your OS:</p>
+<p>You may or may not need these dependencies based on your OS. If you run into errors while deploying, try the following:</p>
 <h3 id="ubuntuwsl"><a class="header" href="#ubuntuwsl">Ubuntu/WSL</a></h3>
 <pre><code class="language-bash">sudo apt install clang
 sudo apt install build-essential
 sudo apt install libssl-dev
+sudo apt install pkg-config
 </code></pre>
 <h3 id="mac"><a class="header" href="#mac">Mac</a></h3>
 <pre><code class="language-bash"># Install the Xcode Command Line Tools
