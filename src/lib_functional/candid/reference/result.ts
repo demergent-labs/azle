@@ -1,5 +1,4 @@
-import { RequireExactlyOne } from '../../../lib/candid_types/variant';
-import { CandidType } from '../..';
+import { RequireExactlyOne } from './variant';
 import { CandidType, IDL } from '../..';
 import { Parent, toIDLType } from '../../utils';
 

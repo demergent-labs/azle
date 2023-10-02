@@ -1,4 +1,5 @@
 import { IDL } from '../../';
+import { RequireExactlyOne } from './variant';
 import { Parent, toIDLType } from '../../utils';
 import { Principal as DfinityPrincipal } from '@dfinity/principal';
 

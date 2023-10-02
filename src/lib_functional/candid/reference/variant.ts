@@ -24,7 +24,7 @@ export function Variant<
     } as any;
 }
 
-type RequireExactlyOne<
+export type RequireExactlyOne<
     ObjectType,
     KeysType extends keyof ObjectType = keyof ObjectType
 > = {
