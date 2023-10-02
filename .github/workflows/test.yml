@@ -17,6 +17,8 @@
 # "examples/generics",
 # "examples/run_time_errors",
 
+# TODO http_counter tests are being skipped until this is resolved: https://forum.dfinity.org/t/lookuppathabsent/23461
+
 name: Azle Tests
 on:
     push:
