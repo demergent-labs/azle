@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { ok, Test } from 'azle/test';
+import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/management_canister/management_canister.did';
 import { readFileSync } from 'fs';
 
@@ -189,6 +189,26 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                             3_000_000n &&
                         canisterStatus.settings.compute_allocation === 1n &&
                         canisterStatus.module_hash.length === 0
+                };
+            }
+        },
+        {
+            name: 'getCanisterInfo',
+            test: async () => {
+                const canisterId =
+                    await managementCanister.getCreatedCanisterId();
+
+                const canisterInfo = await managementCanister.getCanisterInfo({
+                    canister_id: canisterId,
+                    num_requested_changes: [50n]
+                });
+
+                return {
+                    Ok:
+                        canisterInfo.total_num_changes === 3n &&
+                        canisterInfo.recent_changes.length === 3 &&
+                        canisterInfo.module_hash.length === 0 &&
+                        canisterInfo.controllers.length === 1
                 };
             }
         },
