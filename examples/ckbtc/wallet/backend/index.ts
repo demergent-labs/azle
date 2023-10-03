@@ -12,6 +12,7 @@ import {
     init,
     nat,
     nat64,
+    postUpgrade,
     text,
     update
 } from 'azle';
@@ -25,23 +26,9 @@ let ckBTC: typeof ICRC;
 let minter: typeof Minter;
 
 export default Canister({
-    init: init([], () => {
-        const ckBTC = ICRC(
-            Principal.fromText(
-                process.env.CK_BTC_PRINCIPAL ??
-                    ic.trap('process.env.CK_BTC_PRINCIPAL is undefined')
-            )
-        );
-
-        minter = Minter(
-            Principal.fromText(
-                process.env.MINTER_PRINCIPAL ??
-                    ic.trap('process.env.MINTER_PRINCIPAL is undefined')
-            )
-        );
-    }),
+    init: init([], setupCanisters),
+    postUpgrade: postUpgrade([], setupCanisters),
     getBalance: update([], nat64, async () => {
-        // TODO: switch to the new ic.call(ckBTC.icrc1_balance_of, {args:}) syntax
         return await ic.call(ckBTC.icrc1_balance_of, {
             args: [
                 {
@@ -112,4 +99,20 @@ function padPrincipalWithZeros(blob: blob): blob {
     let newUin8Array = new Uint8Array(32);
     newUin8Array.set(blob);
     return newUin8Array;
+}
+
+function setupCanisters() {
+    ckBTC = ICRC(
+        Principal.fromText(
+            process.env.CK_BTC_PRINCIPAL ??
+                ic.trap('process.env.CK_BTC_PRINCIPAL is undefined')
+        )
+    );
+
+    minter = Minter(
+        Principal.fromText(
+            process.env.MINTER_PRINCIPAL ??
+                ic.trap('process.env.MINTER_PRINCIPAL is undefined')
+        )
+    );
 }
