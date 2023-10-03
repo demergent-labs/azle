@@ -12,21 +12,21 @@ npm install
 
 ## Deployment
 
-### bitcoind
+Run each of the following commands, each in a separate terminal.
+
+Bitcoin daemon:
 
 ```bash
-# Do this in its own terminal
 npm run bitcoin
 ```
 
-### dfx
+IC replica:
 
 ```bash
-# Do this in its own terminal
 npm run ic
 ```
 
-### deploy canisters
+Deploy canisters:
 
 ```bash
 npm run deploy
@@ -34,13 +34,39 @@ npm run deploy
 
 ## Usage
 
-Go to the `wallet_frontend` URL `http://ryjl3-tyaaa-aaaaa-aaaba-cai.localhost:8000`. Minting some initial BTC is shown below. You should mint to the Bitcoin deposit address shown in the web UI to start things off.
+1. Create an Internet Identity
 
-```bash
-# Mine some BTC to that address
-.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress 1 <your-canister-btc-address>
-```
+    Go to the `wallet_frontend` URL `http://ryjl3-tyaaa-aaaaa-aaaba-cai.localhost:8000`.
 
-Now click `Update Balance` in the web UI.
+    ```bash
+    npm run frontend
+    ```
 
-Play around, try transfering some ckBTC to an account in another independent browser tab.
+    The first you visit the frontend it should re-direct you to the local internet-identity (II) to authenticate. If it does not try refreshing the page.
+
+    > **Note:**
+    > This Internet Identity service is running locally (see the local url?) and is for testing. **DO NOT USE YOUR REAL INTERNET IDENTITY!!!**
+
+    ![image](https://github.com/demergent-labs/azle/assets/5455419/6d929bb3-e87e-45c9-88f6-c79b3e8236a4)
+
+    Select "Create New" and continue through the provided instructions to create a new **local test** internet identity.
+
+    ![image](https://github.com/demergent-labs/azle/assets/5455419/564bc367-e6b3-4ccd-81a9-917089da67da)
+
+    Make note of the identity number it generated and the click "I saved it, continue".
+
+2. Mint some BTC
+
+    Back on the frontend site copy the bitcoin deposit address as shown below
+
+    ![image](https://github.com/demergent-labs/azle/assets/5455419/3d6ac20e-e1eb-4d90-a65a-460f8242d8fd)
+
+    Mint some BTC to your wallet by running the following command, replacing `<your-canister-btc-address>` with the address from the frontend:
+
+    ```bash
+    npm run mint --address=<your-canister-btc-address>
+    ```
+
+3. Now click `Update Balance` in the web UI.
+
+4. Play around, try transfering some ckBTC to an account in another independent browser tab.
