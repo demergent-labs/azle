@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "vanilla_js": {
+            "type": "custom",
+            "main": "src/index.js",
+            "build": "npx azle vanilla_js",
+            "candid": "src/index.did",
+            "wasm": ".azle/vanilla_js/vanilla_js.wasm",
+            "gzip": true,
+            "declarations": {
+                "output": "test/dfx_generated/vanilla_js",
+                "node_compatibility": true
+            }
+        }
+    }
+}
