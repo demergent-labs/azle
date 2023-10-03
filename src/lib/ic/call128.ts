@@ -19,7 +19,7 @@ export function call128<T extends (...args: any[]) => any>(
         cycles?: nat;
     }
 ): ReturnTypeOf<T> {
-    return method.crossCanisterCallback(
+    return (method as any).crossCanisterCallback(
         '_AZLE_CROSS_CANISTER_CALL',
         false,
         callRaw128,

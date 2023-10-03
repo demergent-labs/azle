@@ -69,11 +69,13 @@ pub fn native_function<'a>(
 
             if should_resolve {
                 let resolve = global
+                    .get_property("_azleResolveIds").unwrap()
                     .get_property(format!("_resolve_{promise_id}").as_str())
                     .unwrap();
                 resolve.call(&resolve, &[js_value_ref]).unwrap();
             } else {
                 let reject = global
+                    .get_property("_azleRejectIds").unwrap()
                     .get_property(format!("_reject_{promise_id}").as_str())
                     .unwrap();
                 reject.call(&reject, &[js_value_ref]).unwrap();

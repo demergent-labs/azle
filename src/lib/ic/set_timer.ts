@@ -31,12 +31,12 @@ export function setTimer(
 
     globalThis.icTimers[timerId.toString()] = timerCallbackId;
 
-    globalThis[timerCallbackId] = () => {
+    globalThis._azleTimerCallbackIds[timerCallbackId] = () => {
         try {
             callback();
         } finally {
             delete globalThis.icTimers[timerId.toString()];
-            delete globalThis[timerCallbackId];
+            delete globalThis._azleTimerCallbackIds[timerCallbackId];
         }
     };
 

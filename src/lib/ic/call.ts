@@ -20,7 +20,7 @@ export function call<T extends (...args: any[]) => any>(
     }
 ): ReturnTypeOf<T> {
     // TODO probably get rid of .crossCanisterCallback
-    return method.crossCanisterCallback(
+    return (method as any).crossCanisterCallback(
         '_AZLE_CROSS_CANISTER_CALL',
         false,
         callRaw,

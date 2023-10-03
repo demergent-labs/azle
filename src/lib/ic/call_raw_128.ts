@@ -30,18 +30,18 @@ export function callRaw128(
         // TODO perhaps we should be more robust
         // TODO for example, we can keep the time with these
         // TODO if they are over a certain amount old we can delete them
-        globalThis[globalResolveId] = (bytes: ArrayBuffer) => {
+        globalThis._azleResolveIds[globalResolveId] = (bytes: ArrayBuffer) => {
             resolve(new Uint8Array(bytes));
 
-            delete globalThis[globalResolveId];
-            delete globalThis[globalRejectId];
+            delete globalThis._azleResolveIds[globalResolveId];
+            delete globalThis._azleRejectIds[globalRejectId];
         };
 
-        globalThis[globalRejectId] = (error: any) => {
+        globalThis._azleRejectIds[globalRejectId] = (error: any) => {
             reject(error);
 
-            delete globalThis[globalResolveId];
-            delete globalThis[globalRejectId];
+            delete globalThis._azleResolveIds[globalResolveId];
+            delete globalThis._azleRejectIds[globalRejectId];
         };
 
         const canisterIdBytes = canisterId.toUint8Array().buffer;
@@ -60,8 +60,8 @@ export function callRaw128(
                 paymentCandidBytes
             );
         } catch (error) {
-            delete globalThis[globalResolveId];
-            delete globalThis[globalRejectId];
+            delete globalThis._azleResolveIds[globalResolveId];
+            delete globalThis._azleRejectIds[globalRejectId];
             throw error;
         }
     });
