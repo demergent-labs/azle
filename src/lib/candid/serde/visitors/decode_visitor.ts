@@ -8,8 +8,8 @@ import {
     visitTuple,
     visitVariant,
     visitVec
-} from '.';
-import { Opt } from '../../';
+} from './index';
+import { Opt } from '../../types/constructed';
 
 /**
  * When we decode a Service we are given a principal. We need to use that

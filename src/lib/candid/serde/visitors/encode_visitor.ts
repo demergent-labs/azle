@@ -8,7 +8,7 @@ import {
     visitTuple,
     visitVariant,
     visitVec
-} from '.';
+} from './index';
 
 /**
  * When we encode a Service we have a service class and we need it to be only

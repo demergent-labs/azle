@@ -1,8 +1,9 @@
-import { AzleVoid, IDL } from '../';
+import { AzleVoid } from '../candid/types/primitive/void';
+import { IDL } from '@dfinity/candid';
 import { ic } from '../ic';
-import { CandidType, TypeMapping } from '..';
-import { DecodeVisitor, EncodeVisitor } from '../candid/serde/visitors';
-import { Parent } from '../to_idl_type';
+import { CandidType, TypeMapping, Parent } from '../candid';
+import { DecodeVisitor } from '../candid/serde/visitors/decode_visitor';
+import { EncodeVisitor } from '../candid/serde/visitors/encode_visitor';
 
 export * from './heartbeat';
 export * from './init';

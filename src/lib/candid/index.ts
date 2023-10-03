@@ -1,53 +1,32 @@
-import { IDL } from '..';
-import {
-    AzleBlob,
-    blob,
-    AzleVec,
-    AzleOpt,
-    AzleInt,
-    AzleInt64,
-    AzleInt32,
-    AzleInt16,
-    AzleInt8,
-    AzleNat,
-    AzleNat64,
-    AzleNat32,
-    AzleNat16,
-    AzleNat8,
-    AzleFloat64,
-    AzleFloat32,
-    AzleResult,
-    nat,
-    nat64,
-    nat32,
-    nat16,
-    nat8,
-    int,
-    int64,
-    int32,
-    int16,
-    int8,
-    float64,
-    float32,
-    AzleNull,
-    Null,
-    AzleReserved,
-    reserved,
-    AzleEmpty,
-    empty,
-    AzleBool,
-    bool,
-    Principal,
-    AzleTuple,
-    AzleText,
-    AzleVoid,
-    Opt,
-    Result
-} from './';
+import { IDL } from '@dfinity/candid';
+import { AzleBlob, blob } from './types/constructed/blob';
+import { AzleVec } from './types/constructed/vector';
+import { AzleOpt, Opt } from './types/constructed/option';
+import { AzleTuple } from './types/constructed/tuple';
+import { AzleNull, Null } from './types/primitive/null';
+import { AzleReserved, reserved } from './types/primitive/reserved';
+import { AzleEmpty, empty } from './types/primitive/empty';
+import { AzleBool, bool } from './types/primitive/bool';
+import { AzleText } from './types/primitive/text';
+import { AzleVoid } from './types/primitive/void';
+import { AzleFloat32, float32 } from './types/primitive/floats/float32';
+import { AzleFloat64, float64 } from './types/primitive/floats/float64';
+import { AzleInt, int } from './types/primitive/ints/int';
+import { AzleInt8, int8 } from './types/primitive/ints/int8';
+import { AzleInt16, int16 } from './types/primitive/ints/int16';
+import { AzleInt32, int32 } from './types/primitive/ints/int32';
+import { AzleInt64, int64 } from './types/primitive/ints/int64';
+import { AzleNat, nat } from './types/primitive/nats/nat';
+import { AzleNat8, nat8 } from './types/primitive/nats/nat8';
+import { AzleNat16, nat16 } from './types/primitive/nats/nat16';
+import { AzleNat32, nat32 } from './types/primitive/nats/nat32';
+import { AzleNat64, nat64 } from './types/primitive/nats/nat64';
+import { AzleResult, Result } from '../system_types';
+import { Principal } from './types/reference';
 
-export * from './constructed';
-export * from './primitive';
-export * from './reference';
+export * from './types/constructed';
+export * from './types/primitive';
+export * from './types/reference';
 
 export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? T

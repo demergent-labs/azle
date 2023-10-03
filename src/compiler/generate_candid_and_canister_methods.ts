@@ -3,7 +3,7 @@ import {
     DEFAULT_VISITOR_DATA,
     didResultToCandidString,
     DidVisitor
-} from '../lib/did_visitor';
+} from '../lib/candid/did_visitor';
 
 export function generateCandidAndCanisterMethods(mainJs: string): {
     candid: string;
