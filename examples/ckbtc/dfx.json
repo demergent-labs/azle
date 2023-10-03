@@ -25,7 +25,8 @@
             "main": "wallet/backend/index.ts",
             "build": "npx azle wallet_backend",
             "candid": "wallet/backend/index.did",
-            "wasm": ".azle/wallet_backend/wallet_backend.wasm.gz",
+            "wasm": ".azle/wallet_backend/wallet_backend.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "wallet/frontend/dfx_generate/wallet_backend"
             },
