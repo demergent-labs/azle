@@ -1,4 +1,6 @@
 import { IDL } from '@dfinity/candid';
+import { nat32 } from '../candid/types/primitive/nats/nat32';
+import { blob } from '../candid/types/constructed/blob';
 
 /**
  * Writes data to the stable memory location specified by an offset
@@ -9,7 +11,7 @@ import { IDL } from '@dfinity/candid';
  * @param offset the location at which to write
  * @param buffer the data to write
  */
-export function stableWrite(offset: number, buffer: Uint8Array): void {
+export function stableWrite(offset: nat32, buffer: blob): void {
     const paramsCandidBytes = new Uint8Array(
         IDL.encode([IDL.Nat32, IDL.Vec(IDL.Nat8)], [offset, buffer])
     ).buffer;

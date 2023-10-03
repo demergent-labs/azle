@@ -1,3 +1,6 @@
+import { Void } from '../../../examples/robust_imports/src/import_coverage/types';
+import { blob } from '../candid/types/constructed/blob';
+
 /**
  * Used to manually reply to an ingress message. Intended to be used in
  * canister methods with a {@link Manual} return type.
@@ -15,6 +18,6 @@
  * }
  * ```
  */
-export function replyRaw(replyBuffer: Uint8Array): void {
+export function replyRaw(replyBuffer: blob): Void {
     return globalThis._azleIc.replyRaw(replyBuffer.buffer);
 }

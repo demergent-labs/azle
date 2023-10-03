@@ -1,4 +1,5 @@
 import { IDL } from '@dfinity/candid';
+import { nat64 } from '../candid/types/primitive/nats/nat64';
 
 /**
  * Reads data from the stable memory location specified by an offset.
@@ -7,7 +8,7 @@ import { IDL } from '@dfinity/candid';
  * @param length the length of buffer to read
  * @returns the raw bytes in stable memory
  */
-export function stable64Read(offset: bigint, length: bigint): Uint8Array {
+export function stable64Read(offset: nat64, length: nat64): Uint8Array {
     const paramsCandidBytes = new Uint8Array(
         IDL.encode([IDL.Nat64, IDL.Nat64], [offset, length])
     ).buffer;

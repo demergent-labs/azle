@@ -1,3 +1,5 @@
+import { text } from '../candid/types/primitive/text';
+
 /**
  * Returns the rejection message from the most recently executed
  * cross-canister call
@@ -7,7 +9,7 @@
  *
  * @returns the rejection message
  */
-export function rejectMessage(): string {
+export function rejectMessage(): text {
     throw new Error(
         'This function should not be called directly. It is implemented directly on the ic object'
     );

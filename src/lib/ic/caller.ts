@@ -1,4 +1,4 @@
-import { Principal } from '@dfinity/principal';
+import { Principal } from '../candid/types/reference/principal';
 
 /**
  * Returns the caller of the current call

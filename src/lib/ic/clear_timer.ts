@@ -1,13 +1,13 @@
 import { IDL } from '@dfinity/candid';
-import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { Void } from '../candid/types/primitive/void';
+import { TimerId } from './types';
 
 /**
  * Cancels an existing timer. Does nothing if the timer has already been canceled.
  * @param id The ID of the timer to be cancelled.
  */
-export function clearTimer(timerId: nat64): Void {
-    const encode = (value: nat64) => {
+export function clearTimer(timerId: TimerId): Void {
+    const encode = (value: TimerId) => {
         return new Uint8Array(IDL.encode([IDL.Nat64], [value])).buffer;
     };
 

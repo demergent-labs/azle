@@ -2,9 +2,6 @@ import { nat64, AzleNat64 } from '../candid/types/primitive/nats/nat64';
 
 export type ArgsType<T> = T extends (...args: infer U) => any ? U : any;
 export type ReturnTypeOf<T> = T extends (...args: any[]) => infer R ? R : any;
-export type ReturnTypeOfPromise<T> = T extends (...args: any[]) => infer R
-    ? Promise<R>
-    : never;
 
 /**
  * Represents a duration of time in seconds.

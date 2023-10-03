@@ -1,5 +1,6 @@
 import { IDL } from '@dfinity/candid';
 import { CandidType, toIDLType } from '../candid';
+import { Void } from '../candid/types/primitive/void';
 import { EncodeVisitor } from '../candid/serde/visitors/encode_visitor';
 
 /**
@@ -9,7 +10,7 @@ import { EncodeVisitor } from '../candid/serde/visitors/encode_visitor';
  * is the generic type supplied to `Manual<T>`. Otherwise will result in an
  * uncaught `TypeError`.
  */
-export function reply(data: any, type: CandidType): void {
+export function reply(data: any, type: CandidType): Void {
     if (type.name === 'AzleVoid') {
         // return type is void
         const bytes = new Uint8Array(IDL.encode([], [])).buffer;

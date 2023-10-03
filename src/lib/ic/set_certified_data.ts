@@ -1,4 +1,6 @@
 import { IDL } from '@dfinity/candid';
+import { blob } from '../candid/types/constructed/blob';
+import { Void } from '../candid/types/primitive/void';
 
 /**
  * Sets the certified data of this canister.
@@ -22,7 +24,7 @@ import { IDL } from '@dfinity/candid';
  * @param data the data to be set
  * @returns
  */
-export function setCertifiedData(data: Uint8Array): void {
+export function setCertifiedData(data: blob): Void {
     const dataBytes = new Uint8Array(IDL.encode([IDL.Vec(IDL.Nat8)], [data]))
         .buffer;
 

@@ -1,3 +1,4 @@
+import { nat } from '../candid/types/primitive/nats/nat';
 import { Void } from '../candid/types/primitive/void';
 import { notifyRaw } from './notify_raw';
 import { ArgsType } from './types';
@@ -35,7 +36,7 @@ export function notify<T extends (...args: any[]) => any>(
     method: T,
     config?: {
         args?: ArgsType<T>;
-        cycles?: bigint;
+        cycles?: nat;
     }
 ): Void {
     return method.crossCanisterCallback(

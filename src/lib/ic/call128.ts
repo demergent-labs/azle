@@ -1,3 +1,4 @@
+import { nat } from '../candid/types/primitive/nats/nat';
 import { callRaw128 } from './call_raw_128';
 import { ArgsType, ReturnTypeOf } from './types';
 
@@ -15,7 +16,7 @@ export function call128<T extends (...args: any[]) => any>(
     method: T,
     config?: {
         args?: ArgsType<T>;
-        cycles?: bigint;
+        cycles?: nat;
     }
 ): ReturnTypeOf<T> {
     return method.crossCanisterCallback(

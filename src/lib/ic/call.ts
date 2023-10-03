@@ -1,3 +1,4 @@
+import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { callRaw } from './call_raw';
 import { ArgsType, ReturnTypeOf } from './types';
 
@@ -15,7 +16,7 @@ export function call<T extends (...args: any[]) => any>(
     method: T,
     config?: {
         args?: ArgsType<T>;
-        cycles?: bigint;
+        cycles?: nat64;
     }
 ): ReturnTypeOf<T> {
     // TODO probably get rid of .crossCanisterCallback

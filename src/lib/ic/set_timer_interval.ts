@@ -1,5 +1,4 @@
 import { IDL } from '@dfinity/candid';
-import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { Duration, TimerId } from './types';
 import { v4 } from 'uuid';
 
@@ -16,7 +15,7 @@ export function setTimerInterval(
     interval: Duration,
     callback: () => void | Promise<void>
 ): TimerId {
-    const encode = (value: nat64) => {
+    const encode = (value: Duration) => {
         return new Uint8Array(IDL.encode([IDL.Nat64], [value])).buffer;
     };
 

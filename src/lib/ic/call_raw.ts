@@ -3,6 +3,7 @@ import { Principal } from '@dfinity/principal';
 import { blob } from '../candid/types/constructed/blob';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { v4 } from 'uuid';
+import { text } from '../candid/types/primitive/text';
 
 /**
  * Performs an asynchronous call to another canister using the [System API](
@@ -16,7 +17,7 @@ import { v4 } from 'uuid';
  */
 export function callRaw(
     canisterId: Principal,
-    method: string,
+    method: text,
     argsRaw: blob,
     payment: nat64
 ): Promise<blob> {
