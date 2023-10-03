@@ -50,7 +50,7 @@ import { trap } from './trap';
 
 export * from './types';
 
-type Ic = {
+export type Ic = {
     acceptMessage: typeof acceptMessage;
     argDataRaw: typeof argDataRaw;
     argDataRawSize: typeof argDataRawSize;

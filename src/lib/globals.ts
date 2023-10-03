@@ -1,5 +1,9 @@
-import { ic } from './ic';
+import { Ic, ic } from './ic';
 import { Buffer } from 'buffer';
+
+declare global {
+    var _azleIc: Ic;
+}
 
 export declare var globalThis: {
     _azleCandidInitParams: any[];
