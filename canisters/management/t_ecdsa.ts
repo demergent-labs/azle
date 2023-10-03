@@ -7,7 +7,7 @@ import {
     text,
     Variant,
     Vec
-} from '../../src/lib_functional';
+} from '../../src/lib';
 
 export const EcdsaCurve = Variant({
     secp256k1: Null

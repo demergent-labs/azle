@@ -10,7 +10,7 @@ import {
     text,
     Variant,
     Vec
-} from '../../src/lib_functional';
+} from '../../src/lib';
 
 export type BitcoinAddress = text;
 export const BitcoinAddress = text;

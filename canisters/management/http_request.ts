@@ -9,7 +9,7 @@ import {
     nat64,
     nat,
     Func
-} from '../../src/lib_functional';
+} from '../../src/lib';
 
 export const HttpHeader = Record({
     name: text,

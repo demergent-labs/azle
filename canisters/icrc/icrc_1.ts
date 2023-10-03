@@ -9,7 +9,7 @@ import {
     Record,
     text,
     Variant
-} from '../../src/lib_functional';
+} from '../../src/lib';
 import {
     BadBurn,
     BadFee,

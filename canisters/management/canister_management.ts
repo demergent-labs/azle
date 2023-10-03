@@ -7,7 +7,7 @@ import {
     Variant,
     Null,
     blob
-} from '../../src/lib_functional';
+} from '../../src/lib';
 
 export const CanisterId = Principal;
 export const UserId = Principal;

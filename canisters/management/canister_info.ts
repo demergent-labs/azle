@@ -13,7 +13,7 @@ import {
     nat64,
     nat8,
     Null
-} from '../../src/lib_functional';
+} from '../../src/lib';
 import { managementCanister } from '.';
 
 /** Argument type of {@link managementCanister.canister_info}. */
