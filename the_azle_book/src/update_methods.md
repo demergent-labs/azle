@@ -2,15 +2,15 @@
 
 ## TLDR
 
--   Annotate functions with `update`
+-   Created with the `update` function
 -   Read-write
 -   Executed on many nodes
 -   Consensus
 -   Latency ~2-5 seconds
--   20 billion Wasm instruction limit
+-   [20 billion Wasm instruction limit](https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits)
 -   4 GiB heap limit
--   48 GiB stable memory limit
--   ~900 updates per second per canister
+-   64 GiB stable memory limit
+-   [~900 updates per second per canister](https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6)
 
 Update methods are similar to query methods, but state changes can be persisted. Here's an example of a simple update method:
 
@@ -33,7 +33,7 @@ Because the Internet Computer (IC) persists changes with certain fault tolerance
 Due to the latency and other expenses involved with update methods, it is best to use them only when necessary. Look at the following example:
 
 ```typescript
-import { Canister, Void, query, text, update } from 'azle';
+import { Canister, query, text, update, Void } from 'azle';
 
 let message = '';
 
@@ -52,7 +52,7 @@ You'll notice that we use an update method, `setMessage`, only to perform the ch
 Keep in mind that the heap is limited to 4 GiB, and thus there is an upper bound to global variable storage capacity. You can imagine how a simple database like the following would eventually run out of memory with too many entries:
 
 ```typescript
-import { Canister, None, Opt, Some, Void, query, text, update } from 'azle';
+import { Canister, None, Opt, query, Some, text, update, Void } from 'azle';
 
 type Db = {
     [key: string]: string;
@@ -71,10 +71,10 @@ export default Canister({
 });
 ```
 
-If you need more than 4 GiB of storage, consider taking advantage of the 48 GiB of stable memory. Stable structures like `StableBTreeMap` give you a nice API for interacting with stable memory. These data structures will be [covered in more detail later](./stable_structures.md). Here's a simple example:
+If you need more than 4 GiB of storage, consider taking advantage of the 64 GiB of stable memory. Stable structures like `StableBTreeMap` give you a nice API for interacting with stable memory. These data structures will be [covered in more detail later](./stable_structures.md). Here's a simple example:
 
 ```typescript
-import { Canister, Opt, StableBTreeMap, Void, query, text, update } from 'azle';
+import { Canister, Opt, query, StableBTreeMap, text, update, Void } from 'azle';
 
 let db = StableBTreeMap(text, text, 0);
 
@@ -97,15 +97,15 @@ Here's an example of how to trap and ensure atomic changes to your database:
 ```typescript
 import {
     Canister,
+    ic,
     Opt,
+    query,
     Record,
     StableBTreeMap,
-    Vec,
-    Void,
-    ic,
-    query,
     text,
-    update
+    update,
+    Vec,
+    Void
 } from 'azle';
 
 const Entry = Record({
@@ -141,13 +141,13 @@ There is a limit to how much computation can be done in a single call to an upda
 ```typescript
 import {
     Canister,
-    Opt,
-    StableBTreeMap,
-    Void,
     nat64,
+    Opt,
     query,
+    StableBTreeMap,
     text,
-    update
+    update,
+    Void
 } from 'azle';
 
 let db = StableBTreeMap(text, text, 0);
@@ -170,9 +170,9 @@ export default Canister({
 From the `dfx command line` you can call `setMany` like this:
 
 ```bash
-dfx canister call my_canister setMany '(100_000)'
+dfx canister call my_canister setMany '(10_000)'
 ```
 
-With an argument of `100_000`, `setMany` will fail with an error `...exceeded the instruction limit for single message execution`.
+With an argument of `10_000`, `setMany` will fail with an error `...exceeded the instruction limit for single message execution`.
 
 In terms of update scalability, an individual canister [likely has an upper bound of ~900 updates per second](https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6).

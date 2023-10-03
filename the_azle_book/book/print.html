@@ -387,6 +387,7 @@ xcode-select --install
 <li><a href="hello_world.html#tsconfigjson">tsconfig.json</a></li>
 <li><a href="hello_world.html#dfxjson">dfx.json</a></li>
 <li><a href="hello_world.html#local-deployment">Local deployment</a></li>
+<li><a href="hello_world.html#common-deployment-issues">Common deployment issues</a></li>
 <li><a href="hello_world.html#interacting-with-your-canister-from-the-command-line">Interacting with your canister from the command line</a></li>
 <li><a href="hello_world.html#interacting-with-your-canister-from-the-web-ui">Interacting with your canister from the web UI</a></li>
 </ul>
@@ -407,6 +408,7 @@ npm run canister_deploy_local
 npm run canister_call_set_message
 npm run canister_call_get_message
 </code></pre>
+<p>If you run into an error during deployment, see <a href="./deployment.html#common-deployment-issues">the common deployment issues section</a>.</p>
 <p>See the official <a href="https://github.com/demergent-labs/azle_hello_world">azle_hello_world</a> example for more information.</p>
 <h2 id="methodical-start"><a class="header" href="#methodical-start">Methodical start</a></h2>
 <h3 id="the-project-directory-and-file-structure"><a class="header" href="#the-project-directory-and-file-structure">The project directory and file structure</a></h3>
@@ -507,6 +509,8 @@ setMessage: update([text], Void, (newMessage) =&gt; {
 <p>Then deploy the canister:</p>
 <pre><code class="language-bash">dfx deploy
 </code></pre>
+<h3 id="common-deployment-issues"><a class="header" href="#common-deployment-issues">Common deployment issues</a></h3>
+<p>If you run into an error during deployment, see <a href="./deployment.html#common-deployment-issues">the common deployment issues section</a>.</p>
 <h3 id="interacting-with-your-canister-from-the-command-line"><a class="header" href="#interacting-with-your-canister-from-the-command-line">Interacting with your canister from the command line</a></h3>
 <p>Once we've deployed we can ask for our message:</p>
 <pre><code class="language-bash">dfx canister call azle_hello_world getMessage
@@ -619,6 +623,13 @@ URLs:
 <p>To deploy an individual canister:</p>
 <pre><code class="language-bash">dfx deploy --network ic canister_name
 </code></pre>
+<h2 id="common-deployment-issues-1"><a class="header" href="#common-deployment-issues-1">Common deployment issues</a></h2>
+<p>If you run into an error during deployment, try the following:</p>
+<ol>
+<li>Add the <code>--verbose</code> flag to the <code>build</code> command in your <code>dfx.json</code> file like so: <code>&quot;build&quot;: &quot;npx azle build hello_world --verbose</code></li>
+<li>Ensure that you have followed the instructions correctly in <a href="./installation.html">the installation chapter</a>, especially noting <a href="./installation.html#build-dependencies">the build dependencies</a></li>
+<li>Reach out on <a href="https://discord.gg/5Hb6rM2QUM">the Discord channel</a></li>
+</ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="examples"><a class="header" href="#examples">Examples</a></h1>
 <p>Azle has many example projects showing nearly all Azle APIs. They can be found in the <a href="https://github.com/demergent-labs/azle/tree/main/examples">examples directory</a> of the <a href="https://github.com/demergent-labs/azle">Azle GitHub repository</a>.</p>
 <p>We'll highlight a few of them and some others here:</p>
@@ -643,16 +654,16 @@ URLs:
 <div style="break-before: page; page-break-before: always;"></div><h1 id="query-methods"><a class="header" href="#query-methods">Query Methods</a></h1>
 <h2 id="tldr"><a class="header" href="#tldr">TLDR</a></h2>
 <ul>
-<li>Annotate functions with <code>query</code></li>
+<li>Created with the <code>query</code> function</li>
 <li>Read-only</li>
 <li>Executed on a single node</li>
 <li>No consensus</li>
 <li>Latency on the order of ~100 milliseconds</li>
-<li>5 billion Wasm instruction limit</li>
+<li><a href="https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits">5 billion Wasm instruction limit</a></li>
 <li>4 GiB heap limit</li>
-<li>~32k queries per second per canister</li>
+<li><a href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6">~32k queries per second per canister</a></li>
 </ul>
-<p>The most basic way to expose your canister's functionality publicly is through a query method. Here's an example of a simple query method:</p>
+<p>The most basic way to expose your canister's functionality publicly is through a query method. Here's an example of a simple query method named <code>getString</code>:</p>
 <pre><code class="language-typescript">import { Canister, query, text } from 'azle';
 
 export default Canister({
@@ -661,12 +672,16 @@ export default Canister({
     })
 });
 </code></pre>
+<p>Query methods are defined inside of a call to <code>Canister</code> using the <code>query</code> function.</p>
+<p>The first parameter to <code>query</code> is an array of <code>CandidType</code> objects that will be used to decode the Candid bytes of the arguments sent from the client when calling your query method.</p>
+<p>The second parameter to <code>query</code> is a <code>CandidType</code> object used to encode the return value of your function to Candid bytes to then be sent back to the client.</p>
+<p>The third parameter to <code>query</code> is the function that receives the decoded arguments, performs some computation, and then returns a value to be encoded. The TypeScript signature of this function (parameter and return types) will be inferred from the <code>CandidType</code> arguments in the first and second parameters to <code>query</code>.</p>
 <p><code>getString</code> can be called from the outside world through the IC's HTTP API. You'll usually invoke this API from the <a href="./deployment.html#interacting-with-your-canister"><code>dfx command line</code>, <code>dfx web UI</code>, or an agent</a>.</p>
 <p>From the <code>dfx command line</code> you can call it like this:</p>
 <pre><code class="language-bash">dfx canister call my_canister getString
 </code></pre>
 <p>Query methods are read-only. They do not persist any state changes. Take a look at the following example:</p>
-<pre><code class="language-typescript">import { Canister, Void, query, text } from 'azle';
+<pre><code class="language-typescript">import { Canister, query, text, Void } from 'azle';
 
 let db: {
     [key: string]: string;
@@ -693,23 +708,23 @@ export default Canister({
 });
 </code></pre>
 <p>From the <code>dfx command line</code> you can call <code>pyramid</code> like this:</p>
-<pre><code class="language-bash">dfx canister call my_canister pyramid '(600)'
+<pre><code class="language-bash">dfx canister call my_canister pyramid '(1_000)'
 </code></pre>
-<p>With an argument of <code>600</code>, <code>pyramid</code> will fail with an error <code>...exceeded the instruction limit for single message execution</code>.</p>
+<p>With an argument of <code>1_000</code>, <code>pyramid</code> will fail with an error <code>...exceeded the instruction limit for single message execution</code>.</p>
 <p>Keep in mind that each query method invocation has up to 4 GiB of heap available.</p>
 <p>In terms of query scalability, an individual canister <a href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6">likely has an upper bound of ~36k queries per second</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="update-methods"><a class="header" href="#update-methods">Update Methods</a></h1>
 <h2 id="tldr-1"><a class="header" href="#tldr-1">TLDR</a></h2>
 <ul>
-<li>Annotate functions with <code>update</code></li>
+<li>Created with the <code>update</code> function</li>
 <li>Read-write</li>
 <li>Executed on many nodes</li>
 <li>Consensus</li>
 <li>Latency ~2-5 seconds</li>
-<li>20 billion Wasm instruction limit</li>
+<li><a href="https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits">20 billion Wasm instruction limit</a></li>
 <li>4 GiB heap limit</li>
-<li>48 GiB stable memory limit</li>
-<li>~900 updates per second per canister</li>
+<li>64 GiB stable memory limit</li>
+<li><a href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6">~900 updates per second per canister</a></li>
 </ul>
 <p>Update methods are similar to query methods, but state changes can be persisted. Here's an example of a simple update method:</p>
 <pre><code class="language-typescript">import { Canister, nat64, update } from 'azle';
@@ -725,7 +740,7 @@ export default Canister({
 <p>Calling <code>increment</code> will return the current value of <code>counter</code> and then increase its value by 1. Because <code>counter</code> is a global variable, the change will be persisted to the heap, and subsequent query and update calls will have access to the new <code>counter</code> value.</p>
 <p>Because the Internet Computer (IC) persists changes with certain fault tolerance guarantees, update calls are executed on many nodes and go through <a href="https://internetcomputer.org/how-it-works/consensus/">consensus</a>. This leads to latencies of ~2-5 seconds per update call.</p>
 <p>Due to the latency and other expenses involved with update methods, it is best to use them only when necessary. Look at the following example:</p>
-<pre><code class="language-typescript">import { Canister, Void, query, text, update } from 'azle';
+<pre><code class="language-typescript">import { Canister, query, text, update, Void } from 'azle';
 
 let message = '';
 
@@ -740,7 +755,7 @@ export default Canister({
 </code></pre>
 <p>You'll notice that we use an update method, <code>setMessage</code>, only to perform the change to the global <code>message</code> variable. We use <code>getMessage</code>, a query method, to read the message.</p>
 <p>Keep in mind that the heap is limited to 4 GiB, and thus there is an upper bound to global variable storage capacity. You can imagine how a simple database like the following would eventually run out of memory with too many entries:</p>
-<pre><code class="language-typescript">import { Canister, None, Opt, Some, Void, query, text, update } from 'azle';
+<pre><code class="language-typescript">import { Canister, None, Opt, query, Some, text, update, Void } from 'azle';
 
 type Db = {
     [key: string]: string;
@@ -758,8 +773,8 @@ export default Canister({
     })
 });
 </code></pre>
-<p>If you need more than 4 GiB of storage, consider taking advantage of the 48 GiB of stable memory. Stable structures like <code>StableBTreeMap</code> give you a nice API for interacting with stable memory. These data structures will be <a href="./stable_structures.html">covered in more detail later</a>. Here's a simple example:</p>
-<pre><code class="language-typescript">import { Canister, Opt, StableBTreeMap, Void, query, text, update } from 'azle';
+<p>If you need more than 4 GiB of storage, consider taking advantage of the 64 GiB of stable memory. Stable structures like <code>StableBTreeMap</code> give you a nice API for interacting with stable memory. These data structures will be <a href="./stable_structures.html">covered in more detail later</a>. Here's a simple example:</p>
+<pre><code class="language-typescript">import { Canister, Opt, query, StableBTreeMap, text, update, Void } from 'azle';
 
 let db = StableBTreeMap(text, text, 0);
 
@@ -777,15 +792,15 @@ export default Canister({
 <p>Here's an example of how to trap and ensure atomic changes to your database:</p>
 <pre><code class="language-typescript">import {
     Canister,
+    ic,
     Opt,
+    query,
     Record,
     StableBTreeMap,
-    Vec,
-    Void,
-    ic,
-    query,
     text,
-    update
+    update,
+    Vec,
+    Void
 } from 'azle';
 
 const Entry = Record({
@@ -817,13 +832,13 @@ export default Canister({
 <p>There is a limit to how much computation can be done in a single call to an update method. The current update call limit is <a href="https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits">20 billion Wasm instructions</a>. If we modify our database example, we can introduce an update method that runs the risk of reaching the limit:</p>
 <pre><code class="language-typescript">import {
     Canister,
-    Opt,
-    StableBTreeMap,
-    Void,
     nat64,
+    Opt,
     query,
+    StableBTreeMap,
     text,
-    update
+    update,
+    Void
 } from 'azle';
 
 let db = StableBTreeMap(text, text, 0);
@@ -843,9 +858,9 @@ export default Canister({
 });
 </code></pre>
 <p>From the <code>dfx command line</code> you can call <code>setMany</code> like this:</p>
-<pre><code class="language-bash">dfx canister call my_canister setMany '(100_000)'
+<pre><code class="language-bash">dfx canister call my_canister setMany '(10_000)'
 </code></pre>
-<p>With an argument of <code>100_000</code>, <code>setMany</code> will fail with an error <code>...exceeded the instruction limit for single message execution</code>.</p>
+<p>With an argument of <code>10_000</code>, <code>setMany</code> will fail with an error <code>...exceeded the instruction limit for single message execution</code>.</p>
 <p>In terms of update scalability, an individual canister <a href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6">likely has an upper bound of ~900 updates per second</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="candid"><a class="header" href="#candid">Candid</a></h1>
 <ul>

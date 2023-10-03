@@ -138,3 +138,11 @@ To deploy an individual canister:
 ```bash
 dfx deploy --network ic canister_name
 ```
+
+## Common deployment issues
+
+If you run into an error during deployment, try the following:
+
+1. Add the `--verbose` flag to the `build` command in your `dfx.json` file like so: `"build": "npx azle build hello_world --verbose`
+2. Ensure that you have followed the instructions correctly in [the installation chapter](./installation.md), especially noting [the build dependencies](./installation.md#build-dependencies)
+3. Reach out on [the Discord channel](https://discord.gg/5Hb6rM2QUM)

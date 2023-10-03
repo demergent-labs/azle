@@ -7,6 +7,7 @@
     -   [tsconfig.json](#tsconfigjson)
     -   [dfx.json](#dfxjson)
     -   [Local deployment](#local-deployment)
+    -   [Common deployment issues](#common-deployment-issues)
     -   [Interacting with your canister from the command line](#interacting-with-your-canister-from-the-command-line)
     -   [Interacting with your canister from the web UI](#interacting-with-your-canister-from-the-web-ui)
 
@@ -30,6 +31,8 @@ npm run canister_deploy_local
 npm run canister_call_set_message
 npm run canister_call_get_message
 ```
+
+If you run into an error during deployment, see [the common deployment issues section](./deployment.md#common-deployment-issues).
 
 See the official [azle_hello_world](https://github.com/demergent-labs/azle_hello_world) example for more information.
 
@@ -179,6 +182,10 @@ Then deploy the canister:
 ```bash
 dfx deploy
 ```
+
+### Common deployment issues
+
+If you run into an error during deployment, see [the common deployment issues section](./deployment.md#common-deployment-issues).
 
 ### Interacting with your canister from the command line
 

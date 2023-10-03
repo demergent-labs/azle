@@ -2,16 +2,16 @@
 
 ## TLDR
 
--   Annotate functions with `query`
+-   Created with the `query` function
 -   Read-only
 -   Executed on a single node
 -   No consensus
 -   Latency on the order of ~100 milliseconds
--   5 billion Wasm instruction limit
+-   [5 billion Wasm instruction limit](https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits)
 -   4 GiB heap limit
--   ~32k queries per second per canister
+-   [~32k queries per second per canister](https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6)
 
-The most basic way to expose your canister's functionality publicly is through a query method. Here's an example of a simple query method:
+The most basic way to expose your canister's functionality publicly is through a query method. Here's an example of a simple query method named `getString`:
 
 ```typescript
 import { Canister, query, text } from 'azle';
@@ -22,6 +22,14 @@ export default Canister({
     })
 });
 ```
+
+Query methods are defined inside of a call to `Canister` using the `query` function.
+
+The first parameter to `query` is an array of `CandidType` objects that will be used to decode the Candid bytes of the arguments sent from the client when calling your query method.
+
+The second parameter to `query` is a `CandidType` object used to encode the return value of your function to Candid bytes to then be sent back to the client.
+
+The third parameter to `query` is the function that receives the decoded arguments, performs some computation, and then returns a value to be encoded. The TypeScript signature of this function (parameter and return types) will be inferred from the `CandidType` arguments in the first and second parameters to `query`.
 
 `getString` can be called from the outside world through the IC's HTTP API. You'll usually invoke this API from the [`dfx command line`, `dfx web UI`, or an agent](./deployment.md#interacting-with-your-canister).
 
@@ -34,7 +42,7 @@ dfx canister call my_canister getString
 Query methods are read-only. They do not persist any state changes. Take a look at the following example:
 
 ```typescript
-import { Canister, Void, query, text } from 'azle';
+import { Canister, query, text, Void } from 'azle';
 
 let db: {
     [key: string]: string;
@@ -69,10 +77,10 @@ export default Canister({
 From the `dfx command line` you can call `pyramid` like this:
 
 ```bash
-dfx canister call my_canister pyramid '(600)'
+dfx canister call my_canister pyramid '(1_000)'
 ```
 
-With an argument of `600`, `pyramid` will fail with an error `...exceeded the instruction limit for single message execution`.
+With an argument of `1_000`, `pyramid` will fail with an error `...exceeded the instruction limit for single message execution`.
 
 Keep in mind that each query method invocation has up to 4 GiB of heap available.
 

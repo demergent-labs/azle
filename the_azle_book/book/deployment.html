@@ -236,6 +236,13 @@ URLs:
 <p>To deploy an individual canister:</p>
 <pre><code class="language-bash">dfx deploy --network ic canister_name
 </code></pre>
+<h2 id="common-deployment-issues"><a class="header" href="#common-deployment-issues">Common deployment issues</a></h2>
+<p>If you run into an error during deployment, try the following:</p>
+<ol>
+<li>Add the <code>--verbose</code> flag to the <code>build</code> command in your <code>dfx.json</code> file like so: <code>&quot;build&quot;: &quot;npx azle build hello_world --verbose</code></li>
+<li>Ensure that you have followed the instructions correctly in <a href="./installation.html">the installation chapter</a>, especially noting <a href="./installation.html#build-dependencies">the build dependencies</a></li>
+<li>Reach out on <a href="https://discord.gg/5Hb6rM2QUM">the Discord channel</a></li>
+</ol>
 
                     </main>
 
