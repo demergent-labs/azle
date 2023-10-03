@@ -4,7 +4,6 @@ import {
     Opt,
     Principal,
     Record,
-    Result,
     Variant,
     Vec,
     blob,
@@ -57,7 +56,12 @@ const UpdateBalanceError = Variant({
     GenericError: Record({ error_message: text, error_code: nat64 })
 });
 
-export const UpdateBalanceResult = Result(Vec(UtxoStatus), UpdateBalanceError);
+// TODO: For some reason Result doesn't work.
+// export const UpdateBalanceResult = Result(Vec(UtxoStatus), UpdateBalanceError);
+export const UpdateBalanceResult = Variant({
+    Ok: Vec(UtxoStatus),
+    Err: UpdateBalanceError
+});
 
 export const Minter = Canister({
     get_btc_address: update(
