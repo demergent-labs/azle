@@ -27,6 +27,7 @@ import { Principal } from './types/reference';
 export * from './types/constructed';
 export * from './types/primitive';
 export * from './types/reference';
+export * from './recursive';
 
 export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? T
