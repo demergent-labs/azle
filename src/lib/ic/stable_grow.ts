@@ -1,6 +1,11 @@
 import { IDL } from '@dfinity/candid';
 
-export function stableGrow(newPages) {
+/**
+ * Attempts to grow the stable memory by `newPages`.
+ * @param newPages
+ * @returns the previous size that was reserved.
+ */
+export function stableGrow(newPages: number): number {
     const newPagesCandidBytes = new Uint8Array(
         IDL.encode([IDL.Nat32], [newPages])
     ).buffer;

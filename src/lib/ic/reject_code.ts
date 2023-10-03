@@ -1,4 +1,11 @@
-export function rejectCode() {
+import { RejectionCode } from '../system_types';
+
+/**
+ * Returns the rejection code from the most recently executed cross-canister
+ * call
+ * @returns the rejection code
+ */
+export function rejectCode(): typeof RejectionCode {
     const rejectCodeNumber = globalThis._azleIc.rejectCode();
 
     switch (rejectCodeNumber) {
