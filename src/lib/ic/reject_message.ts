@@ -9,8 +9,4 @@ import { text } from '../candid/types/primitive/text';
  *
  * @returns the rejection message
  */
-export function rejectMessage(): text {
-    throw new Error(
-        'This function should not be called directly. It is implemented directly on the ic object'
-    );
-}
+export const rejectMessage = () => text;

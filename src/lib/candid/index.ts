@@ -1,7 +1,7 @@
 import { IDL } from '@dfinity/candid';
 import { AzleBlob, blob } from './types/constructed/blob';
-import { AzleVec } from './types/constructed/vector';
-import { AzleOpt, Opt } from './types/constructed/option';
+import { AzleVec } from './types/constructed/vec';
+import { AzleOpt, Opt } from './types/constructed/opt';
 import { AzleTuple } from './types/constructed/tuple';
 import { AzleNull, Null } from './types/primitive/null';
 import { AzleReserved, reserved } from './types/primitive/reserved';

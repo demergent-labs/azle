@@ -1,5 +1,5 @@
 import { CandidType, Parent, toIDLType } from '../../index';
-import { RequireExactlyOne } from '../constructed/variant';
+import { RequireExactlyOne } from './variant';
 import { IDL } from '@dfinity/candid';
 
 /**

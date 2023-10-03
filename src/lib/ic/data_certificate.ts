@@ -1,5 +1,5 @@
 import { blob } from '../candid/types/constructed/blob';
-import { None, Opt, Some } from '../candid/types/constructed/option';
+import { None, Opt, Some } from '../candid/types/constructed/opt';
 
 /**
  * When called from a query call, returns the data certificate

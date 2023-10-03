@@ -2,11 +2,11 @@ import { CandidType, Parent, toIDLType } from '../../index';
 import { IDL } from '@dfinity/candid';
 
 export * from './blob';
-export * from './option';
+export * from './opt';
 export * from './record';
 export * from './tuple';
 export * from './variant';
-export * from './vector';
+export * from './vec';
 
 type CandidMap = { [key: string]: CandidType };
 type IdlMap = { [key: string]: IDL.Type<any> };

@@ -6,8 +6,4 @@ import { text } from '../candid/types/primitive/text';
  * (5) rejection code and the provided message
  * @param message the rejection message
  */
-export function trap(message: text): empty {
-    throw new Error(
-        'This function should not be called directly. It is implemented directly on the ic object'
-    );
-}
+export const trap = (message: text) => empty;
