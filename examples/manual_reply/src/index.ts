@@ -121,7 +121,7 @@ export default Canister({
     ),
     updateVoid: update(
         [],
-        Void,
+        Manual(Void),
         () => {
             ic.reply(undefined, Void);
         },
