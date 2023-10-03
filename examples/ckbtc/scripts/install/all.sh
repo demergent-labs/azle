@@ -13,3 +13,5 @@ npm run install:kyt
 
 # did file found here: https://github.com/dfinity/ic/blob/master/rs/bitcoin/ckbtc/minter/ckbtc_minter.did
 npm run install:minter
+
+npm run install:wallet_frontend
