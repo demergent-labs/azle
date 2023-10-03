@@ -6,4 +6,10 @@ import { text } from '../candid/types/primitive/text';
  * (5) rejection code and the provided message
  * @param message the rejection message
  */
-export const trap = (message: text) => empty;
+export function trap(message: text): empty {
+    if (globalThis._azleIc === undefined) {
+        throw new Error(message);
+    }
+
+    globalThis._azleIc.trap(message);
+}

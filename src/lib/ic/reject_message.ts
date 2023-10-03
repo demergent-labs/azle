@@ -9,4 +9,8 @@ import { text } from '../candid/types/primitive/text';
  *
  * @returns the rejection message
  */
-export const rejectMessage = () => text;
+export function rejectMessage(): text {
+    return globalThis._azleIc
+        ? globalThis._azleIc.rejectMessage()
+        : (undefined as any);
+}

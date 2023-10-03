@@ -13,6 +13,10 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @param buffer the data to write
  */
 export function stable64Write(offset: nat64, buffer: blob): void {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const paramsCandidBytes = new Uint8Array(
         IDL.encode([IDL.Nat64, IDL.Vec(IDL.Nat8)], [offset, buffer])
     ).buffer;

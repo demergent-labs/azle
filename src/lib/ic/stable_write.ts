@@ -12,6 +12,10 @@ import { blob } from '../candid/types/constructed/blob';
  * @param buffer the data to write
  */
 export function stableWrite(offset: nat32, buffer: blob): void {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const paramsCandidBytes = new Uint8Array(
         IDL.encode([IDL.Nat32, IDL.Vec(IDL.Nat8)], [offset, buffer])
     ).buffer;

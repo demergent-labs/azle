@@ -18,6 +18,10 @@ export function notifyRaw(
     argsRaw: blob,
     payment: nat
 ): Void {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const canisterIdBytes = canisterId.toUint8Array().buffer;
     const argsRawBuffer = argsRaw.buffer;
     const paymentCandidBytes = new Uint8Array(IDL.encode([IDL.Nat], [payment]))

@@ -15,6 +15,10 @@ export function setTimerInterval(
     interval: Duration,
     callback: () => void | Promise<void>
 ): TimerId {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const encode = (value: Duration) => {
         return new Uint8Array(IDL.encode([IDL.Nat64], [value])).buffer;
     };

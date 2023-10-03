@@ -9,6 +9,10 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the raw bytes in stable memory
  */
 export function stable64Read(offset: nat64, length: nat64): Uint8Array {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const paramsCandidBytes = new Uint8Array(
         IDL.encode([IDL.Nat64, IDL.Nat64], [offset, length])
     ).buffer;

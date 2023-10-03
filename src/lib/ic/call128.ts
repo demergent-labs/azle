@@ -19,6 +19,10 @@ export function call128<T extends (...args: any[]) => any>(
         cycles?: nat;
     }
 ): ReturnTypeOf<T> {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     return (method as any).crossCanisterCallback(
         '_AZLE_CROSS_CANISTER_CALL',
         false,

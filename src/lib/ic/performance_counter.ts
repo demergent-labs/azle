@@ -12,6 +12,10 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the performance counter metric
  */
 export function performanceCounter(counterType: nat32): nat64 {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const counterTypeCandidBytes = new Uint8Array(
         IDL.encode([IDL.Nat32], [counterType])
     ).buffer;

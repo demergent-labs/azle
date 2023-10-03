@@ -7,6 +7,10 @@ import { nat } from '../candid/types/primitive/nats/nat';
  * @returns the actual amount moved
  */
 export function msgCyclesAccept128(maxAmount: nat): nat {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const maxAmountCandidBytes = new Uint8Array(
         IDL.encode([IDL.Nat], [maxAmount])
     ).buffer;

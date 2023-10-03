@@ -6,6 +6,10 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the number of cycles in the canister
  */
 export function canisterBalance(): nat64 {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const canisterBalanceCandidBytes = globalThis._azleIc.canisterBalance();
     return BigInt(
         IDL.decode([IDL.Nat64], canisterBalanceCandidBytes)[0] as number

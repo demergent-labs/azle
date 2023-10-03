@@ -7,6 +7,10 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the amount of cycles
  */
 export function msgCyclesAvailable(): nat64 {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const msgCyclesAvailableCandidBytes =
         globalThis._azleIc.msgCyclesAvailable();
 

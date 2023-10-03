@@ -11,7 +11,11 @@ import { EncodeVisitor } from '../candid/serde/visitors/encode_visitor';
  * uncaught `TypeError`.
  */
 export function reply(data: any, type: CandidType): Void {
-    if (type.name === 'AzleVoid') {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
+    if ((type as any).name === 'AzleVoid') {
         // return type is void
         const bytes = new Uint8Array(IDL.encode([], [])).buffer;
         return globalThis._azleIc.replyRaw(bytes);

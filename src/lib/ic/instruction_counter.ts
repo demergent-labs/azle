@@ -10,6 +10,10 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the number of instructions
  */
 export function instructionCounter(): nat64 {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const instructionCounterCandidBytes =
         globalThis._azleIc.instructionCounter();
     return BigInt(

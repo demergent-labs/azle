@@ -7,5 +7,9 @@ import { text } from '../candid/types/primitive/text';
  * @returns the Candid string
  */
 export function candidDecode(candidEncoded: blob): text {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     return globalThis._azleIc.candidDecode(candidEncoded.buffer);
 }

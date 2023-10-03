@@ -7,6 +7,10 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the version number
  */
 export function canisterVersion(): nat64 {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const canisterVersionCandidBytes = globalThis._azleIc.canisterVersion();
     return BigInt(
         IDL.decode([IDL.Nat64], canisterVersionCandidBytes)[0] as number

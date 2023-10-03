@@ -1,12 +1,13 @@
-// This unverified signature is helpful for catching where we use this so we can pick up the types easily. If I do any then i will miss them all
-type UnverifiedSignature = () => void;
+import { text } from '../../candid/types/primitive/text';
+import { Void } from '../../candid/types/primitive/void';
+
 /**
  * The interface for our rust methods it slightly different than the interface
  * we expose to the users. This is the interface for the rust functions.
  */
 export type AzleIc = {
     argDataRaw: () => ArrayBufferLike;
-    argDataRawSize: () => bigint;
+    argDataRawSize: () => number;
     callRaw: (
         promiseId: string,
         canisterIdBytes: ArrayBufferLike,

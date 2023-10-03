@@ -5,4 +5,6 @@ import { Void } from '../candid/types/primitive/void';
  * Rejects the current call with the provided message
  * @param message the rejection message
  */
-export const reject = (message: text) => Void;
+export function reject(message: text): Void {
+    return globalThis._azleIc ? globalThis._azleIc.reject(message) : undefined;
+}

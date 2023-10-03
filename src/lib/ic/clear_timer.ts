@@ -7,6 +7,10 @@ import { TimerId } from './types';
  * @param id The ID of the timer to be cancelled.
  */
 export function clearTimer(timerId: TimerId): Void {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const encode = (value: TimerId) => {
         return new Uint8Array(IDL.encode([IDL.Nat64], [value])).buffer;
     };

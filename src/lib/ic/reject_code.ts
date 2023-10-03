@@ -6,6 +6,10 @@ import { RejectionCode } from '../system_types';
  * @returns the rejection code
  */
 export function rejectCode(): typeof RejectionCode {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const rejectCodeNumber = globalThis._azleIc.rejectCode();
 
     switch (rejectCodeNumber) {

@@ -25,6 +25,10 @@ import { Void } from '../candid/types/primitive/void';
  * @returns
  */
 export function setCertifiedData(data: blob): Void {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const dataBytes = new Uint8Array(IDL.encode([IDL.Vec(IDL.Nat8)], [data]))
         .buffer;
 

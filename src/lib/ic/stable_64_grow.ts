@@ -8,6 +8,10 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the previous size that was reserved.
  */
 export function stable64Grow(newPages: nat64): nat64 {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const newPagesCandidBytes = new Uint8Array(
         IDL.encode([IDL.Nat64], [newPages])
     ).buffer;

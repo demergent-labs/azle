@@ -7,6 +7,10 @@ import { nat } from '../candid/types/primitive/nats/nat';
  * @returns the amount of cycles
  */
 export function msgCyclesAvailable128(): nat {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const msgCyclesAvailable128CandidBytes =
         globalThis._azleIc.msgCyclesAvailable128();
 

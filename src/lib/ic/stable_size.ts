@@ -6,6 +6,10 @@ import { nat32 } from '../candid/types/primitive/nats/nat32';
  * @returns the current memory size
  */
 export function stableSize(): nat32 {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     return IDL.decode(
         [IDL.Nat32],
         globalThis._azleIc.stableSize()

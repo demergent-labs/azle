@@ -7,6 +7,10 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the current memory size
  */
 export function stable64Size(): nat64 {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     return BigInt(
         IDL.decode([IDL.Nat64], globalThis._azleIc.stable64Size())[0] as number
     );

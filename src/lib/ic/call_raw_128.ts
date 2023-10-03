@@ -21,6 +21,10 @@ export function callRaw128(
     argsRaw: blob,
     payment: nat
 ): Promise<blob> {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
         const promiseId = v4();
