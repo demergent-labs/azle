@@ -1,13 +1,4 @@
-import {
-    blob,
-    nat,
-    nat64,
-    Null,
-    Opt,
-    Principal,
-    Record,
-    Variant
-} from '../../src/lib_functional';
+import { blob, nat, nat64, Null, Opt, Record, Variant } from '../../src/lib';
 
 import {
     BadFee,

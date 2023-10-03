@@ -13,6 +13,8 @@ import {
     update
 } from 'azle';
 import {
+    CanisterInfoArgs,
+    CanisterInfoResult,
     CanisterStatusArgs,
     CanisterStatusResult,
     CreateCanisterResult,
@@ -113,16 +115,22 @@ export default Canister({
 
         return true;
     }),
+    getCanisterInfo: update(
+        [CanisterInfoArgs],
+        CanisterInfoResult,
+        async (args) => {
+            const result = await ic.call(managementCanister.canister_info, {
+                args: [args]
+            });
+            return result;
+        }
+    ),
     getCanisterStatus: update(
         [CanisterStatusArgs],
         CanisterStatusResult,
         async (args) => {
             return await ic.call(managementCanister.canister_status, {
-                args: [
-                    {
-                        canister_id: args.canister_id
-                    }
-                ]
+                args: [args]
             });
         }
     ),

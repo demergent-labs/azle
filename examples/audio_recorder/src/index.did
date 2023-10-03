@@ -1,21 +1,10 @@
-type rec_2 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
-type rec_3 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
-type rec_4 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
-type rec_5 = record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64};
-type rec_6 = variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal};
-type rec_7 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
-type rec_8 = variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal};
-type rec_9 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
-type rec_10 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
-type rec_11 = record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64};
-type rec_12 = variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal};
 service: () -> {
-    createUser: (text) -> (rec_2);
-    readUsers: () -> (vec rec_3) query;
-    readUserById: (principal) -> (opt rec_4) query;
-    deleteUser: (principal) -> (variant {Ok:rec_5; Err:rec_6});
-    createRecording: (vec nat8, text, principal) -> (variant {Ok:rec_7; Err:rec_8});
-    readRecordings: () -> (vec rec_9) query;
-    readRecordingById: (principal) -> (opt rec_10) query;
-    deleteRecording: (principal) -> (variant {Ok:rec_11; Err:rec_12});
+    createRecording: (vec nat8, text, principal) -> (variant {Ok:record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64}; Err:variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal}});
+    createUser: (text) -> (record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64});
+    deleteRecording: (principal) -> (variant {Ok:record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64}; Err:variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal}});
+    deleteUser: (principal) -> (variant {Ok:record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64}; Err:variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal}});
+    readRecordingById: (principal) -> (opt record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64}) query;
+    readRecordings: () -> (vec record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64}) query;
+    readUserById: (principal) -> (opt record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64}) query;
+    readUsers: () -> (vec record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64}) query;
 }

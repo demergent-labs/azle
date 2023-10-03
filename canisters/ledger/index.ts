@@ -24,7 +24,7 @@ import {
     Vec,
     Principal,
     Func
-} from '../../src/lib_functional';
+} from '../../src/lib';
 import * as icrc from '../icrc';
 
 // Amount of tokens, measured in 10^-8 of a token.

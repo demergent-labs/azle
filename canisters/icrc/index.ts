@@ -9,7 +9,7 @@ import {
     text,
     Tuple,
     Vec
-} from '../../src/lib_functional';
+} from '../../src/lib';
 import { Account, TransferArgs, TransferResult, Value } from './icrc_1';
 import {
     AllowanceArgs,

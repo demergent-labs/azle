@@ -1,0 +1,49 @@
+import { Callback, CanisterMethodInfo, createParents, executeMethod } from '.';
+import {
+    CandidType,
+    TypeMapping,
+    Void,
+    toParamIDLTypes,
+    toReturnIDLType
+} from '../candid';
+
+export function postUpgrade<
+    const Params extends ReadonlyArray<CandidType>,
+    GenericCallback extends Callback<Params, typeof Void>
+>(
+    paramsIdls: Params,
+    callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Void>
+        ? GenericCallback
+        : never
+): CanisterMethodInfo<Params, Void> {
+    return (parent: any) => {
+        const parents = createParents(parent);
+        const paramCandid = toParamIDLTypes(paramsIdls as any, parents);
+        const returnCandid = toReturnIDLType(Void as any, parents);
+
+        const finalCallback =
+            callback === undefined
+                ? undefined
+                : (...args: any[]) => {
+                      executeMethod(
+                          'postUpgrade',
+                          paramCandid,
+                          returnCandid,
+                          args,
+                          callback,
+                          paramsIdls as any,
+                          Void,
+                          false
+                      );
+                  };
+
+        return {
+            mode: 'postUpgrade',
+            callback: finalCallback,
+            paramsIdls: paramsIdls as any,
+            returnIdl: Void,
+            async: false,
+            guard: undefined
+        };
+    };
+}
