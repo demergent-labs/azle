@@ -28,6 +28,7 @@
             "wasm": ".azle/wallet_backend/wallet_backend.wasm",
             "gzip": true,
             "declarations": {
+                "node_compatibility": true,
                 "output": "wallet/frontend/dfx_generate/wallet_backend"
             },
             "env": ["CK_BTC_PRINCIPAL", "MINTER_PRINCIPAL"]

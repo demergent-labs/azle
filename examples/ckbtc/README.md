@@ -4,11 +4,18 @@ Keep in mind that this is a simple demo example of ckBTC with Azle, and is proba
 
 This ckBTC example shows you how to setup ckBTC locally, with the `ckBTC ledger`, `internet identity`, `kyt`, `minter`, and `bitcoind`. It also has a canister wallet backend and frontend. The canister wallet shows how a canister can control a number of ckBTC subaccounts. The frontend functionality only shows how to mint ckBTC and transfer between other canister wallets.
 
-## Installation
+## Setup
+
+Install all npm dependencies and download canister WASMs binaries:
 
 ```bash
 npm install
 ```
+
+Update the `canisters.wallet_backend.declarations.node_compatibility` property in dfx.json to `false`:
+
+> **Note:**
+> The tests require node_compatibility to be set to `true` but the frontend requires it to be set to `false`. Toggle it according to your use case.
 
 ## Deployment
 
@@ -42,7 +49,7 @@ npm run deploy
     npm run frontend
     ```
 
-    The first you visit the frontend it should re-direct you to the local internet-identity (II) to authenticate. If it does not try refreshing the page.
+    The first time you visit the frontend it should re-direct you to the local internet-identity to authenticate. If it does not try refreshing the page.
 
     > **Note:**
     > This Internet Identity service is running locally (see the local url?) and is for testing. **DO NOT USE YOUR REAL INTERNET IDENTITY!!!**
@@ -53,11 +60,11 @@ npm run deploy
 
     ![image](https://github.com/demergent-labs/azle/assets/5455419/564bc367-e6b3-4ccd-81a9-917089da67da)
 
-    Make note of the identity number it generated and the click "I saved it, continue".
+    Make note of the identity number it generated and then click "I saved it, continue".
 
 2. Mint some BTC
 
-    Back on the frontend site copy the bitcoin deposit address as shown below
+    Back on the frontend site copy the bitcoin deposit address as shown below:
 
     ![image](https://github.com/demergent-labs/azle/assets/5455419/3d6ac20e-e1eb-4d90-a65a-460f8242d8fd)
 
@@ -67,6 +74,6 @@ npm run deploy
     npm run mint --address=<your-canister-btc-address>
     ```
 
-3. Now click `Update Balance` in the web UI.
+3. Now click `Update Balance` in the web UI to retrieve the updated balance.
 
-4. Play around, try transfering some ckBTC to an account in another independent browser tab.
+4. Play around. Try transferring some ckBTC to an account in another independent browser tab.

@@ -52,7 +52,6 @@ export default Canister({
             ]
         });
     }),
-
     getDepositAddress: update([], text, async () => {
         return await ic.call(minter.get_btc_address, {
             args: [
@@ -65,7 +64,6 @@ export default Canister({
             ]
         });
     }),
-
     transfer: update(
         [text, nat],
         Result(nat, TransferError),
