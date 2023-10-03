@@ -29,7 +29,7 @@
             "gzip": true,
             "declarations": {
                 "node_compatibility": true,
-                "output": "wallet/frontend/dfx_generate/wallet_backend"
+                "output": "wallet/frontend/dfx_generated/wallet_backend"
             },
             "env": ["CK_BTC_PRINCIPAL", "MINTER_PRINCIPAL"]
         },
