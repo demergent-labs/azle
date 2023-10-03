@@ -1,6 +1,5 @@
 import '@dfinity/candid/lib/esm/idl'; // This must remain or the build fails
 import { Principal } from '@dfinity/principal';
-import { IDL } from '@dfinity/candid';
 import { blob } from '../candid/types/constructed/blob';
 import { Void } from '../candid/types/primitive/void';
 import { AzleNat64, nat64 } from '../candid/types/primitive/nats/nat64';
@@ -13,6 +12,46 @@ import { v4 } from 'uuid';
 import { EncodeVisitor } from '../candid/serde/visitors';
 import { acceptMessage } from './accept_message';
 import { stableRead } from './stable_read';
+import { argDataRaw } from './arg_data_raw';
+import { call } from './call';
+import { call128 } from './call128';
+import { callRaw } from './call_raw';
+import { callRaw128 } from './call_raw_128';
+import { caller } from './caller';
+import { candidDecode } from './candid_decode';
+import { candidEncode } from './candid_encode';
+import { canisterBalance } from './canister_balance';
+import { canisterBalance128 } from './cansiter_balance_128';
+import { canisterVersion } from './canister_version';
+import { clearTimer } from './clear_timer';
+import { dataCertificate } from './data_certificate';
+import { id } from './id';
+import { instructionCounter } from './instruction_counter';
+import { isController } from './is_controller';
+import { msgCyclesAccept } from './msg_cycles_accept';
+import { msgCyclesAccept128 } from './msg_cycles_accept_128';
+import { msgCyclesAvailable } from './msg_cycles_available';
+import { msgCyclesAvailable128 } from './msg_cycles_available_128';
+import { msgCyclesRefunded } from './msg_cycles_refunded';
+import { msgCyclesRefunded128 } from './msg_cycles_refunded_128';
+import { setTimer } from './set_timer';
+import { setTimerInterval } from './set_timer_interval';
+import { rejectCode } from './reject_code';
+import { reply } from './reply';
+import { notify } from './notify';
+import { notifyRaw } from './notify_raw';
+import { performanceCounter } from './performance_counter';
+import { replyRaw } from './reply_raw';
+import { setCertifiedData } from './set_certified_data';
+import { stableBytes } from './stable_bytes';
+import { stableGrow } from './stable_grow';
+import { stableSize } from './stable_size';
+import { stableWrite } from './stable_write';
+import { stable64Grow } from './stable_64_grow';
+import { stable64Read } from './stable_64_read';
+import { stable64Size } from './stable_64_size';
+import { stable64Write } from './stable_64_write';
+import { time } from './time';
 
 // declare var globalThis: {
 //     ic: Ic;
@@ -461,432 +500,46 @@ export const ic: Ic = globalThis._azleIc
     ? {
           ...globalThis._azleIc,
           stableRead,
-          argDataRaw: () => {
-              return new Uint8Array(globalThis._azleIc.argDataRaw());
-          },
-          call: (method, config) => {
-              // TODO probably get rid of .crossCanisterCallback
-              return method.crossCanisterCallback(
-                  '_AZLE_CROSS_CANISTER_CALL',
-                  false,
-                  ic.callRaw,
-                  config?.cycles ?? 0n,
-                  ...(config?.args ?? [])
-              );
-          },
-          call128: (method, config) => {
-              return method.crossCanisterCallback(
-                  '_AZLE_CROSS_CANISTER_CALL',
-                  false,
-                  ic.callRaw128,
-                  config?.cycles ?? 0n,
-                  ...(config?.args ?? [])
-              );
-          },
-          callRaw: (canisterId, method, argsRaw, payment) => {
-              return new Promise((resolve, reject) => {
-                  const promiseId = v4();
-                  const globalResolveId = `_resolve_${promiseId}`;
-                  const globalRejectId = `_reject_${promiseId}`;
-
-                  // TODO perhaps we should be more robust
-                  // TODO for example, we can keep the time with these
-                  // TODO if they are over a certain amount old we can delete them
-                  globalThis[globalResolveId] = (bytes: ArrayBuffer) => {
-                      resolve(new Uint8Array(bytes));
-
-                      delete globalThis[globalResolveId];
-                      delete globalThis[globalRejectId];
-                  };
-
-                  globalThis[globalRejectId] = (error: any) => {
-                      reject(error);
-
-                      delete globalThis[globalResolveId];
-                      delete globalThis[globalRejectId];
-                  };
-
-                  const canisterIdBytes = canisterId.toUint8Array().buffer;
-                  const argsRawBuffer = argsRaw.buffer;
-                  const paymentCandidBytes = new Uint8Array(
-                      IDL.encode([IDL.Nat64], [payment])
-                  ).buffer;
-
-                  // TODO consider finally, what if deletion goes wrong
-                  try {
-                      globalThis._azleIc.callRaw(
-                          promiseId,
-                          canisterIdBytes,
-                          method,
-                          argsRawBuffer,
-                          paymentCandidBytes
-                      );
-                  } catch (error) {
-                      delete globalThis[globalResolveId];
-                      delete globalThis[globalRejectId];
-                      throw error;
-                  }
-              });
-          },
-          callRaw128: (canisterId, method, argsRaw, payment) => {
-              return new Promise((resolve, reject) => {
-                  const promiseId = v4();
-                  const globalResolveId = `_resolve_${promiseId}`;
-                  const globalRejectId = `_reject_${promiseId}`;
-
-                  // TODO perhaps we should be more robust
-                  // TODO for example, we can keep the time with these
-                  // TODO if they are over a certain amount old we can delete them
-                  globalThis[globalResolveId] = (bytes: ArrayBuffer) => {
-                      resolve(new Uint8Array(bytes));
-
-                      delete globalThis[globalResolveId];
-                      delete globalThis[globalRejectId];
-                  };
-
-                  globalThis[globalRejectId] = (error: any) => {
-                      reject(error);
-
-                      delete globalThis[globalResolveId];
-                      delete globalThis[globalRejectId];
-                  };
-
-                  const canisterIdBytes = canisterId.toUint8Array().buffer;
-                  const argsRawBuffer = argsRaw.buffer;
-                  const paymentCandidBytes = new Uint8Array(
-                      IDL.encode([IDL.Nat], [payment])
-                  ).buffer;
-
-                  // TODO consider finally, what if deletion goes wrong
-                  try {
-                      globalThis._azleIc.callRaw128(
-                          promiseId,
-                          canisterIdBytes,
-                          method,
-                          argsRawBuffer,
-                          paymentCandidBytes
-                      );
-                  } catch (error) {
-                      delete globalThis[globalResolveId];
-                      delete globalThis[globalRejectId];
-                      throw error;
-                  }
-              });
-          },
-          caller: () => {
-              const callerBytes = globalThis._azleIc.caller();
-              return Principal.fromUint8Array(new Uint8Array(callerBytes));
-          },
-          candidDecode: (candidEncoded) => {
-              return globalThis._azleIc.candidDecode(candidEncoded.buffer);
-          },
-          candidEncode: (candidString) => {
-              return new Uint8Array(
-                  globalThis._azleIc.candidEncode(candidString)
-              );
-          },
-          canisterBalance: () => {
-              const canisterBalanceCandidBytes =
-                  globalThis._azleIc.canisterBalance();
-              return IDL.decode([IDL.Nat64], canisterBalanceCandidBytes)[0];
-          },
-          canisterBalance128: () => {
-              const canisterBalance128CandidBytes =
-                  globalThis._azleIc.canisterBalance128();
-              return IDL.decode([IDL.Nat], canisterBalance128CandidBytes)[0];
-          },
-          canisterVersion: () => {
-              const canisterVersionCandidBytes =
-                  globalThis._azleIc.canisterVersion();
-              return IDL.decode([IDL.Nat64], canisterVersionCandidBytes)[0];
-          },
-          clearTimer: (timerId: nat64) => {
-              const encode = (value: nat64) => {
-                  return new Uint8Array(IDL.encode([IDL.Nat64], [value]))
-                      .buffer;
-              };
-
-              globalThis._azleIc.clearTimer(encode(timerId));
-
-              const timerCallbackId = globalThis.icTimers[timerId.toString()];
-
-              delete globalThis.icTimers[timerId.toString()];
-              delete globalThis[timerCallbackId];
-          },
-          dataCertificate: () => {
-              const rawRustValue: ArrayBuffer | undefined =
-                  globalThis._azleIc.dataCertificate();
-
-              return rawRustValue === undefined
-                  ? None
-                  : Some(new Uint8Array(rawRustValue));
-          },
-          id: () => {
-              // TODO consider bytes instead of string, just like with caller
-              const idString = globalThis._azleIc.id();
-              return Principal.fromText(idString);
-          },
-          instructionCounter: () => {
-              const instructionCounterCandidBytes =
-                  globalThis._azleIc.instructionCounter();
-              return IDL.decode([IDL.Nat64], instructionCounterCandidBytes)[0];
-          },
-          isController: (principal) => {
-              return globalThis._azleIc.isController(
-                  principal.toUint8Array().buffer
-              );
-          },
-          msgCyclesAccept: (maxAmount: nat64) => {
-              const maxAmountCandidBytes = new Uint8Array(
-                  IDL.encode([IDL.Nat64], [maxAmount])
-              ).buffer;
-
-              const msgCyclesAcceptCandidBytes =
-                  globalThis._azleIc.msgCyclesAccept(maxAmountCandidBytes);
-
-              return IDL.decode([IDL.Nat64], msgCyclesAcceptCandidBytes)[0];
-          },
-          msgCyclesAccept128: (maxAmount: nat64) => {
-              const maxAmountCandidBytes = new Uint8Array(
-                  IDL.encode([IDL.Nat], [maxAmount])
-              ).buffer;
-
-              const msgCyclesAccept128CandidBytes =
-                  globalThis._azleIc.msgCyclesAccept128(maxAmountCandidBytes);
-
-              return IDL.decode([IDL.Nat], msgCyclesAccept128CandidBytes)[0];
-          },
-          msgCyclesAvailable: () => {
-              const msgCyclesAvailableCandidBytes =
-                  globalThis._azleIc.msgCyclesAvailable();
-
-              return IDL.decode([IDL.Nat64], msgCyclesAvailableCandidBytes)[0];
-          },
-          msgCyclesAvailable128: () => {
-              const msgCyclesAvailable128CandidBytes =
-                  globalThis._azleIc.msgCyclesAvailable128();
-
-              return IDL.decode([IDL.Nat], msgCyclesAvailable128CandidBytes)[0];
-          },
-          msgCyclesRefunded: () => {
-              const msgCyclesRefundedCandidBytes =
-                  globalThis._azleIc.msgCyclesRefunded();
-
-              return IDL.decode([IDL.Nat64], msgCyclesRefundedCandidBytes)[0];
-          },
-          msgCyclesRefunded128: () => {
-              const msgCyclesRefunded128CandidBytes =
-                  globalThis._azleIc.msgCyclesRefunded128();
-
-              return IDL.decode([IDL.Nat], msgCyclesRefunded128CandidBytes)[0];
-          },
-          notify: (method, config) => {
-              return method.crossCanisterCallback(
-                  '_AZLE_CROSS_CANISTER_CALL',
-                  true,
-                  ic.notifyRaw,
-                  config?.cycles ?? 0n,
-                  ...(config?.args ?? [])
-              );
-          },
-          notifyRaw: (canisterId, method, argsRaw, payment) => {
-              const canisterIdBytes = canisterId.toUint8Array().buffer;
-              const argsRawBuffer = argsRaw.buffer;
-              const paymentCandidBytes = new Uint8Array(
-                  IDL.encode([IDL.Nat], [payment])
-              ).buffer;
-
-              return globalThis._azleIc.notifyRaw(
-                  canisterIdBytes,
-                  method,
-                  argsRawBuffer,
-                  paymentCandidBytes
-              );
-          },
-          performanceCounter: (counterType: nat32) => {
-              const counterTypeCandidBytes = new Uint8Array(
-                  IDL.encode([IDL.Nat32], [counterType])
-              ).buffer;
-
-              const performanceCounterCandidBytes =
-                  globalThis._azleIc.performanceCounter(counterTypeCandidBytes);
-
-              return IDL.decode([IDL.Nat64], performanceCounterCandidBytes)[0];
-          },
-          rejectCode: () => {
-              const rejectCodeNumber = globalThis._azleIc.rejectCode();
-
-              switch (rejectCodeNumber) {
-                  case 0:
-                      return { NoError: null };
-                  case 1:
-                      return { SysFatal: null };
-                  case 2:
-                      return { SysTransient: null };
-                  case 3:
-                      return { DestinationInvalid: null };
-                  case 4:
-                      return { CanisterReject: null };
-                  case 5:
-                      return { CanisterError: null };
-                  case 6:
-                      return { Unknown: null };
-                  default:
-                      throw Error(
-                          `Unknown rejection code: ${rejectCodeNumber}`
-                      );
-              }
-          },
-          reply: (data: any, type: CandidType): void => {
-              if (type.name === 'AzleVoid') {
-                  // return type is void
-                  const bytes = new Uint8Array(IDL.encode([], [])).buffer;
-                  return globalThis._azleIc.replyRaw(bytes);
-              }
-
-              const idlType = toIDLType(type, []);
-
-              const encodeReadyResult = idlType.accept(new EncodeVisitor(), {
-                  js_class: type,
-                  js_data: data
-              });
-
-              const bytes = new Uint8Array(
-                  IDL.encode([idlType], [encodeReadyResult])
-              ).buffer;
-              return globalThis._azleIc.replyRaw(bytes);
-          },
-          replyRaw: (replyBuffer: blob) => {
-              return globalThis._azleIc.replyRaw(replyBuffer.buffer);
-          },
-          setCertifiedData: (data) => {
-              const dataBytes = new Uint8Array(
-                  IDL.encode([IDL.Vec(IDL.Nat8)], [data])
-              ).buffer;
-
-              return globalThis._azleIc.setCertifiedData(dataBytes);
-          },
-          setTimer: (delay: nat64, callback: () => void | Promise<void>) => {
-              const encode = (value: nat64) => {
-                  return new Uint8Array(IDL.encode([IDL.Nat64], [value]))
-                      .buffer;
-              };
-
-              const decode = (value: ArrayBufferLike) => {
-                  return BigInt(IDL.decode([IDL.Nat64], value)[0] as number);
-              };
-
-              const timerCallbackId = `_timer_${v4()}`;
-
-              const timerId = decode(
-                  globalThis._azleIc.setTimer(encode(delay), timerCallbackId)
-              );
-
-              globalThis.icTimers[timerId.toString()] = timerCallbackId;
-
-              globalThis[timerCallbackId] = () => {
-                  try {
-                      callback();
-                  } finally {
-                      delete globalThis.icTimers[timerId.toString()];
-                      delete globalThis[timerCallbackId];
-                  }
-              };
-
-              return timerId;
-          },
-          setTimerInterval: (
-              interval: nat64,
-              callback: () => void | Promise<void>
-          ) => {
-              const encode = (value: nat64) => {
-                  return new Uint8Array(IDL.encode([IDL.Nat64], [value]))
-                      .buffer;
-              };
-
-              const decode = (value: ArrayBufferLike) => {
-                  return BigInt(IDL.decode([IDL.Nat64], value)[0] as number);
-              };
-
-              const timerCallbackId = `_interval_timer_${v4()}`;
-
-              const timerId = decode(
-                  globalThis._azleIc.setTimerInterval(
-                      encode(interval),
-                      timerCallbackId
-                  )
-              );
-
-              globalThis.icTimers[timerId.toString()] = timerCallbackId;
-
-              // We don't delete this even if the callback throws because
-              // it still needs to be here for the next tick
-              globalThis[timerCallbackId] = callback;
-
-              return timerId;
-          },
-          stableBytes: () => {
-              return new Uint8Array(globalThis._azleIc.stableBytes());
-          },
-          stableGrow: (newPages) => {
-              const newPagesCandidBytes = new Uint8Array(
-                  IDL.encode([IDL.Nat32], [newPages])
-              ).buffer;
-
-              return IDL.decode(
-                  [IDL.Nat32],
-                  globalThis._azleIc.stableGrow(newPagesCandidBytes)
-              )[0];
-          },
-          stableSize: () => {
-              return IDL.decode(
-                  [IDL.Nat32],
-                  globalThis._azleIc.stableSize()
-              )[0];
-          },
-          stableWrite: (offset, buffer) => {
-              const paramsCandidBytes = new Uint8Array(
-                  IDL.encode([IDL.Nat32, IDL.Vec(IDL.Nat8)], [offset, buffer])
-              ).buffer;
-
-              return globalThis._azleIc.stableWrite(paramsCandidBytes);
-          },
-          stable64Grow: (newPages) => {
-              const newPagesCandidBytes = new Uint8Array(
-                  IDL.encode([IDL.Nat64], [newPages])
-              ).buffer;
-
-              return IDL.decode(
-                  [IDL.Nat64],
-                  globalThis._azleIc.stable64Grow(newPagesCandidBytes)
-              )[0];
-          },
-          stable64Read: (offset, buffer) => {
-              const paramsCandidBytes = new Uint8Array(
-                  IDL.encode([IDL.Nat64, IDL.Nat64], [offset, buffer])
-              ).buffer;
-
-              return new Uint8Array(
-                  globalThis._azleIc.stable64Read(paramsCandidBytes)
-              );
-          },
-          stable64Size: () => {
-              return IDL.decode(
-                  [IDL.Nat64],
-                  globalThis._azleIc.stable64Size()
-              )[0];
-          },
-          stable64Write: (offset, buffer) => {
-              const paramsCandidBytes = new Uint8Array(
-                  IDL.encode([IDL.Nat64, IDL.Vec(IDL.Nat8)], [offset, buffer])
-              ).buffer;
-
-              return globalThis._azleIc.stable64Write(paramsCandidBytes);
-          },
-          time: () => {
-              const timeCandidBytes = globalThis._azleIc.time();
-              return IDL.decode([IDL.Nat64], timeCandidBytes)[0];
-          }
+          argDataRaw,
+          call,
+          call128,
+          callRaw,
+          callRaw128,
+          caller,
+          candidDecode,
+          candidEncode,
+          canisterBalance,
+          canisterBalance128,
+          canisterVersion,
+          clearTimer,
+          dataCertificate,
+          id,
+          instructionCounter,
+          isController,
+          msgCyclesAccept,
+          msgCyclesAccept128,
+          msgCyclesAvailable,
+          msgCyclesAvailable128,
+          msgCyclesRefunded,
+          msgCyclesRefunded128,
+          notify,
+          notifyRaw,
+          performanceCounter,
+          rejectCode,
+          reply,
+          replyRaw,
+          setCertifiedData,
+          setTimer,
+          setTimerInterval,
+          stableBytes,
+          stableGrow,
+          stableSize,
+          stableWrite,
+          stable64Grow,
+          stable64Read,
+          stable64Size,
+          stable64Write,
+          time
       }
     : {
           acceptMessage: () => {},
