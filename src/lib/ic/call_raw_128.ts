@@ -4,6 +4,7 @@ import { blob } from '../candid/types/constructed/blob';
 import { nat } from '../candid/types/primitive/nats/nat';
 import { v4 } from 'uuid';
 import { text } from '../candid/types/primitive/text';
+import { encode } from '../candid/serde';
 
 /**
  * Performs an asynchronous call to another canister using the [System API](
@@ -50,9 +51,7 @@ export function callRaw128(
 
         const canisterIdBytes = canisterId.toUint8Array().buffer;
         const argsRawBuffer = argsRaw.buffer;
-        const paymentCandidBytes = new Uint8Array(
-            IDL.encode([IDL.Nat], [payment])
-        ).buffer;
+        const paymentCandidBytes = encode(nat, payment).buffer;
 
         // TODO consider finally, what if deletion goes wrong
         try {

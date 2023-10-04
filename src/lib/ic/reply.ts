@@ -1,7 +1,6 @@
-import { IDL } from '@dfinity/candid';
 import { CandidType, toIDLType } from '../candid';
 import { Void } from '../candid/types/primitive/void';
-import { EncodeVisitor } from '../candid/serde/visitors/encode_visitor';
+import { encode } from '../candid/serde';
 
 /**
  * Used to manually reply to an ingress message. Intended to be used in
@@ -15,20 +14,5 @@ export function reply(data: any, type: CandidType): Void {
         return undefined as any;
     }
 
-    if ((type as any).name === 'AzleVoid') {
-        // return type is void
-        const bytes = new Uint8Array(IDL.encode([], [])).buffer;
-        return globalThis._azleIc.replyRaw(bytes);
-    }
-
-    const idlType = toIDLType(type, []);
-
-    const encodeReadyResult = idlType.accept(new EncodeVisitor(), {
-        js_class: type,
-        js_data: data
-    });
-
-    const bytes = new Uint8Array(IDL.encode([idlType], [encodeReadyResult]))
-        .buffer;
-    return globalThis._azleIc.replyRaw(bytes);
+    return globalThis._azleIc.replyRaw(encode(type, data).buffer);
 }

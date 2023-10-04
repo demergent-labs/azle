@@ -2,7 +2,8 @@ import {
     TypeMapping,
     Parent,
     toParamIDLTypes,
-    toReturnIDLType
+    toReturnIDLType,
+    CandidType
 } from '../../index';
 import { ic } from '../../../ic';
 import { Principal } from './principal';
@@ -360,11 +361,14 @@ export function Canister<T extends CanisterOptions>(
     return result;
 }
 
+type CallRawFunction = typeof ic.callRaw | typeof ic.callRaw128;
+type NotifyRawFunction = typeof ic.notifyRaw;
+
 function serviceCall(
     canisterId: Principal,
     methodName: string,
-    paramsIdls: any[],
-    returnIdl: any
+    paramCandidTypes: CandidType[],
+    returnCandidType: CandidType
 ) {
     // This must remain a function and not an arrow function
     // in order to set the context (this) correctly
@@ -372,18 +376,15 @@ function serviceCall(
         this: any, // TODO in lib_new this was Service, I'm not sure we need this anymore
         _: '_AZLE_CROSS_CANISTER_CALL',
         notify: boolean,
-        callFunction:
-            | typeof ic.callRaw
-            | typeof ic.callRaw128
-            | typeof ic.notifyRaw,
+        callFunction: CallRawFunction | NotifyRawFunction,
         cycles: bigint,
         ...args: any[]
     ) {
-        const encodedArgs = encodeMultiple(args, paramsIdls);
+        const encodedArgs = encodeMultiple(paramCandidTypes, args);
 
         if (notify) {
             try {
-                return callFunction(
+                return (callFunction as NotifyRawFunction)(
                     canisterId,
                     methodName,
                     encodedArgs,
@@ -393,14 +394,14 @@ function serviceCall(
                 throw error;
             }
         } else {
-            const encodedResult = await callFunction(
+            const encodedResult = await (callFunction as CallRawFunction)(
                 canisterId,
                 methodName,
                 encodedArgs,
                 cycles
             );
 
-            return decode(encodedResult, returnIdl);
+            return decode(returnCandidType, encodedResult);
         }
     };
 }

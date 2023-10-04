@@ -1,6 +1,7 @@
-import { IDL } from '@dfinity/candid';
 import { Duration, TimerId } from './types';
 import { v4 } from 'uuid';
+import { encode as azleEncode, decode as azleDecode } from '../candid/serde';
+import { nat64 } from '../candid/types/primitive/nats/nat64';
 
 /**
  * Sets callback to be executed every interval. Panics if `interval` + time() is more than 2^64 - 1.
@@ -19,18 +20,17 @@ export function setTimerInterval(
         return undefined as any;
     }
 
-    const encode = (value: Duration) => {
-        return new Uint8Array(IDL.encode([IDL.Nat64], [value])).buffer;
-    };
-
     const decode = (value: ArrayBufferLike) => {
-        return BigInt(IDL.decode([IDL.Nat64], value)[0] as number);
+        return BigInt(azleDecode(nat64, value) as number);
     };
 
     const timerCallbackId = `_interval_timer_${v4()}`;
 
     const timerId = decode(
-        globalThis._azleIc.setTimerInterval(encode(interval), timerCallbackId)
+        globalThis._azleIc.setTimerInterval(
+            azleEncode(nat64, interval).buffer,
+            timerCallbackId
+        )
     );
 
     globalThis.icTimers[timerId.toString()] = timerCallbackId;

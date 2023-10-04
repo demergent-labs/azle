@@ -1,5 +1,5 @@
-import { IDL } from '@dfinity/candid';
 import { nat } from '../candid/types/primitive/nats/nat';
+import { decode, encode } from '../candid/serde';
 
 /**
  * Moves cycles from the call to the canister balance
@@ -11,14 +11,10 @@ export function msgCyclesAccept128(maxAmount: nat): nat {
         return undefined as any;
     }
 
-    const maxAmountCandidBytes = new Uint8Array(
-        IDL.encode([IDL.Nat], [maxAmount])
-    ).buffer;
+    const maxAmountCandidBytes = encode(nat, maxAmount).buffer;
 
     const msgCyclesAccept128CandidBytes =
         globalThis._azleIc.msgCyclesAccept128(maxAmountCandidBytes);
 
-    return BigInt(
-        IDL.decode([IDL.Nat], msgCyclesAccept128CandidBytes)[0] as number
-    );
+    return BigInt(decode(nat, msgCyclesAccept128CandidBytes) as number);
 }

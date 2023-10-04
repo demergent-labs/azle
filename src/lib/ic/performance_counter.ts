@@ -1,6 +1,6 @@
-import { IDL } from '@dfinity/candid';
 import { nat32 } from '../candid/types/primitive/nats/nat32';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
+import { decode, encode } from '../candid/serde';
 
 /**
  * Gets the value of the specified performance counter
@@ -16,15 +16,11 @@ export function performanceCounter(counterType: nat32): nat64 {
         return undefined as any;
     }
 
-    const counterTypeCandidBytes = new Uint8Array(
-        IDL.encode([IDL.Nat32], [counterType])
-    ).buffer;
+    const counterTypeCandidBytes = encode(nat32, counterType).buffer;
 
     const performanceCounterCandidBytes = globalThis._azleIc.performanceCounter(
         counterTypeCandidBytes
     );
 
-    return BigInt(
-        IDL.decode([IDL.Nat64], performanceCounterCandidBytes)[0] as number
-    );
+    return BigInt(decode(nat64, performanceCounterCandidBytes) as number);
 }

@@ -1,6 +1,8 @@
 import { IDL } from '@dfinity/candid';
 import { Duration, TimerId } from './types';
 import { v4 } from 'uuid';
+import { nat64 } from '../candid/types/primitive/nats/nat64';
+import { encode, decode as azleDecode } from '../candid/serde';
 
 /**
  * Sets callback to be executed later, after delay. Panics if `delay` + time() is more than 2^64 - 1.
@@ -19,18 +21,17 @@ export function setTimer(
         return undefined as any;
     }
 
-    const encode = (value: Duration) => {
-        return new Uint8Array(IDL.encode([IDL.Nat64], [value])).buffer;
-    };
-
     const decode = (value: ArrayBufferLike) => {
-        return BigInt(IDL.decode([IDL.Nat64], value)[0] as number);
+        return BigInt(azleDecode(nat64, value) as number);
     };
 
     const timerCallbackId = `_timer_${v4()}`;
 
     const timerId = decode(
-        globalThis._azleIc.setTimer(encode(delay), timerCallbackId)
+        globalThis._azleIc.setTimer(
+            encode(nat64, delay).buffer,
+            timerCallbackId
+        )
     );
 
     globalThis.icTimers[timerId.toString()] = timerCallbackId;

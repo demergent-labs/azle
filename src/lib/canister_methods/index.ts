@@ -3,7 +3,7 @@ import { IDL } from '@dfinity/candid';
 import { ic } from '../ic';
 import { CandidType, TypeMapping, Parent } from '../candid';
 import { DecodeVisitor } from '../candid/serde/visitors/decode_visitor';
-import { EncodeVisitor } from '../candid/serde/visitors/encode_visitor';
+import { encodeMultiple } from '../candid/serde';
 
 export * from './heartbeat';
 export * from './init';
@@ -104,18 +104,7 @@ export function executeMethod(
                 console.log(`final instructions: ${ic.instructionCounter()}`);
 
                 if (!manual) {
-                    // const encodeReadyResult = result === undefined ? [] : [result];
-                    const encodeReadyResult = finalReturnIdl.map((idl: any) => {
-                        return idl.accept(new EncodeVisitor(), {
-                            js_class: userMadeReturnIdl,
-                            js_data: result
-                        });
-                    });
-                    const encoded = IDL.encode(
-                        finalReturnIdl as any,
-                        encodeReadyResult
-                    );
-                    ic.replyRaw(new Uint8Array(encoded));
+                    ic.replyRaw(encodeMultiple(userMadeReturnIdl, result));
                 }
             })
             .catch((error: any) => {
@@ -123,19 +112,7 @@ export function executeMethod(
             });
     } else {
         if (!manual) {
-            // const encodeReadyResult = result === undefined ? [] : [result];
-            const encodeReadyResult = finalReturnIdl.map((idl: any) => {
-                return idl.accept(new EncodeVisitor(), {
-                    js_class: userMadeReturnIdl,
-                    js_data: result
-                });
-            });
-
-            const encoded = IDL.encode(
-                finalReturnIdl as any,
-                encodeReadyResult
-            );
-            ic.replyRaw(new Uint8Array(encoded));
+            ic.replyRaw(encodeMultiple(userMadeReturnIdl, result));
         }
 
         console.log(`final instructions: ${ic.instructionCounter()}`);
