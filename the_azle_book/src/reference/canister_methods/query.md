@@ -3,10 +3,11 @@
 This section is a work in progress.
 
 ```typescript
-import { $query } from 'azle';
+import { Canister, query, text } from 'azle';
 
-$query;
-export function simpleQuery(): string {
-    return 'This is a query method';
-}
+export default Canister({
+    simpleQuery: query([], text, () => {
+        return 'This is a query method';
+    })
+});
 ```
