@@ -36,7 +36,7 @@ export default Canister({
     // Reports the number of cycles returned from the Cycles canister
     sendCycles128: update([], nat, async () => {
         await ic.call(cyclesCanister.receiveCycles128, {
-            cycles: 1_000_000n
+            cycles128: 1_000_000n
         });
 
         return ic.msgCyclesRefunded128();
