@@ -93,7 +93,7 @@ export function visitVariant(
             );
         }
         if ('Err' in data.js_data) {
-            const errField = fields[0];
+            const errField = fields[1];
             const errData = data.js_data['Err'];
             const errClass = data.candidType._azleErr;
             return Result.Err(
