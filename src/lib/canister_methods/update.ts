@@ -20,7 +20,7 @@ export function update<
         : never,
     methodArgs?: MethodArgs
 ): CanisterMethodInfo<Params, Return> {
-    return (parent: any) => {
+    return ((parent: any) => {
         const finalCallback =
             callback === undefined
                 ? undefined
@@ -44,5 +44,5 @@ export function update<
             async: callback === undefined ? false : isAsync(callback),
             guard: methodArgs?.guard
         };
-    };
+    }) as any;
 }

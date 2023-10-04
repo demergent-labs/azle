@@ -20,7 +20,7 @@ export function query<
         : never,
     methodArgs?: MethodArgs
 ): CanisterMethodInfo<Params, Return> {
-    return (parent: any) => {
+    return ((parent: any) => {
         // TODO maybe the cross canister callback should be made here?
         const finalCallback =
             callback === undefined
@@ -45,5 +45,5 @@ export function query<
             async: callback === undefined ? false : isAsync(callback),
             guard: methodArgs?.guard
         };
-    };
+    }) as any;
 }

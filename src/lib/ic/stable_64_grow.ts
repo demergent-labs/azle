@@ -1,4 +1,3 @@
-import { IDL } from '@dfinity/candid';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { decode, encode } from '../candid/serde';
 

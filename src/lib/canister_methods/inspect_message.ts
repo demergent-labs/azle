@@ -4,7 +4,7 @@ import { Void } from '../candid/types/primitive/void';
 export function inspectMessage(
     callback: () => void | Promise<void>
 ): CanisterMethodInfo<[], Void> {
-    return () => {
+    return (() => {
         const finalCallback = (...args: any[]) => {
             executeMethod(
                 'inspectMessage',
@@ -25,5 +25,5 @@ export function inspectMessage(
             async: false,
             guard: undefined
         };
-    };
+    }) as any;
 }

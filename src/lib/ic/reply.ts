@@ -1,4 +1,4 @@
-import { CandidType, toIDLType } from '../candid';
+import { CandidType } from '../candid';
 import { Void } from '../candid/types/primitive/void';
 import { encode } from '../candid/serde';
 

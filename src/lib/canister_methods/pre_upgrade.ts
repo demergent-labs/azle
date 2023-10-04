@@ -4,7 +4,7 @@ import { Void } from '../candid/types/primitive/void';
 export function preUpgrade(
     callback: () => void | Promise<void>
 ): CanisterMethodInfo<[], Void> {
-    return () => {
+    return (() => {
         const finalCallback = (...args: any[]) => {
             executeMethod('preUpgrade', args, callback, [], Void, false, []);
         };
@@ -17,5 +17,5 @@ export function preUpgrade(
             async: isAsync(callback),
             guard: undefined
         };
-    };
+    }) as any;
 }

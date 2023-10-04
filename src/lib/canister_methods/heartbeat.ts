@@ -4,7 +4,7 @@ import { Void } from '../candid/types/primitive/void';
 export function heartbeat(
     callback: () => void | Promise<void>
 ): CanisterMethodInfo<[], Void> {
-    return () => {
+    return (() => {
         const finalCallback = (...args: any[]) => {
             executeMethod('heartbeat', args, callback, [], Void, false, []);
         };
@@ -17,5 +17,5 @@ export function heartbeat(
             async: isAsync(callback),
             guard: undefined
         };
-    };
+    }) as any;
 }

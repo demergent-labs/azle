@@ -11,7 +11,7 @@ export function postUpgrade<
         ? GenericCallback
         : never
 ): CanisterMethodInfo<Params, Void> {
-    return (parent: any) => {
+    return ((parent: any) => {
         const finalCallback =
             callback === undefined
                 ? undefined
@@ -35,5 +35,5 @@ export function postUpgrade<
             async: false,
             guard: undefined
         };
-    };
+    }) as any;
 }

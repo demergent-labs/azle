@@ -1,4 +1,3 @@
-import { IDL } from '@dfinity/candid';
 import { Duration, TimerId } from './types';
 import { v4 } from 'uuid';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
