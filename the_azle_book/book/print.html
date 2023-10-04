@@ -1736,68 +1736,69 @@ export default Canister({
 <div style="break-before: page; page-break-before: always;"></div><h1 id="management-canister"><a class="header" href="#management-canister">Management Canister</a></h1>
 <p>This chapter is a work in progress.</p>
 <p>You can access the management canister like this:</p>
-<pre><code class="language-typescript">import { blob, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function randomBytes(): Promise&lt;Result&lt;blob, string&gt;&gt; {
-    return await managementCanister.raw_rand().call();
-}
+export default Canister({
+    randomBytes: update([], blob, async () =&gt; {
+        return await ic.call(managementCanister.raw_rand);
+    })
+});
 </code></pre>
 <p>See the <a href="./reference/management_canister/management_canister.html">management canister reference section</a> for more information.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister-lifecycle"><a class="header" href="#canister-lifecycle">Canister Lifecycle</a></h1>
 <p>This chapter is a work in progress.</p>
-<pre><code class="language-typescript">import { $init, $postUpgrade, $preUpgrade } from 'azle';
+<pre><code class="language-typescript">import { Canister, init, postUpgrade, preUpgrade } from 'azle';
 
-$init;
-export function init(): void {
-    console.log('runs on first canister install');
-}
-
-$preUpgrade;
-export function preUpgrade(): void {
-    console.log('runs before canister upgrade');
-}
-
-$postUpgrade;
-export function postUpgrade(): void {
-    console.log('runs after canister upgrade');
-}
+export default Canister({
+    init: init([], () =&gt; {
+        console.log('runs on first canister install');
+    }),
+    preUpgrade: preUpgrade(() =&gt; {
+        console.log('runs before canister upgrade');
+    }),
+    postUpgrade: postUpgrade([], () =&gt; {
+        console.log('runs after canister upgrade');
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="timers"><a class="header" href="#timers">Timers</a></h1>
 <p>This chapter is a work in progress.</p>
 <pre><code class="language-typescript">import {
     blob,
+    bool,
+    Canister,
     Duration,
     ic,
     int8,
-    match,
-    $query,
+    query,
     Record,
+    text,
     TimerId,
-    $update
+    update,
+    Void
 } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-type StatusReport = Record&lt;{
-    single: boolean;
-    inline: int8;
-    capture: string;
-    repeat: int8;
-    singleCrossCanister: blob;
-    repeatCrossCanister: blob;
-}&gt;;
+const StatusReport = Record({
+    single: bool,
+    inline: int8,
+    capture: text,
+    repeat: int8,
+    singleCrossCanister: blob,
+    repeatCrossCanister: blob
+});
 
-type TimerIds = Record&lt;{
-    single: TimerId;
-    inline: TimerId;
-    capture: TimerId;
-    repeat: TimerId;
-    singleCrossCanister: TimerId;
-    repeatCrossCanister: TimerId;
-}&gt;;
+const TimerIds = Record({
+    single: TimerId,
+    inline: TimerId,
+    capture: TimerId,
+    repeat: TimerId,
+    singleCrossCanister: TimerId,
+    repeatCrossCanister: TimerId
+});
 
-let status: StatusReport = {
+let statusReport: typeof StatusReport = {
     single: false,
     inline: 0,
     capture: '',
@@ -1806,90 +1807,75 @@ let status: StatusReport = {
     repeatCrossCanister: Uint8Array.from([])
 };
 
-$update;
-export function clearTimer(timerId: TimerId): void {
-    ic.clearTimer(timerId);
-    console.log(`timer ${timerId} cancelled`);
-}
+export default Canister({
+    clearTimer: update([TimerId], Void, (timerId) =&gt; {
+        ic.clearTimer(timerId);
+        console.log(`timer ${timerId} cancelled`);
+    }),
+    setTimers: update([Duration, Duration], TimerIds, (delay, interval) =&gt; {
+        const capturedValue = '🚩';
 
-$update;
-export function setTimers(delay: Duration, interval: Duration): TimerIds {
-    const capturedValue = '🚩';
+        const singleId = ic.setTimer(delay, oneTimeTimerCallback);
 
-    const singleId = ic.setTimer(delay, oneTimeTimerCallback);
+        const inlineId = ic.setTimer(delay, () =&gt; {
+            statusReport.inline = 1;
+            console.log('Inline timer called');
+        });
 
-    const inlineId = ic.setTimer(delay, () =&gt; {
-        status.inline = 1;
-        console.log('Inline timer called');
-    });
+        const captureId = ic.setTimer(delay, () =&gt; {
+            statusReport.capture = capturedValue;
+            console.log(`Timer captured value ${capturedValue}`);
+        });
 
-    const captureId = ic.setTimer(delay, () =&gt; {
-        status.capture = capturedValue;
-        console.log(`Timer captured value ${capturedValue}`);
-    });
+        const repeatId = ic.setTimerInterval(interval, () =&gt; {
+            statusReport.repeat++;
+            console.log(`Repeating timer. Call ${statusReport.repeat}`);
+        });
 
-    const repeatId = ic.setTimerInterval(interval, () =&gt; {
-        status.repeat++;
-        console.log(`Repeating timer. Call ${status.repeat}`);
-    });
+        const singleCrossCanisterId = ic.setTimer(
+            delay,
+            singleCrossCanisterTimerCallback
+        );
 
-    const singleCrossCanisterId = ic.setTimer(
-        delay,
-        singleCrossCanisterTimerCallback
-    );
+        const repeatCrossCanisterId = ic.setTimerInterval(
+            interval,
+            repeatCrossCanisterTimerCallback
+        );
 
-    const repeatCrossCanisterId = ic.setTimerInterval(
-        interval,
-        repeatCrossCanisterTimerCallback
-    );
+        return {
+            single: singleId,
+            inline: inlineId,
+            capture: captureId,
+            repeat: repeatId,
+            singleCrossCanister: singleCrossCanisterId,
+            repeatCrossCanister: repeatCrossCanisterId
+        };
+    }),
+    statusReport: query([], StatusReport, () =&gt; {
+        return statusReport;
+    })
+});
 
-    return {
-        single: singleId,
-        inline: inlineId,
-        capture: captureId,
-        repeat: repeatId,
-        singleCrossCanister: singleCrossCanisterId,
-        repeatCrossCanister: repeatCrossCanisterId
-    };
-}
-
-$query;
-export function statusReport(): StatusReport {
-    return status;
-}
-
-function oneTimeTimerCallback(): void {
-    status.single = true;
+function oneTimeTimerCallback() {
+    statusReport.single = true;
     console.log('oneTimeTimerCallback called');
 }
 
-async function singleCrossCanisterTimerCallback(): Promise&lt;void&gt; {
+async function singleCrossCanisterTimerCallback() {
     console.log('singleCrossCanisterTimerCallback');
 
-    const result = await managementCanister.raw_rand().call();
-
-    match(result, {
-        Ok: (ok) =&gt; {
-            status.singleCrossCanister = ok;
-        },
-        Err: (err) =&gt; ic.trap(err)
-    });
+    statusReport.singleCrossCanister = await ic.call(
+        managementCanister.raw_rand
+    );
 }
 
-async function repeatCrossCanisterTimerCallback(): Promise&lt;void&gt; {
+async function repeatCrossCanisterTimerCallback() {
     console.log('repeatCrossCanisterTimerCallback');
 
-    const result = await managementCanister.raw_rand().call();
-
-    match(result, {
-        Ok: (ok) =&gt; {
-            status.repeatCrossCanister = Uint8Array.from([
-                ...status.repeatCrossCanister,
-                ...ok
-            ]);
-        },
-        Err: (err) =&gt; ic.trap(err)
-    });
+    statusReport.repeatCrossCanister = Uint8Array.from([
+        ...statusReport.repeatCrossCanister,
+        ...(await ic.call(managementCanister.raw_rand))
+    ]);
 }
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cycles"><a class="header" href="#cycles">Cycles</a></h1>
@@ -1903,17 +1889,15 @@ async function repeatCrossCanisterTimerCallback(): Promise&lt;void&gt; {
 <p>Maybe here we just show the basic concept of cycles, link to the main cycles cost page, and show a few examples of how to break down these costs or estimate these costs.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="caveats-1"><a class="header" href="#caveats-1">Caveats</a></h1>
 <h2 id="unknown-security-vulnerabilities"><a class="header" href="#unknown-security-vulnerabilities">Unknown security vulnerabilities</a></h2>
-<p>Azle is a beta project using an experimental JS engine. See <a href="/azle.html#disclaimer">the disclaimer</a> for more information.</p>
-<h2 id="high-instructioncycle-count"><a class="header" href="#high-instructioncycle-count">High instruction/cycle count</a></h2>
-<p>Azle canisters will generally use more Wasm instructions and thus cycles than Motoko or Rust canisters. A good rule of thumb for now would be 2-4x the cycles. Azle's efficiency should increase dramatically with the upcoming JS engine swapout.</p>
-<h2 id="javascript-syntax-and-features"><a class="header" href="#javascript-syntax-and-features">JavaScript syntax and features</a></h2>
-<p>You may encounter various missing JavaScript syntax or features. Azle generally has better conformance than that of its <a href="https://boajs.dev/boa/test262/">underlying JS engine</a>.</p>
+<p>Azle is a beta project. See <a href="/azle.html#disclaimer">the disclaimer</a> for more information.</p>
 <h2 id="npm-packages"><a class="header" href="#npm-packages">npm packages</a></h2>
-<p>Some npm packages will work and some will not work. It is our long-term goal to support as many npm packages as possible. There are many reasons why an npm package may not currently work, including the small Wasm binary limit of the IC, bugs in Azle's JS engine <a href="https://github.com/boa-dev/boa">Boa</a>, or unimplemented web or Node.js APIs. Feel free to open issues if your npm package does not work in Azle.</p>
+<p>Some npm packages will work and some will not work. It is our long-term goal to support as many npm packages as possible. There are various reasons why an npm package may not currently work, including the small Wasm binary limit of the IC and unimplemented web or Node.js APIs. Feel free to open issues if your npm package does not work in Azle.</p>
+<h2 id="javascript-environment-apis"><a class="header" href="#javascript-environment-apis">JavaScript environment APIs</a></h2>
+<p>You may encounter various missing JavaScript environment APIs, such as those you would expect in the web or Node.js environments.</p>
+<h2 id="high-candid-encodingdecoding-costs"><a class="header" href="#high-candid-encodingdecoding-costs">High Candid encoding/decoding costs</a></h2>
+<p>Candid encoding/decoding is currently very unoptimized. This will most likely lead to a ~1-2 million instruction extra fixed cost for all calls, plus more if you use <code>StableBTreeMap</code> or any other API or data structure that engages in Candid encoding/decoding.</p>
 <h2 id="promises"><a class="header" href="#promises">Promises</a></h2>
-<p>Though promises are implemented, the underlying queue that handles asynchronous operations is very simple. This queue will not behave exactly as queues from the major JS engines. The queue can be thought of as a simple queue that executes tasks sequentially without reporting errors.</p>
-<h2 id="treat-azle-types-as-unique-keywords"><a class="header" href="#treat-azle-types-as-unique-keywords">Treat Azle types as unique keywords</a></h2>
-<p>You should treat Azle types essentially as unique keywords, not creating types of the same name elsewhere in your codebase or in other libraries. Any types exported from <a href="https://github.com/demergent-labs/azle/blob/main/index.ts">this file</a> should be treated thusly.</p>
+<p>Though promises are implemented, the underlying queue that handles asynchronous operations is very simple. This queue will not behave exactly as queues from the major JS engines.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reference"><a class="header" href="#reference">Reference</a></h1>
 <ul>
 <li><a href="reference/./bitcoin.html">Bitcoin</a></li>
