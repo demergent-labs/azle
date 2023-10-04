@@ -3,9 +3,9 @@
         "cycles": {
             "type": "custom",
             "build": "npx azle cycles",
-            "root": "canisters/cycles",
-            "ts": "canisters/cycles/index.ts",
-            "candid": "canisters/cycles/index.did",
+            "root": "src/cycles",
+            "ts": "src/cycles/index.ts",
+            "candid": "src/cycles/index.did",
             "wasm": ".azle/cycles/cycles.wasm",
             "gzip": true,
             "declarations": {
@@ -16,9 +16,9 @@
         "intermediary": {
             "type": "custom",
             "build": "npx azle intermediary",
-            "root": "canisters/intermediary",
-            "ts": "canisters/intermediary/index.ts",
-            "candid": "canisters/intermediary/index.did",
+            "root": "src/intermediary",
+            "ts": "src/intermediary/index.ts",
+            "candid": "src/intermediary/index.did",
             "wasm": ".azle/intermediary/intermediary.wasm",
             "gzip": true,
             "declarations": {
