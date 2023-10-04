@@ -8,9 +8,6 @@ declare global {
     var _azleRejectIds: { [key: string]: (err: any) => void };
     var icTimers: { [key: string]: string };
     var _azleTimerCallbackIds: { [key: string]: () => void };
-    var _azleCandidInitParams: any[];
-    var _azleCandidMethods: any[];
-    var _azleCandidTypes: any[];
     var Buffer: BufferConstructor;
     // var console: Console;
     // var crypto: Crypto;
@@ -22,16 +19,10 @@ declare global {
 }
 
 // export declare var globalThis: {
-//     _azleCandidInitParams: any[];
-//     _azleCandidMethods: any[];
-//     _azleCandidTypes: any[];
 //     Buffer: BufferConstructor;
 //     console: any;
 //     crypto: {
 //         getRandomValues: () => Uint8Array;
-//     };
-//     icTimers: {
-//         [key: string]: string;
 //     };
 //     TextDecoder: any;
 //     TextEncoder: any;
@@ -55,7 +46,7 @@ globalThis.console = {
 // TODO the randomness is predictable
 globalThis.crypto = {
     ...globalThis.crypto,
-    getRandomValues: () => {
+    getRandomValues: (() => {
         let array = new Uint8Array(32);
 
         for (let i = 0; i < array.length; i++) {
@@ -63,7 +54,7 @@ globalThis.crypto = {
         }
 
         return array;
-    }
+    }) as any
 };
 
 globalThis.Buffer = Buffer;
