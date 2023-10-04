@@ -1,4 +1,4 @@
-import { CandidType, TypeMapping, toIDLType } from './candid';
+import { CandidType, TypeMapping } from './candid';
 import { None, Opt, Some } from './candid/types/constructed/opt';
 import { nat64 } from './candid/types/primitive/nats/nat64';
 import { nat8 } from './candid/types/primitive/nats/nat8';
@@ -8,10 +8,7 @@ export function StableBTreeMap<
     Key extends CandidType,
     Value extends CandidType
 >(keyType: Key, valueType: Value, memoryId: nat8) {
-    const keyIdl = toIDLType(keyType, []);
-    const valueIdl = toIDLType(valueType, []);
-
-    const candidEncodedMemoryId = new Uint8Array(encode(nat8, memoryId)).buffer;
+    const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
 
     if ((globalThis as any)._azleIc !== undefined) {
         (globalThis as any)._azleIc.stableBTreeMapInit(candidEncodedMemoryId);
