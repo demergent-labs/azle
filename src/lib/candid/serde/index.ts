@@ -31,7 +31,7 @@ export function encode(
     }
 
     const encodeReadyKey = idl.accept(new EncodeVisitor(), {
-        js_class: candidType,
+        candidType: candidType,
         js_data: data
     });
 
@@ -70,7 +70,7 @@ export function decode(
     const candidDecodedValue = IDL.decode([idl], data)[0] as any;
 
     return idl.accept(new DecodeVisitor(), {
-        js_class: candidType,
+        candidType: candidType,
         js_data: candidDecodedValue
     });
 }
@@ -89,7 +89,7 @@ export function encodeMultiple(
             const idl = toIDLType(candidType, parents);
 
             const encodeReadyValue = idl.accept(new EncodeVisitor(), {
-                js_class: candidType,
+                candidType: candidType,
                 js_data: datum
             });
 
@@ -115,7 +115,7 @@ export function decodeMultiple(
     const decoded = IDL.decode(idls, data);
     return idls.map((idl, index) =>
         idl.accept(new DecodeVisitor(), {
-            js_class: candidTypes[index],
+            candidType: candidTypes[index],
             js_data: decoded[index]
         })
     );
