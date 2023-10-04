@@ -71,6 +71,7 @@ jobs:
                     "examples/call_raw",
                     "examples/candid_encoding",
                     "examples/canister",
+                    "examples/ckbtc",
                     "examples/complex_init",
                     "examples/complex_types",
                     "examples/composite_queries",

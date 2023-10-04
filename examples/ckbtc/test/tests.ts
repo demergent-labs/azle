@@ -5,8 +5,8 @@ import { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { getCanisterId } from 'azle/test';
 
-import { _SERVICE } from '../wallet/frontend/dfx_generate/wallet_backend/wallet_backend.did';
-import { createActor } from '../wallet/frontend/dfx_generate/wallet_backend';
+import { _SERVICE } from '../wallet/frontend/dfx_generated/wallet_backend/wallet_backend.did';
+import { createActor } from '../wallet/frontend/dfx_generated/wallet_backend';
 
 type Config = {
     identity: Identity;
