@@ -7,11 +7,14 @@ Examples:
 -   [cycles](https://github.com/demergent-labs/azle/tree/main/examples/cycles)
 
 ```typescript
-import { NotifyResult, $update } from 'azle';
-import { cyclesCanister } from '../cycles';
+import { Canister, ic, update, Void } from 'azle';
+import { otherCanister } from './otherCanister';
 
-$update;
-export function sendCycles128Notify(): NotifyResult {
-    return cyclesCanister.receiveCycles128().cycles128(1_000_000n).notify();
-}
+export default Canister({
+    sendCycles128Notify: update([], Void, async () => {
+        return ic.notify(otherCanister.receiveCycles128, {
+            cycles: 1_000_000n
+        });
+    })
+});
 ```

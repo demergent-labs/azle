@@ -7,16 +7,16 @@ Examples:
 -   [ic_api](https://github.com/demergent-labs/azle/blob/main/examples/ic_api)
 
 ```typescript
-import { blob, ic, int8, $query } from 'azle';
+import { blob, bool, Canister, ic, int8, query, text } from 'azle';
 
-// returns the argument data as bytes.
-$query;
-export function argDataRaw(
-    arg1: blob,
-    arg2: int8,
-    arg3: boolean,
-    arg4: string
-): blob {
-    return ic.argDataRaw();
-}
+export default Canister({
+    // returns the argument data as bytes.
+    argDataRaw: query(
+        [blob, int8, bool, text],
+        blob,
+        (arg1, arg2, arg3, arg4) => {
+            return ic.argDataRaw();
+        }
+    )
+});
 ```

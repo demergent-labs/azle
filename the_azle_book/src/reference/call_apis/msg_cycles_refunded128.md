@@ -7,20 +7,17 @@ Examples:
 -   [cycles](https://github.com/demergent-labs/azle/tree/main/examples/cycles)
 
 ```typescript
-import { ic, match, nat, Result, $update } from 'azle';
-import { cyclesCanister } from '../cycles';
+import { Canister, ic, nat64, update } from 'azle';
+import { otherCanister } from './other_canister';
 
-// Reports the number of cycles returned from the Cycles canister
-$update;
-export async function sendCycles128(): Promise<Result<nat, string>> {
-    const result = await cyclesCanister
-        .receiveCycles128()
-        .cycles128(1_000_000n)
-        .call();
+export default Canister({
+    // Reports the number of cycles returned from the Cycles canister
+    sendCycles128: update([], nat64, async () => {
+        await ic.call128(otherCanister.receiveCycles128, {
+            cycles: 1_000_000n
+        });
 
-    return match(result, {
-        Ok: () => ({ Ok: ic.msgCyclesRefunded128() }),
-        Err: (err) => ({ Err: err })
-    });
-}
+        return ic.msgCyclesRefunded128();
+    })
+});
 ```

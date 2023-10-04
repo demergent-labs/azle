@@ -7,11 +7,12 @@ Examples:
 -   [cycles](https://github.com/demergent-labs/azle/tree/main/examples/cycles)
 
 ```typescript
-import { ic, nat, $update } from 'azle';
+import { Canister, ic, nat64, update } from 'azle';
 
-// Moves all transferred cycles to the canister
-$update;
-export function receiveCycles128(): nat {
-    return ic.msgCyclesAccept128(ic.msgCyclesAvailable128() / 2n);
-}
+export default Canister({
+    // Moves all transferred cycles to the canister
+    receiveCycles128: update([], nat64, () => {
+        return ic.msgCyclesAccept128(ic.msgCyclesAvailable128() / 2n);
+    })
+});
 ```
