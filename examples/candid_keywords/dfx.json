@@ -1,14 +1,14 @@
 {
     "canisters": {
-        "candid_types": {
+        "candid_keywords": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle candid_types",
+            "build": "npx azle candid_keywords",
             "candid": "src/index.did",
-            "wasm": ".azle/candid_types/candid_types.wasm",
+            "wasm": ".azle/candid_keywords/candid_keywords.wasm",
             "gzip": true,
             "declarations": {
-                "output": "test/dfx_generated/candid_types",
+                "output": "test/dfx_generated/candid_keywords",
                 "node_compatibility": true
             }
         }

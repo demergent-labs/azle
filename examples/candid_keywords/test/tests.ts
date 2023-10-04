@@ -1,5 +1,5 @@
 import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/candid_types/candid_types.did';
+import { _SERVICE } from './dfx_generated/candid_keywords/candid_keywords.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(candid_canister: ActorSubclass<_SERVICE>): Test[] {
