@@ -14,6 +14,24 @@ type CanisterOptions = {
     [key: string]: CanisterMethodInfo<any, any>;
 };
 
+type _AzleCanisterOptions = {
+    [key: string]: (parent: Parent | undefined) => CanisterMethodInfo<any, any>;
+};
+
+type _AzleFunctionReturnType = {
+    (principal: Principal): void;
+    init?: any;
+    post_upgrade?: any;
+    pre_upgrade?: any;
+    heartbeat?: any;
+    inspect_message?: any;
+    queries?: any[];
+    updates?: any[];
+    callbacks?: any;
+    getSystemFunctionIDLs?: (parents: Parent[]) => IDL.FuncClass[];
+    getIDL?: (parents: Parent[]) => IDL.Type<any>;
+};
+
 type CanisterReturn<T extends CanisterOptions> = {
     [EndpointName in keyof T]: T[EndpointName] extends CanisterMethodInfo<
         infer Params,
@@ -32,13 +50,15 @@ type CallableObject<T extends CanisterOptions> = {
 export function Canister<T extends CanisterOptions>(
     serviceOptions: T
 ): CallableObject<T> & { _azleCandidType?: '_azleCandidType' } {
+    const _azleCanisterOptions =
+        serviceOptions as unknown as _AzleCanisterOptions;
     let result = (parentOrPrincipal: any) => {
         const originalPrincipal = parentOrPrincipal;
         const parentOrUndefined =
             parentOrPrincipal !== undefined && parentOrPrincipal._isPrincipal
                 ? undefined
                 : parentOrPrincipal;
-        const callbacks = Object.entries(serviceOptions).reduce(
+        const callbacks = Object.entries(_azleCanisterOptions).reduce(
             (acc, entry) => {
                 const key = entry[0];
                 const value = entry[1](parentOrUndefined);
@@ -75,7 +95,7 @@ export function Canister<T extends CanisterOptions>(
             {}
         );
 
-        const initOption = Object.entries(serviceOptions).find(
+        const initOption = Object.entries(_azleCanisterOptions).find(
             ([key, value]) => value(parentOrUndefined).mode === 'init'
         );
         const init =
@@ -85,7 +105,7 @@ export function Canister<T extends CanisterOptions>(
                       name: initOption[0]
                   };
 
-        const postUpgradeOption = Object.entries(serviceOptions).find(
+        const postUpgradeOption = Object.entries(_azleCanisterOptions).find(
             ([key, value]) => value(parentOrUndefined).mode === 'postUpgrade'
         );
         const postUpgrade =
@@ -95,7 +115,7 @@ export function Canister<T extends CanisterOptions>(
                       name: postUpgradeOption[0]
                   };
 
-        const preUpgradeOption = Object.entries(serviceOptions).find(
+        const preUpgradeOption = Object.entries(_azleCanisterOptions).find(
             ([key, value]) => value(parentOrUndefined).mode === 'preUpgrade'
         );
         const preUpgrade =
@@ -105,7 +125,7 @@ export function Canister<T extends CanisterOptions>(
                       name: preUpgradeOption[0]
                   };
 
-        const heartbeatOption = Object.entries(serviceOptions).find(
+        const heartbeatOption = Object.entries(_azleCanisterOptions).find(
             ([key, value]) => value(parentOrUndefined).mode === 'heartbeat'
         );
         const heartbeat =
@@ -115,7 +135,7 @@ export function Canister<T extends CanisterOptions>(
                       name: heartbeatOption[0]
                   };
 
-        const inspectMessageOption = Object.entries(serviceOptions).find(
+        const inspectMessageOption = Object.entries(_azleCanisterOptions).find(
             ([key, value]) => value(parentOrUndefined).mode === 'inspectMessage'
         );
         const inspectMessage =
@@ -125,7 +145,7 @@ export function Canister<T extends CanisterOptions>(
                       name: inspectMessageOption[0]
                   };
 
-        const queries = Object.entries(serviceOptions)
+        const queries = Object.entries(_azleCanisterOptions)
             .filter((entry) => {
                 const key = entry[0];
                 const value = entry[1](parentOrUndefined);
@@ -143,7 +163,7 @@ export function Canister<T extends CanisterOptions>(
                 };
             });
 
-        const updates = Object.entries(serviceOptions)
+        const updates = Object.entries(_azleCanisterOptions)
             .filter((entry) => {
                 const key = entry[0];
                 const value = entry[1](parentOrUndefined);
@@ -160,8 +180,10 @@ export function Canister<T extends CanisterOptions>(
                 };
             });
 
-        let returnFunction = (principal: Principal) => {
-            const callbacks = Object.entries(serviceOptions).reduce(
+        let returnFunction: _AzleFunctionReturnType = (
+            principal: Principal
+        ) => {
+            const callbacks = Object.entries(_azleCanisterOptions).reduce(
                 (acc, entry) => {
                     const key = entry[0];
                     const value = entry[1](parentOrUndefined);
@@ -215,7 +237,8 @@ export function Canister<T extends CanisterOptions>(
         (returnFunction.getSystemFunctionIDLs = (
             parents: Parent[]
         ): IDL.FuncClass[] => {
-            const serviceFunctionInfo: ServiceFunctionInfo = serviceOptions;
+            const serviceFunctionInfo: ServiceFunctionInfo =
+                _azleCanisterOptions;
 
             return Object.entries(serviceFunctionInfo).reduce(
                 (accumulator, [_methodName, functionInfo]) => {
@@ -242,7 +265,8 @@ export function Canister<T extends CanisterOptions>(
             );
         }),
             (returnFunction.getIDL = (parents: Parent[]): IDL.ServiceClass => {
-                const serviceFunctionInfo: ServiceFunctionInfo = serviceOptions;
+                const serviceFunctionInfo: ServiceFunctionInfo =
+                    _azleCanisterOptions;
 
                 const record = Object.entries(serviceFunctionInfo).reduce(
                     (accumulator, [methodName, functionInfo]) => {
