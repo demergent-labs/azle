@@ -70,7 +70,7 @@ export function getTests(): Test[] {
         },
         {
             name: 'wait for transactions to settle',
-            wait: 30_000
+            wait: 60_000
         },
         {
             name: 'updateBalance',
