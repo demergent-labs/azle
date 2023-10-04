@@ -1,120 +1,79 @@
+# Chain Key BTC
+
 Keep in mind that this is a simple demo example of ckBTC with Azle, and is probably not suitable for production use. Learn wisely.
 
 This ckBTC example shows you how to setup ckBTC locally, with the `ckBTC ledger`, `internet identity`, `kyt`, `minter`, and `bitcoind`. It also has a canister wallet backend and frontend. The canister wallet shows how a canister can control a number of ckBTC subaccounts. The frontend functionality only shows how to mint ckBTC and transfer between other canister wallets.
 
-# Installation
+## Setup
 
-## bitcoind
-
-```bash
-mkdir .bitcoin
-mkdir .bitcoin/data
-
-curl https://bitcoincore.org/bin/bitcoin-core-23.0/bitcoin-23.0-x86_64-linux-gnu.tar.gz -o bitcoin.tar.gz
-
-tar xzf bitcoin.tar.gz --overwrite --strip-components=1 --directory=.bitcoin/ bitcoin-23.0/bin/
-
-rm -rf bitcoin.tar.gz
-```
-
-## ckbtc ledger canister
+Install all npm dependencies and download canister Wasm binaries:
 
 ```bash
-# did file found here: https://github.com/dfinity/ic/blob/master/rs/rosetta-api/icrc1/ledger/ledger.did
-cd ckbtc
-curl -o ledger.wasm.gz "https://download.dfinity.systems/ic/d6d395a480cd6986b4788f4aafffc5c03a07e46e/canisters/ic-icrc1-ledger.wasm.gz"
+npm install
 ```
 
-## internet identity canister
+Update the `canisters.wallet_backend.declarations.node_compatibility` property in dfx.json to `false`:
+
+> **Note:**
+> The tests require node_compatibility to be set to `true` but the frontend requires it to be set to `false`. Toggle it according to your use case.
+
+## Deployment
+
+Run each of the following commands, each in a separate terminal.
+
+Bitcoin daemon:
 
 ```bash
-# did file found here: https://github.com/dfinity/internet-identity/blob/main/src/internet_identity/internet_identity.did
-cd internet_identity
-# Manually download this file from the browser
-# https://github.com/dfinity/internet-identity/releases/download/release-2023-05-15/internet_identity_test.wasm.gz
+npm run bitcoin
 ```
 
-## ckbtc kyt canister
+IC replica:
 
 ```bash
-# did file found here: https://github.com/dfinity/ic/blob/master/rs/bitcoin/ckbtc/kyt/kyt.did
-cd kyt
-curl -o kyt.wasm.gz "https://download.dfinity.systems/ic/d6d395a480cd6986b4788f4aafffc5c03a07e46e/canisters/ic-ckbtc-kyt.wasm.gz"
+npm run ic
 ```
 
-## ckbtc minter canister
+Deploy canisters:
 
 ```bash
-# did file found here: https://github.com/dfinity/ic/blob/master/rs/bitcoin/ckbtc/minter/ckbtc_minter.did
-cd minter
-curl -o minter.wasm.gz "https://download.dfinity.systems/ic/d6d395a480cd6986b4788f4aafffc5c03a07e46e/canisters/ic-ckbtc-minter.wasm.gz"
+npm run deploy
 ```
 
-# Deployment
+## Usage
 
-## bitcoind
+1. Create an Internet Identity
 
-```bash
-# Do this in its own terminal
-.bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444
-```
+    Go to the `wallet_frontend` URL `http://ryjl3-tyaaa-aaaaa-aaaba-cai.localhost:8000`.
 
-## dfx
+    ```bash
+    npm run frontend
+    ```
 
-```bash
-# Do this in its own terminal
-dfx start --clean --host 127.0.0.1:8000 --enable-bitcoin
-```
+    The first time you visit the frontend it should re-direct you to the local internet-identity to authenticate. If it does not try refreshing the page.
 
-## ckbtc ledger canister
+    > **Note:**
+    > This Internet Identity service is running locally (see the local url?) and is for testing. **DO NOT USE YOUR REAL INTERNET IDENTITY!!!**
 
-```bash
-dfx deploy ckbtc --specified-id=be2us-64aaa-aaaaa-qaabq-cai --argument='(variant { Init = record { minting_account = record { owner = principal "bd3sg-teaaa-aaaaa-qaaba-cai" }; transfer_fee = 0 : nat64; token_symbol = "ckBTC"; token_name = "ckBTC"; metadata = vec {}; initial_balances = vec {}; archive_options = record { num_blocks_to_archive = 0 : nat64; trigger_threshold = 0 : nat64; controller_id = principal "aaaaa-aa" } } })'
-```
+    ![image](https://github.com/demergent-labs/azle/assets/5455419/6d929bb3-e87e-45c9-88f6-c79b3e8236a4)
 
-## internet identity canister
+    Select "Create New" and continue through the provided instructions to create a new **local test** internet identity.
 
-```bash
-dfx deploy internet_identity --specified-id 4duc2-jqaaa-aaaaa-aabiq-cai --argument '(null)'
-```
+    ![image](https://github.com/demergent-labs/azle/assets/5455419/564bc367-e6b3-4ccd-81a9-917089da67da)
 
-## ckbtc kyt canister
+    Make note of the identity number it generated and then click "I saved it, continue".
 
-```bash
-dfx deploy kyt --specified-id bkyz2-fmaaa-aaaaa-qaaaq-cai --argument "(variant { InitArg = record { minter_id = principal \"bd3sg-teaaa-aaaaa-qaaba-cai\"; maintainers = vec { principal \"$(dfx identity get-principal)\" }; mode = variant { AcceptAll } } })"
+2. Mint some BTC
 
-dfx canister call kyt set_api_key '(record { api_key = "" })'
-```
+    Back on the frontend site copy the bitcoin deposit address as shown below:
 
-## ckbtc minter canister
+    ![image](https://github.com/demergent-labs/azle/assets/5455419/3d6ac20e-e1eb-4d90-a65a-460f8242d8fd)
 
-```bash
-dfx deploy minter --specified-id bd3sg-teaaa-aaaaa-qaaba-cai --argument '(variant { Init = record {btc_network = variant { Regtest }; min_confirmations=opt 1; ledger_id = principal "be2us-64aaa-aaaaa-qaabq-cai"; kyt_principal = opt principal "bkyz2-fmaaa-aaaaa-qaaaq-cai"; ecdsa_key_name = "dfx_test_key";retrieve_btc_min_amount = 5_000; max_time_in_queue_nanos = 420_000_000_000; mode = variant {GeneralAvailability}} })'
-```
+    Mint some BTC to your wallet by running the following command, replacing `<your-canister-btc-address>` with the address from the frontend:
 
-## wallet_backend
+    ```bash
+    npm run mint --address=<your-canister-btc-address>
+    ```
 
-```bash
-CK_BTC_PRINCIPAL=be2us-64aaa-aaaaa-qaabq-cai MINTER_PRINCIPAL=bd3sg-teaaa-aaaaa-qaaba-cai dfx deploy wallet_backend --specified-id 7ugoi-yiaaa-aaaaa-aabaa-cai
+3. Now click `Update Balance` in the web UI to retrieve the updated balance.
 
-dfx generate wallet_backend
-```
-
-## wallet frontend
-
-```bash
-dfx deploy wallet_frontend --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai
-```
-
-# Usage
-
-Go to the `wallet_frontend` URL `http://ryjl3-tyaaa-aaaaa-aaaba-cai.localhost:8000`. Minting some initial BTC is shown below. You should mint to the Bitcoin deposit address shown in the web UI to start things off.
-
-```bash
-# Mine some BTC to that address
-.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress 1 <your-canister-btc-address>
-```
-
-Now click `Update Balance` in the web UI.
-
-Play around, try transfering some ckBTC to an account in another independent browser tab.
+4. Play around. Try transferring some ckBTC to an account in another independent browser tab.

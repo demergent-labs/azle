@@ -4,15 +4,9 @@ import { JSCanisterConfig, JavaScript, TypeScript } from './utils/types';
 import { Result } from './utils/result';
 
 export function compileTypeScriptToJavaScript(
-    tsPath: string,
+    main: string,
     canisterConfig: JSCanisterConfig
-): Result<
-    {
-        canisterJavaScript: JavaScript;
-        candidJavaScript: JavaScript;
-    },
-    unknown
-> {
+): Result<JavaScript, unknown> {
     try {
         const globalThisProcess = `
             globalThis.process = {
@@ -32,27 +26,20 @@ export function compileTypeScriptToJavaScript(
             import 'azle';
             import { ic } from 'azle';
             export { Principal } from '@dfinity/principal';
-            export * from './${tsPath}';
-            import CanisterMethods from './${tsPath}';
+            export * from './${main}';
+            import CanisterMethods from './${main}';
 
-            export const canisterMethods = CanisterMethods;
+            export const canisterMethods = CanisterMethods();
+
         `;
 
-        const canisterJavaScript = bundleAndTranspileJs(`
-            ${globalThisProcess}
-            ${imports}
-`);
-
-        const candidJavaScript = bundleAndTranspileJs(`
+        const bundledJavaScript = bundleAndTranspileJs(`
             ${globalThisProcess}
             ${imports}
 `);
 
         return {
-            ok: {
-                canisterJavaScript,
-                candidJavaScript
-            }
+            ok: bundledJavaScript
         };
     } catch (err) {
         return { err };

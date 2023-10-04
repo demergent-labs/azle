@@ -1,28 +1,34 @@
 # Azle (Beta)
 
-Azle is a [TypeScript](https://www.typescriptlang.org/) [Canister Development Kit](https://internetcomputer.org/docs/current/developer-docs/backend/choosing-language) (CDK) for the [Internet Computer](https://internetcomputer.org/) (IC). In other words, it's a TypeScript/JavaScript runtime for building applications ([canisters](https://internetcomputer.org/docs/current/concepts/canisters-code)) on the IC.
+Azle is a [TypeScript](https://www.typescriptlang.org/) and [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) [Canister Development Kit](https://internetcomputer.org/docs/current/developer-docs/backend/choosing-language) (CDK) for the [Internet Computer](https://internetcomputer.org/) (IC). In other words, it's a TypeScript/JavaScript runtime for building applications ([canisters](https://internetcomputer.org/docs/current/concepts/canisters-code)) on the IC.
 
--   [GitHub repo](https://github.com/demergent-labs/azle)
 -   [npm package](https://www.npmjs.com/package/azle)
+-   [GitHub repo](https://github.com/demergent-labs/azle)
 -   [Discord channel](https://discord.gg/5Hb6rM2QUM)
 
 ## Disclaimer
 
 Azle may have unknown security vulnerabilities due to the following:
 
--   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 -   Azle does not yet have extensive automated property tests
 -   Azle does not yet have multiple independent security reviews/audits
--   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa#boa)
+-   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 
 ## Roadmap
 
-We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:
+We hope to move Azle from beta to release candidates by the end of 2023, and to move from release candidates to 1.0 in early 2024.
 
--   QuickJS/SpiderMonkey integration for performance, security, and stability
--   Broad npm package support
--   Extensive automated property testing
+### Blockers for release candidates
+
+-   Good automated property test coverage
+-   Settling of API/syntax
+-   Good npm package support
+
+### Blockers for 1.0
+
+-   Extensive automated property test coverage
 -   Multiple independent security reviews/audits
+-   Broad npm package support
 
 ## Demergent Labs
 
@@ -38,9 +44,9 @@ The following information will help you to determine when Azle and the IC might 
 
 ### Benefits
 
-Azle intends to be a full TypeScript/JavaScript environment for the IC (a decentralized cloud platform), with support for all of the TypeScript/JavaScript language and as many relevant host APIs as possible. These host APIs will be similar to those available in the Node.js and web browser environments.
+Azle intends to be a full TypeScript and JavaScript environment for the IC (a decentralized cloud platform), with support for all of the TypeScript and JavaScript language and as many relevant environment APIs as possible. These environment APIs will be similar to those available in the Node.js and web browser environments.
 
-One of the core benefits of Azle is that it allows web developers to bring their TypeScript/JavaScript skills to the IC. For example, Azle allows the use of various npm packages and VS Code intellisense.
+One of the core benefits of Azle is that it allows web developers to bring their TypeScript or JavaScript skills to the IC. For example, Azle allows the use of various npm packages and VS Code intellisense.
 
 As for the IC, we believe its main benefits can be broken down into the following categories:
 
@@ -66,7 +72,7 @@ In the blockchain world, group-owned applications are known as [DAOs](https://en
 
 ##### Autonomous ownership
 
-In addition to allowing applications to be owned by groups of people, the IC also allows applications to be owned by no one. This essentially creates autonomous applications or everlasting processes that execute indefinitely. The IC will allow such an application to run until it depletes its balance of cycles, or until the [NNS](https://internetcomputer.org/nns) votes to shut it down.
+In addition to allowing applications to be owned by groups of people, the IC also allows applications to be owned by no one. This essentially creates autonomous applications or everlasting processes that execute indefinitely. The IC will essentially allow such an application to run indefinitely, unless it depletes its balance of cycles, or the [NNS](https://internetcomputer.org/nns) votes to shut it down, neither of which is inevitable.
 
 ##### Permanent APIs
 
@@ -159,41 +165,27 @@ Some of Azle's main drawbacks can be summarized as follows:
 
 -   [Beta](#beta)
 -   [Security risks](#security-risks)
--   [High cycle usage](#high-cycle-usage)
 -   [Missing APIs](#missing-apis)
--   [Missing JavaScript features](#missing-javascript-features)
 
 ##### Beta
 
 Azle reached beta in April of 2022. It's an immature project that may have unforeseen bugs and other issues. We're working constantly to improve it. We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:
 
--   QuickJS/SpiderMonkey integration for performance, security, and stability
--   Broad npm package support
--   Extensive automated property testing
+-   Extensive automated property test coverage
 -   Multiple independent security reviews/audits
+-   Broad npm package support
 
 ##### Security risks
 
 As discussed earlier, these are some things to keep in mind:
 
--   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 -   Azle does not yet have extensive automated property tests
 -   Azle does not yet have multiple independent security reviews/audits
--   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa#boa)
-
-##### High cycle usage
-
-We have done some preliminary benchmarking, and based on that our rough heuristic is that Azle will cost 2-4x more cycles than the equivalent project in Motoko or Rust. The performance of your application depends on many factors, and this should just be a rough estimate.
-
-There is evidence to suggest that a 30x improvement in performance is possible in our [underlying JS engine](https://github.com/boa-dev/boa).
+-   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 
 ##### Missing APIs
 
-Azle is not Node.js nor is it V8 running in a web browser. It is using a new JavaScript interpreter running in a very new and very different environment. APIs from the Node.js and web browser ecosystems may not be present in Azle. Our goal is to support as many of these APIs as possible over time.
-
-##### Missing JavaScript features
-
-There may be some missing JavaScript language features. You can track our language feature support based on [Boa's conformance with the ECMAScript test suite](https://boa-dev.github.io/boa/test262/). We also use multiple underlying compilers and bundlers before we execute your JavaScript, thus we may support more language features than the test suite conformance shows.
+Azle is not Node.js nor is it V8 running in a web browser. It is using a JavaScript interpreter running in a very new and very different environment. APIs from the Node.js and web browser ecosystems may not be present in Azle. Our goal is to support as many of these APIs as possible over time.
 
 #### IC
 
@@ -228,4 +220,4 @@ You should assume that all of your application data (unless it is end-to-end enc
 
 ##### NNS risk
 
-The NNS has the ability to uninstall any canister and can generally change anything about the IC. As of the time of this writing, DFINITY effectively controls much of the NNS through its follower relationships. The NNS must mature and decentralize to provide practical and realistic guarantees to canisters and their users.
+The NNS has the ability to uninstall any canister and can generally change anything about the IC protocol. The NNS uses a simple liquid democracy based on coin/token voting and follower relationships. At the time of this writing most of the voting power on the NNS follows DFINITY for protocol changes, effectively giving DFINITY write control to the protocol while those follower relationships remain in place. The NNS must mature and decentralize to provide practical and realistic protections to canisters and their users.

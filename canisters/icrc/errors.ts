@@ -1,25 +1,22 @@
-import { candid, nat, Record, text } from '../../src/lib_new';
+import { nat, Record, text } from '../../src/lib';
 
-export class BadFee extends Record {
-    @candid(nat)
-    expected_fee: nat;
-}
-export class BadBurn extends Record {
-    @candid(nat)
-    min_burn_amount: nat;
-}
-export class InsufficientFunds extends Record {
-    @candid(nat)
-    balance: nat;
-}
-export class Duplicate extends Record {
-    @candid(nat)
-    duplicate_of: nat;
-}
-export class GenericError extends Record {
-    @candid(nat)
-    error_code: nat;
+export const BadFee = Record({
+    expected_fee: nat
+});
 
-    @candid(text)
-    message: text;
-}
+export const BadBurn = Record({
+    min_burn_amount: nat
+});
+
+export const InsufficientFunds = Record({
+    balance: nat
+});
+
+export const Duplicate = Record({
+    duplicate_of: nat
+});
+
+export const GenericError = Record({
+    error_code: nat,
+    message: text
+});

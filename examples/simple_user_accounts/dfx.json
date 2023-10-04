@@ -2,9 +2,8 @@
     "canisters": {
         "simple_user_accounts": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle simple_user_accounts",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/simple_user_accounts/simple_user_accounts.wasm",
             "gzip": true,

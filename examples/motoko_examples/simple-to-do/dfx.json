@@ -2,9 +2,8 @@
     "canisters": {
         "simple_to_do": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle simple_to_do",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/simple_to_do/simple_to_do.wasm",
             "gzip": true,

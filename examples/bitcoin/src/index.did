@@ -1,9 +1,6 @@
-type rec_14 = record {txid:vec nat8; vout:nat32};
-type rec_13 = record {height:nat32; value:nat64; outpoint:rec_14};
-type rec_12 = record {next_page:opt vec nat8; tip_height:nat32; tip_block_hash:vec nat8; utxos:vec rec_13};
 service: () -> {
     getBalance: (text) -> (nat64);
     getCurrentFeePercentiles: () -> (vec nat64);
-    getUtxos: (text) -> (rec_12);
+    getUtxos: (text) -> (record {next_page:opt vec nat8; tip_height:nat32; tip_block_hash:vec nat8; utxos:vec record {height:nat32; value:nat64; outpoint:record {txid:vec nat8; vout:nat32}}});
     sendTransaction: (vec nat8) -> (bool);
 }

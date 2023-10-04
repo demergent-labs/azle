@@ -2,9 +2,8 @@
     "canisters": {
         "quicksort": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle quicksort",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/quicksort/quicksort.wasm",
             "gzip": true,

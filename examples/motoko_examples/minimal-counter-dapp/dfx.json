@@ -2,9 +2,8 @@
     "canisters": {
         "minimal_dapp": {
             "type": "custom",
+            "main": "src/minimal_dapp/index.ts",
             "build": "npx azle minimal_dapp",
-            "root": "src/minimal_dapp",
-            "ts": "src/minimal_dapp/index.ts",
             "candid": "src/minimal_dapp/index.did",
             "wasm": ".azle/minimal_dapp/minimal_dapp.wasm",
             "gzip": true,
@@ -14,14 +13,14 @@
             }
         },
         "minimal_dapp_assets": {
+            "type": "assets",
             "frontend": {
                 "entrypoint": "src/minimal_dapp_assets/src/index.html"
             },
             "source": [
                 "src/minimal_dapp_assets/assets",
                 "dist/minimal_dapp_assets/"
-            ],
-            "type": "assets"
+            ]
         }
     }
 }

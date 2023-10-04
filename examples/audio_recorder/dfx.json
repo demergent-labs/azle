@@ -2,9 +2,8 @@
     "canisters": {
         "audio_recorder": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle audio_recorder",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/audio_recorder/audio_recorder.wasm",
             "gzip": true,

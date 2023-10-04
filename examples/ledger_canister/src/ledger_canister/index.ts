@@ -6,7 +6,6 @@ import {
     nat64,
     None,
     Opt,
-    principal,
     Principal,
     query,
     Some,
@@ -54,9 +53,9 @@ export default Canister({
                         from_subaccount: None,
                         to: binaryAddressFromAddress(to),
                         created_at_time:
-                            createdAtTime.length === 1
-                                ? Some({ timestamp_nanos: createdAtTime[0] })
-                                : None
+                            'None' in createdAtTime
+                                ? None
+                                : Some({ timestamp_nanos: createdAtTime.Some })
                     }
                 ]
             });
@@ -101,7 +100,7 @@ export default Canister({
     getArchives: update([], Archives, async () => {
         return await ic.call(icpCanister.archives, {});
     }),
-    getAddressFromPrincipal: query([principal], text, (principal) => {
+    getAddressFromPrincipal: query([Principal], text, (principal) => {
         return hexAddressFromPrincipal(principal, 0);
     })
 });

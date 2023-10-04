@@ -14,12 +14,10 @@
 # The check-basic-integration-tests-success job is designed to ensure that all jobs spun up from the matrix in the basic-integration-tests have succeeded
 
 # All Examples TODO restore when https://github.com/demergent-labs/azle/issues/1192 is resolved
-# "examples/complex_types",
-# "examples/func_types",
 # "examples/generics",
-# "examples/motoko_examples/superheroes", # blocked by recursive
 # "examples/run_time_errors",
-# "examples/tuple_types",
+
+# TODO http_counter tests are being skipped until this is resolved: https://forum.dfinity.org/t/lookuppathabsent/23461
 
 name: Azle Tests
 on:
@@ -73,16 +71,20 @@ jobs:
                     "examples/call_raw",
                     "examples/candid_encoding",
                     "examples/canister",
+                    "examples/ckbtc",
                     "examples/complex_init",
+                    "examples/complex_types",
                     "examples/composite_queries",
                     "examples/counter",
                     "examples/cross_canister_calls",
                     "examples/cycles",
                     "examples/date",
                     "examples/ethereum_json_rpc",
+                    "examples/func_types",
                     "examples/guard_functions",
                     "examples/heartbeat",
                     "examples/ic_api",
+                    "examples/icrc",
                     "examples/imports",
                     "examples/init",
                     "examples/inspect_message",
@@ -103,6 +105,7 @@ jobs:
                     "examples/motoko_examples/phone-book",
                     "examples/motoko_examples/quicksort",
                     "examples/motoko_examples/simple-to-do",
+                    "examples/motoko_examples/superheroes",
                     "examples/motoko_examples/threshold_ecdsa",
                     "examples/motoko_examples/whoami",
                     "examples/notify_raw",
@@ -114,6 +117,7 @@ jobs:
                     "examples/principal",
                     "examples/query",
                     "examples/randomness",
+                    "examples/recursion",
                     "examples/rejections",
                     "examples/robust_imports",
                     "examples/simple_erc20",
@@ -121,7 +125,9 @@ jobs:
                     "examples/stable_memory",
                     "examples/stable_structures",
                     "examples/timers",
-                    "examples/update"
+                    "examples/tuple_types",
+                    "examples/update",
+                    "examples/vanilla_js"
                   ]
                   END
                   )
@@ -167,7 +173,7 @@ jobs:
               with:
                   node-version: 18
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              run: DFX_VERSION=0.14.2 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+              run: DFX_VERSION=0.15.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/cache@v3
               with:

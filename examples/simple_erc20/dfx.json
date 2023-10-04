@@ -2,9 +2,8 @@
     "canisters": {
         "simple_erc20": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle simple_erc20",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/simple_erc20/simple_erc20.wasm",
             "gzip": true,

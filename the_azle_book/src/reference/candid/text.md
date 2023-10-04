@@ -1,24 +1,21 @@
 # text
 
-This section is a work in progress.
+The `CandidType` object `text` corresponds to the [Candid type text](https://internetcomputer.org/docs/current/references/candid-ref#type-text), is inferred to be a TypeScript string, and will be decoded into a [JavaScript String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) at runtime.
 
-The TypeScript type `string` and the Azle type `text` both correspond to the [Candid type text](https://internetcomputer.org/docs/current/references/candid-ref#type-text) and will become a [JavaScript String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) at runtime.
-
-TypeScript:
+TypeScript or JavaScript:
 
 ```typescript
-import { $query } from 'azle';
+import { Canister, query, text } from 'azle';
 
-$query;
-export function getString(): string {
-    return 'Hello world!';
-}
-
-$query;
-export function printString(string: string): string {
-    console.log(typeof string);
-    return string;
-}
+export default Canister({
+    getString: query([], text, () => {
+        return 'Hello world!';
+    }),
+    printString: query([text], text, (string) => {
+        console.log(typeof string);
+        return string;
+    })
+});
 ```
 
 Candid:

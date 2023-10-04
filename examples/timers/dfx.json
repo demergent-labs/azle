@@ -2,9 +2,8 @@
     "canisters": {
         "timers": {
             "type": "custom",
+            "main": "src/timers.ts",
             "build": "npx azle timers",
-            "root": "src",
-            "ts": "src/timers.ts",
             "candid": "src/timers.did",
             "wasm": ".azle/timers/timers.wasm",
             "gzip": true,

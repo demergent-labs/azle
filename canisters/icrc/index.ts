@@ -1,81 +1,45 @@
 import {
+    Canister,
     nat,
     nat8,
     Opt,
     Record,
-    Service,
     query,
     update,
     text,
     Tuple,
-    Vec,
-    candid
-} from '../../src/lib_new';
+    Vec
+} from '../../src/lib';
+import { Account, TransferArgs, TransferResult, Value } from './icrc_1';
 import {
-    ICRC1Account,
-    ICRC1TransferArgs,
-    ICRC1TransferResult,
-    ICRC1Value
-} from './icrc_1';
-import {
-    ICRC2AllowanceArgs,
-    ICRC2AllowanceResults,
-    ICRC2ApproveArgs,
-    ICRC2ApproveResult,
-    ICRC2TransferFromArgs,
-    ICRC2TransferFromResult
+    AllowanceArgs,
+    AllowanceResult,
+    ApproveArgs,
+    ApproveResult,
+    TransferFromArgs,
+    TransferFromResult
 } from './icrc_2';
 
-export class ICRC1SupportedStandard extends Record {
-    @candid(text)
-    name: text;
+export const SupportedStandard = Record({
+    name: text,
+    url: text
+});
 
-    @candid(text)
-    url: text;
-}
-
-export class ICRC extends Service {
-    @query([], Vec(Tuple(text, ICRC1Value)))
-    icrc1_metadata: () => [text, ICRC1Value][];
-
-    @query([], text)
-    icrc1_name: () => text;
-
-    @query([], text)
-    icrc1_symbol: () => text;
-
-    @query([], nat8)
-    icrc1_decimals: () => nat8;
-
-    @query([], nat)
-    icrc1_fee: () => nat;
-
-    @query([], nat)
-    icrc1_total_supply: () => nat;
-
-    @query([], Opt(ICRC1Account))
-    icrc1_minting_account: () => Opt<ICRC1Account>;
-
-    @query([ICRC1Account], nat)
-    icrc1_balance_of: (account: ICRC1Account) => nat;
-
-    @update([ICRC1TransferArgs], ICRC1TransferResult)
-    icrc1_transfer: (transferArgs: ICRC1TransferArgs) => ICRC1TransferResult;
-
-    @query([], Vec(ICRC1SupportedStandard))
-    icrc1_supported_standards: () => Vec<ICRC1SupportedStandard>;
-
-    @update([ICRC2ApproveArgs], ICRC2ApproveResult)
-    icrc2_approve: (args: ICRC2ApproveArgs) => ICRC2ApproveResult;
-
-    @update([ICRC2TransferFromArgs], ICRC2TransferFromResult)
-    icrc2_transfer_from: (
-        args: ICRC2TransferFromArgs
-    ) => ICRC2TransferFromResult;
-
-    @query([ICRC2AllowanceArgs], ICRC2AllowanceResults)
-    icrc2_allowance: (args: ICRC2AllowanceArgs) => ICRC2AllowanceResults;
-}
+export const ICRC = Canister({
+    icrc1_metadata: query([], Vec(Tuple(text, Value))),
+    icrc1_name: query([], text),
+    icrc1_symbol: query([], text),
+    icrc1_decimals: query([], nat8),
+    icrc1_fee: query([], nat),
+    icrc1_total_supply: query([], nat),
+    icrc1_minting_account: query([], Opt(Account)),
+    icrc1_balance_of: query([Account], nat),
+    icrc1_transfer: update([TransferArgs], TransferResult),
+    icrc1_supported_standards: query([], Vec(SupportedStandard)),
+    icrc2_approve: update([ApproveArgs], ApproveResult),
+    icrc2_transfer_from: update([TransferFromArgs], TransferFromResult),
+    icrc2_allowance: query([AllowanceArgs], AllowanceResult)
+});
 
 export * from './icrc_1';
 export * from './icrc_2';

@@ -1,47 +1,52 @@
-import { nat32, Vec } from 'azle';
-import { Post } from './candid_types/post';
+import { nat32, query, text, update, Vec } from 'azle';
+import { Post } from './candid_types';
 import { getReactionFromStateReaction } from './reactions';
 import { state, StatePost, StateThread, StateUser } from './state';
 import { getThreadFromStateThread } from './threads';
 import { getUserFromStateUser } from './users';
 
-export function createPost(
-    authorId: string,
-    text: string,
-    threadId: string,
-    joinDepth: nat32
-): Post {
-    const id = Object.keys(state.posts).length.toString();
+export const createPost = update(
+    [text, text, text, nat32],
+    Post,
+    (authorId, text, threadId, joinDepth) => {
+        const id = Object.keys(state.posts).length.toString();
 
-    const statePost: StatePost = {
-        id,
-        authorId,
-        reactionIds: [],
-        text,
-        threadId
-    };
-    const updatedStateAuthor = getUpdatedStateAuthor(authorId, statePost.id);
-    const updatedStateThread = getUpdatedStateThread(threadId, statePost.id);
+        const statePost: StatePost = {
+            id,
+            authorId,
+            reactionIds: [],
+            text,
+            threadId
+        };
+        const updatedStateAuthor = getUpdatedStateAuthor(
+            authorId,
+            statePost.id
+        );
+        const updatedStateThread = getUpdatedStateThread(
+            threadId,
+            statePost.id
+        );
 
-    state.posts[id] = statePost;
-    state.users[authorId] = updatedStateAuthor;
-    state.threads[threadId] = updatedStateThread;
+        state.posts[id] = statePost;
+        state.users[authorId] = updatedStateAuthor;
+        state.threads[threadId] = updatedStateThread;
 
-    const post = getPostFromStatePost(statePost, joinDepth);
+        const post = getPostFromStatePost(statePost, joinDepth);
 
-    return post;
-}
+        return post;
+    }
+);
 
-export function getAllPosts(joinDepth: nat32): Vec<Post> {
+export const getAllPosts = query([nat32], Vec(Post), (joinDepth) => {
     return Object.values(state.posts).map((statePost) =>
         getPostFromStatePost(statePost, joinDepth)
     );
-}
+});
 
 export function getPostFromStatePost(
     statePost: StatePost,
     joinDepth: nat32
-): Post {
+): typeof Post {
     const stateAuthor = state.users[statePost.authorId];
     const author = getUserFromStateUser(stateAuthor, joinDepth);
 
@@ -63,13 +68,13 @@ export function getPostFromStatePost(
                 getReactionFromStateReaction(stateReaction, joinDepth - 1)
             );
 
-        return Post.create({
+        return {
             id: statePost.id,
             author,
             reactions,
             text: statePost.text,
             thread
-        });
+        };
     }
 }
 

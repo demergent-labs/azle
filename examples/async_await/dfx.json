@@ -2,9 +2,8 @@
     "canisters": {
         "async_await": {
             "type": "custom",
+            "main": "src/async_await.ts",
             "build": "npx azle async_await",
-            "root": "src",
-            "ts": "src/async_await.ts",
             "candid": "src/async_await.did",
             "wasm": ".azle/async_await/async_await.wasm",
             "gzip": true,

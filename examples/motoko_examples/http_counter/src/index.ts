@@ -56,7 +56,8 @@ const HttpRequest = Record({
     method: text,
     url: text,
     headers: Vec(HeaderField),
-    body: blob
+    body: blob,
+    certificate_version: Opt(nat16)
 });
 
 let stableStorage = StableBTreeMap(text, nat, 0);
@@ -89,9 +90,9 @@ export default Canister({
 
                 const counterOpt = stableStorage.get('counter');
                 const counter =
-                    counterOpt.length === 0
+                    'None' in counterOpt
                         ? ic.trap('counter does not exist')
-                        : counterOpt[0];
+                        : counterOpt.Some;
 
                 return {
                     status_code: 200,
@@ -144,18 +145,18 @@ export default Canister({
         if (req.method === 'POST') {
             const counterOpt = stableStorage.get('counter');
             const counter =
-                counterOpt.length === 0
+                'None' in counterOpt
                     ? ic.trap('counter does not exist')
-                    : counterOpt[0];
+                    : counterOpt.Some;
 
             stableStorage.insert('counter', counter + 1n);
 
             if (req.headers.find(isGzip) === undefined) {
                 const counterOpt = stableStorage.get('counter');
                 const counter =
-                    counterOpt.length === 0
+                    'None' in counterOpt
                         ? ic.trap('counter does not exist')
-                        : counterOpt[0];
+                        : counterOpt.Some;
 
                 return {
                     status_code: 201,
@@ -206,9 +207,9 @@ export default Canister({
             case 'next': {
                 const counterOpt = stableStorage.get('counter');
                 const counter =
-                    counterOpt.length === 0
+                    'None' in counterOpt
                         ? ic.trap('counter does not exist')
-                        : counterOpt[0];
+                        : counterOpt.Some;
 
                 return {
                     body: encode(`${counter}`),

@@ -28,12 +28,11 @@ export function getCanisterConfig(
         });
     }
 
-    const { root, ts, candid } = canisterConfig;
+    const { main, candid } = canisterConfig;
 
-    if (!root || !ts || !candid) {
+    if (!main || !candid) {
         const missingFields = [
-            ['"root"', root],
-            ['"ts"', ts],
+            ['"main"', main],
             ['"candid"', candid]
         ]
             .filter(([_, value]) => !value)
@@ -55,13 +54,12 @@ function colorFormattedDfxJsonExample(canisterName: string): string {
         ${red('"canisters"')}: ${purple('{')}
             ${red(`"${canisterName}"`)}: ${blue('{')}
                 ${red('"type"')}: ${green('"custom"')},
+                ${red('"main"')}: ${green('"src/index.ts"')},
                 ${red('"build"')}: ${green(`"npx azle ${canisterName}"`)},
-                ${red('"root"')}: ${green('"src"')},
-                ${red('"ts"')}: ${green('"src/index.ts"')},
                 ${red('"candid"')}: ${green('"src/index.did"')},
                 ${red('"wasm"')}: ${green(
-        `".azle/${canisterName}/${canisterName}.wasm.gz"`
-    )},
+                    `".azle/${canisterName}/${canisterName}.wasm"`
+                )},
             ${blue('}')}
         ${purple('}')}
     ${yellow('}')}`;

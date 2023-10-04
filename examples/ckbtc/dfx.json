@@ -22,19 +22,33 @@
         },
         "wallet_backend": {
             "type": "custom",
+            "main": "wallet/backend/index.ts",
             "build": "npx azle wallet_backend",
-            "root": "wallet/backend",
-            "ts": "wallet/backend/index.ts",
             "candid": "wallet/backend/index.did",
-            "wasm": ".azle/wallet_backend/wallet_backend.wasm.gz",
+            "wasm": ".azle/wallet_backend/wallet_backend.wasm",
+            "gzip": true,
             "declarations": {
-                "output": "wallet/frontend/dfx_generate/wallet_backend"
+                "node_compatibility": true,
+                "output": "wallet/frontend/dfx_generated/wallet_backend"
             },
             "env": ["CK_BTC_PRINCIPAL", "MINTER_PRINCIPAL"]
         },
         "wallet_frontend": {
             "type": "assets",
             "source": ["wallet/frontend/dist"]
+        }
+    },
+    "networks": {
+        "local": {
+            "bind": "127.0.0.1:8000",
+            "type": "ephemeral"
+        }
+    },
+    "defaults": {
+        "bitcoin": {
+            "enabled": true,
+            "nodes": ["127.0.0.1:18444"],
+            "log_level": "info"
         }
     }
 }

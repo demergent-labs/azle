@@ -1,22 +1,23 @@
-import { ic, nat32, Principal, Update, Variant } from 'azle';
-import { PerfResult } from 'azle/benchmark';
+import { ic, nat32, Null, principal, update, Variant } from 'azle';
+import { PerfResult } from '../../perf_result';
 
-type Reaction = Variant<{
-    Bad: null;
-    Good: null;
-    ThumbsUp: nat32;
-    Tip: Principal;
-}>;
+const Reaction = Variant({
+    Bad: Null,
+    Good: Null,
+    ThumbsUp: nat32,
+    Tip: principal
+});
 
-let variant_init_heap_storage: { [key: string]: Reaction | undefined } = {};
+let variant_init_heap_storage: { [key: string]: typeof Reaction | undefined } =
+    {};
 
-export function variant_init_stack(num_inits: nat32): Update<PerfResult> {
-    const perf_start = ic.performance_counter(0);
+export const variant_init_stack = update([nat32], PerfResult, (num_inits) => {
+    const perf_start = ic.performanceCounter(0);
 
     let i = 0;
 
     while (i < num_inits) {
-        let value: Reaction =
+        let value: typeof Reaction =
             i % 2 === 0
                 ? {
                       ThumbsUp: 2
@@ -28,16 +29,16 @@ export function variant_init_stack(num_inits: nat32): Update<PerfResult> {
         i += 1;
     }
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
 
     return {
         wasm_body_only: perf_end - perf_start,
-        wasm_including_prelude: ic.performance_counter(0)
+        wasm_including_prelude: ic.performanceCounter(0)
     };
-}
+});
 
-export function variant_init_heap(num_inits: nat32): Update<PerfResult> {
-    const perf_start = ic.performance_counter(0);
+export const variant_init_heap = update([nat32], PerfResult, (num_inits) => {
+    const perf_start = ic.performanceCounter(0);
 
     let i = 0;
 
@@ -53,10 +54,10 @@ export function variant_init_heap(num_inits: nat32): Update<PerfResult> {
         i += 1;
     }
 
-    const perf_end = ic.performance_counter(0);
+    const perf_end = ic.performanceCounter(0);
 
     return {
         wasm_body_only: perf_end - perf_start,
-        wasm_including_prelude: ic.performance_counter(0)
+        wasm_including_prelude: ic.performanceCounter(0)
     };
-}
+});

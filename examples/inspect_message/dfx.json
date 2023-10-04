@@ -2,9 +2,8 @@
     "canisters": {
         "inspect_message": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle inspect_message",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/inspect_message/inspect_message.wasm",
             "gzip": true,

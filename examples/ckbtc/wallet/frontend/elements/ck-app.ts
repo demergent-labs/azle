@@ -2,8 +2,8 @@ import { LitElement, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { AuthClient } from '@dfinity/auth-client';
 import { ActorSubclass, HttpAgent, Identity } from '@dfinity/agent';
-import { createActor } from '../dfx_generate/wallet_backend';
-import { _SERVICE } from '../dfx_generate/wallet_backend/wallet_backend.did';
+import { createActor } from '../dfx_generated/wallet_backend';
+import { _SERVICE } from '../dfx_generated/wallet_backend/wallet_backend.did';
 import { nat, nat64 } from 'azle';
 
 @customElement('ck-app')

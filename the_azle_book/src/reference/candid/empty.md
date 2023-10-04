@@ -1,26 +1,23 @@
-# empty
-
-This section is a work in progress.
+### empty
 
 The Azle type `empty` corresponds to the [Candid type empty](https://internetcomputer.org/docs/current/references/candid-ref#type-empty) and has no JavaScript value at runtime.
 
 TypeScript:
 
 ```typescript
-import { empty, $query } from 'azle';
+import { Canister, empty, query } from 'azle';
 
-$query;
-export function getEmpty(): empty {
-    throw 'Anything you want';
-}
-
-// Note: It is impossible to call this function because it requires an argument
-// but there is no way to pass an "empty" value as an argument.
-$query;
-export function printEmpty(empty: empty): empty {
-    console.log(typeof empty);
-    throw 'Anything you want';
-}
+export default Canister({
+    getEmpty: query([], empty, () => {
+        throw 'Anything you want';
+    }),
+    // Note: It is impossible to call this function because it requires an argument
+    // but there is no way to pass an "empty" value as an argument.
+    printEmpty: query([empty], empty, (empty) => {
+        console.log(typeof empty);
+        throw 'Anything you want';
+    })
+});
 ```
 
 Candid:

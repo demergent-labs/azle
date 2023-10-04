@@ -2,9 +2,8 @@
     "canisters": {
         "list_of_lists": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle list_of_lists",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/list_of_lists/list_of_lists.wasm",
             "gzip": true,

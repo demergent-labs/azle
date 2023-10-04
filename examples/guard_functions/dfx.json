@@ -2,9 +2,8 @@
     "canisters": {
         "guard_functions": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle guard_functions",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/guard_functions/guard_functions.wasm",
             "gzip": true,

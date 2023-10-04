@@ -6,8 +6,6 @@
 -   Persistent across upgrades
 -   Familiar API
 -   Must specify memory id
--   Must specify maximum key size
--   Must specify maximum value size
 -   No migrations per memory id
 
 Stable structures are data structures with familiar APIs that allow access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 64 GiB of storage. Stable memory persists automatically across upgrades.
@@ -18,83 +16,77 @@ On the other hand, anything stored in stable memory will be preserved. Writing a
 
 Azle currently provides one stable structure called `StableBTreeMap`. It's similar to a [JavaScript Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) and has most of the common operations you'd expect such as reading, inserting, and removing values.
 
-Here's how to define a simple `StableBTreeMap`. Each `StableBTreeMap` must be defined in the global scope (not within any functions or objects etc):
+Here's how to define a simple `StableBTreeMap`:
 
 ```typescript
-import { nat8, StableBTreeMap } from 'azle';
+import { nat8, StableBTreeMap, text } from 'azle';
 
-let map = new StableBTreeMap<nat8, string>(0, 100, 1_000);
+let map = StableBTreeMap(nat8, text, 0);
 ```
 
-This is a `StableBTreeMap` with a key of type `nat8` and a value of type `string`. Key and value types can be any [Candid type](candid.md).
+This is a `StableBTreeMap` with a key of type `nat8` and a value of type `text`. Key and value types can be any [Candid type](candid.md).
 
-This `StableBTreeMap` also has a `memory id` of `0`, a maximum key size of `100` bytes and a maximum value size of `1_000` bytes. You must statically specify the `memory id`, maximum key size, and maximum value sizes (they cannot be variables).
-
-Each `StableBTreeMap` instance must have a unique `memory id`. Once a `memory id` is allocated, it cannot be used with a different `StableBTreeMap`. This means you can't create another `StableBTreeMap` using the same `memory id`, and you can't change the key or value types of an existing `StableBTreeMap`. [This problem will be addressed](https://github.com/demergent-labs/azle/issues/843).
+This `StableBTreeMap` also has a `memory id` of `0`. Each `StableBTreeMap` instance must have a unique `memory id` between `0` and `254`. Once a `memory id` is allocated, it cannot be used with a different `StableBTreeMap`. This means you can't create another `StableBTreeMap` using the same `memory id`, and you can't change the key or value types of an existing `StableBTreeMap`. [This problem will be addressed to some extent](https://github.com/demergent-labs/azle/issues/843).
 
 Here's an example showing all of the basic `StableBTreeMap` operations:
 
 ```typescript
 import {
+    bool,
+    Canister,
     nat64,
     nat8,
     Opt,
-    $query,
+    query,
     StableBTreeMap,
+    text,
     Tuple,
-    $update,
+    update,
     Vec
 } from 'azle';
 
-type Key = nat8;
-type Value = string;
+const Key = nat8;
+const Value = text;
 
-let map = new StableBTreeMap<Key, Value>(0, 100, 1_000);
+let map = StableBTreeMap(Key, Value, 0);
 
-$query;
-export function containsKey(key: Key): boolean {
-    return map.containsKey(key);
-}
+export default Canister({
+    containsKey: query([Key], bool, (key) => {
+        return map.containsKey(key);
+    }),
 
-$query;
-export function get(key: Key): Opt<Value> {
-    return map.get(key);
-}
+    get: query([Key], Opt(Value), (key) => {
+        return map.get(key);
+    }),
 
-$update;
-export function insert(key: Key, value: Value): Opt<Value> {
-    return map.insert(key, value);
-}
+    insert: update([Key, Value], Opt(Value), (key, value) => {
+        return map.insert(key, value);
+    }),
 
-$query;
-export function isEmpty(): boolean {
-    return map.isEmpty();
-}
+    isEmpty: query([], bool, () => {
+        return map.isEmpty();
+    }),
 
-$query;
-export function items(): Vec<Tuple<[Key, Value]>> {
-    return map.items();
-}
+    items: query([], Vec(Tuple(Key, Value)), () => {
+        return map.items();
+    }),
 
-$query;
-export function keys(): Vec<Key> {
-    return map.keys();
-}
+    keys: query([], Vec(Key), () => {
+        return map.keys();
+    }),
 
-$query;
-export function len(): nat64 {
-    return map.len();
-}
+    len: query([], nat64, () => {
+        return map.len();
+    }),
 
-$update;
-export function remove(key: Key): Opt<Value> {
-    return map.remove(key);
-}
+    remove: update([Key], Opt(Value), (key) => {
+        return map.remove(key);
+    }),
 
-$query;
-export function values(): Vec<Value> {
-    return map.values();
-}
+    values: query([], Vec(Value), () => {
+        return map.values();
+    })
+});
 ```
 
 With these basic operations you can build more complex CRUD database applications:
@@ -102,111 +94,101 @@ With these basic operations you can build more complex CRUD database application
 ```typescript
 import {
     blob,
+    Canister,
     ic,
+    Err,
     nat64,
+    Ok,
     Opt,
     Principal,
-    $query,
+    query,
     Record,
     Result,
     StableBTreeMap,
-    $update,
+    text,
+    update,
     Variant,
-    Vec,
-    match
+    Vec
 } from 'azle';
 
-type User = Record<{
-    id: Principal;
-    createdAt: nat64;
-    recordingIds: Vec<Principal>;
-    username: string;
-}>;
+const User = Record({
+    id: Principal,
+    createdAt: nat64,
+    recordingIds: Vec(Principal),
+    username: text
+});
 
-type Recording = Record<{
-    id: Principal;
-    audio: blob;
-    createdAt: nat64;
-    name: string;
-    userId: Principal;
-}>;
-
-let users = new StableBTreeMap<Principal, User>(0, 38, 100_000);
-let recordings = new StableBTreeMap<Principal, Recording>(1, 38, 5_000_000);
-
-$update;
-export function createUser(username: string): User {
-    const id = generateId();
-    const user: User = {
-        id,
-        createdAt: ic.time(),
-        recordingIds: [],
-        username
-    };
-
-    users.insert(user.id, user);
-
-    return user;
-}
-
-$query;
-export function readUsers(): Vec<User> {
-    return users.values();
-}
-
-$query;
-export function readUserById(id: Principal): Opt<User> {
-    return users.get(id);
-}
-
-$update;
-export function deleteUser(id: Principal): Result<
-    User,
-    Variant<{
-        UserDoesNotExist: Principal;
-    }>
-> {
-    const user = users.get(id);
-
-    return match(user, {
-        Some: (user) => {
-            user.recordingIds.forEach((recordingId) => {
-                recordings.remove(recordingId);
-            });
-
-            users.remove(user.id);
-
-            return {
-                Ok: user
-            };
-        },
-        None: () => {
-            return {
-                Err: {
-                    UserDoesNotExist: id
-                }
-            };
-        }
-    });
-}
-
-$update;
-export function createRecording(
+const Recording = Record({
+    id: Principal,
     audio: blob,
-    name: string,
+    createdAt: nat64,
+    name: text,
     userId: Principal
-): Result<
-    Recording,
-    Variant<{
-        UserDoesNotExist: Principal;
-    }>
-> {
-    const user = users.get(userId);
+});
 
-    return match(user, {
-        Some: (user) => {
+const AudioRecorderError = Variant({
+    RecordingDoesNotExist: Principal,
+    UserDoesNotExist: Principal
+});
+
+let users = StableBTreeMap(Principal, User, 0);
+let recordings = StableBTreeMap(Principal, Recording, 1);
+
+export default Canister({
+    createUser: update([text], User, (username) => {
+        const id = generateId();
+        const user: typeof User = {
+            id,
+            createdAt: ic.time(),
+            recordingIds: [],
+            username
+        };
+
+        users.insert(user.id, user);
+
+        return user;
+    }),
+    readUsers: query([], Vec(User), () => {
+        return users.values();
+    }),
+    readUserById: query([Principal], Opt(User), (id) => {
+        return users.get(id);
+    }),
+    deleteUser: update([Principal], Result(User, AudioRecorderError), (id) => {
+        const userOpt = users.get(id);
+
+        if ('None' in userOpt) {
+            return Err({
+                UserDoesNotExist: id
+            });
+        }
+
+        const user = userOpt.Some;
+
+        user.recordingIds.forEach((recordingId) => {
+            recordings.remove(recordingId);
+        });
+
+        users.remove(user.id);
+
+        return Ok(user);
+    }),
+    createRecording: update(
+        [blob, text, Principal],
+        Result(Recording, AudioRecorderError),
+        (audio, name, userId) => {
+            const userOpt = users.get(userId);
+
+            if ('None' in userOpt) {
+                return Err({
+                    UserDoesNotExist: userId
+                });
+            }
+
+            const user = userOpt.Some;
+
             const id = generateId();
-            const recording: Recording = {
+            const recording: typeof Recording = {
                 id,
                 audio,
                 createdAt: ic.time(),
@@ -216,87 +198,60 @@ export function createRecording(
 
             recordings.insert(recording.id, recording);
 
-            const updatedUser: User = {
+            const updatedUser: typeof User = {
                 ...user,
                 recordingIds: [...user.recordingIds, recording.id]
             };
 
             users.insert(updatedUser.id, updatedUser);
 
-            return {
-                Ok: recording
-            };
-        },
-        None: () => {
-            return {
-                Err: {
-                    UserDoesNotExist: userId
-                }
-            };
+            return Ok(recording);
         }
-    });
-}
+    ),
+    readRecordings: query([], Vec(Recording), () => {
+        return recordings.values();
+    }),
+    readRecordingById: query([Principal], Opt(Recording), (id) => {
+        return recordings.get(id);
+    }),
+    deleteRecording: update(
+        [Principal],
+        Result(Recording, AudioRecorderError),
+        (id) => {
+            const recordingOpt = recordings.get(id);
 
-$query;
-export function readRecordings(): Vec<Recording> {
-    return recordings.values();
-}
+            if ('None' in recordingOpt) {
+                return Err({ RecordingDoesNotExist: id });
+            }
 
-$query;
-export function readRecordingById(id: Principal): Opt<Recording> {
-    return recordings.get(id);
-}
+            const recording = recordingOpt.Some;
 
-$update;
-export function deleteRecording(id: Principal): Result<
-    Recording,
-    Variant<{
-        RecordingDoesNotExist: Principal;
-        UserDoesNotExist: Principal;
-    }>
-> {
-    const recording = recordings.get(id);
+            const userOpt = users.get(recording.userId);
 
-    return match(recording, {
-        Some: (recording) => {
-            const user = users.get(recording.userId);
+            if ('None' in userOpt) {
+                return Err({
+                    UserDoesNotExist: recording.userId
+                });
+            }
 
-            return match(user, {
-                Some: (user) => {
-                    const updatedUser: User = {
-                        ...user,
-                        recordingIds: user.recordingIds.filter(
-                            (recordingId) =>
-                                recordingId.toText() !== recording.id.toText()
-                        )
-                    };
+            const user = userOpt.Some;
 
-                    users.insert(updatedUser.id, updatedUser);
-
-                    recordings.remove(id);
-
-                    return {
-                        Ok: recording
-                    };
-                },
-                None: () => {
-                    return {
-                        Err: {
-                            UserDoesNotExist: recording.userId
-                        }
-                    };
-                }
-            });
-        },
-        None: () => {
-            return {
-                Err: {
-                    RecordingDoesNotExist: id
-                }
+            const updatedUser: typeof User = {
+                ...user,
+                recordingIds: user.recordingIds.filter(
+                    (recordingId) =>
+                        recordingId.toText() !== recording.id.toText()
+                )
             };
+
+            users.insert(updatedUser.id, updatedUser);
+
+            recordings.remove(id);
+
+            return Ok(recording);
         }
-    });
-}
+    )
+});
 
 function generateId(): Principal {
     const randomBytes = new Array(29)
@@ -312,45 +267,43 @@ The example above shows a very basic audio recording backend application. There 
 Each entity gets its own `StableBTreeMap`:
 
 ```typescript
-import { blob, nat64, Principal, Record, StableBTreeMap, Vec } from 'azle';
+import {
+    blob,
+    nat64,
+    Principal,
+    Record,
+    StableBTreeMap,
+    text,
+    Vec
+} from 'azle';
 
-type User = Record<{
-    id: Principal;
-    createdAt: nat64;
-    recordingIds: Vec<Principal>;
-    username: string;
-}>;
+const User = Record({
+    id: Principal,
+    createdAt: nat64,
+    recordingIds: Vec(Principal),
+    username: text
+});
 
-type Recording = Record<{
-    id: Principal;
-    audio: blob;
-    createdAt: nat64;
-    name: string;
-    userId: Principal;
-}>;
+const Recording = Record({
+    id: Principal,
+    audio: blob,
+    createdAt: nat64,
+    name: text,
+    userId: Principal
+});
 
-let users = new StableBTreeMap<Principal, User>(0, 38, 100_000);
-let recordings = new StableBTreeMap<Principal, Recording>(1, 38, 5_000_000);
+let users = StableBTreeMap(Principal, User, 0);
+let recordings = StableBTreeMap(Principal, Recording, 1);
 ```
 
-Notice that each `StableBTreeMap` has a unique `memory id`. The maximum key and value sizes are also set according to the expected application usage.
-
-You can figure out the appropriate maximum key and value sizes by reasoning about your application and engaging in some trial and error using the `insert` method. Calling `insert` on a `StableBTreeMap` will throw an error which in some cases will have the information that you need to determine the maximum key or value size.
-
-If you attempt to insert a key or value that is too large, the `KeyTooLarge` and `ValueTooLarge` errors will show you the size of the value that you attempted to insert. You can increase the maximum key or value size based on the information you receive from the `KeyTooLarge` and `ValueTooLarge` errors and try inserting again.
-
-Thus through some trial and error you can whittle your way to a correct solution. In some cases all of your values will have an obvious static maximum size. In the audio recording example, trial and error revealed that `Principal` is most likely always 38 bytes, thus the maximum key size is set to 38.
-
-Maximum value sizes can be more tricky to figure out, especially if the values are records or variants with dynamic fields such as arrays. `User` has one such dynamic field, `recordingIds`. Since each recording id is a Principal, we know that each will take up 38 bytes. The other fields on `User` shouldn't take up too many bytes so we'll ignore them for our analysis.
-
-We've set the maximum value size of `User` to be 100_000 bytes. If we divide 100_00 by 38, we get ~2_631. This will result in each user being able to store around that many recordings. That's acceptable for our example, and so we'll go with it.
-
-As for `Recording`, the largest dynamic field is `audio`, which will be the actual bytes of the audio recording. We've set the maximum value size here to 5_000_000, which should allow for recordings of ~5 MB in size. That seems reasonable for our example, and so we'll go with it.
-
-As you can see, finding the correct maximum key and value sizes is a bit of an art right now. Combining some trial and error with reasoning about your specific application should get you a working solution in most cases. It's our hope that the need to specify maximum key and value sizes will be removed in the future.
+Notice that each `StableBTreeMap` has a unique `memory id`.
 
 ## Caveats
 
-### Keys
+### Performance
 
-You should be wary when using a `float64`, `float32`, `Service`, or `Func` in any type that is a key for a stable structure. These types do not have the ability to be strictly ordered in all cases. `Service` and `Func` will have no order. `float64` and `float32` will treat `NaN` as less than any other type. These caveats may impact key performance.
+Azle's `StableBTreeMap` uses Candid encoding and decoding to store and retrieve all values. Azle's Candid encoding/decoding implementation is currently not well optimized, and Candid may not be the most optimal encoding format overall, so you may experience heavy instruction usage when performing many `StableBTreeMap` operations in succession. A rough idea of the overhead from our preliminary testing is probably 1-2 million instructions for a full Candid encoding and decoding of values per `StableBTreeMap` operation.
+
+### Migrations
+
+Migrations must be performed manually by reading the values out of one `StableBTreeMap` and writing them into another. Once a `StableBTreeMap` is initialized to a specific `memory id`, that `memory id` cannot be changed unless the canister is completely wiped and initialized again.

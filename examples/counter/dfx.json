@@ -2,9 +2,8 @@
     "canisters": {
         "counter": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle counter",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/counter/counter.wasm",
             "gzip": true,

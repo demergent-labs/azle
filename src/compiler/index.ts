@@ -68,7 +68,7 @@ async function azle() {
             installRustDependencies(azleVersion, rustVersion);
 
             const compilationResult = compileTypeScriptToJavaScript(
-                canisterConfig.ts,
+                canisterConfig.main,
                 canisterConfig
             );
 
@@ -79,21 +79,16 @@ async function azle() {
                 unwrap(azleErrorResult);
             }
 
-            const { canisterJavaScript, candidJavaScript } =
-                compilationResult.ok as {
-                    canisterJavaScript: string;
-                    candidJavaScript: string;
-                };
+            const canisterJavaScript = compilationResult.ok as string;
 
             const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
-                canisterConfig.root,
                 canisterConfig.opt_level ?? '0'
             );
             const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
             const libCargoToml: Toml = generateLibCargoToml(canisterName, '');
 
             const { candid, canisterMethods } =
-                generateCandidAndCanisterMethods(candidJavaScript);
+                generateCandidAndCanisterMethods(canisterJavaScript);
 
             rmSync(canisterPath, { recursive: true, force: true });
             mkdirSync(canisterPath, { recursive: true });

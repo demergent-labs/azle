@@ -2,9 +2,8 @@
     "canisters": {
         "query": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle query",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/query/query.wasm",
             "gzip": true,

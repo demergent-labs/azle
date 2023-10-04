@@ -14,13 +14,7 @@ import Canister2 from '../canister2';
 let canister2: typeof Canister2;
 let counter: nat = 0n;
 
-const incCounter = query([], nat, async () => {
-    counter += 1n;
-
-    return counter;
-});
-
-export default Canister({
+const CompQueryCanister = Canister({
     init: init([], () => {
         canister2 = Canister2(
             Principal.fromText(
@@ -63,13 +57,14 @@ export default Canister({
         return await ic.call(canister2.deepQuery);
     }),
     // Composite query that modifies the state. Should revert after the call is done
-    incCounter,
+    incCounter: query([], nat, async () => {
+        counter += 1n;
+
+        return counter;
+    }),
     // Composite query calling queries on the same canister
     incCanister1: query([], nat, async () => {
-        // TODO This is not an ideal solution but will work for now
-        const self = Canister({
-            incCounter
-        })(ic.id());
+        const self: any = CompQueryCanister(ic.id());
 
         counter += 1n;
 
@@ -88,3 +83,5 @@ export default Canister({
         return counter + canister2AResult + canister2BResult;
     })
 });
+
+export default CompQueryCanister;

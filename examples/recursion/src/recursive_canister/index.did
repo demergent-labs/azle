@@ -1,0 +1,6 @@
+type rec_0 = service {getMessage: () -> (text) query; myQuery: (rec_0) -> (rec_0) query;};
+type rec_1 = service {getMessage: () -> (text) query; myQuery: (rec_1) -> (rec_1) query;};
+service: (text) -> {
+    getMessage: () -> (text) query;
+    myQuery: (rec_0) -> (rec_1) query;
+}

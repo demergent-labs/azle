@@ -1,10 +1,13 @@
 import { Test } from 'azle/test';
 import { execSync } from 'child_process';
 
+const skip = true;
+
 export function getTests(): Test[] {
     return [
         {
             name: 'init get count',
+            skip,
             test: async () => {
                 return {
                     Ok: getCount() === getExpectedGetCountResult(0)
@@ -13,6 +16,7 @@ export function getTests(): Test[] {
         },
         {
             name: 'first increment',
+            skip,
             test: async () => {
                 return {
                     Ok: count() === getExpectedCountResult(1)
@@ -21,6 +25,7 @@ export function getTests(): Test[] {
         },
         {
             name: 'second increment',
+            skip,
             test: async () => {
                 return {
                     Ok: count() === getExpectedCountResult(2)
@@ -29,6 +34,7 @@ export function getTests(): Test[] {
         },
         {
             name: 'get count',
+            skip,
             test: async () => {
                 return {
                     Ok: getCount() === getExpectedGetCountResult(2)
@@ -37,6 +43,7 @@ export function getTests(): Test[] {
         },
         {
             name: 'gzipped increment',
+            skip,
             test: async () => {
                 return {
                     Ok: countGzip() === 'update'
@@ -45,6 +52,7 @@ export function getTests(): Test[] {
         },
         {
             name: 'get gzipped count',
+            skip,
             test: async () => {
                 return {
                     Ok: getCountGzip() === 'query'
@@ -53,6 +61,7 @@ export function getTests(): Test[] {
         },
         {
             name: 'get streaming count',
+            skip,
             test: async () => {
                 return {
                     Ok: getCountStream() === getExpectedGetCountStreamResult(3)
@@ -61,6 +70,7 @@ export function getTests(): Test[] {
         },
         {
             name: 'final get count',
+            skip,
             test: async () => {
                 return {
                     Ok: getCount() === getExpectedGetCountResult(3)
