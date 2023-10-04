@@ -3,8 +3,8 @@
         "ledger_canister": {
             "type": "custom",
             "main": "src/ledger_canister/index.ts",
-            "build": "npx azle ledger_canister",
             "candid": "src/ledger_canister/index.did",
+            "build": "npx azle ledger_canister",
             "wasm": ".azle/ledger_canister/ledger_canister.wasm",
             "gzip": true,
             "declarations": {

@@ -3,8 +3,8 @@
         "ethereum_json_rpc": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle ethereum_json_rpc",
             "candid": "src/index.did",
+            "build": "npx azle ethereum_json_rpc",
             "wasm": ".azle/ethereum_json_rpc/ethereum_json_rpc.wasm",
             "gzip": true,
             "declarations": {

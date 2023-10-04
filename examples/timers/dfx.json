@@ -3,8 +3,8 @@
         "timers": {
             "type": "custom",
             "main": "src/timers.ts",
-            "build": "npx azle timers",
             "candid": "src/timers.did",
+            "build": "npx azle timers",
             "wasm": ".azle/timers/timers.wasm",
             "gzip": true,
             "declarations": {

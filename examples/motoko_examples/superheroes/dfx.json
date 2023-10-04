@@ -3,8 +3,8 @@
         "superheroes": {
             "type": "custom",
             "main": "src/superheroes/index.ts",
-            "build": "npx azle superheroes",
             "candid": "src/superheroes/index.did",
+            "build": "npx azle superheroes",
             "wasm": ".azle/superheroes/superheroes.wasm",
             "gzip": true,
             "declarations": {

@@ -3,8 +3,8 @@
         "phone_book": {
             "type": "custom",
             "main": "src/phone_book/index.ts",
-            "build": "npx azle phone_book",
             "candid": "src/phone_book/index.did",
+            "build": "npx azle phone_book",
             "wasm": ".azle/phone_book/phone_book.wasm",
             "gzip": true,
             "declarations": {

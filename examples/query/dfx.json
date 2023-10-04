@@ -3,8 +3,8 @@
         "query": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle query",
             "candid": "src/index.did",
+            "build": "npx azle query",
             "wasm": ".azle/query/query.wasm",
             "gzip": true,
             "declarations": {

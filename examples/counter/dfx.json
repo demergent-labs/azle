@@ -3,8 +3,8 @@
         "counter": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle counter",
             "candid": "src/index.did",
+            "build": "npx azle counter",
             "wasm": ".azle/counter/counter.wasm",
             "gzip": true,
             "declarations": {

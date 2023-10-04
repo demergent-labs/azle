@@ -3,8 +3,8 @@
         "persistent_storage": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle persistent_storage",
             "candid": "src/index.did",
+            "build": "npx azle persistent_storage",
             "wasm": ".azle/persistent_storage/persistent_storage.wasm",
             "gzip": true,
             "declarations": {

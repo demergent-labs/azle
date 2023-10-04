@@ -3,8 +3,8 @@
         "tuple_types": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle tuple_types",
             "candid": "src/index.did",
+            "build": "npx azle tuple_types",
             "wasm": ".azle/tuple_types/tuple_types.wasm",
             "gzip": true,
             "declarations": {

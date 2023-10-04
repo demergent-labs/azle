@@ -3,8 +3,8 @@
         "pre_and_post_upgrade": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle pre_and_post_upgrade",
             "candid": "src/index.did",
+            "build": "npx azle pre_and_post_upgrade",
             "wasm": ".azle/pre_and_post_upgrade/pre_and_post_upgrade.wasm",
             "gzip": true,
             "declarations": {

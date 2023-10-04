@@ -3,8 +3,8 @@
         "hello_world": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle hello_world",
             "candid": "src/index.did",
+            "build": "npx azle hello_world",
             "wasm": ".azle/hello_world/hello_world.wasm",
             "gzip": true,
             "declarations": {

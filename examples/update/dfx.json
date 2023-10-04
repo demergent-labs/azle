@@ -3,8 +3,8 @@
         "update": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle update",
             "candid": "src/index.did",
+            "build": "npx azle update",
             "wasm": ".azle/update/update.wasm",
             "gzip": true,
             "declarations": {

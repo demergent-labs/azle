@@ -3,8 +3,8 @@
         "blob_array": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle blob_array",
             "candid": "src/index.did",
+            "build": "npx azle blob_array",
             "wasm": ".azle/blob_array/blob_array.wasm",
             "gzip": true,
             "declarations": {

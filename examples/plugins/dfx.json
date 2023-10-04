@@ -3,8 +3,8 @@
         "plugins": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle plugins",
             "candid": "src/index.did",
+            "build": "npx azle plugins",
             "wasm": ".azle/plugins/plugins.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/plugins",

@@ -3,8 +3,8 @@
         "whoami": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle whoami",
             "candid": "src/index.did",
+            "build": "npx azle whoami",
             "wasm": ".azle/whoami/whoami.wasm",
             "gzip": true,
             "declarations": {
