@@ -8,7 +8,7 @@ import { text } from '../candid/types/primitive/text';
  */
 export function trap(message: text): empty {
     if (globalThis._azleIc === undefined) {
-        throw new Error(message);
+        return undefined as never;
     }
 
     globalThis._azleIc.trap(message);
