@@ -10,7 +10,7 @@ Examples:
 import { Canister, ic, Principal, update, Void } from 'azle';
 
 export default Canister({
-    sendNotification: update([], Void, async () => {
+    sendNotification: update([], Void, () => {
         return ic.notifyRaw(
             Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'),
             'receiveNotification',

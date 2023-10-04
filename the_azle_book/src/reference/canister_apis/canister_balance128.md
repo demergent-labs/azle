@@ -8,11 +8,12 @@ Examples:
 -   [ic_api](https://github.com/demergent-labs/azle/tree/main/examples/ic_api)
 
 ```typescript
-import { ic, nat, $query } from 'azle';
+import { Canister, ic, nat, query } from 'azle';
 
-// returns the amount of cycles available in the canister
-$query;
-export function canisterBalance128(): nat {
-    return ic.canisterBalance128();
-}
+export default Canister({
+    // returns the amount of cycles available in the canister
+    canisterBalance128: query([], nat, () => {
+        return ic.canisterBalance128();
+    })
+});
 ```

@@ -8,13 +8,14 @@ Examples:
 -   [null_example](https://github.com/demergent-labs/azle/tree/main/examples/null_example)
 
 ```typescript
-import { ic, $query } from 'azle';
+import { bool, Canister, ic, query, text } from 'azle';
 
-// prints a message through the local replica's output
-$query;
-export function print(message: string): boolean {
-    ic.print(message);
+export default Canister({
+    // prints a message through the local replica's output
+    print: query([text], bool, (message) => {
+        ic.print(message);
 
-    return true;
-}
+        return true;
+    })
+});
 ```

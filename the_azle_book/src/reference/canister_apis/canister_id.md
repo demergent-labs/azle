@@ -11,11 +11,12 @@ Examples:
 -   [whoami](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami)
 
 ```typescript
-import { ic, Principal, $query } from 'azle';
+import { Canister, ic, Principal, query } from 'azle';
 
-// returns this canister's id
-$query;
-export function id(): Principal {
-    return ic.id();
-}
+export default Canister({
+    // returns this canister's id
+    id: query([], Principal, () => {
+        return ic.id();
+    })
+});
 ```

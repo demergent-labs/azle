@@ -12,7 +12,7 @@ import { Canister, ic, update, Void } from 'azle';
 import { otherCanister } from './otherCanister';
 
 export default Canister({
-    sendNotification: update([], Void, async () => {
+    sendNotification: update([], Void, () => {
         return ic.notify(otherCanister.receiveNotification, {
             args: ['This is the notification']
         });

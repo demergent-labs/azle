@@ -11,7 +11,7 @@ import { Canister, ic, update, Void } from 'azle';
 import { otherCanister } from './otherCanister';
 
 export default Canister({
-    sendCycles128Notify: update([], Void, async () => {
+    sendCycles128Notify: update([], Void, () => {
         return ic.notify(otherCanister.receiveCycles128, {
             cycles: 1_000_000n
         });
