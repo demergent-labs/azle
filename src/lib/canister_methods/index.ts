@@ -91,7 +91,7 @@ export function executeMethod(
             .then((result: any) => {
                 // TODO this won't be accurate because we have most likely had
                 // TODO cross-canister calls
-                console.log(`final instructions: ${ic.instructionCounter()}`);
+                reportFinalInstructions();
 
                 if (!manual) {
                     ic.replyRaw(encode(returnCandidType, result, parents));
@@ -105,6 +105,12 @@ export function executeMethod(
             ic.replyRaw(encode(returnCandidType, result));
         }
 
+        reportFinalInstructions();
+    }
+}
+
+function reportFinalInstructions() {
+    if (process.env.AZLE_INSTRUCTION_COUNT === 'true') {
         console.log(`final instructions: ${ic.instructionCounter()}`);
     }
 }
