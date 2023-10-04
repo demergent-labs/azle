@@ -130,7 +130,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         data: VisitorData
     ): VisitorResult {
         const fields = components.map((value) =>
-            hch(value).accept(this, { ...data, isOnService: false })
+            value.accept(this, { ...data, isOnService: false })
         );
         const candid = extractCandid(fields);
         return [`record {${candid[0].join('; ')}}`, candid[1]];
@@ -140,7 +140,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         ty: IDL.Type<T>,
         data: VisitorData
     ): VisitorResult {
-        const candid = hch(ty).accept(this, { ...data, isOnService: false });
+        const candid = ty.accept(this, { ...data, isOnService: false });
         return [`opt ${candid[0]}`, candid[1]];
     }
     visitVec<T>(
@@ -148,16 +148,16 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         ty: IDL.Type<T>,
         data: VisitorData
     ): VisitorResult {
-        const candid = hch(ty).accept(this, { ...data, isOnService: false });
+        const candid = ty.accept(this, { ...data, isOnService: false });
         return [`vec ${candid[0]}`, candid[1]];
     }
     visitFunc(t: IDL.FuncClass, data: VisitorData): VisitorResult {
         const argsTypes = t.argTypes.map((value) =>
-            hch(value).accept(this, { ...data, isOnService: false })
+            value.accept(this, { ...data, isOnService: false })
         );
         const candidArgs = extractCandid(argsTypes);
         const retsTypes = t.retTypes.map((value) =>
-            hch(value).accept(this, { ...data, isOnService: false })
+            value.accept(this, { ...data, isOnService: false })
         );
         const candidRets = extractCandid(retsTypes);
         const args = candidArgs[0].join(', ');
@@ -180,7 +180,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         // Everything else will just be the normal inline candid def
         const usedRecClasses = data.usedRecClasses;
         if (!usedRecClasses.includes(t)) {
-            const candid = hch(ty).accept(this, {
+            const candid = ty.accept(this, {
                 ...data,
                 usedRecClasses: [...usedRecClasses, t],
                 isOnService: false,
@@ -198,7 +198,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         data: VisitorData
     ): VisitorResult {
         const candidFields = fields.map(([key, value]) =>
-            hch(value).accept(this, { ...data, isOnService: false })
+            value.accept(this, { ...data, isOnService: false })
         );
         const candid = extractCandid(candidFields);
         const field_strings = fields.map(
@@ -212,7 +212,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         data: VisitorData
     ): VisitorResult {
         const candidFields = fields.map(([key, value]) =>
-            hch(value).accept(this, { ...data, isOnService: false })
+            value.accept(this, { ...data, isOnService: false })
         );
         const candid = extractCandid(candidFields);
         const fields_string = fields.map(
@@ -248,11 +248,4 @@ function extractCandid(
         {}
     );
     return [paramCandid, candidTypeDefs];
-}
-
-function hch(value: any) {
-    if (value._azleIsCanister) {
-        return value().getIDL();
-    }
-    return value;
 }

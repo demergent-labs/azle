@@ -22,20 +22,13 @@ export type VisitorResult = any;
  * is extracted into these helper methods.
  */
 
-export function hch(value: any) {
-    if (value._azleIsCanister) {
-        return value().getIDL();
-    }
-    return value;
-}
-
 export function visitTuple(
     visitor: DecodeVisitor | EncodeVisitor,
     components: IDL.Type<any>[],
     data: VisitorData
 ): VisitorResult {
     const fields = components.map((value, index) =>
-        hch(value).accept(visitor, {
+        value.accept(visitor, {
             js_data: data.js_data[index],
             js_class: data.js_class._azleTypes[index]
         })
@@ -52,7 +45,7 @@ export function visitVec(
         return data.js_data;
     }
     return data.js_data.map((array_elem: any) => {
-        return hch(ty).accept(visitor, {
+        return ty.accept(visitor, {
             js_data: array_elem,
             js_class: data.js_class._azleType
         });
@@ -70,7 +63,7 @@ export function visitRecord(
 
         return {
             ...acc,
-            [memberName]: hch(memberIdl).accept(visitor, {
+            [memberName]: memberIdl.accept(visitor, {
                 js_data: fieldData,
                 js_class: fieldClass
             })
@@ -92,7 +85,7 @@ export function visitVariant(
             const okClass = data.js_class._azleOk;
 
             return Result.Ok(
-                hch(okField[1]).accept(visitor, {
+                okField[1].accept(visitor, {
                     js_data: okData,
                     js_class: okClass
                 })
@@ -103,7 +96,7 @@ export function visitVariant(
             const errData = data.js_data['Err'];
             const errClass = data.js_class._azleErr;
             return Result.Err(
-                hch(errField[1]).accept(visitor, {
+                errField[1].accept(visitor, {
                     js_data: errData,
                     js_class: errClass
                 })
@@ -119,7 +112,7 @@ export function visitVariant(
         }
         return {
             ...acc,
-            [memberName]: hch(memberIdl).accept(visitor, {
+            [memberName]: memberIdl.accept(visitor, {
                 js_class: fieldClass,
                 js_data: fieldData
             })
@@ -138,7 +131,7 @@ export function visitRec<T>(
     if (js_class._azleIsCanister) {
         js_class = js_class([]);
     }
-    return hch(ty).accept(visitor, {
+    return ty.accept(visitor, {
         ...data,
         js_class
     });

@@ -1,6 +1,5 @@
 import { IDL } from '@dfinity/candid';
 import {
-    hch,
     VisitorData,
     VisitorResult,
     visitRec,
@@ -56,7 +55,7 @@ export class EncodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         data: VisitorData
     ): [] | [any] {
         if ('Some' in data.js_data) {
-            const candid = hch(ty).accept(this, {
+            const candid = ty.accept(this, {
                 js_data: data.js_data.Some,
                 js_class: data.js_class._azleType
             });
