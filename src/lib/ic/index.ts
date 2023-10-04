@@ -3,7 +3,6 @@ import { acceptMessage } from './accept_message';
 import { argDataRaw } from './arg_data_raw';
 import { argDataRawSize } from './arg_data_raw_size';
 import { call } from './call';
-import { call128 } from './call128';
 import { callRaw } from './call_raw';
 import { callRaw128 } from './call_raw_128';
 import { caller } from './caller';
@@ -56,7 +55,6 @@ export const ic = {
     argDataRawSize,
     argDataRaw,
     call,
-    call128,
     callRaw,
     callRaw128,
     caller,
