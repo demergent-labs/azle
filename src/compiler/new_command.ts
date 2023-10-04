@@ -44,8 +44,6 @@ function generateTsconfig(): string {
     "compilerOptions": {
         "strict": true,
         "target": "ES2020",
-        "experimentalDecorators": true,
-        "strictPropertyInitialization": false,
         "moduleResolution": "node",
         "allowJs": true,
         "outDir": "HACK_BECAUSE_OF_ALLOW_JS"
@@ -84,11 +82,11 @@ function generateDfxJson(projectName: string): string {
     "canisters": {
         "${projectName}": {
             "type": "custom",
-            "build": "npx azle ${projectName}",
-            "root": "src",
-            "ts": "src/index.ts",
+            "main": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/${projectName}/${projectName}.wasm.gz"
+            "build": "npx azle ${projectName}",
+            "wasm": ".azle/${projectName}/${projectName}.wasm",
+            "gzip": true
         }
     }
 }
@@ -106,23 +104,22 @@ node_modules
 }
 
 function generateIndexTs(): string {
-    return `import { $query, $update } from 'azle';
+    return `import { Canister, query, text, update, Void } from 'azle';
 
 // This is a global variable that is stored on the heap
-let message: string = '';
+let message = '';
 
-// Query calls complete quickly because they do not go through consensus
-$query;
-export function getMessage(): string {
-    return message;
-}
-
-// Update calls take a few seconds to complete
-// This is because they persist state changes and go through consensus
-$update;
-export function setMessage(newMessage: string): void {
-    message = newMessage; // This change will be persisted
-}
+export default Canister({
+    // Query calls complete quickly because they do not go through consensus
+    getMessage: query([], text, () => {
+        return message;
+    }),
+    // Update calls take a few seconds to complete
+    // This is because they persist state changes and go through consensus
+    setMessage: update([text], Void, (newMessage) => {
+        message = newMessage; // This change will be persisted
+    })
+});
 
 `;
 }

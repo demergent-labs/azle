@@ -1,23 +1,20 @@
 # opt
 
-This section is a work in progress.
-
 The Azle type `Opt` corresponds to the [Candid type opt](https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t). It is a [variant](#variant) with `Some` and `None` cases. At runtime if the value of the variant is `Some`, the `Some` property of the variant object will have a value of the enclosed `Opt` type at runtime.
 
 TypeScript:
 
 ```typescript
-import { Opt, $query } from 'azle';
+import { Canister, None, Opt, Some, bool, query } from 'azle';
 
-$query;
-export function getOptSome(): Opt<boolean> {
-    return Opt.Some(true);
-}
-
-$query;
-export function getOptNone(): Opt<boolean> {
-    return Opt.None;
-}
+export default Canister({
+    getOptSome: query([], Opt(bool), () => {
+        return Some(true);
+    }),
+    getOptNone: query([], Opt(bool), () => {
+        return None;
+    })
+});
 ```
 
 Candid:
