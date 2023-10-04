@@ -1,24 +1,21 @@
 # float64
 
-This section is a work in progress.
-
 The Azle type `float64` and the TypeScript type `number` both correspond to the [Candid type float64](https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
 
 TypeScript:
 
 ```typescript
-import { float64, $query } from 'azle';
+import { Canister, float64, query } from 'azle';
 
-$query;
-export function getFloat64(): float64 {
-    return Math.E;
-}
-
-$query;
-export function printFloat64(float64: float64): float64 {
-    console.log(typeof float64);
-    return float64;
-}
+export default Canister({
+    getFloat64: query([], float64, () => {
+        return Math.E;
+    }),
+    printFloat64: query([float64], float64, (float64) => {
+        console.log(typeof float64);
+        return float64;
+    })
+});
 ```
 
 Candid:

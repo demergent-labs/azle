@@ -1,59 +1,51 @@
 # Candid
 
--   [text](#text)
--   [blob](#blob)
--   [nat](#nat)
--   [nat64](#nat64)
--   [nat32](#nat32)
--   [nat16](#nat16)
--   [nat8](#nat8)
--   [int](#int)
--   [int64](#int64)
--   [int32](#int32)
--   [int16](#int16)
--   [int8](#int8)
--   [float64](#float64)
--   [float32](#float32)
--   [bool](#bool)
--   [null](#null)
--   [vec](#vec)
--   [opt](#opt)
--   [record](#record)
--   [variant](#variant)
--   [func](#func)
--   [service](#service)
--   [principal](#principal)
--   [reserved](#reserved)
--   [empty](#empty)
+-   [text](./reference/candid/text.md)
+-   [blob](./reference/candid/blob.md)
+-   [nat](./reference/candid/nat.md)
+-   [nat8](./reference/candid/nat8.md)
+-   [nat16](./reference/candid/nat16.md)
+-   [nat32](./reference/candid/nat32.md)
+-   [nat64](./reference/candid/nat64.md)
+-   [int](./reference/candid/int.md)
+-   [int8](./reference/candid/int8.md)
+-   [int16](./reference/candid/int16.md)
+-   [int32](./reference/candid/int32.md)
+-   [int64](./reference/candid/int64.md)
+-   [float32](./reference/candid/float32.md)
+-   [float64](./reference/candid/float64.md)
+-   [bool](./reference/candid/bool.md)
+-   [null](./reference/candid/null.md)
+-   [vec](./reference/candid/vec.md)
+-   [opt](./reference/candid/opt.md)
+-   [record](./reference/candid/record.md)
+-   [variant](./reference/candid/variant.md)
+-   [func](./reference/candid/func.md)
+-   [service](./reference/candid/service.md)
+-   [principal](./reference/candid/principal.md)
+-   [reserved](./reference/candid/reserved.md)
+-   [empty](./reference/candid/empty.md)
 
-[Candid](https://internetcomputer.org/docs/current/developer-docs/backend/candid/) is an interface description language created by [DFINITY](https://dfinity.org/). It can be used to define interfaces between services (canisters), allowing canisters and clients written in various languages to easily interact with each other.
+[Candid](https://internetcomputer.org/docs/current/developer-docs/backend/candid/) is an interface description language created by [DFINITY](https://dfinity.org/). It can be used to define interfaces between services (canisters), allowing canisters and clients written in various languages to easily interact with each other. This interaction occurs through the serialization/encoding and deserialization/decoding of runtime values to and from Candid bytes.
 
-Azle allows you to express Candid types through a combination of native and Azle-provided TypeScript types. These types will be necessary in various places as you define your canister. For example, Candid types must be used when defining the parameters and return types of your query and update methods.
+Azle performs automatic encoding and decoding of JavaScript values to and from Candid bytes through the use of various `CandidType` objects. For example, `CandidType` objects are used when defining the parameter and return types of your query and update methods. They are also used to define the keys and values of a `StableBTreeMap`.
 
-It's important to note that the Candid types are represented at runtime using specific JavaScript data structures that may differ in behavior from the description of the actual Candid type. For example, a `float32` Candid type is a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), a `nat64` is a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt), and an `int` is also a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt).
+It's important to note that the `CandidType` objects decode Candid bytes into specific JavaScript runtime data structures that may differ in behavior from the description of the actual Candid type. For example, a `float32` Candid type is a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number), a `nat64` is a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt), and an `int` is also a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt).
 
-Keep this in mind as it may result in unexpected behavior. Each Candid type and its equivalent JavaScript runtime value is explained in more detail in this chapter.
+Keep this in mind as it may result in unexpected behavior. Each `CandidType` object and its equivalent JavaScript runtime value is explained in more detail in [The Azle Book Candid reference](./reference/candid/candid.md).
 
-A reference of all Candid types available on the Internet Computer (IC) can be found [here](https://internetcomputer.org/docs/current/references/candid-ref).
+A more canonical reference of all Candid types available on the Internet Computer (IC) can be found [here](https://internetcomputer.org/docs/current/references/candid-ref).
 
-The following is a simple example showing how to import and use most of the Candid types available in Azle:
+The following is a simple example showing how to import and use many of the `CandidType` objects available in Azle:
 
 ```typescript
 import {
-    Canister,
-    Func,
-    None,
-    Null,
-    Opt,
-    Principal,
-    Record,
-    Recursive,
-    Variant,
-    Vec,
     blob,
     bool,
+    Canister,
     float32,
     float64,
+    Func,
     int,
     int16,
     int32,
@@ -64,14 +56,22 @@ import {
     nat32,
     nat64,
     nat8,
+    None,
+    Null,
+    Opt,
+    Principal,
     query,
+    Record,
+    Recursive,
     text,
-    update
+    update,
+    Variant,
+    Vec
 } from 'azle';
 
 const MyCanister = Canister({
-    query1: query([], bool),
-    update1: update([], text)
+    query: query([], bool),
+    update: update([], text)
 });
 
 const Candid = Record({
@@ -104,7 +104,10 @@ const Candid = Record({
         Tag3: int
     }),
     func: Recursive(() => Func([], Candid, 'query')),
-    canister: MyCanister,
+    canister: Canister({
+        query: query([], bool),
+        update: update([], text)
+    }),
     principal: Principal
 });
 
@@ -153,983 +156,29 @@ Calling `candidTypes` with `dfx` will return:
 ```
 (
   record {
-    "int" = 170_141_183_460_469_231_731_687_303_715_884_105_727 : int;
-    "nat" = 340_282_366_920_938_463_463_374_607_431_768_211_455 : nat;
-    "opt" = null;
-    "vec" = vec { "has one element" };
-    "service" = service "aaaaa-aa";
-    "principal" = principal "ryjl3-tyaaa-aaaaa-aaaba-cai";
-    "blob" = vec {};
-    "bool" = true;
-    "func" = func "rrkah-fqaaa-aaaaa-aaaaq-cai".candidTypes;
-    "int8" = 127 : int8;
-    "nat8" = 255 : nat8;
-    "null" = null : null;
-    "text" = "text";
-    "nat16" = 65_535 : nat16;
-    "nat32" = 4_294_967_295 : nat32;
-    "nat64" = 18_446_744_073_709_551_615 : nat64;
-    "int16" = 32_767 : int16;
-    "int32" = 2_147_483_647 : int32;
-    "int64" = 9_223_372_036_854_775_807 : int64;
-    "variant" = variant { Tag1 };
-    "float32" = 3.1415927 : float32;
-    "float64" = 2.718281828459045 : float64;
-    "record" = record { age = 35 : nat8; lastName = "Doe"; firstName = "John" };
+    func = func "rrkah-fqaaa-aaaaa-aaaaq-cai".candidTypes;
+    text = "text";
+    nat16 = 65_535 : nat16;
+    nat32 = 4_294_967_295 : nat32;
+    nat64 = 18_446_744_073_709_551_615 : nat64;
+    record = record { age = 35 : nat8; lastName = "Doe"; firstName = "John" };
+    int = 170_141_183_460_469_231_731_687_303_715_884_105_727 : int;
+    nat = 340_282_366_920_938_463_463_374_607_431_768_211_455 : nat;
+    opt = null;
+    vec = vec { "has one element" };
+    variant = variant { Tag1 };
+    nat8 = 255 : nat8;
+    canister = service "aaaaa-aa";
+    int16 = 32_767 : int16;
+    int32 = 2_147_483_647 : int32;
+    int64 = 9_223_372_036_854_775_807 : int64;
+    null = null : null;
+    blob = vec {};
+    bool = true;
+    principal = principal "ryjl3-tyaaa-aaaaa-aaaba-cai";
+    int8 = 127 : int8;
+    float32 = 3.1415927 : float32;
+    float64 = 2.718281828459045 : float64;
   },
 )
-```
-
-### text
-
-The TypeScript type `string` and the Azle type `text` both correspond to the [Candid type text](https://internetcomputer.org/docs/current/references/candid-ref#type-text) and will become a [JavaScript String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, query, text } from 'azle';
-
-export default Canister({
-    getString: query([], text, () => {
-        return 'Hello world!';
-    }),
-    printString: query([text], text, (string) => {
-        console.log(typeof string);
-        return string;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getString : () -> (text) query;
-    printString : (text) -> (text) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printString '("Hello world!")'
-("Hello world!")
-```
-
-### blob
-
-The Azle type `blob` corresponds to the [Candid type blob](https://internetcomputer.org/docs/current/references/candid-ref#type-blob) and will become a [JavaScript Uint8Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, blob, query } from 'azle';
-
-export default Canister({
-    getBlob: query([], blob, () => {
-        return Uint8Array.from([68, 73, 68, 76, 0, 0]);
-    }),
-    printBlob: query([blob], blob, (blob) => {
-        console.log(typeof blob);
-        return blob;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getBlob : () -> (vec nat8) query;
-    printBlob : (vec nat8) -> (vec nat8) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printBlob '(vec { 68; 73; 68; 76; 0; 0; })'
-(blob "DIDL\00\00")
-
-dfx canister call candid_canister printBlob '(blob "DIDL\00\00")'
-(blob "DIDL\00\00")
-```
-
-### nat
-
-The Azle type `nat` corresponds to the [Candid type nat](https://internetcomputer.org/docs/current/references/candid-ref#type-nat) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, nat, query } from 'azle';
-
-export default Canister({
-    getNat: query([], nat, () => {
-        return 340_282_366_920_938_463_463_374_607_431_768_211_455n;
-    }),
-    printNat: query([nat], nat, (nat) => {
-        console.log(typeof nat);
-        return nat;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getNat : () -> (nat) query;
-    printNat : (nat) -> (nat) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printNat '(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)'
-(340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)
-```
-
-### nat64
-
-The Azle type `nat64` corresponds to the [Candid type nat64](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, nat64, query } from 'azle';
-
-export default Canister({
-    getNat64: query([], nat64, () => {
-        return 18_446_744_073_709_551_615n;
-    }),
-    printNat64: query([nat64], nat64, (nat64) => {
-        console.log(typeof nat64);
-        return nat64;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getNat64 : () -> (nat64) query;
-    printNat64 : (nat64) -> (nat64) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printNat64 '(18_446_744_073_709_551_615 : nat64)'
-(18_446_744_073_709_551_615 : nat64)
-```
-
-### nat32
-
-The Azle type `nat32` corresponds to the [Candid type nat32](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, nat32, query } from 'azle';
-
-export default Canister({
-    getNat32: query([], nat32, () => {
-        return 4_294_967_295;
-    }),
-    printNat32: query([nat32], nat32, (nat32) => {
-        console.log(typeof nat32);
-        return nat32;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getNat32 : () -> (nat32) query;
-    printNat32 : (nat32) -> (nat32) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printNat32 '(4_294_967_295 : nat32)'
-(4_294_967_295 : nat32)
-```
-
-### nat16
-
-The Azle type `nat16` corresponds to the [Candid type nat16](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, nat16, query } from 'azle';
-
-export default Canister({
-    getNat16: query([], nat16, () => {
-        return 65_535;
-    }),
-    printNat16: query([nat16], nat16, (nat16) => {
-        console.log(typeof nat16);
-        return nat16;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getNat16 : () -> (nat16) query;
-    printNat16 : (nat16) -> (nat16) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printNat16 '(65_535 : nat16)'
-(65_535 : nat16)
-```
-
-### nat8
-
-The Azle type `nat8` corresponds to the [Candid type nat8](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, nat8, query } from 'azle';
-
-export default Canister({
-    getNat8: query([], nat8, () => {
-        return 255;
-    }),
-    printNat8: query([nat8], nat8, (nat8) => {
-        console.log(typeof nat8);
-        return nat8;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getNat8 : () -> (nat8) query;
-    printNat8 : (nat8) -> (nat8) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printNat8 '(255 : nat8)'
-(255 : nat8)
-```
-
-### int
-
-The Azle type `int` corresponds to the [Candid type int](https://internetcomputer.org/docs/current/references/candid-ref#type-int) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, int, query } from 'azle';
-
-export default Canister({
-    getInt: query([], int, () => {
-        return 170_141_183_460_469_231_731_687_303_715_884_105_727n;
-    }),
-    printInt: query([int], int, (int) => {
-        console.log(typeof int);
-        return int;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getInt : () -> (int) query;
-    printInt : (int) -> (int) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printInt '(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)'
-(170_141_183_460_469_231_731_687_303_715_884_105_727 : int)
-```
-
-### int64
-
-The Azle type `int64` corresponds to the [Candid type int64](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, int64, query } from 'azle';
-
-export default Canister({
-    getInt64: query([], int64, () => {
-        return 9_223_372_036_854_775_807n;
-    }),
-    printInt64: query([int64], int64, (int64) => {
-        console.log(typeof int64);
-        return int64;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getInt64 : () -> (int64) query;
-    printInt64 : (int64) -> (int64) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printInt64 '(9_223_372_036_854_775_807 : int64)'
-(9_223_372_036_854_775_807 : int64)
-```
-
-### int32
-
-The Azle type `int32` corresponds to the [Candid type int32](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, int32, query } from 'azle';
-
-export default Canister({
-    getInt32: query([], int32, () => {
-        return 2_147_483_647;
-    }),
-    printInt32: query([int32], int32, (int32) => {
-        console.log(typeof int32);
-        return int32;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getInt32 : () -> (int32) query;
-    printInt32 : (int32) -> (int32) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printInt32 '(2_147_483_647 : int32)'
-(2_147_483_647 : int32)
-```
-
-### int16
-
-The Azle type `int16` corresponds to the [Candid type int16](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, int16, query } from 'azle';
-
-export default Canister({
-    getInt16: query([], int16, () => {
-        return 32_767;
-    }),
-    printInt16: query([int16], int16, (int16) => {
-        console.log(typeof int16);
-        return int16;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getInt16 : () -> (int16) query;
-    printInt16 : (int16) -> (int16) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printInt16 '(32_767 : int16)'
-(32_767 : int16)
-```
-
-### int8
-
-The Azle type `int8` corresponds to the [Candid type int8](https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, int8, query } from 'azle';
-
-export default Canister({
-    getInt8: query([], int8, () => {
-        return 127;
-    }),
-    printInt8: query([int8], int8, (int8) => {
-        console.log(typeof int8);
-        return int8;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getInt8 : () -> (int8) query;
-    printInt8 : (int8) -> (int8) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printInt8 '(127 : int8)'
-(127 : int8)
-```
-
-### float64
-
-The Azle type `float64` and the TypeScript type `number` both correspond to the [Candid type float64](https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, float64, query } from 'azle';
-
-export default Canister({
-    getFloat64: query([], float64, () => {
-        return Math.E;
-    }),
-    printFloat64: query([float64], float64, (float64) => {
-        console.log(typeof float64);
-        return float64;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getFloat64 : () -> (float64) query;
-    printFloat64 : (float64) -> (float64) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printFloat64 '(2.718281828459045 : float64)'
-(2.718281828459045 : float64)
-```
-
-### float32
-
-The Azle type `float32` corresponds to the [Candid type float32](https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, float32, query } from 'azle';
-
-export default Canister({
-    getFloat32: query([], float32, () => {
-        return Math.PI;
-    }),
-    printFloat32: query([float32], float32, (float32) => {
-        console.log(typeof float32);
-        return float32;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getFloat32 : () -> (float32) query;
-    printFloat32 : (float32) -> (float32) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printFloat32 '(3.1415927 : float32)'
-(3.1415927 : float32)
-```
-
-### bool
-
-The TypeScript type `boolean` corresponds to the [Candid type bool](https://internetcomputer.org/docs/current/references/candid-ref#type-bool) and will become a [JavaScript Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, bool, query } from 'azle';
-
-export default Canister({
-    getBool: query([], bool, () => {
-        return true;
-    }),
-    printBool: query([bool], bool, (bool) => {
-        console.log(typeof bool);
-        return bool;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getBool : () -> (bool) query;
-    printBool : (bool) -> (bool) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printBool '(true)'
-(true)
-```
-
-### null
-
-The TypeScript type `null` corresponds to the [Candid type null](https://internetcomputer.org/docs/current/references/candid-ref#type-null) and will become a [JavaScript null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, Null, query } from 'azle';
-
-export default Canister({
-    getNull: query([], Null, () => {
-        return null;
-    }),
-    printNull: query([Null], Null, (null_) => {
-        console.log(typeof null_);
-        return null_;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getNull : () -> (null) query;
-    printNull : (null) -> (null) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printNull '(null)'
-(null : null)
-```
-
-### vec
-
-The Azle type `Vec` corresponds to the [Candid type vec](https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t) and will become a [JavaScript array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) of the specified type at runtime (except for `Vec<nat8>` which will become a `Uint8Array`, thus it is recommended to use the `blob` type instead of `Vec<nat8>`).
-
-TypeScript:
-
-```typescript
-import { Canister, Vec, int32, query } from 'azle';
-
-export default Canister({
-    getNumbers: query([], Vec(int32), () => {
-        return [0, 1, 2, 3];
-    }),
-    printNumbers: query([Vec(int32)], Vec(int32), (numbers) => {
-        console.log(typeof numbers);
-        return numbers;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getNumbers : () -> (vec int32) query;
-    printNumbers : (vec int32) -> (vec int32) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printNumbers '(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })'
-(vec { 0 : int32; 1 : int32; 2 : int32; 3 : int32 })
-```
-
-### opt
-
-The Azle type `Opt` corresponds to the [Candid type opt](https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t). It is a [variant](#variant) with `Some` and `None` cases. At runtime if the value of the variant is `Some`, the `Some` property of the variant object will have a value of the enclosed `Opt` type at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, None, Opt, Some, bool, query } from 'azle';
-
-export default Canister({
-    getOptSome: query([], Opt(bool), () => {
-        return Some(true);
-    }),
-    getOptNone: query([], Opt(bool), () => {
-        return None;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getOptNone : () -> (opt bool) query;
-    getOptSome : () -> (opt bool) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister getOptSome
-(opt true)
-
-dfx canister call candid_canister getOptNone
-(null)
-```
-
-### record
-
-TypeScript type aliases referring to object literals wrapped in the `Record` Azle type correspond to the [Candid record type](https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--) and will become [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, Principal, Record, query, text } from 'azle';
-
-const User = Record({
-    id: Principal,
-    username: text
-});
-
-export default Canister({
-    getUser: query([], User, () => {
-        return {
-            id: Principal.fromUint8Array(Uint8Array.from([0])),
-            username: 'lastmjs'
-        };
-    }),
-    printUser: query([User], User, (user) => {
-        console.log(typeof user);
-        return user;
-    })
-});
-```
-
-Candid:
-
-```
-type User = record { id : principal; username : text };
-service : () -> {
-    getUser : () -> (User) query;
-    printUser : (User) -> (User) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printUser '(record { id = principal "2ibo7-dia"; username = "lastmjs" })'
-(record { id = principal "2ibo7-dia"; username = "lastmjs" })
-```
-
-### variant
-
-TypeScript type aliases referring to object literals wrapped in the `Variant` Azle type correspond to the [Candid variant type](https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--) and will become [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, Null, Variant, query } from 'azle';
-
-const Emotion = Variant({
-    Happy: Null,
-    Indifferent: Null,
-    Sad: Null
-});
-
-const Reaction = Variant({
-    Fire: Null,
-    ThumbsUp: Null,
-    Emotion: Emotion
-});
-
-export default Canister({
-    getReaction: query([], Reaction, () => {
-        return {
-            Fire: null
-        };
-    }),
-    printReaction: query([Reaction], Reaction, (reaction) => {
-        console.log(typeof reaction);
-        return reaction;
-    })
-});
-```
-
-Candid:
-
-```
-type Emotion = variant { Sad; Indifferent; Happy };
-type Reaction = variant { Emotion : Emotion; Fire; ThumbsUp };
-service : () -> {
-    getReaction : () -> (Reaction) query;
-    printReaction : (Reaction) -> (Reaction) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printReaction '(variant { Fire })'
-(variant { Fire })
-```
-
-### func
-
-The Azle type `Func` corresponds to the [Candid type func](https://internetcomputer.org/docs/current/references/candid-ref#type-func---). It is a [TypeScript Tuple](https://www.tutorialsteacher.com/typescript/typescript-tuple) and will become a [JavaScript array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) with two elements at runtime.
-
-The first element is an [@dfinity/principal](https://www.npmjs.com/package/@dfinity/principal) and the second is a [JavaScript string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String). The `@dfinity/principal` represents the `principal` of the canister/service where the function exists, and the `string` represents the function's name.
-
-A `func` acts as a callback, allowing the `func` receiver to know which canister instance and method must be used to call back.
-
-TypeScript:
-
-```typescript
-import { Canister, Func, Principal, query, text } from 'azle';
-
-const BasicFunc = Func([text], text, 'query');
-
-export default Canister({
-    getBasicFunc: query([], BasicFunc, () => {
-        return [
-            Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
-            'getBasicFunc'
-        ];
-    }),
-    printBasicFunc: query([BasicFunc], BasicFunc, (basicFunc) => {
-        console.log(typeof basicFunc);
-        return basicFunc;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getBasicFunc : () -> (func (text) -> (text) query) query;
-    printBasicFunc : (func (text) -> (text) query) -> (
-        func (text) -> (text) query,
-      ) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printBasicFunc '(func "r7inp-6aaaa-aaaaa-aaabq-cai".getBasicFunc)'
-(func "r7inp-6aaaa-aaaaa-aaabq-cai".getBasicFunc)
-```
-
-### service
-
-JavaScript classes that inherit from the Azle type `Service` correspond to the [Candid service type](https://internetcomputer.org/docs/current/references/candid-ref#type-service-) and will become child classes capable of creating instances that can perform cross-canister calls at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, Principal, bool, ic, query, text, update } from 'azle';
-
-const SomeCanister = Canister({
-    query1: query([], bool),
-    update1: update([], text)
-});
-
-export default Canister({
-    getService: query([], SomeCanister, () => {
-        return SomeCanister(Principal.fromText('aaaaa-aa'));
-    }),
-    callService: update([SomeCanister], text, (service) => {
-        return ic.call(service.update1);
-    })
-});
-```
-
-Candid:
-
-```
-type ManualReply = variant { Ok : text; Err : text };
-service : () -> {
-  callService : (
-      service { query1 : () -> (bool) query; update1 : () -> (text) },
-    ) -> (ManualReply);
-  getService : () -> (
-      service { query1 : () -> (bool) query; update1 : () -> (text) },
-    ) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister getService
-(service "aaaaa-aa")
-```
-
-### principal
-
-The Azle type `Principal` corresponds to the [Candid type principal](https://internetcomputer.org/docs/current/references/candid-ref#type-principal) and will become an [@dfinity/principal](https://www.npmjs.com/package/@dfinity/principal) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, Principal, query } from 'azle';
-
-export default Canister({
-    getPrincipal: query([], Principal, () => {
-        return Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
-    }),
-    printPrincipal: query([Principal], Principal, (principal) => {
-        console.log(typeof principal);
-        return principal;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getPrincipal : () -> (principal) query;
-    printPrincipal : (principal) -> (principal) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printPrincipal '(principal "rrkah-fqaaa-aaaaa-aaaaq-cai")'
-(principal "rrkah-fqaaa-aaaaa-aaaaq-cai")
-```
-
-### reserved
-
-The Azle type `reserved` corresponds to the [Candid type reserved](https://internetcomputer.org/docs/current/references/candid-ref#type-reserved), is the TypeScript type `any`, and will become a [JavaScript null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null) at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, query, reserved } from 'azle';
-
-export default Canister({
-    getReserved: query([], reserved, () => {
-        return 'anything';
-    }),
-    printReserved: query([reserved], reserved, (reserved) => {
-        console.log(typeof reserved);
-        return reserved;
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getReserved : () -> (reserved) query;
-    printReserved : (reserved) -> (reserved) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printReserved '(null)'
-(null : reserved)
-```
-
-### empty
-
-The Azle type `empty` corresponds to the [Candid type empty](https://internetcomputer.org/docs/current/references/candid-ref#type-empty) and has no JavaScript value at runtime.
-
-TypeScript:
-
-```typescript
-import { Canister, empty, query } from 'azle';
-
-export default Canister({
-    getEmpty: query([], empty, () => {
-        throw 'Anything you want';
-    }),
-    // Note: It is impossible to call this function because it requires an argument
-    // but there is no way to pass an "empty" value as an argument.
-    printEmpty: query([empty], empty, (empty) => {
-        console.log(typeof empty);
-        throw 'Anything you want';
-    })
-});
-```
-
-Candid:
-
-```
-service : () -> {
-    getEmpty : () -> (empty) query;
-    printEmpty : (empty) -> (empty) query;
-}
-```
-
-dfx:
-
-```bash
-dfx canister call candid_canister printEmpty '("You can put anything here")'
-Error: Failed to create argument blob.
-Caused by: Failed to create argument blob.
-  Invalid data: Unable to serialize Candid values: type mismatch: "You can put anything here" cannot be of type empty
 ```

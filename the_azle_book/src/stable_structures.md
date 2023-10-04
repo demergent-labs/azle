@@ -16,33 +16,33 @@ On the other hand, anything stored in stable memory will be preserved. Writing a
 
 Azle currently provides one stable structure called `StableBTreeMap`. It's similar to a [JavaScript Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) and has most of the common operations you'd expect such as reading, inserting, and removing values.
 
-Here's how to define a simple `StableBTreeMap`. Each `StableBTreeMap` must be defined in the global scope (not within any functions or objects etc):
+Here's how to define a simple `StableBTreeMap`:
 
 ```typescript
-import { StableBTreeMap, nat8, text } from 'azle';
+import { nat8, StableBTreeMap, text } from 'azle';
 
 let map = StableBTreeMap(nat8, text, 0);
 ```
 
 This is a `StableBTreeMap` with a key of type `nat8` and a value of type `text`. Key and value types can be any [Candid type](candid.md).
 
-This `StableBTreeMap` also has a `memory id` of `0`. Each `StableBTreeMap` instance must have a unique `memory id`. Once a `memory id` is allocated, it cannot be used with a different `StableBTreeMap`. This means you can't create another `StableBTreeMap` using the same `memory id`, and you can't change the key or value types of an existing `StableBTreeMap`. [This problem will be addressed](https://github.com/demergent-labs/azle/issues/843).
+This `StableBTreeMap` also has a `memory id` of `0`. Each `StableBTreeMap` instance must have a unique `memory id` between `0` and `254`. Once a `memory id` is allocated, it cannot be used with a different `StableBTreeMap`. This means you can't create another `StableBTreeMap` using the same `memory id`, and you can't change the key or value types of an existing `StableBTreeMap`. [This problem will be addressed to some extent](https://github.com/demergent-labs/azle/issues/843).
 
 Here's an example showing all of the basic `StableBTreeMap` operations:
 
 ```typescript
 import {
-    Canister,
-    Opt,
-    StableBTreeMap,
-    Tuple,
-    Vec,
     bool,
+    Canister,
     nat64,
     nat8,
+    Opt,
     query,
+    StableBTreeMap,
     text,
-    update
+    Tuple,
+    update,
+    Vec
 } from 'azle';
 
 const Key = nat8;
@@ -157,13 +157,13 @@ export default Canister({
     deleteUser: update([Principal], Result(User, AudioRecorderError), (id) => {
         const userOpt = users.get(id);
 
-        if (userOpt.length === 0) {
+        if ('None' in userOpt) {
             return Err({
                 UserDoesNotExist: id
             });
         }
 
-        const user = userOpt[0];
+        const user = userOpt.Some;
 
         user.recordingIds.forEach((recordingId) => {
             recordings.remove(recordingId);
@@ -179,13 +179,13 @@ export default Canister({
         (audio, name, userId) => {
             const userOpt = users.get(userId);
 
-            if (userOpt.length === 0) {
+            if ('None' in userOpt) {
                 return Err({
                     UserDoesNotExist: userId
                 });
             }
 
-            const user = userOpt[0];
+            const user = userOpt.Some;
 
             const id = generateId();
             const recording: typeof Recording = {
@@ -220,21 +220,21 @@ export default Canister({
         (id) => {
             const recordingOpt = recordings.get(id);
 
-            if (recordingOpt.length === 0) {
+            if ('None' in recordingOpt) {
                 return Err({ RecordingDoesNotExist: id });
             }
 
-            const recording = recordingOpt[0];
+            const recording = recordingOpt.Some;
 
             const userOpt = users.get(recording.userId);
 
-            if (userOpt.length === 0) {
+            if ('None' in userOpt) {
                 return Err({
                     UserDoesNotExist: recording.userId
                 });
             }
 
-            const user = userOpt[0];
+            const user = userOpt.Some;
 
             const updatedUser: typeof User = {
                 ...user,
@@ -268,13 +268,13 @@ Each entity gets its own `StableBTreeMap`:
 
 ```typescript
 import {
+    blob,
+    nat64,
     Principal,
     Record,
     StableBTreeMap,
-    Vec,
-    blob,
-    nat64,
-    text
+    text,
+    Vec
 } from 'azle';
 
 const User = Record({
@@ -296,24 +296,14 @@ let users = StableBTreeMap(Principal, User, 0);
 let recordings = StableBTreeMap(Principal, Recording, 1);
 ```
 
-Notice that each `StableBTreeMap` has a unique `memory id`. The maximum key and value sizes are also set according to the expected application usage.
-
-You can figure out the appropriate maximum key and value sizes by reasoning about your application and engaging in some trial and error using the `insert` method. Calling `insert` on a `StableBTreeMap` will throw an error which in some cases will have the information that you need to determine the maximum key or value size.
-
-If you attempt to insert a key or value that is too large, the `KeyTooLarge` and `ValueTooLarge` errors will show you the size of the value that you attempted to insert. You can increase the maximum key or value size based on the information you receive from the `KeyTooLarge` and `ValueTooLarge` errors and try inserting again.
-
-Thus through some trial and error you can whittle your way to a correct solution. In some cases all of your values will have an obvious static maximum size. In the audio recording example, trial and error revealed that `Principal` is most likely always 38 bytes, thus the maximum key size is set to 38.
-
-Maximum value sizes can be more tricky to figure out, especially if the values are records or variants with dynamic fields such as arrays. `User` has one such dynamic field, `recordingIds`. Since each recording id is a Principal, we know that each will take up 38 bytes. The other fields on `User` shouldn't take up too many bytes so we'll ignore them for our analysis.
-
-We've set the maximum value size of `User` to be 100_000 bytes. If we divide 100_00 by 38, we get ~2_631. This will result in each user being able to store around that many recordings. That's acceptable for our example, and so we'll go with it.
-
-As for `Recording`, the largest dynamic field is `audio`, which will be the actual bytes of the audio recording. We've set the maximum value size here to 5_000_000, which should allow for recordings of ~5 MB in size. That seems reasonable for our example, and so we'll go with it.
-
-As you can see, finding the correct maximum key and value sizes is a bit of an art right now. Combining some trial and error with reasoning about your specific application should get you a working solution in most cases. It's our hope that the need to specify maximum key and value sizes will be removed in the future.
+Notice that each `StableBTreeMap` has a unique `memory id`.
 
 ## Caveats
 
-### Keys
+### Performance
 
-You should be wary when using a `float64`, `float32`, `Service`, or `Func` in any type that is a key for a stable structure. These types do not have the ability to be strictly ordered in all cases. `Service` and `Func` will have no order. `float64` and `float32` will treat `NaN` as less than any other type. These caveats may impact key performance.
+Azle's `StableBTreeMap` uses Candid encoding and decoding to store and retrieve all values. Azle's Candid encoding/decoding implementation is currently not well optimized, and Candid may not be the most optimal encoding format overall, so you may experience heavy instruction usage when performing many `StableBTreeMap` operations in succession. A rough idea of the overhead from our preliminary testing is probably 1-2 million instructions for a full Candid encoding and decoding of values per `StableBTreeMap` operation.
+
+### Migrations
+
+Migrations must be performed manually by reading the values out of one `StableBTreeMap` and writing them into another. Once a `StableBTreeMap` is initialized to a specific `memory id`, that `memory id` cannot be changed unless the canister is completely wiped and initialized again.
