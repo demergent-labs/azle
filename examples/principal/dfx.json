@@ -2,11 +2,11 @@
     "canisters": {
         "principal": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle principal",
-            "root": "src",
-            "ts": "src/principal.ts",
-            "candid": "src/principal.did",
-            "wasm": ".azle/principal/principal.wasm.gz",
+            "candid": "src/index.did",
+            "wasm": ".azle/principal/principal.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/principal",
                 "node_compatibility": true

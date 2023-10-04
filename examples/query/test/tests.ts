@@ -1,5 +1,5 @@
 import { Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/rust_type_converions/rust_type_converions.did';
+import { _SERVICE } from '../dfx_generated/query/query.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(query_canister: ActorSubclass<_SERVICE>): Test[] {

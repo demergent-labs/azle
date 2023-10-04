@@ -1,110 +1,100 @@
 import {
     blob,
+    Canister,
     ic,
+    Err,
     nat64,
+    Ok,
     Opt,
     Principal,
-    $query,
+    query,
     Record,
     Result,
     StableBTreeMap,
-    $update,
+    text,
+    update,
     Variant,
-    Vec,
-    match
+    Vec
 } from 'azle';
 
-type User = Record<{
-    id: Principal;
-    createdAt: nat64;
-    recordingIds: Vec<Principal>;
-    username: string;
-}>;
+const User = Record({
+    id: Principal,
+    createdAt: nat64,
+    recordingIds: Vec(Principal),
+    username: text
+});
 
-type Recording = Record<{
-    id: Principal;
-    audio: blob;
-    createdAt: nat64;
-    name: string;
-    userId: Principal;
-}>;
-
-let users = new StableBTreeMap<Principal, User>(0, 38, 100_000);
-let recordings = new StableBTreeMap<Principal, Recording>(1, 38, 5_000_000);
-
-$update;
-export function createUser(username: string): User {
-    const id = generateId();
-    const user: User = {
-        id,
-        createdAt: ic.time(),
-        recordingIds: [],
-        username
-    };
-
-    users.insert(user.id, user);
-
-    return user;
-}
-
-$query;
-export function readUsers(): Vec<User> {
-    return users.values();
-}
-
-$query;
-export function readUserById(id: Principal): Opt<User> {
-    return users.get(id);
-}
-
-$update;
-export function deleteUser(id: Principal): Result<
-    User,
-    Variant<{
-        UserDoesNotExist: Principal;
-    }>
-> {
-    const user = users.get(id);
-
-    return match(user, {
-        Some: (user) => {
-            user.recordingIds.forEach((recordingId) => {
-                recordings.remove(recordingId);
-            });
-
-            users.remove(user.id);
-
-            return {
-                Ok: user
-            };
-        },
-        None: () => {
-            return {
-                Err: {
-                    UserDoesNotExist: id
-                }
-            };
-        }
-    });
-}
-
-$update;
-export function createRecording(
+const Recording = Record({
+    id: Principal,
     audio: blob,
-    name: string,
+    createdAt: nat64,
+    name: text,
     userId: Principal
-): Result<
-    Recording,
-    Variant<{
-        UserDoesNotExist: Principal;
-    }>
-> {
-    const user = users.get(userId);
+});
 
-    return match(user, {
-        Some: (user) => {
+const AudioRecorderError = Variant({
+    RecordingDoesNotExist: Principal,
+    UserDoesNotExist: Principal
+});
+
+let users = StableBTreeMap(Principal, User, 0);
+let recordings = StableBTreeMap(Principal, Recording, 1);
+
+export default Canister({
+    createUser: update([text], User, (username) => {
+        const id = generateId();
+        const user: typeof User = {
+            id,
+            createdAt: ic.time(),
+            recordingIds: [],
+            username
+        };
+
+        users.insert(user.id, user);
+
+        return user;
+    }),
+    readUsers: query([], Vec(User), () => {
+        return users.values();
+    }),
+    readUserById: query([Principal], Opt(User), (id) => {
+        return users.get(id);
+    }),
+    deleteUser: update([Principal], Result(User, AudioRecorderError), (id) => {
+        const userOpt = users.get(id);
+
+        if ('None' in userOpt) {
+            return Err({
+                UserDoesNotExist: id
+            });
+        }
+
+        const user = userOpt.Some;
+
+        user.recordingIds.forEach((recordingId) => {
+            recordings.remove(recordingId);
+        });
+
+        users.remove(user.id);
+
+        return Ok(user);
+    }),
+    createRecording: update(
+        [blob, text, Principal],
+        Result(Recording, AudioRecorderError),
+        (audio, name, userId) => {
+            const userOpt = users.get(userId);
+
+            if ('None' in userOpt) {
+                return Err({
+                    UserDoesNotExist: userId
+                });
+            }
+
+            const user = userOpt.Some;
+
             const id = generateId();
-            const recording: Recording = {
+            const recording: typeof Recording = {
                 id,
                 audio,
                 createdAt: ic.time(),
@@ -114,87 +104,60 @@ export function createRecording(
 
             recordings.insert(recording.id, recording);
 
-            const updatedUser: User = {
+            const updatedUser: typeof User = {
                 ...user,
                 recordingIds: [...user.recordingIds, recording.id]
             };
 
             users.insert(updatedUser.id, updatedUser);
 
-            return {
-                Ok: recording
-            };
-        },
-        None: () => {
-            return {
-                Err: {
-                    UserDoesNotExist: userId
-                }
-            };
+            return Ok(recording);
         }
-    });
-}
+    ),
+    readRecordings: query([], Vec(Recording), () => {
+        return recordings.values();
+    }),
+    readRecordingById: query([Principal], Opt(Recording), (id) => {
+        return recordings.get(id);
+    }),
+    deleteRecording: update(
+        [Principal],
+        Result(Recording, AudioRecorderError),
+        (id) => {
+            const recordingOpt = recordings.get(id);
 
-$query;
-export function readRecordings(): Vec<Recording> {
-    return recordings.values();
-}
+            if ('None' in recordingOpt) {
+                return Err({ RecordingDoesNotExist: id });
+            }
 
-$query;
-export function readRecordingById(id: Principal): Opt<Recording> {
-    return recordings.get(id);
-}
+            const recording = recordingOpt.Some;
 
-$update;
-export function deleteRecording(id: Principal): Result<
-    Recording,
-    Variant<{
-        RecordingDoesNotExist: Principal;
-        UserDoesNotExist: Principal;
-    }>
-> {
-    const recording = recordings.get(id);
+            const userOpt = users.get(recording.userId);
 
-    return match(recording, {
-        Some: (recording) => {
-            const user = users.get(recording.userId);
+            if ('None' in userOpt) {
+                return Err({
+                    UserDoesNotExist: recording.userId
+                });
+            }
 
-            return match(user, {
-                Some: (user) => {
-                    const updatedUser: User = {
-                        ...user,
-                        recordingIds: user.recordingIds.filter(
-                            (recordingId) =>
-                                recordingId.toText() !== recording.id.toText()
-                        )
-                    };
+            const user = userOpt.Some;
 
-                    users.insert(updatedUser.id, updatedUser);
-
-                    recordings.remove(id);
-
-                    return {
-                        Ok: recording
-                    };
-                },
-                None: () => {
-                    return {
-                        Err: {
-                            UserDoesNotExist: recording.userId
-                        }
-                    };
-                }
-            });
-        },
-        None: () => {
-            return {
-                Err: {
-                    RecordingDoesNotExist: id
-                }
+            const updatedUser: typeof User = {
+                ...user,
+                recordingIds: user.recordingIds.filter(
+                    (recordingId) =>
+                        recordingId.toText() !== recording.id.toText()
+                )
             };
+
+            users.insert(updatedUser.id, updatedUser);
+
+            recordings.remove(id);
+
+            return Ok(recording);
         }
-    });
-}
+    )
+});
 
 function generateId(): Principal {
     const randomBytes = new Array(29)

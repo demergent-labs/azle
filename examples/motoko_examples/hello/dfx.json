@@ -1,52 +1,30 @@
 {
     "canisters": {
-        "azle": {
+        "hello": {
             "type": "custom",
-            "build": "npx azle azle",
-            "root": "canisters/azle",
-            "ts": "canisters/azle/index.ts",
-            "candid": "canisters/azle/index.did",
-            "wasm": ".azle/azle/azle.wasm.gz",
+            "main": "src/hello/index.ts",
+            "build": "npx azle hello",
+            "candid": "src/hello/index.did",
+            "wasm": ".azle/hello/hello.wasm",
+            "gzip": true,
             "declarations": {
-                "output": "dfx_generated/azle",
+                "output": "dfx_generated/hello",
                 "node_compatibility": true
             }
         },
         "hello_assets": {
+            "type": "assets",
+            "dependencies": ["hello"],
             "frontend": {
-                "entrypoint": "canisters/hello_assets/src/index.html"
+                "entrypoint": "src/hello_assets/src/index.html"
             },
-            "source": ["canisters/hello_assets/assets", "dist/hello_assets/"],
-            "type": "assets"
-        },
-        "motoko": {
-            "type": "motoko",
-            "main": "canisters/motoko/main.mo",
-            "declarations": {
-                "output": "dfx_generated/motoko",
-                "node_compatibility": true
-            }
-        },
-        "rust": {
-            "type": "rust",
-            "package": "rust",
-            "candid": "canisters/rust/src/lib.did",
-            "declarations": {
-                "output": "dfx_generated/rust",
-                "node_compatibility": true
-            }
+            "source": ["src/hello_assets/assets", "dist/hello_assets/"]
         }
     },
     "defaults": {
         "build": {
             "args": "",
             "packtool": ""
-        }
-    },
-    "networks": {
-        "local": {
-            "bind": "127.0.0.1:8000",
-            "type": "ephemeral"
         }
     },
     "version": 1

@@ -1,58 +1,44 @@
 import {
+    bool,
     nat,
     nat64,
     Opt,
-    $query,
+    query,
     StableBTreeMap,
     Tuple,
-    $update,
+    update,
     Vec
 } from 'azle';
 import { User } from '../types';
 
-let stableMap11 = new StableBTreeMap<nat, User>(11, 100, 1_000);
+let stableMap11 = StableBTreeMap(nat, User, 11);
 
-$query;
-export function stableMap11ContainsKey(key: nat): boolean {
-    return stableMap11.containsKey(key);
-}
-
-$query;
-export function stableMap11Get(key: nat): Opt<User> {
-    return stableMap11.get(key);
-}
-
-$update;
-export function stableMap11Insert(key: nat, value: User): Opt<User> {
-    return stableMap11.insert(key, value);
-}
-
-$query;
-export function stableMap11IsEmpty(): boolean {
-    return stableMap11.isEmpty();
-}
-
-$query;
-export function stableMap11Items(): Vec<Tuple<[nat, User]>> {
-    return stableMap11.items();
-}
-
-$query;
-export function stableMap11Keys(): Vec<nat> {
-    return stableMap11.keys();
-}
-
-$query;
-export function stableMap11Len(): nat64 {
-    return stableMap11.len();
-}
-
-$update;
-export function stableMap11Remove(key: nat): Opt<User> {
-    return stableMap11.remove(key);
-}
-
-$query;
-export function stableMap11Values(): Vec<User> {
-    return stableMap11.values();
-}
+export const stableMap11Methods = {
+    stableMap11ContainsKey: query([nat], bool, (key) => {
+        return stableMap11.containsKey(key);
+    }),
+    stableMap11Get: query([nat], Opt(User), (key) => {
+        return stableMap11.get(key);
+    }),
+    stableMap11Insert: update([nat, User], Opt(User), (key, value) => {
+        return stableMap11.insert(key, value);
+    }),
+    stableMap11IsEmpty: query([], bool, () => {
+        return stableMap11.isEmpty();
+    }),
+    stableMap11Items: query([], Vec(Tuple(nat, User)), () => {
+        return stableMap11.items();
+    }),
+    stableMap11Keys: query([], Vec(nat), () => {
+        return stableMap11.keys();
+    }),
+    stableMap11Len: query([], nat64, () => {
+        return stableMap11.len();
+    }),
+    stableMap11Remove: update([nat], Opt(User), (key) => {
+        return stableMap11.remove(key);
+    }),
+    stableMap11Values: query([], Vec(User), () => {
+        return stableMap11.values();
+    })
+};

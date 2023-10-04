@@ -3,46 +3,65 @@ import {
     int,
     nat,
     nat64,
+    Null,
     Opt,
     Principal,
     Record,
     text,
     Variant
 } from '../../src/lib';
+import {
+    BadBurn,
+    BadFee,
+    Duplicate,
+    GenericError,
+    InsufficientFunds
+} from './errors';
 
 // Number of nanoseconds since the UNIX epoch in UTC timezone.
-export type ICRC1Timestamp = nat64;
+export type Timestamp = nat64;
+export const Timestamp = nat64;
 
-export type ICRC1Subaccount = blob;
+export type Subaccount = blob;
+export const Subaccount = blob;
 
-export type ICRC1Account = Record<{
-    owner: Principal;
-    subaccount: Opt<ICRC1Subaccount>;
-}>;
+export const Account = Record({
+    owner: Principal,
+    subaccount: Opt(Subaccount)
+});
 
-export type ICRC1TransferArgs = Record<{
-    from_subaccount: Opt<ICRC1Subaccount>;
-    to: ICRC1Account;
-    amount: nat;
-    fee: Opt<nat>;
-    memo: Opt<blob>;
-    created_at_time: Opt<ICRC1Timestamp>;
-}>;
+export const TransferArgs = Record({
+    from_subaccount: Opt(Subaccount),
+    to: Account,
+    amount: nat,
+    fee: Opt(nat),
+    memo: Opt(blob),
+    created_at_time: Opt(Timestamp)
+});
 
-export type ICRC1TransferError = Variant<{
-    BadFee: Record<{ expected_fee: nat }>;
-    BadBurn: Record<{ min_burn_amount: nat }>;
-    InsufficientFunds: Record<{ balance: nat }>;
-    TooOld: null;
-    CreatedInFuture: Record<{ ledger_time: ICRC1Timestamp }>;
-    Duplicate: Record<{ duplicate_of: nat }>;
-    TemporarilyUnavailable: null;
-    GenericError: Record<{ error_code: nat; message: text }>;
-}>;
+const CreatedInFuture = Record({
+    ledger_time: Timestamp
+});
 
-export type ICRC1Value = Variant<{
-    Nat: nat;
-    Int: int;
-    Text: text;
-    Blob: blob;
-}>;
+export const TransferError = Variant({
+    BadFee,
+    BadBurn,
+    InsufficientFunds,
+    TooOld: Null,
+    CreatedInFuture: CreatedInFuture,
+    Duplicate: Duplicate,
+    TemporarilyUnavailable: Null,
+    GenericError: GenericError
+});
+
+export const TransferResult = Variant({
+    Ok: nat,
+    Err: TransferError
+});
+
+export const Value = Variant({
+    Nat: nat,
+    Int: int,
+    Text: text,
+    Blob: blob
+});

@@ -1,14 +1,13 @@
-import { $heartbeat, $query } from 'azle';
+import { bool, Canister, heartbeat, query } from 'azle';
 
 let initialized = false;
 
-$heartbeat;
-export function heartbeat(): void {
-    initialized = true;
-    console.log('heartbeat initialized', initialized);
-}
-
-$query;
-export function getInitialized(): boolean {
-    return initialized;
-}
+export default Canister({
+    heartbeat: heartbeat(() => {
+        initialized = true;
+        console.log('heartbeat initialized', initialized);
+    }),
+    getInitialized: query([], bool, () => {
+        return initialized;
+    })
+});

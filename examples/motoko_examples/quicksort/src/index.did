@@ -1,0 +1,3 @@
+service: () -> {
+    sort: (vec int) -> (vec int) query;
+}

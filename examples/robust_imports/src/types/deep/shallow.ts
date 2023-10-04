@@ -1,2 +1,2 @@
-import { Service } from 'azle';
-export default Service;
+import { Canister } from 'azle';
+export default Canister;

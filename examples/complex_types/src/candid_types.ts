@@ -1,39 +1,41 @@
-// TODO it would be cool to add timestamps
+import { Record, Null, text, Variant, Vec, Recursive } from 'azle';
 
-import { Record, Variant, Vec } from 'azle';
+export const ReactionType = Variant({
+    Fire: Null,
+    ThumbsUp: Null,
+    ThumbsDown: Null
+});
 
-export type Post = Record<{
-    id: string;
-    author: User;
-    reactions: Vec<Reaction>;
-    text: string;
-    thread: Thread;
-}>;
+export const User = Recursive(() =>
+    Record({
+        id: text,
+        posts: Vec(Post),
+        reactions: Vec(Reaction),
+        threads: Vec(Thread),
+        username: text
+    })
+);
 
-export type Reaction = Record<{
-    id: string;
-    author: User;
-    post: Post;
-    reactionType: ReactionType;
-}>;
+export const Post = Recursive(() =>
+    Record({
+        id: text,
+        author: User,
+        reactions: Vec(Reaction),
+        text: text,
+        thread: Thread
+    })
+);
 
-export type ReactionType = Variant<{
-    Fire: null;
-    ThumbsUp: null;
-    ThumbsDown: null;
-}>;
+export const Thread = Record({
+    id: text,
+    author: User,
+    posts: Vec(Post),
+    title: text
+});
 
-export type Thread = Record<{
-    id: string;
-    author: User;
-    posts: Vec<Post>;
-    title: string;
-}>;
-
-export type User = Record<{
-    id: string;
-    posts: Vec<Post>;
-    reactions: Vec<Reaction>;
-    threads: Vec<Thread>;
-    username: string;
-}>;
+export const Reaction = Record({
+    id: text,
+    author: User,
+    post: Post,
+    reactionType: ReactionType
+});

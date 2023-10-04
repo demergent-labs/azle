@@ -2,22 +2,21 @@
     "canisters": {
         "ledger_canister": {
             "type": "custom",
+            "main": "src/ledger_canister/index.ts",
             "build": "npx azle ledger_canister",
-            "root": "canisters/ledger_canister",
-            "ts": "canisters/ledger_canister/ledger_canister.ts",
-            "candid": "canisters/ledger_canister/ledger_canister.did",
-            "wasm": ".azle/ledger_canister/ledger_canister.wasm.gz",
+            "candid": "src/ledger_canister/index.did",
+            "wasm": ".azle/ledger_canister/ledger_canister.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/ledger_canister",
                 "node_compatibility": true
             },
-            "env": ["ICP_CANISTER_PRINCIPAL"],
-            "opt_level": "1"
+            "env": ["ICP_CANISTER_PRINCIPAL"]
         },
         "icp_ledger": {
             "type": "custom",
-            "candid": "canisters/icp_ledger/ledger.private.did",
-            "wasm": "canisters/icp_ledger/ledger.wasm"
+            "candid": "src/icp_ledger/ledger.private.did",
+            "wasm": "src/icp_ledger/ledger.wasm"
         }
     }
 }

@@ -2,11 +2,11 @@
     "canisters": {
         "tuple_types": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle tuple_types",
-            "root": "src",
-            "ts": "src/tuple_types.ts",
-            "candid": "src/tuple_types.did",
-            "wasm": ".azle/tuple_types/tuple_types.wasm.gz",
+            "candid": "src/index.did",
+            "wasm": ".azle/tuple_types/tuple_types.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/tuple_types",
                 "node_compatibility": true

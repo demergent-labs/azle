@@ -7,6 +7,7 @@
     -   [tsconfig.json](#tsconfigjson)
     -   [dfx.json](#dfxjson)
     -   [Local deployment](#local-deployment)
+    -   [Common deployment issues](#common-deployment-issues)
     -   [Interacting with your canister from the command line](#interacting-with-your-canister-from-the-command-line)
     -   [Interacting with your canister from the web UI](#interacting-with-your-canister-from-the-web-ui)
 
@@ -30,6 +31,8 @@ npm run canister_deploy_local
 npm run canister_call_set_message
 npm run canister_call_get_message
 ```
+
+If you run into an error during deployment, see [the common deployment issues section](./deployment.md#common-deployment-issues).
 
 See the official [azle_hello_world](https://github.com/demergent-labs/azle_hello_world) example for more information.
 
@@ -63,60 +66,67 @@ Open up `azle_hello_world` in your text editor (we recommend [VS Code](https://c
 Here's the main code of the project, which you should put in the `azle_hello_world/src/index.ts` file of your canister:
 
 ```typescript
-import { $query, $update } from 'azle';
+import { Canister, query, text, update, Void } from 'azle';
 
 // This is a global variable that is stored on the heap
-let message: string = '';
+let message = '';
 
-// Query calls complete quickly because they do not go through consensus
-$query;
-export function getMessage(): string {
-    return message;
-}
-
-// Update calls take a few seconds to complete
-// This is because they persist state changes and go through consensus
-$update;
-export function setMessage(newMessage: string): void {
-    message = newMessage; // This change will be persisted
-}
+export default Canister({
+    // Query calls complete quickly because they do not go through consensus
+    getMessage: query([], text, () => {
+        return message;
+    }),
+    // Update calls take a few seconds to complete
+    // This is because they persist state changes and go through consensus
+    setMessage: update([text], Void, (newMessage) => {
+        message = newMessage; // This change will be persisted
+    })
+});
 ```
 
 Let's discuss each section of the code.
 
 ```typescript
-import { $query, $update } from 'azle';
+import { Canister, query, text, update, Void } from 'azle';
 ```
 
-The code starts off by importing the `$query` and `$update` annotations from `azle`. The `azle` module provides most of the Internet Computer (IC) APIs for your canister.
+The code starts off by importing `Canister`, `query`, `text`, `update` and `Void` from `azle`. The `azle` module provides most of the Internet Computer (IC) APIs for your canister.
 
 ```typescript
 // This is a global variable that is stored on the heap
-let message: string = '';
+let message = '';
 ```
 
-We have created a global variable to store the state of our application. This variable is in scope to all of the functions defined in this module. We have annotated it with a type and set it equal to an empty string.
+We have created a global variable to store the state of our application. This variable is in scope to all of the functions defined in this module. We have set it equal to an empty string.
+
+```typescript
+export default Canister({
+    ...
+});
+```
+
+The `Canister` function allows us to export our canister's definition to the Azle IC environment.
 
 ```typescript
 // Query calls complete quickly because they do not go through consensus
-$query;
-export function getMessage(): string {
+getMessage: query([], text, () => {
     return message;
-}
+}),
 ```
 
-We are exposing a canister query method here. When query methods are called they execute quickly because they do not have to go through consensus. This method simply returns our global `message` variable.
+We are exposing a canister query method here. This method simply returns our global `message` variable. We use a `CandidType` object called `text` to instruct Azle to encode the return value as a Candid `text` value. When query methods are called they execute quickly because they do not have to go through consensus.
 
 ```typescript
 // Update calls take a few seconds to complete
 // This is because they persist state changes and go through consensus
-$update;
-export function setMessage(newMessage: string): void {
+setMessage: update([text], Void, (newMessage) => {
     message = newMessage; // This change will be persisted
-}
+});
 ```
 
-We are exposing an update method here. When update methods are called they take a few seconds to complete. This is because they persist changes and go through consensus. A majority of nodes in a subnet must agree on all state changes introduced in calls to update methods. This method accepts a `string` from the caller and will store it in our global `message` variable.
+We are exposing an update method here. This method accepts a `string` from the caller and will store it in our global `message` variable. We use a `CandidType` object called `text` to instruct Azle to decode the `newMessage` parameter from a Candid `text` value to a JavaScript string value. Azle will infer the TypeScript type for `newMessage`. We use a `CandidType` object called `Void` to instruct Azle to encode the return value as the absence of a Candid value.
+
+When update methods are called they take a few seconds to complete. This is because they persist changes and go through consensus. A majority of nodes in a subnet must agree on all state changes introduced in calls to update methods.
 
 That's it! We've created a very simple getter/setter `Hello World` application. But no `Hello World` project is complete without actually yelling `Hello world`!
 
@@ -131,8 +141,6 @@ Create the following in `azle_hello_world/tsconfig.json`:
     "compilerOptions": {
         "strict": true,
         "target": "ES2020",
-        "experimentalDecorators": true,
-        "strictPropertyInitialization": false,
         "moduleResolution": "node",
         "allowJs": true,
         "outDir": "HACK_BECAUSE_OF_ALLOW_JS"
@@ -149,11 +157,11 @@ Create the following in `azle_hello_world/dfx.json`:
     "canisters": {
         "azle_hello_world": {
             "type": "custom",
-            "build": "npx azle azle_hello_world",
-            "root": "src",
-            "ts": "src/index.ts",
+            "main": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/azle_hello_world/azle_hello_world.wasm.gz"
+            "build": "npx azle azle_hello_world",
+            "wasm": ".azle/azle_hello_world/azle_hello_world.wasm",
+            "gzip": true
         }
     }
 }
@@ -174,6 +182,10 @@ Then deploy the canister:
 ```bash
 dfx deploy
 ```
+
+### Common deployment issues
+
+If you run into an error during deployment, see [the common deployment issues section](./deployment.md#common-deployment-issues).
 
 ### Interacting with your canister from the command line
 

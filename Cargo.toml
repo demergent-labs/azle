@@ -1,5 +1,2 @@
 [workspace]
-members = [
-    "src/compiler/typescript_to_rust/azle_generate",
-    "src/compiler/typescript_to_rust/azle_vm_value_derive"
-]
+members = ["src/compiler/rust/canister", "src/compiler/rust/canister_methods"]

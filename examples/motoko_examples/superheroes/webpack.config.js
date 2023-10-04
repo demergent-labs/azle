@@ -39,7 +39,7 @@ function initCanisterIds() {
 initCanisterIds();
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const asset_entry = path.join('canisters', 'www', 'index.html');
+const asset_entry = path.join('src', 'www', 'index.html');
 
 module.exports = {
     target: 'web',
@@ -76,7 +76,13 @@ module.exports = {
     // tutorial, uncomment the following lines:
     module: {
         rules: [
-            { test: /\.(ts|tsx|jsx)$/, loader: 'ts-loader' },
+            {
+                test: /\.(ts|tsx|jsx)$/,
+                loader: 'ts-loader',
+                options: {
+                    configFile: 'tsconfig.webpack.json'
+                }
+            },
             { test: /\.css$/, use: ['style-loader', 'css-loader'] }
         ]
     },
@@ -87,7 +93,7 @@ module.exports = {
         }),
         new webpack.EnvironmentPlugin({
             NODE_ENV: 'development',
-            AZLE_CANISTER_ID: canisters['azle']
+            SUPERHEROES_CANISTER_ID: canisters['superheroes']
         }),
         new webpack.ProvidePlugin({
             Buffer: [require.resolve('buffer/'), 'Buffer'],
@@ -105,9 +111,8 @@ module.exports = {
                 }
             }
         },
-        hot: 'only',
-        static: {
-            directory: path.resolve(__dirname, './canisters/www')
-        }
+        hot: true,
+        contentBase: path.resolve(__dirname, './src/www'),
+        watchContentBase: true
     }
 };

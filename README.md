@@ -15,25 +15,15 @@
 
 # Azle (Beta)
 
-TypeScript CDK for the [Internet Computer](https://internetcomputer.org/).
+TypeScript and JavaScript CDK for the [Internet Computer](https://internetcomputer.org/).
 
 ## Disclaimer
 
 Azle may have unknown security vulnerabilities due to the following:
 
--   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 -   Azle does not yet have extensive automated property tests
 -   Azle does not yet have multiple independent security reviews/audits
--   Azle heavily relies on Boa which is [self-proclaimed to be experimental](https://github.com/boa-dev/boa#boa)
-
-## Roadmap
-
-We hope to get to a production-ready 1.0 in 2024. The following are the major blockers to 1.0:
-
--   QuickJS/SpiderMonkey integration for performance, security, and stability
--   Broad npm package support
--   Extensive automated property testing
--   Multiple independent security reviews/audits
+-   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 
 ## Documentation
 
@@ -42,6 +32,22 @@ See [The Azle Book](https://demergent-labs.github.io/azle/).
 ## Discussion
 
 Feel free to open issues or join us in the [Discord channel](https://discord.gg/5Hb6rM2QUM).
+
+## Roadmap
+
+We hope to move Azle from beta to release candidates by the end of 2023, and to move from release candidates to 1.0 in early 2024.
+
+### Blockers for release candidates
+
+-   Good automated property test coverage
+-   Settling of API/syntax
+-   Good npm package support
+
+### Blockers for 1.0
+
+-   Extensive automated property test coverage
+-   Multiple independent security reviews/audits
+-   Broad npm package support
 
 ## Contributing
 

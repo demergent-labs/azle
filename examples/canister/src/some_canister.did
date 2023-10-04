@@ -1,0 +1,4 @@
+service: () -> {
+    query1: () -> (bool) query;
+    update1: () -> (text);
+}

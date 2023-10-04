@@ -1,42 +1,25 @@
 # service
 
-This section is a work in progress.
-
 JavaScript classes that inherit from the Azle type `Service` correspond to the [Candid service type](https://internetcomputer.org/docs/current/references/candid-ref#type-service-) and will become child classes capable of creating instances that can perform cross-canister calls at runtime.
 
 TypeScript:
 
 ```typescript
-import {
-    CallResult,
-    Principal,
-    $query,
-    Result,
-    Service,
-    serviceQuery,
-    serviceUpdate,
-    $update
-} from 'azle';
+import { Canister, Principal, bool, ic, query, text, update } from 'azle';
 
-class SomeService extends Service {
-    @serviceQuery
-    query1: () => CallResult<boolean>;
+const SomeCanister = Canister({
+    query1: query([], bool),
+    update1: update([], text)
+});
 
-    @serviceUpdate
-    update1: () => CallResult<string>;
-}
-
-$query;
-export function getService(): SomeService {
-    return new SomeService(Principal.fromText('aaaaa-aa'));
-}
-
-$update;
-export async function callService(
-    service: SomeService
-): Promise<Result<string, string>> {
-    return await service.update1().call();
-}
+export default Canister({
+    getService: query([], SomeCanister, () => {
+        return SomeCanister(Principal.fromText('aaaaa-aa'));
+    }),
+    callService: update([SomeCanister], text, (service) => {
+        return ic.call(service.update1);
+    })
+});
 ```
 
 Candid:

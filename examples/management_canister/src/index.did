@@ -1,0 +1,16 @@
+service: () -> {
+    executeCreateCanister: () -> (record {canister_id:principal});
+    executeDeleteCanister: (principal) -> (bool);
+    executeDepositCycles: (principal) -> (bool);
+    executeInstallCode: (principal, vec nat8) -> (bool);
+    executeStartCanister: (principal) -> (bool);
+    executeStopCanister: (principal) -> (bool);
+    executeUninstallCode: (principal) -> (bool);
+    executeUpdateSettings: (principal) -> (bool);
+    getCanisterInfo: (record {canister_id:principal; num_requested_changes:opt nat64}) -> (record {controllers:vec principal; module_hash:opt vec nat8; recent_changes:vec record {timestamp_nanos:nat64; canister_version:nat64; origin:variant {from_user:record {user_id:principal}; from_canister:record {canister_version:opt nat64; canister_id:principal}}; details:variant {creation:record {controllers:vec principal}; code_deployment:record {mode:variant {reinstall; upgrade; install}; module_hash:vec nat8}; controllers_change:record {controllers:vec principal}; code_uninstall}}; total_num_changes:nat64});
+    getCanisterStatus: (record {canister_id:principal}) -> (record {status:variant {stopped; stopping; running}; memory_size:nat; cycles:nat; settings:record {freezing_threshold:nat; controllers:vec principal; memory_allocation:nat; compute_allocation:nat}; module_hash:opt vec nat8});
+    getCreatedCanisterId: () -> (principal) query;
+    getRawRand: () -> (vec nat8);
+    provisionalCreateCanisterWithCycles: () -> (record {canister_id:principal});
+    provisionalTopUpCanister: (principal, nat) -> (bool);
+}

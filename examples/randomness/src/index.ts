@@ -1,6 +1,15 @@
-import { float64, $update } from 'azle';
+import { bool, Canister, float64, postUpgrade, query, update } from 'azle';
 
-$update;
-export function randomNumber(): float64 {
-    return Math.random();
-}
+let redeployed = false;
+
+export default Canister({
+    postUpgrade: postUpgrade([], () => {
+        redeployed = true;
+    }),
+    getRedeployed: query([], bool, () => {
+        return redeployed;
+    }),
+    randomNumber: update([], float64, () => {
+        return Math.random();
+    })
+});

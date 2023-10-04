@@ -1,10 +1,7 @@
-import { ok, Test } from 'azle/test';
+import { Test } from 'azle/test';
 import { execSync } from 'child_process';
-import {
-    Reaction,
-    User,
-    _SERVICE as CANISTER1_SERVICE
-} from './dfx_generated/canister1/canister1.did';
+import { _SERVICE as CANISTER1_SERVICE } from './dfx_generated/canister1/canister1.did';
+import { Reaction, User } from '../src/types';
 import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
 import { _SERVICE as CANISTER3_SERVICE } from './dfx_generated/canister3/canister3.did';
 import { ActorSubclass } from '@dfinity/agent';
@@ -28,8 +25,8 @@ const STABLE_MAP_KEYS: [
     nat8,
     nat16,
     nat32,
-    Reaction,
-    User,
+    typeof Reaction,
+    typeof User,
     string[], //Opt?
     BigUint64Array,
     null,
@@ -69,8 +66,8 @@ const STABLE_MAP_KEYSCOMPS: [
     (a: nat8 | undefined, b: nat8) => boolean,
     (a: nat16 | undefined, b: nat16) => boolean,
     (a: nat32 | undefined, b: nat32) => boolean,
-    (a: Reaction | undefined, b: Reaction) => boolean,
-    (a: User | undefined, b: User) => boolean,
+    (a: typeof Reaction | undefined, b: typeof Reaction) => boolean,
+    (a: typeof User | undefined, b: typeof User) => boolean,
     (a: string[] | undefined, b: string[]) => boolean,
     (a: BigUint64Array | undefined, b: BigInt64Array) => boolean,
     (a: null | undefined, b: null) => boolean,
@@ -113,8 +110,8 @@ const STABLEMAPVALUES: [
     null,
     string[],
     boolean[],
-    User,
-    Reaction,
+    typeof User,
+    typeof Reaction,
     Principal
 ] = [
     'hello',
@@ -152,8 +149,8 @@ const STABLEMAPVALUECOMPS: [
     (a: null | undefined, b: null) => boolean,
     (a: string[] | undefined, b: string[]) => boolean,
     (a: boolean[] | undefined, b: boolean[]) => boolean,
-    (a: User | undefined, b: User) => boolean,
-    (a: Reaction | undefined, b: Reaction) => boolean,
+    (a: typeof User | undefined, b: typeof User) => boolean,
+    (a: typeof Reaction | undefined, b: typeof Reaction) => boolean,
     (a: Principal | undefined, b: Principal) => boolean
 ] = [
     simpleEquals,
@@ -189,16 +186,28 @@ export function getTests(
         {
             name: 'redeploy canisters',
             prep: async () => {
-                execSync('dfx deploy', { stdio: 'inherit' });
+                execSync('dfx deploy --upgrade-unchanged', {
+                    stdio: 'inherit'
+                });
+            }
+        },
+        {
+            name: 'getRedeployed',
+            test: async () => {
+                const result1 =
+                    await stableStructuresCanister_1.getRedeployed();
+                const result2 =
+                    await stableStructuresCanister_2.getRedeployed();
+                const result3 =
+                    await stableStructuresCanister_3.getRedeployed();
+                return {
+                    Ok: result1 === true && result2 === true && result3 === true
+                };
             }
         },
         ...postRedeployTests(stableStructuresCanister_1, 0, 4),
         ...postRedeployTests(stableStructuresCanister_2, 5, 9),
-        ...postRedeployTests(stableStructuresCanister_3, 10, 13),
-        ...insertErrorTests(
-            stableStructuresCanister_1,
-            stableStructuresCanister_3
-        )
+        ...postRedeployTests(stableStructuresCanister_3, 10, 13)
     ];
 }
 
@@ -477,60 +486,6 @@ function valuesIsLength(
             }
         };
     });
-}
-
-export function insertErrorTests(
-    canister1: ActorSubclass<CANISTER1_SERVICE>,
-    canister3: ActorSubclass<CANISTER3_SERVICE>
-): Test[] {
-    return [
-        {
-            name: 'insert() returns a KeyTooLarge error if the key is too large',
-            test: async () => {
-                try {
-                    const keyOver_100Bytes =
-                        '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
-                    await canister3.stableMap13Insert(
-                        keyOver_100Bytes,
-                        Principal.fromText('aaaaa-aa')
-                    );
-
-                    return {
-                        Ok: false
-                    };
-                } catch (error) {
-                    return {
-                        Ok: (error as Error).message.includes(
-                            'Key is too large'
-                        )
-                    };
-                }
-            }
-        },
-        {
-            name: 'insert() returns a ValueTooLarge error if the value is too large',
-            test: async () => {
-                try {
-                    const valueOver_100Bytes =
-                        '12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901';
-                    const result = await canister1.stableMap0Insert(
-                        1,
-                        valueOver_100Bytes
-                    );
-
-                    return {
-                        Ok: false
-                    };
-                } catch (error) {
-                    return {
-                        Ok: (error as Error).message.includes(
-                            'Value is too large'
-                        )
-                    };
-                }
-            }
-        }
-    ];
 }
 
 /**

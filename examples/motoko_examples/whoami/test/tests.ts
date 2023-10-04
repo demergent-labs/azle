@@ -1,5 +1,5 @@
 import { getCanisterId, Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
+import { _SERVICE } from './dfx_generated/whoami/whoami.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { execSync } from 'child_process';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
@@ -10,7 +10,7 @@ function createIdentity(seed: number): SignIdentity {
     return Ed25519KeyIdentity.generate(Uint8Array.from(seed1));
 }
 
-export const canisterId = getCanisterId('azle');
+export const canisterId = getCanisterId('whoami');
 
 const installationPrincipal = execSync(`dfx identity get-principal`)
     .toString()
@@ -81,7 +81,7 @@ export function getTests(
             name: 'redeploy',
             prep: async () => {
                 execSync(
-                    `dfx deploy ${canisterName} --argument '(principal "${callingPrincipal}")'`,
+                    `dfx deploy --upgrade-unchanged ${canisterName} --argument '(principal "${callingPrincipal}")'`,
                     {
                         stdio: 'inherit'
                     }

@@ -3,7 +3,6 @@ import { Principal } from '@dfinity/principal';
 import { execSync } from 'child_process';
 import { _SERVICE } from '../dfx_generated/robust_imports/robust_imports.did';
 import { ActorSubclass } from '@dfinity/agent';
-import { match } from 'azle';
 
 export function getTests(
     robustImportsCanister: ActorSubclass<_SERVICE>
@@ -80,10 +79,10 @@ function getImportCoverageTests(ic: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'returnFathomlessService',
+            name: 'returnFathomlessCanister',
             test: async () => {
                 const result = execSync(
-                    `dfx canister call robust_imports returnFathomlessService '(service "aaaaa-aa")'`
+                    `dfx canister call robust_imports returnFathomlessCanister '(service "aaaaa-aa")'`
                 )
                     .toString()
                     .trim();
@@ -153,10 +152,10 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'check service',
+            name: 'check canister',
             test: async () => {
                 const result = execSync(
-                    `dfx canister call robust_imports checkService '(service "aaaaa-aa")'`
+                    `dfx canister call robust_imports checkCanister '(service "aaaaa-aa")'`
                 )
                     .toString()
                     .trim();
@@ -323,7 +322,7 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'deploy',
             prep: async () => {
-                execSync(`dfx deploy`, {
+                execSync(`dfx deploy --upgrade-unchanged`, {
                     stdio: 'inherit'
                 });
             }
@@ -442,10 +441,10 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'check service alias',
+            name: 'check canister alias',
             test: async () => {
                 const result = execSync(
-                    `dfx canister call robust_imports checkServiceAlias '(service "aaaaa-aa")'`
+                    `dfx canister call robust_imports checkCanisterAlias '(service "aaaaa-aa")'`
                 )
                     .toString()
                     .trim();
@@ -514,9 +513,12 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
                     { star: true },
                     { star: true }
                 );
-                return {
-                    Ok: match(result, { Ok: () => true, Err: () => false })
-                };
+
+                if ('Ok' in result) {
+                    return { Ok: true };
+                }
+
+                return { Ok: false };
             }
         }
     ];

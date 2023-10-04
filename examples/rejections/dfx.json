@@ -2,26 +2,26 @@
     "canisters": {
         "rejections": {
             "type": "custom",
+            "main": "src/rejections/index.ts",
             "build": "npx azle rejections",
-            "root": "canisters/rejections",
-            "ts": "canisters/rejections/rejections.ts",
-            "candid": "canisters/rejections/rejections.did",
-            "wasm": ".azle/rejections/rejections.wasm.gz",
+            "candid": "src/rejections/index.did",
+            "wasm": ".azle/rejections/rejections.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/rejections",
                 "node_compatibility": true
             },
-            "env": ["SOME_SERVICE_PRINCIPAL"]
+            "env": ["SOME_CANISTER_PRINCIPAL"]
         },
-        "some_service": {
+        "some_canister": {
             "type": "custom",
-            "build": "npx azle some_service",
-            "root": "canisters/some_service",
-            "ts": "canisters/some_service/some_service.ts",
-            "candid": "canisters/some_service/some_service.did",
-            "wasm": ".azle/some_service/some_service.wasm.gz",
+            "main": "src/some_canister/index.ts",
+            "build": "npx azle some_canister",
+            "candid": "src/some_canister/index.did",
+            "wasm": ".azle/some_canister/some_canister.wasm",
+            "gzip": true,
             "declarations": {
-                "output": "test/dfx_generated/some_service",
+                "output": "test/dfx_generated/some_canister",
                 "node_compatibility": true
             }
         }

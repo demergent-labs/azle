@@ -1,44 +1,21 @@
-export {
-    stableMap10ContainsKey,
-    stableMap10Get,
-    stableMap10Insert,
-    stableMap10IsEmpty,
-    stableMap10Items,
-    stableMap10Keys,
-    stableMap10Len,
-    stableMap10Remove,
-    stableMap10Values
-} from './stable_map_10';
-export {
-    stableMap11ContainsKey,
-    stableMap11Get,
-    stableMap11Insert,
-    stableMap11IsEmpty,
-    stableMap11Items,
-    stableMap11Keys,
-    stableMap11Len,
-    stableMap11Remove,
-    stableMap11Values
-} from './stable_map_11';
-export {
-    stableMap12ContainsKey,
-    stableMap12Get,
-    stableMap12Insert,
-    stableMap12IsEmpty,
-    stableMap12Items,
-    stableMap12Keys,
-    stableMap12Len,
-    stableMap12Remove,
-    stableMap12Values
-} from './stable_map_12';
-export {
-    stableMap13ContainsKey,
-    stableMap13Get,
-    stableMap13Insert,
-    stableMap13IsEmpty,
-    stableMap13Items,
-    stableMap13Keys,
-    stableMap13Len,
-    stableMap13Remove,
-    stableMap13Values
-} from './stable_map_13';
+import { bool, Canister, postUpgrade, query } from 'azle';
+
+import { stableMap10Methods } from './stable_map_10';
+import { stableMap11Methods } from './stable_map_11';
+import { stableMap12Methods } from './stable_map_12';
+import { stableMap13Methods } from './stable_map_13';
+
+let redeployed = false;
+
+export default Canister({
+    postUpgrade: postUpgrade([], () => {
+        redeployed = true;
+    }),
+    getRedeployed: query([], bool, () => {
+        return redeployed;
+    }),
+    ...stableMap10Methods,
+    ...stableMap11Methods,
+    ...stableMap12Methods,
+    ...stableMap13Methods
+});

@@ -2,11 +2,11 @@
     "canisters": {
         "null_example": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle null_example",
-            "root": "src",
-            "ts": "src/null_example.ts",
-            "candid": "src/null_example.did",
-            "wasm": ".azle/null_example/null_example.wasm.gz",
+            "candid": "src/index.did",
+            "wasm": ".azle/null_example/null_example.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/null_example",
                 "node_compatibility": true

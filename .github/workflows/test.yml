@@ -13,6 +13,12 @@
 # The basic-integration-tests matrix spins up one job per combination of example directory and code source (repo or npm).
 # The check-basic-integration-tests-success job is designed to ensure that all jobs spun up from the matrix in the basic-integration-tests have succeeded
 
+# All Examples TODO restore when https://github.com/demergent-labs/azle/issues/1192 is resolved
+# "examples/generics",
+# "examples/run_time_errors",
+
+# TODO http_counter tests are being skipped until this is resolved: https://forum.dfinity.org/t/lookuppathabsent/23461
+
 name: Azle Tests
 on:
     push:
@@ -64,6 +70,8 @@ jobs:
                     "examples/bytes",
                     "examples/call_raw",
                     "examples/candid_encoding",
+                    "examples/canister",
+                    "examples/ckbtc",
                     "examples/complex_init",
                     "examples/complex_types",
                     "examples/composite_queries",
@@ -73,13 +81,12 @@ jobs:
                     "examples/date",
                     "examples/ethereum_json_rpc",
                     "examples/func_types",
-                    "examples/generics",
                     "examples/guard_functions",
                     "examples/heartbeat",
                     "examples/ic_api",
+                    "examples/icrc",
                     "examples/imports",
                     "examples/init",
-                    "examples/inline_types",
                     "examples/inspect_message",
                     "examples/key_value_store",
                     "examples/ledger_canister",
@@ -110,18 +117,17 @@ jobs:
                     "examples/principal",
                     "examples/query",
                     "examples/randomness",
+                    "examples/recursion",
                     "examples/rejections",
                     "examples/robust_imports",
-                    "examples/run_time_errors",
-                    "examples/rust_type_conversions",
-                    "examples/service",
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",
                     "examples/stable_memory",
                     "examples/stable_structures",
                     "examples/timers",
                     "examples/tuple_types",
-                    "examples/update"
+                    "examples/update",
+                    "examples/vanilla_js"
                   ]
                   END
                   )
@@ -167,7 +173,7 @@ jobs:
               with:
                   node-version: 18
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              run: DFX_VERSION=0.14.2 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+              run: DFX_VERSION=0.15.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/cache@v3
               with:

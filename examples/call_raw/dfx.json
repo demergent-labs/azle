@@ -2,11 +2,11 @@
     "canisters": {
         "call_raw": {
             "type": "custom",
+            "main": "src/call_raw.ts",
             "build": "npx azle call_raw",
-            "root": "src",
-            "ts": "src/call_raw.ts",
             "candid": "src/call_raw.did",
-            "wasm": ".azle/call_raw/call_raw.wasm.gz",
+            "wasm": ".azle/call_raw/call_raw.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/call_raw",
                 "node_compatibility": true

@@ -34,14 +34,8 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
                     ledgerCanisterAddress
                 );
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok.e8s === 100_000_000_000n
+                    Ok: result.e8s === 100_000_000_000n
                 };
             }
         },
@@ -50,14 +44,8 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await ledgerCanister.getTransferFee();
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok.transfer_fee.e8s === 10_000n
+                    Ok: result.transfer_fee.e8s === 10_000n
                 };
             }
         },
@@ -89,15 +77,9 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
                     length: 100n
                 });
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
-                const transfer_1 = result.Ok.blocks[0].transaction.operation[0];
-                const transfer_2 = result.Ok.blocks[1].transaction.operation[0];
-                const transfer_3 = result.Ok.blocks[2].transaction.operation[0];
+                const transfer_1 = result.blocks[0].transaction.operation[0];
+                const transfer_2 = result.blocks[1].transaction.operation[0];
+                const transfer_3 = result.blocks[2].transaction.operation[0];
 
                 return {
                     Ok:
@@ -118,14 +100,8 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await ledgerCanister.getSymbol();
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok === 'ICP'
+                    Ok: result === 'ICP'
                 };
             }
         },
@@ -134,14 +110,8 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await ledgerCanister.getName();
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok === 'Internet Computer'
+                    Ok: result === 'Internet Computer'
                 };
             }
         },
@@ -150,14 +120,8 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await ledgerCanister.getDecimals();
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok === 8
+                    Ok: result === 8
                 };
             }
         },
@@ -166,14 +130,8 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await ledgerCanister.getArchives();
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok.archives.length === 0
+                    Ok: result.archives.length === 0
                 };
             }
         },
@@ -193,14 +151,8 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
                     []
                 );
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: 'Ok' in result.Ok && result.Ok.Ok === 3n
+                    Ok: 'Ok' in result && result.Ok === 3n
                 };
             }
         },
@@ -217,14 +169,8 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
                     ledgerCanisterAddress
                 );
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok.e8s === 99_999_970_000n
+                    Ok: result.e8s === 99_999_970_000n
                 };
             }
         }
@@ -270,17 +216,11 @@ function getTransferErrorTests(
                     []
                 );
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
                     Ok:
-                        'Err' in result.Ok &&
-                        'BadFee' in result.Ok.Err &&
-                        result.Ok.Err.BadFee.expected_fee.e8s === 10_000n
+                        'Err' in result &&
+                        'BadFee' in result.Err &&
+                        result.Err.BadFee.expected_fee.e8s === 10_000n
                 };
             }
         },
@@ -300,17 +240,11 @@ function getTransferErrorTests(
                     []
                 );
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
                     Ok:
-                        'Err' in result.Ok &&
-                        'InsufficientFunds' in result.Ok.Err &&
-                        result.Ok.Err.InsufficientFunds.balance.e8s === 0n
+                        'Err' in result &&
+                        'InsufficientFunds' in result.Err &&
+                        result.Err.InsufficientFunds.balance.e8s === 0n
                 };
             }
         },
@@ -352,17 +286,11 @@ function getTransferErrorTests(
                     ]
                 );
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
                     Ok:
-                        'Err' in result.Ok &&
-                        'TxTooOld' in result.Ok.Err &&
-                        result.Ok.Err.TxTooOld.allowed_window_nanos ===
+                        'Err' in result &&
+                        'TxTooOld' in result.Err &&
+                        result.Err.TxTooOld.allowed_window_nanos ===
                             86_400_000_000_000n
                 };
             }
@@ -386,16 +314,8 @@ function getTransferErrorTests(
                     ]
                 );
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok:
-                        'Err' in result.Ok &&
-                        'TxCreatedInFuture' in result.Ok.Err
+                    Ok: 'Err' in result && 'TxCreatedInFuture' in result.Err
                 };
             }
         }

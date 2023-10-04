@@ -21,19 +21,19 @@ export function getTests(
         {
             name: 'send notification',
             test: async () => {
-                const result = await canister1.sendNotification();
+                try {
+                    await canister1.sendNotification();
 
-                await new Promise((resolve) => setTimeout(resolve, 5000));
+                    await new Promise((resolve) => setTimeout(resolve, 5000));
 
-                if (!ok(result)) {
                     return {
-                        Err: result.Err
+                        Ok: true
+                    };
+                } catch (e: any) {
+                    return {
+                        Err: e
                     };
                 }
-
-                return {
-                    Ok: true
-                };
             }
         },
         {

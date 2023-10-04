@@ -1,0 +1,8 @@
+service: () -> {
+    initializeSupply: (text, text, text, nat64) -> (bool);
+    transfer: (text, text, nat64) -> (bool);
+    balance: (text) -> (nat64) query;
+    ticker: () -> (text) query;
+    name: () -> (text) query;
+    totalSupply: () -> (nat64) query;
+}

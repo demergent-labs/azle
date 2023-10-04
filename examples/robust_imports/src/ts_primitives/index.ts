@@ -1,21 +1,18 @@
-import { $query } from 'azle';
+import { bool, float64, int, Null, query, text, Void } from 'azle';
 
-export type MyBool = boolean;
-export type MyNull = null;
-export type MyString = string;
-export type MyBigInt = bigint;
-export type MyNumber = number;
-export type MyVoid = void;
+export const MyBool = bool;
+export const MyNull = Null;
+export const MyString = text;
+export const MyBigInt = int;
+export const MyNumber = float64;
+export const MyVoid = Void;
 
-$query;
-export function checkPrimAliases(
-    param1: MyBool,
-    param2: MyNull,
-    param3: MyString,
-    param4: MyBigInt,
-    param5: MyNumber
-): MyVoid {
-    if (param1) {
-        console.log(`${param2}, ${param3}, ${param4}, ${param5}`);
+export const checkPrimAliases = query(
+    [MyBool, MyNull, MyString, MyBigInt, MyNumber],
+    MyVoid,
+    (param1, param2, param3, param4, param5) => {
+        if (param1) {
+            console.log(`${param2}, ${param3}, ${param4}, ${param5}`);
+        }
     }
-}
+);

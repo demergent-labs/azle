@@ -2,11 +2,11 @@
     "canisters": {
         "optional_types": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle optional_types",
-            "root": "src",
-            "ts": "src/optional_types.ts",
-            "candid": "src/optional_types.did",
-            "wasm": ".azle/optional_types/optional_types.wasm.gz",
+            "candid": "src/index.did",
+            "wasm": ".azle/optional_types/optional_types.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/optional_types",
                 "node_compatibility": true

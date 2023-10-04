@@ -1,24 +1,21 @@
 # vec
 
-This section is a work in progress.
-
 The Azle type `Vec` corresponds to the [Candid type vec](https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t) and will become a [JavaScript array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) of the specified type at runtime (except for `Vec<nat8>` which will become a `Uint8Array`, thus it is recommended to use the `blob` type instead of `Vec<nat8>`).
 
 TypeScript:
 
 ```typescript
-import { int32, $query, Vec } from 'azle';
+import { Canister, Vec, int32, query } from 'azle';
 
-$query;
-export function getNumbers(): Vec<int32> {
-    return [0, 1, 2, 3];
-}
-
-$query;
-export function printNumbers(numbers: Vec<int32>): Vec<int32> {
-    console.log(typeof numbers);
-    return numbers;
-}
+export default Canister({
+    getNumbers: query([], Vec(int32), () => {
+        return [0, 1, 2, 3];
+    }),
+    printNumbers: query([Vec(int32)], Vec(int32), (numbers) => {
+        console.log(typeof numbers);
+        return numbers;
+    })
+});
 ```
 
 Candid:

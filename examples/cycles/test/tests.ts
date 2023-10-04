@@ -1,4 +1,4 @@
-import { ok, Test } from 'azle/test';
+import { Test } from 'azle/test';
 import { _SERVICE as CYCLESCANISTERSERVICE } from './dfx_generated/cycles/cycles.did';
 import { _SERVICE as INTERMEDIARYCANISTERSERVICE } from './dfx_generated/intermediary/intermediary.did';
 import { ActorSubclass } from '@dfinity/agent';
@@ -59,10 +59,6 @@ export function getTests(
             test: async () => {
                 const refundResult = await intermediaryCanister.sendCycles();
 
-                if (!ok(refundResult)) {
-                    return { Err: refundResult.Err };
-                }
-
                 // TODO It would be a bit messy and difficult to try and do this
                 // const intermediaryCallResult =
                 //     await intermediaryCanister.getCanisterBalance();
@@ -75,7 +71,7 @@ export function getTests(
                 //     await cyclesCanister.getCanisterBalance128();
 
                 return {
-                    Ok: refundResult.Ok === 500_000n
+                    Ok: refundResult === 500_000n
                     // intermediaryCallResult === 3_999_999_500_000n &&
                     // cyclesCallResult === 4_000_000_500_000n &&
                     // intermediaryCanister128Result === 3_999_999_500_000n &&
@@ -88,10 +84,6 @@ export function getTests(
             test: async () => {
                 const refundResult = await intermediaryCanister.sendCycles128();
 
-                if (!ok(refundResult)) {
-                    return { Err: refundResult.Err };
-                }
-
                 // TODO It would be a bit messy and difficult to try and do this
                 // const intermediaryCallResult =
                 //     await intermediaryCanister.getCanisterBalance();
@@ -104,7 +96,7 @@ export function getTests(
                 //     await cyclesCanister.getCanisterBalance128();
 
                 return {
-                    Ok: refundResult.Ok === 500_000n
+                    Ok: refundResult === 500_000n
                     // intermediaryCallResult === 3_999_999_000_000n &&
                     // cyclesCallResult === 4_000_001_000_000n &&
                     // intermediaryCanister128Result === 3_999_999_000_000n &&
@@ -118,12 +110,6 @@ export function getTests(
                 const sendCyclesNotifyResult =
                     await intermediaryCanister.sendCyclesNotify();
 
-                if ('Err' in sendCyclesNotifyResult) {
-                    return {
-                        Err: JSON.stringify(sendCyclesNotifyResult.Err)
-                    };
-                }
-
                 // TODO It would be a bit messy and difficult to try and do this
                 // const intermediaryCallResult =
                 //     await intermediaryCanister.getCanisterBalance();
@@ -136,7 +122,7 @@ export function getTests(
                 //     await cyclesCanister.getCanisterBalance128();
 
                 return {
-                    Ok: sendCyclesNotifyResult.Ok === null
+                    Ok: sendCyclesNotifyResult === undefined
                     // intermediaryCallResult === 3_999_998_500_000n &&
                     // cyclesCallResult === 4_000_001_500_000n &&
                     // intermediaryCanister128Result === 3_999_998_500_000n &&
@@ -150,12 +136,6 @@ export function getTests(
                 const sendCycles128NotifyResult =
                     await intermediaryCanister.sendCycles128Notify();
 
-                if ('Err' in sendCycles128NotifyResult) {
-                    return {
-                        Err: JSON.stringify(sendCycles128NotifyResult.Err)
-                    };
-                }
-
                 // TODO It would be a bit messy and difficult to try and do this
                 // const intermediaryCallResult =
                 //     await intermediaryCanister.getCanisterBalance();
@@ -168,7 +148,7 @@ export function getTests(
                 //     await cyclesCanister.getCanisterBalance128();
 
                 return {
-                    Ok: sendCycles128NotifyResult.Ok === null
+                    Ok: sendCycles128NotifyResult === undefined
                     // intermediaryCallResult === 3_999_998_000_000n &&
                     // cyclesCallResult === 4_000_002_000_000n &&
                     // intermediaryCanister128Result === 3_999_998_000_000n &&

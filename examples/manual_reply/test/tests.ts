@@ -64,16 +64,6 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         {
-            name: 'update reply with inlineType',
-            test: async () => {
-                const result = await manualReplyCanister.updateInlineType();
-
-                return {
-                    Ok: result[0] === 'Hello' && result[1] === 'World'
-                };
-            }
-        },
-        {
             name: 'update reply with int8',
             test: async () => {
                 const result = await manualReplyCanister.updateInt8();
@@ -109,9 +99,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await manualReplyCanister.updateVoid();
 
                 return {
-                    // The candid return type is generated incorrectly so the
-                    // agent converts the returned `undefined` value to `null`
-                    Ok: result === null
+                    Ok: result === undefined
                 };
             }
         },
@@ -261,9 +249,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await manualReplyCanister.queryVoid();
 
                 return {
-                    // The candid return type is generated incorrectly so the
-                    // agent converts the returned `undefined` value to `null`
-                    Ok: result === null
+                    Ok: result === undefined
                 };
             }
         },
@@ -338,10 +324,10 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
                         record.int === 42n &&
                         record.text === 'text' &&
                         record.bool === true &&
-                        record.blob.every(
+                        record.myBlob.every(
                             (byte, index) => blob[index] === byte
                         ) &&
-                        'Medium' in record.variant
+                        'Medium' in record.myVariant
                 };
             }
         }

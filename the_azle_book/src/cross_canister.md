@@ -22,203 +22,160 @@ Examples:
 
 Canisters are generally able to call the query or update methods of other canisters in any subnet. We refer to these types of calls as cross-canister calls.
 
-A cross-canister call begins with a definition of the canister to be called, referred to as a service.
+A cross-canister call begins with a definition of the canister to be called.
 
-Imagine a simple service called `token_canister`:
-
-```typescript
-import { ic, match, nat64, Principal, StableBTreeMap, $update } from 'azle';
-
-let accounts = new StableBTreeMap<Principal, nat64>(0, 38, 15);
-
-$update;
-export function transfer(to: Principal, amount: nat64): nat64 {
-    const from = ic.caller();
-
-    const fromBalance = match(accounts.get(from), {
-        Some: (some) => some,
-        None: () => 0n
-    });
-    const toBalance = match(accounts.get(to), {
-        Some: (some) => some,
-        None: () => 0n
-    });
-
-    accounts.insert(from, fromBalance - amount);
-    accounts.insert(to, toBalance + amount);
-
-    return amount;
-}
-```
-
-Here's how you would create its service definition:
-
-```typescript
-import { CallResult, Principal, nat64, Service, serviceUpdate } from 'azle';
-
-class TokenCanister extends Service {
-    @serviceUpdate
-    transfer: (to: Principal, amount: nat64) => CallResult<nat64>;
-}
-```
-
-Once you have a service definition you can instantiate it with the canister's `Principal` and then invoke its methods.
-
-Here's how to instantiate `TokenCanister`:
-
-```typescript
-const tokenCanister = new TokenCanister(
-    Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
-);
-```
-
-And here's a more complete example of a canister called `payout_canister` that performs a cross-canister call to `token_canister`:
+Imagine a simple canister called `token_canister`:
 
 ```typescript
 import {
-    CallResult,
+    Canister,
+    ic,
     nat64,
+    Opt,
     Principal,
-    Result,
-    Service,
-    serviceUpdate,
-    $update
+    StableBTreeMap,
+    update
 } from 'azle';
 
-class TokenCanister extends Service {
-    @serviceUpdate
-    transfer: (to: Principal, amount: nat64) => CallResult<nat64>;
-}
+let accounts = StableBTreeMap(Principal, nat64, 0);
 
-const tokenCanister = new TokenCanister(
-    Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
-);
+export default Canister({
+    transfer: update([Principal, nat64], nat64, (to, amount) => {
+        const from = ic.caller();
 
-$update;
-export async function payout(
-    to: Principal,
-    amount: nat64
-): Promise<Result<nat64, string>> {
-    return await tokenCanister.transfer(to, amount).call();
+        const fromBalance = getBalance(accounts.get(from));
+        const toBalance = getBalance(accounts.get(to));
+
+        accounts.insert(from, fromBalance - amount);
+        accounts.insert(to, toBalance + amount);
+
+        return amount;
+    })
+});
+
+function getBalance(accountOpt: Opt<nat64>): nat64 {
+    if ('None' in accountOpt) {
+        return 0n;
+    } else {
+        return accountOpt.Some;
+    }
 }
 ```
 
-Notice that the `tokenCanister.transfer` method, because it is a cross-canister method, returns a `CallResult`. All cross-canister calls return `CallResult`, which has an `Ok` or `Err` property depending on if the cross-canister call was successful or not.
+Now that you have the canister definition, you can import and instantiate it in another canister:
 
-The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a `CallResult`. Azle does not throw on cross-canister calls. Wrapping your cross-canister call in a `try...catch` most likely won't do anything useful.
+```typescript
+import { Canister, ic, nat64, Principal, update } from 'azle';
+import TokenCanister from './token_canister';
 
-Let's add to our example code and explore adding some practical result-based error-handling to stop people from stealing tokens.
+const tokenCanister = TokenCanister(
+    Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
+);
+
+export default Canister({
+    payout: update([Principal, nat64], nat64, async (to, amount) => {
+        return await ic.call(tokenCanister.transfer, {
+            args: [to, amount]
+        });
+    })
+});
+```
+
+If you don't have the actual definition of the token canister with the canister method implementations, you can always create your own canister definition without method implementations:
+
+```typescript
+import { Canister, ic, nat64, Principal, update } from 'azle';
+
+const TokenCanister = Canister({
+    transfer: update([Principal, nat64], nat64)
+});
+
+const tokenCanister = TokenCanister(
+    Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
+);
+
+export default Canister({
+    payout: update([Principal, nat64], nat64, async (to, amount) => {
+        return await ic.call(tokenCanister.transfer, {
+            args: [to, amount]
+        });
+    })
+});
+```
+
+The IC guarantees that cross-canister calls will return. This means that, generally speaking, you will always receive a response from `ic.call`. If there are errors during the call, `ic.call` will throw. Wrapping your cross-canister call in a `try...catch` allows you to handle these errors.
+
+Let's add to our example code and explore adding some practical error-handling to stop people from stealing tokens.
 
 `token_canister`:
 
 ```typescript
 import {
+    Canister,
     ic,
-    match,
     nat64,
+    Opt,
     Principal,
-    Result,
     StableBTreeMap,
-    $update,
-    Variant
+    update
 } from 'azle';
 
-let accounts = new StableBTreeMap<Principal, nat64>(0, 38, 15);
+let accounts = StableBTreeMap(Principal, nat64, 0);
 
-$update;
-export function transfer(
-    to: Principal,
-    amount: nat64
-): Variant<
-    Result<
-        nat64,
-        Variant<{
-            InsufficientBalance: nat64;
-        }>
-    >
-> {
-    const from = ic.caller();
+export default Canister({
+    transfer: update([Principal, nat64], nat64, (to, amount) => {
+        const from = ic.caller();
 
-    const fromBalance = match(accounts.get(from), {
-        Some: (some) => some,
-        None: () => 0n
-    });
+        const fromBalance = getBalance(accounts.get(from));
 
-    if (fromBalance < amount) {
-        return {
-            Err: {
-                InsufficientBalance: fromBalance
-            }
-        };
+        if (amount > fromBalance) {
+            throw new Error(`${from} has an insufficient balance`);
+        }
+
+        const toBalance = getBalance(accounts.get(to));
+
+        accounts.insert(from, fromBalance - amount);
+        accounts.insert(to, toBalance + amount);
+
+        return amount;
+    })
+});
+
+function getBalance(accountOpt: Opt<nat64>): nat64 {
+    if ('None' in accountOpt) {
+        return 0n;
+    } else {
+        return accountOpt.Some;
     }
-
-    const toBalance = match(accounts.get(to), {
-        Some: (some) => some,
-        None: () => 0n
-    });
-
-    accounts.insert(from, fromBalance - amount);
-    accounts.insert(to, toBalance + amount);
-
-    return {
-        Ok: amount
-    };
 }
 ```
 
 `payout_canister`:
 
 ```typescript
-import {
-    CallResult,
-    match,
-    nat64,
-    Principal,
-    Result,
-    Service,
-    serviceUpdate,
-    $update,
-    Variant
-} from 'azle';
+import { Canister, ic, nat64, Principal, update } from 'azle';
+import TokenCanister from './index';
 
-class TokenCanister extends Service {
-    @serviceUpdate
-    transfer: (
-        to: Principal,
-        amount: nat64
-    ) => CallResult<
-        Result<
-            nat64,
-            Variant<{
-                InsufficientBalance: nat64;
-            }>
-        >
-    >;
-}
-
-const tokenCanister = new TokenCanister(
-    Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
+const tokenCanister = TokenCanister(
+    Principal.fromText('bkyz2-fmaaa-aaaaa-qaaaq-cai')
 );
 
-$update;
-export async function payout(
-    to: Principal,
-    amount: nat64
-): Promise<Result<nat64, string>> {
-    const callResult = await tokenCanister.transfer(to, amount).call();
+export default Canister({
+    payout: update([Principal, nat64], nat64, async (to, amount) => {
+        try {
+            return await ic.call(tokenCanister.transfer, {
+                args: [to, amount]
+            });
+        } catch (error) {
+            console.log(error);
+        }
 
-    return match(callResult, {
-        Ok: (transferResult) =>
-            match(transferResult, {
-                Ok: (ok) => ({ Ok: ok }),
-                Err: (err) => ({ Err: JSON.stringify(err) })
-            }),
-        Err: (err) => ({ Err: err })
-    });
-}
+        return 0n;
+    })
+});
 ```
 
-Azle provides a `match` function that will help you handle variant branches. This provides some benefits over using `in`, such as `if ('Err' in result)` or `if ('Ok' in result)`. There are other ways to check for the `Ok` or `Err` properties as well, feel free to experiment with the way that you prefer. They all have trade-offs.
+Throwing will allow you to express error conditions and halt execution, but you may find embracing the `Result` variant as a better solution for error handling because of its composability and predictability.
 
 So far we have only shown a cross-canister call from an update method. Update methods can call other update methods or query methods (but not composite query methods as discussed below). If an update method calls a query method, that query method will be called in replicated mode. Replicated mode engages the consensus process, but for queries the state will still be discarded.
 
@@ -227,84 +184,63 @@ Cross-canister calls can also be initiated from query methods. These are known a
 Here's an example of a composite query method:
 
 ```typescript
-import {
-    CallResult,
-    Principal,
-    $query,
-    Result,
-    Service,
-    serviceQuery
-} from 'azle';
+import { bool, Canister, ic, Principal, query } from 'azle';
 
-class SomeCanister extends Service {
-    @serviceQuery
-    queryForBoolean: () => CallResult<boolean>;
-}
+const SomeCanister = Canister({
+    queryForBoolean: query([], bool)
+});
 
-const someCanister = new SomeCanister(
+const someCanister = SomeCanister(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
-$query;
-export async function querySomeCanister(): Promise<Result<boolean, string>> {
-    return await someCanister.queryForBoolean().call();
-}
+export default Canister({
+    querySomeCanister: query([], bool, async () => {
+        return await ic.call(someCanister.queryForBoolean);
+    })
+});
 ```
 
-You can expect cross-canister calls within the same subnet to take up to a few seconds to complete, and cross-canister calls across subnets [take about double that time](https://forum.dfinity.org/t/can-i-run-multiple-inter-canister-update-calls-in-parallel/13115/6).
+You can expect cross-canister calls within the same subnet to take up to a few seconds to complete, and cross-canister calls across subnets [take about double that time](https://forum.dfinity.org/t/can-i-run-multiple-inter-canister-update-calls-in-parallel/13115/6). Composite queries should be much faster, similar to query calls in latency.
 
 If you don't need to wait for your cross-canister call to return, you can use `notify`:
 
 ```typescript
-import {
-    CallResult,
-    Principal,
-    RejectionCode,
-    Result,
-    Service,
-    serviceUpdate,
-    $update
-} from 'azle';
+import { Canister, ic, Principal, update, Void } from 'azle';
 
-class SomeCanister extends Service {
-    @serviceUpdate
-    receiveNotification: () => CallResult<void>;
-}
+const SomeCanister = Canister({
+    receiveNotification: update([], Void)
+});
 
-const someCanister = new SomeCanister(
+const someCanister = SomeCanister(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
-$update;
-export function sendNotification(): Result<null, RejectionCode> {
-    return someCanister.receiveNotification().notify();
-}
+export default Canister({
+    sendNotification: update([], Void, () => {
+        return ic.notify(someCanister.receiveNotification);
+    })
+});
 ```
 
-If you need to send cycles with your cross-canister call, you can call `cycles` before calling `call` or `notify`:
+If you need to send cycles with your cross-canister call, you can add `cycles` to the `config` object of `ic.notify`:
 
 ```typescript
-import {
-    CallResult,
-    Principal,
-    RejectionCode,
-    Result,
-    Service,
-    serviceUpdate,
-    $update
-} from 'azle';
+import { Canister, ic, Principal, update, Void } from 'azle';
 
-class SomeCanister extends Service {
-    @serviceUpdate
-    receiveNotification: () => CallResult<void>;
-}
+const SomeCanister = Canister({
+    receiveNotification: update([], Void)
+});
 
-const someCanister = new SomeCanister(
+const someCanister = SomeCanister(
     Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
 );
 
-$update;
-export function sendNotification(): Result<null, RejectionCode> {
-    return someCanister.receiveNotification().cycles(1_000_000n).notify();
-}
+export default Canister({
+    sendNotification: update([], Void, () => {
+        return ic.notify(someCanister.receiveNotification, {
+            cycles: 1_000_000n
+        });
+    })
+});
 ```

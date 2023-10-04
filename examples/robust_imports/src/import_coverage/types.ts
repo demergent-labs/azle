@@ -61,7 +61,7 @@ import cavernousDefault, {
     DeepVariant as CavernousVariant
 } from '../types/deep';
 //6 Type import
-import type { Opt, Vec as CoveredVec } from 'azle';
+import { Opt, Vec as CoveredVec } from 'azle';
 //7 Default import as
 import { default as defaultInt16 } from '../types/deep';
 
@@ -111,7 +111,7 @@ export {};
 export { DeepVariant };
 export { ProfoundInt8 as DeepInt8 };
 export {
-    deepDefault as fathomlessService,
+    deepDefault as fathomlessCanister,
     deepStar as fathomlessStar,
     DeepRecord as CoveredRecord,
     CavernousRecord,
@@ -141,4 +141,4 @@ export { DeepInt8 as FathomlessInt } from '../types/deep';
 // export type ProfoundInt = profoundStar.DeepInt8;
 export { DeepInt8 as ProfoundInt } from '../types/deep';
 //5) export default
-export default deepStar.deepAzle.$query;
+export default deepStar.deepAzle.query;

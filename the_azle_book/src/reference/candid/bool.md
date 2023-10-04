@@ -1,24 +1,21 @@
 # bool
 
-This section is a work in progress.
-
 The TypeScript type `boolean` corresponds to the [Candid type bool](https://internetcomputer.org/docs/current/references/candid-ref#type-bool) and will become a [JavaScript Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) at runtime.
 
 TypeScript:
 
 ```typescript
-import { $query } from 'azle';
+import { Canister, bool, query } from 'azle';
 
-$query;
-export function getBool(): boolean {
-    return true;
-}
-
-$query;
-export function printBool(bool: boolean): boolean {
-    console.log(typeof bool);
-    return bool;
-}
+export default Canister({
+    getBool: query([], bool, () => {
+        return true;
+    }),
+    printBool: query([bool], bool, (bool) => {
+        console.log(typeof bool);
+        return bool;
+    })
+});
 ```
 
 Candid:

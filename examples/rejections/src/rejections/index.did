@@ -1,0 +1,7 @@
+service: () -> {
+    getRejectionCodeCanisterError: () -> (variant {NoError; CanisterError; SysTransient; DestinationInvalid; Unknown; SysFatal; CanisterReject});
+    getRejectionCodeCanisterReject: () -> (variant {NoError; CanisterError; SysTransient; DestinationInvalid; Unknown; SysFatal; CanisterReject});
+    getRejectionCodeDestinationInvalid: () -> (variant {NoError; CanisterError; SysTransient; DestinationInvalid; Unknown; SysFatal; CanisterReject});
+    getRejectionCodeNoError: () -> (variant {NoError; CanisterError; SysTransient; DestinationInvalid; Unknown; SysFatal; CanisterReject});
+    getRejectionMessage: (text) -> (text);
+}

@@ -1,4 +1,4 @@
 import * as azle from 'azle';
 
-export type StarRecord = azle.Record<{ star: boolean }>;
-export type StartRecordAlias<T extends object> = azle.Record<T>;
+export const StarRecord = azle.Record({ star: azle.bool });
+export const StartRecordAlias = azle.Record;

@@ -1,44 +1,23 @@
 {
     "canisters": {
-        "azle": {
+        "phone_book": {
             "type": "custom",
-            "build": "npx azle azle",
-            "root": "canisters/azle",
-            "ts": "canisters/azle/index.ts",
-            "candid": "canisters/azle/index.did",
-            "wasm": ".azle/azle/azle.wasm.gz",
+            "main": "src/phone_book/index.ts",
+            "build": "npx azle phone_book",
+            "candid": "src/phone_book/index.did",
+            "wasm": ".azle/phone_book/phone_book.wasm",
+            "gzip": true,
             "declarations": {
-                "output": "dfx_generated/azle",
-                "node_compatibility": true
-            }
-        },
-        "motoko": {
-            "type": "motoko",
-            "main": "canisters/motoko/main.mo",
-            "declarations": {
-                "output": "dfx_generated/motoko",
-                "node_compatibility": true
-            }
-        },
-        "rust": {
-            "type": "rust",
-            "package": "rust",
-            "candid": "canisters/rust/src/lib.did",
-            "declarations": {
-                "output": "dfx_generated/rust",
-                "node_compatibility": true
+                "output": "src/declarations/phone_book",
+                "node_compatibility": false
             }
         },
         "www": {
-            "frontend": {
-                "entrypoint": "canisters/www/public/index.html"
-            },
-            "source": ["canisters/www/assets", "dist/www/"],
             "type": "assets",
-            "declarations": {
-                "output": "dfx_generated/www",
-                "node_compatibility": true
-            }
+            "frontend": {
+                "entrypoint": "src/www/public/index.html"
+            },
+            "source": ["src/www/assets", "dist/www/"]
         }
     }
 }

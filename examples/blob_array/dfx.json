@@ -1,14 +1,14 @@
 {
     "canisters": {
-        "azle": {
+        "blob_array": {
             "type": "custom",
-            "build": "npx azle azle",
-            "root": "canisters/azle",
-            "ts": "canisters/azle/index.ts",
-            "candid": "canisters/azle/index.did",
-            "wasm": ".azle/azle/azle.wasm.gz",
+            "main": "src/index.ts",
+            "build": "npx azle blob_array",
+            "candid": "src/index.did",
+            "wasm": ".azle/blob_array/blob_array.wasm",
+            "gzip": true,
             "declarations": {
-                "output": "dfx_generated/azle",
+                "output": "test/dfx_generated/blob_array",
                 "node_compatibility": true
             }
         }

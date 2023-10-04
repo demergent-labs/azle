@@ -1,51 +1,39 @@
-import { $query, Func, Principal, Query } from 'azle';
+import { func, Principal, Void } from 'azle';
 
-$query;
-export function returnNonArrayValueAsInvalidFunc(): Func<Query<() => void>> {
+@func([], Void, 'query')
+export class MyFunc {}
+
+export function returnNonArrayValueAsInvalidFunc(): MyFunc {
     // @ts-expect-error
     return 'invalid type';
 }
 
-$query;
-export function returnEmptyObjectAsInvalidFunc(): Func<Query<() => void>> {
+export function returnEmptyObjectAsInvalidFunc(): MyFunc {
     // @ts-expect-error
     return {};
 }
 
-$query;
-export function returnEmptyArrayAsInvalidFunc(): Func<Query<() => void>> {
+export function returnEmptyArrayAsInvalidFunc(): MyFunc {
     // @ts-expect-error
     return [];
 }
 
-$query;
-export function returnNonPrincipalValueAsInvalidFunc(): Func<
-    Query<() => void>
-> {
+export function returnNonPrincipalValueAsInvalidFunc(): MyFunc {
     // @ts-expect-error
     return ['non-principal value', 'methodName'];
 }
 
-$query;
-export function returnEmptyObjectPrincipalAsInvalidFunc(): Func<
-    Query<() => void>
-> {
+export function returnEmptyObjectPrincipalAsInvalidFunc(): MyFunc {
     // @ts-expect-error
     return [{}, 'methodName'];
 }
 
-$query;
-export function returnArrayWithOnlyPrincipalAsInvalidFunc(): Func<
-    Query<() => void>
-> {
+export function returnArrayWithOnlyPrincipalAsInvalidFunc(): MyFunc {
     // @ts-expect-error
     return [Principal.fromText('aaaaa-aa')];
 }
 
-$query;
-export function returnNonStringCanisterMethodNameAsInvalidFunc(): Func<
-    Query<() => void>
-> {
+export function returnNonStringCanisterMethodNameAsInvalidFunc(): MyFunc {
     // @ts-expect-error
     return [Principal.fromText('aaaaa-aa'), false];
 }

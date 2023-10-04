@@ -2,11 +2,11 @@
     "canisters": {
         "cycles": {
             "type": "custom",
+            "main": "src/cycles/index.ts",
             "build": "npx azle cycles",
-            "root": "canisters/cycles",
-            "ts": "canisters/cycles/cycles.ts",
-            "candid": "canisters/cycles/cycles.did",
-            "wasm": ".azle/cycles/cycles.wasm.gz",
+            "candid": "src/cycles/index.did",
+            "wasm": ".azle/cycles/cycles.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/cycles",
                 "node_compatibility": true
@@ -14,11 +14,11 @@
         },
         "intermediary": {
             "type": "custom",
+            "main": "src/intermediary/index.ts",
             "build": "npx azle intermediary",
-            "root": "canisters/intermediary",
-            "ts": "canisters/intermediary/intermediary.ts",
-            "candid": "canisters/intermediary/intermediary.did",
-            "wasm": ".azle/intermediary/intermediary.wasm.gz",
+            "candid": "src/intermediary/index.did",
+            "wasm": ".azle/intermediary/intermediary.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/intermediary",
                 "node_compatibility": true

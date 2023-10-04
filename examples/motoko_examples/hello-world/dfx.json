@@ -1,31 +1,14 @@
 {
     "canisters": {
-        "azle": {
+        "hello_world": {
             "type": "custom",
-            "build": "npx azle azle",
-            "root": "canisters/azle",
-            "ts": "canisters/azle/index.ts",
-            "candid": "canisters/azle/index.did",
-            "wasm": ".azle/azle/azle.wasm.gz",
+            "main": "src/index.ts",
+            "build": "npx azle hello_world",
+            "candid": "src/index.did",
+            "wasm": ".azle/hello_world/hello_world.wasm",
+            "gzip": true,
             "declarations": {
-                "output": "dfx_generated/azle",
-                "node_compatibility": true
-            }
-        },
-        "motoko": {
-            "type": "motoko",
-            "main": "canisters/motoko/main.mo",
-            "declarations": {
-                "output": "dfx_generated/motoko",
-                "node_compatibility": true
-            }
-        },
-        "rust": {
-            "type": "rust",
-            "package": "rust",
-            "candid": "canisters/rust/src/lib.did",
-            "declarations": {
-                "output": "dfx_generated/rust",
+                "output": "test/dfx_generated/hello_world",
                 "node_compatibility": true
             }
         }

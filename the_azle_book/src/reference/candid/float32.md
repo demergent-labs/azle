@@ -1,24 +1,21 @@
 # float32
 
-This section is a work in progress.
-
 The Azle type `float32` corresponds to the [Candid type float32](https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64) and will become a [JavaScript Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) at runtime.
 
 TypeScript:
 
 ```typescript
-import { float32, $query } from 'azle';
+import { Canister, float32, query } from 'azle';
 
-$query;
-export function getFloat32(): float32 {
-    return Math.PI;
-}
-
-$query;
-export function printFloat32(float32: float32): float32 {
-    console.log(typeof float32);
-    return float32;
-}
+export default Canister({
+    getFloat32: query([], float32, () => {
+        return Math.PI;
+    }),
+    printFloat32: query([float32], float32, (float32) => {
+        console.log(typeof float32);
+        return float32;
+    })
+});
 ```
 
 Candid:

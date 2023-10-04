@@ -1,0 +1,25 @@
+service: () -> {
+    manualQuery: (text) -> (text) query;
+    manualUpdate: (text) -> (text);
+    queryBlob: () -> (vec nat8) query;
+    queryFloat32: () -> (float32) query;
+    queryInt8: () -> (int8) query;
+    queryNat: () -> (nat) query;
+    queryNull: () -> (null) query;
+    queryRecord: () -> (record {id:text; orbitals:vec record {electrons:nat8; layer:nat8}; state:variant {Gas:variant {Elemental; Mixed; Toxic}; Solid:record {element:text}; Liquid}}) query;
+    queryReserved: () -> (reserved) query;
+    queryString: () -> (text) query;
+    queryVariant: () -> (variant {Elemental; Mixed; Toxic}) query;
+    queryVoid: () -> () query;
+    replyRaw: () -> (record {int:int; bool:bool; text:text; myBlob:vec nat8; myVariant:variant {Large; Small; Medium}});
+    updateBlob: () -> (vec nat8);
+    updateFloat32: () -> (float32);
+    updateInt8: () -> (int8);
+    updateNat: () -> (nat);
+    updateNull: () -> (null);
+    updateRecord: () -> (record {id:text; orbitals:vec record {electrons:nat8; layer:nat8}; state:variant {Gas:variant {Elemental; Mixed; Toxic}; Solid:record {element:text}; Liquid}});
+    updateReserved: () -> (reserved);
+    updateString: () -> (text);
+    updateVariant: () -> (variant {Elemental; Mixed; Toxic});
+    updateVoid: () -> ();
+}

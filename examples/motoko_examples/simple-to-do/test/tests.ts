@@ -1,6 +1,6 @@
 import { Test } from 'azle/test';
-import { ToDo } from '../canisters/azle';
-import { _SERVICE } from '../dfx_generated/azle/azle.did';
+import { ToDo } from '../src';
+import { _SERVICE } from './dfx_generated/simple_to_do/simple_to_do.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 const FIRST_TODO_DESCRIPTION = 'Write tests for the simple to do list example';

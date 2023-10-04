@@ -2,11 +2,11 @@
     "canisters": {
         "bitcoin": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle bitcoin",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/bitcoin/bitcoin.wasm.gz",
+            "wasm": ".azle/bitcoin/bitcoin.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/bitcoin",
                 "node_compatibility": true

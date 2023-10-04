@@ -1,0 +1,9 @@
+type rec_28 = record {text; opt rec_28};
+type rec_33 = record {text; opt rec_33};
+type rec_36 = record {text; opt rec_36};
+service: () -> {
+	create: (record {superpowers:opt rec_28; name:text}) -> (nat32) ;
+	deleteHero: (nat32) -> (bool) ;
+	read: (nat32) -> (opt record {superpowers:opt rec_33; name:text}) query;
+	update: (nat32, record {superpowers:opt rec_36; name:text}) -> (bool) ;
+}

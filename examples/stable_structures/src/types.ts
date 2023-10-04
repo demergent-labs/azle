@@ -1,15 +1,15 @@
-import { Record, Variant, Vec } from 'azle';
+import { Null, Record, text, Variant, Vec } from 'azle';
 
-export type BlogPost = Record<{
-    title: string;
-}>;
+export const BlogPost = Record({
+    title: text
+});
 
-export type Reaction = Variant<{
-    Happy: null;
-    Sad: null;
-}>;
+export const Reaction = Variant({
+    Happy: Null,
+    Sad: Null
+});
 
-export type User = Record<{
-    username: string;
-    posts: Vec<BlogPost>;
-}>;
+export const User = Record({
+    username: text,
+    posts: Vec(BlogPost)
+});

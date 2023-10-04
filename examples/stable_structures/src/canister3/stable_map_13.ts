@@ -1,60 +1,48 @@
 import {
+    bool,
     nat64,
     Opt,
     Principal,
-    $query,
+    query,
     StableBTreeMap,
+    text,
     Tuple,
-    $update,
+    update,
     Vec
 } from 'azle';
 
-let stableMap13 = new StableBTreeMap<string, Principal>(13, 100, 1_000);
+let stableMap13 = StableBTreeMap(text, Principal, 13);
 
-$query;
-export function stableMap13ContainsKey(key: string): boolean {
-    return stableMap13.containsKey(key);
-}
-
-$query;
-export function stableMap13Get(key: string): Opt<Principal> {
-    return stableMap13.get(key);
-}
-
-$update;
-export function stableMap13Insert(
-    key: string,
-    value: Principal
-): Opt<Principal> {
-    return stableMap13.insert(key, value);
-}
-
-$query;
-export function stableMap13IsEmpty(): boolean {
-    return stableMap13.isEmpty();
-}
-
-$query;
-export function stableMap13Items(): Vec<Tuple<[string, Principal]>> {
-    return stableMap13.items();
-}
-
-$query;
-export function stableMap13Keys(): Vec<string> {
-    return stableMap13.keys();
-}
-
-$query;
-export function stableMap13Len(): nat64 {
-    return stableMap13.len();
-}
-
-$update;
-export function stableMap13Remove(key: string): Opt<Principal> {
-    return stableMap13.remove(key);
-}
-
-$query;
-export function stableMap13Values(): Vec<Principal> {
-    return stableMap13.values();
-}
+export const stableMap13Methods = {
+    stableMap13ContainsKey: query([text], bool, (key) => {
+        return stableMap13.containsKey(key);
+    }),
+    stableMap13Get: query([text], Opt(Principal), (key) => {
+        return stableMap13.get(key);
+    }),
+    stableMap13Insert: update(
+        [text, Principal],
+        Opt(Principal),
+        (key, value) => {
+            return stableMap13.insert(key, value);
+        }
+    ),
+    stableMap13IsEmpty: query([], bool, () => {
+        return stableMap13.isEmpty();
+    }),
+    stableMap13Items: query([], Vec(Tuple(text, Principal)), () => {
+        return stableMap13.items();
+    }),
+    stableMap13Keys: query([], Vec(text), () => {
+        return stableMap13.keys();
+    }),
+    stableMap13Len: query([], nat64, () => {
+        return stableMap13.len();
+    }),
+    stableMap13Remove: update([text], Opt(Principal), (key) => {
+        return stableMap13.remove(key);
+    }),
+    stableMap13Values: query([], Vec(Principal), () => {
+        return stableMap13.values();
+    })
+};

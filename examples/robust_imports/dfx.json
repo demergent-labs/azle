@@ -2,16 +2,15 @@
     "canisters": {
         "robust_imports": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle robust_imports",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/robust_imports/robust_imports.wasm.gz",
+            "wasm": ".azle/robust_imports/robust_imports.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "dfx_generated/robust_imports",
                 "node_compatibility": true
-            },
-            "opt_level": "1"
+            }
         }
     }
 }

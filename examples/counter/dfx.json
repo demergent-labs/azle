@@ -2,11 +2,11 @@
     "canisters": {
         "counter": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle counter",
-            "root": "src",
-            "ts": "src/counter.ts",
-            "candid": "src/counter.did",
-            "wasm": ".azle/counter/counter.wasm.gz",
+            "candid": "src/index.did",
+            "wasm": ".azle/counter/counter.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/counter",
                 "node_compatibility": true

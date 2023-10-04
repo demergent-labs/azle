@@ -10,7 +10,7 @@ if (process.env.ETHEREUM_URL === undefined) {
     );
 }
 
-const ethereum_json_rpc_canister = createActor(
+const ethereumJsonRpcCanister = createActor(
     getCanisterId('ethereum_json_rpc'),
     {
         agentOptions: {
@@ -19,4 +19,4 @@ const ethereum_json_rpc_canister = createActor(
     }
 );
 
-runTests(getTests(ethereum_json_rpc_canister));
+runTests(getTests(ethereumJsonRpcCanister));

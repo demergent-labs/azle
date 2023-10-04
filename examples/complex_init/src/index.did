@@ -1,2 +1,0 @@
-type User = record { id : text };
-service : (record { text; User }) -> { greetUser : () -> (text) query }

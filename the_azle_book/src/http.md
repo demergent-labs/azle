@@ -11,64 +11,71 @@ Examples:
 ```typescript
 import {
     blob,
+    bool,
+    Canister,
     Func,
     nat16,
+    None,
     Opt,
-    $query,
-    Query,
+    query,
     Record,
+    text,
     Tuple,
     Variant,
     Vec
 } from 'azle';
 
-type HttpRequest = Record<{
-    method: string;
-    url: string;
-    headers: Vec<Header>;
-    body: blob;
-}>;
+const Token = Record({
+    // add whatever fields you'd like
+    arbitrary_data: text
+});
 
-type HttpResponse = Record<{
-    status_code: nat16;
-    headers: Vec<Header>;
-    body: blob;
-    streaming_strategy: Opt<StreamingStrategy>;
-    upgrade: Opt<boolean>;
-}>;
+const StreamingCallbackHttpResponse = Record({
+    body: blob,
+    token: Opt(Token)
+});
 
-type Header = Tuple<[string, string]>;
+export const Callback = Func([text], StreamingCallbackHttpResponse, 'query');
 
-type StreamingStrategy = Variant<{
-    Callback: CallbackStrategy;
-}>;
+const CallbackStrategy = Record({
+    callback: Callback,
+    token: Token
+});
 
-type CallbackStrategy = Record<{
-    callback: Callback;
-    token: Token;
-}>;
+const StreamingStrategy = Variant({
+    Callback: CallbackStrategy
+});
 
-type Callback = Func<Query<(t: Token) => StreamingCallbackHttpResponse>>;
+type HeaderField = [text, text];
+const HeaderField = Tuple(text, text);
 
-type StreamingCallbackHttpResponse = Record<{
-    body: blob;
-    token: Opt<Token>;
-}>;
+const HttpResponse = Record({
+    status_code: nat16,
+    headers: Vec(HeaderField),
+    body: blob,
+    streaming_strategy: Opt(StreamingStrategy),
+    upgrade: Opt(bool)
+});
 
-type Token = Record<{
-    arbitrary_data: string;
-}>;
+const HttpRequest = Record({
+    method: text,
+    url: text,
+    headers: Vec(HeaderField),
+    body: blob,
+    certificate_version: Opt(nat16)
+});
 
-$query;
-export function http_request(req: HttpRequest): HttpResponse {
-    return {
-        status_code: 200,
-        headers: [],
-        body: Uint8Array.from([]),
-        streaming_strategy: Opt.None,
-        upgrade: Opt.Some(false)
-    };
-}
+export default Canister({
+    http_request: query([HttpRequest], HttpResponse, (req) => {
+        return {
+            status_code: 200,
+            headers: [],
+            body: Buffer.from('hello'),
+            streaming_strategy: None,
+            upgrade: None
+        };
+    })
+});
 ```
 
 ## Outgoing HTTP requests
@@ -80,115 +87,120 @@ Examples:
 
 ```typescript
 import {
+    Canister,
     ic,
-    $init,
-    match,
+    init,
     nat32,
-    $query,
+    Principal,
+    query,
+    Some,
     StableBTreeMap,
-    $update,
-    Opt
+    text,
+    update
 } from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
     managementCanister
 } from 'azle/canisters/management';
-import decodeUtf8 from 'decode-utf8';
-import encodeUtf8 from 'encode-utf8';
 
-type JSON = string;
+let stableStorage = StableBTreeMap(text, text, 0);
 
-let stableStorage = new StableBTreeMap<string, string>(0, 25, 1_000);
+export default Canister({
+    init: init([text], (ethereumUrl) => {
+        stableStorage.insert('ethereumUrl', ethereumUrl);
+    }),
+    ethGetBalance: update([text], text, async (ethereumAddress) => {
+        const urlOpt = stableStorage.get('ethereumUrl');
 
-$init;
-export function init(ethereumUrl: string): void {
-    stableStorage.insert('ethereumUrl', ethereumUrl);
-}
+        if ('None' in urlOpt) {
+            throw new Error('ethereumUrl is not defined');
+        }
 
-$update;
-export async function ethGetBalance(ethereumAddress: string): Promise<JSON> {
-    const httpResult = await managementCanister
-        .http_request({
-            url: match(stableStorage.get('ethereumUrl'), {
-                Some: (url) => url,
-                None: () => ''
-            }),
-            max_response_bytes: Opt.Some(2_000n),
-            method: {
-                post: null
-            },
-            headers: [],
-            body: Opt.Some(
-                new Uint8Array(
-                    encodeUtf8(
-                        JSON.stringify({
-                            jsonrpc: '2.0',
-                            method: 'eth_getBalance',
-                            params: [ethereumAddress, 'earliest'],
-                            id: 1
-                        })
-                    )
-                )
-            ),
-            transform: Opt.Some({
-                function: [ic.id(), 'ethTransform'],
-                context: Uint8Array.from([])
-            })
-        })
-        .cycles(50_000_000n)
-        .call();
+        const url = urlOpt.Some;
 
-    return match(httpResult, {
-        Ok: (httpResponse) => decodeUtf8(Uint8Array.from(httpResponse.body)),
-        Err: (err) => ic.trap(err)
-    });
-}
+        const httpResponse = await ic.call(managementCanister.http_request, {
+            args: [
+                {
+                    url,
+                    max_response_bytes: Some(2_000n),
+                    method: {
+                        post: null
+                    },
+                    headers: [],
+                    body: Some(
+                        Buffer.from(
+                            JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'eth_getBalance',
+                                params: [ethereumAddress, 'earliest'],
+                                id: 1
+                            }),
+                            'utf-8'
+                        )
+                    ),
+                    transform: Some({
+                        function: [ic.id(), 'ethTransform'] as [
+                            Principal,
+                            string
+                        ],
+                        context: Uint8Array.from([])
+                    })
+                }
+            ],
+            cycles: 50_000_000n
+        });
 
-$update;
-export async function ethGetBlockByNumber(number: nat32): Promise<JSON> {
-    const httpResult = await managementCanister
-        .http_request({
-            url: match(stableStorage.get('ethereumUrl'), {
-                Some: (url) => url,
-                None: () => ''
-            }),
-            max_response_bytes: Opt.Some(2_000n),
-            method: {
-                post: null
-            },
-            headers: [],
-            body: Opt.Some(
-                new Uint8Array(
-                    encodeUtf8(
-                        JSON.stringify({
-                            jsonrpc: '2.0',
-                            method: 'eth_getBlockByNumber',
-                            params: [`0x${number.toString(16)}`, false],
-                            id: 1
-                        })
-                    )
-                )
-            ),
-            transform: Opt.Some({
-                function: [ic.id(), 'ethTransform'],
-                context: Uint8Array.from([])
-            })
-        })
-        .cycles(50_000_000n)
-        .call();
+        return Buffer.from(httpResponse.body.buffer).toString('utf-8');
+    }),
+    ethGetBlockByNumber: update([nat32], text, async (number) => {
+        const urlOpt = stableStorage.get('ethereumUrl');
 
-    return match(httpResult, {
-        Ok: (httpResponse) => decodeUtf8(Uint8Array.from(httpResponse.body)),
-        Err: (err) => ic.trap(err)
-    });
-}
+        if ('None' in urlOpt) {
+            throw new Error('ethereumUrl is not defined');
+        }
 
-$query;
-export function ethTransform(args: HttpTransformArgs): HttpResponse {
-    return {
-        ...args.response,
-        headers: []
-    };
-}
+        const url = urlOpt.Some;
+
+        const httpResponse = await ic.call(managementCanister.http_request, {
+            args: [
+                {
+                    url,
+                    max_response_bytes: Some(2_000n),
+                    method: {
+                        post: null
+                    },
+                    headers: [],
+                    body: Some(
+                        Buffer.from(
+                            JSON.stringify({
+                                jsonrpc: '2.0',
+                                method: 'eth_getBlockByNumber',
+                                params: [`0x${number.toString(16)}`, false],
+                                id: 1
+                            }),
+                            'utf-8'
+                        )
+                    ),
+                    transform: Some({
+                        function: [ic.id(), 'ethTransform'] as [
+                            Principal,
+                            string
+                        ],
+                        context: Uint8Array.from([])
+                    })
+                }
+            ],
+            cycles: 50_000_000n
+        });
+
+        return Buffer.from(httpResponse.body.buffer).toString('utf-8');
+    }),
+    ethTransform: query([HttpTransformArgs], HttpResponse, (args) => {
+        return {
+            ...args.response,
+            headers: []
+        };
+    })
+});
 ```

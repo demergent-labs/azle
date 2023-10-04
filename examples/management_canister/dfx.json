@@ -2,11 +2,11 @@
     "canisters": {
         "management_canister": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle management_canister",
-            "root": "src",
-            "ts": "src/management_canister.ts",
-            "candid": "src/management_canister.did",
-            "wasm": ".azle/management_canister/management_canister.wasm.gz",
+            "candid": "src/index.did",
+            "wasm": ".azle/management_canister/management_canister.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/management_canister",
                 "node_compatibility": true

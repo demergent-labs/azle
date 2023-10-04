@@ -38,16 +38,12 @@ function testCanisterFunctionality() {
                     wallets.alice.p2wpkh
                 );
 
-                if (!ok(result)) {
-                    return { Err: result.Err };
-                }
-
                 const blockReward = 5_000_000_000n;
                 const blocksMinedInSetup = 101n;
                 const expectedBalance = blockReward * blocksMinedInSetup;
 
                 return {
-                    Ok: result.Ok === expectedBalance
+                    Ok: result === expectedBalance
                 };
             }
         },
@@ -58,14 +54,8 @@ function testCanisterFunctionality() {
                     wallets.alice.p2wpkh
                 );
 
-                if (!ok(result)) {
-                    return { Err: result.Err };
-                }
-
                 return {
-                    Ok:
-                        result.Ok.tip_height === 101 &&
-                        result.Ok.utxos.length === 101
+                    Ok: result.tip_height === 101 && result.utxos.length === 101
                 };
             }
         },
@@ -74,12 +64,8 @@ function testCanisterFunctionality() {
             test: async () => {
                 const result = await bitcoinCanister.getCurrentFeePercentiles();
 
-                if (!ok(result)) {
-                    return { Err: result.Err };
-                }
-
                 return {
-                    Ok: result.Ok.length === 0 // TODO: This should have entries
+                    Ok: result.length === 0 // TODO: This should have entries
                 };
             }
         },
@@ -93,12 +79,6 @@ function testCanisterFunctionality() {
 
                 const result = await bitcoinCanister.sendTransaction(tx_bytes);
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 bitcoinCli.generateToAddress(1, wallets.alice.p2wpkh);
 
                 // Wait for generated block to be pulled into replica
@@ -109,7 +89,7 @@ function testCanisterFunctionality() {
 
                 return {
                     Ok:
-                        result.Ok === true &&
+                        result === true &&
                         balance_before_transaction === 0 &&
                         balance_after_transaction === 1
                 };

@@ -7,11 +7,11 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy`, {
+    execSync(`dfx deploy candid_encoding`, {
         stdio: 'inherit'
     });
 
-    execSync(`dfx generate`, {
+    execSync(`dfx generate candid_encoding`, {
         stdio: 'inherit'
     });
 }

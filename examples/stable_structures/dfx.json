@@ -2,11 +2,11 @@
     "canisters": {
         "canister1": {
             "type": "custom",
+            "main": "src/canister1/index.ts",
             "build": "npx azle canister1",
-            "root": "src",
-            "ts": "src/canister1/index.ts",
             "candid": "src/canister1/index.did",
-            "wasm": ".azle/canister1/canister1.wasm.gz",
+            "wasm": ".azle/canister1/canister1.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/canister1",
                 "node_compatibility": true
@@ -14,11 +14,11 @@
         },
         "canister2": {
             "type": "custom",
+            "main": "src/canister2/index.ts",
             "build": "npx azle canister2",
-            "root": "src",
-            "ts": "src/canister2/index.ts",
             "candid": "src/canister2/index.did",
-            "wasm": ".azle/canister2/canister2.wasm.gz",
+            "wasm": ".azle/canister2/canister2.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true
@@ -26,11 +26,11 @@
         },
         "canister3": {
             "type": "custom",
+            "main": "src/canister3/index.ts",
             "build": "npx azle canister3",
-            "root": "src",
-            "ts": "src/canister3/index.ts",
             "candid": "src/canister3/index.did",
-            "wasm": ".azle/canister3/canister3.wasm.gz",
+            "wasm": ".azle/canister3/canister3.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/canister3",
                 "node_compatibility": true

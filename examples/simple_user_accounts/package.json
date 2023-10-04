@@ -1,10 +1,11 @@
 {
     "scripts": {
-        "pretest": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/pretest.ts",
-        "test": "AZLE_REBUILD=true ts-node --transpile-only --ignore=false test/test.ts"
+        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "test": "ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
-        "azle": "0.17.1"
+        "azle": "0.17.1",
+        "text-encoding": "^0.7.0"
     },
     "devDependencies": {
         "@dfinity/agent": "0.11.1",

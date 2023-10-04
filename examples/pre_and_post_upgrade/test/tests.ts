@@ -46,7 +46,7 @@ export function getTests(
         {
             name: 'deploy',
             prep: async () => {
-                execSync(`dfx deploy`, {
+                execSync(`dfx deploy --upgrade-unchanged`, {
                     stdio: 'inherit'
                 });
             }
@@ -60,7 +60,7 @@ export function getTests(
                     Ok:
                         result.length === 1 &&
                         result[0].key === '0' &&
-                        result[0].value === 0n
+                        result[0].value === 1n
                 };
             }
         }

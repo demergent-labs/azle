@@ -1,82 +1,45 @@
 import {
-    CallResult,
+    Canister,
     nat,
     nat8,
-    nat64,
     Opt,
     Record,
-    Service,
-    serviceQuery,
-    serviceUpdate,
+    query,
+    update,
     text,
     Tuple,
-    Variant,
     Vec
 } from '../../src/lib';
+import { Account, TransferArgs, TransferResult, Value } from './icrc_1';
 import {
-    ICRC1Account,
-    ICRC1TransferArgs,
-    ICRC1TransferError,
-    ICRC1Value
-} from './icrc_1';
-import {
-    ICRC2AllowanceArgs,
-    ICRC2ApproveArgs,
-    ICRC2ApproveError,
-    ICRC2TransferFromArgs,
-    ICRC2TransferFromError
+    AllowanceArgs,
+    AllowanceResult,
+    ApproveArgs,
+    ApproveResult,
+    TransferFromArgs,
+    TransferFromResult
 } from './icrc_2';
 
-export class ICRC extends Service {
-    @serviceQuery
-    icrc1_metadata: () => CallResult<Vec<Tuple<[text, ICRC1Value]>>>;
+export const SupportedStandard = Record({
+    name: text,
+    url: text
+});
 
-    @serviceQuery
-    icrc1_name: () => CallResult<text>;
-
-    @serviceQuery
-    icrc1_symbol: () => CallResult<text>;
-
-    @serviceQuery
-    icrc1_decimals: () => CallResult<nat8>;
-
-    @serviceQuery
-    icrc1_fee: () => CallResult<nat>;
-
-    @serviceQuery
-    icrc1_total_supply: () => CallResult<nat>;
-
-    @serviceQuery
-    icrc1_minting_account: () => CallResult<Opt<ICRC1Account>>;
-
-    @serviceQuery
-    icrc1_balance_of: (account: ICRC1Account) => CallResult<nat>;
-
-    @serviceUpdate
-    icrc1_transfer: (
-        transferArgs: ICRC1TransferArgs
-    ) => CallResult<Variant<{ Ok: nat; Err: ICRC1TransferError }>>;
-
-    @serviceQuery
-    icrc1_supported_standards: () => CallResult<
-        Vec<Record<{ name: text; url: text }>>
-    >;
-
-    @serviceUpdate
-    icrc2_approve: (
-        args: ICRC2ApproveArgs
-    ) => CallResult<Variant<{ Ok: nat; Err: ICRC2ApproveError }>>;
-
-    @serviceUpdate
-    icrc2_transfer_from: (
-        args: ICRC2TransferFromArgs
-    ) => CallResult<Variant<{ Ok: nat; Err: ICRC2TransferFromError }>>;
-
-    @serviceQuery
-    icrc2_allowance: (
-        args: ICRC2AllowanceArgs
-    ) => CallResult<Record<{ allowance: nat; expires_at: Opt<nat64> }>>;
-}
+export const ICRC = Canister({
+    icrc1_metadata: query([], Vec(Tuple(text, Value))),
+    icrc1_name: query([], text),
+    icrc1_symbol: query([], text),
+    icrc1_decimals: query([], nat8),
+    icrc1_fee: query([], nat),
+    icrc1_total_supply: query([], nat),
+    icrc1_minting_account: query([], Opt(Account)),
+    icrc1_balance_of: query([Account], nat),
+    icrc1_transfer: update([TransferArgs], TransferResult),
+    icrc1_supported_standards: query([], Vec(SupportedStandard)),
+    icrc2_approve: update([ApproveArgs], ApproveResult),
+    icrc2_transfer_from: update([TransferFromArgs], TransferFromResult),
+    icrc2_allowance: query([AllowanceArgs], AllowanceResult)
+});
 
 export * from './icrc_1';
 export * from './icrc_2';

@@ -1,13 +1,12 @@
-import { blob, ic, $query } from 'azle';
+import { blob, Canister, ic, query, text } from 'azle';
 
-// encodes a Candid string to Candid bytes
-$query;
-export function candidEncode(candidString: string): blob {
-    return ic.candidEncode(candidString);
-}
-
-// decodes Candid bytes to a Candid string
-$query;
-export function candidDecode(candidEncoded: blob): string {
-    return ic.candidDecode(candidEncoded);
-}
+export default Canister({
+    // encodes a Candid string to Candid bytes
+    candidEncode: query([text], blob, (candidString) => {
+        return ic.candidEncode(candidString);
+    }),
+    // decodes Candid bytes to a Candid string
+    candidDecode: query([blob], text, (candidEncoded) => {
+        return ic.candidDecode(candidEncoded);
+    })
+});

@@ -41,7 +41,16 @@ export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'dfx deploy',
             prep: async () => {
-                execSync('dfx deploy');
+                execSync('dfx deploy --upgrade-unchanged');
+            }
+        },
+        {
+            name: 'getRedeployed',
+            test: async () => {
+                const result = await randomnessCanister.getRedeployed();
+                return {
+                    Ok: result === true
+                };
             }
         },
         {

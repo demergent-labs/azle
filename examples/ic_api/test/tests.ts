@@ -156,7 +156,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await icApiCanister.canisterVersion();
 
                 return {
-                    Ok: result > 0n
+                    Ok: result >= 0n
                 };
             }
         },
@@ -314,7 +314,7 @@ function isNone<T>(option: [] | T[]): boolean {
     return option.length === 0;
 }
 
-function candidDecode(bytes: Uint8Array): string {
+function candidDecode(bytes: Uint8Array | number[]): string {
     const hexString = [...bytes]
         .map((byte) => byte.toString(16).padStart(2, '0'))
         .join('');

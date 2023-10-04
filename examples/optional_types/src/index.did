@@ -1,0 +1,18 @@
+type rec_2 = record {id:text};
+type rec_1 = record {elements:vec rec_2};
+type rec_0 = record {head:opt rec_1};
+type rec_4 = record {id:text};
+type rec_3 = record {elements:vec rec_4};
+type rec_6 = record {id:text};
+type rec_5 = record {elements:vec rec_6};
+type rec_7 = record {id:text};
+type rec_8 = record {id:text};
+service: () -> {
+    getHtml: () -> (rec_0) query;
+    getHead: () -> (opt rec_3) query;
+    getHeadWithElements: () -> (opt rec_5) query;
+    getElement: (opt opt rec_7) -> (opt opt rec_8) query;
+    getNull: () -> (null) query;
+    getOptNull: () -> (opt text) query;
+    stringToBoolean: (opt text) -> (bool) query;
+}

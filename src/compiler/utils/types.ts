@@ -1,8 +1,4 @@
 import { Variant } from '../../lib';
-import {
-    AliasTables,
-    AliasLists
-} from '../typescript_to_rust/type_alias_parsing/types';
 
 export type AzleError = {
     error?: string;
@@ -20,9 +16,8 @@ export type JavaScript = string;
 
 export type JSCanisterConfig = Readonly<{
     type: 'custom';
+    main: string;
     build: string;
-    root: string;
-    ts: string;
     candid: string;
     wasm: string;
     env?: string[];
@@ -32,10 +27,27 @@ export type JSCanisterConfig = Readonly<{
 export type OptLevel = '0' | '1' | '2' | '3' | '4';
 
 export type CompilerInfo = {
-    plugins: Plugin[];
-    alias_tables: AliasTables;
-    alias_lists: AliasLists;
-    file_names: string[];
+    canister_methods: CanisterMethods;
+};
+
+export type CanisterMethods = {
+    candid: string;
+    queries: CanisterMethod[];
+    updates: CanisterMethod[];
+    init?: CanisterMethod;
+    pre_upgrade?: CanisterMethod;
+    post_upgrade?: CanisterMethod;
+    heartbeat?: CanisterMethod;
+    inspect_message?: CanisterMethod;
+    callbacks: {
+        [key: string]: (...args: any) => any;
+    };
+};
+
+export type CanisterMethod = {
+    name: string;
+    composite?: boolean;
+    guard?: () => void;
 };
 
 export type Plugin = {

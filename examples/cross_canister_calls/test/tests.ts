@@ -1,4 +1,4 @@
-import { getCanisterId, ok, Test } from 'azle/test';
+import { Test } from 'azle/test';
 import { _SERVICE as CANISTER1_SERVICE } from './dfx_generated/canister1/canister1.did';
 import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
 import { ActorSubclass } from '@dfinity/agent';
@@ -13,14 +13,8 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.balance('0');
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok === 100n
+                    Ok: result === 100n
                 };
             }
         },
@@ -31,17 +25,11 @@ export function get_tests(
                     id: '0'
                 });
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
                     Ok:
-                        result.Ok.length === 1 &&
-                        result.Ok[0].id === '0' &&
-                        result.Ok[0].balance === 100n
+                        result.length === 1 &&
+                        result[0].id === '0' &&
+                        result[0].balance === 100n
                 };
             }
         },
@@ -50,14 +38,8 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.balance('1');
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok === 0n
+                    Ok: result === 0n
                 };
             }
         },
@@ -68,14 +50,8 @@ export function get_tests(
                     id: '1'
                 });
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok.length === 0
+                    Ok: result.length === 0
                 };
             }
         },
@@ -84,17 +60,11 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.accounts();
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
                     Ok:
-                        result.Ok.length === 1 &&
-                        result.Ok[0].id === '0' &&
-                        result.Ok[0].balance === 100n
+                        result.length === 1 &&
+                        result[0].id === '0' &&
+                        result[0].balance === 100n
                 };
             }
         },
@@ -103,14 +73,8 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.transfer('0', '1', 34n);
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok === 34n
+                    Ok: result === 34n
                 };
             }
         },
@@ -119,14 +83,8 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.balance('0');
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok === 66n
+                    Ok: result === 66n
                 };
             }
         },
@@ -137,17 +95,11 @@ export function get_tests(
                     id: '0'
                 });
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
                     Ok:
-                        result.Ok.length === 1 &&
-                        result.Ok[0].id === '0' &&
-                        result.Ok[0].balance === 66n
+                        result.length === 1 &&
+                        result[0].id === '0' &&
+                        result[0].balance === 66n
                 };
             }
         },
@@ -156,14 +108,8 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.balance('1');
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
-                    Ok: result.Ok === 34n
+                    Ok: result === 34n
                 };
             }
         },
@@ -174,17 +120,11 @@ export function get_tests(
                     id: '1'
                 });
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
                     Ok:
-                        result.Ok.length === 1 &&
-                        result.Ok[0].id === '1' &&
-                        result.Ok[0].balance === 34n
+                        result.length === 1 &&
+                        result[0].id === '1' &&
+                        result[0].balance === 34n
                 };
             }
         },
@@ -193,35 +133,31 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.accounts();
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
                 return {
                     Ok:
-                        result.Ok.length === 2 &&
-                        result.Ok[0].id === '0' &&
-                        result.Ok[0].balance === 66n &&
-                        result.Ok[1].id === '1' &&
-                        result.Ok[1].balance === 34n
+                        result[0].id === '0' &&
+                        result[0].balance === 66n &&
+                        result[1].id === '1' &&
+                        result[1].balance === 34n
                 };
             }
         },
         {
             name: 'canister1 trap',
             test: async () => {
-                const result = await canister1.trap();
+                try {
+                    await canister1.trap();
 
-                return {
-                    Ok:
-                        'Err' in result &&
-                        result.Err ===
-                            `Rejection code 5, IC0503: Canister ${getCanisterId(
-                                'canister2'
-                            )} trapped explicitly: hahahaha`
-                };
+                    return {
+                        Ok: false
+                    };
+                } catch (error) {
+                    return {
+                        Ok: (error as { message: string }).message.includes(
+                            'hahahaha'
+                        )
+                    };
+                }
             }
         },
         {
@@ -240,7 +176,7 @@ export function get_tests(
                 const result = await canister1.sendNotification();
 
                 return {
-                    Ok: 'Ok' in result && result.Ok === null
+                    Ok: result === undefined
                 };
             }
         },

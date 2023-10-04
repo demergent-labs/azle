@@ -5,13 +5,13 @@ import { createActor as createCyclesActor } from './dfx_generated/cycles';
 import { createActor as createIntermediaryActor } from './dfx_generated/intermediary';
 import { getTests } from './tests';
 
-const cycles_canister = createCyclesActor(getCanisterId('cycles'), {
+const cyclesCanister = createCyclesActor(getCanisterId('cycles'), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-const intermediary_canister = createIntermediaryActor(
+const intermediaryCanister = createIntermediaryActor(
     getCanisterId('intermediary'),
     {
         agentOptions: {
@@ -20,4 +20,4 @@ const intermediary_canister = createIntermediaryActor(
     }
 );
 
-runTests(getTests(cycles_canister, intermediary_canister));
+runTests(getTests(cyclesCanister, intermediaryCanister));

@@ -1,0 +1,6 @@
+type rec_0 = record {desc:text; phone:text};
+type rec_1 = record {desc:text; phone:text};
+service: () -> {
+    insert: (text, rec_0) -> ();
+    lookup: (text) -> (opt rec_1) query;
+}

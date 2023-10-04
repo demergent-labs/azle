@@ -2,11 +2,11 @@
     "canisters": {
         "candid_encoding": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle candid_encoding",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
-            "wasm": ".azle/candid_encoding/candid_encoding.wasm.gz",
+            "wasm": ".azle/candid_encoding/candid_encoding.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/candid_encoding",
                 "node_compatibility": true

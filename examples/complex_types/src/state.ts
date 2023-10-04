@@ -1,6 +1,7 @@
 import { Vec } from 'azle';
 import { ReactionType } from './candid_types';
 
+// TODO this state should go on the class
 export let state: State = {
     posts: {},
     reactions: {},
@@ -35,7 +36,7 @@ export type StateReaction = {
     id: string;
     authorId: string;
     postId: string;
-    reactionType: ReactionType;
+    reactionType: typeof ReactionType;
 };
 
 export type StateThread = {

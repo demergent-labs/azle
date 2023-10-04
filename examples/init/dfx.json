@@ -2,11 +2,11 @@
     "canisters": {
         "init": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle init",
-            "root": "src",
-            "ts": "src/init.ts",
-            "candid": "src/init.did",
-            "wasm": ".azle/init/init.wasm.gz",
+            "candid": "src/index.did",
+            "wasm": ".azle/init/init.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/init",
                 "node_compatibility": true

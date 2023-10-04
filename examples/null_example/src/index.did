@@ -1,0 +1,19 @@
+type rec_0 = record {thirdItem:int; secondItem:null; firstItem:int};
+type rec_1 = record {thirdItem:int; secondItem:null; firstItem:int};
+type rec_2 = record {thirdItem:int; secondItem:null; firstItem:int};
+type rec_3 = record {secondItem:null; firstItem:null};
+type rec_4 = record {secondItem:null; firstItem:null};
+type rec_5 = record {secondItem:null; firstItem:null};
+type rec_6 = record {thirdItem:null; secondItem:null; firstItem:null};
+type rec_7 = record {thirdItem:null; secondItem:null; firstItem:null};
+type rec_8 = record {thirdItem:null; secondItem:null; firstItem:null};
+service: () -> {
+    nullFunction: (null) -> (null) query;
+    voidIsNotNull: () -> () query;
+    getPartiallyNullRecord: () -> (rec_0) query;
+    setPartiallyNullRecord: (rec_1) -> (rec_2);
+    getSmallNullRecord: () -> (rec_3) query;
+    setSmallNullRecord: (rec_4) -> (rec_5);
+    getLargeNullRecord: () -> (rec_6) query;
+    setLargeNullRecord: (rec_7) -> (rec_8);
+}

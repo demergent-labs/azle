@@ -1,0 +1,7 @@
+service: () -> {
+    canisterCrossCanisterCall: (service {query1: () -> (bool) query; update1: () -> (text);}) -> (text);
+    canisterList: (vec service {query1: () -> (bool) query; update1: () -> (text);}) -> (vec service {query1: () -> (bool) query; update1: () -> (text);});
+    canisterNestedReturnType: () -> (record {someCanister:service {query1: () -> (bool) query; update1: () -> (text);}});
+    canisterParam: (service {query1: () -> (bool) query; update1: () -> (text);}) -> (service {query1: () -> (bool) query; update1: () -> (text);}) query;
+    canisterReturnType: () -> (service {query1: () -> (bool) query; update1: () -> (text);}) query;
+}

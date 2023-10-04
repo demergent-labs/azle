@@ -4,7 +4,7 @@ record {
             account = record {
                 owner = principal "r7inp-6aaaa-aaaaa-aaabq-cai";
             };
-            amount = 20_000;
+            amount = 1_000_000;
         };
     };
     minting_account = record {

@@ -1,0 +1,11 @@
+service: () -> {
+    stable64Grow: (nat64) -> (nat64);
+    stable64Read: (nat64, nat64) -> (vec nat8) query;
+    stable64Size: () -> (nat64) query;
+    stable64Write: (nat64, vec nat8) -> ();
+    stableBytes: () -> (vec nat8) query;
+    stableGrow: (nat32) -> (nat32);
+    stableRead: (nat32, nat32) -> (vec nat8) query;
+    stableSize: () -> (nat32) query;
+    stableWrite: (nat32, vec nat8) -> ();
+}

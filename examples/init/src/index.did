@@ -1,0 +1,9 @@
+type rec_0 = record {id:text};
+type rec_1 = variant {Fire; Wave};
+type rec_2 = record {id:text};
+type rec_3 = variant {Fire; Wave};
+service: (rec_0, rec_1, principal) -> {
+    getUser: () -> (opt rec_2) query;
+    getReaction: () -> (opt rec_3) query;
+    getOwner: () -> (opt principal) query;
+}
