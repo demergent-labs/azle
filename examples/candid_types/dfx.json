@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "candid_types": {
+            "type": "custom",
+            "main": "src/index.ts",
+            "build": "npx azle candid_types",
+            "candid": "src/index.did",
+            "wasm": ".azle/candid_types/candid_types.wasm",
+            "gzip": true,
+            "declarations": {
+                "output": "test/dfx_generated/candid_types",
+                "node_compatibility": true
+            }
+        }
+    }
+}

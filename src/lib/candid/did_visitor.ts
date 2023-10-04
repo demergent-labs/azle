@@ -12,6 +12,33 @@ type TypeName = string;
 type CandidDef = string;
 type CandidTypesDefs = { [key: TypeName]: CandidDef };
 
+const CANDID_KEYWORDS = [
+    'blob',
+    'bool',
+    'float32',
+    'float64',
+    'func',
+    'int',
+    'int16',
+    'int32',
+    'int64',
+    'int8',
+    'nat',
+    'nat16',
+    'nat32',
+    'nat64',
+    'nat8',
+    'null',
+    'opt',
+    'principal',
+    'query',
+    'record',
+    'service',
+    'text',
+    'variant',
+    'vec'
+];
+
 // TODO it would be nice to have names for the rec types instead of rec_1, rec_2 etc
 // TODO Once types have names we should deduplicate the init and post_upgrade param types
 // TODO maybe even before we have names we should deduplicate all sorts of types
@@ -107,7 +134,9 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
 
         const funcStrings = canisterMethods[0]
             .map((value, index) => {
-                return `${tab}${t._fields[index][0]}: ${value};`;
+                return `${tab}${escapeCandidKeywords(
+                    t._fields[index][0]
+                )}: ${value};`;
             })
             .join(func_separator);
         if (data.isFirstService) {
@@ -202,7 +231,8 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         );
         const candid = extractCandid(candidFields);
         const field_strings = fields.map(
-            ([key, value], index) => key + ':' + candid[0][index]
+            ([key, value], index) =>
+                escapeCandidKeywords(key) + ':' + candid[0][index]
         );
         return [`record {${field_strings.join('; ')}}`, candid[1]];
     }
@@ -217,10 +247,18 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         const candid = extractCandid(candidFields);
         const fields_string = fields.map(
             ([key, value], index) =>
-                key + (value.name === 'null' ? '' : ':' + candid[0][index])
+                escapeCandidKeywords(key) +
+                (value.name === 'null' ? '' : ':' + candid[0][index])
         );
         return [`variant {${fields_string.join('; ')}}`, candid[1]];
     }
+}
+
+function escapeCandidKeywords(key: string): string {
+    if (CANDID_KEYWORDS.includes(key)) {
+        return `"${key}"`;
+    }
+    return key;
 }
 
 function newTypeToCandidString(newTypes: CandidTypesDefs): string {
