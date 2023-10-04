@@ -1,5 +1,5 @@
-import { IDL } from '@dfinity/candid';
 import { nat } from '../candid/types/primitive/nats/nat';
+import { decode } from '../candid/serde';
 
 /**
  * Gets the amount of funds available in the canister
@@ -12,7 +12,5 @@ export function canisterBalance128(): nat {
 
     const canisterBalance128CandidBytes =
         globalThis._azleIc.canisterBalance128();
-    return BigInt(
-        IDL.decode([IDL.Nat], canisterBalance128CandidBytes)[0] as number
-    );
+    return BigInt(decode(nat, canisterBalance128CandidBytes) as number);
 }

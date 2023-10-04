@@ -6,12 +6,7 @@ import {
     executeMethod,
     isAsync
 } from '.';
-import {
-    CandidType,
-    TypeMapping,
-    toParamIDLTypes,
-    toReturnIDLType
-} from '../candid';
+import { CandidType, TypeMapping } from '../candid';
 
 export function query<
     const Params extends ReadonlyArray<CandidType>,
@@ -26,10 +21,6 @@ export function query<
     methodArgs?: MethodArgs
 ): CanisterMethodInfo<Params, Return> {
     return (parent: any) => {
-        const parents = createParents(parent);
-        const paramCandid = toParamIDLTypes(paramsIdls as any, parents);
-        const returnCandid = toReturnIDLType(returnIdl as any, parents);
-
         // TODO maybe the cross canister callback should be made here?
         const finalCallback =
             callback === undefined
@@ -37,13 +28,12 @@ export function query<
                 : (...args: any[]) => {
                       executeMethod(
                           'query',
-                          paramCandid,
-                          returnCandid,
                           args,
                           callback,
                           paramsIdls as any,
                           returnIdl,
-                          methodArgs?.manual ?? false
+                          methodArgs?.manual ?? false,
+                          createParents(parent)
                       );
                   };
 

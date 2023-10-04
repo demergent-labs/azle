@@ -1,5 +1,5 @@
-import { IDL } from '@dfinity/candid';
 import { nat32 } from '../candid/types/primitive/nats/nat32';
+import { decode } from '../candid/serde';
 
 /**
  * Gets current size of the stable memory (in WASM pages)
@@ -10,8 +10,5 @@ export function stableSize(): nat32 {
         return undefined as any;
     }
 
-    return IDL.decode(
-        [IDL.Nat32],
-        globalThis._azleIc.stableSize()
-    )[0] as number;
+    return decode(nat32, globalThis._azleIc.stableSize()) as number;
 }

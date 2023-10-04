@@ -1,5 +1,5 @@
-import { IDL } from '@dfinity/candid';
 import { nat } from '../candid/types/primitive/nats/nat';
+import { decode } from '../candid/serde';
 
 /**
  * Returns the amount of cycles that were transferred by the caller of the
@@ -14,7 +14,5 @@ export function msgCyclesAvailable128(): nat {
     const msgCyclesAvailable128CandidBytes =
         globalThis._azleIc.msgCyclesAvailable128();
 
-    return BigInt(
-        IDL.decode([IDL.Nat], msgCyclesAvailable128CandidBytes)[0] as number
-    );
+    return BigInt(decode(nat, msgCyclesAvailable128CandidBytes) as number);
 }

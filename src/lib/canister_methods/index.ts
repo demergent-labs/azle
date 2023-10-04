@@ -1,9 +1,7 @@
 import { AzleVoid } from '../candid/types/primitive/void';
-import { IDL } from '@dfinity/candid';
 import { ic } from '../ic';
 import { CandidType, TypeMapping, Parent } from '../candid';
-import { DecodeVisitor } from '../candid/serde/visitors/decode_visitor';
-import { encodeMultiple } from '../candid/serde';
+import { decodeMultiple, encode } from '../candid/serde';
 
 export * from './heartbeat';
 export * from './init';
@@ -44,13 +42,12 @@ export type Callback<
 
 export function executeMethod(
     mode: CanisterMethodInfo<any, any>['mode'],
-    finalParamIdls: any,
-    finalReturnIdl: any,
     args: any[],
     callback: any,
-    userMadeParamsIdls: any[],
-    userMadeReturnIdl: any,
-    manual: boolean
+    paramCandidTypes: CandidType[],
+    returnCandidType: CandidType,
+    manual: boolean,
+    parents: Parent[]
 ) {
     if (mode === 'heartbeat') {
         const result = callback();
@@ -73,16 +70,9 @@ export function executeMethod(
         return;
     }
 
-    const decoded = IDL.decode(finalParamIdls as any, args[0]);
+    const decodedArgs = decodeMultiple(paramCandidTypes, args[0]);
 
-    const myDecodedObject = finalParamIdls.map((idl: any, index: any) => {
-        return idl.accept(new DecodeVisitor(), {
-            js_class: userMadeParamsIdls[index],
-            js_data: decoded[index]
-        });
-    });
-
-    const result = callback(...myDecodedObject);
+    const result = callback(...decodedArgs);
 
     if (
         mode === 'init' ||
@@ -104,7 +94,7 @@ export function executeMethod(
                 console.log(`final instructions: ${ic.instructionCounter()}`);
 
                 if (!manual) {
-                    ic.replyRaw(encodeMultiple(userMadeReturnIdl, result));
+                    ic.replyRaw(encode(returnCandidType, result));
                 }
             })
             .catch((error: any) => {
@@ -112,7 +102,7 @@ export function executeMethod(
             });
     } else {
         if (!manual) {
-            ic.replyRaw(encodeMultiple(userMadeReturnIdl, result));
+            ic.replyRaw(encode(returnCandidType, result));
         }
 
         console.log(`final instructions: ${ic.instructionCounter()}`);

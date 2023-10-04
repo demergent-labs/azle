@@ -1,21 +1,12 @@
 import { CanisterMethodInfo, executeMethod, isAsync } from '.';
-import { Void } from '../candid';
+import { Void } from '../candid/types/primitive/void';
 
 export function preUpgrade(
     callback: () => void | Promise<void>
 ): CanisterMethodInfo<[], Void> {
     return () => {
         const finalCallback = (...args: any[]) => {
-            executeMethod(
-                'preUpgrade',
-                undefined,
-                undefined,
-                args,
-                callback,
-                [],
-                Void,
-                false
-            );
+            executeMethod('preUpgrade', args, callback, [], Void, false, []);
         };
 
         return {

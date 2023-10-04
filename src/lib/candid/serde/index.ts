@@ -3,7 +3,7 @@ import { IDL } from '@dfinity/candid';
 import { AzleVec, AzleOpt, AzleTuple } from '../types/constructed';
 import { DecodeVisitor } from './visitors/decode_visitor';
 import { EncodeVisitor } from './visitors/encode_visitor';
-import { CandidType, toIDLType } from '../../candid';
+import { CandidType, Parent, toIDLType } from '../../candid';
 
 /**
  * Encodes the provided value as candid blob of the designated type.
@@ -17,8 +17,12 @@ import { CandidType, toIDLType } from '../../candid';
  * @param candidType either a built-in IDL data type, or an Azle-defined super-type
  * @returns candid bytes
  */
-export function encode(candidType: CandidType, data: any): Uint8Array {
-    const idl = toIDLType(candidType, []);
+export function encode(
+    candidType: CandidType,
+    data: any,
+    parents: Parent[] = []
+): Uint8Array {
+    const idl = toIDLType(candidType, parents);
 
     const idlIsAzleVoid = Array.isArray(idl);
 
@@ -46,12 +50,16 @@ export function encode(candidType: CandidType, data: any): Uint8Array {
  * @param candidType either a built-in IDL data type, or an Azle-defined super-type
  * @returns the Azle representation of the data
  */
-export function decode(candidType: CandidType, data: ArrayBuffer): any {
+export function decode(
+    candidType: CandidType,
+    data: ArrayBuffer,
+    parents: Parent[] = []
+): any {
     // TODO: there is a discrepancy between CandidType and CandidClass that
     // needs to be aligned so that this isn't an error. Both are representing
     // candid IDLs, either from the @dfinity/candid library or the
     // Azle-augmented ones
-    const idl = toIDLType(candidType, []);
+    const idl = toIDLType(candidType, parents);
 
     const idlIsAzleVoid = Array.isArray(idl);
 
@@ -69,7 +77,8 @@ export function decode(candidType: CandidType, data: ArrayBuffer): any {
 
 export function encodeMultiple(
     candidTypes: CandidType[],
-    data: any[]
+    data: any[],
+    parents: Parent[] = []
 ): Uint8Array {
     const { values, idls } = data.reduce<{
         values: any[];
@@ -77,7 +86,7 @@ export function encodeMultiple(
     }>(
         (acc, datum, index) => {
             const candidType = candidTypes[index];
-            const idl = toIDLType(candidType, []);
+            const idl = toIDLType(candidType, parents);
 
             const encodeReadyValue = idl.accept(new EncodeVisitor(), {
                 js_class: candidType,
@@ -93,4 +102,21 @@ export function encodeMultiple(
     );
 
     return new Uint8Array(IDL.encode(idls, values));
+}
+
+export function decodeMultiple(
+    candidTypes: CandidType[],
+    data: ArrayBuffer,
+    parents: Parent[] = []
+): any[] {
+    const idls = candidTypes.map((candidType) =>
+        toIDLType(candidType, parents)
+    );
+    const decoded = IDL.decode(idls, data);
+    return idls.map((idl, index) =>
+        idl.accept(new DecodeVisitor(), {
+            js_class: candidTypes[index],
+            js_data: decoded[index]
+        })
+    );
 }
