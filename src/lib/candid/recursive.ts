@@ -2,7 +2,7 @@ import { v4 } from 'uuid';
 import { IDL } from '@dfinity/candid';
 import { CandidType, Parent } from './index';
 
-type _AzleRecursiveFunction = {
+export type _AzleRecursiveFunction = {
     (...args: any[]): CandidType;
     _azleName?: string;
     _azleIsRecursive?: boolean;
@@ -13,11 +13,11 @@ export function Recursive(candidTypeCallback: any): any {
     const name = v4();
 
     let result: _AzleRecursiveFunction = (...args: any[]) => {
-        const idl = candidTypeCallback();
-        if (idl._azleIsCanister) {
-            return idl(...args);
+        const candidType = candidTypeCallback();
+        if (candidType._azleIsCanister) {
+            return candidType(...args);
         }
-        return idl;
+        return candidType;
     };
 
     result._azleName = name;

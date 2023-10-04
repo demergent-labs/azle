@@ -13,8 +13,8 @@ export function query<
     Return extends CandidType,
     GenericCallback extends Callback<Params, Return>
 >(
-    paramsIdls: Params,
-    returnIdl: Return,
+    paramCandidTypes: Params,
+    returnCandidType: Return,
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Return>
         ? GenericCallback
         : never,
@@ -30,8 +30,8 @@ export function query<
                           'query',
                           args,
                           callback,
-                          paramsIdls as any,
-                          returnIdl,
+                          paramCandidTypes as unknown as CandidType[],
+                          returnCandidType,
                           methodArgs?.manual ?? false,
                           createParents(parent)
                       );
@@ -40,10 +40,10 @@ export function query<
         return {
             mode: 'query',
             callback: finalCallback,
-            paramsIdls: paramsIdls as any,
-            returnIdl,
+            paramCandidTypes: paramCandidTypes as unknown as CandidType[],
+            returnCandidType,
             async: callback === undefined ? false : isAsync(callback),
             guard: methodArgs?.guard
-        };
+        } as CanisterMethodInfo<Params, Return>;
     }) as any;
 }

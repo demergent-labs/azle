@@ -20,10 +20,10 @@ export function inspectMessage(
         return {
             mode: 'inspectMessage',
             callback: finalCallback,
-            paramsIdls: [],
-            returnIdl: Void,
+            paramCandidTypes: [],
+            returnCandidType: Void,
             async: false,
             guard: undefined
-        };
+        } as CanisterMethodInfo<[], Void>;
     }) as any;
 }

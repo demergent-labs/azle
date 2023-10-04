@@ -12,10 +12,10 @@ export function heartbeat(
         return {
             mode: 'heartbeat',
             callback: finalCallback,
-            paramsIdls: [],
-            returnIdl: Void,
+            paramCandidTypes: [],
+            returnCandidType: Void,
             async: isAsync(callback),
             guard: undefined
-        };
+        } as CanisterMethodInfo<[], Void>;
     }) as any;
 }

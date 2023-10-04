@@ -6,7 +6,7 @@ export function init<
     const Params extends ReadonlyArray<CandidType>,
     GenericCallback extends Callback<Params, typeof Void>
 >(
-    paramsIdls: Params,
+    paramCandidTypes: Params,
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Void>
         ? GenericCallback
         : never
@@ -20,7 +20,7 @@ export function init<
                           'init',
                           args,
                           callback,
-                          paramsIdls as any,
+                          paramCandidTypes as unknown as CandidType[],
                           Void,
                           false,
                           createParents(parent)
@@ -30,10 +30,10 @@ export function init<
         return {
             mode: 'init',
             callback: finalCallback,
-            paramsIdls: paramsIdls as any,
-            returnIdl: Void,
+            paramCandidTypes: paramCandidTypes as any,
+            returnCandidType: Void,
             async: false,
             guard: undefined
-        };
+        } as CanisterMethodInfo<Params, Void>;
     }) as any;
 }

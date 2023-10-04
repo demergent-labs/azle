@@ -29,7 +29,7 @@ export function update<
                           'update',
                           args,
                           callback,
-                          paramCandidTypes as any,
+                          paramCandidTypes as unknown as CandidType[],
                           returnCandidType,
                           methodArgs?.manual ?? false,
                           createParents(parent)
@@ -39,10 +39,10 @@ export function update<
         return {
             mode: 'update',
             callback: finalCallback,
-            paramsIdls: paramCandidTypes as any,
-            returnIdl: returnCandidType,
+            paramCandidTypes: paramCandidTypes as unknown as CandidType[],
+            returnCandidType,
             async: callback === undefined ? false : isAsync(callback),
             guard: methodArgs?.guard
-        };
+        } as CanisterMethodInfo<Params, Return>;
     }) as any;
 }

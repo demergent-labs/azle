@@ -12,15 +12,15 @@ const modeToCandid = {
 };
 
 export function Func(
-    paramsIdls: CandidType[],
-    returnIdl: CandidType,
+    paramCandidTypes: CandidType[],
+    returnCandidTypes: CandidType,
     mode: Mode
 ): [Principal, string] & { _azleCandidType?: '_azleCandidType' } {
     return {
         getIDL(parents: Parent[]) {
             return IDL.Func(
-                toParamIDLTypes(paramsIdls, parents),
-                toReturnIDLType(returnIdl, parents),
+                toParamIDLTypes(paramCandidTypes, parents),
+                toReturnIDLType(returnCandidTypes, parents),
                 modeToCandid[mode]
             );
         }

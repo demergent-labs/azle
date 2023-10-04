@@ -28,8 +28,8 @@ export type CanisterMethodInfo<T extends ReadonlyArray<any>, K> = {
         | 'preUpgrade';
     async: boolean;
     callback?: (...args: any) => any;
-    paramsIdls: any[];
-    returnIdl: any;
+    paramCandidTypes: any[];
+    returnCandidType: any;
     guard: (() => any) | undefined;
 };
 
@@ -70,7 +70,7 @@ export function executeMethod(
         return;
     }
 
-    const decodedArgs = decodeMultiple(paramCandidTypes, args[0]);
+    const decodedArgs = decodeMultiple(paramCandidTypes, args[0], parents);
 
     const result = callback(...decodedArgs);
 
@@ -94,7 +94,7 @@ export function executeMethod(
                 console.log(`final instructions: ${ic.instructionCounter()}`);
 
                 if (!manual) {
-                    ic.replyRaw(encode(returnCandidType, result));
+                    ic.replyRaw(encode(returnCandidType, result, parents));
                 }
             })
             .catch((error: any) => {

@@ -12,10 +12,10 @@ export function preUpgrade(
         return {
             mode: 'preUpgrade',
             callback: finalCallback,
-            paramsIdls: [],
-            returnIdl: Void,
+            paramCandidTypes: [],
+            returnCandidType: Void,
             async: isAsync(callback),
             guard: undefined
-        };
+        } as CanisterMethodInfo<[], Void>;
     }) as any;
 }

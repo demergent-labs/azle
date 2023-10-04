@@ -6,7 +6,7 @@ export function postUpgrade<
     const Params extends ReadonlyArray<CandidType>,
     GenericCallback extends Callback<Params, typeof Void>
 >(
-    paramsIdls: Params,
+    paramCandidTypes: Params,
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Void>
         ? GenericCallback
         : never
@@ -20,7 +20,7 @@ export function postUpgrade<
                           'postUpgrade',
                           args,
                           callback,
-                          paramsIdls as any,
+                          paramCandidTypes as unknown as CandidType[],
                           Void,
                           false,
                           createParents(parent)
@@ -30,10 +30,10 @@ export function postUpgrade<
         return {
             mode: 'postUpgrade',
             callback: finalCallback,
-            paramsIdls: paramsIdls as any,
-            returnIdl: Void,
+            paramCandidTypes: paramCandidTypes as unknown as CandidType[],
+            returnCandidType: Void,
             async: false,
             guard: undefined
-        };
+        } as CanisterMethodInfo<Params, Void>;
     }) as any;
 }
