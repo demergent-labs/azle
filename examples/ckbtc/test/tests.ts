@@ -43,7 +43,7 @@ export function getTests(): Test[] {
         {
             name: 'getDepositAddress',
             test: async () => {
-                const config = db[0];
+                let config = db[0];
 
                 config.depositAddress =
                     await config.canister.getDepositAddress();
@@ -54,7 +54,7 @@ export function getTests(): Test[] {
         {
             name: 'getDepositAddress',
             test: async () => {
-                const config = db[1];
+                let config = db[1];
 
                 config.depositAddress =
                     await config.canister.getDepositAddress();

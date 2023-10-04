@@ -4,6 +4,7 @@ import {
     Opt,
     Principal,
     Record,
+    Result,
     Variant,
     Vec,
     blob,
@@ -57,6 +58,7 @@ const UpdateBalanceError = Variant({
 });
 
 // TODO: For some reason Result doesn't work.
+// See https://github.com/demergent-labs/azle/issues/1335
 // export const UpdateBalanceResult = Result(Vec(UtxoStatus), UpdateBalanceError);
 export const UpdateBalanceResult = Variant({
     Ok: Vec(UtxoStatus),

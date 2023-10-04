@@ -6,7 +6,7 @@ This ckBTC example shows you how to setup ckBTC locally, with the `ckBTC ledger`
 
 ## Setup
 
-Install all npm dependencies and download canister WASMs binaries:
+Install all npm dependencies and download canister Wasm binaries:
 
 ```bash
 npm install
