@@ -57,13 +57,7 @@ const UpdateBalanceError = Variant({
     GenericError: Record({ error_message: text, error_code: nat64 })
 });
 
-// TODO: For some reason Result doesn't work.
-// See https://github.com/demergent-labs/azle/issues/1335
-// export const UpdateBalanceResult = Result(Vec(UtxoStatus), UpdateBalanceError);
-export const UpdateBalanceResult = Variant({
-    Ok: Vec(UtxoStatus),
-    Err: UpdateBalanceError
-});
+export const UpdateBalanceResult = Result(Vec(UtxoStatus), UpdateBalanceError);
 
 export const Minter = Canister({
     get_btc_address: update(
