@@ -6,30 +6,21 @@ import {
     executeMethod,
     isAsync
 } from '.';
-import {
-    CandidType,
-    TypeMapping,
-    toParamIDLTypes,
-    toReturnIDLType
-} from '../candid';
+import { CandidType, TypeMapping } from '../candid';
 
 export function query<
     const Params extends ReadonlyArray<CandidType>,
     Return extends CandidType,
     GenericCallback extends Callback<Params, Return>
 >(
-    paramsIdls: Params,
-    returnIdl: Return,
+    paramCandidTypes: Params,
+    returnCandidType: Return,
     callback?: Awaited<ReturnType<GenericCallback>> extends TypeMapping<Return>
         ? GenericCallback
         : never,
     methodArgs?: MethodArgs
 ): CanisterMethodInfo<Params, Return> {
-    return (parent: any) => {
-        const parents = createParents(parent);
-        const paramCandid = toParamIDLTypes(paramsIdls as any, parents);
-        const returnCandid = toReturnIDLType(returnIdl as any, parents);
-
+    return ((parent: any) => {
         // TODO maybe the cross canister callback should be made here?
         const finalCallback =
             callback === undefined
@@ -37,23 +28,22 @@ export function query<
                 : (...args: any[]) => {
                       executeMethod(
                           'query',
-                          paramCandid,
-                          returnCandid,
                           args,
                           callback,
-                          paramsIdls as any,
-                          returnIdl,
-                          methodArgs?.manual ?? false
+                          paramCandidTypes as unknown as CandidType[],
+                          returnCandidType,
+                          methodArgs?.manual ?? false,
+                          createParents(parent)
                       );
                   };
 
         return {
             mode: 'query',
             callback: finalCallback,
-            paramsIdls: paramsIdls as any,
-            returnIdl,
+            paramCandidTypes: paramCandidTypes as unknown as CandidType[],
+            returnCandidType,
             async: callback === undefined ? false : isAsync(callback),
             guard: methodArgs?.guard
-        };
-    };
+        } as CanisterMethodInfo<Params, Return>;
+    }) as any;
 }

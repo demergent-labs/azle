@@ -19,8 +19,12 @@ export function call<T extends (...args: any[]) => any>(
         cycles?: nat64;
     }
 ): ReturnTypeOf<T> {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     // TODO probably get rid of .crossCanisterCallback
-    return method.crossCanisterCallback(
+    return (method as any).crossCanisterCallback(
         '_AZLE_CROSS_CANISTER_CALL',
         false,
         callRaw,

@@ -12,11 +12,8 @@ export function Variant<
 ): RequireExactlyOne<{
     [K in keyof T]: TypeMapping<T[K]>;
 }> & { _azleCandidType?: '_azleCandidType' } {
-    const name = v4();
-
     return {
         ...obj,
-        _azleName: name,
         getIDL(parents: any) {
             return IDL.Variant(processMap(obj as any, parents));
         }

@@ -115,66 +115,26 @@ export type Parent = {
     name: string;
 };
 
-export function toIDLType(idl: CandidType, parents: Parent[]): IDL.Type<any> {
-    if ('getIDL' in idl) {
-        if ('_azleName' in idl) {
-            const parent = parents.find(
-                (parent) => parent.name === idl._azleName
-            );
-            if (parent !== undefined) {
-                return {
-                    ...parent.idl,
-                    _azleName: idl._azleName,
-                    name: parent.idl.name,
-                    valueToString: (x): string => {
-                        return parent.idl.valueToString(x);
-                    },
-                    buildTypeTable: (typeTable): void => {
-                        return parent.idl.buildTypeTable(typeTable);
-                    },
-                    covariant: (x): x is any => {
-                        return parent.idl.covariant(x);
-                    },
-                    encodeType: (typeTable): ArrayBuffer => {
-                        return parent.idl.encodeType(typeTable);
-                    },
-                    checkType: (t) => {
-                        return parent.idl.checkType(t);
-                    },
-                    _buildTypeTableImpl: (typeTable): void => {
-                        return parent.idl._buildTypeTableImpl(typeTable);
-                    },
-                    // TODO check if this is still being called. maybe by adding a throw here and see if we hit it
-                    display: () => parent.idl.name,
-                    decodeValue: (b, t) => {
-                        return parent.idl.decodeValue(b, t);
-                    },
-                    encodeValue: (b) => {
-                        return parent.idl.encodeValue(b);
-                    },
-                    accept: (v, d) => {
-                        return parent.idl.accept(v, d);
-                    },
-                    _id: parent.idl._id,
-                    _type: parent.idl._type,
-                    fill: (t: any): void => {
-                        parent.idl.fill(t);
-                    },
-                    getType: () => {
-                        return parent.idl.getType();
-                    }
-                };
-            }
+export function toIDLType(
+    candidType: CandidType,
+    parents: Parent[]
+): IDL.Type<any> {
+    if ('_azleName' in candidType) {
+        const parent = parents.find(
+            (parent) => parent.name === candidType._azleName
+        );
+        // If the parent isn't undefined (ie we found one with the same name)
+        // this is a recursive type and we should return the parent rec idl
+        // instead of calling getIDL
+        if (parent !== undefined) {
+            return parent.idl;
         }
-        return idl.getIDL(parents);
     }
-    if (idl._azleIsCanister) {
-        return toIDLType(idl(), parents);
+    if ('_azleIsCanister' in candidType && candidType._azleIsCanister) {
+        return toIDLType((candidType as any)(), parents);
     }
-    // if (idl.display === undefined || idl.getIDL === undefined) {
-    //     throw Error(`${JSON.stringify(idl)} is not a candid type`);
-    // }
-    return idl;
+    // All CandidTypes ought to have a getIDL function defined for them
+    return (candidType as any).getIDL(parents);
 }
 
 export function toParamIDLTypes(

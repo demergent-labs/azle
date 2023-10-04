@@ -1,5 +1,5 @@
-import { IDL } from '@dfinity/candid';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
+import { decode } from '../candid/serde';
 
 /**
  * Returns the number of instructions that the canister executed since the
@@ -10,9 +10,11 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the number of instructions
  */
 export function instructionCounter(): nat64 {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const instructionCounterCandidBytes =
         globalThis._azleIc.instructionCounter();
-    return BigInt(
-        IDL.decode([IDL.Nat64], instructionCounterCandidBytes)[0] as number
-    );
+    return BigInt(decode(nat64, instructionCounterCandidBytes) as number);
 }

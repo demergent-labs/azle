@@ -38,23 +38,8 @@ export function compileTypeScriptToJavaScript(
             ${imports}
 `);
 
-        const javaScriptCodeWithRandom = `
-        globalThis.crypto = {
-            getRandomValues: () => {
-                let array = new Uint8Array(32);
-
-                for (let i = 0; i < array.length; i++) {
-                    array[i] = Math.floor(Math.random() * 256);
-                }
-
-                return array;
-            }
-        };
-        ${bundledJavaScript}
-        `;
-
         return {
-            ok: javaScriptCodeWithRandom
+            ok: bundledJavaScript
         };
     } catch (err) {
         return { err };

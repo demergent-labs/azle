@@ -4,6 +4,7 @@ import { blob } from '../candid/types/constructed/blob';
 import { nat } from '../candid/types/primitive/nats/nat';
 import { v4 } from 'uuid';
 import { text } from '../candid/types/primitive/text';
+import { encode } from '../candid/serde';
 
 /**
  * Performs an asynchronous call to another canister using the [System API](
@@ -21,6 +22,10 @@ export function callRaw128(
     argsRaw: blob,
     payment: nat
 ): Promise<blob> {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
         const promiseId = v4();
@@ -30,25 +35,23 @@ export function callRaw128(
         // TODO perhaps we should be more robust
         // TODO for example, we can keep the time with these
         // TODO if they are over a certain amount old we can delete them
-        globalThis[globalResolveId] = (bytes: ArrayBuffer) => {
+        globalThis._azleResolveIds[globalResolveId] = (bytes: ArrayBuffer) => {
             resolve(new Uint8Array(bytes));
 
-            delete globalThis[globalResolveId];
-            delete globalThis[globalRejectId];
+            delete globalThis._azleResolveIds[globalResolveId];
+            delete globalThis._azleRejectIds[globalRejectId];
         };
 
-        globalThis[globalRejectId] = (error: any) => {
+        globalThis._azleRejectIds[globalRejectId] = (error: any) => {
             reject(error);
 
-            delete globalThis[globalResolveId];
-            delete globalThis[globalRejectId];
+            delete globalThis._azleResolveIds[globalResolveId];
+            delete globalThis._azleRejectIds[globalRejectId];
         };
 
         const canisterIdBytes = canisterId.toUint8Array().buffer;
         const argsRawBuffer = argsRaw.buffer;
-        const paymentCandidBytes = new Uint8Array(
-            IDL.encode([IDL.Nat], [payment])
-        ).buffer;
+        const paymentCandidBytes = encode(nat, payment).buffer;
 
         // TODO consider finally, what if deletion goes wrong
         try {
@@ -60,8 +63,8 @@ export function callRaw128(
                 paymentCandidBytes
             );
         } catch (error) {
-            delete globalThis[globalResolveId];
-            delete globalThis[globalRejectId];
+            delete globalThis._azleResolveIds[globalResolveId];
+            delete globalThis._azleRejectIds[globalRejectId];
             throw error;
         }
     });

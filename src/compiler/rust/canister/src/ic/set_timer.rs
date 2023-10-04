@@ -34,6 +34,7 @@ pub fn native_function<'a>(
             let global = context.global_object().unwrap();
 
             let timer_callback = global
+                .get_property("_azleTimerCallbackIds").unwrap()
                 .get_property(callback_id.as_str())
                 .unwrap_or_else(|e| ic_cdk::api::trap(e.to_string().as_str()));
 

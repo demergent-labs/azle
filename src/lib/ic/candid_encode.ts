@@ -7,5 +7,9 @@ import { text } from '../candid/types/primitive/text';
  * @returns the candid value as bytes
  */
 export function candidEncode(candidString: text): blob {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     return new Uint8Array(globalThis._azleIc.candidEncode(candidString));
 }

@@ -1,6 +1,5 @@
 import { IDL } from '@dfinity/candid';
 import {
-    hch,
     VisitorData,
     VisitorResult,
     visitRec,
@@ -19,7 +18,7 @@ import { Opt } from '../../types/constructed';
 
 export class DecodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
     visitService(t: IDL.ServiceClass, data: VisitorData): VisitorResult {
-        return data.js_class(data.js_data);
+        return data.candidType(data.js_data);
     }
     visitFunc(t: IDL.FuncClass, data: VisitorData): VisitorResult {
         return data.js_data;
@@ -57,9 +56,9 @@ export class DecodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
             return { None: null };
         }
 
-        const candid = hch(ty).accept(this, {
+        const candid = ty.accept(this, {
             js_data: data.js_data[0],
-            js_class: data.js_class._azleType
+            candidType: data.candidType._azleType
         });
 
         return {

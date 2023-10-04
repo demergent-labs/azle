@@ -1,23 +1,30 @@
 import { v4 } from 'uuid';
 import { IDL } from '@dfinity/candid';
-import { Parent } from './index';
+import { CandidType, Parent } from './index';
 
-export function Recursive(idlCallback: any): any {
+export type _AzleRecursiveFunction = {
+    (...args: any[]): CandidType;
+    _azleName?: string;
+    _azleIsRecursive?: boolean;
+    getIDL?: (parents: Parent[]) => IDL.Type<any>;
+};
+
+export function Recursive(candidTypeCallback: any): any {
     const name = v4();
 
-    let result = (...args: any[]) => {
-        const idl = idlCallback();
-        if (idl._azleIsCanister) {
-            return idl(...args);
+    let result: _AzleRecursiveFunction = (...args: any[]) => {
+        const candidType = candidTypeCallback();
+        if (candidType._azleIsCanister) {
+            return candidType(...args);
         }
-        return idl;
+        return candidType;
     };
 
     result._azleName = name;
     result._azleIsRecursive = true;
     result.getIDL = (parents: Parent[]) => {
         const idl = IDL.Rec();
-        let filler = idlCallback();
+        let filler = candidTypeCallback();
         if (filler._azleIsCanister) {
             filler = filler(result);
         }

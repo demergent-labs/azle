@@ -1,5 +1,5 @@
-import { IDL } from '@dfinity/candid';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
+import { decode } from '../candid/serde';
 
 /**
  * Returns the amount of cycles that came back with the response as a refund.
@@ -7,9 +7,11 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the amount of cycles
  */
 export function msgCyclesRefunded(): nat64 {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     const msgCyclesRefundedCandidBytes = globalThis._azleIc.msgCyclesRefunded();
 
-    return BigInt(
-        IDL.decode([IDL.Nat64], msgCyclesRefundedCandidBytes)[0] as number
-    );
+    return BigInt(decode(nat64, msgCyclesRefundedCandidBytes) as number);
 }

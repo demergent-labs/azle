@@ -2,6 +2,7 @@ import { IDL } from '@dfinity/candid';
 import { DecodeVisitor } from './decode_visitor';
 import { EncodeVisitor } from './encode_visitor';
 import { AzleResult, Result } from '../../../system_types/result';
+import { CandidType } from '../..';
 export { EncodeVisitor, DecodeVisitor };
 
 /*
@@ -9,7 +10,7 @@ export { EncodeVisitor, DecodeVisitor };
  * encoded or was just decoded. js_class is the CandidClass (IDLable) class that
  * can be used to create the class.
  */
-export type VisitorData = { js_data: any; js_class: any };
+export type VisitorData = { js_data: any; candidType: any };
 /**
  * The VisitorResult is the transformed version of js_data that is ready to
  * be consumed by the js or ready to be encoded.
@@ -22,22 +23,15 @@ export type VisitorResult = any;
  * is extracted into these helper methods.
  */
 
-export function hch(value: any) {
-    if (value._azleIsCanister) {
-        return value().getIDL();
-    }
-    return value;
-}
-
 export function visitTuple(
     visitor: DecodeVisitor | EncodeVisitor,
     components: IDL.Type<any>[],
     data: VisitorData
 ): VisitorResult {
     const fields = components.map((value, index) =>
-        hch(value).accept(visitor, {
+        value.accept(visitor, {
             js_data: data.js_data[index],
-            js_class: data.js_class._azleTypes[index]
+            candidType: data.candidType._azleTypes[index]
         })
     );
     return [...fields];
@@ -52,9 +46,9 @@ export function visitVec(
         return data.js_data;
     }
     return data.js_data.map((array_elem: any) => {
-        return hch(ty).accept(visitor, {
+        return ty.accept(visitor, {
             js_data: array_elem,
-            js_class: data.js_class._azleType
+            candidType: data.candidType._azleType
         });
     });
 }
@@ -66,13 +60,13 @@ export function visitRecord(
 ): VisitorResult {
     const candidFields = fields.reduce((acc, [memberName, memberIdl]) => {
         const fieldData = data.js_data[memberName];
-        const fieldClass = data.js_class[memberName];
+        const fieldClass = data.candidType[memberName];
 
         return {
             ...acc,
-            [memberName]: hch(memberIdl).accept(visitor, {
+            [memberName]: memberIdl.accept(visitor, {
                 js_data: fieldData,
-                js_class: fieldClass
+                candidType: fieldClass
             })
         };
     }, {});
@@ -85,42 +79,42 @@ export function visitVariant(
     fields: [string, IDL.Type<any>][],
     data: VisitorData
 ): VisitorResult {
-    if (data.js_class instanceof AzleResult) {
+    if (data.candidType instanceof AzleResult) {
         if ('Ok' in data.js_data) {
             const okField = fields[0];
             const okData = data.js_data['Ok'];
-            const okClass = data.js_class._azleOk;
+            const okClass = data.candidType._azleOk;
 
             return Result.Ok(
-                hch(okField[1]).accept(visitor, {
+                okField[1].accept(visitor, {
                     js_data: okData,
-                    js_class: okClass
+                    candidType: okClass
                 })
             );
         }
         if ('Err' in data.js_data) {
             const errField = fields[0];
             const errData = data.js_data['Err'];
-            const errClass = data.js_class._azleErr;
+            const errClass = data.candidType._azleErr;
             return Result.Err(
-                hch(errField[1]).accept(visitor, {
+                errField[1].accept(visitor, {
                     js_data: errData,
-                    js_class: errClass
+                    candidType: errClass
                 })
             );
         }
     }
     const candidFields = fields.reduce((acc, [memberName, memberIdl]) => {
         const fieldData = data.js_data[memberName];
-        const fieldClass = data.js_class[memberName];
+        const fieldClass = data.candidType[memberName];
         if (fieldData === undefined) {
             // If the field data is undefined then it is not the variant that was used
             return acc;
         }
         return {
             ...acc,
-            [memberName]: hch(memberIdl).accept(visitor, {
-                js_class: fieldClass,
+            [memberName]: memberIdl.accept(visitor, {
+                candidType: fieldClass,
                 js_data: fieldData
             })
         };
@@ -134,12 +128,12 @@ export function visitRec<T>(
     ty: IDL.ConstructType<T>,
     data: VisitorData
 ): VisitorResult {
-    let js_class = data.js_class();
-    if (js_class._azleIsCanister) {
-        js_class = js_class([]);
+    let candidType = data.candidType();
+    if (candidType._azleIsCanister) {
+        candidType = candidType([]);
     }
-    return hch(ty).accept(visitor, {
+    return ty.accept(visitor, {
         ...data,
-        js_class
+        candidType
     });
 }

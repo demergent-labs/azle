@@ -19,5 +19,7 @@ import { blob } from '../candid/types/constructed/blob';
  * ```
  */
 export function replyRaw(replyBuffer: blob): Void {
-    return globalThis._azleIc.replyRaw(replyBuffer.buffer);
+    return globalThis._azleIc
+        ? globalThis._azleIc.replyRaw(replyBuffer.buffer)
+        : undefined;
 }

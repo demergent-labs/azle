@@ -6,12 +6,7 @@ import {
     executeMethod,
     isAsync
 } from '.';
-import {
-    CandidType,
-    TypeMapping,
-    toParamIDLTypes,
-    toReturnIDLType
-} from '../candid';
+import { CandidType, TypeMapping } from '../candid';
 
 export function update<
     const Params extends ReadonlyArray<CandidType>,
@@ -25,34 +20,29 @@ export function update<
         : never,
     methodArgs?: MethodArgs
 ): CanisterMethodInfo<Params, Return> {
-    return (parent: any) => {
-        const parents = createParents(parent);
-        const paramIdls = toParamIDLTypes(paramCandidTypes as any, parents);
-        const returnIdls = toReturnIDLType(returnCandidType as any, parents);
-
+    return ((parent: any) => {
         const finalCallback =
             callback === undefined
                 ? undefined
                 : (...args: any[]) => {
                       executeMethod(
                           'update',
-                          paramIdls,
-                          returnIdls,
                           args,
                           callback,
-                          paramCandidTypes as any,
+                          paramCandidTypes as unknown as CandidType[],
                           returnCandidType,
-                          methodArgs?.manual ?? false
+                          methodArgs?.manual ?? false,
+                          createParents(parent)
                       );
                   };
 
         return {
             mode: 'update',
             callback: finalCallback,
-            paramsIdls: paramCandidTypes as any,
-            returnIdl: returnCandidType,
+            paramCandidTypes: paramCandidTypes as unknown as CandidType[],
+            returnCandidType,
             async: callback === undefined ? false : isAsync(callback),
             guard: methodArgs?.guard
-        };
-    };
+        } as CanisterMethodInfo<Params, Return>;
+    }) as any;
 }

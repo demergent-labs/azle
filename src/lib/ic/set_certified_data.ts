@@ -1,6 +1,6 @@
-import { IDL } from '@dfinity/candid';
 import { blob } from '../candid/types/constructed/blob';
 import { Void } from '../candid/types/primitive/void';
+import { encode } from '../candid/serde';
 
 /**
  * Sets the certified data of this canister.
@@ -25,8 +25,11 @@ import { Void } from '../candid/types/primitive/void';
  * @returns
  */
 export function setCertifiedData(data: blob): Void {
-    const dataBytes = new Uint8Array(IDL.encode([IDL.Vec(IDL.Nat8)], [data]))
-        .buffer;
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
+    const dataBytes = encode(blob, data).buffer;
 
     return globalThis._azleIc.setCertifiedData(dataBytes);
 }

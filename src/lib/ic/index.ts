@@ -50,142 +50,54 @@ import { trap } from './trap';
 
 export * from './types';
 
-type Ic = {
-    acceptMessage: typeof acceptMessage;
-    argDataRaw: typeof argDataRaw;
-    argDataRawSize: typeof argDataRawSize;
-    call: typeof call;
-    call128: typeof call128;
-    callRaw: typeof callRaw;
-    callRaw128: typeof callRaw128;
-    caller: typeof caller;
-    candidDecode: typeof candidDecode;
-    candidEncode: typeof candidEncode;
-    canisterBalance: typeof canisterBalance;
-    canisterBalance128: typeof canisterBalance128;
-    canisterVersion: typeof canisterVersion;
-    clearTimer: typeof clearTimer;
-    dataCertificate: typeof dataCertificate;
-    id: typeof id;
-    instructionCounter: typeof instructionCounter;
-    isController: typeof isController;
-    methodName: typeof methodName;
-    msgCyclesAccept: typeof msgCyclesAccept;
-    msgCyclesAccept128: typeof msgCyclesAccept;
-    msgCyclesAvailable: typeof msgCyclesAvailable;
-    msgCyclesAvailable128: typeof msgCyclesAvailable128;
-    msgCyclesRefunded: typeof msgCyclesRefunded;
-    msgCyclesRefunded128: typeof msgCyclesRefunded128;
-    notify: typeof notify;
-    notifyRaw: typeof notifyRaw;
-    performanceCounter: typeof performanceCounter;
-    print: typeof print;
-    reject: typeof reject;
-    rejectCode: typeof rejectCode;
-    rejectMessage: typeof rejectMessage;
-    reply: typeof reply;
-    replyRaw: typeof replyRaw;
-    setCertifiedData: typeof setCertifiedData;
-    setTimer: typeof setTimer;
-    setTimerInterval: typeof setTimerInterval;
-    stableBytes: typeof stableBytes;
-    stableGrow: typeof stableGrow;
-    stableRead: typeof stableRead;
-    stableSize: typeof stableSize;
-    stableWrite: typeof stableWrite;
-    stable64Grow: typeof stable64Grow;
-    stable64Read: typeof stable64Read;
-    stable64Size: typeof stable64Size;
-    stable64Write: typeof stable64Write;
-    time: typeof time;
-    trap: typeof trap;
-};
-
 /** API entrypoint for interacting with the Internet Computer */
-export const ic: Ic = globalThis._azleIc
-    ? {
-          ...globalThis._azleIc,
-          argDataRaw,
-          call,
-          call128,
-          callRaw,
-          callRaw128,
-          caller,
-          candidDecode,
-          candidEncode,
-          canisterBalance,
-          canisterBalance128,
-          canisterVersion,
-          clearTimer,
-          dataCertificate,
-          id,
-          instructionCounter,
-          isController,
-          msgCyclesAccept,
-          msgCyclesAccept128,
-          msgCyclesAvailable,
-          msgCyclesAvailable128,
-          msgCyclesRefunded,
-          msgCyclesRefunded128,
-          notify,
-          notifyRaw,
-          performanceCounter,
-          rejectCode,
-          reply,
-          replyRaw,
-          setCertifiedData,
-          setTimer,
-          setTimerInterval,
-          stableBytes,
-          stableGrow,
-          stableRead,
-          stableSize,
-          stableWrite,
-          stable64Grow,
-          stable64Read,
-          stable64Size,
-          stable64Write,
-          time
-      }
-    : {
-          acceptMessage: () => {},
-          argDataRaw: () => {},
-          argDataRawSize: () => {},
-          callRaw: () => {},
-          caller: () => {},
-          candidDecode: () => {},
-          candidEncode: () => {},
-          canisterBalance: () => {},
-          canisterBalance128: () => {},
-          canisterVersion: () => {},
-          clearTimer: () => {},
-          id: () => {},
-          instructionCounter: () => {},
-          isController: () => {},
-          methodName: () => {},
-          msgCyclesAccept: () => {},
-          msgCyclesAccept128: () => {},
-          msgCyclesAvailable: () => {},
-          msgCyclesAvailable128: () => {},
-          msgCyclesRefunded: () => {},
-          msgCyclesRefunded128: () => {},
-          performanceCounter: () => {},
-          print: () => {},
-          reject: () => {},
-          rejectCode: () => {},
-          rejectMessage: () => {},
-          reply: () => {},
-          replyRaw: () => {},
-          setCertifiedData: () => {},
-          stableBytes: () => {},
-          stableGrow: () => {},
-          stableRead: () => {},
-          stableSize: () => {},
-          stableWrite: () => {},
-          stable64Grow: () => {},
-          stable64Read: () => {},
-          stable64Size: () => {},
-          stable64Write: () => {},
-          time: () => {},
-          trap: () => {}
-      };
+export const ic = {
+    acceptMessage,
+    argDataRawSize,
+    argDataRaw,
+    call,
+    call128,
+    callRaw,
+    callRaw128,
+    caller,
+    candidDecode,
+    candidEncode,
+    canisterBalance,
+    canisterBalance128,
+    canisterVersion,
+    clearTimer,
+    dataCertificate,
+    id,
+    instructionCounter,
+    isController,
+    methodName,
+    msgCyclesAccept,
+    msgCyclesAccept128,
+    msgCyclesAvailable,
+    msgCyclesAvailable128,
+    msgCyclesRefunded,
+    msgCyclesRefunded128,
+    notify,
+    notifyRaw,
+    performanceCounter,
+    print,
+    reject,
+    rejectCode,
+    rejectMessage,
+    reply,
+    replyRaw,
+    setCertifiedData,
+    setTimer,
+    setTimerInterval,
+    stableBytes,
+    stableGrow,
+    stableRead,
+    stableSize,
+    stableWrite,
+    stable64Grow,
+    stable64Read,
+    stable64Size,
+    stable64Write,
+    time,
+    trap
+};

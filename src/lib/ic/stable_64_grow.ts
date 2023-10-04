@@ -1,5 +1,5 @@
-import { IDL } from '@dfinity/candid';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
+import { decode, encode } from '../candid/serde';
 
 /**
  * Attempts to grow the stable memory by `newPages`.
@@ -8,14 +8,16 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * @returns the previous size that was reserved.
  */
 export function stable64Grow(newPages: nat64): nat64 {
-    const newPagesCandidBytes = new Uint8Array(
-        IDL.encode([IDL.Nat64], [newPages])
-    ).buffer;
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
+    const newPagesCandidBytes = encode(nat64, newPages).buffer;
 
     return BigInt(
-        IDL.decode(
-            [IDL.Nat64],
+        decode(
+            nat64,
             globalThis._azleIc.stable64Grow(newPagesCandidBytes)
-        )[0] as number
+        ) as number
     );
 }

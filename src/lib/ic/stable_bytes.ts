@@ -8,5 +8,9 @@ import { blob } from '../candid/types/constructed/blob';
  * @returns a copy of the stable memory
  */
 export function stableBytes(): blob {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
+
     return new Uint8Array(globalThis._azleIc.stableBytes());
 }
