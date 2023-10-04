@@ -2,7 +2,6 @@ import {
     Callback,
     CanisterMethodInfo,
     MethodArgs,
-    createParents,
     executeMethod,
     isAsync
 } from '.';
@@ -20,30 +19,27 @@ export function query<
         : never,
     methodArgs?: MethodArgs
 ): CanisterMethodInfo<Params, Return> {
-    return ((parent: any) => {
-        // TODO maybe the cross canister callback should be made here?
-        const finalCallback =
-            callback === undefined
-                ? undefined
-                : (...args: any[]) => {
-                      executeMethod(
-                          'query',
-                          args,
-                          callback,
-                          paramCandidTypes as unknown as CandidType[],
-                          returnCandidType,
-                          methodArgs?.manual ?? false,
-                          createParents(parent)
-                      );
-                  };
+    // TODO maybe the cross canister callback should be made here?
+    const finalCallback =
+        callback === undefined
+            ? undefined
+            : (...args: any[]) => {
+                  executeMethod(
+                      'query',
+                      args,
+                      callback,
+                      paramCandidTypes as unknown as CandidType[],
+                      returnCandidType,
+                      methodArgs?.manual ?? false
+                  );
+              };
 
-        return {
-            mode: 'query',
-            callback: finalCallback,
-            paramCandidTypes: paramCandidTypes as unknown as CandidType[],
-            returnCandidType,
-            async: callback === undefined ? false : isAsync(callback),
-            guard: methodArgs?.guard
-        } as CanisterMethodInfo<Params, Return>;
-    }) as any;
+    return {
+        mode: 'query',
+        callback: finalCallback,
+        paramCandidTypes: paramCandidTypes as unknown as CandidType[],
+        returnCandidType,
+        async: callback === undefined ? false : isAsync(callback),
+        guard: methodArgs?.guard
+    };
 }
