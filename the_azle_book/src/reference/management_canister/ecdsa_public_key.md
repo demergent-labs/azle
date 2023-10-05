@@ -7,29 +7,36 @@ Examples:
 -   [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa)
 
 ```typescript
-import { blob, ic, match, Opt, Record, Result, $update } from 'azle';
+import { blob, Canister, ic, None, Record, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function publicKey(): Promise<
-    Result<Record<{ publicKey: blob }>, string>
-> {
-    const caller = ic.caller().toUint8Array();
-    const publicKeyResult = await managementCanister
-        .ecdsa_public_key({
-            canister_id: Opt.None,
-            derivation_path: [caller],
-            key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
-        })
-        .call();
+const PublicKey = Record({
+    publicKey: blob
+});
 
-    return match(publicKeyResult, {
-        Ok: (ecdsaPublicKeyResult) => ({
-            Ok: {
-                publicKey: ecdsaPublicKeyResult.public_key
+export default Canister({
+    publicKey: update([], PublicKey, async () => {
+        const caller = ic.caller().toUint8Array();
+
+        const publicKeyResult = await ic.call(
+            managementCanister.ecdsa_public_key,
+            {
+                args: [
+                    {
+                        canister_id: None,
+                        derivation_path: [caller],
+                        key_id: {
+                            curve: { secp256k1: null },
+                            name: 'dfx_test_key'
+                        }
+                    }
+                ]
             }
-        }),
-        Err: (err) => ({ Err: err })
-    });
-}
+        );
+
+        return {
+            publicKey: publicKeyResult.public_key
+        };
+    })
+});
 ```

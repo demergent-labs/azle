@@ -10,16 +10,12 @@ Examples:
 -   [timers](https://github.com/demergent-labs/azle/tree/main/examples/timers)
 
 ```typescript
-import { blob, match, $update } from 'azle';
+import { blob, Canister, ic, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function getRandomness(): Promise<blob> {
-    const randomnessResult = await managementCanister.raw_rand().call();
-
-    return match(randomnessResult, {
-        Ok: (randomness) => randomness,
-        Err: () => Uint8Array.from([])
-    });
-}
+export default Canister({
+    getRawRand: update([], blob, async () => {
+        return await ic.call(managementCanister.raw_rand);
+    })
+});
 ```

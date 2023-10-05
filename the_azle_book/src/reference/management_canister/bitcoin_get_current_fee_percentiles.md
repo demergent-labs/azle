@@ -7,24 +7,27 @@ Examples:
 -   [bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/bitcoin)
 
 ```typescript
-import { Result, $update, Vec } from 'azle';
+import { Canister, ic, update, Vec } from 'azle';
 import {
-    BitcoinNetwork,
     managementCanister,
     MillisatoshiPerByte
 } from 'azle/canisters/management';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
-$update;
-export async function getCurrentFeePercentiles(): Promise<
-    Result<Vec<MillisatoshiPerByte>, string>
-> {
-    return await managementCanister
-        .bitcoin_get_current_fee_percentiles({
-            network: BitcoinNetwork.Regtest
-        })
-        .cycles(BITCOIN_API_CYCLE_COST)
-        .call();
-}
+export default Canister({
+    getCurrentFeePercentiles: update([], Vec(MillisatoshiPerByte), async () => {
+        return await ic.call(
+            managementCanister.bitcoin_get_current_fee_percentiles,
+            {
+                args: [
+                    {
+                        network: { Regtest: null }
+                    }
+                ],
+                cycles: BITCOIN_API_CYCLE_COST
+            }
+        );
+    })
+});
 ```

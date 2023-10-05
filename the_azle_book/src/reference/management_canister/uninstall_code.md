@@ -7,22 +7,20 @@ Examples:
 -   [management_canister](https://github.com/demergent-labs/azle/tree/main/examples/management_canister)
 
 ```typescript
-import { match, Principal, Result, $update } from 'azle';
+import { bool, Canister, ic, Principal, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function executeUninstallCode(
-    canisterId: Principal
-): Promise<Result<boolean, string>> {
-    const callResult = await managementCanister
-        .uninstall_code({
-            canister_id: canisterId
-        })
-        .call();
+export default Canister({
+    executeUninstallCode: update([Principal], bool, async (canisterId) => {
+        await ic.call(managementCanister.uninstall_code, {
+            args: [
+                {
+                    canister_id: canisterId
+                }
+            ]
+        });
 
-    return match(callResult, {
-        Ok: () => ({ Ok: true }),
-        Err: (err) => ({ Err: err })
-    });
-}
+        return true;
+    })
+});
 ```
