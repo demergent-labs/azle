@@ -1,8 +1,8 @@
 # int
 
-The Azle type `int` corresponds to the [Candid type int](https://internetcomputer.org/docs/current/references/candid-ref#type-int) and will become a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
+The `CandidType` object `int` corresponds to the [Candid type int](https://internetcomputer.org/docs/current/references/candid-ref#type-int), is inferred to be a TypeScript `bigint`, and will be decoded into a [JavaScript BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) at runtime.
 
-TypeScript:
+TypeScript or JavaScript:
 
 ```typescript
 import { Canister, int, query } from 'azle';

@@ -1,11 +1,13 @@
 # service
 
-JavaScript classes that inherit from the Azle type `Service` correspond to the [Candid service type](https://internetcomputer.org/docs/current/references/candid-ref#type-service-) and will become child classes capable of creating instances that can perform cross-canister calls at runtime.
+Values created by the `CandidType` function `Canister` correspond to the [Candid service type](https://internetcomputer.org/docs/current/references/candid-ref#type-service-), are inferred to be TypeScript `Object`s, and will be decoded into [@dfinity/principal Principals](https://www.npmjs.com/package/@dfinity/principal) at runtime.
 
-TypeScript:
+These values represent `Principal`s when passed as arguments or return types but can be used for cross-canister calls when passed to call/notify APIs.
+
+TypeScript or JavaScript:
 
 ```typescript
-import { Canister, Principal, bool, ic, query, text, update } from 'azle';
+import { bool, Canister, ic, Principal, query, text, update } from 'azle';
 
 const SomeCanister = Canister({
     query1: query([], bool),

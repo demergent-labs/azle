@@ -1,11 +1,13 @@
 # variant
 
-TypeScript type aliases referring to object literals wrapped in the `Variant` Azle type correspond to the [Candid variant type](https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--) and will become [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
+Objects created by the `CandidType` function `Variant` correspond to the [Candid variant type](https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--), are inferred to be TypeScript `Object`s, and will be decoded into [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
 
-TypeScript:
+The shape of the object will match the object literal passed to the `Variant` function, however it will contain only one of the enumerated properties.
+
+TypeScript or JavaScript:
 
 ```typescript
-import { Canister, Null, Variant, query } from 'azle';
+import { Canister, Null, query, Variant } from 'azle';
 
 const Emotion = Variant({
     Happy: Null,

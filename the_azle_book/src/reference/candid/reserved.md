@@ -1,8 +1,8 @@
 # reserved
 
-The Azle type `reserved` corresponds to the [Candid type reserved](https://internetcomputer.org/docs/current/references/candid-ref#type-reserved), is the TypeScript type `any`, and will become a [JavaScript null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null) at runtime.
+The `CandidType` object `reserved` corresponds to the [Candid type reserved](https://internetcomputer.org/docs/current/references/candid-ref#type-reserved), is inferred to be a TypeScript `any`, and will be decoded into a [JavaScript null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null) at runtime.
 
-TypeScript:
+TypeScript or JavaScript:
 
 ```typescript
 import { Canister, query, reserved } from 'azle';

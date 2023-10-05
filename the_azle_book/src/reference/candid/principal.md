@@ -1,8 +1,8 @@
 # principal
 
-The Azle type `Principal` corresponds to the [Candid type principal](https://internetcomputer.org/docs/current/references/candid-ref#type-principal) and will become an [@dfinity/principal](https://www.npmjs.com/package/@dfinity/principal) at runtime.
+The `CandidType` object `Principal` corresponds to the [Candid type principal](https://internetcomputer.org/docs/current/references/candid-ref#type-principal), is inferred to be a TypeScript [@dfinity/principal](https://www.npmjs.com/package/@dfinity/principal) `Principal`, and will be decoded into an [@dfinity/principal Principal](https://www.npmjs.com/package/@dfinity/principal) at runtime.
 
-TypeScript:
+TypeScript or JavaScript:
 
 ```typescript
 import { Canister, Principal, query } from 'azle';

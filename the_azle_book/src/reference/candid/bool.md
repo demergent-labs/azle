@@ -1,11 +1,11 @@
 # bool
 
-The TypeScript type `boolean` corresponds to the [Candid type bool](https://internetcomputer.org/docs/current/references/candid-ref#type-bool) and will become a [JavaScript Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) at runtime.
+The `CandidType` object `bool` corresponds to the [Candid type bool](https://internetcomputer.org/docs/current/references/candid-ref#type-bool), is inferred to be a TypeScript `boolean`, and will be decoded into a [JavaScript Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) at runtime.
 
-TypeScript:
+TypeScript or JavaScript:
 
 ```typescript
-import { Canister, bool, query } from 'azle';
+import { bool, Canister, query } from 'azle';
 
 export default Canister({
     getBool: query([], bool, () => {

@@ -1,8 +1,8 @@
-### empty
+# empty
 
-The Azle type `empty` corresponds to the [Candid type empty](https://internetcomputer.org/docs/current/references/candid-ref#type-empty) and has no JavaScript value at runtime.
+The `CandidType` object `empty` corresponds to the [Candid type empty](https://internetcomputer.org/docs/current/references/candid-ref#type-empty), is inferred to be a TypeScript `never`, and has no JavaScript value at runtime.
 
-TypeScript:
+TypeScript or JavaScript:
 
 ```typescript
 import { Canister, empty, query } from 'azle';
