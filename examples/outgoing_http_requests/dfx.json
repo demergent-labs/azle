@@ -3,8 +3,8 @@
         "outgoing_http_requests": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle outgoing_http_requests",
             "candid": "src/index.did",
+            "build": "npx azle outgoing_http_requests",
             "wasm": ".azle/outgoing_http_requests/outgoing_http_requests.wasm",
             "gzip": true,
             "declarations": {

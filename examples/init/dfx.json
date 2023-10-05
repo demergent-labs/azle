@@ -3,8 +3,8 @@
         "init": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle init",
             "candid": "src/index.did",
+            "build": "npx azle init",
             "wasm": ".azle/init/init.wasm",
             "gzip": true,
             "declarations": {

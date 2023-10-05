@@ -3,8 +3,8 @@
         "azle": {
             "type": "custom",
             "main": "canisters/azle/index.ts",
-            "build": "npx azle azle",
             "candid": "canisters/azle/index.did",
+            "build": "npx azle azle",
             "wasm": ".azle/azle/azle.wasm",
             "gzip": true,
             "declarations": {
@@ -20,11 +20,11 @@
         },
         "rust": {
             "type": "rust",
-            "package": "rust",
             "candid": "canisters/rust/src/lib.did",
             "declarations": {
                 "output": "dfx_generated/rust"
-            }
+            },
+            "package": "rust"
         }
     }
 }

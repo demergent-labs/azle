@@ -3,8 +3,8 @@
         "basic_bitcoin": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle basic_bitcoin",
             "candid": "src/index.did",
+            "build": "npx azle basic_bitcoin",
             "wasm": ".azle/basic_bitcoin/basic_bitcoin.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/basic_bitcoin",

@@ -3,8 +3,8 @@
         "func_types": {
             "type": "custom",
             "main": "canisters/func_types/index.ts",
-            "build": "npx azle func_types",
             "candid": "canisters/func_types/index.did",
+            "build": "npx azle func_types",
             "wasm": ".azle/func_types/func_types.wasm",
             "gzip": true,
             "declarations": {
@@ -16,8 +16,8 @@
         "notifiers": {
             "type": "custom",
             "main": "canisters/notifiers/index.ts",
-            "build": "npx azle notifiers",
             "candid": "canisters/notifiers/index.did",
+            "build": "npx azle notifiers",
             "wasm": ".azle/notifiers/notifiers.wasm",
             "gzip": true,
             "declarations": {

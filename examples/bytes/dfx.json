@@ -3,8 +3,8 @@
         "bytes_canister": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle bytes_canister",
             "candid": "src/index.did",
+            "build": "npx azle bytes_canister",
             "wasm": ".azle/bytes_canister/bytes_canister.wasm",
             "gzip": true,
             "declarations": {

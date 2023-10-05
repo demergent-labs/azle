@@ -3,8 +3,8 @@
         "generics": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle generics",
             "candid": "src/index.did",
+            "build": "npx azle generics",
             "wasm": ".azle/generics/generics.wasm.gz",
             "declarations": {
                 "output": "test/dfx_generated/generics",

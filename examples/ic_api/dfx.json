@@ -3,8 +3,8 @@
         "ic_api": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle ic_api",
             "candid": "src/index.did",
+            "build": "npx azle ic_api",
             "wasm": ".azle/ic_api/ic_api.wasm",
             "gzip": true,
             "declarations": {

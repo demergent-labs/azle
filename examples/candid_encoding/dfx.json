@@ -3,8 +3,8 @@
         "candid_encoding": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle candid_encoding",
             "candid": "src/index.did",
+            "build": "npx azle candid_encoding",
             "wasm": ".azle/candid_encoding/candid_encoding.wasm",
             "gzip": true,
             "declarations": {

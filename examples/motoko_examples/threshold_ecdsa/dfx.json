@@ -3,8 +3,8 @@
         "threshold_ecdsa": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle threshold_ecdsa",
             "candid": "src/index.did",
+            "build": "npx azle threshold_ecdsa",
             "wasm": ".azle/threshold_ecdsa/threshold_ecdsa.wasm",
             "gzip": true,
             "declarations": {

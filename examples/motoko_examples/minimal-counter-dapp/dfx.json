@@ -3,8 +3,8 @@
         "minimal_dapp": {
             "type": "custom",
             "main": "src/minimal_dapp/index.ts",
-            "build": "npx azle minimal_dapp",
             "candid": "src/minimal_dapp/index.did",
+            "build": "npx azle minimal_dapp",
             "wasm": ".azle/minimal_dapp/minimal_dapp.wasm",
             "gzip": true,
             "declarations": {

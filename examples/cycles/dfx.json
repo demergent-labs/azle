@@ -3,8 +3,8 @@
         "cycles": {
             "type": "custom",
             "main": "src/cycles/index.ts",
-            "build": "npx azle cycles",
             "candid": "src/cycles/index.did",
+            "build": "npx azle cycles",
             "wasm": ".azle/cycles/cycles.wasm",
             "gzip": true,
             "declarations": {
@@ -15,8 +15,8 @@
         "intermediary": {
             "type": "custom",
             "main": "src/intermediary/index.ts",
-            "build": "npx azle intermediary",
             "candid": "src/intermediary/index.did",
+            "build": "npx azle intermediary",
             "wasm": ".azle/intermediary/intermediary.wasm",
             "gzip": true,
             "declarations": {
