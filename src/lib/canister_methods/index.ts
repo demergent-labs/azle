@@ -1,6 +1,6 @@
 import { AzleVoid } from '../candid/types/primitive/void';
 import { ic } from '../ic';
-import { CandidType, TypeMapping, Parent } from '../candid';
+import { CandidType, TypeMapping } from '../candid';
 import { decodeMultiple, encode } from '../candid/serde';
 
 export * from './heartbeat';
@@ -46,8 +46,7 @@ export function executeMethod(
     callback: any,
     paramCandidTypes: CandidType[],
     returnCandidType: CandidType,
-    manual: boolean,
-    parents: Parent[]
+    manual: boolean
 ) {
     if (mode === 'heartbeat') {
         const result = callback();
@@ -70,7 +69,7 @@ export function executeMethod(
         return;
     }
 
-    const decodedArgs = decodeMultiple(paramCandidTypes, args[0], parents);
+    const decodedArgs = decodeMultiple(paramCandidTypes, args[0]);
 
     const result = callback(...decodedArgs);
 
@@ -91,10 +90,10 @@ export function executeMethod(
             .then((result: any) => {
                 // TODO this won't be accurate because we have most likely had
                 // TODO cross-canister calls
-                console.log(`final instructions: ${ic.instructionCounter()}`);
+                reportFinalInstructions();
 
                 if (!manual) {
-                    ic.replyRaw(encode(returnCandidType, result, parents));
+                    ic.replyRaw(encode(returnCandidType, result));
                 }
             })
             .catch((error: any) => {
@@ -105,14 +104,14 @@ export function executeMethod(
             ic.replyRaw(encode(returnCandidType, result));
         }
 
-        console.log(`final instructions: ${ic.instructionCounter()}`);
+        reportFinalInstructions();
     }
 }
 
-export function createParents(parent: any): Parent[] {
-    return parent === undefined
-        ? []
-        : [{ idl: parent, name: parent._azleName }];
+function reportFinalInstructions() {
+    if (process.env.AZLE_INSTRUCTION_COUNT === 'true') {
+        console.log(`final instructions: ${ic.instructionCounter()}`);
+    }
 }
 
 export function isAsync(originalFunction: any) {

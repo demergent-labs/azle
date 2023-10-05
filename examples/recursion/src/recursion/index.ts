@@ -20,10 +20,11 @@ import MyFullCanister from '../recursive_canister';
 // These are the types that can be recursive
 // Record
 //     Record can't be recursive by itself. It needs something to be able to terminate it. It needs to work with Variants, Opts, and Vec
-const varRecord = Recursive(() => Record({ myVar }));
+const varRecord = Recursive(() =>
+    Record({ myVar: Variant({ num: int8, varRec: varRecord }) })
+);
 const vecRecord = Recursive(() => Record({ myVecRecords: Vec(vecRecord) }));
 const optRecord = Recursive(() => Record({ myOpt: Opt(optRecord) }));
-const myVar = Variant({ num: int8, varRec: varRecord });
 // Variant
 //     Variant is the only type that can be recursive all by itself but it does need a way to end the recursion
 const recVariant = Recursive(() =>
@@ -35,8 +36,15 @@ const vecTuple = Recursive(() => Tuple(Vec(vecTuple), Vec(vecTuple)));
 const varTuple = Recursive(() => Tuple(myTupleVar, myTupleVar));
 const myTupleVar = Variant({ num: int8, varTuple });
 // Vec
-//      Vec can't be recursive by itself. At the end of it all it needs to have a concrete type.
+const varVec = Recursive(() => Vec(Variant({ Leaf: int8, Branch: varVec })));
+const optVec = Recursive(() => Vec(Opt(optVec)));
+const tupleVec = Recursive(() => Vec(Tuple(tupleVec, tupleVec)));
+const vecVec = Recursive(() => Vec(vecVec));
 // Opt
+const varOpt = Recursive(() => Opt(Variant({ Leaf: int8, Branch: varOpt })));
+const optOpt = Recursive(() => Opt(optOpt));
+const tupleOpt = Recursive(() => Opt(Tuple(tupleOpt, tupleOpt)));
+const vecOpt = Recursive(() => Opt(Vec(vecOpt)));
 // Service
 const MyCanister = Recursive(() =>
     Canister({
@@ -47,6 +55,14 @@ const MyCanister = Recursive(() =>
 const myFunc = Recursive(() => Func([myFunc], myFunc, 'query'));
 
 export default Canister({
+    testRecVecWithVariant: query([varVec], varVec, (param) => param),
+    testRecVecWithOpt: query([optVec], optVec, (param) => param),
+    testRecVecWithTuple: query([tupleVec], tupleVec, (param) => param),
+    testRecVecWithVec: query([vecVec], vecVec, (param) => param),
+    testRecOptWithVariant: query([varOpt], varOpt, (param) => param),
+    testRecOptWithOpt: query([optOpt], optOpt, (param) => param),
+    testRecOptWithTuple: query([tupleOpt], tupleOpt, (param) => param),
+    testRecOptWithVec: query([vecOpt], vecOpt, (param) => param),
     testRecRecordWithOpt: query([optRecord], optRecord, (param) => param),
     testRecRecordWithVec: query([vecRecord], vecRecord, (param) => param),
     testRecRecordWithVariant: query([varRecord], varRecord, (param) => param),

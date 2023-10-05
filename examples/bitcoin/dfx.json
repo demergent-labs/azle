@@ -3,8 +3,8 @@
         "bitcoin": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle bitcoin",
             "candid": "src/index.did",
+            "build": "npx azle bitcoin",
             "wasm": ".azle/bitcoin/bitcoin.wasm",
             "gzip": true,
             "declarations": {

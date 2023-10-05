@@ -3,8 +3,8 @@
         "quicksort": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle quicksort",
             "candid": "src/index.did",
+            "build": "npx azle quicksort",
             "wasm": ".azle/quicksort/quicksort.wasm",
             "gzip": true,
             "declarations": {

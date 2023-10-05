@@ -3,8 +3,8 @@
         "complex_init": {
             "type": "custom",
             "main": "src/complex_init/index.ts",
-            "build": "npx azle complex_init",
             "candid": "src/complex_init/index.did",
+            "build": "npx azle complex_init",
             "wasm": ".azle/complex_init/complex_init.wasm",
             "gzip": true,
             "declarations": {
@@ -15,8 +15,8 @@
         "rec_init": {
             "type": "custom",
             "main": "src/rec_init/index.ts",
-            "build": "npx azle rec_init",
             "candid": "src/rec_init/index.did",
+            "build": "npx azle rec_init",
             "wasm": ".azle/rec_init/rec_init.wasm",
             "gzip": true,
             "declarations": {

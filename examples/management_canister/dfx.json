@@ -3,8 +3,8 @@
         "management_canister": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle management_canister",
             "candid": "src/index.did",
+            "build": "npx azle management_canister",
             "wasm": ".azle/management_canister/management_canister.wasm",
             "gzip": true,
             "declarations": {

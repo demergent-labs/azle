@@ -3,8 +3,8 @@
         "echo": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle echo",
             "candid": "src/index.did",
+            "build": "npx azle echo",
             "wasm": ".azle/echo/echo.wasm",
             "gzip": true,
             "declarations": {

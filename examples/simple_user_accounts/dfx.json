@@ -3,8 +3,8 @@
         "simple_user_accounts": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle simple_user_accounts",
             "candid": "src/index.did",
+            "build": "npx azle simple_user_accounts",
             "wasm": ".azle/simple_user_accounts/simple_user_accounts.wasm",
             "gzip": true,
             "declarations": {

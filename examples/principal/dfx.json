@@ -3,8 +3,8 @@
         "principal": {
             "type": "custom",
             "main": "src/index.ts",
-            "build": "npx azle principal",
             "candid": "src/index.did",
+            "build": "npx azle principal",
             "wasm": ".azle/principal/principal.wasm",
             "gzip": true,
             "declarations": {

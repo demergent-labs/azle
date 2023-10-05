@@ -3,8 +3,8 @@
         "proxy": {
             "type": "custom",
             "main": "canisters/proxy/index.ts",
-            "build": "npx azle proxy",
             "candid": "canisters/proxy/index.did",
+            "build": "npx azle proxy",
             "wasm": ".azle/proxy/proxy.wasm",
             "gzip": true,
             "declarations": {

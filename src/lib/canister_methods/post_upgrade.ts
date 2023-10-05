@@ -1,4 +1,4 @@
-import { Callback, CanisterMethodInfo, createParents, executeMethod } from '.';
+import { Callback, CanisterMethodInfo, executeMethod } from '.';
 import { CandidType, TypeMapping } from '../candid';
 import { Void } from '../candid/types/primitive/void';
 
@@ -11,29 +11,26 @@ export function postUpgrade<
         ? GenericCallback
         : never
 ): CanisterMethodInfo<Params, Void> {
-    return ((parent: any) => {
-        const finalCallback =
-            callback === undefined
-                ? undefined
-                : (...args: any[]) => {
-                      executeMethod(
-                          'postUpgrade',
-                          args,
-                          callback,
-                          paramCandidTypes as unknown as CandidType[],
-                          Void,
-                          false,
-                          createParents(parent)
-                      );
-                  };
+    const finalCallback =
+        callback === undefined
+            ? undefined
+            : (...args: any[]) => {
+                  executeMethod(
+                      'postUpgrade',
+                      args,
+                      callback,
+                      paramCandidTypes as unknown as CandidType[],
+                      Void,
+                      false
+                  );
+              };
 
-        return {
-            mode: 'postUpgrade',
-            callback: finalCallback,
-            paramCandidTypes: paramCandidTypes as unknown as CandidType[],
-            returnCandidType: Void,
-            async: false,
-            guard: undefined
-        } as CanisterMethodInfo<Params, Void>;
-    }) as any;
+    return {
+        mode: 'postUpgrade',
+        callback: finalCallback,
+        paramCandidTypes: paramCandidTypes as unknown as CandidType[],
+        returnCandidType: Void,
+        async: false,
+        guard: undefined
+    };
 }

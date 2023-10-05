@@ -2,7 +2,6 @@ import {
     Callback,
     CanisterMethodInfo,
     MethodArgs,
-    createParents,
     executeMethod,
     isAsync
 } from '.';
@@ -20,29 +19,26 @@ export function update<
         : never,
     methodArgs?: MethodArgs
 ): CanisterMethodInfo<Params, Return> {
-    return ((parent: any) => {
-        const finalCallback =
-            callback === undefined
-                ? undefined
-                : (...args: any[]) => {
-                      executeMethod(
-                          'update',
-                          args,
-                          callback,
-                          paramCandidTypes as unknown as CandidType[],
-                          returnCandidType,
-                          methodArgs?.manual ?? false,
-                          createParents(parent)
-                      );
-                  };
+    const finalCallback =
+        callback === undefined
+            ? undefined
+            : (...args: any[]) => {
+                  executeMethod(
+                      'update',
+                      args,
+                      callback,
+                      paramCandidTypes as unknown as CandidType[],
+                      returnCandidType,
+                      methodArgs?.manual ?? false
+                  );
+              };
 
-        return {
-            mode: 'update',
-            callback: finalCallback,
-            paramCandidTypes: paramCandidTypes as unknown as CandidType[],
-            returnCandidType,
-            async: callback === undefined ? false : isAsync(callback),
-            guard: methodArgs?.guard
-        } as CanisterMethodInfo<Params, Return>;
-    }) as any;
+    return {
+        mode: 'update',
+        callback: finalCallback,
+        paramCandidTypes: paramCandidTypes as unknown as CandidType[],
+        returnCandidType,
+        async: callback === undefined ? false : isAsync(callback),
+        guard: methodArgs?.guard
+    };
 }

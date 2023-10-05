@@ -3,8 +3,8 @@
         "vanilla_js": {
             "type": "custom",
             "main": "src/index.js",
-            "build": "npx azle vanilla_js",
             "candid": "src/index.did",
+            "build": "npx azle vanilla_js",
             "wasm": ".azle/vanilla_js/vanilla_js.wasm",
             "gzip": true,
             "declarations": {

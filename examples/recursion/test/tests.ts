@@ -1,8 +1,16 @@
 import { Test, getCanisterId } from 'azle/test';
 import {
     _SERVICE,
-    rec_313,
-    rec_321
+    rec_0,
+    rec_10,
+    rec_12,
+    rec_14,
+    rec_2,
+    rec_24,
+    rec_26,
+    rec_4,
+    rec_6,
+    rec_8
 } from './dfx_generated/recursion/recursion.did';
 import { _SERVICE as _REC_SERVICE } from './dfx_generated/recursive_canister/recursive_canister.did';
 import { ActorSubclass } from '@dfinity/agent';
@@ -199,7 +207,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'recursive tuples with vec',
             test: async () => {
-                const input: rec_321 = [[[[], [[[], []]]]], []];
+                const input: rec_26 = [[[[], [[[], []]]]], []];
                 const result =
                     await recursion_canister.testRecTupleWithVec(input);
 
@@ -231,7 +239,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'recursive tuples with opt',
             test: async () => {
-                const input: rec_313 = [[[[], [[[], []]]]], []];
+                const input: rec_24 = [[[[], [[[], []]]]], []];
                 const result =
                     await recursion_canister.testRecTupleWithOpt(input);
 
@@ -388,6 +396,123 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 return {
                     Ok: result === `(service "${principalId}")`
+                };
+            }
+        },
+        {
+            name: 'recursive vec with variant',
+            test: async () => {
+                const input: rec_0 = [
+                    { Leaf: 1 },
+                    { Branch: [{ Leaf: 2 }] },
+                    { Leaf: 3 },
+                    {
+                        Branch: [
+                            {
+                                Branch: [
+                                    { Branch: [{ Leaf: 4 }, { Leaf: 5 }] },
+                                    { Leaf: 6 }
+                                ]
+                            }
+                        ]
+                    }
+                ];
+                const result =
+                    await recursion_canister.testRecVecWithVariant(input);
+
+                return {
+                    Ok: deepCompare(result, input)
+                };
+            }
+        },
+        {
+            name: 'recursive vec with tuple',
+            test: async () => {
+                const input: rec_4 = [
+                    [[], []],
+                    [[[[], []]], []],
+                    [[], [[[], []]]],
+                    [[[[], []]], [[[], []]]]
+                ];
+                const result =
+                    await recursion_canister.testRecVecWithTuple(input);
+
+                return {
+                    Ok: deepCompare(result, input)
+                };
+            }
+        },
+        {
+            name: 'recursive vec with opt',
+            test: async () => {
+                const input: rec_2 = [[[[], [[[], []]]]], []];
+                const result =
+                    await recursion_canister.testRecVecWithOpt(input);
+
+                return {
+                    Ok: deepCompare(result, input)
+                };
+            }
+        },
+        {
+            name: 'recursive vec with vec',
+            test: async () => {
+                const input: rec_6 = [[[[], [[[], []]]]], []];
+                const result =
+                    await recursion_canister.testRecVecWithVec(input);
+
+                return {
+                    Ok: deepCompare(result, input)
+                };
+            }
+        },
+        {
+            name: 'recursive opt with vec',
+            test: async () => {
+                const input: rec_14 = [[[], [], [], []]];
+                const result =
+                    await recursion_canister.testRecOptWithVec(input);
+
+                return {
+                    Ok: deepCompare(result, input)
+                };
+            }
+        },
+        {
+            name: 'recursive opt with tuple',
+            test: async () => {
+                const input: rec_12 = [[[], []]];
+                const result =
+                    await recursion_canister.testRecOptWithTuple(input);
+
+                return {
+                    Ok: deepCompare(result, input)
+                };
+            }
+        },
+        {
+            name: 'recursive opt with variant',
+            test: async () => {
+                const input: rec_8 = [{ Branch: [] }];
+                const result =
+                    await recursion_canister.testRecOptWithVariant(input);
+
+                return {
+                    Ok: deepCompare(result, input)
+                };
+            }
+        },
+        {
+            name: 'recursive opt with opt',
+            test: async () => {
+                const input: rec_10 = [
+                    [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
+                ];
+                const result =
+                    await recursion_canister.testRecOptWithOpt(input);
+
+                return {
+                    Ok: deepCompare(result, input)
                 };
             }
         }
