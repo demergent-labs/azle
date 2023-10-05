@@ -7,8 +7,6 @@
         "lib": ["ES2018", "DOM"],
         "module": "commonjs",
         "strict": true,
-        "target": "es2018",
-        "experimentalDecorators": true,
-        "strictPropertyInitialization": false
+        "target": "es2018"
     }
 }
