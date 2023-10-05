@@ -15,63 +15,51 @@ Examples:
 
 ```typescript
 import {
+    bool,
+    Canister,
     nat64,
     nat8,
     Opt,
-    $query,
+    query,
     StableBTreeMap,
+    text,
     Tuple,
-    $update,
+    update,
     Vec
 } from 'azle';
 
-type Key = nat8;
-type Value = string;
+const Key = nat8;
+const Value = text;
 
-let map = new StableBTreeMap<Key, Value>(0, 100, 1_000);
+let map = StableBTreeMap(Key, Value, 0);
 
-$query;
-export function containsKey(key: Key): boolean {
-    return map.containsKey(key);
-}
-
-$query;
-export function get(key: Key): Opt<Value> {
-    return map.get(key);
-}
-
-$update;
-export function insert(key: Key, value: Value): Opt<Value> {
-    return map.insert(key, value);
-}
-
-$query;
-export function isEmpty(): boolean {
-    return map.isEmpty();
-}
-
-$query;
-export function items(): Vec<Tuple<[Key, Value]>> {
-    return map.items();
-}
-
-$query;
-export function keys(): Vec<Key> {
-    return map.keys();
-}
-
-$query;
-export function len(): nat64 {
-    return map.len();
-}
-
-$update;
-export function remove(key: Key): Opt<Value> {
-    return map.remove(key);
-}
-
-$query;
-export function values(): Vec<Value> {
-    return map.values();
-}
+export default Canister({
+    containsKey: query([Key], bool, (key) => {
+        return map.containsKey(key);
+    }),
+    get: query([Key], Opt(Value), (key) => {
+        return map.get(key);
+    }),
+    mapInsert: update([Key, Value], Opt(Value), (key, value) => {
+        return map.insert(key, value);
+    }),
+    isEmpty: query([], bool, () => {
+        return map.isEmpty();
+    }),
+    items: query([], Vec(Tuple(Key, Value)), () => {
+        return map.items();
+    }),
+    keys: query([], Vec(Key), () => {
+        return map.keys();
+    }),
+    len: query([], nat64, () => {
+        return map.len();
+    }),
+    mapRemove: update([Key], Opt(Value), (key) => {
+        return map.remove(key);
+    }),
+    values: query([], Vec(Value), () => {
+        return map.values();
+    })
+});
 ```

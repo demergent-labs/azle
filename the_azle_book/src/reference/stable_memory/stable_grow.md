@@ -7,10 +7,11 @@ Examples:
 -   [stable_memory](https://github.com/demergent-labs/azle/tree/main/examples/stable_memory)
 
 ```typescript
-import { ic, nat32, StableGrowResult, $update } from 'azle';
+import { Canister, ic, nat32, update } from 'azle';
 
-$update;
-export function stableGrow(newPages: nat32): StableGrowResult {
-    return ic.stableGrow(newPages);
-}
+export default Canister({
+    stableGrow: update([nat32], nat32, (newPages) => {
+        return ic.stableGrow(newPages);
+    })
+});
 ```

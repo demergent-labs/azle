@@ -7,10 +7,11 @@ Examples:
 -   [stable_memory](https://github.com/demergent-labs/azle/tree/main/examples/stable_memory)
 
 ```typescript
-import { blob, ic, nat32, $update } from 'azle';
+import { blob, Canister, ic, nat32, update, Void } from 'azle';
 
-$update;
-export function stableWrite(offset: nat32, buf: blob): void {
-    ic.stableWrite(offset, buf);
-}
+export default Canister({
+    stableWrite: update([nat32, blob], Void, (offset, buf) => {
+        ic.stableWrite(offset, buf);
+    })
+});
 ```
