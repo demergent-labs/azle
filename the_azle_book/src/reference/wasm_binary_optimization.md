@@ -13,9 +13,8 @@ Here's an example using `opt_level` `"1"`:
     "canisters": {
         "hello_world": {
             "type": "custom",
+            "main": "src/index.ts",
             "build": "npx azle hello_world",
-            "root": "src",
-            "ts": "src/index.ts",
             "candid": "src/index.did",
             "wasm": ".azle/hello_world/hello_world.wasm.gz",
             "opt_level": "1"

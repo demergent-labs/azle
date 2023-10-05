@@ -12,13 +12,14 @@ Examples:
 -   [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa)
 
 ```typescript
-import { ic, $query } from 'azle';
+import { bool, Canister, ic, query, text } from 'azle';
 
-// traps with a message, stopping execution and discarding all state within the call
-$query;
-export function trap(message: string): boolean {
-    ic.trap(message);
+export default Canister({
+    // traps with a message, stopping execution and discarding all state within the call
+    trap: query([text], bool, (message) => {
+        ic.trap(message);
 
-    return true;
-}
+        return true;
+    })
+});
 ```

@@ -8,36 +8,31 @@ Examples:
 -   [run_time_errors](https://github.com/demergent-labs/azle/tree/main/examples/run_time_errors)
 
 ```typescript
-import { ic, $inspectMessage, $update } from 'azle';
+import { bool, Canister, ic, inspectMessage, update } from 'azle';
 
-$inspectMessage;
-export function inspectMessage(): void {
-    console.log('inspectMessage called');
+export default Canister({
+    inspectMessage: inspectMessage(() => {
+        console.log('inspectMessage called');
 
-    if (ic.methodName() === 'accessible') {
-        ic.acceptMessage();
-        return;
-    }
+        if (ic.methodName() === 'accessible') {
+            ic.acceptMessage();
+            return;
+        }
 
-    if (ic.methodName() === 'inaccessible') {
-        return;
-    }
+        if (ic.methodName() === 'inaccessible') {
+            return;
+        }
 
-    throw `Method "${ic.methodName()}" not allowed`;
-}
-
-$update;
-export function accessible(): boolean {
-    return true;
-}
-
-$update;
-export function inaccessible(): boolean {
-    return false;
-}
-
-$update;
-export function alsoInaccessible(): boolean {
-    return false;
-}
+        throw `Method "${ic.methodName()}" not allowed`;
+    }),
+    accessible: update([], bool, () => {
+        return true;
+    }),
+    inaccessible: update([], bool, () => {
+        return false;
+    }),
+    alsoInaccessible: update([], bool, () => {
+        return false;
+    })
+});
 ```

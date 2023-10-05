@@ -7,10 +7,11 @@ Examples:
 -   [stable_memory](https://github.com/demergent-labs/azle/tree/main/examples/stable_memory)
 
 ```typescript
-import { ic, nat32, $query } from 'azle';
+import { Canister, ic, nat32, query } from 'azle';
 
-$query;
-export function stableSize(): nat32 {
-    return ic.stableSize();
-}
+export default Canister({
+    stableSize: query([], nat32, () => {
+        return ic.stableSize();
+    })
+});
 ```

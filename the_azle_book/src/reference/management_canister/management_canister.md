@@ -4,6 +4,7 @@
 -   [bitcoin_get_current_fee_percentiles](./bitcoin_get_current_fee_percentiles.md)
 -   [bitcoin_get_utxos](./bitcoin_get_utxos.md)
 -   [bitcoin_send_transaction](./bitcoin_send_transaction.md)
+-   [canister_info](./canister_info.md)
 -   [canister_status](./canister_status.md)
 -   [create_canister](./create_canister.md)
 -   [delete_canister](./delete_canister.md)

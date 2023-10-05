@@ -8,10 +8,11 @@ Examples:
 -   [run_time_errors](https://github.com/demergent-labs/azle/blob/main/examples/run_time_errors/src/index.ts)
 
 ```typescript
-import { ic, $inspectMessage } from 'azle';
+import { Canister, ic, inspectMessage } from 'azle';
 
-$inspectMessage;
-export function inspectMessage(): void {
-    ic.acceptMessage();
-}
+export default Canister({
+    inspectMessage: inspectMessage(() => {
+        ic.acceptMessage();
+    })
+});
 ```

@@ -12,10 +12,11 @@ Examples:
 -   [whoami](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami)
 
 ```typescript
-import { $init } from 'azle';
+import { Canister, init } from 'azle';
 
-$init;
-export function init(): void {
-    console.log('This runs once when the canister is first initialized');
-}
+export default Canister({
+    init: init([], () => {
+        console.log('This runs once when the canister is first initialized');
+    })
+});
 ```

@@ -23,30 +23,27 @@ Examples:
 -   [whoami](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami)
 
 ```typescript
-import {
-    CallResult,
-    nat64,
-    Principal,
-    Result,
-    Service,
-    serviceUpdate,
-    $update
-} from 'azle';
+import { Canister, ic, init, nat64, Principal, update } from 'azle';
 
-class TokenCanister extends Service {
-    @serviceUpdate
-    transfer: (to: Principal, amount: nat64) => CallResult<nat64>;
-}
+const TokenCanister = Canister({
+    transfer: update([Principal, nat64], nat64)
+});
 
-const tokenCanister = new TokenCanister(
-    Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
-);
+let tokenCanister: typeof TokenCanister;
 
-$update;
-export async function payout(
-    to: Principal,
-    amount: nat64
-): Promise<Result<nat64, string>> {
-    return await tokenCanister.transfer(to, amount).call();
+export default Canister({
+    init: init([], setup),
+    postDeploy: init([], setup),
+    payout: update([Principal, nat64], nat64, async (to, amount) => {
+        return await ic.call(tokenCanister.transfer, {
+            args: [to, amount]
+        });
+    })
+});
+
+function setup() {
+    tokenCanister = TokenCanister(
+        Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
+    );
 }
 ```

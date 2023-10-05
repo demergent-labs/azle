@@ -7,24 +7,25 @@ Examples:
 -   [management_canister](https://github.com/demergent-labs/azle/tree/main/examples/management_canister)
 
 ```typescript
-import { match, nat, Principal, Result, $update } from 'azle';
+import { bool, Canister, ic, nat, Principal, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function provisionalTopUpCanister(
-    canisterId: Principal,
-    amount: nat
-): Promise<Result<boolean, string>> {
-    const callResult = await managementCanister
-        .provisional_top_up_canister({
-            canister_id: canisterId,
-            amount
-        })
-        .call();
+export default Canister({
+    provisionalTopUpCanister: update(
+        [Principal, nat],
+        bool,
+        async (canisterId, amount) => {
+            await ic.call(managementCanister.provisional_top_up_canister, {
+                args: [
+                    {
+                        canister_id: canisterId,
+                        amount
+                    }
+                ]
+            });
 
-    return match(callResult, {
-        Ok: () => ({ Ok: true }),
-        Err: (err) => ({ Err: err })
-    });
-}
+            return true;
+        }
+    )
+});
 ```

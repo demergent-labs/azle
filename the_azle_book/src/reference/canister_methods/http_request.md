@@ -9,62 +9,69 @@ Examples:
 ```typescript
 import {
     blob,
+    bool,
+    Canister,
     Func,
     nat16,
+    None,
     Opt,
-    $query,
-    Query,
+    query,
     Record,
+    text,
     Tuple,
     Variant,
     Vec
 } from 'azle';
 
-type HttpRequest = Record<{
-    method: string;
-    url: string;
-    headers: Vec<Header>;
-    body: blob;
-}>;
+const Token = Record({
+    // add whatever fields you'd like
+    arbitrary_data: text
+});
 
-type HttpResponse = Record<{
-    status_code: nat16;
-    headers: Vec<Header>;
-    body: blob;
-    streaming_strategy: Opt<StreamingStrategy>;
-    upgrade: Opt<boolean>;
-}>;
+const StreamingCallbackHttpResponse = Record({
+    body: blob,
+    token: Opt(Token)
+});
 
-type Header = Tuple<[string, string]>;
+export const Callback = Func([text], StreamingCallbackHttpResponse, 'query');
 
-type StreamingStrategy = Variant<{
-    Callback: CallbackStrategy;
-}>;
+const CallbackStrategy = Record({
+    callback: Callback,
+    token: Token
+});
 
-type CallbackStrategy = Record<{
-    callback: Callback;
-    token: Token;
-}>;
+const StreamingStrategy = Variant({
+    Callback: CallbackStrategy
+});
 
-type Callback = Func<Query<(t: Token) => StreamingCallbackHttpResponse>>;
+type HeaderField = [text, text];
+const HeaderField = Tuple(text, text);
 
-type StreamingCallbackHttpResponse = Record<{
-    body: blob;
-    token: Opt<Token>;
-}>;
+const HttpResponse = Record({
+    status_code: nat16,
+    headers: Vec(HeaderField),
+    body: blob,
+    streaming_strategy: Opt(StreamingStrategy),
+    upgrade: Opt(bool)
+});
 
-type Token = Record<{
-    arbitrary_data: string;
-}>;
+const HttpRequest = Record({
+    method: text,
+    url: text,
+    headers: Vec(HeaderField),
+    body: blob,
+    certificate_version: Opt(nat16)
+});
 
-$query;
-export function http_request(req: HttpRequest): HttpResponse {
-    return {
-        status_code: 200,
-        headers: [],
-        body: Uint8Array.from([]),
-        streaming_strategy: Opt.None,
-        upgrade: Opt.Some(false)
-    };
-}
+export default Canister({
+    http_request: query([HttpRequest], HttpResponse, (req) => {
+        return {
+            status_code: 200,
+            headers: [],
+            body: Buffer.from('hello'),
+            streaming_strategy: None,
+            upgrade: None
+        };
+    })
+});
 ```

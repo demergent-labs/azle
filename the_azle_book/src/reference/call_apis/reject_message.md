@@ -7,12 +7,13 @@ Examples:
 -   [rejections](https://github.com/demergent-labs/azle/tree/main/examples/rejections)
 
 ```typescript
-import { ic, $update } from 'azle';
-import { someService } from '../some_service';
+import { Canister, ic, text, update } from 'azle';
+import { otherCanister } from './other_canister';
 
-$update;
-export async function getRejectionMessage(message: string): Promise<string> {
-    await someService.reject(message).call();
-    return ic.rejectMessage();
-}
+export default Canister({
+    getRejectionMessage: update([], text, async () => {
+        await ic.call(otherCanister.method);
+        return ic.rejectMessage();
+    })
+});
 ```

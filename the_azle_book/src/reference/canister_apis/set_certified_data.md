@@ -7,11 +7,12 @@ Examples:
 -   [ic_api](https://github.com/demergent-labs/azle/tree/main/examples/ic_api)
 
 ```typescript
-import { blob, ic, $update } from 'azle';
+import { blob, Canister, ic, update, Void } from 'azle';
 
-// sets up to 32 bytes of certified data
-$update;
-export function setCertifiedData(data: blob): void {
-    ic.setCertifiedData(data);
-}
+export default Canister({
+    // sets up to 32 bytes of certified data
+    setCertifiedData: update([blob], Void, (data) => {
+        ic.setCertifiedData(data);
+    })
+});
 ```

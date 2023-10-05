@@ -8,11 +8,12 @@ Examples:
 -   [candid_encoding](https://github.com/demergent-labs/azle/tree/main/examples/candid_encoding)
 
 ```typescript
-import { blob, ic, $query } from 'azle';
+import { blob, Canister, ic, query, text } from 'azle';
 
-// decodes Candid bytes to a Candid string
-$query;
-export function candidDecode(candidEncoded: blob): string {
-    return ic.candidDecode(candidEncoded);
-}
+export default Canister({
+    // decodes Candid bytes to a Candid string
+    candidDecode: query([blob], text, (candidEncoded) => {
+        return ic.candidDecode(candidEncoded);
+    })
+});
 ```

@@ -7,11 +7,12 @@ Examples:
 -   [ic_api](https://github.com/demergent-labs/azle/tree/main/examples/ic_api)
 
 ```typescript
-import { ic, Principal, $query } from 'azle';
+import { bool, Canister, ic, Principal, query } from 'azle';
 
-// determines whether the given principal is a controller of the canister
-$query;
-export function isController(principal: Principal): boolean {
-    return ic.isController(principal);
-}
+export default Canister({
+    // determines whether the given principal is a controller of the canister
+    isController: query([Principal], bool, (principal) => {
+        return ic.isController(principal);
+    })
+});
 ```

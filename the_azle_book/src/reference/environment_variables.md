@@ -11,11 +11,11 @@ Modify your `dfx.json` file with the `env` property to specify which environment
     "canisters": {
         "canister1": {
             "type": "custom",
+            "main": "src/canister1/index.ts",
             "build": "npx azle canister1",
-            "root": "canisters/canister1",
-            "ts": "canisters/canister1/canister1.ts",
-            "candid": "canisters/canister1/canister1.did",
-            "wasm": ".azle/canister1/canister1.wasm.gz",
+            "candid": "src/canister1/index.did",
+            "wasm": ".azle/canister1/canister1.wasm",
+            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/canister1",
                 "node_compatibility": true
@@ -31,21 +31,20 @@ Modify your `dfx.json` file with the `env` property to specify which environment
 You can access the specified environment variables in Azle like so:
 
 ```typescript
-import { $query } from 'azle';
+import { Canister, query, text } from 'azle';
 
-$query;
-export function canister1PrincipalEnvVar(): string {
-    return (
-        process.env.CANISTER1_PRINCIPAL ??
-        'process.env.CANISTER1_PRINCIPAL is undefined'
-    );
-}
-
-$query;
-export function canister2PrincipalEnvVar(): string {
-    return (
-        process.env.CANISTER2_PRINCIPAL ??
-        'process.env.CANISTER2_PRINCIPAL is undefined'
-    );
-}
+export default Canister({
+    canister1PrincipalEnvVar: query([], text, () => {
+        return (
+            process.env.CANISTER1_PRINCIPAL ??
+            'process.env.CANISTER1_PRINCIPAL is undefined'
+        );
+    }),
+    canister2PrincipalEnvVar: query([], text, () => {
+        return (
+            process.env.CANISTER2_PRINCIPAL ??
+            'process.env.CANISTER2_PRINCIPAL is undefined'
+        );
+    })
+});
 ```

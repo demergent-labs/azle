@@ -11,11 +11,12 @@ Examples:
 -   [outgoing_http_requests](https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests)
 
 ```typescript
-import { blob, ic, $query } from 'azle';
+import { blob, Canister, ic, query, text } from 'azle';
 
-// encodes a Candid string to Candid bytes
-$query;
-export function candidEncode(candidString: string): blob {
-    return ic.candidEncode(candidString);
-}
+export default Canister({
+    // encodes a Candid string to Candid bytes
+    candidEncode: query([text], blob, (candidString) => {
+        return ic.candidEncode(candidString);
+    })
+});
 ```

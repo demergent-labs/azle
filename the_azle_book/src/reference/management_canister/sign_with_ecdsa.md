@@ -7,35 +7,41 @@ Examples:
 -   [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa)
 
 ```typescript
-import { blob, ic, match, Record, Result, $update } from 'azle';
+import { blob, Canister, ic, Record, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function sign(
-    messageHash: blob
-): Promise<Result<Record<{ signature: blob }>, string>> {
-    if (messageHash.length !== 32) {
-        ic.trap('messageHash must be 32 bytes');
-    }
+const Signature = Record({
+    signature: blob
+});
 
-    const caller = ic.caller().toUint8Array();
+export default Canister({
+    sign: update([blob], Signature, async (messageHash) => {
+        if (messageHash.length !== 32) {
+            ic.trap('messageHash must be 32 bytes');
+        }
 
-    const signatureResult = await managementCanister
-        .sign_with_ecdsa({
-            message_hash: messageHash,
-            derivation_path: [caller],
-            key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
-        })
-        .cycles(10_000_000_000n)
-        .call();
+        const caller = ic.caller().toUint8Array();
 
-    return match(signatureResult, {
-        Ok: (signWithEcdsaResult) => ({
-            Ok: {
-                signature: signWithEcdsaResult.signature
+        const signatureResult = await ic.call(
+            managementCanister.sign_with_ecdsa,
+            {
+                args: [
+                    {
+                        message_hash: messageHash,
+                        derivation_path: [caller],
+                        key_id: {
+                            curve: { secp256k1: null },
+                            name: 'dfx_test_key'
+                        }
+                    }
+                ],
+                cycles: 10_000_000_000n
             }
-        }),
-        Err: (err) => ({ Err: err })
-    });
-}
+        );
+
+        return {
+            signature: signatureResult.signature
+        };
+    })
+});
 ```

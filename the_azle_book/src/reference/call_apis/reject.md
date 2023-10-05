@@ -9,10 +9,16 @@ Examples:
 -   [rejections](https://github.com/demergent-labs/azle/tree/main/examples/rejections)
 
 ```typescript
-import { empty, ic, Manual, $query } from 'azle';
+import { Canister, empty, ic, Manual, query, text } from 'azle';
 
-$query;
-export function reject(message: string): Manual<empty> {
-    ic.reject(message);
-}
+export default Canister({
+    reject: query(
+        [text],
+        Manual(empty),
+        (message) => {
+            ic.reject(message);
+        },
+        { manual: true }
+    )
+});
 ```

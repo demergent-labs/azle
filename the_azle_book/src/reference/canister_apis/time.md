@@ -8,11 +8,12 @@ Examples:
 -   [ic_api](https://github.com/demergent-labs/azle/tree/main/examples/ic_api)
 
 ```typescript
-import { ic, nat64, $query } from 'azle';
+import { Canister, ic, nat64, query } from 'azle';
 
-// returns the current timestamp
-$query;
-export function time(): nat64 {
-    return ic.time();
-}
+export default Canister({
+    // returns the current timestamp
+    time: query([], nat64, () => {
+        return ic.time();
+    })
+});
 ```

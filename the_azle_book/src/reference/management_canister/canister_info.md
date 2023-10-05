@@ -1,4 +1,4 @@
-# canister_status
+# canister_info
 
 This section is a work in progress.
 
@@ -9,19 +9,20 @@ Examples:
 ```typescript
 import { Canister, ic, update } from 'azle';
 import {
-    CanisterStatusArgs,
-    CanisterStatusResult,
+    CanisterInfoArgs,
+    CanisterInfoResult,
     managementCanister
 } from 'azle/canisters/management';
 
 export default Canister({
-    getCanisterStatus: update(
-        [CanisterStatusArgs],
-        CanisterStatusResult,
+    getCanisterInfo: update(
+        [CanisterInfoArgs],
+        CanisterInfoResult,
         async (args) => {
-            return await ic.call(managementCanister.canister_status, {
+            const result = await ic.call(managementCanister.canister_info, {
                 args: [args]
             });
+            return result;
         }
     )
 });

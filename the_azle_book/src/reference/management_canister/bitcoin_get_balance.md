@@ -7,26 +7,23 @@ Examples:
 -   [bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/bitcoin)
 
 ```typescript
-import { Opt, Result, $update } from 'azle';
-import {
-    BitcoinNetwork,
-    managementCanister,
-    Satoshi
-} from 'azle/canisters/management';
+import { Canister, ic, None, text, update } from 'azle';
+import { managementCanister, Satoshi } from 'azle/canisters/management';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
-$update;
-export async function getBalance(
-    address: string
-): Promise<Result<Satoshi, string>> {
-    return await managementCanister
-        .bitcoin_get_balance({
-            address,
-            min_confirmations: Opt.None,
-            network: BitcoinNetwork.Regtest
-        })
-        .cycles(BITCOIN_API_CYCLE_COST)
-        .call();
-}
+export default Canister({
+    getBalance: update([text], Satoshi, async (address) => {
+        return await ic.call(managementCanister.bitcoin_get_balance, {
+            args: [
+                {
+                    address,
+                    min_confirmations: None,
+                    network: { Regtest: null }
+                }
+            ],
+            cycles: BITCOIN_API_CYCLE_COST
+        });
+    })
+});
 ```

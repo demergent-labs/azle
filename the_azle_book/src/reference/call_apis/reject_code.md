@@ -7,28 +7,13 @@ Examples:
 -   [rejections](https://github.com/demergent-labs/azle/tree/main/examples/rejections)
 
 ```typescript
-import {
-    CallResult,
-    ic,
-    Principal,
-    RejectionCode,
-    Service,
-    serviceUpdate,
-    $update
-} from 'azle';
+import { Canister, ic, RejectionCode, update } from 'azle';
+import { otherCanister } from './other_canister';
 
-class Nonexistent extends Service {
-    @serviceUpdate
-    method: () => CallResult<void>;
-}
-
-export const nonexistentCanister = new Nonexistent(
-    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
-);
-
-$update;
-export async function getRejectionCodeDestinationInvalid(): Promise<RejectionCode> {
-    await nonexistentCanister.method().call();
-    return ic.rejectCode();
-}
+export default Canister({
+    getRejectionCodeDestinationInvalid: update([], RejectionCode, async () => {
+        await ic.call(otherCanister.method);
+        return ic.rejectCode();
+    })
+});
 ```

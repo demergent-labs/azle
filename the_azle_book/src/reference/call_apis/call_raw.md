@@ -8,27 +8,22 @@ Examples:
 -   [outgoing_http_requests](https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests)
 
 ```typescript
-import { ic, match, nat64, Principal, Result, $update } from 'azle';
+import { Canister, ic, nat64, Principal, text, update } from 'azle';
 
-$update;
-export async function executeCallRaw(
-    canisterId: Principal,
-    method: string,
-    candidArgs: string,
-    payment: nat64
-): Promise<Result<string, string>> {
-    const callResult = await ic.callRaw(
-        canisterId,
-        method,
-        ic.candidEncode(candidArgs),
-        payment
-    );
+export default Canister({
+    executeCallRaw: update(
+        [Principal, text, text, nat64],
+        text,
+        async (canisterId, method, candidArgs, payment) => {
+            const candidBytes = await ic.callRaw(
+                canisterId,
+                method,
+                ic.candidEncode(candidArgs),
+                payment
+            );
 
-    return match(callResult, {
-        Ok: (ok) => ({
-            Ok: ic.candidDecode(ok)
-        }),
-        Err: (err) => ({ Err: err })
-    });
-}
+            return ic.candidDecode(candidBytes);
+        }
+    )
+});
 ```

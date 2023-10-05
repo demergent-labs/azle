@@ -9,11 +9,12 @@ Examples:
 -   [whoami](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami)
 
 ```typescript
-import { ic, Principal, $query } from 'azle';
+import { Canister, ic, Principal, update } from 'azle';
 
-// returns the principal of the identity that called this function
-$query;
-export function caller(): Principal {
-    return ic.caller();
-}
+export default Canister({
+    // returns the principal of the identity that called this function
+    caller: update([], Principal, () => {
+        return ic.caller();
+    })
+});
 ```
