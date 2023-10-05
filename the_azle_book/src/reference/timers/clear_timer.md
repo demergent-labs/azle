@@ -7,10 +7,11 @@ Examples:
 -   [timers](https://github.com/demergent-labs/azle/tree/main/examples/timers)
 
 ```typescript
-import { ic, TimerId, $update } from 'azle';
+import { Canister, ic, TimerId, update, Void } from 'azle';
 
-$update;
-export function clearTimer(timerId: TimerId): void {
-    ic.clearTimer(timerId);
-}
+export default Canister({
+    clearTimer: update([TimerId], Void, (timerId) => {
+        ic.clearTimer(timerId);
+    })
+});
 ```
