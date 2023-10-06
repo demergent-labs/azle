@@ -1,8 +1,8 @@
 # service
 
-Values created by the `CandidType` function `Canister` correspond to the [Candid service type](https://internetcomputer.org/docs/current/references/candid-ref#type-service-), are inferred to be TypeScript `Object`s, and will be decoded into [@dfinity/principal Principals](https://www.npmjs.com/package/@dfinity/principal) at runtime.
+Values created by the `CandidType` function `Canister` correspond to the [Candid service type](https://internetcomputer.org/docs/current/references/candid-ref#type-service-), are inferred to be TypeScript `Object`s, and will be decoded into [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
 
-These values represent `Principal`s when passed as arguments or return types but can be used for cross-canister calls when passed to call/notify APIs.
+The properties of this object that match the keys of the service's `query` and `update` methods can be passed into `ic.call` and `ic.notify` to perform cross-canister calls.
 
 TypeScript or JavaScript:
 

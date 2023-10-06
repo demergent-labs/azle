@@ -145,9 +145,10 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="record"><a class="header" href="#record">record</a></h1>
-<p>TypeScript type aliases referring to object literals wrapped in the <code>Record</code> Azle type correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--">Candid record type</a> and will become <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, Principal, Record, query, text } from 'azle';
+<p>Objects created by the <code>CandidType</code> function <code>Record</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--">Candid record type</a>, are inferred to be TypeScript <code>Object</code>s, and will be decoded into <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
+<p>The shape of the object will match the object literal passed to the <code>Record</code> function.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { Canister, Principal, query, Record, text } from 'azle';
 
 const User = Record({
     id: Principal,

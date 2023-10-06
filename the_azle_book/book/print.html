@@ -397,16 +397,28 @@ xcode-select --install
 <p>Before embarking please ensure you've followed all of <a href="./installation.html">the installation instructions</a>.</p>
 <p>We'll build a simple <code>Hello World</code> canister that shows the basics of importing Azle, exposing a query method, exposing an update method, and storing some state in a global variable. We'll then interact with it from the command line and from our web browser.</p>
 <h2 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h2>
+<p>We are going to use the Azle <code>new</code> command which creates a simple example project.</p>
+<p>We'll then use the <code>npm scripts</code> from this example project's <code>package.json</code> to perform some basic operations. These scripts are just convenient ways to call the underlying <code>dfx</code> commands.</p>
+<p>First use the <code>new</code> command to create a new project called <code>hello_world</code>:</p>
 <pre><code class="language-bash">npx azle new hello_world
-cd hello_world
-
-npm install
-npm run dfx_install
-npm run replica_start
-npm run canister_deploy_local
-
-npm run canister_call_set_message
-npm run canister_call_get_message
+</code></pre>
+<p>Now let's go inside of our project:</p>
+<pre><code class="language-bash">cd hello_world
+</code></pre>
+<p>We should install Azle and all of its dependencies:</p>
+<pre><code class="language-bash">npm install
+</code></pre>
+<p>Start up your local replica:</p>
+<pre><code class="language-bash">npm run replica_start
+</code></pre>
+<p>Deploy your canister:</p>
+<pre><code class="language-bash">npm run canister_deploy_local
+</code></pre>
+<p>Call the <code>setMessage</code> method:</p>
+<pre><code class="language-bash">npm run canister_call_set_message
+</code></pre>
+<p>Call the <code>getMessage</code> method:</p>
+<pre><code class="language-bash">npm run canister_call_get_message
 </code></pre>
 <p>If you run into an error during deployment, see <a href="./deployment.html#common-deployment-issues">the common deployment issues section</a>.</p>
 <p>See the official <a href="https://github.com/demergent-labs/azle_hello_world">azle_hello_world</a> example for more information.</p>
@@ -1978,12 +1990,13 @@ async function repeatCrossCanisterTimerCallback() {
 <li><a href="https://github.com/demergent-labs/azle/blob/main/examples/inspect_message/src/inspect_message.ts">inspect_message</a></li>
 <li><a href="https://github.com/demergent-labs/azle/blob/main/examples/run_time_errors/src/index.ts">run_time_errors</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, $inspectMessage } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, inspectMessage } from 'azle';
 
-$inspectMessage;
-export function inspectMessage(): void {
-    ic.acceptMessage();
-}
+export default Canister({
+    inspectMessage: inspectMessage(() =&gt; {
+        ic.acceptMessage();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="arg-data-raw"><a class="header" href="#arg-data-raw">arg data raw</a></h1>
 <p>This section is a work in progress.</p>
@@ -1991,18 +2004,18 @@ export function inspectMessage(): void {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/blob/main/examples/ic_api">ic_api</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, int8, $query } from 'azle';
+<pre><code class="language-typescript">import { blob, bool, Canister, ic, int8, query, text } from 'azle';
 
-// returns the argument data as bytes.
-$query;
-export function argDataRaw(
-    arg1: blob,
-    arg2: int8,
-    arg3: boolean,
-    arg4: string
-): blob {
-    return ic.argDataRaw();
-}
+export default Canister({
+    // returns the argument data as bytes.
+    argDataRaw: query(
+        [blob, int8, bool, text],
+        blob,
+        (arg1, arg2, arg3, arg4) =&gt; {
+            return ic.argDataRaw();
+        }
+    )
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="arg-data-raw-size"><a class="header" href="#arg-data-raw-size">arg data raw size</a></h1>
 <p>This section is a work in progress.</p>
@@ -2010,18 +2023,18 @@ export function argDataRaw(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/blob/main/examples/ic_api">ic_api</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, int8, nat32, $query } from 'azle';
+<pre><code class="language-typescript">import { blob, bool, Canister, ic, int8, nat, query, text } from 'azle';
 
-// returns the length of the argument data in bytes
-$query;
-export function argDataRawSize(
-    arg1: blob,
-    arg2: int8,
-    arg3: boolean,
-    arg4: string
-): nat32 {
-    return ic.argDataRawSize();
-}
+export default Canister({
+    // returns the length of the argument data in bytes
+    argDataRawSize: query(
+        [blob, int8, bool, text],
+        nat,
+        (arg1, arg2, arg3, arg4) =&gt; {
+            return ic.argDataRawSize();
+        }
+    )
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="call"><a class="header" href="#call">call</a></h1>
 <p>This section is a work in progress.</p>
@@ -2045,31 +2058,28 @@ export function argDataRawSize(
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/tuple_types">tuple_types</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
 </ul>
-<pre><code class="language-typescript">import {
-    CallResult,
-    nat64,
-    Principal,
-    Result,
-    Service,
-    serviceUpdate,
-    $update
-} from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, init, nat64, Principal, update } from 'azle';
 
-class TokenCanister extends Service {
-    @serviceUpdate
-    transfer: (to: Principal, amount: nat64) =&gt; CallResult&lt;nat64&gt;;
-}
+const TokenCanister = Canister({
+    transfer: update([Principal, nat64], nat64)
+});
 
-const tokenCanister = new TokenCanister(
-    Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
-);
+let tokenCanister: typeof TokenCanister;
 
-$update;
-export async function payout(
-    to: Principal,
-    amount: nat64
-): Promise&lt;Result&lt;nat64, string&gt;&gt; {
-    return await tokenCanister.transfer(to, amount).call();
+export default Canister({
+    init: init([], setup),
+    postDeploy: init([], setup),
+    payout: update([Principal, nat64], nat64, async (to, amount) =&gt; {
+        return await ic.call(tokenCanister.transfer, {
+            args: [to, amount]
+        });
+    })
+});
+
+function setup() {
+    tokenCanister = TokenCanister(
+        Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai')
+    );
 }
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="call-raw"><a class="header" href="#call-raw">call raw</a></h1>
@@ -2079,29 +2089,24 @@ export async function payout(
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/call_raw">call_raw</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, match, nat64, Principal, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat64, Principal, text, update } from 'azle';
 
-$update;
-export async function executeCallRaw(
-    canisterId: Principal,
-    method: string,
-    candidArgs: string,
-    payment: nat64
-): Promise&lt;Result&lt;string, string&gt;&gt; {
-    const callResult = await ic.callRaw(
-        canisterId,
-        method,
-        ic.candidEncode(candidArgs),
-        payment
-    );
+export default Canister({
+    executeCallRaw: update(
+        [Principal, text, text, nat64],
+        text,
+        async (canisterId, method, candidArgs, payment) =&gt; {
+            const candidBytes = await ic.callRaw(
+                canisterId,
+                method,
+                ic.candidEncode(candidArgs),
+                payment
+            );
 
-    return match(callResult, {
-        Ok: (ok) =&gt; ({
-            Ok: ic.candidDecode(ok)
-        }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+            return ic.candidDecode(candidBytes);
+        }
+    )
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="call-raw-128"><a class="header" href="#call-raw-128">call raw 128</a></h1>
 <p>This section is a work in progress.</p>
@@ -2109,29 +2114,24 @@ export async function executeCallRaw(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/call_raw">call_raw</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, match, nat, Principal, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat, Principal, text, update } from 'azle';
 
-$update;
-export async function executeCallRaw128(
-    canisterId: Principal,
-    method: string,
-    candidArgs: string,
-    payment: nat
-): Promise&lt;Result&lt;string, string&gt;&gt; {
-    const callResult = await ic.callRaw128(
-        canisterId,
-        method,
-        ic.candidEncode(candidArgs),
-        payment
-    );
+export default Canister({
+    executeCallRaw128: update(
+        [Principal, text, text, nat],
+        text,
+        async (canisterId, method, candidArgs, payment) =&gt; {
+            const candidBytes = await ic.callRaw128(
+                canisterId,
+                method,
+                ic.candidEncode(candidArgs),
+                payment
+            );
 
-    return match(callResult, {
-        Ok: (ok) =&gt; ({
-            Ok: ic.candidDecode(ok)
-        }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+            return ic.candidDecode(candidBytes);
+        }
+    )
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="call-with-payment"><a class="header" href="#call-with-payment">call with payment</a></h1>
 <p>This section is a work in progress.</p>
@@ -2144,31 +2144,28 @@ export async function executeCallRaw128(
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, match, Principal, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, Principal, update, Void } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function executeInstallCode(
-    canisterId: Principal,
-    wasmModule: blob
-): Promise&lt;Result&lt;boolean, string&gt;&gt; {
-    const callResult = await managementCanister
-        .install_code({
-            mode: {
-                install: null
-            },
-            canister_id: canisterId,
-            wasm_module: wasmModule,
-            arg: Uint8Array.from([])
-        })
-        .cycles(100_000_000_000n)
-        .call();
-
-    return match(callResult, {
-        Ok: () =&gt; ({ Ok: true }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+export default Canister({
+    executeInstallCode: update(
+        [Principal, blob],
+        Void,
+        async (canisterId, wasmModule) =&gt; {
+            return await ic.call(managementCanister.install_code, {
+                args: [
+                    {
+                        mode: { install: null },
+                        canister_id: canisterId,
+                        wasm_module: wasmModule,
+                        arg: Uint8Array.from([])
+                    }
+                ],
+                cycles: 100_000_000_000n
+            });
+        }
+    )
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="call-with-payment-128"><a class="header" href="#call-with-payment-128">call with payment 128</a></h1>
 <p>This section is a work in progress.</p>
@@ -2176,31 +2173,28 @@ export async function executeInstallCode(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, match, Principal, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, Principal, update, Void } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function executeInstallCode(
-    canisterId: Principal,
-    wasmModule: blob
-): Promise&lt;Result&lt;boolean, string&gt;&gt; {
-    const callResult = await managementCanister
-        .install_code({
-            mode: {
-                install: null
-            },
-            canister_id: canisterId,
-            wasm_module: wasmModule,
-            arg: Uint8Array.from([])
-        })
-        .cycles128(100_000_000_000n)
-        .call();
-
-    return match(callResult, {
-        Ok: () =&gt; ({ Ok: true }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+export default Canister({
+    executeInstallCode: update(
+        [Principal, blob],
+        Void,
+        async (canisterId, wasmModule) =&gt; {
+            return await ic.call128(managementCanister.install_code, {
+                args: [
+                    {
+                        mode: { install: null },
+                        canister_id: canisterId,
+                        wasm_module: wasmModule,
+                        arg: Uint8Array.from([])
+                    }
+                ],
+                cycles: 100_000_000_000n
+            });
+        }
+    )
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="caller"><a class="header" href="#caller">caller</a></h1>
 <p>This section is a work in progress.</p>
@@ -2210,13 +2204,14 @@ export async function executeInstallCode(
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, Principal, $query } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, Principal, update } from 'azle';
 
-// returns the principal of the identity that called this function
-$query;
-export function caller(): Principal {
-    return ic.caller();
-}
+export default Canister({
+    // returns the principal of the identity that called this function
+    caller: update([], Principal, () =&gt; {
+        return ic.caller();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="method-name"><a class="header" href="#method-name">method name</a></h1>
 <p>This section is a work in progress.</p>
@@ -2225,38 +2220,33 @@ export function caller(): Principal {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/inspect_message">inspect_message</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/run_time_errors">run_time_errors</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, $inspectMessage, $update } from 'azle';
+<pre><code class="language-typescript">import { bool, Canister, ic, inspectMessage, update } from 'azle';
 
-$inspectMessage;
-export function inspectMessage(): void {
-    console.log('inspectMessage called');
+export default Canister({
+    inspectMessage: inspectMessage(() =&gt; {
+        console.log('inspectMessage called');
 
-    if (ic.methodName() === 'accessible') {
-        ic.acceptMessage();
-        return;
-    }
+        if (ic.methodName() === 'accessible') {
+            ic.acceptMessage();
+            return;
+        }
 
-    if (ic.methodName() === 'inaccessible') {
-        return;
-    }
+        if (ic.methodName() === 'inaccessible') {
+            return;
+        }
 
-    throw `Method &quot;${ic.methodName()}&quot; not allowed`;
-}
-
-$update;
-export function accessible(): boolean {
-    return true;
-}
-
-$update;
-export function inaccessible(): boolean {
-    return false;
-}
-
-$update;
-export function alsoInaccessible(): boolean {
-    return false;
-}
+        throw `Method &quot;${ic.methodName()}&quot; not allowed`;
+    }),
+    accessible: update([], bool, () =&gt; {
+        return true;
+    }),
+    inaccessible: update([], bool, () =&gt; {
+        return false;
+    }),
+    alsoInaccessible: update([], bool, () =&gt; {
+        return false;
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="msg-cycles-accept"><a class="header" href="#msg-cycles-accept">msg cycles accept</a></h1>
 <p>This section is a work in progress.</p>
@@ -2264,13 +2254,14 @@ export function alsoInaccessible(): boolean {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat64, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat64, update } from 'azle';
 
-// Moves all transferred cycles to the canister
-$update;
-export function receiveCycles(): nat64 {
-    return ic.msgCyclesAccept(ic.msgCyclesAvailable() / 2n);
-}
+export default Canister({
+    // Moves all transferred cycles to the canister
+    receiveCycles: update([], nat64, () =&gt; {
+        return ic.msgCyclesAccept(ic.msgCyclesAvailable() / 2n);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="msg-cycles-accept-128"><a class="header" href="#msg-cycles-accept-128">msg cycles accept 128</a></h1>
 <p>This section is a work in progress.</p>
@@ -2278,13 +2269,14 @@ export function receiveCycles(): nat64 {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat64, update } from 'azle';
 
-// Moves all transferred cycles to the canister
-$update;
-export function receiveCycles128(): nat {
-    return ic.msgCyclesAccept128(ic.msgCyclesAvailable128() / 2n);
-}
+export default Canister({
+    // Moves all transferred cycles to the canister
+    receiveCycles128: update([], nat64, () =&gt; {
+        return ic.msgCyclesAccept128(ic.msgCyclesAvailable128() / 2n);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="msg-cycles-available"><a class="header" href="#msg-cycles-available">msg cycles available</a></h1>
 <p>This section is a work in progress.</p>
@@ -2292,13 +2284,14 @@ export function receiveCycles128(): nat {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat64, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat64, update } from 'azle';
 
-// Moves all transferred cycles to the canister
-$update;
-export function receiveCycles(): nat64 {
-    return ic.msgCyclesAccept(ic.msgCyclesAvailable() / 2n);
-}
+export default Canister({
+    // Moves all transferred cycles to the canister
+    receiveCycles: update([], nat64, () =&gt; {
+        return ic.msgCyclesAccept(ic.msgCyclesAvailable() / 2n);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="msg-cycles-available-128"><a class="header" href="#msg-cycles-available-128">msg cycles available 128</a></h1>
 <p>This section is a work in progress.</p>
@@ -2306,13 +2299,14 @@ export function receiveCycles(): nat64 {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat64, update } from 'azle';
 
-// Moves all transferred cycles to the canister
-$update;
-export function receiveCycles128(): nat {
-    return ic.msgCyclesAccept128(ic.msgCyclesAvailable128() / 2n);
-}
+export default Canister({
+    // Moves all transferred cycles to the canister
+    receiveCycles128: update([], nat64, () =&gt; {
+        return ic.msgCyclesAccept128(ic.msgCyclesAvailable128() / 2n);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="msg-cycles-refunded"><a class="header" href="#msg-cycles-refunded">msg cycles refunded</a></h1>
 <p>This section is a work in progress.</p>
@@ -2320,22 +2314,19 @@ export function receiveCycles128(): nat {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, match, nat64, Result, $update } from 'azle';
-import { cyclesCanister } from '../cycles';
+<pre><code class="language-typescript">import { Canister, ic, nat64, update } from 'azle';
+import { otherCanister } from './other_canister';
 
-// Reports the number of cycles returned from the Cycles canister
-$update;
-export async function sendCycles(): Promise&lt;Result&lt;nat64, string&gt;&gt; {
-    const result = await cyclesCanister
-        .receiveCycles()
-        .cycles(1_000_000n)
-        .call();
+export default Canister({
+    // Reports the number of cycles returned from the Cycles canister
+    sendCycles: update([], nat64, async () =&gt; {
+        await ic.call(otherCanister.receiveCycles, {
+            cycles: 1_000_000n
+        });
 
-    return match(result, {
-        Ok: () =&gt; ({ Ok: ic.msgCyclesRefunded() }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+        return ic.msgCyclesRefunded();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="msg-cycles-refunded-128"><a class="header" href="#msg-cycles-refunded-128">msg cycles refunded 128</a></h1>
 <p>This section is a work in progress.</p>
@@ -2343,22 +2334,19 @@ export async function sendCycles(): Promise&lt;Result&lt;nat64, string&gt;&gt; {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, match, nat, Result, $update } from 'azle';
-import { cyclesCanister } from '../cycles';
+<pre><code class="language-typescript">import { Canister, ic, nat64, update } from 'azle';
+import { otherCanister } from './other_canister';
 
-// Reports the number of cycles returned from the Cycles canister
-$update;
-export async function sendCycles128(): Promise&lt;Result&lt;nat, string&gt;&gt; {
-    const result = await cyclesCanister
-        .receiveCycles128()
-        .cycles128(1_000_000n)
-        .call();
+export default Canister({
+    // Reports the number of cycles returned from the Cycles canister
+    sendCycles128: update([], nat64, async () =&gt; {
+        await ic.call128(otherCanister.receiveCycles128, {
+            cycles: 1_000_000n
+        });
 
-    return match(result, {
-        Ok: () =&gt; ({ Ok: ic.msgCyclesRefunded128() }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+        return ic.msgCyclesRefunded128();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="notify"><a class="header" href="#notify">notify</a></h1>
 <p>This section is a work in progress.</p>
@@ -2367,17 +2355,16 @@ export async function sendCycles128(): Promise&lt;Result&lt;nat, string&gt;&gt; 
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cross_canister_calls">cross_canister_calls</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { NotifyResult, Principal, $update } from 'azle';
-import { Canister2 } from '../canister2/types';
+<pre><code class="language-typescript">import { Canister, ic, update, Void } from 'azle';
+import { otherCanister } from './otherCanister';
 
-const canister2 = new Canister2(
-    Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
-);
-
-$update;
-export function sendNotification(): NotifyResult {
-    return canister2.receiveNotification('This is the notification').notify();
-}
+export default Canister({
+    sendNotification: update([], Void, () =&gt; {
+        return ic.notify(otherCanister.receiveNotification, {
+            args: ['This is the notification']
+        });
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="notify-raw"><a class="header" href="#notify-raw">notify raw</a></h1>
 <p>This section is a work in progress.</p>
@@ -2385,17 +2372,18 @@ export function sendNotification(): NotifyResult {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/notify_raw">notify_raw</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, NotifyResult, Principal, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, Principal, update, Void } from 'azle';
 
-$update;
-export function sendNotification(): NotifyResult {
-    return ic.notifyRaw(
-        Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'),
-        'receiveNotification',
-        Uint8Array.from(ic.candidEncode('()')),
-        0n
-    );
-}
+export default Canister({
+    sendNotification: update([], Void, () =&gt; {
+        return ic.notifyRaw(
+            Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai'),
+            'receiveNotification',
+            Uint8Array.from(ic.candidEncode('()')),
+            0n
+        );
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="notify-with-payment-128"><a class="header" href="#notify-with-payment-128">notify with payment 128</a></h1>
 <p>This section is a work in progress.</p>
@@ -2403,13 +2391,16 @@ export function sendNotification(): NotifyResult {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 </ul>
-<pre><code class="language-typescript">import { NotifyResult, $update } from 'azle';
-import { cyclesCanister } from '../cycles';
+<pre><code class="language-typescript">import { Canister, ic, update, Void } from 'azle';
+import { otherCanister } from './otherCanister';
 
-$update;
-export function sendCycles128Notify(): NotifyResult {
-    return cyclesCanister.receiveCycles128().cycles128(1_000_000n).notify();
-}
+export default Canister({
+    sendCycles128Notify: update([], Void, () =&gt; {
+        return ic.notify(otherCanister.receiveCycles128, {
+            cycles: 1_000_000n
+        });
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reject"><a class="header" href="#reject">reject</a></h1>
 <p>This section is a work in progress.</p>
@@ -2419,12 +2410,18 @@ export function sendCycles128Notify(): NotifyResult {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/manual_reply">manual_reply</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/rejections">rejections</a></li>
 </ul>
-<pre><code class="language-typescript">import { empty, ic, Manual, $query } from 'azle';
+<pre><code class="language-typescript">import { Canister, empty, ic, Manual, query, text } from 'azle';
 
-$query;
-export function reject(message: string): Manual&lt;empty&gt; {
-    ic.reject(message);
-}
+export default Canister({
+    reject: query(
+        [text],
+        Manual(empty),
+        (message) =&gt; {
+            ic.reject(message);
+        },
+        { manual: true }
+    )
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reject-code"><a class="header" href="#reject-code">reject code</a></h1>
 <p>This section is a work in progress.</p>
@@ -2432,30 +2429,15 @@ export function reject(message: string): Manual&lt;empty&gt; {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/rejections">rejections</a></li>
 </ul>
-<pre><code class="language-typescript">import {
-    CallResult,
-    ic,
-    Principal,
-    RejectionCode,
-    Service,
-    serviceUpdate,
-    $update
-} from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, RejectionCode, update } from 'azle';
+import { otherCanister } from './other_canister';
 
-class Nonexistent extends Service {
-    @serviceUpdate
-    method: () =&gt; CallResult&lt;void&gt;;
-}
-
-export const nonexistentCanister = new Nonexistent(
-    Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
-);
-
-$update;
-export async function getRejectionCodeDestinationInvalid(): Promise&lt;RejectionCode&gt; {
-    await nonexistentCanister.method().call();
-    return ic.rejectCode();
-}
+export default Canister({
+    getRejectionCodeDestinationInvalid: update([], RejectionCode, async () =&gt; {
+        await ic.call(otherCanister.method);
+        return ic.rejectCode();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reject-message"><a class="header" href="#reject-message">reject message</a></h1>
 <p>This section is a work in progress.</p>
@@ -2463,14 +2445,15 @@ export async function getRejectionCodeDestinationInvalid(): Promise&lt;Rejection
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/rejections">rejections</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, $update } from 'azle';
-import { someService } from '../some_service';
+<pre><code class="language-typescript">import { Canister, ic, text, update } from 'azle';
+import { otherCanister } from './other_canister';
 
-$update;
-export async function getRejectionMessage(message: string): Promise&lt;string&gt; {
-    await someService.reject(message).call();
-    return ic.rejectMessage();
-}
+export default Canister({
+    getRejectionMessage: update([], text, async () =&gt; {
+        await ic.call(otherCanister.method);
+        return ic.rejectMessage();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reply"><a class="header" href="#reply">reply</a></h1>
 <p>This section is a work in progress.</p>
@@ -2479,12 +2462,21 @@ export async function getRejectionMessage(message: string): Promise&lt;string&gt
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/composite_queries">composite_queries</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/manual_reply">manual_reply</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, Manual, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, Manual, update } from 'azle';
 
-$update;
-export function updateBlob(): Manual&lt;blob&gt; {
-    ic.reply(new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]));
-}
+export default Canister({
+    updateBlob: update(
+        [],
+        Manual(blob),
+        () =&gt; {
+            ic.reply(
+                new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
+                blob
+            );
+        },
+        { manual: true }
+    )
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reply-raw"><a class="header" href="#reply-raw">reply raw</a></h1>
 <p>This section is a work in progress.</p>
@@ -2493,30 +2485,48 @@ export function updateBlob(): Manual&lt;blob&gt; {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/manual_reply">manual_reply</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, int, Manual, Record, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import {
+    blob,
+    bool,
+    Canister,
+    ic,
+    int,
+    Manual,
+    Null,
+    Record,
+    text,
+    update,
+    Variant
+} from 'azle';
 
-type Options = Variant&lt;{
-    High: null;
-    Medium: null;
-    Low: null;
-}&gt;;
+const Options = Variant({
+    High: Null,
+    Medium: Null,
+    Low: Null
+});
 
-$update;
-export function replyRaw(): Manual&lt;
-    Record&lt;{
-        int: int;
-        text: string;
-        bool: boolean;
-        blob: blob;
-        variant: Options;
-    }&gt;
-&gt; {
-    ic.replyRaw(
-        ic.candidEncode(
-            '(record { &quot;int&quot; = 42; &quot;text&quot; = &quot;text&quot;; &quot;bool&quot; = true; &quot;blob&quot; = blob &quot;Surprise!&quot;; &quot;variant&quot; = variant { Medium } })'
-        )
-    );
-}
+export default Canister({
+    replyRaw: update(
+        [],
+        Manual(
+            Record({
+                int: int,
+                text: text,
+                bool: bool,
+                blob: blob,
+                variant: Options
+            })
+        ),
+        () =&gt; {
+            ic.replyRaw(
+                ic.candidEncode(
+                    '(record { &quot;int&quot; = 42; &quot;text&quot; = &quot;text&quot;; &quot;bool&quot; = true; &quot;blob&quot; = blob &quot;Surprise!&quot;; &quot;variant&quot; = variant { Medium } })'
+                )
+            );
+        },
+        { manual: true }
+    )
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="candid-1"><a class="header" href="#candid-1">Candid</a></h1>
 <ul>
@@ -2547,9 +2557,9 @@ export function replyRaw(): Manual&lt;
 <li><a href="reference/candid/./vec.html">vec</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="blob"><a class="header" href="#blob">blob</a></h1>
-<p>The Azle type <code>blob</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-blob">Candid type blob</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array">JavaScript Uint8Array</a> at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, blob, query } from 'azle';
+<p>The <code>CandidType</code> object <code>blob</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-blob">Candid type blob</a>, is inferred to be a TypeScript <code>Uint8Array</code> and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array">JavaScript Uint8Array</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { blob, Canister, query } from 'azle';
 
 export default Canister({
     getBlob: query([], blob, () =&gt; {
@@ -2575,9 +2585,9 @@ dfx canister call candid_canister printBlob '(blob &quot;DIDL\00\00&quot;)'
 (blob &quot;DIDL\00\00&quot;)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bool"><a class="header" href="#bool">bool</a></h1>
-<p>The TypeScript type <code>boolean</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-bool">Candid type bool</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">JavaScript Boolean</a> at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, bool, query } from 'azle';
+<p>The <code>CandidType</code> object <code>bool</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-bool">Candid type bool</a>, is inferred to be a TypeScript <code>boolean</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">JavaScript Boolean</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { bool, Canister, query } from 'azle';
 
 export default Canister({
     getBool: query([], bool, () =&gt; {
@@ -2599,9 +2609,9 @@ export default Canister({
 <pre><code class="language-bash">dfx canister call candid_canister printBool '(true)'
 (true)
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="empty"><a class="header" href="#empty">empty</a></h3>
-<p>The Azle type <code>empty</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-empty">Candid type empty</a> and has no JavaScript value at runtime.</p>
-<p>TypeScript:</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="empty"><a class="header" href="#empty">empty</a></h1>
+<p>The <code>CandidType</code> object <code>empty</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-empty">Candid type empty</a>, is inferred to be a TypeScript <code>never</code>, and has no JavaScript value at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, empty, query } from 'azle';
 
 export default Canister({
@@ -2629,8 +2639,8 @@ Caused by: Failed to create argument blob.
   Invalid data: Unable to serialize Candid values: type mismatch: &quot;You can put anything here&quot; cannot be of type empty
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="float32"><a class="header" href="#float32">float32</a></h1>
-<p>The Azle type <code>float32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float32</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>float32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float32</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, float32, query } from 'azle';
 
 export default Canister({
@@ -2654,8 +2664,8 @@ export default Canister({
 (3.1415927 : float32)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="float64"><a class="header" href="#float64">float64</a></h1>
-<p>The Azle type <code>float64</code> and the TypeScript type <code>number</code> both correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>float64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float64</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, float64, query } from 'azle';
 
 export default Canister({
@@ -2679,10 +2689,10 @@ export default Canister({
 (2.718281828459045 : float64)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="func"><a class="header" href="#func">func</a></h1>
-<p>The Azle type <code>Func</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-func---">Candid type func</a>. It is a <a href="https://www.tutorialsteacher.com/typescript/typescript-tuple">TypeScript Tuple</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> with two elements at runtime.</p>
+<p>Values created by the <code>CandidType</code> function <code>Func</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-func---">Candid type func</a>, are inferred to be TypeScript <code>[Principal, string]</code> tuples, and will be decoded into <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> with two elements at runtime.</p>
 <p>The first element is an <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal</a> and the second is a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript string</a>. The <code>@dfinity/principal</code> represents the <code>principal</code> of the canister/service where the function exists, and the <code>string</code> represents the function's name.</p>
 <p>A <code>func</code> acts as a callback, allowing the <code>func</code> receiver to know which canister instance and method must be used to call back.</p>
-<p>TypeScript:</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, Func, Principal, query, text } from 'azle';
 
 const BasicFunc = Func([text], text, 'query');
@@ -2713,8 +2723,8 @@ export default Canister({
 (func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.getBasicFunc)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="int"><a class="header" href="#int">int</a></h1>
-<p>The Azle type <code>int</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-int">Candid type int</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>int</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-int">Candid type int</a>, is inferred to be a TypeScript <code>bigint</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, int, query } from 'azle';
 
 export default Canister({
@@ -2738,8 +2748,8 @@ export default Canister({
 (170_141_183_460_469_231_731_687_303_715_884_105_727 : int)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="int8"><a class="header" href="#int8">int8</a></h1>
-<p>The Azle type <code>int8</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int8</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>int8</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int8</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, int8, query } from 'azle';
 
 export default Canister({
@@ -2763,8 +2773,8 @@ export default Canister({
 (127 : int8)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="int16"><a class="header" href="#int16">int16</a></h1>
-<p>The Azle type <code>int16</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int16</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>int16</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int16</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, int16, query } from 'azle';
 
 export default Canister({
@@ -2788,8 +2798,8 @@ export default Canister({
 (32_767 : int16)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="int32"><a class="header" href="#int32">int32</a></h1>
-<p>The Azle type <code>int32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int32</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>int32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int32</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, int32, query } from 'azle';
 
 export default Canister({
@@ -2813,8 +2823,8 @@ export default Canister({
 (2_147_483_647 : int32)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="int64"><a class="header" href="#int64">int64</a></h1>
-<p>The Azle type <code>int64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>int64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int64</a>, is inferred to be a TypeScript <code>bigint</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, int64, query } from 'azle';
 
 export default Canister({
@@ -2838,8 +2848,8 @@ export default Canister({
 (9_223_372_036_854_775_807 : int64)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="nat"><a class="header" href="#nat">nat</a></h1>
-<p>The Azle type <code>nat</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-nat">Candid type nat</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>nat</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-nat">Candid type nat</a>, is inferred to be a TypeScript <code>bigint</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, nat, query } from 'azle';
 
 export default Canister({
@@ -2863,8 +2873,8 @@ export default Canister({
 (340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="nat8"><a class="header" href="#nat8">nat8</a></h1>
-<p>The Azle type <code>nat8</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat8</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>nat8</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat8</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, nat8, query } from 'azle';
 
 export default Canister({
@@ -2888,8 +2898,8 @@ export default Canister({
 (255 : nat8)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="nat16"><a class="header" href="#nat16">nat16</a></h1>
-<p>The Azle type <code>nat16</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat16</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>nat16</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat16</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, nat16, query } from 'azle';
 
 export default Canister({
@@ -2913,8 +2923,8 @@ export default Canister({
 (65_535 : nat16)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="nat32"><a class="header" href="#nat32">nat32</a></h1>
-<p>The Azle type <code>nat32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat32</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>nat32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat32</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, nat32, query } from 'azle';
 
 export default Canister({
@@ -2938,8 +2948,8 @@ export default Canister({
 (4_294_967_295 : nat32)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="nat64"><a class="header" href="#nat64">nat64</a></h1>
-<p>The Azle type <code>nat64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>nat64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat64</a>, is inferred to be a TypeScript <code>bigint</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, nat64, query } from 'azle';
 
 export default Canister({
@@ -2963,8 +2973,8 @@ export default Canister({
 (18_446_744_073_709_551_615 : nat64)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="null"><a class="header" href="#null">null</a></h1>
-<p>The TypeScript type <code>null</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-null">Candid type null</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null">JavaScript null</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>null</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-null">Candid type null</a>, is inferred to be a TypeScript <code>null</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null">JavaScript null</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, Null, query } from 'azle';
 
 export default Canister({
@@ -2988,16 +2998,17 @@ export default Canister({
 (null : null)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="opt"><a class="header" href="#opt">opt</a></h1>
-<p>The Azle type <code>Opt</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t">Candid type opt</a>. It is a <a href="reference/candid/opt.html#variant">variant</a> with <code>Some</code> and <code>None</code> cases. At runtime if the value of the variant is <code>Some</code>, the <code>Some</code> property of the variant object will have a value of the enclosed <code>Opt</code> type at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, None, Opt, Some, bool, query } from 'azle';
+<p>The <code>CandidType</code> object <code>Opt</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t">Candid type opt</a>, is inferred to be a TypeScript <code>Opt&lt;T&gt;</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Object</a> at runtime.</p>
+<p>It is a <a href="reference/candid/opt.html#variant">variant</a> with <code>Some</code> and <code>None</code> cases. At runtime if the value of the variant is <code>Some</code>, the <code>Some</code> property of the variant object will have a value of the enclosed <code>Opt</code> type at runtime.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { bool, Canister, None, Opt, query, Some } from 'azle';
 
 export default Canister({
     getOptSome: query([], Opt(bool), () =&gt; {
-        return Some(true);
+        return Some(true); // equivalent to { Some: true }
     }),
     getOptNone: query([], Opt(bool), () =&gt; {
-        return None;
+        return None; //equivalent to { None: null}
     })
 });
 </code></pre>
@@ -3015,8 +3026,8 @@ dfx canister call candid_canister getOptNone
 (null)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="principal"><a class="header" href="#principal">principal</a></h1>
-<p>The Azle type <code>Principal</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-principal">Candid type principal</a> and will become an <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>Principal</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-principal">Candid type principal</a>, is inferred to be a TypeScript <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal</a> <code>Principal</code>, and will be decoded into an <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal Principal</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, Principal, query } from 'azle';
 
 export default Canister({
@@ -3040,9 +3051,10 @@ export default Canister({
 (principal &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="record"><a class="header" href="#record">record</a></h1>
-<p>TypeScript type aliases referring to object literals wrapped in the <code>Record</code> Azle type correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--">Candid record type</a> and will become <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, Principal, Record, query, text } from 'azle';
+<p>Objects created by the <code>CandidType</code> function <code>Record</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--">Candid record type</a>, are inferred to be TypeScript <code>Object</code>s, and will be decoded into <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
+<p>The shape of the object will match the object literal passed to the <code>Record</code> function.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { Canister, Principal, query, Record, text } from 'azle';
 
 const User = Record({
     id: Principal,
@@ -3074,8 +3086,8 @@ service : () -&gt; {
 (record { id = principal &quot;2ibo7-dia&quot;; username = &quot;lastmjs&quot; })
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reserved"><a class="header" href="#reserved">reserved</a></h1>
-<p>The Azle type <code>reserved</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-reserved">Candid type reserved</a>, is the TypeScript type <code>any</code>, and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null">JavaScript null</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>reserved</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-reserved">Candid type reserved</a>, is inferred to be a TypeScript <code>any</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null">JavaScript null</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, query, reserved } from 'azle';
 
 export default Canister({
@@ -3099,9 +3111,10 @@ export default Canister({
 (null : reserved)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="service"><a class="header" href="#service">service</a></h1>
-<p>JavaScript classes that inherit from the Azle type <code>Service</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-service-">Candid service type</a> and will become child classes capable of creating instances that can perform cross-canister calls at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, Principal, bool, ic, query, text, update } from 'azle';
+<p>Values created by the <code>CandidType</code> function <code>Canister</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-service-">Candid service type</a>, are inferred to be TypeScript <code>Object</code>s, and will be decoded into <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
+<p>The properties of this object that match the keys of the service's <code>query</code> and <code>update</code> methods can be passed into <code>ic.call</code> and <code>ic.notify</code> to perform cross-canister calls.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { bool, Canister, ic, Principal, query, text, update } from 'azle';
 
 const SomeCanister = Canister({
     query1: query([], bool),
@@ -3133,7 +3146,7 @@ service : () -&gt; {
 (service &quot;aaaaa-aa&quot;)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="text"><a class="header" href="#text">text</a></h1>
-<p>The <code>CandidType</code> object <code>text</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-text">Candid type text</a>, is inferred to be a TypeScript string, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript String</a> at runtime.</p>
+<p>The <code>CandidType</code> object <code>text</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-text">Candid type text</a>, is inferred to be a TypeScript <code>string</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript String</a> at runtime.</p>
 <p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, query, text } from 'azle';
 
@@ -3158,9 +3171,10 @@ export default Canister({
 (&quot;Hello world!&quot;)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="variant"><a class="header" href="#variant">variant</a></h1>
-<p>TypeScript type aliases referring to object literals wrapped in the <code>Variant</code> Azle type correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--">Candid variant type</a> and will become <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, Null, Variant, query } from 'azle';
+<p>Objects created by the <code>CandidType</code> function <code>Variant</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--">Candid variant type</a>, are inferred to be TypeScript <code>Object</code>s, and will be decoded into <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
+<p>The shape of the object will match the object literal passed to the <code>Variant</code> function, however it will contain only one of the enumerated properties.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { Canister, Null, query, Variant } from 'azle';
 
 const Emotion = Variant({
     Happy: Null,
@@ -3199,9 +3213,9 @@ service : () -&gt; {
 (variant { Fire })
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="vec"><a class="header" href="#vec">vec</a></h1>
-<p>The Azle type <code>Vec</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>Vec&lt;nat8&gt;</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>Vec&lt;nat8&gt;</code>).</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, Vec, int32, query } from 'azle';
+<p>The <code>CandidType</code> object <code>Vec</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a>, is inferred to be a TypeScript <code>T[]</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>Vec&lt;nat8&gt;</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>Vec&lt;nat8&gt;</code>).</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { Canister, int32, Vec, query } from 'azle';
 
 export default Canister({
     getNumbers: query([], Vec(int32), () =&gt; {
@@ -3247,13 +3261,14 @@ export default Canister({
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/call_raw">call_raw</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/candid_encoding">candid_encoding</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, $query } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, query, text } from 'azle';
 
-// decodes Candid bytes to a Candid string
-$query;
-export function candidDecode(candidEncoded: blob): string {
-    return ic.candidDecode(candidEncoded);
-}
+export default Canister({
+    // decodes Candid bytes to a Candid string
+    candidDecode: query([blob], text, (candidEncoded) =&gt; {
+        return ic.candidDecode(candidEncoded);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="candid-encode"><a class="header" href="#candid-encode">candid encode</a></h1>
 <p>This section is a work in progress.</p>
@@ -3265,13 +3280,14 @@ export function candidDecode(candidEncoded: blob): string {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/notify_raw">notify_raw</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, $query } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, query, text } from 'azle';
 
-// encodes a Candid string to Candid bytes
-$query;
-export function candidEncode(candidString: string): blob {
-    return ic.candidEncode(candidString);
-}
+export default Canister({
+    // encodes a Candid string to Candid bytes
+    candidEncode: query([text], blob, (candidString) =&gt; {
+        return ic.candidEncode(candidString);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister-balance"><a class="header" href="#canister-balance">canister balance</a></h1>
 <p>This section is a work in progress.</p>
@@ -3280,13 +3296,14 @@ export function candidEncode(candidString: string): blob {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat64, $query } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat64, query } from 'azle';
 
-// returns the amount of cycles available in the canister
-$query;
-export function canisterBalance(): nat64 {
-    return ic.canisterBalance();
-}
+export default Canister({
+    // returns the amount of cycles available in the canister
+    canisterBalance: query([], nat64, () =&gt; {
+        return ic.canisterBalance();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister-balance-128"><a class="header" href="#canister-balance-128">canister balance 128</a></h1>
 <p>This section is a work in progress.</p>
@@ -3295,13 +3312,14 @@ export function canisterBalance(): nat64 {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/cycles">cycles</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat, $query } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat, query } from 'azle';
 
-// returns the amount of cycles available in the canister
-$query;
-export function canisterBalance128(): nat {
-    return ic.canisterBalance128();
-}
+export default Canister({
+    // returns the amount of cycles available in the canister
+    canisterBalance128: query([], nat, () =&gt; {
+        return ic.canisterBalance128();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister-version"><a class="header" href="#canister-version">canister version</a></h1>
 <p>This section is a work in progress.</p>
@@ -3309,13 +3327,14 @@ export function canisterBalance128(): nat {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat64, $query } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat64, query } from 'azle';
 
-// returns the canister's version number
-$query;
-export function canisterVersion(): nat64 {
-    return ic.canisterVersion();
-}
+export default Canister({
+    // returns the canister's version number
+    canisterVersion: query([], nat64, () =&gt; {
+        return ic.canisterVersion();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister-id"><a class="header" href="#canister-id">canister id</a></h1>
 <p>This section is a work in progress.</p>
@@ -3327,13 +3346,14 @@ export function canisterVersion(): nat64 {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, Principal, $query } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, Principal, query } from 'azle';
 
-// returns this canister's id
-$query;
-export function id(): Principal {
-    return ic.id();
-}
+export default Canister({
+    // returns this canister's id
+    id: query([], Principal, () =&gt; {
+        return ic.id();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="data-certificate"><a class="header" href="#data-certificate">data certificate</a></h1>
 <p>This section is a work in progress.</p>
@@ -3341,13 +3361,16 @@ export function id(): Principal {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, Opt, $query } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, Opt, query } from 'azle';
 
-// When called from a query call, returns the data certificate authenticating certified_data set by this canister. Returns None if not called from a query call.
-$query;
-export function dataCertificate(): Opt&lt;blob&gt; {
-    return ic.dataCertificate();
-}
+export default Canister({
+    // When called from a query call, returns the data certificate
+    // authenticating certified_data set by this canister. Returns None if not
+    // called from a query call.
+    dataCertificate: query([], Opt(blob), () =&gt; {
+        return ic.dataCertificate();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="instruction-counter"><a class="header" href="#instruction-counter">instruction counter</a></h1>
 <p>This section is a work in progress.</p>
@@ -3355,14 +3378,15 @@ export function dataCertificate(): Opt&lt;blob&gt; {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat64, $query } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat64, query } from 'azle';
 
-// Returns the number of instructions that the canister executed since the last
-// entry point.
-$query;
-export function instructionCounter(): nat64 {
-    return ic.instructionCounter();
-}
+export default Canister({
+    // Returns the number of instructions that the canister executed since the
+    // last entry point.
+    instructionCounter: query([], nat64, () =&gt; {
+        return ic.instructionCounter();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="is-controller"><a class="header" href="#is-controller">is controller</a></h1>
 <p>This section is a work in progress.</p>
@@ -3370,13 +3394,14 @@ export function instructionCounter(): nat64 {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, Principal, $query } from 'azle';
+<pre><code class="language-typescript">import { bool, Canister, ic, Principal, query } from 'azle';
 
-// determines whether the given principal is a controller of the canister
-$query;
-export function isController(principal: Principal): boolean {
-    return ic.isController(principal);
-}
+export default Canister({
+    // determines whether the given principal is a controller of the canister
+    isController: query([Principal], bool, (principal) =&gt; {
+        return ic.isController(principal);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="performance-counter"><a class="header" href="#performance-counter">performance counter</a></h1>
 <p>This section is a work in progress.</p>
@@ -3384,12 +3409,13 @@ export function isController(principal: Principal): boolean {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat64, $query } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat64, query } from 'azle';
 
-$query;
-export function performanceCounter(): nat64 {
-    return ic.performanceCounter(0);
-}
+export default Canister({
+    performanceCounter: query([], nat64, () =&gt; {
+        return ic.performanceCounter(0);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="print"><a class="header" href="#print">print</a></h1>
 <p>This section is a work in progress.</p>
@@ -3398,15 +3424,16 @@ export function performanceCounter(): nat64 {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/null_example">null_example</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, $query } from 'azle';
+<pre><code class="language-typescript">import { bool, Canister, ic, query, text } from 'azle';
 
-// prints a message through the local replica's output
-$query;
-export function print(message: string): boolean {
-    ic.print(message);
+export default Canister({
+    // prints a message through the local replica's output
+    print: query([text], bool, (message) =&gt; {
+        ic.print(message);
 
-    return true;
-}
+        return true;
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="set-certified-data"><a class="header" href="#set-certified-data">set certified data</a></h1>
 <p>This section is a work in progress.</p>
@@ -3414,13 +3441,14 @@ export function print(message: string): boolean {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, update, Void } from 'azle';
 
-// sets up to 32 bytes of certified data
-$update;
-export function setCertifiedData(data: blob): void {
-    ic.setCertifiedData(data);
-}
+export default Canister({
+    // sets up to 32 bytes of certified data
+    setCertifiedData: update([blob], Void, (data) =&gt; {
+        ic.setCertifiedData(data);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="time"><a class="header" href="#time">time</a></h1>
 <p>This section is a work in progress.</p>
@@ -3429,13 +3457,14 @@ export function setCertifiedData(data: blob): void {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/audio_recorder">audio_recorder</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ic_api">ic_api</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat64, $query } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat64, query } from 'azle';
 
-// returns the current timestamp
-$query;
-export function time(): nat64 {
-    return ic.time();
-}
+export default Canister({
+    // returns the current timestamp
+    time: query([], nat64, () =&gt; {
+        return ic.time();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="trap"><a class="header" href="#trap">trap</a></h1>
 <p>This section is a work in progress.</p>
@@ -3448,15 +3477,16 @@ export function time(): nat64 {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, $query } from 'azle';
+<pre><code class="language-typescript">import { bool, Canister, ic, query, text } from 'azle';
 
-// traps with a message, stopping execution and discarding all state within the call
-$query;
-export function trap(message: string): boolean {
-    ic.trap(message);
+export default Canister({
+    // traps with a message, stopping execution and discarding all state within the call
+    trap: query([text], bool, (message) =&gt; {
+        ic.trap(message);
 
-    return true;
-}
+        return true;
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister-methods"><a class="header" href="#canister-methods">Canister Methods</a></h1>
 <ul>
@@ -3477,12 +3507,13 @@ export function trap(message: string): boolean {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/heartbeat">heartbeat</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/run_time_errors">run_time_errors</a></li>
 </ul>
-<pre><code class="language-typescript">import { $heartbeat } from 'azle';
+<pre><code class="language-typescript">import { Canister, heartbeat } from 'azle';
 
-$heartbeat;
-export function heartbeat(): void {
-    console.log('this runs ~1 time per second');
-}
+export default Canister({
+    heartbeat: heartbeat(() =&gt; {
+        console.log('this runs ~1 time per second');
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="http_request"><a class="header" href="#http_request">http_request</a></h1>
 <p>This section is a work in progress.</p>
@@ -3492,66 +3523,73 @@ export function heartbeat(): void {
 </ul>
 <pre><code class="language-typescript">import {
     blob,
+    bool,
+    Canister,
     Func,
     nat16,
+    None,
     Opt,
-    $query,
-    Query,
+    query,
     Record,
+    text,
     Tuple,
     Variant,
     Vec
 } from 'azle';
 
-type HttpRequest = Record&lt;{
-    method: string;
-    url: string;
-    headers: Vec&lt;Header&gt;;
-    body: blob;
-}&gt;;
+const Token = Record({
+    // add whatever fields you'd like
+    arbitrary_data: text
+});
 
-type HttpResponse = Record&lt;{
-    status_code: nat16;
-    headers: Vec&lt;Header&gt;;
-    body: blob;
-    streaming_strategy: Opt&lt;StreamingStrategy&gt;;
-    upgrade: Opt&lt;boolean&gt;;
-}&gt;;
+const StreamingCallbackHttpResponse = Record({
+    body: blob,
+    token: Opt(Token)
+});
 
-type Header = Tuple&lt;[string, string]&gt;;
+export const Callback = Func([text], StreamingCallbackHttpResponse, 'query');
 
-type StreamingStrategy = Variant&lt;{
-    Callback: CallbackStrategy;
-}&gt;;
+const CallbackStrategy = Record({
+    callback: Callback,
+    token: Token
+});
 
-type CallbackStrategy = Record&lt;{
-    callback: Callback;
-    token: Token;
-}&gt;;
+const StreamingStrategy = Variant({
+    Callback: CallbackStrategy
+});
 
-type Callback = Func&lt;Query&lt;(t: Token) =&gt; StreamingCallbackHttpResponse&gt;&gt;;
+type HeaderField = [text, text];
+const HeaderField = Tuple(text, text);
 
-type StreamingCallbackHttpResponse = Record&lt;{
-    body: blob;
-    token: Opt&lt;Token&gt;;
-}&gt;;
+const HttpResponse = Record({
+    status_code: nat16,
+    headers: Vec(HeaderField),
+    body: blob,
+    streaming_strategy: Opt(StreamingStrategy),
+    upgrade: Opt(bool)
+});
 
-type Token = Record&lt;{
-    arbitrary_data: string;
-}&gt;;
+const HttpRequest = Record({
+    method: text,
+    url: text,
+    headers: Vec(HeaderField),
+    body: blob,
+    certificate_version: Opt(nat16)
+});
 
-$query;
-export function http_request(req: HttpRequest): HttpResponse {
-    return {
-        status_code: 200,
-        headers: [],
-        body: Uint8Array.from([]),
-        streaming_strategy: Opt.None,
-        upgrade: Opt.Some(false)
-    };
-}
+export default Canister({
+    http_request: query([HttpRequest], HttpResponse, (req) =&gt; {
+        return {
+            status_code: 200,
+            headers: [],
+            body: Buffer.from('hello'),
+            streaming_strategy: None,
+            upgrade: None
+        };
+    })
+});
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="http_request_update"><a class="header" href="#http_request_update">http_request_update</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="http_request-1"><a class="header" href="#http_request-1">http_request</a></h1>
 <p>This section is a work in progress.</p>
 <p>Examples:</p>
 <ul>
@@ -3559,64 +3597,71 @@ export function http_request(req: HttpRequest): HttpResponse {
 </ul>
 <pre><code class="language-typescript">import {
     blob,
+    bool,
+    Canister,
     Func,
     nat16,
+    None,
     Opt,
-    Query,
     Record,
+    text,
     Tuple,
-    $update,
+    update,
     Variant,
     Vec
 } from 'azle';
 
-type HttpRequest = Record&lt;{
-    method: string;
-    url: string;
-    headers: Vec&lt;Header&gt;;
-    body: blob;
-}&gt;;
+const Token = Record({
+    // add whatever fields you'd like
+    arbitrary_data: text
+});
 
-type HttpResponse = Record&lt;{
-    status_code: nat16;
-    headers: Vec&lt;Header&gt;;
-    body: blob;
-    streaming_strategy: Opt&lt;StreamingStrategy&gt;;
-    upgrade: Opt&lt;boolean&gt;;
-}&gt;;
+const StreamingCallbackHttpResponse = Record({
+    body: blob,
+    token: Opt(Token)
+});
 
-type Header = Tuple&lt;[string, string]&gt;;
+export const Callback = Func([text], StreamingCallbackHttpResponse, 'query');
 
-type StreamingStrategy = Variant&lt;{
-    Callback: CallbackStrategy;
-}&gt;;
+const CallbackStrategy = Record({
+    callback: Callback,
+    token: Token
+});
 
-type CallbackStrategy = Record&lt;{
-    callback: Callback;
-    token: Token;
-}&gt;;
+const StreamingStrategy = Variant({
+    Callback: CallbackStrategy
+});
 
-type Callback = Func&lt;Query&lt;(t: Token) =&gt; StreamingCallbackHttpResponse&gt;&gt;;
+type HeaderField = [text, text];
+const HeaderField = Tuple(text, text);
 
-type StreamingCallbackHttpResponse = Record&lt;{
-    body: blob;
-    token: Opt&lt;Token&gt;;
-}&gt;;
+const HttpResponse = Record({
+    status_code: nat16,
+    headers: Vec(HeaderField),
+    body: blob,
+    streaming_strategy: Opt(StreamingStrategy),
+    upgrade: Opt(bool)
+});
 
-type Token = Record&lt;{
-    arbitrary_data: string;
-}&gt;;
+const HttpRequest = Record({
+    method: text,
+    url: text,
+    headers: Vec(HeaderField),
+    body: blob,
+    certificate_version: Opt(nat16)
+});
 
-$update;
-export function http_request_update(req: HttpRequest): HttpResponse {
-    return {
-        status_code: 200,
-        headers: [],
-        body: Uint8Array.from([]),
-        streaming_strategy: Opt.None,
-        upgrade: Opt.Some(false)
-    };
-}
+export default Canister({
+    http_request_update: update([HttpRequest], HttpResponse, (req) =&gt; {
+        return {
+            status_code: 200,
+            headers: [],
+            body: Buffer.from('hello'),
+            streaming_strategy: None,
+            upgrade: None
+        };
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="init"><a class="header" href="#init">init</a></h1>
 <p>This section is a work in progress.</p>
@@ -3629,12 +3674,13 @@ export function http_request_update(req: HttpRequest): HttpResponse {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/pre_and_post_upgrade">pre_and_post_upgrade</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
 </ul>
-<pre><code class="language-typescript">import { $init } from 'azle';
+<pre><code class="language-typescript">import { Canister, init } from 'azle';
 
-$init;
-export function init(): void {
-    console.log('This runs once when the canister is first initialized');
-}
+export default Canister({
+    init: init([], () =&gt; {
+        console.log('This runs once when the canister is first initialized');
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="inspect-message"><a class="header" href="#inspect-message">inspect message</a></h1>
 <p>This section is a work in progress.</p>
@@ -3643,38 +3689,33 @@ export function init(): void {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/inspect_message">inspect_message</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/run_time_errors">run_time_errors</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, $inspectMessage, $update } from 'azle';
+<pre><code class="language-typescript">import { bool, Canister, ic, inspectMessage, update } from 'azle';
 
-$inspectMessage;
-export function inspectMessage(): void {
-    console.log('inspectMessage called');
+export default Canister({
+    inspectMessage: inspectMessage(() =&gt; {
+        console.log('inspectMessage called');
 
-    if (ic.methodName() === 'accessible') {
-        ic.acceptMessage();
-        return;
-    }
+        if (ic.methodName() === 'accessible') {
+            ic.acceptMessage();
+            return;
+        }
 
-    if (ic.methodName() === 'inaccessible') {
-        return;
-    }
+        if (ic.methodName() === 'inaccessible') {
+            return;
+        }
 
-    throw `Method &quot;${ic.methodName()}&quot; not allowed`;
-}
-
-$update;
-export function accessible(): boolean {
-    return true;
-}
-
-$update;
-export function inaccessible(): boolean {
-    return false;
-}
-
-$update;
-export function alsoInaccessible(): boolean {
-    return false;
-}
+        throw `Method &quot;${ic.methodName()}&quot; not allowed`;
+    }),
+    accessible: update([], bool, () =&gt; {
+        return true;
+    }),
+    inaccessible: update([], bool, () =&gt; {
+        return false;
+    }),
+    alsoInaccessible: update([], bool, () =&gt; {
+        return false;
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="post-upgrade"><a class="header" href="#post-upgrade">post upgrade</a></h1>
 <p>This section is a work in progress.</p>
@@ -3683,12 +3724,13 @@ export function alsoInaccessible(): boolean {
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/pre_and_post_upgrade">pre_and_post_upgrade</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami">whoami</a></li>
 </ul>
-<pre><code class="language-typescript">import { $postUpgrade } from 'azle';
+<pre><code class="language-typescript">import { Canister, postUpgrade } from 'azle';
 
-$postUpgrade;
-export function postUpgrade(): void {
-    console.log('This runs after every canister upgrade');
-}
+export default Canister({
+    postUpgrade: postUpgrade([], () =&gt; {
+        console.log('This runs after every canister upgrade');
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="pre-upgrade"><a class="header" href="#pre-upgrade">pre upgrade</a></h1>
 <p>This section is a work in progress.</p>
@@ -3696,37 +3738,38 @@ export function postUpgrade(): void {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/pre_and_post_upgrade">pre_and_post_upgrade</a></li>
 </ul>
-<pre><code class="language-typescript">import { $preUpgrade } from 'azle';
+<pre><code class="language-typescript">import { Canister, preUpgrade } from 'azle';
 
-$preUpgrade;
-export function preUpgrade(): void {
-    console.log('This runs before every canister upgrade');
-}
+export default Canister({
+    preUpgrade: preUpgrade(() =&gt; {
+        console.log('This runs before every canister upgrade');
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="query"><a class="header" href="#query">query</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">import { $query } from 'azle';
+<pre><code class="language-typescript">import { Canister, query, text } from 'azle';
 
-$query;
-export function simpleQuery(): string {
-    return 'This is a query method';
-}
+export default Canister({
+    simpleQuery: query([], text, () =&gt; {
+        return 'This is a query method';
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="update"><a class="header" href="#update">update</a></h1>
 <p>This section is a work in progress.</p>
-<pre><code class="language-typescript">import { $query, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, query, text, update, Void } from 'azle';
 
 let message = '';
 
-$query;
-export function getMessage(): string {
-    return message;
-}
-
-$update;
-export function setMessage(newMessage: string): void {
-    message = newMessage;
-}
+export default Canister({
+    getMessage: query([], text, () =&gt; {
+        return message;
+    }),
+    setMessage: update([text], Void, (newMessage) =&gt; {
+        message = newMessage;
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="environment-variables"><a class="header" href="#environment-variables">Environment Variables</a></h1>
 <p>You can provide environment variables to Azle canisters by specifying their names in your <code>dfx.json</code> file and then using the <code>process.env</code> object in Azle. Be aware that the environment variables that you specify in your <code>dfx.json</code> file will be included in plain text in your canister's Wasm binary.</p>
@@ -3736,11 +3779,11 @@ export function setMessage(newMessage: string): void {
     &quot;canisters&quot;: {
         &quot;canister1&quot;: {
             &quot;type&quot;: &quot;custom&quot;,
+            &quot;main&quot;: &quot;src/canister1/index.ts&quot;,
             &quot;build&quot;: &quot;npx azle canister1&quot;,
-            &quot;root&quot;: &quot;canisters/canister1&quot;,
-            &quot;ts&quot;: &quot;canisters/canister1/canister1.ts&quot;,
-            &quot;candid&quot;: &quot;canisters/canister1/canister1.did&quot;,
-            &quot;wasm&quot;: &quot;.azle/canister1/canister1.wasm.gz&quot;,
+            &quot;candid&quot;: &quot;src/canister1/index.did&quot;,
+            &quot;wasm&quot;: &quot;.azle/canister1/canister1.wasm&quot;,
+            &quot;gzip&quot;: true,
             &quot;declarations&quot;: {
                 &quot;output&quot;: &quot;test/dfx_generated/canister1&quot;,
                 &quot;node_compatibility&quot;: true
@@ -3752,23 +3795,22 @@ export function setMessage(newMessage: string): void {
 </code></pre>
 <h2 id="processenv"><a class="header" href="#processenv">process.env</a></h2>
 <p>You can access the specified environment variables in Azle like so:</p>
-<pre><code class="language-typescript">import { $query } from 'azle';
+<pre><code class="language-typescript">import { Canister, query, text } from 'azle';
 
-$query;
-export function canister1PrincipalEnvVar(): string {
-    return (
-        process.env.CANISTER1_PRINCIPAL ??
-        'process.env.CANISTER1_PRINCIPAL is undefined'
-    );
-}
-
-$query;
-export function canister2PrincipalEnvVar(): string {
-    return (
-        process.env.CANISTER2_PRINCIPAL ??
-        'process.env.CANISTER2_PRINCIPAL is undefined'
-    );
-}
+export default Canister({
+    canister1PrincipalEnvVar: query([], text, () =&gt; {
+        return (
+            process.env.CANISTER1_PRINCIPAL ??
+            'process.env.CANISTER1_PRINCIPAL is undefined'
+        );
+    }),
+    canister2PrincipalEnvVar: query([], text, () =&gt; {
+        return (
+            process.env.CANISTER2_PRINCIPAL ??
+            'process.env.CANISTER2_PRINCIPAL is undefined'
+        );
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="management-canister-1"><a class="header" href="#management-canister-1">Management Canister</a></h1>
 <ul>
@@ -3776,6 +3818,7 @@ export function canister2PrincipalEnvVar(): string {
 <li><a href="reference/management_canister/./bitcoin_get_current_fee_percentiles.html">bitcoin_get_current_fee_percentiles</a></li>
 <li><a href="reference/management_canister/./bitcoin_get_utxos.html">bitcoin_get_utxos</a></li>
 <li><a href="reference/management_canister/./bitcoin_send_transaction.html">bitcoin_send_transaction</a></li>
+<li><a href="reference/management_canister/./canister_info.html">canister_info</a></li>
 <li><a href="reference/management_canister/./canister_status.html">canister_status</a></li>
 <li><a href="reference/management_canister/./create_canister.html">create_canister</a></li>
 <li><a href="reference/management_canister/./delete_canister.html">delete_canister</a></li>
@@ -3798,28 +3841,25 @@ export function canister2PrincipalEnvVar(): string {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
 </ul>
-<pre><code class="language-typescript">import { Opt, Result, $update } from 'azle';
-import {
-    BitcoinNetwork,
-    managementCanister,
-    Satoshi
-} from 'azle/canisters/management';
+<pre><code class="language-typescript">import { Canister, ic, None, text, update } from 'azle';
+import { managementCanister, Satoshi } from 'azle/canisters/management';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
-$update;
-export async function getBalance(
-    address: string
-): Promise&lt;Result&lt;Satoshi, string&gt;&gt; {
-    return await managementCanister
-        .bitcoin_get_balance({
-            address,
-            min_confirmations: Opt.None,
-            network: BitcoinNetwork.Regtest
-        })
-        .cycles(BITCOIN_API_CYCLE_COST)
-        .call();
-}
+export default Canister({
+    getBalance: update([text], Satoshi, async (address) =&gt; {
+        return await ic.call(managementCanister.bitcoin_get_balance, {
+            args: [
+                {
+                    address,
+                    min_confirmations: None,
+                    network: { Regtest: null }
+                }
+            ],
+            cycles: BITCOIN_API_CYCLE_COST
+        });
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bitcoin_get_current_fee_percentiles"><a class="header" href="#bitcoin_get_current_fee_percentiles">bitcoin_get_current_fee_percentiles</a></h1>
 <p>This section is a work in progress.</p>
@@ -3827,26 +3867,29 @@ export async function getBalance(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
 </ul>
-<pre><code class="language-typescript">import { Result, $update, Vec } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, update, Vec } from 'azle';
 import {
-    BitcoinNetwork,
     managementCanister,
     MillisatoshiPerByte
 } from 'azle/canisters/management';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
-$update;
-export async function getCurrentFeePercentiles(): Promise&lt;
-    Result&lt;Vec&lt;MillisatoshiPerByte&gt;, string&gt;
-&gt; {
-    return await managementCanister
-        .bitcoin_get_current_fee_percentiles({
-            network: BitcoinNetwork.Regtest
-        })
-        .cycles(BITCOIN_API_CYCLE_COST)
-        .call();
-}
+export default Canister({
+    getCurrentFeePercentiles: update([], Vec(MillisatoshiPerByte), async () =&gt; {
+        return await ic.call(
+            managementCanister.bitcoin_get_current_fee_percentiles,
+            {
+                args: [
+                    {
+                        network: { Regtest: null }
+                    }
+                ],
+                cycles: BITCOIN_API_CYCLE_COST
+            }
+        );
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bitcoin_get_utxos"><a class="header" href="#bitcoin_get_utxos">bitcoin_get_utxos</a></h1>
 <p>This section is a work in progress.</p>
@@ -3854,59 +3897,55 @@ export async function getCurrentFeePercentiles(): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/bitcoin">bitcoin</a></li>
 </ul>
-<pre><code class="language-typescript">import { Opt, Result, $update } from 'azle';
-import {
-    BitcoinNetwork,
-    GetUtxosResult,
-    managementCanister
-} from 'azle/canisters/management';
+<pre><code class="language-typescript">import { Canister, ic, None, text, update } from 'azle';
+import { GetUtxosResult, managementCanister } from 'azle/canisters/management';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 
-$update;
-export async function getUtxos(
-    address: string
-): Promise&lt;Result&lt;GetUtxosResult, string&gt;&gt; {
-    return await managementCanister
-        .bitcoin_get_utxos({
-            address,
-            filter: Opt.None,
-            network: BitcoinNetwork.Regtest
-        })
-        .cycles(BITCOIN_API_CYCLE_COST)
-        .call();
-}
+export default Canister({
+    getUtxos: update([text], GetUtxosResult, async (address) =&gt; {
+        return await ic.call(managementCanister.bitcoin_get_utxos, {
+            args: [
+                {
+                    address,
+                    filter: None,
+                    network: { Regtest: null }
+                }
+            ],
+            cycles: BITCOIN_API_CYCLE_COST
+        });
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bitcoin_send_transaction"><a class="header" href="#bitcoin_send_transaction">bitcoin_send_transaction</a></h1>
 <p>This section is a work in progress.</p>
 <p>Examples:</p>
-<pre><code class="language-typescript">import { blob, match, Result, $update } from 'azle';
-import { BitcoinNetwork, managementCanister } from 'azle/canisters/management';
+<pre><code class="language-typescript">import { blob, bool, Canister, ic, update } from 'azle';
+import { managementCanister } from 'azle/canisters/management';
 
 const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
 const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
-$update;
-export async function sendTransaction(
-    transaction: blob
-): Promise&lt;Result&lt;boolean, string&gt;&gt; {
-    const transactionFee =
-        BITCOIN_BASE_TRANSACTION_COST +
-        BigInt(transaction.length) * BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;
+export default Canister({
+    sendTransaction: update([blob], bool, async (transaction) =&gt; {
+        const transactionFee =
+            BITCOIN_BASE_TRANSACTION_COST +
+            BigInt(transaction.length) *
+                BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;
 
-    const callResult = await managementCanister
-        .bitcoin_send_transaction({
-            transaction,
-            network: BitcoinNetwork.Regtest
-        })
-        .cycles(transactionFee)
-        .call();
+        await ic.call(managementCanister.bitcoin_send_transaction, {
+            args: [
+                {
+                    transaction,
+                    network: { Regtest: null }
+                }
+            ],
+            cycles: transactionFee
+        });
 
-    return match(callResult, {
-        Ok: () =&gt; ({ Ok: true }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+        return true;
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canister_status"><a class="header" href="#canister_status">canister_status</a></h1>
 <p>This section is a work in progress.</p>
@@ -3914,28 +3953,24 @@ export async function sendTransaction(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, update } from 'azle';
 import {
     CanisterStatusArgs,
     CanisterStatusResult,
     managementCanister
 } from 'azle/canisters/management';
 
-$update;
-export async function getCanisterStatus(
-    args: CanisterStatusArgs
-): Promise&lt;Result&lt;CanisterStatusResult, string&gt;&gt; {
-    const canisterStatusResultCallResult = await managementCanister
-        .canister_status({
-            canister_id: args.canister_id
-        })
-        .call();
-
-    return match(canisterStatusResultCallResult, {
-        Ok: (canisterStatusResult) =&gt; ({ Ok: canisterStatusResult }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+export default Canister({
+    getCanisterStatus: update(
+        [CanisterStatusArgs],
+        CanisterStatusResult,
+        async (args) =&gt; {
+            return await ic.call(managementCanister.canister_status, {
+                args: [args]
+            });
+        }
+    )
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="create_canister"><a class="header" href="#create_canister">create_canister</a></h1>
 <p>This section is a work in progress.</p>
@@ -3943,30 +3978,20 @@ export async function getCanisterStatus(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Opt, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, None, update } from 'azle';
 import {
     CreateCanisterResult,
     managementCanister
 } from 'azle/canisters/management';
 
-$update;
-export async function executeCreateCanister(): Promise&lt;
-    Result&lt;CreateCanisterResult, string&gt;
-&gt; {
-    const createCanisterResultCallResult = await managementCanister
-        .create_canister({
-            settings: Opt.None
-        })
-        .cycles(50_000_000_000_000n)
-        .call();
-
-    return match(createCanisterResultCallResult, {
-        Ok: (createCanisterResult) =&gt; ({
-            Ok: createCanisterResult
-        }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+export default Canister({
+    executeCreateCanister: update([], CreateCanisterResult, async () =&gt; {
+        return await ic.call(managementCanister.create_canister, {
+            args: [{ settings: None }],
+            cycles: 50_000_000_000_000n
+        });
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="delete_canister"><a class="header" href="#delete_canister">delete_canister</a></h1>
 <p>This section is a work in progress.</p>
@@ -3974,24 +3999,22 @@ export async function executeCreateCanister(): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Principal, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { bool, Canister, ic, Principal, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function executeDeleteCanister(
-    canisterId: Principal
-): Promise&lt;Result&lt;boolean, string&gt;&gt; {
-    const callResult = await managementCanister
-        .delete_canister({
-            canister_id: canisterId
-        })
-        .call();
+export default Canister({
+    executeDeleteCanister: update([Principal], bool, async (canisterId) =&gt; {
+        await ic.call(managementCanister.delete_canister, {
+            args: [
+                {
+                    canister_id: canisterId
+                }
+            ]
+        });
 
-    return match(callResult, {
-        Ok: () =&gt; ({ Ok: true }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+        return true;
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="deposit_cycles"><a class="header" href="#deposit_cycles">deposit_cycles</a></h1>
 <p>This section is a work in progress.</p>
@@ -3999,25 +4022,23 @@ export async function executeDeleteCanister(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Principal, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { bool, Canister, ic, Principal, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function executeDepositCycles(
-    canisterId: Principal
-): Promise&lt;Result&lt;boolean, string&gt;&gt; {
-    const callResult = await managementCanister
-        .deposit_cycles({
-            canister_id: canisterId
-        })
-        .cycles(1_000_000n)
-        .call();
+export default Canister({
+    executeDepositCycles: update([Principal], bool, async (canisterId) =&gt; {
+        await ic.call(managementCanister.deposit_cycles, {
+            args: [
+                {
+                    canister_id: canisterId
+                }
+            ],
+            cycles: 10_000_000n
+        });
 
-    return match(callResult, {
-        Ok: () =&gt; ({ Ok: true }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+        return true;
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ecdsa_public_key"><a class="header" href="#ecdsa_public_key">ecdsa_public_key</a></h1>
 <p>This section is a work in progress.</p>
@@ -4025,78 +4046,84 @@ export async function executeDepositCycles(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, match, Opt, Record, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, None, Record, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function publicKey(): Promise&lt;
-    Result&lt;Record&lt;{ publicKey: blob }&gt;, string&gt;
-&gt; {
-    const caller = ic.caller().toUint8Array();
-    const publicKeyResult = await managementCanister
-        .ecdsa_public_key({
-            canister_id: Opt.None,
-            derivation_path: [caller],
-            key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
-        })
-        .call();
+const PublicKey = Record({
+    publicKey: blob
+});
 
-    return match(publicKeyResult, {
-        Ok: (ecdsaPublicKeyResult) =&gt; ({
-            Ok: {
-                publicKey: ecdsaPublicKeyResult.public_key
+export default Canister({
+    publicKey: update([], PublicKey, async () =&gt; {
+        const caller = ic.caller().toUint8Array();
+
+        const publicKeyResult = await ic.call(
+            managementCanister.ecdsa_public_key,
+            {
+                args: [
+                    {
+                        canister_id: None,
+                        derivation_path: [caller],
+                        key_id: {
+                            curve: { secp256k1: null },
+                            name: 'dfx_test_key'
+                        }
+                    }
+                ]
             }
-        }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+        );
+
+        return {
+            publicKey: publicKeyResult.public_key
+        };
+    })
+});
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="http_request-1"><a class="header" href="#http_request-1">http_request</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="http_request-2"><a class="header" href="#http_request-2">http_request</a></h1>
 <p>This section is a work in progress.</p>
 <p>Examples:</p>
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/ethereum_json_rpc">ethereum_json_rpc</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests">outgoing_http_requests</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, match, Opt, $query, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, None, Principal, query, Some, update } from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
     managementCanister
 } from 'azle/canisters/management';
 
-$update;
-export async function xkcd(): Promise&lt;HttpResponse&gt; {
-    const httpResult = await managementCanister
-        .http_request({
-            url: `https://xkcd.com/642/info.0.json`,
-            max_response_bytes: Opt.Some(2_000n),
-            method: {
-                get: null
-            },
-            headers: [],
-            body: Opt.None,
-            transform: Opt.Some({
-                function: [ic.id(), 'xkcdTransform'],
-                context: Uint8Array.from([])
-            })
-        })
-        .cycles(50_000_000n)
-        .call();
-
-    return match(httpResult, {
-        Ok: (httpResponse) =&gt; httpResponse,
-        Err: (err) =&gt; ic.trap(err)
-    });
-}
-
-$query;
-export function xkcdTransform(args: HttpTransformArgs): HttpResponse {
-    return {
-        ...args.response,
-        headers: []
-    };
-}
+export default Canister({
+    xkcd: update([], HttpResponse, async () =&gt; {
+        return await ic.call(managementCanister.http_request, {
+            args: [
+                {
+                    url: `https://xkcd.com/642/info.0.json`,
+                    max_response_bytes: Some(2_000n),
+                    method: {
+                        get: null
+                    },
+                    headers: [],
+                    body: None,
+                    transform: Some({
+                        function: [ic.id(), 'xkcdTransform'] as [
+                            Principal,
+                            string
+                        ],
+                        context: Uint8Array.from([])
+                    })
+                }
+            ],
+            cycles: 50_000_000n
+        });
+    }),
+    xkcdTransform: query([HttpTransformArgs], HttpResponse, (args) =&gt; {
+        return {
+            ...args.response,
+            headers: []
+        };
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="install_code"><a class="header" href="#install_code">install_code</a></h1>
 <p>This section is a work in progress.</p>
@@ -4104,31 +4131,32 @@ export function xkcdTransform(args: HttpTransformArgs): HttpResponse {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, match, Principal, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, bool, Canister, ic, Principal, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function executeInstallCode(
-    canisterId: Principal,
-    wasmModule: blob
-): Promise&lt;Result&lt;boolean, string&gt;&gt; {
-    const callResult = await managementCanister
-        .install_code({
-            mode: {
-                install: null
-            },
-            canister_id: canisterId,
-            wasm_module: wasmModule,
-            arg: Uint8Array.from([])
-        })
-        .cycles(100_000_000_000n)
-        .call();
+export default Canister({
+    executeInstallCode: update(
+        [Principal, blob],
+        bool,
+        async (canisterId, wasmModule) =&gt; {
+            await ic.call(managementCanister.install_code, {
+                args: [
+                    {
+                        mode: {
+                            install: null
+                        },
+                        canister_id: canisterId,
+                        wasm_module: wasmModule,
+                        arg: Uint8Array.from([])
+                    }
+                ],
+                cycles: 100_000_000_000n
+            });
 
-    return match(callResult, {
-        Ok: () =&gt; ({ Ok: true }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+            return true;
+        }
+    )
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="provisional_create_canister_with_cycles"><a class="header" href="#provisional_create_canister_with_cycles">provisional_create_canister_with_cycles</a></h1>
 <p>This section is a work in progress.</p>
@@ -4136,33 +4164,31 @@ export async function executeInstallCode(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Opt, $update, Variant } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, None, update } from 'azle';
 import {
-    CreateCanisterResult,
-    managementCanister
+    managementCanister,
+    ProvisionalCreateCanisterWithCyclesResult
 } from 'azle/canisters/management';
 
-$update;
-export async function provisionalCreateCanisterWithCycles(): Promise&lt;
-    Variant&lt;{
-        Ok: CreateCanisterResult;
-        Err: string;
-    }&gt;
-&gt; {
-    const callResult = await managementCanister
-        .provisional_create_canister_with_cycles({
-            amount: Opt.None,
-            settings: Opt.None
-        })
-        .call();
-
-    return match(callResult, {
-        Ok: (provisionalCreateCanisterWithCyclesResult) =&gt; ({
-            Ok: provisionalCreateCanisterWithCyclesResult
-        }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+export default Canister({
+    provisionalCreateCanisterWithCycles: update(
+        [],
+        ProvisionalCreateCanisterWithCyclesResult,
+        async () =&gt; {
+            return await ic.call(
+                managementCanister.provisional_create_canister_with_cycles,
+                {
+                    args: [
+                        {
+                            amount: None,
+                            settings: None
+                        }
+                    ]
+                }
+            );
+        }
+    )
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="provisional_top_up_canister"><a class="header" href="#provisional_top_up_canister">provisional_top_up_canister</a></h1>
 <p>This section is a work in progress.</p>
@@ -4170,26 +4196,27 @@ export async function provisionalCreateCanisterWithCycles(): Promise&lt;
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, nat, Principal, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { bool, Canister, ic, nat, Principal, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function provisionalTopUpCanister(
-    canisterId: Principal,
-    amount: nat
-): Promise&lt;Result&lt;boolean, string&gt;&gt; {
-    const callResult = await managementCanister
-        .provisional_top_up_canister({
-            canister_id: canisterId,
-            amount
-        })
-        .call();
+export default Canister({
+    provisionalTopUpCanister: update(
+        [Principal, nat],
+        bool,
+        async (canisterId, amount) =&gt; {
+            await ic.call(managementCanister.provisional_top_up_canister, {
+                args: [
+                    {
+                        canister_id: canisterId,
+                        amount
+                    }
+                ]
+            });
 
-    return match(callResult, {
-        Ok: () =&gt; ({ Ok: true }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+            return true;
+        }
+    )
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="raw_rand"><a class="header" href="#raw_rand">raw_rand</a></h1>
 <p>This section is a work in progress.</p>
@@ -4200,18 +4227,14 @@ export async function provisionalTopUpCanister(
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/timers">timers</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, match, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function getRandomness(): Promise&lt;blob&gt; {
-    const randomnessResult = await managementCanister.raw_rand().call();
-
-    return match(randomnessResult, {
-        Ok: (randomness) =&gt; randomness,
-        Err: () =&gt; Uint8Array.from([])
-    });
-}
+export default Canister({
+    getRawRand: update([], blob, async () =&gt; {
+        return await ic.call(managementCanister.raw_rand);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="sign_with_ecdsa"><a class="header" href="#sign_with_ecdsa">sign_with_ecdsa</a></h1>
 <p>This section is a work in progress.</p>
@@ -4219,37 +4242,43 @@ export async function getRandomness(): Promise&lt;blob&gt; {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa">threshold_ecdsa</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, match, Record, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, Record, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function sign(
-    messageHash: blob
-): Promise&lt;Result&lt;Record&lt;{ signature: blob }&gt;, string&gt;&gt; {
-    if (messageHash.length !== 32) {
-        ic.trap('messageHash must be 32 bytes');
-    }
+const Signature = Record({
+    signature: blob
+});
 
-    const caller = ic.caller().toUint8Array();
+export default Canister({
+    sign: update([blob], Signature, async (messageHash) =&gt; {
+        if (messageHash.length !== 32) {
+            ic.trap('messageHash must be 32 bytes');
+        }
 
-    const signatureResult = await managementCanister
-        .sign_with_ecdsa({
-            message_hash: messageHash,
-            derivation_path: [caller],
-            key_id: { curve: { secp256k1: null }, name: 'dfx_test_key' }
-        })
-        .cycles(10_000_000_000n)
-        .call();
+        const caller = ic.caller().toUint8Array();
 
-    return match(signatureResult, {
-        Ok: (signWithEcdsaResult) =&gt; ({
-            Ok: {
-                signature: signWithEcdsaResult.signature
+        const signatureResult = await ic.call(
+            managementCanister.sign_with_ecdsa,
+            {
+                args: [
+                    {
+                        message_hash: messageHash,
+                        derivation_path: [caller],
+                        key_id: {
+                            curve: { secp256k1: null },
+                            name: 'dfx_test_key'
+                        }
+                    }
+                ],
+                cycles: 10_000_000_000n
             }
-        }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+        );
+
+        return {
+            signature: signatureResult.signature
+        };
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="start_canister"><a class="header" href="#start_canister">start_canister</a></h1>
 <p>This section is a work in progress.</p>
@@ -4257,24 +4286,22 @@ export async function sign(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Principal, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { bool, Canister, ic, Principal, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function executeStartCanister(
-    canisterId: Principal
-): Promise&lt;Result&lt;boolean, string&gt;&gt; {
-    const callResult = await managementCanister
-        .start_canister({
-            canister_id: canisterId
-        })
-        .call();
+export default Canister({
+    executeStartCanister: update([Principal], bool, async (canisterId) =&gt; {
+        await ic.call(managementCanister.start_canister, {
+            args: [
+                {
+                    canister_id: canisterId
+                }
+            ]
+        });
 
-    return match(callResult, {
-        Ok: () =&gt; ({ Ok: true }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+        return true;
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stop_canister"><a class="header" href="#stop_canister">stop_canister</a></h1>
 <p>This section is a work in progress.</p>
@@ -4282,24 +4309,22 @@ export async function executeStartCanister(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Principal, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { bool, Canister, ic, Principal, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function executeStopCanister(
-    canisterId: Principal
-): Promise&lt;Result&lt;boolean, string&gt;&gt; {
-    const callResult = await managementCanister
-        .stop_canister({
-            canister_id: canisterId
-        })
-        .call();
+export default Canister({
+    executeStopCanister: update([Principal], bool, async (canisterId) =&gt; {
+        await ic.call(managementCanister.stop_canister, {
+            args: [
+                {
+                    canister_id: canisterId
+                }
+            ]
+        });
 
-    return match(callResult, {
-        Ok: () =&gt; ({ Ok: true }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+        return true;
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="uninstall_code"><a class="header" href="#uninstall_code">uninstall_code</a></h1>
 <p>This section is a work in progress.</p>
@@ -4307,24 +4332,22 @@ export async function executeStopCanister(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Principal, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { bool, Canister, ic, Principal, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function executeUninstallCode(
-    canisterId: Principal
-): Promise&lt;Result&lt;boolean, string&gt;&gt; {
-    const callResult = await managementCanister
-        .uninstall_code({
-            canister_id: canisterId
-        })
-        .call();
+export default Canister({
+    executeUninstallCode: update([Principal], bool, async (canisterId) =&gt; {
+        await ic.call(managementCanister.uninstall_code, {
+            args: [
+                {
+                    canister_id: canisterId
+                }
+            ]
+        });
 
-    return match(callResult, {
-        Ok: () =&gt; ({ Ok: true }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+        return true;
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="update_settings"><a class="header" href="#update_settings">update_settings</a></h1>
 <p>This section is a work in progress.</p>
@@ -4332,30 +4355,28 @@ export async function executeUninstallCode(
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/management_canister">management_canister</a></li>
 </ul>
-<pre><code class="language-typescript">import { match, Opt, Principal, Result, $update } from 'azle';
+<pre><code class="language-typescript">import { bool, Canister, ic, None, Principal, Some, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
-$update;
-export async function executeUpdateSettings(
-    canisterId: Principal
-): Promise&lt;Result&lt;boolean, string&gt;&gt; {
-    const callResult = await managementCanister
-        .update_settings({
-            canister_id: canisterId,
-            settings: {
-                controllers: Opt.None,
-                compute_allocation: Opt.Some(1n),
-                memory_allocation: Opt.Some(3_000_000n),
-                freezing_threshold: Opt.Some(2_000_000n)
-            }
-        })
-        .call();
+export default Canister({
+    executeUpdateSettings: update([Principal], bool, async (canisterId) =&gt; {
+        await ic.call(managementCanister.update_settings, {
+            args: [
+                {
+                    canister_id: canisterId,
+                    settings: {
+                        controllers: None,
+                        compute_allocation: Some(1n),
+                        memory_allocation: Some(3_000_000n),
+                        freezing_threshold: Some(2_000_000n)
+                    }
+                }
+            ]
+        });
 
-    return match(callResult, {
-        Ok: () =&gt; ({ Ok: true }),
-        Err: (err) =&gt; ({ Err: err })
-    });
-}
+        return true;
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="plugins"><a class="header" href="#plugins">Plugins</a></h1>
 <p>Azle plugins allow developers to wrap Rust code in TypeScript/JavaScript APIs that can then be exposed to Azle canisters, providing a clean and simple developer experience with the underlying Rust code.</p>
@@ -4392,65 +4413,53 @@ export async function executeUpdateSettings(
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_structures">stable_structures</a></li>
 </ul>
 <pre><code class="language-typescript">import {
+    bool,
+    Canister,
     nat64,
     nat8,
     Opt,
-    $query,
+    query,
     StableBTreeMap,
+    text,
     Tuple,
-    $update,
+    update,
     Vec
 } from 'azle';
 
-type Key = nat8;
-type Value = string;
+const Key = nat8;
+const Value = text;
 
-let map = new StableBTreeMap&lt;Key, Value&gt;(0, 100, 1_000);
+let map = StableBTreeMap(Key, Value, 0);
 
-$query;
-export function containsKey(key: Key): boolean {
-    return map.containsKey(key);
-}
-
-$query;
-export function get(key: Key): Opt&lt;Value&gt; {
-    return map.get(key);
-}
-
-$update;
-export function insert(key: Key, value: Value): Opt&lt;Value&gt; {
-    return map.insert(key, value);
-}
-
-$query;
-export function isEmpty(): boolean {
-    return map.isEmpty();
-}
-
-$query;
-export function items(): Vec&lt;Tuple&lt;[Key, Value]&gt;&gt; {
-    return map.items();
-}
-
-$query;
-export function keys(): Vec&lt;Key&gt; {
-    return map.keys();
-}
-
-$query;
-export function len(): nat64 {
-    return map.len();
-}
-
-$update;
-export function remove(key: Key): Opt&lt;Value&gt; {
-    return map.remove(key);
-}
-
-$query;
-export function values(): Vec&lt;Value&gt; {
-    return map.values();
-}
+export default Canister({
+    containsKey: query([Key], bool, (key) =&gt; {
+        return map.containsKey(key);
+    }),
+    get: query([Key], Opt(Value), (key) =&gt; {
+        return map.get(key);
+    }),
+    mapInsert: update([Key, Value], Opt(Value), (key, value) =&gt; {
+        return map.insert(key, value);
+    }),
+    isEmpty: query([], bool, () =&gt; {
+        return map.isEmpty();
+    }),
+    items: query([], Vec(Tuple(Key, Value)), () =&gt; {
+        return map.items();
+    }),
+    keys: query([], Vec(Key), () =&gt; {
+        return map.keys();
+    }),
+    len: query([], nat64, () =&gt; {
+        return map.len();
+    }),
+    mapRemove: update([Key], Opt(Value), (key) =&gt; {
+        return map.remove(key);
+    }),
+    values: query([], Vec(Value), () =&gt; {
+        return map.values();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-bytes"><a class="header" href="#stable-bytes">stable bytes</a></h1>
 <p>This section is a work in progress.</p>
@@ -4458,12 +4467,13 @@ export function values(): Vec&lt;Value&gt; {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, $query } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, query } from 'azle';
 
-$query;
-export function stableBytes(): blob {
-    return ic.stableBytes();
-}
+export default Canister({
+    stableBytes: query([], blob, () =&gt; {
+        return ic.stableBytes();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-grow"><a class="header" href="#stable-grow">stable grow</a></h1>
 <p>This section is a work in progress.</p>
@@ -4471,12 +4481,13 @@ export function stableBytes(): blob {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat32, StableGrowResult, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat32, update } from 'azle';
 
-$update;
-export function stableGrow(newPages: nat32): StableGrowResult {
-    return ic.stableGrow(newPages);
-}
+export default Canister({
+    stableGrow: update([nat32], nat32, (newPages) =&gt; {
+        return ic.stableGrow(newPages);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-read"><a class="header" href="#stable-read">stable read</a></h1>
 <p>This section is a work in progress.</p>
@@ -4484,12 +4495,13 @@ export function stableGrow(newPages: nat32): StableGrowResult {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, nat32, $query } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, nat32, query } from 'azle';
 
-$query;
-export function stableRead(offset: nat32, length: nat32): blob {
-    return ic.stableRead(offset, length);
-}
+export default Canister({
+    stableRead: query([nat32, nat32], blob, (offset, length) =&gt; {
+        return ic.stableRead(offset, length);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-size"><a class="header" href="#stable-size">stable size</a></h1>
 <p>This section is a work in progress.</p>
@@ -4497,12 +4509,13 @@ export function stableRead(offset: nat32, length: nat32): blob {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat32, $query } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat32, query } from 'azle';
 
-$query;
-export function stableSize(): nat32 {
-    return ic.stableSize();
-}
+export default Canister({
+    stableSize: query([], nat32, () =&gt; {
+        return ic.stableSize();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-write"><a class="header" href="#stable-write">stable write</a></h1>
 <p>This section is a work in progress.</p>
@@ -4510,12 +4523,13 @@ export function stableSize(): nat32 {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, nat32, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, nat32, update, Void } from 'azle';
 
-$update;
-export function stableWrite(offset: nat32, buf: blob): void {
-    ic.stableWrite(offset, buf);
-}
+export default Canister({
+    stableWrite: update([nat32, blob], Void, (offset, buf) =&gt; {
+        ic.stableWrite(offset, buf);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable64-grow"><a class="header" href="#stable64-grow">stable64 grow</a></h1>
 <p>This section is a work in progress.</p>
@@ -4523,12 +4537,13 @@ export function stableWrite(offset: nat32, buf: blob): void {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat64, Stable64GrowResult, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat64, update } from 'azle';
 
-$update;
-export function stable64Grow(newPages: nat64): Stable64GrowResult {
-    return ic.stable64Grow(newPages);
-}
+export default Canister({
+    stable64Grow: update([nat64], nat64, (newPages) =&gt; {
+        return ic.stable64Grow(newPages);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable64-read"><a class="header" href="#stable64-read">stable64 read</a></h1>
 <p>This section is a work in progress.</p>
@@ -4536,12 +4551,13 @@ export function stable64Grow(newPages: nat64): Stable64GrowResult {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, nat64, $query } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, nat64, query } from 'azle';
 
-$query;
-export function stable64Read(offset: nat64, length: nat64): blob {
-    return ic.stable64Read(offset, length);
-}
+export default Canister({
+    stable64Read: query([nat64, nat64], blob, (offset, length) =&gt; {
+        return ic.stable64Read(offset, length);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable64-size"><a class="header" href="#stable64-size">stable64 size</a></h1>
 <p>This section is a work in progress.</p>
@@ -4549,12 +4565,13 @@ export function stable64Read(offset: nat64, length: nat64): blob {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, nat64, $query } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, nat64, query } from 'azle';
 
-$query;
-export function stable64Size(): nat64 {
-    return ic.stable64Size();
-}
+export default Canister({
+    stable64Size: query([], nat64, () =&gt; {
+        return ic.stable64Size();
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable64-write"><a class="header" href="#stable64-write">stable64 write</a></h1>
 <p>This section is a work in progress.</p>
@@ -4562,12 +4579,13 @@ export function stable64Size(): nat64 {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/stable_memory">stable_memory</a></li>
 </ul>
-<pre><code class="language-typescript">import { blob, ic, nat64, $update } from 'azle';
+<pre><code class="language-typescript">import { blob, Canister, ic, nat64, update, Void } from 'azle';
 
-$update;
-export function stable64Write(offset: nat64, buf: blob): void {
-    ic.stable64Write(offset, buf);
-}
+export default Canister({
+    stable64Write: update([nat64, blob], Void, (offset, buf) =&gt; {
+        ic.stable64Write(offset, buf);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="timers-1"><a class="header" href="#timers-1">Timers</a></h1>
 <ul>
@@ -4581,12 +4599,13 @@ export function stable64Write(offset: nat64, buf: blob): void {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/timers">timers</a></li>
 </ul>
-<pre><code class="language-typescript">import { ic, TimerId, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, ic, TimerId, update, Void } from 'azle';
 
-$update;
-export function clearTimer(timerId: TimerId): void {
-    ic.clearTimer(timerId);
-}
+export default Canister({
+    clearTimer: update([TimerId], Void, (timerId) =&gt; {
+        ic.clearTimer(timerId);
+    })
+});
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="set-timer"><a class="header" href="#set-timer">set timer</a></h1>
 <p>This section is a work in progress.</p>
@@ -4594,22 +4613,23 @@ export function clearTimer(timerId: TimerId): void {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/timers">timers</a></li>
 </ul>
-<pre><code class="language-typescript">import { Duration, ic, TimerId, Tuple, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, Duration, ic, TimerId, Tuple, update } from 'azle';
 
-$update;
-export function setTimers(delay: Duration): Tuple&lt;[TimerId, TimerId]&gt; {
-    const functionTimerId = ic.setTimer(delay, callback);
+export default Canister({
+    setTimers: update([Duration], Tuple(TimerId, TimerId), (delay) =&gt; {
+        const functionTimerId = ic.setTimer(delay, callback);
 
-    const capturedValue = '🚩';
+        const capturedValue = '🚩';
 
-    const closureTimerId = ic.setTimer(delay, () =&gt; {
-        console.log(`closure called and captured value ${capturedValue}`);
-    });
+        const closureTimerId = ic.setTimer(delay, () =&gt; {
+            console.log(`closure called and captured value ${capturedValue}`);
+        });
 
-    return [functionTimerId, closureTimerId];
-}
+        return [functionTimerId, closureTimerId];
+    })
+});
 
-function callback(): void {
+function callback() {
     console.log('callback called');
 }
 </code></pre>
@@ -4619,24 +4639,29 @@ function callback(): void {
 <ul>
 <li><a href="https://github.com/demergent-labs/azle/tree/main/examples/timers">timers</a></li>
 </ul>
-<pre><code class="language-typescript">import { Duration, ic, TimerId, Tuple, $update } from 'azle';
+<pre><code class="language-typescript">import { Canister, Duration, ic, TimerId, Tuple, update } from 'azle';
 
-$update;
-export function setTimerIntervals(
-    interval: Duration
-): Tuple&lt;[TimerId, TimerId]&gt; {
-    const functionTimerId = ic.setTimerInterval(interval, callback);
+export default Canister({
+    setTimerIntervals: update(
+        [Duration],
+        Tuple(TimerId, TimerId),
+        (interval) =&gt; {
+            const functionTimerId = ic.setTimerInterval(interval, callback);
 
-    const capturedValue = '🚩';
+            const capturedValue = '🚩';
 
-    const closureTimerId = ic.setTimerInterval(interval, () =&gt; {
-        console.log(`closure called and captured value ${capturedValue}`);
-    });
+            const closureTimerId = ic.setTimerInterval(interval, () =&gt; {
+                console.log(
+                    `closure called and captured value ${capturedValue}`
+                );
+            });
 
-    return [functionTimerId, closureTimerId];
-}
+            return [functionTimerId, closureTimerId];
+        }
+    )
+});
 
-function callback(): void {
+function callback() {
     console.log('callback called');
 }
 </code></pre>
@@ -4649,9 +4674,8 @@ function callback(): void {
     &quot;canisters&quot;: {
         &quot;hello_world&quot;: {
             &quot;type&quot;: &quot;custom&quot;,
+            &quot;main&quot;: &quot;src/index.ts&quot;,
             &quot;build&quot;: &quot;npx azle hello_world&quot;,
-            &quot;root&quot;: &quot;src&quot;,
-            &quot;ts&quot;: &quot;src/index.ts&quot;,
             &quot;candid&quot;: &quot;src/index.did&quot;,
             &quot;wasm&quot;: &quot;.azle/hello_world/hello_world.wasm.gz&quot;,
             &quot;opt_level&quot;: &quot;1&quot;
