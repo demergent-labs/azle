@@ -1,11 +1,13 @@
 # record
 
-TypeScript type aliases referring to object literals wrapped in the `Record` Azle type correspond to the [Candid record type](https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--) and will become [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
+Objects created by the `CandidType` function `Record` correspond to the [Candid record type](https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--), are inferred to be TypeScript `Object`s, and will be decoded into [JavaScript Objects](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) at runtime.
 
-TypeScript:
+The shape of the object will match the object literal passed to the `Record` function.
+
+TypeScript or JavaScript:
 
 ```typescript
-import { Canister, Principal, Record, query, text } from 'azle';
+import { Canister, Principal, query, Record, text } from 'azle';
 
 const User = Record({
     id: Principal,

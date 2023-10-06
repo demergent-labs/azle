@@ -1,11 +1,11 @@
 # blob
 
-The Azle type `blob` corresponds to the [Candid type blob](https://internetcomputer.org/docs/current/references/candid-ref#type-blob) and will become a [JavaScript Uint8Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) at runtime.
+The `CandidType` object `blob` corresponds to the [Candid type blob](https://internetcomputer.org/docs/current/references/candid-ref#type-blob), is inferred to be a TypeScript `Uint8Array` and will be decoded into a [JavaScript Uint8Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) at runtime.
 
-TypeScript:
+TypeScript or JavaScript:
 
 ```typescript
-import { Canister, blob, query } from 'azle';
+import { blob, Canister, query } from 'azle';
 
 export default Canister({
     getBlob: query([], blob, () => {

@@ -145,9 +145,10 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="service"><a class="header" href="#service">service</a></h1>
-<p>JavaScript classes that inherit from the Azle type <code>Service</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-service-">Candid service type</a> and will become child classes capable of creating instances that can perform cross-canister calls at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, Principal, bool, ic, query, text, update } from 'azle';
+<p>Values created by the <code>CandidType</code> function <code>Canister</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-service-">Candid service type</a>, are inferred to be TypeScript <code>Object</code>s, and will be decoded into <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
+<p>The properties of this object that match the keys of the service's <code>query</code> and <code>update</code> methods can be passed into <code>ic.call</code> and <code>ic.notify</code> to perform cross-canister calls.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { bool, Canister, ic, Principal, query, text, update } from 'azle';
 
 const SomeCanister = Canister({
     query1: query([], bool),

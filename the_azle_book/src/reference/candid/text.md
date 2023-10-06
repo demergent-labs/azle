@@ -1,6 +1,6 @@
 # text
 
-The `CandidType` object `text` corresponds to the [Candid type text](https://internetcomputer.org/docs/current/references/candid-ref#type-text), is inferred to be a TypeScript string, and will be decoded into a [JavaScript String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) at runtime.
+The `CandidType` object `text` corresponds to the [Candid type text](https://internetcomputer.org/docs/current/references/candid-ref#type-text), is inferred to be a TypeScript `string`, and will be decoded into a [JavaScript String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) at runtime.
 
 TypeScript or JavaScript:
 

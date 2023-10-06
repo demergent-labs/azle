@@ -397,16 +397,28 @@ xcode-select --install
 <p>Before embarking please ensure you've followed all of <a href="./installation.html">the installation instructions</a>.</p>
 <p>We'll build a simple <code>Hello World</code> canister that shows the basics of importing Azle, exposing a query method, exposing an update method, and storing some state in a global variable. We'll then interact with it from the command line and from our web browser.</p>
 <h2 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h2>
+<p>We are going to use the Azle <code>new</code> command which creates a simple example project.</p>
+<p>We'll then use the <code>npm scripts</code> from this example project's <code>package.json</code> to perform some basic operations. These scripts are just convenient ways to call the underlying <code>dfx</code> commands.</p>
+<p>First use the <code>new</code> command to create a new project called <code>hello_world</code>:</p>
 <pre><code class="language-bash">npx azle new hello_world
-cd hello_world
-
-npm install
-npm run dfx_install
-npm run replica_start
-npm run canister_deploy_local
-
-npm run canister_call_set_message
-npm run canister_call_get_message
+</code></pre>
+<p>Now let's go inside of our project:</p>
+<pre><code class="language-bash">cd hello_world
+</code></pre>
+<p>We should install Azle and all of its dependencies:</p>
+<pre><code class="language-bash">npm install
+</code></pre>
+<p>Start up your local replica:</p>
+<pre><code class="language-bash">npm run replica_start
+</code></pre>
+<p>Deploy your canister:</p>
+<pre><code class="language-bash">npm run canister_deploy_local
+</code></pre>
+<p>Call the <code>setMessage</code> method:</p>
+<pre><code class="language-bash">npm run canister_call_set_message
+</code></pre>
+<p>Call the <code>getMessage</code> method:</p>
+<pre><code class="language-bash">npm run canister_call_get_message
 </code></pre>
 <p>If you run into an error during deployment, see <a href="./deployment.html#common-deployment-issues">the common deployment issues section</a>.</p>
 <p>See the official <a href="https://github.com/demergent-labs/azle_hello_world">azle_hello_world</a> example for more information.</p>
@@ -2545,9 +2557,9 @@ export default Canister({
 <li><a href="reference/candid/./vec.html">vec</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="blob"><a class="header" href="#blob">blob</a></h1>
-<p>The Azle type <code>blob</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-blob">Candid type blob</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array">JavaScript Uint8Array</a> at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, blob, query } from 'azle';
+<p>The <code>CandidType</code> object <code>blob</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-blob">Candid type blob</a>, is inferred to be a TypeScript <code>Uint8Array</code> and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array">JavaScript Uint8Array</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { blob, Canister, query } from 'azle';
 
 export default Canister({
     getBlob: query([], blob, () =&gt; {
@@ -2573,9 +2585,9 @@ dfx canister call candid_canister printBlob '(blob &quot;DIDL\00\00&quot;)'
 (blob &quot;DIDL\00\00&quot;)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bool"><a class="header" href="#bool">bool</a></h1>
-<p>The TypeScript type <code>boolean</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-bool">Candid type bool</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">JavaScript Boolean</a> at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, bool, query } from 'azle';
+<p>The <code>CandidType</code> object <code>bool</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-bool">Candid type bool</a>, is inferred to be a TypeScript <code>boolean</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">JavaScript Boolean</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { bool, Canister, query } from 'azle';
 
 export default Canister({
     getBool: query([], bool, () =&gt; {
@@ -2597,9 +2609,9 @@ export default Canister({
 <pre><code class="language-bash">dfx canister call candid_canister printBool '(true)'
 (true)
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h3 id="empty"><a class="header" href="#empty">empty</a></h3>
-<p>The Azle type <code>empty</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-empty">Candid type empty</a> and has no JavaScript value at runtime.</p>
-<p>TypeScript:</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="empty"><a class="header" href="#empty">empty</a></h1>
+<p>The <code>CandidType</code> object <code>empty</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-empty">Candid type empty</a>, is inferred to be a TypeScript <code>never</code>, and has no JavaScript value at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, empty, query } from 'azle';
 
 export default Canister({
@@ -2627,8 +2639,8 @@ Caused by: Failed to create argument blob.
   Invalid data: Unable to serialize Candid values: type mismatch: &quot;You can put anything here&quot; cannot be of type empty
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="float32"><a class="header" href="#float32">float32</a></h1>
-<p>The Azle type <code>float32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float32</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>float32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float32</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, float32, query } from 'azle';
 
 export default Canister({
@@ -2652,8 +2664,8 @@ export default Canister({
 (3.1415927 : float32)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="float64"><a class="header" href="#float64">float64</a></h1>
-<p>The Azle type <code>float64</code> and the TypeScript type <code>number</code> both correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>float64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-float32-and-float64">Candid type float64</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, float64, query } from 'azle';
 
 export default Canister({
@@ -2677,10 +2689,10 @@ export default Canister({
 (2.718281828459045 : float64)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="func"><a class="header" href="#func">func</a></h1>
-<p>The Azle type <code>Func</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-func---">Candid type func</a>. It is a <a href="https://www.tutorialsteacher.com/typescript/typescript-tuple">TypeScript Tuple</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> with two elements at runtime.</p>
+<p>Values created by the <code>CandidType</code> function <code>Func</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-func---">Candid type func</a>, are inferred to be TypeScript <code>[Principal, string]</code> tuples, and will be decoded into <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> with two elements at runtime.</p>
 <p>The first element is an <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal</a> and the second is a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript string</a>. The <code>@dfinity/principal</code> represents the <code>principal</code> of the canister/service where the function exists, and the <code>string</code> represents the function's name.</p>
 <p>A <code>func</code> acts as a callback, allowing the <code>func</code> receiver to know which canister instance and method must be used to call back.</p>
-<p>TypeScript:</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, Func, Principal, query, text } from 'azle';
 
 const BasicFunc = Func([text], text, 'query');
@@ -2711,8 +2723,8 @@ export default Canister({
 (func &quot;r7inp-6aaaa-aaaaa-aaabq-cai&quot;.getBasicFunc)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="int"><a class="header" href="#int">int</a></h1>
-<p>The Azle type <code>int</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-int">Candid type int</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>int</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-int">Candid type int</a>, is inferred to be a TypeScript <code>bigint</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, int, query } from 'azle';
 
 export default Canister({
@@ -2736,8 +2748,8 @@ export default Canister({
 (170_141_183_460_469_231_731_687_303_715_884_105_727 : int)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="int8"><a class="header" href="#int8">int8</a></h1>
-<p>The Azle type <code>int8</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int8</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>int8</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int8</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, int8, query } from 'azle';
 
 export default Canister({
@@ -2761,8 +2773,8 @@ export default Canister({
 (127 : int8)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="int16"><a class="header" href="#int16">int16</a></h1>
-<p>The Azle type <code>int16</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int16</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>int16</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int16</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, int16, query } from 'azle';
 
 export default Canister({
@@ -2786,8 +2798,8 @@ export default Canister({
 (32_767 : int16)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="int32"><a class="header" href="#int32">int32</a></h1>
-<p>The Azle type <code>int32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int32</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>int32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int32</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, int32, query } from 'azle';
 
 export default Canister({
@@ -2811,8 +2823,8 @@ export default Canister({
 (2_147_483_647 : int32)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="int64"><a class="header" href="#int64">int64</a></h1>
-<p>The Azle type <code>int64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>int64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type int64</a>, is inferred to be a TypeScript <code>bigint</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, int64, query } from 'azle';
 
 export default Canister({
@@ -2836,8 +2848,8 @@ export default Canister({
 (9_223_372_036_854_775_807 : int64)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="nat"><a class="header" href="#nat">nat</a></h1>
-<p>The Azle type <code>nat</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-nat">Candid type nat</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>nat</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-nat">Candid type nat</a>, is inferred to be a TypeScript <code>bigint</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, nat, query } from 'azle';
 
 export default Canister({
@@ -2861,8 +2873,8 @@ export default Canister({
 (340_282_366_920_938_463_463_374_607_431_768_211_455 : nat)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="nat8"><a class="header" href="#nat8">nat8</a></h1>
-<p>The Azle type <code>nat8</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat8</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>nat8</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat8</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, nat8, query } from 'azle';
 
 export default Canister({
@@ -2886,8 +2898,8 @@ export default Canister({
 (255 : nat8)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="nat16"><a class="header" href="#nat16">nat16</a></h1>
-<p>The Azle type <code>nat16</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat16</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>nat16</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat16</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, nat16, query } from 'azle';
 
 export default Canister({
@@ -2911,8 +2923,8 @@ export default Canister({
 (65_535 : nat16)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="nat32"><a class="header" href="#nat32">nat32</a></h1>
-<p>The Azle type <code>nat32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat32</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>nat32</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat32</a>, is inferred to be a TypeScript <code>number</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">JavaScript Number</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, nat32, query } from 'azle';
 
 export default Canister({
@@ -2936,8 +2948,8 @@ export default Canister({
 (4_294_967_295 : nat32)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="nat64"><a class="header" href="#nat64">nat64</a></h1>
-<p>The Azle type <code>nat64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat64</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>nat64</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-natn-and-intn">Candid type nat64</a>, is inferred to be a TypeScript <code>bigint</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt">JavaScript BigInt</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, nat64, query } from 'azle';
 
 export default Canister({
@@ -2961,8 +2973,8 @@ export default Canister({
 (18_446_744_073_709_551_615 : nat64)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="null"><a class="header" href="#null">null</a></h1>
-<p>The TypeScript type <code>null</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-null">Candid type null</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null">JavaScript null</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>null</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-null">Candid type null</a>, is inferred to be a TypeScript <code>null</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null">JavaScript null</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, Null, query } from 'azle';
 
 export default Canister({
@@ -2986,16 +2998,17 @@ export default Canister({
 (null : null)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="opt"><a class="header" href="#opt">opt</a></h1>
-<p>The Azle type <code>Opt</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t">Candid type opt</a>. It is a <a href="reference/candid/opt.html#variant">variant</a> with <code>Some</code> and <code>None</code> cases. At runtime if the value of the variant is <code>Some</code>, the <code>Some</code> property of the variant object will have a value of the enclosed <code>Opt</code> type at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, None, Opt, Some, bool, query } from 'azle';
+<p>The <code>CandidType</code> object <code>Opt</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-opt-t">Candid type opt</a>, is inferred to be a TypeScript <code>Opt&lt;T&gt;</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Object</a> at runtime.</p>
+<p>It is a <a href="reference/candid/opt.html#variant">variant</a> with <code>Some</code> and <code>None</code> cases. At runtime if the value of the variant is <code>Some</code>, the <code>Some</code> property of the variant object will have a value of the enclosed <code>Opt</code> type at runtime.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { bool, Canister, None, Opt, query, Some } from 'azle';
 
 export default Canister({
     getOptSome: query([], Opt(bool), () =&gt; {
-        return Some(true);
+        return Some(true); // equivalent to { Some: true }
     }),
     getOptNone: query([], Opt(bool), () =&gt; {
-        return None;
+        return None; //equivalent to { None: null}
     })
 });
 </code></pre>
@@ -3013,8 +3026,8 @@ dfx canister call candid_canister getOptNone
 (null)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="principal"><a class="header" href="#principal">principal</a></h1>
-<p>The Azle type <code>Principal</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-principal">Candid type principal</a> and will become an <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>Principal</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-principal">Candid type principal</a>, is inferred to be a TypeScript <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal</a> <code>Principal</code>, and will be decoded into an <a href="https://www.npmjs.com/package/@dfinity/principal">@dfinity/principal Principal</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, Principal, query } from 'azle';
 
 export default Canister({
@@ -3038,9 +3051,10 @@ export default Canister({
 (principal &quot;rrkah-fqaaa-aaaaa-aaaaq-cai&quot;)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="record"><a class="header" href="#record">record</a></h1>
-<p>TypeScript type aliases referring to object literals wrapped in the <code>Record</code> Azle type correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--">Candid record type</a> and will become <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, Principal, Record, query, text } from 'azle';
+<p>Objects created by the <code>CandidType</code> function <code>Record</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-record--n--t--">Candid record type</a>, are inferred to be TypeScript <code>Object</code>s, and will be decoded into <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
+<p>The shape of the object will match the object literal passed to the <code>Record</code> function.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { Canister, Principal, query, Record, text } from 'azle';
 
 const User = Record({
     id: Principal,
@@ -3072,8 +3086,8 @@ service : () -&gt; {
 (record { id = principal &quot;2ibo7-dia&quot;; username = &quot;lastmjs&quot; })
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reserved"><a class="header" href="#reserved">reserved</a></h1>
-<p>The Azle type <code>reserved</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-reserved">Candid type reserved</a>, is the TypeScript type <code>any</code>, and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null">JavaScript null</a> at runtime.</p>
-<p>TypeScript:</p>
+<p>The <code>CandidType</code> object <code>reserved</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-reserved">Candid type reserved</a>, is inferred to be a TypeScript <code>any</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null">JavaScript null</a> at runtime.</p>
+<p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, query, reserved } from 'azle';
 
 export default Canister({
@@ -3097,9 +3111,10 @@ export default Canister({
 (null : reserved)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="service"><a class="header" href="#service">service</a></h1>
-<p>JavaScript classes that inherit from the Azle type <code>Service</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-service-">Candid service type</a> and will become child classes capable of creating instances that can perform cross-canister calls at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, Principal, bool, ic, query, text, update } from 'azle';
+<p>Values created by the <code>CandidType</code> function <code>Canister</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-service-">Candid service type</a>, are inferred to be TypeScript <code>Object</code>s, and will be decoded into <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
+<p>The properties of this object that match the keys of the service's <code>query</code> and <code>update</code> methods can be passed into <code>ic.call</code> and <code>ic.notify</code> to perform cross-canister calls.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { bool, Canister, ic, Principal, query, text, update } from 'azle';
 
 const SomeCanister = Canister({
     query1: query([], bool),
@@ -3131,7 +3146,7 @@ service : () -&gt; {
 (service &quot;aaaaa-aa&quot;)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="text"><a class="header" href="#text">text</a></h1>
-<p>The <code>CandidType</code> object <code>text</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-text">Candid type text</a>, is inferred to be a TypeScript string, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript String</a> at runtime.</p>
+<p>The <code>CandidType</code> object <code>text</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-text">Candid type text</a>, is inferred to be a TypeScript <code>string</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">JavaScript String</a> at runtime.</p>
 <p>TypeScript or JavaScript:</p>
 <pre><code class="language-typescript">import { Canister, query, text } from 'azle';
 
@@ -3156,9 +3171,10 @@ export default Canister({
 (&quot;Hello world!&quot;)
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="variant"><a class="header" href="#variant">variant</a></h1>
-<p>TypeScript type aliases referring to object literals wrapped in the <code>Variant</code> Azle type correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--">Candid variant type</a> and will become <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, Null, Variant, query } from 'azle';
+<p>Objects created by the <code>CandidType</code> function <code>Variant</code> correspond to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--">Candid variant type</a>, are inferred to be TypeScript <code>Object</code>s, and will be decoded into <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">JavaScript Objects</a> at runtime.</p>
+<p>The shape of the object will match the object literal passed to the <code>Variant</code> function, however it will contain only one of the enumerated properties.</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { Canister, Null, query, Variant } from 'azle';
 
 const Emotion = Variant({
     Happy: Null,
@@ -3197,9 +3213,9 @@ service : () -&gt; {
 (variant { Fire })
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="vec"><a class="header" href="#vec">vec</a></h1>
-<p>The Azle type <code>Vec</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a> and will become a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>Vec&lt;nat8&gt;</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>Vec&lt;nat8&gt;</code>).</p>
-<p>TypeScript:</p>
-<pre><code class="language-typescript">import { Canister, Vec, int32, query } from 'azle';
+<p>The <code>CandidType</code> object <code>Vec</code> corresponds to the <a href="https://internetcomputer.org/docs/current/references/candid-ref#type-vec-t">Candid type vec</a>, is inferred to be a TypeScript <code>T[]</code>, and will be decoded into a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">JavaScript array</a> of the specified type at runtime (except for <code>Vec&lt;nat8&gt;</code> which will become a <code>Uint8Array</code>, thus it is recommended to use the <code>blob</code> type instead of <code>Vec&lt;nat8&gt;</code>).</p>
+<p>TypeScript or JavaScript:</p>
+<pre><code class="language-typescript">import { Canister, int32, Vec, query } from 'azle';
 
 export default Canister({
     getNumbers: query([], Vec(int32), () =&gt; {

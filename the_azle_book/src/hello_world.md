@@ -19,16 +19,49 @@ We'll build a simple `Hello World` canister that shows the basics of importing A
 
 ## Quick Start
 
+We are going to use the Azle `new` command which creates a simple example project.
+
+We'll then use the `npm scripts` from this example project's `package.json` to perform some basic operations. These scripts are just convenient ways to call the underlying `dfx` commands.
+
+First use the `new` command to create a new project called `hello_world`:
+
 ```bash
 npx azle new hello_world
+```
+
+Now let's go inside of our project:
+
+```bash
 cd hello_world
+```
 
+We should install Azle and all of its dependencies:
+
+```bash
 npm install
-npm run dfx_install
-npm run replica_start
-npm run canister_deploy_local
+```
 
+Start up your local replica:
+
+```bash
+npm run replica_start
+```
+
+Deploy your canister:
+
+```bash
+npm run canister_deploy_local
+```
+
+Call the `setMessage` method:
+
+```bash
 npm run canister_call_set_message
+```
+
+Call the `getMessage` method:
+
+```bash
 npm run canister_call_get_message
 ```
 

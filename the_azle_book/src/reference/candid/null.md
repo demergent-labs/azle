@@ -1,8 +1,8 @@
 # null
 
-The TypeScript type `null` corresponds to the [Candid type null](https://internetcomputer.org/docs/current/references/candid-ref#type-null) and will become a [JavaScript null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null) at runtime.
+The `CandidType` object `null` corresponds to the [Candid type null](https://internetcomputer.org/docs/current/references/candid-ref#type-null), is inferred to be a TypeScript `null`, and will be decoded into a [JavaScript null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null) at runtime.
 
-TypeScript:
+TypeScript or JavaScript:
 
 ```typescript
 import { Canister, Null, query } from 'azle';
