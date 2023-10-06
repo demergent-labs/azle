@@ -118,7 +118,8 @@ async function azle() {
                 canisterJavaScript
             );
 
-            writeFileSync(candidPath, candid);
+            writeFileSync(candidPath, candid); // This is for the dfx.json candid property
+            writeFileSync(`${canisterPath}/canister/src/candid.did`, candid); // This is for the Rust canister to have access to the candid file
 
             const compilerInfo: CompilerInfo = {
                 // TODO The spread is because canisterMethods is a function with properties
