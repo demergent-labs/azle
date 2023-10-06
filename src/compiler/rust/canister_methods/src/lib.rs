@@ -214,6 +214,13 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         #(#query_methods)*
 
         #(#update_methods)*
+
+        #[ic_cdk_macros::query]
+        fn __get_candid_interface_tmp_hack() -> String {
+            std::str::from_utf8(CANDID)
+                .expect("candid.did could not be read")
+                .to_string()
+        }
     }
     .into()
 }

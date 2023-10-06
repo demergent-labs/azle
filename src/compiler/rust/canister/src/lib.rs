@@ -14,6 +14,9 @@ mod ic;
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]
 const MAIN_JS: &[u8] = include_bytes!("main.js");
 
+#[cfg(all(target_arch = "wasm32", target_os = "wasi"))]
+const CANDID: &[u8] = include_bytes!("candid.did");
+
 #[allow(unused)]
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 #[allow(unused)]
