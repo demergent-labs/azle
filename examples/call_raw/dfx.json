@@ -2,9 +2,9 @@
     "canisters": {
         "call_raw": {
             "type": "custom",
-            "main": "src/call_raw.ts",
-            "candid": "src/call_raw.did",
+            "main": "src/index.ts",
             "build": "npx azle call_raw",
+            "candid": "src/index.did",
             "wasm": ".azle/call_raw/call_raw.wasm",
             "gzip": true,
             "declarations": {
