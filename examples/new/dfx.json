@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "primitive_types": {
+            "type": "custom",
+            "main": "src/index.ts",
+            "candid": "src/index.did",
+            "build": "npx azle primitive_types",
+            "wasm": ".azle/primitive_types/primitive_types.wasm",
+            "gzip": true,
+            "declarations": {
+                "output": "test/dfx_generated/primitive_types",
+                "node_compatibility": true
+            }
+        }
+    }
+}
