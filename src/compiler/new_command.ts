@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { execSync } from 'child_process';
+import { join } from 'path';
 
 export function generateNewAzleProject(
     azleVersion: string,
@@ -23,23 +23,20 @@ export function generateNewAzleProject(
     const indexTs = generateIndexTs();
     const readmeMd = generateReadmeMd(projectName);
 
-    if (!existsSync(`${projectName}/src`)) {
-        mkdirSync(`${projectName}/src`, {
+    const projectPath = join(projectName, 'src');
+
+    if (!existsSync(projectPath)) {
+        mkdirSync(projectPath, {
             recursive: true
         });
     }
 
-    writeFileSync(`${projectName}/tsconfig.json`, tsconfig);
-    writeFileSync(`${projectName}/package.json`, packageJson);
-    writeFileSync(`${projectName}/dfx.json`, dfxJson);
-    writeFileSync(`${projectName}/.gitignore`, gitignore);
-    writeFileSync(`${projectName}/src/index.ts`, indexTs);
-    writeFileSync(`${projectName}/README.md`, readmeMd);
-
-    // TODO there must be some problem with git init
-    execSync(`cd ${projectName} && git init`, {
-        stdio: 'inherit'
-    });
+    writeFileSync(join(projectName, 'tsconfig.json'), tsconfig);
+    writeFileSync(join(projectName, 'package.json'), packageJson);
+    writeFileSync(join(projectName, 'dfx.json'), dfxJson);
+    writeFileSync(join(projectName, '.gitignore'), gitignore);
+    writeFileSync(join(projectName, 'src', 'index.ts'), indexTs);
+    writeFileSync(join(projectName, 'README.md'), readmeMd);
 }
 
 function generateTsconfig(): string {
