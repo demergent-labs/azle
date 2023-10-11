@@ -109,6 +109,7 @@ jobs:
                     "examples/motoko_examples/superheroes",
                     "examples/motoko_examples/threshold_ecdsa",
                     "examples/motoko_examples/whoami",
+                    "examples/new",
                     "examples/notify_raw",
                     "examples/null_example",
                     "examples/optional_types",
