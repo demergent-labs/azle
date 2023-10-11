@@ -36,7 +36,10 @@ export function generateNewAzleProject(
     writeFileSync(`${projectName}/src/index.ts`, indexTs);
     writeFileSync(`${projectName}/README.md`, readmeMd);
 
-    execSync(`cd ${projectName} && git init`);
+    // TODO there must be some problem with git init
+    execSync(`cd ${projectName} && git init`, {
+        stdio: 'inherit'
+    });
 }
 
 function generateTsconfig(): string {
