@@ -1,0 +1,11 @@
+{
+    "scripts": {
+        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+    },
+    "devDependencies": {
+        "@dfinity/agent": "^0.19.2",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
+    }
+}
