@@ -4,7 +4,7 @@
         "test": "ETHEREUM_URL=https://rpc.ankr.com/eth ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
-        "azle": "0.18.1"
+        "azle": "0.18.2-rc.5"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
