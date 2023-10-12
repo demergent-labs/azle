@@ -2,7 +2,6 @@ import { IDL } from '@dfinity/candid';
 import { DecodeVisitor } from './decode_visitor';
 import { EncodeVisitor } from './encode_visitor';
 import { AzleResult, Result } from '../../../system_types/result';
-import { CandidType } from '../..';
 export { EncodeVisitor, DecodeVisitor };
 
 /*
@@ -80,30 +79,63 @@ export function visitVariant(
     data: VisitorData
 ): VisitorResult {
     if (data.candidType instanceof AzleResult) {
-        if ('Ok' in data.js_data) {
-            const okField = fields[0];
-            const okData = data.js_data['Ok'];
-            const okClass = data.candidType._azleOk;
-
-            return Result.Ok(
-                okField[1].accept(visitor, {
-                    js_data: okData,
-                    candidType: okClass
-                })
-            );
-        }
-        if ('Err' in data.js_data) {
-            const errField = fields[1];
-            const errData = data.js_data['Err'];
-            const errClass = data.candidType._azleErr;
-            return Result.Err(
-                errField[1].accept(visitor, {
-                    js_data: errData,
-                    candidType: errClass
-                })
-            );
-        }
+        return visitAzleResult(visitor, fields, data);
     }
+    return visitAzleVariant(visitor, fields, data);
+}
+
+export function visitRec<T>(
+    visitor: DecodeVisitor | EncodeVisitor,
+    ty: IDL.ConstructType<T>,
+    data: VisitorData
+): VisitorResult {
+    let candidType = data.candidType();
+    if (candidType._azleIsCanister) {
+        candidType = candidType([]);
+    }
+    return ty.accept(visitor, {
+        ...data,
+        candidType
+    });
+}
+
+function visitAzleResult(
+    visitor: DecodeVisitor | EncodeVisitor,
+    fields: [string, IDL.Type<any>][],
+    data: VisitorData
+) {
+    if ('Ok' in data.js_data) {
+        const OK_FIELD_INDEX = 0;
+        const okField = fields[OK_FIELD_INDEX];
+        const okData = data.js_data['Ok'];
+        const okClass = data.candidType._azleOk;
+
+        return Result.Ok(
+            okField[1].accept(visitor, {
+                js_data: okData,
+                candidType: okClass
+            })
+        );
+    }
+    if ('Err' in data.js_data) {
+        const ERR_FIELD_INDEX = 1;
+        const errField = fields[ERR_FIELD_INDEX];
+        const errData = data.js_data['Err'];
+        const errClass = data.candidType._azleErr;
+        return Result.Err(
+            errField[1].accept(visitor, {
+                js_data: errData,
+                candidType: errClass
+            })
+        );
+    }
+}
+
+function visitAzleVariant(
+    visitor: DecodeVisitor | EncodeVisitor,
+    fields: [string, IDL.Type<any>][],
+    data: VisitorData
+) {
     const candidFields = fields.reduce((acc, [memberName, memberIdl]) => {
         const fieldData = data.js_data[memberName];
         const fieldClass = data.candidType[memberName];
@@ -121,19 +153,4 @@ export function visitVariant(
     }, {});
 
     return candidFields;
-}
-
-export function visitRec<T>(
-    visitor: DecodeVisitor | EncodeVisitor,
-    ty: IDL.ConstructType<T>,
-    data: VisitorData
-): VisitorResult {
-    let candidType = data.candidType();
-    if (candidType._azleIsCanister) {
-        candidType = candidType([]);
-    }
-    return ty.accept(visitor, {
-        ...data,
-        candidType
-    });
 }
