@@ -1,6 +1,6 @@
 import { nat32 } from '../candid/types/primitive/nats/nat32';
 import { blob } from '../candid/types/constructed/blob';
-import { encodeMultiple } from '../candid/serde';
+import { encode } from '../candid/serde';
 
 /**
  * Writes data to the stable memory location specified by an offset
@@ -16,10 +16,7 @@ export function stableWrite(offset: nat32, buffer: blob): void {
         return undefined as any;
     }
 
-    const paramsCandidBytes = encodeMultiple(
-        [nat32, blob],
-        [offset, buffer]
-    ).buffer;
+    const paramsCandidBytes = encode([nat32, blob], [offset, buffer]).buffer;
 
     return globalThis._azleIc.stableWrite(paramsCandidBytes);
 }

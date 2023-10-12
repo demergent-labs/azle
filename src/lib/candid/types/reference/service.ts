@@ -10,7 +10,7 @@ import { ic } from '../../../ic';
 import { Principal } from './principal';
 import { IDL } from '@dfinity/candid';
 import { CanisterMethodInfo } from '../../../canister_methods';
-import { decode, encodeMultiple } from '../../serde';
+import { decode, encode } from '../../serde';
 
 type CanisterOptions = {
     [key: string]: CanisterMethodInfo<any, any>;
@@ -302,7 +302,7 @@ function serviceCall(
         cycles: bigint,
         ...args: any[]
     ) {
-        const encodedArgs = encodeMultiple(paramCandidTypes, args);
+        const encodedArgs = encode(paramCandidTypes, args);
 
         if (notify) {
             try {

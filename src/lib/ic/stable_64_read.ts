@@ -1,5 +1,5 @@
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { encodeMultiple } from '../candid/serde';
+import { encode } from '../candid/serde';
 
 /**
  * Reads data from the stable memory location specified by an offset.
@@ -13,10 +13,7 @@ export function stable64Read(offset: nat64, length: nat64): Uint8Array {
         return undefined as any;
     }
 
-    const paramsCandidBytes = encodeMultiple(
-        [nat64, nat64],
-        [offset, length]
-    ).buffer;
+    const paramsCandidBytes = encode([nat64, nat64], [offset, length]).buffer;
 
     return new Uint8Array(globalThis._azleIc.stable64Read(paramsCandidBytes));
 }

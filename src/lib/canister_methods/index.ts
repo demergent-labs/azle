@@ -1,7 +1,7 @@
 import { AzleVoid } from '../candid/types/primitive/void';
 import { ic } from '../ic';
 import { CandidType, TypeMapping } from '../candid';
-import { decodeMultiple, encode } from '../candid/serde';
+import { decode, encode } from '../candid/serde';
 
 export * from './heartbeat';
 export * from './init';
@@ -69,7 +69,7 @@ export function executeMethod(
         return;
     }
 
-    const decodedArgs = decodeMultiple(paramCandidTypes, args[0]);
+    const decodedArgs = decode(paramCandidTypes, args[0]);
 
     const result = callback(...decodedArgs);
 

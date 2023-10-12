@@ -18,6 +18,45 @@ import { CandidType, Parent, toIDLType } from '../../candid';
  * @returns candid bytes
  */
 export function encode(
+    candidType: CandidType | CandidType[],
+    data: any | any[],
+    parents: Parent[] = []
+): Uint8Array {
+    if (Array.isArray(candidType)) {
+        if (Array.isArray(data)) {
+            return encodeMultiple(candidType, data, parents);
+        }
+        throw new Error(
+            'If multiple candid types are given then multiple data entries are expected.'
+        );
+    }
+    return encodeSingle(candidType, data, parents);
+}
+
+/**
+ * Decodes the provided buffer into the designated JS value.
+ *
+ * Intended to be a rich replacement for `IDL.decode` from `@dfinity/candid`
+ * adding support for complex Azle IDL wrappers such as {@link AzleOpt},
+ * {@link AzleVec}, and {@link AzleTuple}. It recursively visits all "inner"
+ * values, converting them from their native shape to the shape that Azle expects.
+ *
+ * @param data the value to decode
+ * @param candidType either a built-in IDL data type, or an Azle-defined super-type
+ * @returns the Azle representation of the data
+ */
+export function decode(
+    candidType: CandidType | CandidType[],
+    data: ArrayBuffer,
+    parents: Parent[] = []
+): any | any[] {
+    if (Array.isArray(candidType)) {
+        return decodeMultiple(candidType, data, parents);
+    }
+    return decodeSingle(candidType, data, parents);
+}
+
+function encodeSingle(
     candidType: CandidType,
     data: any,
     parents: Parent[] = []
@@ -38,19 +77,7 @@ export function encode(
     return new Uint8Array(IDL.encode([idl], [encodeReadyKey]));
 }
 
-/**
- * Decodes the provided buffer into the designated JS value.
- *
- * Intended to be a rich replacement for `IDL.decode` from `@dfinity/candid`
- * adding support for complex Azle IDL wrappers such as {@link AzleOpt},
- * {@link AzleVec}, and {@link AzleTuple}. It recursively visits all "inner"
- * values, converting them from their native shape to the shape that Azle expects.
- *
- * @param data the value to decode
- * @param candidType either a built-in IDL data type, or an Azle-defined super-type
- * @returns the Azle representation of the data
- */
-export function decode(
+function decodeSingle(
     candidType: CandidType,
     data: ArrayBuffer,
     parents: Parent[] = []
@@ -75,7 +102,7 @@ export function decode(
     });
 }
 
-export function encodeMultiple(
+function encodeMultiple(
     candidTypes: CandidType[],
     data: any[],
     parents: Parent[] = []
@@ -104,7 +131,7 @@ export function encodeMultiple(
     return new Uint8Array(IDL.encode(idls, values));
 }
 
-export function decodeMultiple(
+function decodeMultiple(
     candidTypes: CandidType[],
     data: ArrayBuffer,
     parents: Parent[] = []
