@@ -1,5 +1,4 @@
 import { execSync, IOType } from 'child_process';
-
 import {
     GLOBAL_AZLE_RUST_DIR,
     GLOBAL_AZLE_RUST_BIN_DIR,
@@ -20,7 +19,8 @@ export function compileRustCode(
                 ...process.env,
                 CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
                 CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
-                RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR
+                RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR,
+                CARGO_REGISTRIES_CRATES_IO_PROTOCOL: 'sparse'
                 // TODO this allows changing the stack size, could be useful for stack overflow or heap out of bounds errors
                 // RUSTFLAGS: '-C link-args=-zstack-size=2000000000'
             }
