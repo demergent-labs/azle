@@ -15,6 +15,7 @@ global_azle_rustup_bin="$global_azle_rust_bin_dir"/rustup
 export CARGO_TARGET_DIR="$global_azle_config_dir"/rust/target
 export CARGO_HOME="$global_azle_rust_dir"
 export RUSTUP_HOME="$global_azle_rust_dir"
+export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 
 function run() {
     if [ -e "$global_azle_rustup_bin" ] && $global_azle_rustup_bin target list | grep -q "wasm32-wasi (installed)"; then
