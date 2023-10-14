@@ -146,28 +146,15 @@
                     <main>
                         <h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
 <p>Follow the instructions exactly as stated below to avoid issues.</p>
+<p>Windows is only supported through a Linux virtual environment of some kind, such as <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL</a>. Follow <a href="https://learn.microsoft.com/en-us/windows/wsl/install">these instructions to install WSL</a>.</p>
 <p>You should be using a *nix environment (Linux, Mac OS, <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL if using Windows</a>) with bash and have the following installed on your system:</p>
 <ul>
+<li><a href="#build-dependencies">Build dependencies</a></li>
 <li><a href="#nodejs">Node.js 18</a></li>
 <li><a href="#dfx-0150">dfx 0.15.0</a></li>
-<li><a href="#build-dependencies">Build dependencies</a></li>
 </ul>
-<h2 id="nodejs"><a class="header" href="#nodejs">Node.js</a></h2>
-<p>We highly recommend using <a href="https://github.com/nvm-sh/nvm">nvm</a> to install Node.js (and npm, which is included with Node.js). Run the following commands to install Node.js and npm with nvm:</p>
-<pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-</code></pre>
-<p>Now restart your terminal and run the following command:</p>
-<pre><code class="language-bash">nvm install 18
-</code></pre>
-<h2 id="dfx-0150"><a class="header" href="#dfx-0150">dfx 0.15.0</a></h2>
-<p>Run the following command to install dfx 0.15.0:</p>
-<pre><code class="language-bash">DFX_VERSION=0.15.0 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
-</code></pre>
-<p>If after trying to run <code>dfx</code> commands you encounter an error such as <code>dfx: command not found</code>, you might need to add <code>$HOME/bin</code> to your path. Here's an example of doing this in your <code>.bashrc</code>:</p>
-<pre><code class="language-bash">echo 'export PATH=&quot;$PATH:$HOME/bin&quot;' &gt;&gt; &quot;$HOME/.bashrc&quot;
-</code></pre>
 <h2 id="build-dependencies"><a class="header" href="#build-dependencies">Build dependencies</a></h2>
-<p>You may or may not need these dependencies based on your OS. If you run into errors while deploying, try the following:</p>
+<p>It is best to install all of these dependencies based on your OS:</p>
 <h3 id="ubuntuwsl"><a class="header" href="#ubuntuwsl">Ubuntu/WSL</a></h3>
 <pre><code class="language-bash">sudo apt install clang
 sudo apt install build-essential
@@ -177,6 +164,26 @@ sudo apt install pkg-config
 <h3 id="mac"><a class="header" href="#mac">Mac</a></h3>
 <pre><code class="language-bash"># Install the Xcode Command Line Tools
 xcode-select --install
+</code></pre>
+<h2 id="nodejs"><a class="header" href="#nodejs">Node.js</a></h2>
+<p>We highly recommend using <a href="https://github.com/nvm-sh/nvm">nvm</a> to install Node.js (and npm, which is included with Node.js). Run the following commands to install Node.js and npm with nvm:</p>
+<pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+</code></pre>
+<p>Now restart your terminal and run the following command:</p>
+<pre><code class="language-bash">nvm install 18
+</code></pre>
+<p>Check that the installation went smoothly by looking for clean output from the following command:</p>
+<pre><code class="language-bash">node --version
+</code></pre>
+<h2 id="dfx-0150"><a class="header" href="#dfx-0150">dfx 0.15.0</a></h2>
+<p>Run the following command to install dfx 0.15.0:</p>
+<pre><code class="language-bash">DFX_VERSION=0.15.0 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
+</code></pre>
+<p>Check that the installation went smoothly by looking for clean output from the following command:</p>
+<pre><code class="language-bash">dfx --version
+</code></pre>
+<p>If after trying to run <code>dfx --version</code> you encounter an error such as <code>dfx: command not found</code>, you might need to add <code>$HOME/bin</code> to your path. Here's an example of doing this in your <code>.bashrc</code>:</p>
+<pre><code class="language-bash">echo 'export PATH=&quot;$PATH:$HOME/bin&quot;' &gt;&gt; &quot;$HOME/.bashrc&quot;
 </code></pre>
 
                     </main>

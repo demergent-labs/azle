@@ -13,7 +13,7 @@
 
 Let's build your first application (canister) with Azle!
 
-Before embarking please ensure you've followed all of [the installation instructions](./installation.md).
+Before embarking please ensure you've followed all of [the installation instructions](./installation.md), especially noting [the build dependencies](./installation.md#build-dependencies).
 
 We'll build a simple `Hello World` canister that shows the basics of importing Azle, exposing a query method, exposing an update method, and storing some state in a global variable. We'll then interact with it from the command line and from our web browser.
 
@@ -21,18 +21,16 @@ We'll build a simple `Hello World` canister that shows the basics of importing A
 
 We are going to use the Azle `new` command which creates a simple example project.
 
-We'll then use the `npm scripts` from this example project's `package.json` to perform some basic operations. These scripts are just convenient ways to call the underlying `dfx` commands.
-
-First use the `new` command to create a new project called `hello_world`:
+First use the `new` command to create a new project called `azle_hello_world`:
 
 ```bash
-npx azle new hello_world
+npx azle new azle_hello_world
 ```
 
 Now let's go inside of our project:
 
 ```bash
-cd hello_world
+cd azle_hello_world
 ```
 
 We should install Azle and all of its dependencies:
@@ -44,25 +42,25 @@ npm install
 Start up your local replica:
 
 ```bash
-npm run replica_start
+dfx start
 ```
 
-Deploy your canister:
+In another terminal, deploy your canister:
 
 ```bash
-npm run canister_deploy_local
+dfx deploy azle_hello_world
 ```
 
 Call the `setMessage` method:
 
 ```bash
-npm run canister_call_set_message
+dfx canister call azle_hello_world setMessage '("Hello world!")'
 ```
 
 Call the `getMessage` method:
 
 ```bash
-npm run canister_call_get_message
+dfx canister call azle_hello_world getMessage
 ```
 
 If you run into an error during deployment, see [the common deployment issues section](./deployment.md#common-deployment-issues).
