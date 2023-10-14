@@ -161,31 +161,30 @@
 </li>
 </ul>
 <p>Let's build your first application (canister) with Azle!</p>
-<p>Before embarking please ensure you've followed all of <a href="./installation.html">the installation instructions</a>.</p>
+<p>Before embarking please ensure you've followed all of <a href="./installation.html">the installation instructions</a>, especially noting <a href="./installation.html#build-dependencies">the build dependencies</a>.</p>
 <p>We'll build a simple <code>Hello World</code> canister that shows the basics of importing Azle, exposing a query method, exposing an update method, and storing some state in a global variable. We'll then interact with it from the command line and from our web browser.</p>
 <h2 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h2>
 <p>We are going to use the Azle <code>new</code> command which creates a simple example project.</p>
-<p>We'll then use the <code>npm scripts</code> from this example project's <code>package.json</code> to perform some basic operations. These scripts are just convenient ways to call the underlying <code>dfx</code> commands.</p>
-<p>First use the <code>new</code> command to create a new project called <code>hello_world</code>:</p>
-<pre><code class="language-bash">npx azle new hello_world
+<p>First use the <code>new</code> command to create a new project called <code>azle_hello_world</code>:</p>
+<pre><code class="language-bash">npx azle new azle_hello_world
 </code></pre>
 <p>Now let's go inside of our project:</p>
-<pre><code class="language-bash">cd hello_world
+<pre><code class="language-bash">cd azle_hello_world
 </code></pre>
 <p>We should install Azle and all of its dependencies:</p>
 <pre><code class="language-bash">npm install
 </code></pre>
 <p>Start up your local replica:</p>
-<pre><code class="language-bash">npm run replica_start
+<pre><code class="language-bash">dfx start
 </code></pre>
-<p>Deploy your canister:</p>
-<pre><code class="language-bash">npm run canister_deploy_local
+<p>In another terminal, deploy your canister:</p>
+<pre><code class="language-bash">dfx deploy azle_hello_world
 </code></pre>
 <p>Call the <code>setMessage</code> method:</p>
-<pre><code class="language-bash">npm run canister_call_set_message
+<pre><code class="language-bash">dfx canister call azle_hello_world setMessage '(&quot;Hello world!&quot;)'
 </code></pre>
 <p>Call the <code>getMessage</code> method:</p>
-<pre><code class="language-bash">npm run canister_call_get_message
+<pre><code class="language-bash">dfx canister call azle_hello_world getMessage
 </code></pre>
 <p>If you run into an error during deployment, see <a href="./deployment.html#common-deployment-issues">the common deployment issues section</a>.</p>
 <p>See the official <a href="https://github.com/demergent-labs/azle_hello_world">azle_hello_world</a> example for more information.</p>

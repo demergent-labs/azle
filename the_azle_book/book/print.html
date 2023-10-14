@@ -345,28 +345,15 @@ SOFTWARE.
 <p>Operations on canister state are exposed to users through canister methods. These methods can be invoked through HTTP requests. Query methods allow state to be read and are low-latency. Update methods allow state to be changed and are higher-latency. Update methods take a few seconds to complete because of the consensus process.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
 <p>Follow the instructions exactly as stated below to avoid issues.</p>
+<p>Windows is only supported through a Linux virtual environment of some kind, such as <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL</a>. Follow <a href="https://learn.microsoft.com/en-us/windows/wsl/install">these instructions to install WSL</a>.</p>
 <p>You should be using a *nix environment (Linux, Mac OS, <a href="https://learn.microsoft.com/en-us/windows/wsl/install">WSL if using Windows</a>) with bash and have the following installed on your system:</p>
 <ul>
+<li><a href="installation.html#build-dependencies">Build dependencies</a></li>
 <li><a href="installation.html#nodejs">Node.js 18</a></li>
 <li><a href="installation.html#dfx-0150">dfx 0.15.0</a></li>
-<li><a href="installation.html#build-dependencies">Build dependencies</a></li>
 </ul>
-<h2 id="nodejs"><a class="header" href="#nodejs">Node.js</a></h2>
-<p>We highly recommend using <a href="https://github.com/nvm-sh/nvm">nvm</a> to install Node.js (and npm, which is included with Node.js). Run the following commands to install Node.js and npm with nvm:</p>
-<pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-</code></pre>
-<p>Now restart your terminal and run the following command:</p>
-<pre><code class="language-bash">nvm install 18
-</code></pre>
-<h2 id="dfx-0150"><a class="header" href="#dfx-0150">dfx 0.15.0</a></h2>
-<p>Run the following command to install dfx 0.15.0:</p>
-<pre><code class="language-bash">DFX_VERSION=0.15.0 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
-</code></pre>
-<p>If after trying to run <code>dfx</code> commands you encounter an error such as <code>dfx: command not found</code>, you might need to add <code>$HOME/bin</code> to your path. Here's an example of doing this in your <code>.bashrc</code>:</p>
-<pre><code class="language-bash">echo 'export PATH=&quot;$PATH:$HOME/bin&quot;' &gt;&gt; &quot;$HOME/.bashrc&quot;
-</code></pre>
 <h2 id="build-dependencies"><a class="header" href="#build-dependencies">Build dependencies</a></h2>
-<p>You may or may not need these dependencies based on your OS. If you run into errors while deploying, try the following:</p>
+<p>It is best to install all of these dependencies based on your OS:</p>
 <h3 id="ubuntuwsl"><a class="header" href="#ubuntuwsl">Ubuntu/WSL</a></h3>
 <pre><code class="language-bash">sudo apt install clang
 sudo apt install build-essential
@@ -376,6 +363,26 @@ sudo apt install pkg-config
 <h3 id="mac"><a class="header" href="#mac">Mac</a></h3>
 <pre><code class="language-bash"># Install the Xcode Command Line Tools
 xcode-select --install
+</code></pre>
+<h2 id="nodejs"><a class="header" href="#nodejs">Node.js</a></h2>
+<p>We highly recommend using <a href="https://github.com/nvm-sh/nvm">nvm</a> to install Node.js (and npm, which is included with Node.js). Run the following commands to install Node.js and npm with nvm:</p>
+<pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+</code></pre>
+<p>Now restart your terminal and run the following command:</p>
+<pre><code class="language-bash">nvm install 18
+</code></pre>
+<p>Check that the installation went smoothly by looking for clean output from the following command:</p>
+<pre><code class="language-bash">node --version
+</code></pre>
+<h2 id="dfx-0150"><a class="header" href="#dfx-0150">dfx 0.15.0</a></h2>
+<p>Run the following command to install dfx 0.15.0:</p>
+<pre><code class="language-bash">DFX_VERSION=0.15.0 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
+</code></pre>
+<p>Check that the installation went smoothly by looking for clean output from the following command:</p>
+<pre><code class="language-bash">dfx --version
+</code></pre>
+<p>If after trying to run <code>dfx --version</code> you encounter an error such as <code>dfx: command not found</code>, you might need to add <code>$HOME/bin</code> to your path. Here's an example of doing this in your <code>.bashrc</code>:</p>
+<pre><code class="language-bash">echo 'export PATH=&quot;$PATH:$HOME/bin&quot;' &gt;&gt; &quot;$HOME/.bashrc&quot;
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="hello-world"><a class="header" href="#hello-world">Hello World</a></h1>
 <ul>
@@ -394,31 +401,30 @@ xcode-select --install
 </li>
 </ul>
 <p>Let's build your first application (canister) with Azle!</p>
-<p>Before embarking please ensure you've followed all of <a href="./installation.html">the installation instructions</a>.</p>
+<p>Before embarking please ensure you've followed all of <a href="./installation.html">the installation instructions</a>, especially noting <a href="./installation.html#build-dependencies">the build dependencies</a>.</p>
 <p>We'll build a simple <code>Hello World</code> canister that shows the basics of importing Azle, exposing a query method, exposing an update method, and storing some state in a global variable. We'll then interact with it from the command line and from our web browser.</p>
 <h2 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h2>
 <p>We are going to use the Azle <code>new</code> command which creates a simple example project.</p>
-<p>We'll then use the <code>npm scripts</code> from this example project's <code>package.json</code> to perform some basic operations. These scripts are just convenient ways to call the underlying <code>dfx</code> commands.</p>
-<p>First use the <code>new</code> command to create a new project called <code>hello_world</code>:</p>
-<pre><code class="language-bash">npx azle new hello_world
+<p>First use the <code>new</code> command to create a new project called <code>azle_hello_world</code>:</p>
+<pre><code class="language-bash">npx azle new azle_hello_world
 </code></pre>
 <p>Now let's go inside of our project:</p>
-<pre><code class="language-bash">cd hello_world
+<pre><code class="language-bash">cd azle_hello_world
 </code></pre>
 <p>We should install Azle and all of its dependencies:</p>
 <pre><code class="language-bash">npm install
 </code></pre>
 <p>Start up your local replica:</p>
-<pre><code class="language-bash">npm run replica_start
+<pre><code class="language-bash">dfx start
 </code></pre>
-<p>Deploy your canister:</p>
-<pre><code class="language-bash">npm run canister_deploy_local
+<p>In another terminal, deploy your canister:</p>
+<pre><code class="language-bash">dfx deploy azle_hello_world
 </code></pre>
 <p>Call the <code>setMessage</code> method:</p>
-<pre><code class="language-bash">npm run canister_call_set_message
+<pre><code class="language-bash">dfx canister call azle_hello_world setMessage '(&quot;Hello world!&quot;)'
 </code></pre>
 <p>Call the <code>getMessage</code> method:</p>
-<pre><code class="language-bash">npm run canister_call_get_message
+<pre><code class="language-bash">dfx canister call azle_hello_world getMessage
 </code></pre>
 <p>If you run into an error during deployment, see <a href="./deployment.html#common-deployment-issues">the common deployment issues section</a>.</p>
 <p>See the official <a href="https://github.com/demergent-labs/azle_hello_world">azle_hello_world</a> example for more information.</p>
@@ -638,9 +644,11 @@ URLs:
 <h2 id="common-deployment-issues-1"><a class="header" href="#common-deployment-issues-1">Common deployment issues</a></h2>
 <p>If you run into an error during deployment, try the following:</p>
 <ol>
-<li>Add the <code>--verbose</code> flag to the <code>build</code> command in your <code>dfx.json</code> file like so: <code>&quot;build&quot;: &quot;npx azle build hello_world --verbose</code></li>
 <li>Ensure that you have followed the instructions correctly in <a href="./installation.html">the installation chapter</a>, especially noting <a href="./installation.html#build-dependencies">the build dependencies</a></li>
-<li>Reach out on <a href="https://discord.gg/5Hb6rM2QUM">the Discord channel</a></li>
+<li>Start the whole deployment process from scratch by running the following commands: <code>dfx stop</code> or simply terminate <code>dfx</code> in your terminal, <code>dfx start --clean</code>, <code>npx azle clean</code>, <code>dfx deploy</code></li>
+<li>Look for more error output by adding the <code>--verbose</code> flag to the <code>build</code> command in your <code>dfx.json</code> file like so: <code>&quot;build&quot;: &quot;npx azle build hello_world --verbose</code></li>
+<li>Look for errors in each of the files in <code>~/.config/azle/rust/[rust_version]/logs</code></li>
+<li>Reach out in <a href="https://discord.gg/5Hb6rM2QUM">the Discord channel</a></li>
 </ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="examples"><a class="header" href="#examples">Examples</a></h1>
 <p>Azle has many example projects showing nearly all Azle APIs. They can be found in the <a href="https://github.com/demergent-labs/azle/tree/main/examples">examples directory</a> of the <a href="https://github.com/demergent-labs/azle">Azle GitHub repository</a>.</p>
