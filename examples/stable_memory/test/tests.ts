@@ -49,9 +49,8 @@ export function getTests(
             test: async () => {
                 const oldSize = await stableMemoryCanister.stable64Size();
                 const newPages = 5n;
-                const result = await stableMemoryCanister.stable64Grow(
-                    newPages
-                );
+                const result =
+                    await stableMemoryCanister.stable64Grow(newPages);
                 const newSize = await stableMemoryCanister.stable64Size();
 
                 return {
@@ -210,7 +209,7 @@ export function getTests(
                     };
                 }
                 return {
-                    Err: 'canister did run out of memory'
+                    Err: 'canister did not run out of memory'
                 };
             }
         },
@@ -219,9 +218,8 @@ export function getTests(
             test: async () => {
                 const oldSize = await stableMemoryCanister.stable64Size();
                 const newPages = MAX_STABLE64_MEM_PAGES - oldSize;
-                const result = await stableMemoryCanister.stable64Grow(
-                    newPages
-                );
+                const result =
+                    await stableMemoryCanister.stable64Grow(newPages);
                 const newSize = await stableMemoryCanister.stable64Size();
 
                 return {
@@ -242,7 +240,7 @@ export function getTests(
                     };
                 }
                 return {
-                    Err: 'canister did run out of memory'
+                    Err: 'canister did not run out of memory'
                 };
             }
         }
