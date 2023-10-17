@@ -50,10 +50,133 @@ type CallableObject<T extends CanisterOptions> = {
     (principal: Principal): CallableObject<T>;
 } & CanisterReturn<T>;
 
+type SystemMethod = { name: string } | undefined;
+
+type QueryMethod = {
+    name: string;
+    composite: boolean;
+    guard_name: string | undefined;
+};
+
+type UpdateMethod = {
+    name: string;
+    guard_name: string | undefined;
+};
+
+type CallRawFunction = typeof ic.callRaw | typeof ic.callRaw128;
+type NotifyRawFunction = typeof ic.notifyRaw;
+
+type FunctionInfo = {
+    mode: 'query' | 'update';
+    paramCandidTypes: CandidType[];
+    returnCandidType: CandidType;
+};
+
+interface ServiceFunctionInfo {
+    [key: string]: FunctionInfo;
+}
+
 export function Canister<T extends CanisterOptions>(
     canisterOptions: T
 ): CallableObject<T> & { _azleCandidType?: '_azleCandidType' } {
     let result: _AzleCanisterReturnType = (parentOrPrincipal: any) => {
+        const returnFunction = createReturnFunctionObject(canisterOptions);
+
+        if (parentOrPrincipal !== undefined && parentOrPrincipal._isPrincipal) {
+            return returnFunction(parentOrPrincipal);
+        }
+
+        return returnFunction;
+    };
+    result._azleIsCanister = true;
+    return result as any;
+}
+
+function createCallbacks(canisterOptions: CanisterOptions) {
+    return Object.entries(canisterOptions).reduce((acc, entry) => {
+        const key = entry[0];
+        const value = entry[1];
+
+        return {
+            ...acc,
+            [key]: {
+                canisterCallback: value.callback,
+                crossCanisterCallback: (...args: any[]) => {
+                    return serviceCall(
+                        this.principal as any,
+                        key,
+                        value.paramCandidTypes,
+                        value.returnCandidType
+                    )(...args);
+                }
+            }
+        };
+        // }
+    }, {});
+}
+
+function createSystemMethod(
+    mode:
+        | 'init'
+        | 'postUpgrade'
+        | 'preUpgrade'
+        | 'heartbeat'
+        | 'inspectMessage',
+    canisterOptions: CanisterOptions
+): SystemMethod {
+    const methodOption = Object.entries(canisterOptions).find(
+        ([key, value]) => value.mode === mode
+    );
+    return methodOption === undefined
+        ? undefined
+        : {
+              name: methodOption[0]
+          };
+}
+
+function createQueryMethods(canisterOptions: CanisterOptions): QueryMethod[] {
+    return Object.entries(canisterOptions)
+        .filter((entry) => {
+            const key = entry[0];
+            const value = entry[1];
+
+            return value.mode === 'query';
+        })
+        .map((entry) => {
+            const key = entry[0];
+            const value = entry[1];
+
+            return {
+                name: key,
+                composite: value.async,
+                guard_name: createGlobalGuard(value.guard, key)
+            };
+        });
+}
+
+function createUpdateMethods(canisterOptions: CanisterOptions): UpdateMethod[] {
+    return Object.entries(canisterOptions)
+        .filter((entry) => {
+            const key = entry[0];
+            const value = entry[1];
+
+            return value.mode === 'update';
+        })
+        .map((entry) => {
+            const key = entry[0];
+            const value = entry[1];
+
+            return {
+                name: key,
+                guard_name: createGlobalGuard(value.guard, key)
+            };
+        });
+}
+
+function createReturnFunction(
+    canisterOptions: CanisterOptions
+): _AzleFunctionReturnType {
+    return (principal: Principal) => {
         const callbacks = Object.entries(canisterOptions).reduce(
             (acc, entry) => {
                 const key = entry[0];
@@ -65,7 +188,7 @@ export function Canister<T extends CanisterOptions>(
                         canisterCallback: value.callback,
                         crossCanisterCallback: (...args: any[]) => {
                             return serviceCall(
-                                this.principal as any,
+                                principal as any,
                                 key,
                                 value.paramCandidTypes,
                                 value.returnCandidType
@@ -78,213 +201,110 @@ export function Canister<T extends CanisterOptions>(
             {}
         );
 
-        const initOption = Object.entries(canisterOptions).find(
-            ([key, value]) => value.mode === 'init'
-        );
-        const init =
-            initOption === undefined
-                ? undefined
-                : {
-                      name: initOption[0]
-                  };
-
-        const postUpgradeOption = Object.entries(canisterOptions).find(
-            ([key, value]) => value.mode === 'postUpgrade'
-        );
-        const postUpgrade =
-            postUpgradeOption === undefined
-                ? undefined
-                : {
-                      name: postUpgradeOption[0]
-                  };
-
-        const preUpgradeOption = Object.entries(canisterOptions).find(
-            ([key, value]) => value.mode === 'preUpgrade'
-        );
-        const preUpgrade =
-            preUpgradeOption === undefined
-                ? undefined
-                : {
-                      name: preUpgradeOption[0]
-                  };
-
-        const heartbeatOption = Object.entries(canisterOptions).find(
-            ([key, value]) => value.mode === 'heartbeat'
-        );
-        const heartbeat =
-            heartbeatOption === undefined
-                ? undefined
-                : {
-                      name: heartbeatOption[0]
-                  };
-
-        const inspectMessageOption = Object.entries(canisterOptions).find(
-            ([key, value]) => value.mode === 'inspectMessage'
-        );
-        const inspectMessage =
-            inspectMessageOption === undefined
-                ? undefined
-                : {
-                      name: inspectMessageOption[0]
-                  };
-
-        const queries = Object.entries(canisterOptions)
-            .filter((entry) => {
-                const key = entry[0];
-                const value = entry[1];
-
-                return value.mode === 'query';
-            })
-            .map((entry) => {
-                const key = entry[0];
-                const value = entry[1];
-
-                return {
-                    name: key,
-                    composite: value.async,
-                    guard_name: createGlobalGuard(value.guard, key)
-                };
-            });
-
-        const updates = Object.entries(canisterOptions)
-            .filter((entry) => {
-                const key = entry[0];
-                const value = entry[1];
-
-                return value.mode === 'update';
-            })
-            .map((entry) => {
-                const key = entry[0];
-                const value = entry[1];
-
-                return {
-                    name: key,
-                    guard_name: createGlobalGuard(value.guard, key)
-                };
-            });
-
-        let returnFunction: _AzleFunctionReturnType = (
-            principal: Principal
-        ) => {
-            const callbacks = Object.entries(canisterOptions).reduce(
-                (acc, entry) => {
-                    const key = entry[0];
-                    const value = entry[1];
-
-                    return {
-                        ...acc,
-                        [key]: {
-                            canisterCallback: value.callback,
-                            crossCanisterCallback: (...args: any[]) => {
-                                return serviceCall(
-                                    principal as any,
-                                    key,
-                                    value.paramCandidTypes,
-                                    value.returnCandidType
-                                )(...args);
-                            }
-                        }
-                    };
-                    // }
-                },
-                {}
-            );
-
-            return {
-                ...callbacks,
-                principal
-            };
+        return {
+            ...callbacks,
+            principal
         };
-
-        returnFunction.init = init;
-        returnFunction.post_upgrade = postUpgrade;
-        returnFunction.pre_upgrade = preUpgrade;
-        returnFunction.heartbeat = heartbeat;
-        returnFunction.inspect_message = inspectMessage;
-        returnFunction.queries = queries;
-        returnFunction.updates = updates;
-        returnFunction.callbacks = callbacks;
-        returnFunction.getSystemFunctionIDLs = (
-            parents: Parent[]
-        ): IDL.FuncClass[] => {
-            const serviceFunctionInfo = canisterOptions as ServiceFunctionInfo;
-
-            return Object.entries(serviceFunctionInfo).reduce(
-                (accumulator, [_methodName, functionInfo]) => {
-                    const mode = functionInfo.mode;
-                    if (mode === 'update' || mode === 'query') {
-                        // We don't want init, post upgrade, etc showing up in the idl
-                        return accumulator;
-                    }
-
-                    const paramRealIdls = toParamIDLTypes(
-                        functionInfo.paramCandidTypes,
-                        parents
-                    );
-                    const returnRealIdl = toReturnIDLType(
-                        functionInfo.returnCandidType,
-                        parents
-                    );
-                    return [
-                        ...accumulator,
-                        IDL.Func(paramRealIdls, returnRealIdl, [mode])
-                    ];
-                },
-                [] as IDL.FuncClass[]
-            );
-        };
-        returnFunction.getIDL = (parents: Parent[]): IDL.ServiceClass => {
-            const serviceFunctionInfo = canisterOptions as ServiceFunctionInfo;
-
-            const record = Object.entries(serviceFunctionInfo).reduce(
-                (accumulator, [methodName, functionInfo]) => {
-                    const paramIdlTypes = toParamIDLTypes(
-                        functionInfo.paramCandidTypes,
-                        parents
-                    );
-                    const returnIdlTypes = toReturnIDLType(
-                        functionInfo.returnCandidType,
-                        parents
-                    );
-
-                    const mode = functionInfo.mode;
-                    let annotations: string[] = [];
-                    if (mode === 'update') {
-                        // do nothing
-                    } else if (mode === 'query') {
-                        annotations = ['query'];
-                    } else {
-                        // We don't want init, post upgrade, etc showing up in the idl
-                        return accumulator;
-                    }
-
-                    return {
-                        ...accumulator,
-                        [methodName]: IDL.Func(
-                            paramIdlTypes,
-                            returnIdlTypes,
-                            annotations
-                        )
-                    };
-                },
-                {} as Record<string, IDL.FuncClass>
-            );
-
-            return IDL.Service(record);
-        };
-
-        if (parentOrPrincipal !== undefined && parentOrPrincipal._isPrincipal) {
-            return returnFunction(parentOrPrincipal);
-        }
-
-        return returnFunction;
     };
-    result._azleIsCanister = true;
-    return result as any;
 }
 
-type CallRawFunction = typeof ic.callRaw | typeof ic.callRaw128;
-type NotifyRawFunction = typeof ic.notifyRaw;
+function createGetIdlFunction(canisterOptions: CanisterOptions) {
+    return (parents: Parent[]): IDL.ServiceClass => {
+        const serviceFunctionInfo = canisterOptions as ServiceFunctionInfo;
+
+        const record = Object.entries(serviceFunctionInfo).reduce(
+            (accumulator, [methodName, functionInfo]) => {
+                const paramIdlTypes = toParamIDLTypes(
+                    functionInfo.paramCandidTypes,
+                    parents
+                );
+                const returnIdlTypes = toReturnIDLType(
+                    functionInfo.returnCandidType,
+                    parents
+                );
+
+                const mode = functionInfo.mode;
+                let annotations: string[] = [];
+                if (mode === 'update') {
+                    // do nothing
+                } else if (mode === 'query') {
+                    annotations = ['query'];
+                } else {
+                    // We don't want init, post upgrade, etc showing up in the idl
+                    return accumulator;
+                }
+
+                return {
+                    ...accumulator,
+                    [methodName]: IDL.Func(
+                        paramIdlTypes,
+                        returnIdlTypes,
+                        annotations
+                    )
+                };
+            },
+            {} as Record<string, IDL.FuncClass>
+        );
+
+        return IDL.Service(record);
+    };
+}
+
+function createGetSystemFunctionIdlFunction(canisterOptions: CanisterOptions) {
+    return (parents: Parent[]): IDL.FuncClass[] => {
+        const serviceFunctionInfo = canisterOptions as ServiceFunctionInfo;
+
+        return Object.entries(serviceFunctionInfo).reduce(
+            (accumulator, [_methodName, functionInfo]) => {
+                const mode = functionInfo.mode;
+                if (mode === 'update' || mode === 'query') {
+                    // We don't want init, post upgrade, etc showing up in the idl
+                    return accumulator;
+                }
+
+                const paramRealIdls = toParamIDLTypes(
+                    functionInfo.paramCandidTypes,
+                    parents
+                );
+                const returnRealIdl = toReturnIDLType(
+                    functionInfo.returnCandidType,
+                    parents
+                );
+                return [
+                    ...accumulator,
+                    IDL.Func(paramRealIdls, returnRealIdl, [mode])
+                ];
+            },
+            [] as IDL.FuncClass[]
+        );
+    };
+}
+
+function createReturnFunctionObject(canisterOptions: CanisterOptions) {
+    let returnFunction = createReturnFunction(canisterOptions);
+    returnFunction.init = createSystemMethod('init', canisterOptions);
+    returnFunction.heartbeat = createSystemMethod('heartbeat', canisterOptions);
+    returnFunction.post_upgrade = createSystemMethod(
+        'postUpgrade',
+        canisterOptions
+    );
+    returnFunction.pre_upgrade = createSystemMethod(
+        'preUpgrade',
+        canisterOptions
+    );
+    returnFunction.inspect_message = createSystemMethod(
+        'inspectMessage',
+        canisterOptions
+    );
+    returnFunction.queries = createQueryMethods(canisterOptions);
+    returnFunction.updates = createUpdateMethods(canisterOptions);
+    returnFunction.callbacks = createCallbacks(canisterOptions);
+    returnFunction.getIDL = createGetIdlFunction(canisterOptions);
+    returnFunction.getSystemFunctionIDLs =
+        createGetSystemFunctionIdlFunction(canisterOptions);
+
+    return returnFunction;
+}
 
 function serviceCall(
     canisterId: Principal,
@@ -327,6 +347,7 @@ function serviceCall(
         }
     };
 }
+
 function createGlobalGuard(
     guard: (() => any) | undefined,
     functionName: string
@@ -340,14 +361,4 @@ function createGlobalGuard(
     (globalThis as any)[guardName] = guard;
 
     return guardName;
-}
-
-type FunctionInfo = {
-    mode: 'query' | 'update';
-    paramCandidTypes: CandidType[];
-    returnCandidType: CandidType;
-};
-
-interface ServiceFunctionInfo {
-    [key: string]: FunctionInfo;
 }
