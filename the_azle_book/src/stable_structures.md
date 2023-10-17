@@ -2,13 +2,13 @@
 
 ## TLDR
 
--   64 GiB of stable memory
+-   96 GiB of stable memory
 -   Persistent across upgrades
 -   Familiar API
 -   Must specify memory id
 -   No migrations per memory id
 
-Stable structures are data structures with familiar APIs that allow access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 64 GiB of storage. Stable memory persists automatically across upgrades.
+Stable structures are data structures with familiar APIs that allow access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 96 GiB of storage. Stable memory persists automatically across upgrades.
 
 Persistence on the Internet Computer (IC) is very important to understand. When a canister is upgraded (its code is changed after being initially deployed) its heap is wiped. This includes all global variables.
 

@@ -340,7 +340,7 @@ SOFTWARE.
 <p>View the <a href="https://dashboard.internetcomputer.org/subnets">IC Dashboard</a> to explore all data centers, subnets, node operators, and many other aspects of the IC.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="canisters-overview"><a class="header" href="#canisters-overview">Canisters Overview</a></h1>
 <p>Canisters are <a href="https://internetcomputer.org/">Internet Computer</a> (IC) applications. They are the encapsulation of your code and state, and are essentially Wasm modules.</p>
-<p>State can be stored on the 4 GiB heap or in a larger 64 GiB location called stable memory. You can store state on the heap using your language's native global variables. You can store state in stable memory using low-level APIs or special stable data structures that behave similarly to native language data structures.</p>
+<p>State can be stored on the 4 GiB heap or in a larger 96 GiB location called stable memory. You can store state on the heap using your language's native global variables. You can store state in stable memory using low-level APIs or special stable data structures that behave similarly to native language data structures.</p>
 <p>State changes must go through a process called consensus. The consensus process ensures that state changes are <a href="https://en.wikipedia.org/wiki/Byzantine_fault">Byzantine Fault Tolerant</a>. This process takes a few seconds to complete.</p>
 <p>Operations on canister state are exposed to users through canister methods. These methods can be invoked through HTTP requests. Query methods allow state to be read and are low-latency. Update methods allow state to be changed and are higher-latency. Update methods take a few seconds to complete because of the consensus process.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
@@ -743,7 +743,7 @@ export default Canister({
 <li>Latency ~2-5 seconds</li>
 <li><a href="https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits">20 billion Wasm instruction limit</a></li>
 <li>4 GiB heap limit</li>
-<li>64 GiB stable memory limit</li>
+<li>96 GiB stable memory limit</li>
 <li><a href="https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6">~900 updates per second per canister</a></li>
 </ul>
 <p>Update methods are similar to query methods, but state changes can be persisted. Here's an example of a simple update method:</p>
@@ -793,7 +793,7 @@ export default Canister({
     })
 });
 </code></pre>
-<p>If you need more than 4 GiB of storage, consider taking advantage of the 64 GiB of stable memory. Stable structures like <code>StableBTreeMap</code> give you a nice API for interacting with stable memory. These data structures will be <a href="./stable_structures.html">covered in more detail later</a>. Here's a simple example:</p>
+<p>If you need more than 4 GiB of storage, consider taking advantage of the 96 GiB of stable memory. Stable structures like <code>StableBTreeMap</code> give you a nice API for interacting with stable memory. These data structures will be <a href="./stable_structures.html">covered in more detail later</a>. Here's a simple example:</p>
 <pre><code class="language-typescript">import { Canister, Opt, query, StableBTreeMap, text, update, Void } from 'azle';
 
 let db = StableBTreeMap(text, text, 0);
@@ -1059,13 +1059,13 @@ export default Canister({
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stable-structures"><a class="header" href="#stable-structures">Stable Structures</a></h1>
 <h2 id="tldr-2"><a class="header" href="#tldr-2">TLDR</a></h2>
 <ul>
-<li>64 GiB of stable memory</li>
+<li>96 GiB of stable memory</li>
 <li>Persistent across upgrades</li>
 <li>Familiar API</li>
 <li>Must specify memory id</li>
 <li>No migrations per memory id</li>
 </ul>
-<p>Stable structures are data structures with familiar APIs that allow access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 64 GiB of storage. Stable memory persists automatically across upgrades.</p>
+<p>Stable structures are data structures with familiar APIs that allow access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 96 GiB of storage. Stable memory persists automatically across upgrades.</p>
 <p>Persistence on the Internet Computer (IC) is very important to understand. When a canister is upgraded (its code is changed after being initially deployed) its heap is wiped. This includes all global variables.</p>
 <p>On the other hand, anything stored in stable memory will be preserved. Writing and reading to and from stable memory can be done with a <a href="./reference/stable_memory/stable_memory.html">low-level API</a>, but it is generally easier and preferable to use stable structures.</p>
 <p>Azle currently provides one stable structure called <code>StableBTreeMap</code>. It's similar to a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">JavaScript Map</a> and has most of the common operations you'd expect such as reading, inserting, and removing values.</p>
