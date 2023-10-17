@@ -1,5 +1,5 @@
 import { CandidType } from '../../index';
-import { Parent, toIDLType } from '../../index';
+import { Parent, toIdl } from '../../index';
 import { IDL } from '@dfinity/candid';
 
 export class AzleVec<T> {
@@ -11,12 +11,11 @@ export class AzleVec<T> {
     _azleCandidType?: '_azleCandidType';
 
     getIDL(parents: Parent[]) {
-        return IDL.Vec(toIDLType(this._azleType, parents));
+        return IDL.Vec(toIdl(this._azleType, parents));
     }
 }
 
 export type Vec<T> = T[];
 export function Vec<T>(t: T): AzleVec<T> {
-    // return IDL.Vec(toCandidClass(t));
     return new AzleVec(t);
 }

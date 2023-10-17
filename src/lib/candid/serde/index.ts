@@ -3,7 +3,7 @@ import { IDL } from '@dfinity/candid';
 import { AzleVec, AzleOpt, AzleTuple } from '../types/constructed';
 import { DecodeVisitor } from './visitors/decode_visitor';
 import { EncodeVisitor } from './visitors/encode_visitor';
-import { CandidType, Parent, toIDLType } from '../../candid';
+import { CandidType, toIdl } from '../../candid';
 
 /**
  * Encodes the provided value as candid blob of the designated type.
@@ -55,7 +55,7 @@ export function decode(
 }
 
 function encodeSingle(candidType: CandidType, data: any): Uint8Array {
-    const idl = toIDLType(candidType);
+    const idl = toIdl(candidType);
 
     const idlIsAzleVoid = Array.isArray(idl);
 
@@ -76,7 +76,7 @@ function decodeSingle(candidType: CandidType, data: ArrayBuffer): any {
     // needs to be aligned so that this isn't an error. Both are representing
     // candid IDLs, either from the @dfinity/candid library or the
     // Azle-augmented ones
-    const idl = toIDLType(candidType);
+    const idl = toIdl(candidType);
 
     const idlIsAzleVoid = Array.isArray(idl);
 
@@ -99,7 +99,7 @@ function encodeMultiple(candidTypes: CandidType[], data: any[]): Uint8Array {
     }>(
         (acc, datum, index) => {
             const candidType = candidTypes[index];
-            const idl = toIDLType(candidType);
+            const idl = toIdl(candidType);
 
             const encodeReadyValue = idl.accept(new EncodeVisitor(), {
                 candidType: candidType,
@@ -118,7 +118,7 @@ function encodeMultiple(candidTypes: CandidType[], data: any[]): Uint8Array {
 }
 
 function decodeMultiple(candidTypes: CandidType[], data: ArrayBuffer): any[] {
-    const idls = candidTypes.map((candidType) => toIDLType(candidType));
+    const idls = candidTypes.map((candidType) => toIdl(candidType));
     const decoded = IDL.decode(idls, data);
     return idls.map((idl, index) =>
         idl.accept(new DecodeVisitor(), {

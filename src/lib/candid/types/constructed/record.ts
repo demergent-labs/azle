@@ -1,6 +1,6 @@
 import { CandidType, TypeMapping, Parent } from '../../index';
 import { IDL } from '@dfinity/candid';
-import { processMap } from '../constructed';
+import { toIdlMap, CandidMap } from '../constructed';
 
 export function Record<
     T extends {
@@ -14,7 +14,7 @@ export function Record<
     return {
         ...obj,
         getIDL(parents: Parent[]) {
-            return IDL.Record(processMap(obj as any, parents));
+            return IDL.Record(toIdlMap(obj as CandidMap, parents));
         }
     } as any;
 }

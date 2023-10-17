@@ -1,5 +1,5 @@
 import { CandidType, TypeMapping } from '../..';
-import { processMap } from '.';
+import { toIdlMap, CandidMap } from '.';
 import { IDL } from '@dfinity/candid';
 
 export function Variant<
@@ -14,7 +14,7 @@ export function Variant<
     return {
         ...obj,
         getIDL(parents: any) {
-            return IDL.Variant(processMap(obj as any, parents));
+            return IDL.Variant(toIdlMap(obj as CandidMap, parents));
         }
     } as any;
 }

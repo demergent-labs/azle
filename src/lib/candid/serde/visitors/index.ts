@@ -6,8 +6,8 @@ export { EncodeVisitor, DecodeVisitor };
 
 /*
  * The VisitorData gives us js_data which is the data that is about to be
- * encoded or was just decoded. js_class is the CandidClass (IDLable) class that
- * can be used to create the class.
+ * encoded or was just decoded. js_class is the CandidType that can be used to
+ * create the class.
  */
 export type VisitorData = { js_data: any; candidType: any };
 /**

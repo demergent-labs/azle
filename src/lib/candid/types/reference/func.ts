@@ -1,7 +1,7 @@
 import { CandidType } from '../../index';
 import { IDL } from '@dfinity/candid';
 import { Principal } from './principal';
-import { Parent, toParamIDLTypes, toReturnIDLType } from '../../index';
+import { Parent, toParamIdls, toReturnIdl } from '../../index';
 
 type Mode = 'query' | 'update' | 'oneway';
 
@@ -19,8 +19,8 @@ export function Func(
     return {
         getIDL(parents: Parent[]) {
             return IDL.Func(
-                toParamIDLTypes(paramCandidTypes, parents),
-                toReturnIDLType(returnCandidTypes, parents),
+                toParamIdls(paramCandidTypes, parents),
+                toReturnIdl(returnCandidTypes, parents),
                 modeToCandid[mode]
             );
         }

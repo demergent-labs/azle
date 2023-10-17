@@ -28,6 +28,7 @@ export * from './types/constructed';
 export * from './types/primitive';
 export * from './types/reference';
 export * from './recursive';
+export * from './to_Idl';
 
 export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? T
@@ -109,46 +110,3 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
 export type CandidType = {
     _azleCandidType?: '_azleCandidType';
 };
-
-export type Parent = {
-    idl: IDL.RecClass;
-    name: string;
-};
-
-export function toIDLType(
-    candidType: CandidType,
-    parents: Parent[] = []
-): IDL.Type<any> {
-    if ('_azleName' in candidType) {
-        const parent = parents.find(
-            (parent) => parent.name === candidType._azleName
-        );
-        // If the parent isn't undefined (ie we found one with the same name)
-        // this is a recursive type and we should return the parent rec idl
-        // instead of calling getIDL
-        if (parent !== undefined) {
-            return parent.idl;
-        }
-    }
-    if ('_azleIsCanister' in candidType && candidType._azleIsCanister) {
-        return toIDLType((candidType as any)(), parents);
-    }
-    // All CandidTypes ought to have a getIDL function defined for them
-    return (candidType as any).getIDL(parents);
-}
-
-export function toParamIDLTypes(
-    paramCandidTypes: CandidType[],
-    parents: Parent[] = []
-): IDL.Type<any>[] {
-    return paramCandidTypes.map((value) => toIDLType(value, parents));
-}
-
-export function toReturnIDLType(
-    returnCandidType: CandidType,
-    parents: Parent[] = []
-): IDL.Type<any>[] {
-    const idlType = toIDLType(returnCandidType, parents);
-
-    return Array.isArray(idlType) ? idlType : [idlType];
-}

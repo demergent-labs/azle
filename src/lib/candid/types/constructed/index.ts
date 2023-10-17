@@ -1,4 +1,4 @@
-import { CandidType, Parent, toIDLType } from '../../index';
+import { CandidType, Parent, toIdl } from '../../index';
 import { IDL } from '@dfinity/candid';
 
 export * from './blob';
@@ -8,19 +8,18 @@ export * from './tuple';
 export * from './variant';
 export * from './vec';
 
-type CandidMap = { [key: string]: CandidType };
-type IdlMap = { [key: string]: IDL.Type<any> };
+export type CandidMap = { [key: string]: CandidType };
+export type IdlMap = { [key: string]: IDL.Type<any> };
 
-export function processMap(targetMap: CandidMap, parent: Parent[]): IdlMap {
-    const newMap: IdlMap = {};
+export function toIdlMap(candidMap: CandidMap, parent: Parent[]): IdlMap {
+    const idlMap: IdlMap = {};
 
-    for (const key in targetMap) {
-        if (targetMap.hasOwnProperty(key)) {
-            const value = targetMap[key];
-            const newValue = toIDLType(value, parent);
-            newMap[key] = newValue;
+    for (const key in candidMap) {
+        if (candidMap.hasOwnProperty(key)) {
+            const candidType = candidMap[key];
+            idlMap[key] = toIdl(candidType, parent);
         }
     }
 
-    return newMap;
+    return idlMap;
 }

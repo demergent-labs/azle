@@ -1,4 +1,4 @@
-import { Parent, toParamIDLTypes, toReturnIDLType } from '../../../../index';
+import { Parent, toParamIdls, toReturnIdl } from '../../../../index';
 import { _AzleRecursiveFunction } from '../../../../recursive';
 import { IDL } from '@dfinity/candid';
 import { CanisterOptions, ServiceFunctionInfo } from '.';
@@ -40,11 +40,11 @@ export function createGetSystemFunctionIdlFunction(
                     return accumulator;
                 }
 
-                const paramIdls = toParamIDLTypes(
+                const paramIdls = toParamIdls(
                     functionInfo.paramCandidTypes,
                     parents
                 );
-                const returnIdl = toReturnIDLType(
+                const returnIdl = toReturnIdl(
                     functionInfo.returnCandidType,
                     parents
                 );

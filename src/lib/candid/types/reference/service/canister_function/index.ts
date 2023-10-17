@@ -1,7 +1,7 @@
 import {
     Parent,
-    toParamIDLTypes,
-    toReturnIDLType,
+    toParamIdls,
+    toReturnIdl,
     CandidType
 } from '../../../../index';
 import { _AzleRecursiveFunction } from '../../../../recursive';
@@ -109,16 +109,10 @@ function createUpdateOrQueryFunctionIdl(
     parents: Parent[]
 ): IDL.FuncClass {
     const annotations = createAnnotation(functionInfo.mode);
-    const paramIdlTypes = toParamIDLTypes(
-        functionInfo.paramCandidTypes,
-        parents
-    );
-    const returnIdlTypes = toReturnIDLType(
-        functionInfo.returnCandidType,
-        parents
-    );
+    const paramIdls = toParamIdls(functionInfo.paramCandidTypes, parents);
+    const returnIdls = toReturnIdl(functionInfo.returnCandidType, parents);
 
-    return IDL.Func(paramIdlTypes, returnIdlTypes, annotations);
+    return IDL.Func(paramIdls, returnIdls, annotations);
 }
 
 function createCallbacks(canisterOptions: CanisterOptions) {
