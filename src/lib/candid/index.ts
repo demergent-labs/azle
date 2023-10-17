@@ -117,7 +117,7 @@ export type Parent = {
 
 export function toIDLType(
     candidType: CandidType,
-    parents: Parent[]
+    parents: Parent[] = []
 ): IDL.Type<any> {
     if ('_azleName' in candidType) {
         const parent = parents.find(

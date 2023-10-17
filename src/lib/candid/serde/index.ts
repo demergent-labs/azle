@@ -19,18 +19,17 @@ import { CandidType, Parent, toIDLType } from '../../candid';
  */
 export function encode(
     candidType: CandidType | CandidType[],
-    data: any | any[],
-    parents: Parent[] = []
+    data: any | any[]
 ): Uint8Array {
     if (Array.isArray(candidType)) {
         if (Array.isArray(data)) {
-            return encodeMultiple(candidType, data, parents);
+            return encodeMultiple(candidType, data);
         }
         throw new Error(
             'If multiple candid types are given then multiple data entries are expected.'
         );
     }
-    return encodeSingle(candidType, data, parents);
+    return encodeSingle(candidType, data);
 }
 
 /**
@@ -47,21 +46,16 @@ export function encode(
  */
 export function decode(
     candidType: CandidType | CandidType[],
-    data: ArrayBuffer,
-    parents: Parent[] = []
+    data: ArrayBuffer
 ): any | any[] {
     if (Array.isArray(candidType)) {
-        return decodeMultiple(candidType, data, parents);
+        return decodeMultiple(candidType, data);
     }
-    return decodeSingle(candidType, data, parents);
+    return decodeSingle(candidType, data);
 }
 
-function encodeSingle(
-    candidType: CandidType,
-    data: any,
-    parents: Parent[] = []
-): Uint8Array {
-    const idl = toIDLType(candidType, parents);
+function encodeSingle(candidType: CandidType, data: any): Uint8Array {
+    const idl = toIDLType(candidType);
 
     const idlIsAzleVoid = Array.isArray(idl);
 
@@ -77,16 +71,12 @@ function encodeSingle(
     return new Uint8Array(IDL.encode([idl], [encodeReadyKey]));
 }
 
-function decodeSingle(
-    candidType: CandidType,
-    data: ArrayBuffer,
-    parents: Parent[] = []
-): any {
+function decodeSingle(candidType: CandidType, data: ArrayBuffer): any {
     // TODO: there is a discrepancy between CandidType and CandidClass that
     // needs to be aligned so that this isn't an error. Both are representing
     // candid IDLs, either from the @dfinity/candid library or the
     // Azle-augmented ones
-    const idl = toIDLType(candidType, parents);
+    const idl = toIDLType(candidType);
 
     const idlIsAzleVoid = Array.isArray(idl);
 
@@ -102,18 +92,14 @@ function decodeSingle(
     });
 }
 
-function encodeMultiple(
-    candidTypes: CandidType[],
-    data: any[],
-    parents: Parent[] = []
-): Uint8Array {
+function encodeMultiple(candidTypes: CandidType[], data: any[]): Uint8Array {
     const { values, idls } = data.reduce<{
         values: any[];
         idls: IDL.Type<any>[];
     }>(
         (acc, datum, index) => {
             const candidType = candidTypes[index];
-            const idl = toIDLType(candidType, parents);
+            const idl = toIDLType(candidType);
 
             const encodeReadyValue = idl.accept(new EncodeVisitor(), {
                 candidType: candidType,
@@ -131,14 +117,8 @@ function encodeMultiple(
     return new Uint8Array(IDL.encode(idls, values));
 }
 
-function decodeMultiple(
-    candidTypes: CandidType[],
-    data: ArrayBuffer,
-    parents: Parent[] = []
-): any[] {
-    const idls = candidTypes.map((candidType) =>
-        toIDLType(candidType, parents)
-    );
+function decodeMultiple(candidTypes: CandidType[], data: ArrayBuffer): any[] {
+    const idls = candidTypes.map((candidType) => toIDLType(candidType));
     const decoded = IDL.decode(idls, data);
     return idls.map((idl, index) =>
         idl.accept(new DecodeVisitor(), {
