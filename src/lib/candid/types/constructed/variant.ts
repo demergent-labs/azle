@@ -1,6 +1,5 @@
 import { CandidType, TypeMapping } from '../..';
 import { processMap } from '.';
-import { v4 } from 'uuid';
 import { IDL } from '@dfinity/candid';
 
 export function Variant<
