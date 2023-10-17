@@ -30,8 +30,8 @@ type _AzleFunctionReturnType = {
     queries?: any[];
     updates?: any[];
     callbacks?: any;
-    getSystemFunctionIDLs?: (parents: Parent[]) => IDL.FuncClass[];
-    getIDL?: (parents: Parent[]) => IDL.Type<any>;
+    getSystemFunctionIdls?: (parents: Parent[]) => IDL.FuncClass[];
+    getIdl?: (parents: Parent[]) => IDL.Type<any>;
 };
 
 type CallRawFunction = typeof ic.callRaw | typeof ic.callRaw128;
@@ -60,8 +60,8 @@ export function createCanisterFunction(canisterOptions: CanisterOptions) {
     canister.queries = createQueryMethods(canisterOptions);
     canister.updates = createUpdateMethods(canisterOptions);
     canister.callbacks = createCallbacks(canisterOptions);
-    canister.getIDL = createGetIdlFunction(canisterOptions);
-    canister.getSystemFunctionIDLs =
+    canister.getIdl = createGetIdlFunction(canisterOptions);
+    canister.getSystemFunctionIdls =
         createGetSystemFunctionIdlFunction(canisterOptions);
 
     return canister;

@@ -10,7 +10,7 @@ export class AzleVec<T> {
     _azleType: CandidType;
     _azleCandidType?: '_azleCandidType';
 
-    getIDL(parents: Parent[]) {
+    getIdl(parents: Parent[]) {
         return IDL.Vec(toIdl(this._azleType, parents));
     }
 }

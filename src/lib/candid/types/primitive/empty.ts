@@ -4,7 +4,7 @@ export class AzleEmpty {
     _kind: 'AzleEmpty' = 'AzleEmpty';
     _azleCandidType?: '_azleCandidType';
 
-    static getIDL() {
+    static getIdl() {
         return IDL.Empty;
     }
 }

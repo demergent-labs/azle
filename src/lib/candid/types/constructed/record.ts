@@ -13,7 +13,7 @@ export function Record<
 } & { _azleCandidType?: '_azleCandidType' } {
     return {
         ...obj,
-        getIDL(parents: Parent[]) {
+        getIdl(parents: Parent[]) {
             return IDL.Record(toIdlMap(obj as CandidMap, parents));
         }
     } as any;

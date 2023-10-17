@@ -10,7 +10,7 @@ export class AzleTuple<T extends any[]> {
     _azleTypes: CandidType[];
     _azleCandidType?: '_azleCandidType';
 
-    getIDL(parents: Parent[]) {
+    getIdl(parents: Parent[]) {
         const idls = this._azleTypes.map((value) => {
             return toIdl(value, parents);
         });

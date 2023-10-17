@@ -4,7 +4,7 @@ export class AzleNat16 {
     _kind: 'AzleNat16' = 'AzleNat16';
     _azleCandidType?: '_azleCandidType';
 
-    static getIDL() {
+    static getIdl() {
         return IDL.Nat16;
     }
 }

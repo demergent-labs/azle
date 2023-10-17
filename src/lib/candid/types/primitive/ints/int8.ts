@@ -4,7 +4,7 @@ export class AzleInt8 {
     _kind: 'AzleInt8' = 'AzleInt8';
     _azleCandidType?: '_azleCandidType';
 
-    static getIDL() {
+    static getIdl() {
         return IDL.Int8;
     }
 }

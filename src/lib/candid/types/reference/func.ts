@@ -17,7 +17,7 @@ export function Func(
     mode: Mode
 ): [Principal, string] & { _azleCandidType?: '_azleCandidType' } {
     return {
-        getIDL(parents: Parent[]) {
+        getIdl(parents: Parent[]) {
             return IDL.Func(
                 toParamIdls(paramCandidTypes, parents),
                 toReturnIdl(returnCandidTypes, parents),

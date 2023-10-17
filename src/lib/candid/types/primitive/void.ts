@@ -2,7 +2,7 @@ export class AzleVoid {
     _kind: 'AzleVoid' = 'AzleVoid';
     _azleCandidType?: '_azleCandidType';
 
-    static getIDL() {
+    static getIdl() {
         return [];
     }
 }

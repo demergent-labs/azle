@@ -4,7 +4,7 @@ export class AzleInt64 {
     _kind: 'AzleInt64' = 'AzleInt64';
     _azleCandidType?: '_azleCandidType';
 
-    static getIDL() {
+    static getIdl() {
         return IDL.Int64;
     }
 }

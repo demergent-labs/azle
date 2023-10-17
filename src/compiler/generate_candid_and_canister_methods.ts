@@ -36,10 +36,10 @@ export function generateCandidAndCanisterMethods(mainJs: string): {
 
     const canisterMethods = (sandbox.exports as any).canisterMethods;
 
-    const candidInfo = canisterMethods.getIDL([]).accept(new DidVisitor(), {
+    const candidInfo = canisterMethods.getIdl([]).accept(new DidVisitor(), {
         ...getDefaultVisitorData(),
         isFirstService: true,
-        systemFuncs: canisterMethods.getSystemFunctionIDLs()
+        systemFuncs: canisterMethods.getSystemFunctionIdls()
     });
 
     return {

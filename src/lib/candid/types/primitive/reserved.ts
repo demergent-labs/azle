@@ -4,7 +4,7 @@ export class AzleReserved {
     _kind: 'AzleReserved' = 'AzleReserved';
     _azleCandidType?: '_azleCandidType';
 
-    static getIDL() {
+    static getIdl() {
         return IDL.Reserved;
     }
 }

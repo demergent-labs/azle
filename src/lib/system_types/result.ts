@@ -13,7 +13,7 @@ export class AzleResult<T, K> {
 
     _azleCandidType?: '_azleCandidType';
 
-    getIDL(parents: Parent[]) {
+    getIdl(parents: Parent[]) {
         return IDL.Variant({
             Ok: toIdl(this._azleOk, parents),
             Err: toIdl(this._azleErr, parents)

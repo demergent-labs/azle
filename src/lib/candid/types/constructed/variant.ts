@@ -13,7 +13,7 @@ export function Variant<
 }> & { _azleCandidType?: '_azleCandidType' } {
     return {
         ...obj,
-        getIDL(parents: any) {
+        getIdl(parents: any) {
             return IDL.Variant(toIdlMap(obj as CandidMap, parents));
         }
     } as any;
