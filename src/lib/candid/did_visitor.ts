@@ -46,12 +46,14 @@ const CANDID_KEYWORDS = [
 // had the same shape they got merged into one type that had one of the names.
 // That might not be the ideal situation, but it is the expected behavior in rust
 
-export const DEFAULT_VISITOR_DATA: VisitorData = {
-    usedRecClasses: [],
-    isOnService: false,
-    isFirstService: false,
-    systemFuncs: []
-};
+export function getDefaultVisitorData(): VisitorData {
+    return {
+        usedRecClasses: [],
+        isOnService: false,
+        isFirstService: false,
+        systemFuncs: []
+    };
+}
 
 export function didResultToCandidString(result: VisitorResult): string {
     const [candid, candidTypeDefs] = result;

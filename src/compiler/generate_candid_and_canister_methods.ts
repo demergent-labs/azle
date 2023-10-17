@@ -1,6 +1,6 @@
 import { CanisterMethods } from './utils/types';
 import {
-    DEFAULT_VISITOR_DATA,
+    getDefaultVisitorData,
     didResultToCandidString,
     DidVisitor
 } from '../lib/candid/did_visitor';
@@ -37,7 +37,7 @@ export function generateCandidAndCanisterMethods(mainJs: string): {
     const canisterMethods = (sandbox.exports as any).canisterMethods;
 
     const candidInfo = canisterMethods.getIDL([]).accept(new DidVisitor(), {
-        ...DEFAULT_VISITOR_DATA,
+        ...getDefaultVisitorData(),
         isFirstService: true,
         systemFuncs: canisterMethods.getSystemFunctionIDLs()
     });
