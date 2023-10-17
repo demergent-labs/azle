@@ -249,7 +249,8 @@ fn get_guard_token_stream(
                     let context = context.as_mut().unwrap();
 
                     let global = context.global_object().unwrap();
-                    let guard_function = global.get_property(#guard_name).unwrap();
+                    let guard_functions = global.get_property("_azleGuardFunctions").unwrap();
+                    let guard_function = guard_functions.get_property(#guard_name).unwrap();
 
                     // TODO I am not sure what the first parameter to call is supposed to be
                     let result = guard_function.call(&guard_function, &[]);

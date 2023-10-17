@@ -1,14 +1,14 @@
 service: () -> {
+    callExpressionWithEmptyOptionsObject: () -> (bool) query;
+    callExpressionWithoutOptionsObject: () -> (bool) query;
+    customErrorGuarded: () -> (bool) query;
+    errorStringGuarded: () -> (bool) query;
     getCounter: () -> (nat32) query;
     identifierAnnotation: () -> (bool) query;
-    callExpressionWithoutOptionsObject: () -> (bool) query;
-    callExpressionWithEmptyOptionsObject: () -> (bool) query;
     looselyGuarded: () -> (bool) query;
     looselyGuardedManual: () -> (bool) query;
     looselyGuardedWithGuardOptionKeyAsString: () -> (bool) query;
     modifyStateGuarded: () -> (bool);
-    tightlyGuarded: () -> (bool) query;
-    errorStringGuarded: () -> (bool) query;
-    customErrorGuarded: () -> (bool) query;
     nonStringErrValueGuarded: () -> (bool) query;
+    tightlyGuarded: () -> (bool) query;
 }

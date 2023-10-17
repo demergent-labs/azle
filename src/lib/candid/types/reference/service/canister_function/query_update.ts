@@ -67,7 +67,7 @@ function createGlobalGuard(
 
     const guardName = `_azleGuard_${guardedMethodName}`;
 
-    (globalThis as any)[guardName] = guard;
+    globalThis._azleGuardFunctions[guardName] = guard;
 
     return guardName;
 }

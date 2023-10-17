@@ -33,7 +33,7 @@ export function setTimerInterval(
         )
     );
 
-    globalThis.icTimers[timerId.toString()] = timerCallbackId;
+    globalThis._azleIcTimers[timerId.toString()] = timerCallbackId;
 
     // We don't delete this even if the callback throws because
     // it still needs to be here for the next tick
