@@ -27,11 +27,7 @@ import {
     TsCompilationError,
     TsSyntaxErrorLocation
 } from './utils/types';
-import {
-    generateLibCargoToml,
-    generateWorkspaceCargoLock,
-    generateWorkspaceCargoToml
-} from './generate_cargo_toml_files';
+import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 import { copySync } from 'fs-extra';
@@ -84,8 +80,6 @@ async function azle() {
             const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
                 canisterConfig.opt_level ?? '0'
             );
-            const workspaceCargoLock: Toml = generateWorkspaceCargoLock();
-            const libCargoToml: Toml = generateLibCargoToml(canisterName, '');
 
             const { candid, canisterMethods } =
                 generateCandidAndCanisterMethods(canisterJavaScript);

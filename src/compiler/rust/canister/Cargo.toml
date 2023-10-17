@@ -10,7 +10,7 @@ crate-type = ["cdylib"]
 anyhow = "1.0.75"
 candid = { version = "0.9.1", features = ["parser"] }
 ic-cdk-timers = "0.4.0"
-ic-stable-structures = "0.6.0-beta.1"
+ic-stable-structures = "0.6.0"
 canister_methods = { path = "../canister_methods" }
 quickjs-wasm-rs = { git = "https://github.com/ulan/javy.git", branch = "ulan/local-changes" }
 slotmap = "=1.0.6"
