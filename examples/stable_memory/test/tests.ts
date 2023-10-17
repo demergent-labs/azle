@@ -2,9 +2,9 @@ import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/stable_memory/stable_memory.did';
 import { ActorSubclass } from '@dfinity/agent';
 
-const PAGE_SIZE = 65_536;
-const MAX_STABLE_MEM_PAGES = 65_536;
-const MAX_STABLE64_MEM_PAGES = 1_048_576n;
+const PAGE_SIZE = 65_536; // This should currently remain constant
+const MAX_STABLE_MEM_PAGES = 65_536; // This will always remain constant
+const MAX_STABLE64_MEM_PAGES = 1_572_864n; // (# Gib * 2^30) / PAGE_SIZE
 const STABLE_BYTES_SIZE = 655_360;
 
 export function getTests(
@@ -49,9 +49,8 @@ export function getTests(
             test: async () => {
                 const oldSize = await stableMemoryCanister.stable64Size();
                 const newPages = 5n;
-                const result = await stableMemoryCanister.stable64Grow(
-                    newPages
-                );
+                const result =
+                    await stableMemoryCanister.stable64Grow(newPages);
                 const newSize = await stableMemoryCanister.stable64Size();
 
                 return {
@@ -210,7 +209,7 @@ export function getTests(
                     };
                 }
                 return {
-                    Err: 'canister did run out of memory'
+                    Err: 'canister did not run out of memory'
                 };
             }
         },
@@ -219,9 +218,8 @@ export function getTests(
             test: async () => {
                 const oldSize = await stableMemoryCanister.stable64Size();
                 const newPages = MAX_STABLE64_MEM_PAGES - oldSize;
-                const result = await stableMemoryCanister.stable64Grow(
-                    newPages
-                );
+                const result =
+                    await stableMemoryCanister.stable64Grow(newPages);
                 const newSize = await stableMemoryCanister.stable64Size();
 
                 return {
@@ -242,7 +240,7 @@ export function getTests(
                     };
                 }
                 return {
-                    Err: 'canister did run out of memory'
+                    Err: 'canister did not run out of memory'
                 };
             }
         }

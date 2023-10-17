@@ -9,7 +9,7 @@
 -   Latency ~2-5 seconds
 -   [20 billion Wasm instruction limit](https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits)
 -   4 GiB heap limit
--   64 GiB stable memory limit
+-   96 GiB stable memory limit
 -   [~900 updates per second per canister](https://forum.dfinity.org/t/what-is-the-theroretical-number-for-txns-per-second-on-internet-computer-right-now/14039/6)
 
 Update methods are similar to query methods, but state changes can be persisted. Here's an example of a simple update method:
@@ -71,7 +71,7 @@ export default Canister({
 });
 ```
 
-If you need more than 4 GiB of storage, consider taking advantage of the 64 GiB of stable memory. Stable structures like `StableBTreeMap` give you a nice API for interacting with stable memory. These data structures will be [covered in more detail later](./stable_structures.md). Here's a simple example:
+If you need more than 4 GiB of storage, consider taking advantage of the 96 GiB of stable memory. Stable structures like `StableBTreeMap` give you a nice API for interacting with stable memory. These data structures will be [covered in more detail later](./stable_structures.md). Here's a simple example:
 
 ```typescript
 import { Canister, Opt, query, StableBTreeMap, text, update, Void } from 'azle';
