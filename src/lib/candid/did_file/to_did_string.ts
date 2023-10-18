@@ -1,4 +1,4 @@
-import { CandidTypesDefs, VisitorResult } from './visitor.ts/index.js';
+import { CandidTypesDefs, VisitorResult } from './visitor/index.js';
 
 export function toDidString(result: VisitorResult): string {
     // TODO it would be nice to have names for the rec types instead of rec_1, rec_2 etc
@@ -9,17 +9,17 @@ export function toDidString(result: VisitorResult): string {
     // That might not be the ideal situation, but it is the expected behavior in rust
 
     const [candid, candidTypeDefs] = result;
-    const candidTypesString = newTypeToCandidString(candidTypeDefs);
+    const candidTypesString = namedTypeToCandidString(candidTypeDefs);
     return candidTypesString + candid + '\n';
 }
 
-function newTypeToCandidString(newTypes: CandidTypesDefs): string {
+function namedTypeToCandidString(newTypes: CandidTypesDefs): string {
     return Object.entries(newTypes).length > 0
-        ? newTypesToStingArr(newTypes).join('\n') + '\n'
+        ? namedTypesToStingArr(newTypes).join('\n') + '\n'
         : '';
 }
 
-function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
+function namedTypesToStingArr(newTypes: CandidTypesDefs): string[] {
     return Object.entries(newTypes).map(
         ([name, candid]) => `type ${name} = ${candid};`
     );

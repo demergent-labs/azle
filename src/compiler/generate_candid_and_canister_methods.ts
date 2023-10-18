@@ -2,7 +2,7 @@ import { CanisterMethods } from './utils/types';
 import {
     getDefaultVisitorData,
     DidVisitor
-} from '../lib/candid/did_file/visitor.ts';
+} from '../lib/candid/did_file/visitor';
 import { toDidString } from '../lib/candid/did_file';
 
 export function generateCandidAndCanisterMethods(mainJs: string): {
