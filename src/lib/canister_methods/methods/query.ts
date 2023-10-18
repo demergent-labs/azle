@@ -1,11 +1,9 @@
-import {
-    Callback,
-    CanisterMethodInfo,
-    MethodArgs,
-    executeMethod,
-    isAsync
-} from '.';
-import { CandidType, TypeMapping } from '../candid';
+import { CandidType, TypeMapping } from '../../candid';
+import { Callback } from '../callback';
+import { CanisterMethodInfo } from '../canister_method_info';
+import { executeMethod } from '../execute_method';
+import { isAsync } from '../is_async';
+import { MethodArgs } from '../method_args';
 
 export function query<
     const Params extends ReadonlyArray<CandidType>,

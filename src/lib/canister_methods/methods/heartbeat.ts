@@ -1,17 +1,14 @@
-import { CanisterMethodInfo, executeMethod, isAsync } from '.';
-import { ic } from '../ic';
-import { Void } from '../candid/types/primitive/void';
+import { ic } from '../../ic';
+import { Void } from '../../candid/types/primitive/void';
+import { CanisterMethodInfo } from '../canister_method_info';
+import { isAsync } from '../is_async';
 
 export function heartbeat(
     callback: () => void | Promise<void>
 ): CanisterMethodInfo<[], Void> {
-    const finalCallback = () => {
-        executeHeartbeat(callback);
-    };
-
     return {
         mode: 'heartbeat',
-        callback: finalCallback,
+        callback: executeHeartbeat,
         paramCandidTypes: [],
         returnCandidType: Void,
         async: isAsync(callback),
