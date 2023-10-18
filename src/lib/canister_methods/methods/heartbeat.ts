@@ -8,7 +8,7 @@ export function heartbeat(
 ): CanisterMethodInfo<[], Void> {
     return {
         mode: 'heartbeat',
-        callback: executeHeartbeat,
+        callback: () => executeHeartbeat(callback),
         paramCandidTypes: [],
         returnCandidType: Void,
         async: isAsync(callback),
