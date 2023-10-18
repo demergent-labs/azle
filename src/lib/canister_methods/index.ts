@@ -48,27 +48,6 @@ export function executeMethod(
     returnCandidType: CandidType,
     manual: boolean
 ) {
-    if (mode === 'heartbeat') {
-        const result = callback();
-
-        if (
-            result !== undefined &&
-            result !== null &&
-            typeof result.then === 'function'
-        ) {
-            result.catch((error: any) => {
-                ic.trap(error.toString());
-            });
-        }
-
-        return;
-    }
-
-    if (mode === 'preUpgrade') {
-        callback();
-        return;
-    }
-
     const decodedArgs = decode(paramCandidTypes, args[0]);
 
     const result = callback(...decodedArgs);

@@ -5,7 +5,7 @@ export function preUpgrade(
     callback: () => void | Promise<void>
 ): CanisterMethodInfo<[], Void> {
     const finalCallback = (...args: any[]) => {
-        executeMethod('preUpgrade', args, callback, [], Void, false);
+        callback();
     };
 
     return {
