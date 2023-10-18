@@ -1,5 +1,5 @@
-import { Void } from '../../../examples/robust_imports/src/import_coverage/types';
 import { blob } from '../candid/types/constructed/blob';
+import { Void } from '../candid/types/primitive/void';
 
 /**
  * Used to manually reply to an ingress message. Intended to be used in

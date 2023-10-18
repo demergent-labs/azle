@@ -17,5 +17,5 @@ export function clearTimer(timerId: TimerId): Void {
     const timerCallbackId = globalThis._azleIcTimers[timerId.toString()];
 
     delete globalThis._azleIcTimers[timerId.toString()];
-    delete globalThis._azleTimerCallbackIds[timerCallbackId];
+    delete globalThis._azleTimerCallbacks[timerCallbackId];
 }

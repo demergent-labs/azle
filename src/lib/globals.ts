@@ -7,7 +7,7 @@ declare global {
     var _azleResolveIds: { [key: string]: (buf: ArrayBuffer) => void };
     var _azleRejectIds: { [key: string]: (err: any) => void };
     var _azleIcTimers: { [key: string]: string };
-    var _azleTimerCallbackIds: { [key: string]: () => void };
+    var _azleTimerCallbacks: { [key: string]: () => void };
     var _azleGuardFunctions: { [key: string]: () => any };
 }
 
@@ -16,7 +16,7 @@ globalThis.TextEncoder = require('text-encoding').TextEncoder;
 globalThis._azleIcTimers = {};
 globalThis._azleResolveIds = {};
 globalThis._azleRejectIds = {};
-globalThis._azleTimerCallbackIds = {};
+globalThis._azleTimerCallbacks = {};
 globalThis._azleGuardFunctions = {};
 
 globalThis.console = {

@@ -37,7 +37,7 @@ export function setTimerInterval(
 
     // We don't delete this even if the callback throws because
     // it still needs to be here for the next tick
-    globalThis._azleTimerCallbackIds[timerCallbackId] = callback;
+    globalThis._azleTimerCallbacks[timerCallbackId] = callback;
 
     return timerId;
 }
