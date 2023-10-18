@@ -3,7 +3,7 @@ import { AzleIc } from './ic/types/azle_ic';
 import { Buffer } from 'buffer';
 
 declare global {
-    var _azleIc: AzleIc;
+    var _azleIc: AzleIc | undefined;
     var _azleResolveIds: { [key: string]: (buf: ArrayBuffer) => void };
     var _azleRejectIds: { [key: string]: (err: any) => void };
     var _azleIcTimers: { [key: string]: string };
@@ -13,7 +13,7 @@ declare global {
 
 globalThis.TextDecoder = require('text-encoding').TextDecoder;
 globalThis.TextEncoder = require('text-encoding').TextEncoder;
-globalThis._azleIcTimers ||= {};
+globalThis._azleIcTimers = {};
 globalThis._azleResolveIds = {};
 globalThis._azleRejectIds = {};
 globalThis._azleTimerCallbackIds = {};

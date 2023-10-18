@@ -8,11 +8,12 @@ export function StableBTreeMap<
     Key extends CandidType,
     Value extends CandidType
 >(keyType: Key, valueType: Value, memoryId: nat8) {
+    if (globalThis._azleIc === undefined) {
+        return undefined as any;
+    }
     const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
 
-    if (globalThis._azleIc !== undefined) {
-        globalThis._azleIc.stableBTreeMapInit(candidEncodedMemoryId);
-    }
+    globalThis._azleIc.stableBTreeMapInit(candidEncodedMemoryId);
 
     return {
         /**
@@ -21,6 +22,10 @@ export function StableBTreeMap<
          * @returns `true` if the key exists in the map, `false` otherwise.
          */
         containsKey(key: TypeMapping<Key>): boolean {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
             const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
             const candidEncodedKey = encode(keyType, key).buffer;
 
@@ -35,6 +40,10 @@ export function StableBTreeMap<
          * @returns the value associated with the given key, if it exists.
          */
         get(key: TypeMapping<Key>): Opt<TypeMapping<Value>> {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
             const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
             const candidEncodedKey = encode(keyType, key).buffer;
 
@@ -59,6 +68,10 @@ export function StableBTreeMap<
             key: TypeMapping<Key>,
             value: TypeMapping<Value>
         ): Opt<TypeMapping<Value>> {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
             const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
             const candidEncodedKey = encode(keyType, key).buffer;
             const candidEncodedValue = encode(valueType, value).buffer;
@@ -81,6 +94,10 @@ export function StableBTreeMap<
          * @returns `true` if the map contains no elements, `false` otherwise.
          */
         isEmpty(): boolean {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
             const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
 
             return globalThis._azleIc.stableBTreeMapIsEmpty(
@@ -92,6 +109,10 @@ export function StableBTreeMap<
          * @returns tuples representing key/value pairs.
          */
         items(): [TypeMapping<Key>, TypeMapping<Value>][] {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
             const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
 
             const candidEncodedItems = globalThis._azleIc.stableBTreeMapItems(
@@ -111,6 +132,10 @@ export function StableBTreeMap<
          * @returns they keys in the map.
          */
         keys(): TypeMapping<Key>[] {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
             const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
 
             const candidEncodedKeys = globalThis._azleIc.stableBTreeMapKeys(
@@ -127,6 +152,10 @@ export function StableBTreeMap<
          * @returns the number of elements in the map.
          */
         len(): nat64 {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
             const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
 
             const candidEncodedLen = globalThis._azleIc.stableBTreeMapLen(
@@ -141,6 +170,10 @@ export function StableBTreeMap<
          * @returns the previous value at the key if it exists, `null` otherwise.
          */
         remove(key: TypeMapping<Key>): Opt<TypeMapping<Value>> {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
             const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
             const candidEncodedKey = encode(keyType, key).buffer;
 
@@ -160,6 +193,10 @@ export function StableBTreeMap<
          * @returns the values in the map.
          */
         values(): TypeMapping<Value>[] {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
             const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
 
             const candidEncodedValues = globalThis._azleIc.stableBTreeMapValues(

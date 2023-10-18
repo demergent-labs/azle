@@ -28,6 +28,10 @@ export function callRaw128(
 
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
+        if (globalThis._azleIc === undefined) {
+            return undefined as any;
+        }
+
         const promiseId = v4();
         const globalResolveId = `_resolve_${promiseId}`;
         const globalRejectId = `_reject_${promiseId}`;
