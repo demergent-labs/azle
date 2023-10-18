@@ -1,5 +1,13 @@
 import { IDL } from '@dfinity/candid';
 import { visitService } from './visit_service';
+import { visitVariant } from './visit_variant';
+import { visitRecord } from './visit_record';
+import { visitRecursive } from './visit_recursive';
+import { visitPrimitive } from './visit_primitive';
+import { visitTuple } from './visit_tuple';
+import { visitOpt } from './visit_opt';
+import { visitVec } from './visit_vec';
+import { visitFunc } from './visit_func';
 
 export type VisitorData = {
     usedRecClasses: IDL.RecClass[];
@@ -7,7 +15,7 @@ export type VisitorData = {
     isFirstService: boolean;
     systemFuncs: IDL.FuncClass[];
 };
-type VisitorResult = [CandidDef, CandidTypesDefs];
+export type VisitorResult = [CandidDef, CandidTypesDefs];
 
 export type TypeName = string;
 export type CandidDef = string;
@@ -40,13 +48,6 @@ const CANDID_KEYWORDS = [
     'vec'
 ];
 
-// TODO it would be nice to have names for the rec types instead of rec_1, rec_2 etc
-// TODO Once types have names we should deduplicate the init and post_upgrade param types
-// TODO maybe even before we have names we should deduplicate all sorts of types
-// The rust to candid converter we were using did have names, but if two things
-// had the same shape they got merged into one type that had one of the names.
-// That might not be the ideal situation, but it is the expected behavior in rust
-
 export function getDefaultVisitorData(): VisitorData {
     return {
         usedRecClasses: [],
@@ -57,6 +58,13 @@ export function getDefaultVisitorData(): VisitorData {
 }
 
 export function didResultToCandidString(result: VisitorResult): string {
+    // TODO it would be nice to have names for the rec types instead of rec_1, rec_2 etc
+    // TODO Once types have names we should deduplicate the init and post_upgrade param types
+    // TODO maybe even before we have names we should deduplicate all sorts of types
+    // The rust to candid converter we were using did have names, but if two things
+    // had the same shape they got merged into one type that had one of the names.
+    // That might not be the ideal situation, but it is the expected behavior in rust
+
     const [candid, candidTypeDefs] = result;
     const candidTypesString = newTypeToCandidString(candidTypeDefs);
     return candidTypesString + candid + '\n';
@@ -68,108 +76,54 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
     }
     visitPrimitive<T>(
         t: IDL.PrimitiveType<T>,
-        data: VisitorData
+        _data: VisitorData
     ): VisitorResult {
-        return [t.display(), {}];
+        return visitPrimitive(t);
     }
     visitTuple<T extends any[]>(
-        t: IDL.TupleClass<T>,
+        _t: IDL.TupleClass<T>,
         components: IDL.Type<any>[],
         data: VisitorData
     ): VisitorResult {
-        const fields = components.map((value) =>
-            value.accept(this, { ...data, isOnService: false })
-        );
-        const candid = extractCandid(fields);
-        return [`record {${candid[0].join('; ')}}`, candid[1]];
+        return visitTuple(components, this, data);
     }
     visitOpt<T>(
-        t: IDL.OptClass<T>,
+        _t: IDL.OptClass<T>,
         ty: IDL.Type<T>,
         data: VisitorData
     ): VisitorResult {
-        const candid = ty.accept(this, { ...data, isOnService: false });
-        return [`opt ${candid[0]}`, candid[1]];
+        return visitOpt(ty, this, data);
     }
     visitVec<T>(
-        t: IDL.VecClass<T>,
+        _t: IDL.VecClass<T>,
         ty: IDL.Type<T>,
         data: VisitorData
     ): VisitorResult {
-        const candid = ty.accept(this, { ...data, isOnService: false });
-        return [`vec ${candid[0]}`, candid[1]];
+        return visitVec(ty, this, data);
     }
     visitFunc(t: IDL.FuncClass, data: VisitorData): VisitorResult {
-        const argsTypes = t.argTypes.map((value) =>
-            value.accept(this, { ...data, isOnService: false })
-        );
-        const candidArgs = extractCandid(argsTypes);
-        const retsTypes = t.retTypes.map((value) =>
-            value.accept(this, { ...data, isOnService: false })
-        );
-        const candidRets = extractCandid(retsTypes);
-        const args = candidArgs[0].join(', ');
-        const rets = candidRets[0].join(', ');
-        const annon =
-            t.annotations.length === 0 ? '' : ' ' + t.annotations.join(' ');
-        return [
-            `${data.isOnService ? '' : 'func '}(${args}) -> (${rets})${annon}`,
-            { ...candidArgs[1], ...candidRets[1] }
-        ];
+        return visitFunc(t, this, data);
     }
     visitRec<T>(
         t: IDL.RecClass<T>,
         ty: IDL.ConstructType<T>,
         data: VisitorData
     ): VisitorResult {
-        // For RecClasses the definition will be the name, that name will
-        // reference the actual definition which will be added to the list of
-        // candid type defs that will get put at the top of the candid file
-        // Everything else will just be the normal inline candid def
-        const usedRecClasses = data.usedRecClasses;
-        if (!usedRecClasses.includes(t)) {
-            const candid = ty.accept(this, {
-                ...data,
-                usedRecClasses: [...usedRecClasses, t],
-                isOnService: false,
-                isFirstService: false
-            });
-            return [t.name, { ...candid[1], [t.name]: candid[0] }];
-        }
-        // If our list already includes this rec class then just return, we don't
-        // need the list because we will get it when we go through the arm above
-        return [t.name, {}];
+        return visitRecursive(t, ty, this, data);
     }
     visitRecord(
-        t: IDL.RecordClass,
+        _t: IDL.RecordClass,
         fields: [string, IDL.Type<any>][],
         data: VisitorData
     ): VisitorResult {
-        const candidFields = fields.map(([key, value]) =>
-            value.accept(this, { ...data, isOnService: false })
-        );
-        const candid = extractCandid(candidFields);
-        const field_strings = fields.map(
-            ([key, value], index) =>
-                escapeCandidKeywords(key) + ':' + candid[0][index]
-        );
-        return [`record {${field_strings.join('; ')}}`, candid[1]];
+        return visitRecord(fields, this, data);
     }
     visitVariant(
-        t: IDL.VariantClass,
+        _t: IDL.VariantClass,
         fields: [string, IDL.Type<any>][],
         data: VisitorData
     ): VisitorResult {
-        const candidFields = fields.map(([key, value]) =>
-            value.accept(this, { ...data, isOnService: false })
-        );
-        const candid = extractCandid(candidFields);
-        const fields_string = fields.map(
-            ([key, value], index) =>
-                escapeCandidKeywords(key) +
-                (value.name === 'null' ? '' : ':' + candid[0][index])
-        );
-        return [`variant {${fields_string.join('; ')}}`, candid[1]];
+        return visitVariant(fields, this, data);
     }
 }
 
