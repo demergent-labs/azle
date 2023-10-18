@@ -25,7 +25,7 @@ type CallableObject<T extends CanisterOptions> = {
 
 type _AzleCanisterReturnType = {
     (parentOrPrincipal: _AzleRecursiveFunction | Principal): void;
-    _azleIsCanister?: boolean;
+    isCanister?: boolean;
 };
 
 export function Canister<T extends CanisterOptions>(
@@ -40,6 +40,6 @@ export function Canister<T extends CanisterOptions>(
 
         return canisterFunction;
     };
-    result._azleIsCanister = true;
+    result.isCanister = true;
     return result as any;
 }

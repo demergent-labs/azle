@@ -4,14 +4,14 @@ import { IDL } from '@dfinity/candid';
 
 export class AzleTuple<T extends any[]> {
     constructor(t: CandidType[]) {
-        this._azleTypes = t;
+        this.innerTypes = t;
     }
 
-    _azleTypes: CandidType[];
+    innerTypes: CandidType[];
     _azleCandidType?: '_azleCandidType';
 
     getIdl(parents: Parent[]) {
-        const idls = this._azleTypes.map((value) => {
+        const idls = this.innerTypes.map((value) => {
             return toIdl(value, parents);
         });
         return IDL.Tuple(...idls);

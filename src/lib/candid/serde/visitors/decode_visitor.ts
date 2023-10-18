@@ -58,7 +58,7 @@ export class DecodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
 
         const candid = ty.accept(this, {
             js_data: data.js_data[0],
-            candidType: data.candidType._azleType
+            candidType: data.candidType.innerType
         });
 
         return {

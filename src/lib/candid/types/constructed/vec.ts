@@ -4,14 +4,14 @@ import { IDL } from '@dfinity/candid';
 
 export class AzleVec<T> {
     constructor(t: any) {
-        this._azleType = t;
+        this.innerType = t;
     }
 
-    _azleType: CandidType;
+    innerType: CandidType;
     _azleCandidType?: '_azleCandidType';
 
     getIdl(parents: Parent[]) {
-        return IDL.Vec(toIdl(this._azleType, parents));
+        return IDL.Vec(toIdl(this.innerType, parents));
     }
 }
 

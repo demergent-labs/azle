@@ -2,21 +2,21 @@ import { Parent, toIdl, CandidType } from '../candid';
 import { RequireExactlyOne } from '../candid/types/constructed/variant';
 import { IDL } from '@dfinity/candid';
 
-export class AzleResult<T, K> {
-    constructor(ok: any, err: any) {
-        this._azleOk = ok;
-        this._azleErr = err;
+export class AzleResult<T extends CandidType, K extends CandidType> {
+    constructor(ok: T, err: K) {
+        this.Ok = ok;
+        this.Err = err;
     }
 
-    _azleOk: any;
-    _azleErr: any;
+    Ok: T;
+    Err: K;
 
     _azleCandidType?: '_azleCandidType';
 
     getIdl(parents: Parent[]) {
         return IDL.Variant({
-            Ok: toIdl(this._azleOk, parents),
-            Err: toIdl(this._azleErr, parents)
+            Ok: toIdl(this.Ok, parents),
+            Err: toIdl(this.Err, parents)
         });
     }
 }

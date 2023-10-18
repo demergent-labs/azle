@@ -57,7 +57,7 @@ export class EncodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         if ('Some' in data.js_data) {
             const candid = ty.accept(this, {
                 js_data: data.js_data.Some,
-                candidType: data.candidType._azleType
+                candidType: data.candidType.innerType
             });
 
             return [candid];

@@ -10,9 +10,9 @@ export function toIdl(
     candidType: CandidType,
     parents: Parent[] = []
 ): IDL.Type<any> {
-    if ('_azleName' in candidType) {
+    if ('azleName' in candidType) {
         const parent = parents.find(
-            (parent) => parent.name === candidType._azleName
+            (parent) => parent.name === candidType.azleName
         );
         // If the parent isn't undefined (ie we found one with the same name)
         // this is a recursive type and we should return the parent rec idl
@@ -21,7 +21,7 @@ export function toIdl(
             return parent.idl;
         }
     }
-    if ('_azleIsCanister' in candidType && candidType._azleIsCanister) {
+    if ('isCanister' in candidType && candidType.isCanister) {
         return toIdl((candidType as any)(), parents);
     }
     // All CandidTypes ought to have a getIdl function defined for them

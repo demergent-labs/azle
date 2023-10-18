@@ -30,7 +30,7 @@ export function visitTuple(
     const fields = components.map((value, index) =>
         value.accept(visitor, {
             js_data: data.js_data[index],
-            candidType: data.candidType._azleTypes[index]
+            candidType: data.candidType.innerTypes[index]
         })
     );
     return [...fields];
@@ -47,7 +47,7 @@ export function visitVec(
     return data.js_data.map((array_elem: any) => {
         return ty.accept(visitor, {
             js_data: array_elem,
-            candidType: data.candidType._azleType
+            candidType: data.candidType.innerType
         });
     });
 }
@@ -90,7 +90,7 @@ export function visitRec<T>(
     data: VisitorData
 ): VisitorResult {
     let candidType = data.candidType();
-    if (candidType._azleIsCanister) {
+    if (candidType.isCanister) {
         candidType = candidType([]);
     }
     return ty.accept(visitor, {
@@ -108,7 +108,7 @@ function visitAzleResult(
         const OK_FIELD_INDEX = 0;
         const okField = fields[OK_FIELD_INDEX];
         const okData = data.js_data['Ok'];
-        const okClass = data.candidType._azleOk;
+        const okClass = data.candidType.Ok;
 
         return Result.Ok(
             okField[1].accept(visitor, {
@@ -121,7 +121,7 @@ function visitAzleResult(
         const ERR_FIELD_INDEX = 1;
         const errField = fields[ERR_FIELD_INDEX];
         const errData = data.js_data['Err'];
-        const errClass = data.candidType._azleErr;
+        const errClass = data.candidType.Err;
         return Result.Err(
             errField[1].accept(visitor, {
                 js_data: errData,

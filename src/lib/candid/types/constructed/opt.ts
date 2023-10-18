@@ -28,14 +28,14 @@ export function Opt<T>(t: T): AzleOpt<T> {
 
 export class AzleOpt<T> {
     constructor(t: any) {
-        this._azleType = t;
+        this.innerType = t;
     }
 
-    _azleType: CandidType;
+    innerType: CandidType;
     _azleCandidType?: '_azleCandidType';
     _kind: 'AzleOpt' = 'AzleOpt';
 
     getIdl(parents: Parent[]) {
-        return IDL.Opt(toIdl(this._azleType, parents));
+        return IDL.Opt(toIdl(this.innerType, parents));
     }
 }
