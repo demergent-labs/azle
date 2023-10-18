@@ -3,7 +3,7 @@ import { _AzleRecursiveFunction } from '../../../../recursive';
 import { ic } from '../../../../../ic';
 import { Principal } from '../../principal';
 import { IDL } from '@dfinity/candid';
-import { CanisterMethodInfo } from '../../../../../canister_methods/canister_method_info';
+import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';
 import { decode, encode } from '../../../../serde';
 import { createQueryMethods, createUpdateMethods } from './query_update';
 import {

@@ -1,7 +1,7 @@
 import { ic } from '../ic';
 import { CandidType, TypeMapping } from '../candid';
 import { decode, encode } from '../candid/serde';
-import { CanisterMethodInfo } from './canister_method_info';
+import { CanisterMethodInfo } from './types/canister_method_info';
 
 export function executeMethod(
     mode: CanisterMethodInfo<any, any>['mode'],

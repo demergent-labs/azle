@@ -1,4 +1,3 @@
-import { IDL } from '@dfinity/candid';
 import { Void } from '../candid/types/primitive/void';
 import { TimerId } from './types';
 import { encode } from '../candid/serde';

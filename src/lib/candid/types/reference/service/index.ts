@@ -1,7 +1,7 @@
+import { CanisterMethodInfo } from '../../../../canister_methods/types/canister_method_info';
 import { TypeMapping } from '../../../index';
 import { _AzleRecursiveFunction } from '../../../recursive';
 import { Principal } from '../principal';
-import { CanisterMethodInfo } from '../../../../canister_methods';
 import { createCanisterFunction } from './canister_function';
 
 type CanisterOptions = {

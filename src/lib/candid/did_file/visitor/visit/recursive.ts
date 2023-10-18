@@ -1,5 +1,5 @@
 import { IDL } from '@dfinity/candid';
-import { DidVisitor, VisitorData, VisitorResult } from '.';
+import { DidVisitor, VisitorData, VisitorResult } from '..';
 
 export function visitRecursive<T>(
     t: IDL.RecClass<T>,

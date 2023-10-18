@@ -1,7 +1,7 @@
 import { IDL } from '@dfinity/candid';
-import { CandidDef, CandidTypesDefs, DidVisitor, VisitorData } from '.';
-import { escapeCandidKeywords } from './escapeCandidKeywords';
-import { extractCandid } from './extract_candid';
+import { CandidDef, CandidTypesDefs, DidVisitor, VisitorData } from '..';
+import { escapeCandidKeywords } from '../escape_candid_keywords';
+import { extractCandid } from '../extract_candid';
 
 export function visitService(
     t: IDL.ServiceClass,

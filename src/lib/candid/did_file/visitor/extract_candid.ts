@@ -1,4 +1,4 @@
-import { CandidDef, CandidTypesDefs } from '.';
+import { CandidDef, CandidTypesDefs } from './did_visitor';
 
 export function extractCandid(
     paramInfo: [CandidDef, CandidTypesDefs][]

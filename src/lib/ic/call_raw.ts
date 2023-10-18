@@ -1,4 +1,3 @@
-import { IDL } from '@dfinity/candid';
 import { Principal } from '@dfinity/principal';
 import { blob } from '../candid/types/constructed/blob';
 import { nat64 } from '../candid/types/primitive/nats/nat64';

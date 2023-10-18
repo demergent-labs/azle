@@ -1,11 +1,11 @@
 import { IDL } from '@dfinity/candid';
-import { DidVisitor, VisitorData, VisitorResult } from '.';
+import { DidVisitor, VisitorData, VisitorResult } from '..';
 
-export function visitOpt<T>(
+export function visitVec<T>(
     ty: IDL.Type<T>,
     didVisitor: DidVisitor,
     data: VisitorData
 ): VisitorResult {
     const candid = ty.accept(didVisitor, { ...data, isOnService: false });
-    return [`opt ${candid[0]}`, candid[1]];
+    return [`vec ${candid[0]}`, candid[1]];
 }

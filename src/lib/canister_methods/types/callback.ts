@@ -1,4 +1,4 @@
-import { CandidType, TypeMapping } from '../candid';
+import { CandidType, TypeMapping } from '../../candid';
 
 export type Callback<
     Params extends ReadonlyArray<CandidType>,
