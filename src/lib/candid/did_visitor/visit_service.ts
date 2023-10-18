@@ -36,8 +36,8 @@ export function visitService(
 function serviceToCandidString(
     t: IDL.ServiceClass,
     canisterMethodCandidStrings: string[],
-    initMethodCandidString: string,
-    postMethodCandidString: string,
+    initMethodCandidString: string[],
+    postMethodCandidString: string[],
     candidTypes: CandidTypesDefs,
     isFirstService: boolean
 ): [CandidDef, CandidTypesDefs] {
@@ -70,7 +70,7 @@ function getSystemMethod(
     methodName: 'init' | 'postUpgrade',
     didVisitor: DidVisitor,
     data: VisitorData
-): [CandidDef, CandidTypesDefs] {
+): [CandidDef[], CandidTypesDefs] {
     const isInitFunction = (func: IDL.FuncClass) =>
         func.annotations.includes(methodName);
     const result = extractCandid(
@@ -85,13 +85,13 @@ function getSystemMethod(
             )
     );
 
-    if (result[0].length !== 1) {
+    if (result[0].length > 1) {
         console.log(
-            `WARNING: wrong number of ${methodName} methods detected. Expected 1 found ${result[0].length}`
+            `WARNING: too many ${methodName} methods detected. Expected no more than 1, found ${result[0].length}`
         );
     }
 
-    return [result[0][0], result[1]];
+    return [result[0], result[1]];
 }
 
 function getQueryAndUpdateMethods(
@@ -111,8 +111,8 @@ function getQueryAndUpdateMethods(
 }
 
 function createCanisterParamsString(
-    initMethodCandidString: string,
-    postMethodCandidString: string
+    initMethodCandidString: string[],
+    postMethodCandidString: string[]
 ): string {
     if (initMethodCandidString.length === 0) {
         if (postMethodCandidString.length === 0) {
