@@ -1,6 +1,6 @@
 import { CandidType, TypeMapping, Parent } from '../../index';
 import { IDL } from '@dfinity/candid';
-import { toIdlMap, CandidMap } from '../constructed';
+import { toIdlMap, CandidMap } from './to_idl_map';
 
 export function Record<
     T extends {

@@ -1,5 +1,5 @@
 import { CandidType, TypeMapping } from '../..';
-import { toIdlMap, CandidMap } from '.';
+import { toIdlMap, CandidMap } from './to_idl_map';
 import { IDL } from '@dfinity/candid';
 
 export function Variant<
