@@ -1,7 +1,6 @@
-import { IDL } from '@dfinity/candid';
 import { Void } from '../candid/types/primitive/void';
-import { TimerId } from './types';
-import { encode } from '../candid/serde';
+import { TimerId } from './types/timer_id';
+import { encode } from '../candid/serde/encode';
 
 /**
  * Cancels an existing timer. Does nothing if the timer has already been canceled.
@@ -14,8 +13,8 @@ export function clearTimer(timerId: TimerId): Void {
 
     globalThis._azleIc.clearTimer(encode(TimerId, timerId).buffer);
 
-    const timerCallbackId = globalThis.icTimers[timerId.toString()];
+    const timerCallbackId = globalThis._azleIcTimers[timerId.toString()];
 
-    delete globalThis.icTimers[timerId.toString()];
-    delete globalThis._azleTimerCallbackIds[timerCallbackId];
+    delete globalThis._azleIcTimers[timerId.toString()];
+    delete globalThis._azleTimerCallbacks[timerCallbackId];
 }

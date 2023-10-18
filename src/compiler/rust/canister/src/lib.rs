@@ -81,8 +81,7 @@ fn execute_js(function_name: &str, pass_arg_data: bool) {
         let exports = global.get_property("exports").unwrap();
         let canister_methods = exports.get_property("canisterMethods").unwrap();
         let callbacks = canister_methods.get_property("callbacks").unwrap();
-        let method_callbacks = callbacks.get_property(function_name).unwrap();
-        let canister_method_callback = method_callbacks.get_property("canisterCallback").unwrap();
+        let method_callback = callbacks.get_property(function_name).unwrap();
 
         let candid_args = if pass_arg_data {
             ic_cdk::api::call::arg_data_raw()
@@ -94,8 +93,8 @@ fn execute_js(function_name: &str, pass_arg_data: bool) {
         let candid_args_js_value_ref = to_qjs_value(&context, &candid_args_js_value).unwrap();
 
         // TODO I am not sure what the first parameter to call is supposed to be
-        canister_method_callback
-            .call(&canister_method_callback, &[candid_args_js_value_ref])
+        method_callback
+            .call(&method_callback, &[candid_args_js_value_ref])
             .unwrap();
 
         context.execute_pending().unwrap();

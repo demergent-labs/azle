@@ -1,5 +1,6 @@
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { decode, encode } from '../candid/serde';
+import { decode } from '../candid/serde/decode';
+import { encode } from '../candid/serde/encode';
 
 /**
  * Moves cycles from the call to the canister balance
@@ -16,5 +17,5 @@ export function msgCyclesAccept(maxAmount: nat64): nat64 {
     const msgCyclesAcceptCandidBytes =
         globalThis._azleIc.msgCyclesAccept(maxAmountCandidBytes);
 
-    return BigInt(decode(nat64, msgCyclesAcceptCandidBytes) as number);
+    return decode(nat64, msgCyclesAcceptCandidBytes);
 }

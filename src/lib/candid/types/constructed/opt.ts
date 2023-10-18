@@ -1,4 +1,5 @@
-import { CandidType, Parent, toIDLType } from '../../index';
+import { CandidType } from '../../candid_type';
+import { Parent, toIdl } from '../../to_idl';
 import { RequireExactlyOne } from './variant';
 import { IDL } from '@dfinity/candid';
 
@@ -28,14 +29,14 @@ export function Opt<T>(t: T): AzleOpt<T> {
 
 export class AzleOpt<T> {
     constructor(t: any) {
-        this._azleType = t;
+        this.innerType = t;
     }
 
-    _azleType: CandidType;
+    innerType: CandidType;
     _azleCandidType?: '_azleCandidType';
-    _kind: 'AzleOpt' = 'AzleOpt';
+    _azleKind: 'AzleOpt' = 'AzleOpt';
 
-    getIDL(parents: Parent[]) {
-        return IDL.Opt(toIDLType(this._azleType, parents));
+    getIdl(parents: Parent[]) {
+        return IDL.Opt(toIdl(this.innerType, parents));
     }
 }

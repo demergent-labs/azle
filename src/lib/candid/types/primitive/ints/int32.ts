@@ -1,10 +1,10 @@
 import { IDL } from '@dfinity/candid';
 
 export class AzleInt32 {
-    _kind: 'AzleInt32' = 'AzleInt32';
+    _azleKind: 'AzleInt32' = 'AzleInt32';
     _azleCandidType?: '_azleCandidType';
 
-    static getIDL() {
+    static getIdl() {
         return IDL.Int32;
     }
 }

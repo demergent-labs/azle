@@ -1,7 +1,8 @@
-import { CandidType, TypeMapping, Parent } from '../../index';
 import { IDL } from '@dfinity/candid';
-import { processMap } from '../constructed';
-import { v4 } from 'uuid';
+import { toIdlMap, CandidMap } from './to_idl_map';
+import { CandidType } from '../../candid_type';
+import { TypeMapping } from '../../type_mapping';
+import { Parent } from '../../to_idl';
 
 export function Record<
     T extends {
@@ -14,8 +15,8 @@ export function Record<
 } & { _azleCandidType?: '_azleCandidType' } {
     return {
         ...obj,
-        getIDL(parents: Parent[]) {
-            return IDL.Record(processMap(obj as any, parents));
+        getIdl(parents: Parent[]) {
+            return IDL.Record(toIdlMap(obj as CandidMap, parents));
         }
     } as any;
 }

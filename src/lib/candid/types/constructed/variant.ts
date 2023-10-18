@@ -1,6 +1,6 @@
-import { CandidType, TypeMapping } from '../..';
-import { processMap } from '.';
-import { v4 } from 'uuid';
+import { CandidType } from '../../candid_type';
+import { TypeMapping } from '../../type_mapping';
+import { toIdlMap, CandidMap } from './to_idl_map';
 import { IDL } from '@dfinity/candid';
 
 export function Variant<
@@ -14,8 +14,8 @@ export function Variant<
 }> & { _azleCandidType?: '_azleCandidType' } {
     return {
         ...obj,
-        getIDL(parents: any) {
-            return IDL.Variant(processMap(obj as any, parents));
+        getIdl(parents: any) {
+            return IDL.Variant(toIdlMap(obj as CandidMap, parents));
         }
     } as any;
 }

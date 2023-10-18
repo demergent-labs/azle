@@ -1,6 +1,7 @@
 import { nat32 } from '../candid/types/primitive/nats/nat32';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { decode, encode } from '../candid/serde';
+import { decode } from '../candid/serde/decode';
+import { encode } from '../candid/serde/encode';
 
 /**
  * Gets the value of the specified performance counter
@@ -22,5 +23,5 @@ export function performanceCounter(counterType: nat32): nat64 {
         counterTypeCandidBytes
     );
 
-    return BigInt(decode(nat64, performanceCounterCandidBytes) as number);
+    return decode(nat64, performanceCounterCandidBytes);
 }

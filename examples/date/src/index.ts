@@ -174,7 +174,7 @@ export default Canister({
     toISOString: query([text], text, (isoString) => {
         return new Date(isoString).toISOString();
     }),
-    toJSON: query([text], text, (isoString) => {
+    toJSONString: query([text], text, (isoString) => {
         return new Date(isoString).toJSON();
     }),
     toString: query([text], text, (isoString) => {

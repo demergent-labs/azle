@@ -618,7 +618,9 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const date = new Date();
 
-                const result = await dateCanister.toJSON(date.toISOString());
+                const result = await dateCanister.toJSONString(
+                    date.toISOString()
+                );
                 const expected = date.toJSON();
 
                 return {

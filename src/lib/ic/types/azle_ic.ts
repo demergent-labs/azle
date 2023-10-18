@@ -1,6 +1,3 @@
-import { text } from '../../candid/types/primitive/text';
-import { Void } from '../../candid/types/primitive/void';
-
 /**
  * The interface for our rust methods it slightly different than the interface
  * we expose to the users. This is the interface for the rust functions.
@@ -88,4 +85,34 @@ export type AzleIc = {
     call128: () => never;
     notify: () => never;
     reply: () => never;
+    // Stable B Tree Map Functions
+    stableBTreeMapInit: (candidEncodedMemoryId: ArrayBufferLike) => void;
+    stableBTreeMapContainsKey: (
+        candidEncodedMemoryId: ArrayBufferLike,
+        candidEncodedKey: ArrayBufferLike
+    ) => boolean;
+    stableBTreeMapGet: (
+        candidEncodedMemoryId: ArrayBufferLike,
+        candidEncodedKey: ArrayBufferLike
+    ) => ArrayBuffer | undefined;
+    stableBTreeMapInsert: (
+        candidEncodedMemoryId: ArrayBufferLike,
+        candidEncodedKey: ArrayBufferLike,
+        candidEncodedValue: ArrayBufferLike
+    ) => ArrayBuffer | undefined;
+    stableBTreeMapIsEmpty: (candidEncodedMemoryId: ArrayBuffer) => boolean;
+    stableBTreeMapItems: (
+        candidEncodedMemoryId: ArrayBufferLike
+    ) => [ArrayBuffer, ArrayBuffer][];
+    stableBTreeMapKeys: (
+        candidEncodedMemoryId: ArrayBufferLike
+    ) => ArrayBuffer[];
+    stableBTreeMapLen: (candidEncodedMemoryId: ArrayBufferLike) => ArrayBuffer;
+    stableBTreeMapRemove(
+        candidEncodedMemoryId: ArrayBufferLike,
+        candidEncodedKey: ArrayBufferLike
+    ): ArrayBuffer;
+    stableBTreeMapValues: (
+        candidEncodedMemoryId: ArrayBufferLike
+    ) => ArrayBuffer[];
 };

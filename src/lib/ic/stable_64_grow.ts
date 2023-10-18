@@ -1,5 +1,6 @@
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { decode, encode } from '../candid/serde';
+import { decode } from '../candid/serde/decode';
+import { encode } from '../candid/serde/encode';
 
 /**
  * Attempts to grow the stable memory by `newPages`.
@@ -14,10 +15,5 @@ export function stable64Grow(newPages: nat64): nat64 {
 
     const newPagesCandidBytes = encode(nat64, newPages).buffer;
 
-    return BigInt(
-        decode(
-            nat64,
-            globalThis._azleIc.stable64Grow(newPagesCandidBytes)
-        ) as number
-    );
+    return decode(nat64, globalThis._azleIc.stable64Grow(newPagesCandidBytes));
 }

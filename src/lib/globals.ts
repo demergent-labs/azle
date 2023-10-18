@@ -3,37 +3,21 @@ import { AzleIc } from './ic/types/azle_ic';
 import { Buffer } from 'buffer';
 
 declare global {
-    var _azleIc: AzleIc;
+    var _azleIc: AzleIc | undefined;
     var _azleResolveIds: { [key: string]: (buf: ArrayBuffer) => void };
     var _azleRejectIds: { [key: string]: (err: any) => void };
-    var icTimers: { [key: string]: string };
-    var _azleTimerCallbackIds: { [key: string]: () => void };
-    var Buffer: BufferConstructor;
-    // var console: Console;
-    // var crypto: Crypto;
-    var icTimers: {
-        [key: string]: string;
-    };
-    // var TextDecoder: any;
-    // var TextEncoder: any;
+    var _azleIcTimers: { [key: string]: string };
+    var _azleTimerCallbacks: { [key: string]: () => void };
+    var _azleGuardFunctions: { [key: string]: () => any };
 }
-
-// export declare var globalThis: {
-//     Buffer: BufferConstructor;
-//     console: any;
-//     crypto: {
-//         getRandomValues: () => Uint8Array;
-//     };
-//     TextDecoder: any;
-//     TextEncoder: any;
-// };
 
 globalThis.TextDecoder = require('text-encoding').TextDecoder;
 globalThis.TextEncoder = require('text-encoding').TextEncoder;
-globalThis.icTimers ||= {};
+globalThis._azleIcTimers = {};
 globalThis._azleResolveIds = {};
 globalThis._azleRejectIds = {};
-globalThis._azleTimerCallbackIds = {};
+globalThis._azleTimerCallbacks = {};
+globalThis._azleGuardFunctions = {};
 
 globalThis.console = {
     ...globalThis.console,

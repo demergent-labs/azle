@@ -11,5 +11,5 @@ export function trap(message: text): empty {
         return undefined as never;
     }
 
-    globalThis._azleIc.trap(message);
+    return globalThis._azleIc.trap(message);
 }

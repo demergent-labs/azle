@@ -2,7 +2,8 @@ import { nat } from '../candid/types/primitive/nats/nat';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { callRaw } from './call_raw';
 import { callRaw128 } from './call_raw_128';
-import { ArgsType, ReturnTypeOf } from './types';
+import { ArgsType } from './types/args_type';
+import { ReturnTypeOf } from './types/return_type_of';
 
 /**
  * Performs an asynchronous call to another canister.
@@ -31,14 +32,7 @@ export function call<T extends (...args: any[]) => any>(
         config?.cycles128
     );
 
-    // TODO probably get rid of .crossCanisterCallback
-    return (method as any).crossCanisterCallback(
-        '_AZLE_CROSS_CANISTER_CALL',
-        false,
-        callFunction,
-        cycles,
-        ...(config?.args ?? [])
-    );
+    return method(false, callFunction, cycles, ...(config?.args ?? []));
 }
 
 function getCallFunctionAndCycles(

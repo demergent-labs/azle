@@ -1,10 +1,10 @@
 import { IDL } from '@dfinity/candid';
 
 export class AzleInt16 {
-    _kind: 'AzleInt16' = 'AzleInt16';
+    _azleKind: 'AzleInt16' = 'AzleInt16';
     _azleCandidType?: '_azleCandidType';
 
-    static getIDL() {
+    static getIdl() {
         return IDL.Int16;
     }
 }

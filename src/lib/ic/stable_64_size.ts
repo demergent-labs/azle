@@ -1,5 +1,5 @@
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { decode } from '../candid/serde';
+import { decode } from '../candid/serde/decode';
 
 /**
  * Gets current size of the stable memory (in WASM pages). Supports 64-bit
@@ -11,5 +11,5 @@ export function stable64Size(): nat64 {
         return undefined as any;
     }
 
-    return BigInt(decode(nat64, globalThis._azleIc.stable64Size()) as number);
+    return decode(nat64, globalThis._azleIc.stable64Size());
 }

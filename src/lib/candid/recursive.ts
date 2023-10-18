@@ -4,9 +4,9 @@ import { CandidType, Parent } from './index';
 
 export type _AzleRecursiveFunction = {
     (...args: any[]): CandidType;
-    _azleName?: string;
-    _azleIsRecursive?: boolean;
-    getIDL?: (parents: Parent[]) => IDL.Type<any>;
+    azleName?: string;
+    isRecursive?: boolean;
+    getIdl?: (parents: Parent[]) => IDL.Type<any>;
 };
 
 export function Recursive(candidTypeCallback: any): any {
@@ -14,21 +14,21 @@ export function Recursive(candidTypeCallback: any): any {
 
     let result: _AzleRecursiveFunction = (...args: any[]) => {
         const candidType = candidTypeCallback();
-        if (candidType._azleIsCanister) {
+        if (candidType.isCanister) {
             return candidType(...args);
         }
         return candidType;
     };
 
-    result._azleName = name;
-    result._azleIsRecursive = true;
-    result.getIDL = (parents: Parent[]) => {
+    result.azleName = name;
+    result.isRecursive = true;
+    result.getIdl = (parents: Parent[]) => {
         const idl = IDL.Rec();
         let filler = candidTypeCallback();
-        if (filler._azleIsCanister) {
+        if (filler.isCanister) {
             filler = filler(result);
         }
-        idl.fill(filler.getIDL([...parents, { idl: idl, name }]));
+        idl.fill(filler.getIdl([...parents, { idl: idl, name }]));
         return idl;
     };
 

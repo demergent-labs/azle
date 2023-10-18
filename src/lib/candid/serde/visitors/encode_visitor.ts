@@ -1,13 +1,10 @@
 import { IDL } from '@dfinity/candid';
-import {
-    VisitorData,
-    VisitorResult,
-    visitRec,
-    visitRecord,
-    visitTuple,
-    visitVariant,
-    visitVec
-} from './index';
+import { VisitorData, VisitorResult } from './types';
+import { visitTuple } from './visit/tuple';
+import { visitVec } from './visit/vec';
+import { visitRecord } from './visit/record';
+import { visitRec } from './visit/recursive';
+import { visitVariant } from './visit/variant';
 
 /**
  * When we encode a Service we have a service class and we need it to be only
@@ -57,7 +54,7 @@ export class EncodeVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
         if ('Some' in data.js_data) {
             const candid = ty.accept(this, {
                 js_data: data.js_data.Some,
-                candidType: data.candidType._azleType
+                candidType: data.candidType.innerType
             });
 
             return [candid];

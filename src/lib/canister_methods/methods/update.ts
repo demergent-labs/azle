@@ -1,11 +1,10 @@
-import {
-    Callback,
-    CanisterMethodInfo,
-    MethodArgs,
-    executeMethod,
-    isAsync
-} from '.';
-import { CandidType, TypeMapping } from '../candid';
+import { CandidType } from '../../candid/candid_type';
+import { TypeMapping } from '../../candid/type_mapping';
+import { Callback } from '../types/callback';
+import { CanisterMethodInfo } from '../types/canister_method_info';
+import { executeMethod } from '../execute_method';
+import { isAsync } from '../is_async';
+import { MethodArgs } from '../types/method_args';
 
 export function update<
     const Params extends ReadonlyArray<CandidType>,

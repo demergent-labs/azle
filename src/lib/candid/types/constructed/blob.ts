@@ -1,10 +1,10 @@
 import { IDL } from '@dfinity/candid';
 
 export class AzleBlob {
-    _kind: 'AzleBlob' = 'AzleBlob';
+    _azleKind: 'AzleBlob' = 'AzleBlob';
     _azleCandidType?: '_azleCandidType';
 
-    static getIDL() {
+    static getIdl() {
         return IDL.Vec(IDL.Nat8);
     }
 }

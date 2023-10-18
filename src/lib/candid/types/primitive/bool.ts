@@ -1,10 +1,10 @@
 import { IDL } from '@dfinity/candid';
 
 export class AzleBool {
-    _kind: 'AzleBool' = 'AzleBool';
+    _azleKind: 'AzleBool' = 'AzleBool';
     _azleCandidType?: '_azleCandidType';
 
-    static getIDL() {
+    static getIdl() {
         return IDL.Bool;
     }
 }

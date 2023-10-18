@@ -1,5 +1,5 @@
 import { nat } from '../candid/types/primitive/nats/nat';
-import { decode } from '../candid/serde';
+import { decode } from '../candid/serde/decode';
 
 /**
  * Gets the amount of funds available in the canister
@@ -12,5 +12,5 @@ export function canisterBalance128(): nat {
 
     const canisterBalance128CandidBytes =
         globalThis._azleIc.canisterBalance128();
-    return BigInt(decode(nat, canisterBalance128CandidBytes) as number);
+    return decode(nat, canisterBalance128CandidBytes);
 }

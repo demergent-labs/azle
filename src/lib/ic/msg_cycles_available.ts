@@ -1,5 +1,5 @@
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { decode } from '../candid/serde';
+import { decode } from '../candid/serde/decode';
 
 /**
  * Returns the amount of cycles that were transferred by the caller of the
@@ -14,5 +14,5 @@ export function msgCyclesAvailable(): nat64 {
     const msgCyclesAvailableCandidBytes =
         globalThis._azleIc.msgCyclesAvailable();
 
-    return BigInt(decode(nat64, msgCyclesAvailableCandidBytes) as number);
+    return decode(nat64, msgCyclesAvailableCandidBytes);
 }

@@ -1,10 +1,10 @@
 import { IDL } from '@dfinity/candid';
 
 export class AzleNat64 {
-    _kind: 'AzleNat64' = 'AzleNat64';
+    _azleKind: 'AzleNat64' = 'AzleNat64';
     _azleCandidType?: '_azleCandidType';
 
-    static getIDL() {
+    static getIdl() {
         return IDL.Nat64;
     }
 }

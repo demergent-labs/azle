@@ -1,5 +1,5 @@
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { decode } from '../candid/serde';
+import { decode } from '../candid/serde/decode';
 
 /**
  * Returns the number of instructions that the canister executed since the
@@ -16,5 +16,5 @@ export function instructionCounter(): nat64 {
 
     const instructionCounterCandidBytes =
         globalThis._azleIc.instructionCounter();
-    return BigInt(decode(nat64, instructionCounterCandidBytes) as number);
+    return decode(nat64, instructionCounterCandidBytes);
 }

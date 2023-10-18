@@ -1,20 +1,20 @@
-import { CandidType } from '../../index';
-import { Parent, toIDLType } from '../../index';
+import { CandidType } from '../../candid_type';
+import { Parent, toIdl } from '../../to_idl';
 import { IDL } from '@dfinity/candid';
 
 export class AzleTuple<T extends any[]> {
     constructor(t: CandidType[]) {
-        this._azleTypes = t;
+        this.innerTypes = t;
     }
 
-    _azleTypes: CandidType[];
+    innerTypes: CandidType[];
     _azleCandidType?: '_azleCandidType';
 
-    getIDL(parents: Parent[]) {
-        const candidTypes = this._azleTypes.map((value) => {
-            return toIDLType(value, parents);
+    getIdl(parents: Parent[]) {
+        const idls = this.innerTypes.map((value) => {
+            return toIdl(value, parents);
         });
-        return IDL.Tuple(...candidTypes);
+        return IDL.Tuple(...idls);
     }
 }
 

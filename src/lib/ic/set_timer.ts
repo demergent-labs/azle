@@ -1,7 +1,9 @@
-import { Duration, TimerId } from './types';
+import { Duration } from './types/duration';
+import { TimerId } from './types/timer_id';
 import { v4 } from 'uuid';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { encode, decode as azleDecode } from '../candid/serde';
+import { decode } from '../candid/serde/decode';
+import { encode } from '../candid/serde/encode';
 
 /**
  * Sets callback to be executed later, after delay. Panics if `delay` + time() is more than 2^64 - 1.
@@ -20,27 +22,24 @@ export function setTimer(
         return undefined as any;
     }
 
-    const decode = (value: ArrayBufferLike) => {
-        return BigInt(azleDecode(nat64, value) as number);
-    };
-
     const timerCallbackId = `_timer_${v4()}`;
 
     const timerId = decode(
+        nat64,
         globalThis._azleIc.setTimer(
             encode(nat64, delay).buffer,
             timerCallbackId
         )
     );
 
-    globalThis.icTimers[timerId.toString()] = timerCallbackId;
+    globalThis._azleIcTimers[timerId.toString()] = timerCallbackId;
 
-    globalThis._azleTimerCallbackIds[timerCallbackId] = () => {
+    globalThis._azleTimerCallbacks[timerCallbackId] = () => {
         try {
             callback();
         } finally {
-            delete globalThis.icTimers[timerId.toString()];
-            delete globalThis._azleTimerCallbackIds[timerCallbackId];
+            delete globalThis._azleIcTimers[timerId.toString()];
+            delete globalThis._azleTimerCallbacks[timerCallbackId];
         }
     };
 

@@ -17,6 +17,8 @@ service: () -> {
     getUtcMinutes: (text) -> (nat32) query;
     getUtcMonth: (text) -> (nat32) query;
     getUtcSeconds: (text) -> (nat32) query;
+    now: () -> (nat64) query;
+    parse: (text) -> (nat64) query;
     setDate: (text, nat32) -> (nat32) query;
     setFullYear: (text, nat32) -> (nat32) query;
     setHours: (text, nat32) -> (nat32) query;
@@ -34,11 +36,9 @@ service: () -> {
     setUtcSeconds: (text, nat32) -> (nat32) query;
     toDateString: (text) -> (text) query;
     toISOString: (text) -> (text) query;
-    toJSON: (text) -> (text) query;
+    toJSONString: (text) -> (text) query;
     toString: (text) -> (text) query;
     toTimeString: (text) -> (text) query;
     toUtcString: (text) -> (text) query;
-    now: () -> (nat64) query;
-    parse: (text) -> (nat64) query;
     utc: (nat32, nat32) -> (nat64) query;
 }

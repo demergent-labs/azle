@@ -1,4 +1,3 @@
-import '@dfinity/candid/lib/esm/idl'; // This must remain or the build fails
 import { acceptMessage } from './accept_message';
 import { argDataRaw } from './arg_data_raw';
 import { argDataRawSize } from './arg_data_raw_size';
