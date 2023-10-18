@@ -2,7 +2,7 @@ import { IDL } from '@dfinity/candid';
 
 import { AzleVec, AzleOpt, AzleTuple } from '../types/constructed';
 import { EncodeVisitor } from './visitors/encode_visitor';
-import { CandidType, toIdl } from '../../candid';
+import { CandidType, toIdl, toIdlArray } from '../../candid';
 
 /**
  * Encodes the provided value as candid blob of the designated type.
@@ -49,25 +49,12 @@ function encodeSingle(candidType: CandidType, data: any): Uint8Array {
 }
 
 function encodeMultiple(candidTypes: CandidType[], data: any[]): Uint8Array {
-    const { values, idls } = data.reduce<{
-        values: any[];
-        idls: IDL.Type<any>[];
-    }>(
-        (acc, datum, index) => {
-            const candidType = candidTypes[index];
-            const idl = toIdl(candidType);
-
-            const encodeReadyValue = idl.accept(new EncodeVisitor(), {
-                candidType: candidType,
-                js_data: datum
-            });
-
-            return {
-                values: [...acc.values, encodeReadyValue],
-                idls: [...acc.idls, idl]
-            };
-        },
-        { values: [], idls: [] }
+    const idls = toIdlArray(candidTypes);
+    const values = data.map((datum, index) =>
+        idls[index].accept(new EncodeVisitor(), {
+            candidType: candidTypes[index],
+            js_data: datum
+        })
     );
 
     return new Uint8Array(IDL.encode(idls, values));

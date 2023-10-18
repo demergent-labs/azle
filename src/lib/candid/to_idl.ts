@@ -28,18 +28,14 @@ export function toIdl(
     return (candidType as any).getIdl(parents);
 }
 
-export function toParamIdls(
-    paramCandidTypes: CandidType[],
+export function toIdlArray(
+    candidTypes: CandidType | CandidType[],
     parents: Parent[] = []
 ): IDL.Type<any>[] {
-    return paramCandidTypes.map((value) => toIdl(value, parents));
-}
-
-export function toReturnIdl(
-    returnCandidType: CandidType,
-    parents: Parent[] = []
-): IDL.Type<any>[] {
-    const idlType = toIdl(returnCandidType, parents);
+    if (Array.isArray(candidTypes)) {
+        return candidTypes.map((value) => toIdl(value, parents));
+    }
+    const idlType = toIdl(candidTypes, parents);
 
     return Array.isArray(idlType) ? idlType : [idlType];
 }

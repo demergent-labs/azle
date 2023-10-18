@@ -1,14 +1,9 @@
-import {
-    Parent,
-    toParamIdls,
-    toReturnIdl,
-    CandidType
-} from '../../../../index';
+import { Parent, CandidType, toIdlArray } from '../../../../index';
 import { _AzleRecursiveFunction } from '../../../../recursive';
 import { ic } from '../../../../../ic';
 import { Principal } from '../../principal';
 import { IDL } from '@dfinity/candid';
-import { CanisterMethodInfo, query } from '../../../../../canister_methods';
+import { CanisterMethodInfo } from '../../../../../canister_methods/canister_method_info';
 import { decode, encode } from '../../../../serde';
 import { createQueryMethods, createUpdateMethods } from './query_update';
 import {
@@ -109,8 +104,8 @@ function createUpdateOrQueryFunctionIdl(
     parents: Parent[]
 ): IDL.FuncClass {
     const annotations = createAnnotation(functionInfo.mode);
-    const paramIdls = toParamIdls(functionInfo.paramCandidTypes, parents);
-    const returnIdls = toReturnIdl(functionInfo.returnCandidType, parents);
+    const paramIdls = toIdlArray(functionInfo.paramCandidTypes, parents);
+    const returnIdls = toIdlArray(functionInfo.returnCandidType, parents);
 
     return IDL.Func(paramIdls, returnIdls, annotations);
 }

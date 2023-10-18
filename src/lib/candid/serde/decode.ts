@@ -2,7 +2,7 @@ import { IDL } from '@dfinity/candid';
 
 import { AzleVec, AzleOpt, AzleTuple } from '../types/constructed';
 import { DecodeVisitor } from './visitors/decode_visitor';
-import { CandidType, toIdl } from '../../candid';
+import { CandidType, toIdl, toIdlArray } from '../../candid';
 
 /**
  * Decodes the provided buffer into the designated JS value.
@@ -48,7 +48,7 @@ function decodeSingle(candidType: CandidType, data: ArrayBuffer): any {
 }
 
 function decodeMultiple(candidTypes: CandidType[], data: ArrayBuffer): any[] {
-    const idls = candidTypes.map((candidType) => toIdl(candidType));
+    const idls = toIdlArray(candidTypes);
     const decoded = IDL.decode(idls, data);
     return idls.map((idl, index) =>
         idl.accept(new DecodeVisitor(), {
