@@ -28,7 +28,7 @@ export * from './types/constructed';
 export * from './types/primitive';
 export * from './types/reference';
 export * from './recursive';
-export * from './to_Idl';
+export * from './to_idl';
 
 export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? T
