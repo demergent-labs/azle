@@ -1,9 +1,9 @@
 import { CanisterMethods } from './utils/types';
 import {
     getDefaultVisitorData,
-    didResultToCandidString,
     DidVisitor
-} from '../lib/candid/did_visitor';
+} from '../lib/candid/did_file/visitor.ts';
+import { toDidString } from '../lib/candid/did_file';
 
 export function generateCandidAndCanisterMethods(mainJs: string): {
     candid: string;
@@ -43,7 +43,7 @@ export function generateCandidAndCanisterMethods(mainJs: string): {
     });
 
     return {
-        candid: didResultToCandidString(candidInfo),
+        candid: toDidString(candidInfo),
         canisterMethods: canisterMethods
     };
 }

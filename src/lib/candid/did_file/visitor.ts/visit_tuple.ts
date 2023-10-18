@@ -1,5 +1,6 @@
 import { IDL } from '@dfinity/candid';
-import { DidVisitor, VisitorData, VisitorResult, extractCandid } from '.';
+import { DidVisitor, VisitorData, VisitorResult } from '.';
+import { extractCandid } from './extract_candid';
 
 export function visitTuple(
     components: IDL.Type<any>[],

@@ -1,11 +1,7 @@
 import { IDL } from '@dfinity/candid';
-import {
-    DidVisitor,
-    VisitorData,
-    VisitorResult,
-    escapeCandidKeywords,
-    extractCandid
-} from '.';
+import { DidVisitor, VisitorData, VisitorResult } from '.';
+import { escapeCandidKeywords } from './escapeCandidKeywords';
+import { extractCandid } from './extract_candid';
 
 export function visitVariant(
     fields: [string, IDL.Type<any>][],

@@ -1,11 +1,7 @@
 import { IDL } from '@dfinity/candid';
-import {
-    DidVisitor,
-    VisitorData,
-    escapeCandidKeywords,
-    extractCandid,
-    VisitorResult
-} from '.';
+import { DidVisitor, VisitorData, VisitorResult } from '.';
+import { escapeCandidKeywords } from './escapeCandidKeywords';
+import { extractCandid } from './extract_candid';
 
 export function visitRecord(
     fields: [string, IDL.Type<any>][],

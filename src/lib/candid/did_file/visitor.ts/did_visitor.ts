@@ -21,33 +21,6 @@ export type TypeName = string;
 export type CandidDef = string;
 export type CandidTypesDefs = { [key: TypeName]: CandidDef };
 
-const CANDID_KEYWORDS = [
-    'blob',
-    'bool',
-    'float32',
-    'float64',
-    'func',
-    'int',
-    'int16',
-    'int32',
-    'int64',
-    'int8',
-    'nat',
-    'nat16',
-    'nat32',
-    'nat64',
-    'nat8',
-    'null',
-    'opt',
-    'principal',
-    'query',
-    'record',
-    'service',
-    'text',
-    'variant',
-    'vec'
-];
-
 export function getDefaultVisitorData(): VisitorData {
     return {
         usedRecClasses: [],
@@ -55,19 +28,6 @@ export function getDefaultVisitorData(): VisitorData {
         isFirstService: false,
         systemFuncs: []
     };
-}
-
-export function didResultToCandidString(result: VisitorResult): string {
-    // TODO it would be nice to have names for the rec types instead of rec_1, rec_2 etc
-    // TODO Once types have names we should deduplicate the init and post_upgrade param types
-    // TODO maybe even before we have names we should deduplicate all sorts of types
-    // The rust to candid converter we were using did have names, but if two things
-    // had the same shape they got merged into one type that had one of the names.
-    // That might not be the ideal situation, but it is the expected behavior in rust
-
-    const [candid, candidTypeDefs] = result;
-    const candidTypesString = newTypeToCandidString(candidTypeDefs);
-    return candidTypesString + candid + '\n';
 }
 
 export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
@@ -125,38 +85,4 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
     ): VisitorResult {
         return visitVariant(fields, this, data);
     }
-}
-
-export function escapeCandidKeywords(key: string): string {
-    if (CANDID_KEYWORDS.includes(key)) {
-        return `"${key}"`;
-    }
-    return key;
-}
-
-function newTypeToCandidString(newTypes: CandidTypesDefs): string {
-    return Object.entries(newTypes).length > 0
-        ? newTypesToStingArr(newTypes).join('\n') + '\n'
-        : '';
-}
-
-function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
-    return Object.entries(newTypes).map(
-        ([name, candid]) => `type ${name} = ${candid};`
-    );
-}
-
-export function extractCandid(
-    paramInfo: [CandidDef, CandidTypesDefs][]
-): [CandidDef[], CandidTypesDefs] {
-    const paramCandid = paramInfo.map(([candid, _candidTypeDefs]) => {
-        return candid;
-    });
-    const candidTypeDefs = paramInfo.reduce(
-        (acc, [_candid, candidTypeDefs]) => {
-            return { ...acc, ...candidTypeDefs };
-        },
-        {}
-    );
-    return [paramCandid, candidTypeDefs];
 }
