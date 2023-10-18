@@ -1,7 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
 export class AzleInt8 {
-    _kind: 'AzleInt8' = 'AzleInt8';
+    _azleKind: 'AzleInt8' = 'AzleInt8';
     _azleCandidType?: '_azleCandidType';
 
     static getIdl() {

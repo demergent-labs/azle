@@ -33,7 +33,7 @@ export class AzleOpt<T> {
 
     innerType: CandidType;
     _azleCandidType?: '_azleCandidType';
-    _kind: 'AzleOpt' = 'AzleOpt';
+    _azleKind: 'AzleOpt' = 'AzleOpt';
 
     getIdl(parents: Parent[]) {
         return IDL.Opt(toIdl(this.innerType, parents));

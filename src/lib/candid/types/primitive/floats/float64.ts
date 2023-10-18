@@ -1,7 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
 export class AzleFloat64 {
-    _kind: 'AzleFloat64' = 'AzleFloat64';
+    _azleKind: 'AzleFloat64' = 'AzleFloat64';
     _azleCandidType?: '_azleCandidType';
 
     static getIdl() {
