@@ -1,12 +1,29 @@
-import { CandidType, TypeMapping } from './candid';
+import { TypeMapping } from './candid';
 import { None, Opt, Some } from './candid/types/constructed/opt';
 import { nat64 } from './candid/types/primitive/nats/nat64';
 import { nat8 } from './candid/types/primitive/nats/nat8';
 import { encode, decode } from './candid/serde';
 
+// TODO we should probably try to make it work with bigint, Principal, etc
+// TODO out of the box
+export class StableJson {
+    static toBytes(data: any): Uint8Array {
+        return Uint8Array.from(Buffer.from(JSON.stringify(data)));
+    }
+
+    static fromBytes(bytes: Uint8Array): any {
+        return JSON.parse(Buffer.from(bytes).toString());
+    }
+}
+
+export type Serializable = {
+    toBytes: (data: any) => Uint8Array;
+    fromBytes: (bytes: Uint8Array) => any;
+};
+
 export function StableBTreeMap<
-    Key extends CandidType,
-    Value extends CandidType
+    Key extends Serializable,
+    Value extends Serializable
 >(keyType: Key, valueType: Value, memoryId: nat8) {
     const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
 
@@ -62,8 +79,12 @@ export function StableBTreeMap<
             value: TypeMapping<Value>
         ): Opt<TypeMapping<Value>> {
             const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
-            const candidEncodedKey = encode(keyType, key).buffer;
-            const candidEncodedValue = encode(valueType, value).buffer;
+
+            // const candidEncodedKey = encode(keyType, key).buffer;
+            const candidEncodedKey = keyType.toBytes(key).buffer;
+
+            // const candidEncodedValue = encode(valueType, value).buffer;
+            const candidEncodedValue = valueType.toBytes(value).buffer;
 
             const candidEncodedResultValue = (
                 globalThis as any
@@ -73,11 +94,13 @@ export function StableBTreeMap<
                 candidEncodedValue
             );
 
-            if (candidEncodedResultValue === undefined) {
-                return None;
-            } else {
-                return Some(decode(valueType, candidEncodedResultValue));
-            }
+            return None;
+
+            // if (candidEncodedResultValue === undefined) {
+            //     return None;
+            // } else {
+            //     return Some(decode(valueType, candidEncodedResultValue));
+            // }
         },
         /**
          * Checks if the map is empty.
@@ -173,7 +196,8 @@ export function StableBTreeMap<
 
             // TODO too much copying
             return candidEncodedValues.map((candidEncodedValue: any) => {
-                return decode(valueType, candidEncodedValue);
+                // return decode(valueType, candidEncodedValue);
+                return valueType.fromBytes(candidEncodedValue);
             });
         }
     };

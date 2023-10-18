@@ -23,6 +23,7 @@ import { AzleNat32, nat32 } from './types/primitive/nats/nat32';
 import { AzleNat64, nat64 } from './types/primitive/nats/nat64';
 import { AzleResult, Result } from '../system_types';
 import { Principal } from './types/reference';
+import { Serializable } from '../stable_b_tree_map';
 
 export * from './types/constructed';
 export * from './types/primitive';
@@ -108,7 +109,7 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
 
 export type CandidType = {
     _azleCandidType?: '_azleCandidType';
-};
+} & Serializable;
 
 export type Parent = {
     idl: IDL.RecClass;
