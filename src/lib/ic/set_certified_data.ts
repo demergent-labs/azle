@@ -1,6 +1,6 @@
 import { blob } from '../candid/types/constructed/blob';
 import { Void } from '../candid/types/primitive/void';
-import { encode } from '../candid/serde';
+import { encode } from '../candid/serde/encode';
 
 /**
  * Sets the certified data of this canister.

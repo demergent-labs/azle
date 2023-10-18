@@ -1,4 +1,5 @@
-import { CandidType, TypeMapping } from '../../candid';
+import { CandidType } from '../../candid/candid_type';
+import { TypeMapping } from '../../candid/type_mapping';
 import { Callback } from '../types/callback';
 import { CanisterMethodInfo } from '../types/canister_method_info';
 import { executeMethod } from '../execute_method';

@@ -2,7 +2,8 @@ import { nat } from '../candid/types/primitive/nats/nat';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { callRaw } from './call_raw';
 import { callRaw128 } from './call_raw_128';
-import { ArgsType, ReturnTypeOf } from './types';
+import { ArgsType } from './types/args_type';
+import { ReturnTypeOf } from './types/return_type_of';
 
 /**
  * Performs an asynchronous call to another canister.

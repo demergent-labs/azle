@@ -1,5 +1,5 @@
 import { nat } from '../candid/types/primitive/nats/nat';
-import { decode } from '../candid/serde';
+import { decode } from '../candid/serde/decode';
 
 /**
  * Returns the amount of cycles that were transferred by the caller of the

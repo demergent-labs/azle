@@ -1,6 +1,6 @@
 import { nat32 } from '../candid/types/primitive/nats/nat32';
 import { blob } from '../candid/types/constructed/blob';
-import { encode } from '../candid/serde';
+import { encode } from '../candid/serde/encode';
 
 /**
  * Writes data to the stable memory location specified by an offset

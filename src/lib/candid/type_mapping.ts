@@ -21,7 +21,7 @@ import { AzleNat16, nat16 } from './types/primitive/nats/nat16';
 import { AzleNat32, nat32 } from './types/primitive/nats/nat32';
 import { AzleNat64, nat64 } from './types/primitive/nats/nat64';
 import { AzleResult, Result } from '../system_types';
-import { Principal } from './types/reference';
+import { Principal } from './types/reference/principal';
 
 export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? T

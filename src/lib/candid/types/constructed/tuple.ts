@@ -1,5 +1,5 @@
-import { CandidType } from '../../index';
-import { Parent, toIdl } from '../../index';
+import { CandidType } from '../../candid_type';
+import { Parent, toIdl } from '../../to_idl';
 import { IDL } from '@dfinity/candid';
 
 export class AzleTuple<T extends any[]> {

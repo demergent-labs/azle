@@ -1,6 +1,8 @@
-import { CandidType, TypeMapping, Parent } from '../../index';
 import { IDL } from '@dfinity/candid';
 import { toIdlMap, CandidMap } from './to_idl_map';
+import { CandidType } from '../../candid_type';
+import { TypeMapping } from '../../type_mapping';
+import { Parent } from '../../to_idl';
 
 export function Record<
     T extends {

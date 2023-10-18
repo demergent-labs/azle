@@ -3,7 +3,7 @@ import { blob } from '../candid/types/constructed/blob';
 import { nat } from '../candid/types/primitive/nats/nat';
 import { v4 } from 'uuid';
 import { text } from '../candid/types/primitive/text';
-import { encode } from '../candid/serde';
+import { encode } from '../candid/serde/encode';
 
 /**
  * Performs an asynchronous call to another canister using the [System API](
