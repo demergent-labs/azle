@@ -31,14 +31,7 @@ export function call<T extends (...args: any[]) => any>(
         config?.cycles128
     );
 
-    // TODO probably get rid of .crossCanisterCallback
-    return (method as any).crossCanisterCallback(
-        '_AZLE_CROSS_CANISTER_CALL',
-        false,
-        callFunction,
-        cycles,
-        ...(config?.args ?? [])
-    );
+    return method(false, callFunction, cycles, ...(config?.args ?? []));
 }
 
 function getCallFunctionAndCycles(

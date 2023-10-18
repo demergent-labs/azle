@@ -43,8 +43,7 @@ export function notify<T extends (...args: any[]) => any>(
         return undefined as any;
     }
 
-    return (method as any).crossCanisterCallback(
-        '_AZLE_CROSS_CANISTER_CALL',
+    return method(
         true,
         notifyRaw,
         config?.cycles ?? 0n,

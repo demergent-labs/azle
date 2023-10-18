@@ -122,17 +122,7 @@ function createCallbacks(canisterOptions: CanisterOptions) {
 
         return {
             ...acc,
-            [methodName]: {
-                canisterCallback: canisterMethod.callback,
-                crossCanisterCallback: (...args: any[]) => {
-                    return serviceCall(
-                        this.principal as any,
-                        methodName,
-                        canisterMethod.paramCandidTypes,
-                        canisterMethod.returnCandidType
-                    )(...args);
-                }
-            }
+            [methodName]: canisterMethod.callback
         };
     }, {});
 }
@@ -148,19 +138,15 @@ function createCanisterFunctionBase(
 
                 return {
                     ...acc,
-                    [key]: {
-                        canisterCallback: value.callback,
-                        crossCanisterCallback: (...args: any[]) => {
-                            return serviceCall(
-                                principal as any,
-                                key,
-                                value.paramCandidTypes,
-                                value.returnCandidType
-                            )(...args);
-                        }
+                    [key]: (...args: any[]) => {
+                        return serviceCall(
+                            principal as any,
+                            key,
+                            value.paramCandidTypes,
+                            value.returnCandidType
+                        )(...args);
                     }
                 };
-                // }
             },
             {}
         );
@@ -182,7 +168,6 @@ function serviceCall(
     // in order to set the context (this) correctly
     return async function (
         this: any, // TODO in lib_new this was Service, I'm not sure we need this anymore
-        _: '_AZLE_CROSS_CANISTER_CALL',
         notify: boolean,
         callFunction: CallRawFunction | NotifyRawFunction,
         cycles: bigint,
