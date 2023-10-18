@@ -1,4 +1,5 @@
 export * from './candid_type';
+export * from './manual';
 export * from './recursive';
 export * from './to_idl';
 export * from './type_mapping';
