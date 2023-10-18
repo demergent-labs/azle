@@ -1,6 +1,7 @@
 import { IDL } from '@dfinity/candid';
+import { visitService } from './visit_service';
 
-type VisitorData = {
+export type VisitorData = {
     usedRecClasses: IDL.RecClass[];
     isOnService: boolean;
     isFirstService: boolean;
@@ -8,9 +9,9 @@ type VisitorData = {
 };
 type VisitorResult = [CandidDef, CandidTypesDefs];
 
-type TypeName = string;
-type CandidDef = string;
-type CandidTypesDefs = { [key: TypeName]: CandidDef };
+export type TypeName = string;
+export type CandidDef = string;
+export type CandidTypesDefs = { [key: TypeName]: CandidDef };
 
 const CANDID_KEYWORDS = [
     'blob',
@@ -63,91 +64,7 @@ export function didResultToCandidString(result: VisitorResult): string {
 
 export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
     visitService(t: IDL.ServiceClass, data: VisitorData): VisitorResult {
-        const canisterMethods = extractCandid(
-            t._fields.map(([_name, func]) =>
-                func.accept(this, {
-                    ...data,
-                    isOnService: true,
-                    isFirstService: false
-                })
-            )
-        );
-
-        const isInitFunction = (func: IDL.FuncClass) =>
-            func.annotations.includes('init');
-        const isPostUpgradeFunction = (func: IDL.FuncClass) =>
-            func.annotations.includes('postUpgrade');
-        // To get the service params we need to look at the init function
-        const initMethod = extractCandid(
-            data.systemFuncs
-                .filter((func) => isInitFunction(func))
-                .map((initFunc) =>
-                    initFunc.accept(this, {
-                        ...data,
-                        isOnService: true,
-                        isFirstService: false
-                    })
-                )
-        );
-        const postMethod = extractCandid(
-            data.systemFuncs
-                .filter((func) => isPostUpgradeFunction(func))
-                .map((initFunc) =>
-                    initFunc.accept(this, {
-                        ...data,
-                        isOnService: true,
-                        isFirstService: false
-                    })
-                )
-        );
-        const initMethodCandidString = initMethod[0];
-        const postMethodCandidString = postMethod[0];
-        function getFunctionParams(
-            initFuncString: string[],
-            postFuncString: string[]
-        ) {
-            if (initFuncString.length === 0) {
-                if (postFuncString.length === 0) {
-                    return '()';
-                }
-                const parts = postFuncString[0].split('->');
-                if (parts.length >= 2) {
-                    return parts[0].trim();
-                }
-            }
-            const parts = initFuncString[0].split('->');
-            if (parts.length >= 2) {
-                return parts[0].trim();
-            }
-        }
-        const canisterParamsString = getFunctionParams(
-            initMethodCandidString,
-            postMethodCandidString
-        );
-
-        const candidTypes = {
-            ...canisterMethods[1],
-            ...initMethod[1],
-            ...postMethod[1]
-        };
-
-        const tab = data.isFirstService ? '    ' : '';
-        const func_separator = data.isFirstService ? '\n' : ' ';
-
-        const funcStrings = canisterMethods[0]
-            .map((value, index) => {
-                return `${tab}${escapeCandidKeywords(
-                    t._fields[index][0]
-                )}: ${value};`;
-            })
-            .join(func_separator);
-        if (data.isFirstService) {
-            return [
-                `service: ${canisterParamsString} -> {\n${funcStrings}\n}`,
-                candidTypes
-            ];
-        }
-        return [`service {${funcStrings}}`, candidTypes];
+        return visitService(t, this, data);
     }
     visitPrimitive<T>(
         t: IDL.PrimitiveType<T>,
@@ -256,7 +173,7 @@ export class DidVisitor extends IDL.Visitor<VisitorData, VisitorResult> {
     }
 }
 
-function escapeCandidKeywords(key: string): string {
+export function escapeCandidKeywords(key: string): string {
     if (CANDID_KEYWORDS.includes(key)) {
         return `"${key}"`;
     }
@@ -275,7 +192,7 @@ function newTypesToStingArr(newTypes: CandidTypesDefs): string[] {
     );
 }
 
-function extractCandid(
+export function extractCandid(
     paramInfo: [CandidDef, CandidTypesDefs][]
 ): [CandidDef[], CandidTypesDefs] {
     const paramCandid = paramInfo.map(([candid, _candidTypeDefs]) => {
