@@ -12,5 +12,5 @@ export function canisterVersion(): nat64 {
     }
 
     const canisterVersionCandidBytes = globalThis._azleIc.canisterVersion();
-    return BigInt(decode(nat64, canisterVersionCandidBytes) as number);
+    return decode(nat64, canisterVersionCandidBytes);
 }

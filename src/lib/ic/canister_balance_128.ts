@@ -12,5 +12,5 @@ export function canisterBalance128(): nat {
 
     const canisterBalance128CandidBytes =
         globalThis._azleIc.canisterBalance128();
-    return BigInt(decode(nat, canisterBalance128CandidBytes) as number);
+    return decode(nat, canisterBalance128CandidBytes);
 }

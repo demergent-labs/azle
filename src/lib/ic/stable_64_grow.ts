@@ -14,10 +14,5 @@ export function stable64Grow(newPages: nat64): nat64 {
 
     const newPagesCandidBytes = encode(nat64, newPages).buffer;
 
-    return BigInt(
-        decode(
-            nat64,
-            globalThis._azleIc.stable64Grow(newPagesCandidBytes)
-        ) as number
-    );
+    return decode(nat64, globalThis._azleIc.stable64Grow(newPagesCandidBytes));
 }

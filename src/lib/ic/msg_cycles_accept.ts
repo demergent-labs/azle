@@ -16,5 +16,5 @@ export function msgCyclesAccept(maxAmount: nat64): nat64 {
     const msgCyclesAcceptCandidBytes =
         globalThis._azleIc.msgCyclesAccept(maxAmountCandidBytes);
 
-    return BigInt(decode(nat64, msgCyclesAcceptCandidBytes) as number);
+    return decode(nat64, msgCyclesAcceptCandidBytes);
 }

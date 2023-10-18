@@ -1,7 +1,7 @@
 import { Duration, TimerId } from './types';
 import { v4 } from 'uuid';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { encode, decode as azleDecode } from '../candid/serde';
+import { encode, decode } from '../candid/serde';
 
 /**
  * Sets callback to be executed later, after delay. Panics if `delay` + time() is more than 2^64 - 1.
@@ -20,13 +20,10 @@ export function setTimer(
         return undefined as any;
     }
 
-    const decode = (value: ArrayBufferLike) => {
-        return BigInt(azleDecode(nat64, value) as number);
-    };
-
     const timerCallbackId = `_timer_${v4()}`;
 
     const timerId = decode(
+        nat64,
         globalThis._azleIc.setTimer(
             encode(nat64, delay).buffer,
             timerCallbackId

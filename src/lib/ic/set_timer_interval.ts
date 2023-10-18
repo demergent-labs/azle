@@ -1,6 +1,6 @@
 import { Duration, TimerId } from './types';
 import { v4 } from 'uuid';
-import { encode as azleEncode, decode as azleDecode } from '../candid/serde';
+import { encode, decode } from '../candid/serde';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
 
 /**
@@ -20,15 +20,12 @@ export function setTimerInterval(
         return undefined as any;
     }
 
-    const decode = (value: ArrayBufferLike) => {
-        return BigInt(azleDecode(nat64, value) as number);
-    };
-
     const timerCallbackId = `_interval_timer_${v4()}`;
 
     const timerId = decode(
+        nat64,
         globalThis._azleIc.setTimerInterval(
-            azleEncode(nat64, interval).buffer,
+            encode(nat64, interval).buffer,
             timerCallbackId
         )
     );

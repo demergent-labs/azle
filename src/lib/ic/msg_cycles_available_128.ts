@@ -14,5 +14,5 @@ export function msgCyclesAvailable128(): nat {
     const msgCyclesAvailable128CandidBytes =
         globalThis._azleIc.msgCyclesAvailable128();
 
-    return BigInt(decode(nat, msgCyclesAvailable128CandidBytes) as number);
+    return decode(nat, msgCyclesAvailable128CandidBytes);
 }

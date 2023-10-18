@@ -22,5 +22,5 @@ export function performanceCounter(counterType: nat32): nat64 {
         counterTypeCandidBytes
     );
 
-    return BigInt(decode(nat64, performanceCounterCandidBytes) as number);
+    return decode(nat64, performanceCounterCandidBytes);
 }
