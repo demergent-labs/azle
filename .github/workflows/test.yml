@@ -129,7 +129,8 @@ jobs:
                     "examples/timers",
                     "examples/tuple_types",
                     "examples/update",
-                    "examples/vanilla_js"
+                    "examples/vanilla_js",
+                    "property_tests/tests/query_methods"
                   ]
                   END
                   )
