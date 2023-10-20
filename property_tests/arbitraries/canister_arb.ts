@@ -8,7 +8,6 @@ export type TestSample = {
     paramCandidTypes: string;
     returnCandidType: string;
     paramNames: string[];
-    paramSamples: any[];
     body: string;
     test: any;
 };

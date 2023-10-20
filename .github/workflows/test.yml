@@ -139,7 +139,8 @@ jobs:
                     "property_tests/tests/nat8",
                     "property_tests/tests/nat16",
                     "property_tests/tests/nat32",
-                    "property_tests/tests/nat64"
+                    "property_tests/tests/nat64",
+                    "property_tests/tests/vec"
                   ]
                   END
                   )
