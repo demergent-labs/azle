@@ -3,25 +3,24 @@ import { getCanisterId } from '../../../../test';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
+import { BoolArb } from '../../../arbitraries/candid/primitive/bool';
 
 const BoolTestArb = fc
-    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(fc.boolean()))
+    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(BoolArb))
     .map(([functionName, bools]) => {
         const paramCandidTypes = bools.map(() => 'bool').join(', ');
         const returnCandidType = 'bool';
         const paramNames = bools.map((_, index) => `param${index}`);
 
-        const paramsAreNumbers = paramNames
+        const paramsAreBooleans = paramNames
             .map((paramName) => {
                 return `if (typeof ${paramName} !== 'boolean') throw new Error('${paramName} must be a boolean');`;
             })
             .join('\n');
 
-        const paramsAnd = paramNames.reduce((acc, paramName) => {
+        const returnStatement = paramNames.reduce((acc, paramName) => {
             return `${acc} && ${paramName}`;
         }, 'true');
-
-        const returnStatement = `${paramsAnd}`;
 
         const expectedResult = bools.reduce((acc, bool) => acc && bool, true);
 
@@ -43,7 +42,7 @@ const BoolTestArb = fc
             body: `
             ${paramsCorrectlyOrdered}
 
-            ${paramsAreNumbers}
+            ${paramsAreBooleans}
 
             return ${returnStatement};
         `,
