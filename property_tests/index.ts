@@ -26,7 +26,7 @@ export function runPropTests(testArb: fc.Arbitrary<TestSample>) {
             return true;
         }),
         {
-            numRuns: 1
+            numRuns: Number(process.env.AZLE_NUM_PROP_TEST_RUNS ?? 1)
         }
     );
 }
