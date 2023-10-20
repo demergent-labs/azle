@@ -134,7 +134,7 @@ jobs:
                     "property_tests/tests/int8",
                     "property_tests/tests/int16",
                     "property_tests/tests/int32",
-                    "property_tests/tests/int64"
+                    "property_tests/tests/int64",
                     "property_tests/tests/nat",
                     "property_tests/tests/nat8",
                     "property_tests/tests/nat16",
