@@ -12,6 +12,7 @@ import { Nat64Arb } from '../primitive/nats/nat64_arb';
 
 // TODO look into making this recursive
 // TODO we want to be able to have vecs of vecs
+// TODO we need to add all constructed and reference types
 export const VecArb = fc.oneof(
     fc.array(IntArb).map((sample) => createVecArbWrapper(sample, 'Vec(int)')),
     fc.array(Int8Arb).map((sample) => createVecArbWrapper(sample, 'Vec(int8)')),
