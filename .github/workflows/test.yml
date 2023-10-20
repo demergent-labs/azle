@@ -130,6 +130,11 @@ jobs:
                     "examples/tuple_types",
                     "examples/update",
                     "examples/vanilla_js",
+                    "property_tests/tests/int",
+                    "property_tests/tests/int8",
+                    "property_tests/tests/int16",
+                    "property_tests/tests/int32",
+                    "property_tests/tests/int64"
                     "property_tests/tests/nat",
                     "property_tests/tests/nat8",
                     "property_tests/tests/nat16",
