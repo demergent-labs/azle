@@ -3,9 +3,10 @@ import { getCanisterId } from '../../../../test';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
+import { Float32Arb } from '../../../arbitraries/candid/primitive/floats/float32_arb';
 
-const Nat8TestArb = fc
-    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(fc.float()))
+const float32TestArb = fc
+    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Float32Arb))
     .map(([functionName, float32s]) => {
         const paramCandidTypes = float32s.map(() => 'float32').join(', ');
         const returnCandidType = 'float32';
@@ -65,4 +66,4 @@ const Nat8TestArb = fc
         };
     });
 
-runPropTests(Nat8TestArb);
+runPropTests(float32TestArb);
