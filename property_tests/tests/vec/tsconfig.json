@@ -2,7 +2,6 @@
     "compilerOptions": {
         "strict": true,
         "target": "ES2020",
-        "module": "CommonJS",
         "moduleResolution": "node",
         "allowJs": true,
         "outDir": "HACK_BECAUSE_OF_ALLOW_JS"

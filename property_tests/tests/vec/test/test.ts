@@ -62,9 +62,17 @@ const VecTestArb = fc
             test: {
                 name: `test ${functionName}`,
                 test: async () => {
-                    const { createActor } = await import(
-                        `./dfx_generated/canister`
+                    const resolvedPathIndex = require.resolve(
+                        `./dfx_generated/canister/index.js`
                     );
+                    const resolvedPathDid = require.resolve(
+                        `./dfx_generated/canister/canister.did.js`
+                    );
+
+                    delete require.cache[resolvedPathIndex];
+                    delete require.cache[resolvedPathDid];
+
+                    const { createActor } = require(`./dfx_generated/canister`);
 
                     const actor: any = createActor(getCanisterId('canister'), {
                         agentOptions: {
