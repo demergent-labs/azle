@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 import { createQueryMethodArb } from './query_method_arb';
-import { Test, getCanisterId } from 'azle/test';
+import { Test, getCanisterId } from '../../test';
 
 export function createCanisterArb(testName: string) {
     return fc.constant(0).map(() => {
