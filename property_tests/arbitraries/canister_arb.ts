@@ -4,7 +4,9 @@ import { Test } from '../../test';
 
 export type TestSample = {
     functionName: string;
+    imports: string[];
     paramCandidTypes: string;
+    returnCandidType: string;
     paramNames: string[];
     paramSamples: any[];
     body: string;
@@ -22,13 +24,21 @@ export function createCanisterArb(testArb: fc.Arbitrary<TestSample>) {
                 (queryMethod) => queryMethod.sourceCode
             );
 
+            const imports = [
+                ...new Set(
+                    queryMethods.reduce((acc, queryMethod) => {
+                        return [...acc, ...queryMethod.imports];
+                    }, [] as string[])
+                )
+            ];
+
             const tests: Test[] = queryMethods.map(
                 (queryMethod) => queryMethod.test
             );
 
             return {
                 sourceCode: `
-    import { Canister, nat, query } from 'azle';
+    import { Canister, query, ${imports.join(', ')} } from 'azle';
     
     export default Canister({
         ${queryMethodSourceCodes.join(',\n    ')}

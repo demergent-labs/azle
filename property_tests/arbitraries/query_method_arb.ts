@@ -6,25 +6,19 @@ export function createQueryMethodArb(testArb: fc.Arbitrary<TestSample>) {
         const paramNames = testSample.paramNames;
         const paramSamples = testSample.paramSamples;
         const paramCandidTypes = testSample.paramCandidTypes;
+        const returnCandidType = testSample.returnCandidType;
         const body = testSample.body;
         const functionName = testSample.functionName;
 
-        const paramsCorrectlyOrdered = paramNames
-            .map((paramName, index) => {
-                return `if (${paramName} !== ${paramSamples[index]}n) throw new Error('${paramName} is incorrectly ordered')`;
-            })
-            .join('\n');
-
         return {
             name: functionName,
-            sourceCode: `${functionName}: query([${paramCandidTypes}], nat, (${paramNames.join(
+            sourceCode: `${functionName}: query([${paramCandidTypes}], ${returnCandidType}, (${paramNames.join(
                 ', '
             )}) => {
-                    ${paramsCorrectlyOrdered}
-
                     ${body}
                 })`,
-            test: testSample.test
+            test: testSample.test,
+            imports: testSample.imports
         };
     });
 }

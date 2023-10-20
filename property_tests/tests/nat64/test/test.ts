@@ -1,16 +1,16 @@
 import fc from 'fast-check';
-import { NatArb } from '../../../arbitraries/candid/primitive/nats/nat_arb';
+import { Nat64Arb } from '../../../arbitraries/candid/primitive/nats/nat64_arb';
 import { getCanisterId } from '../../../../test';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../../';
 
-const NatTestArb = fc
-    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(NatArb))
-    .map(([functionName, nats]) => {
-        const paramCandidTypes = nats.map(() => 'nat').join(', ');
-        const returnCandidType = 'nat';
-        const paramNames = nats.map((_, index) => `param${index}`);
+const Nat64TestArb = fc
+    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Nat64Arb))
+    .map(([functionName, nat64s]) => {
+        const paramCandidTypes = nat64s.map(() => 'nat64').join(', ');
+        const returnCandidType = 'nat64';
+        const paramNames = nat64s.map((_, index) => `param${index}`);
 
         const paramsAreBigInts = paramNames
             .map((paramName) => {
@@ -22,11 +22,14 @@ const NatTestArb = fc
             return `${acc} + ${paramName}`;
         }, '0n');
 
-        const returnStatement = `${paramsSum}`;
+        const length = nat64s.length === 0 ? 1 : nat64s.length;
 
-        const expectedResult = nats.reduce((acc, nat) => acc + nat, 0n);
+        const returnStatement = `(${paramsSum}) / ${length}n`;
 
-        const paramSamples = nats;
+        const expectedResult =
+            nat64s.reduce((acc, nat64) => acc + nat64, 0n) / BigInt(length);
+
+        const paramSamples = nat64s;
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
@@ -36,14 +39,14 @@ const NatTestArb = fc
 
         return {
             functionName,
-            imports: ['nat'],
+            imports: ['nat64'],
             paramCandidTypes,
             returnCandidType,
             paramNames,
             paramSamples,
             body: `
             ${paramsCorrectlyOrdered}
-            
+
             ${paramsAreBigInts}
 
             return ${returnStatement};
@@ -61,7 +64,7 @@ const NatTestArb = fc
                         }
                     });
 
-                    const result = await actor[functionName](...nats);
+                    const result = await actor[functionName](...nat64s);
 
                     return {
                         Ok: result === expectedResult
@@ -71,4 +74,4 @@ const NatTestArb = fc
         };
     });
 
-runPropTests(NatTestArb);
+runPropTests(Nat64TestArb);
