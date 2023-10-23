@@ -3,11 +3,11 @@ import { getCanisterId } from '../../../../test';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
+import { NullArb } from '../../../arbitraries/candid/primitive/null';
 
 const NullTestArb = fc
-    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.nat({ max: 20 }))
-    .map(([functionName, nullCount]) => {
-        const nulls = Array.from({ length: nullCount }, () => null);
+    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(NullArb))
+    .map(([functionName, nulls]) => {
         const paramCandidTypes = nulls.map(() => 'Null').join(', ');
         const returnCandidType = 'Null';
         const paramNames = nulls.map((_, index) => `param${index}`);
