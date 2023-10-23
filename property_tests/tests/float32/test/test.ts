@@ -26,7 +26,7 @@ const Float32TestArb = fc
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                let areFloat32sEqual = areFloatsEqual(
+                const areFloat32sEqual = areFloatsEqual(
                     paramName,
                     paramSamples[index]
                 );

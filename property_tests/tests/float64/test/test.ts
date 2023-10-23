@@ -34,7 +34,7 @@ const Float64TestArb = fc
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                let areFloat64sEqual = areFloatsEqual(
+                const areFloat64sEqual = areFloatsEqual(
                     paramName,
                     paramSamples[index]
                 );
