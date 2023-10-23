@@ -1,5 +1,5 @@
 import { nat } from '../candid/types/primitive/nats/nat';
-import { decode } from '../candid/serde';
+import { decode } from '../candid/serde/decode';
 
 /**
  * Gets the amount of funds available in the canister

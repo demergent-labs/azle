@@ -1,5 +1,6 @@
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { decode, encode } from '../candid/serde';
+import { decode } from '../candid/serde/decode';
+import { encode } from '../candid/serde/encode';
 
 /**
  * Moves cycles from the call to the canister balance

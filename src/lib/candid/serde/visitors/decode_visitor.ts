@@ -1,14 +1,11 @@
 import { IDL } from '@dfinity/candid';
-import {
-    VisitorData,
-    VisitorResult,
-    visitRec,
-    visitRecord,
-    visitTuple,
-    visitVariant,
-    visitVec
-} from './index';
 import { Opt } from '../../types/constructed';
+import { VisitorData, VisitorResult } from './types';
+import { visitRecord } from './visit/record';
+import { visitRec } from './visit/recursive';
+import { visitTuple } from './visit/tuple';
+import { visitVariant } from './visit/variant';
+import { visitVec } from './visit/vec';
 
 /**
  * When we decode a Service we are given a principal. We need to use that

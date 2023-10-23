@@ -1,4 +1,4 @@
-import { TypeMapping } from './candid';
+import { TypeMapping } from './candid/type_mapping';
 import { None, Opt, Some } from './candid/types/constructed/opt';
 import { nat64 } from './candid/types/primitive/nats/nat64';
 import { nat8 } from './candid/types/primitive/nats/nat8';

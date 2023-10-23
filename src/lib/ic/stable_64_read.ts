@@ -1,5 +1,5 @@
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { encode } from '../candid/serde';
+import { encode } from '../candid/serde/encode';
 
 /**
  * Reads data from the stable memory location specified by an offset.

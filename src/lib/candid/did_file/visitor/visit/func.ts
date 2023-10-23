@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
-import { DidVisitor, VisitorData, VisitorResult } from '..';
 import { extractCandid } from '../extract_candid';
+import { DidVisitor, VisitorData, VisitorResult } from '../did_visitor';
 
 export function visitFunc(
     t: IDL.FuncClass,

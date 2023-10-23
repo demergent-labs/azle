@@ -1,7 +1,7 @@
 import { nat } from '../candid/types/primitive/nats/nat';
 import { Void } from '../candid/types/primitive/void';
 import { notifyRaw } from './notify_raw';
-import { ArgsType } from './types';
+import { ArgsType } from './types/args_type';
 
 /**
  * Sends a one-way message with payment cycles attached to it that invokes
