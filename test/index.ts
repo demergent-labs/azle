@@ -1,4 +1,3 @@
-import { Variant } from '../src/lib';
 import { execSync } from 'child_process';
 
 export type Test = {
@@ -11,7 +10,7 @@ export type Test = {
 
 // export type Variant<T> = Partial<T>;
 
-export type AzleResult<T, E> = Variant<{
+export type AzleResult<T, E> = Partial<{
     Ok: T;
     Err: E;
 }>;
@@ -31,7 +30,10 @@ export function ok<T, E>(azle_result: AzleResult<T, E>): azle_result is Ok<T> {
 
 // TODO should this just return a boolean?
 // TODO then the function calling can decide to throw or not
-export async function runTests(tests: Test[]) {
+export async function runTests(
+    tests: Test[],
+    exitProcess: boolean = true
+): Promise<boolean> {
     for (let i = 0; i < tests.length; i++) {
         const test = tests[i];
 
@@ -74,14 +76,22 @@ export async function runTests(tests: Test[]) {
                 console.log('\x1b[31m', `${result.Err}`);
                 console.log('\x1b[0m');
 
-                process.exit(1);
+                if (exitProcess) {
+                    process.exit(1);
+                } else {
+                    return false;
+                }
             }
 
             if (result.Ok !== true) {
                 console.log('\x1b[31m', `test: ${test.name} failed`);
                 console.log('\x1b[0m');
 
-                process.exit(1);
+                if (exitProcess) {
+                    process.exit(1);
+                } else {
+                    return false;
+                }
             }
 
             console.log('\x1b[32m', `test: ${test.name} passed`);
@@ -93,9 +103,16 @@ export async function runTests(tests: Test[]) {
                 (error as any).toString()
             );
             console.log('\x1b[0m');
-            process.exit(1);
+
+            if (exitProcess) {
+                process.exit(1);
+            } else {
+                return false;
+            }
         }
     }
+
+    return true;
 }
 
 export function deploy(canisterName: string, argument?: string): Test[] {
@@ -199,7 +216,7 @@ export function createSnakeCaseProxy<T extends object>(
     }) as any;
 }
 
-function convertKeysToSnakeCase(obj) {
+function convertKeysToSnakeCase(obj: any): any {
     if (
         typeof obj !== 'object' ||
         obj === null ||
@@ -227,7 +244,7 @@ function convertKeysToSnakeCase(obj) {
             (key as string)[0] === (key as string)[0]?.toUpperCase()
                 ? key
                 : camelToSnakeCase(key as string);
-        newObj[snakeCaseKey] = convertKeysToSnakeCase(obj[key]);
+        (newObj as any)[snakeCaseKey] = convertKeysToSnakeCase(obj[key]);
     }
 
     return newObj;
