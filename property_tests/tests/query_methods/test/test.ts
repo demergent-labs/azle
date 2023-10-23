@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { getActor } from '../../../get_actor';
 import { Test, getCanisterId, runTests } from 'azle/test';
 import { writeFileSync } from 'fs';
 import { execSync } from 'child_process';
@@ -49,15 +50,7 @@ const CanisterArb = fc.constant(0).map(() => {
         return {
             name: `query method test ${queryMethod.name}`,
             test: async () => {
-                const { createActor } = await import(
-                    './dfx_generated/canister'
-                );
-
-                const actor: any = createActor(getCanisterId('canister'), {
-                    agentOptions: {
-                        host: 'http://127.0.0.1:8000'
-                    }
-                });
+                const actor = getActor('./tests/query_methods/test');
 
                 const result = await actor[queryMethod.name]();
 
