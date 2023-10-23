@@ -132,6 +132,7 @@ jobs:
                     "examples/vanilla_js",
                     "property_tests/tests/blob",
                     "property_tests/tests/bool",
+                    "property_tests/tests/float32",
                     "property_tests/tests/int",
                     "property_tests/tests/int8",
                     "property_tests/tests/int16",
