@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 import { Int32Arb } from '../../../arbitraries/candid/primitive/ints/int32_arb';
-import { getCanisterId } from '../../../../test';
+import { getActor } from '../../../get_actor';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
@@ -55,15 +55,7 @@ const Int32TestArb = fc
             test: {
                 name: `test ${functionName}`,
                 test: async () => {
-                    const { createActor } = await import(
-                        `./dfx_generated/canister`
-                    );
-
-                    const actor: any = createActor(getCanisterId('canister'), {
-                        agentOptions: {
-                            host: 'http://127.0.0.1:8000'
-                        }
-                    });
+                    const actor = getActor('./tests/int32/test');
 
                     const result = await actor[functionName](...int32s);
 
