@@ -5,7 +5,7 @@ import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
 import { Float32Arb } from '../../../arbitraries/candid/primitive/floats/float32_arb';
 
-const float32TestArb = fc
+const Float32TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Float32Arb))
     .map(([functionName, float32s]) => {
         const paramCandidTypes = float32s.map(() => 'float32').join(', ');
@@ -66,4 +66,4 @@ const float32TestArb = fc
         };
     });
 
-runPropTests(float32TestArb);
+runPropTests(Float32TestArb);
