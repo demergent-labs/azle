@@ -1,4 +1,4 @@
-import { Null, Record, text, Variant, Vec } from 'azle';
+import { Func, Null, Record, text, Variant, Vec } from 'azle';
 
 export const BlogPost = Record({
     title: text
@@ -13,3 +13,5 @@ export const User = Record({
     username: text,
     posts: Vec(BlogPost)
 });
+
+export const Callback = Func([BlogPost], Reaction, 'update');

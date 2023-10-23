@@ -1,6 +1,8 @@
 import { CandidType } from '../../index';
 import { Parent, toIdl } from '../../index';
 import { IDL } from '@dfinity/candid';
+import { encode } from '../../serde/encode';
+import { decode } from '../../serde/decode';
 
 export class AzleTuple<T extends any[]> {
     constructor(t: CandidType[]) {
@@ -9,6 +11,14 @@ export class AzleTuple<T extends any[]> {
 
     innerTypes: CandidType[];
     _azleCandidType?: '_azleCandidType';
+
+    toBytes(data: number): Uint8Array {
+        return encode(this, data);
+    }
+
+    fromBytes(bytes: Uint8Array): number {
+        return decode(this, bytes);
+    }
 
     getIdl(parents: Parent[]) {
         const idls = this.innerTypes.map((value) => {

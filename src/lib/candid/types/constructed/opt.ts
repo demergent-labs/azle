@@ -1,4 +1,6 @@
 import { CandidType, Parent, toIdl } from '../../index';
+import { decode } from '../../serde/decode';
+import { encode } from '../../serde/encode';
 import { RequireExactlyOne } from './variant';
 import { IDL } from '@dfinity/candid';
 
@@ -34,6 +36,14 @@ export class AzleOpt<T> {
     innerType: CandidType;
     _azleCandidType?: '_azleCandidType';
     _azleKind: 'AzleOpt' = 'AzleOpt';
+
+    toBytes(data: number): Uint8Array {
+        return encode(this, data);
+    }
+
+    fromBytes(bytes: Uint8Array): number {
+        return decode(this, bytes);
+    }
 
     getIdl(parents: Parent[]) {
         return IDL.Opt(toIdl(this.innerType, parents));

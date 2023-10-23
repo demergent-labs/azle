@@ -1,19 +1,41 @@
-import { CandidType, TypeMapping } from './candid';
+import { TypeMapping } from './candid';
 import { None, Opt, Some } from './candid/types/constructed/opt';
 import { nat64 } from './candid/types/primitive/nats/nat64';
 import { nat8 } from './candid/types/primitive/nats/nat8';
 import { encode, decode } from './candid/serde';
 
-export function StableBTreeMap<
-    Key extends CandidType,
-    Value extends CandidType
->(keyType: Key, valueType: Value, memoryId: nat8) {
-    if (globalThis._azleIc === undefined) {
-        return undefined as any;
+// TODO we should probably try to make it work with bigint, Principal, etc
+// TODO out of the box
+// TODO we probably need to allow the user to pass in their own encoding/decoding for Json as well
+// TODO we need a way to make the types good in TypeMapping
+export class StableJson {
+    static toBytes(data: any): Uint8Array {
+        return Uint8Array.from(Buffer.from(JSON.stringify(data)));
     }
+
+    static fromBytes(bytes: Uint8Array): any {
+        return JSON.parse(Buffer.from(bytes).toString());
+    }
+}
+
+export interface Serializable {
+    toBytes: (data: any) => Uint8Array;
+    fromBytes: (bytes: Uint8Array) => any;
+}
+
+export function StableBTreeMap<
+    Key extends Partial<Serializable>,
+    Value extends Partial<Serializable>
+>(keyType: Key, valueType: Value, memoryId: nat8) {
+    // TODO we don't really need to candid encode this, it's just a number
     const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
 
-    globalThis._azleIc.stableBTreeMapInit(candidEncodedMemoryId);
+    if (globalThis._azleIc !== undefined) {
+        globalThis._azleIc.stableBTreeMapInit(candidEncodedMemoryId);
+    }
+
+    isSerializable(keyType);
+    isSerializable(valueType);
 
     return {
         /**
@@ -26,12 +48,11 @@ export function StableBTreeMap<
                 return undefined as any;
             }
 
-            const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
-            const candidEncodedKey = encode(keyType, key).buffer;
+            const encodedKey = keyType.toBytes(key).buffer;
 
             return globalThis._azleIc.stableBTreeMapContainsKey(
                 candidEncodedMemoryId,
-                candidEncodedKey
+                encodedKey
             );
         },
         /**
@@ -44,18 +65,17 @@ export function StableBTreeMap<
                 return undefined as any;
             }
 
-            const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
-            const candidEncodedKey = encode(keyType, key).buffer;
+            const encodedKey = keyType.toBytes(key).buffer;
 
-            const candidEncodedValue = globalThis._azleIc.stableBTreeMapGet(
+            const encodedResult = globalThis._azleIc.stableBTreeMapGet(
                 candidEncodedMemoryId,
-                candidEncodedKey
+                encodedKey
             );
 
-            if (candidEncodedValue === undefined) {
+            if (encodedResult === undefined) {
                 return None;
             } else {
-                return Some(decode(valueType, candidEncodedValue));
+                return Some(valueType.fromBytes(new Uint8Array(encodedResult)));
             }
         },
         /**
@@ -72,21 +92,19 @@ export function StableBTreeMap<
                 return undefined as any;
             }
 
-            const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
-            const candidEncodedKey = encode(keyType, key).buffer;
-            const candidEncodedValue = encode(valueType, value).buffer;
+            const encodedKey = keyType.toBytes(key).buffer;
+            const encodedValue = valueType.toBytes(value).buffer;
 
-            const candidEncodedResultValue =
-                globalThis._azleIc.stableBTreeMapInsert(
-                    candidEncodedMemoryId,
-                    candidEncodedKey,
-                    candidEncodedValue
-                );
+            const encodedResult = globalThis._azleIc.stableBTreeMapInsert(
+                candidEncodedMemoryId,
+                encodedKey,
+                encodedValue
+            );
 
-            if (candidEncodedResultValue === undefined) {
+            if (encodedResult === undefined) {
                 return None;
             } else {
-                return Some(decode(valueType, candidEncodedResultValue));
+                return Some(valueType.fromBytes(new Uint8Array(encodedResult)));
             }
         },
         /**
@@ -97,8 +115,6 @@ export function StableBTreeMap<
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
-
-            const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
 
             return globalThis._azleIc.stableBTreeMapIsEmpty(
                 candidEncodedMemoryId
@@ -113,17 +129,15 @@ export function StableBTreeMap<
                 return undefined as any;
             }
 
-            const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
-
-            const candidEncodedItems = globalThis._azleIc.stableBTreeMapItems(
+            const encodedItems = globalThis._azleIc.stableBTreeMapItems(
                 candidEncodedMemoryId
             );
 
             // TODO too much copying
-            return candidEncodedItems.map((candidEncodedItem) => {
+            return encodedItems.map(([encodedKey, encodedValue]) => {
                 return [
-                    decode(keyType, candidEncodedItem[0]),
-                    decode(valueType, candidEncodedItem[1])
+                    keyType.fromBytes(new Uint8Array(encodedKey)),
+                    valueType.fromBytes(new Uint8Array(encodedValue))
                 ];
             });
         },
@@ -136,15 +150,13 @@ export function StableBTreeMap<
                 return undefined as any;
             }
 
-            const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
-
-            const candidEncodedKeys = globalThis._azleIc.stableBTreeMapKeys(
+            const encodedKeys = globalThis._azleIc.stableBTreeMapKeys(
                 candidEncodedMemoryId
             );
 
             // TODO too much copying
-            return candidEncodedKeys.map((candidEncodedKey) => {
-                return decode(keyType, candidEncodedKey);
+            return encodedKeys.map((encodedKey) => {
+                return keyType.fromBytes(new Uint8Array(encodedKey));
             });
         },
         /**
@@ -155,8 +167,6 @@ export function StableBTreeMap<
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
-
-            const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
 
             const candidEncodedLen = globalThis._azleIc.stableBTreeMapLen(
                 candidEncodedMemoryId
@@ -174,18 +184,17 @@ export function StableBTreeMap<
                 return undefined as any;
             }
 
-            const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
-            const candidEncodedKey = encode(keyType, key).buffer;
+            const encodedKey = keyType.toBytes(key).buffer;
 
-            const candidEncodedValue = globalThis._azleIc.stableBTreeMapRemove(
+            const encodedValue = globalThis._azleIc.stableBTreeMapRemove(
                 candidEncodedMemoryId,
-                candidEncodedKey
+                encodedKey
             );
 
-            if (candidEncodedValue === undefined) {
+            if (encodedValue === undefined) {
                 return None;
             } else {
-                return Some(decode(valueType, candidEncodedValue));
+                return Some(valueType.fromBytes(new Uint8Array(encodedValue)));
             }
         },
         /**
@@ -197,16 +206,24 @@ export function StableBTreeMap<
                 return undefined as any;
             }
 
-            const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
-
-            const candidEncodedValues = globalThis._azleIc.stableBTreeMapValues(
+            const encodedValues = globalThis._azleIc.stableBTreeMapValues(
                 candidEncodedMemoryId
             );
 
             // TODO too much copying
-            return candidEncodedValues.map((candidEncodedValue) => {
-                return decode(valueType, candidEncodedValue);
+            return encodedValues.map((encodedValue) => {
+                return valueType.fromBytes(new Uint8Array(encodedValue));
             });
         }
     };
+}
+
+function isSerializable(obj: any): asserts obj is Serializable {
+    if (obj.toBytes === undefined) {
+        throw new Error(`value must have a toBytes method`);
+    }
+
+    if (obj.fromBytes === undefined) {
+        throw new Error(`value must have a fromBytes method`);
+    }
 }

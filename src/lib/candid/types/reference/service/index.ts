@@ -1,5 +1,5 @@
 import { CanisterMethodInfo } from '../../../../canister_methods/types/canister_method_info';
-import { TypeMapping } from '../../../index';
+import { CandidType, TypeMapping } from '../../../index';
 import { _AzleRecursiveFunction } from '../../../recursive';
 import { Principal } from '../principal';
 import { createCanisterFunction } from './canister_function';
@@ -30,7 +30,7 @@ type _AzleCanisterReturnType = {
 
 export function Canister<T extends CanisterOptions>(
     canisterOptions: T
-): CallableObject<T> & { _azleCandidType?: '_azleCandidType' } {
+): CallableObject<T> & CandidType {
     let result: _AzleCanisterReturnType = (parentOrPrincipal: any) => {
         const canisterFunction = createCanisterFunction(canisterOptions);
 

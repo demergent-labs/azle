@@ -27,35 +27,35 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? T
     : T extends () => any
     ? ReturnType<T>
-    : T extends AzleText
+    : T extends typeof AzleText
     ? string
-    : T extends AzleBool
+    : T extends typeof AzleBool
     ? bool
-    : T extends AzleInt
+    : T extends typeof AzleInt
     ? int
-    : T extends AzleInt64
+    : T extends typeof AzleInt64
     ? int64
-    : T extends AzleInt32
+    : T extends typeof AzleInt32
     ? int32
-    : T extends AzleInt16
+    : T extends typeof AzleInt16
     ? int16
-    : T extends AzleInt8
+    : T extends typeof AzleInt8
     ? int8
-    : T extends AzleNat
+    : T extends typeof AzleNat
     ? nat
-    : T extends AzleNat64
+    : T extends typeof AzleNat64
     ? nat64
-    : T extends AzleNat32
+    : T extends typeof AzleNat32
     ? nat32
-    : T extends AzleNat16
+    : T extends typeof AzleNat16
     ? nat16
-    : T extends AzleNat8
+    : T extends typeof AzleNat8
     ? nat8
-    : T extends AzleFloat64
+    : T extends typeof AzleFloat64
     ? float64
-    : T extends AzleFloat32
+    : T extends typeof AzleFloat32
     ? float32
-    : T extends AzleVoid
+    : T extends typeof AzleVoid
     ? void
     : T extends AzleTuple<infer U>
     ? {
@@ -88,14 +88,14 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? Opt<TypeMapping<Some>>
     : T extends AzleResult<infer U, infer W>
     ? Result<TypeMapping<U>, TypeMapping<W>>
-    : T extends AzleBlob
+    : T extends typeof AzleBlob
     ? blob
     : T extends typeof Principal
     ? Principal
-    : T extends AzleNull
+    : T extends typeof AzleNull
     ? Null
-    : T extends AzleReserved
+    : T extends typeof AzleReserved
     ? reserved
-    : T extends AzleEmpty
+    : T extends typeof AzleEmpty
     ? empty
     : T;
