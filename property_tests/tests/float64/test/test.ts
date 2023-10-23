@@ -4,6 +4,7 @@ import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
 import { Float64ArrayArb } from '../../../arbitraries/candid/primitive/floats/float64_arb';
+import { areFloatsEqual } from '../../../are_equal';
 
 const Float64TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), Float64ArrayArb)
@@ -33,7 +34,11 @@ const Float64TestArb = fc
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                return `if (${paramName} !== ${paramSamples[index]}) throw new Error('${paramName} is incorrectly ordered')`;
+                const areFloat64sEqual = areFloatsEqual(
+                    paramName,
+                    paramSamples[index]
+                );
+                return `if (!${areFloat64sEqual}) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
@@ -57,6 +62,12 @@ const Float64TestArb = fc
                     const actor = getActor('./tests/float64/test');
 
                     const result = await actor[functionName](...float64s);
+
+                    if (Number.isNaN(expectedResult)) {
+                        return {
+                            Ok: Number.isNaN(result)
+                        };
+                    }
 
                     return {
                         Ok: result === expectedResult

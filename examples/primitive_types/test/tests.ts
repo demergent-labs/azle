@@ -20,9 +20,8 @@ export function getTests(
         {
             name: 'printString',
             test: async () => {
-                const result = await primitiveTypesCanister.printString(
-                    'string'
-                );
+                const result =
+                    await primitiveTypesCanister.printString('string');
 
                 return {
                     Ok: result === 'string'
@@ -62,9 +61,8 @@ export function getTests(
         {
             name: 'printNumber',
             test: async () => {
-                const result = await primitiveTypesCanister.printNumber(
-                    90071992547409.05
-                );
+                const result =
+                    await primitiveTypesCanister.printNumber(90071992547409.05);
 
                 return {
                     Ok: result.toString() === '90071992547409.05'
@@ -86,9 +84,10 @@ export function getTests(
         {
             name: 'printInt',
             test: async () => {
-                const result = await primitiveTypesCanister.printInt(
-                    170_141_183_460_469_231_731_687_303_715_884_105_727n
-                );
+                const result =
+                    await primitiveTypesCanister.printInt(
+                        170_141_183_460_469_231_731_687_303_715_884_105_727n
+                    );
 
                 return {
                     Ok:
@@ -110,9 +109,10 @@ export function getTests(
         {
             name: 'printInt64',
             test: async () => {
-                const result = await primitiveTypesCanister.printInt(
-                    9_223_372_036_854_775_807n
-                );
+                const result =
+                    await primitiveTypesCanister.printInt(
+                        9_223_372_036_854_775_807n
+                    );
 
                 return {
                     Ok: result === 9_223_372_036_854_775_807n
@@ -132,9 +132,8 @@ export function getTests(
         {
             name: 'printInt32',
             test: async () => {
-                const result = await primitiveTypesCanister.printInt32(
-                    2_147_483_647
-                );
+                const result =
+                    await primitiveTypesCanister.printInt32(2_147_483_647);
 
                 return {
                     Ok: result === 2_147_483_647
@@ -196,9 +195,10 @@ export function getTests(
         {
             name: 'printNat',
             test: async () => {
-                const result = await primitiveTypesCanister.printNat(
-                    340_282_366_920_938_463_463_374_607_431_768_211_455n
-                );
+                const result =
+                    await primitiveTypesCanister.printNat(
+                        340_282_366_920_938_463_463_374_607_431_768_211_455n
+                    );
 
                 return {
                     Ok:
@@ -220,9 +220,10 @@ export function getTests(
         {
             name: 'printNat64',
             test: async () => {
-                const result = await primitiveTypesCanister.printNat64(
-                    18_446_744_073_709_551_615n
-                );
+                const result =
+                    await primitiveTypesCanister.printNat64(
+                        18_446_744_073_709_551_615n
+                    );
 
                 return {
                     Ok: result === 18_446_744_073_709_551_615n
@@ -242,9 +243,8 @@ export function getTests(
         {
             name: 'printNat32',
             test: async () => {
-                const result = await primitiveTypesCanister.printNat32(
-                    4_294_967_295
-                );
+                const result =
+                    await primitiveTypesCanister.printNat32(4_294_967_295);
 
                 return {
                     Ok: result === 4_294_967_295
@@ -304,12 +304,49 @@ export function getTests(
         {
             name: 'printFloat64',
             test: async () => {
-                const result = await primitiveTypesCanister.printFloat64(
-                    2.718281828459045
-                );
+                const result =
+                    await primitiveTypesCanister.printFloat64(
+                        2.718281828459045
+                    );
 
                 return {
                     Ok: result.toString() === '2.718281828459045'
+                };
+            }
+        },
+        {
+            name: 'print Float64.Nan',
+            test: async () => {
+                const result = await primitiveTypesCanister.printFloat64(
+                    Number.NaN
+                );
+
+                return {
+                    Ok: Number.isNaN(result)
+                };
+            }
+        },
+        {
+            name: 'print positive Float64.Infinity',
+            test: async () => {
+                const result = await primitiveTypesCanister.printFloat64(
+                    Number.POSITIVE_INFINITY
+                );
+
+                return {
+                    Ok: !Number.isFinite(result)
+                };
+            }
+        },
+        {
+            name: 'print negative Float64.Infinity',
+            test: async () => {
+                const result = await primitiveTypesCanister.printFloat64(
+                    Number.NEGATIVE_INFINITY
+                );
+
+                return {
+                    Ok: !Number.isFinite(result)
                 };
             }
         },
@@ -327,13 +364,48 @@ export function getTests(
         {
             name: 'printFloat32',
             test: async () => {
-                const result = await primitiveTypesCanister.printFloat32(
-                    3.1415927
-                );
+                const result =
+                    await primitiveTypesCanister.printFloat32(3.1415927);
 
                 return {
                     // Ok: result.toString() === '3.1415927' // TODO on the command line this is returned
                     Ok: result.toString() === '3.1415927410125732'
+                };
+            }
+        },
+        {
+            name: 'print Float32.Nan',
+            test: async () => {
+                const result = await primitiveTypesCanister.printFloat32(
+                    Number.NaN
+                );
+
+                return {
+                    Ok: Number.isNaN(result)
+                };
+            }
+        },
+        {
+            name: 'print positive Float32.Infinity',
+            test: async () => {
+                const result = await primitiveTypesCanister.printFloat32(
+                    Number.POSITIVE_INFINITY
+                );
+
+                return {
+                    Ok: !Number.isFinite(result)
+                };
+            }
+        },
+        {
+            name: 'print negative Float32.Infinity',
+            test: async () => {
+                const result = await primitiveTypesCanister.printFloat32(
+                    Number.NEGATIVE_INFINITY
+                );
+
+                return {
+                    Ok: !Number.isFinite(result)
                 };
             }
         },
