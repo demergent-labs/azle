@@ -30,7 +30,8 @@ export function runPropTests(testArb: fc.Arbitrary<TestSample>) {
             return true;
         }),
         {
-            numRuns: Number(process.env.AZLE_NUM_PROPTEST_RUNS ?? 1)
+            numRuns: Number(process.env.AZLE_NUM_PROPTEST_RUNS ?? 1),
+            endOnFailure: true // TODO This essentially disables shrinking. We don't know how to do shrinking well yet
         }
     );
 }
