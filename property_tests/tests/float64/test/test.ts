@@ -1,16 +1,17 @@
 import fc from 'fast-check';
-import { Int16Arb } from '../../../arbitraries/candid/primitive/ints/int16_arb';
 import { getActor } from '../../../get_actor';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
+import { Float64ArrayArb } from '../../../arbitraries/candid/primitive/floats/float64_arb';
 
-const Int16TestArb = fc
-    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Int16Arb))
-    .map(([functionName, int16s]) => {
-        const paramCandidTypes = int16s.map(() => 'int16').join(', ');
-        const returnCandidType = 'int16';
-        const paramNames = int16s.map((_, index) => `param${index}`);
+const Float64TestArb = fc
+    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), Float64ArrayArb)
+    .map(([functionName, float64Array]) => {
+        const float64s = [...float64Array.values()];
+        const paramCandidTypes = float64s.map(() => 'float64').join(', ');
+        const returnCandidType = 'float64';
+        const paramNames = float64s.map((_, index) => `param${index}`);
 
         const paramsAreNumbers = paramNames
             .map((paramName) => {
@@ -22,15 +23,13 @@ const Int16TestArb = fc
             return `${acc} + ${paramName}`;
         }, '0');
 
-        const length = int16s.length === 0 ? 1 : int16s.length;
+        const length = float64s.length === 0 ? 1 : float64s.length;
 
-        const returnStatement = `Math.floor((${paramsSum}) / ${length})`;
+        const returnStatement = `(${paramsSum}) / ${length}`;
 
-        const expectedResult = Math.floor(
-            int16s.reduce((acc, int16) => acc + int16, 0) / length
-        );
-
-        const paramSamples = int16s;
+        const expectedResult =
+            float64s.reduce((acc, float64) => acc + float64, 0) / length;
+        const paramSamples = float64s;
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
@@ -40,7 +39,7 @@ const Int16TestArb = fc
 
         return {
             functionName,
-            imports: ['int16'],
+            imports: ['float64'],
             paramCandidTypes,
             returnCandidType,
             paramNames,
@@ -55,9 +54,9 @@ const Int16TestArb = fc
             test: {
                 name: `test ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/int16/test');
+                    const actor = getActor('./tests/float64/test');
 
-                    const result = await actor[functionName](...int16s);
+                    const result = await actor[functionName](...float64s);
 
                     return {
                         Ok: result === expectedResult
@@ -67,4 +66,4 @@ const Int16TestArb = fc
         };
     });
 
-runPropTests(Int16TestArb);
+runPropTests(Float64TestArb);

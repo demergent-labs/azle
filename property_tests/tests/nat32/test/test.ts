@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 import { Nat32Arb } from '../../../arbitraries/candid/primitive/nats/nat32_arb';
-import { getCanisterId } from '../../../../test';
+import { getActor } from '../../../get_actor';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
@@ -55,15 +55,7 @@ const Nat32TestArb = fc
             test: {
                 name: `test ${functionName}`,
                 test: async () => {
-                    const { createActor } = await import(
-                        `./dfx_generated/canister`
-                    );
-
-                    const actor: any = createActor(getCanisterId('canister'), {
-                        agentOptions: {
-                            host: 'http://127.0.0.1:8000'
-                        }
-                    });
+                    const actor = getActor('./tests/nat32/test');
 
                     const result = await actor[functionName](...nat32s);
 

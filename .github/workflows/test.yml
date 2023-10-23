@@ -131,6 +131,9 @@ jobs:
                     "examples/update",
                     "examples/vanilla_js",
                     "property_tests/tests/blob",
+                    "property_tests/tests/bool",
+                    "property_tests/tests/float32",
+                    "property_tests/tests/float64",
                     "property_tests/tests/int",
                     "property_tests/tests/int8",
                     "property_tests/tests/int16",
@@ -141,6 +144,8 @@ jobs:
                     "property_tests/tests/nat16",
                     "property_tests/tests/nat32",
                     "property_tests/tests/nat64",
+                    "property_tests/tests/null",
+                    "property_tests/tests/text",
                     "property_tests/tests/vec"
                   ]
                   END
