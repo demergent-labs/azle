@@ -16,6 +16,8 @@ quickjs-wasm-rs = { git = "https://github.com/ulan/javy.git", branch = "ulan/loc
 slotmap = "=1.0.6"
 ic-cdk = "0.10.0"
 ic-cdk-macros = "0.7.0"
+lalrpop = "=0.20.0"
+lalrpop-util = "=0.20.0"
 # TODO for now we must turn on the transient feature (no stable storage file system) or we can't generate the Candid file
 ic-wasi-polyfill = { git = "https://github.com/demergent-labs/ic-wasi-polyfill", rev = "f3812b879c096faf930331e76441fadf2ebe6586", features = [
     "transient",
