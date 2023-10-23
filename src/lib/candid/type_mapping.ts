@@ -82,6 +82,8 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
                   : 10
           >;
       }
+    : T extends AzleVec<AzleNat8>
+    ? Uint8Array
     : T extends AzleVec<infer U>
     ? TypeMapping<U>[]
     : T extends AzleOpt<infer Some>

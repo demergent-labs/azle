@@ -42,6 +42,7 @@
         "@types/fs-extra": "9.0.13",
         "eslint": "8.11.0",
         "eslint-config-prettier": "8.5.0",
+        "fast-check": "^3.13.1",
         "husky": "7.0.4",
         "lint-staged": "12.3.7",
         "prettier": "^3.0.3"

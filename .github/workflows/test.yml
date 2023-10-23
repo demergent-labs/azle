@@ -129,7 +129,24 @@ jobs:
                     "examples/timers",
                     "examples/tuple_types",
                     "examples/update",
-                    "examples/vanilla_js"
+                    "examples/vanilla_js",
+                    "property_tests/tests/blob",
+                    "property_tests/tests/bool",
+                    "property_tests/tests/float32",
+                    "property_tests/tests/float64",
+                    "property_tests/tests/int",
+                    "property_tests/tests/int8",
+                    "property_tests/tests/int16",
+                    "property_tests/tests/int32",
+                    "property_tests/tests/int64",
+                    "property_tests/tests/nat",
+                    "property_tests/tests/nat8",
+                    "property_tests/tests/nat16",
+                    "property_tests/tests/nat32",
+                    "property_tests/tests/nat64",
+                    "property_tests/tests/null",
+                    "property_tests/tests/text",
+                    "property_tests/tests/vec"
                   ]
                   END
                   )
@@ -201,7 +218,15 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
-              run: npm test
+              run: AZLE_NUM_PROPTEST_RUNS=10 npm test
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && contains(github.head_ref, 'release--') }}
+              shell: bash -l {0}
+              working-directory: ${{ matrix.example_directories }}
+              run: AZLE_NUM_PROPTEST_RUNS=100 npm test
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
+              shell: bash -l {0}
+              working-directory: ${{ matrix.example_directories }}
+              run: AZLE_NUM_PROPTEST_RUNS=100 npm test
 
     check-basic-integration-tests-success:
         needs: basic-integration-tests
