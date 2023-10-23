@@ -23,7 +23,7 @@
         "build": "cd wallet/frontend && npm run build"
     },
     "dependencies": {
-        "azle": "0.18.5"
+        "azle": "0.18.6-rc.0"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
