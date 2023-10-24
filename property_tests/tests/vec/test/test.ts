@@ -34,6 +34,9 @@ const VecTestArb = fc
 
         const expectedResult = vecWrappers[0]?.vec ?? [];
 
+        const equalityCheck =
+            vecWrappers[0]?.equalityCheck ?? ((a, b) => a === b);
+
         return {
             functionName,
             imports: [
@@ -47,6 +50,7 @@ const VecTestArb = fc
                 'nat16',
                 'nat32',
                 'nat64',
+                'Principal',
                 'Vec'
             ],
             paramCandidTypes: paramCandidTypes.join(', '),
@@ -69,7 +73,11 @@ const VecTestArb = fc
                     );
 
                     return {
-                        Ok: primitiveArraysAreEqual(result, expectedResult)
+                        Ok: primitiveArraysAreEqual(
+                            result,
+                            expectedResult,
+                            equalityCheck
+                        )
                     };
                 }
             }
@@ -78,7 +86,11 @@ const VecTestArb = fc
 
 runPropTests(VecTestArb);
 
-function primitiveArraysAreEqual(arr1: any, arr2: any) {
+function primitiveArraysAreEqual(
+    arr1: any,
+    arr2: any,
+    equalityCheck: (a: any, b: any) => boolean
+) {
     // Check if both arrays have the same length
     if (arr1.length !== arr2.length) {
         return false;
@@ -86,7 +98,7 @@ function primitiveArraysAreEqual(arr1: any, arr2: any) {
 
     // Loop through each element to check for equality
     for (let i = 0; i < arr1.length; i++) {
-        if (arr1[i] !== arr2[i]) {
+        if (!equalityCheck(arr1[i], arr2[i])) {
             return false;
         }
     }

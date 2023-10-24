@@ -1,3 +1,4 @@
+import { Principal } from '@dfinity/principal';
 import fc from 'fast-check';
 import { IntArb } from '../primitive/ints/int_arb';
 import { Int8Arb } from '../primitive/ints/int8_arb';
@@ -9,6 +10,7 @@ import { Nat8Arb } from '../primitive/nats/nat8_arb';
 import { Nat16Arb } from '../primitive/nats/nat16_arb';
 import { Nat32Arb } from '../primitive/nats/nat32_arb';
 import { Nat64Arb } from '../primitive/nats/nat64_arb';
+import { PrincipalArb } from '../reference/principal_arb';
 
 // TODO look into making this recursive
 // TODO we want to be able to have vecs of vecs
@@ -35,12 +37,26 @@ export const VecArb = fc.oneof(
         .map((sample) => createVecArbWrapper(sample, 'Vec(nat32)')),
     fc
         .array(Nat64Arb)
-        .map((sample) => createVecArbWrapper(sample, 'Vec(nat64)'))
+        .map((sample) => createVecArbWrapper(sample, 'Vec(nat64)')),
+    fc
+        .array(PrincipalArb)
+        .map((sample) =>
+            createVecArbWrapper(
+                sample,
+                'Vec(Principal)',
+                (a: Principal, b: Principal) => a.toText() === b.toText()
+            )
+        )
 );
 
-function createVecArbWrapper(sample: any[], candidType: string) {
+function createVecArbWrapper(
+    sample: any[],
+    candidType: string,
+    equalityCheck: (a: any, b: any) => boolean = (a, b) => a === b
+) {
     return {
         vec: sample,
-        candidType
+        candidType,
+        equalityCheck
     };
 }
