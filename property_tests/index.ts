@@ -25,7 +25,10 @@ export function runPropTests(testArb: fc.Arbitrary<TestSample>) {
                 stdio: 'inherit'
             });
 
-            return await runTests(canister.tests, false);
+            return await runTests(
+                canister.tests,
+                process.env.AZLE_HIDE_CANISTER_ON_FAIL === undefined
+            );
         }),
         {
             numRuns: Number(process.env.AZLE_NUM_PROPTEST_RUNS ?? 1),

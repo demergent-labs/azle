@@ -28,42 +28,80 @@ const InnerOptArb = (arb: fc.Arbitrary<any>) => {
         });
 };
 
+export const { OptArb } = fc.letrec((tie) => ({
+    OptArb: fc.oneof(
+        InnerOptArb(tie('OptArb')).map((sample) =>
+            createOptArbWrapper(sample, 'recOpt')
+        ),
+        InnerOptArb(IntArb).map((sample) =>
+            createOptArbWrapper(sample, 'Opt(int)')
+        ),
+        InnerOptArb(Int8Arb).map((sample) =>
+            createOptArbWrapper(sample, 'Opt(int8)')
+        ),
+        InnerOptArb(Int16Arb).map((sample) =>
+            createOptArbWrapper(sample, 'Opt(int16)')
+        ),
+        InnerOptArb(Int32Arb).map((sample) =>
+            createOptArbWrapper(sample, 'Opt(int32)')
+        ),
+        InnerOptArb(Int64Arb).map((sample) =>
+            createOptArbWrapper(sample, 'Opt(int64)')
+        ),
+        InnerOptArb(NatArb).map((sample) =>
+            createOptArbWrapper(sample, 'Opt(nat)')
+        ),
+        InnerOptArb(Nat8Arb).map((sample) =>
+            createOptArbWrapper(sample, 'Opt(nat8)')
+        ),
+        InnerOptArb(Nat16Arb).map((sample) =>
+            createOptArbWrapper(sample, 'Opt(nat16)')
+        ),
+        InnerOptArb(Nat32Arb).map((sample) =>
+            createOptArbWrapper(sample, 'Opt(nat32)')
+        ),
+        InnerOptArb(Nat64Arb).map((sample) =>
+            createOptArbWrapper(sample, 'Opt(nat64)')
+        )
+    )
+}));
+
 // TODO look into making this recursive
 // TODO we want to be able to have opts of opts
 // TODO we also need to add vecs in here
 // TODO we need to add all constructed and reference types
-export const OptArb = fc.oneof(
-    InnerOptArb(IntArb).map((sample) =>
-        createOptArbWrapper(sample, 'Opt(int)')
-    ),
-    InnerOptArb(Int8Arb).map((sample) =>
-        createOptArbWrapper(sample, 'Opt(int8)')
-    ),
-    InnerOptArb(Int16Arb).map((sample) =>
-        createOptArbWrapper(sample, 'Opt(int16)')
-    ),
-    InnerOptArb(Int32Arb).map((sample) =>
-        createOptArbWrapper(sample, 'Opt(int32)')
-    ),
-    InnerOptArb(Int64Arb).map((sample) =>
-        createOptArbWrapper(sample, 'Opt(int64)')
-    ),
-    InnerOptArb(NatArb).map((sample) =>
-        createOptArbWrapper(sample, 'Opt(nat)')
-    ),
-    InnerOptArb(Nat8Arb).map((sample) =>
-        createOptArbWrapper(sample, 'Opt(nat8)')
-    ),
-    InnerOptArb(Nat16Arb).map((sample) =>
-        createOptArbWrapper(sample, 'Opt(nat16)')
-    ),
-    InnerOptArb(Nat32Arb).map((sample) =>
-        createOptArbWrapper(sample, 'Opt(nat32)')
-    ),
-    InnerOptArb(Nat64Arb).map((sample) =>
-        createOptArbWrapper(sample, 'Opt(nat64)')
-    )
-);
+// export const OptArb = fc.oneof(
+//     InnerOptArb(IntArb).map((sample) =>
+//         createOptArbWrapper(sample, 'Opt(int)')
+//     ),
+//     InnerOptArb(Int8Arb).map((sample) =>
+//         createOptArbWrapper(sample, 'Opt(int8)')
+//     ),
+//     InnerOptArb(Int16Arb).map((sample) =>
+//         createOptArbWrapper(sample, 'Opt(int16)')
+//     ),
+//     InnerOptArb(Int32Arb).map((sample) =>
+//         createOptArbWrapper(sample, 'Opt(int32)')
+//     ),
+//     InnerOptArb(Int64Arb).map((sample) =>
+//         createOptArbWrapper(sample, 'Opt(int64)')
+//     ),
+//     InnerOptArb(NatArb).map((sample) =>
+//         createOptArbWrapper(sample, 'Opt(nat)')
+//     ),
+//     InnerOptArb(Nat8Arb).map((sample) =>
+//         createOptArbWrapper(sample, 'Opt(nat8)')
+//     ),
+//     InnerOptArb(Nat16Arb).map((sample) =>
+//         createOptArbWrapper(sample, 'Opt(nat16)')
+//     ),
+//     InnerOptArb(Nat32Arb).map((sample) =>
+//         createOptArbWrapper(sample, 'Opt(nat32)')
+//     ),
+//     InnerOptArb(Nat64Arb).map((sample) =>
+//         createOptArbWrapper(sample, 'Opt(nat64)')
+//     )
+// );
 
 function createOptArbWrapper(sample: any, candidType: string) {
     return {

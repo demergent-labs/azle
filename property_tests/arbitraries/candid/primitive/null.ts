@@ -113,13 +113,13 @@ fc.statistics(
         })
     })).node,
     (v) => {
-        function size(n) {
+        function size(n: any): number {
             if (n === null) return 0;
             else return 1 + size(n.left) + size(n.right);
         }
         const s = size(v);
         let lower = 1;
-        const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
+        const next = (n: number) => (String(n)[0] === '1' ? n * 5 : n * 2);
         while (next(lower) <= s) {
             lower = next(lower);
         }
@@ -155,16 +155,20 @@ fc.statistics(
         })
     })).node,
     (v) => {
-        function size(n) {
+        function size(n: any): number {
             if (n === null) return 0;
             else
                 return (
-                    1 + n.children.reduce((acc, child) => acc + size(child), 0)
+                    1 +
+                    n.children.reduce(
+                        (acc: number, child: any) => acc + size(child),
+                        0
+                    )
                 );
         }
         const s = size(v);
         let lower = 1;
-        const next = (n) => (String(n)[0] === '1' ? n * 5 : n * 2);
+        const next = (n: number) => (String(n)[0] === '1' ? n * 5 : n * 2);
         while (next(lower) <= s) {
             lower = next(lower);
         }
