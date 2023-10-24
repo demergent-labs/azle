@@ -3,8 +3,9 @@ import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
 
 export class AzleText {
-    _azleKind: 'AzleText' = 'AzleText';
-    _azleCandidType?: '_azleCandidType';
+    _azleText: 'AzleText' = 'AzleText';
+    static _azleText: 'AzleText' = 'AzleText';
+    static _azleCandidType?: '_azleCandidType';
 
     static toBytes(data: number): Uint8Array {
         return encode(this, data);

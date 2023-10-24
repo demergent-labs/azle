@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/run_time_errors/run_time_errors.did';

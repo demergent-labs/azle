@@ -6,6 +6,18 @@ import { executeMethod } from '../execute_method';
 import { isAsync } from '../is_async';
 import { MethodArgs } from '../types/method_args';
 
+// type IfHasKey<T, K extends string, Yes, No> = K extends keyof T
+//     ? undefined extends T[K]
+//         ? Yes
+//         : No
+//     : No;
+
+// type Test1 = IfHasKey<typeof TestRecord, '_azleCandidType', 'Yes', 'No'>;
+
+// interface CandidType {
+//     _azleCandidType?: '_azleCandidType';
+// }
+
 export function query<
     const Params extends ReadonlyArray<CandidType>,
     Return extends CandidType,

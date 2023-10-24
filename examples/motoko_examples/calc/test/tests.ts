@@ -1,4 +1,5 @@
 import { Test } from 'azle/test';
+// @ts-ignore
 import { _SERVICE } from './dfx_generated/calc/calc.did';
 import { ActorSubclass } from '@dfinity/agent';
 

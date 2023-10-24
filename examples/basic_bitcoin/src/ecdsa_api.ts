@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { blob, ic, match, Opt, Vec } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 

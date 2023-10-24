@@ -4,6 +4,7 @@ import { toIdlMap, CandidMap } from './to_idl_map';
 import { IDL } from '@dfinity/candid';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
+import { Serializable } from '../../../stable_b_tree_map';
 
 export function Variant<
     T extends {
@@ -14,7 +15,8 @@ export function Variant<
 ): RequireExactlyOne<{
     [K in keyof T]: TypeMapping<T[K]>;
 }> &
-    CandidType {
+    CandidType &
+    Partial<Serializable> {
     return {
         ...obj,
         toBytes(data: number): Uint8Array {

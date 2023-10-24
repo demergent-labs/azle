@@ -30,7 +30,7 @@ export const stableMap1Methods = {
         return stableMap1.items();
     }),
     stableMap1Keys: query([], Vec(nat16), () => {
-        return stableMap1.keys();
+        return Uint16Array.from(stableMap1.keys());
     }),
     stableMap1Len: query([], nat64, () => {
         return stableMap1.len();

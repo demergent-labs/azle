@@ -57,6 +57,8 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? float32
     : T extends typeof AzleVoid
     ? void
+    : T extends AzleVoid
+    ? void
     : T extends AzleTuple<infer U>
     ? {
           [K in keyof U]: TypeMapping<
@@ -82,10 +84,12 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
                   : 10
           >;
       }
-    : T extends AzleVec<AzleNat8>
-    ? Uint8Array
     : T extends AzleVec<infer U>
-    ? TypeMapping<U>[]
+    ? U extends { _azleKind: 'AzleNat8' }
+        ? Uint8Array
+        : U extends { _azleKind: 'AzleNat16' }
+        ? Uint16Array
+        : TypeMapping<U>[]
     : T extends AzleOpt<infer Some>
     ? Opt<TypeMapping<Some>>
     : T extends AzleResult<infer U, infer W>

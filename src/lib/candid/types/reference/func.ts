@@ -3,6 +3,7 @@ import { IDL } from '@dfinity/candid';
 import { Principal } from './principal';
 import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
+import { Serializable } from '../../../stable_b_tree_map';
 
 type Mode = 'query' | 'update' | 'oneway';
 
@@ -16,7 +17,7 @@ export function Func(
     paramCandidTypes: CandidType[],
     returnCandidTypes: CandidType,
     mode: Mode
-): [Principal, string] & CandidType {
+): [Principal, string] & CandidType & Partial<Serializable> {
     return {
         toBytes(data: number): Uint8Array {
             return encode(this, data);

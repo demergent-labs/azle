@@ -133,7 +133,7 @@ function createCanisterFunctionBase(
 
                 return {
                     ...acc,
-                    [key]: (...args: any[]) => {
+                    [key]: (...args: any) => {
                         return serviceCall(
                             principal as any,
                             key,

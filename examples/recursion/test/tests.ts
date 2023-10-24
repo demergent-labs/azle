@@ -11,7 +11,9 @@ import {
     rec_4,
     rec_6,
     rec_8
+    // @ts-ignore
 } from './dfx_generated/recursion/recursion.did';
+// @ts-ignore
 import { _SERVICE as _REC_SERVICE } from './dfx_generated/recursive_canister/recursive_canister.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';

@@ -4,7 +4,7 @@ import { decode } from '../../serde/decode';
 
 export class AzleNull {
     _azleKind: 'AzleNull' = 'AzleNull';
-    _azleCandidType?: '_azleCandidType';
+    static _azleCandidType?: '_azleCandidType';
 
     static toBytes(data: number): Uint8Array {
         return encode(this, data);

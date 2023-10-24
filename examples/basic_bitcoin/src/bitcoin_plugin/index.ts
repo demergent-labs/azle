@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { blob, int32, nat32, nat64, registerPlugin, Vec } from 'azle';
 
 export type BitcoinAddress = {

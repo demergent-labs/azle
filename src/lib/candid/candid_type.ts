@@ -1,5 +1,9 @@
 import { Serializable } from '../stable_b_tree_map';
 
-export type CandidType = {
+// export type CandidType = {
+//     _azleCandidType?: '_azleCandidType';
+// } & Partial<Serializable>;
+
+export interface CandidType {
     _azleCandidType?: '_azleCandidType';
-} & Partial<Serializable>;
+}

@@ -5,6 +5,7 @@ import { TypeMapping } from '../../type_mapping';
 import { Parent } from '../../to_idl';
 import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
+import { Serializable } from '../../../stable_b_tree_map';
 
 export function Record<
     T extends {
@@ -14,7 +15,8 @@ export function Record<
     obj: T
 ): {
     [K in keyof T]: TypeMapping<T[K]>;
-} & CandidType {
+} & CandidType &
+    Partial<Serializable> {
     return {
         ...obj,
         toBytes(data: number): Uint8Array {

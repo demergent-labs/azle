@@ -1,11 +1,11 @@
-import { ic, nat32, Null, principal, update, Variant } from 'azle';
+import { ic, nat32, Null, Principal, update, Variant } from 'azle';
 import { PerfResult } from '../../perf_result';
 
 const Reaction = Variant({
     Bad: Null,
     Good: Null,
     ThumbsUp: nat32,
-    Tip: principal
+    Tip: Principal
 });
 
 let variant_init_heap_storage: { [key: string]: typeof Reaction | undefined } =

@@ -7,6 +7,9 @@ import { Principal } from '@dfinity/principal';
 type DeepArray<T> = arr | Array<arr | DeepArray<T>>;
 
 type arr =
+    | BigInt64Array
+    | bigint[]
+    | number[]
     | Int8Array
     | Int16Array
     | Int32Array
@@ -482,7 +485,9 @@ function arrEqual<T>(a: DeepArray<T>, b: DeepArray<T>): boolean {
     if (Array.isArray(a) && Array.isArray(b)) {
         return (
             a.length === b.length &&
-            a.every((value, index) => arrEqual(value, b[index]))
+            (a as any).every((value: any, index: any) =>
+                arrEqual(value, (b as any)[index])
+            )
         );
     }
     if (Array.isArray(a) || Array.isArray(b)) {

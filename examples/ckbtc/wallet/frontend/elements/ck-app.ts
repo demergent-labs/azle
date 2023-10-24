@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { LitElement, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { AuthClient } from '@dfinity/auth-client';

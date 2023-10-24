@@ -45,7 +45,7 @@ export function installBitcoin() {
 }
 
 export async function whileRunningBitcoinDaemon(
-    callback: () => Promise<void> | void
+    callback: () => Promise<boolean> | void
 ) {
     installBitcoin();
     const bitcoinDaemon = await startBitcoinDaemon();

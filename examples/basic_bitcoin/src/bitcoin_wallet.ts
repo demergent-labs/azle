@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 //! A demo of a very bare-bones bitcoin "wallet".
 //!
 //! The wallet here showcases how bitcoin addresses can be be computed

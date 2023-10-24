@@ -1,4 +1,5 @@
 import { Test } from 'azle/test';
+// @ts-ignore
 import { _SERVICE } from '../src/declarations/minimal_dapp/minimal_dapp.did';
 import { ActorSubclass } from '@dfinity/agent';
 

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import * as _blob from './blob';
 import * as _func from './func';
 import * as _number from './numbers';

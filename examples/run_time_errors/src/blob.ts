@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { blob, query, Service } from 'azle';
 
 export function returnNonObjectAsInvalidBlob(): blob {
