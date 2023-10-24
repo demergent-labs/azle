@@ -37,8 +37,10 @@ export function createCanisterArb(testArb: fc.Arbitrary<TestSample>) {
 
             return {
                 sourceCode: `
-    import { Canister, query, ${imports.join(', ')} } from 'azle';
-    
+    import { Canister, Recursive, query, ${imports.join(', ')} } from 'azle';
+
+    const recOpt = Recursive(() => Opt(recOpt))
+
     export default Canister({
         ${queryMethodSourceCodes.join(',\n    ')}
     });`,
