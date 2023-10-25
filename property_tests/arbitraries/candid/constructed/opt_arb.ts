@@ -10,6 +10,7 @@ import { Nat16Arb } from '../primitive/nats/nat16_arb';
 import { Nat32Arb } from '../primitive/nats/nat32_arb';
 import { Nat64Arb } from '../primitive/nats/nat64_arb';
 import { Float32Arb } from '../primitive/floats/float32_arb';
+import { Float64Arb } from '../primitive/floats/float64_arb';
 import { TextArb } from '../primitive/text';
 import { NullArb } from '../primitive/null';
 import { BoolArb } from '../primitive/bool';
@@ -50,8 +51,11 @@ export const OptArb = fc.oneof(
     InnerOptArb(Float32Arb).map((sample) =>
         createOptArbWrapper(sample, 'float32')
     ),
+    InnerOptArb(Float64Arb).map((sample) =>
+        createOptArbWrapper(sample, 'float64')
+    ),
     InnerOptArb(TextArb).map((sample) => createOptArbWrapper(sample, 'text')),
-    // InnerOptArb(NullArb).map((sample) => createOptArbWrapper(sample, 'Null'))
+    InnerOptArb(NullArb).map((sample) => createOptArbWrapper(sample, 'Null')),
     InnerOptArb(BoolArb).map((sample) => createOptArbWrapper(sample, 'bool'))
 );
 
