@@ -1,14 +1,11 @@
 import fc from 'fast-check';
-import {
-    OptArb,
-    OptRecordArb
-} from '../../../arbitraries/candid/constructed/opt_arb';
+import { OptRecordArb } from '../../../arbitraries/candid/constructed/opt_arb';
 import { getActor } from '../../../get_actor';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
 
-const NewOptTestArb = fc
+const OptTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(OptRecordArb))
     .map(([functionName, optTrees]) => {
         const paramCandidTypes = optTrees.map((tree) => createCandidType(tree));
@@ -21,13 +18,20 @@ const NewOptTestArb = fc
 
         const candidValues = optTrees.map((tree) => createCandidValue(tree));
 
-        const paramsCorrectlyOrdered = paramNames
+        const areParamsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                const areOptEqual = areOptsEqual(
+                return `if (!${areOptsEqual(
                     paramName,
                     candidValues[index]
-                );
-                return `if (!${areOptEqual}) throw new Error('${paramName} is incorrectly ordered')`;
+                )}) throw new Error('${paramName} is incorrectly ordered')`;
+            })
+            .join('\n');
+
+        const areParamsOpts = paramNames
+            .map((paramName) => {
+                return `if (!${isParamOpt(
+                    paramName
+                )}) throw new Error('${paramName} must be an Opt');`;
             })
             .join('\n');
 
@@ -82,8 +86,8 @@ const NewOptTestArb = fc
                 return depth1 === depth2 && deepestValue1 === deepestValue2;
             }
 
-            ${paramsCorrectlyOrdered}
-
+            ${areParamsCorrectlyOrdered}
+            ${areParamsOpts}
 
             return ${returnStatement};
         `,
@@ -107,6 +111,8 @@ const NewOptTestArb = fc
             }
         };
     });
+
+runPropTests(OptTestArb);
 
 function createCandidType(optTree: any): string {
     if (optTree.nextLayer === null) {
@@ -143,95 +149,6 @@ function createCandidValue(optTree: any): any {
     }
 }
 
-runPropTests(NewOptTestArb);
-
-// const OptTestArb = fc
-//     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(OptArb))
-//     .map(([functionName, optWrappers]) => {
-//         const paramCandidTypes = optWrappers.map(
-//             (vecWrapper) => vecWrapper.candidType
-//         );
-//         const returnCandidType = optWrappers[0]?.candidType ?? 'Opt(int8)';
-//         const paramNames = optWrappers.map((_, index) => `param${index}`);
-
-//         // TODO this ordering check is not perfect
-//         // TODO but turning the vec into a string seems a bit difficult...we need to figure out how to check perfecly for the values that we want
-//         // TODO maybe a global variable that we can write into and call would work
-//         // TODO we really need to create some kind of universal equality checking solution
-//         const paramsCorrectlyOrdered = paramNames
-//             .map((paramName, index) => {
-//                 return `if (${paramName}.Some === undefined && ${optWrappers[index].opt.Some} === undefined && ${paramName}.None !== ${optWrappers[index].opt.None}) throw new Error('${paramName} is incorrectly ordered')`;
-//             })
-//             .join('\n');
-
-//         // TODO these checks should be much more precise probably, imagine checking the values inside of the opts
-//         const paramsOpts = paramNames
-//             .map((paramName) => {
-//                 return `if (${paramName}.Some === undefined && ${paramName}.None === undefined) throw new Error('${paramName} must be an Opt');`;
-//             })
-//             .join('\n');
-
-//         const returnStatement = paramNames[0] ?? `None`;
-
-//         const expectedResult =
-//             optWrappers.length === 0 ? [] : unwrapAllOpts(optWrappers)[0];
-
-//         return {
-//             functionName,
-//             imports: [
-//                 'int',
-//                 'int8',
-//                 'int16',
-//                 'int32',
-//                 'int64',
-//                 'nat',
-//                 'nat8',
-//                 'nat16',
-//                 'nat32',
-//                 'nat64',
-//                 'None',
-//                 'Opt'
-//             ],
-//             paramCandidTypes: paramCandidTypes.join(', '),
-//             returnCandidType,
-//             paramNames,
-//             body: `
-//             ${paramsOpts}
-
-//             return ${returnStatement};
-//         `,
-//             test: {
-//                 name: `test ${functionName}`,
-//                 test: async () => {
-//                     const actor = getActor('./tests/opt/test');
-
-//                     const params = unwrapAllOpts(optWrappers);
-
-//                     const result = await actor[functionName](...params);
-
-//                     if (result.length === 1 && Array.isArray(result[0])) {
-//                         console.log(JSON.stringify(params, replacer));
-
-//                         console.log("WE'VE GOT A LIVE ONE");
-//                         console.log('result', result);
-//                         console.log('expected result', expectedResult);
-//                         console.log(
-//                             compareDepthsAndValues(result, expectedResult)
-//                         );
-//                     }
-
-//                     // TODO be careful on equality checks when we go beyond primitives
-//                     // TODO a universal equality checker is going to be very useful
-//                     return {
-//                         Ok: compareDepthsAndValues(result, expectedResult)
-//                     };
-//                 }
-//             }
-//         };
-//     });
-
-// runPropTests(OptTestArb);
-
 function replacer(_key: any, value: any) {
     if (typeof value === 'bigint') {
         return value.toString() + 'n';
@@ -239,7 +156,11 @@ function replacer(_key: any, value: any) {
     return value;
 }
 
-function areOptsEqual(paramName: string, paramValue: any) {
+function isParamOpt(paramName: string): string {
+    return `(${paramName}.Some !== undefined || ${paramName}.None !== undefined)`;
+}
+
+function areOptsEqual(paramName: string, paramValue: any): string {
     return `compareDepthsAndValues(${paramName}, ${JSON.stringify(
         paramValue,
         replacer
