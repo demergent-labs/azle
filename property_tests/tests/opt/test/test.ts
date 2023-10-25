@@ -1,42 +1,24 @@
 import fc from 'fast-check';
-import {
-    RecursiveOptArb,
-    RecursiveOpt,
-    createAgentValueFromRecursiveOpt,
-    createCandidTypeFromRecursiveOpt,
-    createCandidValueFromRecursiveOpt
-} from '../../../arbitraries/candid/constructed/opt_arb';
+import { OptArb } from '../../../arbitraries/candid/constructed/opt_arb';
 import { getActor } from '../../../get_actor';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
 
 const OptTestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(RecursiveOptArb)
-    )
+    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(OptArb))
     .map(([functionName, optRecordArb]) => {
-        const optTrees: RecursiveOpt[] = optRecordArb as RecursiveOpt[];
-        const paramCandidTypes = optTrees.map((tree) =>
-            createCandidTypeFromRecursiveOpt(tree)
-        );
-        const paramNames = optTrees.map((_, index) => `param${index}`);
+        const opts: OptArb[] = optRecordArb;
+        const paramCandidTypes = opts.map((opt) => opt.candidType);
+        const paramNames = opts.map((_, index) => `param${index}`);
         // If there are not optTrees then we will be returning None so the type
         // here can be whatever as long as it's wrapped in Opt
         const returnCandidType =
-            optTrees.length === 0
-                ? 'Opt(int8)'
-                : createCandidTypeFromRecursiveOpt(optTrees[0]);
+            opts.length === 0 ? 'Opt(int8)' : opts[0].candidType;
         const returnStatement = paramNames[0] ?? `None`;
-        const expectedResult =
-            optTrees.length === 0
-                ? []
-                : createAgentValueFromRecursiveOpt(optTrees[0]);
+        const expectedResult = opts.length === 0 ? [] : opts[0].agentValue;
 
-        const candidValues = optTrees.map((tree) =>
-            createCandidValueFromRecursiveOpt(tree)
-        );
+        const candidValues = opts.map((opt) => opt.azleValue);
 
         const areParamsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
@@ -91,9 +73,7 @@ const OptTestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/opt/test');
 
-                    const params = optTrees.map((tree) =>
-                        createAgentValueFromRecursiveOpt(tree)
-                    );
+                    const params = opts.map((opt) => opt.agentValue);
 
                     const result = await actor[functionName](...params);
 
