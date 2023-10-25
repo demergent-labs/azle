@@ -8,8 +8,7 @@ import { areOptsEqual } from '../../../are_equal/are_opts_equal';
 
 const OptTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(OptArb))
-    .map(([functionName, optRecordArb]) => {
-        const opts: OptArb[] = optRecordArb;
+    .map(([functionName, opts]) => {
         const paramCandidTypes = opts.map((opt) => opt.candidType);
         const paramNames = opts.map((_, index) => `param${index}`);
         // If there are not optTrees then we will be returning None so the type
