@@ -51,6 +51,7 @@ const OptTestArb = fc
                 'None',
                 'Opt',
                 'float32',
+                'float64',
                 'text',
                 'Null',
                 'bool'
@@ -64,12 +65,10 @@ const OptTestArb = fc
                 value: any;
             } {
                 if (value.None === null) {
-                    console.log("We found the value to be None")
                     return { depth: 0, value: null };
                 }
-                if (value.Some.Some === undefined && value.Some.None === undefined) {
+                if (value.Some === null || (value.Some.Some === undefined && value.Some.None === undefined)) {
                     // The value.Some is not an opt. return value.Some
-                    console.log("We found the value to be some")
                     return {depth: 0, value: JSON.stringify(value.Some, (key, value) => typeof value === 'bigint' ? value.toString() + "n" : value)}
                 }
 
