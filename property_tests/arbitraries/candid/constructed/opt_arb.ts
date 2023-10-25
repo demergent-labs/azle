@@ -34,10 +34,8 @@ const InnerOptArb = (arb: fc.Arbitrary<any>) => {
 };
 
 // TODO look into making this recursive
-// TODO we want to be able to have opts of opts
-// TODO we also need to add vecs in here
 // TODO we need to add all constructed and reference types
-export const OptArb = fc.oneof(
+export const PrimitiveOptArb = fc.oneof(
     InnerOptArb(Float32Arb).map((sample) =>
         createOptArbWrapper(sample, 'float32')
     ),
@@ -59,16 +57,76 @@ export const OptArb = fc.oneof(
     InnerOptArb(NullArb).map((sample) => createOptArbWrapper(sample, 'Null'))
 );
 
-function createOptArbWrapper(sample: any, candidType: string) {
+export type OptWrapper = { opt: any; candidType: string };
+export type RecursiveOpt = { base: OptWrapper; nextLayer: RecursiveOpt | null };
+type AzleOpt = { Some?: any; None?: null };
+type AgentOpt = [any] | [];
+
+function createOptArbWrapper(sample: any, candidType: string): OptWrapper {
     return {
         opt: sample,
         candidType
     };
 }
 
-export const { OptRecordArb } = fc.letrec((tie) => ({
-    OptRecordArb: fc.record({
-        base: OptArb,
+export const { RecursiveOptArb } = fc.letrec((tie) => ({
+    RecursiveOptArb: fc.record({
+        base: PrimitiveOptArb,
         nextLayer: fc.option(tie('OptRecordArb'), { maxDepth: 3 })
     })
 }));
+
+export const OptArb = RecursiveOptArb.map((recursiveOptArb) => {
+    const optArb = recursiveOptArb as RecursiveOpt;
+    return {
+        optArb,
+        candidType: createCandidTypeFromRecursiveOpt(optArb),
+        azleValue: createCandidValueFromRecursiveOpt(optArb),
+        agentValue: createAgentValueFromRecursiveOpt(optArb)
+    };
+});
+
+export function createCandidTypeFromRecursiveOpt(
+    RecursiveOpt: RecursiveOpt
+): string {
+    if (RecursiveOpt.nextLayer === null) {
+        // base case
+        return `Opt(${RecursiveOpt.base.candidType})`;
+    } else {
+        return `Opt(${createCandidTypeFromRecursiveOpt(
+            RecursiveOpt.nextLayer
+        )})`;
+    }
+}
+
+export function createAgentValueFromRecursiveOpt(
+    RecursiveOpt: RecursiveOpt
+): AgentOpt {
+    if (RecursiveOpt.nextLayer === null) {
+        // base case
+        if (RecursiveOpt.base.opt && RecursiveOpt.base.opt.Some !== undefined) {
+            return [RecursiveOpt.base.opt.Some];
+        } else {
+            return [];
+        }
+    } else {
+        return [createAgentValueFromRecursiveOpt(RecursiveOpt.nextLayer)];
+    }
+}
+
+export function createCandidValueFromRecursiveOpt(
+    RecursiveOpt: RecursiveOpt
+): AzleOpt {
+    if (RecursiveOpt.nextLayer === null) {
+        // base case
+        if (RecursiveOpt.base.opt && RecursiveOpt.base.opt.Some !== undefined) {
+            return { Some: RecursiveOpt.base.opt.Some };
+        } else {
+            return { None: null };
+        }
+    } else {
+        return {
+            Some: createCandidValueFromRecursiveOpt(RecursiveOpt.nextLayer)
+        };
+    }
+}
