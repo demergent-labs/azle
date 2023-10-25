@@ -50,9 +50,9 @@ export const OptArb = fc.oneof(
     InnerOptArb(Float32Arb).map((sample) =>
         createOptArbWrapper(sample, 'float32')
     ),
-    InnerOptArb(TextArb).map((sample) => createOptArbWrapper(sample, 'text'))
+    InnerOptArb(TextArb).map((sample) => createOptArbWrapper(sample, 'text')),
     // InnerOptArb(NullArb).map((sample) => createOptArbWrapper(sample, 'Null'))
-    // InnerOptArb(BoolArb).map((sample) => createOptArbWrapper(sample, 'bool'))
+    InnerOptArb(BoolArb).map((sample) => createOptArbWrapper(sample, 'bool'))
 );
 
 function createOptArbWrapper(sample: any, candidType: string) {
