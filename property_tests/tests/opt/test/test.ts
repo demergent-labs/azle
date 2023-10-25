@@ -69,7 +69,7 @@ const OptTestArb = fc
             return ${returnStatement};
         `,
             test: {
-                name: `test ${functionName}`,
+                name: `test opt ${functionName}`,
                 test: async () => {
                     const actor = getActor('./tests/opt/test');
 
@@ -173,7 +173,7 @@ function areOptsEqual(opt1: any, opt2: any) {
     function isNone(value: any | []) {
         return Array.isArray(value) && value.length === 0;
     }
-    if (isNone(opt1) && isNone(opt2)) {
+    if (isNone(value1) && isNone(value2)) {
         return true;
     }
 
