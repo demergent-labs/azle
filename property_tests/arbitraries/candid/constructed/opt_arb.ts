@@ -77,7 +77,7 @@ function createOptArbWrapper(sample: any, candidType: string): OptWrapper {
 export const { RecursiveOptArb } = fc.letrec((tie) => ({
     RecursiveOptArb: fc.record({
         base: PrimitiveOptArb,
-        nextLayer: fc.option(tie('OptRecordArb'), { maxDepth: 3 })
+        nextLayer: fc.option(tie('RecursiveOptArb'), { maxDepth: 3 })
     })
 }));
 
