@@ -232,7 +232,7 @@ runPropTests(NewOptTestArb);
 
 // runPropTests(OptTestArb);
 
-function replacer(key: any, value: any) {
+function replacer(_key: any, value: any) {
     if (typeof value === 'bigint') {
         return value.toString() + 'n';
     }
@@ -252,7 +252,7 @@ function calculateDepthAndValues(value: [any] | []): {
 } {
     if (value.length === 0) {
         // None
-        return { depth: 0, value: value };
+        return { depth: 1, value: value };
     }
     const isOpt =
         Array.isArray(value[0]) &&
@@ -260,7 +260,7 @@ function calculateDepthAndValues(value: [any] | []): {
     if (!isOpt) {
         // The value.Some is not an opt. return value.Some
         return {
-            depth: 0,
+            depth: 1,
             value: value[0]
         };
     }
@@ -269,40 +269,21 @@ function calculateDepthAndValues(value: [any] | []): {
     return { ...result, depth: result.depth + 1 };
 }
 
-function calculateDepthAndValuesOld(value: any): { depth: number; value: any } {
-    if (!Array.isArray(value)) {
-        return { depth: 0, value: value };
-    }
-
-    let maxDepth = 0;
-    let deepestValue;
-
-    for (const item of value) {
-        if (Array.isArray(item)) {
-            const { depth, value } = calculateDepthAndValuesOld(item);
-            if (depth > maxDepth) {
-                maxDepth = depth;
-                deepestValue = value;
-            }
-        } else {
-            if (typeof item !== 'undefined') {
-                deepestValue = item;
-            }
-        }
-    }
-
-    if (maxDepth > 2) {
-        console.log('THIS ONE IS EXCITING');
-    }
-
-    return { depth: 1 + maxDepth, value: deepestValue };
-}
-
 function compareDepthsAndValues(value1: any, value2: any) {
     const { depth: depth1, value: deepestValue1 } =
-        calculateDepthAndValuesOld(value1);
+        calculateDepthAndValues(value1);
     const { depth: depth2, value: deepestValue2 } =
-        calculateDepthAndValuesOld(value2);
+        calculateDepthAndValues(value2);
 
-    return depth1 === depth2 && deepestValue1 === deepestValue2;
+    return depth1 === depth2 && optEquals(deepestValue1, deepestValue2);
+}
+
+function optEquals(value1: any | [], value2: any | []) {
+    function isNone(value: any | []) {
+        return Array.isArray(value) && value.length === 0;
+    }
+    if (isNone(value1) && isNone(value2)) {
+        return true;
+    }
+    return value1 === value2;
 }
