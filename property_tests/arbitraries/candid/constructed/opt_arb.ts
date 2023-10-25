@@ -74,21 +74,21 @@ function createOptArbWrapper(sample: any, candidType: string): OptWrapper {
     };
 }
 
-export const { RecursiveOptArb } = fc.letrec((tie) => ({
-    RecursiveOptArb: fc.record({
-        base: PrimitiveOptArb,
-        nextLayer: fc.option(tie('RecursiveOptArb'), { maxDepth: 3 })
-    })
-}));
-
-export const OptArb = RecursiveOptArb.map((recursiveOptArb) => {
-    const optArb = recursiveOptArb as RecursiveOpt;
-    return {
-        candidType: createCandidTypeFromRecursiveOpt(optArb),
-        azleValue: createCandidValueFromRecursiveOpt(optArb),
-        agentValue: createAgentValueFromRecursiveOpt(optArb)
-    };
-});
+export const OptArb = fc
+    .letrec((tie) => ({
+        RecursiveOptArb: fc.record({
+            base: PrimitiveOptArb,
+            nextLayer: fc.option(tie('RecursiveOptArb'), { maxDepth: 3 })
+        })
+    }))
+    .RecursiveOptArb.map((recursiveOptArb) => {
+        const optArb = recursiveOptArb as RecursiveOpt;
+        return {
+            candidType: createCandidTypeFromRecursiveOpt(optArb),
+            azleValue: createCandidValueFromRecursiveOpt(optArb),
+            agentValue: createAgentValueFromRecursiveOpt(optArb)
+        };
+    });
 
 function createCandidTypeFromRecursiveOpt(RecursiveOpt: RecursiveOpt): string {
     if (RecursiveOpt.nextLayer === null) {
