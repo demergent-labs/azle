@@ -38,6 +38,12 @@ const InnerOptArb = (arb: fc.Arbitrary<any>) => {
 // TODO we also need to add vecs in here
 // TODO we need to add all constructed and reference types
 export const OptArb = fc.oneof(
+    InnerOptArb(Float32Arb).map((sample) =>
+        createOptArbWrapper(sample, 'float32')
+    ),
+    InnerOptArb(Float64Arb).map((sample) =>
+        createOptArbWrapper(sample, 'float64')
+    ),
     InnerOptArb(IntArb).map((sample) => createOptArbWrapper(sample, 'int')),
     InnerOptArb(Int8Arb).map((sample) => createOptArbWrapper(sample, 'int8')),
     InnerOptArb(Int16Arb).map((sample) => createOptArbWrapper(sample, 'int16')),
@@ -48,15 +54,9 @@ export const OptArb = fc.oneof(
     InnerOptArb(Nat16Arb).map((sample) => createOptArbWrapper(sample, 'nat16')),
     InnerOptArb(Nat32Arb).map((sample) => createOptArbWrapper(sample, 'nat32')),
     InnerOptArb(Nat64Arb).map((sample) => createOptArbWrapper(sample, 'nat64')),
-    InnerOptArb(Float32Arb).map((sample) =>
-        createOptArbWrapper(sample, 'float32')
-    ),
-    InnerOptArb(Float64Arb).map((sample) =>
-        createOptArbWrapper(sample, 'float64')
-    ),
+    InnerOptArb(BoolArb).map((sample) => createOptArbWrapper(sample, 'bool')),
     InnerOptArb(TextArb).map((sample) => createOptArbWrapper(sample, 'text')),
-    InnerOptArb(NullArb).map((sample) => createOptArbWrapper(sample, 'Null')),
-    InnerOptArb(BoolArb).map((sample) => createOptArbWrapper(sample, 'bool'))
+    InnerOptArb(NullArb).map((sample) => createOptArbWrapper(sample, 'Null'))
 );
 
 function createOptArbWrapper(sample: any, candidType: string) {
