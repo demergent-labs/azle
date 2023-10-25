@@ -4,8 +4,6 @@ import { Principal } from '@dfinity/principal';
 export const PrincipalArb = fc
     .uint8Array({
         minLength: 29,
-        maxLength: 29,
-        min: 0,
-        max: 255
+        maxLength: 29
     })
     .map((sample) => Principal.fromUint8Array(sample));
