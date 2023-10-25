@@ -4,7 +4,7 @@ import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
 import { Float64Arb } from '../../../arbitraries/candid/primitive/floats/float64_arb';
-import { areFloatsEqual } from '../../../are_equal';
+import { areFloatsEqual } from '../../../are_equal/';
 
 const Float64TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Float64Arb))
