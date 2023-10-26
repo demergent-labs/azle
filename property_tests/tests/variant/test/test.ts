@@ -8,15 +8,19 @@ import { getActor, runPropTests } from '../../../../property_tests';
 const VariantTestArb = fc
     .tuple(
         UniqueIdentifierArb('canisterMethod'),
-        fc.uniqueArray(VariantArb, { selector: (entry) => entry.candidType })
+        fc.uniqueArray(VariantArb, {
+            selector: (entry) => entry.meta.candidType
+        })
     )
     .map(([functionName, variants]): TestSample => {
         const candidTypeDeclarations = variants.map(
-            (variant) => variant.typeDeclaration
+            (variant) => variant.meta.typeDeclaration ?? ''
         );
-        const paramCandidTypes = variants.map((variant) => variant.candidType);
+        const paramCandidTypes = variants.map(
+            (variant) => variant.meta.candidType
+        );
         const returnCandidType =
-            variants[0]?.candidType ?? 'Variant({None: Null})';
+            variants[0]?.meta?.candidType ?? 'Variant({None: Null})';
         const paramNames = variants.map((_, index) => `param${index}`);
 
         const paramsAreVariants = paramNames
@@ -26,12 +30,12 @@ const VariantTestArb = fc
             .join('\n');
 
         const paramsCorrectlyOrdered = variants
-            .map((wrappedVariant, index) => {
+            .map((variant, index) => {
                 const paramName = `param${index}`;
 
-                return `if (![${wrappedVariant.fieldNames.map(
-                    (i) => `"${i}"`
-                )}].includes(Object.keys(${paramName})[0])) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (Object.keys(${paramName})[0] !== "${
+                    Object.keys(variant.value)[0]
+                }") throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
@@ -75,7 +79,7 @@ const VariantTestArb = fc
                     const actor = getActor('./tests/variant/test');
 
                     const result = await actor[functionName](
-                        ...variants.map((wrapper) => wrapper.value)
+                        ...variants.map((variant) => variant.value)
                     );
 
                     return {

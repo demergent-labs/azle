@@ -17,7 +17,7 @@ export type Candid<T> = {
     meta: {
         candidType: string;
         typeDeclaration?: string;
-        import?: Set<string>;
+        imports?: Set<string>;
     };
 };
 
@@ -40,10 +40,3 @@ export const CandidTypeArb = fc.oneof(
     NullArb
 );
 // TODO: This needs to support ALL valid candid types, including records, variants, etc.
-
-function wrap<T>(value: T, candidType: string): Candid<T> {
-    return {
-        value,
-        meta: { candidType }
-    };
-}

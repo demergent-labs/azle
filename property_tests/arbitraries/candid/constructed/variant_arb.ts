@@ -4,30 +4,7 @@ import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
 
 type Variant = {
-    /** The identifier for referencing the variant in source code */
-    candidType: string;
-    /**
-     * The JS source code for creating the variant. E.g.:
-     *
-     * ```js
-     * const VariantName = Variant({
-     *   FieldOne: Null,
-     *   FieldTwo: text,
-     * });
-     * ```
-     */
-    typeDeclaration: string;
-    /**
-     * A random instance of the field. E.g.:
-     * ```ts
-     * { FieldOne: null }
-     * ```
-     */
-    value: {
-        [x: string]: number | bigint | null;
-    };
-    /** A list of the tag/case/field names in the variant */
-    fieldNames: string[];
+    [x: string]: number | bigint | null;
 };
 
 export const VariantArb = fc
@@ -41,7 +18,7 @@ export const VariantArb = fc
             // an empty object.
         })
     )
-    .map(([name, fields]) => {
+    .map(([name, fields]): Candid<Variant> => {
         const fieldNames = fields.map(([fieldName]) => fieldName);
 
         const typeDeclaration = `const ${name} = Variant({\n    ${fields
@@ -66,10 +43,16 @@ export const VariantArb = fc
                       };
                   })();
 
+        const imports = new Set(
+            fields.map((field) => field[1].meta.candidType)
+        );
+
         return {
-            candidType: name,
-            typeDeclaration,
-            value,
-            fieldNames
+            meta: {
+                candidType: name,
+                typeDeclaration,
+                imports
+            },
+            value
         };
     });
