@@ -4,6 +4,8 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { execSync } from 'child_process';
 import { runTests } from '../test';
 
+export { getActor } from './get_actor';
+
 export function runPropTests(testArb: fc.Arbitrary<TestSample>) {
     fc.assert(
         fc.asyncProperty(createCanisterArb(testArb), async (canister) => {

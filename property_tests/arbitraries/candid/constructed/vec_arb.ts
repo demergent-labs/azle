@@ -12,6 +12,12 @@ import { Nat32Arb } from '../primitive/nats/nat32_arb';
 import { Nat64Arb } from '../primitive/nats/nat64_arb';
 import { PrincipalArb } from '../reference/principal_arb';
 
+export type WrappedVec<Array> = {
+    vec: Array;
+    candidType: string;
+    equalityCheck: (a: any, b: any) => boolean;
+};
+
 // TODO look into making this recursive
 // TODO we want to be able to have vecs of vecs
 // TODO we need to add all constructed and reference types
@@ -49,11 +55,11 @@ export const VecArb = fc.oneof(
         )
 );
 
-function createVecArbWrapper(
-    sample: any[],
+function createVecArbWrapper<T>(
+    sample: T,
     candidType: string,
     equalityCheck: (a: any, b: any) => boolean = (a, b) => a === b
-) {
+): WrappedVec<T> {
     return {
         vec: sample,
         candidType,
