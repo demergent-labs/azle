@@ -4,7 +4,7 @@ import { getActor } from '../../../get_actor';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
-import { areOptsEqual } from '../../../are_equal';
+import { areOptsEqual } from '../../../are_equal/opt';
 
 const OptTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(OptArb))
