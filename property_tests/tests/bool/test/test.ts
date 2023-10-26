@@ -14,9 +14,9 @@ const BoolTestArb = fc
     )
     .map(([functionName, bools, returnBool]): TestSample => {
         const paramCandidTypes = bools
-            .map((bool) => bool.meta.candidType)
+            .map((bool) => bool.src.candidType)
             .join(', ');
-        const returnCandidType = returnBool.meta.candidType;
+        const returnCandidType = returnBool.src.candidType;
         const paramNames = bools.map((_, index) => `param${index}`);
 
         // TODO do we want to encapsulate 'boolean' in the CandidArb? Like an agentType instead of a candidType, like azleValue and agentValue?

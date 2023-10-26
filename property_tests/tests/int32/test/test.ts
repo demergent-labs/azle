@@ -10,7 +10,7 @@ const Int32TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Int32Arb))
     .map(([functionName, int32s]): TestSample => {
         const paramCandidTypes = int32s
-            .map((int32) => int32.meta.candidType)
+            .map((int32) => int32.src.candidType)
             .join(', ');
         const returnCandidType = 'int32';
         const paramNames = int32s.map((_, index) => `param${index}`);

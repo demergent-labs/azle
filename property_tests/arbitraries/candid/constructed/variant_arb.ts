@@ -24,7 +24,7 @@ export const VariantArb = fc
         const typeDeclaration = `const ${name} = Variant({\n    ${fields
             .map(
                 ([fieldName, fieldDataType]) =>
-                    `${fieldName}: ${fieldDataType.meta.candidType}`
+                    `${fieldName}: ${fieldDataType.src.candidType}`
             )
             .join(',\n    ')}\n});`;
 
@@ -43,12 +43,10 @@ export const VariantArb = fc
                       };
                   })();
 
-        const imports = new Set(
-            fields.map((field) => field[1].meta.candidType)
-        );
+        const imports = new Set(fields.map((field) => field[1].src.candidType));
 
         return {
-            meta: {
+            src: {
                 candidType: name,
                 typeDeclaration,
                 imports

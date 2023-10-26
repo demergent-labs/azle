@@ -11,7 +11,7 @@ const Float32TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Float32Arb))
     .map(([functionName, float32s]): TestSample => {
         const paramCandidTypes = float32s
-            .map((float32) => float32.meta.candidType)
+            .map((float32) => float32.src.candidType)
             .join(', ');
         const returnCandidType = 'float32';
         const paramNames = float32s.map((_, index) => `param${index}`);

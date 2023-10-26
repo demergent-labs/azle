@@ -10,7 +10,7 @@ const Nat16TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Nat16Arb))
     .map(([functionName, nat16s]): TestSample => {
         const paramCandidTypes = nat16s
-            .map((nat16) => nat16.meta.candidType)
+            .map((nat16) => nat16.src.candidType)
             .join(', ');
         const returnCandidType = 'nat16';
         const paramNames = nat16s.map((_, index) => `param${index}`);

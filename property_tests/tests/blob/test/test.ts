@@ -13,7 +13,7 @@ const BlobTestArb = fc
         fc.oneof(fc.constant('blob'), fc.constant('Vec(nat8)'))
     )
     .map(([functionName, blobs, returnCandidType]): TestSample => {
-        const paramCandidTypes = blobs.map((blob) => blob.meta.candidType);
+        const paramCandidTypes = blobs.map((blob) => blob.src.candidType);
         const paramNames = blobs.map((_, index) => `param${index}`);
 
         // TODO this ordering check is not perfect

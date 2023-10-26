@@ -14,7 +14,7 @@ import { NullArb } from './primitive/null';
 // TODO we're thinking that Candid is not the best name for this. What is better?
 export type Candid<T> = {
     value: T;
-    meta: {
+    src: {
         candidType: string;
         typeDeclaration?: string;
         imports?: Set<string>;

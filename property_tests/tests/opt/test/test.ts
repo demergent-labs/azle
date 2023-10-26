@@ -10,16 +10,16 @@ import { getActor, runPropTests } from '../../../../property_tests';
 const OptTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(OptArb))
     .map(([functionName, opts]): TestSample => {
-        const paramCandidTypes = opts.map((opt) => opt.candidType);
+        const paramCandidTypes = opts.map((opt) => opt.src.candidType);
         const paramNames = opts.map((_, index) => `param${index}`);
         // If there are not optTrees then we will be returning None so the type
         // here can be whatever as long as it's wrapped in Opt
         const returnCandidType =
-            opts.length === 0 ? 'Opt(int8)' : opts[0].candidType;
+            opts.length === 0 ? 'Opt(int8)' : opts[0].src.candidType;
         const returnStatement = paramNames[0] ?? `None`;
-        const expectedResult = opts.length === 0 ? [] : opts[0].agentValue;
+        const expectedResult = opts.length === 0 ? [] : opts[0].value.agent;
 
-        const candidValues = opts.map((opt) => opt.azleValue);
+        const candidValues = opts.map((opt) => opt.value.azle);
 
         const areParamsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
@@ -70,11 +70,11 @@ const OptTestArb = fc
             return ${returnStatement};
         `,
             test: {
-                name: `test opt ${functionName}`,
+                name: `opt ${functionName}`,
                 test: async () => {
                     const actor = getActor('./tests/opt/test');
 
-                    const params = opts.map((opt) => opt.agentValue);
+                    const params = opts.map((opt) => opt.value.agent);
 
                     const result = await actor[functionName](...params);
 

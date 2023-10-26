@@ -10,7 +10,7 @@ const Int64TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Int64Arb))
     .map(([functionName, int64s]): TestSample => {
         const paramCandidTypes = int64s
-            .map((int64) => int64.meta.candidType)
+            .map((int64) => int64.src.candidType)
             .join(', ');
         const returnCandidType = 'int64';
         const paramNames = int64s.map((_, index) => `param${index}`);

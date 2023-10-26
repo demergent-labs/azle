@@ -10,7 +10,7 @@ const Nat64TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Nat64Arb))
     .map(([functionName, nat64s]): TestSample => {
         const paramCandidTypes = nat64s
-            .map((nat64) => nat64.meta.candidType)
+            .map((nat64) => nat64.src.candidType)
             .join(', ');
         const returnCandidType = 'nat64';
         const paramNames = nat64s.map((_, index) => `param${index}`);

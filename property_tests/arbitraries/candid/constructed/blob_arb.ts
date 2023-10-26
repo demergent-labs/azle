@@ -8,7 +8,7 @@ export const BlobArb = fc
     )
     .map(
         ([value, candidType]): Candid<Uint8Array> => ({
-            meta: { candidType },
+            src: { candidType },
             value
         })
     );

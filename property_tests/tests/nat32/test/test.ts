@@ -10,7 +10,7 @@ const Nat32TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Nat32Arb))
     .map(([functionName, nat32s]): TestSample => {
         const paramCandidTypes = nat32s
-            .map((nat32) => nat32.meta.candidType)
+            .map((nat32) => nat32.src.candidType)
             .join(', ');
         const returnCandidType = 'nat32';
         const paramNames = nat32s.map((_, index) => `param${index}`);

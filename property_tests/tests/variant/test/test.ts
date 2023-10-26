@@ -9,18 +9,18 @@ const VariantTestArb = fc
     .tuple(
         UniqueIdentifierArb('canisterMethod'),
         fc.uniqueArray(VariantArb, {
-            selector: (entry) => entry.meta.candidType
+            selector: (entry) => entry.src.candidType
         })
     )
     .map(([functionName, variants]): TestSample => {
         const candidTypeDeclarations = variants.map(
-            (variant) => variant.meta.typeDeclaration ?? ''
+            (variant) => variant.src.typeDeclaration ?? ''
         );
         const paramCandidTypes = variants.map(
-            (variant) => variant.meta.candidType
+            (variant) => variant.src.candidType
         );
         const returnCandidType =
-            variants[0]?.meta?.candidType ?? 'Variant({None: Null})';
+            variants[0]?.src?.candidType ?? 'Variant({None: Null})';
         const paramNames = variants.map((_, index) => `param${index}`);
 
         const paramsAreVariants = paramNames

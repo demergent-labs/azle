@@ -10,7 +10,7 @@ const IntTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(IntArb))
     .map(([functionName, ints]): TestSample => {
         const paramCandidTypes = ints
-            .map((int) => int.meta.candidType)
+            .map((int) => int.src.candidType)
             .join(', ');
         const returnCandidType = 'int';
         const paramNames = ints.map((_, index) => `param${index}`);

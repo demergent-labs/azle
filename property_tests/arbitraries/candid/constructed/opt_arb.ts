@@ -14,19 +14,26 @@ import { Float64Arb } from '../primitive/floats/float64_arb';
 import { TextArb } from '../primitive/text';
 import { NullArb } from '../primitive/null';
 import { BoolArb } from '../primitive/bool';
+import { Candid } from '../../candid';
 
-const InnerOptArb = (arb: fc.Arbitrary<any>) => {
+const InnerOptArb = (arb: fc.Arbitrary<Candid<any>>) => {
     return fc
         .oneof(fc.constant('Some'), fc.constant('None'))
         .chain((keySample) => {
-            return arb.map((innerValueSample) => {
+            return arb.map((innerValueSample): CandidSampleOpt<any> => {
                 if (keySample === 'Some') {
                     return {
-                        Some: innerValueSample
+                        Some: innerValueSample,
+                        src: {
+                            candidType: `Opt(${innerValueSample.src.candidType})`
+                        }
                     };
                 } else {
                     return {
-                        None: null
+                        None: null,
+                        src: {
+                            candidType: `Opt(${innerValueSample.src.candidType})`
+                        }
                     };
                 }
             });
@@ -36,43 +43,40 @@ const InnerOptArb = (arb: fc.Arbitrary<any>) => {
 // TODO look into making this recursive
 // TODO we need to add all constructed and reference types
 export const PrimitiveOptArb = fc.oneof(
-    InnerOptArb(Float32Arb).map((sample) =>
-        createOptArbWrapper(sample, 'float32')
-    ),
-    InnerOptArb(Float64Arb).map((sample) =>
-        createOptArbWrapper(sample, 'float64')
-    ),
-    InnerOptArb(IntArb).map((sample) => createOptArbWrapper(sample, 'int')),
-    InnerOptArb(Int8Arb).map((sample) => createOptArbWrapper(sample, 'int8')),
-    InnerOptArb(Int16Arb).map((sample) => createOptArbWrapper(sample, 'int16')),
-    InnerOptArb(Int32Arb).map((sample) => createOptArbWrapper(sample, 'int32')),
-    InnerOptArb(Int64Arb).map((sample) => createOptArbWrapper(sample, 'int64')),
-    InnerOptArb(NatArb).map((sample) => createOptArbWrapper(sample, 'nat')),
-    InnerOptArb(Nat8Arb).map((sample) => createOptArbWrapper(sample, 'nat8')),
-    InnerOptArb(Nat16Arb).map((sample) => createOptArbWrapper(sample, 'nat16')),
-    InnerOptArb(Nat32Arb).map((sample) => createOptArbWrapper(sample, 'nat32')),
-    InnerOptArb(Nat64Arb).map((sample) => createOptArbWrapper(sample, 'nat64')),
-    InnerOptArb(BoolArb).map((sample) => createOptArbWrapper(sample, 'bool')),
-    InnerOptArb(TextArb).map((sample) => createOptArbWrapper(sample, 'text')),
-    InnerOptArb(NullArb).map((sample) => createOptArbWrapper(sample, 'Null'))
+    InnerOptArb(Float32Arb),
+    InnerOptArb(Float64Arb),
+    InnerOptArb(IntArb),
+    InnerOptArb(Int8Arb),
+    InnerOptArb(Int16Arb),
+    InnerOptArb(Int32Arb),
+    InnerOptArb(Int64Arb),
+    InnerOptArb(NatArb),
+    InnerOptArb(Nat8Arb),
+    InnerOptArb(Nat16Arb),
+    InnerOptArb(Nat32Arb),
+    InnerOptArb(Nat64Arb),
+    InnerOptArb(BoolArb),
+    InnerOptArb(TextArb),
+    InnerOptArb(NullArb)
 );
 
-export type OptArb = {
-    candidType: string;
-    azleValue: AzleOpt;
-    agentValue: AgentOpt;
+export type Opt = {
+    azle: AzleOpt<any>;
+    agent: AgentOpt;
 };
-type OptWrapper = { opt: any; candidType: string };
-type RecursiveOpt = { base: OptWrapper; nextLayer: RecursiveOpt | null };
-type AzleOpt = { Some?: any; None?: null };
-type AgentOpt = [any] | [];
 
-function createOptArbWrapper(sample: any, candidType: string): OptWrapper {
-    return {
-        opt: sample,
-        candidType
-    };
-}
+type RecursiveOpt<T> = {
+    base: CandidSampleOpt<Candid<T>>;
+    nextLayer: RecursiveOpt<T> | null;
+};
+type AzleOpt<T> = { Some?: T; None?: null };
+type CandidSampleOpt<T> = {
+    Some?: T;
+    None?: any;
+    src: { candidType: string };
+};
+
+type AgentOpt = [any] | [];
 
 export const OptArb = fc
     .letrec((tie) => ({
@@ -81,19 +85,23 @@ export const OptArb = fc
             nextLayer: fc.option(tie('RecursiveOptArb'), { maxDepth: 10 })
         })
     }))
-    .RecursiveOptArb.map((recursiveOptArb): OptArb => {
-        const optArb = recursiveOptArb as RecursiveOpt;
+    .RecursiveOptArb.map((recursiveOptArb): Candid<Opt> => {
+        const optArb = recursiveOptArb as RecursiveOpt<any>;
         return {
-            candidType: createCandidTypeFromRecursiveOpt(optArb),
-            azleValue: createCandidValueFromRecursiveOpt(optArb),
-            agentValue: createAgentValueFromRecursiveOpt(optArb)
+            src: { candidType: createCandidTypeFromRecursiveOpt(optArb) },
+            value: {
+                azle: createCandidValueFromRecursiveOpt(optArb),
+                agent: createAgentValueFromRecursiveOpt(optArb)
+            }
         };
     });
 
-function createCandidTypeFromRecursiveOpt(RecursiveOpt: RecursiveOpt): string {
+function createCandidTypeFromRecursiveOpt(
+    RecursiveOpt: RecursiveOpt<any>
+): string {
     if (RecursiveOpt.nextLayer === null) {
         // base case
-        return `Opt(${RecursiveOpt.base.candidType})`;
+        return RecursiveOpt.base.src.candidType;
     } else {
         return `Opt(${createCandidTypeFromRecursiveOpt(
             RecursiveOpt.nextLayer
@@ -102,12 +110,12 @@ function createCandidTypeFromRecursiveOpt(RecursiveOpt: RecursiveOpt): string {
 }
 
 function createAgentValueFromRecursiveOpt(
-    RecursiveOpt: RecursiveOpt
+    RecursiveOpt: RecursiveOpt<any>
 ): AgentOpt {
     if (RecursiveOpt.nextLayer === null) {
         // base case
-        if (RecursiveOpt.base.opt && RecursiveOpt.base.opt.Some !== undefined) {
-            return [RecursiveOpt.base.opt.Some];
+        if (RecursiveOpt.base && RecursiveOpt.base.Some !== undefined) {
+            return [RecursiveOpt.base.Some.value];
         } else {
             return [];
         }
@@ -117,12 +125,12 @@ function createAgentValueFromRecursiveOpt(
 }
 
 function createCandidValueFromRecursiveOpt(
-    RecursiveOpt: RecursiveOpt
-): AzleOpt {
+    RecursiveOpt: RecursiveOpt<any>
+): AzleOpt<any> {
     if (RecursiveOpt.nextLayer === null) {
         // base case
-        if (RecursiveOpt.base.opt && RecursiveOpt.base.opt.Some !== undefined) {
-            return { Some: RecursiveOpt.base.opt.Some };
+        if (RecursiveOpt.base && RecursiveOpt.base.Some !== undefined) {
+            return { Some: RecursiveOpt.base.Some.value };
         } else {
             return { None: null };
         }

@@ -4,6 +4,6 @@ import { Candid } from '..';
 export const TextArb = fc.string().map(
     (value): Candid<string> => ({
         value,
-        meta: { candidType: 'text' }
+        src: { candidType: 'text' }
     })
 );

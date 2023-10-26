@@ -4,6 +4,6 @@ import { Candid } from '..';
 export const NullArb = fc.constant(null).map(
     (value): Candid<null> => ({
         value,
-        meta: { candidType: 'Null' }
+        src: { candidType: 'Null' }
     })
 );

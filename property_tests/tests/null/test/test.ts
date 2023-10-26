@@ -10,7 +10,7 @@ const NullTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(NullArb))
     .map(([functionName, nulls]): TestSample => {
         const paramCandidTypes = nulls
-            .map((Null) => Null.meta.candidType)
+            .map((Null) => Null.src.candidType)
             .join(', ');
         const returnCandidType = 'Null';
         const paramNames = nulls.map((_, index) => `param${index}`);

@@ -4,7 +4,7 @@ function calculateDepthAndValues(value: [any] | []): {
 } {
     if (value.length === 0) {
         // None
-        return { depth: 1, value: value };
+        return { depth: 1, value };
     }
     const isOpt =
         Array.isArray(value[0]) &&
