@@ -9,9 +9,11 @@ const BoolTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(BoolArb))
     .map(([functionName, bools]) => {
         const paramCandidTypes = bools.map(() => 'bool').join(', ');
+        // TODO what if we just had at least one param? that way we would always have a return value?
         const returnCandidType = 'bool';
         const paramNames = bools.map((_, index) => `param${index}`);
 
+        // TODO do we want to encapsulate 'boolean' in the CandidArb? Like an agentType instead of a candidType, like azleValue and agentValue?
         const paramsAreBooleans = paramNames
             .map((paramName) => {
                 return `if (typeof ${paramName} !== 'boolean') throw new Error('${paramName} must be a boolean');`;
@@ -22,7 +24,10 @@ const BoolTestArb = fc
             return `${acc} && ${paramName}`;
         }, 'true');
 
-        const expectedResult = bools.reduce((acc, bool) => acc && bool, true);
+        const expectedResult = bools.reduce(
+            (acc, bool) => acc && bool.value,
+            true
+        );
 
         const paramSamples = bools;
 

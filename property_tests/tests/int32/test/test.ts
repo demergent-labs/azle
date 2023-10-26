@@ -8,7 +8,9 @@ import { runPropTests } from '../../..';
 const Int32TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Int32Arb))
     .map(([functionName, int32s]) => {
-        const paramCandidTypes = int32s.map(() => 'int32').join(', ');
+        const paramCandidTypes = int32s
+            .map((int32) => int32.candidType)
+            .join(', ');
         const returnCandidType = 'int32';
         const paramNames = int32s.map((_, index) => `param${index}`);
 
@@ -27,7 +29,7 @@ const Int32TestArb = fc
         const returnStatement = `Math.floor((${paramsSum}) / ${length})`;
 
         const expectedResult = Math.floor(
-            int32s.reduce((acc, int32) => acc + int32, 0) / length
+            int32s.reduce((acc, int32) => acc + int32.value, 0) / length
         );
 
         const paramSamples = int32s;

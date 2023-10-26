@@ -8,7 +8,9 @@ import { NullArb } from '../../../arbitraries/candid/primitive/null';
 const NullTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(NullArb))
     .map(([functionName, nulls]) => {
-        const paramCandidTypes = nulls.map(() => 'Null').join(', ');
+        const paramCandidTypes = nulls
+            .map((Null) => Null.candidType)
+            .join(', ');
         const returnCandidType = 'Null';
         const paramNames = nulls.map((_, index) => `param${index}`);
 

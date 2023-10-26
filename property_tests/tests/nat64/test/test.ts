@@ -8,7 +8,9 @@ import { runPropTests } from '../../../';
 const Nat64TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Nat64Arb))
     .map(([functionName, nat64s]) => {
-        const paramCandidTypes = nat64s.map(() => 'nat64').join(', ');
+        const paramCandidTypes = nat64s
+            .map((nat64) => nat64.candidType)
+            .join(', ');
         const returnCandidType = 'nat64';
         const paramNames = nat64s.map((_, index) => `param${index}`);
 
@@ -27,7 +29,8 @@ const Nat64TestArb = fc
         const returnStatement = `(${paramsSum}) / ${length}n`;
 
         const expectedResult =
-            nat64s.reduce((acc, nat64) => acc + nat64, 0n) / BigInt(length);
+            nat64s.reduce((acc, nat64) => acc + nat64.value, 0n) /
+            BigInt(length);
 
         const paramSamples = nat64s;
 
