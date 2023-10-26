@@ -3,11 +3,16 @@ import { TestSample } from './canister_arb';
 
 export function createQueryMethodArb(testArb: fc.Arbitrary<TestSample>) {
     return testArb.map((testSample) => {
-        const paramNames = testSample.paramNames;
-        const paramCandidTypes = testSample.paramCandidTypes;
-        const returnCandidType = testSample.returnCandidType;
-        const body = testSample.body;
-        const functionName = testSample.functionName;
+        const {
+            paramNames,
+            paramCandidTypes,
+            returnCandidType,
+            body,
+            functionName,
+            test,
+            imports,
+            candidTypeDeclarations
+        } = testSample;
 
         return {
             name: functionName,
@@ -16,8 +21,9 @@ export function createQueryMethodArb(testArb: fc.Arbitrary<TestSample>) {
             )}) => {
                     ${body}
                 })`,
-            test: testSample.test,
-            imports: testSample.imports
+            test,
+            imports,
+            candidTypeDeclarations
         };
     });
 }

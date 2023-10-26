@@ -147,6 +147,7 @@ jobs:
                     "property_tests/tests/null",
                     "property_tests/tests/principal",
                     "property_tests/tests/text",
+                    "property_tests/tests/variant",
                     "property_tests/tests/vec"
                   ]
                   END

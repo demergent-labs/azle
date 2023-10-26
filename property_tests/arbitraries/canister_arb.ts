@@ -5,6 +5,7 @@ import { Test } from '../../test';
 export type TestSample = {
     functionName: string;
     imports: string[];
+    candidTypeDeclarations?: string[];
     paramCandidTypes: string;
     returnCandidType: string;
     paramNames: string[];
@@ -23,6 +24,18 @@ export function createCanisterArb(testArb: fc.Arbitrary<TestSample>) {
                 (queryMethod) => queryMethod.sourceCode
             );
 
+            const candidTypeDeclarations = queryMethods.reduce(
+                (accumulator, queryMethod) => {
+                    const queryMethodCandidTypeDeclarations =
+                        queryMethod.candidTypeDeclarations?.join('\n') ?? '';
+                    return [
+                        accumulator,
+                        queryMethodCandidTypeDeclarations
+                    ].join(accumulator.endsWith('\n') ? '' : '\n');
+                },
+                ''
+            );
+
             const imports = [
                 ...new Set(
                     queryMethods.reduce((acc, queryMethod) => {
@@ -38,6 +51,8 @@ export function createCanisterArb(testArb: fc.Arbitrary<TestSample>) {
             return {
                 sourceCode: `
     import { Canister, query, ${imports.join(', ')} } from 'azle';
+
+    ${candidTypeDeclarations}
 
     export default Canister({
         ${queryMethodSourceCodes.join(',\n    ')}

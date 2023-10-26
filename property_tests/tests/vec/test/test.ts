@@ -4,10 +4,11 @@ import { getActor } from '../../../get_actor';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
+import { TestSample } from '../../../arbitraries/canister_arb';
 
 const VecTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(VecArb))
-    .map(([functionName, vecWrappers]) => {
+    .map(([functionName, vecWrappers]): TestSample => {
         const paramCandidTypes = vecWrappers.map(
             (vecWrapper) => vecWrapper.candidType
         );
@@ -22,7 +23,7 @@ const VecTestArb = fc
             .join('\n');
 
         // TODO this ordering check is not perfect
-        // TODO but turning the vec into a string seems a bit difficult...we need to figure out how to check perfecly for the values that we want
+        // TODO but turning the vec into a string seems a bit difficult...we need to figure out how to check perfectly for the values that we want
         // TODO maybe a global variable that we can write into and call would work
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
