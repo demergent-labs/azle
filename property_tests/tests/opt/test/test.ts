@@ -4,39 +4,38 @@ import { getActor } from '../../../get_actor';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
+import { areOptsEqual } from '../../../are_equal/opt';
 
 const OptTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(OptArb))
-    .map(([functionName, optWrappers]) => {
-        const paramCandidTypes = optWrappers.map(
-            (vecWrapper) => vecWrapper.candidType
-        );
-        const returnCandidType = optWrappers[0]?.candidType ?? 'Opt(int8)';
-        const paramNames = optWrappers.map((_, index) => `param${index}`);
+    .map(([functionName, opts]) => {
+        const paramCandidTypes = opts.map((opt) => opt.candidType);
+        const paramNames = opts.map((_, index) => `param${index}`);
+        // If there are not optTrees then we will be returning None so the type
+        // here can be whatever as long as it's wrapped in Opt
+        const returnCandidType =
+            opts.length === 0 ? 'Opt(int8)' : opts[0].candidType;
+        const returnStatement = paramNames[0] ?? `None`;
+        const expectedResult = opts.length === 0 ? [] : opts[0].agentValue;
 
-        // TODO this ordering check is not perfect
-        // TODO but turning the vec into a string seems a bit difficult...we need to figure out how to check perfecly for the values that we want
-        // TODO maybe a global variable that we can write into and call would work
-        // TODO we really need to create some kind of universal equality checking solution
-        // const paramsCorrectlyOrdered = paramNames
-        //     .map((paramName, index) => {
-        //         return `if (${paramName}.Some === undefined && ${optWrappers[index].opt.Some} === undefined && ${paramName}.None !== ${optWrappers[index].opt.None}) throw new Error('${paramName} is incorrectly ordered')`;
-        //     })
-        //     .join('\n');
+        const candidValues = opts.map((opt) => opt.azleValue);
 
-        // TODO these checks should be much more precise probably, imagine checking the values inside of the opts
-        const paramsOpts = paramNames
-            .map((paramName) => {
-                return `if (${paramName}.Some === undefined && ${paramName}.None === undefined) throw new Error('${paramName} must be an Opt');`;
+        const areParamsCorrectlyOrdered = paramNames
+            .map((paramName, index) => {
+                return `if (!${createAreOptsEqualCodeUsage(
+                    paramName,
+                    candidValues[index]
+                )}) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
-        const returnStatement = paramNames[0] ?? `None`;
-
-        const expectedResult =
-            optWrappers[0]?.opt.Some !== undefined
-                ? [optWrappers[0]?.opt.Some]
-                : [];
+        const areParamsOpts = paramNames
+            .map((paramName) => {
+                return `if (!${isParamOpt(
+                    paramName
+                )}) throw new Error('${paramName} must be an Opt');`;
+            })
+            .join('\n');
 
         return {
             functionName,
@@ -52,37 +51,36 @@ const OptTestArb = fc
                 'nat32',
                 'nat64',
                 'None',
-                'Opt'
+                'Opt',
+                'float32',
+                'float64',
+                'text',
+                'Null',
+                'bool'
             ],
             paramCandidTypes: paramCandidTypes.join(', '),
             returnCandidType,
             paramNames,
             body: `
-            ${paramsOpts}
+            ${createAreOptsEqualCodeDeclaration()}
+            ${areParamsCorrectlyOrdered}
+            ${areParamsOpts}
 
             return ${returnStatement};
         `,
             test: {
-                name: `test ${functionName}`,
+                name: `test opt ${functionName}`,
                 test: async () => {
                     const actor = getActor('./tests/opt/test');
 
-                    const result = await actor[functionName](
-                        ...optWrappers.map((optWrapper) => {
-                            if (optWrapper.opt.Some !== undefined) {
-                                return [optWrapper.opt.Some];
-                            } else {
-                                return [];
-                            }
-                        })
-                    );
+                    const params = opts.map((opt) => opt.agentValue);
+
+                    const result = await actor[functionName](...params);
 
                     // TODO be careful on equality checks when we go beyond primitives
                     // TODO a universal equality checker is going to be very useful
                     return {
-                        Ok:
-                            result.length === expectedResult.length &&
-                            result[0] === expectedResult[0]
+                        Ok: areOptsEqual(result, expectedResult)
                     };
                 }
             }
@@ -90,3 +88,53 @@ const OptTestArb = fc
     });
 
 runPropTests(OptTestArb);
+
+function isParamOpt(paramName: string): string {
+    return `(${paramName}.Some !== undefined || ${paramName}.None !== undefined)`;
+}
+
+function createAreOptsEqualCodeDeclaration(): string {
+    return `
+            function calculateDepthAndValues(value: any): {
+                depth: number;
+                value: any;
+            } {
+                if (value.None === null) {
+                    return { depth: 0, value: null };
+                }
+                if (value.Some === null || (value.Some.Some === undefined && value.Some.None === undefined)) {
+                    // The value.Some is not an opt. return value.Some
+                    return {depth: 0, value: JSON.stringify(value.Some, (key, value) => typeof value === 'bigint' ? value.toString() + "n" : value)}
+                }
+
+                const result = calculateDepthAndValues(value.Some);
+                return { ...result, depth: result.depth + 1 };
+            }
+
+            function areOptsEqual(opt1: any, opt2: any) {
+                const { depth: depth1, value: value1 } =
+                    calculateDepthAndValues(opt1);
+                const { depth: depth2, value: value2 } =
+                    calculateDepthAndValues(opt2);
+
+                return depth1 === depth2 && value1 === value2;
+            }
+        `;
+}
+
+function createAreOptsEqualCodeUsage(
+    paramName: string,
+    paramValue: any
+): string {
+    function replacer(_key: any, value: any) {
+        if (typeof value === 'bigint') {
+            return value.toString() + 'n';
+        }
+        return value;
+    }
+
+    return `areOptsEqual(${paramName}, ${JSON.stringify(
+        paramValue,
+        replacer
+    )})`;
+}

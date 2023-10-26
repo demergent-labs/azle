@@ -38,7 +38,7 @@ export function createCanisterArb(testArb: fc.Arbitrary<TestSample>) {
             return {
                 sourceCode: `
     import { Canister, query, ${imports.join(', ')} } from 'azle';
-    
+
     export default Canister({
         ${queryMethodSourceCodes.join(',\n    ')}
     });`,

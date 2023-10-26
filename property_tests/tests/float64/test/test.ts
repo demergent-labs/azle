@@ -3,13 +3,12 @@ import { getActor } from '../../../get_actor';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { runPropTests } from '../../..';
-import { Float64ArrayArb } from '../../../arbitraries/candid/primitive/floats/float64_arb';
-import { areFloatsEqual } from '../../../are_equal';
+import { Float64Arb } from '../../../arbitraries/candid/primitive/floats/float64_arb';
+import { areFloatsEqual } from '../../../are_equal/float';
 
 const Float64TestArb = fc
-    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), Float64ArrayArb)
-    .map(([functionName, float64Array]) => {
-        const float64s = [...float64Array.values()];
+    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Float64Arb))
+    .map(([functionName, float64s]) => {
         const paramCandidTypes = float64s.map(() => 'float64').join(', ');
         const returnCandidType = 'float64';
         const paramNames = float64s.map((_, index) => `param${index}`);
