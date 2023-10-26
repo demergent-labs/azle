@@ -1,14 +1,15 @@
 import fc from 'fast-check';
-import { OptArb } from '../../../arbitraries/candid/constructed/opt_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+
 import { areOptsEqual } from '../../../are_equal/opt';
+import { OptArb } from '../../../arbitraries/candid/constructed/opt_arb';
+import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const OptTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(OptArb))
-    .map(([functionName, opts]) => {
+    .map(([functionName, opts]): TestSample => {
         const paramCandidTypes = opts.map((opt) => opt.candidType);
         const paramNames = opts.map((_, index) => `param${index}`);
         // If there are not optTrees then we will be returning None so the type

@@ -1,8 +1,9 @@
 import fc from 'fast-check';
-import { CandidArb } from '../../../canister_arb';
+import { Candid } from '../..';
 
-export const Nat8Arb = fc
-    .bigUintN(8)
-    .map(
-        (sample): CandidArb => ({ value: Number(sample), candidType: 'nat8' })
-    );
+export const Nat8Arb = fc.bigUintN(8).map(
+    (value): Candid<number> => ({
+        value: Number(value),
+        meta: { candidType: 'nat8' }
+    })
+);

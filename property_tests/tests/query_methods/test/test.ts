@@ -1,8 +1,9 @@
+import { execSync } from 'child_process';
 import fc from 'fast-check';
+import { writeFileSync } from 'fs';
+
 import { getActor } from '../../../get_actor';
 import { Test, getCanisterId, runTests } from 'azle/test';
-import { writeFileSync } from 'fs';
-import { execSync } from 'child_process';
 
 // TODO Canister
 // TODO Record

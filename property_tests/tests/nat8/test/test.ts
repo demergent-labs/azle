@@ -1,15 +1,16 @@
 import fc from 'fast-check';
+
 import { Nat8Arb } from '../../../arbitraries/candid/primitive/nats/nat8_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const Nat8TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Nat8Arb))
-    .map(([functionName, nat8s]) => {
+    .map(([functionName, nat8s]): TestSample => {
         const paramCandidTypes = nat8s
-            .map((nat8) => nat8.candidType)
+            .map((nat8) => nat8.meta.candidType)
             .join(', ');
         const returnCandidType = 'nat8';
         const paramNames = nat8s.map((_, index) => `param${index}`);
@@ -32,11 +33,11 @@ const Nat8TestArb = fc
             nat8s.reduce((acc, nat8) => acc + nat8.value, 0) / length
         );
 
-        const paramSamples = nat8s;
+        const paramValues = nat8s.map((sample) => sample.value);
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                return `if (${paramName} !== ${paramSamples[index]}) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (${paramName} !== ${paramValues[index]}) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
@@ -46,7 +47,6 @@ const Nat8TestArb = fc
             paramCandidTypes,
             returnCandidType,
             paramNames,
-            paramSamples,
             body: `
             ${paramsCorrectlyOrdered}
 
@@ -59,7 +59,7 @@ const Nat8TestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/nat8/test');
 
-                    const result = await actor[functionName](...nat8s);
+                    const result = await actor[functionName](...paramValues);
 
                     return {
                         Ok: result === expectedResult

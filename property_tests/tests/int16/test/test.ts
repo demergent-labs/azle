@@ -1,15 +1,16 @@
 import fc from 'fast-check';
+
 import { Int16Arb } from '../../../arbitraries/candid/primitive/ints/int16_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const Int16TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Int16Arb))
-    .map(([functionName, int16s]) => {
+    .map(([functionName, int16s]): TestSample => {
         const paramCandidTypes = int16s
-            .map((int16) => int16.candidType)
+            .map((int16) => int16.meta.candidType)
             .join(', ');
         const returnCandidType = 'int16';
         const paramNames = int16s.map((_, index) => `param${index}`);
@@ -32,11 +33,11 @@ const Int16TestArb = fc
             int16s.reduce((acc, int16) => acc + int16.value, 0) / length
         );
 
-        const paramSamples = int16s;
+        const paramValues = int16s.map((sample) => sample.value);
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                return `if (${paramName} !== ${paramSamples[index]}) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (${paramName} !== ${paramValues[index]}) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
@@ -46,7 +47,6 @@ const Int16TestArb = fc
             paramCandidTypes,
             returnCandidType,
             paramNames,
-            paramSamples,
             body: `
             ${paramsCorrectlyOrdered}
 
@@ -59,7 +59,7 @@ const Int16TestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/int16/test');
 
-                    const result = await actor[functionName](...int16s);
+                    const result = await actor[functionName](...paramValues);
 
                     return {
                         Ok: result === expectedResult

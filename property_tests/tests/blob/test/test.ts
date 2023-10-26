@@ -1,9 +1,10 @@
 import fc from 'fast-check';
+
 import { BlobArb } from '../../../arbitraries/candid/constructed/blob_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const BlobTestArb = fc
     .tuple(
@@ -11,16 +12,16 @@ const BlobTestArb = fc
         fc.array(BlobArb),
         fc.oneof(fc.constant('blob'), fc.constant('Vec(nat8)'))
     )
-    .map(([functionName, blobTuples, returnCandidType]) => {
-        const paramCandidTypes = blobTuples.map((blobTuple) => blobTuple[1]);
-        const paramNames = blobTuples.map((_, index) => `param${index}`);
+    .map(([functionName, blobs, returnCandidType]): TestSample => {
+        const paramCandidTypes = blobs.map((blob) => blob.meta.candidType);
+        const paramNames = blobs.map((_, index) => `param${index}`);
 
         // TODO this ordering check is not perfect
         // TODO but turning the vec into a string seems a bit difficult...we need to figure out how to check perfecly for the values that we want
         // TODO maybe a global variable that we can write into and call would work
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                return `if (${paramName}.length !== ${blobTuples[index][0].length}) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (${paramName}.length !== ${blobs[index].value.length}) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
@@ -36,8 +37,8 @@ const BlobTestArb = fc
             .join(', ')}])`;
 
         const expectedResult = Uint8Array.from(
-            blobTuples
-                .map((blobTuple) => blobTuple[0])
+            blobs
+                .map((blob) => blob.value)
                 .reduce((acc, blob) => [...acc, ...blob], [] as number[])
         );
 
@@ -60,7 +61,7 @@ const BlobTestArb = fc
                     const actor = getActor('./tests/blob/test');
 
                     const result = await actor[functionName](
-                        ...blobTuples.map((blobTuple) => blobTuple[0])
+                        ...blobs.map((blob) => blob.value)
                     );
 
                     return {

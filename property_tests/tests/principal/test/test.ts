@@ -1,17 +1,18 @@
 import fc from 'fast-check';
-import { getActor } from '../../../get_actor';
-import { PrincipalArb } from '../../../arbitraries/candid/reference/principal_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+
 import { arePrincipalsEqual } from '../../../are_equal';
+import { PrincipalArb } from '../../../arbitraries/candid/reference/principal_arb';
+import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const PrincipalTestArb = fc
     .tuple(
         createUniquePrimitiveArb(JsFunctionNameArb),
         fc.array(PrincipalArb, { minLength: 1 })
     )
-    .map(([functionName, principals]) => {
+    .map(([functionName, principals]): TestSample => {
         const paramCandidTypes = principals.map(() => 'Principal').join(', ');
         const returnCandidType = 'Principal';
         const paramNames = principals.map((_, index) => `param${index}`);
@@ -43,7 +44,6 @@ const PrincipalTestArb = fc
             paramCandidTypes,
             returnCandidType,
             paramNames,
-            principals,
             body: `
                 ${paramsCorrectlyOrdered}
 

@@ -1,20 +1,22 @@
 import fc from 'fast-check';
+
 import { VariantArb } from '../../../arbitraries/candid/constructed/variant_arb';
-import { TestSample } from '../../../arbitraries/canister_arb';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 
 const VariantTestArb = fc
     .tuple(
         UniqueIdentifierArb('canisterMethod'),
-        fc.uniqueArray(VariantArb, { selector: (entry) => entry.name })
+        fc.uniqueArray(VariantArb, { selector: (entry) => entry.candidType })
     )
     .map(([functionName, variants]): TestSample => {
         const candidTypeDeclarations = variants.map(
             (variant) => variant.typeDeclaration
         );
-        const paramCandidTypes = variants.map((variant) => variant.name);
-        const returnCandidType = variants[0]?.name ?? 'Variant({None: Null})';
+        const paramCandidTypes = variants.map((variant) => variant.candidType);
+        const returnCandidType =
+            variants[0]?.candidType ?? 'Variant({None: Null})';
         const paramNames = variants.map((_, index) => `param${index}`);
 
         const paramsAreVariants = paramNames

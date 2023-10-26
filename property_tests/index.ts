@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { TestSample, createCanisterArb } from './arbitraries/canister_arb';
+import { TestSample, CanisterArb } from './arbitraries/canister_arb';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { execSync } from 'child_process';
 import { runTests } from '../test';
@@ -8,7 +8,7 @@ export { getActor } from './get_actor';
 
 export function runPropTests(testArb: fc.Arbitrary<TestSample>) {
     fc.assert(
-        fc.asyncProperty(createCanisterArb(testArb), async (canister) => {
+        fc.asyncProperty(CanisterArb(testArb), async (canister) => {
             if (!existsSync('src')) {
                 mkdirSync('src');
             }

@@ -1,15 +1,16 @@
 import fc from 'fast-check';
+
 import { Int8Arb } from '../../../arbitraries/candid/primitive/ints/int8_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const Int8TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Int8Arb))
-    .map(([functionName, int8s]) => {
+    .map(([functionName, int8s]): TestSample => {
         const paramCandidTypes = int8s
-            .map((int8) => int8.candidType)
+            .map((int8) => int8.meta.candidType)
             .join(', ');
         const returnCandidType = 'int8';
         const paramNames = int8s.map((_, index) => `param${index}`);
@@ -32,11 +33,11 @@ const Int8TestArb = fc
             int8s.reduce((acc, int8) => acc + int8.value, 0) / length
         );
 
-        const paramSamples = int8s;
+        const paramValues = int8s.map((sample) => sample.value);
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                return `if (${paramName} !== ${paramSamples[index]}) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (${paramName} !== ${paramValues[index]}) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
@@ -46,7 +47,6 @@ const Int8TestArb = fc
             paramCandidTypes,
             returnCandidType,
             paramNames,
-            paramSamples,
             body: `
             ${paramsCorrectlyOrdered}
 
@@ -59,7 +59,7 @@ const Int8TestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/int8/test');
 
-                    const result = await actor[functionName](...int8s);
+                    const result = await actor[functionName](...paramValues);
 
                     return {
                         Ok: result === expectedResult

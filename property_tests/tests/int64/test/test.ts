@@ -1,14 +1,17 @@
 import fc from 'fast-check';
+
 import { Int64Arb } from '../../../arbitraries/candid/primitive/ints/int64_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const Int64TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Int64Arb))
-    .map(([functionName, int64s]) => {
-        const paramCandidTypes = int64s.map((int64) => int64.value).join(', ');
+    .map(([functionName, int64s]): TestSample => {
+        const paramCandidTypes = int64s
+            .map((int64) => int64.meta.candidType)
+            .join(', ');
         const returnCandidType = 'int64';
         const paramNames = int64s.map((_, index) => `param${index}`);
 
@@ -30,11 +33,11 @@ const Int64TestArb = fc
             int64s.reduce((acc, int64) => acc + int64.value, 0n) /
             BigInt(length);
 
-        const paramSamples = int64s;
+        const paramValues = int64s.map((sample) => sample.value);
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                return `if (${paramName} !== ${paramSamples[index]}n) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (${paramName} !== ${paramValues[index]}n) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
@@ -44,7 +47,6 @@ const Int64TestArb = fc
             paramCandidTypes,
             returnCandidType,
             paramNames,
-            paramSamples,
             body: `
             ${paramsCorrectlyOrdered}
 
@@ -57,7 +59,7 @@ const Int64TestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/int64/test');
 
-                    const result = await actor[functionName](...int64s);
+                    const result = await actor[functionName](...paramValues);
 
                     return {
                         Ok: result === expectedResult

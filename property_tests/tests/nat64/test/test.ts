@@ -1,15 +1,16 @@
 import fc from 'fast-check';
+
 import { Nat64Arb } from '../../../arbitraries/candid/primitive/nats/nat64_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../../';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const Nat64TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Nat64Arb))
-    .map(([functionName, nat64s]) => {
+    .map(([functionName, nat64s]): TestSample => {
         const paramCandidTypes = nat64s
-            .map((nat64) => nat64.candidType)
+            .map((nat64) => nat64.meta.candidType)
             .join(', ');
         const returnCandidType = 'nat64';
         const paramNames = nat64s.map((_, index) => `param${index}`);
@@ -32,11 +33,11 @@ const Nat64TestArb = fc
             nat64s.reduce((acc, nat64) => acc + nat64.value, 0n) /
             BigInt(length);
 
-        const paramSamples = nat64s;
+        const paramValues = nat64s.map((sample) => sample.value);
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                return `if (${paramName} !== ${paramSamples[index]}n) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (${paramName} !== ${paramValues[index]}n) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
@@ -46,7 +47,6 @@ const Nat64TestArb = fc
             paramCandidTypes,
             returnCandidType,
             paramNames,
-            paramSamples,
             body: `
             ${paramsCorrectlyOrdered}
 
@@ -59,7 +59,7 @@ const Nat64TestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/nat64/test');
 
-                    const result = await actor[functionName](...nat64s);
+                    const result = await actor[functionName](...paramValues);
 
                     return {
                         Ok: result === expectedResult

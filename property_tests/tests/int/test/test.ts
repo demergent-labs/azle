@@ -1,14 +1,17 @@
 import fc from 'fast-check';
+
 import { IntArb } from '../../../arbitraries/candid/primitive/ints/int_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const IntTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(IntArb))
-    .map(([functionName, ints]) => {
-        const paramCandidTypes = ints.map((int) => int.candidType).join(', ');
+    .map(([functionName, ints]): TestSample => {
+        const paramCandidTypes = ints
+            .map((int) => int.meta.candidType)
+            .join(', ');
         const returnCandidType = 'int';
         const paramNames = ints.map((_, index) => `param${index}`);
 
@@ -26,11 +29,11 @@ const IntTestArb = fc
 
         const expectedResult = ints.reduce((acc, int) => acc + int.value, 0n);
 
-        const paramSamples = ints;
+        const paramValues = ints.map((sample) => sample.value);
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                return `if (${paramName} !== ${paramSamples[index]}n) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (${paramName} !== ${paramValues[index]}n) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
@@ -40,7 +43,6 @@ const IntTestArb = fc
             paramCandidTypes,
             returnCandidType,
             paramNames,
-            paramSamples,
             body: `
             ${paramsCorrectlyOrdered}
 
@@ -53,7 +55,7 @@ const IntTestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/int/test');
 
-                    const result = await actor[functionName](...ints);
+                    const result = await actor[functionName](...paramValues);
 
                     return {
                         Ok: result === expectedResult

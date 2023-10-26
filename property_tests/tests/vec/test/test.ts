@@ -1,10 +1,10 @@
 import fc from 'fast-check';
+
 import { VecArb } from '../../../arbitraries/candid/constructed/vec_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
-import { TestSample } from '../../../arbitraries/canister_arb';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const VecTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(VecArb))

@@ -1,11 +1,11 @@
 import fc from 'fast-check';
-import { CandidTypeArb } from '../../candid';
+import { Candid, CandidTypeArb } from '../../candid';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
 
 type Variant = {
     /** The identifier for referencing the variant in source code */
-    name: string;
+    candidType: string;
     /**
      * The JS source code for creating the variant. E.g.:
      *
@@ -41,13 +41,13 @@ export const VariantArb = fc
             // an empty object.
         })
     )
-    .map(([name, fields]): Variant => {
+    .map(([name, fields]) => {
         const fieldNames = fields.map(([fieldName]) => fieldName);
 
         const typeDeclaration = `const ${name} = Variant({\n    ${fields
             .map(
                 ([fieldName, fieldDataType]) =>
-                    `${fieldName}: ${fieldDataType.type}`
+                    `${fieldName}: ${fieldDataType.meta.candidType}`
             )
             .join(',\n    ')}\n});`;
 
@@ -67,7 +67,7 @@ export const VariantArb = fc
                   })();
 
         return {
-            name,
+            candidType: name,
             typeDeclaration,
             value,
             fieldNames
