@@ -9,7 +9,9 @@ import { areFloatsEqual } from '../../../are_equal/float';
 const Float64TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Float64Arb))
     .map(([functionName, float64s]) => {
-        const paramCandidTypes = float64s.map(() => 'float64').join(', ');
+        const paramCandidTypes = float64s
+            .map((float64) => float64.candidType)
+            .join(', ');
         const returnCandidType = 'float64';
         const paramNames = float64s.map((_, index) => `param${index}`);
 
@@ -28,8 +30,8 @@ const Float64TestArb = fc
         const returnStatement = `(${paramsSum}) / ${length}`;
 
         const expectedResult =
-            float64s.reduce((acc, float64) => acc + float64, 0) / length;
-        const paramSamples = float64s;
+            float64s.reduce((acc, float64) => acc + float64.value, 0) / length;
+        const paramSamples = float64s.map((float64) => float64.value);
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {

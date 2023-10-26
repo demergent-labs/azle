@@ -13,6 +13,13 @@ export type TestSample = {
     test: any;
 };
 
+// TODO is the the right place or name for this?
+// TODO maybe we want specific types for each things for the infereed types?
+export type CandidArb = {
+    candidType: string;
+    value: any;
+};
+
 export function createCanisterArb(testArb: fc.Arbitrary<TestSample>) {
     return fc
         .array(createQueryMethodArb(testArb), {

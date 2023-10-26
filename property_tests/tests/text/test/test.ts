@@ -8,7 +8,9 @@ import { TextArb } from '../../../arbitraries/candid/primitive/text';
 const TextTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(TextArb))
     .map(([functionName, texts]) => {
-        const paramCandidTypes = texts.map(() => 'text').join(', ');
+        const paramCandidTypes = texts
+            .map((text) => text.candidType)
+            .join(', ');
         const returnCandidType = 'text';
         const paramNames = texts.map((_, index) => `param${index}`);
 
@@ -23,7 +25,7 @@ const TextTestArb = fc
         }, '""');
 
         const expectedResult = texts.reduce((acc, text) => acc + text, '');
-        const paramSamples = texts;
+        const paramSamples = texts.map((text) => text.value);
 
         function escapeStringForJavaScript(input: string) {
             return input

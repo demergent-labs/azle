@@ -8,7 +8,9 @@ import { runPropTests } from '../../..';
 const Nat32TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Nat32Arb))
     .map(([functionName, nat32s]) => {
-        const paramCandidTypes = nat32s.map(() => 'nat32').join(', ');
+        const paramCandidTypes = nat32s
+            .map((nat32) => nat32.candidType)
+            .join(', ');
         const returnCandidType = 'nat32';
         const paramNames = nat32s.map((_, index) => `param${index}`);
 
@@ -27,7 +29,7 @@ const Nat32TestArb = fc
         const returnStatement = `Math.floor((${paramsSum}) / ${length})`;
 
         const expectedResult = Math.floor(
-            nat32s.reduce((acc, nat32) => acc + nat32, 0) / length
+            nat32s.reduce((acc, nat32) => acc + nat32.value, 0) / length
         );
 
         const paramSamples = nat32s;

@@ -8,7 +8,7 @@ import { runPropTests } from '../../../';
 const NatTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(NatArb))
     .map(([functionName, nats]) => {
-        const paramCandidTypes = nats.map(() => 'nat').join(', ');
+        const paramCandidTypes = nats.map((nat) => nat.candidType).join(', ');
         const returnCandidType = 'nat';
         const paramNames = nats.map((_, index) => `param${index}`);
 
@@ -24,7 +24,7 @@ const NatTestArb = fc
 
         const returnStatement = `${paramsSum}`;
 
-        const expectedResult = nats.reduce((acc, nat) => acc + nat, 0n);
+        const expectedResult = nats.reduce((acc, nat) => acc + nat.value, 0n);
 
         const paramSamples = nats;
 

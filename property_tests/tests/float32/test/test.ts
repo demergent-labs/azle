@@ -9,7 +9,9 @@ import { areFloatsEqual } from '../../../are_equal/float';
 const Float32TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Float32Arb))
     .map(([functionName, float32s]) => {
-        const paramCandidTypes = float32s.map(() => 'float32').join(', ');
+        const paramCandidTypes = float32s
+            .map((float32) => float32.candidType)
+            .join(', ');
         const returnCandidType = 'float32';
         const paramNames = float32s.map((_, index) => `param${index}`);
 
@@ -21,7 +23,7 @@ const Float32TestArb = fc
 
         const returnStatement = float32s.length === 0 ? '0' : `param0`;
 
-        const paramSamples = float32s;
+        const paramSamples = float32s.map((float32s) => float32s.value);
         const expectedResult = float32s.length === 0 ? 0 : float32s[0];
 
         const paramsCorrectlyOrdered = paramNames

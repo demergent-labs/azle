@@ -8,7 +8,7 @@ import { runPropTests } from '../../..';
 const Int64TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Int64Arb))
     .map(([functionName, int64s]) => {
-        const paramCandidTypes = int64s.map(() => 'int64').join(', ');
+        const paramCandidTypes = int64s.map((int64) => int64.value).join(', ');
         const returnCandidType = 'int64';
         const paramNames = int64s.map((_, index) => `param${index}`);
 
@@ -27,7 +27,8 @@ const Int64TestArb = fc
         const returnStatement = `(${paramsSum}) / ${length}n`;
 
         const expectedResult =
-            int64s.reduce((acc, int64) => acc + int64, 0n) / BigInt(length);
+            int64s.reduce((acc, int64) => acc + int64.value, 0n) /
+            BigInt(length);
 
         const paramSamples = int64s;
 
