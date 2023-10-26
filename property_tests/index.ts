@@ -27,7 +27,7 @@ export function runPropTests(testArb: fc.Arbitrary<TestSample>) {
 
             return await runTests(
                 canister.tests,
-                process.env.AZLE_HIDE_CANISTER_ON_FAIL === undefined
+                process.env.AZLE_PROPTEST_VERBOSE !== undefined
             );
         }),
         {

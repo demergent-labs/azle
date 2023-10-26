@@ -78,10 +78,10 @@ export const OptArb = fc
     .letrec((tie) => ({
         RecursiveOptArb: fc.record({
             base: PrimitiveOptArb,
-            nextLayer: fc.option(tie('RecursiveOptArb'), { maxDepth: 3 })
+            nextLayer: fc.option(tie('RecursiveOptArb'), { maxDepth: 10 })
         })
     }))
-    .RecursiveOptArb.map((recursiveOptArb) => {
+    .RecursiveOptArb.map((recursiveOptArb): OptArb => {
         const optArb = recursiveOptArb as RecursiveOpt;
         return {
             candidType: createCandidTypeFromRecursiveOpt(optArb),
