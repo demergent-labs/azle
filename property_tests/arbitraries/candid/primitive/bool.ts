@@ -1,9 +1,4 @@
 import fc from 'fast-check';
-import { Candid } from '..';
+import { CandidArb } from '../candid_arb';
 
-export const BoolArb = fc.boolean().map(
-    (value): Candid<boolean> => ({
-        value,
-        src: { candidType: 'bool', imports: new Set(['bool']) }
-    })
-);
+export const BoolArb = CandidArb(fc.boolean(), 'bool');

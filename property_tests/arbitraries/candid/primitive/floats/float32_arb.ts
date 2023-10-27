@@ -1,9 +1,4 @@
 import fc from 'fast-check';
-import { Candid } from '../..';
+import { CandidArb } from '../../candid_arb';
 
-export const Float32Arb = fc.float().map(
-    (value): Candid<number> => ({
-        src: { candidType: 'float32', imports: new Set(['float32']) },
-        value
-    })
-);
+export const Float32Arb = CandidArb(fc.float(), 'float32');

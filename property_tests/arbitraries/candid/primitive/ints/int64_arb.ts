@@ -1,9 +1,4 @@
 import fc from 'fast-check';
-import { Candid } from '../..';
+import { CandidArb } from '../../candid_arb';
 
-export const Int64Arb = fc.bigIntN(64).map(
-    (value): Candid<bigint> => ({
-        value,
-        src: { candidType: 'int64', imports: new Set(['int64']) }
-    })
-);
+export const Int64Arb = CandidArb(fc.bigIntN(64), 'int64');

@@ -1,9 +1,4 @@
 import fc from 'fast-check';
-import { Candid } from '../..';
+import { CandidArb } from '../../candid_arb';
 
-export const IntArb = fc.bigInt().map(
-    (value): Candid<bigint> => ({
-        value,
-        src: { candidType: 'int', imports: new Set(['int']) }
-    })
-);
+export const IntArb = CandidArb(fc.bigInt(), 'int');

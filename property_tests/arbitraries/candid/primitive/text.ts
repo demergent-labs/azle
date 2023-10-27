@@ -1,9 +1,4 @@
 import fc from 'fast-check';
-import { Candid } from '..';
+import { CandidArb } from '../candid_arb';
 
-export const TextArb = fc.string().map(
-    (value): Candid<string> => ({
-        value,
-        src: { candidType: 'text', imports: new Set(['text']) }
-    })
-);
+export const TextArb = CandidArb(fc.string(), 'text');

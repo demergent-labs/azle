@@ -1,9 +1,4 @@
-import fc from 'fast-check';
-import { Candid } from '../..';
+import { CandidArb } from '../../candid_arb';
+import { UNumberArb } from './index';
 
-export const Nat16Arb = fc.bigUintN(16).map(
-    (value): Candid<number> => ({
-        value: Number(value),
-        src: { candidType: 'nat16', imports: new Set(['nat16']) }
-    })
-);
+export const Nat16Arb = CandidArb(UNumberArb(16), 'nat16');

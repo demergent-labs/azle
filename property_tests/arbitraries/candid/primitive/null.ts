@@ -1,9 +1,4 @@
 import fc from 'fast-check';
-import { Candid } from '..';
+import { CandidArb } from '../candid_arb';
 
-export const NullArb = fc.constant(null).map(
-    (value): Candid<null> => ({
-        value,
-        src: { candidType: 'Null', imports: new Set(['Null']) }
-    })
-);
+export const NullArb = CandidArb(fc.constant(null), 'Null');
