@@ -1,3 +1,4 @@
-import fc from 'fast-check';
+import { CandidArb } from '../../candid_arb';
+import { NumberArb } from './';
 
-export const Int8Arb = fc.bigIntN(8).map((sample) => Number(sample));
+export const Int8Arb = CandidArb(NumberArb(8), 'int8');

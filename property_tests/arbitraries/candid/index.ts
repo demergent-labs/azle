@@ -11,9 +11,14 @@ import { Nat32Arb } from './primitive/nats/nat32_arb';
 import { Nat64Arb } from './primitive/nats/nat64_arb';
 import { NullArb } from './primitive/null';
 
+// TODO we're thinking that Candid is not the best name for this. What is better?
 export type Candid<T> = {
     value: T;
-    type: string;
+    src: {
+        candidType: string;
+        typeDeclaration?: string;
+        imports: Set<string>;
+    };
 };
 
 /**
@@ -22,23 +27,16 @@ export type Candid<T> = {
  * **Note:** This currently only supports ints, nats, and null arbitraries
  */
 export const CandidTypeArb = fc.oneof(
-    IntArb.map((sample) => wrap(sample, 'int')),
-    Int8Arb.map((sample) => wrap(sample, 'int8')),
-    Int16Arb.map((sample) => wrap(sample, 'int16')),
-    Int32Arb.map((sample) => wrap(sample, 'int32')),
-    Int64Arb.map((sample) => wrap(sample, 'int64')),
-    NatArb.map((sample) => wrap(sample, 'nat')),
-    Nat8Arb.map((sample) => wrap(sample, 'nat8')),
-    Nat16Arb.map((sample) => wrap(sample, 'nat16')),
-    Nat32Arb.map((sample) => wrap(sample, 'nat32')),
-    Nat64Arb.map((sample) => wrap(sample, 'nat64')),
-    NullArb.map((sample) => wrap(sample, 'Null'))
+    IntArb,
+    Int8Arb,
+    Int16Arb,
+    Int32Arb,
+    Int64Arb,
+    NatArb,
+    Nat8Arb,
+    Nat16Arb,
+    Nat32Arb,
+    Nat64Arb,
+    NullArb
 );
 // TODO: This needs to support ALL valid candid types, including records, variants, etc.
-
-function wrap<T>(value: T, type: string): Candid<T> {
-    return {
-        value,
-        type
-    };
-}

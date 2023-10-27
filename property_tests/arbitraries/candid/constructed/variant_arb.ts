@@ -1,33 +1,10 @@
 import fc from 'fast-check';
-import { CandidTypeArb } from '../../candid';
+import { Candid, CandidTypeArb } from '../../candid';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
 
 type Variant = {
-    /** The identifier for referencing the variant in source code */
-    name: string;
-    /**
-     * The JS source code for creating the variant. E.g.:
-     *
-     * ```js
-     * const VariantName = Variant({
-     *   FieldOne: Null,
-     *   FieldTwo: text,
-     * });
-     * ```
-     */
-    typeDeclaration: string;
-    /**
-     * A random instance of the field. E.g.:
-     * ```ts
-     * { FieldOne: null }
-     * ```
-     */
-    value: {
-        [x: string]: number | bigint | null;
-    };
-    /** A list of the tag/case/field names in the variant */
-    fieldNames: string[];
+    [x: string]: number | bigint | null;
 };
 
 export const VariantArb = fc
@@ -41,13 +18,13 @@ export const VariantArb = fc
             // an empty object.
         })
     )
-    .map(([name, fields]): Variant => {
+    .map(([name, fields]): Candid<Variant> => {
         const fieldNames = fields.map(([fieldName]) => fieldName);
 
         const typeDeclaration = `const ${name} = Variant({\n    ${fields
             .map(
                 ([fieldName, fieldDataType]) =>
-                    `${fieldName}: ${fieldDataType.type}`
+                    `${fieldName}: ${fieldDataType.src.candidType}`
             )
             .join(',\n    ')}\n});`;
 
@@ -66,10 +43,17 @@ export const VariantArb = fc
                       };
                   })();
 
+        const imports = new Set([
+            ...fields.map((field) => field[1].src.candidType),
+            'Variant'
+        ]);
+
         return {
-            name,
-            typeDeclaration,
-            value,
-            fieldNames
+            src: {
+                candidType: name,
+                typeDeclaration,
+                imports
+            },
+            value
         };
     });

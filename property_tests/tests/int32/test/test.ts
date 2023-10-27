@@ -1,14 +1,17 @@
 import fc from 'fast-check';
+
 import { Int32Arb } from '../../../arbitraries/candid/primitive/ints/int32_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const Int32TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Int32Arb))
-    .map(([functionName, int32s]) => {
-        const paramCandidTypes = int32s.map(() => 'int32').join(', ');
+    .map(([functionName, int32s]): TestSample => {
+        const paramCandidTypes = int32s
+            .map((int32) => int32.src.candidType)
+            .join(', ');
         const returnCandidType = 'int32';
         const paramNames = int32s.map((_, index) => `param${index}`);
 
@@ -27,14 +30,14 @@ const Int32TestArb = fc
         const returnStatement = `Math.floor((${paramsSum}) / ${length})`;
 
         const expectedResult = Math.floor(
-            int32s.reduce((acc, int32) => acc + int32, 0) / length
+            int32s.reduce((acc, int32) => acc + int32.value, 0) / length
         );
 
-        const paramSamples = int32s;
+        const paramValues = int32s.map((sample) => sample.value);
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                return `if (${paramName} !== ${paramSamples[index]}) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (${paramName} !== ${paramValues[index]}) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
@@ -44,7 +47,6 @@ const Int32TestArb = fc
             paramCandidTypes,
             returnCandidType,
             paramNames,
-            paramSamples,
             body: `
             ${paramsCorrectlyOrdered}
 
@@ -57,7 +59,7 @@ const Int32TestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/int32/test');
 
-                    const result = await actor[functionName](...int32s);
+                    const result = await actor[functionName](...paramValues);
 
                     return {
                         Ok: result === expectedResult

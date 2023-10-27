@@ -1,3 +1,4 @@
-import fc from 'fast-check';
+import { CandidArb } from '../../candid_arb';
+import { UNumberArb } from './index';
 
-export const Nat32Arb = fc.bigUintN(32).map((sample) => Number(sample));
+export const Nat32Arb = CandidArb(UNumberArb(32), 'nat32');

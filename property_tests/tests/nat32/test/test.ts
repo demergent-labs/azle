@@ -1,14 +1,17 @@
 import fc from 'fast-check';
+
 import { Nat32Arb } from '../../../arbitraries/candid/primitive/nats/nat32_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../..';
 
 const Nat32TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Nat32Arb))
-    .map(([functionName, nat32s]) => {
-        const paramCandidTypes = nat32s.map(() => 'nat32').join(', ');
+    .map(([functionName, nat32s]): TestSample => {
+        const paramCandidTypes = nat32s
+            .map((nat32) => nat32.src.candidType)
+            .join(', ');
         const returnCandidType = 'nat32';
         const paramNames = nat32s.map((_, index) => `param${index}`);
 
@@ -27,14 +30,14 @@ const Nat32TestArb = fc
         const returnStatement = `Math.floor((${paramsSum}) / ${length})`;
 
         const expectedResult = Math.floor(
-            nat32s.reduce((acc, nat32) => acc + nat32, 0) / length
+            nat32s.reduce((acc, nat32) => acc + nat32.value, 0) / length
         );
 
-        const paramSamples = nat32s;
+        const paramValues = nat32s.map((sample) => sample.value);
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                return `if (${paramName} !== ${paramSamples[index]}) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (${paramName} !== ${paramValues[index]}) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
@@ -44,7 +47,6 @@ const Nat32TestArb = fc
             paramCandidTypes,
             returnCandidType,
             paramNames,
-            paramSamples,
             body: `
             ${paramsCorrectlyOrdered}
 
@@ -57,7 +59,7 @@ const Nat32TestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/nat32/test');
 
-                    const result = await actor[functionName](...nat32s);
+                    const result = await actor[functionName](...paramValues);
 
                     return {
                         Ok: result === expectedResult

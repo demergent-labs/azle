@@ -1,20 +1,26 @@
 import fc from 'fast-check';
+
 import { VariantArb } from '../../../arbitraries/candid/constructed/variant_arb';
-import { TestSample } from '../../../arbitraries/canister_arb';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 
 const VariantTestArb = fc
     .tuple(
         UniqueIdentifierArb('canisterMethod'),
-        fc.uniqueArray(VariantArb, { selector: (entry) => entry.name })
+        fc.uniqueArray(VariantArb, {
+            selector: (entry) => entry.src.candidType
+        })
     )
     .map(([functionName, variants]): TestSample => {
         const candidTypeDeclarations = variants.map(
-            (variant) => variant.typeDeclaration
+            (variant) => variant.src.typeDeclaration ?? ''
         );
-        const paramCandidTypes = variants.map((variant) => variant.name);
-        const returnCandidType = variants[0]?.name ?? 'Variant({None: Null})';
+        const paramCandidTypes = variants.map(
+            (variant) => variant.src.candidType
+        );
+        const returnCandidType =
+            variants[0]?.src?.candidType ?? 'Variant({None: Null})';
         const paramNames = variants.map((_, index) => `param${index}`);
 
         const paramsAreVariants = paramNames
@@ -24,12 +30,12 @@ const VariantTestArb = fc
             .join('\n');
 
         const paramsCorrectlyOrdered = variants
-            .map((wrappedVariant, index) => {
+            .map((variant, index) => {
                 const paramName = `param${index}`;
 
-                return `if (![${wrappedVariant.fieldNames.map(
-                    (i) => `"${i}"`
-                )}].includes(Object.keys(${paramName})[0])) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (Object.keys(${paramName})[0] !== "${
+                    Object.keys(variant.value)[0]
+                }") throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
@@ -39,23 +45,15 @@ const VariantTestArb = fc
 
         const expectedResult = variants[0]?.value ?? { None: null };
 
+        const imports = Array.from(
+            variants.reduce((acc, variant) => {
+                return new Set([...acc, ...variant.src.imports]);
+            }, new Set<string>())
+        );
+
         return {
             functionName,
-            imports: [
-                'int',
-                'int8',
-                'int16',
-                'int32',
-                'int64',
-                'nat',
-                'nat8',
-                'nat16',
-                'nat32',
-                'nat64',
-                'Null',
-                'Variant',
-                'Void'
-            ],
+            imports,
             candidTypeDeclarations,
             paramCandidTypes: paramCandidTypes.join(', '),
             returnCandidType,
@@ -73,7 +71,7 @@ const VariantTestArb = fc
                     const actor = getActor('./tests/variant/test');
 
                     const result = await actor[functionName](
-                        ...variants.map((wrapper) => wrapper.value)
+                        ...variants.map((variant) => variant.value)
                     );
 
                     return {

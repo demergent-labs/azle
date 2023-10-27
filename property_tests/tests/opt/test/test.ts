@@ -1,24 +1,34 @@
 import fc from 'fast-check';
-import { OptArb } from '../../../arbitraries/candid/constructed/opt_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+
 import { areOptsEqual } from '../../../are_equal/opt';
+import { OptArb } from '../../../arbitraries/candid/constructed/opt_arb';
+import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const OptTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(OptArb))
-    .map(([functionName, opts]) => {
-        const paramCandidTypes = opts.map((opt) => opt.candidType);
+    .map(([functionName, opts]): TestSample => {
+        const paramCandidTypes = opts.map((opt) => opt.src.candidType);
         const paramNames = opts.map((_, index) => `param${index}`);
         // If there are not optTrees then we will be returning None so the type
         // here can be whatever as long as it's wrapped in Opt
         const returnCandidType =
-            opts.length === 0 ? 'Opt(int8)' : opts[0].candidType;
+            opts.length === 0 ? 'Opt(int8)' : opts[0].src.candidType;
         const returnStatement = paramNames[0] ?? `None`;
-        const expectedResult = opts.length === 0 ? [] : opts[0].agentValue;
+        const expectedResult = opts.length === 0 ? [] : opts[0].value.agent;
 
-        const candidValues = opts.map((opt) => opt.azleValue);
+        const candidValues = opts.map((opt) => opt.value.azle);
+
+        const imports = Array.from(
+            opts.reduce(
+                (acc, opt) => {
+                    return new Set([...acc, ...opt.src.imports]);
+                },
+                new Set(['None'])
+            )
+        );
 
         const areParamsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
@@ -39,25 +49,7 @@ const OptTestArb = fc
 
         return {
             functionName,
-            imports: [
-                'int',
-                'int8',
-                'int16',
-                'int32',
-                'int64',
-                'nat',
-                'nat8',
-                'nat16',
-                'nat32',
-                'nat64',
-                'None',
-                'Opt',
-                'float32',
-                'float64',
-                'text',
-                'Null',
-                'bool'
-            ],
+            imports,
             paramCandidTypes: paramCandidTypes.join(', '),
             returnCandidType,
             paramNames,
@@ -69,11 +61,11 @@ const OptTestArb = fc
             return ${returnStatement};
         `,
             test: {
-                name: `test opt ${functionName}`,
+                name: `opt ${functionName}`,
                 test: async () => {
                     const actor = getActor('./tests/opt/test');
 
-                    const params = opts.map((opt) => opt.agentValue);
+                    const params = opts.map((opt) => opt.value.agent);
 
                     const result = await actor[functionName](...params);
 
@@ -126,15 +118,17 @@ function createAreOptsEqualCodeUsage(
     paramName: string,
     paramValue: any
 ): string {
-    function replacer(_key: any, value: any) {
-        if (typeof value === 'bigint') {
-            return value.toString() + 'n';
-        }
-        return value;
-    }
+    return `areOptsEqual(${paramName}, ${valueToSrc(paramValue)})`;
+}
 
-    return `areOptsEqual(${paramName}, ${JSON.stringify(
-        paramValue,
-        replacer
-    )})`;
+function stringifyBigInts(_key: any, value: any) {
+    if (typeof value === 'bigint') {
+        return value.toString() + 'n';
+    }
+    return value;
+}
+
+// NOTE: This is a little buggy but seems to work for opt (bigints are "123n" instead of 123n)
+export function valueToSrc(value: any): string {
+    return JSON.stringify(value, stringifyBigInts);
 }

@@ -1,15 +1,18 @@
 import fc from 'fast-check';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
-import { Float64Arb } from '../../../arbitraries/candid/primitive/floats/float64_arb';
+
 import { areFloatsEqual } from '../../../are_equal/float';
+import { Float64Arb } from '../../../arbitraries/candid/primitive/floats/float64_arb';
+import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const Float64TestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Float64Arb))
-    .map(([functionName, float64s]) => {
-        const paramCandidTypes = float64s.map(() => 'float64').join(', ');
+    .map(([functionName, float64s]): TestSample => {
+        const paramCandidTypes = float64s
+            .map((float64) => float64.src.candidType)
+            .join(', ');
         const returnCandidType = 'float64';
         const paramNames = float64s.map((_, index) => `param${index}`);
 
@@ -28,16 +31,16 @@ const Float64TestArb = fc
         const returnStatement = `(${paramsSum}) / ${length}`;
 
         const expectedResult =
-            float64s.reduce((acc, float64) => acc + float64, 0) / length;
-        const paramSamples = float64s;
+            float64s.reduce((acc, float64) => acc + float64.value, 0) / length;
+        const paramValues = float64s.map((float64) => float64.value);
 
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
                 const areFloat64sEqual = areFloatsEqual(
                     paramName,
-                    paramSamples[index]
+                    paramValues[index]
                 );
-                return `if (!${areFloat64sEqual}) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (!(${areFloat64sEqual})) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
@@ -47,7 +50,6 @@ const Float64TestArb = fc
             paramCandidTypes,
             returnCandidType,
             paramNames,
-            paramSamples,
             body: `
             ${paramsCorrectlyOrdered}
 
@@ -60,7 +62,7 @@ const Float64TestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/float64/test');
 
-                    const result = await actor[functionName](...float64s);
+                    const result = await actor[functionName](...paramValues);
 
                     if (Number.isNaN(expectedResult)) {
                         return {

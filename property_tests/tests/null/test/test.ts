@@ -1,14 +1,17 @@
 import fc from 'fast-check';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+
 import { NullArb } from '../../../arbitraries/candid/primitive/null';
+import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const NullTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(NullArb))
-    .map(([functionName, nulls]) => {
-        const paramCandidTypes = nulls.map(() => 'Null').join(', ');
+    .map(([functionName, nulls]): TestSample => {
+        const paramCandidTypes = nulls
+            .map((Null) => Null.src.candidType)
+            .join(', ');
         const returnCandidType = 'Null';
         const paramNames = nulls.map((_, index) => `param${index}`);
 
@@ -24,7 +27,6 @@ const NullTestArb = fc
             paramCandidTypes,
             returnCandidType,
             paramNames,
-            paramSamples: nulls,
             body: `
             ${allNullCheck}
 
@@ -35,7 +37,9 @@ const NullTestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/null/test');
 
-                    const result = await actor[functionName](...nulls);
+                    const result = await actor[functionName](
+                        ...nulls.map((sample) => sample.value)
+                    );
 
                     return {
                         Ok: result === null

@@ -1,19 +1,17 @@
 import fc from 'fast-check';
+
 import { VecArb } from '../../../arbitraries/candid/constructed/vec_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
-import { TestSample } from '../../../arbitraries/canister_arb';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
 
 const VecTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(VecArb))
-    .map(([functionName, vecWrappers]): TestSample => {
-        const paramCandidTypes = vecWrappers.map(
-            (vecWrapper) => vecWrapper.candidType
-        );
-        const returnCandidType = vecWrappers[0]?.candidType ?? 'Vec(int8)';
-        const paramNames = vecWrappers.map((_, index) => `param${index}`);
+    .map(([functionName, vecs]): TestSample => {
+        const paramCandidTypes = vecs.map((vec) => vec.src.candidType);
+        const returnCandidType = vecs[0]?.src?.candidType ?? 'Vec(nat8)';
+        const paramNames = vecs.map((_, index) => `param${index}`);
 
         // TODO these checks should be much more precise probably, imagine checking the elements inside of the arrays
         const paramsAreArrays = paramNames
@@ -27,33 +25,25 @@ const VecTestArb = fc
         // TODO maybe a global variable that we can write into and call would work
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                return `if (${paramName}.length !== ${vecWrappers[index].vec.length}) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (${paramName}.length !== ${vecs[index].value.length}) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
-        const returnStatement = paramNames[0] ?? `[]`;
+        const returnStatement = paramNames[0] ?? `new Uint8Array()`;
 
-        const expectedResult = vecWrappers[0]?.vec ?? [];
+        const expectedResult = vecs[0]?.value ?? [];
 
-        const equalityCheck =
-            vecWrappers[0]?.equalityCheck ?? ((a, b) => a === b);
+        const equalityCheck = (a: any, b: any) => a === b;
+
+        const imports = Array.from(
+            vecs.reduce((acc, vec) => {
+                return new Set([...acc, ...vec.src.imports]);
+            }, new Set<string>())
+        );
 
         return {
             functionName,
-            imports: [
-                'int',
-                'int8',
-                'int16',
-                'int32',
-                'int64',
-                'nat',
-                'nat8',
-                'nat16',
-                'nat32',
-                'nat64',
-                'Principal',
-                'Vec'
-            ],
+            imports,
             paramCandidTypes: paramCandidTypes.join(', '),
             returnCandidType,
             paramNames,
@@ -69,9 +59,8 @@ const VecTestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/vec/test');
 
-                    const result = await actor[functionName](
-                        ...vecWrappers.map((vecWrapper) => vecWrapper.vec)
-                    );
+                    const params = vecs.map((vec) => vec.value);
+                    const result = await actor[functionName](...params);
 
                     return {
                         Ok: primitiveArraysAreEqual(
@@ -86,6 +75,14 @@ const VecTestArb = fc
     });
 
 runPropTests(VecTestArb);
+
+function replacer(key: any, value: any): any {
+    if (typeof value === 'bigint') {
+        return value.toString() + 'n';
+    }
+
+    return value;
+}
 
 function primitiveArraysAreEqual(
     arr1: any,

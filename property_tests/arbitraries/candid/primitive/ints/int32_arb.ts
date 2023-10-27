@@ -1,3 +1,4 @@
-import fc from 'fast-check';
+import { CandidArb } from '../../candid_arb';
+import { NumberArb } from './';
 
-export const Int32Arb = fc.bigIntN(32).map((sample) => Number(sample));
+export const Int32Arb = CandidArb(NumberArb(32), 'int32');
