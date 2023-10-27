@@ -43,7 +43,10 @@ export const VariantArb = fc
                       };
                   })();
 
-        const imports = new Set(fields.map((field) => field[1].src.candidType));
+        const imports = new Set([
+            ...fields.map((field) => field[1].src.candidType),
+            'Variant'
+        ]);
 
         return {
             src: {

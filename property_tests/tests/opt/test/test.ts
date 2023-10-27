@@ -118,15 +118,17 @@ function createAreOptsEqualCodeUsage(
     paramName: string,
     paramValue: any
 ): string {
-    function replacer(_key: any, value: any) {
-        if (typeof value === 'bigint') {
-            return value.toString() + 'n';
-        }
-        return value;
-    }
+    return `areOptsEqual(${paramName}, ${valueToSrc(paramValue)})`;
+}
 
-    return `areOptsEqual(${paramName}, ${JSON.stringify(
-        paramValue,
-        replacer
-    )})`;
+function stringifyBigInts(_key: any, value: any) {
+    if (typeof value === 'bigint') {
+        return value.toString() + 'n';
+    }
+    return value;
+}
+
+// NOTE: This is a little buggy but seems to work for opt (bigints are "123n" instead of 123n)
+export function valueToSrc(value: any): string {
+    return JSON.stringify(value, stringifyBigInts);
 }

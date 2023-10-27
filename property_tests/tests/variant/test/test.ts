@@ -45,23 +45,15 @@ const VariantTestArb = fc
 
         const expectedResult = variants[0]?.value ?? { None: null };
 
+        const imports = Array.from(
+            variants.reduce((acc, variant) => {
+                return new Set([...acc, ...variant.src.imports]);
+            }, new Set<string>())
+        );
+
         return {
             functionName,
-            imports: [
-                'int',
-                'int8',
-                'int16',
-                'int32',
-                'int64',
-                'nat',
-                'nat8',
-                'nat16',
-                'nat32',
-                'nat64',
-                'Null',
-                'Variant',
-                'Void'
-            ],
+            imports,
             candidTypeDeclarations,
             paramCandidTypes: paramCandidTypes.join(', '),
             returnCandidType,
