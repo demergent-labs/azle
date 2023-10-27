@@ -10,9 +10,9 @@ const VecTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(VecArb))
     .map(([functionName, vecWrappers]): TestSample => {
         const paramCandidTypes = vecWrappers.map(
-            (vecWrapper) => vecWrapper.candidType
+            (vecWrapper) => vecWrapper.src.candidType
         );
-        const returnCandidType = vecWrappers[0]?.candidType ?? 'Vec(int8)';
+        const returnCandidType = vecWrappers[0]?.src?.candidType ?? 'Vec(int8)';
         const paramNames = vecWrappers.map((_, index) => `param${index}`);
 
         // TODO these checks should be much more precise probably, imagine checking the elements inside of the arrays
@@ -27,38 +27,26 @@ const VecTestArb = fc
         // TODO maybe a global variable that we can write into and call would work
         const paramsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
-                return `if (${paramName}.length !== ${vecWrappers[index].vec.length}) throw new Error('${paramName} is incorrectly ordered')`;
+                return `if (${paramName}.length !== ${vecWrappers[index].value.length}) throw new Error('${paramName} is incorrectly ordered')`;
             })
             .join('\n');
 
         const returnStatement = paramNames[0] ?? `[]`;
 
-        const expectedResult = vecWrappers[0]?.vec ?? [];
+        const expectedResult = vecWrappers[0]?.value ?? [];
 
         const equalityCheck =
             vecWrappers[0]?.equalityCheck ?? ((a, b) => a === b);
 
+        const imports = Array.from(
+            vecWrappers.reduce((acc, vecWrapper) => {
+                return new Set([...acc, ...vecWrapper.src.imports]);
+            }, new Set<string>())
+        );
+
         return {
             functionName,
-            imports: [
-                'int',
-                'int8',
-                'int16',
-                'int32',
-                'int64',
-                'nat',
-                'nat8',
-                'nat16',
-                'nat32',
-                'nat64',
-                'Principal',
-                'Vec',
-                'Null',
-                'bool',
-                'float32',
-                'float64',
-                'text'
-            ],
+            imports,
             paramCandidTypes: paramCandidTypes.join(', '),
             returnCandidType,
             paramNames,
@@ -76,11 +64,11 @@ const VecTestArb = fc
 
                     console.log(JSON.stringify(expectedResult, replacer));
                     const params = vecWrappers.map(
-                        (vecWrapper) => vecWrapper.vec
+                        (vecWrapper) => vecWrapper.value
                     );
                     console.log(JSON.stringify(params, replacer));
                     const result = await actor[functionName](...params);
-                    console.log(result, replacer);
+                    console.log(JSON.stringify(result, replacer));
 
                     return {
                         Ok: primitiveArraysAreEqual(

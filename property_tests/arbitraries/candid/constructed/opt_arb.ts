@@ -25,14 +25,16 @@ const InnerOptArb = (arb: fc.Arbitrary<Candid<any>>) => {
                     return {
                         Some: innerValueSample,
                         src: {
-                            candidType: `Opt(${innerValueSample.src.candidType})`
+                            candidType: `Opt(${innerValueSample.src.candidType})`,
+                            imports: innerValueSample.src.imports.add('Opt')
                         }
                     };
                 } else {
                     return {
                         None: null,
                         src: {
-                            candidType: `Opt(${innerValueSample.src.candidType})`
+                            candidType: `Opt(${innerValueSample.src.candidType})`,
+                            imports: innerValueSample.src.imports.add('Opt')
                         }
                     };
                 }
@@ -73,7 +75,7 @@ type AzleOpt<T> = { Some?: T; None?: null };
 type CandidSampleOpt<T> = {
     Some?: T;
     None?: any;
-    src: { candidType: string };
+    src: { candidType: string; imports: Set<string> };
 };
 
 type AgentOpt = [any] | [];
@@ -88,7 +90,10 @@ export const OptArb = fc
     .RecursiveOptArb.map((recursiveOptArb): Candid<Opt> => {
         const optArb = recursiveOptArb as RecursiveOpt<any>;
         return {
-            src: { candidType: createCandidTypeFromRecursiveOpt(optArb) },
+            src: {
+                candidType: createCandidTypeFromRecursiveOpt(optArb),
+                imports: createImportsFromRecursiveOpt(optArb)
+            },
             value: {
                 azle: createCandidValueFromRecursiveOpt(optArb),
                 agent: createAgentValueFromRecursiveOpt(optArb)
@@ -106,6 +111,17 @@ function createCandidTypeFromRecursiveOpt(
         return `Opt(${createCandidTypeFromRecursiveOpt(
             RecursiveOpt.nextLayer
         )})`;
+    }
+}
+
+function createImportsFromRecursiveOpt(
+    RecursiveOpt: RecursiveOpt<any>
+): Set<string> {
+    if (RecursiveOpt.nextLayer === null) {
+        // base case
+        return RecursiveOpt.base.src.imports;
+    } else {
+        return createImportsFromRecursiveOpt(RecursiveOpt.nextLayer);
     }
 }
 

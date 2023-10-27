@@ -8,7 +8,7 @@ export const BlobArb = fc
     )
     .map(
         ([value, candidType]): Candid<Uint8Array> => ({
-            src: { candidType },
+            src: { candidType, imports: new Set(['blob']) },
             value
         })
     );

@@ -17,7 +17,7 @@ export type Candid<T> = {
     src: {
         candidType: string;
         typeDeclaration?: string;
-        imports?: Set<string>;
+        imports: Set<string>;
     };
 };
 

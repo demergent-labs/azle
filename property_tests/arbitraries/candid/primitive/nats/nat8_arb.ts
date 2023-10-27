@@ -4,6 +4,6 @@ import { Candid } from '../..';
 export const Nat8Arb = fc.bigUintN(8).map(
     (value): Candid<number> => ({
         value: Number(value),
-        src: { candidType: 'nat8' }
+        src: { candidType: 'nat8', imports: new Set(['nat8']) }
     })
 );

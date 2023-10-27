@@ -21,6 +21,15 @@ const OptTestArb = fc
 
         const candidValues = opts.map((opt) => opt.value.azle);
 
+        const imports = Array.from(
+            opts.reduce(
+                (acc, opt) => {
+                    return new Set([...acc, ...opt.src.imports]);
+                },
+                new Set(['None'])
+            )
+        );
+
         const areParamsCorrectlyOrdered = paramNames
             .map((paramName, index) => {
                 return `if (!${createAreOptsEqualCodeUsage(
@@ -40,25 +49,7 @@ const OptTestArb = fc
 
         return {
             functionName,
-            imports: [
-                'int',
-                'int8',
-                'int16',
-                'int32',
-                'int64',
-                'nat',
-                'nat8',
-                'nat16',
-                'nat32',
-                'nat64',
-                'None',
-                'Opt',
-                'float32',
-                'float64',
-                'text',
-                'Null',
-                'bool'
-            ],
+            imports,
             paramCandidTypes: paramCandidTypes.join(', '),
             returnCandidType,
             paramNames,

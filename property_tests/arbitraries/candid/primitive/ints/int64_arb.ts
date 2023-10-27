@@ -4,6 +4,6 @@ import { Candid } from '../..';
 export const Int64Arb = fc.bigIntN(64).map(
     (value): Candid<bigint> => ({
         value,
-        src: { candidType: 'int64' }
+        src: { candidType: 'int64', imports: new Set(['int64']) }
     })
 );

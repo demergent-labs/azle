@@ -19,25 +19,29 @@ import { NullArb } from '../primitive/null';
 import { TextArb } from '../primitive/text';
 
 export type WrappedVec<Array> = {
-    vec: Array;
-    candidType: string;
+    value: Array;
+    src: {
+        candidType: string;
+        imports: Set<string>;
+    };
     equalityCheck: (a: any, b: any) => boolean;
 };
 
-type ArrayMember = {};
-
-export const VecArbOld = fc.array(fc.oneof(IntArb, Int8Arb)).map(
-    (sample): WrappedVec<any> => ({
-        vec: sample.map((sample) => sample.value),
-        candidType: `Vec(${sample[0]?.src?.candidType ?? 'int8'})`,
-        equalityCheck: (a, b) => a === b
-    })
-);
+// export const VecArbOld = fc.array(fc.oneof(IntArb, Int8Arb)).map(
+//     (sample): WrappedVec<any> => ({
+//         vec: sample.map((sample) => sample.value),
+//         candidType: `Vec(${sample[0]?.src?.candidType ?? 'int8'})`,
+//         equalityCheck: (a, b) => a === b
+//     })
+// );
 
 const VecInnerArb = (arb: fc.Arbitrary<Candid<any>>) => {
     return fc.tuple(fc.array(arb), arb).map(([sample, src]) => ({
-        vec: sample.map((sample) => sample.value),
-        candidType: `Vec(${src.src.candidType})`
+        value: sample.map((sample) => sample.value),
+        src: {
+            candidType: `Vec(${src.src.candidType})`,
+            imports: new Set(src.src.imports).add('Vec')
+        }
     }));
 };
 
