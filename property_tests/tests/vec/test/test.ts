@@ -10,7 +10,7 @@ const VecTestArb = fc
     .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(VecArb))
     .map(([functionName, vecs]): TestSample => {
         const paramCandidTypes = vecs.map((vec) => vec.src.candidType);
-        const returnCandidType = vecs[0]?.src?.candidType ?? 'Vec(int8)';
+        const returnCandidType = vecs[0]?.src?.candidType ?? 'Vec(nat8)';
         const paramNames = vecs.map((_, index) => `param${index}`);
 
         // TODO these checks should be much more precise probably, imagine checking the elements inside of the arrays
@@ -29,7 +29,7 @@ const VecTestArb = fc
             })
             .join('\n');
 
-        const returnStatement = paramNames[0] ?? `[]`;
+        const returnStatement = paramNames[0] ?? `new Uint8Array()`;
 
         const expectedResult = vecs[0]?.value ?? [];
 
@@ -59,14 +59,8 @@ const VecTestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/vec/test');
 
-                    console.log('Expected Result');
-                    console.log(JSON.stringify(expectedResult, replacer));
                     const params = vecs.map((vec) => vec.value);
-                    console.log('Params');
-                    console.log(JSON.stringify(params, replacer));
                     const result = await actor[functionName](...params);
-                    console.log('Actual Result');
-                    console.log(JSON.stringify(result, replacer));
 
                     return {
                         Ok: primitiveArraysAreEqual(

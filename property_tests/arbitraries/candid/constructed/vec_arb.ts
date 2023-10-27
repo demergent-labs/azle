@@ -18,9 +18,9 @@ import { Float64Arb } from '../primitive/floats/float64_arb';
 import { NullArb } from '../primitive/null';
 import { TextArb } from '../primitive/text';
 
-const VecInnerArb = (arb: fc.Arbitrary<Candid<any>>) => {
+const VecInnerArb = <T>(arb: fc.Arbitrary<Candid<T>>) => {
     return fc.tuple(fc.array(arb), arb).map(
-        ([sample, src]): Candid<any[]> => ({
+        ([sample, src]): Candid<T[]> => ({
             value: sample.map((sample) => sample.value),
             src: {
                 candidType: `Vec(${src.src.candidType})`,
