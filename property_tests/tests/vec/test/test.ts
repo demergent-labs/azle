@@ -52,7 +52,12 @@ const VecTestArb = fc
                 'nat32',
                 'nat64',
                 'Principal',
-                'Vec'
+                'Vec',
+                'Null',
+                'bool',
+                'float32',
+                'float64',
+                'text'
             ],
             paramCandidTypes: paramCandidTypes.join(', '),
             returnCandidType,
@@ -69,9 +74,13 @@ const VecTestArb = fc
                 test: async () => {
                     const actor = getActor('./tests/vec/test');
 
-                    const result = await actor[functionName](
-                        ...vecWrappers.map((vecWrapper) => vecWrapper.vec)
+                    console.log(JSON.stringify(expectedResult, replacer));
+                    const params = vecWrappers.map(
+                        (vecWrapper) => vecWrapper.vec
                     );
+                    console.log(JSON.stringify(params, replacer));
+                    const result = await actor[functionName](...params);
+                    console.log(result, replacer);
 
                     return {
                         Ok: primitiveArraysAreEqual(
@@ -86,6 +95,14 @@ const VecTestArb = fc
     });
 
 runPropTests(VecTestArb);
+
+function replacer(key: any, value: any): any {
+    if (typeof value === 'bigint') {
+        return value.toString() + 'n';
+    }
+
+    return value;
+}
 
 function primitiveArraysAreEqual(
     arr1: any,
