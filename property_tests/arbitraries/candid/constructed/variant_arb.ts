@@ -3,7 +3,7 @@ import { Candid, CandidTypeArb } from '../../candid';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
 
-type Variant = {
+export type Variant = {
     [x: string]: number | bigint | null;
 };
 
@@ -52,6 +52,28 @@ export const VariantArb = fc
                 typeDeclaration,
                 imports
             },
-            value
+            value,
+            equals: (a: Variant, b: Variant): boolean => {
+                if (typeof a !== 'object' || typeof b !== 'object') {
+                    return false;
+                }
+
+                const aKeys = Object.keys(a);
+                const bKeys = Object.keys(b);
+                if (aKeys.length !== bKeys.length) {
+                    return false;
+                }
+                const aField = aKeys[0];
+                const bField = bKeys[0];
+                if (aField !== bField) {
+                    return false;
+                }
+                return fields.reduce((acc, [fieldName, candidType]) => {
+                    if (fieldName !== aField) {
+                        return acc || false;
+                    }
+                    return candidType.equals(a[fieldName], b[fieldName]);
+                }, false);
+            }
         };
     });

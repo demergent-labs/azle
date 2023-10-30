@@ -1,14 +1,7 @@
 import fc from 'fast-check';
-import { Candid } from '../';
+import { CandidArb } from '../candid_arb';
 
-export const BlobArb = fc
-    .tuple(
-        fc.uint8Array(),
-        fc.oneof(fc.constant('blob'), fc.constant('Vec(nat8)'))
-    )
-    .map(
-        ([value, candidType]): Candid<Uint8Array> => ({
-            src: { candidType, imports: new Set(['blob']) },
-            value
-        })
-    );
+export const BlobArb = fc.oneof(
+    CandidArb(fc.uint8Array(), 'Vec(nat8)'),
+    CandidArb(fc.uint8Array(), 'blob')
+);

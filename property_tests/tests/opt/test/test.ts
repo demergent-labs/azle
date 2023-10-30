@@ -1,81 +1,51 @@
 import fc from 'fast-check';
 
-import { areOptsEqual } from '../../../are_equal/opt';
-import { OptArb } from '../../../arbitraries/candid/constructed/opt_arb';
+import {
+    createAreOptsEqualCodeDeclaration,
+    createAreOptsEqualCodeUsage
+} from '../../../are_equal/opt';
+import { Opt, OptArb } from '../../../arbitraries/candid/constructed/opt_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
+import { Candid } from '../../../arbitraries/candid';
+import { Test } from '../../../../test';
 
 const OptTestArb = fc
-    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(OptArb))
-    .map(([functionName, opts]): TestSample => {
-        const paramCandidTypes = opts.map((opt) => opt.src.candidType);
-        const paramNames = opts.map((_, index) => `param${index}`);
+    .tuple(
+        createUniquePrimitiveArb(JsFunctionNameArb),
+        fc.array(OptArb),
+        OptArb
+    )
+    .map(([functionName, paramOpts, defaultReturnOpt]): TestSample => {
+        const imports = new Set([
+            'None',
+            ...paramOpts.flatMap((opt) => [...opt.src.imports])
+        ]);
+
+        const paramNames = paramOpts.map((_, index) => `param${index}`);
+        const paramCandidTypes = paramOpts
+            .map((opt) => opt.src.candidType)
+            .join(', ');
+
         // If there are not optTrees then we will be returning None so the type
         // here can be whatever as long as it's wrapped in Opt
         const returnCandidType =
-            opts.length === 0 ? 'Opt(int8)' : opts[0].src.candidType;
-        const returnStatement = paramNames[0] ?? `None`;
-        const expectedResult = opts.length === 0 ? [] : opts[0].value.agent;
+            paramOpts.length === 0 ? 'Opt(int8)' : paramOpts[0].src.candidType;
 
-        const candidValues = opts.map((opt) => opt.value.azle);
+        const body = generateBody(paramNames, paramOpts);
 
-        const imports = Array.from(
-            opts.reduce(
-                (acc, opt) => {
-                    return new Set([...acc, ...opt.src.imports]);
-                },
-                new Set(['None'])
-            )
-        );
-
-        const areParamsCorrectlyOrdered = paramNames
-            .map((paramName, index) => {
-                return `if (!${createAreOptsEqualCodeUsage(
-                    paramName,
-                    candidValues[index]
-                )}) throw new Error('${paramName} is incorrectly ordered')`;
-            })
-            .join('\n');
-
-        const areParamsOpts = paramNames
-            .map((paramName) => {
-                return `if (!${isParamOpt(
-                    paramName
-                )}) throw new Error('${paramName} must be an Opt');`;
-            })
-            .join('\n');
+        const test = generateTest(functionName, paramOpts, defaultReturnOpt);
 
         return {
-            functionName,
             imports,
-            paramCandidTypes: paramCandidTypes.join(', '),
-            returnCandidType,
+            functionName,
             paramNames,
-            body: `
-            ${createAreOptsEqualCodeDeclaration()}
-            ${areParamsCorrectlyOrdered}
-            ${areParamsOpts}
-
-            return ${returnStatement};
-        `,
-            test: {
-                name: `opt ${functionName}`,
-                test: async () => {
-                    const actor = getActor('./tests/opt/test');
-
-                    const params = opts.map((opt) => opt.value.agent);
-
-                    const result = await actor[functionName](...params);
-
-                    // TODO be careful on equality checks when we go beyond primitives
-                    // TODO a universal equality checker is going to be very useful
-                    return {
-                        Ok: areOptsEqual(result, expectedResult)
-                    };
-                }
-            }
+            paramCandidTypes,
+            returnCandidType,
+            body,
+            test
         };
     });
 
@@ -85,50 +55,58 @@ function isParamOpt(paramName: string): string {
     return `(${paramName}.Some !== undefined || ${paramName}.None !== undefined)`;
 }
 
-function createAreOptsEqualCodeDeclaration(): string {
+function generateBody(paramNames: string[], paramOpts: Candid<Opt>[]): string {
+    const areParamsOpts = paramNames
+        .map((paramName) => {
+            return `if (!${isParamOpt(
+                paramName
+            )}) throw new Error('${paramName} must be an Opt');`;
+        })
+        .join('\n');
+
+    const candidValues = paramOpts.map((opt) => opt.value.azle);
+
+    const areParamsCorrectlyOrdered = paramNames
+        .map((paramName, index) => {
+            return `if (!${createAreOptsEqualCodeUsage(
+                paramName,
+                candidValues[index]
+            )}) throw new Error('${paramName} is incorrectly ordered')`;
+        })
+        .join('\n');
+
+    const returnStatement = paramNames[0] ?? `None`;
+
     return `
-            function calculateDepthAndValues(value: any): {
-                depth: number;
-                value: any;
-            } {
-                if (value.None === null) {
-                    return { depth: 0, value: null };
-                }
-                if (value.Some === null || (value.Some.Some === undefined && value.Some.None === undefined)) {
-                    // The value.Some is not an opt. return value.Some
-                    return {depth: 0, value: JSON.stringify(value.Some, (key, value) => typeof value === 'bigint' ? value.toString() + "n" : value)}
-                }
+        ${areParamsOpts}
+        ${createAreOptsEqualCodeDeclaration()}
+        ${areParamsCorrectlyOrdered}
 
-                const result = calculateDepthAndValues(value.Some);
-                return { ...result, depth: result.depth + 1 };
-            }
-
-            function areOptsEqual(opt1: any, opt2: any) {
-                const { depth: depth1, value: value1 } =
-                    calculateDepthAndValues(opt1);
-                const { depth: depth2, value: value2 } =
-                    calculateDepthAndValues(opt2);
-
-                return depth1 === depth2 && value1 === value2;
-            }
-        `;
+        return ${returnStatement};
+    `;
 }
 
-function createAreOptsEqualCodeUsage(
-    paramName: string,
-    paramValue: any
-): string {
-    return `areOptsEqual(${paramName}, ${valueToSrc(paramValue)})`;
-}
+function generateTest(
+    functionName: string,
+    paramOpts: Candid<Opt>[],
+    returnOpt: Candid<Opt>
+): Test {
+    const expectedResult =
+        paramOpts.length === 0 ? [] : paramOpts[0].value.agent;
+    return {
+        name: `opt ${functionName}`,
+        test: async () => {
+            const actor = getActor('./tests/opt/test');
 
-function stringifyBigInts(_key: any, value: any) {
-    if (typeof value === 'bigint') {
-        return value.toString() + 'n';
-    }
-    return value;
-}
+            const params = paramOpts.map((opt) => opt.value.agent);
 
-// NOTE: This is a little buggy but seems to work for opt (bigints are "123n" instead of 123n)
-export function valueToSrc(value: any): string {
-    return JSON.stringify(value, stringifyBigInts);
+            const result = await actor[functionName](...params);
+
+            // TODO be careful on equality checks when we go beyond primitives
+            // TODO a universal equality checker is going to be very useful
+            return {
+                Ok: returnOpt.equals(result, expectedResult)
+            };
+        }
+    };
 }

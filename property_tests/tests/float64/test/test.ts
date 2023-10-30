@@ -6,76 +6,110 @@ import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
+import { Candid } from '../../../arbitraries/candid';
+import { Test } from '../../../../test';
 
 const Float64TestArb = fc
-    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Float64Arb))
-    .map(([functionName, float64s]): TestSample => {
-        const paramCandidTypes = float64s
+    .tuple(
+        createUniquePrimitiveArb(JsFunctionNameArb),
+        fc.array(Float64Arb),
+        Float64Arb
+    )
+    .map(([functionName, paramFloat64s, defaultReturnFloat64]): TestSample => {
+        const imports = defaultReturnFloat64.src.imports;
+
+        const paramNames = paramFloat64s.map((_, index) => `param${index}`);
+        const paramCandidTypes = paramFloat64s
             .map((float64) => float64.src.candidType)
             .join(', ');
-        const returnCandidType = 'float64';
-        const paramNames = float64s.map((_, index) => `param${index}`);
 
-        const paramsAreNumbers = paramNames
-            .map((paramName) => {
-                return `if (typeof ${paramName} !== 'number') throw new Error('${paramName} must be a number');`;
-            })
-            .join('\n');
+        const returnCandidType = defaultReturnFloat64.src.candidType;
 
-        const paramsSum = paramNames.reduce((acc, paramName) => {
-            return `${acc} + ${paramName}`;
-        }, '0');
+        const body = generateBody(
+            paramNames,
+            paramFloat64s,
+            defaultReturnFloat64
+        );
 
-        const length = float64s.length === 0 ? 1 : float64s.length;
-
-        const returnStatement = `(${paramsSum}) / ${length}`;
-
-        const expectedResult =
-            float64s.reduce((acc, float64) => acc + float64.value, 0) / length;
-        const paramValues = float64s.map((float64) => float64.value);
-
-        const paramsCorrectlyOrdered = paramNames
-            .map((paramName, index) => {
-                const areFloat64sEqual = areFloatsEqual(
-                    paramName,
-                    paramValues[index]
-                );
-                return `if (!(${areFloat64sEqual})) throw new Error('${paramName} is incorrectly ordered')`;
-            })
-            .join('\n');
+        const test = generateTest(
+            functionName,
+            paramFloat64s,
+            defaultReturnFloat64
+        );
 
         return {
+            imports,
             functionName,
-            imports: ['float64'],
+            paramNames,
             paramCandidTypes,
             returnCandidType,
-            paramNames,
-            body: `
-            ${paramsCorrectlyOrdered}
-
-            ${paramsAreNumbers}
-
-            return ${returnStatement};
-        `,
-            test: {
-                name: `test ${functionName}`,
-                test: async () => {
-                    const actor = getActor('./tests/float64/test');
-
-                    const result = await actor[functionName](...paramValues);
-
-                    if (Number.isNaN(expectedResult)) {
-                        return {
-                            Ok: Number.isNaN(result)
-                        };
-                    }
-
-                    return {
-                        Ok: result === expectedResult
-                    };
-                }
-            }
+            body,
+            test
         };
     });
 
 runPropTests(Float64TestArb);
+
+function generateBody(
+    paramNames: string[],
+    paramFloat64s: Candid<number>[],
+    returnFloat64: Candid<number>
+): string {
+    const paramsAreNumbers = paramNames
+        .map((paramName) => {
+            return `if (typeof ${paramName} !== 'number') throw new Error('${paramName} must be a number');`;
+        })
+        .join('\n');
+
+    const paramValues = paramFloat64s.map((float64) => float64.value);
+    const paramsCorrectlyOrdered = paramNames
+        .map((paramName, index) => {
+            const areFloat64sEqual = areFloatsEqual(
+                paramName,
+                paramValues[index]
+            );
+            return `if (!(${areFloat64sEqual})) throw new Error('${paramName} is incorrectly ordered')`;
+        })
+        .join('\n');
+
+    const sum = paramNames.reduce((acc, paramName) => {
+        return `${acc} + ${paramName}`;
+    }, `${returnFloat64.value}`);
+    const count = paramFloat64s.length + 1;
+    const average = `(${sum}) / ${count}`;
+
+    return `
+        ${paramsCorrectlyOrdered}
+
+        ${paramsAreNumbers}
+
+        return ${average};
+    `;
+}
+
+function generateTest(
+    functionName: string,
+    paramFloat64s: Candid<number>[],
+    returnFloat64: Candid<number>
+): Test {
+    const expectedResult =
+        paramFloat64s.reduce(
+            (acc, float64) => acc + float64.value,
+            returnFloat64.value
+        ) / length;
+
+    const paramValues = paramFloat64s.map((float64) => float64.value);
+
+    return {
+        name: `float64 ${functionName}`,
+        test: async () => {
+            const actor = getActor('./tests/float64/test');
+
+            const result = await actor[functionName](...paramValues);
+
+            return {
+                Ok: returnFloat64.equals(result, expectedResult)
+            };
+        }
+    };
+}

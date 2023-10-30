@@ -15,6 +15,7 @@ import { TextArb } from '../primitive/text';
 import { NullArb } from '../primitive/null';
 import { BoolArb } from '../primitive/bool';
 import { Candid } from '../../candid';
+import { PrincipalArb } from '../reference/principal_arb';
 
 const InnerOptArb = (arb: fc.Arbitrary<Candid<any>>) => {
     return fc
@@ -60,6 +61,7 @@ export const PrimitiveOptArb = fc.oneof(
     InnerOptArb(BoolArb),
     InnerOptArb(TextArb),
     InnerOptArb(NullArb)
+    // InnerOptArb(PrincipalArb)
 );
 
 export type Opt = {
@@ -97,62 +99,123 @@ export const OptArb = fc
             value: {
                 azle: createCandidValueFromRecursiveOpt(optArb),
                 agent: createAgentValueFromRecursiveOpt(optArb)
-            }
+            },
+            equals: (a, b) => areOptsEqual(getBaseEquals(optArb), a, b)
         };
     });
 
 function createCandidTypeFromRecursiveOpt(
-    RecursiveOpt: RecursiveOpt<any>
+    recursiveOpt: RecursiveOpt<any>
 ): string {
-    if (RecursiveOpt.nextLayer === null) {
+    if (recursiveOpt.nextLayer === null) {
         // base case
-        return RecursiveOpt.base.src.candidType;
+        return recursiveOpt.base.src.candidType;
     } else {
         return `Opt(${createCandidTypeFromRecursiveOpt(
-            RecursiveOpt.nextLayer
+            recursiveOpt.nextLayer
         )})`;
     }
 }
 
 function createImportsFromRecursiveOpt(
-    RecursiveOpt: RecursiveOpt<any>
+    recursiveOpt: RecursiveOpt<any>
 ): Set<string> {
-    if (RecursiveOpt.nextLayer === null) {
+    if (recursiveOpt.nextLayer === null) {
         // base case
-        return RecursiveOpt.base.src.imports;
+        return recursiveOpt.base.src.imports;
     } else {
-        return createImportsFromRecursiveOpt(RecursiveOpt.nextLayer);
+        return createImportsFromRecursiveOpt(recursiveOpt.nextLayer);
     }
 }
 
 function createAgentValueFromRecursiveOpt(
-    RecursiveOpt: RecursiveOpt<any>
+    recursiveOpt: RecursiveOpt<any>
 ): AgentOpt {
-    if (RecursiveOpt.nextLayer === null) {
+    if (recursiveOpt.nextLayer === null) {
         // base case
-        if (RecursiveOpt.base && RecursiveOpt.base.Some !== undefined) {
-            return [RecursiveOpt.base.Some.value];
+        if (recursiveOpt.base && recursiveOpt.base.Some !== undefined) {
+            return [recursiveOpt.base.Some.value];
         } else {
             return [];
         }
     } else {
-        return [createAgentValueFromRecursiveOpt(RecursiveOpt.nextLayer)];
+        return [createAgentValueFromRecursiveOpt(recursiveOpt.nextLayer)];
     }
 }
 
 function createCandidValueFromRecursiveOpt(
-    RecursiveOpt: RecursiveOpt<any>
+    recursiveOpt: RecursiveOpt<any>
 ): AzleOpt<any> {
-    if (RecursiveOpt.nextLayer === null) {
+    if (recursiveOpt.nextLayer === null) {
         // base case
-        if (RecursiveOpt.base && RecursiveOpt.base.Some !== undefined) {
-            return { Some: RecursiveOpt.base.Some.value };
+        if (recursiveOpt.base && recursiveOpt.base.Some !== undefined) {
+            return { Some: recursiveOpt.base.Some.value };
         } else {
             return { None: null };
         }
     } else {
         return {
-            Some: createCandidValueFromRecursiveOpt(RecursiveOpt.nextLayer)
+            Some: createCandidValueFromRecursiveOpt(recursiveOpt.nextLayer)
         };
     }
+}
+
+function calculateDepthAndValues(value: [any] | []): {
+    depth: number;
+    value: any;
+} {
+    if (value.length === 0) {
+        // None
+        return { depth: 1, value };
+    }
+    const isOpt =
+        Array.isArray(value[0]) &&
+        (value[0].length === 1 || value[0].length === 0);
+    if (!isOpt) {
+        // The value.Some is not an opt. return value.Some
+        return {
+            depth: 1,
+            value: value[0]
+        };
+    }
+
+    const result = calculateDepthAndValues(value[0]);
+    return { ...result, depth: result.depth + 1 };
+}
+
+function getBaseEquals(
+    recursiveOpt: RecursiveOpt<any>
+): (a: any, b: any) => boolean {
+    if (recursiveOpt.nextLayer === null) {
+        // base case
+        if (recursiveOpt.base && recursiveOpt.base.Some !== undefined) {
+            return recursiveOpt.base.Some.equals;
+        } else {
+            return (a: null, b: null) => a === b;
+        }
+    } else {
+        return getBaseEquals(recursiveOpt.nextLayer);
+    }
+}
+
+function areOptsEqual(
+    equals: (a: any, b: any) => boolean,
+    opt1: any,
+    opt2: any
+) {
+    const { depth: depth1, value: value1 } = calculateDepthAndValues(opt1);
+    const { depth: depth2, value: value2 } = calculateDepthAndValues(opt2);
+
+    if (depth1 !== depth2) {
+        return false;
+    }
+
+    function isNone(value: any | []) {
+        return Array.isArray(value) && value.length === 0;
+    }
+    if (isNone(value1) && isNone(value2)) {
+        return true;
+    }
+
+    return equals(value1, value2);
 }

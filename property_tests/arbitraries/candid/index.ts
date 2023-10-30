@@ -19,6 +19,7 @@ export type Candid<T> = {
         typeDeclaration?: string;
         imports: Set<string>;
     };
+    equals(a: T, b: T): boolean;
 };
 
 /**
