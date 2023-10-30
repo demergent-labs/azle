@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { TestSample } from './canister_arb';
+import { TestSample } from './test_sample_arb';
 
 export function createQueryMethodArb(testArb: fc.Arbitrary<TestSample>) {
     return testArb.map((testSample) => {
