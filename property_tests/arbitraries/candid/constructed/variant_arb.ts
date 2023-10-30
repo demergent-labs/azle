@@ -19,8 +19,6 @@ export const VariantArb = fc
         })
     )
     .map(([name, fields]): Candid<Variant> => {
-        const fieldNames = fields.map(([fieldName]) => fieldName);
-
         const typeDeclaration = `const ${name} = Variant({\n    ${fields
             .map(
                 ([fieldName, fieldDataType]) =>
