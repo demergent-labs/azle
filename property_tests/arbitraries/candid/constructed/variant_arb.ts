@@ -20,6 +20,8 @@ export const VariantArb = fc
         })
     )
     .map(([name, fields]): Candid<Variant> => {
+        const randomIndex = Math.floor(Math.random() * fields.length);
+
         const typeDeclaration = `const ${name} = Variant({\n    ${fields
             .map(
                 ([fieldName, fieldDataType]) =>
@@ -27,58 +29,79 @@ export const VariantArb = fc
             )
             .join(',\n    ')}\n});`;
 
-        const value =
-            fields.length === 0
-                ? {}
-                : (() => {
-                      const randomIndex = Math.floor(
-                          Math.random() * fields.length
-                      );
-                      const [randomFieldName, { value: randomFieldDataType }] =
-                          fields[randomIndex];
-
-                      return {
-                          [randomFieldName]: randomFieldDataType
-                      };
-                  })();
+        const value = generateValue(randomIndex, fields);
 
         const imports = new Set([
             ...fields.map((field) => field[1].src.candidType),
             'Variant'
         ]);
 
+        const valueLiteral = generateValueLiteral(randomIndex, fields);
+        const equals = generateEqualsMethod(fields);
+
         return {
             src: {
                 candidType: name,
                 typeDeclaration,
                 imports,
-                valueLiteral: '' // TODO
+                valueLiteral
             },
             value,
-            equals: (a: Variant, b: Variant): boolean => {
-                if (typeof a !== typeof b) {
-                    return false;
-                }
-
-                const aKeys = Object.keys(a);
-                const bKeys = Object.keys(b);
-                if (aKeys.length !== bKeys.length && aKeys.length !== 1) {
-                    return false;
-                }
-                const aFieldName = aKeys[0];
-                const bFieldName = bKeys[0];
-                if (aFieldName !== bFieldName) {
-                    return false;
-                }
-
-                return fields.reduce((acc, [fieldName, candidType]) => {
-                    const fieldCandidType =
-                        candidType as Candid<VariantFieldType>;
-                    if (fieldName !== aFieldName) {
-                        return acc || false;
-                    }
-                    return fieldCandidType.equals(a[fieldName], b[fieldName]);
-                }, false);
-            }
+            equals
         };
     });
+
+type Field = [string, Candid<VariantFieldType>];
+
+function generateValue(index: number, fields: Field[]) {
+    return fields.length === 0
+        ? {}
+        : (() => {
+              const [randomFieldName, { value: randomFieldDataType }] =
+                  fields[index];
+
+              return {
+                  [randomFieldName]: randomFieldDataType
+              };
+          })();
+}
+
+function generateValueLiteral(index: number, fields: Field[]): string {
+    if (fields.length === 0) {
+        return '{}';
+    }
+
+    const [fieldName, field] = fields[index];
+
+    return `{
+        ${fieldName}: ${field.src.valueLiteral}
+    }`;
+}
+
+function generateEqualsMethod(
+    fields: Field[]
+): (a: Variant, b: Variant) => boolean {
+    return (a: Variant, b: Variant): boolean => {
+        if (typeof a !== typeof b) {
+            return false;
+        }
+
+        const aKeys = Object.keys(a);
+        const bKeys = Object.keys(b);
+        if (aKeys.length !== bKeys.length && aKeys.length !== 1) {
+            return false;
+        }
+        const aFieldName = aKeys[0];
+        const bFieldName = bKeys[0];
+        if (aFieldName !== bFieldName) {
+            return false;
+        }
+
+        return fields.reduce((acc, [fieldName, fieldCandidType]) => {
+            if (fieldName !== aFieldName) {
+                return acc || false;
+            }
+            return fieldCandidType.equals(a[fieldName], b[fieldName]);
+        }, false);
+    };
+}
