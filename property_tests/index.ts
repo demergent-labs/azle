@@ -16,6 +16,10 @@ export function runPropTests(testArb: fc.Arbitrary<TestSample>) {
 
             writeFileSync('src/index.ts', canister.sourceCode);
 
+            execSync(`npx prettier --write src`, {
+                stdio: 'inherit'
+            });
+
             execSync(`dfx canister uninstall-code canister || true`, {
                 stdio: 'inherit'
             });
