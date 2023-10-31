@@ -1,25 +1,22 @@
 import fc from 'fast-check';
-import { Candid, CandidTypeArb } from '../../candid';
+
+import { Candid, CandidTypeArb } from '..';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
 
-type Variant = {
+export type Record = {
     [x: string]: number | bigint | null;
 };
 
-export const VariantArb = fc
+export const RecordArb = fc
     .tuple(
         UniqueIdentifierArb('typeDeclaration'),
         fc.uniqueArray(fc.tuple(JsFunctionNameArb, CandidTypeArb), {
-            selector: (entry) => entry[0],
-            minLength: 1
-            // Although no minLength is technically required (according to the
-            // spec), the DFX CLI itself currently errors out trying to pass
-            // an empty object.
+            selector: (entry) => entry[0]
         })
     )
-    .map(([name, fields]): Candid<Variant> => {
-        const typeDeclaration = `const ${name} = Variant({\n    ${fields
+    .map(([name, fields]): Candid<Record> => {
+        const typeDeclaration = `const ${name} = Record({\n    ${fields
             .map(
                 ([fieldName, fieldDataType]) =>
                     `${fieldName}: ${fieldDataType.src.candidType}`
@@ -29,21 +26,16 @@ export const VariantArb = fc
         const value =
             fields.length === 0
                 ? {}
-                : (() => {
-                      const randomIndex = Math.floor(
-                          Math.random() * fields.length
-                      );
-                      const [randomFieldName, { value: randomFieldDataType }] =
-                          fields[randomIndex];
-
+                : fields.reduce((record, [fieldName, fieldDataType]) => {
                       return {
-                          [randomFieldName]: randomFieldDataType
+                          ...record,
+                          [fieldName]: fieldDataType.value
                       };
-                  })();
+                  }, {});
 
         const imports = new Set([
             ...fields.map((field) => field[1].src.candidType),
-            'Variant'
+            'Record'
         ]);
 
         return {
