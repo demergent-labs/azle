@@ -21,6 +21,8 @@ export type Candid<T> = {
     };
 };
 
+export type CandidType = number | bigint | null;
+
 /**
  * An arbitrary representing all possible Candid types.
  *
