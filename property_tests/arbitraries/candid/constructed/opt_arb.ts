@@ -40,11 +40,9 @@ const InnerOptArb = (arb: fc.Arbitrary<Candid<InnerOpt>>) => {
                         if (a.Some === undefined || b.Some === undefined) {
                             return false;
                         }
-                        const aSome = a.Some;
-                        const bSome = b.Some;
                         return innerValueSample.equals(
-                            aSome.value,
-                            bSome.value
+                            a.Some.value,
+                            b.Some.value
                         );
                     }
                 };
@@ -141,7 +139,7 @@ function generateImports(recursiveOpt: RecursiveOpt<InnerOptArb>): Set<string> {
 function generateValue(recursiveOpt: RecursiveOpt<InnerOptArb>): Opt {
     if (recursiveOpt.nextLayer === null) {
         // base case
-        if (recursiveOpt.base && recursiveOpt.base.value.Some !== undefined) {
+        if (recursiveOpt.base.value.Some !== undefined) {
             return [recursiveOpt.base.value.Some.value];
         } else {
             return [];
@@ -190,7 +188,7 @@ function getBaseEquals(
 ): (a: any, b: any) => boolean {
     if (recursiveOpt.nextLayer === null) {
         // base case
-        if (recursiveOpt.base && recursiveOpt.base.value.Some !== undefined) {
+        if (recursiveOpt.base.value.Some !== undefined) {
             return recursiveOpt.base.value.Some.equals;
         } else {
             return (a: null, b: null) => a === b;
