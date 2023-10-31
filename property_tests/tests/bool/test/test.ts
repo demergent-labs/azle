@@ -54,10 +54,10 @@ function generateBody(
         })
         .join('\n');
 
-    const paramValues = paramBools.map((bool) => bool.value);
+    const paramLiterals = paramBools.map((bool) => bool.src.valueLiteral);
     const paramsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
-            return `if (${paramName} !== ${paramValues[index]}) throw new Error('${paramName} is incorrectly ordered')`;
+            return `if (${paramName} !== ${paramLiterals[index]}) throw new Error('${paramName} is incorrectly ordered')`;
         })
         .join('\n');
 

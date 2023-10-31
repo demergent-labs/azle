@@ -29,10 +29,10 @@ export function createAreOptsEqualCodeDeclaration(): string {
 
 export function createAreOptsEqualCodeUsage(
     paramName: string,
-    paramValue: any
+    paramLiteral: string
 ): string {
     //  TODO this only works because right now both a and b are strings when they are bigints. Try changing the areOptsEqual with deepEqual and you will see
-    return `areOptsEqual(${paramName}, ${valueToSrc(paramValue)})`;
+    return `areOptsEqual(${paramName}, ${paramLiteral})`;
 }
 
 function stringifyBigInts(_key: any, value: any) {

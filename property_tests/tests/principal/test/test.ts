@@ -74,7 +74,7 @@ function generateBody(
     const returnStatement =
         paramPrincipals.length > 0
             ? `param0`
-            : `Principal.fromText("${returnPrincipal.value.toText()}")`;
+            : returnPrincipal.src.valueLiteral;
 
     const paramsCorrectlyOrdered = paramNames
         .map((paramName, index) => {

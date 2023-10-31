@@ -54,13 +54,13 @@ function generateBody(
 
     const sum = paramNames.reduce((acc, paramName) => {
         return `${acc} + ${paramName}`;
-    }, `${returnNat.value}`);
+    }, `${returnNat.src.valueLiteral}`);
 
-    const paramValues = paramNats.map((sample) => sample.value);
+    const paramLiterals = paramNats.map((sample) => sample.src.valueLiteral);
 
     const paramsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
-            return `if (${paramName} !== ${paramValues[index]}n) throw new Error('${paramName} is incorrectly ordered')`;
+            return `if (${paramName} !== ${paramLiterals[index]}) throw new Error('${paramName} is incorrectly ordered')`;
         })
         .join('\n');
     return `

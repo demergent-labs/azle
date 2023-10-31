@@ -64,13 +64,13 @@ function generateBody(paramNames: string[], paramOpts: Candid<Opt>[]): string {
         })
         .join('\n');
 
-    const candidValues = paramOpts.map((opt) => opt.value.azle);
+    const valueLiterals = paramOpts.map((opt) => opt.src.valueLiteral);
 
     const areParamsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
             return `if (!${createAreOptsEqualCodeUsage(
                 paramName,
-                candidValues[index]
+                valueLiterals[index]
             )}) throw new Error('${paramName} is incorrectly ordered')`;
         })
         .join('\n');
@@ -91,14 +91,13 @@ function generateTest(
     paramOpts: Candid<Opt>[],
     returnOpt: Candid<Opt>
 ): Test {
-    const expectedResult =
-        paramOpts.length === 0 ? [] : paramOpts[0].value.agent;
+    const expectedResult = paramOpts.length === 0 ? [] : paramOpts[0].value;
     return {
         name: `opt ${functionName}`,
         test: async () => {
             const actor = getActor('./tests/opt/test');
 
-            const params = paramOpts.map((opt) => opt.value.agent);
+            const params = paramOpts.map((opt) => opt.value);
 
             const result = await actor[functionName](...params);
 

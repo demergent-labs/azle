@@ -6,6 +6,7 @@ import { JsFunctionNameArb } from '../../js_function_name_arb';
 export type Variant = {
     [x: string]: number | bigint | null;
 };
+export type VariantFieldType = number | bigint | null;
 
 export const VariantArb = fc
     .tuple(
@@ -50,7 +51,8 @@ export const VariantArb = fc
             src: {
                 candidType: name,
                 typeDeclaration,
-                imports
+                imports,
+                valueLiteral: '' // TODO
             },
             value,
             equals: (a: Variant, b: Variant): boolean => {
@@ -68,11 +70,14 @@ export const VariantArb = fc
                 if (aField !== bField) {
                     return false;
                 }
+
                 return fields.reduce((acc, [fieldName, candidType]) => {
+                    const fieldCandidType =
+                        candidType as Candid<VariantFieldType>;
                     if (fieldName !== aField) {
                         return acc || false;
                     }
-                    return candidType.equals(a[fieldName], b[fieldName]);
+                    return fieldCandidType.equals(a[fieldName], b[fieldName]);
                 }, false);
             }
         };

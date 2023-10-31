@@ -16,27 +16,35 @@ import { NullArb } from '../primitive/null';
 import { BoolArb } from '../primitive/bool';
 import { Candid } from '../../candid';
 import { PrincipalArb } from '../reference/principal_arb';
+import { Principal } from '@dfinity/principal';
 
-const InnerOptArb = (arb: fc.Arbitrary<Candid<any>>) => {
+type InnerOpt = number | bigint | null | string | boolean | Opt | Principal;
+type InnerOptArb = Candid<{ Some?: Candid<InnerOpt>; None?: null }>;
+
+const InnerOptArb = (arb: fc.Arbitrary<Candid<InnerOpt>>) => {
     return fc
         .oneof(fc.constant('Some'), fc.constant('None'))
         .chain((keySample) => {
-            return arb.map((innerValueSample): CandidSampleOpt<any> => {
+            return arb.map((innerValueSample): InnerOptArb => {
                 if (keySample === 'Some') {
                     return {
-                        Some: innerValueSample,
+                        value: { Some: innerValueSample },
                         src: {
                             candidType: `Opt(${innerValueSample.src.candidType})`,
-                            imports: innerValueSample.src.imports.add('Opt')
-                        }
+                            imports: innerValueSample.src.imports.add('Opt'),
+                            valueLiteral: `{Some: ${innerValueSample.src.valueLiteral}}`
+                        },
+                        equals: (a, b) => true
                     };
                 } else {
                     return {
-                        None: null,
+                        value: { None: null },
                         src: {
                             candidType: `Opt(${innerValueSample.src.candidType})`,
-                            imports: innerValueSample.src.imports.add('Opt')
-                        }
+                            imports: innerValueSample.src.imports.add('Opt'),
+                            valueLiteral: '{None: null}'
+                        },
+                        equals: (a, b) => true
                     };
                 }
             });
@@ -64,23 +72,12 @@ export const PrimitiveOptArb = fc.oneof(
     // InnerOptArb(PrincipalArb)
 );
 
-export type Opt = {
-    azle: AzleOpt<any>;
-    agent: AgentOpt;
-};
-
 type RecursiveOpt<T> = {
-    base: CandidSampleOpt<Candid<T>>;
+    base: T;
     nextLayer: RecursiveOpt<T> | null;
 };
-type AzleOpt<T> = { Some?: T; None?: null };
-type CandidSampleOpt<T> = {
-    Some?: T;
-    None?: any;
-    src: { candidType: string; imports: Set<string> };
-};
 
-type AgentOpt = [any] | [];
+export type Opt = [InnerOpt] | never[];
 
 export const OptArb = fc
     .letrec((tie) => ({
@@ -90,73 +87,57 @@ export const OptArb = fc
         })
     }))
     .RecursiveOptArb.map((recursiveOptArb): Candid<Opt> => {
-        const optArb = recursiveOptArb as RecursiveOpt<any>;
+        const optArb = recursiveOptArb as RecursiveOpt<InnerOptArb>;
         return {
             src: {
-                candidType: createCandidTypeFromRecursiveOpt(optArb),
-                imports: createImportsFromRecursiveOpt(optArb)
+                candidType: generateCandidType(optArb),
+                imports: generateImports(optArb),
+                valueLiteral: generateValueLiteral(optArb)
             },
-            value: {
-                azle: createCandidValueFromRecursiveOpt(optArb),
-                agent: createAgentValueFromRecursiveOpt(optArb)
-            },
+            value: generateValue(optArb),
             equals: (a, b) => areOptsEqual(getBaseEquals(optArb), a, b)
         };
     });
 
-function createCandidTypeFromRecursiveOpt(
-    recursiveOpt: RecursiveOpt<any>
-): string {
+function generateCandidType(recursiveOpt: RecursiveOpt<InnerOptArb>): string {
     if (recursiveOpt.nextLayer === null) {
         // base case
         return recursiveOpt.base.src.candidType;
     } else {
-        return `Opt(${createCandidTypeFromRecursiveOpt(
-            recursiveOpt.nextLayer
-        )})`;
+        return `Opt(${generateCandidType(recursiveOpt.nextLayer)})`;
     }
 }
 
-function createImportsFromRecursiveOpt(
-    recursiveOpt: RecursiveOpt<any>
-): Set<string> {
+function generateImports(recursiveOpt: RecursiveOpt<InnerOptArb>): Set<string> {
     if (recursiveOpt.nextLayer === null) {
         // base case
         return recursiveOpt.base.src.imports;
     } else {
-        return createImportsFromRecursiveOpt(recursiveOpt.nextLayer);
+        return generateImports(recursiveOpt.nextLayer);
     }
 }
 
-function createAgentValueFromRecursiveOpt(
-    recursiveOpt: RecursiveOpt<any>
-): AgentOpt {
+function generateValue(recursiveOpt: RecursiveOpt<InnerOptArb>): Opt {
     if (recursiveOpt.nextLayer === null) {
         // base case
-        if (recursiveOpt.base && recursiveOpt.base.Some !== undefined) {
-            return [recursiveOpt.base.Some.value];
+        if (recursiveOpt.base && recursiveOpt.base.value.Some !== undefined) {
+            return [recursiveOpt.base.value.Some.value];
         } else {
             return [];
         }
     } else {
-        return [createAgentValueFromRecursiveOpt(recursiveOpt.nextLayer)];
+        return [generateValue(recursiveOpt.nextLayer)];
     }
 }
 
-function createCandidValueFromRecursiveOpt(
-    recursiveOpt: RecursiveOpt<any>
-): AzleOpt<any> {
+function generateValueLiteral(recursiveOpt: RecursiveOpt<InnerOptArb>): string {
     if (recursiveOpt.nextLayer === null) {
         // base case
-        if (recursiveOpt.base && recursiveOpt.base.Some !== undefined) {
-            return { Some: recursiveOpt.base.Some.value };
-        } else {
-            return { None: null };
-        }
+        return recursiveOpt.base.src.valueLiteral;
     } else {
-        return {
-            Some: createCandidValueFromRecursiveOpt(recursiveOpt.nextLayer)
-        };
+        return `{
+            Some: ${generateValueLiteral(recursiveOpt.nextLayer)}
+        }`;
     }
 }
 
@@ -184,12 +165,12 @@ function calculateDepthAndValues(value: [any] | []): {
 }
 
 function getBaseEquals(
-    recursiveOpt: RecursiveOpt<any>
+    recursiveOpt: RecursiveOpt<InnerOptArb>
 ): (a: any, b: any) => boolean {
     if (recursiveOpt.nextLayer === null) {
         // base case
-        if (recursiveOpt.base && recursiveOpt.base.Some !== undefined) {
-            return recursiveOpt.base.Some.equals;
+        if (recursiveOpt.base && recursiveOpt.base.value.Some !== undefined) {
+            return recursiveOpt.base.equals;
         } else {
             return (a: null, b: null) => a === b;
         }

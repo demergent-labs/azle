@@ -92,11 +92,12 @@ function generateTest(
     paramFloat64s: Candid<number>[],
     returnFloat64: Candid<number>
 ): Test {
+    const count = paramFloat64s.length + 1;
     const expectedResult =
         paramFloat64s.reduce(
             (acc, float64) => acc + float64.value,
             returnFloat64.value
-        ) / length;
+        ) / count;
 
     const paramValues = paramFloat64s.map((float64) => float64.value);
 

@@ -41,13 +41,6 @@ const TextTestArb = fc
 
 runPropTests(TextTestArb);
 
-function escapeStringForJavaScript(input: string) {
-    return input
-        .replace(/\\/g, '\\\\') // Escape backslashes
-        .replace(/'/g, "\\'") // Escape single quotes
-        .replace(/"/g, '\\"'); // Escape double quotes
-}
-
 function generateBody(
     paramNames: string[],
     paramTexts: Candid<string>[],
@@ -61,15 +54,13 @@ function generateBody(
 
     const returnStatement = paramNames.reduce((acc, paramName) => {
         return `${acc} + ${paramName}`;
-    }, `${returnText.value}`);
+    }, `${returnText.src.valueLiteral}`);
 
-    const paramValues = paramTexts.map((text) => text.value);
+    const paramValues = paramTexts.map((text) => text.src.valueLiteral);
 
     const paramsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
-            return `if (${paramName} !== '${escapeStringForJavaScript(
-                paramValues[index]
-            )}') throw new Error('${paramName} is incorrectly ordered')`;
+            return `if (${paramName} !== ${paramValues[index]}) throw new Error('${paramName} is incorrectly ordered')`;
         })
         .join('\n');
 
