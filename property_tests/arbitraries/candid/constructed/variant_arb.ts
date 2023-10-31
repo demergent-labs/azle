@@ -3,9 +3,10 @@ import { Candid, CandidTypeArb } from '../../candid';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
 
-type Variant = {
+export type Variant = {
     [x: string]: number | bigint | null;
 };
+export type VariantFieldType = number | bigint | null;
 
 export const VariantArb = fc
     .tuple(
@@ -50,8 +51,34 @@ export const VariantArb = fc
             src: {
                 candidType: name,
                 typeDeclaration,
-                imports
+                imports,
+                valueLiteral: '' // TODO
             },
-            value
+            value,
+            equals: (a: Variant, b: Variant): boolean => {
+                if (typeof a !== typeof b) {
+                    return false;
+                }
+
+                const aKeys = Object.keys(a);
+                const bKeys = Object.keys(b);
+                if (aKeys.length !== bKeys.length && aKeys.length !== 1) {
+                    return false;
+                }
+                const aFieldName = aKeys[0];
+                const bFieldName = bKeys[0];
+                if (aFieldName !== bFieldName) {
+                    return false;
+                }
+
+                return fields.reduce((acc, [fieldName, candidType]) => {
+                    const fieldCandidType =
+                        candidType as Candid<VariantFieldType>;
+                    if (fieldName !== aFieldName) {
+                        return acc || false;
+                    }
+                    return fieldCandidType.equals(a[fieldName], b[fieldName]);
+                }, false);
+            }
         };
     });

@@ -1,11 +1,22 @@
 import fc from 'fast-check';
 import { Candid } from './';
+import { deepEqual } from 'fast-equals';
 
-export const CandidArb = <T>(arb: fc.Arbitrary<T>, candidType: string) => {
+export const CandidArb = <T>(
+    arb: fc.Arbitrary<T>,
+    candidType: string,
+    toLiteral: (value: T) => string,
+    equals: (a: T, b: T) => boolean = (a: T, b: T) => deepEqual(a, b)
+) => {
     return arb.map(
         (value): Candid<T> => ({
-            src: { candidType, imports: new Set([candidType]) },
-            value
+            src: {
+                candidType,
+                imports: new Set([candidType]),
+                valueLiteral: toLiteral(value)
+            },
+            value,
+            equals
         })
     );
 };
