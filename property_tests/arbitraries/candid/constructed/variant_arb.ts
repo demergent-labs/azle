@@ -56,25 +56,25 @@ export const VariantArb = fc
             },
             value,
             equals: (a: Variant, b: Variant): boolean => {
-                if (typeof a !== 'object' || typeof b !== 'object') {
+                if (typeof a !== typeof b) {
                     return false;
                 }
 
                 const aKeys = Object.keys(a);
                 const bKeys = Object.keys(b);
-                if (aKeys.length !== bKeys.length) {
+                if (aKeys.length !== bKeys.length && aKeys.length !== 1) {
                     return false;
                 }
-                const aField = aKeys[0];
-                const bField = bKeys[0];
-                if (aField !== bField) {
+                const aFieldName = aKeys[0];
+                const bFieldName = bKeys[0];
+                if (aFieldName !== bFieldName) {
                     return false;
                 }
 
                 return fields.reduce((acc, [fieldName, candidType]) => {
                     const fieldCandidType =
                         candidType as Candid<VariantFieldType>;
-                    if (fieldName !== aField) {
+                    if (fieldName !== aFieldName) {
                         return acc || false;
                     }
                     return fieldCandidType.equals(a[fieldName], b[fieldName]);

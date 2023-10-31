@@ -26,7 +26,7 @@ const VecInnerArb = <T>(arb: fc.Arbitrary<Candid<T>>) => {
             value: sample.map((sample) => sample.value),
             src: {
                 candidType: `Vec(${src.src.candidType})`,
-                imports: new Set(src.src.imports).add('Vec'),
+                imports: new Set([...src.src.imports, 'Vec']),
                 valueLiteral: '' // TODO
             },
             equals

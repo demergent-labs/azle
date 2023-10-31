@@ -21,7 +21,8 @@ const OptTestArb = fc
     .map(([functionName, paramOpts, defaultReturnOpt]): TestSample => {
         const imports = new Set([
             'None',
-            ...paramOpts.flatMap((opt) => [...opt.src.imports])
+            ...paramOpts.flatMap((opt) => [...opt.src.imports]),
+            ...defaultReturnOpt.src.imports
         ]);
 
         const paramNames = paramOpts.map((_, index) => `param${index}`);
@@ -29,12 +30,12 @@ const OptTestArb = fc
             .map((opt) => opt.src.candidType)
             .join(', ');
 
-        // If there are not optTrees then we will be returning None so the type
-        // here can be whatever as long as it's wrapped in Opt
         const returnCandidType =
-            paramOpts.length === 0 ? 'Opt(int8)' : paramOpts[0].src.candidType;
+            paramOpts.length === 0
+                ? defaultReturnOpt.src.candidType
+                : paramOpts[0].src.candidType;
 
-        const body = generateBody(paramNames, paramOpts);
+        const body = generateBody(paramNames, paramOpts, defaultReturnOpt);
 
         const test = generateTest(functionName, paramOpts, defaultReturnOpt);
 
@@ -55,7 +56,11 @@ function isParamOpt(paramName: string): string {
     return `(${paramName}.Some !== undefined || ${paramName}.None !== undefined)`;
 }
 
-function generateBody(paramNames: string[], paramOpts: Candid<Opt>[]): string {
+function generateBody(
+    paramNames: string[],
+    paramOpts: Candid<Opt>[],
+    returnOpt: Candid<Opt>
+): string {
     const areParamsOpts = paramNames
         .map((paramName) => {
             return `if (!${isParamOpt(
@@ -75,7 +80,7 @@ function generateBody(paramNames: string[], paramOpts: Candid<Opt>[]): string {
         })
         .join('\n');
 
-    const returnStatement = paramNames[0] ?? `None`;
+    const returnStatement = paramNames[0] ?? returnOpt.src.valueLiteral;
 
     return `
         ${areParamsOpts}
@@ -91,7 +96,8 @@ function generateTest(
     paramOpts: Candid<Opt>[],
     returnOpt: Candid<Opt>
 ): Test {
-    const expectedResult = paramOpts.length === 0 ? [] : paramOpts[0].value;
+    const expectedResult =
+        paramOpts.length === 0 ? returnOpt.value : paramOpts[0].value;
     return {
         name: `opt ${functionName}`,
         test: async () => {
@@ -101,10 +107,11 @@ function generateTest(
 
             const result = await actor[functionName](...params);
 
-            // TODO be careful on equality checks when we go beyond primitives
-            // TODO a universal equality checker is going to be very useful
+            const equals =
+                paramOpts.length > 0 ? paramOpts[0].equals : returnOpt.equals;
+
             return {
-                Ok: returnOpt.equals(result, expectedResult)
+                Ok: equals(result, expectedResult)
             };
         }
     };

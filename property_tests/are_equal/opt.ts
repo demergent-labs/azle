@@ -34,15 +34,3 @@ export function createAreOptsEqualCodeUsage(
     //  TODO this only works because right now both a and b are strings when they are bigints. Try changing the areOptsEqual with deepEqual and you will see
     return `areOptsEqual(${paramName}, ${paramLiteral})`;
 }
-
-function stringifyBigInts(_key: any, value: any) {
-    if (typeof value === 'bigint') {
-        return value.toString() + 'n';
-    }
-    return value;
-}
-
-// NOTE: This is a little buggy but seems to work for opt (bigints are "123n" instead of 123n)
-function valueToSrc(value: any): string {
-    return JSON.stringify(value, stringifyBigInts);
-}
