@@ -69,13 +69,13 @@ function generateBody(
         })
         .join('\n');
 
-    const valueLiterals = paramOpts.map((opt) => opt.src.valueLiteral);
+    const paramLiterals = paramOpts.map((opt) => opt.src.valueLiteral);
 
     const areParamsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
             return `if (!${createAreOptsEqualCodeUsage(
                 paramName,
-                valueLiterals[index]
+                paramLiterals[index]
             )}) throw new Error('${paramName} is incorrectly ordered')`;
         })
         .join('\n');

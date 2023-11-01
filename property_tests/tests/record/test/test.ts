@@ -15,35 +15,42 @@ const RecordTestArb = fc
         UniqueIdentifierArb('canisterMethod'),
         fc.uniqueArray(RecordArb, {
             selector: (entry) => entry.src.candidType
-        })
+        }),
+        RecordArb
     )
-    .map(([functionName, records]): TestSample => {
-        const imports = Array.from(
-            records.reduce((acc, record) => {
-                return new Set([...acc, ...record.src.imports]);
-            }, new Set<string>())
-        );
+    .map(([functionName, paramRecords, defaultReturnRecord]): TestSample => {
+        const imports = new Set([
+            ...paramRecords.flatMap((record) => [...record.src.imports]),
+            ...defaultReturnRecord.src.imports
+        ]);
 
-        const candidTypeDeclarations = records.map(
-            (record) => record.src.typeDeclaration ?? ''
-        );
+        const candidTypeDeclarations = [
+            ...paramRecords.map((record) => record.src.typeDeclaration ?? ''),
+            defaultReturnRecord.src.typeDeclaration ?? ''
+        ];
 
-        const paramNames = records.map((_, index) => `param${index}`);
+        const paramNames = paramRecords.map((_, index) => `param${index}`);
 
-        const paramCandidTypes = records
+        const paramCandidTypes = paramRecords
             .map((record) => record.src.candidType)
             .join(', ');
 
-        const returnCandidType = records[0]?.src?.candidType ?? 'Record({})';
+        const returnCandidType =
+            paramRecords[0]?.src?.candidType ??
+            defaultReturnRecord.src.candidType;
 
-        const body = generateBody(records);
+        const body = generateBody(paramRecords, defaultReturnRecord);
 
-        const test = generateTest(functionName, records);
+        const test = generateTest(
+            functionName,
+            paramRecords,
+            defaultReturnRecord
+        );
 
         return {
-            functionName,
             imports,
             candidTypeDeclarations,
+            functionName,
             paramNames,
             paramCandidTypes,
             returnCandidType,
@@ -54,8 +61,11 @@ const RecordTestArb = fc
 
 runPropTests(RecordTestArb);
 
-function generateBody(records: Candid<Record>[]): string {
-    const paramsAreRecords = records
+function generateBody(
+    paramRecords: Candid<Record>[],
+    returnRecord: Candid<Record>
+): string {
+    const paramsAreRecords = paramRecords
         .map((record, index) => {
             const paramName = `param${index}`;
             const fieldsCount = Object.keys(record.value).length;
@@ -68,7 +78,7 @@ function generateBody(records: Candid<Record>[]): string {
         })
         .join('\n');
 
-    const paramsCorrectlyOrdered = records
+    const paramsCorrectlyOrdered = paramRecords
         .map((record, index) => {
             const paramName = `param${index}`;
 
@@ -88,7 +98,8 @@ function generateBody(records: Candid<Record>[]): string {
         })
         .join('\n');
 
-    const returnStatement = records.length === 0 ? '{}' : `param0`;
+    const returnStatement =
+        paramRecords.length === 0 ? returnRecord.src.valueLiteral : `param0`;
 
     return `
         ${paramsAreRecords}
@@ -99,8 +110,13 @@ function generateBody(records: Candid<Record>[]): string {
     `;
 }
 
-function generateTest(functionName: string, records: Candid<Record>[]): Test {
-    const expectedResult = records[0]?.value ?? {};
+function generateTest(
+    functionName: string,
+    paramRecords: Candid<Record>[],
+    returnRecord: Candid<Record>
+): Test {
+    const expectedResult = paramRecords[0]?.value ?? returnRecord.value;
+    const equals = paramRecords[0]?.equals ?? returnRecord.equals;
 
     return {
         name: `record ${functionName}`,
@@ -108,9 +124,15 @@ function generateTest(functionName: string, records: Candid<Record>[]): Test {
             const actor = getActor('./tests/record/test');
 
             const result = await actor[functionName](
-                ...records.map((record) => record.value)
+                ...paramRecords.map((record) => record.value)
             );
 
+            // This built in equals will handle types like principal without
+            // any additional work. Do this first. If it fails, move on to the
+            // more robust check that will give us clues as to why it failed
+            if (equals(result, expectedResult)) {
+                return { Ok: true };
+            }
             return recordsAreEqual(result, expectedResult);
         }
     };

@@ -58,14 +58,14 @@ function generateBody(
 
     const sum = paramNames.reduce((acc, paramName) => {
         return `${acc} + ${paramName}`;
-    }, `${returnInt32.value}`);
+    }, returnInt32.src.valueLiteral);
     const count = paramInt32s.length + 1;
     const average = `Math.floor((${sum}) / ${count})`;
 
-    const paramValues = paramInt32s.map((sample) => sample.value);
+    const paramLiterals = paramInt32s.map((sample) => sample.src.valueLiteral);
     const paramsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
-            return `if (${paramName} !== ${paramValues[index]}) throw new Error('${paramName} is incorrectly ordered')`;
+            return `if (${paramName} !== ${paramLiterals[index]}) throw new Error('${paramName} is incorrectly ordered')`;
         })
         .join('\n');
 

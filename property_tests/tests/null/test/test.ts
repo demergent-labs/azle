@@ -51,7 +51,7 @@ function generateBody(paramNames: string[], returnNull: Candid<null>): string {
     return `
         ${allNullCheck}
 
-        return ${returnNull.value};
+        return ${returnNull.src.valueLiteral};
     `;
 }
 

@@ -15,7 +15,7 @@ const VecTestArb = fc
         fc.array(VecArb),
         VecArb
     )
-    .map(([functionName, paramVecs]): TestSample => {
+    .map(([functionName, paramVecs, defaultReturnVec]): TestSample => {
         const imports = new Set([
             ...paramVecs.flatMap((vec) => [...vec.src.imports])
         ]);
@@ -23,11 +23,12 @@ const VecTestArb = fc
         const paramNames = paramVecs.map((_, index) => `param${index}`);
         const paramCandidTypes = paramVecs.map((vec) => vec.src.candidType);
 
-        const returnCandidType = paramVecs[0]?.src?.candidType ?? 'Vec(nat8)';
+        const returnCandidType =
+            paramVecs[0]?.src?.candidType ?? defaultReturnVec.src.candidType;
 
-        const body = generateBody(paramNames, paramVecs);
+        const body = generateBody(paramNames, paramVecs, defaultReturnVec);
 
-        const test = generateTest(functionName, paramVecs);
+        const test = generateTest(functionName, paramVecs, defaultReturnVec);
 
         return {
             functionName,
@@ -58,7 +59,11 @@ function blobsAreEqual(arr1: Uint8Array, arr2: Uint8Array) {
     return true;
 }
 
-function generateBody(paramNames: string[], paramVecs: Candid<any>[]): string {
+function generateBody(
+    paramNames: string[],
+    paramVecs: Candid<any>[],
+    returnVec: Candid<any>
+): string {
     // TODO these checks should be much more precise probably, imagine checking the elements inside of the arrays
     const paramsAreArrays = paramNames
         .map((paramName) => {
@@ -75,20 +80,24 @@ function generateBody(paramNames: string[], paramVecs: Candid<any>[]): string {
         })
         .join('\n');
 
-    const firstParamOrEmptyBlob = paramNames[0] ?? `[]`;
+    const returnValue = paramNames[0] ?? returnVec.src.valueLiteral;
 
     return `
         ${paramsAreArrays}
 
         ${paramsCorrectlyOrdered}
 
-        return ${firstParamOrEmptyBlob};
+        return ${returnValue};
     `;
 }
 
-function generateTest(functionName: string, paramVecs: Candid<any>[]): Test {
-    const expectedResult = paramVecs[0]?.value ?? [];
-    const equals = paramVecs[0]?.equals ?? blobsAreEqual;
+function generateTest(
+    functionName: string,
+    paramVecs: Candid<any>[],
+    returnVec: Candid<any>
+): Test {
+    const expectedResult = paramVecs[0]?.value ?? returnVec.value;
+    const equals = paramVecs[0]?.equals ?? returnVec.equals;
 
     return {
         name: `vec ${functionName}`,

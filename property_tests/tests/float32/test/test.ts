@@ -61,26 +61,30 @@ function generateBody(
         })
         .join('\n');
 
-    const paramValues = paramFloat32s.map((float32s) => float32s.value);
+    const paramLiterals = paramFloat32s.map(
+        (float32s) => float32s.src.valueLiteral
+    );
     const paramsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
             const areFloat32sEqual = areFloatsEqual(
                 paramName,
-                paramValues[index]
+                paramLiterals[index]
             );
             return `if (!(${areFloat32sEqual})) throw new Error('${paramName} is incorrectly ordered')`;
         })
         .join('\n');
 
-    const firstParamOrReturnFloat =
-        paramFloat32s.length === 0 ? `${returnFloat32.value}` : `param0`;
+    const returnStatement =
+        paramFloat32s.length === 0
+            ? returnFloat32.src.valueLiteral
+            : paramNames[0];
 
     return `
         ${paramsCorrectlyOrdered}
 
         ${paramsAreNumbers}
 
-        return ${firstParamOrReturnFloat};
+        return ${returnStatement};
     `;
 }
 

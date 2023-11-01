@@ -10,6 +10,7 @@ import { Nat16Arb } from './primitive/nats/nat16_arb';
 import { Nat32Arb } from './primitive/nats/nat32_arb';
 import { Nat64Arb } from './primitive/nats/nat64_arb';
 import { NullArb } from './primitive/null';
+import { BoolArb } from './primitive/bool';
 
 // TODO we're thinking that Candid is not the best name for this. What is better?
 export type Candid<T> = {
@@ -23,7 +24,7 @@ export type Candid<T> = {
     equals(a: T, b: T): boolean;
 };
 
-export type CandidType = number | bigint | null;
+export type CandidType = number | bigint | null | boolean;
 
 /**
  * An arbitrary representing all possible Candid types.
@@ -41,6 +42,7 @@ export const CandidTypeArb = fc.oneof(
     Nat16Arb,
     Nat32Arb,
     Nat64Arb,
-    NullArb
+    NullArb,
+    BoolArb
 );
 // TODO: This needs to support ALL valid candid types, including records, variants, etc.

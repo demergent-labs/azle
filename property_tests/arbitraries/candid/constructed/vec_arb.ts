@@ -20,19 +20,32 @@ import { deepEqual } from 'fast-equals';
 
 const VecInnerArb = <T>(arb: fc.Arbitrary<Candid<T>>) => {
     return fc.tuple(fc.array(arb), arb).map(([sample, src]): Candid<T[]> => {
-        const equals = (a: T[], b: T[]) =>
-            arraysAreEqual(a, b, sample[0]?.equals ?? deepEqual);
+        const equals = generateEquals(sample);
+        const valueLiteral = generateValueLiteral(sample);
+
         return {
             value: sample.map((sample) => sample.value),
             src: {
                 candidType: `Vec(${src.src.candidType})`,
                 imports: new Set([...src.src.imports, 'Vec']),
-                valueLiteral: '' // TODO
+                valueLiteral
             },
             equals
         };
     });
 };
+
+function generateValueLiteral<T>(sample: Candid<T>[]) {
+    const valueLiterals = sample
+        .map((sample) => sample.src.valueLiteral)
+        .join(',');
+    return `[${valueLiterals}]`;
+}
+
+function generateEquals<T>(sample: Candid<T>[]) {
+    return (a: T[], b: T[]) =>
+        arraysAreEqual(a, b, sample[0]?.equals ?? deepEqual);
+}
 
 export const VecArb = fc.oneof(
     VecInnerArb(Float32Arb),

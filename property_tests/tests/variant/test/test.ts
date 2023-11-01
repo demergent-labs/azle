@@ -15,16 +15,21 @@ const VariantTestArb = fc
         UniqueIdentifierArb('canisterMethod'),
         fc.uniqueArray(VariantArb, {
             selector: (entry) => entry.src.candidType
-        })
+        }),
+        VariantArb
     )
-    .map(([functionName, paramVariants]): TestSample => {
+    .map(([functionName, paramVariants, defaultReturnVariant]): TestSample => {
         const imports = new Set([
-            ...paramVariants.flatMap((variant) => [...variant.src.imports])
+            ...paramVariants.flatMap((variant) => [...variant.src.imports]),
+            ...defaultReturnVariant.src.imports
         ]);
 
-        const candidTypeDeclarations = paramVariants.map(
-            (variant) => variant.src.typeDeclaration ?? ''
-        );
+        const candidTypeDeclarations = [
+            ...paramVariants.map(
+                (variant) => variant.src.typeDeclaration ?? ''
+            ),
+            defaultReturnVariant.src.typeDeclaration ?? ''
+        ];
 
         const paramNames = paramVariants.map((_, index) => `param${index}`);
         const paramCandidTypes = paramVariants
@@ -32,11 +37,20 @@ const VariantTestArb = fc
             .join(', ');
 
         const returnCandidType =
-            paramVariants[0]?.src?.candidType ?? 'Variant({None: Null})';
+            paramVariants[0]?.src?.candidType ??
+            defaultReturnVariant.src.candidType;
 
-        const body = generateBody(paramNames, paramVariants);
+        const body = generateBody(
+            paramNames,
+            paramVariants,
+            defaultReturnVariant
+        );
 
-        const test = generateTest(functionName, paramVariants);
+        const test = generateTest(
+            functionName,
+            paramVariants,
+            defaultReturnVariant
+        );
 
         return {
             imports,
@@ -54,7 +68,8 @@ runPropTests(VariantTestArb);
 
 function generateBody(
     paramNames: string[],
-    paramVariants: Candid<Variant>[]
+    paramVariants: Candid<Variant>[],
+    returnVariant: Candid<Variant>
 ): string {
     const paramsAreVariants = paramNames
         .map((paramName) => {
@@ -74,7 +89,7 @@ function generateBody(
 
     const returnStatement = paramNames[0]
         ? `${paramNames[0]}`
-        : '{ None: null }';
+        : returnVariant.src.valueLiteral;
 
     return `
         ${paramsCorrectlyOrdered}
@@ -87,9 +102,10 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    paramVariants: Candid<Variant>[]
+    paramVariants: Candid<Variant>[],
+    returnVariant: Candid<Variant>
 ): Test {
-    const expectedResult = paramVariants[0]?.value ?? { None: null };
+    const expectedResult = paramVariants[0]?.value ?? returnVariant.value;
     const equals =
         paramVariants[0]?.equals ?? ((a: any, b: any) => a.None === b.None);
     return {
