@@ -15,30 +15,37 @@ const TupleTestArb = fc
         UniqueIdentifierArb('canisterMethod'),
         fc.uniqueArray(TupleArb, {
             selector: (entry) => entry.src.candidType
-        })
+        }),
+        TupleArb
     )
-    .map(([functionName, tuples]): TestSample => {
-        const imports = Array.from(
-            tuples.reduce((acc, tuple) => {
-                return new Set([...acc, ...tuple.src.imports]);
-            }, new Set<string>())
-        );
+    .map(([functionName, paramTuples, defaultReturnTuple]): TestSample => {
+        const imports = new Set([
+            ...paramTuples.flatMap((tuple) => [...tuple.src.imports]),
+            ...defaultReturnTuple.src.imports
+        ]);
 
-        const candidTypeDeclarations = tuples.map(
-            (tuple) => tuple.src.typeDeclaration ?? ''
-        );
+        const candidTypeDeclarations = [
+            ...paramTuples.map((tuple) => tuple.src.typeDeclaration ?? ''),
+            defaultReturnTuple.src.typeDeclaration ?? ''
+        ];
 
-        const paramNames = tuples.map((_, index) => `param${index}`);
+        const paramNames = paramTuples.map((_, index) => `param${index}`);
 
-        const paramCandidTypes = tuples
+        const paramCandidTypes = paramTuples
             .map((tuple) => tuple.src.candidType)
             .join(', ');
 
-        const returnCandidType = tuples[0]?.src?.candidType ?? 'Tuple()';
+        const returnCandidType =
+            paramTuples[0]?.src?.candidType ??
+            defaultReturnTuple.src.candidType;
 
-        const body = generateBody(tuples);
+        const body = generateBody(paramTuples, defaultReturnTuple);
 
-        const test = generateTest(functionName, tuples);
+        const test = generateTest(
+            functionName,
+            paramTuples,
+            defaultReturnTuple
+        );
 
         return {
             functionName,
@@ -54,8 +61,11 @@ const TupleTestArb = fc
 
 runPropTests(TupleTestArb);
 
-function generateBody(tuples: Candid<Tuple>[]): string {
-    const paramsAreTuples = tuples
+function generateBody(
+    paramTuples: Candid<Tuple>[],
+    returnTuple: Candid<Tuple>
+): string {
+    const paramsAreTuples = paramTuples
         .map((tuple, index) => {
             const paramName = `param${index}`;
             const fieldsCount = tuple.value.length;
@@ -68,7 +78,7 @@ function generateBody(tuples: Candid<Tuple>[]): string {
         })
         .join('\n');
 
-    const paramsCorrectlyOrdered = tuples
+    const paramsCorrectlyOrdered = paramTuples
         .map((tuple, paramIndex): string => {
             const paramName = `param${paramIndex}`;
 
@@ -88,7 +98,8 @@ function generateBody(tuples: Candid<Tuple>[]): string {
         })
         .join('\n');
 
-    const returnStatement = tuples.length === 0 ? '[]' : `param0`;
+    const returnStatement =
+        paramTuples.length === 0 ? returnTuple.src.valueLiteral : `param0`;
 
     return `
         ${paramsAreTuples}
@@ -99,8 +110,13 @@ function generateBody(tuples: Candid<Tuple>[]): string {
     `;
 }
 
-function generateTest(functionName: string, tuples: Candid<Tuple>[]): Test {
-    const expectedResult = tuples[0]?.value ?? {};
+function generateTest(
+    functionName: string,
+    paramTuples: Candid<Tuple>[],
+    returnTuple: Candid<Tuple>
+): Test {
+    const expectedResult = paramTuples[0]?.value ?? returnTuple.value;
+    const equals = paramTuples[0]?.equals ?? returnTuple.equals;
 
     return {
         name: `tuple ${functionName}`,
@@ -108,8 +124,15 @@ function generateTest(functionName: string, tuples: Candid<Tuple>[]): Test {
             const actor = getActor('./tests/tuple/test');
 
             const result = await actor[functionName](
-                ...tuples.map((tuple) => tuple.value)
+                ...paramTuples.map((tuple) => tuple.value)
             );
+
+            // This built in equals will handle types like principal without
+            // any additional work. Do this first. If it fails, move on to the
+            // more robust check that will give us clues as to why it failed
+            if (equals(result, expectedResult)) {
+                return { Ok: true };
+            }
 
             return tuplesAreEqual(result, expectedResult);
         }

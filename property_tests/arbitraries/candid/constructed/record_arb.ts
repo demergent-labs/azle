@@ -8,7 +8,7 @@ export type Record = {
     [x: string]: RecordFieldType;
 };
 
-export type RecordFieldType = number | bigint | null;
+export type RecordFieldType = number | bigint | null | boolean;
 type Field = [string, Candid<RecordFieldType>];
 
 export const RecordArb = fc
@@ -23,9 +23,9 @@ export const RecordArb = fc
 
         const imports = generateImports(fields);
 
-        const value = generateValue(fields);
-
         const valueLiteral = generateValueLiteral(fields);
+
+        const value = generateValue(fields);
 
         const equals = generateEqualsMethod(fields);
 
@@ -42,10 +42,8 @@ export const RecordArb = fc
     });
 
 function generateImports(fields: Field[]): Set<string> {
-    return new Set([
-        ...fields.map((field) => field[1].src.candidType),
-        'Record'
-    ]);
+    const fieldImports = fields.flatMap((field) => [...field[1].src.imports]);
+    return new Set([...fieldImports, 'Record']);
 }
 
 function generateTypeDeclaration(name: string, fields: Field[]): string {

@@ -116,6 +116,7 @@ function generateTest(
     returnRecord: Candid<Record>
 ): Test {
     const expectedResult = paramRecords[0]?.value ?? returnRecord.value;
+    const equals = paramRecords[0]?.equals ?? returnRecord.equals;
 
     return {
         name: `record ${functionName}`,
@@ -126,6 +127,12 @@ function generateTest(
                 ...paramRecords.map((record) => record.value)
             );
 
+            // This built in equals will handle types like principal without
+            // any additional work. Do this first. If it fails, move on to the
+            // more robust check that will give us clues as to why it failed
+            if (equals(result, expectedResult)) {
+                return { Ok: true };
+            }
             return recordsAreEqual(result, expectedResult);
         }
     };

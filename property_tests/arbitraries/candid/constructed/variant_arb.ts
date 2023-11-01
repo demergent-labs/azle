@@ -4,9 +4,9 @@ import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
 
 export type Variant = {
-    [x: string]: number | bigint | null;
+    [x: string]: VariantFieldType;
 };
-export type VariantFieldType = number | bigint | null;
+export type VariantFieldType = number | bigint | null | boolean;
 
 export const VariantArb = fc
     .tuple(
@@ -22,16 +22,14 @@ export const VariantArb = fc
     .map(([name, fields]): Candid<Variant> => {
         const randomIndex = Math.floor(Math.random() * fields.length);
 
-        const typeDeclaration = generateTypeDeclaration(fields);
+        const typeDeclaration = generateTypeDeclaration(name, fields);
+
+        const imports = generateImports(fields);
+
+        const valueLiteral = generateValueLiteral(randomIndex, fields);
 
         const value = generateValue(randomIndex, fields);
 
-        const imports = new Set([
-            ...fields.map((field) => field[1].src.candidType),
-            'Variant'
-        ]);
-
-        const valueLiteral = generateValueLiteral(randomIndex, fields);
         const equals = generateEqualsMethod(fields);
 
         return {
@@ -48,7 +46,12 @@ export const VariantArb = fc
 
 type Field = [string, Candid<VariantFieldType>];
 
-function generateTypeDeclaration(fields: Field[]): string {
+function generateImports(fields: Field[]): Set<string> {
+    const fieldImports = fields.flatMap((field) => [...field[1].src.imports]);
+    return new Set([...fieldImports, 'Variant']);
+}
+
+function generateTypeDeclaration(name: string, fields: Field[]): string {
     return `const ${name} = Variant({\n    ${fields
         .map(
             ([fieldName, fieldDataType]) =>
