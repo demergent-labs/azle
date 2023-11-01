@@ -97,7 +97,7 @@ function generateTest(
     returnVec: Candid<any>
 ): Test {
     const expectedResult = paramVecs[0]?.value ?? returnVec.value;
-    const equals = paramVecs[0]?.equals ?? blobsAreEqual;
+    const equals = paramVecs[0]?.equals ?? returnVec.equals;
 
     return {
         name: `vec ${functionName}`,
