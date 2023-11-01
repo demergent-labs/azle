@@ -23,6 +23,8 @@ export type Candid<T> = {
     equals(a: T, b: T): boolean;
 };
 
+export type CandidType = number | bigint | null;
+
 /**
  * An arbitrary representing all possible Candid types.
  *
