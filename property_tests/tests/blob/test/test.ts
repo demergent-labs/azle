@@ -16,16 +16,12 @@ const BlobTestArb = fc
     )
     .map(([functionName, paramBlobs, defaultReturnBlob]): TestSample => {
         const imports = defaultReturnBlob.src.imports;
-
         const paramNames = paramBlobs.map((_, index) => `param${index}`);
         const paramCandidTypes = paramBlobs
             .map((blob) => blob.src.candidType)
             .join(', ');
-
         const returnCandidType = defaultReturnBlob.src.candidType;
-
         const body = generateBody(paramNames, paramBlobs, defaultReturnBlob);
-
         const test = generateTest(functionName, paramBlobs, defaultReturnBlob);
 
         return {
@@ -58,13 +54,18 @@ function generateBody(
     // TODO maybe a global variable that we can write into and call would work
     const paramsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
-            return `if (${paramName}.length !== ${paramBlobs[index].value.length}) throw new Error('${paramName} is incorrectly ordered')`;
+            const paramIsCorrectLength = `${paramName}.length === ${paramBlobs[index].value.length}`;
+
+            const throwError = `throw new Error('${paramName} is incorrectly ordered')`;
+
+            return `if (!(${paramIsCorrectLength})) ${throwError};`;
         })
         .join('\n');
 
     const returnStatement = `Uint8Array.from([${[...returnBlob.value]} ${
         returnBlob.value.length > 0 ? ',' : ''
     } ${paramNames.map((paramName) => `...${paramName}`).join(', ')}])`;
+
     return `
         ${paramsAreUint8Arrays}
 

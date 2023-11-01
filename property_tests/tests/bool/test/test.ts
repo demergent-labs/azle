@@ -31,9 +31,9 @@ const BoolTestArb = fc
         return {
             imports,
             functionName,
+            paramNames,
             paramCandidTypes,
             returnCandidType,
-            paramNames,
             body,
             test
         };
