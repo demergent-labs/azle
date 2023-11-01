@@ -1,15 +1,14 @@
 import fc from 'fast-check';
 
-import { Candid, CandidTypeArb } from '..';
+import { Candid, CandidType, CandidTypeArb } from '../../candid';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
 
 export type Record = {
-    [x: string]: RecordFieldType;
+    [x: string]: CandidType;
 };
 
-export type RecordFieldType = number | bigint | null | boolean;
-type Field = [string, Candid<RecordFieldType>];
+type Field = [string, Candid<CandidType>];
 
 export const RecordArb = fc
     .tuple(
@@ -91,8 +90,8 @@ function generateEqualsMethod(
             return false;
         }
 
-        const aFieldNames = Object.keys(a);
-        const bFieldNames = Object.keys(b);
+        const aFieldNames = Object.keys(a).sort();
+        const bFieldNames = Object.keys(b).sort();
         if (aFieldNames.length !== bFieldNames.length) {
             return false;
         }
