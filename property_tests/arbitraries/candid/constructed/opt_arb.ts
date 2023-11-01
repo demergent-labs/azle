@@ -1,69 +1,16 @@
 import fc from 'fast-check';
-import { IntArb } from '../primitive/ints/int_arb';
-import { Int8Arb } from '../primitive/ints/int8_arb';
-import { Int16Arb } from '../primitive/ints/int16_arb';
-import { Int32Arb } from '../primitive/ints/int32_arb';
-import { Int64Arb } from '../primitive/ints/int64_arb';
-import { NatArb } from '../primitive/nats/nat_arb';
-import { Nat8Arb } from '../primitive/nats/nat8_arb';
-import { Nat16Arb } from '../primitive/nats/nat16_arb';
-import { Nat32Arb } from '../primitive/nats/nat32_arb';
-import { Nat64Arb } from '../primitive/nats/nat64_arb';
-import { Float32Arb } from '../primitive/floats/float32_arb';
-import { Float64Arb } from '../primitive/floats/float64_arb';
-import { TextArb } from '../primitive/text';
-import { NullArb } from '../primitive/null';
-import { BoolArb } from '../primitive/bool';
-import { Candid } from '../../candid';
-import { PrincipalArb } from '../reference/principal_arb';
-import { Principal } from '@dfinity/principal';
+import { Candid, CandidType, CandidTypeArb } from '../../candid';
 
-type InnerOpt = number | bigint | null | string | boolean | Opt | Principal;
-type InnerOptArb = Candid<{ Some?: Candid<InnerOpt>; None?: null }>;
+type InnerOptArb = ['Some' | 'None', Candid<CandidType>];
 
 // This gives us a random Some or None, which means the default depth of all Opts is at least one
-const InnerOptArb = (arb: fc.Arbitrary<Candid<InnerOpt>>) => {
+const InnerOptArb = (arb: fc.Arbitrary<Candid<CandidType>>) => {
     return fc.constantFrom('Some', 'None').chain((keySample) => {
         return arb.map((innerValueSample): InnerOptArb => {
             if (keySample === 'Some') {
-                return {
-                    value: { Some: innerValueSample },
-                    src: {
-                        candidType: `Opt(${innerValueSample.src.candidType})`,
-                        imports: new Set([
-                            ...innerValueSample.src.imports,
-                            'Opt'
-                        ]),
-                        valueLiteral: `{Some: ${innerValueSample.src.valueLiteral}}`
-                    },
-                    equals: (a, b) => {
-                        if (a.Some === undefined || b.Some === undefined) {
-                            return false;
-                        }
-                        return innerValueSample.equals(
-                            a.Some.value,
-                            b.Some.value
-                        );
-                    }
-                };
+                return ['Some', innerValueSample];
             } else {
-                return {
-                    value: { None: null },
-                    src: {
-                        candidType: `Opt(${innerValueSample.src.candidType})`,
-                        imports: new Set([
-                            ...innerValueSample.src.imports,
-                            'Opt'
-                        ]),
-                        valueLiteral: '{None: null}'
-                    },
-                    equals: (a, b) => {
-                        if (a.None === undefined || b.None === undefined) {
-                            return false;
-                        }
-                        return a.None === b.None;
-                    }
-                };
+                return ['None', innerValueSample];
             }
         });
     });
@@ -71,31 +18,14 @@ const InnerOptArb = (arb: fc.Arbitrary<Candid<InnerOpt>>) => {
 
 // TODO look into making this recursive
 // TODO we need to add all constructed and reference types
-export const PrimitiveOptArb = fc.oneof(
-    InnerOptArb(Float32Arb),
-    InnerOptArb(Float64Arb),
-    InnerOptArb(IntArb),
-    InnerOptArb(Int8Arb),
-    InnerOptArb(Int16Arb),
-    InnerOptArb(Int32Arb),
-    InnerOptArb(Int64Arb),
-    InnerOptArb(NatArb),
-    InnerOptArb(Nat8Arb),
-    InnerOptArb(Nat16Arb),
-    InnerOptArb(Nat32Arb),
-    InnerOptArb(Nat64Arb),
-    InnerOptArb(BoolArb),
-    InnerOptArb(TextArb),
-    InnerOptArb(NullArb),
-    InnerOptArb(PrincipalArb)
-);
+export const PrimitiveOptArb = InnerOptArb(CandidTypeArb);
 
 type RecursiveOpt<T> = {
     base: T;
     nextLayer: RecursiveOpt<T> | null;
 };
 
-export type Opt = [InnerOpt] | never[];
+export type Opt = [CandidType | Opt] | never[];
 
 export const OptArb = fc
     .letrec((tie) => ({
@@ -121,7 +51,7 @@ export const OptArb = fc
 function generateCandidType(recursiveOpt: RecursiveOpt<InnerOptArb>): string {
     if (recursiveOpt.nextLayer === null) {
         // base case
-        return recursiveOpt.base.src.candidType;
+        return `Opt(${recursiveOpt.base[1].src.candidType})`;
     } else {
         return `Opt(${generateCandidType(recursiveOpt.nextLayer)})`;
     }
@@ -130,7 +60,7 @@ function generateCandidType(recursiveOpt: RecursiveOpt<InnerOptArb>): string {
 function generateImports(recursiveOpt: RecursiveOpt<InnerOptArb>): Set<string> {
     if (recursiveOpt.nextLayer === null) {
         // base case
-        return recursiveOpt.base.src.imports;
+        return new Set([...recursiveOpt.base[1].src.imports, 'Opt']);
     } else {
         return generateImports(recursiveOpt.nextLayer);
     }
@@ -139,8 +69,8 @@ function generateImports(recursiveOpt: RecursiveOpt<InnerOptArb>): Set<string> {
 function generateValue(recursiveOpt: RecursiveOpt<InnerOptArb>): Opt {
     if (recursiveOpt.nextLayer === null) {
         // base case
-        if (recursiveOpt.base.value.Some !== undefined) {
-            return [recursiveOpt.base.value.Some.value];
+        if (recursiveOpt.base[0] === 'Some') {
+            return [recursiveOpt.base[1].value];
         } else {
             return [];
         }
@@ -152,7 +82,11 @@ function generateValue(recursiveOpt: RecursiveOpt<InnerOptArb>): Opt {
 function generateValueLiteral(recursiveOpt: RecursiveOpt<InnerOptArb>): string {
     if (recursiveOpt.nextLayer === null) {
         // base case
-        return recursiveOpt.base.src.valueLiteral;
+        if (recursiveOpt.base[0] === 'Some') {
+            return `{Some: ${recursiveOpt.base[1].src.valueLiteral}}`;
+        } else {
+            return `{None: null}`;
+        }
     } else {
         return `{
             Some: ${generateValueLiteral(recursiveOpt.nextLayer)}
@@ -188,8 +122,8 @@ function getBaseEquals(
 ): (a: any, b: any) => boolean {
     if (recursiveOpt.nextLayer === null) {
         // base case
-        if (recursiveOpt.base.value.Some !== undefined) {
-            return recursiveOpt.base.value.Some.equals;
+        if (recursiveOpt.base[0] === 'Some') {
+            return recursiveOpt.base[1].equals;
         } else {
             return (a: null, b: null) => a === b;
         }
@@ -210,12 +144,13 @@ function areOptsEqual(
         return false;
     }
 
-    function isNone(value: any | []) {
-        return Array.isArray(value) && value.length === 0;
-    }
     if (isNone(value1) && isNone(value2)) {
         return true;
     }
 
     return equals(value1, value2);
+}
+
+function isNone(value: any | []) {
+    return Array.isArray(value) && value.length === 0;
 }

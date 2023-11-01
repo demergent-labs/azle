@@ -17,6 +17,7 @@ import { Float64Arb } from '../primitive/floats/float64_arb';
 import { NullArb } from '../primitive/null';
 import { TextArb } from '../primitive/text';
 import { deepEqual } from 'fast-equals';
+import { BlobArb } from './blob_arb';
 
 const VecInnerArb = <T>(arb: fc.Arbitrary<Candid<T>>) => {
     return fc.tuple(fc.array(arb), arb).map(([sample, src]): Candid<T[]> => {
@@ -62,7 +63,8 @@ export const VecArb = fc.oneof(
     VecInnerArb(Nat64Arb),
     VecInnerArb(BoolArb),
     VecInnerArb(TextArb),
-    VecInnerArb(PrincipalArb)
+    VecInnerArb(PrincipalArb),
+    VecInnerArb(BlobArb)
     // VecInnerArb(NullArb)
 );
 
