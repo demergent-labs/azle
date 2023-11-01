@@ -41,7 +41,7 @@ function generateImports(fields: Candid<CandidType>[]): Set<string> {
 
 function generateValueLiteral(fields: Candid<CandidType>[]) {
     const fieldLiterals = fields
-        .map((field) => `${field.src.valueLiteral}`)
+        .map((field) => field.src.valueLiteral)
         .join(',\n');
 
     return `[

@@ -35,17 +35,13 @@ const RecordTestArb = fc
             .map((record) => record.src.candidType)
             .join(', ');
 
-        const returnCandidType =
-            paramRecords[0]?.src?.candidType ??
-            defaultReturnRecord.src.candidType;
+        const returnRecord =
+            paramRecords.length === 0 ? defaultReturnRecord : paramRecords[0];
+        const returnCandidType = returnRecord.src.candidType;
 
-        const body = generateBody(paramRecords, defaultReturnRecord);
+        const body = generateBody(paramRecords, returnRecord);
 
-        const test = generateTest(
-            functionName,
-            paramRecords,
-            defaultReturnRecord
-        );
+        const test = generateTest(functionName, paramRecords, returnRecord);
 
         return {
             imports,
@@ -115,9 +111,6 @@ function generateTest(
     paramRecords: Candid<Record>[],
     returnRecord: Candid<Record>
 ): Test {
-    const expectedResult = paramRecords[0]?.value ?? returnRecord.value;
-    const equals = paramRecords[0]?.equals ?? returnRecord.equals;
-
     return {
         name: `record ${functionName}`,
         test: async () => {
@@ -130,10 +123,10 @@ function generateTest(
             // This built in equals will handle types like principal without
             // any additional work. Do this first. If it fails, move on to the
             // more robust check that will give us clues as to why it failed
-            if (equals(result, expectedResult)) {
+            if (returnRecord.equals(result, returnRecord.value)) {
                 return { Ok: true };
             }
-            return recordsAreEqual(result, expectedResult);
+            return recordsAreEqual(result, returnRecord.value);
         }
     };
 }

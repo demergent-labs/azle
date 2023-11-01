@@ -15,7 +15,7 @@ const BlobTestArb = fc
         BlobArb
     )
     .map(([functionName, paramBlobs, defaultReturnBlob]): TestSample => {
-        const imports = new Set(['blob', 'nat8', 'Vec']);
+        const imports = defaultReturnBlob.src.imports;
 
         const paramNames = paramBlobs.map((_, index) => `param${index}`);
         const paramCandidTypes = paramBlobs

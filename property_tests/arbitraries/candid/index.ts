@@ -11,6 +11,12 @@ import { Nat32Arb } from './primitive/nats/nat32_arb';
 import { Nat64Arb } from './primitive/nats/nat64_arb';
 import { NullArb } from './primitive/null';
 import { BoolArb } from './primitive/bool';
+import { Principal } from '@dfinity/principal';
+import { PrincipalArb } from './reference/principal_arb';
+import { Float32Arb } from './primitive/floats/float32_arb';
+import { Float64Arb } from './primitive/floats/float64_arb';
+import { TextArb } from './primitive/text';
+import { BlobArb } from './constructed/blob_arb';
 
 // TODO we're thinking that Candid is not the best name for this. What is better?
 export type Candid<T> = {
@@ -24,7 +30,14 @@ export type Candid<T> = {
     equals(a: T, b: T): boolean;
 };
 
-export type CandidType = number | bigint | null | boolean;
+export type CandidType =
+    | number
+    | bigint
+    | null
+    | boolean
+    | Principal
+    | Uint8Array
+    | string;
 
 /**
  * An arbitrary representing all possible Candid types.
@@ -32,6 +45,8 @@ export type CandidType = number | bigint | null | boolean;
  * **Note:** This currently only supports ints, nats, and null arbitraries
  */
 export const CandidTypeArb = fc.oneof(
+    Float32Arb,
+    Float64Arb,
     IntArb,
     Int8Arb,
     Int16Arb,
@@ -42,7 +57,10 @@ export const CandidTypeArb = fc.oneof(
     Nat16Arb,
     Nat32Arb,
     Nat64Arb,
+    BoolArb,
     NullArb,
-    BoolArb
+    TextArb,
+    PrincipalArb,
+    BlobArb
 );
 // TODO: This needs to support ALL valid candid types, including records, variants, etc.

@@ -1,12 +1,12 @@
 import fc from 'fast-check';
-import { Candid, CandidTypeArb } from '../../candid';
+import { Candid, CandidType, CandidTypeArb } from '../../candid';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
 
 export type Variant = {
-    [x: string]: VariantFieldType;
+    [x: string]: CandidType;
 };
-export type VariantFieldType = number | bigint | null | boolean;
+type Field = [string, Candid<CandidType>];
 
 export const VariantArb = fc
     .tuple(
@@ -43,8 +43,6 @@ export const VariantArb = fc
             equals
         };
     });
-
-type Field = [string, Candid<VariantFieldType>];
 
 function generateImports(fields: Field[]): Set<string> {
     const fieldImports = fields.flatMap((field) => [...field[1].src.imports]);

@@ -35,17 +35,13 @@ const TupleTestArb = fc
             .map((tuple) => tuple.src.candidType)
             .join(', ');
 
-        const returnCandidType =
-            paramTuples[0]?.src?.candidType ??
-            defaultReturnTuple.src.candidType;
+        const returnTuple =
+            paramTuples.length === 0 ? defaultReturnTuple : paramTuples[0];
+        const returnCandidType = returnTuple.src.candidType;
 
-        const body = generateBody(paramTuples, defaultReturnTuple);
+        const body = generateBody(paramTuples, returnTuple);
 
-        const test = generateTest(
-            functionName,
-            paramTuples,
-            defaultReturnTuple
-        );
+        const test = generateTest(functionName, paramTuples, returnTuple);
 
         return {
             functionName,
@@ -82,19 +78,11 @@ function generateBody(
         .map((tuple, paramIndex): string => {
             const paramName = `param${paramIndex}`;
 
-            return tuple.value
-                .map((fieldValue, fieldIndex): string => {
-                    const fieldIsNull = fieldValue === null;
+            const paramIsCorrectValue = `${paramName}.toString() === ${tuple.src.valueLiteral}.toString()`;
 
-                    const condition = fieldIsNull
-                        ? `${paramName}[${fieldIndex}] !== null`
-                        : `${paramName}[${fieldIndex}].toString() !== "${fieldValue.toString()}"`;
+            const throwError = `throw new Error('${paramName} is incorrectly ordered.')`;
 
-                    const throwError = `throw new Error('${paramName} is incorrectly ordered. Field ${fieldIndex} is not the correct value.')`;
-
-                    return `if (${condition}) ${throwError}`;
-                })
-                .join('\n');
+            return `if (!(${paramIsCorrectValue})) ${throwError}`;
         })
         .join('\n');
 
@@ -115,8 +103,7 @@ function generateTest(
     paramTuples: Candid<Tuple>[],
     returnTuple: Candid<Tuple>
 ): Test {
-    const expectedResult = paramTuples[0]?.value ?? returnTuple.value;
-    const equals = paramTuples[0]?.equals ?? returnTuple.equals;
+    const expectedResult = returnTuple.value;
 
     return {
         name: `tuple ${functionName}`,
@@ -130,7 +117,7 @@ function generateTest(
             // This built in equals will handle types like principal without
             // any additional work. Do this first. If it fails, move on to the
             // more robust check that will give us clues as to why it failed
-            if (equals(result, expectedResult)) {
+            if (returnTuple.equals(result, expectedResult)) {
                 return { Ok: true };
             }
 
