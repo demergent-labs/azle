@@ -22,12 +22,7 @@ export const VariantArb = fc
     .map(([name, fields]): Candid<Variant> => {
         const randomIndex = Math.floor(Math.random() * fields.length);
 
-        const typeDeclaration = `const ${name} = Variant({\n    ${fields
-            .map(
-                ([fieldName, fieldDataType]) =>
-                    `${fieldName}: ${fieldDataType.src.candidType}`
-            )
-            .join(',\n    ')}\n});`;
+        const typeDeclaration = generateTypeDeclaration(fields);
 
         const value = generateValue(randomIndex, fields);
 
@@ -53,17 +48,24 @@ export const VariantArb = fc
 
 type Field = [string, Candid<VariantFieldType>];
 
-function generateValue(index: number, fields: Field[]) {
-    return fields.length === 0
-        ? {}
-        : (() => {
-              const [randomFieldName, { value: randomFieldDataType }] =
-                  fields[index];
+function generateTypeDeclaration(fields: Field[]): string {
+    return `const ${name} = Variant({\n    ${fields
+        .map(
+            ([fieldName, fieldDataType]) =>
+                `${fieldName}: ${fieldDataType.src.candidType}`
+        )
+        .join(',\n    ')}\n});`;
+}
 
-              return {
-                  [randomFieldName]: randomFieldDataType
-              };
-          })();
+function generateValue(index: number, fields: Field[]): Variant {
+    if (fields.length === 0) {
+        return {};
+    }
+    const [randomFieldName, { value: randomFieldDataType }] = fields[index];
+
+    return {
+        [randomFieldName]: randomFieldDataType
+    };
 }
 
 function generateValueLiteral(index: number, fields: Field[]): string {
@@ -71,10 +73,10 @@ function generateValueLiteral(index: number, fields: Field[]): string {
         return '{}';
     }
 
-    const [fieldName, field] = fields[index];
+    const [fieldName, fieldValue] = fields[index];
 
     return `{
-        ${fieldName}: ${field.src.valueLiteral}
+        ${fieldName}: ${fieldValue.src.valueLiteral}
     }`;
 }
 

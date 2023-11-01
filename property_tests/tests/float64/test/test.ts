@@ -61,12 +61,14 @@ function generateBody(
         })
         .join('\n');
 
-    const paramValues = paramFloat64s.map((float64) => float64.value);
+    const paramLiterals = paramFloat64s.map(
+        (float64) => float64.src.valueLiteral
+    );
     const paramsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
             const areFloat64sEqual = areFloatsEqual(
                 paramName,
-                paramValues[index]
+                paramLiterals[index]
             );
             return `if (!(${areFloat64sEqual})) throw new Error('${paramName} is incorrectly ordered')`;
         })
@@ -74,7 +76,7 @@ function generateBody(
 
     const sum = paramNames.reduce((acc, paramName) => {
         return `${acc} + ${paramName}`;
-    }, `${returnFloat64.value}`);
+    }, returnFloat64.src.valueLiteral);
     const count = paramFloat64s.length + 1;
     const average = `(${sum}) / ${count}`;
 

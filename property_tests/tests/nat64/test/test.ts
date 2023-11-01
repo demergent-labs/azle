@@ -58,7 +58,7 @@ function generateBody(
 
     const sum = paramNames.reduce((acc, paramName) => {
         return `${acc} + ${paramName}`;
-    }, `${returnNat64.src.valueLiteral}`);
+    }, returnNat64.src.valueLiteral);
     const count = paramNat64s.length + 1;
     const average = `(${sum}) / ${count}n`;
 

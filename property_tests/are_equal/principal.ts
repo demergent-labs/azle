@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
 
-export function arePrincipalsEqual(paramName: string, paramValue: Principal) {
-    return `(${paramName}.toText() === "${paramValue.toText()}")`;
+export function arePrincipalsEqual(paramName: string, paramLiteral: string) {
+    return `(${paramName}.toText() === "${paramLiteral}.toText()")`;
 }

@@ -54,7 +54,7 @@ function generateBody(
 
     const sum = paramNames.reduce((acc, paramName) => {
         return `${acc} + ${paramName}`;
-    }, `${returnInt.src.valueLiteral}`);
+    }, returnInt.src.valueLiteral);
 
     const paramLiterals = paramInts.map((sample) => sample.src.valueLiteral);
     const paramsCorrectlyOrdered = paramNames

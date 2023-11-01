@@ -80,14 +80,14 @@ function generateBody(
         })
         .join('\n');
 
-    const firstParamOrEmptyBlob = paramNames[0] ?? returnVec.src.valueLiteral;
+    const returnValue = paramNames[0] ?? returnVec.src.valueLiteral;
 
     return `
         ${paramsAreArrays}
 
         ${paramsCorrectlyOrdered}
 
-        return ${firstParamOrEmptyBlob};
+        return ${returnValue};
     `;
 }
 

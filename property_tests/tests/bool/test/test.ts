@@ -29,8 +29,8 @@ const BoolTestArb = fc
         const test = generateTest(functionName, paramBools, defaultReturnBool);
 
         return {
-            functionName,
             imports,
+            functionName,
             paramCandidTypes,
             returnCandidType,
             paramNames,
@@ -63,7 +63,7 @@ function generateBody(
 
     const returnStatement = paramNames.reduce((acc, paramName) => {
         return `${acc} && ${paramName}`;
-    }, `${returnBool.value}`);
+    }, returnBool.src.valueLiteral);
 
     return `
         ${paramsAreBooleans}

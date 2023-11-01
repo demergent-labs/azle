@@ -56,16 +56,18 @@ function generateBody(
         })
         .join('\n');
 
-    const paramValues = paramInt16s.map((sample) => sample.value);
+    const paramValueLiterals = paramInt16s.map(
+        (sample) => sample.src.valueLiteral
+    );
     const paramsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
-            return `if (${paramName} !== ${paramValues[index]}) throw new Error('${paramName} is incorrectly ordered')`;
+            return `if (${paramName} !== ${paramValueLiterals[index]}) throw new Error('${paramName} is incorrectly ordered')`;
         })
         .join('\n');
 
     const sum = paramNames.reduce((acc, paramName) => {
         return `${acc} + ${paramName}`;
-    }, `${returnInt16.value}`);
+    }, returnInt16.src.valueLiteral);
     const count = paramInt16s.length + 1;
     const average = `Math.floor((${sum}) / ${count})`;
 

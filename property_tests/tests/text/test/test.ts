@@ -54,7 +54,7 @@ function generateBody(
 
     const returnStatement = paramNames.reduce((acc, paramName) => {
         return `${acc} + ${paramName}`;
-    }, `${returnText.src.valueLiteral}`);
+    }, returnText.src.valueLiteral);
 
     const paramValues = paramTexts.map((text) => text.src.valueLiteral);
 

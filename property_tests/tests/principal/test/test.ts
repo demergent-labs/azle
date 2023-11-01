@@ -80,7 +80,7 @@ function generateBody(
         .map((paramName, index) => {
             const areEqual = arePrincipalsEqual(
                 paramName,
-                paramPrincipals[index].value
+                paramPrincipals[index].src.valueLiteral
             );
 
             return `if (!${areEqual}) throw new Error('${paramName} is incorrectly ordered')`;

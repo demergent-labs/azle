@@ -1,7 +1,3 @@
-export function areFloatsEqual(paramName: string, paramValue: number) {
-    if (Number.isNaN(paramValue)) {
-        return `(Number.isNaN(${paramName}) && Number.isNaN(${paramValue}))`;
-    } else {
-        return `${paramName} === ${paramValue}`;
-    }
+export function areFloatsEqual(paramName: string, paramLiteral: string) {
+    return `((Number.isNaN(${paramName}) && Number.isNaN(${paramLiteral})) || ${paramName} === ${paramLiteral})`;
 }
