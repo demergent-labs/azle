@@ -1,8 +1,9 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
+import { CandidType } from './candid_type_arb';
 
 // TODO we're thinking that Candid is not the best name for this. What is better?
-export type Candid<T> = {
+export type Candid<T extends CandidType> = {
     value: T;
     src: {
         candidType: string;
@@ -13,7 +14,7 @@ export type Candid<T> = {
     equals(a: T, b: T): boolean;
 };
 
-export const CandidArb = <T>(
+export const CandidArb = <T extends CandidType>(
     arb: fc.Arbitrary<T>,
     candidType: string,
     toLiteral: (value: T) => string,

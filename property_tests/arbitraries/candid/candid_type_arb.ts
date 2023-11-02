@@ -18,6 +18,8 @@ import { Float64Arb } from './primitive/floats/float64_arb';
 import { TextArb } from './primitive/text';
 import { BlobArb } from './constructed/blob_arb';
 import { Candid } from './candid_arb';
+import { Func } from './reference/func_arb';
+import { Opt } from './constructed/opt_arb';
 
 export type CandidType =
     | number
@@ -26,7 +28,9 @@ export type CandidType =
     | boolean
     | Principal
     | Uint8Array
-    | string;
+    | string
+    | Func
+    | Opt;
 
 /**
  * An arbitrary representing all possible Candid types.

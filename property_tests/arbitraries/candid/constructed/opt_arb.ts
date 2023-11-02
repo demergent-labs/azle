@@ -10,7 +10,7 @@ type Base = {
 
 type RecursiveOpt<T> = { base: T } | { nextLayer: RecursiveOpt<T> };
 
-export type Opt = [CandidType | Opt] | never[];
+export type Opt = [CandidType] | never[];
 
 // TODO look into making this recursive
 // TODO we need to add all constructed and reference types
