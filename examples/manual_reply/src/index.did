@@ -11,7 +11,7 @@ service: () -> {
     queryString: () -> (text) query;
     queryVariant: () -> (variant {Elemental; Mixed; Toxic}) query;
     queryVoid: () -> () query;
-    replyRaw: () -> (record {int:int; bool:bool; text:text; myBlob:vec nat8; myVariant:variant {Large; Small; Medium}});
+    replyRaw: () -> (record {"int":int; "bool":bool; "text":text; myBlob:vec nat8; myVariant:variant {Large; Small; Medium}});
     updateBlob: () -> (vec nat8);
     updateFloat32: () -> (float32);
     updateInt8: () -> (int8);

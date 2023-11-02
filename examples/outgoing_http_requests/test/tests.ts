@@ -1,9 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
-import {
-    HttpResponse,
-    _SERVICE
-} from './dfx_generated/outgoing_http_requests/outgoing_http_requests.did';
+import { _SERVICE } from './dfx_generated/outgoing_http_requests/outgoing_http_requests.did';
+import { HttpResponse } from 'azle/canisters/management';
 import decodeUtf8 from 'decode-utf8';
 
 export function getTests(
@@ -16,7 +14,7 @@ export function getTests(
                 const result = await outgoingHttpRequestsCanister.xkcd();
 
                 return {
-                    Ok: checkXkcdResult(result)
+                    Ok: checkXkcdResult(result as any)
                 };
             }
         },
@@ -26,14 +24,14 @@ export function getTests(
                 const result = await outgoingHttpRequestsCanister.xkcdRaw();
 
                 return {
-                    Ok: checkXkcdResult(result)
+                    Ok: checkXkcdResult(result as any)
                 };
             }
         }
     ];
 }
 
-function checkXkcdResult(result: HttpResponse): boolean {
+function checkXkcdResult(result: typeof HttpResponse): boolean {
     const resultJson = JSON.parse(decodeUtf8(Uint8Array.from(result.body)));
     const expectedJson = JSON.parse(
         `{"month": "9", "num": 642, "link": "", "year": "2009", "news": "", "safe_title": "Creepy", "alt": "And I even got out my adorable new netbook!", "img": "https://imgs.xkcd.com/comics/creepy.png", "title": "Creepy", "day": "28"}`
