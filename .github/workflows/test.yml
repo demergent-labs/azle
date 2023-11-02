@@ -230,7 +230,7 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
-              run: npx tsc --noEmit
+              run: $GITHUB_WORKSPACE/node_modules/.bin/tsc --noEmit
 
     check-basic-integration-tests-success:
         needs: basic-integration-tests
