@@ -1,8 +1,8 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
-import { _SERVICE, rec_0 } from './dfx_generated/timers/timers.did';
+import { _SERVICE } from './dfx_generated/timers/timers.did';
 
-let timerIds: rec_0 = {
+let timerIds = {
     single: 0n,
     inline: 0n,
     capture: 0n,
