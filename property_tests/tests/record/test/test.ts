@@ -120,9 +120,12 @@ function generateTest(
                 ...paramRecords.map((record) => record.value)
             );
 
-            // This built in equals will handle types like principal without
-            // any additional work. Do this first. If it fails, move on to the
-            // more robust check that will give us clues as to why it failed
+            // Start by using the equals method defined by the return arbitrary
+            // This method works in all cases and if it should return true it
+            // will. It's weakness is that we don't always know why it returns
+            // false, so if that equals method returns false, then instead of
+            // just returning {Ok: false} we will use the equals function that
+            // has better reporting of why the test failed but isn't as robust
             if (returnRecord.equals(result, returnRecord.value)) {
                 return { Ok: true };
             }
