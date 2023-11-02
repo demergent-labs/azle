@@ -33,7 +33,7 @@ export type CandidType =
  *
  * **Note:** This currently only supports ints, nats, and null arbitraries
  */
-export const CandidTypeArb = fc.oneof(
+export const CandidTypeArb: fc.Arbitrary<Candid<CandidType>> = fc.oneof(
     Float32Arb,
     Float64Arb,
     IntArb,
@@ -51,5 +51,5 @@ export const CandidTypeArb = fc.oneof(
     TextArb,
     PrincipalArb,
     BlobArb
-) as fc.Arbitrary<Candid<CandidType>>;
+);
 // TODO: This needs to support ALL valid candid types, including records, variants, etc.
