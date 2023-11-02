@@ -17,6 +17,7 @@ import { Float32Arb } from './primitive/floats/float32_arb';
 import { Float64Arb } from './primitive/floats/float64_arb';
 import { TextArb } from './primitive/text';
 import { BlobArb } from './constructed/blob_arb';
+import { Candid } from './candid_arb';
 
 export type CandidType =
     | number
@@ -50,5 +51,5 @@ export const CandidTypeArb = fc.oneof(
     TextArb,
     PrincipalArb,
     BlobArb
-);
+) as fc.Arbitrary<Candid<CandidType>>;
 // TODO: This needs to support ALL valid candid types, including records, variants, etc.

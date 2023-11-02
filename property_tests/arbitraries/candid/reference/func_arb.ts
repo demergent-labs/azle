@@ -3,24 +3,28 @@ import { Principal } from '@dfinity/principal';
 
 import { PrincipalArb } from './principal_arb';
 import { VoidArb } from '../primitive/void';
-import { Candid, CandidType, CandidTypeArb } from '../candid_type_arb';
+import { Candid } from '../candid_arb';
+import { CandidType, CandidTypeArb } from '../candid_type_arb';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 
 export type Func = [Principal, string];
 type Mode = 'query' | 'update' | 'oneway';
 
-export const FuncArb = fc
-    .tuple(
-        UniqueIdentifierArb('typeDeclaration'),
-        fc.array(CandidTypeArb),
-        fc.tuple(CandidTypeArb, VoidArb),
-        fc.constantFrom('query', 'update', 'oneway') as fc.Arbitrary<Mode>,
-        PrincipalArb
-    )
-    .map(([name, params, returnTypeAndVoid, mode, principal]): Candid<Func> => {
-        const returnFunc =
-            mode === 'oneway' ? returnTypeAndVoid[1] : returnTypeAndVoid[0];
+export const FuncArb = (
+    fc.constantFrom('query', 'update', 'oneway') as fc.Arbitrary<Mode>
+)
+    .chain((mode) => {
+        const returnType = mode === 'oneway' ? VoidArb : CandidTypeArb;
 
+        return fc.tuple(
+            UniqueIdentifierArb('typeDeclaration'),
+            fc.array(CandidTypeArb),
+            returnType,
+            fc.constant(mode),
+            PrincipalArb
+        );
+    })
+    .map(([name, params, returnFunc, mode, principal]): Candid<Func> => {
         const typeDeclaration = generateTypeDeclaration(
             name,
             params,
