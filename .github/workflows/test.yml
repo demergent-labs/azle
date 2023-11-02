@@ -217,7 +217,8 @@ jobs:
               run: npm link azle
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0}
-              run: npm run typecheck
+              working-directory: ${{ matrix.example_directories }}
+              run: npx tsc --noEmit
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
