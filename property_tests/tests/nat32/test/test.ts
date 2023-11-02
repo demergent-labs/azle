@@ -1,70 +1,108 @@
 import fc from 'fast-check';
+
 import { Nat32Arb } from '../../../arbitraries/candid/primitive/nats/nat32_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../..';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
+import { Test } from '../../../../test';
 
 const Nat32TestArb = fc
-    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Nat32Arb))
-    .map(([functionName, nat32s]) => {
-        const paramCandidTypes = nat32s.map(() => 'nat32').join(', ');
-        const returnCandidType = 'nat32';
-        const paramNames = nat32s.map((_, index) => `param${index}`);
+    .tuple(
+        createUniquePrimitiveArb(JsFunctionNameArb),
+        fc.array(Nat32Arb),
+        Nat32Arb
+    )
+    .map(([functionName, paramNat32s, defaultReturnNat32]): TestSample => {
+        const imports = defaultReturnNat32.src.imports;
 
-        const paramsAreNumbers = paramNames
-            .map((paramName) => {
-                return `if (typeof ${paramName} !== 'number') throw new Error('${paramName} must be a number');`;
-            })
-            .join('\n');
+        const paramNames = paramNat32s.map((_, index) => `param${index}`);
+        const paramCandidTypes = paramNat32s
+            .map((nat32) => nat32.src.candidType)
+            .join(', ');
 
-        const paramsSum = paramNames.reduce((acc, paramName) => {
-            return `${acc} + ${paramName}`;
-        }, '0');
+        const returnCandidType = defaultReturnNat32.src.candidType;
 
-        const length = nat32s.length === 0 ? 1 : nat32s.length;
+        const body = generateBody(paramNames, paramNat32s, defaultReturnNat32);
 
-        const returnStatement = `Math.floor((${paramsSum}) / ${length})`;
-
-        const expectedResult = Math.floor(
-            nat32s.reduce((acc, nat32) => acc + nat32, 0) / length
+        const test = generateTest(
+            functionName,
+            paramNat32s,
+            defaultReturnNat32
         );
 
-        const paramSamples = nat32s;
-
-        const paramsCorrectlyOrdered = paramNames
-            .map((paramName, index) => {
-                return `if (${paramName} !== ${paramSamples[index]}) throw new Error('${paramName} is incorrectly ordered')`;
-            })
-            .join('\n');
-
         return {
+            imports,
             functionName,
-            imports: ['nat32'],
+            paramNames,
             paramCandidTypes,
             returnCandidType,
-            paramNames,
-            paramSamples,
-            body: `
-            ${paramsCorrectlyOrdered}
-
-            ${paramsAreNumbers}
-
-            return ${returnStatement};
-        `,
-            test: {
-                name: `test ${functionName}`,
-                test: async () => {
-                    const actor = getActor('./tests/nat32/test');
-
-                    const result = await actor[functionName](...nat32s);
-
-                    return {
-                        Ok: result === expectedResult
-                    };
-                }
-            }
+            body,
+            test
         };
     });
 
 runPropTests(Nat32TestArb);
+
+function generateBody(
+    paramNames: string[],
+    paramNat32s: CandidMeta<number>[],
+    returnNat32: CandidMeta<number>
+): string {
+    const paramsAreNumbers = paramNames
+        .map((paramName) => {
+            return `if (typeof ${paramName} !== 'number') throw new Error('${paramName} must be a number');`;
+        })
+        .join('\n');
+
+    const sum = paramNames.reduce((acc, paramName) => {
+        return `${acc} + ${paramName}`;
+    }, returnNat32.src.valueLiteral);
+    const count = paramNat32s.length + 1;
+    const average = `Math.floor((${sum}) / ${count})`;
+
+    const paramLiterals = paramNat32s.map((sample) => sample.src.valueLiteral);
+
+    const paramsCorrectlyOrdered = paramNames
+        .map((paramName, index) => {
+            return `if (${paramName} !== ${paramLiterals[index]}) throw new Error('${paramName} is incorrectly ordered')`;
+        })
+        .join('\n');
+
+    return `
+        ${paramsAreNumbers}
+
+        ${paramsCorrectlyOrdered}
+
+        return ${average};
+    `;
+}
+
+function generateTest(
+    functionName: string,
+    paramNat32s: CandidMeta<number>[],
+    returnNat32: CandidMeta<number>
+): Test {
+    const count = paramNat32s.length + 1;
+    const expectedResult = Math.floor(
+        paramNat32s.reduce(
+            (acc, nat32) => acc + nat32.value,
+            returnNat32.value
+        ) / count
+    );
+    const paramValues = paramNat32s.map((sample) => sample.value);
+
+    return {
+        name: `nat32 ${functionName}`,
+        test: async () => {
+            const actor = getActor('./tests/nat32/test');
+
+            const result = await actor[functionName](...paramValues);
+
+            return {
+                Ok: returnNat32.equals(result, expectedResult)
+            };
+        }
+    };
+}

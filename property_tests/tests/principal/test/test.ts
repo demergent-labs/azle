@@ -1,66 +1,120 @@
 import fc from 'fast-check';
-import { getActor } from '../../../get_actor';
+import { deepEqual, shallowEqual } from 'fast-equals';
+
+import { arePrincipalsEqual } from '../../../are_equal/principal';
 import { PrincipalArb } from '../../../arbitraries/candid/reference/principal_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
-import { arePrincipalsEqual } from '../../../are_equal';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
+import { Principal } from '@dfinity/principal';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
+import { Test } from '../../../../test';
 
 const PrincipalTestArb = fc
     .tuple(
         createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(PrincipalArb, { minLength: 1 })
+        fc.array(PrincipalArb),
+        PrincipalArb
     )
-    .map(([functionName, principals]) => {
-        const paramCandidTypes = principals.map(() => 'Principal').join(', ');
-        const returnCandidType = 'Principal';
-        const paramNames = principals.map((_, index) => `param${index}`);
-
-        const paramsArePrincipals = paramNames
-            .map((paramName) => {
-                return `if (${paramName}._isPrincipal !== true) throw new Error('${paramName} must be a Principal');`;
-            })
-            .join('\n');
-
-        const returnStatement = `param0`;
-
-        const expectedResult = principals[0].toText();
-
-        const paramsCorrectlyOrdered = paramNames
-            .map((paramName, index) => {
-                const areEqual = arePrincipalsEqual(
-                    paramName,
-                    principals[index]
-                );
-
-                return `if (!${areEqual}) throw new Error('${paramName} is incorrectly ordered')`;
-            })
-            .join('\n');
-
-        return {
+    .map(
+        ([
             functionName,
-            imports: ['Principal'],
-            paramCandidTypes,
-            returnCandidType,
-            paramNames,
-            principals,
-            body: `
-                ${paramsCorrectlyOrdered}
+            paramPrincipals,
+            defaultReturnPrincipal
+        ]): TestSample => {
+            const imports = defaultReturnPrincipal.src.imports;
 
-                ${paramsArePrincipals}
+            const paramNames = paramPrincipals.map(
+                (_, index) => `param${index}`
+            );
+            const paramCandidTypes = paramPrincipals
+                .map((principal) => principal.src.candidType)
+                .join(', ');
 
-                return ${returnStatement};
-            `,
-            test: {
-                name: `test ${functionName}`,
-                test: async () => {
-                    const actor = getActor('./tests/principal/test');
-                    const result = await actor[functionName](...principals);
+            const returnCandidType = defaultReturnPrincipal.src.candidType;
 
-                    return { Ok: result.toText() === expectedResult };
-                }
-            }
-        };
-    });
+            const body = generateBody(
+                paramNames,
+                paramPrincipals,
+                defaultReturnPrincipal
+            );
+
+            const test = generateTest(
+                functionName,
+                paramPrincipals,
+                defaultReturnPrincipal
+            );
+
+            return {
+                imports,
+                functionName,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                test
+            };
+        }
+    );
 
 runPropTests(PrincipalTestArb);
+
+function generateBody(
+    paramNames: string[],
+    paramPrincipals: CandidMeta<Principal>[],
+    returnPrincipal: CandidMeta<Principal>
+): string {
+    const paramsArePrincipals = paramNames
+        .map((paramName) => {
+            return `if (${paramName}._isPrincipal !== true) throw new Error('${paramName} must be a Principal');`;
+        })
+        .join('\n');
+
+    const returnStatement =
+        paramPrincipals.length > 0
+            ? `param0`
+            : returnPrincipal.src.valueLiteral;
+
+    const paramsCorrectlyOrdered = paramNames
+        .map((paramName, index) => {
+            const areEqual = arePrincipalsEqual(
+                paramName,
+                paramPrincipals[index].src.valueLiteral
+            );
+
+            return `if (!${areEqual}) throw new Error('${paramName} is incorrectly ordered')`;
+        })
+        .join('\n');
+
+    return `
+        ${paramsArePrincipals}
+
+        ${paramsCorrectlyOrdered}
+
+        return ${returnStatement};
+    `;
+}
+
+function generateTest(
+    functionName: string,
+    paramPrincipals: CandidMeta<Principal>[],
+    returnPrincipal: CandidMeta<Principal>
+): Test {
+    const expectedResult =
+        paramPrincipals.length > 0
+            ? paramPrincipals[0].value
+            : returnPrincipal.value;
+
+    return {
+        name: `principal ${functionName}`,
+        test: async () => {
+            const actor = getActor('./tests/principal/test');
+            const result = await actor[functionName](
+                ...paramPrincipals.map((sample) => sample.value)
+            );
+
+            return { Ok: returnPrincipal.equals(result, expectedResult) };
+        }
+    };
+}

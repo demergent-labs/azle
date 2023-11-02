@@ -2,7 +2,7 @@ import fc from 'fast-check';
 
 let samples = new Set();
 
-export function createUniquePrimitiveArb(arb: fc.Arbitrary<any>) {
+export function createUniquePrimitiveArb<T>(arb: fc.Arbitrary<T>) {
     return arb
         .filter((primitiveSample) => !samples.has(primitiveSample))
         .map((primitiveSample) => {

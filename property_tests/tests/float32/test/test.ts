@@ -1,72 +1,113 @@
 import fc from 'fast-check';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+
+import { areFloatsEqual } from '../../../are_equal/float';
 import { Float32Arb } from '../../../arbitraries/candid/primitive/floats/float32_arb';
-import { areFloatsEqual } from '../../../are_equal';
+import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
+import { Test } from '../../../../test';
 
 const Float32TestArb = fc
-    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Float32Arb))
-    .map(([functionName, float32s]) => {
-        const paramCandidTypes = float32s.map(() => 'float32').join(', ');
-        const returnCandidType = 'float32';
-        const paramNames = float32s.map((_, index) => `param${index}`);
+    .tuple(
+        createUniquePrimitiveArb(JsFunctionNameArb),
+        fc.array(Float32Arb),
+        Float32Arb
+    )
+    .map(([functionName, paramFloat32s, defaultReturnFloat32]): TestSample => {
+        const imports = defaultReturnFloat32.src.imports;
 
-        const paramsAreNumbers = paramNames
-            .map((paramName) => {
-                return `if (typeof ${paramName} !== 'number') throw new Error('${paramName} must be a number');`;
-            })
-            .join('\n');
+        const paramNames = paramFloat32s.map((_, index) => `param${index}`);
+        const paramCandidTypes = paramFloat32s
+            .map((float32) => float32.src.candidType)
+            .join(', ');
 
-        const returnStatement = float32s.length === 0 ? '0' : `param0`;
+        const returnCandidType = defaultReturnFloat32.src.candidType;
 
-        const paramSamples = float32s;
-        const expectedResult = float32s.length === 0 ? 0 : float32s[0];
+        const body = generateBody(
+            paramNames,
+            paramFloat32s,
+            defaultReturnFloat32
+        );
 
-        const paramsCorrectlyOrdered = paramNames
-            .map((paramName, index) => {
-                const areFloat32sEqual = areFloatsEqual(
-                    paramName,
-                    paramSamples[index]
-                );
-                return `if (!${areFloat32sEqual}) throw new Error('${paramName} is incorrectly ordered')`;
-            })
-            .join('\n');
+        const test = generateTest(
+            functionName,
+            paramFloat32s,
+            defaultReturnFloat32
+        );
 
         return {
+            imports,
             functionName,
-            imports: ['float32'],
+            paramNames,
             paramCandidTypes,
             returnCandidType,
-            paramNames,
-            paramSamples,
-            body: `
-            ${paramsCorrectlyOrdered}
-
-            ${paramsAreNumbers}
-
-            return ${returnStatement};
-        `,
-            test: {
-                name: `test ${functionName}`,
-                test: async () => {
-                    const actor = getActor('./tests/float32/test');
-
-                    const result = await actor[functionName](...float32s);
-
-                    if (Number.isNaN(expectedResult)) {
-                        return {
-                            Ok: Number.isNaN(result)
-                        };
-                    }
-
-                    return {
-                        Ok: result === expectedResult
-                    };
-                }
-            }
+            body,
+            test
         };
     });
 
 runPropTests(Float32TestArb);
+
+function generateBody(
+    paramNames: string[],
+    paramFloat32s: CandidMeta<number>[],
+    returnFloat32: CandidMeta<number>
+): string {
+    const paramsAreNumbers = paramNames
+        .map((paramName) => {
+            return `if (typeof ${paramName} !== 'number') throw new Error('${paramName} must be a number');`;
+        })
+        .join('\n');
+
+    const paramLiterals = paramFloat32s.map(
+        (float32s) => float32s.src.valueLiteral
+    );
+    const paramsCorrectlyOrdered = paramNames
+        .map((paramName, index) => {
+            const areFloat32sEqual = areFloatsEqual(
+                paramName,
+                paramLiterals[index]
+            );
+            return `if (!(${areFloat32sEqual})) throw new Error('${paramName} is incorrectly ordered')`;
+        })
+        .join('\n');
+
+    const returnStatement =
+        paramFloat32s.length === 0
+            ? returnFloat32.src.valueLiteral
+            : paramNames[0];
+
+    return `
+        ${paramsCorrectlyOrdered}
+
+        ${paramsAreNumbers}
+
+        return ${returnStatement};
+    `;
+}
+
+function generateTest(
+    functionName: string,
+    paramFloat32s: CandidMeta<number>[],
+    returnFloat32: CandidMeta<number>
+): Test {
+    const expectedResult =
+        paramFloat32s.length === 0
+            ? returnFloat32.value
+            : paramFloat32s[0].value;
+    const paramValues = paramFloat32s.map((paramFloats) => paramFloats.value);
+    return {
+        name: `float32 ${functionName}`,
+        test: async () => {
+            const actor = getActor('./tests/float32/test');
+
+            const result = await actor[functionName](...paramValues);
+
+            return {
+                Ok: returnFloat32.equals(result, expectedResult)
+            };
+        }
+    };
+}

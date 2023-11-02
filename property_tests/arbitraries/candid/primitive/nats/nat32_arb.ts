@@ -1,3 +1,9 @@
-import fc from 'fast-check';
+import { numberToSrcLiteral } from '../../to_src_literal/number';
+import { CandidMetaArb } from '../../candid_arb';
+import { UNumberArb } from './index';
 
-export const Nat32Arb = fc.bigUintN(32).map((sample) => Number(sample));
+export const Nat32Arb = CandidMetaArb(
+    UNumberArb(32),
+    'nat32',
+    numberToSrcLiteral
+);

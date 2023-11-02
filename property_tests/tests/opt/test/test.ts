@@ -1,92 +1,118 @@
 import fc from 'fast-check';
-import { OptArb } from '../../../arbitraries/candid/constructed/opt_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+
+import {
+    createAreOptsEqualCodeDeclaration,
+    createAreOptsEqualCodeUsage
+} from '../../../are_equal/opt';
+import { Opt, OptArb } from '../../../arbitraries/candid/constructed/opt_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
+import { Test } from '../../../../test';
 
 const OptTestArb = fc
-    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(OptArb))
-    .map(([functionName, optWrappers]) => {
-        const paramCandidTypes = optWrappers.map(
-            (vecWrapper) => vecWrapper.candidType
-        );
-        const returnCandidType = optWrappers[0]?.candidType ?? 'Opt(int8)';
-        const paramNames = optWrappers.map((_, index) => `param${index}`);
+    .tuple(
+        createUniquePrimitiveArb(JsFunctionNameArb),
+        fc.array(OptArb),
+        OptArb
+    )
+    .map(([functionName, paramOpts, defaultReturnOpt]): TestSample => {
+        const imports = new Set([
+            'None',
+            ...paramOpts.flatMap((opt) => [...opt.src.imports]),
+            ...defaultReturnOpt.src.imports
+        ]);
 
-        // TODO this ordering check is not perfect
-        // TODO but turning the vec into a string seems a bit difficult...we need to figure out how to check perfecly for the values that we want
-        // TODO maybe a global variable that we can write into and call would work
-        // TODO we really need to create some kind of universal equality checking solution
-        // const paramsCorrectlyOrdered = paramNames
-        //     .map((paramName, index) => {
-        //         return `if (${paramName}.Some === undefined && ${optWrappers[index].opt.Some} === undefined && ${paramName}.None !== ${optWrappers[index].opt.None}) throw new Error('${paramName} is incorrectly ordered')`;
-        //     })
-        //     .join('\n');
+        const paramNames = paramOpts.map((_, index) => `param${index}`);
+        const paramCandidTypes = paramOpts
+            .map((opt) => opt.src.candidType)
+            .join(', ');
 
-        // TODO these checks should be much more precise probably, imagine checking the values inside of the opts
-        const paramsOpts = paramNames
-            .map((paramName) => {
-                return `if (${paramName}.Some === undefined && ${paramName}.None === undefined) throw new Error('${paramName} must be an Opt');`;
-            })
-            .join('\n');
+        const returnCandidType =
+            paramOpts.length === 0
+                ? defaultReturnOpt.src.candidType
+                : paramOpts[0].src.candidType;
 
-        const returnStatement = paramNames[0] ?? `None`;
+        const body = generateBody(paramNames, paramOpts, defaultReturnOpt);
 
-        const expectedResult =
-            optWrappers[0]?.opt.Some !== undefined
-                ? [optWrappers[0]?.opt.Some]
-                : [];
+        const test = generateTest(functionName, paramOpts, defaultReturnOpt);
 
         return {
+            imports,
             functionName,
-            imports: [
-                'int',
-                'int8',
-                'int16',
-                'int32',
-                'int64',
-                'nat',
-                'nat8',
-                'nat16',
-                'nat32',
-                'nat64',
-                'None',
-                'Opt'
-            ],
-            paramCandidTypes: paramCandidTypes.join(', '),
-            returnCandidType,
             paramNames,
-            body: `
-            ${paramsOpts}
-
-            return ${returnStatement};
-        `,
-            test: {
-                name: `test ${functionName}`,
-                test: async () => {
-                    const actor = getActor('./tests/opt/test');
-
-                    const result = await actor[functionName](
-                        ...optWrappers.map((optWrapper) => {
-                            if (optWrapper.opt.Some !== undefined) {
-                                return [optWrapper.opt.Some];
-                            } else {
-                                return [];
-                            }
-                        })
-                    );
-
-                    // TODO be careful on equality checks when we go beyond primitives
-                    // TODO a universal equality checker is going to be very useful
-                    return {
-                        Ok:
-                            result.length === expectedResult.length &&
-                            result[0] === expectedResult[0]
-                    };
-                }
-            }
+            paramCandidTypes,
+            returnCandidType,
+            body,
+            test
         };
     });
 
 runPropTests(OptTestArb);
+
+function isParamOpt(paramName: string): string {
+    return `(${paramName}.Some !== undefined || ${paramName}.None !== undefined)`;
+}
+
+function generateBody(
+    paramNames: string[],
+    paramOpts: CandidMeta<Opt>[],
+    returnOpt: CandidMeta<Opt>
+): string {
+    const areParamsOpts = paramNames
+        .map((paramName) => {
+            return `if (!${isParamOpt(
+                paramName
+            )}) throw new Error('${paramName} must be an Opt');`;
+        })
+        .join('\n');
+
+    const paramLiterals = paramOpts.map((opt) => opt.src.valueLiteral);
+
+    const areParamsCorrectlyOrdered = paramNames
+        .map((paramName, index) => {
+            return `if (!${createAreOptsEqualCodeUsage(
+                paramName,
+                paramLiterals[index]
+            )}) throw new Error('${paramName} is incorrectly ordered')`;
+        })
+        .join('\n');
+
+    const returnStatement = paramNames[0] ?? returnOpt.src.valueLiteral;
+
+    return `
+        ${areParamsOpts}
+        ${createAreOptsEqualCodeDeclaration()}
+        ${areParamsCorrectlyOrdered}
+
+        return ${returnStatement};
+    `;
+}
+
+function generateTest(
+    functionName: string,
+    paramOpts: CandidMeta<Opt>[],
+    returnOpt: CandidMeta<Opt>
+): Test {
+    const expectedResult =
+        paramOpts.length === 0 ? returnOpt.value : paramOpts[0].value;
+    return {
+        name: `opt ${functionName}`,
+        test: async () => {
+            const actor = getActor('./tests/opt/test');
+
+            const params = paramOpts.map((opt) => opt.value);
+
+            const result = await actor[functionName](...params);
+
+            const equals =
+                paramOpts.length > 0 ? paramOpts[0].equals : returnOpt.equals;
+
+            return {
+                Ok: equals(result, expectedResult)
+            };
+        }
+    };
+}
