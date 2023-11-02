@@ -4,6 +4,9 @@ import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
 
 export class Principal extends DfinityPrincipal {
+    _azleKind: 'Principal' = 'Principal';
+    static _azleKind: 'Principal' = 'Principal';
+
     static _azleCandidType?: '_azleCandidType';
 
     static toBytes(data: number): Uint8Array {

@@ -10,7 +10,11 @@ export class AzleVec<T> {
     }
 
     innerType: CandidType;
+
     _azleCandidType?: '_azleCandidType';
+
+    _azleKind: 'AzleVec' = 'AzleVec';
+    static _azleKind: 'AzleVec' = 'AzleVec';
 
     toBytes(data: number): Uint8Array {
         return encode(this, data);

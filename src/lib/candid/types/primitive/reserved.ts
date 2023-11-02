@@ -4,6 +4,8 @@ import { decode } from '../../serde/decode';
 
 export class AzleReserved {
     _azleKind: 'AzleReserved' = 'AzleReserved';
+    static _azleKind: 'AzleKind' = 'AzleKind';
+
     static _azleCandidType?: '_azleCandidType';
 
     static toBytes(data: number): Uint8Array {

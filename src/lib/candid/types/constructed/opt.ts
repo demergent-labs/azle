@@ -36,7 +36,9 @@ export class AzleOpt<T> {
 
     innerType: CandidType;
     _azleCandidType?: '_azleCandidType';
+
     _azleKind: 'AzleOpt' = 'AzleOpt';
+    static _azleKind: 'AzleOpt' = 'AzleOpt';
 
     toBytes(data: number): Uint8Array {
         return encode(this, data);
