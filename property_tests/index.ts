@@ -34,7 +34,7 @@ export function runPropTests(testArb: fc.Arbitrary<TestSample>) {
 
             return await runTests(
                 canister.tests,
-                process.env.AZLE_PROPTEST_VERBOSE === undefined
+                process.env.AZLE_PROPTEST_VERBOSE !== 'true'
             );
         }),
         {

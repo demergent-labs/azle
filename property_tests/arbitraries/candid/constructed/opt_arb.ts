@@ -1,12 +1,12 @@
 import fc from 'fast-check';
 import { Candid, CandidType, CandidTypeArb } from '../../candid';
 
-type InnerOptArb = ['Some' | 'None', Candid<CandidType>];
+type BaseOpt = ['Some' | 'None', Candid<CandidType>];
 
 // This gives us a random Some or None, which means the default depth of all Opts is at least one
-const InnerOptArb = (arb: fc.Arbitrary<Candid<CandidType>>) => {
+const BaseOptArb = (arb: fc.Arbitrary<Candid<CandidType>>) => {
     return fc.constantFrom('Some', 'None').chain((keySample) => {
-        return arb.map((innerValueSample): InnerOptArb => {
+        return arb.map((innerValueSample): BaseOpt => {
             if (keySample === 'Some') {
                 return ['Some', innerValueSample];
             } else {
@@ -18,7 +18,7 @@ const InnerOptArb = (arb: fc.Arbitrary<Candid<CandidType>>) => {
 
 // TODO look into making this recursive
 // TODO we need to add all constructed and reference types
-export const PrimitiveOptArb = InnerOptArb(CandidTypeArb);
+export const PrimitiveOptArb = BaseOptArb(CandidTypeArb);
 
 type RecursiveOpt<T> = {
     base: T;
@@ -33,7 +33,7 @@ export const OptArb = fc
             base: PrimitiveOptArb,
             nextLayer: fc
                 .option(tie('RecursiveOptArb'), { maxDepth: 10 })
-                .map((sample) => sample as RecursiveOpt<InnerOptArb>)
+                .map((sample) => sample as RecursiveOpt<BaseOpt>)
         })
     }))
     .RecursiveOptArb.map((recursiveOptArb): Candid<Opt> => {
@@ -48,7 +48,7 @@ export const OptArb = fc
         };
     });
 
-function generateCandidType(recursiveOpt: RecursiveOpt<InnerOptArb>): string {
+function generateCandidType(recursiveOpt: RecursiveOpt<BaseOpt>): string {
     if (recursiveOpt.nextLayer === null) {
         // base case
         return `Opt(${recursiveOpt.base[1].src.candidType})`;
@@ -57,7 +57,7 @@ function generateCandidType(recursiveOpt: RecursiveOpt<InnerOptArb>): string {
     }
 }
 
-function generateImports(recursiveOpt: RecursiveOpt<InnerOptArb>): Set<string> {
+function generateImports(recursiveOpt: RecursiveOpt<BaseOpt>): Set<string> {
     if (recursiveOpt.nextLayer === null) {
         // base case
         return new Set([...recursiveOpt.base[1].src.imports, 'Opt']);
@@ -66,7 +66,7 @@ function generateImports(recursiveOpt: RecursiveOpt<InnerOptArb>): Set<string> {
     }
 }
 
-function generateValue(recursiveOpt: RecursiveOpt<InnerOptArb>): Opt {
+function generateValue(recursiveOpt: RecursiveOpt<BaseOpt>): Opt {
     if (recursiveOpt.nextLayer === null) {
         // base case
         if (recursiveOpt.base[0] === 'Some') {
@@ -79,7 +79,7 @@ function generateValue(recursiveOpt: RecursiveOpt<InnerOptArb>): Opt {
     }
 }
 
-function generateValueLiteral(recursiveOpt: RecursiveOpt<InnerOptArb>): string {
+function generateValueLiteral(recursiveOpt: RecursiveOpt<BaseOpt>): string {
     if (recursiveOpt.nextLayer === null) {
         // base case
         if (recursiveOpt.base[0] === 'Some') {
@@ -118,7 +118,7 @@ function calculateDepthAndValues(value: [any] | []): {
 }
 
 function getBaseEquals(
-    recursiveOpt: RecursiveOpt<InnerOptArb>
+    recursiveOpt: RecursiveOpt<BaseOpt>
 ): (a: any, b: any) => boolean {
     if (recursiveOpt.nextLayer === null) {
         // base case
