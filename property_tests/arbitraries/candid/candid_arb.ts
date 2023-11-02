@@ -1,6 +1,17 @@
 import fc from 'fast-check';
-import { Candid } from './';
 import { deepEqual } from 'fast-equals';
+
+// TODO we're thinking that Candid is not the best name for this. What is better?
+export type Candid<T> = {
+    value: T;
+    src: {
+        candidType: string;
+        typeDeclaration?: string;
+        imports: Set<string>;
+        valueLiteral: string;
+    };
+    equals(a: T, b: T): boolean;
+};
 
 export const CandidArb = <T>(
     arb: fc.Arbitrary<T>,

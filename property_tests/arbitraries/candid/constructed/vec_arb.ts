@@ -10,7 +10,7 @@ import { Nat16Arb } from '../primitive/nats/nat16_arb';
 import { Nat32Arb } from '../primitive/nats/nat32_arb';
 import { Nat64Arb } from '../primitive/nats/nat64_arb';
 import { PrincipalArb } from '../reference/principal_arb';
-import { Candid } from '..';
+import { Candid } from '../candid_arb';
 import { BoolArb } from '../primitive/bool';
 import { Float32Arb } from '../primitive/floats/float32_arb';
 import { Float64Arb } from '../primitive/floats/float64_arb';

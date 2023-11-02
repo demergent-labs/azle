@@ -8,7 +8,7 @@ import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { getActor, runPropTests } from '../../..';
 import { AzleResult, Test } from '../../../../test';
-import { Candid } from '../../../arbitraries/candid';
+import { Candid } from '../../../arbitraries/candid/candid_arb';
 
 const RecordTestArb = fc
     .tuple(

@@ -7,9 +7,9 @@ type IdentifiersMap = {
 let identifiers: IdentifiersMap = {};
 
 /**
- * An arbitrary for creating unique JS/Rust keyword-avoidant identifiers.
- * Generated identifiers are checked for uniqueness based on the provided key.
- * Duplicates may occur across groupings, but never within.
+ * An arbitrary for creating unique Rust-keyword-avoidant identifiers. Generated
+ * identifiers are checked for uniqueness based on the provided key. Duplicates
+ * may occur across groupings, but never within.
  * @param key the grouping in which to keep this identifier unique
  * @returns an arbitrary identifier string
  */

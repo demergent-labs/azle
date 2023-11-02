@@ -3,7 +3,7 @@ import { Principal } from '@dfinity/principal';
 
 import { PrincipalArb } from './principal_arb';
 import { VoidArb } from '../primitive/void';
-import { Candid, CandidType, CandidTypeArb } from '../../candid';
+import { Candid, CandidType, CandidTypeArb } from '../candid_type_arb';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 
 export type Func = [Principal, string];

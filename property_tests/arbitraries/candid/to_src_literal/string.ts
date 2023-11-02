@@ -6,5 +6,5 @@ function escapeStringForJavaScript(input: string) {
 }
 
 export function stringToSrcLiteral(value: string): string {
-    return `"${escapeStringForJavaScript(value)}"`;
+    return `'${escapeStringForJavaScript(value)}'`;
 }

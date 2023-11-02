@@ -6,7 +6,7 @@ import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { deepEqual } from 'fast-equals';
-import { Candid } from '../../../arbitraries/candid';
+import { Candid } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 
 const VecTestArb = fc

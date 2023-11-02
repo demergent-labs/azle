@@ -1,5 +1,6 @@
 import fc from 'fast-check';
-import { Candid, CandidType, CandidTypeArb } from '../../candid';
+import { CandidType, CandidTypeArb } from '../candid_type_arb';
+import { Candid } from '../candid_arb';
 
 type BaseOpt = ['Some' | 'None', Candid<CandidType>];
 

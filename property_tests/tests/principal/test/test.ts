@@ -1,14 +1,14 @@
 import fc from 'fast-check';
 import { deepEqual, shallowEqual } from 'fast-equals';
 
-import { arePrincipalsEqual } from '../../../are_equal';
+import { arePrincipalsEqual } from '../../../are_equal/principal';
 import { PrincipalArb } from '../../../arbitraries/candid/reference/principal_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { Principal } from '@dfinity/principal';
-import { Candid } from '../../../arbitraries/candid';
+import { Candid } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 
 const PrincipalTestArb = fc
