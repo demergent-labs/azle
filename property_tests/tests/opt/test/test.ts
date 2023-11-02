@@ -9,7 +9,7 @@ import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
-import { Candid } from '../../../arbitraries/candid/candid_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 
 const OptTestArb = fc
@@ -58,8 +58,8 @@ function isParamOpt(paramName: string): string {
 
 function generateBody(
     paramNames: string[],
-    paramOpts: Candid<Opt>[],
-    returnOpt: Candid<Opt>
+    paramOpts: CandidMeta<Opt>[],
+    returnOpt: CandidMeta<Opt>
 ): string {
     const areParamsOpts = paramNames
         .map((paramName) => {
@@ -93,8 +93,8 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    paramOpts: Candid<Opt>[],
-    returnOpt: Candid<Opt>
+    paramOpts: CandidMeta<Opt>[],
+    returnOpt: CandidMeta<Opt>
 ): Test {
     const expectedResult =
         paramOpts.length === 0 ? returnOpt.value : paramOpts[0].value;

@@ -5,7 +5,7 @@ import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
-import { Candid } from '../../../arbitraries/candid/candid_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 
 const NullTestArb = fc
@@ -41,7 +41,10 @@ const NullTestArb = fc
 
 runPropTests(NullTestArb);
 
-function generateBody(paramNames: string[], returnNull: Candid<null>): string {
+function generateBody(
+    paramNames: string[],
+    returnNull: CandidMeta<null>
+): string {
     const areAllNull = paramNames.reduce((acc, paramName) => {
         return `${acc} && ${paramName} === null`;
     }, 'true');
@@ -57,8 +60,8 @@ function generateBody(paramNames: string[], returnNull: Candid<null>): string {
 
 function generateTest(
     functionName: string,
-    paramNulls: Candid<null>[],
-    returnNull: Candid<null>
+    paramNulls: CandidMeta<null>[],
+    returnNull: CandidMeta<null>
 ): Test {
     return {
         name: `test ${functionName}`,

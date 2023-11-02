@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Candid } from '../candid_arb';
+import { CandidMeta } from '../candid_arb';
 import { CandidType, CandidTypeArb } from '../candid_type_arb';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
@@ -9,7 +9,7 @@ export type Record = {
     [x: string]: CandidType;
 };
 
-type Field = [string, Candid<CandidType>];
+type Field = [string, CandidMeta<CandidType>];
 
 export const RecordArb = fc
     .tuple(
@@ -18,7 +18,7 @@ export const RecordArb = fc
             selector: (entry) => entry[0]
         })
     )
-    .map(([name, fields]): Candid<Record> => {
+    .map(([name, fields]): CandidMeta<Record> => {
         const typeDeclaration = generateTypeDeclaration(name, fields);
 
         const imports = generateImports(fields);

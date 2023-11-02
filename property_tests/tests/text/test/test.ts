@@ -5,7 +5,7 @@ import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
-import { Candid } from '../../../arbitraries/candid/candid_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 
 const TextTestArb = fc
@@ -43,8 +43,8 @@ runPropTests(TextTestArb);
 
 function generateBody(
     paramNames: string[],
-    paramTexts: Candid<string>[],
-    returnText: Candid<string>
+    paramTexts: CandidMeta<string>[],
+    returnText: CandidMeta<string>
 ): string {
     const paramsAreStrings = paramNames
         .map((paramName) => {
@@ -75,8 +75,8 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    paramTexts: Candid<string>[],
-    returnTexts: Candid<string>
+    paramTexts: CandidMeta<string>[],
+    returnTexts: CandidMeta<string>
 ): Test {
     const expectedResult = paramTexts.reduce(
         (acc, text) => acc + text.value,

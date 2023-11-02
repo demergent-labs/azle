@@ -5,7 +5,7 @@ import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
-import { Candid } from '../../../arbitraries/candid/candid_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 
 const Int8TestArb = fc
@@ -43,8 +43,8 @@ runPropTests(Int8TestArb);
 
 function generateBody(
     paramNames: string[],
-    paramInt8s: Candid<number>[],
-    returnInt8: Candid<number>
+    paramInt8s: CandidMeta<number>[],
+    returnInt8: CandidMeta<number>
 ): string {
     const paramsAreNumbers = paramNames
         .map((paramName) => {
@@ -77,8 +77,8 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    paramInt8s: Candid<number>[],
-    returnInt8: Candid<number>
+    paramInt8s: CandidMeta<number>[],
+    returnInt8: CandidMeta<number>
 ): Test {
     const count = paramInt8s.length + 1;
     const expectedResult = Math.floor(

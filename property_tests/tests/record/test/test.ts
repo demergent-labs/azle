@@ -8,7 +8,7 @@ import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { getActor, runPropTests } from '../../..';
 import { AzleResult, Test } from '../../../../test';
-import { Candid } from '../../../arbitraries/candid/candid_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 
 const RecordTestArb = fc
     .tuple(
@@ -58,8 +58,8 @@ const RecordTestArb = fc
 runPropTests(RecordTestArb);
 
 function generateBody(
-    paramRecords: Candid<Record>[],
-    returnRecord: Candid<Record>
+    paramRecords: CandidMeta<Record>[],
+    returnRecord: CandidMeta<Record>
 ): string {
     const paramsAreRecords = paramRecords
         .map((record, index) => {
@@ -108,8 +108,8 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    paramRecords: Candid<Record>[],
-    returnRecord: Candid<Record>
+    paramRecords: CandidMeta<Record>[],
+    returnRecord: CandidMeta<Record>
 ): Test {
     return {
         name: `record ${functionName}`,

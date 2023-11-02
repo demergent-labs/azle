@@ -5,7 +5,7 @@ import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
-import { Candid } from '../../../arbitraries/candid/candid_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 
 const BlobTestArb = fc
@@ -39,8 +39,8 @@ runPropTests(BlobTestArb);
 
 function generateBody(
     paramNames: string[],
-    paramBlobs: Candid<Uint8Array>[],
-    returnBlob: Candid<Uint8Array>
+    paramBlobs: CandidMeta<Uint8Array>[],
+    returnBlob: CandidMeta<Uint8Array>
 ): string {
     // TODO these checks should be much more precise probably, imagine checking the elements inside of the arrays
     const paramsAreUint8Arrays = paramNames
@@ -77,8 +77,8 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    paramBlobs: Candid<Uint8Array>[],
-    returnBlob: Candid<Uint8Array>
+    paramBlobs: CandidMeta<Uint8Array>[],
+    returnBlob: CandidMeta<Uint8Array>
 ): Test {
     const expectedResult = Uint8Array.from(
         paramBlobs

@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { getActor, runPropTests } from '../../..';
-import { Candid } from '../../../arbitraries/candid/candid_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { FuncArb, Func } from '../../../arbitraries/candid/reference/func_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
@@ -61,7 +61,10 @@ const FuncTestArb = fc
 
 runPropTests(FuncTestArb);
 
-function generateBody(funcs: Candid<Func>[], returnFunc: Candid<Func>): string {
+function generateBody(
+    funcs: CandidMeta<Func>[],
+    returnFunc: CandidMeta<Func>
+): string {
     const paramsAreFuncs = funcs
         .map((_, index) => {
             const paramName = `param${index}`;
@@ -112,8 +115,8 @@ function generateBody(funcs: Candid<Func>[], returnFunc: Candid<Func>): string {
 
 function generateTest(
     functionName: string,
-    funcs: Candid<Func>[],
-    returnFunc: Candid<Func>
+    funcs: CandidMeta<Func>[],
+    returnFunc: CandidMeta<Func>
 ): Test {
     return {
         name: `func ${functionName}`,

@@ -1,9 +1,9 @@
 import fc from 'fast-check';
 import { Principal } from '@dfinity/principal';
-import { CandidArb } from '../candid_arb';
+import { CandidMetaArb } from '../candid_arb';
 import { principalToSrcLiteral } from '../to_src_literal/principal';
 
-export const PrincipalArb = CandidArb(
+export const PrincipalArb = CandidMetaArb(
     fc
         .uint8Array({
             minLength: 29,

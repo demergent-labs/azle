@@ -8,7 +8,7 @@ import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { Principal } from '@dfinity/principal';
-import { Candid } from '../../../arbitraries/candid/candid_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 
 const PrincipalTestArb = fc
@@ -62,8 +62,8 @@ runPropTests(PrincipalTestArb);
 
 function generateBody(
     paramNames: string[],
-    paramPrincipals: Candid<Principal>[],
-    returnPrincipal: Candid<Principal>
+    paramPrincipals: CandidMeta<Principal>[],
+    returnPrincipal: CandidMeta<Principal>
 ): string {
     const paramsArePrincipals = paramNames
         .map((paramName) => {
@@ -98,8 +98,8 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    paramPrincipals: Candid<Principal>[],
-    returnPrincipal: Candid<Principal>
+    paramPrincipals: CandidMeta<Principal>[],
+    returnPrincipal: CandidMeta<Principal>
 ): Test {
     const expectedResult =
         paramPrincipals.length > 0

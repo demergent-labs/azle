@@ -5,7 +5,7 @@ import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
-import { Candid } from '../../../arbitraries/candid/candid_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 
 const BoolTestArb = fc
@@ -43,8 +43,8 @@ runPropTests(BoolTestArb);
 
 function generateBody(
     paramNames: string[],
-    paramBools: Candid<boolean>[],
-    returnBool: Candid<boolean>
+    paramBools: CandidMeta<boolean>[],
+    returnBool: CandidMeta<boolean>
 ): string {
     // TODO do we want to encapsulate 'boolean' in the CandidArb? Like an agentType instead of a candidType, like azleValue and agentValue?
     // TODO or will this not matter anymore once we start using a deep equal library
@@ -76,8 +76,8 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    paramBools: Candid<boolean>[],
-    returnBool: Candid<boolean>
+    paramBools: CandidMeta<boolean>[],
+    returnBool: CandidMeta<boolean>
 ): Test {
     const expectedResult = paramBools.reduce(
         (acc, bool) => acc && bool.value,

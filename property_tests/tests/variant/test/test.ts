@@ -7,7 +7,7 @@ import {
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
-import { Candid } from '../../../arbitraries/candid/candid_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 
 const VariantTestArb = fc
@@ -68,8 +68,8 @@ runPropTests(VariantTestArb);
 
 function generateBody(
     paramNames: string[],
-    paramVariants: Candid<Variant>[],
-    returnVariant: Candid<Variant>
+    paramVariants: CandidMeta<Variant>[],
+    returnVariant: CandidMeta<Variant>
 ): string {
     const paramsAreVariants = paramNames
         .map((paramName) => {
@@ -102,8 +102,8 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    paramVariants: Candid<Variant>[],
-    returnVariant: Candid<Variant>
+    paramVariants: CandidMeta<Variant>[],
+    returnVariant: CandidMeta<Variant>
 ): Test {
     const expectedResult = paramVariants[0]?.value ?? returnVariant.value;
     const equals =

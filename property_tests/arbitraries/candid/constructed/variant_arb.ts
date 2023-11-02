@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { Candid } from '../candid_arb';
+import { CandidMeta } from '../candid_arb';
 import { CandidType, CandidTypeArb } from '../candid_type_arb';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
@@ -7,7 +7,7 @@ import { JsFunctionNameArb } from '../../js_function_name_arb';
 export type Variant = {
     [x: string]: CandidType;
 };
-type Field = [string, Candid<CandidType>];
+type Field = [string, CandidMeta<CandidType>];
 
 export const VariantArb = fc
     .tuple(
@@ -20,7 +20,7 @@ export const VariantArb = fc
             // an empty object.
         })
     )
-    .map(([name, fields]): Candid<Variant> => {
+    .map(([name, fields]): CandidMeta<Variant> => {
         const randomIndex = Math.floor(Math.random() * fields.length);
 
         const typeDeclaration = generateTypeDeclaration(name, fields);

@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Candid } from '../candid_arb';
+import { CandidMeta } from '../candid_arb';
 import { CandidType, CandidTypeArb } from '../candid_type_arb';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 
@@ -8,7 +8,7 @@ export type Tuple = CandidType[];
 
 export const TupleArb = fc
     .tuple(UniqueIdentifierArb('typeDeclaration'), fc.array(CandidTypeArb))
-    .map(([name, fields]): Candid<Tuple> => {
+    .map(([name, fields]): CandidMeta<Tuple> => {
         const innerTypes = fields.map((field) => field.src.candidType);
 
         const typeDeclaration = `const ${name} = Tuple(${innerTypes.join(
@@ -35,12 +35,12 @@ export const TupleArb = fc
         };
     });
 
-function generateImports(fields: Candid<CandidType>[]): Set<string> {
+function generateImports(fields: CandidMeta<CandidType>[]): Set<string> {
     const fieldImports = fields.flatMap((field) => [...field.src.imports]);
     return new Set([...fieldImports, 'Tuple']);
 }
 
-function generateValueLiteral(fields: Candid<CandidType>[]) {
+function generateValueLiteral(fields: CandidMeta<CandidType>[]) {
     const fieldLiterals = fields
         .map((field) => field.src.valueLiteral)
         .join(',\n');
@@ -51,7 +51,7 @@ function generateValueLiteral(fields: Candid<CandidType>[]) {
 }
 
 function generateEqualsMethod(
-    fields: Candid<CandidType>[]
+    fields: CandidMeta<CandidType>[]
 ): (a: Tuple, b: Tuple) => boolean {
     return (a: Tuple, b: Tuple): boolean => {
         if (typeof a !== typeof b) {

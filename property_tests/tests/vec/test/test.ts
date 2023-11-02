@@ -6,7 +6,7 @@ import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { deepEqual } from 'fast-equals';
-import { Candid } from '../../../arbitraries/candid/candid_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 
 const VecTestArb = fc
@@ -61,8 +61,8 @@ function blobsAreEqual(arr1: Uint8Array, arr2: Uint8Array) {
 
 function generateBody(
     paramNames: string[],
-    paramVecs: Candid<any>[],
-    returnVec: Candid<any>
+    paramVecs: CandidMeta<any>[],
+    returnVec: CandidMeta<any>
 ): string {
     // TODO these checks should be much more precise probably, imagine checking the elements inside of the arrays
     const paramsAreArrays = paramNames
@@ -93,8 +93,8 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    paramVecs: Candid<any>[],
-    returnVec: Candid<any>
+    paramVecs: CandidMeta<any>[],
+    returnVec: CandidMeta<any>
 ): Test {
     const expectedResult = paramVecs[0]?.value ?? returnVec.value;
     const equals = paramVecs[0]?.equals ?? returnVec.equals;

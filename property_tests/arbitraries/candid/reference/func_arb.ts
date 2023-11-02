@@ -3,7 +3,7 @@ import { Principal } from '@dfinity/principal';
 
 import { PrincipalArb } from './principal_arb';
 import { VoidArb } from '../primitive/void';
-import { Candid } from '../candid_arb';
+import { CandidMeta } from '../candid_arb';
 import { CandidType, CandidTypeArb } from '../candid_type_arb';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 
@@ -24,7 +24,7 @@ export const FuncArb = (
             PrincipalArb
         );
     })
-    .map(([name, params, returnFunc, mode, principal]): Candid<Func> => {
+    .map(([name, params, returnFunc, mode, principal]): CandidMeta<Func> => {
         const typeDeclaration = generateTypeDeclaration(
             name,
             params,
@@ -56,7 +56,7 @@ export const FuncArb = (
 
 function generateTypeDeclaration(
     name: string,
-    paramCandids: Candid<CandidType>[],
+    paramCandids: CandidMeta<CandidType>[],
     returnType: string,
     mode: Mode
 ): string {

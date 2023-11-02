@@ -1,11 +1,11 @@
 import fc from 'fast-check';
 import { CandidType, CandidTypeArb } from '../candid_type_arb';
-import { Candid } from '../candid_arb';
+import { CandidMeta } from '../candid_arb';
 
 type SomeOrNone = 'Some' | 'None';
 type Base = {
     someOrNone: SomeOrNone;
-    candid: Candid<CandidType>;
+    candid: CandidMeta<CandidType>;
 };
 
 type RecursiveOpt<T> = { base: T } | { nextLayer: RecursiveOpt<T> };
@@ -34,7 +34,7 @@ export const OptArb = fc
             })
         )
     }))
-    .RecursiveOptArb.map((recursiveOptArb): Candid<Opt> => {
+    .RecursiveOptArb.map((recursiveOptArb): CandidMeta<Opt> => {
         return {
             src: {
                 candidType: generateCandidType(recursiveOptArb),

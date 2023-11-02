@@ -8,7 +8,7 @@ import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { getActor, runPropTests } from '../../..';
 import { AzleResult, Test } from '../../../../test';
-import { Candid } from '../../../arbitraries/candid/candid_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 
 const TupleTestArb = fc
     .tuple(
@@ -58,8 +58,8 @@ const TupleTestArb = fc
 runPropTests(TupleTestArb);
 
 function generateBody(
-    paramTuples: Candid<Tuple>[],
-    returnTuple: Candid<Tuple>
+    paramTuples: CandidMeta<Tuple>[],
+    returnTuple: CandidMeta<Tuple>
 ): string {
     const paramsAreTuples = paramTuples
         .map((tuple, index) => {
@@ -100,8 +100,8 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    paramTuples: Candid<Tuple>[],
-    returnTuple: Candid<Tuple>
+    paramTuples: CandidMeta<Tuple>[],
+    returnTuple: CandidMeta<Tuple>
 ): Test {
     const expectedResult = returnTuple.value;
 

@@ -10,7 +10,7 @@ import { Nat16Arb } from '../primitive/nats/nat16_arb';
 import { Nat32Arb } from '../primitive/nats/nat32_arb';
 import { Nat64Arb } from '../primitive/nats/nat64_arb';
 import { PrincipalArb } from '../reference/principal_arb';
-import { Candid } from '../candid_arb';
+import { CandidMeta } from '../candid_arb';
 import { BoolArb } from '../primitive/bool';
 import { Float32Arb } from '../primitive/floats/float32_arb';
 import { Float64Arb } from '../primitive/floats/float64_arb';
@@ -18,32 +18,37 @@ import { NullArb } from '../primitive/null';
 import { TextArb } from '../primitive/text';
 import { deepEqual } from 'fast-equals';
 import { BlobArb } from './blob_arb';
+import { CandidType } from '../candid_type_arb';
 
-const VecInnerArb = <T>(arb: fc.Arbitrary<Candid<T>>) => {
-    return fc.tuple(fc.array(arb), arb).map(([sample, src]): Candid<T[]> => {
-        const equals = generateEquals(sample);
-        const valueLiteral = generateValueLiteral(sample);
+const VecInnerArb = <T extends CandidType>(
+    arb: fc.Arbitrary<CandidMeta<T>>
+) => {
+    return fc
+        .tuple(fc.array(arb), arb)
+        .map(([sample, src]): CandidMeta<T[]> => {
+            const equals = generateEquals(sample);
+            const valueLiteral = generateValueLiteral(sample);
 
-        return {
-            value: sample.map((sample) => sample.value),
-            src: {
-                candidType: `Vec(${src.src.candidType})`,
-                imports: new Set([...src.src.imports, 'Vec']),
-                valueLiteral
-            },
-            equals
-        };
-    });
+            return {
+                value: sample.map((sample) => sample.value),
+                src: {
+                    candidType: `Vec(${src.src.candidType})`,
+                    imports: new Set([...src.src.imports, 'Vec']),
+                    valueLiteral
+                },
+                equals
+            };
+        });
 };
 
-function generateValueLiteral<T>(sample: Candid<T>[]) {
+function generateValueLiteral<T extends CandidType>(sample: CandidMeta<T>[]) {
     const valueLiterals = sample
         .map((sample) => sample.src.valueLiteral)
         .join(',');
     return `[${valueLiterals}]`;
 }
 
-function generateEquals<T>(sample: Candid<T>[]) {
+function generateEquals<T extends CandidType>(sample: CandidMeta<T>[]) {
     return (a: T[], b: T[]) =>
         arraysAreEqual(a, b, sample[0]?.equals ?? deepEqual);
 }

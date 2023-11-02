@@ -17,9 +17,12 @@ import { Float32Arb } from './primitive/floats/float32_arb';
 import { Float64Arb } from './primitive/floats/float64_arb';
 import { TextArb } from './primitive/text';
 import { BlobArb } from './constructed/blob_arb';
-import { Candid } from './candid_arb';
+import { CandidMeta } from './candid_arb';
 import { Func } from './reference/func_arb';
 import { Opt } from './constructed/opt_arb';
+import { Variant } from './constructed/variant_arb';
+import { Record } from './constructed/record_arb';
+import { Tuple } from './constructed/tuple_arb';
 
 export type CandidType =
     | number
@@ -30,14 +33,18 @@ export type CandidType =
     | Uint8Array
     | string
     | Func
-    | Opt;
+    | Opt
+    | Variant
+    | Record
+    | Tuple
+    | undefined;
 
 /**
  * An arbitrary representing all possible Candid types.
  *
  * **Note:** This currently only supports ints, nats, and null arbitraries
  */
-export const CandidTypeArb: fc.Arbitrary<Candid<CandidType>> = fc.oneof(
+export const CandidTypeArb: fc.Arbitrary<CandidMeta<CandidType>> = fc.oneof(
     Float32Arb,
     Float64Arb,
     IntArb,

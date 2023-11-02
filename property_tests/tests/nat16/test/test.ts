@@ -5,7 +5,7 @@ import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
-import { Candid } from '../../../arbitraries/candid/candid_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 
 const Nat16TestArb = fc
@@ -47,8 +47,8 @@ runPropTests(Nat16TestArb);
 
 function generateBody(
     paramNames: string[],
-    paramNat16s: Candid<number>[],
-    returnNat16: Candid<number>
+    paramNat16s: CandidMeta<number>[],
+    returnNat16: CandidMeta<number>
 ): string {
     const paramsAreNumbers = paramNames
         .map((paramName) => {
@@ -80,8 +80,8 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    paramNat16s: Candid<number>[],
-    returnNat16: Candid<number>
+    paramNat16s: CandidMeta<number>[],
+    returnNat16: CandidMeta<number>
 ): Test {
     const count = paramNat16s.length + 1;
     const expectedResult = Math.floor(
