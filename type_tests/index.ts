@@ -6,7 +6,7 @@ import {
     Record,
     Serializable,
     Void
-} from 'azle';
+} from '../src/lib';
 import { CandidType } from '../src/lib/candid/candid_type';
 import { expectTypeOf } from 'expect-type';
 import { TypeMapping } from '../src/lib/candid/type_mapping';

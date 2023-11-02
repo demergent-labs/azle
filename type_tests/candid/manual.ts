@@ -1,4 +1,4 @@
-import { text, Manual } from 'azle';
+import { text, Manual } from '../../src/lib';
 import { CandidType } from '../../src/lib/candid/candid_type';
 import { typeMapping } from '../';
 

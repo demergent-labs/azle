@@ -20,7 +20,7 @@ import {
     reserved,
     text,
     Void
-} from 'azle';
+} from '../../../src/lib';
 
 export const ExampleRecord = Record({
     bool: bool,

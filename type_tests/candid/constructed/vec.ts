@@ -1,4 +1,4 @@
-import { nat8, nat16, text, Vec } from 'azle';
+import { nat8, nat16, text, Vec } from '../../../src/lib';
 import { CandidType } from '../../../src/lib/candid/candid_type';
 import { typeMapping } from '../..';
 
