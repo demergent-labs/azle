@@ -82,7 +82,7 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
                   : 10
           >;
       }
-    : T extends AzleVec<AzleNat8> // TODO this isn't correct. It's capturing everything that's an AzleVec not just AzleVec<AzleNat8>
+    : T extends AzleVec<AzleNat8>
     ? Uint8Array
     : T extends AzleVec<infer U>
     ? TypeMapping<U>[]
