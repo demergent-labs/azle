@@ -1,70 +1,109 @@
 import fc from 'fast-check';
+
 import { Int16Arb } from '../../../arbitraries/candid/primitive/ints/int16_arb';
-import { getActor } from '../../../get_actor';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { runPropTests } from '../../..';
+import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
+import { Test } from '../../../../test';
 
 const Int16TestArb = fc
-    .tuple(createUniquePrimitiveArb(JsFunctionNameArb), fc.array(Int16Arb))
-    .map(([functionName, int16s]) => {
-        const paramCandidTypes = int16s.map(() => 'int16').join(', ');
-        const returnCandidType = 'int16';
-        const paramNames = int16s.map((_, index) => `param${index}`);
+    .tuple(
+        createUniquePrimitiveArb(JsFunctionNameArb),
+        fc.array(Int16Arb),
+        Int16Arb
+    )
+    .map(([functionName, paramInt16s, defaultReturnInt16]): TestSample => {
+        const imports = defaultReturnInt16.src.imports;
 
-        const paramsAreNumbers = paramNames
-            .map((paramName) => {
-                return `if (typeof ${paramName} !== 'number') throw new Error('${paramName} must be a number');`;
-            })
-            .join('\n');
+        const paramNames = paramInt16s.map((_, index) => `param${index}`);
+        const paramCandidTypes = paramInt16s
+            .map((int16) => int16.src.candidType)
+            .join(', ');
 
-        const paramsSum = paramNames.reduce((acc, paramName) => {
-            return `${acc} + ${paramName}`;
-        }, '0');
+        const returnCandidType = defaultReturnInt16.src.candidType;
 
-        const length = int16s.length === 0 ? 1 : int16s.length;
+        const body = generateBody(paramNames, paramInt16s, defaultReturnInt16);
 
-        const returnStatement = `Math.floor((${paramsSum}) / ${length})`;
-
-        const expectedResult = Math.floor(
-            int16s.reduce((acc, int16) => acc + int16, 0) / length
+        const test = generateTest(
+            functionName,
+            paramInt16s,
+            defaultReturnInt16
         );
 
-        const paramSamples = int16s;
-
-        const paramsCorrectlyOrdered = paramNames
-            .map((paramName, index) => {
-                return `if (${paramName} !== ${paramSamples[index]}) throw new Error('${paramName} is incorrectly ordered')`;
-            })
-            .join('\n');
-
         return {
+            imports,
             functionName,
-            imports: ['int16'],
+            paramNames,
             paramCandidTypes,
             returnCandidType,
-            paramNames,
-            paramSamples,
-            body: `
-            ${paramsCorrectlyOrdered}
-
-            ${paramsAreNumbers}
-
-            return ${returnStatement};
-        `,
-            test: {
-                name: `test ${functionName}`,
-                test: async () => {
-                    const actor = getActor('./tests/int16/test');
-
-                    const result = await actor[functionName](...int16s);
-
-                    return {
-                        Ok: result === expectedResult
-                    };
-                }
-            }
+            body,
+            test
         };
     });
 
 runPropTests(Int16TestArb);
+
+function generateBody(
+    paramNames: string[],
+    paramInt16s: CandidMeta<number>[],
+    returnInt16: CandidMeta<number>
+): string {
+    const paramsAreNumbers = paramNames
+        .map((paramName) => {
+            return `if (typeof ${paramName} !== 'number') throw new Error('${paramName} must be a number');`;
+        })
+        .join('\n');
+
+    const paramValueLiterals = paramInt16s.map(
+        (sample) => sample.src.valueLiteral
+    );
+    const paramsCorrectlyOrdered = paramNames
+        .map((paramName, index) => {
+            return `if (${paramName} !== ${paramValueLiterals[index]}) throw new Error('${paramName} is incorrectly ordered')`;
+        })
+        .join('\n');
+
+    const sum = paramNames.reduce((acc, paramName) => {
+        return `${acc} + ${paramName}`;
+    }, returnInt16.src.valueLiteral);
+    const count = paramInt16s.length + 1;
+    const average = `Math.floor((${sum}) / ${count})`;
+
+    return `
+        ${paramsAreNumbers}
+
+        ${paramsCorrectlyOrdered}
+
+        return ${average};
+    `;
+}
+
+function generateTest(
+    functionName: string,
+    paramInt16s: CandidMeta<number>[],
+    returnInt16: CandidMeta<number>
+): Test {
+    const count = paramInt16s.length + 1;
+    const expectedResult = Math.floor(
+        paramInt16s.reduce(
+            (acc, int16) => acc + int16.value,
+            returnInt16.value
+        ) / count
+    );
+    const paramValues = paramInt16s.map((sample) => sample.value);
+
+    return {
+        name: `int16 ${functionName}`,
+        test: async () => {
+            const actor = getActor('./tests/int16/test');
+
+            const result = await actor[functionName](...paramValues);
+
+            return {
+                Ok: returnInt16.equals(result, expectedResult)
+            };
+        }
+    };
+}

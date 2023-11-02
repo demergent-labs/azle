@@ -1,20 +1,11 @@
 import fc from 'fast-check';
-import { createQueryMethodArb } from './query_method_arb';
+import { QueryMethodArb } from './query_method_arb';
 import { Test } from '../../test';
+import { TestSample } from './test_sample_arb';
 
-export type TestSample = {
-    functionName: string;
-    imports: string[];
-    paramCandidTypes: string;
-    returnCandidType: string;
-    paramNames: string[];
-    body: string;
-    test: any;
-};
-
-export function createCanisterArb(testArb: fc.Arbitrary<TestSample>) {
+export function CanisterArb(testArb: fc.Arbitrary<TestSample>) {
     return fc
-        .array(createQueryMethodArb(testArb), {
+        .array(QueryMethodArb(testArb), {
             minLength: 20, // TODO work on these
             maxLength: 100
         })
@@ -22,6 +13,13 @@ export function createCanisterArb(testArb: fc.Arbitrary<TestSample>) {
             const queryMethodSourceCodes = queryMethods.map(
                 (queryMethod) => queryMethod.sourceCode
             );
+
+            const candidTypeDeclarations = queryMethods
+                .map(
+                    (queryMethod) =>
+                        queryMethod.candidTypeDeclarations?.join('\n') ?? ''
+                )
+                .join('\n');
 
             const imports = [
                 ...new Set(
@@ -38,7 +36,9 @@ export function createCanisterArb(testArb: fc.Arbitrary<TestSample>) {
             return {
                 sourceCode: `
     import { Canister, query, ${imports.join(', ')} } from 'azle';
-    
+
+    ${candidTypeDeclarations}
+
     export default Canister({
         ${queryMethodSourceCodes.join(',\n    ')}
     });`,

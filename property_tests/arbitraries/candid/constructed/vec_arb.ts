@@ -9,38 +9,86 @@ import { Nat8Arb } from '../primitive/nats/nat8_arb';
 import { Nat16Arb } from '../primitive/nats/nat16_arb';
 import { Nat32Arb } from '../primitive/nats/nat32_arb';
 import { Nat64Arb } from '../primitive/nats/nat64_arb';
+import { PrincipalArb } from '../reference/principal_arb';
+import { CandidMeta } from '../candid_arb';
+import { BoolArb } from '../primitive/bool';
+import { Float32Arb } from '../primitive/floats/float32_arb';
+import { Float64Arb } from '../primitive/floats/float64_arb';
+import { NullArb } from '../primitive/null';
+import { TextArb } from '../primitive/text';
+import { deepEqual } from 'fast-equals';
+import { BlobArb } from './blob_arb';
+import { CandidType } from '../candid_type_arb';
 
-// TODO look into making this recursive
-// TODO we want to be able to have vecs of vecs
-// TODO we need to add all constructed and reference types
+const VecInnerArb = <T extends CandidType>(
+    arb: fc.Arbitrary<CandidMeta<T>>
+) => {
+    return fc
+        .tuple(fc.array(arb), arb)
+        .map(([sample, src]): CandidMeta<T[]> => {
+            const equals = generateEquals(sample);
+            const valueLiteral = generateValueLiteral(sample);
+
+            return {
+                value: sample.map((sample) => sample.value),
+                src: {
+                    candidType: `Vec(${src.src.candidType})`,
+                    imports: new Set([...src.src.imports, 'Vec']),
+                    valueLiteral
+                },
+                equals
+            };
+        });
+};
+
+function generateValueLiteral<T extends CandidType>(sample: CandidMeta<T>[]) {
+    const valueLiterals = sample
+        .map((sample) => sample.src.valueLiteral)
+        .join(',');
+    return `[${valueLiterals}]`;
+}
+
+function generateEquals<T extends CandidType>(sample: CandidMeta<T>[]) {
+    return (a: T[], b: T[]) =>
+        arraysAreEqual(a, b, sample[0]?.equals ?? deepEqual);
+}
+
 export const VecArb = fc.oneof(
-    fc.array(IntArb).map((sample) => createVecArbWrapper(sample, 'Vec(int)')),
-    fc.array(Int8Arb).map((sample) => createVecArbWrapper(sample, 'Vec(int8)')),
-    fc
-        .array(Int16Arb)
-        .map((sample) => createVecArbWrapper(sample, 'Vec(int16)')),
-    fc
-        .array(Int32Arb)
-        .map((sample) => createVecArbWrapper(sample, 'Vec(int32)')),
-    fc
-        .array(Int64Arb)
-        .map((sample) => createVecArbWrapper(sample, 'Vec(int64)')),
-    fc.array(NatArb).map((sample) => createVecArbWrapper(sample, 'Vec(nat)')),
-    fc.array(Nat8Arb).map((sample) => createVecArbWrapper(sample, 'Vec(nat8)')),
-    fc
-        .array(Nat16Arb)
-        .map((sample) => createVecArbWrapper(sample, 'Vec(nat16)')),
-    fc
-        .array(Nat32Arb)
-        .map((sample) => createVecArbWrapper(sample, 'Vec(nat32)')),
-    fc
-        .array(Nat64Arb)
-        .map((sample) => createVecArbWrapper(sample, 'Vec(nat64)'))
+    VecInnerArb(Float32Arb),
+    VecInnerArb(Float64Arb),
+    VecInnerArb(IntArb),
+    VecInnerArb(Int8Arb),
+    VecInnerArb(Int16Arb),
+    VecInnerArb(Int32Arb),
+    VecInnerArb(Int64Arb),
+    VecInnerArb(NatArb),
+    VecInnerArb(Nat8Arb),
+    VecInnerArb(Nat16Arb),
+    VecInnerArb(Nat32Arb),
+    VecInnerArb(Nat64Arb),
+    VecInnerArb(BoolArb),
+    VecInnerArb(TextArb),
+    VecInnerArb(PrincipalArb),
+    VecInnerArb(BlobArb)
+    // VecInnerArb(NullArb)
 );
 
-function createVecArbWrapper(sample: any[], candidType: string) {
-    return {
-        vec: sample,
-        candidType
-    };
+function arraysAreEqual<T>(
+    arr1: T[],
+    arr2: T[],
+    equals: (a: T, b: T) => boolean
+) {
+    // Check if both arrays have the same length
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+
+    // Loop through each element to check for equality
+    for (let i = 0; i < arr1.length; i++) {
+        if (!equals(arr1[i], arr2[i])) {
+            return false;
+        }
+    }
+
+    return true;
 }

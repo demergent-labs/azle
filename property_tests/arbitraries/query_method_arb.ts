@@ -1,23 +1,36 @@
 import fc from 'fast-check';
-import { TestSample } from './canister_arb';
+import { TestSample } from './test_sample_arb';
+import { Test } from '../../test';
 
-export function createQueryMethodArb(testArb: fc.Arbitrary<TestSample>) {
-    return testArb.map((testSample) => {
-        const paramNames = testSample.paramNames;
-        const paramCandidTypes = testSample.paramCandidTypes;
-        const returnCandidType = testSample.returnCandidType;
-        const body = testSample.body;
-        const functionName = testSample.functionName;
+type QueryMethod = {
+    sourceCode: string;
+    test: Test;
+    imports: Set<string>;
+    candidTypeDeclarations: string[] | undefined;
+};
+
+export function QueryMethodArb(testArb: fc.Arbitrary<TestSample>) {
+    return testArb.map((testSample): QueryMethod => {
+        const {
+            paramNames,
+            paramCandidTypes,
+            returnCandidType,
+            body,
+            functionName,
+            test,
+            imports,
+            candidTypeDeclarations
+        } = testSample;
 
         return {
-            name: functionName,
             sourceCode: `${functionName}: query([${paramCandidTypes}], ${returnCandidType}, (${paramNames.join(
                 ', '
             )}) => {
                     ${body}
                 })`,
-            test: testSample.test,
-            imports: testSample.imports
+            test,
+            imports,
+            candidTypeDeclarations
         };
     });
 }
