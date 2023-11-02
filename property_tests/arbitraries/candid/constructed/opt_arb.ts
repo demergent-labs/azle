@@ -58,7 +58,12 @@ function generateCandidType(recursiveOpt: RecursiveOpt<Base>): string {
 function generateImports(recursiveOpt: RecursiveOpt<Base>): Set<string> {
     if ('base' in recursiveOpt) {
         // base case
-        return new Set([...recursiveOpt.base.candid.src.imports, 'Opt']);
+        return new Set([
+            ...recursiveOpt.base.candid.src.imports,
+            'Opt',
+            'Some',
+            'None'
+        ]);
     } else {
         return generateImports(recursiveOpt.nextLayer);
     }
@@ -81,14 +86,12 @@ function generateValueLiteral(recursiveOpt: RecursiveOpt<Base>): string {
     if ('base' in recursiveOpt) {
         // base case
         if (recursiveOpt.base.someOrNone === 'Some') {
-            return `{Some: ${recursiveOpt.base.candid.src.valueLiteral}}`;
+            return `Some(${recursiveOpt.base.candid.src.valueLiteral})`;
         } else {
-            return `{None: null}`;
+            return `None`;
         }
     } else {
-        return `{
-            Some: ${generateValueLiteral(recursiveOpt.nextLayer)}
-        }`;
+        return `Some(${generateValueLiteral(recursiveOpt.nextLayer)})`;
     }
 }
 
