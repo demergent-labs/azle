@@ -218,10 +218,6 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
-              run: npx tsc --noEmit
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
               run: AZLE_NUM_PROPTEST_RUNS=10 npm test
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && contains(github.head_ref, 'release--') }}
               shell: bash -l {0}
@@ -231,6 +227,10 @@ jobs:
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
               run: AZLE_NUM_PROPTEST_RUNS=100 npm test
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              shell: bash -l {0}
+              working-directory: ${{ matrix.example_directories }}
+              run: npx tsc --noEmit
 
     check-basic-integration-tests-success:
         needs: basic-integration-tests

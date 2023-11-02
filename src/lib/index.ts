@@ -1,4 +1,5 @@
 import './globals';
+import '../../type_tests';
 export * from './candid';
 export * from './canister_methods';
 export * from './ic';
