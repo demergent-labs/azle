@@ -3,7 +3,10 @@ import { CandidType, CandidTypeArb } from '../candid_type_arb';
 import { Candid } from '../candid_arb';
 
 type SomeOrNone = 'Some' | 'None';
-type Base = [SomeOrNone, Candid<CandidType>];
+type Base = {
+    someOrNone: SomeOrNone;
+    candid: Candid<CandidType>;
+};
 
 type RecursiveOpt<T> = { base: T } | { nextLayer: RecursiveOpt<T> };
 
@@ -11,10 +14,12 @@ export type Opt = [CandidType | Opt] | never[];
 
 // TODO look into making this recursive
 // TODO we need to add all constructed and reference types
-const BaseArb = fc.tuple(
-    fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>,
-    CandidTypeArb
-);
+const BaseArb = fc
+    .tuple(
+        fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>,
+        CandidTypeArb
+    )
+    .map(([someOrNone, candid]) => ({ someOrNone, candid }) as Base);
 
 export const OptArb = fc
     .letrec((tie) => ({
@@ -44,7 +49,7 @@ export const OptArb = fc
 function generateCandidType(recursiveOpt: RecursiveOpt<Base>): string {
     if ('base' in recursiveOpt) {
         // base case
-        return `Opt(${recursiveOpt.base[1].src.candidType})`;
+        return `Opt(${recursiveOpt.base.candid.src.candidType})`;
     } else {
         return `Opt(${generateCandidType(recursiveOpt.nextLayer)})`;
     }
@@ -53,7 +58,7 @@ function generateCandidType(recursiveOpt: RecursiveOpt<Base>): string {
 function generateImports(recursiveOpt: RecursiveOpt<Base>): Set<string> {
     if ('base' in recursiveOpt) {
         // base case
-        return new Set([...recursiveOpt.base[1].src.imports, 'Opt']);
+        return new Set([...recursiveOpt.base.candid.src.imports, 'Opt']);
     } else {
         return generateImports(recursiveOpt.nextLayer);
     }
@@ -62,8 +67,8 @@ function generateImports(recursiveOpt: RecursiveOpt<Base>): Set<string> {
 function generateValue(recursiveOpt: RecursiveOpt<Base>): Opt {
     if ('base' in recursiveOpt) {
         // base case
-        if (recursiveOpt.base[0] === 'Some') {
-            return [recursiveOpt.base[1].value];
+        if (recursiveOpt.base.someOrNone === 'Some') {
+            return [recursiveOpt.base.candid.value];
         } else {
             return [];
         }
@@ -75,8 +80,8 @@ function generateValue(recursiveOpt: RecursiveOpt<Base>): Opt {
 function generateValueLiteral(recursiveOpt: RecursiveOpt<Base>): string {
     if ('base' in recursiveOpt) {
         // base case
-        if (recursiveOpt.base[0] === 'Some') {
-            return `{Some: ${recursiveOpt.base[1].src.valueLiteral}}`;
+        if (recursiveOpt.base.someOrNone === 'Some') {
+            return `{Some: ${recursiveOpt.base.candid.src.valueLiteral}}`;
         } else {
             return `{None: null}`;
         }
@@ -115,8 +120,8 @@ function getBaseEquals(
 ): (a: any, b: any) => boolean {
     if ('base' in recursiveOpt) {
         // base case
-        if (recursiveOpt.base[0] === 'Some') {
-            return recursiveOpt.base[1].equals;
+        if (recursiveOpt.base.someOrNone === 'Some') {
+            return recursiveOpt.base.candid.equals;
         } else {
             return (a: null, b: null) => a === b;
         }
