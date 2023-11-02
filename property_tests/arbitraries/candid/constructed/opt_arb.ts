@@ -2,40 +2,32 @@ import fc from 'fast-check';
 import { CandidType, CandidTypeArb } from '../candid_type_arb';
 import { Candid } from '../candid_arb';
 
-type BaseOpt = ['Some' | 'None', Candid<CandidType>];
+type SomeOrNone = 'Some' | 'None';
+type Base = [SomeOrNone, Candid<CandidType>];
 
-// This gives us a random Some or None, which means the default depth of all Opts is at least one
-const BaseOptArb = (arb: fc.Arbitrary<Candid<CandidType>>) => {
-    return fc.constantFrom('Some', 'None').chain((keySample) => {
-        return arb.map((innerValueSample): BaseOpt => {
-            if (keySample === 'Some') {
-                return ['Some', innerValueSample];
-            } else {
-                return ['None', innerValueSample];
-            }
-        });
-    });
-};
-
-// TODO look into making this recursive
-// TODO we need to add all constructed and reference types
-export const PrimitiveOptArb = BaseOptArb(CandidTypeArb);
-
-type RecursiveOpt<T> = {
-    base: T;
-    nextLayer: RecursiveOpt<T> | null;
-};
+type RecursiveOpt<T> = { base: T } | { nextLayer: RecursiveOpt<T> };
 
 export type Opt = [CandidType | Opt] | never[];
 
+// TODO look into making this recursive
+// TODO we need to add all constructed and reference types
+const BaseArb = fc.tuple(
+    fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>,
+    CandidTypeArb
+);
+
 export const OptArb = fc
     .letrec((tie) => ({
-        RecursiveOptArb: fc.record({
-            base: PrimitiveOptArb,
-            nextLayer: fc
-                .option(tie('RecursiveOptArb'), { maxDepth: 10 })
-                .map((sample) => sample as RecursiveOpt<BaseOpt>)
-        })
+        RecursiveOptArb: fc.oneof(
+            fc.record({
+                base: BaseArb
+            }),
+            fc.record({
+                nextLayer: tie('RecursiveOptArb').map(
+                    (sample) => sample as RecursiveOpt<Base>
+                )
+            })
+        )
     }))
     .RecursiveOptArb.map((recursiveOptArb): Candid<Opt> => {
         return {
@@ -49,8 +41,8 @@ export const OptArb = fc
         };
     });
 
-function generateCandidType(recursiveOpt: RecursiveOpt<BaseOpt>): string {
-    if (recursiveOpt.nextLayer === null) {
+function generateCandidType(recursiveOpt: RecursiveOpt<Base>): string {
+    if ('base' in recursiveOpt) {
         // base case
         return `Opt(${recursiveOpt.base[1].src.candidType})`;
     } else {
@@ -58,8 +50,8 @@ function generateCandidType(recursiveOpt: RecursiveOpt<BaseOpt>): string {
     }
 }
 
-function generateImports(recursiveOpt: RecursiveOpt<BaseOpt>): Set<string> {
-    if (recursiveOpt.nextLayer === null) {
+function generateImports(recursiveOpt: RecursiveOpt<Base>): Set<string> {
+    if ('base' in recursiveOpt) {
         // base case
         return new Set([...recursiveOpt.base[1].src.imports, 'Opt']);
     } else {
@@ -67,8 +59,8 @@ function generateImports(recursiveOpt: RecursiveOpt<BaseOpt>): Set<string> {
     }
 }
 
-function generateValue(recursiveOpt: RecursiveOpt<BaseOpt>): Opt {
-    if (recursiveOpt.nextLayer === null) {
+function generateValue(recursiveOpt: RecursiveOpt<Base>): Opt {
+    if ('base' in recursiveOpt) {
         // base case
         if (recursiveOpt.base[0] === 'Some') {
             return [recursiveOpt.base[1].value];
@@ -80,8 +72,8 @@ function generateValue(recursiveOpt: RecursiveOpt<BaseOpt>): Opt {
     }
 }
 
-function generateValueLiteral(recursiveOpt: RecursiveOpt<BaseOpt>): string {
-    if (recursiveOpt.nextLayer === null) {
+function generateValueLiteral(recursiveOpt: RecursiveOpt<Base>): string {
+    if ('base' in recursiveOpt) {
         // base case
         if (recursiveOpt.base[0] === 'Some') {
             return `{Some: ${recursiveOpt.base[1].src.valueLiteral}}`;
@@ -119,9 +111,9 @@ function calculateDepthAndValues(value: [any] | []): {
 }
 
 function getBaseEquals(
-    recursiveOpt: RecursiveOpt<BaseOpt>
+    recursiveOpt: RecursiveOpt<Base>
 ): (a: any, b: any) => boolean {
-    if (recursiveOpt.nextLayer === null) {
+    if ('base' in recursiveOpt) {
         // base case
         if (recursiveOpt.base[0] === 'Some') {
             return recursiveOpt.base[1].equals;
