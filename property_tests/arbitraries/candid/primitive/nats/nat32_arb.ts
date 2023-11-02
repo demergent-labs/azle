@@ -1,4 +1,4 @@
-import { numberToSrcLiteral } from '../../../../utils/to_src_literal/number';
+import { numberToSrcLiteral } from '../../to_src_literal/number';
 import { CandidArb } from '../../candid_arb';
 import { UNumberArb } from './index';
 

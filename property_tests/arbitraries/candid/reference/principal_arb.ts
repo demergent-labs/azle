@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 import { Principal } from '@dfinity/principal';
 import { CandidArb } from '../candid_arb';
-import { principalToSrcLiteral } from '../../../utils/to_src_literal/principal';
+import { principalToSrcLiteral } from '../to_src_literal/principal';
 
 export const PrincipalArb = CandidArb(
     fc

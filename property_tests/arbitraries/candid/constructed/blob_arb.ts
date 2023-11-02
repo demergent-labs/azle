@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 import { CandidArb } from '../candid_arb';
-import { blobToSrcLiteral } from '../../../utils/to_src_literal/blob';
+import { blobToSrcLiteral } from '../to_src_literal/blob';
 
 export const BlobArb = fc
     .oneof(
