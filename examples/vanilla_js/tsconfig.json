@@ -1,3 +1,9 @@
 {
-    "dummy": "This is here because of Azle's TypeChecking infrastructure"
+    "compilerOptions": {
+        "strict": true,
+        "target": "ES2020",
+        "moduleResolution": "node",
+        "allowJs": true,
+        "outDir": "HACK_BECAUSE_OF_ALLOW_JS"
+    }
 }
