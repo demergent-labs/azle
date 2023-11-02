@@ -17,7 +17,8 @@ const VecTestArb = fc
     )
     .map(([functionName, paramVecs, defaultReturnVec]): TestSample => {
         const imports = new Set([
-            ...paramVecs.flatMap((vec) => [...vec.src.imports])
+            ...paramVecs.flatMap((vec) => [...vec.src.imports]),
+            ...defaultReturnVec.src.imports
         ]);
 
         const paramNames = paramVecs.map((_, index) => `param${index}`);
