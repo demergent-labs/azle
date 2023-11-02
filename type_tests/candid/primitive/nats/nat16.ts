@@ -1,4 +1,8 @@
 import { nat16 } from 'azle';
 import { CandidType } from '../../../../src/lib/candid/candid_type';
+import { Serializable } from '../../../../src/lib/stable_b_tree_map';
+import { typeMapping } from '../../..';
 
-export const TestNat16: CandidType = nat16;
+export const TestCandidType: CandidType = nat16;
+export const TestSerializable: Serializable = nat16;
+export const TestTypeMapping: number = typeMapping(nat16);
