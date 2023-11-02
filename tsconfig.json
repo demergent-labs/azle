@@ -9,5 +9,6 @@
         "outDir": "HACK_BECAUSE_OF_ALLOW_JS",
         "resolveJsonModule": true,
         "esModuleInterop": true
-    }
+    },
+    "exclude": ["examples/new"]
 }

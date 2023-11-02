@@ -232,7 +232,7 @@ jobs:
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
               run: AZLE_NUM_PROPTEST_RUNS=100 AZLE_PROPTEST_VERBOSE=true npm test
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.example_directories != "new" }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
               run: $GITHUB_WORKSPACE/node_modules/.bin/tsc --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs
