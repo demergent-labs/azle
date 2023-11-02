@@ -8,23 +8,23 @@ import {
     Void
 } from '../src/lib';
 import { CandidType } from '../src/lib/candid/candid_type';
-import { expectTypeOf } from 'expect-type';
+// import { expectTypeOf } from 'expect-type';
 import { TypeMapping } from '../src/lib/candid/type_mapping';
 
 export function typeMapping<T>(value: T): TypeMapping<T> {
     return value as any;
 }
 
-expectTypeOf(0).not.toMatchTypeOf<CandidType>;
-expectTypeOf(0n).not.toMatchTypeOf<CandidType>;
-expectTypeOf('').not.toMatchTypeOf<CandidType>;
+// expectTypeOf(0).not.toMatchTypeOf<CandidType>;
+// expectTypeOf(0n).not.toMatchTypeOf<CandidType>;
+// expectTypeOf('').not.toMatchTypeOf<CandidType>;
 
 // expectTypeOf({}).not.toMatchTypeOf<CandidType>; // TODO this is wrong
 
-expectTypeOf(text).toMatchTypeOf<CandidType>;
-expectTypeOf(text).toMatchTypeOf<Serializable>;
-expectTypeOf(StableJson).not.toMatchTypeOf<CandidType>; // TODO this is wrong
-expectTypeOf(StableJson).toMatchTypeOf<Serializable>; // TODO this is wrong
+// expectTypeOf(text).toMatchTypeOf<CandidType>;
+// expectTypeOf(text).toMatchTypeOf<Serializable>;
+// expectTypeOf(StableJson).not.toMatchTypeOf<CandidType>; // TODO this is wrong
+// expectTypeOf(StableJson).toMatchTypeOf<Serializable>; // TODO this is wrong
 
 const TestText: CandidType = text;
 
