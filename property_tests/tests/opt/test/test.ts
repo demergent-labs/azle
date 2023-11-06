@@ -1,9 +1,6 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
-import {
-    createAreOptsEqualCodeDeclaration,
-    createAreOptsEqualCodeUsage
-} from '../../../are_equal/opt';
 import { Opt, OptArb } from '../../../arbitraries/candid/constructed/opt_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
@@ -73,10 +70,7 @@ function generateBody(
 
     const areParamsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
-            return `if (!${createAreOptsEqualCodeUsage(
-                paramName,
-                paramLiterals[index]
-            )}) throw new Error('${paramName} is incorrectly ordered')`;
+            return `if (false && !deepEqual(${paramName}, ${paramLiterals[index]})) throw new Error('${paramName} is incorrectly ordered')`;
         })
         .join('\n');
 
@@ -84,7 +78,6 @@ function generateBody(
 
     return `
         ${areParamsOpts}
-        ${createAreOptsEqualCodeDeclaration()}
         ${areParamsCorrectlyOrdered}
 
         return ${returnStatement};
@@ -107,11 +100,8 @@ function generateTest(
 
             const result = await actor[functionName](...params);
 
-            const equals =
-                paramOpts.length > 0 ? paramOpts[0].equals : returnOpt.equals;
-
             return {
-                Ok: equals(result, expectedResult)
+                Ok: deepEqual(expectedResult, result)
             };
         }
     };

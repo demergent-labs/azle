@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { deepEqual, shallowEqual } from 'fast-equals';
+import { deepEqual } from 'fast-equals';
 
 import { arePrincipalsEqual } from '../../../are_equal/principal';
 import { PrincipalArb } from '../../../arbitraries/candid/reference/principal_arb';
@@ -114,7 +114,7 @@ function generateTest(
                 ...paramPrincipals.map((sample) => sample.value)
             );
 
-            return { Ok: returnPrincipal.equals(result, expectedResult) };
+            return { Ok: deepEqual(result, expectedResult) };
         }
     };
 }

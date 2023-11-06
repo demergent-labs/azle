@@ -36,6 +36,7 @@ export function CanisterArb(testArb: fc.Arbitrary<TestSample>) {
             return {
                 sourceCode: `
     import { Canister, query, ${imports.join(', ')} } from 'azle';
+    import { deepEqual } from 'fast-equals';
 
     ${candidTypeDeclarations}
 
