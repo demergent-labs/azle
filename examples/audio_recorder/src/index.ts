@@ -17,14 +17,14 @@ import {
     Vec
 } from 'azle';
 
-const User = Record({
+export const User = Record({
     id: Principal,
     createdAt: nat64,
     recordingIds: Vec(Principal),
     username: text
 });
 
-const Recording = Record({
+export const Recording = Record({
     id: Principal,
     audio: blob,
     createdAt: nat64,

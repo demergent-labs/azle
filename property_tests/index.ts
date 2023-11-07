@@ -32,10 +32,19 @@ export function runPropTests(testArb: fc.Arbitrary<TestSample>) {
                 stdio: 'inherit'
             });
 
-            return await runTests(
+            const result = await runTests(
                 canister.tests,
                 process.env.AZLE_PROPTEST_VERBOSE !== 'true'
             );
+
+            execSync(
+                `node_modules/.bin/tsc --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs`,
+                {
+                    stdio: 'inherit'
+                }
+            );
+
+            return result;
         }),
         {
             numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
