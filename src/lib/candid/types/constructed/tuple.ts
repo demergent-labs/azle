@@ -12,7 +12,12 @@ export class AzleTuple<T extends any[]> {
     }
 
     innerTypes: CandidType[];
+
+    _azleKind: 'AzleTuple' = 'AzleTuple';
     _azleCandidType?: '_azleCandidType';
+
+    static _azleKind: 'AzleTuple' = 'AzleTuple';
+    static _azleCandidType?: '_azleCandidType';
 
     toBytes(data: any) {
         return encode(this, data);

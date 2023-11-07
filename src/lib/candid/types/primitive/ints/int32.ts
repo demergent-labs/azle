@@ -3,6 +3,9 @@ import { encode } from '../../../serde/encode';
 import { decode } from '../../../serde/decode';
 
 export class AzleInt32 {
+    _azleKind: 'AzleInt32' = 'AzleInt32';
+    _azleCandidType?: '_azleCandidType';
+
     static _azleKind: 'AzleInt32' = 'AzleInt32';
     static _azleCandidType?: '_azleCandidType';
 

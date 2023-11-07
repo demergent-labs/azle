@@ -5,7 +5,6 @@ import { decode } from '../../serde/decode';
 
 export class Principal extends DfinityPrincipal {
     static _azleKind: 'Principal' = 'Principal';
-
     static _azleCandidType?: '_azleCandidType';
 
     static toBytes(data: any) {

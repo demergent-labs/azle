@@ -4,8 +4,9 @@ import { decode } from '../../serde/decode';
 
 export class AzleNull {
     _azleKind: 'AzleNull' = 'AzleNull';
-    static _azleKind: 'AzleKind' = 'AzleKind';
+    _azleCandidType?: '_azleCandidType';
 
+    static _azleKind: 'AzleNull' = 'AzleNull';
     static _azleCandidType?: '_azleCandidType';
 
     static toBytes(data: any) {
