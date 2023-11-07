@@ -22,6 +22,7 @@ import { AzleNat32, nat32 } from './types/primitive/nats/nat32';
 import { AzleNat64, nat64 } from './types/primitive/nats/nat64';
 import { AzleResult, Result } from '../system_types';
 import { Principal } from './types/reference/principal';
+import { StableJson } from '../stable_b_tree_map';
 
 // TODO I believe we have some unnecessary cases and constructs in here now
 // TODO we probably don't need AzleTuple or AzleOpt
@@ -117,4 +118,6 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? any
     : T extends typeof AzleEmpty
     ? empty
+    : T extends StableJson<infer U>
+    ? U
     : T;

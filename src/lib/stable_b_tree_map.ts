@@ -4,11 +4,17 @@ import { nat64 } from './candid/types/primitive/nats/nat64';
 import { nat8 } from './candid/types/primitive/nats/nat8';
 import { encode, decode } from './candid/serde';
 
+// TODO we should probably allow the user to pass in their own types
+// TODO when they want to use a custom serializable
+// TODO perhaps we need a way to extend TypeMapping
+
 // TODO we should probably try to make it work with bigint, Principal, etc
 // TODO out of the box
 // TODO we probably need to allow the user to pass in their own encoding/decoding for Json as well
 // TODO we need a way to make the types good in TypeMapping
-export class StableJson {
+export class StableJson<T = string> {
+    static _azleKind: 'StableJson' = 'StableJson';
+
     static toBytes(data: any) {
         return Uint8Array.from(Buffer.from(JSON.stringify(data)));
     }
