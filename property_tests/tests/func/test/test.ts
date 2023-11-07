@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import { getActor, runPropTests } from '../../..';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -97,7 +98,8 @@ function generateBody(
             const methodNameIsCorrect = `${paramName}[1] === '${methodName}'`;
             const throwError = `throw new Error('${paramName} is incorrectly ordered')`;
 
-            return `if (!(${principalValueIsCorrect} && ${methodNameIsCorrect})) ${throwError}`;
+            const debug = `console.log(${paramName})\nconsole.log(${func.src.valueLiteral})\n`;
+            return `${debug}if (!deepEqual(${paramName}[0].toText(), ${func.src.valueLiteral}[0].toText())) ${throwError}`;
         })
         .join('\n');
 
@@ -128,7 +130,7 @@ function generateTest(
             );
 
             return {
-                Ok: returnFunc.equals(result, returnFunc.value)
+                Ok: deepEqual(result, returnFunc.value)
             };
         }
     };

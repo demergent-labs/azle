@@ -44,22 +44,6 @@ const VecTestArb = fc
 
 runPropTests(VecTestArb);
 
-function blobsAreEqual(arr1: Uint8Array, arr2: Uint8Array) {
-    // Check if both arrays have the same length
-    if (arr1.length !== arr2.length) {
-        return false;
-    }
-
-    // Loop through each element to check for equality
-    for (let i = 0; i < arr1.length; i++) {
-        if (!deepEqual(arr1[i], arr2[i])) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 function generateBody(
     paramNames: string[],
     paramVecs: CandidMeta<any>[],
@@ -98,7 +82,6 @@ function generateTest(
     returnVec: CandidMeta<any>
 ): Test {
     const expectedResult = paramVecs[0]?.value ?? returnVec.value;
-    const equals = paramVecs[0]?.equals ?? returnVec.equals;
 
     return {
         name: `vec ${functionName}`,
@@ -109,7 +92,7 @@ function generateTest(
             const result = await actor[functionName](...params);
 
             return {
-                Ok: equals(result, expectedResult)
+                Ok: deepEqual(result, expectedResult)
             };
         }
     };

@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import { BlobArb } from '../../../arbitraries/candid/constructed/blob_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
@@ -96,7 +97,7 @@ function generateTest(
             );
 
             return {
-                Ok: returnBlob.equals(result, expectedResult)
+                Ok: deepEqual(result, expectedResult)
             };
         }
     };

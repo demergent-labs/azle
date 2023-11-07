@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import { Int32Arb } from '../../../arbitraries/candid/primitive/ints/int32_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
@@ -100,7 +101,7 @@ function generateTest(
             const result = await actor[functionName](...paramValues);
 
             return {
-                Ok: returnInt32.equals(result, expectedResult)
+                Ok: deepEqual(result, expectedResult)
             };
         }
     };

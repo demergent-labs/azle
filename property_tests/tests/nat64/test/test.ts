@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import { Nat64Arb } from '../../../arbitraries/candid/primitive/nats/nat64_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
@@ -99,7 +100,7 @@ function generateTest(
             const result = await actor[functionName](...paramValues);
 
             return {
-                Ok: returnNat64.equals(result, expectedResult)
+                Ok: deepEqual(result, expectedResult)
             };
         }
     };

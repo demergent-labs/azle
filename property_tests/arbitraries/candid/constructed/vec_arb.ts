@@ -26,7 +26,6 @@ const VecInnerArb = <T extends CandidType>(
     return fc
         .tuple(fc.array(arb), arb)
         .map(([sample, src]): CandidMeta<T[]> => {
-            const equals = generateEquals(sample);
             const valueLiteral = generateValueLiteral(sample);
 
             return {
@@ -35,8 +34,7 @@ const VecInnerArb = <T extends CandidType>(
                     candidType: `Vec(${src.src.candidType})`,
                     imports: new Set([...src.src.imports, 'Vec']),
                     valueLiteral
-                },
-                equals
+                }
             };
         });
 };
@@ -46,11 +44,6 @@ function generateValueLiteral<T extends CandidType>(sample: CandidMeta<T>[]) {
         .map((sample) => sample.src.valueLiteral)
         .join(',');
     return `[${valueLiterals}]`;
-}
-
-function generateEquals<T extends CandidType>(sample: CandidMeta<T>[]) {
-    return (a: T[], b: T[]) =>
-        arraysAreEqual(a, b, sample[0]?.equals ?? deepEqual);
 }
 
 export const VecArb = fc.oneof(

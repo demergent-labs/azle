@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import {
     Variant,
@@ -106,8 +107,6 @@ function generateTest(
     returnVariant: CandidMeta<Variant>
 ): Test {
     const expectedResult = paramVariants[0]?.value ?? returnVariant.value;
-    const equals =
-        paramVariants[0]?.equals ?? ((a: any, b: any) => a.None === b.None);
     return {
         name: `variant ${functionName}`,
         test: async () => {
@@ -118,7 +117,7 @@ function generateTest(
             );
 
             return {
-                Ok: equals(result, expectedResult)
+                Ok: deepEqual(result, expectedResult)
             };
         }
     };

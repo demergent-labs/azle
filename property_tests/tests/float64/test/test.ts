@@ -1,6 +1,6 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
-import { areFloatsEqual } from '../../../are_equal/float';
 import { Float64Arb } from '../../../arbitraries/candid/primitive/floats/float64_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
@@ -66,11 +66,7 @@ function generateBody(
     );
     const paramsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
-            const areFloat64sEqual = areFloatsEqual(
-                paramName,
-                paramLiterals[index]
-            );
-            return `if (!(${areFloat64sEqual})) throw new Error('${paramName} is incorrectly ordered')`;
+            return `if (!deepEqual(${paramName}, ${paramLiterals[index]})) throw new Error('${paramName} is incorrectly ordered')`;
         })
         .join('\n');
 
@@ -111,7 +107,7 @@ function generateTest(
             const result = await actor[functionName](...paramValues);
 
             return {
-                Ok: returnFloat64.equals(result, expectedResult)
+                Ok: deepEqual(result, expectedResult)
             };
         }
     };

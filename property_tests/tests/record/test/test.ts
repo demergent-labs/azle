@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import {
     RecordArb,
@@ -120,58 +121,7 @@ function generateTest(
                 ...paramRecords.map((record) => record.value)
             );
 
-            // Start by using the equals method defined by the return arbitrary
-            // This method works in all cases and if it should return true it
-            // will. It's weakness is that we don't always know why it returns
-            // false, so if that equals method returns false, then instead of
-            // just returning {Ok: false} we will use the equals function that
-            // has better reporting of why the test failed but isn't as robust
-            if (returnRecord.equals(result, returnRecord.value)) {
-                return { Ok: true };
-            }
-            return recordsAreEqual(result, returnRecord.value);
+            return { Ok: deepEqual(result, returnRecord.value) };
         }
     };
-}
-
-function recordsAreEqual(
-    result: Record,
-    expectedResult: Record
-): AzleResult<boolean, string> {
-    if (typeof result !== 'object') {
-        return { Err: 'Result is not an object' };
-    }
-
-    if (typeof expectedResult !== 'object') {
-        return { Err: 'Expected Result is not an object' };
-    }
-
-    const resultKeys = Object.keys(result);
-    const resultEntries = Object.entries(result);
-    const expectedResultEntries = Object.entries(expectedResult);
-
-    if (resultEntries.length !== expectedResultEntries.length) {
-        return {
-            Err: `The entries of result and expectedResult differ in length: ${resultEntries.length} & ${expectedResultEntries.length} respectively`
-        };
-    }
-
-    for (let i = 0; i < expectedResultEntries.length; i++) {
-        const [expectedResultKey, expectedResultValue] =
-            expectedResultEntries[i];
-
-        if (!resultKeys.includes(expectedResultKey)) {
-            return {
-                Err: `Result is missing key "${expectedResultKey}"`
-            };
-        }
-
-        if (result[expectedResultKey] !== expectedResultValue) {
-            return {
-                Err: `Expected result.${expectedResultKey} to be ${expectedResultValue} but got ${result[expectedResultKey]} instead`
-            };
-        }
-    }
-
-    return { Ok: true };
 }

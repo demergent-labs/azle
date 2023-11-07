@@ -1,7 +1,6 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
-import { arePrincipalsEqual } from '../../../are_equal/principal';
 import { PrincipalArb } from '../../../arbitraries/candid/reference/principal_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
@@ -78,10 +77,10 @@ function generateBody(
 
     const paramsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
-            const areEqual = arePrincipalsEqual(
-                paramName,
-                paramPrincipals[index].src.valueLiteral
-            );
+            const areEqual = `deepEqual(
+                ${paramName}.toText(),
+                ${paramPrincipals[index].src.valueLiteral}.toText()
+            )`;
 
             return `if (!${areEqual}) throw new Error('${paramName} is incorrectly ordered')`;
         })

@@ -11,14 +11,12 @@ export type CandidMeta<T extends CandidType> = {
         imports: Set<string>;
         valueLiteral: string;
     };
-    equals(a: T, b: T): boolean;
 };
 
 export const CandidMetaArb = <T extends CandidType>(
     arb: fc.Arbitrary<T>,
     candidType: string,
-    toLiteral: (value: T) => string,
-    equals: (a: T, b: T) => boolean = (a: T, b: T) => deepEqual(a, b)
+    toLiteral: (value: T) => string
 ) => {
     return arb.map(
         (value): CandidMeta<T> => ({
@@ -27,8 +25,7 @@ export const CandidMetaArb = <T extends CandidType>(
                 imports: new Set([candidType]),
                 valueLiteral: toLiteral(value)
             },
-            value,
-            equals
+            value
         })
     );
 };
