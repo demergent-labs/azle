@@ -65,23 +65,3 @@ export const VecArb = fc.oneof(
     VecInnerArb(BlobArb)
     // VecInnerArb(NullArb)
 );
-
-function arraysAreEqual<T>(
-    arr1: T[],
-    arr2: T[],
-    equals: (a: T, b: T) => boolean
-) {
-    // Check if both arrays have the same length
-    if (arr1.length !== arr2.length) {
-        return false;
-    }
-
-    // Loop through each element to check for equality
-    for (let i = 0; i < arr1.length; i++) {
-        if (!equals(arr1[i], arr2[i])) {
-            return false;
-        }
-    }
-
-    return true;
-}
