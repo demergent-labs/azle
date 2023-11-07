@@ -31,8 +31,6 @@ export const VariantArb = fc
 
         const value = generateValue(randomIndex, fields);
 
-        const equals = generateEqualsMethod(fields);
-
         return {
             src: {
                 candidType: name,
@@ -40,8 +38,7 @@ export const VariantArb = fc
                 imports,
                 valueLiteral
             },
-            value,
-            equals
+            value
         };
     });
 
@@ -80,32 +77,4 @@ function generateValueLiteral(index: number, fields: Field[]): string {
     return `{
         ${fieldName}: ${fieldValue.src.valueLiteral}
     }`;
-}
-
-function generateEqualsMethod(
-    fields: Field[]
-): (a: Variant, b: Variant) => boolean {
-    return (a: Variant, b: Variant): boolean => {
-        if (typeof a !== typeof b) {
-            return false;
-        }
-
-        const aKeys = Object.keys(a);
-        const bKeys = Object.keys(b);
-        if (aKeys.length !== bKeys.length && aKeys.length !== 1) {
-            return false;
-        }
-        const aFieldName = aKeys[0];
-        const bFieldName = bKeys[0];
-        if (aFieldName !== bFieldName) {
-            return false;
-        }
-
-        return fields.reduce((acc, [fieldName, fieldCandidType]) => {
-            if (fieldName !== aFieldName) {
-                return acc || false;
-            }
-            return fieldCandidType.equals(a[fieldName], b[fieldName]);
-        }, false);
-    };
 }

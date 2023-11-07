@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import { getActor, runPropTests } from '../../..';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -6,6 +7,7 @@ import { FuncArb, Func } from '../../../arbitraries/candid/reference/func_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const FuncTestArb = fc
     .tuple(
@@ -43,7 +45,7 @@ const FuncTestArb = fc
 
         const returnCandidType = returnFunc.src.candidType;
 
-        const body = generateBody(paramFuncs, returnFunc);
+        const body = generateBody(paramNames, paramFuncs, returnFunc);
 
         const test = generateTest(functionName, paramFuncs, returnFunc);
 
@@ -62,12 +64,13 @@ const FuncTestArb = fc
 runPropTests(FuncTestArb);
 
 function generateBody(
-    funcs: CandidMeta<Func>[],
+    paramNames: string[],
+    paramFuncs: CandidMeta<Func>[],
     returnFunc: CandidMeta<Func>
 ): string {
-    const paramsAreFuncs = funcs
+    const paramsAreFuncs = paramFuncs
         .map((_, index) => {
-            const paramName = `param${index}`;
+            const paramName = paramNames[index];
 
             const paramIsArray = `Array.isArray(${paramName})`;
             const paramHas2Fields = `${paramName}.length === 2`;
@@ -87,22 +90,13 @@ function generateBody(
         })
         .join('\n');
 
-    const paramsCorrectlyOrdered = funcs
-        .map((func, paramIndex): string => {
-            const paramName = `param${paramIndex}`;
-
-            const [principal, methodName] = func.value;
-
-            const principalValueIsCorrect = `${paramName}[0].toText() === '${principal.toText()}'`;
-            const methodNameIsCorrect = `${paramName}[1] === '${methodName}'`;
-            const throwError = `throw new Error('${paramName} is incorrectly ordered')`;
-
-            return `if (!(${principalValueIsCorrect} && ${methodNameIsCorrect})) ${throwError}`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramFuncs
+    );
 
     const returnStatement =
-        funcs.length === 0 ? returnFunc.src.valueLiteral : `param0`;
+        paramFuncs.length === 0 ? returnFunc.src.valueLiteral : `param0`;
 
     return `
         ${paramsAreFuncs}
@@ -128,7 +122,7 @@ function generateTest(
             );
 
             return {
-                Ok: returnFunc.equals(result, returnFunc.value)
+                Ok: deepEqual(result, returnFunc.value)
             };
         }
     };

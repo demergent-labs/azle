@@ -49,8 +49,7 @@ export const FuncArb = (
                 imports,
                 valueLiteral
             },
-            value,
-            equals: funcsAreEqual
+            value
         };
     });
 
@@ -63,16 +62,4 @@ function generateTypeDeclaration(
     const params = paramCandids.map((param) => param.src.candidType).join(', ');
 
     return `const ${name} = Func([${params}], ${returnType}, '${mode}')`;
-}
-
-function funcsAreEqual(result: Func, expectedResult: Func): boolean {
-    if (result[0].toText() !== expectedResult[0].toText()) {
-        return false;
-    }
-
-    if (result[1] !== expectedResult[1]) {
-        return false;
-    }
-
-    return true;
 }

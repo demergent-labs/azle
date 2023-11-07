@@ -41,8 +41,7 @@ export const OptArb = fc
                 imports: generateImports(recursiveOptArb),
                 valueLiteral: generateValueLiteral(recursiveOptArb)
             },
-            value: generateValue(recursiveOptArb),
-            equals: (a, b) => areOptsEqual(getBaseEquals(recursiveOptArb), a, b)
+            value: generateValue(recursiveOptArb)
         };
     });
 
@@ -116,42 +115,4 @@ function calculateDepthAndValues(value: [any] | []): {
 
     const result = calculateDepthAndValues(value[0]);
     return { ...result, depth: result.depth + 1 };
-}
-
-function getBaseEquals(
-    recursiveOpt: RecursiveOpt<Base>
-): (a: any, b: any) => boolean {
-    if ('base' in recursiveOpt) {
-        // base case
-        if (recursiveOpt.base.someOrNone === 'Some') {
-            return recursiveOpt.base.candid.equals;
-        } else {
-            return (a: null, b: null) => a === b;
-        }
-    } else {
-        return getBaseEquals(recursiveOpt.nextLayer);
-    }
-}
-
-function areOptsEqual(
-    equals: (a: any, b: any) => boolean,
-    opt1: any,
-    opt2: any
-) {
-    const { depth: depth1, value: value1 } = calculateDepthAndValues(opt1);
-    const { depth: depth2, value: value2 } = calculateDepthAndValues(opt2);
-
-    if (depth1 !== depth2) {
-        return false;
-    }
-
-    if (isNone(value1) && isNone(value2)) {
-        return true;
-    }
-
-    return equals(value1, value2);
-}
-
-function isNone(value: any | []) {
-    return Array.isArray(value) && value.length === 0;
 }

@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import {
     RecordArb,
@@ -7,8 +8,9 @@ import {
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { getActor, runPropTests } from '../../..';
-import { AzleResult, Test } from '../../../../test';
+import { Test } from '../../../../test';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const RecordTestArb = fc
     .tuple(
@@ -39,7 +41,7 @@ const RecordTestArb = fc
             paramRecords.length === 0 ? defaultReturnRecord : paramRecords[0];
         const returnCandidType = returnRecord.src.candidType;
 
-        const body = generateBody(paramRecords, returnRecord);
+        const body = generateBody(paramNames, paramRecords, returnRecord);
 
         const test = generateTest(functionName, paramRecords, returnRecord);
 
@@ -58,12 +60,13 @@ const RecordTestArb = fc
 runPropTests(RecordTestArb);
 
 function generateBody(
+    paramNames: string[],
     paramRecords: CandidMeta<Record>[],
     returnRecord: CandidMeta<Record>
 ): string {
     const paramsAreRecords = paramRecords
         .map((record, index) => {
-            const paramName = `param${index}`;
+            const paramName = paramNames[index];
             const fieldsCount = Object.keys(record.value).length;
 
             const paramIsObject = `typeof ${paramName} === 'object'`;
@@ -74,25 +77,10 @@ function generateBody(
         })
         .join('\n');
 
-    const paramsCorrectlyOrdered = paramRecords
-        .map((record, index) => {
-            const paramName = `param${index}`;
-
-            const fieldNamesMatch = Object.entries(record.value)
-                .map(([fieldName, _]) => {
-                    return `Object.keys(${paramName}).includes('${fieldName}')`;
-                })
-                .join(' && ');
-
-            const throwError = `throw new Error('${paramName} is incorrectly ordered')`;
-
-            if (Object.entries(record.value).length === 0) {
-                return `if (Object.keys(${paramName}).length !== 0) ${throwError}`;
-            }
-
-            return `if (!(${fieldNamesMatch})) ${throwError}`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramRecords
+    );
 
     const returnStatement =
         paramRecords.length === 0 ? returnRecord.src.valueLiteral : `param0`;
@@ -120,58 +108,7 @@ function generateTest(
                 ...paramRecords.map((record) => record.value)
             );
 
-            // Start by using the equals method defined by the return arbitrary
-            // This method works in all cases and if it should return true it
-            // will. It's weakness is that we don't always know why it returns
-            // false, so if that equals method returns false, then instead of
-            // just returning {Ok: false} we will use the equals function that
-            // has better reporting of why the test failed but isn't as robust
-            if (returnRecord.equals(result, returnRecord.value)) {
-                return { Ok: true };
-            }
-            return recordsAreEqual(result, returnRecord.value);
+            return { Ok: deepEqual(result, returnRecord.value) };
         }
     };
-}
-
-function recordsAreEqual(
-    result: Record,
-    expectedResult: Record
-): AzleResult<boolean, string> {
-    if (typeof result !== 'object') {
-        return { Err: 'Result is not an object' };
-    }
-
-    if (typeof expectedResult !== 'object') {
-        return { Err: 'Expected Result is not an object' };
-    }
-
-    const resultKeys = Object.keys(result);
-    const resultEntries = Object.entries(result);
-    const expectedResultEntries = Object.entries(expectedResult);
-
-    if (resultEntries.length !== expectedResultEntries.length) {
-        return {
-            Err: `The entries of result and expectedResult differ in length: ${resultEntries.length} & ${expectedResultEntries.length} respectively`
-        };
-    }
-
-    for (let i = 0; i < expectedResultEntries.length; i++) {
-        const [expectedResultKey, expectedResultValue] =
-            expectedResultEntries[i];
-
-        if (!resultKeys.includes(expectedResultKey)) {
-            return {
-                Err: `Result is missing key "${expectedResultKey}"`
-            };
-        }
-
-        if (result[expectedResultKey] !== expectedResultValue) {
-            return {
-                Err: `Expected result.${expectedResultKey} to be ${expectedResultValue} but got ${result[expectedResultKey]} instead`
-            };
-        }
-    }
-
-    return { Ok: true };
 }

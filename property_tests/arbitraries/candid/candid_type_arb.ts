@@ -37,7 +37,15 @@ export type CandidType =
     | Variant
     | Record
     | Tuple
-    | undefined;
+    | undefined
+    | Int16Array
+    | Int32Array
+    | Int8Array
+    | BigInt64Array
+    | Uint16Array
+    | Uint32Array
+    | Uint8Array
+    | BigUint64Array;
 
 /**
  * An arbitrary representing all possible Candid types.

@@ -36,6 +36,9 @@ export function CanisterArb(testArb: fc.Arbitrary<TestSample>) {
             return {
                 sourceCode: `
     import { Canister, query, ${imports.join(', ')} } from 'azle';
+    import { deepEqual } from 'fast-equals';
+    // TODO solve the underlying principal problem https://github.com/demergent-labs/azle/issues/1443
+    import { Principal as DfinityPrincipal } from '@dfinity/principal';
 
     ${candidTypeDeclarations}
 
