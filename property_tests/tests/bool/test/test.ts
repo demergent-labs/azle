@@ -8,6 +8,7 @@ import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const BoolTestArb = fc
     .tuple(
@@ -55,12 +56,10 @@ function generateBody(
         })
         .join('\n');
 
-    const paramLiterals = paramBools.map((bool) => bool.src.valueLiteral);
-    const paramsCorrectlyOrdered = paramNames
-        .map((paramName, index) => {
-            return `if (${paramName} !== ${paramLiterals[index]}) throw new Error('${paramName} is incorrectly ordered')`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramBools
+    );
 
     const returnStatement = paramNames.reduce((acc, paramName) => {
         return `${acc} && ${paramName}`;

@@ -8,6 +8,7 @@ import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const Float32TestArb = fc
     .tuple(
@@ -61,14 +62,10 @@ function generateBody(
         })
         .join('\n');
 
-    const paramLiterals = paramFloat32s.map(
-        (float32s) => float32s.src.valueLiteral
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramFloat32s
     );
-    const paramsCorrectlyOrdered = paramNames
-        .map((paramName, index) => {
-            return `if (!deepEqual(${paramName}, ${paramLiterals[index]})) throw new Error('${paramName} is incorrectly ordered')`;
-        })
-        .join('\n');
 
     const returnStatement =
         paramFloat32s.length === 0

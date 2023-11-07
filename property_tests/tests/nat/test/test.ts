@@ -8,6 +8,7 @@ import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const NatTestArb = fc
     .tuple(
@@ -57,13 +58,11 @@ function generateBody(
         return `${acc} + ${paramName}`;
     }, returnNat.src.valueLiteral);
 
-    const paramLiterals = paramNats.map((sample) => sample.src.valueLiteral);
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramNats
+    );
 
-    const paramsCorrectlyOrdered = paramNames
-        .map((paramName, index) => {
-            return `if (${paramName} !== ${paramLiterals[index]}) throw new Error('${paramName} is incorrectly ordered')`;
-        })
-        .join('\n');
     return `
         ${paramsCorrectlyOrdered}
 

@@ -8,6 +8,7 @@ import { getActor, runPropTests } from '../../../../property_tests';
 import { deepEqual } from 'fast-equals';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const VecTestArb = fc
     .tuple(
@@ -49,21 +50,16 @@ function generateBody(
     paramVecs: CandidMeta<any>[],
     returnVec: CandidMeta<any>
 ): string {
-    // TODO these checks should be much more precise probably, imagine checking the elements inside of the arrays
     const paramsAreArrays = paramNames
         .map((paramName) => {
             return `if (!Array.isArray(${paramName}) && !ArrayBuffer.isView(${paramName})) throw new Error('${paramName} must be an array');`;
         })
         .join('\n');
 
-    // TODO this ordering check is not perfect
-    // TODO but turning the vec into a string seems a bit difficult...we need to figure out how to check perfectly for the values that we want
-    // TODO maybe a global variable that we can write into and call would work
-    const paramsCorrectlyOrdered = paramNames
-        .map((paramName, index) => {
-            return `if (${paramName}.length !== ${paramVecs[index].value.length}) throw new Error('${paramName} is incorrectly ordered')`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramVecs
+    );
 
     const returnValue = paramNames[0] ?? returnVec.src.valueLiteral;
 

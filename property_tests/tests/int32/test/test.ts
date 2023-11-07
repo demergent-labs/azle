@@ -8,6 +8,7 @@ import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const Int32TestArb = fc
     .tuple(
@@ -63,12 +64,10 @@ function generateBody(
     const count = paramInt32s.length + 1;
     const average = `Math.floor((${sum}) / ${count})`;
 
-    const paramLiterals = paramInt32s.map((sample) => sample.src.valueLiteral);
-    const paramsCorrectlyOrdered = paramNames
-        .map((paramName, index) => {
-            return `if (${paramName} !== ${paramLiterals[index]}) throw new Error('${paramName} is incorrectly ordered')`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramInt32s
+    );
 
     return `
         ${paramsAreNumbers}

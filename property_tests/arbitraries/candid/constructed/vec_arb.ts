@@ -96,6 +96,10 @@ function generateValueLiteral<T extends CandidType>(
 
     const valueLiteral = `[${valueLiterals}]`;
 
+    if (candidType === 'int64') {
+        return `BigInt64Array.from(${valueLiteral})`;
+    }
+
     if (candidType === 'int32') {
         return `Int32Array.from(${valueLiteral})`;
     }
@@ -106,6 +110,10 @@ function generateValueLiteral<T extends CandidType>(
 
     if (candidType === 'int8') {
         return `Int8Array.from(${valueLiteral})`;
+    }
+
+    if (candidType === 'nat64') {
+        return `BigUint64Array.from(${valueLiteral})`;
     }
 
     if (candidType === 'nat32') {

@@ -9,6 +9,7 @@ import { getActor, runPropTests } from '../../../../property_tests';
 import { Principal } from '@dfinity/principal';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const PrincipalTestArb = fc
     .tuple(
@@ -75,16 +76,10 @@ function generateBody(
             ? `param0`
             : returnPrincipal.src.valueLiteral;
 
-    const paramsCorrectlyOrdered = paramNames
-        .map((paramName, index) => {
-            const areEqual = `deepEqual(
-                ${paramName},
-                ${paramPrincipals[index].src.valueLiteral}
-            )`;
-
-            return `if (!${areEqual}) throw new Error('${paramName} is incorrectly ordered')`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramPrincipals
+    );
 
     return `
         ${paramsArePrincipals}

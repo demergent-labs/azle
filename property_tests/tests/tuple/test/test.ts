@@ -10,6 +10,7 @@ import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb'
 import { getActor, runPropTests } from '../../..';
 import { Test } from '../../../../test';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const TupleTestArb = fc
     .tuple(
@@ -40,7 +41,7 @@ const TupleTestArb = fc
             paramTuples.length === 0 ? defaultReturnTuple : paramTuples[0];
         const returnCandidType = returnTuple.src.candidType;
 
-        const body = generateBody(paramTuples, returnTuple);
+        const body = generateBody(paramNames, paramTuples, returnTuple);
 
         const test = generateTest(functionName, paramTuples, returnTuple);
 
@@ -59,12 +60,13 @@ const TupleTestArb = fc
 runPropTests(TupleTestArb);
 
 function generateBody(
+    paramNames: string[],
     paramTuples: CandidMeta<Tuple>[],
     returnTuple: CandidMeta<Tuple>
 ): string {
     const paramsAreTuples = paramTuples
         .map((tuple, index) => {
-            const paramName = `param${index}`;
+            const paramName = paramNames[index];
             const fieldsCount = tuple.value.length;
 
             const paramIsArray = `Array.isArray(${paramName})`;
@@ -75,17 +77,10 @@ function generateBody(
         })
         .join('\n');
 
-    const paramsCorrectlyOrdered = paramTuples
-        .map((tuple, paramIndex): string => {
-            const paramName = `param${paramIndex}`;
-
-            const paramIsCorrectValue = `${paramName}.toString() === ${tuple.src.valueLiteral}.toString()`;
-
-            const throwError = `throw new Error('${paramName} is incorrectly ordered.')`;
-
-            return `if (!(${paramIsCorrectValue})) ${throwError}`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramTuples
+    );
 
     const returnStatement =
         paramTuples.length === 0 ? returnTuple.src.valueLiteral : `param0`;
