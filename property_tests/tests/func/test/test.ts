@@ -92,14 +92,9 @@ function generateBody(
         .map((func, paramIndex): string => {
             const paramName = `param${paramIndex}`;
 
-            const [principal, methodName] = func.value;
-
-            const principalValueIsCorrect = `${paramName}[0].toText() === '${principal.toText()}'`;
-            const methodNameIsCorrect = `${paramName}[1] === '${methodName}'`;
             const throwError = `throw new Error('${paramName} is incorrectly ordered')`;
 
-            const debug = `console.log(${paramName})\nconsole.log(${func.src.valueLiteral})\n`;
-            return `${debug}if (!deepEqual(${paramName}[0].toText(), ${func.src.valueLiteral}[0].toText())) ${throwError}`;
+            return `if (!deepEqual(${paramName}, ${func.src.valueLiteral})) ${throwError}`;
         })
         .join('\n');
 

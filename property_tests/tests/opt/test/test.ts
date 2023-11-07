@@ -70,7 +70,7 @@ function generateBody(
 
     const areParamsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
-            return `if (false && !deepEqual(${paramName}, ${paramLiterals[index]})) throw new Error('${paramName} is incorrectly ordered')`;
+            return `if (!deepEqual(${paramName}, ${paramLiterals[index]})) throw new Error('${paramName} is incorrectly ordered')`;
         })
         .join('\n');
 

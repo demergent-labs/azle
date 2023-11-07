@@ -78,8 +78,8 @@ function generateBody(
     const paramsCorrectlyOrdered = paramNames
         .map((paramName, index) => {
             const areEqual = `deepEqual(
-                ${paramName}.toText(),
-                ${paramPrincipals[index].src.valueLiteral}.toText()
+                ${paramName},
+                ${paramPrincipals[index].src.valueLiteral}
             )`;
 
             return `if (!${areEqual}) throw new Error('${paramName} is incorrectly ordered')`;
