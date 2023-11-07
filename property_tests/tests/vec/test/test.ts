@@ -88,7 +88,7 @@ function generateTest(
         test: async () => {
             const actor = getActor('./tests/vec/test');
 
-            const params = paramVecs.map((vec) => vec.value);
+            const params = paramVecs.map((vec) => [...vec.value]);
             const result = await actor[functionName](...params);
 
             return {
