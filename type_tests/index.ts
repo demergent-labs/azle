@@ -11,9 +11,9 @@ import { CandidType } from '../src/lib/candid/candid_type';
 // import { expectTypeOf } from 'expect-type';
 import { TypeMapping } from '../src/lib/candid/type_mapping';
 
-export function typeMapping<T>(value: T): TypeMapping<T> {
-    return value as any;
-}
+// export function typeMapping<T>(value: T): TypeMapping<T> {
+//     return value as any;
+// }
 
 // expectTypeOf(0).not.toMatchTypeOf<CandidType>;
 // expectTypeOf(0n).not.toMatchTypeOf<CandidType>;
@@ -26,27 +26,27 @@ export function typeMapping<T>(value: T): TypeMapping<T> {
 // expectTypeOf(StableJson).not.toMatchTypeOf<CandidType>; // TODO this is wrong
 // expectTypeOf(StableJson).toMatchTypeOf<Serializable>; // TODO this is wrong
 
-const TestText: CandidType = text;
+// const TestText: CandidType = text;
 
-// @ts-expect-error
-const TestStableJson: CandidType = StableJson;
+// // @ts-expect-error
+// const TestStableJson: CandidType = StableJson;
 
-const ExampleRecord = Record({
-    text: text,
-    nat64: nat64
-});
+// const ExampleRecord = Record({
+//     text: text,
+//     nat64: nat64
+// });
 
-const TestExampleRecord: {
-    text: string;
-    nat64: bigint;
-} = ExampleRecord;
+// const TestExampleRecord: {
+//     text: string;
+//     nat64: bigint;
+// } = ExampleRecord;
 
-const ExampleRecordInstance: typeof ExampleRecord = {
-    text: '',
-    nat64: 0n
-};
+// const ExampleRecordInstance: typeof ExampleRecord = {
+//     text: '',
+//     nat64: 0n
+// };
 
-query([text], Void);
+// query([text], Void);
 
 // query([StableJson], Void);
 

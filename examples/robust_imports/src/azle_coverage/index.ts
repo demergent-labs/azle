@@ -256,7 +256,7 @@ export const putTheCoconutInTheLime = kiwi(
     [coconut],
     Lime(coconut),
     (coconut) => {
-        return [coconut];
+        return Int16Array.from([coconut]);
     }
 );
 

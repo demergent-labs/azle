@@ -92,7 +92,7 @@ export const returnFathomlessVec = icQuery(
     [],
     ic.FathomlessVec(ic.azle.int16),
     () => {
-        return [1, 2, 3, 4, 5, 6, 7];
+        return Int16Array.from([1, 2, 3, 4, 5, 6, 7]);
     }
 );
 

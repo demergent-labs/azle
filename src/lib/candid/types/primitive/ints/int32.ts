@@ -3,7 +3,7 @@ import { encode } from '../../../serde/encode';
 import { decode } from '../../../serde/decode';
 
 export class AzleInt32 {
-    _azleKind: 'AzleInt32' = 'AzleInt32';
+    static _azleKind: 'AzleInt32' = 'AzleInt32';
     static _azleCandidType?: '_azleCandidType';
 
     static toBytes(data: number): Uint8Array {

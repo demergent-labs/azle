@@ -1,8 +1,15 @@
 import { int64 } from '../../../../src/lib';
-import { CandidType } from '../../../../src/lib/candid/candid_type';
-import { Serializable } from '../../../../src/lib/stable_b_tree_map';
-import { typeMapping } from '../../..';
+import {
+    AssertType,
+    NotAnyAndExact,
+    testCandidType,
+    testSerializable
+} from '../../../assert_type';
+import { TypeMapping } from '../../../../src/lib/candid/type_mapping';
 
-export const TestCandidType: CandidType = int64;
-export const TestSerializable: Serializable = int64;
-export const TestTypeMapping: bigint = typeMapping(int64);
+testCandidType(int64);
+testSerializable(int64);
+
+export type TestTypeMapping = AssertType<
+    NotAnyAndExact<TypeMapping<typeof int64>, bigint>
+>;

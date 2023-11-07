@@ -1,8 +1,9 @@
+// TODO there is much more we could test here
+
 // empty is not present because its type is never which is difficult to test
 
 import {
     bool,
-    CandidType,
     float32,
     float64,
     int,
@@ -21,6 +22,7 @@ import {
     text,
     Void
 } from '../../../src/lib';
+import { testCandidType, testSerializable } from '../../assert_type';
 
 export const ExampleRecord = Record({
     bool: bool,
@@ -42,7 +44,8 @@ export const ExampleRecord = Record({
     void: Void
 });
 
-export const TestCandidType: CandidType = ExampleRecord;
+testCandidType(ExampleRecord);
+testSerializable(ExampleRecord);
 
 export const TestExampleRecord: {
     bool: boolean;

@@ -30,7 +30,7 @@ export const stableMap2Methods = {
         return stableMap2.items();
     }),
     stableMap2Keys: query([], Vec(nat32), () => {
-        return stableMap2.keys();
+        return Uint32Array.from(stableMap2.keys());
     }),
     stableMap2Len: query([], nat64, () => {
         return stableMap2.len();

@@ -3,7 +3,7 @@ import { encode } from '../../../serde/encode';
 import { decode } from '../../../serde/decode';
 
 export class AzleNat32 {
-    _azleKind: 'AzleNat32' = 'AzleNat32';
+    static _azleKind: 'AzleNat32' = 'AzleNat32';
     static _azleCandidType?: '_azleCandidType';
 
     static toBytes(data: number): Uint8Array {

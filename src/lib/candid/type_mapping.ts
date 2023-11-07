@@ -23,6 +23,9 @@ import { AzleNat64, nat64 } from './types/primitive/nats/nat64';
 import { AzleResult, Result } from '../system_types';
 import { Principal } from './types/reference/principal';
 
+// TODO I believe we have some unnecessary cases and constructs in here now
+// TODO we probably don't need AzleTuple or AzleOpt
+// TODO remove and run tests
 export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? T
     : T extends () => any
@@ -89,6 +92,14 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
         ? Uint8Array
         : U extends { _azleKind: 'AzleNat16' }
         ? Uint16Array
+        : U extends { _azleKind: 'AzleNat32' }
+        ? Uint32Array
+        : U extends { _azleKind: 'AzleInt8' }
+        ? Int8Array
+        : U extends { _azleKind: 'AzleInt16' }
+        ? Int16Array
+        : U extends { _azleKind: 'AzleInt32' }
+        ? Int32Array
         : T extends AzleVec<infer U> // TODO I do not know why we have to do this?
         ? TypeMapping<U>[]
         : TypeMapping<U>[]
@@ -103,7 +114,7 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     : T extends typeof AzleNull
     ? Null
     : T extends typeof AzleReserved
-    ? reserved
+    ? any
     : T extends typeof AzleEmpty
     ? empty
     : T;

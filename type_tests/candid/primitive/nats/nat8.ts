@@ -1,8 +1,15 @@
 import { nat8 } from '../../../../src/lib';
-import { CandidType } from '../../../../src/lib/candid/candid_type';
-import { Serializable } from '../../../../src/lib/stable_b_tree_map';
-import { typeMapping } from '../../..';
+import {
+    AssertType,
+    NotAnyAndExact,
+    testCandidType,
+    testSerializable
+} from '../../../assert_type';
+import { TypeMapping } from '../../../../src/lib/candid/type_mapping';
 
-export const TestCandidType: CandidType = nat8;
-export const TestSerializable: Serializable = nat8;
-export const TestTypeMapping: number = typeMapping(nat8);
+testCandidType(nat8);
+testSerializable(nat8);
+
+export type TestTypeMapping = AssertType<
+    NotAnyAndExact<TypeMapping<typeof nat8>, number>
+>;

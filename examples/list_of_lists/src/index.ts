@@ -60,20 +60,20 @@ export default Canister({
                 [
                     [
                         [
-                            [[1], [2]],
+                            [Int8Array.from([1]), Int8Array.from([2])],
                             [
-                                [1, 2, 3],
-                                [4, 5, 6]
+                                Int8Array.from([1, 2, 3]),
+                                Int8Array.from([4, 5, 6])
                             ]
                         ]
                     ],
-                    [[[[1]]], [[[2]]]],
-                    [[[[3]]]]
+                    [[[Int8Array.from([1])]], [[Int8Array.from([2])]]],
+                    [[[Int8Array.from([3])]]]
                 ]
             ],
             [
-                [[[[[1]]]], [[[[2]]]]],
-                [[[[[3]]]], [[[[4]]]]]
+                [[[[Int8Array.from([1])]]], [[[Int8Array.from([2])]]]],
+                [[[[Int8Array.from([3])]]], [[[Int8Array.from([4])]]]]
             ]
         ];
     }),

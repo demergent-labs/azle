@@ -1,7 +1,10 @@
-import { text, Manual } from '../../src/lib';
-import { CandidType } from '../../src/lib/candid/candid_type';
-import { typeMapping } from '../';
+import { Manual, text } from '../../src/lib';
+import { AssertType, NotAnyAndExact, testCandidType } from '../assert_type';
+import { TypeMapping } from '../../src/lib/candid/type_mapping';
 
-export const TestCandidType: CandidType = Manual(text);
+testCandidType(Manual(text));
 
-export const TestTypeMapping: void = typeMapping(Manual(text));
+const testTypeMapping = Manual(text);
+export type TestTypeMapping = AssertType<
+    NotAnyAndExact<TypeMapping<typeof testTypeMapping>, void>
+>;
