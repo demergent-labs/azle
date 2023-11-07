@@ -9,11 +9,11 @@ import { encode, decode } from './candid/serde';
 // TODO we probably need to allow the user to pass in their own encoding/decoding for Json as well
 // TODO we need a way to make the types good in TypeMapping
 export class StableJson {
-    static toBytes(data: any): Uint8Array {
+    static toBytes(data: any) {
         return Uint8Array.from(Buffer.from(JSON.stringify(data)));
     }
 
-    static fromBytes(bytes: Uint8Array): any {
+    static fromBytes(bytes: Uint8Array) {
         return JSON.parse(Buffer.from(bytes).toString());
     }
 }

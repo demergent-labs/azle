@@ -6,11 +6,11 @@ export class AzleNat32 {
     static _azleKind: 'AzleNat32' = 'AzleNat32';
     static _azleCandidType?: '_azleCandidType';
 
-    static toBytes(data: number): Uint8Array {
+    static toBytes(data: any) {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array): number {
+    static fromBytes(bytes: Uint8Array) {
         return decode(this, bytes);
     }
 

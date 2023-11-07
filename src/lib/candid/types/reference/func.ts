@@ -19,10 +19,10 @@ export function Func(
     mode: Mode
 ): [Principal, string] & CandidType & Partial<Serializable> {
     return {
-        toBytes(data: number): Uint8Array {
+        toBytes(data: any) {
             return encode(this, data);
         },
-        fromBytes(bytes: Uint8Array): number {
+        fromBytes(bytes: Uint8Array) {
             return decode(this, bytes);
         },
         getIdl(parents: Parent[]) {

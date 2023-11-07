@@ -46,11 +46,11 @@ export class AzleOpt<T> {
     _azleKind: 'AzleOpt' = 'AzleOpt';
     static _azleKind: 'AzleOpt' = 'AzleOpt';
 
-    toBytes(data: number): Uint8Array {
+    toBytes(data: any) {
         return encode(this, data);
     }
 
-    fromBytes(bytes: Uint8Array): number {
+    fromBytes(bytes: Uint8Array) {
         return decode(this, bytes);
     }
 

@@ -19,10 +19,10 @@ export function Record<
     Partial<Serializable> {
     return {
         ...obj,
-        toBytes(data: number): Uint8Array {
+        toBytes(data: any) {
             return encode(this, data);
         },
-        fromBytes(bytes: Uint8Array): number {
+        fromBytes(bytes: Uint8Array) {
             return decode(this, bytes);
         },
         getIdl(parents: Parent[]) {

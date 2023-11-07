@@ -14,11 +14,11 @@ export class AzleTuple<T extends any[]> {
     innerTypes: CandidType[];
     _azleCandidType?: '_azleCandidType';
 
-    toBytes(data: number): Uint8Array {
+    toBytes(data: any) {
         return encode(this, data);
     }
 
-    fromBytes(bytes: Uint8Array): number {
+    fromBytes(bytes: Uint8Array) {
         return decode(this, bytes);
     }
 

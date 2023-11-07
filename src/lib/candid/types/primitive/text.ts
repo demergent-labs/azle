@@ -9,12 +9,11 @@ export class AzleText {
     _azleCandidType?: '_azleCandidType' = '_azleCandidType';
     static _azleCandidType?: '_azleCandidType' = '_azleCandidType';
 
-    static toBytes(data: number): Uint8Array {
+    static toBytes(data: any) {
         return encode(this, data);
     }
 
-    // TODO fix all of the return types
-    static fromBytes(bytes: Uint8Array): string {
+    static fromBytes(bytes: Uint8Array) {
         return decode(this, bytes);
     }
 

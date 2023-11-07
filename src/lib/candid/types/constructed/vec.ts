@@ -16,11 +16,11 @@ export class AzleVec<T> {
     _azleKind: 'AzleVec' = 'AzleVec';
     static _azleKind: 'AzleVec' = 'AzleVec';
 
-    toBytes(data: number): Uint8Array {
+    toBytes(data: any) {
         return encode(this, data);
     }
 
-    fromBytes(bytes: Uint8Array): number {
+    fromBytes(bytes: Uint8Array) {
         return decode(this, bytes);
     }
 
