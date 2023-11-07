@@ -9,7 +9,9 @@ export type Variant = {
 };
 type Field = [string, CandidMeta<CandidType>];
 
-export const VariantArb = fc
+type RecursiveArb<T> = { base: T } | { nextLayer: RecursiveArb<T> };
+
+export const BaseVariantArb = fc
     .tuple(
         UniqueIdentifierArb('typeDeclaration'),
         fc.uniqueArray(fc.tuple(JsFunctionNameArb, CandidTypeArb), {
@@ -41,6 +43,37 @@ export const VariantArb = fc
             value
         };
     });
+
+export const RecursiveArb = <T extends CandidType>(
+    BaseArb: fc.Arbitrary<CandidMeta<T>>,
+    generateCandidType: (recursiveThing: any) => string,
+    generateImports: (recursiveThing: any) => Set<string>,
+    generateValueLiteral: (recursiveThing: any) => string,
+    generateValue: (recursiveThing: any) => T
+) =>
+    fc
+        .letrec((tie) => ({
+            RecursiveArb: fc.oneof(
+                fc.record({ base: BaseArb }),
+                fc.record({
+                    nextLayer: tie('RecursiveArb').map(
+                        (sample) => sample as RecursiveArb<T>
+                    )
+                })
+            )
+        }))
+        .RecursiveArb.map((recursiveArb): CandidMeta<T> => {
+            return {
+                src: {
+                    candidType: generateCandidType(recursiveArb),
+                    imports: generateImports(recursiveArb),
+                    valueLiteral: generateValueLiteral(recursiveArb)
+                },
+                value: generateValue(recursiveArb)
+            };
+        });
+
+export const VariantArb = RecursiveArb(BaseVariantArb);
 
 function generateImports(fields: Field[]): Set<string> {
     const fieldImports = fields.flatMap((field) => [...field[1].src.imports]);
