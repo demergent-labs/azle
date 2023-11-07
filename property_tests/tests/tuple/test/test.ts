@@ -115,6 +115,16 @@ function generateTest(
                 ...paramTuples.map((tuple) => tuple.value)
             );
 
+            if (!Array.isArray(result)) {
+                // Empty Tuple
+                return {
+                    Ok: deepEqual(
+                        Array.from(Object.values(result)),
+                        expectedResult
+                    )
+                };
+            }
+
             return { Ok: deepEqual(result, expectedResult) };
         }
     };
