@@ -17,7 +17,7 @@ import {
     Vec
 } from 'azle';
 
-export const User = Record({
+const User = Record({
     id: Principal,
     createdAt: nat64,
     recordingIds: Vec(Principal),
@@ -25,7 +25,7 @@ export const User = Record({
 });
 type User = typeof User;
 
-export const Recording = Record({
+const Recording = Record({
     id: Principal,
     audio: blob,
     createdAt: nat64,

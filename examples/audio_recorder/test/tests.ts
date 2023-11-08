@@ -1,12 +1,11 @@
 import { ok, Test } from 'azle/test';
-import { User, Recording } from '../src/index';
 import { _SERVICE } from './dfx_generated/audio_recorder/audio_recorder.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 // TODO to be more thorough we could test all of the error cases as well
 
-let global_user: typeof User;
-let global_recording: typeof Recording;
+let global_user: any;
+let global_recording: any;
 
 export function get_tests(
     audio_recorder_canister: ActorSubclass<_SERVICE>

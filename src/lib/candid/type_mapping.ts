@@ -94,12 +94,16 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
         ? Uint16Array
         : U extends { _azleKind: 'AzleNat32' }
         ? Uint32Array
+        : U extends { _azleKind: 'AzleNat64' }
+        ? BigUint64Array
         : U extends { _azleKind: 'AzleInt8' }
         ? Int8Array
         : U extends { _azleKind: 'AzleInt16' }
         ? Int16Array
         : U extends { _azleKind: 'AzleInt32' }
         ? Int32Array
+        : U extends { _azleKind: 'AzleInt64' }
+        ? BigInt64Array
         : T extends AzleVec<infer U> // TODO I do not know why we have to do this?
         ? TypeMapping<U>[]
         : TypeMapping<U>[]

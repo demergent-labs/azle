@@ -75,7 +75,7 @@ function generateBody(
         .map((param, index) => {
             const paramName = `param${index}`;
 
-            const paramIsAService = `${paramName}.principal.toText() === "${param.value.toText()}"`;
+            const paramIsAService = `(${paramName} as any).principal.toText() === "${param.value.toText()}"`;
 
             const throwError = `throw new Error('${paramName} must be a Service');`;
 
