@@ -23,4 +23,4 @@ export class AzleNat16 {
 }
 
 export const nat16 = AzleNat16;
-export type nat16 = number;
+export type nat16 = number & { _azleKind?: 'AzleNat16' };

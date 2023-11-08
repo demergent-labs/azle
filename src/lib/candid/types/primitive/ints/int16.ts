@@ -22,4 +22,4 @@ export class AzleInt16 {
     }
 }
 export const int16 = AzleInt16;
-export type int16 = number;
+export type int16 = number & { _azleKind?: 'AzleInt16' };

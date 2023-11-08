@@ -22,4 +22,4 @@ export class AzleInt32 {
     }
 }
 export const int32 = AzleInt32;
-export type int32 = number;
+export type int32 = number & { _azleKind?: 'AzleInt32' };

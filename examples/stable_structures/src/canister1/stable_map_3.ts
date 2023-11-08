@@ -11,7 +11,7 @@ import {
 } from 'azle';
 import { Reaction } from '../types';
 
-let stableMap3 = StableBTreeMap(Reaction, int, 3);
+let stableMap3 = StableBTreeMap<Reaction, int>(Reaction, int, 3);
 
 export const stableMap3Methods = {
     stableMap3ContainsKey: query([Reaction], bool, (key) => {

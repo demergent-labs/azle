@@ -23,4 +23,4 @@ export class AzleInt8 {
 }
 
 export const int8 = AzleInt8;
-export type int8 = number;
+export type int8 = number & { _azleKind?: 'AzleInt8' };

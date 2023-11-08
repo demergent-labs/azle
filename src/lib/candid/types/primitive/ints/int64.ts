@@ -22,4 +22,4 @@ export class AzleInt64 {
     }
 }
 export const int64 = AzleInt64;
-export type int64 = bigint;
+export type int64 = bigint & { _azleKind?: 'AzleInt64' };

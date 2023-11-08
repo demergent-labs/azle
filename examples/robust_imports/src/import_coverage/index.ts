@@ -141,7 +141,7 @@ export const makeCavernousRecord = dollarSignQuery(
 );
 
 export const typeCheck = dollarSignQuery(
-    [CoveredVec(CoveredOpt(ic.nat16))],
+    [CoveredVec(CoveredOpt(ic.int16))],
     coveredInt16,
     (vec) => {
         if (vec.length === 1) {

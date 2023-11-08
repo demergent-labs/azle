@@ -3,6 +3,7 @@ import { Parent, toIdl } from '../../to_idl';
 import { IDL } from '@dfinity/candid';
 import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
+import { TypeMapping } from '../../type_mapping';
 
 export class AzleVec<T> {
     constructor(t: any) {
@@ -30,7 +31,7 @@ export class AzleVec<T> {
     }
 }
 
-export type Vec<T> = T[];
+export type Vec<T> = TypeMapping<AzleVec<T>>;
 export function Vec<T>(t: T): AzleVec<T> {
     return new AzleVec(t);
 }

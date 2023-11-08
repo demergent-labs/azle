@@ -11,7 +11,7 @@ import {
     Vec
 } from 'azle';
 
-let stableMap1 = StableBTreeMap(nat16, blob, 1);
+let stableMap1 = StableBTreeMap<nat16, blob>(nat16, blob, 1);
 
 export const stableMap1Methods = {
     stableMap1ContainsKey: query([nat16], bool, (key) => {

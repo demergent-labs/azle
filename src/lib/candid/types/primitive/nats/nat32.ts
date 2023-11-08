@@ -22,4 +22,4 @@ export class AzleNat32 {
     }
 }
 export const nat32 = AzleNat32;
-export type nat32 = number;
+export type nat32 = number & { _azleKind?: 'AzleNat32' };

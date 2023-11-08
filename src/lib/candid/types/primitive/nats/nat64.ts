@@ -22,4 +22,4 @@ export class AzleNat64 {
     }
 }
 export const nat64 = AzleNat64;
-export type nat64 = bigint;
+export type nat64 = bigint & { _azleKind?: 'AzleNat64' };

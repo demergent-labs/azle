@@ -37,6 +37,7 @@ const Reaction = Variant({
 });
 
 const StableFunc = Func([nat64, text], Void, 'query');
+type StableFunc = typeof StableFunc;
 
 const NullFunc = Func(
     [Opt(Null), Vec(Null), Null, Vec(Vec(Null)), Vec(Opt(Null))],
@@ -44,7 +45,7 @@ const NullFunc = Func(
     'query'
 );
 
-let stableStorage = StableBTreeMap(text, StableFunc, 0);
+let stableStorage = StableBTreeMap<text, StableFunc>(text, StableFunc, 0);
 
 export default Canister({
     init: init([], () => {
