@@ -43,10 +43,5 @@ export function notify<T extends (...args: any[]) => any>(
         return undefined as any;
     }
 
-    return method(
-        true,
-        notifyRaw,
-        config?.cycles ?? 0n,
-        ...(config?.args ?? [])
-    );
+    return method(true, notifyRaw, config?.cycles ?? 0n, config?.args ?? []);
 }

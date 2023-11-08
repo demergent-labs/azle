@@ -1,8 +1,5 @@
 import { Test } from 'azle/test';
-import {
-    ManualReply,
-    _SERVICE
-} from './dfx_generated/manual_reply/manual_reply.did';
+import { _SERVICE } from './dfx_generated/manual_reply/manual_reply.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
@@ -107,7 +104,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'update reply with record',
             test: async () => {
                 const result = await manualReplyCanister.updateRecord();
-                const expectedResult: ManualReply = {
+                const expectedResult = {
                     id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
                     orbitals: [
                         {
@@ -257,7 +254,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'query reply with record',
             test: async () => {
                 const result = await manualReplyCanister.queryRecord();
-                const expectedResult: ManualReply = {
+                const expectedResult = {
                     id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
                     orbitals: [
                         {

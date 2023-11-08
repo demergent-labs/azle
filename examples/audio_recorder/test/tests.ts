@@ -1,15 +1,11 @@
 import { ok, Test } from 'azle/test';
-import {
-    Recording,
-    _SERVICE,
-    User
-} from './dfx_generated/audio_recorder/audio_recorder.did';
+import { _SERVICE } from './dfx_generated/audio_recorder/audio_recorder.did';
 import { ActorSubclass } from '@dfinity/agent';
 
 // TODO to be more thorough we could test all of the error cases as well
 
-let global_user: User;
-let global_recording: Recording;
+let global_user: any;
+let global_recording: any;
 
 export function get_tests(
     audio_recorder_canister: ActorSubclass<_SERVICE>
@@ -18,9 +14,8 @@ export function get_tests(
         {
             name: 'create_user',
             test: async () => {
-                const user = await audio_recorder_canister.createUser(
-                    'lastmjs'
-                );
+                const user =
+                    await audio_recorder_canister.createUser('lastmjs');
 
                 global_user = user;
 
@@ -48,7 +43,7 @@ export function get_tests(
 
                 const recording = result.Ok;
 
-                global_recording = recording;
+                global_recording = recording as any;
 
                 return {
                     Ok:

@@ -1,5 +1,6 @@
 import { Ok, Test } from 'azle/test';
 import { int } from 'azle';
+// @ts-ignore
 import { _SERVICE } from './dfx_generated/quicksort/quicksort.did';
 import { ActorSubclass } from '@dfinity/agent';
 

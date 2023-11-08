@@ -3,7 +3,7 @@ import fc from 'fast-check';
 import { writeFileSync } from 'fs';
 
 import { getActor } from '../../../get_actor';
-import { Test, getCanisterId, runTests } from 'azle/test';
+import { Test, getCanisterId, runTests } from '../../../../test';
 
 // TODO Canister
 // TODO Record

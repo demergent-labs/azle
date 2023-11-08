@@ -5,7 +5,7 @@ import { existsSync, rmSync } from 'fs-extra';
 import { getTests } from './tests';
 
 export async function whileRunningBitcoinDaemon(
-    callback: () => Promise<void> | void
+    callback: () => Promise<boolean> | void
 ) {
     const bitcoinDaemon = await startBitcoinDaemon();
     await callback();

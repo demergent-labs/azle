@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { blob, empty, text } from 'azle';
 
 export function returnInvalidBooleanValue(): boolean {

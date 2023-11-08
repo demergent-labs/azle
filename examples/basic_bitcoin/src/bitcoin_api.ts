@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { blob, ic, match, nat64, Opt, Vec } from 'azle';
 import {
     BitcoinNetwork,

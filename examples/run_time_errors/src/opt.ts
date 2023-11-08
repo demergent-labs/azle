@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Opt } from 'azle';
 
 export function returnNonObject(): Opt<string> {

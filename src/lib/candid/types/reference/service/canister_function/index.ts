@@ -133,13 +133,18 @@ function createCanisterFunctionBase(
 
                 return {
                     ...acc,
-                    [key]: (...args: any[]) => {
+                    [key]: (
+                        notify: boolean,
+                        callFunction: CallRawFunction | NotifyRawFunction,
+                        cycles: bigint,
+                        args: any[]
+                    ) => {
                         return serviceCall(
                             principal as any,
                             key,
                             value.paramCandidTypes,
                             value.returnCandidType
-                        )(...args);
+                        )(notify, callFunction, cycles, args);
                     }
                 };
             },
@@ -159,15 +164,12 @@ function serviceCall(
     paramCandidTypes: CandidType[],
     returnCandidType: CandidType
 ) {
-    // This must remain a function and not an arrow function
-    // in order to set the context (this) correctly
-    return async function (
-        this: any, // TODO in lib_new this was Service, I'm not sure we need this anymore
+    return async (
         notify: boolean,
         callFunction: CallRawFunction | NotifyRawFunction,
         cycles: bigint,
-        ...args: any[]
-    ) {
+        args: any[]
+    ) => {
         const encodedArgs = encode(paramCandidTypes, args);
 
         if (notify) {

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { func, Principal, Void } from 'azle';
 
 @func([], Void, 'query')

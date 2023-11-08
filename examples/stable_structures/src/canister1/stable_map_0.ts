@@ -11,7 +11,7 @@ import {
     Vec
 } from 'azle';
 
-let stableMap0 = StableBTreeMap(nat8, text, 0);
+let stableMap0 = StableBTreeMap<nat8, text>(nat8, text, 0);
 
 export const stableMap0Methods = {
     stableMap0ContainsKey: query([nat8], bool, (key) => {
@@ -30,7 +30,7 @@ export const stableMap0Methods = {
         return stableMap0.items();
     }),
     stableMap0Keys: query([], Vec(nat8), () => {
-        return stableMap0.keys();
+        return Uint8Array.from(stableMap0.keys());
     }),
     stableMap0Len: query([], nat64, () => {
         return stableMap0.len();

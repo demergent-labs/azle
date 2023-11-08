@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { ic } from 'azle';
 import RunTimeErrorService from './index';
 

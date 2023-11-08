@@ -35,6 +35,10 @@ const STABLE_MAP_KEYS: [
     float32,
     nat,
     blob,
+    string,
+    string,
+    [Principal, string],
+    string,
     string
 ] = [
     0,
@@ -59,7 +63,14 @@ const STABLE_MAP_KEYS: [
     10.23,
     0n,
     new Uint8Array(HELLO_BYTES),
-    'hello'
+    'hello',
+    'world',
+    [Principal.fromText('aaaaa-aa'), 'test_method'],
+    'json',
+    JSON.stringify({
+        hello: 'hello',
+        world: 'world'
+    })
 ];
 
 const STABLE_MAP_KEYSCOMPS: [
@@ -76,6 +87,10 @@ const STABLE_MAP_KEYSCOMPS: [
     (a: float32 | undefined, b: float32) => boolean,
     (a: nat | undefined, b: nat) => boolean,
     (a: blob | undefined, b: blob) => boolean,
+    (a: string | undefined, b: string) => boolean,
+    (a: string | undefined, b: string) => boolean,
+    (a: [Principal, string] | undefined, b: [Principal, string]) => boolean,
+    (a: string | undefined, b: string) => boolean,
     (a: string | undefined, b: string) => boolean
 ] = [
     simpleEquals,
@@ -95,7 +110,15 @@ const STABLE_MAP_KEYSCOMPS: [
     (a, b) => a?.toFixed(2) === b.toFixed(2),
     simpleEquals,
     (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
-    simpleEquals
+    simpleEquals,
+    simpleEquals,
+    (a, b) =>
+        a !== undefined && a[0].toText() === b[0].toText() && a[1] === b[1],
+    simpleEquals,
+    (a, b) =>
+        a !== undefined &&
+        JSON.parse(a).hello === JSON.parse(b).hello &&
+        JSON.parse(a).world === JSON.parse(b).world
 ];
 
 const STABLEMAPVALUES: [
@@ -112,7 +135,11 @@ const STABLEMAPVALUES: [
     boolean[],
     typeof User,
     typeof Reaction,
-    Principal
+    Principal,
+    [Principal, string],
+    string,
+    string,
+    string
 ] = [
     'hello',
     new Uint8Array(HELLO_BYTES),
@@ -134,7 +161,14 @@ const STABLEMAPVALUES: [
         ]
     },
     { Sad: null },
-    Principal.fromText('aaaaa-aa')
+    Principal.fromText('aaaaa-aa'),
+    [Principal.fromText('aaaaa-aa'), 'test_method'],
+    'syrup',
+    JSON.stringify({
+        hello: 'hello',
+        world: 'world'
+    }),
+    'candyland'
 ];
 
 const STABLEMAPVALUECOMPS: [
@@ -151,7 +185,11 @@ const STABLEMAPVALUECOMPS: [
     (a: boolean[] | undefined, b: boolean[]) => boolean,
     (a: typeof User | undefined, b: typeof User) => boolean,
     (a: typeof Reaction | undefined, b: typeof Reaction) => boolean,
-    (a: Principal | undefined, b: Principal) => boolean
+    (a: Principal | undefined, b: Principal) => boolean,
+    (a: [Principal, string] | undefined, b: [Principal, string]) => boolean,
+    (a: string | undefined, b: string) => boolean,
+    (a: string | undefined, b: string) => boolean,
+    (a: string | undefined, b: string) => boolean
 ] = [
     simpleEquals,
     (a, b) => a !== undefined && a.every((value, index) => value === b[index]),
@@ -171,7 +209,15 @@ const STABLEMAPVALUECOMPS: [
     (a, b) =>
         a !== undefined &&
         Object.keys(a).every((value) => Object.keys(b).includes(value)),
-    (a, b) => a !== undefined && a.toText() === b.toText()
+    (a, b) => a !== undefined && a.toText() === b.toText(),
+    (a, b) =>
+        a !== undefined && a[0].toText() === b[0].toText() && a[1] === b[1],
+    simpleEquals,
+    (a, b) =>
+        a !== undefined &&
+        JSON.parse(a).hello === JSON.parse(b).hello &&
+        JSON.parse(a).world === JSON.parse(b).world,
+    simpleEquals
 ];
 
 export function getTests(
@@ -182,7 +228,7 @@ export function getTests(
     return [
         ...preRedeployTests(stableStructuresCanister_1, 0, 4),
         ...preRedeployTests(stableStructuresCanister_2, 5, 9),
-        ...preRedeployTests(stableStructuresCanister_3, 10, 13),
+        ...preRedeployTests(stableStructuresCanister_3, 10, 17),
         {
             name: 'redeploy canisters',
             prep: async () => {
@@ -207,7 +253,7 @@ export function getTests(
         },
         ...postRedeployTests(stableStructuresCanister_1, 0, 4),
         ...postRedeployTests(stableStructuresCanister_2, 5, 9),
-        ...postRedeployTests(stableStructuresCanister_3, 10, 13)
+        ...postRedeployTests(stableStructuresCanister_3, 10, 17)
     ];
 }
 

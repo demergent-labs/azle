@@ -1,5 +1,7 @@
 import { getCanisterId, runTests } from 'azle/test';
+// @ts-ignore
 import { createActor } from './dfx_generated/recursion';
+// @ts-ignore
 import { createActor as createRecursiveActor } from './dfx_generated/recursive_canister';
 import { getRecursiveCanisterTests, getTests } from './tests';
 

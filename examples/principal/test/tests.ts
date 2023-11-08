@@ -68,7 +68,7 @@ export function getTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
     ];
 }
 
-function getFromHexTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
+function getFromHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'principalFromHex aaaaa-aa',
@@ -167,7 +167,7 @@ function getFromHexTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
     ];
 }
 
-function getFromTextTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
+function getFromTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'principalFromText aaaaa-aa',
@@ -266,7 +266,7 @@ function getFromTextTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
     ];
 }
 
-function getFromBlobTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
+function getFromBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'principalFromBlob aaaaa-aa',
@@ -365,16 +365,15 @@ function getFromBlobTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
     ];
 }
 
-function getToHexTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
+function getToHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'principalToHex aaaaa-aa',
             test: async () => {
                 const principal = Principal.fromText('aaaaa-aa');
 
-                const result = await principalCanister.principalToHex(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToHex(principal);
 
                 return {
                     Ok: result === principal.toHex()
@@ -388,9 +387,8 @@ function getToHexTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 );
 
-                const result = await principalCanister.principalToHex(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToHex(principal);
 
                 return {
                     Ok: result === principal.toHex()
@@ -404,9 +402,8 @@ function getToHexTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'ryjl3-tyaaa-aaaaa-aaaba-cai'
                 );
 
-                const result = await principalCanister.principalToHex(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToHex(principal);
 
                 return {
                     Ok: result === principal.toHex()
@@ -420,9 +417,8 @@ function getToHexTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'jiyou-fiaaa-aaaam-aad6q-cai'
                 );
 
-                const result = await principalCanister.principalToHex(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToHex(principal);
 
                 return {
                     Ok: result === principal.toHex()
@@ -436,9 +432,8 @@ function getToHexTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'jqklt-hiaaa-aaaam-aaeba-cai'
                 );
 
-                const result = await principalCanister.principalToHex(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToHex(principal);
 
                 return {
                     Ok: result === principal.toHex()
@@ -452,9 +447,8 @@ function getToHexTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe'
                 );
 
-                const result = await principalCanister.principalToHex(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToHex(principal);
 
                 return {
                     Ok: result === principal.toHex()
@@ -464,16 +458,15 @@ function getToHexTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
     ];
 }
 
-function getToTextTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
+function getToTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'principalToText aaaaa-aa',
             test: async () => {
                 const principal = Principal.fromText('aaaaa-aa');
 
-                const result = await principalCanister.principalToText(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToText(principal);
 
                 return {
                     Ok: result === principal.toText()
@@ -487,9 +480,8 @@ function getToTextTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 );
 
-                const result = await principalCanister.principalToText(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToText(principal);
 
                 return {
                     Ok: result === principal.toText()
@@ -503,9 +495,8 @@ function getToTextTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'ryjl3-tyaaa-aaaaa-aaaba-cai'
                 );
 
-                const result = await principalCanister.principalToText(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToText(principal);
 
                 return {
                     Ok: result === principal.toText()
@@ -519,9 +510,8 @@ function getToTextTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'jiyou-fiaaa-aaaam-aad6q-cai'
                 );
 
-                const result = await principalCanister.principalToText(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToText(principal);
 
                 return {
                     Ok: result === principal.toText()
@@ -535,9 +525,8 @@ function getToTextTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'jqklt-hiaaa-aaaam-aaeba-cai'
                 );
 
-                const result = await principalCanister.principalToText(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToText(principal);
 
                 return {
                     Ok: result === principal.toText()
@@ -551,9 +540,8 @@ function getToTextTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe'
                 );
 
-                const result = await principalCanister.principalToText(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToText(principal);
 
                 return {
                     Ok: result === principal.toText()
@@ -563,16 +551,15 @@ function getToTextTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
     ];
 }
 
-function getToBlobTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
+function getToBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
         {
             name: 'principalToBlob aaaaa-aa',
             test: async () => {
                 const principal = Principal.fromText('aaaaa-aa');
 
-                const result = await principalCanister.principalToBlob(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToBlob(principal);
 
                 return {
                     Ok:
@@ -589,9 +576,8 @@ function getToBlobTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 );
 
-                const result = await principalCanister.principalToBlob(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToBlob(principal);
 
                 return {
                     Ok:
@@ -608,9 +594,8 @@ function getToBlobTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'ryjl3-tyaaa-aaaaa-aaaba-cai'
                 );
 
-                const result = await principalCanister.principalToBlob(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToBlob(principal);
 
                 return {
                     Ok:
@@ -627,9 +612,8 @@ function getToBlobTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'jiyou-fiaaa-aaaam-aad6q-cai'
                 );
 
-                const result = await principalCanister.principalToBlob(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToBlob(principal);
 
                 return {
                     Ok:
@@ -646,9 +630,8 @@ function getToBlobTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'jqklt-hiaaa-aaaam-aaeba-cai'
                 );
 
-                const result = await principalCanister.principalToBlob(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToBlob(principal);
 
                 return {
                     Ok:
@@ -665,9 +648,8 @@ function getToBlobTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
                     'qaxqg-4ymay-xutcp-nnull-fvtqf-5p6d4-mxbja-i6t5s-wz7kb-csadv-qqe'
                 );
 
-                const result = await principalCanister.principalToBlob(
-                    principal
-                );
+                const result =
+                    await principalCanister.principalToBlob(principal);
 
                 return {
                     Ok:
@@ -681,7 +663,7 @@ function getToBlobTests(principalCanister: ActorSubclass<SERVICE>): Test[] {
 }
 
 function getSelfAuthenticatingTests(
-    principalCanister: ActorSubclass<SERVICE>
+    principalCanister: ActorSubclass<_SERVICE>
 ): Test[] {
     return [
         {

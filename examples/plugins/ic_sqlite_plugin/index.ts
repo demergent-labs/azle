@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Record, registerPlugin, Result, Variant, Vec } from 'azle';
 
 type SQLite = {

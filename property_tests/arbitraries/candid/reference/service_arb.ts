@@ -66,7 +66,7 @@ const ServiceMethodArb = fc
 export const ServiceArb = fc
     .tuple(
         UniqueIdentifierArb('typeDeclaration'),
-        fc.array(ServiceMethodArb),
+        fc.uniqueArray(ServiceMethodArb, { selector: (entry) => entry.name }),
         PrincipalArb
     )
     .map(([name, serviceMethods, principal]): CandidMeta<Principal> => {

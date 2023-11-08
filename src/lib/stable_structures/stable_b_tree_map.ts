@@ -1,0 +1,208 @@
+import { None, Opt, Some } from '../candid/types/constructed/opt';
+import { nat64 } from '../candid/types/primitive/nats/nat64';
+import { nat8 } from '../candid/types/primitive/nats/nat8';
+import { encode, decode } from '../candid/serde';
+
+export interface Serializable {
+    toBytes: (data: any) => Uint8Array;
+    fromBytes: (bytes: Uint8Array) => any;
+}
+
+export function StableBTreeMap<Key = any, Value = any>(
+    keyType: Partial<Serializable>,
+    valueType: Partial<Serializable>,
+    memoryId: nat8
+) {
+    if (globalThis._azleIc !== undefined) {
+        globalThis._azleIc.stableBTreeMapInit(memoryId);
+    }
+
+    isSerializable(keyType);
+    isSerializable(valueType);
+
+    return {
+        /**
+         * Checks if the given key exists in the map.
+         * @param key the key to check.
+         * @returns `true` if the key exists in the map, `false` otherwise.
+         */
+        containsKey(key: Key): boolean {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
+            const encodedKey = keyType.toBytes(key).buffer;
+
+            return globalThis._azleIc.stableBTreeMapContainsKey(
+                memoryId,
+                encodedKey
+            );
+        },
+        /**
+         * Retrieves the value stored at the provided key.
+         * @param key the location from which to retrieve.
+         * @returns the value associated with the given key, if it exists.
+         */
+        get(key: Key): Opt<Value> {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
+            const encodedKey = keyType.toBytes(key).buffer;
+
+            const encodedResult = globalThis._azleIc.stableBTreeMapGet(
+                memoryId,
+                encodedKey
+            );
+
+            if (encodedResult === undefined) {
+                return None;
+            } else {
+                return Some(valueType.fromBytes(new Uint8Array(encodedResult)));
+            }
+        },
+        /**
+         * Inserts a value into the map at the provided key.
+         * @param key the location at which to insert.
+         * @param value the value to insert.
+         * @returns the previous value of the key, if present.
+         */
+        insert(key: Key, value: Value): Opt<Value> {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
+            const encodedKey = keyType.toBytes(key).buffer;
+            const encodedValue = valueType.toBytes(value).buffer;
+
+            const encodedResult = globalThis._azleIc.stableBTreeMapInsert(
+                memoryId,
+                encodedKey,
+                encodedValue
+            );
+
+            if (encodedResult === undefined) {
+                return None;
+            } else {
+                return Some(valueType.fromBytes(new Uint8Array(encodedResult)));
+            }
+        },
+        /**
+         * Checks if the map is empty.
+         * @returns `true` if the map contains no elements, `false` otherwise.
+         */
+        isEmpty(): boolean {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
+            return globalThis._azleIc.stableBTreeMapIsEmpty(memoryId);
+        },
+        /**
+         * Retrieves the items in the map in sorted order.
+         * @returns tuples representing key/value pairs.
+         */
+        items(): [Key, Value][] {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
+            const encodedItems =
+                globalThis._azleIc.stableBTreeMapItems(memoryId);
+
+            // TODO too much copying
+            return encodedItems.map(([encodedKey, encodedValue]) => {
+                return [
+                    keyType.fromBytes(new Uint8Array(encodedKey)),
+                    valueType.fromBytes(new Uint8Array(encodedValue))
+                ];
+            });
+        },
+        /**
+         * The keys for each element in the map in sorted order.
+         * @returns they keys in the map.
+         */
+        keys(): Key[] {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
+            const encodedKeys = globalThis._azleIc.stableBTreeMapKeys(memoryId);
+
+            // TODO too much copying
+            return encodedKeys.map((encodedKey) => {
+                return keyType.fromBytes(new Uint8Array(encodedKey));
+            });
+        },
+        /**
+         * Checks to see how many elements are in the map.
+         * @returns the number of elements in the map.
+         */
+        len(): nat64 {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
+            const candidEncodedLen =
+                globalThis._azleIc.stableBTreeMapLen(memoryId);
+
+            // TODO let's try just using a simple string instead of decode considering how expensive decode is
+            return decode(nat64, candidEncodedLen);
+        },
+        /**
+         * Removes a key from the map.
+         * @param key the location from which to remove.
+         * @returns the previous value at the key if it exists, `null` otherwise.
+         */
+        remove(key: Key): Opt<Value> {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
+            const encodedKey = keyType.toBytes(key).buffer;
+
+            const encodedValue = globalThis._azleIc.stableBTreeMapRemove(
+                memoryId,
+                encodedKey
+            );
+
+            if (encodedValue === undefined) {
+                return None;
+            } else {
+                return Some(valueType.fromBytes(new Uint8Array(encodedValue)));
+            }
+        },
+        /**
+         * The values in the map in sorted order.
+         * @param startIndex the starting index to begin retrieval
+         * @param length the number of values to retrieve
+         * @returns the values in the map.
+         */
+        values(startIndex: number = 0, length: number = 0): Value[] {
+            if (globalThis._azleIc === undefined) {
+                return undefined as any;
+            }
+
+            const encodedValues = globalThis._azleIc.stableBTreeMapValues(
+                memoryId,
+                startIndex,
+                length
+            );
+
+            // TODO too much copying
+            return encodedValues.map((encodedValue) => {
+                return valueType.fromBytes(new Uint8Array(encodedValue));
+            });
+        }
+    };
+}
+
+function isSerializable(obj: any): asserts obj is Serializable {
+    if (obj.toBytes === undefined) {
+        throw new Error(`value must have a toBytes method`);
+    }
+
+    if (obj.fromBytes === undefined) {
+        throw new Error(`value must have a fromBytes method`);
+    }
+}

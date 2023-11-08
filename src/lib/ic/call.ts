@@ -32,7 +32,7 @@ export function call<T extends (...args: any[]) => any>(
         config?.cycles128
     );
 
-    return method(false, callFunction, cycles, ...(config?.args ?? []));
+    return method(false, callFunction, cycles, config?.args ?? []);
 }
 
 function getCallFunctionAndCycles(

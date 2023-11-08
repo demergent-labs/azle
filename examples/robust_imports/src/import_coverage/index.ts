@@ -92,7 +92,7 @@ export const returnFathomlessVec = icQuery(
     [],
     ic.FathomlessVec(ic.azle.int16),
     () => {
-        return [1, 2, 3, 4, 5, 6, 7];
+        return Int16Array.from([1, 2, 3, 4, 5, 6, 7]);
     }
 );
 
@@ -141,7 +141,7 @@ export const makeCavernousRecord = dollarSignQuery(
 );
 
 export const typeCheck = dollarSignQuery(
-    [CoveredVec(CoveredOpt(ic.nat16))],
+    [CoveredVec(CoveredOpt(ic.int16))],
     coveredInt16,
     (vec) => {
         if (vec.length === 1) {

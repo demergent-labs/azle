@@ -1,3 +1,3 @@
-export type CandidType = {
+export interface CandidType {
     _azleCandidType?: '_azleCandidType';
-};
+}

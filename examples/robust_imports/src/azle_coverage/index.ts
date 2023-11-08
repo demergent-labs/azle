@@ -256,7 +256,7 @@ export const putTheCoconutInTheLime = kiwi(
     [coconut],
     Lime(coconut),
     (coconut) => {
-        return [coconut];
+        return Int16Array.from([coconut]);
     }
 );
 
@@ -299,7 +299,7 @@ export const removeRambutanSkins = ugni([], rambutan, () => {
     const opt = soncoya.get(0);
 
     if ('None' in opt) {
-        ic.trap('soncoya is None');
+        return ic.trap('soncoya is None');
     }
 
     const preparedFruit = opt.Some;
@@ -331,7 +331,7 @@ export const pickElderberry = ugni([], elderberry, () => {
     const opt = soncoya.get(0);
 
     if ('None' in opt) {
-        ic.trap('soncoya is None');
+        return ic.trap('soncoya is None');
     }
 
     const preparedFruit = opt.Some;

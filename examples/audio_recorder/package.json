@@ -7,7 +7,7 @@
         "azle": "0.18.6"
     },
     "devDependencies": {
-        "@dfinity/agent": "0.11.1",
+        "@dfinity/agent": "^0.19.3",
         "ts-node": "10.7.0",
         "typescript": "4.6.3"
     }

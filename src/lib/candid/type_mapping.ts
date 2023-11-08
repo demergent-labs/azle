@@ -23,38 +23,43 @@ import { AzleNat64, nat64 } from './types/primitive/nats/nat64';
 import { AzleResult, Result } from '../system_types';
 import { Principal } from './types/reference/principal';
 
+// TODO I believe we have some unnecessary cases and constructs in here now
+// TODO we probably don't need AzleTuple or AzleOpt
+// TODO remove and run tests
 export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     ? T
     : T extends () => any
     ? ReturnType<T>
-    : T extends AzleText
+    : T extends typeof AzleText
     ? string
-    : T extends AzleBool
+    : T extends typeof AzleBool
     ? bool
-    : T extends AzleInt
+    : T extends typeof AzleInt
     ? int
-    : T extends AzleInt64
+    : T extends typeof AzleInt64
     ? int64
-    : T extends AzleInt32
+    : T extends typeof AzleInt32
     ? int32
-    : T extends AzleInt16
+    : T extends typeof AzleInt16
     ? int16
-    : T extends AzleInt8
+    : T extends typeof AzleInt8
     ? int8
-    : T extends AzleNat
+    : T extends typeof AzleNat
     ? nat
-    : T extends AzleNat64
+    : T extends typeof AzleNat64
     ? nat64
-    : T extends AzleNat32
+    : T extends typeof AzleNat32
     ? nat32
-    : T extends AzleNat16
+    : T extends typeof AzleNat16
     ? nat16
-    : T extends AzleNat8
+    : T extends typeof AzleNat8
     ? nat8
-    : T extends AzleFloat64
+    : T extends typeof AzleFloat64
     ? float64
-    : T extends AzleFloat32
+    : T extends typeof AzleFloat32
     ? float32
+    : T extends typeof AzleVoid
+    ? void
     : T extends AzleVoid
     ? void
     : T extends AzleTuple<infer U>
@@ -82,22 +87,38 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
                   : 10
           >;
       }
-    : T extends AzleVec<AzleNat8>
-    ? Uint8Array
     : T extends AzleVec<infer U>
-    ? TypeMapping<U>[]
+    ? U extends { _azleKind?: 'AzleNat8' }
+        ? Uint8Array
+        : U extends { _azleKind?: 'AzleNat16' }
+        ? Uint16Array
+        : U extends { _azleKind?: 'AzleNat32' }
+        ? Uint32Array
+        : U extends { _azleKind?: 'AzleNat64' }
+        ? BigUint64Array
+        : U extends { _azleKind?: 'AzleInt8' }
+        ? Int8Array
+        : U extends { _azleKind?: 'AzleInt16' }
+        ? Int16Array
+        : U extends { _azleKind?: 'AzleInt32' }
+        ? Int32Array
+        : U extends { _azleKind?: 'AzleInt64' }
+        ? BigInt64Array
+        : T extends AzleVec<infer U> // TODO I do not know why we have to do this?
+        ? TypeMapping<U>[]
+        : TypeMapping<U>[]
     : T extends AzleOpt<infer Some>
     ? Opt<TypeMapping<Some>>
     : T extends AzleResult<infer U, infer W>
     ? Result<TypeMapping<U>, TypeMapping<W>>
-    : T extends AzleBlob
+    : T extends typeof AzleBlob
     ? blob
     : T extends typeof Principal
     ? Principal
-    : T extends AzleNull
+    : T extends typeof AzleNull
     ? Null
-    : T extends AzleReserved
-    ? reserved
-    : T extends AzleEmpty
+    : T extends typeof AzleReserved
+    ? any
+    : T extends typeof AzleEmpty
     ? empty
     : T;

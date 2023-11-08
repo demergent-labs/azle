@@ -5,7 +5,10 @@ import { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { getCanisterId } from 'azle/test';
 
+// @ts-ignore
 import { _SERVICE } from '../wallet/frontend/dfx_generated/wallet_backend/wallet_backend.did';
+
+// @ts-ignore
 import { createActor } from '../wallet/frontend/dfx_generated/wallet_backend';
 
 type Config = {

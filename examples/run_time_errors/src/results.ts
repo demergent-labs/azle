@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Result } from 'azle';
 
 export function returnNonObjectAsInvalidResult(): Result<string, string> {

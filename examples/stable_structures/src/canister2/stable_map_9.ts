@@ -11,7 +11,7 @@ import {
     Tuple
 } from 'azle';
 
-let stableMap9 = StableBTreeMap(float64, Vec(text), 9);
+let stableMap9 = StableBTreeMap<float64, Vec<text>>(float64, Vec(text), 9);
 
 export const stableMap9Methods = {
     stableMap9ContainsKey: query([float64], bool, (key) => {

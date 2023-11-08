@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { blob, $init, match, nat64, $postUpgrade, $update, Vec } from 'azle';
 import {
     BitcoinNetwork,

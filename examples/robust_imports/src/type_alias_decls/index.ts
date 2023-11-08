@@ -165,7 +165,7 @@ export const getMyRecord = azle.query([], MyRecordFromAlias, () => {
         depth: { depth: 3 },
         tups: ['Hello', 1.23],
         description: { ugly: null },
-        list: [1, 2, 3, 4, 5, 6, 7]
+        list: Uint16Array.from([1, 2, 3, 4, 5, 6, 7])
     };
 });
 
@@ -176,7 +176,7 @@ export const getMyRecordAlias = azle.query([], MyRecordFromAliasAlias, () => {
         depth: { depth: 3 },
         tups: ['Hello', 1.23],
         description: { ugly: null },
-        list: [1, 2, 3, 4, 5, 6, 7]
+        list: Uint16Array.from([1, 2, 3, 4, 5, 6, 7])
     };
 });
 
@@ -187,7 +187,7 @@ export const getSuperAlias = azle.query([], SuperAlias, () => {
         depth: { depth: 3 },
         tups: ['Hello', 1.23],
         description: { ugly: null },
-        list: [1, 2, 3, 4, 5, 6, 7]
+        list: Uint16Array.from([1, 2, 3, 4, 5, 6, 7])
     };
 });
 

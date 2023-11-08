@@ -1,4 +1,5 @@
 import { Test } from 'azle/test';
+// @ts-ignore
 import { _SERVICE } from '../dfx_generated/update/update.did';
 import { ActorSubclass } from '@dfinity/agent';
 
@@ -7,9 +8,8 @@ export function getTests(updateCanister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'simpleUpdate',
             test: async () => {
-                const result = await updateCanister.simpleUpdate(
-                    'Why hello there'
-                );
+                const result =
+                    await updateCanister.simpleUpdate('Why hello there');
 
                 return {
                     Ok: result === undefined

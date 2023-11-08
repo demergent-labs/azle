@@ -5,4 +5,4 @@ import { nat64, AzleNat64 } from '../../candid/types/primitive/nats/nat64';
  * functions. Pass to {@link ic.clearTimer} to remove the timer.
  */
 export type TimerId = nat64; // TODO: Consider modeling this after the corresponding struct in Rust
-export const TimerId: AzleNat64 = AzleNat64 as any;
+export const TimerId = AzleNat64;

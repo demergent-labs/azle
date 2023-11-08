@@ -1,5 +1,9 @@
+import { Serializable } from '../../../stable_structures/stable_b_tree_map';
 import { CandidType } from '../../candid_type';
+import { decode } from '../../serde/decode';
+import { encode } from '../../serde/encode';
 import { Parent, toIdl } from '../../to_idl';
+import { TypeMapping } from '../../type_mapping';
 import { RequireExactlyOne } from './variant';
 import { IDL } from '@dfinity/candid';
 
@@ -22,9 +26,13 @@ export function Some<T>(value: T) {
 export const None = { None: null };
 
 // TODO what happens if we pass something to Opt() that can't be converted to CandidClass?
-export function Opt<T>(t: T): AzleOpt<T> {
+export function Opt<T>(
+    t: T
+): RequireExactlyOne<{ Some: TypeMapping<T>; None: null }> &
+    CandidType &
+    Partial<Serializable> {
     // return IDL.Opt(toCandidClass(t));
-    return new AzleOpt(t);
+    return new AzleOpt(t) as any;
 }
 
 export class AzleOpt<T> {
@@ -33,8 +41,20 @@ export class AzleOpt<T> {
     }
 
     innerType: CandidType;
-    _azleCandidType?: '_azleCandidType';
+
     _azleKind: 'AzleOpt' = 'AzleOpt';
+    _azleCandidType?: '_azleCandidType';
+
+    static _azleKind: 'AzleOpt' = 'AzleOpt';
+    static _azleCandidType?: '_azleCandidType';
+
+    toBytes(data: any) {
+        return encode(this, data);
+    }
+
+    fromBytes(bytes: Uint8Array) {
+        return decode(this, bytes);
+    }
 
     getIdl(parents: Parent[]) {
         return IDL.Opt(toIdl(this.innerType, parents));

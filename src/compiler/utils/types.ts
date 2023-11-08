@@ -1,4 +1,4 @@
-import { Variant } from '../../lib';
+import { RequireExactlyOne } from '../../lib';
 
 export type AzleError = {
     error?: string;
@@ -61,7 +61,7 @@ export type RunOptions = {
 
 export type Rust = string;
 
-export type SpawnSyncError = Variant<{
+export type SpawnSyncError = RequireExactlyOne<{
     Error: string;
     Signal: NodeJS.Signals;
     Status: number;

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { bool, Record, Vec, candid, int, text } from 'azle';
 
 export class OtherUserDefinedRecord extends Record {

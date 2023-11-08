@@ -11,7 +11,7 @@ import {
     Tuple
 } from 'azle';
 
-let stableMap5 = StableBTreeMap(Opt(text), float64, 5);
+let stableMap5 = StableBTreeMap<Opt<text>, float64>(Opt(text), float64, 5);
 
 export const stableMap5Methods = {
     stableMap5ContainsKey: query([Opt(text)], bool, (key) => {

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Principal } from 'azle';
 
 export function returnStringAsInvalidPrincipal(): Principal {

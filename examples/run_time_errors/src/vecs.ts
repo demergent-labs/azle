@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Vec } from 'azle';
 
 export function returnNonObjectAsInvalidVec(): Vec<string> {

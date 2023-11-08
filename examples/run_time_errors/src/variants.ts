@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Tuple, Null, Variant, Vec, bool, candid, int, text } from 'azle';
 import { UserDefinedRecord } from './records';
 
