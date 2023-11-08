@@ -108,6 +108,5 @@ function generateTypeDeclaration(
         .filter((typeDeclaration) => typeDeclaration)
         .join(',\n');
 
-    // TODO: Is this going to work if serviceMethods.length === 0?
     return `const ${name} = Canister({${methods}});`;
 }
