@@ -1,78 +1,27 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+import { CanisterArb } from '../../../arbitraries/canister_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import {
     Variant,
     VariantArb
 } from '../../../arbitraries/candid/constructed/variant_arb';
-import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
-import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
+import { QueryMethodArb } from '../../../arbitraries/query_method_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
-import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
-const VariantTestArb = fc
-    .tuple(
-        UniqueIdentifierArb('canisterMethod'),
-        fc.uniqueArray(VariantArb, {
-            selector: (entry) => entry.src.candidType
-        }),
-        VariantArb
-    )
-    .map(
-        ([
-            functionName,
-            paramVariants,
-            defaultReturnVariant
-        ]): QueryMethodBlueprint => {
-            const imports = new Set([
-                ...paramVariants.flatMap((variant) => [...variant.src.imports]),
-                ...defaultReturnVariant.src.imports
-            ]);
+const UniqueVariantsArray = fc.uniqueArray(VariantArb, {
+    selector: (entry) => entry.src.candidType
+});
 
-            const candidTypeDeclarations = [
-                ...paramVariants.map(
-                    (variant) => variant.src.typeDeclaration ?? ''
-                ),
-                defaultReturnVariant.src.typeDeclaration ?? ''
-            ];
+const AllVariantsQueryMethod = QueryMethodArb(UniqueVariantsArray, VariantArb, {
+    generateBody,
+    generateTests
+});
 
-            const paramNames = paramVariants.map((_, index) => `param${index}`);
-            const paramCandidTypes = paramVariants
-                .map((variant) => variant.src.candidType)
-                .join(', ');
-
-            const returnCandidType =
-                paramVariants[0]?.src?.candidType ??
-                defaultReturnVariant.src.candidType;
-
-            const body = generateBody(
-                paramNames,
-                paramVariants,
-                defaultReturnVariant
-            );
-
-            const test = generateTest(
-                functionName,
-                paramVariants,
-                defaultReturnVariant
-            );
-
-            return {
-                imports,
-                functionName,
-                candidTypeDeclarations,
-                paramCandidTypes,
-                returnCandidType,
-                paramNames,
-                body,
-                test
-            };
-        }
-    );
-
-runPropTests(VariantTestArb);
+runPropTests(CanisterArb(AllVariantsQueryMethod));
 
 function generateBody(
     paramNames: string[],
@@ -103,24 +52,26 @@ function generateBody(
     `;
 }
 
-function generateTest(
+function generateTests(
     functionName: string,
     paramVariants: CandidMeta<Variant>[],
     returnVariant: CandidMeta<Variant>
-): Test {
+): Test[] {
     const expectedResult = paramVariants[0]?.value ?? returnVariant.value;
-    return {
-        name: `variant ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/variant/test');
+    return [
+        {
+            name: `variant ${functionName}`,
+            test: async () => {
+                const actor = getActor('./tests/variant/test');
 
-            const result = await actor[functionName](
-                ...paramVariants.map((variant) => variant.value)
-            );
+                const result = await actor[functionName](
+                    ...paramVariants.map((variant) => variant.value)
+                );
 
-            return {
-                Ok: deepEqual(result, expectedResult)
-            };
+                return {
+                    Ok: deepEqual(result, expectedResult)
+                };
+            }
         }
-    };
+    ];
 }

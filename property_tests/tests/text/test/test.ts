@@ -1,61 +1,20 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
-import { CanisterArb } from '../../../arbitraries/canister_arb';
-import { TextArb } from '../../../arbitraries/candid/primitive/text';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
-import { getActor, runPropTests } from '../../../../property_tests';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { Test } from '../../../../test';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+import { CanisterArb } from '../../../arbitraries/canister_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
+import { TextArb } from '../../../arbitraries/candid/primitive/text';
 import { QueryMethodArb } from '../../../arbitraries/query_method_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
+import { Test } from '../../../../test';
 
-const TextTestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(TextArb),
-        TextArb
-    )
-    .map(
-        ([
-            functionName,
-            paramTexts,
-            defaultReturnText
-        ]): QueryMethodBlueprint => {
-            const imports = defaultReturnText.src.imports;
+const AllVariantsQueryMethod = QueryMethodArb(fc.array(TextArb), TextArb, {
+    generateBody,
+    generateTests
+});
 
-            const paramNames = paramTexts.map((_, index) => `param${index}`);
-            const paramCandidTypes = paramTexts
-                .map((text) => text.src.candidType)
-                .join(', ');
-
-            const returnCandidType = defaultReturnText.src.candidType;
-
-            const body = generateBody(
-                paramNames,
-                paramTexts,
-                defaultReturnText
-            );
-
-            const tests = [
-                generateTest(functionName, paramTexts, defaultReturnText)
-            ];
-
-            return {
-                imports,
-                functionName,
-                paramNames,
-                paramCandidTypes,
-                returnCandidType,
-                body,
-                tests
-            };
-        }
-    );
-
-runPropTests(CanisterArb(QueryMethodArb(TextTestArb)));
+runPropTests(CanisterArb(AllVariantsQueryMethod));
 
 function generateBody(
     paramNames: string[],
@@ -86,27 +45,29 @@ function generateBody(
     `;
 }
 
-function generateTest(
+function generateTests(
     functionName: string,
     paramTexts: CandidMeta<string>[],
     returnTexts: CandidMeta<string>
-): Test {
+): Test[] {
     const expectedResult = paramTexts.reduce(
         (acc, text) => acc + text.value,
         returnTexts.value
     );
     const paramValues = paramTexts.map((text) => text.value);
 
-    return {
-        name: `text ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/text/test');
+    return [
+        {
+            name: `text ${functionName}`,
+            test: async () => {
+                const actor = getActor('./tests/text/test');
 
-            const result = await actor[functionName](...paramValues);
+                const result = await actor[functionName](...paramValues);
 
-            return {
-                Ok: deepEqual(result, expectedResult)
-            };
+                return {
+                    Ok: deepEqual(result, expectedResult)
+                };
+            }
         }
-    };
+    ];
 }
