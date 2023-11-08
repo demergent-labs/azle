@@ -11,7 +11,7 @@ import {
     Vec
 } from 'azle';
 
-let stableMap17 = StableBTreeMap(StableJson, text, 17);
+let stableMap17 = StableBTreeMap(StableJson(), text, 17);
 
 export const stableMap17Methods = {
     stableMap17ContainsKey: query([text], bool, (key) => {

@@ -1,4 +1,4 @@
-import { Serializable } from '../../../stable_b_tree_map';
+import { Serializable } from '../../../stable_structures/stable_b_tree_map';
 import { CandidType } from '../../candid_type';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';

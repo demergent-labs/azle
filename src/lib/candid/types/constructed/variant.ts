@@ -4,7 +4,7 @@ import { toIdlMap, CandidMap } from './to_idl_map';
 import { IDL } from '@dfinity/candid';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
-import { Serializable } from '../../../stable_b_tree_map';
+import { Serializable } from '../../../stable_structures/stable_b_tree_map';
 
 export function Variant<
     T extends {

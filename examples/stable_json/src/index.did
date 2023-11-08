@@ -1,3 +1,4 @@
 service: () -> {
-    test: () -> () query;
+    insert: () -> ();
+    values: () -> (vec record {id:principal; age:nat; signature:vec nat8; username:text}) query;
 }

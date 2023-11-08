@@ -1,43 +1,20 @@
-import { TypeMapping } from './candid/type_mapping';
-import { None, Opt, Some } from './candid/types/constructed/opt';
-import { nat64 } from './candid/types/primitive/nats/nat64';
-import { nat8 } from './candid/types/primitive/nats/nat8';
-import { encode, decode } from './candid/serde';
-
-// TODO we should probably allow the user to pass in their own types
-// TODO when they want to use a custom serializable
-// TODO perhaps we need a way to extend TypeMapping
-
-// TODO we should probably try to make it work with bigint, Principal, etc
-// TODO out of the box
-// TODO we probably need to allow the user to pass in their own encoding/decoding for Json as well
-// TODO we need a way to make the types good in TypeMapping
-export class StableJson<T = string> {
-    static _azleKind: 'StableJson' = 'StableJson';
-
-    static toBytes(data: any) {
-        return Uint8Array.from(Buffer.from(JSON.stringify(data)));
-    }
-
-    static fromBytes(bytes: Uint8Array) {
-        return JSON.parse(Buffer.from(bytes).toString());
-    }
-}
+import { None, Opt, Some } from '../candid/types/constructed/opt';
+import { nat64 } from '../candid/types/primitive/nats/nat64';
+import { nat8 } from '../candid/types/primitive/nats/nat8';
+import { encode, decode } from '../candid/serde';
 
 export interface Serializable {
     toBytes: (data: any) => Uint8Array;
     fromBytes: (bytes: Uint8Array) => any;
 }
 
-export function StableBTreeMap<
-    Key extends Partial<Serializable>,
-    Value extends Partial<Serializable>
->(keyType: Key, valueType: Value, memoryId: nat8) {
-    // TODO we don't really need to candid encode this, it's just a number
-    const candidEncodedMemoryId = encode(nat8, memoryId).buffer;
-
+export function StableBTreeMap<Key = any, Value = any>(
+    keyType: Partial<Serializable>,
+    valueType: Partial<Serializable>,
+    memoryId: nat8
+) {
     if (globalThis._azleIc !== undefined) {
-        globalThis._azleIc.stableBTreeMapInit(candidEncodedMemoryId);
+        globalThis._azleIc.stableBTreeMapInit(memoryId);
     }
 
     isSerializable(keyType);
@@ -49,7 +26,7 @@ export function StableBTreeMap<
          * @param key the key to check.
          * @returns `true` if the key exists in the map, `false` otherwise.
          */
-        containsKey(key: TypeMapping<Key>): boolean {
+        containsKey(key: Key): boolean {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
@@ -57,7 +34,7 @@ export function StableBTreeMap<
             const encodedKey = keyType.toBytes(key).buffer;
 
             return globalThis._azleIc.stableBTreeMapContainsKey(
-                candidEncodedMemoryId,
+                memoryId,
                 encodedKey
             );
         },
@@ -66,7 +43,7 @@ export function StableBTreeMap<
          * @param key the location from which to retrieve.
          * @returns the value associated with the given key, if it exists.
          */
-        get(key: TypeMapping<Key>): Opt<TypeMapping<Value>> {
+        get(key: Key): Opt<Value> {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
@@ -74,7 +51,7 @@ export function StableBTreeMap<
             const encodedKey = keyType.toBytes(key).buffer;
 
             const encodedResult = globalThis._azleIc.stableBTreeMapGet(
-                candidEncodedMemoryId,
+                memoryId,
                 encodedKey
             );
 
@@ -90,10 +67,7 @@ export function StableBTreeMap<
          * @param value the value to insert.
          * @returns the previous value of the key, if present.
          */
-        insert(
-            key: TypeMapping<Key>,
-            value: TypeMapping<Value>
-        ): Opt<TypeMapping<Value>> {
+        insert(key: Key, value: Value): Opt<Value> {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
@@ -102,7 +76,7 @@ export function StableBTreeMap<
             const encodedValue = valueType.toBytes(value).buffer;
 
             const encodedResult = globalThis._azleIc.stableBTreeMapInsert(
-                candidEncodedMemoryId,
+                memoryId,
                 encodedKey,
                 encodedValue
             );
@@ -122,22 +96,19 @@ export function StableBTreeMap<
                 return undefined as any;
             }
 
-            return globalThis._azleIc.stableBTreeMapIsEmpty(
-                candidEncodedMemoryId
-            );
+            return globalThis._azleIc.stableBTreeMapIsEmpty(memoryId);
         },
         /**
          * Retrieves the items in the map in sorted order.
          * @returns tuples representing key/value pairs.
          */
-        items(): [TypeMapping<Key>, TypeMapping<Value>][] {
+        items(): [Key, Value][] {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
 
-            const encodedItems = globalThis._azleIc.stableBTreeMapItems(
-                candidEncodedMemoryId
-            );
+            const encodedItems =
+                globalThis._azleIc.stableBTreeMapItems(memoryId);
 
             // TODO too much copying
             return encodedItems.map(([encodedKey, encodedValue]) => {
@@ -151,14 +122,12 @@ export function StableBTreeMap<
          * The keys for each element in the map in sorted order.
          * @returns they keys in the map.
          */
-        keys(): TypeMapping<Key>[] {
+        keys(): Key[] {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
 
-            const encodedKeys = globalThis._azleIc.stableBTreeMapKeys(
-                candidEncodedMemoryId
-            );
+            const encodedKeys = globalThis._azleIc.stableBTreeMapKeys(memoryId);
 
             // TODO too much copying
             return encodedKeys.map((encodedKey) => {
@@ -174,10 +143,10 @@ export function StableBTreeMap<
                 return undefined as any;
             }
 
-            const candidEncodedLen = globalThis._azleIc.stableBTreeMapLen(
-                candidEncodedMemoryId
-            );
+            const candidEncodedLen =
+                globalThis._azleIc.stableBTreeMapLen(memoryId);
 
+            // TODO let's try just using a simple string instead of decode considering how expensive decode is
             return decode(nat64, candidEncodedLen);
         },
         /**
@@ -185,7 +154,7 @@ export function StableBTreeMap<
          * @param key the location from which to remove.
          * @returns the previous value at the key if it exists, `null` otherwise.
          */
-        remove(key: TypeMapping<Key>): Opt<TypeMapping<Value>> {
+        remove(key: Key): Opt<Value> {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
@@ -193,7 +162,7 @@ export function StableBTreeMap<
             const encodedKey = keyType.toBytes(key).buffer;
 
             const encodedValue = globalThis._azleIc.stableBTreeMapRemove(
-                candidEncodedMemoryId,
+                memoryId,
                 encodedKey
             );
 
@@ -205,15 +174,19 @@ export function StableBTreeMap<
         },
         /**
          * The values in the map in sorted order.
+         * @param startIndex the starting index to begin retrieval
+         * @param length the number of values to retrieve
          * @returns the values in the map.
          */
-        values(): TypeMapping<Value>[] {
+        values(startIndex: number = 0, length: number = 0): Value[] {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
 
             const encodedValues = globalThis._azleIc.stableBTreeMapValues(
-                candidEncodedMemoryId
+                memoryId,
+                startIndex,
+                length
             );
 
             // TODO too much copying

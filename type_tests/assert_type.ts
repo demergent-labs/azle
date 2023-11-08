@@ -1,5 +1,5 @@
 import { CandidType } from '../src/lib/candid/candid_type';
-import { Serializable } from '../src/lib/stable_b_tree_map';
+import { Serializable } from '../src/lib/stable_structures/stable_b_tree_map';
 
 export type IsAny<T> = 0 extends 1 & T ? true : false;
 export type IsExact<T, U> = [T] extends [U]

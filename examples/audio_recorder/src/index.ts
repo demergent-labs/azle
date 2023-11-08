@@ -23,6 +23,7 @@ export const User = Record({
     recordingIds: Vec(Principal),
     username: text
 });
+type User = typeof User;
 
 export const Recording = Record({
     id: Principal,
@@ -31,14 +32,16 @@ export const Recording = Record({
     name: text,
     userId: Principal
 });
+type Recording = typeof Recording;
 
 const AudioRecorderError = Variant({
     RecordingDoesNotExist: Principal,
     UserDoesNotExist: Principal
 });
+type AudioRecorderError = typeof AudioRecorderError;
 
-let users = StableBTreeMap(Principal, User, 0);
-let recordings = StableBTreeMap(Principal, Recording, 1);
+let users = StableBTreeMap<Principal, User>(Principal, User, 0);
+let recordings = StableBTreeMap<Principal, Recording>(Principal, Recording, 1);
 
 export default Canister({
     createUser: update([text], User, (username) => {

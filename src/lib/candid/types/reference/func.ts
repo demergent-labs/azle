@@ -3,7 +3,7 @@ import { IDL } from '@dfinity/candid';
 import { Principal } from './principal';
 import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
-import { Serializable } from '../../../stable_b_tree_map';
+import { Serializable } from '../../../stable_structures/stable_b_tree_map';
 
 type Mode = 'query' | 'update' | 'oneway';
 

@@ -4,7 +4,7 @@ import { IDL } from '@dfinity/candid';
 import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
 import { TypeMapping } from '../../type_mapping';
-import { Serializable } from '../../../stable_b_tree_map';
+import { Serializable } from '../../../stable_structures/stable_b_tree_map';
 
 export class AzleTuple<T extends any[]> {
     constructor(t: CandidType[]) {
