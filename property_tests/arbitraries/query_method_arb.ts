@@ -2,7 +2,7 @@ import fc from 'fast-check';
 import { TestSample } from './test_sample_arb';
 import { Test } from '../../test';
 
-type QueryMethod = {
+export type QueryMethod = {
     sourceCode: string;
     test: Test;
     imports: Set<string>;
