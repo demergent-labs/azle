@@ -23,11 +23,14 @@ export function CanisterArb(testArb: fc.Arbitrary<TestSample>) {
 
             const imports = [
                 ...new Set(
-                    queryMethods.reduce((acc, queryMethod) => {
-                        return [...acc, ...queryMethod.imports];
-                    }, [] as string[])
+                    queryMethods.reduce(
+                        (acc, queryMethod) => {
+                            return [...acc, ...queryMethod.imports];
+                        },
+                        ['Canister', 'query']
+                    )
                 )
-            ];
+            ].join();
 
             const tests: Test[] = queryMethods.map(
                 (queryMethod) => queryMethod.test
@@ -35,7 +38,7 @@ export function CanisterArb(testArb: fc.Arbitrary<TestSample>) {
 
             return {
                 sourceCode: `
-    import { Canister, query, ${imports.join(', ')} } from 'azle';
+    import { ${imports} } from 'azle';
     import { deepEqual } from 'fast-equals';
     // TODO solve the underlying principal problem https://github.com/demergent-labs/azle/issues/1443
     import { Principal as DfinityPrincipal } from '@dfinity/principal';
