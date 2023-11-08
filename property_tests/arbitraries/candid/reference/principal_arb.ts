@@ -11,6 +11,5 @@ export const PrincipalArb = CandidMetaArb(
         })
         .map((sample) => Principal.fromUint8Array(sample)),
     'Principal',
-    principalToSrcLiteral,
-    (a, b) => a.toText() === b.toText()
+    principalToSrcLiteral
 );

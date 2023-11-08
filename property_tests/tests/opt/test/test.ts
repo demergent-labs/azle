@@ -1,9 +1,6 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
-import {
-    createAreOptsEqualCodeDeclaration,
-    createAreOptsEqualCodeUsage
-} from '../../../are_equal/opt';
 import { Opt, OptArb } from '../../../arbitraries/candid/constructed/opt_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
@@ -11,6 +8,7 @@ import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const OptTestArb = fc
     .tuple(
@@ -69,23 +67,16 @@ function generateBody(
         })
         .join('\n');
 
-    const paramLiterals = paramOpts.map((opt) => opt.src.valueLiteral);
-
-    const areParamsCorrectlyOrdered = paramNames
-        .map((paramName, index) => {
-            return `if (!${createAreOptsEqualCodeUsage(
-                paramName,
-                paramLiterals[index]
-            )}) throw new Error('${paramName} is incorrectly ordered')`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramOpts
+    );
 
     const returnStatement = paramNames[0] ?? returnOpt.src.valueLiteral;
 
     return `
         ${areParamsOpts}
-        ${createAreOptsEqualCodeDeclaration()}
-        ${areParamsCorrectlyOrdered}
+        ${paramsCorrectlyOrdered}
 
         return ${returnStatement};
     `;
@@ -107,11 +98,8 @@ function generateTest(
 
             const result = await actor[functionName](...params);
 
-            const equals =
-                paramOpts.length > 0 ? paramOpts[0].equals : returnOpt.equals;
-
             return {
-                Ok: equals(result, expectedResult)
+                Ok: deepEqual(expectedResult, result)
             };
         }
     };

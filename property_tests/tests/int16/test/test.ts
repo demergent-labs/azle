@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import { Int16Arb } from '../../../arbitraries/candid/primitive/ints/int16_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
@@ -7,6 +8,7 @@ import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const Int16TestArb = fc
     .tuple(
@@ -56,14 +58,10 @@ function generateBody(
         })
         .join('\n');
 
-    const paramValueLiterals = paramInt16s.map(
-        (sample) => sample.src.valueLiteral
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramInt16s
     );
-    const paramsCorrectlyOrdered = paramNames
-        .map((paramName, index) => {
-            return `if (${paramName} !== ${paramValueLiterals[index]}) throw new Error('${paramName} is incorrectly ordered')`;
-        })
-        .join('\n');
 
     const sum = paramNames.reduce((acc, paramName) => {
         return `${acc} + ${paramName}`;
@@ -102,7 +100,7 @@ function generateTest(
             const result = await actor[functionName](...paramValues);
 
             return {
-                Ok: returnInt16.equals(result, expectedResult)
+                Ok: deepEqual(result, expectedResult)
             };
         }
     };

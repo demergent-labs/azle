@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import { BlobArb } from '../../../arbitraries/candid/constructed/blob_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
@@ -7,6 +8,7 @@ import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const BlobTestArb = fc
     .tuple(
@@ -49,18 +51,10 @@ function generateBody(
         })
         .join('\n');
 
-    // TODO this ordering check is not perfect
-    // TODO but turning the vec into a string seems a bit difficult...we need to figure out how to check perfecly for the values that we want
-    // TODO maybe a global variable that we can write into and call would work
-    const paramsCorrectlyOrdered = paramNames
-        .map((paramName, index) => {
-            const paramIsCorrectLength = `${paramName}.length === ${paramBlobs[index].value.length}`;
-
-            const throwError = `throw new Error('${paramName} is incorrectly ordered')`;
-
-            return `if (!(${paramIsCorrectLength})) ${throwError};`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramBlobs
+    );
 
     const returnStatement = `Uint8Array.from([${[...returnBlob.value]} ${
         returnBlob.value.length > 0 ? ',' : ''
@@ -96,7 +90,7 @@ function generateTest(
             );
 
             return {
-                Ok: returnBlob.equals(result, expectedResult)
+                Ok: deepEqual(result, expectedResult)
             };
         }
     };
