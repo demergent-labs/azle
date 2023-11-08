@@ -10,19 +10,18 @@ pub fn native_function<'a>(
     _this: &CallbackArg,
     args: &[CallbackArg],
 ) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let memory_id_candid_bytes: Vec<u8> = args
+    let memory_id: usize = args
         .get(0)
-        .expect("stable_b_tree_map_get argument 0 is undefined")
+        .expect("stable_b_tree_map_init argument 0 is undefined")
         .to_js_value()?
         .try_into()?;
-    let memory_id: u8 = candid::decode_one(&memory_id_candid_bytes)?;
 
     STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
         let mut stable_b_tree_maps = stable_b_tree_maps.borrow_mut();
         stable_b_tree_maps.insert(
-            memory_id,
+            memory_id as u8,
             StableBTreeMap::init(
-                MEMORY_MANAGER_REF_CELL.with(|m| m.borrow().get(MemoryId::new(memory_id))),
+                MEMORY_MANAGER_REF_CELL.with(|m| m.borrow().get(MemoryId::new(memory_id as u8))),
             ),
         );
     });
