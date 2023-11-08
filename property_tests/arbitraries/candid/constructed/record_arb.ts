@@ -27,8 +27,6 @@ export const RecordArb = fc
 
         const value = generateValue(fields);
 
-        const equals = generateEqualsMethod(fields);
-
         return {
             src: {
                 candidType: name,
@@ -36,8 +34,7 @@ export const RecordArb = fc
                 imports,
                 valueLiteral
             },
-            value,
-            equals
+            value
         };
     });
 
@@ -81,41 +78,4 @@ function generateValueLiteral(fields: Field[]): string {
     return `{
         ${fieldLiterals}
     }`;
-}
-
-function generateEqualsMethod(
-    fields: Field[]
-): (a: Record, b: Record) => boolean {
-    return (a: Record, b: Record): boolean => {
-        if (typeof a !== typeof b) {
-            return false;
-        }
-
-        const aFieldNames = Object.keys(a).sort();
-        const bFieldNames = Object.keys(b).sort();
-        if (aFieldNames.length !== bFieldNames.length) {
-            return false;
-        }
-
-        const areFieldNamesTheSame = aFieldNames.reduce(
-            (acc, aFieldName, index) =>
-                acc && aFieldName === bFieldNames[index],
-            true
-        );
-
-        if (!areFieldNamesTheSame) {
-            return false;
-        }
-
-        const areFieldValuesTheSame = fields.reduce(
-            (acc, [fieldName, fieldCandidType]) => {
-                return (
-                    acc && fieldCandidType.equals(a[fieldName], b[fieldName])
-                );
-            },
-            true
-        );
-
-        return areFieldValuesTheSame;
-    };
 }

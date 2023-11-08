@@ -16,41 +16,119 @@ import { Float32Arb } from '../primitive/floats/float32_arb';
 import { Float64Arb } from '../primitive/floats/float64_arb';
 import { NullArb } from '../primitive/null';
 import { TextArb } from '../primitive/text';
-import { deepEqual } from 'fast-equals';
 import { BlobArb } from './blob_arb';
 import { CandidType } from '../candid_type_arb';
+
+type Vec<T> =
+    | T[]
+    | Uint16Array
+    | Uint32Array
+    | Uint8Array
+    | Int16Array
+    | Int32Array
+    | Int8Array
+    | BigUint64Array
+    | BigInt64Array;
 
 const VecInnerArb = <T extends CandidType>(
     arb: fc.Arbitrary<CandidMeta<T>>
 ) => {
     return fc
         .tuple(fc.array(arb), arb)
-        .map(([sample, src]): CandidMeta<T[]> => {
-            const equals = generateEquals(sample);
-            const valueLiteral = generateValueLiteral(sample);
+        .map(([sample, src]): CandidMeta<Vec<T>> => {
+            const valueLiteral = generateValueLiteral(
+                sample,
+                src.src.candidType
+            );
 
             return {
-                value: sample.map((sample) => sample.value),
+                value: generateValue(sample, src.src.candidType),
                 src: {
                     candidType: `Vec(${src.src.candidType})`,
                     imports: new Set([...src.src.imports, 'Vec']),
                     valueLiteral
-                },
-                equals
+                }
             };
         });
 };
 
-function generateValueLiteral<T extends CandidType>(sample: CandidMeta<T>[]) {
+function generateValue<T extends CandidType>(
+    array: CandidMeta<T>[],
+    candidType: string
+): Vec<T> {
+    const value = array.map((sample) => sample.value);
+
+    if (candidType === 'int8') {
+        return new Int8Array(value as number[]);
+    }
+    if (candidType === 'int16') {
+        return new Int16Array(value as number[]);
+    }
+    if (candidType === 'int32') {
+        return new Int32Array(value as number[]);
+    }
+    if (candidType === 'int64') {
+        return new BigInt64Array(value as bigint[]);
+    }
+    if (candidType === 'nat8') {
+        return new Uint8Array(value as number[]);
+    }
+    if (candidType === 'nat16') {
+        return new Uint16Array(value as number[]);
+    }
+    if (candidType === 'nat32') {
+        return new Uint32Array(value as number[]);
+    }
+    if (candidType === 'nat64') {
+        return new BigUint64Array(value as bigint[]);
+    }
+
+    return value;
+}
+
+function generateValueLiteral<T extends CandidType>(
+    sample: CandidMeta<T>[],
+    candidType: string
+) {
     const valueLiterals = sample
         .map((sample) => sample.src.valueLiteral)
         .join(',');
-    return `[${valueLiterals}]`;
-}
 
-function generateEquals<T extends CandidType>(sample: CandidMeta<T>[]) {
-    return (a: T[], b: T[]) =>
-        arraysAreEqual(a, b, sample[0]?.equals ?? deepEqual);
+    const valueLiteral = `[${valueLiterals}]`;
+
+    if (candidType === 'int64') {
+        return `BigInt64Array.from(${valueLiteral})`;
+    }
+
+    if (candidType === 'int32') {
+        return `Int32Array.from(${valueLiteral})`;
+    }
+
+    if (candidType === 'int16') {
+        return `Int16Array.from(${valueLiteral})`;
+    }
+
+    if (candidType === 'int8') {
+        return `Int8Array.from(${valueLiteral})`;
+    }
+
+    if (candidType === 'nat64') {
+        return `BigUint64Array.from(${valueLiteral})`;
+    }
+
+    if (candidType === 'nat32') {
+        return `Uint32Array.from(${valueLiteral})`;
+    }
+
+    if (candidType === 'nat16') {
+        return `Uint16Array.from(${valueLiteral})`;
+    }
+
+    if (candidType === 'nat8') {
+        return `Uint8Array.from(${valueLiteral})`;
+    }
+
+    return valueLiteral;
 }
 
 export const VecArb = fc.oneof(
@@ -72,23 +150,3 @@ export const VecArb = fc.oneof(
     VecInnerArb(BlobArb)
     // VecInnerArb(NullArb)
 );
-
-function arraysAreEqual<T>(
-    arr1: T[],
-    arr2: T[],
-    equals: (a: T, b: T) => boolean
-) {
-    // Check if both arrays have the same length
-    if (arr1.length !== arr2.length) {
-        return false;
-    }
-
-    // Loop through each element to check for equality
-    for (let i = 0; i < arr1.length; i++) {
-        if (!equals(arr1[i], arr2[i])) {
-            return false;
-        }
-    }
-
-    return true;
-}

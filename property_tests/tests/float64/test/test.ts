@@ -1,6 +1,6 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
-import { areFloatsEqual } from '../../../are_equal/float';
 import { Float64Arb } from '../../../arbitraries/candid/primitive/floats/float64_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
@@ -8,6 +8,7 @@ import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const Float64TestArb = fc
     .tuple(
@@ -61,18 +62,10 @@ function generateBody(
         })
         .join('\n');
 
-    const paramLiterals = paramFloat64s.map(
-        (float64) => float64.src.valueLiteral
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramFloat64s
     );
-    const paramsCorrectlyOrdered = paramNames
-        .map((paramName, index) => {
-            const areFloat64sEqual = areFloatsEqual(
-                paramName,
-                paramLiterals[index]
-            );
-            return `if (!(${areFloat64sEqual})) throw new Error('${paramName} is incorrectly ordered')`;
-        })
-        .join('\n');
 
     const sum = paramNames.reduce((acc, paramName) => {
         return `${acc} + ${paramName}`;
@@ -111,7 +104,7 @@ function generateTest(
             const result = await actor[functionName](...paramValues);
 
             return {
-                Ok: returnFloat64.equals(result, expectedResult)
+                Ok: deepEqual(result, expectedResult)
             };
         }
     };

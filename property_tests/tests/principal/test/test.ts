@@ -1,7 +1,6 @@
 import fc from 'fast-check';
-import { deepEqual, shallowEqual } from 'fast-equals';
+import { deepEqual } from 'fast-equals';
 
-import { arePrincipalsEqual } from '../../../are_equal/principal';
 import { PrincipalArb } from '../../../arbitraries/candid/reference/principal_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
@@ -10,6 +9,7 @@ import { getActor, runPropTests } from '../../../../property_tests';
 import { Principal } from '@dfinity/principal';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const PrincipalTestArb = fc
     .tuple(
@@ -76,16 +76,10 @@ function generateBody(
             ? `param0`
             : returnPrincipal.src.valueLiteral;
 
-    const paramsCorrectlyOrdered = paramNames
-        .map((paramName, index) => {
-            const areEqual = arePrincipalsEqual(
-                paramName,
-                paramPrincipals[index].src.valueLiteral
-            );
-
-            return `if (!${areEqual}) throw new Error('${paramName} is incorrectly ordered')`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramPrincipals
+    );
 
     return `
         ${paramsArePrincipals}
@@ -114,7 +108,7 @@ function generateTest(
                 ...paramPrincipals.map((sample) => sample.value)
             );
 
-            return { Ok: returnPrincipal.equals(result, expectedResult) };
+            return { Ok: deepEqual(result, expectedResult) };
         }
     };
 }

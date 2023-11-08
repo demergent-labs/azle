@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import {
     TupleArb,
@@ -7,8 +8,9 @@ import {
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { getActor, runPropTests } from '../../..';
-import { AzleResult, Test } from '../../../../test';
+import { Test } from '../../../../test';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const TupleTestArb = fc
     .tuple(
@@ -39,7 +41,7 @@ const TupleTestArb = fc
             paramTuples.length === 0 ? defaultReturnTuple : paramTuples[0];
         const returnCandidType = returnTuple.src.candidType;
 
-        const body = generateBody(paramTuples, returnTuple);
+        const body = generateBody(paramNames, paramTuples, returnTuple);
 
         const test = generateTest(functionName, paramTuples, returnTuple);
 
@@ -58,12 +60,13 @@ const TupleTestArb = fc
 runPropTests(TupleTestArb);
 
 function generateBody(
+    paramNames: string[],
     paramTuples: CandidMeta<Tuple>[],
     returnTuple: CandidMeta<Tuple>
 ): string {
     const paramsAreTuples = paramTuples
         .map((tuple, index) => {
-            const paramName = `param${index}`;
+            const paramName = paramNames[index];
             const fieldsCount = tuple.value.length;
 
             const paramIsArray = `Array.isArray(${paramName})`;
@@ -74,17 +77,10 @@ function generateBody(
         })
         .join('\n');
 
-    const paramsCorrectlyOrdered = paramTuples
-        .map((tuple, paramIndex): string => {
-            const paramName = `param${paramIndex}`;
-
-            const paramIsCorrectValue = `${paramName}.toString() === ${tuple.src.valueLiteral}.toString()`;
-
-            const throwError = `throw new Error('${paramName} is incorrectly ordered.')`;
-
-            return `if (!(${paramIsCorrectValue})) ${throwError}`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramTuples
+    );
 
     const returnStatement =
         paramTuples.length === 0 ? returnTuple.src.valueLiteral : `param0`;
@@ -114,52 +110,17 @@ function generateTest(
                 ...paramTuples.map((tuple) => tuple.value)
             );
 
-            // Start by using the equals method defined by the return arbitrary
-            // This method works in all cases and if it should return true it
-            // will. It's weakness is that we don't always know why it returns
-            // false, so if that equals method returns false, then instead of
-            // just returning {Ok: false} we will use the equals function that
-            // has better reporting of why the test failed but isn't as robust
-            if (returnTuple.equals(result, expectedResult)) {
-                return { Ok: true };
+            if (!Array.isArray(result)) {
+                // Empty Tuple
+                return {
+                    Ok: deepEqual(
+                        Array.from(Object.values(result)),
+                        expectedResult
+                    )
+                };
             }
 
-            return tuplesAreEqual(result, expectedResult);
+            return { Ok: deepEqual(result, expectedResult) };
         }
     };
-}
-
-function tuplesAreEqual(
-    result: Tuple,
-    expectedResult: Tuple
-): AzleResult<boolean, string> {
-    if (typeof result !== 'object') {
-        return { Err: 'Result is not an object' };
-    }
-
-    if (typeof expectedResult !== 'object') {
-        return { Err: 'Expected result is not an object' };
-    }
-
-    const resultFieldsCount = Object.entries(result).length;
-    const expectedResultFieldsCount = Object.entries(expectedResult).length;
-
-    if (resultFieldsCount !== expectedResultFieldsCount) {
-        return {
-            Err: `Result is not of the correct length: expected ${expectedResultFieldsCount}, received ${resultFieldsCount}`
-        };
-    }
-
-    for (let i = 0; i < expectedResultFieldsCount; i++) {
-        const expectedFieldValue = expectedResult[i];
-        const actualFieldValue = result[i];
-
-        if (actualFieldValue !== expectedFieldValue) {
-            return {
-                Err: `Expected result[${i}] to be ${expectedFieldValue} but got ${actualFieldValue} instead`
-            };
-        }
-    }
-
-    return { Ok: true };
 }

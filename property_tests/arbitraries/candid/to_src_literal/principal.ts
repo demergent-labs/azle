@@ -1,5 +1,6 @@
 import { Principal } from '@dfinity/principal';
 
 export function principalToSrcLiteral(value: Principal): string {
-    return `Principal.fromText('${value.toText()}')`;
+    // TODO solve the underlying principal problem https://github.com/demergent-labs/azle/issues/1443
+    return `DfinityPrincipal.fromText('${value.toText()}')`;
 }

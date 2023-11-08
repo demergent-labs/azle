@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import { TextArb } from '../../../arbitraries/candid/primitive/text';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
@@ -7,6 +8,7 @@ import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const TextTestArb = fc
     .tuple(
@@ -56,13 +58,10 @@ function generateBody(
         return `${acc} + ${paramName}`;
     }, returnText.src.valueLiteral);
 
-    const paramValues = paramTexts.map((text) => text.src.valueLiteral);
-
-    const paramsCorrectlyOrdered = paramNames
-        .map((paramName, index) => {
-            return `if (${paramName} !== ${paramValues[index]}) throw new Error('${paramName} is incorrectly ordered')`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramTexts
+    );
 
     return `
         ${paramsAreStrings}
@@ -92,7 +91,7 @@ function generateTest(
             const result = await actor[functionName](...paramValues);
 
             return {
-                Ok: returnTexts.equals(result, expectedResult)
+                Ok: deepEqual(result, expectedResult)
             };
         }
     };

@@ -21,8 +21,6 @@ export const TupleArb = fc
 
         const value = fields.map((field) => field.value);
 
-        const equals = generateEqualsMethod(fields);
-
         return {
             src: {
                 candidType: name,
@@ -30,8 +28,7 @@ export const TupleArb = fc
                 imports,
                 valueLiteral
             },
-            value,
-            equals
+            value
         };
     });
 
@@ -48,36 +45,4 @@ function generateValueLiteral(fields: CandidMeta<CandidType>[]) {
     return `[
         ${fieldLiterals}
     ]`;
-}
-
-function generateEqualsMethod(
-    fields: CandidMeta<CandidType>[]
-): (a: Tuple, b: Tuple) => boolean {
-    return (a: Tuple, b: Tuple): boolean => {
-        if (typeof a !== typeof b) {
-            return false;
-        }
-
-        const aFieldNames = Object.keys(a);
-        const bFieldNames = Object.keys(b);
-        if (aFieldNames.length !== bFieldNames.length) {
-            return false;
-        }
-
-        const areFieldNamesTheSame = aFieldNames.reduce(
-            (acc, aFieldName, index) =>
-                acc && aFieldName === bFieldNames[index],
-            true
-        );
-
-        if (!areFieldNamesTheSame) {
-            return false;
-        }
-
-        const areFieldValuesTheSame = fields.reduce((acc, field, index) => {
-            return acc && field.equals(a[index], b[index]);
-        }, true);
-
-        return areFieldValuesTheSame;
-    };
 }

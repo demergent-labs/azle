@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import {
     Variant,
@@ -9,6 +10,7 @@ import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb'
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const VariantTestArb = fc
     .tuple(
@@ -77,15 +79,10 @@ function generateBody(
         })
         .join('\n');
 
-    const paramsCorrectlyOrdered = paramVariants
-        .map((variant, index) => {
-            const paramName = `param${index}`;
-
-            return `if (Object.keys(${paramName})[0] !== "${
-                Object.keys(variant.value)[0]
-            }") throw new Error('${paramName} is incorrectly ordered')`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramVariants
+    );
 
     const returnStatement = paramNames[0]
         ? `${paramNames[0]}`
@@ -106,8 +103,6 @@ function generateTest(
     returnVariant: CandidMeta<Variant>
 ): Test {
     const expectedResult = paramVariants[0]?.value ?? returnVariant.value;
-    const equals =
-        paramVariants[0]?.equals ?? ((a: any, b: any) => a.None === b.None);
     return {
         name: `variant ${functionName}`,
         test: async () => {
@@ -118,7 +113,7 @@ function generateTest(
             );
 
             return {
-                Ok: equals(result, expectedResult)
+                Ok: deepEqual(result, expectedResult)
             };
         }
     };

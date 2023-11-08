@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import { NullArb } from '../../../arbitraries/candid/primitive/null';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
@@ -73,7 +74,7 @@ function generateTest(
             );
 
             return {
-                Ok: returnNull.equals(result, null)
+                Ok: deepEqual(result, null)
             };
         }
     };

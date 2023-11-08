@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+import { deepEqual } from 'fast-equals';
 
 import { Nat8Arb } from '../../../arbitraries/candid/primitive/nats/nat8_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
@@ -7,6 +8,7 @@ import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const Nat8TestArb = fc
     .tuple(
@@ -58,12 +60,10 @@ function generateBody(
     const count = paramNat8s.length + 1;
     const average = `Math.floor((${sum}) / ${count})`;
 
-    const paramLiteral = paramNat8s.map((sample) => sample.src.valueLiteral);
-    const paramsCorrectlyOrdered = paramNames
-        .map((paramName, index) => {
-            return `if (${paramName} !== ${paramLiteral[index]}) throw new Error('${paramName} is incorrectly ordered')`;
-        })
-        .join('\n');
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
+        paramNames,
+        paramNat8s
+    );
 
     return `
         ${paramsAreNumbers}
@@ -94,7 +94,7 @@ function generateTest(
             const result = await actor[functionName](...paramValues);
 
             return {
-                Ok: returnNat8.equals(result, expectedResult)
+                Ok: deepEqual(result, expectedResult)
             };
         }
     };
