@@ -1,36 +1,36 @@
 import fc from 'fast-check';
-import { TestSample } from './test_sample_arb';
+import { QueryMethodBlueprint } from './test_sample_arb';
 import { Test } from '../../test';
 
 export type QueryMethod = {
-    sourceCode: string;
-    test: Test;
     imports: Set<string>;
     candidTypeDeclarations: string[] | undefined;
+    sourceCode: string;
+    tests: Test[];
 };
 
-export function QueryMethodArb(testArb: fc.Arbitrary<TestSample>) {
-    return testArb.map((testSample): QueryMethod => {
+export function QueryMethodArb(blueprint: fc.Arbitrary<Candid>) {
+    return blueprint.map((blueprint): QueryMethod => {
         const {
             paramNames,
             paramCandidTypes,
             returnCandidType,
             body,
             functionName,
-            test,
+            tests,
             imports,
             candidTypeDeclarations
-        } = testSample;
+        } = blueprint;
 
         return {
+            imports,
+            candidTypeDeclarations,
             sourceCode: `${functionName}: query([${paramCandidTypes}], ${returnCandidType}, (${paramNames.join(
                 ', '
             )}) => {
                     ${body}
                 })`,
-            test,
-            imports,
-            candidTypeDeclarations
+            tests
         };
     });
 }

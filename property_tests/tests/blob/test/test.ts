@@ -1,9 +1,10 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { BlobArb } from '../../../arbitraries/candid/constructed/blob_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -16,28 +17,40 @@ const BlobTestArb = fc
         fc.array(BlobArb),
         BlobArb
     )
-    .map(([functionName, paramBlobs, defaultReturnBlob]): TestSample => {
-        const imports = defaultReturnBlob.src.imports;
-        const paramNames = paramBlobs.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramBlobs
-            .map((blob) => blob.src.candidType)
-            .join(', ');
-        const returnCandidType = defaultReturnBlob.src.candidType;
-        const body = generateBody(paramNames, paramBlobs, defaultReturnBlob);
-        const test = generateTest(functionName, paramBlobs, defaultReturnBlob);
-
-        return {
-            imports,
+    .map(
+        ([
             functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
+            paramBlobs,
+            defaultReturnBlob
+        ]): QueryMethodBlueprint => {
+            const imports = defaultReturnBlob.src.imports;
+            const paramNames = paramBlobs.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramBlobs
+                .map((blob) => blob.src.candidType)
+                .join(', ');
+            const returnCandidType = defaultReturnBlob.src.candidType;
+            const body = generateBody(
+                paramNames,
+                paramBlobs,
+                defaultReturnBlob
+            );
+            const tests = [
+                generateTest(functionName, paramBlobs, defaultReturnBlob)
+            ];
 
-runPropTests(BlobTestArb);
+            return {
+                imports,
+                functionName,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                tests
+            };
+        }
+    );
+
+runPropTests(CanisterArb(BlobTestArb));
 
 function generateBody(
     paramNames: string[],

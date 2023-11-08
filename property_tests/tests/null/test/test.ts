@@ -1,9 +1,10 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { NullArb } from '../../../arbitraries/candid/primitive/null';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -15,7 +16,7 @@ const NullTestArb = fc
         fc.array(NullArb),
         NullArb
     )
-    .map(([functionName, paramNulls, returnNull]): TestSample => {
+    .map(([functionName, paramNulls, returnNull]): QueryMethodBlueprint => {
         const imports = returnNull.src.imports;
 
         const paramNames = paramNulls.map((_, index) => `param${index}`);
@@ -27,7 +28,7 @@ const NullTestArb = fc
 
         const body = generateBody(paramNames, returnNull);
 
-        const test = generateTest(functionName, paramNulls, returnNull);
+        const tests = [generateTest(functionName, paramNulls, returnNull)];
 
         return {
             functionName,
@@ -36,11 +37,11 @@ const NullTestArb = fc
             returnCandidType,
             paramNames,
             body,
-            test
+            tests
         };
     });
 
-runPropTests(NullTestArb);
+runPropTests(CanisterArb(NullTestArb));
 
 function generateBody(
     paramNames: string[],

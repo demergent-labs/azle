@@ -5,7 +5,7 @@ import {
     Variant,
     VariantArb
 } from '../../../arbitraries/candid/constructed/variant_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -20,51 +20,57 @@ const VariantTestArb = fc
         }),
         VariantArb
     )
-    .map(([functionName, paramVariants, defaultReturnVariant]): TestSample => {
-        const imports = new Set([
-            ...paramVariants.flatMap((variant) => [...variant.src.imports]),
-            ...defaultReturnVariant.src.imports
-        ]);
-
-        const candidTypeDeclarations = [
-            ...paramVariants.map(
-                (variant) => variant.src.typeDeclaration ?? ''
-            ),
-            defaultReturnVariant.src.typeDeclaration ?? ''
-        ];
-
-        const paramNames = paramVariants.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramVariants
-            .map((variant) => variant.src.candidType)
-            .join(', ');
-
-        const returnCandidType =
-            paramVariants[0]?.src?.candidType ??
-            defaultReturnVariant.src.candidType;
-
-        const body = generateBody(
-            paramNames,
-            paramVariants,
-            defaultReturnVariant
-        );
-
-        const test = generateTest(
+    .map(
+        ([
             functionName,
             paramVariants,
             defaultReturnVariant
-        );
+        ]): QueryMethodBlueprint => {
+            const imports = new Set([
+                ...paramVariants.flatMap((variant) => [...variant.src.imports]),
+                ...defaultReturnVariant.src.imports
+            ]);
 
-        return {
-            imports,
-            functionName,
-            candidTypeDeclarations,
-            paramCandidTypes,
-            returnCandidType,
-            paramNames,
-            body,
-            test
-        };
-    });
+            const candidTypeDeclarations = [
+                ...paramVariants.map(
+                    (variant) => variant.src.typeDeclaration ?? ''
+                ),
+                defaultReturnVariant.src.typeDeclaration ?? ''
+            ];
+
+            const paramNames = paramVariants.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramVariants
+                .map((variant) => variant.src.candidType)
+                .join(', ');
+
+            const returnCandidType =
+                paramVariants[0]?.src?.candidType ??
+                defaultReturnVariant.src.candidType;
+
+            const body = generateBody(
+                paramNames,
+                paramVariants,
+                defaultReturnVariant
+            );
+
+            const test = generateTest(
+                functionName,
+                paramVariants,
+                defaultReturnVariant
+            );
+
+            return {
+                imports,
+                functionName,
+                candidTypeDeclarations,
+                paramCandidTypes,
+                returnCandidType,
+                paramNames,
+                body,
+                test
+            };
+        }
+    );
 
 runPropTests(VariantTestArb);
 

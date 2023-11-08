@@ -1,10 +1,11 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { getActor, runPropTests } from '../../..';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { FuncArb, Func } from '../../../arbitraries/candid/reference/func_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { Test } from '../../../../test';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
@@ -19,49 +20,55 @@ const FuncTestArb = fc
         }),
         FuncArb
     )
-    .map(([functionName, paramFuncs, defaultReturnFunc]): TestSample => {
-        const imports = new Set([
-            'Principal',
-            'Void',
-            ...paramFuncs.flatMap((func) => [...func.src.imports]),
-            ...defaultReturnFunc.src.imports
-        ]);
-
-        const candidTypeDeclarations = [
-            ...paramFuncs.map((func) => func.src.typeDeclaration ?? ''),
-            paramFuncs.length === 0
-                ? defaultReturnFunc.src.typeDeclaration ?? ''
-                : ''
-        ];
-
-        const paramNames = paramFuncs.map((_, index) => `param${index}`);
-
-        const paramCandidTypes = paramFuncs
-            .map((func) => func.src.candidType)
-            .join(', ');
-
-        const returnFunc =
-            paramFuncs.length === 0 ? defaultReturnFunc : paramFuncs[0];
-
-        const returnCandidType = returnFunc.src.candidType;
-
-        const body = generateBody(paramNames, paramFuncs, returnFunc);
-
-        const test = generateTest(functionName, paramFuncs, returnFunc);
-
-        return {
+    .map(
+        ([
             functionName,
-            imports,
-            candidTypeDeclarations,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
+            paramFuncs,
+            defaultReturnFunc
+        ]): QueryMethodBlueprint => {
+            const imports = new Set([
+                'Principal',
+                'Void',
+                ...paramFuncs.flatMap((func) => [...func.src.imports]),
+                ...defaultReturnFunc.src.imports
+            ]);
 
-runPropTests(FuncTestArb);
+            const candidTypeDeclarations = [
+                ...paramFuncs.map((func) => func.src.typeDeclaration ?? ''),
+                paramFuncs.length === 0
+                    ? defaultReturnFunc.src.typeDeclaration ?? ''
+                    : ''
+            ];
+
+            const paramNames = paramFuncs.map((_, index) => `param${index}`);
+
+            const paramCandidTypes = paramFuncs
+                .map((func) => func.src.candidType)
+                .join(', ');
+
+            const returnFunc =
+                paramFuncs.length === 0 ? defaultReturnFunc : paramFuncs[0];
+
+            const returnCandidType = returnFunc.src.candidType;
+
+            const body = generateBody(paramNames, paramFuncs, returnFunc);
+
+            const tests = [generateTest(functionName, paramFuncs, returnFunc)];
+
+            return {
+                functionName,
+                imports,
+                candidTypeDeclarations,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                tests
+            };
+        }
+    );
+
+runPropTests(CanisterArb(FuncTestArb));
 
 function generateBody(
     paramNames: string[],

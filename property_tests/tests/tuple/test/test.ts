@@ -5,7 +5,7 @@ import {
     TupleArb,
     Tuple
 } from '../../../arbitraries/candid/constructed/tuple_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { getActor, runPropTests } from '../../..';
 import { Test } from '../../../../test';
@@ -20,42 +20,48 @@ const TupleTestArb = fc
         }),
         TupleArb
     )
-    .map(([functionName, paramTuples, defaultReturnTuple]): TestSample => {
-        const imports = new Set([
-            ...paramTuples.flatMap((tuple) => [...tuple.src.imports]),
-            ...defaultReturnTuple.src.imports
-        ]);
-
-        const candidTypeDeclarations = [
-            ...paramTuples.map((tuple) => tuple.src.typeDeclaration ?? ''),
-            defaultReturnTuple.src.typeDeclaration ?? ''
-        ];
-
-        const paramNames = paramTuples.map((_, index) => `param${index}`);
-
-        const paramCandidTypes = paramTuples
-            .map((tuple) => tuple.src.candidType)
-            .join(', ');
-
-        const returnTuple =
-            paramTuples.length === 0 ? defaultReturnTuple : paramTuples[0];
-        const returnCandidType = returnTuple.src.candidType;
-
-        const body = generateBody(paramNames, paramTuples, returnTuple);
-
-        const test = generateTest(functionName, paramTuples, returnTuple);
-
-        return {
+    .map(
+        ([
             functionName,
-            imports,
-            candidTypeDeclarations,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
+            paramTuples,
+            defaultReturnTuple
+        ]): QueryMethodBlueprint => {
+            const imports = new Set([
+                ...paramTuples.flatMap((tuple) => [...tuple.src.imports]),
+                ...defaultReturnTuple.src.imports
+            ]);
+
+            const candidTypeDeclarations = [
+                ...paramTuples.map((tuple) => tuple.src.typeDeclaration ?? ''),
+                defaultReturnTuple.src.typeDeclaration ?? ''
+            ];
+
+            const paramNames = paramTuples.map((_, index) => `param${index}`);
+
+            const paramCandidTypes = paramTuples
+                .map((tuple) => tuple.src.candidType)
+                .join(', ');
+
+            const returnTuple =
+                paramTuples.length === 0 ? defaultReturnTuple : paramTuples[0];
+            const returnCandidType = returnTuple.src.candidType;
+
+            const body = generateBody(paramNames, paramTuples, returnTuple);
+
+            const test = generateTest(functionName, paramTuples, returnTuple);
+
+            return {
+                functionName,
+                imports,
+                candidTypeDeclarations,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                test
+            };
+        }
+    );
 
 runPropTests(TupleTestArb);
 

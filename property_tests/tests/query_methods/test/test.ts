@@ -1,99 +1,77 @@
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 import { writeFileSync } from 'fs';
-
-import { getActor } from '../../../get_actor';
 import { Test, getCanisterId, runTests } from '../../../../test';
+
+import { CanisterArb } from '../../../arbitraries/canister_arb';
+import { getActor, runPropTests } from '../../../';
+import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
+import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
+import {
+    CandidType,
+    CandidTypeArb
+} from '../../../arbitraries/candid/candid_type_arb';
+import { VoidArb } from '../../../arbitraries/candid/primitive/void';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 
 // TODO Canister
 // TODO Record
 // TODO text
 // TODO nat
-
-// TODO query methods
 // TODO update methods
 
-// const JsFunctionNameArb = fc.stringMatching(/^[a-zA-Z_$][a-zA-Z_$0-9]*$/);
-const JsFunctionNameArb = fc.stringMatching(/^[_a-zA-Z][_a-zA-Z0-9]*$/);
+const QueryMethodTestArb = fc
+    .tuple(
+        createUniquePrimitiveArb(JsFunctionNameArb),
+        fc.array(CandidTypeArb, { minLength: 1 }), // TODO: I set to 1 for ease. Support 0.
+        fc.oneof(CandidTypeArb, VoidArb) // TODO: Consider adjusting the weights so Void is used same as all others
+    )
+    .map(
+        ([
+            functionName,
+            paramTypes,
+            defaultReturnType
+        ]): QueryMethodBlueprint => {
+            const imports = new Set([
+                'Principal',
+                ...paramTypes.flatMap((type) => [...type.src.imports]),
+                ...defaultReturnType.src.imports
+            ]);
+            const paramNames = paramTypes.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramTypes
+                .map((text) => text.src.candidType)
+                .join(', ');
 
-let generatedStrings = new Set();
+            const returnCandidType = defaultReturnType.src.candidType;
 
-const UniqueJsFunctionNameArb = JsFunctionNameArb.filter(
-    (str) => !generatedStrings.has(str)
-).map((str) => {
-    generatedStrings.add(str);
-    return str;
-});
+            const body = 'return param0;';
 
-// TODO methodName must be a valid JS name
-// TODO methodName must be unique
-const QueryMethodArb = fc
-    .tuple(UniqueJsFunctionNameArb, fc.nat())
-    .map(([jsFunctionName, nat]) => {
-        const normalizedJsFunctionName =
-            jsFunctionName === '_' ? '_x' : jsFunctionName;
+            const tests: Test[] = [
+                {
+                    name: `query method test ${functionName}`,
+                    test: async () => {
+                        const actor = getActor('./tests/query_methods/test');
 
-        return {
-            name: normalizedJsFunctionName,
-            sourceCode: `${normalizedJsFunctionName}: query([], nat, () => ${nat}n)`,
-            expectedResult: BigInt(nat)
-        };
-    });
+                        const result = await actor[functionName]();
 
-const CanisterArb = fc.constant(0).map(() => {
-    const queryMethods = fc.sample(QueryMethodArb, 100);
+                        return {
+                            Ok: result === queryMethod.expectedResult
+                        };
+                    }
+                }
+            ];
 
-    const queryMethodSourceCodes = queryMethods.map(
-        (queryMethod) => queryMethod.sourceCode
+            return {
+                imports,
+                functionName,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                tests
+            };
+        }
     );
 
-    const tests: Test[] = queryMethods.map((queryMethod) => {
-        return {
-            name: `query method test ${queryMethod.name}`,
-            test: async () => {
-                const actor = getActor('./tests/query_methods/test');
-
-                const result = await actor[queryMethod.name]();
-
-                return {
-                    Ok: result === queryMethod.expectedResult
-                };
-            }
-        };
-    });
-
-    return {
-        sourceCode: `
-import { Canister, nat, query } from 'azle';
-
-export default Canister({
-    ${queryMethodSourceCodes.join(',\n    ')}
-});`,
-        tests
-    };
-});
-
-fc.assert(
-    fc.asyncProperty(CanisterArb, async (canister) => {
-        writeFileSync('src/index.ts', canister.sourceCode);
-
-        execSync(`dfx canister uninstall-code canister || true`, {
-            stdio: 'inherit'
-        });
-
-        execSync(`dfx deploy canister`, {
-            stdio: 'inherit'
-        });
-
-        execSync(`dfx generate canister`, {
-            stdio: 'inherit'
-        });
-
-        await runTests(canister.tests);
-
-        return true;
-    }),
-    {
-        numRuns: 1
-    }
-);
+runPropTests(CanisterArb(QueryMethodTestArb));

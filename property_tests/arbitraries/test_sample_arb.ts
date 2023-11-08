@@ -1,6 +1,6 @@
 import { Test } from '../../test';
 
-export type TestSample = {
+export type QueryMethodBlueprint = {
     imports: Set<string>;
     candidTypeDeclarations?: string[];
     functionName: string;
@@ -8,5 +8,5 @@ export type TestSample = {
     paramCandidTypes: string;
     returnCandidType: string;
     body: string;
-    test: Test;
+    tests: Test[];
 };

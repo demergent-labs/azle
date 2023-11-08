@@ -1,14 +1,16 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { TextArb } from '../../../arbitraries/candid/primitive/text';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+import { QueryMethodArb } from '../../../arbitraries/query_method_arb';
 
 const TextTestArb = fc
     .tuple(
@@ -16,32 +18,44 @@ const TextTestArb = fc
         fc.array(TextArb),
         TextArb
     )
-    .map(([functionName, paramTexts, defaultReturnText]): TestSample => {
-        const imports = defaultReturnText.src.imports;
-
-        const paramNames = paramTexts.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramTexts
-            .map((text) => text.src.candidType)
-            .join(', ');
-
-        const returnCandidType = defaultReturnText.src.candidType;
-
-        const body = generateBody(paramNames, paramTexts, defaultReturnText);
-
-        const test = generateTest(functionName, paramTexts, defaultReturnText);
-
-        return {
-            imports,
+    .map(
+        ([
             functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
+            paramTexts,
+            defaultReturnText
+        ]): QueryMethodBlueprint => {
+            const imports = defaultReturnText.src.imports;
 
-runPropTests(TextTestArb);
+            const paramNames = paramTexts.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramTexts
+                .map((text) => text.src.candidType)
+                .join(', ');
+
+            const returnCandidType = defaultReturnText.src.candidType;
+
+            const body = generateBody(
+                paramNames,
+                paramTexts,
+                defaultReturnText
+            );
+
+            const tests = [
+                generateTest(functionName, paramTexts, defaultReturnText)
+            ];
+
+            return {
+                imports,
+                functionName,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                tests
+            };
+        }
+    );
+
+runPropTests(CanisterArb(QueryMethodArb(TextTestArb)));
 
 function generateBody(
     paramNames: string[],

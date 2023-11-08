@@ -1,9 +1,10 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { BoolArb } from '../../../arbitraries/candid/primitive/bool';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -16,32 +17,44 @@ const BoolTestArb = fc
         fc.array(BoolArb),
         BoolArb
     )
-    .map(([functionName, paramBools, defaultReturnBool]): TestSample => {
-        const imports = defaultReturnBool.src.imports;
-
-        const paramNames = paramBools.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramBools
-            .map((bool) => bool.src.candidType)
-            .join(', ');
-
-        const returnCandidType = defaultReturnBool.src.candidType;
-
-        const body = generateBody(paramNames, paramBools, defaultReturnBool);
-
-        const test = generateTest(functionName, paramBools, defaultReturnBool);
-
-        return {
-            imports,
+    .map(
+        ([
             functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
+            paramBools,
+            defaultReturnBool
+        ]): QueryMethodBlueprint => {
+            const imports = defaultReturnBool.src.imports;
 
-runPropTests(BoolTestArb);
+            const paramNames = paramBools.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramBools
+                .map((bool) => bool.src.candidType)
+                .join(', ');
+
+            const returnCandidType = defaultReturnBool.src.candidType;
+
+            const body = generateBody(
+                paramNames,
+                paramBools,
+                defaultReturnBool
+            );
+
+            const tests = [
+                generateTest(functionName, paramBools, defaultReturnBool)
+            ];
+
+            return {
+                imports,
+                functionName,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                tests
+            };
+        }
+    );
+
+runPropTests(CanisterArb(BoolTestArb));
 
 function generateBody(
     paramNames: string[],

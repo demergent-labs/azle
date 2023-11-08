@@ -3,11 +3,13 @@ import { execSync } from 'child_process';
 import fc from 'fast-check';
 
 import { runPropTests } from '../../..';
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { ServiceArb } from '../../../arbitraries/candid/reference/service_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { Test } from '../../../../test';
+import { QueryMethodArb } from '../../../arbitraries/query_method_arb';
 
 const ServiceTestArb = fc
     .tuple(
@@ -19,52 +21,60 @@ const ServiceTestArb = fc
         }),
         ServiceArb
     )
-    .map(([functionName, paramServices, defaultReturnService]): TestSample => {
-        const imports = new Set([
-            'Principal',
-            ...paramServices.flatMap((service) => [...service.src.imports]),
-            ...defaultReturnService.src.imports
-        ]);
-
-        const candidTypeDeclarations = [
-            ...paramServices.map(
-                (service) => service.src.typeDeclaration ?? ''
-            ),
-            paramServices.length === 0
-                ? defaultReturnService.src.typeDeclaration ?? ''
-                : ''
-        ];
-
-        const paramNames = paramServices.map((_, index) => `param${index}`);
-
-        const paramCandidTypes = paramServices
-            .map((service) => service.src.candidType)
-            .join(', ');
-
-        const returnService =
-            paramServices.length === 0
-                ? defaultReturnService
-                : paramServices[0];
-
-        const returnCandidType = returnService.src.candidType;
-
-        const body = generateBody(paramNames, paramServices, returnService);
-
-        const test = generateTest(functionName, paramServices, returnService);
-
-        return {
+    .map(
+        ([
             functionName,
-            imports,
-            candidTypeDeclarations,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
+            paramServices,
+            defaultReturnService
+        ]): QueryMethodBlueprint => {
+            const imports = new Set([
+                'Principal',
+                ...paramServices.flatMap((service) => [...service.src.imports]),
+                ...defaultReturnService.src.imports
+            ]);
 
-runPropTests(ServiceTestArb);
+            const candidTypeDeclarations = [
+                ...paramServices.map(
+                    (service) => service.src.typeDeclaration ?? ''
+                ),
+                paramServices.length === 0
+                    ? defaultReturnService.src.typeDeclaration ?? ''
+                    : ''
+            ];
+
+            const paramNames = paramServices.map((_, index) => `param${index}`);
+
+            const paramCandidTypes = paramServices
+                .map((service) => service.src.candidType)
+                .join(', ');
+
+            const returnService =
+                paramServices.length === 0
+                    ? defaultReturnService
+                    : paramServices[0];
+
+            const returnCandidType = returnService.src.candidType;
+
+            const body = generateBody(paramNames, paramServices, returnService);
+
+            const tests = [
+                generateTest(functionName, paramServices, returnService)
+            ];
+
+            return {
+                functionName,
+                imports,
+                candidTypeDeclarations,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                tests
+            };
+        }
+    );
+
+runPropTests(CanisterArb(QueryMethodArb(ServiceTestArb)));
 
 function generateBody(
     paramNames: string[],

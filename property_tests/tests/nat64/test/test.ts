@@ -1,9 +1,10 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { Nat64Arb } from '../../../arbitraries/candid/primitive/nats/nat64_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -16,36 +17,44 @@ const Nat64TestArb = fc
         fc.array(Nat64Arb),
         Nat64Arb
     )
-    .map(([functionName, paramNat64s, defaultReturnNat64]): TestSample => {
-        const imports = defaultReturnNat64.src.imports;
-
-        const paramNames = paramNat64s.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramNat64s
-            .map((nat64) => nat64.src.candidType)
-            .join(', ');
-
-        const returnCandidType = defaultReturnNat64.src.candidType;
-
-        const body = generateBody(paramNames, paramNat64s, defaultReturnNat64);
-
-        const test = generateTest(
+    .map(
+        ([
             functionName,
             paramNat64s,
             defaultReturnNat64
-        );
+        ]): QueryMethodBlueprint => {
+            const imports = defaultReturnNat64.src.imports;
 
-        return {
-            imports,
-            functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
+            const paramNames = paramNat64s.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramNat64s
+                .map((nat64) => nat64.src.candidType)
+                .join(', ');
 
-runPropTests(Nat64TestArb);
+            const returnCandidType = defaultReturnNat64.src.candidType;
+
+            const body = generateBody(
+                paramNames,
+                paramNat64s,
+                defaultReturnNat64
+            );
+
+            const tests = [
+                generateTest(functionName, paramNat64s, defaultReturnNat64)
+            ];
+
+            return {
+                imports,
+                functionName,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                tests
+            };
+        }
+    );
+
+runPropTests(CanisterArb(Nat64TestArb));
 
 function generateBody(
     paramNames: string[],

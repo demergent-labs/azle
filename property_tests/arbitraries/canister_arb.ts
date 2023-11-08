@@ -1,16 +1,24 @@
 import fc from 'fast-check';
-import { QueryMethod, QueryMethodArb } from './query_method_arb';
-import { TestSample } from './test_sample_arb';
+import { QueryMethod } from './query_method_arb';
+import { Test } from '../../test';
 
-export function CanisterArb(testArb: fc.Arbitrary<TestSample>) {
+export type Canister = {
+    sourceCode: string;
+    tests: Test[];
+};
+
+// TODO: Update the signature to support init, pre/post upgrade, heartbeat, etc.
+export function CanisterArb(queryMethodArb: fc.Arbitrary<QueryMethod>) {
     return fc
-        .array(QueryMethodArb(testArb), {
+        .array(queryMethodArb, {
             minLength: 20, // TODO work on these
             maxLength: 100
         })
-        .map((queryMethods) => {
+        .map((queryMethods): Canister => {
             const sourceCode = generateSourceCode(queryMethods);
-            const tests = queryMethods.map((queryMethod) => queryMethod.test);
+            const tests = queryMethods.flatMap(
+                (queryMethod) => queryMethod.tests
+            );
 
             return {
                 sourceCode,
