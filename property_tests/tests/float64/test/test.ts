@@ -1,9 +1,10 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { Float64Arb } from '../../../arbitraries/candid/primitive/floats/float64_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -16,40 +17,44 @@ const Float64TestArb = fc
         fc.array(Float64Arb),
         Float64Arb
     )
-    .map(([functionName, paramFloat64s, defaultReturnFloat64]): TestSample => {
-        const imports = defaultReturnFloat64.src.imports;
-
-        const paramNames = paramFloat64s.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramFloat64s
-            .map((float64) => float64.src.candidType)
-            .join(', ');
-
-        const returnCandidType = defaultReturnFloat64.src.candidType;
-
-        const body = generateBody(
-            paramNames,
-            paramFloat64s,
-            defaultReturnFloat64
-        );
-
-        const test = generateTest(
+    .map(
+        ([
             functionName,
             paramFloat64s,
             defaultReturnFloat64
-        );
+        ]): QueryMethodBlueprint => {
+            const imports = defaultReturnFloat64.src.imports;
 
-        return {
-            imports,
-            functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
+            const paramNames = paramFloat64s.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramFloat64s
+                .map((float64) => float64.src.candidType)
+                .join(', ');
 
-runPropTests(Float64TestArb);
+            const returnCandidType = defaultReturnFloat64.src.candidType;
+
+            const body = generateBody(
+                paramNames,
+                paramFloat64s,
+                defaultReturnFloat64
+            );
+
+            const tests = [
+                generateTest(functionName, paramFloat64s, defaultReturnFloat64)
+            ];
+
+            return {
+                imports,
+                functionName,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                tests
+            };
+        }
+    );
+
+runPropTests(CanisterArb(Float64TestArb));
 
 function generateBody(
     paramNames: string[],

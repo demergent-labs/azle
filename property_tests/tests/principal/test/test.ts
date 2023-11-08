@@ -3,7 +3,7 @@ import { deepEqual } from 'fast-equals';
 
 import { PrincipalArb } from '../../../arbitraries/candid/reference/principal_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { Principal } from '@dfinity/principal';
@@ -22,7 +22,7 @@ const PrincipalTestArb = fc
             functionName,
             paramPrincipals,
             defaultReturnPrincipal
-        ]): TestSample => {
+        ]): QueryMethodBlueprint => {
             const imports = defaultReturnPrincipal.src.imports;
 
             const paramNames = paramPrincipals.map(

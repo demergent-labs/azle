@@ -2,7 +2,7 @@ import fc from 'fast-check';
 
 import { VecArb } from '../../../arbitraries/candid/constructed/vec_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { deepEqual } from 'fast-equals';
@@ -16,38 +16,45 @@ const VecTestArb = fc
         fc.array(VecArb),
         VecArb
     )
-    .map(([functionName, paramVecs, defaultReturnVec]): TestSample => {
-        const imports = new Set([
-            ...paramVecs.flatMap((vec) => [...vec.src.imports]),
-            ...defaultReturnVec.src.imports
-        ]);
+    .map(
+        ([functionName, paramVecs, defaultReturnVec]): QueryMethodBlueprint => {
+            const imports = new Set([
+                ...paramVecs.flatMap((vec) => [...vec.src.imports]),
+                ...defaultReturnVec.src.imports
+            ]);
 
-        const candidTypeDeclarations = [
-            ...paramVecs.map((vec) => vec.src.typeDeclaration ?? ''),
-            defaultReturnVec.src.typeDeclaration ?? ''
-        ];
+            const candidTypeDeclarations = [
+                ...paramVecs.map((vec) => vec.src.typeDeclaration ?? ''),
+                defaultReturnVec.src.typeDeclaration ?? ''
+            ];
 
-        const paramNames = paramVecs.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramVecs.map((vec) => vec.src.candidType);
+            const paramNames = paramVecs.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramVecs.map((vec) => vec.src.candidType);
 
-        const returnCandidType =
-            paramVecs[0]?.src?.candidType ?? defaultReturnVec.src.candidType;
+            const returnCandidType =
+                paramVecs[0]?.src?.candidType ??
+                defaultReturnVec.src.candidType;
 
-        const body = generateBody(paramNames, paramVecs, defaultReturnVec);
+            const body = generateBody(paramNames, paramVecs, defaultReturnVec);
 
-        const test = generateTest(functionName, paramVecs, defaultReturnVec);
+            const test = generateTest(
+                functionName,
+                paramVecs,
+                defaultReturnVec
+            );
 
-        return {
-            functionName,
-            imports,
-            candidTypeDeclarations,
-            paramCandidTypes: paramCandidTypes.join(', '),
-            returnCandidType,
-            paramNames,
-            body,
-            test
-        };
-    });
+            return {
+                functionName,
+                imports,
+                candidTypeDeclarations,
+                paramCandidTypes: paramCandidTypes.join(', '),
+                returnCandidType,
+                paramNames,
+                body,
+                test
+            };
+        }
+    );
 
 runPropTests(VecTestArb);
 

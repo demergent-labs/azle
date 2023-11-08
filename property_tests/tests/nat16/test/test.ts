@@ -1,9 +1,10 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { Nat16Arb } from '../../../arbitraries/candid/primitive/nats/nat16_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -16,36 +17,44 @@ const Nat16TestArb = fc
         fc.array(Nat16Arb),
         Nat16Arb
     )
-    .map(([functionName, paramNat16s, defaultReturnNat16]): TestSample => {
-        const imports = defaultReturnNat16.src.imports;
-
-        const paramNames = paramNat16s.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramNat16s
-            .map((nat16) => nat16.src.candidType)
-            .join(', ');
-
-        const returnCandidType = defaultReturnNat16.src.candidType;
-
-        const body = generateBody(paramNames, paramNat16s, defaultReturnNat16);
-
-        const test = generateTest(
+    .map(
+        ([
             functionName,
             paramNat16s,
             defaultReturnNat16
-        );
+        ]): QueryMethodBlueprint => {
+            const imports = defaultReturnNat16.src.imports;
 
-        return {
-            imports,
-            functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
+            const paramNames = paramNat16s.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramNat16s
+                .map((nat16) => nat16.src.candidType)
+                .join(', ');
 
-runPropTests(Nat16TestArb);
+            const returnCandidType = defaultReturnNat16.src.candidType;
+
+            const body = generateBody(
+                paramNames,
+                paramNat16s,
+                defaultReturnNat16
+            );
+
+            const tests = [
+                generateTest(functionName, paramNat16s, defaultReturnNat16)
+            ];
+
+            return {
+                imports,
+                functionName,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                tests
+            };
+        }
+    );
+
+runPropTests(CanisterArb(Nat16TestArb));
 
 function generateBody(
     paramNames: string[],

@@ -1,9 +1,10 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { NatArb } from '../../../arbitraries/candid/primitive/nats/nat_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -16,32 +17,36 @@ const NatTestArb = fc
         fc.array(NatArb),
         NatArb
     )
-    .map(([functionName, paramNats, defaultReturnNat]): TestSample => {
-        const imports = defaultReturnNat.src.imports;
+    .map(
+        ([functionName, paramNats, defaultReturnNat]): QueryMethodBlueprint => {
+            const imports = defaultReturnNat.src.imports;
 
-        const paramNames = paramNats.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramNats
-            .map((nat) => nat.src.candidType)
-            .join(', ');
+            const paramNames = paramNats.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramNats
+                .map((nat) => nat.src.candidType)
+                .join(', ');
 
-        const returnCandidType = defaultReturnNat.src.candidType;
+            const returnCandidType = defaultReturnNat.src.candidType;
 
-        const body = generateBody(paramNames, paramNats, defaultReturnNat);
+            const body = generateBody(paramNames, paramNats, defaultReturnNat);
 
-        const test = generateTest(functionName, paramNats, defaultReturnNat);
+            const tests = [
+                generateTest(functionName, paramNats, defaultReturnNat)
+            ];
 
-        return {
-            imports,
-            functionName,
-            paramCandidTypes,
-            returnCandidType,
-            paramNames,
-            body,
-            test
-        };
-    });
+            return {
+                imports,
+                functionName,
+                paramCandidTypes,
+                returnCandidType,
+                paramNames,
+                body,
+                tests
+            };
+        }
+    );
 
-runPropTests(NatTestArb);
+runPropTests(CanisterArb(NatTestArb));
 
 function generateBody(
     paramNames: string[],

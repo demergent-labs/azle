@@ -1,9 +1,10 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { Int8Arb } from '../../../arbitraries/candid/primitive/ints/int8_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -16,32 +17,44 @@ const Int8TestArb = fc
         fc.array(Int8Arb),
         Int8Arb
     )
-    .map(([functionName, paramInt8s, defaultReturnInt8]): TestSample => {
-        const imports = defaultReturnInt8.src.imports;
-
-        const paramNames = paramInt8s.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramInt8s
-            .map((int8) => int8.src.candidType)
-            .join(', ');
-
-        const returnCandidType = defaultReturnInt8.src.candidType;
-
-        const body = generateBody(paramNames, paramInt8s, defaultReturnInt8);
-
-        const test = generateTest(functionName, paramInt8s, defaultReturnInt8);
-
-        return {
-            imports,
+    .map(
+        ([
             functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
+            paramInt8s,
+            defaultReturnInt8
+        ]): QueryMethodBlueprint => {
+            const imports = defaultReturnInt8.src.imports;
 
-runPropTests(Int8TestArb);
+            const paramNames = paramInt8s.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramInt8s
+                .map((int8) => int8.src.candidType)
+                .join(', ');
+
+            const returnCandidType = defaultReturnInt8.src.candidType;
+
+            const body = generateBody(
+                paramNames,
+                paramInt8s,
+                defaultReturnInt8
+            );
+
+            const tests = [
+                generateTest(functionName, paramInt8s, defaultReturnInt8)
+            ];
+
+            return {
+                imports,
+                functionName,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                tests
+            };
+        }
+    );
+
+runPropTests(CanisterArb(Int8TestArb));
 
 function generateBody(
     paramNames: string[],

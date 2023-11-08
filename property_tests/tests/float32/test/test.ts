@@ -1,9 +1,10 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { Float32Arb } from '../../../arbitraries/candid/primitive/floats/float32_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -16,40 +17,44 @@ const Float32TestArb = fc
         fc.array(Float32Arb),
         Float32Arb
     )
-    .map(([functionName, paramFloat32s, defaultReturnFloat32]): TestSample => {
-        const imports = defaultReturnFloat32.src.imports;
-
-        const paramNames = paramFloat32s.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramFloat32s
-            .map((float32) => float32.src.candidType)
-            .join(', ');
-
-        const returnCandidType = defaultReturnFloat32.src.candidType;
-
-        const body = generateBody(
-            paramNames,
-            paramFloat32s,
-            defaultReturnFloat32
-        );
-
-        const test = generateTest(
+    .map(
+        ([
             functionName,
             paramFloat32s,
             defaultReturnFloat32
-        );
+        ]): QueryMethodBlueprint => {
+            const imports = defaultReturnFloat32.src.imports;
 
-        return {
-            imports,
-            functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
+            const paramNames = paramFloat32s.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramFloat32s
+                .map((float32) => float32.src.candidType)
+                .join(', ');
 
-runPropTests(Float32TestArb);
+            const returnCandidType = defaultReturnFloat32.src.candidType;
+
+            const body = generateBody(
+                paramNames,
+                paramFloat32s,
+                defaultReturnFloat32
+            );
+
+            const tests = [
+                generateTest(functionName, paramFloat32s, defaultReturnFloat32)
+            ];
+
+            return {
+                imports,
+                functionName,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                tests
+            };
+        }
+    );
+
+runPropTests(CanisterArb(Float32TestArb));
 
 function generateBody(
     paramNames: string[],

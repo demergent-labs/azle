@@ -1,47 +1,20 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
-import { BoolArb } from '../../../arbitraries/candid/primitive/bool';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { getActor, runPropTests } from '../../../../property_tests';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { Test } from '../../../../test';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
+import { BoolArb } from '../../../arbitraries/candid/primitive/bool';
+import { CanisterArb } from '../../../arbitraries/canister_arb';
+import { QueryMethodArb } from '../../../arbitraries/query_method_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
+import { Test } from '../../../../test';
 
-const BoolTestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(BoolArb),
-        BoolArb
-    )
-    .map(([functionName, paramBools, defaultReturnBool]): TestSample => {
-        const imports = defaultReturnBool.src.imports;
+const AllBoolQueryMethod = QueryMethodArb(fc.array(BoolArb), BoolArb, {
+    generateBody,
+    generateTests
+});
 
-        const paramNames = paramBools.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramBools
-            .map((bool) => bool.src.candidType)
-            .join(', ');
-
-        const returnCandidType = defaultReturnBool.src.candidType;
-
-        const body = generateBody(paramNames, paramBools, defaultReturnBool);
-
-        const test = generateTest(functionName, paramBools, defaultReturnBool);
-
-        return {
-            imports,
-            functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
-
-runPropTests(BoolTestArb);
+runPropTests(CanisterArb(AllBoolQueryMethod));
 
 function generateBody(
     paramNames: string[],
@@ -74,27 +47,29 @@ function generateBody(
     `;
 }
 
-function generateTest(
+function generateTests(
     functionName: string,
     paramBools: CandidMeta<boolean>[],
     returnBool: CandidMeta<boolean>
-): Test {
+): Test[] {
     const expectedResult = paramBools.reduce(
         (acc, bool) => acc && bool.agentResponseValue,
         returnBool.agentResponseValue
     );
     const paramValues = paramBools.map((bool) => bool.agentArgumentValue);
 
-    return {
-        name: `bool ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/bool/test');
+    return [
+        {
+            name: `bool ${functionName}`,
+            test: async () => {
+                const actor = getActor('./tests/bool/test');
 
-            const result = await actor[functionName](...paramValues);
+                const result = await actor[functionName](...paramValues);
 
-            return {
-                Ok: deepEqual(result, expectedResult)
-            };
+                return {
+                    Ok: deepEqual(result, expectedResult)
+                };
+            }
         }
-    };
+    ];
 }

@@ -1,9 +1,10 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { Int16Arb } from '../../../arbitraries/candid/primitive/ints/int16_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -16,36 +17,44 @@ const Int16TestArb = fc
         fc.array(Int16Arb),
         Int16Arb
     )
-    .map(([functionName, paramInt16s, defaultReturnInt16]): TestSample => {
-        const imports = defaultReturnInt16.src.imports;
-
-        const paramNames = paramInt16s.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramInt16s
-            .map((int16) => int16.src.candidType)
-            .join(', ');
-
-        const returnCandidType = defaultReturnInt16.src.candidType;
-
-        const body = generateBody(paramNames, paramInt16s, defaultReturnInt16);
-
-        const test = generateTest(
+    .map(
+        ([
             functionName,
             paramInt16s,
             defaultReturnInt16
-        );
+        ]): QueryMethodBlueprint => {
+            const imports = defaultReturnInt16.src.imports;
 
-        return {
-            imports,
-            functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
+            const paramNames = paramInt16s.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramInt16s
+                .map((int16) => int16.src.candidType)
+                .join(', ');
 
-runPropTests(Int16TestArb);
+            const returnCandidType = defaultReturnInt16.src.candidType;
+
+            const body = generateBody(
+                paramNames,
+                paramInt16s,
+                defaultReturnInt16
+            );
+
+            const tests = [
+                generateTest(functionName, paramInt16s, defaultReturnInt16)
+            ];
+
+            return {
+                imports,
+                functionName,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                tests
+            };
+        }
+    );
+
+runPropTests(CanisterArb(Int16TestArb));
 
 function generateBody(
     paramNames: string[],

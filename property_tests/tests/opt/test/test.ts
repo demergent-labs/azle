@@ -3,7 +3,7 @@ import { deepEqual } from 'fast-equals';
 
 import { Opt, OptArb } from '../../../arbitraries/candid/constructed/opt_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
+import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
@@ -16,43 +16,49 @@ const OptTestArb = fc
         fc.array(OptArb),
         OptArb
     )
-    .map(([functionName, paramOpts, defaultReturnOpt]): TestSample => {
-        const imports = new Set([
-            'None',
-            ...paramOpts.flatMap((opt) => [...opt.src.imports]),
-            ...defaultReturnOpt.src.imports
-        ]);
+    .map(
+        ([functionName, paramOpts, defaultReturnOpt]): QueryMethodBlueprint => {
+            const imports = new Set([
+                'None',
+                ...paramOpts.flatMap((opt) => [...opt.src.imports]),
+                ...defaultReturnOpt.src.imports
+            ]);
 
-        const candidTypeDeclarations = [
-            ...paramOpts.map((opt) => opt.src.typeDeclaration ?? ''),
-            defaultReturnOpt.src.typeDeclaration ?? ''
-        ];
+            const candidTypeDeclarations = [
+                ...paramOpts.map((opt) => opt.src.typeDeclaration ?? ''),
+                defaultReturnOpt.src.typeDeclaration ?? ''
+            ];
 
-        const paramNames = paramOpts.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramOpts
-            .map((opt) => opt.src.candidType)
-            .join(', ');
+            const paramNames = paramOpts.map((_, index) => `param${index}`);
+            const paramCandidTypes = paramOpts
+                .map((opt) => opt.src.candidType)
+                .join(', ');
 
-        const returnCandidType =
-            paramOpts.length === 0
-                ? defaultReturnOpt.src.candidType
-                : paramOpts[0].src.candidType;
+            const returnCandidType =
+                paramOpts.length === 0
+                    ? defaultReturnOpt.src.candidType
+                    : paramOpts[0].src.candidType;
 
-        const body = generateBody(paramNames, paramOpts, defaultReturnOpt);
+            const body = generateBody(paramNames, paramOpts, defaultReturnOpt);
 
-        const test = generateTest(functionName, paramOpts, defaultReturnOpt);
+            const test = generateTest(
+                functionName,
+                paramOpts,
+                defaultReturnOpt
+            );
 
-        return {
-            imports,
-            functionName,
-            candidTypeDeclarations,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
+            return {
+                imports,
+                functionName,
+                candidTypeDeclarations,
+                paramNames,
+                paramCandidTypes,
+                returnCandidType,
+                body,
+                test
+            };
+        }
+    );
 
 runPropTests(OptTestArb);
 
