@@ -31,31 +31,33 @@ import * as icrc from '../icrc';
 export const Tokens = Record({
     e8s: nat64
 });
+export type Tokens = typeof Tokens.tsType;
 
 // Number of nanoseconds from the UNIX epoch in UTC timezone.
 export const TimeStamp = Record({
     timestamp_nanos: nat64
 });
+export type TimeStamp = typeof TimeStamp.tsType;
 
 // AccountIdentifier is a 32-byte array.
 // The first 4 bytes is big-endian encoding of a CRC32 checksum of the last 28 bytes.
-export type AccountIdentifier = blob;
 export const AccountIdentifier = blob;
+export type AccountIdentifier = blob;
 
 // Subaccount is an arbitrary 32-byte byte array.
 // Ledger uses subaccounts to compute the source address, which enables one
 // principal to control multiple ledger accounts.
-export type SubAccount = blob;
 export const SubAccount = blob;
+export type SubAccount = blob;
 
 // Sequence number of a block produced by the ledger.
-export type BlockIndex = nat64;
 export const BlockIndex = nat64;
+export type BlockIndex = nat64;
 
 // An arbitrary number associated with a transaction.
 // The caller can set it in a `transfer` call as a correlation identifier.
-export type Memo = nat64;
 export const Memo = nat64;
+export type Memo = nat64;
 
 // Arguments for the `transfer` call.
 export const TransferArgs = Record({
@@ -78,22 +80,27 @@ export const TransferArgs = Record({
     // If null, the ledger uses current IC time as the timestamp.
     created_at_time: Opt(TimeStamp)
 });
+export type TransferArgs = typeof TransferArgs.tsType;
 
 export const BadFee = Record({
     expected_fee: Tokens
 });
+export type BadFee = typeof BadFee.tsType;
 
 export const InsufficientFunds = Record({
     balance: Tokens
 });
+export type InsufficientFunds = typeof InsufficientFunds.tsType;
 
 export const TxTooOld = Record({
     allowed_window_nanos: nat64
 });
+export type TxTooOld = typeof TxTooOld.tsType;
 
 export const TxDuplicate = Record({
     duplicate_of: BlockIndex
 });
+export type TxDuplicate = typeof TxDuplicate.tsType;
 
 export const TransferError = Variant({
     // The fee that the caller specified in the transfer request was not the one that ledger expects.
@@ -112,23 +119,28 @@ export const TransferError = Variant({
     // `duplicate_of` field is equal to the index of the block containing the original transaction.
     TxDuplicate: TxDuplicate
 });
+export type TransferError = typeof TransferError.tsType;
 
 export const TransferResult = Variant({
     Ok: nat64,
     Err: TransferError
 });
+export type TransferResult = typeof TransferResult.tsType;
 
 // Arguments for the `account_balance` call.
 export const AccountBalanceArgs = Record({
     account: AccountIdentifier
 });
+export type AccountBalanceArgs = typeof AccountBalanceArgs.tsType;
 
 export const TransferFeeArg = Record({});
+export type TransferFeeArg = typeof TransferFeeArg.tsType;
 
 export const TransferFee = Record({
     // The fee to pay to perform a transfer
     transfer_fee: Tokens
 });
+export type TransferFee = typeof TransferFee.tsType;
 
 export const GetBlocksArgs = Record({
     // The index of the first block to fetch.
@@ -136,16 +148,19 @@ export const GetBlocksArgs = Record({
     // Max number of blocks to fetch.
     length: nat64
 });
+export type GetBlocksArgs = typeof GetBlocksArgs.tsType;
 
 export const Mint = Record({
     to: AccountIdentifier,
     amount: Tokens
 });
+export type Mint = typeof Mint.tsType;
 
 export const Burn = Record({
     from: AccountIdentifier,
     amount: Tokens
 });
+export type Burn = typeof Burn.tsType;
 
 export const Transfer = Record({
     from: AccountIdentifier,
@@ -153,24 +168,28 @@ export const Transfer = Record({
     amount: Tokens,
     fee: Tokens
 });
+export type Transfer = typeof Transfer.tsType;
 
 export const Operation = Variant({
     Mint: Mint,
     Burn: Burn,
     Transfer: Transfer
 });
+export type Operation = typeof Operation.tsType;
 
 export const Transaction = Record({
     memo: Memo,
     operation: Opt(Operation),
     created_at_time: TimeStamp
 });
+export type Transaction = typeof Transaction.tsType;
 
 export const Block = Record({
     parent_hash: Opt(blob),
     transaction: Transaction,
     timestamp: TimeStamp
 });
+export type Block = typeof Block.tsType;
 
 // A prefix of the block range specified in the [GetBlocksArgs] request.
 export const BlockRange = Record({
@@ -189,16 +208,19 @@ export const BlockRange = Record({
     // 2. [GetBlocksArgs.from] was larger than the last block known to the canister.
     blocks: Vec(Block)
 });
+export type BlockRange = typeof BlockRange.tsType;
 
 export const BadFirstBlockIndex = Record({
     requested_index: BlockIndex,
     first_valid_index: BlockIndex
 });
+export type BadFirstBlockIndex = typeof BadFirstBlockIndex.tsType;
 
 export const Other = Record({
     error_code: nat64,
     error_message: text
 });
+export type Other = typeof Other.tsType;
 
 // An error indicating that the arguments passed to [QueryArchiveFn] were invalid.
 export const QueryArchiveError = Variant({
@@ -208,6 +230,7 @@ export const QueryArchiveError = Variant({
     // Reserved for future use.
     Other: Other
 });
+export type QueryArchiveError = typeof QueryArchiveError.tsType;
 
 export const QueryArchiveResult = Variant({
     // Successfully fetched zero or more blocks.
@@ -215,6 +238,7 @@ export const QueryArchiveResult = Variant({
     // The [GetBlocksArgs] request was invalid.
     Err: QueryArchiveError
 });
+export type QueryArchiveResult = typeof QueryArchiveResult.tsType;
 
 // A function that is used for fetching archived ledger blocks.
 export const QueryArchiveFn = Func(
@@ -222,6 +246,7 @@ export const QueryArchiveFn = Func(
     QueryArchiveResult,
     'query'
 );
+export type QueryArchiveFn = typeof QueryArchiveFn.tsType;
 
 export const ArchivedBlock = Record({
     // The index of the first archived block that can be fetched using the callback.
@@ -233,6 +258,7 @@ export const ArchivedBlock = Record({
     // and [len] fields above.
     callback: QueryArchiveFn
 });
+export type ArchivedBlock = typeof ArchivedBlock.tsType;
 
 // The result of a "query_blocks" call.
 //
@@ -267,29 +293,35 @@ export const QueryBlocksResponse = Record({
     // of the originally requested block range.
     archived_blocks: Vec(ArchivedBlock)
 });
+export type QueryBlocksResponse = typeof QueryBlocksResponse.tsType;
 
 export const Archive = Record({
     canister_id: Principal
 });
+export type Archive = typeof Archive.tsType;
 
 export const Archives = Record({
     archives: Vec(Archive)
 });
+export type Archives = typeof Archives.tsType;
 
 export const SymbolResult = Record({
     symbol: text
 });
+export type SymbolResult = typeof SymbolResult.tsType;
 
 export const NameResult = Record({
     name: text
 });
+export type NameResult = typeof NameResult.tsType;
 
 export const DecimalsResult = Record({
     decimals: nat32
 });
+export type DecimalsResult = typeof DecimalsResult.tsType;
 
-export type Address = text;
 export const Address = text;
+export type Address = text;
 
 export const Ledger = Canister({
     // Transfers tokens from a subaccount of the caller to the destination address.
