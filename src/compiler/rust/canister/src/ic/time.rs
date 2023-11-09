@@ -5,6 +5,6 @@ pub fn native_function<'a>(
     _this: &CallbackArg,
     _args: &[CallbackArg],
 ) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let time_js_value: JSValue = candid::encode_one(ic_cdk::api::time())?.into();
+    let time_js_value: JSValue = ic_cdk::api::time().to_string().into();
     to_qjs_value(&context, &time_js_value)
 }

@@ -1,7 +1,5 @@
 import { nat32 } from '../candid/types/primitive/nats/nat32';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { decode } from '../candid/serde/decode';
-import { encode } from '../candid/serde/encode';
 
 /**
  * Gets the value of the specified performance counter
@@ -17,11 +15,9 @@ export function performanceCounter(counterType: nat32): nat64 {
         return undefined as any;
     }
 
-    const counterTypeCandidBytes = encode(nat32, counterType).buffer;
-
-    const performanceCounterCandidBytes = globalThis._azleIc.performanceCounter(
-        counterTypeCandidBytes
+    const performanceCounterString = globalThis._azleIc.performanceCounter(
+        counterType.toString()
     );
 
-    return decode(nat64, performanceCounterCandidBytes);
+    return BigInt(performanceCounterString);
 }

@@ -14,7 +14,6 @@ export function instructionCounter(): nat64 {
         return undefined as any;
     }
 
-    const instructionCounterCandidBytes =
-        globalThis._azleIc.instructionCounter();
-    return decode(nat64, instructionCounterCandidBytes);
+    const instructionCounterString = globalThis._azleIc.instructionCounter();
+    return BigInt(instructionCounterString);
 }

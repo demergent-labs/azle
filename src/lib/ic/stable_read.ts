@@ -12,7 +12,7 @@ export function stableRead(offset: nat32, length: nat32): Uint8Array {
         return undefined as any;
     }
 
-    const paramsCandidBytes = encode([nat32, nat32], [offset, length]).buffer;
-
-    return new Uint8Array(globalThis._azleIc.stableRead(paramsCandidBytes));
+    return new Uint8Array(
+        globalThis._azleIc.stableRead(offset.toString(), length.toString())
+    );
 }

@@ -28,7 +28,7 @@ export type AzleIc = {
     clearTimer: (timerIdBytes: ArrayBufferLike) => void;
     dataCertificate: () => ArrayBufferLike | undefined;
     id: () => string;
-    instructionCounter: () => ArrayBufferLike;
+    instructionCounter: () => string;
     isController: (principalBytes: ArrayBufferLike) => boolean;
     msgCyclesAccept: (maxAmountCandidBytes: ArrayBufferLike) => ArrayBufferLike;
     msgCyclesAccept128: (
@@ -44,9 +44,7 @@ export type AzleIc = {
         argsRawBuffer: ArrayBufferLike,
         paymentCandidBytes: ArrayBufferLike
     ) => void;
-    performanceCounter: (
-        counterTypeCandidBytes: ArrayBufferLike
-    ) => ArrayBufferLike;
+    performanceCounter: (counterType: string) => string;
     rejectCode: () => number;
     replyRaw: (bytes: ArrayBufferLike) => void;
     setCertifiedData: (dataBytes: ArrayBufferLike) => void;
@@ -59,15 +57,15 @@ export type AzleIc = {
         timerCallbackId: string
     ) => ArrayBufferLike;
     stableBytes: () => ArrayBufferLike;
-    stableGrow: (newPagesCandidBytes: ArrayBufferLike) => ArrayBufferLike;
-    stableRead: (paramsCandidBytes: ArrayBufferLike) => ArrayBufferLike;
-    stableSize: () => ArrayBufferLike;
-    stableWrite: (paramsCandidBytes: ArrayBufferLike) => void;
-    stable64Grow: (newPagesCandidBytes: ArrayBufferLike) => ArrayBufferLike;
-    stable64Read: (paramsCandidBytes: ArrayBufferLike) => ArrayBufferLike;
-    stable64Size: () => ArrayBufferLike;
-    stable64Write: (paramsCandidBytes: ArrayBufferLike) => void;
-    time: () => ArrayBufferLike;
+    stableGrow: (newPages: string) => string;
+    stableRead: (offset: string, length: string) => ArrayBufferLike;
+    stableSize: () => string;
+    stableWrite: (offset: string, buf: ArrayBufferLike) => void;
+    stable64Grow: (newPages: string) => string;
+    stable64Read: (offset: string, length: string) => ArrayBufferLike;
+    stable64Size: () => string;
+    stable64Write: (offset: string, buf: ArrayBufferLike) => void;
+    time: () => string;
     // These calls aren't intercepted by our IC object, they go right to the
     // rust version and come out. Since they don't need to be intercepted I am
     // assuming that their types are the same as the types declared by our

@@ -7,15 +7,19 @@ pub fn native_function<'a>(
     _this: &CallbackArg,
     args: &[CallbackArg],
 ) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let params_bytes: Vec<u8> = args
+    let offset_string: String = args
         .get(0)
         .expect("stableWrite must have two arguments")
         .to_js_value()?
         .try_into()?;
 
-    let (offset, buf): (u32, Vec<u8>) = candid::decode_args(&params_bytes)?;
+    let buf: Vec<u8> = args
+        .get(1)
+        .expect("stableWrite must have two arguments")
+        .to_js_value()?
+        .try_into()?;
 
-    ic_cdk::api::stable::stable_write(offset, &buf);
+    ic_cdk::api::stable::stable_write(offset_string.parse()?, &buf);
 
     context.undefined_value()
 }
