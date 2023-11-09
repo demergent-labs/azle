@@ -4,12 +4,34 @@ import { UniqueIdentifierArb } from './unique_identifier_arb';
 import { CandidType } from './candid/candid_type_arb';
 import { CandidMeta } from './candid/candid_arb';
 
+export type Named<T> = {
+    name: string;
+    el: T;
+};
+
 export type QueryMethod = {
     imports: Set<string>;
     candidTypeDeclarations: string[] | undefined;
     sourceCode: string;
     tests: Test[];
 };
+
+export type BodyGenerator<
+    ParamType extends CandidType,
+    ReturnType extends CandidType
+> = (
+    namedParams: Named<CandidMeta<ParamType>>[],
+    returnType: CandidMeta<ReturnType>
+) => string;
+
+export type TestsGenerator<
+    ParamType extends CandidType,
+    ReturnType extends CandidType
+> = (
+    methodName: string,
+    namedParams: Named<CandidMeta<ParamType>>[],
+    returnType: CandidMeta<ReturnType>
+) => Test[];
 
 export function QueryMethodArb<
     ParamType extends CandidType,
@@ -18,17 +40,8 @@ export function QueryMethodArb<
     paramTypeArrayArb: fc.Arbitrary<CandidMeta<ParamType>[]>,
     returnTypeArb: fc.Arbitrary<CandidMeta<ReturnType>>,
     constraints: {
-        generateBody: (
-            // TODO: Consider combining params and paramNames into Named<CandidMeta<ParamType>>
-            paramNames: string[],
-            params: CandidMeta<ParamType>[],
-            defaultReturnType: CandidMeta<ReturnType>
-        ) => string;
-        generateTests: (
-            methodName: string,
-            params: CandidMeta<ParamType>[],
-            defaultReturnType: CandidMeta<ReturnType>
-        ) => Test[];
+        generateBody: BodyGenerator<ParamType, ReturnType>;
+        generateTests: TestsGenerator<ParamType, ReturnType>;
         // TODO: Consider adding a callback to determine the returnType
         // i.e. instead of using the first one if the params array isn't empty.
     }
@@ -39,42 +52,45 @@ export function QueryMethodArb<
             paramTypeArrayArb,
             returnTypeArb
         )
-        .map(([functionName, paramTypes, defaultReturnType]): QueryMethod => {
+        .map(([functionName, paramTypes, returnType]): QueryMethod => {
             const imports = new Set([
                 ...paramTypes.flatMap((param) => [...param.src.imports]),
-                ...defaultReturnType.src.imports
+                ...returnType.src.imports
             ]);
 
             const candidTypeDeclarations = [
                 ...paramTypes.map((param) => param.src.typeDeclaration ?? ''),
-                defaultReturnType.src.typeDeclaration ?? ''
+                returnType.src.typeDeclaration ?? ''
             ];
 
-            const paramNames = paramTypes.map((_, index) => `_param${index}`);
+            const namedParams = paramTypes.map(
+                <T>(param: T, index: number): Named<T> => ({
+                    name: `_param${index}`,
+                    el: param
+                })
+            );
 
             const paramCandidTypes = paramTypes
                 .map((param) => param.src.candidType)
                 .join(', ');
 
-            const returnCandidType = defaultReturnType.src.candidType;
+            const returnCandidType = returnType.src.candidType;
 
-            const body = constraints.generateBody(
-                paramNames,
-                paramTypes,
-                defaultReturnType
-            );
+            const paramNames = namedParams
+                .map((namedParam) => namedParam.name)
+                .join(', ');
+
+            const body = constraints.generateBody(namedParams, returnType);
             const tests = constraints.generateTests(
                 functionName,
-                paramTypes,
-                defaultReturnType
+                namedParams,
+                returnType
             );
 
             return {
                 imports,
                 candidTypeDeclarations,
-                sourceCode: `${functionName}: query([${paramCandidTypes}], ${returnCandidType}, (${paramNames.join(
-                    ', '
-                )}) => {
+                sourceCode: `${functionName}: query([${paramCandidTypes}], ${returnCandidType}, (${paramNames}) => {
                     ${body}
                 })`,
                 tests

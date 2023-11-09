@@ -8,6 +8,8 @@ import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb
 
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
+import { CandidType } from '../../../arbitraries/candid/candid_type_arb';
 
 // TODO Canister
 // TODO Record
@@ -20,7 +22,7 @@ const HeterogeneousQueryMethod = QueryMethodArb(
     fc.oneof(
         { arbitrary: CandidTypeArb, weight: 17 },
         { arbitrary: VoidArb, weight: 1 }
-    ),
+    ) as fc.Arbitrary<CandidMeta<CandidType | undefined>>,
     {
         generateBody,
         generateTests

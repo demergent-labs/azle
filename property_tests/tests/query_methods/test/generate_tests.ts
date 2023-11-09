@@ -1,16 +1,16 @@
 import { deepEqual } from 'fast-equals';
 
 import { getActor } from 'azle/property_tests';
-import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
 import { CandidType } from 'azle/property_tests/arbitraries/candid/candid_type_arb';
+import { TestsGenerator } from 'azle/property_tests/arbitraries/query_method_arb';
 import { Test } from 'azle/test';
 
-export function generateTests(
-    functionName: string,
-    params: CandidMeta<CandidType>[],
-    returnType: CandidMeta<CandidType>
-): Test[] {
-    const paramValues = params.map((param) => param.value);
+export const generateTests: TestsGenerator<CandidType, CandidType> = (
+    functionName,
+    params,
+    returnType
+): Test[] => {
+    const paramValues = params.map((param) => param.el.value);
     const expectedResult = returnType.value;
 
     return [
@@ -29,4 +29,4 @@ export function generateTests(
             }
         }
     ];
-}
+};
