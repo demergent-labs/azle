@@ -10,8 +10,13 @@ import {
 } from '../../src/lib';
 
 export const CanisterId = Principal;
+export type CanisterId = Principal;
+
 export const UserId = Principal;
+export type UserId = Principal;
+
 export const WasmModule = blob;
+export type WasmModule = blob;
 
 export const CanisterSettings = Record({
     /**
@@ -26,6 +31,7 @@ export const CanisterSettings = Record({
     memory_allocation: Opt(nat),
     freezing_threshold: Opt(nat)
 });
+export type CanisterSettings = typeof CanisterSettings.tsType;
 
 /**
  * The arguments to provide to the management canister's create_canister
@@ -34,16 +40,19 @@ export const CanisterSettings = Record({
 export const CreateCanisterArgs = Record({
     settings: Opt(CanisterSettings)
 });
+export type CreateCanisterArgs = typeof CreateCanisterArgs.tsType;
 
 export const CreateCanisterResult = Record({
     canister_id: Principal
 });
+export type CreateCanisterResult = typeof CreateCanisterResult.tsType;
 
 export const CanisterStatus = Variant({
     running: Null,
     stopping: Null,
     stopped: Null
 });
+export type CanisterStatus = typeof CanisterStatus.tsType;
 
 export const DefiniteCanisterSettings = Record({
     controllers: Vec(Principal),
@@ -51,6 +60,7 @@ export const DefiniteCanisterSettings = Record({
     memory_allocation: nat,
     freezing_threshold: nat
 });
+export type DefiniteCanisterSettings = typeof DefiniteCanisterSettings.tsType;
 
 export const CanisterStatusResult = Record({
     status: CanisterStatus,
@@ -59,21 +69,25 @@ export const CanisterStatusResult = Record({
     memory_size: nat,
     cycles: nat
 });
+export type CanisterStatusResult = typeof CanisterStatusResult.tsType;
 
 export const CanisterStatusArgs = Record({
     canister_id: Principal
 });
+export type CanisterStatusArgs = typeof CanisterStatusArgs.tsType;
 
 export const UpdateSettingsArgs = Record({
     canister_id: CanisterId,
     settings: CanisterSettings
 });
+export type UpdateSettingsArgs = typeof UpdateSettingsArgs.tsType;
 
 export const InstallCodeMode = Variant({
     install: Null,
     reinstall: Null,
     upgrade: Null
 });
+export type InstallCodeMode = typeof InstallCodeMode.tsType;
 
 export const InstallCodeArgs = Record({
     mode: InstallCodeMode,
@@ -81,37 +95,49 @@ export const InstallCodeArgs = Record({
     wasm_module: WasmModule,
     arg: blob
 });
+export type InstallCodeArgs = typeof InstallCodeArgs.tsType;
 
 export const UninstallCodeArgs = Record({
     canister_id: CanisterId
 });
+export type UninstallCodeArgs = typeof UninstallCodeArgs.tsType;
 
 export const StartCanisterArgs = Record({
     canister_id: CanisterId
 });
+export type StartCanisterArgs = typeof StartCanisterArgs.tsType;
 
 export const StopCanisterArgs = Record({
     canister_id: CanisterId
 });
+export type StopCanisterArgs = typeof StopCanisterArgs.tsType;
 
 export const DeleteCanisterArgs = Record({
     canister_id: CanisterId
 });
+export type DeleteCanisterArgs = typeof DeleteCanisterArgs.tsType;
 
 export const ProvisionalCreateCanisterWithCyclesArgs = Record({
     amount: Opt(nat),
     settings: Opt(CanisterSettings)
 });
+export type ProvisionalCreateCanisterWithCyclesArgs =
+    typeof ProvisionalCreateCanisterWithCyclesArgs.tsType;
 
 export const ProvisionalCreateCanisterWithCyclesResult = Record({
     canister_id: CanisterId
 });
+export type ProvisionalCreateCanisterWithCyclesResult =
+    typeof ProvisionalCreateCanisterWithCyclesResult.tsType;
 
 export const ProvisionalTopUpCanisterArgs = Record({
     canister_id: CanisterId,
     amount: nat
 });
+export type ProvisionalTopUpCanisterArgs =
+    typeof ProvisionalTopUpCanisterArgs.tsType;
 
 export const DepositCyclesArgs = Record({
     canister_id: CanisterId
 });
+export type DepositCyclesArgs = typeof DepositCyclesArgs.tsType;

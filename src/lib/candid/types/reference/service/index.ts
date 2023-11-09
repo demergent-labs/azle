@@ -20,7 +20,7 @@ type CanisterReturn<T extends CanisterOptions> = {
 };
 
 type CallableObject<T extends CanisterOptions> = {
-    (principal: Principal): CallableObject<T>;
+    (principal: Principal): CallableObject<T> & CandidType;
 } & CanisterReturn<T>;
 
 type _AzleCanisterReturnType = {

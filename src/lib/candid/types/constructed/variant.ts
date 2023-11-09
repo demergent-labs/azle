@@ -4,21 +4,17 @@ import { toIdlMap, CandidMap } from './to_idl_map';
 import { IDL } from '@dfinity/candid';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
-import { Serializable } from '../../../stable_structures/stable_b_tree_map';
 
 export function Variant<
     T extends {
         [K in keyof T]: CandidType;
     }
->(
-    obj: T
-): RequireExactlyOne<{
-    [K in keyof T]: TypeMapping<T[K]>;
-}> &
-    CandidType &
-    Partial<Serializable> {
+>(obj: T) {
     return {
         ...obj,
+        tsType: {} as RequireExactlyOne<{
+            [K in keyof T]: TypeMapping<T[K]>;
+        }>,
         toBytes(data: any) {
             return encode(this, data);
         },
@@ -28,7 +24,7 @@ export function Variant<
         getIdl(parents: any) {
             return IDL.Variant(toIdlMap(obj as CandidMap, parents));
         }
-    } as any;
+    };
 }
 
 export type RequireExactlyOne<

@@ -26,12 +26,14 @@ export const CanisterInfoArgs = Record({
      */
     num_requested_changes: Opt(nat64)
 });
+export type CanisterInfoArgs = typeof CanisterInfoArgs.tsType;
 
 /** Details about a canister creation. */
 export const CreationRecord = Record({
     /** Initial set of canister controllers. */
     controllers: Vec(Principal)
 });
+export type CreationRecord = typeof CreationRecord.tsType;
 
 /** The mode with which a canister is installed. */
 export const CanisterInstallMode = Variant({
@@ -42,6 +44,7 @@ export const CanisterInstallMode = Variant({
     /** Upgrade an existing canister. */
     upgrade: Null
 });
+export type CanisterInstallMode = typeof CanisterInstallMode.tsType;
 
 /** Details about a canister code deployment. */
 export const CodeDeploymentRecord = Record({
@@ -50,12 +53,14 @@ export const CodeDeploymentRecord = Record({
     /** A SHA256 hash of the new module installed on the canister. */
     module_hash: Vec(nat8)
 });
+export type CodeDeploymentRecord = typeof CodeDeploymentRecord.tsType;
 
 /** Details about updating canister controllers. */
 export const ControllersChangeRecord = Record({
     /** The full new set of canister controllers. */
     controllers: Vec(Principal)
 });
+export type ControllersChangeRecord = typeof ControllersChangeRecord.tsType;
 
 /** Provides details on the respective canister change. */
 export const CanisterChangeDetails = Variant({
@@ -68,12 +73,14 @@ export const CanisterChangeDetails = Variant({
     /** See {@link ControllersChangeRecord}. */
     controllers_change: ControllersChangeRecord
 });
+export type CanisterChangeDetails = typeof CanisterChangeDetails.tsType;
 
 /** Details about a canister change initiated by a user. */
 export const FromUserRecord = Record({
     /** Principle of the user. */
     user_id: Principal
 });
+export type FromUserRecord = typeof FromUserRecord.tsType;
 
 /**
  * Details about a canister change initiated by a canister (called *originator*).
@@ -89,6 +96,7 @@ export const FromCanisterRecord = Record({
      */
     canister_version: Opt(nat64)
 });
+export type FromCanisterRecord = typeof FromCanisterRecord.tsType;
 
 /** Provides details on who initiated a canister change. */
 export const CanisterChangeOrigin = Variant({
@@ -97,6 +105,7 @@ export const CanisterChangeOrigin = Variant({
     /** See {@link FromCanisterRecord}. */
     from_canister: FromCanisterRecord
 });
+export type CanisterChangeOrigin = typeof CanisterChangeOrigin.tsType;
 
 /** Represents a canister change as stored in the canister history. */
 export const CanisterChange = Record({
@@ -112,6 +121,7 @@ export const CanisterChange = Record({
     /** The change’s details. */
     details: CanisterChangeDetails
 });
+export type CanisterChange = typeof CanisterChange.tsType;
 
 /** Return type of {@link managementCanister.canister_info}. */
 export const CanisterInfoResult = Record({
@@ -135,3 +145,4 @@ export const CanisterInfoResult = Record({
     /** Controllers of the canister. */
     controllers: Vec(Principal)
 });
+export type CanisterInfoResult = typeof CanisterInfoResult.tsType;

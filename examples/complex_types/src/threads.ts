@@ -39,7 +39,7 @@ export const getAllThreads = query([nat32], Vec(Thread), (joinDepth) => {
 export function getThreadFromStateThread(
     stateThread: StateThread,
     joinDepth: nat32
-): typeof Thread {
+): Thread {
     const stateAuthor = state.users[stateThread.authorId];
     const author = getUserFromStateUser(stateAuthor, joinDepth);
 

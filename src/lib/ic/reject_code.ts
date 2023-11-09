@@ -5,7 +5,7 @@ import { RejectionCode } from '../system_types';
  * call
  * @returns the rejection code
  */
-export function rejectCode(): typeof RejectionCode {
+export function rejectCode(): RejectionCode {
     if (globalThis._azleIc === undefined) {
         return undefined as any;
     }

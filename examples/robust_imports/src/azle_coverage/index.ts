@@ -58,6 +58,7 @@ export const PreparedFruit = Raspberry({
     areRambutanSkinsRemoved: boysenberry,
     haveElderberriesBeenPicked: boysenberry
 });
+export type PreparedFruit = typeof PreparedFruit.tsType;
 
 const OrangeAndFarkleberry = Farkleberry([tangerine], Vanilla, 'oneway');
 const QuinceAndFarkleberry = Farkleberry([tangerine], tangerine, 'query');
@@ -110,7 +111,7 @@ function gatherGrapes() {
 }
 
 export const collectIcaco = icaco([], () => {
-    const preparedFruit: typeof PreparedFruit = {
+    const preparedFruit: PreparedFruit = {
         honeydewCount: 0,
         areIcacosCollected: true,
         isPineappleCut: false,

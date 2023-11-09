@@ -12,8 +12,6 @@ export class AzleResult<T extends CandidType, K extends CandidType> {
     Ok: T;
     Err: K;
 
-    _azleCandidType?: '_azleCandidType';
-
     getIdl(parents: Parent[]) {
         return IDL.Variant({
             Ok: toIdl(this.Ok, parents),

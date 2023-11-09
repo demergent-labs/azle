@@ -13,10 +13,7 @@ export class AzleVec<T> {
     innerType: CandidType;
 
     _azleKind: 'AzleVec' = 'AzleVec';
-    _azleCandidType?: '_azleCandidType';
-
     static _azleKind: 'AzleVec' = 'AzleVec';
-    static _azleCandidType?: '_azleCandidType';
 
     toBytes(data: any) {
         return encode(this, data);

@@ -24,6 +24,7 @@ const Superhero = Record({
     name: text,
     superpowers: Opt(List)
 });
+type Superhero = typeof Superhero.tsType;
 
 /**
  * Application State
@@ -33,7 +34,7 @@ const Superhero = Record({
 let next: SuperheroId = 0;
 
 // The superhero data store.
-let superheroes: Map<SuperheroId, typeof Superhero> = new Map();
+let superheroes: Map<SuperheroId, Superhero> = new Map();
 
 /**
  * High-Level API

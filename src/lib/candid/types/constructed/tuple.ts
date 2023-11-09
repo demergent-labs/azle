@@ -4,20 +4,20 @@ import { IDL } from '@dfinity/candid';
 import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
 import { TypeMapping } from '../../type_mapping';
-import { Serializable } from '../../../stable_structures/stable_b_tree_map';
 
 export class AzleTuple<T extends any[]> {
     constructor(t: CandidType[]) {
         this.innerTypes = t;
     }
 
+    tsType: {
+        [P in keyof T]: TypeMapping<T[P]>;
+    } = {} as any;
+
     innerTypes: CandidType[];
 
     _azleKind: 'AzleTuple' = 'AzleTuple';
-    _azleCandidType?: '_azleCandidType';
-
     static _azleKind: 'AzleTuple' = 'AzleTuple';
-    static _azleCandidType?: '_azleCandidType';
 
     toBytes(data: any) {
         return encode(this, data);
@@ -35,12 +35,7 @@ export class AzleTuple<T extends any[]> {
     }
 }
 
-export function Tuple<T extends any[]>(
-    ...types: T
-): {
-    [P in keyof T]: TypeMapping<T[P]>;
-} & CandidType &
-    Partial<Serializable> {
-    return new AzleTuple(types) as any;
+export function Tuple<T extends any[]>(...types: T) {
+    return new AzleTuple<T>(types);
 }
 export type Tuple<T> = T;

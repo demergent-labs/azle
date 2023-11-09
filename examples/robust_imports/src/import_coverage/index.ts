@@ -44,6 +44,7 @@ export const MyVariant = ic.CoveredVariant({
 export const MyDeepVariant = ic.DeepVariant({
     Thing: int8
 });
+export type MyDeepVariant = typeof MyDeepVariant.tsType;
 export const MyFathomlessVariant = ic.FathomlessVariant({
     MyInt8: ic.int8,
     MyInt16: ic.int16
@@ -64,7 +65,7 @@ export const myVariantToMyDeepVariant = query(
     (mV) => {
         if (mV.Thing !== undefined) {
             const thing = mV.Thing;
-            let result: typeof MyDeepVariant = { Thing: thing };
+            let result: MyDeepVariant = { Thing: thing };
             return result;
         }
 

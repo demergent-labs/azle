@@ -26,7 +26,7 @@ pub fn native_function<'a>(
             let stable_b_tree_maps = stable_b_tree_maps.borrow();
 
             stable_b_tree_maps[&(memory_id as u8)]
-                .contains_key(&AzleStableBTreeMapKey { candid_bytes: key })
+                .contains_key(&AzleStableBTreeMapKey { bytes: key })
         })
         .into();
 

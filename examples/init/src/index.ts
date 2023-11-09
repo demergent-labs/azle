@@ -15,14 +15,16 @@ import {
 const User = Record({
     id: text
 });
+type User = typeof User.tsType;
 
 const Reaction = Variant({
     Fire: Null,
     Wave: Null
 });
+type Reaction = typeof Reaction.tsType;
 
-let user: Opt<typeof User> = None;
-let reaction: Opt<typeof Reaction> = None;
+let user: Opt<User> = None;
+let reaction: Opt<Reaction> = None;
 let owner: Opt<Principal> = None;
 
 export default Canister({

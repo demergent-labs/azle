@@ -20,7 +20,7 @@ pub fn native_function<'a>(
 
         stable_b_tree_maps[&(memory_id as u8)]
             .iter()
-            .map(|(key, value)| vec![key.candid_bytes, value.candid_bytes])
+            .map(|(key, value)| vec![key.bytes, value.bytes])
             .collect()
     });
 

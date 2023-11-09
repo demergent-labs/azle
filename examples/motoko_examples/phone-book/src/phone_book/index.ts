@@ -14,8 +14,9 @@ export const Entry = Record({
     desc: text,
     phone: text
 });
+export type Entry = typeof Entry.tsType;
 
-let phoneBook = new Map<string, typeof Entry>();
+let phoneBook = new Map<string, Entry>();
 
 export default Canister({
     insert: update([text, Entry], Void, (name, entry) => {

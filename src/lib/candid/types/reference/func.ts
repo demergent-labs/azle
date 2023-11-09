@@ -17,8 +17,9 @@ export function Func(
     paramCandidTypes: CandidType[],
     returnCandidTypes: CandidType,
     mode: Mode
-): [Principal, string] & CandidType & Partial<Serializable> {
+) {
     return {
+        tsType: {} as [Principal, string],
         toBytes(data: any) {
             return encode(this, data);
         },
@@ -32,5 +33,5 @@ export function Func(
                 modeToCandid[mode]
             );
         }
-    } as any;
+    };
 }

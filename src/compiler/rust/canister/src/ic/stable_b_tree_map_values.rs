@@ -39,7 +39,7 @@ pub fn native_function<'a>(
             } else {
                 length
             })
-            .map(|(_, value)| value.candid_bytes)
+            .map(|(_, value)| value.bytes)
             .collect()
     });
 

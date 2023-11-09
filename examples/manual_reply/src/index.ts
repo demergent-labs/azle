@@ -25,6 +25,7 @@ const Options = Variant({
     Medium: Null,
     Large: Null
 });
+type Options = typeof Options.tsType;
 
 const RawReply = Record({
     int: int,
@@ -33,33 +34,39 @@ const RawReply = Record({
     myBlob: blob,
     myVariant: Options
 });
+type RawReply = typeof RawReply.tsType;
 
 const Orbital = Record({
     layer: nat8,
     electrons: nat8
 });
+type Orbital = typeof Orbital.tsType;
 
 const Solid = Record({
     element: text
 });
+type Solid = typeof Solid.tsType;
 
 const Gas = Variant({
     Elemental: Null,
     Mixed: Null,
     Toxic: Null
 });
+type Gas = typeof Gas.tsType;
 
 const State = Variant({
     Gas: Gas,
     Liquid: Null,
     Solid: Solid
 });
+type State = typeof State.tsType;
 
 const Element = Record({
     id: text,
     orbitals: Vec(Orbital),
     state: State
 });
+type Element = typeof Element.tsType;
 
 export default Canister({
     // Updates
@@ -131,7 +138,7 @@ export default Canister({
         [],
         Manual(Element),
         () => {
-            const element: typeof Element = {
+            const element: Element = {
                 id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
                 orbitals: [
                     {
@@ -257,7 +264,7 @@ export default Canister({
         [],
         Manual(Element),
         () => {
-            const element: typeof Element = {
+            const element: Element = {
                 id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
                 orbitals: [
                     {

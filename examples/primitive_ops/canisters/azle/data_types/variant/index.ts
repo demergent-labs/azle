@@ -7,9 +7,9 @@ const Reaction = Variant({
     ThumbsUp: nat32,
     Tip: Principal
 });
+type Reaction = typeof Reaction.tsType;
 
-let variant_init_heap_storage: { [key: string]: typeof Reaction | undefined } =
-    {};
+let variant_init_heap_storage: { [key: string]: Reaction | undefined } = {};
 
 export const variant_init_stack = update([nat32], PerfResult, (num_inits) => {
     const perf_start = ic.performanceCounter(0);
@@ -17,7 +17,7 @@ export const variant_init_stack = update([nat32], PerfResult, (num_inits) => {
     let i = 0;
 
     while (i < num_inits) {
-        let value: typeof Reaction =
+        let value: Reaction =
             i % 2 === 0
                 ? {
                       ThumbsUp: 2

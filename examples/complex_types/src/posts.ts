@@ -46,7 +46,7 @@ export const getAllPosts = query([nat32], Vec(Post), (joinDepth) => {
 export function getPostFromStatePost(
     statePost: StatePost,
     joinDepth: nat32
-): typeof Post {
+): Post {
     const stateAuthor = state.users[statePost.authorId];
     const author = getUserFromStateUser(stateAuthor, joinDepth);
 

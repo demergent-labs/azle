@@ -1,9 +1,4 @@
-// TODO get rid of unnecessary memory id candid bytes converions
-// TODO get rid of saying candid_bytes in Rust
-// TODO add type tests for stablebtreemap
-// TODO the stableType doesn't work for Func
-// TODO make sure Serializable is actually working well
-// TODO seems like only one of the properties actually needs to be there
+// TODO use string for nat64/bigint conversions to and from the Rust environment
 
 import {
     blob,
@@ -31,9 +26,15 @@ const User = Record({
     age: nat,
     signature: blob
 });
-type User = typeof User;
+type User = typeof User.tsType;
 
-let map = StableBTreeMap<text, User>(User, StableJson(), 0);
+// TODO figure out good minimum for:
+// TODO number keys and json objects with 1, 5, 10, 15, 20 records
+// TODO use a combination of different types
+// TODO should we create special StableNumber and StableBigInt and StableString?
+// TODO we should measure the performance to see what we can do
+
+let map = StableBTreeMap<text, User>(text, StableJson(), 0);
 
 export default Canister({
     insert: update([], Void, () => {

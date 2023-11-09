@@ -4,10 +4,7 @@ import { decode } from '../../serde/decode';
 
 export class AzleBlob {
     _azleKind: 'AzleBlob' = 'AzleBlob';
-    _azleCandidType?: '_azleCandidType';
-
     static _azleKind: 'AzleBlob' = 'AzleBlob';
-    static _azleCandidType?: '_azleCandidType';
 
     static toBytes(data: any) {
         return encode(this, data);

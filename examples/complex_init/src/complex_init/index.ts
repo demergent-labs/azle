@@ -13,9 +13,10 @@ import {
 const User = Record({
     id: text
 });
+type User = typeof User.tsType;
 
 let greeting: text = 'Hello User';
-let user: Opt<typeof User> = None;
+let user: Opt<User> = None;
 
 export default Canister({
     init: init([Tuple(text, User)], (tuple) => {

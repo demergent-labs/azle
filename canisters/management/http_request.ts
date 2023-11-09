@@ -15,12 +15,14 @@ export const HttpHeader = Record({
     name: text,
     value: text
 });
+export type HttpHeader = typeof HttpHeader.tsType;
 
 export const HttpMethod = Variant({
     get: Null,
     head: Null,
     post: Null
 });
+export type HttpMethod = typeof HttpMethod.tsType;
 
 export const HttpResponse = Record({
     /**
@@ -39,17 +41,20 @@ export const HttpResponse = Record({
      */
     body: blob
 });
+export type HttpResponse = typeof HttpResponse.tsType;
 
 export const HttpTransformArgs = Record({
     response: HttpResponse,
     context: blob
 });
+export type HttpTransformArgs = typeof HttpTransformArgs.tsType;
 
 export const HttpTransformFunc = Func(
     [HttpTransformArgs],
     HttpResponse,
     'query'
 );
+export type HttpTransformFunc = typeof HttpTransformFunc.tsType;
 
 export const HttpTransform = Record({
     /**
@@ -63,6 +68,7 @@ export const HttpTransform = Record({
      */
     context: blob
 });
+export type HttpTransform = typeof HttpTransform.tsType;
 
 export const HttpRequestArgs = Record({
     /**
@@ -100,3 +106,4 @@ export const HttpRequestArgs = Record({
      */
     transform: Opt(HttpTransform)
 });
+export type HttpRequestArgs = typeof HttpRequestArgs.tsType;

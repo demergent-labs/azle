@@ -15,7 +15,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await todoCanister.addTodo(
                     FIRST_TODO_DESCRIPTION
                 );
-                const expectedResult: (typeof ToDo)[] = [
+                const expectedResult: ToDo[] = [
                     {
                         description: FIRST_TODO_DESCRIPTION,
                         completed: false
@@ -34,7 +34,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await todoCanister.addTodo(
                     SECOND_TODO_DESCRIPTION
                 );
-                const expectedResult: (typeof ToDo)[] = [
+                const expectedResult: ToDo[] = [
                     {
                         description: FIRST_TODO_DESCRIPTION,
                         completed: false
@@ -65,7 +65,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'complete todo',
             test: async () => {
                 const result = await todoCanister.completeTodo(1n);
-                const expectedResult: (typeof ToDo)[] = [
+                const expectedResult: ToDo[] = [
                     {
                         description: FIRST_TODO_DESCRIPTION,
                         completed: false
@@ -98,7 +98,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'clear completed todos',
             test: async () => {
                 const result = await todoCanister.clearCompleted();
-                const expectedResult: (typeof ToDo)[] = [
+                const expectedResult: ToDo[] = [
                     {
                         description: FIRST_TODO_DESCRIPTION,
                         completed: false
@@ -117,7 +117,7 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'complete todo',
             test: async () => {
                 const result = await todoCanister.completeTodo(0n);
-                const expectedResult: (typeof ToDo)[] = [
+                const expectedResult: ToDo[] = [
                     {
                         description: FIRST_TODO_DESCRIPTION,
                         completed: true
@@ -146,17 +146,14 @@ export function getTests(todoCanister: ActorSubclass<_SERVICE>): Test[] {
     ];
 }
 
-function equalTodoList(
-    listA: (typeof ToDo)[],
-    listB: (typeof ToDo)[]
-): boolean {
+function equalTodoList(listA: ToDo[], listB: ToDo[]): boolean {
     return (
         listA.length === listB.length &&
         listA.every((item, index) => equalTodo(item, listB[index]))
     );
 }
 
-function equalTodo(todoA: typeof ToDo, todoB: typeof ToDo): boolean {
+function equalTodo(todoA: ToDo, todoB: ToDo): boolean {
     return (
         todoA.description === todoB.description &&
         todoA.completed === todoB.completed

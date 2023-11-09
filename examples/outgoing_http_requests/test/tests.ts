@@ -31,7 +31,7 @@ export function getTests(
     ];
 }
 
-function checkXkcdResult(result: typeof HttpResponse): boolean {
+function checkXkcdResult(result: HttpResponse): boolean {
     const resultJson = JSON.parse(decodeUtf8(Uint8Array.from(result.body)));
     const expectedJson = JSON.parse(
         `{"month": "9", "num": 642, "link": "", "year": "2009", "news": "", "safe_title": "Creepy", "alt": "And I even got out my adorable new netbook!", "img": "https://imgs.xkcd.com/comics/creepy.png", "title": "Creepy", "day": "28"}`

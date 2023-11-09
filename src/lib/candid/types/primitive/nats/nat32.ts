@@ -4,10 +4,7 @@ import { decode } from '../../../serde/decode';
 
 export class AzleNat32 {
     _azleKind: 'AzleNat32' = 'AzleNat32';
-    _azleCandidType?: '_azleCandidType';
-
     static _azleKind: 'AzleNat32' = 'AzleNat32';
-    static _azleCandidType?: '_azleCandidType';
 
     static toBytes(data: any) {
         return encode(this, data);

@@ -25,7 +25,7 @@ let state: State = {
 
 export default Canister({
     transfer: update([text, text, nat64], nat64, (from, to, amount) => {
-        const fromAccount: typeof Account | undefined = state.accounts[from];
+        const fromAccount: Account | undefined = state.accounts[from];
         if (fromAccount === undefined) {
             state.accounts[from] = {
                 id: from,

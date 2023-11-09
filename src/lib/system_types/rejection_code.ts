@@ -13,3 +13,4 @@ export const RejectionCode = Variant({
     CanisterError: Null,
     Unknown: Null
 });
+export type RejectionCode = typeof RejectionCode.tsType;

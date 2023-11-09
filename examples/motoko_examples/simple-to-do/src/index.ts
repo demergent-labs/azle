@@ -14,8 +14,9 @@ export const ToDo = Record({
     description: text,
     completed: bool
 });
+export type ToDo = typeof ToDo.tsType;
 
-let todos: Map<nat, typeof ToDo> = new Map();
+let todos: Map<nat, ToDo> = new Map();
 let nextId: nat = 0n;
 
 export default Canister({

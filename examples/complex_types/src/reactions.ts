@@ -41,7 +41,7 @@ export const getAllReactions = query([nat32], Vec(Reaction), (joinDepth) => {
 export function getReactionFromStateReaction(
     stateReaction: StateReaction,
     joinDepth: nat32
-): typeof Reaction {
+): Reaction {
     const stateAuthor = state.users[stateReaction.authorId];
     const author = getUserFromStateUser(stateAuthor, joinDepth);
 

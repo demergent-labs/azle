@@ -5,20 +5,17 @@ import { TypeMapping } from '../../type_mapping';
 import { Parent } from '../../to_idl';
 import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
-import { Serializable } from '../../../stable_structures/stable_b_tree_map';
 
 export function Record<
     T extends {
         [K in keyof T]: CandidType;
     }
->(
-    obj: T
-): {
-    [K in keyof T]: TypeMapping<T[K]>;
-} & CandidType &
-    Partial<Serializable> {
+>(obj: T) {
     return {
         ...obj,
+        tsType: {} as {
+            [K in keyof T]: TypeMapping<T[K]>;
+        },
         toBytes(data: any) {
             return encode(this, data);
         },
@@ -28,5 +25,5 @@ export function Record<
         getIdl(parents: Parent[]) {
             return IDL.Record(toIdlMap(obj as CandidMap, parents));
         }
-    } as any;
+    };
 }

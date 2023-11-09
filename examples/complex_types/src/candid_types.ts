@@ -5,6 +5,7 @@ export const ReactionType = Variant({
     ThumbsUp: Null,
     ThumbsDown: Null
 });
+export type ReactionType = typeof ReactionType.tsType;
 
 export const User = Recursive(() =>
     Record({
@@ -15,6 +16,7 @@ export const User = Recursive(() =>
         username: text
     })
 );
+export type User = typeof User.tsType;
 
 export const Post = Recursive(() =>
     Record({
@@ -25,6 +27,7 @@ export const Post = Recursive(() =>
         thread: Thread
     })
 );
+export type Post = typeof Post.tsType;
 
 export const Thread = Record({
     id: text,
@@ -32,6 +35,7 @@ export const Thread = Record({
     posts: Vec(Post),
     title: text
 });
+export type Thread = typeof Thread.tsType;
 
 export const Reaction = Record({
     id: text,
@@ -39,3 +43,4 @@ export const Reaction = Record({
     post: Post,
     reactionType: ReactionType
 });
+export type Reaction = typeof Reaction.tsType;
