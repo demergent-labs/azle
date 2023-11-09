@@ -23,7 +23,7 @@ const User = Record({
     recordingIds: Vec(Principal),
     username: text
 });
-type User = typeof User;
+type User = typeof User.tsType;
 
 const Recording = Record({
     id: Principal,
@@ -32,13 +32,13 @@ const Recording = Record({
     name: text,
     userId: Principal
 });
-type Recording = typeof Recording;
+type Recording = typeof Recording.tsType;
 
 const AudioRecorderError = Variant({
     RecordingDoesNotExist: Principal,
     UserDoesNotExist: Principal
 });
-type AudioRecorderError = typeof AudioRecorderError;
+type AudioRecorderError = typeof AudioRecorderError.tsType;
 
 let users = StableBTreeMap<Principal, User>(Principal, User, 0);
 let recordings = StableBTreeMap<Principal, Recording>(Principal, Recording, 1);
@@ -46,7 +46,7 @@ let recordings = StableBTreeMap<Principal, Recording>(Principal, Recording, 1);
 export default Canister({
     createUser: update([text], User, (username) => {
         const id = generateId();
-        const user: typeof User = {
+        const user: User = {
             id,
             createdAt: ic.time(),
             recordingIds: [],
@@ -97,7 +97,7 @@ export default Canister({
             const user = userOpt.Some;
 
             const id = generateId();
-            const recording: typeof Recording = {
+            const recording: Recording = {
                 id,
                 audio,
                 createdAt: ic.time(),
@@ -107,7 +107,7 @@ export default Canister({
 
             recordings.insert(recording.id, recording);
 
-            const updatedUser: typeof User = {
+            const updatedUser: User = {
                 ...user,
                 recordingIds: [...user.recordingIds, recording.id]
             };
@@ -145,7 +145,7 @@ export default Canister({
 
             const user = userOpt.Some;
 
-            const updatedUser: typeof User = {
+            const updatedUser: User = {
                 ...user,
                 recordingIds: user.recordingIds.filter(
                     (recordingId) =>

@@ -33,10 +33,8 @@ pub fn native_function<'a>(
             .get_mut(&(memory_id as u8))
             .unwrap()
             .insert(
-                AzleStableBTreeMapKey { candid_bytes: key },
-                AzleStableBTreeMapValue {
-                    candid_bytes: value,
-                },
+                AzleStableBTreeMapKey { bytes: key },
+                AzleStableBTreeMapValue { bytes: value },
             );
 
         result
@@ -45,7 +43,7 @@ pub fn native_function<'a>(
     // TODO could we somehow encode the entire option here more easily
     match value_option {
         Some(value) => {
-            let candid_bytes_js_value: JSValue = value.candid_bytes.into();
+            let candid_bytes_js_value: JSValue = value.bytes.into();
 
             to_qjs_value(&context, &candid_bytes_js_value)
         }

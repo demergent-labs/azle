@@ -32,7 +32,7 @@ export const getAllUsers = query([nat32], Vec(User), (joinDepth) => {
 export function getUserFromStateUser(
     stateUser: StateUser,
     joinDepth: nat32
-): typeof User {
+): User {
     if (joinDepth === 0) {
         return {
             id: stateUser.id,

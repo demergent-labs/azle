@@ -1,3 +1,4 @@
+import { IDL } from '@dfinity/candid';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
 
@@ -16,8 +17,8 @@ export class AzleVoid {
         return decode(this, bytes);
     }
 
-    static getIdl() {
-        return [];
+    static getIdl(): IDL.Type<any> {
+        return [] as unknown as IDL.Type<any>;
     }
 }
 

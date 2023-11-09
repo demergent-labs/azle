@@ -22,6 +22,7 @@ const StatusReport = Record({
     singleCrossCanister: blob,
     repeatCrossCanister: blob
 });
+type StatusReport = typeof StatusReport.tsType;
 
 const TimerIds = Record({
     single: TimerId,
@@ -31,8 +32,9 @@ const TimerIds = Record({
     singleCrossCanister: TimerId,
     repeatCrossCanister: TimerId
 });
+type TimerIds = typeof TimerIds.tsType;
 
-let statusReport: typeof StatusReport = {
+let statusReport: StatusReport = {
     single: false,
     inline: 0,
     capture: '',

@@ -20,8 +20,10 @@ import {
 import Notifier, { NotifierFunc } from '../notifiers';
 
 const BasicFunc = Func([text], text, 'query');
+type BasicFunc = typeof BasicFunc.tsType;
 
 const ComplexFunc = Recursive(() => Func([User, Reaction], nat64, 'update'));
+type ComplexFunc = typeof ComplexFunc.tsType;
 
 const User = Record({
     id: text,
@@ -37,7 +39,7 @@ const Reaction = Variant({
 });
 
 const StableFunc = Func([nat64, text], Void, 'query');
-type StableFunc = typeof StableFunc;
+type StableFunc = typeof StableFunc.tsType;
 
 const NullFunc = Func(
     [Opt(Null), Vec(Null), Null, Vec(Vec(Null)), Vec(Opt(Null))],

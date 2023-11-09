@@ -1,7 +1,7 @@
 import { None, Opt, Some } from '../candid/types/constructed/opt';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { nat8 } from '../candid/types/primitive/nats/nat8';
-import { encode, decode } from '../candid/serde';
+import { decode } from '../candid/serde';
 
 export interface Serializable {
     toBytes: (data: any) => Uint8Array;
@@ -9,16 +9,16 @@ export interface Serializable {
 }
 
 export function StableBTreeMap<Key = any, Value = any>(
-    keyType: Partial<Serializable>,
-    valueType: Partial<Serializable>,
+    keySerializable: Serializable,
+    valueSerializable: Serializable,
     memoryId: nat8
 ) {
     if (globalThis._azleIc !== undefined) {
         globalThis._azleIc.stableBTreeMapInit(memoryId);
     }
 
-    isSerializable(keyType);
-    isSerializable(valueType);
+    isSerializable(keySerializable);
+    isSerializable(valueSerializable);
 
     return {
         /**
@@ -31,7 +31,7 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            const encodedKey = keyType.toBytes(key).buffer;
+            const encodedKey = keySerializable.toBytes(key).buffer;
 
             return globalThis._azleIc.stableBTreeMapContainsKey(
                 memoryId,
@@ -48,7 +48,7 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            const encodedKey = keyType.toBytes(key).buffer;
+            const encodedKey = keySerializable.toBytes(key).buffer;
 
             const encodedResult = globalThis._azleIc.stableBTreeMapGet(
                 memoryId,
@@ -58,7 +58,9 @@ export function StableBTreeMap<Key = any, Value = any>(
             if (encodedResult === undefined) {
                 return None;
             } else {
-                return Some(valueType.fromBytes(new Uint8Array(encodedResult)));
+                return Some(
+                    valueSerializable.fromBytes(new Uint8Array(encodedResult))
+                );
             }
         },
         /**
@@ -72,8 +74,8 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            const encodedKey = keyType.toBytes(key).buffer;
-            const encodedValue = valueType.toBytes(value).buffer;
+            const encodedKey = keySerializable.toBytes(key).buffer;
+            const encodedValue = valueSerializable.toBytes(value).buffer;
 
             const encodedResult = globalThis._azleIc.stableBTreeMapInsert(
                 memoryId,
@@ -84,7 +86,9 @@ export function StableBTreeMap<Key = any, Value = any>(
             if (encodedResult === undefined) {
                 return None;
             } else {
-                return Some(valueType.fromBytes(new Uint8Array(encodedResult)));
+                return Some(
+                    valueSerializable.fromBytes(new Uint8Array(encodedResult))
+                );
             }
         },
         /**
@@ -113,8 +117,8 @@ export function StableBTreeMap<Key = any, Value = any>(
             // TODO too much copying
             return encodedItems.map(([encodedKey, encodedValue]) => {
                 return [
-                    keyType.fromBytes(new Uint8Array(encodedKey)),
-                    valueType.fromBytes(new Uint8Array(encodedValue))
+                    keySerializable.fromBytes(new Uint8Array(encodedKey)),
+                    valueSerializable.fromBytes(new Uint8Array(encodedValue))
                 ];
             });
         },
@@ -131,7 +135,7 @@ export function StableBTreeMap<Key = any, Value = any>(
 
             // TODO too much copying
             return encodedKeys.map((encodedKey) => {
-                return keyType.fromBytes(new Uint8Array(encodedKey));
+                return keySerializable.fromBytes(new Uint8Array(encodedKey));
             });
         },
         /**
@@ -159,7 +163,7 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            const encodedKey = keyType.toBytes(key).buffer;
+            const encodedKey = keySerializable.toBytes(key).buffer;
 
             const encodedValue = globalThis._azleIc.stableBTreeMapRemove(
                 memoryId,
@@ -169,7 +173,9 @@ export function StableBTreeMap<Key = any, Value = any>(
             if (encodedValue === undefined) {
                 return None;
             } else {
-                return Some(valueType.fromBytes(new Uint8Array(encodedValue)));
+                return Some(
+                    valueSerializable.fromBytes(new Uint8Array(encodedValue))
+                );
             }
         },
         /**
@@ -191,7 +197,9 @@ export function StableBTreeMap<Key = any, Value = any>(
 
             // TODO too much copying
             return encodedValues.map((encodedValue) => {
-                return valueType.fromBytes(new Uint8Array(encodedValue));
+                return valueSerializable.fromBytes(
+                    new Uint8Array(encodedValue)
+                );
             });
         }
     };

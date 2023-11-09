@@ -12,7 +12,7 @@ import {
 
 type Db = {
     users: {
-        [id: string]: typeof User;
+        [id: string]: User;
     };
 };
 
@@ -24,6 +24,7 @@ const User = Record({
     id: text,
     username: text
 });
+type User = typeof User.tsType;
 
 export default Canister({
     getUserById: query([text], Opt(User), (id) => {
@@ -35,7 +36,7 @@ export default Canister({
     }),
     createUser: update([text], User, (username) => {
         const id = Object.keys(db.users).length.toString();
-        const user: typeof User = {
+        const user: User = {
             id,
             username
         };

@@ -61,20 +61,20 @@ export const TestExampleVariant: RequireExactlyOne<{
     reserved: any;
     text: string;
     void: null;
-}> = ExampleVariant;
+}> = ExampleVariant.tsType;
 
-export const ExampleVariantInstance0: typeof ExampleVariant = {
+export const ExampleVariantInstance0: typeof ExampleVariant.tsType = {
     bool: null
 };
 
-export const ExampleVariantInstance1: typeof ExampleVariant = {
+export const ExampleVariantInstance1: typeof ExampleVariant.tsType = {
     float32: 0
 };
 
-export const ExampleVariantInstance2: typeof ExampleVariant = {
+export const ExampleVariantInstance2: typeof ExampleVariant.tsType = {
     float64: 0
 };
 
-export const ExampleVariantInstance3: typeof ExampleVariant = {
+export const ExampleVariantInstance3: typeof ExampleVariant.tsType = {
     int: null
 };

@@ -24,13 +24,13 @@ pub fn native_function<'a>(
     let value_option = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
         let stable_b_tree_maps = stable_b_tree_maps.borrow();
 
-        stable_b_tree_maps[&(memory_id as u8)].get(&AzleStableBTreeMapKey { candid_bytes: key })
+        stable_b_tree_maps[&(memory_id as u8)].get(&AzleStableBTreeMapKey { bytes: key })
     });
 
     // TODO could we somehow encode the entire option here more easily
     match value_option {
         Some(value) => {
-            let candid_bytes_js_value: JSValue = value.candid_bytes.into();
+            let candid_bytes_js_value: JSValue = value.bytes.into();
 
             to_qjs_value(&context, &candid_bytes_js_value)
         }

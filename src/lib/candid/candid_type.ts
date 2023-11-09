@@ -1,3 +1,6 @@
+import { IDL } from '@dfinity/candid';
+import { Parent } from './to_idl';
+
 export interface CandidType {
-    _azleCandidType?: '_azleCandidType';
+    getIdl(parents: Parent[]): IDL.Type<any>;
 }

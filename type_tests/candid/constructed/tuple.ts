@@ -65,9 +65,9 @@ export const TestExampleTuple: [
     any,
     string,
     void
-] = ExampleTuple;
+] = ExampleTuple.tsType;
 
-export const ExampleTupleInstance: typeof ExampleTuple = [
+export const ExampleTupleInstance: typeof ExampleTuple.tsType = [
     true,
     0,
     0,

@@ -65,9 +65,9 @@ export const TestExampleRecord: {
     reserved: any;
     text: string;
     void: void;
-} = ExampleRecord;
+} = ExampleRecord.tsType;
 
-export const ExampleRecordInstance: typeof ExampleRecord = {
+export const ExampleRecordInstance: typeof ExampleRecord.tsType = {
     bool: true,
     float32: 0,
     float64: 0,
