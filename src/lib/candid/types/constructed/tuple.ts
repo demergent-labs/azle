@@ -12,7 +12,7 @@ export class AzleTuple<T extends any[]> {
 
     tsType: {
         [P in keyof T]: TypeMapping<T[P]>;
-    };
+    } = {} as any;
 
     innerTypes: CandidType[];
 
