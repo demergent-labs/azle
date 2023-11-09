@@ -4,10 +4,7 @@ import { decode } from '../../../serde/decode';
 
 export class AzleInt64 {
     _azleKind: 'AzleInt64' = 'AzleInt64';
-    _azleCandidType?: '_azleCandidType';
-
     static _azleKind: 'AzleInt64' = 'AzleInt64';
-    static _azleCandidType?: '_azleCandidType';
 
     static toBytes(data: any) {
         return encode(this, data);

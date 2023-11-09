@@ -4,10 +4,7 @@ import { decode } from '../../../serde/decode';
 
 export class AzleFloat32 {
     _azleKind: 'AzleFloat32' = 'AzleFloat32';
-    _azleCandidType?: '_azleCandidType';
-
     static _azleKind: 'AzleFloat32' = 'AzleFloat32';
-    static _azleCandidType?: '_azleCandidType';
 
     static toBytes(data: any) {
         return encode(this, data);
