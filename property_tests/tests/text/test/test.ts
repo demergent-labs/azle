@@ -2,19 +2,19 @@ import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
-import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { TextArb } from '../../../arbitraries/candid/primitive/text';
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { QueryMethodArb } from '../../../arbitraries/query_method_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { Test } from '../../../../test';
 
-const AllVariantsQueryMethod = QueryMethodArb(fc.array(TextArb), TextArb, {
+const AllTextQueryMethod = QueryMethodArb(fc.array(TextArb), TextArb, {
     generateBody,
     generateTests
 });
 
-runPropTests(CanisterArb(AllVariantsQueryMethod));
+runPropTests(CanisterArb(AllTextQueryMethod));
 
 function generateBody(
     paramNames: string[],

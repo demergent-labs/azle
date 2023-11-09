@@ -1,56 +1,20 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
-import { CanisterArb } from '../../../arbitraries/canister_arb';
-import { BlobArb } from '../../../arbitraries/candid/constructed/blob_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { getActor, runPropTests } from '../../../../property_tests';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { Test } from '../../../../test';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
+import { BlobArb } from '../../../arbitraries/candid/constructed/blob_arb';
+import { CanisterArb } from '../../../arbitraries/canister_arb';
+import { QueryMethodArb } from '../../../arbitraries/query_method_arb';
+import { getActor, runPropTests } from '../../../../property_tests';
+import { Test } from '../../../../test';
 
-const BlobTestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(BlobArb),
-        BlobArb
-    )
-    .map(
-        ([
-            functionName,
-            paramBlobs,
-            defaultReturnBlob
-        ]): QueryMethodBlueprint => {
-            const imports = defaultReturnBlob.src.imports;
-            const paramNames = paramBlobs.map((_, index) => `param${index}`);
-            const paramCandidTypes = paramBlobs
-                .map((blob) => blob.src.candidType)
-                .join(', ');
-            const returnCandidType = defaultReturnBlob.src.candidType;
-            const body = generateBody(
-                paramNames,
-                paramBlobs,
-                defaultReturnBlob
-            );
-            const tests = [
-                generateTest(functionName, paramBlobs, defaultReturnBlob)
-            ];
+const AllBlobsQueryMethod = QueryMethodArb(fc.array(BlobArb), BlobArb, {
+    generateBody,
+    generateTests
+});
 
-            return {
-                imports,
-                functionName,
-                paramNames,
-                paramCandidTypes,
-                returnCandidType,
-                body,
-                tests
-            };
-        }
-    );
-
-runPropTests(CanisterArb(BlobTestArb));
+runPropTests(CanisterArb(AllBlobsQueryMethod));
 
 function generateBody(
     paramNames: string[],
@@ -82,29 +46,31 @@ function generateBody(
     `;
 }
 
-function generateTest(
+function generateTests(
     functionName: string,
     paramBlobs: CandidMeta<Uint8Array>[],
     returnBlob: CandidMeta<Uint8Array>
-): Test {
+): Test[] {
     const expectedResult = Uint8Array.from(
         paramBlobs
             .map((blob) => blob.value)
             .reduce((acc, blob) => [...acc, ...blob], [...returnBlob.value])
     );
 
-    return {
-        name: `blob ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/blob/test');
+    return [
+        {
+            name: `blob ${functionName}`,
+            test: async () => {
+                const actor = getActor('./tests/blob/test');
 
-            const result = await actor[functionName](
-                ...paramBlobs.map((blob) => blob.value)
-            );
+                const result = await actor[functionName](
+                    ...paramBlobs.map((blob) => blob.value)
+                );
 
-            return {
-                Ok: deepEqual(result, expectedResult)
-            };
+                return {
+                    Ok: deepEqual(result, expectedResult)
+                };
+            }
         }
-    };
+    ];
 }

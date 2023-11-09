@@ -1,19 +1,15 @@
-import { execSync } from 'child_process';
 import fc from 'fast-check';
-import { writeFileSync } from 'fs';
-import { Test, getCanisterId, runTests } from '../../../../test';
+import { Test } from '../../../../test';
 
-import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { getActor, runPropTests } from '../../../';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import {
     CandidType,
     CandidTypeArb
 } from '../../../arbitraries/candid/candid_type_arb';
 import { VoidArb } from '../../../arbitraries/candid/primitive/void';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
+import { CanisterArb } from '../../../arbitraries/canister_arb';
+import { QueryMethodArb } from '../../../arbitraries/query_method_arb';
 
 // TODO Canister
 // TODO Record
@@ -21,57 +17,42 @@ import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 // TODO nat
 // TODO update methods
 
-const QueryMethodTestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(CandidTypeArb, { minLength: 1 }), // TODO: I set to 1 for ease. Support 0.
-        fc.oneof(CandidTypeArb, VoidArb) // TODO: Consider adjusting the weights so Void is used same as all others
-    )
-    .map(
-        ([
-            functionName,
-            paramTypes,
-            defaultReturnType
-        ]): QueryMethodBlueprint => {
-            const imports = new Set([
-                'Principal',
-                ...paramTypes.flatMap((type) => [...type.src.imports]),
-                ...defaultReturnType.src.imports
-            ]);
-            const paramNames = paramTypes.map((_, index) => `param${index}`);
-            const paramCandidTypes = paramTypes
-                .map((text) => text.src.candidType)
-                .join(', ');
+const HeterogeneousQueryMethod = QueryMethodArb(
+    fc.array(CandidTypeArb, { minLength: 1 }), // TODO: I set to 1 for ease. Support 0.
+    fc.oneof(CandidTypeArb, VoidArb), // TODO: Consider adjusting the weights so Void is used same as all others
+    {
+        generateBody,
+        generateTests
+    }
+);
 
-            const returnCandidType = defaultReturnType.src.candidType;
+runPropTests(CanisterArb(HeterogeneousQueryMethod));
 
-            const body = 'return param0;';
+function generateBody(
+    paramNames: string[],
+    params: CandidMeta<CandidType>[],
+    returnType: CandidMeta<CandidType>
+): string {
+    return '';
+}
 
-            const tests: Test[] = [
-                {
-                    name: `query method test ${functionName}`,
-                    test: async () => {
-                        const actor = getActor('./tests/query_methods/test');
+function generateTests(
+    functionName: string,
+    params: CandidMeta<CandidType>[],
+    returnType: CandidMeta<CandidType>
+): Test[] {
+    return [
+        {
+            name: `query method ${functionName}`,
+            test: async () => {
+                const actor = getActor('./tests/query_methods/test');
 
-                        const result = await actor[functionName]();
+                await actor[functionName](
+                    ...params.map((param) => param.value)
+                );
 
-                        return {
-                            Ok: result === queryMethod.expectedResult
-                        };
-                    }
-                }
-            ];
-
-            return {
-                imports,
-                functionName,
-                paramNames,
-                paramCandidTypes,
-                returnCandidType,
-                body,
-                tests
-            };
+                throw new Error('TODO: Test not implemented');
+            }
         }
-    );
-
-runPropTests(CanisterArb(QueryMethodTestArb));
+    ];
+}

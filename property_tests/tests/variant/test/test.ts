@@ -2,12 +2,12 @@ import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
-import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import {
     Variant,
     VariantArb
 } from '../../../arbitraries/candid/constructed/variant_arb';
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { QueryMethodArb } from '../../../arbitraries/query_method_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { Test } from '../../../../test';
