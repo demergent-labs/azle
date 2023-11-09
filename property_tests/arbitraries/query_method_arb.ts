@@ -50,15 +50,13 @@ export function QueryMethodArb<
                 defaultReturnType.src.typeDeclaration ?? ''
             ];
 
-            const paramNames = paramTypes.map((_, index) => `param${index}`);
+            const paramNames = paramTypes.map((_, index) => `_param${index}`);
 
             const paramCandidTypes = paramTypes
                 .map((param) => param.src.candidType)
                 .join(', ');
 
-            const returnCandidType =
-                paramTypes[0]?.src?.candidType ??
-                defaultReturnType.src.candidType;
+            const returnCandidType = defaultReturnType.src.candidType;
 
             const body = constraints.generateBody(
                 paramNames,
