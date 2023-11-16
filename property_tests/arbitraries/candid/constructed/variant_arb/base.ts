@@ -1,29 +1,10 @@
 import fc from 'fast-check';
-import { CandidMeta } from '../candid_arb';
-import { CandidType } from '../candid_type_arb';
-import { UniqueIdentifierArb } from '../../unique_identifier_arb';
-import { JsFunctionNameArb } from '../../js_function_name_arb';
-import { BoolArb } from '../primitive/bool';
-import { Float32Arb } from '../primitive/floats/float32_arb';
-import { Float64Arb } from '../primitive/floats/float64_arb';
-import { Int16Arb } from '../primitive/ints/int16_arb';
-import { Int32Arb } from '../primitive/ints/int32_arb';
-import { Int64Arb } from '../primitive/ints/int64_arb';
-import { Int8Arb } from '../primitive/ints/int8_arb';
-import { IntArb } from '../primitive/ints/int_arb';
-import { Nat16Arb } from '../primitive/nats/nat16_arb';
-import { Nat32Arb } from '../primitive/nats/nat32_arb';
-import { Nat64Arb } from '../primitive/nats/nat64_arb';
-import { Nat8Arb } from '../primitive/nats/nat8_arb';
-import { NatArb } from '../primitive/nats/nat_arb';
-import { NullArb } from '../primitive/null';
-import { TextArb } from '../primitive/text';
-import { PrincipalArb } from '../reference/principal_arb';
-import { BlobArb } from './blob_arb';
+import { CandidMeta } from '../../candid_arb';
+import { CandidType } from '../../candid_type_arb';
+import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
+import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { Variant } from '.';
 
-export type Variant = {
-    [x: string]: CandidType;
-};
 type Field = [string, CandidMeta<CandidType>];
 
 function VariantFieldsArb(
@@ -37,35 +18,6 @@ function VariantFieldsArb(
         // an empty object.
     });
 }
-
-export const CandidTypeArb: fc.Arbitrary<CandidMeta<CandidType>> = fc.letrec(
-    (tie) => ({
-        CandidType: fc.oneof(
-            Float32Arb,
-            Float64Arb,
-            IntArb,
-            Int8Arb,
-            Int16Arb,
-            Int32Arb,
-            Int64Arb,
-            NatArb,
-            Nat8Arb,
-            Nat16Arb,
-            Nat32Arb,
-            Nat64Arb,
-            BoolArb,
-            NullArb,
-            TextArb,
-            PrincipalArb,
-            BlobArb,
-            tie('Variant').map((sample) => sample as CandidMeta<Variant>)
-            // tie('RecordThing').map((sample) => sample as CandidMeta<Record>)
-        ),
-        Variant: BaseVariantArb(
-            tie('CandidType') as fc.Arbitrary<CandidMeta<CandidType>>
-        )
-    })
-).CandidType;
 
 export function BaseVariantArb(
     candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>
@@ -99,8 +51,6 @@ export function BaseVariantArb(
             };
         });
 }
-
-export const VariantArb = BaseVariantArb(CandidTypeArb);
 
 function generateImports(fields: Field[]): Set<string> {
     const fieldImports = fields.flatMap((field) => [...field[1].src.imports]);
