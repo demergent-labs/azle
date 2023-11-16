@@ -20,7 +20,7 @@ const SmallRecord = Record({
 });
 type SmallRecord = typeof SmallRecord.tsType;
 
-let smallRecordMap = StableBTreeMap<text, SmallRecord>(
+let smallRecordMap = StableBTreeMap<string, SmallRecord>(
     stableJson,
     stableJson,
     0
@@ -34,7 +34,7 @@ const MediumRecord = Record({
 });
 type MediumRecord = typeof MediumRecord.tsType;
 
-let mediumRecordMap = StableBTreeMap<text, MediumRecord>(
+let mediumRecordMap = StableBTreeMap<string, MediumRecord>(
     stableJson,
     stableJson,
     1
@@ -51,7 +51,7 @@ const LargeRecord = Record({
 });
 type LargeRecord = typeof LargeRecord.tsType;
 
-let largeRecordMap = StableBTreeMap<text, LargeRecord>(
+let largeRecordMap = StableBTreeMap<string, LargeRecord>(
     stableJson,
     stableJson,
     2
@@ -68,7 +68,7 @@ export default Canister({
         }
     }),
     valuesSmallRecord: query([nat32], Vec(SmallRecord), (numToReturn) => {
-        return smallRecordMap.values(0, Math.floor(numToReturn));
+        return smallRecordMap.values(0, numToReturn);
     }),
     insertMediumRecord: update([nat32], Void, (numToInsert) => {
         for (let i = 0; i < numToInsert; i++) {

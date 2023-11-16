@@ -9,11 +9,12 @@ pub fn native_function<'a>(
     _this: &CallbackArg,
     args: &[CallbackArg],
 ) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let memory_id: usize = args
+    let memory_id_string: String = args
         .get(0)
         .expect("stable_b_tree_map_insert argument 0 is undefined")
         .to_js_value()?
         .try_into()?;
+    let memory_id: u8 = memory_id_string.parse()?;
 
     let key: Vec<u8> = args
         .get(1)
@@ -29,13 +30,10 @@ pub fn native_function<'a>(
     let value_option = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
         let mut stable_b_tree_maps = stable_b_tree_maps.borrow_mut();
 
-        let result = stable_b_tree_maps
-            .get_mut(&(memory_id as u8))
-            .unwrap()
-            .insert(
-                AzleStableBTreeMapKey { bytes: key },
-                AzleStableBTreeMapValue { bytes: value },
-            );
+        let result = stable_b_tree_maps.get_mut(&memory_id).unwrap().insert(
+            AzleStableBTreeMapKey { bytes: key },
+            AzleStableBTreeMapValue { bytes: value },
+        );
 
         result
     });
