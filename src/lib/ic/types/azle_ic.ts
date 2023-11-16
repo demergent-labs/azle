@@ -84,31 +84,31 @@ export type AzleIc = {
     notify: () => never;
     reply: () => never;
     // Stable B Tree Map Functions
-    stableBTreeMapInit: (memoryId: number) => void;
+    stableBTreeMapInit: (memoryId: string) => void;
     stableBTreeMapContainsKey: (
-        memoryId: number,
+        memoryId: string,
         encodedKey: ArrayBufferLike
     ) => boolean;
     stableBTreeMapGet: (
-        memoryId: number,
+        memoryId: string,
         encodedKey: ArrayBufferLike
     ) => ArrayBuffer | undefined;
     stableBTreeMapInsert: (
-        memoryId: number,
+        memoryId: string,
         encodedKey: ArrayBufferLike,
         encodedValue: ArrayBufferLike
     ) => ArrayBuffer | undefined;
-    stableBTreeMapIsEmpty: (memoryId: number) => boolean;
-    stableBTreeMapItems: (memoryId: number) => [ArrayBuffer, ArrayBuffer][];
-    stableBTreeMapKeys: (memoryId: number) => ArrayBuffer[];
-    stableBTreeMapLen: (memoryId: number) => ArrayBuffer;
+    stableBTreeMapIsEmpty: (memoryId: string) => boolean;
+    stableBTreeMapItems: (memoryId: string) => [ArrayBuffer, ArrayBuffer][];
+    stableBTreeMapKeys: (memoryId: string) => ArrayBuffer[];
+    stableBTreeMapLen: (memoryId: string) => ArrayBuffer;
     stableBTreeMapRemove(
-        memoryId: number,
+        memoryId: string,
         encodedKey: ArrayBufferLike
     ): ArrayBuffer;
     stableBTreeMapValues: (
-        memoryId: number,
-        startIndex: number,
-        length: number
+        memoryId: string,
+        startIndex: string,
+        length: string
     ) => ArrayBuffer[];
 };
