@@ -11,12 +11,10 @@ import { encode } from '../candid/serde/encode';
  * @param offset the location at which to write
  * @param buffer the data to write
  */
-export function stableWrite(offset: nat32, buffer: blob): void {
+export function stableWrite(offset: nat32, buf: blob): void {
     if (globalThis._azleIc === undefined) {
         return undefined as any;
     }
 
-    const paramsCandidBytes = encode([nat32, blob], [offset, buffer]).buffer;
-
-    return globalThis._azleIc.stableWrite(paramsCandidBytes);
+    return globalThis._azleIc.stableWrite(offset.toString(), buf.buffer);
 }

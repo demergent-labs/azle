@@ -15,5 +15,7 @@ export function stable64Read(offset: nat64, length: nat64): Uint8Array {
 
     const paramsCandidBytes = encode([nat64, nat64], [offset, length]).buffer;
 
-    return new Uint8Array(globalThis._azleIc.stable64Read(paramsCandidBytes));
+    return new Uint8Array(
+        globalThis._azleIc.stable64Read(offset.toString(), length.toString())
+    );
 }

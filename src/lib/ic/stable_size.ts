@@ -10,5 +10,5 @@ export function stableSize(): nat32 {
         return undefined as any;
     }
 
-    return decode(nat32, globalThis._azleIc.stableSize()) as number;
+    return Number(globalThis._azleIc.stableSize());
 }

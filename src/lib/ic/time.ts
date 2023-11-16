@@ -10,6 +10,5 @@ export function time(): nat64 {
         return undefined as any;
     }
 
-    const timeCandidBytes = globalThis._azleIc.time();
-    return decode(nat64, timeCandidBytes);
+    return BigInt(globalThis._azleIc.time());
 }

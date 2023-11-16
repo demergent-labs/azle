@@ -11,5 +11,5 @@ export function stable64Size(): nat64 {
         return undefined as any;
     }
 
-    return decode(nat64, globalThis._azleIc.stable64Size());
+    return BigInt(globalThis._azleIc.stable64Size());
 }
