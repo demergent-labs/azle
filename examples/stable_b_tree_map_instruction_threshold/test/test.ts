@@ -1,5 +1,5 @@
 import { getCanisterId, runTests } from 'azle/test';
-import { createActor } from './dfx_generated/stable_json';
+import { createActor } from './dfx_generated/stable_b_tree_map_instruction_threshold';
 import { getTests } from './tests';
 
 const stableBTreeMapInstructionThresholdCanister = createActor(
