@@ -1,5 +1,3 @@
-// TODO maybe change this test to be called stable_b_tree_map_performance
-
 import {
     blob,
     Canister,
@@ -58,9 +56,6 @@ let largeRecordMap = StableBTreeMap<text, LargeRecord>(
     stableJson,
     2
 );
-
-// TODO should we create special StableNumber and StableBigInt and StableString?
-// TODO we should measure the performance to see what we can do
 
 export default Canister({
     insertSmallRecord: update([nat32], Void, (numToInsert) => {
