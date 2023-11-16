@@ -7,9 +7,9 @@ export function StableJson(options?: {
 }): Serializable {
     return {
         toBytes(data: any) {
-            return Uint8Array.from(
-                Buffer.from(JSON.stringify(data, options?.replacer ?? replacer))
-            );
+            const result = JSON.stringify(data, options?.replacer ?? replacer);
+
+            return Uint8Array.from(Buffer.from(result));
         },
         fromBytes(bytes: Uint8Array) {
             return JSON.parse(
@@ -20,10 +20,18 @@ export function StableJson(options?: {
     };
 }
 
+export const stableJson = StableJson();
+
 export function replacer(_key: string, value: any): any {
     if (typeof value === 'bigint') {
         return {
             __bigint__: value.toString()
+        };
+    }
+
+    if (typeof value === 'object' && value._isPrincipal === true) {
+        return {
+            __principal__: value.toString()
         };
     }
 

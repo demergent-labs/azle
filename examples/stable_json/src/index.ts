@@ -1,4 +1,4 @@
-// TODO use string for nat64/bigint conversions to and from the Rust environment
+// TODO maybe change this test to be called stable_b_tree_map_performance
 
 import {
     blob,
@@ -8,46 +8,109 @@ import {
     Principal,
     query,
     Record,
-    Serializable,
-    StableJson,
     StableBTreeMap,
+    stableJson,
     text,
     update,
     Vec,
-    Void,
-    Func,
-    Opt
+    Void
 } from 'azle';
-import { v1 } from 'uuid';
+import { v4 } from 'uuid';
 
-const User = Record({
-    id: Principal,
+const SmallRecord = Record({
+    id: Principal
+});
+type SmallRecord = typeof SmallRecord.tsType;
+
+let smallRecordMap = StableBTreeMap<text, SmallRecord>(
+    stableJson,
+    stableJson,
+    0
+);
+
+const MediumRecord = Record({
+    id: text,
     username: text,
     age: nat,
-    signature: blob
+    internetIdentity: Principal
 });
-type User = typeof User.tsType;
+type MediumRecord = typeof MediumRecord.tsType;
 
-// TODO figure out good minimum for:
-// TODO number keys and json objects with 1, 5, 10, 15, 20 records
-// TODO use a combination of different types
+let mediumRecordMap = StableBTreeMap<text, MediumRecord>(
+    stableJson,
+    stableJson,
+    1
+);
+
+const LargeRecord = Record({
+    id: text,
+    username: text,
+    age: nat,
+    internetIdentity: Principal,
+    signature: blob,
+    friends: Vec(text),
+    mediumRecord: MediumRecord
+});
+type LargeRecord = typeof LargeRecord.tsType;
+
+let largeRecordMap = StableBTreeMap<text, LargeRecord>(
+    stableJson,
+    stableJson,
+    2
+);
+
 // TODO should we create special StableNumber and StableBigInt and StableString?
 // TODO we should measure the performance to see what we can do
 
-let map = StableBTreeMap<text, User>(text, StableJson(), 0);
-
 export default Canister({
-    insert: update([], Void, () => {
-        for (let i = 0; i < 1_000; i++) {
-            map.insert(v1(), {
-                id: Principal.fromText('aaaaa-aa'),
-                username: i.toString(),
-                age: BigInt(i),
-                signature: Uint8Array.from([0, 1, 2, 3, 4, 5])
+    insertSmallRecord: update([nat32], Void, (numToInsert) => {
+        for (let i = 0; i < numToInsert; i++) {
+            const id = v4();
+
+            smallRecordMap.insert(id, {
+                id: Principal.fromText('aaaaa-aa')
             });
         }
     }),
-    values: query([], Vec(User), () => {
-        return map.values(0, 5);
+    valuesSmallRecord: query([nat32], Vec(SmallRecord), (numToReturn) => {
+        return smallRecordMap.values(0, Math.floor(numToReturn));
+    }),
+    insertMediumRecord: update([nat32], Void, (numToInsert) => {
+        for (let i = 0; i < numToInsert; i++) {
+            const id = v4();
+
+            mediumRecordMap.insert(id, {
+                id,
+                username: `lastmjs${i}`,
+                age: BigInt(i),
+                internetIdentity: Principal.fromText('aaaaa-aa')
+            });
+        }
+    }),
+    valuesMediumRecord: query([nat32], Vec(MediumRecord), (numToReturn) => {
+        return mediumRecordMap.values(0, numToReturn);
+    }),
+    insertLargeRecord: update([nat32], Void, (numToInsert) => {
+        for (let i = 0; i < numToInsert; i++) {
+            const id = v4();
+
+            largeRecordMap.insert(id, {
+                id,
+                username: `lastmjs${i}`,
+                age: BigInt(i),
+                internetIdentity: Principal.fromText('aaaaa-aa'),
+                signature: Uint8Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+                friends: [v4(), v4(), v4(), v4()],
+                mediumRecord: {
+                    id,
+                    username: `lastmjs${i}`,
+                    age: BigInt(i),
+                    internetIdentity: Principal.fromText('aaaaa-aa')
+                }
+            });
+        }
+    }),
+    valuesLargeRecord: query([nat32], Vec(LargeRecord), (numToReturn) => {
+        return largeRecordMap.values(0, numToReturn);
     })
 });

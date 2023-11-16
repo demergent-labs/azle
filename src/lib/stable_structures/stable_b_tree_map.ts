@@ -191,8 +191,8 @@ export function StableBTreeMap<Key = any, Value = any>(
 
             const encodedValues = globalThis._azleIc.stableBTreeMapValues(
                 memoryId,
-                startIndex,
-                length
+                Math.floor(startIndex),
+                Math.floor(length)
             );
 
             // TODO too much copying
