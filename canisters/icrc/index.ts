@@ -24,6 +24,7 @@ export const SupportedStandard = Record({
     name: text,
     url: text
 });
+export type SupportedStandard = typeof SupportedStandard.tsType;
 
 export const ICRC = Canister({
     icrc1_metadata: query([], Vec(Tuple(text, Value))),
