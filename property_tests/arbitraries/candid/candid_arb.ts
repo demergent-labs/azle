@@ -5,12 +5,14 @@ import { CandidType } from './candid_type_arb';
 export type CandidMeta<T extends CandidType, E = T> = {
     value: T;
     expectedValue: E;
-    src: {
-        candidType: string;
-        typeDeclaration?: string;
-        imports: Set<string>;
-        valueLiteral: string;
-    };
+    src: Src;
+};
+
+export type Src = {
+    candidType: string;
+    typeDeclaration?: string;
+    imports: Set<string>;
+    valueLiteral: string;
 };
 
 export const CandidMetaArb = <T extends CandidType>(

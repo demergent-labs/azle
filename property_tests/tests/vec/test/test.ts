@@ -22,6 +22,11 @@ const VecTestArb = fc
             ...defaultReturnVec.src.imports
         ]);
 
+        const candidTypeDeclarations = [
+            ...paramVecs.map((vec) => vec.src.typeDeclaration ?? ''),
+            defaultReturnVec.src.typeDeclaration ?? ''
+        ];
+
         const paramNames = paramVecs.map((_, index) => `param${index}`);
         const paramCandidTypes = paramVecs.map((vec) => vec.src.candidType);
 
@@ -35,6 +40,7 @@ const VecTestArb = fc
         return {
             functionName,
             imports,
+            candidTypeDeclarations,
             paramCandidTypes: paramCandidTypes.join(', '),
             returnCandidType,
             paramNames,
@@ -77,7 +83,8 @@ function generateTest(
     paramVecs: CandidMeta<any>[],
     returnVec: CandidMeta<any>
 ): Test {
-    const expectedResult = paramVecs[0]?.value ?? returnVec.value;
+    const expectedResult =
+        paramVecs[0]?.expectedValue ?? returnVec.expectedValue;
 
     return {
         name: `vec ${functionName}`,

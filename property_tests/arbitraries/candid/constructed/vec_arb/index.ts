@@ -17,9 +17,10 @@ import { NullArb } from '../../primitive/null';
 import { TextArb } from '../../primitive/text';
 import { BlobArb } from '../blob_arb';
 import { VecInnerArb } from './base';
+import { CandidType } from '../../candid_type_arb';
 
-export type Vec<T> =
-    | T[]
+export type Vec =
+    | CandidType[]
     | Uint16Array
     | Uint32Array
     | Uint8Array
@@ -29,6 +30,10 @@ export type Vec<T> =
     | BigUint64Array
     | BigInt64Array;
 
+// TODO we have a big problem here. If we try to make a vec of CandidTypeArb you
+// get a vec of multiple different types of candidTypeArbs, doing it this way
+// makes it so you for sure have a homogeneous vec... but it doesn't benefit
+// from code reuse
 export const VecArb = fc.oneof(
     VecInnerArb(Float32Arb),
     VecInnerArb(Float64Arb),
@@ -45,6 +50,6 @@ export const VecArb = fc.oneof(
     VecInnerArb(BoolArb),
     VecInnerArb(TextArb),
     VecInnerArb(PrincipalArb),
-    VecInnerArb(BlobArb)
-    // VecInnerArb(NullArb)
+    VecInnerArb(BlobArb),
+    VecInnerArb(NullArb)
 );

@@ -52,7 +52,7 @@ function generateTypeDeclaration(
                 : innerType.src.typeDeclaration
         }\nconst ${name} = ${generateCandidType(innerType)}`;
     }
-    return innerType.src.typeDeclaration; // TODO don't do it if it's undefined?
+    return innerType.src.typeDeclaration;
 }
 
 function generateCandidType(innerType: CandidMeta<CandidType>): string {

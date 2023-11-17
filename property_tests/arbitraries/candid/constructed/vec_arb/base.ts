@@ -1,36 +1,150 @@
-import fc from 'fast-check';
-import { CandidMeta } from '../../candid_arb';
+import fc, { sample } from 'fast-check';
+import { CandidMeta, Src } from '../../candid_arb';
 import { CandidType } from '../../candid_type_arb';
 import { Vec } from './index';
+import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 
-export const VecInnerArb = <T extends CandidType>(
+export function VecInnerArb<T extends CandidType>(
     arb: fc.Arbitrary<CandidMeta<T>>
-) => {
+): fc.Arbitrary<CandidMeta<Vec>> {
     return fc
-        .tuple(fc.array(arb), arb)
-        .map(([sample, src]): CandidMeta<Vec<T>> => {
-            const valueLiteral = generateValueLiteral(
-                sample,
-                src.src.candidType
-            );
+        .tuple(
+            UniqueIdentifierArb('typeDeclaration'),
+            fc.array(arb),
+            arb,
+            fc.boolean()
+        )
+        .map(
+            ([
+                name,
+                vecOfInnerType,
+                { src: innerTypeSrc },
+                useTypeDeclaration
+            ]): CandidMeta<Vec> => {
+                const valueLiteral = generateValueLiteral(
+                    vecOfInnerType,
+                    innerTypeSrc.candidType
+                );
+                const candidType = useTypeDeclaration
+                    ? name
+                    : generateCandidType(innerTypeSrc);
 
-            return {
-                value: generateValue(sample, src.src.candidType),
-                expectedValue: generateValue(sample, src.src.candidType),
-                src: {
-                    candidType: `Vec(${src.src.candidType})`,
-                    imports: new Set([...src.src.imports, 'Vec']),
-                    valueLiteral
-                }
-            };
-        });
-};
+                const imports = generateImports(innerTypeSrc);
+
+                const typeDeclaration = generateTypeDeclaration(
+                    name,
+                    innerTypeSrc,
+                    useTypeDeclaration
+                );
+
+                const value = generateValue(
+                    vecOfInnerType,
+                    innerTypeSrc.candidType
+                );
+
+                const expectedValue = generateValue(
+                    vecOfInnerType,
+                    innerTypeSrc.candidType
+                );
+
+                return {
+                    value,
+                    expectedValue,
+                    src: {
+                        candidType,
+                        imports,
+                        typeDeclaration,
+                        valueLiteral
+                    }
+                };
+            }
+        );
+}
+
+// Exploration for making VecArb use CandidTypeArb
+// export function VecArb(
+//     candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>
+// ): fc.Arbitrary<CandidMeta<Vec>> {
+//     candidTypeArb.chain((innerType) => {
+//         return fc.array(fc.constant(innerType));
+//     });
+//     return fc
+//         .tuple(
+//             UniqueIdentifierArb('typeDeclaration'),
+//             fc.array(candidTypeArb),
+//             fc.boolean()
+//         )
+//         .map(([name, innerType, useTypeDeclaration]) => {
+//             const candidType = useTypeDeclaration
+//                 ? name
+//                 : generateCandidType(innerType);
+
+//             const imports = generateImports(innerType);
+
+//             const typeDeclaration = generateTypeDeclaration(
+//                 name,
+//                 innerType,
+//                 useTypeDeclaration
+//             );
+
+//             const valueLiteral = generateValueLiteral(innerType);
+
+//             return {
+//                 src: {
+//                     candidType,
+//                     imports,
+//                     typeDeclaration,
+//                     valueLiteral
+//                 },
+//                 value,
+//                 expectedValue
+//             };
+//         });
+// }
+
+function generateTypeDeclaration(
+    name: string,
+    innerTypeSrc: Src,
+    useTypeDeclaration: boolean
+) {
+    if (useTypeDeclaration) {
+        return `${
+            innerTypeSrc.typeDeclaration === undefined
+                ? ''
+                : innerTypeSrc.typeDeclaration
+        }\nconst ${name} = ${generateCandidType(innerTypeSrc)}`;
+    }
+    return innerTypeSrc.typeDeclaration;
+}
+
+function generateImports(innerTypeSrc: Src): Set<string> {
+    // Hack until https://github.com/demergent-labs/azle/issues/1453 gets fixed
+    if (innerTypeSrc.candidType === 'Null') {
+        return new Set([...innerTypeSrc.imports, 'Vec', 'bool']);
+    }
+    return new Set([...innerTypeSrc.imports, 'Vec']);
+}
+
+function generateCandidType(innerTypeSrc: Src): string {
+    // Hack until https://github.com/demergent-labs/azle/issues/1453 gets fixed
+    if (innerTypeSrc.candidType === 'Null') {
+        return `Vec(bool)`;
+    }
+    return `Vec(${innerTypeSrc.candidType})`;
+}
 
 function generateValue<T extends CandidType>(
     array: CandidMeta<T>[],
-    candidType: string
-): Vec<T> {
-    const value = array.map((sample) => sample.value);
+    candidType: string,
+    returned: boolean = false
+): Vec {
+    // Hack until https://github.com/demergent-labs/azle/issues/1453 gets fixed
+    if (candidType === 'Null') {
+        return Array(array.length).fill(false);
+    }
+    const value = array.map((sample) =>
+        returned ? sample.expectedValue : sample.value
+    );
 
     if (candidType === 'int8') {
         return new Int8Array(value as number[]);
@@ -64,6 +178,10 @@ function generateValueLiteral<T extends CandidType>(
     sample: CandidMeta<T>[],
     candidType: string
 ) {
+    // Hack until https://github.com/demergent-labs/azle/issues/1453 gets fixed
+    if (candidType === 'Null') {
+        return `[${Array(sample.length).fill(false)}]`;
+    }
     const valueLiterals = sample
         .map((sample) => sample.src.valueLiteral)
         .join(',');
