@@ -14,12 +14,19 @@ export function RecordArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
             UniqueIdentifierArb('typeDeclaration'),
             fc.uniqueArray(fc.tuple(JsFunctionNameArb, candidTypeArb), {
                 selector: (entry) => entry[0]
-            })
+            }),
+            fc.boolean()
         )
-        .map(([name, fields]): CandidMeta<Record> => {
-            const candidType = generateCandidType(fields);
+        .map(([name, fields, useTypeDeclaration]): CandidMeta<Record> => {
+            const candidType = useTypeDeclaration
+                ? name
+                : generateCandidType(fields);
 
-            const typeDeclaration = generateTypeDeclaration(name, fields);
+            const typeDeclaration = generateTypeDeclaration(
+                name,
+                fields,
+                useTypeDeclaration
+            );
 
             const imports = generateImports(fields);
 
@@ -53,8 +60,20 @@ function generateCandidType(fields: Field[]): string {
         .join(',')}})`;
 }
 
-function generateTypeDeclaration(name: string, fields: Field[]): string {
-    return `const ${name} = ${generateCandidType(fields)};`;
+function generateTypeDeclaration(
+    name: string,
+    fields: Field[],
+    useTypeDeclaration: boolean
+): string {
+    const fieldTypeDeclarations = fields
+        .map((field) => field[1].src.typeDeclaration)
+        .join('\n');
+    if (useTypeDeclaration) {
+        return `${fieldTypeDeclarations}\nconst ${name} = ${generateCandidType(
+            fields
+        )};`;
+    }
+    return fieldTypeDeclarations;
 }
 
 function generateValue(fields: Field[]): Record {

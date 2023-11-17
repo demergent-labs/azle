@@ -25,14 +25,21 @@ export function BaseVariantArb(
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
-            VariantFieldsArb(candidTypeArb)
+            VariantFieldsArb(candidTypeArb),
+            fc.boolean()
         )
-        .map(([name, fields]): CandidMeta<Variant> => {
+        .map(([name, fields, useTypeDeclaration]): CandidMeta<Variant> => {
             const randomIndex = Math.floor(Math.random() * fields.length);
 
-            const candidType = generateCandidType(fields);
+            const candidType = useTypeDeclaration
+                ? name
+                : generateCandidType(fields);
 
-            const typeDeclaration = generateTypeDeclaration(name, fields);
+            const typeDeclaration = generateTypeDeclaration(
+                name,
+                fields,
+                useTypeDeclaration
+            );
 
             const imports = generateImports(fields);
 
@@ -57,8 +64,20 @@ function generateImports(fields: Field[]): Set<string> {
     return new Set([...fieldImports, 'Variant']);
 }
 
-function generateTypeDeclaration(name: string, fields: Field[]): string {
-    return `const ${name} = ${generateCandidType(fields)};`;
+function generateTypeDeclaration(
+    name: string,
+    fields: Field[],
+    useTypeDeclaration: boolean
+): string {
+    const fieldTypeDeclarations = fields
+        .map((field) => field[1].src.typeDeclaration)
+        .join('\n');
+    if (useTypeDeclaration) {
+        return `${fieldTypeDeclarations}\nconst ${name} = ${generateCandidType(
+            fields
+        )};`;
+    }
+    return fieldTypeDeclarations;
 }
 
 function generateCandidType(fields: Field[]): string {
