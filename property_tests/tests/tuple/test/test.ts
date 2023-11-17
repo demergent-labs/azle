@@ -3,7 +3,8 @@ import { deepEqual } from 'fast-equals';
 
 import {
     TupleArb,
-    Tuple
+    Tuple,
+    ReturnTuple
 } from '../../../arbitraries/candid/constructed/tuple_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
@@ -61,8 +62,8 @@ runPropTests(TupleTestArb);
 
 function generateBody(
     paramNames: string[],
-    paramTuples: CandidMeta<Tuple>[],
-    returnTuple: CandidMeta<Tuple>
+    paramTuples: CandidMeta<Tuple, ReturnTuple>[],
+    returnTuple: CandidMeta<Tuple, ReturnTuple>
 ): string {
     const paramsAreTuples = paramTuples
         .map((tuple, index) => {
@@ -94,12 +95,19 @@ function generateBody(
     `;
 }
 
+function replacer(key: any, value: any) {
+    if (typeof value === 'bigint') {
+        return value.toString() + '\n';
+    }
+    return value;
+}
+
 function generateTest(
     functionName: string,
-    paramTuples: CandidMeta<Tuple>[],
-    returnTuple: CandidMeta<Tuple>
+    paramTuples: CandidMeta<Tuple, ReturnTuple>[],
+    returnTuple: CandidMeta<Tuple, ReturnTuple>
 ): Test {
-    const expectedResult = returnTuple.value;
+    const expectedResult = returnTuple.expectedValue;
 
     return {
         name: `tuple ${functionName}`,
@@ -109,16 +117,6 @@ function generateTest(
             const result = await actor[functionName](
                 ...paramTuples.map((tuple) => tuple.value)
             );
-
-            if (!Array.isArray(result)) {
-                // Empty Tuple
-                return {
-                    Ok: deepEqual(
-                        Array.from(Object.values(result)),
-                        expectedResult
-                    )
-                };
-            }
 
             return { Ok: deepEqual(result, expectedResult) };
         }

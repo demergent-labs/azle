@@ -25,6 +25,7 @@ import { BaseVariantArb } from './constructed/variant_arb/base';
 import { Record } from './constructed/record_arb';
 import { Tuple } from './constructed/tuple_arb';
 import { RecordArb } from './constructed/record_arb/base';
+import { TupleArb } from './constructed/tuple_arb/base';
 
 export type CandidType =
     | number
@@ -75,9 +76,13 @@ export const CandidTypeArb: fc.Arbitrary<CandidMeta<CandidType>> = fc.letrec(
             PrincipalArb,
             BlobArb,
             tie('Variant').map((sample) => sample as CandidMeta<Variant>),
+            tie('Tuple').map((sample) => sample as CandidMeta<Tuple>),
             tie('Record').map((sample) => sample as CandidMeta<Record>)
         ),
         Variant: BaseVariantArb(
+            tie('CandidType') as fc.Arbitrary<CandidMeta<CandidType>>
+        ),
+        Tuple: TupleArb(
             tie('CandidType') as fc.Arbitrary<CandidMeta<CandidType>>
         ),
         Record: RecordArb(

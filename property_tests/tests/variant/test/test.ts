@@ -102,7 +102,8 @@ function generateTest(
     paramVariants: CandidMeta<Variant>[],
     returnVariant: CandidMeta<Variant>
 ): Test {
-    const expectedResult = paramVariants[0]?.value ?? returnVariant.value;
+    const expectedResult =
+        paramVariants[0]?.expectedValue ?? returnVariant.expectedValue;
     return {
         name: `variant ${functionName}`,
         test: async () => {

@@ -47,6 +47,8 @@ export function BaseVariantArb(
 
             const value = generateValue(randomIndex, fields);
 
+            const expectedValue = generateValue(randomIndex, fields, true);
+
             return {
                 src: {
                     candidType,
@@ -54,7 +56,8 @@ export function BaseVariantArb(
                     imports,
                     valueLiteral
                 },
-                value
+                value,
+                expectedValue
             };
         });
 }
@@ -89,14 +92,23 @@ function generateCandidType(fields: Field[]): string {
         .join(',')}})`;
 }
 
-function generateValue(index: number, fields: Field[]): Variant {
+function generateValue(
+    index: number,
+    fields: Field[],
+    returned: boolean = false
+): Variant {
     if (fields.length === 0) {
         return {};
     }
-    const [randomFieldName, { value: randomFieldDataType }] = fields[index];
+    const [
+        randomFieldName,
+        { value: randomFieldValue, expectedValue: randomFieldExpectedValue }
+    ] = fields[index];
 
     return {
-        [randomFieldName]: randomFieldDataType
+        [randomFieldName]: returned
+            ? randomFieldExpectedValue
+            : randomFieldValue
     };
 }
 

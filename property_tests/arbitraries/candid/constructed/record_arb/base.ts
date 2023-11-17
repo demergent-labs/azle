@@ -34,6 +34,8 @@ export function RecordArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
 
             const value = generateValue(fields);
 
+            const expectedValue = generateValue(fields, true);
+
             return {
                 src: {
                     candidType,
@@ -41,7 +43,8 @@ export function RecordArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
                     imports,
                     valueLiteral
                 },
-                value
+                value,
+                expectedValue
             };
         });
 }
@@ -76,13 +79,15 @@ function generateTypeDeclaration(
     return fieldTypeDeclarations;
 }
 
-function generateValue(fields: Field[]): Record {
+function generateValue(fields: Field[], returned: boolean = false): Record {
     return fields.length === 0
         ? {}
         : fields.reduce((record, [fieldName, fieldDataType]) => {
               return {
                   ...record,
-                  [fieldName]: fieldDataType.value
+                  [fieldName]: returned
+                      ? fieldDataType.expectedValue
+                      : fieldDataType.value
               };
           }, {});
 }

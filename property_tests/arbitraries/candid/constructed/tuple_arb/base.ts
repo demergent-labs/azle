@@ -3,7 +3,7 @@ import fc from 'fast-check';
 import { CandidMeta } from '../../candid_arb';
 import { CandidType } from '../../candid_type_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
-import { Tuple } from './index';
+import { ReturnTuple, Tuple } from './index';
 
 export function TupleArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
     return fc
@@ -12,33 +12,52 @@ export function TupleArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
             fc.array(candidTypeArb),
             fc.boolean()
         )
-        .map(([name, fields, useTypeDeclaration]): CandidMeta<Tuple> => {
-            const candidType = useTypeDeclaration
-                ? name
-                : generateCandidType(fields);
+        .map(
+            ([name, fields, useTypeDeclaration]): CandidMeta<
+                Tuple,
+                ReturnTuple
+            > => {
+                const candidType = useTypeDeclaration
+                    ? name
+                    : generateCandidType(fields);
 
-            const typeDeclaration = generateTypeDeclaration(
-                name,
-                fields,
-                useTypeDeclaration
-            );
+                const typeDeclaration = generateTypeDeclaration(
+                    name,
+                    fields,
+                    useTypeDeclaration
+                );
 
-            const imports = generateImports(fields);
+                const imports = generateImports(fields);
 
-            const valueLiteral = generateValueLiteral(fields);
+                const valueLiteral = generateValueLiteral(fields);
 
-            const value = fields.map((field) => field.value);
+                const value = generateVale(fields);
 
-            return {
-                src: {
-                    candidType,
-                    typeDeclaration,
-                    imports,
-                    valueLiteral
-                },
-                value
-            };
-        });
+                const expectedValue = generateExpectedVale(fields);
+
+                return {
+                    src: {
+                        candidType,
+                        typeDeclaration,
+                        imports,
+                        valueLiteral
+                    },
+                    value,
+                    expectedValue
+                };
+            }
+        );
+}
+
+function generateVale(fields: CandidMeta<CandidType>[]) {
+    return fields.map((field) => field.value);
+}
+
+function generateExpectedVale(fields: CandidMeta<CandidType>[]): Tuple | {} {
+    if (fields.length === 0) {
+        return {};
+    }
+    return fields.map((field) => field.expectedValue);
 }
 
 function generateTypeDeclaration(

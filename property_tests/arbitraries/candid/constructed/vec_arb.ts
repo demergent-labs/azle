@@ -43,6 +43,7 @@ const VecInnerArb = <T extends CandidType>(
 
             return {
                 value: generateValue(sample, src.src.candidType),
+                expectedValue: generateValue(sample, src.src.candidType),
                 src: {
                     candidType: `Vec(${src.src.candidType})`,
                     imports: new Set([...src.src.imports, 'Vec']),

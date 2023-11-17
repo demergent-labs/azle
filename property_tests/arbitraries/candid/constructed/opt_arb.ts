@@ -41,7 +41,8 @@ export const OptArb = fc
                 imports: generateImports(recursiveOptArb),
                 valueLiteral: generateValueLiteral(recursiveOptArb)
             },
-            value: generateValue(recursiveOptArb)
+            value: generateValue(recursiveOptArb),
+            expectedValue: generateValue(recursiveOptArb)
         };
     });
 
@@ -92,27 +93,4 @@ function generateValueLiteral(recursiveOpt: RecursiveOpt<Base>): string {
     } else {
         return `Some(${generateValueLiteral(recursiveOpt.nextLayer)})`;
     }
-}
-
-function calculateDepthAndValues(value: [any] | []): {
-    depth: number;
-    value: any;
-} {
-    if (value.length === 0) {
-        // None
-        return { depth: 1, value };
-    }
-    const isOpt =
-        Array.isArray(value[0]) &&
-        (value[0].length === 1 || value[0].length === 0);
-    if (!isOpt) {
-        // The value.Some is not an opt. return value.Some
-        return {
-            depth: 1,
-            value: value[0]
-        };
-    }
-
-    const result = calculateDepthAndValues(value[0]);
-    return { ...result, depth: result.depth + 1 };
 }

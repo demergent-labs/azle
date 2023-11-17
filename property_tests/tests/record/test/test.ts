@@ -108,7 +108,7 @@ function generateTest(
                 ...paramRecords.map((record) => record.value)
             );
 
-            return { Ok: deepEqual(result, returnRecord.value) };
+            return { Ok: deepEqual(result, returnRecord.expectedValue) };
         }
     };
 }
