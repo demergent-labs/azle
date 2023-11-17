@@ -49,7 +49,8 @@ export const FuncArb = (
                 imports,
                 valueLiteral
             },
-            value
+            value,
+            expectedValue: value
         };
     });
 
