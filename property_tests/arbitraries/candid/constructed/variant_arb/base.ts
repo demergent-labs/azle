@@ -21,7 +21,7 @@ function VariantFieldsArb(
 
 export function BaseVariantArb(
     candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>
-) {
+): fc.Arbitrary<CandidMeta<Variant>> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
