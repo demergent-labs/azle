@@ -109,9 +109,7 @@ function generateTypeDeclaration(
 ) {
     if (useTypeDeclaration) {
         return `${
-            innerTypeSrc.typeDeclaration === undefined
-                ? ''
-                : innerTypeSrc.typeDeclaration
+            innerTypeSrc.typeDeclaration ?? ''
         }\nconst ${name} = ${generateCandidType(innerTypeSrc)}`;
     }
     return innerTypeSrc.typeDeclaration;
