@@ -62,6 +62,12 @@ export type CandidType =
 export const CandidTypeArb: fc.Arbitrary<CandidMeta<CandidType>> = fc.letrec(
     (tie) => ({
         CandidType: fc.oneof(
+            BlobArb,
+            tie('Opt').map((sample) => sample as CandidMeta<Opt>),
+            tie('Record').map((sample) => sample as CandidMeta<Record>),
+            tie('Tuple').map((sample) => sample as CandidMeta<Tuple>),
+            tie('Variant').map((sample) => sample as CandidMeta<Variant>),
+            tie('Vec').map((sample) => sample as CandidMeta<Vec>),
             Float32Arb,
             Float64Arb,
             IntArb,
@@ -77,14 +83,8 @@ export const CandidTypeArb: fc.Arbitrary<CandidMeta<CandidType>> = fc.letrec(
             BoolArb,
             NullArb,
             TextArb,
-            PrincipalArb,
-            BlobArb,
             tie('Func').map((sample) => sample as CandidMeta<Func>),
-            tie('Variant').map((sample) => sample as CandidMeta<Variant>),
-            tie('Tuple').map((sample) => sample as CandidMeta<Tuple>),
-            tie('Record').map((sample) => sample as CandidMeta<Record>),
-            tie('Opt').map((sample) => sample as CandidMeta<Opt>),
-            tie('Vec').map((sample) => sample as CandidMeta<Vec>)
+            PrincipalArb
         ),
         Func: FuncArb(
             tie('CandidType') as fc.Arbitrary<CandidMeta<CandidType>>
@@ -103,4 +103,4 @@ export const CandidTypeArb: fc.Arbitrary<CandidMeta<CandidType>> = fc.letrec(
     })
 ).CandidType;
 
-// TODO: This needs to support ALL valid candid types, including records, variants, etc.
+// TODO: This needs to support service.

@@ -34,6 +34,11 @@ export type Vec =
 // get a vec of multiple different types of candidTypeArbs, doing it this way
 // makes it so you for sure have a homogeneous vec... but it doesn't benefit
 // from code reuse
+// The Problem goes even deeper than we first thought. If you pass in something
+// like an opt for example, Opt gets an arbitrary inner value, so every index in
+// the array will be an opt with a different inner value, so instead of having a
+// homogenous vec of opt nat16 you will get a vec of opt nat16 and opt int and
+// opt bool etc
 export const VecArb = fc.oneof(
     VecInnerArb(Float32Arb),
     VecInnerArb(Float64Arb),
@@ -48,8 +53,8 @@ export const VecArb = fc.oneof(
     VecInnerArb(Nat32Arb),
     VecInnerArb(Nat64Arb),
     VecInnerArb(BoolArb),
+    VecInnerArb(NullArb),
     VecInnerArb(TextArb),
     VecInnerArb(PrincipalArb),
-    VecInnerArb(BlobArb),
-    VecInnerArb(NullArb)
+    VecInnerArb(BlobArb)
 );
