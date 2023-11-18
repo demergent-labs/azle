@@ -97,15 +97,15 @@ function generateTest(
 ): Test {
     const expectedResult =
         paramPrincipals.length > 0
-            ? paramPrincipals[0].value
-            : returnPrincipal.value;
+            ? paramPrincipals[0].agentResponseValue
+            : returnPrincipal.agentResponseValue;
 
     return {
         name: `principal ${functionName}`,
         test: async () => {
             const actor = getActor('./tests/principal/test');
             const result = await actor[functionName](
-                ...paramPrincipals.map((sample) => sample.value)
+                ...paramPrincipals.map((sample) => sample.agentArgumentValue)
             );
 
             return { Ok: deepEqual(result, expectedResult) };

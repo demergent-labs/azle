@@ -80,10 +80,10 @@ function generateTest(
     returnBool: CandidMeta<boolean>
 ): Test {
     const expectedResult = paramBools.reduce(
-        (acc, bool) => acc && bool.value,
-        returnBool.value
+        (acc, bool) => acc && bool.agentResponseValue,
+        returnBool.agentResponseValue
     );
-    const paramValues = paramBools.map((bool) => bool.value);
+    const paramValues = paramBools.map((bool) => bool.agentArgumentValue);
 
     return {
         name: `bool ${functionName}`,

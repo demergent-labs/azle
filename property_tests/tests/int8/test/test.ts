@@ -81,10 +81,12 @@ function generateTest(
 ): Test {
     const count = paramInt8s.length + 1;
     const expectedResult = Math.floor(
-        paramInt8s.reduce((acc, int8) => acc + int8.value, returnInt8.value) /
-            count
+        paramInt8s.reduce(
+            (acc, int8) => acc + int8.agentResponseValue,
+            returnInt8.agentResponseValue
+        ) / count
     );
-    const paramValues = paramInt8s.map((sample) => sample.value);
+    const paramValues = paramInt8s.map((sample) => sample.agentArgumentValue);
     return {
         name: `test ${functionName}`,
         test: async () => {

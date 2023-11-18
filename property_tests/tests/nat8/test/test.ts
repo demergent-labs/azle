@@ -81,10 +81,12 @@ function generateTest(
 ): Test {
     const count = paramNat8s.length + 1;
     const expectedResult = Math.floor(
-        paramNat8s.reduce((acc, nat8) => acc + nat8.value, returnNat8.value) /
-            count
+        paramNat8s.reduce(
+            (acc, nat8) => acc + nat8.agentResponseValue,
+            returnNat8.agentResponseValue
+        ) / count
     );
-    const paramValues = paramNat8s.map((sample) => sample.value);
+    const paramValues = paramNat8s.map((sample) => sample.agentArgumentValue);
 
     return {
         name: `nat8 ${functionName}`,

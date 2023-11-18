@@ -37,19 +37,19 @@ export function VecInnerArb<T extends CandidType>(
                     useTypeDeclaration
                 );
 
-                const value = generateValue(
+                const agentArgumentValue = generateValue(
                     vecOfInnerType,
                     innerTypeSrc.candidType
                 );
 
-                const expectedValue = generateValue(
+                const agentResponseValue = generateValue(
                     vecOfInnerType,
                     innerTypeSrc.candidType
                 );
 
                 return {
-                    value,
-                    expectedValue,
+                    agentArgumentValue,
+                    agentResponseValue,
                     src: {
                         candidType,
                         imports,
@@ -141,7 +141,7 @@ function generateValue<T extends CandidType>(
         return Array(array.length).fill(false);
     }
     const value = array.map((sample) =>
-        returned ? sample.expectedValue : sample.value
+        returned ? sample.agentResponseValue : sample.agentArgumentValue
     );
 
     if (candidType === 'int8') {

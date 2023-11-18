@@ -34,8 +34,8 @@ export function OptArb(
                     typeDeclaration,
                     valueLiteral: generateValueLiteral(someOrNone, innerType)
                 },
-                value: generateValue(someOrNone, innerType),
-                expectedValue: generateValue(someOrNone, innerType)
+                agentArgumentValue: generateValue(someOrNone, innerType),
+                agentResponseValue: generateValue(someOrNone, innerType, true)
             };
         });
 }
@@ -64,10 +64,14 @@ function generateImports(innerType: CandidMeta<CandidType>): Set<string> {
 function generateValue(
     someOrNone: SomeOrNone,
     innerType: CandidMeta<CandidType>,
-    returned: boolean = false
+    useAgentResponseValue: boolean = false
 ): Opt {
     if (someOrNone === 'Some') {
-        return [returned ? innerType.expectedValue : innerType.value];
+        return [
+            useAgentResponseValue
+                ? innerType.agentResponseValue
+                : innerType.agentArgumentValue
+        ];
     } else {
         return [];
     }

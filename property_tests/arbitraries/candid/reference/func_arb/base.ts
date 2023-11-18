@@ -37,7 +37,7 @@ export function FuncArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
                     'Func'
                 ]);
 
-                const value: Func = [principal.value, name];
+                const value: Func = [principal.agentArgumentValue, name];
 
                 const valueLiteral = `[${principal.src.valueLiteral}, '${name}']`;
 
@@ -48,8 +48,8 @@ export function FuncArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
                         imports,
                         valueLiteral
                     },
-                    value,
-                    expectedValue: value
+                    agentArgumentValue: value,
+                    agentResponseValue: value
                 };
             }
         );

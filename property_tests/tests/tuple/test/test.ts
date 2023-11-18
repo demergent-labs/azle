@@ -68,7 +68,7 @@ function generateBody(
     const paramsAreTuples = paramTuples
         .map((tuple, index) => {
             const paramName = paramNames[index];
-            const fieldsCount = tuple.value.length;
+            const fieldsCount = tuple.agentArgumentValue.length;
 
             const paramIsArray = `Array.isArray(${paramName})`;
             const paramHasCorrectNumberOfFields = `${paramName}.length === ${fieldsCount}`;
@@ -95,19 +95,12 @@ function generateBody(
     `;
 }
 
-function replacer(key: any, value: any) {
-    if (typeof value === 'bigint') {
-        return value.toString() + '\n';
-    }
-    return value;
-}
-
 function generateTest(
     functionName: string,
     paramTuples: CandidMeta<Tuple, ReturnTuple>[],
     returnTuple: CandidMeta<Tuple, ReturnTuple>
 ): Test {
-    const expectedResult = returnTuple.expectedValue;
+    const expectedResult = returnTuple.agentResponseValue;
 
     return {
         name: `tuple ${functionName}`,
@@ -115,7 +108,7 @@ function generateTest(
             const actor = getActor('./tests/tuple/test');
 
             const result = await actor[functionName](
-                ...paramTuples.map((tuple) => tuple.value)
+                ...paramTuples.map((tuple) => tuple.agentArgumentValue)
             );
 
             return { Ok: deepEqual(result, expectedResult) };

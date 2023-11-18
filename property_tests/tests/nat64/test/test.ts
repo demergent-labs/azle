@@ -86,10 +86,10 @@ function generateTest(
     const count = paramNat64s.length + 1;
     const expectedResult =
         paramNat64s.reduce(
-            (acc, nat64) => acc + nat64.value,
-            returnNat64.value
+            (acc, nat64) => acc + nat64.agentResponseValue,
+            returnNat64.agentResponseValue
         ) / BigInt(count);
-    const paramValues = paramNat64s.map((sample) => sample.value);
+    const paramValues = paramNat64s.map((sample) => sample.agentArgumentValue);
 
     return {
         name: `nat64 ${functionName}`,

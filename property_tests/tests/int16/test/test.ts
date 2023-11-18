@@ -86,11 +86,11 @@ function generateTest(
     const count = paramInt16s.length + 1;
     const expectedResult = Math.floor(
         paramInt16s.reduce(
-            (acc, int16) => acc + int16.value,
-            returnInt16.value
+            (acc, int16) => acc + int16.agentResponseValue,
+            returnInt16.agentResponseValue
         ) / count
     );
-    const paramValues = paramInt16s.map((sample) => sample.value);
+    const paramValues = paramInt16s.map((sample) => sample.agentArgumentValue);
 
     return {
         name: `int16 ${functionName}`,

@@ -84,14 +84,14 @@ function generateTest(
     returnVec: CandidMeta<any>
 ): Test {
     const expectedResult =
-        paramVecs[0]?.expectedValue ?? returnVec.expectedValue;
+        paramVecs[0]?.agentResponseValue ?? returnVec.agentResponseValue;
 
     return {
         name: `vec ${functionName}`,
         test: async () => {
             const actor = getActor('./tests/vec/test');
 
-            const params = paramVecs.map((vec) => vec.value);
+            const params = paramVecs.map((vec) => vec.agentArgumentValue);
             const result = await actor[functionName](...params);
 
             return {

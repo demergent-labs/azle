@@ -45,9 +45,9 @@ export function BaseVariantArb(
 
             const valueLiteral = generateValueLiteral(randomIndex, fields);
 
-            const value = generateValue(randomIndex, fields);
+            const agentArgumentValue = generateValue(randomIndex, fields);
 
-            const expectedValue = generateValue(randomIndex, fields, true);
+            const agentResponseValue = generateValue(randomIndex, fields, true);
 
             return {
                 src: {
@@ -56,8 +56,8 @@ export function BaseVariantArb(
                     imports,
                     valueLiteral
                 },
-                value,
-                expectedValue
+                agentArgumentValue,
+                agentResponseValue
             };
         });
 }
@@ -102,7 +102,10 @@ function generateValue(
     }
     const [
         randomFieldName,
-        { value: randomFieldValue, expectedValue: randomFieldExpectedValue }
+        {
+            agentArgumentValue: randomFieldValue,
+            agentResponseValue: randomFieldExpectedValue
+        }
     ] = fields[index];
 
     return {

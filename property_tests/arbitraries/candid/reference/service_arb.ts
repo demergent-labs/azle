@@ -85,7 +85,7 @@ export const ServiceArb = fc
 
         const valueLiteral = `${name}(${principal.src.valueLiteral})`;
 
-        const value = principal.value;
+        const value = principal.agentArgumentValue;
 
         return {
             src: {
@@ -94,7 +94,8 @@ export const ServiceArb = fc
                 imports,
                 valueLiteral
             },
-            value
+            agentArgumentValue: value,
+            agentResponseValue: value
         };
     });
 

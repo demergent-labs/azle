@@ -95,14 +95,14 @@ function generateTest(
 ): Test {
     const expectedResult =
         paramOpts.length === 0
-            ? returnOpt.expectedValue
-            : paramOpts[0].expectedValue;
+            ? returnOpt.agentResponseValue
+            : paramOpts[0].agentResponseValue;
     return {
         name: `opt ${functionName}`,
         test: async () => {
             const actor = getActor('./tests/opt/test');
 
-            const params = paramOpts.map((opt) => opt.value);
+            const params = paramOpts.map((opt) => opt.agentArgumentValue);
 
             const result = await actor[functionName](...params);
 

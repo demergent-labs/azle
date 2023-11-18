@@ -32,9 +32,9 @@ export function RecordArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
 
             const valueLiteral = generateValueLiteral(fields);
 
-            const value = generateValue(fields);
+            const agentArgumentValue = generateValue(fields);
 
-            const expectedValue = generateValue(fields, true);
+            const agentResponseValue = generateValue(fields, true);
 
             return {
                 src: {
@@ -43,8 +43,8 @@ export function RecordArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
                     imports,
                     valueLiteral
                 },
-                value,
-                expectedValue
+                agentArgumentValue,
+                agentResponseValue
             };
         });
 }
@@ -86,8 +86,8 @@ function generateValue(fields: Field[], returned: boolean = false): Record {
               return {
                   ...record,
                   [fieldName]: returned
-                      ? fieldDataType.expectedValue
-                      : fieldDataType.value
+                      ? fieldDataType.agentResponseValue
+                      : fieldDataType.agentArgumentValue
               };
           }, {});
 }

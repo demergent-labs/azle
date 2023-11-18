@@ -88,9 +88,11 @@ function generateTest(
 ): Test {
     const expectedResult =
         paramFloat32s.length === 0
-            ? returnFloat32.value
-            : paramFloat32s[0].value;
-    const paramValues = paramFloat32s.map((paramFloats) => paramFloats.value);
+            ? returnFloat32.agentResponseValue
+            : paramFloat32s[0].agentResponseValue;
+    const paramValues = paramFloat32s.map(
+        (paramFloats) => paramFloats.agentArgumentValue
+    );
     return {
         name: `float32 ${functionName}`,
         test: async () => {
