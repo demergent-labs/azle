@@ -23,6 +23,11 @@ const OptTestArb = fc
             ...defaultReturnOpt.src.imports
         ]);
 
+        const candidTypeDeclarations = [
+            ...paramOpts.map((opt) => opt.src.typeDeclaration ?? ''),
+            defaultReturnOpt.src.typeDeclaration ?? ''
+        ];
+
         const paramNames = paramOpts.map((_, index) => `param${index}`);
         const paramCandidTypes = paramOpts
             .map((opt) => opt.src.candidType)
@@ -40,6 +45,7 @@ const OptTestArb = fc
         return {
             imports,
             functionName,
+            candidTypeDeclarations,
             paramNames,
             paramCandidTypes,
             returnCandidType,
@@ -88,13 +94,15 @@ function generateTest(
     returnOpt: CandidMeta<Opt>
 ): Test {
     const expectedResult =
-        paramOpts.length === 0 ? returnOpt.value : paramOpts[0].value;
+        paramOpts.length === 0
+            ? returnOpt.agentResponseValue
+            : paramOpts[0].agentResponseValue;
     return {
         name: `opt ${functionName}`,
         test: async () => {
             const actor = getActor('./tests/opt/test');
 
-            const params = paramOpts.map((opt) => opt.value);
+            const params = paramOpts.map((opt) => opt.agentArgumentValue);
 
             const result = await actor[functionName](...params);
 

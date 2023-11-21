@@ -21,8 +21,14 @@ import { CandidMeta } from './candid_arb';
 import { Func } from './reference/func_arb';
 import { Opt } from './constructed/opt_arb';
 import { Variant } from './constructed/variant_arb';
+import { BaseVariantArb } from './constructed/variant_arb/base';
 import { Record } from './constructed/record_arb';
 import { Tuple } from './constructed/tuple_arb';
+import { RecordArb } from './constructed/record_arb/base';
+import { TupleArb } from './constructed/tuple_arb/base';
+import { OptArb } from './constructed/opt_arb/base';
+import { Vec, VecArb } from './constructed/vec_arb';
+import { FuncArb } from './reference/func_arb/base';
 
 export type CandidType =
     | number
@@ -45,30 +51,56 @@ export type CandidType =
     | Uint16Array
     | Uint32Array
     | Uint8Array
-    | BigUint64Array;
+    | BigUint64Array
+    | Vec;
 
 /**
  * An arbitrary representing all possible Candid types.
  *
  * **Note:** This currently only supports ints, nats, and null arbitraries
  */
-export const CandidTypeArb: fc.Arbitrary<CandidMeta<CandidType>> = fc.oneof(
-    Float32Arb,
-    Float64Arb,
-    IntArb,
-    Int8Arb,
-    Int16Arb,
-    Int32Arb,
-    Int64Arb,
-    NatArb,
-    Nat8Arb,
-    Nat16Arb,
-    Nat32Arb,
-    Nat64Arb,
-    BoolArb,
-    NullArb,
-    TextArb,
-    PrincipalArb,
-    BlobArb
-);
-// TODO: This needs to support ALL valid candid types, including records, variants, etc.
+export const CandidTypeArb: fc.Arbitrary<CandidMeta<CandidType>> = fc.letrec(
+    (tie) => ({
+        CandidType: fc.oneof(
+            BlobArb,
+            tie('Opt').map((sample) => sample as CandidMeta<Opt>),
+            tie('Record').map((sample) => sample as CandidMeta<Record>),
+            tie('Tuple').map((sample) => sample as CandidMeta<Tuple>),
+            tie('Variant').map((sample) => sample as CandidMeta<Variant>),
+            tie('Vec').map((sample) => sample as CandidMeta<Vec>),
+            Float32Arb,
+            Float64Arb,
+            IntArb,
+            Int8Arb,
+            Int16Arb,
+            Int32Arb,
+            Int64Arb,
+            NatArb,
+            Nat8Arb,
+            Nat16Arb,
+            Nat32Arb,
+            Nat64Arb,
+            BoolArb,
+            NullArb,
+            TextArb,
+            tie('Func').map((sample) => sample as CandidMeta<Func>),
+            PrincipalArb
+        ),
+        Func: FuncArb(
+            tie('CandidType') as fc.Arbitrary<CandidMeta<CandidType>>
+        ),
+        Vec: VecArb,
+        Opt: OptArb(tie('CandidType') as fc.Arbitrary<CandidMeta<CandidType>>),
+        Variant: BaseVariantArb(
+            tie('CandidType') as fc.Arbitrary<CandidMeta<CandidType>>
+        ),
+        Tuple: TupleArb(
+            tie('CandidType') as fc.Arbitrary<CandidMeta<CandidType>>
+        ),
+        Record: RecordArb(
+            tie('CandidType') as fc.Arbitrary<CandidMeta<CandidType>>
+        )
+    })
+).CandidType;
+
+// TODO: This needs to support service.

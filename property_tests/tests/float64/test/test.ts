@@ -90,11 +90,13 @@ function generateTest(
     const count = paramFloat64s.length + 1;
     const expectedResult =
         paramFloat64s.reduce(
-            (acc, float64) => acc + float64.value,
-            returnFloat64.value
+            (acc, float64) => acc + float64.agentResponseValue,
+            returnFloat64.agentResponseValue
         ) / count;
 
-    const paramValues = paramFloat64s.map((float64) => float64.value);
+    const paramValues = paramFloat64s.map(
+        (float64) => float64.agentArgumentValue
+    );
 
     return {
         name: `float64 ${functionName}`,

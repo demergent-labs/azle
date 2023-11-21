@@ -75,7 +75,7 @@ function generateBody(
         .map((param, index) => {
             const paramName = `param${index}`;
 
-            const paramIsAService = `(${paramName} as any).principal.toText() === "${param.value.toText()}"`;
+            const paramIsAService = `(${paramName} as any).principal.toText() === "${param.agentArgumentValue.toText()}"`;
 
             const throwError = `throw new Error('${paramName} must be a Service');`;
 
@@ -106,7 +106,10 @@ function generateTest(
             // See https://forum.dfinity.org/t/topic/20885/14
 
             const paramsString = paramServices
-                .map((service) => `service "${service.value.toText()}"`)
+                .map(
+                    (service) =>
+                        `service "${service.agentArgumentValue.toText()}"`
+                )
                 .join();
 
             const result = execSync(
@@ -116,7 +119,9 @@ function generateTest(
                 .trim();
 
             return {
-                Ok: result === `(service "${returnService.value.toText()}")`
+                Ok:
+                    result ===
+                    `(service "${returnService.agentArgumentValue.toText()}")`
             };
         }
     };

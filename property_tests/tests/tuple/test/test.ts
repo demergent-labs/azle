@@ -3,7 +3,8 @@ import { deepEqual } from 'fast-equals';
 
 import {
     TupleArb,
-    Tuple
+    Tuple,
+    ReturnTuple
 } from '../../../arbitraries/candid/constructed/tuple_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
@@ -61,13 +62,13 @@ runPropTests(TupleTestArb);
 
 function generateBody(
     paramNames: string[],
-    paramTuples: CandidMeta<Tuple>[],
-    returnTuple: CandidMeta<Tuple>
+    paramTuples: CandidMeta<Tuple, ReturnTuple>[],
+    returnTuple: CandidMeta<Tuple, ReturnTuple>
 ): string {
     const paramsAreTuples = paramTuples
         .map((tuple, index) => {
             const paramName = paramNames[index];
-            const fieldsCount = tuple.value.length;
+            const fieldsCount = tuple.agentArgumentValue.length;
 
             const paramIsArray = `Array.isArray(${paramName})`;
             const paramHasCorrectNumberOfFields = `${paramName}.length === ${fieldsCount}`;
@@ -96,10 +97,10 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    paramTuples: CandidMeta<Tuple>[],
-    returnTuple: CandidMeta<Tuple>
+    paramTuples: CandidMeta<Tuple, ReturnTuple>[],
+    returnTuple: CandidMeta<Tuple, ReturnTuple>
 ): Test {
-    const expectedResult = returnTuple.value;
+    const expectedResult = returnTuple.agentResponseValue;
 
     return {
         name: `tuple ${functionName}`,
@@ -107,18 +108,8 @@ function generateTest(
             const actor = getActor('./tests/tuple/test');
 
             const result = await actor[functionName](
-                ...paramTuples.map((tuple) => tuple.value)
+                ...paramTuples.map((tuple) => tuple.agentArgumentValue)
             );
-
-            if (!Array.isArray(result)) {
-                // Empty Tuple
-                return {
-                    Ok: deepEqual(
-                        Array.from(Object.values(result)),
-                        expectedResult
-                    )
-                };
-            }
 
             return { Ok: deepEqual(result, expectedResult) };
         }

@@ -86,11 +86,11 @@ function generateTest(
     const count = paramNat32s.length + 1;
     const expectedResult = Math.floor(
         paramNat32s.reduce(
-            (acc, nat32) => acc + nat32.value,
-            returnNat32.value
+            (acc, nat32) => acc + nat32.agentResponseValue,
+            returnNat32.agentResponseValue
         ) / count
     );
-    const paramValues = paramNat32s.map((sample) => sample.value);
+    const paramValues = paramNat32s.map((sample) => sample.agentArgumentValue);
 
     return {
         name: `nat32 ${functionName}`,

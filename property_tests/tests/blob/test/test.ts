@@ -56,9 +56,11 @@ function generateBody(
         paramBlobs
     );
 
-    const returnStatement = `Uint8Array.from([${[...returnBlob.value]} ${
-        returnBlob.value.length > 0 ? ',' : ''
-    } ${paramNames.map((paramName) => `...${paramName}`).join(', ')}])`;
+    const returnStatement = `Uint8Array.from([${[
+        ...returnBlob.agentArgumentValue
+    ]} ${returnBlob.agentArgumentValue.length > 0 ? ',' : ''} ${paramNames
+        .map((paramName) => `...${paramName}`)
+        .join(', ')}])`;
 
     return `
         ${paramsAreUint8Arrays}
@@ -76,8 +78,11 @@ function generateTest(
 ): Test {
     const expectedResult = Uint8Array.from(
         paramBlobs
-            .map((blob) => blob.value)
-            .reduce((acc, blob) => [...acc, ...blob], [...returnBlob.value])
+            .map((blob) => blob.agentResponseValue)
+            .reduce(
+                (acc, blob) => [...acc, ...blob],
+                [...returnBlob.agentResponseValue]
+            )
     );
 
     return {
@@ -86,7 +91,7 @@ function generateTest(
             const actor = getActor('./tests/blob/test');
 
             const result = await actor[functionName](
-                ...paramBlobs.map((blob) => blob.value)
+                ...paramBlobs.map((blob) => blob.agentArgumentValue)
             );
 
             return {

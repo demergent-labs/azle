@@ -102,14 +102,16 @@ function generateTest(
     paramVariants: CandidMeta<Variant>[],
     returnVariant: CandidMeta<Variant>
 ): Test {
-    const expectedResult = paramVariants[0]?.value ?? returnVariant.value;
+    const expectedResult =
+        paramVariants[0]?.agentResponseValue ??
+        returnVariant.agentResponseValue;
     return {
         name: `variant ${functionName}`,
         test: async () => {
             const actor = getActor('./tests/variant/test');
 
             const result = await actor[functionName](
-                ...paramVariants.map((variant) => variant.value)
+                ...paramVariants.map((variant) => variant.agentArgumentValue)
             );
 
             return {

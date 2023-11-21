@@ -113,6 +113,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
             }
         },
         // TODO we don't know we this just started breaking
+        // https://github.com/demergent-labs/azle/issues/1453
         // {
         //     name: 'listOfNull test',
         //     test: async () => {
