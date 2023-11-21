@@ -5,7 +5,7 @@ import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { BoolArb } from '../../../arbitraries/candid/primitive/bool';
 import { CanisterArb } from '../../../arbitraries/canister_arb';
-import { QueryMethodArb } from '../../../arbitraries/query_method_arb';
+import { Named, QueryMethodArb } from '../../../arbitraries/query_method_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { Test } from '../../../../test';
 
@@ -17,25 +17,21 @@ const AllBoolQueryMethod = QueryMethodArb(fc.array(BoolArb), BoolArb, {
 runPropTests(CanisterArb(AllBoolQueryMethod));
 
 function generateBody(
-    paramNames: string[],
-    paramBools: CandidMeta<boolean>[],
+    namedParamBools: Named<CandidMeta<boolean>>[],
     returnBool: CandidMeta<boolean>
 ): string {
     // TODO do we want to encapsulate 'boolean' in the CandidArb? Like an agentType instead of a candidType, like azleValue and agentValue?
     // TODO or will this not matter anymore once we start using a deep equal library
-    const paramsAreBooleans = paramNames
-        .map((paramName) => {
-            return `if (typeof ${paramName} !== 'boolean') throw new Error('${paramName} must be a boolean');`;
+    const paramsAreBooleans = namedParamBools
+        .map((param) => {
+            return `if (typeof ${param.name} !== 'boolean') throw new Error('${param.name} must be a boolean');`;
         })
         .join('\n');
 
-    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
-        paramNames,
-        paramBools
-    );
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(namedParamBools);
 
-    const returnStatement = paramNames.reduce((acc, paramName) => {
-        return `${acc} && ${paramName}`;
+    const returnStatement = namedParamBools.reduce((acc, { name }) => {
+        return `${acc} && ${name}`;
     }, returnBool.src.valueLiteral);
 
     return `
@@ -49,14 +45,16 @@ function generateBody(
 
 function generateTests(
     functionName: string,
-    paramBools: CandidMeta<boolean>[],
+    namedParamBools: Named<CandidMeta<boolean>>[],
     returnBool: CandidMeta<boolean>
 ): Test[] {
-    const expectedResult = paramBools.reduce(
-        (acc, bool) => acc && bool.agentResponseValue,
+    const expectedResult = namedParamBools.reduce(
+        (acc, param) => acc && param.el.agentResponseValue,
         returnBool.agentResponseValue
     );
-    const paramValues = paramBools.map((bool) => bool.agentArgumentValue);
+    const paramValues = namedParamBools.map(
+        (param) => param.el.agentArgumentValue
+    );
 
     return [
         {

@@ -3,79 +3,40 @@ import { deepEqual } from 'fast-equals';
 
 import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { Float32Arb } from '../../../arbitraries/candid/primitive/floats/float32_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+import { Named, QueryMethodArb } from '../../../arbitraries/query_method_arb';
 
-const Float32TestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(Float32Arb),
-        Float32Arb
-    )
-    .map(
-        ([
-            functionName,
-            paramFloat32s,
-            defaultReturnFloat32
-        ]): QueryMethodBlueprint => {
-            const imports = defaultReturnFloat32.src.imports;
+const AllFloat32sQueryMethod = QueryMethodArb(
+    fc.array(Float32Arb),
+    Float32Arb,
+    {
+        generateBody,
+        generateTests
+    }
+);
 
-            const paramNames = paramFloat32s.map((_, index) => `param${index}`);
-            const paramCandidTypes = paramFloat32s
-                .map((float32) => float32.src.candidType)
-                .join(', ');
-
-            const returnCandidType = defaultReturnFloat32.src.candidType;
-
-            const body = generateBody(
-                paramNames,
-                paramFloat32s,
-                defaultReturnFloat32
-            );
-
-            const tests = [
-                generateTest(functionName, paramFloat32s, defaultReturnFloat32)
-            ];
-
-            return {
-                imports,
-                functionName,
-                paramNames,
-                paramCandidTypes,
-                returnCandidType,
-                body,
-                tests
-            };
-        }
-    );
-
-runPropTests(CanisterArb(Float32TestArb));
+runPropTests(CanisterArb(AllFloat32sQueryMethod));
 
 function generateBody(
-    paramNames: string[],
-    paramFloat32s: CandidMeta<number>[],
+    namedParamFloat32s: Named<CandidMeta<number>>[],
     returnFloat32: CandidMeta<number>
 ): string {
-    const paramsAreNumbers = paramNames
-        .map((paramName) => {
-            return `if (typeof ${paramName} !== 'number') throw new Error('${paramName} must be a number');`;
+    const paramsAreNumbers = namedParamFloat32s
+        .map((param) => {
+            return `if (typeof ${param.name} !== 'number') throw new Error('${param.name} must be a number');`;
         })
         .join('\n');
 
-    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
-        paramNames,
-        paramFloat32s
-    );
+    const paramsCorrectlyOrdered =
+        areParamsCorrectlyOrdered(namedParamFloat32s);
 
     const returnStatement =
-        paramFloat32s.length === 0
+        namedParamFloat32s.length === 0
             ? returnFloat32.src.valueLiteral
-            : paramNames[0];
+            : namedParamFloat32s[0].name;
 
     return `
         ${paramsCorrectlyOrdered}
@@ -86,28 +47,30 @@ function generateBody(
     `;
 }
 
-function generateTest(
+function generateTests(
     functionName: string,
-    paramFloat32s: CandidMeta<number>[],
+    namedParamFloat32s: Named<CandidMeta<number>>[],
     returnFloat32: CandidMeta<number>
-): Test {
+): Test[] {
     const expectedResult =
-        paramFloat32s.length === 0
+        namedParamFloat32s.length === 0
             ? returnFloat32.agentResponseValue
-            : paramFloat32s[0].agentResponseValue;
-    const paramValues = paramFloat32s.map(
-        (paramFloats) => paramFloats.agentArgumentValue
+            : namedParamFloat32s[0].el.agentResponseValue;
+    const paramValues = namedParamFloat32s.map(
+        (paramFloats) => paramFloats.el.agentArgumentValue
     );
-    return {
-        name: `float32 ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/float32/test');
+    return [
+        {
+            name: `float32 ${functionName}`,
+            test: async () => {
+                const actor = getActor('./tests/float32/test');
 
-            const result = await actor[functionName](...paramValues);
+                const result = await actor[functionName](...paramValues);
 
-            return {
-                Ok: deepEqual(result, expectedResult)
-            };
+                return {
+                    Ok: deepEqual(result, expectedResult)
+                };
+            }
         }
-    };
+    ];
 }
