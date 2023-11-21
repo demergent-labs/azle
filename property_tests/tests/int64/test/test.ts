@@ -86,11 +86,11 @@ function generateTest(
     const count = paramInt64s.length + 1;
     const expectedResult =
         paramInt64s.reduce(
-            (acc, int64) => acc + int64.value,
-            returnInt64.value
+            (acc, int64) => acc + int64.agentResponseValue,
+            returnInt64.agentResponseValue
         ) / BigInt(count);
 
-    const paramValues = paramInt64s.map((sample) => sample.value);
+    const paramValues = paramInt64s.map((sample) => sample.agentArgumentValue);
     return {
         name: `int64 ${functionName}`,
         test: async () => {

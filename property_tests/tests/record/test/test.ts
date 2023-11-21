@@ -67,7 +67,7 @@ function generateBody(
     const paramsAreRecords = paramRecords
         .map((record, index) => {
             const paramName = paramNames[index];
-            const fieldsCount = Object.keys(record.value).length;
+            const fieldsCount = Object.keys(record.agentArgumentValue).length;
 
             const paramIsObject = `typeof ${paramName} === 'object'`;
             const paramHasCorrectNumberOfFields = `Object.keys(${paramName}).length === ${fieldsCount}`;
@@ -105,10 +105,10 @@ function generateTest(
             const actor = getActor('./tests/record/test');
 
             const result = await actor[functionName](
-                ...paramRecords.map((record) => record.value)
+                ...paramRecords.map((record) => record.agentArgumentValue)
             );
 
-            return { Ok: deepEqual(result, returnRecord.value) };
+            return { Ok: deepEqual(result, returnRecord.agentResponseValue) };
         }
     };
 }

@@ -70,7 +70,7 @@ function generateTest(
             const actor = getActor('./tests/null/test');
 
             const result = await actor[functionName](
-                ...paramNulls.map((sample) => sample.value)
+                ...paramNulls.map((sample) => sample.agentArgumentValue)
             );
 
             return {

@@ -78,10 +78,10 @@ function generateTest(
     returnTexts: CandidMeta<string>
 ): Test {
     const expectedResult = paramTexts.reduce(
-        (acc, text) => acc + text.value,
-        returnTexts.value
+        (acc, text) => acc + text.agentResponseValue,
+        returnTexts.agentResponseValue
     );
-    const paramValues = paramTexts.map((text) => text.value);
+    const paramValues = paramTexts.map((text) => text.agentArgumentValue);
 
     return {
         name: `text ${functionName}`,

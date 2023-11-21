@@ -78,10 +78,10 @@ function generateTest(
     returnInt: CandidMeta<bigint>
 ): Test {
     const expectedResult = paramInts.reduce(
-        (acc, int) => acc + int.value,
-        returnInt.value
+        (acc, int) => acc + int.agentResponseValue,
+        returnInt.agentResponseValue
     );
-    const paramValues = paramInts.map((sample) => sample.value);
+    const paramValues = paramInts.map((sample) => sample.agentArgumentValue);
 
     return {
         name: `int ${functionName}`,

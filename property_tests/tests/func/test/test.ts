@@ -118,11 +118,11 @@ function generateTest(
             const actor = getActor('./tests/func/test');
 
             const result = await actor[functionName](
-                ...funcs.map((func) => func.value)
+                ...funcs.map((func) => func.agentArgumentValue)
             );
 
             return {
-                Ok: deepEqual(result, returnFunc.value)
+                Ok: deepEqual(result, returnFunc.agentResponseValue)
             };
         }
     };

@@ -86,11 +86,11 @@ function generateTest(
     const count = paramInt32s.length + 1;
     const expectedResult = Math.floor(
         paramInt32s.reduce(
-            (acc, int32) => acc + int32.value,
-            returnInt32.value
+            (acc, int32) => acc + int32.agentResponseValue,
+            returnInt32.agentResponseValue
         ) / count
     );
-    const paramValues = paramInt32s.map((sample) => sample.value);
+    const paramValues = paramInt32s.map((sample) => sample.agentArgumentValue);
 
     return {
         name: `int32 ${functionName}`,
