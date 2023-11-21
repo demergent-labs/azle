@@ -1,100 +1,29 @@
-// TODO this test isn't testing StableBTreeMap yet
+// TODO I need to figure out how to test the stable part of this
+// TODO I am not sure I can do that without having the ability to create multiple
+// TODO different kinds of methods per test
 
-import fc from 'fast-check';
-import { deepEqual } from 'fast-equals';
+// TODO it would probably be better to create the StableBTreeMaps globally
+// TODO and just have one method for each StableBTreeMap method
 
-import { TextArb } from '../../../arbitraries/candid/primitive/text';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
-import { getActor, runPropTests } from '../../../../property_tests';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { Test } from '../../../../test';
-import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+// TODO we should test update methods as well...probably mainly
 
-const StableBTreeMapTestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(TextArb),
-        TextArb
-    )
-    .map(([functionName, paramTexts, defaultReturnText]): TestSample => {
-        const imports = defaultReturnText.src.imports;
+import { runPropTests } from '../../../../property_tests';
+import { ContainsKeyTestArb } from './contains_key';
+import { GetTestArb } from './get';
+import { IsEmptyTestArb } from './is_empty';
+import { ItemsTestArb } from './items';
+import { KeysTestArb } from './keys';
+import { LenTestArb } from './len';
+import { RemoveTestArb } from './remove';
+import { ValuesTestArb } from './values';
 
-        const paramNames = paramTexts.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramTexts
-            .map((text) => text.src.candidType)
-            .join(', ');
-
-        const returnCandidType = defaultReturnText.src.candidType;
-
-        const body = generateBody(paramNames, paramTexts, defaultReturnText);
-
-        const test = generateTest(functionName, paramTexts, defaultReturnText);
-
-        return {
-            imports,
-            functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
-
-runPropTests(StableBTreeMapTestArb);
-
-function generateBody(
-    paramNames: string[],
-    paramTexts: CandidMeta<string>[],
-    returnText: CandidMeta<string>
-): string {
-    const paramsAreStrings = paramNames
-        .map((paramName) => {
-            return `if (typeof ${paramName} !== 'string') throw new Error('${paramName} must be a string');`;
-        })
-        .join('\n');
-
-    const returnStatement = paramNames.reduce((acc, paramName) => {
-        return `${acc} + ${paramName}`;
-    }, returnText.src.valueLiteral);
-
-    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
-        paramNames,
-        paramTexts
-    );
-
-    return `
-        ${paramsAreStrings}
-
-        ${paramsCorrectlyOrdered}
-
-        return ${returnStatement};
-    `;
-}
-
-function generateTest(
-    functionName: string,
-    paramTexts: CandidMeta<string>[],
-    returnTexts: CandidMeta<string>
-): Test {
-    const expectedResult = paramTexts.reduce(
-        (acc, text) => acc + text.value,
-        returnTexts.value
-    );
-    const paramValues = paramTexts.map((text) => text.value);
-
-    return {
-        name: `text ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/stable_b_tree_map/test');
-
-            const result = await actor[functionName](...paramValues);
-
-            return {
-                Ok: deepEqual(result, expectedResult)
-            };
-        }
-    };
-}
+runPropTests([
+    ContainsKeyTestArb,
+    GetTestArb,
+    IsEmptyTestArb,
+    ItemsTestArb,
+    KeysTestArb,
+    LenTestArb,
+    RemoveTestArb,
+    ValuesTestArb
+]);

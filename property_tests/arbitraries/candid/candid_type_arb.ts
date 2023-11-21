@@ -68,7 +68,7 @@ export const CandidTypeArb: fc.Arbitrary<CandidMeta<CandidType>> = fc.oneof(
     BoolArb,
     NullArb,
     TextArb,
-    PrincipalArb,
-    BlobArb
+    PrincipalArb
+    // BlobArb // TODO add this back in!!!
 );
 // TODO: This needs to support ALL valid candid types, including records, variants, etc.

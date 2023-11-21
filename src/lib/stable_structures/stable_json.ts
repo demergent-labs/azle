@@ -29,7 +29,11 @@ export function replacer(_key: string, value: any): any {
         };
     }
 
-    if (typeof value === 'object' && value._isPrincipal === true) {
+    if (
+        typeof value === 'object' &&
+        value !== null &&
+        value._isPrincipal === true
+    ) {
         return {
             __principal__: value.toString()
         };
@@ -87,7 +91,7 @@ export function replacer(_key: string, value: any): any {
 }
 
 export function reviver(_key: string, value: any): any {
-    if (typeof value === 'object') {
+    if (typeof value === 'object' && value !== null) {
         if (typeof value.__bigint__ === 'string') {
             return BigInt(value.__bigint__);
         }

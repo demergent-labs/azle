@@ -3,13 +3,19 @@ import { QueryMethodArb } from './query_method_arb';
 import { Test } from '../../test';
 import { TestSample } from './test_sample_arb';
 
-export function CanisterArb(testArb: fc.Arbitrary<TestSample>) {
+export function CanisterArb(testArbs: fc.Arbitrary<TestSample>[]) {
     return fc
-        .array(QueryMethodArb(testArb), {
-            minLength: 20, // TODO work on these
-            maxLength: 100
-        })
-        .map((queryMethods) => {
+        .tuple(
+            ...testArbs.map((testArb) =>
+                fc.array(QueryMethodArb(testArb), {
+                    minLength: 10,
+                    maxLength: 30
+                })
+            )
+        )
+        .map((queriesMethods) => {
+            const queryMethods = queriesMethods.flat(1);
+
             const queryMethodSourceCodes = queryMethods.map(
                 (queryMethod) => queryMethod.sourceCode
             );

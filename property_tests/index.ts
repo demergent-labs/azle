@@ -7,9 +7,9 @@ import { runTests } from '../test';
 
 export { getActor } from './get_actor';
 
-export function runPropTests(testArb: fc.Arbitrary<TestSample>) {
+export function runPropTests(testArbs: fc.Arbitrary<TestSample>[]) {
     fc.assert(
-        fc.asyncProperty(CanisterArb(testArb), async (canister) => {
+        fc.asyncProperty(CanisterArb(testArbs), async (canister) => {
             if (!existsSync('src')) {
                 mkdirSync('src');
             }
