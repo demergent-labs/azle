@@ -3,80 +3,36 @@ import { deepEqual } from 'fast-equals';
 
 import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { Int8Arb } from '../../../arbitraries/candid/primitive/ints/int8_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+import { Named, QueryMethodArb } from '../../../arbitraries/query_method_arb';
 
-const Int8TestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(Int8Arb),
-        Int8Arb
-    )
-    .map(
-        ([
-            functionName,
-            paramInt8s,
-            defaultReturnInt8
-        ]): QueryMethodBlueprint => {
-            const imports = defaultReturnInt8.src.imports;
+const AllInt8sQueryMethod = QueryMethodArb(fc.array(Int8Arb), Int8Arb, {
+    generateBody,
+    generateTests
+});
 
-            const paramNames = paramInt8s.map((_, index) => `param${index}`);
-            const paramCandidTypes = paramInt8s
-                .map((int8) => int8.src.candidType)
-                .join(', ');
-
-            const returnCandidType = defaultReturnInt8.src.candidType;
-
-            const body = generateBody(
-                paramNames,
-                paramInt8s,
-                defaultReturnInt8
-            );
-
-            const tests = [
-                generateTest(functionName, paramInt8s, defaultReturnInt8)
-            ];
-
-            return {
-                imports,
-                functionName,
-                paramNames,
-                paramCandidTypes,
-                returnCandidType,
-                body,
-                tests
-            };
-        }
-    );
-
-runPropTests(CanisterArb(Int8TestArb));
+runPropTests(CanisterArb(AllInt8sQueryMethod));
 
 function generateBody(
-    paramNames: string[],
-    paramInt8s: CandidMeta<number>[],
+    namedParamInt8s: Named<CandidMeta<number>>[],
     returnInt8: CandidMeta<number>
 ): string {
-    const paramsAreNumbers = paramNames
-        .map((paramName) => {
-            return `if (typeof ${paramName} !== 'number') throw new Error('${paramName} must be a number');`;
+    const paramsAreNumbers = namedParamInt8s
+        .map((param) => {
+            return `if (typeof ${param.name} !== 'number') throw new Error('${param.name} must be a number');`;
         })
         .join('\n');
 
-    const sum = paramNames.reduce((acc, paramName) => {
-        return `${acc} + ${paramName}`;
+    const sum = namedParamInt8s.reduce((acc, { name }) => {
+        return `${acc} + ${name}`;
     }, returnInt8.src.valueLiteral);
-    const count = paramInt8s.length + 1;
+    const count = namedParamInt8s.length + 1;
     const average = `Math.floor((${sum}) / ${count})`;
 
-    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
-        paramNames,
-        paramInt8s
-    );
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(namedParamInt8s);
 
     return `
         ${paramsAreNumbers}
@@ -87,29 +43,33 @@ function generateBody(
     `;
 }
 
-function generateTest(
+function generateTests(
     functionName: string,
-    paramInt8s: CandidMeta<number>[],
+    namedParamInt8s: Named<CandidMeta<number>>[],
     returnInt8: CandidMeta<number>
-): Test {
-    const count = paramInt8s.length + 1;
+): Test[] {
+    const count = namedParamInt8s.length + 1;
     const expectedResult = Math.floor(
-        paramInt8s.reduce(
-            (acc, int8) => acc + int8.agentResponseValue,
+        namedParamInt8s.reduce(
+            (acc, param) => acc + param.el.agentResponseValue,
             returnInt8.agentResponseValue
         ) / count
     );
-    const paramValues = paramInt8s.map((sample) => sample.agentArgumentValue);
-    return {
-        name: `test ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/int8/test');
+    const paramValues = namedParamInt8s.map(
+        (param) => param.el.agentArgumentValue
+    );
+    return [
+        {
+            name: `test ${functionName}`,
+            test: async () => {
+                const actor = getActor('./tests/int8/test');
 
-            const result = await actor[functionName](...paramValues);
+                const result = await actor[functionName](...paramValues);
 
-            return {
-                Ok: deepEqual(result, expectedResult)
-            };
+                return {
+                    Ok: deepEqual(result, expectedResult)
+                };
+            }
         }
-    };
+    ];
 }

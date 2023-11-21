@@ -3,80 +3,36 @@ import { deepEqual } from 'fast-equals';
 
 import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { Int64Arb } from '../../../arbitraries/candid/primitive/ints/int64_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+import { Named, QueryMethodArb } from '../../../arbitraries/query_method_arb';
 
-const Int64TestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(Int64Arb),
-        Int64Arb
-    )
-    .map(
-        ([
-            functionName,
-            paramInt64s,
-            defaultReturnInt64
-        ]): QueryMethodBlueprint => {
-            const imports = defaultReturnInt64.src.imports;
+const AllInt64sQueryMethod = QueryMethodArb(fc.array(Int64Arb), Int64Arb, {
+    generateBody,
+    generateTests
+});
 
-            const paramNames = paramInt64s.map((_, index) => `param${index}`);
-            const paramCandidTypes = paramInt64s
-                .map((int64) => int64.src.candidType)
-                .join(', ');
-
-            const returnCandidType = defaultReturnInt64.src.candidType;
-
-            const body = generateBody(
-                paramNames,
-                paramInt64s,
-                defaultReturnInt64
-            );
-
-            const tests = [
-                generateTest(functionName, paramInt64s, defaultReturnInt64)
-            ];
-
-            return {
-                imports,
-                functionName,
-                paramNames,
-                paramCandidTypes,
-                returnCandidType,
-                body,
-                tests
-            };
-        }
-    );
-
-runPropTests(CanisterArb(Int64TestArb));
+runPropTests(CanisterArb(AllInt64sQueryMethod));
 
 function generateBody(
-    paramNames: string[],
-    paramInt64s: CandidMeta<bigint>[],
+    namedParamInt64s: Named<CandidMeta<bigint>>[],
     returnInt64: CandidMeta<bigint>
 ): string {
-    const paramsAreBigInts = paramNames
-        .map((paramName) => {
-            return `if (typeof ${paramName} !== 'bigint') throw new Error('${paramName} must be a bigint');`;
+    const paramsAreBigInts = namedParamInt64s
+        .map((param) => {
+            return `if (typeof ${param.name} !== 'bigint') throw new Error('${param.name} must be a bigint');`;
         })
         .join('\n');
 
-    const sum = paramNames.reduce((acc, paramName) => {
-        return `${acc} + ${paramName}`;
+    const sum = namedParamInt64s.reduce((acc, { name }) => {
+        return `${acc} + ${name}`;
     }, returnInt64.src.valueLiteral);
-    const count = paramInt64s.length + 1;
+    const count = namedParamInt64s.length + 1;
     const average = `(${sum}) / ${count}n`;
 
-    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
-        paramNames,
-        paramInt64s
-    );
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(namedParamInt64s);
 
     return `
         ${paramsAreBigInts}
@@ -87,29 +43,33 @@ function generateBody(
     `;
 }
 
-function generateTest(
+function generateTests(
     functionName: string,
-    paramInt64s: CandidMeta<bigint>[],
+    namedParamInt64s: Named<CandidMeta<bigint>>[],
     returnInt64: CandidMeta<bigint>
-): Test {
-    const count = paramInt64s.length + 1;
+): Test[] {
+    const count = namedParamInt64s.length + 1;
     const expectedResult =
-        paramInt64s.reduce(
-            (acc, int64) => acc + int64.agentResponseValue,
+        namedParamInt64s.reduce(
+            (acc, param) => acc + param.el.agentResponseValue,
             returnInt64.agentResponseValue
         ) / BigInt(count);
 
-    const paramValues = paramInt64s.map((sample) => sample.agentArgumentValue);
-    return {
-        name: `int64 ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/int64/test');
+    const paramValues = namedParamInt64s.map(
+        (param) => param.el.agentArgumentValue
+    );
+    return [
+        {
+            name: `int64 ${functionName}`,
+            test: async () => {
+                const actor = getActor('./tests/int64/test');
 
-            const result = await actor[functionName](...paramValues);
+                const result = await actor[functionName](...paramValues);
 
-            return {
-                Ok: deepEqual(result, expectedResult)
-            };
+                return {
+                    Ok: deepEqual(result, expectedResult)
+                };
+            }
         }
-    };
+    ];
 }

@@ -3,80 +3,36 @@ import { deepEqual } from 'fast-equals';
 
 import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { Nat64Arb } from '../../../arbitraries/candid/primitive/nats/nat64_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+import { Named, QueryMethodArb } from '../../../arbitraries/query_method_arb';
 
-const Nat64TestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(Nat64Arb),
-        Nat64Arb
-    )
-    .map(
-        ([
-            functionName,
-            paramNat64s,
-            defaultReturnNat64
-        ]): QueryMethodBlueprint => {
-            const imports = defaultReturnNat64.src.imports;
+const AllNat64sQueryMethod = QueryMethodArb(fc.array(Nat64Arb), Nat64Arb, {
+    generateBody,
+    generateTests
+});
 
-            const paramNames = paramNat64s.map((_, index) => `param${index}`);
-            const paramCandidTypes = paramNat64s
-                .map((nat64) => nat64.src.candidType)
-                .join(', ');
-
-            const returnCandidType = defaultReturnNat64.src.candidType;
-
-            const body = generateBody(
-                paramNames,
-                paramNat64s,
-                defaultReturnNat64
-            );
-
-            const tests = [
-                generateTest(functionName, paramNat64s, defaultReturnNat64)
-            ];
-
-            return {
-                imports,
-                functionName,
-                paramNames,
-                paramCandidTypes,
-                returnCandidType,
-                body,
-                tests
-            };
-        }
-    );
-
-runPropTests(CanisterArb(Nat64TestArb));
+runPropTests(CanisterArb(AllNat64sQueryMethod));
 
 function generateBody(
-    paramNames: string[],
-    paramNat64s: CandidMeta<bigint>[],
+    namedParamNat64s: Named<CandidMeta<bigint>>[],
     returnNat64: CandidMeta<bigint>
 ): string {
-    const paramsAreBigInts = paramNames
-        .map((paramName) => {
-            return `if (typeof ${paramName} !== 'bigint') throw new Error('${paramName} must be a bigint');`;
+    const paramsAreBigInts = namedParamNat64s
+        .map((param) => {
+            return `if (typeof ${param.name} !== 'bigint') throw new Error('${param.name} must be a bigint');`;
         })
         .join('\n');
 
-    const sum = paramNames.reduce((acc, paramName) => {
-        return `${acc} + ${paramName}`;
+    const sum = namedParamNat64s.reduce((acc, { name }) => {
+        return `${acc} + ${name}`;
     }, returnNat64.src.valueLiteral);
-    const count = paramNat64s.length + 1;
+    const count = namedParamNat64s.length + 1;
     const average = `(${sum}) / ${count}n`;
 
-    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
-        paramNames,
-        paramNat64s
-    );
+    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(namedParamNat64s);
 
     return `
         ${paramsAreBigInts}
@@ -87,29 +43,33 @@ function generateBody(
     `;
 }
 
-function generateTest(
+function generateTests(
     functionName: string,
-    paramNat64s: CandidMeta<bigint>[],
+    namedParamNat64s: Named<CandidMeta<bigint>>[],
     returnNat64: CandidMeta<bigint>
-): Test {
-    const count = paramNat64s.length + 1;
+): Test[] {
+    const count = namedParamNat64s.length + 1;
     const expectedResult =
-        paramNat64s.reduce(
-            (acc, nat64) => acc + nat64.agentResponseValue,
+        namedParamNat64s.reduce(
+            (acc, param) => acc + param.el.agentResponseValue,
             returnNat64.agentResponseValue
         ) / BigInt(count);
-    const paramValues = paramNat64s.map((sample) => sample.agentArgumentValue);
+    const paramValues = namedParamNat64s.map(
+        (param) => param.el.agentArgumentValue
+    );
 
-    return {
-        name: `nat64 ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/nat64/test');
+    return [
+        {
+            name: `nat64 ${functionName}`,
+            test: async () => {
+                const actor = getActor('./tests/nat64/test');
 
-            const result = await actor[functionName](...paramValues);
+                const result = await actor[functionName](...paramValues);
 
-            return {
-                Ok: deepEqual(result, expectedResult)
-            };
+                return {
+                    Ok: deepEqual(result, expectedResult)
+                };
+            }
         }
-    };
+    ];
 }
