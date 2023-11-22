@@ -2,12 +2,12 @@ import { Principal } from '@dfinity/principal';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 
-import { runPropTests } from '../../..';
-import { CanisterArb } from '../../../arbitraries/canister_arb';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { ServiceArb } from '../../../arbitraries/candid/reference/service_arb';
-import { QueryMethodArb } from '../../../arbitraries/query_method_arb';
-import { Test } from '../../../../test';
+import { runPropTests } from 'azle/property_tests';
+import { CanisterArb } from 'azle/property_tests/arbitraries/canister_arb';
+import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
+import { ServiceArb } from 'azle/property_tests/arbitraries/candid/reference/service_arb';
+import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb';
+import { Test } from 'azle/test';
 
 const UniqueServicesArray = fc.uniqueArray(ServiceArb, {
     selector: (entry) => entry.src.candidType

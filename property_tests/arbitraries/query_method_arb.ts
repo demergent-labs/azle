@@ -65,7 +65,7 @@ export function QueryMethodArb<
 
             const namedParams = paramTypes.map(
                 <T>(param: T, index: number): Named<T> => ({
-                    name: `_param${index}`,
+                    name: `param${index}`,
                     el: param
                 })
             );

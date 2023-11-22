@@ -5,13 +5,13 @@ import {
     TupleArb,
     Tuple,
     ReturnTuple
-} from '../../../arbitraries/candid/constructed/tuple_arb';
-import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
-import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
-import { getActor, runPropTests } from '../../..';
-import { Test } from '../../../../test';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+} from 'azle/property_tests/arbitraries/candid/constructed/tuple_arb';
+import { QueryMethodBlueprint } from 'azle/property_tests/arbitraries/test_sample_arb';
+import { UniqueIdentifierArb } from 'azle/property_tests/arbitraries/unique_identifier_arb';
+import { getActor, runPropTests } from 'azle/property_tests';
+import { Test } from 'azle/test';
+import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
+import { areParamsCorrectlyOrdered } from 'azle/property_tests/are_params_correctly_ordered';
 
 const TupleTestArb = fc
     .tuple(

@@ -1,13 +1,13 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
-import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { TextArb } from '../../../arbitraries/candid/primitive/text';
-import { CanisterArb } from '../../../arbitraries/canister_arb';
-import { QueryMethodArb } from '../../../arbitraries/query_method_arb';
-import { getActor, runPropTests } from '../../../../property_tests';
-import { Test } from '../../../../test';
+import { areParamsCorrectlyOrdered } from 'azle/property_tests/are_params_correctly_ordered';
+import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
+import { TextArb } from 'azle/property_tests/arbitraries/candid/primitive/text';
+import { CanisterArb } from 'azle/property_tests/arbitraries/canister_arb';
+import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb';
+import { getActor, runPropTests } from 'azle/property_tests';
+import { Test } from 'azle/test';
 
 const AllTextQueryMethod = QueryMethodArb(fc.array(TextArb), TextArb, {
     generateBody,

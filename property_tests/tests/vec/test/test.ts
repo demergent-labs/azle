@@ -1,14 +1,14 @@
 import fc from 'fast-check';
 
-import { VecArb } from '../../../arbitraries/candid/constructed/vec_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { getActor, runPropTests } from '../../../../property_tests';
+import { VecArb } from 'azle/property_tests/arbitraries/candid/constructed/vec_arb';
+import { JsFunctionNameArb } from 'azle/property_tests/arbitraries/js_function_name_arb';
+import { QueryMethodBlueprint } from 'azle/property_tests/arbitraries/test_sample_arb';
+import { createUniquePrimitiveArb } from 'azle/property_tests/arbitraries/unique_primitive_arb';
+import { getActor, runPropTests } from 'azle/property_tests';
 import { deepEqual } from 'fast-equals';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { Test } from '../../../../test';
-import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
+import { Test } from 'azle/test';
+import { areParamsCorrectlyOrdered } from 'azle/property_tests/are_params_correctly_ordered';
 
 const VecTestArb = fc
     .tuple(
