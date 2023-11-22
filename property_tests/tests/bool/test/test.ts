@@ -9,12 +9,12 @@ import { Named, QueryMethodArb } from '../../../arbitraries/query_method_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { Test } from '../../../../test';
 
-const AllBoolQueryMethod = QueryMethodArb(fc.array(BoolArb), BoolArb, {
+const AllBoolsQueryMethod = QueryMethodArb(fc.array(BoolArb), BoolArb, {
     generateBody,
     generateTests
 });
 
-runPropTests(CanisterArb(AllBoolQueryMethod));
+runPropTests(CanisterArb(AllBoolsQueryMethod));
 
 function generateBody(
     namedParamBools: Named<CandidMeta<boolean>>[],

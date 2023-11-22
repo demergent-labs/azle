@@ -10,8 +10,8 @@ export const generateTests: TestsGenerator<CandidType, CandidType> = (
     params,
     returnType
 ): Test[] => {
-    const paramValues = params.map((param) => param.el.value);
-    const expectedResult = returnType.value;
+    const paramValues = params.map((param) => param.el.agentArgumentValue);
+    const expectedResult = returnType.agentResponseValue;
 
     return [
         {

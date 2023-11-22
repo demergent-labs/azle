@@ -5,7 +5,6 @@ import { CandidTypeArb } from 'azle/property_tests/arbitraries/candid/candid_typ
 import { CandidReturnTypeArb } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
 import { CanisterArb } from 'azle/property_tests/arbitraries/canister_arb';
 import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb';
-import { firstParamOrDefault as generateParamAndReturnArbs } from 'azle/property_tests/first_param_or_default';
 
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
@@ -17,7 +16,8 @@ import { generateTests } from './generate_tests';
 // TODO update methods
 
 const HeterogeneousQueryMethod = QueryMethodArb(
-    ...generateParamAndReturnArbs(CandidTypeArb, CandidReturnTypeArb),
+    fc.array(CandidTypeArb),
+    CandidReturnTypeArb,
     {
         generateBody,
         generateTests

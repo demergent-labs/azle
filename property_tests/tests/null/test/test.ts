@@ -3,52 +3,24 @@ import { deepEqual } from 'fast-equals';
 
 import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { NullArb } from '../../../arbitraries/candid/primitive/null';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { QueryMethodBlueprint } from '../../../arbitraries/test_sample_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
 import { getActor, runPropTests } from '../../../../property_tests';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Test } from '../../../../test';
+import { Named, QueryMethodArb } from '../../../arbitraries/query_method_arb';
 
-const NullTestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(NullArb),
-        NullArb
-    )
-    .map(([functionName, paramNulls, returnNull]): QueryMethodBlueprint => {
-        const imports = returnNull.src.imports;
+const AllNullsQueryMethod = QueryMethodArb(fc.array(NullArb), NullArb, {
+    generateBody,
+    generateTests
+});
 
-        const paramNames = paramNulls.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramNulls
-            .map((Null) => Null.src.candidType)
-            .join(', ');
-
-        const returnCandidType = returnNull.src.candidType;
-
-        const body = generateBody(paramNames, returnNull);
-
-        const tests = [generateTest(functionName, paramNulls, returnNull)];
-
-        return {
-            functionName,
-            imports,
-            paramCandidTypes,
-            returnCandidType,
-            paramNames,
-            body,
-            tests
-        };
-    });
-
-runPropTests(CanisterArb(NullTestArb));
+runPropTests(CanisterArb(AllNullsQueryMethod));
 
 function generateBody(
-    paramNames: string[],
+    namedParamNulls: Named<CandidMeta<null>>[],
     returnNull: CandidMeta<null>
 ): string {
-    const areAllNull = paramNames.reduce((acc, paramName) => {
-        return `${acc} && ${paramName} === null`;
+    const areAllNull = namedParamNulls.reduce((acc, { name }) => {
+        return `${acc} && ${name} === null`;
     }, 'true');
 
     const allNullCheck = `if (!(${areAllNull})) throw new Error("Not all of the values were null")`;
@@ -60,23 +32,27 @@ function generateBody(
     `;
 }
 
-function generateTest(
+function generateTests(
     functionName: string,
-    paramNulls: CandidMeta<null>[],
-    returnNull: CandidMeta<null>
-): Test {
-    return {
-        name: `test ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/null/test');
+    namedParamNulls: Named<CandidMeta<null>>[],
+    _returnNull: CandidMeta<null>
+): Test[] {
+    return [
+        {
+            name: `test ${functionName}`,
+            test: async () => {
+                const actor = getActor('./tests/null/test');
 
-            const result = await actor[functionName](
-                ...paramNulls.map((sample) => sample.agentArgumentValue)
-            );
+                const result = await actor[functionName](
+                    ...namedParamNulls.map(
+                        (param) => param.el.agentArgumentValue
+                    )
+                );
 
-            return {
-                Ok: deepEqual(result, null)
-            };
+                return {
+                    Ok: deepEqual(result, null)
+                };
+            }
         }
-    };
+    ];
 }
