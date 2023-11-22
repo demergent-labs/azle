@@ -9,9 +9,7 @@ import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
 const AllBlobsQueryMethod = QueryMethodArb(
-    fc.uniqueArray(TupleArb, {
-        selector: (entry) => entry.src.candidType
-    }),
+    fc.uniqueArray(TupleArb, { selector: (entry) => entry.src.candidType }),
     TupleArb,
     {
         generateBody,
