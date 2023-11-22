@@ -18,30 +18,46 @@ export type QueryMethod = {
 
 export type BodyGenerator<
     ParamType extends CandidType,
-    ReturnType extends CandidType
+    ParamAgentType,
+    ReturnType extends CandidType,
+    ReturnAgentType
 > = (
-    namedParams: Named<CandidMeta<ParamType>>[],
-    returnType: CandidMeta<ReturnType>
+    namedParams: Named<CandidMeta<ParamType, ParamAgentType>>[],
+    returnType: CandidMeta<ReturnType, ReturnAgentType>
 ) => string;
 
 export type TestsGenerator<
     ParamType extends CandidType,
-    ReturnType extends CandidType
+    ParamAgentType,
+    ReturnType extends CandidType,
+    ReturnAgentType
 > = (
     methodName: string,
-    namedParams: Named<CandidMeta<ParamType>>[],
-    returnType: CandidMeta<ReturnType>
+    namedParams: Named<CandidMeta<ParamType, ParamAgentType>>[],
+    returnType: CandidMeta<ReturnType, ReturnAgentType>
 ) => Test[];
 
 export function QueryMethodArb<
     ParamType extends CandidType,
-    ReturnType extends CandidType
+    ParamAgentType,
+    ReturnType extends CandidType,
+    ReturnAgentType
 >(
-    paramTypeArrayArb: fc.Arbitrary<CandidMeta<ParamType>[]>,
-    returnTypeArb: fc.Arbitrary<CandidMeta<ReturnType>>,
+    paramTypeArrayArb: fc.Arbitrary<CandidMeta<ParamType, ParamAgentType>[]>,
+    returnTypeArb: fc.Arbitrary<CandidMeta<ReturnType, ReturnAgentType>>,
     constraints: {
-        generateBody: BodyGenerator<ParamType, ReturnType>;
-        generateTests: TestsGenerator<ParamType, ReturnType>;
+        generateBody: BodyGenerator<
+            ParamType,
+            ParamAgentType,
+            ReturnType,
+            ReturnAgentType
+        >;
+        generateTests: TestsGenerator<
+            ParamType,
+            ParamAgentType,
+            ReturnType,
+            ReturnAgentType
+        >;
         // TODO: Consider adding a callback to determine the returnType
         // i.e. instead of using the first one if the params array isn't empty.
     }
