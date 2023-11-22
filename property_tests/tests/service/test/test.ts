@@ -8,13 +8,15 @@ import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const UniqueServicesArray = fc.uniqueArray(ServiceArb, {
-    selector: (entry) => entry.src.candidType
-});
-
-const AllServicesQueryMethod = QueryMethodArb(UniqueServicesArray, ServiceArb, {
-    generateBody,
-    generateTests
-});
+const AllServicesQueryMethod = QueryMethodArb(
+    fc.uniqueArray(ServiceArb, {
+        selector: (entry) => entry.src.candidType
+    }),
+    ServiceArb,
+    {
+        generateBody,
+        generateTests
+    }
+);
 
 runPropTests(CanisterArb(AllServicesQueryMethod));
