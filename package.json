@@ -59,6 +59,7 @@
         "prettier": "^3.0.3"
     },
     "lint-staged": {
+        "*.{js,ts}": "eslint --cache --fix",
         "**/*": "prettier --write --ignore-unknown"
     }
 }
