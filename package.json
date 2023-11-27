@@ -5,6 +5,7 @@
     "description": "TypeScript and JavaScript CDK for the Internet Computer",
     "scripts": {
         "typecheck": "tsc --noEmit",
+        "lint": "eslint . --ext .js,.ts --fix",
         "prepare": "husky install",
         "test": "test/test.sh"
     },
