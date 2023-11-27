@@ -3,7 +3,11 @@ module.exports = {
         es2021: true,
         node: true
     },
-    extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+    extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        'prettier'
+    ],
     overrides: [
         {
             env: {
@@ -22,9 +26,10 @@ module.exports = {
     },
     plugins: ['@typescript-eslint'],
     rules: {
-        indent: ['error', 4],
-        'linebreak-style': ['error', 'unix'],
-        quotes: ['error', 'single'],
-        semi: ['error', 'always']
+        quotes: [
+            'error',
+            'single',
+            { avoidEscape: true, allowTemplateLiterals: false }
+        ]
     }
 };
