@@ -49,6 +49,8 @@
         "@types/pako": "^2.0.3",
         "deep-equal": "^2.2.3",
         "deep-is": "^0.1.4",
+        "@typescript-eslint/eslint-plugin": "^6.13.0",
+        "@typescript-eslint/parser": "^6.13.0",
         "eslint": "8.11.0",
         "eslint-config-prettier": "8.5.0",
         "fast-check": "^3.13.1",
