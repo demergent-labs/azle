@@ -1,14 +1,14 @@
 import fc from 'fast-check';
 import { CandidType } from '../../candid_type_arb';
-import { CandidMeta } from '../../candid_arb';
+import { CandidValueAndMeta } from '../../candid_arb';
 import { Opt } from './index';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 
 type SomeOrNone = 'Some' | 'None';
 
 export function OptArb(
-    candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>
-): fc.Arbitrary<CandidMeta<Opt>> {
+    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>>
+): fc.Arbitrary<CandidValueAndMeta<Opt>> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
@@ -42,7 +42,7 @@ export function OptArb(
 
 function generateTypeDeclaration(
     name: string,
-    innerType: CandidMeta<CandidType>,
+    innerType: CandidValueAndMeta<CandidType>,
     useTypeDeclaration: boolean
 ) {
     if (useTypeDeclaration) {
@@ -53,17 +53,19 @@ function generateTypeDeclaration(
     return innerType.src.typeDeclaration;
 }
 
-function generateCandidType(innerType: CandidMeta<CandidType>): string {
+function generateCandidType(innerType: CandidValueAndMeta<CandidType>): string {
     return `Opt(${innerType.src.candidType})`;
 }
 
-function generateImports(innerType: CandidMeta<CandidType>): Set<string> {
+function generateImports(
+    innerType: CandidValueAndMeta<CandidType>
+): Set<string> {
     return new Set([...innerType.src.imports, 'Opt', 'Some', 'None']);
 }
 
 function generateValue(
     someOrNone: SomeOrNone,
-    innerType: CandidMeta<CandidType>,
+    innerType: CandidValueAndMeta<CandidType>,
     useAgentResponseValue: boolean = false
 ): Opt {
     if (someOrNone === 'Some') {
@@ -79,7 +81,7 @@ function generateValue(
 
 function generateValueLiteral(
     someOrNone: SomeOrNone,
-    innerType: CandidMeta<CandidType>
+    innerType: CandidValueAndMeta<CandidType>
 ): string {
     if (someOrNone === 'Some') {
         return `Some(${innerType.src.valueLiteral})`;

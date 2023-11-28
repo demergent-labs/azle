@@ -2,14 +2,16 @@ import fc from 'fast-check';
 
 import { PrincipalArb } from '../principal_arb';
 import { VoidArb } from '../../primitive/void';
-import { CandidMeta } from '../../candid_arb';
+import { CandidValueAndMeta } from '../../candid_arb';
 import { CandidType } from '../../candid_type_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { Func } from './index';
 
 type Mode = 'query' | 'update' | 'oneway';
 
-export function FuncArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
+export function FuncArb(
+    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>>
+) {
     return (fc.constantFrom('query', 'update', 'oneway') as fc.Arbitrary<Mode>)
         .chain((mode) => {
             const returnType = mode === 'oneway' ? VoidArb : candidTypeArb;
@@ -23,7 +25,13 @@ export function FuncArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
             );
         })
         .map(
-            ([name, params, returnFunc, mode, principal]): CandidMeta<Func> => {
+            ([
+                name,
+                params,
+                returnFunc,
+                mode,
+                principal
+            ]): CandidValueAndMeta<Func> => {
                 const typeDeclaration = generateTypeDeclaration(
                     name,
                     params,
@@ -57,8 +65,8 @@ export function FuncArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
 
 function generateTypeDeclaration(
     name: string,
-    paramCandids: CandidMeta<CandidType>[],
-    returnCandid: CandidMeta<CandidType>,
+    paramCandids: CandidValueAndMeta<CandidType>[],
+    returnCandid: CandidValueAndMeta<CandidType>,
     mode: Mode
 ): string {
     const paramTypeDeclarations = paramCandids

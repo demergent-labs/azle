@@ -1,14 +1,14 @@
 import fc from 'fast-check';
-import { CandidMeta } from '../../candid_arb';
+import { CandidValueAndMeta } from '../../candid_arb';
 import { CandidType } from '../../candid_type_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { Variant } from '.';
 
-type Field = [string, CandidMeta<CandidType>];
+type Field = [string, CandidValueAndMeta<CandidType>];
 
 function VariantFieldsArb(
-    candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>
+    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>>
 ): fc.Arbitrary<Field[]> {
     return fc.uniqueArray(fc.tuple(JsFunctionNameArb, candidTypeArb), {
         selector: (entry) => entry[0],
@@ -20,46 +20,56 @@ function VariantFieldsArb(
 }
 
 export function BaseVariantArb(
-    candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>
-): fc.Arbitrary<CandidMeta<Variant>> {
+    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>>
+): fc.Arbitrary<CandidValueAndMeta<Variant>> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
             VariantFieldsArb(candidTypeArb),
             fc.boolean()
         )
-        .map(([name, fields, useTypeDeclaration]): CandidMeta<Variant> => {
-            const randomIndex = Math.floor(Math.random() * fields.length);
-
-            const candidType = useTypeDeclaration
-                ? name
-                : generateCandidType(fields);
-
-            const typeDeclaration = generateTypeDeclaration(
+        .map(
+            ([
                 name,
                 fields,
                 useTypeDeclaration
-            );
+            ]): CandidValueAndMeta<Variant> => {
+                const randomIndex = Math.floor(Math.random() * fields.length);
 
-            const imports = generateImports(fields);
+                const candidType = useTypeDeclaration
+                    ? name
+                    : generateCandidType(fields);
 
-            const valueLiteral = generateValueLiteral(randomIndex, fields);
+                const typeDeclaration = generateTypeDeclaration(
+                    name,
+                    fields,
+                    useTypeDeclaration
+                );
 
-            const agentArgumentValue = generateValue(randomIndex, fields);
+                const imports = generateImports(fields);
 
-            const agentResponseValue = generateValue(randomIndex, fields, true);
+                const valueLiteral = generateValueLiteral(randomIndex, fields);
 
-            return {
-                src: {
-                    candidType,
-                    typeDeclaration,
-                    imports,
-                    valueLiteral
-                },
-                agentArgumentValue,
-                agentResponseValue
-            };
-        });
+                const agentArgumentValue = generateValue(randomIndex, fields);
+
+                const agentResponseValue = generateValue(
+                    randomIndex,
+                    fields,
+                    true
+                );
+
+                return {
+                    src: {
+                        candidType,
+                        typeDeclaration,
+                        imports,
+                        valueLiteral
+                    },
+                    agentArgumentValue,
+                    agentResponseValue
+                };
+            }
+        );
 }
 
 function generateImports(fields: Field[]): Set<string> {

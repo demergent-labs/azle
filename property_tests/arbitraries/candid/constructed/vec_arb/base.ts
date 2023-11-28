@@ -1,12 +1,12 @@
 import fc, { sample } from 'fast-check';
-import { CandidMeta, Src } from '../../candid_arb';
+import { CandidValueAndMeta, Src } from '../../candid_arb';
 import { CandidType } from '../../candid_type_arb';
 import { Vec } from './index';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 
 export function VecInnerArb<T extends CandidType>(
-    arb: fc.Arbitrary<CandidMeta<T>>
-): fc.Arbitrary<CandidMeta<Vec>> {
+    arb: fc.Arbitrary<CandidValueAndMeta<T>>
+): fc.Arbitrary<CandidValueAndMeta<Vec>> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
@@ -20,7 +20,7 @@ export function VecInnerArb<T extends CandidType>(
                 vecOfInnerType,
                 { src: innerTypeSrc },
                 useTypeDeclaration
-            ]): CandidMeta<Vec> => {
+            ]): CandidValueAndMeta<Vec> => {
                 const valueLiteral = generateValueLiteral(
                     vecOfInnerType,
                     innerTypeSrc.candidType
@@ -132,7 +132,7 @@ function generateCandidType(innerTypeSrc: Src): string {
 }
 
 function generateValue<T extends CandidType>(
-    array: CandidMeta<T>[],
+    array: CandidValueAndMeta<T>[],
     candidType: string,
     returned: boolean = false
 ): Vec {
@@ -173,7 +173,7 @@ function generateValue<T extends CandidType>(
 }
 
 function generateValueLiteral<T extends CandidType>(
-    sample: CandidMeta<T>[],
+    sample: CandidValueAndMeta<T>[],
     candidType: string
 ) {
     // Hack until https://github.com/demergent-labs/azle/issues/1453 gets fixed

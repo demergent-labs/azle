@@ -1,11 +1,13 @@
 import fc from 'fast-check';
 
-import { CandidMeta } from '../../candid_arb';
+import { CandidValueAndMeta } from '../../candid_arb';
 import { CandidType } from '../../candid_type_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { ReturnTuple, Tuple } from './index';
 
-export function TupleArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
+export function TupleArb(
+    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>>
+) {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
@@ -13,7 +15,7 @@ export function TupleArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
             fc.boolean()
         )
         .map(
-            ([name, fields, useTypeDeclaration]): CandidMeta<
+            ([name, fields, useTypeDeclaration]): CandidValueAndMeta<
                 Tuple,
                 ReturnTuple
             > => {
@@ -49,11 +51,13 @@ export function TupleArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
         );
 }
 
-function generateVale(fields: CandidMeta<CandidType>[]) {
+function generateVale(fields: CandidValueAndMeta<CandidType>[]) {
     return fields.map((field) => field.agentArgumentValue);
 }
 
-function generateExpectedValue(fields: CandidMeta<CandidType>[]): ReturnTuple {
+function generateExpectedValue(
+    fields: CandidValueAndMeta<CandidType>[]
+): ReturnTuple {
     if (fields.length === 0) {
         return {};
     }
@@ -62,7 +66,7 @@ function generateExpectedValue(fields: CandidMeta<CandidType>[]): ReturnTuple {
 
 function generateTypeDeclaration(
     name: string,
-    fields: CandidMeta<CandidType>[],
+    fields: CandidValueAndMeta<CandidType>[],
     useTypeDeclaration: boolean
 ): string {
     const fieldTypeDeclarations = fields
@@ -76,18 +80,20 @@ function generateTypeDeclaration(
     return fieldTypeDeclarations;
 }
 
-function generateCandidType(fields: CandidMeta<CandidType>[]) {
+function generateCandidType(fields: CandidValueAndMeta<CandidType>[]) {
     const innerTypes = fields.map((field) => field.src.candidType);
 
     return `Tuple(${innerTypes.join(', ')})`;
 }
 
-function generateImports(fields: CandidMeta<CandidType>[]): Set<string> {
+function generateImports(
+    fields: CandidValueAndMeta<CandidType>[]
+): Set<string> {
     const fieldImports = fields.flatMap((field) => [...field.src.imports]);
     return new Set([...fieldImports, 'Tuple']);
 }
 
-function generateValueLiteral(fields: CandidMeta<CandidType>[]) {
+function generateValueLiteral(fields: CandidValueAndMeta<CandidType>[]) {
     const fieldLiterals = fields
         .map((field) => field.src.valueLiteral)
         .join(',\n');

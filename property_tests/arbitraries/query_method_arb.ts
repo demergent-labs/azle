@@ -2,8 +2,8 @@ import fc from 'fast-check';
 import { Test } from '../../test';
 import { UniqueIdentifierArb } from './unique_identifier_arb';
 import { CandidType } from './candid/candid_type_arb';
-import { CandidMeta } from './candid/candid_arb';
 import { Named } from '../';
+import { CandidValueAndMeta } from './candid/candid_arb';
 
 export type QueryMethod = {
     imports: Set<string>;
@@ -19,9 +19,9 @@ export type BodyGenerator<
     ReturnTypeAgentResponseValue
 > = (
     namedParams: Named<
-        CandidMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
+        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
     >[],
-    returnType: CandidMeta<
+    returnType: CandidValueAndMeta<
         ReturnTypeAgentArgumentValue,
         ReturnTypeAgentResponseValue
     >
@@ -35,9 +35,9 @@ export type TestsGenerator<
 > = (
     methodName: string,
     namedParams: Named<
-        CandidMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
+        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
     >[],
-    returnType: CandidMeta<
+    returnType: CandidValueAndMeta<
         ReturnTypeAgentArgumentValue,
         ReturnTypeAgentResponseValue
     >
@@ -50,10 +50,13 @@ export function QueryMethodArb<
     ReturnTypeAgentResponseValue
 >(
     paramTypeArrayArb: fc.Arbitrary<
-        CandidMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
+        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
     >,
     returnTypeArb: fc.Arbitrary<
-        CandidMeta<ReturnTypeAgentArgumentValue, ReturnTypeAgentResponseValue>
+        CandidValueAndMeta<
+            ReturnTypeAgentArgumentValue,
+            ReturnTypeAgentResponseValue
+        >
     >,
     constraints: {
         generateBody: BodyGenerator<
