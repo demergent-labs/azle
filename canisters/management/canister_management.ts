@@ -1,12 +1,12 @@
 import {
-    Record,
-    Opt,
-    Vec,
-    Principal,
+    blob,
     nat,
-    Variant,
     Null,
-    blob
+    Opt,
+    Principal,
+    Record,
+    Variant,
+    Vec
 } from '../../src/lib';
 
 export const CanisterId = Principal;

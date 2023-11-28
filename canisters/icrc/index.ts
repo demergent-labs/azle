@@ -3,11 +3,11 @@ import {
     nat,
     nat8,
     Opt,
-    Record,
     query,
-    update,
+    Record,
     text,
     Tuple,
+    update,
     Vec
 } from '../../src/lib';
 import { Account, TransferArgs, TransferResult, Value } from './icrc_1';

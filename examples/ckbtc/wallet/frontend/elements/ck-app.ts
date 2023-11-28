@@ -1,12 +1,13 @@
 // @ts-nocheck
 
-import { LitElement, html } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
-import { AuthClient } from '@dfinity/auth-client';
 import { ActorSubclass, HttpAgent, Identity } from '@dfinity/agent';
+import { AuthClient } from '@dfinity/auth-client';
+import { nat, nat64 } from 'azle';
+import { html, LitElement } from 'lit';
+import { customElement, state } from 'lit/decorators.js';
+
 import { createActor } from '../dfx_generated/wallet_backend';
 import { _SERVICE } from '../dfx_generated/wallet_backend/wallet_backend.did';
-import { nat, nat64 } from 'azle';
 
 @customElement('ck-app')
 export class CkApp extends LitElement {

@@ -1,6 +1,7 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/async_await/async_await.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/async_await/async_await.did';
 
 export function get_tests(
     async_await_canister: ActorSubclass<_SERVICE>

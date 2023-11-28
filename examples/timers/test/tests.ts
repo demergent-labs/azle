@@ -1,5 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
+
 import { _SERVICE } from './dfx_generated/timers/timers.did';
 
 let timerIds = {

@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { blob, $init, match, nat64, $postUpgrade, $update, Vec } from 'azle';
+import { $init, $postUpgrade, $update, blob, match, nat64, Vec } from 'azle';
 import {
     BitcoinNetwork,
     GetUtxosResult,

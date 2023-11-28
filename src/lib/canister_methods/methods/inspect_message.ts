@@ -1,6 +1,6 @@
 import { Void } from '../../candid/types/primitive/void';
-import { CanisterMethodInfo } from '../types/canister_method_info';
 import { executeMethod } from '../execute_method';
+import { CanisterMethodInfo } from '../types/canister_method_info';
 
 export function inspectMessage(
     callback: () => void | Promise<void>

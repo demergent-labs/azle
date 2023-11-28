@@ -1,5 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
+
 import { _SERVICE as _COMPLEX_SERVICE } from './dfx_generated/complex_init/complex_init.did';
 // @ts-ignore
 import { _SERVICE as _REC_SERVICE } from './dfx_generated/rec_init/rec_init.did';

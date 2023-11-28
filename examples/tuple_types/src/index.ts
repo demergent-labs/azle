@@ -1,21 +1,21 @@
 import {
-    query,
+    Canister,
     // CallResult,
     int,
-    nat64,
     nat8,
+    nat64,
     Null,
     Principal,
+    query,
     Record,
+    Recursive,
     // Service,
     // serviceUpdate,
     text,
     Tuple,
     Variant,
     Vec,
-    Void,
-    Recursive,
-    Canister
+    Void
 } from 'azle';
 
 // TODO maybe we should write tests for canister and stable storage?

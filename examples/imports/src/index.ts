@@ -1,6 +1,7 @@
 import { Canister, int, query, text } from 'azle';
-import { one, two, three } from './library';
 import { sha224 } from 'js-sha256';
+
+import { one, three, two } from './library';
 
 export default Canister({
     getOne: query([], text, () => {

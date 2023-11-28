@@ -1,7 +1,7 @@
-import { ic } from '../ic';
 import { CandidType } from '../candid/candid_type';
 import { decode } from '../candid/serde/decode';
 import { encode } from '../candid/serde/encode';
+import { ic } from '../ic';
 import { CanisterMethodInfo } from './types/canister_method_info';
 
 export function executeMethod(

@@ -1,6 +1,7 @@
 import fc from 'fast-check';
-import { QueryMethodArb } from './query_method_arb';
+
 import { Test } from '../../test';
+import { QueryMethodArb } from './query_method_arb';
 import { TestSample } from './test_sample_arb';
 
 export function CanisterArb(testArb: fc.Arbitrary<TestSample>) {

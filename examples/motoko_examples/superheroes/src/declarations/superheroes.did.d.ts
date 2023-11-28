@@ -1,5 +1,5 @@
-import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
+import type { Principal } from '@dfinity/principal';
 
 export type rec_28 = [string, [] | [rec_28]];
 export type rec_33 = [string, [] | [rec_33]];

@@ -1,10 +1,11 @@
 import { IDL } from '@dfinity/candid';
+
 import { VisitorData, VisitorResult } from './types';
-import { visitTuple } from './visit/tuple';
-import { visitVec } from './visit/vec';
 import { visitRecord } from './visit/record';
 import { visitRec } from './visit/recursive';
+import { visitTuple } from './visit/tuple';
 import { visitVariant } from './visit/variant';
+import { visitVec } from './visit/vec';
 
 /**
  * When we encode a Service we have a service class and we need it to be only

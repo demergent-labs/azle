@@ -1,12 +1,12 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { Test } from '../../../../test';
 import { getActor, runPropTests } from '../../..';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { FuncArb, Func } from '../../../arbitraries/candid/reference/func_arb';
+import { Func, FuncArb } from '../../../arbitraries/candid/reference/func_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
-import { Test } from '../../../../test';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const FuncTestArb = fc

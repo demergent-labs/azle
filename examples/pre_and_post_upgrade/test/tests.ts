@@ -1,7 +1,8 @@
+import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { execSync } from 'child_process';
+
 import { _SERVICE } from './dfx_generated/pre_and_post_upgrade/pre_and_post_upgrade.did';
-import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(
     preAndPostUpgradeCanister: ActorSubclass<_SERVICE>

@@ -1,8 +1,9 @@
 import fc from 'fast-check';
+
+import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { CandidMeta } from '../../candid_arb';
 import { CandidType } from '../../candid_type_arb';
-import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
-import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { Variant } from '.';
 
 type Field = [string, CandidMeta<CandidType>];

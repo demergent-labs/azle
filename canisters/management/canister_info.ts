@@ -5,14 +5,14 @@
 // Some documentation changed from original work.
 
 import {
-    Record,
-    Opt,
-    Vec,
-    Principal,
-    Variant,
-    nat64,
     nat8,
-    Null
+    nat64,
+    Null,
+    Opt,
+    Principal,
+    Record,
+    Variant,
+    Vec
 } from '../../src/lib';
 import { managementCanister } from '.';
 

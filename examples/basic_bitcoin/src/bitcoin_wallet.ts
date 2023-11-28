@@ -9,7 +9,7 @@
 //! * Support for address types that aren't P2PKH.
 //! * Caching spent UTXOs so that they are not reused in future transactions.
 //! * Option to set the fee.
-import { blob, ic, nat64, match, Result, Vec } from 'azle';
+import { blob, ic, match, nat64, Result, Vec } from 'azle';
 import {
     BitcoinNetwork,
     MillisatoshiPerByte,

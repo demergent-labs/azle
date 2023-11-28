@@ -1,5 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
+
 import { _SERVICE } from './dfx_generated/null_example/null_example.did';
 
 export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
@@ -52,9 +53,8 @@ export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
                     secondItem: null,
                     thirdItem: 15n
                 };
-                const result = await nullExampleCanister.setPartiallyNullRecord(
-                    record
-                );
+                const result =
+                    await nullExampleCanister.setPartiallyNullRecord(record);
 
                 return {
                     Ok:
@@ -87,9 +87,8 @@ export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
                     firstItem: null,
                     secondItem: null
                 };
-                const result = await nullExampleCanister.setSmallNullRecord(
-                    record
-                );
+                const result =
+                    await nullExampleCanister.setSmallNullRecord(record);
 
                 return {
                     Ok:
@@ -124,9 +123,8 @@ export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
                     secondItem: null,
                     thirdItem: null
                 };
-                const result = await nullExampleCanister.setLargeNullRecord(
-                    record
-                );
+                const result =
+                    await nullExampleCanister.setLargeNullRecord(record);
 
                 return {
                     Ok:

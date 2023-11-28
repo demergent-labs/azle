@@ -1,5 +1,6 @@
-import { Test } from '../../../test'; // We don't want to install Azle
 import { execSync } from 'child_process';
+
+import { Test } from '../../../test'; // We don't want to install Azle
 
 export function getTests(): Test[] {
     return [

@@ -1,10 +1,10 @@
 import fc from 'fast-check';
 
-import { PrincipalArb } from '../principal_arb';
-import { VoidArb } from '../../primitive/void';
+import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { CandidMeta } from '../../candid_arb';
 import { CandidType } from '../../candid_type_arb';
-import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
+import { VoidArb } from '../../primitive/void';
+import { PrincipalArb } from '../principal_arb';
 import { Func } from './index';
 
 type Mode = 'query' | 'update' | 'oneway';

@@ -1,6 +1,7 @@
-import { Principal } from '@dfinity/principal';
 import { ActorSubclass } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
 import { Test } from 'azle/test';
+
 import { _SERVICE } from './dfx_generated/principal/principal.did';
 
 export function getTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {

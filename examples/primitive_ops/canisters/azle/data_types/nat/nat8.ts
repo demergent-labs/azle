@@ -1,4 +1,5 @@
 import { ic, nat8, nat32, update } from 'azle';
+
 import { PerfResult } from '../../perf_result';
 
 let nat8_init_heap_storage: { [key: string]: nat8 | undefined } = {};

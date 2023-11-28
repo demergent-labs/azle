@@ -1,4 +1,5 @@
 import { IDL } from '@dfinity/candid';
+
 import {
     CandidDef,
     CandidTypesDefs,

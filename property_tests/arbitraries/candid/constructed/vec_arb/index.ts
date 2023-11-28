@@ -1,4 +1,9 @@
 import fc from 'fast-check';
+
+import { CandidType } from '../../candid_type_arb';
+import { BoolArb } from '../../primitive/bool';
+import { Float32Arb } from '../../primitive/floats/float32_arb';
+import { Float64Arb } from '../../primitive/floats/float64_arb';
 import { IntArb } from '../../primitive/ints/int_arb';
 import { Int8Arb } from '../../primitive/ints/int8_arb';
 import { Int16Arb } from '../../primitive/ints/int16_arb';
@@ -9,15 +14,11 @@ import { Nat8Arb } from '../../primitive/nats/nat8_arb';
 import { Nat16Arb } from '../../primitive/nats/nat16_arb';
 import { Nat32Arb } from '../../primitive/nats/nat32_arb';
 import { Nat64Arb } from '../../primitive/nats/nat64_arb';
-import { PrincipalArb } from '../../reference/principal_arb';
-import { BoolArb } from '../../primitive/bool';
-import { Float32Arb } from '../../primitive/floats/float32_arb';
-import { Float64Arb } from '../../primitive/floats/float64_arb';
 import { NullArb } from '../../primitive/null';
 import { TextArb } from '../../primitive/text';
+import { PrincipalArb } from '../../reference/principal_arb';
 import { BlobArb } from '../blob_arb';
 import { VecInnerArb } from './base';
-import { CandidType } from '../../candid_type_arb';
 
 export type Vec =
     | CandidType[]

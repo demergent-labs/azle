@@ -1,4 +1,5 @@
 import { bool, Canister, ic, Manual, nat32, query, update } from 'azle';
+
 import {
     allowAll,
     incrementCounterAndAllowAll,

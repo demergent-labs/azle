@@ -1,4 +1,5 @@
 import { ic, nat32, Null, Principal, update, Variant } from 'azle';
+
 import { PerfResult } from '../../perf_result';
 
 const Reaction = Variant({

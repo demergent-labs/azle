@@ -1,10 +1,11 @@
 import { IDL } from '@dfinity/candid';
-import { EncodeVisitor } from '../../encode_visitor';
+
 import { AzleResult } from '../../../../../system_types';
 import { DecodeVisitor } from '../../decode_visitor';
+import { EncodeVisitor } from '../../encode_visitor';
 import { VisitorData, VisitorResult } from '../../types';
-import { visitAzleVariant } from './azle_variant';
 import { visitAzleResult } from './azle_result';
+import { visitAzleVariant } from './azle_variant';
 
 export function visitVariant(
     visitor: DecodeVisitor | EncodeVisitor,

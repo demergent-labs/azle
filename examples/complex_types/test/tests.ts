@@ -1,6 +1,7 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/complex_types/complex_types.did.d';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/complex_types/complex_types.did.d';
 
 export function get_tests(
     complex_types_canister: ActorSubclass<_SERVICE>

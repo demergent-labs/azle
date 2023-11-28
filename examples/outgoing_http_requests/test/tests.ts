@@ -1,8 +1,9 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/outgoing_http_requests/outgoing_http_requests.did';
 import { HttpResponse } from 'azle/canisters/management';
+import { Test } from 'azle/test';
 import decodeUtf8 from 'decode-utf8';
+
+import { _SERVICE } from './dfx_generated/outgoing_http_requests/outgoing_http_requests.did';
 
 export function getTests(
     outgoingHttpRequestsCanister: ActorSubclass<_SERVICE>

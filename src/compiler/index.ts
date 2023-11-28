@@ -1,5 +1,16 @@
+import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
+import { copySync } from 'fs-extra';
 import { join } from 'path';
+
+import {
+    dfx_version as dfxVersion,
+    rust_version as rustVersion,
+    version as azleVersion
+} from '../../package.json';
 import { compileRustCode } from './compile_rust_code';
+import { compileTypeScriptToJavaScript } from './compile_typescript_code';
+import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
+import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 import { installRustDependencies } from './install_rust_dependencies';
 import { generateNewAzleProject } from './new_command';
 import {
@@ -11,14 +22,8 @@ import {
     time,
     unwrap
 } from './utils';
-import { dim, green, red } from './utils/colors';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils';
-import {
-    version as azleVersion,
-    dfx_version as dfxVersion,
-    rust_version as rustVersion
-} from '../../package.json';
-import { compileTypeScriptToJavaScript } from './compile_typescript_code';
+import { dim, green, red } from './utils/colors';
 import { Err, ok } from './utils/result';
 import {
     AzleError,
@@ -27,10 +32,6 @@ import {
     TsCompilationError,
     TsSyntaxErrorLocation
 } from './utils/types';
-import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
-import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
-import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
-import { copySync } from 'fs-extra';
 
 azle();
 

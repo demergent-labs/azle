@@ -1,4 +1,5 @@
-import { Canister, int, Vec, query } from 'azle';
+import { Canister, int, query, Vec } from 'azle';
+
 import { Int } from './comparison';
 import * as Quicksort from './quicksort';
 

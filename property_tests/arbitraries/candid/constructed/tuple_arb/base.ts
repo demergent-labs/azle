@@ -1,8 +1,8 @@
 import fc from 'fast-check';
 
+import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { CandidMeta } from '../../candid_arb';
 import { CandidType } from '../../candid_type_arb';
-import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { ReturnTuple, Tuple } from './index';
 
 export function TupleArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {

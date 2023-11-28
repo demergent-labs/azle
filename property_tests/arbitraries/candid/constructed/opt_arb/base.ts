@@ -1,8 +1,9 @@
 import fc from 'fast-check';
-import { CandidType } from '../../candid_type_arb';
-import { CandidMeta } from '../../candid_arb';
-import { Opt } from './index';
+
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
+import { CandidMeta } from '../../candid_arb';
+import { CandidType } from '../../candid_type_arb';
+import { Opt } from './index';
 
 type SomeOrNone = 'Some' | 'None';
 

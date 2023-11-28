@@ -1,6 +1,7 @@
 import { IDL } from '@dfinity/candid';
-import { encode } from '../../serde/encode';
+
 import { decode } from '../../serde/decode';
+import { encode } from '../../serde/encode';
 
 export class AzleBool {
     _azleKind: 'AzleBool' = 'AzleBool';

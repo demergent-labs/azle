@@ -1,8 +1,9 @@
 import fc, { sample } from 'fast-check';
+
+import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { CandidMeta, Src } from '../../candid_arb';
 import { CandidType } from '../../candid_type_arb';
 import { Vec } from './index';
-import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 
 export function VecInnerArb<T extends CandidType>(
     arb: fc.Arbitrary<CandidMeta<T>>

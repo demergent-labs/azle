@@ -3,8 +3,8 @@ import { ChildProcessWithoutNullStreams, execSync, spawn } from 'child_process';
 import { existsSync, rmSync } from 'fs-extra';
 
 import { bitcoinCli, TxInput, TxOutputs, Utxo } from './bitcoin_cli';
-import { Wallets } from './wallets';
 import { State } from './test';
+import { Wallets } from './wallets';
 
 /**
  * Performs preparatory work to get the bitcoin network into a testable state.

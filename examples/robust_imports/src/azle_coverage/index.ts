@@ -1,18 +1,21 @@
+import { ic, ic as lemon, int16 as coconut } from 'azle';
+
 import kiwi, {
     banana,
     blackberry,
     elderberry,
+    Farkleberry,
     fig32,
     fig64,
-    Farkleberry,
     honeydew,
     icaco,
-    ilama,
     iceApple,
     iceApple8,
     iceApple16,
     iceApple32,
     iceApple64,
+    ilama,
+    Lime,
     Mango,
     nectarine,
     nectarine8,
@@ -21,24 +24,21 @@ import kiwi, {
     nectarine64,
     Nutmeg,
     Olive,
-    pomegranate,
-    pineapple,
-    peach,
     Peach,
+    peach,
+    pineapple,
+    pomegranate,
     quince,
-    Raspberry,
     rambutan,
-    Strawberry,
+    Raspberry,
     Soncoya,
-    tangerine,
+    Strawberry,
     Tamarind,
+    tangerine,
     ugni,
-    Voavanga,
-    Lime,
-    Vanilla
+    Vanilla,
+    Voavanga
 } from './fruit';
-
-import { ic as lemon, int16 as coconut, ic } from 'azle';
 import * as starFruit from './fruit';
 
 const FruitDeliveryCanister = Strawberry({

@@ -1,6 +1,7 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/key_value_store/key_value_store.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/key_value_store/key_value_store.did';
 
 export function getTests(
     keyValueStoreCanister: ActorSubclass<_SERVICE>

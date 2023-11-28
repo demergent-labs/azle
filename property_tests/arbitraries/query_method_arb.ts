@@ -1,6 +1,7 @@
 import fc from 'fast-check';
-import { TestSample } from './test_sample_arb';
+
 import { Test } from '../../test';
+import { TestSample } from './test_sample_arb';
 
 type QueryMethod = {
     sourceCode: string;

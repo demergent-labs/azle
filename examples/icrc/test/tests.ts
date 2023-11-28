@@ -1,7 +1,8 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/proxy/proxy.did';
 import { Principal } from '@dfinity/principal';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/proxy/proxy.did';
 
 export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
     return [

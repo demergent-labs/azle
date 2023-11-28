@@ -1,11 +1,10 @@
 import { blob, nat, nat64, Null, Opt, Record, Variant } from '../../src/lib';
-
 import {
-    BadFee,
     BadBurn,
-    InsufficientFunds,
+    BadFee,
     Duplicate,
-    GenericError
+    GenericError,
+    InsufficientFunds
 } from './errors';
 import { Account, CreatedInFuture } from './icrc_1';
 

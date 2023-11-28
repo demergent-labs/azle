@@ -9,6 +9,7 @@ import {
     text,
     update
 } from 'azle';
+
 import Canister3 from '../canister3';
 
 let canister3: typeof Canister3;

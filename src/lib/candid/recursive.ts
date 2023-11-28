@@ -1,5 +1,6 @@
-import { v4 } from 'uuid';
 import { IDL } from '@dfinity/candid';
+import { v4 } from 'uuid';
+
 import { CandidType, Parent } from './index';
 
 export type _AzleRecursiveFunction = {

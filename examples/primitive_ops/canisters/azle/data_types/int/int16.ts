@@ -1,4 +1,5 @@
 import { ic, int16, nat32, update } from 'azle';
+
 import { PerfResult } from '../../perf_result';
 
 let int16_init_heap_storage: { [key: string]: int16 | undefined } = {};
