@@ -46,6 +46,7 @@
         "@typescript-eslint/parser": "^6.13.0",
         "eslint": "^8.54.0",
         "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-simple-import-sort": "^10.0.0",
         "fast-check": "^3.13.1",
         "fast-equals": "5.0.1",
         "husky": "7.0.4",
