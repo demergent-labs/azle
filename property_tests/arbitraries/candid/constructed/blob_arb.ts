@@ -1,5 +1,8 @@
 import fc from 'fast-check';
-import { CandidValueAndMeta, CandidValueAndMetaArb } from '../candid_arb';
+import {
+    CandidValueAndMeta,
+    CandidValueAndMetaArb
+} from '../candid_value_and_meta_arb';
 import { blobToSrcLiteral } from '../to_src_literal/blob';
 
 export const BlobArb = fc

@@ -5,7 +5,7 @@ import { CandidType } from './candid/candid_type_arb';
 import { UniqueIdentifierArb } from './unique_identifier_arb';
 import { Test } from '../../test';
 import { Named } from '../';
-import { CandidValueAndMeta } from './candid/candid_arb';
+import { CandidValueAndMeta } from './candid/candid_value_and_meta_arb';
 
 export type QueryMethod = {
     imports: Set<string>;

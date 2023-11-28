@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 import { CandidType } from '../../candid_type_arb';
-import { CandidValueAndMeta } from '../../candid_arb';
+import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { Opt } from './index';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 

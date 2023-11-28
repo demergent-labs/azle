@@ -1,4 +1,4 @@
-import { CandidValueAndMeta } from './arbitraries/candid/candid_arb';
+import { CandidValueAndMeta } from './arbitraries/candid/candid_value_and_meta_arb';
 import { CandidType } from './arbitraries/candid/candid_type_arb';
 import { Named } from '.';
 

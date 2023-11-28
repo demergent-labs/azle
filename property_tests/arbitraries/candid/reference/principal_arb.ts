@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 import { Principal } from '@dfinity/principal';
-import { CandidValueAndMetaArb } from '../candid_arb';
+import { CandidValueAndMetaArb } from '../candid_value_and_meta_arb';
 import { principalToSrcLiteral } from '../to_src_literal/principal';
 
 export const PrincipalArb = CandidValueAndMetaArb(
