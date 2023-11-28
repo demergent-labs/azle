@@ -1,5 +1,9 @@
 import fc from 'fast-check';
-import { CandidMetaArb } from '../../candid_arb';
+import { CandidValueAndMetaArb } from '../../candid_arb';
 import { bigintToSrcLiteral } from '../../to_src_literal/bigint';
 
-export const IntArb = CandidMetaArb(fc.bigInt(), 'int', bigintToSrcLiteral);
+export const IntArb = CandidValueAndMetaArb(
+    fc.bigInt(),
+    'int',
+    bigintToSrcLiteral
+);
