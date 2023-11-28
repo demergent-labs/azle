@@ -1,5 +1,5 @@
 import fc, { sample } from 'fast-check';
-import { CandidValueAndMeta, Src } from '../../candid_arb';
+import { CandidValueAndMeta, Src } from '../../candid_value_and_meta_arb';
 import { CandidType } from '../../candid_type_arb';
 import { Vec } from './index';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';

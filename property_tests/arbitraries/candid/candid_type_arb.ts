@@ -17,7 +17,7 @@ import { Float32Arb } from './primitive/floats/float32_arb';
 import { Float64Arb } from './primitive/floats/float64_arb';
 import { TextArb } from './primitive/text';
 import { BlobArb } from './constructed/blob_arb';
-import { CandidValueAndMeta } from './candid_arb';
+import { CandidValueAndMeta } from './candid_value_and_meta_arb';
 import { Func } from './reference/func_arb';
 import { Opt } from './constructed/opt_arb';
 import { Variant } from './constructed/variant_arb';
