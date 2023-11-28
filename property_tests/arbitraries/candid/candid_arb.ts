@@ -15,7 +15,7 @@ export type Src = {
     valueLiteral: string;
 };
 
-export const CandidMetaArb = <T extends CandidType>(
+export const CandidValueAndMetaArb = <T extends CandidType>(
     arb: fc.Arbitrary<T>,
     candidType: string,
     toLiteral: (value: T) => string

@@ -1,8 +1,8 @@
 import fc from 'fast-check';
-import { CandidMetaArb } from '../candid_arb';
+import { CandidValueAndMetaArb } from '../candid_arb';
 import { nullToSrcLiteral } from '../to_src_literal/null';
 
-export const NullArb = CandidMetaArb(
+export const NullArb = CandidValueAndMetaArb(
     fc.constant(null),
     'Null',
     nullToSrcLiteral
