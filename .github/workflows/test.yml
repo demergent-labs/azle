@@ -212,6 +212,9 @@ jobs:
               shell: bash -l {0}
               run: npm link
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              shell: bash -l {0}
+              run: npm run lint
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               working-directory: ${{ matrix.example_directories }}
               run: dfx start --clean --background --host 127.0.0.1:8000
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
