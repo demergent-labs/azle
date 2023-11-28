@@ -3,7 +3,7 @@ import { Principal } from '@dfinity/principal';
 
 import { PrincipalArb } from './principal_arb';
 import { VoidArb } from '../primitive/void';
-import { CandidMeta } from '../candid_arb';
+import { CandidValueAndMeta } from '../candid_arb';
 import { CandidTypeArb } from '../candid_type_arb';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
@@ -69,7 +69,7 @@ export const ServiceArb = fc
         fc.uniqueArray(ServiceMethodArb, { selector: (entry) => entry.name }),
         PrincipalArb
     )
-    .map(([name, serviceMethods, principal]): CandidMeta<Principal> => {
+    .map(([name, serviceMethods, principal]): CandidValueAndMeta<Principal> => {
         const imports = new Set([
             ...serviceMethods.flatMap((method) => [...method.imports]),
             'Canister',

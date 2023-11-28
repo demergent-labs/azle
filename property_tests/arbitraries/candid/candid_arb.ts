@@ -2,7 +2,7 @@ import fc from 'fast-check';
 import { CandidType } from './candid_type_arb';
 
 // TODO we're thinking that Candid is not the best name for this. What is better?
-export type CandidMeta<T extends CandidType, E = T> = {
+export type CandidValueAndMeta<T extends CandidType, E = T> = {
     agentArgumentValue: T;
     agentResponseValue: E;
     src: Src;
@@ -21,7 +21,7 @@ export const CandidMetaArb = <T extends CandidType>(
     toLiteral: (value: T) => string
 ) => {
     return arb.map(
-        (agentArgumentValue): CandidMeta<T> => ({
+        (agentArgumentValue): CandidValueAndMeta<T> => ({
             src: {
                 candidType,
                 imports: new Set([candidType]),

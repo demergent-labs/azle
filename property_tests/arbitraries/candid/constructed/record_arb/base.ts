@@ -1,14 +1,16 @@
 import fc from 'fast-check';
 
-import { CandidMeta } from '../../candid_arb';
+import { CandidValueAndMeta } from '../../candid_arb';
 import { CandidType } from '../../candid_type_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { Record } from './index';
 
-type Field = [string, CandidMeta<CandidType>];
+type Field = [string, CandidValueAndMeta<CandidType>];
 
-export function RecordArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
+export function RecordArb(
+    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>>
+) {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
@@ -17,36 +19,42 @@ export function RecordArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
             }),
             fc.boolean()
         )
-        .map(([name, fields, useTypeDeclaration]): CandidMeta<Record> => {
-            const candidType = useTypeDeclaration
-                ? name
-                : generateCandidType(fields);
-
-            const typeDeclaration = generateTypeDeclaration(
+        .map(
+            ([
                 name,
                 fields,
                 useTypeDeclaration
-            );
+            ]): CandidValueAndMeta<Record> => {
+                const candidType = useTypeDeclaration
+                    ? name
+                    : generateCandidType(fields);
 
-            const imports = generateImports(fields);
+                const typeDeclaration = generateTypeDeclaration(
+                    name,
+                    fields,
+                    useTypeDeclaration
+                );
 
-            const valueLiteral = generateValueLiteral(fields);
+                const imports = generateImports(fields);
 
-            const agentArgumentValue = generateValue(fields);
+                const valueLiteral = generateValueLiteral(fields);
 
-            const agentResponseValue = generateValue(fields, true);
+                const agentArgumentValue = generateValue(fields);
 
-            return {
-                src: {
-                    candidType,
-                    typeDeclaration,
-                    imports,
-                    valueLiteral
-                },
-                agentArgumentValue,
-                agentResponseValue
-            };
-        });
+                const agentResponseValue = generateValue(fields, true);
+
+                return {
+                    src: {
+                        candidType,
+                        typeDeclaration,
+                        imports,
+                        valueLiteral
+                    },
+                    agentArgumentValue,
+                    agentResponseValue
+                };
+            }
+        );
 }
 
 function generateImports(fields: Field[]): Set<string> {
