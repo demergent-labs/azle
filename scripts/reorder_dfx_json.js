@@ -32,7 +32,12 @@ fs.readdir(dirPath, (err, folders) => {
             fs.readJson(dfxJsonPath)
                 .then((dfxConfig) => {
                     for (const canister in dfxConfig.canisters) {
-                        if (dfxConfig.canisters.hasOwnProperty(canister)) {
+                        if (
+                            Object.prototype.hasOwnProperty.call(
+                                dfxConfig.canisters,
+                                canister
+                            )
+                        ) {
                             dfxConfig.canisters[canister] = reorderKeys(
                                 dfxConfig.canisters[canister],
                                 [

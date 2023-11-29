@@ -10,7 +10,7 @@ export function toIdlMap(candidMap: CandidMap, parent: Parent[]): IdlMap {
     const idlMap: IdlMap = {};
 
     for (const key in candidMap) {
-        if (candidMap.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(candidMap, key)) {
             const candidType = candidMap[key];
             idlMap[key] = toIdl(candidType, parent);
         }
