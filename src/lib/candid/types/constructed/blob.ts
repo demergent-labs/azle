@@ -4,8 +4,8 @@ import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
 
 export class AzleBlob {
-    _azleKind: 'AzleBlob' = 'AzleBlob';
-    static _azleKind: 'AzleBlob' = 'AzleBlob';
+    _azleKind = 'AzleBlob' as const;
+    static _azleKind = 'AzleBlob' as const;
 
     static tsType: blob;
 

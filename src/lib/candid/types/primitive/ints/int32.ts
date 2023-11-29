@@ -4,8 +4,8 @@ import { decode } from '../../../serde/decode';
 import { encode } from '../../../serde/encode';
 
 export class AzleInt32 {
-    _azleKind: 'AzleInt32' = 'AzleInt32';
-    static _azleKind: 'AzleInt32' = 'AzleInt32';
+    _azleKind = 'AzleInt32' as const;
+    static _azleKind = 'AzleInt32' as const;
 
     static tsType: int32;
 

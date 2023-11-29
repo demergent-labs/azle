@@ -4,8 +4,8 @@ import { decode } from '../../../serde/decode';
 import { encode } from '../../../serde/encode';
 
 export class AzleNat {
-    _azleKind: 'AzleNat' = 'AzleNat';
-    static _azleKind: 'AzleNat' = 'AzleNat';
+    _azleKind = 'AzleNat' as const;
+    static _azleKind = 'AzleNat' as const;
 
     static tsType: nat;
 

@@ -5,7 +5,6 @@ const temporarilyDisabledRules = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-var-requires': 'off',
-    '@typescript-eslint/prefer-as-const': 'off',
     'no-constant-condition': 'off',
     'no-undef': 'off',
     'no-var': 'off',
