@@ -5,43 +5,73 @@ import { CandidType } from '../../candid_type_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { Record } from './index';
+import {
+    CandidClass,
+    CandidTypeMeta,
+    CandidValueArb,
+    CandidValues,
+    RecordCandidMeta
+} from '../../candid_meta_arb';
 
-type Field = [string, CandidValueAndMeta<CandidType>];
+type TypeField = [string, CandidTypeMeta];
+type ValueField = [string, CandidValues<CandidType>];
+type ArbValueField = [string, fc.Arbitrary<CandidValues<CandidType>>];
 
-export function RecordArb(
-    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>>
-) {
+export function RecordTypeArb(
+    candidTypeArbForFields: fc.Arbitrary<CandidTypeMeta>
+): fc.Arbitrary<RecordCandidMeta> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
-            fc.uniqueArray(fc.tuple(JsFunctionNameArb, candidTypeArb), {
-                selector: (entry) => entry[0]
-            }),
+            fc.uniqueArray(
+                fc.tuple(JsFunctionNameArb, candidTypeArbForFields),
+                {
+                    selector: (entry) => entry[0]
+                }
+            ),
             fc.boolean()
         )
-        .map(
-            ([
+        .map(([name, fields, useTypeDeclaration]): RecordCandidMeta => {
+            useTypeDeclaration = false;
+            const candidType = useTypeDeclaration
+                ? name
+                : generateCandidType(fields);
+
+            const typeDeclaration = generateTypeDeclaration(
                 name,
                 fields,
                 useTypeDeclaration
-            ]): CandidValueAndMeta<Record> => {
-                const candidType = useTypeDeclaration
-                    ? name
-                    : generateCandidType(fields);
+            );
 
-                const typeDeclaration = generateTypeDeclaration(
-                    name,
-                    fields,
-                    useTypeDeclaration
-                );
+            const imports = generateImports(fields);
 
-                const imports = generateImports(fields);
+            return {
+                candidMeta: {
+                    candidType,
+                    typeDeclaration,
+                    imports,
+                    candidClass: CandidClass.Record
+                },
+                innerTypes: fields
+            };
+        });
+}
 
-                const valueLiteral = generateValueLiteral(fields);
-
-                const agentArgumentValue = generateValue(fields);
-
-                const agentResponseValue = generateValue(fields, true);
+export function RecordArb(
+    candidTypeArb: fc.Arbitrary<CandidTypeMeta>
+): fc.Arbitrary<CandidValueAndMeta<Record>> {
+    return RecordTypeArb(candidTypeArb)
+        .chain((recordType) =>
+            fc.tuple(fc.constant(recordType), RecordValueArb(recordType))
+        )
+        .map(
+            ([
+                recordType,
+                { agentArgumentValue, agentResponseValue, valueLiteral }
+            ]) => {
+                const candidType = recordType.candidMeta.candidType;
+                const typeDeclaration = recordType.candidMeta.candidType;
+                const imports = recordType.candidMeta.imports;
 
                 return {
                     src: {
@@ -57,27 +87,56 @@ export function RecordArb(
         );
 }
 
-function generateImports(fields: Field[]): Set<string> {
-    const fieldImports = fields.flatMap((field) => [...field[1].src.imports]);
+export function RecordValueArb(
+    recordType: RecordCandidMeta
+): fc.Arbitrary<CandidValues<Record>> {
+    const fieldValues = recordType.innerTypes.map(([name, innerType]) => {
+        const result: ArbValueField = [name, CandidValueArb(innerType)];
+        return result;
+    });
+    const arbitraryFieldValues = fieldValues.map(([key, arbValue]) =>
+        arbValue.map((value): [string, CandidValues<CandidType>] => [
+            key,
+            value
+        ])
+    );
+
+    return fc.tuple(...arbitraryFieldValues).map((fieldValues) => {
+        const valueLiteral = generateValueLiteral(fieldValues);
+        const agentArgumentValue = generateValue(fieldValues);
+        const agentResponseValue = generateValue(fieldValues, true);
+
+        return {
+            valueLiteral,
+            agentArgumentValue,
+            agentResponseValue
+        };
+    });
+}
+
+function generateImports(fields: TypeField[]): Set<string> {
+    const fieldImports = fields.flatMap((field) => [
+        ...field[1].candidMeta.imports
+    ]);
     return new Set([...fieldImports, 'Record']);
 }
 
-function generateCandidType(fields: Field[]): string {
+function generateCandidType(fields: TypeField[]): string {
     return `Record({${fields
         .map(
             ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.src.candidType}`
+                `${fieldName}: ${fieldDataType.candidMeta.candidType}`
         )
         .join(',')}})`;
 }
 
 function generateTypeDeclaration(
     name: string,
-    fields: Field[],
+    fields: TypeField[],
     useTypeDeclaration: boolean
 ): string {
     const fieldTypeDeclarations = fields
-        .map((field) => field[1].src.typeDeclaration)
+        .map((field) => field[1].candidMeta.typeDeclaration)
         .join('\n');
     if (useTypeDeclaration) {
         return `${fieldTypeDeclarations}\nconst ${name} = ${generateCandidType(
@@ -87,20 +146,23 @@ function generateTypeDeclaration(
     return fieldTypeDeclarations;
 }
 
-function generateValue(fields: Field[], returned: boolean = false): Record {
+function generateValue(
+    fields: ValueField[],
+    returned: boolean = false
+): Record {
     return fields.length === 0
         ? {}
-        : fields.reduce((record, [fieldName, fieldDataType]) => {
+        : fields.reduce((record, [fieldName, fieldCandidTypeMeta]) => {
               return {
                   ...record,
                   [fieldName]: returned
-                      ? fieldDataType.agentResponseValue
-                      : fieldDataType.agentArgumentValue
+                      ? fieldCandidTypeMeta.agentResponseValue
+                      : fieldCandidTypeMeta.agentArgumentValue
               };
           }, {});
 }
 
-function generateValueLiteral(fields: Field[]): string {
+function generateValueLiteral(fields: ValueField[]): string {
     if (fields.length === 0) {
         return '{}';
     }
@@ -108,7 +170,7 @@ function generateValueLiteral(fields: Field[]): string {
     const fieldLiterals = fields
         .map(
             ([fieldName, fieldValue]) =>
-                `${fieldName}: ${fieldValue.src.valueLiteral}`
+                `${fieldName}: ${fieldValue.valueLiteral}`
         )
         .join(',\n');
 

@@ -10,7 +10,7 @@ import { Nat16Arb } from './primitive/nats/nat16_arb';
 import { Nat32Arb } from './primitive/nats/nat32_arb';
 import { Nat64Arb } from './primitive/nats/nat64_arb';
 import { NullArb } from './primitive/null';
-import { BoolArb } from './primitive/bool';
+import { BoolArb, BoolTypeArb } from './primitive/bool';
 import { Principal } from '@dfinity/principal';
 import { PrincipalArb } from './reference/principal_arb';
 import { Float32Arb } from './primitive/floats/float32_arb';
@@ -24,11 +24,18 @@ import { Variant } from './constructed/variant_arb';
 import { BaseVariantArb } from './constructed/variant_arb/base';
 import { Record } from './constructed/record_arb';
 import { Tuple } from './constructed/tuple_arb';
-import { RecordArb } from './constructed/record_arb/base';
+import { RecordArb, RecordTypeArb } from './constructed/record_arb/base';
 import { TupleArb } from './constructed/tuple_arb/base';
 import { OptArb } from './constructed/opt_arb/base';
-import { Vec, VecArb } from './constructed/vec_arb';
+import { Vec } from './constructed/vec_arb';
+import { VecArb, VecTypeArb } from './constructed/vec_arb/base';
 import { FuncArb } from './reference/func_arb/base';
+import {
+    CandidMeta,
+    CandidTypeMeta,
+    RecordCandidMeta,
+    VecCandidMeta
+} from './candid_meta_arb';
 
 export type CandidType =
     | number
@@ -54,6 +61,20 @@ export type CandidType =
     | BigUint64Array
     | Vec;
 
+export const CandidCoolTypeArb: fc.Arbitrary<CandidTypeMeta> = fc.letrec(
+    (tie) => ({
+        CandidType: fc.oneof(
+            BoolTypeArb,
+            tie('Record').map((sample) => sample as RecordCandidMeta)
+            // tie('Vec').map((sample) => sample as VecCandidMeta)
+        ),
+        Record: RecordTypeArb(
+            tie('CandidType') as fc.Arbitrary<CandidTypeMeta>
+        ),
+        Vec: VecTypeArb(tie('CandidType') as fc.Arbitrary<CandidTypeMeta>)
+    })
+).CandidType;
+
 /**
  * An arbitrary representing all possible Candid types.
  *
@@ -62,36 +83,36 @@ export type CandidType =
 export const CandidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>> =
     fc.letrec((tie) => ({
         CandidType: fc.oneof(
-            BlobArb,
-            tie('Opt').map((sample) => sample as CandidValueAndMeta<Opt>),
+            // BlobArb,
+            // tie('Opt').map((sample) => sample as CandidValueAndMeta<Opt>),
             tie('Record').map((sample) => sample as CandidValueAndMeta<Record>),
-            tie('Tuple').map((sample) => sample as CandidValueAndMeta<Tuple>),
-            tie('Variant').map(
-                (sample) => sample as CandidValueAndMeta<Variant>
-            ),
-            tie('Vec').map((sample) => sample as CandidValueAndMeta<Vec>),
-            Float32Arb,
-            Float64Arb,
-            IntArb,
-            Int8Arb,
-            Int16Arb,
-            Int32Arb,
-            Int64Arb,
-            NatArb,
-            Nat8Arb,
-            Nat16Arb,
-            Nat32Arb,
-            Nat64Arb,
-            BoolArb,
-            NullArb,
-            TextArb,
-            tie('Func').map((sample) => sample as CandidValueAndMeta<Func>),
-            PrincipalArb
+            // tie('Tuple').map((sample) => sample as CandidValueAndMeta<Tuple>),
+            // tie('Variant').map(
+            //     (sample) => sample as CandidValueAndMeta<Variant>
+            // ),
+            // tie('Vec').map((sample) => sample as CandidValueAndMeta<Vec>),
+            // Float32Arb,
+            // Float64Arb,
+            // IntArb,
+            // Int8Arb,
+            // Int16Arb,
+            // Int32Arb,
+            // Int64Arb,
+            // NatArb,
+            // Nat8Arb,
+            // Nat16Arb,
+            // Nat32Arb,
+            // Nat64Arb,
+            BoolArb
+            // NullArb,
+            // TextArb,
+            // tie('Func').map((sample) => sample as CandidValueAndMeta<Func>),
+            // PrincipalArb
         ),
         Func: FuncArb(
             tie('CandidType') as fc.Arbitrary<CandidValueAndMeta<CandidType>>
         ),
-        Vec: VecArb,
+        Vec: VecArb(CandidCoolTypeArb),
         Opt: OptArb(
             tie('CandidType') as fc.Arbitrary<CandidValueAndMeta<CandidType>>
         ),
@@ -101,9 +122,7 @@ export const CandidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>> =
         Tuple: TupleArb(
             tie('CandidType') as fc.Arbitrary<CandidValueAndMeta<CandidType>>
         ),
-        Record: RecordArb(
-            tie('CandidType') as fc.Arbitrary<CandidValueAndMeta<CandidType>>
-        )
+        Record: RecordArb(CandidCoolTypeArb)
     })).CandidType;
 
 // TODO: This needs to support service.
