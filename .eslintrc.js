@@ -2,7 +2,6 @@
 // This is tech-debt. We should go through and re-enable these at some point.
 const temporarilyDisabledRules = {
     '@typescript-eslint/ban-ts-comment': 'off',
-    '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-loss-of-precision': 'off',
     '@typescript-eslint/no-namespace': 'off',

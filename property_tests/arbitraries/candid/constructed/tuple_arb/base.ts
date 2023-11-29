@@ -53,7 +53,9 @@ function generateVale(fields: CandidMeta<CandidType>[]) {
     return fields.map((field) => field.agentArgumentValue);
 }
 
-function generateExpectedVale(fields: CandidMeta<CandidType>[]): Tuple | {} {
+function generateExpectedVale(
+    fields: CandidMeta<CandidType>[]
+): Tuple | Record<string, never> {
     if (fields.length === 0) {
         return {};
     }
