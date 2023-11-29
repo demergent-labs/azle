@@ -9,13 +9,13 @@ import { Nat8Arb } from './primitive/nats/nat8_arb';
 import { Nat16Arb } from './primitive/nats/nat16_arb';
 import { Nat32Arb } from './primitive/nats/nat32_arb';
 import { Nat64Arb } from './primitive/nats/nat64_arb';
-import { NullArb } from './primitive/null';
+import { NullArb, NullTypeArb } from './primitive/null';
 import { BoolArb, BoolTypeArb } from './primitive/bool';
 import { Principal } from '@dfinity/principal';
 import { PrincipalArb } from './reference/principal_arb';
 import { Float32Arb } from './primitive/floats/float32_arb';
 import { Float64Arb } from './primitive/floats/float64_arb';
-import { TextArb } from './primitive/text';
+import { TextArb, TextTypeArb } from './primitive/text';
 import { BlobArb } from './constructed/blob_arb';
 import { CandidValueAndMeta } from './candid_value_and_meta';
 import { Func } from './reference/func_arb';
@@ -31,8 +31,7 @@ import { Vec } from './constructed/vec_arb';
 import { VecArb, VecTypeArb } from './constructed/vec_arb/base';
 import { FuncArb } from './reference/func_arb/base';
 import {
-    CandidTypeMeta,
-    CandidTypeShape,
+    CandidDefinition,
     RecordCandidMeta,
     VecCandidMeta
 } from './candid_meta_arb';
@@ -61,17 +60,19 @@ export type CorrespondingJSType =
     | BigUint64Array
     | Vec;
 
-export const CandidCoolTypeArb: fc.Arbitrary<CandidTypeShape> = fc.letrec(
+export const CandidDefinitionArb: fc.Arbitrary<CandidDefinition> = fc.letrec(
     (tie) => ({
         CandidType: fc.oneof(
             BoolTypeArb,
+            // NullTypeArb, // Must be excluded until https://github.com/demergent-labs/azle/issues/1453 gets resolved
+            TextTypeArb,
             tie('Record').map((sample) => sample as RecordCandidMeta),
             tie('Vec').map((sample) => sample as VecCandidMeta)
         ),
         Record: RecordTypeArb(
-            tie('CandidType') as fc.Arbitrary<CandidTypeShape>
+            tie('CandidType') as fc.Arbitrary<CandidDefinition>
         ),
-        Vec: VecTypeArb(tie('CandidType') as fc.Arbitrary<CandidTypeShape>)
+        Vec: VecTypeArb(tie('CandidType') as fc.Arbitrary<CandidDefinition>)
     })
 ).CandidType;
 
@@ -80,7 +81,7 @@ export const CandidCoolTypeArb: fc.Arbitrary<CandidTypeShape> = fc.letrec(
  *
  * **Note:** This currently only supports ints, nats, and null arbitraries
  */
-export const CandidTypeArb: fc.Arbitrary<
+export const CandidValueAndMetaArb: fc.Arbitrary<
     CandidValueAndMeta<CorrespondingJSType>
 > = fc.letrec((tie) => ({
     CandidType: fc.oneof(
@@ -113,7 +114,7 @@ export const CandidTypeArb: fc.Arbitrary<
             CandidValueAndMeta<CorrespondingJSType>
         >
     ),
-    Vec: VecArb(CandidCoolTypeArb),
+    Vec: VecArb(CandidDefinitionArb),
     Opt: OptArb(
         tie('CandidType') as fc.Arbitrary<
             CandidValueAndMeta<CorrespondingJSType>
@@ -129,7 +130,7 @@ export const CandidTypeArb: fc.Arbitrary<
             CandidValueAndMeta<CorrespondingJSType>
         >
     ),
-    Record: RecordArb(CandidCoolTypeArb)
+    Record: RecordArb(CandidDefinitionArb)
 })).CandidType;
 
 // TODO: This needs to support service.

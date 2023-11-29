@@ -4,15 +4,16 @@ import { CorrespondingJSType } from '../candid_type_arb';
 
 export function OldSimpleCandidValueAndMetaArb<T extends CorrespondingJSType>(
     arb: fc.Arbitrary<T>,
-    candidType: string,
+    typeAnnotation: string,
     imports: Set<string>,
     toLiteral: (value: T) => string
 ): fc.Arbitrary<CandidValueAndMeta<T>> {
     return arb.map(
         (value): CandidValueAndMeta<T> => ({
             src: {
-                candidType,
+                typeAnnotation,
                 imports,
+                typeAliasDeclarations: [], // TODO make this random
                 valueLiteral: toLiteral(value)
             },
             agentArgumentValue: value,

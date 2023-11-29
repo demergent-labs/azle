@@ -6,19 +6,19 @@ import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { Record } from './index';
 import {
-    CandidTypeShape,
+    CandidDefinition,
     CandidValueArb,
     CandidValues,
     RecordCandidMeta
 } from '../../candid_meta_arb';
 import { CandidType } from '../../candid_type';
 
-type TypeField = [string, CandidTypeShape];
+type TypeField = [string, CandidDefinition];
 type ValueField = [string, CandidValues<CorrespondingJSType>];
 type ArbValueField = [string, fc.Arbitrary<CandidValues<CorrespondingJSType>>];
 
 export function RecordTypeArb(
-    candidTypeArbForFields: fc.Arbitrary<CandidTypeShape>
+    candidTypeArbForFields: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<RecordCandidMeta> {
     return fc
         .tuple(
@@ -33,11 +33,11 @@ export function RecordTypeArb(
             fc.boolean()
         )
         .map(([name, fields, useTypeDeclaration]): RecordCandidMeta => {
-            const candidType = useTypeDeclaration
+            const typeAnnotation = useTypeDeclaration
                 ? name
-                : generateCandidType(fields);
+                : generateTypeAnnotation(fields);
 
-            const typeDeclaration = generateTypeDeclaration(
+            const typeAliasDeclarations = generateTypeAliasDeclarations(
                 name,
                 fields,
                 useTypeDeclaration
@@ -47,10 +47,10 @@ export function RecordTypeArb(
 
             return {
                 candidMeta: {
-                    candidType,
-                    typeDeclaration,
+                    typeAnnotation,
+                    typeAliasDeclarations,
                     imports,
-                    candidClass: CandidType.Record
+                    candidType: CandidType.Record
                 },
                 innerTypes: fields
             };
@@ -58,7 +58,7 @@ export function RecordTypeArb(
 }
 
 export function RecordArb(
-    candidTypeArb: fc.Arbitrary<CandidTypeShape>
+    candidTypeArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Record>> {
     return RecordTypeArb(candidTypeArb)
         .chain((recordType) =>
@@ -66,17 +66,19 @@ export function RecordArb(
         )
         .map(
             ([
-                recordType,
+                {
+                    candidMeta: {
+                        typeAnnotation,
+                        typeAliasDeclarations,
+                        imports
+                    }
+                },
                 { agentArgumentValue, agentResponseValue, valueLiteral }
             ]) => {
-                const candidType = recordType.candidMeta.candidType;
-                const typeDeclaration = recordType.candidMeta.typeDeclaration;
-                const imports = recordType.candidMeta.imports;
-
                 return {
                     src: {
-                        candidType,
-                        typeDeclaration,
+                        typeAnnotation,
+                        typeAliasDeclarations,
                         imports,
                         valueLiteral
                     },
@@ -121,29 +123,30 @@ function generateImports(fields: TypeField[]): Set<string> {
     return new Set([...fieldImports, 'Record']);
 }
 
-function generateCandidType(fields: TypeField[]): string {
+function generateTypeAnnotation(fields: TypeField[]): string {
     return `Record({${fields
         .map(
             ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.candidMeta.candidType}`
+                `${fieldName}: ${fieldDataType.candidMeta.typeAnnotation}`
         )
         .join(',')}})`;
 }
 
-function generateTypeDeclaration(
+function generateTypeAliasDeclarations(
     name: string,
     fields: TypeField[],
     useTypeDeclaration: boolean
-): string {
-    const fieldTypeDeclarations = fields
-        .map((field) => field[1].candidMeta.typeDeclaration)
-        .join('\n');
+): string[] {
+    const fieldTypeAliasDeclarations = fields.flatMap(
+        (field) => field[1].candidMeta.typeAliasDeclarations
+    );
     if (useTypeDeclaration) {
-        return `${fieldTypeDeclarations}\nconst ${name} = ${generateCandidType(
-            fields
-        )};`;
+        return [
+            ...fieldTypeAliasDeclarations,
+            `const ${name} = ${generateTypeAnnotation(fields)};`
+        ];
     }
-    return fieldTypeDeclarations;
+    return fieldTypeAliasDeclarations;
 }
 
 function generateValue(

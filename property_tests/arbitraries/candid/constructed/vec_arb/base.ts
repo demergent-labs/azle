@@ -4,7 +4,7 @@ import { CorrespondingJSType } from '../../candid_type_arb';
 import { Vec } from './index';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
-    CandidTypeShape,
+    CandidDefinition,
     CandidValueArb,
     CandidValues,
     VecCandidMeta
@@ -12,7 +12,7 @@ import {
 import { CandidType } from '../../candid_type';
 
 export function VecTypeArb(
-    candidTypeArb: fc.Arbitrary<CandidTypeShape>
+    candidTypeArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<VecCandidMeta> {
     return fc
         .tuple(
@@ -21,11 +21,11 @@ export function VecTypeArb(
             fc.boolean()
         )
         .map(([name, innerType, useTypeDeclaration]): VecCandidMeta => {
-            const candidType = useTypeDeclaration
+            const typeAnnotation = useTypeDeclaration
                 ? name
-                : generateCandidType(innerType);
+                : generateTypeAnnotation(innerType);
 
-            const typeDeclaration = generateTypeDeclaration(
+            const typeAliasDeclarations = generateTypeAliasDeclarations(
                 name,
                 innerType,
                 useTypeDeclaration
@@ -35,10 +35,10 @@ export function VecTypeArb(
 
             return {
                 candidMeta: {
-                    candidType,
-                    typeDeclaration,
+                    typeAnnotation,
+                    typeAliasDeclarations,
                     imports,
-                    candidClass: CandidType.Vec
+                    candidType: CandidType.Vec
                 },
                 innerType: innerType
             };
@@ -46,7 +46,7 @@ export function VecTypeArb(
 }
 
 export function VecArb(
-    candidTypeArb: fc.Arbitrary<CandidTypeShape>
+    candidTypeArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Vec>> {
     return VecTypeArb(candidTypeArb)
         .chain((vecType) =>
@@ -54,17 +54,19 @@ export function VecArb(
         )
         .map(
             ([
-                recordType,
+                {
+                    candidMeta: {
+                        typeAnnotation,
+                        typeAliasDeclarations,
+                        imports
+                    }
+                },
                 { agentArgumentValue, agentResponseValue, valueLiteral }
             ]) => {
-                const candidType = recordType.candidMeta.candidType;
-                const typeDeclaration = recordType.candidMeta.typeDeclaration;
-                const imports = recordType.candidMeta.imports;
-
                 return {
                     src: {
-                        candidType,
-                        typeDeclaration,
+                        typeAnnotation,
+                        typeAliasDeclarations,
                         imports,
                         valueLiteral
                     },
@@ -102,70 +104,59 @@ export function VecValueArb(
     });
 }
 
-function generateTypeDeclaration(
+function generateTypeAliasDeclarations(
     name: string,
-    innerType: CandidTypeShape,
+    innerType: CandidDefinition,
     useTypeDeclaration: boolean
-): string {
+): string[] {
     if (useTypeDeclaration) {
-        return `${
-            innerType.candidMeta.typeDeclaration ?? ''
-        }\nconst ${name} = ${generateCandidType(innerType)}`;
+        return [
+            ...innerType.candidMeta.typeAliasDeclarations,
+            `const ${name} = ${generateTypeAnnotation(innerType)};`
+        ];
     }
-    return innerType.candidMeta.typeDeclaration;
+    return innerType.candidMeta.typeAliasDeclarations;
 }
 
-function generateImports(innerType: CandidTypeShape): Set<string> {
-    // Hack until https://github.com/demergent-labs/azle/issues/1453 gets fixed
-    if (innerType.candidMeta.candidType === 'Null') {
-        return new Set([...innerType.candidMeta.imports, 'Vec', 'bool']);
-    }
+function generateImports(innerType: CandidDefinition): Set<string> {
     return new Set([...innerType.candidMeta.imports, 'Vec']);
 }
 
-function generateCandidType(innerType: CandidTypeShape): string {
-    // Hack until https://github.com/demergent-labs/azle/issues/1453 gets fixed
-    if (innerType.candidMeta.candidType === 'Null') {
-        return `Vec(bool)`;
-    }
-    return `Vec(${innerType.candidMeta.candidType})`;
+function generateTypeAnnotation(innerType: CandidDefinition): string {
+    return `Vec(${innerType.candidMeta.typeAnnotation})`;
 }
 
 function generateValue<T extends CorrespondingJSType>(
     array: CandidValues<T>[],
-    candidType: string,
+    candidType: CandidType,
     returned: boolean = false
 ): Vec {
-    // Hack until https://github.com/demergent-labs/azle/issues/1453 gets fixed
-    if (candidType === 'Null') {
-        return Array(array.length).fill(false);
-    }
     const value = array.map((sample) =>
         returned ? sample.agentResponseValue : sample.agentArgumentValue
     );
 
-    if (candidType === 'int8') {
+    if (candidType === CandidType.Int8) {
         return new Int8Array(value as number[]);
     }
-    if (candidType === 'int16') {
+    if (candidType === CandidType.Int16) {
         return new Int16Array(value as number[]);
     }
-    if (candidType === 'int32') {
+    if (candidType === CandidType.Int32) {
         return new Int32Array(value as number[]);
     }
-    if (candidType === 'int64') {
+    if (candidType === CandidType.Int64) {
         return new BigInt64Array(value as bigint[]);
     }
-    if (candidType === 'nat8') {
+    if (candidType === CandidType.Nat8) {
         return new Uint8Array(value as number[]);
     }
-    if (candidType === 'nat16') {
+    if (candidType === CandidType.Nat16) {
         return new Uint16Array(value as number[]);
     }
-    if (candidType === 'nat32') {
+    if (candidType === CandidType.Nat32) {
         return new Uint32Array(value as number[]);
     }
-    if (candidType === 'nat64') {
+    if (candidType === CandidType.Nat64) {
         return new BigUint64Array(value as bigint[]);
     }
 
@@ -174,45 +165,41 @@ function generateValue<T extends CorrespondingJSType>(
 
 function generateValueLiteral<T extends CorrespondingJSType>(
     sample: CandidValues<T>[],
-    innerCandidType: string
+    innerCandidType: CandidType
 ) {
-    // Hack until https://github.com/demergent-labs/azle/issues/1453 gets fixed
-    if (innerCandidType === 'Null') {
-        return `[${Array(sample.length).fill(false)}]`;
-    }
     const valueLiterals = sample.map((sample) => sample.valueLiteral).join(',');
 
     const valueLiteral = `[${valueLiterals}]`;
 
-    if (innerCandidType === 'int64') {
+    if (innerCandidType === CandidType.Int64) {
         return `BigInt64Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === 'int32') {
+    if (innerCandidType === CandidType.Int32) {
         return `Int32Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === 'int16') {
+    if (innerCandidType === CandidType.Int16) {
         return `Int16Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === 'int8') {
+    if (innerCandidType === CandidType.Int8) {
         return `Int8Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === 'nat64') {
+    if (innerCandidType === CandidType.Nat64) {
         return `BigUint64Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === 'nat32') {
+    if (innerCandidType === CandidType.Nat32) {
         return `Uint32Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === 'nat16') {
+    if (innerCandidType === CandidType.Nat16) {
         return `Uint16Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === 'nat8') {
+    if (innerCandidType === CandidType.Nat8) {
         return `Uint8Array.from(${valueLiteral})`;
     }
 

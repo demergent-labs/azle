@@ -1,45 +1,45 @@
 import fc from 'fast-check';
-import { PrimitiveCandidShape } from '../candid_meta_arb';
+import { PrimitiveDefinition } from '../candid_meta_arb';
 import {
     CandidType,
     primitiveCandidClassToImports,
-    primitiveCandidTypeToString
+    primitiveCandidTypeToString as primitiveCandidTypeToTypeAnnotation
 } from '../candid_type';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 
 export function SimpleCandidShapeArb(
-    candidClass: CandidType
-): fc.Arbitrary<PrimitiveCandidShape> {
+    candidType: CandidType
+): fc.Arbitrary<PrimitiveDefinition> {
     return fc
         .tuple(UniqueIdentifierArb('typeDeclaration'), fc.boolean())
         .map(([name, useTypeDeclaration]) => {
-            const candidType = useTypeDeclaration
+            const typeAnnotation = useTypeDeclaration
                 ? name
-                : primitiveCandidTypeToString(candidClass);
-            const imports = primitiveCandidClassToImports(candidClass);
-            const typeDeclaration = generateTypeDeclaration(
+                : primitiveCandidTypeToTypeAnnotation(candidType);
+            const imports = primitiveCandidClassToImports(candidType);
+            const typeAliasDeclarations = generateTypeAliasDeclarations(
                 name,
-                primitiveCandidTypeToString(candidClass),
+                primitiveCandidTypeToTypeAnnotation(candidType),
                 useTypeDeclaration
             );
             return {
                 candidMeta: {
-                    candidClass,
                     candidType,
+                    typeAnnotation,
                     imports,
-                    typeDeclaration
+                    typeAliasDeclarations
                 }
             };
         });
 }
 
-function generateTypeDeclaration(
+function generateTypeAliasDeclarations(
     name: string,
     candidType: string,
     useTypeDeclaration: boolean
-): string {
+): string[] {
     if (useTypeDeclaration) {
-        return `const ${name} = ${candidType};`;
+        return [`const ${name} = ${candidType};`];
     }
-    return '';
+    return [];
 }

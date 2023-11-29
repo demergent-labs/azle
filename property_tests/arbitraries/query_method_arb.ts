@@ -88,8 +88,10 @@ export function QueryMethodArb<
             ]);
 
             const candidTypeDeclarations = [
-                ...paramTypes.map((param) => param.src.typeDeclaration ?? ''),
-                returnType.src.typeDeclaration ?? ''
+                ...paramTypes.flatMap(
+                    (param) => param.src.typeAliasDeclarations
+                ),
+                ...returnType.src.typeAliasDeclarations
             ];
 
             const namedParams = paramTypes.map(
@@ -100,10 +102,10 @@ export function QueryMethodArb<
             );
 
             const paramCandidTypes = paramTypes
-                .map((param) => param.src.candidType)
+                .map((param) => param.src.typeAnnotation)
                 .join(', ');
 
-            const returnCandidType = returnType.src.candidType;
+            const returnCandidType = returnType.src.typeAnnotation;
 
             const paramNames = namedParams
                 .map((namedParam) => namedParam.name)

@@ -1,5 +1,8 @@
 import { VecArb as Base } from './base';
-import { CandidCoolTypeArb, CorrespondingJSType } from '../../candid_type_arb';
+import {
+    CandidDefinitionArb,
+    CorrespondingJSType
+} from '../../candid_type_arb';
 
 export type Vec =
     | CorrespondingJSType[]
@@ -21,4 +24,4 @@ export type Vec =
 // the array will be an opt with a different inner value, so instead of having a
 // homogenous vec of opt nat16 you will get a vec of opt nat16 and opt int and
 // opt bool etc
-export const VecArb = Base(CandidCoolTypeArb);
+export const VecArb = Base(CandidDefinitionArb);
