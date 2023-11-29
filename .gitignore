@@ -1,6 +1,5 @@
 .dfx
 .DS_Store
-.editorconfig
 .vscode/*
 dist
 node_modules
