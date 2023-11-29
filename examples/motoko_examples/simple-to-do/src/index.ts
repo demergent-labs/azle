@@ -63,6 +63,6 @@ export default Canister({
         // );
         // ```
         //  See: https://github.com/demergent-labs/azle/issues/574
-        todos = new Map([...todos].filter(([key, value]) => !value.completed));
+        todos = new Map([...todos].filter(([_key, value]) => !value.completed));
     })
 });

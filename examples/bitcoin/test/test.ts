@@ -1,4 +1,4 @@
-import { getCanisterId, ok, runTests, Test } from 'azle/test';
+import { getCanisterId, runTests, Test } from 'azle/test';
 
 import { bitcoinCli } from './bitcoin_cli';
 import { createActor } from './dfx_generated/bitcoin';

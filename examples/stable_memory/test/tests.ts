@@ -201,7 +201,7 @@ export function getTests(
             name: 'stable grow out of memory',
             test: async () => {
                 try {
-                    const result = await stableMemoryCanister.stableGrow(1);
+                    await stableMemoryCanister.stableGrow(1);
                 } catch (e: any) {
                     return {
                         Ok: e
@@ -232,7 +232,7 @@ export function getTests(
             name: 'stable64 grow out of memory',
             test: async () => {
                 try {
-                    const result = await stableMemoryCanister.stable64Grow(1n);
+                    await stableMemoryCanister.stable64Grow(1n);
                 } catch (e: any) {
                     return {
                         Ok: e

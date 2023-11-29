@@ -118,7 +118,7 @@ export type TypeMapping<T, RecursionLevel = 0> = RecursionLevel extends 10
     : T extends typeof AzleNull
     ? Null
     : T extends typeof AzleReserved
-    ? any
+    ? reserved
     : T extends typeof AzleEmpty
     ? empty
     : T extends { tsType: infer U }

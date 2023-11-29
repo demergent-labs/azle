@@ -3,8 +3,7 @@ import { execSync, IOType } from 'child_process';
 import {
     GLOBAL_AZLE_RUST_BIN_DIR,
     GLOBAL_AZLE_RUST_DIR,
-    GLOBAL_AZLE_TARGET_DIR,
-    time
+    GLOBAL_AZLE_TARGET_DIR
 } from './utils';
 
 export function compileRustCode(

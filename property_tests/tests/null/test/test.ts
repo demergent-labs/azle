@@ -74,7 +74,7 @@ function generateTest(
             );
 
             return {
-                Ok: deepEqual(result, null)
+                Ok: deepEqual(result, returnNull.agentResponseValue)
             };
         }
     };

@@ -1,4 +1,3 @@
-import { encode } from '../candid/serde/encode';
 import { blob } from '../candid/types/constructed/blob';
 import { nat32 } from '../candid/types/primitive/nats/nat32';
 
