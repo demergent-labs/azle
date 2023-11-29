@@ -179,14 +179,18 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                 try {
                     await fruit.checkWatermelonForSeeds(false, watermelon);
                     return { Ok: false };
-                } catch (err) {}
+                } catch (err) {
+                    // continue regardless of error
+                }
                 try {
                     await fruit.checkWatermelonForSeeds(
                         true,
                         seedlessWatermelon
                     );
                     return { Ok: false };
-                } catch (err) {}
+                } catch (err) {
+                    // continue regardless of error
+                }
                 try {
                     await fruit.checkWatermelonForSeeds(
                         false,
@@ -310,11 +314,15 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                 try {
                     await fruit.dirtyIlama();
                     return { Ok: false };
-                } catch {}
+                } catch {
+                    // continue regardless of error
+                }
                 try {
                     await fruit.pickElderberry();
                     return { Ok: false };
-                } catch {}
+                } catch {
+                    // continue regardless of error
+                }
                 return {
                     Ok: !(await fruit.isFruitPrepared())
                 };
@@ -396,7 +404,9 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
                 try {
                     await canister.deepEmptyAlias();
                     return { Ok: false };
-                } catch {}
+                } catch {
+                    // continue regardless of error
+                }
                 return { Ok: true };
             }
         },

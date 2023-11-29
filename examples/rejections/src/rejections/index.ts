@@ -39,28 +39,36 @@ export default Canister({
     getRejectionCodeDestinationInvalid: update([], RejectionCode, async () => {
         try {
             await ic.call(nonexistentCanister.method);
-        } catch (error) {}
+        } catch (error) {
+            // continue regardless of error
+        }
 
         return ic.rejectCode();
     }),
     getRejectionCodeCanisterReject: update([], RejectionCode, async () => {
         try {
             await ic.call(someCanister.reject, { args: ['reject'] });
-        } catch (error) {}
+        } catch (error) {
+            // continue regardless of error
+        }
 
         return ic.rejectCode();
     }),
     getRejectionCodeCanisterError: update([], RejectionCode, async () => {
         try {
             await ic.call(someCanister.error);
-        } catch (error) {}
+        } catch (error) {
+            // continue regardless of error
+        }
 
         return ic.rejectCode();
     }),
     getRejectionMessage: update([text], text, async (message: text) => {
         try {
             await ic.call(someCanister.reject, { args: [message] });
-        } catch (error) {}
+        } catch (error) {
+            // continue regardless of error
+        }
 
         return ic.rejectMessage();
     })
