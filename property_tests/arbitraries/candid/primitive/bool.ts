@@ -1,9 +1,21 @@
 import fc from 'fast-check';
-import { PrimitiveCandidValueAndMetaArb } from '../candid_value_and_meta_arb';
+import {
+    PrimitiveCandidMetaArb,
+    PrimitiveCandidValueAndMetaArb,
+    PrimitiveCandidValueArb
+} from '../candid_value_and_meta_arb';
 import { booleanToSrcLiteral } from '../to_src_literal/boolean';
+import { BoolCandidMeta, CandidClass, CandidValues } from '../candid_meta_arb';
 
 export const BoolArb = PrimitiveCandidValueAndMetaArb(
     fc.boolean(),
-    'bool',
+    CandidClass.Bool,
     booleanToSrcLiteral
 );
+
+export const BoolTypeArb: fc.Arbitrary<BoolCandidMeta> = PrimitiveCandidMetaArb(
+    CandidClass.Bool
+);
+
+export const BoolValueArb: fc.Arbitrary<CandidValues<boolean>> =
+    PrimitiveCandidValueArb(fc.boolean(), booleanToSrcLiteral);

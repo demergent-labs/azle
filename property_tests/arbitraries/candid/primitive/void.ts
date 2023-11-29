@@ -1,8 +1,8 @@
 import fc from 'fast-check';
-import { PrimitiveCandidValueAndMetaArb } from '../candid_value_and_meta_arb';
+import { OldPrimitiveCandidValueAndMetaArb } from '../candid_value_and_meta_arb';
 import { voidToSrcLiteral } from '../to_src_literal/void';
 
-export const VoidArb = PrimitiveCandidValueAndMetaArb(
+export const VoidArb = OldPrimitiveCandidValueAndMetaArb(
     fc.constant(undefined),
     'Void',
     voidToSrcLiteral
