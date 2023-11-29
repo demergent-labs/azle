@@ -56,7 +56,7 @@ export function PrimitiveCandidValueAndMetaArb<T extends CandidType>(
                 { agentArgumentValue, agentResponseValue, valueLiteral }
             ]) => {
                 const candidType = recordType.candidMeta.candidType;
-                const typeDeclaration = recordType.candidMeta.candidType;
+                const typeDeclaration = recordType.candidMeta.typeDeclaration;
                 const imports = recordType.candidMeta.imports;
 
                 return {
@@ -79,14 +79,13 @@ export function PrimitiveCandidMetaArb(
     return fc
         .tuple(UniqueIdentifierArb('typeDeclaration'), fc.boolean())
         .map(([name, useTypeDeclaration]) => {
-            useTypeDeclaration = false;
             const candidType = useTypeDeclaration
                 ? name
                 : primitiveCandidClassToType(candidClass);
             const imports = primitiveCandidClassToImports(candidClass);
             const typeDeclaration = generateTypeDeclaration(
                 name,
-                candidType,
+                primitiveCandidClassToType(candidClass),
                 useTypeDeclaration
             );
             return {

@@ -21,7 +21,6 @@ export function VecTypeArb(
             fc.boolean()
         )
         .map(([name, innerType, useTypeDeclaration]): VecCandidMeta => {
-            useTypeDeclaration = false;
             const candidType = useTypeDeclaration
                 ? name
                 : generateCandidType(innerType);
@@ -59,7 +58,7 @@ export function VecArb(
                 { agentArgumentValue, agentResponseValue, valueLiteral }
             ]) => {
                 const candidType = recordType.candidMeta.candidType;
-                const typeDeclaration = recordType.candidMeta.candidType;
+                const typeDeclaration = recordType.candidMeta.typeDeclaration;
                 const imports = recordType.candidMeta.imports;
 
                 return {
