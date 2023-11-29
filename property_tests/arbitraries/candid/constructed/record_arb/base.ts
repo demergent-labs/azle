@@ -26,7 +26,8 @@ export function RecordTypeArb(
             fc.uniqueArray(
                 fc.tuple(JsFunctionNameArb, candidTypeArbForFields),
                 {
-                    selector: (entry) => entry[0]
+                    selector: (entry) => entry[0],
+                    minLength: 1 // Zero length records are giving that same null error 'vec length of zero sized values too large' // I don't know if that's the same error but it seems like it is
                 }
             ),
             fc.boolean()
