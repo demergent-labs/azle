@@ -6,12 +6,12 @@ import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { Record } from './index';
 import {
-    CandidClass,
     CandidTypeMeta,
     CandidValueArb,
     CandidValues,
     RecordCandidMeta
 } from '../../candid_meta_arb';
+import { CandidClass } from '../../candid_class';
 
 type TypeField = [string, CandidTypeMeta];
 type ValueField = [string, CandidValues<CandidType>];

@@ -4,12 +4,12 @@ import { CandidType } from '../../candid_type_arb';
 import { Vec } from './index';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
-    CandidClass,
     CandidTypeMeta,
     CandidValueArb,
     CandidValues,
     VecCandidMeta
 } from '../../candid_meta_arb';
+import { CandidClass } from '../../candid_class';
 
 export function VecTypeArb(
     candidTypeArb: fc.Arbitrary<CandidTypeMeta>
@@ -102,104 +102,6 @@ export function VecValueArb(
         };
     });
 }
-
-// export function VecInnerArb<T extends CandidType>(
-//     arb: fc.Arbitrary<CandidValueAndMeta<T>>
-// ): fc.Arbitrary<CandidValueAndMeta<Vec>> {
-//     return fc
-//         .tuple(
-//             UniqueIdentifierArb('typeDeclaration'),
-//             fc.array(arb),
-//             arb,
-//             fc.boolean()
-//         )
-//         .map(
-//             ([
-//                 name,
-//                 vecOfInnerType,
-//                 { src: innerTypeSrc },
-//                 useTypeDeclaration
-//             ]): CandidValueAndMeta<Vec> => {
-//                 const valueLiteral = generateValueLiteral(
-//                     vecOfInnerType,
-//                     innerTypeSrc.candidType
-//                 );
-//                 const candidType = useTypeDeclaration
-//                     ? name
-//                     : generateCandidType(innerTypeSrc);
-
-//                 const imports = generateImports(innerTypeSrc);
-
-//                 const typeDeclaration = generateTypeDeclaration(
-//                     name,
-//                     innerTypeSrc,
-//                     useTypeDeclaration
-//                 );
-
-//                 const agentArgumentValue = generateValue(
-//                     vecOfInnerType,
-//                     innerTypeSrc.candidType
-//                 );
-
-//                 const agentResponseValue = generateValue(
-//                     vecOfInnerType,
-//                     innerTypeSrc.candidType
-//                 );
-
-//                 return {
-//                     agentArgumentValue,
-//                     agentResponseValue,
-//                     src: {
-//                         candidType,
-//                         imports,
-//                         typeDeclaration,
-//                         valueLiteral
-//                     }
-//                 };
-//             }
-//         );
-// }
-
-// Exploration for making VecArb use CandidTypeArb
-// export function VecArb(
-//     candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>
-// ): fc.Arbitrary<CandidMeta<Vec>> {
-//     candidTypeArb.chain((innerType) => {
-//         return fc.array(fc.constant(innerType));
-//     });
-//     return fc
-//         .tuple(
-//             UniqueIdentifierArb('typeDeclaration'),
-//             fc.array(candidTypeArb),
-//             fc.boolean()
-//         )
-//         .map(([name, innerType, useTypeDeclaration]) => {
-//             const candidType = useTypeDeclaration
-//                 ? name
-//                 : generateCandidType(innerType);
-
-//             const imports = generateImports(innerType);
-
-//             const typeDeclaration = generateTypeDeclaration(
-//                 name,
-//                 innerType,
-//                 useTypeDeclaration
-//             );
-
-//             const valueLiteral = generateValueLiteral(innerType);
-
-//             return {
-//                 src: {
-//                     candidType,
-//                     imports,
-//                     typeDeclaration,
-//                     valueLiteral
-//                 },
-//                 value,
-//                 expectedValue
-//             };
-//         });
-// }
 
 function generateTypeDeclaration(
     name: string,
