@@ -18,14 +18,18 @@ export function SimpleCandidValueAndMetaArb<T extends CorrespondingJSType>(
         .map(
             ([
                 {
-                    candidMeta: { candidType, typeDeclaration, imports }
+                    candidMeta: {
+                        typeAnnotation,
+                        typeAliasDeclarations,
+                        imports
+                    }
                 },
                 { agentArgumentValue, agentResponseValue, valueLiteral }
             ]) => {
                 return {
                     src: {
-                        candidType,
-                        typeDeclaration,
+                        typeAnnotation,
+                        typeAliasDeclarations,
                         imports,
                         valueLiteral
                     },

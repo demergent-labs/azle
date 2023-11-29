@@ -4,7 +4,7 @@ import { Principal } from '@dfinity/principal';
 import { PrincipalArb } from './principal_arb';
 import { VoidArb } from '../primitive/void';
 import { CandidValueAndMeta } from '../candid_value_and_meta';
-import { CandidTypeArb } from '../candid_type_arb';
+import { CandidValueAndMetaArb } from '../candid_type_arb';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
 
@@ -23,7 +23,7 @@ import { JsFunctionNameArb } from '../../js_function_name_arb';
 type ServiceMethod = {
     name: string;
     imports: Set<string>;
-    typeDeclarations: string[];
+    typeAliasDeclarations: string[];
     src: string;
 };
 
@@ -31,22 +31,22 @@ const ServiceMethodArb = fc
     .tuple(
         JsFunctionNameArb,
         fc.constantFrom('query', 'update'),
-        fc.array(CandidTypeArb),
-        fc.oneof(CandidTypeArb, VoidArb)
+        fc.array(CandidValueAndMetaArb),
+        fc.oneof(CandidValueAndMetaArb, VoidArb)
     )
     .map(([name, mode, params, returnType]): ServiceMethod => {
-        const paramCandidTypes = params.map((param) => param.src.candidType);
-
-        const typeDeclarations = params.reduce(
-            (acc, { src: { typeDeclaration } }) => {
-                return typeDeclaration ? [...acc, typeDeclaration] : acc;
-            },
-            returnType.src.typeDeclaration
-                ? [returnType.src.typeDeclaration]
-                : new Array<string>()
+        const paramCandidTypes = params.map(
+            (param) => param.src.typeAnnotation
         );
 
-        const src = `${name}: ${mode}([${paramCandidTypes}], ${returnType.src.candidType})`;
+        const typeAliasDeclarations = params.reduce(
+            (acc, { src: { typeAliasDeclarations } }): string[] => {
+                return [...acc, ...typeAliasDeclarations];
+            },
+            returnType.src.typeAliasDeclarations
+        );
+
+        const src = `${name}: ${mode}([${paramCandidTypes}], ${returnType.src.typeAnnotation})`;
 
         const imports = params.reduce(
             (acc, param) => {
@@ -58,7 +58,7 @@ const ServiceMethodArb = fc
         return {
             name,
             imports,
-            typeDeclarations,
+            typeAliasDeclarations,
             src
         };
     });
@@ -78,10 +78,10 @@ export const ServiceArb = fc
 
         const typeDeclaration = generateTypeDeclaration(name, serviceMethods);
 
-        const typeDeclarationAndChildren = [
-            ...serviceMethods.flatMap((method) => method.typeDeclarations),
+        const typeAliasDeclarationsAndChildren = [
+            ...serviceMethods.flatMap((method) => method.typeAliasDeclarations),
             typeDeclaration
-        ].join('\n');
+        ];
 
         const valueLiteral = `${name}(${principal.src.valueLiteral})`;
 
@@ -89,8 +89,8 @@ export const ServiceArb = fc
 
         return {
             src: {
-                candidType: name,
-                typeDeclaration: typeDeclarationAndChildren,
+                typeAnnotation: name,
+                typeAliasDeclarations: typeAliasDeclarationsAndChildren,
                 imports,
                 valueLiteral
             },

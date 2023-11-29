@@ -66,7 +66,7 @@ export function primitiveCandidTypeToString(candidType: CandidType): string {
         return 'bool';
     }
     if (candidType === CandidType.Null) {
-        return 'null';
+        return 'Null';
     }
     if (candidType === CandidType.Text) {
         return 'text';

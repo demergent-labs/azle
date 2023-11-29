@@ -124,8 +124,10 @@ export function QueryMethodArb<
                 );
 
                 const candidTypeDeclarations = [
-                    ...paramTypes.map((param) => param.src.typeDeclaration),
-                    returnType.src.typeDeclaration
+                    ...paramTypes.flatMap(
+                        (param) => param.src.typeAliasDeclarations
+                    ),
+                    ...returnType.src.typeAliasDeclarations
                 ].filter(isDefined);
 
                 const globalDeclarations =
@@ -206,10 +208,10 @@ function generateSourceCode<
     callback: string
 ): string {
     const paramCandidTypes = paramTypes
-        .map((param) => param.src.candidType)
+        .map((param) => param.src.typeAnnotation)
         .join(', ');
 
-    const returnCandidType = returnType.src.candidType;
+    const returnCandidType = returnType.src.typeAnnotation;
 
     return `${functionName}: query([${paramCandidTypes}], ${returnCandidType}, ${callback})`;
 }

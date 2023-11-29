@@ -19,11 +19,11 @@ export function TupleArb(
                 Tuple,
                 ReturnTuple
             > => {
-                const candidType = useTypeDeclaration
+                const typeAnnotation = useTypeDeclaration
                     ? name
-                    : generateCandidType(fields);
+                    : generateTypeAnnotation(fields);
 
-                const typeDeclaration = generateTypeDeclaration(
+                const typeAliasDeclarations = generateTypeAliasDeclarations(
                     name,
                     fields,
                     useTypeDeclaration
@@ -39,8 +39,8 @@ export function TupleArb(
 
                 return {
                     src: {
-                        candidType,
-                        typeDeclaration,
+                        typeAnnotation,
+                        typeAliasDeclarations,
                         imports,
                         valueLiteral
                     },
@@ -64,24 +64,27 @@ function generateExpectedValue(
     return fields.map((field) => field.agentResponseValue);
 }
 
-function generateTypeDeclaration(
+function generateTypeAliasDeclarations(
     name: string,
     fields: CandidValueAndMeta<CorrespondingJSType>[],
     useTypeDeclaration: boolean
-): string {
-    const fieldTypeDeclarations = fields
-        .map((field) => field.src.typeDeclaration)
-        .join('\n');
+): string[] {
+    const fieldTypeAliasDeclarations = fields.flatMap(
+        (field) => field.src.typeAliasDeclarations
+    );
     if (useTypeDeclaration) {
-        return `${fieldTypeDeclarations}\nconst ${name} = ${generateCandidType(
-            fields
-        )};`;
+        return [
+            ...fieldTypeAliasDeclarations,
+            `const ${name} = ${generateTypeAnnotation(fields)};`
+        ];
     }
-    return fieldTypeDeclarations;
+    return fieldTypeAliasDeclarations;
 }
 
-function generateCandidType(fields: CandidValueAndMeta<CorrespondingJSType>[]) {
-    const innerTypes = fields.map((field) => field.src.candidType);
+function generateTypeAnnotation(
+    fields: CandidValueAndMeta<CorrespondingJSType>[]
+) {
+    const innerTypes = fields.map((field) => field.src.typeAnnotation);
 
     return `Tuple(${innerTypes.join(', ')})`;
 }

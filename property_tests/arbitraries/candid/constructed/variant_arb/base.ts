@@ -36,11 +36,11 @@ export function BaseVariantArb(
             ]): CandidValueAndMeta<Variant> => {
                 const randomIndex = Math.floor(Math.random() * fields.length);
 
-                const candidType = useTypeDeclaration
+                const typeAnnotation = useTypeDeclaration
                     ? name
-                    : generateCandidType(fields);
+                    : generateTypeAnnotation(fields);
 
-                const typeDeclaration = generateTypeDeclaration(
+                const typeAliasDeclarations = generateTypeAliasDeclarations(
                     name,
                     fields,
                     useTypeDeclaration
@@ -60,8 +60,8 @@ export function BaseVariantArb(
 
                 return {
                     src: {
-                        candidType,
-                        typeDeclaration,
+                        typeAnnotation,
+                        typeAliasDeclarations,
                         imports,
                         valueLiteral
                     },
@@ -77,27 +77,28 @@ function generateImports(fields: Field[]): Set<string> {
     return new Set([...fieldImports, 'Variant']);
 }
 
-function generateTypeDeclaration(
+function generateTypeAliasDeclarations(
     name: string,
     fields: Field[],
     useTypeDeclaration: boolean
-): string {
-    const fieldTypeDeclarations = fields
-        .map((field) => field[1].src.typeDeclaration)
-        .join('\n');
+): string[] {
+    const fieldTypeDeclarations = fields.flatMap(
+        (field) => field[1].src.typeAliasDeclarations
+    );
     if (useTypeDeclaration) {
-        return `${fieldTypeDeclarations}\nconst ${name} = ${generateCandidType(
-            fields
-        )};`;
+        return [
+            ...fieldTypeDeclarations,
+            `const ${name} = ${generateTypeAnnotation(fields)};`
+        ];
     }
     return fieldTypeDeclarations;
 }
 
-function generateCandidType(fields: Field[]): string {
+function generateTypeAnnotation(fields: Field[]): string {
     return `Variant({${fields
         .map(
             ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.src.candidType}`
+                `${fieldName}: ${fieldDataType.src.typeAnnotation}`
         )
         .join(',')}})`;
 }

@@ -17,11 +17,11 @@ export function OptArb(
             fc.boolean()
         )
         .map(([name, someOrNone, innerType, useTypeDeclaration]) => {
-            const candidType = useTypeDeclaration
+            const typeAnnotation = useTypeDeclaration
                 ? name
-                : generateCandidType(innerType);
+                : generateTypeAnnotation(innerType);
 
-            const typeDeclaration = generateTypeDeclaration(
+            const typeAliasDeclarations = generateTypeAliasDeclarations(
                 name,
                 innerType,
                 useTypeDeclaration
@@ -29,9 +29,9 @@ export function OptArb(
 
             return {
                 src: {
-                    candidType,
+                    typeAnnotation,
                     imports: generateImports(innerType),
-                    typeDeclaration,
+                    typeAliasDeclarations,
                     valueLiteral: generateValueLiteral(someOrNone, innerType)
                 },
                 agentArgumentValue: generateValue(someOrNone, innerType),
@@ -40,23 +40,24 @@ export function OptArb(
         });
 }
 
-function generateTypeDeclaration(
+function generateTypeAliasDeclarations(
     name: string,
     innerType: CandidValueAndMeta<CorrespondingJSType>,
     useTypeDeclaration: boolean
-) {
+): string[] {
     if (useTypeDeclaration) {
-        return `${
-            innerType.src.typeDeclaration ?? ''
-        }\nconst ${name} = ${generateCandidType(innerType)}`;
+        return [
+            ...innerType.src.typeAliasDeclarations,
+            `const ${name} = ${generateTypeAnnotation(innerType)};`
+        ];
     }
-    return innerType.src.typeDeclaration;
+    return innerType.src.typeAliasDeclarations;
 }
 
-function generateCandidType(
+function generateTypeAnnotation(
     innerType: CandidValueAndMeta<CorrespondingJSType>
 ): string {
-    return `Opt(${innerType.src.candidType})`;
+    return `Opt(${innerType.src.typeAnnotation})`;
 }
 
 function generateImports(
