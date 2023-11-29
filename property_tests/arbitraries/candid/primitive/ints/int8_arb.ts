@@ -13,9 +13,8 @@ export const Int8Arb = SimpleCandidValueAndMetaArb(
     numberToSrcLiteral
 );
 
-export const Int8TypeArb: fc.Arbitrary<IntCandidMeta> = SimpleCandidShapeArb(
-    CandidType.Int8
-);
+export const Int8DefinitionArb: fc.Arbitrary<IntCandidMeta> =
+    SimpleCandidShapeArb(CandidType.Int8);
 
 export const Int8ValueArb: fc.Arbitrary<CandidValues<number>> =
     SimpleCandidValueArb(NumberArb(8), numberToSrcLiteral);

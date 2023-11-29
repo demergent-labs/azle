@@ -12,9 +12,8 @@ export const Nat64Arb = SimpleCandidValueAndMetaArb(
     bigintToSrcLiteral
 );
 
-export const Nat64TypeArb: fc.Arbitrary<NatCandidMeta> = SimpleCandidShapeArb(
-    CandidType.Nat64
-);
+export const Nat64DefinitionArb: fc.Arbitrary<NatCandidMeta> =
+    SimpleCandidShapeArb(CandidType.Nat64);
 
 export const Nat64ValueArb: fc.Arbitrary<CandidValues<bigint>> =
     SimpleCandidValueArb(fc.bigUintN(64), bigintToSrcLiteral);

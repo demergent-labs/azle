@@ -12,9 +12,8 @@ export const TextArb = SimpleCandidValueAndMetaArb(
     stringToSrcLiteral
 );
 
-export const TextTypeArb: fc.Arbitrary<TextCandidMeta> = SimpleCandidShapeArb(
-    CandidType.Text
-);
+export const TextDefinitionArb: fc.Arbitrary<TextCandidMeta> =
+    SimpleCandidShapeArb(CandidType.Text);
 
 export const TextValueArb: fc.Arbitrary<CandidValues<string>> =
     SimpleCandidValueArb(fc.string(), stringToSrcLiteral);

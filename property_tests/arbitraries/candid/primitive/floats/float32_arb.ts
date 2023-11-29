@@ -12,7 +12,7 @@ export const Float32Arb = SimpleCandidValueAndMetaArb(
     floatToSrcLiteral
 );
 
-export const Float32TypeArb: fc.Arbitrary<FloatCandidMeta> =
+export const Float32DefinitionArb: fc.Arbitrary<FloatCandidMeta> =
     SimpleCandidShapeArb(CandidType.Float32);
 
 export const Float32ValueArb: fc.Arbitrary<CandidValues<number>> =
