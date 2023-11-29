@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "bierner.comment-tagged-templates",
+        "dbaeumer.vscode-eslint",
+        "editorconfig.editorconfig",
+        "esbenp.prettier-vscode",
+        "rust-lang.rust-analyzer"
+    ]
+}

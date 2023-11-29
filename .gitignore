@@ -1,6 +1,7 @@
 .dfx
 .DS_Store
 .vscode/*
+!.vscode/extensions.json
 dist
 node_modules
 target
