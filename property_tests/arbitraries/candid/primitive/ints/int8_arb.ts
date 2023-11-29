@@ -1,7 +1,7 @@
 import { numberToSrcLiteral } from '../../to_src_literal/number';
 import { PrimitiveCandidValueAndMetaArb } from '../../candid_value_and_meta_arb';
 import { NumberArb } from './';
-import { CandidClass } from '../../candid_meta_arb';
+import { CandidClass } from '../../candid_class';
 
 export const Int8Arb = PrimitiveCandidValueAndMetaArb(
     NumberArb(8),

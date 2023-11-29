@@ -1,12 +1,11 @@
 import fc from 'fast-check';
 import { CandidType } from './candid_type_arb';
+import { CandidValues, PrimitiveCandidMeta } from './candid_meta_arb';
 import {
     CandidClass,
-    CandidValues,
-    PrimitiveCandidMeta,
     primitiveCandidClassToImports,
     primitiveCandidClassToType
-} from './candid_meta_arb';
+} from './candid_class';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 
 // TODO we're thinking that Candid is not the best name for this. What is better?

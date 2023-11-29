@@ -5,7 +5,7 @@ import {
     PrimitiveCandidValueAndMetaArb
 } from '../candid_value_and_meta_arb';
 import { blobToSrcLiteral } from '../to_src_literal/blob';
-import { CandidClass } from '../candid_meta_arb';
+import { CandidClass } from '../candid_class';
 
 export const BlobArb = fc
     .oneof(

@@ -5,7 +5,8 @@ import {
     PrimitiveCandidValueArb
 } from '../candid_value_and_meta_arb';
 import { booleanToSrcLiteral } from '../to_src_literal/boolean';
-import { BoolCandidMeta, CandidClass, CandidValues } from '../candid_meta_arb';
+import { BoolCandidMeta, CandidValues } from '../candid_meta_arb';
+import { CandidClass } from '../candid_class';
 
 export const BoolArb = PrimitiveCandidValueAndMetaArb(
     fc.boolean(),
