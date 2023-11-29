@@ -1,28 +1,19 @@
 import fc from 'fast-check';
-import {
-    CandidValueAndMeta,
-    OldPrimitiveCandidValueAndMetaArb,
-    PrimitiveCandidValueAndMetaArb
-} from '../candid_value_and_meta_arb';
+import { SimpleCandidValueAndMetaArb } from '../simple_type_arbs/value_and_meta_arb';
 import { blobToSrcLiteral } from '../to_src_literal/blob';
-import { CandidClass } from '../candid_class';
+import { CandidType } from '../candid_type';
+import { OldSimpleCandidValueAndMetaArb } from '../simple_type_arbs/old_value_and_meta_arb';
 
-export const BlobArb = fc
-    .oneof(
-        OldPrimitiveCandidValueAndMetaArb(
-            fc.uint8Array(),
-            'Vec(nat8)',
-            blobToSrcLiteral
-        ),
-        PrimitiveCandidValueAndMetaArb(
-            fc.uint8Array(),
-            CandidClass.Blob,
-            blobToSrcLiteral
-        )
+export const BlobArb = fc.oneof(
+    OldSimpleCandidValueAndMetaArb(
+        fc.uint8Array(),
+        'Vec(nat8)',
+        new Set(['Vec', 'nat8']),
+        blobToSrcLiteral
+    ),
+    SimpleCandidValueAndMetaArb(
+        fc.uint8Array(),
+        CandidType.Blob,
+        blobToSrcLiteral
     )
-    .map(
-        (sample): CandidValueAndMeta<Uint8Array> => ({
-            ...sample,
-            src: { ...sample.src, imports: new Set(['blob', 'nat8', 'Vec']) }
-        })
-    );
+);

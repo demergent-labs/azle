@@ -3,7 +3,7 @@ import { Principal } from '@dfinity/principal';
 
 import { PrincipalArb } from './principal_arb';
 import { VoidArb } from '../primitive/void';
-import { CandidValueAndMeta } from '../candid_value_and_meta_arb';
+import { CandidValueAndMeta } from '../candid_value_and_meta';
 import { CandidTypeArb } from '../candid_type_arb';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../js_function_name_arb';

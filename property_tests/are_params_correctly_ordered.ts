@@ -1,8 +1,8 @@
-import { CandidValueAndMeta } from './arbitraries/candid/candid_value_and_meta_arb';
-import { CandidType } from './arbitraries/candid/candid_type_arb';
+import { CandidValueAndMeta } from './arbitraries/candid/candid_value_and_meta';
+import { CorrespondingJSType } from './arbitraries/candid/candid_type_arb';
 import { Named } from '.';
 
-export function areParamsCorrectlyOrdered<T extends CandidType>(
+export function areParamsCorrectlyOrdered<T extends CorrespondingJSType>(
     params: Named<CandidValueAndMeta<T>>[]
 ) {
     return params

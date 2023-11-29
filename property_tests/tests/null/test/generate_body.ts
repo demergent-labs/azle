@@ -1,4 +1,4 @@
-import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
+import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta';
 import { Named } from 'azle/property_tests';
 
 export function generateBody(

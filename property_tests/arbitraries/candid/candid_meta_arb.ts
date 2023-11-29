@@ -1,93 +1,95 @@
 import fc from 'fast-check';
-import { CandidType } from './candid_type_arb';
+import { CorrespondingJSType } from './candid_type_arb';
 import { RecordValueArb } from './constructed/record_arb/base';
 import { BoolValueArb } from './primitive/bool';
 import { VecValueArb } from './constructed/vec_arb/base';
-import { CandidClass } from './candid_class';
+import { CandidType } from './candid_type';
 
-export type CandidMeta = {
+export type CandidTypeMeta = {
     candidType: string;
     typeDeclaration: string;
     imports: Set<string>;
-    candidClass: CandidClass;
+    candidClass: CandidType;
 };
 
-export type CandidValues<T extends CandidType, E = T> = {
+export type CandidValues<T extends CorrespondingJSType, E = T> = {
     agentArgumentValue: T;
     agentResponseValue: E;
     valueLiteral: string;
 };
 
-export type CandidTypeMeta =
-    | MultiTypeConstructedCandidMeta
-    | SingleTypeConstructedMeta
-    | PrimitiveCandidMeta
-    | UnnamedMultiTypeConstructedCandidMeta
-    | FuncCandidMeta
-    | ServiceCandidMeta;
+export type CandidTypeShape =
+    | MultiTypeConstructedCandidShape
+    | SingleTypeConstructedShape
+    | PrimitiveCandidShape
+    | UnnamedMultiTypeConstructedCandidShape
+    | FuncCandidShape
+    | ServiceCandidShape;
 
-export type MultiTypeConstructedCandidMeta = {
-    candidMeta: CandidMeta;
-    innerTypes: [string, CandidTypeMeta][];
+export type MultiTypeConstructedCandidShape = {
+    candidMeta: CandidTypeMeta;
+    innerTypes: [string, CandidTypeShape][];
 };
 
-export type UnnamedMultiTypeConstructedCandidMeta = {
-    candidMeta: CandidMeta;
-    innerTypes: CandidTypeMeta[];
+export type UnnamedMultiTypeConstructedCandidShape = {
+    candidMeta: CandidTypeMeta;
+    innerTypes: CandidTypeShape[];
 };
 
-export type SingleTypeConstructedMeta = {
-    candidMeta: CandidMeta;
-    innerType: CandidTypeMeta;
+export type SingleTypeConstructedShape = {
+    candidMeta: CandidTypeMeta;
+    innerType: CandidTypeShape;
 };
 
-export type PrimitiveCandidMeta = {
-    candidMeta: CandidMeta;
+export type PrimitiveCandidShape = {
+    candidMeta: CandidTypeMeta;
 };
 
 // Constructed
-export type OptCandidMeta = SingleTypeConstructedMeta;
-export type VecCandidMeta = SingleTypeConstructedMeta;
-export type RecordCandidMeta = MultiTypeConstructedCandidMeta;
-export type VariantCandidMeta = MultiTypeConstructedCandidMeta;
-export type TupleCandidMeta = UnnamedMultiTypeConstructedCandidMeta;
+export type OptCandidMeta = SingleTypeConstructedShape;
+export type VecCandidMeta = SingleTypeConstructedShape;
+export type RecordCandidMeta = MultiTypeConstructedCandidShape;
+export type VariantCandidMeta = MultiTypeConstructedCandidShape;
+export type TupleCandidMeta = UnnamedMultiTypeConstructedCandidShape;
 export type BlobCandidMeta = VecCandidMeta;
 
 // Primitives
-export type FloatCandidMeta = PrimitiveCandidMeta;
-export type IntCandidMeta = PrimitiveCandidMeta;
-export type NatCandidMeta = PrimitiveCandidMeta;
-export type BoolCandidMeta = PrimitiveCandidMeta;
-export type NullCandidMeta = PrimitiveCandidMeta;
-export type TextCandidMeta = PrimitiveCandidMeta;
+export type FloatCandidMeta = PrimitiveCandidShape;
+export type IntCandidMeta = PrimitiveCandidShape;
+export type NatCandidMeta = PrimitiveCandidShape;
+export type BoolCandidMeta = PrimitiveCandidShape;
+export type NullCandidMeta = PrimitiveCandidShape;
+export type TextCandidMeta = PrimitiveCandidShape;
 
 // Reference
-export type FuncCandidMeta = {
-    candidMeta: CandidMeta;
-    paramCandidMeta: CandidTypeMeta[];
-    returnCandidMeta: CandidTypeMeta;
+export type FuncCandidShape = {
+    candidMeta: CandidTypeMeta;
+    paramCandidMeta: CandidTypeShape[];
+    returnCandidMeta: CandidTypeShape;
 };
-export type PrincipalCandidMeta = PrimitiveCandidMeta;
-export type ServiceCandidMeta = {
-    candidMeta: CandidMeta;
-    funcs: FuncCandidMeta[];
+export type PrincipalCandidMeta = PrimitiveCandidShape;
+export type ServiceCandidShape = {
+    candidMeta: CandidTypeMeta;
+    funcs: FuncCandidShape[];
 };
 
 export function CandidValueArb(
-    candidTypeMeta: CandidTypeMeta
-): fc.Arbitrary<CandidValues<CandidType>> {
+    candidTypeMeta: CandidTypeShape
+): fc.Arbitrary<CandidValues<CorrespondingJSType>> {
     const candidType = candidTypeMeta.candidMeta.candidClass;
-    if (candidType === CandidClass.Record) {
-        return RecordValueArb(candidTypeMeta as MultiTypeConstructedCandidMeta);
+    if (candidType === CandidType.Record) {
+        return RecordValueArb(
+            candidTypeMeta as MultiTypeConstructedCandidShape
+        );
     }
-    if (candidType === CandidClass.Variant) {
+    if (candidType === CandidType.Variant) {
         // return generateVariantValues(candidTypeMeta);
     }
-    if (candidType === CandidClass.Bool) {
+    if (candidType === CandidType.Bool) {
         return BoolValueArb;
     }
-    if (candidType === CandidClass.Vec) {
-        return VecValueArb(candidTypeMeta as SingleTypeConstructedMeta);
+    if (candidType === CandidType.Vec) {
+        return VecValueArb(candidTypeMeta as SingleTypeConstructedShape);
     }
     // etc
     throw 'Type cannot be converted to CandidValue yet';

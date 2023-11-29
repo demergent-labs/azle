@@ -1,10 +1,10 @@
 import { numberToSrcLiteral } from '../../to_src_literal/number';
-import { PrimitiveCandidValueAndMetaArb } from '../../candid_value_and_meta_arb';
+import { SimpleCandidValueAndMetaArb } from '../../simple_type_arbs/value_and_meta_arb';
 import { UNumberArb } from './index';
-import { CandidClass } from '../../candid_class';
+import { CandidType } from '../../candid_type';
 
-export const Nat16Arb = PrimitiveCandidValueAndMetaArb(
+export const Nat16Arb = SimpleCandidValueAndMetaArb(
     UNumberArb(16),
-    CandidClass.Nat16,
+    CandidType.Nat16,
     numberToSrcLiteral
 );

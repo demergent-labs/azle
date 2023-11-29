@@ -1,14 +1,14 @@
 import fc from 'fast-check';
-import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
-import { CandidType } from '../../candid_type_arb';
+import { CandidValueAndMeta } from '../../candid_value_and_meta';
+import { CorrespondingJSType } from '../../candid_type_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { Variant } from '.';
 
-type Field = [string, CandidValueAndMeta<CandidType>];
+type Field = [string, CandidValueAndMeta<CorrespondingJSType>];
 
 function VariantFieldsArb(
-    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>>
+    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>>
 ): fc.Arbitrary<Field[]> {
     return fc.uniqueArray(fc.tuple(JsFunctionNameArb, candidTypeArb), {
         selector: (entry) => entry[0],
@@ -20,7 +20,7 @@ function VariantFieldsArb(
 }
 
 export function BaseVariantArb(
-    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>>
+    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>>
 ): fc.Arbitrary<CandidValueAndMeta<Variant>> {
     return fc
         .tuple(

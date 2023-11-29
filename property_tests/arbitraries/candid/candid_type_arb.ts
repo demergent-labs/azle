@@ -17,7 +17,7 @@ import { Float32Arb } from './primitive/floats/float32_arb';
 import { Float64Arb } from './primitive/floats/float64_arb';
 import { TextArb } from './primitive/text';
 import { BlobArb } from './constructed/blob_arb';
-import { CandidValueAndMeta } from './candid_value_and_meta_arb';
+import { CandidValueAndMeta } from './candid_value_and_meta';
 import { Func } from './reference/func_arb';
 import { Opt } from './constructed/opt_arb';
 import { Variant } from './constructed/variant_arb';
@@ -31,13 +31,13 @@ import { Vec } from './constructed/vec_arb';
 import { VecArb, VecTypeArb } from './constructed/vec_arb/base';
 import { FuncArb } from './reference/func_arb/base';
 import {
-    CandidMeta,
     CandidTypeMeta,
+    CandidTypeShape,
     RecordCandidMeta,
     VecCandidMeta
 } from './candid_meta_arb';
 
-export type CandidType =
+export type CorrespondingJSType =
     | number
     | bigint
     | null
@@ -61,7 +61,7 @@ export type CandidType =
     | BigUint64Array
     | Vec;
 
-export const CandidCoolTypeArb: fc.Arbitrary<CandidTypeMeta> = fc.letrec(
+export const CandidCoolTypeArb: fc.Arbitrary<CandidTypeShape> = fc.letrec(
     (tie) => ({
         CandidType: fc.oneof(
             BoolTypeArb,
@@ -69,9 +69,9 @@ export const CandidCoolTypeArb: fc.Arbitrary<CandidTypeMeta> = fc.letrec(
             tie('Vec').map((sample) => sample as VecCandidMeta)
         ),
         Record: RecordTypeArb(
-            tie('CandidType') as fc.Arbitrary<CandidTypeMeta>
+            tie('CandidType') as fc.Arbitrary<CandidTypeShape>
         ),
-        Vec: VecTypeArb(tie('CandidType') as fc.Arbitrary<CandidTypeMeta>)
+        Vec: VecTypeArb(tie('CandidType') as fc.Arbitrary<CandidTypeShape>)
     })
 ).CandidType;
 
@@ -80,49 +80,56 @@ export const CandidCoolTypeArb: fc.Arbitrary<CandidTypeMeta> = fc.letrec(
  *
  * **Note:** This currently only supports ints, nats, and null arbitraries
  */
-export const CandidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>> =
-    fc.letrec((tie) => ({
-        CandidType: fc.oneof(
-            // BlobArb,
-            // tie('Opt').map((sample) => sample as CandidValueAndMeta<Opt>),
-            tie('Record').map((sample) => sample as CandidValueAndMeta<Record>),
-            // tie('Tuple').map((sample) => sample as CandidValueAndMeta<Tuple>),
-            // tie('Variant').map(
-            //     (sample) => sample as CandidValueAndMeta<Variant>
-            // ),
-            // tie('Vec').map((sample) => sample as CandidValueAndMeta<Vec>),
-            // Float32Arb,
-            // Float64Arb,
-            // IntArb,
-            // Int8Arb,
-            // Int16Arb,
-            // Int32Arb,
-            // Int64Arb,
-            // NatArb,
-            // Nat8Arb,
-            // Nat16Arb,
-            // Nat32Arb,
-            // Nat64Arb,
-            BoolArb
-            // NullArb,
-            // TextArb,
-            // tie('Func').map((sample) => sample as CandidValueAndMeta<Func>),
-            // PrincipalArb
-        ),
-        Func: FuncArb(
-            tie('CandidType') as fc.Arbitrary<CandidValueAndMeta<CandidType>>
-        ),
-        Vec: VecArb(CandidCoolTypeArb),
-        Opt: OptArb(
-            tie('CandidType') as fc.Arbitrary<CandidValueAndMeta<CandidType>>
-        ),
-        Variant: BaseVariantArb(
-            tie('CandidType') as fc.Arbitrary<CandidValueAndMeta<CandidType>>
-        ),
-        Tuple: TupleArb(
-            tie('CandidType') as fc.Arbitrary<CandidValueAndMeta<CandidType>>
-        ),
-        Record: RecordArb(CandidCoolTypeArb)
-    })).CandidType;
+export const CandidTypeArb: fc.Arbitrary<
+    CandidValueAndMeta<CorrespondingJSType>
+> = fc.letrec((tie) => ({
+    CandidType: fc.oneof(
+        BlobArb,
+        tie('Opt').map((sample) => sample as CandidValueAndMeta<Opt>),
+        tie('Record').map((sample) => sample as CandidValueAndMeta<Record>),
+        tie('Tuple').map((sample) => sample as CandidValueAndMeta<Tuple>),
+        tie('Variant').map((sample) => sample as CandidValueAndMeta<Variant>),
+        tie('Vec').map((sample) => sample as CandidValueAndMeta<Vec>),
+        Float32Arb,
+        Float64Arb,
+        IntArb,
+        Int8Arb,
+        Int16Arb,
+        Int32Arb,
+        Int64Arb,
+        NatArb,
+        Nat8Arb,
+        Nat16Arb,
+        Nat32Arb,
+        Nat64Arb,
+        BoolArb,
+        NullArb,
+        TextArb,
+        tie('Func').map((sample) => sample as CandidValueAndMeta<Func>),
+        PrincipalArb
+    ),
+    Func: FuncArb(
+        tie('CandidType') as fc.Arbitrary<
+            CandidValueAndMeta<CorrespondingJSType>
+        >
+    ),
+    Vec: VecArb(CandidCoolTypeArb),
+    Opt: OptArb(
+        tie('CandidType') as fc.Arbitrary<
+            CandidValueAndMeta<CorrespondingJSType>
+        >
+    ),
+    Variant: BaseVariantArb(
+        tie('CandidType') as fc.Arbitrary<
+            CandidValueAndMeta<CorrespondingJSType>
+        >
+    ),
+    Tuple: TupleArb(
+        tie('CandidType') as fc.Arbitrary<
+            CandidValueAndMeta<CorrespondingJSType>
+        >
+    ),
+    Record: RecordArb(CandidCoolTypeArb)
+})).CandidType;
 
 // TODO: This needs to support service.

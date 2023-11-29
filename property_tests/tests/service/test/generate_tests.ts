@@ -1,7 +1,7 @@
 import { Principal } from '@dfinity/principal';
 import { execSync } from 'child_process';
 
-import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
+import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta';
 import { Named } from 'azle/property_tests';
 import { Test } from 'azle/test';
 

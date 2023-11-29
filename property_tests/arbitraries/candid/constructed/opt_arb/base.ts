@@ -1,13 +1,13 @@
 import fc from 'fast-check';
-import { CandidType } from '../../candid_type_arb';
-import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
+import { CorrespondingJSType } from '../../candid_type_arb';
+import { CandidValueAndMeta } from '../../candid_value_and_meta';
 import { Opt } from './index';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 
 type SomeOrNone = 'Some' | 'None';
 
 export function OptArb(
-    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>>
+    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>>
 ): fc.Arbitrary<CandidValueAndMeta<Opt>> {
     return fc
         .tuple(
@@ -42,7 +42,7 @@ export function OptArb(
 
 function generateTypeDeclaration(
     name: string,
-    innerType: CandidValueAndMeta<CandidType>,
+    innerType: CandidValueAndMeta<CorrespondingJSType>,
     useTypeDeclaration: boolean
 ) {
     if (useTypeDeclaration) {
@@ -53,19 +53,21 @@ function generateTypeDeclaration(
     return innerType.src.typeDeclaration;
 }
 
-function generateCandidType(innerType: CandidValueAndMeta<CandidType>): string {
+function generateCandidType(
+    innerType: CandidValueAndMeta<CorrespondingJSType>
+): string {
     return `Opt(${innerType.src.candidType})`;
 }
 
 function generateImports(
-    innerType: CandidValueAndMeta<CandidType>
+    innerType: CandidValueAndMeta<CorrespondingJSType>
 ): Set<string> {
     return new Set([...innerType.src.imports, 'Opt', 'Some', 'None']);
 }
 
 function generateValue(
     someOrNone: SomeOrNone,
-    innerType: CandidValueAndMeta<CandidType>,
+    innerType: CandidValueAndMeta<CorrespondingJSType>,
     useAgentResponseValue: boolean = false
 ): Opt {
     if (someOrNone === 'Some') {
@@ -81,7 +83,7 @@ function generateValue(
 
 function generateValueLiteral(
     someOrNone: SomeOrNone,
-    innerType: CandidValueAndMeta<CandidType>
+    innerType: CandidValueAndMeta<CorrespondingJSType>
 ): string {
     if (someOrNone === 'Some') {
         return `Some(${innerType.src.valueLiteral})`;

@@ -1,11 +1,11 @@
 import fc from 'fast-check';
 
 import { CandidReturnType } from './candid/candid_return_type_arb';
-import { CandidType } from './candid/candid_type_arb';
+import { CorrespondingJSType } from './candid/candid_type_arb';
 import { UniqueIdentifierArb } from './unique_identifier_arb';
 import { Test } from '../../test';
 import { Named } from '../';
-import { CandidValueAndMeta } from './candid/candid_value_and_meta_arb';
+import { CandidValueAndMeta } from './candid/candid_value_and_meta';
 
 export type QueryMethod = {
     imports: Set<string>;
@@ -15,9 +15,9 @@ export type QueryMethod = {
 };
 
 export type BodyGenerator<
-    ParamAgentArgumentValue extends CandidType,
+    ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue,
-    ReturnTypeAgentArgumentValue extends CandidType,
+    ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 > = (
     namedParams: Named<
@@ -30,9 +30,9 @@ export type BodyGenerator<
 ) => string;
 
 export type TestsGenerator<
-    ParamAgentArgumentValue extends CandidType,
+    ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue,
-    ReturnTypeAgentArgumentValue extends CandidType,
+    ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 > = (
     methodName: string,
@@ -48,9 +48,9 @@ export type TestsGenerator<
 export type CallbackLocation = 'INLINE' | 'STANDALONE';
 
 export function QueryMethodArb<
-    ParamAgentArgumentValue extends CandidType,
+    ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue,
-    ReturnTypeAgentArgumentValue extends CandidType,
+    ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 >(
     paramTypeArrayArb: fc.Arbitrary<
@@ -161,7 +161,7 @@ function isDefined<T>(value: T | undefined): value is T {
 }
 
 function generateCallback<
-    ParamType extends CandidType,
+    ParamType extends CorrespondingJSType,
     ParamAgentType,
     ReturnType extends CandidReturnType,
     ReturnAgentType
@@ -195,7 +195,7 @@ function generateCallback<
 }
 
 function generateSourceCode<
-    ParamType extends CandidType,
+    ParamType extends CorrespondingJSType,
     ParamAgentType,
     ReturnType extends CandidReturnType,
     ReturnAgentType
