@@ -33,7 +33,6 @@ export function RecordTypeArb(
             fc.boolean()
         )
         .map(([name, fields, useTypeDeclaration]): RecordCandidMeta => {
-            useTypeDeclaration = false;
             const candidType = useTypeDeclaration
                 ? name
                 : generateCandidType(fields);
@@ -71,7 +70,7 @@ export function RecordArb(
                 { agentArgumentValue, agentResponseValue, valueLiteral }
             ]) => {
                 const candidType = recordType.candidMeta.candidType;
-                const typeDeclaration = recordType.candidMeta.candidType;
+                const typeDeclaration = recordType.candidMeta.typeDeclaration;
                 const imports = recordType.candidMeta.imports;
 
                 return {

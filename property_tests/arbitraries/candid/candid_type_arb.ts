@@ -65,8 +65,8 @@ export const CandidCoolTypeArb: fc.Arbitrary<CandidTypeMeta> = fc.letrec(
     (tie) => ({
         CandidType: fc.oneof(
             BoolTypeArb,
-            tie('Record').map((sample) => sample as RecordCandidMeta)
-            // tie('Vec').map((sample) => sample as VecCandidMeta)
+            tie('Record').map((sample) => sample as RecordCandidMeta),
+            tie('Vec').map((sample) => sample as VecCandidMeta)
         ),
         Record: RecordTypeArb(
             tie('CandidType') as fc.Arbitrary<CandidTypeMeta>
