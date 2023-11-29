@@ -12,9 +12,8 @@ export const IntArb = SimpleCandidValueAndMetaArb(
     bigintToSrcLiteral
 );
 
-export const IntTypeArb: fc.Arbitrary<IntCandidMeta> = SimpleCandidShapeArb(
-    CandidType.Int
-);
+export const IntDefinitionArb: fc.Arbitrary<IntCandidMeta> =
+    SimpleCandidShapeArb(CandidType.Int);
 
 export const IntValueArb: fc.Arbitrary<CandidValues<bigint>> =
     SimpleCandidValueArb(fc.bigInt(), bigintToSrcLiteral);

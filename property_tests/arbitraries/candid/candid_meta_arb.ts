@@ -6,6 +6,18 @@ import { VecValueArb } from './constructed/vec_arb/base';
 import { CandidType } from './candid_type';
 import { TextValueArb } from './primitive/text';
 import { NullValueArb } from './primitive/null';
+import { Float32ValueArb } from './primitive/floats/float32_arb';
+import { Float64ValueArb } from './primitive/floats/float64_arb';
+import { IntValueArb } from './primitive/ints/int_arb';
+import { Int8ValueArb } from './primitive/ints/int8_arb';
+import { Int16ValueArb } from './primitive/ints/int16_arb';
+import { Int32ValueArb } from './primitive/ints/int32_arb';
+import { Int64ValueArb } from './primitive/ints/int64_arb';
+import { NatValueArb } from './primitive/nats/nat_arb';
+import { Nat8ValueArb } from './primitive/nats/nat8_arb';
+import { Nat16ValueArb } from './primitive/nats/nat16_arb';
+import { Nat32ValueArb } from './primitive/nats/nat32_arb';
+import { Nat64ValueArb } from './primitive/nats/nat64_arb';
 
 export type CandidMeta = {
     typeAnnotation: string; // Either a type reference or type literal
@@ -96,6 +108,42 @@ export function CandidValueArb(
     }
     if (candidType === CandidType.Null) {
         return NullValueArb;
+    }
+    if (candidType === CandidType.Float32) {
+        return Float32ValueArb;
+    }
+    if (candidType === CandidType.Float64) {
+        return Float64ValueArb;
+    }
+    if (candidType === CandidType.Int) {
+        return IntValueArb;
+    }
+    if (candidType === CandidType.Int8) {
+        return Int8ValueArb;
+    }
+    if (candidType === CandidType.Int16) {
+        return Int16ValueArb;
+    }
+    if (candidType === CandidType.Int32) {
+        return Int32ValueArb;
+    }
+    if (candidType === CandidType.Int64) {
+        return Int64ValueArb;
+    }
+    if (candidType === CandidType.Nat) {
+        return NatValueArb;
+    }
+    if (candidType === CandidType.Nat8) {
+        return Nat8ValueArb;
+    }
+    if (candidType === CandidType.Nat16) {
+        return Nat16ValueArb;
+    }
+    if (candidType === CandidType.Nat32) {
+        return Nat32ValueArb;
+    }
+    if (candidType === CandidType.Nat64) {
+        return Nat64ValueArb;
     }
     // etc
     throw 'Type cannot be converted to CandidValue yet';

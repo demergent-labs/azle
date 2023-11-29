@@ -12,9 +12,8 @@ export const BoolArb = SimpleCandidValueAndMetaArb(
     booleanToSrcLiteral
 );
 
-export const BoolTypeArb: fc.Arbitrary<BoolCandidMeta> = SimpleCandidShapeArb(
-    CandidType.Bool
-);
+export const BoolDefinitionArb: fc.Arbitrary<BoolCandidMeta> =
+    SimpleCandidShapeArb(CandidType.Bool);
 
 export const BoolValueArb: fc.Arbitrary<CandidValues<boolean>> =
     SimpleCandidValueArb(fc.boolean(), booleanToSrcLiteral);

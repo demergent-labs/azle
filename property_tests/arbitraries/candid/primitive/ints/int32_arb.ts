@@ -13,9 +13,8 @@ export const Int32Arb = SimpleCandidValueAndMetaArb(
     numberToSrcLiteral
 );
 
-export const Int32TypeArb: fc.Arbitrary<IntCandidMeta> = SimpleCandidShapeArb(
-    CandidType.Int32
-);
+export const Int32DefinitionArb: fc.Arbitrary<IntCandidMeta> =
+    SimpleCandidShapeArb(CandidType.Int32);
 
 export const Int32ValueArb: fc.Arbitrary<CandidValues<number>> =
     SimpleCandidValueArb(NumberArb(32), numberToSrcLiteral);

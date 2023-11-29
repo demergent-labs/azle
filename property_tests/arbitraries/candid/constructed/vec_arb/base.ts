@@ -11,7 +11,7 @@ import {
 } from '../../candid_meta_arb';
 import { CandidType } from '../../candid_type';
 
-export function VecTypeArb(
+export function VecDefinitionArb(
     candidTypeArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<VecCandidMeta> {
     return fc
@@ -48,7 +48,7 @@ export function VecTypeArb(
 export function VecArb(
     candidTypeArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Vec>> {
-    return VecTypeArb(candidTypeArb)
+    return VecDefinitionArb(candidTypeArb)
         .chain((vecType) =>
             fc.tuple(fc.constant(vecType), VecValueArb(vecType))
         )

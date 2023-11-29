@@ -18,7 +18,7 @@ export const Float64Arb = SimpleCandidValueAndMetaArb(
     floatToSrcLiteral
 );
 
-export const Float64TypeArb: fc.Arbitrary<FloatCandidMeta> =
+export const Float64DefinitionArb: fc.Arbitrary<FloatCandidMeta> =
     SimpleCandidShapeArb(CandidType.Float64);
 
 export const Float64ValueArb: fc.Arbitrary<CandidValues<number>> =

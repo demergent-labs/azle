@@ -12,9 +12,8 @@ export const NatArb = SimpleCandidValueAndMetaArb(
     bigintToSrcLiteral
 );
 
-export const NatTypeArb: fc.Arbitrary<NatCandidMeta> = SimpleCandidShapeArb(
-    CandidType.Nat
-);
+export const NatDefinitionArb: fc.Arbitrary<NatCandidMeta> =
+    SimpleCandidShapeArb(CandidType.Nat);
 
 export const NatValueArb: fc.Arbitrary<CandidValues<bigint>> =
-    SimpleCandidValueArb(fc.bigInt(), bigintToSrcLiteral);
+    SimpleCandidValueArb(fc.bigUint(), bigintToSrcLiteral);

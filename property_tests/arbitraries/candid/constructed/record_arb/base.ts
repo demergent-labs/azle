@@ -17,7 +17,7 @@ type TypeField = [string, CandidDefinition];
 type ValueField = [string, CandidValues<CorrespondingJSType>];
 type ArbValueField = [string, fc.Arbitrary<CandidValues<CorrespondingJSType>>];
 
-export function RecordTypeArb(
+export function RecordDefinitionArb(
     candidTypeArbForFields: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<RecordCandidMeta> {
     return fc
@@ -60,7 +60,7 @@ export function RecordTypeArb(
 export function RecordArb(
     candidTypeArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Record>> {
-    return RecordTypeArb(candidTypeArb)
+    return RecordDefinitionArb(candidTypeArb)
         .chain((recordType) =>
             fc.tuple(fc.constant(recordType), RecordValueArb(recordType))
         )

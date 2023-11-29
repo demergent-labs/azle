@@ -12,9 +12,8 @@ export const NullArb = SimpleCandidValueAndMetaArb(
     nullToSrcLiteral
 );
 
-export const NullTypeArb: fc.Arbitrary<NullCandidMeta> = SimpleCandidShapeArb(
-    CandidType.Null
-);
+export const NullDefinitionArb: fc.Arbitrary<NullCandidMeta> =
+    SimpleCandidShapeArb(CandidType.Null);
 
 export const NullValueArb: fc.Arbitrary<CandidValues<null>> =
     SimpleCandidValueArb(fc.constant(null), nullToSrcLiteral);
