@@ -15,20 +15,20 @@ export type Src = {
     valueLiteral: string;
 };
 
-export const CandidValueAndMetaArb = <T extends CandidType>(
+export function PrimitiveCandidValueAndMetaArb<T extends CandidType>(
     arb: fc.Arbitrary<T>,
     candidType: string,
     toLiteral: (value: T) => string
-) => {
+): fc.Arbitrary<CandidValueAndMeta<T>> {
     return arb.map(
-        (agentArgumentValue): CandidValueAndMeta<T> => ({
+        (value): CandidValueAndMeta<T> => ({
             src: {
                 candidType,
                 imports: new Set([candidType]),
-                valueLiteral: toLiteral(agentArgumentValue)
+                valueLiteral: toLiteral(value)
             },
-            agentArgumentValue,
-            agentResponseValue: agentArgumentValue
+            agentArgumentValue: value,
+            agentResponseValue: value
         })
     );
-};
+}
