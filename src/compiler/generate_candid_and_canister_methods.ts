@@ -1,3 +1,5 @@
+import { createContext, Script } from 'vm';
+
 import { toDidString } from '../lib/candid/did_file';
 import {
     DidVisitor,
@@ -9,8 +11,6 @@ export function generateCandidAndCanisterMethods(mainJs: string): {
     candid: string;
     canisterMethods: CanisterMethods;
 } {
-    const vm = require('vm');
-
     const sandbox = {
         globalThis: {},
         crypto: {
@@ -29,9 +29,9 @@ export function generateCandidAndCanisterMethods(mainJs: string): {
         TextDecoder,
         TextEncoder
     };
-    const context = new vm.createContext(sandbox);
+    const context = createContext(sandbox);
 
-    const script = new vm.Script(mainJs);
+    const script = new Script(mainJs);
     script.runInContext(context);
 
     const canisterMethods = (sandbox.exports as any).canisterMethods;

@@ -4,7 +4,7 @@ const temporarilyDisabledRules = {
     '@typescript-eslint/ban-ts-comment': 'off', // 39 problems
     '@typescript-eslint/no-explicit-any': 'off', // 321 problems
     '@typescript-eslint/no-unused-vars': 'off', // 33 problems
-    '@typescript-eslint/no-var-requires': 'off', // 12 problems
+    '@typescript-eslint/no-var-requires': 'off', // 8 problems
     '@typescript-eslint/prefer-as-const': 'off', // 45 problems
     'no-constant-condition': 'off', // 1 problem
     'no-undef': 'off', // 11 problems
