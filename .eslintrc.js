@@ -13,7 +13,6 @@ const temporarilyDisabledRules = {
     'no-empty': 'off',
     'no-prototype-builtins': 'off',
     'no-undef': 'off',
-    'no-useless-catch': 'off',
     'no-var': 'off',
     'prefer-const': 'off'
 };

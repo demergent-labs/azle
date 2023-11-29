@@ -174,16 +174,12 @@ function serviceCall(
         const encodedArgs = encode(paramCandidTypes, args);
 
         if (notify) {
-            try {
-                return (callFunction as NotifyRawFunction)(
-                    canisterId,
-                    methodName,
-                    encodedArgs,
-                    cycles
-                );
-            } catch (error) {
-                throw error;
-            }
+            return (callFunction as NotifyRawFunction)(
+                canisterId,
+                methodName,
+                encodedArgs,
+                cycles
+            );
         } else {
             return (async () => {
                 const encodedResult = await (callFunction as CallRawFunction)(
