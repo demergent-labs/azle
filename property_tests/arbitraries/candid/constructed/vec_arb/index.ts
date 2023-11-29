@@ -1,8 +1,8 @@
 import { VecArb as Base } from './base';
-import { CandidCoolTypeArb, CandidType } from '../../candid_type_arb';
+import { CandidCoolTypeArb, CorrespondingJSType } from '../../candid_type_arb';
 
 export type Vec =
-    | CandidType[]
+    | CorrespondingJSType[]
     | Uint16Array
     | Uint32Array
     | Uint8Array

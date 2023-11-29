@@ -1,9 +1,9 @@
 import fc from 'fast-check';
 import { Test } from '../../test';
 import { UniqueIdentifierArb } from './unique_identifier_arb';
-import { CandidType } from './candid/candid_type_arb';
+import { CorrespondingJSType } from './candid/candid_type_arb';
 import { Named } from '../';
-import { CandidValueAndMeta } from './candid/candid_value_and_meta_arb';
+import { CandidValueAndMeta } from './candid/candid_value_and_meta';
 
 export type QueryMethod = {
     imports: Set<string>;
@@ -13,9 +13,9 @@ export type QueryMethod = {
 };
 
 export type BodyGenerator<
-    ParamAgentArgumentValue extends CandidType,
+    ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue,
-    ReturnTypeAgentArgumentValue extends CandidType,
+    ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 > = (
     namedParams: Named<
@@ -28,9 +28,9 @@ export type BodyGenerator<
 ) => string;
 
 export type TestsGenerator<
-    ParamAgentArgumentValue extends CandidType,
+    ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue,
-    ReturnTypeAgentArgumentValue extends CandidType,
+    ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 > = (
     methodName: string,
@@ -44,9 +44,9 @@ export type TestsGenerator<
 ) => Test[];
 
 export function QueryMethodArb<
-    ParamAgentArgumentValue extends CandidType,
+    ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue,
-    ReturnTypeAgentArgumentValue extends CandidType,
+    ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 >(
     paramTypeArrayArb: fc.Arbitrary<

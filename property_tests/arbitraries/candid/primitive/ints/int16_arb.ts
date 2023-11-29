@@ -1,10 +1,10 @@
 import { numberToSrcLiteral } from '../../to_src_literal/number';
-import { PrimitiveCandidValueAndMetaArb } from '../../candid_value_and_meta_arb';
+import { SimpleCandidValueAndMetaArb } from '../../simple_type_arbs/value_and_meta_arb';
 import { NumberArb } from './';
-import { CandidClass } from '../../candid_class';
+import { CandidType } from '../../candid_type';
 
-export const Int16Arb = PrimitiveCandidValueAndMetaArb(
+export const Int16Arb = SimpleCandidValueAndMetaArb(
     NumberArb(16),
-    CandidClass.Int16,
+    CandidType.Int16,
     numberToSrcLiteral
 );

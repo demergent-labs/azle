@@ -1,18 +1,18 @@
 import fc from 'fast-check';
-import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
-import { CandidType } from '../../candid_type_arb';
+import { CandidValueAndMeta } from '../../candid_value_and_meta';
+import { CorrespondingJSType } from '../../candid_type_arb';
 import { Vec } from './index';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
-    CandidTypeMeta,
+    CandidTypeShape,
     CandidValueArb,
     CandidValues,
     VecCandidMeta
 } from '../../candid_meta_arb';
-import { CandidClass } from '../../candid_class';
+import { CandidType } from '../../candid_type';
 
 export function VecTypeArb(
-    candidTypeArb: fc.Arbitrary<CandidTypeMeta>
+    candidTypeArb: fc.Arbitrary<CandidTypeShape>
 ): fc.Arbitrary<VecCandidMeta> {
     return fc
         .tuple(
@@ -38,7 +38,7 @@ export function VecTypeArb(
                     candidType,
                     typeDeclaration,
                     imports,
-                    candidClass: CandidClass.Vec
+                    candidClass: CandidType.Vec
                 },
                 innerType: innerType
             };
@@ -46,7 +46,7 @@ export function VecTypeArb(
 }
 
 export function VecArb(
-    candidTypeArb: fc.Arbitrary<CandidTypeMeta>
+    candidTypeArb: fc.Arbitrary<CandidTypeShape>
 ): fc.Arbitrary<CandidValueAndMeta<Vec>> {
     return VecTypeArb(candidTypeArb)
         .chain((vecType) =>
@@ -104,7 +104,7 @@ export function VecValueArb(
 
 function generateTypeDeclaration(
     name: string,
-    innerType: CandidTypeMeta,
+    innerType: CandidTypeShape,
     useTypeDeclaration: boolean
 ): string {
     if (useTypeDeclaration) {
@@ -115,7 +115,7 @@ function generateTypeDeclaration(
     return innerType.candidMeta.typeDeclaration;
 }
 
-function generateImports(innerType: CandidTypeMeta): Set<string> {
+function generateImports(innerType: CandidTypeShape): Set<string> {
     // Hack until https://github.com/demergent-labs/azle/issues/1453 gets fixed
     if (innerType.candidMeta.candidType === 'Null') {
         return new Set([...innerType.candidMeta.imports, 'Vec', 'bool']);
@@ -123,7 +123,7 @@ function generateImports(innerType: CandidTypeMeta): Set<string> {
     return new Set([...innerType.candidMeta.imports, 'Vec']);
 }
 
-function generateCandidType(innerType: CandidTypeMeta): string {
+function generateCandidType(innerType: CandidTypeShape): string {
     // Hack until https://github.com/demergent-labs/azle/issues/1453 gets fixed
     if (innerType.candidMeta.candidType === 'Null') {
         return `Vec(bool)`;
@@ -131,7 +131,7 @@ function generateCandidType(innerType: CandidTypeMeta): string {
     return `Vec(${innerType.candidMeta.candidType})`;
 }
 
-function generateValue<T extends CandidType>(
+function generateValue<T extends CorrespondingJSType>(
     array: CandidValues<T>[],
     candidType: string,
     returned: boolean = false
@@ -172,7 +172,7 @@ function generateValue<T extends CandidType>(
     return value;
 }
 
-function generateValueLiteral<T extends CandidType>(
+function generateValueLiteral<T extends CorrespondingJSType>(
     sample: CandidValues<T>[],
     innerCandidType: string
 ) {

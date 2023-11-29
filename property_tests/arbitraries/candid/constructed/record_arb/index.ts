@@ -1,8 +1,8 @@
-import { CandidCoolTypeArb, CandidType } from '../../candid_type_arb';
+import { CandidCoolTypeArb, CorrespondingJSType } from '../../candid_type_arb';
 import { RecordArb as Base } from './base';
 
 export type Record = {
-    [x: string]: CandidType;
+    [x: string]: CorrespondingJSType;
 };
 
 export const RecordArb = Base(CandidCoolTypeArb);

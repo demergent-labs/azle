@@ -1,15 +1,14 @@
 import { deepEqual } from 'fast-equals';
 
 import { getActor } from 'azle/property_tests';
-import { CandidType } from 'azle/property_tests/arbitraries/candid/candid_type_arb';
+import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/candid_type_arb';
 import { TestsGenerator } from 'azle/property_tests/arbitraries/query_method_arb';
 import { Test } from 'azle/test';
 
-export const generateTests: TestsGenerator<CandidType, CandidType> = (
-    functionName,
-    params,
-    returnType
-): Test[] => {
+export const generateTests: TestsGenerator<
+    CorrespondingJSType,
+    CorrespondingJSType
+> = (functionName, params, returnType): Test[] => {
     const paramValues = params.map((param) => param.el.agentArgumentValue);
     const expectedResult = returnType.agentResponseValue;
 

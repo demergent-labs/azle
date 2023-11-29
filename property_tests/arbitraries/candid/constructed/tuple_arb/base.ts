@@ -1,12 +1,12 @@
 import fc from 'fast-check';
 
-import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
-import { CandidType } from '../../candid_type_arb';
+import { CandidValueAndMeta } from '../../candid_value_and_meta';
+import { CorrespondingJSType } from '../../candid_type_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { ReturnTuple, Tuple } from './index';
 
 export function TupleArb(
-    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>>
+    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>>
 ) {
     return fc
         .tuple(
@@ -51,12 +51,12 @@ export function TupleArb(
         );
 }
 
-function generateVale(fields: CandidValueAndMeta<CandidType>[]) {
+function generateVale(fields: CandidValueAndMeta<CorrespondingJSType>[]) {
     return fields.map((field) => field.agentArgumentValue);
 }
 
 function generateExpectedValue(
-    fields: CandidValueAndMeta<CandidType>[]
+    fields: CandidValueAndMeta<CorrespondingJSType>[]
 ): ReturnTuple {
     if (fields.length === 0) {
         return {};
@@ -66,7 +66,7 @@ function generateExpectedValue(
 
 function generateTypeDeclaration(
     name: string,
-    fields: CandidValueAndMeta<CandidType>[],
+    fields: CandidValueAndMeta<CorrespondingJSType>[],
     useTypeDeclaration: boolean
 ): string {
     const fieldTypeDeclarations = fields
@@ -80,20 +80,22 @@ function generateTypeDeclaration(
     return fieldTypeDeclarations;
 }
 
-function generateCandidType(fields: CandidValueAndMeta<CandidType>[]) {
+function generateCandidType(fields: CandidValueAndMeta<CorrespondingJSType>[]) {
     const innerTypes = fields.map((field) => field.src.candidType);
 
     return `Tuple(${innerTypes.join(', ')})`;
 }
 
 function generateImports(
-    fields: CandidValueAndMeta<CandidType>[]
+    fields: CandidValueAndMeta<CorrespondingJSType>[]
 ): Set<string> {
     const fieldImports = fields.flatMap((field) => [...field.src.imports]);
     return new Set([...fieldImports, 'Tuple']);
 }
 
-function generateValueLiteral(fields: CandidValueAndMeta<CandidType>[]) {
+function generateValueLiteral(
+    fields: CandidValueAndMeta<CorrespondingJSType>[]
+) {
     const fieldLiterals = fields
         .map((field) => field.src.valueLiteral)
         .join(',\n');

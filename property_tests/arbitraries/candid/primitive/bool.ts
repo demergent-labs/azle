@@ -1,22 +1,20 @@
 import fc from 'fast-check';
-import {
-    PrimitiveCandidMetaArb,
-    PrimitiveCandidValueAndMetaArb,
-    PrimitiveCandidValueArb
-} from '../candid_value_and_meta_arb';
+import { SimpleCandidValueAndMetaArb } from '../simple_type_arbs/value_and_meta_arb';
+import { SimpleCandidShapeArb } from '../simple_type_arbs/shape_arb';
+import { SimpleCandidValueArb } from '../simple_type_arbs/value_arb';
 import { booleanToSrcLiteral } from '../to_src_literal/boolean';
 import { BoolCandidMeta, CandidValues } from '../candid_meta_arb';
-import { CandidClass } from '../candid_class';
+import { CandidType } from '../candid_type';
 
-export const BoolArb = PrimitiveCandidValueAndMetaArb(
+export const BoolArb = SimpleCandidValueAndMetaArb(
     fc.boolean(),
-    CandidClass.Bool,
+    CandidType.Bool,
     booleanToSrcLiteral
 );
 
-export const BoolTypeArb: fc.Arbitrary<BoolCandidMeta> = PrimitiveCandidMetaArb(
-    CandidClass.Bool
+export const BoolTypeArb: fc.Arbitrary<BoolCandidMeta> = SimpleCandidShapeArb(
+    CandidType.Bool
 );
 
 export const BoolValueArb: fc.Arbitrary<CandidValues<boolean>> =
-    PrimitiveCandidValueArb(fc.boolean(), booleanToSrcLiteral);
+    SimpleCandidValueArb(fc.boolean(), booleanToSrcLiteral);

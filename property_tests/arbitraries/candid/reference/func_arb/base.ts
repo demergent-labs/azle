@@ -2,15 +2,15 @@ import fc from 'fast-check';
 
 import { PrincipalArb } from '../principal_arb';
 import { VoidArb } from '../../primitive/void';
-import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
-import { CandidType } from '../../candid_type_arb';
+import { CandidValueAndMeta } from '../../candid_value_and_meta';
+import { CorrespondingJSType } from '../../candid_type_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { Func } from './index';
 
 type Mode = 'query' | 'update' | 'oneway';
 
 export function FuncArb(
-    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CandidType>>
+    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>>
 ) {
     return (fc.constantFrom('query', 'update', 'oneway') as fc.Arbitrary<Mode>)
         .chain((mode) => {
@@ -65,8 +65,8 @@ export function FuncArb(
 
 function generateTypeDeclaration(
     name: string,
-    paramCandids: CandidValueAndMeta<CandidType>[],
-    returnCandid: CandidValueAndMeta<CandidType>,
+    paramCandids: CandidValueAndMeta<CorrespondingJSType>[],
+    returnCandid: CandidValueAndMeta<CorrespondingJSType>,
     mode: Mode
 ): string {
     const paramTypeDeclarations = paramCandids

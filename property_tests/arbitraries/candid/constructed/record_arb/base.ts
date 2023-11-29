@@ -1,24 +1,24 @@
 import fc from 'fast-check';
 
-import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
-import { CandidType } from '../../candid_type_arb';
+import { CandidValueAndMeta } from '../../candid_value_and_meta';
+import { CorrespondingJSType } from '../../candid_type_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { Record } from './index';
 import {
-    CandidTypeMeta,
+    CandidTypeShape,
     CandidValueArb,
     CandidValues,
     RecordCandidMeta
 } from '../../candid_meta_arb';
-import { CandidClass } from '../../candid_class';
+import { CandidType } from '../../candid_type';
 
-type TypeField = [string, CandidTypeMeta];
-type ValueField = [string, CandidValues<CandidType>];
-type ArbValueField = [string, fc.Arbitrary<CandidValues<CandidType>>];
+type TypeField = [string, CandidTypeShape];
+type ValueField = [string, CandidValues<CorrespondingJSType>];
+type ArbValueField = [string, fc.Arbitrary<CandidValues<CorrespondingJSType>>];
 
 export function RecordTypeArb(
-    candidTypeArbForFields: fc.Arbitrary<CandidTypeMeta>
+    candidTypeArbForFields: fc.Arbitrary<CandidTypeShape>
 ): fc.Arbitrary<RecordCandidMeta> {
     return fc
         .tuple(
@@ -50,7 +50,7 @@ export function RecordTypeArb(
                     candidType,
                     typeDeclaration,
                     imports,
-                    candidClass: CandidClass.Record
+                    candidClass: CandidType.Record
                 },
                 innerTypes: fields
             };
@@ -58,7 +58,7 @@ export function RecordTypeArb(
 }
 
 export function RecordArb(
-    candidTypeArb: fc.Arbitrary<CandidTypeMeta>
+    candidTypeArb: fc.Arbitrary<CandidTypeShape>
 ): fc.Arbitrary<CandidValueAndMeta<Record>> {
     return RecordTypeArb(candidTypeArb)
         .chain((recordType) =>
@@ -95,7 +95,7 @@ export function RecordValueArb(
         return result;
     });
     const arbitraryFieldValues = fieldValues.map(([key, arbValue]) =>
-        arbValue.map((value): [string, CandidValues<CandidType>] => [
+        arbValue.map((value): [string, CandidValues<CorrespondingJSType>] => [
             key,
             value
         ])

@@ -1,10 +1,10 @@
 import fc from 'fast-check';
-import { PrimitiveCandidValueAndMetaArb } from '../../candid_value_and_meta_arb';
+import { SimpleCandidValueAndMetaArb } from '../../simple_type_arbs/value_and_meta_arb';
 import { bigintToSrcLiteral } from '../../to_src_literal/bigint';
-import { CandidClass } from '../../candid_class';
+import { CandidType } from '../../candid_type';
 
-export const Int64Arb = PrimitiveCandidValueAndMetaArb(
+export const Int64Arb = SimpleCandidValueAndMetaArb(
     fc.bigIntN(64),
-    CandidClass.Int64,
+    CandidType.Int64,
     bigintToSrcLiteral
 );
