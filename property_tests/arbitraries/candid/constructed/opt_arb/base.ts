@@ -3,20 +3,26 @@ import { CorrespondingJSType } from '../../candid_type_arb';
 import { CandidValueAndMeta } from '../../candid_value_and_meta';
 import { Opt } from './index';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
+import {
+    CandidDefinition,
+    CandidValueArb,
+    CandidValues,
+    OptCandidMeta
+} from '../../candid_meta_arb';
+import { CandidType } from '../../candid_type';
 
 type SomeOrNone = 'Some' | 'None';
 
-export function OptArb(
-    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>>
-): fc.Arbitrary<CandidValueAndMeta<Opt>> {
+export function OptDefinitionArb(
+    candidTypeArbForInnerType: fc.Arbitrary<CandidDefinition>
+): fc.Arbitrary<OptCandidMeta> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
-            fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>,
-            candidTypeArb,
+            candidTypeArbForInnerType,
             fc.boolean()
         )
-        .map(([name, someOrNone, innerType, useTypeDeclaration]) => {
+        .map(([name, innerType, useTypeDeclaration]): OptCandidMeta => {
             const typeAnnotation = useTypeDeclaration
                 ? name
                 : generateTypeAnnotation(innerType);
@@ -27,48 +33,105 @@ export function OptArb(
                 useTypeDeclaration
             );
 
+            const imports = generateImports(innerType);
+
             return {
-                src: {
+                candidMeta: {
                     typeAnnotation,
-                    imports: generateImports(innerType),
                     typeAliasDeclarations,
-                    valueLiteral: generateValueLiteral(someOrNone, innerType)
+                    imports,
+                    candidType: CandidType.Opt
                 },
-                agentArgumentValue: generateValue(someOrNone, innerType),
-                agentResponseValue: generateValue(someOrNone, innerType, true)
+                innerType
             };
         });
 }
 
+export function OptArb(
+    candidTypeArb: fc.Arbitrary<CandidDefinition>
+): fc.Arbitrary<CandidValueAndMeta<Opt>> {
+    return OptDefinitionArb(candidTypeArb)
+        .chain((tupleDefinition) =>
+            fc.tuple(fc.constant(tupleDefinition), OptValueArb(tupleDefinition))
+        )
+        .map(
+            ([
+                {
+                    candidMeta: {
+                        typeAnnotation,
+                        typeAliasDeclarations,
+                        imports
+                    }
+                },
+                { agentArgumentValue, agentResponseValue, valueLiteral }
+            ]) => {
+                return {
+                    src: {
+                        typeAnnotation,
+                        typeAliasDeclarations,
+                        imports,
+                        valueLiteral
+                    },
+                    agentArgumentValue,
+                    agentResponseValue
+                };
+            }
+        );
+}
+
+export function OptValueArb(
+    tupleDefinition: OptCandidMeta
+): fc.Arbitrary<CandidValues<Opt>> {
+    (fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>).chain(
+        (someOrNone) => {
+            if (someOrNone == 'Some') {
+            }
+            return CandidValueArb(tupleDefinition.innerType);
+        }
+    );
+    const fieldValues = fc.tuple(
+        fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>,
+        CandidValueArb(tupleDefinition.innerType)
+    );
+
+    return fieldValues.map(([someOrNone, innerType]) => {
+        const valueLiteral = generateValueLiteral(someOrNone, innerType);
+        const agentArgumentValue = generateValue(someOrNone, innerType);
+        const agentResponseValue = generateValue(someOrNone, innerType, true);
+
+        return {
+            valueLiteral,
+            agentArgumentValue,
+            agentResponseValue
+        };
+    });
+}
+
 function generateTypeAliasDeclarations(
     name: string,
-    innerType: CandidValueAndMeta<CorrespondingJSType>,
+    innerType: CandidDefinition,
     useTypeDeclaration: boolean
 ): string[] {
     if (useTypeDeclaration) {
         return [
-            ...innerType.src.typeAliasDeclarations,
+            ...innerType.candidMeta.typeAliasDeclarations,
             `const ${name} = ${generateTypeAnnotation(innerType)};`
         ];
     }
-    return innerType.src.typeAliasDeclarations;
+    return innerType.candidMeta.typeAliasDeclarations;
 }
 
-function generateTypeAnnotation(
-    innerType: CandidValueAndMeta<CorrespondingJSType>
-): string {
-    return `Opt(${innerType.src.typeAnnotation})`;
+function generateTypeAnnotation(innerType: CandidDefinition): string {
+    return `Opt(${innerType.candidMeta.typeAnnotation})`;
 }
 
-function generateImports(
-    innerType: CandidValueAndMeta<CorrespondingJSType>
-): Set<string> {
-    return new Set([...innerType.src.imports, 'Opt', 'Some', 'None']);
+function generateImports(innerType: CandidDefinition): Set<string> {
+    return new Set([...innerType.candidMeta.imports, 'Opt', 'Some', 'None']);
 }
 
 function generateValue(
     someOrNone: SomeOrNone,
-    innerType: CandidValueAndMeta<CorrespondingJSType>,
+    innerType: CandidValues<CorrespondingJSType>,
     useAgentResponseValue: boolean = false
 ): Opt {
     if (someOrNone === 'Some') {
@@ -84,10 +147,10 @@ function generateValue(
 
 function generateValueLiteral(
     someOrNone: SomeOrNone,
-    innerType: CandidValueAndMeta<CorrespondingJSType>
+    innerType: CandidValues<CorrespondingJSType>
 ): string {
     if (someOrNone === 'Some') {
-        return `Some(${innerType.src.valueLiteral})`;
+        return `Some(${innerType.valueLiteral})`;
     } else {
         return `None`;
     }

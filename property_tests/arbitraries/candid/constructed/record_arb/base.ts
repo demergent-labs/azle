@@ -13,9 +13,9 @@ import {
 } from '../../candid_meta_arb';
 import { CandidType } from '../../candid_type';
 
-type TypeField = [string, CandidDefinition];
-type ValueField = [string, CandidValues<CorrespondingJSType>];
-type ArbValueField = [string, fc.Arbitrary<CandidValues<CorrespondingJSType>>];
+type FieldDefinition = [string, CandidDefinition];
+type FieldValue = [string, CandidValues<CorrespondingJSType>];
+type FieldArbValue = [string, fc.Arbitrary<CandidValues<CorrespondingJSType>>];
 
 export function RecordDefinitionArb(
     candidTypeArbForFields: fc.Arbitrary<CandidDefinition>
@@ -28,6 +28,7 @@ export function RecordDefinitionArb(
                 {
                     selector: (entry) => entry[0],
                     minLength: 1 // Zero length records are giving that same null error 'vec length of zero sized values too large' // I don't know if that's the same error but it seems like it is
+                    // https://github.com/demergent-labs/azle/issues/1453
                 }
             ),
             fc.boolean()
@@ -93,14 +94,11 @@ export function RecordValueArb(
     recordType: RecordCandidMeta
 ): fc.Arbitrary<CandidValues<Record>> {
     const fieldValues = recordType.innerTypes.map(([name, innerType]) => {
-        const result: ArbValueField = [name, CandidValueArb(innerType)];
+        const result: FieldArbValue = [name, CandidValueArb(innerType)];
         return result;
     });
     const arbitraryFieldValues = fieldValues.map(([key, arbValue]) =>
-        arbValue.map((value): [string, CandidValues<CorrespondingJSType>] => [
-            key,
-            value
-        ])
+        arbValue.map((value): FieldValue => [key, value])
     );
 
     return fc.tuple(...arbitraryFieldValues).map((fieldValues) => {
@@ -116,14 +114,14 @@ export function RecordValueArb(
     });
 }
 
-function generateImports(fields: TypeField[]): Set<string> {
+function generateImports(fields: FieldDefinition[]): Set<string> {
     const fieldImports = fields.flatMap((field) => [
         ...field[1].candidMeta.imports
     ]);
     return new Set([...fieldImports, 'Record']);
 }
 
-function generateTypeAnnotation(fields: TypeField[]): string {
+function generateTypeAnnotation(fields: FieldDefinition[]): string {
     return `Record({${fields
         .map(
             ([fieldName, fieldDataType]) =>
@@ -134,7 +132,7 @@ function generateTypeAnnotation(fields: TypeField[]): string {
 
 function generateTypeAliasDeclarations(
     name: string,
-    fields: TypeField[],
+    fields: FieldDefinition[],
     useTypeDeclaration: boolean
 ): string[] {
     const fieldTypeAliasDeclarations = fields.flatMap(
@@ -150,7 +148,7 @@ function generateTypeAliasDeclarations(
 }
 
 function generateValue(
-    fields: ValueField[],
+    fields: FieldValue[],
     returned: boolean = false
 ): Record {
     return fields.length === 0
@@ -165,7 +163,7 @@ function generateValue(
           }, {});
 }
 
-function generateValueLiteral(fields: ValueField[]): string {
+function generateValueLiteral(fields: FieldValue[]): string {
     if (fields.length === 0) {
         return '{}';
     }

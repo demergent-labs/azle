@@ -27,18 +27,24 @@ import { CandidValueAndMeta } from './candid_value_and_meta';
 import { Func } from './reference/func_arb';
 import { Opt } from './constructed/opt_arb';
 import { Variant } from './constructed/variant_arb';
-import { BaseVariantArb } from './constructed/variant_arb/base';
+import {
+    VariantArb,
+    VariantDefinitionArb
+} from './constructed/variant_arb/base';
 import { Record } from './constructed/record_arb';
 import { Tuple } from './constructed/tuple_arb';
 import { RecordArb, RecordDefinitionArb } from './constructed/record_arb/base';
-import { TupleArb } from './constructed/tuple_arb/base';
-import { OptArb } from './constructed/opt_arb/base';
+import { TupleArb, TupleDefinitionArb } from './constructed/tuple_arb/base';
+import { OptArb, OptDefinitionArb } from './constructed/opt_arb/base';
 import { Vec } from './constructed/vec_arb';
 import { VecArb, VecDefinitionArb } from './constructed/vec_arb/base';
 import { FuncArb } from './reference/func_arb/base';
 import {
     CandidDefinition,
+    OptCandidMeta,
     RecordCandidMeta,
+    TupleCandidMeta,
+    VariantCandidMeta,
     VecCandidMeta
 } from './candid_meta_arb';
 
@@ -85,12 +91,24 @@ export const CandidDefinitionArb: fc.Arbitrary<CandidDefinition> = fc.letrec(
             // NullDefinitionArb, // Must be excluded until https://github.com/demergent-labs/azle/issues/1453 gets resolved
             TextDefinitionArb,
             tie('Record').map((sample) => sample as RecordCandidMeta),
-            tie('Vec').map((sample) => sample as VecCandidMeta)
+            tie('Vec').map((sample) => sample as VecCandidMeta),
+            tie('Variant').map((sample) => sample as VariantCandidMeta),
+            tie('Tuple').map((sample) => sample as TupleCandidMeta),
+            tie('Opt').map((sample) => sample as OptCandidMeta)
+        ),
+        Opt: OptDefinitionArb(
+            tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
         ),
         Record: RecordDefinitionArb(
             tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
         ),
+        Tuple: TupleDefinitionArb(
+            tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
+        ),
         Vec: VecDefinitionArb(
+            tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
+        ),
+        Variant: VariantDefinitionArb(
             tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
         )
     })
@@ -135,21 +153,9 @@ export const CandidValueAndMetaArb: fc.Arbitrary<
         >
     ),
     Vec: VecArb(CandidDefinitionArb),
-    Opt: OptArb(
-        tie('CandidType') as fc.Arbitrary<
-            CandidValueAndMeta<CorrespondingJSType>
-        >
-    ),
-    Variant: BaseVariantArb(
-        tie('CandidType') as fc.Arbitrary<
-            CandidValueAndMeta<CorrespondingJSType>
-        >
-    ),
-    Tuple: TupleArb(
-        tie('CandidType') as fc.Arbitrary<
-            CandidValueAndMeta<CorrespondingJSType>
-        >
-    ),
+    Opt: OptArb(CandidDefinitionArb),
+    Variant: VariantArb(CandidDefinitionArb),
+    Tuple: TupleArb(CandidDefinitionArb),
     Record: RecordArb(CandidDefinitionArb)
 })).CandidType;
 
