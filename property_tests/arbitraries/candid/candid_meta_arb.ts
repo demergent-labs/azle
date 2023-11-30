@@ -21,6 +21,7 @@ import { Nat64ValueArb } from './primitive/nats/nat64_arb';
 import { VariantValueArb } from './constructed/variant_arb/base';
 import { TupleValueArb } from './constructed/tuple_arb/base';
 import { OptValueArb } from './constructed/opt_arb/base';
+import { PrincipalValueArb } from './reference/principal_arb';
 
 export type CandidMeta = {
     typeAnnotation: string; // Either a type reference or type literal
@@ -153,6 +154,9 @@ export function CandidValueArb(
     }
     if (candidType === CandidType.Nat64) {
         return Nat64ValueArb;
+    }
+    if (candidType === CandidType.Principal) {
+        return PrincipalValueArb;
     }
     // etc
     throw 'Type cannot be converted to CandidValue yet';
