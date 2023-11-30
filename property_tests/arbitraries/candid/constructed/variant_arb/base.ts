@@ -4,60 +4,72 @@ import { CorrespondingJSType } from '../../candid_type_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { Variant } from '.';
+import {
+    CandidDefinition,
+    CandidValueArb,
+    CandidValues,
+    VariantCandidMeta
+} from '../../candid_meta_arb';
+import { CandidType } from '../../candid_type';
 
-type Field = [string, CandidValueAndMeta<CorrespondingJSType>];
+type FieldDefinition = [string, CandidDefinition];
+type FieldValue = [string, CandidValues<CorrespondingJSType>];
 
-function VariantFieldsArb(
-    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>>
-): fc.Arbitrary<Field[]> {
-    return fc.uniqueArray(fc.tuple(JsFunctionNameArb, candidTypeArb), {
-        selector: (entry) => entry[0],
-        minLength: 1
-        // Although no minLength is technically required (according to the
-        // spec), the DFX CLI itself currently errors out trying to pass
-        // an empty object.
-    });
-}
-
-export function BaseVariantArb(
-    candidTypeArb: fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>>
-): fc.Arbitrary<CandidValueAndMeta<Variant>> {
+export function VariantDefinitionArb(
+    candidTypeArbForFields: fc.Arbitrary<CandidDefinition>
+): fc.Arbitrary<VariantCandidMeta> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
-            VariantFieldsArb(candidTypeArb),
+            VariantFieldsArb(candidTypeArbForFields),
             fc.boolean()
         )
-        .map(
-            ([
+        .map(([name, fields, useTypeDeclaration]): VariantCandidMeta => {
+            const typeAnnotation = useTypeDeclaration
+                ? name
+                : generateTypeAnnotation(fields);
+
+            const typeAliasDeclarations = generateTypeAliasDeclarations(
                 name,
                 fields,
                 useTypeDeclaration
-            ]): CandidValueAndMeta<Variant> => {
-                const randomIndex = Math.floor(Math.random() * fields.length);
+            );
 
-                const typeAnnotation = useTypeDeclaration
-                    ? name
-                    : generateTypeAnnotation(fields);
+            const imports = generateImports(fields);
 
-                const typeAliasDeclarations = generateTypeAliasDeclarations(
-                    name,
-                    fields,
-                    useTypeDeclaration
-                );
+            return {
+                candidMeta: {
+                    typeAnnotation,
+                    typeAliasDeclarations,
+                    imports,
+                    candidType: CandidType.Variant
+                },
+                innerTypes: fields
+            };
+        });
+}
 
-                const imports = generateImports(fields);
-
-                const valueLiteral = generateValueLiteral(randomIndex, fields);
-
-                const agentArgumentValue = generateValue(randomIndex, fields);
-
-                const agentResponseValue = generateValue(
-                    randomIndex,
-                    fields,
-                    true
-                );
-
+export function VariantArb(
+    candidTypeArb: fc.Arbitrary<CandidDefinition>
+): fc.Arbitrary<CandidValueAndMeta<Variant>> {
+    return VariantDefinitionArb(candidTypeArb)
+        .chain((variantDefinition) =>
+            fc.tuple(
+                fc.constant(variantDefinition),
+                VariantValueArb(variantDefinition)
+            )
+        )
+        .map(
+            ([
+                {
+                    candidMeta: {
+                        typeAnnotation,
+                        typeAliasDeclarations,
+                        imports
+                    }
+                },
+                { agentArgumentValue, agentResponseValue, valueLiteral }
+            ]) => {
                 return {
                     src: {
                         typeAnnotation,
@@ -72,18 +84,65 @@ export function BaseVariantArb(
         );
 }
 
-function generateImports(fields: Field[]): Set<string> {
-    const fieldImports = fields.flatMap((field) => [...field[1].src.imports]);
+export function VariantValueArb(
+    variantDefinition: VariantCandidMeta
+): fc.Arbitrary<CandidValues<Variant>> {
+    if (variantDefinition.innerTypes.length === 0) {
+        return fc.constant({
+            valueLiteral: '{}',
+            agentArgumentValue: {},
+            agentResponseValue: {}
+        });
+    }
+    const randomIndex = Math.floor(
+        Math.random() * variantDefinition.innerTypes.length
+    );
+
+    const [name, innerType] = variantDefinition.innerTypes[randomIndex];
+
+    const fieldValue = CandidValueArb(innerType).map((values): FieldValue => {
+        return [name, values];
+    });
+
+    return fieldValue.map((fieldValues) => {
+        const valueLiteral = generateValueLiteral(fieldValues);
+        const agentArgumentValue = generateValue(fieldValues);
+        const agentResponseValue = generateValue(fieldValues, true);
+
+        return {
+            valueLiteral,
+            agentArgumentValue,
+            agentResponseValue
+        };
+    });
+}
+
+function VariantFieldsArb(
+    candidTypeArb: fc.Arbitrary<CandidDefinition>
+): fc.Arbitrary<FieldDefinition[]> {
+    return fc.uniqueArray(fc.tuple(JsFunctionNameArb, candidTypeArb), {
+        selector: (entry) => entry[0],
+        minLength: 1
+        // Although no minLength is technically required (according to the
+        // spec), the DFX CLI itself currently errors out trying to pass
+        // an empty object.
+    });
+}
+
+function generateImports(fields: FieldDefinition[]): Set<string> {
+    const fieldImports = fields.flatMap((field) => [
+        ...field[1].candidMeta.imports
+    ]);
     return new Set([...fieldImports, 'Variant']);
 }
 
 function generateTypeAliasDeclarations(
     name: string,
-    fields: Field[],
+    fields: FieldDefinition[],
     useTypeDeclaration: boolean
 ): string[] {
     const fieldTypeDeclarations = fields.flatMap(
-        (field) => field[1].src.typeAliasDeclarations
+        (field) => field[1].candidMeta.typeAliasDeclarations
     );
     if (useTypeDeclaration) {
         return [
@@ -94,46 +153,27 @@ function generateTypeAliasDeclarations(
     return fieldTypeDeclarations;
 }
 
-function generateTypeAnnotation(fields: Field[]): string {
+function generateTypeAnnotation(fields: FieldDefinition[]): string {
     return `Variant({${fields
         .map(
             ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.src.typeAnnotation}`
+                `${fieldName}: ${fieldDataType.candidMeta.typeAnnotation}`
         )
         .join(',')}})`;
 }
 
-function generateValue(
-    index: number,
-    fields: Field[],
-    returned: boolean = false
-): Variant {
-    if (fields.length === 0) {
-        return {};
-    }
-    const [
-        randomFieldName,
-        {
-            agentArgumentValue: randomFieldValue,
-            agentResponseValue: randomFieldExpectedValue
-        }
-    ] = fields[index];
+function generateValue(field: FieldValue, returned: boolean = false): Variant {
+    const [fieldName, { agentArgumentValue, agentResponseValue }] = field;
 
     return {
-        [randomFieldName]: returned
-            ? randomFieldExpectedValue
-            : randomFieldValue
+        [fieldName]: returned ? agentResponseValue : agentArgumentValue
     };
 }
 
-function generateValueLiteral(index: number, fields: Field[]): string {
-    if (fields.length === 0) {
-        return '{}';
-    }
-
-    const [fieldName, fieldValue] = fields[index];
+function generateValueLiteral(field: FieldValue): string {
+    const [fieldName, fieldValue] = field;
 
     return `{
-        ${fieldName}: ${fieldValue.src.valueLiteral}
+        ${fieldName}: ${fieldValue.valueLiteral}
     }`;
 }

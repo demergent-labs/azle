@@ -18,6 +18,9 @@ import { Nat8ValueArb } from './primitive/nats/nat8_arb';
 import { Nat16ValueArb } from './primitive/nats/nat16_arb';
 import { Nat32ValueArb } from './primitive/nats/nat32_arb';
 import { Nat64ValueArb } from './primitive/nats/nat64_arb';
+import { VariantValueArb } from './constructed/variant_arb/base';
+import { TupleValueArb } from './constructed/tuple_arb/base';
+import { OptValueArb } from './constructed/opt_arb/base';
 
 export type CandidMeta = {
     typeAnnotation: string; // Either a type reference or type literal
@@ -92,16 +95,22 @@ export function CandidValueArb(
 ): fc.Arbitrary<CandidValues<CorrespondingJSType>> {
     const candidType = candidTypeMeta.candidMeta.candidType;
     if (candidType === CandidType.Record) {
-        return RecordValueArb(candidTypeMeta as MultiTypeConstructedDefinition);
+        return RecordValueArb(candidTypeMeta as RecordCandidMeta);
     }
     if (candidType === CandidType.Variant) {
-        // return generateVariantValues(candidTypeMeta);
+        return VariantValueArb(candidTypeMeta as VariantCandidMeta);
+    }
+    if (candidType === CandidType.Tuple) {
+        return TupleValueArb(candidTypeMeta as TupleCandidMeta);
+    }
+    if (candidType === CandidType.Opt) {
+        return OptValueArb(candidTypeMeta as OptCandidMeta);
     }
     if (candidType === CandidType.Bool) {
         return BoolValueArb;
     }
     if (candidType === CandidType.Vec) {
-        return VecValueArb(candidTypeMeta as SingleTypeConstructedDefinition);
+        return VecValueArb(candidTypeMeta as VecCandidMeta);
     }
     if (candidType === CandidType.Text) {
         return TextValueArb;

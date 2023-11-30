@@ -1,11 +1,11 @@
 import {
-    CorrespondingJSType,
-    CandidValueAndMetaArb
+    CandidDefinitionArb,
+    CorrespondingJSType
 } from '../../candid_type_arb';
-import { BaseVariantArb } from './base';
+import { VariantArb as Base } from './base';
 
 export type Variant = {
     [x: string]: CorrespondingJSType;
 };
 
-export const VariantArb = BaseVariantArb(CandidValueAndMetaArb);
+export const VariantArb = Base(CandidDefinitionArb);
