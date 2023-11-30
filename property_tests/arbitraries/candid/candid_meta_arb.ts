@@ -63,20 +63,20 @@ export type PrimitiveDefinition = {
 };
 
 // Constructed
-export type OptCandidMeta = SingleTypeConstructedDefinition;
-export type VecCandidMeta = SingleTypeConstructedDefinition;
-export type RecordCandidMeta = MultiTypeConstructedDefinition;
-export type VariantCandidMeta = MultiTypeConstructedDefinition;
-export type TupleCandidMeta = UnnamedMultiTypeConstructedDefinition;
-export type BlobCandidMeta = VecCandidMeta;
+export type OptCandidDefinition = SingleTypeConstructedDefinition;
+export type VecCandidDefinition = SingleTypeConstructedDefinition;
+export type RecordCandidDefinition = MultiTypeConstructedDefinition;
+export type VariantCandidDefinition = MultiTypeConstructedDefinition;
+export type TupleCandidDefinition = UnnamedMultiTypeConstructedDefinition;
+export type BlobCandidDefinition = VecCandidDefinition;
 
 // Primitives
-export type FloatCandidMeta = PrimitiveDefinition;
-export type IntCandidMeta = PrimitiveDefinition;
-export type NatCandidMeta = PrimitiveDefinition;
-export type BoolCandidMeta = PrimitiveDefinition;
-export type NullCandidMeta = PrimitiveDefinition;
-export type TextCandidMeta = PrimitiveDefinition;
+export type FloatCandidDefinition = PrimitiveDefinition;
+export type IntCandidDefinition = PrimitiveDefinition;
+export type NatCandidDefinition = PrimitiveDefinition;
+export type BoolCandidDefinition = PrimitiveDefinition;
+export type NullCandidDefinition = PrimitiveDefinition;
+export type TextCandidDefinition = PrimitiveDefinition;
 
 // Reference
 export type FuncCandidDefinition = {
@@ -84,7 +84,7 @@ export type FuncCandidDefinition = {
     paramCandidMeta: CandidDefinition[];
     returnCandidMeta: CandidDefinition;
 };
-export type PrincipalCandidMeta = PrimitiveDefinition;
+export type PrincipalCandidDefinition = PrimitiveDefinition;
 export type ServiceCandidDefinition = {
     candidMeta: CandidMeta;
     funcs: FuncCandidDefinition[];
@@ -95,22 +95,22 @@ export function CandidValueArb(
 ): fc.Arbitrary<CandidValues<CorrespondingJSType>> {
     const candidType = candidTypeMeta.candidMeta.candidType;
     if (candidType === CandidType.Record) {
-        return RecordValueArb(candidTypeMeta as RecordCandidMeta);
+        return RecordValueArb(candidTypeMeta as RecordCandidDefinition);
     }
     if (candidType === CandidType.Variant) {
-        return VariantValueArb(candidTypeMeta as VariantCandidMeta);
+        return VariantValueArb(candidTypeMeta as VariantCandidDefinition);
     }
     if (candidType === CandidType.Tuple) {
-        return TupleValueArb(candidTypeMeta as TupleCandidMeta);
+        return TupleValueArb(candidTypeMeta as TupleCandidDefinition);
     }
     if (candidType === CandidType.Opt) {
-        return OptValueArb(candidTypeMeta as OptCandidMeta);
+        return OptValueArb(candidTypeMeta as OptCandidDefinition);
     }
     if (candidType === CandidType.Bool) {
         return BoolValueArb;
     }
     if (candidType === CandidType.Vec) {
-        return VecValueArb(candidTypeMeta as VecCandidMeta);
+        return VecValueArb(candidTypeMeta as VecCandidDefinition);
     }
     if (candidType === CandidType.Text) {
         return TextValueArb;

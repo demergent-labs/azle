@@ -7,7 +7,7 @@ import {
     CandidDefinition,
     CandidValueArb,
     CandidValues,
-    OptCandidMeta
+    OptCandidDefinition
 } from '../../candid_meta_arb';
 import { CandidType } from '../../candid_type';
 
@@ -15,14 +15,14 @@ type SomeOrNone = 'Some' | 'None';
 
 export function OptDefinitionArb(
     candidTypeArbForInnerType: fc.Arbitrary<CandidDefinition>
-): fc.Arbitrary<OptCandidMeta> {
+): fc.Arbitrary<OptCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
             candidTypeArbForInnerType,
             fc.boolean()
         )
-        .map(([name, innerType, useTypeDeclaration]): OptCandidMeta => {
+        .map(([name, innerType, useTypeDeclaration]): OptCandidDefinition => {
             const typeAnnotation = useTypeDeclaration
                 ? name
                 : generateTypeAnnotation(innerType);
@@ -80,7 +80,7 @@ export function OptArb(
 }
 
 export function OptValueArb(
-    tupleDefinition: OptCandidMeta
+    tupleDefinition: OptCandidDefinition
 ): fc.Arbitrary<CandidValues<Opt>> {
     (fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>).chain(
         (someOrNone) => {

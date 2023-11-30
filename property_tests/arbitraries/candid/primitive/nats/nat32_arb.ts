@@ -3,7 +3,7 @@ import { SimpleCandidValueAndMetaArb } from '../../simple_type_arbs/value_and_me
 import { UNumberArb } from './index';
 import { CandidType } from '../../candid_type';
 import fc from 'fast-check';
-import { CandidValues, NatCandidMeta } from '../../candid_meta_arb';
+import { CandidValues, NatCandidDefinition } from '../../candid_meta_arb';
 import { SimpleCandidShapeArb } from '../../simple_type_arbs/shape_arb';
 import { SimpleCandidValueArb } from '../../simple_type_arbs/value_arb';
 
@@ -13,7 +13,7 @@ export const Nat32Arb = SimpleCandidValueAndMetaArb(
     numberToSrcLiteral
 );
 
-export const Nat32DefinitionArb: fc.Arbitrary<NatCandidMeta> =
+export const Nat32DefinitionArb: fc.Arbitrary<NatCandidDefinition> =
     SimpleCandidShapeArb(CandidType.Nat32);
 
 export const Nat32ValueArb: fc.Arbitrary<CandidValues<number>> =

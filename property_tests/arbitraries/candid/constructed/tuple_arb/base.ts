@@ -8,13 +8,13 @@ import {
     CandidDefinition,
     CandidValueArb,
     CandidValues,
-    TupleCandidMeta
+    TupleCandidDefinition
 } from '../../candid_meta_arb';
 import { CandidType } from '../../candid_type';
 
 export function TupleDefinitionArb(
     candidTypeArbForFields: fc.Arbitrary<CandidDefinition>
-): fc.Arbitrary<TupleCandidMeta> {
+): fc.Arbitrary<TupleCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
@@ -24,7 +24,7 @@ export function TupleDefinitionArb(
             // https://github.com/demergent-labs/azle/issues/1453
             fc.boolean()
         )
-        .map(([name, fields, useTypeDeclaration]): TupleCandidMeta => {
+        .map(([name, fields, useTypeDeclaration]): TupleCandidDefinition => {
             const typeAnnotation = useTypeDeclaration
                 ? name
                 : generateTypeAnnotation(fields);
@@ -126,7 +126,7 @@ export function TupleArb(
 }
 
 export function TupleValueArb(
-    tupleDefinition: TupleCandidMeta
+    tupleDefinition: TupleCandidDefinition
 ): fc.Arbitrary<CandidValues<Tuple, ReturnTuple>> {
     const fieldValues = tupleDefinition.innerTypes.map((innerType) => {
         const result: fc.Arbitrary<CandidValues<CorrespondingJSType>> =

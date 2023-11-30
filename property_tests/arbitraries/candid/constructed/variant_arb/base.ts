@@ -8,7 +8,7 @@ import {
     CandidDefinition,
     CandidValueArb,
     CandidValues,
-    VariantCandidMeta
+    VariantCandidDefinition
 } from '../../candid_meta_arb';
 import { CandidType } from '../../candid_type';
 
@@ -17,14 +17,14 @@ type FieldValue = [string, CandidValues<CorrespondingJSType>];
 
 export function VariantDefinitionArb(
     candidTypeArbForFields: fc.Arbitrary<CandidDefinition>
-): fc.Arbitrary<VariantCandidMeta> {
+): fc.Arbitrary<VariantCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
             VariantFieldsArb(candidTypeArbForFields),
             fc.boolean()
         )
-        .map(([name, fields, useTypeDeclaration]): VariantCandidMeta => {
+        .map(([name, fields, useTypeDeclaration]): VariantCandidDefinition => {
             const typeAnnotation = useTypeDeclaration
                 ? name
                 : generateTypeAnnotation(fields);
@@ -85,7 +85,7 @@ export function VariantArb(
 }
 
 export function VariantValueArb(
-    variantDefinition: VariantCandidMeta
+    variantDefinition: VariantCandidDefinition
 ): fc.Arbitrary<CandidValues<Variant>> {
     if (variantDefinition.innerTypes.length === 0) {
         return fc.constant({

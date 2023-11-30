@@ -2,7 +2,7 @@ import fc from 'fast-check';
 import { SimpleCandidValueAndMetaArb } from '../simple_type_arbs/value_and_meta_arb';
 import { stringToSrcLiteral } from '../to_src_literal/string';
 import { CandidType } from '../candid_type';
-import { CandidValues, TextCandidMeta } from '../candid_meta_arb';
+import { CandidValues, TextCandidDefinition } from '../candid_meta_arb';
 import { SimpleCandidValueArb } from '../simple_type_arbs/value_arb';
 import { SimpleCandidShapeArb } from '../simple_type_arbs/shape_arb';
 
@@ -12,7 +12,7 @@ export const TextArb = SimpleCandidValueAndMetaArb(
     stringToSrcLiteral
 );
 
-export const TextDefinitionArb: fc.Arbitrary<TextCandidMeta> =
+export const TextDefinitionArb: fc.Arbitrary<TextCandidDefinition> =
     SimpleCandidShapeArb(CandidType.Text);
 
 export const TextValueArb: fc.Arbitrary<CandidValues<string>> =
