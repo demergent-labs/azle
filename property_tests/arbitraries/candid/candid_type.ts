@@ -71,6 +71,9 @@ export function primitiveCandidTypeToString(candidType: CandidType): string {
     if (candidType === CandidType.Text) {
         return 'text';
     }
+    if (candidType === CandidType.Principal) {
+        return 'Principal';
+    }
     return '';
 }
 

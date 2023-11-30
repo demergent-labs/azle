@@ -12,7 +12,10 @@ import { Nat64Arb, Nat64DefinitionArb } from './primitive/nats/nat64_arb';
 import { NullArb, NullDefinitionArb } from './primitive/null';
 import { BoolArb, BoolDefinitionArb } from './primitive/bool';
 import { Principal } from '@dfinity/principal';
-import { PrincipalArb } from './reference/principal_arb';
+import {
+    PrincipalArb,
+    PrincipalDefinitionArb
+} from './reference/principal_arb';
 import {
     Float32Arb,
     Float32DefinitionArb
@@ -90,6 +93,7 @@ export const CandidDefinitionArb: fc.Arbitrary<CandidDefinition> = fc.letrec(
             BoolDefinitionArb,
             // NullDefinitionArb, // Must be excluded until https://github.com/demergent-labs/azle/issues/1453 gets resolved
             TextDefinitionArb,
+            PrincipalDefinitionArb,
             tie('Record').map((sample) => sample as RecordCandidDefinition),
             tie('Vec').map((sample) => sample as VecCandidDefinition),
             tie('Variant').map((sample) => sample as VariantCandidDefinition),
