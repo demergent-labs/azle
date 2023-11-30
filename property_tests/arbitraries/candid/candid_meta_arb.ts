@@ -22,6 +22,9 @@ import { VariantValueArb } from './constructed/variant_arb/base';
 import { TupleValueArb } from './constructed/tuple_arb/base';
 import { OptValueArb } from './constructed/opt_arb/base';
 import { PrincipalValueArb } from './reference/principal_arb';
+import { FuncValueArb } from './reference/func_arb/base';
+import { VoidValueArb } from './primitive/void';
+import { ServiceValueArb } from './reference/service_arb/base';
 
 export type CandidMeta = {
     typeAnnotation: string; // Either a type reference or type literal
@@ -78,6 +81,7 @@ export type NatCandidDefinition = PrimitiveDefinition;
 export type BoolCandidDefinition = PrimitiveDefinition;
 export type NullCandidDefinition = PrimitiveDefinition;
 export type TextCandidDefinition = PrimitiveDefinition;
+export type VoidCandidDefinition = PrimitiveDefinition;
 
 // Reference
 export type FuncCandidDefinition = {
@@ -87,8 +91,15 @@ export type FuncCandidDefinition = {
 };
 export type PrincipalCandidDefinition = PrimitiveDefinition;
 export type ServiceCandidDefinition = {
+    name: string;
     candidMeta: CandidMeta;
-    funcs: FuncCandidDefinition[];
+    funcs: ServiceMethodDefinition[];
+};
+export type ServiceMethodDefinition = {
+    name: string;
+    imports: Set<string>;
+    typeAliasDeclarations: string[];
+    src: string;
 };
 
 export function CandidValueArb(
@@ -112,6 +123,9 @@ export function CandidValueArb(
     }
     if (candidType === CandidType.Vec) {
         return VecValueArb(candidTypeMeta as VecCandidDefinition);
+    }
+    if (candidType === CandidType.Func) {
+        return FuncValueArb;
     }
     if (candidType === CandidType.Text) {
         return TextValueArb;
@@ -157,6 +171,12 @@ export function CandidValueArb(
     }
     if (candidType === CandidType.Principal) {
         return PrincipalValueArb;
+    }
+    if (candidType === CandidType.Void) {
+        return VoidValueArb;
+    }
+    if (candidType === CandidType.Service) {
+        return ServiceValueArb(candidTypeMeta as ServiceCandidDefinition);
     }
     // etc
     throw 'Type cannot be converted to CandidValue yet';
