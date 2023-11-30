@@ -3,7 +3,7 @@ import { SimpleCandidValueAndMetaArb } from '../simple_type_arbs/value_and_meta_
 import { SimpleCandidShapeArb } from '../simple_type_arbs/shape_arb';
 import { SimpleCandidValueArb } from '../simple_type_arbs/value_arb';
 import { booleanToSrcLiteral } from '../to_src_literal/boolean';
-import { BoolCandidMeta, CandidValues } from '../candid_meta_arb';
+import { BoolCandidDefinition, CandidValues } from '../candid_meta_arb';
 import { CandidType } from '../candid_type';
 
 export const BoolArb = SimpleCandidValueAndMetaArb(
@@ -12,7 +12,7 @@ export const BoolArb = SimpleCandidValueAndMetaArb(
     booleanToSrcLiteral
 );
 
-export const BoolDefinitionArb: fc.Arbitrary<BoolCandidMeta> =
+export const BoolDefinitionArb: fc.Arbitrary<BoolCandidDefinition> =
     SimpleCandidShapeArb(CandidType.Bool);
 
 export const BoolValueArb: fc.Arbitrary<CandidValues<boolean>> =

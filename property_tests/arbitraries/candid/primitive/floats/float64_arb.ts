@@ -4,7 +4,7 @@ import { floatToSrcLiteral } from '../../to_src_literal/float';
 import { CandidType } from '../../candid_type';
 import { SimpleCandidShapeArb } from '../../simple_type_arbs/shape_arb';
 import { SimpleCandidValueArb } from '../../simple_type_arbs/value_arb';
-import { CandidValues, FloatCandidMeta } from '../../candid_meta_arb';
+import { CandidValues, FloatCandidDefinition } from '../../candid_meta_arb';
 
 function float64(): fc.Arbitrary<number> {
     return fc
@@ -18,7 +18,7 @@ export const Float64Arb = SimpleCandidValueAndMetaArb(
     floatToSrcLiteral
 );
 
-export const Float64DefinitionArb: fc.Arbitrary<FloatCandidMeta> =
+export const Float64DefinitionArb: fc.Arbitrary<FloatCandidDefinition> =
     SimpleCandidShapeArb(CandidType.Float64);
 
 export const Float64ValueArb: fc.Arbitrary<CandidValues<number>> =

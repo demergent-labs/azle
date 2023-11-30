@@ -7,20 +7,20 @@ import {
     CandidDefinition,
     CandidValueArb,
     CandidValues,
-    VecCandidMeta
+    VecCandidDefinition
 } from '../../candid_meta_arb';
 import { CandidType } from '../../candid_type';
 
 export function VecDefinitionArb(
     candidTypeArb: fc.Arbitrary<CandidDefinition>
-): fc.Arbitrary<VecCandidMeta> {
+): fc.Arbitrary<VecCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
             candidTypeArb,
             fc.boolean()
         )
-        .map(([name, innerType, useTypeDeclaration]): VecCandidMeta => {
+        .map(([name, innerType, useTypeDeclaration]): VecCandidDefinition => {
             const typeAnnotation = useTypeDeclaration
                 ? name
                 : generateTypeAnnotation(innerType);
@@ -78,7 +78,7 @@ export function VecArb(
 }
 
 export function VecValueArb(
-    vecType: VecCandidMeta
+    vecType: VecCandidDefinition
 ): fc.Arbitrary<CandidValues<Vec>> {
     const arbitraryMemberValues = fc
         .tuple(fc.array(fc.constant(null)), fc.constant(vecType.innerType))

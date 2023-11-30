@@ -41,11 +41,11 @@ import { VecArb, VecDefinitionArb } from './constructed/vec_arb/base';
 import { FuncArb } from './reference/func_arb/base';
 import {
     CandidDefinition,
-    OptCandidMeta,
-    RecordCandidMeta,
-    TupleCandidMeta,
-    VariantCandidMeta,
-    VecCandidMeta
+    OptCandidDefinition,
+    RecordCandidDefinition,
+    TupleCandidDefinition,
+    VariantCandidDefinition,
+    VecCandidDefinition
 } from './candid_meta_arb';
 
 export type CorrespondingJSType =
@@ -90,11 +90,11 @@ export const CandidDefinitionArb: fc.Arbitrary<CandidDefinition> = fc.letrec(
             BoolDefinitionArb,
             // NullDefinitionArb, // Must be excluded until https://github.com/demergent-labs/azle/issues/1453 gets resolved
             TextDefinitionArb,
-            tie('Record').map((sample) => sample as RecordCandidMeta),
-            tie('Vec').map((sample) => sample as VecCandidMeta),
-            tie('Variant').map((sample) => sample as VariantCandidMeta),
-            tie('Tuple').map((sample) => sample as TupleCandidMeta),
-            tie('Opt').map((sample) => sample as OptCandidMeta)
+            tie('Record').map((sample) => sample as RecordCandidDefinition),
+            tie('Vec').map((sample) => sample as VecCandidDefinition),
+            tie('Variant').map((sample) => sample as VariantCandidDefinition),
+            tie('Tuple').map((sample) => sample as TupleCandidDefinition),
+            tie('Opt').map((sample) => sample as OptCandidDefinition)
         ),
         Opt: OptDefinitionArb(
             tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>

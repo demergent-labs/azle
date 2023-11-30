@@ -3,7 +3,7 @@ import { numberToSrcLiteral } from '../../to_src_literal/number';
 import { SimpleCandidValueAndMetaArb } from '../../simple_type_arbs/value_and_meta_arb';
 import { NumberArb } from './';
 import { CandidType } from '../../candid_type';
-import { CandidValues, IntCandidMeta } from '../../candid_meta_arb';
+import { CandidValues, IntCandidDefinition } from '../../candid_meta_arb';
 import { SimpleCandidShapeArb } from '../../simple_type_arbs/shape_arb';
 import { SimpleCandidValueArb } from '../../simple_type_arbs/value_arb';
 
@@ -13,7 +13,7 @@ export const Int16Arb = SimpleCandidValueAndMetaArb(
     numberToSrcLiteral
 );
 
-export const Int16DefinitionArb: fc.Arbitrary<IntCandidMeta> =
+export const Int16DefinitionArb: fc.Arbitrary<IntCandidDefinition> =
     SimpleCandidShapeArb(CandidType.Int16);
 
 export const Int16ValueArb: fc.Arbitrary<CandidValues<number>> =

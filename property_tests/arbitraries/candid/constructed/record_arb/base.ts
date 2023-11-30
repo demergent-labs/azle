@@ -9,7 +9,7 @@ import {
     CandidDefinition,
     CandidValueArb,
     CandidValues,
-    RecordCandidMeta
+    RecordCandidDefinition
 } from '../../candid_meta_arb';
 import { CandidType } from '../../candid_type';
 
@@ -19,7 +19,7 @@ type FieldArbValue = [string, fc.Arbitrary<CandidValues<CorrespondingJSType>>];
 
 export function RecordDefinitionArb(
     candidTypeArbForFields: fc.Arbitrary<CandidDefinition>
-): fc.Arbitrary<RecordCandidMeta> {
+): fc.Arbitrary<RecordCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
@@ -33,7 +33,7 @@ export function RecordDefinitionArb(
             ),
             fc.boolean()
         )
-        .map(([name, fields, useTypeDeclaration]): RecordCandidMeta => {
+        .map(([name, fields, useTypeDeclaration]): RecordCandidDefinition => {
             const typeAnnotation = useTypeDeclaration
                 ? name
                 : generateTypeAnnotation(fields);
@@ -91,7 +91,7 @@ export function RecordArb(
 }
 
 export function RecordValueArb(
-    recordType: RecordCandidMeta
+    recordType: RecordCandidDefinition
 ): fc.Arbitrary<CandidValues<Record>> {
     const fieldValues = recordType.innerTypes.map(([name, innerType]) => {
         const result: FieldArbValue = [name, CandidValueArb(innerType)];
