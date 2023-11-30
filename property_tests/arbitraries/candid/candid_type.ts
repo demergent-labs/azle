@@ -22,7 +22,8 @@ export enum CandidType {
     Text,
     Func,
     Principal,
-    Service
+    Service,
+    Void
 }
 
 export function primitiveCandidTypeToString(candidType: CandidType): string {
@@ -73,6 +74,9 @@ export function primitiveCandidTypeToString(candidType: CandidType): string {
     }
     if (candidType === CandidType.Principal) {
         return 'Principal';
+    }
+    if (candidType === CandidType.Void) {
+        return 'Void';
     }
     return '';
 }

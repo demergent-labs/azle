@@ -18,19 +18,16 @@ type FieldValue = [string, CandidValues<CorrespondingJSType>];
 type FieldArbValue = [string, fc.Arbitrary<CandidValues<CorrespondingJSType>>];
 
 export function RecordDefinitionArb(
-    candidTypeArbForFields: fc.Arbitrary<CandidDefinition>
+    fieldCandidDefArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<RecordCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
-            fc.uniqueArray(
-                fc.tuple(JsFunctionNameArb, candidTypeArbForFields),
-                {
-                    selector: (entry) => entry[0],
-                    minLength: 1 // Zero length records are giving that same null error 'vec length of zero sized values too large' // I don't know if that's the same error but it seems like it is
-                    // https://github.com/demergent-labs/azle/issues/1453
-                }
-            ),
+            fc.uniqueArray(fc.tuple(JsFunctionNameArb, fieldCandidDefArb), {
+                selector: (entry) => entry[0],
+                minLength: 1 // Zero length records are giving that same null error 'vec length of zero sized values too large' // I don't know if that's the same error but it seems like it is
+                // https://github.com/demergent-labs/azle/issues/1453
+            }),
             fc.boolean()
         )
         .map(([name, fields, useTypeDeclaration]): RecordCandidDefinition => {
@@ -59,11 +56,11 @@ export function RecordDefinitionArb(
 }
 
 export function RecordArb(
-    candidTypeArb: fc.Arbitrary<CandidDefinition>
+    candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Record>> {
-    return RecordDefinitionArb(candidTypeArb)
-        .chain((recordType) =>
-            fc.tuple(fc.constant(recordType), RecordValueArb(recordType))
+    return RecordDefinitionArb(candidDefinitionArb)
+        .chain((recordDef) =>
+            fc.tuple(fc.constant(recordDef), RecordValueArb(recordDef))
         )
         .map(
             ([
@@ -91,9 +88,9 @@ export function RecordArb(
 }
 
 export function RecordValueArb(
-    recordType: RecordCandidDefinition
+    recordDefinition: RecordCandidDefinition
 ): fc.Arbitrary<CandidValues<Record>> {
-    const fieldValues = recordType.innerTypes.map(([name, innerType]) => {
+    const fieldValues = recordDefinition.innerTypes.map(([name, innerType]) => {
         const result: FieldArbValue = [name, CandidValueArb(innerType)];
         return result;
     });
@@ -124,8 +121,8 @@ function generateImports(fields: FieldDefinition[]): Set<string> {
 function generateTypeAnnotation(fields: FieldDefinition[]): string {
     return `Record({${fields
         .map(
-            ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.candidMeta.typeAnnotation}`
+            ([fieldName, fieldDefinition]) =>
+                `${fieldName}: ${fieldDefinition.candidMeta.typeAnnotation}`
         )
         .join(',')}})`;
 }
@@ -153,12 +150,12 @@ function generateValue(
 ): Record {
     return fields.length === 0
         ? {}
-        : fields.reduce((record, [fieldName, fieldCandidTypeMeta]) => {
+        : fields.reduce((record, [fieldName, fieldCandidValues]) => {
               return {
                   ...record,
                   [fieldName]: returned
-                      ? fieldCandidTypeMeta.agentResponseValue
-                      : fieldCandidTypeMeta.agentArgumentValue
+                      ? fieldCandidValues.agentResponseValue
+                      : fieldCandidValues.agentArgumentValue
               };
           }, {});
 }
@@ -170,8 +167,8 @@ function generateValueLiteral(fields: FieldValue[]): string {
 
     const fieldLiterals = fields
         .map(
-            ([fieldName, fieldValue]) =>
-                `${fieldName}: ${fieldValue.valueLiteral}`
+            ([fieldName, fieldCandidValues]) =>
+                `${fieldName}: ${fieldCandidValues.valueLiteral}`
         )
         .join(',\n');
 

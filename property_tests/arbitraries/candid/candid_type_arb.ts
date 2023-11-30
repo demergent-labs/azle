@@ -9,7 +9,7 @@ import { Nat8Arb, Nat8DefinitionArb } from './primitive/nats/nat8_arb';
 import { Nat16Arb, Nat16DefinitionArb } from './primitive/nats/nat16_arb';
 import { Nat32Arb, Nat32DefinitionArb } from './primitive/nats/nat32_arb';
 import { Nat64Arb, Nat64DefinitionArb } from './primitive/nats/nat64_arb';
-import { NullArb, NullDefinitionArb } from './primitive/null';
+import { NullArb } from './primitive/null';
 import { BoolArb, BoolDefinitionArb } from './primitive/bool';
 import { Principal } from '@dfinity/principal';
 import {
@@ -41,9 +41,10 @@ import { TupleArb, TupleDefinitionArb } from './constructed/tuple_arb/base';
 import { OptArb, OptDefinitionArb } from './constructed/opt_arb/base';
 import { Vec } from './constructed/vec_arb';
 import { VecArb, VecDefinitionArb } from './constructed/vec_arb/base';
-import { FuncArb } from './reference/func_arb/base';
+import { FuncArb, FuncDefinitionArb } from './reference/func_arb/base';
 import {
     CandidDefinition,
+    FuncCandidDefinition,
     OptCandidDefinition,
     RecordCandidDefinition,
     TupleCandidDefinition,
@@ -94,11 +95,16 @@ export const CandidDefinitionArb: fc.Arbitrary<CandidDefinition> = fc.letrec(
             // NullDefinitionArb, // Must be excluded until https://github.com/demergent-labs/azle/issues/1453 gets resolved
             TextDefinitionArb,
             PrincipalDefinitionArb,
+            tie('Func').map((sample) => sample as FuncCandidDefinition),
             tie('Record').map((sample) => sample as RecordCandidDefinition),
             tie('Vec').map((sample) => sample as VecCandidDefinition),
             tie('Variant').map((sample) => sample as VariantCandidDefinition),
             tie('Tuple').map((sample) => sample as TupleCandidDefinition),
             tie('Opt').map((sample) => sample as OptCandidDefinition)
+            // tie('Service').map((sample) => sample as ServiceCandidDefinition) // Services Aren't working with deep equals
+        ),
+        Func: FuncDefinitionArb(
+            tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
         ),
         Opt: OptDefinitionArb(
             tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
@@ -106,6 +112,9 @@ export const CandidDefinitionArb: fc.Arbitrary<CandidDefinition> = fc.letrec(
         Record: RecordDefinitionArb(
             tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
         ),
+        // Service: ServiceDefinitionArb(
+        //     tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
+        // ),
         Tuple: TupleDefinitionArb(
             tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
         ),
@@ -151,11 +160,7 @@ export const CandidValueAndMetaArb: fc.Arbitrary<
         tie('Func').map((sample) => sample as CandidValueAndMeta<Func>),
         PrincipalArb
     ),
-    Func: FuncArb(
-        tie('CandidType') as fc.Arbitrary<
-            CandidValueAndMeta<CorrespondingJSType>
-        >
-    ),
+    Func: FuncArb(CandidDefinitionArb),
     Vec: VecArb(CandidDefinitionArb),
     Opt: OptArb(CandidDefinitionArb),
     Variant: VariantArb(CandidDefinitionArb),

@@ -51,8 +51,8 @@ export function OptArb(
     candidTypeArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Opt>> {
     return OptDefinitionArb(candidTypeArb)
-        .chain((tupleDefinition) =>
-            fc.tuple(fc.constant(tupleDefinition), OptValueArb(tupleDefinition))
+        .chain((optDefinition) =>
+            fc.tuple(fc.constant(optDefinition), OptValueArb(optDefinition))
         )
         .map(
             ([
@@ -80,21 +80,14 @@ export function OptArb(
 }
 
 export function OptValueArb(
-    tupleDefinition: OptCandidDefinition
+    optDefinition: OptCandidDefinition
 ): fc.Arbitrary<CandidValues<Opt>> {
-    (fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>).chain(
-        (someOrNone) => {
-            if (someOrNone == 'Some') {
-            }
-            return CandidValueArb(tupleDefinition.innerType);
-        }
-    );
-    const fieldValues = fc.tuple(
+    const innerValue = fc.tuple(
         fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>,
-        CandidValueArb(tupleDefinition.innerType)
+        CandidValueArb(optDefinition.innerType)
     );
 
-    return fieldValues.map(([someOrNone, innerType]) => {
+    return innerValue.map(([someOrNone, innerType]) => {
         const valueLiteral = generateValueLiteral(someOrNone, innerType);
         const agentArgumentValue = generateValue(someOrNone, innerType);
         const agentResponseValue = generateValue(someOrNone, innerType, true);
