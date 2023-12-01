@@ -8,7 +8,7 @@ import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const AllBlobsQueryMethod = QueryMethodArb(
+const AllTuplesQueryMethod = QueryMethodArb(
     fc.uniqueArray(TupleArb, { selector: (entry) => entry.src.candidType }),
     TupleArb,
     {
@@ -17,4 +17,4 @@ const AllBlobsQueryMethod = QueryMethodArb(
     }
 );
 
-runPropTests(CanisterArb(AllBlobsQueryMethod));
+runPropTests(CanisterArb(AllTuplesQueryMethod));
