@@ -1,5 +1,4 @@
 import fc from 'fast-check';
-import { CorrespondingJSType } from './candid_type_arb';
 import { RecordValueArb } from './constructed/record_arb/base';
 import { BoolValueArb } from './primitive/bool';
 import { VecValueArb } from './constructed/vec_arb/base';
@@ -25,13 +24,17 @@ import { PrincipalValueArb } from './reference/principal_arb';
 import { FuncValueArb } from './reference/func_arb/base';
 import { VoidValueArb } from './primitive/void';
 import { ServiceValueArb } from './reference/service_arb/base';
-
-export type CandidMeta = {
-    typeAnnotation: string; // Either a type reference or type literal
-    typeAliasDeclarations: string[];
-    imports: Set<string>;
-    candidType: CandidType;
-};
+import {
+    CandidDefinition,
+    OptCandidDefinition,
+    RecordCandidDefinition,
+    ServiceCandidDefinition,
+    TupleCandidDefinition,
+    VariantCandidDefinition,
+    VecCandidDefinition
+} from './definition_arb/types';
+import { BlobValueArb } from './constructed/blob_arb';
+import { CorrespondingJSType } from './corresponding_js_type';
 
 export type CandidValues<T extends CorrespondingJSType, E = T> = {
     agentArgumentValue: T;
@@ -39,99 +42,30 @@ export type CandidValues<T extends CorrespondingJSType, E = T> = {
     valueLiteral: string;
 };
 
-export type CandidDefinition =
-    | MultiTypeConstructedDefinition
-    | SingleTypeConstructedDefinition
-    | PrimitiveDefinition
-    | UnnamedMultiTypeConstructedDefinition
-    | FuncCandidDefinition
-    | ServiceCandidDefinition;
-
-export type MultiTypeConstructedDefinition = {
-    candidMeta: CandidMeta;
-    innerTypes: [string, CandidDefinition][];
-};
-
-export type UnnamedMultiTypeConstructedDefinition = {
-    candidMeta: CandidMeta;
-    innerTypes: CandidDefinition[];
-};
-
-export type SingleTypeConstructedDefinition = {
-    candidMeta: CandidMeta;
-    innerType: CandidDefinition;
-};
-
-export type PrimitiveDefinition = {
-    candidMeta: CandidMeta;
-};
-
-// Constructed
-export type OptCandidDefinition = SingleTypeConstructedDefinition;
-export type VecCandidDefinition = SingleTypeConstructedDefinition;
-export type RecordCandidDefinition = MultiTypeConstructedDefinition;
-export type VariantCandidDefinition = MultiTypeConstructedDefinition;
-export type TupleCandidDefinition = UnnamedMultiTypeConstructedDefinition;
-export type BlobCandidDefinition = VecCandidDefinition;
-
-// Primitives
-export type FloatCandidDefinition = PrimitiveDefinition;
-export type IntCandidDefinition = PrimitiveDefinition;
-export type NatCandidDefinition = PrimitiveDefinition;
-export type BoolCandidDefinition = PrimitiveDefinition;
-export type NullCandidDefinition = PrimitiveDefinition;
-export type TextCandidDefinition = PrimitiveDefinition;
-export type VoidCandidDefinition = PrimitiveDefinition;
-
-// Reference
-export type FuncCandidDefinition = {
-    candidMeta: CandidMeta;
-    paramCandidMeta: CandidDefinition[];
-    returnCandidMeta: CandidDefinition;
-};
-export type PrincipalCandidDefinition = PrimitiveDefinition;
-export type ServiceCandidDefinition = {
-    name: string;
-    candidMeta: CandidMeta;
-    funcs: ServiceMethodDefinition[];
-};
-export type ServiceMethodDefinition = {
-    name: string;
-    imports: Set<string>;
-    typeAliasDeclarations: string[];
-    src: string;
-};
-
 export function CandidValueArb(
     candidTypeMeta: CandidDefinition
 ): fc.Arbitrary<CandidValues<CorrespondingJSType>> {
     const candidType = candidTypeMeta.candidMeta.candidType;
-    if (candidType === CandidType.Record) {
-        return RecordValueArb(candidTypeMeta as RecordCandidDefinition);
-    }
-    if (candidType === CandidType.Variant) {
-        return VariantValueArb(candidTypeMeta as VariantCandidDefinition);
-    }
-    if (candidType === CandidType.Tuple) {
-        return TupleValueArb(candidTypeMeta as TupleCandidDefinition);
+    if (candidType === CandidType.Blob) {
+        return BlobValueArb;
     }
     if (candidType === CandidType.Opt) {
         return OptValueArb(candidTypeMeta as OptCandidDefinition);
     }
-    if (candidType === CandidType.Bool) {
-        return BoolValueArb;
+    if (candidType === CandidType.Record) {
+        return RecordValueArb(candidTypeMeta as RecordCandidDefinition);
+    }
+    if (candidType === CandidType.Tuple) {
+        return TupleValueArb(candidTypeMeta as TupleCandidDefinition);
+    }
+    if (candidType === CandidType.Variant) {
+        return VariantValueArb(candidTypeMeta as VariantCandidDefinition);
     }
     if (candidType === CandidType.Vec) {
         return VecValueArb(candidTypeMeta as VecCandidDefinition);
     }
-    if (candidType === CandidType.Func) {
-        return FuncValueArb;
-    }
-    if (candidType === CandidType.Text) {
-        return TextValueArb;
-    }
-    if (candidType === CandidType.Null) {
-        return NullValueArb;
+    if (candidType === CandidType.Bool) {
+        return BoolValueArb;
     }
     if (candidType === CandidType.Float32) {
         return Float32ValueArb;
@@ -169,15 +103,23 @@ export function CandidValueArb(
     if (candidType === CandidType.Nat64) {
         return Nat64ValueArb;
     }
-    if (candidType === CandidType.Principal) {
-        return PrincipalValueArb;
+    if (candidType === CandidType.Null) {
+        return NullValueArb;
+    }
+    if (candidType === CandidType.Text) {
+        return TextValueArb;
     }
     if (candidType === CandidType.Void) {
         return VoidValueArb;
     }
+    if (candidType === CandidType.Func) {
+        return FuncValueArb;
+    }
+    if (candidType === CandidType.Principal) {
+        return PrincipalValueArb;
+    }
     if (candidType === CandidType.Service) {
         return ServiceValueArb(candidTypeMeta as ServiceCandidDefinition);
     }
-    // etc
-    throw 'Type cannot be converted to CandidValue yet';
+    throw new Error('Unreachable');
 }

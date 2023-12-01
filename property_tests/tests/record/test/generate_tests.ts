@@ -1,7 +1,7 @@
 import { deepEqual } from 'fast-equals';
 
 import { getActor, Named } from 'azle/property_tests';
-import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta';
+import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/value_and_meta_arb';
 import { Record } from 'azle/property_tests/arbitraries/candid/constructed/record_arb';
 import { Test } from 'azle/test';
 

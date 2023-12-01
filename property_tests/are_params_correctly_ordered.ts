@@ -1,5 +1,5 @@
-import { CandidValueAndMeta } from './arbitraries/candid/candid_value_and_meta';
-import { CorrespondingJSType } from './arbitraries/candid/candid_type_arb';
+import { CandidValueAndMeta } from './arbitraries/candid/value_and_meta_arb';
+import { CorrespondingJSType } from './arbitraries/candid/corresponding_js_type';
 import { Named } from '.';
 
 export function areParamsCorrectlyOrdered<T extends CorrespondingJSType>(

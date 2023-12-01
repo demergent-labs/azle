@@ -1,8 +1,11 @@
 import fc from 'fast-check';
 
-import { CandidValueAndMeta } from './candid_value_and_meta';
-import { CorrespondingJSType, CandidValueAndMetaArb } from './candid_type_arb';
+import {
+    CandidValueAndMeta,
+    CandidValueAndMetaArb
+} from './value_and_meta_arb';
 import { VoidArb } from './primitive/void';
+import { CorrespondingJSType } from './corresponding_js_type';
 
 export type CandidReturnType = CorrespondingJSType | undefined;
 

@@ -1,8 +1,8 @@
 import fc from 'fast-check';
-import { CorrespondingJSType } from '../candid_type_arb';
-import { CandidValues } from '../candid_meta_arb';
+import { CorrespondingJSType } from '../corresponding_js_type';
+import { CandidValues } from '../values';
 
-export function SimpleCandidValueArb<T extends CorrespondingJSType>(
+export function SimpleCandidValuesArb<T extends CorrespondingJSType>(
     arb: fc.Arbitrary<T>,
     toLiteral: (value: T) => string
 ): fc.Arbitrary<CandidValues<T>> {

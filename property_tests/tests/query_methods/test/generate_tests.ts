@@ -1,9 +1,9 @@
 import { deepEqual } from 'fast-equals';
 
 import { getActor, Named } from 'azle/property_tests';
-import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/candid_type_arb';
-import { CandidReturnType } from '../../../arbitraries/candid/candid_return_type_arb';
-import { CandidValueAndMeta } from '../../../arbitraries/candid/candid_value_and_meta';
+import { CorrespondingJSType } from '../../../arbitraries/candid/corresponding_js_type';
+import { CandidReturnType } from '../../../arbitraries/candid/return_type_arb';
+import { CandidValueAndMeta } from '../../../arbitraries/candid/value_and_meta_arb';
 import { Test } from 'azle/test';
 
 export function generateTests(

@@ -3,9 +3,10 @@ import { SimpleCandidValueAndMetaArb } from '../../simple_type_arbs/value_and_me
 import { NumberArb } from './';
 import { CandidType } from '../../candid_type';
 import fc from 'fast-check';
-import { CandidValues, IntCandidDefinition } from '../../candid_meta_arb';
-import { SimpleCandidShapeArb } from '../../simple_type_arbs/shape_arb';
-import { SimpleCandidValueArb } from '../../simple_type_arbs/value_arb';
+import { IntCandidDefinition } from '../../definition_arb/types';
+import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
+import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
+import { CandidValues } from '../../values';
 
 export const Int32Arb = SimpleCandidValueAndMetaArb(
     NumberArb(32),
@@ -14,7 +15,7 @@ export const Int32Arb = SimpleCandidValueAndMetaArb(
 );
 
 export const Int32DefinitionArb: fc.Arbitrary<IntCandidDefinition> =
-    SimpleCandidShapeArb(CandidType.Int32);
+    SimpleCandidDefinitionArb(CandidType.Int32);
 
 export const Int32ValueArb: fc.Arbitrary<CandidValues<number>> =
-    SimpleCandidValueArb(NumberArb(32), numberToSrcLiteral);
+    SimpleCandidValuesArb(NumberArb(32), numberToSrcLiteral);

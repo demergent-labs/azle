@@ -1,7 +1,5 @@
-import {
-    CandidDefinitionArb,
-    CorrespondingJSType
-} from '../../candid_type_arb';
+import { CandidDefinitionArb } from '../../definition_arb';
+import { CorrespondingJSType } from '../../corresponding_js_type';
 import { RecordArb as Base } from './base';
 
 export type Record = {

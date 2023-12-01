@@ -2,9 +2,10 @@ import fc from 'fast-check';
 import { SimpleCandidValueAndMetaArb } from '../simple_type_arbs/value_and_meta_arb';
 import { stringToSrcLiteral } from '../to_src_literal/string';
 import { CandidType } from '../candid_type';
-import { CandidValues, TextCandidDefinition } from '../candid_meta_arb';
-import { SimpleCandidValueArb } from '../simple_type_arbs/value_arb';
-import { SimpleCandidShapeArb } from '../simple_type_arbs/shape_arb';
+import { TextCandidDefinition } from '../definition_arb/types';
+import { SimpleCandidValuesArb } from '../simple_type_arbs/values_arb';
+import { SimpleCandidDefinitionArb } from '../simple_type_arbs/definition_arb';
+import { CandidValues } from '../values';
 
 export const TextArb = SimpleCandidValueAndMetaArb(
     fc.string(),
@@ -13,7 +14,7 @@ export const TextArb = SimpleCandidValueAndMetaArb(
 );
 
 export const TextDefinitionArb: fc.Arbitrary<TextCandidDefinition> =
-    SimpleCandidShapeArb(CandidType.Text);
+    SimpleCandidDefinitionArb(CandidType.Text);
 
 export const TextValueArb: fc.Arbitrary<CandidValues<string>> =
-    SimpleCandidValueArb(fc.string(), stringToSrcLiteral);
+    SimpleCandidValuesArb(fc.string(), stringToSrcLiteral);
