@@ -4,12 +4,14 @@ import { getActor } from 'azle/property_tests';
 import { CandidType } from 'azle/property_tests/arbitraries/candid/candid_type_arb';
 import { TestsGenerator } from 'azle/property_tests/arbitraries/query_method_arb';
 import { Test } from 'azle/test';
+import { CandidReturnType } from '../../../arbitraries/candid/candid_return_type_arb';
 
-export const generateTests: TestsGenerator<CandidType, CandidType> = (
-    functionName,
-    params,
-    returnType
-): Test[] => {
+export const generateTests: TestsGenerator<
+    CandidType,
+    CandidReturnType,
+    CandidType,
+    CandidReturnType
+> = (functionName, params, returnType): Test[] => {
     const paramValues = params.map((param) => param.el.agentArgumentValue);
     const expectedResult = returnType.agentResponseValue;
 
