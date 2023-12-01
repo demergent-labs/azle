@@ -1,10 +1,11 @@
 import fc from 'fast-check';
 import { voidToSrcLiteral } from '../to_src_literal/void';
-import { CandidValues, VoidCandidDefinition } from '../candid_meta_arb';
-import { SimpleCandidShapeArb } from '../simple_type_arbs/shape_arb';
-import { SimpleCandidValueArb } from '../simple_type_arbs/value_arb';
+import { VoidCandidDefinition } from '../definition_arb/types';
+import { SimpleCandidDefinitionArb } from '../simple_type_arbs/definition_arb';
+import { SimpleCandidValuesArb } from '../simple_type_arbs/values_arb';
 import { CandidType } from '../candid_type';
 import { SimpleCandidValueAndMetaArb } from '../simple_type_arbs/value_and_meta_arb';
+import { CandidValues } from '../values';
 
 export const VoidArb = SimpleCandidValueAndMetaArb(
     fc.constant(undefined),
@@ -13,7 +14,7 @@ export const VoidArb = SimpleCandidValueAndMetaArb(
 );
 
 export const VoidDefinitionArb: fc.Arbitrary<VoidCandidDefinition> =
-    SimpleCandidShapeArb(CandidType.Void);
+    SimpleCandidDefinitionArb(CandidType.Void);
 
 export const VoidValueArb: fc.Arbitrary<CandidValues<undefined>> =
-    SimpleCandidValueArb(fc.constant(undefined), voidToSrcLiteral);
+    SimpleCandidValuesArb(fc.constant(undefined), voidToSrcLiteral);

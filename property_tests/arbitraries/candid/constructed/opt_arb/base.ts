@@ -1,14 +1,13 @@
 import fc from 'fast-check';
-import { CorrespondingJSType } from '../../candid_type_arb';
-import { CandidValueAndMeta } from '../../candid_value_and_meta';
+import { CorrespondingJSType } from '../../corresponding_js_type';
+import { CandidValueAndMeta } from '../../value_and_meta_arb';
 import { Opt } from './index';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
-    CandidValueArb,
-    CandidValues,
     OptCandidDefinition
-} from '../../candid_meta_arb';
+} from '../../definition_arb/types';
+import { CandidValueArb, CandidValues } from '../../values';
 import { CandidType } from '../../candid_type';
 
 type SomeOrNone = 'Some' | 'None';

@@ -2,16 +2,16 @@ import fc from 'fast-check';
 
 import { PrincipalArb } from '../principal_arb';
 import { VoidDefinitionArb } from '../../primitive/void';
-import { CandidValueAndMeta } from '../../candid_value_and_meta';
+import { CandidValueAndMeta } from '../../value_and_meta_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { Func } from './index';
 import {
     CandidDefinition,
-    CandidValues,
     FuncCandidDefinition
-} from '../../candid_meta_arb';
+} from '../../definition_arb/types';
 import { CandidType } from '../../candid_type';
 import { TextArb } from '../../primitive/text';
+import { CandidValues } from '../../values';
 
 type Mode = 'query' | 'update' | 'oneway';
 

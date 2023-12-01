@@ -3,16 +3,16 @@ import { Principal } from '@dfinity/principal';
 
 import { PrincipalValueArb } from '../principal_arb';
 import { VoidDefinitionArb } from '../../primitive/void';
-import { CandidValueAndMeta } from '../../candid_value_and_meta';
+import { CandidValueAndMeta } from '../../value_and_meta_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import {
     CandidDefinition,
-    CandidValues,
     ServiceCandidDefinition,
     ServiceMethodDefinition
-} from '../../candid_meta_arb';
+} from '../../definition_arb/types';
 import { CandidType } from '../../candid_type';
+import { CandidValues } from '../../values';
 
 // TODO:
 // - services that are more than type-definitions, i.e. have functionality

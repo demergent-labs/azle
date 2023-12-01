@@ -3,9 +3,10 @@ import { Principal } from '@dfinity/principal';
 import { SimpleCandidValueAndMetaArb } from '../simple_type_arbs/value_and_meta_arb';
 import { principalToSrcLiteral } from '../to_src_literal/principal';
 import { CandidType } from '../candid_type';
-import { SimpleCandidShapeArb } from '../simple_type_arbs/shape_arb';
-import { SimpleCandidValueArb } from '../simple_type_arbs/value_arb';
-import { CandidValues, PrincipalCandidDefinition } from '../candid_meta_arb';
+import { SimpleCandidDefinitionArb } from '../simple_type_arbs/definition_arb';
+import { SimpleCandidValuesArb } from '../simple_type_arbs/values_arb';
+import { PrincipalCandidDefinition } from '../definition_arb/types';
+import { CandidValues } from '../values';
 
 export const PrincipalArb = SimpleCandidValueAndMetaArb(
     principal(),
@@ -14,10 +15,10 @@ export const PrincipalArb = SimpleCandidValueAndMetaArb(
 );
 
 export const PrincipalDefinitionArb: fc.Arbitrary<PrincipalCandidDefinition> =
-    SimpleCandidShapeArb(CandidType.Principal);
+    SimpleCandidDefinitionArb(CandidType.Principal);
 
 export const PrincipalValueArb: fc.Arbitrary<CandidValues<Principal>> =
-    SimpleCandidValueArb(principal(), principalToSrcLiteral);
+    SimpleCandidValuesArb(principal(), principalToSrcLiteral);
 
 function principal() {
     return fc

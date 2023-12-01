@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { PrimitiveDefinition } from '../candid_meta_arb';
+import { PrimitiveDefinition } from '../definition_arb/types';
 import {
     CandidType,
     primitiveCandidClassToImports,
@@ -7,7 +7,7 @@ import {
 } from '../candid_type';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 
-export function SimpleCandidShapeArb(
+export function SimpleCandidDefinitionArb( // TODO rename this to definition
     candidType: CandidType
 ): fc.Arbitrary<PrimitiveDefinition> {
     return fc

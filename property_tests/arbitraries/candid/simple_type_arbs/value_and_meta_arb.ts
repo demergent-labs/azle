@@ -1,9 +1,9 @@
 import fc from 'fast-check';
-import { CorrespondingJSType } from '../candid_type_arb';
+import { CorrespondingJSType } from '../corresponding_js_type';
 import { CandidType } from '../candid_type';
-import { CandidValueAndMeta } from '../candid_value_and_meta';
-import { SimpleCandidShapeArb } from './shape_arb';
-import { SimpleCandidValueArb } from './value_arb';
+import { CandidValueAndMeta } from '../value_and_meta_arb';
+import { SimpleCandidDefinitionArb } from './definition_arb';
+import { SimpleCandidValuesArb } from './values_arb';
 
 export function SimpleCandidValueAndMetaArb<T extends CorrespondingJSType>(
     jsValueArb: fc.Arbitrary<T>,
@@ -12,8 +12,8 @@ export function SimpleCandidValueAndMetaArb<T extends CorrespondingJSType>(
 ): fc.Arbitrary<CandidValueAndMeta<T>> {
     return fc
         .tuple(
-            SimpleCandidShapeArb(candidType),
-            SimpleCandidValueArb(jsValueArb, toLiteral)
+            SimpleCandidDefinitionArb(candidType),
+            SimpleCandidValuesArb(jsValueArb, toLiteral)
         )
         .map(
             ([

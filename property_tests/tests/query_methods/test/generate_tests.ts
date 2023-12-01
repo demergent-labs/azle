@@ -1,7 +1,7 @@
 import { deepEqual } from 'fast-equals';
 
 import { getActor } from 'azle/property_tests';
-import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/candid_type_arb';
+import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
 import { TestsGenerator } from 'azle/property_tests/arbitraries/query_method_arb';
 import { Test } from 'azle/test';
 

@@ -2,9 +2,10 @@ import fc from 'fast-check';
 import { SimpleCandidValueAndMetaArb } from '../../simple_type_arbs/value_and_meta_arb';
 import { floatToSrcLiteral } from '../../to_src_literal/float';
 import { CandidType } from '../../candid_type';
-import { CandidValues, FloatCandidDefinition } from '../../candid_meta_arb';
-import { SimpleCandidShapeArb } from '../../simple_type_arbs/shape_arb';
-import { SimpleCandidValueArb } from '../../simple_type_arbs/value_arb';
+import { FloatCandidDefinition } from '../../definition_arb/types';
+import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
+import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
+import { CandidValues } from '../../values';
 
 export const Float32Arb = SimpleCandidValueAndMetaArb(
     fc.float(),
@@ -13,7 +14,7 @@ export const Float32Arb = SimpleCandidValueAndMetaArb(
 );
 
 export const Float32DefinitionArb: fc.Arbitrary<FloatCandidDefinition> =
-    SimpleCandidShapeArb(CandidType.Float32);
+    SimpleCandidDefinitionArb(CandidType.Float32);
 
 export const Float32ValueArb: fc.Arbitrary<CandidValues<number>> =
-    SimpleCandidValueArb(fc.float(), floatToSrcLiteral);
+    SimpleCandidValuesArb(fc.float(), floatToSrcLiteral);

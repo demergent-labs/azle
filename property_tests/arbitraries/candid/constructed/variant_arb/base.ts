@@ -1,15 +1,14 @@
 import fc from 'fast-check';
-import { CandidValueAndMeta } from '../../candid_value_and_meta';
-import { CorrespondingJSType } from '../../candid_type_arb';
+import { CandidValueAndMeta } from '../../value_and_meta_arb';
+import { CorrespondingJSType } from '../../corresponding_js_type';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { Variant } from '.';
 import {
     CandidDefinition,
-    CandidValueArb,
-    CandidValues,
     VariantCandidDefinition
-} from '../../candid_meta_arb';
+} from '../../definition_arb/types';
+import { CandidValueArb, CandidValues } from '../../values';
 import { CandidType } from '../../candid_type';
 
 type FieldDefinition = [string, CandidDefinition];

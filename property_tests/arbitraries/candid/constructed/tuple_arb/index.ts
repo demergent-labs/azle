@@ -1,7 +1,5 @@
-import {
-    CorrespondingJSType,
-    CandidDefinitionArb
-} from '../../candid_type_arb';
+import { CorrespondingJSType } from '../../corresponding_js_type';
+import { CandidDefinitionArb } from '../../definition_arb';
 import { TupleArb as Base } from './base';
 
 export type Tuple = CorrespondingJSType[];
