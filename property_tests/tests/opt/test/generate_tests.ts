@@ -1,9 +1,8 @@
 import { deepEqual } from 'fast-equals';
 
-import { getActor } from 'azle/property_tests';
+import { getActor, Named } from 'azle/property_tests';
 import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
 import { Opt } from 'azle/property_tests/arbitraries/candid/constructed/opt_arb';
-import { Named } from 'azle/property_tests/arbitraries/query_method_arb';
 import { Test } from 'azle/test';
 
 export function generateTests(

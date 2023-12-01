@@ -1,5 +1,5 @@
 import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
-import { Named } from 'azle/property_tests/arbitraries/query_method_arb';
+import { Named } from 'azle/property_tests';
 
 export function generateBody(
     namedParamNulls: Named<CandidMeta<null>>[],

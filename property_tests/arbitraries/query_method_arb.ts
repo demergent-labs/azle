@@ -3,11 +3,7 @@ import { Test } from '../../test';
 import { UniqueIdentifierArb } from './unique_identifier_arb';
 import { CandidType } from './candid/candid_type_arb';
 import { CandidMeta } from './candid/candid_arb';
-
-export type Named<T> = {
-    name: string;
-    el: T;
-};
+import { Named } from '../';
 
 export type QueryMethod = {
     imports: Set<string>;

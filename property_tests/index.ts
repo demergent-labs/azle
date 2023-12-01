@@ -4,6 +4,11 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { execSync } from 'child_process';
 import { runTests } from '../test';
 
+export type Named<T> = {
+    name: string;
+    el: T;
+};
+
 export { getActor } from './get_actor';
 
 export function runPropTests(canisterArb: fc.Arbitrary<Canister>) {

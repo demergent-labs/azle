@@ -1,6 +1,6 @@
 import { CandidMeta } from './arbitraries/candid/candid_arb';
 import { CandidType } from './arbitraries/candid/candid_type_arb';
-import { Named } from './arbitraries/query_method_arb';
+import { Named } from '.';
 
 export function areParamsCorrectlyOrdered<T extends CandidType>(
     params: Named<CandidMeta<T>>[]

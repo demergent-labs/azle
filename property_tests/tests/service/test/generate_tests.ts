@@ -2,7 +2,7 @@ import { Principal } from '@dfinity/principal';
 import { execSync } from 'child_process';
 
 import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
-import { Named } from 'azle/property_tests/arbitraries/query_method_arb';
+import { Named } from 'azle/property_tests';
 import { Test } from 'azle/test';
 
 export function generateTests(
