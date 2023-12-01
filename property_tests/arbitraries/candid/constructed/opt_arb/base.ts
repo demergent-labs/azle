@@ -4,35 +4,10 @@ import { Opt } from './index';
 import { CandidDefinition } from '../../definition_arb/types';
 import { OptDefinitionArb } from './definition_arb';
 import { OptValuesArb } from './values_arb';
+import { CandidArb } from '../../complex_type_arb';
 
 export function OptArb(
-    candidTypeArb: fc.Arbitrary<CandidDefinition>
+    candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Opt>> {
-    return OptDefinitionArb(candidTypeArb)
-        .chain((optDefinition) =>
-            fc.tuple(fc.constant(optDefinition), OptValuesArb(optDefinition))
-        )
-        .map(
-            ([
-                {
-                    candidMeta: {
-                        typeAnnotation,
-                        typeAliasDeclarations,
-                        imports
-                    }
-                },
-                { agentArgumentValue, agentResponseValue, valueLiteral }
-            ]) => {
-                return {
-                    src: {
-                        typeAnnotation,
-                        typeAliasDeclarations,
-                        imports,
-                        valueLiteral
-                    },
-                    agentArgumentValue,
-                    agentResponseValue
-                };
-            }
-        );
+    return CandidArb(OptDefinitionArb, OptValuesArb, candidDefinitionArb);
 }
