@@ -5,7 +5,7 @@ import { CandidValueAndMeta } from '../../value_and_meta_arb';
 import { CandidDefinition } from '../../definition_arb/types';
 import { ServiceValueArb } from './values_arb';
 import { ServiceDefinitionArb } from './definition_arb';
-import { ComplexCandidValueAndMetaArb } from '../../complex_type_arb';
+import { ComplexCandidValueAndMetaArb } from '../../complex_value_and_meta_arb';
 
 // TODO:
 // - services that are more than type-definitions, i.e. have functionality

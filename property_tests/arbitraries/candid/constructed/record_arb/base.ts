@@ -5,7 +5,7 @@ import { Record } from './index';
 import { CandidDefinition } from '../../definition_arb/types';
 import { RecordDefinitionArb } from './definition_arb';
 import { RecordValuesArb } from './values_arb';
-import { ComplexCandidValueAndMetaArb } from '../../complex_type_arb';
+import { ComplexCandidValueAndMetaArb } from '../../complex_value_and_meta_arb';
 
 export function RecordArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
