@@ -54,13 +54,21 @@ export default Canister({
     // }
 
     // returns the argument data as bytes.
-    argDataRaw: query([blob, int8, bool, text], blob, () => {
-        return ic.argDataRaw();
-    }),
+    argDataRaw: query(
+        [blob, int8, bool, text],
+        blob,
+        (_arg1, _arg2, _arg3, _arg4) => {
+            return ic.argDataRaw();
+        }
+    ),
     // returns the length of the argument data in bytes
-    argDataRawSize: query([blob, int8, bool, text], nat32, () => {
-        return ic.argDataRawSize();
-    }),
+    argDataRawSize: query(
+        [blob, int8, bool, text],
+        nat32,
+        (_arg1, _arg2, _arg3, _arg4) => {
+            return ic.argDataRawSize();
+        }
+    ),
     // returns the principal of the identity that called this function
     caller: query([], Principal, () => {
         return ic.caller();
