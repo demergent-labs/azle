@@ -45,8 +45,6 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
 
 /**
  * An arbitrary representing all possible Candid types.
- *
- * **Note:** This currently only supports ints, nats, and null arbitraries
  */
 export const CandidValueAndMetaArb: fc.Arbitrary<
     CandidValueAndMeta<CorrespondingJSType>
@@ -58,21 +56,21 @@ export const CandidValueAndMetaArb: fc.Arbitrary<
         tie('Tuple').map((sample) => sample as CandidValueAndMeta<Tuple>),
         tie('Variant').map((sample) => sample as CandidValueAndMeta<Variant>),
         tie('Vec').map((sample) => sample as CandidValueAndMeta<Vec>),
-        Float32Arb,
-        Float64Arb,
+        Float32Arb(),
+        Float64Arb(),
         IntArb,
         Int8Arb,
-        Int16Arb,
-        Int32Arb,
+        Int16Arb(),
+        Int32Arb(),
         Int64Arb,
         NatArb,
         Nat8Arb,
         Nat16Arb,
         Nat32Arb,
         Nat64Arb,
-        BoolArb,
+        BoolArb(),
         NullArb,
-        TextArb,
+        TextArb(),
         tie('Func').map((sample) => sample as CandidValueAndMeta<Func>),
         PrincipalArb
     ),

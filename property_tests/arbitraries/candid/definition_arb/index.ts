@@ -34,19 +34,19 @@ import { BlobDefinitionArb } from '../constructed/blob_arb/definition_arb';
 export const CandidDefinitionArb: fc.Arbitrary<CandidDefinition> = fc.letrec(
     (tie) => ({
         CandidDefinition: fc.oneof(
-            BlobDefinitionArb,
+            BlobDefinitionArb(),
             tie('Opt').map((sample) => sample as OptCandidDefinition),
             tie('Record').map((sample) => sample as RecordCandidDefinition),
             tie('Tuple').map((sample) => sample as TupleCandidDefinition),
             tie('Variant').map((sample) => sample as VariantCandidDefinition),
             tie('Vec').map((sample) => sample as VecCandidDefinition),
-            BoolDefinitionArb,
+            BoolDefinitionArb(),
             Float32DefinitionArb,
             Float64DefinitionArb,
             IntDefinitionArb,
             Int8DefinitionArb,
             Int16DefinitionArb,
-            Int32DefinitionArb,
+            Int32DefinitionArb(),
             Int64DefinitionArb,
             NatDefinitionArb,
             Nat8DefinitionArb,
@@ -54,7 +54,7 @@ export const CandidDefinitionArb: fc.Arbitrary<CandidDefinition> = fc.letrec(
             Nat32DefinitionArb,
             Nat64DefinitionArb,
             // NullDefinitionArb, // Must be excluded until https://github.com/demergent-labs/azle/issues/1453 gets resolved
-            TextDefinitionArb,
+            TextDefinitionArb(),
             tie('Func').map((sample) => sample as FuncCandidDefinition),
             PrincipalDefinitionArb
             // tie('Service').map((sample) => sample as ServiceCandidDefinition) // Services Aren't working with deep equals
