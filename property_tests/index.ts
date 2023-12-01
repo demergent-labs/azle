@@ -4,6 +4,7 @@ import { TestSample } from './arbitraries/test_sample_arb';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { execSync } from 'child_process';
 import { runTests } from '../test';
+import { clear as clearUniquePrimitiveArb } from './arbitraries/unique_primitive_arb';
 
 export { getActor } from './get_actor';
 
@@ -43,6 +44,8 @@ export function runPropTests(testArbs: fc.Arbitrary<TestSample>[]) {
                     stdio: 'inherit'
                 }
             );
+
+            clearUniquePrimitiveArb();
 
             return result;
         }),

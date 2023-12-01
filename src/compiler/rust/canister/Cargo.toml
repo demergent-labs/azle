@@ -12,7 +12,7 @@ candid = { version = "0.9.1", features = ["parser"] }
 ic-cdk-timers = "0.4.0"
 ic-stable-structures = "0.6.0"
 canister_methods = { path = "../canister_methods" }
-quickjs-wasm-rs = { git = "https://github.com/ulan/javy.git", rev = "89b660febe2f1b20fb15c03669b785087eac4427" }
+quickjs-wasm-rs = { git = "https://github.com/ulan/javy.git", rev = "fdf12ce4fd5636417cd63e1f6296aa79196434a7" }
 slotmap = "=1.0.6"
 ic-cdk = "0.10.0"
 ic-cdk-macros = "0.7.0"

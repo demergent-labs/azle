@@ -12,3 +12,7 @@ export function createUniquePrimitiveArb<T>(arb: fc.Arbitrary<T>) {
             return primitiveSample;
         });
 }
+
+export function clear() {
+    samples = new Set();
+}
