@@ -3,7 +3,7 @@ import { SimpleCandidValueAndMetaArb } from '../../simple_type_arbs/value_and_me
 import { blobToSrcLiteral } from '../../to_src_literal/blob';
 import { BlobValuesArb } from './values';
 import { _VecNat8DefinitionArb } from './definition';
-import { ComplexCandidValueAndMetaArb } from '../../complex_type_arb';
+import { ComplexCandidValueAndMetaArb } from '../../complex_value_and_meta_arb';
 
 export const BlobArb = fc.oneof(
     ComplexCandidValueAndMetaArb(_VecNat8DefinitionArb(), () => BlobValuesArb),

@@ -4,7 +4,7 @@ import { Vec } from './index';
 import { CandidDefinition } from '../../definition_arb/types';
 import { VecDefinitionArb } from './definition_arb';
 import { VecValuesArb } from './values_arb';
-import { ComplexCandidValueAndMetaArb } from '../../complex_type_arb';
+import { ComplexCandidValueAndMetaArb } from '../../complex_value_and_meta_arb';
 
 export function VecArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
