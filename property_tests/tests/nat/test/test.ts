@@ -1,98 +1,16 @@
 import fc from 'fast-check';
-import { deepEqual } from 'fast-equals';
 
-import { NatArb } from '../../../arbitraries/candid/primitive/nats/nat_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { getActor, runPropTests } from '../../../../property_tests';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { Test } from '../../../../test';
-import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+import { runPropTests } from 'azle/property_tests';
+import { NatArb } from 'azle/property_tests/arbitraries/candid/primitive/nats/nat_arb';
+import { CanisterArb } from 'azle/property_tests/arbitraries/canister_arb';
+import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb';
 
-const NatTestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(NatArb),
-        NatArb
-    )
-    .map(([functionName, paramNats, defaultReturnNat]): TestSample => {
-        const imports = defaultReturnNat.src.imports;
+import { generateBody } from './generate_body';
+import { generateTests } from './generate_tests';
 
-        const paramNames = paramNats.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramNats
-            .map((nat) => nat.src.candidType)
-            .join(', ');
+const AllNatsQueryMethod = QueryMethodArb(fc.array(NatArb), NatArb, {
+    generateBody,
+    generateTests
+});
 
-        const returnCandidType = defaultReturnNat.src.candidType;
-
-        const body = generateBody(paramNames, paramNats, defaultReturnNat);
-
-        const test = generateTest(functionName, paramNats, defaultReturnNat);
-
-        return {
-            imports,
-            functionName,
-            paramCandidTypes,
-            returnCandidType,
-            paramNames,
-            body,
-            test
-        };
-    });
-
-runPropTests(NatTestArb);
-
-function generateBody(
-    paramNames: string[],
-    paramNats: CandidMeta<bigint>[],
-    returnNat: CandidMeta<bigint>
-): string {
-    const paramsAreBigInts = paramNames
-        .map((paramName) => {
-            return `if (typeof ${paramName} !== 'bigint') throw new Error('${paramName} must be a bigint');`;
-        })
-        .join('\n');
-
-    const sum = paramNames.reduce((acc, paramName) => {
-        return `${acc} + ${paramName}`;
-    }, returnNat.src.valueLiteral);
-
-    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
-        paramNames,
-        paramNats
-    );
-
-    return `
-        ${paramsCorrectlyOrdered}
-
-        ${paramsAreBigInts}
-
-        return ${sum};
-    `;
-}
-
-function generateTest(
-    functionName: string,
-    paramNats: CandidMeta<bigint>[],
-    returnNat: CandidMeta<bigint>
-): Test {
-    const expectedResult = paramNats.reduce(
-        (acc, nat) => acc + nat.agentResponseValue,
-        returnNat.agentResponseValue
-    );
-    const paramValues = paramNats.map((sample) => sample.agentArgumentValue);
-
-    return {
-        name: `nat ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/nat/test');
-
-            const result = await actor[functionName](...paramValues);
-
-            return {
-                Ok: deepEqual(result, expectedResult)
-            };
-        }
-    };
-}
+runPropTests(CanisterArb(AllNatsQueryMethod));

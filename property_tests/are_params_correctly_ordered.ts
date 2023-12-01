@@ -1,18 +1,18 @@
 import { CandidMeta } from './arbitraries/candid/candid_arb';
 import { CandidType } from './arbitraries/candid/candid_type_arb';
+import { Named } from '.';
 
 export function areParamsCorrectlyOrdered<T extends CandidType>(
-    paramNames: string[],
-    params: CandidMeta<T>[]
+    params: Named<CandidMeta<T>>[]
 ) {
-    return paramNames
-        .map((paramName, index) => {
+    return params
+        .map(({ name, el }) => {
             const areEqual = `deepEqual(
-                ${paramName},
-                ${params[index].src.valueLiteral}
+                ${name},
+                ${el.src.valueLiteral}
             )`;
 
-            return `if (!${areEqual}) throw new Error('${paramName} is incorrectly ordered')`;
+            return `if (!${areEqual}) throw new Error('${name} is incorrectly ordered')`;
         })
         .join('\n');
 }

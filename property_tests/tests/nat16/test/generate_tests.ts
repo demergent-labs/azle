@@ -1,0 +1,37 @@
+import { deepEqual } from 'fast-equals';
+
+import { getActor, Named } from 'azle/property_tests';
+import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
+import { Test } from 'azle/test';
+
+export function generateTests(
+    functionName: string,
+    namedParamNat16s: Named<CandidMeta<number>>[],
+    returnNat16: CandidMeta<number>
+): Test[] {
+    const count = namedParamNat16s.length + 1;
+    const expectedResult = Math.floor(
+        namedParamNat16s.reduce(
+            (acc, param) => acc + param.el.agentResponseValue,
+            returnNat16.agentResponseValue
+        ) / count
+    );
+    const paramValues = namedParamNat16s.map(
+        (param) => param.el.agentArgumentValue
+    );
+
+    return [
+        {
+            name: `nat16 ${functionName}`,
+            test: async () => {
+                const actor = getActor('./tests/nat16/test');
+
+                const result = await actor[functionName](...paramValues);
+
+                return {
+                    Ok: deepEqual(result, expectedResult)
+                };
+            }
+        }
+    ];
+}
