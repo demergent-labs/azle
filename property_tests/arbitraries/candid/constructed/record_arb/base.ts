@@ -10,5 +10,5 @@ import { CandidArb } from '../../complex_type_arb';
 export function RecordArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Record>> {
-    return CandidArb(RecordDefinitionArb, RecordValuesArb, candidDefinitionArb);
+    return CandidArb(RecordDefinitionArb(candidDefinitionArb), RecordValuesArb);
 }

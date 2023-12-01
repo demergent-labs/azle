@@ -9,5 +9,5 @@ import { CandidArb } from '../../complex_type_arb';
 export function OptArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Opt>> {
-    return CandidArb(OptDefinitionArb, OptValuesArb, candidDefinitionArb);
+    return CandidArb(OptDefinitionArb(candidDefinitionArb), OptValuesArb);
 }

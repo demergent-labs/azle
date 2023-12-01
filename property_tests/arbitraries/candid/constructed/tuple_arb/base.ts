@@ -10,5 +10,5 @@ import { CandidArb } from '../../complex_type_arb';
 export function TupleArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Tuple, ReturnTuple>> {
-    return CandidArb(TupleDefinitionArb, TupleValuesArb, candidDefinitionArb);
+    return CandidArb(TupleDefinitionArb(candidDefinitionArb), TupleValuesArb);
 }

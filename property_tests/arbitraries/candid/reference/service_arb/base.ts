@@ -23,8 +23,7 @@ export function ServiceArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Principal>> {
     return CandidArb(
-        ServiceDefinitionArb,
-        ServiceValueArb,
-        candidDefinitionArb
+        ServiceDefinitionArb(candidDefinitionArb),
+        ServiceValueArb
     );
 }

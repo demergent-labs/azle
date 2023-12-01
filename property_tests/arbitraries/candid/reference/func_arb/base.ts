@@ -11,8 +11,7 @@ export function FuncArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Func>> {
     return CandidArb(
-        FuncDefinitionArb,
-        () => FuncValueArb,
-        candidDefinitionArb
+        FuncDefinitionArb(candidDefinitionArb),
+        () => FuncValueArb
     );
 }

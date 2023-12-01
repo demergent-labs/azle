@@ -9,37 +9,28 @@ export function CandidArb<
     D extends CandidDefinition,
     V extends CandidValues<T>
 >(
-    DefinitionArb: (
-        candidTypeArb: fc.Arbitrary<CandidDefinition>
-    ) => fc.Arbitrary<D>,
-    ValueArb: (arb: D) => fc.Arbitrary<V>,
-    innerDefinitionArb: fc.Arbitrary<CandidDefinition>
+    DefinitionArb: fc.Arbitrary<D>,
+    ValueArb: (arb: D) => fc.Arbitrary<V>
 ): fc.Arbitrary<CandidValueAndMeta<any>> {
-    return DefinitionArb(innerDefinitionArb)
-        .chain((tupleDefinition) =>
-            fc.tuple(fc.constant(tupleDefinition), ValueArb(tupleDefinition))
-        )
-        .map(
-            ([
-                {
-                    candidMeta: {
-                        typeAnnotation,
-                        typeAliasDeclarations,
-                        imports
-                    }
+    return DefinitionArb.chain((candidDefinition) =>
+        fc.tuple(fc.constant(candidDefinition), ValueArb(candidDefinition))
+    ).map(
+        ([
+            {
+                candidMeta: { typeAnnotation, typeAliasDeclarations, imports }
+            },
+            { agentArgumentValue, agentResponseValue, valueLiteral }
+        ]) => {
+            return {
+                src: {
+                    typeAnnotation,
+                    typeAliasDeclarations,
+                    imports,
+                    valueLiteral
                 },
-                { agentArgumentValue, agentResponseValue, valueLiteral }
-            ]) => {
-                return {
-                    src: {
-                        typeAnnotation,
-                        typeAliasDeclarations,
-                        imports,
-                        valueLiteral
-                    },
-                    agentArgumentValue,
-                    agentResponseValue
-                };
-            }
-        );
+                agentArgumentValue,
+                agentResponseValue
+            };
+        }
+    );
 }
