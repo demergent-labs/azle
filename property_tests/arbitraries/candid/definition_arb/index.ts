@@ -14,11 +14,11 @@ import { PrincipalDefinitionArb } from '../reference/principal_arb';
 import { Float32DefinitionArb } from '../primitive/floats/float32_arb';
 import { Float64DefinitionArb } from '../primitive/floats/float64_arb';
 import { TextDefinitionArb } from '../primitive/text';
-import { VariantDefinitionArb } from '../constructed/variant_arb/base';
-import { RecordDefinitionArb } from '../constructed/record_arb/base';
-import { TupleDefinitionArb } from '../constructed/tuple_arb/base';
-import { OptDefinitionArb } from '../constructed/opt_arb/base';
-import { VecDefinitionArb } from '../constructed/vec_arb/base';
+import { VariantDefinitionArb } from '../constructed/variant_arb/definition_arbs';
+import { RecordDefinitionArb } from '../constructed/record_arb/definition_arb';
+import { TupleDefinitionArb } from '../constructed/tuple_arb/definition_arb';
+import { OptDefinitionArb } from '../constructed/opt_arb/definition_arb';
+import { VecDefinitionArb } from '../constructed/vec_arb/definition_arb';
 import { FuncDefinitionArb } from '../reference/func_arb/base';
 import {
     CandidDefinition,

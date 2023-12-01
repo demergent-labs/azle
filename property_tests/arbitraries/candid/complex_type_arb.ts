@@ -1,20 +1,23 @@
 import fc from 'fast-check';
+import { CorrespondingJSType } from './corresponding_js_type';
+import { CandidDefinition } from './definition_arb/types';
+import { CandidValueAndMeta } from './value_and_meta_arb';
+import { CandidValues } from './values';
 
-import { CandidValueAndMeta } from '../../value_and_meta_arb';
-import { ReturnTuple, Tuple } from './index';
-import { CandidDefinition } from '../../definition_arb/types';
-import { TupleDefinitionArb } from './definition_arb';
-import { TupleValuesArb } from './values_arbs';
-
-export function TupleArb(
-    candidTypeArb: fc.Arbitrary<CandidDefinition>
-): fc.Arbitrary<CandidValueAndMeta<Tuple, ReturnTuple>> {
-    return TupleDefinitionArb(candidTypeArb)
+export function CandidArb<
+    T extends CorrespondingJSType,
+    D extends CandidDefinition,
+    V extends CandidValues<T>
+>(
+    DefinitionArb: (
+        candidTypeArb: fc.Arbitrary<CandidDefinition>
+    ) => fc.Arbitrary<D>,
+    ValueArb: (arb: D) => fc.Arbitrary<V>,
+    innerDefinitionArb: fc.Arbitrary<CandidDefinition>
+): fc.Arbitrary<CandidValueAndMeta<any>> {
+    return DefinitionArb(innerDefinitionArb)
         .chain((tupleDefinition) =>
-            fc.tuple(
-                fc.constant(tupleDefinition),
-                TupleValuesArb(tupleDefinition)
-            )
+            fc.tuple(fc.constant(tupleDefinition), ValueArb(tupleDefinition))
         )
         .map(
             ([

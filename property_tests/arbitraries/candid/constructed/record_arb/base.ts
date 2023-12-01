@@ -1,65 +1,17 @@
 import fc from 'fast-check';
 
 import { CandidValueAndMeta } from '../../value_and_meta_arb';
-import { CorrespondingJSType } from '../../corresponding_js_type';
-import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
-import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { Record } from './index';
-import {
-    CandidDefinition,
-    RecordCandidDefinition
-} from '../../definition_arb/types';
-import { CandidValueArb, CandidValues } from '../../values';
-import { CandidType } from '../../candid_type';
-
-type FieldDefinition = [string, CandidDefinition];
-type FieldValue = [string, CandidValues<CorrespondingJSType>];
-type FieldArbValue = [string, fc.Arbitrary<CandidValues<CorrespondingJSType>>];
-
-export function RecordDefinitionArb(
-    fieldCandidDefArb: fc.Arbitrary<CandidDefinition>
-): fc.Arbitrary<RecordCandidDefinition> {
-    return fc
-        .tuple(
-            UniqueIdentifierArb('typeDeclaration'),
-            fc.uniqueArray(fc.tuple(JsFunctionNameArb, fieldCandidDefArb), {
-                selector: (entry) => entry[0],
-                minLength: 1 // Zero length records are giving that same null error 'vec length of zero sized values too large' // I don't know if that's the same error but it seems like it is
-                // https://github.com/demergent-labs/azle/issues/1453
-            }),
-            fc.boolean()
-        )
-        .map(([name, fields, useTypeDeclaration]): RecordCandidDefinition => {
-            const typeAnnotation = useTypeDeclaration
-                ? name
-                : generateTypeAnnotation(fields);
-
-            const typeAliasDeclarations = generateTypeAliasDeclarations(
-                name,
-                fields,
-                useTypeDeclaration
-            );
-
-            const imports = generateImports(fields);
-
-            return {
-                candidMeta: {
-                    typeAnnotation,
-                    typeAliasDeclarations,
-                    imports,
-                    candidType: CandidType.Record
-                },
-                innerTypes: fields
-            };
-        });
-}
+import { CandidDefinition } from '../../definition_arb/types';
+import { RecordDefinitionArb } from './definition_arb';
+import { RecordValuesArb } from './values_arb';
 
 export function RecordArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Record>> {
     return RecordDefinitionArb(candidDefinitionArb)
         .chain((recordDef) =>
-            fc.tuple(fc.constant(recordDef), RecordValueArb(recordDef))
+            fc.tuple(fc.constant(recordDef), RecordValuesArb(recordDef))
         )
         .map(
             ([
@@ -84,94 +36,4 @@ export function RecordArb(
                 };
             }
         );
-}
-
-export function RecordValueArb(
-    recordDefinition: RecordCandidDefinition
-): fc.Arbitrary<CandidValues<Record>> {
-    const fieldValues = recordDefinition.innerTypes.map(([name, innerType]) => {
-        const result: FieldArbValue = [name, CandidValueArb(innerType)];
-        return result;
-    });
-    const arbitraryFieldValues = fieldValues.map(([key, arbValue]) =>
-        arbValue.map((value): FieldValue => [key, value])
-    );
-
-    return fc.tuple(...arbitraryFieldValues).map((fieldValues) => {
-        const valueLiteral = generateValueLiteral(fieldValues);
-        const agentArgumentValue = generateValue(fieldValues);
-        const agentResponseValue = generateValue(fieldValues, true);
-
-        return {
-            valueLiteral,
-            agentArgumentValue,
-            agentResponseValue
-        };
-    });
-}
-
-function generateImports(fields: FieldDefinition[]): Set<string> {
-    const fieldImports = fields.flatMap((field) => [
-        ...field[1].candidMeta.imports
-    ]);
-    return new Set([...fieldImports, 'Record']);
-}
-
-function generateTypeAnnotation(fields: FieldDefinition[]): string {
-    return `Record({${fields
-        .map(
-            ([fieldName, fieldDefinition]) =>
-                `${fieldName}: ${fieldDefinition.candidMeta.typeAnnotation}`
-        )
-        .join(',')}})`;
-}
-
-function generateTypeAliasDeclarations(
-    name: string,
-    fields: FieldDefinition[],
-    useTypeDeclaration: boolean
-): string[] {
-    const fieldTypeAliasDeclarations = fields.flatMap(
-        (field) => field[1].candidMeta.typeAliasDeclarations
-    );
-    if (useTypeDeclaration) {
-        return [
-            ...fieldTypeAliasDeclarations,
-            `const ${name} = ${generateTypeAnnotation(fields)};`
-        ];
-    }
-    return fieldTypeAliasDeclarations;
-}
-
-function generateValue(
-    fields: FieldValue[],
-    returned: boolean = false
-): Record {
-    return fields.length === 0
-        ? {}
-        : fields.reduce((record, [fieldName, fieldCandidValues]) => {
-              return {
-                  ...record,
-                  [fieldName]: returned
-                      ? fieldCandidValues.agentResponseValue
-                      : fieldCandidValues.agentArgumentValue
-              };
-          }, {});
-}
-
-function generateValueLiteral(fields: FieldValue[]): string {
-    if (fields.length === 0) {
-        return '{}';
-    }
-
-    const fieldLiterals = fields
-        .map(
-            ([fieldName, fieldCandidValues]) =>
-                `${fieldName}: ${fieldCandidValues.valueLiteral}`
-        )
-        .join(',\n');
-
-    return `{
-        ${fieldLiterals}
-    }`;
 }
