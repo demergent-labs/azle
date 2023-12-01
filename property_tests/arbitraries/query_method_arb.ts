@@ -17,46 +17,60 @@ export type QueryMethod = {
 };
 
 export type BodyGenerator<
-    ParamType extends CandidType,
-    ParamAgentType,
-    ReturnType extends CandidType,
-    ReturnAgentType
+    ParamAgentArgumentValue extends CandidType,
+    ParamAgentResponseValue,
+    ReturnTypeAgentArgumentValue extends CandidType,
+    ReturnTypeAgentResponseValue
 > = (
-    namedParams: Named<CandidMeta<ParamType, ParamAgentType>>[],
-    returnType: CandidMeta<ReturnType, ReturnAgentType>
+    namedParams: Named<
+        CandidMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
+    >[],
+    returnType: CandidMeta<
+        ReturnTypeAgentArgumentValue,
+        ReturnTypeAgentResponseValue
+    >
 ) => string;
 
 export type TestsGenerator<
-    ParamType extends CandidType,
-    ParamAgentType,
-    ReturnType extends CandidType,
-    ReturnAgentType
+    ParamAgentArgumentValue extends CandidType,
+    ParamAgentResponseValue,
+    ReturnTypeAgentArgumentValue extends CandidType,
+    ReturnTypeAgentResponseValue
 > = (
     methodName: string,
-    namedParams: Named<CandidMeta<ParamType, ParamAgentType>>[],
-    returnType: CandidMeta<ReturnType, ReturnAgentType>
+    namedParams: Named<
+        CandidMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
+    >[],
+    returnType: CandidMeta<
+        ReturnTypeAgentArgumentValue,
+        ReturnTypeAgentResponseValue
+    >
 ) => Test[];
 
 export function QueryMethodArb<
-    ParamType extends CandidType,
-    ParamAgentType,
-    ReturnType extends CandidType,
-    ReturnAgentType
+    ParamAgentArgumentValue extends CandidType,
+    ParamAgentResponseValue,
+    ReturnTypeAgentArgumentValue extends CandidType,
+    ReturnTypeAgentResponseValue
 >(
-    paramTypeArrayArb: fc.Arbitrary<CandidMeta<ParamType, ParamAgentType>[]>,
-    returnTypeArb: fc.Arbitrary<CandidMeta<ReturnType, ReturnAgentType>>,
+    paramTypeArrayArb: fc.Arbitrary<
+        CandidMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
+    >,
+    returnTypeArb: fc.Arbitrary<
+        CandidMeta<ReturnTypeAgentArgumentValue, ReturnTypeAgentResponseValue>
+    >,
     constraints: {
         generateBody: BodyGenerator<
-            ParamType,
-            ParamAgentType,
-            ReturnType,
-            ReturnAgentType
+            ParamAgentArgumentValue,
+            ParamAgentResponseValue,
+            ReturnTypeAgentArgumentValue,
+            ReturnTypeAgentResponseValue
         >;
         generateTests: TestsGenerator<
-            ParamType,
-            ParamAgentType,
-            ReturnType,
-            ReturnAgentType
+            ParamAgentArgumentValue,
+            ParamAgentResponseValue,
+            ReturnTypeAgentArgumentValue,
+            ReturnTypeAgentResponseValue
         >;
         // TODO: Consider adding a callback to determine the returnType
         // i.e. instead of using the first one if the params array isn't empty.
