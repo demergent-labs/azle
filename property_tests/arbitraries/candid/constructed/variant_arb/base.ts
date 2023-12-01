@@ -10,8 +10,7 @@ export function VariantArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Variant>> {
     return CandidArb(
-        VariantDefinitionArb,
-        VariantValuesArb,
-        candidDefinitionArb
+        VariantDefinitionArb(candidDefinitionArb),
+        VariantValuesArb
     );
 }
