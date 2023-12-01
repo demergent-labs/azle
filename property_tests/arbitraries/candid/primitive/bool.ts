@@ -1,19 +1,19 @@
 import fc from 'fast-check';
-import { SimpleCandidValueAndMetaArb } from '../simple_type_arbs/value_and_meta_arb';
 import { SimpleCandidDefinitionArb } from '../simple_type_arbs/definition_arb';
 import { SimpleCandidValuesArb } from '../simple_type_arbs/values_arb';
 import { booleanToSrcLiteral } from '../to_src_literal/boolean';
+import { ComplexCandidValueAndMetaArb } from '../complex_value_and_meta_arb';
 import { BoolCandidDefinition } from '../definition_arb/types';
 import { CandidValues } from '../values';
 
-export const BoolArb = SimpleCandidValueAndMetaArb(
-    fc.boolean(),
-    'bool',
-    booleanToSrcLiteral
-);
+export function BoolArb(): fc.Arbitrary<any> {
+    return ComplexCandidValueAndMetaArb(BoolDefinitionArb(), BoolValueArb);
+}
 
-export const BoolDefinitionArb: fc.Arbitrary<BoolCandidDefinition> =
-    SimpleCandidDefinitionArb('bool');
+export function BoolDefinitionArb(): fc.Arbitrary<BoolCandidDefinition> {
+    return SimpleCandidDefinitionArb('bool');
+}
 
-export const BoolValueArb: fc.Arbitrary<CandidValues<boolean>> =
-    SimpleCandidValuesArb(fc.boolean(), booleanToSrcLiteral);
+export function BoolValueArb(): fc.Arbitrary<CandidValues<boolean>> {
+    return SimpleCandidValuesArb(fc.boolean(), booleanToSrcLiteral);
+}

@@ -3,10 +3,9 @@ import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { BlobCandidDefinition } from '../../definition_arb/types';
 import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
 
-export const BlobDefinitionArb: fc.Arbitrary<BlobCandidDefinition> = fc.oneof(
-    SimpleCandidDefinitionArb('blob'),
-    _VecNat8DefinitionArb()
-);
+export function BlobDefinitionArb(): fc.Arbitrary<BlobCandidDefinition> {
+    return fc.oneof(SimpleCandidDefinitionArb('blob'), _VecNat8DefinitionArb());
+}
 
 export function _VecNat8DefinitionArb(): fc.Arbitrary<BlobCandidDefinition> {
     return fc
