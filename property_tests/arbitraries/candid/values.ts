@@ -21,9 +21,9 @@ import { VariantValuesArb } from './constructed/variant_arb/values_arb';
 import { TupleValuesArb } from './constructed/tuple_arb/values_arbs';
 import { OptValuesArb } from './constructed/opt_arb/values_arb';
 import { PrincipalValueArb } from './reference/principal_arb';
-import { FuncValueArb } from './reference/func_arb/base';
+import { FuncValueArb } from './reference/func_arb/values_arb';
 import { VoidValueArb } from './primitive/void';
-import { ServiceValueArb } from './reference/service_arb/base';
+import { ServiceValueArb } from './reference/service_arb/values_arb';
 import {
     CandidDefinition,
     OptCandidDefinition,

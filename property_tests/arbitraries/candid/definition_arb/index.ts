@@ -19,7 +19,7 @@ import { RecordDefinitionArb } from '../constructed/record_arb/definition_arb';
 import { TupleDefinitionArb } from '../constructed/tuple_arb/definition_arb';
 import { OptDefinitionArb } from '../constructed/opt_arb/definition_arb';
 import { VecDefinitionArb } from '../constructed/vec_arb/definition_arb';
-import { FuncDefinitionArb } from '../reference/func_arb/base';
+import { FuncDefinitionArb } from '../reference/func_arb/definition_arb';
 import {
     CandidDefinition,
     FuncCandidDefinition,
