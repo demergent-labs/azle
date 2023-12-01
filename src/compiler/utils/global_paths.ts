@@ -1,9 +1,10 @@
+import { homedir } from 'os';
 import { join, resolve } from 'path';
 
 import { rust_version, version as azleVersion } from '../../../package.json';
 
 export const GLOBAL_AZLE_CONFIG_DIR = resolve(
-    require('os').homedir(),
+    homedir(),
     join('.config', 'azle')
 );
 export const GLOBAL_AZLE_RUST_DIR = join(

@@ -86,8 +86,6 @@ export function getTests(): Test[] {
                     return { Err: Object.keys(updateBalanceResult.Err)[0] };
                 }
 
-                const okValue = updateBalanceResult.Ok;
-
                 return { Ok: true };
             }
         },

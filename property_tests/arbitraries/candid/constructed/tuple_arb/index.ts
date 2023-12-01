@@ -2,6 +2,6 @@ import { CandidType, CandidTypeArb } from '../../candid_type_arb';
 import { TupleArb as Base } from './base';
 
 export type Tuple = CandidType[];
-export type ReturnTuple = Tuple | {};
+export type ReturnTuple = Tuple | Record<string, never>;
 
 export const TupleArb = Base(CandidTypeArb);

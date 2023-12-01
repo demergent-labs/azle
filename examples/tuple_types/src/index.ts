@@ -14,8 +14,7 @@ import {
     text,
     Tuple,
     Variant,
-    Vec,
-    Void
+    Vec
 } from 'azle';
 
 // TODO maybe we should write tests for canister and stable storage?

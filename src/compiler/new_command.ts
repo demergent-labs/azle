@@ -60,14 +60,14 @@ function generatePackageJson(
 ): string {
     return `{
     "scripts": {
-        "dfx_install": "DFX_VERSION=${dfxVersion} sh -ci \\\"$(curl -fsSL https://sdk.dfinity.org/install.sh)\\\"",
+        "dfx_install": "DFX_VERSION=${dfxVersion} sh -ci \\"$(curl -fsSL https://sdk.dfinity.org/install.sh)\\"",
         "replica_start": "dfx start --background",
         "replica_stop": "dfx stop",
         "canister_deploy_local": "dfx deploy ${projectName}",
         "canister_deploy_mainnet": "dfx deploy --network ic ${projectName}",
         "canister_uninstall": "dfx canister uninstall-code ${projectName}",
         "canister_call_get_message": "dfx canister call ${projectName} getMessage",
-        "canister_call_set_message": "dfx canister call ${projectName} setMessage '(\\\"Hello world!\\\")'"
+        "canister_call_set_message": "dfx canister call ${projectName} setMessage '(\\"Hello world!\\")'"
     },
     "dependencies": {
         "azle": "${azleVersion}"

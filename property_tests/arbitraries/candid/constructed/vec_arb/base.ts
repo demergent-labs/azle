@@ -1,4 +1,4 @@
-import fc, { sample } from 'fast-check';
+import fc from 'fast-check';
 
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import { CandidMeta, Src } from '../../candid_arb';

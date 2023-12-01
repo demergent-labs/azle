@@ -1,4 +1,5 @@
 import { Buffer } from 'buffer';
+import { TextDecoder, TextEncoder } from 'text-encoding';
 
 import { ic } from './ic';
 import { AzleIc } from './ic/types/azle_ic';
@@ -12,8 +13,8 @@ declare global {
     var _azleGuardFunctions: { [key: string]: () => any };
 }
 
-globalThis.TextDecoder = require('text-encoding').TextDecoder;
-globalThis.TextEncoder = require('text-encoding').TextEncoder;
+globalThis.TextDecoder = TextDecoder;
+globalThis.TextEncoder = TextEncoder;
 globalThis._azleIcTimers = {};
 globalThis._azleResolveIds = {};
 globalThis._azleRejectIds = {};

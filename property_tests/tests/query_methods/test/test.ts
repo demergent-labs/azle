@@ -2,7 +2,7 @@ import { execSync } from 'child_process';
 import fc from 'fast-check';
 import { writeFileSync } from 'fs';
 
-import { getCanisterId, runTests, Test } from '../../../../test';
+import { runTests, Test } from '../../../../test';
 import { getActor } from '../../../get_actor';
 
 // TODO Canister

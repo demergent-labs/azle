@@ -1,3 +1,3 @@
-export function voidToSrcLiteral(value: undefined): string {
+export function voidToSrcLiteral(_value: undefined): string {
     return 'undefined';
 }

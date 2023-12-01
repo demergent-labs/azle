@@ -178,7 +178,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'listOfEmpty test',
             test: async () => {
                 try {
-                    const result = await listOfListsCanister.listOfEmpty();
+                    await listOfListsCanister.listOfEmpty();
                 } catch (error) {
                     return {
                         Ok: (error as any).message.startsWith('Call failed')
@@ -238,13 +238,6 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const expectedResult = [[[Principal.fromText('aaaaa-aa')]]];
                 const result =
                     await listOfListsCanister.listOfPrincipal(expectedResult);
-                const principalEq = (a: any, b: any) => {
-                    return (
-                        'toText' in a &&
-                        'toText' in b &&
-                        a.toText() === b.toText()
-                    );
-                };
 
                 return {
                     Ok:

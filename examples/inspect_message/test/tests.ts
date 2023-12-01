@@ -27,7 +27,7 @@ export function getTests(
             name: 'not calling `ic.acceptMessage` in inspectMessage',
             test: async () => {
                 try {
-                    const result = await inspectMessageCanister.inaccessible();
+                    await inspectMessageCanister.inaccessible();
                     return {
                         Ok: false
                     };
@@ -44,8 +44,7 @@ export function getTests(
             name: 'throwing in `inspectMessage`',
             test: async () => {
                 try {
-                    const result =
-                        await inspectMessageCanister.alsoInaccessible();
+                    await inspectMessageCanister.alsoInaccessible();
 
                     return {
                         Ok: false

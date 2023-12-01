@@ -1,4 +1,3 @@
-import { decode } from '../candid/serde/decode';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
 
 /**
