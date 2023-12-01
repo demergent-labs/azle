@@ -193,7 +193,7 @@ function generateCallback<
         .map((namedParam) => `${namedParam.name}: any`) // TODO: Use actual candid type, not any
         .join(', ');
 
-    return `function ${callbackName}(${paramNamesAndTypes}) {${body}}`;
+    return `function ${callbackName}(${paramNamesAndTypes}): any {${body}}`; // TODO: Use actual candid type, not any
 }
 
 function generateSourceCode<
