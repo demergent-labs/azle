@@ -2,7 +2,6 @@ import fc from 'fast-check';
 import { RecordValuesArb } from './constructed/record_arb/values_arb';
 import { BoolValueArb } from './primitive/bool';
 import { VecValuesArb } from './constructed/vec_arb/values_arb';
-import { CandidType } from './candid_type';
 import { TextValueArb } from './primitive/text';
 import { NullValueArb } from './primitive/null';
 import { Float32ValueArb } from './primitive/floats/float32_arb';
@@ -46,79 +45,79 @@ export function CandidValueArb(
     candidTypeMeta: CandidDefinition
 ): fc.Arbitrary<CandidValues<CorrespondingJSType>> {
     const candidType = candidTypeMeta.candidMeta.candidType;
-    if (candidType === CandidType.Blob) {
+    if (candidType === 'blob') {
         return BlobValuesArb;
     }
-    if (candidType === CandidType.Opt) {
+    if (candidType === 'Opt') {
         return OptValuesArb(candidTypeMeta as OptCandidDefinition);
     }
-    if (candidType === CandidType.Record) {
+    if (candidType === 'Record') {
         return RecordValuesArb(candidTypeMeta as RecordCandidDefinition);
     }
-    if (candidType === CandidType.Tuple) {
+    if (candidType === 'Tuple') {
         return TupleValuesArb(candidTypeMeta as TupleCandidDefinition);
     }
-    if (candidType === CandidType.Variant) {
+    if (candidType === 'Variant') {
         return VariantValuesArb(candidTypeMeta as VariantCandidDefinition);
     }
-    if (candidType === CandidType.Vec) {
+    if (candidType === 'Vec') {
         return VecValuesArb(candidTypeMeta as VecCandidDefinition);
     }
-    if (candidType === CandidType.Bool) {
+    if (candidType === 'bool') {
         return BoolValueArb;
     }
-    if (candidType === CandidType.Float32) {
+    if (candidType === 'float32') {
         return Float32ValueArb;
     }
-    if (candidType === CandidType.Float64) {
+    if (candidType === 'float64') {
         return Float64ValueArb;
     }
-    if (candidType === CandidType.Int) {
+    if (candidType === 'int') {
         return IntValueArb;
     }
-    if (candidType === CandidType.Int8) {
+    if (candidType === 'int8') {
         return Int8ValueArb;
     }
-    if (candidType === CandidType.Int16) {
+    if (candidType === 'int16') {
         return Int16ValueArb;
     }
-    if (candidType === CandidType.Int32) {
+    if (candidType === 'int32') {
         return Int32ValueArb;
     }
-    if (candidType === CandidType.Int64) {
+    if (candidType === 'int64') {
         return Int64ValueArb;
     }
-    if (candidType === CandidType.Nat) {
+    if (candidType === 'nat') {
         return NatValueArb;
     }
-    if (candidType === CandidType.Nat8) {
+    if (candidType === 'nat8') {
         return Nat8ValueArb;
     }
-    if (candidType === CandidType.Nat16) {
+    if (candidType === 'nat16') {
         return Nat16ValueArb;
     }
-    if (candidType === CandidType.Nat32) {
+    if (candidType === 'nat32') {
         return Nat32ValueArb;
     }
-    if (candidType === CandidType.Nat64) {
+    if (candidType === 'nat64') {
         return Nat64ValueArb;
     }
-    if (candidType === CandidType.Null) {
+    if (candidType === 'Null') {
         return NullValueArb;
     }
-    if (candidType === CandidType.Text) {
+    if (candidType === 'text') {
         return TextValueArb;
     }
-    if (candidType === CandidType.Void) {
+    if (candidType === 'Void') {
         return VoidValueArb;
     }
-    if (candidType === CandidType.Func) {
+    if (candidType === 'Func') {
         return FuncValueArb;
     }
-    if (candidType === CandidType.Principal) {
+    if (candidType === 'Principal') {
         return PrincipalValueArb;
     }
-    if (candidType === CandidType.Service) {
+    if (candidType === 'Service') {
         return ServiceValueArb(candidTypeMeta as ServiceCandidDefinition);
     }
     throw new Error('Unreachable');

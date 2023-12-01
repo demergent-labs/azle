@@ -1,6 +1,5 @@
 import fc from 'fast-check';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
-import { CandidType } from '../../candid_type';
 import {
     CandidDefinition,
     VecCandidDefinition
@@ -33,7 +32,7 @@ export function VecDefinitionArb(
                     typeAnnotation,
                     typeAliasDeclarations,
                     imports,
-                    candidType: CandidType.Vec
+                    candidType: 'Vec'
                 },
                 innerType: innerType
             };

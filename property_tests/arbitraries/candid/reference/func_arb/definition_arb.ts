@@ -1,6 +1,5 @@
 import fc from 'fast-check';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
-import { CandidType } from '../../candid_type';
 import {
     CandidDefinition,
     FuncCandidDefinition
@@ -56,7 +55,7 @@ export function FuncDefinitionArb(
                         typeAnnotation,
                         typeAliasDeclarations,
                         imports,
-                        candidType: CandidType.Func
+                        candidType: 'Func'
                     },
                     paramCandidMeta: params,
                     returnCandidMeta: returnFunc

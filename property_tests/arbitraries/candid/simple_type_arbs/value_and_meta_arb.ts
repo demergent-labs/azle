@@ -1,13 +1,13 @@
 import fc from 'fast-check';
 import { CorrespondingJSType } from '../corresponding_js_type';
-import { CandidType } from '../candid_type';
+import { SimpleCandidType } from '../candid_type';
 import { CandidValueAndMeta } from '../value_and_meta_arb';
 import { SimpleCandidDefinitionArb } from './definition_arb';
 import { SimpleCandidValuesArb } from './values_arb';
 
 export function SimpleCandidValueAndMetaArb<T extends CorrespondingJSType>(
     jsValueArb: fc.Arbitrary<T>,
-    candidType: CandidType,
+    candidType: SimpleCandidType,
     toLiteral: (value: T) => string
 ): fc.Arbitrary<CandidValueAndMeta<T>> {
     return fc

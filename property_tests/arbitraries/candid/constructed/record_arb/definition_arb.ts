@@ -1,7 +1,6 @@
 import fc from 'fast-check';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
-import { CandidType } from '../../candid_type';
 import {
     CandidDefinition,
     RecordCandidDefinition
@@ -40,7 +39,7 @@ export function RecordDefinitionArb(
                     typeAnnotation,
                     typeAliasDeclarations,
                     imports,
-                    candidType: CandidType.Record
+                    candidType: 'Record'
                 },
                 innerTypes: fields
             };
