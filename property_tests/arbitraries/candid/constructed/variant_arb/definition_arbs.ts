@@ -46,7 +46,7 @@ function VariantFieldsArb(
     candidTypeArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<Field[]> {
     return fc.uniqueArray(fc.tuple(JsFunctionNameArb, candidTypeArb), {
-        selector: (entry) => entry[0],
+        selector: ([name, _]) => name,
         minLength: 1
         // Although no minLength is technically required (according to the
         // spec), the DFX CLI itself currently errors out trying to pass
