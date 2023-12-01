@@ -6,15 +6,18 @@ import { VecCandidDefinition } from '../../definition_arb/types';
 import { CandidValues, CandidValueArb } from '../../values';
 
 export function VecValuesArb(
-    vecType: VecCandidDefinition
+    vecDefinition: VecCandidDefinition
 ): fc.Arbitrary<CandidValues<Vec>> {
     const arbitraryMemberValues = fc
-        .tuple(fc.array(fc.constant(null)), fc.constant(vecType.innerType))
+        .tuple(
+            fc.array(fc.constant(null)),
+            fc.constant(vecDefinition.innerType)
+        )
         .chain(([arrayTemplate, innerType]) =>
             fc.tuple(...arrayTemplate.map(() => CandidValueArb(innerType)))
         );
 
-    const innerCandidType = vecType.innerType.candidMeta.candidType;
+    const innerCandidType = vecDefinition.innerType.candidMeta.candidType;
 
     return arbitraryMemberValues.map((fieldValues) => {
         const valueLiteral = generateValueLiteral(fieldValues, innerCandidType);
