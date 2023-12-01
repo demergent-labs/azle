@@ -1,7 +1,7 @@
 import fc from 'fast-check';
-import { RecordValueArb } from './constructed/record_arb/base';
+import { RecordValuesArb } from './constructed/record_arb/values_arb';
 import { BoolValueArb } from './primitive/bool';
-import { VecValueArb } from './constructed/vec_arb/base';
+import { VecValuesArb } from './constructed/vec_arb/values_arb';
 import { CandidType } from './candid_type';
 import { TextValueArb } from './primitive/text';
 import { NullValueArb } from './primitive/null';
@@ -17,9 +17,9 @@ import { Nat8ValueArb } from './primitive/nats/nat8_arb';
 import { Nat16ValueArb } from './primitive/nats/nat16_arb';
 import { Nat32ValueArb } from './primitive/nats/nat32_arb';
 import { Nat64ValueArb } from './primitive/nats/nat64_arb';
-import { VariantValueArb } from './constructed/variant_arb/base';
-import { TupleValueArb } from './constructed/tuple_arb/base';
-import { OptValueArb } from './constructed/opt_arb/base';
+import { VariantValuesArb } from './constructed/variant_arb/values_arb';
+import { TupleValuesArb } from './constructed/tuple_arb/values_arbs';
+import { OptValuesArb } from './constructed/opt_arb/values_arb';
 import { PrincipalValueArb } from './reference/principal_arb';
 import { FuncValueArb } from './reference/func_arb/base';
 import { VoidValueArb } from './primitive/void';
@@ -33,7 +33,7 @@ import {
     VariantCandidDefinition,
     VecCandidDefinition
 } from './definition_arb/types';
-import { BlobValueArb } from './constructed/blob_arb';
+import { BlobValuesArb } from './constructed/blob_arb/values';
 import { CorrespondingJSType } from './corresponding_js_type';
 
 export type CandidValues<T extends CorrespondingJSType, E = T> = {
@@ -47,22 +47,22 @@ export function CandidValueArb(
 ): fc.Arbitrary<CandidValues<CorrespondingJSType>> {
     const candidType = candidTypeMeta.candidMeta.candidType;
     if (candidType === CandidType.Blob) {
-        return BlobValueArb;
+        return BlobValuesArb;
     }
     if (candidType === CandidType.Opt) {
-        return OptValueArb(candidTypeMeta as OptCandidDefinition);
+        return OptValuesArb(candidTypeMeta as OptCandidDefinition);
     }
     if (candidType === CandidType.Record) {
-        return RecordValueArb(candidTypeMeta as RecordCandidDefinition);
+        return RecordValuesArb(candidTypeMeta as RecordCandidDefinition);
     }
     if (candidType === CandidType.Tuple) {
-        return TupleValueArb(candidTypeMeta as TupleCandidDefinition);
+        return TupleValuesArb(candidTypeMeta as TupleCandidDefinition);
     }
     if (candidType === CandidType.Variant) {
-        return VariantValueArb(candidTypeMeta as VariantCandidDefinition);
+        return VariantValuesArb(candidTypeMeta as VariantCandidDefinition);
     }
     if (candidType === CandidType.Vec) {
-        return VecValueArb(candidTypeMeta as VecCandidDefinition);
+        return VecValuesArb(candidTypeMeta as VecCandidDefinition);
     }
     if (candidType === CandidType.Bool) {
         return BoolValueArb;
