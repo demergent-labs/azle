@@ -1,6 +1,7 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/simple_erc20/simple_erc20.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/simple_erc20/simple_erc20.did';
 
 export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
     return [

@@ -1,6 +1,5 @@
 import { BenchmarkResult, calculate_average } from './index';
 import { get_usd_cost_estimates } from './usd';
-import { USDCostEstimates } from './usd/usd_cost_estimate';
 import {
     USAGE_CONFIG_HEAVY_QUERY_HEAVY,
     USAGE_CONFIG_HEAVY_QUERY_UPDATE_EVEN,
@@ -12,6 +11,7 @@ import {
     USAGE_CONFIG_MODERATE_QUERY_UPDATE_EVEN,
     USAGE_CONFIG_MODERATE_UPDATE_HEAVY
 } from './usd/usage_config';
+import { USDCostEstimates } from './usd/usd_cost_estimate';
 
 export function create_markdown_report(
     benchmark_results: BenchmarkResult[],

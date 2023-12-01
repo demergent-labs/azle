@@ -1,9 +1,9 @@
-import { CanisterMethods } from './utils/types';
-import {
-    getDefaultVisitorData,
-    DidVisitor
-} from '../lib/candid/did_file/visitor';
 import { toDidString } from '../lib/candid/did_file';
+import {
+    DidVisitor,
+    getDefaultVisitorData
+} from '../lib/candid/did_file/visitor';
+import { CanisterMethods } from './utils/types';
 
 export function generateCandidAndCanisterMethods(mainJs: string): {
     candid: string;

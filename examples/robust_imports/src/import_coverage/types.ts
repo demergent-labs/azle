@@ -25,10 +25,12 @@ Import Clause breakdown
 
 */
 //1) ImportedDefaultBinding (thing) (import thing from 'thing')
-import deepDefault from '../types/deep/shallow';
+import * as azle from 'azle';
+//6 Type import
+import { Opt, Vec as CoveredVec } from 'azle';
+
 //2) NameSpaceImport (* as thing) (import * as thing from 'thing')
 import * as deepStar from '../types/deep';
-import * as azle from 'azle';
 //3) NamedImports
 //a) ({}) (import {} from 'thing')
 import {} from '../types/deep';
@@ -47,7 +49,7 @@ import {
 } from '../types/deep';
 //c) Combos
 //i) ({thing1, thing2 as other2}) ({thing1, thing2 as other2})
-import { DeepVariant, DeepInt8 as ProfoundInt8 } from '../types/deep';
+import { DeepInt8 as ProfoundInt8, DeepVariant } from '../types/deep';
 //ii) ({thing1 as other1, thing2}) ({thing1, thing2 as other2})
 import { DeepRecord as FathomlessRecord, DeepVec } from '../types/deep';
 //4) ImportedDefaultBinding, NameSpaceImport (thing, * as other from 'thing')
@@ -56,14 +58,13 @@ import profoundDefault, * as profoundStar from '../types/deep';
 import bottomlessDefault, { DeepTuple as BottomlessTuple } from '../types/deep';
 //a) there could be all sorts of combos in here
 import cavernousDefault, {
-    DeepTuple as CavernousTuple,
     DeepOpt,
+    DeepTuple as CavernousTuple,
     DeepVariant as CavernousVariant
 } from '../types/deep';
-//6 Type import
-import { Opt, Vec as CoveredVec } from 'azle';
 //7 Default import as
 import { default as defaultInt16 } from '../types/deep';
+import deepDefault from '../types/deep/shallow';
 
 /*
 From https://262.ecma-international.org/13.0/#sec-exports 16.2.3
@@ -92,8 +93,8 @@ From https://262.ecma-international.org/13.0/#sec-exports 16.2.3
 
 //1) export ExportFromClause FromClause ;
 //a) *
-export * from 'azle';
 export * from '../types/deep'; // TODO support having multiple export * from declarations
+export * from 'azle';
 //b) * as ModuleExportName
 export * as azle from 'azle';
 //c) NamedExports
@@ -105,32 +106,32 @@ export { Record } from 'azle';
 //ii) thing as other
 export { Variant as CoveredVariant } from 'azle';
 //iii) combos
-export { Tuple as CoveredTuple, Vec, int64 as nat8 } from 'azle';
+export { Tuple as CoveredTuple, int64 as nat8, Vec } from 'azle';
 //2) export NamedExports ;
 export {};
 export { DeepVariant };
 export { ProfoundInt8 as DeepInt8 };
 export {
-    deepDefault as fathomlessCanister,
-    deepStar as fathomlessStar,
-    DeepRecord as CoveredRecord,
-    CavernousRecord,
-    DeepTuple,
-    BottomlessInt8 as FathomlessInt8,
-    BottomlessVariant as FathomlessVariant,
-    BottomlessTuple as FathomlessTuple,
-    FathomlessRecord,
-    DeepVec as FathomlessVec,
-    profoundStar,
-    profoundDefault,
     bottomlessDefault,
     cavernousDefault,
+    CavernousRecord,
     CavernousTuple,
-    DeepOpt as FathomlessOpt,
     CavernousVariant,
+    defaultInt16 as coveredInt16,
     Opt as CoveredOpt,
+    DeepRecord as CoveredRecord,
     CoveredVec,
-    defaultInt16 as coveredInt16
+    DeepTuple,
+    deepDefault as fathomlessCanister,
+    BottomlessInt8 as FathomlessInt8,
+    DeepOpt as FathomlessOpt,
+    FathomlessRecord,
+    deepStar as fathomlessStar,
+    BottomlessTuple as FathomlessTuple,
+    BottomlessVariant as FathomlessVariant,
+    DeepVec as FathomlessVec,
+    profoundDefault,
+    profoundStar
 };
 export { DeepInt8 as CoverInt8 };
 export type CoveredText = azle.text;

@@ -1,7 +1,8 @@
 import * as swc from '@swc/core';
 import { buildSync } from 'esbuild';
-import { JSCanisterConfig, JavaScript, TypeScript } from './utils/types';
+
 import { Result } from './utils/result';
+import { JavaScript, JSCanisterConfig, TypeScript } from './utils/types';
 
 export function compileTypeScriptToJavaScript(
     main: string,

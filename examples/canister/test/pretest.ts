@@ -1,5 +1,5 @@
-import { execSync } from 'child_process';
 import { getCanisterId } from 'azle/test';
+import { execSync } from 'child_process';
 
 async function pretest() {
     await new Promise((resolve) => setTimeout(resolve, 5000));

@@ -1,7 +1,8 @@
-import { ok, Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/call_raw/call_raw.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
+import { ok, Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/call_raw/call_raw.did';
 
 export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
     return [

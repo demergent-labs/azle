@@ -1,9 +1,9 @@
 import {
     Canister,
     ic,
-    Ok,
     nat,
     nat64,
+    Ok,
     Principal,
     Result,
     text,

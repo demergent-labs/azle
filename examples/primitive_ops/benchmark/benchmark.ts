@@ -1,4 +1,5 @@
 import { Benchmark, run_benchmarks } from 'azle/benchmark';
+
 import { createActor as createActorAzle } from '../dfx_generated/azle';
 import { createActor as createActorMotoko } from '../dfx_generated/motoko';
 import { createActor as createActorRust } from '../dfx_generated/rust';

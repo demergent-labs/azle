@@ -1,6 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { execSync } from 'child_process';
+
 import { _SERVICE } from './dfx_generated/randomness/randomness.did';
 
 let globalResults: Set<string> = new Set();

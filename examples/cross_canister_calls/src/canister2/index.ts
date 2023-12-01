@@ -11,7 +11,8 @@ import {
     Vec,
     Void
 } from 'azle';
-import { State, Account, AccountArgs } from './types';
+
+import { Account, AccountArgs, State } from './types';
 
 let state: State = {
     accounts: {

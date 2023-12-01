@@ -2,12 +2,12 @@ import { Principal } from '@dfinity/principal';
 import { execSync } from 'child_process';
 import fc from 'fast-check';
 
+import { Test } from '../../../../test';
 import { runPropTests } from '../../..';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { ServiceArb } from '../../../arbitraries/candid/reference/service_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
-import { Test } from '../../../../test';
 
 const ServiceTestArb = fc
     .tuple(

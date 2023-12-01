@@ -1,4 +1,5 @@
 import { ic, nat32, None, Opt, Some, update } from 'azle';
+
 import { PerfResult } from '../../perf_result';
 
 let opt_init_heap_storage: { [key: string]: Opt<boolean> | undefined } = {};

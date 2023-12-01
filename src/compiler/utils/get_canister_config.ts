@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'fs';
 
-import { red, yellow, green, blue, purple } from './colors';
+import { blue, green, purple, red, yellow } from './colors';
 import { Err, Ok, Result } from './result';
 import { AzleError, DfxJson, JSCanisterConfig } from './types';
 

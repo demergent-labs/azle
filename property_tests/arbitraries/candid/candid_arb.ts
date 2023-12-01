@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+
 import { CandidType } from './candid_type_arb';
 
 // TODO we're thinking that Candid is not the best name for this. What is better?

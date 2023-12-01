@@ -1,5 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
+
 import { _SERVICE } from './dfx_generated/counter/counter.did';
 
 export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {

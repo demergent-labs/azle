@@ -1,6 +1,7 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/manual_reply/manual_reply.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/manual_reply/manual_reply.did';
 
 export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
     return [

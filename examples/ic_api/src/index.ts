@@ -1,5 +1,6 @@
 import {
     blob,
+    bool,
     Canister,
     empty,
     ic,
@@ -9,11 +10,10 @@ import {
     nat32,
     nat64,
     Opt,
-    query,
-    update,
-    bool,
-    text,
     Principal,
+    query,
+    text,
+    update,
     Void
 } from 'azle';
 

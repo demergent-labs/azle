@@ -1,5 +1,5 @@
-import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { decode } from '../candid/serde/decode';
+import { nat64 } from '../candid/types/primitive/nats/nat64';
 
 /**
  * Gets current timestamp, in nanoseconds since the epoch (1970-01-01)

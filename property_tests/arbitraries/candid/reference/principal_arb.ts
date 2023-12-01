@@ -1,5 +1,6 @@
-import fc from 'fast-check';
 import { Principal } from '@dfinity/principal';
+import fc from 'fast-check';
+
 import { CandidMetaArb } from '../candid_arb';
 import { principalToSrcLiteral } from '../to_src_literal/principal';
 

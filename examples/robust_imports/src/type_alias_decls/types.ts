@@ -1,10 +1,11 @@
+import * as azle from 'azle';
+import { int, query, Record } from 'azle';
+
 import * as deep from './deep_alias';
+import { deepAlias } from './deep_alias';
 import * as mixed from './mixed_alias';
 import { mixedAlias } from './mixed_alias';
 import { mixedAlias as stirredAlias } from './mixed_alias';
-import { deepAlias } from './deep_alias';
-import * as azle from 'azle';
-import { Record, int, query } from 'azle';
 
 export const AzleRecordAlias = azle.Record;
 export const AzleIntAlias = azle.int;

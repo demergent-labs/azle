@@ -1,4 +1,4 @@
-import { Canister, ic, Principal, query, blob, Func, Void } from 'azle';
+import { blob, Canister, Func, ic, Principal, query, Void } from 'azle';
 
 export const NotifierFunc = Func([blob], Void, 'oneway');
 export type NotifierFunc = typeof NotifierFunc.tsType;

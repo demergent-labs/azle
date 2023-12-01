@@ -1,7 +1,8 @@
 import { IDL } from '@dfinity/candid';
 import { Principal as DfinityPrincipal } from '@dfinity/principal';
-import { encode } from '../../serde/encode';
+
 import { decode } from '../../serde/decode';
+import { encode } from '../../serde/encode';
 import { Parent } from '../../to_idl';
 
 export class Principal extends DfinityPrincipal {

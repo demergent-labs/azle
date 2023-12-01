@@ -1,15 +1,15 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { getActor, runPropTests } from '../../../../property_tests';
+import { Test } from '../../../../test';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import {
     Variant,
     VariantArb
 } from '../../../arbitraries/candid/constructed/variant_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
-import { getActor, runPropTests } from '../../../../property_tests';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { Test } from '../../../../test';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const VariantTestArb = fc

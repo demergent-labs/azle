@@ -1,6 +1,7 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from '../src/declarations/phone_book/phone_book.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from '../src/declarations/phone_book/phone_book.did';
 
 const TEST_PHONE_BOOK_RECORD = {
     desc: 'This is a test record',

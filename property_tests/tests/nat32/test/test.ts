@@ -1,13 +1,13 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { Test } from '../../../../test';
+import { getActor, runPropTests } from '../../..';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { Nat32Arb } from '../../../arbitraries/candid/primitive/nats/nat32_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { getActor, runPropTests } from '../../..';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { Test } from '../../../../test';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const Nat32TestArb = fc

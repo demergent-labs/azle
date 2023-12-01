@@ -1,6 +1,7 @@
-import { ok, Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/audio_recorder/audio_recorder.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { ok, Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/audio_recorder/audio_recorder.did';
 
 // TODO to be more thorough we could test all of the error cases as well
 

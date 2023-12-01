@@ -1,4 +1,5 @@
 import { execSync } from 'child_process';
+
 import { version } from '../../../package.json';
 
 async function pretest() {

@@ -1,7 +1,8 @@
-import { execSync } from 'child_process';
 import { ActorSubclass } from '@dfinity/agent';
 import { AgentError } from '@dfinity/agent/lib/cjs/errors';
 import { Test } from 'azle/test';
+import { execSync } from 'child_process';
+
 import { _SERVICE } from './dfx_generated/guard_functions/guard_functions.did';
 
 export function getTests(

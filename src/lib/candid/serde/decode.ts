@@ -1,8 +1,8 @@
 import { IDL } from '@dfinity/candid';
 
-import { AzleVec, AzleOpt, AzleTuple } from '../types/constructed';
-import { DecodeVisitor } from './visitors/decode_visitor';
 import { CandidType, toIdl, toIdlArray } from '../../candid';
+import { AzleOpt, AzleTuple, AzleVec } from '../types/constructed';
+import { DecodeVisitor } from './visitors/decode_visitor';
 
 /**
  * Decodes the provided buffer into the designated JS value.

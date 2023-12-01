@@ -1,7 +1,7 @@
-import { None, Opt, Some } from '../candid/types/constructed/opt';
-import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { nat8 } from '../candid/types/primitive/nats/nat8';
 import { decode } from '../candid/serde';
+import { None, Opt, Some } from '../candid/types/constructed/opt';
+import { nat8 } from '../candid/types/primitive/nats/nat8';
+import { nat64 } from '../candid/types/primitive/nats/nat64';
 
 export interface Serializable {
     toBytes: (data: any) => Uint8Array;

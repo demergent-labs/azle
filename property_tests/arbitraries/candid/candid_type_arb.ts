@@ -1,4 +1,20 @@
+import { Principal } from '@dfinity/principal';
 import fc from 'fast-check';
+
+import { CandidMeta } from './candid_arb';
+import { BlobArb } from './constructed/blob_arb';
+import { Opt } from './constructed/opt_arb';
+import { OptArb } from './constructed/opt_arb/base';
+import { Record } from './constructed/record_arb';
+import { RecordArb } from './constructed/record_arb/base';
+import { Tuple } from './constructed/tuple_arb';
+import { TupleArb } from './constructed/tuple_arb/base';
+import { Variant } from './constructed/variant_arb';
+import { BaseVariantArb } from './constructed/variant_arb/base';
+import { Vec, VecArb } from './constructed/vec_arb';
+import { BoolArb } from './primitive/bool';
+import { Float32Arb } from './primitive/floats/float32_arb';
+import { Float64Arb } from './primitive/floats/float64_arb';
 import { IntArb } from './primitive/ints/int_arb';
 import { Int8Arb } from './primitive/ints/int8_arb';
 import { Int16Arb } from './primitive/ints/int16_arb';
@@ -10,25 +26,10 @@ import { Nat16Arb } from './primitive/nats/nat16_arb';
 import { Nat32Arb } from './primitive/nats/nat32_arb';
 import { Nat64Arb } from './primitive/nats/nat64_arb';
 import { NullArb } from './primitive/null';
-import { BoolArb } from './primitive/bool';
-import { Principal } from '@dfinity/principal';
-import { PrincipalArb } from './reference/principal_arb';
-import { Float32Arb } from './primitive/floats/float32_arb';
-import { Float64Arb } from './primitive/floats/float64_arb';
 import { TextArb } from './primitive/text';
-import { BlobArb } from './constructed/blob_arb';
-import { CandidMeta } from './candid_arb';
 import { Func } from './reference/func_arb';
-import { Opt } from './constructed/opt_arb';
-import { Variant } from './constructed/variant_arb';
-import { BaseVariantArb } from './constructed/variant_arb/base';
-import { Record } from './constructed/record_arb';
-import { Tuple } from './constructed/tuple_arb';
-import { RecordArb } from './constructed/record_arb/base';
-import { TupleArb } from './constructed/tuple_arb/base';
-import { OptArb } from './constructed/opt_arb/base';
-import { Vec, VecArb } from './constructed/vec_arb';
 import { FuncArb } from './reference/func_arb/base';
+import { PrincipalArb } from './reference/principal_arb';
 
 export type CandidType =
     | number

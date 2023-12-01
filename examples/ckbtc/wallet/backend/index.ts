@@ -2,17 +2,17 @@
 // better using the latest Wasm and did that I know of
 
 import {
-    Canister,
-    None,
-    Principal,
-    Result,
-    Some,
     blob,
+    Canister,
     ic,
     init,
     nat,
     nat64,
+    None,
     postUpgrade,
+    Principal,
+    Result,
+    Some,
     text,
     update
 } from 'azle';

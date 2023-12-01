@@ -1,4 +1,5 @@
 import { IDL } from '@dfinity/candid';
+
 import { DidVisitor, VisitorData, VisitorResult } from '../did_visitor';
 import { extractCandid } from '../extract_candid';
 

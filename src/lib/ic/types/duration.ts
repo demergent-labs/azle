@@ -1,4 +1,4 @@
-import { nat64, AzleNat64 } from '../../candid/types/primitive/nats/nat64';
+import { AzleNat64, nat64 } from '../../candid/types/primitive/nats/nat64';
 
 /**
  * Represents a duration of time in seconds.

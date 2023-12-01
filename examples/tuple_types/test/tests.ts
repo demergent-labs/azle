@@ -1,6 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { Test } from 'azle/test';
+
 import { _SERVICE } from './dfx_generated/tuple_types/tuple_types.did';
 
 export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {

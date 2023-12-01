@@ -1,5 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
+
 import { _SERVICE } from './dfx_generated/blob_array/blob_array.did';
 
 const HELLO_BYTES = Uint8Array.from([104, 101, 108, 108, 111]);

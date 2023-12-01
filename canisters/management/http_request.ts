@@ -1,14 +1,14 @@
 import {
     blob,
-    Record,
-    Opt,
-    Vec,
-    Variant,
-    text,
-    Null,
-    nat64,
+    Func,
     nat,
-    Func
+    nat64,
+    Null,
+    Opt,
+    Record,
+    text,
+    Variant,
+    Vec
 } from '../../src/lib';
 
 export const HttpHeader = Record({

@@ -1,7 +1,8 @@
-import { getCanisterId, Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/canister/canister.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { getCanisterId, Test } from 'azle/test';
 import { execSync } from 'child_process';
+
+import { _SERVICE } from './dfx_generated/canister/canister.did';
 
 // TODO these tests should be rewritten to use @dfinity/agent once this issue is resolved: https://github.com/dfinity/agent-js/issues/702
 // TODO this issue also needs to be resolved: https://forum.dfinity.org/t/services-wont-deserialize-properly-if-functions-arent-in-alphabetical-order/20885

@@ -1,12 +1,12 @@
-import fc from 'fast-check';
 import { Principal } from '@dfinity/principal';
+import fc from 'fast-check';
 
-import { PrincipalArb } from './principal_arb';
-import { VoidArb } from '../primitive/void';
+import { JsFunctionNameArb } from '../../js_function_name_arb';
+import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { CandidMeta } from '../candid_arb';
 import { CandidTypeArb } from '../candid_type_arb';
-import { UniqueIdentifierArb } from '../../unique_identifier_arb';
-import { JsFunctionNameArb } from '../../js_function_name_arb';
+import { VoidArb } from '../primitive/void';
+import { PrincipalArb } from './principal_arb';
 
 // TODO:
 // - services that are more than type-definitions, i.e. have functionality

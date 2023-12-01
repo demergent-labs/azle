@@ -1,10 +1,11 @@
 import { IDL } from '@dfinity/candid';
-import { toIdlMap, CandidMap } from './to_idl_map';
+
 import { CandidType } from '../../candid_type';
-import { TypeMapping } from '../../type_mapping';
-import { Parent } from '../../to_idl';
-import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
+import { encode } from '../../serde/encode';
+import { Parent } from '../../to_idl';
+import { TypeMapping } from '../../type_mapping';
+import { CandidMap, toIdlMap } from './to_idl_map';
 
 export function Record<
     T extends {

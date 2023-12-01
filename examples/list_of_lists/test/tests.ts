@@ -1,8 +1,9 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/list_of_lists/list_of_lists.did';
 import { ActorSubclass } from '@dfinity/agent';
-import { deepEqual } from 'fast-equals';
 import { Principal } from '@dfinity/principal';
+import { Test } from 'azle/test';
+import { deepEqual } from 'fast-equals';
+
+import { _SERVICE } from '../dfx_generated/list_of_lists/list_of_lists.did';
 
 type DeepArray<T> = arr | Array<arr | DeepArray<T>>;
 

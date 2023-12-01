@@ -1,6 +1,7 @@
+import { Buffer } from 'buffer';
+
 import { ic } from './ic';
 import { AzleIc } from './ic/types/azle_ic';
-import { Buffer } from 'buffer';
 
 declare global {
     var _azleIc: AzleIc | undefined;

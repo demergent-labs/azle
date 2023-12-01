@@ -1,8 +1,9 @@
-import { Test } from 'azle/test';
-import { Principal } from '@dfinity/principal';
-import { execSync } from 'child_process';
-import { _SERVICE } from '../dfx_generated/robust_imports/robust_imports.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
+import { Test } from 'azle/test';
+import { execSync } from 'child_process';
+
+import { _SERVICE } from '../dfx_generated/robust_imports/robust_imports.did';
 
 export function getTests(
     robustImportsCanister: ActorSubclass<_SERVICE>

@@ -1,4 +1,5 @@
 import { runTests } from 'azle/test';
+
 import { createActor } from './dfx_generated/whoami';
 import { callingIdentity, canisterId, getTests } from './tests';
 

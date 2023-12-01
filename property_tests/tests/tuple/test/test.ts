@@ -1,16 +1,16 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { Test } from '../../../../test';
+import { getActor, runPropTests } from '../../..';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import {
-    TupleArb,
+    ReturnTuple,
     Tuple,
-    ReturnTuple
+    TupleArb
 } from '../../../arbitraries/candid/constructed/tuple_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
-import { getActor, runPropTests } from '../../..';
-import { Test } from '../../../../test';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const TupleTestArb = fc

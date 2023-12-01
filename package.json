@@ -6,6 +6,7 @@
     "description": "TypeScript and JavaScript CDK for the Internet Computer",
     "scripts": {
         "typecheck": "tsc --noEmit",
+        "lint": "if [ \"$npm_config_fix\" ]; then eslint . --ext .js,.ts --cache --fix; else eslint . --ext .js,.ts --cache; fi",
         "prepare": "husky install",
         "test": "test/test.sh"
     },
@@ -41,8 +42,11 @@
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
         "@types/fs-extra": "9.0.13",
-        "eslint": "8.11.0",
-        "eslint-config-prettier": "8.5.0",
+        "@typescript-eslint/eslint-plugin": "^6.13.0",
+        "@typescript-eslint/parser": "^6.13.0",
+        "eslint": "^8.54.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-simple-import-sort": "^10.0.0",
         "fast-check": "^3.13.1",
         "fast-equals": "5.0.1",
         "husky": "7.0.4",
@@ -50,6 +54,7 @@
         "prettier": "^3.0.3"
     },
     "lint-staged": {
+        "*.{js,ts}": "eslint --cache --fix",
         "**/*": "prettier --write --ignore-unknown"
     }
 }

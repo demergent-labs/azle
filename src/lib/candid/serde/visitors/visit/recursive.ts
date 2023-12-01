@@ -1,6 +1,7 @@
 import { IDL } from '@dfinity/candid';
-import { EncodeVisitor } from '../encode_visitor';
+
 import { DecodeVisitor } from '../decode_visitor';
+import { EncodeVisitor } from '../encode_visitor';
 import { VisitorData, VisitorResult } from '../types';
 
 export function visitRec<T>(

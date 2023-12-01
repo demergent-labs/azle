@@ -1,4 +1,5 @@
 import { getCanisterId, runTests } from 'azle/test';
+
 import { createActor } from './dfx_generated/candid_encoding';
 import { get_tests } from './tests';
 

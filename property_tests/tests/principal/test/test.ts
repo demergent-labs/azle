@@ -1,14 +1,14 @@
+import { Principal } from '@dfinity/principal';
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
+import { getActor, runPropTests } from '../../../../property_tests';
+import { Test } from '../../../../test';
+import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { PrincipalArb } from '../../../arbitraries/candid/reference/principal_arb';
 import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
 import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { getActor, runPropTests } from '../../../../property_tests';
-import { Principal } from '@dfinity/principal';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { Test } from '../../../../test';
 import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
 
 const PrincipalTestArb = fc

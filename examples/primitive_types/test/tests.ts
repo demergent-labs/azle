@@ -1,7 +1,8 @@
+import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { Test } from 'azle/test';
+
 import { _SERVICE } from './dfx_generated/primitive_types/primitive_types.did';
-import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(
     primitiveTypesCanister: ActorSubclass<_SERVICE>

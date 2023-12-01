@@ -1,4 +1,5 @@
 import { Vec } from 'azle';
+
 import { ReactionType } from './candid_types';
 
 // TODO this state should go on the class

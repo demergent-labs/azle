@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { nat64, $query, Record, Result, Tuple, Variant, Vec } from 'azle';
+import { $query, nat64, Record, Result, Tuple, Variant, Vec } from 'azle';
 
 type SimpleResult = Result<string, number>;
 
