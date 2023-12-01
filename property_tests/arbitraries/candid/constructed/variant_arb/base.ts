@@ -4,38 +4,14 @@ import { Variant } from '.';
 import { CandidDefinition } from '../../definition_arb/types';
 import { VariantDefinitionArb } from './definition_arbs';
 import { VariantValuesArb } from './values_arb';
+import { CandidArb } from '../../complex_type_arb';
 
 export function VariantArb(
-    candidTypeArb: fc.Arbitrary<CandidDefinition>
+    candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Variant>> {
-    return VariantDefinitionArb(candidTypeArb)
-        .chain((variantDefinition) =>
-            fc.tuple(
-                fc.constant(variantDefinition),
-                VariantValuesArb(variantDefinition)
-            )
-        )
-        .map(
-            ([
-                {
-                    candidMeta: {
-                        typeAnnotation,
-                        typeAliasDeclarations,
-                        imports
-                    }
-                },
-                { agentArgumentValue, agentResponseValue, valueLiteral }
-            ]) => {
-                return {
-                    src: {
-                        typeAnnotation,
-                        typeAliasDeclarations,
-                        imports,
-                        valueLiteral
-                    },
-                    agentArgumentValue,
-                    agentResponseValue
-                };
-            }
-        );
+    return CandidArb(
+        VariantDefinitionArb,
+        VariantValuesArb,
+        candidDefinitionArb
+    );
 }

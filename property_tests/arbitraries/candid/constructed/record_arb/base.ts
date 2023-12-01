@@ -5,35 +5,10 @@ import { Record } from './index';
 import { CandidDefinition } from '../../definition_arb/types';
 import { RecordDefinitionArb } from './definition_arb';
 import { RecordValuesArb } from './values_arb';
+import { CandidArb } from '../../complex_type_arb';
 
 export function RecordArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Record>> {
-    return RecordDefinitionArb(candidDefinitionArb)
-        .chain((recordDef) =>
-            fc.tuple(fc.constant(recordDef), RecordValuesArb(recordDef))
-        )
-        .map(
-            ([
-                {
-                    candidMeta: {
-                        typeAnnotation,
-                        typeAliasDeclarations,
-                        imports
-                    }
-                },
-                { agentArgumentValue, agentResponseValue, valueLiteral }
-            ]) => {
-                return {
-                    src: {
-                        typeAnnotation,
-                        typeAliasDeclarations,
-                        imports,
-                        valueLiteral
-                    },
-                    agentArgumentValue,
-                    agentResponseValue
-                };
-            }
-        );
+    return CandidArb(RecordDefinitionArb, RecordValuesArb, candidDefinitionArb);
 }

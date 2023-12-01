@@ -11,35 +11,3 @@ export function VecArb(
 ): fc.Arbitrary<CandidValueAndMeta<Vec>> {
     return CandidArb(VecDefinitionArb, VecValuesArb, candidDefinitionArb);
 }
-
-// export function VecArb(
-//     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
-// ): fc.Arbitrary<CandidValueAndMeta<Vec>> {
-//     return VecDefinitionArb(candidDefinitionArb)
-//         .chain((vecType) =>
-//             fc.tuple(fc.constant(vecType), VecValueArb(vecType))
-//         )
-//         .map(
-//             ([
-//                 {
-//                     candidMeta: {
-//                         typeAnnotation,
-//                         typeAliasDeclarations,
-//                         imports
-//                     }
-//                 },
-//                 { agentArgumentValue, agentResponseValue, valueLiteral }
-//             ]) => {
-//                 return {
-//                     src: {
-//                         typeAnnotation,
-//                         typeAliasDeclarations,
-//                         imports,
-//                         valueLiteral
-//                     },
-//                     agentArgumentValue,
-//                     agentResponseValue
-//                 };
-//             }
-//         );
-// }
