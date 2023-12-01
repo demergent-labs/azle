@@ -32,7 +32,7 @@ import {
     VariantCandidDefinition,
     VecCandidDefinition
 } from './definition_arb/types';
-import { BlobValuesArb } from './constructed/blob_arb/values';
+import { BlobValuesArb } from './constructed/blob_arb/values_arb';
 import { CorrespondingJSType } from './corresponding_js_type';
 
 export type CandidValues<T extends CorrespondingJSType, E = T> = {

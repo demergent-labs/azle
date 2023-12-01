@@ -15,7 +15,7 @@ export function RecordDefinitionArb(
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
             fc.uniqueArray(fc.tuple(JsFunctionNameArb, fieldCandidDefArb), {
-                selector: (entry) => entry[0],
+                selector: ([name, _]) => name,
                 minLength: 1 // Zero length records are giving that same null error 'vec length of zero sized values too large' // I don't know if that's the same error but it seems like it is
                 // https://github.com/demergent-labs/azle/issues/1453
             }),

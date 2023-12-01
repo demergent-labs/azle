@@ -29,7 +29,7 @@ import {
     VariantCandidDefinition,
     VecCandidDefinition
 } from './types';
-import { BlobDefinitionArb } from '../constructed/blob_arb/definition';
+import { BlobDefinitionArb } from '../constructed/blob_arb/definition_arb';
 
 export const CandidDefinitionArb: fc.Arbitrary<CandidDefinition> = fc.letrec(
     (tie) => ({
