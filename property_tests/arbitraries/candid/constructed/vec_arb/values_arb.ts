@@ -44,28 +44,28 @@ function generateValue<T extends CorrespondingJSType>(
         returned ? sample.agentResponseValue : sample.agentArgumentValue
     );
 
-    if (candidType === CandidType.Int8) {
+    if (candidType === 'int8') {
         return new Int8Array(value as number[]);
     }
-    if (candidType === CandidType.Int16) {
+    if (candidType === 'int16') {
         return new Int16Array(value as number[]);
     }
-    if (candidType === CandidType.Int32) {
+    if (candidType === 'int32') {
         return new Int32Array(value as number[]);
     }
-    if (candidType === CandidType.Int64) {
+    if (candidType === 'int64') {
         return new BigInt64Array(value as bigint[]);
     }
-    if (candidType === CandidType.Nat8) {
+    if (candidType === 'nat8') {
         return new Uint8Array(value as number[]);
     }
-    if (candidType === CandidType.Nat16) {
+    if (candidType === 'nat16') {
         return new Uint16Array(value as number[]);
     }
-    if (candidType === CandidType.Nat32) {
+    if (candidType === 'nat32') {
         return new Uint32Array(value as number[]);
     }
-    if (candidType === CandidType.Nat64) {
+    if (candidType === 'nat64') {
         return new BigUint64Array(value as bigint[]);
     }
 
@@ -80,35 +80,35 @@ function generateValueLiteral<T extends CorrespondingJSType>(
 
     const valueLiteral = `[${valueLiterals}]`;
 
-    if (innerCandidType === CandidType.Int64) {
+    if (innerCandidType === 'int64') {
         return `BigInt64Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === CandidType.Int32) {
+    if (innerCandidType === 'int32') {
         return `Int32Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === CandidType.Int16) {
+    if (innerCandidType === 'int16') {
         return `Int16Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === CandidType.Int8) {
+    if (innerCandidType === 'int8') {
         return `Int8Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === CandidType.Nat64) {
+    if (innerCandidType === 'nat64') {
         return `BigUint64Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === CandidType.Nat32) {
+    if (innerCandidType === 'nat32') {
         return `Uint32Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === CandidType.Nat16) {
+    if (innerCandidType === 'nat16') {
         return `Uint16Array.from(${valueLiteral})`;
     }
 
-    if (innerCandidType === CandidType.Nat8) {
+    if (innerCandidType === 'nat8') {
         return `Uint8Array.from(${valueLiteral})`;
     }
 

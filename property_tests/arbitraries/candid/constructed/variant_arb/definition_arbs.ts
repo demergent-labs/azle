@@ -1,6 +1,5 @@
 import fc from 'fast-check';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
-import { CandidType } from '../../candid_type';
 import {
     CandidDefinition,
     VariantCandidDefinition
@@ -36,7 +35,7 @@ export function VariantDefinitionArb(
                     typeAnnotation,
                     typeAliasDeclarations,
                     imports,
-                    candidType: CandidType.Variant
+                    candidType: 'Variant'
                 },
                 innerTypes: fields
             };

@@ -4,10 +4,13 @@ import { Opt } from './index';
 import { CandidDefinition } from '../../definition_arb/types';
 import { OptDefinitionArb } from './definition_arb';
 import { OptValuesArb } from './values_arb';
-import { CandidArb } from '../../complex_type_arb';
+import { ComplexCandidValueAndMetaArb } from '../../complex_type_arb';
 
 export function OptArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Opt>> {
-    return CandidArb(OptDefinitionArb(candidDefinitionArb), OptValuesArb);
+    return ComplexCandidValueAndMetaArb(
+        OptDefinitionArb(candidDefinitionArb),
+        OptValuesArb
+    );
 }

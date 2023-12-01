@@ -5,10 +5,13 @@ import { Record } from './index';
 import { CandidDefinition } from '../../definition_arb/types';
 import { RecordDefinitionArb } from './definition_arb';
 import { RecordValuesArb } from './values_arb';
-import { CandidArb } from '../../complex_type_arb';
+import { ComplexCandidValueAndMetaArb } from '../../complex_type_arb';
 
 export function RecordArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Record>> {
-    return CandidArb(RecordDefinitionArb(candidDefinitionArb), RecordValuesArb);
+    return ComplexCandidValueAndMetaArb(
+        RecordDefinitionArb(candidDefinitionArb),
+        RecordValuesArb
+    );
 }

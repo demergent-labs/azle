@@ -1,11 +1,10 @@
 import fc from 'fast-check';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
-import { CandidType } from '../../candid_type';
 import { BlobCandidDefinition } from '../../definition_arb/types';
 import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
 
 export const BlobDefinitionArb: fc.Arbitrary<BlobCandidDefinition> = fc.oneof(
-    SimpleCandidDefinitionArb(CandidType.Blob),
+    SimpleCandidDefinitionArb('blob'),
     _VecNat8DefinitionArb()
 );
 
@@ -23,7 +22,7 @@ export function _VecNat8DefinitionArb(): fc.Arbitrary<BlobCandidDefinition> {
                     typeAnnotation,
                     typeAliasDeclarations,
                     imports,
-                    candidType: CandidType.Blob
+                    candidType: 'blob'
                 }
             };
         });

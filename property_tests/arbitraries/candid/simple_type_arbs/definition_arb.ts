@@ -1,25 +1,19 @@
 import fc from 'fast-check';
 import { PrimitiveDefinition } from '../definition_arb/types';
-import {
-    CandidType,
-    primitiveCandidClassToImports,
-    primitiveCandidTypeToString as primitiveCandidTypeToTypeAnnotation
-} from '../candid_type';
+import { SimpleCandidType } from '../candid_type';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 
-export function SimpleCandidDefinitionArb( // TODO rename this to definition
-    candidType: CandidType
+export function SimpleCandidDefinitionArb(
+    candidType: SimpleCandidType
 ): fc.Arbitrary<PrimitiveDefinition> {
     return fc
         .tuple(UniqueIdentifierArb('typeDeclaration'), fc.boolean())
         .map(([name, useTypeDeclaration]) => {
-            const typeAnnotation = useTypeDeclaration
-                ? name
-                : primitiveCandidTypeToTypeAnnotation(candidType);
-            const imports = primitiveCandidClassToImports(candidType);
+            const typeAnnotation = useTypeDeclaration ? name : candidType;
+            const imports = new Set([candidType]);
             const typeAliasDeclarations = generateTypeAliasDeclarations(
                 name,
-                primitiveCandidTypeToTypeAnnotation(candidType),
+                candidType,
                 useTypeDeclaration
             );
             return {
