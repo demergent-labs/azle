@@ -1,0 +1,8 @@
+service: () -> {
+    insertLargeRecord: (nat32) -> ();
+    insertMediumRecord: (nat32) -> ();
+    insertSmallRecord: (nat32) -> ();
+    valuesLargeRecord: (nat32) -> (vec record {id:text; age:nat; signature:vec nat8; internetIdentity:principal; username:text; mediumRecord:record {id:text; age:nat; internetIdentity:principal; username:text}; friends:vec text}) query;
+    valuesMediumRecord: (nat32) -> (vec record {id:text; age:nat; internetIdentity:principal; username:text}) query;
+    valuesSmallRecord: (nat32) -> (vec record {id:principal}) query;
+}

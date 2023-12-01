@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "stable_b_tree_map_instruction_threshold": {
+            "type": "custom",
+            "main": "src/index.ts",
+            "candid": "src/index.did",
+            "build": "npx azle stable_b_tree_map_instruction_threshold",
+            "wasm": ".azle/stable_b_tree_map_instruction_threshold/stable_b_tree_map_instruction_threshold.wasm",
+            "gzip": true,
+            "declarations": {
+                "output": "test/dfx_generated/stable_b_tree_map_instruction_threshold",
+                "node_compatibility": true
+            }
+        }
+    }
+}

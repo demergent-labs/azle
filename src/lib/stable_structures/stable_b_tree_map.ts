@@ -11,8 +11,10 @@ export interface Serializable {
 export function StableBTreeMap<Key = any, Value = any>(
     keySerializable: Serializable,
     valueSerializable: Serializable,
-    memoryId: nat8
+    memoryIdNumber: nat8
 ) {
+    const memoryId = memoryIdNumber.toString();
+
     if (globalThis._azleIc !== undefined) {
         globalThis._azleIc.stableBTreeMapInit(memoryId);
     }
@@ -184,15 +186,15 @@ export function StableBTreeMap<Key = any, Value = any>(
          * @param length the number of values to retrieve
          * @returns the values in the map.
          */
-        values(startIndex: number = 0, length: number = 0): Value[] {
+        values(startIndex?: number, length?: number): Value[] {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
 
             const encodedValues = globalThis._azleIc.stableBTreeMapValues(
                 memoryId,
-                startIndex,
-                length
+                startIndex?.toString() ?? '0',
+                length?.toString() ?? 'NOT_SET'
             );
 
             // TODO too much copying
