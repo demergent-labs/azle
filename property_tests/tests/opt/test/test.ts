@@ -30,13 +30,13 @@ const OptTestArb = fc
 
         const paramNames = paramOpts.map((_, index) => `param${index}`);
         const paramCandidTypes = paramOpts
-            .map((opt) => opt.src.candidType)
+            .map((opt) => opt.src.candidTypeObject)
             .join(', ');
 
         const returnCandidType =
             paramOpts.length === 0
-                ? defaultReturnOpt.src.candidType
-                : paramOpts[0].src.candidType;
+                ? defaultReturnOpt.src.candidTypeObject
+                : paramOpts[0].src.candidTypeObject;
 
         const body = generateBody(paramNames, paramOpts, defaultReturnOpt);
 
@@ -54,7 +54,7 @@ const OptTestArb = fc
         };
     });
 
-runPropTests(OptTestArb);
+runPropTests([OptTestArb]);
 
 function isParamOpt(paramName: string): string {
     return `(${paramName}.Some !== undefined || ${paramName}.None !== undefined)`;

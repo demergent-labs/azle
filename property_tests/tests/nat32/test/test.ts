@@ -21,10 +21,10 @@ const Nat32TestArb = fc
 
         const paramNames = paramNat32s.map((_, index) => `param${index}`);
         const paramCandidTypes = paramNat32s
-            .map((nat32) => nat32.src.candidType)
+            .map((nat32) => nat32.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = defaultReturnNat32.src.candidType;
+        const returnCandidType = defaultReturnNat32.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramNat32s, defaultReturnNat32);
 
@@ -45,7 +45,7 @@ const Nat32TestArb = fc
         };
     });
 
-runPropTests(Nat32TestArb);
+runPropTests([Nat32TestArb]);
 
 function generateBody(
     paramNames: string[],

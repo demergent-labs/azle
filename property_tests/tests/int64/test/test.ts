@@ -21,10 +21,10 @@ const Int64TestArb = fc
 
         const paramNames = paramInt64s.map((_, index) => `param${index}`);
         const paramCandidTypes = paramInt64s
-            .map((int64) => int64.src.candidType)
+            .map((int64) => int64.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = defaultReturnInt64.src.candidType;
+        const returnCandidType = defaultReturnInt64.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramInt64s, defaultReturnInt64);
 
@@ -45,7 +45,7 @@ const Int64TestArb = fc
         };
     });
 
-runPropTests(Int64TestArb);
+runPropTests([Int64TestArb]);
 
 function generateBody(
     paramNames: string[],

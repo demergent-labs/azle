@@ -17,7 +17,7 @@ const TupleTestArb = fc
     .tuple(
         UniqueIdentifierArb('canisterMethod'),
         fc.uniqueArray(TupleArb, {
-            selector: (entry) => entry.src.candidType
+            selector: (entry) => entry.src.candidTypeObject
         }),
         TupleArb
     )
@@ -35,12 +35,12 @@ const TupleTestArb = fc
         const paramNames = paramTuples.map((_, index) => `param${index}`);
 
         const paramCandidTypes = paramTuples
-            .map((tuple) => tuple.src.candidType)
+            .map((tuple) => tuple.src.candidTypeObject)
             .join(', ');
 
         const returnTuple =
             paramTuples.length === 0 ? defaultReturnTuple : paramTuples[0];
-        const returnCandidType = returnTuple.src.candidType;
+        const returnCandidType = returnTuple.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramTuples, returnTuple);
 
@@ -58,7 +58,7 @@ const TupleTestArb = fc
         };
     });
 
-runPropTests(TupleTestArb);
+runPropTests([TupleTestArb]);
 
 function generateBody(
     paramNames: string[],

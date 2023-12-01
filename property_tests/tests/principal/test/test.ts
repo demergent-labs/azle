@@ -29,10 +29,11 @@ const PrincipalTestArb = fc
                 (_, index) => `param${index}`
             );
             const paramCandidTypes = paramPrincipals
-                .map((principal) => principal.src.candidType)
+                .map((principal) => principal.src.candidTypeObject)
                 .join(', ');
 
-            const returnCandidType = defaultReturnPrincipal.src.candidType;
+            const returnCandidType =
+                defaultReturnPrincipal.src.candidTypeObject;
 
             const body = generateBody(
                 paramNames,
@@ -58,7 +59,7 @@ const PrincipalTestArb = fc
         }
     );
 
-runPropTests(PrincipalTestArb);
+runPropTests([PrincipalTestArb]);
 
 function generateBody(
     paramNames: string[],

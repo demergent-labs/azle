@@ -20,9 +20,9 @@ const BlobTestArb = fc
         const imports = defaultReturnBlob.src.imports;
         const paramNames = paramBlobs.map((_, index) => `param${index}`);
         const paramCandidTypes = paramBlobs
-            .map((blob) => blob.src.candidType)
+            .map((blob) => blob.src.candidTypeObject)
             .join(', ');
-        const returnCandidType = defaultReturnBlob.src.candidType;
+        const returnCandidType = defaultReturnBlob.src.candidTypeObject;
         const body = generateBody(paramNames, paramBlobs, defaultReturnBlob);
         const test = generateTest(functionName, paramBlobs, defaultReturnBlob);
 
@@ -37,7 +37,7 @@ const BlobTestArb = fc
         };
     });
 
-runPropTests(BlobTestArb);
+runPropTests([BlobTestArb]);
 
 function generateBody(
     paramNames: string[],

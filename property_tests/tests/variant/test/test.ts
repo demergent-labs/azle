@@ -16,7 +16,7 @@ const VariantTestArb = fc
     .tuple(
         UniqueIdentifierArb('canisterMethod'),
         fc.uniqueArray(VariantArb, {
-            selector: (entry) => entry.src.candidType
+            selector: (entry) => entry.src.candidTypeObject
         }),
         VariantArb
     )
@@ -35,12 +35,12 @@ const VariantTestArb = fc
 
         const paramNames = paramVariants.map((_, index) => `param${index}`);
         const paramCandidTypes = paramVariants
-            .map((variant) => variant.src.candidType)
+            .map((variant) => variant.src.candidTypeObject)
             .join(', ');
 
         const returnCandidType =
-            paramVariants[0]?.src?.candidType ??
-            defaultReturnVariant.src.candidType;
+            paramVariants[0]?.src?.candidTypeObject ??
+            defaultReturnVariant.src.candidTypeObject;
 
         const body = generateBody(
             paramNames,
@@ -66,7 +66,7 @@ const VariantTestArb = fc
         };
     });
 
-runPropTests(VariantTestArb);
+runPropTests([VariantTestArb]);
 
 function generateBody(
     paramNames: string[],

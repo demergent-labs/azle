@@ -21,10 +21,10 @@ const Nat16TestArb = fc
 
         const paramNames = paramNat16s.map((_, index) => `param${index}`);
         const paramCandidTypes = paramNat16s
-            .map((nat16) => nat16.src.candidType)
+            .map((nat16) => nat16.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = defaultReturnNat16.src.candidType;
+        const returnCandidType = defaultReturnNat16.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramNat16s, defaultReturnNat16);
 
@@ -45,7 +45,7 @@ const Nat16TestArb = fc
         };
     });
 
-runPropTests(Nat16TestArb);
+runPropTests([Nat16TestArb]);
 
 function generateBody(
     paramNames: string[],

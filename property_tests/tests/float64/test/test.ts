@@ -21,10 +21,10 @@ const Float64TestArb = fc
 
         const paramNames = paramFloat64s.map((_, index) => `param${index}`);
         const paramCandidTypes = paramFloat64s
-            .map((float64) => float64.src.candidType)
+            .map((float64) => float64.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = defaultReturnFloat64.src.candidType;
+        const returnCandidType = defaultReturnFloat64.src.candidTypeObject;
 
         const body = generateBody(
             paramNames,
@@ -49,7 +49,7 @@ const Float64TestArb = fc
         };
     });
 
-runPropTests(Float64TestArb);
+runPropTests([Float64TestArb]);
 
 function generateBody(
     paramNames: string[],

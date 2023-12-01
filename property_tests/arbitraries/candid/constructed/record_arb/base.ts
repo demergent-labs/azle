@@ -18,8 +18,11 @@ export function RecordArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
             fc.boolean()
         )
         .map(([name, fields, useTypeDeclaration]): CandidMeta<Record> => {
-            const candidType = useTypeDeclaration
-                ? name
+            const { candidTypeObject, candidType } = useTypeDeclaration
+                ? {
+                      candidTypeObject: name,
+                      candidType: `typeof ${name}.tsType`
+                  }
                 : generateCandidType(fields);
 
             const typeDeclaration = generateTypeDeclaration(
@@ -38,6 +41,7 @@ export function RecordArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
 
             return {
                 src: {
+                    candidTypeObject,
                     candidType,
                     typeDeclaration,
                     imports,
@@ -54,13 +58,24 @@ function generateImports(fields: Field[]): Set<string> {
     return new Set([...fieldImports, 'Record']);
 }
 
-function generateCandidType(fields: Field[]): string {
-    return `Record({${fields
-        .map(
-            ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.src.candidType}`
-        )
-        .join(',')}})`;
+function generateCandidType(fields: Field[]): {
+    candidTypeObject: string;
+    candidType: string;
+} {
+    return {
+        candidTypeObject: `Record({${fields
+            .map(
+                ([fieldName, fieldDataType]) =>
+                    `${fieldName}: ${fieldDataType.src.candidTypeObject}`
+            )
+            .join(',')}})`,
+        candidType: `{${fields
+            .map(
+                ([fieldName, fieldDataType]) =>
+                    `${fieldName}: ${fieldDataType.src.candidType}`
+            )
+            .join(',')}}`
+    };
 }
 
 function generateTypeDeclaration(
@@ -72,9 +87,9 @@ function generateTypeDeclaration(
         .map((field) => field[1].src.typeDeclaration)
         .join('\n');
     if (useTypeDeclaration) {
-        return `${fieldTypeDeclarations}\nconst ${name} = ${generateCandidType(
-            fields
-        )};`;
+        return `${fieldTypeDeclarations}\nconst ${name} = ${
+            generateCandidType(fields).candidTypeObject
+        };`;
     }
     return fieldTypeDeclarations;
 }

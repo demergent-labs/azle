@@ -5,5 +5,6 @@ import { NumberArb } from './';
 export const Int32Arb = CandidMetaArb(
     NumberArb(32),
     'int32',
+    'int32',
     numberToSrcLiteral
 );

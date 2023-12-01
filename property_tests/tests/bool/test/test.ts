@@ -21,10 +21,10 @@ const BoolTestArb = fc
 
         const paramNames = paramBools.map((_, index) => `param${index}`);
         const paramCandidTypes = paramBools
-            .map((bool) => bool.src.candidType)
+            .map((bool) => bool.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = defaultReturnBool.src.candidType;
+        const returnCandidType = defaultReturnBool.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramBools, defaultReturnBool);
 
@@ -41,7 +41,7 @@ const BoolTestArb = fc
         };
     });
 
-runPropTests(BoolTestArb);
+runPropTests([BoolTestArb]);
 
 function generateBody(
     paramNames: string[],

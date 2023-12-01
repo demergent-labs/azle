@@ -15,7 +15,7 @@ const ServiceTestArb = fc
         // TODO: Consider making this not a unique array and then dealing with
         // duplicates when making the type declarations
         fc.uniqueArray(ServiceArb, {
-            selector: (entry) => entry.src.candidType
+            selector: (entry) => entry.src.candidTypeObject
         }),
         ServiceArb
     )
@@ -38,7 +38,7 @@ const ServiceTestArb = fc
         const paramNames = paramServices.map((_, index) => `param${index}`);
 
         const paramCandidTypes = paramServices
-            .map((service) => service.src.candidType)
+            .map((service) => service.src.candidTypeObject)
             .join(', ');
 
         const returnService =
@@ -46,7 +46,7 @@ const ServiceTestArb = fc
                 ? defaultReturnService
                 : paramServices[0];
 
-        const returnCandidType = returnService.src.candidType;
+        const returnCandidType = returnService.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramServices, returnService);
 
@@ -64,7 +64,7 @@ const ServiceTestArb = fc
         };
     });
 
-runPropTests(ServiceTestArb);
+runPropTests([ServiceTestArb]);
 
 function generateBody(
     paramNames: string[],

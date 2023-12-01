@@ -21,10 +21,10 @@ const Int32TestArb = fc
 
         const paramNames = paramInt32s.map((_, index) => `param${index}`);
         const paramCandidTypes = paramInt32s
-            .map((int32) => int32.src.candidType)
+            .map((int32) => int32.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = defaultReturnInt32.src.candidType;
+        const returnCandidType = defaultReturnInt32.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramInt32s, defaultReturnInt32);
 
@@ -45,7 +45,7 @@ const Int32TestArb = fc
         };
     });
 
-runPropTests(Int32TestArb);
+runPropTests([Int32TestArb]);
 
 function generateBody(
     paramNames: string[],

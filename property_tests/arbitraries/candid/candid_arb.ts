@@ -9,6 +9,7 @@ export type CandidMeta<T extends CandidType, E = T> = {
 };
 
 export type Src = {
+    candidTypeObject: string;
     candidType: string;
     typeDeclaration?: string;
     imports: Set<string>;
@@ -17,14 +18,16 @@ export type Src = {
 
 export const CandidMetaArb = <T extends CandidType>(
     arb: fc.Arbitrary<T>,
+    candidTypeObject: string,
     candidType: string,
     toLiteral: (value: T) => string
 ) => {
     return arb.map(
         (agentArgumentValue): CandidMeta<T> => ({
             src: {
+                candidTypeObject,
                 candidType,
-                imports: new Set([candidType]),
+                imports: new Set([candidTypeObject]),
                 valueLiteral: toLiteral(agentArgumentValue)
             },
             agentArgumentValue,

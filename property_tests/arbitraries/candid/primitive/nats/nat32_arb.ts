@@ -5,5 +5,6 @@ import { UNumberArb } from './index';
 export const Nat32Arb = CandidMetaArb(
     UNumberArb(32),
     'nat32',
+    'nat32',
     numberToSrcLiteral
 );

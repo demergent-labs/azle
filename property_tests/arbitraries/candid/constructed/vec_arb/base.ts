@@ -23,10 +23,13 @@ export function VecInnerArb<T extends CandidType>(
             ]): CandidMeta<Vec> => {
                 const valueLiteral = generateValueLiteral(
                     vecOfInnerType,
-                    innerTypeSrc.candidType
+                    innerTypeSrc.candidTypeObject
                 );
-                const candidType = useTypeDeclaration
-                    ? name
+                const { candidTypeObject, candidType } = useTypeDeclaration
+                    ? {
+                          candidTypeObject: name,
+                          candidType: `typeof ${name}.tsType`
+                      }
                     : generateCandidType(innerTypeSrc);
 
                 const imports = generateImports(innerTypeSrc);
@@ -39,18 +42,19 @@ export function VecInnerArb<T extends CandidType>(
 
                 const agentArgumentValue = generateValue(
                     vecOfInnerType,
-                    innerTypeSrc.candidType
+                    innerTypeSrc.candidTypeObject
                 );
 
                 const agentResponseValue = generateValue(
                     vecOfInnerType,
-                    innerTypeSrc.candidType
+                    innerTypeSrc.candidTypeObject
                 );
 
                 return {
                     agentArgumentValue,
                     agentResponseValue,
                     src: {
+                        candidTypeObject,
                         candidType,
                         imports,
                         typeDeclaration,
@@ -108,27 +112,37 @@ function generateTypeDeclaration(
     useTypeDeclaration: boolean
 ) {
     if (useTypeDeclaration) {
-        return `${
-            innerTypeSrc.typeDeclaration ?? ''
-        }\nconst ${name} = ${generateCandidType(innerTypeSrc)}`;
+        return `${innerTypeSrc.typeDeclaration ?? ''}\nconst ${name} = ${
+            generateCandidType(innerTypeSrc).candidTypeObject
+        }`;
     }
     return innerTypeSrc.typeDeclaration;
 }
 
 function generateImports(innerTypeSrc: Src): Set<string> {
     // Hack until https://github.com/demergent-labs/azle/issues/1453 gets fixed
-    if (innerTypeSrc.candidType === 'Null') {
+    if (innerTypeSrc.candidTypeObject === 'Null') {
         return new Set([...innerTypeSrc.imports, 'Vec', 'bool']);
     }
     return new Set([...innerTypeSrc.imports, 'Vec']);
 }
 
-function generateCandidType(innerTypeSrc: Src): string {
+function generateCandidType(innerTypeSrc: Src): {
+    candidTypeObject: string;
+    candidType: string;
+} {
     // Hack until https://github.com/demergent-labs/azle/issues/1453 gets fixed
-    if (innerTypeSrc.candidType === 'Null') {
-        return `Vec(bool)`;
+    if (innerTypeSrc.candidTypeObject === 'Null') {
+        return {
+            candidTypeObject: `Vec(bool)`,
+            candidType: `Vec<bool>`
+        };
     }
-    return `Vec(${innerTypeSrc.candidType})`;
+
+    return {
+        candidTypeObject: `Vec(${innerTypeSrc.candidTypeObject})`,
+        candidType: `Vec<${innerTypeSrc.candidType}>`
+    };
 }
 
 function generateValue<T extends CandidType>(

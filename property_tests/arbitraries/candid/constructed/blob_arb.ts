@@ -4,8 +4,13 @@ import { blobToSrcLiteral } from '../to_src_literal/blob';
 
 export const BlobArb = fc
     .oneof(
-        CandidMetaArb(fc.uint8Array(), 'Vec(nat8)', blobToSrcLiteral),
-        CandidMetaArb(fc.uint8Array(), 'blob', blobToSrcLiteral)
+        CandidMetaArb(
+            fc.uint8Array(),
+            'Vec(nat8)',
+            'Vec<nat8>',
+            blobToSrcLiteral
+        ),
+        CandidMetaArb(fc.uint8Array(), 'blob', 'blob', blobToSrcLiteral)
     )
     .map((sample) => ({
         ...sample,

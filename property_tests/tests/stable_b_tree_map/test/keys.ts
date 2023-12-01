@@ -23,25 +23,29 @@ export const KeysTestArb = fc
 
         const paramNames = ['param0', 'param1'];
         const paramCandidTypes = [
-            stableBTreeMap.param0.src.candidType,
-            stableBTreeMap.param1.src.candidType
+            stableBTreeMap.param0.src.candidTypeObject,
+            stableBTreeMap.param1.src.candidTypeObject
         ].join(', ');
 
-        const returnCandidType = `Vec(${stableBTreeMap.param0.src.candidType})`;
+        const returnCandidType = `Vec(${stableBTreeMap.param0.src.candidTypeObject})`;
         const body = generateBody(
             stableBTreeMap.name,
-            stableBTreeMap.param0.src.candidType,
+            stableBTreeMap.param0.src.candidTypeObject,
             stableBTreeMap.body
         );
 
         const test = generateTest(
             functionName,
             stableBTreeMap.param0,
-            stableBTreeMap.param1.value
+            stableBTreeMap.param1.agentArgumentValue
         );
 
         return {
             imports,
+            candidTypeDeclarations: [
+                stableBTreeMap.param0.src.typeDeclaration ?? '',
+                stableBTreeMap.param1.src.typeDeclaration ?? ''
+            ],
             functionName,
             paramNames,
             paramCandidTypes,
@@ -77,13 +81,18 @@ function generateTest(
         test: async () => {
             const actor = getActor('./tests/stable_b_tree_map/test');
 
-            const result = await actor[functionName](param0.value, param1Value);
+            const result = await actor[functionName](
+                param0.agentArgumentValue,
+                param1Value
+            );
 
             return {
                 Ok: deepEqual(
-                    getArrayForCandidType(param0.src.candidType).from(result),
-                    getArrayForCandidType(param0.src.candidType).from([
-                        param0.value
+                    getArrayForCandidType(param0.src.candidTypeObject).from(
+                        result
+                    ),
+                    getArrayForCandidType(param0.src.candidTypeObject).from([
+                        param0.agentArgumentValue
                     ])
                 )
             };

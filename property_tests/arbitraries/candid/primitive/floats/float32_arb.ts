@@ -5,5 +5,6 @@ import { floatToSrcLiteral } from '../../to_src_literal/float';
 export const Float32Arb = CandidMetaArb(
     fc.float(),
     'float32',
+    'float32',
     floatToSrcLiteral
 );

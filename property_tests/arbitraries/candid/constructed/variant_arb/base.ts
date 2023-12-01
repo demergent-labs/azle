@@ -31,8 +31,11 @@ export function BaseVariantArb(
         .map(([name, fields, useTypeDeclaration]): CandidMeta<Variant> => {
             const randomIndex = Math.floor(Math.random() * fields.length);
 
-            const candidType = useTypeDeclaration
-                ? name
+            const { candidTypeObject, candidType } = useTypeDeclaration
+                ? {
+                      candidTypeObject: name,
+                      candidType: `typeof ${name}.tsType`
+                  }
                 : generateCandidType(fields);
 
             const typeDeclaration = generateTypeDeclaration(
@@ -51,6 +54,7 @@ export function BaseVariantArb(
 
             return {
                 src: {
+                    candidTypeObject,
                     candidType,
                     typeDeclaration,
                     imports,
@@ -64,7 +68,7 @@ export function BaseVariantArb(
 
 function generateImports(fields: Field[]): Set<string> {
     const fieldImports = fields.flatMap((field) => [...field[1].src.imports]);
-    return new Set([...fieldImports, 'Variant']);
+    return new Set([...fieldImports, 'Variant', 'RequireExactlyOne']);
 }
 
 function generateTypeDeclaration(
@@ -76,20 +80,31 @@ function generateTypeDeclaration(
         .map((field) => field[1].src.typeDeclaration)
         .join('\n');
     if (useTypeDeclaration) {
-        return `${fieldTypeDeclarations}\nconst ${name} = ${generateCandidType(
-            fields
-        )};`;
+        return `${fieldTypeDeclarations}\nconst ${name} = ${
+            generateCandidType(fields).candidTypeObject
+        };`;
     }
     return fieldTypeDeclarations;
 }
 
-function generateCandidType(fields: Field[]): string {
-    return `Variant({${fields
-        .map(
-            ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.src.candidType}`
-        )
-        .join(',')}})`;
+function generateCandidType(fields: Field[]): {
+    candidTypeObject: string;
+    candidType: string;
+} {
+    return {
+        candidTypeObject: `Variant({${fields
+            .map(
+                ([fieldName, fieldDataType]) =>
+                    `${fieldName}: ${fieldDataType.src.candidTypeObject}`
+            )
+            .join(',')}})`,
+        candidType: `RequireExactlyOne<{${fields
+            .map(
+                ([fieldName, fieldDataType]) =>
+                    `${fieldName}: ${fieldDataType.src.candidType}`
+            )
+            .join(',')}}>`
+    };
 }
 
 function generateValue(

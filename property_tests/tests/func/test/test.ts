@@ -15,7 +15,7 @@ const FuncTestArb = fc
         // TODO: Consider making this not a unique array and then dealing with
         // duplicates when making the type declarations
         fc.uniqueArray(FuncArb, {
-            selector: (entry) => entry.src.candidType
+            selector: (entry) => entry.src.candidTypeObject
         }),
         FuncArb
     )
@@ -37,13 +37,13 @@ const FuncTestArb = fc
         const paramNames = paramFuncs.map((_, index) => `param${index}`);
 
         const paramCandidTypes = paramFuncs
-            .map((func) => func.src.candidType)
+            .map((func) => func.src.candidTypeObject)
             .join(', ');
 
         const returnFunc =
             paramFuncs.length === 0 ? defaultReturnFunc : paramFuncs[0];
 
-        const returnCandidType = returnFunc.src.candidType;
+        const returnCandidType = returnFunc.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramFuncs, returnFunc);
 
@@ -61,7 +61,7 @@ const FuncTestArb = fc
         };
     });
 
-runPropTests(FuncTestArb);
+runPropTests([FuncTestArb]);
 
 function generateBody(
     paramNames: string[],

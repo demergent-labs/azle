@@ -21,10 +21,10 @@ const Float32TestArb = fc
 
         const paramNames = paramFloat32s.map((_, index) => `param${index}`);
         const paramCandidTypes = paramFloat32s
-            .map((float32) => float32.src.candidType)
+            .map((float32) => float32.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = defaultReturnFloat32.src.candidType;
+        const returnCandidType = defaultReturnFloat32.src.candidTypeObject;
 
         const body = generateBody(
             paramNames,
@@ -49,7 +49,7 @@ const Float32TestArb = fc
         };
     });
 
-runPropTests(Float32TestArb);
+runPropTests([Float32TestArb]);
 
 function generateBody(
     paramNames: string[],

@@ -16,7 +16,7 @@ const RecordTestArb = fc
     .tuple(
         UniqueIdentifierArb('canisterMethod'),
         fc.uniqueArray(RecordArb, {
-            selector: (entry) => entry.src.candidType
+            selector: (entry) => entry.src.candidTypeObject
         }),
         RecordArb
     )
@@ -34,12 +34,12 @@ const RecordTestArb = fc
         const paramNames = paramRecords.map((_, index) => `param${index}`);
 
         const paramCandidTypes = paramRecords
-            .map((record) => record.src.candidType)
+            .map((record) => record.src.candidTypeObject)
             .join(', ');
 
         const returnRecord =
             paramRecords.length === 0 ? defaultReturnRecord : paramRecords[0];
-        const returnCandidType = returnRecord.src.candidType;
+        const returnCandidType = returnRecord.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramRecords, returnRecord);
 
@@ -57,7 +57,7 @@ const RecordTestArb = fc
         };
     });
 
-runPropTests(RecordTestArb);
+runPropTests([RecordTestArb]);
 
 function generateBody(
     paramNames: string[],

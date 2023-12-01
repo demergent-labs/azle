@@ -21,10 +21,10 @@ const TextTestArb = fc
 
         const paramNames = paramTexts.map((_, index) => `param${index}`);
         const paramCandidTypes = paramTexts
-            .map((text) => text.src.candidType)
+            .map((text) => text.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = defaultReturnText.src.candidType;
+        const returnCandidType = defaultReturnText.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramTexts, defaultReturnText);
 
@@ -41,7 +41,7 @@ const TextTestArb = fc
         };
     });
 
-runPropTests(TextTestArb);
+runPropTests([TextTestArb]);
 
 function generateBody(
     paramNames: string[],

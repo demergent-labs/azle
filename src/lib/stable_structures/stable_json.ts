@@ -39,6 +39,24 @@ export function replacer(_key: string, value: any): any {
         };
     }
 
+    if (typeof value === 'number' && isNaN(value)) {
+        return {
+            __nan__: '__nan__'
+        };
+    }
+
+    if (typeof value === 'number' && value === Infinity) {
+        return {
+            __infinity__: '__infinity__'
+        };
+    }
+
+    if (typeof value === 'number' && value === -Infinity) {
+        return {
+            __negative_infinity__: '__negative_infinity__'
+        };
+    }
+
     if (value instanceof Int8Array) {
         return {
             __int8array__: Array.from(value)
@@ -98,6 +116,18 @@ export function reviver(_key: string, value: any): any {
 
         if (typeof value.__principal__ === 'string') {
             return Principal.fromText(value.__principal__);
+        }
+
+        if (value.__nan__ === '__nan__') {
+            return NaN;
+        }
+
+        if (value.__infinity__ === '__infinity__') {
+            return Infinity;
+        }
+
+        if (value.__negative_infinity__ === '__negative_infinity__') {
+            return -Infinity;
         }
 
         if (typeof value.__int8array__ === 'object') {

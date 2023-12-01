@@ -5,5 +5,6 @@ import { nullToSrcLiteral } from '../to_src_literal/null';
 export const NullArb = CandidMetaArb(
     fc.constant(null),
     'Null',
+    'Null',
     nullToSrcLiteral
 );

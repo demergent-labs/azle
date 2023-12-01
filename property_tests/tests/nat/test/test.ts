@@ -21,10 +21,10 @@ const NatTestArb = fc
 
         const paramNames = paramNats.map((_, index) => `param${index}`);
         const paramCandidTypes = paramNats
-            .map((nat) => nat.src.candidType)
+            .map((nat) => nat.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = defaultReturnNat.src.candidType;
+        const returnCandidType = defaultReturnNat.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramNats, defaultReturnNat);
 
@@ -41,7 +41,7 @@ const NatTestArb = fc
         };
     });
 
-runPropTests(NatTestArb);
+runPropTests([NatTestArb]);
 
 function generateBody(
     paramNames: string[],

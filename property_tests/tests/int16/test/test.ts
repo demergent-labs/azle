@@ -21,10 +21,10 @@ const Int16TestArb = fc
 
         const paramNames = paramInt16s.map((_, index) => `param${index}`);
         const paramCandidTypes = paramInt16s
-            .map((int16) => int16.src.candidType)
+            .map((int16) => int16.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = defaultReturnInt16.src.candidType;
+        const returnCandidType = defaultReturnInt16.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramInt16s, defaultReturnInt16);
 
@@ -45,7 +45,7 @@ const Int16TestArb = fc
         };
     });
 
-runPropTests(Int16TestArb);
+runPropTests([Int16TestArb]);
 
 function generateBody(
     paramNames: string[],

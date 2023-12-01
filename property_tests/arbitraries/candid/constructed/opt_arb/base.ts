@@ -17,8 +17,11 @@ export function OptArb(
             fc.boolean()
         )
         .map(([name, someOrNone, innerType, useTypeDeclaration]) => {
-            const candidType = useTypeDeclaration
-                ? name
+            const { candidTypeObject, candidType } = useTypeDeclaration
+                ? {
+                      candidTypeObject: name,
+                      candidType: `typeof ${name}.tsType`
+                  }
                 : generateCandidType(innerType);
 
             const typeDeclaration = generateTypeDeclaration(
@@ -29,6 +32,7 @@ export function OptArb(
 
             return {
                 src: {
+                    candidTypeObject,
                     candidType,
                     imports: generateImports(innerType),
                     typeDeclaration,
@@ -46,15 +50,21 @@ function generateTypeDeclaration(
     useTypeDeclaration: boolean
 ) {
     if (useTypeDeclaration) {
-        return `${
-            innerType.src.typeDeclaration ?? ''
-        }\nconst ${name} = ${generateCandidType(innerType)}`;
+        return `${innerType.src.typeDeclaration ?? ''}\nconst ${name} = ${
+            generateCandidType(innerType).candidTypeObject
+        }`;
     }
     return innerType.src.typeDeclaration;
 }
 
-function generateCandidType(innerType: CandidMeta<CandidType>): string {
-    return `Opt(${innerType.src.candidType})`;
+function generateCandidType(innerType: CandidMeta<CandidType>): {
+    candidTypeObject: string;
+    candidType: string;
+} {
+    return {
+        candidTypeObject: `Opt(${innerType.src.candidTypeObject})`,
+        candidType: `Opt<${innerType.src.candidType}>`
+    };
 }
 
 function generateImports(innerType: CandidMeta<CandidType>): Set<string> {

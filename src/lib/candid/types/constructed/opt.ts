@@ -2,6 +2,7 @@ import { CandidType } from '../../candid_type';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
 import { Parent, toIdl } from '../../to_idl';
+import { TypeMapping } from '../../type_mapping';
 import { RequireExactlyOne } from './variant';
 import { IDL } from '@dfinity/candid';
 
@@ -32,6 +33,8 @@ export class AzleOpt<T> {
     constructor(t: any) {
         this.innerType = t;
     }
+
+    tsType: RequireExactlyOne<{ Some: TypeMapping<T>; None: null }> = {} as any;
 
     innerType: CandidType;
 

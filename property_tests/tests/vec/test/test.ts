@@ -28,10 +28,13 @@ const VecTestArb = fc
         ];
 
         const paramNames = paramVecs.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramVecs.map((vec) => vec.src.candidType);
+        const paramCandidTypes = paramVecs.map(
+            (vec) => vec.src.candidTypeObject
+        );
 
         const returnCandidType =
-            paramVecs[0]?.src?.candidType ?? defaultReturnVec.src.candidType;
+            paramVecs[0]?.src?.candidTypeObject ??
+            defaultReturnVec.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramVecs, defaultReturnVec);
 
@@ -49,7 +52,7 @@ const VecTestArb = fc
         };
     });
 
-runPropTests(VecTestArb);
+runPropTests([VecTestArb]);
 
 function generateBody(
     paramNames: string[],

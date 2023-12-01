@@ -35,7 +35,7 @@ const ServiceMethodArb = fc
         fc.oneof(CandidTypeArb, VoidArb)
     )
     .map(([name, mode, params, returnType]): ServiceMethod => {
-        const paramThings = params.map((param) => param.src.candidType);
+        const paramThings = params.map((param) => param.src.candidTypeObject);
 
         const typeDeclarations = params.reduce(
             (acc, { src: { typeDeclaration } }) => {
@@ -46,7 +46,7 @@ const ServiceMethodArb = fc
                 : new Array<string>()
         );
 
-        const src = `${name}: ${mode}([${paramThings}], ${returnType.src.candidType})`;
+        const src = `${name}: ${mode}([${paramThings}], ${returnType.src.candidTypeObject})`;
 
         const imports = params.reduce(
             (acc, param) => {
@@ -89,7 +89,8 @@ export const ServiceArb = fc
 
         return {
             src: {
-                candidType: name,
+                candidTypeObject: name,
+                candidType: `typeof ${name}.tsType`,
                 typeDeclaration: typeDeclarationAndChildren,
                 imports,
                 valueLiteral

@@ -23,14 +23,14 @@ export const ValuesTestArb = fc
 
         const paramNames = ['param0', 'param1'];
         const paramCandidTypes = [
-            stableBTreeMap.param0.src.candidType,
-            stableBTreeMap.param1.src.candidType
+            stableBTreeMap.param0.src.candidTypeObject,
+            stableBTreeMap.param1.src.candidTypeObject
         ].join(', ');
 
-        const returnCandidType = `Vec(${stableBTreeMap.param1.src.candidType})`;
+        const returnCandidType = `Vec(${stableBTreeMap.param1.src.candidTypeObject})`;
         const body = generateBody(
             stableBTreeMap.name,
-            stableBTreeMap.param1.src.candidType,
+            stableBTreeMap.param1.src.candidTypeObject,
             stableBTreeMap.body
         );
 
@@ -42,6 +42,10 @@ export const ValuesTestArb = fc
 
         return {
             imports,
+            candidTypeDeclarations: [
+                stableBTreeMap.param0.src.typeDeclaration ?? '',
+                stableBTreeMap.param1.src.typeDeclaration ?? ''
+            ],
             functionName,
             paramNames,
             paramCandidTypes,
@@ -78,15 +82,17 @@ function generateTest(
             const actor = getActor('./tests/stable_b_tree_map/test');
 
             const result = await actor[functionName](
-                param0.value,
-                param1.value
+                param0.agentArgumentValue,
+                param1.agentArgumentValue
             );
 
             return {
                 Ok: deepEqual(
-                    getArrayForCandidType(param1.src.candidType).from(result),
-                    getArrayForCandidType(param1.src.candidType).from([
-                        param1.value
+                    getArrayForCandidType(param1.src.candidTypeObject).from(
+                        result
+                    ),
+                    getArrayForCandidType(param1.src.candidTypeObject).from([
+                        param1.agentArgumentValue
                     ])
                 )
             };

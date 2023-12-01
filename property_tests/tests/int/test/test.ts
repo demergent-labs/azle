@@ -21,10 +21,10 @@ const IntTestArb = fc
 
         const paramNames = paramInts.map((_, index) => `param${index}`);
         const paramCandidTypes = paramInts
-            .map((int) => int.src.candidType)
+            .map((int) => int.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = defaultReturnInt.src.candidType;
+        const returnCandidType = defaultReturnInt.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramInts, defaultReturnInt);
 
@@ -41,7 +41,7 @@ const IntTestArb = fc
         };
     });
 
-runPropTests(IntTestArb);
+runPropTests([IntTestArb]);
 
 function generateBody(
     paramNames: string[],

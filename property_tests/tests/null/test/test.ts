@@ -20,10 +20,10 @@ const NullTestArb = fc
 
         const paramNames = paramNulls.map((_, index) => `param${index}`);
         const paramCandidTypes = paramNulls
-            .map((Null) => Null.src.candidType)
+            .map((Null) => Null.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = returnNull.src.candidType;
+        const returnCandidType = returnNull.src.candidTypeObject;
 
         const body = generateBody(paramNames, returnNull);
 
@@ -40,7 +40,7 @@ const NullTestArb = fc
         };
     });
 
-runPropTests(NullTestArb);
+runPropTests([NullTestArb]);
 
 function generateBody(
     paramNames: string[],

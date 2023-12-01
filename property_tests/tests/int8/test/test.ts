@@ -21,10 +21,10 @@ const Int8TestArb = fc
 
         const paramNames = paramInt8s.map((_, index) => `param${index}`);
         const paramCandidTypes = paramInt8s
-            .map((int8) => int8.src.candidType)
+            .map((int8) => int8.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = defaultReturnInt8.src.candidType;
+        const returnCandidType = defaultReturnInt8.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramInt8s, defaultReturnInt8);
 
@@ -41,7 +41,7 @@ const Int8TestArb = fc
         };
     });
 
-runPropTests(Int8TestArb);
+runPropTests([Int8TestArb]);
 
 function generateBody(
     paramNames: string[],

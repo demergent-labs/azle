@@ -1,6 +1,4 @@
 import fc from 'fast-check';
-import { TextArb } from './candid/primitive/text';
-import { BoolArb } from './candid/primitive/bool';
 import { UniqueIdentifierArb } from './unique_identifier_arb';
 import { createUniquePrimitiveArb } from './unique_primitive_arb';
 import { CandidTypeArb } from './candid/candid_type_arb';

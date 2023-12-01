@@ -43,7 +43,8 @@ export function FuncArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
 
                 return {
                     src: {
-                        candidType: name,
+                        candidTypeObject: name,
+                        candidType: `typeof ${name}.tsType`,
                         typeDeclaration,
                         imports,
                         valueLiteral
@@ -65,7 +66,9 @@ function generateTypeDeclaration(
         .map((param) => param.src.typeDeclaration ?? '')
         .join('\n');
     const returnTypeDeclaration = returnCandid.src.typeDeclaration ?? '';
-    const params = paramCandids.map((param) => param.src.candidType).join(', ');
+    const params = paramCandids
+        .map((param) => param.src.candidTypeObject)
+        .join(', ');
 
-    return `${paramTypeDeclarations}\n${returnTypeDeclaration}\nconst ${name} = Func([${params}], ${returnCandid.src.candidType}, '${mode}')`;
+    return `${paramTypeDeclarations}\n${returnTypeDeclaration}\nconst ${name} = Func([${params}], ${returnCandid.src.candidTypeObject}, '${mode}')`;
 }

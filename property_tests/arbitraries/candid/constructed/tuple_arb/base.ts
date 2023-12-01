@@ -9,7 +9,9 @@ export function TupleArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
-            fc.array(candidTypeArb),
+            fc.array(candidTypeArb, {
+                minLength: 1
+            }),
             fc.boolean()
         )
         .map(
@@ -17,8 +19,11 @@ export function TupleArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
                 Tuple,
                 ReturnTuple
             > => {
-                const candidType = useTypeDeclaration
-                    ? name
+                const { candidTypeObject, candidType } = useTypeDeclaration
+                    ? {
+                          candidTypeObject: name,
+                          candidType: `typeof ${name}.tsType`
+                      }
                     : generateCandidType(fields);
 
                 const typeDeclaration = generateTypeDeclaration(
@@ -37,6 +42,7 @@ export function TupleArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
 
                 return {
                     src: {
+                        candidTypeObject,
                         candidType,
                         typeDeclaration,
                         imports,
@@ -69,17 +75,26 @@ function generateTypeDeclaration(
         .map((field) => field.src.typeDeclaration)
         .join('\n');
     if (useTypeDeclaration) {
-        return `${fieldTypeDeclarations}\nconst ${name} = ${generateCandidType(
-            fields
-        )};`;
+        return `${fieldTypeDeclarations}\nconst ${name} = ${
+            generateCandidType(fields).candidTypeObject
+        };`;
     }
     return fieldTypeDeclarations;
 }
 
-function generateCandidType(fields: CandidMeta<CandidType>[]) {
-    const innerTypes = fields.map((field) => field.src.candidType);
+function generateCandidType(fields: CandidMeta<CandidType>[]): {
+    candidTypeObject: string;
+    candidType: string;
+} {
+    const innerCandidTypeObjects = fields.map(
+        (field) => field.src.candidTypeObject
+    );
+    const innerCandidTypes = fields.map((field) => field.src.candidType);
 
-    return `Tuple(${innerTypes.join(', ')})`;
+    return {
+        candidTypeObject: `Tuple(${innerCandidTypeObjects.join(', ')})`,
+        candidType: `Tuple<[${innerCandidTypes.join(', ')}]>`
+    };
 }
 
 function generateImports(fields: CandidMeta<CandidType>[]): Set<string> {

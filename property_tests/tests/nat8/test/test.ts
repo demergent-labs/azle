@@ -21,10 +21,10 @@ const Nat8TestArb = fc
 
         const paramNames = paramNat8s.map((_, index) => `param${index}`);
         const paramCandidTypes = paramNat8s
-            .map((nat8) => nat8.src.candidType)
+            .map((nat8) => nat8.src.candidTypeObject)
             .join(', ');
 
-        const returnCandidType = defaultReturnNat8.src.candidType;
+        const returnCandidType = defaultReturnNat8.src.candidTypeObject;
 
         const body = generateBody(paramNames, paramNat8s, defaultReturnNat8);
 
@@ -41,7 +41,7 @@ const Nat8TestArb = fc
         };
     });
 
-runPropTests(Nat8TestArb);
+runPropTests([Nat8TestArb]);
 
 function generateBody(
     paramNames: string[],
