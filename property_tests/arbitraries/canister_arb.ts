@@ -39,11 +39,8 @@ function generateSourceCode(queryMethods: QueryMethod[]) {
         )
     ].join();
 
-    const candidTypeDeclarations = queryMethods
-        .map(
-            (queryMethod) =>
-                queryMethod.candidTypeDeclarations?.join('\n') ?? ''
-        )
+    const declarations = queryMethods
+        .flatMap((queryMethod) => queryMethod.globalDeclarations)
         .join('\n');
 
     const sourceCodes = queryMethods.map(
@@ -56,7 +53,7 @@ function generateSourceCode(queryMethods: QueryMethod[]) {
         // TODO solve the underlying principal problem https://github.com/demergent-labs/azle/issues/1443
         import { Principal as DfinityPrincipal } from '@dfinity/principal';
 
-        ${candidTypeDeclarations}
+        ${declarations}
 
         export default Canister({
             ${sourceCodes.join(',\n    ')}
