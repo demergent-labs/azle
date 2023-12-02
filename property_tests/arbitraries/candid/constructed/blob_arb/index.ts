@@ -6,9 +6,6 @@ import { _VecNat8DefinitionArb } from './definition_arb';
 import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
 
 export const BlobArb = fc.oneof(
-    CandidValueAndMetaArbGenerator(
-        _VecNat8DefinitionArb(),
-        () => BlobValuesArb
-    ),
+    CandidValueAndMetaArbGenerator(_VecNat8DefinitionArb(), BlobValuesArb),
     SimpleCandidValueAndMetaArb(fc.uint8Array(), 'blob', blobToSrcLiteral)
 );

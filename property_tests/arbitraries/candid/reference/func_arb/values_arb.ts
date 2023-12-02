@@ -5,7 +5,7 @@ import { CandidValues } from '../../candid_values_arb';
 import { PrincipalArb } from '../principal_arb';
 
 export const FuncValueArb: fc.Arbitrary<CandidValues<Func>> = fc
-    .tuple(TextArb, PrincipalArb)
+    .tuple(TextArb(), PrincipalArb)
     .map(([name, principal]) => {
         const value: Func = [
             principal.agentArgumentValue,
