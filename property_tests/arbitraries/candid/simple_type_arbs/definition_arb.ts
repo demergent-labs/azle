@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { PrimitiveDefinition } from '../definition_arb/types';
+import { PrimitiveDefinition } from '../candid_definition_arb/types';
 import { SimpleCandidType } from '../candid_type';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 

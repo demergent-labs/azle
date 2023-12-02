@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
-import { BlobCandidDefinition } from '../../definition_arb/types';
+import { BlobCandidDefinition } from '../../candid_definition_arb/types';
 import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
 
 export function BlobDefinitionArb(): fc.Arbitrary<BlobCandidDefinition> {

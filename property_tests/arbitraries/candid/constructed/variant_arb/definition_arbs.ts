@@ -3,7 +3,7 @@ import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
     VariantCandidDefinition
-} from '../../definition_arb/types';
+} from '../../candid_definition_arb/types';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 
 type Field = [string, CandidDefinition];

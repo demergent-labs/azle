@@ -3,7 +3,7 @@ import fc from 'fast-check';
 import {
     CandidValueAndMeta,
     CandidValueAndMetaArb
-} from './value_and_meta_arb';
+} from './candid_value_and_meta_arb';
 import { VoidArb } from './primitive/void';
 import { CorrespondingJSType } from './corresponding_js_type';
 

@@ -2,7 +2,7 @@ import fc from 'fast-check';
 import { Test } from '../../test';
 import { UniqueIdentifierArb } from './unique_identifier_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
-import { CandidValueAndMeta } from './candid/value_and_meta_arb';
+import { CandidValueAndMeta } from './candid/candid_value_and_meta_arb';
 import { Named } from '../';
 
 export type QueryMethod = {

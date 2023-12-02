@@ -2,8 +2,8 @@ import fc from 'fast-check';
 import { Vec } from '.';
 import { CandidType } from '../../candid_type';
 import { CorrespondingJSType } from '../../corresponding_js_type';
-import { VecCandidDefinition } from '../../definition_arb/types';
-import { CandidValues, CandidValueArb } from '../../values';
+import { VecCandidDefinition } from '../../candid_definition_arb/types';
+import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 
 export function VecValuesArb(
     vecDefinition: VecCandidDefinition

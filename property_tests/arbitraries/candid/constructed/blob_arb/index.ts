@@ -3,9 +3,12 @@ import { SimpleCandidValueAndMetaArb } from '../../simple_type_arbs/value_and_me
 import { blobToSrcLiteral } from '../../to_src_literal/blob';
 import { BlobValuesArb } from './values_arb';
 import { _VecNat8DefinitionArb } from './definition_arb';
-import { ComplexCandidValueAndMetaArb } from '../../complex_value_and_meta_arb';
+import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
 
 export const BlobArb = fc.oneof(
-    ComplexCandidValueAndMetaArb(_VecNat8DefinitionArb(), () => BlobValuesArb),
+    CandidValueAndMetaArbGenerator(
+        _VecNat8DefinitionArb(),
+        () => BlobValuesArb
+    ),
     SimpleCandidValueAndMetaArb(fc.uint8Array(), 'blob', blobToSrcLiteral)
 );

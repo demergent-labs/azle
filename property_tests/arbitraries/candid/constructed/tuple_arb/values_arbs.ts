@@ -1,8 +1,8 @@
 import fc from 'fast-check';
 import { Tuple, ReturnTuple } from '.';
 import { CorrespondingJSType } from '../../corresponding_js_type';
-import { TupleCandidDefinition } from '../../definition_arb/types';
-import { CandidValues, CandidValueArb } from '../../values';
+import { TupleCandidDefinition } from '../../candid_definition_arb/types';
+import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 
 export function TupleValuesArb(
     tupleDefinition: TupleCandidDefinition

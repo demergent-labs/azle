@@ -4,8 +4,8 @@ import { SimpleCandidValueAndMetaArb } from '../simple_type_arbs/value_and_meta_
 import { principalToSrcLiteral } from '../to_src_literal/principal';
 import { SimpleCandidDefinitionArb } from '../simple_type_arbs/definition_arb';
 import { SimpleCandidValuesArb } from '../simple_type_arbs/values_arb';
-import { PrincipalCandidDefinition } from '../definition_arb/types';
-import { CandidValues } from '../values';
+import { PrincipalCandidDefinition } from '../candid_definition_arb/types';
+import { CandidValues } from '../candid_values_arb';
 
 export const PrincipalArb = SimpleCandidValueAndMetaArb(
     principal(),

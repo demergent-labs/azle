@@ -3,7 +3,7 @@ import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
     VecCandidDefinition
-} from '../../definition_arb/types';
+} from '../../candid_definition_arb/types';
 
 export function VecDefinitionArb(
     candidTypeArb: fc.Arbitrary<CandidDefinition>

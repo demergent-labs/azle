@@ -1,15 +1,15 @@
 import fc from 'fast-check';
-import { CandidValueAndMeta } from '../../value_and_meta_arb';
+import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { Vec } from './index';
-import { CandidDefinition } from '../../definition_arb/types';
+import { CandidDefinition } from '../../candid_definition_arb/types';
 import { VecDefinitionArb } from './definition_arb';
 import { VecValuesArb } from './values_arb';
-import { ComplexCandidValueAndMetaArb } from '../../complex_value_and_meta_arb';
+import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
 
 export function VecArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Vec>> {
-    return ComplexCandidValueAndMetaArb(
+    return CandidValueAndMetaArbGenerator(
         VecDefinitionArb(candidDefinitionArb),
         VecValuesArb
     );

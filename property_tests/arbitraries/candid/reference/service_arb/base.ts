@@ -1,11 +1,11 @@
 import fc from 'fast-check';
 import { Principal } from '@dfinity/principal';
 
-import { CandidValueAndMeta } from '../../value_and_meta_arb';
-import { CandidDefinition } from '../../definition_arb/types';
+import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
+import { CandidDefinition } from '../../candid_definition_arb/types';
 import { ServiceValueArb } from './values_arb';
 import { ServiceDefinitionArb } from './definition_arb';
-import { ComplexCandidValueAndMetaArb } from '../../complex_value_and_meta_arb';
+import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
 
 // TODO:
 // - services that are more than type-definitions, i.e. have functionality
@@ -22,7 +22,7 @@ import { ComplexCandidValueAndMetaArb } from '../../complex_value_and_meta_arb';
 export function ServiceArb(
     candidDefinitionArb: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<CandidValueAndMeta<Principal>> {
-    return ComplexCandidValueAndMetaArb(
+    return CandidValueAndMetaArbGenerator(
         ServiceDefinitionArb(candidDefinitionArb),
         ServiceValueArb
     );

@@ -31,7 +31,7 @@ import {
     TupleCandidDefinition,
     VariantCandidDefinition,
     VecCandidDefinition
-} from './definition_arb/types';
+} from './candid_definition_arb/types';
 import { BlobValuesArb } from './constructed/blob_arb/values_arb';
 import { CorrespondingJSType } from './corresponding_js_type';
 
@@ -46,7 +46,7 @@ export function CandidValueArb(
 ): fc.Arbitrary<CandidValues<CorrespondingJSType>> {
     const candidType = candidTypeMeta.candidMeta.candidType;
     if (candidType === 'blob') {
-        return BlobValuesArb;
+        return BlobValuesArb();
     }
     if (candidType === 'Opt') {
         return OptValuesArb(candidTypeMeta as OptCandidDefinition);
@@ -64,7 +64,7 @@ export function CandidValueArb(
         return VecValuesArb(candidTypeMeta as VecCandidDefinition);
     }
     if (candidType === 'bool') {
-        return BoolValueArb;
+        return BoolValueArb();
     }
     if (candidType === 'float32') {
         return Float32ValueArb;
@@ -82,7 +82,7 @@ export function CandidValueArb(
         return Int16ValueArb;
     }
     if (candidType === 'int32') {
-        return Int32ValueArb;
+        return Int32ValueArb();
     }
     if (candidType === 'int64') {
         return Int64ValueArb;
@@ -103,10 +103,10 @@ export function CandidValueArb(
         return Nat64ValueArb;
     }
     if (candidType === 'Null') {
-        return NullValueArb;
+        return NullValueArb();
     }
     if (candidType === 'text') {
-        return TextValueArb;
+        return TextValueArb();
     }
     if (candidType === 'Void') {
         return VoidValueArb;
