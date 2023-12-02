@@ -9,8 +9,8 @@ import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
 const AllFloat32sQueryMethod = QueryMethodArb(
-    fc.array(Float32Arb),
-    Float32Arb,
+    fc.array(Float32Arb()),
+    Float32Arb(),
     {
         generateBody,
         generateTests

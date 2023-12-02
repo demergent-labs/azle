@@ -1,5 +1,4 @@
 import fc from 'fast-check';
-import { SimpleCandidValueAndMetaArb } from '../../simple_type_arbs/value_and_meta_arb';
 import { floatToSrcLiteral } from '../../to_src_literal/float';
 import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
 import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
