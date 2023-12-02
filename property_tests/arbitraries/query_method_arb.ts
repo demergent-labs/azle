@@ -45,10 +45,7 @@ export type TestsGenerator<
     >
 ) => Test[];
 
-export enum CallbackLocation {
-    Inline = 'INLINE',
-    Standalone = 'STANDALONE'
-}
+export type CallbackLocation = 'INLINE' | 'STANDALONE';
 
 export function QueryMethodArb<
     ParamAgentArgumentValue extends CandidType,
@@ -84,9 +81,9 @@ export function QueryMethodArb<
             paramTypeArrayArb,
             returnTypeArb,
             fc.constantFrom(
-                CallbackLocation.Inline,
-                CallbackLocation.Standalone
-            ),
+                'INLINE',
+                'STANDALONE'
+            ) as fc.Arbitrary<CallbackLocation>,
             UniqueIdentifierArb('typeDeclaration')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using
@@ -129,7 +126,7 @@ export function QueryMethodArb<
                 ].filter(isDefined);
 
                 const globalDeclarations =
-                    callbackLocation === CallbackLocation.Standalone
+                    callbackLocation === 'STANDALONE'
                         ? [...candidTypeDeclarations, callback]
                         : candidTypeDeclarations;
 
@@ -137,9 +134,7 @@ export function QueryMethodArb<
                     functionName,
                     paramTypes,
                     returnType,
-                    callbackLocation === CallbackLocation.Standalone
-                        ? callbackName
-                        : callback
+                    callbackLocation === 'STANDALONE' ? callbackName : callback
                 );
 
                 const tests = constraints.generateTests(
@@ -185,7 +180,7 @@ function generateCallback<
 
     const body = generateBody(namedParams, returnType);
 
-    if (callbackLocation === CallbackLocation.Inline) {
+    if (callbackLocation === 'INLINE') {
         return `(${paramNames}) => {${body}}`;
     }
 
