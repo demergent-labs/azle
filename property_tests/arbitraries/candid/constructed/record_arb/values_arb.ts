@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 import { Record } from './index';
-import { RecordCandidDefinition } from '../../definition_arb/types';
-import { CandidValues, CandidValueArb } from '../../values';
+import { RecordCandidDefinition } from '../../candid_definition_arb/types';
+import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 import { CorrespondingJSType } from '../../corresponding_js_type';
 
 type Field = [string, CandidValues<CorrespondingJSType>];

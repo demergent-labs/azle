@@ -1,10 +1,10 @@
 import fc from 'fast-check';
 import { CorrespondingJSType } from './corresponding_js_type';
-import { CandidDefinition } from './definition_arb/types';
-import { CandidValueAndMeta } from './value_and_meta_arb';
-import { CandidValues } from './values';
+import { CandidDefinition } from './candid_definition_arb/types';
+import { CandidValueAndMeta } from './candid_value_and_meta_arb';
+import { CandidValues } from './candid_values_arb';
 
-export function ComplexCandidValueAndMetaArb<
+export function CandidValueAndMetaArbGenerator<
     T extends CorrespondingJSType,
     D extends CandidDefinition,
     V extends CandidValues<T>

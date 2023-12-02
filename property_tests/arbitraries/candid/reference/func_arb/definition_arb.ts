@@ -3,7 +3,7 @@ import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
     FuncCandidDefinition
-} from '../../definition_arb/types';
+} from '../../candid_definition_arb/types';
 import { VoidDefinitionArb } from '../../primitive/void';
 
 type Mode = 'query' | 'update' | 'oneway';

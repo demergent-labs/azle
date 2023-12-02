@@ -5,7 +5,7 @@ import {
     CandidDefinition,
     ServiceCandidDefinition,
     ServiceMethodDefinition
-} from '../../definition_arb/types';
+} from '../../candid_definition_arb/types';
 import { VoidDefinitionArb } from '../../primitive/void';
 
 export function ServiceDefinitionArb(

@@ -3,7 +3,7 @@ import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
     OptCandidDefinition
-} from '../../definition_arb/types';
+} from '../../candid_definition_arb/types';
 
 export function OptDefinitionArb(
     candidTypeArbForInnerType: fc.Arbitrary<CandidDefinition>

@@ -3,7 +3,7 @@ import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
     TupleCandidDefinition
-} from '../../definition_arb/types';
+} from '../../candid_definition_arb/types';
 
 export function TupleDefinitionArb(
     candidTypeArbForFields: fc.Arbitrary<CandidDefinition>

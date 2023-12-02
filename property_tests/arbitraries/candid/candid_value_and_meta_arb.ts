@@ -28,7 +28,7 @@ import { OptArb } from './constructed/opt_arb/base';
 import { Vec } from './constructed/vec_arb';
 import { VecArb } from './constructed/vec_arb/base';
 import { FuncArb } from './reference/func_arb/base';
-import { CandidDefinitionArb } from './definition_arb';
+import { CandidDefinitionArb } from './candid_definition_arb';
 import { CorrespondingJSType } from './corresponding_js_type';
 
 // TODO we're thinking that Candid is not the best name for this. What is better?

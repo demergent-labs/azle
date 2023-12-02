@@ -1,4 +1,4 @@
-import { CandidValueAndMeta } from './arbitraries/candid/value_and_meta_arb';
+import { CandidValueAndMeta } from './arbitraries/candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from './arbitraries/candid/corresponding_js_type';
 import { Named } from '.';
 

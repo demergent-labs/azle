@@ -1,11 +1,11 @@
 import fc from 'fast-check';
 
-import { CandidReturnType } from './candid/return_type_arb';
+import { CandidReturnType } from './candid/candid_return_type_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
 import { UniqueIdentifierArb } from './unique_identifier_arb';
 import { Test } from '../../test';
 import { Named } from '../';
-import { CandidValueAndMeta } from './candid/value_and_meta_arb';
+import { CandidValueAndMeta } from './candid/candid_value_and_meta_arb';
 
 export type QueryMethod = {
     imports: Set<string>;

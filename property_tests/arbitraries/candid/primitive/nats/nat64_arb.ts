@@ -3,7 +3,7 @@ import { SimpleCandidValueAndMetaArb } from '../../simple_type_arbs/value_and_me
 import { bigintToSrcLiteral } from '../../to_src_literal/bigint';
 import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
 import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
-import { ComplexCandidValueAndMetaArb } from '../../complex_value_and_meta_arb';
+import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
 
 export const Nat64DefinitionArb = SimpleCandidDefinitionArb('nat64');
 
@@ -12,7 +12,7 @@ export const Nat64ValueArb = SimpleCandidValuesArb(
     bigintToSrcLiteral
 );
 
-export const Nat64Arb = ComplexCandidValueAndMetaArb(
+export const Nat64Arb = CandidValueAndMetaArbGenerator(
     Nat64DefinitionArb,
     () => Nat64ValueArb
 );

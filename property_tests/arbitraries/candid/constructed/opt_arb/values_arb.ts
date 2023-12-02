@@ -1,8 +1,8 @@
 import fc from 'fast-check';
 import { Opt } from '.';
 import { CorrespondingJSType } from '../../corresponding_js_type';
-import { OptCandidDefinition } from '../../definition_arb/types';
-import { CandidValues, CandidValueArb } from '../../values';
+import { OptCandidDefinition } from '../../candid_definition_arb/types';
+import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 
 type SomeOrNone = 'Some' | 'None';
 

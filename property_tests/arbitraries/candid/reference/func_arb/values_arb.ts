@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 import { Func } from '.';
 import { TextArb } from '../../primitive/text';
-import { CandidValues } from '../../values';
+import { CandidValues } from '../../candid_values_arb';
 import { PrincipalArb } from '../principal_arb';
 
 export const FuncValueArb: fc.Arbitrary<CandidValues<Func>> = fc
