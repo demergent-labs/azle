@@ -16,16 +16,10 @@ import { Float32Arb } from './primitive/floats/float32_arb';
 import { Float64Arb } from './primitive/floats/float64_arb';
 import { TextArb } from './primitive/text';
 import { BlobArb } from './constructed/blob_arb';
-import { Func } from './reference/func_arb';
-import { Opt } from './constructed/opt_arb';
-import { Variant } from './constructed/variant_arb';
 import { VariantArb } from './constructed/variant_arb';
-import { Record } from './constructed/record_arb';
-import { Tuple } from './constructed/tuple_arb';
 import { RecordArb } from './constructed/record_arb';
 import { TupleArb } from './constructed/tuple_arb';
 import { OptArb } from './constructed/opt_arb';
-import { Vec } from './constructed/vec_arb';
 import { VecArb } from './constructed/vec_arb';
 import { FuncArb } from './reference/func_arb';
 import { CorrespondingJSType } from './corresponding_js_type';
@@ -48,41 +42,31 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
 export function CandidValueAndMetaArb(): fc.Arbitrary<
     CandidValueAndMeta<CorrespondingJSType>
 > {
-    return fc.letrec((tie) => ({
-        CandidType: fc.oneof(
-            BlobArb(),
-            tie('Opt').map((sample) => sample as CandidValueAndMeta<Opt>),
-            tie('Record').map((sample) => sample as CandidValueAndMeta<Record>),
-            tie('Tuple').map((sample) => sample as CandidValueAndMeta<Tuple>),
-            tie('Variant').map(
-                (sample) => sample as CandidValueAndMeta<Variant>
-            ),
-            tie('Vec').map((sample) => sample as CandidValueAndMeta<Vec>),
-            Float32Arb(),
-            Float64Arb(),
-            IntArb(),
-            Int8Arb(),
-            Int16Arb(),
-            Int32Arb(),
-            Int64Arb(),
-            NatArb(),
-            Nat8Arb(),
-            Nat16Arb(),
-            Nat32Arb(),
-            Nat64Arb(),
-            BoolArb(),
-            NullArb(),
-            TextArb(),
-            tie('Func').map((sample) => sample as CandidValueAndMeta<Func>),
-            PrincipalArb()
-        ),
-        Func: FuncArb(),
-        Vec: VecArb(),
-        Opt: OptArb(),
-        Variant: VariantArb(),
-        Tuple: TupleArb(),
-        Record: RecordArb()
-    })).CandidType;
+    return fc.oneof(
+        BlobArb(),
+        OptArb(),
+        RecordArb(),
+        TupleArb(),
+        VariantArb(),
+        VecArb(),
+        Float32Arb(),
+        Float64Arb(),
+        IntArb(),
+        Int8Arb(),
+        Int16Arb(),
+        Int32Arb(),
+        Int64Arb(),
+        NatArb(),
+        Nat8Arb(),
+        Nat16Arb(),
+        Nat32Arb(),
+        Nat64Arb(),
+        BoolArb(),
+        NullArb(),
+        TextArb(),
+        FuncArb(),
+        PrincipalArb()
+    );
 }
 
 // TODO: This needs to support service.
