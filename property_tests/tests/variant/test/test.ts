@@ -10,7 +10,7 @@ import { generateTests } from './generate_tests';
 
 const AllVariantsQueryMethod = QueryMethodArb(
     fc.uniqueArray(VariantArb(), {
-        selector: (entry) => entry.src.typeAnnotation
+        selector: (entry) => entry.src.candidTypeObject
     }),
     VariantArb(),
     {

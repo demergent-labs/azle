@@ -32,7 +32,7 @@ export function VariantDefinitionArb(
 
             return {
                 candidMeta: {
-                    typeAnnotation,
+                    candidTypeObject: typeAnnotation,
                     typeAliasDeclarations,
                     imports,
                     candidType: 'Variant'
@@ -82,7 +82,7 @@ function generateTypeAnnotation(fields: Field[]): string {
     return `Variant({${fields
         .map(
             ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.candidMeta.typeAnnotation}`
+                `${fieldName}: ${fieldDataType.candidMeta.candidTypeObject}`
         )
         .join(',')}})`;
 }

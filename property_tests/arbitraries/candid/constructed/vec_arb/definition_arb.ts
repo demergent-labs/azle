@@ -29,7 +29,7 @@ export function VecDefinitionArb(
 
             return {
                 candidMeta: {
-                    typeAnnotation,
+                    candidTypeObject: typeAnnotation,
                     typeAliasDeclarations,
                     imports,
                     candidType: 'Vec'
@@ -58,5 +58,5 @@ function generateImports(innerType: CandidDefinition): Set<string> {
 }
 
 function generateTypeAnnotation(innerType: CandidDefinition): string {
-    return `Vec(${innerType.candidMeta.typeAnnotation})`;
+    return `Vec(${innerType.candidMeta.candidTypeObject})`;
 }

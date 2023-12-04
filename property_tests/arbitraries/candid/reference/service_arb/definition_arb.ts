@@ -36,7 +36,7 @@ export function ServiceDefinitionArb(
             return {
                 name,
                 candidMeta: {
-                    typeAnnotation,
+                    candidTypeObject: typeAnnotation,
                     typeAliasDeclarations,
                     imports,
                     candidType: 'Service'
@@ -58,7 +58,7 @@ function ServiceMethodArb(
         )
         .map(([name, mode, params, returnType]): ServiceMethodDefinition => {
             const paramCandidTypes = params.map(
-                (param) => param.candidMeta.typeAnnotation
+                (param) => param.candidMeta.candidTypeObject
             );
 
             const typeAliasDeclarations = params.reduce(
@@ -68,7 +68,7 @@ function ServiceMethodArb(
                 returnType.candidMeta.typeAliasDeclarations
             );
 
-            const src = `${name}: ${mode}([${paramCandidTypes}], ${returnType.candidMeta.typeAnnotation})`;
+            const src = `${name}: ${mode}([${paramCandidTypes}], ${returnType.candidMeta.candidTypeObject})`;
 
             const imports = params.reduce(
                 (acc, param) => {

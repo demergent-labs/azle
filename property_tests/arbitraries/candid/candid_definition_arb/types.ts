@@ -64,7 +64,7 @@ export type ServiceMethodDefinition = {
 };
 
 type CandidMeta = {
-    typeAnnotation: string; // Either a type reference or type literal
+    candidTypeObject: string; // Either a type reference or type literal
     typeAliasDeclarations: string[];
     imports: Set<string>;
     candidType: CandidType;

@@ -29,7 +29,7 @@ export function OptDefinitionArb(
 
             return {
                 candidMeta: {
-                    typeAnnotation,
+                    candidTypeObject: typeAnnotation,
                     typeAliasDeclarations,
                     imports,
                     candidType: 'Opt'
@@ -54,7 +54,7 @@ function generateTypeAliasDeclarations(
 }
 
 function generateTypeAnnotation(innerType: CandidDefinition): string {
-    return `Opt(${innerType.candidMeta.typeAnnotation})`;
+    return `Opt(${innerType.candidMeta.candidTypeObject})`;
 }
 
 function generateImports(innerType: CandidDefinition): Set<string> {

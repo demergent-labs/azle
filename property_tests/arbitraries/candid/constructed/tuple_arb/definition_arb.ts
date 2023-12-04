@@ -32,7 +32,7 @@ export function TupleDefinitionArb(
 
             return {
                 candidMeta: {
-                    typeAnnotation,
+                    candidTypeObject: typeAnnotation,
                     typeAliasDeclarations,
                     imports,
                     candidType: 'Tuple'
@@ -60,7 +60,7 @@ function generateTypeAliasDeclarations(
 }
 
 function generateTypeAnnotation(fields: CandidDefinition[]) {
-    const innerTypes = fields.map((field) => field.candidMeta.typeAnnotation);
+    const innerTypes = fields.map((field) => field.candidMeta.candidTypeObject);
 
     return `Tuple(${innerTypes.join(', ')})`;
 }

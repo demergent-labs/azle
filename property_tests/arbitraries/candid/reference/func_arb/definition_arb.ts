@@ -52,7 +52,7 @@ export function FuncDefinitionArb(
 
                 return {
                     candidMeta: {
-                        typeAnnotation,
+                        candidTypeObject: typeAnnotation,
                         typeAliasDeclarations,
                         imports,
                         candidType: 'Func'
@@ -97,7 +97,7 @@ function generateTypeAnnotation(
     mode: Mode
 ): string {
     const params = paramCandids
-        .map((param) => param.candidMeta.typeAnnotation)
+        .map((param) => param.candidMeta.candidTypeObject)
         .join(', ');
-    return `Func([${params}], ${returnCandid.candidMeta.typeAnnotation}, '${mode}')`;
+    return `Func([${params}], ${returnCandid.candidMeta.candidTypeObject}, '${mode}')`;
 }

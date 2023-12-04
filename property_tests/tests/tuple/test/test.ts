@@ -10,7 +10,7 @@ import { generateTests } from './generate_tests';
 
 const AllTuplesQueryMethod = QueryMethodArb(
     fc.uniqueArray(TupleArb(), {
-        selector: (entry) => entry.src.typeAnnotation
+        selector: (entry) => entry.src.candidTypeObject
     }),
     TupleArb(),
     {

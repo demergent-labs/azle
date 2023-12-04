@@ -10,7 +10,7 @@ import { generateTests } from './generate_tests';
 
 const AllFuncsQueryMethod = QueryMethodArb(
     fc.uniqueArray(FuncArb(), {
-        selector: (entry) => entry.src.typeAnnotation
+        selector: (entry) => entry.src.candidTypeObject
     }),
     FuncArb(),
     {

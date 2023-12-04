@@ -36,7 +36,7 @@ export function RecordDefinitionArb(
 
             return {
                 candidMeta: {
-                    typeAnnotation,
+                    candidTypeObject: typeAnnotation,
                     typeAliasDeclarations,
                     imports,
                     candidType: 'Record'
@@ -57,7 +57,7 @@ function generateTypeAnnotation(fields: Field[]): string {
     return `Record({${fields
         .map(
             ([fieldName, fieldDefinition]) =>
-                `${fieldName}: ${fieldDefinition.candidMeta.typeAnnotation}`
+                `${fieldName}: ${fieldDefinition.candidMeta.candidTypeObject}`
         )
         .join(',')}})`;
 }

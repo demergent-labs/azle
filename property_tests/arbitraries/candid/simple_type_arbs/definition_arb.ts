@@ -9,7 +9,7 @@ export function SimpleCandidDefinitionArb(
     return fc
         .tuple(UniqueIdentifierArb('typeDeclaration'), fc.boolean())
         .map(([name, useTypeDeclaration]) => {
-            const typeAnnotation = useTypeDeclaration ? name : candidType;
+            const candidTypeObject = useTypeDeclaration ? name : candidType;
             const imports = new Set([candidType]);
             const typeAliasDeclarations = generateTypeAliasDeclarations(
                 name,
@@ -19,7 +19,7 @@ export function SimpleCandidDefinitionArb(
             return {
                 candidMeta: {
                     candidType,
-                    typeAnnotation,
+                    candidTypeObject,
                     imports,
                     typeAliasDeclarations
                 }
