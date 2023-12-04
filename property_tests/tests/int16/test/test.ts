@@ -1,107 +1,16 @@
 import fc from 'fast-check';
-import { deepEqual } from 'fast-equals';
 
-import { Int16Arb } from '../../../arbitraries/candid/primitive/ints/int16_arb';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { getActor, runPropTests } from '../../../../property_tests';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { Test } from '../../../../test';
-import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+import { runPropTests } from 'azle/property_tests';
+import { Int16Arb } from 'azle/property_tests/arbitraries/candid/primitive/ints/int16_arb';
+import { CanisterArb } from 'azle/property_tests/arbitraries/canister_arb';
+import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb';
 
-const Int16TestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(Int16Arb),
-        Int16Arb
-    )
-    .map(([functionName, paramInt16s, defaultReturnInt16]): TestSample => {
-        const imports = defaultReturnInt16.src.imports;
+import { generateBody } from './generate_body';
+import { generateTests } from './generate_tests';
 
-        const paramNames = paramInt16s.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramInt16s
-            .map((int16) => int16.src.candidTypeObject)
-            .join(', ');
+const AllInt16sQueryMethod = QueryMethodArb(fc.array(Int16Arb), Int16Arb, {
+    generateBody,
+    generateTests
+});
 
-        const returnCandidType = defaultReturnInt16.src.candidTypeObject;
-
-        const body = generateBody(paramNames, paramInt16s, defaultReturnInt16);
-
-        const test = generateTest(
-            functionName,
-            paramInt16s,
-            defaultReturnInt16
-        );
-
-        return {
-            imports,
-            functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
-
-runPropTests([Int16TestArb]);
-
-function generateBody(
-    paramNames: string[],
-    paramInt16s: CandidMeta<number>[],
-    returnInt16: CandidMeta<number>
-): string {
-    const paramsAreNumbers = paramNames
-        .map((paramName) => {
-            return `if (typeof ${paramName} !== 'number') throw new Error('${paramName} must be a number');`;
-        })
-        .join('\n');
-
-    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
-        paramNames,
-        paramInt16s
-    );
-
-    const sum = paramNames.reduce((acc, paramName) => {
-        return `${acc} + ${paramName}`;
-    }, returnInt16.src.valueLiteral);
-    const count = paramInt16s.length + 1;
-    const average = `Math.floor((${sum}) / ${count})`;
-
-    return `
-        ${paramsAreNumbers}
-
-        ${paramsCorrectlyOrdered}
-
-        return ${average};
-    `;
-}
-
-function generateTest(
-    functionName: string,
-    paramInt16s: CandidMeta<number>[],
-    returnInt16: CandidMeta<number>
-): Test {
-    const count = paramInt16s.length + 1;
-    const expectedResult = Math.floor(
-        paramInt16s.reduce(
-            (acc, int16) => acc + int16.agentResponseValue,
-            returnInt16.agentResponseValue
-        ) / count
-    );
-    const paramValues = paramInt16s.map((sample) => sample.agentArgumentValue);
-
-    return {
-        name: `int16 ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/int16/test');
-
-            const result = await actor[functionName](...paramValues);
-
-            return {
-                Ok: deepEqual(result, expectedResult)
-            };
-        }
-    };
-}
+runPropTests(CanisterArb(AllInt16sQueryMethod));

@@ -1,81 +1,16 @@
 import fc from 'fast-check';
-import { deepEqual } from 'fast-equals';
 
-import { NullArb } from '../../../arbitraries/candid/primitive/null';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { getActor, runPropTests } from '../../../../property_tests';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { Test } from '../../../../test';
+import { runPropTests } from 'azle/property_tests';
+import { NullArb } from 'azle/property_tests/arbitraries/candid/primitive/null';
+import { CanisterArb } from 'azle/property_tests/arbitraries/canister_arb';
+import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb';
 
-const NullTestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(NullArb),
-        NullArb
-    )
-    .map(([functionName, paramNulls, returnNull]): TestSample => {
-        const imports = returnNull.src.imports;
+import { generateBody } from './generate_body';
+import { generateTests } from './generate_tests';
 
-        const paramNames = paramNulls.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramNulls
-            .map((Null) => Null.src.candidTypeObject)
-            .join(', ');
+const AllNullsQueryMethod = QueryMethodArb(fc.array(NullArb), NullArb, {
+    generateBody,
+    generateTests
+});
 
-        const returnCandidType = returnNull.src.candidTypeObject;
-
-        const body = generateBody(paramNames, returnNull);
-
-        const test = generateTest(functionName, paramNulls, returnNull);
-
-        return {
-            functionName,
-            imports,
-            paramCandidTypes,
-            returnCandidType,
-            paramNames,
-            body,
-            test
-        };
-    });
-
-runPropTests([NullTestArb]);
-
-function generateBody(
-    paramNames: string[],
-    returnNull: CandidMeta<null>
-): string {
-    const areAllNull = paramNames.reduce((acc, paramName) => {
-        return `${acc} && ${paramName} === null`;
-    }, 'true');
-
-    const allNullCheck = `if (!(${areAllNull})) throw new Error("Not all of the values were null")`;
-
-    return `
-        ${allNullCheck}
-
-        return ${returnNull.src.valueLiteral};
-    `;
-}
-
-function generateTest(
-    functionName: string,
-    paramNulls: CandidMeta<null>[],
-    returnNull: CandidMeta<null>
-): Test {
-    return {
-        name: `test ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/null/test');
-
-            const result = await actor[functionName](
-                ...paramNulls.map((sample) => sample.agentArgumentValue)
-            );
-
-            return {
-                Ok: deepEqual(result, null)
-            };
-        }
-    };
-}
+runPropTests(CanisterArb(AllNullsQueryMethod));

@@ -2,17 +2,17 @@ import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
 import { StableBTreeMapArb } from '../../../arbitraries/stable_b_tree_map_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
 import { getActor } from '../../../../property_tests';
 import { Test } from '../../../../test';
 import { getArrayForCandidType, getArrayStringForCandidType } from './utils';
 import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
 import { CandidType } from '../../../arbitraries/candid/candid_type_arb';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
+import { QueryMethod } from '../../../arbitraries/query_method_arb';
 
 export const ValuesTestArb = fc
     .tuple(UniqueIdentifierArb('stableBTreeMap'), StableBTreeMapArb)
-    .map(([functionName, stableBTreeMap]): TestSample => {
+    .map(([functionName, stableBTreeMap]): QueryMethod => {
         const imports = new Set([
             ...stableBTreeMap.param0.src.imports,
             ...stableBTreeMap.param1.src.imports,
@@ -21,8 +21,7 @@ export const ValuesTestArb = fc
             'StableBTreeMap'
         ]);
 
-        const paramNames = ['param0', 'param1'];
-        const paramCandidTypes = [
+        const paramCandidTypeObjects = [
             stableBTreeMap.param0.src.candidTypeObject,
             stableBTreeMap.param1.src.candidTypeObject
         ].join(', ');
@@ -42,16 +41,14 @@ export const ValuesTestArb = fc
 
         return {
             imports,
-            candidTypeDeclarations: [
+            globalDeclarations: [
                 stableBTreeMap.param0.src.typeDeclaration ?? '',
                 stableBTreeMap.param1.src.typeDeclaration ?? ''
             ],
-            functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
+            sourceCode: `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidType}, (param0, param1) => {
+                ${body}
+            })`,
+            tests: [test]
         };
     });
 

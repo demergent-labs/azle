@@ -35,7 +35,9 @@ const ServiceMethodArb = fc
         fc.oneof(CandidTypeArb, VoidArb)
     )
     .map(([name, mode, params, returnType]): ServiceMethod => {
-        const paramThings = params.map((param) => param.src.candidTypeObject);
+        const paramCandidTypeObjects = params.map(
+            (param) => param.src.candidTypeObject
+        );
 
         const typeDeclarations = params.reduce(
             (acc, { src: { typeDeclaration } }) => {
@@ -46,7 +48,7 @@ const ServiceMethodArb = fc
                 : new Array<string>()
         );
 
-        const src = `${name}: ${mode}([${paramThings}], ${returnType.src.candidTypeObject})`;
+        const src = `${name}: ${mode}([${paramCandidTypeObjects}], ${returnType.src.candidTypeObject})`;
 
         const imports = params.reduce(
             (acc, param) => {
@@ -109,6 +111,5 @@ function generateTypeDeclaration(
         .filter((typeDeclaration) => typeDeclaration)
         .join(',\n');
 
-    // TODO: Is this going to work if serviceMethods.length === 0?
     return `const ${name} = Canister({${methods}});`;
 }

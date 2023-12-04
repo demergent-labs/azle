@@ -1,100 +1,16 @@
 import fc from 'fast-check';
-import { deepEqual } from 'fast-equals';
 
-import { BoolArb } from '../../../arbitraries/candid/primitive/bool';
-import { JsFunctionNameArb } from '../../../arbitraries/js_function_name_arb';
-import { TestSample } from '../../../arbitraries/test_sample_arb';
-import { createUniquePrimitiveArb } from '../../../arbitraries/unique_primitive_arb';
-import { getActor, runPropTests } from '../../../../property_tests';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { Test } from '../../../../test';
-import { areParamsCorrectlyOrdered } from '../../../are_params_correctly_ordered';
+import { runPropTests } from 'azle/property_tests';
+import { BoolArb } from 'azle/property_tests/arbitraries/candid/primitive/bool';
+import { CanisterArb } from 'azle/property_tests/arbitraries/canister_arb';
+import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb';
 
-const BoolTestArb = fc
-    .tuple(
-        createUniquePrimitiveArb(JsFunctionNameArb),
-        fc.array(BoolArb),
-        BoolArb
-    )
-    .map(([functionName, paramBools, defaultReturnBool]): TestSample => {
-        const imports = defaultReturnBool.src.imports;
+import { generateBody } from './generate_body';
+import { generateTests } from './generate_tests';
 
-        const paramNames = paramBools.map((_, index) => `param${index}`);
-        const paramCandidTypes = paramBools
-            .map((bool) => bool.src.candidTypeObject)
-            .join(', ');
+const AllBoolsQueryMethod = QueryMethodArb(fc.array(BoolArb), BoolArb, {
+    generateBody,
+    generateTests
+});
 
-        const returnCandidType = defaultReturnBool.src.candidTypeObject;
-
-        const body = generateBody(paramNames, paramBools, defaultReturnBool);
-
-        const test = generateTest(functionName, paramBools, defaultReturnBool);
-
-        return {
-            imports,
-            functionName,
-            paramNames,
-            paramCandidTypes,
-            returnCandidType,
-            body,
-            test
-        };
-    });
-
-runPropTests([BoolTestArb]);
-
-function generateBody(
-    paramNames: string[],
-    paramBools: CandidMeta<boolean>[],
-    returnBool: CandidMeta<boolean>
-): string {
-    // TODO do we want to encapsulate 'boolean' in the CandidArb? Like an agentType instead of a candidType, like azleValue and agentValue?
-    // TODO or will this not matter anymore once we start using a deep equal library
-    const paramsAreBooleans = paramNames
-        .map((paramName) => {
-            return `if (typeof ${paramName} !== 'boolean') throw new Error('${paramName} must be a boolean');`;
-        })
-        .join('\n');
-
-    const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(
-        paramNames,
-        paramBools
-    );
-
-    const returnStatement = paramNames.reduce((acc, paramName) => {
-        return `${acc} && ${paramName}`;
-    }, returnBool.src.valueLiteral);
-
-    return `
-        ${paramsAreBooleans}
-
-        ${paramsCorrectlyOrdered}
-
-        return ${returnStatement};
-    `;
-}
-
-function generateTest(
-    functionName: string,
-    paramBools: CandidMeta<boolean>[],
-    returnBool: CandidMeta<boolean>
-): Test {
-    const expectedResult = paramBools.reduce(
-        (acc, bool) => acc && bool.agentResponseValue,
-        returnBool.agentResponseValue
-    );
-    const paramValues = paramBools.map((bool) => bool.agentArgumentValue);
-
-    return {
-        name: `bool ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/bool/test');
-
-            const result = await actor[functionName](...paramValues);
-
-            return {
-                Ok: deepEqual(result, expectedResult)
-            };
-        }
-    };
-}
+runPropTests(CanisterArb(AllBoolsQueryMethod));

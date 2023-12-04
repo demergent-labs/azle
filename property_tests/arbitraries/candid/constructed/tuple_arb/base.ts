@@ -38,7 +38,7 @@ export function TupleArb(candidTypeArb: fc.Arbitrary<CandidMeta<CandidType>>) {
 
                 const agentArgumentValue = generateVale(fields);
 
-                const agentResponseValue = generateExpectedVale(fields);
+                const agentResponseValue = generateExpectedValue(fields);
 
                 return {
                     src: {
@@ -59,7 +59,7 @@ function generateVale(fields: CandidMeta<CandidType>[]) {
     return fields.map((field) => field.agentArgumentValue);
 }
 
-function generateExpectedVale(fields: CandidMeta<CandidType>[]): Tuple | {} {
+function generateExpectedValue(fields: CandidMeta<CandidType>[]): ReturnTuple {
     if (fields.length === 0) {
         return {};
     }

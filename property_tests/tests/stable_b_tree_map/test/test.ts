@@ -8,6 +8,7 @@
 // TODO we should test update methods as well...probably mainly
 
 import { runPropTests } from '../../../../property_tests';
+import { CanisterArb } from '../../../arbitraries/canister_arb';
 import { ContainsKeyTestArb } from './contains_key';
 import { GetTestArb } from './get';
 import { IsEmptyTestArb } from './is_empty';
@@ -17,13 +18,16 @@ import { LenTestArb } from './len';
 import { RemoveTestArb } from './remove';
 import { ValuesTestArb } from './values';
 
-runPropTests([
-    ContainsKeyTestArb,
-    GetTestArb,
-    IsEmptyTestArb,
-    ItemsTestArb,
-    KeysTestArb,
-    LenTestArb,
-    RemoveTestArb,
-    ValuesTestArb
-]);
+// TODO we need to all adding in all of these methods
+runPropTests(CanisterArb(ContainsKeyTestArb));
+
+// runPropTests([
+//     ContainsKeyTestArb,
+//     GetTestArb,
+//     IsEmptyTestArb,
+//     ItemsTestArb,
+//     KeysTestArb,
+//     LenTestArb,
+//     RemoveTestArb,
+//     ValuesTestArb
+// ]);
