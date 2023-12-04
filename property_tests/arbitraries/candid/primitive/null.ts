@@ -5,11 +5,11 @@ import { nullToSrcLiteral } from '../to_src_literal/null';
 import { CandidValueAndMetaArbGenerator } from '../candid_value_and_meta_arb_generator';
 import { NullCandidDefinition } from '../candid_definition_arb/types';
 import { CandidValues } from '../candid_values_arb';
+import { CandidValueAndMeta } from '../candid_value_and_meta_arb';
 
-export const NullArb = CandidValueAndMetaArbGenerator(
-    NullDefinitionArb(),
-    NullValueArb
-);
+export function NullArb(): fc.Arbitrary<CandidValueAndMeta<null>> {
+    return CandidValueAndMetaArbGenerator(NullDefinitionArb(), NullValueArb);
+}
 
 export function NullDefinitionArb(): fc.Arbitrary<NullCandidDefinition> {
     return SimpleCandidDefinitionArb('Null');

@@ -67,40 +67,40 @@ export function CandidValueArb(
         return BoolValueArb();
     }
     if (candidType === 'float32') {
-        return Float32ValueArb;
+        return Float32ValueArb();
     }
     if (candidType === 'float64') {
-        return Float64ValueArb;
+        return Float64ValueArb();
     }
     if (candidType === 'int') {
-        return IntValueArb;
+        return IntValueArb();
     }
     if (candidType === 'int8') {
-        return Int8ValueArb;
+        return Int8ValueArb();
     }
     if (candidType === 'int16') {
-        return Int16ValueArb;
+        return Int16ValueArb();
     }
     if (candidType === 'int32') {
         return Int32ValueArb();
     }
     if (candidType === 'int64') {
-        return Int64ValueArb;
+        return Int64ValueArb();
     }
     if (candidType === 'nat') {
-        return NatValueArb;
+        return NatValueArb();
     }
     if (candidType === 'nat8') {
-        return Nat8ValueArb;
+        return Nat8ValueArb();
     }
     if (candidType === 'nat16') {
-        return Nat16ValueArb;
+        return Nat16ValueArb();
     }
     if (candidType === 'nat32') {
-        return Nat32ValueArb;
+        return Nat32ValueArb();
     }
     if (candidType === 'nat64') {
-        return Nat64ValueArb;
+        return Nat64ValueArb();
     }
     if (candidType === 'Null') {
         return NullValueArb();
@@ -109,13 +109,13 @@ export function CandidValueArb(
         return TextValueArb();
     }
     if (candidType === 'Void') {
-        return VoidValueArb;
+        return VoidValueArb();
     }
     if (candidType === 'Func') {
-        return FuncValueArb;
+        return FuncValueArb();
     }
     if (candidType === 'Principal') {
-        return PrincipalValueArb;
+        return PrincipalValueArb();
     }
     if (candidType === 'Service') {
         return ServiceValueArb(candidTypeMeta as ServiceCandidDefinition);
