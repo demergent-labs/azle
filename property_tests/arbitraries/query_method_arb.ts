@@ -203,10 +203,10 @@ function generateSourceCode<
     callback: string
 ): string {
     const paramCandidTypes = paramTypes
-        .map((param) => param.src.candidType)
+        .map((param) => param.src.candidTypeObject)
         .join(', ');
 
-    const returnCandidType = returnType.src.candidType;
+    const returnCandidType = returnType.src.candidTypeObject;
 
     return `${functionName}: query([${paramCandidTypes}], ${returnCandidType}, ${callback})`;
 }
