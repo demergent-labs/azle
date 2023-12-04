@@ -1,23 +1,34 @@
 import fc from 'fast-check';
-import { QueryMethod } from './query_method_arb';
+import { QueryMethod } from './canister_methods/query_method_arb';
 import { Test } from '../../test';
+import { UpdateMethod } from './canister_methods/update_method_arb';
 
 export type Canister = {
     sourceCode: string;
     tests: Test[];
 };
 
+export type CanisterConstraints = {
+    queryMethods?: fc.Arbitrary<QueryMethod[]>;
+    updateMethods?: fc.Arbitrary<UpdateMethod[]>;
+};
+
 // TODO: Update the signature to support init, pre/post upgrade, heartbeat, etc.
-export function CanisterArb(queryMethodArb: fc.Arbitrary<QueryMethod>) {
+export function CanisterArb(constraints: CanisterConstraints) {
     return fc
-        .array(queryMethodArb, {
-            minLength: 20, // TODO work on these
-            maxLength: 100
-        })
-        .map((queryMethods): Canister => {
-            const sourceCode = generateSourceCode(queryMethods);
-            const tests = queryMethods.flatMap(
-                (queryMethod) => queryMethod.tests
+        .tuple(
+            constraints.queryMethods ?? EmptyArrayArb<QueryMethod>(),
+            constraints.updateMethods ?? EmptyArrayArb<UpdateMethod>()
+        )
+        .map(([queryMethods, updateMethods]): Canister => {
+            const canisterMethods: (QueryMethod | UpdateMethod)[] = [
+                ...queryMethods,
+                ...updateMethods
+            ];
+
+            const sourceCode = generateSourceCode(canisterMethods);
+            const tests = canisterMethods.flatMap(
+                (canisterMethod) => canisterMethod.tests
             );
 
             return {
@@ -27,25 +38,23 @@ export function CanisterArb(queryMethodArb: fc.Arbitrary<QueryMethod>) {
         });
 }
 
-function generateSourceCode(queryMethods: QueryMethod[]) {
+function generateSourceCode(canisterMethods: (UpdateMethod | QueryMethod)[]) {
     const imports = [
         ...new Set(
-            queryMethods.reduce(
-                (acc, queryMethod) => {
-                    return [...acc, ...queryMethod.imports];
+            canisterMethods.reduce(
+                (acc, method) => {
+                    return [...acc, ...method.imports];
                 },
-                ['Canister', 'query']
+                ['Canister', 'query', 'update']
             )
         )
     ].join();
 
-    const declarations = queryMethods
-        .flatMap((queryMethod) => queryMethod.globalDeclarations)
+    const declarations = canisterMethods
+        .flatMap((method) => method.globalDeclarations)
         .join('\n');
 
-    const sourceCodes = queryMethods.map(
-        (queryMethod) => queryMethod.sourceCode
-    );
+    const sourceCodes = canisterMethods.map((method) => method.sourceCode);
 
     return /*TS*/ `
         import { ${imports} } from 'azle';
@@ -59,4 +68,8 @@ function generateSourceCode(queryMethods: QueryMethod[]) {
             ${sourceCodes.join(',\n    ')}
         });
     `;
+}
+
+function EmptyArrayArb<T>(): fc.Arbitrary<T[]> {
+    return fc.array(fc.constant(null), { maxLength: 0 }) as fc.Arbitrary<T[]>;
 }
