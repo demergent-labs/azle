@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { runPropTests, defaultArrayConstraints } from 'azle/property_tests';
+import { defaultArrayConstraints, runPropTests } from 'azle/property_tests';
 import { BoolArb } from 'azle/property_tests/arbitraries/candid/primitive/bool';
 import {
     CanisterArb,

@@ -1,9 +1,12 @@
 import fc from 'fast-check';
 
-import { runPropTests } from 'azle/property_tests';
+import { defaultArrayConstraints, runPropTests } from 'azle/property_tests';
 import { CandidValueAndMetaArb } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { CandidReturnTypeArb } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
-import { CanisterArb } from 'azle/property_tests/arbitraries/canister_arb';
+import {
+    CanisterArb,
+    CanisterConfig
+} from 'azle/property_tests/arbitraries/canister_arb';
 import { QueryMethodArb } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 
 import { generateBody } from './generate_body';
@@ -24,11 +27,10 @@ const HeterogeneousQueryMethodArb = QueryMethodArb(
     }
 );
 
-runPropTests(
-    CanisterArb({
-        queryMethods: fc.array(HeterogeneousQueryMethodArb, {
-            minLength: 20,
-            maxLength: 100
-        })
-    })
-);
+const CanisterConfigArb = fc
+    .array(HeterogeneousQueryMethodArb, defaultArrayConstraints)
+    .map((queryMethods): CanisterConfig => {
+        return { queryMethods };
+    });
+
+runPropTests(CanisterArb(CanisterConfigArb));
