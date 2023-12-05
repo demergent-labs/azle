@@ -41,22 +41,22 @@ export const CandidDefinitionArb: fc.Arbitrary<CandidDefinition> = fc.letrec(
             tie('Variant').map((sample) => sample as VariantCandidDefinition),
             tie('Vec').map((sample) => sample as VecCandidDefinition),
             BoolDefinitionArb(),
-            Float32DefinitionArb,
-            Float64DefinitionArb,
-            IntDefinitionArb,
-            Int8DefinitionArb,
-            Int16DefinitionArb,
+            Float32DefinitionArb(),
+            Float64DefinitionArb(),
+            IntDefinitionArb(),
+            Int8DefinitionArb(),
+            Int16DefinitionArb(),
             Int32DefinitionArb(),
-            Int64DefinitionArb,
-            NatDefinitionArb,
-            Nat8DefinitionArb,
-            Nat16DefinitionArb,
-            Nat32DefinitionArb,
-            Nat64DefinitionArb,
-            // NullDefinitionArb, // Must be excluded until https://github.com/demergent-labs/azle/issues/1453 gets resolved
+            Int64DefinitionArb(),
+            NatDefinitionArb(),
+            Nat8DefinitionArb(),
+            Nat16DefinitionArb(),
+            Nat32DefinitionArb(),
+            Nat64DefinitionArb(),
+            // NullDefinitionArb(), // Must be excluded until https://github.com/demergent-labs/azle/issues/1453 gets resolved
             TextDefinitionArb(),
             tie('Func').map((sample) => sample as FuncCandidDefinition),
-            PrincipalDefinitionArb
+            PrincipalDefinitionArb()
             // tie('Service').map((sample) => sample as ServiceCandidDefinition) // Services Aren't working with deep equals
         ),
         Func: FuncDefinitionArb(

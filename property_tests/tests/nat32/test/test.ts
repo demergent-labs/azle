@@ -8,7 +8,7 @@ import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const AllNat32sQueryMethod = QueryMethodArb(fc.array(Nat32Arb), Nat32Arb, {
+const AllNat32sQueryMethod = QueryMethodArb(fc.array(Nat32Arb()), Nat32Arb(), {
     generateBody,
     generateTests
 });

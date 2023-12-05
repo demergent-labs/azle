@@ -1,8 +1,20 @@
 import { CorrespondingJSType } from '../../corresponding_js_type';
 import { CandidDefinitionArb } from '../../candid_definition_arb';
-import { TupleArb as Base } from './base';
+import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
+import { CandidDefinition } from '../../candid_definition_arb/types';
+import { TupleDefinitionArb } from './definition_arb';
+import { TupleValuesArb } from './values_arbs';
+import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
+import fc from 'fast-check';
 
 export type Tuple = CorrespondingJSType[];
 export type ReturnTuple = Tuple | {};
 
-export const TupleArb = Base(CandidDefinitionArb);
+export function TupleArb(
+    candidDefinitionArb: fc.Arbitrary<CandidDefinition> = CandidDefinitionArb
+): fc.Arbitrary<CandidValueAndMeta<Tuple, ReturnTuple>> {
+    return CandidValueAndMetaArbGenerator(
+        TupleDefinitionArb(candidDefinitionArb),
+        TupleValuesArb
+    );
+}

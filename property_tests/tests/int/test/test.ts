@@ -8,7 +8,7 @@ import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const AllIntsQueryMethod = QueryMethodArb(fc.array(IntArb), IntArb, {
+const AllIntsQueryMethod = QueryMethodArb(fc.array(IntArb()), IntArb(), {
     generateBody,
     generateTests
 });

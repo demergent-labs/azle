@@ -14,7 +14,7 @@ export function FuncDefinitionArb(
     return (fc.constantFrom('query', 'update', 'oneway') as fc.Arbitrary<Mode>)
         .chain((mode) => {
             const returnType =
-                mode === 'oneway' ? VoidDefinitionArb : candidDefArb;
+                mode === 'oneway' ? VoidDefinitionArb() : candidDefArb;
 
             return fc.tuple(
                 UniqueIdentifierArb('typeDeclaration'),

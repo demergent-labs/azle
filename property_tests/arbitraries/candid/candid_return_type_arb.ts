@@ -9,7 +9,11 @@ import { CorrespondingJSType } from './corresponding_js_type';
 
 export type CandidReturnType = CorrespondingJSType | undefined;
 
-export const CandidReturnTypeArb = fc.oneof(
-    { arbitrary: CandidValueAndMetaArb, weight: 17 },
-    { arbitrary: VoidArb, weight: 1 }
-) as fc.Arbitrary<CandidValueAndMeta<CandidReturnType>>;
+export function CandidReturnTypeArb(): fc.Arbitrary<
+    CandidValueAndMeta<CandidReturnType>
+> {
+    return fc.oneof(
+        { arbitrary: CandidValueAndMetaArb(), weight: 17 },
+        { arbitrary: VoidArb(), weight: 1 }
+    );
+}

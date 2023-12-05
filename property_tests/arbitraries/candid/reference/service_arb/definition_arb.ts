@@ -54,7 +54,7 @@ function ServiceMethodArb(
             JsFunctionNameArb,
             fc.constantFrom('query', 'update'),
             fc.array(candidDefArb),
-            fc.oneof(candidDefArb, VoidDefinitionArb)
+            fc.oneof(candidDefArb, VoidDefinitionArb())
         )
         .map(([name, mode, params, returnType]): ServiceMethodDefinition => {
             const paramCandidTypes = params.map(

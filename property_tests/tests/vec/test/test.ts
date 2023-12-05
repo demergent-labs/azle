@@ -8,7 +8,7 @@ import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const AllVecsQueryMethod = QueryMethodArb(fc.array(VecArb), VecArb, {
+const AllVecsQueryMethod = QueryMethodArb(fc.array(VecArb()), VecArb(), {
     generateBody,
     generateTests
 });
