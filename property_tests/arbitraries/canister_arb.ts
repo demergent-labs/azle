@@ -17,8 +17,8 @@ export type CanisterConstraints = {
 export function CanisterArb(constraints: CanisterConstraints) {
     return fc
         .tuple(
-            constraints.queryMethods ?? EmptyArrayArb<QueryMethod>(),
-            constraints.updateMethods ?? EmptyArrayArb<UpdateMethod>()
+            constraints.queryMethods ?? fc.constant([]),
+            constraints.updateMethods ?? fc.constant([])
         )
         .map(([queryMethods, updateMethods]): Canister => {
             const canisterMethods: (QueryMethod | UpdateMethod)[] = [
@@ -68,8 +68,4 @@ function generateSourceCode(canisterMethods: (UpdateMethod | QueryMethod)[]) {
             ${sourceCodes.join(',\n    ')}
         });
     `;
-}
-
-function EmptyArrayArb<T>(): fc.Arbitrary<T[]> {
-    return fc.array(fc.constant(null), { maxLength: 0 }) as fc.Arbitrary<T[]>;
 }
