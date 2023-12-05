@@ -1,11 +1,11 @@
 import { Principal } from '@dfinity/principal';
 
-import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
+import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { Named } from 'azle/property_tests';
 
 export function generateBody(
-    namedParamServices: Named<CandidMeta<Principal>>[],
-    returnService: CandidMeta<Principal>
+    namedParamServices: Named<CandidValueAndMeta<Principal>>[],
+    returnService: CandidValueAndMeta<Principal>
 ): string {
     const paramsAreServices = namedParamServices
         .map((param) => {

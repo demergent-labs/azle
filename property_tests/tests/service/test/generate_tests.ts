@@ -1,14 +1,14 @@
 import { Principal } from '@dfinity/principal';
 import { execSync } from 'child_process';
 
-import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
+import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { Named } from 'azle/property_tests';
 import { Test } from 'azle/test';
 
 export function generateTests(
     functionName: string,
-    namedParamServices: Named<CandidMeta<Principal>>[],
-    returnService: CandidMeta<Principal>
+    namedParamServices: Named<CandidValueAndMeta<Principal>>[],
+    returnService: CandidValueAndMeta<Principal>
 ): Test[] {
     return [
         {

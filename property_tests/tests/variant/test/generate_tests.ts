@@ -1,14 +1,14 @@
 import { deepEqual } from 'fast-equals';
 
 import { getActor, Named } from 'azle/property_tests';
-import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
+import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { Variant } from 'azle/property_tests/arbitraries/candid/constructed/variant_arb';
 import { Test } from 'azle/test';
 
 export function generateTests(
     functionName: string,
-    namedParamVariants: Named<CandidMeta<Variant>>[],
-    returnVariant: CandidMeta<Variant>
+    namedParamVariants: Named<CandidValueAndMeta<Variant>>[],
+    returnVariant: CandidValueAndMeta<Variant>
 ): Test[] {
     const expectedResult = returnVariant.agentResponseValue;
 

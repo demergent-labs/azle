@@ -1,7 +1,7 @@
 import { deepEqual } from 'fast-equals';
 
 import { getActor, Named } from 'azle/property_tests';
-import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
+import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import {
     Tuple,
     ReturnTuple
@@ -10,8 +10,8 @@ import { Test } from 'azle/test';
 
 export function generateTests(
     functionName: string,
-    namedParamTuples: Named<CandidMeta<Tuple, ReturnTuple>>[],
-    returnTuple: CandidMeta<Tuple, ReturnTuple>
+    namedParamTuples: Named<CandidValueAndMeta<Tuple, ReturnTuple>>[],
+    returnTuple: CandidValueAndMeta<Tuple, ReturnTuple>
 ): Test[] {
     const expectedResult = returnTuple.agentResponseValue;
 

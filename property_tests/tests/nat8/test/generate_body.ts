@@ -1,10 +1,10 @@
-import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
+import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { Named } from 'azle/property_tests';
 import { areParamsCorrectlyOrdered } from 'azle/property_tests/are_params_correctly_ordered';
 
 export function generateBody(
-    namedParamNat8s: Named<CandidMeta<number>>[],
-    returnNat8: CandidMeta<number>
+    namedParamNat8s: Named<CandidValueAndMeta<number>>[],
+    returnNat8: CandidValueAndMeta<number>
 ): string {
     const paramsAreNumbers = namedParamNat8s
         .map((param) => {

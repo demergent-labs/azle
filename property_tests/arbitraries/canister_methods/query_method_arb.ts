@@ -1,8 +1,8 @@
 import fc from 'fast-check';
 
-import { CandidMeta } from '../candid/candid_arb';
+import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CandidReturnType } from '../candid/candid_return_type_arb';
-import { CandidType } from '../candid/candid_type_arb';
+import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import { Named } from '../..';
 import {
@@ -22,16 +22,19 @@ export type QueryMethod = {
 };
 
 export function QueryMethodArb<
-    ParamAgentArgumentValue extends CandidType,
+    ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue,
-    ReturnTypeAgentArgumentValue extends CandidType,
+    ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 >(
     paramTypeArrayArb: fc.Arbitrary<
-        CandidMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
+        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
     >,
     returnTypeArb: fc.Arbitrary<
-        CandidMeta<ReturnTypeAgentArgumentValue, ReturnTypeAgentResponseValue>
+        CandidValueAndMeta<
+            ReturnTypeAgentArgumentValue,
+            ReturnTypeAgentResponseValue
+        >
     >,
     constraints: {
         generateBody: BodyGenerator<
@@ -95,8 +98,10 @@ export function QueryMethodArb<
                 );
 
                 const candidTypeDeclarations = [
-                    ...paramTypes.map((param) => param.src.typeDeclaration),
-                    returnType.src.typeDeclaration
+                    ...paramTypes.flatMap(
+                        (param) => param.src.typeAliasDeclarations
+                    ),
+                    ...returnType.src.typeAliasDeclarations
                 ].filter(isDefined);
 
                 const globalDeclarations =
@@ -128,21 +133,21 @@ export function QueryMethodArb<
 }
 
 function generateSourceCode<
-    ParamType extends CandidType,
+    ParamType extends CorrespondingJSType,
     ParamAgentType,
     ReturnType extends CandidReturnType,
     ReturnAgentType
 >(
     functionName: string,
-    paramTypes: CandidMeta<ParamType, ParamAgentType>[],
-    returnType: CandidMeta<ReturnType, ReturnAgentType>,
+    paramTypes: CandidValueAndMeta<ParamType, ParamAgentType>[],
+    returnType: CandidValueAndMeta<ReturnType, ReturnAgentType>,
     callback: string
 ): string {
     const paramCandidTypes = paramTypes
-        .map((param) => param.src.candidType)
+        .map((param) => param.src.typeAnnotation)
         .join(', ');
 
-    const returnCandidType = returnType.src.candidType;
+    const returnCandidType = returnType.src.typeAnnotation;
 
     return `${functionName}: query([${paramCandidTypes}], ${returnCandidType}, ${callback})`;
 }

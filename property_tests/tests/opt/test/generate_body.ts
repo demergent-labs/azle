@@ -1,11 +1,11 @@
-import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
+import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { Opt } from 'azle/property_tests/arbitraries/candid/constructed/opt_arb';
 import { Named } from 'azle/property_tests';
 import { areParamsCorrectlyOrdered } from 'azle/property_tests/are_params_correctly_ordered';
 
 export function generateBody(
-    namedParamOpts: Named<CandidMeta<Opt>>[],
-    returnOpt: CandidMeta<Opt>
+    namedParamOpts: Named<CandidValueAndMeta<Opt>>[],
+    returnOpt: CandidValueAndMeta<Opt>
 ): string {
     const areParamsOpts = namedParamOpts
         .map((param) => {

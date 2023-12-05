@@ -9,8 +9,10 @@ import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
 const AllServicesQueryMethodArb = QueryMethodArb(
-    fc.uniqueArray(ServiceArb, { selector: (entry) => entry.src.candidType }),
-    ServiceArb,
+    fc.uniqueArray(ServiceArb(), {
+        selector: (entry) => entry.src.typeAnnotation
+    }),
+    ServiceArb(),
     {
         generateBody,
         generateTests

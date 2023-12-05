@@ -8,10 +8,14 @@ import { QueryMethodArb } from 'azle/property_tests/arbitraries/canister_methods
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const AllInt32sQueryMethodArb = QueryMethodArb(fc.array(Int32Arb), Int32Arb, {
-    generateBody,
-    generateTests
-});
+const AllInt32sQueryMethodArb = QueryMethodArb(
+    fc.array(Int32Arb()),
+    Int32Arb(),
+    {
+        generateBody,
+        generateTests
+    }
+);
 
 runPropTests(
     CanisterArb({

@@ -9,8 +9,8 @@ import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
 const AllRecordsQueryMethodArb = QueryMethodArb(
-    fc.array(RecordArb),
-    RecordArb,
+    fc.array(RecordArb()),
+    RecordArb(),
     {
         generateBody,
         generateTests
