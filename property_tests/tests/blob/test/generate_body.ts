@@ -1,10 +1,10 @@
-import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
+import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { Named } from 'azle/property_tests';
 import { areParamsCorrectlyOrdered } from 'azle/property_tests/are_params_correctly_ordered';
 
 export function generateBody(
-    namedParamBlobs: Named<CandidMeta<Uint8Array>>[],
-    returnBlob: CandidMeta<Uint8Array>
+    namedParamBlobs: Named<CandidValueAndMeta<Uint8Array>>[],
+    returnBlob: CandidValueAndMeta<Uint8Array>
 ): string {
     // TODO these checks should be much more precise probably, imagine checking the elements inside of the arrays
     const paramsAreUint8Arrays = namedParamBlobs

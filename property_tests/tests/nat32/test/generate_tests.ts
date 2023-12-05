@@ -1,13 +1,13 @@
 import { deepEqual } from 'fast-equals';
 
 import { getActor, Named } from 'azle/property_tests';
-import { CandidMeta } from 'azle/property_tests/arbitraries/candid/candid_arb';
+import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { Test } from 'azle/test';
 
 export function generateTests(
     functionName: string,
-    namedParamNat32s: Named<CandidMeta<number>>[],
-    returnNat32: CandidMeta<number>
+    namedParamNat32s: Named<CandidValueAndMeta<number>>[],
+    returnNat32: CandidValueAndMeta<number>
 ): Test[] {
     const count = namedParamNat32s.length + 1;
     const expectedResult = Math.floor(

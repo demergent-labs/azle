@@ -1,10 +1,21 @@
 import { numberToSrcLiteral } from '../../to_src_literal/number';
-import { CandidMetaArb } from '../../candid_arb';
 import { NumberArb } from './';
+import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
+import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
+import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
+import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
+import fc from 'fast-check';
+import { CandidValues } from '../../candid_values_arb';
+import { IntCandidDefinition } from '../../candid_definition_arb/types';
 
-export const Int8Arb = CandidMetaArb(
-    NumberArb(8),
-    'int8',
-    'int8',
-    numberToSrcLiteral
-);
+export function Int8Arb(): fc.Arbitrary<CandidValueAndMeta<number>> {
+    return CandidValueAndMetaArbGenerator(Int8DefinitionArb(), Int8ValueArb);
+}
+
+export function Int8DefinitionArb(): fc.Arbitrary<IntCandidDefinition> {
+    return SimpleCandidDefinitionArb('int8');
+}
+
+export function Int8ValueArb(): fc.Arbitrary<CandidValues<number>> {
+    return SimpleCandidValuesArb(NumberArb(8), numberToSrcLiteral);
+}

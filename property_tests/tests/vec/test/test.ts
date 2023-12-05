@@ -1,16 +1,25 @@
 import fc from 'fast-check';
 
-import { runPropTests } from 'azle/property_tests';
+import { defaultArrayConstraints, runPropTests } from 'azle/property_tests';
 import { VecArb } from 'azle/property_tests/arbitraries/candid/constructed/vec_arb';
-import { CanisterArb } from 'azle/property_tests/arbitraries/canister_arb';
-import { QueryMethodArb } from 'azle/property_tests/arbitraries/query_method_arb';
+import {
+    CanisterArb,
+    CanisterConfig
+} from 'azle/property_tests/arbitraries/canister_arb';
+import { QueryMethodArb } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
 
-const AllVecsQueryMethod = QueryMethodArb(fc.array(VecArb), VecArb, {
+const AllVecsQueryMethodArb = QueryMethodArb(fc.array(VecArb()), VecArb(), {
     generateBody,
     generateTests
 });
 
-runPropTests(CanisterArb(AllVecsQueryMethod));
+const CanisterConfigArb = fc
+    .array(AllVecsQueryMethodArb, defaultArrayConstraints)
+    .map((queryMethods): CanisterConfig => {
+        return { queryMethods };
+    });
+
+runPropTests(CanisterArb(CanisterConfigArb));

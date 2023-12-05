@@ -59,3 +59,8 @@ export function runPropTests(canisterArb: fc.Arbitrary<Canister>) {
         }
     );
 }
+
+export const defaultArrayConstraints = {
+    minLength: 20,
+    maxLength: 100
+};
