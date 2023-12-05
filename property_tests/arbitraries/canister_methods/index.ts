@@ -1,35 +1,35 @@
-import { CandidMeta } from '../candid/candid_arb';
+import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CandidReturnType } from '../candid/candid_return_type_arb';
-import { CandidType } from '../candid/candid_type_arb';
+import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { Named } from '../..';
 import { Test } from '../../../test';
 
 export type BodyGenerator<
-    ParamAgentArgumentValue extends CandidType,
+    ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue,
-    ReturnTypeAgentArgumentValue extends CandidType,
+    ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 > = (
     namedParams: Named<
-        CandidMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
+        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
     >[],
-    returnType: CandidMeta<
+    returnType: CandidValueAndMeta<
         ReturnTypeAgentArgumentValue,
         ReturnTypeAgentResponseValue
     >
 ) => string;
 
 export type TestsGenerator<
-    ParamAgentArgumentValue extends CandidType,
+    ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue,
-    ReturnTypeAgentArgumentValue extends CandidType,
+    ReturnTypeAgentArgumentValue extends CorrespondingJSType,
     ReturnTypeAgentResponseValue
 > = (
     methodName: string,
     namedParams: Named<
-        CandidMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
+        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
     >[],
-    returnType: CandidMeta<
+    returnType: CandidValueAndMeta<
         ReturnTypeAgentArgumentValue,
         ReturnTypeAgentResponseValue
     >
@@ -42,13 +42,13 @@ export function isDefined<T>(value: T | undefined): value is T {
 }
 
 export function generateCallback<
-    ParamType extends CandidType,
+    ParamType extends CorrespondingJSType,
     ParamAgentType,
     ReturnType extends CandidReturnType,
     ReturnAgentType
 >(
-    namedParams: Named<CandidMeta<ParamType, ParamAgentType>>[],
-    returnType: CandidMeta<ReturnType, ReturnAgentType>,
+    namedParams: Named<CandidValueAndMeta<ParamType, ParamAgentType>>[],
+    returnType: CandidValueAndMeta<ReturnType, ReturnAgentType>,
     generateBody: BodyGenerator<
         ParamType,
         ParamAgentType,
