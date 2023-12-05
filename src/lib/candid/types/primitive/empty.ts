@@ -6,6 +6,8 @@ export class AzleEmpty {
     _azleKind: 'AzleEmpty' = 'AzleEmpty';
     static _azleKind: 'AzleEmpty' = 'AzleEmpty';
 
+    static tsType: empty;
+
     static toBytes(data: any) {
         return encode(this, data);
     }

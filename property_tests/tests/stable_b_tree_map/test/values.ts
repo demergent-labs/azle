@@ -5,10 +5,10 @@ import { StableBTreeMapArb } from '../../../arbitraries/stable_b_tree_map_arb';
 import { getActor } from '../../../../property_tests';
 import { Test } from '../../../../test';
 import { getArrayForCandidType, getArrayStringForCandidType } from './utils';
-import { CandidMeta } from '../../../arbitraries/candid/candid_arb';
-import { CandidType } from '../../../arbitraries/candid/candid_type_arb';
+import { CandidValueAndMeta } from '../../../arbitraries/candid/candid_value_and_meta_arb';
+import { CorrespondingJSType } from '../../../arbitraries/candid/corresponding_js_type';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
-import { QueryMethod } from '../../../arbitraries/query_method_arb';
+import { QueryMethod } from '../../../arbitraries/canister_methods/query_method_arb';
 
 export const ValuesTestArb = fc
     .tuple(UniqueIdentifierArb('stableBTreeMap'), StableBTreeMapArb)
@@ -22,14 +22,14 @@ export const ValuesTestArb = fc
         ]);
 
         const paramCandidTypeObjects = [
-            stableBTreeMap.param0.src.candidTypeObject,
-            stableBTreeMap.param1.src.candidTypeObject
+            stableBTreeMap.param0.src.candidTypeAnnotation,
+            stableBTreeMap.param1.src.candidTypeAnnotation
         ].join(', ');
 
-        const returnCandidType = `Vec(${stableBTreeMap.param1.src.candidTypeObject})`;
+        const returnCandidType = `Vec(${stableBTreeMap.param1.src.candidTypeAnnotation})`;
         const body = generateBody(
             stableBTreeMap.name,
-            stableBTreeMap.param1.src.candidTypeObject,
+            stableBTreeMap.param1.src.candidTypeAnnotation,
             stableBTreeMap.body
         );
 
@@ -42,8 +42,8 @@ export const ValuesTestArb = fc
         return {
             imports,
             globalDeclarations: [
-                stableBTreeMap.param0.src.typeDeclaration ?? '',
-                stableBTreeMap.param1.src.typeDeclaration ?? ''
+                ...stableBTreeMap.param0.src.variableAliasDeclarations,
+                ...stableBTreeMap.param1.src.variableAliasDeclarations
             ],
             sourceCode: `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidType}, (param0, param1) => {
                 ${body}
@@ -70,8 +70,8 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    param0: CandidMeta<CandidType>,
-    param1: CandidMeta<CandidType>
+    param0: CandidValueAndMeta<CorrespondingJSType>,
+    param1: CandidValueAndMeta<CorrespondingJSType>
 ): Test {
     return {
         name: `values ${functionName}`,
@@ -85,12 +85,12 @@ function generateTest(
 
             return {
                 Ok: deepEqual(
-                    getArrayForCandidType(param1.src.candidTypeObject).from(
+                    getArrayForCandidType(param1.src.candidTypeAnnotation).from(
                         result
                     ),
-                    getArrayForCandidType(param1.src.candidTypeObject).from([
-                        param1.agentArgumentValue
-                    ])
+                    getArrayForCandidType(param1.src.candidTypeAnnotation).from(
+                        [param1.agentArgumentValue]
+                    )
                 )
             };
         }

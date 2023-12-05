@@ -5,7 +5,7 @@ import { StableBTreeMapArb } from '../../../arbitraries/stable_b_tree_map_arb';
 import { getActor } from '../../../../property_tests';
 import { Test } from '../../../../test';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
-import { QueryMethod } from '../../../arbitraries/query_method_arb';
+import { QueryMethod } from '../../../arbitraries/canister_methods/query_method_arb';
 
 export const GetTestArb = fc
     .tuple(UniqueIdentifierArb('stableBTreeMap'), StableBTreeMapArb)
@@ -19,11 +19,11 @@ export const GetTestArb = fc
         ]);
 
         const paramCandidTypeObjects = [
-            stableBTreeMap.param0.src.candidTypeObject,
-            stableBTreeMap.param1.src.candidTypeObject
+            stableBTreeMap.param0.src.candidTypeAnnotation,
+            stableBTreeMap.param1.src.candidTypeAnnotation
         ].join(', ');
 
-        const returnCandidType = `Opt(${stableBTreeMap.param1.src.candidTypeObject})`;
+        const returnCandidType = `Opt(${stableBTreeMap.param1.src.candidTypeAnnotation})`;
         const body = generateBody(stableBTreeMap.name, stableBTreeMap.body);
 
         const test = generateTest(
@@ -35,8 +35,8 @@ export const GetTestArb = fc
         return {
             imports,
             globalDeclarations: [
-                stableBTreeMap.param0.src.typeDeclaration ?? '',
-                stableBTreeMap.param1.src.typeDeclaration ?? ''
+                ...stableBTreeMap.param0.src.variableAliasDeclarations,
+                ...stableBTreeMap.param1.src.variableAliasDeclarations
             ],
             sourceCode: `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidType}, (param0, param1) => {
                 ${body}

@@ -7,6 +7,8 @@ import { Parent } from '../../to_idl';
 export class Principal extends DfinityPrincipal {
     static _azleKind: 'Principal' = 'Principal';
 
+    static tsType: Principal;
+
     static toBytes(data: any) {
         return encode(this, data);
     }

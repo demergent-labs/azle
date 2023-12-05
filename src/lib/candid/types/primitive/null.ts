@@ -6,6 +6,8 @@ export class AzleNull {
     _azleKind: 'AzleNull' = 'AzleNull';
     static _azleKind: 'AzleNull' = 'AzleNull';
 
+    static tsType: Null;
+
     static toBytes(data: any) {
         return encode(this, data);
     }

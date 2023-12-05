@@ -6,6 +6,8 @@ export class AzleNat32 {
     _azleKind: 'AzleNat32' = 'AzleNat32';
     static _azleKind: 'AzleNat32' = 'AzleNat32';
 
+    static tsType: nat32;
+
     static toBytes(data: any) {
         return encode(this, data);
     }

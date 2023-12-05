@@ -1,13 +1,13 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
-import { StableBTreeMapArb } from '../../../arbitraries/stable_b_tree_map_arb';
 import { getActor } from '../../../../property_tests';
 import { Test } from '../../../../test';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
-import { QueryMethod } from '../../../arbitraries/query_method_arb';
+import { QueryMethod } from '../../../arbitraries/canister_methods/query_method_arb';
+import { StableBTreeMap } from '../../../arbitraries/stable_b_tree_map_arb';
 
-export function ContainsKeyTestArb(stableBTreeMap: any) {
+export function ContainsKeyTestArb(stableBTreeMap: StableBTreeMap) {
     return fc
         .tuple(UniqueIdentifierArb('stableBTreeMap'))
         .map(([functionName]): QueryMethod => {
@@ -25,7 +25,7 @@ export function ContainsKeyTestArb(stableBTreeMap: any) {
             ].join(', ');
 
             const returnCandidType = `bool`;
-            const body = generateBody(stableBTreeMap.name, stableBTreeMap.body);
+            const body = generateBody(stableBTreeMap.name);
             const test = generateTest(
                 functionName,
                 stableBTreeMap.param0.agentArgumentValue,
@@ -35,8 +35,8 @@ export function ContainsKeyTestArb(stableBTreeMap: any) {
             return {
                 imports,
                 globalDeclarations: [
-                    stableBTreeMap.param0.src.typeDeclaration ?? '',
-                    stableBTreeMap.param1.src.typeDeclaration ?? ''
+                    ...stableBTreeMap.param0.src.variableAliasDeclarations,
+                    ...stableBTreeMap.param1.src.variableAliasDeclarations
                 ],
                 sourceCode: `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidType}, (param0, param1) => {
                 ${body}
@@ -46,13 +46,8 @@ export function ContainsKeyTestArb(stableBTreeMap: any) {
         });
 }
 
-function generateBody(
-    stableBTreeMapName: string,
-    stableBTreeMapBody: string
-): string {
+function generateBody(stableBTreeMapName: string): string {
     return `
-        ${stableBTreeMapBody}
-
         ${stableBTreeMapName}.insert(param0, param1);
 
         return ${stableBTreeMapName}.containsKey(param0);

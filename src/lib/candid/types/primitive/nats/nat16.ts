@@ -6,6 +6,8 @@ export class AzleNat16 {
     _azleKind: 'AzleNat16' = 'AzleNat16';
     static _azleKind: 'AzleNat16' = 'AzleNat16';
 
+    static tsType: nat16;
+
     static toBytes(data: any) {
         return encode(this, data);
     }

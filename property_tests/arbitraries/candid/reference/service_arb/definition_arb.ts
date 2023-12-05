@@ -1,4 +1,5 @@
 import fc from 'fast-check';
+
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
@@ -21,14 +22,22 @@ export function ServiceDefinitionArb(
         )
         .map(([name, fields, useTypeDeclaration]): ServiceCandidDefinition => {
             useTypeDeclaration = true;
-            const typeAnnotation = useTypeDeclaration
-                ? name
-                : generateTypeAnnotation(fields);
 
-            const typeAliasDeclarations = generateTypeAliasDeclarations(
+            const candidTypeAnnotation = generateCandidTypeAnnotation(
+                useTypeDeclaration,
+                name
+            );
+
+            const candidTypeObject = generateCandidTypeObject(
+                useTypeDeclaration,
                 name,
-                fields,
-                useTypeDeclaration
+                fields
+            );
+
+            const variableAliasDeclarations = generateVariableAliasDeclarations(
+                useTypeDeclaration,
+                name,
+                fields
             );
 
             const imports = generateImports(fields);
@@ -36,8 +45,9 @@ export function ServiceDefinitionArb(
             return {
                 name,
                 candidMeta: {
-                    typeAnnotation,
-                    typeAliasDeclarations,
+                    candidTypeAnnotation,
+                    candidTypeObject,
+                    variableAliasDeclarations,
                     imports,
                     candidType: 'Service'
                 },
@@ -57,18 +67,21 @@ function ServiceMethodArb(
             fc.oneof(candidDefArb, VoidDefinitionArb())
         )
         .map(([name, mode, params, returnType]): ServiceMethodDefinition => {
-            const paramCandidTypes = params.map(
-                (param) => param.candidMeta.typeAnnotation
+            const paramCandidTypeObjects = params.map(
+                (param) => param.candidMeta.candidTypeObject
             );
 
-            const typeAliasDeclarations = params.reduce(
-                (acc, { candidMeta: { typeAliasDeclarations } }): string[] => {
-                    return [...acc, ...typeAliasDeclarations];
+            const variableAliasDeclarations = params.reduce(
+                (
+                    acc,
+                    { candidMeta: { variableAliasDeclarations } }
+                ): string[] => {
+                    return [...acc, ...variableAliasDeclarations];
                 },
-                returnType.candidMeta.typeAliasDeclarations
+                returnType.candidMeta.variableAliasDeclarations
             );
 
-            const src = `${name}: ${mode}([${paramCandidTypes}], ${returnType.candidMeta.typeAnnotation})`;
+            const src = `${name}: ${mode}([${paramCandidTypeObjects}], ${returnType.candidMeta.candidTypeObject})`;
 
             const imports = params.reduce(
                 (acc, param) => {
@@ -80,30 +93,53 @@ function ServiceMethodArb(
             return {
                 name,
                 imports,
-                typeAliasDeclarations,
+                variableAliasDeclarations: variableAliasDeclarations,
                 src
             };
         });
 }
 
-function generateTypeAliasDeclarations(
+function generateVariableAliasDeclarations(
+    useTypeDeclaration: boolean,
     name: string,
-    serviceMethods: ServiceMethodDefinition[],
-    useTypeDeclaration: boolean
+    serviceMethods: ServiceMethodDefinition[]
 ): string[] {
     const serviceMethodTypeAliasDecls = serviceMethods.flatMap(
-        (serviceMethod) => serviceMethod.typeAliasDeclarations
+        (serviceMethod) => serviceMethod.variableAliasDeclarations
     );
     if (useTypeDeclaration) {
         return [
             ...serviceMethodTypeAliasDecls,
-            `const ${name} = ${generateTypeAnnotation(serviceMethods)};`
+            `const ${name} = ${generateCandidTypeObject(
+                false,
+                name,
+                serviceMethods
+            )};`
         ];
     }
     return serviceMethodTypeAliasDecls;
 }
 
-function generateTypeAnnotation(serviceMethods: ServiceMethodDefinition[]) {
+function generateCandidTypeAnnotation(
+    useTypeDeclaration: boolean,
+    name: string
+) {
+    if (useTypeDeclaration === true) {
+        return `typeof ${name}.tsType`;
+    }
+
+    return '[Principal]';
+}
+
+function generateCandidTypeObject(
+    useTypeDeclaration: boolean,
+    name: string,
+    serviceMethods: ServiceMethodDefinition[]
+) {
+    if (useTypeDeclaration === true) {
+        return name;
+    }
+
     const methods = serviceMethods
         .map((serviceMethod) => serviceMethod.src)
         .filter((typeDeclaration) => typeDeclaration)

@@ -52,14 +52,14 @@ function generateSourceCode(
         )
     ].join();
 
-    const declarationsFromCanisterMethods = canisterMethods
-        .flatMap((method) => method.globalDeclarations)
-        .join('\n');
+    const declarationsFromCanisterMethods = canisterMethods.flatMap(
+        (method) => method.globalDeclarations
+    );
 
     const declarations = [
         ...globalDeclarations,
-        declarationsFromCanisterMethods
-    ];
+        ...declarationsFromCanisterMethods
+    ].join('\n');
 
     const sourceCodes = canisterMethods.map((method) => method.sourceCode);
 

@@ -15,22 +15,31 @@ export function OptDefinitionArb(
             fc.boolean()
         )
         .map(([name, innerType, useTypeDeclaration]): OptCandidDefinition => {
-            const typeAnnotation = useTypeDeclaration
-                ? name
-                : generateTypeAnnotation(innerType);
-
-            const typeAliasDeclarations = generateTypeAliasDeclarations(
+            const candidTypeAnnotation = generateCandidTypeAnnotation(
+                useTypeDeclaration,
                 name,
-                innerType,
-                useTypeDeclaration
+                innerType
+            );
+
+            const candidTypeObject = generateCandidTypeObject(
+                useTypeDeclaration,
+                name,
+                innerType
+            );
+
+            const variableAliasDeclarations = generateVariableAliasDeclarations(
+                useTypeDeclaration,
+                name,
+                innerType
             );
 
             const imports = generateImports(innerType);
 
             return {
                 candidMeta: {
-                    typeAnnotation,
-                    typeAliasDeclarations,
+                    candidTypeAnnotation,
+                    candidTypeObject,
+                    variableAliasDeclarations,
                     imports,
                     candidType: 'Opt'
                 },
@@ -39,22 +48,46 @@ export function OptDefinitionArb(
         });
 }
 
-function generateTypeAliasDeclarations(
+function generateVariableAliasDeclarations(
+    useTypeDeclaration: boolean,
     name: string,
-    innerType: CandidDefinition,
-    useTypeDeclaration: boolean
+    innerType: CandidDefinition
 ): string[] {
     if (useTypeDeclaration) {
         return [
-            ...innerType.candidMeta.typeAliasDeclarations,
-            `const ${name} = ${generateTypeAnnotation(innerType)};`
+            ...innerType.candidMeta.variableAliasDeclarations,
+            `const ${name} = ${generateCandidTypeObject(
+                false,
+                name,
+                innerType
+            )};`
         ];
     }
-    return innerType.candidMeta.typeAliasDeclarations;
+    return innerType.candidMeta.variableAliasDeclarations;
 }
 
-function generateTypeAnnotation(innerType: CandidDefinition): string {
-    return `Opt(${innerType.candidMeta.typeAnnotation})`;
+function generateCandidTypeAnnotation(
+    useTypeDeclaration: boolean,
+    name: string,
+    innerType: CandidDefinition
+): string {
+    if (useTypeDeclaration) {
+        return `typeof ${name}.tsType`;
+    }
+
+    return `Opt<${innerType.candidMeta.candidTypeAnnotation}>`;
+}
+
+function generateCandidTypeObject(
+    useTypeDeclaration: boolean,
+    name: string,
+    innerType: CandidDefinition
+): string {
+    if (useTypeDeclaration === true) {
+        return name;
+    }
+
+    return `Opt(${innerType.candidMeta.candidTypeObject})`;
 }
 
 function generateImports(innerType: CandidDefinition): Set<string> {

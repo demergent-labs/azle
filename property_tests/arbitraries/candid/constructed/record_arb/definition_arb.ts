@@ -22,22 +22,31 @@ export function RecordDefinitionArb(
             fc.boolean()
         )
         .map(([name, fields, useTypeDeclaration]): RecordCandidDefinition => {
-            const typeAnnotation = useTypeDeclaration
-                ? name
-                : generateTypeAnnotation(fields);
-
-            const typeAliasDeclarations = generateTypeAliasDeclarations(
+            const candidTypeAnnotation = generateCandidTypeAnnotation(
+                useTypeDeclaration,
                 name,
-                fields,
-                useTypeDeclaration
+                fields
+            );
+
+            const candidTypeObject = generateCandidTypeObject(
+                useTypeDeclaration,
+                name,
+                fields
+            );
+
+            const variableAliasDeclarations = generateVariableAliasDeclarations(
+                useTypeDeclaration,
+                name,
+                fields
             );
 
             const imports = generateImports(fields);
 
             return {
                 candidMeta: {
-                    typeAnnotation,
-                    typeAliasDeclarations,
+                    candidTypeAnnotation,
+                    candidTypeObject,
+                    variableAliasDeclarations,
                     imports,
                     candidType: 'Record'
                 },
@@ -53,28 +62,53 @@ function generateImports(fields: Field[]): Set<string> {
     return new Set([...fieldImports, 'Record']);
 }
 
-function generateTypeAnnotation(fields: Field[]): string {
+function generateCandidTypeAnnotation(
+    useTypeDeclaration: boolean,
+    name: string,
+    fields: Field[]
+): string {
+    if (useTypeDeclaration === true) {
+        return name;
+    }
+
+    return `{${fields
+        .map(
+            ([fieldName, fieldDefinition]) =>
+                `${fieldName}: ${fieldDefinition.candidMeta.candidTypeAnnotation}`
+        )
+        .join(',')}`;
+}
+
+function generateCandidTypeObject(
+    useTypeDeclaration: boolean,
+    name: string,
+    fields: Field[]
+): string {
+    if (useTypeDeclaration === true) {
+        return name;
+    }
+
     return `Record({${fields
         .map(
             ([fieldName, fieldDefinition]) =>
-                `${fieldName}: ${fieldDefinition.candidMeta.typeAnnotation}`
+                `${fieldName}: ${fieldDefinition.candidMeta.candidTypeObject}`
         )
         .join(',')}})`;
 }
 
-function generateTypeAliasDeclarations(
+function generateVariableAliasDeclarations(
+    useTypeDeclaration: boolean,
     name: string,
-    fields: Field[],
-    useTypeDeclaration: boolean
+    fields: Field[]
 ): string[] {
-    const fieldTypeAliasDeclarations = fields.flatMap(
-        (field) => field[1].candidMeta.typeAliasDeclarations
+    const fieldVariableAliasDefinitions = fields.flatMap(
+        (field) => field[1].candidMeta.variableAliasDeclarations
     );
     if (useTypeDeclaration) {
         return [
-            ...fieldTypeAliasDeclarations,
-            `const ${name} = ${generateTypeAnnotation(fields)};`
+            ...fieldVariableAliasDefinitions,
+            `const ${name} = ${generateCandidTypeObject(false, name, fields)};`
         ];
     }
-    return fieldTypeAliasDeclarations;
+    return fieldVariableAliasDefinitions;
 }

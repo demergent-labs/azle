@@ -17,14 +17,20 @@ export function CandidValueAndMetaArbGenerator<
     ).map(
         ([
             {
-                candidMeta: { typeAnnotation, typeAliasDeclarations, imports }
+                candidMeta: {
+                    candidTypeAnnotation,
+                    candidTypeObject,
+                    variableAliasDeclarations,
+                    imports
+                }
             },
             { agentArgumentValue, agentResponseValue, valueLiteral }
         ]) => {
             return {
                 src: {
-                    typeAnnotation,
-                    typeAliasDeclarations,
+                    candidTypeAnnotation,
+                    candidTypeObject,
+                    variableAliasDeclarations,
                     imports,
                     valueLiteral
                 },
