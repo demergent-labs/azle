@@ -8,37 +8,39 @@ export type Canister = {
     tests: Test[];
 };
 
-export type CanisterConstraints = {
-    queryMethods?: fc.Arbitrary<QueryMethod[]>;
-    updateMethods?: fc.Arbitrary<UpdateMethod[]>;
+export type CanisterConfig = {
+    globalDeclarations?: string[];
+    queryMethods?: QueryMethod[];
+    updateMethods?: UpdateMethod[];
 };
 
 // TODO: Update the signature to support init, pre/post upgrade, heartbeat, etc.
-export function CanisterArb(constraints: CanisterConstraints) {
-    return fc
-        .tuple(
-            constraints.queryMethods ?? fc.constant([]),
-            constraints.updateMethods ?? fc.constant([])
-        )
-        .map(([queryMethods, updateMethods]): Canister => {
-            const canisterMethods: (QueryMethod | UpdateMethod)[] = [
-                ...queryMethods,
-                ...updateMethods
-            ];
+export function CanisterArb(configArb: fc.Arbitrary<CanisterConfig>) {
+    return configArb.map((config): Canister => {
+        const canisterMethods: (QueryMethod | UpdateMethod)[] = [
+            ...(config.queryMethods ?? []),
+            ...(config.updateMethods ?? [])
+        ];
 
-            const sourceCode = generateSourceCode(canisterMethods);
-            const tests = canisterMethods.flatMap(
-                (canisterMethod) => canisterMethod.tests
-            );
+        const sourceCode = generateSourceCode(
+            config.globalDeclarations ?? [],
+            canisterMethods
+        );
+        const tests = canisterMethods.flatMap(
+            (canisterMethod) => canisterMethod.tests
+        );
 
-            return {
-                sourceCode,
-                tests
-            };
-        });
+        return {
+            sourceCode,
+            tests
+        };
+    });
 }
 
-function generateSourceCode(canisterMethods: (UpdateMethod | QueryMethod)[]) {
+function generateSourceCode(
+    globalDeclarations: string[],
+    canisterMethods: (UpdateMethod | QueryMethod)[]
+) {
     const imports = [
         ...new Set(
             canisterMethods.reduce(
@@ -50,9 +52,14 @@ function generateSourceCode(canisterMethods: (UpdateMethod | QueryMethod)[]) {
         )
     ].join();
 
-    const declarations = canisterMethods
+    const declarationsFromCanisterMethods = canisterMethods
         .flatMap((method) => method.globalDeclarations)
         .join('\n');
+
+    const declarations = [
+        ...globalDeclarations,
+        declarationsFromCanisterMethods
+    ];
 
     const sourceCodes = canisterMethods.map((method) => method.sourceCode);
 
