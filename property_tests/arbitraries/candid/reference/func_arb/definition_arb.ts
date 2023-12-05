@@ -5,6 +5,7 @@ import {
     FuncCandidDefinition
 } from '../../candid_definition_arb/types';
 import { VoidDefinitionArb } from '../../primitive/void';
+import { CandidType, Func } from '../../../../../src/lib';
 
 type Mode = 'query' | 'update' | 'oneway';
 
@@ -45,6 +46,12 @@ export function FuncDefinitionArb(
                     mode
                 );
 
+                const azleCandidTypeObject = generateAzleCandidTypeObject(
+                    params,
+                    returnFunc,
+                    mode
+                );
+
                 const variableAliasDeclarations =
                     generateVariableAliasDeclarations(
                         useTypeDeclaration,
@@ -65,6 +72,7 @@ export function FuncDefinitionArb(
                     candidMeta: {
                         candidTypeAnnotation,
                         candidTypeObject,
+                        azleCandidTypeObject,
                         variableAliasDeclarations,
                         imports,
                         candidType: 'Func'
@@ -131,5 +139,18 @@ function generateCandidTypeObject(
     const params = paramCandids
         .map((param) => param.candidMeta.candidTypeObject)
         .join(', ');
+
     return `Func([${params}], ${returnCandid.candidMeta.candidTypeObject}, '${mode}')`;
+}
+
+function generateAzleCandidTypeObject(
+    paramCandids: CandidDefinition[],
+    returnCandid: CandidDefinition,
+    mode: Mode
+): CandidType {
+    const params = paramCandids.map(
+        (param) => param.candidMeta.azleCandidTypeObject
+    );
+
+    return Func(params, returnCandid.candidMeta.azleCandidTypeObject, mode);
 }

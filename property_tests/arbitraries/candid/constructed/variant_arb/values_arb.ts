@@ -26,10 +26,10 @@ export function VariantValuesArb(
         return [name, values];
     });
 
-    return fieldValue.map((fieldValues) => {
-        const valueLiteral = generateValueLiteral(fieldValues);
-        const agentArgumentValue = generateValue(fieldValues);
-        const agentResponseValue = generateValue(fieldValues, true);
+    return fieldValue.map((field) => {
+        const valueLiteral = generateValueLiteral(field);
+        const agentArgumentValue = generateValue(field);
+        const agentResponseValue = generateValue(field, true);
 
         return {
             valueLiteral,

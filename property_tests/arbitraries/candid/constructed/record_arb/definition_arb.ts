@@ -6,6 +6,7 @@ import {
     CandidDefinitionArb,
     RecordCandidDefinition
 } from '../../candid_definition_arb/types';
+import { CandidType, Record } from '../../../../../src/lib';
 
 type Field = [string, CandidDefinition];
 
@@ -35,6 +36,8 @@ export function RecordDefinitionArb(
                 fields
             );
 
+            const azleCandidTypeObject = generateAzleCandidTypeObject(fields);
+
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 useTypeDeclaration,
                 name,
@@ -47,6 +50,7 @@ export function RecordDefinitionArb(
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
+                    azleCandidTypeObject,
                     variableAliasDeclarations,
                     imports,
                     candidType: 'Record'
@@ -95,6 +99,17 @@ function generateCandidTypeObject(
                 `${fieldName}: ${fieldDefinition.candidMeta.candidTypeObject}`
         )
         .join(',')}})`;
+}
+
+function generateAzleCandidTypeObject(fields: Field[]): CandidType {
+    const azleRecordConstructorObj = fields.reduce<{
+        [key: string]: CandidType;
+    }>((acc, [fieldName, fieldDefinition]) => {
+        acc[fieldName] = fieldDefinition.candidMeta.azleCandidTypeObject;
+        return acc;
+    }, {});
+
+    return Record(azleRecordConstructorObj);
 }
 
 function generateVariableAliasDeclarations(
