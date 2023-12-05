@@ -16,6 +16,17 @@ export type Named<T> = {
 export { getActor } from './get_actor';
 
 export function runPropTests(canisterArb: fc.Arbitrary<Canister>) {
+    const defaultParams = {
+        numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
+        endOnFailure: true // TODO This essentially disables shrinking. We don't know how to do shrinking well yet
+    };
+
+    const seed = process.env.AZLE_PROPTEST_SEED
+        ? Number(process.env.AZLE_PROPTEST_SEED)
+        : undefined;
+
+    const executionParams = seed ? { ...defaultParams, seed } : defaultParams;
+
     fc.assert(
         fc.asyncProperty(canisterArb, async (canister) => {
             if (!existsSync('src')) {
@@ -33,7 +44,12 @@ export function runPropTests(canisterArb: fc.Arbitrary<Canister>) {
             });
 
             for (let i = 0; i < canister.tests.length; i++) {
-                execSync(`dfx deploy canister`, {
+                const argumentsString =
+                    canister.initArgs && canister.initArgs.length > 0
+                        ? `--argument '(${canister.initArgs.join(', ')})'`
+                        : '';
+
+                execSync(`dfx deploy canister ${argumentsString}`, {
                     stdio: 'inherit'
                 });
 
@@ -64,10 +80,7 @@ export function runPropTests(canisterArb: fc.Arbitrary<Canister>) {
 
             return true;
         }),
-        {
-            numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
-            endOnFailure: true // TODO This essentially disables shrinking. We don't know how to do shrinking well yet
-        }
+        executionParams
     );
 }
 

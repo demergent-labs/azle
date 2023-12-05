@@ -2,25 +2,50 @@ import fc from 'fast-check';
 import { QueryMethod } from './canister_methods/query_method_arb';
 import { Test } from '../../test';
 import { UpdateMethod } from './canister_methods/update_method_arb';
+import { InitMethod } from './canister_methods/init_method_arb';
+import { CorrespondingJSType } from './candid/corresponding_js_type';
 
 export type Canister = {
+    initArgs: string[] | undefined;
     sourceCode: string;
     tests: Test[][];
 };
 
-export type CanisterConfig = {
+export type CanisterConfig<
+    ParamAgentArgumentValue extends CorrespondingJSType = undefined,
+    ParamAgentResponseValue = undefined
+> = {
     globalDeclarations?: string[];
+    initMethod?: InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>;
     queryMethods?: QueryMethod[];
     updateMethods?: UpdateMethod[];
 };
 
 // TODO: Update the signature to support init, pre/post upgrade, heartbeat, etc.
-export function CanisterArb(configArb: fc.Arbitrary<CanisterConfig>) {
+export function CanisterArb<
+    ParamAgentArgumentValue extends CorrespondingJSType,
+    ParamAgentResponseValue
+>(
+    configArb: fc.Arbitrary<
+        CanisterConfig<ParamAgentArgumentValue, ParamAgentResponseValue>
+    >
+) {
     return configArb.map((config): Canister => {
-        const canisterMethods: (QueryMethod | UpdateMethod)[] = [
+        const canisterMethods: (
+            | QueryMethod
+            | UpdateMethod
+            | InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
+        )[] = [
+            ...(config.initMethod ? [config.initMethod] : []),
             ...(config.queryMethods ?? []),
             ...(config.updateMethods ?? [])
         ];
+
+        const initArgs = config.initMethod?.params.map(({ el: { value } }) => {
+            return value.candidTypeObject
+                .getIdl([])
+                .valueToString(value.agentArgumentValue);
+        });
 
         const sourceCode = generateSourceCode(
             config.globalDeclarations ?? [],
@@ -51,6 +76,7 @@ export function CanisterArb(configArb: fc.Arbitrary<CanisterConfig>) {
         );
 
         return {
+            initArgs,
             sourceCode,
             tests
         };
@@ -91,7 +117,9 @@ function generateSourceCode(
         // @ts-ignore
         import deepEqual from 'deep-is';
 
+        // #region Declarations
         ${declarations}
+        // #endregion Declarations
 
         export default Canister({
             ${sourceCodes.join(',\n    ')}

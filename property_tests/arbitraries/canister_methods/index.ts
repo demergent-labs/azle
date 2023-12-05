@@ -13,10 +13,12 @@ export type BodyGenerator<
     namedParams: Named<
         CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
     >[],
-    returnType: CandidValueAndMeta<
-        ReturnTypeAgentArgumentValue,
-        ReturnTypeAgentResponseValue
-    >
+    returnType:
+        | CandidValueAndMeta<
+              ReturnTypeAgentArgumentValue,
+              ReturnTypeAgentResponseValue
+          >
+        | undefined
 ) => string;
 
 export type TestsGenerator<
@@ -29,10 +31,12 @@ export type TestsGenerator<
     namedParams: Named<
         CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
     >[],
-    returnType: CandidValueAndMeta<
-        ReturnTypeAgentArgumentValue,
-        ReturnTypeAgentResponseValue
-    >
+    returnType:
+        | CandidValueAndMeta<
+              ReturnTypeAgentArgumentValue,
+              ReturnTypeAgentResponseValue
+          >
+        | undefined
 ) => Test[][];
 
 export type CallbackLocation = 'INLINE' | 'STANDALONE';
@@ -48,7 +52,7 @@ export function generateCallback<
     ReturnAgentType
 >(
     namedParams: Named<CandidValueAndMeta<ParamType, ParamAgentType>>[],
-    returnType: CandidValueAndMeta<ReturnType, ReturnAgentType>,
+    returnType: CandidValueAndMeta<ReturnType, ReturnAgentType> | undefined,
     generateBody: BodyGenerator<
         ParamType,
         ParamAgentType,

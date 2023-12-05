@@ -7,8 +7,8 @@ import { PrincipalArb } from '../principal_arb';
 export function FuncValueArb(): fc.Arbitrary<CandidValues<Func>> {
     return fc.tuple(TextArb(), PrincipalArb()).map(([name, principal]) => {
         const value: Func = [
-            principal.agentArgumentValue,
-            name.agentArgumentValue
+            principal.value.agentArgumentValue,
+            name.value.agentArgumentValue
         ];
 
         const valueLiteral = `[${principal.src.valueLiteral}, ${name.src.valueLiteral}]`;

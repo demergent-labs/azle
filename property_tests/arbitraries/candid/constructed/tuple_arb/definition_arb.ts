@@ -4,6 +4,7 @@ import {
     CandidDefinition,
     TupleCandidDefinition
 } from '../../candid_definition_arb/types';
+import { CandidType, Tuple } from '../../../../../src/lib';
 
 export function TupleDefinitionArb(
     candidTypeArbForFields: fc.Arbitrary<CandidDefinition>
@@ -30,6 +31,8 @@ export function TupleDefinitionArb(
                 fields
             );
 
+            const azleCandidTypeObject = generateAzleCandidTypeObject(fields);
+
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 useTypeDeclaration,
                 name,
@@ -42,6 +45,7 @@ export function TupleDefinitionArb(
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
+                    azleCandidTypeObject,
                     variableAliasDeclarations,
                     imports,
                     candidType: 'Tuple'
@@ -96,6 +100,14 @@ function generateCandidTypeObject(
     const innerTypes = fields.map((field) => field.candidMeta.candidTypeObject);
 
     return `Tuple(${innerTypes.join(', ')})`;
+}
+
+function generateAzleCandidTypeObject(fields: CandidDefinition[]): CandidType {
+    const innerTypes = fields.map(
+        (field) => field.candidMeta.azleCandidTypeObject
+    );
+
+    return Tuple(...innerTypes);
 }
 
 function generateImports(fields: CandidDefinition[]): Set<string> {
