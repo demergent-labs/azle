@@ -68,7 +68,7 @@ function generateCandidTypeAnnotation(
     fields: Field[]
 ): string {
     if (useTypeDeclaration === true) {
-        return name;
+        return `typeof ${name}.tsType`;
     }
 
     return `{${fields
