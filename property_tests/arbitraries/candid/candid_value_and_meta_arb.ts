@@ -23,11 +23,15 @@ import { OptArb } from './constructed/opt_arb';
 import { VecArb } from './constructed/vec_arb';
 import { FuncArb } from './reference/func_arb';
 import { CorrespondingJSType } from './corresponding_js_type';
+import { CandidType } from '../../../src/lib';
 
 // TODO we're thinking that Candid is not the best name for this. What is better?
 export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
-    agentArgumentValue: T;
-    agentResponseValue: E;
+    value: {
+        agentArgumentValue: T;
+        agentResponseValue: E;
+        candidTypeObject: CandidType;
+    };
     src: {
         candidTypeAnnotation: string;
         candidTypeObject: string;
@@ -71,3 +75,31 @@ export function CandidValueAndMetaArb(): fc.Arbitrary<
 }
 
 // TODO: This needs to support service.
+
+/**
+ * Azle currently (v0.18.6) cannot accept funcs in init methods.
+ * See https://github.com/demergent-labs/azle/issues/1474
+ */
+export function CandidValueAndMetaArbWithoutFuncs(): fc.Arbitrary<
+    CandidValueAndMeta<CorrespondingJSType>
+> {
+    return fc.oneof(
+        BlobArb(),
+        Float32Arb(),
+        Float64Arb(),
+        IntArb(),
+        Int8Arb(),
+        Int16Arb(),
+        Int32Arb(),
+        Int64Arb(),
+        NatArb(),
+        Nat8Arb(),
+        Nat16Arb(),
+        Nat32Arb(),
+        Nat64Arb(),
+        BoolArb(),
+        NullArb(),
+        TextArb(),
+        PrincipalArb()
+    );
+}

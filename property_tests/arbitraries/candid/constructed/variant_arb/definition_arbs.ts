@@ -5,6 +5,7 @@ import {
     VariantCandidDefinition
 } from '../../candid_definition_arb/types';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { CandidType, Variant } from '../../../../../src/lib';
 
 type Field = [string, CandidDefinition];
 
@@ -30,6 +31,8 @@ export function VariantDefinitionArb(
                 fields
             );
 
+            const azleCandidTypeObject = generateAzleCandidTypeObject(fields);
+
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 useTypeDeclaration,
                 name,
@@ -42,6 +45,7 @@ export function VariantDefinitionArb(
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
+                    azleCandidTypeObject,
                     variableAliasDeclarations,
                     imports,
                     candidType: 'Variant'
@@ -119,4 +123,15 @@ function generateCandidTypeObject(
                 `${fieldName}: ${fieldDataType.candidMeta.candidTypeObject}`
         )
         .join(',')}})`;
+}
+
+function generateAzleCandidTypeObject(fields: Field[]): CandidType {
+    const azleVariantConstructorObj = fields.reduce<{
+        [key: string]: CandidType;
+    }>((acc, [fieldName, fieldDefinition]) => {
+        acc[fieldName] = fieldDefinition.candidMeta.azleCandidTypeObject;
+        return acc;
+    }, {});
+
+    return Variant(azleVariantConstructorObj);
 }
