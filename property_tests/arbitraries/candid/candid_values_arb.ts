@@ -27,6 +27,8 @@ import {
     CandidDefinition,
     OptCandidDefinition,
     RecordCandidDefinition,
+    RecursiveCandidDefinition,
+    RecursiveGlobalDefinition,
     ServiceCandidDefinition,
     TupleCandidDefinition,
     VariantCandidDefinition,
@@ -34,6 +36,7 @@ import {
 } from './candid_definition_arb/types';
 import { BlobValuesArb } from './constructed/blob_arb/values_arb';
 import { CorrespondingJSType } from './corresponding_js_type';
+import { RecursivePlaceHolderValuesArb } from './recursive/values_arb';
 
 export type CandidValues<T extends CorrespondingJSType, E = T> = {
     agentArgumentValue: T;
@@ -119,6 +122,13 @@ export function CandidValueArb(
     }
     if (candidType === 'Service') {
         return ServiceValueArb(candidTypeMeta as ServiceCandidDefinition);
+    }
+    if (candidType === 'Recursive') {
+        return RecursivePlaceHolderValuesArb(
+            candidTypeMeta as
+                | RecursiveCandidDefinition
+                | RecursiveGlobalDefinition
+        );
     }
     throw new Error('Unreachable');
 }

@@ -4,6 +4,7 @@ export type ComplexCandidType =
     | 'Func'
     | 'Opt'
     | 'Record'
+    | 'Recursive'
     | 'Service'
     | 'Tuple'
     | 'Variant'

@@ -1,4 +1,7 @@
+import fc from 'fast-check';
 import { CandidType } from '../candid_type';
+
+export type CandidDefinitionArb = fc.Arbitrary<CandidDefinition>;
 
 export type CandidDefinition =
     | MultiTypeConstructedDefinition
@@ -61,6 +64,17 @@ export type ServiceMethodDefinition = {
     imports: Set<string>;
     typeAliasDeclarations: string[];
     src: string;
+};
+
+// Recursive
+export type RecursiveCandidDefinition = {
+    candidMeta: CandidMeta;
+    name: string;
+};
+export type RecursiveGlobalDefinition = {
+    candidMeta: CandidMeta;
+    name: string;
+    innerType: CandidDefinition;
 };
 
 type CandidMeta = {
