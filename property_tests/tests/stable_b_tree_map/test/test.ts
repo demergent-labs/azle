@@ -43,8 +43,6 @@ const StableBTreeMapTestArb = fc
                         removeTestQueryMethod,
                         valuesTestQueryMethod
                     ]) => {
-                        // TODO don't we want imports here?
-                        // TODO let's go through the tests now assuming just one insert for the rest
                         return {
                             globalDeclarations: [
                                 stableBTreeMap.body,

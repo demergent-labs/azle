@@ -20,11 +20,6 @@ export function ItemsTestArb(stableBTreeMap: StableBTreeMap) {
                 'StableBTreeMap'
             ]);
 
-            const paramCandidTypeObjects = [
-                stableBTreeMap.param0.src.candidTypeObject,
-                stableBTreeMap.param1.src.candidTypeObject
-            ].join(', ');
-
             const returnCandidTypeObject = `Vec(Tuple(${stableBTreeMap.param0.src.candidTypeObject}, ${stableBTreeMap.param1.src.candidTypeObject}))`;
             const body = generateBody(stableBTreeMap.name);
 
@@ -37,7 +32,7 @@ export function ItemsTestArb(stableBTreeMap: StableBTreeMap) {
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidTypeObject}, (param0, param1) => {
+                sourceCode: `${functionName}: query([], ${returnCandidTypeObject}, () => {
                 ${body}
             })`,
                 tests: [test]
@@ -47,8 +42,6 @@ export function ItemsTestArb(stableBTreeMap: StableBTreeMap) {
 
 function generateBody(stableBTreeMapName: string): string {
     return `
-        ${stableBTreeMapName}.insert(param0, param1);
-
         return ${stableBTreeMapName}.items();
     `;
 }
@@ -63,7 +56,7 @@ function generateTest(
         test: async () => {
             const actor = getActor('./tests/stable_b_tree_map/test');
 
-            const result = await actor[functionName](param0Value, param1Value);
+            const result = await actor[functionName]();
 
             return {
                 Ok: deepEqual(result, [[param0Value, param1Value]])

@@ -22,11 +22,6 @@ export function ValuesTestArb(stableBTreeMap: StableBTreeMap) {
                 'StableBTreeMap'
             ]);
 
-            const paramCandidTypeObjects = [
-                stableBTreeMap.param0.src.candidTypeObject,
-                stableBTreeMap.param1.src.candidTypeObject
-            ].join(', ');
-
             const returnCandidTypeObject = `Vec(${stableBTreeMap.param1.src.candidTypeObject})`;
             const body = generateBody(
                 stableBTreeMap.name,
@@ -42,7 +37,7 @@ export function ValuesTestArb(stableBTreeMap: StableBTreeMap) {
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `${functionName}: update([${paramCandidTypeObjects}], ${returnCandidTypeObject}, (param0, param1) => {
+                sourceCode: `${functionName}: query([], ${returnCandidTypeObject}, () => {
                 ${body}
             })`,
                 tests: [test]
@@ -55,8 +50,6 @@ function generateBody(
     stableBTreeMapValueCandidTypeAnnotation: string
 ): string {
     return `
-        ${stableBTreeMapName}.insert(param0, param1);
-
         return ${getArrayStringForCandidType(
             stableBTreeMapValueCandidTypeAnnotation
         )}(${stableBTreeMapName}.values());

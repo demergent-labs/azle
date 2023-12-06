@@ -23,8 +23,7 @@ export function RemoveTestArb(stableBTreeMap: StableBTreeMap) {
             ]);
 
             const paramCandidTypeObjects = [
-                stableBTreeMap.param0.src.candidTypeObject,
-                stableBTreeMap.param1.src.candidTypeObject
+                stableBTreeMap.param0.src.candidTypeObject
             ].join(', ');
 
             const returnCandidTypeObject = `Opt(${stableBTreeMap.param1.src.candidTypeObject})`;
@@ -39,7 +38,7 @@ export function RemoveTestArb(stableBTreeMap: StableBTreeMap) {
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `${functionName}: update([${paramCandidTypeObjects}], ${returnCandidTypeObject}, (param0, param1) => {
+                sourceCode: `${functionName}: update([${paramCandidTypeObjects}], ${returnCandidTypeObject}, (param0) => {
                 ${body}
             })`,
                 tests: [test]
@@ -49,8 +48,6 @@ export function RemoveTestArb(stableBTreeMap: StableBTreeMap) {
 
 function generateBody(stableBTreeMapName: string): string {
     return `
-        ${stableBTreeMapName}.insert(param0, param1);
-
         return ${stableBTreeMapName}.remove(param0);
     `;
 }
@@ -65,7 +62,7 @@ function generateTest(
         test: async () => {
             const actor = getActor('./tests/stable_b_tree_map/test');
 
-            const result = await actor[functionName](param0Value, param1Value);
+            const result = await actor[functionName](param0Value);
 
             return {
                 Ok: deepEqual(result, [param1Value])

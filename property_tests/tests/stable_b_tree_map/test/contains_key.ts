@@ -20,22 +20,20 @@ export function ContainsKeyTestArb(stableBTreeMap: StableBTreeMap) {
             ]);
 
             const paramCandidTypeObjects = [
-                stableBTreeMap.param0.src.candidTypeObject,
-                stableBTreeMap.param1.src.candidTypeObject
+                stableBTreeMap.param0.src.candidTypeObject
             ].join(', ');
 
             const returnCandidType = `bool`;
             const body = generateBody(stableBTreeMap.name);
             const test = generateTest(
                 functionName,
-                stableBTreeMap.param0.agentArgumentValue,
-                stableBTreeMap.param1.agentArgumentValue
+                stableBTreeMap.param0.agentArgumentValue
             );
 
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidType}, (param0, param1) => {
+                sourceCode: `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidType}, (param0) => {
                 ${body}
             })`,
                 tests: [test]
@@ -45,23 +43,17 @@ export function ContainsKeyTestArb(stableBTreeMap: StableBTreeMap) {
 
 function generateBody(stableBTreeMapName: string): string {
     return `
-        ${stableBTreeMapName}.insert(param0, param1);
-
         return ${stableBTreeMapName}.containsKey(param0);
     `;
 }
 
-function generateTest(
-    functionName: string,
-    param0Value: any,
-    param1Value: any
-): Test {
+function generateTest(functionName: string, param0Value: any): Test {
     return {
         name: `containsKey ${functionName}`,
         test: async () => {
             const actor = getActor('./tests/stable_b_tree_map/test');
 
-            const result = await actor[functionName](param0Value, param1Value);
+            const result = await actor[functionName](param0Value);
 
             return {
                 Ok: deepEqual(result, true)

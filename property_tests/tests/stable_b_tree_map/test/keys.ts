@@ -22,27 +22,18 @@ export function KeysTestArb(stableBTreeMap: StableBTreeMap) {
                 'StableBTreeMap'
             ]);
 
-            const paramCandidTypeObjects = [
-                stableBTreeMap.param0.src.candidTypeObject,
-                stableBTreeMap.param1.src.candidTypeObject
-            ].join(', ');
-
             const returnCandidTypeObject = `Vec(${stableBTreeMap.param0.src.candidTypeObject})`;
             const body = generateBody(
                 stableBTreeMap.name,
                 stableBTreeMap.param0.src.candidTypeAnnotation
             );
 
-            const test = generateTest(
-                functionName,
-                stableBTreeMap.param0,
-                stableBTreeMap.param1.agentArgumentValue
-            );
+            const test = generateTest(functionName, stableBTreeMap.param0);
 
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidTypeObject}, (param0, param1) => {
+                sourceCode: `${functionName}: query([], ${returnCandidTypeObject}, () => {
                 ${body}
             })`,
                 tests: [test]
@@ -55,8 +46,6 @@ function generateBody(
     stableBTreeMapKeyCandidTypeAnnotation: string
 ): string {
     return `
-        ${stableBTreeMapName}.insert(param0, param1);
-
         return ${getArrayStringForCandidType(
             stableBTreeMapKeyCandidTypeAnnotation
         )}(${stableBTreeMapName}.keys());
@@ -65,18 +54,14 @@ function generateBody(
 
 function generateTest(
     functionName: string,
-    param0: CandidValueAndMeta<CorrespondingJSType>,
-    param1Value: any
+    param0: CandidValueAndMeta<CorrespondingJSType>
 ): Test {
     return {
         name: `keys ${functionName}`,
         test: async () => {
             const actor = getActor('./tests/stable_b_tree_map/test');
 
-            const result = await actor[functionName](
-                param0.agentArgumentValue,
-                param1Value
-            );
+            const result = await actor[functionName]();
 
             return {
                 Ok: deepEqual(

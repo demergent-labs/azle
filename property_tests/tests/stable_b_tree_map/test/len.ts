@@ -19,24 +19,15 @@ export function LenTestArb(stableBTreeMap: StableBTreeMap) {
                 'StableBTreeMap'
             ]);
 
-            const paramCandidTypeObjects = [
-                stableBTreeMap.param0.src.candidTypeObject,
-                stableBTreeMap.param1.src.candidTypeObject
-            ].join(', ');
-
             const returnCandidTypeObject = `nat64`;
             const body = generateBody(stableBTreeMap.name);
 
-            const test = generateTest(
-                functionName,
-                stableBTreeMap.param0.agentArgumentValue,
-                stableBTreeMap.param1.agentArgumentValue
-            );
+            const test = generateTest(functionName);
 
             return {
                 imports,
                 globalDeclarations: [],
-                sourceCode: `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidTypeObject}, (param0, param1) => {
+                sourceCode: `${functionName}: query([], ${returnCandidTypeObject}, () => {
                 ${body}
             })`,
                 tests: [test]
@@ -46,23 +37,17 @@ export function LenTestArb(stableBTreeMap: StableBTreeMap) {
 
 function generateBody(stableBTreeMapName: string): string {
     return `
-        ${stableBTreeMapName}.insert(param0, param1);
-
         return ${stableBTreeMapName}.len();
     `;
 }
 
-function generateTest(
-    functionName: string,
-    param0Value: any,
-    param1Value: any
-): Test {
+function generateTest(functionName: string): Test {
     return {
         name: `len ${functionName}`,
         test: async () => {
             const actor = getActor('./tests/stable_b_tree_map/test');
 
-            const result = await actor[functionName](param0Value, param1Value);
+            const result = await actor[functionName]();
 
             return {
                 Ok: deepEqual(result, 1n)
