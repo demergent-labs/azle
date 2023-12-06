@@ -28,6 +28,7 @@ import { CorrespondingJSType } from './corresponding_js_type';
 export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
     agentArgumentValue: T;
     agentResponseValue: E;
+    candidTypeObjectString: string;
     src: {
         typeAnnotation: string;
         typeAliasDeclarations: string[];

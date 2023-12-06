@@ -28,9 +28,11 @@ export function runPropTests(canisterArb: fc.Arbitrary<Canister>) {
                 stdio: 'inherit'
             });
 
-            // TODO: Figure out how to pass parameters in here
-            // Maybe use @dfinity/candid to stringify them?
-            execSync(`dfx deploy canister`, {
+            const argumentsString = canister.initArgs
+                ? `'(${canister.initArgs.join(',')})'`
+                : '';
+
+            execSync(`dfx deploy canister ${argumentsString}`, {
                 stdio: 'inherit'
             });
 

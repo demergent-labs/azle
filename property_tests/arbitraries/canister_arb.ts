@@ -6,6 +6,7 @@ import { InitMethod } from './canister_methods/init_method_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
 
 export type Canister = {
+    initArgs: string[] | undefined;
     sourceCode: string;
     tests: Test[];
 };
@@ -40,6 +41,11 @@ export function CanisterArb<
             ...(config.updateMethods ?? [])
         ];
 
+        const initArgs = config.initMethod?.params.map((param) => {
+            return param.el.candidTypeObjectString; // TODO: Swap this out for the real object
+            // return param.el.candidTypeObject.valueToString();
+        });
+
         const sourceCode = generateSourceCode(
             config.globalDeclarations ?? [],
             canisterMethods
@@ -49,6 +55,7 @@ export function CanisterArb<
         );
 
         return {
+            initArgs,
             sourceCode,
             tests
         };
