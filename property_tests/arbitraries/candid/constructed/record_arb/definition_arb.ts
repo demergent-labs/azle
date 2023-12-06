@@ -3,13 +3,14 @@ import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
+    CandidDefinitionArb,
     RecordCandidDefinition
 } from '../../candid_definition_arb/types';
 
 type Field = [string, CandidDefinition];
 
 export function RecordDefinitionArb(
-    fieldCandidDefArb: fc.Arbitrary<CandidDefinition>
+    fieldCandidDefArb: CandidDefinitionArb
 ): fc.Arbitrary<RecordCandidDefinition> {
     return fc
         .tuple(

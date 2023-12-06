@@ -1,5 +1,5 @@
 import { CorrespondingJSType } from '../../corresponding_js_type';
-import { CandidDefinitionArb } from '../../candid_definition_arb';
+import { candidDefinitionArb } from '../../candid_definition_arb';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidDefinition } from '../../candid_definition_arb/types';
 import { TupleDefinitionArb } from './definition_arb';
@@ -11,10 +11,10 @@ export type Tuple = CorrespondingJSType[];
 export type ReturnTuple = Tuple | {};
 
 export function TupleArb(
-    candidDefinitionArb: fc.Arbitrary<CandidDefinition> = CandidDefinitionArb
+    fieldCandidDefinitionArb: fc.Arbitrary<CandidDefinition> = candidDefinitionArb()
 ): fc.Arbitrary<CandidValueAndMeta<Tuple, ReturnTuple>> {
     return CandidValueAndMetaArbGenerator(
-        TupleDefinitionArb(candidDefinitionArb),
+        TupleDefinitionArb(fieldCandidDefinitionArb),
         TupleValuesArb
     );
 }

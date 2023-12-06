@@ -1,4 +1,7 @@
+import fc from 'fast-check';
 import { CandidType } from '../candid_type';
+
+export type CandidDefinitionArb = fc.Arbitrary<CandidDefinition>;
 
 export type CandidDefinition =
     | MultiTypeConstructedDefinition
