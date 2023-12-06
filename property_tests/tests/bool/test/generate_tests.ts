@@ -7,11 +7,11 @@ import { Test } from 'azle/test';
 export function generateTests(
     functionName: string,
     namedParamBools: Named<CandidValueAndMeta<boolean>>[],
-    returnBool: CandidValueAndMeta<boolean>
+    returnBool: CandidValueAndMeta<boolean> | undefined
 ): Test[] {
     const expectedResult = namedParamBools.reduce(
         (acc, param) => acc && param.el.agentResponseValue,
-        returnBool.agentResponseValue
+        returnBool?.agentResponseValue
     );
     const paramValues = namedParamBools.map(
         (param) => param.el.agentArgumentValue
