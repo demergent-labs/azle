@@ -51,6 +51,37 @@ const rustKeywords = [
     'yield'
 ];
 
+const azleKeywords = [
+    'blob',
+    'bool',
+    'float32',
+    'float64',
+    'Func',
+    'int',
+    'int8',
+    'int16',
+    'int32',
+    'int64',
+    'nat',
+    'nat8',
+    'nat16',
+    'nat32',
+    'nat64',
+    'Null',
+    'Opt',
+    'Principal',
+    'Record',
+    'Recursive',
+    'Service',
+    'Tuple',
+    'Variant',
+    'Vec'
+];
+
+const jsKeywords = ['eval', 'var', 'new'];
+
 export const JsFunctionNameArb = fc
     .stringMatching(/^(_[a-zA-Z0-9]+|[a-zA-Z][a-zA-Z0-9]*)$/)
-    .filter((sample) => !rustKeywords.includes(sample));
+    .filter((sample) => !rustKeywords.includes(sample))
+    .filter((sample) => !jsKeywords.includes(sample))
+    .filter((sample) => !azleKeywords.includes(sample));
