@@ -31,6 +31,7 @@ import {
     CandidDefinitionArb
 } from './types';
 import { BlobDefinitionArb } from '../constructed/blob_arb/definition_arb';
+import { recursiveOptions } from '../recursive';
 
 export function candidDefinitionArb(): CandidDefinitionArb {
     return fc.letrec((tie) => ({
@@ -60,26 +61,35 @@ export function candidDefinitionArb(): CandidDefinitionArb {
             PrincipalDefinitionArb()
             // tie('Service').map((sample) => sample as ServiceCandidDefinition) // Services Aren't working with deep equals
         ),
-        Func: FuncDefinitionArb(
-            tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
-        ),
-        Opt: OptDefinitionArb(
-            tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
-        ),
-        Record: RecordDefinitionArb(
-            tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
-        ),
-        // Service: ServiceDefinitionArb(
-        //     tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
-        // ),
-        Tuple: TupleDefinitionArb(
-            tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
-        ),
-        Variant: VariantDefinitionArb(
-            tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
-        ),
-        Vec: VecDefinitionArb(
-            tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
-        )
+
+        Func: FuncDefinitionArb(possiblyRecursiveArb(tie)),
+        Opt: OptDefinitionArb(possiblyRecursiveArb(tie)),
+        Record: RecordDefinitionArb(possiblyRecursiveArb(tie)),
+        // Service: ServiceDefinitionArb(possiblyRecursiveArb(tie)),
+        Tuple: TupleDefinitionArb(possiblyRecursiveArb(tie)),
+        Variant: VariantDefinitionArb(possiblyRecursiveArb(tie)),
+        Vec: VecDefinitionArb(possiblyRecursiveArb(tie))
     })).CandidDefinition;
+}
+
+function possiblyRecursiveArb(
+    tie: fc.LetrecLooselyTypedTie
+): fc.Arbitrary<CandidDefinition> {
+    const notRecursiveArb = tie(
+        'CandidDefinition'
+    ) as fc.Arbitrary<CandidDefinition>;
+    return fc
+        .tuple(
+            fc.constant(recursiveOptions),
+            fc.nat(Math.max(recursiveOptions.length, 0))
+        )
+        .chain(([recDefs, randomIndex]) => {
+            if (recDefs.length === 0) {
+                return notRecursiveArb;
+            }
+            return fc.oneof(
+                { arbitrary: fc.constant(recDefs[randomIndex]), weight: 1 },
+                { arbitrary: notRecursiveArb, weight: 1 }
+            );
+        });
 }
