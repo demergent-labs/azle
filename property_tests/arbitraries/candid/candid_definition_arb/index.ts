@@ -27,12 +27,13 @@ import {
     RecordCandidDefinition,
     TupleCandidDefinition,
     VariantCandidDefinition,
-    VecCandidDefinition
+    VecCandidDefinition,
+    CandidDefinitionArb
 } from './types';
 import { BlobDefinitionArb } from '../constructed/blob_arb/definition_arb';
 
-export const CandidDefinitionArb: fc.Arbitrary<CandidDefinition> = fc.letrec(
-    (tie) => ({
+export function candidDefinitionArb(): CandidDefinitionArb {
+    return fc.letrec((tie) => ({
         CandidDefinition: fc.oneof(
             BlobDefinitionArb(),
             tie('Opt').map((sample) => sample as OptCandidDefinition),
@@ -80,5 +81,5 @@ export const CandidDefinitionArb: fc.Arbitrary<CandidDefinition> = fc.letrec(
         Vec: VecDefinitionArb(
             tie('CandidDefinition') as fc.Arbitrary<CandidDefinition>
         )
-    })
-).CandidDefinition;
+    })).CandidDefinition;
+}

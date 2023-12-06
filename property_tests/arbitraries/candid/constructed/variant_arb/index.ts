@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { CandidDefinitionArb } from '../../candid_definition_arb';
+import { candidDefinitionArb } from '../../candid_definition_arb';
 import { CorrespondingJSType } from '../../corresponding_js_type';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidDefinition } from '../../candid_definition_arb/types';
@@ -13,10 +13,10 @@ export type Variant = {
 };
 
 export function VariantArb(
-    candidDefinitionArb: fc.Arbitrary<CandidDefinition> = CandidDefinitionArb
+    fieldCandidDefinitionArb: fc.Arbitrary<CandidDefinition> = candidDefinitionArb()
 ): fc.Arbitrary<CandidValueAndMeta<Variant>> {
     return CandidValueAndMetaArbGenerator(
-        VariantDefinitionArb(candidDefinitionArb),
+        VariantDefinitionArb(fieldCandidDefinitionArb),
         VariantValuesArb
     );
 }
