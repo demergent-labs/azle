@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 import { Principal } from '@dfinity/principal';
 
-import { CandidDefinitionArb } from '../../candid_definition_arb';
+import { candidDefinitionArb } from '../../candid_definition_arb';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidDefinition } from '../../candid_definition_arb/types';
 import { FuncDefinitionArb } from './definition_arb';
@@ -11,10 +11,10 @@ import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_
 export type Func = [Principal, string];
 
 export function FuncArb(
-    candidDefinitionArb: fc.Arbitrary<CandidDefinition> = CandidDefinitionArb
+    innerCandidDefinitionArb: fc.Arbitrary<CandidDefinition> = candidDefinitionArb()
 ): fc.Arbitrary<CandidValueAndMeta<Func>> {
     return CandidValueAndMetaArbGenerator(
-        FuncDefinitionArb(candidDefinitionArb),
+        FuncDefinitionArb(innerCandidDefinitionArb),
         FuncValueArb
     );
 }

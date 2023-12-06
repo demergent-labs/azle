@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { CandidDefinitionArb } from '../../candid_definition_arb';
+import { candidDefinitionArb } from '../../candid_definition_arb';
 import { CorrespondingJSType } from '../../corresponding_js_type';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidDefinition } from '../../candid_definition_arb/types';
@@ -20,10 +20,10 @@ export type Vec =
     | BigInt64Array;
 
 export function VecArb(
-    candidDefinitionArb: fc.Arbitrary<CandidDefinition> = CandidDefinitionArb
+    elementCandidDefinitionArb: fc.Arbitrary<CandidDefinition> = candidDefinitionArb()
 ): fc.Arbitrary<CandidValueAndMeta<Vec>> {
     return CandidValueAndMetaArbGenerator(
-        VecDefinitionArb(candidDefinitionArb),
+        VecDefinitionArb(elementCandidDefinitionArb),
         VecValuesArb
     );
 }
