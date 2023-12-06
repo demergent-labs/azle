@@ -76,7 +76,7 @@ function generateCandidTypeAnnotation(
             ([fieldName, fieldDefinition]) =>
                 `${fieldName}: ${fieldDefinition.candidMeta.candidTypeAnnotation}`
         )
-        .join(',')}`;
+        .join(',')}}`;
 }
 
 function generateCandidTypeObject(

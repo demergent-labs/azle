@@ -6,7 +6,7 @@ export class AzleBlob {
     _azleKind: 'AzleBlob' = 'AzleBlob';
     static _azleKind: 'AzleBlob' = 'AzleBlob';
 
-    static tsType: AzleBlob;
+    static tsType: blob;
 
     static toBytes(data: any) {
         return encode(this, data);

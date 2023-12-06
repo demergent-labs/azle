@@ -21,32 +21,22 @@ import { LenTestArb } from './len';
 import { RemoveTestArb } from './remove';
 import { ValuesTestArb } from './values';
 
-const StableBTreeMapTestArb = StableBTreeMapArb.chain((stableBTreeMap) => {
-    return fc
-        .tuple(
-            ContainsKeyTestArb(stableBTreeMap)
-            // GetTestArb,
-            // IsEmptyTestArb,
-            // ItemsTestArb,
-            // KeysTestArb,
-            // LenTestArb,
-            // RemoveTestArb,
-            // ValuesTestArb
-        )
-        .map(
-            ([
-                containsKeyTestQueryMethod
-                // getTestQueryMethod,
-                // isEmptyTestQueryMethod,
-                // itemsTestQueryMethod,
-                // keysTestQueryMethod,
-                // lenTestQueryMethod,
-                // removeTestQueryMethod,
-                // valuesTestQueryMethod
-            ]) => {
-                return {
-                    globalDeclarations: [stableBTreeMap.body],
-                    queryMethods: [
+const StableBTreeMapTestArb = fc
+    .array(
+        StableBTreeMapArb.chain((stableBTreeMap) => {
+            return fc
+                .tuple(
+                    ContainsKeyTestArb(stableBTreeMap)
+                    // GetTestArb,
+                    // IsEmptyTestArb,
+                    // ItemsTestArb,
+                    // KeysTestArb,
+                    // LenTestArb,
+                    // RemoveTestArb,
+                    // ValuesTestArb
+                )
+                .map(
+                    ([
                         containsKeyTestQueryMethod
                         // getTestQueryMethod,
                         // isEmptyTestQueryMethod,
@@ -55,23 +45,47 @@ const StableBTreeMapTestArb = StableBTreeMapArb.chain((stableBTreeMap) => {
                         // lenTestQueryMethod,
                         // removeTestQueryMethod,
                         // valuesTestQueryMethod
-                    ],
-                    updateMethods: []
-                };
-            }
+                    ]) => {
+                        return {
+                            globalDeclarations: [stableBTreeMap.body],
+                            queryMethods: [
+                                containsKeyTestQueryMethod
+                                // getTestQueryMethod,
+                                // isEmptyTestQueryMethod,
+                                // itemsTestQueryMethod,
+                                // keysTestQueryMethod,
+                                // lenTestQueryMethod,
+                                // removeTestQueryMethod,
+                                // valuesTestQueryMethod
+                            ],
+                            updateMethods: []
+                        };
+                    }
+                );
+        }),
+        {
+            minLength: 10,
+            maxLength: 50
+        }
+    )
+    .map((canisterConfigs) => {
+        const globalDeclarations = canisterConfigs.flatMap(
+            (canisterConfig) => canisterConfig.globalDeclarations
         );
-});
 
-// TODO we need to all adding in all of these methods
+        const queryMethods = canisterConfigs.flatMap(
+            (canisterConfig) => canisterConfig.queryMethods
+        );
+
+        const updateMethods = canisterConfigs.flatMap(
+            (canisterConfig) => canisterConfig.updateMethods
+        );
+
+        return {
+            globalDeclarations,
+            queryMethods,
+            updateMethods
+        };
+    });
+
 runPropTests(CanisterArb(StableBTreeMapTestArb));
-
-// runPropTests([
-//     ContainsKeyTestArb,
-//     GetTestArb,
-//     IsEmptyTestArb,
-//     ItemsTestArb,
-//     KeysTestArb,
-//     LenTestArb,
-//     RemoveTestArb,
-//     ValuesTestArb
-// ]);
