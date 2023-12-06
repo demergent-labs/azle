@@ -57,7 +57,8 @@ export function FuncDefinitionArb(
                 const imports = new Set([
                     ...params.flatMap((param) => [...param.candidMeta.imports]),
                     ...returnFunc.candidMeta.imports,
-                    'Func'
+                    'Func',
+                    'Principal'
                 ]);
 
                 return {

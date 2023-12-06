@@ -67,7 +67,7 @@ function generateImports(fields: Field[]): Set<string> {
     const fieldImports = fields.flatMap((field) => [
         ...field[1].candidMeta.imports
     ]);
-    return new Set([...fieldImports, 'Variant']);
+    return new Set([...fieldImports, 'RequireExactlyOne', 'Variant']);
 }
 
 function generateVariableAliasDeclarations(
