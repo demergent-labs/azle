@@ -2,11 +2,6 @@
 // TODO I am not sure I can do that without having the ability to create multiple
 // TODO different kinds of methods per test
 
-// TODO it would probably be better to create the StableBTreeMaps globally
-// TODO and just have one method for each StableBTreeMap method
-
-// TODO we should test update methods as well...probably mainly
-
 import fc from 'fast-check';
 
 import { runPropTests } from '../../../../property_tests';
@@ -20,52 +15,62 @@ import { KeysTestArb } from './keys';
 import { LenTestArb } from './len';
 import { RemoveTestArb } from './remove';
 import { ValuesTestArb } from './values';
+import { InsertTestArb } from './insert';
 
 const StableBTreeMapTestArb = fc
     .array(
         StableBTreeMapArb.chain((stableBTreeMap) => {
             return fc
                 .tuple(
-                    ContainsKeyTestArb(stableBTreeMap)
-                    // GetTestArb,
-                    // IsEmptyTestArb,
-                    // ItemsTestArb,
-                    // KeysTestArb,
-                    // LenTestArb,
-                    // RemoveTestArb,
-                    // ValuesTestArb
+                    InsertTestArb(stableBTreeMap),
+                    ContainsKeyTestArb(stableBTreeMap),
+                    GetTestArb(stableBTreeMap),
+                    IsEmptyTestArb(stableBTreeMap),
+                    ItemsTestArb(stableBTreeMap),
+                    KeysTestArb(stableBTreeMap),
+                    LenTestArb(stableBTreeMap),
+                    RemoveTestArb(stableBTreeMap),
+                    ValuesTestArb(stableBTreeMap)
                 )
                 .map(
                     ([
-                        containsKeyTestQueryMethod
-                        // getTestQueryMethod,
-                        // isEmptyTestQueryMethod,
-                        // itemsTestQueryMethod,
-                        // keysTestQueryMethod,
-                        // lenTestQueryMethod,
-                        // removeTestQueryMethod,
-                        // valuesTestQueryMethod
+                        containsKeyTestQueryMethod,
+                        getTestQueryMethod,
+                        isEmptyTestQueryMethod,
+                        itemsTestQueryMethod,
+                        keysTestQueryMethod,
+                        lenTestQueryMethod,
+                        removeTestQueryMethod,
+                        valuesTestQueryMethod
                     ]) => {
+                        // TODO don't we want imports here?
+                        // TODO let's go through the tests now assuming just one insert for the rest
                         return {
-                            globalDeclarations: [stableBTreeMap.body],
-                            queryMethods: [
-                                containsKeyTestQueryMethod
-                                // getTestQueryMethod,
-                                // isEmptyTestQueryMethod,
-                                // itemsTestQueryMethod,
-                                // keysTestQueryMethod,
-                                // lenTestQueryMethod,
-                                // removeTestQueryMethod,
-                                // valuesTestQueryMethod
+                            globalDeclarations: [
+                                stableBTreeMap.body,
+                                ...stableBTreeMap.param0.src
+                                    .variableAliasDeclarations,
+                                ...stableBTreeMap.param1.src
+                                    .variableAliasDeclarations
                             ],
-                            updateMethods: []
+                            queryMethods: [],
+                            updateMethods: [
+                                containsKeyTestQueryMethod,
+                                getTestQueryMethod,
+                                isEmptyTestQueryMethod,
+                                itemsTestQueryMethod,
+                                keysTestQueryMethod,
+                                lenTestQueryMethod,
+                                removeTestQueryMethod,
+                                valuesTestQueryMethod
+                            ]
                         };
                     }
                 );
         }),
         {
-            minLength: 10,
-            maxLength: 50
+            minLength: 1,
+            maxLength: 20
         }
     )
     .map((canisterConfigs) => {

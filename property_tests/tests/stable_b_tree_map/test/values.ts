@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
-import { StableBTreeMapArb } from '../../../arbitraries/stable_b_tree_map_arb';
+import { StableBTreeMap } from '../../../arbitraries/stable_b_tree_map_arb';
 import { getActor } from '../../../../property_tests';
 import { Test } from '../../../../test';
 import { getArrayForCandidType, getArrayStringForCandidType } from './utils';
@@ -10,60 +10,55 @@ import { CorrespondingJSType } from '../../../arbitraries/candid/corresponding_j
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { QueryMethod } from '../../../arbitraries/canister_methods/query_method_arb';
 
-export const ValuesTestArb = fc
-    .tuple(UniqueIdentifierArb('stableBTreeMap'), StableBTreeMapArb)
-    .map(([functionName, stableBTreeMap]): QueryMethod => {
-        const imports = new Set([
-            ...stableBTreeMap.param0.src.imports,
-            ...stableBTreeMap.param1.src.imports,
-            'Vec',
-            'stableJson',
-            'StableBTreeMap'
-        ]);
+export function ValuesTestArb(stableBTreeMap: StableBTreeMap) {
+    return fc
+        .tuple(UniqueIdentifierArb('stableBTreeMap'))
+        .map(([functionName]): QueryMethod => {
+            const imports = new Set([
+                ...stableBTreeMap.param0.src.imports,
+                ...stableBTreeMap.param1.src.imports,
+                'Vec',
+                'stableJson',
+                'StableBTreeMap'
+            ]);
 
-        const paramCandidTypeObjects = [
-            stableBTreeMap.param0.src.candidTypeAnnotation,
-            stableBTreeMap.param1.src.candidTypeAnnotation
-        ].join(', ');
+            const paramCandidTypeObjects = [
+                stableBTreeMap.param0.src.candidTypeObject,
+                stableBTreeMap.param1.src.candidTypeObject
+            ].join(', ');
 
-        const returnCandidType = `Vec(${stableBTreeMap.param1.src.candidTypeAnnotation})`;
-        const body = generateBody(
-            stableBTreeMap.name,
-            stableBTreeMap.param1.src.candidTypeAnnotation,
-            stableBTreeMap.body
-        );
+            const returnCandidTypeObject = `Vec(${stableBTreeMap.param1.src.candidTypeObject})`;
+            const body = generateBody(
+                stableBTreeMap.name,
+                stableBTreeMap.param1.src.candidTypeAnnotation
+            );
 
-        const test = generateTest(
-            functionName,
-            stableBTreeMap.param0,
-            stableBTreeMap.param1
-        );
+            const test = generateTest(
+                functionName,
+                stableBTreeMap.param0,
+                stableBTreeMap.param1
+            );
 
-        return {
-            imports,
-            globalDeclarations: [
-                ...stableBTreeMap.param0.src.variableAliasDeclarations,
-                ...stableBTreeMap.param1.src.variableAliasDeclarations
-            ],
-            sourceCode: `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidType}, (param0, param1) => {
+            return {
+                imports,
+                globalDeclarations: [],
+                sourceCode: `${functionName}: update([${paramCandidTypeObjects}], ${returnCandidTypeObject}, (param0, param1) => {
                 ${body}
             })`,
-            tests: [test]
-        };
-    });
+                tests: [test]
+            };
+        });
+}
 
 function generateBody(
     stableBTreeMapName: string,
-    stableBTreeMapValueCandidType: string,
-    stableBTreeMapBody: string
+    stableBTreeMapValueCandidTypeAnnotation: string
 ): string {
     return `
-        ${stableBTreeMapBody}
-
         ${stableBTreeMapName}.insert(param0, param1);
 
         return ${getArrayStringForCandidType(
-            stableBTreeMapValueCandidType
+            stableBTreeMapValueCandidTypeAnnotation
         )}(${stableBTreeMapName}.values());
     `;
 }

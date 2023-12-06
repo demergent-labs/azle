@@ -9,9 +9,7 @@ export function SimpleCandidDefinitionArb(
     return fc
         .tuple(UniqueIdentifierArb('typeDeclaration'), fc.boolean())
         .map(([name, useTypeDeclaration]) => {
-            const candidTypeAnnotation = useTypeDeclaration
-                ? `typeof ${name}.tsType`
-                : candidType;
+            const candidTypeAnnotation = candidType;
             const candidTypeObject = useTypeDeclaration ? name : candidType;
             const imports = new Set([candidType]);
             const variableAliasDeclarations = generateVariableAliasDeclarations(

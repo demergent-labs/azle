@@ -42,24 +42,9 @@ export class AzleVec<T> {
     }
 }
 
-export type Vec<
-    T extends
-        | blob
-        | boolean
-        | CandidType
-        | int
-        | int64
-        | int32
-        | int16
-        | int8
-        | nat
-        | nat64
-        | nat32
-        | nat16
-        | nat8
-        | Principal
-        | string
-> = TypeMapping<AzleVec<T>>;
-export function Vec<T extends CandidType>(t: T): AzleVec<T> {
+// TODO we should tighten T to be only CandidTypes...it just gets tricky
+// TODO I have walked back the tightening for the moment because of problems it is causing
+export type Vec<T> = TypeMapping<AzleVec<T>>;
+export function Vec<T>(t: T): AzleVec<T> {
     return new AzleVec(t);
 }
