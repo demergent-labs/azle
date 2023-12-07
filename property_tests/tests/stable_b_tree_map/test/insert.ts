@@ -11,26 +11,20 @@ export function InsertTestArb(stableBTreeMap: StableBTreeMap) {
     return fc
         .tuple(UniqueIdentifierArb('stableBTreeMap'))
         .map(([functionName]): QueryMethod => {
-            const imports = new Set([
-                ...stableBTreeMap.param0.src.imports,
-                ...stableBTreeMap.param1.src.imports,
-                'Opt',
-                'stableJson',
-                'StableBTreeMap'
-            ]);
+            const imports = new Set([...stableBTreeMap.imports, 'Opt']);
 
             const paramCandidTypeObjects = [
-                stableBTreeMap.param0.src.candidTypeObject,
-                stableBTreeMap.param1.src.candidTypeObject
+                stableBTreeMap.keySample.src.candidTypeObject,
+                stableBTreeMap.valueSample.src.candidTypeObject
             ].join(', ');
 
-            const returnCandidTypeObject = `Opt(${stableBTreeMap.param1.src.candidTypeObject})`;
+            const returnCandidTypeObject = `Opt(${stableBTreeMap.valueSample.src.candidTypeObject})`;
             const body = generateBody(stableBTreeMap.name);
 
-            const test = generateTest(
+            const tests = generateTests(
                 functionName,
-                stableBTreeMap.param0.agentArgumentValue,
-                stableBTreeMap.param1.agentArgumentValue
+                stableBTreeMap.keySample.agentArgumentValue,
+                stableBTreeMap.valueSample.agentArgumentValue
             );
 
             return {
@@ -39,7 +33,7 @@ export function InsertTestArb(stableBTreeMap: StableBTreeMap) {
                 sourceCode: `${functionName}: update([${paramCandidTypeObjects}], ${returnCandidTypeObject}, (param0, param1) => {
                 ${body}
             })`,
-                tests: [test]
+                tests
             };
         });
 }
@@ -50,21 +44,28 @@ function generateBody(stableBTreeMapName: string): string {
     `;
 }
 
-function generateTest(
+function generateTests(
     functionName: string,
     param0Value: any,
     param1Value: any
-): Test {
-    return {
-        name: `insert ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/stable_b_tree_map/test');
+): Test[][] {
+    return [
+        [
+            {
+                name: `insert after first deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
 
-            const result = await actor[functionName](param0Value, param1Value);
+                    const result = await actor[functionName](
+                        param0Value,
+                        param1Value
+                    );
 
-            return {
-                Ok: deepEqual(result, [])
-            };
-        }
-    };
+                    return {
+                        Ok: deepEqual(result, [])
+                    };
+                }
+            }
+        ]
+    ];
 }

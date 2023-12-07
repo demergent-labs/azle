@@ -19,7 +19,7 @@ export type UpdateMethod = {
     imports: Set<string>;
     globalDeclarations: string[];
     sourceCode: string;
-    tests: Test[];
+    tests: Test[][];
 };
 
 export function UpdateMethodArb<

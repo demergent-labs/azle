@@ -11,18 +11,12 @@ export function LenTestArb(stableBTreeMap: StableBTreeMap) {
     return fc
         .tuple(UniqueIdentifierArb('stableBTreeMap'))
         .map(([functionName]): QueryMethod => {
-            const imports = new Set([
-                ...stableBTreeMap.param0.src.imports,
-                ...stableBTreeMap.param1.src.imports,
-                'nat64',
-                'stableJson',
-                'StableBTreeMap'
-            ]);
+            const imports = new Set([...stableBTreeMap.imports, 'nat64']);
 
             const returnCandidTypeObject = `nat64`;
             const body = generateBody(stableBTreeMap.name);
 
-            const test = generateTest(functionName);
+            const tests = generateTests(functionName);
 
             return {
                 imports,
@@ -30,7 +24,7 @@ export function LenTestArb(stableBTreeMap: StableBTreeMap) {
                 sourceCode: `${functionName}: query([], ${returnCandidTypeObject}, () => {
                 ${body}
             })`,
-                tests: [test]
+                tests
             };
         });
 }
@@ -41,17 +35,49 @@ function generateBody(stableBTreeMapName: string): string {
     `;
 }
 
-function generateTest(functionName: string): Test {
-    return {
-        name: `len ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/stable_b_tree_map/test');
+function generateTests(functionName: string): Test[][] {
+    return [
+        [
+            {
+                name: `len after first deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
 
-            const result = await actor[functionName]();
+                    const result = await actor[functionName]();
 
-            return {
-                Ok: deepEqual(result, 1n)
-            };
-        }
-    };
+                    return {
+                        Ok: deepEqual(result, 1n)
+                    };
+                }
+            }
+        ],
+        [
+            {
+                name: `len after second deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
+
+                    const result = await actor[functionName]();
+
+                    return {
+                        Ok: deepEqual(result, 1n)
+                    };
+                }
+            }
+        ],
+        [
+            {
+                name: `len after third deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
+
+                    const result = await actor[functionName]();
+
+                    return {
+                        Ok: deepEqual(result, 0n)
+                    };
+                }
+            }
+        ]
+    ];
 }

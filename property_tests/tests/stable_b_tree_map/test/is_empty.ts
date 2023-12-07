@@ -11,17 +11,11 @@ export function IsEmptyTestArb(stableBTreeMap: StableBTreeMap) {
     return fc
         .tuple(UniqueIdentifierArb('stableBTreeMap'))
         .map(([functionName]): QueryMethod => {
-            const imports = new Set([
-                ...stableBTreeMap.param0.src.imports,
-                ...stableBTreeMap.param1.src.imports,
-                'bool',
-                'stableJson',
-                'StableBTreeMap'
-            ]);
+            const imports = new Set([...stableBTreeMap.imports, 'bool']);
 
             const body = generateBody(stableBTreeMap.name);
 
-            const test = generateTest(functionName);
+            const tests = generateTests(functionName);
 
             return {
                 imports,
@@ -29,7 +23,7 @@ export function IsEmptyTestArb(stableBTreeMap: StableBTreeMap) {
                 sourceCode: `${functionName}: query([], bool, () => {
                 ${body}
             })`,
-                tests: [test]
+                tests
             };
         });
 }
@@ -40,17 +34,49 @@ function generateBody(stableBTreeMapName: string): string {
     `;
 }
 
-function generateTest(functionName: string): Test {
-    return {
-        name: `isEmpty ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/stable_b_tree_map/test');
+function generateTests(functionName: string): Test[][] {
+    return [
+        [
+            {
+                name: `isEmpty after first deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
 
-            const result = await actor[functionName]();
+                    const result = await actor[functionName]();
 
-            return {
-                Ok: deepEqual(result, false)
-            };
-        }
-    };
+                    return {
+                        Ok: deepEqual(result, true)
+                    };
+                }
+            }
+        ],
+        [
+            {
+                name: `isEmpty after second deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
+
+                    const result = await actor[functionName]();
+
+                    return {
+                        Ok: deepEqual(result, false)
+                    };
+                }
+            }
+        ],
+        [
+            {
+                name: `isEmpty after third deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
+
+                    const result = await actor[functionName]();
+
+                    return {
+                        Ok: deepEqual(result, true)
+                    };
+                }
+            }
+        ]
+    ];
 }

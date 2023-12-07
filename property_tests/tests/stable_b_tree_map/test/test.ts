@@ -22,45 +22,47 @@ const StableBTreeMapTestArb = fc
         StableBTreeMapArb.chain((stableBTreeMap) => {
             return fc
                 .tuple(
+                    IsEmptyTestArb(stableBTreeMap),
                     InsertTestArb(stableBTreeMap),
                     ContainsKeyTestArb(stableBTreeMap),
                     GetTestArb(stableBTreeMap),
-                    IsEmptyTestArb(stableBTreeMap),
                     ItemsTestArb(stableBTreeMap),
                     KeysTestArb(stableBTreeMap),
                     LenTestArb(stableBTreeMap),
-                    RemoveTestArb(stableBTreeMap),
-                    ValuesTestArb(stableBTreeMap)
+                    ValuesTestArb(stableBTreeMap),
+                    RemoveTestArb(stableBTreeMap)
                 )
                 .map(
                     ([
+                        isEmptyTestQueryMethod,
+                        insertTestQueryMethod,
                         containsKeyTestQueryMethod,
                         getTestQueryMethod,
-                        isEmptyTestQueryMethod,
                         itemsTestQueryMethod,
                         keysTestQueryMethod,
                         lenTestQueryMethod,
-                        removeTestQueryMethod,
-                        valuesTestQueryMethod
+                        valuesTestQueryMethod,
+                        removeTestQueryMethod
                     ]) => {
                         return {
                             globalDeclarations: [
-                                stableBTreeMap.body,
-                                ...stableBTreeMap.param0.src
+                                stableBTreeMap.definition,
+                                ...stableBTreeMap.keySample.src
                                     .variableAliasDeclarations,
-                                ...stableBTreeMap.param1.src
+                                ...stableBTreeMap.valueSample.src
                                     .variableAliasDeclarations
                             ],
                             queryMethods: [],
                             updateMethods: [
+                                isEmptyTestQueryMethod,
+                                insertTestQueryMethod,
                                 containsKeyTestQueryMethod,
                                 getTestQueryMethod,
-                                isEmptyTestQueryMethod,
                                 itemsTestQueryMethod,
                                 keysTestQueryMethod,
                                 lenTestQueryMethod,
-                                removeTestQueryMethod,
-                                valuesTestQueryMethod
+                                valuesTestQueryMethod,
+                                removeTestQueryMethod
                             ]
                         };
                     }

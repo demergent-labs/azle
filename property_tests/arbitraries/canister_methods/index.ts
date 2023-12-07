@@ -33,7 +33,7 @@ export type TestsGenerator<
         ReturnTypeAgentArgumentValue,
         ReturnTypeAgentResponseValue
     >
-) => Test[];
+) => Test[][];
 
 export type CallbackLocation = 'INLINE' | 'STANDALONE';
 
