@@ -18,22 +18,31 @@ export function VariantDefinitionArb(
             fc.boolean()
         )
         .map(([name, fields, useTypeDeclaration]): VariantCandidDefinition => {
-            const typeAnnotation = useTypeDeclaration
-                ? name
-                : generateTypeAnnotation(fields);
-
-            const typeAliasDeclarations = generateTypeAliasDeclarations(
+            const candidTypeAnnotation = generateCandidTypeAnnotation(
+                useTypeDeclaration,
                 name,
-                fields,
-                useTypeDeclaration
+                fields
+            );
+
+            const candidTypeObject = generateCandidTypeObject(
+                useTypeDeclaration,
+                name,
+                fields
+            );
+
+            const variableAliasDeclarations = generateVariableAliasDeclarations(
+                useTypeDeclaration,
+                name,
+                fields
             );
 
             const imports = generateImports(fields);
 
             return {
                 candidMeta: {
-                    typeAnnotation,
-                    typeAliasDeclarations,
+                    candidTypeAnnotation,
+                    candidTypeObject,
+                    variableAliasDeclarations,
                     imports,
                     candidType: 'Variant'
                 },
@@ -58,31 +67,56 @@ function generateImports(fields: Field[]): Set<string> {
     const fieldImports = fields.flatMap((field) => [
         ...field[1].candidMeta.imports
     ]);
-    return new Set([...fieldImports, 'Variant']);
+    return new Set([...fieldImports, 'RequireExactlyOne', 'Variant']);
 }
 
-function generateTypeAliasDeclarations(
+function generateVariableAliasDeclarations(
+    useTypeDeclaration: boolean,
     name: string,
-    fields: Field[],
-    useTypeDeclaration: boolean
+    fields: Field[]
 ): string[] {
     const fieldTypeDeclarations = fields.flatMap(
-        (field) => field[1].candidMeta.typeAliasDeclarations
+        (field) => field[1].candidMeta.variableAliasDeclarations
     );
     if (useTypeDeclaration) {
         return [
             ...fieldTypeDeclarations,
-            `const ${name} = ${generateTypeAnnotation(fields)};`
+            `const ${name} = ${generateCandidTypeObject(false, name, fields)};`
         ];
     }
     return fieldTypeDeclarations;
 }
 
-function generateTypeAnnotation(fields: Field[]): string {
+function generateCandidTypeAnnotation(
+    useTypeDeclaration: boolean,
+    name: string,
+    fields: Field[]
+): string {
+    if (useTypeDeclaration === true) {
+        return `typeof ${name}.tsType`;
+    }
+
+    return `RequireExactlyOne<{${fields
+        .map(
+            ([fieldName, fieldDataType]) =>
+                `${fieldName}: ${fieldDataType.candidMeta.candidTypeAnnotation}`
+        )
+        .join(',')}}>`;
+}
+
+function generateCandidTypeObject(
+    useTypeDeclaration: boolean,
+    name: string,
+    fields: Field[]
+): string {
+    if (useTypeDeclaration === true) {
+        return name;
+    }
+
     return `Variant({${fields
         .map(
             ([fieldName, fieldDataType]) =>
-                `${fieldName}: ${fieldDataType.candidMeta.typeAnnotation}`
+                `${fieldName}: ${fieldDataType.candidMeta.candidTypeObject}`
         )
         .join(',')}})`;
 }

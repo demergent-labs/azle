@@ -6,6 +6,8 @@ export class AzleVoid {
     _azleKind: 'AzleVoid' = 'AzleVoid';
     static _azleKind: 'AzleVoid' = 'AzleVoid';
 
+    static tsType: Void;
+
     static toBytes(data: any) {
         return encode(this, data);
     }

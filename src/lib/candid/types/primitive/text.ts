@@ -6,6 +6,8 @@ export class AzleText {
     _azleKind: 'AzleText' = 'AzleText';
     static _azleKind: 'AzleText' = 'AzleText';
 
+    static tsType: text;
+
     static toBytes(data: any) {
         return encode(this, data);
     }

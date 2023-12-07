@@ -6,6 +6,8 @@ export class AzleBool {
     _azleKind: 'AzleBool' = 'AzleBool';
     static _azleKind: 'AzleBool' = 'AzleBool';
 
+    static tsType: bool;
+
     static toBytes(data: any) {
         return encode(this, data);
     }

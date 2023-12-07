@@ -6,6 +6,8 @@ export class AzleFloat32 {
     _azleKind: 'AzleFloat32' = 'AzleFloat32';
     static _azleKind: 'AzleFloat32' = 'AzleFloat32';
 
+    static tsType: float32;
+
     static toBytes(data: any) {
         return encode(this, data);
     }

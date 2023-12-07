@@ -32,28 +32,40 @@ export function FuncDefinitionArb(
                 mode,
                 useTypeDeclaration
             ]): FuncCandidDefinition => {
-                const typeAliasDeclarations = generateTypeAliasDeclarations(
+                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                    useTypeDeclaration,
+                    name
+                );
+
+                const candidTypeObject = generateCandidTypeObject(
+                    useTypeDeclaration,
                     name,
                     params,
                     returnFunc,
-                    mode,
-                    useTypeDeclaration
+                    mode
                 );
 
-                const typeAnnotation = useTypeDeclaration
-                    ? name
-                    : generateTypeAnnotation(params, returnFunc, mode);
+                const variableAliasDeclarations =
+                    generateVariableAliasDeclarations(
+                        useTypeDeclaration,
+                        name,
+                        params,
+                        returnFunc,
+                        mode
+                    );
 
                 const imports = new Set([
                     ...params.flatMap((param) => [...param.candidMeta.imports]),
                     ...returnFunc.candidMeta.imports,
-                    'Func'
+                    'Func',
+                    'Principal'
                 ]);
 
                 return {
                     candidMeta: {
-                        typeAnnotation,
-                        typeAliasDeclarations,
+                        candidTypeAnnotation,
+                        candidTypeObject,
+                        variableAliasDeclarations,
                         imports,
                         candidType: 'Func'
                     },
@@ -64,23 +76,26 @@ export function FuncDefinitionArb(
         );
 }
 
-function generateTypeAliasDeclarations(
+function generateVariableAliasDeclarations(
+    useTypeDeclaration: boolean,
     name: string,
     paramCandids: CandidDefinition[],
     returnCandid: CandidDefinition,
-    mode: Mode,
-    useTypeDeclaration: boolean
+    mode: Mode
 ): string[] {
     const paramTypeDeclarations = paramCandids.flatMap(
-        (param) => param.candidMeta.typeAliasDeclarations
+        (param) => param.candidMeta.variableAliasDeclarations
     );
-    const returnTypeDeclaration = returnCandid.candidMeta.typeAliasDeclarations;
+    const returnTypeDeclaration =
+        returnCandid.candidMeta.variableAliasDeclarations;
 
     if (useTypeDeclaration) {
         return [
             ...paramTypeDeclarations,
             ...returnTypeDeclaration,
-            `const ${name} = ${generateTypeAnnotation(
+            `const ${name} = ${generateCandidTypeObject(
+                false,
+                name,
                 paramCandids,
                 returnCandid,
                 mode
@@ -91,13 +106,30 @@ function generateTypeAliasDeclarations(
     return [...paramTypeDeclarations, ...returnTypeDeclaration];
 }
 
-function generateTypeAnnotation(
+function generateCandidTypeAnnotation(
+    useTypeDeclaration: boolean,
+    name: string
+): string {
+    if (useTypeDeclaration === true) {
+        return `typeof ${name}.tsType`;
+    }
+
+    return `[Principal, string]`;
+}
+
+function generateCandidTypeObject(
+    useTypeDeclaration: boolean,
+    name: string,
     paramCandids: CandidDefinition[],
     returnCandid: CandidDefinition,
     mode: Mode
 ): string {
+    if (useTypeDeclaration === true) {
+        return name;
+    }
+
     const params = paramCandids
-        .map((param) => param.candidMeta.typeAnnotation)
+        .map((param) => param.candidMeta.candidTypeObject)
         .join(', ');
-    return `Func([${params}], ${returnCandid.candidMeta.typeAnnotation}, '${mode}')`;
+    return `Func([${params}], ${returnCandid.candidMeta.candidTypeObject}, '${mode}')`;
 }

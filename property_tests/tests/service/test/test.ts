@@ -13,7 +13,7 @@ import { generateTests } from './generate_tests';
 
 const AllServicesQueryMethodArb = QueryMethodArb(
     fc.uniqueArray(ServiceArb(), {
-        selector: (entry) => entry.src.typeAnnotation
+        selector: (entry) => entry.src.candidTypeAnnotation
     }),
     ServiceArb(),
     {

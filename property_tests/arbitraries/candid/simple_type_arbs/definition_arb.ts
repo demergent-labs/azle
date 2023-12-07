@@ -9,25 +9,27 @@ export function SimpleCandidDefinitionArb(
     return fc
         .tuple(UniqueIdentifierArb('typeDeclaration'), fc.boolean())
         .map(([name, useTypeDeclaration]) => {
-            const typeAnnotation = useTypeDeclaration ? name : candidType;
+            const candidTypeAnnotation = candidType;
+            const candidTypeObject = useTypeDeclaration ? name : candidType;
             const imports = new Set([candidType]);
-            const typeAliasDeclarations = generateTypeAliasDeclarations(
+            const variableAliasDeclarations = generateVariableAliasDeclarations(
                 name,
                 candidType,
                 useTypeDeclaration
             );
             return {
                 candidMeta: {
+                    candidTypeAnnotation,
+                    candidTypeObject,
                     candidType,
-                    typeAnnotation,
                     imports,
-                    typeAliasDeclarations
+                    variableAliasDeclarations
                 }
             };
         });
 }
 
-function generateTypeAliasDeclarations(
+function generateVariableAliasDeclarations(
     name: string,
     candidType: string,
     useTypeDeclaration: boolean

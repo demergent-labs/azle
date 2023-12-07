@@ -3,6 +3,7 @@ import { Canister } from './arbitraries/canister_arb';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { execSync } from 'child_process';
 import { runTests } from '../test';
+import { clear as clearUniquePrimitiveArb } from './arbitraries/unique_primitive_arb';
 
 export type Named<T> = {
     name: string;
@@ -47,6 +48,8 @@ export function runPropTests(canisterArb: fc.Arbitrary<Canister>) {
                     stdio: 'inherit'
                 }
             );
+
+            clearUniquePrimitiveArb();
 
             return result;
         }),

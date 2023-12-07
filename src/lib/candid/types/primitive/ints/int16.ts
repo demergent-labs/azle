@@ -6,6 +6,8 @@ export class AzleInt16 {
     _azleKind: 'AzleInt16' = 'AzleInt16';
     static _azleKind: 'AzleInt16' = 'AzleInt16';
 
+    static tsType: int16;
+
     static toBytes(data: any) {
         return encode(this, data);
     }

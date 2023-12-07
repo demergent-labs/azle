@@ -99,9 +99,9 @@ export function QueryMethodArb<
 
                 const candidTypeDeclarations = [
                     ...paramTypes.flatMap(
-                        (param) => param.src.typeAliasDeclarations
+                        (param) => param.src.variableAliasDeclarations
                     ),
-                    ...returnType.src.typeAliasDeclarations
+                    ...returnType.src.variableAliasDeclarations
                 ].filter(isDefined);
 
                 const globalDeclarations =
@@ -143,11 +143,11 @@ function generateSourceCode<
     returnType: CandidValueAndMeta<ReturnType, ReturnAgentType>,
     callback: string
 ): string {
-    const paramCandidTypes = paramTypes
-        .map((param) => param.src.typeAnnotation)
+    const paramCandidTypeObjects = paramTypes
+        .map((param) => param.src.candidTypeObject)
         .join(', ');
 
-    const returnCandidType = returnType.src.typeAnnotation;
+    const returnCandidTypeObject = returnType.src.candidTypeObject;
 
-    return `${functionName}: query([${paramCandidTypes}], ${returnCandidType}, ${callback})`;
+    return `${functionName}: query([${paramCandidTypeObjects}], ${returnCandidTypeObject}, ${callback})`;
 }

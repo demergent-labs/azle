@@ -18,22 +18,31 @@ export function TupleDefinitionArb(
             fc.boolean()
         )
         .map(([name, fields, useTypeDeclaration]): TupleCandidDefinition => {
-            const typeAnnotation = useTypeDeclaration
-                ? name
-                : generateTypeAnnotation(fields);
-
-            const typeAliasDeclarations = generateTypeAliasDeclarations(
+            const candidTypeAnnotation = generateCandidTypeAnnotation(
+                useTypeDeclaration,
                 name,
-                fields,
-                useTypeDeclaration
+                fields
+            );
+
+            const candidTypeObject = generateCandidTypeObject(
+                useTypeDeclaration,
+                name,
+                fields
+            );
+
+            const variableAliasDeclarations = generateVariableAliasDeclarations(
+                useTypeDeclaration,
+                name,
+                fields
             );
 
             const imports = generateImports(fields);
 
             return {
                 candidMeta: {
-                    typeAnnotation,
-                    typeAliasDeclarations,
+                    candidTypeAnnotation,
+                    candidTypeObject,
+                    variableAliasDeclarations,
                     imports,
                     candidType: 'Tuple'
                 },
@@ -42,25 +51,49 @@ export function TupleDefinitionArb(
         });
 }
 
-function generateTypeAliasDeclarations(
+function generateVariableAliasDeclarations(
+    useTypeDeclaration: boolean,
     name: string,
-    fields: CandidDefinition[],
-    useTypeDeclaration: boolean
+    fields: CandidDefinition[]
 ): string[] {
-    const fieldTypeAliasDeclarations = fields.flatMap(
-        (field) => field.candidMeta.typeAliasDeclarations
+    const fieldVariableAliasDeclarations = fields.flatMap(
+        (field) => field.candidMeta.variableAliasDeclarations
     );
     if (useTypeDeclaration) {
         return [
-            ...fieldTypeAliasDeclarations,
-            `const ${name} = ${generateTypeAnnotation(fields)};`
+            ...fieldVariableAliasDeclarations,
+            `const ${name} = ${generateCandidTypeObject(false, name, fields)};`
         ];
     }
-    return fieldTypeAliasDeclarations;
+    return fieldVariableAliasDeclarations;
 }
 
-function generateTypeAnnotation(fields: CandidDefinition[]) {
-    const innerTypes = fields.map((field) => field.candidMeta.typeAnnotation);
+function generateCandidTypeAnnotation(
+    useTypeDeclaration: boolean,
+    name: string,
+    fields: CandidDefinition[]
+) {
+    if (useTypeDeclaration === true) {
+        return `typeof ${name}.tsType`;
+    }
+
+    const innerTypes = fields.map(
+        (field) => field.candidMeta.candidTypeAnnotation
+    );
+
+    return `Tuple<[${innerTypes.join(', ')}]>`;
+}
+
+function generateCandidTypeObject(
+    useTypeDeclaration: boolean,
+    name: string,
+    fields: CandidDefinition[]
+) {
+    if (useTypeDeclaration === true) {
+        return name;
+    }
+
+    const innerTypes = fields.map((field) => field.candidMeta.candidTypeObject);
 
     return `Tuple(${innerTypes.join(', ')})`;
 }

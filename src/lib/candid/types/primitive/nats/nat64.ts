@@ -6,6 +6,8 @@ export class AzleNat64 {
     _azleKind: 'AzleNat64' = 'AzleNat64';
     static _azleKind: 'AzleNat64' = 'AzleNat64';
 
+    static tsType: nat64;
+
     static toBytes(data: any) {
         return encode(this, data);
     }

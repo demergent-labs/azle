@@ -62,13 +62,14 @@ export type ServiceCandidDefinition = {
 export type ServiceMethodDefinition = {
     name: string;
     imports: Set<string>;
-    typeAliasDeclarations: string[];
+    variableAliasDeclarations: string[];
     src: string;
 };
 
 type CandidMeta = {
-    typeAnnotation: string; // Either a type reference or type literal
-    typeAliasDeclarations: string[];
+    candidTypeAnnotation: string; // Either a type reference or type literal
+    candidTypeObject: string;
+    variableAliasDeclarations: string[];
     imports: Set<string>;
     candidType: CandidType;
 };

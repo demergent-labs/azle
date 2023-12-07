@@ -6,6 +6,8 @@ export class AzleReserved {
     _azleKind: 'AzleReserved' = 'AzleReserved';
     static _azleKind: 'AzleReserved' = 'AzleReserved';
 
+    static tsType: reserved;
+
     static toBytes(data: any) {
         return encode(this, data);
     }

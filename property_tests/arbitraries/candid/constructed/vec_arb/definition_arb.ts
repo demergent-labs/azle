@@ -15,22 +15,31 @@ export function VecDefinitionArb(
             fc.boolean()
         )
         .map(([name, innerType, useTypeDeclaration]): VecCandidDefinition => {
-            const typeAnnotation = useTypeDeclaration
-                ? name
-                : generateTypeAnnotation(innerType);
-
-            const typeAliasDeclarations = generateTypeAliasDeclarations(
+            const candidTypeAnnotation = generateCandidTypeAnnotation(
+                useTypeDeclaration,
                 name,
-                innerType,
-                useTypeDeclaration
+                innerType
+            );
+
+            const candidTypeObject = generateCandidTypeObject(
+                useTypeDeclaration,
+                name,
+                innerType
+            );
+
+            const variableAliasDeclarations = generateVariableAliasDeclarations(
+                useTypeDeclaration,
+                name,
+                innerType
             );
 
             const imports = generateImports(innerType);
 
             return {
                 candidMeta: {
-                    typeAnnotation,
-                    typeAliasDeclarations,
+                    candidTypeAnnotation,
+                    candidTypeObject,
+                    variableAliasDeclarations,
                     imports,
                     candidType: 'Vec'
                 },
@@ -39,24 +48,48 @@ export function VecDefinitionArb(
         });
 }
 
-function generateTypeAliasDeclarations(
+function generateVariableAliasDeclarations(
+    useTypeDeclaration: boolean,
     name: string,
-    innerType: CandidDefinition,
-    useTypeDeclaration: boolean
+    innerType: CandidDefinition
 ): string[] {
     if (useTypeDeclaration) {
         return [
-            ...innerType.candidMeta.typeAliasDeclarations,
-            `const ${name} = ${generateTypeAnnotation(innerType)};`
+            ...innerType.candidMeta.variableAliasDeclarations,
+            `const ${name} = ${generateCandidTypeObject(
+                false,
+                name,
+                innerType
+            )};`
         ];
     }
-    return innerType.candidMeta.typeAliasDeclarations;
+    return innerType.candidMeta.variableAliasDeclarations;
 }
 
 function generateImports(innerType: CandidDefinition): Set<string> {
     return new Set([...innerType.candidMeta.imports, 'Vec']);
 }
 
-function generateTypeAnnotation(innerType: CandidDefinition): string {
-    return `Vec(${innerType.candidMeta.typeAnnotation})`;
+function generateCandidTypeAnnotation(
+    useTypeDeclaration: boolean,
+    name: string,
+    innerType: CandidDefinition
+): string {
+    if (useTypeDeclaration === true) {
+        return `typeof ${name}.tsType`;
+    }
+
+    return `Vec<${innerType.candidMeta.candidTypeAnnotation}>`;
+}
+
+function generateCandidTypeObject(
+    useTypeDeclaration: boolean,
+    name: string,
+    innerType: CandidDefinition
+): string {
+    if (useTypeDeclaration === true) {
+        return name;
+    }
+
+    return `Vec(${innerType.candidMeta.candidTypeObject})`;
 }
