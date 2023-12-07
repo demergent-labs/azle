@@ -8,7 +8,7 @@ export function generateTests(
     functionName: string,
     namedParamInt8s: Named<CandidValueAndMeta<number>>[],
     returnInt8: CandidValueAndMeta<number>
-): Test[] {
+): Test[][] {
     const count = namedParamInt8s.length + 1;
     const expectedResult = Math.floor(
         namedParamInt8s.reduce(
@@ -20,17 +20,19 @@ export function generateTests(
         (param) => param.el.agentArgumentValue
     );
     return [
-        {
-            name: `test ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/int8/test');
+        [
+            {
+                name: `test ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/int8/test');
 
-                const result = await actor[functionName](...paramValues);
+                    const result = await actor[functionName](...paramValues);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                    return {
+                        Ok: deepEqual(result, expectedResult)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

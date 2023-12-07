@@ -9,23 +9,25 @@ export function generateTests(
     functionName: string,
     namedParamRecords: Named<CandidValueAndMeta<Record>>[],
     returnRecord: CandidValueAndMeta<Record>
-): Test[] {
+): Test[][] {
     return [
-        {
-            name: `record ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/record/test');
+        [
+            {
+                name: `record ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/record/test');
 
-                const result = await actor[functionName](
-                    ...namedParamRecords.map(
-                        (param) => param.el.agentArgumentValue
-                    )
-                );
+                    const result = await actor[functionName](
+                        ...namedParamRecords.map(
+                            (param) => param.el.agentArgumentValue
+                        )
+                    );
 
-                return {
-                    Ok: deepEqual(result, returnRecord.agentResponseValue)
-                };
+                    return {
+                        Ok: deepEqual(result, returnRecord.agentResponseValue)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

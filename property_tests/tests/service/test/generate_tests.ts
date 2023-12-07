@@ -9,34 +9,36 @@ export function generateTests(
     functionName: string,
     namedParamServices: Named<CandidValueAndMeta<Principal>>[],
     returnService: CandidValueAndMeta<Principal>
-): Test[] {
+): Test[][] {
     return [
-        {
-            name: `service ${functionName}`,
-            test: async () => {
-                // Using execSync because the JS Agent has a bug expecting services
-                // to be ordered by hash or something.
-                // See https://forum.dfinity.org/t/topic/20885/14
+        [
+            {
+                name: `service ${functionName}`,
+                test: async () => {
+                    // Using execSync because the JS Agent has a bug expecting services
+                    // to be ordered by hash or something.
+                    // See https://forum.dfinity.org/t/topic/20885/14
 
-                const paramsString = namedParamServices
-                    .map(
-                        (param) =>
-                            `service "${param.el.agentArgumentValue.toText()}"`
+                    const paramsString = namedParamServices
+                        .map(
+                            (param) =>
+                                `service "${param.el.agentArgumentValue.toText()}"`
+                        )
+                        .join();
+
+                    const result = execSync(
+                        `dfx canister call canister ${functionName} '(${paramsString})'`
                     )
-                    .join();
+                        .toString()
+                        .trim();
 
-                const result = execSync(
-                    `dfx canister call canister ${functionName} '(${paramsString})'`
-                )
-                    .toString()
-                    .trim();
-
-                return {
-                    Ok:
-                        result ===
-                        `(service "${returnService.agentArgumentValue.toText()}")`
-                };
+                    return {
+                        Ok:
+                            result ===
+                            `(service "${returnService.agentArgumentValue.toText()}")`
+                    };
+                }
             }
-        }
+        ]
     ];
 }

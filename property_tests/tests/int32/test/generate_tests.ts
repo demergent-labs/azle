@@ -8,7 +8,7 @@ export function generateTests(
     functionName: string,
     namedParamInt32s: Named<CandidValueAndMeta<number>>[],
     returnInt32: CandidValueAndMeta<number>
-): Test[] {
+): Test[][] {
     const count = namedParamInt32s.length + 1;
     const expectedResult = Math.floor(
         namedParamInt32s.reduce(
@@ -21,17 +21,19 @@ export function generateTests(
     );
 
     return [
-        {
-            name: `int32 ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/int32/test');
+        [
+            {
+                name: `int32 ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/int32/test');
 
-                const result = await actor[functionName](...paramValues);
+                    const result = await actor[functionName](...paramValues);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                    return {
+                        Ok: deepEqual(result, expectedResult)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

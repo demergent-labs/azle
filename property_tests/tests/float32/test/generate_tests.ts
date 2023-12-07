@@ -8,7 +8,7 @@ export function generateTests(
     functionName: string,
     namedParamFloat32s: Named<CandidValueAndMeta<number>>[],
     returnFloat32: CandidValueAndMeta<number>
-): Test[] {
+): Test[][] {
     const expectedResult =
         namedParamFloat32s.length === 0
             ? returnFloat32.agentResponseValue
@@ -17,17 +17,19 @@ export function generateTests(
         (paramFloats) => paramFloats.el.agentArgumentValue
     );
     return [
-        {
-            name: `float32 ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/float32/test');
+        [
+            {
+                name: `float32 ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/float32/test');
 
-                const result = await actor[functionName](...paramValues);
+                    const result = await actor[functionName](...paramValues);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                    return {
+                        Ok: deepEqual(result, expectedResult)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

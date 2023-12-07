@@ -8,7 +8,7 @@ export function generateTests(
     functionName: string,
     paramBlobs: Named<CandidValueAndMeta<Uint8Array>>[],
     returnBlob: CandidValueAndMeta<Uint8Array>
-): Test[] {
+): Test[][] {
     const expectedResult = Uint8Array.from(
         paramBlobs
             .map((blob) => blob.el.agentResponseValue)
@@ -19,19 +19,21 @@ export function generateTests(
     );
 
     return [
-        {
-            name: `blob ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/blob/test');
+        [
+            {
+                name: `blob ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/blob/test');
 
-                const result = await actor[functionName](
-                    ...paramBlobs.map((blob) => blob.el.agentArgumentValue)
-                );
+                    const result = await actor[functionName](
+                        ...paramBlobs.map((blob) => blob.el.agentArgumentValue)
+                    );
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                    return {
+                        Ok: deepEqual(result, expectedResult)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

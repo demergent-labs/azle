@@ -8,7 +8,7 @@ export function generateTests(
     functionName: string,
     namedParamNat64s: Named<CandidValueAndMeta<bigint>>[],
     returnNat64: CandidValueAndMeta<bigint>
-): Test[] {
+): Test[][] {
     const count = namedParamNat64s.length + 1;
     const expectedResult =
         namedParamNat64s.reduce(
@@ -20,17 +20,19 @@ export function generateTests(
     );
 
     return [
-        {
-            name: `nat64 ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/nat64/test');
+        [
+            {
+                name: `nat64 ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/nat64/test');
 
-                const result = await actor[functionName](...paramValues);
+                    const result = await actor[functionName](...paramValues);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                    return {
+                        Ok: deepEqual(result, expectedResult)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

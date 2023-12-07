@@ -8,7 +8,7 @@ export function generateTests(
     functionName: string,
     namedParamInt16s: Named<CandidValueAndMeta<number>>[],
     returnInt16: CandidValueAndMeta<number>
-): Test[] {
+): Test[][] {
     const count = namedParamInt16s.length + 1;
     const expectedResult = Math.floor(
         namedParamInt16s.reduce(
@@ -21,17 +21,19 @@ export function generateTests(
     );
 
     return [
-        {
-            name: `int16 ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/int16/test');
+        [
+            {
+                name: `int16 ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/int16/test');
 
-                const result = await actor[functionName](...paramValues);
+                    const result = await actor[functionName](...paramValues);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                    return {
+                        Ok: deepEqual(result, expectedResult)
+                    };
+                }
             }
-        }
+        ]
     ];
 }
