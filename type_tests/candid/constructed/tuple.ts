@@ -20,7 +20,8 @@ import {
     reserved,
     text,
     Tuple,
-    Void
+    Void,
+    Record
 } from '../../../src/lib';
 import { testCandidType, testSerializable } from '../../assert_type';
 
@@ -86,3 +87,32 @@ export const ExampleTupleInstance: typeof ExampleTuple.tsType = [
     '',
     undefined
 ];
+
+// Crude tests to ensure Tuple only accepts CandidType
+
+const TupleRecord = Record({
+    id: text,
+    username: text
+});
+
+Tuple(float32);
+Tuple(int16);
+Tuple(TupleRecord);
+
+// @ts-expect-error
+Tuple({});
+
+// @ts-expect-error
+Tuple(5);
+
+// @ts-expect-error
+Tuple('not CandidType');
+
+// @ts-expect-error
+Tuple(null);
+
+// @ts-expect-error
+Tuple(undefined);
+
+// @ts-expect-error
+Tuple(Symbol('not CandidType'));

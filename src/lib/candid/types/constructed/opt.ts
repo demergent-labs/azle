@@ -25,7 +25,7 @@ export function Some<T>(value: T) {
 export const None = { None: null };
 
 // TODO what happens if we pass something to Opt() that can't be converted to CandidClass?
-export function Opt<T>(t: T) {
+export function Opt<T extends CandidType>(t: T) {
     return new AzleOpt<T>(t);
 }
 

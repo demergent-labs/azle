@@ -171,6 +171,9 @@ Vec(int16);
 Vec(VecRecord);
 
 // @ts-expect-error
+Vec({});
+
+// @ts-expect-error
 Vec(5);
 
 // @ts-expect-error
