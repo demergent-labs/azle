@@ -21,10 +21,41 @@ Here's how to define a simple `StableBTreeMap`:
 ```typescript
 import { nat8, StableBTreeMap, text } from 'azle';
 
-let map = StableBTreeMap(nat8, text, 0);
+let map = StableBTreeMap<nat8, text>(0);
 ```
 
-This is a `StableBTreeMap` with a key of type `nat8` and a value of type `text`. Key and value types can be any [Candid type](candid.md).
+This is a `StableBTreeMap` with a key of type `nat8` and a value of type `text`. When writing to and reading from a `StableBTreeMap`, by default the `stableJson` `Seriliazable` object is used to encode JS values into bytes and to decode JS values from bytes. `stableJson` uses `JSON.stringify` and `JSON.parse` with a custom `replacer` and `reviver` to handle many `Candid` and other values that you will most likely need for your canisters.
+
+You can also use other `Seriliazable` objects besides `stableJson`, and you can even create your own. Simply pass in a `Serializable` as the second and third parameter to your `StableBTreeMap`. The second parameter is the `key` `Serializable` and the third parameter is the `value` `serializable`.
+
+All `CandidType` objects imported from `azle` are `Serializable` objects as well. A `Serializable` simply has a `toBytes` method that takes a JS value and returns a `Uint8Array`, and a `fromBytes` method that takes a `Uint8Array` and returns a JS value.
+
+```typescript
+let map = StableBTreeMap<nat8, text>(0, nat8, text);
+```
+
+The `StableBTreeMap` above will now use the `nat8` and `text` implementations of `toBytes` and `fromBytes` instead of `stableJson`.
+
+Here's an example of how to create your own `Serializable`:
+
+```typescript
+export interface Serializable {
+    toBytes: (data: any) => Uint8Array;
+    fromBytes: (bytes: Uint8Array) => any;
+}
+
+export function StableSimpleJson(): Serializable {
+    return {
+        toBytes(data: any) {
+            const result = JSON.stringify(data);
+            return Uint8Array.from(Buffer.from(result));
+        },
+        fromBytes(bytes: Uint8Array) {
+            return JSON.parse(Buffer.from(bytes).toString());
+        }
+    };
+}
+```
 
 This `StableBTreeMap` also has a `memory id` of `0`. Each `StableBTreeMap` instance must have a unique `memory id` between `0` and `254`. Once a `memory id` is allocated, it cannot be used with a different `StableBTreeMap`. This means you can't create another `StableBTreeMap` using the same `memory id`, and you can't change the key or value types of an existing `StableBTreeMap`. [This problem will be addressed to some extent](https://github.com/demergent-labs/azle/issues/843).
 
