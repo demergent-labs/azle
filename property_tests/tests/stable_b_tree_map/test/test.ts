@@ -42,11 +42,11 @@ const StableBTreeMapTestArb = fc
                     ]) => {
                         return {
                             globalDeclarations: [
-                                stableBTreeMap.definition,
                                 ...stableBTreeMap.keySample.src
                                     .variableAliasDeclarations,
                                 ...stableBTreeMap.valueSample.src
-                                    .variableAliasDeclarations
+                                    .variableAliasDeclarations,
+                                stableBTreeMap.definition
                             ],
                             queryMethods: [],
                             updateMethods: [
@@ -65,8 +65,8 @@ const StableBTreeMapTestArb = fc
                 );
         }),
         {
-            minLength: 1,
-            maxLength: 50
+            minLength: 20,
+            maxLength: 100
         }
     )
     .map((canisterConfigs) => {
