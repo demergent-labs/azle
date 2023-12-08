@@ -46,8 +46,8 @@ function generateBody(stableBTreeMapName: string): string {
 
 function generateTests(
     functionName: string,
-    param0Value: any,
-    param1Value: any
+    keySampleAgentArgumentValue: StableBTreeMap['keySample']['agentArgumentValue'],
+    valueSampleAgentArgumentValue: StableBTreeMap['valueSample']['agentArgumentValue']
 ): Test[][] {
     return [
         [
@@ -57,8 +57,8 @@ function generateTests(
                     const actor = getActor('./tests/stable_b_tree_map/test');
 
                     const result = await actor[functionName](
-                        param0Value,
-                        param1Value
+                        keySampleAgentArgumentValue,
+                        valueSampleAgentArgumentValue
                     );
 
                     return {

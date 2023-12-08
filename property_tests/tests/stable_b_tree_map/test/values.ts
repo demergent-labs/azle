@@ -5,8 +5,6 @@ import { StableBTreeMap } from '../../../arbitraries/stable_b_tree_map_arb';
 import { getActor } from '../../../../property_tests';
 import { Test } from '../../../../test';
 import { getArrayForCandidType, getArrayStringForCandidType } from './utils';
-import { CandidValueAndMeta } from '../../../arbitraries/candid/candid_value_and_meta_arb';
-import { CorrespondingJSType } from '../../../arbitraries/candid/corresponding_js_type';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
 import { QueryMethod } from '../../../arbitraries/canister_methods/query_method_arb';
 
@@ -51,7 +49,7 @@ function generateBody(
 
 function generateTests(
     functionName: string,
-    param1: CandidValueAndMeta<CorrespondingJSType>
+    valueSample: StableBTreeMap['valueSample']
 ): Test[][] {
     return [
         [
@@ -65,11 +63,11 @@ function generateTests(
                     return {
                         Ok: deepEqual(
                             getArrayForCandidType(
-                                param1.src.candidTypeAnnotation
+                                valueSample.src.candidTypeAnnotation
                             ).from(result),
                             getArrayForCandidType(
-                                param1.src.candidTypeAnnotation
-                            ).from([param1.agentArgumentValue])
+                                valueSample.src.candidTypeAnnotation
+                            ).from([valueSample.agentArgumentValue])
                         )
                     };
                 }
@@ -86,11 +84,11 @@ function generateTests(
                     return {
                         Ok: deepEqual(
                             getArrayForCandidType(
-                                param1.src.candidTypeAnnotation
+                                valueSample.src.candidTypeAnnotation
                             ).from(result),
                             getArrayForCandidType(
-                                param1.src.candidTypeAnnotation
-                            ).from([param1.agentArgumentValue])
+                                valueSample.src.candidTypeAnnotation
+                            ).from([valueSample.agentArgumentValue])
                         )
                     };
                 }
@@ -107,10 +105,10 @@ function generateTests(
                     return {
                         Ok: deepEqual(
                             getArrayForCandidType(
-                                param1.src.candidTypeAnnotation
+                                valueSample.src.candidTypeAnnotation
                             ).from(result),
                             getArrayForCandidType(
-                                param1.src.candidTypeAnnotation
+                                valueSample.src.candidTypeAnnotation
                             ).from([])
                         )
                     };

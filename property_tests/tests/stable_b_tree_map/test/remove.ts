@@ -1,10 +1,7 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
-import {
-    StableBTreeMap,
-    StableBTreeMapArb
-} from '../../../arbitraries/stable_b_tree_map_arb';
+import { StableBTreeMap } from '../../../arbitraries/stable_b_tree_map_arb';
 import { getActor } from '../../../../property_tests';
 import { Test } from '../../../../test';
 import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
@@ -48,8 +45,8 @@ function generateBody(stableBTreeMapName: string): string {
 
 function generateTests(
     functionName: string,
-    param0Value: any,
-    param1Value: any
+    keySampleAgentArgumentValue: StableBTreeMap['keySample']['agentArgumentValue'],
+    valueSampleAgentArgumentValue: StableBTreeMap['valueSample']['agentArgumentValue']
 ): Test[][] {
     return [
         [],
@@ -59,10 +56,12 @@ function generateTests(
                 test: async () => {
                     const actor = getActor('./tests/stable_b_tree_map/test');
 
-                    const result = await actor[functionName](param0Value);
+                    const result = await actor[functionName](
+                        keySampleAgentArgumentValue
+                    );
 
                     return {
-                        Ok: deepEqual(result, [param1Value])
+                        Ok: deepEqual(result, [valueSampleAgentArgumentValue])
                     };
                 }
             }

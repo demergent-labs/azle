@@ -1,7 +1,3 @@
-// TODO I need to figure out how to test the stable part of this
-// TODO I am not sure I can do that without having the ability to create multiple
-// TODO different kinds of methods per test
-
 import fc from 'fast-check';
 
 import { runPropTests } from '../../../../property_tests';
@@ -70,7 +66,7 @@ const StableBTreeMapTestArb = fc
         }),
         {
             minLength: 1,
-            maxLength: 20
+            maxLength: 50
         }
     )
     .map((canisterConfigs) => {

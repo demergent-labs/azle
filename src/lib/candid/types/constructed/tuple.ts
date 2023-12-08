@@ -35,7 +35,7 @@ export class AzleTuple<T extends any[]> {
     }
 }
 
-export function Tuple<T extends any[]>(...types: T) {
+export function Tuple<T extends CandidType[]>(...types: T) {
     return new AzleTuple<T>(types);
 }
 export type Tuple<T> = T;
