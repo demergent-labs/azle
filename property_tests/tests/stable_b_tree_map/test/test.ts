@@ -1,8 +1,8 @@
 import fc from 'fast-check';
 
-import { runPropTests } from '../../../../property_tests';
-import { CanisterArb } from '../../../arbitraries/canister_arb';
-import { StableBTreeMapArb } from '../../../arbitraries/stable_b_tree_map_arb';
+import { runPropTests } from 'azle/property_tests';
+import { CanisterArb } from 'azle/property_tests/arbitraries/canister_arb';
+import { StableBTreeMapArb } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
 import { ContainsKeyTestArb } from './contains_key';
 import { GetTestArb } from './get';
 import { IsEmptyTestArb } from './is_empty';
