@@ -1,12 +1,12 @@
 import fc from 'fast-check';
 import { deepEqual } from 'fast-equals';
 
-import { StableBTreeMap } from '../../../arbitraries/stable_b_tree_map_arb';
-import { getActor } from '../../../../property_tests';
-import { Test } from '../../../../test';
+import { StableBTreeMap } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
+import { getActor } from 'azle/property_tests';
+import { Test } from 'azle/test';
 import { getArrayForCandidType, getArrayStringForCandidType } from './utils';
-import { UniqueIdentifierArb } from '../../../arbitraries/unique_identifier_arb';
-import { QueryMethod } from '../../../arbitraries/canister_methods/query_method_arb';
+import { UniqueIdentifierArb } from 'azle/property_tests/arbitraries/unique_identifier_arb';
+import { QueryMethod } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 
 export function KeysTestArb(stableBTreeMap: StableBTreeMap) {
     return fc
