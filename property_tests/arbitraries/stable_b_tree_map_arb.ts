@@ -3,6 +3,8 @@ import { UniqueIdentifierArb } from './unique_identifier_arb';
 import { createUniquePrimitiveArb } from './unique_primitive_arb';
 import { CandidValueAndMetaArb } from './candid/candid_value_and_meta_arb';
 
+type SerializableType = 'STABLE_JSON' | 'CANDID_TYPE_OBJECT';
+
 export const StableBTreeMapArb = fc
     .tuple(
         CandidValueAndMetaArb(),
@@ -19,9 +21,9 @@ export const StableBTreeMapArb = fc
     .map(
         ([
             keySample,
-            keyArgumentInfo,
+            keySerializableType,
             valueSample,
-            valueArgumentInfo,
+            valueSerializableType,
             uniqueIdentifier,
             memoryId
         ]) => {
@@ -37,8 +39,8 @@ export const StableBTreeMapArb = fc
             const serializableArguments = getSerializableArguments(
                 keySample,
                 valueSample,
-                keyArgumentInfo,
-                valueArgumentInfo
+                keySerializableType,
+                valueSerializableType
             );
 
             return {
@@ -58,22 +60,22 @@ export type StableBTreeMap = typeof StableBTreeMap;
 function getSerializableArguments(
     keySample: StableBTreeMap['keySample'],
     valueSample: StableBTreeMap['valueSample'],
-    keyArgumentInfo: 'STABLE_JSON' | 'CANDID_TYPE_OBJECT',
-    valueArgumentInfo: 'STABLE_JSON' | 'CANDID_TYPE_OBJECT'
+    keySerializableType: SerializableType,
+    valueSerializableType: SerializableType
 ): string {
     const keyArgument =
-        keyArgumentInfo === 'STABLE_JSON'
+        keySerializableType === 'STABLE_JSON'
             ? 'stableJson'
             : keySample.src.candidTypeObject;
     const valueArgument =
-        valueArgumentInfo == 'STABLE_JSON'
+        valueSerializableType == 'STABLE_JSON'
             ? 'stableJson'
             : valueSample.src.candidTypeObject;
 
     return `, ${keyArgument}, ${valueArgument}`;
 }
 
-function argumentInfoArb(): fc.Arbitrary<'STABLE_JSON' | 'CANDID_TYPE_OBJECT'> {
+function argumentInfoArb(): fc.Arbitrary<SerializableType> {
     return fc.oneof(
         fc.constant<'STABLE_JSON'>('STABLE_JSON'),
         fc.constant<'CANDID_TYPE_OBJECT'>('CANDID_TYPE_OBJECT')
