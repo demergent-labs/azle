@@ -7,7 +7,6 @@ import {
     query,
     Some,
     StableBTreeMap,
-    stableJson,
     text,
     update
 } from 'azle';
@@ -17,7 +16,7 @@ import {
     managementCanister
 } from 'azle/canisters/management';
 
-let stableStorage = StableBTreeMap<text, text>(stableJson, stableJson, 0);
+let stableStorage = StableBTreeMap<text, text>(0);
 
 export default Canister({
     init: init([text], (ethereumUrl) => {

@@ -7,7 +7,6 @@ import {
     query,
     Record,
     StableBTreeMap,
-    stableJson,
     text,
     update,
     Vec,
@@ -20,11 +19,7 @@ const SmallRecord = Record({
 });
 type SmallRecord = typeof SmallRecord.tsType;
 
-let smallRecordMap = StableBTreeMap<string, SmallRecord>(
-    stableJson,
-    stableJson,
-    0
-);
+let smallRecordMap = StableBTreeMap<string, SmallRecord>(0);
 
 const MediumRecord = Record({
     id: text,
@@ -34,11 +29,7 @@ const MediumRecord = Record({
 });
 type MediumRecord = typeof MediumRecord.tsType;
 
-let mediumRecordMap = StableBTreeMap<string, MediumRecord>(
-    stableJson,
-    stableJson,
-    1
-);
+let mediumRecordMap = StableBTreeMap<string, MediumRecord>(1);
 
 const LargeRecord = Record({
     id: text,
@@ -51,11 +42,7 @@ const LargeRecord = Record({
 });
 type LargeRecord = typeof LargeRecord.tsType;
 
-let largeRecordMap = StableBTreeMap<string, LargeRecord>(
-    stableJson,
-    stableJson,
-    2
-);
+let largeRecordMap = StableBTreeMap<string, LargeRecord>(2);
 
 export default Canister({
     insertSmallRecord: update([nat32], Void, (numToInsert) => {

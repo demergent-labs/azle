@@ -5,14 +5,13 @@ import {
     Opt,
     query,
     StableBTreeMap,
-    stableJson,
     Tuple,
     update,
     Vec
 } from 'azle';
 import { Reaction } from '../types';
 
-let stableMap12 = StableBTreeMap<blob, Reaction>(stableJson, stableJson, 12);
+let stableMap12 = StableBTreeMap<blob, Reaction>(12);
 
 export const stableMap12Methods = {
     stableMap12ContainsKey: query([blob], bool, (key) => {

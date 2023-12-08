@@ -4,7 +4,6 @@ import {
     Opt,
     query,
     StableBTreeMap,
-    stableJson,
     text,
     Tuple,
     update,
@@ -12,7 +11,7 @@ import {
 } from 'azle';
 import { Callback } from '../types';
 
-let stableMap15 = StableBTreeMap<Callback, text>(stableJson, stableJson, 15);
+let stableMap15 = StableBTreeMap<Callback, text>(15);
 
 export const stableMap15Methods = {
     stableMap15ContainsKey: query([Callback], bool, (key) => {

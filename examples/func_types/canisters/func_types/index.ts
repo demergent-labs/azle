@@ -9,7 +9,6 @@ import {
     query,
     Record,
     StableBTreeMap,
-    stableJson,
     update,
     Variant,
     Vec,
@@ -48,7 +47,7 @@ const NullFunc = Func(
     'query'
 );
 
-let stableStorage = StableBTreeMap<text, StableFunc>(stableJson, stableJson, 0);
+let stableStorage = StableBTreeMap<text, StableFunc>(0);
 
 export default Canister({
     init: init([], () => {

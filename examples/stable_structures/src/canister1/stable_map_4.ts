@@ -5,18 +5,13 @@ import {
     Opt,
     query,
     StableBTreeMap,
-    stableJson,
     Tuple,
     update,
     Vec
 } from 'azle';
 import { User } from '../types';
 
-export let stableMap4 = StableBTreeMap<User, float32>(
-    stableJson,
-    stableJson,
-    4
-);
+export let stableMap4 = StableBTreeMap<User, float32>(4);
 
 export const stableMap4Methods = {
     stableMap4ContainsKey: query([User], bool, (key) => {

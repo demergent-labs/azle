@@ -210,7 +210,7 @@ export const returnFuncAlias = azle.query(
     }
 );
 
-let stableMap = types.DeepStableBTreeMapAlias(azle.nat16, azle.text, 1);
+let stableMap = types.DeepStableBTreeMapAlias<azle.nat16, azle.text>(1);
 
 export const setStable = azle.update(
     [azle.nat16, azle.text],

@@ -27,7 +27,7 @@ export const StableBTreeMapArb = fc
         return {
             name,
             imports,
-            definition: `let ${name} = StableBTreeMap<${keySample.src.candidTypeAnnotation}, ${valueSample.src.candidTypeAnnotation}>(stableJson, stableJson, ${memoryId});`,
+            definition: `let ${name} = StableBTreeMap<${keySample.src.candidTypeAnnotation}, ${valueSample.src.candidTypeAnnotation}>(${memoryId});`,
             keySample,
             valueSample
         };

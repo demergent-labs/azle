@@ -5,12 +5,11 @@ import {
     query,
     update,
     StableBTreeMap,
-    stableJson,
     Vec,
     Tuple
 } from 'azle';
 
-let stableMap6 = StableBTreeMap<Vec<nat64>, bool>(stableJson, stableJson, 6);
+let stableMap6 = StableBTreeMap<Vec<nat64>, bool>(6);
 
 export const stableMap6Methods = {
     stableMap6ContainsKey: query([Vec(nat64)], bool, (key) => {
