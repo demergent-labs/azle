@@ -47,7 +47,7 @@ const NullFunc = Func(
     'query'
 );
 
-let stableStorage = StableBTreeMap<text, StableFunc>(text, StableFunc, 0);
+let stableStorage = StableBTreeMap<text, StableFunc>(0);
 
 export default Canister({
     init: init([], () => {

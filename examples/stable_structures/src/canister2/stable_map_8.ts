@@ -10,7 +10,7 @@ import {
     Tuple
 } from 'azle';
 
-let stableMap8 = StableBTreeMap<bool, Null>(bool, Null, 8);
+let stableMap8 = StableBTreeMap<bool, Null>(8);
 
 export const stableMap8Methods = {
     stableMap8ContainsKey: query([bool], bool, (key) => {

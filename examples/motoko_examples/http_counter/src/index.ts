@@ -60,7 +60,7 @@ const HttpRequest = Record({
     certificate_version: Opt(nat16)
 });
 
-let stableStorage = StableBTreeMap<text, nat>(text, nat, 0);
+let stableStorage = StableBTreeMap<text, nat>(0);
 
 export default Canister({
     init: init([], () => {

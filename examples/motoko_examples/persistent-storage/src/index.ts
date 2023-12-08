@@ -11,7 +11,7 @@ import {
     update
 } from 'azle';
 
-let stableStorage = StableBTreeMap<text, nat>(text, nat, 0);
+let stableStorage = StableBTreeMap<text, nat>(0);
 let redeployed = false;
 
 export default Canister({

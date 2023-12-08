@@ -10,7 +10,7 @@ import {
     Vec
 } from 'azle';
 
-let stableMap10 = StableBTreeMap<float32, Opt<bool>>(float32, Opt(bool), 10);
+let stableMap10 = StableBTreeMap<float32, Opt<bool>>(10);
 
 export const stableMap10Methods = {
     stableMap10ContainsKey: query([float32], bool, (key) => {

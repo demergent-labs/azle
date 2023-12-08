@@ -11,7 +11,7 @@ import {
 } from 'azle';
 import { Callback } from '../types';
 
-let stableMap15 = StableBTreeMap<Callback, text>(Callback, text, 15);
+let stableMap15 = StableBTreeMap<Callback, text>(15);
 
 export const stableMap15Methods = {
     stableMap15ContainsKey: query([Callback], bool, (key) => {

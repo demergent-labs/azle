@@ -7,7 +7,7 @@ import { AssertType, NotAnyAndExact } from '../assert_type';
 // TODO these tests just make sure that the basic methods are there
 // TODO we want to maybe test that the type arguments work correctly as well
 
-let mapText = StableBTreeMap(text, text, 0);
+let mapText = StableBTreeMap<text, text>(0);
 
 export type TestContainsKey = AssertType<
     NotAnyAndExact<typeof mapText.containsKey, (key: any) => boolean>

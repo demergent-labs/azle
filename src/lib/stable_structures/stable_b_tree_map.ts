@@ -2,6 +2,7 @@ import { None, Opt, Some } from '../candid/types/constructed/opt';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { nat8 } from '../candid/types/primitive/nats/nat8';
 import { decode } from '../candid/serde';
+import { stableJson } from './stable_json';
 
 export interface Serializable {
     toBytes: (data: any) => Uint8Array;
@@ -9,9 +10,9 @@ export interface Serializable {
 }
 
 export function StableBTreeMap<Key = any, Value = any>(
-    keySerializable: Serializable,
-    valueSerializable: Serializable,
-    memoryIdNumber: nat8
+    memoryIdNumber: nat8,
+    keySerializable: Serializable = stableJson,
+    valueSerializable: Serializable = stableJson
 ) {
     const memoryId = memoryIdNumber.toString();
 
