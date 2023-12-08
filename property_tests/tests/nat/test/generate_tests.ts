@@ -8,7 +8,7 @@ export function generateTests(
     functionName: string,
     namedParamNats: Named<CandidValueAndMeta<bigint>>[],
     returnNat: CandidValueAndMeta<bigint>
-): Test[] {
+): Test[][] {
     const expectedResult = namedParamNats.reduce(
         (acc, param) => acc + param.el.agentResponseValue,
         returnNat.agentResponseValue
@@ -18,17 +18,19 @@ export function generateTests(
     );
 
     return [
-        {
-            name: `nat ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/nat/test');
+        [
+            {
+                name: `nat ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/nat/test');
 
-                const result = await actor[functionName](...paramValues);
+                    const result = await actor[functionName](...paramValues);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                    return {
+                        Ok: deepEqual(result, expectedResult)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

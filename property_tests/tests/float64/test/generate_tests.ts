@@ -8,7 +8,7 @@ export function generateTests(
     functionName: string,
     namedParamFloat64s: Named<CandidValueAndMeta<number>>[],
     returnFloat64: CandidValueAndMeta<number>
-): Test[] {
+): Test[][] {
     const count = namedParamFloat64s.length + 1;
     const expectedResult =
         namedParamFloat64s.reduce(
@@ -21,17 +21,19 @@ export function generateTests(
     );
 
     return [
-        {
-            name: `float64 ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/float64/test');
+        [
+            {
+                name: `float64 ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/float64/test');
 
-                const result = await actor[functionName](...paramValues);
+                    const result = await actor[functionName](...paramValues);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                    return {
+                        Ok: deepEqual(result, expectedResult)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

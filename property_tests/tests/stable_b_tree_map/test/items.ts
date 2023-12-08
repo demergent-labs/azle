@@ -12,21 +12,18 @@ export function ItemsTestArb(stableBTreeMap: StableBTreeMap) {
         .tuple(UniqueIdentifierArb('stableBTreeMap'))
         .map(([functionName]): QueryMethod => {
             const imports = new Set([
-                ...stableBTreeMap.param0.src.imports,
-                ...stableBTreeMap.param1.src.imports,
+                ...stableBTreeMap.imports,
                 'Vec',
-                'Tuple',
-                'stableJson',
-                'StableBTreeMap'
+                'Tuple'
             ]);
 
-            const returnCandidTypeObject = `Vec(Tuple(${stableBTreeMap.param0.src.candidTypeObject}, ${stableBTreeMap.param1.src.candidTypeObject}))`;
+            const returnCandidTypeObject = `Vec(Tuple(${stableBTreeMap.keySample.src.candidTypeObject}, ${stableBTreeMap.valueSample.src.candidTypeObject}))`;
             const body = generateBody(stableBTreeMap.name);
 
-            const test = generateTest(
+            const tests = generateTests(
                 functionName,
-                stableBTreeMap.param0.agentArgumentValue,
-                stableBTreeMap.param1.agentArgumentValue
+                stableBTreeMap.keySample.agentArgumentValue,
+                stableBTreeMap.valueSample.agentArgumentValue
             );
 
             return {
@@ -35,7 +32,7 @@ export function ItemsTestArb(stableBTreeMap: StableBTreeMap) {
                 sourceCode: `${functionName}: query([], ${returnCandidTypeObject}, () => {
                 ${body}
             })`,
-                tests: [test]
+                tests
             };
         });
 }
@@ -46,21 +43,53 @@ function generateBody(stableBTreeMapName: string): string {
     `;
 }
 
-function generateTest(
+function generateTests(
     functionName: string,
     param0Value: any,
     param1Value: any
-): Test {
-    return {
-        name: `items ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/stable_b_tree_map/test');
+): Test[][] {
+    return [
+        [
+            {
+                name: `items after first deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
 
-            const result = await actor[functionName]();
+                    const result = await actor[functionName]();
 
-            return {
-                Ok: deepEqual(result, [[param0Value, param1Value]])
-            };
-        }
-    };
+                    return {
+                        Ok: deepEqual(result, [[param0Value, param1Value]])
+                    };
+                }
+            }
+        ],
+        [
+            {
+                name: `items after second deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
+
+                    const result = await actor[functionName]();
+
+                    return {
+                        Ok: deepEqual(result, [[param0Value, param1Value]])
+                    };
+                }
+            }
+        ],
+        [
+            {
+                name: `items after third deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
+
+                    const result = await actor[functionName]();
+
+                    return {
+                        Ok: deepEqual(result, [])
+                    };
+                }
+            }
+        ]
+    ];
 }

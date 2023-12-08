@@ -8,7 +8,7 @@ export function generateTests(
     functionName: string,
     namedParamNat16s: Named<CandidValueAndMeta<number>>[],
     returnNat16: CandidValueAndMeta<number>
-): Test[] {
+): Test[][] {
     const count = namedParamNat16s.length + 1;
     const expectedResult = Math.floor(
         namedParamNat16s.reduce(
@@ -21,17 +21,19 @@ export function generateTests(
     );
 
     return [
-        {
-            name: `nat16 ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/nat16/test');
+        [
+            {
+                name: `nat16 ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/nat16/test');
 
-                const result = await actor[functionName](...paramValues);
+                    const result = await actor[functionName](...paramValues);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                    return {
+                        Ok: deepEqual(result, expectedResult)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

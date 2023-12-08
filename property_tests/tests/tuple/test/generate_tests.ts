@@ -12,23 +12,25 @@ export function generateTests(
     functionName: string,
     namedParamTuples: Named<CandidValueAndMeta<Tuple, ReturnTuple>>[],
     returnTuple: CandidValueAndMeta<Tuple, ReturnTuple>
-): Test[] {
+): Test[][] {
     const expectedResult = returnTuple.agentResponseValue;
 
     return [
-        {
-            name: `tuple ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/tuple/test');
+        [
+            {
+                name: `tuple ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/tuple/test');
 
-                const result = await actor[functionName](
-                    ...namedParamTuples.map(
-                        (param) => param.el.agentArgumentValue
-                    )
-                );
+                    const result = await actor[functionName](
+                        ...namedParamTuples.map(
+                            (param) => param.el.agentArgumentValue
+                        )
+                    );
 
-                return { Ok: deepEqual(result, expectedResult) };
+                    return { Ok: deepEqual(result, expectedResult) };
+                }
             }
-        }
+        ]
     ];
 }

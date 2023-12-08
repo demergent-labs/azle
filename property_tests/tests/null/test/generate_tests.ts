@@ -8,23 +8,25 @@ export function generateTests(
     functionName: string,
     namedParamNulls: Named<CandidValueAndMeta<null>>[],
     _returnNull: CandidValueAndMeta<null>
-): Test[] {
+): Test[][] {
     return [
-        {
-            name: `test ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/null/test');
+        [
+            {
+                name: `test ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/null/test');
 
-                const result = await actor[functionName](
-                    ...namedParamNulls.map(
-                        (param) => param.el.agentArgumentValue
-                    )
-                );
+                    const result = await actor[functionName](
+                        ...namedParamNulls.map(
+                            (param) => param.el.agentArgumentValue
+                        )
+                    );
 
-                return {
-                    Ok: deepEqual(result, null)
-                };
+                    return {
+                        Ok: deepEqual(result, null)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

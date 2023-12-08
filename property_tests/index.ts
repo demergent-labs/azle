@@ -29,29 +29,37 @@ export function runPropTests(canisterArb: fc.Arbitrary<Canister>) {
                 stdio: 'inherit'
             });
 
-            execSync(`dfx deploy canister`, {
-                stdio: 'inherit'
-            });
-
-            execSync(`dfx generate canister`, {
-                stdio: 'inherit'
-            });
-
-            const result = await runTests(
-                canister.tests,
-                process.env.AZLE_PROPTEST_VERBOSE !== 'true'
-            );
-
-            execSync(
-                `node_modules/.bin/tsc --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs`,
-                {
+            for (let i = 0; i < canister.tests.length; i++) {
+                execSync(`dfx deploy canister`, {
                     stdio: 'inherit'
+                });
+
+                execSync(`dfx generate canister`, {
+                    stdio: 'inherit'
+                });
+
+                const tests = canister.tests[i];
+
+                const result = await runTests(
+                    tests,
+                    process.env.AZLE_PROPTEST_VERBOSE !== 'true'
+                );
+
+                execSync(
+                    `node_modules/.bin/tsc --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs`,
+                    {
+                        stdio: 'inherit'
+                    }
+                );
+
+                clearUniquePrimitiveArb();
+
+                if (result === false) {
+                    return false;
                 }
-            );
+            }
 
-            clearUniquePrimitiveArb();
-
-            return result;
+            return true;
         }),
         {
             numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),

@@ -18,7 +18,7 @@ export type QueryMethod = {
     imports: Set<string>;
     globalDeclarations: string[];
     sourceCode: string;
-    tests: Test[];
+    tests: Test[][];
 };
 
 export function QueryMethodArb<

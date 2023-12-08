@@ -9,25 +9,27 @@ export function generateTests(
     functionName: string,
     namedParamOpts: Named<CandidValueAndMeta<Opt>>[],
     returnOpt: CandidValueAndMeta<Opt>
-): Test[] {
+): Test[][] {
     const expectedResult = returnOpt.agentResponseValue;
 
     return [
-        {
-            name: `opt ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/opt/test');
+        [
+            {
+                name: `opt ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/opt/test');
 
-                const params = namedParamOpts.map(
-                    (param) => param.el.agentArgumentValue
-                );
+                    const params = namedParamOpts.map(
+                        (param) => param.el.agentArgumentValue
+                    );
 
-                const result = await actor[functionName](...params);
+                    const result = await actor[functionName](...params);
 
-                return {
-                    Ok: deepEqual(expectedResult, result)
-                };
+                    return {
+                        Ok: deepEqual(expectedResult, result)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

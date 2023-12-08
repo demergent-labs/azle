@@ -8,7 +8,7 @@ export function generateTests(
     functionName: string,
     namedParamInt64s: Named<CandidValueAndMeta<bigint>>[],
     returnInt64: CandidValueAndMeta<bigint>
-): Test[] {
+): Test[][] {
     const count = namedParamInt64s.length + 1;
     const expectedResult =
         namedParamInt64s.reduce(
@@ -20,17 +20,19 @@ export function generateTests(
         (param) => param.el.agentArgumentValue
     );
     return [
-        {
-            name: `int64 ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/int64/test');
+        [
+            {
+                name: `int64 ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/int64/test');
 
-                const result = await actor[functionName](...paramValues);
+                    const result = await actor[functionName](...paramValues);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                    return {
+                        Ok: deepEqual(result, expectedResult)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

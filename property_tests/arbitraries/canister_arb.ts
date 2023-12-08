@@ -5,7 +5,7 @@ import { UpdateMethod } from './canister_methods/update_method_arb';
 
 export type Canister = {
     sourceCode: string;
-    tests: Test[];
+    tests: Test[][];
 };
 
 export type CanisterConfig = {
@@ -26,8 +26,28 @@ export function CanisterArb(configArb: fc.Arbitrary<CanisterConfig>) {
             config.globalDeclarations ?? [],
             canisterMethods
         );
-        const tests = canisterMethods.flatMap(
-            (canisterMethod) => canisterMethod.tests
+
+        const tests = canisterMethods.reduce(
+            (acc: Test[][], canisterMethod): Test[][] => {
+                if (canisterMethod.tests.length < acc.length) {
+                    return acc.map((accTests, index) => {
+                        return [
+                            ...accTests,
+                            ...(canisterMethod.tests[index] ?? [])
+                        ];
+                    });
+                } else {
+                    return canisterMethod.tests.map(
+                        (canisterMethodTests, index) => {
+                            return [
+                                ...(acc[index] ?? []),
+                                ...canisterMethodTests
+                            ];
+                        }
+                    );
+                }
+            },
+            []
         );
 
         return {

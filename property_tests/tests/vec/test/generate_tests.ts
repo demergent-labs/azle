@@ -8,24 +8,26 @@ export function generateTests(
     functionName: string,
     namedParamVecs: Named<CandidValueAndMeta<any>>[],
     returnVec: CandidValueAndMeta<any>
-): Test[] {
+): Test[][] {
     const expectedResult = returnVec.agentResponseValue;
 
     return [
-        {
-            name: `vec ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/vec/test');
+        [
+            {
+                name: `vec ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/vec/test');
 
-                const params = namedParamVecs.map(
-                    (param) => param.el.agentArgumentValue
-                );
-                const result = await actor[functionName](...params);
+                    const params = namedParamVecs.map(
+                        (param) => param.el.agentArgumentValue
+                    );
+                    const result = await actor[functionName](...params);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                    return {
+                        Ok: deepEqual(result, expectedResult)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

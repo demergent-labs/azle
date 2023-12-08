@@ -14,25 +14,19 @@ export function RemoveTestArb(stableBTreeMap: StableBTreeMap) {
     return fc
         .tuple(UniqueIdentifierArb('stableBTreeMap'))
         .map(([functionName]): QueryMethod => {
-            const imports = new Set([
-                ...stableBTreeMap.param0.src.imports,
-                ...stableBTreeMap.param1.src.imports,
-                'Opt',
-                'stableJson',
-                'StableBTreeMap'
-            ]);
+            const imports = new Set([...stableBTreeMap.imports, 'Opt']);
 
             const paramCandidTypeObjects = [
-                stableBTreeMap.param0.src.candidTypeObject
+                stableBTreeMap.keySample.src.candidTypeObject
             ].join(', ');
 
-            const returnCandidTypeObject = `Opt(${stableBTreeMap.param1.src.candidTypeObject})`;
+            const returnCandidTypeObject = `Opt(${stableBTreeMap.valueSample.src.candidTypeObject})`;
             const body = generateBody(stableBTreeMap.name);
 
-            const test = generateTest(
+            const tests = generateTests(
                 functionName,
-                stableBTreeMap.param0.agentArgumentValue,
-                stableBTreeMap.param1.agentArgumentValue
+                stableBTreeMap.keySample.agentArgumentValue,
+                stableBTreeMap.valueSample.agentArgumentValue
             );
 
             return {
@@ -41,7 +35,7 @@ export function RemoveTestArb(stableBTreeMap: StableBTreeMap) {
                 sourceCode: `${functionName}: update([${paramCandidTypeObjects}], ${returnCandidTypeObject}, (param0) => {
                 ${body}
             })`,
-                tests: [test]
+                tests
             };
         });
 }
@@ -52,21 +46,26 @@ function generateBody(stableBTreeMapName: string): string {
     `;
 }
 
-function generateTest(
+function generateTests(
     functionName: string,
     param0Value: any,
     param1Value: any
-): Test {
-    return {
-        name: `remove ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/stable_b_tree_map/test');
+): Test[][] {
+    return [
+        [],
+        [
+            {
+                name: `remove after second deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
 
-            const result = await actor[functionName](param0Value);
+                    const result = await actor[functionName](param0Value);
 
-            return {
-                Ok: deepEqual(result, [param1Value])
-            };
-        }
-    };
+                    return {
+                        Ok: deepEqual(result, [param1Value])
+                    };
+                }
+            }
+        ]
+    ];
 }

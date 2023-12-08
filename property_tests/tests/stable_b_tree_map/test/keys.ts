@@ -14,21 +14,15 @@ export function KeysTestArb(stableBTreeMap: StableBTreeMap) {
     return fc
         .tuple(UniqueIdentifierArb('stableBTreeMap'))
         .map(([functionName]): QueryMethod => {
-            const imports = new Set([
-                ...stableBTreeMap.param0.src.imports,
-                ...stableBTreeMap.param1.src.imports,
-                'Vec',
-                'stableJson',
-                'StableBTreeMap'
-            ]);
+            const imports = new Set([...stableBTreeMap.imports, 'Vec']);
 
-            const returnCandidTypeObject = `Vec(${stableBTreeMap.param0.src.candidTypeObject})`;
+            const returnCandidTypeObject = `Vec(${stableBTreeMap.keySample.src.candidTypeObject})`;
             const body = generateBody(
                 stableBTreeMap.name,
-                stableBTreeMap.param0.src.candidTypeAnnotation
+                stableBTreeMap.keySample.src.candidTypeAnnotation
             );
 
-            const test = generateTest(functionName, stableBTreeMap.param0);
+            const tests = generateTests(functionName, stableBTreeMap.keySample);
 
             return {
                 imports,
@@ -36,7 +30,7 @@ export function KeysTestArb(stableBTreeMap: StableBTreeMap) {
                 sourceCode: `${functionName}: query([], ${returnCandidTypeObject}, () => {
                 ${body}
             })`,
-                tests: [test]
+                tests
             };
         });
 }
@@ -52,27 +46,73 @@ function generateBody(
     `;
 }
 
-function generateTest(
+function generateTests(
     functionName: string,
     param0: CandidValueAndMeta<CorrespondingJSType>
-): Test {
-    return {
-        name: `keys ${functionName}`,
-        test: async () => {
-            const actor = getActor('./tests/stable_b_tree_map/test');
+): Test[][] {
+    return [
+        [
+            {
+                name: `keys after first deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
 
-            const result = await actor[functionName]();
+                    const result = await actor[functionName]();
 
-            return {
-                Ok: deepEqual(
-                    getArrayForCandidType(param0.src.candidTypeAnnotation).from(
-                        result
-                    ),
-                    getArrayForCandidType(param0.src.candidTypeAnnotation).from(
-                        [param0.agentArgumentValue]
-                    )
-                )
-            };
-        }
-    };
+                    return {
+                        Ok: deepEqual(
+                            getArrayForCandidType(
+                                param0.src.candidTypeAnnotation
+                            ).from(result),
+                            getArrayForCandidType(
+                                param0.src.candidTypeAnnotation
+                            ).from([param0.agentArgumentValue])
+                        )
+                    };
+                }
+            }
+        ],
+        [
+            {
+                name: `keys after second deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
+
+                    const result = await actor[functionName]();
+
+                    return {
+                        Ok: deepEqual(
+                            getArrayForCandidType(
+                                param0.src.candidTypeAnnotation
+                            ).from(result),
+                            getArrayForCandidType(
+                                param0.src.candidTypeAnnotation
+                            ).from([param0.agentArgumentValue])
+                        )
+                    };
+                }
+            }
+        ],
+        [
+            {
+                name: `keys after third deploy ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/stable_b_tree_map/test');
+
+                    const result = await actor[functionName]();
+
+                    return {
+                        Ok: deepEqual(
+                            getArrayForCandidType(
+                                param0.src.candidTypeAnnotation
+                            ).from(result),
+                            getArrayForCandidType(
+                                param0.src.candidTypeAnnotation
+                            ).from([])
+                        )
+                    };
+                }
+            }
+        ]
+    ];
 }

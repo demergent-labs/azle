@@ -8,7 +8,7 @@ export function generateTests(
     functionName: string,
     namedParamTexts: Named<CandidValueAndMeta<string>>[],
     returnTexts: CandidValueAndMeta<string>
-): Test[] {
+): Test[][] {
     const expectedResult = namedParamTexts.reduce(
         (acc, param) => acc + param.el.agentResponseValue,
         returnTexts.agentResponseValue
@@ -18,17 +18,19 @@ export function generateTests(
     );
 
     return [
-        {
-            name: `text ${functionName}`,
-            test: async () => {
-                const actor = getActor('./tests/text/test');
+        [
+            {
+                name: `text ${functionName}`,
+                test: async () => {
+                    const actor = getActor('./tests/text/test');
 
-                const result = await actor[functionName](...paramValues);
+                    const result = await actor[functionName](...paramValues);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                    return {
+                        Ok: deepEqual(result, expectedResult)
+                    };
+                }
             }
-        }
+        ]
     ];
 }

@@ -17,11 +17,19 @@ export const StableBTreeMapArb = fc
     .map(([keySample, valueSample, uniqueIdentifier, memoryId]) => {
         const name = `stableBTreeMap${uniqueIdentifier}`;
 
+        const imports = new Set([
+            ...keySample.src.imports,
+            ...valueSample.src.imports,
+            'stableJson',
+            'StableBTreeMap'
+        ]);
+
         return {
             name,
-            body: `let ${name} = StableBTreeMap<${keySample.src.candidTypeAnnotation}, ${valueSample.src.candidTypeAnnotation}>(stableJson, stableJson, ${memoryId});`,
-            param0: keySample,
-            param1: valueSample
+            imports,
+            definition: `let ${name} = StableBTreeMap<${keySample.src.candidTypeAnnotation}, ${valueSample.src.candidTypeAnnotation}>(stableJson, stableJson, ${memoryId});`,
+            keySample,
+            valueSample
         };
     });
 
