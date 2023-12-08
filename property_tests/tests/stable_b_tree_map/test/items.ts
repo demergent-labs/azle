@@ -45,8 +45,8 @@ function generateBody(stableBTreeMapName: string): string {
 
 function generateTests(
     functionName: string,
-    param0Value: any,
-    param1Value: any
+    keySampleAgentArgumentValue: StableBTreeMap['keySample']['agentArgumentValue'],
+    valueSampleAgentArgumentValue: StableBTreeMap['valueSample']['agentArgumentValue']
 ): Test[][] {
     return [
         [
@@ -58,7 +58,12 @@ function generateTests(
                     const result = await actor[functionName]();
 
                     return {
-                        Ok: deepEqual(result, [[param0Value, param1Value]])
+                        Ok: deepEqual(result, [
+                            [
+                                keySampleAgentArgumentValue,
+                                valueSampleAgentArgumentValue
+                            ]
+                        ])
                     };
                 }
             }
@@ -72,7 +77,12 @@ function generateTests(
                     const result = await actor[functionName]();
 
                     return {
-                        Ok: deepEqual(result, [[param0Value, param1Value]])
+                        Ok: deepEqual(result, [
+                            [
+                                keySampleAgentArgumentValue,
+                                valueSampleAgentArgumentValue
+                            ]
+                        ])
                     };
                 }
             }

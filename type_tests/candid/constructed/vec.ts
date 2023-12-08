@@ -11,7 +11,9 @@ import {
     nat32,
     nat16,
     nat8,
-    Vec
+    Vec,
+    Record,
+    text
 } from '../../../src/lib';
 import {
     AssertType,
@@ -156,3 +158,29 @@ export type TestVecTypeInt16 = AssertType<
 >;
 
 export type TestVecTypeInt8 = AssertType<NotAnyAndExact<Vec<int8>, Int8Array>>;
+
+// Crude tests to ensure Vec only accepts CandidType
+
+const VecRecord = Record({
+    id: text,
+    username: text
+});
+
+Vec(float32);
+Vec(int16);
+Vec(VecRecord);
+
+// @ts-expect-error
+Vec(5);
+
+// @ts-expect-error
+Vec('not CandidType');
+
+// @ts-expect-error
+Vec(null);
+
+// @ts-expect-error
+Vec(undefined);
+
+// @ts-expect-error
+Vec(Symbol('not CandidType'));

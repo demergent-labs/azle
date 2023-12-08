@@ -41,7 +41,10 @@ function generateBody(stableBTreeMapName: string): string {
     `;
 }
 
-function generateTests(functionName: string, param0Value: any): Test[][] {
+function generateTests(
+    functionName: string,
+    keySampleAgentArgumentValue: StableBTreeMap['keySample']['agentArgumentValue']
+): Test[][] {
     return [
         [
             {
@@ -49,7 +52,9 @@ function generateTests(functionName: string, param0Value: any): Test[][] {
                 test: async () => {
                     const actor = getActor('./tests/stable_b_tree_map/test');
 
-                    const result = await actor[functionName](param0Value);
+                    const result = await actor[functionName](
+                        keySampleAgentArgumentValue
+                    );
 
                     return {
                         Ok: deepEqual(result, true)
@@ -63,7 +68,9 @@ function generateTests(functionName: string, param0Value: any): Test[][] {
                 test: async () => {
                     const actor = getActor('./tests/stable_b_tree_map/test');
 
-                    const result = await actor[functionName](param0Value);
+                    const result = await actor[functionName](
+                        keySampleAgentArgumentValue
+                    );
 
                     return {
                         Ok: deepEqual(result, true)
@@ -77,7 +84,9 @@ function generateTests(functionName: string, param0Value: any): Test[][] {
                 test: async () => {
                     const actor = getActor('./tests/stable_b_tree_map/test');
 
-                    const result = await actor[functionName](param0Value);
+                    const result = await actor[functionName](
+                        keySampleAgentArgumentValue
+                    );
 
                     return {
                         Ok: deepEqual(result, false)
