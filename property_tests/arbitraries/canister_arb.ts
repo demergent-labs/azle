@@ -70,7 +70,9 @@ function generateSourceCode(
                 ['Canister', 'query', 'update']
             )
         )
-    ].join();
+    ]
+        .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
+        .join();
 
     const declarationsFromCanisterMethods = canisterMethods.flatMap(
         (method) => method.globalDeclarations
