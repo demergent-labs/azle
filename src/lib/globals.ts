@@ -1,6 +1,7 @@
 import { ic } from './ic';
 import { AzleIc } from './ic/types/azle_ic';
 import { Buffer } from 'buffer';
+import { replacer } from './stable_structures/stable_json';
 
 declare global {
     var _azleIc: AzleIc | undefined;
@@ -11,6 +12,19 @@ declare global {
     var _azleGuardFunctions: { [key: string]: () => any };
 }
 
+if (globalThis._azleIc) {
+    globalThis.console = {
+        ...globalThis.console,
+        log: (...args: any[]) => {
+            const jsonStringifiedArgs = args
+                .map((arg) => JSON.stringify(arg, replacer, 4))
+                .join(' ');
+
+            ic.print(jsonStringifiedArgs);
+        }
+    };
+}
+
 globalThis.TextDecoder = require('text-encoding').TextDecoder;
 globalThis.TextEncoder = require('text-encoding').TextEncoder;
 globalThis._azleIcTimers = {};
@@ -18,13 +32,6 @@ globalThis._azleResolveIds = {};
 globalThis._azleRejectIds = {};
 globalThis._azleTimerCallbacks = {};
 globalThis._azleGuardFunctions = {};
-
-globalThis.console = {
-    ...globalThis.console,
-    log: (...args: any[]) => {
-        ic.print(...args);
-    }
-};
 
 // TODO be careful we are using a random seed of 0 I think
 // TODO the randomness is predictable
