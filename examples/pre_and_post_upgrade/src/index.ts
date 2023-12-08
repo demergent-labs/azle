@@ -7,6 +7,7 @@ import {
     query,
     Record,
     StableBTreeMap,
+    stableJson,
     text,
     update,
     Vec,
@@ -19,7 +20,7 @@ const Entry = Record({
 });
 type Entry = typeof Entry;
 
-let stableStorage = StableBTreeMap<text, Vec<Entry>>(text, Vec(Entry), 0);
+let stableStorage = StableBTreeMap<text, Vec<Entry>>(stableJson, stableJson, 0);
 
 let entries: {
     [key: string]: nat64;

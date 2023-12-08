@@ -13,6 +13,7 @@ import {
     Record,
     Some,
     StableBTreeMap,
+    stableJson,
     text,
     Tuple,
     update,
@@ -60,7 +61,7 @@ const HttpRequest = Record({
     certificate_version: Opt(nat16)
 });
 
-let stableStorage = StableBTreeMap<text, nat>(text, nat, 0);
+let stableStorage = StableBTreeMap<text, nat>(stableJson, stableJson, 0);
 
 export default Canister({
     init: init([], () => {

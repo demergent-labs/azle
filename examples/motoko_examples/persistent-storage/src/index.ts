@@ -7,11 +7,12 @@ import {
     postUpgrade,
     query,
     StableBTreeMap,
+    stableJson,
     text,
     update
 } from 'azle';
 
-let stableStorage = StableBTreeMap<text, nat>(text, nat, 0);
+let stableStorage = StableBTreeMap<text, nat>(stableJson, stableJson, 0);
 let redeployed = false;
 
 export default Canister({

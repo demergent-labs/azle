@@ -11,6 +11,7 @@ import {
     Record,
     Result,
     StableBTreeMap,
+    stableJson,
     text,
     update,
     Variant,
@@ -40,8 +41,12 @@ const AudioRecorderError = Variant({
 });
 type AudioRecorderError = typeof AudioRecorderError.tsType;
 
-let users = StableBTreeMap<Principal, User>(Principal, User, 0);
-let recordings = StableBTreeMap<Principal, Recording>(Principal, Recording, 1);
+let users = StableBTreeMap<Principal, User>(stableJson, stableJson, 0);
+let recordings = StableBTreeMap<Principal, Recording>(
+    stableJson,
+    stableJson,
+    1
+);
 
 export default Canister({
     createUser: update([text], User, (username) => {

@@ -6,14 +6,14 @@ import {
     query,
     Some,
     StableBTreeMap,
-    StableJson,
+    stableJson,
     text,
     Tuple,
     update,
     Vec
 } from 'azle';
 
-let stableMap16 = StableBTreeMap<text, {}>(text, StableJson(), 16);
+let stableMap16 = StableBTreeMap<text, {}>(stableJson, stableJson, 16);
 
 export const stableMap16Methods = {
     stableMap16ContainsKey: query([text], bool, (key) => {

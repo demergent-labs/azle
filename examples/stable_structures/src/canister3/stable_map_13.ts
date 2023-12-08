@@ -5,13 +5,14 @@ import {
     Principal,
     query,
     StableBTreeMap,
+    stableJson,
     text,
     Tuple,
     update,
     Vec
 } from 'azle';
 
-let stableMap13 = StableBTreeMap<text, Principal>(text, Principal, 13);
+let stableMap13 = StableBTreeMap<text, Principal>(stableJson, stableJson, 13);
 
 export const stableMap13Methods = {
     stableMap13ContainsKey: query([text], bool, (key) => {
