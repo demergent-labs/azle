@@ -18,7 +18,7 @@ if (globalThis._azleIc) {
         log: (...args: any[]) => {
             const jsonStringifiedArgs = args
                 .map((arg) => JSON.stringify(arg, replacer, 4))
-                .join(', ');
+                .join(' ');
 
             ic.print(jsonStringifiedArgs);
         }
