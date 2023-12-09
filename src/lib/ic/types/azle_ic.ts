@@ -99,8 +99,16 @@ export type AzleIc = {
         encodedValue: ArrayBufferLike
     ) => ArrayBuffer | undefined;
     stableBTreeMapIsEmpty: (memoryId: string) => boolean;
-    stableBTreeMapItems: (memoryId: string) => [ArrayBuffer, ArrayBuffer][];
-    stableBTreeMapKeys: (memoryId: string) => ArrayBuffer[];
+    stableBTreeMapItems: (
+        memoryId: string,
+        startIndex: string,
+        length: string
+    ) => [ArrayBuffer, ArrayBuffer][];
+    stableBTreeMapKeys: (
+        memoryId: string,
+        startIndex: string,
+        length: string
+    ) => ArrayBuffer[];
     stableBTreeMapLen: (memoryId: string) => ArrayBuffer;
     stableBTreeMapRemove(
         memoryId: string,
