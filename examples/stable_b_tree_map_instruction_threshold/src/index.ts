@@ -8,6 +8,7 @@ import {
     Record,
     StableBTreeMap,
     text,
+    Tuple,
     update,
     Vec,
     Void
@@ -54,9 +55,19 @@ export default Canister({
             });
         }
     }),
+    keysSmallRecord: query([nat32], Vec(text), (numToReturn) => {
+        return smallRecordMap.keys(0, numToReturn);
+    }),
     valuesSmallRecord: query([nat32], Vec(SmallRecord), (numToReturn) => {
         return smallRecordMap.values(0, numToReturn);
     }),
+    itemsSmallRecord: query(
+        [nat32],
+        Vec(Tuple(text, SmallRecord)),
+        (numToReturn) => {
+            return smallRecordMap.items(0, numToReturn);
+        }
+    ),
     insertMediumRecord: update([nat32], Void, (numToInsert) => {
         for (let i = 0; i < numToInsert; i++) {
             const id = v4();
@@ -69,9 +80,19 @@ export default Canister({
             });
         }
     }),
+    keysMediumRecord: query([nat32], Vec(text), (numToReturn) => {
+        return mediumRecordMap.keys(0, numToReturn);
+    }),
     valuesMediumRecord: query([nat32], Vec(MediumRecord), (numToReturn) => {
         return mediumRecordMap.values(0, numToReturn);
     }),
+    itemsMediumRecord: query(
+        [nat32],
+        Vec(Tuple(text, MediumRecord)),
+        (numToReturn) => {
+            return mediumRecordMap.items(0, numToReturn);
+        }
+    ),
     insertLargeRecord: update([nat32], Void, (numToInsert) => {
         for (let i = 0; i < numToInsert; i++) {
             const id = v4();
@@ -92,7 +113,17 @@ export default Canister({
             });
         }
     }),
+    keysLargeRecord: query([nat32], Vec(text), (numToReturn) => {
+        return largeRecordMap.keys(0, numToReturn);
+    }),
     valuesLargeRecord: query([nat32], Vec(LargeRecord), (numToReturn) => {
         return largeRecordMap.values(0, numToReturn);
-    })
+    }),
+    itemsLargeRecord: query(
+        [nat32],
+        Vec(Tuple(text, LargeRecord)),
+        (numToReturn) => {
+            return largeRecordMap.items(0, numToReturn);
+        }
+    )
 });

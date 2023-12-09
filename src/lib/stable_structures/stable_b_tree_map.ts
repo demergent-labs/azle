@@ -107,15 +107,20 @@ export function StableBTreeMap<Key = any, Value = any>(
         },
         /**
          * Retrieves the items in the map in sorted order.
+         * @param startIndex the starting index to begin retrieval
+         * @param length the number of items to retrieve
          * @returns tuples representing key/value pairs.
          */
-        items(): [Key, Value][] {
+        items(startIndex?: number, length?: number): [Key, Value][] {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
 
-            const encodedItems =
-                globalThis._azleIc.stableBTreeMapItems(memoryId);
+            const encodedItems = globalThis._azleIc.stableBTreeMapItems(
+                memoryId,
+                startIndex?.toString() ?? '0',
+                length?.toString() ?? 'NOT_SET'
+            );
 
             // TODO too much copying
             return encodedItems.map(([encodedKey, encodedValue]) => {
@@ -127,14 +132,20 @@ export function StableBTreeMap<Key = any, Value = any>(
         },
         /**
          * The keys for each element in the map in sorted order.
+         * @param startIndex the starting index to begin retrieval
+         * @param length the number of keys to retrieve
          * @returns they keys in the map.
          */
-        keys(): Key[] {
+        keys(startIndex?: number, length?: number): Key[] {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
 
-            const encodedKeys = globalThis._azleIc.stableBTreeMapKeys(memoryId);
+            const encodedKeys = globalThis._azleIc.stableBTreeMapKeys(
+                memoryId,
+                startIndex?.toString() ?? '0',
+                length?.toString() ?? 'NOT_SET'
+            );
 
             // TODO too much copying
             return encodedKeys.map((encodedKey) => {
