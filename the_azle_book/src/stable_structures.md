@@ -24,11 +24,11 @@ import { nat8, StableBTreeMap, text } from 'azle';
 let map = StableBTreeMap<nat8, text>(0);
 ```
 
-This is a `StableBTreeMap` with a key of type `nat8` and a value of type `text`. When writing to and reading from a `StableBTreeMap`, by default the `stableJson` `Seriliazable` object is used to encode JS values into bytes and to decode JS values from bytes. `stableJson` uses `JSON.stringify` and `JSON.parse` with a custom `replacer` and `reviver` to handle many `Candid` and other values that you will most likely need for your canisters.
+This is a `StableBTreeMap` with a key of type `nat8` and a value of type `text`. `StableBTreeMap` works by encoding and decoding values under-the-hood, storing and retrieving values in bytes in the stable memory location of the IC. When writing to and reading from a `StableBTreeMap`, by default the `stableJson` `Seriliazable object` is used to encode JS values into bytes and to decode JS values from bytes. `stableJson` uses `JSON.stringify` and `JSON.parse` with a custom `replacer` and `reviver` to handle many `Candid` and other values that you will most likely need for your canisters.
 
-You can also use other `Seriliazable` objects besides `stableJson`, and you can even create your own. Simply pass in a `Serializable` as the second and third parameter to your `StableBTreeMap`. The second parameter is the `key` `Serializable` and the third parameter is the `value` `serializable`.
+You can also use other `Serializable objects` besides `stableJson`, and you can even create your own. Simply pass in a `Serializable object` as the second and third parameter to your `StableBTreeMap`. The second parameter is the `key` `Serializable object` and the third parameter is the `value` `Serializable object`.
 
-All `CandidType` objects imported from `azle` are `Serializable` objects as well. A `Serializable` simply has a `toBytes` method that takes a JS value and returns a `Uint8Array`, and a `fromBytes` method that takes a `Uint8Array` and returns a JS value.
+All `CandidType` objects imported from `azle` are `Serializable objects` as well. A `Serializable object` simply has a `toBytes` method that takes a JS value and returns a `Uint8Array`, and a `fromBytes` method that takes a `Uint8Array` and returns a JS value.
 
 ```typescript
 let map = StableBTreeMap<nat8, text>(0, nat8, text);
@@ -77,9 +77,12 @@ import {
 } from 'azle';
 
 const Key = nat8;
-const Value = text;
+type Key = typeof Key.tsType;
 
-let map = StableBTreeMap(Key, Value, 0);
+const Value = text;
+type Value = typeof Value.tsType;
+
+let map = StableBTreeMap<Key, Value>(0);
 
 export default Canister({
     containsKey: query([Key], bool, (key) => {
@@ -103,7 +106,7 @@ export default Canister({
     }),
 
     keys: query([], Vec(Key), () => {
-        return map.keys();
+        return Uint8Array.from(map.keys());
     }),
 
     len: query([], nat64, () => {
@@ -148,6 +151,7 @@ const User = Record({
     recordingIds: Vec(Principal),
     username: text
 });
+type User = typeof User.tsType;
 
 const Recording = Record({
     id: Principal,
@@ -156,19 +160,21 @@ const Recording = Record({
     name: text,
     userId: Principal
 });
+type Recording = typeof Recording.tsType;
 
 const AudioRecorderError = Variant({
     RecordingDoesNotExist: Principal,
     UserDoesNotExist: Principal
 });
+type AudioRecorderError = typeof AudioRecorderError.tsType;
 
-let users = StableBTreeMap(Principal, User, 0);
-let recordings = StableBTreeMap(Principal, Recording, 1);
+let users = StableBTreeMap<Principal, User>(0);
+let recordings = StableBTreeMap<Principal, Recording>(1);
 
 export default Canister({
     createUser: update([text], User, (username) => {
         const id = generateId();
-        const user: typeof User = {
+        const user: User = {
             id,
             createdAt: ic.time(),
             recordingIds: [],
@@ -219,7 +225,7 @@ export default Canister({
             const user = userOpt.Some;
 
             const id = generateId();
-            const recording: typeof Recording = {
+            const recording: Recording = {
                 id,
                 audio,
                 createdAt: ic.time(),
@@ -229,7 +235,7 @@ export default Canister({
 
             recordings.insert(recording.id, recording);
 
-            const updatedUser: typeof User = {
+            const updatedUser: User = {
                 ...user,
                 recordingIds: [...user.recordingIds, recording.id]
             };
@@ -267,7 +273,7 @@ export default Canister({
 
             const user = userOpt.Some;
 
-            const updatedUser: typeof User = {
+            const updatedUser: User = {
                 ...user,
                 recordingIds: user.recordingIds.filter(
                     (recordingId) =>
@@ -300,11 +306,20 @@ Each entity gets its own `StableBTreeMap`:
 ```typescript
 import {
     blob,
+    Canister,
+    ic,
+    Err,
     nat64,
+    Ok,
+    Opt,
     Principal,
+    query,
     Record,
+    Result,
     StableBTreeMap,
     text,
+    update,
+    Variant,
     Vec
 } from 'azle';
 
@@ -314,6 +329,7 @@ const User = Record({
     recordingIds: Vec(Principal),
     username: text
 });
+type User = typeof User.tsType;
 
 const Recording = Record({
     id: Principal,
@@ -322,19 +338,34 @@ const Recording = Record({
     name: text,
     userId: Principal
 });
+type Recording = typeof Recording.tsType;
 
-let users = StableBTreeMap(Principal, User, 0);
-let recordings = StableBTreeMap(Principal, Recording, 1);
+const AudioRecorderError = Variant({
+    RecordingDoesNotExist: Principal,
+    UserDoesNotExist: Principal
+});
+type AudioRecorderError = typeof AudioRecorderError.tsType;
+
+let users = StableBTreeMap<Principal, User>(0);
+let recordings = StableBTreeMap<Principal, Recording>(1);
 ```
 
-Notice that each `StableBTreeMap` has a unique `memory id`.
+Notice that each `StableBTreeMap` has a unique `memory id`. You can begin to create basic database CRUD functionality by creating one `StableBTreeMap` per entity. It's up to you to create functionality for querying, filtering, and relations. `StableBTreeMap` is not a full-featured database solution, but a fundamental building block that may enable you to achieve more advanced database functionality.
+
+Demergent Labs plans to deeply explore database solutions on the IC in the future.
 
 ## Caveats
 
-### Performance
+### CandidType Performance
 
-Azle's `StableBTreeMap` uses Candid encoding and decoding to store and retrieve all values. Azle's Candid encoding/decoding implementation is currently not well optimized, and Candid may not be the most optimal encoding format overall, so you may experience heavy instruction usage when performing many `StableBTreeMap` operations in succession. A rough idea of the overhead from our preliminary testing is probably 1-2 million instructions for a full Candid encoding and decoding of values per `StableBTreeMap` operation.
+Azle's Candid encoding/decoding implementation is currently not well optimized, and Candid may not be the most optimal encoding format overall, so you may experience heavy instruction usage when performing many `StableBTreeMap` operations in succession. A rough idea of the overhead from our preliminary testing is probably 1-2 million instructions for a full Candid encoding and decoding of values per `StableBTreeMap` operation.
+
+For these reasons we recommend using the `stableJson` `Serializable object` (the default) instead of `CandidType` `Serializable objects`.
 
 ### Migrations
 
 Migrations must be performed manually by reading the values out of one `StableBTreeMap` and writing them into another. Once a `StableBTreeMap` is initialized to a specific `memory id`, that `memory id` cannot be changed unless the canister is completely wiped and initialized again.
+
+### Canister
+
+`Canister` values do not currently work with the default `stableJson` implementation. If you must persist `Canister`s, consider using the `Canister` `CandidType object` as your `Serializable object` in your `StableBTreeMap`, or create a custom `replacer` or `reviver` for `stableJson` that handles `Canister`.

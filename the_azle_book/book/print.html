@@ -796,7 +796,7 @@ export default Canister({
 <p>If you need more than 4 GiB of storage, consider taking advantage of the 96 GiB of stable memory. Stable structures like <code>StableBTreeMap</code> give you a nice API for interacting with stable memory. These data structures will be <a href="./stable_structures.html">covered in more detail later</a>. Here's a simple example:</p>
 <pre><code class="language-typescript">import { Canister, Opt, query, StableBTreeMap, text, update, Void } from 'azle';
 
-let db = StableBTreeMap(text, text, 0);
+let db = StableBTreeMap&lt;text, text&gt;(0);
 
 export default Canister({
     get: query([text], Opt(text), (key) =&gt; {
@@ -828,7 +828,7 @@ const Entry = Record({
     value: text
 });
 
-let db = StableBTreeMap(text, text, 0);
+let db = StableBTreeMap&lt;text, text&gt;(0);
 
 export default Canister({
     get: query([text], Opt(text), (key) =&gt; {
@@ -861,7 +861,7 @@ export default Canister({
     Void
 } from 'azle';
 
-let db = StableBTreeMap(text, text, 0);
+let db = StableBTreeMap&lt;text, text&gt;(0);
 
 export default Canister({
     get: query([text], Opt(text), (key) =&gt; {
@@ -1074,9 +1074,9 @@ export default Canister({
 
 let map = StableBTreeMap&lt;nat8, text&gt;(0);
 </code></pre>
-<p>This is a <code>StableBTreeMap</code> with a key of type <code>nat8</code> and a value of type <code>text</code>. When writing to and reading from a <code>StableBTreeMap</code>, by default the <code>stableJson</code> <code>Seriliazable</code> object is used to encode JS values into bytes and to decode JS values from bytes. <code>stableJson</code> uses <code>JSON.stringify</code> and <code>JSON.parse</code> with a custom <code>replacer</code> and <code>reviver</code> to handle many <code>Candid</code> and other values that you will most likely need for your canisters.</p>
-<p>You can also use other <code>Seriliazable</code> objects besides <code>stableJson</code>, and you can even create your own. Simply pass in a <code>Serializable</code> as the second and third parameter to your <code>StableBTreeMap</code>. The second parameter is the <code>key</code> <code>Serializable</code> and the third parameter is the <code>value</code> <code>serializable</code>.</p>
-<p>All <code>CandidType</code> objects imported from <code>azle</code> are <code>Serializable</code> objects as well. A <code>Serializable</code> simply has a <code>toBytes</code> method that takes a JS value and returns a <code>Uint8Array</code>, and a <code>fromBytes</code> method that takes a <code>Uint8Array</code> and returns a JS value.</p>
+<p>This is a <code>StableBTreeMap</code> with a key of type <code>nat8</code> and a value of type <code>text</code>. <code>StableBTreeMap</code> works by encoding and decoding values under-the-hood, storing and retrieving values in bytes in the stable memory location of the IC. When writing to and reading from a <code>StableBTreeMap</code>, by default the <code>stableJson</code> <code>Seriliazable object</code> is used to encode JS values into bytes and to decode JS values from bytes. <code>stableJson</code> uses <code>JSON.stringify</code> and <code>JSON.parse</code> with a custom <code>replacer</code> and <code>reviver</code> to handle many <code>Candid</code> and other values that you will most likely need for your canisters.</p>
+<p>You can also use other <code>Serializable objects</code> besides <code>stableJson</code>, and you can even create your own. Simply pass in a <code>Serializable object</code> as the second and third parameter to your <code>StableBTreeMap</code>. The second parameter is the <code>key</code> <code>Serializable object</code> and the third parameter is the <code>value</code> <code>Serializable object</code>.</p>
+<p>All <code>CandidType</code> objects imported from <code>azle</code> are <code>Serializable objects</code> as well. A <code>Serializable object</code> simply has a <code>toBytes</code> method that takes a JS value and returns a <code>Uint8Array</code>, and a <code>fromBytes</code> method that takes a <code>Uint8Array</code> and returns a JS value.</p>
 <pre><code class="language-typescript">let map = StableBTreeMap&lt;nat8, text&gt;(0, nat8, text);
 </code></pre>
 <p>The <code>StableBTreeMap</code> above will now use the <code>nat8</code> and <code>text</code> implementations of <code>toBytes</code> and <code>fromBytes</code> instead of <code>stableJson</code>.</p>
@@ -1115,9 +1115,12 @@ export function StableSimpleJson(): Serializable {
 } from 'azle';
 
 const Key = nat8;
-const Value = text;
+type Key = typeof Key.tsType;
 
-let map = StableBTreeMap(Key, Value, 0);
+const Value = text;
+type Value = typeof Value.tsType;
+
+let map = StableBTreeMap&lt;Key, Value&gt;(0);
 
 export default Canister({
     containsKey: query([Key], bool, (key) =&gt; {
@@ -1141,7 +1144,7 @@ export default Canister({
     }),
 
     keys: query([], Vec(Key), () =&gt; {
-        return map.keys();
+        return Uint8Array.from(map.keys());
     }),
 
     len: query([], nat64, () =&gt; {
@@ -1183,6 +1186,7 @@ const User = Record({
     recordingIds: Vec(Principal),
     username: text
 });
+type User = typeof User.tsType;
 
 const Recording = Record({
     id: Principal,
@@ -1191,19 +1195,21 @@ const Recording = Record({
     name: text,
     userId: Principal
 });
+type Recording = typeof Recording.tsType;
 
 const AudioRecorderError = Variant({
     RecordingDoesNotExist: Principal,
     UserDoesNotExist: Principal
 });
+type AudioRecorderError = typeof AudioRecorderError.tsType;
 
-let users = StableBTreeMap(Principal, User, 0);
-let recordings = StableBTreeMap(Principal, Recording, 1);
+let users = StableBTreeMap&lt;Principal, User&gt;(0);
+let recordings = StableBTreeMap&lt;Principal, Recording&gt;(1);
 
 export default Canister({
     createUser: update([text], User, (username) =&gt; {
         const id = generateId();
-        const user: typeof User = {
+        const user: User = {
             id,
             createdAt: ic.time(),
             recordingIds: [],
@@ -1254,7 +1260,7 @@ export default Canister({
             const user = userOpt.Some;
 
             const id = generateId();
-            const recording: typeof Recording = {
+            const recording: Recording = {
                 id,
                 audio,
                 createdAt: ic.time(),
@@ -1264,7 +1270,7 @@ export default Canister({
 
             recordings.insert(recording.id, recording);
 
-            const updatedUser: typeof User = {
+            const updatedUser: User = {
                 ...user,
                 recordingIds: [...user.recordingIds, recording.id]
             };
@@ -1302,7 +1308,7 @@ export default Canister({
 
             const user = userOpt.Some;
 
-            const updatedUser: typeof User = {
+            const updatedUser: User = {
                 ...user,
                 recordingIds: user.recordingIds.filter(
                     (recordingId) =&gt;
@@ -1331,11 +1337,20 @@ function generateId(): Principal {
 <p>Each entity gets its own <code>StableBTreeMap</code>:</p>
 <pre><code class="language-typescript">import {
     blob,
+    Canister,
+    ic,
+    Err,
     nat64,
+    Ok,
+    Opt,
     Principal,
+    query,
     Record,
+    Result,
     StableBTreeMap,
     text,
+    update,
+    Variant,
     Vec
 } from 'azle';
 
@@ -1345,6 +1360,7 @@ const User = Record({
     recordingIds: Vec(Principal),
     username: text
 });
+type User = typeof User.tsType;
 
 const Recording = Record({
     id: Principal,
@@ -1353,16 +1369,27 @@ const Recording = Record({
     name: text,
     userId: Principal
 });
+type Recording = typeof Recording.tsType;
 
-let users = StableBTreeMap(Principal, User, 0);
-let recordings = StableBTreeMap(Principal, Recording, 1);
+const AudioRecorderError = Variant({
+    RecordingDoesNotExist: Principal,
+    UserDoesNotExist: Principal
+});
+type AudioRecorderError = typeof AudioRecorderError.tsType;
+
+let users = StableBTreeMap&lt;Principal, User&gt;(0);
+let recordings = StableBTreeMap&lt;Principal, Recording&gt;(1);
 </code></pre>
-<p>Notice that each <code>StableBTreeMap</code> has a unique <code>memory id</code>.</p>
+<p>Notice that each <code>StableBTreeMap</code> has a unique <code>memory id</code>. You can begin to create basic database CRUD functionality by creating one <code>StableBTreeMap</code> per entity. It's up to you to create functionality for querying, filtering, and relations. <code>StableBTreeMap</code> is not a full-featured database solution, but a fundamental building block that may enable you to achieve more advanced database functionality.</p>
+<p>Demergent Labs plans to deeply explore database solutions on the IC in the future.</p>
 <h2 id="caveats"><a class="header" href="#caveats">Caveats</a></h2>
-<h3 id="performance"><a class="header" href="#performance">Performance</a></h3>
-<p>Azle's <code>StableBTreeMap</code> uses Candid encoding and decoding to store and retrieve all values. Azle's Candid encoding/decoding implementation is currently not well optimized, and Candid may not be the most optimal encoding format overall, so you may experience heavy instruction usage when performing many <code>StableBTreeMap</code> operations in succession. A rough idea of the overhead from our preliminary testing is probably 1-2 million instructions for a full Candid encoding and decoding of values per <code>StableBTreeMap</code> operation.</p>
+<h3 id="candidtype-performance"><a class="header" href="#candidtype-performance">CandidType Performance</a></h3>
+<p>Azle's Candid encoding/decoding implementation is currently not well optimized, and Candid may not be the most optimal encoding format overall, so you may experience heavy instruction usage when performing many <code>StableBTreeMap</code> operations in succession. A rough idea of the overhead from our preliminary testing is probably 1-2 million instructions for a full Candid encoding and decoding of values per <code>StableBTreeMap</code> operation.</p>
+<p>For these reasons we recommend using the <code>stableJson</code> <code>Serializable object</code> (the default) instead of <code>CandidType</code> <code>Serializable objects</code>.</p>
 <h3 id="migrations"><a class="header" href="#migrations">Migrations</a></h3>
 <p>Migrations must be performed manually by reading the values out of one <code>StableBTreeMap</code> and writing them into another. Once a <code>StableBTreeMap</code> is initialized to a specific <code>memory id</code>, that <code>memory id</code> cannot be changed unless the canister is completely wiped and initialized again.</p>
+<h3 id="canister"><a class="header" href="#canister">Canister</a></h3>
+<p><code>Canister</code> values do not currently work with the default <code>stableJson</code> implementation. If you must persist <code>Canister</code>s, consider using the <code>Canister</code> <code>CandidType object</code> as your <code>Serializable object</code> in your <code>StableBTreeMap</code>, or create a custom <code>replacer</code> or <code>reviver</code> for <code>stableJson</code> that handles <code>Canister</code>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cross-canister"><a class="header" href="#cross-canister">Cross-canister</a></h1>
 <p>Examples:</p>
 <ul>
@@ -1397,7 +1424,7 @@ let recordings = StableBTreeMap(Principal, Recording, 1);
     update
 } from 'azle';
 
-let accounts = StableBTreeMap(Principal, nat64, 0);
+let accounts = StableBTreeMap&lt;Principal, nat64&gt;(0);
 
 export default Canister({
     transfer: update([Principal, nat64], nat64, (to, amount) =&gt; {
@@ -1469,7 +1496,7 @@ export default Canister({
     update
 } from 'azle';
 
-let accounts = StableBTreeMap(Principal, nat64, 0);
+let accounts = StableBTreeMap&lt;Principal, nat64&gt;(0);
 
 export default Canister({
     transfer: update([Principal, nat64], nat64, (to, amount) =&gt; {
@@ -1676,7 +1703,7 @@ import {
     managementCanister
 } from 'azle/canisters/management';
 
-let stableStorage = StableBTreeMap(text, text, 0);
+let stableStorage = StableBTreeMap&lt;text, text&gt;(0);
 
 export default Canister({
     init: init([text], (ethereumUrl) =&gt; {
@@ -1938,7 +1965,7 @@ async function repeatCrossCanisterTimerCallback() {
 <h2 id="javascript-environment-apis"><a class="header" href="#javascript-environment-apis">JavaScript environment APIs</a></h2>
 <p>You may encounter various missing JavaScript environment APIs, such as those you would expect in the web or Node.js environments.</p>
 <h2 id="high-candid-encodingdecoding-costs"><a class="header" href="#high-candid-encodingdecoding-costs">High Candid encoding/decoding costs</a></h2>
-<p>Candid encoding/decoding is currently very unoptimized. This will most likely lead to a ~1-2 million instruction extra fixed cost for all calls, plus more if you use <code>StableBTreeMap</code> or any other API or data structure that engages in Candid encoding/decoding.</p>
+<p>Candid encoding/decoding is currently very unoptimized. This will most likely lead to a ~1-2 million extra fixed instruction cost for all calls. Be careful using <code>CandidType</code> <code>Serializable objects</code> with <code>StableBTreeMap</code>, or using any other API or data structure that engages in Candid encoding/decoding.</p>
 <h2 id="promises"><a class="header" href="#promises">Promises</a></h2>
 <p>Though promises are implemented, the underlying queue that handles asynchronous operations is very simple. This queue will not behave exactly as queues from the major JS engines.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reference"><a class="header" href="#reference">Reference</a></h1>
@@ -4458,35 +4485,46 @@ export default Canister({
 } from 'azle';
 
 const Key = nat8;
-const Value = text;
+type Key = typeof Key.tsType;
 
-let map = StableBTreeMap(Key, Value, 0);
+const Value = text;
+type Value = typeof Value.tsType;
+
+let map = StableBTreeMap&lt;Key, Value&gt;(0);
 
 export default Canister({
     containsKey: query([Key], bool, (key) =&gt; {
         return map.containsKey(key);
     }),
+
     get: query([Key], Opt(Value), (key) =&gt; {
         return map.get(key);
     }),
-    mapInsert: update([Key, Value], Opt(Value), (key, value) =&gt; {
+
+    insert: update([Key, Value], Opt(Value), (key, value) =&gt; {
         return map.insert(key, value);
     }),
+
     isEmpty: query([], bool, () =&gt; {
         return map.isEmpty();
     }),
+
     items: query([], Vec(Tuple(Key, Value)), () =&gt; {
         return map.items();
     }),
+
     keys: query([], Vec(Key), () =&gt; {
-        return map.keys();
+        return Uint8Array.from(map.keys());
     }),
+
     len: query([], nat64, () =&gt; {
         return map.len();
     }),
-    mapRemove: update([Key], Opt(Value), (key) =&gt; {
+
+    remove: update([Key], Opt(Value), (key) =&gt; {
         return map.remove(key);
     }),
+
     values: query([], Vec(Value), () =&gt; {
         return map.values();
     })

@@ -37,7 +37,7 @@ import {
     update
 } from 'azle';
 
-let accounts = StableBTreeMap(Principal, nat64, 0);
+let accounts = StableBTreeMap<Principal, nat64>(0);
 
 export default Canister({
     transfer: update([Principal, nat64], nat64, (to, amount) => {
@@ -120,7 +120,7 @@ import {
     update
 } from 'azle';
 
-let accounts = StableBTreeMap(Principal, nat64, 0);
+let accounts = StableBTreeMap<Principal, nat64>(0);
 
 export default Canister({
     transfer: update([Principal, nat64], nat64, (to, amount) => {

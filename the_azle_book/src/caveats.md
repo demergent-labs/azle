@@ -14,7 +14,7 @@ You may encounter various missing JavaScript environment APIs, such as those you
 
 ## High Candid encoding/decoding costs
 
-Candid encoding/decoding is currently very unoptimized. This will most likely lead to a ~1-2 million instruction extra fixed cost for all calls, plus more if you use `StableBTreeMap` or any other API or data structure that engages in Candid encoding/decoding.
+Candid encoding/decoding is currently very unoptimized. This will most likely lead to a ~1-2 million extra fixed instruction cost for all calls. Be careful using `CandidType` `Serializable objects` with `StableBTreeMap`, or using any other API or data structure that engages in Candid encoding/decoding.
 
 ## Promises
 
