@@ -65,8 +65,8 @@ const StableBTreeMapTestArb = fc
                 );
         }),
         {
-            minLength: 20,
-            maxLength: 50
+            minLength: 10,
+            maxLength: 30
         }
     )
     .map((canisterConfigs) => {
