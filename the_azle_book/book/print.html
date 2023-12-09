@@ -350,7 +350,7 @@ SOFTWARE.
 <ul>
 <li><a href="installation.html#build-dependencies">Build dependencies</a></li>
 <li><a href="installation.html#nodejs">Node.js 18</a></li>
-<li><a href="installation.html#dfx-0151">dfx 0.15.1</a></li>
+<li><a href="installation.html#dfx-0152">dfx 0.15.2</a></li>
 </ul>
 <h2 id="build-dependencies"><a class="header" href="#build-dependencies">Build dependencies</a></h2>
 <p>It is best to install all of these dependencies based on your OS:</p>
@@ -374,9 +374,9 @@ xcode-select --install
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">node --version
 </code></pre>
-<h2 id="dfx-0151"><a class="header" href="#dfx-0151">dfx 0.15.1</a></h2>
-<p>Run the following command to install dfx 0.15.1:</p>
-<pre><code class="language-bash">DFX_VERSION=0.15.1 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
+<h2 id="dfx-0152"><a class="header" href="#dfx-0152">dfx 0.15.2</a></h2>
+<p>Run the following command to install dfx 0.15.2:</p>
+<pre><code class="language-bash">DFX_VERSION=0.15.2 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">dfx --version
@@ -1065,7 +1065,7 @@ export default Canister({
 <li>Must specify memory id</li>
 <li>No migrations per memory id</li>
 </ul>
-<p>Stable structures are data structures with familiar APIs that allow access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 96 GiB of storage. Stable memory persists automatically across upgrades.</p>
+<p>Stable structures are data structures with familiar APIs that allow write and read access to stable memory. Stable memory is a separate memory location from the heap that currently allows up to 96 GiB of binary storage. Stable memory persists automatically across upgrades.</p>
 <p>Persistence on the Internet Computer (IC) is very important to understand. When a canister is upgraded (its code is changed after being initially deployed) its heap is wiped. This includes all global variables.</p>
 <p>On the other hand, anything stored in stable memory will be preserved. Writing and reading to and from stable memory can be done with a <a href="./reference/stable_memory/stable_memory.html">low-level API</a>, but it is generally easier and preferable to use stable structures.</p>
 <p>Azle currently provides one stable structure called <code>StableBTreeMap</code>. It's similar to a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">JavaScript Map</a> and has most of the common operations you'd expect such as reading, inserting, and removing values.</p>
@@ -1074,13 +1074,16 @@ export default Canister({
 
 let map = StableBTreeMap&lt;nat8, text&gt;(0);
 </code></pre>
-<p>This is a <code>StableBTreeMap</code> with a key of type <code>nat8</code> and a value of type <code>text</code>. <code>StableBTreeMap</code> works by encoding and decoding values under-the-hood, storing and retrieving values in bytes in the stable memory location of the IC. When writing to and reading from a <code>StableBTreeMap</code>, by default the <code>stableJson</code> <code>Seriliazable object</code> is used to encode JS values into bytes and to decode JS values from bytes. <code>stableJson</code> uses <code>JSON.stringify</code> and <code>JSON.parse</code> with a custom <code>replacer</code> and <code>reviver</code> to handle many <code>Candid</code> and other values that you will most likely need for your canisters.</p>
-<p>You can also use other <code>Serializable objects</code> besides <code>stableJson</code>, and you can even create your own. Simply pass in a <code>Serializable object</code> as the second and third parameter to your <code>StableBTreeMap</code>. The second parameter is the <code>key</code> <code>Serializable object</code> and the third parameter is the <code>value</code> <code>Serializable object</code>.</p>
-<p>All <code>CandidType</code> objects imported from <code>azle</code> are <code>Serializable objects</code> as well. A <code>Serializable object</code> simply has a <code>toBytes</code> method that takes a JS value and returns a <code>Uint8Array</code>, and a <code>fromBytes</code> method that takes a <code>Uint8Array</code> and returns a JS value.</p>
-<pre><code class="language-typescript">let map = StableBTreeMap&lt;nat8, text&gt;(0, nat8, text);
+<p>This is a <code>StableBTreeMap</code> with a key of type <code>nat8</code> and a value of type <code>text</code>. Unless you want a default type of <code>any</code> for your <code>key</code> and <code>value</code>, then you must explicitly type your <code>StableBTreeMap</code> with type arguments.</p>
+<p><code>StableBTreeMap</code> works by encoding and decoding values under-the-hood, storing and retrieving these values in bytes in stable memory. When writing to and reading from a <code>StableBTreeMap</code>, by default the <code>stableJson</code> <code>Serializable object</code> is used to encode JS values into bytes and to decode JS values from bytes. <code>stableJson</code> uses <code>JSON.stringify</code> and <code>JSON.parse</code> with a custom <code>replacer</code> and <code>reviver</code> to handle many <code>Candid</code> and other values that you will most likely use in your canisters.</p>
+<p>You may use other <code>Serializable objects</code> besides <code>stableJson</code>, and you can even create your own. Simply pass in a <code>Serializable object</code> as the second and third parameters to your <code>StableBTreeMap</code>. The second parameter is the <code>key</code> <code>Serializable object</code> and the third parameter is the <code>value</code> <code>Serializable object</code>. For example, the following <code>StableBTreeMap</code> uses the <code>nat8</code> and <code>text</code> <code>CandidType objects</code> from Azle as <code>Serializable objects</code>. These <code>Serializable objects</code> will encode and decode to and from Candid bytes:</p>
+<pre><code class="language-typescript">import { nat8, StableBTreeMap, text } from 'azle';
+
+let map = StableBTreeMap&lt;nat8, text&gt;(0, nat8, text);
 </code></pre>
-<p>The <code>StableBTreeMap</code> above will now use the <code>nat8</code> and <code>text</code> implementations of <code>toBytes</code> and <code>fromBytes</code> instead of <code>stableJson</code>.</p>
-<p>Here's an example of how to create your own <code>Serializable</code>:</p>
+<p>All <code>CandidType</code> objects imported from <code>azle</code> are <code>Serializable objects</code>.</p>
+<p>A <code>Serializable object</code> simply has a <code>toBytes</code> method that takes a JS value and returns a <code>Uint8Array</code>, and a <code>fromBytes</code> method that takes a <code>Uint8Array</code> and returns a JS value.</p>
+<p>Here's an example of how to create your own simple <code>JSON</code> <code>Serializable</code>:</p>
 <pre><code class="language-typescript">export interface Serializable {
     toBytes: (data: any) =&gt; Uint8Array;
     fromBytes: (bytes: Uint8Array) =&gt; any;
