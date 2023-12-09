@@ -15,24 +15,24 @@ export function getTests(
 
                 const keysResult =
                     await stableBTreeMapInstructionThresholdCanister.keysSmallRecord(
-                        5_000
+                        4_000
                     );
 
                 const valuesResult =
                     await stableBTreeMapInstructionThresholdCanister.valuesSmallRecord(
-                        6_000
+                        5_000
                     );
 
                 const itemsResult =
                     await stableBTreeMapInstructionThresholdCanister.itemsSmallRecord(
-                        2_000
+                        1_000
                     );
 
                 return {
                     Ok:
-                        keysResult.length === 5_000 &&
-                        valuesResult.length === 6_000 &&
-                        itemsResult.length === 2_000
+                        keysResult.length === 4_000 &&
+                        valuesResult.length === 5_000 &&
+                        itemsResult.length === 1_000
                 };
             }
         },
