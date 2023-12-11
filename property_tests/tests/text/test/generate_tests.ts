@@ -22,7 +22,7 @@ export function generateTests(
             {
                 name: `text ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/text/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](...paramValues);
 

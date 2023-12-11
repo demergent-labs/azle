@@ -25,7 +25,7 @@ export function generateTests(
             {
                 name: `nat32 ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/nat32/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](...paramValues);
 

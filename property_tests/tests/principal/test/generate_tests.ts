@@ -20,7 +20,7 @@ export function generateTests(
             {
                 name: `principal ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/principal/test');
+                    const actor = getActor(__dirname);
                     const result = await actor[functionName](
                         ...namedParamPrincipals.map(
                             (param) => param.el.agentArgumentValue

@@ -1,4 +1,4 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from '../../../../idl_export';
 import { DidVisitor, VisitorData, VisitorResult } from '../did_visitor';
 import { escapeCandidKeywords } from '../escape_candid_keywords';
 import { extractCandid } from '../extract_candid';

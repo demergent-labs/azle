@@ -1,6 +1,6 @@
 import { CandidType } from '../../candid_type';
 import { Parent, toIdl } from '../../to_idl';
-import { IDL } from '@dfinity/candid';
+import { IDL } from '../../../idl_export';
 import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
 import { TypeMapping } from '../../type_mapping';

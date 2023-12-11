@@ -1,7 +1,7 @@
 import { CandidType } from '../../candid_type';
 import { TypeMapping } from '../../type_mapping';
 import { toIdlMap, CandidMap } from './to_idl_map';
-import { IDL } from '@dfinity/candid';
+import { IDL } from '../../../idl_export';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
 

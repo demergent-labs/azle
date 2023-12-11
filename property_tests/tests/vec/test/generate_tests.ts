@@ -16,7 +16,7 @@ export function generateTests(
             {
                 name: `vec ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/vec/test');
+                    const actor = getActor(__dirname);
 
                     const params = namedParamVecs.map(
                         (param) => param.el.agentArgumentValue

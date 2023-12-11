@@ -1,4 +1,4 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from '../../../../../idl_export';
 import { EncodeVisitor } from '../../encode_visitor';
 import { DecodeVisitor } from '../../decode_visitor';
 import { VisitorData } from '../../types';

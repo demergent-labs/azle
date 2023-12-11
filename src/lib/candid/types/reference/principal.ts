@@ -1,5 +1,5 @@
-import { IDL } from '@dfinity/candid';
-import { Principal as DfinityPrincipal } from '@dfinity/principal';
+import { IDL } from '../../../idl_export';
+import { DfinityPrincipal } from '../../..';
 import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
 import { Parent } from '../../to_idl';

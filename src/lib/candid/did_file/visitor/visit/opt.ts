@@ -1,4 +1,4 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from '../../../../idl_export';
 import { DidVisitor, VisitorData, VisitorResult } from '../did_visitor';
 
 export function visitOpt<T>(

@@ -20,7 +20,7 @@ export function generateTests(
             {
                 name: `tuple ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/tuple/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](
                         ...namedParamTuples.map(

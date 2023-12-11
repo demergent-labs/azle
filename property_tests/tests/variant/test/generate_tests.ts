@@ -17,7 +17,7 @@ export function generateTests(
             {
                 name: `variant ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/variant/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](
                         ...namedParamVariants.map(

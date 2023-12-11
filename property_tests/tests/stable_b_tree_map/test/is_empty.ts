@@ -40,7 +40,7 @@ function generateTests(functionName: string): Test[][] {
             {
                 name: `isEmpty after first deploy ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/stable_b_tree_map/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName]();
 
@@ -54,7 +54,7 @@ function generateTests(functionName: string): Test[][] {
             {
                 name: `isEmpty after second deploy ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/stable_b_tree_map/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName]();
 
@@ -68,7 +68,7 @@ function generateTests(functionName: string): Test[][] {
             {
                 name: `isEmpty after third deploy ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/stable_b_tree_map/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName]();
 

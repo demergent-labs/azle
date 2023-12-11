@@ -1,4 +1,4 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from '../../idl_export';
 
 import { AzleVec, AzleOpt, AzleTuple } from '../types/constructed';
 import { DecodeVisitor } from './visitors/decode_visitor';

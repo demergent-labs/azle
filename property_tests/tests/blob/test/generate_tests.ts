@@ -23,7 +23,7 @@ export function generateTests(
             {
                 name: `blob ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/blob/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](
                         ...paramBlobs.map((blob) => blob.el.agentArgumentValue)

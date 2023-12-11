@@ -54,7 +54,7 @@ function generateTests(
             {
                 name: `insert after first deploy ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/stable_b_tree_map/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](
                         keySampleAgentArgumentValue,
