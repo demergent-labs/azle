@@ -19,7 +19,7 @@ export function generateTests(
             {
                 name: `query method "${functionName}"`,
                 test: async () => {
-                    const actor = getActor('./tests/query_methods/test');
+                    const actor = getActor(__dirname);
                     const result = await actor[functionName](...paramValues);
                     const valuesAreEqual = deepEqual(result, expectedResult);
 

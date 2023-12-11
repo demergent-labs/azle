@@ -17,7 +17,7 @@ export function generateTests(
             {
                 name: `opt ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/opt/test');
+                    const actor = getActor(__dirname);
 
                     const params = namedParamOpts.map(
                         (param) => param.el.agentArgumentValue

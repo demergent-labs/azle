@@ -24,7 +24,7 @@ export function generateTests(
             {
                 name: `int64 ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/int64/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](...paramValues);
 

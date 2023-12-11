@@ -1,4 +1,4 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from '../../../idl_export';
 import { Opt } from '../../types/constructed';
 import { VisitorData, VisitorResult } from './types';
 import { visitRecord } from './visit/record';

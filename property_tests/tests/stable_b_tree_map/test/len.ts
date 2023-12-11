@@ -41,7 +41,7 @@ function generateTests(functionName: string): Test[][] {
             {
                 name: `len after first deploy ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/stable_b_tree_map/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName]();
 
@@ -55,7 +55,7 @@ function generateTests(functionName: string): Test[][] {
             {
                 name: `len after second deploy ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/stable_b_tree_map/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName]();
 
@@ -69,7 +69,7 @@ function generateTests(functionName: string): Test[][] {
             {
                 name: `len after third deploy ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/stable_b_tree_map/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName]();
 

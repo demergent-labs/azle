@@ -15,7 +15,7 @@ export function generateTests(
             {
                 name: `record ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/record/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](
                         ...namedParamRecords.map(

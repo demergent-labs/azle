@@ -21,7 +21,7 @@ export function generateTests(
             {
                 name: `float32 ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/float32/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](...paramValues);
 

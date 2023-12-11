@@ -1,4 +1,4 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from '../../../idl_export';
 import { CandidType } from '../../candid_type';
 import { Parent, toIdl } from '../../to_idl';
 

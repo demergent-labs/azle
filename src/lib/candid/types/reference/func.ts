@@ -1,5 +1,5 @@
 import { CandidType, Parent, toIdlArray } from '../../index';
-import { IDL } from '@dfinity/candid';
+import { IDL } from '../../../idl_export';
 import { Principal } from './principal';
 import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';

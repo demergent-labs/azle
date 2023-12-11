@@ -1,4 +1,4 @@
-import { Principal } from '@dfinity/principal';
+import { Principal } from '../';
 import { blob } from '../candid/types/constructed/blob';
 import { nat } from '../candid/types/primitive/nats/nat';
 import { v4 } from 'uuid';

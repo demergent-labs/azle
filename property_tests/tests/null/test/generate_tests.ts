@@ -14,7 +14,7 @@ export function generateTests(
             {
                 name: `test ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/null/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](
                         ...namedParamNulls.map(

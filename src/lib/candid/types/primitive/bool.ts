@@ -1,4 +1,4 @@
-import { IDL } from '@dfinity/candid';
+import { IDL } from '../../../idl_export';
 import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
 
