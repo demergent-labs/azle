@@ -1,4 +1,4 @@
-import { IDL } from '../../../idl_export';
+import { IDL } from '@dfinity/candid';
 import { VisitorData, VisitorResult } from './types';
 import { visitTuple } from './visit/tuple';
 import { visitVec } from './visit/vec';

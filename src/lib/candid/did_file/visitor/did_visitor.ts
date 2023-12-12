@@ -1,4 +1,4 @@
-import { IDL } from '../../../idl_export';
+import { IDL } from '@dfinity/candid';
 import { visitService } from './visit/service';
 import { visitVariant } from './visit/variant';
 import { visitRecord } from './visit/record';

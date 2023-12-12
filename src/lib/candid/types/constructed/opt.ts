@@ -4,7 +4,7 @@ import { encode } from '../../serde/encode';
 import { Parent, toIdl } from '../../to_idl';
 import { TypeMapping } from '../../type_mapping';
 import { RequireExactlyOne } from './variant';
-import { IDL } from '../../../idl_export';
+import { IDL } from '@dfinity/candid';
 
 /**
  * Represents an optional value: every {@link Opt} is either `Some` and contains
