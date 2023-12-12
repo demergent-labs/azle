@@ -29,9 +29,7 @@ export type InitMethod<
 
 export function InitMethodArb<
     ParamAgentArgumentValue extends CorrespondingJSType,
-    ParamAgentResponseValue,
-    ReturnTypeAgentArgumentValue extends CorrespondingJSType,
-    ReturnTypeAgentResponseValue
+    ParamAgentResponseValue
 >(
     paramTypeArrayArb: fc.Arbitrary<
         CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
@@ -39,15 +37,11 @@ export function InitMethodArb<
     constraints: {
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,
-            ParamAgentResponseValue,
-            ReturnTypeAgentArgumentValue | undefined,
-            ReturnTypeAgentResponseValue | undefined
+            ParamAgentResponseValue
         >;
         generateTests: TestsGenerator<
             ParamAgentArgumentValue,
-            ParamAgentResponseValue,
-            ReturnTypeAgentArgumentValue | undefined,
-            ReturnTypeAgentResponseValue | undefined
+            ParamAgentResponseValue
         >;
         callbackLocation?: CallbackLocation;
     }
