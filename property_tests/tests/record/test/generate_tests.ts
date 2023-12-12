@@ -17,12 +17,15 @@ export function generateTests(
 
                     const result = await actor[functionName](
                         ...namedParamRecords.map(
-                            (param) => param.el.agentArgumentValue
+                            (param) => param.el.value.agentArgumentValue
                         )
                     );
 
                     return {
-                        Ok: deepEqual(result, returnRecord.agentResponseValue)
+                        Ok: deepEqual(
+                            result,
+                            returnRecord.value.agentResponseValue
+                        )
                     };
                 }
             }

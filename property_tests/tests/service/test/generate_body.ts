@@ -11,7 +11,7 @@ export function generateBody(
         .map((param) => {
             const paramIsAService = `(${
                 param.name
-            } as any).principal.toText() === "${param.el.agentArgumentValue.toText()}"`;
+            } as any).principal.toText() === "${param.el.value.agentArgumentValue.toText()}"`;
 
             const throwError = `throw new Error('${param.name} must be a Service');`;
 

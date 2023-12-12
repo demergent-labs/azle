@@ -12,6 +12,7 @@ import {
     generateCallback
 } from '.';
 import { Test } from '../../../test';
+import { VoidArb } from '../candid/primitive/void';
 
 export type InitMethod<
     ParamAgentArgumentValue extends CorrespondingJSType,
@@ -39,14 +40,14 @@ export function InitMethodArb<
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,
             ParamAgentResponseValue,
-            ReturnTypeAgentArgumentValue,
-            ReturnTypeAgentResponseValue
+            ReturnTypeAgentArgumentValue | undefined,
+            ReturnTypeAgentResponseValue | undefined
         >;
         generateTests: TestsGenerator<
             ParamAgentArgumentValue,
             ParamAgentResponseValue,
-            ReturnTypeAgentArgumentValue,
-            ReturnTypeAgentResponseValue
+            ReturnTypeAgentArgumentValue | undefined,
+            ReturnTypeAgentResponseValue | undefined
         >;
         callbackLocation?: CallbackLocation;
     }
@@ -55,6 +56,7 @@ export function InitMethodArb<
         .tuple(
             UniqueIdentifierArb('canisterMethod'),
             paramTypeArrayArb,
+            VoidArb(),
             fc.constantFrom(
                 'INLINE',
                 'STANDALONE'
@@ -68,6 +70,7 @@ export function InitMethodArb<
             ([
                 functionName,
                 paramTypes,
+                returnType,
                 defaultCallbackLocation,
                 callbackName
             ]) => {
@@ -90,7 +93,7 @@ export function InitMethodArb<
 
                 const callback = generateCallback(
                     namedParams,
-                    undefined,
+                    returnType,
                     constraints.generateBody,
                     callbackLocation,
                     callbackName
@@ -114,7 +117,7 @@ export function InitMethodArb<
                 const tests = constraints.generateTests(
                     functionName,
                     namedParams,
-                    undefined
+                    returnType
                 );
 
                 return {

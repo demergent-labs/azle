@@ -9,8 +9,10 @@ export function generateTests(
     params: Named<CandidValueAndMeta<CorrespondingJSType>>[],
     returnType: CandidValueAndMeta<CandidReturnType>
 ): Test[][] {
-    const paramValues = params.map((param) => param.el.agentArgumentValue);
-    const expectedResult = returnType.agentResponseValue;
+    const paramValues = params.map(
+        (param) => param.el.value.agentArgumentValue
+    );
+    const expectedResult = returnType.value.agentResponseValue;
 
     return [
         [

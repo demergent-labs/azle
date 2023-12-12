@@ -7,7 +7,7 @@ export function generateTests(
     namedParamVecs: Named<CandidValueAndMeta<any>>[],
     returnVec: CandidValueAndMeta<any>
 ): Test[][] {
-    const expectedResult = returnVec.agentResponseValue;
+    const expectedResult = returnVec.value.agentResponseValue;
 
     return [
         [
@@ -17,7 +17,7 @@ export function generateTests(
                     const actor = getActor(__dirname);
 
                     const params = namedParamVecs.map(
-                        (param) => param.el.agentArgumentValue
+                        (param) => param.el.value.agentArgumentValue
                     );
                     const result = await actor[functionName](...params);
 
