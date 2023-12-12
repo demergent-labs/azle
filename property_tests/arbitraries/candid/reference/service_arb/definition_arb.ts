@@ -1,13 +1,15 @@
 import fc from 'fast-check';
 
-import { JsFunctionNameArb } from '../../../js_function_name_arb';
-import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
+import {
+    ServiceMethodArb,
+    ServiceMethodDefinition
+} from './service_method_arb';
 import {
     CandidDefinition,
-    ServiceCandidDefinition,
-    ServiceMethodDefinition
+    ServiceCandidDefinition
 } from '../../candid_definition_arb/types';
-import { VoidDefinitionArb } from '../../primitive/void';
+import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
+import { Canister } from '../../../../../src/lib/candid/types/reference/service';
 
 export function ServiceDefinitionArb(
     fieldCandidDefArb: fc.Arbitrary<CandidDefinition>
@@ -34,6 +36,8 @@ export function ServiceDefinitionArb(
                 fields
             );
 
+            const azleCandidTypeObject = generateAzleCandidTypeObject(fields);
+
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 useTypeDeclaration,
                 name,
@@ -47,54 +51,12 @@ export function ServiceDefinitionArb(
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
+                    azleCandidTypeObject,
                     variableAliasDeclarations,
                     imports,
                     candidType: 'Service'
                 },
                 funcs: fields
-            };
-        });
-}
-
-function ServiceMethodArb(
-    candidDefArb: fc.Arbitrary<CandidDefinition>
-): fc.Arbitrary<ServiceMethodDefinition> {
-    return fc
-        .tuple(
-            JsFunctionNameArb,
-            fc.constantFrom('query', 'update'),
-            fc.array(candidDefArb),
-            fc.oneof(candidDefArb, VoidDefinitionArb())
-        )
-        .map(([name, mode, params, returnType]): ServiceMethodDefinition => {
-            const paramCandidTypeObjects = params.map(
-                (param) => param.candidMeta.candidTypeObject
-            );
-
-            const variableAliasDeclarations = params.reduce(
-                (
-                    acc,
-                    { candidMeta: { variableAliasDeclarations } }
-                ): string[] => {
-                    return [...acc, ...variableAliasDeclarations];
-                },
-                returnType.candidMeta.variableAliasDeclarations
-            );
-
-            const src = `${name}: ${mode}([${paramCandidTypeObjects}], ${returnType.candidMeta.candidTypeObject})`;
-
-            const imports = params.reduce(
-                (acc, param) => {
-                    return new Set([...acc, ...param.candidMeta.imports]);
-                },
-                new Set([mode, ...returnType.candidMeta.imports])
-            );
-
-            return {
-                name,
-                imports,
-                variableAliasDeclarations: variableAliasDeclarations,
-                src
             };
         });
 }
@@ -146,6 +108,19 @@ function generateCandidTypeObject(
         .join(',\n');
 
     return `Canister({${methods}})`;
+}
+
+function generateAzleCandidTypeObject(
+    serviceMethods: ServiceMethodDefinition[]
+) {
+    const methods = serviceMethods.reduce((acc, serviceMethod) => {
+        return {
+            ...acc,
+            [serviceMethod.name]: serviceMethod.azleCandidTypeObject
+        };
+    }, {});
+
+    return Canister(methods);
 }
 
 function generateImports(

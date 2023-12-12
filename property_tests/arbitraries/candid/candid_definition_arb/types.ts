@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 import { CandidType } from '../candid_type';
-import { CandidType as AzleCandidType } from '../../../../src/lib';
+import { CandidType as AzleCandidType } from '../../../../src/lib/candid/candid_type';
+import { ServiceMethodDefinition } from '../reference/service_arb/service_method_arb';
 
 export type CandidDefinitionArb = fc.Arbitrary<CandidDefinition>;
 
@@ -59,12 +60,6 @@ export type ServiceCandidDefinition = {
     name: string;
     candidMeta: CandidMeta;
     funcs: ServiceMethodDefinition[];
-};
-export type ServiceMethodDefinition = {
-    name: string;
-    imports: Set<string>;
-    variableAliasDeclarations: string[];
-    src: string;
 };
 
 type CandidMeta = {
