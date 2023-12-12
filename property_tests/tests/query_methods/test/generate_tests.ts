@@ -1,4 +1,5 @@
-import deepEqual from 'deep-equal';
+// @ts-ignore
+import deepEqual from 'deep-is';
 
 import { getActor, Named } from 'azle/property_tests';
 import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';

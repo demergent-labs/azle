@@ -85,7 +85,9 @@ function generateSourceCode(
 
     return /*TS*/ `
         import { ${imports} } from 'azle';
-        import deepEqual from 'deep-equal';
+        
+        // @ts-ignore
+        import deepEqual from 'deep-is';
 
         ${declarations}
 
