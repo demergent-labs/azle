@@ -1,25 +1,27 @@
 import fc from 'fast-check';
 import { CandidValueAndMeta } from '../candid_value_and_meta_arb';
-import {
-    CandidDefinitionArb,
-    RecursiveCandidDefinition,
-    RecursiveGlobalDefinition
-} from '../candid_definition_arb/types';
+import { RecursiveGlobalDefinition } from '../candid_definition_arb/types';
 import { RecursiveDefinitionArb } from './definition_arb';
 import { RecursiveValuesArb } from './values_arb';
 import { CandidValueAndMetaArbGenerator } from '../candid_value_and_meta_arb_generator';
-import { candidDefinitionArb } from '../candid_definition_arb';
+import { complexCandidDefinitionMemo } from '../candid_definition_arb/complex_candid_definition_memo';
+import { DEFAULT_DEF_MAX_DEPTH } from '../../config';
 
-export const recursiveShapes: { [key: string]: RecursiveGlobalDefinition } = {};
-export const recursiveOptions: RecursiveCandidDefinition[] = [];
+export const recursive: {
+    shapes: { [key: string]: RecursiveGlobalDefinition };
+} = {
+    shapes: {}
+};
 
 export type Recursive = any;
 
-export function RecursiveArb(
-    arb: CandidDefinitionArb = candidDefinitionArb()
-): fc.Arbitrary<CandidValueAndMeta<Recursive>> {
+export function RecursiveArb(): fc.Arbitrary<CandidValueAndMeta<Recursive>> {
     return CandidValueAndMetaArbGenerator(
-        RecursiveDefinitionArb(arb),
+        RecursiveDefinitionArb(
+            complexCandidDefinitionMemo,
+            [],
+            DEFAULT_DEF_MAX_DEPTH
+        ),
         RecursiveValuesArb
     );
 }

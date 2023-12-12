@@ -5,11 +5,12 @@ import { TupleCandidDefinition } from '../../candid_definition_arb/types';
 import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 
 export function TupleValuesArb(
-    tupleDefinition: TupleCandidDefinition
+    tupleDefinition: TupleCandidDefinition,
+    n: number
 ): fc.Arbitrary<CandidValues<Tuple, ReturnTuple>> {
     const fieldValues = tupleDefinition.innerTypes.map((innerType) => {
         const result: fc.Arbitrary<CandidValues<CorrespondingJSType>> =
-            CandidValueArb(innerType);
+            CandidValueArb(innerType, n - 1);
         return result;
     });
 

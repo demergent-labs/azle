@@ -6,15 +6,23 @@ import { VecCandidDefinition } from '../../candid_definition_arb/types';
 import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 
 export function VecValuesArb(
-    vecDefinition: VecCandidDefinition
+    vecDefinition: VecCandidDefinition,
+    n: number
 ): fc.Arbitrary<CandidValues<Vec>> {
+    if (n < 1) {
+        return fc.constant(
+            generateEmptyVec(vecDefinition.innerType.candidMeta.candidType)
+        );
+    }
     const arbitraryMemberValues = fc
         .tuple(
             fc.array(fc.constant(null)),
             fc.constant(vecDefinition.innerType)
         )
         .chain(([arrayTemplate, innerType]) =>
-            fc.tuple(...arrayTemplate.map(() => CandidValueArb(innerType)))
+            fc.tuple(
+                ...arrayTemplate.map(() => CandidValueArb(innerType, n - 1))
+            )
         );
 
     const innerCandidType = vecDefinition.innerType.candidMeta.candidType;
@@ -35,41 +43,24 @@ export function VecValuesArb(
     });
 }
 
+function generateEmptyVec(innerCandidType: CandidType): CandidValues<Vec> {
+    return {
+        valueLiteral: typeValueLiteral('[]', innerCandidType),
+        agentArgumentValue: typeArray([], innerCandidType),
+        agentResponseValue: typeArray([], innerCandidType)
+    };
+}
+
 function generateValue<T extends CorrespondingJSType>(
     array: CandidValues<T>[],
-    candidType: CandidType,
+    innerCandidType: CandidType,
     returned: boolean = false
 ): Vec {
     const value = array.map((sample) =>
         returned ? sample.agentResponseValue : sample.agentArgumentValue
     );
 
-    if (candidType === 'int8') {
-        return new Int8Array(value as number[]);
-    }
-    if (candidType === 'int16') {
-        return new Int16Array(value as number[]);
-    }
-    if (candidType === 'int32') {
-        return new Int32Array(value as number[]);
-    }
-    if (candidType === 'int64') {
-        return new BigInt64Array(value as bigint[]);
-    }
-    if (candidType === 'nat8') {
-        return new Uint8Array(value as number[]);
-    }
-    if (candidType === 'nat16') {
-        return new Uint16Array(value as number[]);
-    }
-    if (candidType === 'nat32') {
-        return new Uint32Array(value as number[]);
-    }
-    if (candidType === 'nat64') {
-        return new BigUint64Array(value as bigint[]);
-    }
-
-    return value;
+    return typeArray(value, innerCandidType);
 }
 
 function generateValueLiteral<T extends CorrespondingJSType>(
@@ -80,37 +71,76 @@ function generateValueLiteral<T extends CorrespondingJSType>(
 
     const valueLiteral = `[${valueLiterals}]`;
 
+    return typeValueLiteral(valueLiteral, innerCandidType);
+}
+
+function typeValueLiteral(
+    arrayLiteral: string,
+    innerCandidType: CandidType
+): string {
     if (innerCandidType === 'int64') {
-        return `BigInt64Array.from(${valueLiteral})`;
+        return `BigInt64Array.from(${arrayLiteral})`;
     }
 
     if (innerCandidType === 'int32') {
-        return `Int32Array.from(${valueLiteral})`;
+        return `Int32Array.from(${arrayLiteral})`;
     }
 
     if (innerCandidType === 'int16') {
-        return `Int16Array.from(${valueLiteral})`;
+        return `Int16Array.from(${arrayLiteral})`;
     }
 
     if (innerCandidType === 'int8') {
-        return `Int8Array.from(${valueLiteral})`;
+        return `Int8Array.from(${arrayLiteral})`;
     }
 
     if (innerCandidType === 'nat64') {
-        return `BigUint64Array.from(${valueLiteral})`;
+        return `BigUint64Array.from(${arrayLiteral})`;
     }
 
     if (innerCandidType === 'nat32') {
-        return `Uint32Array.from(${valueLiteral})`;
+        return `Uint32Array.from(${arrayLiteral})`;
     }
 
     if (innerCandidType === 'nat16') {
-        return `Uint16Array.from(${valueLiteral})`;
+        return `Uint16Array.from(${arrayLiteral})`;
     }
 
     if (innerCandidType === 'nat8') {
-        return `Uint8Array.from(${valueLiteral})`;
+        return `Uint8Array.from(${arrayLiteral})`;
     }
 
-    return valueLiteral;
+    return arrayLiteral;
+}
+
+function typeArray<T extends CorrespondingJSType>(
+    arr: T[],
+    innerCandidType: CandidType
+): Vec {
+    if (innerCandidType === 'int8') {
+        return new Int8Array(arr as number[]);
+    }
+    if (innerCandidType === 'int16') {
+        return new Int16Array(arr as number[]);
+    }
+    if (innerCandidType === 'int32') {
+        return new Int32Array(arr as number[]);
+    }
+    if (innerCandidType === 'int64') {
+        return new BigInt64Array(arr as bigint[]);
+    }
+    if (innerCandidType === 'nat8') {
+        return new Uint8Array(arr as number[]);
+    }
+    if (innerCandidType === 'nat16') {
+        return new Uint16Array(arr as number[]);
+    }
+    if (innerCandidType === 'nat32') {
+        return new Uint32Array(arr as number[]);
+    }
+    if (innerCandidType === 'nat64') {
+        return new BigUint64Array(arr as bigint[]);
+    }
+
+    return arr;
 }

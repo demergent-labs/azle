@@ -2,6 +2,8 @@ import fc from 'fast-check';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
+    RecCandidDefMemo,
+    RecursiveCandidDefinition,
     VariantCandidDefinition
 } from '../../candid_definition_arb/types';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
@@ -14,12 +16,14 @@ type RuntimeVariant = {
 };
 
 export function VariantDefinitionArb(
-    candidTypeArbForFields: fc.Arbitrary<CandidDefinition>
+    candidTypeArbForFields: RecCandidDefMemo,
+    parents: RecursiveCandidDefinition[],
+    n: number
 ): fc.Arbitrary<VariantCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
-            VariantFieldsArb(candidTypeArbForFields),
+            VariantFieldsArb(candidTypeArbForFields, parents, n),
             fc.boolean()
         )
         .map(([name, fields, useTypeDeclaration]): VariantCandidDefinition => {
@@ -61,15 +65,28 @@ export function VariantDefinitionArb(
 }
 
 function VariantFieldsArb(
-    candidTypeArb: fc.Arbitrary<CandidDefinition>
+    candidTypeArb: RecCandidDefMemo,
+    parents: RecursiveCandidDefinition[],
+    n: number
 ): fc.Arbitrary<Field[]> {
-    return fc.uniqueArray(fc.tuple(JsFunctionNameArb, candidTypeArb), {
-        selector: ([name, _]) => name,
-        minLength: 1
-        // Although no minLength is technically required (according to the
-        // spec), the DFX CLI itself currently errors out trying to pass
-        // an empty object.
-    });
+    // Although no minLength is technically required (according to the
+    // spec), the DFX CLI itself currently errors out trying to pass
+    // an empty object.
+    const VARIANT_MIN_FIELD_COUNT = 1;
+    return fc
+        .uniqueArray(JsFunctionNameArb, {
+            minLength: VARIANT_MIN_FIELD_COUNT
+        })
+        .chain((fieldsNames) =>
+            fc.tuple(
+                ...fieldsNames.map((name, index) =>
+                    fc.tuple(
+                        fc.constant(name),
+                        possiblyRecursiveArb(candidTypeArb, index, parents, n)
+                    )
+                )
+            )
+        );
 }
 
 function generateImports(fields: Field[]): Set<string> {

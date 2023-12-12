@@ -5,10 +5,14 @@ import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { candidTypeToRuntimeCandidTypeObject } from './candid_type_to_azle_candid_type';
 
 export function SimpleCandidDefinitionArb(
-    candidType: SimpleCandidType
+    candidType: SimpleCandidType,
+    useVariableAliasDeclaration?: boolean
 ): fc.Arbitrary<PrimitiveDefinition> {
     return fc
-        .tuple(UniqueIdentifierArb('typeDeclaration'), fc.boolean())
+        .tuple(
+            UniqueIdentifierArb('typeDeclaration'),
+            useVariableAliasDeclarationArb(useVariableAliasDeclaration)
+        )
         .map(([name, useTypeDeclaration]) => {
             const candidTypeAnnotation = candidType;
             const candidTypeObject = useTypeDeclaration ? name : candidType;
@@ -31,6 +35,14 @@ export function SimpleCandidDefinitionArb(
                 }
             };
         });
+}
+
+function useVariableAliasDeclarationArb(
+    useVariableAliasDeclaration: boolean | undefined
+): fc.Arbitrary<boolean> {
+    return useVariableAliasDeclaration === undefined
+        ? fc.boolean()
+        : fc.constant(useVariableAliasDeclaration);
 }
 
 function generateVariableAliasDeclarations(

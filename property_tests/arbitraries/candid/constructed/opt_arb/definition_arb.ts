@@ -2,17 +2,38 @@ import fc from 'fast-check';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
-    OptCandidDefinition
+    OptCandidDefinition,
+    RecCandidDefMemo,
+    RecursiveCandidDefinition
 } from '../../candid_definition_arb/types';
 import { CandidType, Opt } from '../../../../../src/lib';
 
+function possiblyRecursiveArb(
+    candidArb: RecCandidDefMemo,
+    parents: RecursiveCandidDefinition[],
+    n: number
+): fc.Arbitrary<CandidDefinition> {
+    return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
+        if (parents.length === 0 || n < 1) {
+            // If there are no recursive parents or this is the first variant field just do a regular arb field
+            return candidArb(parents)(n);
+        }
+        return fc.oneof(
+            { arbitrary: fc.constant(parents[randomIndex]), weight: 1 },
+            { arbitrary: candidArb(parents)(n), weight: 1 }
+        );
+    });
+}
+
 export function OptDefinitionArb(
-    candidTypeArbForInnerType: fc.Arbitrary<CandidDefinition>
+    candidTypeArbForInnerType: RecCandidDefMemo,
+    parents: RecursiveCandidDefinition[],
+    n: number
 ): fc.Arbitrary<OptCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
-            candidTypeArbForInnerType,
+            possiblyRecursiveArb(candidTypeArbForInnerType, parents, n),
             fc.boolean()
         )
         .map(([name, innerType, useTypeDeclaration]): OptCandidDefinition => {

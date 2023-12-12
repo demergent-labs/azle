@@ -45,26 +45,27 @@ export type CandidValues<T extends CorrespondingJSType, E = T> = {
 };
 
 export function CandidValueArb(
-    candidTypeMeta: CandidDefinition
+    candidTypeMeta: CandidDefinition,
+    n: number
 ): fc.Arbitrary<CandidValues<CorrespondingJSType>> {
     const candidType = candidTypeMeta.candidMeta.candidType;
     if (candidType === 'blob') {
         return BlobValuesArb();
     }
     if (candidType === 'Opt') {
-        return OptValuesArb(candidTypeMeta as OptCandidDefinition);
+        return OptValuesArb(candidTypeMeta as OptCandidDefinition, n);
     }
     if (candidType === 'Record') {
-        return RecordValuesArb(candidTypeMeta as RecordCandidDefinition);
+        return RecordValuesArb(candidTypeMeta as RecordCandidDefinition, n);
     }
     if (candidType === 'Tuple') {
-        return TupleValuesArb(candidTypeMeta as TupleCandidDefinition);
+        return TupleValuesArb(candidTypeMeta as TupleCandidDefinition, n);
     }
     if (candidType === 'Variant') {
-        return VariantValuesArb(candidTypeMeta as VariantCandidDefinition);
+        return VariantValuesArb(candidTypeMeta as VariantCandidDefinition, n);
     }
     if (candidType === 'Vec') {
-        return VecValuesArb(candidTypeMeta as VecCandidDefinition);
+        return VecValuesArb(candidTypeMeta as VecCandidDefinition, n);
     }
     if (candidType === 'bool') {
         return BoolValueArb();
@@ -127,7 +128,8 @@ export function CandidValueArb(
         return RecursivePlaceHolderValuesArb(
             candidTypeMeta as
                 | RecursiveCandidDefinition
-                | RecursiveGlobalDefinition
+                | RecursiveGlobalDefinition,
+            n
         );
     }
     throw new Error('Unreachable');

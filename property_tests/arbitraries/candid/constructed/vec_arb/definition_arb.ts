@@ -2,17 +2,38 @@ import fc from 'fast-check';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
+    RecCandidDefMemo,
+    RecursiveCandidDefinition,
     VecCandidDefinition
 } from '../../candid_definition_arb/types';
 import { CandidType, Vec } from '../../../../../src/lib';
 
+function possiblyRecursiveArb(
+    candidArb: RecCandidDefMemo,
+    parents: RecursiveCandidDefinition[],
+    n: number
+): fc.Arbitrary<CandidDefinition> {
+    return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
+        if (parents.length === 0) {
+            // If there are no recursive parents or this is the first variant field just do a regular arb field
+            return candidArb(parents)(n);
+        }
+        return fc.oneof(
+            { arbitrary: fc.constant(parents[randomIndex]), weight: 1 },
+            { arbitrary: candidArb(parents)(n), weight: 1 }
+        );
+    });
+}
+
 export function VecDefinitionArb(
-    candidTypeArb: fc.Arbitrary<CandidDefinition>
+    candidTypeArb: RecCandidDefMemo,
+    parents: RecursiveCandidDefinition[],
+    n: number
 ): fc.Arbitrary<VecCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
-            candidTypeArb,
+            possiblyRecursiveArb(candidTypeArb, parents, n),
             fc.boolean()
         )
         .map(([name, innerType, useTypeDeclaration]): VecCandidDefinition => {

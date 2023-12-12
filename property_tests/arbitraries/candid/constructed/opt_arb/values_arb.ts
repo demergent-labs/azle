@@ -7,11 +7,15 @@ import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 type SomeOrNone = 'Some' | 'None';
 
 export function OptValuesArb(
-    optDefinition: OptCandidDefinition
+    optDefinition: OptCandidDefinition,
+    n: number
 ): fc.Arbitrary<CandidValues<Opt>> {
+    if (n < 1) {
+        return fc.constant(generateNoneValue());
+    }
     const innerValue = fc.tuple(
         fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>,
-        CandidValueArb(optDefinition.innerType)
+        CandidValueArb(optDefinition.innerType, n - 1)
     );
 
     return innerValue.map(([someOrNone, innerType]) => {
@@ -25,6 +29,14 @@ export function OptValuesArb(
             agentResponseValue
         };
     });
+}
+
+function generateNoneValue(): CandidValues<Opt> {
+    return {
+        valueLiteral: 'None',
+        agentArgumentValue: [],
+        agentResponseValue: []
+    };
 }
 
 function generateValue(

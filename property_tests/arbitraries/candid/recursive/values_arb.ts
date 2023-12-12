@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { Recursive, recursiveShapes } from '.';
+import { Recursive, recursive } from '.';
 import {
     RecursiveCandidDefinition,
     RecursiveGlobalDefinition
@@ -7,14 +7,16 @@ import {
 import { CandidValues, CandidValueArb } from '../candid_values_arb';
 
 export function RecursivePlaceHolderValuesArb(
-    recDefinition: RecursiveCandidDefinition | RecursiveGlobalDefinition
+    recDefinition: RecursiveCandidDefinition | RecursiveGlobalDefinition,
+    n: number
 ): fc.Arbitrary<CandidValues<Recursive>> {
-    const recShape = recursiveShapes[recDefinition.name];
-    return RecursiveValuesArb(recShape);
+    const recShape = recursive.shapes[recDefinition.name];
+    return RecursiveValuesArb(recShape, n);
 }
 
 export function RecursiveValuesArb(
-    optDefinition: RecursiveGlobalDefinition
+    recDefinition: RecursiveGlobalDefinition,
+    n: number
 ): fc.Arbitrary<CandidValues<Recursive>> {
-    return CandidValueArb(optDefinition.innerType);
+    return CandidValueArb(recDefinition.innerType, n);
 }
