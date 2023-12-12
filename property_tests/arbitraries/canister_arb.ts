@@ -41,11 +41,22 @@ export function CanisterArb<
             ...(config.updateMethods ?? [])
         ];
 
-        const initArgs = config.initMethod?.params.map(({ el: { value } }) => {
-            return value.candidTypeObject
-                .getIdl([])
-                .valueToString(value.agentArgumentValue);
-        });
+        const initArgs = config.initMethod?.params.map(
+            ({
+                el: {
+                    src: { candidTypeAnnotation },
+                    value
+                }
+            }) => {
+                const paramCandidString = value.candidTypeObject
+                    .getIdl([])
+                    .valueToString(value.agentArgumentValue);
+
+                return candidTypeAnnotation === 'text'
+                    ? escapeCandidStringForBash(paramCandidString)
+                    : paramCandidString;
+            }
+        );
 
         const sourceCode = generateSourceCode(
             config.globalDeclarations ?? [],
@@ -128,4 +139,15 @@ function generateSourceCode(
             ${sourceCodes.join(',\n    ')}
         });
     `;
+}
+
+function escapeCandidStringForBash(input: string) {
+    return `"${escapeForBash(input.slice(1, -1))}"`;
+}
+
+function escapeForBash(input: string) {
+    return input
+        .replace(/\\/g, '\\\\') // Escape backslashes
+        .replace(/'/g, "'\\''") // Escape single quotes
+        .replace(/"/g, '\\"'); // Escape double quotes
 }
