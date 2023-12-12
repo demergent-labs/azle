@@ -1,5 +1,5 @@
 import { Principal } from '@dfinity/principal';
-import { deepEqual } from 'fast-equals';
+import deepEqual from 'deep-equal';
 
 import { getActor, Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';

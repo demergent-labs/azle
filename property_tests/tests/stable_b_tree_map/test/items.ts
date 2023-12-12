@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { deepEqual } from 'fast-equals';
+import deepEqual from 'deep-equal';
 
 import { StableBTreeMap } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
 import { getActor } from 'azle/property_tests';

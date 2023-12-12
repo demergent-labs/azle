@@ -1,4 +1,4 @@
-import { deepEqual } from 'fast-equals';
+import deepEqual from 'deep-equal';
 
 import { Named, getActor } from 'azle/property_tests';
 import { Test } from 'azle/test';
