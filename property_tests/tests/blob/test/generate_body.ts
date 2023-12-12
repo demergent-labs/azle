@@ -15,11 +15,11 @@ export function generateBody(
 
     const paramsCorrectlyOrdered = areParamsCorrectlyOrdered(namedParamBlobs);
 
-    const returnStatement = `Uint8Array.from([${[
-        ...returnBlob.agentArgumentValue
-    ]} ${returnBlob.agentArgumentValue.length > 0 ? ',' : ''} ${namedParamBlobs
-        .map((param) => `...${param.name}`)
-        .join(', ')}])`;
+    const returnValue = returnBlob.value.agentArgumentValue;
+
+    const returnStatement = `Uint8Array.from([${[...returnValue]} ${
+        returnValue.length > 0 ? ',' : ''
+    } ${namedParamBlobs.map((param) => `...${param.name}`).join(', ')}])`;
 
     return `
         ${paramsAreUint8Arrays}

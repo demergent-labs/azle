@@ -13,7 +13,7 @@ export function generateTests(
     namedParamTuples: Named<CandidValueAndMeta<Tuple, ReturnTuple>>[],
     returnTuple: CandidValueAndMeta<Tuple, ReturnTuple>
 ): Test[][] {
-    const expectedResult = returnTuple.agentResponseValue;
+    const expectedResult = returnTuple.value.agentResponseValue;
 
     return [
         [
@@ -24,7 +24,7 @@ export function generateTests(
 
                     const result = await actor[functionName](
                         ...namedParamTuples.map(
-                            (param) => param.el.agentArgumentValue
+                            (param) => param.el.value.agentArgumentValue
                         )
                     );
 

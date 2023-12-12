@@ -21,7 +21,7 @@ export function ContainsKeyTestArb(stableBTreeMap: StableBTreeMap) {
             const body = generateBody(stableBTreeMap.name);
             const tests = generateTests(
                 functionName,
-                stableBTreeMap.keySample.agentArgumentValue
+                stableBTreeMap.keySample.value.agentArgumentValue
             );
 
             return {
@@ -43,7 +43,7 @@ function generateBody(stableBTreeMapName: string): string {
 
 function generateTests(
     functionName: string,
-    keySampleAgentArgumentValue: StableBTreeMap['keySample']['agentArgumentValue']
+    keySampleAgentArgumentValue: StableBTreeMap['keySample']['value']['agentArgumentValue']
 ): Test[][] {
     return [
         [

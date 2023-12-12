@@ -11,10 +11,10 @@ export function generateTests(
 ): Test[][] {
     const expectedResult = Uint8Array.from(
         paramBlobs
-            .map((blob) => blob.el.agentResponseValue)
+            .map((blob) => blob.el.value.agentResponseValue)
             .reduce(
                 (acc, blob) => [...acc, ...blob],
-                [...returnBlob.agentResponseValue]
+                [...returnBlob.value.agentResponseValue]
             )
     );
 
@@ -26,7 +26,9 @@ export function generateTests(
                     const actor = getActor(__dirname);
 
                     const result = await actor[functionName](
-                        ...paramBlobs.map((blob) => blob.el.agentArgumentValue)
+                        ...paramBlobs.map(
+                            (blob) => blob.el.value.agentArgumentValue
+                        )
                     );
 
                     return {

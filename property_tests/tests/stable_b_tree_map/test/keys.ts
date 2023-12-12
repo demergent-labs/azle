@@ -64,7 +64,7 @@ function generateTests(
                             ).from(result),
                             getArrayForCandidType(
                                 keySample.src.candidTypeAnnotation
-                            ).from([keySample.agentArgumentValue])
+                            ).from([keySample.value.agentArgumentValue])
                         )
                     };
                 }
@@ -85,7 +85,7 @@ function generateTests(
                             ).from(result),
                             getArrayForCandidType(
                                 keySample.src.candidTypeAnnotation
-                            ).from([keySample.agentArgumentValue])
+                            ).from([keySample.value.agentArgumentValue])
                         )
                     };
                 }

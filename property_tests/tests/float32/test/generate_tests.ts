@@ -11,10 +11,10 @@ export function generateTests(
 ): Test[][] {
     const expectedResult =
         namedParamFloat32s.length === 0
-            ? returnFloat32.agentResponseValue
-            : namedParamFloat32s[0].el.agentResponseValue;
+            ? returnFloat32.value.agentResponseValue
+            : namedParamFloat32s[0].el.value.agentResponseValue;
     const paramValues = namedParamFloat32s.map(
-        (paramFloats) => paramFloats.el.agentArgumentValue
+        (paramFloats) => paramFloats.el.value.agentArgumentValue
     );
     return [
         [

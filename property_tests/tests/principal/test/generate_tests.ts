@@ -12,8 +12,8 @@ export function generateTests(
 ): Test[][] {
     const expectedResult =
         namedParamPrincipals.length > 0
-            ? namedParamPrincipals[0].el.agentResponseValue
-            : returnPrincipal.agentResponseValue;
+            ? namedParamPrincipals[0].el.value.agentResponseValue
+            : returnPrincipal.value.agentResponseValue;
 
     return [
         [
@@ -23,7 +23,7 @@ export function generateTests(
                     const actor = getActor(__dirname);
                     const result = await actor[functionName](
                         ...namedParamPrincipals.map(
-                            (param) => param.el.agentArgumentValue
+                            (param) => param.el.value.agentArgumentValue
                         )
                     );
 

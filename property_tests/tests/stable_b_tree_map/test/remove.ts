@@ -22,8 +22,8 @@ export function RemoveTestArb(stableBTreeMap: StableBTreeMap) {
 
             const tests = generateTests(
                 functionName,
-                stableBTreeMap.keySample.agentArgumentValue,
-                stableBTreeMap.valueSample.agentArgumentValue
+                stableBTreeMap.keySample.value.agentArgumentValue,
+                stableBTreeMap.valueSample.value.agentArgumentValue
             );
 
             return {
@@ -45,8 +45,8 @@ function generateBody(stableBTreeMapName: string): string {
 
 function generateTests(
     functionName: string,
-    keySampleAgentArgumentValue: StableBTreeMap['keySample']['agentArgumentValue'],
-    valueSampleAgentArgumentValue: StableBTreeMap['valueSample']['agentArgumentValue']
+    keySampleAgentArgumentValue: StableBTreeMap['keySample']['value']['agentArgumentValue'],
+    valueSampleAgentArgumentValue: StableBTreeMap['valueSample']['value']['agentArgumentValue']
 ): Test[][] {
     return [
         [],

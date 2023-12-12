@@ -4,7 +4,7 @@ import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candi
 
 export function generateBody(
     _namedParams: Named<CandidValueAndMeta<CorrespondingJSType>>[],
-    returnType: CandidValueAndMeta<CorrespondingJSType> | undefined
+    returnType: CandidValueAndMeta<CorrespondingJSType>
 ) {
-    return `return ${returnType?.src.valueLiteral}`;
+    return `return ${returnType.src.valueLiteral}`;
 }

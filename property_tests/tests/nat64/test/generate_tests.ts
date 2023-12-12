@@ -12,11 +12,11 @@ export function generateTests(
     const count = namedParamNat64s.length + 1;
     const expectedResult =
         namedParamNat64s.reduce(
-            (acc, param) => acc + param.el.agentResponseValue,
-            returnNat64.agentResponseValue
+            (acc, param) => acc + param.el.value.agentResponseValue,
+            returnNat64.value.agentResponseValue
         ) / BigInt(count);
     const paramValues = namedParamNat64s.map(
-        (param) => param.el.agentArgumentValue
+        (param) => param.el.value.agentArgumentValue
     );
 
     return [

@@ -12,12 +12,12 @@ export function generateTests(
     const count = namedParamInt64s.length + 1;
     const expectedResult =
         namedParamInt64s.reduce(
-            (acc, param) => acc + param.el.agentResponseValue,
-            returnInt64.agentResponseValue
+            (acc, param) => acc + param.el.value.agentResponseValue,
+            returnInt64.value.agentResponseValue
         ) / BigInt(count);
 
     const paramValues = namedParamInt64s.map(
-        (param) => param.el.agentArgumentValue
+        (param) => param.el.value.agentArgumentValue
     );
     return [
         [

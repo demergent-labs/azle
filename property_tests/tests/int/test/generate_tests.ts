@@ -10,11 +10,11 @@ export function generateTests(
     returnInt: CandidValueAndMeta<bigint>
 ): Test[][] {
     const expectedResult = namedParamInts.reduce(
-        (acc, param) => acc + param.el.agentResponseValue,
-        returnInt.agentResponseValue
+        (acc, param) => acc + param.el.value.agentResponseValue,
+        returnInt.value.agentResponseValue
     );
     const paramValues = namedParamInts.map(
-        (param) => param.el.agentArgumentValue
+        (param) => param.el.value.agentArgumentValue
     );
 
     return [
