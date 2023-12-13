@@ -1,4 +1,4 @@
-import { IDL } from '../../../../../idl_export';
+import { IDL } from '@dfinity/candid';
 import { EncodeVisitor } from '../../encode_visitor';
 import { AzleResult } from '../../../../../system_types';
 import { DecodeVisitor } from '../../decode_visitor';

@@ -1,4 +1,5 @@
-import { deepEqual } from 'fast-equals';
+// @ts-ignore
+import deepEqual from 'deep-is';
 
 import { getActor, Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';

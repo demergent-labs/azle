@@ -1,5 +1,7 @@
 import fc from 'fast-check';
-import { deepEqual } from 'fast-equals';
+
+// @ts-ignore
+import deepEqual from 'deep-is';
 
 import { getActor } from 'azle/property_tests';
 import { Test } from 'azle/test';

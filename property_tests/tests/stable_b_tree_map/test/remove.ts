@@ -1,5 +1,7 @@
 import fc from 'fast-check';
-import { deepEqual } from 'fast-equals';
+
+// @ts-ignore
+import deepEqual from 'deep-is';
 
 import { StableBTreeMap } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
 import { getActor } from 'azle/property_tests';

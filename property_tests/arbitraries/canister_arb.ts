@@ -85,12 +85,9 @@ function generateSourceCode(
 
     return /*TS*/ `
         import { ${imports} } from 'azle';
-        import { deepEqual } from 'fast-equals';
-        // import * as deepEqual from 'fast-deep-equal';
-        // TODO solve the underlying principal problem https://github.com/demergent-labs/azle/issues/1443
-        // import { Principal as DfinityPrincipal } from '@dfinity/principal';
-        // import { Principal as DfinityPrincipal } from 'azle';
-        import { DfinityPrincipal } from 'azle';
+        
+        // @ts-ignore
+        import deepEqual from 'deep-is';
 
         ${declarations}
 

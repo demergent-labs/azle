@@ -1,6 +1,6 @@
 import { Parent, toIdlArray } from '../../../../index';
 import { _AzleRecursiveFunction } from '../../../../recursive';
-import { IDL } from '../../../../../idl_export';
+import { IDL } from '@dfinity/candid';
 import { CanisterOptions, ServiceFunctionInfo } from '.';
 
 type SystemMethod = { name: string } | undefined;
