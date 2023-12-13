@@ -3,7 +3,7 @@ export function floatToSrcLiteral(value: number): string {
         return 'Number.NaN';
     }
     if (Number.isFinite(value)) {
-        if (1 / value === -Infinity) {
+        if (value === 0 && 1 / value === -Infinity) {
             return '-0';
         }
 
