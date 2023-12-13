@@ -13,6 +13,9 @@ export function generateCandidAndCanisterMethods(mainJs: string): {
 
     const sandbox = {
         globalThis: {},
+        window: {},
+        self: {},
+        global: {},
         crypto: {
             getRandomValues: () => {
                 let array = new Uint8Array(32);
