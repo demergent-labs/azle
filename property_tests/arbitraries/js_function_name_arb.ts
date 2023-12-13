@@ -78,7 +78,60 @@ const azleKeywords = [
     'Vec'
 ];
 
-const jsKeywords = ['eval', 'var', 'new', 'try'];
+const jsKeywords = [
+    'await',
+    'break',
+    'case',
+    'catch',
+    'class',
+    'const',
+    'continue',
+    'debugger',
+    'default',
+    'delete',
+    'do',
+    'else',
+    'enum',
+    'export',
+    'extends',
+    'false',
+    'finally',
+    'for',
+    'function',
+    'if',
+    'implements',
+    'import',
+    'in',
+    'instanceof',
+    'interface',
+    'let',
+    'new',
+    'null',
+    'package',
+    'private',
+    'protected',
+    'public',
+    'return',
+    'super',
+    'switch',
+    'static',
+    'this',
+    'throw',
+    'true',
+    'try',
+    'typeof',
+    'var',
+    'void',
+    'while',
+    'with',
+    'yield',
+    // Additional words with special meaning
+    'NaN',
+    'Infinity',
+    'undefined',
+    'arguments',
+    'eval'
+];
 
 export const JsFunctionNameArb = fc
     .stringMatching(/^(_[a-zA-Z0-9]+|[a-zA-Z][a-zA-Z0-9]*)$/)

@@ -22,8 +22,11 @@ export function Float64ValueArb(): fc.Arbitrary<CandidValues<number>> {
     return SimpleCandidValuesArb(float64(), floatToSrcLiteral);
 }
 
+// TODO multiplying by zero is to remove -0
+// TODO we should open an issue with agent-js
+// TODO the agent should encode and decode -0 correctly
 function float64(): fc.Arbitrary<number> {
     return fc
         .float64Array({ maxLength: 1, minLength: 1 })
-        .map((sample) => sample[0]);
+        .map((sample) => (sample[0] === 0 ? sample[0] * 0 : sample[0]));
 }

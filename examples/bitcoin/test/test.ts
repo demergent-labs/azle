@@ -22,7 +22,7 @@ const tests: Test[] = [
     ...impureSetup(wallets, state),
     {
         name: 'wait for blockchain balance to reflect',
-        wait: 60_000
+        wait: 120_000
     },
     ...testCanisterFunctionality()
 ];
