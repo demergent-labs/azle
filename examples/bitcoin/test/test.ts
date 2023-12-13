@@ -22,7 +22,7 @@ const tests: Test[] = [
     ...impureSetup(wallets, state),
     {
         name: 'wait for blockchain balance to reflect',
-        wait: 120_000
+        wait: 60_000
     },
     ...testCanisterFunctionality()
 ];
@@ -41,6 +41,10 @@ function testCanisterFunctionality() {
                 const blockReward = 5_000_000_000n;
                 const blocksMinedInSetup = 101n;
                 const expectedBalance = blockReward * blocksMinedInSetup;
+
+                // TODO remove this after testing
+                console.log('result', result);
+                console.log('expectedBalance', expectedBalance);
 
                 return {
                     Ok: result === expectedBalance

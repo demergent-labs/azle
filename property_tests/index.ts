@@ -1,4 +1,7 @@
 import fc from 'fast-check';
+// @ts-ignore
+import libraryDeepEqual from 'deep-is';
+
 import { Canister } from './arbitraries/canister_arb';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { execSync } from 'child_process';
@@ -72,3 +75,15 @@ export const defaultArrayConstraints = {
     minLength: 20,
     maxLength: 100
 };
+
+export function deepEqual(a: any, b: any): boolean {
+    const result = libraryDeepEqual(a, b);
+
+    if (result === false) {
+        console.log('deepEqual returned false');
+        console.log('deepEqual value a', a);
+        console.log('deepEqual value b', b);
+    }
+
+    return result;
+}

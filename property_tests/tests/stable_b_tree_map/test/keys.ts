@@ -1,10 +1,7 @@
 import fc from 'fast-check';
 
-// @ts-ignore
-import deepEqual from 'deep-is';
-
 import { StableBTreeMap } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
-import { getActor } from 'azle/property_tests';
+import { deepEqual, getActor } from 'azle/property_tests';
 import { Test } from 'azle/test';
 import { getArrayForCandidType, getArrayStringForCandidType } from './utils';
 import { UniqueIdentifierArb } from 'azle/property_tests/arbitraries/unique_identifier_arb';
