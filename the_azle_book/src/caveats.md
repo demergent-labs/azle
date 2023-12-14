@@ -19,3 +19,9 @@ Candid encoding/decoding is currently very unoptimized. This will most likely le
 ## Promises
 
 Though promises are implemented, the underlying queue that handles asynchronous operations is very simple. This queue will not behave exactly as queues from the major JS engines.
+
+## JSON.parse and StableBTreeMap float64 values
+
+It seems to be only some `float64` values cannot be successfully stored and retrieved with a `StableBTreeMap` using `stableJson` because of this bug with JSON.parse: https://github.com/bellard/quickjs/issues/206
+
+This will also affect stand-alone usage of `JSON.parse`.

@@ -1386,6 +1386,8 @@ let recordings = StableBTreeMap&lt;Principal, Recording&gt;(1);
 <p>Notice that each <code>StableBTreeMap</code> has a unique <code>memory id</code>. You can begin to create basic database CRUD functionality by creating one <code>StableBTreeMap</code> per entity. It's up to you to create functionality for querying, filtering, and relations. <code>StableBTreeMap</code> is not a full-featured database solution, but a fundamental building block that may enable you to achieve more advanced database functionality.</p>
 <p>Demergent Labs plans to deeply explore database solutions on the IC in the future.</p>
 <h2 id="caveats"><a class="header" href="#caveats">Caveats</a></h2>
+<h3 id="float64-values"><a class="header" href="#float64-values">float64 values</a></h3>
+<p>It seems to be only some <code>float64</code> values cannot be successfully stored and retrieved with a <code>StableBTreeMap</code> using <code>stableJson</code> because of this bug with <code>JSON.parse</code>: https://github.com/bellard/quickjs/issues/206</p>
 <h3 id="candidtype-performance"><a class="header" href="#candidtype-performance">CandidType Performance</a></h3>
 <p>Azle's Candid encoding/decoding implementation is currently not well optimized, and Candid may not be the most optimal encoding format overall, so you may experience heavy instruction usage when performing many <code>StableBTreeMap</code> operations in succession. A rough idea of the overhead from our preliminary testing is probably 1-2 million instructions for a full Candid encoding and decoding of values per <code>StableBTreeMap</code> operation.</p>
 <p>For these reasons we recommend using the <code>stableJson</code> <code>Serializable object</code> (the default) instead of <code>CandidType</code> <code>Serializable objects</code>.</p>
@@ -1971,6 +1973,9 @@ async function repeatCrossCanisterTimerCallback() {
 <p>Candid encoding/decoding is currently very unoptimized. This will most likely lead to a ~1-2 million extra fixed instruction cost for all calls. Be careful using <code>CandidType</code> <code>Serializable objects</code> with <code>StableBTreeMap</code>, or using any other API or data structure that engages in Candid encoding/decoding.</p>
 <h2 id="promises"><a class="header" href="#promises">Promises</a></h2>
 <p>Though promises are implemented, the underlying queue that handles asynchronous operations is very simple. This queue will not behave exactly as queues from the major JS engines.</p>
+<h2 id="jsonparse-and-stablebtreemap-float64-values"><a class="header" href="#jsonparse-and-stablebtreemap-float64-values">JSON.parse and StableBTreeMap float64 values</a></h2>
+<p>It seems to be only some <code>float64</code> values cannot be successfully stored and retrieved with a <code>StableBTreeMap</code> using <code>stableJson</code> because of this bug with JSON.parse: https://github.com/bellard/quickjs/issues/206</p>
+<p>This will also affect stand-alone usage of <code>JSON.parse</code>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="reference"><a class="header" href="#reference">Reference</a></h1>
 <ul>
 <li><a href="reference/./bitcoin.html">Bitcoin</a></li>

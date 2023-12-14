@@ -360,6 +360,10 @@ Demergent Labs plans to deeply explore database solutions on the IC in the futur
 
 ## Caveats
 
+### float64 values
+
+It seems to be only some `float64` values cannot be successfully stored and retrieved with a `StableBTreeMap` using `stableJson` because of this bug with `JSON.parse`: https://github.com/bellard/quickjs/issues/206
+
 ### CandidType Performance
 
 Azle's Candid encoding/decoding implementation is currently not well optimized, and Candid may not be the most optimal encoding format overall, so you may experience heavy instruction usage when performing many `StableBTreeMap` operations in succession. A rough idea of the overhead from our preliminary testing is probably 1-2 million instructions for a full Candid encoding and decoding of values per `StableBTreeMap` operation.
