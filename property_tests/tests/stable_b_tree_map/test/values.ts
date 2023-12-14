@@ -1,8 +1,7 @@
 import fc from 'fast-check';
-import { deepEqual } from 'fast-equals';
 
 import { StableBTreeMap } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
-import { getActor } from 'azle/property_tests';
+import { deepEqual, getActor } from 'azle/property_tests';
 import { Test } from 'azle/test';
 import { getArrayForCandidType, getArrayStringForCandidType } from './utils';
 import { UniqueIdentifierArb } from 'azle/property_tests/arbitraries/unique_identifier_arb';
@@ -56,7 +55,7 @@ function generateTests(
             {
                 name: `values after first deploy ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/stable_b_tree_map/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName]();
 
@@ -77,7 +76,7 @@ function generateTests(
             {
                 name: `values after second deploy ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/stable_b_tree_map/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName]();
 
@@ -98,7 +97,7 @@ function generateTests(
             {
                 name: `values after third deploy ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/stable_b_tree_map/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName]();
 

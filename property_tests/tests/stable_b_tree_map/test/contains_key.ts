@@ -1,7 +1,6 @@
 import fc from 'fast-check';
-import { deepEqual } from 'fast-equals';
 
-import { getActor } from 'azle/property_tests';
+import { deepEqual, getActor } from 'azle/property_tests';
 import { Test } from 'azle/test';
 import { UniqueIdentifierArb } from 'azle/property_tests/arbitraries/unique_identifier_arb';
 import { QueryMethod } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
@@ -50,7 +49,7 @@ function generateTests(
             {
                 name: `containsKey after first deploy ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/stable_b_tree_map/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](
                         keySampleAgentArgumentValue
@@ -66,7 +65,7 @@ function generateTests(
             {
                 name: `containsKey after second deploy ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/stable_b_tree_map/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](
                         keySampleAgentArgumentValue
@@ -82,7 +81,7 @@ function generateTests(
             {
                 name: `containsKey after third deploy ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/stable_b_tree_map/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](
                         keySampleAgentArgumentValue

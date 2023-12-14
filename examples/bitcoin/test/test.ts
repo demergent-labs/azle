@@ -42,6 +42,10 @@ function testCanisterFunctionality() {
                 const blocksMinedInSetup = 101n;
                 const expectedBalance = blockReward * blocksMinedInSetup;
 
+                // TODO remove this after testing
+                console.log('result', result);
+                console.log('expectedBalance', expectedBalance);
+
                 return {
                     Ok: result === expectedBalance
                 };

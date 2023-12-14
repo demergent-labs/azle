@@ -1,6 +1,4 @@
-import { deepEqual } from 'fast-equals';
-
-import { Named, getActor } from 'azle/property_tests';
+import { deepEqual, Named, getActor } from 'azle/property_tests';
 import { Test } from 'azle/test';
 import { CandidReturnType } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
@@ -19,7 +17,7 @@ export function generateTests(
             {
                 name: `update method "${functionName}"`,
                 test: async () => {
-                    const actor = getActor('./tests/update_methods/test');
+                    const actor = getActor(__dirname);
                     const result = await actor[functionName](...paramValues);
                     const valuesAreEqual = deepEqual(result, expectedResult);
 

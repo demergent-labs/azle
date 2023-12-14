@@ -1,7 +1,6 @@
 import { Principal } from '@dfinity/principal';
-import { deepEqual } from 'fast-equals';
 
-import { getActor, Named } from 'azle/property_tests';
+import { deepEqual, getActor, Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { Test } from 'azle/test';
 
@@ -20,7 +19,7 @@ export function generateTests(
             {
                 name: `principal ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/principal/test');
+                    const actor = getActor(__dirname);
                     const result = await actor[functionName](
                         ...namedParamPrincipals.map(
                             (param) => param.el.agentArgumentValue

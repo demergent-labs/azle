@@ -1,6 +1,4 @@
-import { deepEqual } from 'fast-equals';
-
-import { getActor, Named } from 'azle/property_tests';
+import { deepEqual, getActor, Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { Test } from 'azle/test';
 
@@ -25,7 +23,7 @@ export function generateTests(
             {
                 name: `int16 ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/int16/test');
+                    const actor = getActor(__dirname);
 
                     const result = await actor[functionName](...paramValues);
 
