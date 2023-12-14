@@ -14,8 +14,14 @@ You may encounter various missing JavaScript environment APIs, such as those you
 
 ## High Candid encoding/decoding costs
 
-Candid encoding/decoding is currently very unoptimized. This will most likely lead to a ~1-2 million instruction extra fixed cost for all calls, plus more if you use `StableBTreeMap` or any other API or data structure that engages in Candid encoding/decoding.
+Candid encoding/decoding is currently very unoptimized. This will most likely lead to a ~1-2 million extra fixed instruction cost for all calls. Be careful using `CandidType` `Serializable objects` with `StableBTreeMap`, or using any other API or data structure that engages in Candid encoding/decoding.
 
 ## Promises
 
 Though promises are implemented, the underlying queue that handles asynchronous operations is very simple. This queue will not behave exactly as queues from the major JS engines.
+
+## JSON.parse and StableBTreeMap float64 values
+
+It seems to be only some `float64` values cannot be successfully stored and retrieved with a `StableBTreeMap` using `stableJson` because of this bug with JSON.parse: https://github.com/bellard/quickjs/issues/206
+
+This will also affect stand-alone usage of `JSON.parse`.

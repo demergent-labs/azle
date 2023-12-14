@@ -152,9 +152,12 @@
 <h2 id="javascript-environment-apis"><a class="header" href="#javascript-environment-apis">JavaScript environment APIs</a></h2>
 <p>You may encounter various missing JavaScript environment APIs, such as those you would expect in the web or Node.js environments.</p>
 <h2 id="high-candid-encodingdecoding-costs"><a class="header" href="#high-candid-encodingdecoding-costs">High Candid encoding/decoding costs</a></h2>
-<p>Candid encoding/decoding is currently very unoptimized. This will most likely lead to a ~1-2 million instruction extra fixed cost for all calls, plus more if you use <code>StableBTreeMap</code> or any other API or data structure that engages in Candid encoding/decoding.</p>
+<p>Candid encoding/decoding is currently very unoptimized. This will most likely lead to a ~1-2 million extra fixed instruction cost for all calls. Be careful using <code>CandidType</code> <code>Serializable objects</code> with <code>StableBTreeMap</code>, or using any other API or data structure that engages in Candid encoding/decoding.</p>
 <h2 id="promises"><a class="header" href="#promises">Promises</a></h2>
 <p>Though promises are implemented, the underlying queue that handles asynchronous operations is very simple. This queue will not behave exactly as queues from the major JS engines.</p>
+<h2 id="jsonparse-and-stablebtreemap-float64-values"><a class="header" href="#jsonparse-and-stablebtreemap-float64-values">JSON.parse and StableBTreeMap float64 values</a></h2>
+<p>It seems to be only some <code>float64</code> values cannot be successfully stored and retrieved with a <code>StableBTreeMap</code> using <code>stableJson</code> because of this bug with JSON.parse: https://github.com/bellard/quickjs/issues/206</p>
+<p>This will also affect stand-alone usage of <code>JSON.parse</code>.</p>
 
                     </main>
 

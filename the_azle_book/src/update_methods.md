@@ -76,7 +76,7 @@ If you need more than 4 GiB of storage, consider taking advantage of the 96 GiB 
 ```typescript
 import { Canister, Opt, query, StableBTreeMap, text, update, Void } from 'azle';
 
-let db = StableBTreeMap(text, text, 0);
+let db = StableBTreeMap<text, text>(0);
 
 export default Canister({
     get: query([text], Opt(text), (key) => {
@@ -113,7 +113,7 @@ const Entry = Record({
     value: text
 });
 
-let db = StableBTreeMap(text, text, 0);
+let db = StableBTreeMap<text, text>(0);
 
 export default Canister({
     get: query([text], Opt(text), (key) => {
@@ -150,7 +150,7 @@ import {
     Void
 } from 'azle';
 
-let db = StableBTreeMap(text, text, 0);
+let db = StableBTreeMap<text, text>(0);
 
 export default Canister({
     get: query([text], Opt(text), (key) => {

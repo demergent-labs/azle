@@ -207,7 +207,7 @@ export default Canister({
 <p>If you need more than 4 GiB of storage, consider taking advantage of the 96 GiB of stable memory. Stable structures like <code>StableBTreeMap</code> give you a nice API for interacting with stable memory. These data structures will be <a href="./stable_structures.html">covered in more detail later</a>. Here's a simple example:</p>
 <pre><code class="language-typescript">import { Canister, Opt, query, StableBTreeMap, text, update, Void } from 'azle';
 
-let db = StableBTreeMap(text, text, 0);
+let db = StableBTreeMap&lt;text, text&gt;(0);
 
 export default Canister({
     get: query([text], Opt(text), (key) =&gt; {
@@ -239,7 +239,7 @@ const Entry = Record({
     value: text
 });
 
-let db = StableBTreeMap(text, text, 0);
+let db = StableBTreeMap&lt;text, text&gt;(0);
 
 export default Canister({
     get: query([text], Opt(text), (key) =&gt; {
@@ -272,7 +272,7 @@ export default Canister({
     Void
 } from 'azle';
 
-let db = StableBTreeMap(text, text, 0);
+let db = StableBTreeMap&lt;text, text&gt;(0);
 
 export default Canister({
     get: query([text], Opt(text), (key) =&gt; {

@@ -29,35 +29,46 @@ import {
 } from 'azle';
 
 const Key = nat8;
-const Value = text;
+type Key = typeof Key.tsType;
 
-let map = StableBTreeMap(Key, Value, 0);
+const Value = text;
+type Value = typeof Value.tsType;
+
+let map = StableBTreeMap<Key, Value>(0);
 
 export default Canister({
     containsKey: query([Key], bool, (key) => {
         return map.containsKey(key);
     }),
+
     get: query([Key], Opt(Value), (key) => {
         return map.get(key);
     }),
-    mapInsert: update([Key, Value], Opt(Value), (key, value) => {
+
+    insert: update([Key, Value], Opt(Value), (key, value) => {
         return map.insert(key, value);
     }),
+
     isEmpty: query([], bool, () => {
         return map.isEmpty();
     }),
+
     items: query([], Vec(Tuple(Key, Value)), () => {
         return map.items();
     }),
+
     keys: query([], Vec(Key), () => {
-        return map.keys();
+        return Uint8Array.from(map.keys());
     }),
+
     len: query([], nat64, () => {
         return map.len();
     }),
-    mapRemove: update([Key], Opt(Value), (key) => {
+
+    remove: update([Key], Opt(Value), (key) => {
         return map.remove(key);
     }),
+
     values: query([], Vec(Value), () => {
         return map.values();
     })
