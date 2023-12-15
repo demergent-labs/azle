@@ -18,7 +18,7 @@ import { generateBody as callableMethodBodyGenerator } from './generate_callable
 import { generateBody as postDeployMethodBodyGenerator } from './generate_post_deploy_method_body';
 import { generateTests as generateInitTests } from './generate_init_tests';
 import { generateTests as generatePostUpgradeTests } from './generate_post_upgrade_tests';
-import { CorrespondingJSType } from '../../../arbitraries/candid/corresponding_js_type';
+import { CorrespondingJSType } from '../../../../arbitraries/candid/corresponding_js_type';
 import { InitMethodArb } from 'azle/property_tests/arbitraries/canister_methods/init_method_arb';
 import { globalVarName } from './global_var_name';
 

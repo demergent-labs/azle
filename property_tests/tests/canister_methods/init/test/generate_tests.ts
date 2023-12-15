@@ -19,8 +19,10 @@ export function generateTests(
             {
                 name: `init method`,
                 test: async () => {
-                    const actor = getActor('./tests/post_upgrade_method/test');
-                    const result = await actor.getPostDeployValues();
+                    const actor = getActor(
+                        './tests/canister_methods/init/test'
+                    );
+                    const result = await actor.getInitValues();
 
                     const valuesAreEqual = deepEqual(result, expectedResult);
 
