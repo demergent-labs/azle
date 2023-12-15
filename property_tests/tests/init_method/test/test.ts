@@ -96,7 +96,7 @@ function generateGetInitValuesCanisterMethod(
     globalInitVariableNames: string[]
 ): QueryMethod {
     return {
-        imports: new Set(['Tuple', 'bool']),
+        imports: new Set(['bool', 'query', 'Tuple']),
         globalDeclarations: [],
         sourceCode: /*TS*/ `getInitValues: query(
             [],

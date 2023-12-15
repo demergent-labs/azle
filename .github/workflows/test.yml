@@ -149,6 +149,7 @@ jobs:
                     "property_tests/tests/nat64",
                     "property_tests/tests/null",
                     "property_tests/tests/opt",
+                    "property_tests/tests/post_upgrade_method",
                     "property_tests/tests/principal",
                     "property_tests/tests/query_methods",
                     "property_tests/tests/record",
