@@ -121,7 +121,7 @@ function generateGetPostDeployValuesCanisterMethod(
     globalPostDeployVariableNames: string[]
 ): QueryMethod {
     return {
-        imports: new Set(['Tuple', 'bool']),
+        imports: new Set(['Tuple', 'bool', 'query']),
         globalDeclarations: [],
         sourceCode: /*TS*/ `getPostDeployValues: query(
             [],
