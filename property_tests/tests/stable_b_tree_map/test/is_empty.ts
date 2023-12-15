@@ -11,7 +11,11 @@ export function IsEmptyTestArb(stableBTreeMap: StableBTreeMap) {
     return fc
         .tuple(UniqueIdentifierArb('stableBTreeMap'))
         .map(([functionName]): QueryMethod => {
-            const imports = new Set([...stableBTreeMap.imports, 'bool']);
+            const imports = new Set([
+                ...stableBTreeMap.imports,
+                'bool',
+                'query'
+            ]);
 
             const body = generateBody(stableBTreeMap.name);
 

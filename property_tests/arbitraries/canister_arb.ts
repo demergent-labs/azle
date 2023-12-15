@@ -1,15 +1,25 @@
 import fc from 'fast-check';
 import { QueryMethod } from './canister_methods/query_method_arb';
 import { Test } from '../../test';
-import { UpdateMethod } from './canister_methods/update_method_arb';
-import { InitMethod } from './canister_methods/init_method_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
+import { InitMethod } from './canister_methods/init_method_arb';
+import { PostUpgradeMethod } from './canister_methods/post_upgrade_arb';
+import { UpdateMethod } from './canister_methods/update_method_arb';
 
 export type Canister = {
-    initArgs: string[] | undefined;
+    deployArgs: string[] | undefined;
     sourceCode: string;
     tests: Test[][];
 };
+
+export type CanisterMethod<
+    ParamAgentArgumentValue extends CorrespondingJSType,
+    ParamAgentResponseValue
+> =
+    | QueryMethod
+    | UpdateMethod
+    | InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
+    | PostUpgradeMethod<ParamAgentArgumentValue, ParamAgentResponseValue>;
 
 export type CanisterConfig<
     ParamAgentArgumentValue extends CorrespondingJSType = undefined,
@@ -17,6 +27,10 @@ export type CanisterConfig<
 > = {
     globalDeclarations?: string[];
     initMethod?: InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>;
+    postUpgradeMethod?: PostUpgradeMethod<
+        ParamAgentArgumentValue,
+        ParamAgentResponseValue
+    >;
     queryMethods?: QueryMethod[];
     updateMethods?: UpdateMethod[];
 };
@@ -31,17 +45,17 @@ export function CanisterArb<
     >
 ) {
     return configArb.map((config): Canister => {
-        const canisterMethods: (
-            | QueryMethod
-            | UpdateMethod
-            | InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
-        )[] = [
+        const canisterMethods: CanisterMethod<
+            ParamAgentArgumentValue,
+            ParamAgentResponseValue
+        >[] = [
             ...(config.initMethod ? [config.initMethod] : []),
+            ...(config.postUpgradeMethod ? [config.postUpgradeMethod] : []),
             ...(config.queryMethods ?? []),
             ...(config.updateMethods ?? [])
         ];
 
-        const initArgs = config.initMethod?.params.map(
+        const deployArgs = config.initMethod?.params.map(
             ({
                 el: {
                     src: { candidTypeAnnotation },
@@ -87,7 +101,7 @@ export function CanisterArb<
         );
 
         return {
-            initArgs,
+            deployArgs,
             sourceCode,
             tests
         };
@@ -99,14 +113,10 @@ function generateSourceCode(
     canisterMethods: (UpdateMethod | QueryMethod)[]
 ) {
     const imports = [
-        ...new Set(
-            canisterMethods.reduce(
-                (acc, method) => {
-                    return [...acc, ...method.imports];
-                },
-                ['Canister', 'query', 'update']
-            )
-        )
+        ...new Set([
+            'Canister',
+            ...canisterMethods.flatMap((method) => [...method.imports])
+        ])
     ]
         .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
         .join();
@@ -116,8 +126,7 @@ function generateSourceCode(
     );
 
     const declarations = [
-        ...globalDeclarations,
-        ...declarationsFromCanisterMethods
+        ...new Set([...globalDeclarations, ...declarationsFromCanisterMethods])
     ].join('\n');
 
     const sourceCodes = canisterMethods.map((method) => method.sourceCode);

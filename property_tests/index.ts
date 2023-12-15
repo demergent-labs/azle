@@ -42,8 +42,8 @@ export function runPropTests(canisterArb: fc.Arbitrary<Canister>) {
 
             for (let i = 0; i < canister.tests.length; i++) {
                 const argumentsString =
-                    canister.initArgs && canister.initArgs.length > 0
-                        ? `--argument '(${canister.initArgs.join(', ')})'`
+                    canister.deployArgs && canister.deployArgs.length > 0
+                        ? `--argument '(${canister.deployArgs.join(', ')})'`
                         : '';
 
                 execSync(`dfx deploy canister ${argumentsString}`, {

@@ -79,6 +79,7 @@ export function UpdateMethodArb<
                     constraints.callbackLocation ?? defaultCallbackLocation;
 
                 const imports = new Set([
+                    'update',
                     ...paramTypes.flatMap((param) => [...param.src.imports]),
                     ...returnType.src.imports
                 ]);

@@ -11,7 +11,11 @@ export function RemoveTestArb(stableBTreeMap: StableBTreeMap) {
     return fc
         .tuple(UniqueIdentifierArb('stableBTreeMap'))
         .map(([functionName]): QueryMethod => {
-            const imports = new Set([...stableBTreeMap.imports, 'Opt']);
+            const imports = new Set([
+                ...stableBTreeMap.imports,
+                'Opt',
+                'update'
+            ]);
 
             const paramCandidTypeObjects = [
                 stableBTreeMap.keySample.src.candidTypeObject
