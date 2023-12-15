@@ -15,7 +15,8 @@ type Mode = 'query' | 'update' | 'oneway';
 export function FuncDefinitionArb(
     candidDefArb: WithShapesArb<CandidDefinition>
 ): WithShapesArb<FuncCandidDefinition> {
-    return (fc.constantFrom('query', 'update', 'oneway') as fc.Arbitrary<Mode>)
+    return fc
+        .constantFrom<Mode>('query', 'update', 'oneway')
         .chain((mode) => {
             const returnType =
                 mode === 'oneway' ? VoidDefinitionArb() : candidDefArb;
