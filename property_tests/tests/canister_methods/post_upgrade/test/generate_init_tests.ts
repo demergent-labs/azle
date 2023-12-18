@@ -17,9 +17,7 @@ export function generateTests(
             {
                 name: `init method`,
                 test: async () => {
-                    const actor = getActor(
-                        './tests/canister_methods/post_upgrade/test'
-                    );
+                    const actor = getActor(__dirname);
 
                     const initValues = await actor.getInitValues();
                     const isPostUpgradeCalled =
