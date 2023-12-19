@@ -8,7 +8,7 @@ You should be using a \*nix environment (Linux, Mac OS, [WSL if using Windows](h
 
 -   [Build dependencies](#build-dependencies)
 -   [Node.js 18](#nodejs)
--   [dfx 0.15.1](#dfx-0151)
+-   [dfx 0.15.2](#dfx-0152)
 
 ## Build dependencies
 
@@ -50,12 +50,12 @@ Check that the installation went smoothly by looking for clean output from the f
 node --version
 ```
 
-## dfx 0.15.1
+## dfx 0.15.2
 
-Run the following command to install dfx 0.15.1:
+Run the following command to install dfx 0.15.2:
 
 ```bash
-DFX_VERSION=0.15.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+DFX_VERSION=0.15.2 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
