@@ -83,7 +83,7 @@ runPropTests(CanisterArb(CanisterConfigArb));
 
 function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
     return {
-        imports: new Set(['bool', 'query', 'StableBTreeMap']),
+        imports: new Set(['bool', 'query', 'StableBTreeMap', 'text']),
         globalDeclarations: [],
         sourceCode: /*TS*/ `getPreUpgradeExecuted: query([], bool,() => {
             return stable.get(PRE_UPGRADE_HOOK_EXECUTED).Some === true
