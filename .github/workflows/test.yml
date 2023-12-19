@@ -162,6 +162,7 @@ jobs:
                     "property_tests/tests/canister_methods/http_request",
                     "property_tests/tests/canister_methods/http_request_update",
                     "property_tests/tests/canister_methods/init",
+                    "property_tests/tests/canister_methods/inspect_message",
                     "property_tests/tests/canister_methods/post_upgrade",
                     "property_tests/tests/canister_methods/pre_upgrade",
                     "property_tests/tests/canister_methods/query",
