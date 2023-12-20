@@ -5,6 +5,7 @@ import { encode } from '../../serde/encode';
 import { decode } from '../../serde/decode';
 import { Serializable } from '../../../stable_structures/stable_b_tree_map';
 
+export type Func = [Principal, string];
 type Mode = 'query' | 'update' | 'oneway';
 
 const modeToCandid = {
@@ -19,7 +20,7 @@ export function Func(
     mode: Mode
 ) {
     return {
-        tsType: {} as [Principal, string],
+        tsType: {} as Func,
         toBytes(data: any) {
             return encode(this, data);
         },
