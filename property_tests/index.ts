@@ -15,7 +15,7 @@ export type Named<T> = {
 
 export { getActor } from './get_actor';
 
-export function runPropTests(canisterArb: fc.Arbitrary<Canister>) {
+export async function runPropTests(canisterArb: fc.Arbitrary<Canister>) {
     const defaultParams = {
         numRuns: Number(process.env.AZLE_PROPTEST_NUM_RUNS ?? 1),
         endOnFailure: true // TODO This essentially disables shrinking. We don't know how to do shrinking well yet
@@ -27,62 +27,77 @@ export function runPropTests(canisterArb: fc.Arbitrary<Canister>) {
 
     const executionParams = seed ? { ...defaultParams, seed } : defaultParams;
 
-    fc.assert(
-        fc.asyncProperty(canisterArb, async (canister) => {
-            if (!existsSync('src')) {
-                mkdirSync('src');
-            }
-
-            writeFileSync('src/index.ts', canister.sourceCode);
-
-            execSync(`npx prettier --write src`, {
-                stdio: 'inherit'
-            });
-
-            execSync(`dfx canister uninstall-code canister || true`, {
-                stdio: 'inherit'
-            });
-
-            for (let i = 0; i < canister.tests.length; i++) {
-                const argumentsString =
-                    canister.deployArgs !== undefined &&
-                    canister.deployArgs.length > 0
-                        ? `--argument '(${canister.deployArgs.join(', ')})'`
-                        : '';
-
-                execSync(`dfx deploy canister ${argumentsString}`, {
-                    stdio: 'inherit'
-                });
-
-                execSync(`dfx generate canister`, {
-                    stdio: 'inherit'
-                });
-
-                const tests = canister.tests[i];
-
-                const result = await runTests(
-                    tests,
-                    process.env.AZLE_PROPTEST_VERBOSE !== 'true'
-                );
-
-                execSync(
-                    `node_modules/.bin/tsc --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-
-                clearUniquePrimitiveArb();
-
-                if (result === false) {
-                    return false;
+    try {
+        await fc.assert(
+            fc.asyncProperty(canisterArb, async (canister) => {
+                if (!existsSync('src')) {
+                    mkdirSync('src');
                 }
-            }
 
-            return true;
-        }),
-        executionParams
-    );
+                writeFileSync('src/index.ts', canister.sourceCode);
+
+                execSync(`npx prettier --write src`, {
+                    stdio: 'inherit'
+                });
+
+                execSync(`dfx canister uninstall-code canister || true`, {
+                    stdio: 'inherit'
+                });
+
+                for (let i = 0; i < canister.tests.length; i++) {
+                    const argumentsString =
+                        canister.deployArgs !== undefined &&
+                        canister.deployArgs.length > 0
+                            ? `--argument '(${canister.deployArgs.join(', ')})'`
+                            : '';
+
+                    execSync(`dfx deploy canister ${argumentsString}`, {
+                        stdio: 'inherit'
+                    });
+
+                    execSync(`dfx generate canister`, {
+                        stdio: 'inherit'
+                    });
+
+                    const tests = canister.tests[i];
+
+                    const result = await runTests(
+                        tests,
+                        process.env.AZLE_PROPTEST_QUIET === 'true'
+                    );
+
+                    execSync(
+                        `node_modules/.bin/tsc --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs`,
+                        {
+                            stdio: 'inherit'
+                        }
+                    );
+
+                    clearUniquePrimitiveArb();
+
+                    if (result === false) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }),
+            executionParams
+        );
+    } catch (error) {
+        if (process.env.AZLE_PROPTEST_VERBOSE !== 'true') {
+            // Customize the error message to exclude counter example
+            if (error instanceof Error) {
+                const errorLines = error.message.split('\n');
+                const newError = [
+                    ...errorLines.slice(0, 2),
+                    ...errorLines.slice(errorLines.length - 4)
+                ].join('\n');
+                error.message = newError;
+            }
+        }
+        throw error;
+    }
 }
 
 export const defaultArrayConstraints = {
