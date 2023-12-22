@@ -14,7 +14,9 @@ export type Variant = {
 
 export function VariantArb(): fc.Arbitrary<CandidValueAndMeta<Variant>> {
     return CandidValueAndMetaArbGenerator(
-        VariantDefinitionArb(candidDefinitionMemo, [], DEFAULT_DEF_MAX_DEPTH),
+        VariantDefinitionArb(candidDefinitionMemo, [], {
+            n: DEFAULT_DEF_MAX_DEPTH
+        }),
         VariantValuesArb
     );
 }

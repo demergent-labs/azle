@@ -11,7 +11,9 @@ export type Opt = [CorrespondingJSType] | never[];
 
 export function OptArb(): fc.Arbitrary<CandidValueAndMeta<Opt>> {
     return CandidValueAndMetaArbGenerator(
-        OptDefinitionArb(candidDefinitionMemo, [], DEFAULT_DEF_MAX_DEPTH),
+        OptDefinitionArb(candidDefinitionMemo, [], {
+            n: DEFAULT_DEF_MAX_DEPTH
+        }),
         OptValuesArb
     );
 }

@@ -2,7 +2,8 @@ import fc from 'fast-check';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
-    RecCandidDefMemo,
+    DefinitionConstraints,
+    RecursiveCandidDefinitionMemo,
     RecursiveCandidDefinition,
     VariantCandidDefinition
 } from '../../candid_definition_arb/types';
@@ -16,14 +17,14 @@ type RuntimeVariant = {
 };
 
 export function VariantDefinitionArb(
-    candidTypeArbForFields: RecCandidDefMemo,
+    candidTypeArbForFields: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidDefinition[],
-    n: number
+    constraints: DefinitionConstraints
 ): fc.Arbitrary<VariantCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
-            VariantFieldsArb(candidTypeArbForFields, parents, n),
+            VariantFieldsArb(candidTypeArbForFields, parents, constraints),
             fc.boolean()
         )
         .map(([name, fields, useTypeDeclaration]): VariantCandidDefinition => {
@@ -65,9 +66,9 @@ export function VariantDefinitionArb(
 }
 
 function VariantFieldsArb(
-    candidTypeArb: RecCandidDefMemo,
+    candidTypeArb: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidDefinition[],
-    n: number
+    constraints: DefinitionConstraints
 ): fc.Arbitrary<Field[]> {
     // Although no minLength is technically required (according to the
     // spec), the DFX CLI itself currently errors out trying to pass
@@ -82,11 +83,44 @@ function VariantFieldsArb(
                 ...fieldsNames.map((name, index) =>
                     fc.tuple(
                         fc.constant(name),
-                        possiblyRecursiveArb(candidTypeArb, index, parents, n)
+                        possiblyRecursiveArb(
+                            candidTypeArb,
+                            index,
+                            parents,
+                            constraints
+                        )
                     )
                 )
             )
         );
+}
+
+// Recursion requires at least one of the fields to be a "base case", or in
+// other words it needs to terminate or else we will get an infinitely deep
+// shape. For simplicity we have made the first index always be a base case so
+// we are guaranteed to have at least one. Consequently this function takes the
+// index of the field for which it's generating an arbitrary. If it's 0 then we
+// will not allow a recursive option to be picked for that field. A more
+// complicated approach would involve the guaranteed base case being in any one
+// of the fields, instead of always the first one.
+// TODO rename and move to the bottom.
+function possiblyRecursiveArb(
+    candidArb: RecursiveCandidDefinitionMemo,
+    index: number,
+    parents: RecursiveCandidDefinition[],
+    constraints: DefinitionConstraints
+): fc.Arbitrary<CandidDefinition> {
+    const n = constraints.n ?? 0;
+    return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
+        if (parents.length === 0 || index < 1) {
+            // If there are no recursive parents or this is the first variant field just do a regular arb field
+            return candidArb(parents)(n);
+        }
+        return fc.oneof(
+            { arbitrary: fc.constant(parents[randomIndex]), weight: 1 },
+            { arbitrary: candidArb(parents)(n), weight: 1 }
+        );
+    });
 }
 
 function generateImports(fields: Field[]): Set<string> {

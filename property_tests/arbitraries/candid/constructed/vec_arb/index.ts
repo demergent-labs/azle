@@ -21,7 +21,9 @@ export type Vec =
 
 export function VecArb(): fc.Arbitrary<CandidValueAndMeta<Vec>> {
     return CandidValueAndMetaArbGenerator(
-        VecDefinitionArb(candidDefinitionMemo, [], DEFAULT_DEF_MAX_DEPTH),
+        VecDefinitionArb(candidDefinitionMemo, [], {
+            n: DEFAULT_DEF_MAX_DEPTH
+        }),
         VecValuesArb
     );
 }

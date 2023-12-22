@@ -6,16 +6,16 @@ import { PrimitiveDefinitionWeights } from './simple_candid_definition_arb';
 import { ComplexDefinitionWeights } from './complex_candid_definition_memo';
 
 export type CandidDefinitionMemo = (n: number) => CandidDefinitionArb;
-export type RecCandidDefMemo = (
+export type RecursiveCandidDefinitionMemo = (
     parents: RecursiveCandidDefinition[],
-    constraints?: ComplexDefinitionWeights
+    constraints?: DefinitionConstraints
 ) => CandidDefinitionMemo;
 
-export type DefinitionConstraints = {
+export type DefinitionConstraints = Partial<{
     n: number;
     recursive_weights: boolean;
     weights: CandidDefinitionWeights;
-};
+}>;
 
 export type CandidDefinitionWeights = Partial<
     Record<

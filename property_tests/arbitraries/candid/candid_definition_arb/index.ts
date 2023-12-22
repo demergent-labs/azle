@@ -3,7 +3,7 @@ import {
     CandidDefinitionArb,
     RecursiveCandidDefinition,
     CandidDefinitionMemo,
-    CandidDefinitionWeights
+    DefinitionConstraints
 } from './types';
 import {
     COMPLEX_ARB_COUNT,
@@ -22,14 +22,14 @@ import { DEFAULT_DEF_MAX_DEPTH } from '../../config';
 export function candidDefinitionArb(
     maxDepth: number = DEFAULT_DEF_MAX_DEPTH,
     parents: RecursiveCandidDefinition[] = [],
-    weights: CandidDefinitionWeights = {}
+    constraints: DefinitionConstraints = {}
 ): CandidDefinitionArb {
-    return candidDefinitionMemo(parents, weights)(maxDepth);
+    return candidDefinitionMemo(parents, constraints)(maxDepth);
 }
 
 export function candidDefinitionMemo(
     parents: RecursiveCandidDefinition[],
-    weights: CandidDefinitionWeights = {}
+    constraints: DefinitionConstraints = {}
 ): CandidDefinitionMemo {
     return fc.memo((n) => {
         if (n <= 1) {
@@ -37,11 +37,14 @@ export function candidDefinitionMemo(
         }
         return fc.oneof(
             {
-                arbitrary: primitiveCandidDefinitionArb(weights),
+                arbitrary: primitiveCandidDefinitionArb(constraints.weights),
                 weight: PRIM_ARB_COUNT
             },
             {
-                arbitrary: complexCandidDefinitionMemo(parents, weights)(n - 1),
+                arbitrary: complexCandidDefinitionMemo(
+                    parents,
+                    constraints
+                )(n - 1),
                 weight: COMPLEX_ARB_COUNT
             },
             {

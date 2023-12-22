@@ -17,11 +17,9 @@ export type Recursive = any;
 
 export function RecursiveArb(): fc.Arbitrary<CandidValueAndMeta<Recursive>> {
     return CandidValueAndMetaArbGenerator(
-        RecursiveDefinitionArb(
-            complexCandidDefinitionMemo,
-            [],
-            DEFAULT_DEF_MAX_DEPTH
-        ),
+        RecursiveDefinitionArb(complexCandidDefinitionMemo, [], {
+            n: DEFAULT_DEF_MAX_DEPTH
+        }),
         RecursiveValuesArb
     );
 }

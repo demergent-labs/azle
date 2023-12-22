@@ -2,38 +2,22 @@ import fc from 'fast-check';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
-    RecCandidDefMemo,
+    DefinitionConstraints,
+    RecursiveCandidDefinitionMemo,
     RecursiveCandidDefinition,
     VecCandidDefinition
 } from '../../candid_definition_arb/types';
 import { CandidType, Vec } from '../../../../../src/lib';
 
-function possiblyRecursiveArb(
-    candidArb: RecCandidDefMemo,
-    parents: RecursiveCandidDefinition[],
-    n: number
-): fc.Arbitrary<CandidDefinition> {
-    return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
-        if (parents.length === 0) {
-            // If there are no recursive parents or this is the first variant field just do a regular arb field
-            return candidArb(parents)(n);
-        }
-        return fc.oneof(
-            { arbitrary: fc.constant(parents[randomIndex]), weight: 1 },
-            { arbitrary: candidArb(parents)(n), weight: 1 }
-        );
-    });
-}
-
 export function VecDefinitionArb(
-    candidTypeArb: RecCandidDefMemo,
+    candidTypeArb: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidDefinition[],
-    n: number
+    constraints: DefinitionConstraints
 ): fc.Arbitrary<VecCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
-            possiblyRecursiveArb(candidTypeArb, parents, n),
+            possiblyRecursiveArb(candidTypeArb, parents, constraints),
             fc.boolean()
         )
         .map(([name, innerType, useTypeDeclaration]): VecCandidDefinition => {
@@ -72,6 +56,24 @@ export function VecDefinitionArb(
                 innerType: innerType
             };
         });
+}
+
+function possiblyRecursiveArb(
+    candidArb: RecursiveCandidDefinitionMemo,
+    parents: RecursiveCandidDefinition[],
+    constraints: DefinitionConstraints
+): fc.Arbitrary<CandidDefinition> {
+    const n = constraints.n ?? 0;
+    return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
+        if (parents.length === 0) {
+            // If there are no recursive parents or this is the first variant field just do a regular arb field
+            return candidArb(parents)(n);
+        }
+        return fc.oneof(
+            { arbitrary: fc.constant(parents[randomIndex]), weight: 1 },
+            { arbitrary: candidArb(parents)(n), weight: 1 }
+        );
+    });
 }
 
 function generateVariableAliasDeclarations(

@@ -2,7 +2,8 @@ import fc from 'fast-check';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import {
     CandidDefinition,
-    RecCandidDefMemo,
+    DefinitionConstraints,
+    RecursiveCandidDefinitionMemo,
     RecursiveCandidDefinition,
     RecursiveGlobalDefinition
 } from '../candid_definition_arb/types';
@@ -10,9 +11,9 @@ import { CandidType, Recursive } from '../../../../src/lib';
 import { recursive } from '.';
 
 export function RecursiveDefinitionArb(
-    candidTypeArbForInnerType: RecCandidDefMemo,
+    candidTypeArbForInnerType: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidDefinition[],
-    n: number
+    constraints: DefinitionConstraints
 ): fc.Arbitrary<RecursiveGlobalDefinition> {
     return UniqueIdentifierArb('typeDeclaration')
         .chain((name): fc.Arbitrary<RecursiveCandidDefinition> => {
@@ -32,14 +33,17 @@ export function RecursiveDefinitionArb(
         .chain((innerRecDef) => {
             return fc.tuple(
                 candidTypeArbForInnerType([innerRecDef, ...parents], {
-                    blob: 0,
-                    tuple: 0,
-                    vec: 0
-                    // TODO there are a lot of bugs with recursion so we are disabling the problematic types until the issues are resolved
-                    // https://github.com/demergent-labs/azle/issues/1518
-                    // https://github.com/demergent-labs/azle/issues/1513
-                    // https://github.com/demergent-labs/azle/issues/1525
-                })(n),
+                    recursive_weights: true, // This should be true so that the below weights will be respected all the way down. Until those issues are resolved we can't have blobs, tuples or vecs anywhere in any recursive shapes
+                    weights: {
+                        blob: 0,
+                        tuple: 0,
+                        vec: 0
+                        // TODO there are a lot of bugs with recursion so we are disabling the problematic types until the issues are resolved
+                        // https://github.com/demergent-labs/azle/issues/1518
+                        // https://github.com/demergent-labs/azle/issues/1513
+                        // https://github.com/demergent-labs/azle/issues/1525
+                    }
+                })(constraints.n ?? 0),
                 fc.constant(innerRecDef)
             );
         })
