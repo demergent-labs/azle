@@ -152,6 +152,7 @@ jobs:
                     "property_tests/tests/principal",
                     "property_tests/tests/query_methods",
                     "property_tests/tests/record",
+                    "property_tests/tests/recursive",
                     "property_tests/tests/service",
                     "property_tests/tests/stable_b_tree_map",
                     "property_tests/tests/text",
