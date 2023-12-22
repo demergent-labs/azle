@@ -27,8 +27,8 @@ import {
     CandidDefinition,
     OptCandidDefinition,
     RecordCandidDefinition,
+    RecursiveCandidName,
     RecursiveCandidDefinition,
-    RecursiveGlobalDefinition,
     ServiceCandidDefinition,
     TupleCandidDefinition,
     VariantCandidDefinition,
@@ -126,9 +126,7 @@ export function CandidValueArb(
     }
     if (candidType === 'Recursive') {
         return RecursivePlaceHolderValuesArb(
-            candidTypeMeta as
-                | RecursiveCandidDefinition
-                | RecursiveGlobalDefinition,
+            candidTypeMeta as RecursiveCandidName | RecursiveCandidDefinition,
             n
         );
     }

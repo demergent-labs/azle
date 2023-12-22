@@ -5,13 +5,13 @@ import {
     DefinitionConstraints,
     OptCandidDefinition,
     RecursiveCandidDefinitionMemo,
-    RecursiveCandidDefinition
+    RecursiveCandidName
 } from '../../candid_definition_arb/types';
 import { CandidType, Opt } from '../../../../../src/lib';
 
 export function OptDefinitionArb(
     candidTypeArbForInnerType: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidDefinition[],
+    parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
 ): fc.Arbitrary<OptCandidDefinition> {
     return fc
@@ -64,7 +64,7 @@ export function OptDefinitionArb(
 
 function possiblyRecursiveArb(
     candidArb: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidDefinition[],
+    parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
 ): fc.Arbitrary<CandidDefinition> {
     const n = constraints.n ?? 0;

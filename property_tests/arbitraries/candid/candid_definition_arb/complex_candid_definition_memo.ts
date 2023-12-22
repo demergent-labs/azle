@@ -11,7 +11,7 @@ import { ServiceDefinitionArb } from '../reference/service_arb/definition_arb';
 import {
     CandidDefinitionMemo,
     DefinitionConstraints,
-    RecursiveCandidDefinition
+    RecursiveCandidName
 } from './types';
 
 export type ComplexDefinitionWeights = Partial<{
@@ -29,7 +29,7 @@ export type ComplexDefinitionWeights = Partial<{
 export const COMPLEX_ARB_COUNT = 8;
 
 export function complexCandidDefinitionMemo(
-    parents: RecursiveCandidDefinition[],
+    parents: RecursiveCandidName[],
     constraints: DefinitionConstraints = {}
 ): CandidDefinitionMemo {
     const weights = constraints.weights ?? {};

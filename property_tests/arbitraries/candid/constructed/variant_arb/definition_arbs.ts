@@ -4,7 +4,7 @@ import {
     CandidDefinition,
     DefinitionConstraints,
     RecursiveCandidDefinitionMemo,
-    RecursiveCandidDefinition,
+    RecursiveCandidName,
     VariantCandidDefinition
 } from '../../candid_definition_arb/types';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
@@ -18,7 +18,7 @@ type RuntimeVariant = {
 
 export function VariantDefinitionArb(
     candidTypeArbForFields: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidDefinition[],
+    parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
 ): fc.Arbitrary<VariantCandidDefinition> {
     return fc
@@ -67,7 +67,7 @@ export function VariantDefinitionArb(
 
 function VariantFieldsArb(
     candidTypeArb: RecursiveCandidDefinitionMemo,
-    parents: RecursiveCandidDefinition[],
+    parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
 ): fc.Arbitrary<Field[]> {
     // Although no minLength is technically required (according to the
@@ -107,7 +107,7 @@ function VariantFieldsArb(
 function possiblyRecursiveArb(
     candidArb: RecursiveCandidDefinitionMemo,
     index: number,
-    parents: RecursiveCandidDefinition[],
+    parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
 ): fc.Arbitrary<CandidDefinition> {
     const n = constraints.n ?? 0;

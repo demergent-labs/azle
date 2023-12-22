@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 import {
     CandidDefinitionArb,
-    RecursiveCandidDefinition,
+    RecursiveCandidName,
     CandidDefinitionMemo,
     DefinitionConstraints
 } from './types';
@@ -21,14 +21,14 @@ import { DEFAULT_DEF_MAX_DEPTH } from '../../config';
 
 export function candidDefinitionArb(
     maxDepth: number = DEFAULT_DEF_MAX_DEPTH,
-    parents: RecursiveCandidDefinition[] = [],
+    parents: RecursiveCandidName[] = [],
     constraints: DefinitionConstraints = {}
 ): CandidDefinitionArb {
     return candidDefinitionMemo(parents, constraints)(maxDepth);
 }
 
 export function candidDefinitionMemo(
-    parents: RecursiveCandidDefinition[],
+    parents: RecursiveCandidName[],
     constraints: DefinitionConstraints = {}
 ): CandidDefinitionMemo {
     return fc.memo((n) => {
