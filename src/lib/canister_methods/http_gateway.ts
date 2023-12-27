@@ -8,10 +8,7 @@ import { Opt } from '../candid/types/constructed/opt';
 import { Record } from '../candid/types/constructed/record';
 import { text } from '../candid/types/primitive/text';
 import { Tuple } from '../candid/types/constructed/tuple';
-import {
-    RequireExactlyOne,
-    Variant
-} from '../candid/types/constructed/variant';
+import { Variant } from '../candid/types/constructed/variant';
 import { Vec } from '../candid/types/constructed/vec';
 import { CandidType } from '../candid';
 
@@ -85,13 +82,9 @@ export type CallbackStrategy<Token> = {
 };
 
 function StreamingStrategy<Token extends CandidType>(token: Token) {
-    const thing = Variant({
+    return Variant({
         Callback: CallbackStrategy(token)
     });
-
-    thing.tsType;
-
-    return thing;
 }
 export type StreamingStrategy<Token> = Variant<{
     Callback: CallbackStrategy<Token>;
