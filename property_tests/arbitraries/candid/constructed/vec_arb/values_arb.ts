@@ -2,7 +2,14 @@ import fc from 'fast-check';
 import { Vec } from '.';
 import { CandidType } from '../../candid_type';
 import { CorrespondingJSType } from '../../corresponding_js_type';
-import { VecCandidDefinition } from '../../candid_definition_arb/types';
+import {
+    CandidDefinition,
+    OptCandidDefinition,
+    RecordCandidDefinition,
+    TupleCandidDefinition,
+    VariantCandidDefinition,
+    VecCandidDefinition
+} from '../../candid_definition_arb/types';
 import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 import { RecursiveShapes } from '../../recursive';
 
@@ -12,6 +19,11 @@ export function VecValuesArb(
     depthLevel: number
 ): fc.Arbitrary<CandidValues<Vec>> {
     if (depthLevel < 1) {
+        return fc.constant(
+            generateEmptyVec(vecDefinition.innerType.candidMeta.candidType)
+        );
+    }
+    if (isEmptyInnerType(vecDefinition.innerType)) {
         return fc.constant(
             generateEmptyVec(vecDefinition.innerType.candidMeta.candidType)
         );
@@ -147,4 +159,55 @@ function typeArray<T extends CorrespondingJSType>(
     }
 
     return arr;
+}
+
+/**
+ * In order to prevent DoS attacks empty inner types can only be of length 0.
+ * Empty types are null, empty record, empty tuple, record with one field that
+ * is a null, tuple with one field that is a null.
+ * Lets start with a vec or null, or vec or tuple where all the fields are null,
+ * or vec or record where all things are null or vec or variant where things are
+ * null
+ * https://github.com/demergent-labs/azle/issues/1524
+ * @param innerType
+ * @returns
+ */
+function isEmptyInnerType(innerType: CandidDefinition): boolean {
+    if (innerType.candidMeta.candidType === 'Null') {
+        return true;
+    }
+    if (
+        innerType.candidMeta.candidType === 'Record' ||
+        innerType.candidMeta.candidType === 'Tuple' ||
+        innerType.candidMeta.candidType === 'Variant' ||
+        innerType.candidMeta.candidType === 'Opt'
+    ) {
+        return areAllFieldsNull(innerType);
+    }
+    return false;
+}
+
+function areAllFieldsNull(innerType: CandidDefinition): boolean {
+    if (
+        innerType.candidMeta.candidType === 'Record' ||
+        innerType.candidMeta.candidType === 'Variant'
+    ) {
+        const multiInnerType = innerType as
+            | RecordCandidDefinition
+            | VariantCandidDefinition;
+        return multiInnerType.innerTypes.every((innerType) =>
+            isEmptyInnerType(innerType[1])
+        );
+    }
+    if (innerType.candidMeta.candidType === 'Tuple') {
+        const multiInnerType = innerType as TupleCandidDefinition;
+        return multiInnerType.innerTypes.every((innerType) =>
+            isEmptyInnerType(innerType)
+        );
+    }
+    if (innerType.candidMeta.candidType === 'Opt') {
+        const optInnerType = innerType as OptCandidDefinition;
+        return isEmptyInnerType(optInnerType.innerType);
+    }
+    return false;
 }
