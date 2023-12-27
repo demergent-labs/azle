@@ -1,4 +1,4 @@
-import fc from 'fast-check';
+import fc, { ArrayConstraints } from 'fast-check';
 import { Vec } from '.';
 import { CandidType } from '../../candid_type';
 import { CorrespondingJSType } from '../../corresponding_js_type';
@@ -13,6 +13,14 @@ import {
 import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 import { RecursiveShapes } from '../../recursive';
 
+/*
+https://github.com/dfinity/candid/blob/491969f34dd791e51f69c5f8d3c6192ae405b839/spec/Candid.md#memory
+Set size limit to follow candid spec
+const NULL_VEC_SIZE_LIMIT = 2_000_000;
+*/
+// TODO set to zero until the limit is unified on both the canister and client side as per https://github.com/demergent-labs/azle/issues/1538
+const EMPTYISH_VEC_SIZE_LIMIT = 0;
+
 export function VecValuesArb(
     vecDefinition: VecCandidDefinition,
     recursiveShapes: RecursiveShapes,
@@ -23,14 +31,9 @@ export function VecValuesArb(
             generateEmptyVec(vecDefinition.innerType.candidMeta.candidType)
         );
     }
-    if (isEmptyInnerType(vecDefinition.innerType)) {
-        return fc.constant(
-            generateEmptyVec(vecDefinition.innerType.candidMeta.candidType)
-        );
-    }
     const arbitraryMemberValues = fc
         .tuple(
-            fc.array(fc.constant(null)),
+            fc.array(fc.constant(null), determineVecConstraints(vecDefinition)),
             fc.constant(vecDefinition.innerType)
         )
         .chain(([arrayTemplate, innerType]) =>
@@ -57,6 +60,15 @@ export function VecValuesArb(
             agentResponseValue
         };
     });
+}
+
+function determineVecConstraints(
+    vecDefinition: VecCandidDefinition
+): ArrayConstraints | undefined {
+    if (isEmptyInnerType(vecDefinition.innerType)) {
+        return { maxLength: EMPTYISH_VEC_SIZE_LIMIT };
+    }
+    return;
 }
 
 function generateEmptyVec(innerCandidType: CandidType): CandidValues<Vec> {
