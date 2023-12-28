@@ -30,7 +30,7 @@ export function generateBody(
 }
 
 function generateHttpMethodCheck(method: string, requestParamName: string) {
-    return /*TS*/ `
+    return `
         if (${requestParamName}.method !== '${method}') {
             throw new Error(
                 \`Unexpected req.method. Expected ${method} but received \${${requestParamName}.method}\`
@@ -40,7 +40,7 @@ function generateHttpMethodCheck(method: string, requestParamName: string) {
 }
 
 function generateUrlCheck(url: string, requestParamName: string) {
-    return /*TS*/ `
+    return `
         if (${requestParamName}.url !== '${escape(url)}') {
             throw new Error(
                 \`Unexpected req.url. Expected '${escape(
@@ -57,7 +57,7 @@ function generateHeadersMap(
 ) {
     return headers.length === 0
         ? ''
-        : /*TS*/ `
+        : `
             const headers = (${requestParamName}.headers as [string, string][]).reduce<{
                 [key: string]: string}
             >((prev, [name, value]) => ({[name]: value, ...prev}), {});
@@ -89,6 +89,7 @@ function generateHeaderChecks(headers: [string, string][]) {
 function escape(input: string) {
     return input
         .replace(/\\/g, '\\\\') // Escape backslashes
+        .replace(/\$\{/g, '\\${') // Escape interpolation starts
         .replace(/`/g, '\\`') // Escape backticks
         .replace(/'/g, "\\'") // Escape single quotes
         .replace(/"/g, '\\"'); // Escape double quotes
