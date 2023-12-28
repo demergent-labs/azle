@@ -43,7 +43,10 @@ export function HttpResponseArb<T extends CorrespondingJSType = any>(
         const agentResponseValue = {
             status: response.status_code,
             headers: lowerCasedHeaders,
-            body: new TextDecoder().decode(response.body)
+            body:
+                response.status_code === 204 // No Content
+                    ? ''
+                    : new TextDecoder().decode(response.body)
         };
 
         const headerStrings = response.headers
