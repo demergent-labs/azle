@@ -1,5 +1,5 @@
 import { HttpRequest, HttpResponse } from 'azle';
-import { deepEqual, Named } from 'azle/property_tests';
+import { deepEqual, Named, getActor } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { HttpResponseAgentResponseValue } from 'azle/property_tests/arbitraries/http/response_arb';
 import { Test } from 'azle/test';
@@ -20,11 +20,15 @@ export function generateTests(
     return [
         [
             {
-                name: 'get state before http_request',
+                name: 'get state before calling http_request',
                 test: async () => {
-                    const TODO = true;
-                    // TODO: check that the state was 0
-                    return { Ok: TODO };
+                    const actor = getActor(__dirname);
+
+                    const result = await actor['get_state']();
+
+                    return {
+                        Ok: deepEqual(result, 0)
+                    };
                 }
             },
             {
@@ -53,9 +57,13 @@ export function generateTests(
             {
                 name: 'get state after calling http_request',
                 test: async () => {
-                    const TODO = true;
-                    // TODO: check that the state is one more than it was before.
-                    return { Ok: TODO };
+                    const actor = getActor(__dirname);
+
+                    const result = await actor['get_state']();
+
+                    return {
+                        Ok: deepEqual(result, 1)
+                    };
                 }
             }
         ]
