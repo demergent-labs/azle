@@ -51,6 +51,7 @@ export function UpdateMethodArb<
             ReturnTypeAgentResponseValue
         >;
         callbackLocation?: CallbackLocation;
+        name?: string;
     }
 ) {
     return fc
@@ -66,7 +67,7 @@ export function UpdateMethodArb<
         )
         .map(
             ([
-                functionName,
+                defaultFunctionName,
                 paramTypes,
                 returnType,
                 defaultCallbackLocation,
@@ -74,6 +75,7 @@ export function UpdateMethodArb<
             ]): UpdateMethod => {
                 const callbackLocation =
                     constraints.callbackLocation ?? defaultCallbackLocation;
+                const functionName = constraints.name ?? defaultFunctionName;
 
                 const imports = new Set([
                     'update',
