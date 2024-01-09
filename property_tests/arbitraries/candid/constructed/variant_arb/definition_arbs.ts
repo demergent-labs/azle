@@ -9,7 +9,7 @@ import { CandidType, Variant } from '../../../../../src/lib';
 
 type Field = [string, CandidDefinition];
 
-type RunTimeVariant = {
+type RuntimeVariant = {
     [key: string]: CandidType;
 };
 
@@ -132,7 +132,7 @@ function generateCandidTypeObject(
 
 function generateRuntimeCandidTypeObject(fields: Field[]): CandidType {
     const azleVariantConstructorObj = fields.reduce(
-        (acc, [fieldName, fieldDefinition]): RunTimeVariant => {
+        (acc, [fieldName, fieldDefinition]): RuntimeVariant => {
             return {
                 ...acc,
                 [fieldName]: fieldDefinition.candidMeta.runtimeCandidTypeObject

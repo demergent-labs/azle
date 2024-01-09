@@ -10,7 +10,7 @@ import { CandidType, Record } from '../../../../../src/lib';
 
 type Field = [string, CandidDefinition];
 
-type RunTimeRecord = {
+type RuntimeRecord = {
     [key: string]: CandidType;
 };
 
@@ -108,7 +108,7 @@ function generateCandidTypeObject(
 
 function generateRuntimeCandidTypeObject(fields: Field[]): CandidType {
     const azleRecordConstructorObj = fields.reduce(
-        (acc, [fieldName, fieldDefinition]): RunTimeRecord => {
+        (acc, [fieldName, fieldDefinition]): RuntimeRecord => {
             return {
                 ...acc,
                 [fieldName]: fieldDefinition.candidMeta.runtimeCandidTypeObject

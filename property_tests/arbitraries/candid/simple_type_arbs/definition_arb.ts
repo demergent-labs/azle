@@ -2,7 +2,7 @@ import fc from 'fast-check';
 import { PrimitiveDefinition } from '../candid_definition_arb/types';
 import { SimpleCandidType } from '../candid_type';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
-import { candidTypeToRuntimeCandidType } from './candid_type_to_azle_candid_type';
+import { candidTypeToRuntimeCandidTypeObject } from './candid_type_to_azle_candid_type';
 
 export function SimpleCandidDefinitionArb(
     candidType: SimpleCandidType
@@ -13,7 +13,7 @@ export function SimpleCandidDefinitionArb(
             const candidTypeAnnotation = candidType;
             const candidTypeObject = useTypeDeclaration ? name : candidType;
             const runtimeCandidTypeObject =
-                candidTypeToRuntimeCandidType(candidType);
+                candidTypeToRuntimeCandidTypeObject(candidType);
             const imports = new Set([candidType]);
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 name,

@@ -21,7 +21,7 @@ import {
 } from '../../../../src/lib';
 import { SimpleCandidType } from '../candid_type';
 
-export function candidTypeToRuntimeCandidType(
+export function candidTypeToRuntimeCandidTypeObject(
     candidType: SimpleCandidType
 ): CandidType {
     if (candidType === 'blob') {
