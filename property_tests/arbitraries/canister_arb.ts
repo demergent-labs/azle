@@ -6,7 +6,7 @@ import { InitMethod } from './canister_methods/init_method_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
 
 export type Canister = {
-    initArgs: string[] | undefined;
+    deployArgs: string[] | undefined;
     sourceCode: string;
     tests: Test[][];
 };
@@ -41,9 +41,10 @@ export function CanisterArb<
             ...(config.updateMethods ?? [])
         ];
 
-        const initArgs = config.initMethod?.params.map((paramValue) => {
-            const value = paramValue.el.value;
-            const candidTypeAnnotation = paramValue.el.src.candidTypeAnnotation;
+        const deployArgs = config.initMethod?.params.map((paramValue) => {
+            const value = paramValue.value.value;
+            const candidTypeAnnotation =
+                paramValue.value.src.candidTypeAnnotation;
             const paramCandidString = value.candidTypeObject
                 .getIdl([])
                 .valueToString(value.agentArgumentValue);
@@ -82,7 +83,7 @@ export function CanisterArb<
         );
 
         return {
-            initArgs,
+            deployArgs,
             sourceCode,
             tests
         };

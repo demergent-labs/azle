@@ -12,7 +12,7 @@ export function generateBody(
 ): string {
     const paramsAreTuples = namedParamTuples
         .map((param) => {
-            const fieldsCount = param.el.value.agentArgumentValue.length;
+            const fieldsCount = param.value.value.agentArgumentValue.length;
 
             const paramIsArray = `Array.isArray(${param.name})`;
             const paramHasCorrectNumberOfFields = `${param.name}.length === ${fieldsCount}`;

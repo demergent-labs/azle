@@ -9,7 +9,7 @@ export function generateTests(
 ): Test[][] {
     const expectedResult = [
         true,
-        ...params.map((param) => param.el.value.agentResponseValue)
+        ...params.map((param) => param.value.value.agentResponseValue)
     ];
 
     return [

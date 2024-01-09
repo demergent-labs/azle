@@ -59,7 +59,7 @@ const CanisterConfigArb = fc
             CorrespondingJSType
         > => {
             const initParamTypes = initMethod.params.map(
-                (param) => param.el.src.candidTypeObject
+                (param) => param.value.src.candidTypeObject
             );
 
             const globalInitVariableNames = initMethod.params.map(
@@ -67,7 +67,7 @@ const CanisterConfigArb = fc
             );
             const globalInitVariableDeclarations = initMethod.params.map(
                 (param, i) =>
-                    `let initParam${i}: ${param.el.src.candidTypeAnnotation};`
+                    `let initParam${i}: ${param.value.src.candidTypeAnnotation};`
             );
 
             const globalDeclarations = [

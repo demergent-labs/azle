@@ -22,7 +22,7 @@ export function generateTests(
                     const paramsString = namedParamServices
                         .map(
                             (param) =>
-                                `service "${param.el.value.agentArgumentValue.toText()}"`
+                                `service "${param.value.value.agentArgumentValue.toText()}"`
                         )
                         .join();
 

@@ -10,7 +10,7 @@ export function generateBody(
     const paramsAreRecords = namedParamRecords
         .map((param) => {
             const fieldsCount = Object.keys(
-                param.el.value.agentArgumentValue
+                param.value.value.agentArgumentValue
             ).length;
 
             const paramIsObject = `typeof ${param.name} === 'object'`;

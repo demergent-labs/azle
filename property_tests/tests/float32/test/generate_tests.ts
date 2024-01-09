@@ -10,9 +10,9 @@ export function generateTests(
     const expectedResult =
         namedParamFloat32s.length === 0
             ? returnFloat32.value.agentResponseValue
-            : namedParamFloat32s[0].el.value.agentResponseValue;
+            : namedParamFloat32s[0].value.value.agentResponseValue;
     const paramValues = namedParamFloat32s.map(
-        (paramFloats) => paramFloats.el.value.agentArgumentValue
+        (paramFloats) => paramFloats.value.value.agentArgumentValue
     );
     return [
         [

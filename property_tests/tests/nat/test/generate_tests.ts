@@ -8,11 +8,11 @@ export function generateTests(
     returnNat: CandidValueAndMeta<bigint>
 ): Test[][] {
     const expectedResult = namedParamNats.reduce(
-        (acc, param) => acc + param.el.value.agentResponseValue,
+        (acc, param) => acc + param.value.value.agentResponseValue,
         returnNat.value.agentResponseValue
     );
     const paramValues = namedParamNats.map(
-        (param) => param.el.value.agentArgumentValue
+        (param) => param.value.value.agentArgumentValue
     );
 
     return [

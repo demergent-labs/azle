@@ -10,7 +10,7 @@ import { clear as clearUniquePrimitiveArb } from './arbitraries/unique_primitive
 
 export type Named<T> = {
     name: string;
-    el: T;
+    value: T;
 };
 
 export { getActor } from './get_actor';
@@ -45,9 +45,9 @@ export function runPropTests(canisterArb: fc.Arbitrary<Canister>) {
 
             for (let i = 0; i < canister.tests.length; i++) {
                 const argumentsString =
-                    canister.initArgs !== undefined &&
-                    canister.initArgs.length > 0
-                        ? `--argument '(${canister.initArgs.join(', ')})'`
+                    canister.deployArgs !== undefined &&
+                    canister.deployArgs.length > 0
+                        ? `--argument '(${canister.deployArgs.join(', ')})'`
                         : '';
 
                 execSync(`dfx deploy canister ${argumentsString}`, {

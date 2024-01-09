@@ -9,7 +9,7 @@ export function generateTests(
 ): Test[][] {
     const expectedResult = Uint8Array.from(
         paramBlobs
-            .map((blob) => blob.el.value.agentResponseValue)
+            .map((blob) => blob.value.value.agentResponseValue)
             .reduce(
                 (acc, blob) => [...acc, ...blob],
                 [...returnBlob.value.agentResponseValue]
@@ -25,7 +25,7 @@ export function generateTests(
 
                     const result = await actor[functionName](
                         ...paramBlobs.map(
-                            (blob) => blob.el.value.agentArgumentValue
+                            (blob) => blob.value.value.agentArgumentValue
                         )
                     );
 

@@ -18,7 +18,7 @@ export function generateTests(
                     const actor = getActor(__dirname);
 
                     const params = namedParamOpts.map(
-                        (param) => param.el.value.agentArgumentValue
+                        (param) => param.value.value.agentArgumentValue
                     );
 
                     const result = await actor[functionName](...params);

@@ -10,7 +10,7 @@ export function generateTests(
     returnType: CandidValueAndMeta<CandidReturnType>
 ): Test[][] {
     const paramValues = params.map(
-        (param) => param.el.value.agentArgumentValue
+        (param) => param.value.value.agentArgumentValue
     );
     const expectedResult = returnType.value.agentResponseValue;
 

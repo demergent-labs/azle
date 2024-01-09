@@ -86,7 +86,7 @@ export function UpdateMethodArb<
                 const namedParams = paramTypes.map(
                     <T>(param: T, index: number): Named<T> => ({
                         name: `param${index}`,
-                        el: param
+                        value: param
                     })
                 );
 
