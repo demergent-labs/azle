@@ -56,19 +56,34 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         fn init() {
             unsafe { ic_wasi_polyfill::init(&[], &[]); }
 
-            let context = JSContextRef::default();
+            let mut rt = wasmedge_quickjs::Runtime::new();
 
-            ic::register(&context);
+            let r = rt.run_with_context(|context| {
+                ic::register(context);
 
-            context.eval_global("exports.js", "globalThis.exports = {};").unwrap();
-            context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();
+                context.eval_global_str("globalThis.exports = {};".to_string());
+                context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
+                // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
-            CONTEXT.with(|ctx| {
-                let mut ctx = ctx.borrow_mut();
-                *ctx = Some(context);
+                // match &temp {
+                //     wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                //         js_exception.dump_error();
+                //         panic!("we had an error");
+                //     },
+                //     _ => {}
+                // };
+
+                // ic_cdk::println!("temp: {:#?}", temp);
+
+                #init_method_call
             });
 
-            #init_method_call
+            ic_cdk::println!("init result: {:#?}", r);
+
+            RUNTIME.with(|runtime| {
+                let mut runtime = runtime.borrow_mut();
+                *runtime = Some(rt);
+            });
         }
     };
 
@@ -87,19 +102,34 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         fn post_upgrade() {
             unsafe { ic_wasi_polyfill::init(&[], &[]); }
 
-            let context = JSContextRef::default();
+            let mut rt = wasmedge_quickjs::Runtime::new();
 
-            ic::register(&context);
+            let r = rt.run_with_context(|context| {
+                ic::register(context);
 
-            context.eval_global("exports.js", "globalThis.exports = {}").unwrap();
-            context.eval_global("main.js", std::str::from_utf8(MAIN_JS).unwrap()).unwrap();
+                context.eval_global_str("globalThis.exports = {};".to_string());
+                context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
+                // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
-            CONTEXT.with(|ctx| {
-                let mut ctx = ctx.borrow_mut();
-                *ctx = Some(context);
+                // match &temp {
+                //     wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                //         js_exception.dump_error();
+                //         panic!("we had an error");
+                //     },
+                //     _ => {}
+                // };
+
+                // ic_cdk::println!("temp: {:#?}", temp);
+
+                #post_update_method_call
             });
 
-            #post_update_method_call
+            ic_cdk::println!("post_upgrade result: {:#?}", r);
+
+            RUNTIME.with(|runtime| {
+                let mut runtime = runtime.borrow_mut();
+                *runtime = Some(rt);
+            });
         }
     };
 

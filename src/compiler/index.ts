@@ -81,9 +81,6 @@ async function azle() {
                 canisterConfig.opt_level ?? '0'
             );
 
-            const { candid, canisterMethods } =
-                generateCandidAndCanisterMethods(canisterJavaScript);
-
             rmSync(canisterPath, { recursive: true, force: true });
             mkdirSync(canisterPath, { recursive: true });
 
@@ -111,6 +108,37 @@ async function azle() {
                 `${canisterPath}/canister/src/main.js`,
                 canisterJavaScript
             );
+
+            // TODO a lot of this file writing and compiler_info.json
+            // TODO stuff is repeated which is messy and bad of course
+            writeFileSync(`${canisterPath}/canister/src/candid.did`, ''); // This is for the Rust canister to have access to the candid file
+
+            const compilerInfo0: CompilerInfo = {
+                // TODO The spread is because canisterMethods is a function with properties
+                canister_methods: {
+                    candid: '',
+                    queries: [],
+                    updates: [],
+                    callbacks: {}
+                } // TODO we should probably just grab the props out that we need
+            };
+
+            const compilerInfoPath0 = join(
+                canisterPath,
+                'canister',
+                'src',
+                'compiler_info.json'
+            );
+
+            // TODO why not just write the dfx.json file here as well?
+            writeFileSync(compilerInfoPath0, JSON.stringify(compilerInfo0));
+
+            compileRustCode(canisterName, canisterPath, stdioType);
+
+            const { candid, canisterMethods } =
+                generateCandidAndCanisterMethods(
+                    `${canisterPath}/${canisterName}.wasm`
+                );
 
             writeFileSync(candidPath, candid); // This is for the dfx.json candid property
             writeFileSync(`${canisterPath}/canister/src/candid.did`, candid); // This is for the Rust canister to have access to the candid file
