@@ -28,8 +28,8 @@ export function OptDefinitionArb(
                 innerType
             );
 
-            const azleCandidTypeObject =
-                generateAzleCandidTypeObject(innerType);
+            const runtimeCandidTypeObject =
+                generateRuntimeCandidTypeObject(innerType);
 
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 useTypeDeclaration,
@@ -43,7 +43,7 @@ export function OptDefinitionArb(
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
-                    azleCandidTypeObject,
+                    runtimeCandidTypeObject,
                     variableAliasDeclarations,
                     imports,
                     candidType: 'Opt'
@@ -95,8 +95,10 @@ function generateCandidTypeObject(
     return `Opt(${innerType.candidMeta.candidTypeObject})`;
 }
 
-function generateAzleCandidTypeObject(innerType: CandidDefinition): CandidType {
-    return Opt(innerType.candidMeta.azleCandidTypeObject);
+function generateRuntimeCandidTypeObject(
+    innerType: CandidDefinition
+): CandidType {
+    return Opt(innerType.candidMeta.runtimeCandidTypeObject);
 }
 
 function generateImports(innerType: CandidDefinition): Set<string> {

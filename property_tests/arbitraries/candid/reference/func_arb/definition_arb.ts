@@ -46,7 +46,7 @@ export function FuncDefinitionArb(
                     mode
                 );
 
-                const azleCandidTypeObject = generateAzleCandidTypeObject(
+                const runtimeCandidTypeObject = generateRuntimeCandidTypeObject(
                     params,
                     returnFunc,
                     mode
@@ -72,7 +72,7 @@ export function FuncDefinitionArb(
                     candidMeta: {
                         candidTypeAnnotation,
                         candidTypeObject,
-                        azleCandidTypeObject,
+                        runtimeCandidTypeObject,
                         variableAliasDeclarations,
                         imports,
                         candidType: 'Func'
@@ -143,14 +143,14 @@ function generateCandidTypeObject(
     return `Func([${params}], ${returnCandid.candidMeta.candidTypeObject}, '${mode}')`;
 }
 
-function generateAzleCandidTypeObject(
+function generateRuntimeCandidTypeObject(
     paramCandids: CandidDefinition[],
     returnCandid: CandidDefinition,
     mode: Mode
 ): CandidType {
     const params = paramCandids.map(
-        (param) => param.candidMeta.azleCandidTypeObject
+        (param) => param.candidMeta.runtimeCandidTypeObject
     );
 
-    return Func(params, returnCandid.candidMeta.azleCandidTypeObject, mode);
+    return Func(params, returnCandid.candidMeta.runtimeCandidTypeObject, mode);
 }

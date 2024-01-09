@@ -20,7 +20,7 @@ export function CandidValueAndMetaArbGenerator<
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
-                    azleCandidTypeObject,
+                    runtimeCandidTypeObject,
                     variableAliasDeclarations,
                     imports
                 }
@@ -38,7 +38,7 @@ export function CandidValueAndMetaArbGenerator<
                 value: {
                     agentArgumentValue,
                     agentResponseValue,
-                    candidTypeObject: azleCandidTypeObject
+                    runtimeCandidTypeObject
                 }
             };
         }

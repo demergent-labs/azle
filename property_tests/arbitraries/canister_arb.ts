@@ -45,7 +45,7 @@ export function CanisterArb<
             const value = paramValue.value.value;
             const candidTypeAnnotation =
                 paramValue.value.src.candidTypeAnnotation;
-            const paramCandidString = value.candidTypeObject
+            const paramCandidString = value.runtimeCandidTypeObject
                 .getIdl([])
                 .valueToString(value.agentArgumentValue);
 

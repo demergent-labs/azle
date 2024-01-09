@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 import { CandidType } from '../candid_type';
-import { CandidType as AzleCandidType } from '../../../../src/lib/candid/candid_type';
+import { CandidType as RuntimeCandidType } from '../../../../src/lib/candid/candid_type';
 import { ServiceMethodDefinition } from '../reference/service_arb/service_method_arb';
 
 export type CandidDefinitionArb = fc.Arbitrary<CandidDefinition>;
@@ -65,7 +65,7 @@ export type ServiceCandidDefinition = {
 type CandidMeta = {
     candidTypeAnnotation: string; // Either a type reference or type literal
     candidTypeObject: string;
-    azleCandidTypeObject: AzleCandidType;
+    runtimeCandidTypeObject: RuntimeCandidType;
     variableAliasDeclarations: string[];
     imports: Set<string>;
     candidType: CandidType;

@@ -40,7 +40,8 @@ export function RecordDefinitionArb(
                 fields
             );
 
-            const azleCandidTypeObject = generateAzleCandidTypeObject(fields);
+            const runtimeCandidTypeObject =
+                generateRuntimeCandidTypeObject(fields);
 
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 useTypeDeclaration,
@@ -54,7 +55,7 @@ export function RecordDefinitionArb(
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
-                    azleCandidTypeObject,
+                    runtimeCandidTypeObject,
                     variableAliasDeclarations,
                     imports,
                     candidType: 'Record'
@@ -105,12 +106,12 @@ function generateCandidTypeObject(
         .join(',')}})`;
 }
 
-function generateAzleCandidTypeObject(fields: Field[]): CandidType {
+function generateRuntimeCandidTypeObject(fields: Field[]): CandidType {
     const azleRecordConstructorObj = fields.reduce(
         (acc, [fieldName, fieldDefinition]): RunTimeRecord => {
             return {
                 ...acc,
-                [fieldName]: fieldDefinition.candidMeta.azleCandidTypeObject
+                [fieldName]: fieldDefinition.candidMeta.runtimeCandidTypeObject
             };
         },
         {}

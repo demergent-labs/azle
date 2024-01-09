@@ -35,7 +35,8 @@ export function VariantDefinitionArb(
                 fields
             );
 
-            const azleCandidTypeObject = generateAzleCandidTypeObject(fields);
+            const runtimeCandidTypeObject =
+                generateRuntimeCandidTypeObject(fields);
 
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 useTypeDeclaration,
@@ -49,7 +50,7 @@ export function VariantDefinitionArb(
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
-                    azleCandidTypeObject,
+                    runtimeCandidTypeObject,
                     variableAliasDeclarations,
                     imports,
                     candidType: 'Variant'
@@ -129,12 +130,12 @@ function generateCandidTypeObject(
         .join(',')}})`;
 }
 
-function generateAzleCandidTypeObject(fields: Field[]): CandidType {
+function generateRuntimeCandidTypeObject(fields: Field[]): CandidType {
     const azleVariantConstructorObj = fields.reduce(
         (acc, [fieldName, fieldDefinition]): RunTimeVariant => {
             return {
                 ...acc,
-                [fieldName]: fieldDefinition.candidMeta.azleCandidTypeObject
+                [fieldName]: fieldDefinition.candidMeta.runtimeCandidTypeObject
             };
         },
         {}

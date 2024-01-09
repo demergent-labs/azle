@@ -23,14 +23,14 @@ import { OptArb } from './constructed/opt_arb';
 import { VecArb } from './constructed/vec_arb';
 import { FuncArb } from './reference/func_arb';
 import { CorrespondingJSType } from './corresponding_js_type';
-import { CandidType } from '../../../src/lib';
+import { CandidType as RuntimeCandidType } from '../../../src/lib';
 
 // TODO we're thinking that Candid is not the best name for this. What is better?
 export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
     value: {
         agentArgumentValue: T;
         agentResponseValue: E;
-        candidTypeObject: CandidType;
+        runtimeCandidTypeObject: RuntimeCandidType;
     };
     src: {
         candidTypeAnnotation: string;

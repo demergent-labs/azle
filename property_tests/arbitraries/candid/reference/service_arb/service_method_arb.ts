@@ -14,7 +14,7 @@ type Mode = 'query' | 'update';
 
 export type ServiceMethodDefinition = {
     name: string;
-    azleCandidTypeObject: CanisterMethodInfo<CandidType[], CandidType>;
+    runtimeCandidTypeObject: CanisterMethodInfo<CandidType[], CandidType>;
     imports: Set<string>;
     variableAliasDeclarations: string[];
     src: string;
@@ -54,7 +54,7 @@ export function ServiceMethodArb(
                 new Set([mode, ...returnType.candidMeta.imports])
             );
 
-            const azleCandidTypeObject = generateAzleCandidTypeObject(
+            const runtimeCandidTypeObject = generateRuntimeCandidTypeObject(
                 mode,
                 params,
                 returnType
@@ -62,24 +62,25 @@ export function ServiceMethodArb(
 
             return {
                 name,
-                azleCandidTypeObject: azleCandidTypeObject,
+                runtimeCandidTypeObject,
                 imports,
-                variableAliasDeclarations: variableAliasDeclarations,
+                variableAliasDeclarations,
                 src
             };
         });
 }
 
-function generateAzleCandidTypeObject(
+function generateRuntimeCandidTypeObject(
     mode: Mode,
     params: CandidDefinition[],
     returnType: CandidDefinition
 ) {
     const queryOrUpdate = mode === 'query' ? query : update;
     const paramCandidTypeObjects = params.map(
-        (param) => param.candidMeta.azleCandidTypeObject
+        (param) => param.candidMeta.runtimeCandidTypeObject
     );
-    const returnCandidTypeObject = returnType.candidMeta.azleCandidTypeObject;
+    const returnCandidTypeObject =
+        returnType.candidMeta.runtimeCandidTypeObject;
 
     return queryOrUpdate(paramCandidTypeObjects, returnCandidTypeObject);
 }

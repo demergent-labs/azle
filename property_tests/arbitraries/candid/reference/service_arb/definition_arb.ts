@@ -36,7 +36,8 @@ export function ServiceDefinitionArb(
                 fields
             );
 
-            const azleCandidTypeObject = generateAzleCandidTypeObject(fields);
+            const runtimeCandidTypeObject =
+                generateRuntimeCandidTypeObject(fields);
 
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 useTypeDeclaration,
@@ -51,7 +52,7 @@ export function ServiceDefinitionArb(
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
-                    azleCandidTypeObject,
+                    runtimeCandidTypeObject,
                     variableAliasDeclarations,
                     imports,
                     candidType: 'Service'
@@ -110,13 +111,13 @@ function generateCandidTypeObject(
     return `Canister({${methods}})`;
 }
 
-function generateAzleCandidTypeObject(
+function generateRuntimeCandidTypeObject(
     serviceMethods: ServiceMethodDefinition[]
 ) {
     const methods = serviceMethods.reduce((acc, serviceMethod) => {
         return {
             ...acc,
-            [serviceMethod.name]: serviceMethod.azleCandidTypeObject
+            [serviceMethod.name]: serviceMethod.runtimeCandidTypeObject
         };
     }, {});
 

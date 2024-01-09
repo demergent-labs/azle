@@ -20,7 +20,7 @@ export function _VecNat8DefinitionArb(): fc.Arbitrary<BlobCandidDefinition> {
             const imports = new Set(['Vec', 'nat8']);
             return {
                 candidMeta: {
-                    azleCandidTypeObject: blob,
+                    runtimeCandidTypeObject: blob,
                     candidTypeAnnotation,
                     candidTypeObject,
                     variableAliasDeclarations,

@@ -31,7 +31,8 @@ export function TupleDefinitionArb(
                 fields
             );
 
-            const azleCandidTypeObject = generateAzleCandidTypeObject(fields);
+            const runtimeCandidTypeObject =
+                generateRuntimeCandidTypeObject(fields);
 
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 useTypeDeclaration,
@@ -45,7 +46,7 @@ export function TupleDefinitionArb(
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
-                    azleCandidTypeObject,
+                    runtimeCandidTypeObject,
                     variableAliasDeclarations,
                     imports,
                     candidType: 'Tuple'
@@ -102,9 +103,11 @@ function generateCandidTypeObject(
     return `Tuple(${innerTypes.join(', ')})`;
 }
 
-function generateAzleCandidTypeObject(fields: CandidDefinition[]): CandidType {
+function generateRuntimeCandidTypeObject(
+    fields: CandidDefinition[]
+): CandidType {
     const innerTypes = fields.map(
-        (field) => field.candidMeta.azleCandidTypeObject
+        (field) => field.candidMeta.runtimeCandidTypeObject
     );
 
     return Tuple(...innerTypes);

@@ -28,8 +28,8 @@ export function VecDefinitionArb(
                 innerType
             );
 
-            const azleCandidTypeObject =
-                generateAzleCandidTypeObject(innerType);
+            const runtimeCandidTypeObject =
+                generateRuntimeCandidTypeObject(innerType);
 
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 useTypeDeclaration,
@@ -43,7 +43,7 @@ export function VecDefinitionArb(
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
-                    azleCandidTypeObject,
+                    runtimeCandidTypeObject,
                     variableAliasDeclarations,
                     imports,
                     candidType: 'Vec'
@@ -99,6 +99,8 @@ function generateCandidTypeObject(
     return `Vec(${innerType.candidMeta.candidTypeObject})`;
 }
 
-function generateAzleCandidTypeObject(innerType: CandidDefinition): CandidType {
-    return Vec(innerType.candidMeta.azleCandidTypeObject);
+function generateRuntimeCandidTypeObject(
+    innerType: CandidDefinition
+): CandidType {
+    return Vec(innerType.candidMeta.runtimeCandidTypeObject);
 }

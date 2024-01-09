@@ -21,7 +21,7 @@ import {
 } from '../../../../src/lib';
 import { SimpleCandidType } from '../candid_type';
 
-export function candidTypeToAzleCandidType(
+export function candidTypeToRuntimeCandidType(
     candidType: SimpleCandidType
 ): CandidType {
     if (candidType === 'blob') {
