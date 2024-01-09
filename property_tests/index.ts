@@ -45,7 +45,8 @@ export function runPropTests(canisterArb: fc.Arbitrary<Canister>) {
 
             for (let i = 0; i < canister.tests.length; i++) {
                 const argumentsString =
-                    canister.initArgs && canister.initArgs.length > 0
+                    canister.initArgs !== undefined &&
+                    canister.initArgs.length > 0
                         ? `--argument '(${canister.initArgs.join(', ')})'`
                         : '';
 

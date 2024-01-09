@@ -75,31 +75,3 @@ export function CandidValueAndMetaArb(): fc.Arbitrary<
 }
 
 // TODO: This needs to support service.
-
-/**
- * Azle currently (v0.18.6) cannot accept funcs in init methods.
- * See https://github.com/demergent-labs/azle/issues/1474
- */
-export function CandidValueAndMetaArbWithoutFuncs(): fc.Arbitrary<
-    CandidValueAndMeta<CorrespondingJSType>
-> {
-    return fc.oneof(
-        BlobArb(),
-        Float32Arb(),
-        Float64Arb(),
-        IntArb(),
-        Int8Arb(),
-        Int16Arb(),
-        Int32Arb(),
-        Int64Arb(),
-        NatArb(),
-        Nat8Arb(),
-        Nat16Arb(),
-        Nat32Arb(),
-        Nat64Arb(),
-        BoolArb(),
-        NullArb(),
-        TextArb(),
-        PrincipalArb()
-    );
-}

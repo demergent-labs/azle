@@ -22,14 +22,14 @@ export function VariantValuesArb(
 
     const [name, innerType] = variantDefinition.innerTypes[randomIndex];
 
-    const fieldValue = CandidValueArb(innerType).map((values): Field => {
+    const fieldValues = CandidValueArb(innerType).map((values): Field => {
         return [name, values];
     });
 
-    return fieldValue.map((field) => {
-        const valueLiteral = generateValueLiteral(field);
-        const agentArgumentValue = generateValue(field);
-        const agentResponseValue = generateValue(field, true);
+    return fieldValues.map((fieldValue) => {
+        const valueLiteral = generateValueLiteral(fieldValue);
+        const agentArgumentValue = generateValue(fieldValue);
+        const agentResponseValue = generateValue(fieldValue, true);
 
         return {
             valueLiteral,

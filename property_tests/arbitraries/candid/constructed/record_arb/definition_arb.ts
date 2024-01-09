@@ -10,6 +10,10 @@ import { CandidType, Record } from '../../../../../src/lib';
 
 type Field = [string, CandidDefinition];
 
+type RunTimeRecord = {
+    [key: string]: CandidType;
+};
+
 export function RecordDefinitionArb(
     fieldCandidDefArb: CandidDefinitionArb
 ): fc.Arbitrary<RecordCandidDefinition> {
@@ -61,7 +65,7 @@ export function RecordDefinitionArb(
 }
 
 function generateImports(fields: Field[]): Set<string> {
-    const fieldImports = fields.flatMap((field) => [
+    const fieldImports = fields.flatMap((field): string[] => [
         ...field[1].candidMeta.imports
     ]);
     return new Set([...fieldImports, 'Record']);
@@ -102,12 +106,15 @@ function generateCandidTypeObject(
 }
 
 function generateAzleCandidTypeObject(fields: Field[]): CandidType {
-    const azleRecordConstructorObj = fields.reduce<{
-        [key: string]: CandidType;
-    }>((acc, [fieldName, fieldDefinition]) => {
-        acc[fieldName] = fieldDefinition.candidMeta.azleCandidTypeObject;
-        return acc;
-    }, {});
+    const azleRecordConstructorObj = fields.reduce(
+        (acc, [fieldName, fieldDefinition]): RunTimeRecord => {
+            return {
+                ...acc,
+                [fieldName]: fieldDefinition.candidMeta.azleCandidTypeObject
+            };
+        },
+        {}
+    );
 
     return Record(azleRecordConstructorObj);
 }
@@ -118,7 +125,7 @@ function generateVariableAliasDeclarations(
     fields: Field[]
 ): string[] {
     const fieldVariableAliasDefinitions = fields.flatMap(
-        (field) => field[1].candidMeta.variableAliasDeclarations
+        (field): string[] => field[1].candidMeta.variableAliasDeclarations
     );
     if (useTypeDeclaration) {
         return [

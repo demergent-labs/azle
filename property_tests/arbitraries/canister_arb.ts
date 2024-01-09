@@ -41,22 +41,17 @@ export function CanisterArb<
             ...(config.updateMethods ?? [])
         ];
 
-        const initArgs = config.initMethod?.params.map(
-            ({
-                el: {
-                    src: { candidTypeAnnotation },
-                    value
-                }
-            }) => {
-                const paramCandidString = value.candidTypeObject
-                    .getIdl([])
-                    .valueToString(value.agentArgumentValue);
+        const initArgs = config.initMethod?.params.map((paramValue) => {
+            const value = paramValue.el.value;
+            const candidTypeAnnotation = paramValue.el.src.candidTypeAnnotation;
+            const paramCandidString = value.candidTypeObject
+                .getIdl([])
+                .valueToString(value.agentArgumentValue);
 
-                return candidTypeAnnotation === 'text'
-                    ? escapeCandidStringForBash(paramCandidString)
-                    : paramCandidString;
-            }
-        );
+            return candidTypeAnnotation === 'text'
+                ? escapeCandidStringForBash(paramCandidString)
+                : paramCandidString;
+        });
 
         const sourceCode = generateSourceCode(
             config.globalDeclarations ?? [],
@@ -124,7 +119,7 @@ function generateSourceCode(
 
     return /*TS*/ `
         import { ${imports} } from 'azle';
-        
+
         // @ts-ignore
         import deepEqual from 'deep-is';
 

@@ -9,6 +9,10 @@ import { CandidType, Variant } from '../../../../../src/lib';
 
 type Field = [string, CandidDefinition];
 
+type RunTimeVariant = {
+    [key: string]: CandidType;
+};
+
 export function VariantDefinitionArb(
     candidTypeArbForFields: fc.Arbitrary<CandidDefinition>
 ): fc.Arbitrary<VariantCandidDefinition> {
@@ -126,12 +130,15 @@ function generateCandidTypeObject(
 }
 
 function generateAzleCandidTypeObject(fields: Field[]): CandidType {
-    const azleVariantConstructorObj = fields.reduce<{
-        [key: string]: CandidType;
-    }>((acc, [fieldName, fieldDefinition]) => {
-        acc[fieldName] = fieldDefinition.candidMeta.azleCandidTypeObject;
-        return acc;
-    }, {});
+    const azleVariantConstructorObj = fields.reduce(
+        (acc, [fieldName, fieldDefinition]): RunTimeVariant => {
+            return {
+                ...acc,
+                [fieldName]: fieldDefinition.candidMeta.azleCandidTypeObject
+            };
+        },
+        {}
+    );
 
     return Variant(azleVariantConstructorObj);
 }

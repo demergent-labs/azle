@@ -75,11 +75,11 @@ function generateAzleCandidTypeObject(
     params: CandidDefinition[],
     returnType: CandidDefinition
 ) {
-    const modeFunction = mode === 'query' ? query : update;
+    const queryOrUpdate = mode === 'query' ? query : update;
     const paramCandidTypeObjects = params.map(
         (param) => param.candidMeta.azleCandidTypeObject
     );
     const returnCandidTypeObject = returnType.candidMeta.azleCandidTypeObject;
 
-    return modeFunction(paramCandidTypeObjects, returnCandidTypeObject);
+    return queryOrUpdate(paramCandidTypeObjects, returnCandidTypeObject);
 }

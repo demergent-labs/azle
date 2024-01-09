@@ -51,10 +51,7 @@ export function InitMethodArb<
             UniqueIdentifierArb('canisterMethod'),
             paramTypeArrayArb,
             VoidArb(),
-            fc.constantFrom(
-                'INLINE',
-                'STANDALONE'
-            ) as fc.Arbitrary<CallbackLocation>,
+            fc.constantFrom<CallbackLocation>('INLINE', 'STANDALONE'),
             UniqueIdentifierArb('typeDeclaration')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using
@@ -67,9 +64,10 @@ export function InitMethodArb<
                 returnType,
                 defaultCallbackLocation,
                 callbackName
-            ]) => {
-                // TODO: Add a return type to this map callback of type InitMethod<Something, Something>
-
+            ]): InitMethod<
+                ParamAgentArgumentValue,
+                ParamAgentResponseValue
+            > => {
                 const callbackLocation =
                     constraints.callbackLocation ?? defaultCallbackLocation;
 

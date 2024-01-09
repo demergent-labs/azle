@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { runPropTests } from 'azle/property_tests';
-import { CandidValueAndMetaArbWithoutFuncs as CandidValueAndMetaArb } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
+import { CandidValueAndMetaArb } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { CandidReturnTypeArb } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
 import {
     CanisterArb,
