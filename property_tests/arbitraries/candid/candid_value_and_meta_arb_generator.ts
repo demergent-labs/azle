@@ -10,10 +10,14 @@ export function CandidValueAndMetaArbGenerator<
     V extends CandidValues<T>
 >(
     DefinitionArb: fc.Arbitrary<D>,
-    ValueArb: (arb: D) => fc.Arbitrary<V>
+    ValueArb: (arb: D, constraints?: any) => fc.Arbitrary<V>,
+    valueConstraints?: any
 ): fc.Arbitrary<CandidValueAndMeta<any>> {
     return DefinitionArb.chain((candidDefinition) =>
-        fc.tuple(fc.constant(candidDefinition), ValueArb(candidDefinition))
+        fc.tuple(
+            fc.constant(candidDefinition),
+            ValueArb(candidDefinition, valueConstraints)
+        )
     ).map(
         ([
             {
