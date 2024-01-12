@@ -4,10 +4,22 @@ import { Test } from '../../test';
 import { UpdateMethod } from './canister_methods/update_method_arb';
 import { InitMethod } from './canister_methods/init_method_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
-import { TextClass } from '@dfinity/candid/lib/cjs/idl';
+import { TextClass, FloatClass } from '@dfinity/candid/lib/cjs/idl';
 
 TextClass.prototype.valueToString = function (x): string {
     return `"${escapeForBash(x)}"`;
+};
+
+/**
+ * If a float doesn't have a decimal it won't serialize properly, so 10 while
+ * is a float won't serialize unless it's 10.0
+ */
+FloatClass.prototype.valueToString = function (x): string {
+    const floatString = x.toString();
+    if (floatString.includes('.')) {
+        return floatString;
+    }
+    return floatString + '.0';
 };
 
 export type Canister = {
