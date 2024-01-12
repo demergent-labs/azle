@@ -6,7 +6,7 @@ import { InitMethod } from './canister_methods/init_method_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
 import { TextClass, FloatClass } from '@dfinity/candid/lib/cjs/idl';
 
-TextClass.prototype.valueToString = function (x): string {
+TextClass.prototype.valueToString = (x): string => {
     return `"${escapeForBash(x)}"`;
 };
 
@@ -14,7 +14,7 @@ TextClass.prototype.valueToString = function (x): string {
  * If a float doesn't have a decimal it won't serialize properly, so 10 while
  * is a float won't serialize unless it's 10.0
  */
-FloatClass.prototype.valueToString = function (x): string {
+FloatClass.prototype.valueToString = (x): string => {
     const floatString = x.toString();
     if (floatString.includes('.')) {
         return floatString;
