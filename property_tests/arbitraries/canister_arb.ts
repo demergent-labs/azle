@@ -4,6 +4,11 @@ import { Test } from '../../test';
 import { UpdateMethod } from './canister_methods/update_method_arb';
 import { InitMethod } from './canister_methods/init_method_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
+import { TextClass } from '@dfinity/candid/lib/cjs/idl';
+
+TextClass.prototype.valueToString = function (x): string {
+    return `"${escapeForBash(x)}"`;
+};
 
 export type Canister = {
     deployArgs: string[] | undefined;
@@ -41,18 +46,13 @@ export function CanisterArb<
             ...(config.updateMethods ?? [])
         ];
 
-        const deployArgs = config.initMethod?.params.map((paramValue) => {
-            const value = paramValue.value.value;
-            const candidTypeAnnotation =
-                paramValue.value.src.candidTypeAnnotation;
-            const paramCandidString = value.runtimeCandidTypeObject
-                .getIdl([])
-                .valueToString(value.agentArgumentValue);
-
-            return candidTypeAnnotation === 'text'
-                ? escapeCandidStringForBash(paramCandidString)
-                : paramCandidString;
-        });
+        const deployArgs = config.initMethod?.params.map(
+            ({ value: { value } }) => {
+                return value.runtimeCandidTypeObject
+                    .getIdl([])
+                    .valueToString(value.agentArgumentValue);
+            }
+        );
 
         const sourceCode = generateSourceCode(
             config.globalDeclarations ?? [],
