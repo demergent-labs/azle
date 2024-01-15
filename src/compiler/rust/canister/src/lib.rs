@@ -100,6 +100,9 @@ fn execute_js(function_name: &str, pass_arg_data: bool) {
             // TODO this returns a value so I think we need to check it to get an error
             method_callback_function.call(&[candid_args_js_value]);
 
+            // TODO might we need to do this in init and post_upgrade?
+            context.event_loop().unwrap().run_tick_task();
+
             // TODO I am not sure what the first parameter to call is supposed to be
             // method_callback
             //     .call(&method_callback, &[candid_args_js_value_ref])
