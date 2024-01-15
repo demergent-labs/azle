@@ -1,26 +1,25 @@
 import { deepEqual, Named, getActor } from 'azle/property_tests';
-import { Test } from 'azle/test';
-import { CandidReturnType } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
+import { Test } from 'azle/test';
 
 export function generateTests(
-    functionName: string,
-    params: Named<CandidValueAndMeta<CorrespondingJSType>>[],
-    returnType: CandidValueAndMeta<CandidReturnType>
+    _functionName: string,
+    params: Named<CandidValueAndMeta<CorrespondingJSType>>[]
 ): Test[][] {
-    const paramValues = params.map(
-        (param) => param.value.value.agentArgumentValue
-    );
-    const expectedResult = returnType.value.agentResponseValue;
+    const expectedResult = [
+        true,
+        ...params.map((param) => param.value.value.agentResponseValue)
+    ];
 
     return [
         [
             {
-                name: `update method "${functionName}"`,
+                name: `init method`,
                 test: async () => {
-                    const actor = getActor(__dirname);
-                    const result = await actor[functionName](...paramValues);
+                    const actor = getActor('./tests/init_method/test');
+                    const result = await actor.getInitValues();
+
                     const valuesAreEqual = deepEqual(result, expectedResult);
 
                     return valuesAreEqual

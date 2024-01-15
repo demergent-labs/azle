@@ -1,12 +1,9 @@
 import fc from 'fast-check';
 
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
-import { CandidReturnType } from '../candid/candid_return_type_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
-import { Test } from '../../../test';
 import { Named } from '../..';
-
 import {
     BodyGenerator,
     TestsGenerator,
@@ -14,41 +11,37 @@ import {
     isDefined,
     generateCallback
 } from '.';
+import { Test } from '../../../test';
+import { VoidArb } from '../candid/primitive/void';
 
-export type UpdateMethod = {
+export type InitMethod<
+    ParamAgentArgumentValue extends CorrespondingJSType,
+    ParamAgentResponseValue
+> = {
     imports: Set<string>;
     globalDeclarations: string[];
+    params: Named<
+        CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
+    >[];
     sourceCode: string;
     tests: Test[][];
 };
 
-export function UpdateMethodArb<
+export function InitMethodArb<
     ParamAgentArgumentValue extends CorrespondingJSType,
-    ParamAgentResponseValue,
-    ReturnTypeAgentArgumentValue extends CorrespondingJSType,
-    ReturnTypeAgentResponseValue
+    ParamAgentResponseValue
 >(
     paramTypeArrayArb: fc.Arbitrary<
         CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>[]
     >,
-    returnTypeArb: fc.Arbitrary<
-        CandidValueAndMeta<
-            ReturnTypeAgentArgumentValue,
-            ReturnTypeAgentResponseValue
-        >
-    >,
     constraints: {
         generateBody: BodyGenerator<
             ParamAgentArgumentValue,
-            ParamAgentResponseValue,
-            ReturnTypeAgentArgumentValue,
-            ReturnTypeAgentResponseValue
+            ParamAgentResponseValue
         >;
         generateTests: TestsGenerator<
             ParamAgentArgumentValue,
-            ParamAgentResponseValue,
-            ReturnTypeAgentArgumentValue,
-            ReturnTypeAgentResponseValue
+            ParamAgentResponseValue
         >;
         callbackLocation?: CallbackLocation;
     }
@@ -57,11 +50,8 @@ export function UpdateMethodArb<
         .tuple(
             UniqueIdentifierArb('canisterMethod'),
             paramTypeArrayArb,
-            returnTypeArb,
-            fc.constantFrom(
-                'INLINE',
-                'STANDALONE'
-            ) as fc.Arbitrary<CallbackLocation>,
+            VoidArb(),
+            fc.constantFrom<CallbackLocation>('INLINE', 'STANDALONE'),
             UniqueIdentifierArb('typeDeclaration')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using
@@ -74,13 +64,16 @@ export function UpdateMethodArb<
                 returnType,
                 defaultCallbackLocation,
                 callbackName
-            ]): UpdateMethod => {
+            ]): InitMethod<
+                ParamAgentArgumentValue,
+                ParamAgentResponseValue
+            > => {
                 const callbackLocation =
                     constraints.callbackLocation ?? defaultCallbackLocation;
 
                 const imports = new Set([
-                    ...paramTypes.flatMap((param) => [...param.src.imports]),
-                    ...returnType.src.imports
+                    'init',
+                    ...paramTypes.flatMap((param) => [...param.src.imports])
                 ]);
 
                 const namedParams = paramTypes.map(
@@ -98,22 +91,18 @@ export function UpdateMethodArb<
                     callbackName
                 );
 
-                const candidTypeDeclarations = [
-                    ...paramTypes.flatMap(
-                        (param) => param.src.variableAliasDeclarations
-                    ),
-                    ...returnType.src.variableAliasDeclarations
-                ].filter(isDefined);
+                const variableAliasDeclarations = paramTypes
+                    .flatMap((param) => param.src.variableAliasDeclarations)
+                    .filter(isDefined);
 
                 const globalDeclarations =
                     callbackLocation === 'STANDALONE'
-                        ? [...candidTypeDeclarations, callback]
-                        : candidTypeDeclarations;
+                        ? [...variableAliasDeclarations, callback]
+                        : variableAliasDeclarations;
 
                 const sourceCode = generateSourceCode(
                     functionName,
                     paramTypes,
-                    returnType,
                     callbackLocation === 'STANDALONE' ? callbackName : callback
                 );
 
@@ -126,6 +115,7 @@ export function UpdateMethodArb<
                 return {
                     imports,
                     globalDeclarations,
+                    params: namedParams,
                     sourceCode,
                     tests
                 };
@@ -135,20 +125,15 @@ export function UpdateMethodArb<
 
 function generateSourceCode<
     ParamType extends CorrespondingJSType,
-    ParamAgentType,
-    ReturnType extends CandidReturnType,
-    ReturnAgentType
+    ParamAgentType
 >(
     functionName: string,
     paramTypes: CandidValueAndMeta<ParamType, ParamAgentType>[],
-    returnType: CandidValueAndMeta<ReturnType, ReturnAgentType>,
     callback: string
 ): string {
     const paramCandidTypeObjects = paramTypes
         .map((param) => param.src.candidTypeObject)
         .join(', ');
 
-    const returnCandidTypeObject = returnType.src.candidTypeObject;
-
-    return `${functionName}: update([${paramCandidTypeObjects}], ${returnCandidTypeObject}, ${callback})`;
+    return `${functionName}: init([${paramCandidTypeObjects}], ${callback})`;
 }
