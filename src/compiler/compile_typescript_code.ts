@@ -1,7 +1,7 @@
-import * as swc from '@swc/core';
 import { buildSync } from 'esbuild';
 import { JSCanisterConfig, JavaScript, TypeScript } from './utils/types';
 import { Result } from './utils/result';
+import { GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR } from './utils/global_paths';
 
 export function compileTypeScriptToJavaScript(
     main: string,
@@ -98,28 +98,21 @@ export function bundleFromString(ts: TypeScript): JavaScript {
         logLevel: 'silent',
         target: 'es2020',
         alias: {
-            internal:
-                '/home/lastmjs/development/wasmedge-quickjs/modules/internal',
-            util: '/home/lastmjs/development/wasmedge-quickjs/modules/util',
-            fs: '/home/lastmjs/development/wasmedge-quickjs/modules/fs',
-            fmt: '/home/lastmjs/development/wasmedge-quickjs/modules/fmt',
-            buffer: '/home/lastmjs/development/wasmedge-quickjs/modules/buffer.js',
-            path: '/home/lastmjs/development/wasmedge-quickjs/modules/path.js',
-            stream: '/home/lastmjs/development/wasmedge-quickjs/modules/stream.js',
-            process:
-                '/home/lastmjs/development/wasmedge-quickjs/modules/process.js',
-            url: '/home/lastmjs/development/wasmedge-quickjs/modules/url.js',
-            events: '/home/lastmjs/development/wasmedge-quickjs/modules/events.js',
-            string_decoder:
-                '/home/lastmjs/development/wasmedge-quickjs/modules/string_decoder.js',
-            punycode:
-                '/home/lastmjs/development/wasmedge-quickjs/modules/punycode.js',
-            querystring:
-                '/home/lastmjs/development/wasmedge-quickjs/modules/querystring.js',
-            whatwg_url:
-                '/home/lastmjs/development/wasmedge-quickjs/modules/whatwg_url.js',
-            encoding:
-                '/home/lastmjs/development/wasmedge-quickjs/modules/encoding.js'
+            internal: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/internal`,
+            util: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/util`,
+            fs: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/fs`,
+            fmt: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/fmt`,
+            buffer: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/buffer.js`,
+            path: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/path.js`,
+            stream: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/stream.js`,
+            process: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/process.js`,
+            url: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/url.js`,
+            events: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/events.js`,
+            string_decoder: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/string_decoder.js`,
+            punycode: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/punycode.js`,
+            querystring: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/querystring.js`,
+            whatwg_url: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/whatwg_url.js`,
+            encoding: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/encoding.js`
         },
         external: ['_node:fs', '_encoding']
         // TODO tsconfig was here to attempt to set importsNotUsedAsValues to true to force Principal to always be bundled
