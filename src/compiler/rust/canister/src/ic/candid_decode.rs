@@ -1,21 +1,19 @@
 use std::convert::TryInto;
 
-use quickjs_wasm_rs::{to_qjs_value, CallbackArg, JSContextRef, JSValue, JSValueRef};
+use wasmedge_quickjs::{Context, JsArrayBuffer, JsFn, JsString, JsValue};
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    _args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let candid_encoded: Vec<u8> = _args
-        .get(0)
-        .expect("candidDecode must have at least one argument")
-        .to_js_value()?
-        .try_into()?;
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        let candid_encoded = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(0).unwrap() {
+            js_array_buffer.to_vec()
+        } else {
+            panic!("conversion from JsValue to JsArrayBuffer failed")
+        };
 
-    let candid_args: candid::IDLArgs = candid::IDLArgs::from_bytes(&candid_encoded)?;
-    let candid_string = candid_args.to_string();
+        let candid_args: candid::IDLArgs = candid::IDLArgs::from_bytes(&candid_encoded).unwrap();
+        let candid_string = candid_args.to_string();
 
-    let candid_string_js_value: JSValue = candid_string.into();
-    to_qjs_value(&context, &candid_string_js_value)
+        context.new_string(&candid_string).into()
+    }
 }

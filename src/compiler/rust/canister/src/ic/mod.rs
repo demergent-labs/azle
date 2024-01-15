@@ -4,8 +4,8 @@
 // mod call_raw;
 // mod call_raw128;
 // mod caller;
-// mod candid_decode;
-// mod candid_encode;
+mod candid_decode;
+mod candid_encode;
 // mod canister_balance;
 // mod canister_balance128;
 // mod canister_version;
@@ -97,20 +97,21 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     //     context.wrap_callback2(caller::native_function).unwrap(),
     // )
     // .unwrap();
-    // ic.set_property(
-    //     "candidDecode",
-    //     context
-    //         .wrap_callback2(candid_decode::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "candidEncode",
-    //     context
-    //         .wrap_callback2(candid_encode::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+
+    ic.set(
+        "candidDecode",
+        context
+            .new_function::<candid_decode::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "candidEncode",
+        context
+            .new_function::<candid_encode::NativeFunction>("")
+            .into(),
+    );
+
     // ic.set_property(
     //     "canisterBalance",
     //     context
