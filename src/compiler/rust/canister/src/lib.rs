@@ -1,10 +1,10 @@
 #[allow(unused)]
 use canister_methods::canister_methods;
-// use ic_stable_structures::{
-//     memory_manager::{MemoryManager, VirtualMemory},
-//     storable::Bound,
-//     DefaultMemoryImpl, StableBTreeMap, Storable,
-// };
+use ic_stable_structures::{
+    memory_manager::{MemoryManager, VirtualMemory},
+    storable::Bound,
+    DefaultMemoryImpl, StableBTreeMap, Storable,
+};
 use std::collections::BTreeMap;
 use std::{cell::RefCell, convert::TryInto};
 use wasmedge_quickjs::AsObject;
@@ -17,55 +17,55 @@ const MAIN_JS: &[u8] = include_bytes!("main.js");
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]
 const CANDID: &[u8] = include_bytes!("candid.did");
 
-// #[allow(unused)]
-// type Memory = VirtualMemory<DefaultMemoryImpl>;
-// #[allow(unused)]
-// type AzleStableBTreeMap = StableBTreeMap<AzleStableBTreeMapKey, AzleStableBTreeMapValue, Memory>;
+#[allow(unused)]
+type Memory = VirtualMemory<DefaultMemoryImpl>;
+#[allow(unused)]
+type AzleStableBTreeMap = StableBTreeMap<AzleStableBTreeMapKey, AzleStableBTreeMapValue, Memory>;
 
-// #[derive(Ord, PartialOrd, Eq, PartialEq, Clone)]
-// struct AzleStableBTreeMapKey {
-//     bytes: Vec<u8>,
-// }
+#[derive(Ord, PartialOrd, Eq, PartialEq, Clone)]
+struct AzleStableBTreeMapKey {
+    bytes: Vec<u8>,
+}
 
-// impl Storable for AzleStableBTreeMapKey {
-//     fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
-//         std::borrow::Cow::Borrowed(&self.bytes)
-//     }
+impl Storable for AzleStableBTreeMapKey {
+    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
+        std::borrow::Cow::Borrowed(&self.bytes)
+    }
 
-//     fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
-//         AzleStableBTreeMapKey {
-//             bytes: bytes.to_vec(),
-//         }
-//     }
+    fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
+        AzleStableBTreeMapKey {
+            bytes: bytes.to_vec(),
+        }
+    }
 
-//     const BOUND: Bound = Bound::Unbounded;
-// }
+    const BOUND: Bound = Bound::Unbounded;
+}
 
-// #[derive(Ord, PartialOrd, Eq, PartialEq, Clone)]
-// struct AzleStableBTreeMapValue {
-//     bytes: Vec<u8>,
-// }
+#[derive(Ord, PartialOrd, Eq, PartialEq, Clone)]
+struct AzleStableBTreeMapValue {
+    bytes: Vec<u8>,
+}
 
-// impl Storable for AzleStableBTreeMapValue {
-//     fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
-//         std::borrow::Cow::Borrowed(&self.bytes)
-//     }
+impl Storable for AzleStableBTreeMapValue {
+    fn to_bytes(&self) -> std::borrow::Cow<[u8]> {
+        std::borrow::Cow::Borrowed(&self.bytes)
+    }
 
-//     fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
-//         AzleStableBTreeMapValue {
-//             bytes: bytes.to_vec(),
-//         }
-//     }
+    fn from_bytes(bytes: std::borrow::Cow<[u8]>) -> Self {
+        AzleStableBTreeMapValue {
+            bytes: bytes.to_vec(),
+        }
+    }
 
-//     const BOUND: Bound = Bound::Unbounded;
-// }
+    const BOUND: Bound = Bound::Unbounded;
+}
 
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
 
-    // static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+    static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 
-    // static STABLE_B_TREE_MAPS: RefCell<BTreeMap<u8, AzleStableBTreeMap>> = RefCell::new(BTreeMap::new());
+    static STABLE_B_TREE_MAPS: RefCell<BTreeMap<u8, AzleStableBTreeMap>> = RefCell::new(BTreeMap::new());
 }
 
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]
@@ -120,6 +120,11 @@ pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
         let mut runtime = wasmedge_quickjs::Runtime::new();
 
         runtime.run_with_context(|context| {
+            context.get_global().set(
+                "_azleWasmtimeCandidEnvironment",
+                wasmedge_quickjs::JsValue::Bool(true),
+            );
+
             ic::register(context);
 
             context.eval_global_str("globalThis.exports = {};".to_string());

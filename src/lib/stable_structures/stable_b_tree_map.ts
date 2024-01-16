@@ -16,7 +16,10 @@ export function StableBTreeMap<Key = any, Value = any>(
 ) {
     const memoryId = memoryIdNumber.toString();
 
-    if (globalThis._azleIc !== undefined) {
+    if (
+        globalThis._azleIc !== undefined &&
+        globalThis._azleWasmtimeCandidEnvironment !== true
+    ) {
         globalThis._azleIc.stableBTreeMapInit(memoryId);
     }
 

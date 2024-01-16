@@ -5,6 +5,7 @@ import { replacer } from './stable_structures/stable_json';
 
 declare global {
     var _azleInsideCanister: boolean;
+    var _azleWasmtimeCandidEnvironment: boolean;
     var _azleIc: AzleIc | undefined;
     var _azleResolveIds: { [key: string]: (buf: ArrayBuffer) => void };
     var _azleRejectIds: { [key: string]: (err: any) => void };

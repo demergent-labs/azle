@@ -35,16 +35,16 @@ mod stable64_grow;
 mod stable64_read;
 mod stable64_size;
 mod stable64_write;
-// mod stable_b_tree_map_contains_key;
-// mod stable_b_tree_map_get;
-// mod stable_b_tree_map_init;
-// mod stable_b_tree_map_insert;
-// mod stable_b_tree_map_is_empty;
-// mod stable_b_tree_map_items;
-// mod stable_b_tree_map_keys;
-// mod stable_b_tree_map_len;
-// mod stable_b_tree_map_remove;
-// mod stable_b_tree_map_values;
+mod stable_b_tree_map_contains_key;
+mod stable_b_tree_map_get;
+mod stable_b_tree_map_init;
+mod stable_b_tree_map_insert;
+mod stable_b_tree_map_is_empty;
+mod stable_b_tree_map_items;
+mod stable_b_tree_map_keys;
+mod stable_b_tree_map_len;
+mod stable_b_tree_map_remove;
+mod stable_b_tree_map_values;
 mod stable_bytes;
 mod stable_grow;
 mod stable_read;
@@ -340,76 +340,75 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
             .into(),
     );
 
-    // ic.set_property(
-    //     "stableBTreeMapContainsKey",
-    //     context
-    //         .wrap_callback2(stable_b_tree_map_contains_key::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableBTreeMapGet",
-    //     context
-    //         .wrap_callback2(stable_b_tree_map_get::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableBTreeMapInit",
-    //     context
-    //         .wrap_callback2(stable_b_tree_map_init::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableBTreeMapInsert",
-    //     context
-    //         .wrap_callback2(stable_b_tree_map_insert::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableBTreeMapIsEmpty",
-    //     context
-    //         .wrap_callback2(stable_b_tree_map_is_empty::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableBTreeMapItems",
-    //     context
-    //         .wrap_callback2(stable_b_tree_map_items::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableBTreeMapKeys",
-    //     context
-    //         .wrap_callback2(stable_b_tree_map_keys::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableBTreeMapLen",
-    //     context
-    //         .wrap_callback2(stable_b_tree_map_len::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableBTreeMapRemove",
-    //     context
-    //         .wrap_callback2(stable_b_tree_map_remove::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableBTreeMapValues",
-    //     context
-    //         .wrap_callback2(stable_b_tree_map_values::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+    ic.set(
+        "stableBTreeMapContainsKey",
+        context
+            .new_function::<stable_b_tree_map_contains_key::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableBTreeMapGet",
+        context
+            .new_function::<stable_b_tree_map_get::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableBTreeMapInit",
+        context
+            .new_function::<stable_b_tree_map_init::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableBTreeMapInsert",
+        context
+            .new_function::<stable_b_tree_map_insert::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableBTreeMapIsEmpty",
+        context
+            .new_function::<stable_b_tree_map_is_empty::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableBTreeMapItems",
+        context
+            .new_function::<stable_b_tree_map_items::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableBTreeMapKeys",
+        context
+            .new_function::<stable_b_tree_map_keys::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableBTreeMapLen",
+        context
+            .new_function::<stable_b_tree_map_len::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableBTreeMapRemove",
+        context
+            .new_function::<stable_b_tree_map_remove::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableBTreeMapValues",
+        context
+            .new_function::<stable_b_tree_map_values::NativeFunction>("")
+            .into(),
+    );
 
     ic.set(
         "time",
