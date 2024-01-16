@@ -21,7 +21,7 @@ mod is_controller;
 // mod msg_cycles_available128;
 // mod msg_cycles_refunded;
 // mod msg_cycles_refunded128;
-// mod notify_raw;
+mod notify_raw;
 mod performance_counter;
 mod print;
 mod reject;
@@ -214,11 +214,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     //         .unwrap(),
     // )
     // .unwrap();
-    // ic.set_property(
-    //     "notifyRaw",
-    //     context.wrap_callback2(notify_raw::native_function).unwrap(),
-    // )
-    // .unwrap();
+
+    ic.set(
+        "notifyRaw",
+        context
+            .new_function::<notify_raw::NativeFunction>("")
+            .into(),
+    );
 
     ic.set(
         "performanceCounter",

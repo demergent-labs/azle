@@ -42,7 +42,7 @@ export type AzleIc = {
         canisterIdBytes: ArrayBufferLike,
         method: string,
         argsRawBuffer: ArrayBufferLike,
-        paymentCandidBytes: ArrayBufferLike
+        paymentString: string
     ) => void;
     performanceCounter: (counterType: string) => bigint;
     rejectCode: () => number;
