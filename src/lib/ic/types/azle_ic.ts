@@ -44,7 +44,7 @@ export type AzleIc = {
         argsRawBuffer: ArrayBufferLike,
         paymentCandidBytes: ArrayBufferLike
     ) => void;
-    performanceCounter: (counterType: number) => bigint;
+    performanceCounter: (counterType: string) => bigint;
     rejectCode: () => number;
     replyRaw: (bytes: ArrayBufferLike) => void;
     setCertifiedData: (dataBytes: ArrayBufferLike) => void;
