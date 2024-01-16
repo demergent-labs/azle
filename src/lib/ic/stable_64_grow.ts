@@ -11,5 +11,5 @@ export function stable64Grow(newPages: nat64): nat64 {
         return undefined as any;
     }
 
-    return BigInt(globalThis._azleIc.stable64Grow(newPages.toString()));
+    return globalThis._azleIc.stable64Grow(newPages.toString());
 }

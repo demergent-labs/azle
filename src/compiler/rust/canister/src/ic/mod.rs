@@ -31,10 +31,10 @@ mod reply_raw;
 mod set_certified_data;
 // mod set_timer;
 // mod set_timer_interval;
-// mod stable64_grow;
-// mod stable64_read;
-// mod stable64_size;
-// mod stable64_write;
+mod stable64_grow;
+mod stable64_read;
+mod stable64_size;
+mod stable64_write;
 // mod stable_b_tree_map_contains_key;
 // mod stable_b_tree_map_get;
 // mod stable_b_tree_map_init;
@@ -45,11 +45,11 @@ mod set_certified_data;
 // mod stable_b_tree_map_len;
 // mod stable_b_tree_map_remove;
 // mod stable_b_tree_map_values;
-// mod stable_bytes;
-// mod stable_grow;
-// mod stable_read;
-// mod stable_size;
-// mod stable_write;
+mod stable_bytes;
+mod stable_grow;
+mod stable_read;
+mod stable_size;
+mod stable_write;
 mod time;
 mod trap;
 
@@ -276,69 +276,70 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     //         .unwrap(),
     // )
     // .unwrap();
-    // ic.set_property(
-    //     "stable64Grow",
-    //     context
-    //         .wrap_callback2(stable64_grow::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stable64Read",
-    //     context
-    //         .wrap_callback2(stable64_read::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stable64Size",
-    //     context
-    //         .wrap_callback2(stable64_size::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stable64Write",
-    //     context
-    //         .wrap_callback2(stable64_write::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableBytes",
-    //     context
-    //         .wrap_callback2(stable_bytes::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableGrow",
-    //     context
-    //         .wrap_callback2(stable_grow::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableRead",
-    //     context
-    //         .wrap_callback2(stable_read::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableSize",
-    //     context
-    //         .wrap_callback2(stable_size::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "stableWrite",
-    //     context
-    //         .wrap_callback2(stable_write::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+
+    ic.set(
+        "stable64Grow",
+        context
+            .new_function::<stable64_grow::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stable64Read",
+        context
+            .new_function::<stable64_read::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stable64Size",
+        context
+            .new_function::<stable64_size::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stable64Write",
+        context
+            .new_function::<stable64_write::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableBytes",
+        context
+            .new_function::<stable_bytes::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableGrow",
+        context
+            .new_function::<stable_grow::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableRead",
+        context
+            .new_function::<stable_read::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableSize",
+        context
+            .new_function::<stable_size::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableWrite",
+        context
+            .new_function::<stable_write::NativeFunction>("")
+            .into(),
+    );
+
     // ic.set_property(
     //     "stableBTreeMapContainsKey",
     //     context

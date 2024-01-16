@@ -1,25 +1,24 @@
 use std::convert::TryInto;
 
-use quickjs_wasm_rs::{CallbackArg, JSContextRef, JSValueRef};
+use wasmedge_quickjs::{Context, JsFn, JsValue};
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let offset_string: String = args
-        .get(0)
-        .expect("stable64Write must have two arguments")
-        .to_js_value()?
-        .try_into()?;
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        let offset_string = if let JsValue::String(js_string) = argv.get(0).unwrap() {
+            js_string.to_string()
+        } else {
+            panic!("conversion from JsValue to JsString failed")
+        };
 
-    let buf: Vec<u8> = args
-        .get(1)
-        .expect("stable64Write must have two arguments")
-        .to_js_value()?
-        .try_into()?;
+        let buf = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(1).unwrap() {
+            js_array_buffer.to_vec()
+        } else {
+            panic!("conversion from JsValue to JsArrayBuffer failed")
+        };
 
-    ic_cdk::api::stable::stable64_write(offset_string.parse()?, &buf);
+        ic_cdk::api::stable::stable64_write(offset_string.parse().unwrap(), &buf);
 
-    context.undefined_value()
+        JsValue::UnDefined
+    }
 }

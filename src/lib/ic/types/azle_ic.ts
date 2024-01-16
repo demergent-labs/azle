@@ -61,9 +61,9 @@ export type AzleIc = {
     stableRead: (offset: string, length: string) => ArrayBufferLike;
     stableSize: () => string;
     stableWrite: (offset: string, buf: ArrayBufferLike) => void;
-    stable64Grow: (newPages: string) => string;
+    stable64Grow: (newPages: string) => bigint;
     stable64Read: (offset: string, length: string) => ArrayBufferLike;
-    stable64Size: () => string;
+    stable64Size: () => bigint;
     stable64Write: (offset: string, buf: ArrayBufferLike) => void;
     time: () => bigint;
     // These calls aren't intercepted by our IC object, they go right to the
