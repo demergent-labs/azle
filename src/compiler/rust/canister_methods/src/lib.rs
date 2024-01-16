@@ -54,7 +54,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
     let init_method = quote! {
         #[ic_cdk_macros::init]
         fn init() {
-            unsafe { ic_wasi_polyfill::init(&[], &[]); }
+            ic_wasi_polyfill::init(&[], &[]);
 
             let mut rt = wasmedge_quickjs::Runtime::new();
 
@@ -74,8 +74,6 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 // };
 
                 // ic_cdk::println!("temp: {:#?}", temp);
-
-                #init_method_call
             });
 
             ic_cdk::println!("init result: {:#?}", r);
@@ -84,6 +82,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 let mut runtime = runtime.borrow_mut();
                 *runtime = Some(rt);
             });
+
+            #init_method_call
         }
     };
 
@@ -100,7 +100,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
     let post_update_method = quote! {
         #[ic_cdk_macros::post_upgrade]
         fn post_upgrade() {
-            unsafe { ic_wasi_polyfill::init(&[], &[]); }
+            ic_wasi_polyfill::init(&[], &[]);
 
             let mut rt = wasmedge_quickjs::Runtime::new();
 
@@ -120,8 +120,6 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 // };
 
                 // ic_cdk::println!("temp: {:#?}", temp);
-
-                #post_update_method_call
             });
 
             ic_cdk::println!("post_upgrade result: {:#?}", r);
@@ -130,6 +128,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 let mut runtime = runtime.borrow_mut();
                 *runtime = Some(rt);
             });
+
+            #post_update_method_call
         }
     };
 
