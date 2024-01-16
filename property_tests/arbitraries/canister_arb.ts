@@ -16,7 +16,7 @@ TextClass.prototype.valueToString = (x): string => {
  */
 FloatClass.prototype.valueToString = (x): string => {
     const floatString = x.toString();
-    if (floatString.includes('.')) {
+    if (floatString.includes('.') || floatString.includes('e')) {
         return floatString;
     }
     return floatString + '.0';
