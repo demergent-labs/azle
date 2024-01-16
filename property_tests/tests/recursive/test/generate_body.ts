@@ -7,18 +7,6 @@ export function generateBody(
     namedParamRecursive: Named<CandidValueAndMeta<Recursive>>[],
     returnRecursive: CandidValueAndMeta<Recursive>
 ): string {
-    // const paramsAreRecords = namedParamRecursive
-    //     .map((param) => {
-    //         const fieldsCount = Object.keys(param.el.agentArgumentValue).length;
-
-    //         const paramIsObject = `typeof ${param.name} === 'object'`;
-    //         const paramHasCorrectNumberOfFields = `Object.keys(${param.name}).length === ${fieldsCount}`;
-    //         const throwError = `throw new Error('${param.name} must be a Record');`;
-
-    //         return `if (!(${paramIsObject} && ${paramHasCorrectNumberOfFields})) ${throwError}`;
-    //     })
-    //     .join('\n');
-
     const paramsCorrectlyOrdered =
         areParamsCorrectlyOrdered(namedParamRecursive);
 

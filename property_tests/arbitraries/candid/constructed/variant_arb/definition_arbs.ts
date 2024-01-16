@@ -103,22 +103,21 @@ function VariantFieldsArb(
 // will not allow a recursive option to be picked for that field. A more
 // complicated approach would involve the guaranteed base case being in any one
 // of the fields, instead of always the first one.
-// TODO rename and move to the bottom.
 function possiblyRecursiveArb(
     candidArb: RecursiveCandidDefinitionMemo,
     index: number,
     parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
 ): fc.Arbitrary<CandidDefinition> {
-    const n = constraints.n ?? 0;
+    const depthLevel = constraints.depthLevel ?? 0;
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0 || index < 1) {
             // If there are no recursive parents or this is the first variant field just do a regular arb field
-            return candidArb(parents)(n);
+            return candidArb(parents)(depthLevel);
         }
         return fc.oneof(
             { arbitrary: fc.constant(parents[randomIndex]), weight: 1 },
-            { arbitrary: candidArb(parents)(n), weight: 1 }
+            { arbitrary: candidArb(parents)(depthLevel), weight: 1 }
         );
     });
 }

@@ -34,14 +34,14 @@ export function complexCandidDefinitionMemo(
 ): CandidDefinitionMemo {
     const weights = constraints.weights ?? {};
     const newConstraints: DefinitionConstraints = {
-        n: constraints.n,
+        depthLevel: constraints.depthLevel,
         weights:
-            constraints.recursive_weights ?? false
+            constraints.recursiveWeights ?? false
                 ? constraints.weights ?? {}
                 : {},
-        recursive_weights: constraints.recursive_weights
+        recursiveWeights: constraints.recursiveWeights
     };
-    return fc.memo((n) => {
+    return fc.memo((depthLevel) => {
         return fc.oneof(
             {
                 arbitrary: BlobDefinitionArb(),
@@ -49,7 +49,7 @@ export function complexCandidDefinitionMemo(
             },
             {
                 arbitrary: FuncDefinitionArb(
-                    candidDefinitionMemo([], newConstraints)(n)
+                    candidDefinitionMemo([], newConstraints)(depthLevel)
                 ),
                 weight: weights.func ?? 1
             },
@@ -63,13 +63,13 @@ export function complexCandidDefinitionMemo(
             },
             {
                 arbitrary: RecordDefinitionArb(
-                    candidDefinitionMemo([], newConstraints)(n)
+                    candidDefinitionMemo([], newConstraints)(depthLevel)
                 ),
                 weight: weights.record ?? 1
             },
             {
                 arbitrary: TupleDefinitionArb(
-                    candidDefinitionMemo([], newConstraints)(n)
+                    candidDefinitionMemo([], newConstraints)(depthLevel)
                 ),
                 weight: weights.tuple ?? 1
             },
@@ -91,7 +91,7 @@ export function complexCandidDefinitionMemo(
             },
             {
                 arbitrary: ServiceDefinitionArb(
-                    candidDefinitionMemo([], newConstraints)(n)
+                    candidDefinitionMemo([], newConstraints)(depthLevel)
                 ),
                 weight: weights.service ?? 0
                 // TODO Service is disabled until it is more refined. Maybe the

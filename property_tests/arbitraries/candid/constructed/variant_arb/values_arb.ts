@@ -8,10 +8,10 @@ type Field = [string, CandidValues<CorrespondingJSType>];
 
 export function VariantValuesArb(
     variantDefinition: VariantCandidDefinition,
-    n: number
+    depthLevel: number
 ): fc.Arbitrary<CandidValues<Variant>> {
     return fc
-        .nat(n < 1 ? 0 : variantDefinition.innerTypes.length - 1)
+        .nat(depthLevel < 1 ? 0 : variantDefinition.innerTypes.length - 1)
         .chain((randomIndex) => {
             if (variantDefinition.innerTypes.length === 0) {
                 return fc.constant({
@@ -23,7 +23,7 @@ export function VariantValuesArb(
 
             const [name, innerType] = variantDefinition.innerTypes[randomIndex];
 
-            const fieldValues = CandidValueArb(innerType, n - 1).map(
+            const fieldValues = CandidValueArb(innerType, depthLevel - 1).map(
                 (values): Field => {
                     return [name, values];
                 }

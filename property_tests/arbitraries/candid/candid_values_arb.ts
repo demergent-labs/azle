@@ -36,7 +36,7 @@ import {
 } from './candid_definition_arb/types';
 import { BlobValuesArb } from './constructed/blob_arb/values_arb';
 import { CorrespondingJSType } from './corresponding_js_type';
-import { RecursivePlaceHolderValuesArb } from './recursive/values_arb';
+import { RecursiveNameValuesArb } from './recursive/values_arb';
 
 export type CandidValues<T extends CorrespondingJSType, E = T> = {
     agentArgumentValue: T;
@@ -46,26 +46,35 @@ export type CandidValues<T extends CorrespondingJSType, E = T> = {
 
 export function CandidValueArb(
     candidTypeMeta: CandidDefinition,
-    n: number
+    depthLevel: number
 ): fc.Arbitrary<CandidValues<CorrespondingJSType>> {
     const candidType = candidTypeMeta.candidMeta.candidType;
     if (candidType === 'blob') {
         return BlobValuesArb();
     }
     if (candidType === 'Opt') {
-        return OptValuesArb(candidTypeMeta as OptCandidDefinition, n);
+        return OptValuesArb(candidTypeMeta as OptCandidDefinition, depthLevel);
     }
     if (candidType === 'Record') {
-        return RecordValuesArb(candidTypeMeta as RecordCandidDefinition, n);
+        return RecordValuesArb(
+            candidTypeMeta as RecordCandidDefinition,
+            depthLevel
+        );
     }
     if (candidType === 'Tuple') {
-        return TupleValuesArb(candidTypeMeta as TupleCandidDefinition, n);
+        return TupleValuesArb(
+            candidTypeMeta as TupleCandidDefinition,
+            depthLevel
+        );
     }
     if (candidType === 'Variant') {
-        return VariantValuesArb(candidTypeMeta as VariantCandidDefinition, n);
+        return VariantValuesArb(
+            candidTypeMeta as VariantCandidDefinition,
+            depthLevel
+        );
     }
     if (candidType === 'Vec') {
-        return VecValuesArb(candidTypeMeta as VecCandidDefinition, n);
+        return VecValuesArb(candidTypeMeta as VecCandidDefinition, depthLevel);
     }
     if (candidType === 'bool') {
         return BoolValueArb();
@@ -125,9 +134,9 @@ export function CandidValueArb(
         return ServiceValueArb(candidTypeMeta as ServiceCandidDefinition);
     }
     if (candidType === 'Recursive') {
-        return RecursivePlaceHolderValuesArb(
+        return RecursiveNameValuesArb(
             candidTypeMeta as RecursiveCandidName | RecursiveCandidDefinition,
-            n
+            depthLevel
         );
     }
     throw new Error('Unreachable');

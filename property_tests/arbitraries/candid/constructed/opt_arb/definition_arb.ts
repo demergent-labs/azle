@@ -67,15 +67,16 @@ function possiblyRecursiveArb(
     parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
 ): fc.Arbitrary<CandidDefinition> {
-    const n = constraints.n ?? 0;
+    const depthLevel = constraints.depthLevel ?? 0;
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
-        if (parents.length === 0 || n < 1) {
-            // If there are no recursive parents or this is the first variant field just do a regular arb field
-            return candidArb(parents)(n);
+        if (parents.length === 0 || depthLevel < 1) {
+            // If there are no recursive parents or we have reached a depth
+            // level of 0 just do a regular arb inner type
+            return candidArb(parents)(depthLevel);
         }
         return fc.oneof(
             { arbitrary: fc.constant(parents[randomIndex]), weight: 1 },
-            { arbitrary: candidArb(parents)(n), weight: 1 }
+            { arbitrary: candidArb(parents)(depthLevel), weight: 1 }
         );
     });
 }

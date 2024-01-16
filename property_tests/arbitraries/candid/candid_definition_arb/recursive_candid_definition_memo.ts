@@ -13,7 +13,9 @@ export const REC_ARB_COUNT = 0;
 export function recursiveCandidDefinitionMemo(
     parents: RecursiveCandidName[]
 ): CandidDefinitionMemo {
-    return fc.memo((n) =>
-        RecursiveDefinitionArb(complexCandidDefinitionMemo, parents, { n })
+    return fc.memo((depthLevel) =>
+        RecursiveDefinitionArb(complexCandidDefinitionMemo, parents, {
+            depthLevel: depthLevel
+        })
     );
 }

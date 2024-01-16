@@ -7,9 +7,9 @@ import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 
 export function VecValuesArb(
     vecDefinition: VecCandidDefinition,
-    n: number
+    depthLevel: number
 ): fc.Arbitrary<CandidValues<Vec>> {
-    if (n < 1) {
+    if (depthLevel < 1) {
         return fc.constant(
             generateEmptyVec(vecDefinition.innerType.candidMeta.candidType)
         );
@@ -21,7 +21,9 @@ export function VecValuesArb(
         )
         .chain(([arrayTemplate, innerType]) =>
             fc.tuple(
-                ...arrayTemplate.map(() => CandidValueArb(innerType, n - 1))
+                ...arrayTemplate.map(() =>
+                    CandidValueArb(innerType, depthLevel - 1)
+                )
             )
         );
 

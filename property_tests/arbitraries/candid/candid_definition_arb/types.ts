@@ -5,15 +5,15 @@ import { ServiceMethodDefinition } from '../reference/service_arb/service_method
 import { PrimitiveDefinitionWeights } from './simple_candid_definition_arb';
 import { ComplexDefinitionWeights } from './complex_candid_definition_memo';
 
-export type CandidDefinitionMemo = (n: number) => CandidDefinitionArb;
+export type CandidDefinitionMemo = (depthLevel: number) => CandidDefinitionArb;
 export type RecursiveCandidDefinitionMemo = (
     parents: RecursiveCandidName[],
     constraints?: DefinitionConstraints
 ) => CandidDefinitionMemo;
 
 export type DefinitionConstraints = Partial<{
-    n: number;
-    recursive_weights: boolean;
+    depthLevel: number;
+    recursiveWeights: boolean;
     weights: CandidDefinitionWeights;
 }>;
 

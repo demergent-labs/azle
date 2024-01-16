@@ -9,10 +9,13 @@ type ArbField = [string, fc.Arbitrary<CandidValues<CorrespondingJSType>>];
 
 export function RecordValuesArb(
     recordDefinition: RecordCandidDefinition,
-    n: number
+    depthLevel: number
 ): fc.Arbitrary<CandidValues<Record>> {
     const fieldValues = recordDefinition.innerTypes.map(([name, innerType]) => {
-        const result: ArbField = [name, CandidValueArb(innerType, n - 1)];
+        const result: ArbField = [
+            name,
+            CandidValueArb(innerType, depthLevel - 1)
+        ];
         return result;
     });
     const arbitraryFieldValues = fieldValues.map(([key, arbValue]) =>

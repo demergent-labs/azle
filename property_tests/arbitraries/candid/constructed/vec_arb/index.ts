@@ -6,7 +6,7 @@ import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { VecDefinitionArb } from './definition_arb';
 import { VecValuesArb } from './values_arb';
 import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
-import { DEFAULT_DEF_MAX_DEPTH } from '../../../config';
+import { DEFAULT_DEFINITION_MAX_DEPTH } from '../../../config';
 
 export type Vec =
     | CorrespondingJSType[]
@@ -22,7 +22,7 @@ export type Vec =
 export function VecArb(): fc.Arbitrary<CandidValueAndMeta<Vec>> {
     return CandidValueAndMetaArbGenerator(
         VecDefinitionArb(candidDefinitionMemo, [], {
-            n: DEFAULT_DEF_MAX_DEPTH
+            depthLevel: DEFAULT_DEFINITION_MAX_DEPTH
         }),
         VecValuesArb
     );

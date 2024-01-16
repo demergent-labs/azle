@@ -8,14 +8,14 @@ type SomeOrNone = 'Some' | 'None';
 
 export function OptValuesArb(
     optDefinition: OptCandidDefinition,
-    n: number
+    depthLevel: number
 ): fc.Arbitrary<CandidValues<Opt>> {
-    if (n < 1) {
+    if (depthLevel < 1) {
         return fc.constant(generateNoneValue());
     }
     const innerValue = fc.tuple(
         fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>,
-        CandidValueArb(optDefinition.innerType, n - 1)
+        CandidValueArb(optDefinition.innerType, depthLevel - 1)
     );
 
     return innerValue.map(([someOrNone, innerType]) => {

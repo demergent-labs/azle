@@ -6,17 +6,17 @@ import {
 } from '../candid_definition_arb/types';
 import { CandidValues, CandidValueArb } from '../candid_values_arb';
 
-export function RecursivePlaceHolderValuesArb(
+export function RecursiveNameValuesArb(
     recDefinition: RecursiveCandidName | RecursiveCandidDefinition,
-    n: number
+    depthLevel: number
 ): fc.Arbitrary<CandidValues<Recursive>> {
     const recShape = recursive.shapes[recDefinition.name];
-    return RecursiveValuesArb(recShape, n);
+    return RecursiveValuesArb(recShape, depthLevel);
 }
 
 export function RecursiveValuesArb(
     recDefinition: RecursiveCandidDefinition,
-    n: number
+    depthLevel: number
 ): fc.Arbitrary<CandidValues<Recursive>> {
-    return CandidValueArb(recDefinition.innerType, n);
+    return CandidValueArb(recDefinition.innerType, depthLevel);
 }

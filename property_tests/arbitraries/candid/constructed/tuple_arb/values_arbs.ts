@@ -6,11 +6,11 @@ import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 
 export function TupleValuesArb(
     tupleDefinition: TupleCandidDefinition,
-    n: number
+    depthLevel: number
 ): fc.Arbitrary<CandidValues<Tuple, ReturnTuple>> {
     const fieldValues = tupleDefinition.innerTypes.map((innerType) => {
         const result: fc.Arbitrary<CandidValues<CorrespondingJSType>> =
-            CandidValueArb(innerType, n - 1);
+            CandidValueArb(innerType, depthLevel - 1);
         return result;
     });
 
