@@ -109,7 +109,7 @@ export type AzleIc = {
         startIndex: string,
         length: string
     ) => ArrayBuffer[];
-    stableBTreeMapLen: (memoryId: string) => ArrayBuffer;
+    stableBTreeMapLen: (memoryId: string) => bigint;
     stableBTreeMapRemove(
         memoryId: string,
         encodedKey: ArrayBufferLike
