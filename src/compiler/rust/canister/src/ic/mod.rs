@@ -1,19 +1,19 @@
 // mod accept_message;
-// mod arg_data_raw;
-// mod arg_data_raw_size;
+mod arg_data_raw;
+mod arg_data_raw_size;
 // mod call_raw;
 // mod call_raw128;
-// mod caller;
+mod caller;
 mod candid_decode;
 mod candid_encode;
-// mod canister_balance;
-// mod canister_balance128;
-// mod canister_version;
+mod canister_balance;
+mod canister_balance128;
+mod canister_version;
 // mod clear_timer;
-// mod data_certificate;
-// mod id;
-// mod instruction_counter;
-// mod is_controller;
+mod data_certificate;
+mod id;
+mod instruction_counter;
+mod is_controller;
 // mod method_name;
 // mod msg_cycles_accept;
 // mod msg_cycles_accept128;
@@ -22,13 +22,13 @@ mod candid_encode;
 // mod msg_cycles_refunded;
 // mod msg_cycles_refunded128;
 // mod notify_raw;
-// mod performance_counter;
+mod performance_counter;
 mod print;
-// mod reject;
+mod reject;
 // mod reject_code;
 // mod reject_message;
 mod reply_raw;
-// mod set_certified_data;
+mod set_certified_data;
 // mod set_timer;
 // mod set_timer_interval;
 // mod stable64_grow;
@@ -50,8 +50,8 @@ mod reply_raw;
 // mod stable_read;
 // mod stable_size;
 // mod stable_write;
-// mod time;
-// mod trap;
+mod time;
+mod trap;
 
 use wasmedge_quickjs::AsObject;
 
@@ -66,20 +66,21 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     //         .unwrap(),
     // )
     // .unwrap();
-    // ic.set_property(
-    //     "argDataRawSize",
-    //     context
-    //         .wrap_callback2(arg_data_raw_size::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "argDataRaw",
-    //     context
-    //         .wrap_callback2(arg_data_raw::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+
+    ic.set(
+        "argDataRaw",
+        context
+            .new_function::<arg_data_raw::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "argDataRawSize",
+        context
+            .new_function::<arg_data_raw_size::NativeFunction>("")
+            .into(),
+    );
+
     // ic.set_property(
     //     "callRaw",
     //     context.wrap_callback2(call_raw::native_function).unwrap(),
@@ -92,11 +93,11 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     //         .unwrap(),
     // )
     // .unwrap();
-    // ic.set_property(
-    //     "caller",
-    //     context.wrap_callback2(caller::native_function).unwrap(),
-    // )
-    // .unwrap();
+
+    ic.set(
+        "caller",
+        context.new_function::<caller::NativeFunction>("").into(),
+    );
 
     ic.set(
         "candidDecode",
@@ -112,27 +113,27 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
             .into(),
     );
 
-    // ic.set_property(
-    //     "canisterBalance",
-    //     context
-    //         .wrap_callback2(canister_balance::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "canisterBalance128",
-    //     context
-    //         .wrap_callback2(canister_balance128::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "canisterVersion",
-    //     context
-    //         .wrap_callback2(canister_version::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+    ic.set(
+        "canisterBalance",
+        context
+            .new_function::<canister_balance::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "canisterBalance128",
+        context
+            .new_function::<canister_balance128::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "canisterVersion",
+        context
+            .new_function::<canister_version::NativeFunction>("")
+            .into(),
+    );
+
     // ic.set_property(
     //     "clearTimer",
     //     context
@@ -140,29 +141,30 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     //         .unwrap(),
     // )
     // .unwrap();
-    // ic.set_property(
-    //     "dataCertificate",
-    //     context
-    //         .wrap_callback2(data_certificate::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property("id", context.wrap_callback2(id::native_function).unwrap())
-    //     .unwrap();
-    // ic.set_property(
-    //     "instructionCounter",
-    //     context
-    //         .wrap_callback2(instruction_counter::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "isController",
-    //     context
-    //         .wrap_callback2(is_controller::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+
+    ic.set(
+        "dataCertificate",
+        context
+            .new_function::<data_certificate::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set("id", context.new_function::<id::NativeFunction>("").into());
+
+    ic.set(
+        "instructionCounter",
+        context
+            .new_function::<instruction_counter::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "isController",
+        context
+            .new_function::<is_controller::NativeFunction>("")
+            .into(),
+    );
+
     // ic.set_property(
     //     "methodName",
     //     context
@@ -217,24 +219,24 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     //     context.wrap_callback2(notify_raw::native_function).unwrap(),
     // )
     // .unwrap();
-    // ic.set_property(
-    //     "performanceCounter",
-    //     context
-    //         .wrap_callback2(performance_counter::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+
+    ic.set(
+        "performanceCounter",
+        context
+            .new_function::<performance_counter::NativeFunction>("")
+            .into(),
+    );
 
     ic.set(
         "print",
         context.new_function::<print::NativeFunction>("").into(),
     );
 
-    // ic.set_property(
-    //     "reject",
-    //     context.wrap_callback2(reject::native_function).unwrap(),
-    // )
-    // .unwrap();
+    ic.set(
+        "reject",
+        context.new_function::<reject::NativeFunction>("").into(),
+    );
+
     // ic.set_property(
     //     "rejectCode",
     //     context
@@ -255,13 +257,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         context.new_function::<reply_raw::NativeFunction>("").into(),
     );
 
-    // ic.set_property(
-    //     "setCertifiedData",
-    //     context
-    //         .wrap_callback2(set_certified_data::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+    ic.set(
+        "setCertifiedData",
+        context
+            .new_function::<set_certified_data::NativeFunction>("")
+            .into(),
+    );
+
     // ic.set_property(
     //     "setTimer",
     //     context.wrap_callback2(set_timer::native_function).unwrap(),
@@ -407,19 +409,16 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     //         .unwrap(),
     // )
     // .unwrap();
-    // ic.set_property(
-    //     "time",
-    //     context.wrap_callback2(time::native_function).unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "trap",
-    //     context.wrap_callback2(trap::native_function).unwrap(),
-    // )
-    // .unwrap();
 
-    // let global = context.global_object().unwrap();
-    // global.set_property("_azleIc", ic).unwrap();
+    ic.set(
+        "time",
+        context.new_function::<time::NativeFunction>("").into(),
+    );
+
+    ic.set(
+        "trap",
+        context.new_function::<trap::NativeFunction>("").into(),
+    );
 
     context.get_global().set("_azleIc", ic.into());
 }

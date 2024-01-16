@@ -1,22 +1,18 @@
-use std::convert::TryInto;
+use wasmedge_quickjs::{Context, JsFn, JsValue};
 
-use quickjs_wasm_rs::{to_qjs_value, CallbackArg, JSContextRef, JSValue, JSValueRef};
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        let counter_type = if let JsValue::Int(js_int) = argv.get(0).unwrap() {
+            if *js_int >= 0 {
+                *js_int as u32
+            } else {
+                panic!("counter_type cannot be negative")
+            }
+        } else {
+            panic!("conversion from JsValue to JsInt failed")
+        };
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let counter_type_string: String = args
-        .get(0)
-        .expect("performanceCounter must have one argument")
-        .to_js_value()?
-        .try_into()?;
-
-    let return_js_value: JSValue =
-        ic_cdk::api::call::performance_counter(counter_type_string.parse()?)
-            .to_string()
-            .into();
-
-    to_qjs_value(&context, &return_js_value)
+        ic_cdk::api::call::performance_counter(counter_type).into()
+    }
 }

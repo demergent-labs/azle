@@ -1,6 +1,5 @@
 import { blob } from '../candid/types/constructed/blob';
 import { Void } from '../candid/types/primitive/void';
-import { encode } from '../candid/serde/encode';
 
 /**
  * Sets the certified data of this canister.
@@ -29,7 +28,5 @@ export function setCertifiedData(data: blob): Void {
         return undefined as any;
     }
 
-    const dataBytes = encode(blob, data).buffer;
-
-    return globalThis._azleIc.setCertifiedData(dataBytes);
+    return globalThis._azleIc.setCertifiedData(data.buffer);
 }

@@ -1,5 +1,4 @@
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { decode } from '../candid/serde/decode';
 
 /**
  * Returns the canister version number
@@ -11,6 +10,5 @@ export function canisterVersion(): nat64 {
         return undefined as any;
     }
 
-    const canisterVersionCandidBytes = globalThis._azleIc.canisterVersion();
-    return decode(nat64, canisterVersionCandidBytes);
+    return globalThis._azleIc.canisterVersion();
 }

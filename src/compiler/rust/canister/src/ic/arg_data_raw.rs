@@ -1,10 +1,10 @@
-use quickjs_wasm_rs::{to_qjs_value, CallbackArg, JSContextRef, JSValue, JSValueRef};
+use wasmedge_quickjs::{Context, JsFn, JsValue};
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    _args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let arg_data_raw_js_value: JSValue = ic_cdk::api::call::arg_data_raw().into();
-    to_qjs_value(&context, &arg_data_raw_js_value)
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        context
+            .new_array_buffer(&ic_cdk::api::call::arg_data_raw())
+            .into()
+    }
 }

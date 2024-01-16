@@ -1,20 +1,17 @@
-use std::convert::TryInto;
+use wasmedge_quickjs::{Context, JsFn, JsValue};
 
-use quickjs_wasm_rs::{CallbackArg, JSContextRef, JSValueRef};
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        let certified_data_bytes =
+            if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(0).unwrap() {
+                js_array_buffer.to_vec()
+            } else {
+                panic!("conversion from JsValue to JsArrayBuffer failed")
+            };
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let certified_data_bytes: Vec<u8> = args
-        .get(0)
-        .expect("setCertifiedData must have one argument")
-        .to_js_value()?
-        .try_into()?;
+        ic_cdk::api::set_certified_data(&certified_data_bytes);
 
-    let certified_data: Vec<u8> = candid::decode_one(&certified_data_bytes)?;
-
-    ic_cdk::api::set_certified_data(&certified_data);
-    context.undefined_value()
+        JsValue::UnDefined
+    }
 }

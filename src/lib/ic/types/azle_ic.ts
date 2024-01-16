@@ -22,13 +22,13 @@ export type AzleIc = {
     caller: () => ArrayBufferLike;
     candidDecode: (candidBytes: ArrayBufferLike) => string;
     candidEncode: (candidString: string) => ArrayBufferLike;
-    canisterBalance: () => ArrayBufferLike;
-    canisterBalance128: () => ArrayBufferLike;
-    canisterVersion: () => ArrayBufferLike;
+    canisterBalance: () => bigint;
+    canisterBalance128: () => string;
+    canisterVersion: () => bigint;
     clearTimer: (timerIdBytes: ArrayBufferLike) => void;
     dataCertificate: () => ArrayBufferLike | undefined;
     id: () => string;
-    instructionCounter: () => string;
+    instructionCounter: () => bigint;
     isController: (principalBytes: ArrayBufferLike) => boolean;
     msgCyclesAccept: (maxAmountCandidBytes: ArrayBufferLike) => ArrayBufferLike;
     msgCyclesAccept128: (
@@ -44,7 +44,7 @@ export type AzleIc = {
         argsRawBuffer: ArrayBufferLike,
         paymentCandidBytes: ArrayBufferLike
     ) => void;
-    performanceCounter: (counterType: string) => string;
+    performanceCounter: (counterType: number) => bigint;
     rejectCode: () => number;
     replyRaw: (bytes: ArrayBufferLike) => void;
     setCertifiedData: (dataBytes: ArrayBufferLike) => void;
@@ -65,7 +65,7 @@ export type AzleIc = {
     stable64Read: (offset: string, length: string) => ArrayBufferLike;
     stable64Size: () => string;
     stable64Write: (offset: string, buf: ArrayBufferLike) => void;
-    time: () => string;
+    time: () => bigint;
     // These calls aren't intercepted by our IC object, they go right to the
     // rust version and come out. Since they don't need to be intercepted I am
     // assuming that their types are the same as the types declared by our

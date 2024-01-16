@@ -1,5 +1,4 @@
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { decode } from '../candid/serde/decode';
 
 /**
  * Gets current timestamp, in nanoseconds since the epoch (1970-01-01)
@@ -10,5 +9,5 @@ export function time(): nat64 {
         return undefined as any;
     }
 
-    return BigInt(globalThis._azleIc.time());
+    return globalThis._azleIc.time();
 }
