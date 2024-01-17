@@ -45,16 +45,15 @@ export function PostUpgradeMethodArb<
         >;
         callbackLocation?: CallbackLocation;
     }
-) {
+): fc.Arbitrary<
+    PostUpgradeMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
+> {
     return fc
         .tuple(
             UniqueIdentifierArb('canisterMethod'),
             paramTypeArrayArb,
             VoidArb(),
-            fc.constantFrom(
-                'INLINE',
-                'STANDALONE'
-            ) as fc.Arbitrary<CallbackLocation>,
+            fc.constantFrom<CallbackLocation>('INLINE', 'STANDALONE'),
             UniqueIdentifierArb('typeDeclaration')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using
@@ -67,9 +66,10 @@ export function PostUpgradeMethodArb<
                 returnType,
                 defaultCallbackLocation,
                 callbackName
-            ]) => {
-                // TODO: Add a return type to this map callback of type PostUpgradeMethod<Something, Something>
-
+            ]): PostUpgradeMethod<
+                ParamAgentArgumentValue,
+                ParamAgentResponseValue
+            > => {
                 const callbackLocation =
                     constraints.callbackLocation ?? defaultCallbackLocation;
 
@@ -81,7 +81,7 @@ export function PostUpgradeMethodArb<
                 const namedParams = paramTypes.map(
                     <T>(param: T, index: number): Named<T> => ({
                         name: `param${index}`,
-                        el: param
+                        value: param
                     })
                 );
 

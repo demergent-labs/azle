@@ -72,13 +72,12 @@ export function CanisterArb<
             ...(config.updateMethods ?? [])
         ];
 
-        const deployArgs = config.initMethod?.params.map(
-            ({ value: { value } }) => {
-                return value.runtimeCandidTypeObject
-                    .getIdl([])
-                    .valueToString(value.agentArgumentValue);
-            }
-        );
+        const deployArgs = config.initMethod?.params.map((param) => {
+            const value = param.value.value;
+            return value.runtimeCandidTypeObject
+                .getIdl([])
+                .valueToString(value.agentArgumentValue);
+        });
 
         const sourceCode = generateSourceCode(
             config.globalDeclarations ?? [],
