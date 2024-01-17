@@ -93,9 +93,8 @@ impl JsFn for NativeFunction {
                         reject.call(&[js_value.clone()]);
                     }
 
-                    // TODO do we need to progress setTimeouts and stuff?
-                    // TODO make sure to test this
-                    // context.event_loop().unwrap().run_tick_task();
+                    // TODO Is this all we need to do for promises and timeouts?
+                    context.event_loop().unwrap().run_tick_task();
                     context.promise_loop_poll();
                 });
             });

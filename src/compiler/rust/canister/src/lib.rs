@@ -109,8 +109,9 @@ fn execute_js(function_name: &str, pass_arg_data: bool) {
                 _ => {}
             };
 
-            // TODO might we need to do this in init and post_upgrade?
+            // TODO Is this all we need to do for promises and timeouts?
             context.event_loop().unwrap().run_tick_task();
+            context.promise_loop_poll();
         });
     });
 }

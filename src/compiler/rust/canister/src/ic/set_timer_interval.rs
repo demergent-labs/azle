@@ -40,6 +40,10 @@ impl JsFn for NativeFunction {
 
                     timer_callback.call(&[]);
 
+                    // TODO Is this all we need to do for promises and timeouts?
+                    context.event_loop().unwrap().run_tick_task();
+                    context.promise_loop_poll();
+
                     // TODO handle errors
                 });
             });
