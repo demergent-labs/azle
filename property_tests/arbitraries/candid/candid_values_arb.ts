@@ -37,6 +37,7 @@ import {
 import { BlobValuesArb } from './constructed/blob_arb/values_arb';
 import { CorrespondingJSType } from './corresponding_js_type';
 import { RecursiveNameValuesArb } from './recursive/values_arb';
+import { RecursiveShapes } from './recursive';
 
 export type CandidValues<T extends CorrespondingJSType, E = T> = {
     agentArgumentValue: T;
@@ -46,6 +47,7 @@ export type CandidValues<T extends CorrespondingJSType, E = T> = {
 
 export function CandidValueArb(
     candidTypeMeta: CandidDefinition,
+    recursiveShapes: RecursiveShapes,
     depthLevel: number
 ): fc.Arbitrary<CandidValues<CorrespondingJSType>> {
     const candidType = candidTypeMeta.candidMeta.candidType;
@@ -53,28 +55,39 @@ export function CandidValueArb(
         return BlobValuesArb();
     }
     if (candidType === 'Opt') {
-        return OptValuesArb(candidTypeMeta as OptCandidDefinition, depthLevel);
+        return OptValuesArb(
+            candidTypeMeta as OptCandidDefinition,
+            recursiveShapes,
+            depthLevel
+        );
     }
     if (candidType === 'Record') {
         return RecordValuesArb(
             candidTypeMeta as RecordCandidDefinition,
+            recursiveShapes,
             depthLevel
         );
     }
     if (candidType === 'Tuple') {
         return TupleValuesArb(
             candidTypeMeta as TupleCandidDefinition,
+            recursiveShapes,
             depthLevel
         );
     }
     if (candidType === 'Variant') {
         return VariantValuesArb(
             candidTypeMeta as VariantCandidDefinition,
+            recursiveShapes,
             depthLevel
         );
     }
     if (candidType === 'Vec') {
-        return VecValuesArb(candidTypeMeta as VecCandidDefinition, depthLevel);
+        return VecValuesArb(
+            candidTypeMeta as VecCandidDefinition,
+            recursiveShapes,
+            depthLevel
+        );
     }
     if (candidType === 'bool') {
         return BoolValueArb();
@@ -136,6 +149,7 @@ export function CandidValueArb(
     if (candidType === 'Recursive') {
         return RecursiveNameValuesArb(
             candidTypeMeta as RecursiveCandidName | RecursiveCandidDefinition,
+            recursiveShapes,
             depthLevel
         );
     }

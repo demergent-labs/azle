@@ -5,12 +5,16 @@ import {
     DefinitionConstraints,
     RecursiveCandidDefinitionMemo,
     RecursiveCandidName,
-    VariantCandidDefinition
+    VariantCandidDefinition,
+    WithShapes,
+    WithShapesArb
 } from '../../candid_definition_arb/types';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { CandidType, Variant } from '../../../../../src/lib';
+import { RecursiveShapes } from '../../recursive';
 
 type Field = [string, CandidDefinition];
+type FieldAndShapes = [string, WithShapes<CandidDefinition>];
 
 type RuntimeVariant = {
     [key: string]: CandidType;
@@ -20,56 +24,75 @@ export function VariantDefinitionArb(
     candidTypeArbForFields: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
-): fc.Arbitrary<VariantCandidDefinition> {
+): WithShapesArb<VariantCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
             VariantFieldsArb(candidTypeArbForFields, parents, constraints),
             fc.boolean()
         )
-        .map(([name, fields, useTypeDeclaration]): VariantCandidDefinition => {
-            const candidTypeAnnotation = generateCandidTypeAnnotation(
-                useTypeDeclaration,
+        .map(
+            ([
                 name,
-                fields
-            );
+                fieldsAndShapes,
+                useTypeDeclaration
+            ]): WithShapes<VariantCandidDefinition> => {
+                const fields = fieldsAndShapes.map(
+                    (field): Field => [field[0], field[1].definition]
+                );
+                const recursiveShapes = fieldsAndShapes.reduce(
+                    (acc, field): RecursiveShapes => {
+                        return { ...acc, ...field[1].recursiveShapes };
+                    },
+                    {}
+                );
+                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                    useTypeDeclaration,
+                    name,
+                    fields
+                );
 
-            const candidTypeObject = generateCandidTypeObject(
-                useTypeDeclaration,
-                name,
-                fields
-            );
+                const candidTypeObject = generateCandidTypeObject(
+                    useTypeDeclaration,
+                    name,
+                    fields
+                );
 
-            const runtimeCandidTypeObject =
-                generateRuntimeCandidTypeObject(fields);
+                const runtimeCandidTypeObject =
+                    generateRuntimeCandidTypeObject(fields);
 
-            const variableAliasDeclarations = generateVariableAliasDeclarations(
-                useTypeDeclaration,
-                name,
-                fields
-            );
+                const variableAliasDeclarations =
+                    generateVariableAliasDeclarations(
+                        useTypeDeclaration,
+                        name,
+                        fields
+                    );
 
-            const imports = generateImports(fields);
+                const imports = generateImports(fields);
 
-            return {
-                candidMeta: {
-                    candidTypeAnnotation,
-                    candidTypeObject,
-                    runtimeCandidTypeObject,
-                    variableAliasDeclarations,
-                    imports,
-                    candidType: 'Variant'
-                },
-                innerTypes: fields
-            };
-        });
+                return {
+                    definition: {
+                        candidMeta: {
+                            candidTypeAnnotation,
+                            candidTypeObject,
+                            runtimeCandidTypeObject,
+                            variableAliasDeclarations,
+                            imports,
+                            candidType: 'Variant'
+                        },
+                        innerTypes: fields
+                    },
+                    recursiveShapes
+                };
+            }
+        );
 }
 
 function VariantFieldsArb(
     candidTypeArb: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
-): fc.Arbitrary<Field[]> {
+): fc.Arbitrary<FieldAndShapes[]> {
     // Although no minLength is technically required (according to the
     // spec), the DFX CLI itself currently errors out trying to pass
     // an empty object.
@@ -108,16 +131,25 @@ function possiblyRecursiveArb(
     index: number,
     parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
-): fc.Arbitrary<CandidDefinition> {
-    const depthLevel = constraints.depthLevel ?? 0;
+): WithShapesArb<CandidDefinition> {
+    const depthLevel = constraints?.depthLevel ?? 0;
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0 || index < 1) {
             // If there are no recursive parents or this is the first variant field just do a regular arb field
             return candidArb(parents)(depthLevel);
         }
         return fc.oneof(
-            { arbitrary: fc.constant(parents[randomIndex]), weight: 1 },
-            { arbitrary: candidArb(parents)(depthLevel), weight: 1 }
+            {
+                arbitrary: fc.constant({
+                    definition: parents[randomIndex],
+                    recursiveShapes: {}
+                }),
+                weight: 1
+            },
+            {
+                arbitrary: candidArb(parents)(depthLevel),
+                weight: 1
+            }
         );
     });
 }

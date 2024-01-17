@@ -4,9 +4,11 @@ import { CandidType } from '../../candid_type';
 import { CorrespondingJSType } from '../../corresponding_js_type';
 import { VecCandidDefinition } from '../../candid_definition_arb/types';
 import { CandidValues, CandidValueArb } from '../../candid_values_arb';
+import { RecursiveShapes } from '../../recursive';
 
 export function VecValuesArb(
     vecDefinition: VecCandidDefinition,
+    recursiveShapes: RecursiveShapes,
     depthLevel: number
 ): fc.Arbitrary<CandidValues<Vec>> {
     if (depthLevel < 1) {
@@ -22,7 +24,7 @@ export function VecValuesArb(
         .chain(([arrayTemplate, innerType]) =>
             fc.tuple(
                 ...arrayTemplate.map(() =>
-                    CandidValueArb(innerType, depthLevel - 1)
+                    CandidValueArb(innerType, recursiveShapes, depthLevel - 1)
                 )
             )
         );

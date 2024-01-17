@@ -1,6 +1,9 @@
 import fc, { StringSharedConstraints } from 'fast-check';
 import { stringToSrcLiteral } from '../to_src_literal/string';
-import { TextCandidDefinition } from '../candid_definition_arb/types';
+import {
+    TextCandidDefinition,
+    WithShapesArb
+} from '../candid_definition_arb/types';
 import { SimpleCandidValuesArb } from '../simple_type_arbs/values_arb';
 import { SimpleCandidDefinitionArb } from '../simple_type_arbs/definition_arb';
 import { CandidValues } from '../candid_values_arb';
@@ -23,7 +26,7 @@ export function TextArb(
     );
 }
 
-export function TextDefinitionArb(): fc.Arbitrary<TextCandidDefinition> {
+export function TextDefinitionArb(): WithShapesArb<TextCandidDefinition> {
     return SimpleCandidDefinitionArb('text');
 }
 

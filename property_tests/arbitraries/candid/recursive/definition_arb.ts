@@ -5,16 +5,18 @@ import {
     DefinitionConstraints,
     RecursiveCandidDefinitionMemo,
     RecursiveCandidName,
-    RecursiveCandidDefinition
+    RecursiveCandidDefinition,
+    WithShapes,
+    WithShapesArb
 } from '../candid_definition_arb/types';
 import { CandidType, Recursive } from '../../../../src/lib';
-import { recursive } from '.';
+import { RecursiveShapes } from '.';
 
 export function RecursiveDefinitionArb(
     candidTypeArbForInnerType: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
-): fc.Arbitrary<RecursiveCandidDefinition> {
+): WithShapesArb<RecursiveCandidDefinition> {
     return UniqueIdentifierArb('typeDeclaration')
         .chain((name): fc.Arbitrary<RecursiveCandidName> => {
             const recCanDef: RecursiveCandidName = {
@@ -47,38 +49,44 @@ export function RecursiveDefinitionArb(
                 fc.constant(innerRecDef)
             );
         })
-        .map(([innerType, recCanDef]) => {
-            const {
-                name,
-                candidMeta: { candidTypeObject, candidTypeAnnotation }
-            } = recCanDef;
-            const variableAliasDeclarations = generateVariableAliasDeclarations(
-                name,
-                innerType
-            );
+        .map(
+            ([
+                { definition: innerType },
+                recCanDef
+            ]): WithShapes<RecursiveCandidDefinition> => {
+                const {
+                    name,
+                    candidMeta: { candidTypeObject, candidTypeAnnotation }
+                } = recCanDef;
+                const variableAliasDeclarations =
+                    generateVariableAliasDeclarations(name, innerType);
 
-            const imports = generateImports(innerType);
+                const imports = generateImports(innerType);
 
-            const runtimeCandidTypeObject =
-                generateRuntimeCandidTypeObject(innerType);
+                const runtimeCandidTypeObject =
+                    generateRuntimeCandidTypeObject(innerType);
 
-            const shape: RecursiveCandidDefinition = {
-                candidMeta: {
-                    candidTypeObject,
-                    candidTypeAnnotation,
-                    variableAliasDeclarations,
-                    imports,
-                    candidType: 'Recursive',
-                    runtimeCandidTypeObject
-                },
-                name,
-                innerType
-            };
+                const recursiveShape: RecursiveCandidDefinition = {
+                    candidMeta: {
+                        candidTypeObject,
+                        candidTypeAnnotation,
+                        variableAliasDeclarations,
+                        imports,
+                        candidType: 'Recursive',
+                        runtimeCandidTypeObject
+                    },
+                    name,
+                    innerType
+                };
 
-            recursive.shapes[name] = shape;
-
-            return shape;
-        });
+                return {
+                    definition: recursiveShape,
+                    recursiveShapes: {
+                        [name]: recursiveShape
+                    }
+                };
+            }
+        );
 }
 
 function generateVariableAliasDeclarations(

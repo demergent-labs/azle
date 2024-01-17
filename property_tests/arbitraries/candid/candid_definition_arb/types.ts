@@ -4,8 +4,11 @@ import { CandidType as RuntimeCandidType } from '../../../../src/lib/candid/cand
 import { ServiceMethodDefinition } from '../reference/service_arb/service_method_arb';
 import { PrimitiveDefinitionWeights } from './simple_candid_definition_arb';
 import { ComplexDefinitionWeights } from './complex_candid_definition_memo';
+import { RecursiveShapes } from '../recursive';
 
-export type CandidDefinitionMemo = (depthLevel: number) => CandidDefinitionArb;
+export type CandidDefinitionMemo = (
+    depthLevel: number
+) => WithShapesArb<CandidDefinition>;
 export type RecursiveCandidDefinitionMemo = (
     parents: RecursiveCandidName[],
     constraints?: DefinitionConstraints
@@ -24,7 +27,10 @@ export type CandidDefinitionWeights = Partial<
     >
 >;
 
-export type CandidDefinitionArb = fc.Arbitrary<CandidDefinition>;
+export type WithShapes<T> = { definition: T; recursiveShapes: RecursiveShapes };
+export type WithShapesArb<T> = fc.Arbitrary<WithShapes<T>>;
+
+export type CandidDefinitionArb = WithShapesArb<CandidDefinition>;
 
 export type CandidDefinition =
     | MultiTypeConstructedDefinition

@@ -7,13 +7,8 @@ import { CandidValueAndMetaArbGenerator } from '../candid_value_and_meta_arb_gen
 import { complexCandidDefinitionMemo } from '../candid_definition_arb/complex_candid_definition_memo';
 import { DEFAULT_DEFINITION_MAX_DEPTH } from '../../config';
 
-export const recursive: {
-    shapes: { [key: string]: RecursiveCandidDefinition };
-} = {
-    shapes: {}
-};
-
 export type Recursive = any;
+export type RecursiveShapes = { [key: string]: RecursiveCandidDefinition };
 
 export function RecursiveArb(): fc.Arbitrary<CandidValueAndMeta<Recursive>> {
     return CandidValueAndMetaArbGenerator(

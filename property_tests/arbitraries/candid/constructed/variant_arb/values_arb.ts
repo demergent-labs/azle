@@ -3,11 +3,13 @@ import { Variant } from '.';
 import { VariantCandidDefinition } from '../../candid_definition_arb/types';
 import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 import { CorrespondingJSType } from '../../corresponding_js_type';
+import { RecursiveShapes } from '../../recursive';
 
 type Field = [string, CandidValues<CorrespondingJSType>];
 
 export function VariantValuesArb(
     variantDefinition: VariantCandidDefinition,
+    recursiveShapes: RecursiveShapes,
     depthLevel: number
 ): fc.Arbitrary<CandidValues<Variant>> {
     return fc
@@ -23,11 +25,13 @@ export function VariantValuesArb(
 
             const [name, innerType] = variantDefinition.innerTypes[randomIndex];
 
-            const fieldValues = CandidValueArb(innerType, depthLevel - 1).map(
-                (values): Field => {
-                    return [name, values];
-                }
-            );
+            const fieldValues = CandidValueArb(
+                innerType,
+                recursiveShapes,
+                depthLevel - 1
+            ).map((values): Field => {
+                return [name, values];
+            });
 
             return fieldValues.map((fieldValue) => {
                 const valueLiteral = generateValueLiteral(fieldValue);

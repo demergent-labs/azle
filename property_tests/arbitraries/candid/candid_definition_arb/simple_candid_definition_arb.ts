@@ -15,7 +15,7 @@ import { NatDefinitionArb } from '../primitive/nats/nat_arb';
 import { NullDefinitionArb } from '../primitive/null';
 import { TextDefinitionArb } from '../primitive/text';
 import { PrincipalDefinitionArb } from '../reference/principal_arb';
-import { CandidDefinitionArb } from './types';
+import { PrimitiveDefinition, WithShapesArb } from './types';
 
 export type PrimitiveDefinitionWeights = Partial<{
     bool: number;
@@ -43,7 +43,7 @@ const PRIM_DEF_WEIGHTS_DEFAULT = {};
 
 export function primitiveCandidDefinitionArb(
     constraints: PrimitiveDefinitionWeights = PRIM_DEF_WEIGHTS_DEFAULT
-): CandidDefinitionArb {
+): WithShapesArb<PrimitiveDefinition> {
     return fc.oneof(
         { arbitrary: BoolDefinitionArb(), weight: constraints.bool ?? 1 },
         { arbitrary: Float32DefinitionArb(), weight: constraints.float32 ?? 1 },

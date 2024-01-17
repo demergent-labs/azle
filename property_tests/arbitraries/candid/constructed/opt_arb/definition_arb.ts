@@ -5,15 +5,18 @@ import {
     DefinitionConstraints,
     OptCandidDefinition,
     RecursiveCandidDefinitionMemo,
-    RecursiveCandidName
+    RecursiveCandidName,
+    WithShapes,
+    WithShapesArb
 } from '../../candid_definition_arb/types';
 import { CandidType, Opt } from '../../../../../src/lib';
+import { RecursiveShapes } from '../../recursive';
 
 export function OptDefinitionArb(
     candidTypeArbForInnerType: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
-): fc.Arbitrary<OptCandidDefinition> {
+): WithShapesArb<OptCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
@@ -24,49 +27,61 @@ export function OptDefinitionArb(
             ),
             fc.boolean()
         )
-        .map(([name, innerType, useTypeDeclaration]): OptCandidDefinition => {
-            const candidTypeAnnotation = generateCandidTypeAnnotation(
-                useTypeDeclaration,
+        .map(
+            ([
                 name,
-                innerType
-            );
+                innerTypeAndShapes,
+                useTypeDeclaration
+            ]): WithShapes<OptCandidDefinition> => {
+                const { definition: innerType, recursiveShapes } =
+                    innerTypeAndShapes;
+                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                    useTypeDeclaration,
+                    name,
+                    innerType
+                );
 
-            const candidTypeObject = generateCandidTypeObject(
-                useTypeDeclaration,
-                name,
-                innerType
-            );
+                const candidTypeObject = generateCandidTypeObject(
+                    useTypeDeclaration,
+                    name,
+                    innerType
+                );
 
-            const runtimeCandidTypeObject =
-                generateRuntimeCandidTypeObject(innerType);
+                const runtimeCandidTypeObject =
+                    generateRuntimeCandidTypeObject(innerType);
 
-            const variableAliasDeclarations = generateVariableAliasDeclarations(
-                useTypeDeclaration,
-                name,
-                innerType
-            );
+                const variableAliasDeclarations =
+                    generateVariableAliasDeclarations(
+                        useTypeDeclaration,
+                        name,
+                        innerType
+                    );
 
-            const imports = generateImports(innerType);
+                const imports = generateImports(innerType);
 
-            return {
-                candidMeta: {
-                    candidTypeAnnotation,
-                    candidTypeObject,
-                    runtimeCandidTypeObject,
-                    variableAliasDeclarations,
-                    imports,
-                    candidType: 'Opt'
-                },
-                innerType
-            };
-        });
+                return {
+                    definition: {
+                        candidMeta: {
+                            candidTypeAnnotation,
+                            candidTypeObject,
+                            runtimeCandidTypeObject,
+                            variableAliasDeclarations,
+                            imports,
+                            candidType: 'Opt'
+                        },
+                        innerType
+                    },
+                    recursiveShapes
+                };
+            }
+        );
 }
 
 function possiblyRecursiveArb(
     candidArb: RecursiveCandidDefinitionMemo,
     parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
-): fc.Arbitrary<CandidDefinition> {
+): WithShapesArb<CandidDefinition> {
     const depthLevel = constraints.depthLevel ?? 0;
     return fc.nat(Math.max(parents.length - 1, 0)).chain((randomIndex) => {
         if (parents.length === 0 || depthLevel < 1) {
@@ -75,8 +90,17 @@ function possiblyRecursiveArb(
             return candidArb(parents)(depthLevel);
         }
         return fc.oneof(
-            { arbitrary: fc.constant(parents[randomIndex]), weight: 1 },
-            { arbitrary: candidArb(parents)(depthLevel), weight: 1 }
+            {
+                arbitrary: fc.constant({
+                    definition: parents[randomIndex],
+                    recursiveShapes: {}
+                }),
+                weight: 1
+            },
+            {
+                arbitrary: candidArb(parents)(depthLevel),
+                weight: 1
+            }
         );
     });
 }

@@ -18,13 +18,17 @@ import {
     recursiveCandidDefinitionMemo
 } from './recursive_candid_definition_memo';
 import { DEFAULT_DEFINITION_MAX_DEPTH } from '../../config';
+import { RecursiveShapes } from '../recursive';
 
 export function candidDefinitionArb(
-    maxDepth: number = DEFAULT_DEFINITION_MAX_DEPTH,
+    recursiveShapes: RecursiveShapes,
     parents: RecursiveCandidName[] = [],
     constraints: DefinitionConstraints = {}
 ): CandidDefinitionArb {
-    return candidDefinitionMemo(parents, constraints)(maxDepth);
+    return candidDefinitionMemo(
+        parents,
+        constraints
+    )(constraints.depthLevel ?? DEFAULT_DEFINITION_MAX_DEPTH);
 }
 
 export function candidDefinitionMemo(

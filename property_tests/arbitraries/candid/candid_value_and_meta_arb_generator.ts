@@ -1,24 +1,31 @@
 import fc from 'fast-check';
 import { CorrespondingJSType } from './corresponding_js_type';
-import { CandidDefinition } from './candid_definition_arb/types';
+import { CandidDefinition, WithShapes } from './candid_definition_arb/types';
 import { CandidValueAndMeta } from './candid_value_and_meta_arb';
 import { CandidValues } from './candid_values_arb';
+import { RecursiveShapes } from './recursive';
 
 export function CandidValueAndMetaArbGenerator<
     T extends CorrespondingJSType,
     D extends CandidDefinition,
     V extends CandidValues<T>
 >(
-    DefinitionArb: fc.Arbitrary<D>,
-    ValueArb: (arb: D, constraints?: any) => fc.Arbitrary<V>,
+    DefinitionArb: fc.Arbitrary<WithShapes<D>>,
+    ValueArb: (
+        arb: D,
+        recursiveShapes: RecursiveShapes,
+        constraints?: any
+    ) => fc.Arbitrary<V>,
     valueConstraints?: any
 ): fc.Arbitrary<CandidValueAndMeta<any>> {
-    return DefinitionArb.chain((candidDefinition) =>
-        fc.tuple(
+    return DefinitionArb.chain((candidDefinitionAndShapes) => {
+        const candidDefinition = candidDefinitionAndShapes.definition;
+        const recursiveShape = candidDefinitionAndShapes.recursiveShapes;
+        return fc.tuple(
             fc.constant(candidDefinition),
-            ValueArb(candidDefinition, valueConstraints)
-        )
-    ).map(
+            ValueArb(candidDefinition, recursiveShape, valueConstraints)
+        );
+    }).map(
         ([
             {
                 candidMeta: {
