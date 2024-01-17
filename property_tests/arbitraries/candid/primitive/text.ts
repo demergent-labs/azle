@@ -10,6 +10,7 @@ import { CandidValues } from '../candid_values_arb';
 import { CandidValueAndMeta } from '../candid_value_and_meta_arb';
 import { CandidValueAndMetaArbGenerator } from '../candid_value_and_meta_arb_generator';
 import { JsFunctionNameArb } from '../../js_function_name_arb';
+import { RecursiveShapes } from '../recursive';
 
 export interface TextConstraints extends StringSharedConstraints {
     canStartWithDigit?: boolean;
@@ -32,6 +33,7 @@ export function TextDefinitionArb(): WithShapesArb<TextCandidDefinition> {
 
 export function TextValueArb(
     _?: TextCandidDefinition,
+    _recShapes?: RecursiveShapes,
     constraints?: TextConstraints
 ): fc.Arbitrary<CandidValues<string>> {
     const canStartWithDigit = constraints?.canStartWithDigit ?? true;

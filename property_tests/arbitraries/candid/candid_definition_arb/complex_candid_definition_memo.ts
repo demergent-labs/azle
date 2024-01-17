@@ -13,7 +13,6 @@ import {
     DefinitionConstraints,
     RecursiveCandidName
 } from './types';
-import { RecursiveShapes } from '../recursive';
 
 export type ComplexDefinitionWeights = Partial<{
     blob: number;
