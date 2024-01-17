@@ -37,6 +37,7 @@ export function generateCandidAndCanisterMethods(wasmFilePath: string): {
             msg_cycles_accept: () => {},
             msg_cycles_accept128: () => {},
             msg_cycles_available: () => {},
+            msg_cycles_available128: () => {},
             msg_cycles_refunded: () => {},
             msg_cycles_refunded128: () => {},
             msg_method_name_copy: () => {},

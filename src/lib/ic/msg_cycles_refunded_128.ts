@@ -1,5 +1,4 @@
 import { nat } from '../candid/types/primitive/nats/nat';
-import { decode } from '../candid/serde/decode';
 
 /**
  * Returns the amount of cycles that came back with the response as a refund.
@@ -11,8 +10,8 @@ export function msgCyclesRefunded128(): nat {
         return undefined as any;
     }
 
-    const msgCyclesRefunded128CandidBytes =
+    const msgCyclesRefunded128AmountString =
         globalThis._azleIc.msgCyclesRefunded128();
 
-    return decode(nat, msgCyclesRefunded128CandidBytes);
+    return BigInt(msgCyclesRefunded128AmountString);
 }

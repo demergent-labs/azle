@@ -1,5 +1,4 @@
 import { nat } from '../candid/types/primitive/nats/nat';
-import { decode } from '../candid/serde/decode';
 
 /**
  * Returns the amount of cycles that were transferred by the caller of the
@@ -11,8 +10,8 @@ export function msgCyclesAvailable128(): nat {
         return undefined as any;
     }
 
-    const msgCyclesAvailable128CandidBytes =
+    const msgCyclesAvailable128AmountString =
         globalThis._azleIc.msgCyclesAvailable128();
 
-    return decode(nat, msgCyclesAvailable128CandidBytes);
+    return BigInt(msgCyclesAvailable128AmountString);
 }

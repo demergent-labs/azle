@@ -15,12 +15,12 @@ mod id;
 mod instruction_counter;
 mod is_controller;
 mod method_name;
-// mod msg_cycles_accept;
-// mod msg_cycles_accept128;
-// mod msg_cycles_available;
-// mod msg_cycles_available128;
-// mod msg_cycles_refunded;
-// mod msg_cycles_refunded128;
+mod msg_cycles_accept;
+mod msg_cycles_accept128;
+mod msg_cycles_available;
+mod msg_cycles_available128;
+mod msg_cycles_refunded;
+mod msg_cycles_refunded128;
 mod notify_raw;
 mod performance_counter;
 mod print;
@@ -169,48 +169,47 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
             .into(),
     );
 
-    // ic.set_property(
-    //     "msgCyclesAccept",
-    //     context
-    //         .wrap_callback2(msg_cycles_accept::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "msgCyclesAccept128",
-    //     context
-    //         .wrap_callback2(msg_cycles_accept128::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "msgCyclesAvailable",
-    //     context
-    //         .wrap_callback2(msg_cycles_available::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "msgCyclesAvailable128",
-    //     context
-    //         .wrap_callback2(msg_cycles_available128::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "msgCyclesRefunded",
-    //     context
-    //         .wrap_callback2(msg_cycles_refunded::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "msgCyclesRefunded128",
-    //     context
-    //         .wrap_callback2(msg_cycles_refunded128::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+    ic.set(
+        "msgCyclesAccept",
+        context
+            .new_function::<msg_cycles_accept::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "msgCyclesAccept128",
+        context
+            .new_function::<msg_cycles_accept128::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "msgCyclesAvailable",
+        context
+            .new_function::<msg_cycles_available::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "msgCyclesAvailable128",
+        context
+            .new_function::<msg_cycles_available128::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "msgCyclesRefunded",
+        context
+            .new_function::<msg_cycles_refunded::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "msgCyclesRefunded128",
+        context
+            .new_function::<msg_cycles_refunded128::NativeFunction>("")
+            .into(),
+    );
 
     ic.set(
         "notifyRaw",

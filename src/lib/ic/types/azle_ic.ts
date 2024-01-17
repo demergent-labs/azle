@@ -30,14 +30,12 @@ export type AzleIc = {
     id: () => string;
     instructionCounter: () => bigint;
     isController: (principalBytes: ArrayBufferLike) => boolean;
-    msgCyclesAccept: (maxAmountCandidBytes: ArrayBufferLike) => ArrayBufferLike;
-    msgCyclesAccept128: (
-        maxAmountCandidBytes: ArrayBufferLike
-    ) => ArrayBufferLike;
-    msgCyclesAvailable: () => ArrayBufferLike;
-    msgCyclesAvailable128: () => ArrayBufferLike;
-    msgCyclesRefunded: () => ArrayBufferLike;
-    msgCyclesRefunded128: () => ArrayBufferLike;
+    msgCyclesAccept: (maxAmountString: string) => string;
+    msgCyclesAccept128: (maxAmountString: string) => string;
+    msgCyclesAvailable: () => string;
+    msgCyclesAvailable128: () => string;
+    msgCyclesRefunded: () => bigint;
+    msgCyclesRefunded128: () => string;
     notifyRaw: (
         canisterIdBytes: ArrayBufferLike,
         method: string,
