@@ -25,7 +25,7 @@ export type AzleIc = {
     canisterBalance: () => bigint;
     canisterBalance128: () => string;
     canisterVersion: () => bigint;
-    clearTimer: (timerIdBytes: ArrayBufferLike) => void;
+    clearTimer: (timerIdString: string) => void;
     dataCertificate: () => ArrayBufferLike | undefined;
     id: () => string;
     instructionCounter: () => bigint;
@@ -48,14 +48,11 @@ export type AzleIc = {
     rejectCode: () => number;
     replyRaw: (bytes: ArrayBufferLike) => void;
     setCertifiedData: (dataBytes: ArrayBufferLike) => void;
-    setTimer: (
-        delayBytes: ArrayBufferLike,
-        timerCallbackId: string
-    ) => ArrayBufferLike;
+    setTimer: (delayString: string, timerCallbackId: string) => string;
     setTimerInterval: (
-        intervalBytes: ArrayBufferLike,
+        intervalString: string,
         timerCallbackId: string
-    ) => ArrayBufferLike;
+    ) => string;
     stableBytes: () => ArrayBufferLike;
     stableGrow: (newPages: string) => string;
     stableRead: (offset: string, length: string) => ArrayBufferLike;

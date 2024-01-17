@@ -1,21 +1,18 @@
-use std::convert::TryInto;
+use wasmedge_quickjs::{Context, JsFn, JsValue};
 
-use quickjs_wasm_rs::{CallbackArg, JSContextRef, JSValueRef};
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        let timer_id_string = if let JsValue::String(js_string) = argv.get(0).unwrap() {
+            js_string.to_string()
+        } else {
+            panic!("conversion from JsValue to JsString failed")
+        };
+        let timer_id_u64: u64 = timer_id_string.parse().unwrap();
+        let timer_id = ic_cdk_timers::TimerId::from(slotmap::KeyData::from_ffi(timer_id_u64));
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let timer_id_vec_u8: Vec<u8> = args
-        .get(0)
-        .expect("clearTimer must have one argument")
-        .to_js_value()?
-        .try_into()?;
+        ic_cdk_timers::clear_timer(timer_id);
 
-    let timer_id_u64: u64 = candid::decode_one(&timer_id_vec_u8)?;
-    let timer_id = ic_cdk_timers::TimerId::from(slotmap::KeyData::from_ffi(timer_id_u64));
-
-    ic_cdk_timers::clear_timer(timer_id);
-    context.undefined_value()
+        JsValue::UnDefined
+    }
 }

@@ -9,7 +9,7 @@ mod candid_encode;
 mod canister_balance;
 mod canister_balance128;
 mod canister_version;
-// mod clear_timer;
+mod clear_timer;
 mod data_certificate;
 mod id;
 mod instruction_counter;
@@ -29,8 +29,8 @@ mod reject;
 // mod reject_message;
 mod reply_raw;
 mod set_certified_data;
-// mod set_timer;
-// mod set_timer_interval;
+mod set_timer;
+mod set_timer_interval;
 mod stable64_grow;
 mod stable64_read;
 mod stable64_size;
@@ -133,13 +133,12 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
             .into(),
     );
 
-    // ic.set_property(
-    //     "clearTimer",
-    //     context
-    //         .wrap_callback2(clear_timer::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+    ic.set(
+        "clearTimer",
+        context
+            .new_function::<clear_timer::NativeFunction>("")
+            .into(),
+    );
 
     ic.set(
         "dataCertificate",
@@ -265,18 +264,17 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
             .into(),
     );
 
-    // ic.set_property(
-    //     "setTimer",
-    //     context.wrap_callback2(set_timer::native_function).unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "setTimerInterval",
-    //     context
-    //         .wrap_callback2(set_timer_interval::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+    ic.set(
+        "setTimer",
+        context.new_function::<set_timer::NativeFunction>("").into(),
+    );
+
+    ic.set(
+        "setTimerInterval",
+        context
+            .new_function::<set_timer_interval::NativeFunction>("")
+            .into(),
+    );
 
     ic.set(
         "stable64Grow",

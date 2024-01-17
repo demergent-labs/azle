@@ -1,63 +1,53 @@
 use std::convert::TryInto;
 
-use quickjs_wasm_rs::{to_qjs_value, CallbackArg, JSContextRef, JSValue, JSValueRef};
 use slotmap::Key;
+use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
 
-use crate::CONTEXT;
+use crate::RUNTIME;
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let candid_encoded_array_buffer: Vec<u8> = args
-        .get(0)
-        .expect("performanceCounter must have one argument")
-        .to_js_value()?
-        .try_into()?;
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        let interval_string = if let JsValue::String(js_string) = argv.get(0).unwrap() {
+            js_string.to_string()
+        } else {
+            panic!("conversion from JsValue to JsString failed")
+        };
+        let interval_u64: u64 = interval_string.parse().unwrap();
+        let interval = core::time::Duration::new(interval_u64, 0);
 
-    let interval_as_u64: u64 = candid::decode_one(&candid_encoded_array_buffer)?;
+        let callback_id = if let JsValue::String(js_string) = argv.get(1).unwrap() {
+            js_string.to_string()
+        } else {
+            panic!("conversion from JsValue to JsString failed")
+        };
 
-    let interval = core::time::Duration::new(interval_as_u64, 0);
+        let closure = move || {
+            RUNTIME.with(|runtime| {
+                let mut runtime = runtime.borrow_mut();
+                let runtime = runtime.as_mut().unwrap();
 
-    let callback_id: String = args
-        .get(1)
-        .expect("An argument for 'callback' was not provided")
-        .to_js_value()?
-        .try_into()?;
+                runtime.run_with_context(|context| {
+                    let global = context.get_global();
 
-    let closure = move || {
-        CONTEXT.with(|context| {
-            let mut context = context.borrow_mut();
-            let context = context.as_mut().unwrap();
+                    let timer_callback = global
+                        .get("_azleTimerCallbacks")
+                        .to_obj()
+                        .unwrap()
+                        .get(callback_id.as_str())
+                        .to_function()
+                        .unwrap();
 
-            let global = context.global_object().unwrap();
+                    timer_callback.call(&[]);
 
-            let timer_callback = global
-                .get_property("_azleTimerCallbacks")
-                .unwrap()
-                .get_property(callback_id.as_str())
-                .unwrap_or_else(|e| ic_cdk::api::trap(e.to_string().as_str()));
+                    // TODO handle errors
+                });
+            });
+        };
 
-            // TODO I am not sure what the first parameter to call is supposed to be
-            let callback_result = timer_callback.call(&timer_callback, &[]);
+        let timer_id: ic_cdk_timers::TimerId = ic_cdk_timers::set_timer_interval(interval, closure);
+        let timer_id_u64: u64 = timer_id.data().as_ffi();
 
-            if let Err(e) = callback_result {
-                ic_cdk::api::trap(e.to_string().as_str())
-            }
-        });
-    };
-
-    let timer_id: ic_cdk_timers::TimerId = ic_cdk_timers::set_timer_interval(interval, closure);
-    let timer_id_as_u64: u64 = timer_id.data().as_ffi();
-    let timer_id_candid_encoded_bytes: JSValue = candid::encode_one(timer_id_as_u64)
-        .unwrap_or_else(|e| {
-            // If something goes wrong we need to clear the timer before
-            // throwing to the JS above.
-            ic_cdk_timers::clear_timer(timer_id);
-            ic_cdk::api::trap(e.to_string().as_str());
-        })
-        .into();
-
-    to_qjs_value(&context, &timer_id_candid_encoded_bytes)
+        context.new_string(&timer_id_u64.to_string()).into()
+    }
 }
