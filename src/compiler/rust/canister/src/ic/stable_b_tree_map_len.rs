@@ -18,6 +18,6 @@ impl JsFn for NativeFunction {
             stable_b_tree_maps[&memory_id].len()
         });
 
-        len.into()
+        context.new_string(&len.to_string()).into()
     }
 }

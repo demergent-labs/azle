@@ -13,5 +13,5 @@ export function instructionCounter(): nat64 {
         return undefined as any;
     }
 
-    return globalThis._azleIc.instructionCounter();
+    return BigInt(globalThis._azleIc.instructionCounter());
 }

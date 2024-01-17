@@ -15,6 +15,6 @@ impl JsFn for NativeFunction {
             ic_cdk::api::call::RejectionCode::Unknown => 6,
         };
 
-        reject_code_number.into()
+        context.new_string(&reject_code_number.to_string()).into()
     }
 }

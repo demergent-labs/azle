@@ -6,6 +6,6 @@ import { nat32 } from '../candid/types/primitive/nats/nat32';
  */
 export function argDataRawSize(): nat32 {
     return globalThis._azleIc
-        ? globalThis._azleIc.argDataRawSize()
+        ? Number(globalThis._azleIc.argDataRawSize())
         : (undefined as any);
 }

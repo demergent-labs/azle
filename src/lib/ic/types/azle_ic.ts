@@ -4,7 +4,7 @@
  */
 export type AzleIc = {
     argDataRaw: () => ArrayBufferLike;
-    argDataRawSize: () => number;
+    argDataRawSize: () => string;
     callRaw: (
         promiseId: string,
         canisterIdBytes: ArrayBufferLike,
@@ -22,19 +22,19 @@ export type AzleIc = {
     caller: () => ArrayBufferLike;
     candidDecode: (candidBytes: ArrayBufferLike) => string;
     candidEncode: (candidString: string) => ArrayBufferLike;
-    canisterBalance: () => bigint;
+    canisterBalance: () => string;
     canisterBalance128: () => string;
-    canisterVersion: () => bigint;
+    canisterVersion: () => string;
     clearTimer: (timerIdString: string) => void;
     dataCertificate: () => ArrayBufferLike | undefined;
     id: () => string;
-    instructionCounter: () => bigint;
+    instructionCounter: () => string;
     isController: (principalBytes: ArrayBufferLike) => boolean;
     msgCyclesAccept: (maxAmountString: string) => string;
     msgCyclesAccept128: (maxAmountString: string) => string;
     msgCyclesAvailable: () => string;
     msgCyclesAvailable128: () => string;
-    msgCyclesRefunded: () => bigint;
+    msgCyclesRefunded: () => string;
     msgCyclesRefunded128: () => string;
     notifyRaw: (
         canisterIdBytes: ArrayBufferLike,
@@ -42,8 +42,8 @@ export type AzleIc = {
         argsRawBuffer: ArrayBufferLike,
         paymentString: string
     ) => void;
-    performanceCounter: (counterType: string) => bigint;
-    rejectCode: () => number;
+    performanceCounter: (counterType: string) => string;
+    rejectCode: () => string;
     replyRaw: (bytes: ArrayBufferLike) => void;
     setCertifiedData: (dataBytes: ArrayBufferLike) => void;
     setTimer: (delayString: string, timerCallbackId: string) => string;
@@ -56,11 +56,11 @@ export type AzleIc = {
     stableRead: (offset: string, length: string) => ArrayBufferLike;
     stableSize: () => string;
     stableWrite: (offset: string, buf: ArrayBufferLike) => void;
-    stable64Grow: (newPages: string) => bigint;
+    stable64Grow: (newPages: string) => string;
     stable64Read: (offset: string, length: string) => ArrayBufferLike;
-    stable64Size: () => bigint;
+    stable64Size: () => string;
     stable64Write: (offset: string, buf: ArrayBufferLike) => void;
-    time: () => bigint;
+    time: () => string;
     // These calls aren't intercepted by our IC object, they go right to the
     // rust version and come out. Since they don't need to be intercepted I am
     // assuming that their types are the same as the types declared by our
@@ -104,7 +104,7 @@ export type AzleIc = {
         startIndex: string,
         length: string
     ) => ArrayBuffer[];
-    stableBTreeMapLen: (memoryId: string) => bigint;
+    stableBTreeMapLen: (memoryId: string) => string;
     stableBTreeMapRemove(
         memoryId: string,
         encodedKey: ArrayBufferLike

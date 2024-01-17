@@ -163,7 +163,7 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            return globalThis._azleIc.stableBTreeMapLen(memoryId);
+            return BigInt(globalThis._azleIc.stableBTreeMapLen(memoryId));
         },
         /**
          * Removes a key from the map.

@@ -10,7 +10,7 @@ export function rejectCode(): RejectionCode {
         return undefined as any;
     }
 
-    const rejectCodeNumber = globalThis._azleIc.rejectCode();
+    const rejectCodeNumber = Number(globalThis._azleIc.rejectCode());
 
     switch (rejectCodeNumber) {
         case 0:

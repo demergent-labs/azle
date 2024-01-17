@@ -10,5 +10,5 @@ export function canisterVersion(): nat64 {
         return undefined as any;
     }
 
-    return globalThis._azleIc.canisterVersion();
+    return BigInt(globalThis._azleIc.canisterVersion());
 }

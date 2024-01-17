@@ -3,6 +3,8 @@ use wasmedge_quickjs::{Context, JsFn, JsValue};
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
     fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
-        ic_cdk::api::canister_balance().into()
+        context
+            .new_string(&ic_cdk::api::canister_balance().to_string())
+            .into()
     }
 }

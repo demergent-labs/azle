@@ -9,6 +9,11 @@ impl JsFn for NativeFunction {
             panic!("conversion from JsValue to JsString failed")
         };
 
-        ic_cdk::api::call::performance_counter(counter_type_string.parse().unwrap()).into()
+        context
+            .new_string(
+                &ic_cdk::api::call::performance_counter(counter_type_string.parse().unwrap())
+                    .to_string(),
+            )
+            .into()
     }
 }

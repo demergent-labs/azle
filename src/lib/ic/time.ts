@@ -9,5 +9,5 @@ export function time(): nat64 {
         return undefined as any;
     }
 
-    return globalThis._azleIc.time();
+    return BigInt(globalThis._azleIc.time());
 }

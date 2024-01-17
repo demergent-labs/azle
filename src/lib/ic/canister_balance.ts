@@ -9,5 +9,5 @@ export function canisterBalance(): nat64 {
         return undefined as any;
     }
 
-    return globalThis._azleIc.canisterBalance();
+    return BigInt(globalThis._azleIc.canisterBalance());
 }

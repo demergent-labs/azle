@@ -15,5 +15,7 @@ export function performanceCounter(counterType: nat32): nat64 {
         return undefined as any;
     }
 
-    return globalThis._azleIc.performanceCounter(counterType.toString());
+    return BigInt(
+        globalThis._azleIc.performanceCounter(counterType.toString())
+    );
 }
