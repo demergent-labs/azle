@@ -17,7 +17,7 @@ export function getTests(
                 const result = await stableMemoryCanister.stableSize();
 
                 return {
-                    Ok: result === 385 // This is not 0 probably because of the stable memory filesystem from ic-wasi-polyfill
+                    Ok: result === 0
                 };
             }
         },
@@ -27,7 +27,7 @@ export function getTests(
                 const result = await stableMemoryCanister.stable64Size();
 
                 return {
-                    Ok: result === 385n // This is not 0 probably because of the stable memory filesystem from ic-wasi-polyfill
+                    Ok: result === 0n
                 };
             }
         },
