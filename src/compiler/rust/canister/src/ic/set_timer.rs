@@ -38,7 +38,19 @@ impl JsFn for NativeFunction {
                         .to_function()
                         .unwrap();
 
-                    timer_callback.call(&[]);
+                    let result = timer_callback.call(&[]);
+
+                    // TODO error handling is mostly done in JS right now
+                    // TODO we would really like wasmedge-quickjs to add
+                    // TODO good error info to JsException and move error handling
+                    // TODO out of our own code
+                    match &result {
+                        wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                            js_exception.dump_error();
+                            panic!("TODO needs error info");
+                        }
+                        _ => {}
+                    };
 
                     // TODO Is this all we need to do for promises and timeouts?
                     context.event_loop().unwrap().run_tick_task();

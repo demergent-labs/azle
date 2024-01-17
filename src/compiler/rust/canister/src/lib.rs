@@ -97,12 +97,14 @@ fn execute_js(function_name: &str, pass_arg_data: bool) {
 
             let method_callback_function = method_callback.to_function().unwrap();
 
-            // TODO this returns a value so I think we need to check it to get an error
             let result = method_callback_function.call(&[candid_args_js_value]);
 
+            // TODO error handling is mostly done in JS right now
+            // TODO we would really like wasmedge-quickjs to add
+            // TODO good error info to JsException and move error handling
+            // TODO out of our own code
             match &result {
                 wasmedge_quickjs::JsValue::Exception(js_exception) => {
-                    // TODO maybe we can just call toString() on the error object
                     js_exception.dump_error();
                     panic!("TODO needs error info");
                 }
@@ -130,6 +132,7 @@ pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
 
             ic::register(context);
 
+            // TODO what do we do if there is an error in here?
             context.eval_global_str("globalThis.exports = {};".to_string());
             context.eval_module_str(
                 std::str::from_utf8(MAIN_JS).unwrap().to_string(),
@@ -141,6 +144,18 @@ pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
             let candid_info_function = global.get("candidInfoFunction").to_function().unwrap();
 
             let candid_info = candid_info_function.call(&[]);
+
+            // TODO error handling is mostly done in JS right now
+            // TODO we would really like wasmedge-quickjs to add
+            // TODO good error info to JsException and move error handling
+            // TODO out of our own code
+            match &candid_info {
+                wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                    js_exception.dump_error();
+                    panic!("TODO needs error info");
+                }
+                _ => {}
+            };
 
             let candid_info_string = candid_info.to_string().unwrap().to_string();
 

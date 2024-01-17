@@ -80,7 +80,19 @@ impl JsFn for NativeFunction {
                             .to_function()
                             .unwrap();
 
-                        resolve.call(&[js_value.clone()]);
+                        let result = resolve.call(&[js_value.clone()]);
+
+                        // TODO error handling is mostly done in JS right now
+                        // TODO we would really like wasmedge-quickjs to add
+                        // TODO good error info to JsException and move error handling
+                        // TODO out of our own code
+                        match &result {
+                            wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                                js_exception.dump_error();
+                                panic!("TODO needs error info");
+                            }
+                            _ => {}
+                        };
                     } else {
                         let reject = global
                             .get("_azleRejectIds")
@@ -90,7 +102,19 @@ impl JsFn for NativeFunction {
                             .to_function()
                             .unwrap();
 
-                        reject.call(&[js_value.clone()]);
+                        let result = reject.call(&[js_value.clone()]);
+
+                        // TODO error handling is mostly done in JS right now
+                        // TODO we would really like wasmedge-quickjs to add
+                        // TODO good error info to JsException and move error handling
+                        // TODO out of our own code
+                        match &result {
+                            wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                                js_exception.dump_error();
+                                panic!("TODO needs error info");
+                            }
+                            _ => {}
+                        };
                     }
 
                     // TODO Is this all we need to do for promises and timeouts?

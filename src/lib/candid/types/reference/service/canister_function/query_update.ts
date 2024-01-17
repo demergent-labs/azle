@@ -1,4 +1,5 @@
 import { CanisterOptions } from '.';
+import { handleUncaughtError } from '../../../../../error';
 
 type QueryMethod = {
     name: string;
@@ -67,7 +68,13 @@ function createGlobalGuard(
 
     const guardName = `_azleGuard_${guardedMethodName}`;
 
-    globalThis._azleGuardFunctions[guardName] = guard;
+    globalThis._azleGuardFunctions[guardName] = () => {
+        try {
+            guard();
+        } catch (error) {
+            handleUncaughtError(error);
+        }
+    };
 
     return guardName;
 }

@@ -61,6 +61,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
             let r = rt.run_with_context(|context| {
                 ic::register(context);
 
+                // TODO what do we do if there is an error in here?
                 context.eval_global_str("globalThis.exports = {};".to_string());
                 context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
@@ -112,6 +113,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
             let r = rt.run_with_context(|context| {
                 ic::register(context);
 
+                // TODO what do we do if there is an error in here?
                 context.eval_global_str("globalThis.exports = {};".to_string());
                 context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
@@ -284,27 +286,31 @@ fn get_guard_token_stream(
         quote! {
             // TODO should the guard function have access to the raw args?
             fn #guard_name_ident() -> Result<(), String> {
-                CONTEXT.with(|context| {
-                    let mut context = context.borrow_mut();
-                    let context = context.as_mut().unwrap();
+                RUNTIME.with(|runtime| {
+                    let mut runtime = runtime.borrow_mut();
+                    let runtime = runtime.as_mut().unwrap();
 
-                    let global = context.global_object().unwrap();
-                    let guard_functions = global.get_property("_azleGuardFunctions").unwrap();
-                    let guard_function = guard_functions.get_property(#guard_name).unwrap();
+                    runtime.run_with_context(|context| {
+                        let global = context.get_global();
 
-                    // TODO I am not sure what the first parameter to call is supposed to be
-                    let result = guard_function.call(&guard_function, &[]);
+                        let guard_functions = global.get("_azleGuardFunctions").to_obj().unwrap();
 
-                    match result {
-                        Ok(_) => {
-                            Ok(())
-                        },
-                        Err(err_js_value_ref) => {
-                            let err: String = err_js_value_ref.to_string();
+                        let guard_function = guard_functions.get(#guard_name).to_function().unwrap();
 
-                            Err(err)
+                        let result = guard_function.call(&[]);
+
+                        // TODO error handling is mostly done in JS right now
+                        // TODO we would really like wasmedge-quickjs to add
+                        // TODO good error info to JsException and move error handling
+                        // TODO out of our own code
+                        match &result {
+                            wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                                js_exception.dump_error();
+                                Err("TODO needs error info".to_string())
+                            }
+                            _ => Ok(())
                         }
-                    }
+                    })
                 })
             }
         },
