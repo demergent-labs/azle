@@ -3,7 +3,6 @@ import { blob } from '../candid/types/constructed/blob';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { v4 } from 'uuid';
 import { text } from '../candid/types/primitive/text';
-import { encode } from '../candid/serde/encode';
 
 /**
  * Performs an asynchronous call to another canister using the [System API](
@@ -54,7 +53,7 @@ export function callRaw(
 
         const canisterIdBytes = canisterId.toUint8Array().buffer;
         const argsRawBuffer = argsRaw.buffer;
-        const paymentCandidBytes = encode(nat64, payment).buffer;
+        const paymentString = payment.toString();
 
         // TODO consider finally, what if deletion goes wrong
         try {
@@ -63,7 +62,7 @@ export function callRaw(
                 canisterIdBytes,
                 method,
                 argsRawBuffer,
-                paymentCandidBytes
+                paymentString
             );
         } catch (error) {
             delete globalThis._azleResolveIds[globalResolveId];

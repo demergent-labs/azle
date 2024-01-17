@@ -10,14 +10,14 @@ export type AzleIc = {
         canisterIdBytes: ArrayBufferLike,
         method: string,
         argsRaw: ArrayBufferLike,
-        paymentCandidBytes: ArrayBufferLike
+        paymentString: string
     ) => void;
     callRaw128: (
         promiseId: string,
         canisterIdBytes: ArrayBufferLike,
         method: string,
         argsRaw: ArrayBufferLike,
-        paymentCandidBytes: ArrayBufferLike
+        paymentString: string
     ) => void;
     caller: () => ArrayBufferLike;
     candidDecode: (candidBytes: ArrayBufferLike) => string;

@@ -1,3 +1,5 @@
+use std::{cell::RefCell, collections::BTreeMap, convert::TryInto};
+
 #[allow(unused)]
 use canister_methods::canister_methods;
 use ic_stable_structures::{
@@ -5,8 +7,6 @@ use ic_stable_structures::{
     storable::Bound,
     DefaultMemoryImpl, StableBTreeMap, Storable,
 };
-use std::collections::BTreeMap;
-use std::{cell::RefCell, convert::TryInto};
 use wasmedge_quickjs::AsObject;
 
 mod ic;

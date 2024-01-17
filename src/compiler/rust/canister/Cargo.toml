@@ -20,5 +20,5 @@ ic-cdk-macros = "0.7.0"
 ic-wasi-polyfill = { git = "https://github.com/wasm-forge/ic-wasi-polyfill", rev = "1693665ed57adc4f997a0313555ec0b0b5de1c07", features = [
     "transient",
 ] }
-wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "09edab8fbfa15e17f91d834003589fc7e60357ba" }
+wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "218238f970b2d1c3e34d712c6be9f558b8364716" }
 # wasmedge_quickjs = { path = "/home/wasmedge-quickjs" }

@@ -1,8 +1,8 @@
 // mod accept_message;
 mod arg_data_raw;
 mod arg_data_raw_size;
-// mod call_raw;
-// mod call_raw128;
+mod call_raw;
+mod call_raw128;
 mod caller;
 mod candid_decode;
 mod candid_encode;
@@ -81,18 +81,17 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
             .into(),
     );
 
-    // ic.set_property(
-    //     "callRaw",
-    //     context.wrap_callback2(call_raw::native_function).unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "callRaw128",
-    //     context
-    //         .wrap_callback2(call_raw128::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+    ic.set(
+        "callRaw",
+        context.new_function::<call_raw::NativeFunction>("").into(),
+    );
+
+    ic.set(
+        "callRaw128",
+        context
+            .new_function::<call_raw128::NativeFunction>("")
+            .into(),
+    );
 
     ic.set(
         "caller",
