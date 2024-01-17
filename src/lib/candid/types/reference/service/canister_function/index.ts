@@ -164,7 +164,7 @@ function serviceCall(
     paramCandidTypes: CandidType[],
     returnCandidType: CandidType
 ) {
-    return async (
+    return (
         notify: boolean,
         callFunction: CallRawFunction | NotifyRawFunction,
         cycles: bigint,
@@ -184,14 +184,16 @@ function serviceCall(
                 throw error;
             }
         } else {
-            const encodedResult = await (callFunction as CallRawFunction)(
-                canisterId,
-                methodName,
-                encodedArgs,
-                cycles
-            );
+            return (async () => {
+                const encodedResult = await (callFunction as CallRawFunction)(
+                    canisterId,
+                    methodName,
+                    encodedArgs,
+                    cycles
+                );
 
-            return decode(returnCandidType, encodedResult);
+                return decode(returnCandidType, encodedResult);
+            })();
         }
     };
 }
