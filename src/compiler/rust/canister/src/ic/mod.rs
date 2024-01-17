@@ -1,4 +1,4 @@
-// mod accept_message;
+mod accept_message;
 mod arg_data_raw;
 mod arg_data_raw_size;
 mod call_raw;
@@ -14,7 +14,7 @@ mod data_certificate;
 mod id;
 mod instruction_counter;
 mod is_controller;
-// mod method_name;
+mod method_name;
 // mod msg_cycles_accept;
 // mod msg_cycles_accept128;
 // mod msg_cycles_available;
@@ -25,8 +25,8 @@ mod notify_raw;
 mod performance_counter;
 mod print;
 mod reject;
-// mod reject_code;
-// mod reject_message;
+mod reject_code;
+mod reject_message;
 mod reply_raw;
 mod set_certified_data;
 mod set_timer;
@@ -59,13 +59,12 @@ use wasmedge_quickjs::AsObject;
 pub fn register(context: &mut wasmedge_quickjs::Context) {
     let mut ic = context.new_object();
 
-    // ic.set_property(
-    //     "acceptMessage",
-    //     context
-    //         .wrap_callback2(accept_message::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+    ic.set(
+        "acceptMessage",
+        context
+            .new_function::<accept_message::NativeFunction>("")
+            .into(),
+    );
 
     ic.set(
         "argDataRaw",
@@ -163,13 +162,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
             .into(),
     );
 
-    // ic.set_property(
-    //     "methodName",
-    //     context
-    //         .wrap_callback2(method_name::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+    ic.set(
+        "methodName",
+        context
+            .new_function::<method_name::NativeFunction>("")
+            .into(),
+    );
+
     // ic.set_property(
     //     "msgCyclesAccept",
     //     context
@@ -237,20 +236,19 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         context.new_function::<reject::NativeFunction>("").into(),
     );
 
-    // ic.set_property(
-    //     "rejectCode",
-    //     context
-    //         .wrap_callback2(reject_code::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
-    // ic.set_property(
-    //     "rejectMessage",
-    //     context
-    //         .wrap_callback2(reject_message::native_function)
-    //         .unwrap(),
-    // )
-    // .unwrap();
+    ic.set(
+        "rejectCode",
+        context
+            .new_function::<reject_code::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "rejectMessage",
+        context
+            .new_function::<reject_message::NativeFunction>("")
+            .into(),
+    );
 
     ic.set(
         "replyRaw",
