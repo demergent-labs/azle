@@ -24,7 +24,8 @@ FloatClass.prototype.valueToString = (x): string => {
 };
 
 export type Canister = {
-    deployArgs: string[] | undefined;
+    initArgs: string[] | undefined;
+    postUpgradeArgs: string[] | undefined;
     sourceCode: string;
     tests: Test[][];
 };
@@ -72,12 +73,21 @@ export function CanisterArb<
             ...(config.updateMethods ?? [])
         ];
 
-        const deployArgs = config.initMethod?.params.map((param) => {
+        const initArgs = config.initMethod?.params.map((param) => {
             const value = param.value.value;
             return value.runtimeCandidTypeObject
                 .getIdl([])
                 .valueToString(value.agentArgumentValue);
         });
+
+        const postUpgradeArgs = config.postUpgradeMethod?.params.map(
+            (param) => {
+                const value = param.value.value;
+                return value.runtimeCandidTypeObject
+                    .getIdl([])
+                    .valueToString(value.agentArgumentValue);
+            }
+        );
 
         const sourceCode = generateSourceCode(
             config.globalDeclarations ?? [],
@@ -108,7 +118,8 @@ export function CanisterArb<
         );
 
         return {
-            deployArgs,
+            initArgs,
+            postUpgradeArgs,
             sourceCode,
             tests
         };

@@ -19,9 +19,15 @@ export function generateTests(
                 name: `post upgrade method`,
                 test: async () => {
                     const actor = getActor('./tests/post_upgrade_method/test');
-                    const result = await actor.getPostDeployValues();
+                    const result = await actor.getPostUpgradeValues();
 
-                    const valuesAreEqual = deepEqual(result, expectedResult);
+                    const isInitCalled = await actor.isInitCalled();
+                    const InitHookExecuted = await actor.getInitHookExecuted();
+                    const wasInitCalled = isInitCalled && InitHookExecuted;
+
+                    const valuesAreEqual =
+                        deepEqual(result, expectedResult) &&
+                        wasInitCalled === false;
 
                     return valuesAreEqual
                         ? { Ok: true }

@@ -25,33 +25,35 @@ export function CandidValueAndMetaArbGenerator<
             fc.constant(candidDefinition),
             ValueArb(candidDefinition, recursiveShapes, valueConstraints)
         );
-    }).map(
-        ([
-            {
-                candidMeta: {
-                    candidTypeAnnotation,
-                    candidTypeObject,
-                    runtimeCandidTypeObject,
-                    variableAliasDeclarations,
-                    imports
-                }
-            },
-            { agentArgumentValue, agentResponseValue, valueLiteral }
-        ]) => {
-            return {
-                src: {
-                    candidTypeAnnotation,
-                    candidTypeObject,
-                    variableAliasDeclarations,
-                    imports,
-                    valueLiteral
-                },
-                value: {
-                    agentArgumentValue,
-                    agentResponseValue,
-                    runtimeCandidTypeObject
-                }
-            };
+    }).map(([definition, value]) => {
+        return definitionAndValueToValueAndMeta(definition, value);
+    });
+}
+
+export function definitionAndValueToValueAndMeta(
+    definition: CandidDefinition,
+    value: CandidValues<CorrespondingJSType>
+): CandidValueAndMeta<CorrespondingJSType> {
+    const {
+        candidTypeAnnotation,
+        candidTypeObject,
+        imports,
+        variableAliasDeclarations,
+        runtimeCandidTypeObject
+    } = definition.candidMeta;
+    const { valueLiteral, agentArgumentValue, agentResponseValue } = value;
+    return {
+        src: {
+            candidTypeAnnotation,
+            candidTypeObject,
+            imports,
+            valueLiteral,
+            variableAliasDeclarations
+        },
+        value: {
+            agentArgumentValue,
+            agentResponseValue,
+            runtimeCandidTypeObject
         }
-    );
+    };
 }

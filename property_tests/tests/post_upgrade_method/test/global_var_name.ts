@@ -1,3 +1,7 @@
-export function globalVarName(i: number) {
-    return `postDeployParam${i}`;
+export function globalInitVarName(i: number) {
+    return `initParam${i}`;
+}
+
+export function globalPostUpgradeVarName(i: number) {
+    return `postUpgradeParam${i}`;
 }
