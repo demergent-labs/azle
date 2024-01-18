@@ -7,6 +7,7 @@
             "build": "npx azle canister",
             "wasm": ".azle/canister/canister.wasm",
             "gzip": true,
+            "opt_level": "1",
             "declarations": {
                 "output": "test/dfx_generated/canister",
                 "node_compatibility": true
