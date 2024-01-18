@@ -20,10 +20,10 @@ export function CandidValueAndMetaArbGenerator<
 ): fc.Arbitrary<CandidValueAndMeta<any>> {
     return DefinitionArb.chain((candidDefinitionAndShapes) => {
         const candidDefinition = candidDefinitionAndShapes.definition;
-        const recursiveShape = candidDefinitionAndShapes.recursiveShapes;
+        const recursiveShapes = candidDefinitionAndShapes.recursiveShapes;
         return fc.tuple(
             fc.constant(candidDefinition),
-            ValueArb(candidDefinition, recursiveShape, valueConstraints)
+            ValueArb(candidDefinition, recursiveShapes, valueConstraints)
         );
     }).map(
         ([

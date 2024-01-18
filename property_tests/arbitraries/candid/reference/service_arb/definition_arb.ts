@@ -39,7 +39,6 @@ export function ServiceDefinitionArb(
                     },
                     {}
                 );
-                useTypeDeclaration = true;
 
                 const candidTypeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
