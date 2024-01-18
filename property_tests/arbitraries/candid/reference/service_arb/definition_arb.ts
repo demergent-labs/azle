@@ -22,7 +22,7 @@ export function ServiceDefinitionArb(
             fc.uniqueArray(ServiceMethodArb(fieldCandidDefArb), {
                 selector: (entry) => entry.definition.name
             }),
-            fc.boolean()
+            fc.constant(true) // TODO This needs to be true, I don't know why we set up to be an arbitrary boolean if it has to be true
         )
         .map(
             ([
