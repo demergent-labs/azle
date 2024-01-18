@@ -1,10 +1,25 @@
-import fc from 'fast-check';
+import fc, { ArrayConstraints } from 'fast-check';
 import { Vec } from '.';
 import { CandidType } from '../../candid_type';
 import { CorrespondingJSType } from '../../corresponding_js_type';
-import { VecCandidDefinition } from '../../candid_definition_arb/types';
+import {
+    CandidDefinition,
+    OptCandidDefinition,
+    RecordCandidDefinition,
+    TupleCandidDefinition,
+    VariantCandidDefinition,
+    VecCandidDefinition
+} from '../../candid_definition_arb/types';
 import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 import { RecursiveShapes } from '../../recursive';
+
+/*
+https://github.com/dfinity/candid/blob/491969f34dd791e51f69c5f8d3c6192ae405b839/spec/Candid.md#memory
+Set size limit to follow candid spec
+const NULL_VEC_SIZE_LIMIT = 2_000_000;
+*/
+// TODO set to zero until the limit is unified on both the canister and client side as per https://github.com/demergent-labs/azle/issues/1538
+const EMPTYISH_VEC_SIZE_LIMIT = 0;
 
 export function VecValuesArb(
     vecDefinition: VecCandidDefinition,
@@ -18,7 +33,7 @@ export function VecValuesArb(
     }
     const arbitraryMemberValues = fc
         .tuple(
-            fc.array(fc.constant(null)),
+            fc.array(fc.constant(null), determineVecConstraints(vecDefinition)),
             fc.constant(vecDefinition.innerType)
         )
         .chain(([arrayTemplate, innerType]) =>
@@ -45,6 +60,15 @@ export function VecValuesArb(
             agentResponseValue
         };
     });
+}
+
+function determineVecConstraints(
+    vecDefinition: VecCandidDefinition
+): ArrayConstraints | undefined {
+    if (isEmptyInnerType(vecDefinition.innerType)) {
+        return { maxLength: EMPTYISH_VEC_SIZE_LIMIT };
+    }
+    return;
 }
 
 function generateEmptyVec(innerCandidType: CandidType): CandidValues<Vec> {
@@ -147,4 +171,55 @@ function typeArray<T extends CorrespondingJSType>(
     }
 
     return arr;
+}
+
+/**
+ * In order to prevent DoS attacks empty inner types can only be of length 0.
+ * Empty types are null, empty record, empty tuple, record with one field that
+ * is a null, tuple with one field that is a null.
+ * Lets start with a vec or null, or vec or tuple where all the fields are null,
+ * or vec or record where all things are null or vec or variant where things are
+ * null
+ * https://github.com/demergent-labs/azle/issues/1524
+ * @param innerType
+ * @returns
+ */
+function isEmptyInnerType(innerType: CandidDefinition): boolean {
+    if (innerType.candidMeta.candidType === 'Null') {
+        return true;
+    }
+    if (
+        innerType.candidMeta.candidType === 'Record' ||
+        innerType.candidMeta.candidType === 'Tuple' ||
+        innerType.candidMeta.candidType === 'Variant' ||
+        innerType.candidMeta.candidType === 'Opt'
+    ) {
+        return areAllFieldsNull(innerType);
+    }
+    return false;
+}
+
+function areAllFieldsNull(innerType: CandidDefinition): boolean {
+    if (
+        innerType.candidMeta.candidType === 'Record' ||
+        innerType.candidMeta.candidType === 'Variant'
+    ) {
+        const multiInnerType = innerType as
+            | RecordCandidDefinition
+            | VariantCandidDefinition;
+        return multiInnerType.innerTypes.every((innerType) =>
+            isEmptyInnerType(innerType[1])
+        );
+    }
+    if (innerType.candidMeta.candidType === 'Tuple') {
+        const multiInnerType = innerType as TupleCandidDefinition;
+        return multiInnerType.innerTypes.every((innerType) =>
+            isEmptyInnerType(innerType)
+        );
+    }
+    if (innerType.candidMeta.candidType === 'Opt') {
+        const optInnerType = innerType as OptCandidDefinition;
+        return isEmptyInnerType(optInnerType.innerType);
+    }
+    return false;
 }

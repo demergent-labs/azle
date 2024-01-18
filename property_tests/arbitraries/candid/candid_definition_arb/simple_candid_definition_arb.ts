@@ -58,7 +58,7 @@ export function primitiveCandidDefinitionArb(
         { arbitrary: Nat16DefinitionArb(), weight: constraints.nat16 ?? 1 },
         { arbitrary: Nat32DefinitionArb(), weight: constraints.nat32 ?? 1 },
         { arbitrary: Nat64DefinitionArb(), weight: constraints.nat64 ?? 1 },
-        { arbitrary: NullDefinitionArb(), weight: constraints.null ?? 0 }, // TODO Null must be excluded until https://github.com/demergent-labs/azle/issues/1453 gets resolved
+        { arbitrary: NullDefinitionArb(), weight: constraints.null ?? 1 },
         { arbitrary: TextDefinitionArb(), weight: constraints.text ?? 1 },
         {
             arbitrary: PrincipalDefinitionArb(),
