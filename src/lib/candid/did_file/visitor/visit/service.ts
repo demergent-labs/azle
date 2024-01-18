@@ -125,7 +125,7 @@ function createCanisterParamsString(
     }
     const parts = initMethodCandidString[0].split('->');
     if (parts.length >= 2) {
-        return parts[0].trim();
+        return parts.slice(0, -1).join('->').trim();
     }
     return '()'; // If we can't find any init or post upgrade params return empty ()
 }

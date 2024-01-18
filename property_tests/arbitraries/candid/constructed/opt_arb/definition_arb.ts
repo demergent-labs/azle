@@ -4,6 +4,7 @@ import {
     CandidDefinition,
     OptCandidDefinition
 } from '../../candid_definition_arb/types';
+import { CandidType, Opt } from '../../../../../src/lib';
 
 export function OptDefinitionArb(
     candidTypeArbForInnerType: fc.Arbitrary<CandidDefinition>
@@ -27,6 +28,9 @@ export function OptDefinitionArb(
                 innerType
             );
 
+            const runtimeCandidTypeObject =
+                generateRuntimeCandidTypeObject(innerType);
+
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 useTypeDeclaration,
                 name,
@@ -39,6 +43,7 @@ export function OptDefinitionArb(
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
+                    runtimeCandidTypeObject,
                     variableAliasDeclarations,
                     imports,
                     candidType: 'Opt'
@@ -88,6 +93,12 @@ function generateCandidTypeObject(
     }
 
     return `Opt(${innerType.candidMeta.candidTypeObject})`;
+}
+
+function generateRuntimeCandidTypeObject(
+    innerType: CandidDefinition
+): CandidType {
+    return Opt(innerType.candidMeta.runtimeCandidTypeObject);
 }
 
 function generateImports(innerType: CandidDefinition): Set<string> {

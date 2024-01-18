@@ -2,25 +2,69 @@ import fc from 'fast-check';
 import { QueryMethod } from './canister_methods/query_method_arb';
 import { Test } from '../../test';
 import { UpdateMethod } from './canister_methods/update_method_arb';
+import { InitMethod } from './canister_methods/init_method_arb';
+import { CorrespondingJSType } from './candid/corresponding_js_type';
+import { TextClass, FloatClass } from '@dfinity/candid/lib/cjs/idl';
+
+TextClass.prototype.valueToString = (x): string => {
+    return `"${escapeForBash(x)}"`;
+};
+
+/**
+ * If a float doesn't have a decimal it won't serialize properly, so 10 while
+ * is a float won't serialize unless it's 10.0
+ */
+FloatClass.prototype.valueToString = (x): string => {
+    const floatString = x.toString();
+    if (floatString.includes('.') || floatString.includes('e')) {
+        return floatString;
+    }
+    return floatString + '.0';
+};
 
 export type Canister = {
+    deployArgs: string[] | undefined;
     sourceCode: string;
     tests: Test[][];
 };
 
-export type CanisterConfig = {
+export type CanisterConfig<
+    ParamAgentArgumentValue extends CorrespondingJSType = undefined,
+    ParamAgentResponseValue = undefined
+> = {
     globalDeclarations?: string[];
+    initMethod?: InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>;
     queryMethods?: QueryMethod[];
     updateMethods?: UpdateMethod[];
 };
 
 // TODO: Update the signature to support init, pre/post upgrade, heartbeat, etc.
-export function CanisterArb(configArb: fc.Arbitrary<CanisterConfig>) {
+export function CanisterArb<
+    ParamAgentArgumentValue extends CorrespondingJSType,
+    ParamAgentResponseValue
+>(
+    configArb: fc.Arbitrary<
+        CanisterConfig<ParamAgentArgumentValue, ParamAgentResponseValue>
+    >
+) {
     return configArb.map((config): Canister => {
-        const canisterMethods: (QueryMethod | UpdateMethod)[] = [
+        const canisterMethods: (
+            | QueryMethod
+            | UpdateMethod
+            | InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
+        )[] = [
+            ...(config.initMethod ? [config.initMethod] : []),
             ...(config.queryMethods ?? []),
             ...(config.updateMethods ?? [])
         ];
+
+        const deployArgs = config.initMethod?.params.map(
+            ({ value: { value } }) => {
+                return value.runtimeCandidTypeObject
+                    .getIdl([])
+                    .valueToString(value.agentArgumentValue);
+            }
+        );
 
         const sourceCode = generateSourceCode(
             config.globalDeclarations ?? [],
@@ -51,6 +95,7 @@ export function CanisterArb(configArb: fc.Arbitrary<CanisterConfig>) {
         );
 
         return {
+            deployArgs,
             sourceCode,
             tests
         };
@@ -70,7 +115,9 @@ function generateSourceCode(
                 ['Canister', 'query', 'update']
             )
         )
-    ].join();
+    ]
+        .sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }))
+        .join();
 
     const declarationsFromCanisterMethods = canisterMethods.flatMap(
         (method) => method.globalDeclarations
@@ -85,14 +132,27 @@ function generateSourceCode(
 
     return /*TS*/ `
         import { ${imports} } from 'azle';
-        
+
         // @ts-ignore
         import deepEqual from 'deep-is';
 
+        // #region Declarations
         ${declarations}
+        // #endregion Declarations
 
         export default Canister({
             ${sourceCodes.join(',\n    ')}
         });
     `;
+}
+
+function escapeCandidStringForBash(input: string) {
+    return `"${escapeForBash(input.slice(1, -1))}"`;
+}
+
+function escapeForBash(input: string) {
+    return input
+        .replace(/\\/g, '\\\\') // Escape backslashes
+        .replace(/'/g, "'\\''") // Escape single quotes
+        .replace(/"/g, '\\"'); // Escape double quotes
 }

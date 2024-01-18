@@ -10,16 +10,21 @@ export function CandidValueAndMetaArbGenerator<
     V extends CandidValues<T>
 >(
     DefinitionArb: fc.Arbitrary<D>,
-    ValueArb: (arb: D) => fc.Arbitrary<V>
+    ValueArb: (arb: D, constraints?: any) => fc.Arbitrary<V>,
+    valueConstraints?: any
 ): fc.Arbitrary<CandidValueAndMeta<any>> {
     return DefinitionArb.chain((candidDefinition) =>
-        fc.tuple(fc.constant(candidDefinition), ValueArb(candidDefinition))
+        fc.tuple(
+            fc.constant(candidDefinition),
+            ValueArb(candidDefinition, valueConstraints)
+        )
     ).map(
         ([
             {
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
+                    runtimeCandidTypeObject,
                     variableAliasDeclarations,
                     imports
                 }
@@ -34,8 +39,11 @@ export function CandidValueAndMetaArbGenerator<
                     imports,
                     valueLiteral
                 },
-                agentArgumentValue,
-                agentResponseValue
+                value: {
+                    agentArgumentValue,
+                    agentResponseValue,
+                    runtimeCandidTypeObject
+                }
             };
         }
     );

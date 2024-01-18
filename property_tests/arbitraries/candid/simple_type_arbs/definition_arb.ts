@@ -2,6 +2,7 @@ import fc from 'fast-check';
 import { PrimitiveDefinition } from '../candid_definition_arb/types';
 import { SimpleCandidType } from '../candid_type';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
+import { candidTypeToRuntimeCandidTypeObject } from './candid_type_to_azle_candid_type';
 
 export function SimpleCandidDefinitionArb(
     candidType: SimpleCandidType
@@ -11,6 +12,8 @@ export function SimpleCandidDefinitionArb(
         .map(([name, useTypeDeclaration]) => {
             const candidTypeAnnotation = candidType;
             const candidTypeObject = useTypeDeclaration ? name : candidType;
+            const runtimeCandidTypeObject =
+                candidTypeToRuntimeCandidTypeObject(candidType);
             const imports = new Set([candidType]);
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 name,
@@ -22,6 +25,7 @@ export function SimpleCandidDefinitionArb(
                     candidTypeAnnotation,
                     candidTypeObject,
                     candidType,
+                    runtimeCandidTypeObject,
                     imports,
                     variableAliasDeclarations
                 }

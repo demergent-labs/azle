@@ -4,6 +4,7 @@ import {
     CandidDefinition,
     VecCandidDefinition
 } from '../../candid_definition_arb/types';
+import { CandidType, Vec } from '../../../../../src/lib';
 
 export function VecDefinitionArb(
     candidTypeArb: fc.Arbitrary<CandidDefinition>
@@ -27,6 +28,9 @@ export function VecDefinitionArb(
                 innerType
             );
 
+            const runtimeCandidTypeObject =
+                generateRuntimeCandidTypeObject(innerType);
+
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 useTypeDeclaration,
                 name,
@@ -39,6 +43,7 @@ export function VecDefinitionArb(
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
+                    runtimeCandidTypeObject,
                     variableAliasDeclarations,
                     imports,
                     candidType: 'Vec'
@@ -92,4 +97,10 @@ function generateCandidTypeObject(
     }
 
     return `Vec(${innerType.candidMeta.candidTypeObject})`;
+}
+
+function generateRuntimeCandidTypeObject(
+    innerType: CandidDefinition
+): CandidType {
+    return Vec(innerType.candidMeta.runtimeCandidTypeObject);
 }

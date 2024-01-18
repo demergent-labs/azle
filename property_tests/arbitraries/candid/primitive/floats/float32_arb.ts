@@ -1,4 +1,4 @@
-import fc from 'fast-check';
+import fc, { sample } from 'fast-check';
 import { floatToSrcLiteral } from '../../to_src_literal/float';
 import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
 import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
@@ -23,7 +23,9 @@ export function Float32DefinitionArb(): fc.Arbitrary<FloatCandidDefinition> {
 // TODO the agent should encode and decode -0 correctly
 export function Float32ValueArb(): fc.Arbitrary<CandidValues<number>> {
     return SimpleCandidValuesArb(
-        fc.float().map((sample) => (sample === 0 ? sample * 0 : sample)),
+        fc
+            .float32Array({ maxLength: 1, minLength: 1 })
+            .map((sample) => (sample[0] === 0 ? sample[0] * 0 : sample[0])),
         floatToSrcLiteral
     );
 }

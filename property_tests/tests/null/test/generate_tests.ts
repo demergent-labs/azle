@@ -16,7 +16,7 @@ export function generateTests(
 
                     const result = await actor[functionName](
                         ...namedParamNulls.map(
-                            (param) => param.el.agentArgumentValue
+                            (param) => param.value.value.agentArgumentValue
                         )
                     );
 

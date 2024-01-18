@@ -7,8 +7,8 @@ import { Test } from '../../../test';
 export type BodyGenerator<
     ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue,
-    ReturnTypeAgentArgumentValue extends CorrespondingJSType,
-    ReturnTypeAgentResponseValue
+    ReturnTypeAgentArgumentValue extends CorrespondingJSType = undefined,
+    ReturnTypeAgentResponseValue = undefined
 > = (
     namedParams: Named<
         CandidValueAndMeta<ParamAgentArgumentValue, ParamAgentResponseValue>
@@ -22,8 +22,8 @@ export type BodyGenerator<
 export type TestsGenerator<
     ParamAgentArgumentValue extends CorrespondingJSType,
     ParamAgentResponseValue,
-    ReturnTypeAgentArgumentValue extends CorrespondingJSType,
-    ReturnTypeAgentResponseValue
+    ReturnTypeAgentArgumentValue extends CorrespondingJSType = undefined,
+    ReturnTypeAgentResponseValue = undefined
 > = (
     methodName: string,
     namedParams: Named<
