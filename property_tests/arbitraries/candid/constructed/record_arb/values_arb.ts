@@ -3,15 +3,21 @@ import { Record } from './index';
 import { RecordCandidDefinition } from '../../candid_definition_arb/types';
 import { CandidValues, CandidValueArb } from '../../candid_values_arb';
 import { CorrespondingJSType } from '../../corresponding_js_type';
+import { RecursiveShapes } from '../../recursive';
 
 type Field = [string, CandidValues<CorrespondingJSType>];
 type ArbField = [string, fc.Arbitrary<CandidValues<CorrespondingJSType>>];
 
 export function RecordValuesArb(
-    recordDefinition: RecordCandidDefinition
+    recordDefinition: RecordCandidDefinition,
+    recursiveShapes: RecursiveShapes,
+    depthLevel: number
 ): fc.Arbitrary<CandidValues<Record>> {
     const fieldValues = recordDefinition.innerTypes.map(([name, innerType]) => {
-        const result: ArbField = [name, CandidValueArb(innerType)];
+        const result: ArbField = [
+            name,
+            CandidValueArb(innerType, recursiveShapes, depthLevel - 1)
+        ];
         return result;
     });
     const arbitraryFieldValues = fieldValues.map(([key, arbValue]) =>

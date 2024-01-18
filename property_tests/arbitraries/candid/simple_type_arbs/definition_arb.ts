@@ -1,15 +1,23 @@
 import fc from 'fast-check';
-import { PrimitiveDefinition } from '../candid_definition_arb/types';
+import {
+    PrimitiveDefinition,
+    WithShapes,
+    WithShapesArb
+} from '../candid_definition_arb/types';
 import { SimpleCandidType } from '../candid_type';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { candidTypeToRuntimeCandidTypeObject } from './candid_type_to_azle_candid_type';
 
 export function SimpleCandidDefinitionArb(
-    candidType: SimpleCandidType
-): fc.Arbitrary<PrimitiveDefinition> {
+    candidType: SimpleCandidType,
+    useVariableAliasDeclaration?: boolean
+): WithShapesArb<PrimitiveDefinition> {
     return fc
-        .tuple(UniqueIdentifierArb('typeDeclaration'), fc.boolean())
-        .map(([name, useTypeDeclaration]) => {
+        .tuple(
+            UniqueIdentifierArb('typeDeclaration'),
+            useVariableAliasDeclarationArb(useVariableAliasDeclaration)
+        )
+        .map(([name, useTypeDeclaration]): WithShapes<PrimitiveDefinition> => {
             const candidTypeAnnotation = candidType;
             const candidTypeObject = useTypeDeclaration ? name : candidType;
             const runtimeCandidTypeObject =
@@ -21,16 +29,27 @@ export function SimpleCandidDefinitionArb(
                 useTypeDeclaration
             );
             return {
-                candidMeta: {
-                    candidTypeAnnotation,
-                    candidTypeObject,
-                    candidType,
-                    runtimeCandidTypeObject,
-                    imports,
-                    variableAliasDeclarations
-                }
+                definition: {
+                    candidMeta: {
+                        candidTypeAnnotation,
+                        candidTypeObject,
+                        candidType,
+                        runtimeCandidTypeObject,
+                        imports,
+                        variableAliasDeclarations
+                    }
+                },
+                recursiveShapes: {}
             };
         });
+}
+
+function useVariableAliasDeclarationArb(
+    useVariableAliasDeclaration: boolean | undefined
+): fc.Arbitrary<boolean> {
+    return useVariableAliasDeclaration === undefined
+        ? fc.boolean()
+        : fc.constant(useVariableAliasDeclaration);
 }
 
 function generateVariableAliasDeclarations(
