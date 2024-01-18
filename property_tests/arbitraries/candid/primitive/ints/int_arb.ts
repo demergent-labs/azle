@@ -16,5 +16,8 @@ export function IntDefinitionArb(): fc.Arbitrary<IntCandidDefinition> {
 }
 
 export function IntValueArb(): fc.Arbitrary<CandidValues<bigint>> {
-    return SimpleCandidValuesArb(fc.bigInt(), bigintToSrcLiteral);
+    return SimpleCandidValuesArb(
+        fc.bigInt(-1000000000000000000n, 1000000000000000000n), // TODO Remove min and max once https://github.com/second-state/wasmedge-quickjs/issues/125
+        bigintToSrcLiteral
+    );
 }
