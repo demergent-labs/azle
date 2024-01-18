@@ -29,4 +29,4 @@ const CanisterConfigArb = fc
         return { queryMethods };
     });
 
-runPropTests(CanisterArb(CanisterConfigArb));
+runPropTests(CanisterArb(CanisterConfigArb), true);
