@@ -5,8 +5,13 @@ import {
     VariantCandidDefinition
 } from '../../candid_definition_arb/types';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import { CandidType, Variant } from '../../../../../src/lib';
 
 type Field = [string, CandidDefinition];
+
+type RuntimeVariant = {
+    [key: string]: CandidType;
+};
 
 export function VariantDefinitionArb(
     candidTypeArbForFields: fc.Arbitrary<CandidDefinition>
@@ -30,6 +35,9 @@ export function VariantDefinitionArb(
                 fields
             );
 
+            const runtimeCandidTypeObject =
+                generateRuntimeCandidTypeObject(fields);
+
             const variableAliasDeclarations = generateVariableAliasDeclarations(
                 useTypeDeclaration,
                 name,
@@ -42,6 +50,7 @@ export function VariantDefinitionArb(
                 candidMeta: {
                     candidTypeAnnotation,
                     candidTypeObject,
+                    runtimeCandidTypeObject,
                     variableAliasDeclarations,
                     imports,
                     candidType: 'Variant'
@@ -119,4 +128,18 @@ function generateCandidTypeObject(
                 `${fieldName}: ${fieldDataType.candidMeta.candidTypeObject}`
         )
         .join(',')}})`;
+}
+
+function generateRuntimeCandidTypeObject(fields: Field[]): CandidType {
+    const azleVariantConstructorObj = fields.reduce(
+        (acc, [fieldName, fieldDefinition]): RuntimeVariant => {
+            return {
+                ...acc,
+                [fieldName]: fieldDefinition.candidMeta.runtimeCandidTypeObject
+            };
+        },
+        {}
+    );
+
+    return Variant(azleVariantConstructorObj);
 }

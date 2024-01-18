@@ -8,7 +8,7 @@ export function generateTests(
     namedParamVariants: Named<CandidValueAndMeta<Variant>>[],
     returnVariant: CandidValueAndMeta<Variant>
 ): Test[][] {
-    const expectedResult = returnVariant.agentResponseValue;
+    const expectedResult = returnVariant.value.agentResponseValue;
 
     return [
         [
@@ -19,7 +19,7 @@ export function generateTests(
 
                     const result = await actor[functionName](
                         ...namedParamVariants.map(
-                            (param) => param.el.agentArgumentValue
+                            (param) => param.value.value.agentArgumentValue
                         )
                     );
 

@@ -6,10 +6,10 @@ export function areParamsCorrectlyOrdered<T extends CorrespondingJSType>(
     params: Named<CandidValueAndMeta<T>>[]
 ) {
     return params
-        .map(({ name, el }) => {
+        .map(({ name, value }) => {
             const areEqual = `deepEqual(
                 ${name},
-                ${el.src.valueLiteral}
+                ${value.src.valueLiteral}
             )`;
 
             return `if (!${areEqual}) {console.log('value', ${name}); throw new Error('${name} is incorrectly ordered');}`;

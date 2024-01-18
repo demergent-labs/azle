@@ -5,18 +5,20 @@ import { CandidValues } from '../../candid_values_arb';
 import { PrincipalArb } from '../principal_arb';
 
 export function FuncValueArb(): fc.Arbitrary<CandidValues<Func>> {
-    return fc.tuple(TextArb(), PrincipalArb()).map(([name, principal]) => {
-        const value: Func = [
-            principal.agentArgumentValue,
-            name.agentArgumentValue
-        ];
+    return fc
+        .tuple(TextArb({ isJsFunctionName: true }), PrincipalArb())
+        .map(([name, principal]) => {
+            const value: Func = [
+                principal.value.agentArgumentValue,
+                name.value.agentArgumentValue
+            ];
 
-        const valueLiteral = `[${principal.src.valueLiteral}, ${name.src.valueLiteral}]`;
+            const valueLiteral = `[${principal.src.valueLiteral}, ${name.src.valueLiteral}]`;
 
-        return {
-            valueLiteral,
-            agentArgumentValue: value,
-            agentResponseValue: value
-        };
-    });
+            return {
+                valueLiteral,
+                agentArgumentValue: value,
+                agentResponseValue: value
+            };
+        });
 }
