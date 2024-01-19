@@ -1,7 +1,7 @@
 import fc from 'fast-check';
 
 import { deepEqual, getActor, runPropTests } from 'azle/property_tests';
-import { CandidValueAndMetaArbWithoutFuncs as CandidValueAndMetaArb } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
+import { CandidValueAndMetaArb } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { CandidReturnTypeArb } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
 import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
 import {
@@ -83,10 +83,10 @@ runPropTests(CanisterArb(CanisterConfigArb));
 
 function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
     return {
-        imports: new Set(['bool', 'query', 'StableBTreeMap', 'text']),
+        imports: new Set(['bool', 'query', 'StableBTreeMap', 'text', 'Opt']),
         globalDeclarations: [],
-        sourceCode: /*TS*/ `getPreUpgradeExecuted: query([], bool,() => {
-            return stable.get(PRE_UPGRADE_HOOK_EXECUTED).Some === true
+        sourceCode: /*TS*/ `getPreUpgradeExecuted: query([], Opt(bool),() => {
+            return stable.get(PRE_UPGRADE_HOOK_EXECUTED)
         })`,
         tests: [
             [
@@ -96,7 +96,7 @@ function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
                         const actor = getActor(__dirname);
                         const result = await actor.getPreUpgradeExecuted();
 
-                        return { Ok: deepEqual(result, false) };
+                        return { Ok: deepEqual(result, []) };
                     }
                 }
             ],
@@ -107,7 +107,7 @@ function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
                         const actor = getActor(__dirname);
                         const result = await actor.getPreUpgradeExecuted();
 
-                        return { Ok: deepEqual(result, false) };
+                        return { Ok: deepEqual(result, [true]) };
                     }
                 }
             ]

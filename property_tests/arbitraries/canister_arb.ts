@@ -169,10 +169,6 @@ function generateSourceCode(
     `;
 }
 
-function escapeCandidStringForBash(input: string) {
-    return `"${escapeForBash(input.slice(1, -1))}"`;
-}
-
 function escapeForBash(input: string) {
     return input
         .replace(/\\/g, '\\\\') // Escape backslashes
