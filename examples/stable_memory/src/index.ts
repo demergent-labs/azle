@@ -1,5 +1,7 @@
 import { blob, Canister, ic, nat32, nat64, query, update, Void } from 'azle';
 
+const STABLE_BYTES_SIZE = 655_360;
+
 export default Canister({
     stableSize: query([], nat32, () => {
         return ic.stableSize();
@@ -26,6 +28,6 @@ export default Canister({
         return ic.stable64Read(offset, length);
     }),
     stableBytes: query([], blob, () => {
-        return ic.stableBytes();
+        return ic.stableBytes().slice(0, STABLE_BYTES_SIZE);
     })
 });

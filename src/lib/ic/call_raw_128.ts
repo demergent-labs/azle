@@ -54,7 +54,7 @@ export function callRaw128(
 
         const canisterIdBytes = canisterId.toUint8Array().buffer;
         const argsRawBuffer = argsRaw.buffer;
-        const paymentCandidBytes = encode(nat, payment).buffer;
+        const paymentString = payment.toString();
 
         // TODO consider finally, what if deletion goes wrong
         try {
@@ -63,7 +63,7 @@ export function callRaw128(
                 canisterIdBytes,
                 method,
                 argsRawBuffer,
-                paymentCandidBytes
+                paymentString
             );
         } catch (error) {
             delete globalThis._azleResolveIds[globalResolveId];

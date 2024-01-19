@@ -1,7 +1,6 @@
 import { Void } from '../candid/types/primitive/void';
 import { nat } from '../candid/types/primitive/nats/nat';
 import { blob } from '../candid/types/constructed/blob';
-import { encode } from '../candid/serde/encode';
 import { Principal } from '../candid/types/reference/principal';
 import { text } from '../candid/types/primitive/text';
 
@@ -25,12 +24,12 @@ export function notifyRaw(
 
     const canisterIdBytes = canisterId.toUint8Array().buffer;
     const argsRawBuffer = argsRaw.buffer;
-    const paymentCandidBytes = encode(nat, payment).buffer;
+    const paymentString = payment.toString();
 
     return globalThis._azleIc.notifyRaw(
         canisterIdBytes,
         method,
         argsRawBuffer,
-        paymentCandidBytes
+        paymentString
     );
 }

@@ -1,89 +1,129 @@
 // TODO basically copied into call_raw128
-use std::convert::TryInto;
 
-use quickjs_wasm_rs::{to_qjs_value, CallbackArg, JSContextRef, JSValue, JSValueRef};
+use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
 
-use crate::CONTEXT;
+use crate::RUNTIME;
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let promise_id: String = args
-        .get(0)
-        .expect("call_raw promise_id argument is undefined")
-        .to_js_value()?
-        .try_into()?;
-    let canister_id_bytes: Vec<u8> = args
-        .get(1)
-        .expect("call_raw canister_id_bytes is undefined")
-        .to_js_value()?
-        .try_into()?;
-    let canister_id = candid::Principal::from_slice(&canister_id_bytes);
-    let method: String = args
-        .get(2)
-        .expect("call_raw method argument is undefined")
-        .to_js_value()?
-        .try_into()?;
-    let args_raw: Vec<u8> = args
-        .get(3)
-        .expect("call_raw args_raw argument is undefined")
-        .to_js_value()?
-        .try_into()?;
-    let payment_candid_bytes: Vec<u8> = args
-        .get(4)
-        .expect("call_raw payment_candid_bytes argument is undefined")
-        .to_js_value()?
-        .try_into()?;
-    let payment: u64 = candid::decode_one(&payment_candid_bytes)?;
-
-    ic_cdk::spawn(async move {
-        let call_result =
-            ic_cdk::api::call::call_raw(canister_id, &method, &args_raw, payment).await;
-
-        let (should_resolve, js_value) = match call_result {
-            Ok(candid_bytes) => {
-                let candid_bytes_js_value: JSValue = candid_bytes.into();
-                (true, candid_bytes_js_value)
-            }
-            Err(err) => {
-                let err_js_value: JSValue = format!(
-                    "Rejection code {rejection_code}, {error_message}",
-                    rejection_code = (err.0 as i32).to_string(),
-                    error_message = err.1
-                )
-                .into();
-
-                (false, err_js_value)
-            }
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        let promise_id = if let JsValue::String(js_string) = argv.get(0).unwrap() {
+            js_string.to_string()
+        } else {
+            panic!("conversion from JsValue to JsString failed")
         };
 
-        CONTEXT.with(|context| {
-            let mut context = context.borrow_mut();
-            let context = context.as_mut().unwrap();
+        let canister_id_bytes = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(1).unwrap()
+        {
+            js_array_buffer.to_vec()
+        } else {
+            panic!("conversion from JsValue to JsArrayBuffer failed")
+        };
+        let canister_id = candid::Principal::from_slice(&canister_id_bytes);
 
-            let global = context.global_object().unwrap();
+        let method = if let JsValue::String(js_string) = argv.get(2).unwrap() {
+            js_string.to_string()
+        } else {
+            panic!("conversion from JsValue to JsString failed")
+        };
 
-            let js_value_ref = to_qjs_value(&context, &js_value).unwrap();
+        let args_raw = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(3).unwrap() {
+            js_array_buffer.to_vec()
+        } else {
+            panic!("conversion from JsValue to JsArrayBuffer failed")
+        };
 
-            if should_resolve {
-                let resolve = global
-                    .get_property("_azleResolveIds").unwrap()
-                    .get_property(format!("_resolve_{promise_id}").as_str())
-                    .unwrap();
-                resolve.call(&resolve, &[js_value_ref]).unwrap();
-            } else {
-                let reject = global
-                    .get_property("_azleRejectIds").unwrap()
-                    .get_property(format!("_reject_{promise_id}").as_str())
-                    .unwrap();
-                reject.call(&reject, &[js_value_ref]).unwrap();
-            }
+        let payment_string = if let JsValue::String(js_string) = argv.get(4).unwrap() {
+            js_string.to_string()
+        } else {
+            panic!("conversion from JsValue to JsString failed")
+        };
+        let payment: u64 = payment_string.parse().unwrap();
 
-            context.execute_pending().unwrap();
+        ic_cdk::spawn(async move {
+            let call_result =
+                ic_cdk::api::call::call_raw(canister_id, &method, &args_raw, payment).await;
+
+            RUNTIME.with(|runtime| {
+                let mut runtime = runtime.borrow_mut();
+                let runtime = runtime.as_mut().unwrap();
+
+                runtime.run_with_context(|context| {
+                    let global = context.get_global();
+
+                    let (should_resolve, js_value) = match &call_result {
+                        Ok(candid_bytes) => {
+                            let candid_bytes_js_value: JsValue =
+                                context.new_array_buffer(candid_bytes).into();
+
+                            (true, candid_bytes_js_value)
+                        }
+                        Err(err) => {
+                            let err_js_value: JsValue = context
+                                .new_error(&format!(
+                                    "Rejection code {rejection_code}, {error_message}",
+                                    rejection_code = (err.0 as i32).to_string(),
+                                    error_message = err.1
+                                ))
+                                .into();
+
+                            (false, err_js_value)
+                        }
+                    };
+
+                    if should_resolve {
+                        let resolve = global
+                            .get("_azleResolveIds")
+                            .to_obj()
+                            .unwrap()
+                            .get(format!("_resolve_{promise_id}").as_str())
+                            .to_function()
+                            .unwrap();
+
+                        let result = resolve.call(&[js_value.clone()]);
+
+                        // TODO error handling is mostly done in JS right now
+                        // TODO we would really like wasmedge-quickjs to add
+                        // TODO good error info to JsException and move error handling
+                        // TODO out of our own code
+                        match &result {
+                            wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                                js_exception.dump_error();
+                                panic!("TODO needs error info");
+                            }
+                            _ => {}
+                        };
+                    } else {
+                        let reject = global
+                            .get("_azleRejectIds")
+                            .to_obj()
+                            .unwrap()
+                            .get(format!("_reject_{promise_id}").as_str())
+                            .to_function()
+                            .unwrap();
+
+                        let result = reject.call(&[js_value.clone()]);
+
+                        // TODO error handling is mostly done in JS right now
+                        // TODO we would really like wasmedge-quickjs to add
+                        // TODO good error info to JsException and move error handling
+                        // TODO out of our own code
+                        match &result {
+                            wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                                js_exception.dump_error();
+                                panic!("TODO needs error info");
+                            }
+                            _ => {}
+                        };
+                    }
+
+                    // TODO Is this all we need to do for promises and timeouts?
+                    context.event_loop().unwrap().run_tick_task();
+                    context.promise_loop_poll();
+                });
+            });
         });
-    });
 
-    context.undefined_value()
+        JsValue::UnDefined
+    }
 }

@@ -1,20 +1,17 @@
-use std::convert::TryInto;
+use wasmedge_quickjs::{Context, JsFn, JsValue};
 
-use quickjs_wasm_rs::{CallbackArg, JSContextRef, JSValueRef};
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        let first_arg_option = argv.get(0);
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let first_arg_option = args.get(0);
+        if let Some(first_arg) = first_arg_option {
+            let string_to_print = first_arg.clone().to_string().unwrap().to_string();
+            ic_cdk::print(string_to_print);
+        } else {
+            ic_cdk::print("");
+        }
 
-    if let Some(first_arg) = first_arg_option {
-        let string_to_print: String = first_arg.to_js_value()?.try_into()?;
-        ic_cdk::print(string_to_print);
-    } else {
-        ic_cdk::print("");
+        JsValue::UnDefined
     }
-
-    context.undefined_value()
 }

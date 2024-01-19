@@ -1,20 +1,16 @@
-use std::convert::TryInto;
+use wasmedge_quickjs::{Context, JsFn, JsValue};
 
-use quickjs_wasm_rs::{to_qjs_value, CallbackArg, JSContextRef, JSValue, JSValueRef};
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        let principal_bytes = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(0).unwrap() {
+            js_array_buffer.to_vec()
+        } else {
+            panic!("conversion from JsValue to JsArrayBuffer failed")
+        };
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let principal_bytes: Vec<u8> = args
-        .get(0)
-        .expect("isController must have at least one argument")
-        .to_js_value()?
-        .try_into()?;
+        let principal = candid::Principal::from_slice(&principal_bytes);
 
-    let principal = candid::Principal::from_slice(&principal_bytes);
-
-    let is_controller_js_value: JSValue = ic_cdk::api::is_controller(&principal).into();
-    to_qjs_value(&context, &is_controller_js_value)
+        ic_cdk::api::is_controller(&principal).into()
+    }
 }

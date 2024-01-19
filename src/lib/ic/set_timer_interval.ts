@@ -24,19 +24,16 @@ export function setTimerInterval(
 
     const timerCallbackId = `_interval_timer_${v4()}`;
 
-    const timerId = decode(
-        nat64,
-        globalThis._azleIc.setTimerInterval(
-            encode(nat64, interval).buffer,
-            timerCallbackId
-        )
+    const timerId = globalThis._azleIc.setTimerInterval(
+        interval.toString(),
+        timerCallbackId
     );
 
-    globalThis._azleIcTimers[timerId.toString()] = timerCallbackId;
+    globalThis._azleIcTimers[timerId] = timerCallbackId;
 
     // We don't delete this even if the callback throws because
     // it still needs to be here for the next tick
     globalThis._azleTimerCallbacks[timerCallbackId] = callback;
 
-    return timerId;
+    return BigInt(timerId);
 }

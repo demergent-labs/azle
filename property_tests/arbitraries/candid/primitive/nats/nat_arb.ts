@@ -19,5 +19,8 @@ export function NatDefinitionArb(): WithShapesArb<NatCandidDefinition> {
 }
 
 export function NatValueArb(): fc.Arbitrary<CandidValues<bigint>> {
-    return SimpleCandidValuesArb(fc.bigUint(), bigintToSrcLiteral);
+    return SimpleCandidValuesArb(
+        fc.bigUint(1000000000000000000n), // TODO Remove max once https://github.com/second-state/wasmedge-quickjs/issues/125
+        bigintToSrcLiteral
+    );
 }

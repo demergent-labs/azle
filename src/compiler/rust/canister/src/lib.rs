@@ -1,3 +1,5 @@
+use std::{cell::RefCell, collections::BTreeMap, convert::TryInto};
+
 #[allow(unused)]
 use canister_methods::canister_methods;
 use ic_stable_structures::{
@@ -5,9 +7,7 @@ use ic_stable_structures::{
     storable::Bound,
     DefaultMemoryImpl, StableBTreeMap, Storable,
 };
-use quickjs_wasm_rs::{to_qjs_value, JSContextRef, JSValue};
-use std::cell::RefCell;
-use std::collections::BTreeMap;
+use wasmedge_quickjs::AsObject;
 
 mod ic;
 
@@ -61,7 +61,7 @@ impl Storable for AzleStableBTreeMapValue {
 }
 
 thread_local! {
-    static CONTEXT: RefCell<Option<JSContextRef>> = RefCell::new(None);
+    static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
 
     static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 
@@ -73,30 +73,95 @@ canister_methods!();
 
 #[allow(unused)]
 fn execute_js(function_name: &str, pass_arg_data: bool) {
-    CONTEXT.with(|context| {
-        let mut context = context.borrow_mut();
-        let context = context.as_mut().unwrap();
+    RUNTIME.with(|runtime| {
+        let mut runtime = runtime.borrow_mut();
+        let runtime = runtime.as_mut().unwrap();
 
-        let global = context.global_object().unwrap();
-        let exports = global.get_property("exports").unwrap();
-        let canister_methods = exports.get_property("canisterMethods").unwrap();
-        let callbacks = canister_methods.get_property("callbacks").unwrap();
-        let method_callback = callbacks.get_property(function_name).unwrap();
+        runtime.run_with_context(|context| {
+            let global = context.get_global();
+            let exports = global.get("exports");
 
-        let candid_args = if pass_arg_data {
-            ic_cdk::api::call::arg_data_raw()
-        } else {
-            vec![]
-        };
+            let canister_methods = exports.get("canisterMethods").unwrap();
 
-        let candid_args_js_value: JSValue = candid_args.into();
-        let candid_args_js_value_ref = to_qjs_value(&context, &candid_args_js_value).unwrap();
+            let callbacks = canister_methods.get("callbacks").unwrap();
+            let method_callback = callbacks.get(function_name).unwrap();
 
-        // TODO I am not sure what the first parameter to call is supposed to be
-        method_callback
-            .call(&method_callback, &[candid_args_js_value_ref])
-            .unwrap();
+            let candid_args = if pass_arg_data {
+                ic_cdk::api::call::arg_data_raw()
+            } else {
+                vec![]
+            };
 
-        context.execute_pending().unwrap();
+            let candid_args_js_value: wasmedge_quickjs::JsValue =
+                context.new_array_buffer(&candid_args).into();
+
+            let method_callback_function = method_callback.to_function().unwrap();
+
+            let result = method_callback_function.call(&[candid_args_js_value]);
+
+            // TODO error handling is mostly done in JS right now
+            // TODO we would really like wasmedge-quickjs to add
+            // TODO good error info to JsException and move error handling
+            // TODO out of our own code
+            match &result {
+                wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                    js_exception.dump_error();
+                    panic!("TODO needs error info");
+                }
+                _ => {}
+            };
+
+            // TODO Is this all we need to do for promises and timeouts?
+            context.event_loop().unwrap().run_tick_task();
+            context.promise_loop_poll();
+        });
     });
+}
+
+// Heavily inspired by https://stackoverflow.com/a/47676844
+#[no_mangle]
+pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
+    RUNTIME.with(|runtime| {
+        let mut runtime = wasmedge_quickjs::Runtime::new();
+
+        runtime.run_with_context(|context| {
+            context.get_global().set(
+                "_azleWasmtimeCandidEnvironment",
+                wasmedge_quickjs::JsValue::Bool(true),
+            );
+
+            ic::register(context);
+
+            // TODO what do we do if there is an error in here?
+            context.eval_global_str("globalThis.exports = {};".to_string());
+            context.eval_module_str(
+                std::str::from_utf8(MAIN_JS).unwrap().to_string(),
+                "azle_main",
+            );
+
+            let global = context.get_global();
+
+            let candid_info_function = global.get("candidInfoFunction").to_function().unwrap();
+
+            let candid_info = candid_info_function.call(&[]);
+
+            // TODO error handling is mostly done in JS right now
+            // TODO we would really like wasmedge-quickjs to add
+            // TODO good error info to JsException and move error handling
+            // TODO out of our own code
+            match &candid_info {
+                wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                    js_exception.dump_error();
+                    panic!("TODO needs error info");
+                }
+                _ => {}
+            };
+
+            let candid_info_string = candid_info.to_string().unwrap().to_string();
+
+            let c_string = std::ffi::CString::new(candid_info_string).unwrap();
+
+            c_string.into_raw()
+        })
+    })
 }

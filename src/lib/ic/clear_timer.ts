@@ -11,7 +11,7 @@ export function clearTimer(timerId: TimerId): Void {
         return undefined as any;
     }
 
-    globalThis._azleIc.clearTimer(encode(TimerId, timerId).buffer);
+    globalThis._azleIc.clearTimer(timerId.toString());
 
     const timerCallbackId = globalThis._azleIcTimers[timerId.toString()];
 

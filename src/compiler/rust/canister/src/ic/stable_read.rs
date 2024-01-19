@@ -1,26 +1,24 @@
-use std::convert::TryInto;
+use wasmedge_quickjs::{Context, JsFn, JsValue};
 
-use quickjs_wasm_rs::{to_qjs_value, CallbackArg, JSContextRef, JSValueRef};
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        let offset_string = if let JsValue::String(js_string) = argv.get(0).unwrap() {
+            js_string.to_string() // TODO it would be great to have a direct conversion to u64 but seems the bindings don't support it
+        } else {
+            panic!("conversion from JsValue to JsString failed")
+        };
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let offset_string: String = args
-        .get(0)
-        .expect("stableRead must have two arguments")
-        .to_js_value()?
-        .try_into()?;
+        let length_string = if let JsValue::String(js_string) = argv.get(1).unwrap() {
+            js_string.to_string() // TODO it would be great to have a direct conversion to u64 but seems the bindings don't support it
+        } else {
+            panic!("conversion from JsValue to JsString failed")
+        };
 
-    let length_string: String = args
-        .get(1)
-        .expect("stableRead must have two arguments")
-        .to_js_value()?
-        .try_into()?;
+        let mut buf: Vec<u8> = vec![0; length_string.parse().unwrap()];
 
-    let mut buf: Vec<u8> = vec![0; length_string.parse()?];
-    ic_cdk::api::stable::stable_read(offset_string.parse()?, &mut buf);
+        ic_cdk::api::stable::stable_read(offset_string.parse().unwrap(), &mut buf);
 
-    to_qjs_value(&context, &buf.into())
+        context.new_array_buffer(&buf).into()
+    }
 }

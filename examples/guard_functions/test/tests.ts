@@ -89,7 +89,7 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `"Message": "Uncaught Execution halted by \\"unpassable\\" guard function"`
+                            `Uncaught Error: Execution halted by \\"unpassable\\" guard function`
                         )
                     };
                 }
@@ -107,7 +107,7 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `Uncaught Execution halted by \\"throw string\\" guard function`
+                            `Uncaught Error: Execution halted by \\"throw string\\" guard function`
                         )
                     };
                 }
@@ -143,7 +143,7 @@ export function getTests(
                 } catch (error) {
                     return {
                         Ok: (error as AgentError).message.includes(
-                            `Uncaught [object Object]`
+                            `Uncaught Error: [object Object]`
                         )
                     };
                 }

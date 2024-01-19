@@ -4,58 +4,53 @@
  */
 export type AzleIc = {
     argDataRaw: () => ArrayBufferLike;
-    argDataRawSize: () => number;
+    argDataRawSize: () => string;
     callRaw: (
         promiseId: string,
         canisterIdBytes: ArrayBufferLike,
         method: string,
         argsRaw: ArrayBufferLike,
-        paymentCandidBytes: ArrayBufferLike
+        paymentString: string
     ) => void;
     callRaw128: (
         promiseId: string,
         canisterIdBytes: ArrayBufferLike,
         method: string,
         argsRaw: ArrayBufferLike,
-        paymentCandidBytes: ArrayBufferLike
+        paymentString: string
     ) => void;
     caller: () => ArrayBufferLike;
     candidDecode: (candidBytes: ArrayBufferLike) => string;
     candidEncode: (candidString: string) => ArrayBufferLike;
-    canisterBalance: () => ArrayBufferLike;
-    canisterBalance128: () => ArrayBufferLike;
-    canisterVersion: () => ArrayBufferLike;
-    clearTimer: (timerIdBytes: ArrayBufferLike) => void;
+    canisterBalance: () => string;
+    canisterBalance128: () => string;
+    canisterVersion: () => string;
+    clearTimer: (timerIdString: string) => void;
     dataCertificate: () => ArrayBufferLike | undefined;
     id: () => string;
     instructionCounter: () => string;
     isController: (principalBytes: ArrayBufferLike) => boolean;
-    msgCyclesAccept: (maxAmountCandidBytes: ArrayBufferLike) => ArrayBufferLike;
-    msgCyclesAccept128: (
-        maxAmountCandidBytes: ArrayBufferLike
-    ) => ArrayBufferLike;
-    msgCyclesAvailable: () => ArrayBufferLike;
-    msgCyclesAvailable128: () => ArrayBufferLike;
-    msgCyclesRefunded: () => ArrayBufferLike;
-    msgCyclesRefunded128: () => ArrayBufferLike;
+    msgCyclesAccept: (maxAmountString: string) => string;
+    msgCyclesAccept128: (maxAmountString: string) => string;
+    msgCyclesAvailable: () => string;
+    msgCyclesAvailable128: () => string;
+    msgCyclesRefunded: () => string;
+    msgCyclesRefunded128: () => string;
     notifyRaw: (
         canisterIdBytes: ArrayBufferLike,
         method: string,
         argsRawBuffer: ArrayBufferLike,
-        paymentCandidBytes: ArrayBufferLike
+        paymentString: string
     ) => void;
     performanceCounter: (counterType: string) => string;
-    rejectCode: () => number;
+    rejectCode: () => string;
     replyRaw: (bytes: ArrayBufferLike) => void;
     setCertifiedData: (dataBytes: ArrayBufferLike) => void;
-    setTimer: (
-        delayBytes: ArrayBufferLike,
-        timerCallbackId: string
-    ) => ArrayBufferLike;
+    setTimer: (delayString: string, timerCallbackId: string) => string;
     setTimerInterval: (
-        intervalBytes: ArrayBufferLike,
+        intervalString: string,
         timerCallbackId: string
-    ) => ArrayBufferLike;
+    ) => string;
     stableBytes: () => ArrayBufferLike;
     stableGrow: (newPages: string) => string;
     stableRead: (offset: string, length: string) => ArrayBufferLike;
@@ -109,7 +104,7 @@ export type AzleIc = {
         startIndex: string,
         length: string
     ) => ArrayBuffer[];
-    stableBTreeMapLen: (memoryId: string) => ArrayBuffer;
+    stableBTreeMapLen: (memoryId: string) => string;
     stableBTreeMapRemove(
         memoryId: string,
         encodedKey: ArrayBufferLike

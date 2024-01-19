@@ -24,15 +24,12 @@ export function setTimer(
 
     const timerCallbackId = `_timer_${v4()}`;
 
-    const timerId = decode(
-        nat64,
-        globalThis._azleIc.setTimer(
-            encode(nat64, delay).buffer,
-            timerCallbackId
-        )
+    const timerId = globalThis._azleIc.setTimer(
+        delay.toString(),
+        timerCallbackId
     );
 
-    globalThis._azleIcTimers[timerId.toString()] = timerCallbackId;
+    globalThis._azleIcTimers[timerId] = timerCallbackId;
 
     globalThis._azleTimerCallbacks[timerCallbackId] = () => {
         try {
@@ -43,5 +40,5 @@ export function setTimer(
         }
     };
 
-    return timerId;
+    return BigInt(timerId);
 }

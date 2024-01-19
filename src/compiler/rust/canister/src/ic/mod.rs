@@ -53,368 +53,368 @@ mod stable_write;
 mod time;
 mod trap;
 
-use quickjs_wasm_rs::JSContextRef;
+use wasmedge_quickjs::AsObject;
 
 #[allow(unused)]
-pub fn register(context: &JSContextRef) {
-    let ic = context.object_value().unwrap();
+pub fn register(context: &mut wasmedge_quickjs::Context) {
+    let mut ic = context.new_object();
 
-    ic.set_property(
+    ic.set(
         "acceptMessage",
         context
-            .wrap_callback2(accept_message::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
-        "argDataRawSize",
-        context
-            .wrap_callback2(arg_data_raw_size::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<accept_message::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "argDataRaw",
         context
-            .wrap_callback2(arg_data_raw::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<arg_data_raw::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "argDataRawSize",
+        context
+            .new_function::<arg_data_raw_size::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "callRaw",
-        context.wrap_callback2(call_raw::native_function).unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+        context.new_function::<call_raw::NativeFunction>("").into(),
+    );
+
+    ic.set(
         "callRaw128",
         context
-            .wrap_callback2(call_raw128::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<call_raw128::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "caller",
-        context.wrap_callback2(caller::native_function).unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+        context.new_function::<caller::NativeFunction>("").into(),
+    );
+
+    ic.set(
         "candidDecode",
         context
-            .wrap_callback2(candid_decode::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<candid_decode::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "candidEncode",
         context
-            .wrap_callback2(candid_encode::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<candid_encode::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "canisterBalance",
         context
-            .wrap_callback2(canister_balance::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<canister_balance::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "canisterBalance128",
         context
-            .wrap_callback2(canister_balance128::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<canister_balance128::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "canisterVersion",
         context
-            .wrap_callback2(canister_version::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<canister_version::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "clearTimer",
         context
-            .wrap_callback2(clear_timer::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<clear_timer::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "dataCertificate",
         context
-            .wrap_callback2(data_certificate::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property("id", context.wrap_callback2(id::native_function).unwrap())
-        .unwrap();
-    ic.set_property(
+            .new_function::<data_certificate::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set("id", context.new_function::<id::NativeFunction>("").into());
+
+    ic.set(
         "instructionCounter",
         context
-            .wrap_callback2(instruction_counter::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<instruction_counter::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "isController",
         context
-            .wrap_callback2(is_controller::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<is_controller::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "methodName",
         context
-            .wrap_callback2(method_name::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<method_name::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "msgCyclesAccept",
         context
-            .wrap_callback2(msg_cycles_accept::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<msg_cycles_accept::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "msgCyclesAccept128",
         context
-            .wrap_callback2(msg_cycles_accept128::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<msg_cycles_accept128::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "msgCyclesAvailable",
         context
-            .wrap_callback2(msg_cycles_available::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<msg_cycles_available::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "msgCyclesAvailable128",
         context
-            .wrap_callback2(msg_cycles_available128::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<msg_cycles_available128::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "msgCyclesRefunded",
         context
-            .wrap_callback2(msg_cycles_refunded::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<msg_cycles_refunded::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "msgCyclesRefunded128",
         context
-            .wrap_callback2(msg_cycles_refunded128::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<msg_cycles_refunded128::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "notifyRaw",
-        context.wrap_callback2(notify_raw::native_function).unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+        context
+            .new_function::<notify_raw::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "performanceCounter",
         context
-            .wrap_callback2(performance_counter::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<performance_counter::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "print",
-        context.wrap_callback2(print::native_function).unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+        context.new_function::<print::NativeFunction>("").into(),
+    );
+
+    ic.set(
         "reject",
-        context.wrap_callback2(reject::native_function).unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+        context.new_function::<reject::NativeFunction>("").into(),
+    );
+
+    ic.set(
         "rejectCode",
         context
-            .wrap_callback2(reject_code::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<reject_code::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "rejectMessage",
         context
-            .wrap_callback2(reject_message::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<reject_message::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "replyRaw",
-        context.wrap_callback2(reply_raw::native_function).unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+        context.new_function::<reply_raw::NativeFunction>("").into(),
+    );
+
+    ic.set(
         "setCertifiedData",
         context
-            .wrap_callback2(set_certified_data::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<set_certified_data::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "setTimer",
-        context.wrap_callback2(set_timer::native_function).unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+        context.new_function::<set_timer::NativeFunction>("").into(),
+    );
+
+    ic.set(
         "setTimerInterval",
         context
-            .wrap_callback2(set_timer_interval::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<set_timer_interval::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stable64Grow",
         context
-            .wrap_callback2(stable64_grow::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable64_grow::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stable64Read",
         context
-            .wrap_callback2(stable64_read::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable64_read::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stable64Size",
         context
-            .wrap_callback2(stable64_size::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable64_size::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stable64Write",
         context
-            .wrap_callback2(stable64_write::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable64_write::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableBytes",
         context
-            .wrap_callback2(stable_bytes::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_bytes::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableGrow",
         context
-            .wrap_callback2(stable_grow::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_grow::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableRead",
         context
-            .wrap_callback2(stable_read::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_read::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableSize",
         context
-            .wrap_callback2(stable_size::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_size::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableWrite",
         context
-            .wrap_callback2(stable_write::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_write::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableBTreeMapContainsKey",
         context
-            .wrap_callback2(stable_b_tree_map_contains_key::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_b_tree_map_contains_key::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableBTreeMapGet",
         context
-            .wrap_callback2(stable_b_tree_map_get::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_b_tree_map_get::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableBTreeMapInit",
         context
-            .wrap_callback2(stable_b_tree_map_init::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_b_tree_map_init::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableBTreeMapInsert",
         context
-            .wrap_callback2(stable_b_tree_map_insert::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_b_tree_map_insert::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableBTreeMapIsEmpty",
         context
-            .wrap_callback2(stable_b_tree_map_is_empty::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_b_tree_map_is_empty::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableBTreeMapItems",
         context
-            .wrap_callback2(stable_b_tree_map_items::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_b_tree_map_items::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableBTreeMapKeys",
         context
-            .wrap_callback2(stable_b_tree_map_keys::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_b_tree_map_keys::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableBTreeMapLen",
         context
-            .wrap_callback2(stable_b_tree_map_len::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_b_tree_map_len::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableBTreeMapRemove",
         context
-            .wrap_callback2(stable_b_tree_map_remove::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
+            .new_function::<stable_b_tree_map_remove::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
         "stableBTreeMapValues",
         context
-            .wrap_callback2(stable_b_tree_map_values::native_function)
-            .unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
-        "time",
-        context.wrap_callback2(time::native_function).unwrap(),
-    )
-    .unwrap();
-    ic.set_property(
-        "trap",
-        context.wrap_callback2(trap::native_function).unwrap(),
-    )
-    .unwrap();
+            .new_function::<stable_b_tree_map_values::NativeFunction>("")
+            .into(),
+    );
 
-    let global = context.global_object().unwrap();
-    global.set_property("_azleIc", ic).unwrap();
+    ic.set(
+        "time",
+        context.new_function::<time::NativeFunction>("").into(),
+    );
+
+    ic.set(
+        "trap",
+        context.new_function::<trap::NativeFunction>("").into(),
+    );
+
+    context.get_global().set("_azleIc", ic.into());
 }

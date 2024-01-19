@@ -12,11 +12,13 @@ candid = { version = "0.9.1", features = ["parser"] }
 ic-cdk-timers = "0.4.0"
 ic-stable-structures = "0.6.0"
 canister_methods = { path = "../canister_methods" }
-quickjs-wasm-rs = { git = "https://github.com/ulan/javy.git", rev = "fdf12ce4fd5636417cd63e1f6296aa79196434a7" }
 slotmap = "=1.0.6"
 ic-cdk = "0.10.0"
 ic-cdk-macros = "0.7.0"
-# TODO for now we must turn on the transient feature (no stable storage file system) or we can't generate the Candid file
-ic-wasi-polyfill = { git = "https://github.com/demergent-labs/ic-wasi-polyfill", rev = "f3812b879c096faf930331e76441fadf2ebe6586", features = [
+
+# TODO transient feature can be removed once https://github.com/wasm-forge/ic-wasi-polyfill/issues/14
+ic-wasi-polyfill = { git = "https://github.com/wasm-forge/ic-wasi-polyfill", rev = "1693665ed57adc4f997a0313555ec0b0b5de1c07", features = [
     "transient",
 ] }
+wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "218238f970b2d1c3e34d712c6be9f558b8364716" }
+# wasmedge_quickjs = { path = "/home/wasmedge-quickjs" }

@@ -1,7 +1,6 @@
 import { None, Opt, Some } from '../candid/types/constructed/opt';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { nat8 } from '../candid/types/primitive/nats/nat8';
-import { decode } from '../candid/serde';
 import { stableJson } from './stable_json';
 
 export interface Serializable {
@@ -16,7 +15,10 @@ export function StableBTreeMap<Key = any, Value = any>(
 ) {
     const memoryId = memoryIdNumber.toString();
 
-    if (globalThis._azleIc !== undefined) {
+    if (
+        globalThis._azleIc !== undefined &&
+        globalThis._azleWasmtimeCandidEnvironment !== true
+    ) {
         globalThis._azleIc.stableBTreeMapInit(memoryId);
     }
 
@@ -161,11 +163,7 @@ export function StableBTreeMap<Key = any, Value = any>(
                 return undefined as any;
             }
 
-            const candidEncodedLen =
-                globalThis._azleIc.stableBTreeMapLen(memoryId);
-
-            // TODO let's try just using a simple string instead of decode considering how expensive decode is
-            return decode(nat64, candidEncodedLen);
+            return BigInt(globalThis._azleIc.stableBTreeMapLen(memoryId));
         },
         /**
          * Removes a key from the map.

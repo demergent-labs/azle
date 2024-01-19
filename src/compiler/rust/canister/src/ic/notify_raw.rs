@@ -1,49 +1,53 @@
-use std::convert::TryInto;
+use wasmedge_quickjs::{Context, JsFn, JsValue};
 
-// TODO basically copied from call_raw128
-use quickjs_wasm_rs::{CallbackArg, JSContextRef, JSValueRef};
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        let canister_id_bytes = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(0).unwrap()
+        {
+            js_array_buffer.to_vec()
+        } else {
+            panic!("conversion from JsValue to JsArrayBuffer failed")
+        };
+        let canister_id = candid::Principal::from_slice(&canister_id_bytes);
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let canister_id_bytes: Vec<u8> = args
-        .get(0)
-        .expect("notify_raw canister_id_bytes is undefined")
-        .to_js_value()?
-        .try_into()?;
-    let canister_id = candid::Principal::from_slice(&canister_id_bytes);
-    let method: String = args
-        .get(1)
-        .expect("notify_raw method argument is undefined")
-        .to_js_value()?
-        .try_into()?;
-    let args_raw: Vec<u8> = args
-        .get(2)
-        .expect("notify_raw args_raw argument is undefined")
-        .to_js_value()?
-        .try_into()?;
-    let payment_candid_bytes: Vec<u8> = args
-        .get(3)
-        .expect("notify_raw payment_candid_bytes argument is undefined")
-        .to_js_value()?
-        .try_into()?;
-    let payment: u128 = candid::decode_one(&payment_candid_bytes)?;
+        let method = if let JsValue::String(js_string) = argv.get(1).unwrap() {
+            js_string.to_string()
+        } else {
+            panic!("conversion from JsValue to JsString failed")
+        };
 
-    let notify_result = ic_cdk::api::call::notify_raw(canister_id, &method, &args_raw, payment);
+        let args_raw = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(2).unwrap() {
+            js_array_buffer.to_vec()
+        } else {
+            panic!("conversion from JsValue to JsArrayBuffer failed")
+        };
 
-    match notify_result {
-        Ok(_) => context.undefined_value(),
-        Err(err) => {
-            // TODO it might be nice to convert the rejection code to a string as well if possible
-            // TODO to give the user an actual error message (like the enum variants converted to string)
-            let err_string = format!(
-                "Rejection code {rejection_code}",
-                rejection_code = (err as i32).to_string()
-            );
+        let payment_string = if let JsValue::String(js_string) = argv.get(3).unwrap() {
+            js_string.to_string()
+        } else {
+            panic!("conversion from JsValue to JsString failed")
+        };
+        let payment: u128 = payment_string.parse().unwrap();
 
-            Err(anyhow::anyhow!(err_string))
+        let notify_result = ic_cdk::api::call::notify_raw(canister_id, &method, &args_raw, payment);
+
+        match notify_result {
+            Ok(_) => JsValue::UnDefined,
+            Err(err) => {
+                // TODO obviously fix this once we figure out wasmedge_quickjs errors
+
+                // TODO it might be nice to convert the rejection code to a string as well if possible
+                // TODO to give the user an actual error message (like the enum variants converted to string)
+                let err_string = format!(
+                    "Rejection code {rejection_code}",
+                    rejection_code = (err as i32).to_string()
+                );
+
+                // Err(anyhow::anyhow!(err_string))
+
+                panic!(err_string);
+            }
         }
     }
 }

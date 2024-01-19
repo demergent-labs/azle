@@ -1,5 +1,4 @@
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { decode } from '../candid/serde/decode';
 
 /**
  * Gets the amount of funds available in the canister
@@ -10,6 +9,5 @@ export function canisterBalance(): nat64 {
         return undefined as any;
     }
 
-    const canisterBalanceCandidBytes = globalThis._azleIc.canisterBalance();
-    return decode(nat64, canisterBalanceCandidBytes);
+    return BigInt(globalThis._azleIc.canisterBalance());
 }

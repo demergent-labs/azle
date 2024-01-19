@@ -19,5 +19,5 @@ export function Nat64DefinitionArb(): WithShapesArb<NatCandidDefinition> {
 }
 
 export function Nat64ValueArb(): fc.Arbitrary<CandidValues<bigint>> {
-    return SimpleCandidValuesArb(fc.bigUintN(64), bigintToSrcLiteral);
+    return SimpleCandidValuesArb(fc.bigUintN(60), bigintToSrcLiteral); // TODO set back to 64 once https://github.com/second-state/wasmedge-quickjs/issues/125
 }

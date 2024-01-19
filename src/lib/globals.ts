@@ -4,6 +4,8 @@ import { Buffer } from 'buffer';
 import { replacer } from './stable_structures/stable_json';
 
 declare global {
+    var _azleInsideCanister: boolean;
+    var _azleWasmtimeCandidEnvironment: boolean;
     var _azleIc: AzleIc | undefined;
     var _azleResolveIds: { [key: string]: (buf: ArrayBuffer) => void };
     var _azleRejectIds: { [key: string]: (err: any) => void };
@@ -12,7 +14,10 @@ declare global {
     var _azleGuardFunctions: { [key: string]: () => any };
 }
 
-if (globalThis._azleIc) {
+globalThis._azleInsideCanister =
+    globalThis._azleIc === undefined ? false : true;
+
+if (globalThis._azleInsideCanister) {
     globalThis.console = {
         ...globalThis.console,
         log: (...args: any[]) => {
@@ -22,6 +27,20 @@ if (globalThis._azleIc) {
 
             ic.print(jsonStringifiedArgs);
         }
+    };
+
+    const originalSetTimeout = setTimeout;
+
+    (globalThis as any).setTimeout = (
+        handler: TimerHandler,
+        timeout?: number
+    ) => {
+        if (timeout === undefined || timeout === 0) {
+            return originalSetTimeout(handler, 0);
+        }
+
+        // TODO change this to throw once errors throw and show up properly
+        ic.trap(`setTimeout cannot be called with milliseconds above 0`);
     };
 }
 

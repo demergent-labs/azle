@@ -1,10 +1,12 @@
-use quickjs_wasm_rs::{CallbackArg, JSContextRef, JSValueRef};
+use std::convert::TryFrom;
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    _args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    ic_cdk::api::call::accept_message();
-    context.undefined_value()
+use wasmedge_quickjs::{Context, JsFn, JsValue};
+
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        ic_cdk::api::call::accept_message();
+
+        JsValue::UnDefined
+    }
 }

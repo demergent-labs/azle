@@ -43,5 +43,5 @@ service: () -> {
     simpleAzleQuery: () -> () query;
     simpleDeepQuery: () -> () query;
     simpleQuery: () -> () query;
-    typeCheck: (vec opt nat16) -> (int16) query;
+    typeCheck: (vec opt int16) -> (int16) query;
 }

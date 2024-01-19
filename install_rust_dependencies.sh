@@ -6,6 +6,7 @@ azle_version="$1"
 rust_version="$2"
 
 global_azle_config_dir=~/.config/azle
+global_azle_version_dir="$global_azle_config_dir"/"$azle_version"
 global_azle_rust_dir="$global_azle_config_dir"/rust/"$rust_version"
 global_azle_rust_bin_dir="$global_azle_rust_dir"/bin
 global_azle_logs_dir="$global_azle_rust_dir"/logs
@@ -20,13 +21,15 @@ export RUSTUP_HOME="$global_azle_rust_dir"
 export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 
 function run() {
-    if ! ([ -e "$global_azle_rustup_bin" ] && [ -e "$global_azle_wasi2ic_bin" ] && [ -e "$global_azle_cargo_bin" ] && [ -e "$global_azle_rustc_bin" ] && $global_azle_rustup_bin target list | grep -q "wasm32-wasi (installed)"); then
+    if ! ([ -e "$global_azle_rustup_bin" ] && [ -e "$global_azle_wasi2ic_bin" ] && [ -e "$global_azle_cargo_bin" ] && [ -e "$global_azle_rustc_bin" ] && [ -e "$global_azle_version_dir"/wasmedge-quickjs ] && $global_azle_rustup_bin target list | grep -q "wasm32-wasi (installed)"); then
+        mkdir -p "$global_azle_version_dir"
         mkdir -p "$global_azle_rust_dir"
         mkdir -p "$global_azle_logs_dir"
 
         install_rustup
         install_wasm32
         install_wasi2ic
+        install_wasmedge_quickjs
 
         echo -e "[4/4] 🚀 Launching..."
     fi
@@ -45,6 +48,15 @@ function install_wasm32() {
 function install_wasi2ic() {
     echo -e "[3/4] 🖥️  Deploying..."
     "$global_azle_cargo_bin" install --git https://github.com/wasm-forge/wasi2ic --rev 806c3558aad24224852a9582f018178402cb3679 &> "$global_azle_logs_dir"/install_wasi2ic
+}
+
+function install_wasmedge_quickjs() {
+    cd "$global_azle_version_dir" &> "$global_azle_logs_dir"/install_wasmedge_quickjs
+    git clone https://github.com/demergent-labs/wasmedge-quickjs &>> "$global_azle_logs_dir"/install_wasmedge_quickjs
+    cd wasmedge-quickjs &>> "$global_azle_logs_dir"/install_wasmedge_quickjs
+    git checkout 09edab8fbfa15e17f91d834003589fc7e60357ba &>> "$global_azle_logs_dir"/install_wasmedge_quickjs
+    cd - &>> "$global_azle_logs_dir"/install_wasmedge_quickjs
+    cd - &>> "$global_azle_logs_dir"/install_wasmedge_quickjs
 }
 
 run

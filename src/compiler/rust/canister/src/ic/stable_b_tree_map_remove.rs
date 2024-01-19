@@ -1,43 +1,36 @@
-use std::convert::TryInto;
-
-use quickjs_wasm_rs::{to_qjs_value, CallbackArg, JSContextRef, JSValue, JSValueRef};
+use wasmedge_quickjs::{Context, JsFn, JsValue};
 
 use crate::{AzleStableBTreeMapKey, STABLE_B_TREE_MAPS};
 
-pub fn native_function<'a>(
-    context: &'a JSContextRef,
-    _this: &CallbackArg,
-    args: &[CallbackArg],
-) -> Result<JSValueRef<'a>, anyhow::Error> {
-    let memory_id_string: String = args
-        .get(0)
-        .expect("stable_b_tree_map_remove argument 0 is undefined")
-        .to_js_value()?
-        .try_into()?;
-    let memory_id: u8 = memory_id_string.parse()?;
+pub struct NativeFunction;
+impl JsFn for NativeFunction {
+    fn call(context: &mut Context, this_val: JsValue, argv: &[JsValue]) -> JsValue {
+        let memory_id_string = if let JsValue::String(js_string) = argv.get(0).unwrap() {
+            js_string.to_string()
+        } else {
+            panic!("conversion from JsValue to JsString failed")
+        };
+        let memory_id: u8 = memory_id_string.parse().unwrap();
 
-    let key: Vec<u8> = args
-        .get(1)
-        .expect("stable_b_tree_map_remove argument 1 is undefined")
-        .to_js_value()?
-        .try_into()?;
+        let key = if let JsValue::ArrayBuffer(js_array_buffer) = argv.get(1).unwrap() {
+            js_array_buffer.to_vec()
+        } else {
+            panic!("conversion from JsValue to JsArrayBuffer failed")
+        };
 
-    let value_option = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
-        let mut stable_b_tree_maps = stable_b_tree_maps.borrow_mut();
+        let value_option = STABLE_B_TREE_MAPS.with(|stable_b_tree_maps| {
+            let mut stable_b_tree_maps = stable_b_tree_maps.borrow_mut();
 
-        stable_b_tree_maps
-            .get_mut(&memory_id)
-            .unwrap()
-            .remove(&AzleStableBTreeMapKey { bytes: key })
-    });
+            stable_b_tree_maps
+                .get_mut(&memory_id)
+                .unwrap()
+                .remove(&AzleStableBTreeMapKey { bytes: key })
+        });
 
-    // TODO could we somehow encode the entire option here more easily
-    match value_option {
-        Some(value) => {
-            let candid_bytes_js_value: JSValue = value.bytes.into();
-
-            to_qjs_value(&context, &candid_bytes_js_value)
+        // TODO could we somehow encode the entire option here more easily
+        match value_option {
+            Some(value) => context.new_array_buffer(&value.bytes).into(),
+            None => JsValue::UnDefined,
         }
-        None => context.undefined_value(),
     }
 }
