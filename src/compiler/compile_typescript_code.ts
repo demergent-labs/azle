@@ -1,5 +1,5 @@
 import { buildSync } from 'esbuild';
-import { JSCanisterConfig, JavaScript, TypeScript } from './utils/types';
+import { JavaScript, TypeScript } from './utils/types';
 import { Result } from './utils/result';
 import { GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR } from './utils/global_paths';
 
