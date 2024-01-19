@@ -17,7 +17,7 @@ import { InitMethodArb } from 'azle/property_tests/arbitraries/canister_methods/
 import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';
 import { generateBody as initBodyGenerator } from './generate_init_body';
 import { generateTests } from './generate_tests';
-import { CorrespondingJSType } from '../../../arbitraries/candid/corresponding_js_type';
+import { CorrespondingJSType } from '../../../../arbitraries/candid/corresponding_js_type';
 
 const SimpleInitMethodArb = InitMethodArb(fc.array(CandidValueAndMetaArb()), {
     generateBody: initBodyGenerator,

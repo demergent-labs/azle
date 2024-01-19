@@ -13,19 +13,31 @@ export function generateTests(
     ];
 
     return [
+        [], // Don't test on the first deploy, test after a re-deploy
         [
             {
-                name: `init method`,
+                name: `post upgrade method`,
                 test: async () => {
-                    const actor = getActor('./tests/init_method/test');
-                    const result = await actor.getInitValues();
+                    const actor = getActor(
+                        './tests/canister_methods/post_upgrade/test'
+                    );
 
-                    const valuesAreEqual = deepEqual(result, expectedResult);
+                    const postUpgradeValues =
+                        await actor.getPostUpgradeValues();
+                    const isInitCalled = await actor.isInitCalled();
+
+                    const valuesAreEqual =
+                        deepEqual(postUpgradeValues, expectedResult) &&
+                        isInitCalled === false;
 
                     return valuesAreEqual
                         ? { Ok: true }
                         : {
-                              Err: `\n Incorrect return value\n   expected: ${expectedResult}\n   received: ${result}`
+                              Err: `\n
+Incorrect return value
+expected: ${expectedResult}
+received: ${postUpgradeValues}
+isInitCalled: ${isInitCalled}`
                           };
                 }
             }

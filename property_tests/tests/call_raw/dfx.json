@@ -1,0 +1,28 @@
+{
+    "canisters": {
+        "canister": {
+            "type": "custom",
+            "main": "src/canister/index.ts",
+            "candid": "src/canister/index.did",
+            "build": "npx azle canister",
+            "wasm": ".azle/canister/canister.wasm",
+            "gzip": true,
+            "declarations": {
+                "output": "test/dfx_generated/canister",
+                "node_compatibility": true
+            }
+        },
+        "callRawExecutor": {
+            "type": "custom",
+            "main": "src/callRawExecutor/index.ts",
+            "candid": "src/callRawExecutor/index.did",
+            "build": "npx azle callRawExecutor",
+            "wasm": ".azle/callRawExecutor/callRawExecutor.wasm",
+            "gzip": true,
+            "declarations": {
+                "output": "test/dfx_generated/callRawExecutor",
+                "node_compatibility": true
+            }
+        }
+    }
+}
