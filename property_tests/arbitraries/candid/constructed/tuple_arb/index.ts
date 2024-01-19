@@ -11,7 +11,7 @@ export type Tuple = CorrespondingJSType[];
 export type ReturnTuple = Tuple | {};
 
 export function TupleArb(
-    fieldCandidDefinitionArb: fc.Arbitrary<CandidDefinition> = candidDefinitionArb()
+    fieldCandidDefinitionArb = candidDefinitionArb({})
 ): fc.Arbitrary<CandidValueAndMeta<Tuple, ReturnTuple>> {
     return CandidValueAndMetaArbGenerator(
         TupleDefinitionArb(fieldCandidDefinitionArb),
