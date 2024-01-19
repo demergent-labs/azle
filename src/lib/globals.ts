@@ -19,15 +19,18 @@ globalThis._azleInsideCanister =
     globalThis._azleIc === undefined ? false : true;
 
 if (globalThis._azleInsideCanister) {
+    const log = (...args: any[]) => {
+        const jsonStringifiedArgs = args
+            .map((arg) => JSON.stringify(arg, replacer, 4))
+            .join(' ');
+
+        ic.print(jsonStringifiedArgs);
+    };
+
     globalThis.console = {
         ...globalThis.console,
-        log: (...args: any[]) => {
-            const jsonStringifiedArgs = args
-                .map((arg) => JSON.stringify(arg, replacer, 4))
-                .join(' ');
-
-            ic.print(jsonStringifiedArgs);
-        }
+        log,
+        error: log
     };
 
     const originalSetTimeout = setTimeout;
@@ -41,6 +44,7 @@ if (globalThis._azleInsideCanister) {
         }
 
         // TODO change this to throw once errors throw and show up properly
+        // TODO should this throw an error or just not do anything? At least a warning would be good right?
         ic.trap(`setTimeout cannot be called with milliseconds above 0`);
     };
 }
@@ -57,8 +61,9 @@ globalThis._azleGuardFunctions = {};
 // TODO the randomness is predictable
 globalThis.crypto = {
     ...globalThis.crypto,
-    getRandomValues: (() => {
-        let array = new Uint8Array(32);
+    getRandomValues: ((array: Uint8Array) => {
+        // TODO the type is wrong of array
+        // TODO this could possibly be any kind of TypedArray
 
         for (let i = 0; i < array.length; i++) {
             array[i] = Math.floor(Math.random() * 256);
@@ -71,3 +76,6 @@ globalThis.crypto = {
 globalThis.Buffer = Buffer;
 
 globalThis.process = process;
+globalThis.clearInterval = () => {}; // TODO should this throw an error or just not do anything? At least a warning would be good right?
+
+globalThis.global = globalThis;

@@ -1,5 +1,3 @@
-use std::convert::TryInto;
-
 use slotmap::Key;
 use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
 
