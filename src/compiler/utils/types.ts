@@ -28,6 +28,7 @@ export type OptLevel = '0' | '1' | '2' | '3' | '4';
 
 export type CompilerInfo = {
     canister_methods: CanisterMethods;
+    env_vars: [string, string][];
 };
 
 export type CanisterMethods = {

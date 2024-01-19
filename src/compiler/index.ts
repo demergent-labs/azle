@@ -23,6 +23,7 @@ import { Err, ok } from './utils/result';
 import {
     AzleError,
     CompilerInfo,
+    JSCanisterConfig,
     Toml,
     TsCompilationError,
     TsSyntaxErrorLocation
@@ -64,8 +65,7 @@ async function azle() {
             installRustDependencies(azleVersion, rustVersion);
 
             const compilationResult = compileTypeScriptToJavaScript(
-                canisterConfig.main,
-                canisterConfig
+                canisterConfig.main
             );
 
             if (!ok(compilationResult)) {
@@ -113,14 +113,16 @@ async function azle() {
             // TODO stuff is repeated which is messy and bad of course
             writeFileSync(`${canisterPath}/canister/src/candid.did`, ''); // This is for the Rust canister to have access to the candid file
 
+            const envVars = getEnvVars(canisterConfig);
+
             const compilerInfo0: CompilerInfo = {
-                // TODO The spread is because canisterMethods is a function with properties
                 canister_methods: {
                     candid: '',
                     queries: [],
                     updates: [],
                     callbacks: {}
-                } // TODO we should probably just grab the props out that we need
+                },
+                env_vars: envVars
             };
 
             const compilerInfoPath0 = join(
@@ -147,7 +149,8 @@ async function azle() {
                 // TODO The spread is because canisterMethods is a function with properties
                 canister_methods: {
                     ...canisterMethods
-                } // TODO we should probably just grab the props out that we need
+                }, // TODO we should probably just grab the props out that we need
+                env_vars: envVars
             };
 
             const compilerInfoPath = join(
@@ -215,4 +218,10 @@ function generateVisualDisplayOfErrorLocation(
         `${(line + 1).toString().padStart(line.toString().length)}| `
     )}${marker}`;
     return `${preciseLocation}\n${previousLine}\n${offendingLine}\n${subsequentLine}`;
+}
+
+function getEnvVars(canisterConfig: JSCanisterConfig): [string, string][] {
+    return (canisterConfig.env ?? []).map((envVarName) => {
+        return [envVarName, process.env[envVarName] ?? ''];
+    });
 }

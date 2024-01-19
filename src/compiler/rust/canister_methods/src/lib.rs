@@ -21,6 +21,7 @@ impl ToIdent for String {
 #[derive(Debug, Serialize, Deserialize)]
 struct CompilerInfo {
     canister_methods: CanisterMethods,
+    env_vars: Vec<(String, String)>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -45,6 +46,12 @@ struct CanisterMethod {
 pub fn canister_methods(_: TokenStream) -> TokenStream {
     let compiler_info = get_compiler_info("canister/src/compiler_info.json").unwrap();
 
+    let env_vars: Vec<_> = compiler_info
+        .env_vars
+        .iter()
+        .map(|(key, value)| quote!((#key, #value)))
+        .collect();
+
     let init_method_call = compiler_info.canister_methods.init.map(|init_method| {
         let js_function_name = &init_method.name;
 
@@ -54,7 +61,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
     let init_method = quote! {
         #[ic_cdk_macros::init]
         fn init() {
-            ic_wasi_polyfill::init(&[], &[]);
+            ic_wasi_polyfill::init(&[], &[#(#env_vars),*]);
 
             let mut rt = wasmedge_quickjs::Runtime::new();
 
@@ -81,8 +88,6 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
                 // ic_cdk::println!("temp: {:#?}", temp);
             });
-
-            ic_cdk::println!("init result: {:#?}", r);
 
             RUNTIME.with(|runtime| {
                 let mut runtime = runtime.borrow_mut();
@@ -106,7 +111,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
     let post_update_method = quote! {
         #[ic_cdk_macros::post_upgrade]
         fn post_upgrade() {
-            ic_wasi_polyfill::init(&[], &[]);
+            ic_wasi_polyfill::init(&[], &[#(#env_vars),*]);
 
             let mut rt = wasmedge_quickjs::Runtime::new();
 
@@ -133,8 +138,6 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
                 // ic_cdk::println!("temp: {:#?}", temp);
             });
-
-            ic_cdk::println!("post_upgrade result: {:#?}", r);
 
             RUNTIME.with(|runtime| {
                 let mut runtime = runtime.borrow_mut();

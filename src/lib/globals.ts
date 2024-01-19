@@ -2,6 +2,7 @@ import { ic } from './ic';
 import { AzleIc } from './ic/types/azle_ic';
 import { Buffer } from 'buffer';
 import { replacer } from './stable_structures/stable_json';
+import * as process from 'process';
 
 declare global {
     var _azleInsideCanister: boolean;
@@ -68,3 +69,5 @@ globalThis.crypto = {
 };
 
 globalThis.Buffer = Buffer;
+
+globalThis.process = process;
