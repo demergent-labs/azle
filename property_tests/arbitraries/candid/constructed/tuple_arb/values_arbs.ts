@@ -3,13 +3,16 @@ import { Tuple, ReturnTuple } from '.';
 import { CorrespondingJSType } from '../../corresponding_js_type';
 import { TupleCandidDefinition } from '../../candid_definition_arb/types';
 import { CandidValues, CandidValueArb } from '../../candid_values_arb';
+import { RecursiveShapes } from '../../recursive';
 
 export function TupleValuesArb(
-    tupleDefinition: TupleCandidDefinition
+    tupleDefinition: TupleCandidDefinition,
+    recursiveShapes: RecursiveShapes,
+    depthLevel: number
 ): fc.Arbitrary<CandidValues<Tuple, ReturnTuple>> {
     const fieldValues = tupleDefinition.innerTypes.map((innerType) => {
         const result: fc.Arbitrary<CandidValues<CorrespondingJSType>> =
-            CandidValueArb(innerType);
+            CandidValueArb(innerType, recursiveShapes, depthLevel - 1);
         return result;
     });
 

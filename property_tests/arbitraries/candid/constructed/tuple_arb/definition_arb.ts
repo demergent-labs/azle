@@ -2,13 +2,16 @@ import fc from 'fast-check';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
-    TupleCandidDefinition
+    TupleCandidDefinition,
+    WithShapes,
+    WithShapesArb
 } from '../../candid_definition_arb/types';
 import { CandidType, Tuple } from '../../../../../src/lib';
+import { RecursiveShapes } from '../../recursive';
 
 export function TupleDefinitionArb(
-    candidTypeArbForFields: fc.Arbitrary<CandidDefinition>
-): fc.Arbitrary<TupleCandidDefinition> {
+    candidTypeArbForFields: WithShapesArb<CandidDefinition>
+): WithShapesArb<TupleCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
@@ -18,42 +21,61 @@ export function TupleDefinitionArb(
             // https://github.com/demergent-labs/azle/issues/1453
             fc.boolean()
         )
-        .map(([name, fields, useTypeDeclaration]): TupleCandidDefinition => {
-            const candidTypeAnnotation = generateCandidTypeAnnotation(
-                useTypeDeclaration,
+        .map(
+            ([
                 name,
-                fields
-            );
+                fieldsAndShapes,
+                useTypeDeclaration
+            ]): WithShapes<TupleCandidDefinition> => {
+                const fields = fieldsAndShapes.map(
+                    (field): CandidDefinition => field.definition
+                );
+                const recursiveShapes = fieldsAndShapes.reduce(
+                    (acc, field): RecursiveShapes => {
+                        return { ...acc, ...field.recursiveShapes };
+                    },
+                    {}
+                );
+                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                    useTypeDeclaration,
+                    name,
+                    fields
+                );
 
-            const candidTypeObject = generateCandidTypeObject(
-                useTypeDeclaration,
-                name,
-                fields
-            );
+                const candidTypeObject = generateCandidTypeObject(
+                    useTypeDeclaration,
+                    name,
+                    fields
+                );
 
-            const runtimeCandidTypeObject =
-                generateRuntimeCandidTypeObject(fields);
+                const runtimeCandidTypeObject =
+                    generateRuntimeCandidTypeObject(fields);
 
-            const variableAliasDeclarations = generateVariableAliasDeclarations(
-                useTypeDeclaration,
-                name,
-                fields
-            );
+                const variableAliasDeclarations =
+                    generateVariableAliasDeclarations(
+                        useTypeDeclaration,
+                        name,
+                        fields
+                    );
 
-            const imports = generateImports(fields);
+                const imports = generateImports(fields);
 
-            return {
-                candidMeta: {
-                    candidTypeAnnotation,
-                    candidTypeObject,
-                    runtimeCandidTypeObject,
-                    variableAliasDeclarations,
-                    imports,
-                    candidType: 'Tuple'
-                },
-                innerTypes: fields
-            };
-        });
+                return {
+                    definition: {
+                        candidMeta: {
+                            candidTypeAnnotation,
+                            candidTypeObject,
+                            runtimeCandidTypeObject,
+                            variableAliasDeclarations,
+                            imports,
+                            candidType: 'Tuple'
+                        },
+                        innerTypes: fields
+                    },
+                    recursiveShapes
+                };
+            }
+        );
 }
 
 function generateVariableAliasDeclarations(
