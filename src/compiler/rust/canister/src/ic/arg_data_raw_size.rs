@@ -1,5 +1,3 @@
-use std::convert::TryFrom;
-
 use wasmedge_quickjs::{Context, JsFn, JsValue};
 
 pub struct NativeFunction;

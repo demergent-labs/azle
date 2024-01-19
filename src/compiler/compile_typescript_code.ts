@@ -71,6 +71,7 @@ export function bundleFromString(ts: TypeScript): JavaScript {
             util: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/util`,
             fs: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/fs`,
             fmt: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/fmt`,
+            assert: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/assert.js`,
             buffer: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/buffer.js`,
             path: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/path.js`,
             stream: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/stream.js`,
@@ -81,7 +82,10 @@ export function bundleFromString(ts: TypeScript): JavaScript {
             punycode: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/punycode.js`,
             querystring: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/querystring.js`,
             whatwg_url: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/whatwg_url.js`,
-            encoding: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/encoding.js`
+            encoding: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/encoding.js`,
+            crypto: 'crypto-browserify',
+            'internal/deps/acorn/acorn/dist/acorn': `crypto-browserify`, // TODO this is a bug, wasmedge-quickjs should probably add these files
+            'internal/deps/acorn/acorn-walk/dist/walk': `crypto-browserify` // TODO this is a bug, wasmedge-quickjs should probably add these files
         },
         external: ['_node:fs', '_encoding']
         // TODO tsconfig was here to attempt to set importsNotUsedAsValues to true to force Principal to always be bundled
@@ -92,5 +96,11 @@ export function bundleFromString(ts: TypeScript): JavaScript {
     const bundleArray = buildResult.outputFiles[0].contents;
     const bundleString = Buffer.from(bundleArray).toString('utf-8');
 
-    return bundleString;
+    // TODO consuming code tries to require assert.js which is now an ES module
+    // TODO in wasmedge-quickjs, so the expected output is now on the .default property
+    // TODO this has only come up with assert for now
+    return bundleString.replace(
+        /__toCommonJS\(assert_exports\)\);/g,
+        `__toCommonJS(assert_exports)).default;`
+    );
 }
