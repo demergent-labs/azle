@@ -215,15 +215,18 @@ function generateGetInitHookExecuted(): QueryMethod {
     };
 }
 
-function generateIsInitCalled(
-    globalPostUpgradeVariableNames: string[]
-): QueryMethod {
+function generateIsInitCalled(globalInitVariableNames: string[]): QueryMethod {
+    const areAllParamsUndefined = globalInitVariableNames
+        .map((name) => `${name} === undefined`)
+        .join(' && ');
+    const isInitCalled =
+        globalInitVariableNames.length === 0
+            ? 'initHookExecuted'
+            : areAllParamsUndefined;
     return {
         imports: new Set(['bool', 'query']),
         globalDeclarations: [],
-        sourceCode: /*TS*/ `isInitCalled: query([], bool, () => ${globalPostUpgradeVariableNames
-            .map((name) => `${name} === undefined`)
-            .join(' && ')})`,
+        sourceCode: /*TS*/ `isInitCalled: query([], bool, () => ${isInitCalled})`,
         tests: []
     };
 }
@@ -231,12 +234,17 @@ function generateIsInitCalled(
 function generateIsPostUpgradeCalled(
     globalPostUpgradeVariableNames: string[]
 ): QueryMethod {
+    const areAllParamsUndefined = globalPostUpgradeVariableNames
+        .map((name) => `${name} === undefined`)
+        .join(' && ');
+    const isPostUpgradeCalled =
+        globalPostUpgradeVariableNames.length === 0
+            ? 'postUpgradeHookExecuted'
+            : areAllParamsUndefined;
     return {
         imports: new Set(['bool', 'query']),
         globalDeclarations: [],
-        sourceCode: /*TS*/ `isPostUpgradeCalled: query([], bool, () => ${globalPostUpgradeVariableNames
-            .map((name) => `${name} === undefined`)
-            .join(' && ')})`,
+        sourceCode: /*TS*/ `isPostUpgradeCalled: query([], bool, () => ${isPostUpgradeCalled})`,
         tests: []
     };
 }
