@@ -3,15 +3,21 @@ import { Opt } from '.';
 import { CorrespondingJSType } from '../../corresponding_js_type';
 import { OptCandidDefinition } from '../../candid_definition_arb/types';
 import { CandidValues, CandidValueArb } from '../../candid_values_arb';
+import { RecursiveShapes } from '../../recursive';
 
 type SomeOrNone = 'Some' | 'None';
 
 export function OptValuesArb(
-    optDefinition: OptCandidDefinition
+    optDefinition: OptCandidDefinition,
+    recursiveShapes: RecursiveShapes,
+    depthLevel: number
 ): fc.Arbitrary<CandidValues<Opt>> {
+    if (depthLevel < 1) {
+        return fc.constant(generateNoneValue());
+    }
     const innerValue = fc.tuple(
         fc.constantFrom('Some', 'None') as fc.Arbitrary<SomeOrNone>,
-        CandidValueArb(optDefinition.innerType)
+        CandidValueArb(optDefinition.innerType, recursiveShapes, depthLevel - 1)
     );
 
     return innerValue.map(([someOrNone, innerType]) => {
@@ -25,6 +31,14 @@ export function OptValuesArb(
             agentResponseValue
         };
     });
+}
+
+function generateNoneValue(): CandidValues<Opt> {
+    return {
+        valueLiteral: 'None',
+        agentArgumentValue: [],
+        agentResponseValue: []
+    };
 }
 
 function generateValue(

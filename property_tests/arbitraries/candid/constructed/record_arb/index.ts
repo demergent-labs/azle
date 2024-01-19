@@ -13,7 +13,7 @@ export type Record = {
 };
 
 export function RecordArb(
-    arb: CandidDefinitionArb = candidDefinitionArb()
+    arb: CandidDefinitionArb = candidDefinitionArb({})
 ): fc.Arbitrary<CandidValueAndMeta<Record>> {
     return CandidValueAndMetaArbGenerator(
         RecordDefinitionArb(arb),

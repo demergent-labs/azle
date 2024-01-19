@@ -6,13 +6,16 @@ import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import fc from 'fast-check';
 import { CandidValues } from '../../candid_values_arb';
-import { IntCandidDefinition } from '../../candid_definition_arb/types';
+import {
+    IntCandidDefinition,
+    WithShapesArb
+} from '../../candid_definition_arb/types';
 
 export function Int8Arb(): fc.Arbitrary<CandidValueAndMeta<number>> {
     return CandidValueAndMetaArbGenerator(Int8DefinitionArb(), Int8ValueArb);
 }
 
-export function Int8DefinitionArb(): fc.Arbitrary<IntCandidDefinition> {
+export function Int8DefinitionArb(): WithShapesArb<IntCandidDefinition> {
     return SimpleCandidDefinitionArb('int8');
 }
 
