@@ -1,0 +1,16 @@
+{
+    "canisters": {
+        "backend": {
+            "type": "custom",
+            "main": "src/backend/index.ts",
+            "candid": "src/backend/index.did",
+            "build": "npx azle backend",
+            "wasm": ".azle/backend/backend.wasm",
+            "gzip": true,
+            "declarations": {
+                "output": "test/dfx_generated/backend",
+                "node_compatibility": true
+            }
+        }
+    }
+}

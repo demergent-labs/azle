@@ -72,9 +72,16 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 context.eval_global_str("globalThis.exports = {};".to_string());
                 context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
-                // TODO Is this all we need to do for promises and timeouts?
-                context.event_loop().unwrap().run_tick_task();
                 context.promise_loop_poll();
+
+                while (true) {
+                    let num_tasks = context.event_loop().unwrap().run_tick_task();
+                    context.promise_loop_poll();
+
+                    if num_tasks == 0 {
+                        break;
+                    }
+                }
 
                 // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
@@ -122,9 +129,16 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 context.eval_global_str("globalThis.exports = {};".to_string());
                 context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
-                // TODO Is this all we need to do for promises and timeouts?
-                context.event_loop().unwrap().run_tick_task();
                 context.promise_loop_poll();
+
+                while (true) {
+                    let num_tasks = context.event_loop().unwrap().run_tick_task();
+                    context.promise_loop_poll();
+
+                    if num_tasks == 0 {
+                        break;
+                    }
+                }
 
                 // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
@@ -312,6 +326,17 @@ fn get_guard_token_stream(
                                 Err("TODO needs error info".to_string())
                             }
                             _ => Ok(())
+                        }
+
+                        context.promise_loop_poll();
+
+                        while (true) {
+                            let num_tasks = context.event_loop().unwrap().run_tick_task();
+                            context.promise_loop_poll();
+
+                            if num_tasks == 0 {
+                                break;
+                            }
                         }
                     })
                 })

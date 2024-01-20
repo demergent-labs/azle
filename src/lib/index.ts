@@ -6,3 +6,4 @@ export * from './ic';
 export * from './stable_structures/stable_b_tree_map';
 export * from './stable_structures/stable_json';
 export * from './system_types';
+export * from './server';

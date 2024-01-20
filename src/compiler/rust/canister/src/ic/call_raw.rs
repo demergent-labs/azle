@@ -117,9 +117,16 @@ impl JsFn for NativeFunction {
                         };
                     }
 
-                    // TODO Is this all we need to do for promises and timeouts?
-                    context.event_loop().unwrap().run_tick_task();
                     context.promise_loop_poll();
+
+                    while (true) {
+                        let num_tasks = context.event_loop().unwrap().run_tick_task();
+                        context.promise_loop_poll();
+
+                        if num_tasks == 0 {
+                            break;
+                        }
+                    }
                 });
             });
         });

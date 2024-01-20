@@ -32,3 +32,7 @@ export const GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR = join(
     azleVersion,
     'wasmedge-quickjs'
 );
+
+// This is for local development of wasmedge-quickjs js modules
+// export const GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR =
+// '/home/lastmjs/development/wasmedge-quickjs';

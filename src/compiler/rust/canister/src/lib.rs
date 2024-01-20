@@ -111,9 +111,16 @@ fn execute_js(function_name: &str, pass_arg_data: bool) {
                 _ => {}
             };
 
-            // TODO Is this all we need to do for promises and timeouts?
-            context.event_loop().unwrap().run_tick_task();
             context.promise_loop_poll();
+
+            while (true) {
+                let num_tasks = context.event_loop().unwrap().run_tick_task();
+                context.promise_loop_poll();
+
+                if num_tasks == 0 {
+                    break;
+                }
+            }
         });
     });
 }
@@ -139,6 +146,17 @@ pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
                 "azle_main",
             );
 
+            context.promise_loop_poll();
+
+            while (true) {
+                let num_tasks = context.event_loop().unwrap().run_tick_task();
+                context.promise_loop_poll();
+
+                if num_tasks == 0 {
+                    break;
+                }
+            }
+
             let global = context.get_global();
 
             let candid_info_function = global.get("candidInfoFunction").to_function().unwrap();
@@ -156,6 +174,18 @@ pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
                 }
                 _ => {}
             };
+
+            context.promise_loop_poll();
+
+            // TODO did I put this in the right place?
+            while (true) {
+                let num_tasks = context.event_loop().unwrap().run_tick_task();
+                context.promise_loop_poll();
+
+                if num_tasks == 0 {
+                    break;
+                }
+            }
 
             let candid_info_string = candid_info.to_string().unwrap().to_string();
 
