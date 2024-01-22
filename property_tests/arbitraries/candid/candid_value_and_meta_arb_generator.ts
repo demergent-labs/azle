@@ -2,7 +2,7 @@ import fc from 'fast-check';
 import { CorrespondingJSType } from './corresponding_js_type';
 import { CandidDefinition, WithShapes } from './candid_definition_arb/types';
 import { CandidValueAndMeta } from './candid_value_and_meta_arb';
-import { CandidValues } from './candid_values_arb';
+import { CandidValueConstraints, CandidValues } from './candid_values_arb';
 import { RecursiveShapes } from './recursive';
 
 export function CandidValueAndMetaArbGenerator<
@@ -14,9 +14,9 @@ export function CandidValueAndMetaArbGenerator<
     ValueArb: (
         arb: D,
         recursiveShapes: RecursiveShapes,
-        constraints?: any
+        constraints?: CandidValueConstraints
     ) => fc.Arbitrary<V>,
-    valueConstraints?: any
+    valueConstraints?: CandidValueConstraints
 ): fc.Arbitrary<CandidValueAndMeta<any>> {
     return DefinitionArb.chain((candidDefinitionAndShapes) => {
         const candidDefinition = candidDefinitionAndShapes.definition;

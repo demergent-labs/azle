@@ -9,6 +9,11 @@ import {
 } from '../../candid_definition_arb/types';
 import { CandidValues } from '../../candid_values_arb';
 import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
+import { RecursiveShapes } from '../../recursive';
+
+export interface Float64Constraints extends fc.Float64ArrayConstraints {
+    noNegativeZero?: boolean;
+}
 
 export function Float64Arb(): fc.Arbitrary<CandidValueAndMeta<number>> {
     return CandidValueAndMetaArbGenerator(
@@ -21,15 +26,21 @@ export function Float64DefinitionArb(): WithShapesArb<FloatCandidDefinition> {
     return SimpleCandidDefinitionArb('float64');
 }
 
-export function Float64ValueArb(): fc.Arbitrary<CandidValues<number>> {
-    return SimpleCandidValuesArb(float64(), floatToSrcLiteral);
+export function Float64ValueArb<C extends Float64Constraints>(
+    _?: FloatCandidDefinition,
+    _recShapes?: RecursiveShapes,
+    constraints?: C
+): fc.Arbitrary<CandidValues<number>> {
+    return SimpleCandidValuesArb(float64(constraints), floatToSrcLiteral);
 }
 
-// TODO multiplying by zero is to remove -0
-// TODO we should open an issue with agent-js
-// TODO the agent should encode and decode -0 correctly
-function float64(): fc.Arbitrary<number> {
+function float64(constraints?: Float64Constraints): fc.Arbitrary<number> {
     return fc
-        .float64Array({ maxLength: 1, minLength: 1 })
-        .map((sample) => (sample[0] === 0 ? sample[0] * 0 : sample[0]));
+        .float64Array({ ...constraints, maxLength: 1, minLength: 1 })
+        .map((sample) => {
+            if (constraints?.noNegativeZero) {
+                return sample[0] === 0 ? sample[0] * 0 : sample[0];
+            }
+            return sample[0];
+        });
 }

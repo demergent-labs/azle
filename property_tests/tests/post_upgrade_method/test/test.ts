@@ -275,11 +275,18 @@ function definitionsToValueAndMetaArb(
             fc.constant(definitions),
             fc.tuple(
                 ...definitions.map((definition) =>
-                    CandidValueArb(
-                        definition,
-                        recursiveShapes,
-                        DEFAULT_VALUE_MAX_DEPTH
-                    )
+                    // TODO multiplying by zero is to remove -0
+                    // TODO we should open an issue with agent-js
+                    // TODO the agent should encode and decode -0 correctly
+                    // https://github.com/demergent-labs/azle/issues/1511
+                    // TODO Infinity and NaN can't be used in this context
+                    // https://github.com/dfinity/candid/issues/499
+                    CandidValueArb(definition, recursiveShapes, {
+                        noDefaultInfinity: true,
+                        noNaN: true,
+                        noNegativeZero: true,
+                        depthLevel: DEFAULT_VALUE_MAX_DEPTH
+                    })
                 )
             )
         )
