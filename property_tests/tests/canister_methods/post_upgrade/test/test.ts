@@ -18,7 +18,7 @@ import {
 import { PostUpgradeMethodArb } from 'azle/property_tests/arbitraries/canister_methods/post_upgrade_arb';
 
 import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';
-import { generateBody as postUpgradeMethodBodyGenerator } from './generate_post_deploy_method_body';
+import { generateBody as postUpgradeMethodBodyGenerator } from './generate_post_upgrade_method_body';
 import { generateBody as initMethodBodyGenerator } from './generate_init_method_body';
 import { generateTests as generateInitTests } from './generate_init_tests';
 import { generateTests as generatePostUpgradeTests } from './generate_post_upgrade_tests';
