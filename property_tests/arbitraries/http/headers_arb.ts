@@ -6,7 +6,7 @@ export function HttpHeadersArb() {
     const HeaderNameArb = fc.stringMatching(/^[a-zA-Z0-9_-]+$/);
 
     const HeaderValueArb = fc
-        .stringMatching(/^[a-zA-Z0-9_ :;.,\/"'?!(){}[\]@<>=\-+*#$&`|~^%]+$/)
+        .stringMatching(/^[a-zA-Z0-9_ .'!-+*#$&`|~^%]+$/)
         .map((value) => value.trim());
 
     const HeaderArb = fc.tuple(HeaderNameArb, HeaderValueArb);
