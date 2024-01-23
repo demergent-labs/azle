@@ -4,6 +4,7 @@ import { Test } from '../../test';
 import { UpdateMethod } from './canister_methods/update_method_arb';
 import { InitMethod } from './canister_methods/init_method_arb';
 import { PostUpgradeMethod } from './canister_methods/post_upgrade_arb';
+import { PreUpgradeMethod } from './canister_methods/pre_upgrade_method_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
 import { TextClass, FloatClass } from '@dfinity/candid/lib/cjs/idl';
 
@@ -37,7 +38,8 @@ export type CanisterMethod<
     | QueryMethod
     | UpdateMethod
     | InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
-    | PostUpgradeMethod<ParamAgentArgumentValue, ParamAgentResponseValue>;
+    | PostUpgradeMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
+    | PreUpgradeMethod;
 
 export type CanisterConfig<
     ParamAgentArgumentValue extends CorrespondingJSType = undefined,
@@ -49,6 +51,7 @@ export type CanisterConfig<
         ParamAgentArgumentValue,
         ParamAgentResponseValue
     >;
+    preUpgradeMethod?: PreUpgradeMethod;
     queryMethods?: QueryMethod[];
     updateMethods?: UpdateMethod[];
 };
@@ -69,6 +72,7 @@ export function CanisterArb<
         >[] = [
             ...(config.initMethod ? [config.initMethod] : []),
             ...(config.postUpgradeMethod ? [config.postUpgradeMethod] : []),
+            ...(config.preUpgradeMethod ? [config.preUpgradeMethod] : []),
             ...(config.queryMethods ?? []),
             ...(config.updateMethods ?? [])
         ];
@@ -163,10 +167,6 @@ function generateSourceCode(
             ${sourceCodes.join(',\n    ')}
         });
     `;
-}
-
-function escapeCandidStringForBash(input: string) {
-    return `"${escapeForBash(input.slice(1, -1))}"`;
 }
 
 function escapeForBash(input: string) {

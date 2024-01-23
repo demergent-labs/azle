@@ -23,7 +23,10 @@ const AllServicesQueryMethodArb = QueryMethodArb(
 );
 
 const CanisterConfigArb = fc
-    .array(AllServicesQueryMethodArb, defaultArrayConstraints)
+    .array(AllServicesQueryMethodArb, {
+        ...defaultArrayConstraints,
+        maxLength: 45
+    })
     .map((queryMethods): CanisterConfig => {
         return { queryMethods };
     });

@@ -18,7 +18,7 @@ export function generateTests(
             {
                 name: `post upgrade method`,
                 test: async () => {
-                    const actor = getActor('./tests/post_upgrade_method/test');
+                    const actor = getActor(__dirname);
 
                     const postUpgradeValues =
                         await actor.getPostUpgradeValues();

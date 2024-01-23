@@ -15,10 +15,13 @@ export interface Float64Constraints extends fc.Float64ArrayConstraints {
     noNegativeZero?: boolean;
 }
 
-export function Float64Arb(): fc.Arbitrary<CandidValueAndMeta<number>> {
+export function Float64Arb(
+    constraints?: Float64Constraints
+): fc.Arbitrary<CandidValueAndMeta<number>> {
     return CandidValueAndMetaArbGenerator(
         Float64DefinitionArb(),
-        Float64ValueArb
+        Float64ValueArb,
+        constraints
     );
 }
 

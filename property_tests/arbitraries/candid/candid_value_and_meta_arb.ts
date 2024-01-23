@@ -24,6 +24,7 @@ import { VecArb } from './constructed/vec_arb';
 import { FuncArb } from './reference/func_arb';
 import { CorrespondingJSType } from './corresponding_js_type';
 import { CandidType as RuntimeCandidType } from '../../../src/lib';
+import { CandidValueConstraints } from './candid_values_arb';
 
 // TODO we're thinking that Candid is not the best name for this. What is better?
 export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
@@ -44,9 +45,9 @@ export type CandidValueAndMeta<T extends CorrespondingJSType, E = T> = {
 /**
  * An arbitrary representing all possible Candid types.
  */
-export function CandidValueAndMetaArb(): fc.Arbitrary<
-    CandidValueAndMeta<CorrespondingJSType>
-> {
+export function CandidValueAndMetaArb(
+    constraints?: CandidValueConstraints
+): fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>> {
     return fc.oneof(
         BlobArb(),
         OptArb(),
@@ -54,8 +55,8 @@ export function CandidValueAndMetaArb(): fc.Arbitrary<
         TupleArb(),
         VariantArb(),
         VecArb(),
-        Float32Arb(),
-        Float64Arb(),
+        Float32Arb(constraints),
+        Float64Arb(constraints),
         IntArb(),
         Int8Arb(),
         Int16Arb(),
@@ -68,7 +69,7 @@ export function CandidValueAndMetaArb(): fc.Arbitrary<
         Nat64Arb(),
         BoolArb(),
         NullArb(),
-        TextArb(),
+        TextArb(constraints),
         FuncArb(),
         PrincipalArb()
     );

@@ -58,10 +58,7 @@ export function UpdateMethodArb<
             UniqueIdentifierArb('canisterMethod'),
             paramTypeArrayArb,
             returnTypeArb,
-            fc.constantFrom(
-                'INLINE',
-                'STANDALONE'
-            ) as fc.Arbitrary<CallbackLocation>,
+            fc.constantFrom<CallbackLocation>('INLINE', 'STANDALONE'),
             UniqueIdentifierArb('typeDeclaration')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using

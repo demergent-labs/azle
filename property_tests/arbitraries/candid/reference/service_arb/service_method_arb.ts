@@ -30,7 +30,7 @@ export function ServiceMethodArb(
     return fc
         .tuple(
             JsFunctionNameArb,
-            fc.constantFrom('query', 'update') as fc.Arbitrary<Mode>,
+            fc.constantFrom<Mode>('query', 'update'),
             fc.array(candidDefArb),
             fc.oneof(candidDefArb, VoidDefinitionArb())
         )
