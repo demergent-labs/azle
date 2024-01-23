@@ -55,17 +55,21 @@ export async function runPropTests(
                     });
 
                     for (let i = 0; i < canister.tests.length; i++) {
+                        const args =
+                            i === 0
+                                ? canister.initArgs
+                                : canister.postUpgradeArgs;
                         const argumentsString =
-                            canister.deployArgs !== undefined &&
-                            canister.deployArgs.length > 0
-                                ? `--argument '(${canister.deployArgs.join(
-                                      ', '
-                                  )})'`
+                            args !== undefined && args.length > 0
+                                ? `--argument '(${args.join(', ')})'`
                                 : '';
 
-                        execSync(`dfx deploy canister ${argumentsString}`, {
-                            stdio: 'inherit'
-                        });
+                        execSync(
+                            `dfx deploy canister ${argumentsString} --upgrade-unchanged`,
+                            {
+                                stdio: 'inherit'
+                            }
+                        );
 
                         execSync(`dfx generate canister`, {
                             stdio: 'inherit'

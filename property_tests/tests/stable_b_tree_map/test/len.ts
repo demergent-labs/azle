@@ -10,7 +10,11 @@ export function LenTestArb(stableBTreeMap: StableBTreeMap) {
     return fc
         .tuple(UniqueIdentifierArb('stableBTreeMap'))
         .map(([functionName]): QueryMethod => {
-            const imports = new Set([...stableBTreeMap.imports, 'nat64']);
+            const imports = new Set([
+                ...stableBTreeMap.imports,
+                'nat64',
+                'query'
+            ]);
 
             const returnCandidTypeObject = `nat64`;
             const body = generateBody(stableBTreeMap.name);

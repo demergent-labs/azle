@@ -10,8 +10,13 @@ import {
     VariantCandidDefinition,
     VecCandidDefinition
 } from '../../candid_definition_arb/types';
-import { CandidValues, CandidValueArb } from '../../candid_values_arb';
+import {
+    CandidValues,
+    CandidValueArb,
+    CandidValueConstraints
+} from '../../candid_values_arb';
 import { RecursiveShapes } from '../../recursive';
+import { DEFAULT_VALUE_MAX_DEPTH } from '../../../config';
 
 /*
 https://github.com/dfinity/candid/blob/491969f34dd791e51f69c5f8d3c6192ae405b839/spec/Candid.md#memory
@@ -24,8 +29,11 @@ const EMPTYISH_VEC_SIZE_LIMIT = 0;
 export function VecValuesArb(
     vecDefinition: VecCandidDefinition,
     recursiveShapes: RecursiveShapes,
-    depthLevel: number
+    constraints: CandidValueConstraints = {
+        depthLevel: DEFAULT_VALUE_MAX_DEPTH
+    }
 ): fc.Arbitrary<CandidValues<Vec>> {
+    const depthLevel = constraints.depthLevel ?? DEFAULT_VALUE_MAX_DEPTH;
     if (depthLevel < 1) {
         return fc.constant(
             generateEmptyVec(vecDefinition.innerType.candidMeta.candidType)
@@ -39,7 +47,10 @@ export function VecValuesArb(
         .chain(([arrayTemplate, innerType]) =>
             fc.tuple(
                 ...arrayTemplate.map(() =>
-                    CandidValueArb(innerType, recursiveShapes, depthLevel - 1)
+                    CandidValueArb(innerType, recursiveShapes, {
+                        ...constraints,
+                        depthLevel: depthLevel - 1
+                    })
                 )
             )
         );

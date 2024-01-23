@@ -78,6 +78,7 @@ export function QueryMethodArb<
                     constraints.callbackLocation ?? defaultCallbackLocation;
 
                 const imports = new Set([
+                    'query',
                     ...paramTypes.flatMap((param) => [...param.src.imports]),
                     ...returnType.src.imports
                 ]);

@@ -11,8 +11,7 @@ export function areParamsCorrectlyOrdered<T extends CorrespondingJSType>(
                 ${name},
                 ${value.src.valueLiteral}
             )`;
-
-            return `if (!${areEqual}) {console.log('value', ${name}); throw new Error('${name} is incorrectly ordered');}`;
+            return `if (!${areEqual}) {console.log('value', ${name}, 'expected', ${value.src.valueLiteral}); throw new Error('${name} is incorrectly ordered');}`;
         })
         .join('\n');
 }

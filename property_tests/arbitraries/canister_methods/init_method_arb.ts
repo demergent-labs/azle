@@ -45,7 +45,7 @@ export function InitMethodArb<
         >;
         callbackLocation?: CallbackLocation;
     }
-) {
+): fc.Arbitrary<InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>> {
     return fc
         .tuple(
             UniqueIdentifierArb('canisterMethod'),
