@@ -23,20 +23,29 @@ export function generateTests(
                 name: functionName,
                 test: async () => {
                     const response = fletch('canister', request);
-                    const filteredHeaders = response.headers.filter(
-                        ([name]) =>
-                            name !== 'x-ic-streaming-response' &&
-                            name !== 'content-length' &&
-                            name !== 'date'
-                    );
+                    const filteredHeaders = response.headers
+                        .filter(
+                            ([name]) =>
+                                name !== 'x-ic-streaming-response' &&
+                                name !== 'content-length' &&
+                                name !== 'date'
+                        )
+                        .sort();
                     const processedResponse = {
                         status: response.status,
                         headers: filteredHeaders,
                         body: response.body
                     };
+                    const filteredExpectedHeaders =
+                        expectedResponse.headers.sort();
+                    const processedExpectedResponse = {
+                        status: expectedResponse.status,
+                        headers: filteredExpectedHeaders,
+                        body: expectedResponse.body
+                    };
                     const valuesAreEqual = deepEqual(
                         processedResponse,
-                        expectedResponse
+                        processedExpectedResponse
                     );
 
                     return { Ok: valuesAreEqual };
