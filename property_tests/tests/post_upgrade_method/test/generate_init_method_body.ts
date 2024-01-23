@@ -14,7 +14,7 @@ export function generateBody(
         .join('\n');
 
     return `
-        initHookExecuted = true;
+        initExecuted = true;
 
         ${paramsAreCorrectlyOrdered}
 

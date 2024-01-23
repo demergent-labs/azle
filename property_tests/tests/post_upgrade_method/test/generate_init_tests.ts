@@ -18,23 +18,23 @@ export function generateTests(
                 name: `init method`,
                 test: async () => {
                     const actor = getActor('./tests/post_upgrade_method/test');
-                    const result = await actor.getInitValues();
 
+                    const initValues = await actor.getInitValues();
                     const isPostUpgradeCalled =
                         await actor.isPostUpgradeCalled();
-                    const postUpgradeHookExecuted =
-                        await actor.getPostUpgradeHookExecuted();
-                    const wasPostUpgradeCalled =
-                        isPostUpgradeCalled && postUpgradeHookExecuted;
 
                     const valuesAreEqual =
-                        deepEqual(result, expectedResult) &&
-                        wasPostUpgradeCalled === false;
+                        deepEqual(initValues, expectedResult) &&
+                        isPostUpgradeCalled === false;
 
                     return valuesAreEqual
                         ? { Ok: true }
                         : {
-                              Err: `\n Incorrect return value\n   expected: ${expectedResult}\n   received: ${result}`
+                              Err: `\n
+Incorrect return value
+    expected: ${expectedResult}
+    received: ${initValues}
+    isPostUpgradeCalled: ${isPostUpgradeCalled}`
                           };
                 }
             }

@@ -14,7 +14,7 @@ export function generateBody(
         .join('\n');
 
     return `
-        postUpgradeHookExecuted = true;
+        postUpgradeExecuted = true;
 
         ${paramsAreCorrectlyOrdered}
 

@@ -19,7 +19,7 @@ import { PostUpgradeMethodArb } from 'azle/property_tests/arbitraries/canister_m
 
 import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';
 import { generateBody as postUpgradeMethodBodyGenerator } from './generate_post_deploy_method_body';
-import { generateBody as postInitMethodBodyGenerator } from './generate_init_method_body';
+import { generateBody as initMethodBodyGenerator } from './generate_init_method_body';
 import { generateTests as generateInitTests } from './generate_init_tests';
 import { generateTests as generatePostUpgradeTests } from './generate_post_upgrade_tests';
 import { CorrespondingJSType } from '../../../arbitraries/candid/corresponding_js_type';
@@ -40,17 +40,17 @@ const CanisterConfigArb = fc
         const initParamValues = definitionsToValueAndMetaArb(
             paramDefinitionsWithShapes
         );
-        const postParamValues = definitionsToValueAndMetaArb(
+        const postUpgradeParamValues = definitionsToValueAndMetaArb(
             paramDefinitionsWithShapes
         );
-        return fc.tuple(initParamValues, postParamValues);
+        return fc.tuple(initParamValues, postUpgradeParamValues);
     })
-    .chain(([initDeployParams, postUpgradeParams]) => {
-        const initDeployParamsArb = fc.constant(initDeployParams);
+    .chain(([initParams, postUpgradeParams]) => {
+        const initDeployParamsArb = fc.constant(initParams);
         const postUpgradeParamsArb = fc.constant(postUpgradeParams);
 
         const SimpleInitMethodArb = InitMethodArb(initDeployParamsArb, {
-            generateBody: postInitMethodBodyGenerator,
+            generateBody: initMethodBodyGenerator,
             generateTests: generateInitTests
         });
 
@@ -128,8 +128,8 @@ const CanisterConfigArb = fc
             );
 
             const globalDeclarations = [
-                'let postUpgradeHookExecuted: boolean = false;',
-                'let initHookExecuted: boolean = false;',
+                'let postUpgradeExecuted: boolean = false;',
+                'let initExecuted: boolean = false;',
                 ...globalInitVariableDeclarations,
                 ...globalPostUpgradeVariableDeclarations
             ];
@@ -151,11 +151,6 @@ const CanisterConfigArb = fc
 
             const isInitCalled = generateIsInitCalled(globalInitVariableNames);
 
-            const getInitHookExecuted = generateGetInitHookExecuted();
-
-            const getPostUpgradeHookExecuted =
-                generateGetPostUpgradeHookExecuted();
-
             return {
                 globalDeclarations,
                 initMethod,
@@ -165,8 +160,6 @@ const CanisterConfigArb = fc
                     getPostUpgradeValues,
                     isPostUpgradeCalled,
                     isInitCalled,
-                    getInitHookExecuted,
-                    getPostUpgradeHookExecuted,
                     ...queryMethods
                 ],
                 updateMethods
@@ -175,54 +168,44 @@ const CanisterConfigArb = fc
     );
 
 function generateGetPostUpgradeValuesCanisterMethod(
-    postUpgradeParamCandidTypeObjects: string[],
-    globalPostUpgradeVariableNames: string[]
+    paramCandidTypeObjects: string[],
+    globalVariableNames: string[]
 ): QueryMethod {
     return {
         imports: new Set(['Tuple', 'bool', 'query']),
         globalDeclarations: [],
         sourceCode: /*TS*/ `getPostUpgradeValues: query(
             [],
-            Tuple(bool, ${postUpgradeParamCandidTypeObjects.join()}),
-            () => {return [postUpgradeHookExecuted, ${globalPostUpgradeVariableNames.join()}]}
+            Tuple(bool, ${paramCandidTypeObjects.join()}),
+            () => {return [postUpgradeExecuted, ${globalVariableNames.join()}]}
         )`,
         tests: []
     };
 }
 
 function generateGetInitValuesCanisterMethod(
-    postUpgradeParamCandidTypeObjects: string[],
-    globalPostUpgradeVariableNames: string[]
+    paramCandidTypeObjects: string[],
+    globalVariableNames: string[]
 ): QueryMethod {
     return {
         imports: new Set(['Tuple', 'bool', 'query']),
         globalDeclarations: [],
         sourceCode: /*TS*/ `getInitValues: query(
             [],
-            Tuple(bool, ${postUpgradeParamCandidTypeObjects.join()}),
-            () => {return [initHookExecuted, ${globalPostUpgradeVariableNames.join()}]}
+            Tuple(bool, ${paramCandidTypeObjects.join()}),
+            () => {return [initExecuted, ${globalVariableNames.join()}]}
         )`,
         tests: []
     };
 }
 
-function generateGetInitHookExecuted(): QueryMethod {
-    return {
-        imports: new Set(['bool', 'query']),
-        globalDeclarations: [],
-        sourceCode: /*TS*/ `getInitHookExecuted: query([], bool, () => initHookExecuted)`,
-        tests: []
-    };
-}
-
-function generateIsInitCalled(globalInitVariableNames: string[]): QueryMethod {
-    const areAllParamsUndefined = globalInitVariableNames
+function generateIsInitCalled(globalVariableNames: string[]): QueryMethod {
+    const areAllParamsUndefined = globalVariableNames
         .map((name) => `${name} === undefined`)
         .join(' && ');
-    const isInitCalled =
-        globalInitVariableNames.length === 0
-            ? 'initHookExecuted'
-            : areAllParamsUndefined;
+    const isInitCalled = `initExecuted${
+        globalVariableNames.length === 0 ? '' : ' || ' + !areAllParamsUndefined
+    }`;
     return {
         imports: new Set(['bool', 'query']),
         globalDeclarations: [],
@@ -232,28 +215,18 @@ function generateIsInitCalled(globalInitVariableNames: string[]): QueryMethod {
 }
 
 function generateIsPostUpgradeCalled(
-    globalPostUpgradeVariableNames: string[]
+    globalVariableNames: string[]
 ): QueryMethod {
-    const areAllParamsUndefined = globalPostUpgradeVariableNames
+    const areAllParamsUndefined = globalVariableNames
         .map((name) => `${name} === undefined`)
         .join(' && ');
-    const isPostUpgradeCalled =
-        globalPostUpgradeVariableNames.length === 0
-            ? 'postUpgradeHookExecuted'
-            : areAllParamsUndefined;
+    const isPostUpgradeCalled = `postUpgradeExecuted${
+        globalVariableNames.length === 0 ? '' : ' || ' + !areAllParamsUndefined
+    }`;
     return {
         imports: new Set(['bool', 'query']),
         globalDeclarations: [],
         sourceCode: /*TS*/ `isPostUpgradeCalled: query([], bool, () => ${isPostUpgradeCalled})`,
-        tests: []
-    };
-}
-
-function generateGetPostUpgradeHookExecuted(): QueryMethod {
-    return {
-        imports: new Set(['bool', 'query']),
-        globalDeclarations: [],
-        sourceCode: /*TS*/ `getPostUpgradeHookExecuted: query([], bool, () => postUpgradeHookExecuted)`,
         tests: []
     };
 }
