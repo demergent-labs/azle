@@ -204,7 +204,9 @@ function generateIsInitCalled(globalVariableNames: string[]): QueryMethod {
         .map((name) => `${name} === undefined`)
         .join(' && ');
     const isInitCalled = `initExecuted${
-        globalVariableNames.length === 0 ? '' : ' || ' + !areAllParamsUndefined
+        globalVariableNames.length === 0
+            ? ''
+            : ` || !(${areAllParamsUndefined})`
     }`;
     return {
         imports: new Set(['bool', 'query']),
@@ -221,7 +223,9 @@ function generateIsPostUpgradeCalled(
         .map((name) => `${name} === undefined`)
         .join(' && ');
     const isPostUpgradeCalled = `postUpgradeExecuted${
-        globalVariableNames.length === 0 ? '' : ' || ' + !areAllParamsUndefined
+        globalVariableNames.length === 0
+            ? ''
+            : ` || !(${areAllParamsUndefined})`
     }`;
     return {
         imports: new Set(['bool', 'query']),
