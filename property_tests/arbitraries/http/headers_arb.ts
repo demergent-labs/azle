@@ -11,5 +11,5 @@ export function HttpHeadersArb() {
 
     const HeaderArb = fc.tuple(HeaderNameArb, HeaderValueArb);
 
-    return fc.array(HeaderArb);
+    return fc.uniqueArray(HeaderArb, { selector: ([name, _]) => name });
 }
