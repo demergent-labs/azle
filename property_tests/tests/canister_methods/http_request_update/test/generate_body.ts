@@ -68,6 +68,7 @@ function generateHeadersMap(
 
 function generateHeaderChecks(headers: [string, string][]) {
     return headers
+        .filter(([_, value]) => value !== '') // An empty header value is the same as a none existent header
         .map(
             ([name, value]) => `
             if (headers['${escape(name).toLowerCase()}'] !== '${escape(
