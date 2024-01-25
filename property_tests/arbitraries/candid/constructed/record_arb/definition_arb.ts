@@ -4,9 +4,12 @@ import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
     CandidDefinitionArb,
-    RecordCandidDefinition
+    RecordCandidDefinition,
+    WithShapes,
+    WithShapesArb
 } from '../../candid_definition_arb/types';
 import { CandidType, Record } from '../../../../../src/lib';
+import { RecursiveShapes } from '../../recursive';
 
 type Field = [string, CandidDefinition];
 
@@ -16,7 +19,7 @@ type RuntimeRecord = {
 
 export function RecordDefinitionArb(
     fieldCandidDefArb: CandidDefinitionArb
-): fc.Arbitrary<RecordCandidDefinition> {
+): WithShapesArb<RecordCandidDefinition> {
     return fc
         .tuple(
             UniqueIdentifierArb('typeDeclaration'),
@@ -27,42 +30,61 @@ export function RecordDefinitionArb(
             }),
             fc.boolean()
         )
-        .map(([name, fields, useTypeDeclaration]): RecordCandidDefinition => {
-            const candidTypeAnnotation = generateCandidTypeAnnotation(
-                useTypeDeclaration,
+        .map(
+            ([
                 name,
-                fields
-            );
+                fieldsAndShapes,
+                useTypeDeclaration
+            ]): WithShapes<RecordCandidDefinition> => {
+                const fields = fieldsAndShapes.map(
+                    (field): Field => [field[0], field[1].definition]
+                );
+                const recursiveShapes = fieldsAndShapes.reduce(
+                    (acc, field): RecursiveShapes => {
+                        return { ...acc, ...field[1].recursiveShapes };
+                    },
+                    {}
+                );
+                const candidTypeAnnotation = generateCandidTypeAnnotation(
+                    useTypeDeclaration,
+                    name,
+                    fields
+                );
 
-            const candidTypeObject = generateCandidTypeObject(
-                useTypeDeclaration,
-                name,
-                fields
-            );
+                const candidTypeObject = generateCandidTypeObject(
+                    useTypeDeclaration,
+                    name,
+                    fields
+                );
 
-            const runtimeCandidTypeObject =
-                generateRuntimeCandidTypeObject(fields);
+                const runtimeCandidTypeObject =
+                    generateRuntimeCandidTypeObject(fields);
 
-            const variableAliasDeclarations = generateVariableAliasDeclarations(
-                useTypeDeclaration,
-                name,
-                fields
-            );
+                const variableAliasDeclarations =
+                    generateVariableAliasDeclarations(
+                        useTypeDeclaration,
+                        name,
+                        fields
+                    );
 
-            const imports = generateImports(fields);
+                const imports = generateImports(fields);
 
-            return {
-                candidMeta: {
-                    candidTypeAnnotation,
-                    candidTypeObject,
-                    runtimeCandidTypeObject,
-                    variableAliasDeclarations,
-                    imports,
-                    candidType: 'Record'
-                },
-                innerTypes: fields
-            };
-        });
+                return {
+                    definition: {
+                        candidMeta: {
+                            candidTypeAnnotation,
+                            candidTypeObject,
+                            runtimeCandidTypeObject,
+                            variableAliasDeclarations,
+                            imports,
+                            candidType: 'Record'
+                        },
+                        innerTypes: fields
+                    },
+                    recursiveShapes
+                };
+            }
+        );
 }
 
 function generateImports(fields: Field[]): Set<string> {

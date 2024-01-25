@@ -11,7 +11,11 @@ export function KeysTestArb(stableBTreeMap: StableBTreeMap) {
     return fc
         .tuple(UniqueIdentifierArb('stableBTreeMap'))
         .map(([functionName]): QueryMethod => {
-            const imports = new Set([...stableBTreeMap.imports, 'Vec']);
+            const imports = new Set([
+                ...stableBTreeMap.imports,
+                'Vec',
+                'query'
+            ]);
 
             const returnCandidTypeObject = `Vec(${stableBTreeMap.keySample.src.candidTypeObject})`;
             const body = generateBody(

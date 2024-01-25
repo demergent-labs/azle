@@ -9,7 +9,8 @@ import {
     TestsGenerator,
     CallbackLocation,
     isDefined,
-    generateCallback
+    generateCallback,
+    CallbackLocationArb
 } from '.';
 import { Test } from '../../../test';
 import { VoidArb } from '../candid/primitive/void';
@@ -45,13 +46,13 @@ export function InitMethodArb<
         >;
         callbackLocation?: CallbackLocation;
     }
-) {
+): fc.Arbitrary<InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>> {
     return fc
         .tuple(
             UniqueIdentifierArb('canisterMethod'),
             paramTypeArrayArb,
             VoidArb(),
-            fc.constantFrom<CallbackLocation>('INLINE', 'STANDALONE'),
+            CallbackLocationArb,
             UniqueIdentifierArb('typeDeclaration')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using

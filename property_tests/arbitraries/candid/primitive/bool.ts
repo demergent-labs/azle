@@ -5,12 +5,13 @@ import { booleanToSrcLiteral } from '../to_src_literal/boolean';
 import { CandidValueAndMetaArbGenerator } from '../candid_value_and_meta_arb_generator';
 import { BoolCandidDefinition } from '../candid_definition_arb/types';
 import { CandidValues } from '../candid_values_arb';
+import { WithShapesArb } from '../candid_definition_arb/types';
 
 export function BoolArb(): fc.Arbitrary<any> {
     return CandidValueAndMetaArbGenerator(BoolDefinitionArb(), BoolValueArb);
 }
 
-export function BoolDefinitionArb(): fc.Arbitrary<BoolCandidDefinition> {
+export function BoolDefinitionArb(): WithShapesArb<BoolCandidDefinition> {
     return SimpleCandidDefinitionArb('bool');
 }
 

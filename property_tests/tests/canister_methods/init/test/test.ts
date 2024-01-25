@@ -17,12 +17,26 @@ import { InitMethodArb } from 'azle/property_tests/arbitraries/canister_methods/
 import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';
 import { generateBody as initBodyGenerator } from './generate_init_body';
 import { generateTests } from './generate_tests';
-import { CorrespondingJSType } from '../../../arbitraries/candid/corresponding_js_type';
+import { CorrespondingJSType } from '../../../../arbitraries/candid/corresponding_js_type';
 
-const SimpleInitMethodArb = InitMethodArb(fc.array(CandidValueAndMetaArb()), {
-    generateBody: initBodyGenerator,
-    generateTests
-});
+// TODO multiplying by zero is to remove -0
+// TODO we should open an issue with agent-js
+// TODO the agent should encode and decode -0 correctly
+// https://github.com/demergent-labs/azle/issues/1511
+// TODO Infinity and NaN can't be used in this context
+// https://github.com/dfinity/candid/issues/499
+const valueConstraints = {
+    noDefaultInfinity: true,
+    noNaN: true,
+    noNegativeZero: true
+};
+const SimpleInitMethodArb = InitMethodArb(
+    fc.array(CandidValueAndMetaArb(valueConstraints)),
+    {
+        generateBody: initBodyGenerator,
+        generateTests
+    }
+);
 
 const HeterogeneousQueryMethodArb = QueryMethodArb(
     fc.array(CandidValueAndMetaArb()),
@@ -96,7 +110,7 @@ function generateGetInitValuesCanisterMethod(
     globalInitVariableNames: string[]
 ): QueryMethod {
     return {
-        imports: new Set(['Tuple', 'bool']),
+        imports: new Set(['bool', 'query', 'Tuple']),
         globalDeclarations: [],
         sourceCode: /*TS*/ `getInitValues: query(
             [],

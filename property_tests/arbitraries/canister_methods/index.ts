@@ -1,3 +1,5 @@
+import fc from 'fast-check';
+
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CandidReturnType } from '../candid/candid_return_type_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
@@ -5,8 +7,8 @@ import { Named } from '../..';
 import { Test } from '../../../test';
 
 export type BodyGenerator<
-    ParamAgentArgumentValue extends CorrespondingJSType,
-    ParamAgentResponseValue,
+    ParamAgentArgumentValue extends CorrespondingJSType = undefined,
+    ParamAgentResponseValue = undefined,
     ReturnTypeAgentArgumentValue extends CorrespondingJSType = undefined,
     ReturnTypeAgentResponseValue = undefined
 > = (
@@ -20,8 +22,8 @@ export type BodyGenerator<
 ) => string;
 
 export type TestsGenerator<
-    ParamAgentArgumentValue extends CorrespondingJSType,
-    ParamAgentResponseValue,
+    ParamAgentArgumentValue extends CorrespondingJSType = undefined,
+    ParamAgentResponseValue = undefined,
     ReturnTypeAgentArgumentValue extends CorrespondingJSType = undefined,
     ReturnTypeAgentResponseValue = undefined
 > = (
@@ -36,6 +38,11 @@ export type TestsGenerator<
 ) => Test[][];
 
 export type CallbackLocation = 'INLINE' | 'STANDALONE';
+
+export const CallbackLocationArb = fc.constantFrom<CallbackLocation>(
+    'INLINE',
+    'STANDALONE'
+);
 
 export function isDefined<T>(value: T | undefined): value is T {
     return value !== undefined;

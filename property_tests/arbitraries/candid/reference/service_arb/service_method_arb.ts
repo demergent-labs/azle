@@ -1,7 +1,11 @@
 import fc from 'fast-check';
 
 import { CandidType } from '../../candid_type';
-import { CandidDefinition } from '../../candid_definition_arb/types';
+import {
+    CandidDefinition,
+    WithShapes,
+    WithShapesArb
+} from '../../candid_definition_arb/types';
 import { VoidDefinitionArb } from '../../primitive/void';
 import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import {
@@ -21,53 +25,68 @@ export type ServiceMethodDefinition = {
 };
 
 export function ServiceMethodArb(
-    candidDefArb: fc.Arbitrary<CandidDefinition>
-): fc.Arbitrary<ServiceMethodDefinition> {
+    candidDefArb: WithShapesArb<CandidDefinition>
+): WithShapesArb<ServiceMethodDefinition> {
     return fc
         .tuple(
             JsFunctionNameArb,
-            fc.constantFrom('query', 'update') as fc.Arbitrary<Mode>,
+            fc.constantFrom<Mode>('query', 'update'),
             fc.array(candidDefArb),
             fc.oneof(candidDefArb, VoidDefinitionArb())
         )
-        .map(([name, mode, params, returnType]): ServiceMethodDefinition => {
-            const paramCandidTypeObjects = params.map(
-                (param) => param.candidMeta.candidTypeObject
-            );
-
-            const variableAliasDeclarations = params.reduce(
-                (
-                    acc,
-                    { candidMeta: { variableAliasDeclarations } }
-                ): string[] => {
-                    return [...acc, ...variableAliasDeclarations];
-                },
-                returnType.candidMeta.variableAliasDeclarations
-            );
-
-            const src = `${name}: ${mode}([${paramCandidTypeObjects}], ${returnType.candidMeta.candidTypeObject})`;
-
-            const imports = params.reduce(
-                (acc, param) => {
-                    return new Set([...acc, ...param.candidMeta.imports]);
-                },
-                new Set([mode, ...returnType.candidMeta.imports])
-            );
-
-            const runtimeCandidTypeObject = generateRuntimeCandidTypeObject(
-                mode,
-                params,
-                returnType
-            );
-
-            return {
+        .map(
+            ([
                 name,
-                runtimeCandidTypeObject,
-                imports,
-                variableAliasDeclarations,
-                src
-            };
-        });
+                mode,
+                paramsAndShapes,
+                returnTypeAndShapes
+            ]): WithShapes<ServiceMethodDefinition> => {
+                const params = paramsAndShapes.map((thing) => thing.definition);
+                const returnType = returnTypeAndShapes.definition;
+                const recursiveShapes = paramsAndShapes.reduce((acc, thing) => {
+                    return { ...acc, ...thing.recursiveShapes };
+                }, returnTypeAndShapes.recursiveShapes);
+                const paramCandidTypeObjects = params.map(
+                    (param) => param.candidMeta.candidTypeObject
+                );
+
+                const variableAliasDeclarations = params.reduce(
+                    (
+                        acc,
+                        { candidMeta: { variableAliasDeclarations } }
+                    ): string[] => {
+                        return [...acc, ...variableAliasDeclarations];
+                    },
+                    returnType.candidMeta.variableAliasDeclarations
+                );
+
+                const src = `${name}: ${mode}([${paramCandidTypeObjects}], ${returnType.candidMeta.candidTypeObject})`;
+
+                const imports = params.reduce(
+                    (acc, param) => {
+                        return new Set([...acc, ...param.candidMeta.imports]);
+                    },
+                    new Set([mode, ...returnType.candidMeta.imports])
+                );
+
+                const runtimeCandidTypeObject = generateRuntimeCandidTypeObject(
+                    mode,
+                    params,
+                    returnType
+                );
+
+                return {
+                    definition: {
+                        name,
+                        runtimeCandidTypeObject,
+                        imports,
+                        variableAliasDeclarations,
+                        src
+                    },
+                    recursiveShapes
+                };
+            }
+        );
 }
 
 function generateRuntimeCandidTypeObject(

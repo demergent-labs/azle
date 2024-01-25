@@ -2,17 +2,21 @@ import fc from 'fast-check';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
-    FuncCandidDefinition
+    FuncCandidDefinition,
+    WithShapes,
+    WithShapesArb
 } from '../../candid_definition_arb/types';
 import { VoidDefinitionArb } from '../../primitive/void';
 import { CandidType, Func } from '../../../../../src/lib';
+import { RecursiveShapes } from '../../recursive';
 
 type Mode = 'query' | 'update' | 'oneway';
 
 export function FuncDefinitionArb(
-    candidDefArb: fc.Arbitrary<CandidDefinition>
-): fc.Arbitrary<FuncCandidDefinition> {
-    return (fc.constantFrom('query', 'update', 'oneway') as fc.Arbitrary<Mode>)
+    candidDefArb: WithShapesArb<CandidDefinition>
+): WithShapesArb<FuncCandidDefinition> {
+    return fc
+        .constantFrom<Mode>('query', 'update', 'oneway')
         .chain((mode) => {
             const returnType =
                 mode === 'oneway' ? VoidDefinitionArb() : candidDefArb;
@@ -28,11 +32,21 @@ export function FuncDefinitionArb(
         .map(
             ([
                 name,
-                params,
-                returnFunc,
+                paramsAndShapes,
+                returnFuncAndShapes,
                 mode,
                 useTypeDeclaration
-            ]): FuncCandidDefinition => {
+            ]): WithShapes<FuncCandidDefinition> => {
+                const params = paramsAndShapes.map(
+                    (paramAndShapes) => paramAndShapes.definition
+                );
+                const returnFunc = returnFuncAndShapes.definition;
+                const recursiveShapes = paramsAndShapes.reduce(
+                    (acc, paramAndShapes) => {
+                        return { ...acc, ...paramAndShapes.recursiveShapes };
+                    },
+                    returnFuncAndShapes.recursiveShapes
+                );
                 const candidTypeAnnotation = generateCandidTypeAnnotation(
                     useTypeDeclaration,
                     name
@@ -69,16 +83,19 @@ export function FuncDefinitionArb(
                 ]);
 
                 return {
-                    candidMeta: {
-                        candidTypeAnnotation,
-                        candidTypeObject,
-                        runtimeCandidTypeObject,
-                        variableAliasDeclarations,
-                        imports,
-                        candidType: 'Func'
+                    definition: {
+                        candidMeta: {
+                            candidTypeAnnotation,
+                            candidTypeObject,
+                            runtimeCandidTypeObject,
+                            variableAliasDeclarations,
+                            imports,
+                            candidType: 'Func'
+                        },
+                        paramCandidMeta: params,
+                        returnCandidMeta: returnFunc
                     },
-                    paramCandidMeta: params,
-                    returnCandidMeta: returnFunc
+                    recursiveShapes
                 };
             }
         );

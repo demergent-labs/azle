@@ -10,7 +10,8 @@ import {
     TestsGenerator,
     CallbackLocation,
     isDefined,
-    generateCallback
+    generateCallback,
+    CallbackLocationArb
 } from '.';
 import { Test } from '../../../test';
 
@@ -57,10 +58,7 @@ export function QueryMethodArb<
             UniqueIdentifierArb('canisterMethod'),
             paramTypeArrayArb,
             returnTypeArb,
-            fc.constantFrom(
-                'INLINE',
-                'STANDALONE'
-            ) as fc.Arbitrary<CallbackLocation>,
+            CallbackLocationArb,
             UniqueIdentifierArb('typeDeclaration')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using
@@ -78,6 +76,7 @@ export function QueryMethodArb<
                     constraints.callbackLocation ?? defaultCallbackLocation;
 
                 const imports = new Set([
+                    'query',
                     ...paramTypes.flatMap((param) => [...param.src.imports]),
                     ...returnType.src.imports
                 ]);

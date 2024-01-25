@@ -13,7 +13,8 @@ export function ItemsTestArb(stableBTreeMap: StableBTreeMap) {
             const imports = new Set([
                 ...stableBTreeMap.imports,
                 'Vec',
-                'Tuple'
+                'Tuple',
+                'query'
             ]);
 
             const returnCandidTypeObject = `Vec(Tuple(${stableBTreeMap.keySample.src.candidTypeObject}, ${stableBTreeMap.valueSample.src.candidTypeObject}))`;

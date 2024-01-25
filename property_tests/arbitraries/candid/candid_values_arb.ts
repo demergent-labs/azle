@@ -2,10 +2,16 @@ import fc from 'fast-check';
 import { RecordValuesArb } from './constructed/record_arb/values_arb';
 import { BoolValueArb } from './primitive/bool';
 import { VecValuesArb } from './constructed/vec_arb/values_arb';
-import { TextValueArb } from './primitive/text';
+import { TextConstraints, TextValueArb } from './primitive/text';
 import { NullValueArb } from './primitive/null';
-import { Float32ValueArb } from './primitive/floats/float32_arb';
-import { Float64ValueArb } from './primitive/floats/float64_arb';
+import {
+    Float32Constraints,
+    Float32ValueArb
+} from './primitive/floats/float32_arb';
+import {
+    Float64Constraints,
+    Float64ValueArb
+} from './primitive/floats/float64_arb';
 import { IntValueArb } from './primitive/ints/int_arb';
 import { Int8ValueArb } from './primitive/ints/int8_arb';
 import { Int16ValueArb } from './primitive/ints/int16_arb';
@@ -27,6 +33,8 @@ import {
     CandidDefinition,
     OptCandidDefinition,
     RecordCandidDefinition,
+    RecursiveCandidName,
+    RecursiveCandidDefinition,
     ServiceCandidDefinition,
     TupleCandidDefinition,
     VariantCandidDefinition,
@@ -34,6 +42,8 @@ import {
 } from './candid_definition_arb/types';
 import { BlobValuesArb } from './constructed/blob_arb/values_arb';
 import { CorrespondingJSType } from './corresponding_js_type';
+import { RecursiveNameValuesArb } from './recursive/values_arb';
+import { RecursiveShapes } from './recursive';
 
 export type CandidValues<T extends CorrespondingJSType, E = T> = {
     agentArgumentValue: T;
@@ -41,36 +51,65 @@ export type CandidValues<T extends CorrespondingJSType, E = T> = {
     valueLiteral: string;
 };
 
+export interface CandidValueConstraints
+    extends TextConstraints,
+        Float32Constraints,
+        Float64Constraints {
+    depthLevel?: number;
+}
+
 export function CandidValueArb(
-    candidTypeMeta: CandidDefinition
+    candidTypeMeta: CandidDefinition,
+    recursiveShapes: RecursiveShapes,
+    constraints: CandidValueConstraints
 ): fc.Arbitrary<CandidValues<CorrespondingJSType>> {
     const candidType = candidTypeMeta.candidMeta.candidType;
     if (candidType === 'blob') {
         return BlobValuesArb();
     }
     if (candidType === 'Opt') {
-        return OptValuesArb(candidTypeMeta as OptCandidDefinition);
+        return OptValuesArb(
+            candidTypeMeta as OptCandidDefinition,
+            recursiveShapes,
+            constraints
+        );
     }
     if (candidType === 'Record') {
-        return RecordValuesArb(candidTypeMeta as RecordCandidDefinition);
+        return RecordValuesArb(
+            candidTypeMeta as RecordCandidDefinition,
+            recursiveShapes,
+            constraints
+        );
     }
     if (candidType === 'Tuple') {
-        return TupleValuesArb(candidTypeMeta as TupleCandidDefinition);
+        return TupleValuesArb(
+            candidTypeMeta as TupleCandidDefinition,
+            recursiveShapes,
+            constraints
+        );
     }
     if (candidType === 'Variant') {
-        return VariantValuesArb(candidTypeMeta as VariantCandidDefinition);
+        return VariantValuesArb(
+            candidTypeMeta as VariantCandidDefinition,
+            recursiveShapes,
+            constraints
+        );
     }
     if (candidType === 'Vec') {
-        return VecValuesArb(candidTypeMeta as VecCandidDefinition);
+        return VecValuesArb(
+            candidTypeMeta as VecCandidDefinition,
+            recursiveShapes,
+            constraints
+        );
     }
     if (candidType === 'bool') {
         return BoolValueArb();
     }
     if (candidType === 'float32') {
-        return Float32ValueArb();
+        return Float32ValueArb(undefined, undefined, constraints);
     }
     if (candidType === 'float64') {
-        return Float64ValueArb();
+        return Float64ValueArb(undefined, undefined, constraints);
     }
     if (candidType === 'int') {
         return IntValueArb();
@@ -119,6 +158,13 @@ export function CandidValueArb(
     }
     if (candidType === 'Service') {
         return ServiceValueArb(candidTypeMeta as ServiceCandidDefinition);
+    }
+    if (candidType === 'Recursive') {
+        return RecursiveNameValuesArb(
+            candidTypeMeta as RecursiveCandidName | RecursiveCandidDefinition,
+            recursiveShapes,
+            constraints
+        );
     }
     throw new Error('Unreachable');
 }
