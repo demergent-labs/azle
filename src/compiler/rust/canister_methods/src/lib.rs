@@ -320,13 +320,13 @@ fn get_guard_token_stream(
                         // TODO we would really like wasmedge-quickjs to add
                         // TODO good error info to JsException and move error handling
                         // TODO out of our own code
-                        match &result {
+                        let final_result = match &result {
                             wasmedge_quickjs::JsValue::Exception(js_exception) => {
                                 js_exception.dump_error();
                                 Err("TODO needs error info".to_string())
                             }
                             _ => Ok(())
-                        }
+                        };
 
                         context.promise_loop_poll();
 
@@ -338,6 +338,8 @@ fn get_guard_token_stream(
                                 break;
                             }
                         }
+
+                        final_result
                     })
                 })
             }
