@@ -27,16 +27,36 @@ const RequestMethodArb = fc.constantFrom<RequestMethod>(
     'PATCH'
 );
 
-const UrlArb = fc.webUrl({ withQueryParameters: true }).map((url) => {
+const UrlPathArb = fc.webUrl({ withQueryParameters: true }).map((url) => {
     const parsedUrl = new URL(url);
-    return parsedUrl.pathname + parsedUrl.search + parsedUrl.hash;
+    // fc.webUrl gives us a path that is already encoded, but only partly. I
+    // have found it leaving $ and @ unencoded. So to be safe we have to decode
+    // all of the values (to prevent % from being encoded) and then reencode the
+    // values to encode symbols such as $ and @
+    const pathname = parsedUrl.pathname
+        .split('/')
+        .map((value) => encodeString(value))
+        .join('/');
+    const search = encodeString(parsedUrl.search, '?');
+    const hash = encodeString(parsedUrl.hash, '#');
+    return `${pathname}${search}${hash}`;
 });
+
+function encodeString(search: string, prefix: string = ''): string {
+    if (search.length === 0) {
+        return search;
+    }
+
+    return `${prefix}${encodeURIComponent(
+        decodeURIComponent(search.slice(prefix.length))
+    )}`;
+}
 
 function HttpRequestValueArb() {
     return fc
         .tuple(
             RequestMethodArb,
-            UrlArb,
+            UrlPathArb,
             HttpHeadersArb(),
             BodyArb(),
             fc
