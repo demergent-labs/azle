@@ -79,22 +79,4 @@ globalThis.process = process;
 globalThis.clearInterval = () => {}; // TODO should this throw an error or just not do anything? At least a warning would be good right?
 
 globalThis.global = globalThis;
-
-const OriginalError = Error;
-
-function CustomError(...args: any) {
-    const instance = new OriginalError(...args);
-    instance.name = 'CustomError';
-
-    console.log('CustomError created, attempting to log');
-    console.log(args); // TODO maybe do the stack trace stuff
-
-    return instance;
-}
-
-CustomError.prototype = Object.create(OriginalError.prototype);
-CustomError.prototype.constructor = CustomError;
-
-(globalThis as any).Error = CustomError;
-
 globalThis.TypeError = globalThis.Error;
