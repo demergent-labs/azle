@@ -1,3 +1,5 @@
+// TODO once we have dfx 0.16.x working reenable these tests in CI
+
 import { Server } from 'azle';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';

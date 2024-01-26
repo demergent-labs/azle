@@ -63,7 +63,6 @@ jobs:
               run: |
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
-                    "examples/apollo_server",
                     "examples/async_await",
                     "examples/audio_recorder",
                     "examples/bitcoin",
