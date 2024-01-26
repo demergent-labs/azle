@@ -27,11 +27,6 @@ export const GLOBAL_AZLE_BIN_DIR = join(
     'bin'
 );
 
-export const GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR = join(
-    GLOBAL_AZLE_CONFIG_DIR,
-    azleVersion,
-    'wasmedge-quickjs'
-);
-
-// This is for local development of wasmedge-quickjs js modules
-// export const GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR = '/home/wasmedge-quickjs';
+export const GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR =
+    process.env.AZLE_WASMEDGE_QUICKJS_DIR ??
+    join(GLOBAL_AZLE_CONFIG_DIR, azleVersion, 'wasmedge-quickjs');
