@@ -108,12 +108,8 @@ fn execute_js(function_name: &str, pass_arg_data: bool) {
                     js_exception.dump_error();
                     panic!("TODO needs error info");
                 }
-                _ => {}
+                _ => run_event_loop(context),
             };
-
-            // TODO Is this all we need to do for promises and timeouts?
-            context.event_loop().unwrap().run_tick_task();
-            context.promise_loop_poll();
         });
     });
 }
@@ -139,6 +135,8 @@ pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
                 "azle_main",
             );
 
+            run_event_loop(context);
+
             let global = context.get_global();
 
             let candid_info_function = global.get("candidInfoFunction").to_function().unwrap();
@@ -154,7 +152,7 @@ pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
                     js_exception.dump_error();
                     panic!("TODO needs error info");
                 }
-                _ => {}
+                _ => run_event_loop(context),
             };
 
             let candid_info_string = candid_info.to_string().unwrap().to_string();
@@ -164,4 +162,17 @@ pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
             c_string.into_raw()
         })
     })
+}
+
+fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
+    context.promise_loop_poll();
+
+    while (true) {
+        let num_tasks = context.event_loop().unwrap().run_tick_task();
+        context.promise_loop_poll();
+
+        if num_tasks == 0 {
+            break;
+        }
+    }
 }

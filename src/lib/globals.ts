@@ -79,3 +79,4 @@ globalThis.process = process;
 globalThis.clearInterval = () => {}; // TODO should this throw an error or just not do anything? At least a warning would be good right?
 
 globalThis.global = globalThis;
+globalThis.TypeError = globalThis.Error;

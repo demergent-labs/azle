@@ -2,7 +2,7 @@
 
 use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
 
-use crate::RUNTIME;
+use crate::{run_event_loop, RUNTIME};
 
 pub struct NativeFunction;
 impl JsFn for NativeFunction {
@@ -91,7 +91,7 @@ impl JsFn for NativeFunction {
                                 js_exception.dump_error();
                                 panic!("TODO needs error info");
                             }
-                            _ => {}
+                            _ => run_event_loop(context),
                         };
                     } else {
                         let reject = global
@@ -113,13 +113,9 @@ impl JsFn for NativeFunction {
                                 js_exception.dump_error();
                                 panic!("TODO needs error info");
                             }
-                            _ => {}
+                            _ => run_event_loop(context),
                         };
                     }
-
-                    // TODO Is this all we need to do for promises and timeouts?
-                    context.event_loop().unwrap().run_tick_task();
-                    context.promise_loop_poll();
                 });
             });
         });

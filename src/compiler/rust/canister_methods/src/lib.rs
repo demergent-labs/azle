@@ -72,9 +72,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 context.eval_global_str("globalThis.exports = {};".to_string());
                 context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
-                // TODO Is this all we need to do for promises and timeouts?
-                context.event_loop().unwrap().run_tick_task();
-                context.promise_loop_poll();
+                run_event_loop(context);
 
                 // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
@@ -122,9 +120,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 context.eval_global_str("globalThis.exports = {};".to_string());
                 context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
-                // TODO Is this all we need to do for promises and timeouts?
-                context.event_loop().unwrap().run_tick_task();
-                context.promise_loop_poll();
+                run_event_loop(context);
 
                 // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
@@ -311,7 +307,14 @@ fn get_guard_token_stream(
                                 js_exception.dump_error();
                                 Err("TODO needs error info".to_string())
                             }
-                            _ => Ok(())
+                            _ => {
+                                // TODO what if errors happen in here?
+                                // TODO can guard functions even be async?
+                                // TODO I don't think they can
+                                run_event_loop(context);
+
+                                Ok(())
+                            }
                         }
                     })
                 })

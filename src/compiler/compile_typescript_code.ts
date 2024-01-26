@@ -83,11 +83,13 @@ export function bundleFromString(ts: TypeScript): JavaScript {
             querystring: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/querystring.js`,
             whatwg_url: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/whatwg_url.js`,
             encoding: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/encoding.js`,
+            http: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/http.js`,
             crypto: 'crypto-browserify',
+            zlib: 'crypto-browserify', // TODO wrong of course
             'internal/deps/acorn/acorn/dist/acorn': `crypto-browserify`, // TODO this is a bug, wasmedge-quickjs should probably add these files
             'internal/deps/acorn/acorn-walk/dist/walk': `crypto-browserify` // TODO this is a bug, wasmedge-quickjs should probably add these files
         },
-        external: ['_node:fs', '_encoding']
+        external: ['_node:fs', '_encoding', 'wasi_net', 'wasi_http']
         // TODO tsconfig was here to attempt to set importsNotUsedAsValues to true to force Principal to always be bundled
         // TODO now we always bundle Principal for all code, but I am keeping this here in case we run into the problem elsewhere
         // tsconfig: path.join( __dirname, './esbuild-tsconfig.json') // TODO this path resolution may cause problems on non-Linux systems, beware...might not be necessary now that we are using stdin
@@ -99,8 +101,17 @@ export function bundleFromString(ts: TypeScript): JavaScript {
     // TODO consuming code tries to require assert.js which is now an ES module
     // TODO in wasmedge-quickjs, so the expected output is now on the .default property
     // TODO this has only come up with assert for now
-    return bundleString.replace(
-        /__toCommonJS\(assert_exports\)\);/g,
-        `__toCommonJS(assert_exports)).default;`
-    );
+    return bundleString
+        .replace(
+            /__toCommonJS\(assert_exports\)\);/g,
+            `__toCommonJS(assert_exports)).default;`
+        )
+        .replace(
+            /__toCommonJS\(stream_exports\)\);/g,
+            `__toCommonJS(stream_exports)).default;`
+        )
+        .replace(
+            /__toCommonJS\(http_exports\)\);/g,
+            `__toCommonJS(http_exports)).default;`
+        );
 }

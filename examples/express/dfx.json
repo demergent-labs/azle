@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "express": {
+            "type": "custom",
+            "main": "src/backend/index.ts",
+            "candid": "src/backend/index.did",
+            "build": "npx azle express",
+            "wasm": ".azle/express/express.wasm",
+            "gzip": true
+        }
+    }
+}
