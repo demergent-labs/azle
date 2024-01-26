@@ -1,5 +1,7 @@
 import { Test } from 'azle/test';
 import { execSync } from 'child_process';
+import * as dns from 'node:dns';
+dns.setDefaultResultOrder('ipv4first');
 
 const skip = true;
 
@@ -7,73 +9,67 @@ export function getTests(): Test[] {
     return [
         {
             name: 'init get count',
-            skip,
             test: async () => {
                 return {
-                    Ok: getCount() === getExpectedGetCountResult(0)
+                    Ok: (await getCount()) === getExpectedGetCountResult(0)
                 };
             }
         },
         {
             name: 'first increment',
-            skip,
             test: async () => {
                 return {
-                    Ok: count() === getExpectedCountResult(1)
+                    Ok: (await count()) === getExpectedCountResult(1)
                 };
             }
         },
         {
             name: 'second increment',
-            skip,
             test: async () => {
                 return {
-                    Ok: count() === getExpectedCountResult(2)
+                    Ok: (await count()) === getExpectedCountResult(2)
                 };
             }
         },
         {
             name: 'get count',
-            skip,
             test: async () => {
                 return {
-                    Ok: getCount() === getExpectedGetCountResult(2)
+                    Ok: (await getCount()) === getExpectedGetCountResult(2)
                 };
             }
         },
         {
             name: 'gzipped increment',
-            skip,
             test: async () => {
                 return {
-                    Ok: countGzip() === 'update'
+                    Ok: (await countGzip()) === 'update'
                 };
             }
         },
         {
             name: 'get gzipped count',
-            skip,
             test: async () => {
                 return {
-                    Ok: getCountGzip() === 'query'
+                    Ok: (await getCountGzip()) === 'query'
                 };
             }
         },
         {
             name: 'get streaming count',
-            skip,
             test: async () => {
                 return {
-                    Ok: getCountStream() === getExpectedGetCountStreamResult(3)
+                    Ok:
+                        (await getCountStream()) ===
+                        getExpectedGetCountStreamResult(3)
                 };
             }
         },
         {
             name: 'final get count',
-            skip,
             test: async () => {
                 return {
-                    Ok: getCount() === getExpectedGetCountResult(3)
+                    Ok: (await getCount()) === getExpectedGetCountResult(3)
                 };
             }
         }
@@ -84,49 +80,44 @@ function getCanisterID(): string {
     return execSync(`dfx canister id http_counter`).toString().trim();
 }
 
-function count(): string {
+function getUrl(): string {
     const canister_id = getCanisterID();
-    return execSync(
-        `curl --silent -X POST "${canister_id}.localhost:8000/" --resolve "${canister_id}.localhost:8000:127.0.0.1"`
-    )
-        .toString()
-        .trim();
+    return `http://${canister_id}.localhost:8000/`;
 }
 
-function countGzip(): string {
-    const canister_id = getCanisterID();
-    return execSync(
-        `curl --compressed --silent -X POST "${canister_id}.localhost:8000/" --resolve "${canister_id}.localhost:8000:127.0.0.1"`
-    )
-        .toString()
-        .trim();
+async function count(): Promise<string> {
+    const response = await fetch(getUrl(), {
+        method: 'POST',
+        headers: [['accept-encoding', '']]
+    });
+    return (await response.text()).trim();
 }
 
-function getCount(): string {
-    const canister_id = getCanisterID();
-    return execSync(
-        `curl --silent "${canister_id}.localhost:8000/" --resolve "${canister_id}.localhost:8000:127.0.0.1"`
-    )
-        .toString()
-        .trim();
+async function countGzip(): Promise<string> {
+    const response = await fetch(getUrl(), {
+        method: 'POST'
+    });
+    return (await response.text()).trim();
 }
 
-function getCountStream(): string {
-    const canister_id = getCanisterID();
-    return execSync(
-        `curl --silent "${canister_id}.localhost:8000/stream" --resolve "${canister_id}.localhost:8000:127.0.0.1"`
-    )
-        .toString()
-        .trim();
+async function getCount(): Promise<string> {
+    const response = await fetch(getUrl(), {
+        headers: [['accept-encoding', '']]
+    });
+    return (await response.text()).trim();
 }
 
-function getCountGzip(): string {
-    const canister_id = getCanisterID();
-    return execSync(
-        `curl --compressed --silent "${canister_id}.localhost:8000/" --resolve "${canister_id}.localhost:8000:127.0.0.1"`
-    )
-        .toString()
-        .trim();
+async function getCountStream(): Promise<string> {
+    const streamUrl = `${getUrl()}stream`;
+    const response = await fetch(streamUrl, {
+        headers: [['accept-encoding', '']]
+    });
+    return (await response.text()).trim();
+}
+
+async function getCountGzip(): Promise<string> {
+    const response = await fetch(getUrl());
+    return (await response.text()).trim();
 }
 
 function getExpectedGetCountResult(expectedCount: number): string {
