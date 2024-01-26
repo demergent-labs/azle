@@ -84,12 +84,20 @@ export function bundleFromString(ts: TypeScript): JavaScript {
             whatwg_url: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/whatwg_url.js`,
             encoding: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/encoding.js`,
             http: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/http.js`,
+            os: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/os.js`,
             crypto: 'crypto-browserify',
             zlib: 'crypto-browserify', // TODO wrong of course
             'internal/deps/acorn/acorn/dist/acorn': `crypto-browserify`, // TODO this is a bug, wasmedge-quickjs should probably add these files
             'internal/deps/acorn/acorn-walk/dist/walk': `crypto-browserify` // TODO this is a bug, wasmedge-quickjs should probably add these files
         },
-        external: ['_node:fs', '_encoding', 'wasi_net', 'wasi_http']
+        external: [
+            '_node:fs',
+            '_node:os',
+            'qjs:os',
+            '_encoding',
+            'wasi_net',
+            'wasi_http'
+        ]
         // TODO tsconfig was here to attempt to set importsNotUsedAsValues to true to force Principal to always be bundled
         // TODO now we always bundle Principal for all code, but I am keeping this here in case we run into the problem elsewhere
         // tsconfig: path.join( __dirname, './esbuild-tsconfig.json') // TODO this path resolution may cause problems on non-Linux systems, beware...might not be necessary now that we are using stdin
