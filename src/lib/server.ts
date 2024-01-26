@@ -68,9 +68,6 @@ export const HttpRequest = Record({
     certificate_version: Opt(nat16)
 });
 
-globalThis._azleHttpResponse = HttpResponse;
-globalThis._azleExportedIc = ic;
-
 let server: NodeServer;
 
 export function Server(serverInit: () => NodeServer | Promise<NodeServer>) {
@@ -162,7 +159,6 @@ export async function httpHandler(
             }
 
             if (typeof data === 'string') {
-                console.log('string');
                 this.responseData = Buffer.concat([
                     this.responseData,
                     Buffer.from(data)
@@ -171,11 +167,13 @@ export async function httpHandler(
                 return;
             }
 
-            // TODO object is not done, it is not doing anything
+            // TODO I am not sure if this works
+            // TODO I did what I remember Rust doing
+            // TODO which is to just turn the object into a string
             if (typeof data === 'object') {
                 this.responseData = Buffer.concat([
                     this.responseData,
-                    Buffer.from([])
+                    Buffer.from(data.toString())
                 ]);
                 return;
             }

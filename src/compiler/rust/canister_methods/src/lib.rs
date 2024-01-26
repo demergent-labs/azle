@@ -72,16 +72,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 context.eval_global_str("globalThis.exports = {};".to_string());
                 context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
-                context.promise_loop_poll();
-
-                while (true) {
-                    let num_tasks = context.event_loop().unwrap().run_tick_task();
-                    context.promise_loop_poll();
-
-                    if num_tasks == 0 {
-                        break;
-                    }
-                }
+                run_event_loop(context);
 
                 // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
@@ -129,16 +120,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 context.eval_global_str("globalThis.exports = {};".to_string());
                 context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
-                context.promise_loop_poll();
-
-                while (true) {
-                    let num_tasks = context.event_loop().unwrap().run_tick_task();
-                    context.promise_loop_poll();
-
-                    if num_tasks == 0 {
-                        break;
-                    }
-                }
+                run_event_loop(context);
 
                 // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
@@ -320,26 +302,20 @@ fn get_guard_token_stream(
                         // TODO we would really like wasmedge-quickjs to add
                         // TODO good error info to JsException and move error handling
                         // TODO out of our own code
-                        let final_result = match &result {
+                        match &result {
                             wasmedge_quickjs::JsValue::Exception(js_exception) => {
                                 js_exception.dump_error();
                                 Err("TODO needs error info".to_string())
                             }
-                            _ => Ok(())
-                        };
+                            _ => {
+                                // TODO what if errors happen in here?
+                                // TODO can guard functions even be async?
+                                // TODO I don't think they can
+                                run_event_loop(context);
 
-                        context.promise_loop_poll();
-
-                        while (true) {
-                            let num_tasks = context.event_loop().unwrap().run_tick_task();
-                            context.promise_loop_poll();
-
-                            if num_tasks == 0 {
-                                break;
+                                Ok(())
                             }
                         }
-
-                        final_result
                     })
                 })
             }

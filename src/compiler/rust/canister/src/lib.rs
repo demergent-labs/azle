@@ -108,19 +108,8 @@ fn execute_js(function_name: &str, pass_arg_data: bool) {
                     js_exception.dump_error();
                     panic!("TODO needs error info");
                 }
-                _ => {}
+                _ => run_event_loop(context),
             };
-
-            context.promise_loop_poll();
-
-            while (true) {
-                let num_tasks = context.event_loop().unwrap().run_tick_task();
-                context.promise_loop_poll();
-
-                if num_tasks == 0 {
-                    break;
-                }
-            }
         });
     });
 }
@@ -146,16 +135,7 @@ pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
                 "azle_main",
             );
 
-            context.promise_loop_poll();
-
-            while (true) {
-                let num_tasks = context.event_loop().unwrap().run_tick_task();
-                context.promise_loop_poll();
-
-                if num_tasks == 0 {
-                    break;
-                }
-            }
+            run_event_loop(context);
 
             let global = context.get_global();
 
@@ -172,20 +152,8 @@ pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
                     js_exception.dump_error();
                     panic!("TODO needs error info");
                 }
-                _ => {}
+                _ => run_event_loop(context),
             };
-
-            context.promise_loop_poll();
-
-            // TODO did I put this in the right place?
-            while (true) {
-                let num_tasks = context.event_loop().unwrap().run_tick_task();
-                context.promise_loop_poll();
-
-                if num_tasks == 0 {
-                    break;
-                }
-            }
 
             let candid_info_string = candid_info.to_string().unwrap().to_string();
 
@@ -194,4 +162,17 @@ pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
             c_string.into_raw()
         })
     })
+}
+
+fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
+    context.promise_loop_poll();
+
+    while (true) {
+        let num_tasks = context.event_loop().unwrap().run_tick_task();
+        context.promise_loop_poll();
+
+        if num_tasks == 0 {
+            break;
+        }
+    }
 }

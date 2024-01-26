@@ -3,7 +3,6 @@ import { AzleIc } from './ic/types/azle_ic';
 import { Buffer } from 'buffer';
 import { replacer } from './stable_structures/stable_json';
 import * as process from 'process';
-import { HttpResponse } from './server';
 
 declare global {
     var _azleInsideCanister: boolean;
@@ -14,8 +13,6 @@ declare global {
     var _azleIcTimers: { [key: string]: string };
     var _azleTimerCallbacks: { [key: string]: () => void };
     var _azleGuardFunctions: { [key: string]: () => any };
-    var _azleExportedIc: typeof ic;
-    var _azleHttpResponse: typeof HttpResponse;
 }
 
 globalThis._azleInsideCanister =
