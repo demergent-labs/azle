@@ -15,11 +15,12 @@ canister_methods = { path = "../canister_methods" }
 slotmap = "=1.0.6"
 ic-cdk = "0.10.0"
 ic-cdk-macros = "0.7.0"
+include_dir = "0.7.3"
 
 # TODO transient feature can be removed once https://github.com/wasm-forge/ic-wasi-polyfill/issues/14
 ic-wasi-polyfill = { git = "https://github.com/wasm-forge/ic-wasi-polyfill", rev = "1693665ed57adc4f997a0313555ec0b0b5de1c07", features = [
     "transient",
 ] }
 
-wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "1a9b098a6d7dae30442e300a426f44a6932b26a5" }
+wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "a64adb5910cd7c065b1f0efa337b0a03ffb6afc9" }
 # wasmedge_quickjs = { path = "/home/wasmedge-quickjs" }

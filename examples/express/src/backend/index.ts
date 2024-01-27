@@ -6,13 +6,13 @@ let globalState = {};
 
 export default Server(() => {
     writeFileSync(
-        '/public/index.html',
+        '/dist/test.html',
         `<!DOCTYPE html><html><body>HTML from the filesystem</body></html>`
     );
 
-    writeFileSync('/public/test.txt', 'I have written some text to this file');
+    writeFileSync('/dist/test.txt', 'I have written some text to this file');
 
-    writeFileSync('/public/send-file.txt', 'Does this work too?');
+    writeFileSync('/dist/send-file.txt', 'Does this work too?');
 
     const app = express();
 
@@ -26,7 +26,7 @@ export default Server(() => {
     });
 
     app.get('/file-stream', (req, res) => {
-        const fileStream = createReadStream('/public/test.txt');
+        const fileStream = createReadStream('/dist/test.txt');
 
         fileStream.pipe(res);
     });
@@ -40,7 +40,7 @@ export default Server(() => {
     });
 
     app.get('/send-file', (req, res) => {
-        res.sendFile('/public/send-file.txt');
+        res.sendFile('/dist/send-file.txt');
     });
 
     app.use(express.json());
@@ -67,7 +67,7 @@ export default Server(() => {
 
     app.use('/router', router);
 
-    app.use(express.static('/public'));
+    app.use(express.static('/dist'));
 
     return app.listen();
 });

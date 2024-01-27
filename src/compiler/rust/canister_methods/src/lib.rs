@@ -1,7 +1,7 @@
 // TODO we need an easy way to see the expanded file now
 // TODO perhaps we should automatically do this and store it in the filesystem for easy retrieval?
 
-use std::fs;
+use std::{fs, path::Path};
 
 use proc_macro::TokenStream;
 use proc_macro2::Ident;
@@ -22,6 +22,7 @@ impl ToIdent for String {
 struct CompilerInfo {
     canister_methods: CanisterMethods,
     env_vars: Vec<(String, String)>,
+    assets: Vec<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -52,6 +53,34 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         .map(|(key, value)| quote!((#key, #value)))
         .collect();
 
+    let include_dir_macros = compiler_info
+        .assets
+        .iter()
+        .enumerate()
+        .map(|(index, asset_path)| {
+            let directory_name = Path::new(asset_path).file_name().unwrap().to_string_lossy();
+            let path = format!("$CARGO_MANIFEST_DIR/src/{directory_name}");
+            let var_name = format!("ASSET_DIR{index}").to_ident();
+
+            quote!(
+                static #var_name: Dir = include_dir!(#path);
+            )
+        });
+
+    let extract_dirs: Vec<_> = compiler_info
+        .assets
+        .iter()
+        .enumerate()
+        .map(|(index, asset_path)| {
+            let directory_name = Path::new(asset_path).file_name().unwrap().to_string_lossy();
+            let var_name = format!("ASSET_DIR{index}").to_ident();
+
+            quote!(
+                #var_name.extract(#directory_name).unwrap();
+            )
+        })
+        .collect();
+
     let init_method_call = compiler_info.canister_methods.init.map(|init_method| {
         let js_function_name = &init_method.name;
 
@@ -62,6 +91,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         #[ic_cdk_macros::init]
         fn init() {
             ic_wasi_polyfill::init(&[], &[#(#env_vars),*]);
+
+            #(#extract_dirs)*
 
             let mut rt = wasmedge_quickjs::Runtime::new();
 
@@ -110,6 +141,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         #[ic_cdk_macros::post_upgrade]
         fn post_upgrade() {
             ic_wasi_polyfill::init(&[], &[#(#env_vars),*]);
+
+            #(#extract_dirs)*
 
             let mut rt = wasmedge_quickjs::Runtime::new();
 
@@ -242,6 +275,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         });
 
     quote! {
+        #(#include_dir_macros)*
+
         #init_method
 
         #post_update_method

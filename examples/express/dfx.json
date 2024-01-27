@@ -6,7 +6,9 @@
             "candid": "src/backend/index.did",
             "build": "npx azle express",
             "wasm": ".azle/express/express.wasm",
-            "gzip": true
+            "gzip": true,
+            "assets": ["src/frontend/dist"],
+            "build_assets": "npm run build"
         }
     }
 }

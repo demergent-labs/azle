@@ -247,6 +247,7 @@ dependencies = [
  "ic-cdk-timers",
  "ic-stable-structures 0.6.1",
  "ic-wasi-polyfill",
+ "include_dir",
  "slotmap",
  "wasmedge_quickjs",
 ]
@@ -826,6 +827,25 @@ checksum = "634d9b1461af396cad843f47fdba5597a4f9e6ddd4bfb6ff5d85028c25cb12f6"
 dependencies = [
  "unicode-bidi",
  "unicode-normalization",
+]
+
+[[package]]
+name = "include_dir"
+version = "0.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "18762faeff7122e89e0857b02f7ce6fcc0d101d5e9ad2ad7846cc01d61b7f19e"
+dependencies = [
+ "include_dir_macros",
+]
+
+[[package]]
+name = "include_dir_macros"
+version = "0.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b139284b5cf57ecfa712bcc66950bb635b31aff41c188e8a4cfc758eca374a3f"
+dependencies = [
+ "proc-macro2",
+ "quote",
 ]
 
 [[package]]
@@ -1875,7 +1895,7 @@ checksum = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
 [[package]]
 name = "wasmedge_quickjs"
 version = "0.5.0-alpha"
-source = "git+https://github.com/demergent-labs/wasmedge-quickjs?rev=1a9b098a6d7dae30442e300a426f44a6932b26a5#1a9b098a6d7dae30442e300a426f44a6932b26a5"
+source = "git+https://github.com/demergent-labs/wasmedge-quickjs?rev=a64adb5910cd7c065b1f0efa337b0a03ffb6afc9#a64adb5910cd7c065b1f0efa337b0a03ffb6afc9"
 dependencies = [
  "argparse",
  "encoding",

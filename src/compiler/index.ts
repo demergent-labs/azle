@@ -32,6 +32,8 @@ import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 import { copySync } from 'fs-extra';
+import { basename } from 'path';
+import { execSync } from 'child_process';
 
 azle();
 
@@ -109,6 +111,20 @@ async function azle() {
                 canisterJavaScript
             );
 
+            if (
+                canisterConfig.build_assets !== undefined &&
+                canisterConfig.build_assets !== null
+            ) {
+                execSync(canisterConfig.build_assets);
+            }
+
+            for (const asset of canisterConfig.assets ?? []) {
+                copySync(
+                    asset,
+                    join(canisterPath, 'canister', 'src', basename(asset))
+                );
+            }
+
             // TODO a lot of this file writing and compiler_info.json
             // TODO stuff is repeated which is messy and bad of course
             writeFileSync(`${canisterPath}/canister/src/candid.did`, ''); // This is for the Rust canister to have access to the candid file
@@ -122,7 +138,8 @@ async function azle() {
                     updates: [],
                     callbacks: {}
                 },
-                env_vars: envVars
+                env_vars: envVars,
+                assets: canisterConfig.assets ?? []
             };
 
             const compilerInfoPath0 = join(
@@ -150,7 +167,8 @@ async function azle() {
                 canister_methods: {
                     ...canisterMethods
                 }, // TODO we should probably just grab the props out that we need
-                env_vars: envVars
+                env_vars: envVars,
+                assets: canisterConfig.assets ?? []
             };
 
             const compilerInfoPath = join(

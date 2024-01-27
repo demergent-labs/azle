@@ -7,6 +7,7 @@ use ic_stable_structures::{
     storable::Bound,
     DefaultMemoryImpl, StableBTreeMap, Storable,
 };
+use include_dir::{include_dir, Dir};
 use wasmedge_quickjs::AsObject;
 
 mod ic;
