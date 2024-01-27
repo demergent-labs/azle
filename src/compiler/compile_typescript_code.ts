@@ -85,6 +85,7 @@ export function bundleFromString(ts: TypeScript): JavaScript {
             encoding: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/encoding.js`,
             http: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/http.js`,
             os: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/os.js`,
+            // crypto: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/crypto.js`,
             crypto: 'crypto-browserify',
             zlib: 'crypto-browserify', // TODO wrong of course
             'internal/deps/acorn/acorn/dist/acorn': `crypto-browserify`, // TODO this is a bug, wasmedge-quickjs should probably add these files
@@ -93,6 +94,7 @@ export function bundleFromString(ts: TypeScript): JavaScript {
         external: [
             '_node:fs',
             '_node:os',
+            '_node:crypto',
             'qjs:os',
             '_encoding',
             'wasi_net',

@@ -81,6 +81,7 @@ jobs:
                     "examples/cycles",
                     "examples/date",
                     "examples/ethereum_json_rpc",
+                    "examples/ethers",
                     "examples/express",
                     "examples/fs",
                     "examples/func_types",

@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "ethers": {
+            "type": "custom",
+            "main": "src/index.ts",
+            "candid": "src/index.did",
+            "build": "npx azle ethers",
+            "wasm": ".azle/ethers/ethers.wasm",
+            "gzip": true
+        }
+    }
+}
