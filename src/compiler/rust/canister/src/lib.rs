@@ -1,4 +1,4 @@
-use std::{cell::RefCell, collections::BTreeMap, convert::TryInto};
+use std::{cell::RefCell, collections::BTreeMap, collections::HashMap, convert::TryInto};
 
 #[allow(unused)]
 use canister_methods::canister_methods;
@@ -11,6 +11,7 @@ use include_dir::{include_dir, Dir};
 use wasmedge_quickjs::AsObject;
 
 mod ic;
+mod web_assembly;
 
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]
 const MAIN_JS: &[u8] = include_bytes!("main.js");
@@ -67,6 +68,8 @@ thread_local! {
     static MEMORY_MANAGER_REF_CELL: RefCell<MemoryManager<DefaultMemoryImpl>> = RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 
     static STABLE_B_TREE_MAPS: RefCell<BTreeMap<u8, AzleStableBTreeMap>> = RefCell::new(BTreeMap::new());
+
+    static WASM_INSTANCES: RefCell<HashMap<String, (wasmi::Instance, wasmi::Store<()>)>> = RefCell::new(HashMap::new());
 }
 
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]

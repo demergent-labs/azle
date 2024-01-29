@@ -3,6 +3,7 @@ import { AzleIc } from './ic/types/azle_ic';
 import { Buffer } from 'buffer';
 import { replacer } from './stable_structures/stable_json';
 import * as process from 'process';
+import { v4 } from 'uuid';
 
 declare global {
     var _azleInsideCanister: boolean;
@@ -13,6 +14,7 @@ declare global {
     var _azleIcTimers: { [key: string]: string };
     var _azleTimerCallbacks: { [key: string]: () => void };
     var _azleGuardFunctions: { [key: string]: () => any };
+    var _azleWebAssembly: any;
 }
 
 globalThis._azleInsideCanister =
@@ -81,3 +83,30 @@ globalThis.clearInterval = () => {}; // TODO should this throw an error or just 
 
 globalThis.global = globalThis;
 globalThis.TypeError = globalThis.Error;
+
+globalThis.WebAssembly = {
+    instantiate: (...args: any[]) => {
+        const uuid = v4();
+
+        const instantiatedSource = globalThis._azleWebAssembly.instantiate(
+            uuid,
+            ...args
+        );
+        const exportEntries = Object.entries(
+            instantiatedSource.instance.exports
+        );
+
+        for (let i = 0; i < exportEntries.length; i++) {
+            const [key, value] = exportEntries[i];
+
+            if (typeof value === 'function') {
+                instantiatedSource.instance.exports[key] = value.bind({
+                    instanceUuid: uuid,
+                    exportName: key
+                });
+            }
+        }
+
+        return instantiatedSource;
+    }
+} as any;

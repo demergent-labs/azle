@@ -63,6 +63,7 @@ jobs:
               run: |
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
+                    "examples/apollo_server",
                     "examples/async_await",
                     "examples/audio_recorder",
                     "examples/bitcoin",
@@ -127,6 +128,7 @@ jobs:
                     "examples/robust_imports",
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",
+                    "examples/sqlite",
                     "examples/stable_b_tree_map_instruction_threshold",
                     "examples/stable_memory",
                     "examples/stable_structures",
@@ -210,7 +212,7 @@ jobs:
               with:
                   node-version: 18
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              run: DFX_VERSION=0.15.2 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+              run: DFX_VERSION=0.15.3-largewasm.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/cache@v3
               with:
