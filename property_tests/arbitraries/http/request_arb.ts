@@ -65,15 +65,23 @@ function HttpRequestValueArb() {
                     return optCertVer === null ? None : Some(optCertVer);
                 })
         )
-        .map(([method, url, headers, body, certificate_version]) => {
-            return {
+        .map(
+            ([
                 method,
                 url,
                 headers,
                 body,
                 certificate_version
-            };
-        });
+            ]): HttpRequest => {
+                return {
+                    method,
+                    url,
+                    headers,
+                    body,
+                    certificate_version
+                };
+            }
+        );
 }
 
 export function HttpRequestArb(): fc.Arbitrary<

@@ -22,7 +22,7 @@ export function generateTests(
             {
                 name: functionName,
                 test: async () => {
-                    const response = fletch('canister', request);
+                    const response = await fletch('canister', request);
                     const filteredHeaders = response.headers
                         .filter(
                             ([name]) =>
@@ -36,12 +36,11 @@ export function generateTests(
                         headers: filteredHeaders,
                         body: response.body
                     };
-                    const filteredExpectedHeaders =
+                    const sortedExpectedHeaders =
                         expectedResponse.headers.sort();
                     const processedExpectedResponse = {
-                        status: expectedResponse.status,
-                        headers: filteredExpectedHeaders,
-                        body: expectedResponse.body
+                        ...expectedResponse,
+                        headers: sortedExpectedHeaders
                     };
                     const valuesAreEqual = deepEqual(
                         processedResponse,

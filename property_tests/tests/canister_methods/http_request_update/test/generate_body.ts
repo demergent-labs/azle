@@ -68,12 +68,32 @@ function generateHeadersMap(
 
 function generateHeaderChecks(headers: [string, string][]) {
     return headers
-        .filter(([_, value]) => value !== '') // An empty header value is the same as a none existent header
-        .map(
-            ([name, value]) => `
-            if (headers['${escape(name).toLowerCase()}'] !== '${escape(
-                value
-            )}') {
+        .map(([name, value]) => {
+            if (value === '') {
+                return generateEmptyHeaderCheck(name);
+            }
+            return generateNonEmptyHeaderCheck(name, value);
+        })
+        .join('\n');
+}
+
+function generateEmptyHeaderCheck(name: string) {
+    return `if (headers['${escape(name).toLowerCase()}'] !== undefined) {
+                throw new Error(
+                    \`Unexpected value for header '${escape(
+                        name
+                    )}'. Expected undefined but received '\${headers['${escape(
+                        name
+                    ).toLowerCase()}']}'\`
+                );
+            }
+        `;
+}
+
+function generateNonEmptyHeaderCheck(name: string, value: string): string {
+    return `if (headers['${escape(name).toLowerCase()}'] !== '${escape(
+        value
+    )}') {
                 throw new Error(
                     \`Unexpected value for header '${escape(
                         name
@@ -84,9 +104,7 @@ function generateHeaderChecks(headers: [string, string][]) {
                     ).toLowerCase()}']}'\`
                 );
             }
-        `
-        )
-        .join('\n');
+        `;
 }
 
 function escape(input: string) {

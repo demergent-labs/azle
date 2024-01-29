@@ -1,11 +1,52 @@
 import { execSync } from 'child_process';
 import { HttpRequest } from 'azle';
 import { getCanisterId } from 'azle/test';
+import * as dns from 'node:dns';
+dns.setDefaultResultOrder('ipv4first');
+
+type HttpResponse = {
+    status: number;
+    headers: string[][];
+    body: string;
+};
+
+/**
+ * An asynchronous "fetch" for canisters.
+ */
+export async function fletch(
+    canisterName: string,
+    request: HttpRequest
+): Promise<HttpResponse> {
+    if (request.method === 'TRACE' || request.method == 'PATCH') {
+        return fletchSync(canisterName, request);
+    }
+    const canisterId = getCanisterId(canisterName);
+
+    const { method, body, headers, url: path } = request;
+
+    const url = `http://${canisterId}.localhost:8000${path}`;
+
+    const fetchOptions = {
+        method,
+        headers,
+        body: method === 'GET' ? undefined : body
+    };
+
+    return await toResponse(await fetch(url, fetchOptions));
+}
+
+async function toResponse(response: Response): Promise<HttpResponse> {
+    const headers: [string, string][] = Array.from(response.headers.entries());
+    const status = response.status;
+    const body = await response.text();
+
+    return { status, headers, body };
+}
 
 /**
  * A synchronous "fetch" for canisters.
  */
-export function fletch(canisterName: string, options: HttpRequest) {
+export function fletchSync(canisterName: string, options: HttpRequest) {
     const canisterId = getCanisterId(canisterName);
 
     const requestHeaders = toCurlHeadersString(options.headers);
@@ -21,7 +62,7 @@ export function fletch(canisterName: string, options: HttpRequest) {
 
     const responseBuffer = execSync(curlCommand);
 
-    return toResponse(responseBuffer);
+    return toResponseSync(responseBuffer);
 }
 
 function toCurlHeadersString(headers: [string, string][]) {
@@ -36,7 +77,7 @@ function singleQuotedString(input: string) {
     return `'${singleQuoteEscapedString}'`;
 }
 
-function toResponse(buffer: Buffer) {
+function toResponseSync(buffer: Buffer) {
     const responseString = new TextDecoder().decode(buffer);
 
     const [statusCodeAndHeaders, body] = responseString.split('\r\n\r\n');

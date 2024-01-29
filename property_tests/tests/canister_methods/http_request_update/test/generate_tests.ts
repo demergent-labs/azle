@@ -34,21 +34,30 @@ export function generateTests(
             {
                 name: functionName,
                 test: async () => {
-                    const response = fletch('canister', request);
-                    const filteredHeaders = response.headers.filter(
-                        ([name]) =>
-                            name !== 'x-ic-streaming-response' &&
-                            name !== 'content-length' &&
-                            name !== 'date'
-                    );
+                    const response = await fletch('canister', request);
+
+                    const filteredHeaders = response.headers
+                        .filter(
+                            ([name]) =>
+                                name !== 'x-ic-streaming-response' &&
+                                name !== 'content-length' &&
+                                name !== 'date'
+                        )
+                        .sort();
+                    const sortedExpectedHeaders =
+                        expectedResponse.headers.sort();
                     const processedResponse = {
                         status: response.status,
                         headers: filteredHeaders,
                         body: response.body
                     };
+                    const processedExpectedResponse = {
+                        ...expectedResponse,
+                        headers: sortedExpectedHeaders
+                    };
                     const valuesAreEqual = deepEqual(
                         processedResponse,
-                        expectedResponse
+                        processedExpectedResponse
                     );
 
                     return { Ok: valuesAreEqual };
