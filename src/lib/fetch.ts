@@ -46,7 +46,9 @@ export async function azleFetch(input: any, init?: any): Promise<any> {
                 ([funcName]: [string, IDL.Type]) => funcName === canisterMethod
             );
 
-            const argsRaw = new Uint8Array(IDL.encode(funcIdl.argTypes, args));
+            const argsRaw = new Uint8Array(
+                IDL.encode(funcIdl.argTypes, args ?? [])
+            );
 
             const result = await ic.callRaw(
                 Principal.fromText(canisterId),
