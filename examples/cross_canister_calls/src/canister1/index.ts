@@ -20,16 +20,19 @@ let canister2: typeof Canister2;
 
 export default Canister({
     init: init([], () => {
-        canister2 = Canister2(Principal.fromText(getCanister2Id()));
+        canister2 = Canister2(Principal.fromText(getCanister2Principal()));
     }),
     transfer: update([text, text, nat64], nat64, async (from, to, amount) => {
         if (process.env.AZLE_TEST_FETCH === 'true') {
-            const response = await fetch(`icp://${getCanister2Id()}/transfer`, {
-                body: serialize({
-                    candidPath: 'canister2/index.did',
-                    args: [from, to, amount]
-                })
-            });
+            const response = await fetch(
+                `icp://${getCanister2Principal()}/transfer`,
+                {
+                    body: serialize({
+                        candidPath: 'canister2/index.did',
+                        args: [from, to, amount]
+                    })
+                }
+            );
             const responseJson = await response.json();
 
             return responseJson;
@@ -41,12 +44,15 @@ export default Canister({
     }),
     balance: update([text], nat64, async (id) => {
         if (process.env.AZLE_TEST_FETCH === 'true') {
-            const response = await fetch(`icp://${getCanister2Id()}/balance`, {
-                body: serialize({
-                    candidPath: 'canister2/index.did',
-                    args: [id]
-                })
-            });
+            const response = await fetch(
+                `icp://${getCanister2Principal()}/balance`,
+                {
+                    body: serialize({
+                        candidPath: 'canister2/index.did',
+                        args: [id]
+                    })
+                }
+            );
             const responseJson = response.json();
 
             return responseJson;
@@ -58,12 +64,15 @@ export default Canister({
     }),
     account: update([AccountArgs], Opt(Account), async (args) => {
         if (process.env.AZLE_TEST_FETCH === 'true') {
-            const response = await fetch(`icp://${getCanister2Id()}/account`, {
-                body: serialize({
-                    candidPath: 'canister2/index.did',
-                    args: [args]
-                })
-            });
+            const response = await fetch(
+                `icp://${getCanister2Principal()}/account`,
+                {
+                    body: serialize({
+                        candidPath: 'canister2/index.did',
+                        args: [args]
+                    })
+                }
+            );
             const responseJson = await response.json();
 
             if (responseJson.length === 1) {
@@ -79,12 +88,15 @@ export default Canister({
     }),
     accounts: update([], Vec(Account), async () => {
         if (process.env.AZLE_TEST_FETCH === 'true') {
-            const response = await fetch(`icp://${getCanister2Id()}/accounts`, {
-                body: serialize({
-                    candidPath: 'canister2/index.did',
-                    args: []
-                })
-            });
+            const response = await fetch(
+                `icp://${getCanister2Principal()}/accounts`,
+                {
+                    body: serialize({
+                        candidPath: 'canister2/index.did',
+                        args: []
+                    })
+                }
+            );
             const responseJson = await response.json();
 
             return responseJson;
@@ -96,12 +108,15 @@ export default Canister({
     }),
     trap: update([], text, async () => {
         if (process.env.AZLE_TEST_FETCH === 'true') {
-            const response = await fetch(`icp://${getCanister2Id()}/trap`, {
-                body: serialize({
-                    candidPath: 'canister2/index.did',
-                    args: []
-                })
-            });
+            const response = await fetch(
+                `icp://${getCanister2Principal()}/trap`,
+                {
+                    body: serialize({
+                        candidPath: 'canister2/index.did',
+                        args: []
+                    })
+                }
+            );
             const responseJson = await response.json();
 
             return responseJson;
@@ -121,7 +136,7 @@ export default Canister({
     })
 });
 
-function getCanister2Id(): string {
+function getCanister2Principal(): string {
     if (process.env.CANISTER2_PRINCIPAL !== undefined) {
         return process.env.CANISTER2_PRINCIPAL;
     }
