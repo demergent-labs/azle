@@ -2,7 +2,7 @@ import { Actor } from '@dfinity/agent';
 import { watch } from 'chokidar';
 import { readFileSync, writeFileSync } from 'fs';
 
-import { createAuthenticatedAgent, whoami } from '../../../dfx';
+import { getAuthenticatedAgent, whoami } from '../../../dfx';
 import { getCanisterJavaScript } from '../get_canister_javascript';
 import { ok } from '../utils/result';
 
@@ -57,7 +57,7 @@ async function reloadJs(
 
     writeFileSync(reloadedJsPath, canisterJavaScriptResult.ok);
 
-    const agent = await createAuthenticatedAgent(whoami());
+    const agent = await getAuthenticatedAgent(whoami());
 
     const actor = Actor.createActor(
         ({ IDL }) => {

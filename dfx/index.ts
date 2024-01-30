@@ -28,7 +28,7 @@ export function getAgentHost(): string {
         : `http://127.0.0.1:${getWebServerPort()}`;
 }
 
-export async function createAnonymousAgent() {
+export async function getAnonymousAgent() {
     const agent = new HttpAgent({
         host: getAgentHost()
     });
@@ -38,7 +38,13 @@ export async function createAnonymousAgent() {
     }
 }
 
-export async function createAuthenticatedAgent(
+/**
+ * Returns an agent authenticated with the identity with the given name.
+ *
+ * @param identityName
+ * @returns
+ */
+export async function getAuthenticatedAgent(
     identityName: string
 ): Promise<HttpAgent> {
     const agent = new HttpAgent({
@@ -51,6 +57,61 @@ export async function createAuthenticatedAgent(
     }
 
     return agent;
+}
+
+/**
+ * Returns an agent authenticated with the identity with the given name.
+ *
+ * IMPORTANT: In order to be synchronous this call will not fetch the root key.
+ * If you are not on mainnet you will need to fetch the root key separately.
+ *
+ * @param identityName
+ * @returns
+ */
+export function getAuthenticatedAgentSync(identityName: string): HttpAgent {
+    const agent = new HttpAgent({
+        host: getAgentHost(),
+        identity: getSecp256k1KeyIdentity(identityName)
+    });
+
+    return agent;
+}
+
+/**
+ * Generates a new identity with the given name if there doesn't already exist
+ * an identity with that name, and returns an agent authenticated with that
+ * identity.
+ *
+ * IMPORTANT: In order to be synchronous this call will not fetch the root key.
+ * If you are not on mainnet you will need to fetch the root key separately.
+ *
+ * @param identityName
+ * @returns
+ */
+export function generateAuthenticatedAgentSync(
+    identityName: string
+): HttpAgent {
+    if (!identityExists(identityName)) {
+        generateIdentity(identityName);
+    }
+    return getAuthenticatedAgentSync(identityName);
+}
+
+/**
+ * Generates a new identity with the given name if there doesn't already exist
+ * an identity with that name, and returns an agent authenticated with that
+ * identity.
+ *
+ * @param identityName
+ * @returns
+ */
+export async function generateAuthenticatedAgent(
+    identityName: string
+): Promise<HttpAgent> {
+    if (!identityExists(identityName)) {
+        generateIdentity(identityName);
+    }
+    return await getAuthenticatedAgent(identityName);
 }
 
 export function whoami(): string {
