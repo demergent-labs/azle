@@ -115,10 +115,10 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: 'static index.html',
+            name: 'static test.html',
             test: async () => {
                 try {
-                    const response = await fetch(`${origin}`);
+                    const response = await fetch(`${origin}/test.html`);
                     const responseText = await response.text();
 
                     return {
