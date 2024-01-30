@@ -4,6 +4,7 @@ import { Buffer } from 'buffer';
 import { replacer } from './stable_structures/stable_json';
 import * as process from 'process';
 import { v4 } from 'uuid';
+import { azleFetch } from './fetch';
 
 declare global {
     var _azleInsideCanister: boolean;
@@ -109,4 +110,6 @@ if (globalThis._azleInsideCanister) {
             return instantiatedSource;
         }
     } as any;
+
+    globalThis.fetch = azleFetch;
 }
