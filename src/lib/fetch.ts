@@ -21,7 +21,7 @@ export async function azleFetch(input: any, init?: any): Promise<any> {
             const canisterMethod = url.pathname.replace('/', '');
 
             // TODO the body could just be bytes as well
-            const { candidPath, args, cycles } = body;
+            const { candidPath, args, cycles, cycles128 } = body;
 
             const idlString = ic.candidCompiler(candidPath);
 
@@ -50,12 +50,22 @@ export async function azleFetch(input: any, init?: any): Promise<any> {
                 IDL.encode(funcIdl.argTypes, args ?? [])
             );
 
-            const result = await ic.callRaw(
-                Principal.fromText(canisterId),
-                canisterMethod,
-                argsRaw,
-                BigInt(cycles ?? 0)
-            );
+            const canisterPrincipal = Principal.fromText(canisterId);
+
+            const result =
+                cycles128 === undefined
+                    ? await ic.callRaw(
+                          canisterPrincipal,
+                          canisterMethod,
+                          argsRaw,
+                          BigInt(cycles ?? 0)
+                      )
+                    : await ic.callRaw128(
+                          canisterPrincipal,
+                          canisterMethod,
+                          argsRaw,
+                          BigInt(cycles128 ?? 0)
+                      );
 
             const decodedResult = IDL.decode(funcIdl.retTypes, result);
 
@@ -72,6 +82,11 @@ export async function azleFetch(input: any, init?: any): Promise<any> {
     throw new Error('Not supported in Azle fetch');
 }
 
-export function serialize<T>(param: T): ArrayBuffer {
+export function serialize(param: {
+    candidPath: string;
+    args?: any[];
+    cycles?: number | bigint;
+    cycles128?: number | bigint;
+}): ArrayBuffer {
     return param as any;
 }
