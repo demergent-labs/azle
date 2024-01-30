@@ -70,15 +70,13 @@ export const HttpRequest = Record({
 
 let server: NodeServer;
 
-// TODO can the serverInit be async?
-// TODO for example this would be important for sql.js
-export function Server(serverInit: () => NodeServer) {
+export function Server(serverInit: () => NodeServer | Promise<NodeServer>) {
     return Canister({
-        init: init([], () => {
-            server = serverInit();
+        init: init([], async () => {
+            server = await serverInit();
         }),
-        postUpgrade: postUpgrade([], () => {
-            server = serverInit();
+        postUpgrade: postUpgrade([], async () => {
+            server = await serverInit();
         }),
         http_request: query(
             [HttpRequest],

@@ -54,7 +54,7 @@ function install_wasmedge_quickjs() {
     cd "$global_azle_version_dir" &> "$global_azle_logs_dir"/install_wasmedge_quickjs
     git clone https://github.com/demergent-labs/wasmedge-quickjs &>> "$global_azle_logs_dir"/install_wasmedge_quickjs
     cd wasmedge-quickjs &>> "$global_azle_logs_dir"/install_wasmedge_quickjs
-    git checkout 82e21ec4b3a59fa3b55a60c3445502deacf2c4a8 &>> "$global_azle_logs_dir"/install_wasmedge_quickjs
+    git checkout d49bc38b1864ab4e9467eff41354b9d6fc668c18 &>> "$global_azle_logs_dir"/install_wasmedge_quickjs
     cd - &>> "$global_azle_logs_dir"/install_wasmedge_quickjs
     cd - &>> "$global_azle_logs_dir"/install_wasmedge_quickjs
 }
