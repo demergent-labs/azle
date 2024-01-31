@@ -13,7 +13,8 @@ import {
     Recursive,
     int8,
     Variant,
-    Opt
+    Opt,
+    serialize
 } from 'azle';
 import MyFullCanister from '../recursive_canister';
 
@@ -144,6 +145,19 @@ export default Canister({
         [MyFullCanister],
         MyFullCanister,
         async (myFullCanister) => {
+            if (process.env.AZLE_TEST_FETCH === 'true') {
+                const response = await fetch(
+                    `icp://${myFullCanister.principal.toText()}/myQuery`,
+                    {
+                        body: serialize({
+                            candidPath: `/src/recursive_canister.did`,
+                            args: [myFullCanister.principal]
+                        })
+                    }
+                );
+                const responseJson = await response.json();
+                return MyFullCanister(responseJson);
+            }
             return await ic.call(myFullCanister.myQuery, {
                 args: [myFullCanister]
             });
