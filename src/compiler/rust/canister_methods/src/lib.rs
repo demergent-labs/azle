@@ -98,6 +98,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
             let r = rt.run_with_context(|context| {
                 ic::register(context);
+                web_assembly::register(context);
 
                 // TODO what do we do if there is an error in here?
                 context.eval_global_str("globalThis.exports = {};".to_string());
@@ -148,6 +149,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
             let r = rt.run_with_context(|context| {
                 ic::register(context);
+                web_assembly::register(context);
 
                 // TODO what do we do if there is an error in here?
                 context.eval_global_str("globalThis.exports = {};".to_string());
