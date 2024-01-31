@@ -11,7 +11,7 @@
                 "output": "test/dfx_generated/proxy",
                 "node_compatibility": true
             },
-            "env": ["ICRC_PRINCIPAL"]
+            "env": ["ICRC_PRINCIPAL", "AZLE_TEST_FETCH"]
         },
         "icrc": {
             "type": "motoko",

@@ -12,7 +12,7 @@
                 "node_compatibility": true
             },
             "env": ["CANISTER2_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": ["src/canister2"]
+            "assets": [["src/canister2/index.did", "src/canister2/index.did"]]
         },
         "canister2": {
             "type": "custom",
