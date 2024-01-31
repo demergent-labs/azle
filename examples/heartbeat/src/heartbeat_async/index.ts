@@ -19,7 +19,7 @@ async function getRandomness(): Promise<Uint8Array> {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const response = await fetch(`icp://aaaaa-aa/raw_rand`, {
             body: serialize({
-                candidPath: '/canisters/management/ic.did'
+                candidPath: '/candid/management.did'
             })
         });
         const responseJson = await response.json();
