@@ -42,7 +42,7 @@ export default Canister({
                 `icp://${getIcrcPrincipal()}/icrc1_metadata`,
                 {
                     body: serialize({
-                        candidPath: '/canisters/icrc/icrc.did'
+                        candidPath: '/candid/icrc.did'
                     })
                 }
             );
@@ -59,7 +59,7 @@ export default Canister({
                 `icp://${getIcrcPrincipal()}/icrc1_name`,
                 {
                     body: serialize({
-                        candidPath: '/canisters/icrc/icrc.did'
+                        candidPath: '/candid/icrc.did'
                     })
                 }
             );
@@ -76,7 +76,7 @@ export default Canister({
                 `icp://${getIcrcPrincipal()}/icrc1_decimals`,
                 {
                     body: serialize({
-                        candidPath: '/canisters/icrc/icrc.did'
+                        candidPath: '/candid/icrc.did'
                     })
                 }
             );
@@ -93,7 +93,7 @@ export default Canister({
                 `icp://${getIcrcPrincipal()}/icrc1_symbol`,
                 {
                     body: serialize({
-                        candidPath: '/canisters/icrc/icrc.did'
+                        candidPath: '/candid/icrc.did'
                     })
                 }
             );
@@ -110,7 +110,7 @@ export default Canister({
                 `icp://${getIcrcPrincipal()}/icrc1_fee`,
                 {
                     body: serialize({
-                        candidPath: '/canisters/icrc/icrc.did'
+                        candidPath: '/candid/icrc.did'
                     })
                 }
             );
@@ -127,7 +127,7 @@ export default Canister({
                 `icp://${getIcrcPrincipal()}/icrc1_total_supply`,
                 {
                     body: serialize({
-                        candidPath: '/canisters/icrc/icrc.did'
+                        candidPath: '/candid/icrc.did'
                     })
                 }
             );
@@ -144,7 +144,7 @@ export default Canister({
                 `icp://${getIcrcPrincipal()}/icrc1_minting_account`,
                 {
                     body: serialize({
-                        candidPath: '/canisters/icrc/icrc.did'
+                        candidPath: '/candid/icrc.did'
                     })
                 }
             );
@@ -165,7 +165,7 @@ export default Canister({
                 `icp://${getIcrcPrincipal()}/icrc1_balance_of`,
                 {
                     body: serialize({
-                        candidPath: '/canisters/icrc/icrc.did',
+                        candidPath: '/candid/icrc.did',
                         args: [
                             {
                                 ...account,
@@ -195,7 +195,7 @@ export default Canister({
                     `icp://${getIcrcPrincipal()}/icrc1_transfer`,
                     {
                         body: serialize({
-                            candidPath: '/canisters/icrc/icrc.did',
+                            candidPath: '/candid/icrc.did',
                             args: [
                                 {
                                     ...transferArgs,
@@ -234,7 +234,7 @@ export default Canister({
                 `icp://${getIcrcPrincipal()}/icrc1_supported_standards`,
                 {
                     body: serialize({
-                        candidPath: '/canisters/icrc/icrc.did'
+                        candidPath: '/candid/icrc.did'
                     })
                 }
             );
@@ -251,7 +251,7 @@ export default Canister({
                 `icp://${getIcrcPrincipal()}/icrc2_approve`,
                 {
                     body: serialize({
-                        candidPath: '/canisters/icrc/icrc.did',
+                        candidPath: '/candid/icrc.did',
                         args: [
                             {
                                 ...approveArgs,
@@ -298,7 +298,7 @@ export default Canister({
                     `icp://${getIcrcPrincipal()}/icrc2_transfer_from`,
                     {
                         body: serialize({
-                            candidPath: '/canisters/icrc/icrc.did',
+                            candidPath: '/candid/icrc.did',
                             args: [
                                 {
                                     ...transferFromArgs,
@@ -350,7 +350,7 @@ export default Canister({
                     `icp://${getIcrcPrincipal()}/icrc2_allowance`,
                     {
                         body: serialize({
-                            candidPath: '/canisters/icrc/icrc.did',
+                            candidPath: '/candid/icrc.did',
                             args: [
                                 {
                                     ...allowanceArgs,

@@ -23,7 +23,7 @@ export type JSCanisterConfig = Readonly<{
     wasm: string;
     env?: string[];
     opt_level?: OptLevel;
-    assets?: string[];
+    assets?: [string, string][];
 }>;
 
 export type OptLevel = '0' | '1' | '2' | '3' | '4';
@@ -31,7 +31,6 @@ export type OptLevel = '0' | '1' | '2' | '3' | '4';
 export type CompilerInfo = {
     canister_methods: CanisterMethods;
     env_vars: [string, string][];
-    assets: string[];
 };
 
 export type CanisterMethods = {
