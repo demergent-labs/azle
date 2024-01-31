@@ -29,26 +29,6 @@ FloatClass.prototype.valueToString = (x): string => {
     return floatString + '.0';
 };
 
-// Remove this when it is no longer necessary
-// TODO https://github.com/demergent-labs/azle/issues/1597
-VecClass.prototype.valueToString = function (x): string {
-    const elements = Array.from(x).map((e): string => {
-        // @ts-ignore
-        return this._type.valueToString(e);
-    });
-    return 'vec {' + elements.join('; ') + '}';
-};
-
-// Remove this when it is no longer necessary
-// TODO https://github.com/demergent-labs/azle/issues/1597
-FixedNatClass.prototype.valueToString = function (x): string {
-    const natString = x.toString();
-    if (this._bits === 8) {
-        return `${natString}: nat8`;
-    }
-    return natString;
-};
-
 export type Canister = {
     initArgs: string[] | undefined;
     postUpgradeArgs: string[] | undefined;
