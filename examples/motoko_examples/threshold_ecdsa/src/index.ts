@@ -53,20 +53,20 @@ async function getPublicKeyResult() {
         );
 
         return await publicKeyResponse.json();
-    }
-
-    return await ic.call(managementCanister.ecdsa_public_key, {
-        args: [
-            {
-                canister_id: None,
-                derivation_path: [caller],
-                key_id: {
-                    curve: { secp256k1: null },
-                    name: 'dfx_test_key'
+    } else {
+        return await ic.call(managementCanister.ecdsa_public_key, {
+            args: [
+                {
+                    canister_id: None,
+                    derivation_path: [caller],
+                    key_id: {
+                        curve: { secp256k1: null },
+                        name: 'dfx_test_key'
+                    }
                 }
-            }
-        ]
-    });
+            ]
+        });
+    }
 }
 
 async function getSignatureResult(messageHash: Uint8Array) {
@@ -94,19 +94,19 @@ async function getSignatureResult(messageHash: Uint8Array) {
         );
 
         return await publicKeyResponse.json();
-    }
-
-    return await ic.call(managementCanister.sign_with_ecdsa, {
-        args: [
-            {
-                message_hash: messageHash,
-                derivation_path: [caller],
-                key_id: {
-                    curve: { secp256k1: null },
-                    name: 'dfx_test_key'
+    } else {
+        return await ic.call(managementCanister.sign_with_ecdsa, {
+            args: [
+                {
+                    message_hash: messageHash,
+                    derivation_path: [caller],
+                    key_id: {
+                        curve: { secp256k1: null },
+                        name: 'dfx_test_key'
+                    }
                 }
-            }
-        ],
-        cycles: 10_000_000_000n
-    });
+            ],
+            cycles: 10_000_000_000n
+        });
+    }
 }

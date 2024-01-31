@@ -16,7 +16,59 @@ import {
 } from 'azle/canisters/management';
 
 export default Canister({
-    xkcd: update([], HttpResponse, getXkcdResponse),
+    xkcd: update([], HttpResponse, async () => {
+        if (process.env.AZLE_TEST_FETCH) {
+            const response = await fetch(`icp://aaaaa-aa/http_request`, {
+                body: serialize({
+                    candidPath: '/candid/management.did',
+                    args: [
+                        {
+                            url: `https://xkcd.com/642/info.0.json`,
+                            max_response_bytes: [2_000n],
+                            method: {
+                                get: null
+                            },
+                            headers: [],
+                            body: [],
+                            transform: [
+                                {
+                                    function: [ic.id(), 'xkcdTransform'] as [
+                                        Principal,
+                                        string
+                                    ],
+                                    context: Uint8Array.from([])
+                                }
+                            ]
+                        }
+                    ],
+                    cycles: 50_000_000n
+                })
+            });
+            return await response.json();
+        } else {
+            return await ic.call(managementCanister.http_request, {
+                args: [
+                    {
+                        url: `https://xkcd.com/642/info.0.json`,
+                        max_response_bytes: Some(2_000n),
+                        method: {
+                            get: null
+                        },
+                        headers: [],
+                        body: None,
+                        transform: Some({
+                            function: [ic.id(), 'xkcdTransform'] as [
+                                Principal,
+                                string
+                            ],
+                            context: Uint8Array.from([])
+                        })
+                    }
+                ],
+                cycles: 50_000_000n
+            });
+        }
+    }),
     // TODO the replica logs give some concerning output: https://forum.dfinity.org/t/fix-me-in-http-outcalls-call-raw/19435
     xkcdRaw: update(
         [],
@@ -54,51 +106,4 @@ export default Canister({
     })
 });
 
-async function getXkcdResponse() {
-    if (process.env.AZLE_TEST_FETCH) {
-        await fetch(`icp://aaaaa-aa/http_request`, {
-            body: serialize({
-                candidPath: '/candid/management.did',
-                args: [
-                    {
-                        url: `https://xkcd.com/642/info.0.json`,
-                        max_response_bytes: [2_000n],
-                        method: {
-                            get: null
-                        },
-                        headers: [],
-                        body: [],
-                        transform: [
-                            {
-                                function: [ic.id(), 'xkcdTransform'] as [
-                                    Principal,
-                                    string
-                                ],
-                                context: Uint8Array.from([])
-                            }
-                        ]
-                    }
-                ],
-                cycles: 50_000_000n
-            })
-        });
-    }
-    return await ic.call(managementCanister.http_request, {
-        args: [
-            {
-                url: `https://xkcd.com/642/info.0.json`,
-                max_response_bytes: Some(2_000n),
-                method: {
-                    get: null
-                },
-                headers: [],
-                body: None,
-                transform: Some({
-                    function: [ic.id(), 'xkcdTransform'] as [Principal, string],
-                    context: Uint8Array.from([])
-                })
-            }
-        ],
-        cycles: 50_000_000n
-    });
-}
+async function getXkcdResponse() {}
