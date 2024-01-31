@@ -5,6 +5,7 @@ import {
     postUpgrade,
     Principal,
     query,
+    serialize,
     update
 } from 'azle';
 
@@ -40,6 +41,19 @@ const WhoAmI = Canister({
     // Return the principal identifier of this canister.
     id: update([], Principal, async () => {
         const self: any = WhoAmI(ic.id());
+
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(
+                `icp://${self.principal.toText()}/whoami`,
+                {
+                    body: serialize({
+                        candidPath: `/src/whoami.did`
+                    })
+                }
+            );
+
+            return await response.json();
+        }
 
         return await ic.call(self.whoami);
     }),
