@@ -171,6 +171,7 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'icrc2_transfer_from',
             test: async () => {
                 const result = await proxyCanister.icrc2_transfer_from({
+                    spender_subaccount: [],
                     from: {
                         owner: Principal.fromText(
                             'r7inp-6aaaa-aaaaa-aaabq-cai'

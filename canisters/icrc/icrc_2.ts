@@ -50,6 +50,7 @@ export const ApproveError = Variant({
 export type ApproveError = typeof ApproveError.tsType;
 
 export const TransferFromArgs = Record({
+    spender_subaccount: Opt(blob),
     from: Account,
     to: Account,
     amount: nat,
