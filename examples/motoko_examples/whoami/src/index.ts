@@ -53,9 +53,9 @@ const WhoAmI = Canister({
             );
 
             return await response.json();
+        } else {
+            return await ic.call(self.whoami);
         }
-
-        return await ic.call(self.whoami);
     }),
     // Return the principal identifier of this canister via the global `ic` object.
     // This is much quicker than `id()` above because it isn't making a cross-

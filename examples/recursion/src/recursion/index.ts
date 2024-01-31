@@ -157,10 +157,11 @@ export default Canister({
                 );
                 const responseJson = await response.json();
                 return MyFullCanister(responseJson);
+            } else {
+                return await ic.call(myFullCanister.myQuery, {
+                    args: [myFullCanister]
+                });
             }
-            return await ic.call(myFullCanister.myQuery, {
-                args: [myFullCanister]
-            });
         }
     )
 });
