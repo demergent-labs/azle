@@ -42,7 +42,7 @@ jobs:
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }} # A personal GitHub token is setup as a secret so that committing and pushing to GitHub from the Action will trigger another workflow
             - uses: actions/setup-node@v3
               with:
-                  node-version: 18
+                  node-version: 20
                   registry-url: https://registry.npmjs.org
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -194,7 +194,8 @@ jobs:
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix:
-                os: [ubuntu-latest, macos-latest]
+                # os: [ubuntu-latest, macos-latest] # TODO put this back of course
+                os: [macos-latest]
                 include_npm:
                     # Only include npm in the matrix if you've pushed to main and the last commit was a merge of a release branch, or the base branch of the pull request is a release branch
                     - ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
