@@ -30,7 +30,8 @@ if (globalThis._azleInsideCanister) {
     globalThis.console = {
         ...globalThis.console,
         log,
-        error: log
+        error: log,
+        warn: log
     };
 
     const originalSetTimeout = setTimeout;

@@ -1,0 +1,12 @@
+{
+    "canisters": {
+        "sqlite": {
+            "type": "custom",
+            "main": "src/index.ts",
+            "candid": "src/index.did",
+            "build": "npx azle sqlite",
+            "wasm": ".azle/sqlite/sqlite.wasm",
+            "gzip": true
+        }
+    }
+}
