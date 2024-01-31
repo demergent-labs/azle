@@ -20,6 +20,7 @@ export type AzleIc = {
         paymentString: string
     ) => void;
     caller: () => ArrayBufferLike;
+    candidCompiler: (candidPath: string) => string;
     candidDecode: (candidBytes: ArrayBufferLike) => string;
     candidEncode: (candidString: string) => ArrayBufferLike;
     canisterBalance: () => string;
