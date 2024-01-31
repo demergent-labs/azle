@@ -5,7 +5,7 @@ export default Server(() => {
     const app = express();
 
     app.post('/', async (req, res) => {
-        const response = await fetch(`icp://bkyz2-fmaaa-aaaaa-qaaaq-cai/test`, {
+        const response = await fetch(`icp://be2us-64aaa-aaaaa-qaabq-cai/test`, {
             body: serialize({
                 candidPath: '/src/evm_rpc.did',
                 args: ['did you get it?']
