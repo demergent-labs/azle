@@ -222,7 +222,11 @@ jobs:
                   key: azle-cargo-${{ hashFiles('src/compiler/generate_cargo_toml_files.ts') }}
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && runner.os == 'macOS' }}
               shell: bash -l {0}
-              run: brew install llvm
+              run: |
+                  brew install llvm
+                  echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile
+                  export LDFLAGS="-L/usr/local/opt/llvm/lib"
+                  export CPPFLAGS="-I/usr/local/opt/llvm/include"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0} # TODO figure out why this is here and comment about it
               run: npm install
