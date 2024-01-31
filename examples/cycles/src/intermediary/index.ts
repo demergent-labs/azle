@@ -49,7 +49,7 @@ export default Canister({
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://${getCyclesPrincipal()}/receiveCycles128`, {
                 body: serialize({
-                    candidPath: 'src/cycles/index.did',
+                    candidPath: '/src/cycles/index.did',
                     cycles128: 1_000_000n
                 })
             });
