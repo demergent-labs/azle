@@ -118,10 +118,10 @@ async function azle() {
                 execSync(canisterConfig.build_assets);
             }
 
-            for (const asset of canisterConfig.assets ?? []) {
+            for (const [src, dest] of canisterConfig.assets ?? []) {
                 copySync(
-                    asset,
-                    join(canisterPath, 'canister', 'src', basename(asset))
+                    src,
+                    join(canisterPath, 'canister', 'src', 'assets', dest)
                 );
             }
 
@@ -138,8 +138,7 @@ async function azle() {
                     updates: [],
                     callbacks: {}
                 },
-                env_vars: envVars,
-                assets: canisterConfig.assets ?? []
+                env_vars: envVars
             };
 
             const compilerInfoPath0 = join(
@@ -167,8 +166,7 @@ async function azle() {
                 canister_methods: {
                     ...canisterMethods
                 }, // TODO we should probably just grab the props out that we need
-                env_vars: envVars,
-                assets: canisterConfig.assets ?? []
+                env_vars: envVars
             };
 
             const compilerInfoPath = join(
