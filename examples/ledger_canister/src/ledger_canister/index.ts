@@ -253,14 +253,6 @@ export default Canister({
     })
 });
 
-function azleOptToAgentOpt<T>(opt: Opt<T>): [T] | [] {
-    if ('None' in opt) {
-        return [];
-    } else {
-        return [opt.Some];
-    }
-}
-
 function agentOptToAzleOpt<T>(opt: [T] | []): Opt<T> {
     if (opt.length === 0) {
         return None;
