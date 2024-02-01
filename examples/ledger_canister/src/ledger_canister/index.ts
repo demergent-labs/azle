@@ -69,6 +69,7 @@ export default Canister({
                         })
                     }
                 );
+
                 return await response.json();
             } else {
                 return await ic.call(icpCanister.transfer, {
@@ -110,6 +111,7 @@ export default Canister({
                     })
                 }
             );
+
             return await response.json();
         } else {
             return await ic.call(icpCanister.account_balance, {
@@ -132,6 +134,7 @@ export default Canister({
                     })
                 }
             );
+
             return await response.json();
         } else {
             return await ic.call(icpCanister.transfer_fee, { args: [{}] });
@@ -158,19 +161,21 @@ export default Canister({
                     chain_length,
                     first_block_index
                 } = await response.json();
-                const azleBlocks = blocks.map((block: any): Block => {
+                const azleBlocks = blocks.map((block: any) => {
                     const { parent_hash, timestamp, transaction } = block;
                     const { created_at_time, memo, operation } = transaction;
+
                     return {
                         parent_hash: agentOptToAzleOpt(parent_hash),
-                        timestamp: timestamp as any,
+                        timestamp,
                         transaction: {
-                            created_at_time: created_at_time as any,
+                            created_at_time,
                             memo,
-                            operation: agentOptToAzleOpt(operation) as any
+                            operation: agentOptToAzleOpt(operation)
                         }
                     };
                 });
+
                 return {
                     archived_blocks,
                     blocks: azleBlocks,
@@ -195,9 +200,11 @@ export default Canister({
                     })
                 }
             );
+
             return (await response.json()).symbol;
         } else {
             const symbolResult = await ic.call(icpCanister.symbol);
+
             return symbolResult.symbol;
         }
     }),
@@ -211,9 +218,11 @@ export default Canister({
                     })
                 }
             );
+
             return (await response.json()).name;
         } else {
             const nameResult = await ic.call(icpCanister.name);
+
             return nameResult.name;
         }
     }),
@@ -227,9 +236,11 @@ export default Canister({
                     })
                 }
             );
+
             return (await response.json()).decimals;
         } else {
             const decimalsResult = await ic.call(icpCanister.decimals);
+
             return decimalsResult.decimals;
         }
     }),
@@ -243,6 +254,7 @@ export default Canister({
                     })
                 }
             );
+
             return await response.json();
         } else {
             return await ic.call(icpCanister.archives);
