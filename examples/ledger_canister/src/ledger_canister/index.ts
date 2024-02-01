@@ -30,58 +30,6 @@ import {
 
 let icpCanister: typeof Ledger;
 
-function getIcpCanisterPrincipal(): string {
-    if (process.env.ICP_CANISTER_PRINCIPAL !== undefined) {
-        return process.env.ICP_CANISTER_PRINCIPAL;
-    } else {
-        throw new Error('process.env.ICP_CANISTER_PRINCIPAL is undefined');
-    }
-}
-
-type AgentQueryBlocksResponse = {
-    chain_length: bigint;
-    certificate: [Uint8Array] | [];
-    blocks: AgentBlock[];
-    first_block_index: bigint;
-    archived_blocks: AgentArchivedBlock[];
-};
-type AgentArchivedBlock = {
-    start: bigint;
-    length: bigint;
-    callback: [Principal, string];
-};
-type AgentBlock = {
-    parent_hash: [Uint8Array] | [];
-    transaction: AgentTransaction;
-    timestamp: bigint;
-};
-type AgentTransaction = {
-    memo: bigint;
-    operation: [Operation] | [];
-    created_at_time: bigint;
-};
-type Operation = {
-    Mint?: Mint;
-    Burn?: Burn;
-    Transfer?: Transfer;
-};
-type Mint = {
-    to: Uint8Array;
-    amount: Tokens;
-};
-
-type Burn = {
-    from: Uint8Array;
-    amount: Tokens;
-};
-
-type Transfer = {
-    from: Uint8Array;
-    to: Uint8Array;
-    amount: Tokens;
-    fee: Tokens;
-};
-
 export default Canister({
     init: init([], () => {
         icpCanister = Ledger(Principal.fromText(getIcpCanisterPrincipal()));
@@ -209,8 +157,8 @@ export default Canister({
                     certificate,
                     chain_length,
                     first_block_index
-                } = (await response.json()) as AgentQueryBlocksResponse;
-                const azleBlocks = blocks.map((block): Block => {
+                } = await response.json();
+                const azleBlocks = blocks.map((block: any): Block => {
                     const { parent_hash, timestamp, transaction } = block;
                     const { created_at_time, memo, operation } = transaction;
                     return {
@@ -318,5 +266,13 @@ function agentOptToAzleOpt<T>(opt: [T] | []): Opt<T> {
         return None;
     } else {
         return Some(opt[0]);
+    }
+}
+
+function getIcpCanisterPrincipal(): string {
+    if (process.env.ICP_CANISTER_PRINCIPAL !== undefined) {
+        return process.env.ICP_CANISTER_PRINCIPAL;
+    } else {
+        throw new Error('process.env.ICP_CANISTER_PRINCIPAL is undefined');
     }
 }
