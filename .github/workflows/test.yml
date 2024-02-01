@@ -228,6 +228,7 @@ jobs:
                   echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile
                   export LDFLAGS="-L/usr/local/opt/llvm/lib"
                   export CPPFLAGS="-I/usr/local/opt/llvm/include"
+                  sudo networksetup -setdnsservers Ethernet 9.9.9.9
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0} # TODO figure out why this is here and comment about it
               run: npm install
