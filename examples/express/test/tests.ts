@@ -40,6 +40,9 @@ export function getTests(canisterId: string): Test[] {
                         Ok: responseText === 'Just testing res.send'
                     };
                 } catch (error: any) {
+                    console.log('error', error);
+                    console.log('JSON.stringify(error)', JSON.stringify(error));
+
                     return {
                         Err: error
                     };
