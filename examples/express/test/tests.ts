@@ -20,7 +20,7 @@ dns.resolve('localhost', (err, addresses) => {
 });
 
 dns.resolve4('localhost', (err, addresses) => {
-    if (err) throw err;
+    // if (err) throw err;
 
     console.log(`IPv4 addresses: ${JSON.stringify(addresses)}`);
     // Use the resolved IPv4 address in your network request
