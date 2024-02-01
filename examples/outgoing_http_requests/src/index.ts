@@ -32,10 +32,7 @@ export default Canister({
                             body: [],
                             transform: [
                                 {
-                                    function: [ic.id(), 'xkcdTransform'] as [
-                                        Principal,
-                                        string
-                                    ],
+                                    function: [ic.id(), 'xkcdTransform'],
                                     context: Uint8Array.from([])
                                 }
                             ]
@@ -69,7 +66,6 @@ export default Canister({
             });
         }
     }),
-    // TODO the replica logs give some concerning output: https://forum.dfinity.org/t/fix-me-in-http-outcalls-call-raw/19435
     xkcdRaw: update(
         [],
         Manual(HttpResponse),
@@ -105,5 +101,3 @@ export default Canister({
         };
     })
 });
-
-async function getXkcdResponse() {}
