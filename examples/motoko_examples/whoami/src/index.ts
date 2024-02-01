@@ -5,6 +5,7 @@ import {
     postUpgrade,
     Principal,
     query,
+    serialize,
     update
 } from 'azle';
 
@@ -41,7 +42,20 @@ const WhoAmI = Canister({
     id: update([], Principal, async () => {
         const self: any = WhoAmI(ic.id());
 
-        return await ic.call(self.whoami);
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(
+                `icp://${self.principal.toText()}/whoami`,
+                {
+                    body: serialize({
+                        candidPath: `/src/whoami.did`
+                    })
+                }
+            );
+
+            return await response.json();
+        } else {
+            return await ic.call(self.whoami);
+        }
     }),
     // Return the principal identifier of this canister via the global `ic` object.
     // This is much quicker than `id()` above because it isn't making a cross-
