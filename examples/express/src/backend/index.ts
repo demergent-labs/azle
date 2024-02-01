@@ -16,7 +16,7 @@ export default Server(() => {
 
     const app = express();
 
-    app.get('/res-send', async (req, res) => {
+    app.get('/res-send', (req, res) => {
         res.send('Just testing res.send');
     });
 
