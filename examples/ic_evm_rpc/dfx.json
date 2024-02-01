@@ -7,7 +7,7 @@
             "build": "npx azle ic_evm_rpc",
             "wasm": ".azle/ic_evm_rpc/ic_evm_rpc.wasm",
             "gzip": true,
-            "assets": ["src"]
+            "assets": [["src/evm_rpc.did", "src/evm_rpc.did"]]
         },
         "evm_rpc_canister": {
             "type": "custom",
