@@ -12,21 +12,17 @@ export async function azleFetch(input: any, init?: any): Promise<any> {
     if (typeof init === 'object') {
         const { method, headers, body } = init;
 
-        // TODO let's think of the exact URL that we want here
-        // TODO would it be nice to put the canister id and method in the url?
-        // TODO it seems to be part of routing and locating
-        // TODO icp://canister/principal/method
         if (url.protocol === 'icp:') {
             const canisterId = url.hostname;
             const canisterMethod = url.pathname.replace('/', '');
 
-            // TODO the body could just be bytes as well
             const { candidPath, args, cycles, cycles128 } = body;
 
             const idlString = ic.candidCompiler(candidPath);
 
-            // TODO very bad replacement of course
-            const normalizedIdlString = idlString.replace(/export/g, '');
+            const normalizedIdlString = idlString
+                .replace(/export const idlFactory/g, 'const idlFactory')
+                .replace(/export const init/g, 'const init');
 
             const idlFactory = eval(`
                 try {

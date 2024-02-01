@@ -82,6 +82,8 @@ if (globalThis._azleInsideCanister) {
     globalThis.clearInterval = () => {}; // TODO should this throw an error or just not do anything? At least a warning would be good right?
 
     globalThis.global = globalThis;
+    (globalThis as any).self = globalThis;
+
     globalThis.TypeError = globalThis.Error;
 
     globalThis.WebAssembly = {
