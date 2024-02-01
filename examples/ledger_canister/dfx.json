@@ -11,7 +11,8 @@
                 "output": "test/dfx_generated/ledger_canister",
                 "node_compatibility": true
             },
-            "env": ["ICP_CANISTER_PRINCIPAL"]
+            "env": ["ICP_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [["src/icp_ledger/ledger.public.did", "src/ledger.did"]]
         },
         "icp_ledger": {
             "type": "custom",
