@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/timers",
                 "node_compatibility": true
-            }
+            },
+            "env": ["AZLE_TEST_FETCH"]
         }
     }
 }

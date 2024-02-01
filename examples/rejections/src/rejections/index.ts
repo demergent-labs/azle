@@ -4,6 +4,7 @@ import {
     init,
     Principal,
     RejectionCode,
+    serialize,
     text,
     update,
     Void
@@ -20,10 +21,7 @@ let nonexistentCanister: typeof Nonexistent;
 export default Canister({
     init: init([], () => {
         someCanister = SomeCanister(
-            Principal.fromText(
-                process.env.SOME_CANISTER_PRINCIPAL ??
-                    ic.trap('process.env.SOME_CANISTER_PRINCIPAL is undefined')
-            )
+            Principal.fromText(getSomeCanisterPrincipal())
         );
 
         nonexistentCanister = Nonexistent(
@@ -31,36 +29,86 @@ export default Canister({
         );
     }),
     getRejectionCodeNoError: update([], RejectionCode, async () => {
-        await ic.call(someCanister.accept);
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            await fetch(`icp://${getSomeCanisterPrincipal()}/accept`, {
+                body: serialize({
+                    candidPath: `/src/some_canister.did`
+                })
+            });
+        } else {
+            await ic.call(someCanister.accept);
+        }
 
         return ic.rejectCode();
     }),
     getRejectionCodeDestinationInvalid: update([], RejectionCode, async () => {
         try {
-            await ic.call(nonexistentCanister.method);
+            if (process.env.AZLE_TEST_FETCH === 'true') {
+                await fetch(`icp://rkp4c-7iaaa-aaaaa-aaaca-cai/method`, {
+                    body: serialize({
+                        candidPath: `/src/nonexistent.did`
+                    })
+                });
+            } else {
+                await ic.call(nonexistentCanister.method);
+            }
         } catch (error) {}
 
         return ic.rejectCode();
     }),
     getRejectionCodeCanisterReject: update([], RejectionCode, async () => {
         try {
-            await ic.call(someCanister.reject, { args: ['reject'] });
+            if (process.env.AZLE_TEST_FETCH === 'true') {
+                await fetch(`icp://${getSomeCanisterPrincipal()}/reject`, {
+                    body: serialize({
+                        candidPath: `/src/some_canister.did`,
+                        args: ['reject']
+                    })
+                });
+            } else {
+                await ic.call(someCanister.reject, { args: ['reject'] });
+            }
         } catch (error) {}
 
         return ic.rejectCode();
     }),
     getRejectionCodeCanisterError: update([], RejectionCode, async () => {
         try {
-            await ic.call(someCanister.error);
+            if (process.env.AZLE_TEST_FETCH === 'true') {
+                await fetch(`icp://${getSomeCanisterPrincipal()}/error`, {
+                    body: serialize({
+                        candidPath: `/src/some_canister.did`
+                    })
+                });
+            } else {
+                await ic.call(someCanister.error);
+            }
         } catch (error) {}
 
         return ic.rejectCode();
     }),
     getRejectionMessage: update([text], text, async (message: text) => {
         try {
-            await ic.call(someCanister.reject, { args: [message] });
+            if (process.env.AZLE_TEST_FETCH === 'true') {
+                await fetch(`icp://${getSomeCanisterPrincipal()}/reject`, {
+                    body: serialize({
+                        candidPath: `/src/some_canister.did`,
+                        args: [message]
+                    })
+                });
+            } else {
+                await ic.call(someCanister.reject, { args: [message] });
+            }
         } catch (error) {}
 
         return ic.rejectMessage();
     })
 });
+
+function getSomeCanisterPrincipal(): string {
+    if (process.env.SOME_CANISTER_PRINCIPAL !== undefined) {
+        return process.env.SOME_CANISTER_PRINCIPAL;
+    }
+
+    throw new Error(`process.env.SOME_CANISTER_PRINCIPAL is not defined`);
+}
