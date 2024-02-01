@@ -11,7 +11,8 @@
                 "output": "test/dfx_generated/func_types",
                 "node_compatibility": true
             },
-            "env": ["NOTIFIERS_PRINCIPAL"]
+            "env": ["NOTIFIERS_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [["canisters/notifiers/index.did", "src/notifiers.did"]]
         },
         "notifiers": {
             "type": "custom",
