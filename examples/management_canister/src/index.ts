@@ -195,7 +195,9 @@ export default Canister({
                 const { canister_id, num_requested_changes } = args;
                 const infoArgs = {
                     canister_id,
-                    num_requested_changes: convertOpt(num_requested_changes)
+                    num_requested_changes: azleOptToAgentOpt(
+                        num_requested_changes
+                    )
                 };
                 const response = await fetch(`icp://aaaaa-aa/canister_info`, {
                     body: serialize({
@@ -356,16 +358,6 @@ export default Canister({
     })
 });
 
-async function callManagementCanisterasdf(
-    func: string,
-    args?: any,
-    cycles?: bigint
-) {
-    await fetch(`icp://aaaaa-aa/${func}`, {
-        body: serialize({ candidPath: '/candid/management.did', args, cycles })
-    });
-}
-
 async function createCanister() {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const response = await fetch(`icp://aaaaa-aa/create_canister`, {
@@ -384,10 +376,10 @@ async function createCanister() {
     }
 }
 
-function convertOpt<T>(opt: Opt<T>): [T] | [] {
-    if (opt.Some !== undefined) {
-        return [opt.Some];
-    } else {
+function azleOptToAgentOpt<T>(opt: Opt<T>): [T] | [] {
+    if ('None' in opt) {
         return [];
+    } else {
+        return [opt.Some];
     }
 }
