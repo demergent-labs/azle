@@ -3,6 +3,13 @@ import { execSync } from 'child_process';
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
+execSync(
+    `echo "127.0.0.1	localhost\n255.255.255.255	broadcasthost" | sudo tee /etc/hosts > /dev/null`,
+    {
+        stdio: 'inherit'
+    }
+);
+
 execSync('cat /etc/hosts', {
     stdio: 'inherit'
 });
