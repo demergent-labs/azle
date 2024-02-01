@@ -16,9 +16,15 @@ export default Server(() => {
 
     const app = express();
 
-    app.get('/res-send', (req, res) => {
+    app.get('/res-send', async (req, res) => {
+        await test();
+
         res.send('Just testing res.send');
     });
+
+    async function test() {
+        throw new Error('why it no work');
+    }
 
     app.get('/res-write', (req, res) => {
         res.write('Why hello there sir');

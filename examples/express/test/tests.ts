@@ -10,21 +10,17 @@ execSync(
     }
 );
 
+execSync(`nslookup localhost`, {
+    stdio: 'inherit'
+});
+
 execSync('cat /etc/hosts', {
     stdio: 'inherit'
 });
 
-dns.resolve('localhost', (err, addresses) => {
+dns.lookup('localhost', (err, addresses) => {
     console.log('err', err);
     console.log('addresses', addresses);
-});
-
-dns.resolve4('localhost', (err, addresses) => {
-    // if (err) throw err;
-
-    console.log(`IPv4 addresses: ${JSON.stringify(addresses)}`);
-    // Use the resolved IPv4 address in your network request
-    // For example, you might use `http.request` or a similar method and specify the IP address directly
 });
 
 import { Test } from 'azle/test';
