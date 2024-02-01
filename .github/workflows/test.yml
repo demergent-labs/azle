@@ -194,8 +194,8 @@ jobs:
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix:
-                # os: [ubuntu-latest, macos-latest] # TODO put this back of course
-                os: [macos-latest]
+                # os: [ubuntu-latest, macos-latest] # TODO Once we are ready let's get macos testing up and going again
+                os: [ubuntu-latest]
                 include_npm:
                     # Only include npm in the matrix if you've pushed to main and the last commit was a merge of a release branch, or the base branch of the pull request is a release branch
                     - ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
