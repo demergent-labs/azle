@@ -1,5 +1,11 @@
+import { execSync } from 'child_process';
+
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
+
+execSync('cat /etc/hosts', {
+    stdio: 'inherit'
+});
 
 dns.resolve('localhost', (err, addresses) => {
     console.log('err', err);
