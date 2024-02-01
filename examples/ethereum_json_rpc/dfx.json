@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/ethereum_json_rpc",
                 "node_compatibility": true
-            }
+            },
+            "env": ["AZLE_TEST_FETCH"]
         }
     }
 }

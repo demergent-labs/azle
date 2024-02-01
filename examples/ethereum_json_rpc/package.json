@@ -1,7 +1,8 @@
 {
     "scripts": {
-        "pretest": "ETHEREUM_URL=https://rpc.ankr.com/eth ts-node --transpile-only --ignore=false test/pretest.ts",
-        "test": "ETHEREUM_URL=https://rpc.ankr.com/eth ts-node --transpile-only --ignore=false test/test.ts"
+        "pre_tests": "ETHEREUM_URL=https://rpc.ankr.com/eth ts-node --transpile-only --ignore=false test/pretest.ts",
+        "tests": "ETHEREUM_URL=https://rpc.ankr.com/eth npm run pre_tests && ts-node --transpile-only --ignore=false test/test.ts",
+        "test": "ETHEREUM_URL=https://rpc.ankr.com/eth AZLE_TEST_FETCH=false npm run tests && ETHEREUM_URL=https://rpc.ankr.com/eth AZLE_TEST_FETCH=true npm run tests"
     },
     "dependencies": {
         "azle": "0.20.0"
