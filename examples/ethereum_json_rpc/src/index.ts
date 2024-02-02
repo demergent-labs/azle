@@ -61,7 +61,6 @@ async function getBalance(url: string, ethereumAddress: string) {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const response = await fetch(`icp://aaaaa-aa/http_request`, {
             body: serialize({
-                candidPath: '/candid/management.did',
                 args: [
                     {
                         url,
@@ -136,7 +135,6 @@ async function getBlockByNumber(url: string, number: number) {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const response = await fetch(`icp://aaaaa-aa/http_request`, {
             body: serialize({
-                candidPath: '/candid/management.did',
                 args: [
                     {
                         url,
