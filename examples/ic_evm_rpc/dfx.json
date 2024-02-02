@@ -1,21 +1,23 @@
 {
     "canisters": {
-        "ic_evm_rpc": {
+        "server": {
             "type": "custom",
             "main": "src/index.ts",
             "candid": "src/index.did",
-            "build": "npx azle ic_evm_rpc",
-            "wasm": ".azle/ic_evm_rpc/ic_evm_rpc.wasm",
+            "build": "npx azle server",
+            "wasm": ".azle/server/server.wasm",
             "gzip": true,
             "assets": [["src/evm_rpc.did", "src/evm_rpc.did"]]
         },
-        "evm_rpc_canister": {
+        "evm_rpc": {
             "type": "custom",
-            "main": "src/evm_rpc.ts",
-            "candid": "src/evm_rpc.did",
-            "build": "npx azle evm_rpc_canister",
-            "wasm": ".azle/evm_rpc_canister/evm_rpc_canister.wasm",
-            "gzip": true
+            "candid": "https://",
+            "wasm": "https://",
+            "remote": {
+                "id": {
+                    "ic": ""
+                }
+            }
         }
     }
 }
