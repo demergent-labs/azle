@@ -6,12 +6,7 @@ import { InitMethod } from './canister_methods/init_method_arb';
 import { PostUpgradeMethod } from './canister_methods/post_upgrade_arb';
 import { PreUpgradeMethod } from './canister_methods/pre_upgrade_method_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
-import {
-    TextClass,
-    FloatClass,
-    FixedNatClass,
-    VecClass
-} from '@dfinity/candid/lib/cjs/idl';
+import { TextClass, FloatClass } from '@dfinity/candid/lib/cjs/idl';
 
 TextClass.prototype.valueToString = (x): string => {
     return `"${escapeForBash(x)}"`;
