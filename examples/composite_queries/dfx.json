@@ -14,7 +14,13 @@
             "env": [
                 "CANISTER1_PRINCIPAL",
                 "CANISTER2_PRINCIPAL",
-                "CANISTER3_PRINCIPAL"
+                "CANISTER3_PRINCIPAL",
+                "AZLE_TEST_FETCH"
+            ],
+            "assets": [
+                ["src/canister1/index.did", "src/canister1.did"],
+                ["src/canister2/index.did", "src/canister2.did"],
+                ["src/canister3/index.did", "src/canister3.did"]
             ]
         },
         "canister2": {
@@ -28,7 +34,8 @@
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true
             },
-            "env": ["CANISTER3_PRINCIPAL"]
+            "env": ["CANISTER3_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [["src/canister3/index.did", "src/canister3.did"]]
         },
         "canister3": {
             "type": "custom",
