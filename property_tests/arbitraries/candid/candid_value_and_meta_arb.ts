@@ -50,11 +50,11 @@ export function CandidValueAndMetaArb(
 ): fc.Arbitrary<CandidValueAndMeta<CorrespondingJSType>> {
     return fc.oneof(
         BlobArb(),
-        OptArb(),
-        RecordArb(),
-        TupleArb(),
-        VariantArb(),
-        VecArb(),
+        OptArb(constraints),
+        RecordArb(constraints),
+        TupleArb(constraints),
+        VariantArb(constraints),
+        VecArb(constraints),
         Float32Arb(constraints),
         Float64Arb(constraints),
         IntArb(),
@@ -70,7 +70,7 @@ export function CandidValueAndMetaArb(
         BoolArb(),
         NullArb(),
         TextArb(constraints),
-        FuncArb(),
+        FuncArb(constraints),
         PrincipalArb()
     );
 }
