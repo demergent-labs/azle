@@ -2,8 +2,8 @@
     "canisters": {
         "server": {
             "type": "custom",
-            "main": "src/index.ts",
-            "candid": "src/index.did",
+            "main": "src/server.ts",
+            "candid": "src/server.did",
             "build": "npx azle server",
             "wasm": ".azle/server/server.wasm",
             "gzip": true,
@@ -11,11 +11,11 @@
         },
         "evm_rpc": {
             "type": "custom",
-            "candid": "https://",
-            "wasm": "https://",
+            "candid": "https://github.com/internet-computer-protocol/ic-eth-rpc/releases/latest/download/evm_rpc.did",
+            "wasm": "https://github.com/internet-computer-protocol/ic-eth-rpc/releases/latest/download/evm_rpc_dev.wasm.gz",
             "remote": {
                 "id": {
-                    "ic": ""
+                    "ic": "a6d44-nyaaa-aaaap-abp7q-cai"
                 }
             }
         }

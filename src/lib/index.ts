@@ -8,3 +8,4 @@ export * from './stable_structures/stable_json';
 export * from './system_types';
 export * from './server';
 export { serialize } from './fetch';
+export * from './json';

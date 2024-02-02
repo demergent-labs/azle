@@ -2,19 +2,22 @@ import { Serializable } from './stable_b_tree_map';
 import { Principal } from '../candid/types/reference/principal';
 
 export function StableJson(options?: {
-    replacer?: typeof replacer;
-    reviver?: typeof reviver;
+    replacer?: typeof jsonReplacer;
+    reviver?: typeof jsonReviver;
 }): Serializable {
     return {
         toBytes(data: any) {
-            const result = JSON.stringify(data, options?.replacer ?? replacer);
+            const result = JSON.stringify(
+                data,
+                options?.replacer ?? jsonReplacer
+            );
 
             return Uint8Array.from(Buffer.from(result));
         },
         fromBytes(bytes: Uint8Array) {
             return JSON.parse(
                 Buffer.from(bytes).toString(),
-                options?.reviver ?? reviver
+                options?.reviver ?? jsonReviver
             );
         }
     };
@@ -22,7 +25,7 @@ export function StableJson(options?: {
 
 export const stableJson = StableJson();
 
-export function replacer(_key: string, value: any): any {
+export function jsonReplacer(_key: string, value: any): any {
     if (typeof value === 'bigint') {
         return {
             __bigint__: value.toString()
@@ -108,7 +111,7 @@ export function replacer(_key: string, value: any): any {
     return value;
 }
 
-export function reviver(_key: string, value: any): any {
+export function jsonReviver(_key: string, value: any): any {
     if (typeof value === 'object' && value !== null) {
         if (typeof value.__bigint__ === 'string') {
             return BigInt(value.__bigint__);

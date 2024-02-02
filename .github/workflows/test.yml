@@ -90,6 +90,7 @@ jobs:
                     "examples/heartbeat",
                     "examples/hello_world",
                     "examples/ic_api",
+                    "examples/ic_evm_rpc",
                     "examples/icrc",
                     "examples/imports",
                     "examples/init",

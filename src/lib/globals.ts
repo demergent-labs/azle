@@ -1,7 +1,7 @@
 import { ic } from './ic';
 import { AzleIc } from './ic/types/azle_ic';
 import { Buffer } from 'buffer';
-import { replacer } from './stable_structures/stable_json';
+import { jsonReplacer } from './stable_structures/stable_json';
 import * as process from 'process';
 import { v4 } from 'uuid';
 import { azleFetch } from './fetch';
@@ -24,7 +24,7 @@ globalThis._azleInsideCanister =
 if (globalThis._azleInsideCanister) {
     const log = (...args: any[]) => {
         const jsonStringifiedArgs = args
-            .map((arg) => JSON.stringify(arg, replacer, 4))
+            .map((arg) => JSON.stringify(arg, jsonReplacer, 4))
             .join(' ');
 
         ic.print(jsonStringifiedArgs);

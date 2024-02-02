@@ -1,13 +1,22 @@
 import { execSync } from 'child_process';
 
 async function pretest() {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
-    execSync(`dfx canister uninstall-code ic_evm_rpc || true`, {
+    execSync(`dfx canister uninstall-code evm_rpc || true`, {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy`, {
+    execSync(`dfx canister uninstall-code server || true`, {
+        stdio: 'inherit'
+    });
+
+    execSync(
+        `dfx deploy --specified-id be2us-64aaa-aaaaa-qaabq-cai evm_rpc --argument '(record { nodesInSubnet = 28 })'`,
+        {
+            stdio: 'inherit'
+        }
+    );
+
+    execSync(`dfx deploy server`, {
         stdio: 'inherit'
     });
 }
