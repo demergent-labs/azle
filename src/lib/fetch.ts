@@ -1,6 +1,7 @@
 import { ic, Principal } from './';
 import { IDL } from '@dfinity/candid';
 import { URL } from 'url';
+import * as fs from 'fs';
 
 export async function azleFetch(input: any, init?: any): Promise<any> {
     if (process.env.AZLE_TEST_FETCH === 'true') {
@@ -9,14 +10,18 @@ export async function azleFetch(input: any, init?: any): Promise<any> {
 
     const url = new URL(input);
 
-    if (typeof init === 'object') {
-        const { method, headers, body } = init;
+    if (typeof init === 'object' || init === undefined) {
+        const { method, headers, body } = getMethodHeaderAndBody(init);
 
         if (url.protocol === 'icp:') {
             const canisterId = url.hostname;
             const canisterMethod = url.pathname.replace('/', '');
 
-            const { candidPath, args, cycles, cycles128 } = body;
+            const { args, cycles, cycles128 } = getArgsCyclesAndCycles128(body);
+            const candidPath = determineCandidPath(
+                canisterId,
+                body?.candidPath
+            );
 
             const idlString = ic.candidCompiler(candidPath);
 
@@ -79,10 +84,46 @@ export async function azleFetch(input: any, init?: any): Promise<any> {
 }
 
 export function serialize(param: {
-    candidPath: string;
+    candidPath?: string;
     args?: any[];
     cycles?: number | bigint;
     cycles128?: number | bigint;
 }): ArrayBuffer {
     return param as any;
+}
+
+function determineCandidPath(canisterId: string, candidPath?: string): string {
+    if (candidPath !== undefined) {
+        return candidPath;
+    }
+    const filePath = `/candid/${canisterId}.did`;
+    if (fs.existsSync(filePath)) {
+        return filePath;
+    }
+    throw new Error(
+        "Candid path doesn't exists, please specify a valid candid path"
+    );
+}
+
+function getMethodHeaderAndBody(init: any): {
+    method: any;
+    headers: any;
+    body: any;
+} {
+    if (init === undefined) {
+        return { method: undefined, headers: undefined, body: undefined };
+    } else {
+        return init;
+    }
+}
+function getArgsCyclesAndCycles128(body: any): {
+    args: any;
+    cycles: any;
+    cycles128: any;
+} {
+    if (body === undefined) {
+        return { args: undefined, cycles: undefined, cycles128: undefined };
+    } else {
+        return body;
+    }
 }
