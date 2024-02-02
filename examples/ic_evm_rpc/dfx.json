@@ -1,21 +1,23 @@
 {
     "canisters": {
-        "ic_evm_rpc": {
+        "server": {
             "type": "custom",
-            "main": "src/index.ts",
-            "candid": "src/index.did",
-            "build": "npx azle ic_evm_rpc",
-            "wasm": ".azle/ic_evm_rpc/ic_evm_rpc.wasm",
+            "main": "src/server.ts",
+            "candid": "src/server.did",
+            "build": "npx azle server",
+            "wasm": ".azle/server/server.wasm",
             "gzip": true,
             "assets": [["src/evm_rpc.did", "src/evm_rpc.did"]]
         },
-        "evm_rpc_canister": {
+        "evm_rpc": {
             "type": "custom",
-            "main": "src/evm_rpc.ts",
-            "candid": "src/evm_rpc.did",
-            "build": "npx azle evm_rpc_canister",
-            "wasm": ".azle/evm_rpc_canister/evm_rpc_canister.wasm",
-            "gzip": true
+            "candid": "https://github.com/internet-computer-protocol/ic-eth-rpc/releases/latest/download/evm_rpc.did",
+            "wasm": "https://github.com/internet-computer-protocol/ic-eth-rpc/releases/latest/download/evm_rpc_dev.wasm.gz",
+            "remote": {
+                "id": {
+                    "ic": "a6d44-nyaaa-aaaap-abp7q-cai"
+                }
+            }
         }
     }
 }

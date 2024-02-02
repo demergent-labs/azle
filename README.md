@@ -25,6 +25,19 @@ Azle may have unknown security vulnerabilities due to the following:
 -   Azle does not yet have multiple independent security reviews/audits
 -   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
 
+## Get Started
+
+The quickest way to get started is through the [hello_world example](https://github.com/demergent-labs/azle/tree/main/examples/hello_world).
+
+You can also create the [hello_world example](https://github.com/demergent-labs/azle/tree/main/examples/hello_world) locally like this:
+
+```bash
+npx azle new hello_world
+cd hello_world
+
+# Now read the README.md
+```
+
 ## Documentation
 
 See [The Azle Book](https://demergent-labs.github.io/azle/).
@@ -32,22 +45,6 @@ See [The Azle Book](https://demergent-labs.github.io/azle/).
 ## Discussion
 
 Feel free to open issues or join us in the [Discord channel](https://discord.gg/5Hb6rM2QUM).
-
-## Roadmap
-
-We hope to move Azle from beta to release candidates by the end of 2023, and to move from release candidates to 1.0 in early 2024.
-
-### Blockers for release candidates
-
--   Good automated property test coverage
--   Settling of API/syntax
--   Good npm package support
-
-### Blockers for 1.0
-
--   Extensive automated property test coverage
--   Multiple independent security reviews/audits
--   Broad npm package support
 
 ## Contributing
 
