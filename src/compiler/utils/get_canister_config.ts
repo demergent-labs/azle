@@ -61,7 +61,7 @@ export function getCanisterConfig(
             ],
             [
                 join(require.main?.path, 'canisters', 'management', 'ic.did'),
-                join('candid', 'management.did')
+                join('candid', 'aaaaa-aa.did')
             ]
         ]
     });

@@ -32,14 +32,13 @@ import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 import { copySync } from 'fs-extra';
-import { basename } from 'path';
 import { execSync } from 'child_process';
 
 azle();
 
 async function azle() {
     if (process.argv[2] === 'new') {
-        generateNewAzleProject(azleVersion, dfxVersion);
+        generateNewAzleProject();
         return;
     }
 
