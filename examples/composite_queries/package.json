@@ -1,7 +1,8 @@
 {
     "scripts": {
-        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
-        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+        "pre_tests": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "tests": "npm run pre_tests && ts-node --transpile-only --ignore=false test/test.ts",
+        "test": "AZLE_TEST_FETCH=true npm run tests"
     },
     "dependencies": {
         "azle": "0.20.0"
