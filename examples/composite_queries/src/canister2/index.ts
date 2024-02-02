@@ -6,6 +6,7 @@ import {
     nat,
     Principal,
     query,
+    serialize,
     text,
     update
 } from 'azle';
@@ -16,12 +17,7 @@ let counter: nat = 0n;
 
 export default Canister({
     init: init([], () => {
-        canister3 = Canister3(
-            Principal.fromText(
-                process.env.CANISTER3_PRINCIPAL ??
-                    ic.trap('process.env.CANISTER3_PRINCIPAL is undefined')
-            )
-        );
+        canister3 = Canister3(Principal.fromText(getCanister3Principal()));
     }),
     // TODO is this supposed to be a query?
     incCounter: query([], nat, () => {
@@ -43,6 +39,27 @@ export default Canister({
         { manual: true }
     ),
     deepQuery: query([], text, async () => {
-        return await ic.call(canister3.deepQuery);
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(
+                `icp://${getCanister3Principal()}/deepQuery`,
+                {
+                    body: serialize({
+                        candidPath: `/src/canister3.did`
+                    })
+                }
+            );
+
+            return await response.json();
+        } else {
+            return await ic.call(canister3.deepQuery);
+        }
     })
 });
+
+function getCanister3Principal(): string {
+    if (process.env.CANISTER3_PRINCIPAL !== undefined) {
+        return process.env.CANISTER3_PRINCIPAL;
+    }
+
+    throw new Error(`process.env.CANISTER3_PRINCIPAL is not defined`);
+}

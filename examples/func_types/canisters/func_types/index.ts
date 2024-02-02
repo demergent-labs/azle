@@ -15,7 +15,8 @@ import {
     text,
     Void,
     Null,
-    Recursive
+    Recursive,
+    serialize
 } from 'azle';
 import Notifier, { NotifierFunc } from '../notifiers';
 
@@ -103,12 +104,31 @@ export default Canister({
 
     getNotifierFromNotifiersCanister: update([], NotifierFunc, async () => {
         const notifiersCanister = Notifier(
-            Principal.fromText(
-                process.env.NOTIFIERS_PRINCIPAL ??
-                    ic.trap('process.env.NOTIFIERS_PRINCIPAL is undefined')
-            )
+            Principal.fromText(getNotifierPrincipal())
         );
 
-        return await ic.call(notifiersCanister.getNotifier);
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(
+                `icp://${getNotifierPrincipal()}/getNotifier`,
+                {
+                    body: serialize({
+                        candidPath: `/src/notifiers.did`
+                    })
+                }
+            );
+            const responseJson = await response.json();
+
+            return responseJson;
+        } else {
+            return await ic.call(notifiersCanister.getNotifier);
+        }
     })
 });
+
+function getNotifierPrincipal(): string {
+    if (process.env.NOTIFIERS_PRINCIPAL !== undefined) {
+        return process.env.NOTIFIERS_PRINCIPAL;
+    }
+
+    throw new Error(`process.env.NOTIFIERS_PRINCIPAL is not defined`);
+}
