@@ -44,7 +44,6 @@ export default Canister({
         if (process.env.AZLE_TEST_FETCH === 'true' || false) {
             await fetch(`icp://aaaaa-aa/update_settings`, {
                 body: serialize({
-                    candidPath: '/candid/management.did',
                     args: [
                         {
                             canister_id: canisterId,
@@ -87,7 +86,6 @@ export default Canister({
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 await fetch(`icp://aaaaa-aa/install_code`, {
                     body: serialize({
-                        candidPath: '/candid/management.did',
                         args: [
                             {
                                 mode: {
@@ -126,7 +124,6 @@ export default Canister({
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/uninstall_code`, {
                 body: serialize({
-                    candidPath: '/candid/management.did',
                     args: [
                         {
                             canister_id: canisterId,
@@ -152,7 +149,6 @@ export default Canister({
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/start_canister`, {
                 body: serialize({
-                    candidPath: '/candid/management.did',
                     args: [{ canister_id: canisterId }]
                 })
             });
@@ -171,7 +167,6 @@ export default Canister({
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/stop_canister`, {
                 body: serialize({
-                    candidPath: '/candid/management.did',
                     args: [{ canister_id: canisterId }]
                 })
             });
@@ -201,7 +196,6 @@ export default Canister({
                 };
                 const response = await fetch(`icp://aaaaa-aa/canister_info`, {
                     body: serialize({
-                        candidPath: '/candid/management.did',
                         args: [infoArgs]
                     })
                 });
@@ -220,7 +214,6 @@ export default Canister({
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 const response = await fetch(`icp://aaaaa-aa/canister_status`, {
                     body: serialize({
-                        candidPath: '/candid/management.did',
                         args: [args]
                     })
                 });
@@ -236,7 +229,6 @@ export default Canister({
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/delete_canister`, {
                 body: serialize({
-                    candidPath: '/candid/management.did',
                     args: [{ canister_id: canisterId }]
                 })
             });
@@ -256,7 +248,6 @@ export default Canister({
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/deposit_cycles`, {
                 body: serialize({
-                    candidPath: '/candid/management.did',
                     args: [{ canister_id: canisterId }],
                     cycles: 10_000_000n
                 })
@@ -276,11 +267,7 @@ export default Canister({
     }),
     getRawRand: update([], blob, async () => {
         if (process.env.AZLE_TEST_FETCH === 'true') {
-            const response = await fetch(`icp://aaaaa-aa/raw_rand`, {
-                body: serialize({
-                    candidPath: '/candid/management.did'
-                })
-            });
+            const response = await fetch(`icp://aaaaa-aa/raw_rand`);
             return await response.json();
         } else {
             return await ic.call(managementCanister.raw_rand);
@@ -296,7 +283,6 @@ export default Canister({
                     `icp://aaaaa-aa/provisional_create_canister_with_cycles`,
                     {
                         body: serialize({
-                            candidPath: '/candid/management.did',
                             args: [
                                 {
                                     amount: [],
@@ -334,7 +320,6 @@ export default Canister({
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 await fetch(`icp://aaaaa-aa/provisional_top_up_canister`, {
                     body: serialize({
-                        candidPath: '/candid/management.did',
                         args: [{ canister_id: canisterId, amount }],
                         cycles: 10_000_000n
                     })
@@ -362,7 +347,6 @@ async function createCanister() {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const response = await fetch(`icp://aaaaa-aa/create_canister`, {
             body: serialize({
-                candidPath: '/candid/management.did',
                 args: [{ settings: [], sender_canister_version: [] }],
                 cycles: 50_000_000_000_000n
             })

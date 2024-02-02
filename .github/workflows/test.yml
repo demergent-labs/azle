@@ -88,6 +88,7 @@ jobs:
                     "examples/func_types",
                     "examples/guard_functions",
                     "examples/heartbeat",
+                    "examples/hello_world",
                     "examples/ic_api",
                     "examples/icrc",
                     "examples/imports",

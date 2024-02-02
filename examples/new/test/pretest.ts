@@ -6,18 +6,15 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(
-        `cd hello_world && dfx canister uninstall-code hello_world || true`,
-        {
-            stdio: 'inherit'
-        }
-    );
+    execSync(`cd hello_world && dfx canister uninstall-code backend || true`, {
+        stdio: 'inherit'
+    });
 
     execSync(`cd hello_world && npm install`, {
         stdio: 'inherit'
     });
 
-    execSync(`cd hello_world && npm run canister_deploy_local`, {
+    execSync(`cd hello_world && dfx deploy`, {
         stdio: 'inherit'
     });
 }
