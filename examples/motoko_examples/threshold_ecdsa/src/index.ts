@@ -37,7 +37,6 @@ async function getPublicKeyResult() {
             `icp://aaaaa-aa/ecdsa_public_key`,
             {
                 body: serialize({
-                    candidPath: '/candid/management.did',
                     args: [
                         {
                             canister_id: [],
@@ -77,7 +76,6 @@ async function getSignatureResult(messageHash: Uint8Array) {
             `icp://aaaaa-aa/sign_with_ecdsa`,
             {
                 body: serialize({
-                    candidPath: '/candid/management.did',
                     args: [
                         {
                             message_hash: messageHash,

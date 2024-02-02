@@ -20,7 +20,6 @@ export default Canister({
         if (process.env.AZLE_TEST_FETCH) {
             const response = await fetch(`icp://aaaaa-aa/http_request`, {
                 body: serialize({
-                    candidPath: '/candid/management.did',
                     args: [
                         {
                             url: `https://xkcd.com/642/info.0.json`,

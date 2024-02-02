@@ -115,11 +115,7 @@ async function repeatCrossCanisterTimerCallback() {
 
 async function getRandomness(): Promise<blob> {
     if (process.env.AZLE_TEST_FETCH === 'true') {
-        const response = await fetch(`icp://aaaaa-aa/raw_rand`, {
-            body: serialize({
-                candidPath: '/candid/management.did'
-            })
-        });
+        const response = await fetch(`icp://aaaaa-aa/raw_rand`);
         const responseJson = await response.json();
 
         return responseJson;
