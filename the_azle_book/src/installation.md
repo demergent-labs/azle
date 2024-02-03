@@ -17,6 +17,7 @@ It is best to install all of these dependencies based on your OS:
 ### Ubuntu/WSL
 
 ```bash
+sudo apt update
 sudo apt install clang
 sudo apt install build-essential
 sudo apt install libssl-dev

@@ -13,6 +13,7 @@ npx azle new hello_world
 cd hello_world
 
 # Ubuntu build dependencies
+sudo apt update
 sudo apt install clang
 sudo apt install build-essential
 sudo apt install libssl-dev
