@@ -17,6 +17,7 @@ It is best to install all of these dependencies based on your OS:
 ### Ubuntu/WSL
 
 ```bash
+sudo apt update
 sudo apt install clang
 sudo apt install build-essential
 sudo apt install libssl-dev
@@ -37,7 +38,7 @@ echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> ~/.zshrc
 We highly recommend using [nvm](https://github.com/nvm-sh/nvm) to install Node.js (and npm, which is included with Node.js). Run the following commands to install Node.js and npm with nvm:
 
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 ```
 
 Now restart your terminal and run the following command:

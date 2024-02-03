@@ -340,6 +340,7 @@ SOFTWARE.
 cd hello_world
 
 # Ubuntu build dependencies
+sudo apt update
 sudo apt install clang
 sudo apt install build-essential
 sudo apt install libssl-dev
@@ -349,6 +350,12 @@ sudo apt install pkg-config
 xcode-select --install
 brew install llvm
 echo 'export PATH=&quot;/opt/homebrew/opt/llvm/bin:$PATH&quot;' &gt;&gt; ~/.zshrc
+
+# It's recommended to use nvm and Node.js 18
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# Restart your terminal
+nvm install 18
 
 # The dfx command line tools for managing ICP applications
 DFX_VERSION=0.16.1 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
@@ -409,7 +416,8 @@ curl -X POST -H &quot;Content-Type: application/json&quot; -d &quot;{ \&quot;hel
 <h2 id="build-dependencies"><a class="header" href="#build-dependencies">Build dependencies</a></h2>
 <p>It is best to install all of these dependencies based on your OS:</p>
 <h3 id="ubuntuwsl"><a class="header" href="#ubuntuwsl">Ubuntu/WSL</a></h3>
-<pre><code class="language-bash">sudo apt install clang
+<pre><code class="language-bash">sudo apt update
+sudo apt install clang
 sudo apt install build-essential
 sudo apt install libssl-dev
 sudo apt install pkg-config
@@ -422,7 +430,7 @@ echo 'export PATH=&quot;/opt/homebrew/opt/llvm/bin:$PATH&quot;' &gt;&gt; ~/.zshr
 </code></pre>
 <h2 id="nodejs"><a class="header" href="#nodejs">Node.js</a></h2>
 <p>We highly recommend using <a href="https://github.com/nvm-sh/nvm">nvm</a> to install Node.js (and npm, which is included with Node.js). Run the following commands to install Node.js and npm with nvm:</p>
-<pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+<pre><code class="language-bash">curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 </code></pre>
 <p>Now restart your terminal and run the following command:</p>
 <pre><code class="language-bash">nvm install 18

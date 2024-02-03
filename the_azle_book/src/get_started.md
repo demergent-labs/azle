@@ -15,6 +15,7 @@ npx azle new hello_world
 cd hello_world
 
 # Ubuntu build dependencies
+sudo apt update
 sudo apt install clang
 sudo apt install build-essential
 sudo apt install libssl-dev
@@ -24,6 +25,12 @@ sudo apt install pkg-config
 xcode-select --install
 brew install llvm
 echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> ~/.zshrc
+
+# It's recommended to use nvm and Node.js 18
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# Restart your terminal
+nvm install 18
 
 # The dfx command line tools for managing ICP applications
 DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
