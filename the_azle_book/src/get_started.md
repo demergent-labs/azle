@@ -25,6 +25,12 @@ xcode-select --install
 brew install llvm
 echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> ~/.zshrc
 
+# It's recommended to use nvm and Node.js 18
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# Restart your terminal
+nvm install 18
+
 # The dfx command line tools for managing ICP applications
 DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 dfx start --clean --host 127.0.0.1:8000
