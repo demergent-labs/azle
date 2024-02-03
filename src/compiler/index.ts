@@ -38,7 +38,7 @@ azle();
 
 async function azle() {
     if (process.argv[2] === 'new') {
-        generateNewAzleProject();
+        generateNewAzleProject(azleVersion);
         return;
     }
 
