@@ -21,7 +21,7 @@ sudo apt install pkg-config
 # Mac build dependencies
 xcode-select --install
 brew install llvm
-echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.zshrc
+echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> ~/.zshrc
 
 # The dfx command line tools for managing ICP applications
 DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"

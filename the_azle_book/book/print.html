@@ -348,7 +348,7 @@ sudo apt install pkg-config
 # Mac build dependencies
 xcode-select --install
 brew install llvm
-echo 'export PATH=&quot;/usr/local/opt/llvm/bin:$PATH&quot;' &gt;&gt; ~/.zshrc
+echo 'export PATH=&quot;/opt/homebrew/opt/llvm/bin:$PATH&quot;' &gt;&gt; ~/.zshrc
 
 # The dfx command line tools for managing ICP applications
 DFX_VERSION=0.16.1 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
@@ -417,6 +417,8 @@ sudo apt install pkg-config
 <h3 id="mac"><a class="header" href="#mac">Mac</a></h3>
 <pre><code class="language-bash"># Install the Xcode Command Line Tools
 xcode-select --install
+brew install llvm
+echo 'export PATH=&quot;/opt/homebrew/opt/llvm/bin:$PATH&quot;' &gt;&gt; ~/.zshrc
 </code></pre>
 <h2 id="nodejs"><a class="header" href="#nodejs">Node.js</a></h2>
 <p>We highly recommend using <a href="https://github.com/nvm-sh/nvm">nvm</a> to install Node.js (and npm, which is included with Node.js). Run the following commands to install Node.js and npm with nvm:</p>

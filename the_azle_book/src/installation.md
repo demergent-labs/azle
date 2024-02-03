@@ -28,6 +28,8 @@ sudo apt install pkg-config
 ```bash
 # Install the Xcode Command Line Tools
 xcode-select --install
+brew install llvm
+echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> ~/.zshrc
 ```
 
 ## Node.js
