@@ -1,8 +1,10 @@
-# Azle Hello World
+# Get Started
 
 Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript. The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
 
-For more documentation please see [The Azle Book](https://demergent-labs.github.io/azle/).
+Azle is currently going through a transition to give higher priority to utilizing HTTP, REST, JSON, and other familiar web technologies. This is in contrast to having previously focused on ICP-specific technologies like [Candid](./candid.md) and explicitly creating `Canister` objects with [query](./query_methods.md) and [update](./update_methods.md) methods.
+
+We are calling these two paradigms REST-based and Candid-based. Many concepts from the [Candid-based documentation](./candid_based_documentation.md) are still applicable in the REST-based paradigm. The REST-based paradigm simply focuses on changing the communication and serialization strategies to be more web-focused and less custom.
 
 ## Installation
 
@@ -42,16 +44,3 @@ dfx canister id backend
 curl http://[canisterId].localhost:8000/db
 curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://[canisterId].localhost:8000/db/update
 ```
-
-## Examples
-
-There are many Azle examples in the [examples directory](https://github.com/demergent-labs/azle/tree/main/examples). We recommend starting with the following:
-
--   [apollo_server](https://github.com/demergent-labs/azle/tree/main/examples/apollo_server)
--   [ethers](https://github.com/demergent-labs/azle/tree/main/examples/ethers)
--   [express](https://github.com/demergent-labs/azle/tree/main/examples/express)
--   [fs](https://github.com/demergent-labs/azle/tree/main/examples/fs)
--   [hello_world](https://github.com/demergent-labs/azle/tree/main/examples/hello_world)
--   [ic_evm_rpc](https://github.com/demergent-labs/azle/tree/main/examples/ic_evm_rpc)
--   [sqlite](https://github.com/demergent-labs/azle/tree/main/examples/sqlite)
--   [web_assembly](https://github.com/demergent-labs/azle/tree/main/examples/web_assembly)
