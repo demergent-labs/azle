@@ -15,9 +15,9 @@ npm install
 
 if [[ "$VERSION" == *"-rc."* ]];
 then
-    npm publish --tag next
+    # npm publish --tag next # TODO this must be set back!
 else
-    npm publish
+    # npm publish # TODO this must be set back!
 fi
 
 # TODO loop through checking for the status instead of sleeping
