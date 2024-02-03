@@ -164,6 +164,8 @@ sudo apt install pkg-config
 <h3 id="mac"><a class="header" href="#mac">Mac</a></h3>
 <pre><code class="language-bash"># Install the Xcode Command Line Tools
 xcode-select --install
+brew install llvm
+echo 'export PATH=&quot;/opt/homebrew/opt/llvm/bin:$PATH&quot;' &gt;&gt; ~/.zshrc
 </code></pre>
 <h2 id="nodejs"><a class="header" href="#nodejs">Node.js</a></h2>
 <p>We highly recommend using <a href="https://github.com/nvm-sh/nvm">nvm</a> to install Node.js (and npm, which is included with Node.js). Run the following commands to install Node.js and npm with nvm:</p>
