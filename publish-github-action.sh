@@ -32,6 +32,8 @@ do
     sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
     npm install
 
+    rm -rf node_modules
+
     cd $root_dir
 done
 
