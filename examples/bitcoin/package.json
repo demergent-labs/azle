@@ -4,8 +4,9 @@
         "bitcoin-cli": "bitcoin-cli -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin -rpcport=18443",
         "deploy": "scripts/deploy.sh bitcoin",
         "start": "dfx start --enable-bitcoin --clean",
-        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
-        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+        "pre_tests": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "tests": "npm run pre_tests && ts-node --transpile-only --ignore=false test/test.ts",
+        "test": "AZLE_TEST_FETCH=false npm run tests && AZLE_TEST_FETCH=true npm run tests"
     },
     "dependencies": {
         "azle": "0.20.1"
