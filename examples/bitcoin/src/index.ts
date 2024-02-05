@@ -41,7 +41,7 @@ export default Canister({
                         {
                             address,
                             min_confirmations: [],
-                            network: { Regtest: null }
+                            network: { regtest: null }
                         }
                     ],
                     cycles: BITCOIN_API_CYCLE_COST
@@ -56,7 +56,7 @@ export default Canister({
                     {
                         address,
                         min_confirmations: None,
-                        network: { Regtest: null }
+                        network: { regtest: null }
                     }
                 ],
                 cycles: BITCOIN_API_CYCLE_COST
@@ -71,7 +71,7 @@ export default Canister({
                     body: serialize({
                         args: [
                             {
-                                network: { Regtest: null }
+                                network: { regtest: null }
                             }
                         ],
                         cycles: BITCOIN_API_CYCLE_COST
@@ -87,7 +87,7 @@ export default Canister({
                 {
                     args: [
                         {
-                            network: { Regtest: null }
+                            network: { regtest: null }
                         }
                     ],
                     cycles: BITCOIN_API_CYCLE_COST
@@ -103,7 +103,7 @@ export default Canister({
                         {
                             address,
                             filter: [],
-                            network: { Regtest: null }
+                            network: { regtest: null }
                         }
                     ],
                     cycles: BITCOIN_API_CYCLE_COST
@@ -118,7 +118,7 @@ export default Canister({
                     {
                         address,
                         filter: None,
-                        network: { Regtest: null }
+                        network: { regtest: null }
                     }
                 ],
                 cycles: BITCOIN_API_CYCLE_COST
@@ -139,7 +139,7 @@ export default Canister({
                         args: [
                             {
                                 transaction,
-                                network: { Regtest: null }
+                                network: { regtest: null }
                             }
                         ],
                         cycles: transactionFee
@@ -152,7 +152,7 @@ export default Canister({
                 args: [
                     {
                         transaction,
-                        network: { Regtest: null }
+                        network: { regtest: null }
                     }
                 ],
                 cycles: transactionFee

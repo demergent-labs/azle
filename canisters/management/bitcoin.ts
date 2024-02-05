@@ -28,9 +28,9 @@ export const Satoshi = nat64;
 export type Satoshi = nat64;
 
 export const BitcoinNetwork = Variant({
-    Mainnet: Null,
-    Regtest: Null,
-    Testnet: Null
+    mainnet: Null,
+    regtest: Null,
+    testnet: Null
 });
 export type BitcoinNetwork = typeof BitcoinNetwork.tsType;
 
