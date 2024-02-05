@@ -1,8 +1,12 @@
-import { ok, getCanisterId, runTests, Test } from 'azle/test';
+import { getCanisterId, runTests, Test } from 'azle/test';
 import { createActor } from './dfx_generated/bitcoin';
 import { wallets } from './wallets';
 import { impureSetup, whileRunningBitcoinDaemon } from './setup';
 import { bitcoinCli } from './bitcoin_cli';
+
+const BLOCK_REWARD = 5_000_000_000n;
+const BLOCKS_MINED_IN_SETUP = 101n;
+const EXPECTED_BALANCE_AFTER_SETUP = BLOCK_REWARD * BLOCKS_MINED_IN_SETUP;
 
 const bitcoinCanister = createActor(getCanisterId('bitcoin'), {
     agentOptions: {
@@ -38,16 +42,8 @@ function testCanisterFunctionality() {
                     wallets.alice.p2wpkh
                 );
 
-                const blockReward = 5_000_000_000n;
-                const blocksMinedInSetup = 101n;
-                const expectedBalance = blockReward * blocksMinedInSetup;
-
-                // TODO remove this after testing
-                console.log('result', result);
-                console.log('expectedBalance', expectedBalance);
-
                 return {
-                    Ok: result === expectedBalance
+                    Ok: result === EXPECTED_BALANCE_AFTER_SETUP
                 };
             }
         },
@@ -76,7 +72,7 @@ function testCanisterFunctionality() {
         {
             name: 'sendTransaction',
             test: async () => {
-                const balance_before_transaction =
+                const receivedBeforeTransaction =
                     bitcoinCli.getReceivedByAddress(wallets.bob.p2wpkh);
 
                 const tx_bytes = hex_string_to_bytes(state.signedTxHex);
@@ -88,14 +84,14 @@ function testCanisterFunctionality() {
                 // Wait for generated block to be pulled into replica
                 await new Promise((resolve) => setTimeout(resolve, 5000));
 
-                const balance_after_transaction =
+                const receivedAfterTransaction =
                     bitcoinCli.getReceivedByAddress(wallets.bob.p2wpkh, 0);
 
                 return {
                     Ok:
                         result === true &&
-                        balance_before_transaction === 0 &&
-                        balance_after_transaction === 1
+                        receivedBeforeTransaction === 0 &&
+                        receivedAfterTransaction === 1
                 };
             }
         }
