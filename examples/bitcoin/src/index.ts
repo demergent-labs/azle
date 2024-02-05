@@ -40,7 +40,7 @@ export default Canister({
                     args: [
                         {
                             address,
-                            min_confirmations: None,
+                            min_confirmations: [],
                             network: { Regtest: null }
                         }
                     ],
@@ -102,7 +102,7 @@ export default Canister({
                     args: [
                         {
                             address,
-                            filter: None,
+                            filter: [],
                             network: { Regtest: null }
                         }
                     ],
