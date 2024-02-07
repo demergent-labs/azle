@@ -1,23 +1,16 @@
 import { join } from 'path';
 import { compileRustCode } from './compile_rust_code';
-import { installRustDependencies } from './install_rust_dependencies';
 import { generateNewAzleProject } from './new_command';
 import {
     getCanisterConfig,
     getCanisterName,
     getStdIoType,
     logSuccess,
-    printFirstBuildWarning,
     time,
     unwrap
 } from './utils';
 import { dim, green, red } from './utils/colors';
-import { GLOBAL_AZLE_CONFIG_DIR } from './utils';
-import {
-    version as azleVersion,
-    dfx_version as dfxVersion,
-    rust_version as rustVersion
-} from '../../package.json';
+import { version as azleVersion } from '../../package.json';
 import { compileTypeScriptToJavaScript } from './compile_typescript_code';
 import { Err, ok } from './utils/result';
 import {
@@ -31,7 +24,7 @@ import {
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
-import { copySync, readFileSync } from 'fs-extra';
+import { copySync } from 'fs-extra';
 import { execSync } from 'child_process';
 
 azle();
@@ -42,15 +35,37 @@ async function azle() {
         return;
     }
 
+    const stdioType = getStdIoType();
+
     if (process.argv[2] === 'clean') {
-        rmSync(GLOBAL_AZLE_CONFIG_DIR, {
+        rmSync('.azle', {
             recursive: true,
             force: true
         });
+
+        console.info(`.azle directory deleted`);
+
+        execSync(`docker stop azle_${azleVersion}_container || true`, {
+            stdio: stdioType
+        });
+
+        console.info(`azle_${azleVersion}_container stopped`);
+
+        execSync(`docker rm azle_${azleVersion}_container || true`, {
+            stdio: stdioType
+        });
+
+        console.info(`azle_${azleVersion}_container removed`);
+
+        execSync(`docker image rm azle_${azleVersion}_image || true`, {
+            stdio: stdioType
+        });
+
+        console.info(`azle_${azleVersion}_image removed`);
+
         return;
     }
 
-    const stdioType = getStdIoType();
     const canisterName = unwrap(getCanisterName(process.argv));
     const canisterPath = join('.azle', canisterName);
 
@@ -61,25 +76,34 @@ async function azle() {
             const canisterConfig = unwrap(getCanisterConfig(canisterName));
             const candidPath = canisterConfig.candid;
 
-            printFirstBuildWarning(azleVersion, stdioType);
+            mkdirSync('.azle', { recursive: true });
+
+            if (process.env.AZLE_USE_DOCKERFILE === 'true') {
+                console.log('process.env.AZLE_USE_DOCKERFILE is being used'); // TODO remove this after testing it in CI
+
+                execSync(
+                    `docker image inspect azle_${azleVersion}_image || (docker build -f ${__dirname}/Dockerfile -t azle_${azleVersion}_image . && docker save -o .azle/azle_${azleVersion}_image azle_${azleVersion}_image)`,
+                    {
+                        stdio: stdioType
+                    }
+                );
+            } else {
+                execSync(
+                    `docker image inspect azle_${azleVersion}_image || (curl -L https://github.com/demergent-labs/azle/releases/download/${azleVersion}/azle_${azleVersion}_image.gz -o .azle/azle_${azleVersion}_image.gz && gzip -d .azle/azle_${azleVersion}_image.gz && docker load -i .azle/azle_${azleVersion}_image)`,
+                    {
+                        stdio: stdioType
+                    }
+                );
+            }
 
             execSync(
-                `docker build -f ${__dirname}/Dockerfile -t azle_${azleVersion} .`,
-                {
-                    stdio: stdioType
-                }
-            );
-
-            execSync(
-                `docker inspect azle_${azleVersion}_container || docker create --name azle_${azleVersion}_container azle_${azleVersion} tail -f /dev/null`,
+                `docker inspect azle_${azleVersion}_container || docker create --name azle_${azleVersion}_container azle_${azleVersion}_image tail -f /dev/null`,
                 { stdio: stdioType }
             );
 
             execSync(`docker start azle_${azleVersion}_container`, {
                 stdio: stdioType
             });
-
-            mkdirSync('.azle', { recursive: true });
 
             execSync(
                 `docker cp azle_${azleVersion}_container:/wasmedge-quickjs .azle/wasmedge-quickjs`,
