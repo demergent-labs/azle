@@ -16,5 +16,5 @@ RUN mkdir /global_target_dir
 
 RUN cargo install --git https://github.com/wasm-forge/wasi2ic --rev 806c3558aad24224852a9582f018178402cb3679
 
-RUN git clone https://github.com/demergent-labs/wasmedge-quickjs
-RUN cd wasmedge-quickjs && git checkout a64adb5910cd7c065b1f0efa337b0a03ffb6afc9
+# This is all on one line so that when the commit is changed Docker will rerun the clone
+RUN git clone https://github.com/demergent-labs/wasmedge-quickjs && cd wasmedge-quickjs && git checkout ce02a5969befebfe47b1bfe3231c367afa34188b
