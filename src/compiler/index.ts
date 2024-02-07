@@ -31,7 +31,7 @@ import {
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
-import { copySync } from 'fs-extra';
+import { copySync, readFileSync } from 'fs-extra';
 import { execSync } from 'child_process';
 
 azle();
@@ -86,6 +86,9 @@ async function azle() {
 
             console.log('process.cwd()', process.cwd());
             console.log('__dirname', __dirname);
+            console.log(
+                readFileSync('.azle/wasmedge-quickjs/.gitignore').toString()
+            );
 
             const compilationResult = compileTypeScriptToJavaScript(
                 canisterConfig.main
