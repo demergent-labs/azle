@@ -29,4 +29,4 @@ export const GLOBAL_AZLE_BIN_DIR = join(
 
 export const GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR =
     process.env.AZLE_WASMEDGE_QUICKJS_DIR ??
-    join(GLOBAL_AZLE_CONFIG_DIR, azleVersion, 'wasmedge-quickjs');
+    join(process.cwd(), '.azle', 'wasmedge-quickjs');

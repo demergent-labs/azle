@@ -31,7 +31,7 @@ import {
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
-import { copySync } from 'fs-extra';
+import { copySync, readFileSync } from 'fs-extra';
 import { execSync } from 'child_process';
 
 azle();
@@ -61,9 +61,30 @@ async function azle() {
             const canisterConfig = unwrap(getCanisterConfig(canisterName));
             const candidPath = canisterConfig.candid;
 
-            printFirstBuildWarning();
+            printFirstBuildWarning(azleVersion, stdioType);
 
-            installRustDependencies(azleVersion, rustVersion);
+            execSync(
+                `docker build -f ${__dirname}/Dockerfile -t azle_${azleVersion} .`,
+                {
+                    stdio: stdioType
+                }
+            );
+
+            execSync(
+                `docker inspect azle_${azleVersion}_container || docker create --name azle_${azleVersion}_container azle_${azleVersion} tail -f /dev/null`,
+                { stdio: stdioType }
+            );
+
+            execSync(`docker start azle_${azleVersion}_container`, {
+                stdio: stdioType
+            });
+
+            mkdirSync('.azle', { recursive: true });
+
+            execSync(
+                `docker cp azle_${azleVersion}_container:/wasmedge-quickjs .azle/wasmedge-quickjs`,
+                { stdio: stdioType }
+            );
 
             const compilationResult = compileTypeScriptToJavaScript(
                 canisterConfig.main
@@ -150,7 +171,7 @@ async function azle() {
             // TODO why not just write the dfx.json file here as well?
             writeFileSync(compilerInfoPath0, JSON.stringify(compilerInfo0));
 
-            compileRustCode(canisterName, canisterPath, stdioType);
+            compileRustCode(azleVersion, canisterName, stdioType);
 
             const { candid, canisterMethods } =
                 generateCandidAndCanisterMethods(
@@ -178,7 +199,7 @@ async function azle() {
             // TODO why not just write the dfx.json file here as well?
             writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
 
-            compileRustCode(canisterName, canisterPath, stdioType);
+            compileRustCode(azleVersion, canisterName, stdioType);
         }
     );
 
