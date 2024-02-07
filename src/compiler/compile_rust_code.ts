@@ -1,46 +1,43 @@
 import { execSync, IOType } from 'child_process';
-import {
-    GLOBAL_AZLE_RUST_DIR,
-    GLOBAL_AZLE_RUST_BIN_DIR,
-    GLOBAL_AZLE_TARGET_DIR,
-    time
-} from './utils';
 
 export function compileRustCode(
+    azleVersion: string,
     canisterName: string,
-    canisterPath: string,
     stdio: IOType
 ) {
     execSync(
-        `cd ${canisterPath} && ${GLOBAL_AZLE_RUST_BIN_DIR}/cargo build --target wasm32-wasi --manifest-path canister/Cargo.toml --release`,
+        `docker exec azle_${azleVersion}_container rm -rf /.azle/${canisterName}`,
+        { stdio }
+    );
+
+    execSync(`docker exec azle_${azleVersion}_container mkdir -p /.azle`, {
+        stdio
+    });
+
+    execSync(
+        `docker exec azle_${azleVersion}_container mkdir -p /global_target_dir`,
         {
-            stdio,
-            env: {
-                ...process.env,
-                CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-                CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
-                RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR,
-                CARGO_REGISTRIES_CRATES_IO_PROTOCOL: 'sparse'
-                // TODO this allows changing the stack size, could be useful for stack overflow or heap out of bounds errors
-                // RUSTFLAGS: '-C link-args=-zstack-size=2000000000'
-            }
+            stdio
         }
     );
 
-    const wasmTargetFilePath = `${GLOBAL_AZLE_TARGET_DIR}/wasm32-wasi/release/canister.wasm`;
-
-    execSync(`cp ${wasmTargetFilePath} ${canisterPath}`);
+    execSync(
+        `docker cp .azle/${canisterName} azle_${azleVersion}_container:/.azle`,
+        { stdio }
+    );
 
     execSync(
-        `cd ${canisterPath} && ${GLOBAL_AZLE_RUST_BIN_DIR}/wasi2ic canister.wasm ${canisterName}.wasm`,
-        {
-            stdio,
-            env: {
-                ...process.env,
-                CARGO_TARGET_DIR: GLOBAL_AZLE_TARGET_DIR,
-                CARGO_HOME: GLOBAL_AZLE_RUST_DIR,
-                RUSTUP_HOME: GLOBAL_AZLE_RUST_DIR
-            }
-        }
+        `docker exec -w /.azle/${canisterName} azle_${azleVersion}_container env CARGO_TARGET_DIR=/global_target_dir cargo build --target wasm32-wasi --manifest-path canister/Cargo.toml --release`,
+        { stdio }
+    );
+
+    execSync(
+        `docker exec -w /.azle/${canisterName} azle_${azleVersion}_container wasi2ic /global_target_dir/wasm32-wasi/release/canister.wasm /global_target_dir/wasm32-wasi/release/canister.wasm`,
+        { stdio }
+    );
+
+    execSync(
+        `docker cp azle_${azleVersion}_container:/global_target_dir/wasm32-wasi/release/canister.wasm .azle/${canisterName}/${canisterName}.wasm`,
+        { stdio }
     );
 }
