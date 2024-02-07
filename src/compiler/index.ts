@@ -79,18 +79,11 @@ async function azle() {
                 stdio: stdioType
             });
 
+            mkdirSync('.azle', { recursive: true });
+
             execSync(
-                `docker cp azle_${azleVersion}_container:/wasmedge-quickjs .azle`,
+                `docker cp azle_${azleVersion}_container:/wasmedge-quickjs .azle/wasmedge-quickjs`,
                 { stdio: stdioType }
-            );
-
-            execSync(`ls -a`, { stdio: stdioType });
-            execSync(`cd .azle && ls -a`, { stdio: stdioType });
-
-            console.log('process.cwd()', process.cwd());
-            console.log('__dirname', __dirname);
-            console.log(
-                readFileSync('.azle/wasmedge-quickjs/.gitignore').toString()
             );
 
             const compilationResult = compileTypeScriptToJavaScript(
