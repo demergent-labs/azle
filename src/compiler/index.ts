@@ -84,6 +84,9 @@ async function azle() {
                 { stdio: stdioType }
             );
 
+            console.log('process.cwd()', process.cwd());
+            console.log('__dirname', __dirname);
+
             const compilationResult = compileTypeScriptToJavaScript(
                 canisterConfig.main
             );
