@@ -57,6 +57,8 @@ jobs:
               run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
             - if: contains(github.head_ref, 'release--')
               run: git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+            - if: contains(github.head_ref, 'release--')
+              run: DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             - id: example_directories
               # TODO to improve this further we might be able to create an environment variable that grabs the example directories with a glob
               # TODO we want to be able to easily include and exclude examples though

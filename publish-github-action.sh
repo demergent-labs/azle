@@ -13,12 +13,12 @@ directories=$(echo "$directories_json_string" | jq -c -r '.[]')
 sed -E -i "s/(\"version\": \")(.*)(\")/\1$VERSION\3/" package.json
 npm install
 
-# if [[ "$VERSION" == *"-rc."* ]];
-# then
-    # npm publish --tag next # TODO this must be set back!
-# else
-    # npm publish # TODO this must be set back!
-# fi
+if [[ "$VERSION" == *"-rc."* ]];
+then
+    npm publish --tag next
+else
+    npm publish
+fi
 
 # TODO loop through checking for the status instead of sleeping
 echo -e "sleeping for 30 seconds to ensure azle@$VERSION is fully registered on npm"
@@ -43,3 +43,13 @@ git push origin $GITHUB_HEAD_REF
 
 git tag $VERSION
 git push origin $VERSION
+
+dfx start --background
+cd examples/hello_world && dfx deploy
+
+if [[ "$VERSION" == *"-rc."* ]];
+then
+    gh release create "$VERSION" "examples/hello_world/.azle/azle_${VERSION}_image" -t "$VERSION" --prerelease
+else
+    gh release create "$VERSION" "examples/hello_world/.azle/azle_${VERSION}_image" -t "$VERSION"
+fi
