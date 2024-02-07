@@ -82,7 +82,7 @@ async function azle() {
                 console.log('process.env.AZLE_USE_DOCKERFILE is being used'); // TODO remove this after testing it in CI
 
                 execSync(
-                    `docker image inspect azle_${azleVersion}_image || (docker build -f ${__dirname}/Dockerfile -t azle_${azleVersion}_image . && docker save -o .azle/azle_${azleVersion}_image azle_${azleVersion}_image)`,
+                    `docker image inspect azle_${azleVersion}_image || (docker build -f ${__dirname}/Dockerfile -t azle_${azleVersion}_image ${__dirname} && docker save -o .azle/azle_${azleVersion}_image azle_${azleVersion}_image)`,
                     {
                         stdio: stdioType
                     }

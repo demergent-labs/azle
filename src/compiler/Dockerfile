@@ -21,3 +21,17 @@ RUN cargo install --git https://github.com/wasm-forge/wasi2ic --rev 806c3558aad2
 RUN git clone https://github.com/demergent-labs/wasmedge-quickjs && cd wasmedge-quickjs && git checkout ce02a5969befebfe47b1bfe3231c367afa34188b
 
 RUN mkdir /global_target_dir
+
+# The following is to pre-compile as many dependencies as possible for Azle projects
+# We simply copy over the current Rust setup and do a cargo build
+COPY rust/ /azle_rust_dependencies
+
+RUN touch /azle_rust_dependencies/canister/src/main.js
+RUN touch /azle_rust_dependencies/canister/src/candid.did
+RUN mkdir /azle_rust_dependencies/canister/src/assets
+RUN echo "{\"canister_methods\":{\"queries\":[],\"updates\":[],\"callbacks\":{}},\"env_vars\":[],\"assets\":[]}" > /azle_rust_dependencies/canister/src/compiler_info.json
+RUN echo "[workspace]\nmembers = [\"canister\"]\n\n[profile.release]\nopt-level = 'z'" > /azle_rust_dependencies/Cargo.toml
+
+WORKDIR /azle_rust_dependencies
+
+RUN AZLE_SKIP_COMPILER_INFO=true CARGO_TARGET_DIR=/global_target_dir cargo build --target wasm32-wasi --manifest-path canister/Cargo.toml --release

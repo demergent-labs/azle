@@ -219,11 +219,6 @@ jobs:
                   node-version: 18
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               run: DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              uses: actions/cache@v3
-              with:
-                  path: ~/.config/azle
-                  key: azle-cargo-${{ hashFiles('src/compiler/generate_cargo_toml_files.ts') }}
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && runner.os == 'macOS' }}
               shell: bash -l {0}
               # The DNS server stuff is because of this: https://github.com/actions/runner-images/issues/6383
