@@ -23,19 +23,20 @@ fi
 # TODO loop through checking for the status instead of sleeping
 echo -e "sleeping for 30 seconds to ensure azle@$VERSION is fully registered on npm"
 
-sleep 30
+# TODO put this all back of course
+# sleep 30
 
-for directory in ${directories[@]}
-do
-    cd $directory
+# for directory in ${directories[@]}
+# do
+#     cd $directory
 
-    sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
-    npm install
+#     sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
+#     npm install
 
-    rm -rf node_modules
+#     rm -rf node_modules
 
-    cd $root_dir
-done
+#     cd $root_dir
+# done
 
 git add --all
 git commit -am "azle-bot automated release $VERSION"
