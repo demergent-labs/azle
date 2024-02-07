@@ -84,6 +84,9 @@ async function azle() {
                 { stdio: stdioType }
             );
 
+            execSync(`ls -a`, { stdio: stdioType });
+            execSync(`cd .azle && ls -a`, { stdio: stdioType });
+
             console.log('process.cwd()', process.cwd());
             console.log('__dirname', __dirname);
             console.log(
