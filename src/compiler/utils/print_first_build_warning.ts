@@ -24,12 +24,6 @@ function isInitialCompile(azleVersion: string, stdio: IOType): boolean {
 
         return false;
     } catch (error: any) {
-        const errorMessage = error.stderr.toString();
-
-        if (errorMessage.includes('No such image')) {
-            return true;
-        }
-
-        throw error;
+        return true;
     }
 }
