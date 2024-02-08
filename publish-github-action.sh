@@ -47,6 +47,8 @@ git push origin $GITHUB_HEAD_REF
 git tag $VERSION
 git push origin $VERSION
 
+npm install
+npm link
 dfx start --background
 cd examples/hello_world
 npm install
