@@ -26,17 +26,19 @@ echo -e "sleeping for 30 seconds to ensure azle@$VERSION is fully registered on 
 # TODO put this all back of course
 # sleep 30
 
-# for directory in ${directories[@]}
-# do
-#     cd $directory
+for directory in ${directories[@]}
+do
+    cd $directory
 
-#     sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
-#     npm install
+    sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
+    npm install
 
-#     rm -rf node_modules
+    rm -rf node_modules
 
-#     cd $root_dir
-# done
+    cd $root_dir
+
+    break
+done
 
 git add --all
 git commit -am "azle-bot automated release $VERSION"
@@ -46,7 +48,10 @@ git tag $VERSION
 git push origin $VERSION
 
 dfx start --background
-cd examples/hello_world && dfx deploy
+cd examples/hello_world
+npm install
+npm link azle
+AZLE_USE_DOCKERFILE=true dfx deploy
 
 if [[ "$VERSION" == *"-rc."* ]];
 then
