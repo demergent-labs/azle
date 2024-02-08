@@ -54,10 +54,11 @@ cd examples/hello_world
 npm install
 npm link azle
 AZLE_USE_DOCKERFILE=true dfx deploy
+gzip -9 ".azle/azle_${VERSION}_image"
 
 if [[ "$VERSION" == *"-rc."* ]];
 then
-    gh release create "$VERSION" "examples/hello_world/.azle/azle_${VERSION}_image" -t "$VERSION" --prerelease
+    gh release create "$VERSION" ".azle/azle_${VERSION}_image.gz" -t "$VERSION" --prerelease
 else
-    gh release create "$VERSION" "examples/hello_world/.azle/azle_${VERSION}_image" -t "$VERSION"
+    gh release create "$VERSION" ".azle/azle_${VERSION}_image.gz" -t "$VERSION"
 fi
