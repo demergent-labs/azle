@@ -37,13 +37,6 @@ do
     cd $root_dir
 done
 
-git add --all
-git commit -am "azle-bot automated release $VERSION"
-git push origin $GITHUB_HEAD_REF
-
-git tag $VERSION
-git push origin $VERSION
-
 npm install
 npm link
 dfx start --background
@@ -52,6 +45,13 @@ npm install
 npm link azle
 AZLE_USE_DOCKERFILE=true dfx deploy
 gzip -9 ".azle/azle_${VERSION}_image"
+
+git add --all
+git commit -am "azle-bot automated release $VERSION"
+git push origin $GITHUB_HEAD_REF
+
+git tag $VERSION
+git push origin $VERSION
 
 if [[ "$VERSION" == *"-rc."* ]];
 then
