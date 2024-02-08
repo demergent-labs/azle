@@ -4,10 +4,6 @@ import { wallets } from './wallets';
 import { impureSetup, whileRunningBitcoinDaemon } from './setup';
 import { bitcoinCli } from './bitcoin_cli';
 
-const BLOCK_REWARD = 5_000_000_000n;
-const BLOCKS_MINED_IN_SETUP = 101n;
-const EXPECTED_BALANCE_AFTER_SETUP = BLOCK_REWARD * BLOCKS_MINED_IN_SETUP;
-
 const bitcoinCanister = createActor(getCanisterId('bitcoin'), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
@@ -42,8 +38,12 @@ function testCanisterFunctionality() {
                     wallets.alice.p2wpkh
                 );
 
+                const blockReward = 5_000_000_000n;
+                const blocksMinedInSetup = 101n;
+                const expectedBalance = blockReward * blocksMinedInSetup;
+
                 return {
-                    Ok: result === EXPECTED_BALANCE_AFTER_SETUP
+                    Ok: result === expectedBalance
                 };
             }
         },

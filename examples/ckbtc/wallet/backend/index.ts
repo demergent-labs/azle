@@ -32,7 +32,7 @@ export default Canister({
     getBalance: update([], nat64, async () => {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
-                `icp://${(ckBTC as any).principal.toText()}/icrc1_balance_of`,
+                `icp://${getCkBtcPrincipal()}/icrc1_balance_of`,
                 {
                     body: serialize({
                         candidPath: `/candid/icrc.did`,
@@ -68,10 +68,10 @@ export default Canister({
     updateBalance: update([], UpdateBalanceResult, async () => {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
-                `icp://${(minter as any).principal.toText()}/update_balance`,
+                `icp://${getMinterPrincipal()}/update_balance`,
                 {
                     body: serialize({
-                        candidPath: `/src/minter.did`,
+                        candidPath: `/minter/minter.did`,
                         args: [
                             {
                                 owner: [ic.id()],
@@ -104,10 +104,10 @@ export default Canister({
     getDepositAddress: update([], text, async () => {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
-                `icp://${(minter as any).principal.toText()}/get_btc_address`,
+                `icp://${getMinterPrincipal()}/get_btc_address`,
                 {
                     body: serialize({
-                        candidPath: `/src/minter.did`,
+                        candidPath: `/minter/minter.did`,
                         args: [
                             {
                                 owner: [ic.id()],
@@ -143,7 +143,7 @@ export default Canister({
         async (to, amount) => {
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 const response = await fetch(
-                    `icp://${(ckBTC as any).principal.toText()}/icrc1_transfer`,
+                    `icp://${getCkBtcPrincipal()}/icrc1_transfer`,
                     {
                         body: serialize({
                             candidPath: `/candid/icrc.did`,
@@ -225,4 +225,20 @@ function setupCanisters() {
                 ic.trap('process.env.MINTER_PRINCIPAL is undefined')
         )
     );
+}
+
+function getCkBtcPrincipal(): string {
+    if (process.env.CK_BTC_PRINCIPAL !== undefined) {
+        return process.env.CK_BTC_PRINCIPAL;
+    }
+
+    throw new Error(`process.env.CK_BTC_PRINCIPAL is not defined`);
+}
+
+function getMinterPrincipal(): string {
+    if (process.env.MINTER_PRINCIPAL !== undefined) {
+        return process.env.MINTER_PRINCIPAL;
+    }
+
+    throw new Error(`process.env.MINTER_PRINCIPAL is not defined`);
 }
