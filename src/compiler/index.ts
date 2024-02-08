@@ -9,7 +9,7 @@ import {
     time,
     unwrap
 } from './utils';
-import { dim, green, red } from './utils/colors';
+import { dim, green, red, yellow } from './utils/colors';
 import { version as azleVersion } from '../../package.json';
 import { compileTypeScriptToJavaScript } from './compile_typescript_code';
 import { Err, ok } from './utils/result';
@@ -26,6 +26,7 @@ import { generateCandidAndCanisterMethods } from './generate_candid_and_canister
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 import { copySync } from 'fs-extra';
 import { execSync } from 'child_process';
+import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 
 azle();
 
@@ -38,6 +39,13 @@ async function azle() {
     const stdioType = getStdIoType();
 
     if (process.argv[2] === 'clean') {
+        rmSync(GLOBAL_AZLE_CONFIG_DIR, {
+            recursive: true,
+            force: true
+        });
+
+        console.info(`~/.config/azle directory deleted`);
+
         rmSync('.azle', {
             recursive: true,
             force: true
@@ -76,24 +84,70 @@ async function azle() {
             const canisterConfig = unwrap(getCanisterConfig(canisterName));
             const candidPath = canisterConfig.candid;
 
+            mkdirSync(GLOBAL_AZLE_CONFIG_DIR, { recursive: true });
             mkdirSync('.azle', { recursive: true });
 
             if (process.env.AZLE_USE_DOCKERFILE === 'true') {
-                console.log('process.env.AZLE_USE_DOCKERFILE is being used'); // TODO remove this after testing it in CI
+                try {
+                    execSync(`docker image inspect azle_${azleVersion}_image`, {
+                        stdio: stdioType
+                    });
+                } catch (error) {
+                    console.info(yellow(`\nBuilding image...\n`));
 
-                execSync(
-                    `docker image inspect azle_${azleVersion}_image || (docker build -f ${__dirname}/Dockerfile -t azle_${azleVersion}_image ${__dirname} && docker save -o .azle/azle_${azleVersion}_image azle_${azleVersion}_image)`,
-                    {
-                        stdio: stdioType
-                    }
-                );
+                    execSync(
+                        `docker build -f ${__dirname}/Dockerfile -t azle_${azleVersion}_image ${__dirname}`,
+                        {
+                            stdio: 'inherit'
+                        }
+                    );
+
+                    console.info(yellow(`\nSaving image...`));
+
+                    execSync(
+                        `docker save -o ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image azle_${azleVersion}_image`,
+                        {
+                            stdio: stdioType
+                        }
+                    );
+
+                    console.info(yellow(`Compiling...`));
+                }
             } else {
-                execSync(
-                    `docker image inspect azle_${azleVersion}_image || (curl -L https://github.com/demergent-labs/azle/releases/download/${azleVersion}/azle_${azleVersion}_image.gz -o .azle/azle_${azleVersion}_image.gz && gzip -d .azle/azle_${azleVersion}_image.gz && docker load -i .azle/azle_${azleVersion}_image)`,
-                    {
+                try {
+                    execSync(`docker image inspect azle_${azleVersion}_image`, {
                         stdio: stdioType
-                    }
-                );
+                    });
+                } catch (error) {
+                    console.info(yellow(`\nDownloading image...\n`));
+
+                    execSync(
+                        `curl -L https://github.com/demergent-labs/azle/releases/download/${azleVersion}/azle_${azleVersion}_image.gz -o ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.gz`,
+                        {
+                            stdio: 'inherit'
+                        }
+                    );
+
+                    console.info(yellow(`\nDecompressing image...`));
+
+                    execSync(
+                        `gzip -d -f ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.gz`,
+                        {
+                            stdio: stdioType
+                        }
+                    );
+
+                    console.info(yellow(`Loading image...`));
+
+                    execSync(
+                        `docker load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image`,
+                        {
+                            stdio: stdioType
+                        }
+                    );
+
+                    console.info(yellow(`Compiling...`));
+                }
             }
 
             execSync(
@@ -106,7 +160,7 @@ async function azle() {
             });
 
             execSync(
-                `docker cp azle_${azleVersion}_container:/wasmedge-quickjs .azle/wasmedge-quickjs`,
+                `docker cp azle_${azleVersion}_container:/wasmedge-quickjs ${GLOBAL_AZLE_CONFIG_DIR}/wasmedge-quickjs_${azleVersion}`,
                 { stdio: stdioType }
             );
 

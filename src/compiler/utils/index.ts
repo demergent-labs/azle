@@ -10,5 +10,9 @@ export function getStdIoType() {
 }
 
 export function isVerboseMode(): boolean {
-    return process.argv.includes('--verbose') || process.argv.includes('-v');
+    return (
+        process.argv.includes('--verbose') ||
+        process.argv.includes('-v') ||
+        process.env.AZLE_VERBOSE === 'true'
+    );
 }

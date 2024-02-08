@@ -37,6 +37,15 @@ do
     cd $root_dir
 done
 
+npm install
+npm link
+dfx start --background
+cd examples/hello_world
+npm install
+npm link azle
+AZLE_USE_DOCKERFILE=true dfx deploy
+gzip -9 "~/.config/azle/azle_${VERSION}_image"
+
 git add --all
 git commit -am "azle-bot automated release $VERSION"
 git push origin $GITHUB_HEAD_REF
@@ -44,12 +53,9 @@ git push origin $GITHUB_HEAD_REF
 git tag $VERSION
 git push origin $VERSION
 
-dfx start --background
-cd examples/hello_world && dfx deploy
-
 if [[ "$VERSION" == *"-rc."* ]];
 then
-    gh release create "$VERSION" "examples/hello_world/.azle/azle_${VERSION}_image" -t "$VERSION" --prerelease
+    gh release create "$VERSION" "~/.config/azle/azle_${VERSION}_image.gz" -t "$VERSION" --prerelease
 else
-    gh release create "$VERSION" "examples/hello_world/.azle/azle_${VERSION}_image" -t "$VERSION"
+    gh release create "$VERSION" "~/.config/azle/azle_${VERSION}_image.gz" -t "$VERSION"
 fi

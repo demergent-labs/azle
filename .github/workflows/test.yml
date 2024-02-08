@@ -30,6 +30,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         outputs:
             # These outputs are used to pass information along to the next job
             should_run_tests: ${{ steps.should_run_tests.outputs.should_run_tests }} # We only want the next job to run the tests once we have finished deploying to npm and GitHub
