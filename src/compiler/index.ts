@@ -53,19 +53,19 @@ async function azle() {
 
         console.info(`.azle directory deleted`);
 
-        execSync(`docker stop azle_${azleVersion}_container || true`, {
+        execSync(`podman stop azle_${azleVersion}_container || true`, {
             stdio: stdioType
         });
 
         console.info(`azle_${azleVersion}_container stopped`);
 
-        execSync(`docker rm azle_${azleVersion}_container || true`, {
+        execSync(`podman rm azle_${azleVersion}_container || true`, {
             stdio: stdioType
         });
 
         console.info(`azle_${azleVersion}_container removed`);
 
-        execSync(`docker image rm azle_${azleVersion}_image || true`, {
+        execSync(`podman image rm azle_${azleVersion}_image || true`, {
             stdio: stdioType
         });
 
@@ -89,7 +89,7 @@ async function azle() {
 
             if (process.env.AZLE_USE_DOCKERFILE === 'true') {
                 try {
-                    execSync(`docker image inspect azle_${azleVersion}_image`, {
+                    execSync(`podman image inspect azle_${azleVersion}_image`, {
                         stdio: stdioType
                     });
 
@@ -106,7 +106,7 @@ async function azle() {
                     console.info(yellow(`\nBuilding image...\n`));
 
                     execSync(
-                        `docker build -f ${__dirname}/Dockerfile -t azle_${azleVersion}_image ${__dirname}`,
+                        `podman build -f ${__dirname}/Dockerfile -t azle_${azleVersion}_image ${__dirname}`,
                         {
                             stdio: 'inherit'
                         }
@@ -115,7 +115,7 @@ async function azle() {
                     console.info(yellow(`\nSaving image...`));
 
                     execSync(
-                        `docker save -o ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image azle_${azleVersion}_image`,
+                        `podman save -o ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image azle_${azleVersion}_image`,
                         {
                             stdio: stdioType
                         }
@@ -125,7 +125,7 @@ async function azle() {
                 }
             } else {
                 try {
-                    execSync(`docker image inspect azle_${azleVersion}_image`, {
+                    execSync(`podman image inspect azle_${azleVersion}_image`, {
                         stdio: stdioType
                     });
                 } catch (error) {
@@ -150,7 +150,7 @@ async function azle() {
                     console.info(yellow(`Loading image...`));
 
                     execSync(
-                        `docker load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image`,
+                        `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image`,
                         {
                             stdio: stdioType
                         }
@@ -161,16 +161,16 @@ async function azle() {
             }
 
             execSync(
-                `docker inspect azle_${azleVersion}_container || docker create --name azle_${azleVersion}_container azle_${azleVersion}_image tail -f /dev/null`,
+                `podman inspect azle_${azleVersion}_container || podman create --name azle_${azleVersion}_container azle_${azleVersion}_image tail -f /dev/null`,
                 { stdio: stdioType }
             );
 
-            execSync(`docker start azle_${azleVersion}_container`, {
+            execSync(`podman start azle_${azleVersion}_container`, {
                 stdio: stdioType
             });
 
             execSync(
-                `docker cp azle_${azleVersion}_container:/wasmedge-quickjs ${GLOBAL_AZLE_CONFIG_DIR}/wasmedge-quickjs_${azleVersion}`,
+                `podman cp azle_${azleVersion}_container:/wasmedge-quickjs ${GLOBAL_AZLE_CONFIG_DIR}/wasmedge-quickjs_${azleVersion}`,
                 { stdio: stdioType }
             );
 

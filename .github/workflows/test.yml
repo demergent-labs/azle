@@ -60,6 +60,8 @@ jobs:
               run: git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
             - if: contains(github.head_ref, 'release--')
               run: DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+            - if: contains(github.head_ref, 'release--')
+              run: sudo apt-get install -y podman
             - id: example_directories
               # TODO to improve this further we might be able to create an environment variable that grabs the example directories with a glob
               # TODO we want to be able to easily include and exclude examples though
@@ -222,6 +224,8 @@ jobs:
                   node-version: 18
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               run: DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              run: sudo apt-get install -y podman
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && runner.os == 'macOS' }}
               shell: bash -l {0}
               # The DNS server stuff is because of this: https://github.com/actions/runner-images/issues/6383

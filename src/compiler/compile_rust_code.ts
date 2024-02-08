@@ -6,38 +6,38 @@ export function compileRustCode(
     stdio: IOType
 ) {
     execSync(
-        `docker exec azle_${azleVersion}_container rm -rf /.azle/${canisterName}`,
+        `podman exec azle_${azleVersion}_container rm -rf /.azle/${canisterName}`,
         { stdio }
     );
 
-    execSync(`docker exec azle_${azleVersion}_container mkdir -p /.azle`, {
+    execSync(`podman exec azle_${azleVersion}_container mkdir -p /.azle`, {
         stdio
     });
 
     execSync(
-        `docker exec azle_${azleVersion}_container mkdir -p /global_target_dir`,
+        `podman exec azle_${azleVersion}_container mkdir -p /global_target_dir`,
         {
             stdio
         }
     );
 
     execSync(
-        `docker cp .azle/${canisterName} azle_${azleVersion}_container:/.azle`,
+        `podman cp .azle/${canisterName} azle_${azleVersion}_container:/.azle`,
         { stdio }
     );
 
     execSync(
-        `docker exec -w /.azle/${canisterName} azle_${azleVersion}_container env CARGO_TARGET_DIR=/global_target_dir cargo build --target wasm32-wasi --manifest-path canister/Cargo.toml --release`,
+        `podman exec -w /.azle/${canisterName} azle_${azleVersion}_container env CARGO_TARGET_DIR=/global_target_dir cargo build --target wasm32-wasi --manifest-path canister/Cargo.toml --release`,
         { stdio }
     );
 
     execSync(
-        `docker exec -w /.azle/${canisterName} azle_${azleVersion}_container wasi2ic /global_target_dir/wasm32-wasi/release/canister.wasm /global_target_dir/wasm32-wasi/release/canister.wasm`,
+        `podman exec -w /.azle/${canisterName} azle_${azleVersion}_container wasi2ic /global_target_dir/wasm32-wasi/release/canister.wasm /global_target_dir/wasm32-wasi/release/canister.wasm`,
         { stdio }
     );
 
     execSync(
-        `docker cp azle_${azleVersion}_container:/global_target_dir/wasm32-wasi/release/canister.wasm .azle/${canisterName}/${canisterName}.wasm`,
+        `podman cp azle_${azleVersion}_container:/global_target_dir/wasm32-wasi/release/canister.wasm .azle/${canisterName}/${canisterName}.wasm`,
         { stdio }
     );
 }
