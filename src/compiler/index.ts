@@ -92,6 +92,16 @@ async function azle() {
                     execSync(`docker image inspect azle_${azleVersion}_image`, {
                         stdio: stdioType
                     });
+
+                    if (
+                        !existsSync(
+                            `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image`
+                        )
+                    ) {
+                        throw new Error(
+                            `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image does not exist`
+                        );
+                    }
                 } catch (error) {
                     console.info(yellow(`\nBuilding image...\n`));
 
