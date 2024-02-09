@@ -25,7 +25,7 @@ import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 import { copySync } from 'fs-extra';
-import { execSync } from 'child_process';
+import { execSync, IOType } from 'child_process';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 
 azle();
@@ -87,20 +87,42 @@ async function azle() {
             mkdirSync(GLOBAL_AZLE_CONFIG_DIR, { recursive: true });
             mkdirSync('.azle', { recursive: true });
 
+            const imageHasBeenLoaded = hasImageBeenLoaded(stdioType);
+
             if (process.env.AZLE_USE_DOCKERFILE === 'true') {
                 try {
-                    execSync(`podman image inspect azle_${azleVersion}_image`, {
-                        stdio: stdioType
-                    });
+                    if (!imageHasBeenLoaded) {
+                        if (
+                            existsSync(
+                                `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar`
+                            )
+                        ) {
+                            console.info(yellow(`\nLoading image...\n`));
 
-                    if (
-                        !existsSync(
-                            `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar`
-                        )
-                    ) {
-                        throw new Error(
-                            `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar does not exist`
-                        );
+                            execSync(
+                                `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar`,
+                                {
+                                    stdio: 'inherit'
+                                }
+                            );
+                        } else if (
+                            existsSync(
+                                `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz`
+                            )
+                        ) {
+                            console.info(yellow(`\nLoading image...\n`));
+
+                            execSync(
+                                `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz`,
+                                {
+                                    stdio: 'inherit'
+                                }
+                            );
+                        } else {
+                            throw new Error(
+                                `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar or ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz does not exist`
+                            );
+                        }
                     }
                 } catch (error) {
                     console.info(yellow(`\nBuilding image...\n`));
@@ -125,18 +147,38 @@ async function azle() {
                 }
             } else {
                 try {
-                    execSync(`podman image inspect azle_${azleVersion}_image`, {
-                        stdio: stdioType
-                    });
+                    if (!imageHasBeenLoaded) {
+                        if (
+                            existsSync(
+                                `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar`
+                            )
+                        ) {
+                            console.info(yellow(`\nLoading image...\n`));
 
-                    if (
-                        !existsSync(
-                            `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar`
-                        )
-                    ) {
-                        throw new Error(
-                            `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar does not exist`
-                        );
+                            execSync(
+                                `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar`,
+                                {
+                                    stdio: 'inherit'
+                                }
+                            );
+                        } else if (
+                            existsSync(
+                                `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz`
+                            )
+                        ) {
+                            console.info(yellow(`\nLoading image...\n`));
+
+                            execSync(
+                                `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz`,
+                                {
+                                    stdio: 'inherit'
+                                }
+                            );
+                        } else {
+                            throw new Error(
+                                `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar or ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz does not exist`
+                            );
+                        }
                     }
                 } catch (error) {
                     console.info(yellow(`\nDownloading image...\n`));
@@ -349,4 +391,16 @@ function getEnvVars(canisterConfig: JSCanisterConfig): [string, string][] {
     return (canisterConfig.env ?? []).map((envVarName) => {
         return [envVarName, process.env[envVarName] ?? ''];
     });
+}
+
+function hasImageBeenLoaded(stdioType: IOType): boolean {
+    try {
+        execSync(`podman image inspect azle_${azleVersion}_image`, {
+            stdio: stdioType
+        });
+
+        return true;
+    } catch (error) {
+        return false;
+    }
 }

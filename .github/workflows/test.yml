@@ -225,6 +225,11 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               run: DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              uses: actions/cache@v3
+              with:
+                  path: ~/.config/azle
+                  key: config-azle-${{ hashFiles('src/compiler/Dockerfile') }}
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               run: sudo apt-get install -y podman
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && runner.os == 'macOS' }}
               shell: bash -l {0}
