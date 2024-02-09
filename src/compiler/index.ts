@@ -112,16 +112,16 @@ async function azle() {
                         }
                     );
 
-                    console.info(yellow(`\nSaving image...`));
+                    console.info(yellow(`\nSaving image...\n`));
 
                     execSync(
                         `podman save -o ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image azle_${azleVersion}_image`,
                         {
-                            stdio: stdioType
+                            stdio: 'inherit'
                         }
                     );
 
-                    console.info(yellow(`Compiling...`));
+                    console.info(yellow(`\nCompiling...`));
                 }
             } else {
                 try {
@@ -138,25 +138,16 @@ async function azle() {
                         }
                     );
 
-                    console.info(yellow(`\nDecompressing image...`));
+                    console.info(yellow(`\nLoading image...\n`));
 
                     execSync(
-                        `gzip -d -f ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.gz`,
+                        `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.gz`,
                         {
-                            stdio: stdioType
+                            stdio: 'inherit'
                         }
                     );
 
-                    console.info(yellow(`Loading image...`));
-
-                    execSync(
-                        `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image`,
-                        {
-                            stdio: stdioType
-                        }
-                    );
-
-                    console.info(yellow(`Compiling...`));
+                    console.info(yellow(`\nCompiling...`));
                 }
             }
 
