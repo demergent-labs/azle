@@ -231,7 +231,7 @@ jobs:
                   # path: $HOME/.config/azle
                   key: config-azle-${{ hashFiles('src/compiler/Dockerfile') }}
             - name: List contents of .config
-              run: ls -la $HOME/.config
+              run: ls -la $HOME/.config/azle
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               run: sudo apt-get install -y podman
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && runner.os == 'macOS' }}
@@ -277,7 +277,7 @@ jobs:
               working-directory: ${{ matrix.example_directories }}
               run: $GITHUB_WORKSPACE/node_modules/.bin/tsc --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs
             - name: List contents of .config
-              run: ls -la $HOME/.config
+              run: ls -la $HOME/.config/azle
 
     check-basic-integration-tests-success:
         needs: basic-integration-tests
