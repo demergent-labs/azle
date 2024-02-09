@@ -227,7 +227,8 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/cache@v3
               with:
-                  path: $HOME/.config/azle
+                  path: /home/root/.config/azle
+                  # path: $HOME/.config/azle
                   key: config-azle-${{ hashFiles('src/compiler/Dockerfile') }}
             - name: List contents of .config
               run: ls -la $HOME/.config
