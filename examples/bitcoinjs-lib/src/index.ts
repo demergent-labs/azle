@@ -30,7 +30,6 @@ export default Server(() => {
         const keyPair = ECPair.fromWIF(
             'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
         );
-        keyPair.toWIF();
         res.send(keyPair.privateKey?.toString('hex'));
     });
 
@@ -51,7 +50,6 @@ export default Server(() => {
             'L2uPYXe17xSTqbCjZvL2DsyXPCbXspvcu5mHLDYUgzdUbZGSKrSr'
         );
         const psbt = new bitcoin.Psbt();
-        console.log('about to add input');
         psbt.addInput({
             // if hash is string, txid, if hash is Buffer, is reversed compared to txid
             hash: '7d067b4a697a09d2c3cff7d4d9506c9955e93bff41bf82d439da7d030382bc3e',
@@ -106,6 +104,20 @@ export default Server(() => {
         const hash = bitcoin.crypto.sha256(message);
         const signature = keyPair.sign(hash);
         res.send(keyPair.verify(hash, signature));
+    });
+
+    app.post('/fail-to-verify-bitcoin-message', (req, res) => {
+        const keyPair = ECPair.fromWIF(
+            'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
+        );
+        const wrongKeyPair = ECPair.fromWIF(
+            'L2uPYXe17xSTqbCjZvL2DsyXPCbXspvcu5mHLDYUgzdUbZGSKrSr'
+        );
+
+        const message = Buffer.from('This is an example of a signed message');
+        const hash = bitcoin.crypto.sha256(message);
+        const signature = keyPair.sign(hash);
+        res.send(wrongKeyPair.verify(hash, signature));
     });
 
     return app.listen();

@@ -12,12 +12,12 @@ export function getTests(canisterId: string): Test[] {
             test: async () => {
                 try {
                     const response = await fetch(`${origin}/get-address`);
-                    const responseText = await response.json();
+                    const responseText = await response.text();
 
                     return {
                         Ok:
-                            responseText.hash ===
-                            'f9c1437adefc936cea1e20109a5c56ad51a13de6'
+                            responseText ===
+                            '1PmamxRspvjCV7vDqMpzvKf92epy1utZVj'
                     };
                 } catch (error: any) {
                     return {
@@ -31,14 +31,12 @@ export function getTests(canisterId: string): Test[] {
             test: async () => {
                 try {
                     const response = await fetch(`${origin}/get-public-key`);
-                    const responseText = await response.json();
+                    const publicKey = await response.text();
 
                     return {
                         Ok:
-                            responseText.x ===
-                                'fad62848f1a6cde4c4d9453dadea714cbd59f1282087853de8b0c6072bec27e7' &&
-                            responseText.y ===
-                                'c6d9119eb169b44403e83b5e87f98c72b01c2d4642006b1546b0040aa4e0554f'
+                            publicKey ===
+                            '03fad62848f1a6cde4c4d9453dadea714cbd59f1282087853de8b0c6072bec27e7'
                     };
                 } catch (error: any) {
                     return {
@@ -52,11 +50,11 @@ export function getTests(canisterId: string): Test[] {
             test: async () => {
                 try {
                     const response = await fetch(`${origin}/get-private-key`);
-                    const responseText = await response.json();
+                    const responseText = await response.text();
 
                     return {
                         Ok:
-                            responseText.bn ===
+                            responseText ===
                             'b221d9dbb083a7f33428d7c2a3c3198ae925614d70210e28716ccaa7cd4ddb79'
                     };
                 } catch (error: any) {
@@ -92,14 +90,15 @@ export function getTests(canisterId: string): Test[] {
             test: async () => {
                 try {
                     const response = await fetch(
-                        `${origin}/create-transaction`
+                        `${origin}/create-transaction`,
+                        { method: 'POST' }
                     );
-                    const responseText = await response.json();
+                    const transaction = await response.text();
 
                     return {
                         Ok:
-                            responseText.hash ===
-                            'e6e948df3bc1b826368fa76092d621ef67aaf4f3404b16ae85b9c61eb1a210dc'
+                            transaction ===
+                            '02000000018689302ea03ef5dd56fb7940a867f9240fa811eddeb0fa4c87ad9ff3728f5e110000000000ffffffff01983a0000000000001976a914ad618cf4333b3b248f9744e8e81db2964d0ae39788ac00000000'
                     };
                 } catch (error: any) {
                     return {
@@ -142,6 +141,28 @@ export function getTests(canisterId: string): Test[] {
 
                     return {
                         Ok: responseText === true
+                    };
+                } catch (error: any) {
+                    return {
+                        Err: error
+                    };
+                }
+            }
+        },
+        {
+            name: '/fail-to-verify-bitcoin-message',
+            test: async () => {
+                try {
+                    const response = await fetch(
+                        `${origin}/fail-to-verify-bitcoin-message`,
+                        {
+                            method: 'POST'
+                        }
+                    );
+                    const responseText = await response.json();
+
+                    return {
+                        Ok: responseText === false
                     };
                 } catch (error: any) {
                     return {

@@ -7,23 +7,23 @@ export default Server(() => {
 
     app.get('/get-address', (req, res) => {
         const privateKey = new PrivateKey(
-            'b221d9dbb083a7f33428d7c2a3c3198ae925614d70210e28716ccaa7cd4ddb79'
+            'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
         );
-        res.send(privateKey.toAddress());
+        res.send(privateKey.toAddress().toString());
     });
 
     app.get('/get-public-key', (req, res) => {
         const privateKey = new PrivateKey(
-            'b221d9dbb083a7f33428d7c2a3c3198ae925614d70210e28716ccaa7cd4ddb79'
+            'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
         );
-        res.send(privateKey.toPublicKey());
+        res.send(privateKey.toPublicKey().toString());
     });
 
     app.get('/get-private-key', (req, res) => {
         const privateKey = new PrivateKey(
-            'b221d9dbb083a7f33428d7c2a3c3198ae925614d70210e28716ccaa7cd4ddb79'
+            'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
         );
-        res.json(privateKey.toJSON());
+        res.send(privateKey.toString());
     });
 
     app.get('/get-private-key-wif', (req, res) => {
@@ -33,7 +33,7 @@ export default Server(() => {
         res.send(privateKey.toWIF());
     });
 
-    app.get('/create-transaction', (req, res) => {
+    app.post('/create-transaction', (req, res) => {
         const privateKey = new PrivateKey(
             'b221d9dbb083a7f33428d7c2a3c3198ae925614d70210e28716ccaa7cd4ddb79'
         );
@@ -49,12 +49,12 @@ export default Server(() => {
             .to('1Gokm82v6DmtwKEB8AiVhm82hyFSsEvBDK', 15000)
             .sign(privateKey);
 
-        res.send(transaction);
+        res.send(transaction.toString());
     });
 
     app.post('/sign-bitcoin-message', (req, res) => {
         const privateKey = new PrivateKey(
-            'b221d9dbb083a7f33428d7c2a3c3198ae925614d70210e28716ccaa7cd4ddb79'
+            'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
         );
         const message = new Message('This is an example of a signed message.');
         const signature = message.sign(privateKey);
@@ -64,12 +64,26 @@ export default Server(() => {
 
     app.post('/verify-bitcoin-message', (req, res) => {
         const privateKey = new PrivateKey(
-            'b221d9dbb083a7f33428d7c2a3c3198ae925614d70210e28716ccaa7cd4ddb79'
+            'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
         );
         const message = new Message('This is an example of a signed message.');
         const signature = message.sign(privateKey);
         const address = privateKey.toAddress();
-        console.log(signature);
+
+        res.send(message.verify(address, signature));
+    });
+
+    app.post('/fail-to-verify-bitcoin-message', (req, res) => {
+        const privateKey = new PrivateKey(
+            'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
+        );
+        const wrongPrivateKey = new PrivateKey(
+            'L2uPYXe17xSTqbCjZvL2DsyXPCbXspvcu5mHLDYUgzdUbZGSKrSr'
+        );
+
+        const message = new Message('This is an example of a signed message.');
+        const signature = message.sign(privateKey);
+        const address = wrongPrivateKey.toAddress();
 
         res.send(message.verify(address, signature));
     });
