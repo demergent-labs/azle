@@ -95,11 +95,11 @@ async function azle() {
 
                     if (
                         !existsSync(
-                            `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image`
+                            `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar`
                         )
                     ) {
                         throw new Error(
-                            `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image does not exist`
+                            `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar does not exist`
                         );
                     }
                 } catch (error) {
@@ -115,7 +115,7 @@ async function azle() {
                     console.info(yellow(`\nSaving image...\n`));
 
                     execSync(
-                        `podman save -o ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image azle_${azleVersion}_image`,
+                        `podman save -o ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar azle_${azleVersion}_image`,
                         {
                             stdio: 'inherit'
                         }
@@ -132,7 +132,7 @@ async function azle() {
                     console.info(yellow(`\nDownloading image...\n`));
 
                     execSync(
-                        `curl -L https://github.com/demergent-labs/azle/releases/download/${azleVersion}/azle_${azleVersion}_image.gz -o ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.gz`,
+                        `curl -L https://github.com/demergent-labs/azle/releases/download/${azleVersion}/azle_${azleVersion}_image.tar.gz -o ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz`,
                         {
                             stdio: 'inherit'
                         }
@@ -141,7 +141,7 @@ async function azle() {
                     console.info(yellow(`\nLoading image...\n`));
 
                     execSync(
-                        `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.gz`,
+                        `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz`,
                         {
                             stdio: 'inherit'
                         }
