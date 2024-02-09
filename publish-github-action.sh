@@ -44,7 +44,7 @@ cd examples/hello_world
 npm install
 npm link azle
 AZLE_USE_DOCKERFILE=true dfx deploy
-gzip -9 "~/.config/azle/azle_${VERSION}_image.tar"
+gzip -9 "$HOME/.config/azle/azle_${VERSION}_image.tar"
 
 git add --all
 git commit -am "azle-bot automated release $VERSION"
@@ -55,7 +55,7 @@ git push origin $VERSION
 
 if [[ "$VERSION" == *"-rc."* ]];
 then
-    gh release create "$VERSION" "~/.config/azle/azle_${VERSION}_image.tar.gz" -t "$VERSION" --prerelease
+    gh release create "$VERSION" "$HOME/.config/azle/azle_${VERSION}_image.tar.gz" -t "$VERSION" --prerelease
 else
-    gh release create "$VERSION" "~/.config/azle/azle_${VERSION}_image.tar.gz" -t "$VERSION"
+    gh release create "$VERSION" "$HOME/.config/azle/azle_${VERSION}_image.tar.gz" -t "$VERSION"
 fi

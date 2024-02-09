@@ -128,6 +128,16 @@ async function azle() {
                     execSync(`podman image inspect azle_${azleVersion}_image`, {
                         stdio: stdioType
                     });
+
+                    if (
+                        !existsSync(
+                            `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar`
+                        )
+                    ) {
+                        throw new Error(
+                            `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar does not exist`
+                        );
+                    }
                 } catch (error) {
                     console.info(yellow(`\nDownloading image...\n`));
 
