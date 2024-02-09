@@ -1,5 +1,3 @@
-// TODO we need to refactor this whole thing
-
 import { join } from 'path';
 import { compileRustCode } from './compile_rust_code';
 import { generateNewAzleProject } from './new_command';
