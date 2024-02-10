@@ -4,7 +4,7 @@
         "test": "ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
-        "azle": "0.20.2-rc.0",
+        "azle": "0.20.2-rc.11",
         "js-sha256": "0.9.0"
     },
     "devDependencies": {
