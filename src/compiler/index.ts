@@ -3,7 +3,7 @@ import { mkdirSync, writeFileSync } from 'fs';
 import { compileRustCodeWithCandidAndCompilerInfo } from './compile_rust_code_with_candid_and_compiler_info';
 import { getCandidAndCanisterMethods } from './get_candid_and_canister_methods';
 import { getCanisterJavaScript } from './get_canister_javascript';
-import { getNames } from './get_names';
+import { getNamesBeforeCli, getNamesAfterCli } from './get_names';
 import { handleCli } from './handle_cli';
 import { prepareDockerImage } from './prepare_docker_images';
 import { prepareRustStagingArea } from './prepare_rust_staging_area';
@@ -20,20 +20,12 @@ async function azle() {
         dockerfileHash,
         dockerContainerPrefix,
         dockerImagePrefix,
-        canisterName,
-        canisterPath,
         dockerImageName,
         dockerImagePathTar,
         dockerImagePathTarGz,
         dockerContainerName,
-        wasmedgeQuickJsPath,
-        canisterConfig,
-        candidPath,
-        compilerInfoPath,
-        envVars,
-        rustStagingCandidPath,
-        rustStagingWasmPath
-    } = getNames();
+        wasmedgeQuickJsPath
+    } = getNamesBeforeCli();
 
     const commandExecuted = handleCli(
         stdioType,
@@ -45,6 +37,17 @@ async function azle() {
     if (commandExecuted === true) {
         return;
     }
+
+    const {
+        canisterName,
+        canisterPath,
+        canisterConfig,
+        candidPath,
+        compilerInfoPath,
+        envVars,
+        rustStagingCandidPath,
+        rustStagingWasmPath
+    } = getNamesAfterCli();
 
     await time(
         `\nBuilding canister ${green(canisterName)}`,

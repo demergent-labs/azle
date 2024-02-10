@@ -11,7 +11,7 @@ import {
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { JSCanisterConfig } from './utils/types';
 
-export function getNames() {
+export function getNamesBeforeCli() {
     const stdioType = getStdIoType();
 
     const dockerfilePath = join(__dirname, 'Dockerfile');
@@ -35,6 +35,21 @@ export function getNames() {
         wasmedgeQuickJsName
     );
 
+    return {
+        stdioType,
+        dockerfileHash,
+        dockerImagePrefix,
+        dockerImageName,
+        dockerContainerPrefix,
+        dockerContainerName,
+        wasmedgeQuickJsName,
+        dockerImagePathTar,
+        dockerImagePathTarGz,
+        wasmedgeQuickJsPath
+    };
+}
+
+export function getNamesAfterCli() {
     const canisterName = unwrap(getCanisterName(process.argv));
     const canisterPath = join('.azle', canisterName);
 
@@ -60,16 +75,6 @@ export function getNames() {
     const rustStagingWasmPath = join(canisterPath, `${canisterName}.wasm`);
 
     return {
-        stdioType,
-        dockerfileHash,
-        dockerImagePrefix,
-        dockerImageName,
-        dockerContainerPrefix,
-        dockerContainerName,
-        wasmedgeQuickJsName,
-        dockerImagePathTar,
-        dockerImagePathTarGz,
-        wasmedgeQuickJsPath,
         canisterName,
         canisterPath,
         canisterConfig,
