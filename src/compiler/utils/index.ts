@@ -1,10 +1,12 @@
+import { IOType } from 'child_process';
+
 export { getCanisterConfig } from './get_canister_config';
 export { getCanisterName } from './get_canister_name';
 export { logSuccess } from './log_success';
 export { unwrap } from './result';
 export { time } from './time';
 
-export function getStdIoType() {
+export function getStdIoType(): IOType {
     return isVerboseMode() ? 'inherit' : 'pipe';
 }
 
