@@ -4,6 +4,7 @@
             "type": "custom",
             "main": "src/index.ts",
             "candid": "src/index.did",
+            "candid_gen": "http",
             "build": "npx azle ethers",
             "wasm": ".azle/ethers/ethers.wasm",
             "gzip": true

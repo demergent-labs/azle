@@ -4,6 +4,7 @@
             "type": "custom",
             "main": "src/index.ts",
             "candid": "src/index.did",
+            "candid_gen": "http",
             "build": "npx azle sqlite",
             "wasm": ".azle/sqlite/sqlite.wasm",
             "gzip": true
