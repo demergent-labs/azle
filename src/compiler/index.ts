@@ -40,8 +40,8 @@ async function azle() {
     const stdioType = getStdIoType();
 
     const dockerfileHash = getDockerfileHash();
-    const dockerImageName = `azle_image_${dockerfileHash}`;
-    const dockerContainerName = `azle_container_${dockerfileHash}`;
+    const dockerImageName = `__azle_image_${dockerfileHash}`;
+    const dockerContainerName = `__azle_container_${dockerfileHash}`;
     const wasmedgeQuickJsName = `wasmedge_quickjs_${dockerfileHash}`;
 
     const dockerImagePathTar = join(
@@ -73,7 +73,7 @@ async function azle() {
         console.info(`.azle directory deleted`);
 
         execSync(
-            `podman stop $(podman ps --filter "name=azle_container_" --format "{{.ID}}") || true`,
+            `podman stop $(podman ps --filter "name=__azle_container_" --format "{{.ID}}") || true`,
             {
                 stdio: stdioType
             }
@@ -82,7 +82,7 @@ async function azle() {
         console.info(`azle containers stopped`);
 
         execSync(
-            `podman rm $(podman ps -a --filter "name=azle_container_" --format "{{.ID}}") || true`,
+            `podman rm $(podman ps -a --filter "name=__azle_container_" --format "{{.ID}}") || true`,
             {
                 stdio: stdioType
             }
@@ -91,7 +91,7 @@ async function azle() {
         console.info(`azle containers removed`);
 
         execSync(
-            `podman image rm $(podman images --filter "reference=azle_image_" --format "{{.ID}}") || true`,
+            `podman image rm $(podman images --filter "reference=__azle_image_" --format "{{.ID}}") || true`,
             {
                 stdio: stdioType
             }
