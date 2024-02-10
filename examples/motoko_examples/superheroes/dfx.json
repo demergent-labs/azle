@@ -10,7 +10,17 @@
             "declarations": {
                 "output": "src/declarations",
                 "node_compatibility": true
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/superheroes/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "www": {
             "type": "assets",

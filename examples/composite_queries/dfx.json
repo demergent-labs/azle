@@ -21,6 +21,16 @@
                 ["src/canister1/index.did", "src/canister1.did"],
                 ["src/canister2/index.did", "src/canister2.did"],
                 ["src/canister3/index.did", "src/canister3.did"]
+            ],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/canister1/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
             ]
         },
         "canister2": {
@@ -35,7 +45,17 @@
                 "node_compatibility": true
             },
             "env": ["CANISTER3_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [["src/canister3/index.did", "src/canister3.did"]]
+            "assets": [["src/canister3/index.did", "src/canister3.did"]],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/canister2/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "canister3": {
             "type": "custom",
@@ -47,7 +67,17 @@
             "declarations": {
                 "output": "test/dfx_generated/canister3",
                 "node_compatibility": true
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/canister3/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         }
     }
 }

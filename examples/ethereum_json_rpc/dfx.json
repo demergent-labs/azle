@@ -11,7 +11,17 @@
                 "output": "test/dfx_generated/ethereum_json_rpc",
                 "node_compatibility": true
             },
-            "env": ["AZLE_TEST_FETCH"]
+            "env": ["AZLE_TEST_FETCH"],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         }
     }
 }

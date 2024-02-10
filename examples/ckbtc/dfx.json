@@ -31,7 +31,17 @@
                 "node_compatibility": true,
                 "output": "wallet/frontend/dfx_generated/wallet_backend"
             },
-            "env": ["CK_BTC_PRINCIPAL", "MINTER_PRINCIPAL"]
+            "env": ["CK_BTC_PRINCIPAL", "MINTER_PRINCIPAL"],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "wallet/backend/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "wallet_frontend": {
             "type": "assets",

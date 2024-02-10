@@ -9,7 +9,17 @@
             "gzip": true,
             "declarations": {
                 "output": "dfx_generated/azle"
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "canisters/azle/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "motoko": {
             "type": "motoko",

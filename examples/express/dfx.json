@@ -9,7 +9,17 @@
             "wasm": ".azle/express/express.wasm",
             "gzip": true,
             "assets": [["src/frontend/dist", "dist"]],
-            "build_assets": "npm run build"
+            "build_assets": "npm run build",
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/backend/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         }
     }
 }

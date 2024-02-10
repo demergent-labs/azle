@@ -12,7 +12,17 @@
                 "node_compatibility": true
             },
             "env": ["CANISTER2_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [["src/canister2/index.did", "src/canister2/index.did"]]
+            "assets": [["src/canister2/index.did", "src/canister2/index.did"]],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/canister1/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "canister2": {
             "type": "custom",
@@ -24,7 +34,17 @@
             "declarations": {
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/canister2/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         }
     }
 }

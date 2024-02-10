@@ -17,6 +17,16 @@
                     "src/recursive_canister/index.did",
                     "src/recursive_canister.did"
                 ]
+            ],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/recursion/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
             ]
         },
         "recursive_canister": {
@@ -29,7 +39,17 @@
             "declarations": {
                 "output": "test/dfx_generated/recursive_canister",
                 "node_compatibility": true
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/recursive_canister/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         }
     }
 }
