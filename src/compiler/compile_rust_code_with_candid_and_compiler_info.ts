@@ -5,7 +5,7 @@ import { compileRustCode } from './compile_rust_code';
 import { CompilerInfo } from './utils/types';
 
 export function compileRustCodeWithCandidAndCompilerInfo(
-    canisterPath: string,
+    rustStagingCandidPath: string,
     candid: string,
     compilerInfoPath: string,
     compilerInfo: CompilerInfo,
@@ -14,7 +14,7 @@ export function compileRustCodeWithCandidAndCompilerInfo(
     stdioType: IOType
 ) {
     // This is for the Rust canister to have access to the candid file
-    writeFileSync(`${canisterPath}/canister/src/candid.did`, candid);
+    writeFileSync(rustStagingCandidPath, candid);
 
     // TODO why not just write the dfx.json file here as well?
     writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));

@@ -14,7 +14,8 @@ import { JSCanisterConfig } from './utils/types';
 export function getNames() {
     const stdioType = getStdIoType();
 
-    const dockerfileHash = getDockerfileHash();
+    const dockerfilePath = join(__dirname, 'Dockerfile');
+    const dockerfileHash = getDockerfileHash(dockerfilePath);
     const dockerImagePrefix = 'azle__image__';
     const dockerImageName = `${dockerImagePrefix}${dockerfileHash}`;
     const dockerContainerPrefix = 'azle__container__';
@@ -49,6 +50,15 @@ export function getNames() {
 
     const envVars = getEnvVars(canisterConfig);
 
+    const rustStagingCandidPath = join(
+        canisterPath,
+        'canister',
+        'src',
+        'candid.did'
+    );
+
+    const rustStagingWasmPath = join(canisterPath, `${canisterName}.wasm`);
+
     return {
         stdioType,
         dockerfileHash,
@@ -65,14 +75,16 @@ export function getNames() {
         canisterConfig,
         candidPath,
         compilerInfoPath,
-        envVars
+        envVars,
+        rustStagingCandidPath,
+        rustStagingWasmPath
     };
 }
 
-function getDockerfileHash(): string {
+function getDockerfileHash(dockerfilePath: string): string {
     let hash = createHash('sha256');
 
-    const dockerfile = readFileSync(join(__dirname, 'Dockerfile'));
+    const dockerfile = readFileSync(dockerfilePath);
 
     hash.update(dockerfile);
 

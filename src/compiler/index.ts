@@ -30,7 +30,9 @@ async function azle() {
         canisterConfig,
         candidPath,
         compilerInfoPath,
-        envVars
+        envVars,
+        rustStagingCandidPath,
+        rustStagingWasmPath
     } = getNames();
 
     const commandExecuted = handleCli(
@@ -78,7 +80,9 @@ async function azle() {
                 dockerContainerName,
                 canisterName,
                 stdioType,
-                envVars
+                envVars,
+                rustStagingCandidPath,
+                rustStagingWasmPath
             );
 
             // This is for the dfx.json candid property
@@ -93,7 +97,7 @@ async function azle() {
             };
 
             compileRustCodeWithCandidAndCompilerInfo(
-                canisterPath,
+                rustStagingCandidPath,
                 candid,
                 compilerInfoPath,
                 compilerInfo,
