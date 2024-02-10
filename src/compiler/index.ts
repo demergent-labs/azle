@@ -59,6 +59,13 @@ async function azle() {
         wasmedgeQuickJsName
     );
 
+    if (process.argv[2] === 'dockerfile-hash') {
+        execSync(`echo -n "${dockerfileHash}"`, {
+            stdio: 'inherit'
+        });
+        return;
+    }
+
     if (process.argv[2] === 'clean') {
         rmSync(GLOBAL_AZLE_CONFIG_DIR, {
             recursive: true,
