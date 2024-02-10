@@ -24,9 +24,10 @@ import {
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
-import { copySync } from 'fs-extra';
+import { copySync, readFileSync } from 'fs-extra';
 import { execSync, IOType } from 'child_process';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
+import { createHash } from 'crypto';
 
 azle();
 
@@ -37,6 +38,24 @@ async function azle() {
     }
 
     const stdioType = getStdIoType();
+
+    const dockerfileHash = getDockerfileHash();
+    const dockerImageName = `azle_image_${dockerfileHash}`;
+    const dockerContainerName = `azle_container_${dockerfileHash}`;
+    const wasmedgeQuickJsName = `wasmedge_quickjs_${dockerfileHash}`;
+
+    const dockerImagePathTar = join(
+        GLOBAL_AZLE_CONFIG_DIR,
+        `${dockerImageName}.tar`
+    );
+    const dockerImagePathTarGz = join(
+        GLOBAL_AZLE_CONFIG_DIR,
+        `${dockerImageName}.tar.gz`
+    );
+    const wasmedgeQuickJsPath = join(
+        GLOBAL_AZLE_CONFIG_DIR,
+        wasmedgeQuickJsName
+    );
 
     if (process.argv[2] === 'clean') {
         rmSync(GLOBAL_AZLE_CONFIG_DIR, {
@@ -53,23 +72,32 @@ async function azle() {
 
         console.info(`.azle directory deleted`);
 
-        execSync(`podman stop azle_${azleVersion}_container || true`, {
-            stdio: stdioType
-        });
+        execSync(
+            `podman stop $(podman ps --filter "name=azle_container_" --format "{{.ID}}") || true`,
+            {
+                stdio: stdioType
+            }
+        );
 
-        console.info(`azle_${azleVersion}_container stopped`);
+        console.info(`azle containers stopped`);
 
-        execSync(`podman rm azle_${azleVersion}_container || true`, {
-            stdio: stdioType
-        });
+        execSync(
+            `podman rm $(podman ps -a --filter "name=azle_container_" --format "{{.ID}}") || true`,
+            {
+                stdio: stdioType
+            }
+        );
 
-        console.info(`azle_${azleVersion}_container removed`);
+        console.info(`azle containers removed`);
 
-        execSync(`podman image rm azle_${azleVersion}_image || true`, {
-            stdio: stdioType
-        });
+        execSync(
+            `podman image rm $(podman images --filter "reference=azle_image_" --format "{{.ID}}") || true`,
+            {
+                stdio: stdioType
+            }
+        );
 
-        console.info(`azle_${azleVersion}_image removed`);
+        console.info(`azle images removed`);
 
         return;
     }
@@ -87,40 +115,29 @@ async function azle() {
             mkdirSync(GLOBAL_AZLE_CONFIG_DIR, { recursive: true });
             mkdirSync('.azle', { recursive: true });
 
-            const imageHasBeenLoaded = hasImageBeenLoaded(stdioType);
+            const imageHasBeenLoaded = hasImageBeenLoaded(
+                dockerImageName,
+                stdioType
+            );
 
             if (process.env.AZLE_USE_DOCKERFILE === 'true') {
                 try {
                     if (!imageHasBeenLoaded) {
-                        if (
-                            existsSync(
-                                `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar`
-                            )
-                        ) {
+                        if (existsSync(dockerImagePathTar)) {
                             console.info(yellow(`\nLoading image...\n`));
 
-                            execSync(
-                                `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar`,
-                                {
-                                    stdio: 'inherit'
-                                }
-                            );
-                        } else if (
-                            existsSync(
-                                `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz`
-                            )
-                        ) {
+                            execSync(`podman load -i ${dockerImagePathTar}`, {
+                                stdio: 'inherit'
+                            });
+                        } else if (existsSync(dockerImagePathTarGz)) {
                             console.info(yellow(`\nLoading image...\n`));
 
-                            execSync(
-                                `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz`,
-                                {
-                                    stdio: 'inherit'
-                                }
-                            );
+                            execSync(`podman load -i ${dockerImagePathTarGz}`, {
+                                stdio: 'inherit'
+                            });
                         } else {
                             throw new Error(
-                                `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar or ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz does not exist`
+                                `${dockerImagePathTar} or ${dockerImagePathTarGz} does not exist`
                             );
                         }
                     }
@@ -128,7 +145,7 @@ async function azle() {
                     console.info(yellow(`\nBuilding image...\n`));
 
                     execSync(
-                        `podman build -f ${__dirname}/Dockerfile -t azle_${azleVersion}_image ${__dirname}`,
+                        `podman build -f ${__dirname}/Dockerfile -t ${dockerImageName} ${__dirname}`,
                         {
                             stdio: 'inherit'
                         }
@@ -137,7 +154,7 @@ async function azle() {
                     console.info(yellow(`\nSaving image...\n`));
 
                     execSync(
-                        `podman save -o ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar azle_${azleVersion}_image`,
+                        `podman save -o ${dockerImagePathTar} ${dockerImageName}`,
                         {
                             stdio: 'inherit'
                         }
@@ -148,35 +165,21 @@ async function azle() {
             } else {
                 try {
                     if (!imageHasBeenLoaded) {
-                        if (
-                            existsSync(
-                                `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar`
-                            )
-                        ) {
+                        if (existsSync(dockerImagePathTar)) {
                             console.info(yellow(`\nLoading image...\n`));
 
-                            execSync(
-                                `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar`,
-                                {
-                                    stdio: 'inherit'
-                                }
-                            );
-                        } else if (
-                            existsSync(
-                                `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz`
-                            )
-                        ) {
+                            execSync(`podman load -i ${dockerImagePathTar}`, {
+                                stdio: 'inherit'
+                            });
+                        } else if (existsSync(dockerImagePathTarGz)) {
                             console.info(yellow(`\nLoading image...\n`));
 
-                            execSync(
-                                `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz`,
-                                {
-                                    stdio: 'inherit'
-                                }
-                            );
+                            execSync(`podman load -i ${dockerImagePathTarGz}`, {
+                                stdio: 'inherit'
+                            });
                         } else {
                             throw new Error(
-                                `${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar or ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz does not exist`
+                                `${dockerImagePathTar} or ${dockerImagePathTarGz} does not exist`
                             );
                         }
                     }
@@ -184,7 +187,7 @@ async function azle() {
                     console.info(yellow(`\nDownloading image...\n`));
 
                     execSync(
-                        `curl -L https://github.com/demergent-labs/azle/releases/download/${azleVersion}/azle_${azleVersion}_image.tar.gz -o ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz`,
+                        `curl -L https://github.com/demergent-labs/azle/releases/download/${azleVersion}/${dockerImageName}.tar.gz -o ${dockerImagePathTarGz}`,
                         {
                             stdio: 'inherit'
                         }
@@ -192,33 +195,31 @@ async function azle() {
 
                     console.info(yellow(`\nLoading image...\n`));
 
-                    execSync(
-                        `podman load -i ${GLOBAL_AZLE_CONFIG_DIR}/azle_${azleVersion}_image.tar.gz`,
-                        {
-                            stdio: 'inherit'
-                        }
-                    );
+                    execSync(`podman load -i ${dockerImagePathTarGz}`, {
+                        stdio: 'inherit'
+                    });
 
                     console.info(yellow(`\nCompiling...`));
                 }
             }
 
             execSync(
-                `podman inspect azle_${azleVersion}_container || podman create --name azle_${azleVersion}_container azle_${azleVersion}_image tail -f /dev/null`,
+                `podman inspect ${dockerContainerName} || podman create --name ${dockerContainerName} ${dockerImageName} tail -f /dev/null`,
                 { stdio: stdioType }
             );
 
-            execSync(`podman start azle_${azleVersion}_container`, {
+            execSync(`podman start ${dockerContainerName}`, {
                 stdio: stdioType
             });
 
             execSync(
-                `podman cp azle_${azleVersion}_container:/wasmedge-quickjs ${GLOBAL_AZLE_CONFIG_DIR}/wasmedge-quickjs_${azleVersion}`,
+                `podman cp ${dockerContainerName}:/wasmedge-quickjs ${wasmedgeQuickJsPath}`,
                 { stdio: stdioType }
             );
 
             const compilationResult = compileTypeScriptToJavaScript(
-                canisterConfig.main
+                canisterConfig.main,
+                wasmedgeQuickJsPath
             );
 
             if (!ok(compilationResult)) {
@@ -302,7 +303,7 @@ async function azle() {
             // TODO why not just write the dfx.json file here as well?
             writeFileSync(compilerInfoPath0, JSON.stringify(compilerInfo0));
 
-            compileRustCode(azleVersion, canisterName, stdioType);
+            compileRustCode(dockerContainerName, canisterName, stdioType);
 
             const { candid, canisterMethods } =
                 generateCandidAndCanisterMethods(
@@ -330,7 +331,7 @@ async function azle() {
             // TODO why not just write the dfx.json file here as well?
             writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
 
-            compileRustCode(azleVersion, canisterName, stdioType);
+            compileRustCode(dockerContainerName, canisterName, stdioType);
         }
     );
 
@@ -393,9 +394,12 @@ function getEnvVars(canisterConfig: JSCanisterConfig): [string, string][] {
     });
 }
 
-function hasImageBeenLoaded(stdioType: IOType): boolean {
+function hasImageBeenLoaded(
+    dockerImageName: string,
+    stdioType: IOType
+): boolean {
     try {
-        execSync(`podman image inspect azle_${azleVersion}_image`, {
+        execSync(`podman image inspect ${dockerImageName}`, {
             stdio: stdioType
         });
 
@@ -403,4 +407,14 @@ function hasImageBeenLoaded(stdioType: IOType): boolean {
     } catch (error) {
         return false;
     }
+}
+
+function getDockerfileHash(): string {
+    let hash = createHash('sha256');
+
+    const dockerfile = readFileSync(join(__dirname, 'Dockerfile'));
+
+    hash.update(dockerfile);
+
+    return hash.digest('hex');
 }
