@@ -4,6 +4,7 @@
             "type": "custom",
             "main": "src/index.ts",
             "candid": "src/index.did",
+            "candid_gen": "custom",
             "build": "npx azle audio_recorder",
             "wasm": ".azle/audio_recorder/audio_recorder.wasm",
             "gzip": true,

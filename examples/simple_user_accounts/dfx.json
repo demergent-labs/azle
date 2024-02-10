@@ -4,6 +4,7 @@
             "type": "custom",
             "main": "src/index.ts",
             "candid": "src/index.did",
+            "candid_gen": "custom",
             "build": "npx azle simple_user_accounts",
             "wasm": ".azle/simple_user_accounts/simple_user_accounts.wasm",
             "gzip": true,
