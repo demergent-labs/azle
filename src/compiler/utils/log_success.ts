@@ -1,9 +1,16 @@
-import { dim, green } from './colors';
+import { execSync } from 'child_process';
 
-export function logSuccess(canisterPath: string, canisterName: string): void {
+import { green } from './colors';
+
+export function logSuccess(canisterName: string): void {
+    const canisterId = execSync(`dfx canister id ${canisterName}`)
+        .toString()
+        .trim();
+    const canisterPort = execSync(`dfx info webserver-port`).toString().trim();
+
     console.info(
-        `\n🎉 Built canister ${green(canisterName)} ${dim(
-            `at ${canisterPath}/${canisterName}.wasm\n`
-        )}`
+        `\n🎉 Canister ${green(canisterName)} available at ${green(
+            `http://${canisterId}.localhost:${canisterPort}`
+        )}\n`
     );
 }
