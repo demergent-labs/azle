@@ -275,6 +275,23 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 }
 
 fn get_compiler_info(compiler_info_path: &str) -> Result<CompilerInfo, String> {
+    if let Ok(azle_skip_compiler_info) = std::env::var("AZLE_SKIP_COMPILER_INFO") {
+        if azle_skip_compiler_info == "true" {
+            return Ok(CompilerInfo {
+                canister_methods: CanisterMethods {
+                    init: None,
+                    post_upgrade: None,
+                    pre_upgrade: None,
+                    inspect_message: None,
+                    heartbeat: None,
+                    queries: vec![],
+                    updates: vec![],
+                },
+                env_vars: vec![],
+            });
+        }
+    }
+
     let compiler_info_string = fs::read_to_string(compiler_info_path)
         .map_err(|err| format!("Error reading {compiler_info_path}: {err}"))?;
     let compiler_info: CompilerInfo = serde_json::from_str(&compiler_info_string)
