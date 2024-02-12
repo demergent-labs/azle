@@ -11,7 +11,11 @@
                 "output": "test/dfx_generated/rejections",
                 "node_compatibility": true
             },
-            "env": ["SOME_CANISTER_PRINCIPAL"]
+            "env": ["SOME_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [
+                ["src/some_canister/index.did", "src/some_canister.did"],
+                ["src/nonexistent.did", "src/nonexistent.did"]
+            ]
         },
         "some_canister": {
             "type": "custom",

@@ -8,7 +8,7 @@ You should be using a \*nix environment (Linux, Mac OS, [WSL if using Windows](h
 
 -   [Build dependencies](#build-dependencies)
 -   [Node.js 18](#nodejs)
--   [dfx 0.15.2](#dfx-0152)
+-   [dfx 0.16.1](#dfx-0161)
 
 ## Build dependencies
 
@@ -17,6 +17,7 @@ It is best to install all of these dependencies based on your OS:
 ### Ubuntu/WSL
 
 ```bash
+sudo apt update
 sudo apt install clang
 sudo apt install build-essential
 sudo apt install libssl-dev
@@ -28,6 +29,8 @@ sudo apt install pkg-config
 ```bash
 # Install the Xcode Command Line Tools
 xcode-select --install
+brew install llvm
+echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> ~/.zshrc
 ```
 
 ## Node.js
@@ -35,7 +38,7 @@ xcode-select --install
 We highly recommend using [nvm](https://github.com/nvm-sh/nvm) to install Node.js (and npm, which is included with Node.js). Run the following commands to install Node.js and npm with nvm:
 
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 ```
 
 Now restart your terminal and run the following command:
@@ -50,12 +53,12 @@ Check that the installation went smoothly by looking for clean output from the f
 node --version
 ```
 
-## dfx 0.15.2
+## dfx 0.16.1
 
-Run the following command to install dfx 0.15.2:
+Run the following command to install dfx 0.16.1:
 
 ```bash
-DFX_VERSION=0.15.2 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:

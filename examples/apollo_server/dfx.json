@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "apollo_server": {
+            "type": "custom",
+            "main": "src/index.ts",
+            "candid": "src/index.did",
+            "candid_gen": "http",
+            "build": "npx azle apollo_server",
+            "wasm": ".azle/apollo_server/apollo_server.wasm",
+            "gzip": true
+        }
+    }
+}

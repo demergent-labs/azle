@@ -1,9 +1,16 @@
-import { blob, Canister, ic, update, Void } from 'azle';
+import { blob, Canister, ic, serialize, update, Void } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 export default Canister({
     getRandomnessDirectly: update([], blob, async () => {
-        return await ic.call(managementCanister.raw_rand);
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(`icp://aaaaa-aa/raw_rand`);
+            const responseJson = await response.json();
+
+            return responseJson;
+        } else {
+            return await ic.call(managementCanister.raw_rand);
+        }
     }),
     getRandomnessIndirectly: update([], blob, async () => {
         return await getRandomness();
@@ -20,7 +27,11 @@ export default Canister({
         ]);
     }),
     returnPromiseVoid: update([], Void, async () => {
-        await ic.call(managementCanister.raw_rand);
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            await fetch(`icp://aaaaa-aa/raw_rand`);
+        } else {
+            await ic.call(managementCanister.raw_rand);
+        }
     })
 });
 
@@ -37,5 +48,12 @@ async function getRandomnessLevel2(): Promise<blob> {
 }
 
 async function getRandomness(): Promise<blob> {
-    return await ic.call(managementCanister.raw_rand);
+    if (process.env.AZLE_TEST_FETCH === 'true') {
+        const response = await fetch(`icp://aaaaa-aa/raw_rand`);
+        const responseJson = await response.json();
+
+        return responseJson;
+    } else {
+        return await ic.call(managementCanister.raw_rand);
+    }
 }

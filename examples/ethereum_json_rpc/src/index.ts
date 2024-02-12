@@ -5,6 +5,7 @@ import {
     nat32,
     Principal,
     query,
+    serialize,
     Some,
     StableBTreeMap,
     text,
@@ -31,7 +32,73 @@ export default Canister({
 
         const url = urlOpt.Some;
 
-        const httpResponse = await ic.call(managementCanister.http_request, {
+        const httpResponse = await getBalance(url, ethereumAddress);
+
+        return Buffer.from(httpResponse.body.buffer).toString('utf-8');
+    }),
+    ethGetBlockByNumber: update([nat32], text, async (number) => {
+        const urlOpt = stableStorage.get('ethereumUrl');
+
+        if ('None' in urlOpt) {
+            throw new Error('ethereumUrl is not defined');
+        }
+
+        const url = urlOpt.Some;
+
+        const httpResponse = await getBlockByNumber(url, number);
+
+        return Buffer.from(httpResponse.body.buffer).toString('utf-8');
+    }),
+    ethTransform: query([HttpTransformArgs], HttpResponse, (args) => {
+        return {
+            ...args.response,
+            headers: []
+        };
+    })
+});
+
+async function getBalance(url: string, ethereumAddress: string) {
+    if (process.env.AZLE_TEST_FETCH === 'true') {
+        const response = await fetch(`icp://aaaaa-aa/http_request`, {
+            body: serialize({
+                args: [
+                    {
+                        url,
+                        max_response_bytes: [2_000n],
+                        method: {
+                            post: null
+                        },
+                        headers: [],
+                        body: [
+                            Buffer.from(
+                                JSON.stringify({
+                                    jsonrpc: '2.0',
+                                    method: 'eth_getBalance',
+                                    params: [ethereumAddress, 'earliest'],
+                                    id: 1
+                                }),
+                                'utf-8'
+                            )
+                        ],
+                        transform: [
+                            {
+                                function: [ic.id(), 'ethTransform'] as [
+                                    Principal,
+                                    string
+                                ],
+                                context: Uint8Array.from([])
+                            }
+                        ]
+                    }
+                ],
+                cycles: 50_000_000n
+            })
+        });
+        const responseJson = await response.json();
+
+        return responseJson;
+    } else {
+        return await ic.call(managementCanister.http_request, {
             args: [
                 {
                     url,
@@ -62,19 +129,50 @@ export default Canister({
             ],
             cycles: 50_000_000n
         });
+    }
+}
+async function getBlockByNumber(url: string, number: number) {
+    if (process.env.AZLE_TEST_FETCH === 'true') {
+        const response = await fetch(`icp://aaaaa-aa/http_request`, {
+            body: serialize({
+                args: [
+                    {
+                        url,
+                        max_response_bytes: [2_000n],
+                        method: {
+                            post: null
+                        },
+                        headers: [],
+                        body: [
+                            Buffer.from(
+                                JSON.stringify({
+                                    jsonrpc: '2.0',
+                                    method: 'eth_getBlockByNumber',
+                                    params: [`0x${number.toString(16)}`, false],
+                                    id: 1
+                                }),
+                                'utf-8'
+                            )
+                        ],
+                        transform: [
+                            {
+                                function: [ic.id(), 'ethTransform'] as [
+                                    Principal,
+                                    string
+                                ],
+                                context: Uint8Array.from([])
+                            }
+                        ]
+                    }
+                ],
+                cycles: 50_000_000n
+            })
+        });
+        const responseJson = await response.json();
 
-        return Buffer.from(httpResponse.body.buffer).toString('utf-8');
-    }),
-    ethGetBlockByNumber: update([nat32], text, async (number) => {
-        const urlOpt = stableStorage.get('ethereumUrl');
-
-        if ('None' in urlOpt) {
-            throw new Error('ethereumUrl is not defined');
-        }
-
-        const url = urlOpt.Some;
-
-        const httpResponse = await ic.call(managementCanister.http_request, {
+        return responseJson;
+    } else {
+        return await ic.call(managementCanister.http_request, {
             args: [
                 {
                     url,
@@ -105,13 +203,5 @@ export default Canister({
             ],
             cycles: 50_000_000n
         });
-
-        return Buffer.from(httpResponse.body.buffer).toString('utf-8');
-    }),
-    ethTransform: query([HttpTransformArgs], HttpResponse, (args) => {
-        return {
-            ...args.response,
-            headers: []
-        };
-    })
-});
+    }
+}

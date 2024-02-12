@@ -8,17 +8,21 @@ crate-type = ["cdylib"]
 
 [dependencies]
 anyhow = "1.0.75"
-candid = { version = "0.9.1", features = ["parser"] }
-ic-cdk-timers = "0.4.0"
-ic-stable-structures = "0.6.0"
+ic-cdk = "0.12.1"
+ic-cdk-macros = "0.8.4"
+ic-cdk-timers = "0.6.0"
+candid = "0.10.2"
+candid_parser = "0.1.2"
+ic-stable-structures = "0.6.2"
 canister_methods = { path = "../canister_methods" }
+include_dir = "0.7.3"
 slotmap = "=1.0.6"
-ic-cdk = "0.10.0"
-ic-cdk-macros = "0.7.0"
+wasmi = "0.31.2"
 
 # TODO transient feature can be removed once https://github.com/wasm-forge/ic-wasi-polyfill/issues/14
-ic-wasi-polyfill = { git = "https://github.com/wasm-forge/ic-wasi-polyfill", rev = "1693665ed57adc4f997a0313555ec0b0b5de1c07", features = [
+ic-wasi-polyfill = { git = "https://github.com/wasm-forge/ic-wasi-polyfill", rev = "2d2edb382816e12da9bc81b786b7cd1a00d36735", features = [
     "transient",
 ] }
-wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "218238f970b2d1c3e34d712c6be9f558b8364716" }
+
+wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "ce02a5969befebfe47b1bfe3231c367afa34188b" }
 # wasmedge_quickjs = { path = "/home/wasmedge-quickjs" }

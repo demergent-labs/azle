@@ -4,6 +4,7 @@ mod arg_data_raw_size;
 mod call_raw;
 mod call_raw128;
 mod caller;
+mod candid_compiler;
 mod candid_decode;
 mod candid_encode;
 mod canister_balance;
@@ -95,6 +96,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     ic.set(
         "caller",
         context.new_function::<caller::NativeFunction>("").into(),
+    );
+
+    ic.set(
+        "candidCompiler",
+        context
+            .new_function::<candid_compiler::NativeFunction>("")
+            .into(),
     );
 
     ic.set(

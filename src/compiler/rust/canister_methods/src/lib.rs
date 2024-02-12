@@ -63,18 +63,19 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         fn init() {
             ic_wasi_polyfill::init(&[], &[#(#env_vars),*]);
 
+            ASSETS_DIR.extract("/").unwrap();
+
             let mut rt = wasmedge_quickjs::Runtime::new();
 
             let r = rt.run_with_context(|context| {
                 ic::register(context);
+                web_assembly::register(context);
 
                 // TODO what do we do if there is an error in here?
                 context.eval_global_str("globalThis.exports = {};".to_string());
                 context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
-                // TODO Is this all we need to do for promises and timeouts?
-                context.event_loop().unwrap().run_tick_task();
-                context.promise_loop_poll();
+                run_event_loop(context);
 
                 // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
@@ -113,18 +114,19 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         fn post_upgrade() {
             ic_wasi_polyfill::init(&[], &[#(#env_vars),*]);
 
+            ASSETS_DIR.extract("/").unwrap();
+
             let mut rt = wasmedge_quickjs::Runtime::new();
 
             let r = rt.run_with_context(|context| {
                 ic::register(context);
+                web_assembly::register(context);
 
                 // TODO what do we do if there is an error in here?
                 context.eval_global_str("globalThis.exports = {};".to_string());
                 context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
-                // TODO Is this all we need to do for promises and timeouts?
-                context.event_loop().unwrap().run_tick_task();
-                context.promise_loop_poll();
+                run_event_loop(context);
 
                 // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
 
@@ -246,6 +248,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         });
 
     quote! {
+        static ASSETS_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/src/assets");
+
         #init_method
 
         #post_update_method
@@ -271,6 +275,23 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 }
 
 fn get_compiler_info(compiler_info_path: &str) -> Result<CompilerInfo, String> {
+    if let Ok(azle_skip_compiler_info) = std::env::var("AZLE_SKIP_COMPILER_INFO") {
+        if azle_skip_compiler_info == "true" {
+            return Ok(CompilerInfo {
+                canister_methods: CanisterMethods {
+                    init: None,
+                    post_upgrade: None,
+                    pre_upgrade: None,
+                    inspect_message: None,
+                    heartbeat: None,
+                    queries: vec![],
+                    updates: vec![],
+                },
+                env_vars: vec![],
+            });
+        }
+    }
+
     let compiler_info_string = fs::read_to_string(compiler_info_path)
         .map_err(|err| format!("Error reading {compiler_info_path}: {err}"))?;
     let compiler_info: CompilerInfo = serde_json::from_str(&compiler_info_string)
@@ -311,7 +332,14 @@ fn get_guard_token_stream(
                                 js_exception.dump_error();
                                 Err("TODO needs error info".to_string())
                             }
-                            _ => Ok(())
+                            _ => {
+                                // TODO what if errors happen in here?
+                                // TODO can guard functions even be async?
+                                // TODO I don't think they can
+                                run_event_loop(context);
+
+                                Ok(())
+                            }
                         }
                     })
                 })

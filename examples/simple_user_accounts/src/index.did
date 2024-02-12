@@ -1,5 +1,10 @@
+type User = record {
+    id: text;
+    username: text;
+};
+
 service: () -> {
-    getUserById: (text) -> (opt record {id:text; username:text}) query;
-    getAllUsers: () -> (vec record {id:text; username:text}) query;
-    createUser: (text) -> (record {id:text; username:text});
+    createUser: (text) -> (User);
+    getAllUsers: () -> (vec User) query;
+    getUserById: (text) -> (opt User) query;
 }

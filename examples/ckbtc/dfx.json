@@ -31,7 +31,8 @@
                 "node_compatibility": true,
                 "output": "wallet/frontend/dfx_generated/wallet_backend"
             },
-            "env": ["CK_BTC_PRINCIPAL", "MINTER_PRINCIPAL"]
+            "env": ["CK_BTC_PRINCIPAL", "MINTER_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [["minter/minter.did", "minter/minter.did"]]
         },
         "wallet_frontend": {
             "type": "assets",

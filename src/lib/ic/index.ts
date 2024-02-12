@@ -5,6 +5,7 @@ import { call } from './call';
 import { callRaw } from './call_raw';
 import { callRaw128 } from './call_raw_128';
 import { caller } from './caller';
+import { candidCompiler } from './candid_compiler';
 import { candidDecode } from './candid_decode';
 import { candidEncode } from './candid_encode';
 import { canisterBalance } from './canister_balance';
@@ -57,6 +58,7 @@ export const ic = {
     callRaw,
     callRaw128,
     caller,
+    candidCompiler,
     candidDecode,
     candidEncode,
     canisterBalance,

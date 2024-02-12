@@ -11,7 +11,13 @@
                 "output": "test/dfx_generated/recursion",
                 "node_compatibility": true
             },
-            "env": ["MY_CANISTER_PRINCIPAL"]
+            "env": ["MY_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [
+                [
+                    "src/recursive_canister/index.did",
+                    "src/recursive_canister.did"
+                ]
+            ]
         },
         "recursive_canister": {
             "type": "custom",

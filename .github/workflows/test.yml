@@ -30,6 +30,7 @@ jobs:
         runs-on: ubuntu-latest
         env:
             GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }} # All commits must be verified
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         outputs:
             # These outputs are used to pass information along to the next job
             should_run_tests: ${{ steps.should_run_tests.outputs.should_run_tests }} # We only want the next job to run the tests once we have finished deploying to npm and GitHub
@@ -57,12 +58,17 @@ jobs:
               run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
             - if: contains(github.head_ref, 'release--')
               run: git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
+            - if: contains(github.head_ref, 'release--')
+              run: DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+            - if: contains(github.head_ref, 'release--')
+              run: sudo apt-get install -y podman
             - id: example_directories
               # TODO to improve this further we might be able to create an environment variable that grabs the example directories with a glob
               # TODO we want to be able to easily include and exclude examples though
               run: |
                   EXAMPLE_DIRECTORIES=$(cat << END
                   [
+                    "examples/apollo_server",
                     "examples/async_await",
                     "examples/audio_recorder",
                     "examples/bitcoin",
@@ -81,10 +87,15 @@ jobs:
                     "examples/cycles",
                     "examples/date",
                     "examples/ethereum_json_rpc",
+                    "examples/ethers",
+                    "examples/express",
+                    "examples/fs",
                     "examples/func_types",
                     "examples/guard_functions",
                     "examples/heartbeat",
+                    "examples/hello_world",
                     "examples/ic_api",
+                    "examples/ic_evm_rpc",
                     "examples/icrc",
                     "examples/imports",
                     "examples/init",
@@ -124,6 +135,7 @@ jobs:
                     "examples/robust_imports",
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",
+                    "examples/sqlite",
                     "examples/stable_b_tree_map_instruction_threshold",
                     "examples/stable_memory",
                     "examples/stable_structures",
@@ -131,6 +143,7 @@ jobs:
                     "examples/tuple_types",
                     "examples/update",
                     "examples/vanilla_js",
+                    "examples/web_assembly",
                     "property_tests/tests/blob",
                     "property_tests/tests/bool",
                     "property_tests/tests/canister_methods/http_request",
@@ -184,12 +197,15 @@ jobs:
                   fi
     basic-integration-tests:
         needs: release-candidate-deploy
-        runs-on: ubuntu-latest
+        runs-on: ${{ matrix.os }}
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
+            AZLE_USE_DOCKERFILE: ${{ matrix.azle_source == 'repo' }}
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix:
+                # os: [ubuntu-latest, macos-latest] # TODO Once we are ready let's get macos testing up and going again
+                os: [ubuntu-latest]
                 include_npm:
                     # Only include npm in the matrix if you've pushed to main and the last commit was a merge of a release branch, or the base branch of the pull request is a release branch
                     - ${{ (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) || contains(github.head_ref, 'release--') }}
@@ -209,18 +225,34 @@ jobs:
               with:
                   node-version: 18
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              run: DFX_VERSION=0.15.2 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+              run: DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/cache@v3
               with:
-                  path: ~/.config/azle
-                  key: azle-cargo-${{ hashFiles('src/compiler/generate_cargo_toml_files.ts') }}
+                  path: /home/runner/.config/azle
+                  # path: $HOME/.config/azle
+                  key: config-azle-${{ hashFiles('src/compiler/Dockerfile') }}
+            - name: List contents of .config
+              run: ls -la $HOME/.config/azle || true
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              run: sudo apt-get install -y podman
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && runner.os == 'macOS' }}
+              shell: bash -l {0}
+              # The DNS server stuff is because of this: https://github.com/actions/runner-images/issues/6383
+              run: |
+                  brew install llvm
+                  echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile
+                  export LDFLAGS="-L/usr/local/opt/llvm/lib"
+                  export CPPFLAGS="-I/usr/local/opt/llvm/include"
+                  sudo networksetup -setdnsservers Ethernet 9.9.9.9
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0} # TODO figure out why this is here and comment about it
               run: npm install
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
               shell: bash -l {0}
               run: npm link
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'npm' }}
+              run: npx azle clean # We want to test the full curl download when testing from a clean install
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               working-directory: ${{ matrix.example_directories }}
               run: dfx start --clean --background --host 127.0.0.1:8000
@@ -248,6 +280,8 @@ jobs:
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
               run: $GITHUB_WORKSPACE/node_modules/.bin/tsc --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs
+            - name: List contents of .config
+              run: ls -la $HOME/.config/azle || true
 
     check-basic-integration-tests-success:
         needs: basic-integration-tests

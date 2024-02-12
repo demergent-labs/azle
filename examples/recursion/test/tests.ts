@@ -387,7 +387,6 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
         },
         {
             name: 'test rec service call',
-            skip: true, // TODO waiting for azle.encode and azle.decode to be implemented
             test: async () => {
                 const principalId = getCanisterId('recursive_canister');
                 const result = execSync(

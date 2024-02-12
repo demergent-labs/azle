@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'fs';
+import { join } from 'path';
 
 import { red, yellow, green, blue, purple } from './colors';
 import { Err, Ok, Result } from './result';
@@ -46,7 +47,24 @@ export function getCanisterConfig(
         });
     }
 
-    return Ok(canisterConfig);
+    if (require.main?.path === undefined) {
+        throw new Error(`require.main?.path must be defined`);
+    }
+
+    return Ok({
+        ...canisterConfig,
+        assets: [
+            ...(canisterConfig.assets ?? []),
+            [
+                join(require.main?.path, 'canisters', 'icrc', 'icrc.did'),
+                join('candid', 'icrc.did')
+            ],
+            [
+                join(require.main?.path, 'canisters', 'management', 'ic.did'),
+                join('candid', 'aaaaa-aa.did')
+            ]
+        ]
+    });
 }
 
 function colorFormattedDfxJsonExample(canisterName: string): string {

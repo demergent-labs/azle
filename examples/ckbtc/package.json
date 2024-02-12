@@ -18,12 +18,13 @@
         "deploy:wallet_frontend": "dfx deploy wallet_frontend --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai",
         "frontend": "npx open-cli http://ryjl3-tyaaa-aaaaa-aaaba-cai.localhost:8000/",
         "mint": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress 1 $npm_config_address",
-        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
-        "test": "ts-node --transpile-only --ignore=false test/test.ts",
-        "build": "cd wallet/frontend && npm run build"
+        "build": "cd wallet/frontend && npm run build",
+        "pre_tests": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "tests": "npm run pre_tests && ts-node --transpile-only --ignore=false test/test.ts",
+        "test": "AZLE_TEST_FETCH=false npm run tests && AZLE_TEST_FETCH=true npm run tests"
     },
     "dependencies": {
-        "azle": "0.19.0"
+        "azle": "0.20.2-rc.0"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",

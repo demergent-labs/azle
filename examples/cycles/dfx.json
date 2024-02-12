@@ -23,7 +23,8 @@
                 "output": "test/dfx_generated/intermediary",
                 "node_compatibility": true
             },
-            "env": ["CYCLES_PRINCIPAL"]
+            "env": ["CYCLES_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [["src/cycles/index.did", "src/cycles/index.did"]]
         }
     }
 }

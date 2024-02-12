@@ -4,7 +4,7 @@ import { Principal } from '../candid/types/reference/principal';
  * Gets the id of this canister
  * @returns the canister id
  */
-export function id() {
+export function id(): Principal {
     if (globalThis._azleIc === undefined) {
         return undefined as any;
     }

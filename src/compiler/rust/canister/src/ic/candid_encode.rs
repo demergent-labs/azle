@@ -9,7 +9,7 @@ impl JsFn for NativeFunction {
             panic!("conversion from JsValue to JsString failed")
         };
 
-        let candid_args: candid::IDLArgs = candid_string.parse().unwrap();
+        let candid_args = candid_parser::parse_idl_args(&candid_string).unwrap();
         let candid_encoded = candid_args.to_bytes().unwrap();
 
         context.new_array_buffer(&candid_encoded).into()

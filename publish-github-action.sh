@@ -32,8 +32,19 @@ do
     sed -E -i "s/(\"azle\": \")(.*)(\")/\1$VERSION\3/" package.json
     npm install
 
+    rm -rf node_modules
+
     cd $root_dir
 done
+
+npm install
+npm link
+dfx start --background
+cd examples/hello_world
+npm install
+npm link azle
+AZLE_USE_DOCKERFILE=true dfx deploy
+gzip -9 "$HOME/.config/azle/azle__image__$(npx azle dockerfile-hash).tar"
 
 git add --all
 git commit -am "azle-bot automated release $VERSION"
@@ -41,3 +52,10 @@ git push origin $GITHUB_HEAD_REF
 
 git tag $VERSION
 git push origin $VERSION
+
+if [[ "$VERSION" == *"-rc."* ]];
+then
+    gh release create "$VERSION" "$HOME/.config/azle/azle__image__$(npx azle dockerfile-hash).tar.gz" -t "$VERSION" --prerelease
+else
+    gh release create "$VERSION" "$HOME/.config/azle/azle__image__$(npx azle dockerfile-hash).tar.gz" -t "$VERSION"
+fi

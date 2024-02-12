@@ -1,27 +1,54 @@
-import { Test } from '../../../test'; // We don't want to install Azle
-import { execSync } from 'child_process';
+import * as dns from 'node:dns';
+dns.setDefaultResultOrder('ipv4first');
 
-export function getTests(): Test[] {
+import { Test } from '../../../test';
+
+export function getTests(canisterId: string): Test[] {
+    const origin = `http://${canisterId}.localhost:8000`;
+
     return [
         {
-            name: 'getMessage',
+            name: '/db',
             test: async () => {
-                execSync(
-                    `cd hello_world && npm run canister_call_set_message`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
+                try {
+                    const response = await fetch(`${origin}/db`);
+                    const responseJson = await response.json();
 
-                const result = execSync(
-                    `cd hello_world && npm run canister_call_get_message`
-                )
-                    .toString()
-                    .trim();
+                    return {
+                        Ok:
+                            JSON.stringify(responseJson) ===
+                            JSON.stringify({ hello: '' })
+                    };
+                } catch (error: any) {
+                    return {
+                        Err: error
+                    };
+                }
+            }
+        },
+        {
+            name: '/db/update',
+            test: async () => {
+                try {
+                    const response = await fetch(`${origin}/db/update`, {
+                        method: 'POST',
+                        headers: [['Content-Type', 'application/json']],
+                        body: JSON.stringify({
+                            hello: 'world'
+                        })
+                    });
+                    const responseJson = await response.json();
 
-                return {
-                    Ok: result.includes('Hello world!')
-                };
+                    return {
+                        Ok:
+                            JSON.stringify(responseJson) ===
+                            JSON.stringify({ hello: 'world' })
+                    };
+                } catch (error: any) {
+                    return {
+                        Err: error
+                    };
+                }
             }
         }
     ];

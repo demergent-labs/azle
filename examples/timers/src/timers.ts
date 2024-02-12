@@ -7,6 +7,7 @@ import {
     int8,
     query,
     Record,
+    serialize,
     text,
     TimerId,
     update,
@@ -100,9 +101,7 @@ function oneTimeTimerCallback() {
 async function singleCrossCanisterTimerCallback() {
     console.log('singleCrossCanisterTimerCallback');
 
-    statusReport.singleCrossCanister = await ic.call(
-        managementCanister.raw_rand
-    );
+    statusReport.singleCrossCanister = await getRandomness();
 }
 
 async function repeatCrossCanisterTimerCallback() {
@@ -110,6 +109,17 @@ async function repeatCrossCanisterTimerCallback() {
 
     statusReport.repeatCrossCanister = Uint8Array.from([
         ...statusReport.repeatCrossCanister,
-        ...(await ic.call(managementCanister.raw_rand))
+        ...(await getRandomness())
     ]);
+}
+
+async function getRandomness(): Promise<blob> {
+    if (process.env.AZLE_TEST_FETCH === 'true') {
+        const response = await fetch(`icp://aaaaa-aa/raw_rand`);
+        const responseJson = await response.json();
+
+        return responseJson;
+    } else {
+        return await ic.call(managementCanister.raw_rand);
+    }
 }

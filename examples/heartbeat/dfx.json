@@ -10,7 +10,8 @@
             "declarations": {
                 "output": "test/dfx_generated/heartbeat_async",
                 "node_compatibility": true
-            }
+            },
+            "env": ["AZLE_TEST_FETCH"]
         },
         "heartbeat_sync": {
             "type": "custom",

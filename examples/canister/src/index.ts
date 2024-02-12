@@ -4,6 +4,7 @@ import {
     Principal,
     query,
     Record,
+    serialize,
     text,
     update,
     Vec
@@ -19,22 +20,12 @@ export default Canister({
         return someCanister;
     }),
     canisterReturnType: query([], SomeCanister, () => {
-        return SomeCanister(
-            Principal.fromText(
-                process.env.SOME_CANISTER_PRINCIPAL ??
-                    ic.trap('process.env.SOME_CANISTER_PRINCIPAL is undefined')
-            )
-        );
+        return SomeCanister(Principal.fromText(getSomeCanisterPrincipal()));
     }),
     canisterNestedReturnType: update([], Wrapper, () => {
         return {
             someCanister: SomeCanister(
-                Principal.fromText(
-                    process.env.SOME_CANISTER_PRINCIPAL ??
-                        ic.trap(
-                            'process.env.SOME_CANISTER_PRINCIPAL is undefined'
-                        )
-                )
+                Principal.fromText(getSomeCanisterPrincipal())
             )
         };
     }),
@@ -49,7 +40,29 @@ export default Canister({
         [SomeCanister],
         text,
         async (someCanister) => {
-            return await ic.call(someCanister.update1);
+            if (process.env.AZLE_TEST_FETCH === 'true') {
+                const response = await fetch(
+                    `icp://${getSomeCanisterPrincipal()}/update1`,
+                    {
+                        body: serialize({
+                            candidPath: `/src/some_canister.did`
+                        })
+                    }
+                );
+                const responseJson = await response.json();
+
+                return responseJson;
+            } else {
+                return await ic.call(someCanister.update1);
+            }
         }
     )
 });
+
+function getSomeCanisterPrincipal(): string {
+    if (process.env.SOME_CANISTER_PRINCIPAL !== undefined) {
+        return process.env.SOME_CANISTER_PRINCIPAL;
+    }
+
+    throw new Error(`process.env.SOME_CANISTER_PRINCIPAL is not defined`);
+}
