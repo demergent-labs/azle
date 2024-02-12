@@ -1,10 +1,30 @@
+type User = record {
+    id: principal;
+    createdAt: nat64;
+    recordingIds: vec principal;
+    username: text;
+};
+
+type Recording = record {
+    id: principal;
+    audio: blob;
+    createdAt: nat64;
+    name: text;
+    userId: principal;
+};
+
+type AudioRecorderError = variant {
+    RecordingDoesNotExist: principal;
+    UserDoesNotExist: principal;
+};
+
 service: () -> {
-    createRecording: (vec nat8, text, principal) -> (variant {Ok:record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64}; Err:variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal}});
-    createUser: (text) -> (record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64});
-    deleteRecording: (principal) -> (variant {Ok:record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64}; Err:variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal}});
-    deleteUser: (principal) -> (variant {Ok:record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64}; Err:variant {RecordingDoesNotExist:principal; UserDoesNotExist:principal}});
-    readRecordingById: (principal) -> (opt record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64}) query;
-    readRecordings: () -> (vec record {id:principal; audio:vec nat8; userId:principal; name:text; createdAt:nat64}) query;
-    readUserById: (principal) -> (opt record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64}) query;
-    readUsers: () -> (vec record {id:principal; username:text; recordingIds:vec principal; createdAt:nat64}) query;
+    createUser: (text) -> (User);
+    readUsers: () -> (vec User) query;
+    readUserById: (principal) -> (opt User) query;
+    deleteUser: (principal) -> (variant { Ok: User; Err: AudioRecorderError });
+    createRecording: (vec nat8, text, principal) -> (variant { Ok: Recording; Err: AudioRecorderError });
+    readRecordings: () -> (vec Recording) query;
+    readRecordingById: (principal) -> (opt Recording) query;
+    deleteRecording: (principal) -> (variant { Ok: Recording; Err: AudioRecorderError });
 }

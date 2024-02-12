@@ -20,6 +20,7 @@ export type JSCanisterConfig = Readonly<{
     build: string;
     build_assets?: string;
     candid: string;
+    candid_gen?: CandidGen;
     wasm: string;
     env?: string[];
     opt_level?: OptLevel;
@@ -27,6 +28,8 @@ export type JSCanisterConfig = Readonly<{
 }>;
 
 export type OptLevel = '0' | '1' | '2' | '3' | '4';
+
+export type CandidGen = 'automatic' | 'custom' | 'http';
 
 export type CompilerInfo = {
     canister_methods: CanisterMethods;

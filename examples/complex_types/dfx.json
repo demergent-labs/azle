@@ -4,6 +4,7 @@
             "type": "custom",
             "main": "src/index.ts",
             "candid": "src/index.did",
+            "candid_gen": "custom",
             "build": "npx azle complex_types",
             "wasm": ".azle/complex_types/complex_types.wasm",
             "gzip": true,

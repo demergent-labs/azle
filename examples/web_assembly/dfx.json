@@ -4,6 +4,7 @@
             "type": "custom",
             "main": "src/index.ts",
             "candid": "src/index.did",
+            "candid_gen": "http",
             "build": "npx azle web_assembly",
             "wasm": ".azle/web_assembly/web_assembly.wasm",
             "gzip": true
