@@ -7,7 +7,17 @@
             "candid_gen": "http",
             "build": "npx azle apollo_server",
             "wasm": ".azle/apollo_server/apollo_server.wasm",
-            "gzip": true
+            "gzip": true,
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         }
     }
 }

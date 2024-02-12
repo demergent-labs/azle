@@ -11,7 +11,17 @@
                 "output": "test/dfx_generated/heartbeat_async",
                 "node_compatibility": true
             },
-            "env": ["AZLE_TEST_FETCH"]
+            "env": ["AZLE_TEST_FETCH"],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/heartbeat_async/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "heartbeat_sync": {
             "type": "custom",
@@ -23,7 +33,17 @@
             "declarations": {
                 "output": "test/dfx_generated/heartbeat_sync",
                 "node_compatibility": true
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/heartbeat_sync/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         }
     }
 }

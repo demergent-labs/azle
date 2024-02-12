@@ -10,7 +10,17 @@
             "declarations": {
                 "output": "test/dfx_generated/canister1",
                 "node_compatibility": true
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/canister1/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "canister2": {
             "type": "custom",
@@ -22,7 +32,17 @@
             "declarations": {
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/canister2/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "canister3": {
             "type": "custom",
@@ -34,7 +54,17 @@
             "declarations": {
                 "output": "test/dfx_generated/canister3",
                 "node_compatibility": true
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/canister3/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         }
     }
 }

@@ -15,6 +15,16 @@
             "assets": [
                 ["src/some_canister/index.did", "src/some_canister.did"],
                 ["src/nonexistent.did", "src/nonexistent.did"]
+            ],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/rejections/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
             ]
         },
         "some_canister": {
@@ -27,7 +37,17 @@
             "declarations": {
                 "output": "test/dfx_generated/some_canister",
                 "node_compatibility": true
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/some_canister/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         }
     }
 }

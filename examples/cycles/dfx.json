@@ -10,7 +10,17 @@
             "declarations": {
                 "output": "test/dfx_generated/cycles",
                 "node_compatibility": true
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/cycles/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "intermediary": {
             "type": "custom",
@@ -24,7 +34,17 @@
                 "node_compatibility": true
             },
             "env": ["CYCLES_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [["src/cycles/index.did", "src/cycles/index.did"]]
+            "assets": [["src/cycles/index.did", "src/cycles/index.did"]],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/intermediary/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         }
     }
 }

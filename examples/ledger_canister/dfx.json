@@ -12,7 +12,17 @@
                 "node_compatibility": true
             },
             "env": ["ICP_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [["src/icp_ledger/ledger.public.did", "src/ledger.did"]]
+            "assets": [["src/icp_ledger/ledger.public.did", "src/ledger.did"]],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/ledger_canister/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "icp_ledger": {
             "type": "custom",
