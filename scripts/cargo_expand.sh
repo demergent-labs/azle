@@ -1,3 +1,5 @@
+# TODO this file is now out of date with the new Docker-based compilation
+
 # To exapand the generated lib file, run each of these commands one by one from inside the azle/examples/canister_name/.azle/canister_name/src direcotry
 # install cargo expand
 RUSTUP_HOME=~/.config/azle/1.68.2 CARGO_HOME=~/.config/azle/1.68.2 CARGO_TARGET_DIR=~/.config/azle/target/ ~/.config/azle/1.68.2/bin/cargo install cargo-expand

@@ -1,23 +1,16 @@
 import { join } from 'path';
 import { compileRustCode } from './compile_rust_code';
-import { installRustDependencies } from './install_rust_dependencies';
 import { generateNewAzleProject } from './new_command';
 import {
     getCanisterConfig,
     getCanisterName,
     getStdIoType,
     logSuccess,
-    printFirstBuildWarning,
     time,
     unwrap
 } from './utils';
-import { dim, green, red } from './utils/colors';
-import { GLOBAL_AZLE_CONFIG_DIR } from './utils';
-import {
-    version as azleVersion,
-    dfx_version as dfxVersion,
-    rust_version as rustVersion
-} from '../../package.json';
+import { dim, green, red, yellow } from './utils/colors';
+import { version as azleVersion } from '../../package.json';
 import { compileTypeScriptToJavaScript } from './compile_typescript_code';
 import { Err, ok } from './utils/result';
 import {
@@ -32,7 +25,9 @@ import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 import { copySync, readFileSync } from 'fs-extra';
-import { execSync } from 'child_process';
+import { execSync, IOType } from 'child_process';
+import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
+import { createHash } from 'crypto';
 
 azle();
 
@@ -42,15 +37,80 @@ async function azle() {
         return;
     }
 
+    const stdioType = getStdIoType();
+
+    const dockerfileHash = getDockerfileHash();
+    const dockerImagePrefix = 'azle__image__';
+    const dockerImageName = `${dockerImagePrefix}${dockerfileHash}`;
+    const dockerContainerPrefix = 'azle__container__';
+    const dockerContainerName = `${dockerContainerPrefix}${dockerfileHash}`;
+    const wasmedgeQuickJsName = `wasmedge_quickjs_${dockerfileHash}`;
+
+    const dockerImagePathTar = join(
+        GLOBAL_AZLE_CONFIG_DIR,
+        `${dockerImageName}.tar`
+    );
+    const dockerImagePathTarGz = join(
+        GLOBAL_AZLE_CONFIG_DIR,
+        `${dockerImageName}.tar.gz`
+    );
+    const wasmedgeQuickJsPath = join(
+        GLOBAL_AZLE_CONFIG_DIR,
+        wasmedgeQuickJsName
+    );
+
+    if (process.argv[2] === 'dockerfile-hash') {
+        execSync(`echo -n "${dockerfileHash}"`, {
+            stdio: 'inherit'
+        });
+        return;
+    }
+
     if (process.argv[2] === 'clean') {
         rmSync(GLOBAL_AZLE_CONFIG_DIR, {
             recursive: true,
             force: true
         });
+
+        console.info(`~/.config/azle directory deleted`);
+
+        rmSync('.azle', {
+            recursive: true,
+            force: true
+        });
+
+        console.info(`.azle directory deleted`);
+
+        execSync(
+            `podman stop $(podman ps --filter "name=${dockerContainerPrefix}" --format "{{.ID}}") || true`,
+            {
+                stdio: stdioType
+            }
+        );
+
+        console.info(`azle containers stopped`);
+
+        execSync(
+            `podman rm $(podman ps -a --filter "name=${dockerContainerPrefix}" --format "{{.ID}}") || true`,
+            {
+                stdio: stdioType
+            }
+        );
+
+        console.info(`azle containers removed`);
+
+        execSync(
+            `podman image rm $(podman images --filter "reference=${dockerImagePrefix}" --format "{{.ID}}") || true`,
+            {
+                stdio: stdioType
+            }
+        );
+
+        console.info(`azle images removed`);
+
         return;
     }
 
-    const stdioType = getStdIoType();
     const canisterName = unwrap(getCanisterName(process.argv));
     const canisterPath = join('.azle', canisterName);
 
@@ -61,33 +121,114 @@ async function azle() {
             const canisterConfig = unwrap(getCanisterConfig(canisterName));
             const candidPath = canisterConfig.candid;
 
-            printFirstBuildWarning(azleVersion, stdioType);
+            mkdirSync(GLOBAL_AZLE_CONFIG_DIR, { recursive: true });
+            mkdirSync('.azle', { recursive: true });
 
-            execSync(
-                `docker build -f ${__dirname}/Dockerfile -t azle_${azleVersion} .`,
-                {
-                    stdio: stdioType
-                }
+            const imageHasBeenLoaded = hasImageBeenLoaded(
+                dockerImageName,
+                stdioType
             );
 
+            if (process.env.AZLE_USE_DOCKERFILE === 'true') {
+                try {
+                    if (!imageHasBeenLoaded) {
+                        if (existsSync(dockerImagePathTar)) {
+                            console.info(yellow(`\nLoading image...\n`));
+
+                            execSync(`podman load -i ${dockerImagePathTar}`, {
+                                stdio: 'inherit'
+                            });
+                        } else if (existsSync(dockerImagePathTarGz)) {
+                            console.info(yellow(`\nLoading image...\n`));
+
+                            execSync(`podman load -i ${dockerImagePathTarGz}`, {
+                                stdio: 'inherit'
+                            });
+                        } else {
+                            throw new Error(
+                                `${dockerImagePathTar} or ${dockerImagePathTarGz} does not exist`
+                            );
+                        }
+                    }
+                } catch (error) {
+                    console.info(yellow(`\nBuilding image...\n`));
+
+                    execSync(
+                        `podman build -f ${__dirname}/Dockerfile -t ${dockerImageName} ${__dirname}`,
+                        {
+                            stdio: 'inherit'
+                        }
+                    );
+
+                    console.info(yellow(`\nSaving image...\n`));
+
+                    execSync(
+                        `podman save -o ${dockerImagePathTar} ${dockerImageName}`,
+                        {
+                            stdio: 'inherit'
+                        }
+                    );
+
+                    console.info(yellow(`\nCompiling...`));
+                }
+            } else {
+                try {
+                    if (!imageHasBeenLoaded) {
+                        if (existsSync(dockerImagePathTar)) {
+                            console.info(yellow(`\nLoading image...\n`));
+
+                            execSync(`podman load -i ${dockerImagePathTar}`, {
+                                stdio: 'inherit'
+                            });
+                        } else if (existsSync(dockerImagePathTarGz)) {
+                            console.info(yellow(`\nLoading image...\n`));
+
+                            execSync(`podman load -i ${dockerImagePathTarGz}`, {
+                                stdio: 'inherit'
+                            });
+                        } else {
+                            throw new Error(
+                                `${dockerImagePathTar} or ${dockerImagePathTarGz} does not exist`
+                            );
+                        }
+                    }
+                } catch (error) {
+                    console.info(yellow(`\nDownloading image...\n`));
+
+                    execSync(
+                        `curl -L https://github.com/demergent-labs/azle/releases/download/${azleVersion}/${dockerImageName}.tar.gz -o ${dockerImagePathTarGz}`,
+                        {
+                            stdio: 'inherit'
+                        }
+                    );
+
+                    console.info(yellow(`\nLoading image...\n`));
+
+                    execSync(`podman load -i ${dockerImagePathTarGz}`, {
+                        stdio: 'inherit'
+                    });
+
+                    console.info(yellow(`\nCompiling...`));
+                }
+            }
+
             execSync(
-                `docker inspect azle_${azleVersion}_container || docker create --name azle_${azleVersion}_container azle_${azleVersion} tail -f /dev/null`,
+                `podman inspect ${dockerContainerName} || podman create --name ${dockerContainerName} ${dockerImageName} tail -f /dev/null`,
                 { stdio: stdioType }
             );
 
-            execSync(`docker start azle_${azleVersion}_container`, {
+            execSync(`podman start ${dockerContainerName}`, {
                 stdio: stdioType
             });
 
-            mkdirSync('.azle', { recursive: true });
-
             execSync(
-                `docker cp azle_${azleVersion}_container:/wasmedge-quickjs .azle/wasmedge-quickjs`,
+                `podman cp ${dockerContainerName}:/wasmedge-quickjs ${wasmedgeQuickJsPath}`,
                 { stdio: stdioType }
             );
 
             const compilationResult = compileTypeScriptToJavaScript(
-                canisterConfig.main
+                canisterConfig.main,
+                wasmedgeQuickJsPath
             );
 
             if (!ok(compilationResult)) {
@@ -171,7 +312,7 @@ async function azle() {
             // TODO why not just write the dfx.json file here as well?
             writeFileSync(compilerInfoPath0, JSON.stringify(compilerInfo0));
 
-            compileRustCode(azleVersion, canisterName, stdioType);
+            compileRustCode(dockerContainerName, canisterName, stdioType);
 
             const { candid, canisterMethods } =
                 generateCandidAndCanisterMethods(
@@ -199,11 +340,11 @@ async function azle() {
             // TODO why not just write the dfx.json file here as well?
             writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
 
-            compileRustCode(azleVersion, canisterName, stdioType);
+            compileRustCode(dockerContainerName, canisterName, stdioType);
         }
     );
 
-    logSuccess(canisterPath, canisterName);
+    logSuccess(canisterName);
 }
 
 function compilationErrorToAzleErrorResult(error: unknown): Err<AzleError> {
@@ -260,4 +401,29 @@ function getEnvVars(canisterConfig: JSCanisterConfig): [string, string][] {
     return (canisterConfig.env ?? []).map((envVarName) => {
         return [envVarName, process.env[envVarName] ?? ''];
     });
+}
+
+function hasImageBeenLoaded(
+    dockerImageName: string,
+    stdioType: IOType
+): boolean {
+    try {
+        execSync(`podman image inspect ${dockerImageName}`, {
+            stdio: stdioType
+        });
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+function getDockerfileHash(): string {
+    let hash = createHash('sha256');
+
+    const dockerfile = readFileSync(join(__dirname, 'Dockerfile'));
+
+    hash.update(dockerfile);
+
+    return hash.digest('hex');
 }

@@ -1,10 +1,10 @@
 import { buildSync } from 'esbuild';
 import { JavaScript, TypeScript } from './utils/types';
 import { Result } from './utils/result';
-import { GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR } from './utils/global_paths';
 
 export function compileTypeScriptToJavaScript(
-    main: string
+    main: string,
+    wasmedgeQuickJsPath: string
 ): Result<JavaScript, unknown> {
     try {
         const imports = `
@@ -41,9 +41,12 @@ export function compileTypeScriptToJavaScript(
             globalThis.exports.canisterMethods = canisterMethods;
         `;
 
-        const bundledJavaScript = bundleFromString(`
+        const bundledJavaScript = bundleFromString(
+            `
             ${imports}
-`);
+`,
+            wasmedgeQuickJsPath
+        );
 
         return {
             ok: bundledJavaScript
@@ -53,7 +56,10 @@ export function compileTypeScriptToJavaScript(
     }
 }
 
-export function bundleFromString(ts: TypeScript): JavaScript {
+export function bundleFromString(
+    ts: TypeScript,
+    wasmedgeQuickJsPath: string
+): JavaScript {
     // TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
     const buildResult = buildSync({
         stdin: {
@@ -67,25 +73,25 @@ export function bundleFromString(ts: TypeScript): JavaScript {
         logLevel: 'silent',
         target: 'es2020',
         alias: {
-            internal: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/internal`,
-            util: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/util`,
-            fs: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/fs`,
-            fmt: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/fmt`,
-            assert: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/assert.js`,
-            buffer: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/buffer.js`,
-            path: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/path.js`,
-            stream: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/stream.js`,
-            process: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/process.js`,
-            url: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/url.js`,
-            events: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/events.js`,
-            string_decoder: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/string_decoder.js`,
-            punycode: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/punycode.js`,
-            querystring: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/querystring.js`,
-            whatwg_url: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/whatwg_url.js`,
-            encoding: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/encoding.js`,
-            http: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/http.js`,
-            os: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/os.js`,
-            // crypto: `${GLOBAL_AZLE_WASMEDGE_QUICKJS_DIR}/modules/crypto.js`,
+            internal: `${wasmedgeQuickJsPath}/modules/internal`,
+            util: `${wasmedgeQuickJsPath}/modules/util`,
+            fs: `${wasmedgeQuickJsPath}/modules/fs`,
+            fmt: `${wasmedgeQuickJsPath}/modules/fmt`,
+            assert: `${wasmedgeQuickJsPath}/modules/assert.js`,
+            buffer: `${wasmedgeQuickJsPath}/modules/buffer.js`,
+            path: `${wasmedgeQuickJsPath}/modules/path.js`,
+            stream: `${wasmedgeQuickJsPath}/modules/stream.js`,
+            process: `${wasmedgeQuickJsPath}/modules/process.js`,
+            url: `${wasmedgeQuickJsPath}/modules/url.js`,
+            events: `${wasmedgeQuickJsPath}/modules/events.js`,
+            string_decoder: `${wasmedgeQuickJsPath}/modules/string_decoder.js`,
+            punycode: `${wasmedgeQuickJsPath}/modules/punycode.js`,
+            querystring: `${wasmedgeQuickJsPath}/modules/querystring.js`,
+            whatwg_url: `${wasmedgeQuickJsPath}/modules/whatwg_url.js`,
+            encoding: `${wasmedgeQuickJsPath}/modules/encoding.js`,
+            http: `${wasmedgeQuickJsPath}/modules/http.js`,
+            os: `${wasmedgeQuickJsPath}/modules/os.js`,
+            // crypto: `${wasmedgeQuickJsPath}/modules/crypto.js`,
             crypto: 'crypto-browserify',
             zlib: 'crypto-browserify', // TODO wrong of course
             'internal/deps/acorn/acorn/dist/acorn': `crypto-browserify`, // TODO this is a bug, wasmedge-quickjs should probably add these files
