@@ -29,8 +29,6 @@ export default Canister({
         stableStorage.insert('counter', 0n);
     }),
     http_request: query([HttpRequest], HttpResponse(Token), (req) => {
-        console.log('Hello from http_request');
-
         if (req.method === 'GET') {
             if (req.headers.find(isGzip) === undefined) {
                 if (req.url === '/stream') {
@@ -161,7 +159,6 @@ export default Canister({
         [Token],
         StreamingCallbackHttpResponse(Token),
         (token) => {
-            console.log('Hello from http_streaming');
             switch (token.arbitrary_data) {
                 case 'start': {
                     return {
