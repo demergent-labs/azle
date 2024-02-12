@@ -81,6 +81,7 @@ type satoshi = nat64;
 type bitcoin_network = variant {
   mainnet;
   testnet;
+  regtest;
 };
 
 type bitcoin_address = text;

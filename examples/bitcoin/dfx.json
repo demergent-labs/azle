@@ -11,6 +11,7 @@
                 "output": "test/dfx_generated/bitcoin",
                 "node_compatibility": true
             },
+            "env": ["AZLE_TEST_FETCH"],
             "metadata": [
                 {
                     "name": "candid:service",
