@@ -12,6 +12,17 @@ export function prepareDockerImage(
     dockerContainerName: string,
     wasmedgeQuickJsPath: string
 ) {
+    // TODO I believe this is necessary for Mac
+    // TODO If they do not need this command always run
+    // TODO for example after restarts, then perhaps
+    // TODO we can remove this and just instruct the dev
+    // TODO to run this command once before azle deploy
+    // TODO like the have to do brew install podman
+
+    execSync(`podman machine init --now || true`, {
+        stdio: stdioType
+    });
+
     buildAndLoadImage(
         stdioType,
         dockerImageName,

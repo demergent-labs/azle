@@ -10,7 +10,17 @@
             "declarations": {
                 "output": "test/dfx_generated/complex_init",
                 "node_compatibility": true
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/complex_init/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "rec_init": {
             "type": "custom",
@@ -22,7 +32,17 @@
             "declarations": {
                 "output": "test/dfx_generated/rec_init",
                 "node_compatibility": true
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/rec_init/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         }
     }
 }

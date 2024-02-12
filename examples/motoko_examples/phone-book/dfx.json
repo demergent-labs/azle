@@ -10,7 +10,17 @@
             "declarations": {
                 "output": "src/declarations/phone_book",
                 "node_compatibility": false
-            }
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/phone_book/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "www": {
             "type": "assets",

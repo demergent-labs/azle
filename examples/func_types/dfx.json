@@ -12,7 +12,17 @@
                 "node_compatibility": true
             },
             "env": ["NOTIFIERS_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [["canisters/notifiers/index.did", "src/notifiers.did"]]
+            "assets": [["canisters/notifiers/index.did", "src/notifiers.did"]],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "canisters/func_types/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "notifiers": {
             "type": "custom",
@@ -25,7 +35,17 @@
                 "output": "test/dfx_generated/notifiers",
                 "node_compatibility": true
             },
-            "env": ["NOTIFIERS_PRINCIPAL"]
+            "env": ["NOTIFIERS_PRINCIPAL"],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "canisters/notifiers/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         }
     }
 }

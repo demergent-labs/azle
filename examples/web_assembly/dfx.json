@@ -7,7 +7,17 @@
             "candid_gen": "http",
             "build": "npx azle web_assembly",
             "wasm": ".azle/web_assembly/web_assembly.wasm",
-            "gzip": true
+            "gzip": true,
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         }
     }
 }

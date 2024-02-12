@@ -8,7 +8,17 @@
             "build": "npx azle server",
             "wasm": ".azle/server/server.wasm",
             "gzip": true,
-            "assets": [["src/evm_rpc.did", "src/evm_rpc.did"]]
+            "assets": [["src/evm_rpc.did", "src/evm_rpc.did"]],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/server.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "evm_rpc": {
             "type": "custom",

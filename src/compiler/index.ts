@@ -5,7 +5,7 @@ import { getCandidAndCanisterMethods } from './get_candid_and_canister_methods';
 import { getCanisterJavaScript } from './get_canister_javascript';
 import { getNamesBeforeCli, getNamesAfterCli } from './get_names';
 import { handleCli } from './handle_cli';
-import { prepareDockerImage } from './prepare_docker_images';
+import { prepareDockerImage } from './prepare_docker_image';
 import { prepareRustStagingArea } from './prepare_rust_staging_area';
 import { logSuccess, time } from './utils';
 import { green } from './utils/colors';

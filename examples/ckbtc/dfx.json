@@ -32,7 +32,17 @@
                 "output": "wallet/frontend/dfx_generated/wallet_backend"
             },
             "env": ["CK_BTC_PRINCIPAL", "MINTER_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [["minter/minter.did", "minter/minter.did"]]
+            "assets": [["minter/minter.did", "minter/minter.did"]],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "wallet/backend/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
         },
         "wallet_frontend": {
             "type": "assets",
