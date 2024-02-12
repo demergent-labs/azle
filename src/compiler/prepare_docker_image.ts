@@ -12,18 +12,9 @@ export function prepareDockerImage(
     dockerContainerName: string,
     wasmedgeQuickJsPath: string
 ) {
-    // TODO I believe this is necessary for Mac
-    // TODO If they do not need this command always run
-    // TODO for example after restarts, then perhaps
-    // TODO we can remove this and just instruct the dev
-    // TODO to run this command once before azle deploy
-    // TODO like the have to do brew install podman
+    initAndStartVm(stdioType);
 
-    execSync(`podman machine init --now || true`, {
-        stdio: stdioType
-    });
-
-    buildAndLoadImage(
+    loadImage(
         stdioType,
         dockerImageName,
         dockerImagePathTar,
@@ -38,7 +29,26 @@ export function prepareDockerImage(
     );
 }
 
-function buildAndLoadImage(
+function initAndStartVm(stdioType: IOType) {
+    // TODO I believe this is necessary for Mac
+    // TODO If they do not need this command always run
+    // TODO for example after restarts, then perhaps
+    // TODO we can remove this and just instruct the dev
+    // TODO to run this command once before azle deploy
+    // TODO like the have to do brew install podman
+
+    // TODO detect mac and only run these commands on mac
+
+    execSync(`if [ "$(uname -s)" != "Linux" ]; then podman machine init; fi`, {
+        stdio: stdioType
+    });
+
+    execSync(`if [ "$(uname -s)" != "Linux" ]; then podman machine start; fi`, {
+        stdio: stdioType
+    });
+}
+
+function loadImage(
     stdioType: IOType,
     dockerImageName: string,
     dockerImagePathTar: string,
@@ -65,7 +75,11 @@ function buildAndLoadImage(
     if (process.env.AZLE_USE_DOCKERFILE === 'true') {
         buildAndLoadImageWithDockerfile(dockerImageName, dockerImagePathTar);
     } else {
-        buildAndLoadRemoteImage(dockerImageName, dockerImagePathTarGz);
+        downloadAndLoadRemoteImage(
+            dockerImageName,
+            dockerImagePathTar,
+            dockerImagePathTarGz
+        );
     }
 }
 
@@ -101,7 +115,11 @@ function loadExistingLocalImage(
     if (existsSync(dockerImagePathTarGz)) {
         console.info(yellow(`\nLoading image...\n`));
 
-        execSync(`podman load -i ${dockerImagePathTarGz}`, {
+        execSync(`gzip -d ${dockerImagePathTarGz}`, {
+            stdio: 'inherit'
+        });
+
+        execSync(`podman load -i ${dockerImagePathTar}`, {
             stdio: 'inherit'
         });
 
@@ -133,24 +151,21 @@ function buildAndLoadImageWithDockerfile(
     console.info(yellow(`\nCompiling...`));
 }
 
-function buildAndLoadRemoteImage(
+function downloadAndLoadRemoteImage(
     dockerImageName: string,
+    dockerImagePathTar: string,
     dockerImagePathTarGz: string
 ) {
     console.info(yellow(`\nDownloading image...\n`));
 
     execSync(
-        `curl -L https://github.com/demergent-labs/azle/releases/download/${azleVersion}/${dockerImageName}.tar.gz -o ${dockerImagePathTarGz}`,
+        `curl -L -f https://github.com/demergent-labs/azle/releases/download/${azleVersion}/${dockerImageName}.tar.gz -o ${dockerImagePathTarGz}`,
         {
             stdio: 'inherit'
         }
     );
 
-    console.info(yellow(`\nLoading image...\n`));
-
-    execSync(`podman load -i ${dockerImagePathTarGz}`, {
-        stdio: 'inherit'
-    });
+    loadExistingLocalImage(dockerImagePathTar, dockerImagePathTarGz);
 
     console.info(yellow(`\nCompiling...`));
 }
@@ -162,7 +177,7 @@ function createAndStartContainer(
     wasmedgeQuickJsPath: string
 ) {
     execSync(
-        `podman inspect ${dockerContainerName} || podman create --name ${dockerContainerName} ${dockerImageName} tail -f /dev/null`,
+        `podman create --name ${dockerContainerName} ${dockerImageName} tail -f /dev/null || true`,
         { stdio: stdioType }
     );
 
@@ -170,8 +185,10 @@ function createAndStartContainer(
         stdio: stdioType
     });
 
-    execSync(
-        `podman cp ${dockerContainerName}:/wasmedge-quickjs ${wasmedgeQuickJsPath}`,
-        { stdio: stdioType }
-    );
+    if (!existsSync(wasmedgeQuickJsPath)) {
+        execSync(
+            `podman cp ${dockerContainerName}:/wasmedge-quickjs ${wasmedgeQuickJsPath}`,
+            { stdio: stdioType }
+        );
+    }
 }
