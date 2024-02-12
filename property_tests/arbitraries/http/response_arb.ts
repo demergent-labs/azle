@@ -20,14 +20,13 @@ export function HttpResponseValueArb<T>() {
     return fc
         .tuple(StatusCodeArb, HttpHeadersArb(), BodyArb())
         .map(([status_code, headers, body]): HttpResponse<T> => {
-            const thing: HttpResponse<T> = {
+            return {
                 status_code,
                 headers,
                 body,
                 upgrade: None,
                 streaming_strategy: None
             };
-            return thing;
         });
 }
 export function HttpResponseArb<T extends CorrespondingJSType = any>(

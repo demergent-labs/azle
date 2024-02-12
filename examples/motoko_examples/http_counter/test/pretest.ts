@@ -10,10 +10,6 @@ async function pretest() {
     execSync(`dfx deploy http_counter`, {
         stdio: 'inherit'
     });
-
-    execSync(`dfx generate http_counter`, {
-        stdio: 'inherit'
-    });
 }
 
 pretest();

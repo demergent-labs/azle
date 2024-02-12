@@ -7,10 +7,6 @@
             "build": "npx azle http_counter",
             "wasm": ".azle/http_counter/http_counter.wasm",
             "gzip": true,
-            "declarations": {
-                "output": "test/dfx_generated/http_counter",
-                "node_compatibility": true
-            },
             "metadata": [
                 {
                     "name": "candid:service",
