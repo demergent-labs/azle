@@ -14,11 +14,20 @@ export type HttpResponseAgentResponseValue = {
 };
 
 // The ic replica doesn't support returning status codes in the 1xx range.
-const StatusCodeArb = fc.integer({ min: 200, max: 599 });
+const StatusCodeArb = fc
+    .integer({ min: 200, max: 599 })
+    .filter((status) => status !== 407); // TODO Node's fetch doesn't handle 407 the same as other status, so we're filtering it out until we can figure out why
 
 export function HttpResponseValueArb<T>() {
     return fc
-        .tuple(StatusCodeArb, HttpHeadersArb(), BodyArb())
+        .tuple(StatusCodeArb, HttpHeadersArb())
+        .chain(([statusCode, headers]) => {
+            return fc.tuple(
+                fc.constant(statusCode),
+                fc.constant(headers),
+                hasBody(statusCode) ? BodyArb() : fc.constant(new Uint8Array())
+            );
+        })
         .map(([status_code, headers, body]): HttpResponse<T> => {
             return {
                 status_code,
@@ -85,4 +94,11 @@ export function HttpResponseArb<T extends CorrespondingJSType = any>(
             }
         };
     });
+}
+function hasBody(statusCode: number): boolean {
+    if (statusCode === 205) {
+        return false;
+    } else {
+        return true;
+    }
 }
