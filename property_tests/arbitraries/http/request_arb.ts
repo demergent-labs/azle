@@ -42,13 +42,13 @@ const UrlPathArb = fc.webUrl({ withQueryParameters: true }).map((url) => {
     return `${pathname}${search}${hash}`;
 });
 
-function encodeString(search: string, prefix: string = ''): string {
-    if (search.length === 0) {
-        return search;
+function encodeString(text: string, prefix: string = ''): string {
+    if (text.length === 0) {
+        return text;
     }
 
     return `${prefix}${encodeURIComponent(
-        decodeURIComponent(search.slice(prefix.length))
+        decodeURIComponent(text.slice(prefix.length))
     )}`;
 }
 
