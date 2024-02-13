@@ -96,7 +96,14 @@ export function HttpResponseArb<T extends CorrespondingJSType = any>(
     });
 }
 function hasBody(statusCode: number): boolean {
-    if (statusCode === 205) {
+    // The following code must not have content according to the http spec
+    // https://www.rfc-editor.org/rfc/rfc9110.html
+    if (
+        statusCode < 200 ||
+        statusCode === 204 ||
+        statusCode === 205 ||
+        statusCode === 304
+    ) {
         return false;
     } else {
         return true;
