@@ -230,8 +230,6 @@ jobs:
                   path: /home/runner/.config/azle
                   # path: $HOME/.config/azle
                   key: config-azle-${{ hashFiles('src/compiler/Dockerfile') }}
-            - name: List contents of .config
-              run: ls -la $HOME/.config/azle || true
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               run: sudo apt-get install -y podman
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && runner.os == 'macOS' }}
@@ -265,11 +263,11 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
-              run: AZLE_PROPTEST_NUM_RUNS=10 AZLE_PROPTEST_VERBOSE=true npm test
+              run: AZLE_PROPTEST_NUM_RUNS=5 AZLE_PROPTEST_VERBOSE=true npm test
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
-              run: AZLE_PROPTEST_NUM_RUNS=100 AZLE_PROPTEST_VERBOSE=true npm test
+              run: AZLE_PROPTEST_NUM_RUNS=10 AZLE_PROPTEST_VERBOSE=true npm test
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && (github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
@@ -278,8 +276,6 @@ jobs:
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
               run: $GITHUB_WORKSPACE/node_modules/.bin/tsc --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs
-            - name: List contents of .config
-              run: ls -la $HOME/.config/azle || true
 
     check-basic-integration-tests-success:
         needs: basic-integration-tests

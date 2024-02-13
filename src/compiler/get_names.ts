@@ -1,5 +1,6 @@
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
+import { hashOfDirectory } from 'hash-of-directory';
 import { join } from 'path';
 
 import {
@@ -11,11 +12,11 @@ import {
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { JSCanisterConfig } from './utils/types';
 
-export function getNamesBeforeCli() {
+export async function getNamesBeforeCli() {
     const stdioType = getStdIoType();
 
     const dockerfilePath = join(__dirname, 'Dockerfile');
-    const dockerfileHash = getDockerfileHash(dockerfilePath);
+    const dockerfileHash = await getDockerfileHash(dockerfilePath);
     const dockerImagePrefix = 'azle__image__';
     const dockerImageName = `${dockerImagePrefix}${dockerfileHash}`;
     const dockerContainerPrefix = 'azle__container__';
@@ -86,14 +87,19 @@ export function getNamesAfterCli() {
     };
 }
 
-function getDockerfileHash(dockerfilePath: string): string {
-    let hash = createHash('sha256');
+async function getDockerfileHash(dockerfilePath: string): Promise<string> {
+    let hasher = createHash('sha256');
+
+    const rustDirectory = join(__dirname, 'rust');
+    const rustDirectoryHash = await hashOfDirectory(rustDirectory);
+
+    hasher.update(rustDirectoryHash);
 
     const dockerfile = readFileSync(dockerfilePath);
 
-    hash.update(dockerfile);
+    hasher.update(dockerfile);
 
-    return hash.digest('hex');
+    return hasher.digest('hex');
 }
 
 function getEnvVars(canisterConfig: JSCanisterConfig): [string, string][] {

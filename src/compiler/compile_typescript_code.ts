@@ -60,6 +60,9 @@ export function bundleFromString(
     ts: TypeScript,
     wasmedgeQuickJsPath: string
 ): JavaScript {
+    const finalWasmedgeQuickJsPath =
+        process.env.AZLE_WASMEDGE_QUICKJS_DIR ?? wasmedgeQuickJsPath;
+
     // TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
     const buildResult = buildSync({
         stdin: {
@@ -73,25 +76,25 @@ export function bundleFromString(
         logLevel: 'silent',
         target: 'es2020',
         alias: {
-            internal: `${wasmedgeQuickJsPath}/modules/internal`,
-            util: `${wasmedgeQuickJsPath}/modules/util`,
-            fs: `${wasmedgeQuickJsPath}/modules/fs`,
-            fmt: `${wasmedgeQuickJsPath}/modules/fmt`,
-            assert: `${wasmedgeQuickJsPath}/modules/assert.js`,
-            buffer: `${wasmedgeQuickJsPath}/modules/buffer.js`,
-            path: `${wasmedgeQuickJsPath}/modules/path.js`,
-            stream: `${wasmedgeQuickJsPath}/modules/stream.js`,
-            process: `${wasmedgeQuickJsPath}/modules/process.js`,
-            url: `${wasmedgeQuickJsPath}/modules/url.js`,
-            events: `${wasmedgeQuickJsPath}/modules/events.js`,
-            string_decoder: `${wasmedgeQuickJsPath}/modules/string_decoder.js`,
-            punycode: `${wasmedgeQuickJsPath}/modules/punycode.js`,
-            querystring: `${wasmedgeQuickJsPath}/modules/querystring.js`,
-            whatwg_url: `${wasmedgeQuickJsPath}/modules/whatwg_url.js`,
-            encoding: `${wasmedgeQuickJsPath}/modules/encoding.js`,
-            http: `${wasmedgeQuickJsPath}/modules/http.js`,
-            os: `${wasmedgeQuickJsPath}/modules/os.js`,
-            // crypto: `${wasmedgeQuickJsPath}/modules/crypto.js`,
+            internal: `${finalWasmedgeQuickJsPath}/modules/internal`,
+            util: `${finalWasmedgeQuickJsPath}/modules/util`,
+            fs: `${finalWasmedgeQuickJsPath}/modules/fs`,
+            fmt: `${finalWasmedgeQuickJsPath}/modules/fmt`,
+            assert: `${finalWasmedgeQuickJsPath}/modules/assert.js`,
+            buffer: `${finalWasmedgeQuickJsPath}/modules/buffer.js`,
+            path: `${finalWasmedgeQuickJsPath}/modules/path.js`,
+            stream: `${finalWasmedgeQuickJsPath}/modules/stream.js`,
+            process: `${finalWasmedgeQuickJsPath}/modules/process.js`,
+            url: `${finalWasmedgeQuickJsPath}/modules/url.js`,
+            events: `${finalWasmedgeQuickJsPath}/modules/events.js`,
+            string_decoder: `${finalWasmedgeQuickJsPath}/modules/string_decoder.js`,
+            punycode: `${finalWasmedgeQuickJsPath}/modules/punycode.js`,
+            querystring: `${finalWasmedgeQuickJsPath}/modules/querystring.js`,
+            whatwg_url: `${finalWasmedgeQuickJsPath}/modules/whatwg_url.js`,
+            encoding: `${finalWasmedgeQuickJsPath}/modules/encoding.js`,
+            http: `${finalWasmedgeQuickJsPath}/modules/http.js`,
+            os: `${finalWasmedgeQuickJsPath}/modules/os.js`,
+            // crypto: `${finalWasmedgeQuickJsPath}/modules/crypto.js`,
             crypto: 'crypto-browserify',
             zlib: 'crypto-browserify', // TODO wrong of course
             'internal/deps/acorn/acorn/dist/acorn': `crypto-browserify`, // TODO this is a bug, wasmedge-quickjs should probably add these files

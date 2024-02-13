@@ -25,7 +25,7 @@ async function azle() {
         dockerImagePathTarGz,
         dockerContainerName,
         wasmedgeQuickJsPath
-    } = getNamesBeforeCli();
+    } = await getNamesBeforeCli();
 
     const commandExecuted = handleCli(
         stdioType,
