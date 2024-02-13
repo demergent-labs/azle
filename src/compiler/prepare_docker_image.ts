@@ -39,13 +39,19 @@ function initAndStartVm(stdioType: IOType) {
 
     // TODO detect mac and only run these commands on mac
 
-    execSync(`if [ "$(uname -s)" != "Linux" ]; then podman machine init; fi`, {
-        stdio: stdioType
-    });
+    execSync(
+        `if [ "$(uname -s)" != "Linux" ]; then podman machine init || true; fi`,
+        {
+            stdio: stdioType
+        }
+    );
 
-    execSync(`if [ "$(uname -s)" != "Linux" ]; then podman machine start; fi`, {
-        stdio: stdioType
-    });
+    execSync(
+        `if [ "$(uname -s)" != "Linux" ]; then podman machine start || true; fi`,
+        {
+            stdio: stdioType
+        }
+    );
 }
 
 function loadImage(
