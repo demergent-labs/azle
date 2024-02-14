@@ -8,6 +8,8 @@
 
 There are two main [ICP](https://internetcomputer.org/) environments that you will generally interact with: [the local replica](#deploying-to-the-local-replica) and [mainnet](#deploying-to-mainnet).
 
+We recommend using the `dfx` command line tools to deploy to these environments. Please note that not all `dfx` commands are shown here. See [the dfx CLI reference](https://internetcomputer.org/docs/current/references/cli-reference/dfx-parent) for more information.
+
 ## Starting the local replica
 
 We recommend running your local replica in its own terminal and on a port of your choosing:

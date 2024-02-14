@@ -3,7 +3,7 @@
 -   [Express](#express)
 -   [Limitations](#limitations)
 
-The `Server` function imported from `azle` allows you to build [canisters](https://internetcomputer.org/docs/current/concepts/canisters-code) that act as HTTP servers on [ICP](https://internetcomputer.org/). These servers can serve static files or act as API backends, or both.
+The `Server` function imported from `azle` allows you to build [canisters](https://internetcomputer.org/docs/current/concepts/canisters-code) ([ICP](https://internetcomputer.org/) applications) that act as HTTP servers on ICP. These servers can serve static files or act as API backends, or both.
 
 Here's an example of a very simple HTTP server:
 
@@ -21,7 +21,7 @@ export default Server(() => {
 
 Once [deployed](./deployment.md) you can access your server at a URL like this: `http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:8000`. You can use any HTTP client to interact with your server, such as `curl`, `fetch`, or a web browser. See [the Interacting with your canister section](./deployment.md#interacting-with-your-canister) of the [deployment chapter](./deployment.md) for help in constructing your canister URL.
 
-The result of calling `Server` must be the `default` export of your `main` module, and the callback argument to `Server` must return a [Node.js http.Server](https://nodejs.org/api/http.html#class-httpserver). The `main` module is specified by the `main` property of your project's [dfx.json file](https://github.com/demergent-labs/azle/blob/main/examples/hello_world/dfx.json), which must be at the root directory of your project.
+The `default` export of your `main` module must be the result of calling `Server`, and the callback argument to `Server` must return a [Node.js http.Server](https://nodejs.org/api/http.html#class-httpserver). The `main` module is specified by the `main` property of your project's [dfx.json file](https://github.com/demergent-labs/azle/blob/main/examples/hello_world/dfx.json#L5). The `dfx.json` file must be at the root directory of your project.
 
 The callback argument to `Server` can be asynchronous:
 

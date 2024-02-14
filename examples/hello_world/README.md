@@ -18,28 +18,55 @@ Please remember that Azle is in beta and thus it may have unknown security vulne
 
 > Windows is only supported through a Linux virtual environment of some kind, such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 
-Run the following commands individually following the instructions in the comments:
+On Ubuntu/WSL:
 
 ```bash
-# On Ubuntu/WSL
 sudo apt-get install podman
+```
 
-# On Mac
+On Mac:
+
+```bash
 brew install podman
+```
 
-# It's recommended to use nvm and Node.js 20
+It's recommended to use nvm and Node.js 20:
+
+```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+```
 
-# Restart your terminal
+Restart your terminal and then run:
+
+```bash
 nvm install 20
+```
 
-# The dfx command line tools for managing ICP applications
+Check that the installation went smoothly by looking for clean output from the following command:
+
+```bash
+node --version
+```
+
+Install the dfx command line tools for managing ICP applications:
+
+```bash
 DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```
 
-## Deployment
+Check that the installation went smoothly by looking for clean output from the following command:
 
-Run the following commands individually following the instructions in the comments:
+```bash
+dfx --version
+```
+
+If after trying to run `dfx --version` you encounter an error such as `dfx: command not found`, you might need to add `$HOME/bin` to your path. Here's an example of doing this in your `.bashrc`:
+
+```bash
+echo 'export PATH="$PATH:$HOME/bin"' >> "$HOME/.bashrc"
+```
+
+## Deployment
 
 ```bash
 npx azle new hello_world
@@ -48,18 +75,27 @@ cd hello_world
 npm install
 
 dfx start --clean --host 127.0.0.1:8000
+```
 
-# In a separate terminal in the hello_world directory
+In a separate terminal in the `hello_world` directory:
+
+```bash
 dfx deploy
+```
 
-# If you have problems deploying see https://demergent-labs.github.io/azle/deployment.html#common-deployment-issues
+If you have problems deploying see [Common deployment issues](https://demergent-labs.github.io/azle/deployment.html#common-deployment-issues).
 
-# Obtain your application's [canisterId]
+View your frontend in a web browser at `http://[canisterId].localhost:8000`.
+
+To obtain your application's [canisterId]:
+
+```bash
 dfx canister id backend
+```
 
-# View your frontend in a web browser at http://[canisterId].localhost:8000
+Communicate with your canister using any HTTP client library, for example using `curl`:
 
-# Communicate with your canister using any HTTP client library
+```bash
 curl http://[canisterId].localhost:8000/db
 curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://[canisterId].localhost:8000/db/update
 ```

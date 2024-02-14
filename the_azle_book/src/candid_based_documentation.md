@@ -1,4 +1,6 @@
-# Candid-based Documentation
+# Old Candid-based Documentation
+
+> This entire section of the documentation may be out of date
 
 Azle is currently going through a transition to give higher priority to utilizing HTTP, REST, JSON, and other familiar web technologies. This is in contrast to having previously focused on ICP-specific technologies like [Candid](./candid.md) and explicitly creating `Canister` objects with [query](./query_methods.md) and [update](./update_methods.md) methods.
 
