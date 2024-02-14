@@ -1,63 +1,25 @@
 import {
     blob,
-    bool,
     Canister,
-    Func,
+    HeaderField,
+    HttpRequest,
+    HttpResponse,
     ic,
     init,
     nat,
-    nat16,
     None,
-    Opt,
     query,
     Record,
     Some,
     StableBTreeMap,
+    StreamingCallbackHttpResponse,
     text,
-    Tuple,
-    update,
-    Variant,
-    Vec
+    update
 } from 'azle';
 
 const Token = Record({
     // add whatever fields you'd like
     arbitrary_data: text
-});
-
-const StreamingCallbackHttpResponse = Record({
-    body: blob,
-    token: Opt(Token)
-});
-
-export const Callback = Func([text], StreamingCallbackHttpResponse, 'query');
-
-const CallbackStrategy = Record({
-    callback: Callback,
-    token: Token
-});
-
-const StreamingStrategy = Variant({
-    Callback: CallbackStrategy
-});
-
-type HeaderField = [text, text];
-const HeaderField = Tuple(text, text);
-
-const HttpResponse = Record({
-    status_code: nat16,
-    headers: Vec(HeaderField),
-    body: blob,
-    streaming_strategy: Opt(StreamingStrategy),
-    upgrade: Opt(bool)
-});
-
-const HttpRequest = Record({
-    method: text,
-    url: text,
-    headers: Vec(HeaderField),
-    body: blob,
-    certificate_version: Opt(nat16)
 });
 
 let stableStorage = StableBTreeMap<text, nat>(0);
@@ -66,9 +28,7 @@ export default Canister({
     init: init([], () => {
         stableStorage.insert('counter', 0n);
     }),
-    http_request: query([HttpRequest], HttpResponse, (req) => {
-        console.log('Hello from http_request');
-
+    http_request: query([HttpRequest], HttpResponse(Token), (req) => {
         if (req.method === 'GET') {
             if (req.headers.find(isGzip) === undefined) {
                 if (req.url === '/stream') {
@@ -141,7 +101,7 @@ export default Canister({
             upgrade: None
         };
     }),
-    http_request_update: update([HttpRequest], HttpResponse, (req) => {
+    http_request_update: update([HttpRequest], HttpResponse(Token), (req) => {
         if (req.method === 'POST') {
             const counterOpt = stableStorage.get('counter');
             const counter =
@@ -195,38 +155,41 @@ export default Canister({
             upgrade: None
         };
     }),
-    http_streaming: query([Token], StreamingCallbackHttpResponse, (token) => {
-        console.log('Hello from http_streaming');
-        switch (token.arbitrary_data) {
-            case 'start': {
-                return {
-                    body: encode(' is '),
-                    token: Some({ arbitrary_data: 'next' })
-                };
-            }
-            case 'next': {
-                const counterOpt = stableStorage.get('counter');
-                const counter =
-                    'None' in counterOpt
-                        ? ic.trap('counter does not exist')
-                        : counterOpt.Some;
+    http_streaming: query(
+        [Token],
+        StreamingCallbackHttpResponse(Token),
+        (token) => {
+            switch (token.arbitrary_data) {
+                case 'start': {
+                    return {
+                        body: encode(' is '),
+                        token: Some({ arbitrary_data: 'next' })
+                    };
+                }
+                case 'next': {
+                    const counterOpt = stableStorage.get('counter');
+                    const counter =
+                        'None' in counterOpt
+                            ? ic.trap('counter does not exist')
+                            : counterOpt.Some;
 
-                return {
-                    body: encode(`${counter}`),
-                    token: Some({ arbitrary_data: 'last' })
-                };
-            }
-            case 'last': {
-                return {
-                    body: encode(' streaming\n'),
-                    token: None
-                };
-            }
-            default: {
-                return ic.trap('unreachable');
+                    return {
+                        body: encode(`${counter}`),
+                        token: Some({ arbitrary_data: 'last' })
+                    };
+                }
+                case 'last': {
+                    return {
+                        body: encode(' streaming\n'),
+                        token: None
+                    };
+                }
+                default: {
+                    return ic.trap('unreachable');
+                }
             }
         }
-    })
+    )
 });
 
 function isGzip(x: HeaderField): boolean {

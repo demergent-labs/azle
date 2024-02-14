@@ -51,6 +51,7 @@ export function QueryMethodArb<
             ReturnTypeAgentResponseValue
         >;
         callbackLocation?: CallbackLocation;
+        name?: string;
     }
 ) {
     return fc
@@ -66,7 +67,7 @@ export function QueryMethodArb<
         )
         .map(
             ([
-                functionName,
+                defaultFunctionName,
                 paramTypes,
                 returnType,
                 defaultCallbackLocation,
@@ -74,6 +75,7 @@ export function QueryMethodArb<
             ]): QueryMethod => {
                 const callbackLocation =
                     constraints.callbackLocation ?? defaultCallbackLocation;
+                const functionName = constraints.name ?? defaultFunctionName;
 
                 const imports = new Set([
                     'query',

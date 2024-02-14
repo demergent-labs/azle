@@ -5,6 +5,14 @@ import { IDL } from '@dfinity/candid';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
 
+export type Variant<
+    T extends {
+        [K in keyof T]: any;
+    }
+> = RequireExactlyOne<{
+    [K in keyof T]: TypeMapping<T[K]>;
+}>;
+
 export function Variant<
     T extends {
         [K in keyof T]: CandidType;
@@ -12,9 +20,7 @@ export function Variant<
 >(obj: T) {
     return {
         ...obj,
-        tsType: {} as RequireExactlyOne<{
-            [K in keyof T]: TypeMapping<T[K]>;
-        }>,
+        tsType: {} as Variant<T>,
         toBytes(data: any) {
             return encode(this, data);
         },

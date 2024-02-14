@@ -1,6 +1,7 @@
 import {
     blob,
     bool,
+    CandidType,
     Canister,
     Func,
     ic,
@@ -27,38 +28,65 @@ import { IncomingMessageForServer } from 'http';
 
 const httpMessageParser = require('http-message-parser');
 
-// TODO double-check all of these
-export const Token = Record({
-    // add whatever fields you'd like
-    arbitrary_data: text
-});
-
-export const StreamingCallbackHttpResponse = Record({
-    body: blob,
-    token: Opt(Token)
-});
-
-export const Callback = Func([text], StreamingCallbackHttpResponse, 'query');
-
-export const CallbackStrategy = Record({
-    callback: Callback,
+export const DefaultToken = Record({});
+export function StreamingCallbackHttpResponse<Token extends CandidType>(
     token: Token
-});
+) {
+    return Record({
+        body: blob,
+        token: Opt(token)
+    });
+}
+export type StreamingCallbackHttpResponse<Token> = {
+    body: Uint8Array;
+    token: Opt<Token>;
+};
 
-export const StreamingStrategy = Variant({
-    Callback: CallbackStrategy
-});
+function Callback<Token extends CandidType>(token: Token) {
+    return Func([token], Opt(StreamingCallbackHttpResponse(token)), 'query');
+}
+type Callback = Func;
+
+export function CallbackStrategy<Token extends CandidType>(token: Token) {
+    return Record({
+        callback: Callback(token),
+        token
+    });
+}
+export type CallbackStrategy<Token> = {
+    callback: Callback;
+    token: Token;
+};
+
+export function StreamingStrategy<Token extends CandidType>(token: Token) {
+    return Variant({
+        Callback: CallbackStrategy(token)
+    });
+}
+
+export type StreamingStrategy<Token> = Variant<{
+    Callback: CallbackStrategy<Token>;
+}>;
 
 export type HeaderField = [text, text];
 export const HeaderField = Tuple(text, text);
 
-export const HttpResponse = Record({
-    status_code: nat16,
-    headers: Vec(HeaderField),
-    body: blob,
-    streaming_strategy: Opt(StreamingStrategy),
-    upgrade: Opt(bool)
-});
+export function HttpResponse<Token extends CandidType>(token?: Token) {
+    return Record({
+        status_code: nat16,
+        headers: Vec(HeaderField),
+        body: blob,
+        streaming_strategy: Opt(StreamingStrategy(token ?? DefaultToken)),
+        upgrade: Opt(bool)
+    });
+}
+export type HttpResponse<Token> = {
+    status_code: number;
+    headers: HeaderField[];
+    body: Uint8Array;
+    upgrade: Opt<boolean>;
+    streaming_strategy: Opt<StreamingStrategy<Token>>;
+};
 
 export const HttpRequest = Record({
     method: text,
@@ -67,6 +95,7 @@ export const HttpRequest = Record({
     body: blob,
     certificate_version: Opt(nat16)
 });
+export type HttpRequest = typeof HttpRequest.tsType;
 
 let server: NodeServer;
 
@@ -80,7 +109,7 @@ export function Server(serverInit: () => NodeServer | Promise<NodeServer>) {
         }),
         http_request: query(
             [HttpRequest],
-            Manual(HttpResponse),
+            Manual(HttpResponse()),
             async (httpRequest) => {
                 await httpHandler(httpRequest, true);
             },
@@ -90,7 +119,7 @@ export function Server(serverInit: () => NodeServer | Promise<NodeServer>) {
         ),
         http_request_update: update(
             [HttpRequest],
-            Manual(HttpResponse),
+            Manual(HttpResponse()),
             async (httpRequest) => {
                 await httpHandler(httpRequest, false);
             },
@@ -120,7 +149,7 @@ export async function httpHandler(
                 streaming_strategy: None,
                 upgrade: Some(true)
             },
-            HttpResponse
+            HttpResponse()
         );
 
         return;
@@ -222,7 +251,7 @@ export async function httpHandler(
                         None: null
                     }
                 },
-                HttpResponse
+                HttpResponse()
             );
         }
     }
