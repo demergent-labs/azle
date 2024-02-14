@@ -41,7 +41,9 @@ function generateHttpMethodCheck(method: string, requestParamName: string) {
 
 function generateUrlCheck(url: string, requestParamName: string) {
     return `
-        if (${requestParamName}.url !== '${escape(url)}') {
+        if (decodeURIComponent(${requestParamName}.url) !== decodeURIComponent('${escape(
+            url
+        )}')) {
             throw new Error(
                 \`Unexpected req.url. Expected '${escape(
                     url

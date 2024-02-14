@@ -42,10 +42,10 @@ export type StreamingCallbackHttpResponse<Token> = {
     token: Opt<Token>;
 };
 
-export function Callback<Token extends CandidType>(token: Token) {
+function Callback<Token extends CandidType>(token: Token) {
     return Func([token], Opt(StreamingCallbackHttpResponse(token)), 'query');
 }
-export type Callback = Func;
+type Callback = Func;
 
 export function CallbackStrategy<Token extends CandidType>(token: Token) {
     return Record({
