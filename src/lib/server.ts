@@ -37,17 +37,17 @@ export function StreamingCallbackHttpResponse<Token extends CandidType>(
         token: Opt(token)
     });
 }
-type StreamingCallbackHttpResponse<Token> = {
+export type StreamingCallbackHttpResponse<Token> = {
     body: Uint8Array;
     token: Opt<Token>;
 };
 
-function Callback<Token extends CandidType>(token: Token) {
+export function Callback<Token extends CandidType>(token: Token) {
     return Func([token], Opt(StreamingCallbackHttpResponse(token)), 'query');
 }
-type Callback = Func;
+export type Callback = Func;
 
-function CallbackStrategy<Token extends CandidType>(token: Token) {
+export function CallbackStrategy<Token extends CandidType>(token: Token) {
     return Record({
         callback: Callback(token),
         token
@@ -58,7 +58,7 @@ export type CallbackStrategy<Token> = {
     token: Token;
 };
 
-function StreamingStrategy<Token extends CandidType>(token: Token) {
+export function StreamingStrategy<Token extends CandidType>(token: Token) {
     return Variant({
         Callback: CallbackStrategy(token)
     });
