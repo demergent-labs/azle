@@ -34,7 +34,13 @@ export async function runPropTests(
         ? Number(process.env.AZLE_PROPTEST_SEED)
         : undefined;
 
-    const executionParams = seed ? { ...defaultParams, seed } : defaultParams;
+    const path = process.env.AZLE_PROPTEST_PATH
+        ? process.env.AZLE_PROPTEST_PATH
+        : undefined;
+
+    const executionParams = seed
+        ? { ...defaultParams, seed, path }
+        : defaultParams;
 
     try {
         for (let i = 0; i < numRuns; i++) {
