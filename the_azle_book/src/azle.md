@@ -8,27 +8,11 @@ Azle is a [TypeScript](https://www.typescriptlang.org/) and [JavaScript](https:/
 
 ## Disclaimer
 
-Azle may have unknown security vulnerabilities due to the following:
+Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:
 
--   Azle does not yet have extensive automated property tests
+-   Azle is built with various software packages that have not yet reached maturity
 -   Azle does not yet have multiple independent security reviews/audits
--   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
-
-## Roadmap
-
-We hope to move Azle from beta to release candidates by the end of 2023, and to move from release candidates to 1.0 in early 2024.
-
-### Blockers for release candidates
-
--   Good automated property test coverage
--   Settling of API/syntax
--   Good npm package support
-
-### Blockers for 1.0
-
--   Extensive automated property test coverage
--   Multiple independent security reviews/audits
--   Broad npm package support
+-   Azle does not yet have many live, successful, continuously operating applications deployed to ICP
 
 ## Demergent Labs
 

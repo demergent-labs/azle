@@ -6,22 +6,20 @@
 -   [Deploying to mainnet](#deploying-to-mainnet)
 -   [Common deployment issues](#common-deployment-issues)
 
-There are two main Internet Computer (IC) environments that you will generally interact with: the local replica and mainnet.
-
-When developing on your local machine, our recommended flow is to start up a local replica in your project's root directoy and then deploy to it for local testing.
+There are two main [ICP](https://internetcomputer.org/) environments that you will generally interact with: [the local replica](#deploying-to-the-local-replica) and [mainnet](#deploying-to-mainnet).
 
 ## Starting the local replica
 
-Open a terminal and navigate to your project's root directory:
+We recommend running your local replica in its own terminal and on a port of your choosing:
 
 ```bash
-dfx start
+dfx start --host 127.0.0.1:8000
 ```
 
 Alternatively you can start the local replica as a background process:
 
 ```bash
-dfx start --background
+dfx start --background --host 127.0.0.1:8000
 ```
 
 If you want to stop a local replica running in the background:
@@ -30,7 +28,7 @@ If you want to stop a local replica running in the background:
 dfx stop
 ```
 
-If you ever see this error after `dfx stop`:
+If you ever see this kind of error after `dfx stop`:
 
 ```bash
 Error: Failed to kill all processes.  Remaining: 627221 626923 627260
@@ -47,7 +45,7 @@ sudo kill -9 627260
 If your replica starts behaving strangely, we recommend starting the replica clean, which will clean the `dfx` state of your project:
 
 ```bash
-dfx start --clean
+dfx start --clean --host 127.0.0.1:8000
 ```
 
 ## Deploying to the local replica
@@ -61,71 +59,30 @@ dfx deploy
 To deploy an individual canister:
 
 ```bash
-dfx deploy canister_name
+dfx deploy [canisterName]
 ```
 
 ## Interacting with your canister
 
-As a developer you can generally interact with your canister in three ways:
-
--   [dfx command line](#dfx-command-line)
--   [dfx web UI](#dfx-web-ui)
--   [@dfinity/agent](#dfinityagent)
-
-### dfx command line
-
-You can see a more complete reference [here](https://internetcomputer.org/docs/current/references/cli-reference/).
-
-The commands you are likely to use most frequently are:
+You will generally interact with your canister through an HTTP client such as `curl`, `fetch`, or a web browser. The URL of your canister locally will look like this: `http://[canisterId].localhost:[replicaPort]`. Azle will print your canister's URL in the terminal after a successful deploy.
 
 ```bash
-# assume a canister named my_canister
+# You can obtain the canisterId like this
+dfx canister id [canisterName]
 
-# builds and deploys all canisters specified in dfx.json
-dfx deploy
+# You can obtain the replicaPort like this
+dfx info webserver-port
 
-# builds all canisters specified in dfx.json
-dfx build
+# An example of performing a GET request to a canister
+curl http://a3shf-5eaaa-aaaaa-qaafa-cai.localhost:8000
 
-# builds and deploys my_canister
-dfx deploy my_canister
-
-# builds my_canister
-dfx build my_canister
-
-# removes the Wasm binary and state of my_canister
-dfx uninstall-code my_canister
-
-# calls the methodName method on my_canister with a string argument
-dfx canister call my_canister methodName '("This is a Candid string argument")'
+# An example of performing a POST request to a canister
+curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" http://a3shf-5eaaa-aaaaa-qaafa-cai.localhost:8000
 ```
-
-### dfx web UI
-
-After deploying your canister, you should see output similar to the following in your terminal:
-
-```bash
-Deployed canisters.
-URLs:
-  Backend canister via Candid interface:
-    my_canister: http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&id=rrkah-fqaaa-aaaaa-aaaaq-cai
-```
-
-Open up [http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&id=rrkah-fqaaa-aaaaa-aaaaq-cai](http://127.0.0.1:8000/?canisterId=ryjl3-tyaaa-aaaaa-aaaba-cai&id=rrkah-fqaaa-aaaaa-aaaaq-cai) to access the web UI.
-
-### @dfinity/agent
-
-[@dfinity/agent](https://www.npmjs.com/package/@dfinity/agent) is the TypeScript/JavaScript client library for interacting with canisters on the IC. If you are building a client web application, this is probably what you'll want to use.
-
-There are other agents for other languages as well:
-
--   [Java](https://github.com/ic4j/ic4j-agent)
--   [Python](https://github.com/rocklabs-io/ic-py)
--   [Rust](https://crates.io/crates/ic-agent)
 
 ## Deploying to mainnet
 
-Assuming you are [setup with cycles](https://internetcomputer.org/docs/current/developer-docs/setup/cycles/), then you are ready to deploy to mainnet.
+Assuming you are [setup with a cycles wallet](https://internetcomputer.org/docs/current/developer-docs/getting-started/cycles/cycles-wallet), then you are ready to deploy to mainnet.
 
 To deploy all canisters defined in your dfx.json:
 
@@ -136,15 +93,23 @@ dfx deploy --network ic
 To deploy an individual canister:
 
 ```bash
-dfx deploy --network ic canister_name
+dfx deploy --network ic [canisterName]
 ```
+
+The URL of your canister on mainnet will look like this: `https://[canisterId].raw.icp0.io`.
 
 ## Common deployment issues
 
 If you run into an error during deployment, try the following:
 
-1. Ensure that you have followed the instructions correctly in [the installation chapter](./installation.md), especially noting [the build dependencies](./installation.md#build-dependencies)
-2. Start the whole deployment process from scratch by running the following commands: `dfx stop` or simply terminate `dfx` in your terminal, `dfx start --clean`, `npx azle clean`, `dfx deploy`
-3. Look for more error output by adding the `--verbose` flag to the `build` command in your `dfx.json` file like so: `"build": "npx azle build hello_world --verbose`
-4. Look for errors in each of the files in `~/.config/azle/rust/[rust_version]/logs`
-5. Reach out in [the Discord channel](https://discord.gg/5Hb6rM2QUM)
+1. Ensure that you have followed the installation instructions exactly as specified in [the Get Started chapter](./get_started.md#installation)
+2. Start the whole deployment process from scratch and look for more error output by doing the following:
+    1. In your replica terminal:
+        1. Terminate the replica in your terminal or run `dfx stop` if your replica is running in the background
+        2. `dfx start --clean --host 127.0.0.1:8000`
+    2. In your project terminal at the root directory of your project:
+        1. `rm -rf node_modules`
+        2. `npm install`
+        3. `npx azle clean`
+        4. `AZLE_VERBOSE=true dfx deploy`
+3. If the problem is still not resolved, reach out with the error output in [the Discord channel](https://discord.gg/5Hb6rM2QUM)

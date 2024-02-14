@@ -19,11 +19,11 @@ TypeScript and JavaScript CDK for the [Internet Computer](https://internetcomput
 
 ## Disclaimer
 
-Azle may have unknown security vulnerabilities due to the following:
+Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:
 
--   Azle does not yet have extensive automated property tests
+-   Azle is built with various software packages that have not yet reached maturity
 -   Azle does not yet have multiple independent security reviews/audits
--   Azle does not yet have many live, successful, continuously operating applications deployed to the IC
+-   Azle does not yet have many live, successful, continuously operating applications deployed to ICP
 
 ## Get Started
 

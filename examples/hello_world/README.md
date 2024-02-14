@@ -1,10 +1,43 @@
 # Azle Hello World
 
-Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript. The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
+-   [Installation](#installation)
+-   [Deployment](#deployment)
+-   [Examples](#examples)
+
+Azle helps you to build secure decentralized/replicated servers in TypeScript or JavaScript on [ICP](https://internetcomputer.org/). The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
 
 For more documentation please see [The Azle Book](https://demergent-labs.github.io/azle/).
 
+Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:
+
+-   Azle is built with various software packages that have not yet reached maturity
+-   Azle does not yet have multiple independent security reviews/audits
+-   Azle does not yet have many live, successful, continuously operating applications deployed to ICP
+
 ## Installation
+
+> Windows is only supported through a Linux virtual environment of some kind, such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+
+Run the following commands individually following the instructions in the comments:
+
+```bash
+# On Ubuntu/WSL
+sudo apt-get install podman
+
+# On Mac
+brew install podman
+
+# It's recommended to use nvm and Node.js 20
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# Restart your terminal
+nvm install 20
+
+# The dfx command line tools for managing ICP applications
+DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+```
+
+## Deployment
 
 Run the following commands individually following the instructions in the comments:
 
@@ -12,30 +45,11 @@ Run the following commands individually following the instructions in the commen
 npx azle new hello_world
 cd hello_world
 
-# Ubuntu build dependencies
-sudo apt update
-sudo apt install clang
-sudo apt install build-essential
-sudo apt install libssl-dev
-sudo apt install pkg-config
+npm install
 
-# Mac build dependencies
-xcode-select --install
-brew install llvm
-echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> ~/.zshrc
-
-# It's recommended to use nvm and Node.js 18
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-
-# Restart your terminal
-nvm install 18
-
-# The dfx command line tools for managing ICP applications
-DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 dfx start --clean --host 127.0.0.1:8000
 
 # In a separate terminal in the hello_world directory
-npm install
 dfx deploy
 
 # If you have problems deploying see https://demergent-labs.github.io/azle/deployment.html#common-deployment-issues

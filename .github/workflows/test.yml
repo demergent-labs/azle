@@ -43,7 +43,7 @@ jobs:
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }} # A personal GitHub token is setup as a secret so that committing and pushing to GitHub from the Action will trigger another workflow
             - uses: actions/setup-node@v3
               with:
-                  node-version: 18
+                  node-version: 20
                   registry-url: https://registry.npmjs.org
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -221,7 +221,7 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/setup-node@v3
               with:
-                  node-version: 18
+                  node-version: 20
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               run: DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}

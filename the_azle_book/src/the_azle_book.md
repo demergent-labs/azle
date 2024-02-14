@@ -1,27 +1,23 @@
-# The Azle Book
+# The Azle Book (Beta)
 
 <div style="display: flex; justify-content: center">
     <img src="logo.svg" alt="The Azle Logo" height="250px" />
 </div>
 
-This book is intended to be an in-depth guide to [canister](https://internetcomputer.org/docs/current/concepts/canisters-code) development in [TypeScript](https://www.typescriptlang.org/) on the [Internet Computer](https://internetcomputer.org/) (IC).
+Welcome to The Azle Book! This is a guide for building secure decentralized/replicated servers in TypeScript or JavaScript on [ICP](https://internetcomputer.org/). The current replication factor is [13-40 times](https://dashboard.internetcomputer.org/subnets).
 
-The first 19 chapters are an introductory guide into canister development with [Azle](./azle.md). These chapters build on each other concept by concept, introducing the fundamentals required to create and deploy canisters to the IC.
+Please remember that Azle is in beta and thus it may have unknown security vulnerabilities due to the following:
 
-Chapter 20 is an in-depth reference of the APIs available to Azle canisters.
-
-Our intention is for new developers to use this book as a tutorial or course, starting at chapter 1 and working through chapter 19, using chapter 20 as a reference.
-
-There will also be a companion video series on YouTube. Each chapter here will begin with the video companion as soon as it is available.
-
-You should expect this book and its companion video series to continue to grow and change over time, as its authors and the IC grow and change.
+-   Azle is built with various software packages that have not yet reached maturity
+-   Azle does not yet have multiple independent security reviews/audits
+-   Azle does not yet have many live, successful, continuously operating applications deployed to ICP
 
 The Azle Book is subject to the following license and Azle's [License Extension](https://github.com/demergent-labs/azle/blob/main/LICENSE_EXTENSION.md):
 
 ```
 MIT License
 
-Copyright (c) 2023 AZLE token holders (nlhft-2iaaa-aaaae-qaaua-cai)
+Copyright (c) 2024 AZLE token holders (nlhft-2iaaa-aaaae-qaaua-cai)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
