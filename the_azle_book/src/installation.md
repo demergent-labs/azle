@@ -1,50 +1,29 @@
 # Installation
 
-Follow the instructions exactly as stated below to avoid issues.
+> Windows is only supported through a Linux virtual environment of some kind, such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 
-Windows is only supported through a Linux virtual environment of some kind, such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install). Follow [these instructions to install WSL](https://learn.microsoft.com/en-us/windows/wsl/install).
-
-You should be using a \*nix environment (Linux, Mac OS, [WSL if using Windows](https://learn.microsoft.com/en-us/windows/wsl/install)) with bash and have the following installed on your system:
-
--   [Build dependencies](#build-dependencies)
--   [Node.js 18](#nodejs)
--   [dfx 0.16.1](#dfx-0161)
-
-## Build dependencies
-
-It is best to install all of these dependencies based on your OS:
-
-### Ubuntu/WSL
+On Ubuntu/WSL:
 
 ```bash
-sudo apt update
-sudo apt install clang
-sudo apt install build-essential
-sudo apt install libssl-dev
-sudo apt install pkg-config
+sudo apt-get install podman
 ```
 
-### Mac
+On Mac:
 
 ```bash
-# Install the Xcode Command Line Tools
-xcode-select --install
-brew install llvm
-echo 'export PATH="/opt/homebrew/opt/llvm/bin:$PATH"' >> ~/.zshrc
+brew install podman
 ```
 
-## Node.js
-
-We highly recommend using [nvm](https://github.com/nvm-sh/nvm) to install Node.js (and npm, which is included with Node.js). Run the following commands to install Node.js and npm with nvm:
+It's recommended to use nvm and Node.js 20:
 
 ```bash
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 ```
 
-Now restart your terminal and run the following command:
+Restart your terminal and then run:
 
 ```bash
-nvm install 18
+nvm install 20
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
@@ -53,9 +32,7 @@ Check that the installation went smoothly by looking for clean output from the f
 node --version
 ```
 
-## dfx 0.16.1
-
-Run the following command to install dfx 0.16.1:
+Install the dfx command line tools for managing ICP applications:
 
 ```bash
 DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
