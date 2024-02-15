@@ -18,10 +18,13 @@ export function generateBody(
     const urlCheck = generateUrlCheck(request.url, requestParamName);
     const headersMap = generateHeadersMap(request.headers, requestParamName);
     const headerChecks = generateHeaderChecks(request.headers);
+    const bodyCheck = generateBodyCheck(request.body, requestParamName);
 
     return `
         state++;
 
+        // Body check has to happen before method check or else types might fail
+        ${bodyCheck}
         ${httpMethodCheck}
         ${urlCheck}
         ${headersMap}
@@ -111,6 +114,26 @@ function generateNonEmptyHeaderCheck(name: string, value: string): string {
                 );
             }
         `;
+}
+
+function generateBodyCheck(body: Uint8Array, requestParamName: string): string {
+    return `if (${requestParamName}.method !== 'GET' && ${requestParamName}.body !== undefined) {
+        if (${requestParamName}.body.length !== ${body.length}) {
+            throw new Error(\`Body is not the right length. Expected ${
+                body.length
+            } got \${${requestParamName}.body.length}. Body: \${${requestParamName}.body}\`)
+        }
+        const requestBody = Buffer.from(${requestParamName}.body).toString('utf8');
+        const expectedBody = "${escape(Buffer.from(body).toString('utf8'))}"
+        if (requestBody !== expectedBody) {
+            throw new Error('Unexpected value for body. Expected \${expectedBody}, but received \${requestBody}')
+        }
+        const body = new Uint8Array([${body}])
+        if (!(body.every((value, index) => value === ${requestParamName}.body[index]))) {
+            // This is a redundant check. It's an easier check to do, but outputting a Uint8Array on error is much less helpful that the strings above.
+            throw new Error("Body contents don't match")
+        }
+    }`;
 }
 
 function escape(input: string) {
