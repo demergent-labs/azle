@@ -34,6 +34,7 @@ const StatusCodeArb = fc
     )
     .filter((status) => status !== 407 && status !== 421);
 // TODO Node's fetch doesn't handle 407 the same as other status, so we're filtering it out until we can figure out why
+// TODO https://github.com/demergent-labs/azle/pull/1652
 // TODO same applies to 421 status see https://github.com/demergent-labs/fourZeroSeven for more details
 
 export function HttpResponseValueArb<T>() {
