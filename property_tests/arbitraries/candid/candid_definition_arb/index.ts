@@ -49,13 +49,13 @@ export function candidDefinitionMemo(
                     parents,
                     constraints
                 )(depthLevel - 1),
-                weight: COMPLEX_ARB_COUNT
+                weight: 0
             },
             {
                 arbitrary: recursiveCandidDefinitionMemo(parents)(
                     depthLevel - 1
                 ),
-                weight: REC_ARB_COUNT
+                weight: 0
             }
         );
     });

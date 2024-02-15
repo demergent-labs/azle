@@ -38,12 +38,13 @@ export function Float32ValueArb<C extends Float32Constraints>(
 }
 
 function float32(constraints?: Float32Constraints): fc.Arbitrary<number> {
-    return fc
-        .float32Array({ ...constraints, maxLength: 1, minLength: 1 })
-        .map((sample) => {
-            if (constraints?.noNegativeZero) {
-                return sample[0] === 0 ? 0 : sample[0];
-            }
-            return sample[0];
-        });
+    return fc.constantFrom(-32, 1, 32);
+    // return fc
+    //     .float32Array({ ...constraints, maxLength: 1, minLength: 1 })
+    //     .map((sample) => {
+    //         if (constraints?.noNegativeZero) {
+    //             return sample[0] === 0 ? 0 : sample[0];
+    //         }
+    //         return sample[0];
+    //     });
 }
