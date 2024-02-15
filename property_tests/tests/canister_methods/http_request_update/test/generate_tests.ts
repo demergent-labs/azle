@@ -35,7 +35,6 @@ export function generateTests(
                 name: functionName,
                 test: async () => {
                     const response = await fletch('canister', request);
-
                     const filteredHeaders = response.headers
                         .filter(
                             ([name]) =>
@@ -44,13 +43,13 @@ export function generateTests(
                                 name !== 'date'
                         )
                         .sort();
-                    const sortedExpectedHeaders =
-                        expectedResponse.headers.sort();
                     const processedResponse = {
                         status: response.status,
                         headers: filteredHeaders,
                         body: response.body
                     };
+                    const sortedExpectedHeaders =
+                        expectedResponse.headers.sort();
                     const processedExpectedResponse = {
                         ...expectedResponse,
                         headers: sortedExpectedHeaders

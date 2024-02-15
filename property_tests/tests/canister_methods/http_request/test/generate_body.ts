@@ -81,7 +81,11 @@ function generateHeaderChecks(headers: [string, string][]) {
 }
 
 function generateEmptyHeaderCheck(name: string) {
-    return `if (headers['${escape(name).toLowerCase()}'] !== undefined) {
+    return `if (headers['${escape(
+        name
+    ).toLowerCase()}'] !== undefined && headers['${escape(
+        name
+    ).toLowerCase()}'] !== '') {
                 throw new Error(
                     \`Unexpected value for header '${escape(
                         name
