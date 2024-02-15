@@ -34,7 +34,4 @@ RUN echo "[workspace]\nmembers = [\"canister\"]\n\n[profile.release]\nopt-level 
 
 WORKDIR /azle_rust_dependencies
 
-# This version number should be incremented when the Rust portion of the compiler changes
-# This is to ensure that the Dockerfile hash changes
-# Version: 0
 RUN AZLE_SKIP_COMPILER_INFO=true CARGO_TARGET_DIR=/global_target_dir cargo build --target wasm32-wasi --manifest-path canister/Cargo.toml --release

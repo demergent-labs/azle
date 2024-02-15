@@ -29,6 +29,7 @@
         "@dfinity/principal": "^0.19.3",
         "@types/uuid": "^9.0.4",
         "buffer": "^6.0.3",
+        "chokidar": "^3.6.0",
         "crypto-browserify": "^3.12.0",
         "esbuild": "^0.19.3",
         "fs-extra": "10.0.1",

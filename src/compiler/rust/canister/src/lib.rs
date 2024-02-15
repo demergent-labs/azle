@@ -70,6 +70,8 @@ thread_local! {
     static STABLE_B_TREE_MAPS: RefCell<BTreeMap<u8, AzleStableBTreeMap>> = RefCell::new(BTreeMap::new());
 
     static WASM_INSTANCES: RefCell<HashMap<String, (wasmi::Instance, wasmi::Store<()>)>> = RefCell::new(HashMap::new());
+
+    static RELOADED_JS: RefCell<Vec<u8>> = RefCell::new(vec![]);
 }
 
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]

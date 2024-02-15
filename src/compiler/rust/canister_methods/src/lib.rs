@@ -65,37 +65,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
             ASSETS_DIR.extract("/").unwrap();
 
-            let mut rt = wasmedge_quickjs::Runtime::new();
-
-            let r = rt.run_with_context(|context| {
-                ic::register(context);
-                web_assembly::register(context);
-
-                // TODO what do we do if there is an error in here?
-                context.eval_global_str("globalThis.exports = {};".to_string());
-                context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
-
-                run_event_loop(context);
-
-                // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
-
-                // match &temp {
-                //     wasmedge_quickjs::JsValue::Exception(js_exception) => {
-                //         js_exception.dump_error();
-                //         panic!("we had an error");
-                //     },
-                //     _ => {}
-                // };
-
-                // ic_cdk::println!("temp: {:#?}", temp);
-            });
-
-            RUNTIME.with(|runtime| {
-                let mut runtime = runtime.borrow_mut();
-                *runtime = Some(rt);
-            });
-
-            #init_method_call
+            initialize_js(std::str::from_utf8(MAIN_JS).unwrap(), true);
         }
     };
 
@@ -116,37 +86,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
             ASSETS_DIR.extract("/").unwrap();
 
-            let mut rt = wasmedge_quickjs::Runtime::new();
-
-            let r = rt.run_with_context(|context| {
-                ic::register(context);
-                web_assembly::register(context);
-
-                // TODO what do we do if there is an error in here?
-                context.eval_global_str("globalThis.exports = {};".to_string());
-                context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
-
-                run_event_loop(context);
-
-                // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
-
-                // match &temp {
-                //     wasmedge_quickjs::JsValue::Exception(js_exception) => {
-                //         js_exception.dump_error();
-                //         panic!("we had an error");
-                //     },
-                //     _ => {}
-                // };
-
-                // ic_cdk::println!("temp: {:#?}", temp);
-            });
-
-            RUNTIME.with(|runtime| {
-                let mut runtime = runtime.borrow_mut();
-                *runtime = Some(rt);
-            });
-
-            #post_update_method_call
+            initialize_js(std::str::from_utf8(MAIN_JS).unwrap(), false);
         }
     };
 
@@ -247,6 +187,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
             }
         });
 
+    let reload_js = get_reload_js();
+
     quote! {
         static ASSETS_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/src/assets");
 
@@ -270,6 +212,47 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 .expect("candid.did could not be read")
                 .to_string()
         }
+
+        fn initialize_js(js: &str, init: bool) {
+            let mut rt = wasmedge_quickjs::Runtime::new();
+
+            let r = rt.run_with_context(|context| {
+                ic::register(context);
+                web_assembly::register(context);
+
+                // TODO what do we do if there is an error in here?
+                context.eval_global_str("globalThis.exports = {};".to_string());
+                context.eval_module_str(js.to_string(), "azle_main");
+
+                run_event_loop(context);
+
+                // let temp = context.eval_module_str(std::str::from_utf8(MAIN_JS).unwrap().to_string(), "azle_main");
+
+                // match &temp {
+                //     wasmedge_quickjs::JsValue::Exception(js_exception) => {
+                //         js_exception.dump_error();
+                //         panic!("we had an error");
+                //     },
+                //     _ => {}
+                // };
+
+                // ic_cdk::println!("temp: {:#?}", temp);
+            });
+
+            RUNTIME.with(|runtime| {
+                let mut runtime = runtime.borrow_mut();
+                *runtime = Some(rt);
+            });
+
+            if init == true {
+                #init_method_call
+            }
+            else {
+                #post_update_method_call
+            }
+        }
+
+        #reload_js
     }
     .into()
 }
@@ -346,4 +329,37 @@ fn get_guard_token_stream(
             }
         },
     )
+}
+
+// TODO there is no authentication on this method
+// TODO it is up to the developer to not deploy with this function
+// TODO in the binary if they are worried about it
+fn get_reload_js() -> proc_macro2::TokenStream {
+    if let Ok(azle_autoreload) = std::env::var("AZLE_AUTORELOAD") {
+        if azle_autoreload == "true" {
+            return quote! {
+                #[ic_cdk_macros::update]
+                fn reload_js(js_bytes: Vec<u8>, done: bool) {
+                    if done == false {
+                        RELOADED_JS.with(|reloaded_js| {
+                            let mut reloaded_js_mut = reloaded_js.borrow_mut();
+                            reloaded_js_mut.extend(js_bytes);
+                        });
+                    } else {
+                        let js_bytes_complete = RELOADED_JS.with(|reloaded_js| reloaded_js.borrow().clone());
+                        let js = String::from_utf8_lossy(&js_bytes_complete);
+
+                        RELOADED_JS.with(|reloaded_js| {
+                            let mut reloaded_js_mut = reloaded_js.borrow_mut();
+                            reloaded_js_mut.clear();
+                        });
+
+                        initialize_js(&js, true);
+                    }
+                }
+            };
+        }
+    }
+
+    quote! {}
 }
