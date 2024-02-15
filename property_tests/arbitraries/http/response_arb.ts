@@ -32,7 +32,9 @@ const StatusCodeArb = fc
         },
         { arbitrary: fc.integer({ min: 200, max: 599 }), weight: 1 } // The ic replica doesn't support returning status codes in the 1xx range.
     )
-    .filter((status) => status !== 407); // TODO Node's fetch doesn't handle 407 the same as other status, so we're filtering it out until we can figure out why
+    .filter((status) => status !== 407 && status !== 421);
+// TODO Node's fetch doesn't handle 407 the same as other status, so we're filtering it out until we can figure out why
+// TODO same applies to 421 status see https://github.com/demergent-labs/fourZeroSeven for more details
 
 export function HttpResponseValueArb<T>() {
     return fc
