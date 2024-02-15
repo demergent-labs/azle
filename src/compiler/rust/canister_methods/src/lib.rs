@@ -187,7 +187,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
             }
         });
 
-    let reload_js = get_reload_js();
+    let reload_js = get_reload_js(&compiler_info.env_vars);
 
     quote! {
         static ASSETS_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/src/assets");
@@ -334,9 +334,11 @@ fn get_guard_token_stream(
 // TODO there is no authentication on this method
 // TODO it is up to the developer to not deploy with this function
 // TODO in the binary if they are worried about it
-fn get_reload_js() -> proc_macro2::TokenStream {
-    if let Ok(azle_autoreload) = std::env::var("AZLE_AUTORELOAD") {
-        if azle_autoreload == "true" {
+fn get_reload_js(env_vars: &Vec<(String, String)>) -> proc_macro2::TokenStream {
+    let azle_autoreload_env_var = env_vars.iter().find(|(key, _)| key == "AZLE_AUTORELOAD");
+
+    if let Some((_, value)) = azle_autoreload_env_var {
+        if value == "true" {
             return quote! {
                 #[ic_cdk_macros::update]
                 fn reload_js(js_bytes: Vec<u8>, done: bool) {

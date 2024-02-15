@@ -127,7 +127,9 @@ async function getDockerfileHash(dockerfilePath: string): Promise<string> {
 }
 
 function getEnvVars(canisterConfig: JSCanisterConfig): [string, string][] {
-    return (canisterConfig.env ?? []).map((envVarName) => {
+    const env = [...(canisterConfig.env ?? []), 'AZLE_AUTORELOAD'];
+
+    return env.map((envVarName) => {
         return [envVarName, process.env[envVarName] ?? ''];
     });
 }

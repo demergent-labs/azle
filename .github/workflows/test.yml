@@ -71,6 +71,7 @@ jobs:
                     "examples/apollo_server",
                     "examples/async_await",
                     "examples/audio_recorder",
+                    "examples/autoreload",
                     "examples/bitcoin",
                     "examples/blob_array",
                     "examples/bytes",
