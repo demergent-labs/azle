@@ -18,8 +18,11 @@ export function generateBody(
     const urlCheck = generateUrlCheck(request.url, requestParamName);
     const headersMap = generateHeadersMap(request.headers, requestParamName);
     const headerChecks = generateHeaderChecks(request.headers);
+    const bodyCheck = generateBodyCheck(request.body, requestParamName);
 
     return `
+        // Body check has to happen before method check or else type checks might fail
+        ${bodyCheck}
         ${httpMethodCheck}
         ${urlCheck}
         ${headersMap}
@@ -78,7 +81,11 @@ function generateHeaderChecks(headers: [string, string][]) {
 }
 
 function generateEmptyHeaderCheck(name: string) {
-    return `if (headers['${escape(name).toLowerCase()}'] !== undefined) {
+    return `if (headers['${escape(
+        name
+    ).toLowerCase()}'] !== undefined && headers['${escape(
+        name
+    ).toLowerCase()}'] !== '') {
                 throw new Error(
                     \`Unexpected value for header '${escape(
                         name
@@ -105,6 +112,16 @@ function generateNonEmptyHeaderCheck(name: string, value: string): string {
                 );
             }
         `;
+}
+
+function generateBodyCheck(body: Uint8Array, requestParamName: string): string {
+    return `if (${requestParamName}.method !== 'GET' && ${requestParamName}.body !== undefined) {
+        const requestBody = Buffer.from(${requestParamName}.body).toString('utf-8');
+        const expectedBody = "${escape(Buffer.from(body).toString('utf-8'))}"
+        if (requestBody !== expectedBody) {
+                throw new Error(\`Unexpected value for body. Expected \${expectedBody}, but received \${requestBody}\`)
+        }
+    }`;
 }
 
 function escape(input: string) {

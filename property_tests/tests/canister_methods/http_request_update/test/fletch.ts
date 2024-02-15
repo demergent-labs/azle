@@ -56,13 +56,23 @@ export function fletchSync(canisterName: string, options: HttpRequest) {
         --include\
         -X ${options.method}\
         ${requestHeaders}\
-        --data "${options.body.join(',')}"\
+        --data "${escapeForExecSync(
+            Buffer.from(options.body).toString('utf-8')
+        )}"\
         "${canisterId}.localhost:8000${options.url}" \
         --resolve "${canisterId}.localhost:8000:127.0.0.1"`;
 
     const responseBuffer = execSync(curlCommand);
 
     return toResponseSync(responseBuffer);
+}
+
+function escapeForExecSync(input: string) {
+    return input
+        .replace(/\\/g, '\\\\') // Escape backslashes
+        .replace(/"/g, '\\"') // Escape double quotes
+        .replace(/`/g, '\\`') // Escape backtick
+        .replace(/\$/g, '\\$'); // Escape dollar signs
 }
 
 function toCurlHeadersString(headers: [string, string][]) {
