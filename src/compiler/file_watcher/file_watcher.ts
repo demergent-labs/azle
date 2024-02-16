@@ -9,6 +9,7 @@
 import { Actor, HttpAgent } from '@dfinity/agent';
 import { watch } from 'chokidar';
 import { readFileSync, writeFileSync } from 'fs';
+import { v4 } from 'uuid';
 
 import { getCanisterJavaScript } from '../get_canister_javascript';
 import { ok } from '../utils/result';
@@ -81,7 +82,11 @@ async function reloadJs(
     const actor = Actor.createActor(
         ({ IDL }) => {
             return IDL.Service({
-                reload_js: IDL.Func([IDL.Vec(IDL.Nat8), IDL.Bool], [], [])
+                reload_js: IDL.Func(
+                    [IDL.Nat64, IDL.Nat64, IDL.Vec(IDL.Nat8), IDL.Nat64],
+                    [],
+                    []
+                )
             });
         },
         {
@@ -94,26 +99,25 @@ async function reloadJs(
 
     const chunkSize = 2_000_000; // The current message limit is about 2 MiB
 
+    const timestamp = process.hrtime.bigint();
+
+    let chunkNumber = 0;
+
     for (let i = 0; i < reloadedJs.length; i += chunkSize) {
         const chunk = reloadedJs.slice(i, i + chunkSize);
 
         if (process.env.AZLE_VERBOSE === 'true') {
-            console.info(`Uploading chunk of length ${chunk.length}...`);
+            console.info(
+                `Uploading chunk: ${timestamp}, ${chunkNumber}, ${chunk.length}, ${reloadedJs.length}`
+            );
         }
 
-        actor.reload_js(chunk, false);
-        // TODO if we give each chunk an id, a time, then it should not matter the order
-        // TODO and we can do it faster hopefully
-        await new Promise((resolve) => setTimeout(resolve, 500)); // TODO dubious timing
+        actor.reload_js(timestamp, chunkNumber, chunk, reloadedJs.length);
+
+        chunkNumber += 1;
     }
 
     if (process.env.AZLE_VERBOSE === 'true') {
-        console.info(`Finishing chunk uploads...`);
-    }
-
-    await actor.reload_js(Buffer.from([]), true);
-
-    if (process.env.AZLE_VERBOSE === 'true') {
-        console.info(`Finished chunk uploads`);
+        console.info(`Finished uploading chunks`);
     }
 }

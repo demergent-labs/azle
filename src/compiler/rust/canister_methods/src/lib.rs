@@ -341,23 +341,31 @@ fn get_reload_js(env_vars: &Vec<(String, String)>) -> proc_macro2::TokenStream {
         if value == "true" {
             return quote! {
                 #[ic_cdk_macros::update]
-                fn reload_js(js_bytes: Vec<u8>, done: bool) {
-                    if done == false {
-                        RELOADED_JS.with(|reloaded_js| {
-                            let mut reloaded_js_mut = reloaded_js.borrow_mut();
-                            reloaded_js_mut.extend(js_bytes);
-                        });
-                    } else {
-                        let js_bytes_complete = RELOADED_JS.with(|reloaded_js| reloaded_js.borrow().clone());
-                        let js = String::from_utf8_lossy(&js_bytes_complete);
+                fn reload_js(timestamp: u64, chunk_number: u64, js_bytes: Vec<u8>, total_len: u64) {
+                    RELOADED_JS_TIMESTAMP.with(|reloaded_js_timestamp| {
+                        let mut reloaded_js_timestamp_mut = reloaded_js_timestamp.borrow_mut();
 
-                        RELOADED_JS.with(|reloaded_js| {
-                            let mut reloaded_js_mut = reloaded_js.borrow_mut();
-                            reloaded_js_mut.clear();
-                        });
+                        if timestamp > *reloaded_js_timestamp_mut {
+                            *reloaded_js_timestamp_mut = timestamp;
 
-                        initialize_js(&js, true);
-                    }
+                            RELOADED_JS.with(|reloaded_js| {
+                                let mut reloaded_js_mut = reloaded_js.borrow_mut();
+                                reloaded_js_mut.clear();
+                            });
+                        }
+                    });
+
+                    RELOADED_JS.with(|reloaded_js| {
+                        let mut reloaded_js_mut = reloaded_js.borrow_mut();
+                        reloaded_js_mut.insert(chunk_number, js_bytes);
+
+                        let reloaded_js_complete_bytes: Vec<u8> = reloaded_js_mut.values().flat_map(|v| v.clone()).collect();
+
+                        if reloaded_js_complete_bytes.len() as u64 == total_len {
+                            let js_string = String::from_utf8_lossy(&reloaded_js_complete_bytes);
+                            initialize_js(&js_string, true);
+                        }
+                    });
                 }
             };
         }

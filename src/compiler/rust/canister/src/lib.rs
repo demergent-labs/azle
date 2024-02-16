@@ -71,7 +71,9 @@ thread_local! {
 
     static WASM_INSTANCES: RefCell<HashMap<String, (wasmi::Instance, wasmi::Store<()>)>> = RefCell::new(HashMap::new());
 
-    static RELOADED_JS: RefCell<Vec<u8>> = RefCell::new(vec![]);
+    static RELOADED_JS_TIMESTAMP: RefCell<u64> = RefCell::new(0);
+
+    static RELOADED_JS: RefCell<BTreeMap<u64, Vec<u8>>> = RefCell::new(BTreeMap::new());
 }
 
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]
