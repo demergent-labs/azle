@@ -123,7 +123,7 @@ async function azle() {
         }
     );
 
-    logSuccess(canisterName, replicaWebServerPort);
+    logSuccess(canisterName, canisterId, replicaWebServerPort);
 
     logAutoreloadWarning();
 }
