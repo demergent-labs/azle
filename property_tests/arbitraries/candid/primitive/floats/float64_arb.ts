@@ -38,13 +38,13 @@ export function Float64ValueArb<C extends Float64Constraints>(
 }
 
 function float64(constraints?: Float64Constraints): fc.Arbitrary<number> {
-    return fc.constantFrom(0, 64, -64);
-    // return fc
-    //     .float64Array({ ...constraints, maxLength: 1, minLength: 1 })
-    //     .map((sample) => {
-    //         if (constraints?.noNegativeZero) {
-    //             return sample[0] === 0 ? 0 : sample[0];
-    //         }
-    //         return sample[0];
-    //     });
+    // return fc.constantFrom(0, 64, -64);
+    return fc
+        .float64Array({ ...constraints, maxLength: 1, minLength: 1 })
+        .map((sample) => {
+            if (constraints?.noNegativeZero) {
+                return sample[0] === 0 ? 0 : sample[0];
+            }
+            return sample[0];
+        });
 }

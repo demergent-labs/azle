@@ -9,6 +9,7 @@ import { CorrespondingJSType } from './candid/corresponding_js_type';
 import { TextClass, FloatClass } from '@dfinity/candid/lib/cjs/idl';
 
 TextClass.prototype.valueToString = (x): string => {
+    console.log('Hello from the mutated string valueToString');
     return `"${escapeForBash(x)}"`;
 };
 
@@ -17,6 +18,7 @@ TextClass.prototype.valueToString = (x): string => {
  * is a float won't serialize unless it's 10.0
  */
 FloatClass.prototype.valueToString = (x): string => {
+    console.log('Hello from the mutated float valueToString');
     const floatString = x.toString();
     if (floatString.includes('.') || floatString.includes('e')) {
         return floatString;
