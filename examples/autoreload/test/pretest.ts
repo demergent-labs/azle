@@ -7,7 +7,7 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy`, {
+    execSync(`AZLE_AUTORELOAD=true dfx deploy`, {
         stdio: 'inherit'
     });
 }
