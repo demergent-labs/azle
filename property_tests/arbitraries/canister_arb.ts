@@ -6,23 +6,7 @@ import { InitMethod } from './canister_methods/init_method_arb';
 import { PostUpgradeMethod } from './canister_methods/post_upgrade_arb';
 import { PreUpgradeMethod } from './canister_methods/pre_upgrade_method_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
-import { TextClass, FloatClass } from '@dfinity/candid/lib/cjs/idl';
-
-TextClass.prototype.valueToString = (x): string => {
-    return `"${escapeForBash(x)}"`;
-};
-
-/**
- * If a float doesn't have a decimal it won't serialize properly, so 10 while
- * is a float won't serialize unless it's 10.0
- */
-FloatClass.prototype.valueToString = (x): string => {
-    const floatString = x.toString();
-    if (floatString.includes('.') || floatString.includes('e')) {
-        return floatString;
-    }
-    return floatString + '.0';
-};
+import { CliStringVisitor } from '../visitors/cli-string-visitor';
 
 export type Canister = {
     initArgs: string[] | undefined;
@@ -81,7 +65,9 @@ export function CanisterArb<
             const value = param.value.value;
             return value.runtimeCandidTypeObject
                 .getIdl([])
-                .valueToString(value.agentArgumentValue);
+                .accept(new CliStringVisitor(), {
+                    value: value.agentArgumentValue
+                });
         });
 
         const postUpgradeArgs = config.postUpgradeMethod?.params.map(
@@ -89,7 +75,9 @@ export function CanisterArb<
                 const value = param.value.value;
                 return value.runtimeCandidTypeObject
                     .getIdl([])
-                    .valueToString(value.agentArgumentValue);
+                    .accept(new CliStringVisitor(), {
+                        value: value.agentArgumentValue
+                    });
             }
         );
 
