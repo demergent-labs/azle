@@ -12,6 +12,7 @@ import { logSuccess, time, unwrap } from './utils';
 import { green } from './utils/colors';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { CompilerInfo } from './utils/types';
+import { logAutoreloadWarning } from './log_auto_reload_warning';
 
 azle();
 
@@ -123,6 +124,8 @@ async function azle() {
     );
 
     logSuccess(canisterName, replicaWebServerPort);
+
+    logAutoreloadWarning();
 }
 
 function createAzleDirectories() {
