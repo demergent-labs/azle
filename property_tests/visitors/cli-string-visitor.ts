@@ -3,7 +3,7 @@ import { IDL } from '@dfinity/candid';
 export type VisitorData = { value: any };
 
 /**
- * The Bash string visitor will convert the value given in the VisitorData to
+ * The CLI string visitor will convert the value given in the VisitorData to
  * a string version that will work as an argument in a command line tool such
  * as dfx deploy
  */
@@ -19,23 +19,8 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
         }
         return floatString + '.0';
     }
-    visitType<T>(t: IDL.Type<T>, data: VisitorData): string {
-        return t.valueToString(data.value);
-    }
     visitText(_t: IDL.TextClass, data: VisitorData): string {
         return `"${escapeForBash(data.value)}"`;
-    }
-    visitTuple<T extends any[]>(
-        _t: IDL.TupleClass<T>,
-        components: IDL.Type<any>[],
-        data: VisitorData
-    ): string {
-        const fields = components.map((value, index) =>
-            value.accept(this, {
-                value: data.value[index]
-            })
-        );
-        return `record {${fields.join('; ')}}`;
     }
     visitOpt<T>(
         _t: IDL.OptClass<T>,
@@ -47,17 +32,6 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
         } else {
             return `opt ${ty.accept(this, { value: data.value[0] })}`;
         }
-    }
-    visitVec<T>(
-        _t: IDL.VecClass<T>,
-        ty: IDL.Type<T>,
-        data: VisitorData
-    ): string {
-        const arr = asAnyArray(data.value); // TO REVIEW Do you like this or the any down bellow?
-        const elements = data.value.map((e: any) => {
-            return ty.accept(this, { value: e });
-        });
-        return 'vec {' + elements.join('; ') + '}';
     }
     visitRec<T>(
         _t: IDL.RecClass<T>,
@@ -79,6 +53,18 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
         });
         return `record {${fieldStrings.join('; ')}}`;
     }
+    visitTuple<T extends any[]>(
+        _t: IDL.TupleClass<T>,
+        components: IDL.Type<any>[],
+        data: VisitorData
+    ): string {
+        const fields = components.map((value, index) =>
+            value.accept(this, {
+                value: data.value[index]
+            })
+        );
+        return `record {${fields.join('; ')}}`;
+    }
     visitVariant(
         _t: IDL.VariantClass,
         fields: [string, IDL.Type<any>][],
@@ -96,6 +82,20 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
             }
         }
         throw new Error('Variant has no data: ' + data.value);
+    }
+    visitVec<T>(
+        _t: IDL.VecClass<T>,
+        ty: IDL.Type<T>,
+        data: VisitorData
+    ): string {
+        const arr = asAnyArray(data.value); // TO REVIEW Do you like this or the any down bellow?
+        const elements = data.value.map((e: any) => {
+            return ty.accept(this, { value: e });
+        });
+        return 'vec {' + elements.join('; ') + '}';
+    }
+    visitType<T>(t: IDL.Type<T>, data: VisitorData): string {
+        return t.valueToString(data.value);
     }
 }
 
