@@ -25,10 +25,6 @@ export function getTests(canisterId: string): Test[] {
 
     return [
         {
-            name: 'waiting for Azle to reload',
-            wait: 5_000
-        },
-        {
             name: '/test',
             test: async () => {
                 try {
