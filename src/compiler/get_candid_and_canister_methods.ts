@@ -8,13 +8,12 @@ import { CandidGen, CanisterMethods, CompilerInfo } from './utils/types';
 
 export function getCandidAndCanisterMethods(
     candidGen: CandidGen = 'automatic',
-    canisterPath: string,
     candidPath: string,
     compilerInfoPath: string,
     dockerContainerName: string,
     canisterName: string,
     stdioType: IOType,
-    envVars: [string, string][],
+    envVars: [string, string | undefined][],
     rustStagingCandidPath: string,
     rustStagingWasmPath: string
 ): {

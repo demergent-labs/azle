@@ -33,7 +33,7 @@ export type CandidGen = 'automatic' | 'custom' | 'http';
 
 export type CompilerInfo = {
     canister_methods: CanisterMethods;
-    env_vars: [string, string][];
+    env_vars: [string, string | undefined][];
 };
 
 export type CanisterMethods = {

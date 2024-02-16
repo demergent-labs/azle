@@ -89,7 +89,6 @@ async function azle() {
 
             const { candid, canisterMethods } = getCandidAndCanisterMethods(
                 canisterConfig.candid_gen,
-                canisterPath,
                 candidPath,
                 compilerInfoPath,
                 dockerContainerName,

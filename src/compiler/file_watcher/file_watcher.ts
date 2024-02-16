@@ -1,15 +1,6 @@
-// TODO handle saving many different files within the same timeframe
-// TODO always go with the latest file saved...so use timestamps probably
-// TODO and if you are in the middle of an older file, get rid of it
-// TODO and start with the new file
-// TODO I Think we are going to need to lock this down
-// TODO otherwise you could save many files and have them all start overwriting
-// TODO each other
-
 import { Actor, HttpAgent } from '@dfinity/agent';
 import { watch } from 'chokidar';
 import { readFileSync, writeFileSync } from 'fs';
-import { v4 } from 'uuid';
 
 import { getCanisterJavaScript } from '../get_canister_javascript';
 import { ok } from '../utils/result';
@@ -24,8 +15,8 @@ watch(process.cwd(), {
     ignored: ['**/.dfx/**', '**/.azle/**', '**/node_modules/**']
 }).on('all', async (event, path) => {
     if (process.env.AZLE_VERBOSE === 'true') {
-        console.log('event', event);
-        console.log('path', path);
+        console.info('event', event);
+        console.info('path', path);
     }
 
     if (event === 'change' && (path.endsWith('.ts') || path.endsWith('.js'))) {
@@ -38,7 +29,7 @@ watch(process.cwd(), {
                 replicaWebServerPort
             );
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
 });
@@ -72,11 +63,7 @@ async function reloadJs(
     });
 
     if (process.env.DFX_NETWORK !== 'ic') {
-        try {
-            await agent.fetchRootKey();
-        } catch (error) {
-            console.log(error);
-        }
+        await agent.fetchRootKey();
     }
 
     const actor = Actor.createActor(
@@ -112,7 +99,13 @@ async function reloadJs(
             );
         }
 
-        actor.reload_js(timestamp, chunkNumber, chunk, reloadedJs.length);
+        actor
+            .reload_js(timestamp, chunkNumber, chunk, reloadedJs.length)
+            .catch((error) => {
+                if (process.env.AZLE_VERBOSE === 'true') {
+                    console.error(error);
+                }
+            });
 
         chunkNumber += 1;
     }

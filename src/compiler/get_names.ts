@@ -126,10 +126,16 @@ async function getDockerfileHash(dockerfilePath: string): Promise<string> {
     return hasher.digest('hex');
 }
 
-function getEnvVars(canisterConfig: JSCanisterConfig): [string, string][] {
-    const env = [...(canisterConfig.env ?? []), 'AZLE_AUTORELOAD'];
+function getEnvVars(
+    canisterConfig: JSCanisterConfig
+): [string, string | undefined][] {
+    const userDefinedEnv = canisterConfig.env ?? [];
+    const augmentedEnv =
+        process.env.AZLE_AUTORELOAD !== undefined
+            ? [...userDefinedEnv, 'AZLE_AUTORELOAD']
+            : userDefinedEnv;
 
-    return env.map((envVarName) => {
-        return [envVarName, process.env[envVarName] ?? ''];
+    return augmentedEnv.map((envVarName) => {
+        return [envVarName, process.env[envVarName]];
     });
 }

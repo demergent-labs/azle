@@ -9,6 +9,11 @@ export function setupFileWatcher(
     replicaWebServerPort: string
 ) {
     try {
+        // TODO should we check that this was successful in killing
+        // TODO the process and then warn the user if not?
+        // TODO should we figure out why the || true
+        // TODO does not result in a 0 exit code
+        // TODO and look into removing the try catch?
         execSync(`pkill -f ./file_watcher_loader.js || true`);
     } catch (error) {
         // For some reason pkill throws even with || true
