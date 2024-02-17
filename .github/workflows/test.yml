@@ -233,9 +233,10 @@ jobs:
                   path: /home/runner/.config/azle
                   # path: $HOME/.config/azle
                   key: config-azle-${{ hashFiles('src/compiler/Dockerfile') }}
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.os == 'ubuntu-latest' }}
+              shell: bash -l {0}
               run: sudo apt-get install -y podman
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && runner.os == 'macOS' }}
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.os == 'macos-latest' }}
               shell: bash -l {0}
               # The DNS server stuff is because of this: https://github.com/actions/runner-images/issues/6383
               run: |
