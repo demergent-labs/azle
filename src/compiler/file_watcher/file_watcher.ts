@@ -11,6 +11,7 @@ const mainPath = process.argv[4];
 const wasmedgeQuickJsPath = process.argv[5];
 const replicaWebServerPort = process.argv[6];
 
+// TODO https://github.com/demergent-labs/azle/issues/1664
 watch(process.cwd(), {
     ignored: ['**/.dfx/**', '**/.azle/**', '**/node_modules/**']
 }).on('all', async (event, path) => {
