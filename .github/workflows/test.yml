@@ -204,7 +204,7 @@ jobs:
             # TODO remove this
             AZLE_VERBOSE: true
             AZLE_DOCKERFILE_HASH: b3adf53d5bb3738a27c6f397ffe54ec190007d9496920cf7c30b717653f2b8e3
-            CONTAINERS_MACHINE_PROVIDER: applehv
+            # CONTAINERS_MACHINE_PROVIDER: applehv
             # AZLE_USE_DOCKERFILE: ${{ matrix.azle_source == 'repo' }} TODO set this back
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
@@ -244,6 +244,9 @@ jobs:
               shell: bash -l {0}
               # The DNS server stuff is because of this: https://github.com/actions/runner-images/issues/6383
               run: |
+                  qemu --version
+                  podman --version
+                  brew upgrade qemu
                   brew install podman
                   sudo networksetup -setdnsservers Ethernet 9.9.9.9
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
