@@ -13,10 +13,30 @@ export type HttpResponseAgentResponseValue = {
     body: string;
 };
 
-// The ic replica doesn't support returning status codes in the 1xx range.
+// The following statuses are specified in the spec so we will favor these
+// status in out tests
+// https://www.rfc-editor.org/rfc/rfc9110.html
+const SPEC_SPECIFIED_STATUS = [
+    100, 101, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303, 304, 305,
+    306, 307, 308, 400, 401, 402, 403, 404, 405, 406, 407, 409, 410, 411, 412,
+    413, 414, 415, 416, 417, 418, 421, 422, 426, 500, 501, 502, 503, 504, 505
+];
+
 const StatusCodeArb = fc
-    .integer({ min: 200, max: 599 })
-    .filter((status) => status !== 407); // TODO Node's fetch doesn't handle 407 the same as other status, so we're filtering it out until we can figure out why
+    .oneof(
+        {
+            arbitrary: fc.constantFrom(
+                ...SPEC_SPECIFIED_STATUS.filter((value) => value >= 200) // The ic replica doesn't support returning status codes in the 1xx range.
+            ),
+            weight: 2
+        },
+        { arbitrary: fc.integer({ min: 200, max: 599 }), weight: 1 } // The ic replica doesn't support returning status codes in the 1xx range.
+    )
+    .filter((status) => status !== 407 && status !== 421);
+// TODO Node's fetch doesn't handle 407 the same as other status, so we're filtering it out until we can figure out why
+// TODO https://github.com/demergent-labs/azle/pull/1652
+// TODO same applies to 421 status see https://github.com/demergent-labs/fourZeroSeven for more details
+// TODO https://github.com/nodejs/help/issues/4345
 
 export function HttpResponseValueArb<T>() {
     return fc

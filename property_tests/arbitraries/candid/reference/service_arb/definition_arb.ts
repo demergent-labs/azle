@@ -152,6 +152,7 @@ function generateImports(
             Array.from(serviceMethod.imports)
         ),
         'Canister',
+        'Principal',
         'query'
     ]);
 }
