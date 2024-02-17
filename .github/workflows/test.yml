@@ -202,6 +202,7 @@ jobs:
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             # TODO remove this
+            AZLE_VERBOSE: true
             AZLE_DOCKERFILE_HASH: b3adf53d5bb3738a27c6f397ffe54ec190007d9496920cf7c30b717653f2b8e3
             # AZLE_USE_DOCKERFILE: ${{ matrix.azle_source == 'repo' }} TODO set this back
         strategy:
