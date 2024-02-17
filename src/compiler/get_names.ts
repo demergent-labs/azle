@@ -126,16 +126,20 @@ async function getDockerfileHash(dockerfilePath: string): Promise<string> {
     return hasher.digest('hex');
 }
 
-function getEnvVars(
-    canisterConfig: JSCanisterConfig
-): [string, string | undefined][] {
-    const userDefinedEnv = canisterConfig.env ?? [];
-    const augmentedEnv =
-        process.env.AZLE_AUTORELOAD !== undefined
-            ? [...userDefinedEnv, 'AZLE_AUTORELOAD']
-            : userDefinedEnv;
+function getEnvVars(canisterConfig: JSCanisterConfig): [string, string][] {
+    const env = [...(canisterConfig.env ?? []), 'AZLE_AUTORELOAD'];
 
-    return augmentedEnv.map((envVarName) => {
-        return [envVarName, process.env[envVarName]];
-    });
+    return env
+        .filter((envVarName) => process.env[envVarName] !== undefined)
+        .map((envVarName) => {
+            const envVarValue = process.env[envVarName];
+
+            if (envVarValue === undefined) {
+                throw new Error(
+                    `Environment variable ${envVarName} must be undefined`
+                );
+            }
+
+            return [envVarName, envVarValue];
+        });
 }

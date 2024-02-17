@@ -13,7 +13,7 @@ export function getCandidAndCanisterMethods(
     dockerContainerName: string,
     canisterName: string,
     stdioType: IOType,
-    envVars: [string, string | undefined][],
+    envVars: [string, string][],
     rustStagingCandidPath: string,
     rustStagingWasmPath: string
 ): {
