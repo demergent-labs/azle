@@ -9,7 +9,7 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(`AZLE_AUTORELOAD=true dfx deploy`, {
+    execSync(`AZLE_AUTORELOAD=true AZLE_VERBOSE=true dfx deploy`, {
         stdio: 'inherit'
     });
 }

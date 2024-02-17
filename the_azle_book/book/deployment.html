@@ -179,6 +179,9 @@ sudo kill -9 627260
 <p>To deploy all canisters defined in your <code>dfx.json</code>:</p>
 <pre><code class="language-bash">dfx deploy
 </code></pre>
+<p>If you are building an HTTP-based canister and would like your canister to autoreload on file changes (DO NOT deploy to mainnet with autoreload enabled):</p>
+<pre><code class="language-bash">AZLE_AUTORELOAD=true dfx deploy
+</code></pre>
 <p>To deploy an individual canister:</p>
 <pre><code class="language-bash">dfx deploy [canisterName]
 </code></pre>

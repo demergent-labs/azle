@@ -58,6 +58,12 @@ To deploy all canisters defined in your `dfx.json`:
 dfx deploy
 ```
 
+If you are building an HTTP-based canister and would like your canister to autoreload on file changes (DO NOT deploy to mainnet with autoreload enabled):
+
+```bash
+AZLE_AUTORELOAD=true dfx deploy
+```
+
 To deploy an individual canister:
 
 ```bash

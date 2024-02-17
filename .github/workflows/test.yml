@@ -248,8 +248,8 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
               shell: bash -l {0}
               run: npm link
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'npm' }}
-              run: npx azle clean # We want to test the full curl download when testing from a clean install
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && (matrix.azle_source == 'npm' || matrix.os == 'macos-latest') }}
+              run: npx azle clean # We want to test the full curl download when testing from a clean install or mac
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               working-directory: ${{ matrix.example_directories }}
               run: dfx start --clean --background --host 127.0.0.1:8000

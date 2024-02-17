@@ -195,6 +195,9 @@ dfx start --clean --host 127.0.0.1:8000
 <p>In a separate terminal in the <code>hello_world</code> directory:</p>
 <pre><code class="language-bash">dfx deploy
 </code></pre>
+<p>If you are building an HTTP-based canister and would like your canister to autoreload on file changes (DO NOT deploy to mainnet with autoreload enabled):</p>
+<pre><code class="language-bash">AZLE_AUTORELOAD=true dfx deploy
+</code></pre>
 <p>If you have problems deploying see <a href="https://demergent-labs.github.io/azle/deployment.html#common-deployment-issues">Common deployment issues</a>.</p>
 <p>View your frontend in a web browser at <code>http://[canisterId].localhost:8000</code>.</p>
 <p>To obtain your application's [canisterId]:</p>
