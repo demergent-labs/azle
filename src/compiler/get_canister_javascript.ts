@@ -1,19 +1,18 @@
 import { compileTypeScriptToJavaScript } from './compile_typescript_code';
 import { dim, red } from './utils/colors';
-import { Err, ok, unwrap } from './utils/result';
+import { Err, ok, Result } from './utils/result';
 import {
     AzleError,
-    JSCanisterConfig,
     TsCompilationError,
     TsSyntaxErrorLocation
 } from './utils/types';
 
 export function getCanisterJavaScript(
-    canisterConfig: JSCanisterConfig,
+    mainPath: string,
     wasmedgeQuickJsPath: string
-): string {
+): Result<string, AzleError> {
     const typeScriptCompilationResult = compileTypeScriptToJavaScript(
-        canisterConfig.main,
+        mainPath,
         wasmedgeQuickJsPath
     );
 
@@ -21,12 +20,11 @@ export function getCanisterJavaScript(
         const azleErrorResult = compilationErrorToAzleErrorResult(
             typeScriptCompilationResult.err
         );
-        unwrap(azleErrorResult);
+
+        return azleErrorResult;
     }
 
-    const canisterJavaScript = typeScriptCompilationResult.ok as string;
-
-    return canisterJavaScript;
+    return typeScriptCompilationResult;
 }
 
 function compilationErrorToAzleErrorResult(error: unknown): Err<AzleError> {

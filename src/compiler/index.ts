@@ -1,16 +1,18 @@
 import { mkdirSync, writeFileSync } from 'fs';
 
 import { compileRustCodeWithCandidAndCompilerInfo } from './compile_rust_code_with_candid_and_compiler_info';
+import { setupFileWatcher } from './file_watcher/setup_file_watcher';
 import { getCandidAndCanisterMethods } from './get_candid_and_canister_methods';
 import { getCanisterJavaScript } from './get_canister_javascript';
 import { getNamesBeforeCli, getNamesAfterCli } from './get_names';
 import { handleCli } from './handle_cli';
 import { prepareDockerImage } from './prepare_docker_image';
 import { prepareRustStagingArea } from './prepare_rust_staging_area';
-import { logSuccess, time } from './utils';
+import { logSuccess, time, unwrap } from './utils';
 import { green } from './utils/colors';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { CompilerInfo } from './utils/types';
+import { logAutoreloadWarning } from './log_auto_reload_warning';
 
 azle();
 
@@ -24,7 +26,8 @@ async function azle() {
         dockerImagePathTar,
         dockerImagePathTarGz,
         dockerContainerName,
-        wasmedgeQuickJsPath
+        wasmedgeQuickJsPath,
+        replicaWebServerPort
     } = await getNamesBeforeCli();
 
     const commandExecuted = handleCli(
@@ -46,8 +49,18 @@ async function azle() {
         compilerInfoPath,
         envVars,
         rustStagingCandidPath,
-        rustStagingWasmPath
+        rustStagingWasmPath,
+        canisterId,
+        reloadedJsPath
     } = getNamesAfterCli();
+
+    setupFileWatcher(
+        reloadedJsPath,
+        canisterId,
+        canisterConfig.main,
+        wasmedgeQuickJsPath,
+        replicaWebServerPort
+    );
 
     await time(
         `\nBuilding canister ${green(canisterName)}`,
@@ -64,9 +77,8 @@ async function azle() {
                 wasmedgeQuickJsPath
             );
 
-            const canisterJavaScript = getCanisterJavaScript(
-                canisterConfig,
-                wasmedgeQuickJsPath
+            const canisterJavaScript = unwrap(
+                getCanisterJavaScript(canisterConfig.main, wasmedgeQuickJsPath)
             );
 
             prepareRustStagingArea(
@@ -77,7 +89,6 @@ async function azle() {
 
             const { candid, canisterMethods } = getCandidAndCanisterMethods(
                 canisterConfig.candid_gen,
-                canisterPath,
                 candidPath,
                 compilerInfoPath,
                 dockerContainerName,
@@ -111,7 +122,9 @@ async function azle() {
         }
     );
 
-    logSuccess(canisterName);
+    logSuccess(canisterName, canisterId, replicaWebServerPort);
+
+    logAutoreloadWarning();
 }
 
 function createAzleDirectories() {

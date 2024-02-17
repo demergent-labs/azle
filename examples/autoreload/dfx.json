@@ -1,0 +1,23 @@
+{
+    "canisters": {
+        "autoreload": {
+            "type": "custom",
+            "main": "src/server.ts",
+            "candid": "src/server.did",
+            "candid_gen": "http",
+            "build": "npx azle autoreload",
+            "wasm": ".azle/autoreload/autoreload.wasm",
+            "gzip": true,
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/server.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
+        }
+    }
+}

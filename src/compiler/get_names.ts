@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 import { hashOfDirectory } from 'hash-of-directory';
@@ -36,6 +37,10 @@ export async function getNamesBeforeCli() {
         wasmedgeQuickJsName
     );
 
+    const replicaWebServerPort = execSync(`dfx info webserver-port`)
+        .toString()
+        .trim();
+
     return {
         stdioType,
         dockerfileHash,
@@ -46,7 +51,8 @@ export async function getNamesBeforeCli() {
         wasmedgeQuickJsName,
         dockerImagePathTar,
         dockerImagePathTarGz,
-        wasmedgeQuickJsPath
+        wasmedgeQuickJsPath,
+        replicaWebServerPort
     };
 }
 
@@ -75,6 +81,18 @@ export function getNamesAfterCli() {
 
     const rustStagingWasmPath = join(canisterPath, `${canisterName}.wasm`);
 
+    const canisterId = execSync(`dfx canister id ${canisterName}`)
+        .toString()
+        .trim();
+
+    const reloadedJsPath = join(
+        '.azle',
+        canisterName,
+        'canister',
+        'src',
+        'main_reloaded.js'
+    );
+
     return {
         canisterName,
         canisterPath,
@@ -83,11 +101,17 @@ export function getNamesAfterCli() {
         compilerInfoPath,
         envVars,
         rustStagingCandidPath,
-        rustStagingWasmPath
+        rustStagingWasmPath,
+        canisterId,
+        reloadedJsPath
     };
 }
 
 async function getDockerfileHash(dockerfilePath: string): Promise<string> {
+    if (process.env.AZLE_DOCKERFILE_HASH !== undefined) {
+        return process.env.AZLE_DOCKERFILE_HASH;
+    }
+
     let hasher = createHash('sha256');
 
     const rustDirectory = join(__dirname, 'rust');
@@ -103,7 +127,19 @@ async function getDockerfileHash(dockerfilePath: string): Promise<string> {
 }
 
 function getEnvVars(canisterConfig: JSCanisterConfig): [string, string][] {
-    return (canisterConfig.env ?? []).map((envVarName) => {
-        return [envVarName, process.env[envVarName] ?? ''];
-    });
+    const env = [...(canisterConfig.env ?? []), 'AZLE_AUTORELOAD'];
+
+    return env
+        .filter((envVarName) => process.env[envVarName] !== undefined)
+        .map((envVarName) => {
+            const envVarValue = process.env[envVarName];
+
+            if (envVarValue === undefined) {
+                throw new Error(
+                    `Environment variable ${envVarName} must be undefined`
+                );
+            }
+
+            return [envVarName, envVarValue];
+        });
 }
