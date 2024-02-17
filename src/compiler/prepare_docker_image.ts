@@ -40,7 +40,7 @@ function initAndStartVm(stdioType: IOType) {
     // TODO detect mac and only run these commands on mac
 
     execSync(
-        `if [ "$(uname -s)" != "Linux" ]; then podman machine init --cpus 16 --memory 32768 || true; fi`,
+        `if [ "$(uname -s)" != "Linux" ]; then podman machine init || true; fi`,
         {
             stdio: stdioType
         }
