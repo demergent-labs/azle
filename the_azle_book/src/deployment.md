@@ -120,4 +120,5 @@ If you run into an error during deployment, try the following:
         2. `npm install`
         3. `npx azle clean`
         4. `AZLE_VERBOSE=true dfx deploy`
-3. If the problem is still not resolved, reach out with the error output in [the Discord channel](https://discord.gg/5Hb6rM2QUM)
+3. If the build process hangs on `Waiting for VM ...`, see [this issue for possible fixes](https://github.com/containers/podman/issues/20776)
+4. If the problem is still not resolved, reach out with the error output in [the Discord channel](https://discord.gg/5Hb6rM2QUM)
