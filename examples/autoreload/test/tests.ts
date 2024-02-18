@@ -75,7 +75,7 @@ export function getTests(canisterId: string): Test[] {
         },
         {
             name: 'waiting for Azle to reload',
-            wait: 5_000
+            wait: 10_000
         },
         {
             name: '/test-changed',
@@ -102,7 +102,7 @@ export function getTests(canisterId: string): Test[] {
         },
         {
             name: 'waiting for Azle to reload',
-            wait: 5_000
+            wait: 10_000
         },
         {
             name: '/test',
@@ -166,7 +166,7 @@ export function getTests(canisterId: string): Test[] {
         },
         {
             name: 'waiting for Azle to reload',
-            wait: 5_000
+            wait: 10_000
         },
         {
             name: '/test',

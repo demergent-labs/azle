@@ -205,7 +205,7 @@ jobs:
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix:
-                # os: [ubuntu-latest, macos-latest] # TODO Once we are ready let's get macos testing up and going again
+                # os: [macos-latest]
                 os: [ubuntu-latest]
                 include_npm:
                     # Only include npm in the matrix if you've pushed to main and the last commit was a merge of a release branch, or the base branch of the pull request is a release branch
@@ -232,17 +232,15 @@ jobs:
               with:
                   path: /home/runner/.config/azle
                   # path: $HOME/.config/azle
-                  key: config-azle-${{ hashFiles('src/compiler/Dockerfile') }}
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+                  key: config-azle-${{ hashFiles('src/compiler/Dockerfile', 'src/compiler/rust/**') }}
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.os == 'ubuntu-latest' }}
+              shell: bash -l {0}
               run: sudo apt-get install -y podman
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && runner.os == 'macOS' }}
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.os == 'macos-latest' }}
               shell: bash -l {0}
               # The DNS server stuff is because of this: https://github.com/actions/runner-images/issues/6383
               run: |
-                  brew install llvm
-                  echo 'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> /Users/runner/.bash_profile
-                  export LDFLAGS="-L/usr/local/opt/llvm/lib"
-                  export CPPFLAGS="-I/usr/local/opt/llvm/include"
+                  brew install podman
                   sudo networksetup -setdnsservers Ethernet 9.9.9.9
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0} # TODO figure out why this is here and comment about it
@@ -250,8 +248,8 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
               shell: bash -l {0}
               run: npm link
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'npm' }}
-              run: npx azle clean # We want to test the full curl download when testing from a clean install
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && (matrix.azle_source == 'npm' || matrix.os == 'macos-latest') }}
+              run: npx azle clean # We want to test the full curl download when testing from a clean install or mac
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               working-directory: ${{ matrix.example_directories }}
               run: dfx start --clean --background --host 127.0.0.1:8000

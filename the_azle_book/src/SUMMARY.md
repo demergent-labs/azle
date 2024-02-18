@@ -16,6 +16,8 @@
 -   [Tokens]()
 -   [Bitcoin]()
 -   [Ethereum]()
+-   [Reference](./reference_http/reference.md)
+    -   [Autoreload](./reference_http/autoreload.md)
 -   [Old Candid-based Documentation](./candid_based_documentation.md)
     -   [Azle (Beta)](./azle.md)
     -   [Internet Computer Overview](./internet_computer_overview.md)

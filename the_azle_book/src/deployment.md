@@ -58,6 +58,12 @@ To deploy all canisters defined in your `dfx.json`:
 dfx deploy
 ```
 
+If you are building an HTTP-based canister and would like your canister to autoreload on file changes (DO NOT deploy to mainnet with autoreload enabled):
+
+```bash
+AZLE_AUTORELOAD=true dfx deploy
+```
+
 To deploy an individual canister:
 
 ```bash
@@ -114,4 +120,5 @@ If you run into an error during deployment, try the following:
         2. `npm install`
         3. `npx azle clean`
         4. `AZLE_VERBOSE=true dfx deploy`
-3. If the problem is still not resolved, reach out with the error output in [the Discord channel](https://discord.gg/5Hb6rM2QUM)
+3. If the build process hangs on `Waiting for VM ...`, see [this issue for possible fixes](https://github.com/containers/podman/issues/20776)
+4. If the problem is still not resolved, reach out with the error output in [the Discord channel](https://discord.gg/5Hb6rM2QUM)

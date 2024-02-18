@@ -83,6 +83,12 @@ In a separate terminal in the `hello_world` directory:
 dfx deploy
 ```
 
+If you are building an HTTP-based canister and would like your canister to autoreload on file changes (DO NOT deploy to mainnet with autoreload enabled):
+
+```bash
+AZLE_AUTORELOAD=true dfx deploy
+```
+
 If you have problems deploying see [Common deployment issues](https://demergent-labs.github.io/azle/deployment.html#common-deployment-issues).
 
 View your frontend in a web browser at `http://[canisterId].localhost:8000`.
