@@ -5,7 +5,7 @@
         "test": "AZLE_TEST_FETCH=false npm run tests && AZLE_TEST_FETCH=true npm run tests"
     },
     "dependencies": {
-        "azle": "0.20.2-rc.0",
+        "azle": "0.20.2-rc.17",
         "encode-utf8": "2.0.0"
     },
     "devDependencies": {
