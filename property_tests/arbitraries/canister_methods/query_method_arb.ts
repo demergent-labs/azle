@@ -56,11 +56,11 @@ export function QueryMethodArb<
 ) {
     return fc
         .tuple(
-            UniqueIdentifierArb('canisterMethod'),
+            UniqueIdentifierArb('canisterProperties'),
             paramTypeArrayArb,
             returnTypeArb,
             CallbackLocationArb,
-            UniqueIdentifierArb('typeDeclaration')
+            UniqueIdentifierArb('globalNames')
             // TODO: This unique id would be better named globalScope or something
             // But needs to match the same scope as typeDeclarations so I'm using
             // that for now.

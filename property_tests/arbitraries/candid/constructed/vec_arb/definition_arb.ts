@@ -10,7 +10,6 @@ import {
     WithShapesArb
 } from '../../candid_definition_arb/types';
 import { CandidType, Vec } from '../../../../../src/lib';
-import { RecursiveShapes } from '../../recursive';
 
 export function VecDefinitionArb(
     candidTypeArb: RecursiveCandidDefinitionMemo,
@@ -19,7 +18,7 @@ export function VecDefinitionArb(
 ): WithShapesArb<VecCandidDefinition> {
     return fc
         .tuple(
-            UniqueIdentifierArb('typeDeclaration'),
+            UniqueIdentifierArb('globalNames'),
             possiblyRecursiveArb(candidTypeArb, parents, constraints),
             fc.boolean()
         )

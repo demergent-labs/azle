@@ -8,7 +8,7 @@ import { QueryMethod } from 'azle/property_tests/arbitraries/canister_methods/qu
 
 export function RemoveTestArb(stableBTreeMap: StableBTreeMap) {
     return fc
-        .tuple(UniqueIdentifierArb('stableBTreeMap'))
+        .tuple(UniqueIdentifierArb('canisterProperties'))
         .map(([functionName]): QueryMethod => {
             const imports = new Set([
                 ...stableBTreeMap.imports,

@@ -14,7 +14,7 @@ export function TupleDefinitionArb(
 ): WithShapesArb<TupleCandidDefinition> {
     return fc
         .tuple(
-            UniqueIdentifierArb('typeDeclaration'),
+            UniqueIdentifierArb('globalNames'),
             fc.array(candidTypeArbForFields, { minLength: 1 }),
             // Although no minLength is technically required (according to the
             // spec), there are some issues with vecs of empty objects that are causing some problems
