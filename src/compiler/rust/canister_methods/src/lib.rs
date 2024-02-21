@@ -189,6 +189,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
     let reload_js = get_reload_js(&compiler_info.env_vars);
 
+    let upload_assets = get_upload_assets();
+
     quote! {
         static ASSETS_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/src/assets");
 
@@ -253,6 +255,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         }
 
         #reload_js
+
+        #upload_assets
     }
     .into()
 }
@@ -372,4 +376,47 @@ fn get_reload_js(env_vars: &Vec<(String, String)>) -> proc_macro2::TokenStream {
     }
 
     quote! {}
+}
+
+fn get_upload_assets() -> proc_macro2::TokenStream {
+    quote! {
+        #[ic_cdk_macros::update]
+        fn upload_asset(des: String, timestamp: u64, chunk_number: u64, js_bytes: Vec<u8>, total_len: u64) {
+            UPLOADED_ASSETS_TIMESTAMP.with(|upload_assets_timestamp| {
+                let mut upload_assets_timestamp_mut = upload_assets_timestamp.borrow_mut();
+
+                if timestamp > *upload_assets_timestamp_mut {
+                    *upload_assets_timestamp_mut = timestamp;
+
+                    UPLOADED_ASSETS.with(|upload_assets| {
+                        let mut upload_assets_mut = upload_assets.borrow_mut();
+                        upload_assets_mut.clear();
+                    });
+                }
+            });
+
+            UPLOADED_ASSETS.with(|upload_assets| {
+                let mut upload_assets_mut = upload_assets.borrow_mut();
+                upload_assets_mut.insert(chunk_number, js_bytes);
+
+                let upload_assets_complete_bytes: Vec<u8> = upload_assets_mut.values().flat_map(|v| v.clone()).collect();
+
+                if upload_assets_complete_bytes.len() as u64 == total_len {
+
+                    let asset_string = String::from_utf8_lossy(&upload_assets_complete_bytes);
+
+                    let dir_path = std::path::Path::new(des.as_str()).parent().unwrap();
+
+                    std::fs::create_dir_all(dir_path).unwrap();
+
+                    let mut file = std::fs::File::create(des).unwrap();
+
+                    std::io::Write::write_all(&mut file, asset_string.as_bytes()).unwrap();
+
+                    // flush the buffer to ensure all data is written immediately
+                    std::io::Write::flush(&mut file).unwrap();
+                }
+            });
+        }
+    }
 }

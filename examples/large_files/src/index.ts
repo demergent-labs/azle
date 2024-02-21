@@ -12,5 +12,7 @@ export default Server(() => {
         res.send('Hello world');
     });
 
+    app.use(express.static('/assets'));
+
     return app.listen();
 });

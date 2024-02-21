@@ -74,6 +74,10 @@ thread_local! {
     static RELOADED_JS_TIMESTAMP: RefCell<u64> = RefCell::new(0);
 
     static RELOADED_JS: RefCell<BTreeMap<u64, Vec<u8>>> = RefCell::new(BTreeMap::new());
+
+    static UPLOADED_ASSETS_TIMESTAMP: RefCell<u64> = RefCell::new(0);
+
+    static UPLOADED_ASSETS: RefCell<BTreeMap<u64, Vec<u8>>> = RefCell::new(BTreeMap::new());
 }
 
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]
