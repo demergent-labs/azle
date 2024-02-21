@@ -4,7 +4,7 @@ import { rmSync } from 'fs';
 import { generateNewAzleProject } from './new_command';
 import { version as azleVersion } from '../../package.json';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
-import { uploadAssets } from './file_uploader';
+import { uploadAssets } from './asset_uploader';
 
 export function handleCli(
     stdioType: IOType,
