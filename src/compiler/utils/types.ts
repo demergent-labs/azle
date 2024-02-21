@@ -25,6 +25,7 @@ export type JSCanisterConfig = Readonly<{
     env?: string[];
     opt_level?: OptLevel;
     assets?: [string, string][];
+    large_assets?: [string, string][];
 }>;
 
 export type OptLevel = '0' | '1' | '2' | '3' | '4';
