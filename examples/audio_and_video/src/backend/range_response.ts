@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { createReadStream, statSync } from 'fs';
 import parseRange from 'range-parser';
 
-export function rangeResponse(maxRange: number = 2_000_000) {
+export function rangeResponse(maxRange: number = 3_000_000) {
     return async (req: Request, res: Response) => {
         const filePath = req.originalUrl;
         const fileLength = statSync(filePath).size;
