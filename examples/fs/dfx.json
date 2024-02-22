@@ -8,6 +8,7 @@
             "build": "npx azle fs",
             "wasm": ".azle/fs/fs.wasm",
             "gzip": true,
+            "assets": [["src/image.jpg", "image.jpg"]],
             "metadata": [
                 {
                     "name": "candid:service",

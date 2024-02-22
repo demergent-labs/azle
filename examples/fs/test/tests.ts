@@ -4,6 +4,8 @@ import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 import { Test } from 'azle/test';
+import { createHash } from 'crypto';
+import { readFileSync } from 'fs';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -331,6 +333,95 @@ export function getTests(canisterId: string): Test[] {
 
                     return {
                         Ok: responseText === 'false'
+                    };
+                } catch (error: any) {
+                    return {
+                        Err: error
+                    };
+                }
+            }
+        },
+        {
+            name: '/high-water-mark-boundary',
+            test: async () => {
+                try {
+                    const response = await fetch(
+                        `${origin}/high-water-mark-boundary`
+                    );
+                    const responseText = await response.text();
+
+                    return {
+                        Ok: responseText === '1'
+                    };
+                } catch (error: any) {
+                    return {
+                        Err: error
+                    };
+                }
+            }
+        },
+        {
+            name: '/create-read-stream-larger-than-high-water-mark-chunked',
+            test: async () => {
+                try {
+                    let hasherFile = createHash('sha256');
+
+                    const file = readFileSync('./src/image.jpg');
+
+                    hasherFile.update(file);
+
+                    const digestFile = hasherFile.digest('hex');
+
+                    const response = await fetch(
+                        `${origin}/create-read-stream-larger-than-high-water-mark-chunked`
+                    );
+                    const responseBlob = await response.blob();
+
+                    let hasherReadStream = createHash('sha256');
+
+                    hasherReadStream.update(
+                        new Uint8Array(await responseBlob.arrayBuffer())
+                    );
+
+                    const digestReadStream = hasherReadStream.digest('hex');
+
+                    return {
+                        Ok: digestFile === digestReadStream
+                    };
+                } catch (error: any) {
+                    return {
+                        Err: error
+                    };
+                }
+            }
+        },
+        {
+            name: '/create-read-stream-larger-than-high-water-mark',
+            test: async () => {
+                try {
+                    let hasherFile = createHash('sha256');
+
+                    const file = readFileSync('./src/image.jpg');
+
+                    hasherFile.update(file);
+
+                    const digestFile = hasherFile.digest('hex');
+
+                    const response = await fetch(
+                        `${origin}/create-read-stream-larger-than-high-water-mark`
+                    );
+                    const responseBlob = await response.blob();
+
+                    let hasherReadStream = createHash('sha256');
+
+                    hasherReadStream.update(
+                        new Uint8Array(await responseBlob.arrayBuffer())
+                    );
+
+                    const digestReadStream = hasherReadStream.digest('hex');
+
+                    return {
+                        Ok: digestFile === digestReadStream
                     };
                 } catch (error: any) {
                     return {

@@ -70,6 +70,7 @@ jobs:
                   [
                     "examples/apollo_server",
                     "examples/async_await",
+                    "examples/audio_and_video",
                     "examples/audio_recorder",
                     "examples/autoreload",
                     "examples/bitcoin",

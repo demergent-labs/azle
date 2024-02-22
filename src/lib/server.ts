@@ -209,10 +209,12 @@ export async function httpHandler(
         }
 
         end(data: any) {
-            const parsedHttpResponse = httpMessageParser(this.responseData);
-
             const startIndex =
                 this.responseData.indexOf(Buffer.from('\r\n\r\n')) + 4;
+
+            const parsedHttpResponse = httpMessageParser(
+                this.responseData.slice(0, startIndex)
+            );
 
             const isChunked = Object.keys(parsedHttpResponse.headers)
                 .map((key) => key.toLowerCase())
@@ -270,6 +272,11 @@ export async function httpHandler(
     server.emit('request', req, res);
 }
 
+// TODO I think this is correct but it is expensive
+// TODO we really just want the icx-proxy or boundary node to not
+// TODO automatically apply the Content-Length header
+// TODO we should open up an issue to get the icx-proxy to allow chunked transfer encodings
+// TODO and to not mess with the content-length header if it is already set
 function processChunkedBody(buffer: Buffer): Buffer {
     let result = Buffer.alloc(0);
     let remaining = buffer;
