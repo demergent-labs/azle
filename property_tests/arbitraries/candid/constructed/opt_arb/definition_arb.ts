@@ -19,7 +19,7 @@ export function OptDefinitionArb(
 ): WithShapesArb<OptCandidDefinition> {
     return fc
         .tuple(
-            UniqueIdentifierArb('typeDeclaration'),
+            UniqueIdentifierArb('globalNames'),
             possiblyRecursiveArb(
                 candidTypeArbForInnerType,
                 parents,

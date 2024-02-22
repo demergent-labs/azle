@@ -22,17 +22,17 @@ import { generateBody as postUpgradeMethodBodyGenerator } from './generate_post_
 import { generateBody as initMethodBodyGenerator } from './generate_init_method_body';
 import { generateTests as generateInitTests } from './generate_init_tests';
 import { generateTests as generatePostUpgradeTests } from './generate_post_upgrade_tests';
-import { CorrespondingJSType } from '../../../../arbitraries/candid/corresponding_js_type';
+import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
 import { InitMethodArb } from 'azle/property_tests/arbitraries/canister_methods/init_method_arb';
 import { globalInitVarName, globalPostUpgradeVarName } from './global_var_name';
-import { candidDefinitionArb } from '../../../../arbitraries/candid/candid_definition_arb';
-import { CandidValueArb } from '../../../../arbitraries/candid/candid_values_arb';
-import { definitionAndValueToValueAndMeta } from '../../../../arbitraries/candid/candid_value_and_meta_arb_generator';
+import { candidDefinitionArb } from 'azle/property_tests/arbitraries/candid/candid_definition_arb';
+import { CandidValueArb } from 'azle/property_tests/arbitraries/candid/candid_values_arb';
+import { definitionAndValueToValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb_generator';
 import {
     CandidDefinition,
     WithShapes
-} from '../../../../arbitraries/candid/candid_definition_arb/types';
-import { DEFAULT_VALUE_MAX_DEPTH } from '../../../../arbitraries/config';
+} from 'azle/property_tests/arbitraries/candid/candid_definition_arb/types';
+import { DEFAULT_VALUE_MAX_DEPTH } from 'azle/property_tests/arbitraries/config';
 
 const CanisterConfigArb = fc
     .array(candidDefinitionArb({}))

@@ -17,7 +17,7 @@ import { InitMethodArb } from 'azle/property_tests/arbitraries/canister_methods/
 import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';
 import { generateBody as initBodyGenerator } from './generate_init_body';
 import { generateTests } from './generate_tests';
-import { CorrespondingJSType } from '../../../../arbitraries/candid/corresponding_js_type';
+import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
 
 // TODO multiplying by zero is to remove -0
 // TODO we should open an issue with agent-js

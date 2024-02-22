@@ -8,7 +8,6 @@ import {
 } from '../../candid_definition_arb/types';
 import { VoidDefinitionArb } from '../../primitive/void';
 import { CandidType, Func } from '../../../../../src/lib';
-import { RecursiveShapes } from '../../recursive';
 
 type Mode = 'query' | 'update' | 'oneway';
 
@@ -22,7 +21,7 @@ export function FuncDefinitionArb(
                 mode === 'oneway' ? VoidDefinitionArb() : candidDefArb;
 
             return fc.tuple(
-                UniqueIdentifierArb('typeDeclaration'),
+                UniqueIdentifierArb('globalNames'),
                 fc.array(candidDefArb),
                 returnType,
                 fc.constant(mode),

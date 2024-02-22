@@ -27,7 +27,7 @@ export function VariantDefinitionArb(
 ): WithShapesArb<VariantCandidDefinition> {
     return fc
         .tuple(
-            UniqueIdentifierArb('typeDeclaration'),
+            UniqueIdentifierArb('globalNames'),
             VariantFieldsArb(candidTypeArbForFields, parents, constraints),
             fc.boolean()
         )

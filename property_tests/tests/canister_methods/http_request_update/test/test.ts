@@ -13,7 +13,7 @@ import { RecordArb } from 'azle/property_tests/arbitraries/candid/constructed/re
 
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
-import { UpdateMethodArb } from '../../../../arbitraries/canister_methods/update_method_arb';
+import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
 
 const HttpRequestUpdateMethodArb = RecordArb().chain((record) => {
     const HttpRequestMethodArb = UpdateMethodArb(
