@@ -18,7 +18,7 @@ export function ServiceDefinitionArb(
 ): WithShapesArb<ServiceCandidDefinition> {
     return fc
         .tuple(
-            UniqueIdentifierArb('typeDeclaration'),
+            UniqueIdentifierArb('globalNames'),
             fc.uniqueArray(ServiceMethodArb(fieldCandidDefArb), {
                 selector: (entry) => entry.definition.name
             }),

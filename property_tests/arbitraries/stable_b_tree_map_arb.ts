@@ -11,7 +11,7 @@ export const StableBTreeMapArb = fc
         argumentInfoArb(),
         CandidValueAndMetaArb(),
         argumentInfoArb(),
-        UniqueIdentifierArb('stableBTreeMap'),
+        UniqueIdentifierArb('globalNames'),
         createUniquePrimitiveArb(
             fc.nat({
                 max: 254
@@ -24,11 +24,9 @@ export const StableBTreeMapArb = fc
             keySerializableType,
             valueSample,
             valueSerializableType,
-            uniqueIdentifier,
+            name,
             memoryId
         ]) => {
-            const name = `stableBTreeMap${uniqueIdentifier}`;
-
             const imports = new Set([
                 ...keySample.src.imports,
                 ...valueSample.src.imports,

@@ -8,7 +8,7 @@ import { StableBTreeMap } from 'azle/property_tests/arbitraries/stable_b_tree_ma
 
 export function ContainsKeyTestArb(stableBTreeMap: StableBTreeMap) {
     return fc
-        .tuple(UniqueIdentifierArb('stableBTreeMap'))
+        .tuple(UniqueIdentifierArb('canisterProperties'))
         .map(([functionName]): QueryMethod => {
             const imports = new Set([
                 ...stableBTreeMap.imports,

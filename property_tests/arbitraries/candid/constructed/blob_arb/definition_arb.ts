@@ -14,7 +14,7 @@ export function BlobDefinitionArb(): WithShapesArb<BlobCandidDefinition> {
 
 export function _VecNat8DefinitionArb(): WithShapesArb<BlobCandidDefinition> {
     return fc
-        .tuple(UniqueIdentifierArb('typeDeclaration'), fc.boolean())
+        .tuple(UniqueIdentifierArb('globalNames'), fc.boolean())
         .map(([name, useTypeDeclaration]): WithShapes<BlobCandidDefinition> => {
             const candidTypeAnnotation = 'Vec<nat8>';
             const candidTypeObject = 'Vec(nat8)';
