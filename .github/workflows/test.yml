@@ -49,10 +49,7 @@ jobs:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
             - if: contains(github.head_ref, 'release--')
               name: Install dfx
-              uses: dfinity/setup-dfx@main
-            - if: contains(github.head_ref, 'release--')
-              name: Confirm successful installation
-              run: dfx --version
+              run: DFXVM_INIT_YES=true DFX_VERSION=0.17.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             # TODO we should use some Action-specific bot account
             - if: contains(github.head_ref, 'release--')
               run: git config --global user.name 'Jordan Last'
@@ -232,7 +229,7 @@ jobs:
                   node-version: 20
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               name: Install dfx
-              uses: dfinity/setup-dfx@main
+              run: DFXVM_INIT_YES=true DFX_VERSION=0.17.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
             - name: Confirm successful installation
               run: dfx --version
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
