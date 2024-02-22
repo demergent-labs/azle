@@ -1,12 +1,12 @@
 import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
-import { readFileSync, stat, existsSync } from 'fs';
+import { readFileSync } from 'fs';
 import { DfxJson } from '../utils/types';
 import { getCanisterId } from '../../../test';
-import * as fs from 'fs';
-import * as path from 'path';
+import { readdir, stat } from 'fs/promises';
+import { join } from 'path';
 
 type Src = string;
-type Des = string;
+type Dest = string;
 
 export async function uploadAssets(
     canisterName: string,
@@ -25,54 +25,60 @@ export async function uploadAssets(
 
     for (let i = 0; i < assetsToUpload.length; i++) {
         const [src, des] = assetsToUpload[i];
+        // Don't await, fire off all of the uploads as fast as we can
         upload(src, des, chunkSize, actor);
     }
 }
 
 async function upload(
-    src: Src,
-    des: Des,
+    srcPath: Src,
+    destPath: Dest,
     chunkSize: number,
     actor: ActorSubclass
 ) {
-    if (!existsSync(src)) {
-        console.log(`WARNING: ${src} does not exist`);
+    if (!(await exists(srcPath))) {
+        console.log(`WARNING: ${srcPath} does not exist`);
         return;
     }
 
-    if (await isDirectory(src)) {
-        uploadDirectory(src, des, chunkSize, actor);
+    if (await isDirectory(srcPath)) {
+        await uploadDirectory(srcPath, destPath, chunkSize, actor);
     } else {
-        uploadAsset(src, des, chunkSize, actor);
+        uploadAsset(srcPath, destPath, chunkSize, actor);
     }
 }
 
 async function isDirectory(path: string): Promise<boolean> {
+    const stats = await stat(path);
+    return stats.isDirectory();
+}
+
+async function exists(path: string): Promise<boolean> {
     try {
-        return await new Promise((resolve, reject) => {
-            stat(path, (err, stats) => {
-                if (err) reject(err);
-                else resolve(stats.isDirectory());
-            });
-        });
-    } catch (error) {
-        return false;
+        await stat(path);
+        return true; // File exists
+    } catch (error: any) {
+        if (error.code === 'ENOENT') {
+            return false; // File does not exist
+        } else {
+            throw error; // Other error occurred
+        }
     }
 }
 
 function uploadAsset(
-    src: Src,
-    des: Des,
+    srcPath: Src,
+    destPath: Dest,
     chunkSize: number,
     actor: ActorSubclass
 ) {
-    console.log(`Uploading ${src} to ${des}`);
-    const assetToUpload = readFileSync(src);
+    console.log(`Uploading ${srcPath} to ${destPath}`);
+    const assetToUpload = readFileSync(srcPath); // TODO create a readstream and grab chunks, use the code from video and stuff as reference
     const timestamp = process.hrtime.bigint();
     let chunkNumber = 0;
 
     for (let i = 0; i < assetToUpload.length; i += chunkSize) {
-        const chunk = assetToUpload.slice(i, i + chunkSize);
+        const chunk = assetToUpload.slice(i, i + chunkSize); // TODO change to subarray
 
         if (process.env.AZLE_VERBOSE === 'true') {
             console.info(
@@ -84,17 +90,17 @@ function uploadAsset(
             console.log('Uploading chunk');
         }
 
+        // TOOD we maybe need to introduce a way to prevent the server from getting overloaded with too many calls
+        // TODO add comment about firing off
         actor
             .upload_asset(
-                des,
+                destPath,
                 timestamp,
                 chunkNumber,
                 chunk,
                 assetToUpload.length
             )
             .catch((error) => {
-                console.log('Hey it was an error');
-                console.log(error);
                 if (process.env.AZLE_VERBOSE === 'true') {
                     console.error(error);
                 }
@@ -108,7 +114,7 @@ function uploadAsset(
     }
 }
 
-function getAssetsToUpload(canisterId: string): [Src, Des][] {
+function getAssetsToUpload(canisterId: string): [Src, Dest][] {
     const dfxJson: DfxJson = JSON.parse(readFileSync('dfx.json').toString());
     return dfxJson.canisters[canisterId].large_assets ?? [];
 }
@@ -117,11 +123,11 @@ async function createUploadAssetActor(
     canisterId: string,
     replicaWebServerPort: string
 ): Promise<ActorSubclass> {
+    //TODO This will break on mainnet
     const agent = new HttpAgent({
         host: `http://127.0.0.1:${replicaWebServerPort}`
     });
 
-    // TODO do I need this for this thing?
     if (process.env.DFX_NETWORK !== 'ic') {
         await agent.fetchRootKey();
     }
@@ -150,17 +156,18 @@ async function createUploadAssetActor(
 }
 
 async function uploadDirectory(
-    src: string,
-    des: string,
+    srcDir: string,
+    destDir: string,
     chunkSize: number,
     actor: ActorSubclass
 ) {
     try {
-        const files = await fs.promises.readdir(src);
-        for (const file of files) {
-            const filePath = path.join(src, file);
-            const desPath = path.join(des, file);
-            upload(filePath, desPath, chunkSize, actor);
+        const names = await readdir(srcDir);
+        for (const name of names) {
+            const srcPath = join(srcDir, name);
+            const destPath = join(destDir, name);
+            // Don't await, fire off all of the uploads as fast as we can
+            upload(srcPath, destPath, chunkSize, actor);
         }
     } catch (error) {
         console.error(`Error reading directory: ${error}`);
