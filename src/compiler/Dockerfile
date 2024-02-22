@@ -18,7 +18,7 @@ RUN rustup target add wasm32-wasi
 RUN cargo install --git https://github.com/wasm-forge/wasi2ic --rev 806c3558aad24224852a9582f018178402cb3679
 
 # This is all on one line so that when the commit is changed Docker will rerun the clone
-RUN git clone https://github.com/demergent-labs/wasmedge-quickjs && cd wasmedge-quickjs && git checkout ce02a5969befebfe47b1bfe3231c367afa34188b
+RUN git clone https://github.com/demergent-labs/wasmedge-quickjs && cd wasmedge-quickjs && git checkout 6c81d7e6fe4b22a468beceed0ee697f4163e7ca8
 
 RUN mkdir /global_target_dir
 

@@ -1,0 +1,28 @@
+{
+    "canisters": {
+        "backend": {
+            "type": "custom",
+            "main": "src/backend/server.ts",
+            "candid": "src/backend/server.did",
+            "candid_gen": "http",
+            "build": "npx azle backend",
+            "wasm": ".azle/backend/backend.wasm",
+            "gzip": true,
+            "assets": [
+                ["src/frontend/dist", "dist"],
+                ["src/backend/media", "media"]
+            ],
+            "build_assets": "npm run build",
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/backend/server.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
+        }
+    }
+}

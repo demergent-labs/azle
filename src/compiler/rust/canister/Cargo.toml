@@ -24,5 +24,5 @@ ic-wasi-polyfill = { git = "https://github.com/wasm-forge/ic-wasi-polyfill", rev
     "transient",
 ] }
 
-wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "ce02a5969befebfe47b1bfe3231c367afa34188b" }
+wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "6c81d7e6fe4b22a468beceed0ee697f4163e7ca8" }
 # wasmedge_quickjs = { path = "/home/wasmedge-quickjs" }

@@ -1744,7 +1744,7 @@ checksum = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
 [[package]]
 name = "wasmedge_quickjs"
 version = "0.5.0-alpha"
-source = "git+https://github.com/demergent-labs/wasmedge-quickjs?rev=ce02a5969befebfe47b1bfe3231c367afa34188b#ce02a5969befebfe47b1bfe3231c367afa34188b"
+source = "git+https://github.com/demergent-labs/wasmedge-quickjs?rev=6c81d7e6fe4b22a468beceed0ee697f4163e7ca8#6c81d7e6fe4b22a468beceed0ee697f4163e7ca8"
 dependencies = [
  "argparse",
  "encoding",
