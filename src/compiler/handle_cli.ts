@@ -98,6 +98,8 @@ function handleCommandClean(
     console.info(`azle images removed`);
 }
 
+// TODO add a command that will let people call it and pass in their own without going to the command line
+
 async function handleUploadAssets() {
     const canisterId = process.argv[3];
     const replicaWebServerPort = process.argv[4];

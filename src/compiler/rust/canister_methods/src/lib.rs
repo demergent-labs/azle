@@ -381,37 +381,79 @@ fn get_reload_js(env_vars: &Vec<(String, String)>) -> proc_macro2::TokenStream {
 fn get_upload_assets() -> proc_macro2::TokenStream {
     quote! {
         #[ic_cdk_macros::update]
-        fn upload_asset(des: String, timestamp: u64, chunk_number: u64, js_bytes: Vec<u8>, total_len: u64) {
-            UPLOADED_ASSETS_TIMESTAMP.with(|upload_assets_timestamp| {
-                let mut upload_assets_timestamp_mut = upload_assets_timestamp.borrow_mut();
+        fn upload_asset(dest_path: String, timestamp: u64, chunk_number: u64, asset_bytes: Vec<u8>, total_len: u64) {
+            UPLOADED_ASSETS_TIMESTAMP.with(|upload_assets_timestamp_map| {
+                let mut upload_assets_timestamp_map_mut = upload_assets_timestamp_map.borrow_mut();
+                let upload_assets_timestamp = match upload_assets_timestamp_map_mut.get_mut(&des) {
+                    Some(timestamp) => timestamp,
+                    None => &0,
+                };
 
-                if timestamp > *upload_assets_timestamp_mut {
-                    *upload_assets_timestamp_mut = timestamp;
+
+                if timestamp > *upload_assets_timestamp {
+                    upload_assets_timestamp_map_mut.insert(des.clone(), timestamp);
 
                     UPLOADED_ASSETS.with(|upload_assets| {
                         let mut upload_assets_mut = upload_assets.borrow_mut();
-                        upload_assets_mut.clear();
+                        match upload_assets_mut.get_mut(&des) {
+                            Some(thing) => thing.clear(), // TODO rename
+                            None => (),
+                        }
                     });
                 }
+                // TODO we need to have an else here so that if old earlier time stamps come in we don't add them
+                // If it's less than stop (just disregard and get out of this process for that chunk it's no good we don't want it its old.)
+                // TODO same for reload js
             });
 
             UPLOADED_ASSETS.with(|upload_assets| {
+                ic_cdk::print(format!("By the way the timestamp is {}, the des is {}, the chunk number is {} and the total length is {}", timestamp, des, chunk_number, total_len));
+                ic_cdk::print(format!("len of asset_bytes is {}", asset_bytes.len()));
                 let mut upload_assets_mut = upload_assets.borrow_mut();
-                upload_assets_mut.insert(chunk_number, js_bytes);
+                if let Some(inner_map) = upload_assets_mut.get_mut(&des) {
+                    // If the key exists, insert the value into the inner HashMap
+                    inner_map.insert(chunk_number, asset_bytes);
+                } else {
+                    // If the key doesn't exist, initialize a new inner HashMap and insert the value
+                    let mut new_inner_map = std::collections::HashMap::new();
+                    new_inner_map.insert(chunk_number, asset_bytes);
+                    upload_assets_mut.insert(des.clone(), new_inner_map);
+                }
 
-                let upload_assets_complete_bytes: Vec<u8> = upload_assets_mut.values().flat_map(|v| v.clone()).collect();
+                let mut values: Vec<(u64, Vec<u8>)> = upload_assets_mut
+                    .get(&des)
+                    .unwrap()
+                    .clone()
+                    .into_iter()
+                    .collect();
+
+                values.sort_by_key(|&(key, _)| key);
+
+                let upload_assets_complete_bytes: Vec<u8> =
+                    values.iter().flat_map(|(_, value)| value.clone()).collect();
+
+                // let upload_assets_complete_bytes: Vec<u8> = upload_assets_mut
+                //     .get(&des)
+                //     .unwrap()
+                //     .values()
+                //     .flat_map(|v| v.clone())
+                //     .collect();
+
+                // ic_cdk::print(format!("this is what we are working with {:?}", upload_assets_complete_bytes));
+                ic_cdk::print(format!("this is the length {:?}", upload_assets_complete_bytes.len()));
+
 
                 if upload_assets_complete_bytes.len() as u64 == total_len {
-
-                    let asset_string = String::from_utf8_lossy(&upload_assets_complete_bytes);
+                    ic_cdk::print(format!("ready to write"));
 
                     let dir_path = std::path::Path::new(des.as_str()).parent().unwrap();
 
                     std::fs::create_dir_all(dir_path).unwrap();
 
+                    ic_cdk::print(format!("wrote to {}", des));
                     let mut file = std::fs::File::create(des).unwrap();
 
-                    std::io::Write::write_all(&mut file, asset_string.as_bytes()).unwrap();
+                    std::io::Write::write_all(&mut file, &upload_assets_complete_bytes).unwrap();
 
                     // flush the buffer to ensure all data is written immediately
                     std::io::Write::flush(&mut file).unwrap();
