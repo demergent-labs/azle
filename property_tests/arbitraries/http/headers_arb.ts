@@ -2,8 +2,12 @@
 
 import fc from 'fast-check';
 
+const RESERVED_HEADERS = ['__proto__'];
+
 export function HttpHeadersArb() {
-    const HeaderNameArb = fc.stringMatching(/^[a-zA-Z0-9_-]+$/);
+    const HeaderNameArb = fc
+        .stringMatching(/^[a-zA-Z0-9_-]+$/)
+        .filter((name) => !RESERVED_HEADERS.includes(name));
 
     const HeaderValueArb = fc
         .stringMatching(/^[a-zA-Z0-9_ .'!-+*#$&`|~^%]+$/)
