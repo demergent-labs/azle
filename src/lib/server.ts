@@ -230,6 +230,10 @@ export async function httpHandler(
                 throw new Error('res must be defined');
             }
 
+            // TODO should we be using parsedHttpResponse.headers or this.res.getHeaders()?
+            // TODO this.res.getHeaders() seems to be missing some headers like Transfer-Encoding
+            // TODO also Express in Node has more headers like Date, Connection, Keep-Alive
+            // TODO Conection and Keep-Alive might just not make sense in our context
             ic.reply(
                 {
                     status_code: this.res.statusCode,
