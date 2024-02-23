@@ -9,6 +9,9 @@ export class AzleApp extends LitElement {
     @property()
     identity: Identity | null = null;
 
+    @property()
+    whoami: string = '';
+
     connectedCallback() {
         super.connectedCallback();
         this.authenticate();
@@ -48,7 +51,7 @@ export class AzleApp extends LitElement {
         );
         const responseText = await response.text();
 
-        alert(responseText);
+        this.whoami = responseText;
     }
 
     async whoamiAuthenticated() {
@@ -61,16 +64,26 @@ export class AzleApp extends LitElement {
         );
         const responseText = await response.text();
 
-        alert(responseText);
+        this.whoami = responseText;
     }
 
     render() {
         return html`
             <h1>Internet Identity</h1>
-            <button @click=${this.whoamiUnauthenticated}>
+
+            <h2>
+                Whoami principal:
+                <span id="whoamiPrincipal">${this.whoami}</span>
+            </h2>
+
+            <button
+                id="whoamiUnauthenticated"
+                @click=${this.whoamiUnauthenticated}
+            >
                 Whoami Unauthenticated
             </button>
             <button
+                id="whoamiAuthenticated"
                 @click=${this.whoamiAuthenticated}
                 .disabled=${this.identity === null}
             >

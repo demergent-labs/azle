@@ -12,6 +12,7 @@
     },
     "devDependencies": {
         "@types/express": "^4.17.21",
+        "puppeteer": "^22.2.0",
         "ts-node": "^10.9.1",
         "typescript": "^5.2.2",
         "vite": "^5.0.12"
