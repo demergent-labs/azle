@@ -1,0 +1,4 @@
+service: () -> {
+    http_request: (record {url:text; method:text; body:vec nat8; headers:vec record {text; text}; certificate_version:opt nat16}) -> (record {body:vec nat8; headers:vec record {text; text}; upgrade:opt bool; streaming_strategy:opt variant {Callback:record {token:record {}; callback:func (record {}) -> (opt record {token:opt record {}; body:vec nat8}) query}}; status_code:nat16}) query;
+    http_request_update: (record {url:text; method:text; body:vec nat8; headers:vec record {text; text}; certificate_version:opt nat16}) -> (record {body:vec nat8; headers:vec record {text; text}; upgrade:opt bool; streaming_strategy:opt variant {Callback:record {token:record {}; callback:func (record {}) -> (opt record {token:opt record {}; body:vec nat8}) query}}; status_code:nat16});
+}

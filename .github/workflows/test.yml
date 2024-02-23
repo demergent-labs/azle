@@ -94,6 +94,7 @@ jobs:
                     "examples/ethereum_json_rpc",
                     "examples/ethers",
                     "examples/express",
+                    "examples/fetch_ic",
                     "examples/fs",
                     "examples/func_types",
                     "examples/guard_functions",
