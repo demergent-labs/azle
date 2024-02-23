@@ -36,7 +36,7 @@ export class AzleApp extends LitElement {
         await new Promise((resolve, reject) => {
             authClient.login({
                 identityProvider: import.meta.env.VITE_IDENTITY_PROVIDER,
-                onSuccess: resolve as any,
+                onSuccess: resolve as () => void,
                 onError: reject,
                 windowOpenerFeatures: `width=500,height=500`
             });
