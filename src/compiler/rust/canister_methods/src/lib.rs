@@ -465,6 +465,12 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
 
                 // flush the buffer to ensure all data is written immediately
                 std::io::Write::flush(&mut file).unwrap();
+
+                let mut uploaded_assets_mut = uploaded_assets.borrow_mut();
+                uploaded_assets_mut.remove(dest_path);
+                if uploaded_assets_mut.len() == 0 {
+                    ic_cdk::println!("All assets uploaded and cache is cleared.");
+                }
             });
         }
     }
