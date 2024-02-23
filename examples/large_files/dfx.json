@@ -9,13 +9,10 @@
             "post_install": "npx azle upload-assets large_files 8000",
             "wasm": ".azle/large_files/large_files.wasm",
             "gzip": true,
-            "large_assets": [
+            "assets_large": [
                 ["assets/curled", "assets"],
                 ["assets/permanent", "assets"],
                 ["assets/single_asset.txt", "assets/text/single.txt"]
-            ],
-            "comments": [
-                "Rename to large assets not assets_large, strike that, reverse it"
             ],
             "metadata": [
                 {

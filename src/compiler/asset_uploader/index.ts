@@ -134,7 +134,7 @@ function uploadAsset(
 
 function getAssetsToUpload(canisterId: string): [Src, Dest][] {
     const dfxJson: DfxJson = JSON.parse(readFileSync('dfx.json').toString());
-    return dfxJson.canisters[canisterId].large_assets ?? [];
+    return dfxJson.canisters[canisterId].assets_large ?? [];
 }
 
 async function createUploadAssetActor(
