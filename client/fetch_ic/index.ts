@@ -1,7 +1,11 @@
+// TODO use AZLE_ for environment variables
+
 import { Actor, Agent, HttpAgent, Identity } from '@dfinity/agent';
 
 const originalFetch = window.fetch;
 
+// TODO it would be nice to get rid of the any cast
+// TODO and to ensure that we really are using the correct types for fetch
 (window as any).fetch = fetchIc;
 
 export async function fetchIc(
@@ -16,6 +20,8 @@ export async function fetchIc(
 
     const actor = await createActor(identity, input);
     const urlString = getUrlString(input);
+
+    // TODO think of new names
     const callResult = await getCallResult(urlString, init, actor);
     const response = createResponse(callResult, urlString);
 
@@ -108,7 +114,8 @@ async function getCallResult(
     init: RequestInit | undefined,
     actor: any
 ) {
-    const url = new URL(urlString).pathname;
+    // TODO check the url that is wanted by the HTTP Protocol Gateway Spec
+    const url = new URL(urlString).pathname; // TODO this is missing query parameters and # things
     console.log('url', url);
     const headers = prepareRequestHeaders(init).filter(
         ([key]) => key !== 'Authorization'
@@ -117,7 +124,7 @@ async function getCallResult(
 
     if (init === undefined || init.method === 'GET') {
         return await actor.http_request({
-            method: 'GET',
+            method: init?.method, // TODO handle if init is undefined
             url,
             headers,
             body,
@@ -133,7 +140,7 @@ async function getCallResult(
             init.method === 'DELETE')
     ) {
         return await actor.http_request_update({
-            method: 'GET',
+            method: init?.method,
             url,
             headers,
             body
@@ -247,11 +254,14 @@ function getCanisterId(input: RequestInfo | URL): string | undefined {
 // TODO maybe we can detect the canister id scheme and use that automatically
 // TODO and then allow them to set an environment variable if they are using a custom domain
 async function getAgent(identity: Identity): Promise<Agent> {
+    // TODO we need to infer all of this first
+    // TODO if VITE_CANISTER_ORIGIN exists then use that, otherwise we must get it from the URL
     const agent = new HttpAgent({
         host: import.meta.env.VITE_CANISTER_ORIGIN,
         identity
     });
 
+    // TODO make this a little bit more robust, check for dots and ports maybe
     if (
         import.meta.env.VITE_CANISTER_ORIGIN?.includes(`localhost`) ||
         import.meta.env.VITE_CANISTER_ORIGIN?.includes(`127.0.0.1`)
@@ -271,6 +281,8 @@ function getIdentity(headers: RequestInit['headers']): Identity | undefined {
     ) {
         return undefined;
     }
+
+    // TODO let's do an explicit check to make sure we have an identity and not some other object
 
     return authorizationHeaderValue;
 }
