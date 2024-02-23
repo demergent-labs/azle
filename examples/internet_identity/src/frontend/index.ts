@@ -38,7 +38,7 @@ export class AzleApp extends LitElement {
                 identityProvider: import.meta.env.VITE_IDENTITY_PROVIDER,
                 onSuccess: resolve as any,
                 onError: reject,
-                windowOpenerFeatures: `toolbar=0,location=0,menubar=0,width=500,height=500,left=0,top=0` // TODO I would love for this to open on the right side of the screen
+                windowOpenerFeatures: `width=500,height=500`
             });
         });
 
