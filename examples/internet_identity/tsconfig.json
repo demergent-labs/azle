@@ -6,8 +6,7 @@
         "moduleResolution": "node",
         "allowJs": true,
         "outDir": "HACK_BECAUSE_OF_ALLOW_JS",
-        "resolveJsonModule": true,
-        "esModuleInterop": true
-    },
-    "exclude": ["examples/new"]
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true
+    }
 }
