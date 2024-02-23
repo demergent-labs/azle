@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "build": "cd src/frontend && VITE_CANISTER_ORIGIN=http://$(dfx canister id backend).localhost:8000 VITE_IDENTITY_PROVIDER=http://$(dfx canister id internet_identity).localhost:8000 vite build",
+        "build": "cd src/frontend && VITE_CANISTER_ORIGIN=http://$(dfx canister id backend).localhost:$(dfx info webserver-port) VITE_IDENTITY_PROVIDER=http://$(dfx canister id internet_identity).localhost:$(dfx info webserver-port) vite build",
         "pretest": "ts-node --transpile-only --ignore=false --skip-project test/pretest.ts",
         "test": "ts-node --transpile-only --ignore=false --skip-project test/test.ts"
     },

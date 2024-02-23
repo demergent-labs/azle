@@ -1,6 +1,4 @@
-import { getCanisterId, runTests } from 'azle/test';
+import { runTests } from 'azle/test';
 import { getTests } from './tests';
 
-const canisterId = getCanisterId('backend');
-
-runTests(getTests(canisterId));
+runTests(getTests('backend'));

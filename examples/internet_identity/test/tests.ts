@@ -2,19 +2,17 @@ import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 import { Principal } from '@dfinity/principal';
-import { Test } from 'azle/test';
+import { Test, getCanisterOrigin } from 'azle/test';
 import puppeteer from 'puppeteer';
 
-export function getTests(canisterId: string): Test[] {
-    const origin = `http://${canisterId}.localhost:8000`;
+export function getTests(canisterName: string): Test[] {
+    const origin = getCanisterOrigin(canisterName);
 
     return [
         {
             name: 'Test',
             test: async () => {
-                const browser = await puppeteer.launch({
-                    headless: false
-                });
+                const browser = await puppeteer.launch();
                 const page = await browser.newPage();
 
                 page.on('console', (message) => {
