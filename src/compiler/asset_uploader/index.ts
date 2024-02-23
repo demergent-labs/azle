@@ -24,10 +24,28 @@ export async function uploadAssets(
     const chunkSize = 2_000_000; // The current message limit is about 2 MiB
 
     for (let i = 0; i < assetsToUpload.length; i++) {
-        const [src, des] = assetsToUpload[i];
+        const [srcPath, destPath] = assetsToUpload[i];
         // Don't await, fire off all of the uploads as fast as we can
-        upload(src, des, chunkSize, actor);
+        upload(srcPath, destPath, chunkSize, actor);
     }
+}
+
+export async function uploadSingleAsset(
+    canisterName: string,
+    replicaWebServerPort: string,
+    srcPath: Src,
+    destPath: Dest
+) {
+    const canisterId = getCanisterId(canisterName);
+
+    const actor = await createUploadAssetActor(
+        canisterId,
+        replicaWebServerPort
+    );
+
+    const chunkSize = 2_000_000; // The current message limit is about 2 MiB
+
+    upload(srcPath, destPath, chunkSize, actor);
 }
 
 async function upload(
