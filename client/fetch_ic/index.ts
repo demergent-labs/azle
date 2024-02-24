@@ -1,3 +1,5 @@
+// TODO add to the backend and frontend x-ic-force-query and x-ic-force-update
+// TODO you might want to control queries or updates explicitly no matter the method
 // TODO should we ensure that this works in Node.js as well? Or just focus on the browser?
 // TODO add the user-agent header
 // TODO add as many of the default chrome headers as possible
@@ -118,17 +120,22 @@ async function getCallResult(
     init: RequestInit | undefined,
     actor: any
 ) {
-    // TODO check the url that is wanted by the HTTP Protocol Gateway Spec
-    const url = new URL(urlString).pathname; // TODO this is missing query parameters and # things
+    const url = new URL(urlString);
+    const urlAndQueryParams = `${url.pathname}${url.search}`;
+
     const body = await prepareRequestBody(init);
     const headers = prepareRequestHeaders(init).filter(
         ([key]) => key !== 'Authorization'
     );
 
-    if (init === undefined || init.method === 'GET') {
+    if (
+        init === undefined ||
+        init.method === undefined ||
+        init.method === 'GET'
+    ) {
         return await actor.http_request({
             method: 'GET',
-            url,
+            url: urlAndQueryParams,
             headers,
             body,
             certificate_version: []
@@ -144,11 +151,11 @@ async function getCallResult(
     ) {
         return await actor.http_request_update({
             method: init.method,
-            url,
+            url: urlAndQueryParams,
             headers: [
                 ...headers,
                 ...(body.length !== 0
-                    ? ['Content-Length', body.length.toString()]
+                    ? [['Content-Length', body.length.toString()]]
                     : [])
             ],
             body

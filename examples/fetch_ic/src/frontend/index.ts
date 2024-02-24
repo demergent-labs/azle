@@ -9,15 +9,6 @@ export class AzleApp extends LitElement {
     @property()
     identity: Identity | null = null;
 
-    @property()
-    whoami: string = '';
-
-    @property()
-    headersArrayText: string = '';
-
-    @property()
-    headersObjectText: string = '';
-
     connectedCallback() {
         super.connectedCallback();
         this.authenticate();
@@ -52,6 +43,10 @@ export class AzleApp extends LitElement {
     }
 
     async headersArray() {
+        if (this.identity === null) {
+            throw new Error(`Identity must be defined`);
+        }
+
         const response = await fetch(
             `${import.meta.env.VITE_CANISTER_ORIGIN}/headers-array`,
             {
@@ -66,10 +61,24 @@ export class AzleApp extends LitElement {
         );
         const responseJson = await response.json();
 
-        this.headersArrayText = JSON.stringify(responseJson);
+        if (
+            responseJson.whoami === this.identity.getPrincipal().toString() &&
+            JSON.stringify(responseJson.value) ===
+                JSON.stringify({
+                    'x-azle-0': 'x-azle-0',
+                    'x-azle-1': 'x-azle-1',
+                    'x-azle-2': 'x-azle-2'
+                })
+        ) {
+            (window as any).headersArraySuccess = true;
+        }
     }
 
     async headersObject() {
+        if (this.identity === null) {
+            throw new Error(`Identity must be defined`);
+        }
+
         const response = await fetch(
             `${import.meta.env.VITE_CANISTER_ORIGIN}/headers-object`,
             {
@@ -84,10 +93,24 @@ export class AzleApp extends LitElement {
         );
         const responseJson = await response.json();
 
-        this.headersObjectText = JSON.stringify(responseJson);
+        if (
+            responseJson.whoami === this.identity.getPrincipal().toString() &&
+            JSON.stringify(responseJson.value) ===
+                JSON.stringify({
+                    'x-azle-0': 'x-azle-0',
+                    'x-azle-1': 'x-azle-1',
+                    'x-azle-2': 'x-azle-2'
+                })
+        ) {
+            (window as any).headersObjectSuccess = true;
+        }
     }
 
     async bodyUint8Array() {
+        if (this.identity === null) {
+            throw new Error(`Identity must be defined`);
+        }
+
         const textEncoder = new TextEncoder();
         const encodedText = textEncoder.encode(
             JSON.stringify({
@@ -108,10 +131,22 @@ export class AzleApp extends LitElement {
         );
         const responseJson = await response.json();
 
-        console.log('responseJson', responseJson);
+        if (
+            responseJson.whoami === this.identity.getPrincipal().toString() &&
+            JSON.stringify(responseJson.value) ===
+                JSON.stringify({
+                    value: 'body-uint8array'
+                })
+        ) {
+            (window as any).bodyUint8ArraySuccess = true;
+        }
     }
 
     async bodyString() {
+        if (this.identity === null) {
+            throw new Error(`Identity must be defined`);
+        }
+
         const response = await fetch(
             `${import.meta.env.VITE_CANISTER_ORIGIN}/body-string`,
             {
@@ -127,62 +162,179 @@ export class AzleApp extends LitElement {
         );
         const responseJson = await response.json();
 
-        console.log('responseJson', responseJson);
+        if (
+            responseJson.whoami === this.identity.getPrincipal().toString() &&
+            JSON.stringify(responseJson.value) ===
+                JSON.stringify({
+                    value: 'body-string'
+                })
+        ) {
+            (window as any).bodyStringSuccess = true;
+        }
     }
 
-    async whoamiUnauthenticated() {
-        const response = await fetch(
-            `${import.meta.env.VITE_CANISTER_ORIGIN}/whoami`
+    async bodyArrayBuffer() {
+        if (this.identity === null) {
+            throw new Error(`Identity must be defined`);
+        }
+
+        const textEncoder = new TextEncoder();
+        const encodedText = textEncoder.encode(
+            JSON.stringify({
+                value: 'body-array-buffer'
+            })
         );
-        const responseText = await response.text();
 
-        this.whoami = responseText;
+        const response = await fetch(
+            `${import.meta.env.VITE_CANISTER_ORIGIN}/body-array-buffer`,
+            {
+                method: 'POST',
+                headers: [
+                    ['Authorization', toJwt(this.identity)],
+                    ['Content-Type', 'application/json']
+                ],
+                body: encodedText.buffer
+            }
+        );
+        const responseJson = await response.json();
+
+        if (
+            responseJson.whoami === this.identity.getPrincipal().toString() &&
+            JSON.stringify(responseJson.value) ===
+                JSON.stringify({
+                    value: 'body-array-buffer'
+                })
+        ) {
+            (window as any).bodyArrayBufferSuccess = true;
+        }
     }
 
-    async whoamiAuthenticated() {
+    async bodyBlob() {
+        if (this.identity === null) {
+            throw new Error(`Identity must be defined`);
+        }
+
+        const textEncoder = new TextEncoder();
+        const encodedText = textEncoder.encode(
+            JSON.stringify({
+                value: 'body-blob'
+            })
+        );
+
+        const blob = new Blob([encodedText], { type: 'application/json' });
+
         const response = await fetch(
-            `${import.meta.env.VITE_CANISTER_ORIGIN}/whoami`,
+            `${import.meta.env.VITE_CANISTER_ORIGIN}/body-blob`,
             {
-                method: 'GET',
+                method: 'POST',
+                headers: [
+                    ['Authorization', toJwt(this.identity)],
+                    ['Content-Type', 'application/json']
+                ],
+                body: blob
+            }
+        );
+        const responseJson = await response.json();
+
+        if (
+            responseJson.whoami === this.identity.getPrincipal().toString() &&
+            JSON.stringify(responseJson.value) ===
+                JSON.stringify({
+                    value: 'body-blob'
+                })
+        ) {
+            (window as any).bodyBlobSuccess = true;
+        }
+    }
+
+    async bodyDataView() {
+        if (this.identity === null) {
+            throw new Error(`Identity must be defined`);
+        }
+
+        const textEncoder = new TextEncoder();
+        const encodedText = textEncoder.encode(
+            JSON.stringify({
+                value: 'body-data-view'
+            })
+        );
+
+        const dataView = new DataView(encodedText.buffer);
+
+        const response = await fetch(
+            `${import.meta.env.VITE_CANISTER_ORIGIN}/body-data-view`,
+            {
+                method: 'POST',
+                headers: [
+                    ['Authorization', toJwt(this.identity)],
+                    ['Content-Type', 'application/json']
+                ],
+                body: dataView
+            }
+        );
+        const responseJson = await response.json();
+
+        if (
+            responseJson.whoami === this.identity.getPrincipal().toString() &&
+            JSON.stringify(responseJson.value) ===
+                JSON.stringify({
+                    value: 'body-data-view'
+                })
+        ) {
+            (window as any).bodyDataViewSuccess = true;
+        }
+    }
+
+    async urlQueryParamsGet() {
+        if (this.identity === null) {
+            throw new Error(`Identity must be defined`);
+        }
+
+        const response = await fetch(
+            `${
+                import.meta.env.VITE_CANISTER_ORIGIN
+            }/url-query-params-get?type=get`,
+            {
                 headers: [['Authorization', toJwt(this.identity)]]
             }
         );
-        const responseText = await response.text();
+        const responseJson = await response.json();
 
-        this.whoami = responseText;
+        if (
+            responseJson.whoami === this.identity.getPrincipal().toString() &&
+            responseJson.value.type === 'get'
+        ) {
+            (window as any).urlQueryParamsGetSuccess = true;
+        }
+    }
+
+    async urlQueryParamsPost() {
+        if (this.identity === null) {
+            throw new Error(`Identity must be defined`);
+        }
+
+        const response = await fetch(
+            `${
+                import.meta.env.VITE_CANISTER_ORIGIN
+            }/url-query-params-post?type=post`,
+            {
+                method: 'POST',
+                headers: [['Authorization', toJwt(this.identity)]]
+            }
+        );
+        const responseJson = await response.json();
+
+        if (
+            responseJson.whoami === this.identity.getPrincipal().toString() &&
+            responseJson.value.type === 'post'
+        ) {
+            (window as any).urlQueryParamsPostSuccess = true;
+        }
     }
 
     render() {
         return html`
-            <h1>Internet Identity</h1>
-
-            <h2>
-                Whoami principal:
-                <span id="whoamiPrincipal">${this.whoami}</span>
-            </h2>
-
-            <div>
-                <button
-                    id="whoamiUnauthenticated"
-                    @click=${this.whoamiUnauthenticated}
-                >
-                    Whoami Unauthenticated
-                </button>
-            </div>
-
-            <br />
-
-            <div>
-                <button
-                    id="whoamiAuthenticated"
-                    @click=${this.whoamiAuthenticated}
-                    .disabled=${this.identity === null}
-                >
-                    Whoami Authenticated
-                </button>
-            </div>
-
-            <br />
+            <h1>Test fetchIc</h1>
 
             <div>
                 <button
@@ -191,11 +343,6 @@ export class AzleApp extends LitElement {
                 >
                     Headers Array
                 </button>
-                <input
-                    id="headersArrayInput"
-                    type="text"
-                    .value=${this.headersArrayText}
-                />
             </div>
 
             <br />
@@ -207,23 +354,83 @@ export class AzleApp extends LitElement {
                 >
                     Headers Object
                 </button>
-                <input
-                    id="headersObjectInput"
-                    type="text"
-                    .value=${this.headersObjectText}
-                />
             </div>
 
             <br />
 
             <div>
-                <button @click=${this.bodyUint8Array}>Body Uint8Array</button>
+                <button
+                    id="bodyUint8ArrayButton"
+                    @click=${this.bodyUint8Array}
+                >
+                    Body Uint8Array
+                </button>
             </div>
 
             <br />
 
             <div>
-                <button @click=${this.bodyString}>Body String</button>
+                <button
+                    id="bodyStringButton"
+                    @click=${this.bodyString}
+                >
+                    Body String
+                </button>
+            </div>
+
+            <br />
+
+            <div>
+                <button
+                    id="bodyArrayBufferButton"
+                    @click=${this.bodyArrayBuffer}
+                >
+                    Body ArrayBuffer
+                </button>
+            </div>
+
+            <br />
+
+            <div>
+                <button
+                    id="bodyBlobButton"
+                    @click=${this.bodyBlob}
+                >
+                    Body Blob
+                </button>
+            </div>
+
+            <br />
+
+            <div>
+                <button
+                    id="bodyDataViewButton"
+                    @click=${this.bodyDataView}
+                >
+                    Body DataView
+                </button>
+            </div>
+
+            <br />
+
+            <div>
+                <button
+                    id="urlQueryParamsGetButton"
+                    @click=${this.urlQueryParamsGet}
+                >
+                    Url Query Params GET
+                </button>
+            </div>
+
+            <br />
+
+            <div>
+                <button
+                    id="urlQueryParamsPostButton"
+                    @click=${this.urlQueryParamsPost}
+                >
+                    Url Query Params POST
+                </button>
             </div>
         `;
     }

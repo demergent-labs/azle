@@ -38,70 +38,8 @@ export function getTests(canisterName: string): Test[] {
             }
         },
         {
-            name: 'Whoami Unauthenticated',
-            test: async () => {
-                await mainPage.click('>>> #whoamiUnauthenticated');
-
-                await mainPage.waitForNetworkIdle();
-
-                const whoamiPrincipal = await mainPage.$(
-                    '>>> #whoamiPrincipal'
-                );
-
-                if (whoamiPrincipal === null) {
-                    return {
-                        Ok: false
-                    };
-                }
-
-                const whoamiPrincipalText = await mainPage.evaluate(
-                    (x) => x.textContent,
-                    whoamiPrincipal
-                );
-
-                return {
-                    Ok:
-                        whoamiPrincipalText !== null &&
-                        Principal.fromText(
-                            whoamiPrincipalText
-                        ).isAnonymous() === true
-                };
-            }
-        },
-        {
-            name: 'Waiting for unknown reason',
+            name: 'Waiting for identity to be set',
             wait: 5_000
-        },
-        {
-            name: 'Whoami Authenticated',
-            test: async () => {
-                await mainPage.click('>>> #whoamiAuthenticated');
-
-                await mainPage.waitForNetworkIdle();
-
-                const whoamiPrincipal = await mainPage.$(
-                    '>>> #whoamiPrincipal'
-                );
-
-                if (whoamiPrincipal === null) {
-                    return {
-                        Ok: false
-                    };
-                }
-
-                const whoamiPrincipalText = await mainPage.evaluate(
-                    (x) => x.textContent,
-                    whoamiPrincipal
-                );
-
-                return {
-                    Ok:
-                        whoamiPrincipalText !== null &&
-                        Principal.fromText(
-                            whoamiPrincipalText
-                        ).isAnonymous() === false
-                };
-            }
         },
         {
             name: 'Headers Array',
@@ -110,29 +48,12 @@ export function getTests(canisterName: string): Test[] {
 
                 await mainPage.waitForNetworkIdle();
 
-                const headersArrayInput = await mainPage.$(
-                    '>>> #headersArrayInput'
-                );
-
-                if (headersArrayInput === null) {
-                    return {
-                        Ok: false
-                    };
-                }
-
-                const headersArrayInputText = await mainPage.evaluate(
-                    (x: any) => x.value,
-                    headersArrayInput
+                const success = await page.evaluate(
+                    () => (window as any).headersArraySuccess
                 );
 
                 return {
-                    Ok:
-                        headersArrayInputText ===
-                        JSON.stringify({
-                            'x-azle-0': 'x-azle-0',
-                            'x-azle-1': 'x-azle-1',
-                            'x-azle-2': 'x-azle-2'
-                        })
+                    Ok: success
                 };
             }
         },
@@ -143,29 +64,142 @@ export function getTests(canisterName: string): Test[] {
 
                 await mainPage.waitForNetworkIdle();
 
-                const headersObjectInput = await mainPage.$(
-                    '>>> #headersObjectInput'
-                );
-
-                if (headersObjectInput === null) {
-                    return {
-                        Ok: false
-                    };
-                }
-
-                const headersObjectInputText = await mainPage.evaluate(
-                    (x: any) => x.value,
-                    headersObjectInput
+                const success = await page.evaluate(
+                    () => (window as any).headersObjectSuccess
                 );
 
                 return {
-                    Ok:
-                        headersObjectInputText ===
-                        JSON.stringify({
-                            'x-azle-0': 'x-azle-0',
-                            'x-azle-1': 'x-azle-1',
-                            'x-azle-2': 'x-azle-2'
-                        })
+                    Ok: success
+                };
+            }
+        },
+        {
+            name: 'Body Uint8Array',
+            test: async () => {
+                await mainPage.click('>>> #bodyUint8ArrayButton');
+
+                // I believe that await mainPage.waitForNetworkIdle();
+                // does not work because of the way that agent
+                // engages in polling
+                await new Promise((resolve) => setTimeout(resolve, 5_000));
+
+                const success = await page.evaluate(
+                    () => (window as any).bodyUint8ArraySuccess
+                );
+
+                return {
+                    Ok: success
+                };
+            }
+        },
+        {
+            name: 'Body String',
+            test: async () => {
+                await mainPage.click('>>> #bodyStringButton');
+
+                // I believe that await mainPage.waitForNetworkIdle();
+                // does not work because of the way that agent
+                // engages in polling
+                await new Promise((resolve) => setTimeout(resolve, 5_000));
+
+                const success = await page.evaluate(
+                    () => (window as any).bodyStringSuccess
+                );
+
+                return {
+                    Ok: success
+                };
+            }
+        },
+        {
+            name: 'Body ArrayBuffer',
+            test: async () => {
+                await mainPage.click('>>> #bodyArrayBufferButton');
+
+                // I believe that await mainPage.waitForNetworkIdle();
+                // does not work because of the way that agent
+                // engages in polling
+                await new Promise((resolve) => setTimeout(resolve, 5_000));
+
+                const success = await page.evaluate(
+                    () => (window as any).bodyArrayBufferSuccess
+                );
+
+                return {
+                    Ok: success
+                };
+            }
+        },
+        {
+            name: 'Body Blob',
+            test: async () => {
+                await mainPage.click('>>> #bodyBlobButton');
+
+                // I believe that await mainPage.waitForNetworkIdle();
+                // does not work because of the way that agent
+                // engages in polling
+                await new Promise((resolve) => setTimeout(resolve, 5_000));
+
+                const success = await page.evaluate(
+                    () => (window as any).bodyBlobSuccess
+                );
+
+                return {
+                    Ok: success
+                };
+            }
+        },
+        {
+            name: 'Body DataView',
+            test: async () => {
+                await mainPage.click('>>> #bodyDataViewButton');
+
+                // I believe that await mainPage.waitForNetworkIdle();
+                // does not work because of the way that agent
+                // engages in polling
+                await new Promise((resolve) => setTimeout(resolve, 5_000));
+
+                const success = await page.evaluate(
+                    () => (window as any).bodyDataViewSuccess
+                );
+
+                return {
+                    Ok: success
+                };
+            }
+        },
+        {
+            name: 'Url Query Params GET',
+            test: async () => {
+                await mainPage.click('>>> #urlQueryParamsGetButton');
+
+                await mainPage.waitForNetworkIdle();
+
+                const success = await page.evaluate(
+                    () => (window as any).urlQueryParamsGetSuccess
+                );
+
+                return {
+                    Ok: success
+                };
+            }
+        },
+        {
+            name: 'Url Query Params POST',
+            test: async () => {
+                await mainPage.click('>>> #urlQueryParamsPostButton');
+
+                // I believe that await mainPage.waitForNetworkIdle();
+                // does not work because of the way that agent
+                // engages in polling
+                await new Promise((resolve) => setTimeout(resolve, 5_000));
+
+                const success = await page.evaluate(
+                    () => (window as any).urlQueryParamsPostSuccess
+                );
+
+                return {
+                    Ok: success
                 };
             }
         },
