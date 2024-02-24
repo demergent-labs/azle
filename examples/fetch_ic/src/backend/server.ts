@@ -2,15 +2,12 @@ import { ic, Server } from 'azle';
 import express from 'express';
 
 // TODO test httpresposne status code and headers
+// TODO make sure to test requests and responses, i.e. headers in requests and headers in responses
 
 export default Server(() => {
     const app = express();
 
     app.use(express.json());
-
-    // TODO make sure to test requests and responses, i.e. headers in requests and headers in responses
-
-    // TODO test all HTTP methods
 
     app.get('/headers-array', (req, res) => {
         res.json({
@@ -33,21 +30,21 @@ export default Server(() => {
         });
     });
 
-    app.post('/body-string', (req, res) => {
+    app.put('/body-string', (req, res) => {
         res.json({
             whoami: ic.caller().toString(),
             value: req.body
         });
     });
 
-    app.post('/body-array-buffer', (req, res) => {
+    app.patch('/body-array-buffer', (req, res) => {
         res.json({
             whoami: ic.caller().toString(),
             value: req.body
         });
     });
 
-    app.post('/body-blob', (req, res) => {
+    app.delete('/body-blob', (req, res) => {
         res.json({
             whoami: ic.caller().toString(),
             value: req.body

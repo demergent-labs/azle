@@ -131,10 +131,12 @@ async function getCallResult(
     if (
         init === undefined ||
         init.method === undefined ||
-        init.method === 'GET'
+        init.method === 'GET' ||
+        init.method === 'HEAD' ||
+        init.method === 'OPTIONS'
     ) {
         return await actor.http_request({
-            method: 'GET',
+            method: init?.method ?? 'GET',
             url: urlAndQueryParams,
             headers,
             body,
@@ -161,6 +163,8 @@ async function getCallResult(
             body
         });
     }
+
+    throw new Error(`fetchIc: This request combination is not supported`);
 }
 
 function prepareRequestHeaders(

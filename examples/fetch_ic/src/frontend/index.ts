@@ -150,7 +150,7 @@ export class AzleApp extends LitElement {
         const response = await fetch(
             `${import.meta.env.VITE_CANISTER_ORIGIN}/body-string`,
             {
-                method: 'POST',
+                method: 'PUT',
                 headers: [
                     ['Authorization', toJwt(this.identity)],
                     ['Content-Type', 'application/json']
@@ -188,7 +188,7 @@ export class AzleApp extends LitElement {
         const response = await fetch(
             `${import.meta.env.VITE_CANISTER_ORIGIN}/body-array-buffer`,
             {
-                method: 'POST',
+                method: 'PATCH',
                 headers: [
                     ['Authorization', toJwt(this.identity)],
                     ['Content-Type', 'application/json']
@@ -226,7 +226,7 @@ export class AzleApp extends LitElement {
         const response = await fetch(
             `${import.meta.env.VITE_CANISTER_ORIGIN}/body-blob`,
             {
-                method: 'POST',
+                method: 'DELETE',
                 headers: [
                     ['Authorization', toJwt(this.identity)],
                     ['Content-Type', 'application/json']
