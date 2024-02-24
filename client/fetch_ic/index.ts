@@ -1,3 +1,6 @@
+// TODO should we ensure that this works in Node.js as well? Or just focus on the browser?
+// TODO add the user-agent header
+// TODO add as many of the default chrome headers as possible
 // TODO use AZLE_ for environment variables
 
 import { Actor, Agent, HttpAgent, Identity } from '@dfinity/agent';
@@ -8,6 +11,7 @@ const originalFetch = window.fetch;
 // TODO and to ensure that we really are using the correct types for fetch
 (window as any).fetch = fetchIc;
 
+// TODO RequestInit has many many things to implement
 export async function fetchIc(
     input: RequestInfo | URL,
     init?: RequestInit | undefined
@@ -47,7 +51,7 @@ async function createActor(identity: Identity, input: RequestInfo | URL) {
                 url: IDL.Text,
                 headers: IDL.Vec(HeaderField),
                 body: IDL.Vec(IDL.Nat8),
-                certificate_version: IDL.Opt(IDL.Nat16)
+                certificate_version: IDL.Opt(IDL.Nat16) // TODO do we need to allow the user to set this
             });
 
             const HttpUpdateRequest = IDL.Record({
@@ -116,15 +120,14 @@ async function getCallResult(
 ) {
     // TODO check the url that is wanted by the HTTP Protocol Gateway Spec
     const url = new URL(urlString).pathname; // TODO this is missing query parameters and # things
-    console.log('url', url);
+    const body = await prepareRequestBody(init);
     const headers = prepareRequestHeaders(init).filter(
         ([key]) => key !== 'Authorization'
     );
-    const body = await prepareRequestBody(init);
 
     if (init === undefined || init.method === 'GET') {
         return await actor.http_request({
-            method: init?.method, // TODO handle if init is undefined
+            method: 'GET',
             url,
             headers,
             body,
@@ -140,9 +143,14 @@ async function getCallResult(
             init.method === 'DELETE')
     ) {
         return await actor.http_request_update({
-            method: init?.method,
+            method: init.method,
             url,
-            headers,
+            headers: [
+                ...headers,
+                ...(body.length !== 0
+                    ? ['Content-Length', body.length.toString()]
+                    : [])
+            ],
             body
         });
     }
@@ -155,21 +163,19 @@ function prepareRequestHeaders(
         return [];
     }
 
+    if (init.headers instanceof Headers) {
+        throw new Error(`fetchIc: Headers is not a supported headers type`);
+    }
+
     if (Array.isArray(init.headers)) {
         return init.headers;
     }
 
-    if (init.headers instanceof Headers) {
-        let headers = [];
-
-        for (const header of init.headers.entries()) {
-            headers.push(header);
-        }
-
-        return headers;
+    if (typeof init.headers === 'object') {
+        return Object.entries(init.headers);
     }
 
-    return [];
+    throw new Error(`fetchIc: not a supported headers type`);
 }
 
 async function prepareRequestBody(
@@ -187,28 +193,52 @@ async function prepareRequestBody(
         return Uint8Array.from([]);
     }
 
-    // TODO handle ReadableStream
-
-    // TODO handle buffersource
-
-    // TODO handle formdata
-
-    // TODO handle URLSearchParams
-
     if (typeof init.body === 'string') {
         const textEncoder = new TextEncoder();
         return textEncoder.encode(init.body);
+    }
+
+    if (
+        init.body instanceof ArrayBuffer ||
+        init.body instanceof Uint8Array ||
+        init.body instanceof Uint8ClampedArray ||
+        init.body instanceof Uint16Array ||
+        init.body instanceof Uint32Array ||
+        init.body instanceof BigUint64Array ||
+        init.body instanceof Int8Array ||
+        init.body instanceof Int16Array ||
+        init.body instanceof Int32Array ||
+        init.body instanceof BigInt64Array ||
+        init.body instanceof Float32Array ||
+        init.body instanceof Float64Array
+    ) {
+        return new Uint8Array(init.body);
+    }
+
+    if (init.body instanceof DataView) {
+        return new Uint8Array(init.body.buffer);
     }
 
     if (init.body instanceof Blob) {
         return new Uint8Array(await init.body.arrayBuffer());
     }
 
-    if (init.body instanceof ArrayBuffer) {
-        return new Uint8Array(init.body);
+    if (init.body instanceof File) {
+        const blob = new Blob([init.body], { type: init.body.type });
+        const buffer = await blob.arrayBuffer();
+        return new Uint8Array(buffer);
     }
 
-    return Uint8Array.from([]);
+    if (init.body instanceof URLSearchParams) {
+        const encoder = new TextEncoder();
+        return encoder.encode(init.body.toString());
+    }
+
+    if (init.body instanceof FormData) {
+        throw new Error(`FormData is not a supported fetchIc body type`);
+    }
+
+    throw new Error(`Not a supported fetchIc body type`);
 }
 
 function getUrlString(input: RequestInfo | URL): string {
