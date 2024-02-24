@@ -1,3 +1,5 @@
+// TODO let's refactor this file now
+
 // TODO add to the backend and frontend x-ic-force-query and x-ic-force-update
 // TODO you might want to control queries or updates explicitly no matter the method
 // TODO should we ensure that this works in Node.js as well? Or just focus on the browser?
