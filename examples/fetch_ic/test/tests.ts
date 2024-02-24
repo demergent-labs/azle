@@ -1,3 +1,7 @@
+// TODO allow running these tests with and without the authorization header
+// TODO these seem like really good tests for the server and normal fetch too
+// TODO consider how we'll do the axios tests as well
+
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
@@ -196,6 +200,73 @@ export function getTests(canisterName: string): Test[] {
 
                 const success = await page.evaluate(
                     () => (window as any).urlQueryParamsPostSuccess
+                );
+
+                return {
+                    Ok: success
+                };
+            }
+        },
+        {
+            name: 'Not Authorized GET',
+            test: async () => {
+                await mainPage.click('>>> #notAuthorizedGetButton');
+
+                await mainPage.waitForNetworkIdle();
+
+                const success = await page.evaluate(
+                    () => (window as any).notAuthorizedGetSuccess
+                );
+
+                return {
+                    Ok: success
+                };
+            }
+        },
+        {
+            name: 'Not Authorized POST',
+            test: async () => {
+                await mainPage.click('>>> #notAuthorizedPostButton');
+
+                // I believe that await mainPage.waitForNetworkIdle();
+                // does not work because of the way that agent
+                // engages in polling
+                await new Promise((resolve) => setTimeout(resolve, 5_000));
+
+                const success = await page.evaluate(
+                    () => (window as any).notAuthorizedPostSuccess
+                );
+
+                return {
+                    Ok: success
+                };
+            }
+        },
+        {
+            name: 'HEAD',
+            test: async () => {
+                await mainPage.click('>>> #headButton');
+
+                await mainPage.waitForNetworkIdle();
+
+                const success = await page.evaluate(
+                    () => (window as any).headSuccess
+                );
+
+                return {
+                    Ok: success
+                };
+            }
+        },
+        {
+            name: 'OPTIONS',
+            test: async () => {
+                await mainPage.click('>>> #optionsButton');
+
+                await mainPage.waitForNetworkIdle();
+
+                const success = await page.evaluate(
+                    () => (window as any).optionsSuccess
                 );
 
                 return {
