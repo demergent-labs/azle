@@ -448,28 +448,27 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
 
             if uploaded_asset_len == total_len {
                 let delay = core::time::Duration::new(0, 0);
-                let closure = move || write_file(&dest_path);
+                let closure = move || write_file_by_parts(dest_path);
                 ic_cdk_timers::set_timer(delay, closure);
             }
         }
 
-        fn write_file(dest_path: &String) {
+        fn write_file(dest_path: String) {
             UPLOADED_ASSETS.with(|uploaded_assets| {
                 ic_cdk::println!("START writing: {}", dest_path);
                 let uploaded_assets_complete_bytes: Vec<u8> = uploaded_assets
                     .borrow()
-                    .get(dest_path)
+                    .get(&dest_path)
                     .unwrap()
                     .into_iter()
                     .flat_map(|(_, value)| value.clone())
                     .collect();
 
-                ic_cdk::println!("Collected");
                 let dir_path = std::path::Path::new(dest_path.as_str()).parent().unwrap();
 
                 std::fs::create_dir_all(dir_path).unwrap();
 
-                let mut file = std::fs::File::create(dest_path).unwrap();
+                let mut file = std::fs::File::create(&dest_path).unwrap();
 
                 std::io::Write::write_all(&mut file, &uploaded_assets_complete_bytes).unwrap();
 
@@ -478,11 +477,126 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
                 std::io::Write::flush(&mut file).unwrap();
 
                 let mut uploaded_assets_mut = uploaded_assets.borrow_mut();
-                uploaded_assets_mut.remove(dest_path);
+                uploaded_assets_mut.remove(&dest_path);
                 if uploaded_assets_mut.len() == 0 {
                     ic_cdk::println!("All assets uploaded and cache is cleared.");
                 }
             });
+        }
+
+        fn write_file_by_parts(dest_path: String) {
+            let (chunk_count, bytes_per_chunk) = UPLOADED_ASSETS.with(|uploaded_assets| {
+                let chunk_count = uploaded_assets.borrow().get(&dest_path).unwrap().len();
+                ic_cdk::println!("There are {} chunks to upload.", chunk_count);
+                (
+                    chunk_count,
+                    match uploaded_assets.borrow().get(&dest_path).unwrap().get(&0) {
+                        Some(first_bytes) => first_bytes.len(),
+                        None => 0,
+                    },
+                )
+            });
+
+            if chunk_count == 1 {
+                return write_file(dest_path);
+            }
+
+            let limit = 150 * 1024 * 1024; // In my tests 150 MiB seemed to work pretty well so we'll use it as an arbitrary number of bytes to write for each chunk.
+            let limit = 2 * 1024 * 1024; // TODO To test the chunk uploader lets start with 1 KiB chunks.
+            let group_size = limit / bytes_per_chunk;
+            let group_count = chunk_count / group_size;
+            ic_cdk::println!(
+                "There are {} bpc so we are going to upload this file in {} groups of {} chunks each",
+                bytes_per_chunk,
+                group_count,
+                group_size,
+            );
+
+            let dir_path = std::path::Path::new(dest_path.as_str()).parent().unwrap();
+
+            std::fs::create_dir_all(dir_path).unwrap();
+
+            // Create the file, or clear it if it already exists
+            std::fs::OpenOptions::new()
+                .write(true)
+                .truncate(true)
+                .create(true)
+                .open(&dest_path)
+                .unwrap();
+
+            let delay = core::time::Duration::new(0, 0);
+            let closure = move || write_group_of_file_chunks(dest_path, 0, group_size);
+            ic_cdk_timers::set_timer(delay, closure);
+        }
+
+        fn write_group_of_file_chunks(dest_path: String, start_chunk: usize, group_size: usize) {
+            // TODO I am assuming this function to be called by write_file_by_parts so when we get here the file should already exist and be empty and ready to write to. That way we don't have to worry about clearing the file on the first write or anything like that.
+            let write_complete = UPLOADED_ASSETS.with(|uploaded_assets| {
+                if start_chunk == 0 {
+                    ic_cdk::println!("START writing: {}", dest_path);
+                } else {
+                    ic_cdk::println!("Continue writing: {}", dest_path);
+                }
+                let uploaded_assets_complete_bytes: Vec<u8> = uploaded_assets
+                    .borrow()
+                    .get(&dest_path)
+                    .unwrap()
+                    .into_iter()
+                    .skip(start_chunk)
+                    .take(group_size)
+                    .flat_map(|(_, value)| value.clone())
+                    .collect();
+
+                ic_cdk::println!(
+                    "Preparing to write {} bytes to {}",
+                    uploaded_assets_complete_bytes.len(),
+                    dest_path
+                );
+
+                let mut file = std::fs::OpenOptions::new()
+                    .write(true)
+                    .append(true)
+                    .open(&dest_path)
+                    .unwrap();
+
+                ic_cdk::println!("Opened file: {}", dest_path);
+
+                std::io::Write::write_all(&mut file, &uploaded_assets_complete_bytes).unwrap();
+
+                let total_chunk_count = uploaded_assets.borrow().get(&dest_path).unwrap().len();
+                ic_cdk::print(format!(
+                    "Wrote {} of {} chunks to {} starting at {}",
+                    group_size, total_chunk_count, dest_path, start_chunk
+                ));
+                // flush the buffer to ensure all data is written immediately
+                std::io::Write::flush(&mut file).unwrap();
+
+                if start_chunk + group_size >= total_chunk_count {
+                    ic_cdk::println!(
+                        "{} + {} = {} >= {}",
+                        start_chunk,
+                        group_size,
+                        start_chunk + group_size,
+                        total_chunk_count
+                    );
+                    ic_cdk::println!("Finished writing to {}", dest_path);
+                    let mut uploaded_assets_mut = uploaded_assets.borrow_mut();
+                    uploaded_assets_mut.remove(&dest_path);
+                    if uploaded_assets_mut.len() == 0 {
+                        ic_cdk::println!("All assets uploaded and cache is cleared.");
+                    }
+                    true
+                } else {
+                    false
+                }
+            });
+
+            if !write_complete {
+                let delay = core::time::Duration::new(0, 0);
+                let closure =
+                    move || write_group_of_file_chunks(dest_path, start_chunk + group_size, group_size);
+                ic_cdk_timers::set_timer(delay, closure);
+            }
         }
     }
 }
