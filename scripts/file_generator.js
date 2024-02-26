@@ -3,6 +3,9 @@ var fs = require('fs');
 // Function to create a file of a specific size in bytes
 function createFileOfSize(filename, sizeInBytes) {
     var buffer = Buffer.alloc(sizeInBytes);
+    for (var i = 0; i < sizeInBytes; i++) {
+        buffer[i] = Math.floor(Math.random() * 256); // Generate random byte value (0-255)
+    }
     fs.writeFileSync(filename, buffer);
 }
 

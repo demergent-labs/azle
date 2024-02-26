@@ -417,12 +417,21 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
             }
 
             let uploaded_asset_len = UPLOADED_ASSETS.with(|uploaded_assets| {
-                ic_cdk::print(format!("By the way the timestamp is {}, the dest_path is {}, the chunk number is {} and the total length is {}", timestamp, dest_path, chunk_number, total_len));
-                ic_cdk::print(format!("len of asset_bytes is {}", asset_bytes.len()));
+                ic_cdk::println!(
+                    "Timestamp: {}, dest_path: {}, bytes in chunk: {}",
+                    timestamp,
+                    dest_path,
+                    asset_bytes.len()
+                );
                 let mut uploaded_assets_mut = uploaded_assets.borrow_mut();
                 if let Some(bytes_map) = uploaded_assets_mut.get_mut(&dest_path) {
                     // If the key exists, insert the value into the inner HashMap
                     bytes_map.insert(chunk_number, asset_bytes);
+                    ic_cdk::println!(
+                        "Chunk: {}. Total chunks processed: {}",
+                        chunk_number,
+                        bytes_map.len()
+                    );
                     bytes_map.values().fold(0, |acc, bytes| acc + bytes.len()) as u64
                 } else {
                     // If the key doesn't exist, initialize a new inner BTreeMap and insert the value
@@ -430,11 +439,12 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
                     let len = asset_bytes.len() as u64;
                     new_bytes_map.insert(chunk_number, asset_bytes);
                     uploaded_assets_mut.insert(dest_path.clone(), new_bytes_map);
+                    ic_cdk::println!("Chunk: {}. Total chunks processed: {}", chunk_number, 1);
                     len
                 }
             });
 
-            ic_cdk::print(format!("this is the length {:?}", uploaded_asset_len));
+            ic_cdk::println!("Length: {}/{} ", uploaded_asset_len, total_len);
 
             if uploaded_asset_len == total_len {
                 let delay = core::time::Duration::new(0, 0);
@@ -445,7 +455,7 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
 
         fn write_file(dest_path: &String) {
             UPLOADED_ASSETS.with(|uploaded_assets| {
-                ic_cdk::print(format!("ready to write"));
+                ic_cdk::println!("START writing: {}", dest_path);
                 let uploaded_assets_complete_bytes: Vec<u8> = uploaded_assets
                     .borrow()
                     .get(dest_path)
@@ -454,15 +464,16 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
                     .flat_map(|(_, value)| value.clone())
                     .collect();
 
+                ic_cdk::println!("Collected");
                 let dir_path = std::path::Path::new(dest_path.as_str()).parent().unwrap();
 
                 std::fs::create_dir_all(dir_path).unwrap();
 
-                ic_cdk::print(format!("wrote to {}", dest_path));
                 let mut file = std::fs::File::create(dest_path).unwrap();
 
                 std::io::Write::write_all(&mut file, &uploaded_assets_complete_bytes).unwrap();
 
+                ic_cdk::print(format!("END writing {}", dest_path));
                 // flush the buffer to ensure all data is written immediately
                 std::io::Write::flush(&mut file).unwrap();
 

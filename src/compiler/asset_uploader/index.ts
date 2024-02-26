@@ -105,7 +105,11 @@ function uploadAsset(
         }
 
         if (true) {
-            console.log('Uploading chunk');
+            console.log(
+                `Uploading chunk ${i / chunkSize + 1} of ${Math.ceil(
+                    assetToUpload.length / chunkSize
+                )}`
+            );
         }
 
         // TOOD we maybe need to introduce a way to prevent the server from getting overloaded with too many calls
