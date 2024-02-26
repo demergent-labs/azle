@@ -77,6 +77,8 @@ jobs:
                     "examples/audio_recorder",
                     "examples/autoreload",
                     "examples/bitcoin",
+                    "examples/bitcoinjs-lib",
+                    "examples/bitcore-lib",
                     "examples/blob_array",
                     "examples/bytes",
                     "examples/call_raw",
