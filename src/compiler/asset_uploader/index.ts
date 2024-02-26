@@ -84,7 +84,7 @@ async function exists(path: string): Promise<boolean> {
     }
 }
 
-function uploadAsset(
+async function uploadAsset(
     srcPath: Src,
     destPath: Dest,
     chunkSize: number,
@@ -127,6 +127,14 @@ function uploadAsset(
                     console.error(error);
                 }
             });
+        // await actor.upload_asset(
+        //     destPath,
+        //     timestamp,
+        //     chunkNumber,
+        //     chunk,
+        //     assetToUpload.length
+        // );
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
 
         chunkNumber += 1;
     }
