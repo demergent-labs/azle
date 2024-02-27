@@ -502,7 +502,6 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
             }
 
             let limit = 150 * 1024 * 1024; // In my tests 150 MiB seemed to work pretty well so we'll use it as an arbitrary number of bytes to write for each chunk.
-            let limit = 2 * 1024 * 1024; // TODO To test the chunk uploader lets start with 1 KiB chunks.
             let group_size = limit / bytes_per_chunk;
             let group_count = chunk_count / group_size;
             ic_cdk::println!(
