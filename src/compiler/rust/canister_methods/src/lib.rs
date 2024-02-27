@@ -423,21 +423,26 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
                     dest_path,
                     asset_bytes.len()
                 );
+                let chunk_hash = vec![0; 32]; // Initialize empty hash for new chunks
                 let mut uploaded_assets_mut = uploaded_assets.borrow_mut();
                 if let Some(bytes_map) = uploaded_assets_mut.get_mut(&dest_path) {
                     // If the key exists, insert the value into the inner HashMap
-                    bytes_map.insert(chunk_number, asset_bytes);
+                    let chunk_hash = update_chunk_hash(&asset_bytes, &chunk_hash);
+                    bytes_map.insert(chunk_number, (asset_bytes, chunk_hash));
                     ic_cdk::println!(
                         "Chunk: {}. Total chunks processed: {}",
                         chunk_number,
                         bytes_map.len()
                     );
-                    bytes_map.values().fold(0, |acc, bytes| acc + bytes.len()) as u64
+                    bytes_map
+                        .values()
+                        .fold(0, |acc, (bytes, _)| acc + bytes.len()) as u64
                 } else {
                     // If the key doesn't exist, initialize a new inner BTreeMap and insert the value
                     let mut new_bytes_map = std::collections::BTreeMap::new();
                     let len = asset_bytes.len() as u64;
-                    new_bytes_map.insert(chunk_number, asset_bytes);
+                    let chunk_hash = update_chunk_hash(&asset_bytes, &chunk_hash);
+                    new_bytes_map.insert(chunk_number, (asset_bytes, chunk_hash));
                     uploaded_assets_mut.insert(dest_path.clone(), new_bytes_map);
                     ic_cdk::println!("Chunk: {}. Total chunks processed: {}", chunk_number, 1);
                     len
@@ -448,9 +453,40 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
 
             if uploaded_asset_len == total_len {
                 let delay = core::time::Duration::new(0, 0);
-                let closure = move || write_file_by_parts(dest_path);
-                ic_cdk_timers::set_timer(delay, closure);
+                let hash_dest_path = dest_path.clone();
+                let hash_closure = move || hash_file(hash_dest_path);
+                let write_closure = move || write_file_by_parts(dest_path);
+                ic_cdk_timers::set_timer(delay, hash_closure);
+                ic_cdk_timers::set_timer(delay, write_closure);
             }
+        }
+
+        fn hash_file(dest_path: String) {
+            let uploaded_assets_complete_hash: Vec<Vec<u8>> = UPLOADED_ASSETS.with(|uploaded_assets| {
+                uploaded_assets
+                    .borrow()
+                    .get(&dest_path)
+                    .unwrap()
+                    .into_iter()
+                    .map(|(_, (_, hash))| hash.to_vec())
+                    .collect()
+            });
+            let timestamp =
+                UPLOADED_ASSETS_TIMESTAMP.with(|thing| thing.borrow().get(&dest_path).unwrap().clone());
+            let final_hash = create_merkle_tree(&uploaded_assets_complete_hash);
+            // let hex_hash = format!("{:x}", final_hash);
+            let hex_hash: String = final_hash.iter().map(|byte| format!("{:02x}", byte)).collect();
+            ic_cdk::println!("Hash is: {}", hex_hash);
+            UPLOADED_ASSETS_HASHES.with(|thing| {
+                thing
+                    .borrow_mut()
+                    .insert(dest_path, (timestamp, final_hash))
+            });
+        }
+
+        #[ic_cdk_macros::query]
+        pub fn get_file_hash(dest_path: String) -> Vec<u8> {
+            UPLOADED_ASSETS_HASHES.with(|thing| thing.borrow().get(&dest_path).unwrap().1.clone())
         }
 
         fn write_file(dest_path: String) {
@@ -461,9 +497,10 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
                     .get(&dest_path)
                     .unwrap()
                     .into_iter()
-                    .flat_map(|(_, value)| value.clone())
+                    .flat_map(|(_, (bytes, _))| bytes.clone())
                     .collect();
 
+                ic_cdk::println!("Collected");
                 let dir_path = std::path::Path::new(dest_path.as_str()).parent().unwrap();
 
                 std::fs::create_dir_all(dir_path).unwrap();
@@ -479,7 +516,7 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
                 let mut uploaded_assets_mut = uploaded_assets.borrow_mut();
                 uploaded_assets_mut.remove(&dest_path);
                 if uploaded_assets_mut.len() == 0 {
-                    ic_cdk::println!("All assets uploaded and cache is cleared.");
+                    ic_cdk::println!("All assets uploaded and cache is cleared.")
                 }
             });
         }
@@ -491,7 +528,7 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
                 (
                     chunk_count,
                     match uploaded_assets.borrow().get(&dest_path).unwrap().get(&0) {
-                        Some(first_bytes) => first_bytes.len(),
+                        Some((first_bytes, _)) => first_bytes.len(),
                         None => 0,
                     },
                 )
@@ -543,7 +580,7 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
                     .into_iter()
                     .skip(start_chunk)
                     .take(group_size)
-                    .flat_map(|(_, value)| value.clone())
+                    .flat_map(|(_, (bytes, _))| bytes.clone())
                     .collect();
 
                 ic_cdk::println!(
@@ -597,5 +634,25 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
                 ic_cdk_timers::set_timer(delay, closure);
             }
         }
+
+        fn update_chunk_hash(data: &[u8], chunk_hash: &[u8]) -> Vec<u8> {
+            let mut h = <sha2::Sha256 as sha2::Digest>::new();
+            sha2::Digest::update(&mut h, chunk_hash);
+            sha2::Digest::update(&mut h, data);
+            sha2::Digest::finalize(h).to_vec()
+        }
+
+        fn create_merkle_tree(chunk_hashes: &[Vec<u8>]) -> Vec<u8> {
+            if chunk_hashes.len() == 1 {
+                return chunk_hashes[0].clone();
+            }
+
+            let mid = chunk_hashes.len() / 2;
+            let left_tree = create_merkle_tree(&chunk_hashes[..mid]);
+            let right_tree = create_merkle_tree(&chunk_hashes[mid..]);
+
+            update_chunk_hash(&left_tree[..], &right_tree[..])
+        }
+
     }
 }
