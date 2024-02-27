@@ -4,7 +4,7 @@ import { rmSync } from 'fs';
 import { generateNewAzleProject } from './new_command';
 import { version as azleVersion } from '../../package.json';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
-import { uploadAssets, uploadSingleAsset } from './asset_uploader';
+import { uploadAssets } from './asset_uploader';
 
 export function handleCli(
     stdioType: IOType,
@@ -34,12 +34,6 @@ export function handleCli(
 
     if (commandName === 'upload-assets') {
         handleUploadAssets();
-
-        return true;
-    }
-
-    if (commandName === 'upload-asset') {
-        handleUploadAsset();
 
         return true;
     }
@@ -104,23 +98,9 @@ function handleCommandClean(
     console.info(`azle images removed`);
 }
 
-// TODO add a command that will let people call it and pass in their own without going to the command line
-
 async function handleUploadAssets() {
     const canisterId = process.argv[3];
-    const replicaWebServerPort = process.argv[4];
-    await uploadAssets(canisterId, replicaWebServerPort);
-}
-
-async function handleUploadAsset() {
-    const canisterId = process.argv[3];
-    const replicaWebServerPort = process.argv[4];
-    const srcPath = process.argv[5];
-    const destPath = process.argv[6];
-    await uploadSingleAsset(
-        canisterId,
-        replicaWebServerPort,
-        srcPath,
-        destPath
-    );
+    const srcPath = process.argv[4];
+    const destPath = process.argv[5];
+    await uploadAssets(canisterId, srcPath, destPath);
 }

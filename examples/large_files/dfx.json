@@ -6,7 +6,7 @@
             "candid": "src/index.did",
             "candid_gen": "http",
             "build": "npx azle large_files",
-            "post_install": "npx azle upload-assets large_files 8000",
+            "post_install": "npx azle upload-assets large_files",
             "wasm": ".azle/large_files/large_files.wasm",
             "gzip": true,
             "assets_large": [
