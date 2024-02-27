@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { readFileSync } from 'fs';
 import { DfxJson } from '../utils/types';
@@ -10,12 +11,16 @@ type Dest = string;
 
 export async function uploadAssets(
     canisterName: string,
-    replicaWebServerPort: string
+    srcPath?: Src,
+    destPath?: Dest
 ) {
-    const assetsToUpload = getAssetsToUpload(canisterName);
+    const assetsToUpload = getAssetsToUpload(canisterName, srcPath, destPath);
 
     const canisterId = getCanisterId(canisterName);
 
+    const replicaWebServerPort = execSync(`dfx info webserver-port`)
+        .toString()
+        .trim();
     const actor = await createUploadAssetActor(
         canisterId,
         replicaWebServerPort
@@ -28,24 +33,6 @@ export async function uploadAssets(
         // Don't await, fire off all of the uploads as fast as we can
         upload(srcPath, destPath, chunkSize, actor);
     }
-}
-
-export async function uploadSingleAsset(
-    canisterName: string,
-    replicaWebServerPort: string,
-    srcPath: Src,
-    destPath: Dest
-) {
-    const canisterId = getCanisterId(canisterName);
-
-    const actor = await createUploadAssetActor(
-        canisterId,
-        replicaWebServerPort
-    );
-
-    const chunkSize = 2_000_000; // The current message limit is about 2 MiB
-
-    upload(srcPath, destPath, chunkSize, actor);
 }
 
 async function upload(
@@ -95,7 +82,10 @@ async function uploadAsset(
     const timestamp = process.hrtime.bigint();
     let chunkNumber = 0;
 
+    let numRequests = 0;
+
     for (let i = 0; i < assetToUpload.length; i += chunkSize) {
+        numRequests += 1;
         const chunk = assetToUpload.slice(i, i + chunkSize); // TODO change to subarray
 
         if (process.env.AZLE_VERBOSE === 'true') {
@@ -112,7 +102,6 @@ async function uploadAsset(
             );
         }
 
-        // TOOD we maybe need to introduce a way to prevent the server from getting overloaded with too many calls
         // TODO add comment about firing off
         actor
             .upload_asset(
@@ -127,14 +116,13 @@ async function uploadAsset(
                     console.error(error);
                 }
             });
-        // await actor.upload_asset(
-        //     destPath,
-        //     timestamp,
-        //     chunkNumber,
-        //     chunk,
-        //     assetToUpload.length
-        // );
-        // await new Promise((resolve) => setTimeout(resolve, 1000));
+        if (numRequests % 2 === 0) {
+            // We can only process about 4Mib per second. So if chunks are about
+            // 2 MiB or less then we can only send off two per second.
+            // TODO This means we should probably await all of the calls to here
+            // so we don't overload it on a whole directory?
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
 
         chunkNumber += 1;
     }
@@ -144,9 +132,29 @@ async function uploadAsset(
     }
 }
 
-function getAssetsToUpload(canisterId: string): [Src, Dest][] {
-    const dfxJson: DfxJson = JSON.parse(readFileSync('dfx.json').toString());
-    return dfxJson.canisters[canisterId].assets_large ?? [];
+function getAssetsToUpload(
+    canisterId: string,
+    srcPath?: Src,
+    destPath?: Dest
+): [Src, Dest][] {
+    if (srcPath === undefined && destPath !== undefined) {
+        throw new Error(
+            'Dest path must not be undefined if a src path is defined'
+        );
+    } else if (srcPath !== undefined && destPath === undefined) {
+        throw new Error(
+            'Src path must not be undefined if a dest path is defined'
+        );
+    } else if (srcPath === undefined && destPath === undefined) {
+        // If both paths are undefined, look at the dfx.json for the assets to upload
+        const dfxJson: DfxJson = JSON.parse(
+            readFileSync('dfx.json').toString()
+        );
+        return dfxJson.canisters[canisterId].assets_large ?? [];
+    } else if (srcPath !== undefined && destPath !== undefined) {
+        return [[srcPath, destPath]];
+    }
+    throw new Error('Unreachable');
 }
 
 async function createUploadAssetActor(
