@@ -62,6 +62,9 @@ impl Storable for AzleStableBTreeMapValue {
     const BOUND: Bound = Bound::Unbounded;
 }
 
+type Bytes = Vec<u8>;
+type Hash = Vec<u8>;
+
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
 
@@ -75,10 +78,13 @@ thread_local! {
 
     static RELOADED_JS: RefCell<BTreeMap<u64, Vec<u8>>> = RefCell::new(BTreeMap::new());
 
+    static UPLOADED_ASSETS_HASHES: RefCell<HashMap<String, (u64, Vec<u8>)>> = RefCell::new(HashMap::new());
+
     static UPLOADED_ASSETS_TIMESTAMP: RefCell<BTreeMap<String, u64>> = RefCell::new(BTreeMap::new()); // TODO analyze this structure more, Jordan has some thoughts
     // TODO think of adding a UUID or handling the situation where timestamps are equal
 
-    static UPLOADED_ASSETS: RefCell<BTreeMap<String, BTreeMap<u64, Vec<u8>>>> = RefCell::new(BTreeMap::new()); // TODO use a btree map instead of a hash map.
+    static UPLOADED_ASSETS: RefCell<BTreeMap<String, BTreeMap<u64, (Bytes, Hash)>>> =
+        RefCell::new(BTreeMap::new());
 }
 
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]
