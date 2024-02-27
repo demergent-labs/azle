@@ -5,6 +5,7 @@ import { DfxJson } from '../utils/types';
 import { getCanisterId } from '../../../test';
 import { readdir, stat } from 'fs/promises';
 import { join } from 'path';
+import { createReadStream } from 'fs-extra';
 
 type Src = string;
 type Dest = string;
@@ -71,7 +72,7 @@ async function exists(path: string): Promise<boolean> {
     }
 }
 
-async function uploadAsset(
+async function uploadAssetSync(
     srcPath: Src,
     destPath: Dest,
     chunkSize: number,
@@ -130,6 +131,77 @@ async function uploadAsset(
     if (process.env.AZLE_VERBOSE === 'true') {
         console.info(`Finished uploading chunks`);
     }
+}
+
+async function uploadAsset(
+    srcPath: Src,
+    destPath: Dest,
+    chunkSize: number,
+    actor: ActorSubclass
+) {
+    console.log(`Uploading ${srcPath} to ${destPath}`);
+    const readStream = createReadStream(srcPath, { highWaterMark: chunkSize }); // Create a read stream
+    const timestamp = process.hrtime.bigint();
+    let chunkNumber = 0;
+    const fileStats = await stat(srcPath);
+    const totalFileSize = fileStats.size;
+
+    readStream.on('data', async (chunk) => {
+        console.log(`DATA RECEIVED: ${chunk.length}`);
+        let offset = 0;
+        while (offset < chunk.length) {
+            const currentChunk = ++chunkNumber - 1;
+            const end = Math.min(offset + chunkSize, chunk.length);
+            const subChunk = chunk.slice(offset, end);
+
+            if (process.env.AZLE_VERBOSE === 'true') {
+                console.info(
+                    `Uploading chunk: ${timestamp}, ${chunkNumber}, ${subChunk.length}`
+                );
+            }
+
+            console.log(
+                `Uploading chunk ${chunkNumber} of ${Math.ceil(
+                    totalFileSize / chunkSize
+                )}`
+            );
+
+            const delay = Math.floor(chunkNumber / 2) * 500;
+            // We can only process about 4Mib per second. So if chunks are about
+            // 2 MiB or less then we can only send off two per second.
+            // TODO This means we should probably await all of the calls to here
+            // so we don't overload it on a whole directory?
+            console.log(`Waiting for ${delay / 100} seconds`);
+            await new Promise((resolve) => setTimeout(resolve, delay));
+
+            // TODO add comment about firing off
+            actor
+                .upload_asset(
+                    destPath,
+                    timestamp,
+                    currentChunk,
+                    subChunk,
+                    totalFileSize
+                )
+                .catch((error) => {
+                    if (process.env.AZLE_VERBOSE === 'true') {
+                        console.error(error);
+                    }
+                });
+
+            offset += chunkSize;
+        }
+    });
+
+    readStream.on('end', () => {
+        if (process.env.AZLE_VERBOSE === 'true') {
+            console.info(`Finished uploading chunks`);
+        }
+    });
+
+    readStream.on('error', (error) => {
+        console.error(`Error reading file: ${error}`);
+    });
 }
 
 function getAssetsToUpload(
