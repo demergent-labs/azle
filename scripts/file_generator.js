@@ -2,11 +2,41 @@ var fs = require('fs');
 
 // Function to create a file of a specific size in bytes
 function createFileOfSize(filename, sizeInBytes) {
-    var buffer = Buffer.alloc(sizeInBytes);
-    for (var i = 0; i < sizeInBytes; i++) {
-        buffer[i] = Math.floor(Math.random() * 256); // Generate random byte value (0-255)
+    var writeStream = fs.createWriteStream(filename);
+    var bytesWritten = 0;
+
+    // Function to generate random data and write it to the stream
+    function writeRandomData() {
+        // Generate random byte values and write them to the stream
+        while (bytesWritten < sizeInBytes) {
+            var remainingBytes = sizeInBytes - bytesWritten;
+            var chunkSize = Math.min(remainingBytes, 1024); // Adjust the chunk size as needed
+            var buffer = Buffer.alloc(chunkSize);
+            for (var i = 0; i < chunkSize; i++) {
+                buffer[i] = Math.floor(Math.random() * 256); // Generate random byte value (0-255)
+            }
+            writeStream.write(buffer);
+            bytesWritten += chunkSize;
+        }
+        writeStream.end();
     }
-    fs.writeFileSync(filename, buffer);
+
+    // Handle 'finish' event when writing is complete
+    writeStream.on('finish', onFinish);
+
+    // Handle any errors that occur during writing
+    writeStream.on('error', onError);
+
+    // Start writing random data to the stream
+    writeRandomData();
+}
+
+function onFinish() {
+    console.log('Buffer has been written to file');
+}
+
+function onError() {
+    console.error('Error writing buffer to file:', err);
 }
 
 // Parse size from string with optional unit suffix (KB, MB, GB)
