@@ -191,6 +191,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
     let upload_assets = get_upload_assets();
 
+    let hash_assets = get_hash_assets();
+
     quote! {
         static ASSETS_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/src/assets");
 
@@ -257,6 +259,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         #reload_js
 
         #upload_assets
+
+        #hash_assets
     }
     .into()
 }
@@ -397,14 +401,7 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
 
                 if timestamp > *upload_assets_timestamp {
                     upload_assets_timestamp_map_mut.insert(dest_path.clone(), timestamp);
-
-                    UPLOADED_ASSETS.with(|upload_assets| {
-                        let mut upload_assets_mut = upload_assets.borrow_mut();
-                        match upload_assets_mut.get_mut(&dest_path) {
-                            Some(thing) => thing.clear(),
-                            None => (),
-                        }
-                    });
+                    clear_asset_data(&dest_path);
                 } else if timestamp < *upload_assets_timestamp {
                     // The request is from an earlier upload attempt. Disregard
                     return false;
@@ -416,137 +413,31 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
                 return;
             }
 
-            let uploaded_asset_len = UPLOADED_ASSETS.with(|uploaded_assets| {
-                ic_cdk::println!(
-                    "Timestamp: {}, dest_path: {}, bytes in chunk: {}",
-                    timestamp,
-                    dest_path,
-                    asset_bytes.len()
-                );
-                let chunk_hash = vec![0; 32]; // Initialize empty hash for new chunks
-                let mut uploaded_assets_mut = uploaded_assets.borrow_mut();
-                if let Some(bytes_map) = uploaded_assets_mut.get_mut(&dest_path) {
-                    // If the key exists, insert the value into the inner HashMap
-                    let chunk_hash = update_chunk_hash(&asset_bytes, &chunk_hash);
-                    bytes_map.insert(chunk_number, (asset_bytes, chunk_hash));
-                    ic_cdk::println!(
-                        "Chunk: {}. Total chunks processed: {}",
-                        chunk_number,
-                        bytes_map.len()
-                    );
-                    bytes_map
-                        .values()
-                        .fold(0, |acc, (bytes, _)| acc + bytes.len()) as u64
-                } else {
-                    // If the key doesn't exist, initialize a new inner BTreeMap and insert the value
-                    let mut new_bytes_map = std::collections::BTreeMap::new();
-                    let len = asset_bytes.len() as u64;
-                    let chunk_hash = update_chunk_hash(&asset_bytes, &chunk_hash);
-                    new_bytes_map.insert(chunk_number, (asset_bytes, chunk_hash));
-                    uploaded_assets_mut.insert(dest_path.clone(), new_bytes_map);
-                    ic_cdk::println!("Chunk: {}. Total chunks processed: {}", chunk_number, 1);
-                    len
-                }
-            });
+            let uploaded_asset_len = add_asset_data(&dest_path, asset_bytes, chunk_number) as u64;
 
-            ic_cdk::println!("Length: {}/{} ", uploaded_asset_len, total_len);
+            ic_cdk::println!(
+                "Length: {}/{} ",
+                bytes_to_human_readable(uploaded_asset_len),
+                bytes_to_human_readable(total_len)
+            );
 
             if uploaded_asset_len == total_len {
                 let delay = core::time::Duration::new(0, 0);
-                let hash_dest_path = dest_path.clone();
-                let hash_closure = move || hash_file(hash_dest_path);
                 let write_closure = move || write_file_by_parts(dest_path);
-                ic_cdk_timers::set_timer(delay, hash_closure);
                 ic_cdk_timers::set_timer(delay, write_closure);
             }
         }
 
-        fn hash_file(dest_path: String) {
-            let uploaded_assets_complete_hash: Vec<Vec<u8>> = UPLOADED_ASSETS.with(|uploaded_assets| {
-                uploaded_assets
-                    .borrow()
-                    .get(&dest_path)
-                    .unwrap()
-                    .into_iter()
-                    .map(|(_, (_, hash))| hash.to_vec())
-                    .collect()
-            });
-            let timestamp =
-                UPLOADED_ASSETS_TIMESTAMP.with(|thing| thing.borrow().get(&dest_path).unwrap().clone());
-            let final_hash = create_merkle_tree(&uploaded_assets_complete_hash);
-            // let hex_hash = format!("{:x}", final_hash);
-            let hex_hash: String = final_hash.iter().map(|byte| format!("{:02x}", byte)).collect();
-            ic_cdk::println!("Hash is: {}", hex_hash);
-            UPLOADED_ASSETS_HASHES.with(|thing| {
-                thing
-                    .borrow_mut()
-                    .insert(dest_path, (timestamp, final_hash))
-            });
-        }
-
-        #[ic_cdk_macros::query]
-        pub fn get_file_hash(dest_path: String) -> Vec<u8> {
-            UPLOADED_ASSETS_HASHES.with(|thing| thing.borrow().get(&dest_path).unwrap().1.clone())
-        }
-
-        fn write_file(dest_path: String) {
-            UPLOADED_ASSETS.with(|uploaded_assets| {
-                ic_cdk::println!("START writing: {}", dest_path);
-                let uploaded_assets_complete_bytes: Vec<u8> = uploaded_assets
-                    .borrow()
-                    .get(&dest_path)
-                    .unwrap()
-                    .into_iter()
-                    .flat_map(|(_, (bytes, _))| bytes.clone())
-                    .collect();
-
-                ic_cdk::println!("Collected");
-                let dir_path = std::path::Path::new(dest_path.as_str()).parent().unwrap();
-
-                std::fs::create_dir_all(dir_path).unwrap();
-
-                let mut file = std::fs::File::create(&dest_path).unwrap();
-
-                std::io::Write::write_all(&mut file, &uploaded_assets_complete_bytes).unwrap();
-
-                ic_cdk::print(format!("END writing {}", dest_path));
-                // flush the buffer to ensure all data is written immediately
-                std::io::Write::flush(&mut file).unwrap();
-
-                let mut uploaded_assets_mut = uploaded_assets.borrow_mut();
-                uploaded_assets_mut.remove(&dest_path);
-                if uploaded_assets_mut.len() == 0 {
-                    ic_cdk::println!("All assets uploaded and cache is cleared.")
+        fn write_file_by_parts(dest_path: String) {
+            let bytes_per_chunk = UPLOADED_ASSETS.with(|uploaded_assets| {
+                match uploaded_assets.borrow().get(&dest_path).unwrap().get(&0) {
+                    Some(first_bytes) => first_bytes.len(),
+                    None => 0,
                 }
             });
-        }
 
-        fn write_file_by_parts(dest_path: String) {
-            let (chunk_count, bytes_per_chunk) = UPLOADED_ASSETS.with(|uploaded_assets| {
-                let chunk_count = uploaded_assets.borrow().get(&dest_path).unwrap().len();
-                ic_cdk::println!("There are {} chunks to upload.", chunk_count);
-                (
-                    chunk_count,
-                    match uploaded_assets.borrow().get(&dest_path).unwrap().get(&0) {
-                        Some((first_bytes, _)) => first_bytes.len(),
-                        None => 0,
-                    },
-                )
-            });
-
-            if chunk_count == 1 {
-                return write_file(dest_path);
-            }
-
-            let limit = 150 * 1024 * 1024; // In my tests 150 MiB seemed to work pretty well so we'll use it as an arbitrary number of bytes to write for each chunk.
+            let limit = 150 * 1024 * 1024; // The limit is somewhere between 150 and 155 before we run out of instructions.
             let group_size = limit / bytes_per_chunk;
-            let group_count = chunk_count / group_size;
-            ic_cdk::println!(
-                "There are {} bpc so we are going to upload this file in {} groups of {} chunks each",
-                bytes_per_chunk,
-                group_count,
-                group_size,
-            );
 
             let dir_path = std::path::Path::new(dest_path.as_str()).parent().unwrap();
 
@@ -573,19 +464,19 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
                 } else {
                     ic_cdk::println!("Continue writing: {}", dest_path);
                 }
-                let uploaded_assets_complete_bytes: Vec<u8> = uploaded_assets
+                let chunk_of_bytes: Vec<u8> = uploaded_assets
                     .borrow()
                     .get(&dest_path)
                     .unwrap()
                     .into_iter()
                     .skip(start_chunk)
                     .take(group_size)
-                    .flat_map(|(_, (bytes, _))| bytes.clone())
+                    .flat_map(|(_, bytes)| bytes.clone())
                     .collect();
 
                 ic_cdk::println!(
                     "Preparing to write {} bytes to {}",
-                    uploaded_assets_complete_bytes.len(),
+                    bytes_to_human_readable(chunk_of_bytes.len() as u64),
                     dest_path
                 );
 
@@ -595,14 +486,13 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
                     .open(&dest_path)
                     .unwrap();
 
-                ic_cdk::println!("Opened file: {}", dest_path);
-
-                std::io::Write::write_all(&mut file, &uploaded_assets_complete_bytes).unwrap();
+                std::io::Write::write_all(&mut file, &chunk_of_bytes).unwrap();
 
                 let total_chunk_count = uploaded_assets.borrow().get(&dest_path).unwrap().len();
                 ic_cdk::print(format!(
-                    "Wrote {} of {} chunks to {} starting at {}",
-                    group_size, total_chunk_count, dest_path, start_chunk
+                    "{} of {} chunks written!",
+                    start_chunk + group_size,
+                    total_chunk_count
                 ));
                 // flush the buffer to ensure all data is written immediately
                 std::io::Write::flush(&mut file).unwrap();
@@ -627,31 +517,163 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
                 }
             });
 
+            let delay = core::time::Duration::new(0, 0);
             if !write_complete {
-                let delay = core::time::Duration::new(0, 0);
                 let closure =
                     move || write_group_of_file_chunks(dest_path, start_chunk + group_size, group_size);
                 ic_cdk_timers::set_timer(delay, closure);
+            } else {
+                let hash_closure = move || hash_file(dest_path);
+                ic_cdk_timers::set_timer(delay, hash_closure);
             }
         }
 
-        fn update_chunk_hash(data: &[u8], chunk_hash: &[u8]) -> Vec<u8> {
+        fn bytes_to_human_readable(size_in_bytes: u64) -> String {
+            let suffixes = ["B", "KiB", "MiB", "GiB"];
+            let mut size = size_in_bytes as f64;
+
+            for suffix in suffixes.iter() {
+                if size < 1024.0 {
+                    return format!("{:.2} {}", size as f64, suffix);
+                }
+                size /= 1024.0;
+            }
+
+            format!("{:.2} {}", size as f64, suffixes.last().unwrap())
+        }
+
+        fn clear_asset_data(dest_path: &String) {
+            UPLOADED_ASSETS.with(|upload_assets| {
+                let mut upload_assets_mut = upload_assets.borrow_mut();
+                match upload_assets_mut.get_mut(dest_path) {
+                    Some(uploaded_asset) => uploaded_asset.clear(),
+                    None => (),
+                }
+            });
+        }
+
+        // Adds the given asset_bytes to the dest_path asset at the chunk number position. Returns the new total length of dest_path asset after the addition
+        fn add_asset_data(dest_path: &String, asset_bytes: Vec<u8>, chunk_number: u64) -> usize {
+            UPLOADED_ASSETS.with(|uploaded_assets| {
+                let mut uploaded_assets_mut = uploaded_assets.borrow_mut();
+                if let Some(bytes_map) = uploaded_assets_mut.get_mut(dest_path) {
+                    // If the key exists, insert the value into the inner HashMap
+                    bytes_map.insert(chunk_number, asset_bytes);
+                    ic_cdk::println!(
+                        "File: {}. Chunk: {}. Total chunks processed: {}",
+                        dest_path,
+                        chunk_number,
+                        bytes_map.len()
+                    );
+                    bytes_map.values().fold(0, |acc, bytes| acc + bytes.len())
+                } else {
+                    // If the key doesn't exist, initialize a new inner BTreeMap and insert the value
+                    let mut new_bytes_map = std::collections::BTreeMap::new();
+                    let len = asset_bytes.len();
+                    new_bytes_map.insert(chunk_number, asset_bytes);
+                    uploaded_assets_mut.insert(dest_path.clone(), new_bytes_map);
+                    ic_cdk::println!("First chunk processed for {}", dest_path);
+                    len
+                }
+            })
+        }
+    }
+}
+
+fn get_hash_assets() -> proc_macro2::TokenStream {
+    quote! {
+        #[ic_cdk_macros::update]
+        pub fn get_file_hash(dest_path: String) -> String {
+            ASSETS_HASHES
+                .with(|asset_hashes| asset_hashes.borrow().get(&dest_path).unwrap().clone())
+                .iter()
+                .map(|byte| format!("{:02x}", byte))
+                .collect()
+        }
+
+        pub fn test_get_file_hash(dest_path: &String) -> String {
+            ASSETS_HASHES
+                .with(|asset_hashes| asset_hashes.borrow().get(dest_path).unwrap().clone())
+                .iter()
+                .map(|byte| format!("{:02x}", byte))
+                .collect()
+        }
+
+        // pub fn test_get_partial_file_hash(dest_path: &String) -> String {
+        //     ASSETS_HASHES
+        //         .with(|asset_hashes| asset_hashes.borrow().get(dest_path).unwrap().clone())
+        //         .iter()
+        //         .map(|byte| format!("{:02x}", byte))
+        //         .collect()
+        // }
+
+        pub fn hash_file(path: String) {
+            ic_cdk::println!("START HASH FILE");
+            hash_file_by_parts(path, 0)
+        }
+
+        fn hash_file_by_parts(path: String, position: u64) {
+            ic_cdk::println!("Hash file starting at: {}", bytes_to_human_readable(position));
+            let mut file = std::fs::File::open(&path).unwrap();
+
+            std::io::Seek::seek(&mut file, std::io::SeekFrom::Start(position)).unwrap();
+
+            // Read the bytes
+            let limit = 120 * 1024 * 1024; // This limit will be determine by how much hashing an update method can do without running out of cycles. It runs out somewhere between 120 and 125
+            let mut buffer = vec![0; limit];
+            let bytes_read = std::io::Read::read(&mut file, &mut buffer);
+
+            let previous_hash = get_partial_file_hash(&path);
+
+            match bytes_read {
+                Ok(bytes_read) => {
+                    if bytes_read != 0 {
+                        let new_hash = hash_chunk_with(&buffer, previous_hash.as_ref());
+                        set_partial_hash(&path, new_hash);
+                        let delay = core::time::Duration::new(0, 0);
+                        let closure = move || hash_file_by_parts(path, position + bytes_read as u64);
+                        ic_cdk_timers::set_timer(delay, closure);
+                    } else {
+                        // No more bytes to hash, set as final hash for this file
+                        match previous_hash {
+                            Some(hash) => {
+                                set_hash(&path, hash);
+                                ic_cdk::println!("Finish hashing");
+                                clear_partial_hash(&path);
+                                ic_cdk::println!("Partial hash cleared");
+                                ic_cdk::println!("Hash: {}", test_get_file_hash(&path));
+                            }
+                            None => ic_cdk::println!("WARNING: No hash was found for {}", path),
+                        }
+                    }
+                }
+                Err(err) => panic!("Error reading file: {}", err),
+            }
+        }
+
+        pub fn get_partial_file_hash(dest_path: &String) -> Option<Vec<u8>> {
+            PARTIAL_ASSETS_HASHES.with(|asset_hashes| asset_hashes.borrow().get(dest_path).cloned())
+        }
+
+        fn set_partial_hash(path: &String, hash: Vec<u8>) {
+            PARTIAL_ASSETS_HASHES.with(|file_hashes| file_hashes.borrow_mut().insert(path.clone(), hash));
+        }
+
+        fn clear_partial_hash(path: &String) {
+            PARTIAL_ASSETS_HASHES.with(|file_hashes| file_hashes.borrow_mut().remove(path));
+        }
+
+        fn set_hash(path: &String, hash: Vec<u8>) {
+            ASSETS_HASHES.with(|file_hashes| file_hashes.borrow_mut().insert(path.clone(), hash));
+        }
+
+        fn hash_chunk_with(data: &[u8], previous_hash: Option<&Vec<u8>>) -> Vec<u8> {
             let mut h = <sha2::Sha256 as sha2::Digest>::new();
-            sha2::Digest::update(&mut h, chunk_hash);
             sha2::Digest::update(&mut h, data);
-            sha2::Digest::finalize(h).to_vec()
-        }
-
-        fn create_merkle_tree(chunk_hashes: &[Vec<u8>]) -> Vec<u8> {
-            if chunk_hashes.len() == 1 {
-                return chunk_hashes[0].clone();
+            if let Some(hash) = previous_hash {
+                sha2::Digest::update(&mut h, hash);
             }
-
-            let mid = chunk_hashes.len() / 2;
-            let left_tree = create_merkle_tree(&chunk_hashes[..mid]);
-            let right_tree = create_merkle_tree(&chunk_hashes[mid..]);
-
-            update_chunk_hash(&left_tree[..], &right_tree[..])
+            sha2::Digest::finalize(h).to_vec()
         }
 
     }

@@ -78,13 +78,15 @@ thread_local! {
 
     static RELOADED_JS: RefCell<BTreeMap<u64, Vec<u8>>> = RefCell::new(BTreeMap::new());
 
-    static UPLOADED_ASSETS_HASHES: RefCell<HashMap<String, (u64, Vec<u8>)>> = RefCell::new(HashMap::new());
+    static UPLOADED_ASSETS_TIMESTAMP: RefCell<BTreeMap<String, u64>> = RefCell::new(BTreeMap::new());
 
-    static UPLOADED_ASSETS_TIMESTAMP: RefCell<BTreeMap<String, u64>> = RefCell::new(BTreeMap::new()); // TODO analyze this structure more, Jordan has some thoughts
-    // TODO think of adding a UUID or handling the situation where timestamps are equal
-
-    static UPLOADED_ASSETS: RefCell<BTreeMap<String, BTreeMap<u64, (Bytes, Hash)>>> =
+    static UPLOADED_ASSETS: RefCell<BTreeMap<String, BTreeMap<u64, Bytes>>> =
         RefCell::new(BTreeMap::new());
+
+    static PARTIAL_ASSETS_HASHES: RefCell<HashMap<String, Hash>> = RefCell::new(HashMap::new());
+
+    static ASSETS_HASHES: RefCell<HashMap<String, Hash>> = RefCell::new(HashMap::new());
+
 }
 
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]
