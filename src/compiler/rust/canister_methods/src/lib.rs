@@ -620,6 +620,7 @@ fn get_hash_assets() -> proc_macro2::TokenStream {
 
             // Read the bytes
             let limit = 120 * 1024 * 1024; // This limit will be determine by how much hashing an update method can do without running out of cycles. It runs out somewhere between 120 and 125
+            // This limit must be the same as on the node side or else the hashes will not match
             let mut buffer = vec![0; limit];
             let bytes_read = std::io::Read::read(&mut file, &mut buffer);
 
