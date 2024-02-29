@@ -47,6 +47,11 @@ jobs:
                   registry-url: https://registry.npmjs.org
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+            - if: contains(github.head_ref, 'release--')
+              name: Install dfx
+              run: |
+                  DFXVM_INIT_YES=true DFX_VERSION=0.17.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
             # TODO we should use some Action-specific bot account
             - if: contains(github.head_ref, 'release--')
               run: git config --global user.name 'Jordan Last'
@@ -59,8 +64,6 @@ jobs:
             - if: contains(github.head_ref, 'release--')
               run: git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
             - if: contains(github.head_ref, 'release--')
-              run: DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
-            - if: contains(github.head_ref, 'release--')
               run: sudo apt-get install -y podman
             - id: example_directories
               # TODO to improve this further we might be able to create an environment variable that grabs the example directories with a glob
@@ -70,6 +73,7 @@ jobs:
                   [
                     "examples/apollo_server",
                     "examples/async_await",
+                    "examples/audio_and_video",
                     "examples/audio_recorder",
                     "examples/autoreload",
                     "examples/bitcoin",
@@ -101,6 +105,7 @@ jobs:
                     "examples/imports",
                     "examples/init",
                     "examples/inspect_message",
+                    "examples/internet_identity",
                     "examples/key_value_store",
                     "examples/ledger_canister",
                     "examples/list_of_lists",
@@ -226,7 +231,10 @@ jobs:
               with:
                   node-version: 20
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              run: DFX_VERSION=0.16.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+              name: Install dfx
+              run: |
+                  DFXVM_INIT_YES=true DFX_VERSION=0.17.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/cache@v3
               with:

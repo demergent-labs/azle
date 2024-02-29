@@ -14,7 +14,7 @@ export function SimpleCandidDefinitionArb(
 ): WithShapesArb<PrimitiveDefinition> {
     return fc
         .tuple(
-            UniqueIdentifierArb('typeDeclaration'),
+            UniqueIdentifierArb('globalNames'),
             useVariableAliasDeclarationArb(useVariableAliasDeclaration)
         )
         .map(([name, useTypeDeclaration]): WithShapes<PrimitiveDefinition> => {

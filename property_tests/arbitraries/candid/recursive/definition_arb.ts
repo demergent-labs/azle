@@ -17,7 +17,7 @@ export function RecursiveDefinitionArb(
     parents: RecursiveCandidName[],
     constraints: DefinitionConstraints
 ): WithShapesArb<RecursiveCandidDefinition> {
-    return UniqueIdentifierArb('typeDeclaration')
+    return UniqueIdentifierArb('globalNames')
         .chain((name): fc.Arbitrary<RecursiveCandidName> => {
             const recCanDef: RecursiveCandidName = {
                 candidMeta: {

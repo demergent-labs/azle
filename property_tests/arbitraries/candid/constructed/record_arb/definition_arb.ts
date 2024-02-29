@@ -22,7 +22,7 @@ export function RecordDefinitionArb(
 ): WithShapesArb<RecordCandidDefinition> {
     return fc
         .tuple(
-            UniqueIdentifierArb('typeDeclaration'),
+            UniqueIdentifierArb('globalNames'),
             fc.uniqueArray(fc.tuple(JsFunctionNameArb, fieldCandidDefArb), {
                 selector: ([name, _]) => name,
                 minLength: 1 // Zero length records are giving that same null error 'vec length of zero sized values too large' // I don't know if that's the same error but it seems like it is

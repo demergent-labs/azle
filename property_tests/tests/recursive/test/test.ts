@@ -7,10 +7,10 @@ import {
     CanisterConfig
 } from 'azle/property_tests/arbitraries/canister_arb';
 import { QueryMethodArb } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
+import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
 
 import { generateBody } from './generate_body';
 import { generateTests } from './generate_tests';
-import { UpdateMethodArb } from '../../../arbitraries/canister_methods/update_method_arb';
 
 const AllRecursiveQueryMethodArb = fc.oneof(
     QueryMethodArb(fc.array(RecursiveArb()), RecursiveArb(), {

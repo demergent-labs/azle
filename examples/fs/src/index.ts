@@ -1,10 +1,12 @@
 import { Server } from 'azle';
 import express, { Request } from 'express';
 import {
+    createReadStream,
     existsSync,
     mkdirSync,
     readFileSync,
     rmdirSync,
+    statSync,
     unlinkSync,
     writeFileSync
 } from 'fs';
@@ -115,6 +117,56 @@ export default Server(() => {
             res.send(existsSync(req.query.name));
         }
     );
+
+    app.get(
+        '/create-read-stream-larger-than-high-water-mark-chunked',
+        async (req, res) => {
+            const fileLength = statSync('/image.jpg').size;
+
+            const chunkSize = 2_000_000;
+
+            for (let i = 0; i < fileLength; i += chunkSize) {
+                const fileStream = createReadStream('/image.jpg', {
+                    start: i,
+                    end: i + chunkSize - 1
+                });
+
+                for await (const data of fileStream) {
+                    res.write(data);
+                }
+            }
+
+            res.end();
+        }
+    );
+
+    app.get(
+        '/create-read-stream-larger-than-high-water-mark',
+        async (req, res) => {
+            const fileStream = createReadStream('/image.jpg');
+
+            for await (const data of fileStream) {
+                res.write(data);
+            }
+
+            res.end();
+        }
+    );
+
+    app.get('/high-water-mark-boundary', async (req, res) => {
+        const fileStream = createReadStream('/image.jpg', {
+            start: 0,
+            end: 16_384
+        });
+
+        let chunk = Buffer.from([]);
+
+        for await (const data of fileStream) {
+            chunk = data;
+        }
+
+        res.send(chunk.length.toString());
+    });
 
     return app.listen();
 });

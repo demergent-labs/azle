@@ -13,7 +13,7 @@ export function generateTests(
             {
                 name: `recursive ${functionName}`,
                 test: async () => {
-                    const actor = getActor('./tests/recursive/test');
+                    const actor = getActor(__dirname);
 
                     const params = namedParamRecursive.map(
                         (param) => param.value.value.agentArgumentValue
