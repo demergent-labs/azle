@@ -582,12 +582,30 @@ fn get_upload_assets() -> proc_macro2::TokenStream {
 
 fn get_hash_assets() -> proc_macro2::TokenStream {
     quote! {
-        #[ic_cdk_macros::update]
+        #[ic_cdk_macros::query]
         pub fn get_file_hash(dest_path: String) -> String {
             ASSETS_HASHES
                 .with(|asset_hashes| asset_hashes.borrow().get(&dest_path).unwrap().clone())
                 .iter()
                 .map(|byte| format!("{:02x}", byte))
+                .collect()
+        }
+
+        #[ic_cdk_macros::query]
+        pub fn get_file_hashes() -> Vec<String> {
+            ASSETS_HASHES
+                .with(|asset_hashes| asset_hashes.borrow().clone())
+                .iter()
+                .map(|(path, bytes)| {
+                    format!(
+                        "{}: {}",
+                        path,
+                        bytes
+                            .iter()
+                            .map(|bytes| format!("{:02x}", bytes))
+                            .collect::<String>()
+                    )
+                })
                 .collect()
         }
 
@@ -598,14 +616,6 @@ fn get_hash_assets() -> proc_macro2::TokenStream {
                 .map(|byte| format!("{:02x}", byte))
                 .collect()
         }
-
-        // pub fn test_get_partial_file_hash(dest_path: &String) -> String {
-        //     ASSETS_HASHES
-        //         .with(|asset_hashes| asset_hashes.borrow().get(dest_path).unwrap().clone())
-        //         .iter()
-        //         .map(|byte| format!("{:02x}", byte))
-        //         .collect()
-        // }
 
         pub fn hash_file(path: String) {
             ic_cdk::println!("START HASH FILE");

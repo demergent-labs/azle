@@ -12,7 +12,7 @@ if (require.main === module) {
     main();
 }
 
-async function hashFile(path: string): Promise<Buffer> {
+export async function hashFile(path: string): Promise<Buffer> {
     return await hashFileByParts(path, 0);
 }
 
@@ -39,6 +39,8 @@ async function hashFileByParts(
         if (previousHash !== undefined) {
             return previousHash;
         } else {
+            // TODO if we add support for 0 byte files we might need something like this
+            // return hashChunkWith(Buffer.from([]));
             throw new Error(`Error: No hash was found for ${path}`);
         }
     }

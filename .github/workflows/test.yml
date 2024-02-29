@@ -108,6 +108,7 @@ jobs:
                     "examples/internet_identity",
                     "examples/key_value_store",
                     "examples/ledger_canister",
+                    "examples/large_files",
                     "examples/list_of_lists",
                     "examples/management_canister",
                     "examples/manual_reply",
