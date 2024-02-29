@@ -166,12 +166,12 @@ async function uploadAsset(
                 )}`
             );
 
-            const delay = Math.floor(chunkNumber / 2) * 500;
+            const delay = Math.floor(chunkNumber / 2) * 1000;
             // We can only process about 4Mib per second. So if chunks are about
             // 2 MiB or less then we can only send off two per second.
             // TODO This means we should probably await all of the calls to here
             // so we don't overload it on a whole directory?
-            console.log(`Waiting for ${delay / 100} seconds`);
+            console.log(`Waiting for ${delay / 1000} seconds`);
             await new Promise((resolve) => setTimeout(resolve, delay));
 
             // TODO add comment about firing off
