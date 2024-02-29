@@ -41,11 +41,11 @@ function onError() {
 
 // Parse size from string with optional unit suffix (KB, MB, GB)
 function parseSize(sizeString) {
-    var sizeRegex = /^(\d+(?:\.\d+)?)([kmg]?)$/i;
+    var sizeRegex = /^(\d+(?:\.\d+)?)([kmgb]?)$/i;
     var match = sizeString.match(sizeRegex);
     if (!match) {
         throw new Error(
-            'Invalid size format. Please use format like 1024, 1.5KB, 3MB, 2GB.'
+            'Invalid size format. Please use format like 1, 1024B, 1.5K, 3M, 2G. If not units are provided bytes is assumed'
         );
     }
 
@@ -77,7 +77,7 @@ var sizeString = args[1];
 var sizeInBytes = parseSize(sizeString);
 
 // Check if size is a valid number
-if (isNaN(sizeInBytes) || sizeInBytes <= 0) {
+if (isNaN(sizeInBytes) || sizeInBytes < 0) {
     console.error(
         'Invalid size. Please provide a positive integer for size or use a valid unit (B, KB, MB, GB).'
     );

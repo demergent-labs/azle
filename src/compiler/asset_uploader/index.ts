@@ -32,7 +32,7 @@ export async function uploadAssets(
     for (let i = 0; i < assetsToUpload.length; i++) {
         const [srcPath, destPath] = assetsToUpload[i];
         // Don't await, fire off all of the uploads as fast as we can
-        upload(srcPath, destPath, chunkSize, actor);
+        await upload(srcPath, destPath, chunkSize, actor);
     }
 }
 
@@ -50,7 +50,7 @@ async function upload(
     if (await isDirectory(srcPath)) {
         await uploadDirectory(srcPath, destPath, chunkSize, actor);
     } else {
-        uploadAsset(srcPath, destPath, chunkSize, actor);
+        await uploadAsset(srcPath, destPath, chunkSize, actor);
     }
 }
 

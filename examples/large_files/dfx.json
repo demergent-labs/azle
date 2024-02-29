@@ -10,7 +10,7 @@
             "wasm": ".azle/large_files/large_files.wasm",
             "gzip": true,
             "assets_large": [
-                ["assets/curled", "assets"],
+                ["assets/auto", "assets"],
                 ["assets/permanent", "assets"],
                 ["assets/single_asset.txt", "assets/text/single.txt"]
             ],
