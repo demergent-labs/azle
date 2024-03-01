@@ -3,7 +3,7 @@ import { existsSync } from 'fs';
 
 async function pretest() {
     // Edge Cases
-    generateFileOfSize(0, 'B');
+    // generateFileOfSize(0, 'B');
     generateFileOfSize(1, 'B');
     generateFileOfSize(120 * 1024 * 1024 + 1, 'B'); //One more byte than can be processed in a single hash_file_by_parts call
     generateFileOfSize(150 * 1024 * 1024 + 1, 'B'); //One more byte than can be processed in a single write_file_by_parts call
@@ -17,8 +17,8 @@ async function pretest() {
     generateFileOfSize(10, 'MiB');
     generateFileOfSize(100, 'MiB');
     generateFileOfSize(250, 'MiB');
-    // generateFileOfSize(500, 'MiB');
-    // generateFileOfSize(1, 'GiB');
+    generateFileOfSize(500, 'MiB');
+    generateFileOfSize(1, 'GiB');
 
     execSync(`dfx canister uninstall-code large_files || true`, {
         stdio: 'inherit'
