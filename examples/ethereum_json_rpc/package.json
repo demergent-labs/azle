@@ -5,7 +5,7 @@
         "test": "ETHEREUM_URL=https://rpc.ankr.com/eth AZLE_TEST_FETCH=false npm run tests && ETHEREUM_URL=https://rpc.ankr.com/eth AZLE_TEST_FETCH=true npm run tests"
     },
     "dependencies": {
-        "azle": "0.20.2"
+        "azle": "0.20.3-rc.3"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
