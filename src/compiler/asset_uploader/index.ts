@@ -1,15 +1,32 @@
 import { execSync } from 'child_process';
 import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { DfxJson } from '../utils/types';
 import { getCanisterId } from '../../../test';
-import { readdir, stat } from 'fs/promises';
+import { readdir, stat, open } from 'fs/promises';
 import { join } from 'path';
-import { createReadStream } from 'fs-extra';
 
 type Src = string;
 type Dest = string;
 
+/**
+ * Upload an asset at srcPath to destPath at the given canister. If neither
+ * the srcPath nor the destPath are given the srcPath(s) and desPath(s) will
+ * be determined from the dfx.json of the given canister.
+ *
+ * Because of limitations on block consensus rate and ingress message limits
+ * the uploaded assets will be broken up into 2 MB chunks (to be less than the
+ * message size limit) and sent to the canister 2 chunks per second so as to be
+ * bellow the 4MiB per second block rate. For small chunks more could be sent
+ * per second but for simplicity it has been capped at 2 chunks per second.
+ *
+ * The time it takes to upload a file is largely determined by the amount of
+ * throttling. In good circumstances a 1 GiB will therefore take about 5 minutes
+ * to upload.
+ * @param canisterName
+ * @param srcPath
+ * @param destPath
+ */
 export async function uploadAssets(
     canisterName: string,
     srcPath?: Src,
@@ -22,6 +39,7 @@ export async function uploadAssets(
     const replicaWebServerPort = execSync(`dfx info webserver-port`)
         .toString()
         .trim();
+
     const actor = await createUploadAssetActor(
         canisterId,
         replicaWebServerPort
@@ -31,7 +49,7 @@ export async function uploadAssets(
 
     for (let i = 0; i < assetsToUpload.length; i++) {
         const [srcPath, destPath] = assetsToUpload[i];
-        // Don't await, fire off all of the uploads as fast as we can
+        // Await each upload so the canister doesn't get overwhelmed by requests
         await upload(srcPath, destPath, chunkSize, actor);
     }
 }
@@ -42,94 +60,37 @@ async function upload(
     chunkSize: number,
     actor: ActorSubclass
 ) {
-    if (!(await exists(srcPath))) {
+    if (!existsSync(srcPath)) {
         console.log(`WARNING: ${srcPath} does not exist`);
         return;
     }
 
-    if (await isDirectory(srcPath)) {
+    const stats = await stat(srcPath);
+    if (stats.isDirectory()) {
+        // Await each upload so the canister doesn't get overwhelmed by requests
         await uploadDirectory(srcPath, destPath, chunkSize, actor);
     } else {
+        // Await each upload so the canister doesn't get overwhelmed by requests
         await uploadAsset(srcPath, destPath, chunkSize, actor);
     }
 }
 
-async function isDirectory(path: string): Promise<boolean> {
-    const stats = await stat(path);
-    return stats.isDirectory();
-}
-
-async function exists(path: string): Promise<boolean> {
-    try {
-        await stat(path);
-        return true; // File exists
-    } catch (error: any) {
-        if (error.code === 'ENOENT') {
-            return false; // File does not exist
-        } else {
-            throw error; // Other error occurred
-        }
-    }
-}
-
-async function uploadAssetSync(
-    srcPath: Src,
-    destPath: Dest,
+async function uploadDirectory(
+    srcDir: string,
+    destDir: string,
     chunkSize: number,
     actor: ActorSubclass
 ) {
-    console.log(`Uploading ${srcPath} to ${destPath}`);
-    const assetToUpload = readFileSync(srcPath); // TODO create a readstream and grab chunks, use the code from video and stuff as reference
-    const timestamp = process.hrtime.bigint();
-    let chunkNumber = 0;
-
-    let numRequests = 0;
-
-    for (let i = 0; i < assetToUpload.length; i += chunkSize) {
-        numRequests += 1;
-        const chunk = assetToUpload.slice(i, i + chunkSize); // TODO change to subarray
-
-        if (process.env.AZLE_VERBOSE === 'true') {
-            console.info(
-                `Uploading chunk: ${timestamp}, ${chunkNumber}, ${chunk.length}, ${assetToUpload.length}`
-            );
+    try {
+        const names = await readdir(srcDir);
+        for (const name of names) {
+            const srcPath = join(srcDir, name);
+            const destPath = join(destDir, name);
+            // Await each upload so the canister doesn't get overwhelmed by requests
+            await upload(srcPath, destPath, chunkSize, actor);
         }
-
-        if (true) {
-            console.log(
-                `Uploading chunk ${i / chunkSize + 1} of ${Math.ceil(
-                    assetToUpload.length / chunkSize
-                )}`
-            );
-        }
-
-        // TODO add comment about firing off
-        actor
-            .upload_asset(
-                destPath,
-                timestamp,
-                chunkNumber,
-                chunk,
-                assetToUpload.length
-            )
-            .catch((error) => {
-                if (process.env.AZLE_VERBOSE === 'true') {
-                    console.error(error);
-                }
-            });
-        if (numRequests % 2 === 0) {
-            // We can only process about 4Mib per second. So if chunks are about
-            // 2 MiB or less then we can only send off two per second.
-            // TODO This means we should probably await all of the calls to here
-            // so we don't overload it on a whole directory?
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-        }
-
-        chunkNumber += 1;
-    }
-
-    if (process.env.AZLE_VERBOSE === 'true') {
-        console.info(`Finished uploading chunks`);
+    } catch (error) {
+        console.error(`Error reading directory: ${error}`);
     }
 }
 
@@ -139,69 +100,52 @@ async function uploadAsset(
     chunkSize: number,
     actor: ActorSubclass
 ) {
-    console.log(`Uploading ${srcPath} to ${destPath}`);
-    const readStream = createReadStream(srcPath, { highWaterMark: chunkSize }); // Create a read stream
+    if (process.env.AZLE_VERBOSE === 'true') {
+        console.info(`Uploading ${srcPath} to ${destPath}`);
+    }
     const timestamp = process.hrtime.bigint();
+    const file = await open(srcPath, 'r');
+    const stats = await file.stat();
+    const size = stats.size;
+    let position = 0;
     let chunkNumber = 0;
-    const fileStats = await stat(srcPath);
-    const totalFileSize = fileStats.size;
+    while (position < size) {
+        const buffer = Buffer.alloc(chunkSize);
+        const result = await file.read(buffer, 0, chunkSize, position);
+        const chunk = result.buffer.subarray(0, result.bytesRead);
 
-    readStream.on('data', async (chunk) => {
-        console.log(`DATA RECEIVED: ${chunk.length}`);
-        let offset = 0;
-        while (offset < chunk.length) {
-            const currentChunk = ++chunkNumber - 1;
-            const end = Math.min(offset + chunkSize, chunk.length);
-            const subChunk = chunk.slice(offset, end);
-
-            if (process.env.AZLE_VERBOSE === 'true') {
-                console.info(
-                    `Uploading chunk: ${timestamp}, ${chunkNumber}, ${subChunk.length}`
-                );
-            }
-
-            console.log(
+        if (process.env.AZLE_VERBOSE === 'true') {
+            console.info(
                 `Uploading chunk ${chunkNumber} of ${Math.ceil(
-                    totalFileSize / chunkSize
+                    size / chunkSize
                 )}`
             );
-
-            const delay = Math.floor(chunkNumber / 2) * 1000;
-            // We can only process about 4Mib per second. So if chunks are about
-            // 2 MiB or less then we can only send off two per second.
-            // TODO This means we should probably await all of the calls to here
-            // so we don't overload it on a whole directory?
-            console.log(`Waiting for ${delay / 1000} seconds`);
-            await new Promise((resolve) => setTimeout(resolve, delay));
-
-            // TODO add comment about firing off
-            actor
-                .upload_asset(
-                    destPath,
-                    timestamp,
-                    currentChunk,
-                    subChunk,
-                    totalFileSize
-                )
-                .catch((error) => {
-                    if (process.env.AZLE_VERBOSE === 'true') {
-                        console.error(error);
-                    }
-                });
-
-            offset += chunkSize;
         }
-    });
 
-    readStream.on('end', () => {
-        if (process.env.AZLE_VERBOSE === 'true') {
-            console.info(`Finished uploading chunks`);
-        }
-    });
+        await throttle();
+        // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
+        // The above throttling is sufficient to manage the speed of uploads
+        actor
+            .upload_asset(destPath, timestamp, chunkNumber, chunk, size)
+            .catch((error) => {
+                if (process.env.AZLE_VERBOSE === 'true') {
+                    console.error(error);
+                }
+            });
 
-    readStream.on('error', (error) => {
-        console.error(`Error reading file: ${error}`);
-    });
+        position += result.bytesRead;
+        chunkNumber++;
+    }
+    file.close();
+    if (process.env.AZLE_VERBOSE === 'true') {
+        console.info(`Finished uploading ${srcPath}`);
+    }
+}
+
+async function throttle() {
+    // We can only process about 4Mib per second. So if chunks are about
+    // 2 MiB or less then we can only send off two per second.
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Should be 500 (ie 1 every 1/2 second or 2 every second)
 }
 
 function getAssetsToUpload(
@@ -263,23 +207,4 @@ async function createUploadAssetActor(
             canisterId
         }
     );
-}
-
-async function uploadDirectory(
-    srcDir: string,
-    destDir: string,
-    chunkSize: number,
-    actor: ActorSubclass
-) {
-    try {
-        const names = await readdir(srcDir);
-        for (const name of names) {
-            const srcPath = join(srcDir, name);
-            const destPath = join(destDir, name);
-            // Don't await, fire off all of the uploads as fast as we can
-            upload(srcPath, destPath, chunkSize, actor);
-        }
-    } catch (error) {
-        console.error(`Error reading directory: ${error}`);
-    }
 }

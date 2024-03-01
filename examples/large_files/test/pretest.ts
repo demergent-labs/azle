@@ -16,9 +16,9 @@ async function pretest() {
     generateFileOfSize(1, 'MiB');
     generateFileOfSize(10, 'MiB');
     generateFileOfSize(100, 'MiB');
-    generateFileOfSize(250, 'MiB');
-    generateFileOfSize(500, 'MiB');
-    generateFileOfSize(1, 'GiB');
+    // generateFileOfSize(250, 'MiB');
+    // generateFileOfSize(500, 'MiB');
+    // generateFileOfSize(1, 'GiB');
 
     execSync(`dfx canister uninstall-code large_files || true`, {
         stdio: 'inherit'

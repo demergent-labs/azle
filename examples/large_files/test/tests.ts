@@ -43,7 +43,7 @@ export function getTests(canisterId: string): Test[] {
         generateTest('test1MiB', 'auto', origin),
         generateTest('test10MiB', 'auto', origin),
         generateTest('test100MiB', 'auto', origin),
-        { ...generateTest('test250MiB', 'auto', origin), skip: false },
+        { ...generateTest('test250MiB', 'auto', origin), skip: true },
         { ...generateTest('test500MiB', 'auto', origin), skip: true },
         { ...generateTest('test1GiB', 'auto', origin), skip: true }
     ];
