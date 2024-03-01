@@ -32,7 +32,7 @@ export function getTests(canisterId: string): Test[] {
         generateTest('text/thing.txt', 'permanent', origin),
         generateTest('text/thing.txt', 'permanent', origin),
         generateTest('text/single.txt', '', origin, 'single_asset.txt'),
-        { ...generateTest('test0B', 'auto', origin), skip: true },
+        { ...generateTest('test0B', 'auto', origin), skip: true }, // TODO we have problems with 0B files on the canister side
         generateTest('test1B', 'auto', origin),
         generateTest(`test${120 * 1024 * 1024 + 1}B`, 'auto', origin),
         generateTest(`test${150 * 1024 * 1024 + 1}B`, 'auto', origin),
@@ -43,9 +43,9 @@ export function getTests(canisterId: string): Test[] {
         generateTest('test1MiB', 'auto', origin),
         generateTest('test10MiB', 'auto', origin),
         generateTest('test100MiB', 'auto', origin),
-        { ...generateTest('test250MiB', 'auto', origin), skip: true },
-        { ...generateTest('test500MiB', 'auto', origin), skip: true },
-        { ...generateTest('test1GiB', 'auto', origin), skip: true }
+        generateTest('test250MiB', 'auto', origin),
+        { ...generateTest('test500MiB', 'auto', origin), skip: true }, // We currently run out of memory with this file
+        generateTest('test1GiB', 'auto', origin)
     ];
 }
 
