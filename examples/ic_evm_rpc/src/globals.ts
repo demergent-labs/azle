@@ -22,5 +22,9 @@ export const RpcSource = {
 export const JsonRpcSource = {
     // TODO figure out why JsonRpcSource and RpcSource are different
     // TODO Is this coming to consensus amongst multiple providers?
-    Chain: chainId // Sepolia
+    // Chain: chainId // Sepolia
+    Custom: {
+        url: 'https://ethereum-sepolia-rpc.publicnode.com',
+        headers: []
+    }
 };
