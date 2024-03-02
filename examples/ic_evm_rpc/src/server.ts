@@ -1,4 +1,3 @@
-// TODO use body params instead of query params
 // TODO it would be really nice to have the canister's Ethereum address
 // TODO be the same each time, but on dfx --clean the address changes
 // TODO for tests we can have a sepolia address locally
@@ -8,44 +7,41 @@ import { ic, jsonStringify, Server } from 'azle';
 import express, { Request } from 'express';
 import { ethers } from 'ethers';
 
-import { register as registerEthFeeHistory } from './json_rpc_methods/eth_feeHistory';
-import { generateTEcdsaAddress } from './utils/generate_tecdsa_address';
-import { fetchBalanceForAddress } from './utils/fetch_balance_for_address';
-import { ethSendRawTransaction } from './json_rpc_methods/eth_sendRawTransaction';
-import { signWithEcdsa } from './utils/sign_with_ecdsa';
-import { ethGetTransactionCount } from './json_rpc_methods/eth_getTransactionCount';
+import { canisterAddress, chainId } from './globals';
 import { ethGasPrice } from './json_rpc_methods/eth_gas_price';
-
-let canisterAddress: string | null = null;
-export let chainId = 11_155_111; // TODO hard-coded to Sepolia for the moment
+import { ethGetBalance } from './json_rpc_methods/eth_getBalance';
+import { ethGetTransactionCount } from './json_rpc_methods/eth_getTransactionCount';
+import { ethSendRawTransaction } from './json_rpc_methods/eth_sendRawTransaction';
+import { ecdsaPublicKey } from './tecdsa/ecdsa_public_key';
+import { signWithEcdsa } from './tecdsa/sign_with_ecdsa';
 
 export default Server(() => {
     const app = express();
 
-    registerEthFeeHistory(app);
+    app.use(express.json());
 
-    app.post('/caller-address', async (req, res) => {
-        const address = await generateTEcdsaAddress([
-            ic.caller().toUint8Array()
-        ]);
+    app.post('/caller-address', async (_req, res) => {
+        const address = ethers.computeAddress(
+            ethers.hexlify(await ecdsaPublicKey([ic.caller().toUint8Array()]))
+        );
 
         res.json(address);
     });
 
-    app.post('/canister-address', async (req, res) => {
-        if (canisterAddress === null) {
-            canisterAddress = await generateTEcdsaAddress([
-                ic.id().toUint8Array()
-            ]);
+    app.post('/canister-address', async (_req, res) => {
+        if (canisterAddress.value === null) {
+            canisterAddress.value = ethers.computeAddress(
+                ethers.hexlify(await ecdsaPublicKey([ic.id().toUint8Array()]))
+            );
         }
 
-        res.json(canisterAddress);
+        res.json(canisterAddress.value);
     });
 
     app.post(
         '/address-balance',
-        async (req: Request<any, any, any, { address: string }>, res) => {
-            const balance = await fetchBalanceForAddress(req.query.address);
+        async (req: Request<any, any, { address: string }>, res) => {
+            const balance = await ethGetBalance(req.body.address);
 
             res.json(jsonStringify(balance));
         }
@@ -73,33 +69,32 @@ export default Server(() => {
                 chainId
             });
 
-            // TODO get the result and add error handling
-            // TODO to send a transaction maybe we should only talk to one provider?
             const result = await ethSendRawTransaction(rawTransaction);
 
-            console.log('result', result);
-
-            res.json('transaction sent');
+            if (result.Consistent?.Ok?.Ok === null) {
+                res.send('transaction sent');
+            } else {
+                res.status(500).send('transaction failed');
+            }
         }
     );
 
     app.post(
         '/transfer-from-canister',
-        async (
-            req: Request<any, any, any, { to: string; amount: string }>,
-            res
-        ) => {
-            if (canisterAddress === null) {
-                canisterAddress = await generateTEcdsaAddress([
-                    ic.id().toUint8Array()
-                ]);
+        async (req: Request<any, any, { to: string; amount: string }>, res) => {
+            if (canisterAddress.value === null) {
+                canisterAddress.value = ethers.computeAddress(
+                    ethers.hexlify(
+                        await ecdsaPublicKey([ic.id().toUint8Array()])
+                    )
+                );
             }
 
-            const to = req.query.to;
-            const value = ethers.parseEther(req.query.amount);
+            const to = req.body.to;
+            const value = ethers.parseEther(req.body.amount);
             const gasPrice = await ethGasPrice();
             const gasLimit = 21_000;
-            const nonce = await ethGetTransactionCount(canisterAddress);
+            const nonce = await ethGetTransactionCount(canisterAddress.value);
 
             let tx = new ethers.Transaction();
 
@@ -114,12 +109,10 @@ export default Server(() => {
             const unsignedSerializedTxHash =
                 ethers.keccak256(unsignedSerializedTx);
 
-            const signedSerializedTxHash = (
-                await signWithEcdsa(
-                    [ic.id().toUint8Array()],
-                    ethers.getBytes(unsignedSerializedTxHash)
-                )
-            ).signature;
+            const signedSerializedTxHash = await signWithEcdsa(
+                [ic.id().toUint8Array()],
+                ethers.getBytes(unsignedSerializedTxHash)
+            );
 
             const r = ethers.hexlify(signedSerializedTxHash.slice(0, 32));
             const s = ethers.hexlify(signedSerializedTxHash.slice(32, 64));
@@ -139,7 +132,11 @@ export default Server(() => {
 
             console.log('result', result);
 
-            res.json('transaction sent');
+            if (result.Consistent?.Ok?.Ok === null) {
+                res.send('transaction sent');
+            } else {
+                res.status(500).send('transaction failed');
+            }
         }
     );
 

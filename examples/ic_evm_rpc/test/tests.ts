@@ -1,3 +1,5 @@
+// TODO tests have not been updated since the project was materially changed
+
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
@@ -9,6 +11,7 @@ export function getTests(canisterId: string): Test[] {
     return [
         {
             name: '/eth_feeHistory',
+            skip: true,
             test: async () => {
                 const response = await fetch(`${origin}/eth_feeHistory`, {
                     method: 'POST'

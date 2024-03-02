@@ -1,9 +1,9 @@
 import { ic, serialize } from 'azle';
 import { ethers } from 'ethers';
 
-export async function generateTEcdsaAddress(
+export async function ecdsaPublicKey(
     derivationPath: Uint8Array[]
-): Promise<string> {
+): Promise<Uint8Array> {
     const response = await fetch('icp://aaaaa-aa/ecdsa_public_key', {
         body: serialize({
             args: [
@@ -20,9 +20,5 @@ export async function generateTEcdsaAddress(
     });
     const responseJson = await response.json();
 
-    const address = ethers.computeAddress(
-        ethers.hexlify(responseJson.public_key)
-    );
-
-    return address;
+    return responseJson.public_key;
 }

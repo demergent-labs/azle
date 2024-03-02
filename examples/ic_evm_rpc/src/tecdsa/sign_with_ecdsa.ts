@@ -3,9 +3,7 @@ import { serialize } from 'azle';
 export async function signWithEcdsa(
     derivationPath: Uint8Array[],
     messageHash: Uint8Array
-): Promise<{
-    signature: Uint8Array;
-}> {
+): Promise<Uint8Array> {
     const publicKeyResponse = await fetch(`icp://aaaaa-aa/sign_with_ecdsa`, {
         body: serialize({
             args: [
@@ -22,5 +20,5 @@ export async function signWithEcdsa(
         })
     });
 
-    return await publicKeyResponse.json();
+    return (await publicKeyResponse.json()).signature;
 }

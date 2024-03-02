@@ -4,16 +4,16 @@
             "specified_id": "bd3sg-teaaa-aaaaa-qaaba-cai",
             "type": "custom",
             "main": "src/server.ts",
-            "candid": "src/server.did",
+            "candid": "src/candid/server.did",
             "candid_gen": "http",
             "build": "npx azle server",
             "wasm": ".azle/server/server.wasm",
             "gzip": true,
-            "assets": [["src/evm_rpc.did", "src/evm_rpc.did"]],
+            "assets": [["src/candid/evm_rpc.did", "src/candid/evm_rpc.did"]],
             "metadata": [
                 {
                     "name": "candid:service",
-                    "path": "src/server.did"
+                    "path": "src/candid/server.did"
                 },
                 {
                     "name": "cdk:name",
