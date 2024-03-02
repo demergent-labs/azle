@@ -1,6 +1,7 @@
 {
     "canisters": {
         "server": {
+            "specified_id": "bd3sg-teaaa-aaaaa-qaaba-cai",
             "type": "custom",
             "main": "src/server.ts",
             "candid": "src/server.did",
@@ -21,6 +22,7 @@
             ]
         },
         "evm_rpc": {
+            "specified_id": "be2us-64aaa-aaaaa-qaabq-cai",
             "type": "custom",
             "candid": "https://github.com/internet-computer-protocol/ic-eth-rpc/releases/latest/download/evm_rpc.did",
             "wasm": "https://github.com/internet-computer-protocol/ic-eth-rpc/releases/latest/download/evm_rpc_dev.wasm.gz",
