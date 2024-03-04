@@ -2,17 +2,17 @@ use quote::quote;
 
 pub fn get_hash_file() -> proc_macro2::TokenStream {
     quote! {
-        fn hash_file(path: String) {
+        pub fn hash_file(path: String) {
             ic_cdk::println!("START HASH FILE");
             hash_file_by_parts(path, 0)
         }
 
         #[ic_cdk_macros::query]
-        pub fn get_file_hash(dest_path: String) -> String {
+        pub fn get_file_hash(path: String) -> String {
             ASSETS_HASHES
-                .with(|asset_hashes| asset_hashes.borrow().get(&dest_path).unwrap().clone())
+                .with(|asset_hashes| asset_hashes.borrow().get(&path).unwrap().clone())
                 .iter()
-                .map(|byte| format!("{:02x}", byte))
+                .map(|bytes| format!("{:02x}", bytes))
                 .collect()
         }
 
@@ -31,14 +31,6 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
                             .collect::<String>()
                     )
                 })
-                .collect()
-        }
-
-        fn test_get_file_hash(dest_path: &String) -> String {
-            ASSETS_HASHES
-                .with(|asset_hashes| asset_hashes.borrow().get(dest_path).unwrap().clone())
-                .iter()
-                .map(|byte| format!("{:02x}", byte))
                 .collect()
         }
 
@@ -73,7 +65,6 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
                                 ic_cdk::println!("Finish hashing");
                                 clear_partial_hash(&path);
                                 ic_cdk::println!("Partial hash cleared");
-                                ic_cdk::println!("Hash: {}", test_get_file_hash(&path));
                             }
                             None => ic_cdk::println!("WARNING: No hash was found for {}", path),
                         }
@@ -83,8 +74,8 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
             }
         }
 
-        pub fn get_partial_file_hash(dest_path: &String) -> Option<Vec<u8>> {
-            PARTIAL_ASSETS_HASHES.with(|asset_hashes| asset_hashes.borrow().get(dest_path).cloned())
+        pub fn get_partial_file_hash(path: &String) -> Option<Vec<u8>> {
+            PARTIAL_ASSETS_HASHES.with(|asset_hashes| asset_hashes.borrow().get(path).cloned())
         }
 
         fn set_partial_hash(path: &String, hash: Vec<u8>) {
