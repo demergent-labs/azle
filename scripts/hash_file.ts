@@ -24,7 +24,8 @@ async function hashFileByParts(
     const file = await open(path, 'r'); // Open in read-only mode
 
     // Read the bytes
-    const limit = 120 * 1024 * 1024; // Must be the same as on the canister end or hashes will not match
+    // TODO Before having the stable file storage hooked up 120 worked. For right now 60 seems to be working. I think we could do more but I want to get everything in place before spending a lot of time fine tuning it
+    const limit = 60 * 1024 * 1024; // Must be the same as on the canister end or hashes will not match
     const buffer = Buffer.alloc(limit); // Allocate a Buffer for reading
 
     const fileReadResult = await file.read(buffer, 0, limit, position);

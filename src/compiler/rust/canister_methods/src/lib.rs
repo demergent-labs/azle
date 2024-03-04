@@ -8,9 +8,9 @@ use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use serde::{Deserialize, Serialize};
 
+mod hash_file;
 mod reload_js;
 mod upload_assets;
-mod hash_file;
 
 trait ToIdent {
     fn to_ident(&self) -> Ident;
@@ -65,7 +65,9 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
     let init_method = quote! {
         #[ic_cdk_macros::init]
         fn init() {
-            ic_wasi_polyfill::init(&[], &[#(#env_vars),*]);
+            let polyfill_memory =
+                MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
+            ic_wasi_polyfill::init_with_memory(&[], &[#(#env_vars),*], polyfill_memory);
 
             ASSETS_DIR.extract("/").unwrap();
 
@@ -86,7 +88,9 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
     let post_upgrade_method = quote! {
         #[ic_cdk_macros::post_upgrade]
         fn post_upgrade() {
-            ic_wasi_polyfill::init(&[], &[#(#env_vars),*]);
+            let polyfill_memory =
+                MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
+            ic_wasi_polyfill::init_with_memory(&[], &[#(#env_vars),*], polyfill_memory);
 
             ASSETS_DIR.extract("/").unwrap();
 

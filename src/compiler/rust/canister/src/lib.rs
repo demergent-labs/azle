@@ -3,7 +3,7 @@ use std::{cell::RefCell, collections::BTreeMap, collections::HashMap, convert::T
 #[allow(unused)]
 use canister_methods::canister_methods;
 use ic_stable_structures::{
-    memory_manager::{MemoryManager, VirtualMemory},
+    memory_manager::{MemoryId, MemoryManager, VirtualMemory},
     storable::Bound,
     DefaultMemoryImpl, StableBTreeMap, Storable,
 };

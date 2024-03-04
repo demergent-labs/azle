@@ -21,9 +21,7 @@ wasmi = "0.31.2"
 sha2 = "0.10.8"
 
 # TODO transient feature can be removed once https://github.com/wasm-forge/ic-wasi-polyfill/issues/14
-ic-wasi-polyfill = { git = "https://github.com/wasm-forge/ic-wasi-polyfill", rev = "2d2edb382816e12da9bc81b786b7cd1a00d36735", features = [
-    "transient",
-] }
+ic-wasi-polyfill = { git = "https://github.com/wasm-forge/ic-wasi-polyfill", rev = "2d2edb382816e12da9bc81b786b7cd1a00d36735" }
 
 wasmedge_quickjs = { git = "https://github.com/demergent-labs/wasmedge-quickjs", rev = "6c81d7e6fe4b22a468beceed0ee697f4163e7ca8" }
 # wasmedge_quickjs = { path = "/home/wasmedge-quickjs" }

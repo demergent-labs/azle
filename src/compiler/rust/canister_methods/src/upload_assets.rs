@@ -54,7 +54,8 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
                 }
             });
 
-            let limit = 100 * 1024 * 1024; // The limit is somewhere between 150 and 155 before we run out of instructions.
+            // TODO Before having the stable file storage hooked up 100 worked. For right now 25 seems to be working. I think we could do more but I want to get everything in place before spending a lot of time fine tuning it
+            let limit = 25 * 1024 * 1024; // The limit is somewhere between 150 and 155 before we run out of instructions.
             let group_size = limit / bytes_per_chunk;
 
             let dir_path = std::path::Path::new(dest_path.as_str()).parent().unwrap();
