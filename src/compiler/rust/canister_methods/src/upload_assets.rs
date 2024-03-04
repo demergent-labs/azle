@@ -147,7 +147,7 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
             }
         }
 
-        fn bytes_to_human_readable(size_in_bytes: u64) -> String {
+        pub fn bytes_to_human_readable(size_in_bytes: u64) -> String {
             let suffixes = ["B", "KiB", "MiB", "GiB"];
             let mut size = size_in_bytes as f64;
 
