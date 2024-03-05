@@ -65,6 +65,9 @@ impl Storable for AzleStableBTreeMapValue {
 type Bytes = Vec<u8>;
 type Hash = Vec<u8>;
 
+type ChunkCount = u64;
+type BytesReceived = u64;
+
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
 
@@ -78,10 +81,9 @@ thread_local! {
 
     static RELOADED_JS: RefCell<BTreeMap<u64, Vec<u8>>> = RefCell::new(BTreeMap::new());
 
-    static UPLOADED_ASSETS_TIMESTAMP: RefCell<BTreeMap<String, u64>> = RefCell::new(BTreeMap::new());
+    static FILE_INFO: RefCell<BTreeMap<String, (ChunkCount, BytesReceived)>> = RefCell::new(BTreeMap::new());
 
-    static UPLOADED_ASSETS: RefCell<BTreeMap<String, BTreeMap<u64, Bytes>>> =
-        RefCell::new(BTreeMap::new());
+    static UPLOADED_ASSETS_TIMESTAMP: RefCell<BTreeMap<String, u64>> = RefCell::new(BTreeMap::new());
 
     static PARTIAL_ASSETS_HASHES: RefCell<HashMap<String, Hash>> = RefCell::new(HashMap::new());
 
