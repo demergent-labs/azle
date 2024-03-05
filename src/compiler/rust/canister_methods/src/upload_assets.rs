@@ -41,7 +41,7 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
 
         if uploaded_asset_len == total_len {
             ic_cdk::println!("UPLOAD COMPLETE for {}", dest_path);
-            ic_cdk::println!("{} chunks uploaded for {}", get_total_chunks(dest_path), dest_path);
+            ic_cdk::println!("{} chunks uploaded for {}", get_total_chunks(&dest_path), dest_path);
             let delay = core::time::Duration::new(0, 0);
             let write_closure = move || write_file_by_parts(dest_path);
             ic_cdk_timers::set_timer(delay, write_closure);
@@ -52,8 +52,9 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
         let bytes_per_chunk = get_first_chunk_size(&dest_path);
 
         // TODO Before having the stable file storage hooked up 100 worked. For right now 25 seems to be working. I think we could do more but I want to get everything in place before spending a lot of time fine tuning it
+        let total_chunks = get_total_chunks(&dest_path);
         let limit: u64 = 25 * 1024 * 1024; // The limit is somewhere between 150 and 155 before we run out of instructions.
-        let group_size = limit / bytes_per_chunk as u64;
+        let group_size = std::cmp::min(total_chunks, limit / bytes_per_chunk as u64);
 
         let dir_path = std::path::Path::new(dest_path.as_str()).parent().unwrap();
 
@@ -79,6 +80,11 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
         } else {
             ic_cdk::println!("Continue writing: {}", dest_path);
         }
+        ic_cdk::println!(
+            "Attempting to read {} chunks starting at {}",
+            group_size,
+            start_chunk
+        );
         let chunk_of_bytes: Vec<u8> = read_temp_chunks(&dest_path, start_chunk, group_size);
 
         ic_cdk::println!(
@@ -182,14 +188,16 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
 
     // Reads and concatenates ordered chunks from the file system. Returns the data.
     fn read_temp_chunks(dest_path: &str, start_chunk: u64, num_chunks: u64) -> Vec<u8> {
-        let mut all_data = Vec::new();
+        let mut all_data = vec![];
         for chunk_num in start_chunk..(start_chunk + num_chunks) {
             let chunk_path = format!("{}.chunk.{}", dest_path, chunk_num);
-            ic_cdk::println!("Reading from {}", chunk_path);
-            let mut file = std::fs::File::open(&chunk_path).unwrap();
-            let mut chunk_data = Vec::new();
-            std::io::Read::read_to_end(&mut file, &mut chunk_data).unwrap();
-            all_data.extend_from_slice(&chunk_data);
+
+            if std::path::Path::new(&chunk_path).exists() {
+                let mut file = std::fs::File::open(&chunk_path).unwrap();
+                let mut chunk_data = vec![];
+                std::io::Read::read_to_end(&mut file, &mut chunk_data).unwrap();
+                all_data.extend_from_slice(&chunk_data);
+            }
         }
         all_data
     }
