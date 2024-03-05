@@ -2,7 +2,7 @@ import { serialize } from 'azle';
 
 import { RpcSource } from '../globals';
 
-export async function ethGetTransactionCount(address: string): Promise<bigint> {
+export async function ethGetTransactionCount(address: string): Promise<number> {
     const jsonRpcArgs = {
         address,
         block: {
@@ -23,5 +23,5 @@ export async function ethGetTransactionCount(address: string): Promise<bigint> {
     const responseJson = await response.json();
 
     // TODO improve error handling
-    return responseJson.Consistent.Ok;
+    return Number(responseJson.Consistent.Ok);
 }

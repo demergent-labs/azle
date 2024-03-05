@@ -1,8 +1,3 @@
-// TODO it would be really nice to have the canister's Ethereum address
-// TODO be the same each time, but on dfx --clean the address changes
-// TODO for tests we can have a sepolia address locally
-// TODO that has a lot of ETH in it for tests on the testnets
-
 import { ic, jsonStringify, Server } from 'azle';
 import express, { Request } from 'express';
 import { ethers } from 'ethers';
@@ -25,7 +20,7 @@ export default Server(() => {
             ethers.hexlify(await ecdsaPublicKey([ic.caller().toUint8Array()]))
         );
 
-        res.json(address);
+        res.send(address);
     });
 
     app.post('/canister-address', async (_req, res) => {
@@ -35,7 +30,7 @@ export default Server(() => {
             );
         }
 
-        res.json(canisterAddress.value);
+        res.send(canisterAddress.value);
     });
 
     app.post(
@@ -43,7 +38,7 @@ export default Server(() => {
         async (req: Request<any, any, { address: string }>, res) => {
             const balance = await ethGetBalance(req.body.address);
 
-            res.json(jsonStringify(balance));
+            res.send(jsonStringify(balance));
         }
     );
 
@@ -58,8 +53,8 @@ export default Server(() => {
             const to = req.body.to;
             const value = ethers.parseEther(req.body.amount);
             const gasPrice = await ethGasPrice();
-            const gasLimit = 21_000;
-            const nonce = Number(await ethGetTransactionCount(wallet.address));
+            const gasLimit = 21_000n;
+            const nonce = await ethGetTransactionCount(wallet.address);
             const rawTransaction = await wallet.signTransaction({
                 to,
                 value,
@@ -93,17 +88,17 @@ export default Server(() => {
             const to = req.body.to;
             const value = ethers.parseEther(req.body.amount);
             const gasPrice = await ethGasPrice();
-            const gasLimit = 21_000;
+            const gasLimit = 21_000n;
             const nonce = await ethGetTransactionCount(canisterAddress.value);
 
-            let tx = new ethers.Transaction();
-
-            tx.to = to;
-            tx.value = value;
-            tx.gasPrice = gasPrice;
-            tx.gasLimit = gasLimit;
-            tx.nonce = nonce;
-            tx.chainId = chainId;
+            const tx = ethers.Transaction.from({
+                to,
+                value,
+                gasPrice,
+                gasLimit,
+                nonce,
+                chainId
+            });
 
             const unsignedSerializedTx = tx.unsignedSerialized;
             const unsignedSerializedTxHash =
