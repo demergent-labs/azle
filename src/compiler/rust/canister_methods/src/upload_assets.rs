@@ -166,6 +166,7 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
             *chunks += 1;
             total_bytes.clone()
         });
+        // TODO This is in here to do the println that is in get_total_chunks. Remove after testing
         get_total_chunks(dest_path);
 
         ic_cdk::println!(
