@@ -20,12 +20,27 @@ export function calculateRsvForTEcdsa(
         v: v0
     });
 
-    const v =
-        address.toLowerCase() === recoveredAddressV0.toLowerCase() ? v0 : v1;
+    if (address.toLowerCase() === recoveredAddressV0.toLowerCase()) {
+        return {
+            r,
+            s,
+            v: v0
+        };
+    }
 
-    return {
+    const recoveredAddressV1 = ethers.recoverAddress(digest, {
         r,
         s,
-        v
-    };
+        v: v1
+    });
+
+    if (address.toLowerCase() === recoveredAddressV1.toLowerCase()) {
+        return {
+            r,
+            s,
+            v: v1
+        };
+    }
+
+    throw new Error(`v could not be calculated correctly`);
 }
