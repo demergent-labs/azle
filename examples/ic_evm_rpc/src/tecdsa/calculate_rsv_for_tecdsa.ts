@@ -20,7 +20,10 @@ export function calculateRsvForTEcdsa(
         v: v0
     };
 
-    if (address.toLowerCase() === ethers.recoverAddress(digest, rsv0)) {
+    if (
+        address.toLowerCase() ===
+        ethers.recoverAddress(digest, rsv0).toLowerCase()
+    ) {
         return rsv0;
     }
 
@@ -30,7 +33,10 @@ export function calculateRsvForTEcdsa(
         v: v1
     };
 
-    if (address.toLowerCase() === ethers.recoverAddress(digest, rsv1)) {
+    if (
+        address.toLowerCase() ===
+        ethers.recoverAddress(digest, rsv1).toLowerCase()
+    ) {
         return rsv1;
     }
 
