@@ -267,7 +267,6 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
     fn get_total_chunks(file_name: &str) -> u64 {
         let (chunks, total_bytes_received) =
             FILE_INFO.with(|file_info| file_info.borrow().get(file_name).unwrap_or(&(0, 0)).clone());
-        ic_cdk::println!("Chunks: {} | Total Bytes: {}", chunks, total_bytes_received);
         chunks
     }
 
