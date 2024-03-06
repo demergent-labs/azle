@@ -1,7 +1,7 @@
 var fs = require('fs');
 
 // Function to create a file of a specific size in bytes
-function createFileOfSize(filename, sizeInBytes) {
+function createFileOfSize(filename, sizeInBytes, random) {
     var writeStream = fs.createWriteStream(filename);
     var bytesWritten = 0;
 
@@ -13,7 +13,11 @@ function createFileOfSize(filename, sizeInBytes) {
             var chunkSize = Math.min(remainingBytes, 1024); // Adjust the chunk size as needed
             var buffer = Buffer.alloc(chunkSize);
             for (var i = 0; i < chunkSize; i++) {
-                buffer[i] = Math.floor(Math.random() * 256); // Generate random byte value (0-255)
+                if (random === undefined || random === true) {
+                    buffer[i] = Math.floor(Math.random() * 256); // Generate random byte value (0-255)
+                } else {
+                    buffer[i] = 0;
+                }
             }
             writeStream.write(buffer);
             bytesWritten += chunkSize;
@@ -84,7 +88,7 @@ if (isNaN(sizeInBytes) || sizeInBytes < 0) {
     process.exit(1);
 }
 
-createFileOfSize(filename, sizeInBytes);
+createFileOfSize(filename, sizeInBytes, true);
 console.log(
     "File '" + filename + "' created with size " + sizeInBytes + ' bytes.'
 );
