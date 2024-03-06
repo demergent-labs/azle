@@ -30,7 +30,7 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
         };
 
         ic_cdk::println!(
-            "Wrote: {} | Length: {}/{} ",
+            "Uploaded: {} | Length: {}/{} ",
             format_chunk_path(&dest_path, chunk_number),
             bytes_to_human_readable(uploaded_asset_len),
             bytes_to_human_readable(total_len)
@@ -80,11 +80,6 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
 
     fn write_group_of_file_chunks(dest_path: String, start_chunk: u64, group_size: u64) {
         // TODO I am assuming this function to be called by write_file_by_parts so when we get here the file should already exist and be empty and ready to write to. That way we don't have to worry about clearing the file on the first write or anything like that.
-        if start_chunk == 0 {
-            ic_cdk::println!("START writing: {}", dest_path);
-        } else {
-            ic_cdk::println!("Continue writing: {}", dest_path);
-        }
         let chunk_of_bytes = match read_temp_chunks(&dest_path, start_chunk, group_size) {
             Ok(bytes) => bytes,
             Err(err) => {
@@ -92,12 +87,7 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
                 panic!("{}", err)
             }
         };
-        ic_cdk::println!(
-            "Read {} from {} chunks starting at {}",
-            bytes_to_human_readable(chunk_of_bytes.len() as u64),
-            group_size,
-            start_chunk
-        );
+        debug("Finish chunk read");
 
         if let Err(err) = append_chunk_to(&dest_path, &chunk_of_bytes) {
             ic_cdk::println!(
@@ -109,15 +99,17 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
             );
             panic!("{}", err)
         }
-
-        ic_cdk::println!("Finished appending chunk");
+        debug("Finished appending chunk");
 
         let total_chunk_count = get_total_chunks(&dest_path);
-        ic_cdk::print(format!(
-            "{} of {} chunks written!",
-            start_chunk + group_size,
-            total_chunk_count
-        ));
+        ic_cdk::println!(
+            "Wrote {} of {} from {} chunks (of {}) starting at {}",
+            bytes_to_human_readable(chunk_of_bytes.len() as u64),
+            dest_path,
+            group_size,
+            total_chunk_count,
+            start_chunk
+        );
 
         let delay = core::time::Duration::new(0, 0);
         if start_chunk + group_size >= total_chunk_count {
@@ -149,39 +141,40 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
     }
 
     fn append_chunk_to(dest_path: &str, chunk_of_bytes: &[u8]) -> std::io::Result<()> {
-        ic_cdk::println!(
-            "Preparing to write {} bytes to {}",
-            bytes_to_human_readable(chunk_of_bytes.len() as u64),
-            dest_path
+        debug(
+            format!(
+                "Preparing to write {} bytes to {}",
+                bytes_to_human_readable(chunk_of_bytes.len() as u64),
+                dest_path
+            )
+            .as_str(),
         );
 
-        ic_cdk::println!("Just to make sure here is another print");
+        debug("Just to make sure here is another print");
 
         let mut file = std::fs::OpenOptions::new();
 
-        ic_cdk::println!("We made the new thing");
+        debug("We made the new thing");
 
         let file = file.write(true);
 
-        ic_cdk::println!("We made the write thing");
+        debug("We made the write thing");
 
         let file = file.append(true);
 
-        ic_cdk::println!("We made the append thing");
+        debug("We made the append thing");
 
         let mut file = file.open(&dest_path)?;
 
-        ic_cdk::println!("{} opened successfully for writing", dest_path);
+        debug(format!("{} opened successfully for writing", dest_path).as_str());
 
         std::io::Write::write_all(&mut file, &chunk_of_bytes)?;
 
-        ic_cdk::println!("wrote all successfully to {}", dest_path);
+        debug(format!("wrote all successfully to {}", dest_path).as_str());
 
         // flush the buffer to ensure all data is written immediately
         std::io::Write::flush(&mut file)?;
         drop(file);
-
-        ic_cdk::println!("flushed file whatever that means");
 
         Ok(())
     }
@@ -343,6 +336,13 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
 
     fn format_chunk_path(dest_path: &str, chunk_number: u64) -> String {
         format!("{}.chunk.{}", dest_path, chunk_number)
+    }
+
+    fn debug(message: &str) {
+        let debug = false;
+        if debug {
+            ic_cdk::println!("{}", message)
+        }
     }
     }
 }
