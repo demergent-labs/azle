@@ -2,16 +2,19 @@ import { serialize } from 'azle';
 
 import { RpcSource } from '../globals';
 
-export async function ethGetTransactionCount(address: string): Promise<bigint> {
+// TODO add static typing for Ethereum JSON RPC?
+// TODO these types might exist somewhere
+export async function ethFeeHistory(): Promise<any> {
     const jsonRpcArgs = {
-        address,
-        block: {
+        blockCount: 1,
+        newestBlock: {
             Latest: null
-        }
+        },
+        rewardPercentiles: []
     };
 
     const response = await fetch(
-        `icp://be2us-64aaa-aaaaa-qaabq-cai/eth_getTransactionCount`,
+        `icp://be2us-64aaa-aaaaa-qaabq-cai/eth_feeHistory`,
         {
             body: serialize({
                 candidPath: '/src/candid/evm_rpc.did',
@@ -23,5 +26,5 @@ export async function ethGetTransactionCount(address: string): Promise<bigint> {
     const responseJson = await response.json();
 
     // TODO improve error handling
-    return responseJson.Consistent.Ok;
+    return responseJson;
 }
