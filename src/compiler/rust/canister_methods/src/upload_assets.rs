@@ -85,11 +85,6 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
         } else {
             ic_cdk::println!("Continue writing: {}", dest_path);
         }
-        ic_cdk::println!(
-            "Attempting to read {} chunks starting at {}",
-            group_size,
-            start_chunk
-        );
         let chunk_of_bytes = match read_temp_chunks(&dest_path, start_chunk, group_size) {
             Ok(bytes) => bytes,
             Err(err) => {
@@ -97,6 +92,12 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
                 panic!("{}", err)
             }
         };
+        ic_cdk::println!(
+            "Read {} from {} chunks starting at {}",
+            bytes_to_human_readable(chunk_of_bytes.len() as u64),
+            group_size,
+            start_chunk
+        );
 
         if let Err(err) = append_chunk_to(&dest_path, &chunk_of_bytes) {
             ic_cdk::println!(
@@ -266,6 +267,7 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
     fn get_total_chunks(file_name: &str) -> u64 {
         let (chunks, total_bytes_received) =
             FILE_INFO.with(|file_info| file_info.borrow().get(file_name).unwrap_or(&(0, 0)).clone());
+        ic_cdk::println!("Chunks: {} | Total Bytes: {}", chunks, total_bytes_received);
         chunks
     }
 
@@ -279,20 +281,15 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
 
         for chunk_num in start_chunk..(start_chunk + num_chunks) {
             let chunk_path = format_chunk_path(dest_path, chunk_num);
-            ic_cdk::println!("Reading from {}", chunk_path);
 
             if std::path::Path::new(&chunk_path).exists() {
-                ic_cdk::println!("{} exits!", chunk_path);
                 let mut file = std::fs::File::open(&chunk_path)?;
-                ic_cdk::println!("{} was opened successfully!", chunk_path);
                 let mut chunk_data = vec![];
                 std::io::Read::read_to_end(&mut file, &mut chunk_data)?;
                 drop(file);
-                ic_cdk::println!("{} was read successfully!", chunk_path);
                 all_data.extend_from_slice(&chunk_data);
             }
         }
-        ic_cdk::println!("Finished Reading batch of temp chunks");
         Ok(all_data)
     }
 
