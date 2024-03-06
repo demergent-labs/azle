@@ -14,32 +14,24 @@ export function calculateRsvForTEcdsa(
     const v0 = vPartial;
     const v1 = vPartial + 1;
 
-    const recoveredAddressV0 = ethers.recoverAddress(digest, {
+    const rsv0 = {
         r,
         s,
         v: v0
-    });
+    };
 
-    if (address.toLowerCase() === recoveredAddressV0.toLowerCase()) {
-        return {
-            r,
-            s,
-            v: v0
-        };
+    if (address.toLowerCase() === ethers.recoverAddress(digest, rsv0)) {
+        return rsv0;
     }
 
-    const recoveredAddressV1 = ethers.recoverAddress(digest, {
+    const rsv1 = {
         r,
         s,
         v: v1
-    });
+    };
 
-    if (address.toLowerCase() === recoveredAddressV1.toLowerCase()) {
-        return {
-            r,
-            s,
-            v: v1
-        };
+    if (address.toLowerCase() === ethers.recoverAddress(digest, rsv1)) {
+        return rsv1;
     }
 
     throw new Error(`v could not be calculated correctly`);
