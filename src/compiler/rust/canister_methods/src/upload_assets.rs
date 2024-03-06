@@ -24,13 +24,14 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
             }
         };
 
-        match test_read_temp_chunk(&dest_path, chunk_number) {
+        match test_read_temp_chunk(&dest_path, chunk_number, false) {
             Ok(_) => (),
             Err(err) => panic!("There was a problem with the verification: {}", err),
         };
 
         ic_cdk::println!(
-            "Length: {}/{} ",
+            "Wrote: {} | Length: {}/{} ",
+            format_chunk_path(&dest_path, chunk_number),
             bytes_to_human_readable(uploaded_asset_len),
             bytes_to_human_readable(total_len)
         );
@@ -56,18 +57,21 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
         let total_chunks = get_total_chunks(&dest_path);
         let limit: u64 = 25 * 1024 * 1024; // The limit is somewhere between 150 and 155 before we run out of instructions.
         let group_size = std::cmp::min(total_chunks, limit / bytes_per_chunk as u64);
+        let group_size = 1;
 
         let dir_path = std::path::Path::new(dest_path.as_str()).parent().unwrap();
 
         std::fs::create_dir_all(dir_path).unwrap();
 
         // Create the file, or clear it if it already exists
-        std::fs::OpenOptions::new()
+        let file = std::fs::OpenOptions::new()
             .write(true)
             .truncate(true)
             .create(true)
             .open(&dest_path)
             .unwrap();
+
+        drop(file); // Only open the file long enough to create it
 
         let delay = core::time::Duration::new(0, 0);
         let closure = move || write_group_of_file_chunks(dest_path, 0, group_size);
@@ -174,6 +178,7 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
 
         // flush the buffer to ensure all data is written immediately
         std::io::Write::flush(&mut file)?;
+        drop(file);
 
         ic_cdk::println!("flushed file whatever that means");
 
@@ -194,25 +199,30 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
         format!("{:.2} {}", size as f64, suffixes.last().unwrap())
     }
 
-    fn test_read_temp_chunk(dest_path: &String, chunk_number: u64) -> std::io::Result<()> {
-        if true {
-            return Ok(())
-        }
-        let chunk_path = format!("{}.chunk.{}", dest_path, chunk_number);
-        ic_cdk::println!("Start test read for {}", chunk_path);
+    fn test_read_temp_chunk(dest_path: &str, chunk_number: u64, verbose: bool) -> std::io::Result<()> {
+        let chunk_path = format_chunk_path(dest_path, chunk_number);
 
         let exists = std::path::Path::new(&chunk_path).exists();
-        ic_cdk::println!("Exists? {}", exists);
-        match std::fs::metadata(dest_path) {
-            Ok(metadata) => {
-                ic_cdk::println!("Is Dir?: {}", metadata.is_dir());
-                ic_cdk::println!("Is File? {}", metadata.is_file());
-                ic_cdk::println!("Modified: {:?}", metadata.modified()?);
-            }
-            Err(err) => {
-                ic_cdk::println!("Error getting the metadata: {}", err)
-            }
-        };
+        if !exists {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "File doesn't exists",
+            ));
+        }
+        if verbose {
+            ic_cdk::println!("Start test read for {}", chunk_path);
+            ic_cdk::println!("Exists? {}", exists);
+            match std::fs::metadata(dest_path) {
+                Ok(metadata) => {
+                    ic_cdk::println!("Is Dir?: {}", metadata.is_dir());
+                    ic_cdk::println!("Is File? {}", metadata.is_file());
+                    ic_cdk::println!("Modified: {:?}", metadata.modified()?);
+                }
+                Err(err) => {
+                    ic_cdk::println!("Error getting the metadata: {}", err)
+                }
+            };
+        }
         let mut buffer = [0, 0, 0, 0];
         let mut file = std::fs::File::open(&chunk_path)?;
         std::io::Read::read(&mut file, &mut buffer)?;
@@ -223,21 +233,15 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
 
     // Adds the given asset_bytes to the dest_path asset at the chunk number position. Returns the new total length of dest_path asset after the addition
     fn write_temp_chunk(
-        dest_path: &String,
+        dest_path: &str,
         asset_bytes: Vec<u8>,
         chunk_number: u64,
     ) -> std::io::Result<u64> {
-        let file_path = format!("{}.chunk.{}", dest_path, chunk_number);
-        ic_cdk::println!(
-            "writing chunk {} of {} to {}",
-            chunk_number,
-            dest_path,
-            file_path
-        );
+        let file_path = format_chunk_path(dest_path, chunk_number);
         let mut options = std::fs::OpenOptions::new();
         options.create(true).write(true);
 
-        match std::path::Path::new(dest_path.as_str()).parent() {
+        match std::path::Path::new(dest_path).parent() {
             Some(dir_path) => std::fs::create_dir_all(dir_path)?,
             None => (), //Dir doesn't need to be created
         };
@@ -246,24 +250,15 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
         std::io::Write::write_all(&mut file, &asset_bytes)?;
         drop(file);
 
-        let (total_chunks, total_bytes) = FILE_INFO.with(|total_bytes_received| {
+        let total_bytes = FILE_INFO.with(|total_bytes_received| {
             let mut total_bytes_received_mut = total_bytes_received.borrow_mut();
             let (chunks, total_bytes) = total_bytes_received_mut
                 .entry(dest_path.to_owned())
                 .or_insert((0, 0));
             *total_bytes += asset_bytes.len() as u64;
             *chunks += 1;
-            (chunks.clone(), total_bytes.clone())
+            total_bytes.clone()
         });
-        // TODO This is in here to do the println that is in get_total_chunks. Remove after testing
-        get_total_chunks(dest_path);
-
-        ic_cdk::println!(
-            "File: {}. Chunk: {}. Total chunks processed: {}",
-            dest_path,
-            chunk_number,
-            total_chunks
-        );
 
         Ok(total_bytes)
     }
@@ -271,7 +266,6 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
     fn get_total_chunks(file_name: &str) -> u64 {
         let (chunks, total_bytes_received) =
             FILE_INFO.with(|file_info| file_info.borrow().get(file_name).unwrap_or(&(0, 0)).clone());
-        ic_cdk::println!("Chunks: {} | Total Bytes: {}", chunks, total_bytes_received);
         chunks
     }
 
@@ -284,7 +278,7 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
         let mut all_data = vec![];
 
         for chunk_num in start_chunk..(start_chunk + num_chunks) {
-            let chunk_path = format!("{}.chunk.{}", dest_path, chunk_num);
+            let chunk_path = format_chunk_path(dest_path, chunk_num);
             ic_cdk::println!("Reading from {}", chunk_path);
 
             if std::path::Path::new(&chunk_path).exists() {
@@ -293,9 +287,9 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
                 ic_cdk::println!("{} was opened successfully!", chunk_path);
                 let mut chunk_data = vec![];
                 std::io::Read::read_to_end(&mut file, &mut chunk_data)?;
+                drop(file);
                 ic_cdk::println!("{} was read successfully!", chunk_path);
                 all_data.extend_from_slice(&chunk_data);
-                drop(file);
             }
         }
         ic_cdk::println!("Finished Reading batch of temp chunks");
@@ -319,7 +313,7 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
         read_temp_chunks(file_path, 0, 1).unwrap_or(vec![]).len() as u64
     }
 
-    fn verify_latest_version(dest_path: &String, timestamp: u64) -> bool {
+    fn verify_latest_version(dest_path: &str, timestamp: u64) -> bool {
         UPLOADED_ASSETS_TIMESTAMP.with(|upload_assets_timestamp_map| {
             let mut upload_assets_timestamp_map_mut = upload_assets_timestamp_map.borrow_mut();
             let upload_assets_timestamp = match upload_assets_timestamp_map_mut.get_mut(dest_path) {
@@ -329,7 +323,7 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
 
             if timestamp > *upload_assets_timestamp {
                 // The request is from a newer upload attempt. Clean up the previous attempt.
-                upload_assets_timestamp_map_mut.insert(dest_path.clone(), timestamp);
+                upload_assets_timestamp_map_mut.insert(dest_path.to_string(), timestamp);
                 if let Err(err) = delete_temp_chunks(dest_path) {
                     // TODO error handling?
                     // These files may clutter the file system and take up space but otherwise are harmless.
@@ -349,6 +343,10 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
                 true
             }
         })
+    }
+
+    fn format_chunk_path(dest_path: &str, chunk_number: u64) -> String {
+        format!("{}.chunk.{}", dest_path, chunk_number)
     }
     }
 }
