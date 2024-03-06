@@ -95,7 +95,7 @@ export function getTests(canisterId: string): Test[] {
                         headers: [['Content-Type', 'application/json']],
                         body: JSON.stringify({
                             to: canisterAddress,
-                            amount: '.0001'
+                            value: '.0001'
                         })
                     }
                 );
@@ -108,7 +108,7 @@ export function getTests(canisterId: string): Test[] {
         },
         {
             name: 'wait for block time',
-            wait: 120_000
+            wait: 60_000
         },
         {
             name: '/address-balance canister',
@@ -137,7 +137,7 @@ export function getTests(canisterId: string): Test[] {
                         headers: [['Content-Type', 'application/json']],
                         body: JSON.stringify({
                             to: callerAddress,
-                            amount: '.000000000000000007'
+                            value: '.000000000000000007'
                         })
                     }
                 );
@@ -150,7 +150,7 @@ export function getTests(canisterId: string): Test[] {
         },
         {
             name: 'wait for block time',
-            wait: 120_000
+            wait: 60_000
         },
         {
             name: '/address-balance canister',
