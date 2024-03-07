@@ -58,9 +58,9 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
     fn write_file_by_parts(dest_path: String) {
         let bytes_per_chunk = get_first_chunk_size(&dest_path);
 
-        // TODO Before having the stable file storage hooked up 100 worked. For right now 25 seems to be working. I think we could do more but I want to get everything in place before spending a lot of time fine tuning it
+        // TODO Before having the stable file storage hooked up 100 worked. For right now 50 seems to be working. It may need to be less once we have more file writing involved
         let total_chunks = get_total_chunks(&dest_path);
-        let limit: u64 = 25 * 1024 * 1024; // The limit is somewhere between 150 and 155 before we run out of instructions.
+        let limit: u64 = 50 * 1024 * 1024; // The limit is somewhere between 150 and 155 before we run out of instructions.
         let group_size = std::cmp::min(total_chunks, limit / bytes_per_chunk as u64);
 
         let dir_path = std::path::Path::new(dest_path.as_str()).parent().unwrap();

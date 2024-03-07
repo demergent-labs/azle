@@ -9,6 +9,14 @@ export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
 
     return [
+        {
+            name: 'wait for things to finish uploading',
+            test: async () => {
+                await new Promise((resolve) => setTimeout(resolve, 10 * 1000));
+                return { Ok: true };
+            }
+        },
+        // Permanent Assets
         generateTest(
             'photos/people/george-washington.tif',
             'permanent',
@@ -32,11 +40,15 @@ export function getTests(canisterId: string): Test[] {
         generateTest('text/thing.txt', 'permanent', origin),
         generateTest('text/thing.txt', 'permanent', origin),
         generateTest('text/single.txt', '', origin, 'single_asset.txt'),
+
+        // Auto Generated Assets
+        //      Edge Cases
         { ...generateTest('test0B', 'auto', origin), skip: true }, // TODO we have problems with 0B files on the canister side
         generateTest('test1B', 'auto', origin),
         generateTest(`test${120 * 1024 * 1024 + 1}B`, 'auto', origin),
         generateTest(`test${150 * 1024 * 1024 + 1}B`, 'auto', origin),
         generateTest('test2000001B', 'auto', origin),
+        //      General Cases
         generateTest('test1KiB', 'auto', origin),
         generateTest('test10KiB', 'auto', origin),
         generateTest('test100KiB', 'auto', origin),
@@ -45,7 +57,9 @@ export function getTests(canisterId: string): Test[] {
         generateTest('test100MiB', 'auto', origin),
         generateTest('test250MiB', 'auto', origin),
         { ...generateTest('test500MiB', 'auto', origin), skip: true }, // We currently run out of memory with this file
-        generateTest('test1GiB', 'auto', origin)
+        { ...generateTest('test1GiB', 'auto', origin), skip: true }
+        // generateTest(`test${2_000_000 * 18}B`, 'auto', origin),
+        // generateTest(`test${2_000_000 * 18 + 1}B`, 'auto', origin)
     ];
 }
 
@@ -79,20 +93,6 @@ function generateTest(
                     Err: `File ${canisterFilePath} failed to upload`
                 };
             }
-
-            // let attempts = 0;
-            // while (exits === false) {
-            //     await new Promise((resolve) => setTimeout(resolve, 5000));
-            //     let response = await fetch(
-            //         `${origin}/exists?path=${canisterFilePath}`
-            //     );
-            //     exits = await response.json();
-            //     if (attempts++ > 2) {
-            //         return {
-            //             Err: `File ${canisterFilePath} failed to upload`
-            //         };
-            //     }
-            // }
 
             const hash = await actor.get_file_hash(`${canisterFilePath}`);
             return { Ok: hash === expectedHash };

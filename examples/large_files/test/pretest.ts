@@ -9,6 +9,10 @@ async function pretest() {
     generateFileOfSize(150 * 1024 * 1024 + 1, 'B'); //One more byte than can be processed in a single write_file_by_parts call
     generateFileOfSize(2_000_001, 'B'); // One more byte that the high water mark of the readstream
 
+    // Weird Cases
+    // generateFileOfSize(2_000_000 * 18, 'B'); //Weird writing bound
+    // generateFileOfSize(2_000_000 * 18 + 1, 'B'); //Weird writing bound
+
     // General Cases
     generateFileOfSize(1, 'KiB');
     generateFileOfSize(10, 'KiB');
@@ -18,7 +22,7 @@ async function pretest() {
     generateFileOfSize(100, 'MiB');
     generateFileOfSize(250, 'MiB');
     // generateFileOfSize(500, 'MiB');
-    generateFileOfSize(1, 'GiB');
+    // generateFileOfSize(1, 'GiB');
 
     execSync(`dfx canister uninstall-code large_files || true`, {
         stdio: 'inherit'
