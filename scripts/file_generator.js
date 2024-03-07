@@ -39,7 +39,7 @@ function onFinish() {
     console.log('Buffer has been written to file');
 }
 
-function onError() {
+function onError(err) {
     console.error('Error writing buffer to file:', err);
 }
 
