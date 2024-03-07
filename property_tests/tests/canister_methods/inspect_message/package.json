@@ -1,0 +1,12 @@
+{
+    "scripts": {
+        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+    },
+    "dependencies": {
+        "azle": "^0.18.5"
+    },
+    "devDependencies": {
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
+    }
+}

@@ -3,6 +3,7 @@ import { QueryMethod } from './canister_methods/query_method_arb';
 import { Test } from '../../test';
 import { UpdateMethod } from './canister_methods/update_method_arb';
 import { InitMethod } from './canister_methods/init_method_arb';
+import { InspectMessageMethod } from './canister_methods/inspect_message_method_arb';
 import { PostUpgradeMethod } from './canister_methods/post_upgrade_arb';
 import { PreUpgradeMethod } from './canister_methods/pre_upgrade_method_arb';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
@@ -23,7 +24,8 @@ export type CanisterMethod<
     | UpdateMethod
     | InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
     | PostUpgradeMethod<ParamAgentArgumentValue, ParamAgentResponseValue>
-    | PreUpgradeMethod;
+    | PreUpgradeMethod
+    | InspectMessageMethod;
 
 export type CanisterConfig<
     ParamAgentArgumentValue extends CorrespondingJSType = undefined,
@@ -31,6 +33,7 @@ export type CanisterConfig<
 > = {
     globalDeclarations?: string[];
     initMethod?: InitMethod<ParamAgentArgumentValue, ParamAgentResponseValue>;
+    inspectMessageMethod?: InspectMessageMethod;
     postUpgradeMethod?: PostUpgradeMethod<
         ParamAgentArgumentValue,
         ParamAgentResponseValue
@@ -55,6 +58,9 @@ export function CanisterArb<
             ParamAgentResponseValue
         >[] = [
             ...(config.initMethod ? [config.initMethod] : []),
+            ...(config.inspectMessageMethod
+                ? [config.inspectMessageMethod]
+                : []),
             ...(config.postUpgradeMethod ? [config.postUpgradeMethod] : []),
             ...(config.preUpgradeMethod ? [config.preUpgradeMethod] : []),
             ...(config.queryMethods ?? []),
