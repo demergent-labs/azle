@@ -141,36 +141,12 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
     }
 
     fn append_chunk_to(dest_path: &str, chunk_of_bytes: &[u8]) -> std::io::Result<()> {
-        debug(
-            format!(
-                "Preparing to write {} bytes to {}",
-                bytes_to_human_readable(chunk_of_bytes.len() as u64),
-                dest_path
-            )
-            .as_str(),
-        );
-
-        debug("Just to make sure here is another print");
-
-        let mut file = std::fs::OpenOptions::new();
-
-        debug("We made the new thing");
-
-        let file = file.write(true);
-
-        debug("We made the write thing");
-
-        let file = file.append(true);
-
-        debug("We made the append thing");
-
-        let mut file = file.open(&dest_path)?;
-
-        debug(format!("{} opened successfully for writing", dest_path).as_str());
+        let mut file = std::fs::OpenOptions::new()
+            .write(true)
+            .append(true)
+            .open(&dest_path)?;
 
         std::io::Write::write_all(&mut file, &chunk_of_bytes)?;
-
-        debug(format!("wrote all successfully to {}", dest_path).as_str());
 
         // flush the buffer to ensure all data is written immediately
         std::io::Write::flush(&mut file)?;
