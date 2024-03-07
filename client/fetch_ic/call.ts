@@ -8,9 +8,7 @@ export async function call(
     const urlAndQueryParams = `${url.pathname}${url.search}`;
 
     const body = await prepareRequestBody(init);
-    const headers = prepareRequestHeaders(init).filter(
-        ([key]) => key !== 'Authorization'
-    );
+    const headers = prepareRequestHeaders(init);
 
     if (
         init === undefined ||
@@ -27,7 +25,7 @@ export async function call(
             url: urlAndQueryParams,
             headers,
             body,
-            certificate_version: []
+            certificate_version: [2]
         });
     }
 
@@ -71,12 +69,35 @@ function getUrlString(input: RequestInfo | URL): string {
         return input.url;
     }
 
-    throw new Error(`input must be a string, URL, or Request`);
+    throw new Error(`fetchIc: input must be a string, URL, or Request`);
 }
 
 function prepareRequestHeaders(
     init: RequestInit | undefined
 ): [string, string][] {
+    // TODO check all added headers for accuracy
+    // TODO implement sec-fetch-site
+    // TODO implement sec-fetch-dest
+    // TODO implement sec-fetch-mode
+    // TODO implement referer
+    // TODO implement accept-encoding
+    const headersTuples = [
+        ...getHeadersTuples(init),
+        ['user-agent', window.navigator.userAgent] as [string, string],
+        ['cache-control', init?.cache ?? 'no-cache'] as [string, string],
+        ['accept-language', window.navigator.languages.join(',')] as [
+            string,
+            string
+        ],
+        ['accept', '*/*'] as [string, string], // TODO when should we allow the dev to override these?
+        ['host', window.location.host] as [string, string],
+        ['connection', 'keep-alive'] as [string, string]
+    ];
+
+    return headersTuples.filter(([key]) => key !== 'Authorization');
+}
+
+function getHeadersTuples(init: RequestInit | undefined): [string, string][] {
     if (init === undefined) {
         return [];
     }
@@ -153,8 +174,10 @@ async function prepareRequestBody(
     }
 
     if (init.body instanceof FormData) {
-        throw new Error(`FormData is not a supported fetchIc body type`);
+        throw new Error(
+            `fetchIc: FormData is not a supported fetchIc body type`
+        );
     }
 
-    throw new Error(`Not a supported fetchIc body type`);
+    throw new Error(`fetchIc: Not a supported fetchIc body type`);
 }

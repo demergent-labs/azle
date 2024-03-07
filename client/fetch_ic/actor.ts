@@ -24,7 +24,7 @@ export async function createActor(
                 url: IDL.Text,
                 headers: IDL.Vec(HeaderField),
                 body: IDL.Vec(IDL.Nat8),
-                certificate_version: IDL.Opt(IDL.Nat16) // TODO do we need to allow the user to set this
+                certificate_version: IDL.Opt(IDL.Nat16)
             });
 
             const HttpUpdateRequest = IDL.Record({
@@ -79,10 +79,9 @@ export async function createActor(
     );
 }
 
-function getCanisterId(input: RequestInfo | URL): string | undefined {
-    // TODO this should solve the case of using a custo domain scheme
-    if (typeof import.meta.env.VITE_ORIGIN_CANISTER_ID === 'string') {
-        return import.meta.env.VITE_ORIGIN_CANISTER_ID;
+function getCanisterId(input: RequestInfo | URL): string {
+    if (typeof import.meta.env.IC_ORIGIN_CANISTER_ID === 'string') {
+        return import.meta.env.IC_ORIGIN_CANISTER_ID;
     }
 
     if (typeof input === 'string') {
@@ -97,5 +96,7 @@ function getCanisterId(input: RequestInfo | URL): string | undefined {
         return getCanisterId(input.url);
     }
 
-    return undefined;
+    throw new Error(
+        `fetchIc: canister id could not be obtained from URL or IC_ORIGIN_CANISTER_ID environment variable`
+    );
 }

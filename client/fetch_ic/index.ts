@@ -1,9 +1,6 @@
-// TODO add to the backend and frontend x-ic-force-query and x-ic-force-update
-// TODO you might want to control queries or updates explicitly no matter the method
+// TODO document that the following will not work: cache, keepalive
+
 // TODO should we ensure that this works in Node.js as well? Or just focus on the browser?
-// TODO add the user-agent header
-// TODO add as many of the default chrome headers as possible
-// TODO use AZLE_ for environment variables
 
 import { createActor } from './actor';
 import { call } from './call';
@@ -16,7 +13,13 @@ const originalFetch = window.fetch;
 // TODO and to ensure that we really are using the correct types for fetch
 (window as any).fetch = fetchIc;
 
-// TODO RequestInit has many many things to implement
+// TODO implement credentials
+// TODO implement integrity
+// TODO implement mode
+// TODO implement redirect
+// TODO implement referrer
+// TODO implement referrerPolicy
+// TODO implement signal
 export async function fetchIc(
     input: RequestInfo | URL,
     init?: RequestInit | undefined
