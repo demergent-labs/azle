@@ -117,13 +117,6 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
 
         let delay = core::time::Duration::new(0, 0);
         if start_chunk + group_size >= total_chunk_count {
-            ic_cdk::println!(
-                "{} + {} = {} >= {}",
-                start_chunk,
-                group_size,
-                start_chunk + group_size,
-                total_chunk_count
-            );
             ic_cdk::println!("Finished writing to {}", dest_path);
             if let Err(err) = delete_temp_chunks(&dest_path) {
                 // TODO error handling?

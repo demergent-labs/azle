@@ -35,7 +35,11 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
         }
 
         fn hash_file_by_parts(path: String, position: u64) {
-            ic_cdk::println!("Hash file starting at: {}", bytes_to_human_readable(position));
+            ic_cdk::println!(
+                "Hash {} starting at: {}",
+                path,
+                bytes_to_human_readable(position)
+            );
             let mut file = std::fs::File::open(&path).unwrap();
 
             std::io::Seek::seek(&mut file, std::io::SeekFrom::Start(position)).unwrap();
