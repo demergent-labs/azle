@@ -1,4 +1,5 @@
 var fs = require('fs');
+var path = require('path');
 
 // Function to create a file of a specific size in bytes
 async function createFileOfSize(filename, sizeInBytes, random) {
@@ -46,7 +47,7 @@ function onError(err) {
 
 async function createDirectories(filePath) {
     const dirname = path.dirname(filePath); // Get the directory path
-    await fs.mkdir(dirname, { recursive: true }); // Create directories recursively
+    await fs.promises.mkdir(dirname, { recursive: true }); // Create directories recursively
 }
 
 // Parse size from string with optional unit suffix (KB, MB, GB)
