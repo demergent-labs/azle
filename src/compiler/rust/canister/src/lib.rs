@@ -62,6 +62,7 @@ impl Storable for AzleStableBTreeMapValue {
     const BOUND: Bound = Bound::Unbounded;
 }
 
+// TODO remove this as soon as we have stable chunks working
 type Bytes = Vec<u8>;
 type Hash = Vec<u8>;
 
@@ -89,6 +90,9 @@ thread_local! {
 
     static ASSETS_HASHES: RefCell<HashMap<String, Hash>> = RefCell::new(HashMap::new());
 
+    // TODO get rid of this as soon as we have stable chunks working
+    static UPLOADED_ASSETS: RefCell<BTreeMap<String, BTreeMap<u64, Bytes>>> =
+        RefCell::new(BTreeMap::new());
 }
 
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]

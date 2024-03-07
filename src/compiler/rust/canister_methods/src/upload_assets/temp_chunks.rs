@@ -2,12 +2,17 @@ use quote::quote;
 
 pub fn get_temp_chunk_utils() -> proc_macro2::TokenStream {
     quote! {
+    const USE_HEAP: bool = true;
     // Adds the given asset_bytes to the dest_path asset at the chunk number position. Returns the new total length of dest_path asset after the addition
     pub fn write_temp_chunk(
         dest_path: &str,
         asset_bytes: Vec<u8>,
         chunk_number: u64,
     ) -> std::io::Result<u64> {
+        if USE_HEAP {
+            let total_bytes = add_asset_data(dest_path, asset_bytes, chunk_number);
+            return Ok(total_bytes.try_into().unwrap());
+        }
         let file_path = format_chunk_path(dest_path, chunk_number);
         let mut options = std::fs::OpenOptions::new();
         options.create(true).write(true);
@@ -40,6 +45,13 @@ pub fn get_temp_chunk_utils() -> proc_macro2::TokenStream {
         start_chunk: u64,
         num_chunks: u64,
     ) -> std::io::Result<Vec<u8>> {
+        if USE_HEAP {
+            return Ok(get_asset_data(
+                dest_path,
+                start_chunk.try_into().unwrap(),
+                num_chunks.try_into().unwrap(),
+            ));
+        }
         let mut all_data = vec![];
 
         for chunk_num in start_chunk..(start_chunk + num_chunks) {
@@ -57,6 +69,10 @@ pub fn get_temp_chunk_utils() -> proc_macro2::TokenStream {
     }
 
     pub fn delete_temp_chunks(file_name: &str) -> std::io::Result<()> {
+        if USE_HEAP {
+            clear_asset_data(file_name);
+            return Ok(());
+        }
         let total_chunks = get_total_chunks(file_name);
 
         for i in 0..total_chunks {
@@ -69,6 +85,9 @@ pub fn get_temp_chunk_utils() -> proc_macro2::TokenStream {
     }
 
     pub fn get_total_chunks(file_name: &str) -> u64 {
+        if USE_HEAP {
+            return get_asset_total_chunks(file_name);
+        }
         let (chunks, _) =
             FILE_INFO.with(|file_info| file_info.borrow().get(file_name).unwrap_or(&(0, 0)).clone());
         chunks
@@ -79,7 +98,14 @@ pub fn get_temp_chunk_utils() -> proc_macro2::TokenStream {
     }
 
     // TODO delete this when done troubleshooting
-    pub fn test_read_temp_chunk(dest_path: &str, chunk_number: u64, verbose: bool) -> std::io::Result<()> {
+    pub fn test_read_temp_chunk(
+        dest_path: &str,
+        chunk_number: u64,
+        verbose: bool,
+    ) -> std::io::Result<()> {
+        if USE_HEAP {
+            return Ok(());
+        }
         let chunk_path = format_chunk_path(dest_path, chunk_number);
 
         let exists = std::path::Path::new(&chunk_path).exists();
@@ -109,6 +135,61 @@ pub fn get_temp_chunk_utils() -> proc_macro2::TokenStream {
         drop(file);
 
         Ok(())
+    }
+
+    // TODO remove this as soon as Stable chunks works
+    fn get_asset_total_chunks(dest_path: &str) -> u64 {
+        UPLOADED_ASSETS
+            .with(|uploaded_assets| uploaded_assets.borrow().get(dest_path).unwrap().len())
+            .try_into()
+            .unwrap()
+    }
+
+    // TODO remove this as soon as Stable chunks works
+    fn add_asset_data(dest_path: &str, asset_bytes: Vec<u8>, chunk_number: u64) -> usize {
+        UPLOADED_ASSETS.with(|uploaded_assets| {
+            let mut uploaded_assets_mut = uploaded_assets.borrow_mut();
+            if let Some(bytes_map) = uploaded_assets_mut.get_mut(dest_path) {
+                // If the key exists, insert the value into the inner HashMap
+                bytes_map.insert(chunk_number, asset_bytes);
+                bytes_map.values().fold(0, |acc, bytes| acc + bytes.len())
+            } else {
+                // If the key doesn't exist, initialize a new inner BTreeMap and insert the value
+                let mut new_bytes_map = std::collections::BTreeMap::new();
+                let len = asset_bytes.len();
+                new_bytes_map.insert(chunk_number, asset_bytes);
+                uploaded_assets_mut.insert(dest_path.to_string(), new_bytes_map);
+                ic_cdk::println!("First chunk processed for {}", dest_path);
+                len
+            }
+        })
+    }
+
+    // TODO remove this as soon as Stable chunks works
+    fn get_asset_data(dest_path: &str, start_chunk: usize, group_size: usize) -> Vec<u8> {
+        UPLOADED_ASSETS.with(|uploaded_assets| {
+            let chunk_of_bytes: Vec<u8> = uploaded_assets
+                .borrow()
+                .get(&dest_path.to_string())
+                .unwrap()
+                .into_iter()
+                .skip(start_chunk)
+                .take(group_size)
+                .flat_map(|(_, bytes)| bytes.clone())
+                .collect();
+            chunk_of_bytes
+        })
+    }
+
+    // TODO remove this as soon as Stable chunks works
+    fn clear_asset_data(dest_path: &str) {
+        UPLOADED_ASSETS.with(|upload_assets| {
+            let mut upload_assets_mut = upload_assets.borrow_mut();
+            match upload_assets_mut.get_mut(dest_path) {
+                Some(uploaded_asset) => uploaded_asset.clear(),
+                None => (),
+            }
+        });
     }
 
     }

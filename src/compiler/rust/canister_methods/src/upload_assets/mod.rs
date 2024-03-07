@@ -62,7 +62,6 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
         let total_chunks = get_total_chunks(&dest_path);
         let limit: u64 = 25 * 1024 * 1024; // The limit is somewhere between 150 and 155 before we run out of instructions.
         let group_size = std::cmp::min(total_chunks, limit / bytes_per_chunk as u64);
-        let group_size = 1;
 
         let dir_path = std::path::Path::new(dest_path.as_str()).parent().unwrap();
 
