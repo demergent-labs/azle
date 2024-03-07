@@ -1,7 +1,12 @@
-import { Actor, Identity } from '@dfinity/agent';
+import { Actor, ActorMethod, Identity } from '@dfinity/agent';
+import type { Principal } from '@dfinity/principal';
 
 import { getAgent } from './agent';
 
+// TODO make sure the developer can access this if they
+// TODO for example are not using a web client and want to use
+// TODO the actor directly
+// TODO please figure out types for this
 export async function createActor(
     identity: Identity,
     input: RequestInfo | URL
@@ -15,7 +20,7 @@ export async function createActor(
         );
     }
 
-    return Actor.createActor(
+    return Actor.createActor<_SERVICE>(
         ({ IDL }) => {
             const HeaderField = IDL.Tuple(IDL.Text, IDL.Text);
 
@@ -79,6 +84,8 @@ export async function createActor(
     );
 }
 
+// TODO it would be pretty cool to get the canister id from DNS records
+// TODO seems we would have to call some service that can query DNS
 function getCanisterId(input: RequestInfo | URL): string {
     if (typeof import.meta.env.IC_ORIGIN_CANISTER_ID === 'string') {
         return import.meta.env.IC_ORIGIN_CANISTER_ID;
@@ -99,4 +106,46 @@ function getCanisterId(input: RequestInfo | URL): string {
     throw new Error(
         `fetchIc: canister id could not be obtained from URL or IC_ORIGIN_CANISTER_ID environment variable`
     );
+}
+
+export interface _SERVICE {
+    http_request: ActorMethod<
+        [
+            {
+                url: string;
+                method: string;
+                body: Uint8Array | number[];
+                headers: Array<[string, string]>;
+                certificate_version: [] | [number];
+            }
+        ],
+        {
+            body: Uint8Array | number[];
+            headers: Array<[string, string]>;
+            upgrade: [] | [boolean];
+            streaming_strategy:
+                | []
+                | [{ Callback: { token: {}; callback: [Principal, string] } }];
+            status_code: number;
+        }
+    >;
+    http_request_update: ActorMethod<
+        [
+            {
+                url: string;
+                method: string;
+                body: Uint8Array | number[];
+                headers: Array<[string, string]>;
+            }
+        ],
+        {
+            body: Uint8Array | number[];
+            headers: Array<[string, string]>;
+            upgrade: [] | [boolean];
+            streaming_strategy:
+                | []
+                | [{ Callback: { token: {}; callback: [Principal, string] } }];
+            status_code: number;
+        }
+    >;
 }

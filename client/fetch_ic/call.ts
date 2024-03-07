@@ -1,7 +1,9 @@
+import { createActor } from './actor';
+
 export async function call(
     input: RequestInfo | URL,
     init: RequestInit | undefined,
-    actor: any // TODO get these types
+    actor: Awaited<ReturnType<typeof createActor>>
 ) {
     const urlString = getUrlString(input);
     const url = new URL(urlString);
@@ -46,8 +48,11 @@ export async function call(
             headers: [
                 ...headers,
                 ...(body.length !== 0
-                    ? [['Content-Length', body.length.toString()]]
-                    : [])
+                    ? ([['Content-Length', body.length.toString()]] as [
+                          string,
+                          string
+                      ][])
+                    : ([] as [string, string][]))
             ],
             body
         });

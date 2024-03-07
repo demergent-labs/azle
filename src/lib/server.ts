@@ -97,6 +97,14 @@ export const HttpRequest = Record({
 });
 export type HttpRequest = typeof HttpRequest.tsType;
 
+export const HttpUpdateRequest = Record({
+    method: text,
+    url: text,
+    headers: Vec(HeaderField),
+    body: blob
+});
+export type HttpUpdateRequest = typeof HttpUpdateRequest.tsType;
+
 let server: NodeServer;
 
 export function Server(serverInit: () => NodeServer | Promise<NodeServer>) {
@@ -118,7 +126,7 @@ export function Server(serverInit: () => NodeServer | Promise<NodeServer>) {
             }
         ),
         http_request_update: update(
-            [HttpRequest],
+            [HttpUpdateRequest],
             Manual(HttpResponse()),
             async (httpRequest) => {
                 await httpHandler(httpRequest, false);
@@ -131,7 +139,7 @@ export function Server(serverInit: () => NodeServer | Promise<NodeServer>) {
 }
 
 export async function httpHandler(
-    httpRequest: typeof HttpRequest.tsType,
+    httpRequest: HttpRequest | HttpUpdateRequest,
     query: boolean
 ) {
     if (

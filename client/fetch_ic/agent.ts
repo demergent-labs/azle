@@ -5,7 +5,7 @@ export async function getAgent(identity: Identity): Promise<Agent> {
         window.location.host.includes(`localhost:`) ||
         window.location.host.includes(`127.0.0.1:`);
 
-    const host = getHttpAgentHost(runningLocally);
+    const host = runningLocally === false ? 'http://icp-api.io' : undefined;
 
     const agent = new HttpAgent({
         host,
@@ -17,12 +17,4 @@ export async function getAgent(identity: Identity): Promise<Agent> {
     }
 
     return agent;
-}
-
-function getHttpAgentHost(runningLocally: boolean): string {
-    if (runningLocally === true) {
-        return window.location.origin;
-    }
-
-    return `http://icp-api.io`;
 }
