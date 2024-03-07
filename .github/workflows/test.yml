@@ -273,6 +273,9 @@ jobs:
             - name: Check Directory Permissions (Optional)
               working-directory: ${{ matrix.example_directories }}
               run: ls -l .
+            - name: Grant Write Permissions Recursively
+              working-directory: ${{ matrix.example_directories }}
+              run: chmod -R +w .
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
