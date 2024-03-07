@@ -135,11 +135,18 @@ export async function httpHandler(
     query: boolean
 ) {
     if (
+        query === true &&
+        httpRequest.headers.find(
+            ([key, value]) => key === 'x-ic-force-query' && value === 'true'
+        ) === undefined &&
         (httpRequest.method === 'POST' ||
             httpRequest.method === 'PUT' ||
             httpRequest.method === 'PATCH' ||
-            httpRequest.method === 'DELETE') &&
-        query === true
+            httpRequest.method === 'DELETE' ||
+            httpRequest.headers.find(
+                ([key, value]) =>
+                    key === 'x-ic-force-update' && value === 'true'
+            ) !== undefined)
     ) {
         ic.reply(
             {

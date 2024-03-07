@@ -17,7 +17,10 @@ export async function call(
         init.method === undefined ||
         init.method === 'GET' ||
         init.method === 'HEAD' ||
-        init.method === 'OPTIONS'
+        init.method === 'OPTIONS' ||
+        headers.find(
+            ([key, value]) => key === 'x-ic-force-query' && value === 'true'
+        ) !== undefined
     ) {
         return await actor.http_request({
             method: init?.method ?? 'GET',
@@ -33,7 +36,11 @@ export async function call(
         (init.method === 'POST' ||
             init.method === 'PUT' ||
             init.method === 'PATCH' ||
-            init.method === 'DELETE')
+            init.method === 'DELETE' ||
+            headers.find(
+                ([key, value]) =>
+                    key === 'x-ic-force-update' && value === 'true'
+            ) !== undefined)
     ) {
         return await actor.http_request_update({
             method: init.method,
