@@ -1,7 +1,7 @@
 export async function call(
     input: RequestInfo | URL,
     init: RequestInit | undefined,
-    actor: any
+    actor: any // TODO get these types
 ) {
     const urlString = getUrlString(input);
     const url = new URL(urlString);

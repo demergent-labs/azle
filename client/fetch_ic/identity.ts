@@ -12,7 +12,14 @@ export function getIdentity(
         return undefined;
     }
 
-    // TODO let's do an explicit check to make sure we have an identity and not some other object
+    if (
+        authorizationHeaderValue.getPrincipal === undefined ||
+        authorizationHeaderValue.transformRequest === undefined
+    ) {
+        throw new Error(
+            'fetchIc: Authorization header value is not an instance of Identity'
+        );
+    }
 
     return authorizationHeaderValue;
 }
