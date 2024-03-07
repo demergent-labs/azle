@@ -1,5 +1,4 @@
-import { ic, serialize } from 'azle';
-import { ethers } from 'ethers';
+import { serialize } from 'azle';
 
 export async function ecdsaPublicKey(
     derivationPath: Uint8Array[]

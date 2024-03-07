@@ -9,12 +9,15 @@ export const chainId = 11_155_111; // TODO hard-coded to Sepolia for the moment
 export const RpcSource = {
     EthSepolia: [
         [
+            {
+                PublicNode: null
+            }
             // {
             //     Alchemy: null
             // },
-            {
-                Ankr: null
-            }
+            // {
+            //     Ankr: null
+            // }
         ]
     ]
 };

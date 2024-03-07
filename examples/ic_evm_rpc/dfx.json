@@ -23,6 +23,7 @@
         },
         "evm_rpc": {
             "specified_id": "be2us-64aaa-aaaaa-qaabq-cai",
+            "init_arg": "(record { nodesInSubnet = 28 })",
             "type": "custom",
             "candid": "https://github.com/internet-computer-protocol/ic-eth-rpc/releases/latest/download/evm_rpc.did",
             "wasm": "https://github.com/internet-computer-protocol/ic-eth-rpc/releases/latest/download/evm_rpc_dev.wasm.gz",

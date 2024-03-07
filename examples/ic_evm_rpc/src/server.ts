@@ -1,19 +1,16 @@
-// TODO it would be really nice to have the canister's Ethereum address
-// TODO be the same each time, but on dfx --clean the address changes
-// TODO for tests we can have a sepolia address locally
-// TODO that has a lot of ETH in it for tests on the testnets
-
 import { ic, jsonStringify, Server } from 'azle';
-import express, { Request } from 'express';
 import { ethers } from 'ethers';
+import express, { Request } from 'express';
 
 import { canisterAddress, chainId } from './globals';
-import { ethGasPrice } from './json_rpc_methods/eth_gas_price';
-import { ethGetBalance } from './json_rpc_methods/eth_getBalance';
-import { ethGetTransactionCount } from './json_rpc_methods/eth_getTransactionCount';
-import { ethSendRawTransaction } from './json_rpc_methods/eth_sendRawTransaction';
+import { ethFeeHistory } from './json_rpc_methods/eth_fee_history';
+import { ethGetBalance } from './json_rpc_methods/eth_get_balance';
+import { ethGetTransactionCount } from './json_rpc_methods/eth_get_transaction_count';
+import { ethMaxPriorityFeePerGas } from './json_rpc_methods/eth_max_priority_fee_per_gas';
+import { ethSendRawTransaction } from './json_rpc_methods/eth_send_raw_transaction';
 import { ecdsaPublicKey } from './tecdsa/ecdsa_public_key';
 import { signWithEcdsa } from './tecdsa/sign_with_ecdsa';
+import { calculateRsvForTEcdsa } from './tecdsa/calculate_rsv_for_tecdsa';
 
 export default Server(() => {
     const app = express();
@@ -25,7 +22,7 @@ export default Server(() => {
             ethers.hexlify(await ecdsaPublicKey([ic.caller().toUint8Array()]))
         );
 
-        res.json(address);
+        res.send(address);
     });
 
     app.post('/canister-address', async (_req, res) => {
@@ -35,7 +32,7 @@ export default Server(() => {
             );
         }
 
-        res.json(canisterAddress.value);
+        res.send(canisterAddress.value);
     });
 
     app.post(
@@ -43,27 +40,32 @@ export default Server(() => {
         async (req: Request<any, any, { address: string }>, res) => {
             const balance = await ethGetBalance(req.body.address);
 
-            res.json(jsonStringify(balance));
+            res.send(jsonStringify(balance));
         }
     );
 
     app.post(
         '/transfer-from-sepolia-faucet-wallet',
-        async (req: Request<any, any, { to: string; amount: string }>, res) => {
+        async (req: Request<any, any, { to: string; value: string }>, res) => {
             // address: 0x9Ac70EE21bE697173b74aF64399d850038697FD3
             const wallet = new ethers.Wallet(
                 '0x6f784763681eb712dc16714b8ade23f6c982a5872d054059dd64d0ec4e52be33'
             );
 
             const to = req.body.to;
-            const value = ethers.parseEther(req.body.amount);
-            const gasPrice = await ethGasPrice();
-            const gasLimit = 21_000;
-            const nonce = Number(await ethGetTransactionCount(wallet.address));
+            const value = ethers.parseEther(req.body.value);
+            const maxPriorityFeePerGas = await ethMaxPriorityFeePerGas();
+            const baseFeePerGas = BigInt(
+                (await ethFeeHistory()).Consistent?.Ok[0].baseFeePerGas[0]
+            );
+            const maxFeePerGas = baseFeePerGas * 2n + maxPriorityFeePerGas;
+            const gasLimit = 21_000n;
+            const nonce = await ethGetTransactionCount(wallet.address);
             const rawTransaction = await wallet.signTransaction({
                 to,
                 value,
-                gasPrice,
+                maxPriorityFeePerGas,
+                maxFeePerGas,
                 gasLimit,
                 nonce,
                 chainId
@@ -81,7 +83,7 @@ export default Server(() => {
 
     app.post(
         '/transfer-from-canister',
-        async (req: Request<any, any, { to: string; amount: string }>, res) => {
+        async (req: Request<any, any, { to: string; value: string }>, res) => {
             if (canisterAddress.value === null) {
                 canisterAddress.value = ethers.computeAddress(
                     ethers.hexlify(
@@ -91,19 +93,24 @@ export default Server(() => {
             }
 
             const to = req.body.to;
-            const value = ethers.parseEther(req.body.amount);
-            const gasPrice = await ethGasPrice();
-            const gasLimit = 21_000;
+            const value = ethers.parseEther(req.body.value);
+            const maxPriorityFeePerGas = await ethMaxPriorityFeePerGas();
+            const baseFeePerGas = BigInt(
+                (await ethFeeHistory()).Consistent?.Ok[0].baseFeePerGas[0]
+            );
+            const maxFeePerGas = baseFeePerGas * 2n + maxPriorityFeePerGas;
+            const gasLimit = 21_000n;
             const nonce = await ethGetTransactionCount(canisterAddress.value);
 
-            let tx = new ethers.Transaction();
-
-            tx.to = to;
-            tx.value = value;
-            tx.gasPrice = gasPrice;
-            tx.gasLimit = gasLimit;
-            tx.nonce = nonce;
-            tx.chainId = chainId;
+            let tx = ethers.Transaction.from({
+                to,
+                value,
+                maxPriorityFeePerGas,
+                maxFeePerGas,
+                gasLimit,
+                nonce,
+                chainId
+            });
 
             const unsignedSerializedTx = tx.unsignedSerialized;
             const unsignedSerializedTxHash =
@@ -114,9 +121,11 @@ export default Server(() => {
                 ethers.getBytes(unsignedSerializedTxHash)
             );
 
-            const r = ethers.hexlify(signedSerializedTxHash.slice(0, 32));
-            const s = ethers.hexlify(signedSerializedTxHash.slice(32, 64));
-            const v = 27; // TODO this is most likely not correct but isn't strictly required
+            const { r, s, v } = calculateRsvForTEcdsa(
+                canisterAddress.value,
+                unsignedSerializedTxHash,
+                signedSerializedTxHash
+            );
 
             tx.signature = {
                 r,
@@ -126,11 +135,7 @@ export default Server(() => {
 
             const rawTransaction = tx.serialized;
 
-            // TODO get the result and add error handling
-            // TODO to send a transaction maybe we should only talk to one provider?
             const result = await ethSendRawTransaction(rawTransaction);
-
-            console.log('result', result);
 
             if (result.Consistent?.Ok?.Ok === null) {
                 res.send('transaction sent');

@@ -9,14 +9,7 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(
-        `dfx deploy --specified-id be2us-64aaa-aaaaa-qaabq-cai evm_rpc --argument '(record { nodesInSubnet = 28 })'`,
-        {
-            stdio: 'inherit'
-        }
-    );
-
-    execSync(`dfx deploy server`, {
+    execSync(`dfx deploy`, {
         stdio: 'inherit'
     });
 }
