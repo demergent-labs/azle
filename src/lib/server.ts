@@ -25,6 +25,7 @@ import { ServerResponse, Server as NodeServer } from 'http';
 import { HttpConn } from 'http';
 // @ts-ignore
 import { IncomingMessageForServer } from 'http';
+import { CanisterOptions } from './candid/types/reference/service/canister_function';
 
 const httpMessageParser = require('http-message-parser');
 
@@ -105,36 +106,60 @@ export type HttpResponse<Token> = {
     streaming_strategy: Opt<StreamingStrategy<Token>>;
 };
 
-let server: NodeServer;
+let nodeServer: NodeServer | undefined = undefined;
 
-export function Server(serverInit: () => NodeServer | Promise<NodeServer>) {
+type ServerCallback = () => NodeServer | Promise<NodeServer>;
+
+export function serverInit(serverCallback: ServerCallback) {
+    return init([], async () => {
+        nodeServer = await serverCallback();
+    });
+}
+
+export function serverPostUpgrade(serverCallback: ServerCallback) {
+    return postUpgrade([], async () => {
+        nodeServer = await serverCallback();
+    });
+}
+
+export const serverHttpRequest = query(
+    [HttpRequest],
+    Manual(HttpResponse()),
+    async (httpRequest) => {
+        await httpHandler(httpRequest, true);
+    },
+    {
+        manual: true
+    }
+);
+
+export const serverHttpRequestUpdate = update(
+    [HttpUpdateRequest],
+    Manual(HttpResponse()),
+    async (httpRequest) => {
+        await httpHandler(httpRequest, false);
+    },
+    {
+        manual: true
+    }
+);
+
+export function serverCanisterMethods(serverCallback: ServerCallback) {
+    return {
+        init: serverInit(serverCallback),
+        postUpgrade: serverPostUpgrade(serverCallback),
+        http_request: serverHttpRequest,
+        http_request_update: serverHttpRequestUpdate
+    };
+}
+
+export function Server<T extends CanisterOptions>(
+    serverCallback: ServerCallback,
+    canisterOptions?: T
+) {
     return Canister({
-        init: init([], async () => {
-            server = await serverInit();
-        }),
-        postUpgrade: postUpgrade([], async () => {
-            server = await serverInit();
-        }),
-        http_request: query(
-            [HttpRequest],
-            Manual(HttpResponse()),
-            async (httpRequest) => {
-                await httpHandler(httpRequest, true);
-            },
-            {
-                manual: true
-            }
-        ),
-        http_request_update: update(
-            [HttpUpdateRequest],
-            Manual(HttpResponse()),
-            async (httpRequest) => {
-                await httpHandler(httpRequest, false);
-            },
-            {
-                manual: true
-            }
-        )
+        ...serverCanisterMethods(serverCallback),
+        ...canisterOptions
     });
 }
 
@@ -142,6 +167,10 @@ export async function httpHandler(
     httpRequest: HttpRequest | HttpUpdateRequest,
     query: boolean
 ) {
+    if (nodeServer === undefined) {
+        throw new Error(`The server was not initialized`);
+    }
+
     if (
         query === true &&
         httpRequest.headers.find(
@@ -288,7 +317,7 @@ export async function httpHandler(
 
     azleSocket.res = res;
 
-    server.emit('request', req, res);
+    nodeServer.emit('request', req, res);
 }
 
 // TODO I think this is correct but it is expensive
@@ -327,4 +356,8 @@ function processChunkedBody(buffer: Buffer): Buffer {
     }
 
     return result;
+}
+
+export function setNodeServer(newNodeServer: NodeServer) {
+    nodeServer = newNodeServer;
 }
