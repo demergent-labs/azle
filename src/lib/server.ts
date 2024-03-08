@@ -28,7 +28,27 @@ import { IncomingMessageForServer } from 'http';
 
 const httpMessageParser = require('http-message-parser');
 
-export const DefaultToken = Record({});
+export type HeaderField = [text, text];
+export const HeaderField = Tuple(text, text);
+
+export const HttpRequest = Record({
+    method: text,
+    url: text,
+    headers: Vec(HeaderField),
+    body: blob,
+    certificate_version: Opt(nat16)
+});
+export type HttpRequest = typeof HttpRequest.tsType;
+
+export const HttpUpdateRequest = Record({
+    method: text,
+    url: text,
+    headers: Vec(HeaderField),
+    body: blob
+});
+export type HttpUpdateRequest = typeof HttpUpdateRequest.tsType;
+
+export const DefaultToken = blob;
 export function StreamingCallbackHttpResponse<Token extends CandidType>(
     token: Token
 ) {
@@ -68,16 +88,13 @@ export type StreamingStrategy<Token> = Variant<{
     Callback: CallbackStrategy<Token>;
 }>;
 
-export type HeaderField = [text, text];
-export const HeaderField = Tuple(text, text);
-
 export function HttpResponse<Token extends CandidType>(token?: Token) {
     return Record({
         status_code: nat16,
         headers: Vec(HeaderField),
         body: blob,
-        streaming_strategy: Opt(StreamingStrategy(token ?? DefaultToken)),
-        upgrade: Opt(bool)
+        upgrade: Opt(bool),
+        streaming_strategy: Opt(StreamingStrategy(token ?? DefaultToken))
     });
 }
 export type HttpResponse<Token> = {
@@ -87,23 +104,6 @@ export type HttpResponse<Token> = {
     upgrade: Opt<boolean>;
     streaming_strategy: Opt<StreamingStrategy<Token>>;
 };
-
-export const HttpRequest = Record({
-    method: text,
-    url: text,
-    headers: Vec(HeaderField),
-    body: blob,
-    certificate_version: Opt(nat16)
-});
-export type HttpRequest = typeof HttpRequest.tsType;
-
-export const HttpUpdateRequest = Record({
-    method: text,
-    url: text,
-    headers: Vec(HeaderField),
-    body: blob
-});
-export type HttpUpdateRequest = typeof HttpUpdateRequest.tsType;
 
 let server: NodeServer;
 
