@@ -82,24 +82,8 @@ function getUrlString(input: RequestInfo | URL): string {
 function prepareRequestHeaders(
     init: RequestInit | undefined
 ): [string, string][] {
-    // TODO check all added headers for accuracy
-    // TODO implement sec-fetch-site
-    // TODO implement sec-fetch-dest
-    // TODO implement sec-fetch-mode
-    // TODO implement referer
-    // TODO implement accept-encoding
-    const headersTuples = [
-        ...getHeadersTuples(init),
-        ['user-agent', window.navigator.userAgent] as [string, string],
-        ['cache-control', init?.cache ?? 'no-cache'] as [string, string],
-        ['accept-language', window.navigator.languages.join(',')] as [
-            string,
-            string
-        ],
-        ['accept', '*/*'] as [string, string], // TODO when should we allow the dev to override these?
-        ['host', window.location.host] as [string, string],
-        ['connection', 'keep-alive'] as [string, string]
-    ];
+    // TODO should we try to add in the default headers that browsers or Node.js would add?
+    const headersTuples = getHeadersTuples(init);
 
     return headersTuples.filter(([key]) => key !== 'Authorization');
 }

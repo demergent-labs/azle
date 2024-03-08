@@ -13,6 +13,7 @@ export function getIdentity(
     }
 
     if (
+        authorizationHeaderValue === null ||
         authorizationHeaderValue.getPrincipal === undefined ||
         authorizationHeaderValue.transformRequest === undefined
     ) {

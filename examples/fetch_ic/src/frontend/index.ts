@@ -1,6 +1,6 @@
 import { Identity } from '@dfinity/agent';
 import { AuthClient } from '@dfinity/auth-client';
-import { createActor, toJwt } from 'azle/http_client';
+import { toJwt } from 'azle/http_client';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 

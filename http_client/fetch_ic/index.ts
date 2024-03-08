@@ -13,13 +13,8 @@ const originalFetch = globalThis.fetch;
 // TODO and to ensure that we really are using the correct types for fetch
 (globalThis as any).fetch = fetchIc;
 
-// TODO implement credentials
-// TODO implement integrity
-// TODO implement mode
-// TODO implement redirect
-// TODO implement referrer
-// TODO implement referrerPolicy
-// TODO implement signal
+// TODO input can be a request, which acts just like init...we have not accounted for that
+// TODO it seems very uncommon to do that though, for now we won't implement it
 export async function fetchIc(
     input: RequestInfo | URL,
     init?: RequestInit | undefined
@@ -29,6 +24,8 @@ export async function fetchIc(
     if (identity === undefined) {
         return await originalFetch(input, init);
     }
+
+    logWarnings(init);
 
     const canisterId = getCanisterId(input);
     const host = getHost(input);
@@ -44,3 +41,51 @@ export { createActor } from './actor';
 export { createAgent } from './agent';
 export { getCanisterId };
 export { getHost } from './host';
+
+function logWarnings(init?: RequestInit | undefined) {
+    if (init === undefined) {
+        return;
+    }
+
+    if (init.cache !== undefined) {
+        logWarning(`cache`);
+    }
+
+    if (init.credentials !== undefined) {
+        logWarning(`credentials`);
+    }
+
+    if (init.integrity !== undefined) {
+        logWarning(`integrity`);
+    }
+
+    if (init.keepalive !== undefined) {
+        logWarning(`keepalive`);
+    }
+
+    if (init.mode !== undefined) {
+        logWarning(`mode`);
+    }
+
+    if (init.redirect !== undefined) {
+        logWarning(`redirect`);
+    }
+
+    if (init.referrer !== undefined) {
+        logWarning(`referrer`);
+    }
+
+    if (init.referrerPolicy !== undefined) {
+        logWarning(`referrerPolicy`);
+    }
+
+    if (init.signal !== undefined) {
+        logWarning(`signal`);
+    }
+}
+
+function logWarning(method: string) {
+    console.warn(
+        `fetchIc: init.${method} has no effect when using an identity as the Authorization header`
+    );
+}
