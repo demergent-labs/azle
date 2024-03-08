@@ -12,6 +12,7 @@ import {
 } from './utils';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { JSCanisterConfig } from './utils/types';
+import { getCanisterId } from '../../test';
 
 export async function getNamesBeforeCli() {
     const stdioType = getStdIoType();
@@ -81,9 +82,7 @@ export function getNamesAfterCli() {
 
     const rustStagingWasmPath = join(canisterPath, `${canisterName}.wasm`);
 
-    const canisterId = execSync(`dfx canister id ${canisterName}`)
-        .toString()
-        .trim();
+    const canisterId = getCanisterId(canisterName);
 
     const reloadedJsPath = join(
         '.azle',

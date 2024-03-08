@@ -177,9 +177,13 @@ async function createUploadAssetActor(
     canisterId: string,
     replicaWebServerPort: string
 ): Promise<ActorSubclass> {
-    //TODO This will break on mainnet
+    const host =
+        process.env.DFX_NETWORK === 'ic'
+            ? `https://icp-api.io`
+            : `http://127.0.0.1:${replicaWebServerPort}`;
+
     const agent = new HttpAgent({
-        host: `http://127.0.0.1:${replicaWebServerPort}`
+        host
     });
 
     if (process.env.DFX_NETWORK !== 'ic') {
