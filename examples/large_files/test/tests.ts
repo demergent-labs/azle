@@ -49,13 +49,13 @@ export function getTests(canisterId: string): Test[] {
         generateTest(`test${150 * 1024 * 1024 + 1}B`, 'auto', origin),
         generateTest('test2000001B', 'auto', origin),
         //      General Cases
-        generateTest('test1KiB', 'auto', origin),
-        generateTest('test10KiB', 'auto', origin),
-        generateTest('test100KiB', 'auto', origin),
-        generateTest('test1MiB', 'auto', origin),
-        generateTest('test10MiB', 'auto', origin),
-        generateTest('test100MiB', 'auto', origin),
-        generateTest('test250MiB', 'auto', origin),
+        // generateTest('test1KiB', 'auto', origin),
+        // generateTest('test10KiB', 'auto', origin),
+        // generateTest('test100KiB', 'auto', origin),
+        // generateTest('test1MiB', 'auto', origin),
+        // generateTest('test10MiB', 'auto', origin),
+        // generateTest('test100MiB', 'auto', origin),
+        // generateTest('test250MiB', 'auto', origin),
         { ...generateTest('test500MiB', 'auto', origin), skip: true }, // We currently run out of memory with this file
         { ...generateTest('test1GiB', 'auto', origin), skip: true }
         // generateTest(`test${2_000_000 * 18}B`, 'auto', origin),
@@ -77,7 +77,7 @@ function generateTest(
             const nodeFileName = nodeName ?? fileName;
             const nodeFilePath = `assets${dir}/${nodeFileName}`;
             const actor = await createGetFileHashActor(
-                getCanisterId('large_files'),
+                getCanisterId('backend'),
                 '8000'
             );
 

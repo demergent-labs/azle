@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, createReadStream } from 'fs';
 import { DfxJson } from '../utils/types';
 import { getCanisterId } from '../../../test';
 import { readdir, stat, open } from 'fs/promises';
@@ -107,8 +107,28 @@ async function uploadAsset(
     const file = await open(srcPath, 'r');
     const stats = await file.stat();
     const size = stats.size;
-    let position = 0;
     let chunkNumber = 0;
+    // for (let i = 0; i < size; i += chunkSize) {
+    //     const fileStream = createReadStream(srcPath, {
+    //         start: i,
+    //         end: i + chunkSize - 1
+    //     });
+
+    //     for await (const data of fileStream) {
+    //         chunkNumber++;
+    //         await throttle();
+    //         // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
+    //         // The above throttling is sufficient to manage the speed of uploads
+    //         actor
+    //             .upload_asset(destPath, timestamp, chunkNumber, data, size)
+    //             .catch((error) => {
+    //                 if (process.env.AZLE_VERBOSE === 'true') {
+    //                     console.error(error);
+    //                 }
+    //             });
+    //     }
+    // }
+    let position = 0;
     while (position < size) {
         const buffer = Buffer.alloc(chunkSize);
         const result = await file.read(buffer, 0, chunkSize, position);
