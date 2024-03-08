@@ -1,3 +1,6 @@
 .azle
 .dfx
 node_modules
+src/backend/media/jordan_video_streaming_demo.mp4
+src/backend/media/popeye_the_sailor_meets_sindbad_the_sailor.mp4
+src/backend/media/the_memphis_belle.mp4

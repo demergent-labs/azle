@@ -255,7 +255,13 @@ function camelToSnakeCase(str: string) {
 }
 
 export function getCanisterId(canisterName: string): string {
-    return execSync(`dfx canister id ${canisterName}`).toString().trim();
+    return execSync(
+        `dfx canister --network ${
+            process.env.DFX_NETWORK ?? 'local'
+        } id ${canisterName}`
+    )
+        .toString()
+        .trim();
 }
 
 export function getWebServerPort(): string {
