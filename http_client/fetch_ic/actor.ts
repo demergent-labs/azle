@@ -1,4 +1,4 @@
-import { Actor, ActorMethod, Identity } from '@dfinity/agent';
+import { Actor, ActorMethod, ActorSubclass, Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 
 import { getAgent } from './agent';
@@ -6,11 +6,10 @@ import { getAgent } from './agent';
 // TODO make sure the developer can access this if they
 // TODO for example are not using a web client and want to use
 // TODO the actor directly
-// TODO please figure out types for this
 export async function createActor(
     identity: Identity,
     input: RequestInfo | URL
-) {
+): Promise<ActorSubclass<_SERVICE>> {
     const agent = await getAgent(identity);
     const canisterId = getCanisterId(input);
 
