@@ -1,5 +1,7 @@
 import { createActor } from './actor';
 
+export type CallResult = Awaited<ReturnType<typeof call>>;
+
 export async function call(
     input: RequestInfo | URL,
     init: RequestInit | undefined,

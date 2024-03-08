@@ -4,6 +4,8 @@
 
 import { createActor } from './actor';
 import { call } from './call';
+import { getCanisterId } from './get_canister_id';
+import { getHostFromBrowser } from './host';
 import { getIdentity } from './identity';
 import { createResponse } from './response';
 
@@ -30,10 +32,17 @@ export async function fetchIc(
         return await originalFetch(input, init);
     }
 
-    const actor = await createActor(identity, input);
+    const canisterId = getCanisterId(input);
+    const host = getHostFromBrowser();
+    const actor = await createActor(identity, canisterId, host);
 
     const callResult = await call(input, init, actor);
     const response = createResponse(callResult);
 
     return response;
 }
+
+export { createActor } from './actor';
+export { createAgent } from './agent';
+export { getCanisterId };
+export { getHostFromBrowser } from './host';

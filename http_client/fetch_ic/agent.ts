@@ -1,11 +1,11 @@
 import { Agent, HttpAgent, Identity } from '@dfinity/agent';
 
-export async function getAgent(identity: Identity): Promise<Agent> {
+export async function createAgent(
+    identity: Identity,
+    host: string
+): Promise<Agent> {
     const runningLocally =
-        window.location.host.includes(`localhost:`) ||
-        window.location.host.includes(`127.0.0.1:`);
-
-    const host = runningLocally === false ? 'http://icp-api.io' : undefined;
+        host.includes(`localhost:`) || host.includes(`127.0.0.1:`);
 
     const agent = new HttpAgent({
         host,
