@@ -100,6 +100,7 @@ jobs:
                     "examples/guard_functions",
                     "examples/heartbeat",
                     "examples/hello_world",
+                    "examples/hybrid_canister",
                     "examples/ic_api",
                     "examples/ic_evm_rpc",
                     "examples/icrc",
