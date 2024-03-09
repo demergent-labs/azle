@@ -27,7 +27,8 @@ async function azle() {
         dockerImagePathTarGz,
         dockerContainerName,
         wasmedgeQuickJsPath,
-        replicaWebServerPort
+        replicaWebServerPort,
+        nativeCompilation
     } = await getNamesBeforeCli();
 
     const commandExecuted = handleCli(
@@ -68,14 +69,16 @@ async function azle() {
         async () => {
             createAzleDirectories();
 
-            prepareDockerImage(
-                stdioType,
-                dockerImageName,
-                dockerImagePathTar,
-                dockerImagePathTarGz,
-                dockerContainerName,
-                wasmedgeQuickJsPath
-            );
+            if (nativeCompilation === false) {
+                prepareDockerImage(
+                    stdioType,
+                    dockerImageName,
+                    dockerImagePathTar,
+                    dockerImagePathTarGz,
+                    dockerContainerName,
+                    wasmedgeQuickJsPath
+                );
+            }
 
             const canisterJavaScript = unwrap(
                 getCanisterJavaScript(canisterConfig.main, wasmedgeQuickJsPath)
@@ -117,7 +120,8 @@ async function azle() {
                 compilerInfo,
                 dockerContainerName,
                 canisterName,
-                stdioType
+                stdioType,
+                nativeCompilation
             );
         }
     );
