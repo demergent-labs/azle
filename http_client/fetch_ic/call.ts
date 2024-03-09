@@ -14,50 +14,24 @@ export async function call(
     const body = await prepareRequestBody(init);
     const headers = prepareRequestHeaders(init);
 
-    if (
-        init === undefined ||
-        init.method === undefined ||
-        init.method === 'GET' ||
-        init.method === 'HEAD' ||
-        init.method === 'OPTIONS' ||
-        headers.find(
-            ([key, value]) => key === 'x-ic-force-query' && value === 'true'
-        ) !== undefined
-    ) {
-        return await actor.http_request({
-            method: init?.method ?? 'GET',
-            url: urlAndQueryParams,
+    if (shouldCallHttpRequest(init, headers)) {
+        return await callHttpRequest(
+            init,
+            actor,
+            urlAndQueryParams,
             headers,
-            body,
-            certificate_version: [2]
-        });
+            body
+        );
     }
 
-    if (
-        init !== undefined &&
-        (init.method === 'POST' ||
-            init.method === 'PUT' ||
-            init.method === 'PATCH' ||
-            init.method === 'DELETE' ||
-            headers.find(
-                ([key, value]) =>
-                    key === 'x-ic-force-update' && value === 'true'
-            ) !== undefined)
-    ) {
-        return await actor.http_request_update({
-            method: init.method,
-            url: urlAndQueryParams,
-            headers: [
-                ...headers,
-                ...(body.length !== 0
-                    ? ([['Content-Length', body.length.toString()]] as [
-                          string,
-                          string
-                      ][])
-                    : ([] as [string, string][]))
-            ],
+    if (shouldCallHttpRequestUpdate(init, headers)) {
+        return await callHttpRequestUpdate(
+            init,
+            actor,
+            urlAndQueryParams,
+            headers,
             body
-        });
+        );
     }
 
     throw new Error(`fetchIc: This request combination is not supported`);
@@ -171,4 +145,76 @@ async function prepareRequestBody(
     }
 
     throw new Error(`fetchIc: Not a supported fetchIc body type`);
+}
+
+function shouldCallHttpRequest(
+    init: RequestInit | undefined,
+    headers: [string, string][]
+): boolean {
+    return (
+        init === undefined ||
+        init.method === undefined ||
+        init.method === 'GET' ||
+        init.method === 'HEAD' ||
+        init.method === 'OPTIONS' ||
+        headers.find(
+            ([key, value]) => key === 'x-ic-force-query' && value === 'true'
+        ) !== undefined
+    );
+}
+
+function shouldCallHttpRequestUpdate(
+    init: RequestInit | undefined,
+    headers: [string, string][]
+): boolean {
+    return (
+        init !== undefined &&
+        (init.method === 'POST' ||
+            init.method === 'PUT' ||
+            init.method === 'PATCH' ||
+            init.method === 'DELETE' ||
+            headers.find(
+                ([key, value]) =>
+                    key === 'x-ic-force-update' && value === 'true'
+            ) !== undefined)
+    );
+}
+
+async function callHttpRequest(
+    init: RequestInit | undefined,
+    actor: Awaited<ReturnType<typeof createActor>>,
+    urlAndQueryParams: string,
+    headers: [string, string][],
+    body: Uint8Array
+) {
+    return await actor.http_request({
+        method: init?.method ?? 'GET',
+        url: urlAndQueryParams,
+        headers,
+        body,
+        certificate_version: [2]
+    });
+}
+
+async function callHttpRequestUpdate(
+    init: RequestInit | undefined,
+    actor: Awaited<ReturnType<typeof createActor>>,
+    urlAndQueryParams: string,
+    headers: [string, string][],
+    body: Uint8Array
+) {
+    return await actor.http_request_update({
+        method: init?.method ?? 'GET',
+        url: urlAndQueryParams,
+        headers: [
+            ...headers,
+            ...(body.length !== 0
+                ? ([['Content-Length', body.length.toString()]] as [
+                      string,
+                      string
+                  ][])
+                : ([] as [string, string][]))
+        ],
+        body
+    });
 }

@@ -27,7 +27,7 @@ export function getIdentity(
 
 function getAuthorizationHeaderValue(
     headers: RequestInit['headers']
-): string | undefined | Identity {
+): string | undefined | null | Identity {
     if (Array.isArray(headers)) {
         return headers.reduce(
             (acc: string | undefined | Identity, [key, value]) => {
