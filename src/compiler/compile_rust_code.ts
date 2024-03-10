@@ -6,9 +6,6 @@ export function compileRustCode(
     stdio: IOType,
     nativeCompilation: boolean
 ) {
-    console.log('compileRustCode');
-    console.log('nativeCompilation', nativeCompilation);
-
     if (nativeCompilation === true) {
         compileRustCodeNatively(canisterName, stdio);
     } else {

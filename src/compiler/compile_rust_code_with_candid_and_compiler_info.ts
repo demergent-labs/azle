@@ -14,9 +14,6 @@ export function compileRustCodeWithCandidAndCompilerInfo(
     stdioType: IOType,
     nativeCompilation: boolean
 ) {
-    console.log('compileRustCodeWithCandidAndCompilerInfo');
-    console.log('nativeCompilation', nativeCompilation);
-
     // This is for the Rust canister to have access to the candid file
     writeFileSync(rustStagingCandidPath, candid);
 
