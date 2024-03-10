@@ -11,7 +11,7 @@ type Dest = string;
 
 /**
  * Upload an asset at srcPath to destPath at the given canister. If neither
- * the srcPath nor the destPath are given the srcPath(s) and desPath(s) will
+ * the srcPath nor the destPath are given the srcPath(s) and destPath(s) will
  * be determined from the dfx.json of the given canister.
  *
  * Because of limitations on block consensus rate and ingress message limits
@@ -61,8 +61,7 @@ async function upload(
     actor: ActorSubclass
 ) {
     if (!existsSync(srcPath)) {
-        console.log(`WARNING: ${srcPath} does not exist`);
-        return;
+        throw new Error(`${srcPath} does not exist`);
     }
 
     const stats = await stat(srcPath);
@@ -108,54 +107,67 @@ async function uploadAsset(
     const stats = await file.stat();
     const size = stats.size;
     let chunkNumber = 0;
-    // for (let i = 0; i < size; i += chunkSize) {
-    //     const fileStream = createReadStream(srcPath, {
-    //         start: i,
-    //         end: i + chunkSize - 1
-    //     });
+    for (let i = 0; i < size; i += chunkSize) {
+        const fileStream = createReadStream(srcPath, {
+            start: i,
+            end: i + chunkSize - 1,
+            highWaterMark: chunkSize
+        });
 
-    //     for await (const data of fileStream) {
-    //         chunkNumber++;
-    //         await throttle();
-    //         // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
-    //         // The above throttling is sufficient to manage the speed of uploads
-    //         actor
-    //             .upload_asset(destPath, timestamp, chunkNumber, data, size)
-    //             .catch((error) => {
-    //                 if (process.env.AZLE_VERBOSE === 'true') {
-    //                     console.error(error);
-    //                 }
-    //             });
-    //     }
-    // }
-    let position = 0;
-    while (position < size) {
-        const buffer = Buffer.alloc(chunkSize);
-        const result = await file.read(buffer, 0, chunkSize, position);
-        const chunk = result.buffer.subarray(0, result.bytesRead);
-
-        if (process.env.AZLE_VERBOSE === 'true') {
+        for await (const data of fileStream) {
+            chunkNumber++;
+            await throttle();
             console.info(
-                `Uploading chunk ${chunkNumber} of ${Math.ceil(
+                `uploadAsset ${srcPath}: ${chunkNumber} of ~${Math.ceil(
                     size / chunkSize
                 )}`
             );
+            console.log(chunkSize, 'vs', data.length);
+            // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
+            // The above throttling is sufficient to manage the speed of uploads
+            actor
+                .upload_asset(destPath, timestamp, chunkNumber, data, size)
+                .catch((error) => {
+                    if (process.env.AZLE_VERBOSE === 'true') {
+                        console.error(error);
+                    }
+                });
         }
-
-        await throttle();
-        // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
-        // The above throttling is sufficient to manage the speed of uploads
-        actor
-            .upload_asset(destPath, timestamp, chunkNumber, chunk, size)
-            .catch((error) => {
-                if (process.env.AZLE_VERBOSE === 'true') {
-                    console.error(error);
-                }
-            });
-
-        position += result.bytesRead;
-        chunkNumber++;
     }
+    let position = 0;
+    // while (position < size) {
+    //     const buffer = Buffer.alloc(chunkSize);
+    //     const result = await file.read(buffer, 0, chunkSize, position);
+    //     const chunk = result.buffer.subarray(0, result.bytesRead);
+
+    //     if (process.env.AZLE_VERBOSE === 'true') {
+    //         console.info(
+    //             `Uploading chunk ${chunkNumber} of ${Math.ceil(
+    //                 size / chunkSize
+    //             )}`
+    //         );
+    //     }
+
+    //     await throttle();
+    //     console.info(
+    //         `uploadAsset while ${srcPath}: ${chunkNumber} of ${Math.ceil(
+    //             size / chunkSize
+    //         )}`
+    //     );
+    //     console.log(chunkSize, 'vs', chunk.length);
+    //     // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
+    //     // The above throttling is sufficient to manage the speed of uploads
+    //     actor
+    //         .upload_asset(destPath, timestamp, chunkNumber, chunk, size)
+    //         .catch((error) => {
+    //             if (process.env.AZLE_VERBOSE === 'true') {
+    //                 console.error(error);
+    //             }
+    //         });
+
+    //     position += result.bytesRead;
+    //     chunkNumber++;
+    // }
     file.close();
     if (process.env.AZLE_VERBOSE === 'true') {
         console.info(`Finished uploading ${srcPath}`);
