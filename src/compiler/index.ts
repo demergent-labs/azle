@@ -99,7 +99,8 @@ async function azle() {
                 stdioType,
                 envVars,
                 rustStagingCandidPath,
-                rustStagingWasmPath
+                rustStagingWasmPath,
+                nativeCompilation
             );
 
             // This is for the dfx.json candid property
@@ -112,9 +113,6 @@ async function azle() {
                 },
                 env_vars: envVars
             };
-
-            console.log('before compileRustCodeWithCandidAndCompilerInfo');
-            console.log('nativeCompilation', nativeCompilation);
 
             compileRustCodeWithCandidAndCompilerInfo(
                 rustStagingCandidPath,
