@@ -287,16 +287,17 @@ jobs:
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
               run: npm install
-              # This is to put wasmedge-quickjs in the correct location for the --native-compilation tests
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              shell: bash -l {0}
-              run: |
-                  mkdir -p ".config/azle/wasmedge-quickjs_$(npx azle dockerfile-hash)"
-                  cp -r wasmedge-quickjs ".config/azle/wasmedge-quickjs_$(npx azle dockerfile-hash)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
               run: npm link azle
+              # This is to put wasmedge-quickjs in the correct location for the --native-compilation tests
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              shell: bash -l {0}
+              working-directory: ${{ matrix.example_directories }}
+              run: |
+                  mkdir -p /home/runner/.config
+                  cp -r /home/runner/wasmedge-quickjs "/home/runner/.config/azle/wasmedge-quickjs_$(npx azle dockerfile-hash)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
