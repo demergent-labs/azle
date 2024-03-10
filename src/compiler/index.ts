@@ -113,6 +113,9 @@ async function azle() {
                 env_vars: envVars
             };
 
+            console.log('before compileRustCodeWithCandidAndCompilerInfo');
+            console.log('nativeCompilation', nativeCompilation);
+
             compileRustCodeWithCandidAndCompilerInfo(
                 rustStagingCandidPath,
                 candid,

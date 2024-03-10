@@ -14,11 +14,16 @@ export function compileRustCodeWithCandidAndCompilerInfo(
     stdioType: IOType,
     nativeCompilation: boolean
 ) {
+    console.log('compileRustCodeWithCandidAndCompilerInfo');
+    console.log('nativeCompilation', nativeCompilation);
+
     // This is for the Rust canister to have access to the candid file
     writeFileSync(rustStagingCandidPath, candid);
 
     // TODO why not just write the dfx.json file here as well?
     writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
+
+    console.log('before compileRustCode nativeCompilation', nativeCompilation);
 
     compileRustCode(
         dockerContainerName,
