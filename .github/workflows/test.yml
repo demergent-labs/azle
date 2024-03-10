@@ -290,8 +290,7 @@ jobs:
               # This is to put wasmedge-quickjs in the correct location for the --native-compilation tests
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
-              run: cp ../wasmedge-quickjs "../.config/azle/wasmedge-quickjs_$(npx azle dockerfile-hash)"
+              run: cp wasmedge-quickjs ".config/azle/wasmedge-quickjs_$(npx azle dockerfile-hash)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.azle_source == 'repo' }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
