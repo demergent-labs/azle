@@ -37,11 +37,11 @@ async function pretest() {
 pretest();
 
 function generateFileOfSize(size: number, unit: Unit) {
-    const fileName = `assets/auto/test${size}${unit}`;
+    const path = `assets/auto/test${size}${unit}`;
     const fileSize = toBytes(size, unit);
-    if (!existsSync(fileName)) {
-        createFileOfSize(fileName, fileSize);
+    if (!existsSync(path)) {
+        createFileOfSize(path, fileSize);
     } else {
-        console.log(`${fileName} already exists. Skipping`);
+        console.log(`${path} already exists. Skipping`);
     }
 }

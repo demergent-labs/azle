@@ -99,12 +99,9 @@ async function uploadAsset(
     chunkSize: number,
     actor: ActorSubclass
 ) {
-    if (process.env.AZLE_VERBOSE === 'true') {
-        console.info(`Uploading ${srcPath} to ${destPath}`);
-    }
+    console.info(`uploadAsset: Uploading ${srcPath} to ${destPath}`);
     const timestamp = process.hrtime.bigint();
-    const file = await open(srcPath, 'r');
-    const stats = await file.stat();
+    const stats = await stat(srcPath);
     const size = stats.size;
     let chunkNumber = 0;
     for (let i = 0; i < size; i += chunkSize) {
@@ -118,65 +115,28 @@ async function uploadAsset(
             chunkNumber++;
             await throttle();
             console.info(
-                `uploadAsset ${srcPath}: ${chunkNumber} of ~${Math.ceil(
+                `uploadAsset: ${srcPath} | ${chunkNumber} of ~${Math.ceil(
                     size / chunkSize
                 )}`
             );
-            console.log(chunkSize, 'vs', data.length);
             // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
             // The above throttling is sufficient to manage the speed of uploads
             actor
                 .upload_asset(destPath, timestamp, chunkNumber, data, size)
                 .catch((error) => {
-                    if (process.env.AZLE_VERBOSE === 'true') {
-                        console.error(error);
-                    }
+                    console.error(error);
                 });
         }
     }
-    let position = 0;
-    // while (position < size) {
-    //     const buffer = Buffer.alloc(chunkSize);
-    //     const result = await file.read(buffer, 0, chunkSize, position);
-    //     const chunk = result.buffer.subarray(0, result.bytesRead);
-
-    //     if (process.env.AZLE_VERBOSE === 'true') {
-    //         console.info(
-    //             `Uploading chunk ${chunkNumber} of ${Math.ceil(
-    //                 size / chunkSize
-    //             )}`
-    //         );
-    //     }
-
-    //     await throttle();
-    //     console.info(
-    //         `uploadAsset while ${srcPath}: ${chunkNumber} of ${Math.ceil(
-    //             size / chunkSize
-    //         )}`
-    //     );
-    //     console.log(chunkSize, 'vs', chunk.length);
-    //     // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
-    //     // The above throttling is sufficient to manage the speed of uploads
-    //     actor
-    //         .upload_asset(destPath, timestamp, chunkNumber, chunk, size)
-    //         .catch((error) => {
-    //             if (process.env.AZLE_VERBOSE === 'true') {
-    //                 console.error(error);
-    //             }
-    //         });
-
-    //     position += result.bytesRead;
-    //     chunkNumber++;
-    // }
-    file.close();
-    if (process.env.AZLE_VERBOSE === 'true') {
-        console.info(`Finished uploading ${srcPath}`);
-    }
+    console.info(`uploadAsset: finished ${srcPath}`);
 }
 
 async function throttle() {
     // We can only process about 4Mib per second. So if chunks are about
     // 2 MiB or less then we can only send off two per second.
+    if (process.env.DFX_NETWORK === 'ic') {
+        await new Promise((resolve) => setTimeout(resolve, 2_000)); // Mainnet requires more throttling. We found 2_000 by trial and error
+    }
     await new Promise((resolve) => setTimeout(resolve, 500)); // Should be 500 (ie 1 every 1/2 second or 2 every second)
 }
 

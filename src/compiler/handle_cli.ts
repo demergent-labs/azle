@@ -99,8 +99,8 @@ function handleCommandClean(
 }
 
 async function handleUploadAssets() {
-    const canisterId = process.argv[3];
+    const canisterName = process.argv[3];
     const srcPath = process.argv[4];
     const destPath = process.argv[5];
-    await uploadAssets(canisterId, srcPath, destPath);
+    await uploadAssets(canisterName, srcPath, destPath);
 }

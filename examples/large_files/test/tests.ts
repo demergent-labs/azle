@@ -1,9 +1,10 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test, getCanisterId } from 'azle/test';
+import { Test, getAgentHost, getCanisterId } from 'azle/test';
 import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { hashFile } from 'azle/scripts/hash_file';
+import { join } from 'path';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -18,75 +19,93 @@ export function getTests(canisterId: string): Test[] {
         },
         // Permanent Assets
         generateTest(
+            origin,
             'photos/people/george-washington.tif',
-            'permanent',
-            origin
+            'permanent'
         ),
-        generateTest('photos/places/dinosaurNM.jpg', 'permanent', origin),
-        generateTest('photos/places/slc.jpg', 'permanent', origin),
-        generateTest('photos/things/book.jpg', 'permanent', origin),
-        generateTest('photos/things/utah-teapot.jpg', 'permanent', origin),
+        generateTest(origin, 'photos/places/dinosaurNM.jpg', 'permanent'),
+        generateTest(origin, 'photos/places/slc.jpg', 'permanent'),
+        generateTest(origin, 'photos/things/book.jpg', 'permanent'),
+        generateTest(origin, 'photos/things/utah-teapot.jpg', 'permanent'),
         generateTest(
+            origin,
             'text/subfolder/deep-sub-folder/deep.txt',
-            'permanent',
-            origin
+            'permanent'
         ),
         generateTest(
+            origin,
             'text/subfolder/sibling-deep-sub-folder/deep.txt',
-            'permanent',
-            origin
+            'permanent'
         ),
-        generateTest('text/subfolder/other-thing.txt', 'permanent', origin),
-        generateTest('text/thing.txt', 'permanent', origin),
-        generateTest('text/thing.txt', 'permanent', origin),
-        generateTest('text/single.txt', '', origin, 'single_asset.txt'),
+        generateTest(origin, 'text/subfolder/other-thing.txt', 'permanent'),
+        generateTest(origin, 'text/thing.txt', 'permanent'),
+        generateTest(origin, 'text/thing.txt', 'permanent'),
+        generateTest(origin, 'text/single.txt', undefined, 'single_asset.txt'),
 
         // Auto Generated Assets
         //      Edge Cases
-        { ...generateTest('test0B', 'auto', origin), skip: true }, // TODO we have problems with 0B files on the canister side
-        generateTest('test1B', 'auto', origin),
-        generateTest(`test${120 * 1024 * 1024 + 1}B`, 'auto', origin),
-        generateTest(`test${150 * 1024 * 1024 + 1}B`, 'auto', origin),
-        generateTest('test2000001B', 'auto', origin),
+        { ...generateTest(origin, 'test0B', 'auto'), skip: true }, // TODO we have problems with 0B files on the canister side
+        generateTest(origin, 'test1B', 'auto'),
+        generateTest(origin, `test${120 * 1024 * 1024 + 1}B`, 'auto'),
+        generateTest(origin, `test${150 * 1024 * 1024 + 1}B`, 'auto'),
+        generateTest(origin, 'test2000001B', 'auto'),
         //      General Cases
-        // generateTest('test1KiB', 'auto', origin),
-        // generateTest('test10KiB', 'auto', origin),
-        // generateTest('test100KiB', 'auto', origin),
-        // generateTest('test1MiB', 'auto', origin),
-        // generateTest('test10MiB', 'auto', origin),
-        // generateTest('test100MiB', 'auto', origin),
-        // generateTest('test250MiB', 'auto', origin),
-        { ...generateTest('test500MiB', 'auto', origin), skip: true }, // We currently run out of memory with this file
-        { ...generateTest('test1GiB', 'auto', origin), skip: true }
-        // generateTest(`test${2_000_000 * 18}B`, 'auto', origin),
-        // generateTest(`test${2_000_000 * 18 + 1}B`, 'auto', origin)
+        // generateTest(origin, 'test1KiB', 'auto'),
+        // generateTest(origin, 'test10KiB', 'auto'),
+        // generateTest(origin, 'test100KiB', 'auto'),
+        // generateTest(origin, 'test1MiB', 'auto'),
+        // generateTest(origin, 'test10MiB', 'auto'),
+        // generateTest(origin, 'test100MiB', 'auto'),
+        // generateTest(origin, 'test250MiB', 'auto'),
+        { ...generateTest(origin, 'test500MiB', 'auto'), skip: true }, // We currently run out of memory with this file
+        { ...generateTest(origin, 'test1GiB', 'auto'), skip: true }
+        // generateTest(origin, `test${2_000_000 * 18}B`, 'auto'),
+        // generateTest(origin, `test${2_000_000 * 18 + 1}B`, 'auto')
     ];
 }
 
+/**
+ * Generate a test for file uploading. Hashes the local file and compares it to
+ * the hash of the uploaded file. Assumes that all of the files both on the
+ * canister and local side are in a directory called "assets". The parameter
+ * localDir allows for difference between the canisterPath and localPath and
+ * will be inserted between "assets" and the rest of the file path to the local
+ * asset. If localPath is defined it will be used for the localPath. Otherwise
+ * it will be assumed that the canisterPath is the same as the localPath.
+ * @param origin
+ * @param canisterPath
+ * @param localDir
+ * @param localPath
+ * @returns
+ */
 function generateTest(
-    fileName: string,
-    nodeDir: string,
     origin: string,
-    nodeName?: string
+    canisterPath: string,
+    localDir?: string,
+    localPath?: string
 ): Test {
     return {
-        name: `upload: ${fileName}`,
+        name: `upload: ${canisterPath}`,
         test: async () => {
-            const canisterFilePath = `assets/${fileName}`;
-            const dir = nodeDir === '' ? '' : `/${nodeDir}`;
-            const nodeFileName = nodeName ?? fileName;
-            const nodeFilePath = `assets${dir}/${nodeFileName}`;
-            const actor = await createGetFileHashActor(
-                getCanisterId('backend'),
-                '8000'
+            const canisterFilePath = join('assets', canisterPath);
+            const localFilePath = join(
+                'assets',
+                localDir ?? '',
+                localPath ?? canisterPath
             );
 
-            const expectedHash = (await hashFile(nodeFilePath)).toString('hex');
+            const actor = await createGetFileHashActor(
+                getCanisterId('backend')
+            );
 
-            let response = await fetch(
+            const expectedHash = (await hashFile(localFilePath)).toString(
+                'hex'
+            );
+
+            const response = await fetch(
                 `${origin}/exists?path=${canisterFilePath}`
             );
-            let exits = await response.json();
+            const exits = await response.json();
 
             if (exits === false) {
                 return {
@@ -101,11 +120,10 @@ function generateTest(
 }
 
 async function createGetFileHashActor(
-    canisterId: string,
-    replicaWebServerPort: string
+    canisterId: string
 ): Promise<ActorSubclass> {
     const agent = new HttpAgent({
-        host: `http://127.0.0.1:${replicaWebServerPort}`
+        host: getAgentHost()
     });
 
     if (process.env.DFX_NETWORK !== 'ic') {

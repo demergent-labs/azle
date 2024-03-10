@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'fs/promises';
+import { mkdir, writeFile, appendFile } from 'fs/promises';
 import { dirname } from 'path';
 
 async function main() {
@@ -21,7 +21,7 @@ async function main() {
         process.exit(1);
     }
 
-    createFileOfSize(filename, sizeInBytes, true);
+    createFileOfSize(filename, sizeInBytes);
     console.log(
         "File '" + filename + "' created with size " + sizeInBytes + ' bytes.'
     );
@@ -32,26 +32,17 @@ if (require.main === module) {
 }
 
 // Function to create a file of a specific size in bytes
-export async function createFileOfSize(
-    path: string,
-    sizeInBytes: number,
-    random: boolean = true
-) {
+export async function createFileOfSize(path: string, sizeInBytes: number) {
     await mkdir(dirname(path), { recursive: true });
-    let bytesWritten = 0;
-    while (bytesWritten < sizeInBytes) {
-        const remainingBytes = sizeInBytes - bytesWritten;
-        const chunkSize = Math.min(remainingBytes, 1024); // Adjust the chunk size as needed
-        const buffer = Buffer.alloc(chunkSize);
-        for (let i = 0; i < chunkSize; i++) {
-            if (random === undefined || random === true) {
-                buffer[i] = Math.floor(Math.random() * 256); // Generate random byte value (0-255)
-            } else {
-                buffer[i] = 0;
-            }
+    const defaultChunkSize = 1024; // Adjust the chunk size as needed
+    const buffer = Buffer.alloc(defaultChunkSize);
+    for (let i = 0; i < sizeInBytes; i += defaultChunkSize) {
+        const remainingBytes = sizeInBytes - i * defaultChunkSize;
+        const chunkSize = Math.min(remainingBytes, defaultChunkSize);
+        for (let byte = 0; byte < chunkSize; byte++) {
+            buffer[byte] = Math.floor(Math.random() * 256); // Generate random byte value (0-255)
         }
-        await writeFile(path, buffer, { flag: 'a' });
-        bytesWritten += chunkSize;
+        await appendFile(path, buffer.subarray(0, chunkSize));
     }
 }
 

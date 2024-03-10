@@ -1,6 +1,6 @@
 import { Server } from 'azle';
-import { statSync, existsSync } from 'fs';
 import express, { Request } from 'express';
+import { statSync, existsSync } from 'fs';
 
 export default Server(() => {
     const app = express();

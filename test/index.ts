@@ -273,3 +273,7 @@ export function getCanisterOrigin(canisterName: string): string {
         canisterName
     )}.localhost:${getWebServerPort()}`;
 }
+
+export function getAgentHost(): string {
+    return `http://127.0.0.1:${getWebServerPort()}`;
+}

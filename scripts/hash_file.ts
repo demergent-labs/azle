@@ -30,10 +30,10 @@ async function hashFileByParts(
 
     const fileReadResult = await file.read(buffer, 0, limit, position);
     file.close();
-    let bytesRead = fileReadResult.bytesRead;
+    const bytesRead = fileReadResult.bytesRead;
 
     if (bytesRead != 0) {
-        let newHash = hashChunkWith(fileReadResult.buffer, previousHash);
+        const newHash = hashChunkWith(fileReadResult.buffer, previousHash);
         return hashFileByParts(path, position + bytesRead, newHash);
     } else {
         // No more bytes to hash, set as final hash for this file
