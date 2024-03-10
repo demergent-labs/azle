@@ -43,9 +43,9 @@ export async function getNamesBeforeCli() {
 
     const nativeCompilation = process.argv.includes('--native-compilation');
 
-    console.log('getNamesBeforeCli');
-    console.log('nativeCompilation', nativeCompilation);
-    console.log('process.argv', process.argv);
+    // console.log('getNamesBeforeCli');
+    // console.log('nativeCompilation', nativeCompilation);
+    // console.log('process.argv', process.argv);
 
     return {
         stdioType,
