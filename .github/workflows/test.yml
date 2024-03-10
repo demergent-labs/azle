@@ -260,6 +260,8 @@ jobs:
               name: Install wasmedge-quickjs
               shell: bash -l {0}
               run: |
+                  mkdir -p /home/runner/.config/azle
+                  cd /home/runner/.config/azle
                   git clone https://github.com/demergent-labs/wasmedge-quickjs
                   cd wasmedge-quickjs
                   git checkout 6c81d7e6fe4b22a468beceed0ee697f4163e7ca8
@@ -295,9 +297,7 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
-              run: |
-                  mkdir -p /home/runner/.config
-                  cp -r /home/runner/wasmedge-quickjs "/home/runner/.config/azle/wasmedge-quickjs_$(npx azle dockerfile-hash)"
+              run: mv /home/runner/.config/azle/wasmedge-quickjs "/home/runner/.config/azle/wasmedge-quickjs_$(npx azle dockerfile-hash)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
