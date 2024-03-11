@@ -10,11 +10,11 @@ async function pretest() {
     // TODO excluded because it will require some reworking to get 0 byte files to work and it doesn't seem urgent
     // generateFileOfSize(0, 'B');
     await generateFileOfSize(1, 'B');
-    await generateFileOfSize(120 * 1024 * 1024 + 1, 'B'); //One more byte than can be processed in a single hash_file_by_parts call
-    await generateFileOfSize(150 * 1024 * 1024 + 1, 'B'); //One more byte than can be processed in a single write_file_by_parts call
+    await generateFileOfSize(60 * 1024 * 1024 + 1, 'B'); //One more byte than can be processed in a single hash_file_by_parts call
+    await generateFileOfSize(50 * 1024 * 1024 + 1, 'B'); //One more byte than can be processed in a single write_file_by_parts call
     await generateFileOfSize(2_000_001, 'B'); // One more byte that the high water mark of the readstream
 
-    // Weird Cases
+    // Weird Cases TODO These cases may not even be needed after https://github.com/wasm-forge/stable-fs/issues/2
     // TODO excluded because there isn't room on the heap. Bring back after https://github.com/wasm-forge/stable-fs/issues/2 is resolved
     // await generateFileOfSize(2_000_000 * 18, 'B'); //Weird writing bound
     // TODO excluded because there isn't room on the heap. Bring back after https://github.com/wasm-forge/stable-fs/issues/2 is resolved

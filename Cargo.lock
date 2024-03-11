@@ -225,6 +225,7 @@ dependencies = [
  "ic-stable-structures",
  "ic-wasi-polyfill",
  "include_dir",
+ "serde_json",
  "sha2",
  "slotmap",
  "wasmedge_quickjs",

@@ -2,28 +2,29 @@ use quote::quote;
 
 pub fn get_temp_chunk_utils() -> proc_macro2::TokenStream {
     quote! {
-        // Adds the given asset_bytes to the dest_path asset at the chunk number position. Returns the new total length of dest_path asset after the addition
+        // Adds the given file_bytes to the chunked file at the chunk number position.
+        // Returns the new total length of chunked file after the addition
         pub fn write_temp_chunk(
-            dest_path: &str,
-            asset_bytes: Vec<u8>,
+            path: &str,
+            file_bytes: Vec<u8>,
             chunk_number: u64,
         ) -> std::io::Result<u64> {
-            let file_path = format_chunk_path(dest_path, chunk_number);
+            let file_path = format_chunk_path(path, chunk_number);
             let mut options = std::fs::OpenOptions::new();
             options.create(true).write(true);
 
-            match std::path::Path::new(dest_path).parent() {
+            match std::path::Path::new(path).parent() {
                 Some(dir_path) => std::fs::create_dir_all(dir_path)?,
                 None => (), //Dir doesn't need to be created
             };
 
             let mut file = options.open(&file_path)?;
-            std::io::Write::write_all(&mut file, &asset_bytes)?;
+            std::io::Write::write_all(&mut file, &file_bytes)?;
             drop(file);
 
-            update_file_info(dest_path, asset_bytes.len());
+            update_file_info(path, file_bytes.len());
 
-            Ok(get_total_bytes_written(dest_path))
+            Ok(get_total_bytes_written(path))
         }
 
         // Reads and concatenates ordered chunks from the file system. Returns the data.

@@ -6,6 +6,7 @@ use quote::quote;
 
 use crate::hash_file;
 
+// TODO rename this and the file
 pub fn get_upload_assets() -> proc_macro2::TokenStream {
     let temp_chunks_utils_src = temp_chunks::get_temp_chunk_utils();
     let verify_latest_src = verify_latest::get_verify_latest();
@@ -19,11 +20,11 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
         #hash_file_src
 
         #[ic_cdk_macros::update]
-        pub fn upload_asset(
+        pub fn upload_file_chunk(
             dest_path: String,
             timestamp: u64,
             chunk_number: u64,
-            asset_bytes: Vec<u8>,
+            file_bytes: Vec<u8>,
             total_len: u64,
         ) {
             let is_current_timestamp = verify_latest_version(&dest_path, timestamp);
@@ -32,7 +33,7 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
                 return;
             }
 
-            let uploaded_asset_len = match write_temp_chunk(&dest_path, asset_bytes, chunk_number) {
+            let uploaded_file_len = match write_temp_chunk(&dest_path, file_bytes, chunk_number) {
                 Ok(len) => len as u64,
                 Err(err) => {
                     ic_cdk::println!("Error writing temp chunk: {}", err);
@@ -43,11 +44,11 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
             ic_cdk::println!(
                 "Uploaded: {} | Length: {}/{} ",
                 format_chunk_path(&dest_path, chunk_number),
-                bytes_to_human_readable(uploaded_asset_len),
+                bytes_to_human_readable(uploaded_file_len),
                 bytes_to_human_readable(total_len)
             );
 
-            if uploaded_asset_len == total_len {
+            if uploaded_file_len == total_len {
                 ic_cdk::println!(
                     "UPLOAD OF ALL {} CHUNKS COMPLETE for {}. Spawning writer",
                     get_total_chunks(&dest_path),

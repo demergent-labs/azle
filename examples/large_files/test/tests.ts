@@ -46,8 +46,8 @@ export function getTests(canisterId: string): Test[] {
         //      Edge Cases
         { ...generateTest(origin, 'test0B', 'auto'), skip: true }, // TODO we have problems with 0B files on the canister side
         generateTest(origin, 'test1B', 'auto'),
-        generateTest(origin, `test${120 * 1024 * 1024 + 1}B`, 'auto'),
-        generateTest(origin, `test${150 * 1024 * 1024 + 1}B`, 'auto'),
+        generateTest(origin, `test${60 * 1024 * 1024 + 1}B`, 'auto'),
+        generateTest(origin, `test${50 * 1024 * 1024 + 1}B`, 'auto'),
         generateTest(origin, 'test2000001B', 'auto'),
         //      General Cases
         generateTest(origin, 'test1KiB', 'auto'),

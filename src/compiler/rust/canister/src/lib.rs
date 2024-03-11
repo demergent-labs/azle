@@ -62,12 +62,12 @@ impl Storable for AzleStableBTreeMapValue {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-// TODO remove this as soon as we have stable chunks working
-type Bytes = Vec<u8>;
 type Hash = Vec<u8>;
 
 type ChunkCount = u64;
 type BytesReceived = u64;
+
+const FILE_HASH_PATH: &str = "file_hashes.json";
 
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
@@ -84,15 +84,9 @@ thread_local! {
 
     static FILE_INFO: RefCell<BTreeMap<String, (ChunkCount, BytesReceived)>> = RefCell::new(BTreeMap::new());
 
-    static UPLOADED_ASSETS_TIMESTAMPS: RefCell<BTreeMap<String, u64>> = RefCell::new(BTreeMap::new());
+    static UPLOADED_FILE_TIMESTAMPS: RefCell<BTreeMap<String, u64>> = RefCell::new(BTreeMap::new());
 
-    static PARTIAL_ASSETS_HASHES: RefCell<HashMap<String, Hash>> = RefCell::new(HashMap::new());
-
-    static ASSETS_HASHES: RefCell<HashMap<String, Hash>> = RefCell::new(HashMap::new());
-
-    // TODO get rid of this as soon as we have stable chunks working
-    static UPLOADED_ASSETS: RefCell<BTreeMap<String, BTreeMap<u64, Bytes>>> =
-        RefCell::new(BTreeMap::new());
+    static PARTIAL_FILE_HASHES: RefCell<HashMap<String, Hash>> = RefCell::new(HashMap::new());
 }
 
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]

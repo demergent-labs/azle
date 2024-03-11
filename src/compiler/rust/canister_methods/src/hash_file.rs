@@ -4,13 +4,17 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
     quote! {
         pub fn hash_file(path: String) {
             ic_cdk::println!("START HASH FILE");
+            clear_partial_hash(&path);
+            clear_file_hash(&path);
             hash_file_by_parts(path, 0)
         }
 
         #[ic_cdk_macros::query]
         pub fn get_file_hash(path: String) -> String {
-            ASSETS_HASHES
-                .with(|asset_hashes| asset_hashes.borrow().get(&path).unwrap().clone())
+            load_hashes()
+                .unwrap()
+                .get(&path)
+                .unwrap()
                 .iter()
                 .map(|bytes| format!("{:02x}", bytes))
                 .collect()
@@ -19,8 +23,8 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
         // TODO get rid of this when testing is done.
         #[ic_cdk_macros::query]
         pub fn get_file_hashes() -> Vec<String> {
-            ASSETS_HASHES
-                .with(|asset_hashes| asset_hashes.borrow().clone())
+            load_hashes()
+                .unwrap()
                 .iter()
                 .map(|(path, bytes)| {
                     format!(
@@ -66,7 +70,7 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
                         // No more bytes to hash, set as final hash for this file
                         match previous_hash {
                             Some(hash) => {
-                                set_hash(&path, hash);
+                                set_file_hash(&path, hash);
                                 ic_cdk::println!("Finish hashing");
                                 clear_partial_hash(&path);
                                 ic_cdk::println!("Partial hash cleared");
@@ -80,19 +84,27 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
         }
 
         pub fn get_partial_file_hash(path: &String) -> Option<Vec<u8>> {
-            PARTIAL_ASSETS_HASHES.with(|asset_hashes| asset_hashes.borrow().get(path).cloned())
+            PARTIAL_FILE_HASHES.with(|file_hashes| file_hashes.borrow().get(path).cloned())
         }
 
         fn set_partial_hash(path: &String, hash: Vec<u8>) {
-            PARTIAL_ASSETS_HASHES.with(|file_hashes| file_hashes.borrow_mut().insert(path.clone(), hash));
+            PARTIAL_FILE_HASHES.with(|file_hashes| file_hashes.borrow_mut().insert(path.clone(), hash));
         }
 
         fn clear_partial_hash(path: &String) {
-            PARTIAL_ASSETS_HASHES.with(|file_hashes| file_hashes.borrow_mut().remove(path));
+            PARTIAL_FILE_HASHES.with(|file_hashes| file_hashes.borrow_mut().remove(path));
         }
 
-        fn set_hash(path: &String, hash: Vec<u8>) {
-            ASSETS_HASHES.with(|file_hashes| file_hashes.borrow_mut().insert(path.clone(), hash));
+        fn clear_file_hash(path: &String) {
+            let mut file_hashes = load_hashes().unwrap();
+            file_hashes.remove(path);
+            save_hashes(&file_hashes).unwrap();
+        }
+
+        fn set_file_hash(path: &String, hash: Vec<u8>) {
+            let mut file_hashes = load_hashes().unwrap();
+            file_hashes.insert(path.clone(), hash);
+            save_hashes(&file_hashes).unwrap();
         }
 
         fn hash_chunk_with(data: &[u8], previous_hash: Option<&Vec<u8>>) -> Vec<u8> {
@@ -102,6 +114,36 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
                 sha2::Digest::update(&mut h, hash);
             }
             sha2::Digest::finalize(h).to_vec()
+        }
+
+        fn load_hashes() -> Result<HashMap<String, Vec<u8>>, std::io::Error> {
+            let mut file_hashes = HashMap::new();
+            // Check if the file exists
+            if !std::path::Path::new(FILE_HASH_PATH).exists() {
+                return Ok(file_hashes);
+            }
+            let mut file = std::fs::File::open(FILE_HASH_PATH)?;
+
+            let mut data = Vec::new();
+            std::io::Read::read_to_end(&mut file, &mut data)?;
+
+            if !data.is_empty() {
+                file_hashes = serde_json::from_slice(&data)?; // (Example using serde)
+            }
+
+            Ok(file_hashes)
+        }
+
+        fn save_hashes(file_hashes: &HashMap<String, Vec<u8>>) -> Result<(), std::io::Error> {
+            let data = serde_json::to_vec(file_hashes)?; // (Example using serde)
+
+            let mut file = std::fs::OpenOptions::new()
+                .create(true)
+                .write(true)
+                .open(FILE_HASH_PATH)?;
+            std::io::Write::write_all(&mut file, &data)?;
+
+            Ok(())
         }
 
     }

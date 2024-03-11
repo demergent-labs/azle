@@ -1,9 +1,8 @@
 import { execSync } from 'child_process';
 import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
-import { readFileSync, existsSync, createReadStream } from 'fs';
-import { DfxJson } from '../utils/types';
+import { existsSync, createReadStream } from 'fs';
 import { getCanisterId } from '../../../test';
-import { readdir, stat, open } from 'fs/promises';
+import { readdir, stat } from 'fs/promises';
 import { join } from 'path';
 
 type Src = string;
@@ -29,11 +28,8 @@ type Dest = string;
  */
 export async function uploadAssets(
     canisterName: string,
-    srcPath?: Src,
-    destPath?: Dest
+    assets: [Src, Dest][]
 ) {
-    const assetsToUpload = getAssetsToUpload(canisterName, srcPath, destPath);
-
     const canisterId = getCanisterId(canisterName);
 
     const replicaWebServerPort = execSync(`dfx info webserver-port`)
@@ -47,8 +43,7 @@ export async function uploadAssets(
 
     const chunkSize = 2_000_000; // The current message limit is about 2 MiB
 
-    for (let i = 0; i < assetsToUpload.length; i++) {
-        const [srcPath, destPath] = assetsToUpload[i];
+    for (const [srcPath, destPath] of assets) {
         // Await each upload so the canister doesn't get overwhelmed by requests
         await upload(srcPath, destPath, chunkSize, actor);
     }
@@ -121,7 +116,7 @@ async function uploadAsset(
             // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
             // The above throttling is sufficient to manage the speed of uploads
             actor
-                .upload_asset(destPath, timestamp, chunkNumber, data, size)
+                .upload_file_chunk(destPath, timestamp, chunkNumber, data, size)
                 .catch((error) => {
                     console.error(error);
                 });
@@ -138,31 +133,6 @@ async function throttle() {
         await new Promise((resolve) => setTimeout(resolve, 2_000)); // Mainnet requires more throttling. We found 2_000 by trial and error
     }
     await new Promise((resolve) => setTimeout(resolve, 500)); // Should be 500 (ie 1 every 1/2 second or 2 every second)
-}
-
-function getAssetsToUpload(
-    canisterId: string,
-    srcPath?: Src,
-    destPath?: Dest
-): [Src, Dest][] {
-    if (srcPath === undefined && destPath !== undefined) {
-        throw new Error(
-            'Dest path must not be undefined if a src path is defined'
-        );
-    } else if (srcPath !== undefined && destPath === undefined) {
-        throw new Error(
-            'Src path must not be undefined if a dest path is defined'
-        );
-    } else if (srcPath === undefined && destPath === undefined) {
-        // If both paths are undefined, look at the dfx.json for the assets to upload
-        const dfxJson: DfxJson = JSON.parse(
-            readFileSync('dfx.json').toString()
-        );
-        return dfxJson.canisters[canisterId].assets_large ?? [];
-    } else if (srcPath !== undefined && destPath !== undefined) {
-        return [[srcPath, destPath]];
-    }
-    throw new Error('Unreachable');
 }
 
 async function createUploadAssetActor(
@@ -185,7 +155,7 @@ async function createUploadAssetActor(
     return Actor.createActor(
         ({ IDL }) => {
             return IDL.Service({
-                upload_asset: IDL.Func(
+                upload_file_chunk: IDL.Func(
                     [
                         IDL.Text,
                         IDL.Nat64,

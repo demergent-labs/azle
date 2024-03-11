@@ -201,6 +201,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
     let reload_js = reload_js::get_reload_js(&compiler_info.env_vars);
 
+    // TODO rename this
     let upload_assets = upload_assets::get_upload_assets();
 
     quote! {

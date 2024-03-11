@@ -5,6 +5,7 @@ import { generateNewAzleProject } from './new_command';
 import { version as azleVersion } from '../../package.json';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { uploadAssets } from './asset_uploader';
+import { getCanisterConfig, unwrap } from './utils';
 
 export function handleCli(
     stdioType: IOType,
@@ -100,7 +101,33 @@ function handleCommandClean(
 
 async function handleUploadAssets() {
     const canisterName = process.argv[3];
+    console.log(`Well there is your problem canister name is ${canisterName}`);
     const srcPath = process.argv[4];
     const destPath = process.argv[5];
-    await uploadAssets(canisterName, srcPath, destPath);
+    const assetsToUpload = getAssetsToUpload(canisterName, srcPath, destPath);
+    await uploadAssets(canisterName, assetsToUpload);
+}
+
+function getAssetsToUpload(
+    canisterName: string,
+    srcPath?: string,
+    destPath?: string
+): [string, string][] {
+    if (srcPath === undefined && destPath !== undefined) {
+        throw new Error(
+            'Dest path must not be undefined if a src path is defined'
+        );
+    } else if (srcPath !== undefined && destPath === undefined) {
+        throw new Error(
+            'Src path must not be undefined if a dest path is defined'
+        );
+    } else if (srcPath === undefined && destPath === undefined) {
+        // If both paths are undefined, look at the dfx.json for the assets to upload
+        console.log(`What about here? canister name is ${canisterName}`);
+        const dfxJson = unwrap(getCanisterConfig(canisterName));
+        return dfxJson.assets_large ?? [];
+    } else if (srcPath !== undefined && destPath !== undefined) {
+        return [[srcPath, destPath]];
+    }
+    throw new Error('Unreachable');
 }

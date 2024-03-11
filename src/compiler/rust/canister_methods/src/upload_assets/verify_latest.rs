@@ -2,18 +2,18 @@ use quote::quote;
 
 pub fn get_verify_latest() -> proc_macro2::TokenStream {
     quote! {
-        pub fn verify_latest_version(dest_path: &str, timestamp: u64) -> bool {
-            let upload_assets_timestamp = UPLOADED_ASSETS_TIMESTAMPS.with(|upload_assets_timestamp_map| {
-                match upload_assets_timestamp_map.borrow().get(dest_path) {
+        pub fn verify_latest_version(dest_path: &str, current_timestamp: u64) -> bool {
+            let last_recorded_timestamp = UPLOADED_FILE_TIMESTAMPS.with(|uploaded_file_timestamps_map| {
+                match uploaded_file_timestamps_map.borrow().get(dest_path) {
                     Some(timestamp) => timestamp.clone(),
                     None => 0,
                 }
             });
-            if timestamp > upload_assets_timestamp {
+            if current_timestamp > last_recorded_timestamp {
                 // The request is from a newer upload attempt. Clean up the previous attempt.
-                reset_for_new_upload(dest_path, timestamp);
+                reset_for_new_upload(dest_path, current_timestamp);
                 true
-            } else if timestamp < upload_assets_timestamp {
+            } else if current_timestamp < last_recorded_timestamp {
                 // The request is from an earlier upload attempt. Disregard
                 false
             } else {
@@ -23,10 +23,10 @@ pub fn get_verify_latest() -> proc_macro2::TokenStream {
         }
 
         fn reset_for_new_upload(dest_path: &str, timestamp: u64) {
-            UPLOADED_ASSETS_TIMESTAMPS.with(|upload_assets_timestamp_map| {
-                let mut upload_assets_timestamp_map_mut = upload_assets_timestamp_map.borrow_mut();
+            UPLOADED_FILE_TIMESTAMPS.with(|upload_file_timestamps_map| {
+                let mut upload_file_timestamps_map_mut = upload_file_timestamps_map.borrow_mut();
 
-                upload_assets_timestamp_map_mut.insert(dest_path.to_string(), timestamp);
+                upload_file_timestamps_map_mut.insert(dest_path.to_string(), timestamp);
                 if let Err(err) = delete_temp_chunks(dest_path) {
                     // TODO error handling?
                     // These files may clutter the file system and take up space but otherwise are harmless.
