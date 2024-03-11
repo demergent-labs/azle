@@ -112,10 +112,9 @@ async function uploadAsset(
         });
 
         for await (const data of fileStream) {
-            chunkNumber++;
             await throttle();
             console.info(
-                `uploadAsset: ${srcPath} | ${chunkNumber} of ~${Math.ceil(
+                `uploadAsset: ${srcPath} | ${chunkNumber + 1} of ~${Math.ceil(
                     size / chunkSize
                 )}`
             );
@@ -126,6 +125,7 @@ async function uploadAsset(
                 .catch((error) => {
                     console.error(error);
                 });
+            chunkNumber++;
         }
     }
     console.info(`uploadAsset: finished ${srcPath}`);

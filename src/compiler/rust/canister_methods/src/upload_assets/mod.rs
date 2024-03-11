@@ -30,6 +30,7 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
             }
         };
 
+        // TODO delete this when done troubleshooting
         match test_read_temp_chunk(&dest_path, chunk_number, false) {
             Ok(_) => (),
             Err(err) => panic!("There was a problem with the verification: {}", err),
@@ -172,7 +173,7 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
     }
 
     fn verify_latest_version(dest_path: &str, timestamp: u64) -> bool {
-        UPLOADED_ASSETS_TIMESTAMP.with(|upload_assets_timestamp_map| {
+        UPLOADED_ASSETS_TIMESTAMPS.with(|upload_assets_timestamp_map| {
             let mut upload_assets_timestamp_map_mut = upload_assets_timestamp_map.borrow_mut();
             let upload_assets_timestamp = match upload_assets_timestamp_map_mut.get_mut(dest_path) {
                 Some(timestamp) => timestamp,

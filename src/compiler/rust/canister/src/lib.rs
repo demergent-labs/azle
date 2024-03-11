@@ -84,7 +84,7 @@ thread_local! {
 
     static FILE_INFO: RefCell<BTreeMap<String, (ChunkCount, BytesReceived)>> = RefCell::new(BTreeMap::new());
 
-    static UPLOADED_ASSETS_TIMESTAMP: RefCell<BTreeMap<String, u64>> = RefCell::new(BTreeMap::new());
+    static UPLOADED_ASSETS_TIMESTAMPS: RefCell<BTreeMap<String, u64>> = RefCell::new(BTreeMap::new());
 
     static PARTIAL_ASSETS_HASHES: RefCell<HashMap<String, Hash>> = RefCell::new(HashMap::new());
 

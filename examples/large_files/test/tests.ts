@@ -50,17 +50,24 @@ export function getTests(canisterId: string): Test[] {
         generateTest(origin, `test${150 * 1024 * 1024 + 1}B`, 'auto'),
         generateTest(origin, 'test2000001B', 'auto'),
         //      General Cases
-        // generateTest(origin, 'test1KiB', 'auto'),
-        // generateTest(origin, 'test10KiB', 'auto'),
-        // generateTest(origin, 'test100KiB', 'auto'),
-        // generateTest(origin, 'test1MiB', 'auto'),
-        // generateTest(origin, 'test10MiB', 'auto'),
-        // generateTest(origin, 'test100MiB', 'auto'),
-        // generateTest(origin, 'test250MiB', 'auto'),
+        generateTest(origin, 'test1KiB', 'auto'),
+        generateTest(origin, 'test10KiB', 'auto'),
+        generateTest(origin, 'test100KiB', 'auto'),
+        generateTest(origin, 'test1MiB', 'auto'),
+        generateTest(origin, 'test10MiB', 'auto'),
+        generateTest(origin, 'test100MiB', 'auto'),
+        generateTest(origin, 'test250MiB', 'auto'),
+        generateTest(origin, 'test1GiB', 'auto'),
+        // TODO excluded because there isn't room on the heap. Bring back after https://github.com/wasm-forge/stable-fs/issues/2 is resolved
         { ...generateTest(origin, 'test500MiB', 'auto'), skip: true }, // We currently run out of memory with this file
-        { ...generateTest(origin, 'test1GiB', 'auto'), skip: true }
-        // generateTest(origin, `test${2_000_000 * 18}B`, 'auto'),
-        // generateTest(origin, `test${2_000_000 * 18 + 1}B`, 'auto')
+        {
+            ...generateTest(origin, `test${2_000_000 * 18}B`, 'auto'),
+            skip: true
+        },
+        {
+            ...generateTest(origin, `test${2_000_000 * 18 + 1}B`, 'auto'),
+            skip: true
+        }
     ];
 }
 

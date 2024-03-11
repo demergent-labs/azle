@@ -16,6 +16,7 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
                 .collect()
         }
 
+        // TODO get rid of this when testing is done.
         #[ic_cdk_macros::query]
         pub fn get_file_hashes() -> Vec<String> {
             ASSETS_HASHES

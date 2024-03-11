@@ -1,17 +1,6 @@
 import { createHash } from 'crypto';
 import { open } from 'fs/promises';
 
-async function main() {
-    const args = process.argv.slice(2);
-    const filePath = args[0];
-    const fileHash = await hashFile(filePath);
-    console.log(fileHash.toString('hex'));
-}
-
-if (require.main === module) {
-    main();
-}
-
 export async function hashFile(path: string): Promise<Buffer> {
     return await hashFileByParts(path, 0);
 }
@@ -25,6 +14,7 @@ async function hashFileByParts(
 
     // Read the bytes
     // TODO Before having the stable file storage hooked up 120 worked. For right now 60 seems to be working. I think we could do more but I want to get everything in place before spending a lot of time fine tuning it
+    // TODO it would be great to get the size of the chunks from the canister, then we wouldn't have to every update this
     const limit = 60 * 1024 * 1024; // Must be the same as on the canister end or hashes will not match
     const buffer = Buffer.alloc(limit); // Allocate a Buffer for reading
 

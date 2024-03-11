@@ -1,5 +1,4 @@
-import { mkdir, writeFile, appendFile } from 'fs/promises';
-import { dirname } from 'path';
+import { createFileOfSize, toBytes } from '.';
 
 async function main() {
     // Extract filename and size from command line arguments
@@ -21,30 +20,13 @@ async function main() {
         process.exit(1);
     }
 
-    createFileOfSize(filename, sizeInBytes);
+    await createFileOfSize(filename, sizeInBytes);
     console.log(
         "File '" + filename + "' created with size " + sizeInBytes + ' bytes.'
     );
 }
 
-if (require.main === module) {
-    main();
-}
-
-// Function to create a file of a specific size in bytes
-export async function createFileOfSize(path: string, sizeInBytes: number) {
-    await mkdir(dirname(path), { recursive: true });
-    const defaultChunkSize = 1024; // Adjust the chunk size as needed
-    const buffer = Buffer.alloc(defaultChunkSize);
-    for (let i = 0; i < sizeInBytes; i += defaultChunkSize) {
-        const remainingBytes = sizeInBytes - i * defaultChunkSize;
-        const chunkSize = Math.min(remainingBytes, defaultChunkSize);
-        for (let byte = 0; byte < chunkSize; byte++) {
-            buffer[byte] = Math.floor(Math.random() * 256); // Generate random byte value (0-255)
-        }
-        await appendFile(path, buffer.subarray(0, chunkSize));
-    }
-}
+main();
 
 // Parse size from string with optional unit suffix (KB, MB, GB)
 function parseSize(sizeString: string) {
@@ -67,19 +49,4 @@ function parseSize(sizeString: string) {
             return toBytes(size, 'GiB');
     }
     return size;
-}
-
-export type Unit = 'B' | 'KiB' | 'MiB' | 'GiB';
-
-export function toBytes(numBytes: number, unit: Unit): number {
-    if (unit === 'B') {
-        return numBytes;
-    } else if (unit === 'KiB') {
-        return numBytes * 1024;
-    } else if (unit === 'MiB') {
-        return numBytes * 1024 * 1024;
-    } else if (unit === 'GiB') {
-        return numBytes * 1024 * 1024 * 1024;
-    }
-    throw new Error('Invalid Unit. Must be B, KiB, MiB, or GiB');
 }
