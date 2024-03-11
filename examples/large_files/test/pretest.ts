@@ -5,6 +5,7 @@ import { readdir, stat, unlink } from 'fs/promises';
 import { join } from 'path';
 
 async function pretest() {
+    await clearDir(join('assets', 'auto'));
     // Edge Cases
     // TODO excluded because it will require some reworking to get 0 byte files to work and it doesn't seem urgent
     // generateFileOfSize(0, 'B');
@@ -44,20 +45,23 @@ pretest();
 
 async function generateFileOfSize(size: number, unit: Unit) {
     const autoDir = join('assets', 'auto');
-    await clearDir(autoDir);
     const path = join(autoDir, `test${size}${unit}`);
     const fileSize = toBytes(size, unit);
     await createFileOfSize(path, fileSize);
 }
 
-async function clearDir(path: string, recursive: boolean = false) {
-    const files = await readdir(path);
-    for (const file in files) {
-        const stats = await stat(file);
+async function clearDir(dirPath: string, recursive: boolean = false) {
+    if (!existsSync(dirPath)) {
+        return; // Dir doesn't exists, no need to clear it
+    }
+    const contents = await readdir(dirPath);
+    for (const name of contents) {
+        const filePath = join(dirPath, name);
+        const stats = await stat(filePath);
         if (stats.isFile()) {
-            await unlink(join(path, file));
+            await unlink(filePath);
         } else if (stats.isDirectory() && recursive) {
-            clearDir(join(path, file), true);
+            clearDir(filePath, true);
         }
     }
 }

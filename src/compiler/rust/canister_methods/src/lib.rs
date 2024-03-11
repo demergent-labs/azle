@@ -203,8 +203,6 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
     let upload_assets = upload_assets::get_upload_assets();
 
-    let hash_file = hash_file::get_hash_file();
-
     quote! {
         static ASSETS_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/src/assets");
 
@@ -271,8 +269,6 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         #reload_js
 
         #upload_assets
-
-        #hash_file
     }
     .into()
 }
