@@ -81,8 +81,12 @@ export async function azleFetch(input: any, init?: any): Promise<any> {
         const contents = await readFile(path);
 
         return {
+            ok: true,
             arrayBuffer: async () => {
                 return contents.buffer;
+            },
+            json: async () => {
+                return JSON.parse(contents.toString());
             },
             text: async () => {
                 return contents.toString();

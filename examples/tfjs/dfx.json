@@ -1,0 +1,24 @@
+{
+    "canisters": {
+        "api": {
+            "type": "custom",
+            "main": "src/api.ts",
+            "candid": "src/api.did",
+            "candid_gen": "http",
+            "build": "npx azle api",
+            "wasm": ".azle/api/api.wasm",
+            "gzip": true,
+            "assets": [["src/spam", "spam"]],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/api.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
+        }
+    }
+}

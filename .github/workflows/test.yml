@@ -148,6 +148,7 @@ jobs:
                     "examples/stable_b_tree_map_instruction_threshold",
                     "examples/stable_memory",
                     "examples/stable_structures",
+                    "examples/tfjs",
                     "examples/timers",
                     "examples/tuple_types",
                     "examples/update",
