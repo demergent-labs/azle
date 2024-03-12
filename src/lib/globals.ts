@@ -16,6 +16,10 @@ declare global {
     var _azleTimerCallbacks: { [key: string]: () => void };
     var _azleGuardFunctions: { [key: string]: () => any };
     var _azleWebAssembly: any;
+    var _azleOutgoingHttpOptionsMaxResponseBytes: bigint | undefined;
+    var _azleOutgoingHttpOptionsCycles: bigint | undefined;
+    var _azleOutgoingHttpOptionsTransformMethodName: string | undefined;
+    var _azleOutgoingHttpOptionsTransformContext: Uint8Array | undefined;
 }
 
 globalThis._azleInsideCanister =
@@ -119,5 +123,5 @@ if (globalThis._azleInsideCanister) {
         }
     } as any;
 
-    globalThis.fetch = azleFetch;
+    (globalThis as any).fetch = azleFetch;
 }

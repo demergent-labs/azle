@@ -33,6 +33,7 @@ import { rejectMessage } from './reject_message';
 import { reply } from './reply';
 import { replyRaw } from './reply_raw';
 import { setCertifiedData } from './set_certified_data';
+import { setOutgoingHttpOptions } from './set_outgoing_http_options';
 import { setTimer } from './set_timer';
 import { setTimerInterval } from './set_timer_interval';
 import { stable64Grow } from './stable_64_grow';
@@ -86,6 +87,7 @@ export const ic = {
     reply,
     replyRaw,
     setCertifiedData,
+    setOutgoingHttpOptions,
     setTimer,
     setTimerInterval,
     stableBytes,
