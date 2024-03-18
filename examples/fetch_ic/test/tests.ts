@@ -5,7 +5,6 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Principal } from '@dfinity/principal'; // TODO get rid of this dependency if we installed it
 import { Test, getCanisterOrigin } from 'azle/test';
 import puppeteer, { Browser, Page } from 'puppeteer';
 
@@ -283,7 +282,7 @@ export function getTests(canisterName: string): Test[] {
     ];
 }
 
-function iiLogin(page: Page) {
+function iiLogin(page: Page): Promise<void> {
     return new Promise<void>((resolve) => {
         page.once('popup', async (iiPage) => {
             if (iiPage === null) {
