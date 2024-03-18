@@ -28,7 +28,7 @@ export function getTests(canisterName: string): Test[] {
 
                 page.on('console', (message) => {
                     for (const arg of message.args()) {
-                        console.log(`Puppetteer log: ${arg}`);
+                        console.info(`Puppetteer log: ${arg}`);
                     }
                 });
 
