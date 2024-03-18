@@ -243,6 +243,28 @@ jobs:
                   path: /home/runner/.config/azle
                   # path: $HOME/.config/azle
                   key: config-azle-${{ hashFiles('src/compiler/Dockerfile', 'src/compiler/rust/**') }}
+              # This is for the --native-compilation tests
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              name: Install Rust
+              shell: bash -l {0}
+              run: |
+                  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain=1.73.0 --profile=minimal
+                  rustup target add wasm32-wasi
+              # This is for the --native-compilation tests
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              name: Install wasi2ic
+              shell: bash -l {0}
+              run: cargo install --git https://github.com/wasm-forge/wasi2ic --rev 806c3558aad24224852a9582f018178402cb3679
+              # This is for the --native-compilation tests
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              name: Install wasmedge-quickjs
+              shell: bash -l {0}
+              run: |
+                  mkdir -p /home/runner/.config/azle
+                  cd /home/runner/.config/azle
+                  git clone https://github.com/demergent-labs/wasmedge-quickjs
+                  cd wasmedge-quickjs
+                  git checkout 6c81d7e6fe4b22a468beceed0ee697f4163e7ca8
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.os == 'ubuntu-latest' }}
               shell: bash -l {0}
               run: sudo apt-get install -y podman
@@ -271,6 +293,11 @@ jobs:
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
               run: npm link azle
+              # This is to put wasmedge-quickjs in the correct location for the --native-compilation tests
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              shell: bash -l {0}
+              working-directory: ${{ matrix.example_directories }}
+              run: mv /home/runner/.config/azle/wasmedge-quickjs "/home/runner/.config/azle/wasmedge-quickjs_$(npx azle dockerfile-hash)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}

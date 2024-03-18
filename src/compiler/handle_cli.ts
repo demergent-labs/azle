@@ -31,6 +31,12 @@ export function handleCli(
         return true;
     }
 
+    if (commandName === '--version') {
+        handleVersionCommand();
+
+        return true;
+    }
+
     return false;
 }
 
@@ -89,4 +95,8 @@ function handleCommandClean(
     );
 
     console.info(`azle images removed`);
+}
+
+function handleVersionCommand() {
+    console.info(azleVersion);
 }
