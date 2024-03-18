@@ -7,9 +7,9 @@ export default Server(() => {
     app.use(express.json());
 
     app.get('/headers-array', (req, res) => {
-        res.setHeader('x-azle-response-0', 'x-azle-response-0');
-        res.setHeader('x-azle-response-1', 'x-azle-response-1');
-        res.setHeader('x-azle-response-2', 'x-azle-response-2');
+        res.setHeader('X-Azle-Response-Key-0', 'X-Azle-Response-Value-0');
+        res.setHeader('X-Azle-Response-Key-1', 'X-Azle-Response-Value-1');
+        res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
         res.json({
             whoami: ic.caller().toString(),
@@ -18,9 +18,9 @@ export default Server(() => {
     });
 
     app.get('/headers-object', (req, res) => {
-        res.setHeader('x-azle-response-0', 'x-azle-response-0');
-        res.setHeader('x-azle-response-1', 'x-azle-response-1');
-        res.setHeader('x-azle-response-2', 'x-azle-response-2');
+        res.setHeader('X-Azle-Response-Key-0', 'X-Azle-Response-Value-0');
+        res.setHeader('X-Azle-Response-Key-1', 'X-Azle-Response-Value-1');
+        res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
         res.json({
             whoami: ic.caller().toString(),
@@ -29,9 +29,9 @@ export default Server(() => {
     });
 
     app.post('/body-uint8array', (req, res) => {
-        res.setHeader('x-azle-response-0', 'x-azle-response-0');
-        res.setHeader('x-azle-response-1', 'x-azle-response-1');
-        res.setHeader('x-azle-response-2', 'x-azle-response-2');
+        res.setHeader('X-Azle-Response-Key-0', 'X-Azle-Response-Value-0');
+        res.setHeader('X-Azle-Response-Key-1', 'X-Azle-Response-Value-1');
+        res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
         res.json({
             whoami: ic.caller().toString(),
@@ -40,9 +40,9 @@ export default Server(() => {
     });
 
     app.put('/body-string', (req, res) => {
-        res.setHeader('x-azle-response-0', 'x-azle-response-0');
-        res.setHeader('x-azle-response-1', 'x-azle-response-1');
-        res.setHeader('x-azle-response-2', 'x-azle-response-2');
+        res.setHeader('X-Azle-Response-Key-0', 'X-Azle-Response-Value-0');
+        res.setHeader('X-Azle-Response-Key-1', 'X-Azle-Response-Value-1');
+        res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
         res.json({
             whoami: ic.caller().toString(),
@@ -51,9 +51,9 @@ export default Server(() => {
     });
 
     app.patch('/body-array-buffer', (req, res) => {
-        res.setHeader('x-azle-response-0', 'x-azle-response-0');
-        res.setHeader('x-azle-response-1', 'x-azle-response-1');
-        res.setHeader('x-azle-response-2', 'x-azle-response-2');
+        res.setHeader('X-Azle-Response-Key-0', 'X-Azle-Response-Value-0');
+        res.setHeader('X-Azle-Response-Key-1', 'X-Azle-Response-Value-1');
+        res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
         res.json({
             whoami: ic.caller().toString(),
@@ -62,9 +62,9 @@ export default Server(() => {
     });
 
     app.delete('/body-blob', (req, res) => {
-        res.setHeader('x-azle-response-0', 'x-azle-response-0');
-        res.setHeader('x-azle-response-1', 'x-azle-response-1');
-        res.setHeader('x-azle-response-2', 'x-azle-response-2');
+        res.setHeader('X-Azle-Response-Key-0', 'X-Azle-Response-Value-0');
+        res.setHeader('X-Azle-Response-Key-1', 'X-Azle-Response-Value-1');
+        res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
         res.json({
             whoami: ic.caller().toString(),
@@ -73,9 +73,9 @@ export default Server(() => {
     });
 
     app.post('/body-data-view', (req, res) => {
-        res.setHeader('x-azle-response-0', 'x-azle-response-0');
-        res.setHeader('x-azle-response-1', 'x-azle-response-1');
-        res.setHeader('x-azle-response-2', 'x-azle-response-2');
+        res.setHeader('X-Azle-Response-Key-0', 'X-Azle-Response-Value-0');
+        res.setHeader('X-Azle-Response-Key-1', 'X-Azle-Response-Value-1');
+        res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
         res.json({
             whoami: ic.caller().toString(),
@@ -84,9 +84,9 @@ export default Server(() => {
     });
 
     app.get('/url-query-params-get', (req, res) => {
-        res.setHeader('x-azle-response-0', 'x-azle-response-0');
-        res.setHeader('x-azle-response-1', 'x-azle-response-1');
-        res.setHeader('x-azle-response-2', 'x-azle-response-2');
+        res.setHeader('X-Azle-Response-Key-0', 'X-Azle-Response-Value-0');
+        res.setHeader('X-Azle-Response-Key-1', 'X-Azle-Response-Value-1');
+        res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
         res.json({
             whoami: ic.caller().toString(),
@@ -95,9 +95,9 @@ export default Server(() => {
     });
 
     app.post('/url-query-params-post', (req, res) => {
-        res.setHeader('x-azle-response-0', 'x-azle-response-0');
-        res.setHeader('x-azle-response-1', 'x-azle-response-1');
-        res.setHeader('x-azle-response-2', 'x-azle-response-2');
+        res.setHeader('X-Azle-Response-Key-0', 'X-Azle-Response-Value-0');
+        res.setHeader('X-Azle-Response-Key-1', 'X-Azle-Response-Value-1');
+        res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
 
         res.json({
             whoami: ic.caller().toString(),
@@ -105,23 +105,26 @@ export default Server(() => {
         });
     });
 
-    app.get('/not-authorized-get', (req, res) => {
+    app.get('/not-authorized-get', (_req, res) => {
         res.status(401).send('Not Authorized');
     });
 
-    app.post('/not-authorized-post', (req, res) => {
+    app.post('/not-authorized-post', (_req, res) => {
         res.status(401).send('Not Authorized');
     });
 
-    app.head('/head', (req, res) => {
-        res.setHeader('x-azle-response-0', 'x-azle-response-0');
-        res.setHeader('x-azle-response-1', 'x-azle-response-1');
-        res.setHeader('x-azle-response-2', 'x-azle-response-2');
+    app.head('/head', (_req, res) => {
+        res.setHeader('X-Azle-Response-Key-0', 'X-Azle-Response-Value-0');
+        res.setHeader('X-Azle-Response-Key-1', 'X-Azle-Response-Value-1');
+        res.setHeader('X-Azle-Response-Key-2', 'X-Azle-Response-Value-2');
         res.end();
     });
 
-    app.options('/options', (req, res) => {
-        res.setHeader('x-azle-response-options', 'x-azle-response-options');
+    app.options('/options', (_req, res) => {
+        res.setHeader(
+            'X-Azle-Response-Key-Options',
+            'X-Azle-Response-Value-Options'
+        );
         res.end();
     });
 
