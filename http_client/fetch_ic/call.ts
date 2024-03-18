@@ -199,7 +199,7 @@ async function callHttpRequest(
 ): Promise<CallHttpRequestResult> {
     const method = init?.method ?? 'GET';
 
-    getHeadBodyCheck(method, body);
+    checkGetHeadBody(method, body);
 
     return await actor.http_request({
         method,
@@ -219,7 +219,7 @@ async function callHttpRequestUpdate(
 ): Promise<CallHttpRequestUpdateResult> {
     const method = init?.method ?? 'GET';
 
-    getHeadBodyCheck(method, body);
+    checkGetHeadBody(method, body);
 
     return await actor.http_request_update({
         method,
@@ -237,7 +237,7 @@ async function callHttpRequestUpdate(
     });
 }
 
-function getHeadBodyCheck(method: string, body: Uint8Array) {
+function checkGetHeadBody(method: string, body: Uint8Array) {
     if (
         (method.toLowerCase() === 'get' || method.toLowerCase() === 'head') &&
         body.length !== 0
