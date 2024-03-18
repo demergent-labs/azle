@@ -168,7 +168,8 @@ function shouldCallHttpRequest(
         init.method === 'HEAD' ||
         init.method === 'OPTIONS' ||
         headers.find(
-            ([key, value]) => key === 'x-ic-force-query' && value === 'true'
+            ([key, value]) =>
+                key.toLowerCase() === 'x-ic-force-query' && value === 'true'
         ) !== undefined
     );
 }
@@ -185,7 +186,8 @@ function shouldCallHttpRequestUpdate(
             init.method === 'DELETE' ||
             headers.find(
                 ([key, value]) =>
-                    key === 'x-ic-force-update' && value === 'true'
+                    key.toLowerCase() === 'x-ic-force-update' &&
+                    value === 'true'
             ) !== undefined)
     );
 }
