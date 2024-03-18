@@ -1,12 +1,22 @@
+// TODO CONNECT and TRACE are not currently supported as we believe ICP does not support them in any way
+
 import { createActor } from './actor';
 
-export type CallResult = Awaited<ReturnType<typeof call>>;
+export type CallResult = CallHttpRequestResult | CallHttpRequestUpdateResult;
+
+export type CallHttpRequestResult = Awaited<
+    ReturnType<Awaited<ReturnType<typeof createActor>>['http_request']>
+>;
+
+export type CallHttpRequestUpdateResult = Awaited<
+    ReturnType<Awaited<ReturnType<typeof createActor>>['http_request_update']>
+>;
 
 export async function call(
     input: RequestInfo | URL,
     init: RequestInit | undefined,
     actor: Awaited<ReturnType<typeof createActor>>
-) {
+): Promise<CallResult> {
     const urlString = getUrlString(input);
     const url = new URL(urlString);
     const urlAndQueryParams = `${url.pathname}${url.search}`;
@@ -14,50 +24,24 @@ export async function call(
     const body = await prepareRequestBody(init);
     const headers = prepareRequestHeaders(init);
 
-    if (
-        init === undefined ||
-        init.method === undefined ||
-        init.method === 'GET' ||
-        init.method === 'HEAD' ||
-        init.method === 'OPTIONS' ||
-        headers.find(
-            ([key, value]) => key === 'x-ic-force-query' && value === 'true'
-        ) !== undefined
-    ) {
-        return await actor.http_request({
-            method: init?.method ?? 'GET',
-            url: urlAndQueryParams,
+    if (shouldCallHttpRequest(init, headers)) {
+        return await callHttpRequest(
+            init,
+            actor,
+            urlAndQueryParams,
             headers,
-            body,
-            certificate_version: [2]
-        });
+            body
+        );
     }
 
-    if (
-        init !== undefined &&
-        (init.method === 'POST' ||
-            init.method === 'PUT' ||
-            init.method === 'PATCH' ||
-            init.method === 'DELETE' ||
-            headers.find(
-                ([key, value]) =>
-                    key === 'x-ic-force-update' && value === 'true'
-            ) !== undefined)
-    ) {
-        return await actor.http_request_update({
-            method: init.method,
-            url: urlAndQueryParams,
-            headers: [
-                ...headers,
-                ...(body.length !== 0
-                    ? ([['Content-Length', body.length.toString()]] as [
-                          string,
-                          string
-                      ][])
-                    : ([] as [string, string][]))
-            ],
+    if (shouldCallHttpRequestUpdate(init, headers)) {
+        return await callHttpRequestUpdate(
+            init,
+            actor,
+            urlAndQueryParams,
+            headers,
             body
-        });
+        );
     }
 
     throw new Error(`fetchIc: This request combination is not supported`);
@@ -171,4 +155,95 @@ async function prepareRequestBody(
     }
 
     throw new Error(`fetchIc: Not a supported fetchIc body type`);
+}
+
+function shouldCallHttpRequest(
+    init: RequestInit | undefined,
+    headers: [string, string][]
+): boolean {
+    return (
+        init === undefined ||
+        init.method === undefined ||
+        init.method === 'GET' ||
+        init.method === 'HEAD' ||
+        init.method === 'OPTIONS' ||
+        headers.find(
+            ([key, value]) => key === 'x-ic-force-query' && value === 'true'
+        ) !== undefined
+    );
+}
+
+function shouldCallHttpRequestUpdate(
+    init: RequestInit | undefined,
+    headers: [string, string][]
+): boolean {
+    return (
+        init !== undefined &&
+        (init.method === 'POST' ||
+            init.method === 'PUT' ||
+            init.method === 'PATCH' ||
+            init.method === 'DELETE' ||
+            headers.find(
+                ([key, value]) =>
+                    key === 'x-ic-force-update' && value === 'true'
+            ) !== undefined)
+    );
+}
+
+async function callHttpRequest(
+    init: RequestInit | undefined,
+    actor: Awaited<ReturnType<typeof createActor>>,
+    urlAndQueryParams: string,
+    headers: [string, string][],
+    body: Uint8Array
+): Promise<CallHttpRequestResult> {
+    const method = init?.method ?? 'GET';
+
+    checkGetHeadBody(method, body);
+
+    return await actor.http_request({
+        method,
+        url: urlAndQueryParams,
+        headers,
+        body,
+        certificate_version: [2]
+    });
+}
+
+async function callHttpRequestUpdate(
+    init: RequestInit | undefined,
+    actor: Awaited<ReturnType<typeof createActor>>,
+    urlAndQueryParams: string,
+    headers: [string, string][],
+    body: Uint8Array
+): Promise<CallHttpRequestUpdateResult> {
+    const method = init?.method ?? 'GET';
+
+    checkGetHeadBody(method, body);
+
+    return await actor.http_request_update({
+        method,
+        url: urlAndQueryParams,
+        headers: [
+            ...headers,
+            ...(body.length !== 0
+                ? ([['Content-Length', body.length.toString()]] as [
+                      string,
+                      string
+                  ][])
+                : ([] as [string, string][]))
+        ],
+        body
+    });
+}
+
+function checkGetHeadBody(method: string, body: Uint8Array) {
+    if (
+        (method.toLowerCase() === 'get' || method.toLowerCase() === 'head') &&
+        body.length !== 0
+    ) {
+        throw new Error(
+            `fetchIc: Request with GET/HEAD method cannot have body.`
+        );
+    }
 }

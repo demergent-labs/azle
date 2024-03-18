@@ -25,9 +25,8 @@ export function getIdentity(
     return authorizationHeaderValue;
 }
 
-function getAuthorizationHeaderValue(
-    headers: RequestInit['headers']
-): string | undefined | Identity {
+// The return type is explicitly any
+function getAuthorizationHeaderValue(headers: RequestInit['headers']): any {
     if (Array.isArray(headers)) {
         return headers.reduce(
             (acc: string | undefined | Identity, [key, value]) => {
