@@ -1,8 +1,11 @@
 import { execSync } from 'child_process';
 import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
+import { Secp256k1KeyIdentity } from '@dfinity/identity-secp256k1';
 import { existsSync, createReadStream } from 'fs';
+import { readFile } from 'fs/promises';
 import { getCanisterId } from '../../../test';
 import { readdir, stat } from 'fs/promises';
+import { homedir } from 'os';
 import { join } from 'path';
 
 type Src = string;
@@ -135,6 +138,20 @@ async function throttle() {
     await new Promise((resolve) => setTimeout(resolve, 500)); // Should be 500 (ie 1 every 1/2 second or 2 every second)
 }
 
+async function getIdentity(
+    identityName: string = 'default'
+): Promise<Secp256k1KeyIdentity> {
+    const identityPath = join(
+        homedir(),
+        '.config',
+        'dfx',
+        'identity',
+        identityName,
+        'identity.pem'
+    );
+    return Secp256k1KeyIdentity.fromPem(await readFile(identityPath, 'utf-8'));
+}
+
 async function createUploadAssetActor(
     canisterId: string,
     replicaWebServerPort: string
@@ -145,7 +162,8 @@ async function createUploadAssetActor(
             : `http://127.0.0.1:${replicaWebServerPort}`;
 
     const agent = new HttpAgent({
-        host
+        host,
+        identity: getIdentity()
     });
 
     if (process.env.DFX_NETWORK !== 'ic') {

@@ -27,6 +27,10 @@ pub fn get_upload_assets() -> proc_macro2::TokenStream {
             file_bytes: Vec<u8>,
             total_len: u64,
         ) {
+            if !ic_cdk::api::is_controller(&ic_cdk::api::caller()) {
+                panic!("Must be a controller to upload files!");
+            }
+
             let is_current_timestamp = verify_latest_version(&dest_path, timestamp);
 
             if !is_current_timestamp {
