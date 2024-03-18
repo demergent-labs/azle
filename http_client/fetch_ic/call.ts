@@ -21,7 +21,8 @@ export async function call(
         init.method === 'HEAD' ||
         init.method === 'OPTIONS' ||
         headers.find(
-            ([key, value]) => key === 'x-ic-force-query' && value === 'true'
+            ([key, value]) =>
+                key.toLowerCase() === 'x-ic-force-query' && value === 'true'
         ) !== undefined
     ) {
         return await actor.http_request({
@@ -41,7 +42,8 @@ export async function call(
             init.method === 'DELETE' ||
             headers.find(
                 ([key, value]) =>
-                    key === 'x-ic-force-update' && value === 'true'
+                    key.toLowerCase() === 'x-ic-force-update' &&
+                    value === 'true'
             ) !== undefined)
     ) {
         return await actor.http_request_update({

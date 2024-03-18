@@ -312,12 +312,12 @@ function shouldUpgrade(
     query: boolean
 ): boolean {
     const forceQueryHeaderExists = forceHeaderExists(
-        'x-ic-force-query',
+        'X-Ic-Force-Query',
         httpRequest.headers
     );
 
     const forceUpdateHeaderExists = forceHeaderExists(
-        'x-ic-force-update',
+        'X-Ic-Force-Update',
         httpRequest.headers
     );
 
@@ -338,7 +338,9 @@ function forceHeaderExists(
 ): boolean {
     return (
         headers.find(
-            ([key, value]) => key === headerName && value === 'true'
+            ([key, value]) =>
+                key.toLowerCase() === headerName.toLowerCase() &&
+                value === 'true'
         ) !== undefined
     );
 }
