@@ -1,12 +1,20 @@
 import { createActor } from './actor';
 
-export type CallResult = Awaited<ReturnType<typeof call>>;
+export type CallResult = CallHttpRequestResult | CallHttpRequestUpdateResult;
+
+export type CallHttpRequestResult = Awaited<
+    ReturnType<Awaited<ReturnType<typeof createActor>>['http_request']>
+>;
+
+export type CallHttpRequestUpdateResult = Awaited<
+    ReturnType<Awaited<ReturnType<typeof createActor>>['http_request_update']>
+>;
 
 export async function call(
     input: RequestInfo | URL,
     init: RequestInit | undefined,
     actor: Awaited<ReturnType<typeof createActor>>
-) {
+): Promise<CallResult> {
     const urlString = getUrlString(input);
     const url = new URL(urlString);
     const urlAndQueryParams = `${url.pathname}${url.search}`;
@@ -186,7 +194,7 @@ async function callHttpRequest(
     urlAndQueryParams: string,
     headers: [string, string][],
     body: Uint8Array
-) {
+): Promise<CallHttpRequestResult> {
     return await actor.http_request({
         method: init?.method ?? 'GET',
         url: urlAndQueryParams,
@@ -202,7 +210,7 @@ async function callHttpRequestUpdate(
     urlAndQueryParams: string,
     headers: [string, string][],
     body: Uint8Array
-) {
+): Promise<CallHttpRequestUpdateResult> {
     return await actor.http_request_update({
         method: init?.method ?? 'GET',
         url: urlAndQueryParams,
