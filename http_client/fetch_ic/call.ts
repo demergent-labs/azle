@@ -1,3 +1,5 @@
+// TODO CONNECT and TRACE are not currently supported as we believe ICP does not support them in any way
+
 import { createActor } from './actor';
 
 export type CallResult = CallHttpRequestResult | CallHttpRequestUpdateResult;
@@ -195,8 +197,12 @@ async function callHttpRequest(
     headers: [string, string][],
     body: Uint8Array
 ): Promise<CallHttpRequestResult> {
+    const method = init?.method ?? 'GET';
+
+    getHeadBodyCheck(method, body);
+
     return await actor.http_request({
-        method: init?.method ?? 'GET',
+        method,
         url: urlAndQueryParams,
         headers,
         body,
@@ -211,8 +217,12 @@ async function callHttpRequestUpdate(
     headers: [string, string][],
     body: Uint8Array
 ): Promise<CallHttpRequestUpdateResult> {
+    const method = init?.method ?? 'GET';
+
+    getHeadBodyCheck(method, body);
+
     return await actor.http_request_update({
-        method: init?.method ?? 'GET',
+        method,
         url: urlAndQueryParams,
         headers: [
             ...headers,
@@ -225,4 +235,15 @@ async function callHttpRequestUpdate(
         ],
         body
     });
+}
+
+function getHeadBodyCheck(method: string, body: Uint8Array) {
+    if (
+        (method.toLowerCase() === 'get' || method.toLowerCase() === 'head') &&
+        body.length !== 0
+    ) {
+        throw new Error(
+            `fetchIc: Request with GET/HEAD method cannot have body.`
+        );
+    }
 }
