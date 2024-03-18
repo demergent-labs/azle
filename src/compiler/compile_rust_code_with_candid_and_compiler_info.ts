@@ -20,8 +20,6 @@ export function compileRustCodeWithCandidAndCompilerInfo(
     // TODO why not just write the dfx.json file here as well?
     writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
 
-    console.log('before compileRustCode nativeCompilation', nativeCompilation);
-
     compileRustCode(
         dockerContainerName,
         canisterName,
