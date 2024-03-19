@@ -202,7 +202,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
     let reload_js = reload_js::get_reload_js(&compiler_info.env_vars);
 
     // TODO rename this
-    let upload_assets = upload_assets::get_upload_assets();
+    let upload_file_chunk = upload_assets::get_upload_file_chunk();
 
     quote! {
         static ASSETS_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/src/assets");
@@ -269,7 +269,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
         #reload_js
 
-        #upload_assets
+        #upload_file_chunk
     }
     .into()
 }

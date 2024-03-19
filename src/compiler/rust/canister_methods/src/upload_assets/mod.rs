@@ -5,8 +5,7 @@ use quote::quote;
 
 use crate::hash_file;
 
-// TODO rename this and the file
-pub fn get_upload_assets() -> proc_macro2::TokenStream {
+pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
     let temp_chunks_utils_src = temp_chunks::get_temp_chunk_utils();
     let verify_latest_src = verify_latest::get_verify_latest();
     let hash_file_src = hash_file::get_hash_file();
