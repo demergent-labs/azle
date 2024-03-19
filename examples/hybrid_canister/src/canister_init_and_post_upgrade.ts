@@ -1,8 +1,9 @@
 import {
+    Canister,
     init,
     postUpgrade,
     query,
-    Server,
+    serverCanisterMethods,
     setNodeServer,
     text,
     update
@@ -15,7 +16,8 @@ let httpUpdateText = '';
 let candidQueryText = '';
 let candidUpdateText = '';
 
-export default Server(serverCallback, {
+export default Canister({
+    ...serverCanisterMethods(serverCallback),
     init: init([text, text, text, text], (param0, param1, param2, param3) => {
         httpQueryText = param0 + '-init';
         httpUpdateText = param1 + '-init';
@@ -55,6 +57,5 @@ function serverCallback() {
     app.post('/http-update', (_req, res) => {
         res.send(httpUpdateText);
     });
-
     return app.listen();
 }

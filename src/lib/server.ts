@@ -171,20 +171,7 @@ export async function httpHandler(
         throw new Error(`The server was not initialized`);
     }
 
-    if (
-        query === true &&
-        httpRequest.headers.find(
-            ([key, value]) => key === 'x-ic-force-query' && value === 'true'
-        ) === undefined &&
-        (httpRequest.method === 'POST' ||
-            httpRequest.method === 'PUT' ||
-            httpRequest.method === 'PATCH' ||
-            httpRequest.method === 'DELETE' ||
-            httpRequest.headers.find(
-                ([key, value]) =>
-                    key === 'x-ic-force-update' && value === 'true'
-            ) !== undefined)
-    ) {
+    if (shouldUpgrade(httpRequest, query)) {
         ic.reply(
             {
                 status_code: 204,
@@ -318,6 +305,44 @@ export async function httpHandler(
     azleSocket.res = res;
 
     nodeServer.emit('request', req, res);
+}
+
+function shouldUpgrade(
+    httpRequest: HttpRequest | HttpUpdateRequest,
+    query: boolean
+): boolean {
+    const forceQueryHeaderExists = forceHeaderExists(
+        'X-Ic-Force-Query',
+        httpRequest.headers
+    );
+
+    const forceUpdateHeaderExists = forceHeaderExists(
+        'X-Ic-Force-Update',
+        httpRequest.headers
+    );
+
+    return (
+        query === true &&
+        !forceQueryHeaderExists &&
+        (httpRequest.method === 'POST' ||
+            httpRequest.method === 'PUT' ||
+            httpRequest.method === 'PATCH' ||
+            httpRequest.method === 'DELETE' ||
+            forceUpdateHeaderExists)
+    );
+}
+
+function forceHeaderExists(
+    headerName: string,
+    headers: [string, string][]
+): boolean {
+    return (
+        headers.find(
+            ([key, value]) =>
+                key.toLowerCase() === headerName.toLowerCase() &&
+                value === 'true'
+        ) !== undefined
+    );
 }
 
 // TODO I think this is correct but it is expensive

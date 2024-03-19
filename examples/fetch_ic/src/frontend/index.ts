@@ -53,9 +53,9 @@ export class AzleApp extends LitElement {
                 method: 'GET',
                 headers: [
                     ['Authorization', toJwt(this.identity)],
-                    ['x-azle-request-0', 'x-azle-request-0'],
-                    ['x-azle-request-1', 'x-azle-request-1'],
-                    ['x-azle-request-2', 'x-azle-request-2']
+                    ['X-Azle-Request-Key-0', 'X-Azle-Request-Value-0'],
+                    ['X-Azle-Request-Key-1', 'X-Azle-Request-Value-1'],
+                    ['X-Azle-Request-Key-2', 'X-Azle-Request-Value-2']
                 ]
             }
         );
@@ -63,12 +63,18 @@ export class AzleApp extends LitElement {
 
         if (
             responseJson.whoami === this.identity.getPrincipal().toString() &&
-            responseJson.value['x-azle-request-0'] === 'x-azle-request-0' &&
-            responseJson.value['x-azle-request-1'] === 'x-azle-request-1' &&
-            responseJson.value['x-azle-request-2'] === 'x-azle-request-2' &&
-            response.headers.get('x-azle-response-0') === 'x-azle-response-0' &&
-            response.headers.get('x-azle-response-1') === 'x-azle-response-1' &&
-            response.headers.get('x-azle-response-2') === 'x-azle-response-2'
+            responseJson.value['X-Azle-Request-Key-0'.toLowerCase()] ===
+                'X-Azle-Request-Value-0' &&
+            responseJson.value['X-Azle-Request-Key-1'.toLowerCase()] ===
+                'X-Azle-Request-Value-1' &&
+            responseJson.value['X-Azle-Request-Key-2'.toLowerCase()] ===
+                'X-Azle-Request-Value-2' &&
+            response.headers.get('X-Azle-Response-Key-0') ===
+                'X-Azle-Response-Value-0' &&
+            response.headers.get('X-Azle-Response-Key-1') ===
+                'X-Azle-Response-Value-1' &&
+            response.headers.get('X-Azle-Response-Key-2') ===
+                'X-Azle-Response-Value-2'
         ) {
             (window as any).headersArraySuccess = true;
         }
@@ -85,9 +91,9 @@ export class AzleApp extends LitElement {
                 method: 'GET',
                 headers: {
                     Authorization: toJwt(this.identity),
-                    'x-azle-request-0': 'x-azle-request-0',
-                    'x-azle-request-1': 'x-azle-request-1',
-                    'x-azle-request-2': 'x-azle-request-2'
+                    'X-Azle-Request-Key-0': 'X-Azle-Request-Value-0',
+                    'X-Azle-Request-Key-1': 'X-Azle-Request-Value-1',
+                    'X-Azle-Request-Key-2': 'X-Azle-Request-Value-2'
                 }
             }
         );
@@ -95,12 +101,18 @@ export class AzleApp extends LitElement {
 
         if (
             responseJson.whoami === this.identity.getPrincipal().toString() &&
-            responseJson.value['x-azle-request-0'] === 'x-azle-request-0' &&
-            responseJson.value['x-azle-request-1'] === 'x-azle-request-1' &&
-            responseJson.value['x-azle-request-2'] === 'x-azle-request-2' &&
-            response.headers.get('x-azle-response-0') === 'x-azle-response-0' &&
-            response.headers.get('x-azle-response-1') === 'x-azle-response-1' &&
-            response.headers.get('x-azle-response-2') === 'x-azle-response-2'
+            responseJson.value['X-Azle-Request-Key-0'.toLowerCase()] ===
+                'X-Azle-Request-Value-0' &&
+            responseJson.value['X-Azle-Request-Key-1'.toLowerCase()] ===
+                'X-Azle-Request-Value-1' &&
+            responseJson.value['X-Azle-Request-Key-2'.toLowerCase()] ===
+                'X-Azle-Request-Value-2' &&
+            response.headers.get('X-Azle-Response-Key-0') ===
+                'X-Azle-Response-Value-0' &&
+            response.headers.get('X-Azle-Response-Key-1') ===
+                'X-Azle-Response-Value-1' &&
+            response.headers.get('X-Azle-Response-Key-2') ===
+                'X-Azle-Response-Value-2'
         ) {
             (window as any).headersObjectSuccess = true;
         }
@@ -137,9 +149,12 @@ export class AzleApp extends LitElement {
                 JSON.stringify({
                     value: 'body-uint8array'
                 }) &&
-            response.headers.get('x-azle-response-0') === 'x-azle-response-0' &&
-            response.headers.get('x-azle-response-1') === 'x-azle-response-1' &&
-            response.headers.get('x-azle-response-2') === 'x-azle-response-2'
+            response.headers.get('X-Azle-Response-Key-0') ===
+                'X-Azle-Response-Value-0' &&
+            response.headers.get('X-Azle-Response-Key-1') ===
+                'X-Azle-Response-Value-1' &&
+            response.headers.get('X-Azle-Response-Key-2') ===
+                'X-Azle-Response-Value-2'
         ) {
             (window as any).bodyUint8ArraySuccess = true;
         }
@@ -171,9 +186,12 @@ export class AzleApp extends LitElement {
                 JSON.stringify({
                     value: 'body-string'
                 }) &&
-            response.headers.get('x-azle-response-0') === 'x-azle-response-0' &&
-            response.headers.get('x-azle-response-1') === 'x-azle-response-1' &&
-            response.headers.get('x-azle-response-2') === 'x-azle-response-2'
+            response.headers.get('X-Azle-Response-Key-0') ===
+                'X-Azle-Response-Value-0' &&
+            response.headers.get('X-Azle-Response-Key-1') ===
+                'X-Azle-Response-Value-1' &&
+            response.headers.get('X-Azle-Response-Key-2') ===
+                'X-Azle-Response-Value-2'
         ) {
             (window as any).bodyStringSuccess = true;
         }
@@ -210,9 +228,12 @@ export class AzleApp extends LitElement {
                 JSON.stringify({
                     value: 'body-array-buffer'
                 }) &&
-            response.headers.get('x-azle-response-0') === 'x-azle-response-0' &&
-            response.headers.get('x-azle-response-1') === 'x-azle-response-1' &&
-            response.headers.get('x-azle-response-2') === 'x-azle-response-2'
+            response.headers.get('X-Azle-Response-Key-0') ===
+                'X-Azle-Response-Value-0' &&
+            response.headers.get('X-Azle-Response-Key-1') ===
+                'X-Azle-Response-Value-1' &&
+            response.headers.get('X-Azle-Response-Key-2') ===
+                'X-Azle-Response-Value-2'
         ) {
             (window as any).bodyArrayBufferSuccess = true;
         }
@@ -251,9 +272,12 @@ export class AzleApp extends LitElement {
                 JSON.stringify({
                     value: 'body-blob'
                 }) &&
-            response.headers.get('x-azle-response-0') === 'x-azle-response-0' &&
-            response.headers.get('x-azle-response-1') === 'x-azle-response-1' &&
-            response.headers.get('x-azle-response-2') === 'x-azle-response-2'
+            response.headers.get('X-Azle-Response-Key-0') ===
+                'X-Azle-Response-Value-0' &&
+            response.headers.get('X-Azle-Response-Key-1') ===
+                'X-Azle-Response-Value-1' &&
+            response.headers.get('X-Azle-Response-Key-2') ===
+                'X-Azle-Response-Value-2'
         ) {
             (window as any).bodyBlobSuccess = true;
         }
@@ -292,9 +316,12 @@ export class AzleApp extends LitElement {
                 JSON.stringify({
                     value: 'body-data-view'
                 }) &&
-            response.headers.get('x-azle-response-0') === 'x-azle-response-0' &&
-            response.headers.get('x-azle-response-1') === 'x-azle-response-1' &&
-            response.headers.get('x-azle-response-2') === 'x-azle-response-2'
+            response.headers.get('X-Azle-Response-Key-0') ===
+                'X-Azle-Response-Value-0' &&
+            response.headers.get('X-Azle-Response-Key-1') ===
+                'X-Azle-Response-Value-1' &&
+            response.headers.get('X-Azle-Response-Key-2') ===
+                'X-Azle-Response-Value-2'
         ) {
             (window as any).bodyDataViewSuccess = true;
         }
@@ -318,9 +345,12 @@ export class AzleApp extends LitElement {
         if (
             responseJson.whoami === this.identity.getPrincipal().toString() &&
             responseJson.value.type === 'get' &&
-            response.headers.get('x-azle-response-0') === 'x-azle-response-0' &&
-            response.headers.get('x-azle-response-1') === 'x-azle-response-1' &&
-            response.headers.get('x-azle-response-2') === 'x-azle-response-2'
+            response.headers.get('X-Azle-Response-Key-0') ===
+                'X-Azle-Response-Value-0' &&
+            response.headers.get('X-Azle-Response-Key-1') ===
+                'X-Azle-Response-Value-1' &&
+            response.headers.get('X-Azle-Response-Key-2') ===
+                'X-Azle-Response-Value-2'
         ) {
             (window as any).urlQueryParamsGetSuccess = true;
         }
@@ -345,9 +375,12 @@ export class AzleApp extends LitElement {
         if (
             responseJson.whoami === this.identity.getPrincipal().toString() &&
             responseJson.value.type === 'post' &&
-            response.headers.get('x-azle-response-0') === 'x-azle-response-0' &&
-            response.headers.get('x-azle-response-1') === 'x-azle-response-1' &&
-            response.headers.get('x-azle-response-2') === 'x-azle-response-2'
+            response.headers.get('X-Azle-Response-Key-0') ===
+                'X-Azle-Response-Value-0' &&
+            response.headers.get('X-Azle-Response-Key-1') ===
+                'X-Azle-Response-Value-1' &&
+            response.headers.get('X-Azle-Response-Key-2') ===
+                'X-Azle-Response-Value-2'
         ) {
             (window as any).urlQueryParamsPostSuccess = true;
         }
@@ -390,9 +423,12 @@ export class AzleApp extends LitElement {
         );
 
         if (
-            response.headers.get('x-azle-response-0') === 'x-azle-response-0' &&
-            response.headers.get('x-azle-response-1') === 'x-azle-response-1' &&
-            response.headers.get('x-azle-response-2') === 'x-azle-response-2'
+            response.headers.get('X-Azle-Response-Key-0') ===
+                'X-Azle-Response-Value-0' &&
+            response.headers.get('X-Azle-Response-Key-1') ===
+                'X-Azle-Response-Value-1' &&
+            response.headers.get('X-Azle-Response-Key-2') ===
+                'X-Azle-Response-Value-2'
         ) {
             (window as any).headSuccess = true;
         }
@@ -408,8 +444,8 @@ export class AzleApp extends LitElement {
         );
 
         if (
-            response.headers.get('x-azle-response-options') ===
-            'x-azle-response-options'
+            response.headers.get('X-Azle-Response-Key-Options') ===
+            'X-Azle-Response-Value-Options'
         ) {
             (window as any).optionsSuccess = true;
         }
