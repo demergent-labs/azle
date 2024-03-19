@@ -20,9 +20,7 @@ export default Server(async () => {
         }) as any
     };
 
-    const model = await tf.loadLayersModel('file://spam/model.json', {
-        fetchFunc: fetch
-    });
+    const model = await tf.loadLayersModel('file://spam/model.json');
 
     app.get('/prediction', async (_req, res) => {
         // TODO Tokenization and prediction for this specific model have not yet been figured out
