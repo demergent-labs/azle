@@ -1,8 +1,6 @@
 import { execSync } from 'child_process';
 
 export async function run_setup(argument?: string) {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
     execSync(`dfx canister create azle`, {
         stdio: 'inherit'
     });
