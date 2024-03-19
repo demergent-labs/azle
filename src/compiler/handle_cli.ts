@@ -35,6 +35,10 @@ export function handleCli(
 
     if (commandName === 'upload-assets') {
         handleUploadAssets();
+    }
+
+    if (commandName === '--version') {
+        handleVersionCommand();
 
         return true;
     }
@@ -123,4 +127,8 @@ function getAssetsToUpload(
     throw new Error(
         'The source path and destination path but be either both defined or both undefined'
     );
+}
+
+function handleVersionCommand() {
+    console.info(azleVersion);
 }

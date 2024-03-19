@@ -25,10 +25,31 @@ import { ServerResponse, Server as NodeServer } from 'http';
 import { HttpConn } from 'http';
 // @ts-ignore
 import { IncomingMessageForServer } from 'http';
+import { CanisterOptions } from './candid/types/reference/service/canister_function';
 
 const httpMessageParser = require('http-message-parser');
 
-export const DefaultToken = Record({});
+export type HeaderField = [text, text];
+export const HeaderField = Tuple(text, text);
+
+export const HttpRequest = Record({
+    method: text,
+    url: text,
+    headers: Vec(HeaderField),
+    body: blob,
+    certificate_version: Opt(nat16)
+});
+export type HttpRequest = typeof HttpRequest.tsType;
+
+export const HttpUpdateRequest = Record({
+    method: text,
+    url: text,
+    headers: Vec(HeaderField),
+    body: blob
+});
+export type HttpUpdateRequest = typeof HttpUpdateRequest.tsType;
+
+export const DefaultToken = blob;
 export function StreamingCallbackHttpResponse<Token extends CandidType>(
     token: Token
 ) {
@@ -68,16 +89,13 @@ export type StreamingStrategy<Token> = Variant<{
     Callback: CallbackStrategy<Token>;
 }>;
 
-export type HeaderField = [text, text];
-export const HeaderField = Tuple(text, text);
-
 export function HttpResponse<Token extends CandidType>(token?: Token) {
     return Record({
         status_code: nat16,
         headers: Vec(HeaderField),
         body: blob,
-        streaming_strategy: Opt(StreamingStrategy(token ?? DefaultToken)),
-        upgrade: Opt(bool)
+        upgrade: Opt(bool),
+        streaming_strategy: Opt(StreamingStrategy(token ?? DefaultToken))
     });
 }
 export type HttpResponse<Token> = {
@@ -88,59 +106,72 @@ export type HttpResponse<Token> = {
     streaming_strategy: Opt<StreamingStrategy<Token>>;
 };
 
-export const HttpRequest = Record({
-    method: text,
-    url: text,
-    headers: Vec(HeaderField),
-    body: blob,
-    certificate_version: Opt(nat16)
-});
-export type HttpRequest = typeof HttpRequest.tsType;
+let nodeServer: NodeServer | undefined = undefined;
 
-let server: NodeServer;
+type ServerCallback = () => NodeServer | Promise<NodeServer>;
 
-export function Server(serverInit: () => NodeServer | Promise<NodeServer>) {
+export function serverInit(serverCallback: ServerCallback) {
+    return init([], async () => {
+        nodeServer = await serverCallback();
+    });
+}
+
+export function serverPostUpgrade(serverCallback: ServerCallback) {
+    return postUpgrade([], async () => {
+        nodeServer = await serverCallback();
+    });
+}
+
+export const serverHttpRequest = query(
+    [HttpRequest],
+    Manual(HttpResponse()),
+    async (httpRequest) => {
+        await httpHandler(httpRequest, true);
+    },
+    {
+        manual: true
+    }
+);
+
+export const serverHttpRequestUpdate = update(
+    [HttpUpdateRequest],
+    Manual(HttpResponse()),
+    async (httpRequest) => {
+        await httpHandler(httpRequest, false);
+    },
+    {
+        manual: true
+    }
+);
+
+export function serverCanisterMethods(serverCallback: ServerCallback) {
+    return {
+        init: serverInit(serverCallback),
+        postUpgrade: serverPostUpgrade(serverCallback),
+        http_request: serverHttpRequest,
+        http_request_update: serverHttpRequestUpdate
+    };
+}
+
+export function Server<T extends CanisterOptions>(
+    serverCallback: ServerCallback,
+    canisterOptions?: T
+) {
     return Canister({
-        init: init([], async () => {
-            server = await serverInit();
-        }),
-        postUpgrade: postUpgrade([], async () => {
-            server = await serverInit();
-        }),
-        http_request: query(
-            [HttpRequest],
-            Manual(HttpResponse()),
-            async (httpRequest) => {
-                await httpHandler(httpRequest, true);
-            },
-            {
-                manual: true
-            }
-        ),
-        http_request_update: update(
-            [HttpRequest],
-            Manual(HttpResponse()),
-            async (httpRequest) => {
-                await httpHandler(httpRequest, false);
-            },
-            {
-                manual: true
-            }
-        )
+        ...serverCanisterMethods(serverCallback),
+        ...canisterOptions
     });
 }
 
 export async function httpHandler(
-    httpRequest: typeof HttpRequest.tsType,
+    httpRequest: HttpRequest | HttpUpdateRequest,
     query: boolean
 ) {
-    if (
-        (httpRequest.method === 'POST' ||
-            httpRequest.method === 'PUT' ||
-            httpRequest.method === 'PATCH' ||
-            httpRequest.method === 'DELETE') &&
-        query === true
-    ) {
+    if (nodeServer === undefined) {
+        throw new Error(`The server was not initialized`);
+    }
+
+    if (shouldUpgrade(httpRequest, query)) {
         ic.reply(
             {
                 status_code: 204,
@@ -273,7 +304,45 @@ export async function httpHandler(
 
     azleSocket.res = res;
 
-    server.emit('request', req, res);
+    nodeServer.emit('request', req, res);
+}
+
+function shouldUpgrade(
+    httpRequest: HttpRequest | HttpUpdateRequest,
+    query: boolean
+): boolean {
+    const forceQueryHeaderExists = forceHeaderExists(
+        'X-Ic-Force-Query',
+        httpRequest.headers
+    );
+
+    const forceUpdateHeaderExists = forceHeaderExists(
+        'X-Ic-Force-Update',
+        httpRequest.headers
+    );
+
+    return (
+        query === true &&
+        !forceQueryHeaderExists &&
+        (httpRequest.method === 'POST' ||
+            httpRequest.method === 'PUT' ||
+            httpRequest.method === 'PATCH' ||
+            httpRequest.method === 'DELETE' ||
+            forceUpdateHeaderExists)
+    );
+}
+
+function forceHeaderExists(
+    headerName: string,
+    headers: [string, string][]
+): boolean {
+    return (
+        headers.find(
+            ([key, value]) =>
+                key.toLowerCase() === headerName.toLowerCase() &&
+                value === 'true'
+        ) !== undefined
+    );
 }
 
 // TODO I think this is correct but it is expensive
@@ -312,4 +381,8 @@ function processChunkedBody(buffer: Buffer): Buffer {
     }
 
     return result;
+}
+
+export function setNodeServer(newNodeServer: NodeServer) {
+    nodeServer = newNodeServer;
 }

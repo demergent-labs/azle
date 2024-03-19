@@ -4,7 +4,7 @@
             "type": "custom",
             "main": "src/index.ts",
             "candid": "src/index.did",
-            "build": "npx azle primitive_types",
+            "build": "npx azle primitive_types --native-compilation",
             "wasm": ".azle/primitive_types/primitive_types.wasm",
             "gzip": true,
             "declarations": {

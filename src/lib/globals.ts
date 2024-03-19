@@ -24,7 +24,13 @@ globalThis._azleInsideCanister =
 if (globalThis._azleInsideCanister) {
     const log = (...args: any[]) => {
         const jsonStringifiedArgs = args
-            .map((arg) => JSON.stringify(arg, jsonReplacer, 4))
+            .map((arg) => {
+                if (arg instanceof Error) {
+                    return `${arg.name}: ${arg.message} at ${arg.stack}`;
+                } else {
+                    return JSON.stringify(arg, jsonReplacer, 4);
+                }
+            })
             .join(' ');
 
         ic.print(jsonStringifiedArgs);

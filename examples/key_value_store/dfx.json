@@ -4,7 +4,7 @@
             "type": "custom",
             "main": "src/index.ts",
             "candid": "src/index.did",
-            "build": "npx azle key_value_store",
+            "build": "npx azle key_value_store --native-compilation",
             "wasm": ".azle/key_value_store/key_value_store.wasm",
             "gzip": true,
             "declarations": {

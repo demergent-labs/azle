@@ -42,6 +42,8 @@ export async function getNamesBeforeCli() {
         .toString()
         .trim();
 
+    const nativeCompilation = process.argv.includes('--native-compilation');
+
     return {
         stdioType,
         dockerfileHash,
@@ -53,7 +55,8 @@ export async function getNamesBeforeCli() {
         dockerImagePathTar,
         dockerImagePathTarGz,
         wasmedgeQuickJsPath,
-        replicaWebServerPort
+        replicaWebServerPort,
+        nativeCompilation
     };
 }
 

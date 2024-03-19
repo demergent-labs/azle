@@ -1,0 +1,94 @@
+{
+    "canisters": {
+        "server": {
+            "type": "custom",
+            "main": "src/server.ts",
+            "candid": "src/server.did",
+            "build": "npx azle server",
+            "wasm": ".azle/server/server.wasm",
+            "gzip": true,
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/server.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ],
+            "declarations": {
+                "output": "test/dfx_generated/server",
+                "node_compatibility": true
+            }
+        },
+        "server_init_and_post_upgrade": {
+            "type": "custom",
+            "init_arg": "(\"http-query-server-init-and-post-upgrade\", \"http-update-server-init-and-post-upgrade\", \"candidQueryServerInitAndPostUpgrade\", \"candidUpdateServerInitAndPostUpgrade\")",
+            "main": "src/server_init_and_post_upgrade.ts",
+            "candid": "src/server_init_and_post_upgrade.did",
+            "build": "npx azle server_init_and_post_upgrade",
+            "wasm": ".azle/server_init_and_post_upgrade/server_init_and_post_upgrade.wasm",
+            "gzip": true,
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/server_init_and_post_upgrade.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ],
+            "declarations": {
+                "output": "test/dfx_generated/server_init_and_post_upgrade",
+                "node_compatibility": true
+            }
+        },
+        "canister": {
+            "type": "custom",
+            "main": "src/canister.ts",
+            "candid": "src/canister.did",
+            "build": "npx azle canister",
+            "wasm": ".azle/canister/canister.wasm",
+            "gzip": true,
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/canister.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ],
+            "declarations": {
+                "output": "test/dfx_generated/canister",
+                "node_compatibility": true
+            }
+        },
+        "canister_init_and_post_upgrade": {
+            "type": "custom",
+            "init_arg": "(\"http-query-canister-init-and-post-upgrade\", \"http-update-canister-init-and-post-upgrade\", \"candidQueryCanisterInitAndPostUpgrade\", \"candidUpdateCanisterInitAndPostUpgrade\")",
+            "main": "src/canister_init_and_post_upgrade.ts",
+            "candid": "src/canister_init_and_post_upgrade.did",
+            "build": "npx azle canister_init_and_post_upgrade",
+            "wasm": ".azle/canister_init_and_post_upgrade/canister_init_and_post_upgrade.wasm",
+            "gzip": true,
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/canister_init_and_post_upgrade.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ],
+            "declarations": {
+                "output": "test/dfx_generated/canister_init_and_post_upgrade",
+                "node_compatibility": true
+            }
+        }
+    }
+}
