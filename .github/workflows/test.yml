@@ -95,6 +95,7 @@ jobs:
                     "examples/ethers",
                     "examples/express",
                     "examples/fetch_ic",
+                    "examples/file_protocol",
                     "examples/fs",
                     "examples/func_types",
                     "examples/guard_functions",

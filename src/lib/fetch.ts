@@ -2,6 +2,7 @@ import { ic, Principal } from './';
 import { IDL } from '@dfinity/candid';
 import { URL } from 'url';
 import * as fs from 'fs';
+import { readFile } from 'fs/promises';
 
 export async function azleFetch(input: any, init?: any): Promise<any> {
     if (process.env.AZLE_TEST_FETCH === 'true') {
@@ -66,12 +67,31 @@ export async function azleFetch(input: any, init?: any): Promise<any> {
         const decodedResult = IDL.decode(funcIdl.retTypes, result);
 
         return {
+            arrayBuffer: async () => {
+                return result.buffer;
+            },
             json: async () => {
                 return decodedResult[0];
             }
         };
-    } else {
-        // TODO http request to the management canister
+    }
+
+    if (url.protocol === 'file:') {
+        const path = `${url.hostname}${url.pathname}`;
+        const contents = await readFile(path);
+
+        return {
+            arrayBuffer: async () => {
+                return contents.buffer;
+            },
+            text: async () => {
+                return contents.toString();
+            }
+        };
+    }
+
+    if (url.protocol === 'http:') {
+        // TODO http call to the management canister
     }
 
     throw new Error('Not supported in Azle fetch');
