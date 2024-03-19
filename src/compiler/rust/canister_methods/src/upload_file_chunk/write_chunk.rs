@@ -39,29 +39,20 @@ pub fn get_write_chunk() -> proc_macro2::TokenStream {
             Ok(new_file)
         }
 
-        // TODO I'm not sure this is needed anymore...
-        // Same with parts of FILE_INFO
-        pub fn get_total_chunks(file_name: &str) -> u64 {
-            let (chunks, _) =
-                FILE_INFO.with(|file_info| file_info.borrow().get(file_name).unwrap_or(&(0, 0)).clone());
-            chunks
-        }
-
         fn update_file_info(dest_path: &str, bytes_in_chunk: usize) {
             FILE_INFO.with(|total_bytes_received| {
                 let mut total_bytes_received_mut = total_bytes_received.borrow_mut();
-                let (chunks, total_bytes) = total_bytes_received_mut
+                let total_bytes = total_bytes_received_mut
                     .entry(dest_path.to_owned())
-                    .or_insert((0, 0));
+                    .or_insert(0);
                 *total_bytes += bytes_in_chunk as u64;
-                *chunks += 1;
             });
         }
 
         fn get_total_bytes_written(dest_path: &str) -> u64 {
             FILE_INFO.with(|total_bytes_received| {
                 let total_bytes_map = total_bytes_received.borrow();
-                let (_, total_bytes) = total_bytes_map.get(dest_path).unwrap();
+                let total_bytes = total_bytes_map.get(dest_path).unwrap();
                 *total_bytes
             })
         }

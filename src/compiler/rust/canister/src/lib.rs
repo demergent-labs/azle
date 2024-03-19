@@ -64,7 +64,6 @@ impl Storable for AzleStableBTreeMapValue {
 
 type Hash = Vec<u8>;
 
-type ChunkCount = u64;
 type BytesReceived = u64;
 
 const FILE_HASH_PATH: &str = "file_hashes.json";
@@ -82,7 +81,7 @@ thread_local! {
 
     static RELOADED_JS: RefCell<BTreeMap<u64, Vec<u8>>> = RefCell::new(BTreeMap::new());
 
-    static FILE_INFO: RefCell<BTreeMap<String, (ChunkCount, BytesReceived)>> = RefCell::new(BTreeMap::new());
+    static FILE_INFO: RefCell<BTreeMap<String, BytesReceived>> = RefCell::new(BTreeMap::new());
 
     static UPLOADED_FILE_TIMESTAMPS: RefCell<BTreeMap<String, u64>> = RefCell::new(BTreeMap::new());
 
