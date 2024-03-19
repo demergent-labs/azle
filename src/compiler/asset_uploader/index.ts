@@ -15,10 +15,7 @@ import { join } from 'path';
 type Src = string;
 type Dest = string;
 
-export async function uploadAssets(
-    canisterName: string,
-    assets: [Src, Dest][]
-) {
+export async function uploadFiles(canisterName: string, assets: [Src, Dest][]) {
     const actor = await createUploadAssetActor(
         getCanisterId(canisterName),
         getWebServerPort(),
@@ -49,7 +46,7 @@ async function upload(
         await uploadDirectory(srcPath, destPath, chunkSize, actor);
     } else {
         // Await each upload so the canister doesn't get overwhelmed by requests
-        await uploadAsset(srcPath, destPath, chunkSize, actor);
+        await uploadFile(srcPath, destPath, chunkSize, actor);
     }
 }
 
@@ -72,7 +69,7 @@ async function uploadDirectory(
     }
 }
 
-async function uploadAsset(
+async function uploadFile(
     srcPath: Src,
     destPath: Dest,
     chunkSize: number,

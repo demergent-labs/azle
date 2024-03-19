@@ -9,7 +9,7 @@
             "post_install": "npx azle upload-assets backend",
             "wasm": ".azle/backend/backend.wasm",
             "gzip": true,
-            "assets_large": [
+            "Other_assets_large": [
                 ["assets/auto", "assets"],
                 ["assets/permanent", "assets"],
                 ["assets/single_asset.txt", "assets/text/single.txt"]

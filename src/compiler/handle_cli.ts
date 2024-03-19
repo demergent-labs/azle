@@ -4,7 +4,7 @@ import { rmSync } from 'fs';
 import { generateNewAzleProject } from './new_command';
 import { version as azleVersion } from '../../package.json';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
-import { uploadAssets } from './asset_uploader';
+import { uploadFiles } from './asset_uploader';
 import { getCanisterConfig, unwrap } from './utils';
 
 export function handleCli(
@@ -33,8 +33,10 @@ export function handleCli(
         return true;
     }
 
-    if (commandName === 'upload-assets') {
-        handleUploadAssets();
+    if (commandName === 'upload-files') {
+        handleUploadFiles();
+
+        return true;
     }
 
     if (commandName === '--version') {
@@ -103,15 +105,15 @@ function handleCommandClean(
     console.info(`azle images removed`);
 }
 
-async function handleUploadAssets() {
+async function handleUploadFiles() {
     const canisterName = process.argv[3];
     const srcPath = process.argv[4];
     const destPath = process.argv[5];
-    const assetsToUpload = getAssetsToUpload(canisterName, srcPath, destPath);
-    await uploadAssets(canisterName, assetsToUpload);
+    const assetsToUpload = getFilesToUpload(canisterName, srcPath, destPath);
+    await uploadFiles(canisterName, assetsToUpload);
 }
 
-function getAssetsToUpload(
+function getFilesToUpload(
     canisterName: string,
     srcPath?: string,
     destPath?: string

@@ -5,7 +5,7 @@ import { Test, getAgentHost, getCanisterId } from 'azle/test';
 import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { hashFile } from 'azle/scripts/hash_file';
 import { join } from 'path';
-import { uploadAssets } from 'azle/src/compiler/asset_uploader';
+import { uploadFiles } from 'azle/src/compiler/asset_uploader';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -67,7 +67,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: 'test manual upload',
             test: async () => {
-                await uploadAssets('backend', [
+                await uploadFiles('backend', [
                     ['assets/manual/test150MiB', 'assets/test150MiB']
                 ]);
 
