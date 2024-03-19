@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 
 mod hash_file;
 mod reload_js;
-mod upload_assets;
+mod upload_file_chunk;
 
 trait ToIdent {
     fn to_ident(&self) -> Ident;
@@ -202,7 +202,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
     let reload_js = reload_js::get_reload_js(&compiler_info.env_vars);
 
     // TODO rename this
-    let upload_file_chunk = upload_assets::get_upload_file_chunk();
+    let upload_file_chunk = upload_file_chunk::get_upload_file_chunk();
 
     quote! {
         static ASSETS_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/src/assets");
