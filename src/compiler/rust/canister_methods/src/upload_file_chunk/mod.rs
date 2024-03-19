@@ -1,17 +1,17 @@
-pub mod temp_chunks;
 pub mod verify_latest;
+pub mod write_chunk;
 
 use quote::quote;
 
 use crate::hash_file;
 
 pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
-    let temp_chunks_utils_src = temp_chunks::get_temp_chunk_utils();
+    let write_chunk_src = write_chunk::get_write_chunk();
     let verify_latest_src = verify_latest::get_verify_latest();
     let hash_file_src = hash_file::get_hash_file();
 
     quote! {
-        #temp_chunks_utils_src
+        #write_chunk_src
         #verify_latest_src
         #hash_file_src
 

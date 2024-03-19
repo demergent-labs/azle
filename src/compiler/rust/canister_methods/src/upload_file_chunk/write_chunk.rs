@@ -1,6 +1,6 @@
 use quote::quote;
 
-pub fn get_temp_chunk_utils() -> proc_macro2::TokenStream {
+pub fn get_write_chunk() -> proc_macro2::TokenStream {
     quote! {
         // Adds the given file_bytes to the chunked file at the chunk number position.
         // Returns the new total length of chunked file after the addition
