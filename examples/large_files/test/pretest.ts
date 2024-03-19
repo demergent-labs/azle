@@ -11,7 +11,6 @@ async function pretest() {
     // generateFileOfSize(0, 'B');
     await generateFileOfSize(1, 'B');
     await generateFileOfSize(60 * 1024 * 1024 + 1, 'B'); //One more byte than can be processed in a single hash_file_by_parts call
-    await generateFileOfSize(50 * 1024 * 1024 + 1, 'B'); //One more byte than can be processed in a single write_file_by_parts call
     await generateFileOfSize(2_000_001, 'B'); // One more byte that the high water mark of the readstream
 
     // Weird Cases TODO These cases may not even be needed after https://github.com/wasm-forge/stable-fs/issues/2

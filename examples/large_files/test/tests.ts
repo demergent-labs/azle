@@ -54,6 +54,7 @@ export function getTests(canisterId: string): Test[] {
         generateTest(origin, 'test1GiB', 'auto'),
         // TODO excluded because there isn't room on the heap. Bring back after https://github.com/wasm-forge/stable-fs/issues/2 is resolved
         { ...generateTest(origin, 'test500MiB', 'auto'), skip: true }, // We currently run out of memory with this file
+        // Weird cases // TODO these tests are here to validate that https://github.com/wasm-forge/stable-fs/issues/2 is resolved and we might not need them once it is, and they won't work until it is.
         {
             ...generateTest(origin, `test${2_000_000 * 18}B`, 'auto'),
             skip: true
@@ -62,6 +63,7 @@ export function getTests(canisterId: string): Test[] {
             ...generateTest(origin, `test${2_000_000 * 18 + 1}B`, 'auto'),
             skip: true
         },
+        // Manual Upload
         {
             name: 'test manual upload',
             test: async () => {
