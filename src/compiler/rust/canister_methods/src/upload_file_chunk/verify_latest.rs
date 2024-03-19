@@ -18,7 +18,7 @@ pub fn get_verify_latest() -> proc_macro2::TokenStream {
                     ic_cdk::println!(
                         "WARNING: Failed to delete file {} uploaded at {}. {}",
                         dest_path,
-                        current_timestamp
+                        current_timestamp,
                         err
                     );
                 }
