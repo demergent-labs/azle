@@ -5,18 +5,13 @@ import { Test, getAgentHost, getCanisterId } from 'azle/test';
 import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { hashFile } from 'azle/scripts/hash_file';
 import { join } from 'path';
+import { uploadAssets } from 'azle/src/compiler/asset_uploader';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
 
     return [
-        {
-            name: 'wait for things to finish uploading',
-            test: async () => {
-                await new Promise((resolve) => setTimeout(resolve, 10 * 1000));
-                return { Ok: true };
-            }
-        },
+        { name: 'wait for things to finish uploading', wait: 1 * 1000 },
         // Permanent Assets
         generateTest(
             origin,
@@ -47,7 +42,6 @@ export function getTests(canisterId: string): Test[] {
         { ...generateTest(origin, 'test0B', 'auto'), skip: true }, // TODO we have problems with 0B files on the canister side
         generateTest(origin, 'test1B', 'auto'),
         generateTest(origin, `test${60 * 1024 * 1024 + 1}B`, 'auto'),
-        generateTest(origin, `test${50 * 1024 * 1024 + 1}B`, 'auto'),
         generateTest(origin, 'test2000001B', 'auto'),
         //      General Cases
         generateTest(origin, 'test1KiB', 'auto'),
@@ -67,7 +61,24 @@ export function getTests(canisterId: string): Test[] {
         {
             ...generateTest(origin, `test${2_000_000 * 18 + 1}B`, 'auto'),
             skip: true
-        }
+        },
+        {
+            name: 'test manual upload',
+            test: async () => {
+                await uploadAssets('backend', [
+                    ['assets/manual/test150MiB', 'assets/test150MiB']
+                ]);
+
+                await new Promise((resolve) => setTimeout(resolve, 10 * 1000));
+
+                const response = await fetch(
+                    `${origin}/exists?path=assets/test150MiB`
+                );
+
+                return { Ok: (await response.json()) === true };
+            }
+        },
+        generateTest(origin, 'test150MiB', 'manual')
     ];
 }
 

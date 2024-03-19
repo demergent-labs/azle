@@ -4,21 +4,23 @@ pub fn get_temp_chunk_utils() -> proc_macro2::TokenStream {
     quote! {
         // Adds the given file_bytes to the chunked file at the chunk number position.
         // Returns the new total length of chunked file after the addition
-        pub fn write_temp_chunk(
+        pub fn write_chunk(
             path: &str,
             file_bytes: Vec<u8>,
-            chunk_number: u64,
+            start_index: u64,
+            file_len: u64,
         ) -> std::io::Result<u64> {
-            let file_path = format_chunk_path(path, chunk_number);
-            let mut options = std::fs::OpenOptions::new();
-            options.create(true).write(true);
-
             match std::path::Path::new(path).parent() {
                 Some(dir_path) => std::fs::create_dir_all(dir_path)?,
                 None => (), //Dir doesn't need to be created
             };
 
-            let mut file = options.open(&file_path)?;
+            let mut file: std::fs::File = match std::fs::OpenOptions::new().write(true).open(path) {
+                Ok(file) => file,
+                Err(_) => init_file(path, file_len)?,
+            };
+
+            std::io::Seek::seek(&mut file, std::io::SeekFrom::Start(start_index))?;
             std::io::Write::write_all(&mut file, &file_bytes)?;
             drop(file);
 
@@ -27,48 +29,22 @@ pub fn get_temp_chunk_utils() -> proc_macro2::TokenStream {
             Ok(get_total_bytes_written(path))
         }
 
-        // Reads and concatenates ordered chunks from the file system. Returns the data.
-        pub fn read_temp_chunks(
-            dest_path: &str,
-            start_chunk: u64,
-            num_chunks: u64,
-        ) -> std::io::Result<Vec<u8>> {
-            let mut all_data = vec![];
-
-            for chunk_num in start_chunk..(start_chunk + num_chunks) {
-                let chunk_path = format_chunk_path(dest_path, chunk_num);
-
-                if std::path::Path::new(&chunk_path).exists() {
-                    let mut file = std::fs::File::open(&chunk_path)?;
-                    let mut chunk_data = vec![];
-                    std::io::Read::read_to_end(&mut file, &mut chunk_data)?;
-                    drop(file);
-                    all_data.extend_from_slice(&chunk_data);
-                }
-            }
-            Ok(all_data)
+        fn init_file(path: &str, file_len: u64) -> std::io::Result<std::fs::File> {
+            let new_file = std::fs::OpenOptions::new()
+                .create(true)
+                .write(true)
+                .truncate(true)
+                .open(&path)?;
+            new_file.set_len(file_len)?;
+            Ok(new_file)
         }
 
-        pub fn delete_temp_chunks(file_name: &str) -> std::io::Result<()> {
-            let total_chunks = get_total_chunks(file_name);
-
-            for i in 0..total_chunks {
-                let chunk_file_path = format!("{}.chunk.{}", file_name, i);
-                std::fs::remove_file(chunk_file_path)?
-            }
-            ic_cdk::println!("Deleted all chunks for {}", file_name);
-
-            Ok(())
-        }
-
+        // TODO I'm not sure this is needed anymore...
+        // Same with parts of FILE_INFO
         pub fn get_total_chunks(file_name: &str) -> u64 {
             let (chunks, _) =
                 FILE_INFO.with(|file_info| file_info.borrow().get(file_name).unwrap_or(&(0, 0)).clone());
             chunks
-        }
-
-        pub fn format_chunk_path(dest_path: &str, chunk_number: u64) -> String {
-            format!("{}.chunk.{}", dest_path, chunk_number)
         }
 
         fn update_file_info(dest_path: &str, bytes_in_chunk: usize) {

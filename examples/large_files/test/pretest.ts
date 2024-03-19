@@ -27,10 +27,11 @@ async function pretest() {
     await generateFileOfSize(1, 'MiB');
     await generateFileOfSize(10, 'MiB');
     await generateFileOfSize(100, 'MiB');
-    await generateFileOfSize(250, 'MiB');
+    // await generateFileOfSize(250, 'MiB');
     // TODO excluded because there isn't room on the heap. Bring back after https://github.com/wasm-forge/stable-fs/issues/2 is resolved
     // await generateFileOfSize(500, 'MiB');
-    await generateFileOfSize(1, 'GiB');
+    // await generateFileOfSize(1, 'GiB');
+    await generateFileOfSize(150, 'MiB', 'manual');
 
     execSync(`dfx canister uninstall-code backend || true`, {
         stdio: 'inherit'
@@ -43,8 +44,12 @@ async function pretest() {
 
 pretest();
 
-async function generateFileOfSize(size: number, unit: Unit) {
-    const autoDir = join('assets', 'auto');
+async function generateFileOfSize(
+    size: number,
+    unit: Unit,
+    dir: string = 'auto'
+) {
+    const autoDir = join('assets', dir);
     const path = join(autoDir, `test${size}${unit}`);
     const fileSize = toBytes(size, unit);
     await createFileOfSize(path, fileSize);

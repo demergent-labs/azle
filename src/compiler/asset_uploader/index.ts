@@ -39,9 +39,13 @@ export async function uploadAssets(
         .toString()
         .trim();
 
+    // TODO should this live somewhere else (same with info webserver-port)?
+    const identityName = execSync(`dfx identity whoami`).toString().trim();
+
     const actor = await createUploadAssetActor(
         canisterId,
-        replicaWebServerPort
+        replicaWebServerPort,
+        identityName
     );
 
     const chunkSize = 2_000_000; // The current message limit is about 2 MiB
@@ -101,7 +105,6 @@ async function uploadAsset(
     const timestamp = process.hrtime.bigint();
     const stats = await stat(srcPath);
     const size = stats.size;
-    let chunkNumber = 0;
     for (let i = 0; i < size; i += chunkSize) {
         const fileStream = createReadStream(srcPath, {
             start: i,
@@ -109,24 +112,41 @@ async function uploadAsset(
             highWaterMark: chunkSize
         });
 
+        let startIndex = i;
         for await (const data of fileStream) {
             await throttle();
             console.info(
-                `uploadAsset: ${srcPath} | ${chunkNumber + 1} of ~${Math.ceil(
-                    size / chunkSize
-                )}`
+                `uploadAsset: ${srcPath} | ${bytesToHumanReadable(
+                    i + data.length
+                )} of ${bytesToHumanReadable(size)}`
             );
             // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
             // The above throttling is sufficient to manage the speed of uploads
             actor
-                .upload_file_chunk(destPath, timestamp, chunkNumber, data, size)
+                .upload_file_chunk(destPath, timestamp, i, data, size)
                 .catch((error) => {
                     console.error(error);
                 });
-            chunkNumber++;
+            startIndex += data.length;
         }
     }
     console.info(`uploadAsset: finished ${srcPath}`);
+}
+
+function bytesToHumanReadable(sizeInBytes: number): string {
+    const suffixes = ['B', 'KiB', 'MiB', 'GiB'];
+    // TODO it would be nice if we could figure out an algorithm as simple as
+    // TODO this that didn't involve a mutation
+    let size = sizeInBytes;
+
+    for (const suffix in suffixes) {
+        if (size < 1024.0) {
+            return `${size.toFixed(2)} ${suffixes[suffix]}`;
+        }
+        size /= 1024.0;
+    }
+
+    return `${size.toFixed(2)} ${suffixes[suffixes.length - 1]}`;
 }
 
 async function throttle() {
@@ -139,7 +159,7 @@ async function throttle() {
 }
 
 async function getIdentity(
-    identityName: string = 'default'
+    identityName: string
 ): Promise<Secp256k1KeyIdentity> {
     const identityPath = join(
         homedir(),
@@ -154,7 +174,8 @@ async function getIdentity(
 
 async function createUploadAssetActor(
     canisterId: string,
-    replicaWebServerPort: string
+    replicaWebServerPort: string,
+    identityName: string
 ): Promise<ActorSubclass> {
     const host =
         process.env.DFX_NETWORK === 'ic'
@@ -163,7 +184,7 @@ async function createUploadAssetActor(
 
     const agent = new HttpAgent({
         host,
-        identity: getIdentity()
+        identity: getIdentity(identityName)
     });
 
     if (process.env.DFX_NETWORK !== 'ic') {
