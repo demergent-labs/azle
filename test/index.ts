@@ -277,3 +277,7 @@ export function getCanisterOrigin(canisterName: string): string {
 export function getAgentHost(): string {
     return `http://127.0.0.1:${getWebServerPort()}`;
 }
+
+export function getIdentityName(): string {
+    return execSync(`dfx identity whoami`).toString().trim();
+}

@@ -3,7 +3,11 @@ import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { Secp256k1KeyIdentity } from '@dfinity/identity-secp256k1';
 import { existsSync, createReadStream } from 'fs';
 import { readFile } from 'fs/promises';
-import { getCanisterId } from '../../../test';
+import {
+    getCanisterId,
+    getIdentityName,
+    getWebServerPort
+} from '../../../test';
 import { readdir, stat } from 'fs/promises';
 import { homedir } from 'os';
 import { join } from 'path';
@@ -11,41 +15,14 @@ import { join } from 'path';
 type Src = string;
 type Dest = string;
 
-/**
- * Upload an asset at srcPath to destPath at the given canister. If neither
- * the srcPath nor the destPath are given the srcPath(s) and destPath(s) will
- * be determined from the dfx.json of the given canister.
- *
- * Because of limitations on block consensus rate and ingress message limits
- * the uploaded assets will be broken up into 2 MB chunks (to be less than the
- * message size limit) and sent to the canister 2 chunks per second so as to be
- * bellow the 4MiB per second block rate. For small chunks more could be sent
- * per second but for simplicity it has been capped at 2 chunks per second.
- *
- * The time it takes to upload a file is largely determined by the amount of
- * throttling. In good circumstances a 1 GiB will therefore take about 5 minutes
- * to upload.
- * @param canisterName
- * @param srcPath
- * @param destPath
- */
 export async function uploadAssets(
     canisterName: string,
     assets: [Src, Dest][]
 ) {
-    const canisterId = getCanisterId(canisterName);
-
-    const replicaWebServerPort = execSync(`dfx info webserver-port`)
-        .toString()
-        .trim();
-
-    // TODO should this live somewhere else (same with info webserver-port)?
-    const identityName = execSync(`dfx identity whoami`).toString().trim();
-
     const actor = await createUploadAssetActor(
-        canisterId,
-        replicaWebServerPort,
-        identityName
+        getCanisterId(canisterName),
+        getWebServerPort(),
+        getIdentityName()
     );
 
     const chunkSize = 2_000_000; // The current message limit is about 2 MiB

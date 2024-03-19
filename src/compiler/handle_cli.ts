@@ -101,7 +101,6 @@ function handleCommandClean(
 
 async function handleUploadAssets() {
     const canisterName = process.argv[3];
-    console.log(`Well there is your problem canister name is ${canisterName}`);
     const srcPath = process.argv[4];
     const destPath = process.argv[5];
     const assetsToUpload = getAssetsToUpload(canisterName, srcPath, destPath);
@@ -113,21 +112,15 @@ function getAssetsToUpload(
     srcPath?: string,
     destPath?: string
 ): [string, string][] {
-    if (srcPath === undefined && destPath !== undefined) {
-        throw new Error(
-            'Dest path must not be undefined if a src path is defined'
-        );
-    } else if (srcPath !== undefined && destPath === undefined) {
-        throw new Error(
-            'Src path must not be undefined if a dest path is defined'
-        );
-    } else if (srcPath === undefined && destPath === undefined) {
-        // If both paths are undefined, look at the dfx.json for the assets to upload
-        console.log(`What about here? canister name is ${canisterName}`);
-        const dfxJson = unwrap(getCanisterConfig(canisterName));
-        return dfxJson.assets_large ?? [];
-    } else if (srcPath !== undefined && destPath !== undefined) {
+    if (srcPath !== undefined && destPath !== undefined) {
         return [[srcPath, destPath]];
     }
-    throw new Error('Unreachable');
+    if (srcPath === undefined && destPath === undefined) {
+        // If both paths are undefined, look at the dfx.json for the assets to upload
+        const dfxJson = unwrap(getCanisterConfig(canisterName));
+        return dfxJson.assets_large ?? [];
+    }
+    throw new Error(
+        'The source path and destination path but be either both defined or both undefined'
+    );
 }
