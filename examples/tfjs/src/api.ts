@@ -1,8 +1,8 @@
-import { ic, Server } from 'azle';
+import { ic } from 'azle';
 import express from 'express';
 import * as tf from '@tensorflow/tfjs';
 
-export default Server(async () => {
+async function init() {
     const app = express();
 
     app.use(express.json());
@@ -29,5 +29,7 @@ export default Server(async () => {
         res.send('Prediction not yet implemented');
     });
 
-    return app.listen();
-});
+    app.listen();
+}
+
+init();

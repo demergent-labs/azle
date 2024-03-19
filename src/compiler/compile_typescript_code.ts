@@ -11,34 +11,40 @@ export function compileTypeScriptToJavaScript(
             // Trying to make sure that all globalThis dependencies are defined
             // Before the developer imports azle on their own
             import 'azle';
-            import { ic } from 'azle';
+            import { ic, Server } from 'azle';
             import { toDidString } from 'azle/src/lib/candid/did_file/to_did_string';
             import { DidVisitor, getDefaultVisitorData } from 'azle/src/lib/candid/did_file/visitor';
             export { Principal } from '@dfinity/principal';
             export * from './${main}';
-            import CanisterMethods from './${main}';
+            import * as CanisterMethods from './${main}';
 
-            export const canisterMethods = CanisterMethods();
-            
-            globalThis.candidInfoFunction = () => {
-                const candidInfo = canisterMethods.getIdl([]).accept(new DidVisitor(), {
-                    ...getDefaultVisitorData(),
-                    isFirstService: true,
-                    systemFuncs: canisterMethods.getSystemFunctionIdls()
-                });
-            
-                return JSON.stringify({
-                    candid: toDidString(candidInfo),
-                    canisterMethods: {
-                        // TODO The spread is because canisterMethods is a function with properties
-                        // TODO we should probably just grab the props out that we need
-                        ...canisterMethods
-                    }
-                });
-            };            
-
-            // TODO I do not know how to get the module exports yet with wasmedge_quickjs
-            globalThis.exports.canisterMethods = canisterMethods;
+            // TODO This setTimeout is here to allow asynchronous operations during canister initialization
+            // for Server canisters that have chosen not to use export default Server
+            // This seems to work no matter how many async tasks are awaited, but I am still unsure about how it will
+            // behave in all async situations
+            setTimeout(() => {
+                const canisterMethods = CanisterMethods.default !== undefined ? CanisterMethods.default() : Server(() => globalThis._azleNodeServer)();
+                
+                globalThis.candidInfoFunction = () => {
+                    const candidInfo = canisterMethods.getIdl([]).accept(new DidVisitor(), {
+                        ...getDefaultVisitorData(),
+                        isFirstService: true,
+                        systemFuncs: canisterMethods.getSystemFunctionIdls()
+                    });
+                
+                    return JSON.stringify({
+                        candid: toDidString(candidInfo),
+                        canisterMethods: {
+                            // TODO The spread is because canisterMethods is a function with properties
+                            // TODO we should probably just grab the props out that we need
+                            ...canisterMethods
+                        }
+                    });
+                };            
+    
+                // TODO I do not know how to get the module exports yet with wasmedge_quickjs
+                globalThis.exports.canisterMethods = canisterMethods;
+            });
         `;
 
         const bundledJavaScript = bundleFromString(
