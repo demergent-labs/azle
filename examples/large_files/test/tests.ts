@@ -5,7 +5,7 @@ import { Test, getAgentHost, getCanisterId } from 'azle/test';
 import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { hashFile } from 'azle/scripts/hash_file';
 import { join } from 'path';
-import { uploadFiles } from 'azle/src/compiler/asset_uploader';
+import { uploadFiles } from 'azle/src/compiler/file_uploader';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;

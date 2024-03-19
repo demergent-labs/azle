@@ -4,7 +4,7 @@ import { rmSync } from 'fs';
 import { generateNewAzleProject } from './new_command';
 import { version as azleVersion } from '../../package.json';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
-import { uploadFiles } from './asset_uploader';
+import { uploadFiles } from './file_uploader';
 import { getCanisterConfig, unwrap } from './utils';
 
 export function handleCli(
