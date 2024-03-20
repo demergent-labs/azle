@@ -1,14 +1,22 @@
 import { createFileOfSize, toBytes } from '.';
 
 async function main() {
-    // Extract filePath and size from command line arguments
+    const { path, sizeInBytes } = parseArgs();
+
+    await createFileOfSize(path, sizeInBytes);
+    console.info(`File '${path}' created with size ${sizeInBytes} bytes.`);
+}
+
+main();
+
+function parseArgs(): { path: string; sizeInBytes: number } {
     const args = process.argv.slice(2);
     if (args.length !== 2) {
         console.error('Usage: node file_generator/bin.js <filePath> <size>');
         process.exit(1);
     }
 
-    const filePath = args[0];
+    const path = args[0];
     const sizeString = args[1];
     const sizeInBytes = parseSize(sizeString);
 
@@ -20,11 +28,8 @@ async function main() {
         process.exit(1);
     }
 
-    await createFileOfSize(filePath, sizeInBytes);
-    console.info(`File '${filePath}' created with size ${sizeInBytes} bytes.`);
+    return { path, sizeInBytes };
 }
-
-main();
 
 // Parse size from string with optional unit suffix (KB, MB, GB)
 function parseSize(sizeString: string) {
