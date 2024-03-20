@@ -3,7 +3,6 @@ use quote::quote;
 pub fn get_hash_file() -> proc_macro2::TokenStream {
     quote! {
         pub fn hash_file(path: String) {
-            ic_cdk::println!("START HASH FILE");
             clear_partial_hash(&path);
             clear_file_hash(&path);
             hash_file_by_parts(path, 0)
@@ -22,7 +21,7 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
 
         fn hash_file_by_parts(path: String, position: u64) {
             ic_cdk::println!(
-                "Hash {} starting at: {}",
+                "hash_file_by_parts: Hash {} starting at: {}",
                 path,
                 bytes_to_human_readable(position)
             );
@@ -51,9 +50,8 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
                         match previous_hash {
                             Some(hash) => {
                                 set_file_hash(&path, hash);
-                                ic_cdk::println!("Finish hashing");
+                                ic_cdk::println!("hash_file_by_parts: Finish hashing {}\n", path);
                                 clear_partial_hash(&path);
-                                ic_cdk::println!("Partial hash cleared");
                             }
                             None => ic_cdk::println!("WARNING: No hash was found for {}", path),
                         }

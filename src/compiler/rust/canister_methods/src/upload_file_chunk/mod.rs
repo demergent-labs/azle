@@ -42,7 +42,7 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
             };
 
             ic_cdk::println!(
-                "upload_file_chunk: Uploading {}: {}/{} ",
+                "upload_file_chunk: {} | {}/{} ",
                 dest_path,
                 bytes_to_human_readable(uploaded_file_len),
                 bytes_to_human_readable(total_file_len)
@@ -50,12 +50,12 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
 
             if uploaded_file_len == total_file_len {
                 ic_cdk::println!(
-                    "upload_file_chunk: UPLOAD COMPLETE for {}. Spawning hash task",
+                    "upload_file_chunk: Finished {}. Spawning hash task\n",
                     dest_path
                 );
 
                 let delay = core::time::Duration::new(0, 0);
-                let hash_closure = move || hash_file(dest_path);
+                let hash_closure = || hash_file(dest_path);
                 ic_cdk_timers::set_timer(delay, hash_closure);
             }
         }
