@@ -1,7 +1,7 @@
 import { Actor, ActorSubclass } from '@dfinity/agent';
-import { existsSync, createReadStream } from 'fs';
+import { existsSync } from 'fs';
 import { createAgent, getCanisterId } from '../../../dfx';
-import { readdir, stat } from 'fs/promises';
+import { readdir, stat, open } from 'fs/promises';
 import { join } from 'path';
 
 type Src = string;
@@ -66,32 +66,37 @@ async function uploadFile(
     console.info(`uploadFile: Uploading ${srcPath} to ${destPath}`);
     const uploadStartTime = process.hrtime.bigint();
     const fileSize = (await stat(srcPath)).size;
-    for (let i = 0; i < fileSize; i += chunkSize) {
-        const fileStream = createReadStream(srcPath, {
-            start: i,
-            end: i + chunkSize - 1,
-            highWaterMark: chunkSize
-        });
+    const file = await open(srcPath, 'r');
+    for (let startIndex = 0; startIndex < fileSize; startIndex += chunkSize) {
+        let buffer = Buffer.alloc(chunkSize);
+        const { buffer: bytesToUpload, bytesRead } = await file.read(
+            buffer,
+            0,
+            chunkSize,
+            startIndex
+        );
 
-        let startIndex = i;
-        for await (const data of fileStream) {
-            await throttle();
-            console.info(
-                `uploadFile: ${srcPath} | ${bytesToHumanReadable(
-                    i + data.length
-                )} of ${bytesToHumanReadable(fileSize)}`
-            );
-            // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
-            // The above throttling is sufficient to manage the speed of uploads
-            actor
-                .upload_file_chunk(destPath, uploadStartTime, i, data, fileSize)
-                .catch((error) => {
-                    console.error(error);
-                });
-            startIndex += data.length;
-        }
+        await throttle();
+        console.info(
+            `uploadFile: ${srcPath} | ${bytesToHumanReadable(
+                startIndex + bytesRead
+            )}/${bytesToHumanReadable(fileSize)}`
+        );
+        // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
+        // The above throttling is sufficient to manage the speed of uploads
+        actor
+            .upload_file_chunk(
+                destPath,
+                uploadStartTime,
+                startIndex,
+                bytesToUpload,
+                fileSize
+            )
+            .catch((error) => {
+                console.error(error);
+            });
     }
-    console.info(`uploadFile: finished ${srcPath}`);
+    console.info(`uploadFile: finished ${srcPath}\n`);
 }
 
 function bytesToHumanReadable(sizeInBytes: number): string {
