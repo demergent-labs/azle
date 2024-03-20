@@ -13,13 +13,8 @@ async function pretest() {
     await generateFileOfSize(60 * 1024 * 1024 + 1, 'B'); //One more byte than can be processed in a single hash_file_by_parts call
     await generateFileOfSize(2_000_001, 'B'); // One more byte that the high water mark of the readstream
 
-    // Weird Cases TODO These cases may not even be needed after https://github.com/wasm-forge/stable-fs/issues/2
-    // TODO excluded because there isn't room on the heap. Bring back after https://github.com/wasm-forge/stable-fs/issues/2 is resolved
-    // await generateFileOfSize(2_000_000 * 18, 'B'); //Weird writing bound
-    // TODO excluded because there isn't room on the heap. Bring back after https://github.com/wasm-forge/stable-fs/issues/2 is resolved
-    // await generateFileOfSize(2_000_000 * 18 + 1, 'B'); //Weird writing bound
-
     // General Cases
+    // TODO Add tests for huge files after https://github.com/wasm-forge/stable-fs/issues/2 is resolved
     await generateFileOfSize(1, 'KiB');
     await generateFileOfSize(10, 'KiB');
     await generateFileOfSize(100, 'KiB');
@@ -27,8 +22,6 @@ async function pretest() {
     await generateFileOfSize(10, 'MiB');
     await generateFileOfSize(100, 'MiB');
     await generateFileOfSize(250, 'MiB');
-    // TODO excluded because there isn't room on the heap. Bring back after https://github.com/wasm-forge/stable-fs/issues/2 is resolved
-    // await generateFileOfSize(500, 'MiB');
     await generateFileOfSize(1, 'GiB');
     await generateFileOfSize(150, 'MiB', 'manual');
 
@@ -60,12 +53,12 @@ async function clearDir(dirPath: string, recursive: boolean = false) {
     }
     const contents = await readdir(dirPath);
     for (const name of contents) {
-        const filePath = join(dirPath, name);
-        const stats = await stat(filePath);
+        const path = join(dirPath, name);
+        const stats = await stat(path);
         if (stats.isFile()) {
-            await unlink(filePath);
+            await unlink(path);
         } else if (stats.isDirectory() && recursive) {
-            clearDir(filePath, true);
+            clearDir(path, true);
         }
     }
 }

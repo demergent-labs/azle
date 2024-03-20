@@ -20,25 +20,6 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
                 .collect()
         }
 
-        // TODO get rid of this when testing is done.
-        #[ic_cdk_macros::query]
-        pub fn get_file_hashes() -> Vec<String> {
-            load_hashes()
-                .unwrap()
-                .iter()
-                .map(|(path, bytes)| {
-                    format!(
-                        "{}: {}",
-                        path,
-                        bytes
-                            .iter()
-                            .map(|bytes| format!("{:02x}", bytes))
-                            .collect::<String>()
-                    )
-                })
-                .collect()
-        }
-
         fn hash_file_by_parts(path: String, position: u64) {
             ic_cdk::println!(
                 "Hash {} starting at: {}",

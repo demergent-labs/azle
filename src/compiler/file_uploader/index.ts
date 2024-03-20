@@ -15,8 +15,8 @@ import { join } from 'path';
 type Src = string;
 type Dest = string;
 
-export async function uploadFiles(canisterName: string, assets: [Src, Dest][]) {
-    const actor = await createUploadAssetActor(
+export async function uploadFiles(canisterName: string, paths: [Src, Dest][]) {
+    const actor = await createUploadFileChunkActor(
         getCanisterId(canisterName),
         getWebServerPort(),
         getIdentityName()
@@ -24,7 +24,7 @@ export async function uploadFiles(canisterName: string, assets: [Src, Dest][]) {
 
     const chunkSize = 2_000_000; // The current message limit is about 2 MiB
 
-    for (const [srcPath, destPath] of assets) {
+    for (const [srcPath, destPath] of paths) {
         // Await each upload so the canister doesn't get overwhelmed by requests
         await upload(srcPath, destPath, chunkSize, actor);
     }
@@ -57,8 +57,8 @@ async function uploadDirectory(
     actor: ActorSubclass
 ) {
     try {
-        const names = await readdir(srcDir);
-        for (const name of names) {
+        const contents = await readdir(srcDir);
+        for (const name of contents) {
             const srcPath = join(srcDir, name);
             const destPath = join(destDir, name);
             // Await each upload so the canister doesn't get overwhelmed by requests
@@ -75,7 +75,7 @@ async function uploadFile(
     chunkSize: number,
     actor: ActorSubclass
 ) {
-    console.info(`uploadAsset: Uploading ${srcPath} to ${destPath}`);
+    console.info(`uploadFile: Uploading ${srcPath} to ${destPath}`);
     const timestamp = process.hrtime.bigint();
     const stats = await stat(srcPath);
     const size = stats.size;
@@ -90,7 +90,7 @@ async function uploadFile(
         for await (const data of fileStream) {
             await throttle();
             console.info(
-                `uploadAsset: ${srcPath} | ${bytesToHumanReadable(
+                `uploadFile: ${srcPath} | ${bytesToHumanReadable(
                     i + data.length
                 )} of ${bytesToHumanReadable(size)}`
             );
@@ -104,7 +104,7 @@ async function uploadFile(
             startIndex += data.length;
         }
     }
-    console.info(`uploadAsset: finished ${srcPath}`);
+    console.info(`uploadFile: finished ${srcPath}`);
 }
 
 function bytesToHumanReadable(sizeInBytes: number): string {
@@ -146,7 +146,7 @@ async function getIdentity(
     return Secp256k1KeyIdentity.fromPem(await readFile(identityPath, 'utf-8'));
 }
 
-async function createUploadAssetActor(
+async function createUploadFileChunkActor(
     canisterId: string,
     replicaWebServerPort: string,
     identityName: string

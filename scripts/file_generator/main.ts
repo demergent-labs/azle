@@ -1,14 +1,14 @@
 import { createFileOfSize, toBytes } from '.';
 
 async function main() {
-    // Extract filename and size from command line arguments
+    // Extract filePath and size from command line arguments
     const args = process.argv.slice(2);
     if (args.length !== 2) {
-        console.error('Usage: node createFile.js <filename> <size>');
+        console.error('Usage: node file_generator/bin.js <filePath> <size>');
         process.exit(1);
     }
 
-    const filename = args[0];
+    const filePath = args[0];
     const sizeString = args[1];
     const sizeInBytes = parseSize(sizeString);
 
@@ -20,10 +20,8 @@ async function main() {
         process.exit(1);
     }
 
-    await createFileOfSize(filename, sizeInBytes);
-    console.log(
-        "File '" + filename + "' created with size " + sizeInBytes + ' bytes.'
-    );
+    await createFileOfSize(filePath, sizeInBytes);
+    console.info(`File '${filePath}' created with size ${sizeInBytes} bytes.`);
 }
 
 main();

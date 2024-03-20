@@ -18,9 +18,9 @@ export default Server(() => {
     return app.listen();
 });
 
-function getFileSize(filePath: string): number {
+function getFileSize(path: string): number {
     try {
-        const stats = statSync(filePath);
+        const stats = statSync(path);
         if (stats.isFile()) {
             return stats.size;
         } else {

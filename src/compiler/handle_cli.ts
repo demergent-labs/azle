@@ -109,8 +109,8 @@ async function handleUploadFiles() {
     const canisterName = process.argv[3];
     const srcPath = process.argv[4];
     const destPath = process.argv[5];
-    const assetsToUpload = getFilesToUpload(canisterName, srcPath, destPath);
-    await uploadFiles(canisterName, assetsToUpload);
+    const filesToUpload = getFilesToUpload(canisterName, srcPath, destPath);
+    await uploadFiles(canisterName, filesToUpload);
 }
 
 function getFilesToUpload(
