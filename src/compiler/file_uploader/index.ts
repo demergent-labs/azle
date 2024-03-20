@@ -89,13 +89,14 @@ async function uploadFile(
                 destPath,
                 uploadStartTime,
                 startIndex,
-                bytesToUpload,
+                bytesToUpload.subarray(0, bytesRead),
                 fileSize
             )
             .catch((error) => {
                 console.error(error);
             });
     }
+    file.close();
     console.info(`uploadFile: finished ${srcPath}\n`);
 }
 
