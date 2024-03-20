@@ -1,6 +1,6 @@
 use quote::quote;
 
-pub fn get_verify_latest() -> proc_macro2::TokenStream {
+pub fn get_check_if_latest_version_src() -> proc_macro2::TokenStream {
     quote! {
         pub fn verify_latest_version(dest_path: &str, current_timestamp: u64) -> bool {
             let last_recorded_timestamp = UPLOADED_FILE_TIMESTAMPS.with(|uploaded_file_timestamps_map| {
