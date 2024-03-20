@@ -4,6 +4,7 @@ import { readFileSync, writeFileSync } from 'fs';
 
 import { getCanisterJavaScript } from '../get_canister_javascript';
 import { ok } from '../utils/result';
+import { createAgent } from '../../../dfx';
 
 const reloadedJsPath = process.argv[2];
 const canisterId = process.argv[3];
@@ -59,13 +60,7 @@ async function reloadJs(
 
     writeFileSync(reloadedJsPath, canisterJavaScriptResult.ok);
 
-    const agent = new HttpAgent({
-        host: `http://127.0.0.1:${replicaWebServerPort}`
-    });
-
-    if (process.env.DFX_NETWORK !== 'ic') {
-        await agent.fetchRootKey();
-    }
+    const agent = await createAgent();
 
     const actor = Actor.createActor(
         ({ IDL }) => {

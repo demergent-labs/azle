@@ -1,4 +1,5 @@
-import { getCanisterId, runTests } from 'azle/test';
+import { getCanisterId } from 'azle/dfx';
+import { runTests } from 'azle/test';
 import { createActor } from '../src/declarations/phone_book';
 import { getTests } from './tests';
 

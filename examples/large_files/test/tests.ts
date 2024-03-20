@@ -1,11 +1,12 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test, getAgentHost, getCanisterId } from 'azle/test';
-import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
+import { Test } from 'azle/test';
+import { createAgent, getCanisterId } from 'azle/dfx';
+import { execSync } from 'child_process';
+import { Actor, ActorSubclass } from '@dfinity/agent';
 import { hashFile } from 'azle/scripts/hash_file';
 import { join } from 'path';
-import { uploadFiles } from 'azle/src/compiler/file_uploader';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -41,7 +42,7 @@ export function getTests(canisterId: string): Test[] {
         //      Edge Cases
         { ...generateTest(origin, 'test0B', 'auto'), skip: true }, // TODO we have problems with 0B files on the canister side
         generateTest(origin, 'test1B', 'auto'),
-        generateTest(origin, `test${60 * 1024 * 1024 + 1}B`, 'auto'),
+        generateTest(origin, `test${120 * 1024 * 1024 + 1}B`, 'auto'),
         generateTest(origin, 'test2000001B', 'auto'),
         //      General Cases
         generateTest(origin, 'test1KiB', 'auto'),
@@ -56,11 +57,14 @@ export function getTests(canisterId: string): Test[] {
         {
             name: 'test manual upload',
             test: async () => {
-                await uploadFiles('backend', [
-                    ['assets/manual/test150MiB', 'assets/test150MiB']
-                ]);
+                execSync(
+                    `npx azle upload-files backend assets/manual/test150MiB assets/test150MiB`,
+                    {
+                        stdio: 'inherit'
+                    }
+                );
 
-                await new Promise((resolve) => setTimeout(resolve, 10 * 1000));
+                await new Promise((resolve) => setTimeout(resolve, 1 * 1000));
 
                 const response = await fetch(
                     `${origin}/exists?path=assets/test150MiB`
@@ -114,15 +118,15 @@ function generateTest(
             const response = await fetch(
                 `${origin}/exists?path=${canisterFilePath}`
             );
-            const exits = await response.json();
+            const exists = await response.json();
 
-            if (exits === false) {
+            if (exists === false) {
                 return {
                     Err: `File ${canisterFilePath} failed to upload`
                 };
             }
 
-            const hash = await actor.get_file_hash(`${canisterFilePath}`);
+            const hash = await actor.get_file_hash(canisterFilePath);
             return { Ok: hash === expectedHash };
         }
     };
@@ -131,13 +135,7 @@ function generateTest(
 async function createGetFileHashActor(
     canisterId: string
 ): Promise<ActorSubclass> {
-    const agent = new HttpAgent({
-        host: getAgentHost()
-    });
-
-    if (process.env.DFX_NETWORK !== 'ic') {
-        await agent.fetchRootKey();
-    }
+    const agent = await createAgent();
 
     return Actor.createActor(
         ({ IDL }) => {

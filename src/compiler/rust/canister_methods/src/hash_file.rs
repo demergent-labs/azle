@@ -31,8 +31,7 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
             std::io::Seek::seek(&mut file, std::io::SeekFrom::Start(position)).unwrap();
 
             // Read the bytes
-            // TODO Before having the stable file storage hooked up 120 worked. For right now 60 seems to be working. I think we could do more but I want to get everything in place before spending a lot of time fine tuning it
-            let limit = 60 * 1024 * 1024; // This limit will be determine by how much hashing an update method can do without running out of cycles. It runs out somewhere between 120 and 125
+            let limit = 120 * 1024 * 1024; // This limit will be determine by how much hashing an update method can do without running out of cycles. It runs out somewhere between 120 and 135
             // This limit must be the same as on the node side or else the hashes will not match
             let mut buffer = vec![0; limit];
             let bytes_read = std::io::Read::read(&mut file, &mut buffer);

@@ -1,4 +1,5 @@
-import { getCanisterId, runTests, Test } from 'azle/test';
+import { runTests, Test } from 'azle/test';
+import { getCanisterId } from 'azle/dfx';
 import { createActor } from './dfx_generated/bitcoin';
 import { wallets } from './wallets';
 import { impureSetup, whileRunningBitcoinDaemon } from './setup';

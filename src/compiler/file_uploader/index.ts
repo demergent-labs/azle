@@ -1,27 +1,16 @@
-import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
-import { Secp256k1KeyIdentity } from '@dfinity/identity-secp256k1';
+import { Actor, ActorSubclass } from '@dfinity/agent';
 import { existsSync, createReadStream } from 'fs';
-import { readFile } from 'fs/promises';
-import {
-    getCanisterId,
-    getIdentityName,
-    getWebServerPort
-} from '../../../test';
+import { createAgent, getCanisterId } from '../../../dfx';
 import { readdir, stat } from 'fs/promises';
-import { homedir } from 'os';
 import { join } from 'path';
 
 type Src = string;
 type Dest = string;
 
 export async function uploadFiles(canisterName: string, paths: [Src, Dest][]) {
-    const actor = await createUploadFileChunkActor(
-        getCanisterId(canisterName),
-        getWebServerPort(),
-        getIdentityName()
-    );
+    const actor = await createUploadFileChunkActor(getCanisterId(canisterName));
 
-    const chunkSize = 2_000_000; // The current message limit is about 2 MiB
+    const chunkSize = 2_000_000; // The current message limit is about 2 MB
 
     for (const [srcPath, destPath] of paths) {
         // Await each upload so the canister doesn't get overwhelmed by requests
@@ -107,18 +96,29 @@ async function uploadFile(
 
 function bytesToHumanReadable(sizeInBytes: number): string {
     const suffixes = ['B', 'KiB', 'MiB', 'GiB'];
-    // TODO it would be nice if we could figure out an algorithm as simple as
-    // TODO this that didn't involve a mutation
-    let size = sizeInBytes;
 
-    for (const suffix in suffixes) {
-        if (size < 1024.0) {
-            return `${size.toFixed(2)} ${suffixes[suffix]}`;
-        }
-        size /= 1024.0;
-    }
+    const result = suffixes.reduce(
+        (acc, suffix) => {
+            if (acc.done) {
+                return acc;
+            }
+            if (acc.size < 1024.0) {
+                acc.unit = suffix;
+                return {
+                    ...acc,
+                    unit: suffix,
+                    done: true
+                };
+            }
+            return {
+                ...acc,
+                size: acc.size / 1024.0
+            };
+        },
+        { size: sizeInBytes, unit: '', done: false }
+    );
 
-    return `${size.toFixed(2)} ${suffixes[suffixes.length - 1]}`;
+    return `${result.size.toFixed(2)} ${result.unit}`;
 }
 
 async function throttle() {
@@ -126,42 +126,15 @@ async function throttle() {
     // 2 MiB or less then we can only send off two per second.
     if (process.env.DFX_NETWORK === 'ic') {
         await new Promise((resolve) => setTimeout(resolve, 2_000)); // Mainnet requires more throttling. We found 2_000 by trial and error
+    } else {
+        await new Promise((resolve) => setTimeout(resolve, 500)); // Should be 500 (ie 1 every 1/2 second or 2 every second)
     }
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Should be 500 (ie 1 every 1/2 second or 2 every second)
-}
-
-async function getIdentity(
-    identityName: string
-): Promise<Secp256k1KeyIdentity> {
-    const identityPath = join(
-        homedir(),
-        '.config',
-        'dfx',
-        'identity',
-        identityName,
-        'identity.pem'
-    );
-    return Secp256k1KeyIdentity.fromPem(await readFile(identityPath, 'utf-8'));
 }
 
 async function createUploadFileChunkActor(
-    canisterId: string,
-    replicaWebServerPort: string,
-    identityName: string
+    canisterId: string
 ): Promise<ActorSubclass> {
-    const host =
-        process.env.DFX_NETWORK === 'ic'
-            ? `https://icp-api.io`
-            : `http://127.0.0.1:${replicaWebServerPort}`;
-
-    const agent = new HttpAgent({
-        host,
-        identity: getIdentity(identityName)
-    });
-
-    if (process.env.DFX_NETWORK !== 'ic') {
-        await agent.fetchRootKey();
-    }
+    const agent = await createAgent();
 
     return Actor.createActor(
         ({ IDL }) => {

@@ -1,9 +1,9 @@
-import { createFileOfSize, toBytes } from '.';
+import { generateFileOfSize, toBytes } from '.';
 
 async function main() {
     const { path, sizeInBytes } = parseArgs();
 
-    await createFileOfSize(path, sizeInBytes);
+    await generateFileOfSize(path, sizeInBytes);
     console.info(`File '${path}' created with size ${sizeInBytes} bytes.`);
 }
 

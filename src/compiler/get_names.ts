@@ -12,7 +12,7 @@ import {
 } from './utils';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { JSCanisterConfig } from './utils/types';
-import { getCanisterId } from '../../test';
+import { getCanisterId } from '../../dfx';
 
 export async function getNamesBeforeCli() {
     const stdioType = getStdIoType();

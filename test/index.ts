@@ -253,31 +253,3 @@ function convertKeysToSnakeCase(obj: any): any {
 function camelToSnakeCase(str: string) {
     return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 }
-
-export function getCanisterId(canisterName: string): string {
-    return execSync(
-        `dfx canister --network ${
-            process.env.DFX_NETWORK ?? 'local'
-        } id ${canisterName}`
-    )
-        .toString()
-        .trim();
-}
-
-export function getWebServerPort(): string {
-    return execSync(`dfx info webserver-port`).toString().trim();
-}
-
-export function getCanisterOrigin(canisterName: string): string {
-    return `http://${getCanisterId(
-        canisterName
-    )}.localhost:${getWebServerPort()}`;
-}
-
-export function getAgentHost(): string {
-    return `http://127.0.0.1:${getWebServerPort()}`;
-}
-
-export function getIdentityName(): string {
-    return execSync(`dfx identity whoami`).toString().trim();
-}

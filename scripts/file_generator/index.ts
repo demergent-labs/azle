@@ -1,11 +1,10 @@
-import { writeFile } from 'fs-extra';
-import { mkdir, appendFile } from 'fs/promises';
+import { appendFile, mkdir, writeFile } from 'fs/promises';
 import { dirname } from 'path';
 
 export type Unit = 'B' | 'KiB' | 'MiB' | 'GiB';
 
 // Function to create a file of a specific size in bytes
-export async function createFileOfSize(path: string, sizeInBytes: number) {
+export async function generateFileOfSize(path: string, sizeInBytes: number) {
     await ensureDirectoryExists(path);
     await ensureFileEmptyOrCreate(path);
     await fillFileWithRandomBytes(path, sizeInBytes);
@@ -36,22 +35,19 @@ async function ensureFileEmptyOrCreate(path: string) {
 
 async function fillFileWithRandomBytes(path: string, sizeInBytes: number) {
     const defaultChunkSize = 1024 * 1024; // 1 MiB. Size can be adjusted. By trial and error this gave good speeds and 1MB should be small enough for most machines running this to handle
-    const buffer = Buffer.alloc(defaultChunkSize);
     const totalChunks = Math.ceil(sizeInBytes / defaultChunkSize);
     for (let i = 0; i < totalChunks; i++) {
         const remainingBytes = sizeInBytes - i * defaultChunkSize;
         const chunkSize = Math.min(remainingBytes, defaultChunkSize);
-        const randomBytes = await createRandomBytes(chunkSize, buffer);
+        const randomBytes = await createRandomBytes(chunkSize);
         await appendFile(path, randomBytes);
     }
 }
 
-async function createRandomBytes(
-    size: number,
-    buffer: Buffer
-): Promise<Buffer> {
+function createRandomBytes(size: number): Buffer {
+    let buffer = Buffer.alloc(size);
     for (let byte = 0; byte < size; byte++) {
         buffer[byte] = Math.floor(Math.random() * 256); // Generate random byte value (0-255)
     }
-    return buffer.subarray(0, size);
+    return buffer;
 }

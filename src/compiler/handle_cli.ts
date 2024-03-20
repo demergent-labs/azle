@@ -127,7 +127,7 @@ function getFilesToUpload(
         return dfxJson.assets_large ?? [];
     }
     throw new Error(
-        'The source path and destination path but be either both defined or both undefined'
+        'The source path and destination path must be either both defined or both undefined'
     );
 }
 

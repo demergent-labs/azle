@@ -12,7 +12,7 @@ async function hashFileByParts(
 ): Promise<Buffer> {
     const { buffer, bytesRead } = await getBytesToHash(path, position);
 
-    if (bytesRead != 0) {
+    if (bytesRead !== 0) {
         const newHash = hashChunkWith(buffer, previousHash);
         return hashFileByParts(path, position + bytesRead, newHash);
     } else {
@@ -34,9 +34,8 @@ async function getBytesToHash(
     const file = await open(path, 'r');
 
     // Read the bytes
-    // TODO Before having the stable file storage hooked up 120 worked. For right now 60 seems to be working. I think we could do more but I want to get everything in place before spending a lot of time fine tuning it
     // TODO it would be great to get the size of the chunks from the canister, then we wouldn't have to every update this
-    const limit = 60 * 1024 * 1024; // Must be the same as on the canister end or hashes will not match
+    const limit = 120 * 1024 * 1024; // Must be the same as on the canister end or hashes will not match
     const buffer = Buffer.alloc(limit); // Allocate a Buffer for reading
 
     const fileReadResult = await file.read(buffer, 0, limit, position);
@@ -44,11 +43,11 @@ async function getBytesToHash(
     return fileReadResult;
 }
 
-function hashChunkWith(data: Buffer, previous_hash?: Buffer): Buffer {
+function hashChunkWith(data: Buffer, previousHash?: Buffer): Buffer {
     const h = createHash('sha256');
     h.update(data);
-    if (previous_hash !== undefined) {
-        h.update(previous_hash);
+    if (previousHash !== undefined) {
+        h.update(previousHash);
     }
     return h.digest();
 }
