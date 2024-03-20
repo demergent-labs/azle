@@ -3,20 +3,20 @@ use quote::quote;
 pub fn get_hash_file() -> proc_macro2::TokenStream {
     quote! {
         pub fn hash_file(path: String) {
-            clear_partial_hash(&path);
             clear_file_hash(&path);
             hash_file_by_parts(path, 0)
         }
 
         #[ic_cdk_macros::query]
-        pub fn get_file_hash(path: String) -> String {
-            load_hashes()
-                .unwrap()
-                .get(&path)
-                .unwrap()
-                .iter()
-                .map(|bytes| format!("{:02x}", bytes))
-                .collect()
+        pub fn get_file_hash(path: String) -> Option<String> {
+            Some(
+                load_hashes()
+                    .unwrap()
+                    .get(&path)?
+                    .iter()
+                    .map(|bytes| format!("{:02x}", bytes))
+                    .collect(),
+            )
         }
 
         fn hash_file_by_parts(path: String, position: u64) {
@@ -51,7 +51,7 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
                             Some(hash) => {
                                 set_file_hash(&path, hash);
                                 ic_cdk::println!("hash_file_by_parts: Finish hashing {}\n", path);
-                                clear_partial_hash(&path);
+                                clear_file_info(&path);
                             }
                             None => ic_cdk::println!("WARNING: No hash was found for {}", path),
                         }
@@ -62,15 +62,21 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
         }
 
         pub fn get_partial_file_hash(path: &String) -> Option<Vec<u8>> {
-            PARTIAL_FILE_HASHES.with(|file_hashes| file_hashes.borrow().get(path).cloned())
+            FILE_INFO.with(|file_info| Some(file_info.borrow().get(path)?.2.clone()))
         }
 
         fn set_partial_hash(path: &String, hash: Vec<u8>) {
-            PARTIAL_FILE_HASHES.with(|file_hashes| file_hashes.borrow_mut().insert(path.clone(), hash));
+            FILE_INFO.with(|file_hashes| {
+                if let Some(entry) = file_hashes.borrow_mut().get_mut(path) {
+                    entry.2 = hash;
+                } else {
+                    panic!("Couldn't find file info for {}", path)
+                }
+            });
         }
 
-        fn clear_partial_hash(path: &String) {
-            PARTIAL_FILE_HASHES.with(|file_hashes| file_hashes.borrow_mut().remove(path));
+        fn clear_file_info(path: &String) {
+            FILE_INFO.with(|file_info| file_info.borrow_mut().remove(path));
         }
 
         fn clear_file_hash(path: &String) {

@@ -24,9 +24,7 @@ pub fn get_write_chunk() -> proc_macro2::TokenStream {
             std::io::Write::write_all(&mut file, &file_bytes)?;
             drop(file);
 
-            update_file_info(path, file_bytes.len());
-
-            Ok(get_total_bytes_written(path))
+            Ok(set_bytes_received(path, file_bytes.len()))
         }
 
         fn init_file(path: &str, file_len: u64) -> std::io::Result<std::fs::File> {
@@ -39,21 +37,16 @@ pub fn get_write_chunk() -> proc_macro2::TokenStream {
             Ok(new_file)
         }
 
-        fn update_file_info(dest_path: &str, bytes_in_chunk: usize) {
+        fn set_bytes_received(dest_path: &str, bytes_in_chunk: usize) -> u64 {
             FILE_INFO.with(|total_bytes_received| {
                 let mut total_bytes_received_mut = total_bytes_received.borrow_mut();
-                let total_bytes = total_bytes_received_mut
-                    .entry(dest_path.to_owned())
-                    .or_insert(0);
-                *total_bytes += bytes_in_chunk as u64;
-            });
-        }
-
-        fn get_total_bytes_written(dest_path: &str) -> u64 {
-            FILE_INFO.with(|total_bytes_received| {
-                let total_bytes_map = total_bytes_received.borrow();
-                let total_bytes = total_bytes_map.get(dest_path).unwrap();
-                *total_bytes
+                match total_bytes_received_mut.get_mut(dest_path) {
+                    Some((_, total_bytes, _)) => {
+                        *total_bytes += bytes_in_chunk as u64;
+                        *total_bytes
+                    }
+                    None => panic!(""),
+                }
             })
         }
 

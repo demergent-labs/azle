@@ -27,9 +27,9 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
                 panic!("Must be a controller to upload files!");
             }
 
-            let is_current_timestamp = verify_latest_version(&dest_path, timestamp);
+            let is_latest_version = check_if_latest_version(&dest_path, timestamp);
 
-            if !is_current_timestamp {
+            if !is_latest_version {
                 return;
             }
 

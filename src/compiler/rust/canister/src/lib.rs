@@ -63,7 +63,7 @@ impl Storable for AzleStableBTreeMapValue {
 }
 
 type Hash = Vec<u8>;
-
+type Timestamp = u64;
 type BytesReceived = u64;
 
 const FILE_HASH_PATH: &str = ".azle_file_hashes.json";
@@ -81,11 +81,7 @@ thread_local! {
 
     static RELOADED_JS: RefCell<BTreeMap<u64, Vec<u8>>> = RefCell::new(BTreeMap::new());
 
-    static FILE_INFO: RefCell<BTreeMap<String, BytesReceived>> = RefCell::new(BTreeMap::new());
-
-    static UPLOADED_FILE_TIMESTAMPS: RefCell<BTreeMap<String, u64>> = RefCell::new(BTreeMap::new());
-
-    static PARTIAL_FILE_HASHES: RefCell<HashMap<String, Hash>> = RefCell::new(HashMap::new());
+    static FILE_INFO: RefCell<BTreeMap<String, (Timestamp, BytesReceived, Hash)>> = RefCell::new(BTreeMap::new());
 }
 
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]

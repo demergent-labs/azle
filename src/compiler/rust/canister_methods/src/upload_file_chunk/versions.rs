@@ -2,13 +2,17 @@ use quote::quote;
 
 pub fn get_check_if_latest_version_src() -> proc_macro2::TokenStream {
     quote! {
-        pub fn verify_latest_version(dest_path: &str, current_timestamp: u64) -> bool {
-            let last_recorded_timestamp = UPLOADED_FILE_TIMESTAMPS.with(|uploaded_file_timestamps_map| {
+        pub fn check_if_latest_version(dest_path: &str, current_timestamp: u64) -> bool {
+            let last_recorded_timestamp = FILE_INFO.with(|uploaded_file_timestamps_map| {
                 match uploaded_file_timestamps_map.borrow().get(dest_path) {
-                    Some(timestamp) => timestamp.clone(),
+                    Some((timestamp, _, _)) => timestamp.clone(),
                     None => 0,
                 }
             });
+            if current_timestamp < last_recorded_timestamp {
+                // The request is from an earlier upload attempt. Disregard
+                return false;
+            }
             if current_timestamp > last_recorded_timestamp {
                 // The request is from a newer upload attempt. Clean up the previous attempt.
                 if let Err(err) = reset_for_new_upload(dest_path, current_timestamp) {
@@ -22,21 +26,15 @@ pub fn get_check_if_latest_version_src() -> proc_macro2::TokenStream {
                         err
                     );
                 }
-                true
-            } else if current_timestamp < last_recorded_timestamp {
-                // The request is from an earlier upload attempt. Disregard
-                false
-            } else {
-                // The request is from the current upload attempt.
-                true
             }
+            true
         }
 
         fn reset_for_new_upload(path: &str, timestamp: u64) -> std::io::Result<()> {
-            UPLOADED_FILE_TIMESTAMPS.with(|upload_file_timestamps_map| {
-                let mut upload_file_timestamps_map_mut = upload_file_timestamps_map.borrow_mut();
+            FILE_INFO.with(|file_info| {
+                let mut file_info_mut = file_info.borrow_mut();
 
-                upload_file_timestamps_map_mut.insert(path.to_string(), timestamp);
+                file_info_mut.insert(path.to_string(), (timestamp, 0, vec![]));
             });
             // TODO check if the file exists
             std::fs::remove_file(path)?;
