@@ -23,7 +23,7 @@
                     "media/popeye_the_sailor_meets_sindbad_the_sailor.mp4"
                 ]
             ],
-            "post_install": "npx azle upload-assets backend",
+            "post_install": "npx azle upload-files backend",
             "build_assets": "npm run build",
             "metadata": [
                 {
