@@ -14,11 +14,11 @@ export default Canister({
 function serverCallback() {
     const app = express();
 
-    app.get('/http-query', (req, res) => {
+    app.get('/http-query', (_req, res) => {
         res.send('http-query-canister');
     });
 
-    app.post('/http-update', (req, res) => {
+    app.post('/http-update', (_req, res) => {
         res.send('http-update-canister');
     });
     return app.listen();
