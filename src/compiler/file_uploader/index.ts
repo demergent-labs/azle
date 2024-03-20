@@ -1,4 +1,3 @@
-import { execSync } from 'child_process';
 import { Actor, ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { Secp256k1KeyIdentity } from '@dfinity/identity-secp256k1';
 import { existsSync, createReadStream } from 'fs';
@@ -76,10 +75,9 @@ async function uploadFile(
     actor: ActorSubclass
 ) {
     console.info(`uploadFile: Uploading ${srcPath} to ${destPath}`);
-    const timestamp = process.hrtime.bigint();
-    const stats = await stat(srcPath);
-    const size = stats.size;
-    for (let i = 0; i < size; i += chunkSize) {
+    const uploadStartTime = process.hrtime.bigint();
+    const fileSize = (await stat(srcPath)).size;
+    for (let i = 0; i < fileSize; i += chunkSize) {
         const fileStream = createReadStream(srcPath, {
             start: i,
             end: i + chunkSize - 1,
@@ -92,12 +90,12 @@ async function uploadFile(
             console.info(
                 `uploadFile: ${srcPath} | ${bytesToHumanReadable(
                     i + data.length
-                )} of ${bytesToHumanReadable(size)}`
+                )} of ${bytesToHumanReadable(fileSize)}`
             );
             // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
             // The above throttling is sufficient to manage the speed of uploads
             actor
-                .upload_file_chunk(destPath, timestamp, i, data, size)
+                .upload_file_chunk(destPath, uploadStartTime, i, data, fileSize)
                 .catch((error) => {
                     console.error(error);
                 });
