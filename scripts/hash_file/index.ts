@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import { open } from 'fs/promises';
+import { open, FileReadResult } from 'fs/promises';
 
 export async function hashFile(path: string): Promise<Buffer> {
     return await hashFileByParts(path, 0);
@@ -10,20 +10,10 @@ async function hashFileByParts(
     position: number,
     previousHash?: Buffer
 ): Promise<Buffer> {
-    const file = await open(path, 'r'); // Open in read-only mode
-
-    // Read the bytes
-    // TODO Before having the stable file storage hooked up 120 worked. For right now 60 seems to be working. I think we could do more but I want to get everything in place before spending a lot of time fine tuning it
-    // TODO it would be great to get the size of the chunks from the canister, then we wouldn't have to every update this
-    const limit = 60 * 1024 * 1024; // Must be the same as on the canister end or hashes will not match
-    const buffer = Buffer.alloc(limit); // Allocate a Buffer for reading
-
-    const fileReadResult = await file.read(buffer, 0, limit, position);
-    file.close();
-    const bytesRead = fileReadResult.bytesRead;
+    const { buffer, bytesRead } = await getBytesToHash(path, position);
 
     if (bytesRead != 0) {
-        const newHash = hashChunkWith(fileReadResult.buffer, previousHash);
+        const newHash = hashChunkWith(buffer, previousHash);
         return hashFileByParts(path, position + bytesRead, newHash);
     } else {
         // No more bytes to hash, set as final hash for this file
@@ -35,6 +25,23 @@ async function hashFileByParts(
             throw new Error(`Error: No hash was found for ${path}`);
         }
     }
+}
+
+async function getBytesToHash(
+    path: string,
+    position: number
+): Promise<FileReadResult<Buffer>> {
+    const file = await open(path, 'r');
+
+    // Read the bytes
+    // TODO Before having the stable file storage hooked up 120 worked. For right now 60 seems to be working. I think we could do more but I want to get everything in place before spending a lot of time fine tuning it
+    // TODO it would be great to get the size of the chunks from the canister, then we wouldn't have to every update this
+    const limit = 60 * 1024 * 1024; // Must be the same as on the canister end or hashes will not match
+    const buffer = Buffer.alloc(limit); // Allocate a Buffer for reading
+
+    const fileReadResult = await file.read(buffer, 0, limit, position);
+    file.close();
+    return fileReadResult;
 }
 
 function hashChunkWith(data: Buffer, previous_hash?: Buffer): Buffer {
