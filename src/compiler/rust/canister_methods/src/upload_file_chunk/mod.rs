@@ -37,17 +37,13 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
                 write_chunk(&dest_path, file_bytes, start_index, total_file_len).unwrap();
 
             ic_cdk::println!(
-                "upload_file_chunk: {} | {}/{} ",
+                "Received chunk: {} | {}/{} ",
                 dest_path,
                 bytes_to_human_readable(uploaded_file_len),
                 bytes_to_human_readable(total_file_len)
             );
 
             if uploaded_file_len == total_file_len {
-                ic_cdk::println!(
-                    "upload_file_chunk: Finished {}. Spawning hash task\n",
-                    dest_path
-                );
                 start_hash(dest_path)
             }
         }
@@ -63,13 +59,13 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
             let size = size_in_bytes as f64;
 
             let result = suffixes.iter().fold(
-                (size, "", false),
+                (size, suffixes[0], false),
                 |(remaining_size, selected_suffix, done), suffix| {
                     if done {
                         return (remaining_size, selected_suffix, done);
                     }
                     if remaining_size < 1024.0 {
-                        (remaining_size, selected_suffix, true)
+                        (remaining_size, suffix, true)
                     } else {
                         (remaining_size / 1024.0, suffix, false)
                     }
