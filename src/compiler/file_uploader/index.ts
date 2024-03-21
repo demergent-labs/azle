@@ -63,7 +63,6 @@ async function uploadFile(
     chunkSize: number,
     actor: ActorSubclass
 ) {
-    console.info(`uploadFile: Uploading ${srcPath} to ${destPath}`);
     const uploadStartTime = process.hrtime.bigint();
     const fileSize = (await stat(srcPath)).size;
     const file = await open(srcPath, 'r');
@@ -78,7 +77,7 @@ async function uploadFile(
 
         await throttle();
         console.info(
-            `uploadFile: ${srcPath} | ${bytesToHumanReadable(
+            `Uploading chunk: ${srcPath} | ${bytesToHumanReadable(
                 startIndex + bytesRead
             )}/${bytesToHumanReadable(fileSize)}`
         );
@@ -97,7 +96,7 @@ async function uploadFile(
             });
     }
     file.close();
-    console.info(`uploadFile: finished ${srcPath}\n`);
+    console.info();
 }
 
 function bytesToHumanReadable(sizeInBytes: number): string {
