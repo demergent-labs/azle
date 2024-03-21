@@ -53,13 +53,26 @@ if (globalThis._azleInsideCanister) {
         handler: TimerHandler,
         timeout?: number
     ) => {
-        if (timeout === undefined || timeout === 0) {
-            return originalSetTimeout(handler, 0);
-        }
+        // if (timeout === undefined || timeout === 0) {
+        //     return originalSetTimeout(handler, 0);
+        // }
+
+        // console.warn
+
+        // throw new Error()
 
         // TODO change this to throw once errors throw and show up properly
         // TODO should this throw an error or just not do anything? At least a warning would be good right?
-        ic.trap(`setTimeout cannot be called with milliseconds above 0`);
+        // ic.trap(`setTimeout cannot be called with milliseconds above 0`);
+
+        if (timeout !== undefined && timeout !== 0) {
+            console.warn(
+                `Azle Warning: setTimeout should not be called with milliseconds above 0, called with ${timeout} milliseconds`,
+                new Error().stack
+            );
+        }
+
+        return originalSetTimeout(handler, 0);
     };
 
     globalThis.TextDecoder = require('text-encoding').TextDecoder;

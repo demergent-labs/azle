@@ -93,6 +93,7 @@ jobs:
                     "examples/date",
                     "examples/ethereum_json_rpc",
                     "examples/ethers",
+                    "examples/ethers_base",
                     "examples/express",
                     "examples/fetch_ic",
                     "examples/file_protocol",

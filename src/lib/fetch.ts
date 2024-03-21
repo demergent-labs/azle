@@ -1,8 +1,14 @@
+// TODO what happens if you have a bunch of fetches in your dependencies, all in a row?
+// TODO how would you set options for each individually?
+// TODO it seems like you might not be able to do that
+// TODO we have got to get rid of the need to set all of these custom things
+
 import { ic, Principal } from './';
 import { IDL } from '@dfinity/candid';
 import { URL } from 'url';
 import * as fs from 'fs';
 import { readFile } from 'fs/promises';
+const pako = require('pako');
 
 export async function azleFetch(
     input: RequestInfo | URL,
@@ -106,8 +112,12 @@ export async function azleFetch(
     }
 
     if (url.protocol === 'https:' || url.protocol === 'http:') {
+        console.log('azleFetch http 0');
+
         const body = await prepareRequestBody(init);
         // TODO also do headers and method and everything like on the client?
+
+        console.log('azleFetch http 1');
 
         const response = await azleFetch(`icp://aaaaa-aa/http_request`, {
             body: serialize({
@@ -125,17 +135,75 @@ export async function azleFetch(
                     globalThis._azleOutgoingHttpOptionsCycles ?? 3_000_000_000n // TODO this seems to be a conservative max size
             })
         });
+
+        console.log('azleFetch http 2');
+
         const responseJson = await response.json();
 
+        console.log('responseJson', responseJson);
+
+        console.log('azleFetch http 3');
+
+        console.log('responseJson.headers', responseJson.headers);
+        console.log('responseJson.headers.length', responseJson.headers.length);
+        console.log('responseJson.headers[0]', responseJson.headers[0]);
+        console.log(Array.isArray(responseJson.headers));
+
+        const bodyIsGZipped =
+            responseJson.headers.find(({ name, value }) => {
+                return (
+                    name.toLowerCase() === 'content-encoding' &&
+                    value.toLowerCase() === 'gzip'
+                );
+            }) !== undefined;
+
+        console.log('bodyIsGZipped', bodyIsGZipped);
+
+        console.log('responseJson.body.length', responseJson.body.length);
+
+        const unGZippedBody = bodyIsGZipped
+            ? pako.inflate(responseJson.body)
+            : responseJson.body;
+
+        console.log('unGZippedBody.length', unGZippedBody.length);
+
+        // TODO do we need to handle a chunked body on the frontend too?
+        const bodyIsChunked =
+            responseJson.headers.find(({ name, value }) => {
+                return (
+                    name.toLowerCase() === 'transfer-encoding' &&
+                    value.toLowerCase() === 'chunked'
+                );
+            }) !== undefined;
+
+        console.log('bodyIsChunked', bodyIsChunked);
+
+        // const bufferedBody = Buffer.from(responseJson.body);
+
+        // const processedBody = chunkedBody
+        //     ? processChunkedBody(bufferedBody)
+        //     : bufferedBody;
+
+        console.log(Buffer.from(unGZippedBody).toString());
+
+        // const processedBody = bodyIsChunked
+        //     ? processChunkedBody(Buffer.from(unGZippedBody))
+        //     : unGZippedBody;
+
+        const processedBody = Buffer.from(unGZippedBody);
+
+        // TODO can we use the response object from wasmedge-quickjs?
         return {
+            status: Number(responseJson.status),
+            statusText: '', // TODO not done
             arrayBuffer: async () => {
-                return responseJson.body.buffer;
+                return processedBody.buffer;
             },
             json: async () => {
-                return JSON.parse(Buffer.from(responseJson.body).toString());
+                return JSON.parse(Buffer.from(processedBody).toString());
             },
             text: async () => {
-                return Buffer.from(responseJson.body).toString();
+                return Buffer.from(processedBody).toString();
             }
         } as any;
     }

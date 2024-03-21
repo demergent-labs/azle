@@ -36,6 +36,7 @@
         "http-message-parser": "^0.0.34",
         "js-sha256": "0.9.0",
         "net": "^1.0.2",
+        "pako": "^2.1.0",
         "text-encoding": "0.7.0",
         "ts-node": "10.3.1",
         "typescript": "^5.2.2",
