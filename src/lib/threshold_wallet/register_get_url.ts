@@ -9,10 +9,14 @@ import { ethers } from 'ethers';
 
 // TODO the default provider looks like it does multiple requests/responses!
 // TODO it's basically the EVM RPC canister...I am not seeing the need for the EVM RPC canister...
-
 // TODO add tests for different providers??
 // TODO test different url configurations etc?
-ethers.FetchRequest.registerGetUrl(async (fetchRequest) => {
+
+// TODO what if the developer installs a different version of ethers?
+// TODO should we use a peer dependency?
+export async function ethersGetUrl(
+    fetchRequest: ethers.FetchRequest
+): Promise<ethers.FetchResponse> {
     console.log('we tried to do a request but failed :(');
     console.log('fetchRequest.url', fetchRequest.url);
     console.log('fetchRequest.method', fetchRequest.method);
@@ -56,4 +60,4 @@ ethers.FetchRequest.registerGetUrl(async (fetchRequest) => {
 
         return new ethers.FetchResponse(500, '', {}, null, fetchRequest);
     }
-});
+}

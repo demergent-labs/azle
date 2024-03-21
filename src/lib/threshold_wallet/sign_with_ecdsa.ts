@@ -1,4 +1,4 @@
-import { serialize } from 'azle';
+import { serialize } from '../';
 
 import { ThresholdKeyInfo } from './wallet';
 

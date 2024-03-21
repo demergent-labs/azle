@@ -1,9 +1,8 @@
-import { ic, jsonStringify, Server } from 'azle';
+import { ic, jsonStringify, Server, ThresholdWallet } from 'azle';
 import { ethers } from 'ethers';
 import express, { Request } from 'express';
 
-import { ThresholdWallet } from './threshold_wallet/wallet';
-
+// TODO remember to remove the need for Server here
 export default Server(() => {
     const app = express();
 

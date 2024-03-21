@@ -1,6 +1,6 @@
-import { Principal } from 'azle';
 import { ethers } from 'ethers';
 
+import { Principal } from '../';
 import { calculateRsvForTEcdsa } from './calculate_rsv_for_tecdsa';
 import { ecdsaPublicKey } from './ecdsa_public_key';
 import { signWithEcdsa } from './sign_with_ecdsa';
