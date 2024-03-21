@@ -67,13 +67,15 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
         }
 
         pub fn get_partial_file_hash(path: &str) -> Option<Vec<u8>> {
-            FILE_INFO.with(|file_info| Some(file_info.borrow().get(path)?.2.clone()))
+            FILE_INFO
+                .with(|file_info| Some(file_info.borrow().get(path)?.2.clone()))
+                .flatten()
         }
 
         fn set_partial_hash(path: &str, hash: Vec<u8>) {
             FILE_INFO.with(|file_hashes| {
                 if let Some(entry) = file_hashes.borrow_mut().get_mut(path) {
-                    entry.2 = hash;
+                    entry.2 = Some(hash);
                 } else {
                     panic!("Couldn't find file info for {}", path)
                 }

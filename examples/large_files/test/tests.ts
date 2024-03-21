@@ -7,6 +7,8 @@ import { execSync } from 'child_process';
 import { Actor, ActorSubclass } from '@dfinity/agent';
 import { hashFile } from 'azle/scripts/hash_file';
 import { join } from 'path';
+import { rm } from 'fs/promises';
+import { generateTestFileOfSize } from './pretest';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -40,7 +42,7 @@ export function getTests(canisterId: string): Test[] {
 
         // Auto Generated Assets
         //      Edge Cases
-        { ...generateTest(origin, 'test0B', 'auto'), skip: true }, // TODO we have problems with 0B files on the canister side
+        generateTest(origin, 'test0B', 'auto'),
         generateTest(origin, 'test1B', 'auto'),
         generateTest(origin, `test${120 * 1024 * 1024 + 1}B`, 'auto'),
         generateTest(origin, 'test2000001B', 'auto'),
@@ -73,7 +75,22 @@ export function getTests(canisterId: string): Test[] {
                 return { Ok: (await response.json()) === true };
             }
         },
-        generateTest(origin, 'test150MiB', 'manual')
+        generateTest(origin, 'test150MiB', 'manual'),
+        {
+            name: 'deploy',
+            prep: async () => {
+                await rm(join('assets', 'auto'), {
+                    recursive: true,
+                    force: true
+                });
+                await generateTestFileOfSize(2, 'GiB');
+                execSync(`dfx deploy --upgrade-unchanged`, {
+                    stdio: 'inherit'
+                });
+            }
+        },
+        { name: 'wait for things to finish uploading', wait: 30 * 1000 },
+        generateTest(origin, 'test2GiB')
     ];
 }
 
@@ -126,8 +143,14 @@ function generateTest(
                 };
             }
 
-            const hash = await actor.get_file_hash(canisterFilePath);
-            return { Ok: hash === expectedHash };
+            const hash = (await actor.get_file_hash(canisterFilePath)) as
+                | []
+                | [string];
+
+            if (hash.length === 1) {
+                return { Ok: hash[0] === expectedHash };
+            }
+            return { Err: `File not found on canister` };
         }
     };
 }
@@ -140,7 +163,7 @@ async function createGetFileHashActor(
     return Actor.createActor(
         ({ IDL }) => {
             return IDL.Service({
-                get_file_hash: IDL.Func([IDL.Text], [IDL.Text], [])
+                get_file_hash: IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], [])
             });
         },
         {

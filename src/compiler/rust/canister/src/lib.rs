@@ -62,7 +62,7 @@ impl Storable for AzleStableBTreeMapValue {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-type Hash = Vec<u8>;
+type Hash = Option<Vec<u8>>;
 type Timestamp = u64;
 type BytesReceived = u64;
 

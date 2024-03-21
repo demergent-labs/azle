@@ -20,9 +20,8 @@ async function hashFileByParts(
         if (previousHash !== undefined) {
             return previousHash;
         } else {
-            // TODO if we add support for 0 byte files we might need something like this
-            // return hashChunkWith(Buffer.from([]));
-            throw new Error(`Error: No hash was found for ${path}`);
+            // No bytes read and no previous hash means 0 byte file
+            return hashChunkWith(Buffer.from([]));
         }
     }
 }

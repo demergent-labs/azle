@@ -40,7 +40,7 @@ pub fn get_check_if_latest_version_src() -> proc_macro2::TokenStream {
             FILE_INFO.with(|file_info| {
                 let mut file_info_mut = file_info.borrow_mut();
 
-                file_info_mut.insert(path.to_string(), (timestamp, 0, vec![]));
+                file_info_mut.insert(path.to_string(), (timestamp, 0, None));
             });
         }
 

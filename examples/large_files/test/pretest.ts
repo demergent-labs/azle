@@ -6,8 +6,7 @@ import { join } from 'path';
 async function pretest() {
     await rm(join('assets', 'auto'), { recursive: true, force: true });
     // Edge Cases
-    // TODO excluded because it will require some reworking to get 0 byte files to work and it doesn't seem urgent
-    // generateFileOfSize(0, 'B');
+    await generateTestFileOfSize(0, 'B');
     await generateTestFileOfSize(1, 'B');
     await generateTestFileOfSize(120 * 1024 * 1024 + 1, 'B'); // One more byte than can be processed in a single hash_file_by_parts call
     await generateTestFileOfSize(2_000_001, 'B'); // One more byte that the high water mark of the readstream
@@ -35,7 +34,7 @@ async function pretest() {
 
 pretest();
 
-async function generateTestFileOfSize(
+export async function generateTestFileOfSize(
     size: number,
     unit: Unit,
     dir: string = 'auto'

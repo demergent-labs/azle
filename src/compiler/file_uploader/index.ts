@@ -66,7 +66,7 @@ async function uploadFile(
     const uploadStartTime = process.hrtime.bigint();
     const fileSize = (await stat(srcPath)).size;
     const file = await open(srcPath, 'r');
-    for (let startIndex = 0; startIndex < fileSize; startIndex += chunkSize) {
+    for (let startIndex = 0; startIndex <= fileSize; startIndex += chunkSize) {
         let buffer = Buffer.alloc(chunkSize);
         const { buffer: bytesToUpload, bytesRead } = await file.read(
             buffer,
