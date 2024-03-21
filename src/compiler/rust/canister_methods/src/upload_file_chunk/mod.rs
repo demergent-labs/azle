@@ -33,13 +33,8 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
                 return;
             }
 
-            let uploaded_file_len = match write_chunk(&dest_path, file_bytes, start_index, total_file_len) {
-                Ok(len) => len as u64,
-                Err(err) => {
-                    ic_cdk::println!("Error writing chunk: {}", err);
-                    panic!("{}", err)
-                }
-            };
+            let uploaded_file_len =
+                write_chunk(&dest_path, file_bytes, start_index, total_file_len).unwrap();
 
             ic_cdk::println!(
                 "upload_file_chunk: {} | {}/{} ",
@@ -53,25 +48,35 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
                     "upload_file_chunk: Finished {}. Spawning hash task\n",
                     dest_path
                 );
-
-                let delay = core::time::Duration::new(0, 0);
-                let hash_closure = || hash_file(dest_path);
-                ic_cdk_timers::set_timer(delay, hash_closure);
+                start_hash(dest_path)
             }
+        }
+
+        pub fn start_hash(dest_path: String) {
+            let delay = core::time::Duration::new(0, 0);
+            let hash_closure = || hash_file(dest_path);
+            ic_cdk_timers::set_timer(delay, hash_closure);
         }
 
         pub fn bytes_to_human_readable(size_in_bytes: u64) -> String {
             let suffixes = ["B", "KiB", "MiB", "GiB"];
-            let mut size = size_in_bytes as f64;
+            let size = size_in_bytes as f64;
 
-            for suffix in suffixes.iter() {
-                if size < 1024.0 {
-                    return format!("{:.2} {}", size as f64, suffix);
-                }
-                size /= 1024.0;
-            }
+            let result = suffixes.iter().fold(
+                (size, "", false),
+                |(remaining_size, selected_suffix, done), suffix| {
+                    if done {
+                        return (remaining_size, selected_suffix, done);
+                    }
+                    if remaining_size < 1024.0 {
+                        (remaining_size, selected_suffix, true)
+                    } else {
+                        (remaining_size / 1024.0, suffix, false)
+                    }
+                },
+            );
 
-            format!("{:.2} {}", size as f64, suffixes.last().unwrap())
+            format!("{:.2} {}", result.0, result.1)
         }
     }
 }

@@ -12,24 +12,13 @@ pub fn get_check_if_latest_version_src() -> proc_macro2::TokenStream {
 
             if current_timestamp > last_recorded_timestamp {
                 // The request is from a newer upload attempt. Clean up the previous attempt.
-                reset_for_new_upload(dest_path, current_timestamp).unwrap();
+                if current_timestamp > last_recorded_timestamp {
+                    // The request is from a newer upload attempt. Clean up the previous attempt.
+                    reset_for_new_upload(dest_path, current_timestamp).unwrap();
+                }
             }
 
             true
-        }
-
-        fn reset_for_new_upload(path: &str, timestamp: Timestamp) -> std::io::Result<()> {
-            initialize_file_info(path, timestamp);
-            delete_if_exists(path)?;
-            Ok(())
-        }
-
-        fn initialize_file_info(path: &str, timestamp: Timestamp) {
-            FILE_INFO.with(|file_info| {
-                let mut file_info_mut = file_info.borrow_mut();
-
-                file_info_mut.insert(path.to_string(), (timestamp, 0, vec![]));
-            });
         }
 
         fn get_timestamp(path: &str) -> Timestamp {
@@ -39,6 +28,20 @@ pub fn get_check_if_latest_version_src() -> proc_macro2::TokenStream {
                     None => 0,
                 }
             })
+        }
+
+        fn reset_for_new_upload(path: &str, timestamp: Timestamp) -> std::io::Result<()> {
+            delete_if_exists(path)?;
+            initialize_file_info(path, timestamp);
+            Ok(())
+        }
+
+        fn initialize_file_info(path: &str, timestamp: Timestamp) {
+            FILE_INFO.with(|file_info| {
+                let mut file_info_mut = file_info.borrow_mut();
+
+                file_info_mut.insert(path.to_string(), (timestamp, 0, vec![]));
+            });
         }
 
         fn delete_if_exists(path: &str) -> std::io::Result<()> {
