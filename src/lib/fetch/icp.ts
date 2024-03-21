@@ -66,7 +66,9 @@ export async function fetchIcp(
 
     const decodedResult = IDL.decode(funcIdl.retTypes, result);
 
-    // TODO can we use Response from wasmedge-quickjs?
+    // Using Response from wasmedge-quickjs doesn't seem ideal for the time being
+    // It seems very tied to the low-level implementation at first glance
+    // We will build up our own response for the time being
     return {
         ok: true,
         arrayBuffer: async () => {
@@ -74,6 +76,9 @@ export async function fetchIcp(
         },
         json: async () => {
             return decodedResult[0];
+        },
+        text: async () => {
+            return Buffer.from(result.buffer).toString();
         }
     } as any;
 }
@@ -90,6 +95,6 @@ function determineCandidPath(canisterId: string, candidPath?: string): string {
     }
 
     throw new Error(
-        "Candid path doesn't exist, please specify a valid candid path"
+        "azleFetch: Candid path doesn't exist, please specify a valid candid path"
     );
 }
