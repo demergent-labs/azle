@@ -28,7 +28,7 @@ export async function fetchHttp(
     const headers = getHeaders(init);
     const body = await prepareRequestBody(init);
     const transform = getHttpTransform();
-    const cycles = getCycles();
+    const cycles = getCycles(body[0], headers, maxResponseBytes[0]);
 
     const response = await azleFetch(`icp://aaaaa-aa/http_request`, {
         body: serialize({
@@ -150,8 +150,35 @@ function getHttpTransform() {
     ];
 }
 
-function getCycles(): bigint {
-    return globalThis._azleOutgoingHttpOptionsCycles ?? 3_000_000_000n; // TODO this seems to be a conservative max size
+// Calculated according to: https://internetcomputer.org/docs/current/developer-docs/gas-cost#special-features
+// and https://forum.dfinity.org/t/a-new-price-function-for-https-outcalls/20838
+function getCycles(
+    body: Uint8Array | undefined,
+    headers: CandidHttpHeader[],
+    maxResponseBytes: bigint | undefined
+): bigint {
+    const subnetSize = globalThis._azleOutgoingHttpOptionsSubnetSize ?? 13n;
+    const baseFeeEstimate = (3_000_000n + 60_000n * subnetSize) * subnetSize;
+
+    const concatenatedHeaders = headers.reduce(
+        (acc, { name, value }) => `${acc}${name}${value}`,
+        ''
+    );
+    const headersSize = BigInt(Buffer.byteLength(concatenatedHeaders, 'utf-8'));
+    const bodySize = BigInt(body?.length ?? 0);
+    const requestSize = headersSize + bodySize;
+    const requestFeeEstimate = 400n * subnetSize * requestSize;
+
+    const responseFeeEstimate =
+        800n * subnetSize * (maxResponseBytes ?? 2_000_000n);
+
+    const totalFeeEstimate =
+        baseFeeEstimate + requestFeeEstimate + responseFeeEstimate;
+
+    // TODO this calculation appears to be very correct according to the documentation
+    // TODO but it is producing an amount ~20x more than what the system actually asks for
+    // TODO Hopefully this gets resolved soon: https://forum.dfinity.org/t/a-new-price-function-for-https-outcalls/20838/20
+    return globalThis._azleOutgoingHttpOptionsCycles ?? totalFeeEstimate;
 }
 
 // TODO I have decided to leave a lot of these objects even though they may not exist

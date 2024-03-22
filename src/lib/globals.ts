@@ -16,6 +16,7 @@ declare global {
     var _azleTimerCallbacks: { [key: string]: () => void };
     var _azleGuardFunctions: { [key: string]: () => any };
     var _azleWebAssembly: any;
+    var _azleOutgoingHttpOptionsSubnetSize: bigint | undefined;
     var _azleOutgoingHttpOptionsMaxResponseBytes: bigint | undefined;
     var _azleOutgoingHttpOptionsCycles: bigint | undefined;
     var _azleOutgoingHttpOptionsTransformMethodName: string | undefined;
