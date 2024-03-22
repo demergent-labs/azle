@@ -14,6 +14,8 @@ export async function azleFetch(
     input: RequestInfo | URL,
     init?: RequestInit | undefined
 ): Promise<Response> {
+    logWarnings(init);
+
     if (process.env.AZLE_TEST_FETCH === 'true') {
         console.log('azleFetch has been called');
     }
@@ -42,4 +44,56 @@ export function serialize(param: {
     cycles128?: number | bigint;
 }): ArrayBuffer {
     return param as any;
+}
+
+function logWarnings(init?: RequestInit | undefined) {
+    if (init === undefined) {
+        return;
+    }
+
+    if (init.cache !== undefined) {
+        logWarning(`cache`);
+    }
+
+    if (init.credentials !== undefined) {
+        logWarning(`credentials`);
+    }
+
+    if (init.integrity !== undefined) {
+        logWarning(`integrity`);
+    }
+
+    if (init.keepalive !== undefined) {
+        logWarning(`keepalive`);
+    }
+
+    if (init.mode !== undefined) {
+        logWarning(`mode`);
+    }
+
+    if (init.redirect !== undefined) {
+        logWarning(`redirect`);
+    }
+
+    if (init.referrer !== undefined) {
+        logWarning(`referrer`);
+    }
+
+    if (init.referrerPolicy !== undefined) {
+        logWarning(`referrerPolicy`);
+    }
+
+    if (init.signal !== undefined) {
+        logWarning(`signal`);
+    }
+
+    if (init.window !== undefined) {
+        logWarning(`window`);
+    }
+}
+
+function logWarning(method: string) {
+    console.warn(
+        `fetchIc: init.${method} has no effect when using an identity as the Authorization header`
+    );
 }
