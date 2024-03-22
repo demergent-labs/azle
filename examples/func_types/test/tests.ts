@@ -1,7 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
+import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/func_types/func_types.did';
 
 export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test[] {
