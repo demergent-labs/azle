@@ -66,7 +66,7 @@ type Hash = Option<Vec<u8>>;
 type Timestamp = u64;
 type BytesReceived = u64;
 
-const FILE_HASH_PATH: &str = ".azle_file_hashes.json";
+const FILE_HASH_PATH: &str = ".config/azle/file_hashes.json";
 
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);

@@ -8,52 +8,87 @@ type Src = string;
 type Dest = string;
 
 export async function uploadFiles(canisterName: string, paths: [Src, Dest][]) {
-    const actor = await createUploadFileChunkActor(getCanisterId(canisterName));
+    const canisterId = getCanisterId(canisterName);
+    const actor = await createUploadFileChunkActor(canisterId);
 
     const chunkSize = 2_000_000; // The current message limit is about 2 MB
 
-    for (const [srcPath, destPath] of paths) {
+    const expandedPaths = await expandPaths(paths);
+
+    for (const [srcPath, destPath] of expandedPaths) {
         // Await each upload so the canister doesn't get overwhelmed by requests
-        await upload(srcPath, destPath, chunkSize, actor);
+        await uploadFile(srcPath, destPath, chunkSize, actor);
     }
+
+    let complete = false;
+    let endAttempts = 0;
+    process.on('beforeExit', async (code) => {
+        endAttempts++;
+        if (complete) {
+            return;
+        }
+        complete = await verifyUploadAndHashingComplete(
+            canisterId,
+            expandedPaths,
+            false // TODO end after a number of attempts?
+        );
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+    });
+    process.on('exit', async (code) => {
+        const incompleteFiles = await getListOfIncompleteFiles(
+            paths,
+            canisterId
+        );
+        for (const incompleteFile of incompleteFiles) {
+            // TODO I actually thing I want to do the file clean up here, because it's not strictly necessary for the performance of the canister. So we could delete in the background
+            console.log(`TODO remove ${incompleteFile}`);
+        }
+    });
 }
 
-async function upload(
+async function expandPaths(paths: [Src, Dest][]) {
+    return paths.reduce(
+        async (accPromise: Promise<[Src, Dest][]>, [srcPath, destPath]) => {
+            const acc = await accPromise;
+            return [...acc, ...(await expandPath(srcPath, destPath))];
+        },
+        Promise.resolve([])
+    );
+}
+
+async function expandPath(
     srcPath: Src,
-    destPath: Dest,
-    chunkSize: number,
-    actor: ActorSubclass
-) {
+    destPath: Dest
+): Promise<[Src, Dest][]> {
     if (!existsSync(srcPath)) {
         throw new Error(`${srcPath} does not exist`);
     }
 
     const stats = await stat(srcPath);
     if (stats.isDirectory()) {
-        // Await each upload so the canister doesn't get overwhelmed by requests
-        await uploadDirectory(srcPath, destPath, chunkSize, actor);
+        return await expandDirectory(srcPath, destPath);
     } else {
-        // Await each upload so the canister doesn't get overwhelmed by requests
-        await uploadFile(srcPath, destPath, chunkSize, actor);
+        return [[srcPath, destPath]];
     }
 }
 
-async function uploadDirectory(
+async function expandDirectory(
     srcDir: string,
-    destDir: string,
-    chunkSize: number,
-    actor: ActorSubclass
-) {
+    destDir: string
+): Promise<[Src, Dest][]> {
     try {
         const contents = await readdir(srcDir);
-        for (const name of contents) {
-            const srcPath = join(srcDir, name);
-            const destPath = join(destDir, name);
-            // Await each upload so the canister doesn't get overwhelmed by requests
-            await upload(srcPath, destPath, chunkSize, actor);
-        }
+        return contents.reduce(
+            async (accPromise: Promise<[Src, Dest][]>, name) => {
+                const acc = await accPromise;
+                const srcPath = join(srcDir, name);
+                const destPath = join(destDir, name);
+                return [...acc, ...(await expandPath(srcPath, destPath))];
+            },
+            Promise.resolve([])
+        );
     } catch (error) {
-        console.error(`Error reading directory: ${error}`);
+        throw new Error(`Error reading directory: ${error}`);
     }
 }
 
@@ -162,4 +197,62 @@ async function createUploadFileChunkActor(
             canisterId
         }
     );
+}
+
+async function createGetFileHashActor(
+    canisterId: string
+): Promise<ActorSubclass> {
+    const agent = await createAgent();
+
+    return Actor.createActor(
+        ({ IDL }) => {
+            return IDL.Service({
+                get_file_hash: IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], [])
+            });
+        },
+        {
+            agent,
+            canisterId
+        }
+    );
+}
+
+async function verifyUploadAndHashingComplete(
+    canisterId: string,
+    paths: [Src, Dest][],
+    finished: boolean
+): Promise<boolean> {
+    let incompleteFiles = await getListOfIncompleteFiles(paths, canisterId);
+    if (incompleteFiles.length === 0 || finished) {
+        return true;
+    } else {
+        console.log(
+            `Missing hashes for ${
+                incompleteFiles.length
+            } files:\n${incompleteFiles.join(
+                '\n'
+            )}. Waiting 5 seconds and then we'll try again.`
+        );
+        return false;
+    }
+}
+
+async function getListOfIncompleteFiles(
+    paths: [Src, Dest][],
+    canisterId: string
+): Promise<[Src, Dest][]> {
+    const filters = await Promise.all(
+        paths.map(async ([_, destPath]) => {
+            try {
+                let hashActor = await createGetFileHashActor(canisterId);
+                const result = (await hashActor.get_file_hash(destPath)) as
+                    | []
+                    | [string];
+                return result.length === 0;
+            } catch {
+                return true;
+            }
+        })
+    );
+    return paths.filter((_, index) => filters[index]);
 }

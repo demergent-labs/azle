@@ -8,13 +8,12 @@ import { Actor, ActorSubclass } from '@dfinity/agent';
 import { hashFile } from 'azle/scripts/hash_file';
 import { join } from 'path';
 import { rm } from 'fs/promises';
-import { generateTestFileOfSize } from './pretest';
+import { generateTestFileOfSize } from './generateTestFiles';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
 
     return [
-        { name: 'wait for things to finish uploading', wait: 1 * 1000 },
         // Permanent Assets
         generateTest(
             origin,
@@ -89,8 +88,7 @@ export function getTests(canisterId: string): Test[] {
                 });
             }
         },
-        { name: 'wait for things to finish uploading', wait: 30 * 1000 },
-        generateTest(origin, 'test2GiB')
+        generateTest(origin, 'test2GiB', 'auto')
     ];
 }
 

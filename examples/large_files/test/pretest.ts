@@ -1,7 +1,7 @@
-import { Unit, generateFileOfSize, toBytes } from 'azle/scripts/file_generator';
 import { execSync } from 'child_process';
 import { rm } from 'fs/promises';
 import { join } from 'path';
+import { generateTestFileOfSize } from './generateTestFiles';
 
 async function pretest() {
     await rm(join('assets', 'auto'), { recursive: true, force: true });
@@ -9,7 +9,7 @@ async function pretest() {
     await generateTestFileOfSize(0, 'B');
     await generateTestFileOfSize(1, 'B');
     await generateTestFileOfSize(120 * 1024 * 1024 + 1, 'B'); // One more byte than can be processed in a single hash_file_by_parts call
-    await generateTestFileOfSize(2_000_001, 'B'); // One more byte that the high water mark of the readstream
+    await generateTestFileOfSize(2_000_000 + 1, 'B'); // One more byte that the message chunk size
 
     // General Cases
     // TODO Add tests for huge files after https://github.com/wasm-forge/stable-fs/issues/2 is resolved
@@ -33,14 +33,3 @@ async function pretest() {
 }
 
 pretest();
-
-export async function generateTestFileOfSize(
-    size: number,
-    unit: Unit,
-    dir: string = 'auto'
-) {
-    const autoDir = join('assets', dir);
-    const path = join(autoDir, `test${size}${unit}`);
-    const fileSize = toBytes(size, unit);
-    await generateFileOfSize(path, fileSize);
-}
