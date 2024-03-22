@@ -69,6 +69,8 @@ export async function fetchIcp(
     // Using Response from wasmedge-quickjs doesn't seem ideal for the time being
     // It seems very tied to the low-level implementation at first glance
     // We will build up our own response for the time being
+    // TODO we are not using AzleFetchResponse here because the json method
+    // TODO need to return the Candid decoded object
     return {
         ok: true,
         arrayBuffer: async () => {

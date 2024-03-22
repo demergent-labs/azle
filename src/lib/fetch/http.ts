@@ -3,6 +3,7 @@ import { URL } from 'url';
 
 import { azleFetch, serialize } from '.';
 import { ic } from '../';
+import { AzleFetchResponse } from './response';
 import { getUrl } from './url';
 
 export type CandidHttpResponse = {
@@ -72,24 +73,29 @@ export async function fetchHttp(
     //         );
     //     }) !== undefined;
 
-    const finalBody = Buffer.from(unGZippedBody);
+    const finalBody = unGZippedBody;
+
+    const responseHeaders = responseJson.headers.reduce(
+        (acc, { name, value }) => {
+            return {
+                ...acc,
+                [name]: value
+            };
+        },
+        {}
+    );
+
+    // TODO add the response headers here
+    // TODO add response headers everywhere on all protocols
 
     // Using Response from wasmedge-quickjs doesn't seem ideal for the time being
     // It seems very tied to the low-level implementation at first glance
     // We will build up our own response for the time being
-    return {
-        status: Number(responseJson.status),
-        statusText: '', // TODO not done
-        arrayBuffer: async () => {
-            return finalBody.buffer;
-        },
-        json: async () => {
-            return JSON.parse(finalBody.toString());
-        },
-        text: async () => {
-            return finalBody.toString();
-        }
-    } as any;
+    return new AzleFetchResponse(finalBody, {
+        status: 200, // TODO determine,
+        statusText: 'OK', // TODO determine,
+        headers: responseHeaders
+    });
 }
 
 function getHttpMaxResponseBytes() {
@@ -215,17 +221,27 @@ async function prepareRequestBody(
     throw new Error(`azleFetch: Not a supported body type`);
 }
 
-function getHeaders(init: RequestInit | undefined): [string, string][] {
+function getHeaders(init: RequestInit | undefined): CandidHttpHeader[] {
     if (init === undefined) {
         return [];
     }
 
     if (Array.isArray(init.headers)) {
-        return init.headers;
+        return init.headers.map(([key, value]) => {
+            return {
+                name: key,
+                value
+            };
+        });
     }
 
     if (typeof init.headers === 'object') {
-        return Object.entries(init.headers);
+        return Object.entries(init.headers).map(([key, value]) => {
+            return {
+                name: key,
+                value
+            };
+        });
     }
 
     // TODO we do not currently have a Headers object
