@@ -1,47 +1,50 @@
-import { ic } from '../';
-import { azleFetch, serialize } from '.';
+import { inflate } from 'pako';
+import { URL } from 'url';
 
-const pako = require('pako');
+import { azleFetch, serialize } from '.';
+import { ic } from '../';
+import { getUrl } from './url';
+
+export type CandidHttpResponse = {
+    status: bigint;
+    headers: CandidHttpHeader[];
+    body: Uint8Array;
+};
+
+export type CandidHttpHeader = {
+    name: string;
+    value: string;
+};
 
 export async function fetchHttp(
     input: RequestInfo | URL,
     init?: RequestInit | undefined
 ): Promise<Response> {
-    console.log('azleFetch http 0');
-
+    const urlObject = getUrl(input);
+    const url = `${urlObject.origin}${urlObject.pathname}${urlObject.search}`; // For some sad reason toString() on our URL object from wasmedge-quickjs doesn't return the fully formatted URL as as tring, it returns [object Object]
+    const maxResponseBytes = getHttpMaxResponseBytes();
+    const method = getHttpMethod(init);
+    const headers = getHeaders(init);
     const body = await prepareRequestBody(init);
-    // TODO also do headers and method and everything like on the client?
-
-    console.log('azleFetch http 1');
+    const transform = getHttpTransform();
+    const cycles = getCycles();
 
     const response = await azleFetch(`icp://aaaaa-aa/http_request`, {
         body: serialize({
             args: [
                 {
-                    url: input,
-                    max_response_bytes: getHttpMaxResponseBytes(),
-                    method: getHttpMethod(init),
-                    headers: init?.headers ?? [],
+                    url,
+                    max_response_bytes: maxResponseBytes,
+                    method,
+                    headers,
                     body,
-                    transform: getHttpTransform()
+                    transform
                 }
             ],
-            cycles: globalThis._azleOutgoingHttpOptionsCycles ?? 3_000_000_000n // TODO this seems to be a conservative max size
+            cycles
         })
     });
-
-    console.log('azleFetch http 2');
-
-    const responseJson = await response.json();
-
-    console.log('responseJson', responseJson);
-
-    console.log('azleFetch http 3');
-
-    console.log('responseJson.headers', responseJson.headers);
-    console.log('responseJson.headers.length', responseJson.headers.length);
-    console.log('responseJson.headers[0]', responseJson.headers[0]);
-    console.log(Array.isArray(responseJson.headers));
+    const responseJson: CandidHttpResponse = await response.json();
 
     const bodyIsGZipped =
         responseJson.headers.find(({ name, value }) => {
@@ -51,53 +54,40 @@ export async function fetchHttp(
             );
         }) !== undefined;
 
-    console.log('bodyIsGZipped', bodyIsGZipped);
-
-    console.log('responseJson.body.length', responseJson.body.length);
-
     const unGZippedBody = bodyIsGZipped
-        ? pako.inflate(responseJson.body)
+        ? inflate(responseJson.body)
         : responseJson.body;
 
-    console.log('unGZippedBody.length', unGZippedBody.length);
-
+    // TODO do we need to handle chunked bodies at all?
     // TODO do we need to handle a chunked body on the frontend too?
-    const bodyIsChunked =
-        responseJson.headers.find(({ name, value }) => {
-            return (
-                name.toLowerCase() === 'transfer-encoding' &&
-                value.toLowerCase() === 'chunked'
-            );
-        }) !== undefined;
+    // TODO if so we can use the transfer-encoding chunked processing in server.ts
+    // TODO seems the reason I did this was obviated after gzipping
+    // TODO gzipping handled the chunked encoding and produced a full body
+    // TODO but I assume it is possible for a chunked non-gzipped body to occur too
+    // const bodyIsChunked =
+    //     responseJson.headers.find(({ name, value }) => {
+    //         return (
+    //             name.toLowerCase() === 'transfer-encoding' &&
+    //             value.toLowerCase() === 'chunked'
+    //         );
+    //     }) !== undefined;
 
-    console.log('bodyIsChunked', bodyIsChunked);
+    const finalBody = Buffer.from(unGZippedBody);
 
-    // const bufferedBody = Buffer.from(responseJson.body);
-
-    // const processedBody = chunkedBody
-    //     ? processChunkedBody(bufferedBody)
-    //     : bufferedBody;
-
-    console.log(Buffer.from(unGZippedBody).toString());
-
-    // const processedBody = bodyIsChunked
-    //     ? processChunkedBody(Buffer.from(unGZippedBody))
-    //     : unGZippedBody;
-
-    const processedBody = Buffer.from(unGZippedBody);
-
-    // TODO can we use the response object from wasmedge-quickjs?
+    // Using Response from wasmedge-quickjs doesn't seem ideal for the time being
+    // It seems very tied to the low-level implementation at first glance
+    // We will build up our own response for the time being
     return {
         status: Number(responseJson.status),
         statusText: '', // TODO not done
         arrayBuffer: async () => {
-            return processedBody.buffer;
+            return finalBody.buffer;
         },
         json: async () => {
-            return JSON.parse(Buffer.from(processedBody).toString());
+            return JSON.parse(finalBody.toString());
         },
         text: async () => {
-            return Buffer.from(processedBody).toString();
+            return finalBody.toString();
         }
     } as any;
 }
@@ -108,16 +98,31 @@ function getHttpMaxResponseBytes() {
         : [globalThis._azleOutgoingHttpOptionsMaxResponseBytes];
 }
 
-// TODO throw errors on unsupported methods?
 function getHttpMethod(init?: RequestInit | undefined) {
-    if (init === undefined || init.method === undefined) {
+    if (init === undefined) {
         return {
             get: null
         };
     }
 
+    if (init.method === undefined) {
+        return {
+            get: null
+        };
+    }
+
+    if (
+        init.method.toLowerCase() !== 'get' &&
+        init.method.toLowerCase() !== 'head' &&
+        init.method.toLowerCase() !== 'post'
+    ) {
+        throw new Error(
+            `azleFetch: ${init.method} is not a supported HTTP method`
+        );
+    }
+
     return {
-        [init.method?.toLowerCase()]: null
+        [init.method.toLowerCase()]: null
     };
 }
 
@@ -139,6 +144,12 @@ function getHttpTransform() {
     ];
 }
 
+function getCycles(): bigint {
+    return globalThis._azleOutgoingHttpOptionsCycles ?? 3_000_000_000n; // TODO this seems to be a conservative max size
+}
+
+// TODO I have decided to leave a lot of these objects even though they may not exist
+// TODO we'll have to add these over time, the ones that make sense
 // TODO some of these instanceof checks might break
 // TODO some of those objects might not exist in QuickJS/wasmedge-quickjs
 async function prepareRequestBody(
@@ -198,10 +209,29 @@ async function prepareRequestBody(
     }
 
     if (init.body instanceof FormData) {
-        throw new Error(
-            `azleFetch: FormData is not a supported fetchIc body type`
-        );
+        throw new Error(`azleFetch: FormData is not a supported body type`);
     }
 
-    throw new Error(`azleFetch: Not a supported fetchIc body type`);
+    throw new Error(`azleFetch: Not a supported body type`);
+}
+
+function getHeaders(init: RequestInit | undefined): [string, string][] {
+    if (init === undefined) {
+        return [];
+    }
+
+    if (Array.isArray(init.headers)) {
+        return init.headers;
+    }
+
+    if (typeof init.headers === 'object') {
+        return Object.entries(init.headers);
+    }
+
+    // TODO we do not currently have a Headers object
+    // if (init.headers instanceof Headers) {
+    //     throw new Error(`azleFetch: Headers is not a supported headers type`);
+    // }
+
+    throw new Error(`azleFetch: not a supported headers type`);
 }

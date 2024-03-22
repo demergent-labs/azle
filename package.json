@@ -46,6 +46,7 @@
     "devDependencies": {
         "@types/deep-equal": "^1.0.4",
         "@types/fs-extra": "9.0.13",
+        "@types/pako": "^2.0.3",
         "deep-equal": "^2.2.3",
         "deep-is": "^0.1.4",
         "eslint": "8.11.0",

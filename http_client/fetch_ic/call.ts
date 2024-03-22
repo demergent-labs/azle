@@ -149,12 +149,10 @@ async function prepareRequestBody(
     }
 
     if (init.body instanceof FormData) {
-        throw new Error(
-            `fetchIc: FormData is not a supported fetchIc body type`
-        );
+        throw new Error(`fetchIc: FormData is not a supported body type`);
     }
 
-    throw new Error(`fetchIc: Not a supported fetchIc body type`);
+    throw new Error(`fetchIc: Not a supported body type`);
 }
 
 function shouldCallHttpRequest(
