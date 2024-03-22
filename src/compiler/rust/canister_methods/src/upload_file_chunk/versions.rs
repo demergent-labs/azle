@@ -30,6 +30,11 @@ pub fn get_check_if_latest_version_src() -> proc_macro2::TokenStream {
             })
         }
 
+        #[ic_cdk_macros::update]
+        pub fn clear_file_and_info(path: &str) {
+            reset_for_new_upload(path, 0).unwrap()
+        }
+
         fn reset_for_new_upload(path: &str, timestamp: Timestamp) -> std::io::Result<()> {
             delete_if_exists(path)?;
             initialize_file_info(path, timestamp);

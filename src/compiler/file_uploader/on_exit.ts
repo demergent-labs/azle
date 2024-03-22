@@ -1,15 +1,35 @@
+import { Actor, ActorSubclass } from '@dfinity/agent';
 import { Src, Dest } from '.';
 import { getListOfIncompleteFiles } from './incomplete_files';
+import { createAgent } from '../../../dfx';
 
 export function onExit(canisterId: string, paths: [Src, Dest][]) {
-    process.on('exit', async (code) => {
+    process.on('exit', async (_code) => {
         const incompleteFiles = await getListOfIncompleteFiles(
             paths,
             canisterId
         );
-        for (const incompleteFile of incompleteFiles) {
-            // TODO I actually thing I want to do the file clean up here, because it's not strictly necessary for the performance of the canister. So we could delete in the background
-            console.log(`TODO remove ${incompleteFile}`);
+        for (const [_, path] of incompleteFiles) {
+            const actor = await createClearFileAndInfoActor(canisterId);
+            await actor.clear_file_and_info(path);
         }
     });
+}
+
+async function createClearFileAndInfoActor(
+    canisterId: string
+): Promise<ActorSubclass> {
+    const agent = await createAgent();
+
+    return Actor.createActor(
+        ({ IDL }) => {
+            return IDL.Service({
+                clear_file_and_info: IDL.Func([IDL.Text], [], [])
+            });
+        },
+        {
+            agent,
+            canisterId
+        }
+    );
 }
