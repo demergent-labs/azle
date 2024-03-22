@@ -36,11 +36,13 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
             let uploaded_file_len =
                 write_chunk(&dest_path, file_bytes, start_index, total_file_len).unwrap();
 
+            let percentage_complete = uploaded_file_len / total_file_len * 100;
             ic_cdk::println!(
-                "Received chunk: {} | {}/{} ",
+                "Received chunk: {} | {}/{} : {:.2}%",
                 dest_path,
                 bytes_to_human_readable(uploaded_file_len),
-                bytes_to_human_readable(total_file_len)
+                bytes_to_human_readable(total_file_len),
+                percentage_complete
             );
 
             if uploaded_file_len == total_file_len {

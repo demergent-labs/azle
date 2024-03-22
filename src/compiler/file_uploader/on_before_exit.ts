@@ -7,6 +7,8 @@ export function onBeforeExit(canisterId: string, paths: [Src, Dest][]) {
     process.on('beforeExit', async (code) => {
         endAttempts++;
         if (complete) {
+            // If any async behavior happens in 'beforeExit' then 'beforeExit'
+            // will run again. This is need to prevent an infinite loop
             return;
         }
         complete = await verifyUploadAndHashingComplete(

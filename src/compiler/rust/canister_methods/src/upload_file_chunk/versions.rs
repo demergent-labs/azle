@@ -32,6 +32,9 @@ pub fn get_check_if_latest_version_src() -> proc_macro2::TokenStream {
 
         #[ic_cdk_macros::update]
         pub fn clear_file_and_info(path: String) {
+            if !ic_cdk::api::is_controller(&ic_cdk::api::caller()) {
+                panic!("Must be a controller to upload files!");
+            }
             reset_for_new_upload(&path, 0).unwrap()
         }
 

@@ -22,10 +22,13 @@ export async function uploadFile(
         );
 
         await throttle();
+        const percentComplete = ((startIndex + bytesRead) / fileSize) * 100;
         console.info(
             `Uploading chunk: ${srcPath} | ${bytesToHumanReadable(
                 startIndex + bytesRead
-            )}/${bytesToHumanReadable(fileSize)}`
+            )}/${bytesToHumanReadable(fileSize)} : ${percentComplete.toFixed(
+                2
+            )}%`
         );
         // Don't await here! Awaiting the agent will result in about a 4x increase in upload time.
         // The above throttling is sufficient to manage the speed of uploads
