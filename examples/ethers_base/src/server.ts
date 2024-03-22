@@ -45,15 +45,11 @@ export default Server(() => {
     app.post(
         '/address-balance',
         async (req: Request<any, any, { address: string }>, res) => {
-            try {
-                const balance = await ethers
-                    .getDefaultProvider('https://sepolia.base.org')
-                    .getBalance(req.body.address);
+            const balance = await ethers
+                .getDefaultProvider('https://sepolia.base.org')
+                .getBalance(req.body.address);
 
-                res.send(jsonStringify(balance));
-            } catch (error) {
-                console.log(error);
-            }
+            res.send(jsonStringify(balance));
         }
     );
 
