@@ -74,7 +74,7 @@ function convertBodyInitToBody(body?: BodyInit): Response['body'] {
     }
 
     if (body instanceof Uint8Array || body instanceof Buffer) {
-        return body as unknown as Response['body'];
+        return Buffer.from(body) as unknown as Response['body'];
     }
 
     throw new Error(`AzleFetchResponse: body must be a Uint8Array or Buffer`);

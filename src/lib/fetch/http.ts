@@ -253,6 +253,10 @@ function getHeaders(init: RequestInit | undefined): CandidHttpHeader[] {
         return [];
     }
 
+    if (init.headers === undefined) {
+        return [];
+    }
+
     if (Array.isArray(init.headers)) {
         return init.headers.map(([key, value]) => {
             return {
