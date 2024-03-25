@@ -92,6 +92,6 @@ function logWarnings(init?: RequestInit | undefined) {
 
 function logWarning(method: string) {
     console.warn(
-        `fetchIc: init.${method} has no effect when using an identity as the Authorization header`
+        `azleFetch: init.${method} has no effect when using an identity as the Authorization header`
     );
 }

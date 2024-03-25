@@ -2,6 +2,7 @@ import { inflate } from 'pako';
 
 import { azleFetch, serialize } from '.';
 import { ic } from '../';
+import { HttpTransform } from '../../../canisters/management';
 import { AzleFetchResponse } from './response';
 import { getUrl } from './url';
 
@@ -93,7 +94,7 @@ export async function fetchHttp(
     });
 }
 
-function getHttpMaxResponseBytes() {
+function getHttpMaxResponseBytes(): [] | [bigint] {
     return globalThis._azleOutgoingHttpOptionsMaxResponseBytes === undefined
         ? []
         : [globalThis._azleOutgoingHttpOptionsMaxResponseBytes];
@@ -127,7 +128,7 @@ function getHttpMethod(init?: RequestInit | undefined) {
     };
 }
 
-function getHttpTransform() {
+function getHttpTransform(): [] | [HttpTransform] {
     if (globalThis._azleOutgoingHttpOptionsTransformMethodName === undefined) {
         return [];
     }
@@ -172,9 +173,6 @@ function getCycles(
     const totalFeeEstimate =
         baseFeeEstimate + requestFeeEstimate + responseFeeEstimate;
 
-    // TODO this calculation appears to be very correct according to the documentation
-    // TODO but it is producing an amount ~20x more than what the system actually asks for
-    // TODO Hopefully this gets resolved soon: https://forum.dfinity.org/t/a-new-price-function-for-https-outcalls/20838/20
     return globalThis._azleOutgoingHttpOptionsCycles ?? totalFeeEstimate;
 }
 

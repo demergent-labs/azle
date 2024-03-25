@@ -22,14 +22,16 @@ export class AzleFetchResponse {
         this.status = init?.status ?? 200;
         this.statusText = getStatusText(this.status);
         this.ok = this.status >= 200 && this.status <= 299;
-        this.type = 'default'; // TODO determine this
-        this.redirected = false; //TODO determine this
-        this.bodyUsed = false; // TODO determine this
+        this.type = '' as any; // TODO we should work to set this appropriately
+        this.redirected = false; // TODO we are defaulting to false, I believe we would have to implement automatic redirects for this to ever be true
+        this.bodyUsed = false;
         this.headers = new AzleFetchHeaders(init?.headers);
-        this.url = ''; // TODO where are we supposed to get this from?
+        this.url = ''; // TODO I do not understand how this is supposed to be set, as it is a readon-only property and the Respone constructor does not allow you to pass in the URL
     }
 
     async arrayBuffer(): Promise<ArrayBuffer> {
+        this.bodyUsed = true;
+
         if (this.body === null) {
             return new ArrayBuffer(0);
         }
@@ -38,8 +40,10 @@ export class AzleFetchResponse {
     }
 
     async json(): Promise<string> {
+        this.bodyUsed = true;
+
         if (this.body === null) {
-            return ''; // TODO is this correct?
+            return JSON.parse('');
         }
 
         return JSON.parse(
@@ -48,6 +52,8 @@ export class AzleFetchResponse {
     }
 
     async text(): Promise<string> {
+        this.bodyUsed = true;
+
         if (this.body === null) {
             return '';
         }

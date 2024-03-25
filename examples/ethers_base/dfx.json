@@ -1,7 +1,6 @@
 {
     "canisters": {
         "server": {
-            "specified_id": "bd3sg-teaaa-aaaaa-qaaba-cai",
             "type": "custom",
             "main": "src/server.ts",
             "candid": "src/server.did",

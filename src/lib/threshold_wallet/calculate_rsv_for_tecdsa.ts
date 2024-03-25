@@ -39,5 +39,5 @@ export function calculateRsvForTEcdsa(
         return rsv1;
     }
 
-    throw new Error(`v could not be calculated correctly`);
+    throw new Error(`ThresholdWallet: v could not be calculated correctly`);
 }

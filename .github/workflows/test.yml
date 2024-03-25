@@ -301,7 +301,10 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
-              run: mv /home/runner/.config/azle/wasmedge-quickjs "/home/runner/.config/azle/wasmedge-quickjs_$(npx azle dockerfile-hash)"
+              run: |
+                  # TODO remove the echo just for testing
+                  echo "/home/runner/.config/azle/wasmedge-quickjs_$(npx azle dockerfile-hash)"
+                  mv /home/runner/.config/azle/wasmedge-quickjs "/home/runner/.config/azle/wasmedge-quickjs_$(npx azle dockerfile-hash)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}

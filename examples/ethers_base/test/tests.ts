@@ -2,7 +2,7 @@
 
 // If 0x9Ac70EE21bE697173b74aF64399d850038697FD3 ever runs out of Base ETH or USDC,
 // just use a faucet like https://www.ethereum-ecosystem.com/faucets/base-sepolia to get some more
-// We should be good for many thousands of tests
+// We should be good for a few hundred tests
 
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
