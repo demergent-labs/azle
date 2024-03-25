@@ -1,31 +1,37 @@
 import { ActorSubclass, Actor } from '@dfinity/agent';
 import { Src, Dest } from '.';
-import { createAgent } from '../../../dfx';
+import { createAuthenticatedAgent } from '../../../dfx';
 
 export async function getListOfIncompleteFiles(
     paths: [Src, Dest][],
     canisterId: string
 ): Promise<[Src, Dest][]> {
+    const hashActor = await createGetFileHashActor(canisterId);
     const filters = await Promise.all(
-        paths.map(async ([_, destPath]) => {
-            try {
-                let hashActor = await createGetFileHashActor(canisterId);
-                const result = (await hashActor.get_file_hash(destPath)) as
-                    | []
-                    | [string];
-                return result.length === 0;
-            } catch {
-                return true;
-            }
-        })
+        paths.map(
+            async ([_, destPath]): Promise<boolean> =>
+                !hasValidHash(destPath, hashActor)
+        )
     );
     return paths.filter((_, index) => filters[index]);
+}
+
+async function hasValidHash(
+    path: string,
+    actor: ActorSubclass
+): Promise<boolean> {
+    try {
+        const hashOption = (await actor.get_file_hash(path)) as [] | [string];
+        return hashOption.length === 1;
+    } catch {
+        return false;
+    }
 }
 
 async function createGetFileHashActor(
     canisterId: string
 ): Promise<ActorSubclass> {
-    const agent = await createAgent();
+    const agent = await createAuthenticatedAgent();
 
     return Actor.createActor(
         ({ IDL }) => {

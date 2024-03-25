@@ -15,7 +15,7 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
         #check_if_latest_version_src
         #hash_file_src
 
-        #[ic_cdk_macros::update]
+        #[ic_cdk_macros::update(guard = is_authenticated)]
         pub fn upload_file_chunk(
             dest_path: String,
             timestamp: u64,
@@ -23,10 +23,6 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
             file_bytes: Vec<u8>,
             total_file_len: u64,
         ) {
-            if !ic_cdk::api::is_controller(&ic_cdk::api::caller()) {
-                panic!("Must be a controller to upload files!");
-            }
-
             let is_latest_version = check_if_latest_version(&dest_path, timestamp);
 
             if !is_latest_version {
@@ -36,7 +32,7 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
             let uploaded_file_len =
                 write_chunk(&dest_path, file_bytes, start_index, total_file_len).unwrap();
 
-            let percentage_complete = uploaded_file_len / total_file_len * 100;
+            let percentage_complete = uploaded_file_len as f64 / total_file_len.max(1) as f64 * 100.0;
             ic_cdk::println!(
                 "Received chunk: {} | {}/{} : {:.2}%",
                 dest_path,
@@ -48,6 +44,13 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
             if uploaded_file_len == total_file_len {
                 start_hash(dest_path)
             }
+        }
+
+        pub fn is_authenticated() -> Result<(), String> {
+            if ic_cdk::api::is_controller(&ic_cdk::api::caller()) {
+                return Ok(());
+            }
+            return Err("Access denied: Must be a controller to handle files!".to_string());
         }
 
         pub fn start_hash(dest_path: String) {

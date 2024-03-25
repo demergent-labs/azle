@@ -12,10 +12,7 @@ pub fn get_check_if_latest_version_src() -> proc_macro2::TokenStream {
 
             if current_timestamp > last_recorded_timestamp {
                 // The request is from a newer upload attempt. Clean up the previous attempt.
-                if current_timestamp > last_recorded_timestamp {
-                    // The request is from a newer upload attempt. Clean up the previous attempt.
-                    reset_for_new_upload(dest_path, current_timestamp).unwrap();
-                }
+                reset_for_new_upload(dest_path, current_timestamp).unwrap();
             }
 
             true
@@ -24,17 +21,14 @@ pub fn get_check_if_latest_version_src() -> proc_macro2::TokenStream {
         fn get_timestamp(path: &str) -> Timestamp {
             FILE_INFO.with(|uploaded_file_timestamps_map| {
                 match uploaded_file_timestamps_map.borrow().get(path) {
-                    Some((timestamp, _, _)) => timestamp.clone(),
+                    Some((timestamp, _, _, _)) => timestamp.clone(),
                     None => 0,
                 }
             })
         }
 
-        #[ic_cdk_macros::update]
+        #[ic_cdk_macros::update(guard = is_authenticated)]
         pub fn clear_file_and_info(path: String) {
-            if !ic_cdk::api::is_controller(&ic_cdk::api::caller()) {
-                panic!("Must be a controller to upload files!");
-            }
             reset_for_new_upload(&path, 0).unwrap()
         }
 
@@ -48,7 +42,7 @@ pub fn get_check_if_latest_version_src() -> proc_macro2::TokenStream {
             FILE_INFO.with(|file_info| {
                 let mut file_info_mut = file_info.borrow_mut();
 
-                file_info_mut.insert(path.to_string(), (timestamp, 0, None));
+                file_info_mut.insert(path.to_string(), (timestamp, 0, None, 0));
             });
         }
 

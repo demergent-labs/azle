@@ -7,11 +7,8 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
             hash_file_by_parts(&path, 0)
         }
 
-        #[ic_cdk_macros::query]
+        #[ic_cdk_macros::query(guard = is_authenticated)]
         pub fn get_file_hash(path: String) -> Option<String> {
-            if !ic_cdk::api::is_controller(&ic_cdk::api::caller()) {
-                panic!("Must be a controller to get files hashes!");
-            }
             Some(
                 load_hashes()
                     .unwrap()
@@ -22,6 +19,11 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
             )
         }
 
+        #[ic_cdk_macros::query(guard = is_authenticated)]
+        pub fn get_hash_status(path: String) -> Option<(u64, u64)> {
+            Some((get_bytes_hashed(&path)?, get_file_size(&path)?))
+        }
+
         fn hash_file_by_parts(path: &str, position: u64) {
             let file_length = std::fs::metadata(path).unwrap().len();
             ic_cdk::println!(
@@ -30,6 +32,7 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
                 bytes_to_human_readable(position),
                 bytes_to_human_readable(file_length),
             );
+            // TODO add percentage here
             let mut file = std::fs::File::open(&path).unwrap();
 
             std::io::Seek::seek(&mut file, std::io::SeekFrom::Start(position)).unwrap();
@@ -98,6 +101,23 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
             save_hashes(&file_hashes).unwrap();
         }
 
+        fn get_bytes_hashed(path: &str) -> Option<u64> {
+            FILE_INFO.with(|file_info| Some(file_info.borrow().get(path)?.3.clone()))
+        }
+
+        fn get_file_size(path: &str) -> Option<u64> {
+            match std::fs::metadata(path) {
+                Ok(metadata) => Some(metadata.len()),
+                Err(_) => None,
+            }
+        }
+
+        pub fn get_file_hash_path() -> std::path::PathBuf {
+            std::path::Path::new(".config")
+                .join("azle")
+                .join("file_hashes.json")
+        }
+
         fn hash_chunk_with(data: &[u8], previous_hash: Option<&Vec<u8>>) -> Vec<u8> {
             let mut h: sha2::Sha256 = sha2::Digest::new();
             sha2::Digest::update(&mut h, data);
@@ -108,11 +128,12 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
         }
 
         fn load_hashes() -> Result<HashMap<String, Vec<u8>>, std::io::Error> {
-            if !std::path::Path::new(FILE_HASH_PATH).exists() {
+            let file_hash_path = get_file_hash_path();
+            if !file_hash_path.exists() {
                 // If File doesn't exist yet return empty hash map
                 return Ok(HashMap::new());
             }
-            let buffer = std::fs::read(FILE_HASH_PATH)?;
+            let buffer = std::fs::read(file_hash_path)?;
 
             Ok(if buffer.is_empty() {
                 // If File is empty return empty hash map
@@ -125,7 +146,7 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
         fn save_hashes(file_hashes: &HashMap<String, Vec<u8>>) -> Result<(), std::io::Error> {
             let data = serde_json::to_vec(file_hashes)?;
 
-            std::fs::write(FILE_HASH_PATH, data)
+            std::fs::write(get_file_hash_path(), data)
         }
 
     }

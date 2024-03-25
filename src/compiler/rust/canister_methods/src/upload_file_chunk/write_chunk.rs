@@ -41,11 +41,11 @@ pub fn get_write_chunk() -> proc_macro2::TokenStream {
             FILE_INFO.with(|total_bytes_received| {
                 let mut total_bytes_received_mut = total_bytes_received.borrow_mut();
                 match total_bytes_received_mut.get_mut(dest_path) {
-                    Some((_, total_bytes, _)) => {
+                    Some((_, total_bytes, _, _)) => {
                         *total_bytes += bytes_in_chunk as u64;
                         *total_bytes
                     }
-                    None => panic!(""),
+                    None => panic!("Couldn't find file info for {}", dest_path),
                 }
             })
         }
