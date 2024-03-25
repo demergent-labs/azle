@@ -1,0 +1,22 @@
+{
+    "canisters": {
+        "server": {
+            "type": "custom",
+            "main": "src/server.ts",
+            "candid": "src/server.did",
+            "build": "npx azle server",
+            "wasm": ".azle/server/server.wasm",
+            "gzip": true,
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/server.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
+        }
+    }
+}

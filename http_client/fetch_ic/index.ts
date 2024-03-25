@@ -82,6 +82,10 @@ function logWarnings(init?: RequestInit | undefined) {
     if (init.signal !== undefined) {
         logWarning(`signal`);
     }
+
+    if (init.window !== undefined) {
+        logWarning(`window`);
+    }
 }
 
 function logWarning(method: string) {

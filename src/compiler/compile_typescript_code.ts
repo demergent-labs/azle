@@ -11,7 +11,12 @@ export function compileTypeScriptToJavaScript(
             // Trying to make sure that all globalThis dependencies are defined
             // Before the developer imports azle on their own
             import 'azle';
-            import { ic, Server } from 'azle';
+
+            // TODO remove the ethersGetUrl registration once we implement lower-level http for ethers
+            import { ethersGetUrl, ic, Server } from 'azle';
+            import { ethers } from 'ethers';
+            ethers.FetchRequest.registerGetUrl(ethersGetUrl);
+
             import { toDidString } from 'azle/src/lib/candid/did_file/to_did_string';
             import { DidVisitor, getDefaultVisitorData } from 'azle/src/lib/candid/did_file/visitor';
             export { Principal } from '@dfinity/principal';

@@ -4,6 +4,7 @@ import { Buffer } from 'buffer';
 import { jsonReplacer } from './stable_structures/stable_json';
 import * as process from 'process';
 import { v4 } from 'uuid';
+import { URL } from 'url';
 import { azleFetch } from './fetch';
 
 declare global {
@@ -16,6 +17,11 @@ declare global {
     var _azleTimerCallbacks: { [key: string]: () => void };
     var _azleGuardFunctions: { [key: string]: () => any };
     var _azleWebAssembly: any;
+    var _azleOutgoingHttpOptionsSubnetSize: number | undefined;
+    var _azleOutgoingHttpOptionsMaxResponseBytes: bigint | undefined;
+    var _azleOutgoingHttpOptionsCycles: bigint | undefined;
+    var _azleOutgoingHttpOptionsTransformMethodName: string | undefined;
+    var _azleOutgoingHttpOptionsTransformContext: Uint8Array | undefined;
 }
 
 globalThis._azleInsideCanister =
@@ -49,13 +55,14 @@ if (globalThis._azleInsideCanister) {
         handler: TimerHandler,
         timeout?: number
     ) => {
-        if (timeout === undefined || timeout === 0) {
-            return originalSetTimeout(handler, 0);
+        if (timeout !== undefined && timeout !== 0) {
+            console.warn(
+                `Azle Warning: setTimeout may not behave as expected with milliseconds above 0; called with ${timeout} milliseconds`,
+                new Error().stack
+            );
         }
 
-        // TODO change this to throw once errors throw and show up properly
-        // TODO should this throw an error or just not do anything? At least a warning would be good right?
-        ic.trap(`setTimeout cannot be called with milliseconds above 0`);
+        return originalSetTimeout(handler, 0);
     };
 
     globalThis.TextDecoder = require('text-encoding').TextDecoder;
@@ -119,5 +126,7 @@ if (globalThis._azleInsideCanister) {
         }
     } as any;
 
-    globalThis.fetch = azleFetch;
+    (globalThis as any).fetch = azleFetch;
+
+    (globalThis as any).URL = URL;
 }
