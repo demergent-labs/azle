@@ -1,17 +1,15 @@
 import { Actor, ActorSubclass } from '@dfinity/agent';
 import { createAuthenticatedAgent } from '../../../dfx';
 
-export async function createActor(canisterId: string): Promise<ActorSubclass> {
+export async function createClearFileAndInfoActor(
+    canisterId: string
+): Promise<ActorSubclass> {
     const agent = await createAuthenticatedAgent();
 
     return Actor.createActor(
         ({ IDL }) => {
             return IDL.Service({
-                get_hash_status: IDL.Func(
-                    [IDL.Text],
-                    [IDL.Opt(IDL.Tuple(IDL.Nat64, IDL.Nat64))],
-                    []
-                )
+                clear_file_and_info: IDL.Func([IDL.Text], [], [])
             });
         },
         {

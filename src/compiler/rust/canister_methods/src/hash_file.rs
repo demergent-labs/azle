@@ -21,7 +21,7 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
 
         #[ic_cdk_macros::query(guard = is_authenticated)]
         pub fn get_hash_status(path: String) -> Option<(u64, u64)> {
-            Some((get_bytes_hashed(&path)?, get_file_size(&path)?))
+            Some((get_bytes_hashed(&path), get_file_size(&path)?))
         }
 
         fn hash_file_by_parts(path: &str, position: u64) {
@@ -48,6 +48,7 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
             if bytes_read != 0 {
                 let new_hash = hash_chunk_with(&buffer, previous_hash.as_ref());
                 set_partial_hash(path, new_hash);
+                set_bytes_hashed(path, position + bytes_read as u64);
                 spawn_hash_by_parts(path.to_string(), position + bytes_read as u64)
             } else {
                 // No more bytes to hash, set as final hash for this file
@@ -101,8 +102,23 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
             save_hashes(&file_hashes).unwrap();
         }
 
-        fn get_bytes_hashed(path: &str) -> Option<u64> {
-            FILE_INFO.with(|file_info| Some(file_info.borrow().get(path)?.3.clone()))
+        fn get_bytes_hashed(path: &str) -> u64 {
+            FILE_INFO.with(|file_info| {
+                let file_info = file_info.borrow();
+                match file_info.get(path) {
+                    Some(file_info) => file_info.clone().3,
+                    None => get_file_size(path).unwrap(),
+                }
+            })
+        }
+
+        fn set_bytes_hashed(path: &str, bytes_hashed: u64) {
+            FILE_INFO.with(|file_info| {
+                let mut file_info_mut = file_info.borrow_mut();
+                if let Some(file_info_entry) = file_info_mut.get_mut(path) {
+                    file_info_entry.3 = bytes_hashed;
+                }
+            });
         }
 
         fn get_file_size(path: &str) -> Option<u64> {

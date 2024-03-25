@@ -10,7 +10,7 @@ export async function getListOfIncompleteFiles(
     const filters = await Promise.all(
         paths.map(
             async ([_, destPath]): Promise<boolean> =>
-                !hasValidHash(destPath, hashActor)
+                !(await hasValidHash(destPath, hashActor))
         )
     );
     return paths.filter((_, index) => filters[index]);
