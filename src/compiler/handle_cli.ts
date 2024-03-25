@@ -5,7 +5,7 @@ import { generateNewAzleProject } from './new_command';
 import { version as azleVersion } from '../../package.json';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { uploadFiles } from './file_uploader';
-import { getCanisterConfig, unwrap } from './utils';
+import { getFilesToUpload } from './file_uploader/get_files_to_upload';
 
 export function handleCli(
     stdioType: IOType,
@@ -111,24 +111,6 @@ async function handleUploadFiles() {
     const destPath = process.argv[5];
     const filesToUpload = getFilesToUpload(canisterName, srcPath, destPath);
     await uploadFiles(canisterName, filesToUpload);
-}
-
-function getFilesToUpload(
-    canisterName: string,
-    srcPath?: string,
-    destPath?: string
-): [string, string][] {
-    if (srcPath !== undefined && destPath !== undefined) {
-        return [[srcPath, destPath]];
-    }
-    if (srcPath === undefined && destPath === undefined) {
-        // If both paths are undefined, look at the dfx.json for the assets to upload
-        const dfxJson = unwrap(getCanisterConfig(canisterName));
-        return dfxJson.assets_large ?? [];
-    }
-    throw new Error(
-        'The source path and destination path must be either both defined or both undefined'
-    );
 }
 
 function handleVersionCommand() {

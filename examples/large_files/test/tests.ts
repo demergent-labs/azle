@@ -2,7 +2,7 @@ import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 import { Test } from 'azle/test';
-import { createAgent, getCanisterId } from 'azle/dfx';
+import { createAuthenticatedAgent, getCanisterId } from 'azle/dfx';
 import { execSync } from 'child_process';
 import { Actor, ActorSubclass } from '@dfinity/agent';
 import { hashFile } from 'azle/scripts/hash_file';
@@ -64,8 +64,6 @@ export function getTests(canisterId: string): Test[] {
                         stdio: 'inherit'
                     }
                 );
-
-                await new Promise((resolve) => setTimeout(resolve, 1 * 1000));
 
                 const response = await fetch(
                     `${origin}/exists?path=assets/test150MiB`
@@ -156,7 +154,7 @@ function generateTest(
 async function createGetFileHashActor(
     canisterId: string
 ): Promise<ActorSubclass> {
-    const agent = await createAgent();
+    const agent = await createAuthenticatedAgent();
 
     return Actor.createActor(
         ({ IDL }) => {

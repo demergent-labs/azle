@@ -41,7 +41,7 @@ export async function createAnonymousAgent() {
     }
 }
 
-export async function createAgent(): Promise<HttpAgent> {
+export async function createAuthenticatedAgent(): Promise<HttpAgent> {
     const agent = new HttpAgent({
         host: getAgentHost(),
         identity: getIdentity()

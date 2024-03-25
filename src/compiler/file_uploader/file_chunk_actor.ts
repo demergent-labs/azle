@@ -1,8 +1,8 @@
 import { Actor, ActorSubclass } from '@dfinity/agent';
-import { createAgent } from '../../../dfx';
+import { createAuthenticatedAgent } from '../../../dfx';
 
 export async function createActor(canisterId: string): Promise<ActorSubclass> {
-    const agent = await createAgent();
+    const agent = await createAuthenticatedAgent();
 
     return Actor.createActor(
         ({ IDL }) => {

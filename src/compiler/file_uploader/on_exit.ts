@@ -1,7 +1,7 @@
 import { Actor, ActorSubclass } from '@dfinity/agent';
 import { Src, Dest } from '.';
 import { getListOfIncompleteFiles } from './incomplete_files';
-import { createAgent } from '../../../dfx';
+import { createAuthenticatedAgent } from '../../../dfx';
 
 export function onExit(canisterId: string, paths: [Src, Dest][]) {
     process.on('exit', async (_code) => {
@@ -19,7 +19,7 @@ export function onExit(canisterId: string, paths: [Src, Dest][]) {
 async function createClearFileAndInfoActor(
     canisterId: string
 ): Promise<ActorSubclass> {
-    const agent = await createAgent();
+    const agent = await createAuthenticatedAgent();
 
     return Actor.createActor(
         ({ IDL }) => {

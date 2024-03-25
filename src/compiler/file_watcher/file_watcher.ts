@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from 'fs';
 
 import { getCanisterJavaScript } from '../get_canister_javascript';
 import { ok } from '../utils/result';
-import { createAgent } from '../../../dfx';
+import { createAuthenticatedAgent } from '../../../dfx';
 
 const reloadedJsPath = process.argv[2];
 const canisterId = process.argv[3];
@@ -60,7 +60,7 @@ async function reloadJs(
 
     writeFileSync(reloadedJsPath, canisterJavaScriptResult.ok);
 
-    const agent = await createAgent();
+    const agent = await createAuthenticatedAgent();
 
     const actor = Actor.createActor(
         ({ IDL }) => {

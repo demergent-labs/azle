@@ -7,7 +7,6 @@ export function bytesToHumanReadable(sizeInBytes: number): string {
                 return acc;
             }
             if (acc.size < 1024.0) {
-                acc.unit = suffix;
                 return {
                     ...acc,
                     unit: suffix,

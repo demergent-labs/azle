@@ -1,4 +1,3 @@
-import { existsSync } from 'fs';
 import { readdir, stat } from 'fs/promises';
 import { join } from 'path';
 import { Src, Dest } from '.';
@@ -17,10 +16,6 @@ async function expandPath(
     srcPath: Src,
     destPath: Dest
 ): Promise<[Src, Dest][]> {
-    if (!existsSync(srcPath)) {
-        throw new Error(`${srcPath} does not exist`);
-    }
-
     const stats = await stat(srcPath);
     if (stats.isDirectory()) {
         return await expandDirectory(srcPath, destPath);
