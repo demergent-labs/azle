@@ -287,6 +287,65 @@ export function getTests(canisterId: string): Test[] {
                         responseJson.statusText === 'Not Implemented'
                 };
             }
+        },
+        {
+            name: '/transform',
+            test: async () => {
+                const response = await fetch(`${origin}/transform`, {
+                    method: 'POST'
+                });
+                const responseJson = await response.json();
+
+                return {
+                    Ok: responseJson.length === 0
+                };
+            }
+        },
+        {
+            name: '/transform-with-context',
+            test: async () => {
+                const response = await fetch(
+                    `${origin}/transform-with-context`,
+                    {
+                        method: 'POST'
+                    }
+                );
+                const { headers, body } = await response.json();
+
+                return {
+                    Ok: headers.length === 0 && body === 3
+                };
+            }
+        },
+        {
+            name: '/max-response-bytes',
+            test: async () => {
+                const response = await fetch(`${origin}/max-response-bytes`, {
+                    method: 'POST'
+                });
+                const responseJson = await response.json();
+
+                return {
+                    Ok: responseJson.message.includes(
+                        'Header size exceeds specified response size limit 0'
+                    )
+                };
+            }
+        },
+        {
+            name: '/cycles',
+            test: async () => {
+                const response = await fetch(`${origin}/cycles`, {
+                    method: 'POST'
+                });
+                const responseJson = await response.json();
+
+                return {
+                    Ok: responseJson.message.includes(
+                        'http_request request sent with 0 cycles'
+                    )
+                };
+            }
         }
     ];
 }

@@ -5,7 +5,6 @@
             "type": "custom",
             "main": "src/server.ts",
             "candid": "src/server.did",
-            "candid_gen": "http",
             "build": "npx azle server",
             "wasm": ".azle/server/server.wasm",
             "gzip": true,
