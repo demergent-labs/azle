@@ -4,6 +4,7 @@ import { Buffer } from 'buffer';
 import { jsonReplacer } from './stable_structures/stable_json';
 import * as process from 'process';
 import { v4 } from 'uuid';
+import { URL } from 'url';
 import { azleFetch } from './fetch';
 
 declare global {
@@ -16,7 +17,7 @@ declare global {
     var _azleTimerCallbacks: { [key: string]: () => void };
     var _azleGuardFunctions: { [key: string]: () => any };
     var _azleWebAssembly: any;
-    var _azleOutgoingHttpOptionsSubnetSize: bigint | undefined;
+    var _azleOutgoingHttpOptionsSubnetSize: number | undefined;
     var _azleOutgoingHttpOptionsMaxResponseBytes: bigint | undefined;
     var _azleOutgoingHttpOptionsCycles: bigint | undefined;
     var _azleOutgoingHttpOptionsTransformMethodName: string | undefined;
@@ -138,4 +139,6 @@ if (globalThis._azleInsideCanister) {
     } as any;
 
     (globalThis as any).fetch = azleFetch;
+
+    (globalThis as any).URL = URL;
 }

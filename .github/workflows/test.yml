@@ -102,6 +102,7 @@ jobs:
                     "examples/guard_functions",
                     "examples/heartbeat",
                     "examples/hello_world",
+                    "examples/http_outcall_fetch",
                     "examples/hybrid_canister",
                     "examples/ic_api",
                     "examples/ic_evm_rpc",

@@ -1,5 +1,4 @@
 import { readFile } from 'fs/promises';
-import { URL } from 'url';
 
 import { getUrl } from './url';
 import { AzleFetchResponse } from './response';

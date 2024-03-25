@@ -1,6 +1,5 @@
 import { IDL } from '@dfinity/candid';
 import { existsSync } from 'fs';
-import { URL } from 'url';
 
 import { ic, Principal } from '../';
 import { getUrl } from './url';

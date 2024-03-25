@@ -3,8 +3,6 @@
 // TODO it seems like you might not be able to do that
 // TODO we have got to get rid of the need to set all of these custom things
 
-import { URL } from 'url';
-
 import { fetchFile } from './file';
 import { fetchHttp } from './http';
 import { fetchIcp } from './icp';

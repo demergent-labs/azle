@@ -1,5 +1,4 @@
 import { inflate } from 'pako';
-import { URL } from 'url';
 
 import { azleFetch, serialize } from '.';
 import { ic } from '../';
@@ -85,15 +84,11 @@ export async function fetchHttp(
         {}
     );
 
-    // TODO add the response headers here
-    // TODO add response headers everywhere on all protocols
-
     // Using Response from wasmedge-quickjs doesn't seem ideal for the time being
     // It seems very tied to the low-level implementation at first glance
     // We will build up our own response for the time being
     return new AzleFetchResponse(finalBody, {
-        status: 200, // TODO determine,
-        statusText: 'OK', // TODO determine,
+        status: Number(responseJson.status),
         headers: responseHeaders
     });
 }
@@ -157,7 +152,9 @@ function getCycles(
     headers: CandidHttpHeader[],
     maxResponseBytes: bigint | undefined
 ): bigint {
-    const subnetSize = globalThis._azleOutgoingHttpOptionsSubnetSize ?? 13n;
+    const subnetSize = BigInt(
+        globalThis._azleOutgoingHttpOptionsSubnetSize ?? 13
+    );
     const baseFeeEstimate = (3_000_000n + 60_000n * subnetSize) * subnetSize;
 
     const concatenatedHeaders = headers.reduce(
