@@ -1,14 +1,12 @@
-import { ic, Server } from 'azle';
+import { ic } from 'azle';
 import express from 'express';
 
-export default Server(() => {
-    const app = express();
+const app = express();
 
-    app.get('/whoami', (req, res) => {
-        res.send(ic.caller().toString());
-    });
-
-    app.use(express.static('/dist'));
-
-    return app.listen();
+app.get('/whoami', (req, res) => {
+    res.send(ic.caller().toString());
 });
+
+app.use(express.static('/dist'));
+
+app.listen();

@@ -4,46 +4,37 @@ dns.setDefaultResultOrder('ipv4first');
 import { Test } from 'azle/test';
 import { writeFileSync } from 'fs';
 
-export const originalServerTs = `import { Server } from 'azle';
-import express from 'express';
+export const originalServerTs = `import express from 'express';
 
-export default Server(() => {
 const app = express();
 
 app.get('/test', (req, res) => {
     res.send('test');
 });
 
-return app.listen();
-});
+app.listen();
 `;
 
-const testChangedServerTs = `import { Server } from 'azle';
-import express from 'express';
+const testChangedServerTs = `import express from 'express';
 
-export default Server(() => {
-    const app = express();
+const app = express();
 
-    app.get('/test-changed', (req, res) => {
-        res.send('test-changed');
-    });
-
-    return app.listen();
+app.get('/test-changed', (req, res) => {
+    res.send('test-changed');
 });
+
+app.listen();
 `;
 
-const testChangedRapidlyServerTs = `import { Server } from 'azle';
-import express from 'express';
+const testChangedRapidlyServerTs = `import express from 'express';
 
-export default Server(() => {
-    const app = express();
+const app = express();
 
-    app.get('/test-changed-rapidly', (req, res) => {
-        res.send('test-changed-rapidly');
-    });
-
-    return app.listen();
+app.get('/test-changed-rapidly', (req, res) => {
+    res.send('test-changed-rapidly');
 });
+
+app.listen();
 `;
 
 export function getTests(canisterId: string): Test[] {
