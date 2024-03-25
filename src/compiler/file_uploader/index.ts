@@ -2,7 +2,6 @@ import { getCanisterId } from '../../../dfx';
 import { expandPaths } from './expand_paths';
 import { uploadFile } from './upload_file';
 import { onBeforeExit } from './on_before_exit';
-import { onExit } from './on_exit';
 import { createActor } from './file_chunk_actor';
 
 export type Src = string;
@@ -26,5 +25,4 @@ export async function uploadFiles(canisterName: string, paths: [Src, Dest][]) {
     );
 
     onBeforeExit(canisterId, expandedPaths);
-    onExit(canisterId, expandedPaths);
 }
