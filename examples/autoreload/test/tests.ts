@@ -166,7 +166,7 @@ export function getTests(canisterId: string): Test[] {
         },
         {
             name: 'waiting for Azle to reload',
-            wait: 10_000
+            wait: 30_000
         },
         {
             name: '/test',
@@ -174,8 +174,6 @@ export function getTests(canisterId: string): Test[] {
                 try {
                     const response = await fetch(`${origin}/test`);
                     const responseText = await response.text();
-
-                    console.log('responseText', responseText);
 
                     return {
                         Ok: responseText === 'test'
