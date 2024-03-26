@@ -2,13 +2,13 @@ import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 import { Test } from 'azle/test';
-import { createAuthenticatedAgent, getCanisterId } from 'azle/dfx';
+import { getCanisterId } from 'azle/dfx';
 import { execSync } from 'child_process';
-import { Actor, ActorSubclass } from '@dfinity/agent';
 import { hashFile } from 'azle/scripts/hash_file';
 import { join } from 'path';
 import { rm } from 'fs/promises';
 import { generateTestFileOfSize } from './generateTestFiles';
+import { createActor } from 'azle/src/compiler/file_uploader/actors/hash_actor';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -120,9 +120,7 @@ function generateTest(
                 localPath ?? canisterPath
             );
 
-            const actor = await createGetFileHashActor(
-                getCanisterId('backend')
-            );
+            const actor = await createActor(getCanisterId('backend'));
 
             const expectedHash = (await hashFile(localFilePath)).toString(
                 'hex'
@@ -139,9 +137,7 @@ function generateTest(
                 };
             }
 
-            const hash = (await actor.get_file_hash(canisterFilePath)) as
-                | []
-                | [string];
+            const hash = await actor.get_file_hash(canisterFilePath);
 
             if (hash.length === 1) {
                 return { Ok: hash[0] === expectedHash };
@@ -149,22 +145,4 @@ function generateTest(
             return { Err: `File not found on canister` };
         }
     };
-}
-
-async function createGetFileHashActor(
-    canisterId: string
-): Promise<ActorSubclass> {
-    const agent = await createAuthenticatedAgent();
-
-    return Actor.createActor(
-        ({ IDL }) => {
-            return IDL.Service({
-                get_file_hash: IDL.Func([IDL.Text], [IDL.Opt(IDL.Text)], [])
-            });
-        },
-        {
-            agent,
-            canisterId
-        }
-    );
 }

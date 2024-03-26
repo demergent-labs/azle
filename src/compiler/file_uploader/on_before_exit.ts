@@ -1,5 +1,5 @@
 import { Dest, Src } from '.';
-import { createClearFileAndInfoActor } from './actors/clear_file_and_info_actor';
+import { createActor } from './actors/hash_actor';
 import { getListOfIncompleteFiles } from './incomplete_files';
 import {
     FileInfo,
@@ -39,7 +39,7 @@ export function onBeforeExit(canisterId: string, paths: [Src, Dest][]) {
 async function cleanup(canisterId: string, paths: [Src, Dest][]) {
     const incompleteFiles = await getListOfIncompleteFiles(paths, canisterId);
     for (const [_, path] of incompleteFiles) {
-        const actor = await createClearFileAndInfoActor(canisterId);
+        const actor = await createActor(canisterId);
         await actor.clear_file_and_info(path);
     }
 }

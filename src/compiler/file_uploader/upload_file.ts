@@ -2,7 +2,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { stat, open } from 'fs/promises';
 import { Dest, Src } from '.';
 import { bytesToHumanReadable } from './bytes_to_human_readable';
-import { _SERVICE } from './actors/file_chunk_actor';
+import { _SERVICE } from './actors/hash_actor';
 
 export async function uploadFile(
     srcPath: Src,
