@@ -33,8 +33,8 @@ export function handleCli(
         return true;
     }
 
-    if (commandName === 'upload-files') {
-        handleUploadFiles();
+    if (commandName === 'upload-assets') {
+        handleUploadAssets();
 
         return true;
     }
@@ -105,7 +105,7 @@ function handleCommandClean(
     console.info(`azle images removed`);
 }
 
-async function handleUploadFiles() {
+async function handleUploadAssets() {
     const canisterName = process.argv[3];
     const srcPath = process.argv[4];
     const destPath = process.argv[5];

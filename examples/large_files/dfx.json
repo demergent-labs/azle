@@ -6,7 +6,7 @@
             "candid": "src/backend/index.did",
             "candid_gen": "http",
             "build": "npx azle backend",
-            "post_install": "npx azle upload-files backend",
+            "post_install": "npx azle upload-assets backend",
             "wasm": ".azle/backend/backend.wasm",
             "gzip": true,
             "assets_large": [

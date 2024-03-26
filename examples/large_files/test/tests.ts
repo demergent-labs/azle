@@ -8,7 +8,7 @@ import { hashFile } from 'azle/scripts/hash_file';
 import { join } from 'path';
 import { rm } from 'fs/promises';
 import { generateTestFileOfSize } from './generateTestFiles';
-import { createActor } from 'azle/src/compiler/file_uploader/actors/hash_actor';
+import { createActor } from 'azle/src/compiler/file_uploader/uploader_actor';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
