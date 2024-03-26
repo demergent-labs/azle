@@ -26,13 +26,14 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
 
         fn hash_file_by_parts(path: &str, position: u64) {
             let file_length = std::fs::metadata(path).unwrap().len();
+            let percentage = position / file_length.max(1) * 100;
             ic_cdk::println!(
-                "Hashing: {} | {}/{}",
+                "Hashing: {} | {}/{} : {:.2}%",
                 path,
                 bytes_to_human_readable(position),
                 bytes_to_human_readable(file_length),
+                percentage
             );
-            // TODO add percentage here
             let mut file = std::fs::File::open(&path).unwrap();
 
             std::io::Seek::seek(&mut file, std::io::SeekFrom::Start(position)).unwrap();

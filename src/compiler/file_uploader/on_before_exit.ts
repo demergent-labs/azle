@@ -8,16 +8,17 @@ import {
 } from './ongoing_hashes';
 
 export function onBeforeExit(canisterId: string, paths: [Src, Dest][]) {
-    let complete = false;
+    let hashingComplete = false;
     let cleanUpComplete = false;
     let ongoingFileHashes: FileInfo[] = [];
-    process.on('beforeExit', async (code) => {
+    process.on('beforeExit', async () => {
         if (cleanUpComplete) {
             // If any async behavior happens in 'beforeExit' then 'beforeExit'
-            // will run again. This is need to prevent an infinite loop
+            // will run again. This is need to prevent an infinite loop.
+            // Once clean up is complete we are ready to exit
             return;
         }
-        if (complete) {
+        if (hashingComplete) {
             await cleanup(canisterId, paths);
             cleanUpComplete = true;
             return;
@@ -28,7 +29,7 @@ export function onBeforeExit(canisterId: string, paths: [Src, Dest][]) {
             ongoingFileHashes
         );
 
-        complete = ongoingFileHashes.length === 0;
+        hashingComplete = ongoingFileHashes.length === 0;
 
         console.info(`Waiting 5 seconds and then we'll try again.`);
         await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -65,7 +66,6 @@ async function verifyUploadAndHashingComplete(
         );
 
         if (!wasUpdated) {
-            // TODO get hashing percentage and report, if not update after 5 times end the process
             console.info(
                 `Missing hashes for ${
                     incompleteFiles.length

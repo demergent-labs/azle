@@ -88,9 +88,7 @@ async function getHashStatus(
     path: string
 ): Promise<[AmountComplete, Total]> {
     const actor = await createActor(canisterId);
-    const result = (await actor.get_hash_status(path)) as
-        | [[bigint, bigint]]
-        | [];
+    const result = await actor.get_hash_status(path);
     if (result.length === 0) {
         // Files doesn't exist
         return [0n, 0n];

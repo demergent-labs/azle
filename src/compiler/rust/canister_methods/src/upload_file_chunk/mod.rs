@@ -50,7 +50,7 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
             if ic_cdk::api::is_controller(&ic_cdk::api::caller()) {
                 return Ok(());
             }
-            return Err("Access denied: Must be a controller to handle files!".to_string());
+            return Err("Not Authorized: must be a controller to call this method".to_string());
         }
 
         pub fn start_hash(dest_path: String) {

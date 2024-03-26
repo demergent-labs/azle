@@ -2,12 +2,13 @@ import { ActorSubclass } from '@dfinity/agent';
 import { stat, open } from 'fs/promises';
 import { Dest, Src } from '.';
 import { bytesToHumanReadable } from './bytes_to_human_readable';
+import { _SERVICE } from './actors/file_chunk_actor';
 
 export async function uploadFile(
     srcPath: Src,
     destPath: Dest,
     chunkSize: number,
-    actor: ActorSubclass
+    actor: ActorSubclass<_SERVICE>
 ) {
     const uploadStartTime = process.hrtime.bigint();
     const fileSize = (await stat(srcPath)).size;
@@ -36,9 +37,9 @@ export async function uploadFile(
             .upload_file_chunk(
                 destPath,
                 uploadStartTime,
-                startIndex,
+                BigInt(startIndex),
                 bytesToUpload.subarray(0, bytesRead),
-                fileSize
+                BigInt(fileSize)
             )
             .catch((error) => {
                 console.error(error);
