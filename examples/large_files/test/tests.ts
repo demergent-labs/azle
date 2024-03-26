@@ -59,7 +59,7 @@ export function getTests(canisterId: string): Test[] {
             name: 'test manual upload',
             test: async () => {
                 execSync(
-                    `npx azle upload-files backend assets/manual/test150MiB assets/test150MiB`,
+                    `npx azle upload-assets backend assets/manual/test150MiB assets/test150MiB`,
                     {
                         stdio: 'inherit'
                     }
