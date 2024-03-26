@@ -1,4 +1,4 @@
-import { createActor } from './hash_status_actor';
+import { createActor } from './actors/hash_status_actor';
 
 export type FileInfo = {
     path: string;

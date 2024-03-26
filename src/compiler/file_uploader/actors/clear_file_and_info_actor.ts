@@ -1,5 +1,5 @@
 import { Actor, ActorSubclass } from '@dfinity/agent';
-import { createAuthenticatedAgent } from '../../../dfx';
+import { createAuthenticatedAgent } from '../../../../dfx';
 
 export async function createClearFileAndInfoActor(
     canisterId: string

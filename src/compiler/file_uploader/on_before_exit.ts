@@ -1,5 +1,5 @@
 import { Dest, Src } from '.';
-import { createClearFileAndInfoActor } from './clear_file_and_info_actor';
+import { createClearFileAndInfoActor } from './actors/clear_file_and_info_actor';
 import { getListOfIncompleteFiles } from './incomplete_files';
 import {
     FileInfo,
