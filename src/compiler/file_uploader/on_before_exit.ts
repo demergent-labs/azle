@@ -1,5 +1,5 @@
 import { Dest, Src } from '.';
-import { createActor } from './actors/hash_actor';
+import { createActor } from './uploader_actor';
 import { getListOfIncompleteFiles } from './incomplete_files';
 import {
     FileInfo,
