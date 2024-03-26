@@ -1,16 +1,12 @@
 import { Dest, Src } from '.';
 import { createActor } from './uploader_actor';
 import { getListOfIncompleteFiles } from './incomplete_files';
-import {
-    FileInfo,
-    getOngoingHashes,
-    reportOnGoingHashes
-} from './ongoing_hashes';
+import { OngoingHashingJob, getOngoingHashingJobs } from './ongoing_hashes';
 
 export function onBeforeExit(canisterId: string, paths: [Src, Dest][]) {
     let hashingComplete = false;
     let cleanUpComplete = false;
-    let ongoingFileHashes: FileInfo[] = [];
+    let ongoingHashingJobs: OngoingHashingJob[] = [];
     process.on('beforeExit', async () => {
         if (cleanUpComplete) {
             // If any async behavior happens in 'beforeExit' then 'beforeExit'
@@ -23,16 +19,20 @@ export function onBeforeExit(canisterId: string, paths: [Src, Dest][]) {
             cleanUpComplete = true;
             return;
         }
-        ongoingFileHashes = await verifyUploadAndHashingComplete(
+        ongoingHashingJobs = await getOngoingHashingJobs(
             canisterId,
             paths,
-            ongoingFileHashes
+            ongoingHashingJobs
         );
 
-        hashingComplete = ongoingFileHashes.length === 0;
+        hashingComplete = ongoingHashingJobs.length === 0;
 
-        console.info(`Waiting 5 seconds and then we'll try again.`);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        if (!hashingComplete) {
+            console.info(
+                `Waiting 5 seconds before checking hashing status again...`
+            );
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+        }
     });
 }
 
@@ -41,41 +41,5 @@ async function cleanup(canisterId: string, paths: [Src, Dest][]) {
     for (const [_, path] of incompleteFiles) {
         const actor = await createActor(canisterId);
         await actor.clear_file_and_info(path);
-    }
-}
-
-async function verifyUploadAndHashingComplete(
-    canisterId: string,
-    paths: [Src, Dest][],
-    previousHashInfos: FileInfo[]
-): Promise<FileInfo[]> {
-    const incompleteFiles = await getListOfIncompleteFiles(paths, canisterId);
-    if (incompleteFiles.length === 0) {
-        return [];
-    } else {
-        const incompleteDestPaths = incompleteFiles.map(([_, path]) => path);
-
-        const ongoingHashInfo = await getOngoingHashes(
-            canisterId,
-            previousHashInfos,
-            incompleteDestPaths
-        );
-
-        const wasUpdated = ongoingHashInfo.every(
-            (fileInfo) => fileInfo.triesSinceLastChange < 5
-        );
-
-        if (!wasUpdated) {
-            console.info(
-                `Missing hashes for ${
-                    incompleteFiles.length
-                } files:\n${incompleteFiles.join('\n')}.`
-            );
-            return [];
-        }
-
-        reportOnGoingHashes(ongoingHashInfo);
-
-        return ongoingHashInfo;
     }
 }
