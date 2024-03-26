@@ -37,8 +37,11 @@ export async function createActor(
 }
 
 export interface _SERVICE {
-    clear_file_and_info: ActorMethod<[string]>;
+    clear_file_and_info: ActorMethod<[string], void>;
     get_file_hash: ActorMethod<[string], [] | [string]>;
     get_hash_status: ActorMethod<[string], [] | [[bigint, bigint]]>;
-    upload_file_chunk: ActorMethod<[string, bigint, bigint, Buffer, bigint]>;
+    upload_file_chunk: ActorMethod<
+        [string, bigint, bigint, Buffer, bigint],
+        void
+    >;
 }
