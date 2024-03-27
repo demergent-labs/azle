@@ -93,6 +93,7 @@ jobs:
                     "examples/date",
                     "examples/ethereum_json_rpc",
                     "examples/ethers",
+                    "examples/ethers_base",
                     "examples/express",
                     "examples/fetch_ic",
                     "examples/file_protocol",
@@ -101,6 +102,7 @@ jobs:
                     "examples/guard_functions",
                     "examples/heartbeat",
                     "examples/hello_world",
+                    "examples/http_outcall_fetch",
                     "examples/hybrid_canister",
                     "examples/ic_api",
                     "examples/ic_evm_rpc",
@@ -267,7 +269,7 @@ jobs:
                   cd /home/runner/.config/azle
                   git clone https://github.com/demergent-labs/wasmedge-quickjs
                   cd wasmedge-quickjs
-                  git checkout 6c81d7e6fe4b22a468beceed0ee697f4163e7ca8
+                  git checkout c21ff69f442998e4cda4619166e23a9bc91418be
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.os == 'ubuntu-latest' }}
               shell: bash -l {0}
               run: sudo apt-get install -y podman

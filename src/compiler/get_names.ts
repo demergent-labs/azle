@@ -23,7 +23,7 @@ export async function getNamesBeforeCli() {
     const dockerImageName = `${dockerImagePrefix}${dockerfileHash}`;
     const dockerContainerPrefix = 'azle__container__';
     const dockerContainerName = `${dockerContainerPrefix}${dockerfileHash}`;
-    const wasmedgeQuickJsName = `wasmedge_quickjs_${dockerfileHash}`;
+    const wasmedgeQuickJsName = `wasmedge-quickjs_${dockerfileHash}`;
 
     const dockerImagePathTar = join(
         GLOBAL_AZLE_CONFIG_DIR,

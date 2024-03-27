@@ -1,6 +1,3 @@
-// TODO once we have dfx 0.16.x working reenable these tests in CI
-
-import { Server } from 'azle';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import express from 'express';
@@ -86,7 +83,7 @@ const resolvers = {
     }
 };
 
-export default Server(async () => {
+async function init() {
     const app = express();
 
     const server = new ApolloServer({
@@ -98,5 +95,7 @@ export default Server(async () => {
 
     app.use(express.json({ limit: '50mb' }), expressMiddleware(server, {}));
 
-    return app.listen();
-});
+    app.listen();
+}
+
+init();
