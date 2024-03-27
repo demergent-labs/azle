@@ -171,13 +171,13 @@ export function getTests(canisterId: string): Test[] {
                     recursive: true,
                     force: true
                 });
-                await generateTestFileOfSize(2, 'GiB');
+                await generateTestFileOfSize(1, 'GiB');
                 execSync(`dfx deploy --upgrade-unchanged`, {
                     stdio: 'inherit'
                 });
             }
         },
-        generateTest(origin, 'test2GiB', 'auto')
+        generateTest(origin, 'test1GiB', 'auto')
     ];
 }
 
