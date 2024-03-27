@@ -1,17 +1,15 @@
 import { Src, Dest } from '.';
+import { filterAsync } from '../utils/filter_async';
 import { UploaderActor } from './uploader_actor';
 
 export async function getListOfIncompleteFiles(
     paths: [Src, Dest][],
     actor: UploaderActor
 ): Promise<[Src, Dest][]> {
-    const filters = await Promise.all(
-        paths.map(
-            async ([_, destPath]): Promise<boolean> =>
-                !(await hasValidHash(destPath, actor))
-        )
+    return filterAsync(
+        paths,
+        async ([_, path]) => !(await hasValidHash(path, actor))
     );
-    return paths.filter((_, index) => filters[index]);
 }
 
 async function hasValidHash(
