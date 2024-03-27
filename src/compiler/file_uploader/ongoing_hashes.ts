@@ -25,7 +25,9 @@ export async function getOngoingHashingJobs(
         return [];
     }
 
-    const incompleteDestPaths = incompleteFiles.map(([_, path]) => path);
+    const incompleteDestPaths = incompleteFiles.map(
+        ([_, destPath]) => destPath
+    );
 
     const incompleteHashingJobs = await updateOngoingHashingJobs(
         previouslyOngoingJobs,
@@ -55,29 +57,39 @@ async function updateOngoingHashingJobs(
     incompletePaths: string[],
     actor: UploaderActor
 ): Promise<OngoingHashingJob[]> {
-    const hashStatuses = await getHashStatuses(incompletePaths, actor);
+    const latestHashStatuses = await getHashStatuses(incompletePaths, actor);
     const previouslyOngoingHashingJobs = initializePreviousJobsIfNeeded(
         previouslyOngoingJobs,
-        hashStatuses,
+        latestHashStatuses,
         incompletePaths
     );
-    return previouslyOngoingHashingJobs
-        .filter((hashInfo) => incompletePaths.includes(hashInfo.path))
-        .map((hashInfo): OngoingHashingJob => {
-            const newBytesHashed = hashStatuses[hashInfo.path][0];
-            if (hashInfo.bytesHashed === newBytesHashed) {
-                return {
-                    ...hashInfo,
-                    triesSinceLastChange: hashInfo.triesSinceLastChange + 1
-                };
-            } else {
-                return {
-                    ...hashInfo,
-                    bytesHashed: newBytesHashed,
-                    triesSinceLastChange: 0
-                };
-            }
-        });
+
+    return previouslyOngoingHashingJobs.map((hashInfo): OngoingHashingJob => {
+        const newBytesHashed = latestHashStatuses[hashInfo.path][0];
+        if (hashInfo.bytesHashed === newBytesHashed) {
+            return incrementTries(hashInfo);
+        } else {
+            return updateBytes(hashInfo, newBytesHashed);
+        }
+    });
+}
+
+function incrementTries(hashJob: OngoingHashingJob): OngoingHashingJob {
+    return {
+        ...hashJob,
+        triesSinceLastChange: hashJob.triesSinceLastChange + 1
+    };
+}
+
+function updateBytes(
+    hashJob: OngoingHashingJob,
+    newBytesHashed: bigint
+): OngoingHashingJob {
+    return {
+        ...hashJob,
+        bytesHashed: newBytesHashed,
+        triesSinceLastChange: 0
+    };
 }
 
 function reportOngoingHashingJobs(ongoingHashInfo: OngoingHashingJob[]) {
@@ -101,7 +113,9 @@ function initializePreviousJobsIfNeeded(
     incompletePaths: string[]
 ): OngoingHashingJob[] {
     return previousHashInfos.length > 0
-        ? previousHashInfos
+        ? previousHashInfos.filter((hashInfo) =>
+              incompletePaths.includes(hashInfo.path)
+          )
         : incompletePaths.map((path): OngoingHashingJob => {
               return {
                   path,
