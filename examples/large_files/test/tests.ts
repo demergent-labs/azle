@@ -164,6 +164,7 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         generateTest(origin, 'test150MiB', 'manual'),
+        // CI CD isn't working with the 2GiB tests so we're just going to have this one for local tests.
         {
             name: 'deploy',
             prep: async () => {
@@ -175,9 +176,10 @@ export function getTests(canisterId: string): Test[] {
                 execSync(`dfx deploy --upgrade-unchanged`, {
                     stdio: 'inherit'
                 });
-            }
+            },
+            skip: true
         },
-        generateTest(origin, 'test2GiB', 'auto')
+        { ...generateTest(origin, 'test2GiB', 'auto'), skip: true }
     ];
 }
 
