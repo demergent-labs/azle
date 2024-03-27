@@ -164,7 +164,7 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         generateTest(origin, 'test150MiB', 'manual'),
-        // CI CD isn't working with the 2GiB tests so we're just going to have this one for local tests.
+        // TODO CI CD isn't working with the 2GiB tests so we're just going to have this one for local tests.
         {
             name: 'deploy',
             prep: async () => {
