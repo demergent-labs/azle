@@ -1,4 +1,4 @@
-import { getCanisterId } from 'azle/test';
+import { getCanisterId } from 'azle/dfx';
 import { execSync } from 'child_process';
 
 async function pretest() {

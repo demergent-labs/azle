@@ -1,4 +1,5 @@
-import { getCanisterId, Test } from 'azle/test';
+import { getCanisterId } from 'azle/dfx';
+import { Test } from 'azle/test';
 import { _SERVICE } from './dfx_generated/canister/canister.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';

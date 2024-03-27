@@ -1,4 +1,5 @@
-import { getCanisterId, runTests } from 'azle/test';
+import { runTests } from 'azle/test';
+import { getCanisterId } from 'azle/dfx';
 import { createActor } from '../test/dfx_generated/vanilla_js';
 import { getTests } from './tests';
 

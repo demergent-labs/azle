@@ -1,0 +1,29 @@
+{
+    "canisters": {
+        "backend": {
+            "type": "custom",
+            "main": "src/backend/index.ts",
+            "candid": "src/backend/index.did",
+            "candid_gen": "http",
+            "build": "npx azle backend",
+            "post_install": "npx azle upload-assets backend",
+            "wasm": ".azle/backend/backend.wasm",
+            "gzip": true,
+            "assets_large": [
+                ["assets/auto", "assets"],
+                ["assets/permanent", "assets"],
+                ["assets/single_asset.txt", "assets/text/single.txt"]
+            ],
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "src/backend/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
+        }
+    }
+}

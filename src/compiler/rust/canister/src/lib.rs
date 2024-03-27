@@ -3,7 +3,7 @@ use std::{cell::RefCell, collections::BTreeMap, collections::HashMap, convert::T
 #[allow(unused)]
 use canister_methods::canister_methods;
 use ic_stable_structures::{
-    memory_manager::{MemoryManager, VirtualMemory},
+    memory_manager::{MemoryId, MemoryManager, VirtualMemory},
     storable::Bound,
     DefaultMemoryImpl, StableBTreeMap, Storable,
 };
@@ -62,6 +62,11 @@ impl Storable for AzleStableBTreeMapValue {
     const BOUND: Bound = Bound::Unbounded;
 }
 
+type Hash = Option<Vec<u8>>;
+type Timestamp = u64;
+type BytesReceived = u64;
+type BytesHashed = u64;
+
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
 
@@ -74,6 +79,8 @@ thread_local! {
     static RELOADED_JS_TIMESTAMP: RefCell<u64> = RefCell::new(0);
 
     static RELOADED_JS: RefCell<BTreeMap<u64, Vec<u8>>> = RefCell::new(BTreeMap::new());
+
+    static FILE_INFO: RefCell<BTreeMap<String, (Timestamp, BytesReceived, Hash, BytesHashed)>> = RefCell::new(BTreeMap::new());
 }
 
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]

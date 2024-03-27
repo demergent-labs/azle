@@ -1,4 +1,5 @@
-import { getCanisterId, runTests } from 'azle/test';
+import { getCanisterId } from 'azle/dfx';
+import { runTests } from 'azle/test';
 import { createActor } from './dfx_generated/func_types';
 import { getTests } from './tests';
 

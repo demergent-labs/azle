@@ -4,6 +4,8 @@ import { rmSync } from 'fs';
 import { generateNewAzleProject } from './new_command';
 import { version as azleVersion } from '../../package.json';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
+import { uploadFiles } from './file_uploader';
+import { getFilesToUpload } from './file_uploader/get_files_to_upload';
 
 export function handleCli(
     stdioType: IOType,
@@ -27,6 +29,12 @@ export function handleCli(
 
     if (commandName === 'clean') {
         handleCommandClean(stdioType, dockerImagePrefix, dockerContainerPrefix);
+
+        return true;
+    }
+
+    if (commandName === 'upload-assets') {
+        handleUploadAssets();
 
         return true;
     }
@@ -95,6 +103,14 @@ function handleCommandClean(
     );
 
     console.info(`azle images removed`);
+}
+
+async function handleUploadAssets() {
+    const canisterName = process.argv[3];
+    const srcPath = process.argv[4];
+    const destPath = process.argv[5];
+    const filesToUpload = getFilesToUpload(canisterName, srcPath, destPath);
+    await uploadFiles(canisterName, filesToUpload);
 }
 
 function handleVersionCommand() {

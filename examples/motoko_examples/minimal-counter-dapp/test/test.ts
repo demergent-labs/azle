@@ -1,4 +1,5 @@
-import { getCanisterId, runTests } from 'azle/test';
+import { getCanisterId } from 'azle/dfx';
+import { runTests } from 'azle/test';
 // @ts-ignore
 import { createActor } from '../src/declarations/minimal_dapp';
 import { getTests } from './tests';

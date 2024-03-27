@@ -1,4 +1,5 @@
-import { getCanisterId, Test } from 'azle/test';
+import { getCanisterId } from 'azle/dfx';
+import { Test } from 'azle/test';
 
 import { createActor } from '../dfx_generated/canister';
 
