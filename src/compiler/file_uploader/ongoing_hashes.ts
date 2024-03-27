@@ -143,7 +143,8 @@ async function getHashStatuses(
 }
 
 /**
- * Returns a tuple with the amount complete at 0 and the total files size at 1
+ * Returns a tuple with the amount complete at index 0 and the total files size
+ * at index 1
  *
  * This is only meant to be used for status updates. The true test for if a hash
  * is complete is to get the hash.
