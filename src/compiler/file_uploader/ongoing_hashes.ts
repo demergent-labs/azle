@@ -33,12 +33,12 @@ export async function getOngoingHashingJobs(
         actor
     );
 
-    const areStillOngoing = incompleteHashingJobs.every(
+    const isHashingStalled = incompleteHashingJobs.every(
         // If the hash hasn't progressed in the last 5 tries it is considered failed instead of ongoing
-        (fileInfo) => fileInfo.triesSinceLastChange < 5
+        (fileInfo) => fileInfo.triesSinceLastChange >= 5
     );
 
-    if (!areStillOngoing) {
+    if (isHashingStalled) {
         // At the point jobs are considered incomplete instead of ongoing. There
         // are no ongoing jobs to report
         reportIncompleteHashingJobs(incompleteFiles);
