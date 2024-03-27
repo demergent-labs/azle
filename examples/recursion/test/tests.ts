@@ -1,4 +1,5 @@
-import { Test, getCanisterId } from 'azle/test';
+import { getCanisterId } from 'azle/dfx';
+import { Test } from 'azle/test';
 import {
     _SERVICE,
     rec_0,

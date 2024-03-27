@@ -112,6 +112,7 @@ jobs:
                     "examples/inspect_message",
                     "examples/internet_identity",
                     "examples/key_value_store",
+                    "examples/large_files",
                     "examples/ledger_canister",
                     "examples/list_of_lists",
                     "examples/management_canister",

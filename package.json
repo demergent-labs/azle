@@ -25,7 +25,8 @@
     },
     "homepage": "https://github.com/demergent-labs/azle#readme",
     "dependencies": {
-        "@dfinity/agent": "^1.0.0",
+        "@dfinity/agent": "^1.1.0",
+        "@dfinity/identity-secp256k1": "^1.1.0",
         "@types/uuid": "^9.0.4",
         "buffer": "^6.0.3",
         "chokidar": "^3.6.0",

@@ -2,17 +2,95 @@
 
 <html>
     <head>
-        <title>Audio and Video</title>
+        <title>ICP Video/Audio Streaming w/ Range Requests</title>
     </head>
 
     <body>
-        <video
-            src="media/video.ogv"
-            controls
-        ></video>
-        <audio
-            src="media/audio.ogg"
-            controls
-        ></audio>
+        <style>
+            .title {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .info {
+                padding-bottom: 25px;
+            }
+
+            .media-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .media-title {
+                padding: 25px;
+            }
+
+            video {
+                max-height: 75vh;
+            }
+        </style>
+
+        <div class="title">
+            <h1>ICP Video/Audio Streaming w/ Range Requests</h1>
+            <div class="info">
+                <div>
+                    1.
+                    <a
+                        href="https://github.com/demergent-labs/azle/blob/main/examples/audio_and_video/src/backend/server.ts"
+                        target="_blank"
+                        >View the incredibly simple source code</a
+                    >
+                </div>
+                <div>
+                    2. Details on scalability are not fully known yet (consider
+                    boundary node caching/limits + subnet/canister query limits)
+                </div>
+                <div>
+                    3. Streaming is currently free (besides storage, upload,
+                    etc); this will most likely change in the future
+                </div>
+                <div>
+                    4. Very large file uploads (greater than ~20 MiB) will be
+                    released in subsequent versions of Azle
+                </div>
+            </div>
+        </div>
+
+        <div class="media-container">
+            <video
+                src="media/jordan_video_streaming_demo.mp4"
+                controls
+            ></video>
+            <div class="media-title">
+                Jordan Video Streaming Demo - 17.78 MiB
+            </div>
+        </div>
+
+        <div class="media-container">
+            <video
+                src="media/popeye_the_sailor_meets_sindbad_the_sailor.mp4"
+                controls
+            ></video>
+            <div class="media-title">
+                <a
+                    href="https://www.loc.gov/item/mbrs00068306"
+                    target="_blank"
+                    >Popeye the Sailor Meets Sindbad the Sailor - 611.98 MiB</a
+                >
+            </div>
+        </div>
+
+        <div class="media-container">
+            <audio
+                src="media/audio.ogg"
+                controls
+            ></audio>
+            <div class="media-title">
+                Abraham Lincoln's Second Inaugural Address - 5.33 MiB
+            </div>
+        </div>
     </body>
 </html>

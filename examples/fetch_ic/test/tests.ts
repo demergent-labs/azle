@@ -5,7 +5,8 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test, getCanisterOrigin } from 'azle/test';
+import { Test } from 'azle/test';
+import { getCanisterOrigin } from 'azle/dfx';
 import puppeteer, { Browser, Page } from 'puppeteer';
 
 export function getTests(canisterName: string): Test[] {
