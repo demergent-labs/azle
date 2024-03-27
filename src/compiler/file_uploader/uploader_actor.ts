@@ -44,7 +44,7 @@ interface _SERVICE {
     get_file_hash: ActorMethod<[string], [] | [string]>;
     get_hash_status: ActorMethod<[string], [] | [[bigint, bigint]]>;
     upload_file_chunk: ActorMethod<
-        [string, bigint, bigint, Buffer, bigint],
+        [string, bigint, bigint, Uint8Array, bigint],
         void
     >;
 }

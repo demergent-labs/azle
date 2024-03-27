@@ -35,7 +35,7 @@ export function getTests(canisterId: string): Test[] {
                         destPath,
                         0n,
                         0n,
-                        Buffer.from([1, 2, 3, 4]),
+                        Uint8Array.from([1, 2, 3, 4]),
                         4n
                     );
                 } catch (err: any) {
