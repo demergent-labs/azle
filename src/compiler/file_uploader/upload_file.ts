@@ -1,14 +1,13 @@
-import { ActorSubclass } from '@dfinity/agent';
 import { stat, open } from 'fs/promises';
 import { Dest, Src } from '.';
 import { bytesToHumanReadable } from './bytes_to_human_readable';
-import { _SERVICE } from './uploader_actor';
+import { UploaderActor } from './uploader_actor';
 
 export async function uploadFile(
     srcPath: Src,
     destPath: Dest,
     chunkSize: number,
-    actor: ActorSubclass<_SERVICE>
+    actor: UploaderActor
 ) {
     const uploadStartTime = process.hrtime.bigint();
     const fileSize = (await stat(srcPath)).size;

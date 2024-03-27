@@ -1,16 +1,14 @@
-import { ActorSubclass } from '@dfinity/agent';
 import { Src, Dest } from '.';
-import { _SERVICE, createActor } from './uploader_actor';
+import { UploaderActor } from './uploader_actor';
 
 export async function getListOfIncompleteFiles(
     paths: [Src, Dest][],
-    canisterId: string
+    actor: UploaderActor
 ): Promise<[Src, Dest][]> {
-    const hashActor = await createActor(canisterId);
     const filters = await Promise.all(
         paths.map(
             async ([_, destPath]): Promise<boolean> =>
-                !(await hasValidHash(destPath, hashActor))
+                !(await hasValidHash(destPath, actor))
         )
     );
     return paths.filter((_, index) => filters[index]);
@@ -18,7 +16,7 @@ export async function getListOfIncompleteFiles(
 
 async function hasValidHash(
     path: string,
-    actor: ActorSubclass<_SERVICE>
+    actor: UploaderActor
 ): Promise<boolean> {
     try {
         const hashOption = await actor.get_file_hash(path);

@@ -1,6 +1,6 @@
 import { Dest, Src } from '.';
 import { getListOfIncompleteFiles } from './incomplete_files';
-import { createActor } from './uploader_actor';
+import { UploaderActor } from './uploader_actor';
 
 export type OngoingHashingJob = {
     path: string;
@@ -15,11 +15,11 @@ type HashStatus = [AmountComplete, Total];
 type HashStatuses = { [path: string]: HashStatus };
 
 export async function getOngoingHashingJobs(
-    canisterId: string,
     paths: [Src, Dest][],
-    previouslyOngoingJobs: OngoingHashingJob[]
+    previouslyOngoingJobs: OngoingHashingJob[],
+    actor: UploaderActor
 ): Promise<OngoingHashingJob[]> {
-    const incompleteFiles = await getListOfIncompleteFiles(paths, canisterId);
+    const incompleteFiles = await getListOfIncompleteFiles(paths, actor);
 
     if (incompleteFiles.length === 0) {
         return [];
@@ -28,9 +28,9 @@ export async function getOngoingHashingJobs(
     const incompleteDestPaths = incompleteFiles.map(([_, path]) => path);
 
     const incompleteHashingJobs = await updateOngoingHashingJobs(
-        canisterId,
         previouslyOngoingJobs,
-        incompleteDestPaths
+        incompleteDestPaths,
+        actor
     );
 
     const areStillOngoing = incompleteHashingJobs.every(
@@ -51,11 +51,11 @@ export async function getOngoingHashingJobs(
 }
 
 async function updateOngoingHashingJobs(
-    canisterId: string,
     previouslyOngoingJobs: OngoingHashingJob[],
-    incompletePaths: string[]
+    incompletePaths: string[],
+    actor: UploaderActor
 ): Promise<OngoingHashingJob[]> {
-    const hashStatuses = await getHashStatuses(canisterId, incompletePaths);
+    const hashStatuses = await getHashStatuses(incompletePaths, actor);
     const previouslyOngoingHashingJobs = initializePreviousJobsIfNeeded(
         previouslyOngoingJobs,
         hashStatuses,
@@ -113,8 +113,8 @@ function initializePreviousJobsIfNeeded(
 }
 
 async function getHashStatuses(
-    canisterId: string,
-    incompleteFiles: string[]
+    incompleteFiles: string[],
+    actor: UploaderActor
 ): Promise<HashStatuses> {
     return await incompleteFiles.reduce(
         async (
@@ -122,7 +122,7 @@ async function getHashStatuses(
             path
         ): Promise<HashStatuses> => {
             const acc = await accPromise;
-            return { ...acc, [path]: await getHashStatus(canisterId, path) };
+            return { ...acc, [path]: await getHashStatus(path, actor) };
         },
         Promise.resolve({})
     );
@@ -139,10 +139,9 @@ async function getHashStatuses(
  * @returns a tuple with the amount complete and the total file size
  */
 async function getHashStatus(
-    canisterId: string,
-    path: string
+    path: string,
+    actor: UploaderActor
 ): Promise<[AmountComplete, Total]> {
-    const actor = await createActor(canisterId);
     const result = await actor.get_hash_status(path);
     if (result.length === 0) {
         // Files doesn't exist

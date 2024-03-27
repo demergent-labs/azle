@@ -24,5 +24,5 @@ export async function uploadFiles(canisterName: string, paths: [Src, Dest][]) {
         'Finished uploading files. Waiting for file hashing to finish...'
     );
 
-    onBeforeExit(canisterId, expandedPaths);
+    onBeforeExit(expandedPaths, actor);
 }

@@ -2,18 +2,109 @@ import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 import { Test } from 'azle/test';
-import { getCanisterId } from 'azle/dfx';
+import { generateIdentity, getCanisterId } from 'azle/dfx';
 import { execSync } from 'child_process';
 import { hashFile } from 'azle/scripts/hash_file';
 import { join } from 'path';
 import { rm } from 'fs/promises';
 import { generateTestFileOfSize } from './generateTestFiles';
 import { createActor } from 'azle/src/compiler/file_uploader/uploader_actor';
+import { v4 } from 'uuid';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
+    const unauthorizedUser = `test_azle_unauthorized_${v4()}`;
 
     return [
+        {
+            name: 'Set up unauthorized user',
+            prep: async () => {
+                generateIdentity(unauthorizedUser);
+            }
+        },
+        {
+            name: 'Unauthorized Upload from actor',
+            test: async () => {
+                const destPath = 'assets/unauthorizedAddition';
+                let actor = await createActor(
+                    getCanisterId('backend'),
+                    unauthorizedUser
+                );
+                try {
+                    await actor.upload_file_chunk(
+                        destPath,
+                        0n,
+                        0n,
+                        Buffer.from([1, 2, 3, 4]),
+                        4n
+                    );
+                } catch (err: any) {
+                    return {
+                        Ok: err.message.includes(
+                            'Not Authorized: must be a controller to call this method'
+                        )
+                    };
+                }
+                return { Ok: false };
+            }
+        },
+        {
+            name: 'Unauthorized get hash status from actor',
+            test: async () => {
+                let actor = await createActor(
+                    getCanisterId('backend'),
+                    unauthorizedUser
+                );
+                try {
+                    await actor.get_hash_status('assets/test0B');
+                } catch (err: any) {
+                    return {
+                        Ok: err.message.includes(
+                            'Not Authorized: must be a controller to call this method'
+                        )
+                    };
+                }
+                return { Ok: false };
+            }
+        },
+        {
+            name: 'Unauthorized get hash from actor',
+            test: async () => {
+                let actor = await createActor(
+                    getCanisterId('backend'),
+                    unauthorizedUser
+                );
+                try {
+                    await actor.get_file_hash('assets/test0B');
+                } catch (err: any) {
+                    return {
+                        Ok: err.message.includes(
+                            'Not Authorized: must be a controller to call this method'
+                        )
+                    };
+                }
+                return { Ok: false };
+            }
+        },
+        {
+            name: 'Unauthorized clear file and info from actor',
+            test: async () => {
+                let actor = await createActor(
+                    getCanisterId('backend'),
+                    unauthorizedUser
+                );
+                try {
+                    await actor.clear_file_and_info('assets/test0B');
+                } catch (err: any) {
+                    return {
+                        Ok: err.message.includes(
+                            'Not Authorized: must be a controller to call this method'
+                        )
+                    };
+                }
+                return { Ok: false };
+            }
+        },
         // Permanent Assets
         generateTest(
             origin,
@@ -120,8 +211,6 @@ function generateTest(
                 localPath ?? canisterPath
             );
 
-            const actor = await createActor(getCanisterId('backend'));
-
             const expectedHash = (await hashFile(localFilePath)).toString(
                 'hex'
             );
@@ -137,6 +226,7 @@ function generateTest(
                 };
             }
 
+            const actor = await createActor(getCanisterId('backend'));
             const hash = await actor.get_file_hash(canisterFilePath);
 
             if (hash.length === 1) {

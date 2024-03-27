@@ -1,10 +1,13 @@
 import { Actor, ActorMethod, ActorSubclass } from '@dfinity/agent';
 import { createAuthenticatedAgent } from '../../../dfx';
 
+export type UploaderActor = ActorSubclass<_SERVICE>;
+
 export async function createActor(
-    canisterId: string
-): Promise<ActorSubclass<_SERVICE>> {
-    const agent = await createAuthenticatedAgent();
+    canisterId: string,
+    identityName?: string
+): Promise<UploaderActor> {
+    const agent = await createAuthenticatedAgent(identityName);
 
     return Actor.createActor<_SERVICE>(
         ({ IDL }) => {
@@ -36,7 +39,7 @@ export async function createActor(
     );
 }
 
-export interface _SERVICE {
+interface _SERVICE {
     clear_file_and_info: ActorMethod<[string], void>;
     get_file_hash: ActorMethod<[string], [] | [string]>;
     get_hash_status: ActorMethod<[string], [] | [[bigint, bigint]]>;

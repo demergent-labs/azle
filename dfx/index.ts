@@ -41,10 +41,12 @@ export async function createAnonymousAgent() {
     }
 }
 
-export async function createAuthenticatedAgent(): Promise<HttpAgent> {
+export async function createAuthenticatedAgent(
+    identityName?: string
+): Promise<HttpAgent> {
     const agent = new HttpAgent({
         host: getAgentHost(),
-        identity: getIdentity()
+        identity: getIdentity(identityName)
     });
 
     if (process.env.DFX_NETWORK !== 'ic') {
@@ -56,6 +58,25 @@ export async function createAuthenticatedAgent(): Promise<HttpAgent> {
 
 export function getIdentityName(): string {
     return execSync(`dfx identity whoami`).toString().trim();
+}
+
+export function generateIdentity(name: string) {
+    execSync(`dfx identity new ${name} --storage-mode plaintext`);
+}
+
+export function useIdentity(name: string) {
+    execSync(`dfx identity use ${name}`);
+}
+
+export function getIdentities(): string[] {
+    const list = execSync(`dfx identity list`).toString().trim();
+    const identities = list.split('\n');
+
+    return identities;
+}
+
+export function removeIdentity(name: string) {
+    execSync(`dfx identity remove ${name}`);
 }
 
 export async function getIdentity(

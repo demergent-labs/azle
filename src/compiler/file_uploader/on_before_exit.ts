@@ -1,9 +1,9 @@
 import { Dest, Src } from '.';
-import { createActor } from './uploader_actor';
 import { getListOfIncompleteFiles } from './incomplete_files';
 import { OngoingHashingJob, getOngoingHashingJobs } from './ongoing_hashes';
+import { UploaderActor } from './uploader_actor';
 
-export function onBeforeExit(canisterId: string, paths: [Src, Dest][]) {
+export function onBeforeExit(paths: [Src, Dest][], actor: UploaderActor) {
     let hashingComplete = false;
     let cleanUpComplete = false;
     let ongoingHashingJobs: OngoingHashingJob[] = [];
@@ -15,14 +15,14 @@ export function onBeforeExit(canisterId: string, paths: [Src, Dest][]) {
             return;
         }
         if (hashingComplete) {
-            await cleanup(canisterId, paths);
+            await cleanup(paths, actor);
             cleanUpComplete = true;
             return;
         }
         ongoingHashingJobs = await getOngoingHashingJobs(
-            canisterId,
             paths,
-            ongoingHashingJobs
+            ongoingHashingJobs,
+            actor
         );
 
         hashingComplete = ongoingHashingJobs.length === 0;
@@ -36,10 +36,9 @@ export function onBeforeExit(canisterId: string, paths: [Src, Dest][]) {
     });
 }
 
-async function cleanup(canisterId: string, paths: [Src, Dest][]) {
-    const incompleteFiles = await getListOfIncompleteFiles(paths, canisterId);
+async function cleanup(paths: [Src, Dest][], actor: UploaderActor) {
+    const incompleteFiles = await getListOfIncompleteFiles(paths, actor);
     for (const [_, path] of incompleteFiles) {
-        const actor = await createActor(canisterId);
         await actor.clear_file_and_info(path);
     }
 }
