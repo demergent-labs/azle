@@ -26,7 +26,7 @@ export function getTests(canisterId: string): Test[] {
             name: 'Unauthorized Upload from actor',
             test: async () => {
                 const destPath = 'assets/unauthorizedAddition';
-                let actor = await createActor(
+                const actor = await createActor(
                     getCanisterId('backend'),
                     unauthorizedUser
                 );
@@ -51,7 +51,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: 'Unauthorized get hash status from actor',
             test: async () => {
-                let actor = await createActor(
+                const actor = await createActor(
                     getCanisterId('backend'),
                     unauthorizedUser
                 );
@@ -70,7 +70,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: 'Unauthorized get hash from actor',
             test: async () => {
-                let actor = await createActor(
+                const actor = await createActor(
                     getCanisterId('backend'),
                     unauthorizedUser
                 );
@@ -89,7 +89,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: 'Unauthorized clear file and info from actor',
             test: async () => {
-                let actor = await createActor(
+                const actor = await createActor(
                     getCanisterId('backend'),
                     unauthorizedUser
                 );
