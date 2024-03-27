@@ -7,6 +7,7 @@ export function onBeforeExit(paths: [Src, Dest][], actor: UploaderActor) {
     let hashingComplete = false;
     let cleanUpComplete = false;
     let ongoingHashingJobs: OngoingHashingJob[] = [];
+
     process.on('beforeExit', async () => {
         if (cleanUpComplete) {
             // If any async behavior happens in 'beforeExit' then 'beforeExit'
@@ -14,11 +15,13 @@ export function onBeforeExit(paths: [Src, Dest][], actor: UploaderActor) {
             // Once clean up is complete we are ready to exit
             return;
         }
+
         if (hashingComplete) {
             await cleanup(paths, actor);
             cleanUpComplete = true;
             return;
         }
+
         ongoingHashingJobs = await getOngoingHashingJobs(
             paths,
             ongoingHashingJobs,
