@@ -45,7 +45,7 @@ export async function getOngoingHashingJobs(
         return [];
     }
 
-    reportOnGoingHashingJobs(incompleteHashingJobs);
+    reportOngoingHashingJobs(incompleteHashingJobs);
 
     return incompleteHashingJobs;
 }
@@ -80,7 +80,7 @@ async function updateOngoingHashingJobs(
         });
 }
 
-function reportOnGoingHashingJobs(ongoingHashInfo: OngoingHashingJob[]) {
+function reportOngoingHashingJobs(ongoingHashInfo: OngoingHashingJob[]) {
     for (const hashInfo of ongoingHashInfo) {
         const percent =
             (Number(hashInfo.bytesHashed) / Number(hashInfo.totalBytes)) * 100;
@@ -99,7 +99,7 @@ function initializePreviousJobsIfNeeded(
     previousHashInfos: OngoingHashingJob[],
     hashStatuses: HashStatuses,
     incompletePaths: string[]
-) {
+): OngoingHashingJob[] {
     return previousHashInfos.length > 0
         ? previousHashInfos
         : incompletePaths.map((path): OngoingHashingJob => {
