@@ -22,7 +22,10 @@ export async function uploadFile(
         );
 
         await throttle();
-        const percentComplete = ((startIndex + bytesRead) / fileSize) * 100;
+        const percentComplete = calculatePercentComplete(
+            startIndex + bytesRead,
+            fileSize
+        );
         console.info(
             `Uploading chunk: ${srcPath} | ${bytesToHumanReadable(
                 startIndex + bytesRead
@@ -56,4 +59,13 @@ async function throttle() {
     } else {
         await new Promise((resolve) => setTimeout(resolve, 500)); // Should be 500 (ie 1 every 1/2 second or 2 every second)
     }
+}
+function calculatePercentComplete(
+    bytesComplete: number,
+    fileSize: number
+): number {
+    if (bytesComplete === 0 && fileSize === 0) {
+        return 100;
+    }
+    return (bytesComplete / Math.max(fileSize, 1)) * 100;
 }
