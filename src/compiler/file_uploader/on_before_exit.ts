@@ -13,6 +13,7 @@ export function onBeforeExit(paths: [Src, Dest][], actor: UploaderActor) {
             // If any async behavior happens in 'beforeExit' then 'beforeExit'
             // will run again. This is need to prevent an infinite loop.
             // Once clean up is complete we are ready to exit
+            console.log('File hashing finished');
             return;
         }
 
