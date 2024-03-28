@@ -72,7 +72,7 @@ app.post(
 
         const result = await ethSendRawTransaction(rawTransaction);
 
-        if (result.Consistent?.Ok?.Ok === null) {
+        if (result.Consistent?.Ok?.Ok.length === 1) {
             res.send('transaction sent');
         } else {
             res.status(500).send('transaction failed');
@@ -133,7 +133,7 @@ app.post(
 
         const result = await ethSendRawTransaction(rawTransaction);
 
-        if (result.Consistent?.Ok?.Ok === null) {
+        if (result.Consistent?.Ok?.Ok.length === 1) {
             res.send('transaction sent');
         } else {
             res.status(500).send('transaction failed');
