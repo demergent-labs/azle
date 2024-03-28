@@ -260,16 +260,6 @@ jobs:
               name: Install wasi2ic
               shell: bash -l {0}
               run: cargo install --git https://github.com/wasm-forge/wasi2ic --rev 806c3558aad24224852a9582f018178402cb3679
-              # This is for the --native-compilation tests
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              name: Install wasmedge-quickjs
-              shell: bash -l {0}
-              run: |
-                  mkdir -p /home/runner/.config/azle
-                  cd /home/runner/.config/azle
-                  git clone https://github.com/demergent-labs/wasmedge-quickjs
-                  cd wasmedge-quickjs
-                  git checkout c21ff69f442998e4cda4619166e23a9bc91418be
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.os == 'ubuntu-latest' }}
               shell: bash -l {0}
               run: sudo apt-get install -y podman
@@ -287,6 +277,16 @@ jobs:
               run: npm link
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && (matrix.azle_source == 'npm' || matrix.os == 'macos-latest') }}
               run: npx azle clean # We want to test the full curl download when testing from a clean install or mac
+            # This is for the --native-compilation tests
+            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
+              name: Install wasmedge-quickjs
+              shell: bash -l {0}
+              run: |
+                  mkdir -p /home/runner/.config/azle
+                  cd /home/runner/.config/azle
+                  git clone https://github.com/demergent-labs/wasmedge-quickjs
+                  cd wasmedge-quickjs
+                  git checkout c21ff69f442998e4cda4619166e23a9bc91418be
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               working-directory: ${{ matrix.example_directories }}
               run: dfx start --clean --background --host 127.0.0.1:8000
