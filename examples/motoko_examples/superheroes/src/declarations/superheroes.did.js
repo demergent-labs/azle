@@ -1,13 +1,13 @@
 export const idlFactory = ({ IDL }) => {
-    const rec_28 = IDL.Rec();
-    const rec_33 = IDL.Rec();
-    const rec_36 = IDL.Rec();
-    rec_28.fill(IDL.Tuple(IDL.Text, IDL.Opt(rec_28)));
-    rec_33.fill(IDL.Tuple(IDL.Text, IDL.Opt(rec_33)));
-    rec_36.fill(IDL.Tuple(IDL.Text, IDL.Opt(rec_36)));
+    const rec_0 = IDL.Rec();
+    const rec_1 = IDL.Rec();
+    const rec_2 = IDL.Rec();
+    rec_0.fill(IDL.Tuple(IDL.Text, IDL.Opt(rec_0)));
+    rec_1.fill(IDL.Tuple(IDL.Text, IDL.Opt(rec_1)));
+    rec_2.fill(IDL.Tuple(IDL.Text, IDL.Opt(rec_2)));
     return IDL.Service({
         create: IDL.Func(
-            [IDL.Record({ superpowers: IDL.Opt(rec_28), name: IDL.Text })],
+            [IDL.Record({ superpowers: IDL.Opt(rec_0), name: IDL.Text })],
             [IDL.Nat32],
             []
         ),
@@ -16,7 +16,7 @@ export const idlFactory = ({ IDL }) => {
             [IDL.Nat32],
             [
                 IDL.Opt(
-                    IDL.Record({ superpowers: IDL.Opt(rec_33), name: IDL.Text })
+                    IDL.Record({ superpowers: IDL.Opt(rec_1), name: IDL.Text })
                 )
             ],
             ['query']
@@ -24,7 +24,7 @@ export const idlFactory = ({ IDL }) => {
         update: IDL.Func(
             [
                 IDL.Nat32,
-                IDL.Record({ superpowers: IDL.Opt(rec_36), name: IDL.Text })
+                IDL.Record({ superpowers: IDL.Opt(rec_2), name: IDL.Text })
             ],
             [IDL.Bool],
             []
