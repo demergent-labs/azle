@@ -9,8 +9,7 @@ export { idlFactory } from './phone_book.did.js';
  * process.env.CANISTER_ID_<CANISTER_NAME_UPPERCASE>
  * beginning in dfx 0.15.0
  */
-export const canisterId =
-    process.env.CANISTER_ID_PHONE_BOOK || process.env.PHONE_BOOK_CANISTER_ID;
+export const canisterId = process.env.CANISTER_ID_PHONE_BOOK;
 
 export const createActor = (canisterId, options = {}) => {
     const agent = options.agent || new HttpAgent({ ...options.agentOptions });
@@ -39,4 +38,4 @@ export const createActor = (canisterId, options = {}) => {
     });
 };
 
-export const phone_book = createActor(canisterId);
+export const phone_book = canisterId ? createActor(canisterId) : undefined;

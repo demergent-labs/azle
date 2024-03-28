@@ -1,4 +1,3 @@
-import { execSync } from 'child_process';
 import { ActorSubclass } from '@dfinity/agent';
 import { AgentError } from '@dfinity/agent/lib/cjs/errors';
 import { Test } from 'azle/test';

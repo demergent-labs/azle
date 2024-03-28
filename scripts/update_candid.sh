@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Usage:
+# Start up your own replica on port 8000: dfx start --clean --host 127.0.0.1:8000
 # cd examples
 # ../scripts/update_candid.sh
 # cd motoko_examples
@@ -10,15 +11,22 @@ upgrade_candid()
 {
   npm install
   npm link azle
-  # dfx canister create --all # TODO we really only want to deploy the azle canisters
-  # dfx build
-  npm run pretest
+  dfx canister create --all
+  dfx build
 }
 
 upgrade_all()
 {
 
 for dir in */; do
+
+  # You can use this part to skip directories  
+  # first_char=${dir:0:1}
+  # if [[ "$first_char" < "t" ]]; then
+  #     echo "Skipping directory: $dir"
+  #     continue
+  # fi
+
   echo "Looking at directory: $dir"
   if [ -f "$dir/dfx.json" ]; then
     echo "Processing directory: $dir"
@@ -29,8 +37,4 @@ for dir in */; do
 done
 }
 
-dfx start --clean --background
-
 upgrade_all
-
-dfx stop
