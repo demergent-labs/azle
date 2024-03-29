@@ -2,6 +2,7 @@ import { stat, open } from 'fs/promises';
 import { Dest, Src } from '.';
 import { bytesToHumanReadable } from './bytes_to_human_readable';
 import { UploaderActor } from './uploader_actor';
+import { hashFile } from '../../../scripts/hash_file';
 
 export async function uploadFile(
     srcPath: Src,
@@ -12,6 +13,10 @@ export async function uploadFile(
     const uploadStartTime = process.hrtime.bigint();
     const fileSize = (await stat(srcPath)).size;
     const file = await open(srcPath, 'r');
+    if (!(await shouldBeUploaded(srcPath, destPath, actor))) {
+        file.close();
+        return;
+    }
     for (let startIndex = 0; startIndex <= fileSize; startIndex += chunkSize) {
         let buffer = Buffer.alloc(chunkSize);
         const { buffer: bytesToUpload, bytesRead } = await file.read(
@@ -68,4 +73,17 @@ function calculatePercentComplete(
         return 100;
     }
     return (bytesComplete / Math.max(fileSize, 1)) * 100;
+}
+
+async function shouldBeUploaded(
+    srcPath: string,
+    destPath: string,
+    actor: UploaderActor
+): Promise<boolean> {
+    const localHash = (await hashFile(srcPath)).toString('hex');
+    const canisterHash = await actor.get_file_hash(destPath);
+    if (canisterHash.length === 0) {
+        return true;
+    }
+    return localHash !== canisterHash[0];
 }
