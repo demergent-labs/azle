@@ -6,7 +6,7 @@ import {
 } from '../../../dfx';
 
 export const AZLE_UPLOADER_IDENTITY_NAME =
-    process.env.AZLE_UPLOADER_IDENTITY_NAME || '_azle_file_uploader_identity';
+    process.env.AZLE_UPLOADER_IDENTITY_NAME ?? '_azle_file_uploader_identity';
 
 export function generateUploaderIdentity(canisterName: string): string {
     if (!identityExists(AZLE_UPLOADER_IDENTITY_NAME)) {
