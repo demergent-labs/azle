@@ -27,7 +27,10 @@
     "networks": {
         "local": {
             "bind": "127.0.0.1:8000",
-            "type": "ephemeral"
+            "type": "ephemeral",
+            "replica": {
+                "subnet_type": "system"
+            }
         }
     },
     "defaults": {

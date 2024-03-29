@@ -2,8 +2,6 @@ import { execSync } from 'child_process';
 import { getCanisterId } from 'azle/dfx';
 
 async function pretest() {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
     execSync(`dfx canister uninstall-code canister || true`, {
         stdio: 'inherit'
     });

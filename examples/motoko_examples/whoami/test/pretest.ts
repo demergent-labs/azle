@@ -6,8 +6,6 @@ const someoneIdentity = createIdentity(2);
 export const someonePrincipal = someoneIdentity.getPrincipal().toString();
 
 async function pretest() {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
     execSync(`dfx canister uninstall-code whoami || true`, {
         stdio: 'inherit'
     });
