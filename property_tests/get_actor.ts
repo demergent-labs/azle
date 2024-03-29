@@ -1,4 +1,4 @@
-import { getCanisterId } from '../test';
+import { getCanisterId } from '../dfx';
 
 export function getActor(parentDir: string) {
     const resolvedPathIndex = require.resolve(

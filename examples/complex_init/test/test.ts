@@ -1,4 +1,5 @@
-import { getCanisterId, runTests } from 'azle/test';
+import { getCanisterId } from 'azle/dfx';
+import { runTests } from 'azle/test';
 import { createActor as createComplexActor } from '../test/dfx_generated/complex_init';
 // @ts-ignore
 import { createActor as createRecActor } from '../test/dfx_generated/rec_init';

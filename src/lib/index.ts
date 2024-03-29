@@ -9,3 +9,4 @@ export * from './system_types';
 export * from './server';
 export { serialize } from './fetch';
 export * from './json';
+export * from './threshold_wallet';

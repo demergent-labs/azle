@@ -12,6 +12,7 @@ import {
 } from './utils';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { JSCanisterConfig } from './utils/types';
+import { getCanisterId } from '../../dfx';
 
 export async function getNamesBeforeCli() {
     const stdioType = getStdIoType();
@@ -22,7 +23,7 @@ export async function getNamesBeforeCli() {
     const dockerImageName = `${dockerImagePrefix}${dockerfileHash}`;
     const dockerContainerPrefix = 'azle__container__';
     const dockerContainerName = `${dockerContainerPrefix}${dockerfileHash}`;
-    const wasmedgeQuickJsName = `wasmedge_quickjs_${dockerfileHash}`;
+    const wasmedgeQuickJsName = `wasmedge-quickjs_${dockerfileHash}`;
 
     const dockerImagePathTar = join(
         GLOBAL_AZLE_CONFIG_DIR,
@@ -84,9 +85,7 @@ export function getNamesAfterCli() {
 
     const rustStagingWasmPath = join(canisterPath, `${canisterName}.wasm`);
 
-    const canisterId = execSync(`dfx canister id ${canisterName}`)
-        .toString()
-        .trim();
+    const canisterId = getCanisterId(canisterName);
 
     const reloadedJsPath = join(
         '.azle',

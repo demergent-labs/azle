@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import { getCanisterId } from 'azle/test';
+import { getCanisterId } from 'azle/dfx';
 
 async function pretest() {
     execSync(`dfx canister uninstall-code canister || true`, {

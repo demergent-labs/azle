@@ -9,8 +9,7 @@ export { idlFactory } from './superheroes.did.js';
  * process.env.CANISTER_ID_<CANISTER_NAME_UPPERCASE>
  * beginning in dfx 0.15.0
  */
-export const canisterId =
-    process.env.CANISTER_ID_SUPERHEROES || process.env.SUPERHEROES_CANISTER_ID;
+export const canisterId = process.env.CANISTER_ID_SUPERHEROES;
 
 export const createActor = (canisterId, options = {}) => {
     const agent = options.agent || new HttpAgent({ ...options.agentOptions });

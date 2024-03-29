@@ -1,18 +1,18 @@
-type rec_72 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_72}; Good};
-type rec_75 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_75}; Good};
-type rec_68 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_68}; Good};
-type rec_60 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_60}; Good};
-type rec_63 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_63}; Good};
-type rec_56 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_56}; Good};
+type rec_4 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_4}; Good};
+type rec_5 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_5}; Good};
+type rec_3 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_3}; Good};
+type rec_1 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_1}; Good};
+type rec_2 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_2}; Good};
+type rec_0 = variant {Bad:record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_0}; Good};
 service: () -> {
     complexOneTupleInlineParam: (record {record {text; nat64}}) -> (record {record {text; nat64}}) query;
     complexOneTupleInlineReturnType: () -> (record {record {text; nat64}}) query;
     complexOneTupleParam: (record {record {text; nat64}}) -> (record {record {text; nat64}}) query;
     complexOneTupleReturnType: () -> (record {record {text; nat64}}) query;
-    complexThreeTupleInlineParam: (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_72}) -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_75}) query;
-    complexThreeTupleInlineReturnType: () -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_68}) query;
-    complexThreeTupleParam: (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_60}) -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_63}) query;
-    complexThreeTupleReturnType: () -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_56}) query;
+    complexThreeTupleInlineParam: (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_4}) -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_5}) query;
+    complexThreeTupleInlineReturnType: () -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_3}) query;
+    complexThreeTupleParam: (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_1}) -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_2}) query;
+    complexThreeTupleReturnType: () -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}; rec_0}) query;
     complexTwoTupleInlineParam: (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}}) -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}}) query;
     complexTwoTupleInlineReturnType: () -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}}) query;
     complexTwoTupleParam: (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}}) -> (record {record {text; nat64}; record {id:text; primitiveTwoTuple:record {text; nat64}}}) query;
