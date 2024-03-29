@@ -1,16 +1,15 @@
-import { Actor, HttpAgent } from '@dfinity/agent';
+import { Actor } from '@dfinity/agent';
 import { watch } from 'chokidar';
 import { readFileSync, writeFileSync } from 'fs';
 
 import { getCanisterJavaScript } from '../get_canister_javascript';
 import { ok } from '../utils/result';
-import { createAuthenticatedAgent } from '../../../dfx';
+import { createAuthenticatedAgent, whoami } from '../../../dfx';
 
 const reloadedJsPath = process.argv[2];
 const canisterId = process.argv[3];
 const mainPath = process.argv[4];
 const wasmedgeQuickJsPath = process.argv[5];
-const replicaWebServerPort = process.argv[6];
 
 // TODO https://github.com/demergent-labs/azle/issues/1664
 watch(process.cwd(), {
@@ -27,8 +26,7 @@ watch(process.cwd(), {
                 reloadedJsPath,
                 canisterId,
                 mainPath,
-                wasmedgeQuickJsPath,
-                replicaWebServerPort
+                wasmedgeQuickJsPath
             );
         } catch (error) {
             console.error(error);
@@ -40,8 +38,7 @@ async function reloadJs(
     reloadedJsPath: string,
     canisterId: string,
     mainPath: string,
-    wasmedgeQuickJsPath: string,
-    replicaWebServerPort: string
+    wasmedgeQuickJsPath: string
 ) {
     const canisterJavaScriptResult = getCanisterJavaScript(
         mainPath,
@@ -60,7 +57,7 @@ async function reloadJs(
 
     writeFileSync(reloadedJsPath, canisterJavaScriptResult.ok);
 
-    const agent = await createAuthenticatedAgent();
+    const agent = await createAuthenticatedAgent(whoami());
 
     const actor = Actor.createActor(
         ({ IDL }) => {

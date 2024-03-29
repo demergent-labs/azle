@@ -10,6 +10,7 @@ import { rm } from 'fs/promises';
 import { generateTestFileOfSize } from './generateTestFiles';
 import { createActor } from 'azle/src/compiler/file_uploader/uploader_actor';
 import { v4 } from 'uuid';
+import { AZLE_UPLOADER_IDENTITY_NAME } from '../../../src/compiler/file_uploader/uploader_identity';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -228,7 +229,10 @@ function generateTest(
                 };
             }
 
-            const actor = await createActor(getCanisterId('backend'));
+            const actor = await createActor(
+                getCanisterId('backend'),
+                AZLE_UPLOADER_IDENTITY_NAME
+            );
             const hash = await actor.get_file_hash(canisterFilePath);
 
             if (hash.length === 1) {
