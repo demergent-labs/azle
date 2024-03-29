@@ -1,11 +1,12 @@
 import { Actor, ActorMethod, ActorSubclass } from '@dfinity/agent';
 import { createAuthenticatedAgent } from '../../../dfx';
+import { AZLE_UPLOADER_IDENTITY_NAME } from './uploader_identity';
 
 export type UploaderActor = ActorSubclass<_SERVICE>;
 
 export async function createActor(
     canisterId: string,
-    identityName?: string
+    identityName: string = AZLE_UPLOADER_IDENTITY_NAME
 ): Promise<UploaderActor> {
     const agent = await createAuthenticatedAgent(identityName);
 

@@ -60,8 +60,24 @@ export function getIdentityName(): string {
     return execSync(`dfx identity whoami`).toString().trim();
 }
 
-export function generateIdentity(name: string) {
-    execSync(`dfx identity new ${name} --storage-mode plaintext`);
+type StorageMode = 'keyring' | 'password-protected' | 'plaintext';
+
+export function generateIdentity(
+    name: string,
+    storageMode?: StorageMode
+): Buffer {
+    if (storageMode === undefined) {
+        console.info(
+            `Generating identity "${name}". You may have to create a password for ${name}.`
+        );
+        return execSync(`dfx identity new ${name}`);
+    }
+    if (storageMode === 'password-protected') {
+        console.info(
+            `Generating identity "${name}". You will have to create a password for ${name}.`
+        );
+    }
+    return execSync(`dfx identity new ${name} --storage-mode ${storageMode}`);
 }
 
 export function useIdentity(name: string) {
@@ -75,11 +91,16 @@ export function getIdentities(): string[] {
     return identities;
 }
 
+export function identityExists(name: string): boolean {
+    const identities = getIdentities();
+    return identities.includes(name);
+}
+
 export function removeIdentity(name: string) {
     execSync(`dfx identity remove ${name}`);
 }
 
-export async function getIdentity(
+export async function getIdentityFromPemFile(
     identityName: string = getIdentityName()
 ): Promise<Secp256k1KeyIdentity> {
     const identityPath = join(
@@ -91,4 +112,42 @@ export async function getIdentity(
         'identity.pem'
     );
     return Secp256k1KeyIdentity.fromPem(await readFile(identityPath, 'utf-8'));
+}
+
+export function getPemKey(identityName: string = getIdentityName()): string {
+    console.info(
+        `Getting Pem Key for ${identityName}. The password for ${identityName} may be required`
+    );
+    const cmd = `dfx identity export ${identityName}`;
+    const result = execSync(cmd, {
+        stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but it will fail immediately if you do that
+    })
+        .toString()
+        .trim();
+    return result;
+}
+
+export function getIdentity(identityName?: string): Secp256k1KeyIdentity {
+    return Secp256k1KeyIdentity.fromPem(getPemKey(identityName));
+}
+
+export function getPrincipal(identityName: string = getIdentityName()): string {
+    console.info(
+        `Getting Principal for ${identityName}. The password for ${identityName} may be required`
+    );
+    const cmd = `dfx identity get-principal --identity ${identityName}`;
+    return execSync(cmd, {
+        stdio: ['inherit', 'pipe', 'pipe']
+    })
+        .toString()
+        .trim();
+}
+
+export function addController(canisterName: string, principal: string) {
+    const currentIdentity = getIdentityName();
+    console.info(
+        `Adding controller. You may need to enter the password for ${currentIdentity} at this point.`
+    );
+    const cmd = `dfx canister update-settings ${canisterName} --add-controller ${principal}`;
+    return execSync(cmd, { stdio: ['inherit', 'pipe', 'inherit'] }); // TODO I would prefer it to pipe the stderr but it will fail immediately if you do that
 }
