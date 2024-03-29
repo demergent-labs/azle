@@ -64,20 +64,34 @@ type StorageMode = 'keyring' | 'password-protected' | 'plaintext';
 
 export function generateIdentity(
     name: string,
-    storageMode?: StorageMode
+    storageModeCool?: StorageMode
 ): Buffer {
+    console.info();
+    console.info(`Generating identity ${name}`);
+    const storageMode = determineStorageMode(storageModeCool);
     if (storageMode === undefined) {
-        console.info(
-            `Generating identity "${name}". You may have to create a password for ${name}.`
-        );
-        return execSync(`dfx identity new ${name}`);
+        console.info(`You may be prompted to create a password for ${name}`);
+        console.info();
+        return execSync(`dfx identity new ${name}`, {
+            stdio: ['inherit', 'pipe', 'inherit']
+        });
     }
     if (storageMode === 'password-protected') {
-        console.info(
-            `Generating identity "${name}". You will have to create a password for ${name}.`
-        );
+        console.info(`You will be prompted to create a password for ${name}`);
+        console.info();
     }
-    return execSync(`dfx identity new ${name} --storage-mode ${storageMode}`);
+    return execSync(`dfx identity new ${name} --storage-mode ${storageMode}`, {
+        stdio: ['inherit', 'pipe', 'inherit'] // TODO add todo here and aboe
+    });
+}
+
+function determineStorageMode(
+    storageMode?: StorageMode
+): StorageMode | undefined {
+    if (process.env.AZLE_PLAINTEXT_IDENTITY === 'true') {
+        return 'plaintext';
+    }
+    return storageMode;
 }
 
 export function useIdentity(name: string) {
@@ -115,9 +129,10 @@ export async function getIdentityFromPemFile(
 }
 
 export function getPemKey(identityName: string = getIdentityName()): string {
-    console.info(
-        `Getting Pem Key for ${identityName}. The password for ${identityName} may be required`
-    );
+    console.info();
+    console.info(`Exporting PEM key for ${identityName}`);
+    console.info(`You may be prompted for ${identityName}'s password`);
+    console.info();
     const cmd = `dfx identity export ${identityName}`;
     const result = execSync(cmd, {
         stdio: ['inherit', 'pipe', 'inherit'] // TODO I would prefer it to pipe the stderr but it will fail immediately if you do that
@@ -132,22 +147,28 @@ export function getIdentity(identityName?: string): Secp256k1KeyIdentity {
 }
 
 export function getPrincipal(identityName: string = getIdentityName()): string {
-    console.info(
-        `Getting Principal for ${identityName}. The password for ${identityName} may be required`
-    );
+    console.info();
+    console.info(`Getting principal for ${identityName}`);
+    console.info(`You may be prompted for ${identityName}'s password`);
+    console.info();
     const cmd = `dfx identity get-principal --identity ${identityName}`;
     return execSync(cmd, {
-        stdio: ['inherit', 'pipe', 'pipe']
+        stdio: ['inherit', 'pipe', 'inherit'] // TODO add todo
     })
         .toString()
         .trim();
 }
 
-export function addController(canisterName: string, principal: string) {
+export function addController(
+    canisterName: string,
+    identityName: string,
+    principal: string
+) {
     const currentIdentity = getIdentityName();
-    console.info(
-        `Adding controller. You may need to enter the password for ${currentIdentity} at this point.`
-    );
+    console.info();
+    console.info(`Adding ${identityName} as a controller for ${canisterName}`);
+    console.info(`You may be prompted for ${currentIdentity}'s password`);
+    console.info();
     const cmd = `dfx canister update-settings ${canisterName} --add-controller ${principal}`;
     return execSync(cmd, { stdio: ['inherit', 'pipe', 'inherit'] }); // TODO I would prefer it to pipe the stderr but it will fail immediately if you do that
 }
