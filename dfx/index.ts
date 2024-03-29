@@ -130,7 +130,7 @@ export function getSecp256k1KeyIdentity(
     return Secp256k1KeyIdentity.fromPem(getPemKey(identityName));
 }
 
-export function getPrincipal(identityName: string = whoami()): string {
+export function getPrincipal(identityName: string): string {
     console.info();
     console.info(`Getting principal for ${identityName}`);
     console.info(`You may be prompted for ${identityName}'s password`);
