@@ -94,10 +94,6 @@ function determineStorageMode(): StorageMode | undefined {
     return mode;
 }
 
-export function useIdentity(name: string) {
-    execSync(`dfx identity use ${name}`);
-}
-
 export function getIdentities(): string[] {
     const list = execSync(`dfx identity list`).toString().trim();
     const identities = list.split('\n');
