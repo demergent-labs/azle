@@ -214,6 +214,7 @@ jobs:
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_USE_DOCKERFILE: ${{ matrix.azle_source == 'repo' }}
+            AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix:

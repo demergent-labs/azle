@@ -5,7 +5,7 @@ export type UploaderActor = ActorSubclass<_SERVICE>;
 
 export async function createActor(
     canisterId: string,
-    identityName?: string
+    identityName: string
 ): Promise<UploaderActor> {
     const agent = await createAuthenticatedAgent(identityName);
 
