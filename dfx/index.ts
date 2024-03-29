@@ -110,10 +110,6 @@ export function identityExists(name: string): boolean {
     return identities.includes(name);
 }
 
-export function removeIdentity(name: string) {
-    execSync(`dfx identity remove ${name}`);
-}
-
 export function getPemKey(identityName: string): string {
     console.info();
     console.info(`Exporting PEM key for ${identityName}`);
