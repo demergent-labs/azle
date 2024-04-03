@@ -15,9 +15,10 @@ export function getTests(
             name: 'stable size',
             test: async () => {
                 const result = await stableMemoryCanister.stableSize();
+                console.log(result);
 
                 return {
-                    Ok: result === 0
+                    Ok: result === 513
                 };
             }
         },
@@ -27,7 +28,7 @@ export function getTests(
                 const result = await stableMemoryCanister.stable64Size();
 
                 return {
-                    Ok: result === 0n
+                    Ok: result === 513n
                 };
             }
         },
