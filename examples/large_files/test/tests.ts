@@ -110,6 +110,9 @@ export function getTests(canisterId: string): Test[] {
         {
             name: 'redeploy',
             prep: async () => {
+                await generateTestFileOfSize(1, 'KiB');
+                await generateTestFileOfSize(10, 'KiB');
+                await generateTestFileOfSize(100, 'KiB');
                 execSync(`dfx deploy --upgrade-unchanged`, {
                     stdio: 'inherit'
                 });
