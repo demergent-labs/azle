@@ -1,4 +1,3 @@
-import { encode } from '../candid/serde/encode';
 import { Void } from '../candid/types/primitive/void';
 import { TimerId } from './types/timer_id';
 

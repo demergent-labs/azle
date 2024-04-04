@@ -240,7 +240,7 @@ export async function httpHandler(
             }
         }
 
-        end(data: any) {
+        end(_data: any) {
             const startIndex =
                 this.responseData.indexOf(Buffer.from('\r\n\r\n')) + 4;
 

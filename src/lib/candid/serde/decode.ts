@@ -1,7 +1,8 @@
 import { IDL } from '@dfinity/candid';
 
 import { CandidType, toIdl, toIdlArray } from '../../candid';
-import { AzleOpt, AzleTuple, AzleVec } from '../types/constructed';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { AzleOpt, AzleTuple, AzleVec } from '../types/constructed'; // Used for links in comments
 import { DecodeVisitor } from './visitors/decode_visitor';
 
 /**

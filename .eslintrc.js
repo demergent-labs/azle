@@ -3,7 +3,13 @@
 const temporarilyDisabledRules = {
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': [
+        'off',
+        {
+            argsIgnorePattern: '^_', // Ignore argument variables starting with _
+            varsIgnorePattern: '^_' // Ignore local variables starting with _
+        }
+    ], // 26 problems
     '@typescript-eslint/no-var-requires': 'off',
     'no-constant-condition': 'off',
     'no-undef': 'off',

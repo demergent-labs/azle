@@ -11,7 +11,6 @@ import {
     WithShapes,
     WithShapesArb
 } from '../../candid_definition_arb/types';
-import { RecursiveShapes } from '../../recursive';
 
 export function OptDefinitionArb(
     candidTypeArbForInnerType: RecursiveCandidDefinitionMemo,

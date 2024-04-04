@@ -5,7 +5,6 @@ import {
     nat32,
     Principal,
     query,
-    serialize,
     Some,
     StableBTreeMap,
     text,

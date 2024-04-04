@@ -9,7 +9,7 @@ export function visitVariant(
     didVisitor: DidVisitor,
     data: VisitorData
 ): VisitorResult {
-    const candidFields = fields.map(([key, value]) =>
+    const candidFields = fields.map(([_key, value]) =>
         value.accept(didVisitor, { ...data, isOnService: false })
     );
     const candid = extractCandid(candidFields);

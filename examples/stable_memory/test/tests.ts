@@ -204,7 +204,7 @@ export function getTests(
             name: 'stable grow out of memory',
             test: async () => {
                 try {
-                    const result = await stableMemoryCanister.stableGrow(1);
+                    await stableMemoryCanister.stableGrow(1);
                 } catch (e: any) {
                     return {
                         Ok: e.toString().includes('OutOfMemory') // TODO change error messages back to nice ones once we figure that out
@@ -241,7 +241,7 @@ export function getTests(
                 // TODO we are also turning this test off because it seems like we can't grow to the max memory anymore
                 // TODO I am guessing this is because of the size of stable memory
                 try {
-                    const result = await stableMemoryCanister.stable64Grow(1n);
+                    await stableMemoryCanister.stable64Grow(1n);
                 } catch (e: any) {
                     return {
                         Ok: e.toString().includes('OutOfMemory') // TODO change error messages back to nice ones once we figure that out

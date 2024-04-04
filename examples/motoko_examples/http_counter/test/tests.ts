@@ -4,8 +4,6 @@ import { Test } from 'azle/test';
 import { execSync } from 'child_process';
 dns.setDefaultResultOrder('ipv4first');
 
-const skip = true;
-
 export function getTests(): Test[] {
     return [
         {
