@@ -16,7 +16,7 @@ export function visitVariant(
     const fields_string = fields.map(
         ([key, value], index) =>
             escapeCandidKeywords(key) +
-            (value.name === 'null' ? '' : ':' + candid[0][index])
+            (value.name === 'null' ? '' : `:${candid[0][index]}`)
     );
     return [`variant {${fields_string.join('; ')}}`, candid[1]];
 }

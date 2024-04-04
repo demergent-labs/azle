@@ -10,12 +10,12 @@ export function toDidString(result: VisitorResult): string {
 
     const [candid, candidTypeDefs] = result;
     const candidTypesString = namedTypeToCandidString(candidTypeDefs);
-    return candidTypesString + candid + '\n';
+    return `${candidTypesString + candid}\n`;
 }
 
 function namedTypeToCandidString(newTypes: CandidTypesDefs): string {
     return Object.entries(newTypes).length > 0
-        ? namedTypesToStingArr(newTypes).join('\n') + '\n'
+        ? `${namedTypesToStingArr(newTypes).join('\n')}\n`
         : '';
 }
 

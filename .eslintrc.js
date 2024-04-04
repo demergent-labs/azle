@@ -49,6 +49,7 @@ module.exports = {
         'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
         'array-callback-return': 'error',
         'no-template-curly-in-string': 'error',
+        'prefer-template': 'error',
         eqeqeq: 'error',
         ...temporarilyDisabledRules
     }
