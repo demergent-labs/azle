@@ -1,3 +1,4 @@
+/* eslint-disable no-var */
 import { Buffer } from 'buffer';
 import * as process from 'process';
 import { TextDecoder, TextEncoder } from 'text-encoding';

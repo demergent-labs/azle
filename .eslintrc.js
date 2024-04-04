@@ -13,7 +13,6 @@ const temporarilyDisabledRules = {
     '@typescript-eslint/no-var-requires': 'off',
     'no-constant-condition': 'off',
     'no-undef': 'off',
-    'no-var': 'off',
     'prefer-const': 'off'
 };
 
