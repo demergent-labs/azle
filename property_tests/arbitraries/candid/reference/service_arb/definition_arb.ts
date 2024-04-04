@@ -1,17 +1,17 @@
 import fc from 'fast-check';
 
-import {
-    ServiceMethodArb,
-    ServiceMethodDefinition
-} from './service_method_arb';
+import { Canister } from '../../../../../src/lib/candid/types/reference/service';
+import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
     ServiceCandidDefinition,
     WithShapes,
     WithShapesArb
 } from '../../candid_definition_arb/types';
-import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
-import { Canister } from '../../../../../src/lib/candid/types/reference/service';
+import {
+    ServiceMethodArb,
+    ServiceMethodDefinition
+} from './service_method_arb';
 
 export function ServiceDefinitionArb(
     fieldCandidDefArb: WithShapesArb<CandidDefinition>

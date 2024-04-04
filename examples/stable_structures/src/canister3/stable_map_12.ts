@@ -9,6 +9,7 @@ import {
     update,
     Vec
 } from 'azle';
+
 import { Reaction } from '../types';
 
 let stableMap12 = StableBTreeMap<blob, Reaction>(12);

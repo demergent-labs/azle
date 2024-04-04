@@ -1,24 +1,25 @@
+import { ActorSubclass } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
 import { getCanisterId } from 'azle/dfx';
 import { Test } from 'azle/test';
+import { execSync } from 'child_process';
+
 import {
     _SERVICE,
     rec_0,
+    rec_2,
+    rec_4,
+    rec_6,
+    rec_8,
     rec_10,
     rec_12,
     rec_14,
-    rec_2,
     rec_24,
-    rec_26,
-    rec_4,
-    rec_6,
-    rec_8
+    rec_26
     // @ts-ignore
 } from './dfx_generated/recursion/recursion.did';
 // @ts-ignore
 import { _SERVICE as _REC_SERVICE } from './dfx_generated/recursive_canister/recursive_canister.did';
-import { ActorSubclass } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
-import { execSync } from 'child_process';
 
 // TODO these tests should be rewritten to use @dfinity/agent once this issue is resolved: https://github.com/dfinity/agent-js/issues/702
 // TODO this issue also needs to be resolved: https://forum.dfinity.org/t/services-wont-deserialize-properly-if-functions-arent-in-alphabetical-order/20885

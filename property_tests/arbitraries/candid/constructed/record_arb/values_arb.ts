@@ -1,14 +1,15 @@
 import fc from 'fast-check';
-import { Record } from './index';
+
+import { DEFAULT_VALUE_MAX_DEPTH } from '../../../config';
 import { RecordCandidDefinition } from '../../candid_definition_arb/types';
 import {
-    CandidValues,
     CandidValueArb,
-    CandidValueConstraints
+    CandidValueConstraints,
+    CandidValues
 } from '../../candid_values_arb';
 import { CorrespondingJSType } from '../../corresponding_js_type';
 import { RecursiveShapes } from '../../recursive';
-import { DEFAULT_VALUE_MAX_DEPTH } from '../../../config';
+import { Record } from './index';
 
 type Field = [string, CandidValues<CorrespondingJSType>];
 type ArbField = [string, fc.Arbitrary<CandidValues<CorrespondingJSType>>];

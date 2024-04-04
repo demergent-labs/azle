@@ -1,7 +1,6 @@
 import { Principal } from '@dfinity/principal';
-
-import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { Named } from 'azle/property_tests';
+import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 
 export function generateBody(
     namedParamServices: Named<CandidValueAndMeta<Principal>>[],

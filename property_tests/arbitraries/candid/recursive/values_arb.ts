@@ -1,15 +1,16 @@
 import fc from 'fast-check';
-import { Recursive, RecursiveShapes } from '.';
+
+import { DEFAULT_VALUE_MAX_DEPTH } from '../../config';
 import {
-    RecursiveCandidName,
-    RecursiveCandidDefinition
+    RecursiveCandidDefinition,
+    RecursiveCandidName
 } from '../candid_definition_arb/types';
 import {
-    CandidValues,
     CandidValueArb,
-    CandidValueConstraints
+    CandidValueConstraints,
+    CandidValues
 } from '../candid_values_arb';
-import { DEFAULT_VALUE_MAX_DEPTH } from '../../config';
+import { Recursive, RecursiveShapes } from '.';
 
 export function RecursiveNameValuesArb(
     recDefinition: RecursiveCandidName | RecursiveCandidDefinition,

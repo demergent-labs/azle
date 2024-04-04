@@ -1,4 +1,5 @@
-import { ic, blob, nat32, update } from 'azle';
+import { blob, ic, nat32, update } from 'azle';
+
 import { PerfResult } from '../../perf_result';
 
 let blob_init_heap_storage: { [key: string]: blob | undefined } = {};

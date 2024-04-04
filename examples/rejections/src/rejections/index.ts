@@ -9,6 +9,7 @@ import {
     update,
     Void
 } from 'azle';
+
 import SomeCanister from '../some_canister';
 
 const Nonexistent = Canister({

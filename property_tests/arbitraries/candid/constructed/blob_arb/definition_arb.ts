@@ -1,4 +1,6 @@
 import fc from 'fast-check';
+
+import { blob } from '../../../../../src/lib';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     BlobCandidDefinition,
@@ -6,7 +8,6 @@ import {
     WithShapesArb
 } from '../../candid_definition_arb/types';
 import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
-import { blob } from '../../../../../src/lib';
 
 export function BlobDefinitionArb(): WithShapesArb<BlobCandidDefinition> {
     return fc.oneof(SimpleCandidDefinitionArb('blob'), _VecNat8DefinitionArb());

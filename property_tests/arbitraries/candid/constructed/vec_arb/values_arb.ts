@@ -1,7 +1,6 @@
 import fc, { ArrayConstraints } from 'fast-check';
-import { Vec } from '.';
-import { CandidType } from '../../candid_type';
-import { CorrespondingJSType } from '../../corresponding_js_type';
+
+import { DEFAULT_VALUE_MAX_DEPTH } from '../../../config';
 import {
     CandidDefinition,
     OptCandidDefinition,
@@ -10,13 +9,15 @@ import {
     VariantCandidDefinition,
     VecCandidDefinition
 } from '../../candid_definition_arb/types';
+import { CandidType } from '../../candid_type';
 import {
-    CandidValues,
     CandidValueArb,
-    CandidValueConstraints
+    CandidValueConstraints,
+    CandidValues
 } from '../../candid_values_arb';
+import { CorrespondingJSType } from '../../corresponding_js_type';
 import { RecursiveShapes } from '../../recursive';
-import { DEFAULT_VALUE_MAX_DEPTH } from '../../../config';
+import { Vec } from '.';
 
 /*
 https://github.com/dfinity/candid/blob/491969f34dd791e51f69c5f8d3c6192ae405b839/spec/Candid.md#memory

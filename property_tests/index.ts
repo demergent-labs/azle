@@ -1,11 +1,11 @@
-import fc from 'fast-check';
+import { execSync } from 'child_process';
 // @ts-ignore
 import libraryDeepEqual from 'deep-is';
-
-import { Canister } from './arbitraries/canister_arb';
+import fc from 'fast-check';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { execSync } from 'child_process';
+
 import { runTests } from '../test';
+import { Canister } from './arbitraries/canister_arb';
 import { clear as clearUniquePrimitiveArb } from './arbitraries/unique_primitive_arb';
 
 export type Named<T> = {

@@ -1,4 +1,6 @@
 import fc from 'fast-check';
+
+import { CandidType, Vec } from '../../../../../src/lib';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -9,7 +11,6 @@ import {
     WithShapes,
     WithShapesArb
 } from '../../candid_definition_arb/types';
-import { CandidType, Vec } from '../../../../../src/lib';
 
 export function VecDefinitionArb(
     candidTypeArb: RecursiveCandidDefinitionMemo,

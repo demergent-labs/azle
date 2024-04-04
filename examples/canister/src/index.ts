@@ -9,6 +9,7 @@ import {
     update,
     Vec
 } from 'azle';
+
 import SomeCanister from './some_canister';
 
 const Wrapper = Record({

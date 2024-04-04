@@ -1,9 +1,10 @@
-import { runTests, Test } from 'azle/test';
 import { getCanisterId } from 'azle/dfx';
-import { createActor } from './dfx_generated/bitcoin';
-import { wallets } from './wallets';
-import { impureSetup, whileRunningBitcoinDaemon } from './setup';
+import { runTests, Test } from 'azle/test';
+
 import { bitcoinCli } from './bitcoin_cli';
+import { createActor } from './dfx_generated/bitcoin';
+import { impureSetup, whileRunningBitcoinDaemon } from './setup';
+import { wallets } from './wallets';
 
 const bitcoinCanister = createActor(getCanisterId('bitcoin'), {
     agentOptions: {

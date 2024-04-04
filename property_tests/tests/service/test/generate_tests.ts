@@ -1,9 +1,8 @@
 import { Principal } from '@dfinity/principal';
-import { execSync } from 'child_process';
-
-import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { Named } from 'azle/property_tests';
+import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { Test } from 'azle/test';
+import { execSync } from 'child_process';
 
 export function generateTests(
     functionName: string,

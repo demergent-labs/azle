@@ -1,6 +1,7 @@
+import * as dns from 'node:dns';
+
 import { Test } from 'azle/test';
 import { execSync } from 'child_process';
-import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 const skip = true;

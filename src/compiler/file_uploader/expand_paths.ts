@@ -1,6 +1,7 @@
 import { readdir, stat } from 'fs/promises';
 import { join } from 'path';
-import { Src, Dest } from '.';
+
+import { Dest, Src } from '.';
 
 export async function expandPaths(paths: [Src, Dest][]) {
     return paths.reduce(

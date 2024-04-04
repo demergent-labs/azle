@@ -1,10 +1,10 @@
 import fc from 'fast-check';
 
-import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
-import { CandidReturnType } from '../candid/candid_return_type_arb';
-import { CorrespondingJSType } from '../candid/corresponding_js_type';
-import { Named } from '../..';
 import { Test } from '../../../test';
+import { Named } from '../..';
+import { CandidReturnType } from '../candid/candid_return_type_arb';
+import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
+import { CorrespondingJSType } from '../candid/corresponding_js_type';
 
 export type BodyGenerator<
     ParamAgentArgumentValue extends CorrespondingJSType = undefined,

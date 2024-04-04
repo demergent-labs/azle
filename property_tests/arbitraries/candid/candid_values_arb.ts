@@ -1,9 +1,24 @@
 import fc from 'fast-check';
+
+import {
+    CandidDefinition,
+    OptCandidDefinition,
+    RecordCandidDefinition,
+    RecursiveCandidDefinition,
+    RecursiveCandidName,
+    ServiceCandidDefinition,
+    TupleCandidDefinition,
+    VariantCandidDefinition,
+    VecCandidDefinition
+} from './candid_definition_arb/types';
+import { BlobValuesArb } from './constructed/blob_arb/values_arb';
+import { OptValuesArb } from './constructed/opt_arb/values_arb';
 import { RecordValuesArb } from './constructed/record_arb/values_arb';
-import { BoolValueArb } from './primitive/bool';
+import { TupleValuesArb } from './constructed/tuple_arb/values_arbs';
+import { VariantValuesArb } from './constructed/variant_arb/values_arb';
 import { VecValuesArb } from './constructed/vec_arb/values_arb';
-import { TextConstraints, TextValueArb } from './primitive/text';
-import { NullValueArb } from './primitive/null';
+import { CorrespondingJSType } from './corresponding_js_type';
+import { BoolValueArb } from './primitive/bool';
 import {
     Float32Constraints,
     Float32ValueArb
@@ -22,28 +37,14 @@ import { Nat8ValueArb } from './primitive/nats/nat8_arb';
 import { Nat16ValueArb } from './primitive/nats/nat16_arb';
 import { Nat32ValueArb } from './primitive/nats/nat32_arb';
 import { Nat64ValueArb } from './primitive/nats/nat64_arb';
-import { VariantValuesArb } from './constructed/variant_arb/values_arb';
-import { TupleValuesArb } from './constructed/tuple_arb/values_arbs';
-import { OptValuesArb } from './constructed/opt_arb/values_arb';
-import { PrincipalValueArb } from './reference/principal_arb';
-import { FuncValueArb } from './reference/func_arb/values_arb';
+import { NullValueArb } from './primitive/null';
+import { TextConstraints, TextValueArb } from './primitive/text';
 import { VoidValueArb } from './primitive/void';
-import { ServiceValueArb } from './reference/service_arb/values_arb';
-import {
-    CandidDefinition,
-    OptCandidDefinition,
-    RecordCandidDefinition,
-    RecursiveCandidName,
-    RecursiveCandidDefinition,
-    ServiceCandidDefinition,
-    TupleCandidDefinition,
-    VariantCandidDefinition,
-    VecCandidDefinition
-} from './candid_definition_arb/types';
-import { BlobValuesArb } from './constructed/blob_arb/values_arb';
-import { CorrespondingJSType } from './corresponding_js_type';
-import { RecursiveNameValuesArb } from './recursive/values_arb';
 import { RecursiveShapes } from './recursive';
+import { RecursiveNameValuesArb } from './recursive/values_arb';
+import { FuncValueArb } from './reference/func_arb/values_arb';
+import { PrincipalValueArb } from './reference/principal_arb';
+import { ServiceValueArb } from './reference/service_arb/values_arb';
 
 export type CandidValues<T extends CorrespondingJSType, E = T> = {
     agentArgumentValue: T;

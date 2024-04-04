@@ -1,10 +1,11 @@
 import fc from 'fast-check';
-import { HttpHeadersArb } from './headers_arb';
-import { BodyArb } from './body_arb';
+
 import { HttpRequest, None, Some } from '../../../src/lib';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { blobToSrcLiteral } from '../candid/to_src_literal/blob';
 import { stringToSrcLiteral } from '../candid/to_src_literal/string';
+import { BodyArb } from './body_arb';
+import { HttpHeadersArb } from './headers_arb';
 
 type RequestMethod =
     // | 'CONNECT' // Results in WARN hyper::proto::h1::role: unexpected content-length found, canceling

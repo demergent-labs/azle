@@ -2,6 +2,7 @@
 
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
+
 import { createActor } from '../test/dfx_generated/complex_types';
 import { get_tests } from './tests';
 

@@ -1,64 +1,65 @@
 // Named Imports
-import { Canister } from 'azle';
-import {
-    myVariantToMyDeepVariant,
-    myFathomlessVariantToMyCavernousVariant,
-    returnVec,
-    returnFathomlessVec,
-    returnWeird,
-    returnFathomlessCanister,
-    makeCavernousRecord,
-    typeCheck
-} from './import_coverage';
-import {
-    collectIcaco,
-    cutPineapple,
-    separateArilsFromPith,
-    buyHoneydew,
-    keepIlamaClean,
-    addSigFigs,
-    checkCanister,
-    checkWatermelonForSeeds,
-    compareApplesToOranges,
-    handleFarkleberries,
-    getManagementPeach,
-    pitOlives,
-    peelBanana,
-    putTheCoconutInTheLime,
-    isMangoTrickyToEat,
-    isFruitPrepared,
-    removeRambutanSkins,
-    dirtyIlama,
-    pickElderberry
-} from './azle_coverage';
-import {
-    compareStars,
-    helloTextAlias,
-    helloAzleTextAlias,
-    helloMixedTextAlias,
-    helloDeepTextAlias,
-    helloStirredTextAlias,
-    getDeepBlob,
-    deepEmptyAlias,
-    getNumberAliases,
-    passPrincipal,
-    getReservedAlias,
-    simpleDeepQuery,
-    simpleAzleQuery,
-    simpleQuery,
-    checkCanisterAlias,
-    getMyRecord,
-    getMyRecordAlias,
-    getSuperAlias,
-    getManualAlias,
-    returnFuncAlias,
-    setStable,
-    getStable
-} from './type_alias_decls';
-import { checkPrimAliases } from './ts_primitives';
-
 // Not Named Imports
 import './azle_coverage/fruit'; // Shouldn't do anything. It's just here to make sure it doesn't do anything
+
+import { Canister } from 'azle';
+
+import {
+    addSigFigs,
+    buyHoneydew,
+    checkCanister,
+    checkWatermelonForSeeds,
+    collectIcaco,
+    compareApplesToOranges,
+    cutPineapple,
+    dirtyIlama,
+    getManagementPeach,
+    handleFarkleberries,
+    isFruitPrepared,
+    isMangoTrickyToEat,
+    keepIlamaClean,
+    peelBanana,
+    pickElderberry,
+    pitOlives,
+    putTheCoconutInTheLime,
+    removeRambutanSkins,
+    separateArilsFromPith
+} from './azle_coverage';
+import {
+    makeCavernousRecord,
+    myFathomlessVariantToMyCavernousVariant,
+    myVariantToMyDeepVariant,
+    returnFathomlessCanister,
+    returnFathomlessVec,
+    returnVec,
+    returnWeird,
+    typeCheck
+} from './import_coverage';
+import { checkPrimAliases } from './ts_primitives';
+import {
+    checkCanisterAlias,
+    compareStars,
+    deepEmptyAlias,
+    getDeepBlob,
+    getManualAlias,
+    getMyRecord,
+    getMyRecordAlias,
+    getNumberAliases,
+    getReservedAlias,
+    getStable,
+    getSuperAlias,
+    helloAzleTextAlias,
+    helloDeepTextAlias,
+    helloMixedTextAlias,
+    helloStirredTextAlias,
+    helloTextAlias,
+    passPrincipal,
+    returnFuncAlias,
+    setStable,
+    simpleAzleQuery,
+    simpleDeepQuery,
+    simpleQuery
+} from './type_alias_decls';
 
 export default Canister({
     myVariantToMyDeepVariant,

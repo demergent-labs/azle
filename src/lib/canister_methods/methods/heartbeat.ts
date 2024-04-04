@@ -1,7 +1,7 @@
-import { ic } from '../../ic';
 import { Void } from '../../candid/types/primitive/void';
-import { CanisterMethodInfo } from '../types/canister_method_info';
+import { ic } from '../../ic';
 import { isAsync } from '../is_async';
+import { CanisterMethodInfo } from '../types/canister_method_info';
 
 export function heartbeat(
     callback: () => void | Promise<void>

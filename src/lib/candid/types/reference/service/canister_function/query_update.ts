@@ -1,5 +1,5 @@
-import { CanisterOptions } from '.';
 import { handleUncaughtError } from '../../../../../error';
+import { CanisterOptions } from '.';
 
 type QueryMethod = {
     name: string;

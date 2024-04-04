@@ -1,6 +1,6 @@
-import { execSync } from 'child_process';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { SignIdentity } from '@dfinity/agent';
+import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { execSync } from 'child_process';
 
 const someoneIdentity = createIdentity(2);
 export const someonePrincipal = someoneIdentity.getPrincipal().toString();

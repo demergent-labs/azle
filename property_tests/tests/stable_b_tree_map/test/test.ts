@@ -1,17 +1,17 @@
-import fc from 'fast-check';
-
 import { runPropTests } from 'azle/property_tests';
 import { CanisterArb } from 'azle/property_tests/arbitraries/canister_arb';
 import { StableBTreeMapArb } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
+import fc from 'fast-check';
+
 import { ContainsKeyTestArb } from './contains_key';
 import { GetTestArb } from './get';
+import { InsertTestArb } from './insert';
 import { IsEmptyTestArb } from './is_empty';
 import { ItemsTestArb } from './items';
 import { KeysTestArb } from './keys';
 import { LenTestArb } from './len';
 import { RemoveTestArb } from './remove';
 import { ValuesTestArb } from './values';
-import { InsertTestArb } from './insert';
 
 const StableBTreeMapTestArb = fc
     .array(

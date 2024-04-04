@@ -1,6 +1,6 @@
+import * as tf from '@tensorflow/tfjs';
 import { ic } from 'azle';
 import express from 'express';
-import * as tf from '@tensorflow/tfjs';
 
 async function init() {
     const app = express();

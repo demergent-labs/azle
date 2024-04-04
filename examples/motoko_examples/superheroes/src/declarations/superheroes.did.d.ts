@@ -1,6 +1,6 @@
-import type { Principal } from '@dfinity/principal';
 import type { ActorMethod } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
+import type { Principal } from '@dfinity/principal';
 
 export type rec_0 = [string, [] | [rec_0]];
 export type rec_1 = [string, [] | [rec_1]];

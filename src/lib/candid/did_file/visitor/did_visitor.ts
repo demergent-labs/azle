@@ -1,13 +1,14 @@
 import { IDL } from '@dfinity/candid';
-import { visitService } from './visit/service';
-import { visitVariant } from './visit/variant';
+
+import { visitFunc } from './visit/func';
+import { visitOpt } from './visit/opt';
+import { visitPrimitive } from './visit/primitive';
 import { visitRecord } from './visit/record';
 import { visitRecursive } from './visit/recursive';
-import { visitPrimitive } from './visit/primitive';
+import { visitService } from './visit/service';
 import { visitTuple } from './visit/tuple';
-import { visitOpt } from './visit/opt';
+import { visitVariant } from './visit/variant';
 import { visitVec } from './visit/vec';
-import { visitFunc } from './visit/func';
 
 export type VisitorData = {
     usedRecClasses: IDL.RecClass[];

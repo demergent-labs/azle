@@ -8,9 +8,9 @@ import { ethGetBalance } from './json_rpc_methods/eth_get_balance';
 import { ethGetTransactionCount } from './json_rpc_methods/eth_get_transaction_count';
 import { ethMaxPriorityFeePerGas } from './json_rpc_methods/eth_max_priority_fee_per_gas';
 import { ethSendRawTransaction } from './json_rpc_methods/eth_send_raw_transaction';
+import { calculateRsvForTEcdsa } from './tecdsa/calculate_rsv_for_tecdsa';
 import { ecdsaPublicKey } from './tecdsa/ecdsa_public_key';
 import { signWithEcdsa } from './tecdsa/sign_with_ecdsa';
-import { calculateRsvForTEcdsa } from './tecdsa/calculate_rsv_for_tecdsa';
 
 const app = express();
 

@@ -1,11 +1,12 @@
+import { Buffer } from 'buffer';
+import * as process from 'process';
+import { URL } from 'url';
+import { v4 } from 'uuid';
+
+import { azleFetch } from './fetch';
 import { ic } from './ic';
 import { AzleIc } from './ic/types/azle_ic';
-import { Buffer } from 'buffer';
 import { jsonReplacer } from './stable_structures/stable_json';
-import * as process from 'process';
-import { v4 } from 'uuid';
-import { URL } from 'url';
-import { azleFetch } from './fetch';
 
 declare global {
     var _azleInsideCanister: boolean;

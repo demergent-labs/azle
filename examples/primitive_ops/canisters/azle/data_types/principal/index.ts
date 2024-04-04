@@ -1,4 +1,5 @@
 import { ic, nat32, Principal, update } from 'azle';
+
 import { PerfResult } from '../../perf_result';
 
 let principal_init_heap_storage: { [key: string]: Principal | undefined } = {};

@@ -1,5 +1,5 @@
-import { Serializable } from './stable_b_tree_map';
 import { Principal } from '../candid/types/reference/principal';
+import { Serializable } from './stable_b_tree_map';
 
 export function StableJson(options?: {
     replacer?: typeof jsonReplacer;

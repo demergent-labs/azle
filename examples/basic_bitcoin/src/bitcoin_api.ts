@@ -1,12 +1,12 @@
 // @ts-nocheck
 
 import { blob, ic, match, nat64, Opt, Vec } from 'azle';
+import { managementCanister } from 'azle/canisters/management';
 import {
     BitcoinNetwork,
     GetUtxosResult,
     MillisatoshiPerByte
 } from 'azle/canisters/management/bitcoin';
-import { managementCanister } from 'azle/canisters/management';
 
 // The fees for the various bitcoin endpoints.
 const GET_BALANCE_COST_CYCLES: nat64 = 100_000_000n;

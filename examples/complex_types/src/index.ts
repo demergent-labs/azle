@@ -1,4 +1,5 @@
 import { Canister } from 'azle';
+
 import { createPost, getAllPosts } from './posts';
 import { createReaction, getAllReactions } from './reactions';
 import { createThread, getAllThreads } from './threads';

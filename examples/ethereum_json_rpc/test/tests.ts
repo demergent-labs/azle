@@ -1,6 +1,7 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/ethereum_json_rpc/ethereum_json_rpc.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/ethereum_json_rpc/ethereum_json_rpc.did';
 
 export function getTests(
     ethereumJsonRpcCanister: ActorSubclass<_SERVICE>

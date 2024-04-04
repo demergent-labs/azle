@@ -1,4 +1,4 @@
-import { deepEqual, Named, getActor } from 'azle/property_tests';
+import { deepEqual, getActor, Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
 import { Test } from 'azle/test';

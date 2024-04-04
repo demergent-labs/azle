@@ -1,8 +1,8 @@
 import {
     blob,
     Canister,
-    ic,
     Err,
+    ic,
     nat64,
     Ok,
     Opt,

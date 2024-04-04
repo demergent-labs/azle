@@ -9,21 +9,21 @@
 import {
     blob,
     Canister,
+    Func,
     nat,
     nat8,
     nat32,
     nat64,
     Null,
     Opt,
-    Record,
+    Principal,
     query,
-    update,
+    Record,
     text,
     Tuple,
+    update,
     Variant,
-    Vec,
-    Principal,
-    Func
+    Vec
 } from '../../src/lib';
 import * as icrc from '../icrc';
 

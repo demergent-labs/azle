@@ -1,6 +1,7 @@
 // @ts-nocheck
 
 import { $query, $update } from 'azle';
+
 import { ExecuteResult, QueryResult, SQLite } from '../ic_sqlite_plugin';
 
 $update;

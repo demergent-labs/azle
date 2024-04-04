@@ -1,3 +1,9 @@
+import { Server as NodeServer, ServerResponse } from 'http';
+// @ts-ignore
+import { HttpConn } from 'http';
+// @ts-ignore
+import { IncomingMessageForServer } from 'http';
+
 import {
     blob,
     bool,
@@ -20,11 +26,6 @@ import {
     Variant,
     Vec
 } from '.';
-import { ServerResponse, Server as NodeServer } from 'http';
-// @ts-ignore
-import { HttpConn } from 'http';
-// @ts-ignore
-import { IncomingMessageForServer } from 'http';
 import { CanisterOptions } from './candid/types/reference/service/canister_function';
 
 const httpMessageParser = require('http-message-parser');

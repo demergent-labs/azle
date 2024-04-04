@@ -1,6 +1,6 @@
 import { Dest, Src } from '.';
 import { getListOfIncompleteFiles } from './incomplete_files';
-import { OngoingHashingJob, getOngoingHashingJobs } from './ongoing_hashes';
+import { getOngoingHashingJobs, OngoingHashingJob } from './ongoing_hashes';
 import { UploaderActor } from './uploader_actor';
 
 export function onBeforeExit(paths: [Src, Dest][], actor: UploaderActor) {

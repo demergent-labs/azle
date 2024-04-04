@@ -4,6 +4,7 @@ import { readFileSync } from 'fs';
 import { hashOfDirectory } from 'hash-of-directory';
 import { join } from 'path';
 
+import { getCanisterId } from '../../dfx';
 import {
     getCanisterConfig,
     getCanisterName,
@@ -12,7 +13,6 @@ import {
 } from './utils';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { JSCanisterConfig } from './utils/types';
-import { getCanisterId } from '../../dfx';
 
 export async function getNamesBeforeCli() {
     const stdioType = getStdIoType();

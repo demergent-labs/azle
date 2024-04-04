@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { writeFileSync, createReadStream } from 'fs';
+import { createReadStream, writeFileSync } from 'fs';
 
 let globalState = {};
 

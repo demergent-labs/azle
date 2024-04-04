@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises';
 
-import { getUrl } from './url';
 import { AzleFetchResponse } from './response';
+import { getUrl } from './url';
 
 export async function fetchFile(input: RequestInfo | URL): Promise<Response> {
     const url = getUrl(input);

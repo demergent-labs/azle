@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+
 import { CanisterMethods } from './utils/types';
 
 export function generateCandidAndCanisterMethods(wasmFilePath: string): {

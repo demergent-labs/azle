@@ -1,7 +1,7 @@
 import { getCanisterId } from '../../../dfx';
 import { expandPaths } from './expand_paths';
-import { uploadFile } from './upload_file';
 import { onBeforeExit } from './on_before_exit';
+import { uploadFile } from './upload_file';
 import { createActor } from './uploader_actor';
 import { generateUploaderIdentity } from './uploader_identity';
 
