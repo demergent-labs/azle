@@ -1,5 +1,6 @@
 import { Buffer } from 'buffer';
 import * as process from 'process';
+import { TextDecoder, TextEncoder } from 'text-encoding';
 import { URL } from 'url';
 import { v4 } from 'uuid';
 
@@ -66,8 +67,8 @@ if (globalThis._azleInsideCanister) {
         return originalSetTimeout(handler, 0);
     };
 
-    globalThis.TextDecoder = require('text-encoding').TextDecoder;
-    globalThis.TextEncoder = require('text-encoding').TextEncoder;
+    globalThis.TextDecoder = TextDecoder;
+    globalThis.TextEncoder = TextEncoder;
     globalThis._azleIcTimers = {};
     globalThis._azleResolveIds = {};
     globalThis._azleRejectIds = {};
