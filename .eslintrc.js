@@ -46,6 +46,10 @@ module.exports = {
     rules: {
         'simple-import-sort/exports': 'error',
         'simple-import-sort/imports': 'error',
+        'func-style': ['error', 'declaration', { allowArrowFunctions: true }],
+        'array-callback-return': 'error',
+        'no-template-curly-in-string': 'error',
+        eqeqeq: 'error',
         ...temporarilyDisabledRules
     }
 };

@@ -18,7 +18,7 @@ export async function fletch(
     canisterName: string,
     request: HttpRequest
 ): Promise<HttpResponse> {
-    if (request.method === 'TRACE' || request.method == 'PATCH') {
+    if (request.method === 'TRACE' || request.method === 'PATCH') {
         return fletchSync(canisterName, request);
     }
     const canisterId = getCanisterId(canisterName);
