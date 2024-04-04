@@ -71,7 +71,7 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
         data: VisitorData
     ): string {
         for (const [name, type] of fields) {
-            if (data.value.hasOwnProperty(name)) {
+            if (Object.prototype.hasOwnProperty.call(data.value, name)) {
                 const value = type.accept(this, { value: data.value[name] });
                 if (value === 'null') {
                     return `variant {${name}}`;

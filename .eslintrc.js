@@ -8,7 +8,6 @@ const temporarilyDisabledRules = {
     '@typescript-eslint/prefer-as-const': 'off',
     'no-constant-condition': 'off',
     'no-empty': 'off',
-    'no-prototype-builtins': 'off',
     'no-undef': 'off',
     'no-var': 'off',
     'prefer-const': 'off'
