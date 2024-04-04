@@ -33,6 +33,12 @@ export type Result<Ok, Err> = RequireExactlyOne<{
     Err: Err;
 }>;
 
+// Using a namespace is the only way we can see to get Result exported as:
+// - a type
+// - a function
+// - a namespace for the Ok and Err functions
+//
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Result {
     export function Ok<T>(value: T) {
         return { Ok: value };

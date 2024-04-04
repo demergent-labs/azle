@@ -3,8 +3,6 @@
 const temporarilyDisabledRules = {
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-loss-of-precision': 'off',
-    '@typescript-eslint/no-namespace': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/prefer-as-const': 'off',
