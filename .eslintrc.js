@@ -1,16 +1,16 @@
 // TODO: These rules should be enabled, but we had offenses when we enabled ESLint.
 // This is tech-debt. We should go through and re-enable these at some point.
 const temporarilyDisabledRules = {
+    'consistent-return': 'off', // 5 problems
     '@typescript-eslint/require-await': 'off',
-    '@typescript-eslint/no-unsafe-return': 'off',
-    '@typescript-eslint/no-unsafe-argument': 'off',
-    '@typescript-eslint/no-unsafe-member-access': 'off',
-    '@typescript-eslint/no-unsafe-call': 'off',
-    '@typescript-eslint/no-unsafe-assignment': 'off',
+    '@typescript-eslint/no-unsafe-return': 'off', // No any returned
+    '@typescript-eslint/no-unsafe-argument': 'off', // No any passed as arguments
+    '@typescript-eslint/no-unsafe-member-access': 'off', // No accessing members of any
+    '@typescript-eslint/no-unsafe-call': 'off', // 27 errors No calling on any
+    '@typescript-eslint/no-unsafe-assignment': 'off', // 73 errors Don't assign any to anything
     '@typescript-eslint/no-misused-promises': 'off',
     '@typescript-eslint/no-floating-promises': 'off',
-    '@typescript-eslint/no-redundant-type-constituents': 'off',
-    '@typescript-eslint/restrict-template-expressions': 'off'
+    '@typescript-eslint/restrict-template-expressions': 'off' // 2 errors
 };
 
 module.exports = {
