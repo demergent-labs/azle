@@ -17,9 +17,9 @@ import { EncodeVisitor } from './visitors/encode_visitor';
  * @param candidType either a built-in IDL data type, or an Azle-defined super-type
  * @returns candid bytes
  */
-export function encode(
+export function encode<T>(
     candidType: CandidType | CandidType[],
-    data: any | any[]
+    data: T | T[]
 ): Uint8Array {
     if (Array.isArray(candidType)) {
         if (Array.isArray(data)) {

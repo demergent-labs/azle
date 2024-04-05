@@ -17,10 +17,10 @@ import { DecodeVisitor } from './visitors/decode_visitor';
  * @param candidType either a built-in IDL data type, or an Azle-defined super-type
  * @returns the Azle representation of the data
  */
-export function decode(
+export function decode<T>(
     candidType: CandidType | CandidType[],
     data: ArrayBuffer
-): any | any[] {
+): T | T[] {
     if (Array.isArray(candidType)) {
         return decodeMultiple(candidType, data);
     }

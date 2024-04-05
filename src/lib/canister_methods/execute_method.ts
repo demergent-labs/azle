@@ -13,7 +13,7 @@ export function executeMethod(
     returnCandidType: CandidType,
     manual: boolean
 ) {
-    const decodedArgs = decode(paramCandidTypes, args[0]);
+    const decodedArgs = decode<any>(paramCandidTypes, args[0]);
 
     const result = getResult(decodedArgs, callback);
 
