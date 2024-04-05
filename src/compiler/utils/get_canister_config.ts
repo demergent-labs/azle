@@ -21,7 +21,7 @@ export function getCanisterConfig(
     const dfxJson: DfxJson = JSON.parse(readFileSync('dfx.json').toString());
     const canisterConfig = dfxJson.canisters[canisterName];
 
-    if (!canisterConfig) {
+    if (canisterConfig === undefined || canisterConfig === null) {
         return Err({
             error: `Unable to find canister "${canisterName}" in ./dfx.json`,
             suggestion: `Make sure your dfx.json contains an entry for "${canisterName}". For example:\n\n${exampleDfxJson}`,

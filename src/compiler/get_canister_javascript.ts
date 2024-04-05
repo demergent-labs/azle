@@ -48,7 +48,8 @@ function compilationErrorToAzleErrorResult(error: unknown): Err<AzleError> {
 
 function isTsCompilationError(error: unknown): error is TsCompilationError {
     if (
-        error &&
+        error !== undefined &&
+        error !== null &&
         typeof error === 'object' &&
         'stack' in error &&
         'message' in error &&

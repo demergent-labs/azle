@@ -22,7 +22,7 @@ export function toIdl(
             return parent.idl;
         }
     }
-    if ('isCanister' in candidType && candidType.isCanister) {
+    if ('isCanister' in candidType && candidType.isCanister !== undefined) {
         return toIdl((candidType as any)(), parents);
     }
     // All CandidTypes ought to have a getIdl function defined for them

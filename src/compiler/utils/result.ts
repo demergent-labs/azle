@@ -35,10 +35,10 @@ export function Ok<T>(ok: T): Ok<T> {
 }
 
 function exitWithError(payload: AzleError): never {
-    if (payload.error) {
+    if (payload.error !== undefined) {
         console.error(`\n💣 ${red(payload.error)}`);
     }
-    if (payload.suggestion) {
+    if (payload.suggestion !== undefined) {
         console.error(`\n${payload.suggestion}`);
     }
     console.log(`\n💀 Build failed`);

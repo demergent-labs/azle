@@ -5,7 +5,7 @@
     "description": "TypeScript and JavaScript CDK for the Internet Computer",
     "scripts": {
         "typecheck": "tsc --noEmit",
-        "lint": "if [ \"$npm_config_fix\" ]; then eslint . --ext .js,.ts --cache --fix; else eslint . --ext .js,.ts --cache; fi",
+        "lint": "if [ \"$npm_config_fix\" ]; then eslint . --ext .js,.ts --cache --fix; else eslint . --ext .js,.ts --cache --max-old-space-size=4096; fi",
         "prepare": "husky install",
         "test": "test/test.sh"
     },

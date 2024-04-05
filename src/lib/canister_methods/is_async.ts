@@ -1,11 +1,14 @@
-export function isAsync(originalFunction: any) {
-    if (originalFunction[Symbol.toStringTag] === 'AsyncFunction') {
+type ArrowFunction = (...args: any[]) => any;
+
+export function isAsync(originalFunction: ArrowFunction): boolean {
+    if ((originalFunction as any)[Symbol.toStringTag] === 'AsyncFunction') {
         return true;
-    } else if (originalFunction.constructor.name === 'AsyncFunction') {
-        return true;
-    } else if (originalFunction.toString().includes('async ')) {
-        return true;
-    } else {
-        return false;
     }
+    if (originalFunction.constructor.name === 'AsyncFunction') {
+        return true;
+    }
+    if (originalFunction.toString().includes('async ')) {
+        return true;
+    }
+    return false;
 }

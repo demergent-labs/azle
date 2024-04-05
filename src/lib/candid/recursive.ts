@@ -15,7 +15,7 @@ export function Recursive(candidTypeCallback: any): any {
 
     let result: _AzleRecursiveFunction = (...args: any[]) => {
         const candidType = candidTypeCallback();
-        if (candidType.isCanister) {
+        if (candidType.isCanister !== undefined) {
             return candidType(...args);
         }
         return candidType;
@@ -26,7 +26,7 @@ export function Recursive(candidTypeCallback: any): any {
     result.getIdl = (parents: Parent[]) => {
         const idl = IDL.Rec();
         let filler = candidTypeCallback();
-        if (filler.isCanister) {
+        if (filler.isCanister !== undefined) {
             filler = filler(result);
         }
         idl.fill(filler.getIdl([...parents, { idl: idl, name }]));

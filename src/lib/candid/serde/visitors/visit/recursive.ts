@@ -10,7 +10,7 @@ export function visitRec<T>(
     data: VisitorData
 ): VisitorResult {
     let candidType = data.candidType();
-    if (candidType.isCanister) {
+    if (candidType.isCanister !== undefined) {
         candidType = candidType([]);
     }
     return ty.accept(visitor, {

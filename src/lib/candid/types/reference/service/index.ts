@@ -34,7 +34,10 @@ export function Canister<T extends CanisterOptions>(
     let result: _AzleCanisterReturnType = (parentOrPrincipal: any) => {
         const canisterFunction = createCanisterFunction(canisterOptions);
 
-        if (parentOrPrincipal !== undefined && parentOrPrincipal._isPrincipal) {
+        if (
+            parentOrPrincipal !== undefined &&
+            parentOrPrincipal._isPrincipal !== undefined
+        ) {
             return canisterFunction(parentOrPrincipal);
         }
 
