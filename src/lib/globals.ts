@@ -114,9 +114,7 @@ if (globalThis._azleInsideCanister) {
                 instantiatedSource.instance.exports
             );
 
-            for (let i = 0; i < exportEntries.length; i++) {
-                const [key, value] = exportEntries[i];
-
+            for (const [key, value] of exportEntries) {
                 if (typeof value === 'function') {
                     instantiatedSource.instance.exports[key] = value.bind({
                         instanceUuid: uuid,

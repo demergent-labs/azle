@@ -50,6 +50,10 @@ module.exports = {
         'array-callback-return': 'error',
         'no-template-curly-in-string': 'error',
         'prefer-template': 'error',
+        'no-param-reassign': 'error',
+        '@typescript-eslint/prefer-for-of': 'error',
+        'prefer-arrow-callback': 'error',
+        'no-var': 'error',
         eqeqeq: 'error',
         ...temporarilyDisabledRules
     }
