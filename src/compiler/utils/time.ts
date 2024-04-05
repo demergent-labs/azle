@@ -12,7 +12,7 @@ export async function time<T>(
     const duration = parseHrTimeToSeconds(endTime);
 
     if (mode === 'inline') {
-        const leadingNewLinesCount = (label.match(/^[\n]+/g) || [''])[0].length;
+        const leadingNewLinesCount = (label.match(/^[\n]+/g) ?? [''])[0].length;
         const cursorUp = `\x1b[${1 + leadingNewLinesCount}A`;
         process.stdout.write(`${cursorUp}${label} ${dim(`${duration}s`)}\n`);
     } else {

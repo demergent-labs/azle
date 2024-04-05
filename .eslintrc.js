@@ -55,6 +55,8 @@ module.exports = {
         'prefer-arrow-callback': 'error',
         'no-var': 'error',
         '@typescript-eslint/strict-boolean-expressions': 'error',
+        '@typescript-eslint/prefer-optional-chain': 'error',
+        '@typescript-eslint/prefer-nullish-coalescing': 'error',
         eqeqeq: 'error',
         '@typescript-eslint/no-unused-vars': [
             'error',
