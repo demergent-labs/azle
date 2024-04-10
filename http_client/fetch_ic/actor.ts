@@ -94,7 +94,7 @@ export interface _SERVICE {
                 | [
                       {
                           Callback: {
-                              token: unknown; // TODO I am not sure if unknown is the right option here. Maybe `object`?
+                              token: Uint8Array | number[];
                               callback: [Principal, string];
                           };
                       }
@@ -120,7 +120,7 @@ export interface _SERVICE {
                 | [
                       {
                           Callback: {
-                              token: unknown;
+                              token: Uint8Array | number[];
                               callback: [Principal, string];
                           };
                       }

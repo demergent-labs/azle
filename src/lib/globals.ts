@@ -1,4 +1,3 @@
-/* eslint-disable no-var */
 import { Buffer } from 'buffer';
 import * as process from 'process';
 import { TextDecoder, TextEncoder } from 'text-encoding';
@@ -11,19 +10,33 @@ import { AzleIc } from './ic/types/azle_ic';
 import { jsonReplacer } from './stable_structures/stable_json';
 
 declare global {
+    // eslint-disable-next-line no-var
     var _azleInsideCanister: boolean;
+    // eslint-disable-next-line no-var
     var _azleWasmtimeCandidEnvironment: boolean;
+    // eslint-disable-next-line no-var
     var _azleIc: AzleIc | undefined;
+    // eslint-disable-next-line no-var
     var _azleResolveIds: { [key: string]: (buf: ArrayBuffer) => void };
+    // eslint-disable-next-line no-var
     var _azleRejectIds: { [key: string]: (err: any) => void };
+    // eslint-disable-next-line no-var
     var _azleIcTimers: { [key: string]: string };
+    // eslint-disable-next-line no-var
     var _azleTimerCallbacks: { [key: string]: () => void };
+    // eslint-disable-next-line no-var
     var _azleGuardFunctions: { [key: string]: () => any };
+    // eslint-disable-next-line no-var
     var _azleWebAssembly: any;
+    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsSubnetSize: number | undefined;
+    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsMaxResponseBytes: bigint | undefined;
+    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsCycles: bigint | undefined;
+    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsTransformMethodName: string | undefined;
+    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsTransformContext: Uint8Array | undefined;
 }
 

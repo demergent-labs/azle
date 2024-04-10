@@ -17,7 +17,7 @@ import { DecodeVisitor } from './visitors/decode_visitor';
  * @param candidType either a built-in IDL data type, or an Azle-defined super-type
  * @returns the Azle representation of the data
  */
-export function decode<T>(
+export function decode<T = any>(
     candidType: CandidType | CandidType[],
     data: ArrayBuffer
 ): T | T[] {
