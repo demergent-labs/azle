@@ -414,9 +414,9 @@ function itemsIsLength(
                 length === 1 ? 'item' : 'items'
             }`,
             test: async () => {
-                let keyComp: (a: any, b: any) => boolean =
+                const keyComp: (a: any, b: any) => boolean =
                     STABLE_MAP_KEYSCOMPS[index];
-                let valueComp: (a: any, b: any) => boolean =
+                const valueComp: (a: any, b: any) => boolean =
                     STABLEMAPVALUECOMPS[index];
                 const itemsResult = await (stableStructuresCanister as any)[
                     `stableMap${index}Items`
@@ -451,7 +451,7 @@ function keysIsLength(
                 length === 1 ? 'key' : 'keys'
             }`,
             test: async () => {
-                let keyComp: (a: any, b: any) => boolean =
+                const keyComp: (a: any, b: any) => boolean =
                     STABLE_MAP_KEYSCOMPS[index];
                 const keysResult = await (stableStructuresCanister as any)[
                     `stableMap${index}Keys`
@@ -491,7 +491,8 @@ function lenReturns(
 
 function remove(stableStructuresCanister: ActorSubclass<_SERVICE>): Test[] {
     return STABLE_MAP_KEYS.map((stableMapKeys, index) => {
-        let valueComp: (a: any, b: any) => boolean = STABLEMAPVALUECOMPS[index];
+        const valueComp: (a: any, b: any) => boolean =
+            STABLEMAPVALUECOMPS[index];
         return {
             name: `stableMap${index}.remove() returns the previously stored value`,
             test: async () => {
@@ -518,7 +519,7 @@ function valuesIsLength(
                 length === 1 ? 'value' : 'values'
             }`,
             test: async () => {
-                let valueComp: (a: any, b: any) => boolean =
+                const valueComp: (a: any, b: any) => boolean =
                     STABLEMAPVALUECOMPS[index];
                 const valuesResult = await (stableStructuresCanister as any)[
                     `stableMap${index}Values`

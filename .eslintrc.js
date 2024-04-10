@@ -1,10 +1,8 @@
 // TODO: These rules should be enabled, but we had offenses when we enabled ESLint.
 // This is tech-debt. We should go through and re-enable these at some point.
 const temporarilyDisabledRules = {
-    '@typescript-eslint/ban-ts-comment': 'off', // 42 problems
     '@typescript-eslint/no-explicit-any': 'off', // 537 problems
-    'no-undef': 'off', // 79 problems
-    'prefer-const': 'off' // 154 problems
+    'no-undef': 'off' // 79 problems
 };
 
 module.exports = {
@@ -53,6 +51,8 @@ module.exports = {
                 varsIgnorePattern: '^_' // Ignore local variables starting with _
             }
         ],
+        '@typescript-eslint/ban-ts-comment': 'off',
+        'prefer-const': 'off', // For azle let is used to indicate mutability not only re-assignability
         ...temporarilyDisabledRules
     }
 };
