@@ -750,8 +750,8 @@ dependencies = [
 
 [[package]]
 name = "ic-wasi-polyfill"
-version = "0.3.14"
-source = "git+https://github.com/wasm-forge/ic-wasi-polyfill?rev=2d2edb382816e12da9bc81b786b7cd1a00d36735#2d2edb382816e12da9bc81b786b7cd1a00d36735"
+version = "0.4.0"
+source = "git+https://github.com/wasm-forge/ic-wasi-polyfill?rev=88bddc8190caf93a1e052f0513b5d6bc074929c3#88bddc8190caf93a1e052f0513b5d6bc074929c3"
 dependencies = [
  "function_name",
  "ic-cdk",
@@ -1486,9 +1486,9 @@ checksum = "6980e8d7511241f8acf4aebddbb1ff938df5eebe98691418c4468d0b72a96a67"
 
 [[package]]
 name = "stable-fs"
-version = "0.1.11"
+version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3c3e74a9be516e35bacc8f64a686829670ef196bf99e1fba6b5b6b3125ee6132"
+checksum = "3b5c2803cdd539ff47bb6265fab36e26949996c22ce4121fc338d3990b734ab4"
 dependencies = [
  "bitflags 2.4.0",
  "ciborium",
