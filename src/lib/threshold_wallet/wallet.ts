@@ -83,15 +83,15 @@ export class ThresholdWallet extends ethers.AbstractSigner {
     }
 
     // TODO implement?
-    async signMessage(message: string | Uint8Array): Promise<string> {
+    async signMessage(_message: string | Uint8Array): Promise<string> {
         throw new Error(`ThresholdWallet: signMessage is not implemented`);
     }
 
     // TODO implement?
     async signTypedData(
-        domain: ethers.TypedDataDomain,
-        types: Record<string, ethers.TypedDataField[]>,
-        value: Record<string, any>
+        _domain: ethers.TypedDataDomain,
+        _types: Record<string, ethers.TypedDataField[]>,
+        _value: Record<string, any>
     ): Promise<string> {
         throw new Error(`ThresholdWallet: signTypedData is not implemented`);
     }

@@ -34,9 +34,7 @@ export async function runTests(
     tests: Test[],
     exitProcess: boolean = true
 ): Promise<boolean> {
-    for (let i = 0; i < tests.length; i++) {
-        const test = tests[i];
-
+    for (const test of tests) {
         try {
             if (test.skip === true) {
                 console.log(`Skipping: ${test.name}`);

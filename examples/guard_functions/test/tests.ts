@@ -81,8 +81,7 @@ export function getTests(
             name: 'tightlyGuarded',
             test: async () => {
                 try {
-                    const result =
-                        await guardFunctionsCanister.tightlyGuarded();
+                    await guardFunctionsCanister.tightlyGuarded();
                     return {
                         Err: 'Expected tightlyGuarded function to throw'
                     };
@@ -99,8 +98,7 @@ export function getTests(
             name: 'errorStringGuarded',
             test: async () => {
                 try {
-                    const result =
-                        await guardFunctionsCanister.errorStringGuarded();
+                    await guardFunctionsCanister.errorStringGuarded();
                     return {
                         Err: 'Expected errorStringGuarded function to throw'
                     };
@@ -117,8 +115,7 @@ export function getTests(
             name: 'customErrorGuarded',
             test: async () => {
                 try {
-                    const result =
-                        await guardFunctionsCanister.customErrorGuarded();
+                    await guardFunctionsCanister.customErrorGuarded();
                     return {
                         Err: 'Expected customErrorGuarded function to throw'
                     };
@@ -135,8 +132,7 @@ export function getTests(
             name: 'nonStringErrValueGuarded',
             test: async () => {
                 try {
-                    const result =
-                        await guardFunctionsCanister.nonStringErrValueGuarded();
+                    await guardFunctionsCanister.nonStringErrValueGuarded();
                     return {
                         Err: 'Expected nonStringErrValueGuarded function to throw'
                     };

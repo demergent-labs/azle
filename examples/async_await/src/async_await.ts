@@ -1,4 +1,4 @@
-import { blob, Canister, ic, serialize, update, Void } from 'azle';
+import { blob, Canister, ic, update, Void } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 export default Canister({

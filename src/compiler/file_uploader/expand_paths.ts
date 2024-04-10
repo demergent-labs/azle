@@ -40,7 +40,7 @@ async function expandDirectory(
             },
             Promise.resolve([])
         );
-    } catch (error) {
-        throw new Error(`Error reading directory: ${error}`);
+    } catch (error: any) {
+        throw new Error(`Error reading directory: ${error.message}`);
     }
 }

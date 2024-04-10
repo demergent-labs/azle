@@ -9,7 +9,7 @@ import { TupleDefinitionArb } from './definition_arb';
 import { TupleValuesArb } from './values_arbs';
 
 export type Tuple = CorrespondingJSType[];
-export type ReturnTuple = Tuple | {};
+export type ReturnTuple = Tuple | Record<string, never>;
 
 export function TupleArb(
     constraints?: CandidValueConstraints

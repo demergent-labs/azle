@@ -15,8 +15,8 @@ export class AzleVec<T> {
 
     innerType: CandidType;
 
-    _azleKind: 'AzleVec' = 'AzleVec';
-    static _azleKind: 'AzleVec' = 'AzleVec';
+    _azleKind = 'AzleVec' as const;
+    static _azleKind = 'AzleVec' as const;
 
     toBytes(data: any) {
         return encode(this, data);

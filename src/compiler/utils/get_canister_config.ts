@@ -38,7 +38,7 @@ export function getCanisterConfig(
         ]
             .filter(([_, value]) => !value)
             .map(([field, _]) => field);
-        const fieldOrFields = missingFields.length == 1 ? 'field' : 'fields';
+        const fieldOrFields = missingFields.length === 1 ? 'field' : 'fields';
         const missingFieldNames = missingFields.join(', ');
         return Err({
             error: `Missing ${fieldOrFields} ${missingFieldNames} in ./dfx.json`,

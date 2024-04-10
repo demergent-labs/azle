@@ -39,8 +39,8 @@ export class AzleOpt<T> {
 
     innerType: CandidType;
 
-    _azleKind: 'AzleOpt' = 'AzleOpt';
-    static _azleKind: 'AzleOpt' = 'AzleOpt';
+    _azleKind = 'AzleOpt' as const;
+    static _azleKind = 'AzleOpt' as const;
 
     toBytes(data: any) {
         return encode(this, data);

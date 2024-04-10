@@ -498,7 +498,7 @@ export function getTests(
             name: 'getEmpty',
             test: async () => {
                 try {
-                    const result = await primitiveTypesCanister.getEmpty();
+                    await primitiveTypesCanister.getEmpty();
                 } catch (error) {
                     return {
                         Ok: (error as any).message.startsWith('Call failed')
@@ -514,9 +514,7 @@ export function getTests(
             name: 'printEmpty',
             test: async () => {
                 try {
-                    const result = await primitiveTypesCanister.printEmpty(
-                        undefined as never
-                    );
+                    await primitiveTypesCanister.printEmpty(undefined as never);
                 } catch (error) {
                     return {
                         Ok: ((error as any).message as string).includes(

@@ -1,6 +1,5 @@
 import { IDL } from '@dfinity/candid';
 
-import { Serializable } from '../../../stable_structures/stable_b_tree_map';
 import { CandidType, Parent, toIdlArray } from '../../index';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';

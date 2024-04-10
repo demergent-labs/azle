@@ -67,7 +67,7 @@ function getSerializableArguments(
             ? 'stableJson'
             : keySample.src.candidTypeObject;
     const valueArgument =
-        valueSerializableType == 'STABLE_JSON'
+        valueSerializableType === 'STABLE_JSON'
             ? 'stableJson'
             : valueSample.src.candidTypeObject;
 

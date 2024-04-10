@@ -18,7 +18,7 @@ import { AzleNat16, nat16 } from './types/primitive/nats/nat16';
 import { AzleNat32, nat32 } from './types/primitive/nats/nat32';
 import { AzleNat64, nat64 } from './types/primitive/nats/nat64';
 import { AzleNull, Null } from './types/primitive/null';
-import { AzleReserved, reserved } from './types/primitive/reserved';
+import { AzleReserved } from './types/primitive/reserved';
 import { AzleText } from './types/primitive/text';
 import { AzleVoid } from './types/primitive/void';
 import { Principal } from './types/reference/principal';

@@ -1,8 +1,5 @@
 import { v4 } from 'uuid';
 
-import { decode } from '../candid/serde/decode';
-import { encode } from '../candid/serde/encode';
-import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { Duration } from './types/duration';
 import { TimerId } from './types/timer_id';
 

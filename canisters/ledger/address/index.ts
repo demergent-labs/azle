@@ -74,6 +74,6 @@ function to32Bits(number: number): number[] {
 
 function toHexString(byteArray: Uint8Array): string {
     return Array.from(byteArray, (byte) => {
-        return ('0' + (byte & 0xff).toString(16)).slice(-2);
+        return `0${(byte & 0xff).toString(16)}`.slice(-2);
     }).join('');
 }

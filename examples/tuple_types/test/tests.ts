@@ -479,10 +479,10 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 return {
                     Ok:
-                        result[1] == expectedResult[1] &&
-                        result[0][0] == expectedResult[0][0] &&
-                        result[0][1][0] == expectedResult[0][1][0] &&
-                        result[0][1][1] == expectedResult[0][1][1]
+                        result[1] === expectedResult[1] &&
+                        result[0][0] === expectedResult[0][0] &&
+                        result[0][1][0] === expectedResult[0][1][0] &&
+                        result[0][1][1] === expectedResult[0][1][1]
                 };
             }
         }

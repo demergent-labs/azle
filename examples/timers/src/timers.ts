@@ -7,7 +7,6 @@ import {
     int8,
     query,
     Record,
-    serialize,
     text,
     TimerId,
     update,

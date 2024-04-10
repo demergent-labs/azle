@@ -15,7 +15,7 @@ export function visitRecord(
     const candid = extractCandid(candidFields);
     const field_strings = fields.map(
         ([key, _value], index) =>
-            escapeCandidKeywords(key) + ':' + candid[0][index]
+            `${escapeCandidKeywords(key)}:${candid[0][index]}`
     );
     return [`record {${field_strings.join('; ')}}`, candid[1]];
 }
