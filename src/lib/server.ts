@@ -3,6 +3,7 @@ import { Server as NodeServer, ServerResponse } from 'http';
 import { HttpConn } from 'http';
 // @ts-ignore
 import { IncomingMessageForServer } from 'http';
+import httpMessageParser from 'http-message-parser';
 
 import {
     blob,
@@ -27,8 +28,6 @@ import {
     Vec
 } from '.';
 import { CanisterOptions } from './candid/types/reference/service/canister_function';
-
-const httpMessageParser = require('http-message-parser');
 
 export type HeaderField = [text, text];
 export const HeaderField = Tuple(text, text);

@@ -11,6 +11,7 @@ export function getActor(parentDir: string) {
     delete require.cache[resolvedPathIndex];
     delete require.cache[resolvedPathDid];
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { createActor } = require(`${parentDir}/dfx_generated/canister`);
     return createActor(getCanisterId('canister'), {
         agentOptions: {

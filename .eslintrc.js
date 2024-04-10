@@ -3,7 +3,6 @@
 const temporarilyDisabledRules = {
     '@typescript-eslint/ban-ts-comment': 'off', // 42 problems
     '@typescript-eslint/no-explicit-any': 'off', // 537 problems
-    '@typescript-eslint/no-var-requires': 'off', // 14 problems
     'no-undef': 'off', // 79 problems
     'prefer-const': 'off' // 154 problems
 };

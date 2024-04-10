@@ -7,3 +7,4 @@ dfx_generate
 dfx_generated
 declarations
 property_tests/tests/**/src/*
+dist
