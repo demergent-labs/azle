@@ -1,10 +1,3 @@
-// TODO: These rules should be enabled, but we had offenses when we enabled ESLint.
-// This is tech-debt. We should go through and re-enable these at some point.
-const temporarilyDisabledRules = {
-    '@typescript-eslint/no-explicit-any': 'off', // 537 problems
-    'no-undef': 'off' // 79 problems
-};
-
 module.exports = {
     env: {
         es2021: true,
@@ -53,6 +46,7 @@ module.exports = {
         ],
         '@typescript-eslint/ban-ts-comment': 'off',
         'prefer-const': 'off', // For azle let is used to indicate mutability not only re-assignability
-        ...temporarilyDisabledRules
+        'no-undef': 'error', // TS compiler handles this for us
+        '@typescript-eslint/no-explicit-any': 'off' // TODO https://github.com/demergent-labs/azle/issues/1737
     }
 };
