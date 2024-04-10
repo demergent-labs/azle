@@ -46,7 +46,7 @@ module.exports = {
         ],
         '@typescript-eslint/ban-ts-comment': 'off',
         'prefer-const': 'off', // For azle let is used to indicate mutability not only re-assignability
-        'no-undef': 'error', // TS compiler handles this for us
+        'no-undef': 'off', // TS compiler handles this for us
         '@typescript-eslint/no-explicit-any': 'off' // TODO https://github.com/demergent-labs/azle/issues/1737
     }
 };
