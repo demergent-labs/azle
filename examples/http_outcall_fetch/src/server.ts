@@ -1,5 +1,5 @@
 import { ic, query, Server } from 'azle';
-import { HttpTransformArgs, HttpResponse } from 'azle/canisters/management';
+import { HttpResponse, HttpTransformArgs } from 'azle/canisters/management';
 import express from 'express';
 
 export default Server(

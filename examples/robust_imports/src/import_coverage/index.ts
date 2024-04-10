@@ -1,8 +1,8 @@
 import icQuery, * as ic from './types';
-import { text, text as mT, text as mDT, text as mCT } from './types';
+import { text as mCT, text as mDT, text as mT, text } from './types';
 import dollarSignQuery from './types';
 import query, { int8, int8 as variInt } from './types';
-import { CoveredOpt, CoveredVec, coveredInt16 } from './types';
+import { coveredInt16, CoveredOpt, CoveredVec } from './types';
 
 export const MyCoveredRecord = ic.CoveredRecord({
     count: ic.fathomlessStar.DeepInt8,

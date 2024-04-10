@@ -1,11 +1,11 @@
 import { execSync, IOType } from 'child_process';
 import { rmSync } from 'fs';
 
-import { generateNewAzleProject } from './new_command';
 import { version as azleVersion } from '../../package.json';
-import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { uploadFiles } from './file_uploader';
 import { getFilesToUpload } from './file_uploader/get_files_to_upload';
+import { generateNewAzleProject } from './new_command';
+import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 
 export function handleCli(
     stdioType: IOType,

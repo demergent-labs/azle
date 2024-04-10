@@ -1,6 +1,7 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/stable_memory/stable_memory.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/stable_memory/stable_memory.did';
 
 const PAGE_SIZE = 65_536; // This should currently remain constant
 const MAX_STABLE_MEM_PAGES = 65_536; // This will always remain constant

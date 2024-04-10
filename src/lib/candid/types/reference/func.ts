@@ -1,9 +1,10 @@
-import { CandidType, Parent, toIdlArray } from '../../index';
 import { IDL } from '@dfinity/candid';
-import { Principal } from './principal';
-import { encode } from '../../serde/encode';
-import { decode } from '../../serde/decode';
+
 import { Serializable } from '../../../stable_structures/stable_b_tree_map';
+import { CandidType, Parent, toIdlArray } from '../../index';
+import { decode } from '../../serde/decode';
+import { encode } from '../../serde/encode';
+import { Principal } from './principal';
 
 export type Func = [Principal, string];
 type Mode = 'query' | 'update' | 'oneway';

@@ -1,19 +1,19 @@
 import fc from 'fast-check';
 
+import { Test } from '../../../test';
+import { Named } from '../..';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
+import { VoidArb } from '../candid/primitive/void';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
-import { Named } from '../..';
 import {
     BodyGenerator,
-    TestsGenerator,
     CallbackLocation,
-    isDefined,
+    CallbackLocationArb,
     generateCallback,
-    CallbackLocationArb
+    isDefined,
+    TestsGenerator
 } from '.';
-import { Test } from '../../../test';
-import { VoidArb } from '../candid/primitive/void';
 
 export type InitMethod<
     ParamAgentArgumentValue extends CorrespondingJSType,

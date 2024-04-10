@@ -1,16 +1,17 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
 import { generateIdentity, getCanisterId } from 'azle/dfx';
-import { execSync } from 'child_process';
 import { hashFile } from 'azle/scripts/hash_file';
-import { join } from 'path';
-import { rm } from 'fs/promises';
-import { generateTestFileOfSize } from './generateTestFiles';
 import { createActor } from 'azle/src/compiler/file_uploader/uploader_actor';
+import { Test } from 'azle/test';
+import { execSync } from 'child_process';
+import { rm } from 'fs/promises';
+import { join } from 'path';
 import { v4 } from 'uuid';
+
 import { AZLE_UPLOADER_IDENTITY_NAME } from '../../../src/compiler/file_uploader/uploader_identity';
+import { generateTestFileOfSize } from './generateTestFiles';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;

@@ -2,6 +2,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { ok, Test } from 'azle/test';
 import { execSync } from 'child_process';
+
 import { _SERVICE } from './dfx_generated/ledger_canister/ledger_canister.did';
 
 export function getTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {

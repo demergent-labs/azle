@@ -1,7 +1,8 @@
+import { IDL } from '@dfinity/candid';
+
 import { CandidType } from '../candid/candid_type';
 import { Parent, toIdl } from '../candid/to_idl';
 import { RequireExactlyOne } from '../candid/types/constructed/variant';
-import { IDL } from '@dfinity/candid';
 
 export class AzleResult<T extends CandidType, K extends CandidType> {
     constructor(ok: T, err: K) {

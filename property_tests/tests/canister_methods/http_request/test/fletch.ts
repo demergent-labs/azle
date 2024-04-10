@@ -1,7 +1,8 @@
-import { execSync } from 'child_process';
+import * as dns from 'node:dns';
+
 import { HttpRequest } from 'azle';
 import { getCanisterId } from 'azle/dfx';
-import * as dns from 'node:dns';
+import { execSync } from 'child_process';
 dns.setDefaultResultOrder('ipv4first');
 
 type HttpResponse = {

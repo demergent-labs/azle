@@ -1,4 +1,7 @@
 import fc from 'fast-check';
+
+import { CandidType, Variant } from '../../../../../src/lib';
+import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -9,8 +12,6 @@ import {
     WithShapes,
     WithShapesArb
 } from '../../candid_definition_arb/types';
-import { JsFunctionNameArb } from '../../../js_function_name_arb';
-import { CandidType, Variant } from '../../../../../src/lib';
 import { RecursiveShapes } from '../../recursive';
 
 type Field = [string, CandidDefinition];

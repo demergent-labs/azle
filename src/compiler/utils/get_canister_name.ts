@@ -1,7 +1,7 @@
-import { green, dim } from './colors';
+import { version } from '../../../package.json';
+import { dim, green } from './colors';
 import { Err, Ok, Result } from './result';
 import { AzleError } from './types';
-import { version } from '../../../package.json';
 
 export function getCanisterName(args: string[]): Result<string, AzleError> {
     const canisterNames = args.slice(2).filter((arg) => !isCliFlag(arg));

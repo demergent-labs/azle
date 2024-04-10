@@ -1,38 +1,37 @@
-import fc from 'fast-check';
-
 import { runPropTests } from 'azle/property_tests';
-import {
-    CandidValueAndMeta,
-    CandidValueAndMetaArb
-} from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
-import { CandidReturnTypeArb } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
-import {
-    CanisterArb,
-    CanisterConfig
-} from 'azle/property_tests/arbitraries/canister_arb';
-import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
-import {
-    QueryMethod,
-    QueryMethodArb
-} from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
-import { PostUpgradeMethodArb } from 'azle/property_tests/arbitraries/canister_methods/post_upgrade_arb';
-
-import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';
-import { generateBody as postUpgradeMethodBodyGenerator } from './generate_post_upgrade_method_body';
-import { generateBody as initMethodBodyGenerator } from './generate_init_method_body';
-import { generateTests as generateInitTests } from './generate_init_tests';
-import { generateTests as generatePostUpgradeTests } from './generate_post_upgrade_tests';
-import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
-import { InitMethodArb } from 'azle/property_tests/arbitraries/canister_methods/init_method_arb';
-import { globalInitVarName, globalPostUpgradeVarName } from './global_var_name';
 import { candidDefinitionArb } from 'azle/property_tests/arbitraries/candid/candid_definition_arb';
-import { CandidValueArb } from 'azle/property_tests/arbitraries/candid/candid_values_arb';
-import { definitionAndValueToValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb_generator';
 import {
     CandidDefinition,
     WithShapes
 } from 'azle/property_tests/arbitraries/candid/candid_definition_arb/types';
+import { CandidReturnTypeArb } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
+import {
+    CandidValueAndMeta,
+    CandidValueAndMetaArb
+} from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
+import { definitionAndValueToValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb_generator';
+import { CandidValueArb } from 'azle/property_tests/arbitraries/candid/candid_values_arb';
+import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
+import {
+    CanisterArb,
+    CanisterConfig
+} from 'azle/property_tests/arbitraries/canister_arb';
+import { InitMethodArb } from 'azle/property_tests/arbitraries/canister_methods/init_method_arb';
+import { PostUpgradeMethodArb } from 'azle/property_tests/arbitraries/canister_methods/post_upgrade_arb';
+import {
+    QueryMethod,
+    QueryMethodArb
+} from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
+import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
 import { DEFAULT_VALUE_MAX_DEPTH } from 'azle/property_tests/arbitraries/config';
+import fc from 'fast-check';
+
+import { generateBody as callableMethodBodyGenerator } from './generate_callable_method_body';
+import { generateBody as initMethodBodyGenerator } from './generate_init_method_body';
+import { generateTests as generateInitTests } from './generate_init_tests';
+import { generateBody as postUpgradeMethodBodyGenerator } from './generate_post_upgrade_method_body';
+import { generateTests as generatePostUpgradeTests } from './generate_post_upgrade_tests';
+import { globalInitVarName, globalPostUpgradeVarName } from './global_var_name';
 
 const CanisterConfigArb = fc
     .array(candidDefinitionArb({}))

@@ -1,15 +1,16 @@
 import fc from 'fast-check';
+
+import { CandidType, Recursive } from '../../../../src/lib';
 import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import {
     CandidDefinition,
     DefinitionConstraints,
+    RecursiveCandidDefinition,
     RecursiveCandidDefinitionMemo,
     RecursiveCandidName,
-    RecursiveCandidDefinition,
     WithShapes,
     WithShapesArb
 } from '../candid_definition_arb/types';
-import { CandidType, Recursive } from '../../../../src/lib';
 import { RecursiveShapes } from '.';
 
 export function RecursiveDefinitionArb(

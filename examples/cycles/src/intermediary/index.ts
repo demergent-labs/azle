@@ -10,6 +10,7 @@ import {
     update,
     Void
 } from 'azle';
+
 import Cycles from '../cycles';
 
 let cyclesCanister: typeof Cycles;

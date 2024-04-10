@@ -9,6 +9,7 @@ import {
     update,
     Vec
 } from 'azle';
+
 import { Callback } from '../types';
 
 let stableMap14 = StableBTreeMap<text, Callback>(14);

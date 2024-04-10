@@ -1,17 +1,18 @@
 import fc from 'fast-check';
+
 import { BoolDefinitionArb } from '../primitive/bool';
 import { Float32DefinitionArb } from '../primitive/floats/float32_arb';
 import { Float64DefinitionArb } from '../primitive/floats/float64_arb';
+import { IntDefinitionArb } from '../primitive/ints/int_arb';
+import { Int8DefinitionArb } from '../primitive/ints/int8_arb';
 import { Int16DefinitionArb } from '../primitive/ints/int16_arb';
 import { Int32DefinitionArb } from '../primitive/ints/int32_arb';
 import { Int64DefinitionArb } from '../primitive/ints/int64_arb';
-import { Int8DefinitionArb } from '../primitive/ints/int8_arb';
-import { IntDefinitionArb } from '../primitive/ints/int_arb';
+import { NatDefinitionArb } from '../primitive/nats/nat_arb';
+import { Nat8DefinitionArb } from '../primitive/nats/nat8_arb';
 import { Nat16DefinitionArb } from '../primitive/nats/nat16_arb';
 import { Nat32DefinitionArb } from '../primitive/nats/nat32_arb';
 import { Nat64DefinitionArb } from '../primitive/nats/nat64_arb';
-import { Nat8DefinitionArb } from '../primitive/nats/nat8_arb';
-import { NatDefinitionArb } from '../primitive/nats/nat_arb';
 import { NullDefinitionArb } from '../primitive/null';
 import { TextDefinitionArb } from '../primitive/text';
 import { PrincipalDefinitionArb } from '../reference/principal_arb';

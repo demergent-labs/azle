@@ -1,10 +1,11 @@
+import { IDL } from '@dfinity/candid';
+
 import { CandidType } from '../../candid_type';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
 import { Parent, toIdl } from '../../to_idl';
 import { TypeMapping } from '../../type_mapping';
 import { RequireExactlyOne } from './variant';
-import { IDL } from '@dfinity/candid';
 
 /**
  * Represents an optional value: every {@link Opt} is either `Some` and contains

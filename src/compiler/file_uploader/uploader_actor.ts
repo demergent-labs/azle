@@ -1,4 +1,5 @@
 import { Actor, ActorMethod, ActorSubclass } from '@dfinity/agent';
+
 import { createAuthenticatedAgent } from '../../../dfx';
 
 export type UploaderActor = ActorSubclass<_SERVICE>;

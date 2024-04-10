@@ -1,4 +1,5 @@
-import { stat, open } from 'fs/promises';
+import { open, stat } from 'fs/promises';
+
 import { Dest, Src } from '.';
 import { bytesToHumanReadable } from './bytes_to_human_readable';
 import { UploaderActor } from './uploader_actor';

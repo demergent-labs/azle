@@ -1,6 +1,7 @@
 import fc from 'fast-check';
-import { CorrespondingJSType } from '../corresponding_js_type';
+
 import { CandidValues } from '../candid_values_arb';
+import { CorrespondingJSType } from '../corresponding_js_type';
 
 export function SimpleCandidValuesArb<T extends CorrespondingJSType>(
     arb: fc.Arbitrary<T>,

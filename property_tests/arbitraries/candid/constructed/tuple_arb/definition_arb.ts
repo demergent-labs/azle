@@ -1,4 +1,6 @@
 import fc from 'fast-check';
+
+import { CandidType, Tuple } from '../../../../../src/lib';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -6,7 +8,6 @@ import {
     WithShapes,
     WithShapesArb
 } from '../../candid_definition_arb/types';
-import { CandidType, Tuple } from '../../../../../src/lib';
 import { RecursiveShapes } from '../../recursive';
 
 export function TupleDefinitionArb(

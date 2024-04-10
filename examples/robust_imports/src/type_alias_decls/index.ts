@@ -1,5 +1,6 @@
-import * as types from './types';
 import * as azle from 'azle';
+
+import * as types from './types';
 
 function offDuty() {}
 
@@ -22,8 +23,9 @@ const NumberAliases = azle.Record({
     twelfth: LocalNumberAlias
 });
 
-import { MixedConcreteStar } from './types';
 import { Result } from 'azle';
+
+import { MixedConcreteStar } from './types';
 
 export const compareStars = azle.query(
     [MixedConcreteStar, MixedConcreteStar],

@@ -13,6 +13,7 @@ import {
     Vec,
     Void
 } from 'azle';
+
 import Canister2 from '../canister2';
 import { Account, AccountArgs } from '../canister2/types';
 

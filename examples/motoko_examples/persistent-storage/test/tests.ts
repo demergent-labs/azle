@@ -1,7 +1,8 @@
+import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 import { execSync } from 'child_process';
+
 import { _SERVICE } from './dfx_generated/persistent_storage/persistent_storage.did';
-import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(
     persistentStorageCanister: ActorSubclass<_SERVICE>

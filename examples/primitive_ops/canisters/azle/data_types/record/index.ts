@@ -1,4 +1,5 @@
 import { blob, float32, ic, nat32, Principal, update } from 'azle';
+
 import { PerfResult } from '../../perf_result';
 
 type User = {

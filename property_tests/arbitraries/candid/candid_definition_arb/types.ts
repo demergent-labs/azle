@@ -1,10 +1,11 @@
 import fc from 'fast-check';
-import { CandidType } from '../candid_type';
+
 import { CandidType as RuntimeCandidType } from '../../../../src/lib/candid/candid_type';
-import { ServiceMethodDefinition } from '../reference/service_arb/service_method_arb';
-import { PrimitiveDefinitionWeights } from './simple_candid_definition_arb';
-import { ComplexDefinitionWeights } from './complex_candid_definition_memo';
+import { CandidType } from '../candid_type';
 import { RecursiveShapes } from '../recursive';
+import { ServiceMethodDefinition } from '../reference/service_arb/service_method_arb';
+import { ComplexDefinitionWeights } from './complex_candid_definition_memo';
+import { PrimitiveDefinitionWeights } from './simple_candid_definition_arb';
 
 export type CandidDefinitionMemo = (
     depthLevel: number

@@ -1,11 +1,11 @@
+import './register_get_url';
+
 import { ethers } from 'ethers';
 
 import { Principal } from '../';
 import { calculateRsvForTEcdsa } from './calculate_rsv_for_tecdsa';
 import { ecdsaPublicKey } from './ecdsa_public_key';
 import { signWithEcdsa } from './sign_with_ecdsa';
-
-import './register_get_url';
 
 export type ThresholdKeyInfo = {
     derivationPath: Uint8Array[];

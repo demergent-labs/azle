@@ -1,15 +1,15 @@
-import fc from 'fast-check';
 import { Principal } from '@dfinity/principal';
+import fc from 'fast-check';
 
 import { candidDefinitionArb } from '../../candid_definition_arb';
-import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import {
     CandidDefinition,
     WithShapesArb
 } from '../../candid_definition_arb/types';
-import { ServiceValueArb } from './values_arb';
-import { ServiceDefinitionArb } from './definition_arb';
+import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
 import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
+import { ServiceDefinitionArb } from './definition_arb';
+import { ServiceValueArb } from './values_arb';
 
 // TODO:
 // - services that are more than type-definitions, i.e. have functionality

@@ -1,10 +1,11 @@
-import { Parent, CandidType, toIdlArray } from '../../../../index';
-import { _AzleRecursiveFunction } from '../../../../recursive';
-import { ic } from '../../../../../ic';
-import { Principal } from '../../principal';
 import { IDL } from '@dfinity/candid';
+
 import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';
+import { ic } from '../../../../../ic';
+import { CandidType, Parent, toIdlArray } from '../../../../index';
+import { _AzleRecursiveFunction } from '../../../../recursive';
 import { decode, encode } from '../../../../serde';
+import { Principal } from '../../principal';
 import { createQueryMethods, createUpdateMethods } from './query_update';
 import {
     createGetSystemFunctionIdlFunction,

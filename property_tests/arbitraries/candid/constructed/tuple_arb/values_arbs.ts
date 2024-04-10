@@ -1,14 +1,15 @@
 import fc from 'fast-check';
-import { Tuple, ReturnTuple } from '.';
-import { CorrespondingJSType } from '../../corresponding_js_type';
+
+import { DEFAULT_VALUE_MAX_DEPTH } from '../../../config';
 import { TupleCandidDefinition } from '../../candid_definition_arb/types';
 import {
-    CandidValues,
     CandidValueArb,
-    CandidValueConstraints
+    CandidValueConstraints,
+    CandidValues
 } from '../../candid_values_arb';
+import { CorrespondingJSType } from '../../corresponding_js_type';
 import { RecursiveShapes } from '../../recursive';
-import { DEFAULT_VALUE_MAX_DEPTH } from '../../../config';
+import { ReturnTuple, Tuple } from '.';
 
 export function TupleValuesArb(
     tupleDefinition: TupleCandidDefinition,

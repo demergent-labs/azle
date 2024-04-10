@@ -1,6 +1,7 @@
 import { buildSync } from 'esbuild';
-import { JavaScript, TypeScript } from './utils/types';
+
 import { Result } from './utils/result';
+import { JavaScript, TypeScript } from './utils/types';
 
 export function compileTypeScriptToJavaScript(
     main: string,

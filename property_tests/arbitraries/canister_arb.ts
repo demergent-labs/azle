@@ -1,12 +1,13 @@
 import fc from 'fast-check';
-import { QueryMethod } from './canister_methods/query_method_arb';
+
 import { Test } from '../../test';
-import { UpdateMethod } from './canister_methods/update_method_arb';
+import { CliStringVisitor } from '../visitors/cli-string-visitor';
+import { CorrespondingJSType } from './candid/corresponding_js_type';
 import { InitMethod } from './canister_methods/init_method_arb';
 import { PostUpgradeMethod } from './canister_methods/post_upgrade_arb';
 import { PreUpgradeMethod } from './canister_methods/pre_upgrade_method_arb';
-import { CorrespondingJSType } from './candid/corresponding_js_type';
-import { CliStringVisitor } from '../visitors/cli-string-visitor';
+import { QueryMethod } from './canister_methods/query_method_arb';
+import { UpdateMethod } from './canister_methods/update_method_arb';
 
 export type Canister = {
     initArgs: string[] | undefined;

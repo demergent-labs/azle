@@ -1,15 +1,16 @@
 import fc from 'fast-check';
-import { floatToSrcLiteral } from '../../to_src_literal/float';
-import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
-import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
-import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
-import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
+
 import {
     FloatCandidDefinition,
     WithShapesArb
 } from '../../candid_definition_arb/types';
+import { CandidValueAndMeta } from '../../candid_value_and_meta_arb';
+import { CandidValueAndMetaArbGenerator } from '../../candid_value_and_meta_arb_generator';
 import { CandidValues } from '../../candid_values_arb';
 import { RecursiveShapes } from '../../recursive';
+import { SimpleCandidDefinitionArb } from '../../simple_type_arbs/definition_arb';
+import { SimpleCandidValuesArb } from '../../simple_type_arbs/values_arb';
+import { floatToSrcLiteral } from '../../to_src_literal/float';
 
 export interface Float32Constraints extends fc.Float32ArrayConstraints {
     noNegativeZero?: boolean;

@@ -17,17 +17,17 @@ import {
 } from 'azle';
 import {
     Account,
-    ICRC,
-    TransferArgs,
-    TransferResult,
-    Value,
-    SupportedStandard,
+    AllowanceArgs,
+    AllowanceResult,
     ApproveArgs,
     ApproveResult,
+    ICRC,
+    SupportedStandard,
+    TransferArgs,
     TransferFromArgs,
     TransferFromResult,
-    AllowanceArgs,
-    AllowanceResult
+    TransferResult,
+    Value
 } from 'azle/canisters/icrc';
 
 let icrc: typeof ICRC;

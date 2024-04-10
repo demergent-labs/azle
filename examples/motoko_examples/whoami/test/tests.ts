@@ -1,10 +1,11 @@
+import { ActorSubclass } from '@dfinity/agent';
+import { SignIdentity } from '@dfinity/agent';
+import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { getCanisterId } from 'azle/dfx';
 import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/whoami/whoami.did';
-import { ActorSubclass } from '@dfinity/agent';
 import { execSync } from 'child_process';
-import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { SignIdentity } from '@dfinity/agent';
+
+import { _SERVICE } from './dfx_generated/whoami/whoami.did';
 
 function createIdentity(seed: number): SignIdentity {
     const seed1 = [seed, ...new Array(31).fill(0)];

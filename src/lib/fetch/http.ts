@@ -1,8 +1,8 @@
 import { inflate } from 'pako';
 
-import { azleFetch, serialize } from '.';
-import { ic } from '../';
 import { HttpTransform } from '../../../canisters/management';
+import { ic } from '../';
+import { azleFetch, serialize } from '.';
 import { AzleFetchResponse } from './response';
 import { getUrl } from './url';
 

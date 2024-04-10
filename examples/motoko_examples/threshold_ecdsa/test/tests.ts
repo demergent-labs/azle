@@ -1,6 +1,7 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/threshold_ecdsa/threshold_ecdsa.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/threshold_ecdsa/threshold_ecdsa.did';
 
 export function getTests(tEcdsaCanister: ActorSubclass<_SERVICE>): Test[] {
     return [

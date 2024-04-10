@@ -1,5 +1,5 @@
-import { nat32 } from '../candid/types/primitive/nats/nat32';
 import { decode } from '../candid/serde/decode';
+import { nat32 } from '../candid/types/primitive/nats/nat32';
 
 /**
  * Gets current size of the stable memory (in WASM pages)

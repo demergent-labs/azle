@@ -1,7 +1,8 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/bytes_canister/bytes_canister.did.d';
 import { readFileSync } from 'fs';
+
+import { _SERVICE } from './dfx_generated/bytes_canister/bytes_canister.did.d';
 
 export function get_tests(bytes_canister: ActorSubclass<_SERVICE>): Test[] {
     return [

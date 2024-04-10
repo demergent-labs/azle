@@ -1,8 +1,8 @@
 import { IDL } from '@dfinity/candid';
 
-import { AzleVec, AzleOpt, AzleTuple } from '../types/constructed';
-import { EncodeVisitor } from './visitors/encode_visitor';
 import { CandidType, toIdl, toIdlArray } from '../../candid';
+import { AzleOpt, AzleTuple, AzleVec } from '../types/constructed';
+import { EncodeVisitor } from './visitors/encode_visitor';
 
 /**
  * Encodes the provided value as candid blob of the designated type.

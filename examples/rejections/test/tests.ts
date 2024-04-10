@@ -1,6 +1,7 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/rejections/rejections.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/rejections/rejections.did';
 
 export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
@@ -48,9 +49,10 @@ export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'reject message',
             test: async () => {
                 const rejectionMessage = 'custom rejection message';
-                const result = await rejectionsCanister.getRejectionMessage(
-                    rejectionMessage
-                );
+                const result =
+                    await rejectionsCanister.getRejectionMessage(
+                        rejectionMessage
+                    );
                 return {
                     Ok: result === rejectionMessage
                 };

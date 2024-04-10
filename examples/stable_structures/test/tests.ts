@@ -1,9 +1,3 @@
-import { Test } from 'azle/test';
-import { execSync } from 'child_process';
-import { _SERVICE as CANISTER1_SERVICE } from './dfx_generated/canister1/canister1.did';
-import { Reaction, User } from '../src/types';
-import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
-import { _SERVICE as CANISTER3_SERVICE } from './dfx_generated/canister3/canister3.did';
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import {
@@ -12,11 +6,18 @@ import {
     float64,
     int,
     nat,
+    nat8,
     nat16,
     nat32,
-    nat64,
-    nat8
+    nat64
 } from 'azle';
+import { Test } from 'azle/test';
+import { execSync } from 'child_process';
+
+import { Reaction, User } from '../src/types';
+import { _SERVICE as CANISTER1_SERVICE } from './dfx_generated/canister1/canister1.did';
+import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
+import { _SERVICE as CANISTER3_SERVICE } from './dfx_generated/canister3/canister3.did';
 
 type _SERVICE = CANISTER1_SERVICE | CANISTER2_SERVICE | CANISTER3_SERVICE;
 

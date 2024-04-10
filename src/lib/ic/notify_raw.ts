@@ -1,8 +1,8 @@
-import { Void } from '../candid/types/primitive/void';
-import { nat } from '../candid/types/primitive/nats/nat';
 import { blob } from '../candid/types/constructed/blob';
-import { Principal } from '../candid/types/reference/principal';
+import { nat } from '../candid/types/primitive/nats/nat';
 import { text } from '../candid/types/primitive/text';
+import { Void } from '../candid/types/primitive/void';
+import { Principal } from '../candid/types/reference/principal';
 
 /**
  * Like notify, but sends the argument as raw bytes, skipping Candid serialization.

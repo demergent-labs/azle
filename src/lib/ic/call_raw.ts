@@ -1,7 +1,8 @@
+import { v4 } from 'uuid';
+
 import { Principal } from '../';
 import { blob } from '../candid/types/constructed/blob';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
-import { v4 } from 'uuid';
 import { text } from '../candid/types/primitive/text';
 
 /**

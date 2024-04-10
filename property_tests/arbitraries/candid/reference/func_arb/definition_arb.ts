@@ -1,4 +1,6 @@
 import fc from 'fast-check';
+
+import { CandidType, Func } from '../../../../../src/lib';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -7,7 +9,6 @@ import {
     WithShapesArb
 } from '../../candid_definition_arb/types';
 import { VoidDefinitionArb } from '../../primitive/void';
-import { CandidType, Func } from '../../../../../src/lib';
 
 type Mode = 'query' | 'update' | 'oneway';
 

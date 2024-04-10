@@ -1,23 +1,24 @@
 import {
     Canister,
     Func,
-    init,
     ic,
+    init,
     nat64,
+    Null,
     Opt,
     Principal,
     query,
     Record,
+    Recursive,
+    serialize,
     StableBTreeMap,
+    text,
     update,
     Variant,
     Vec,
-    text,
-    Void,
-    Null,
-    Recursive,
-    serialize
+    Void
 } from 'azle';
+
 import Notifier, { NotifierFunc } from '../notifiers';
 
 const BasicFunc = Func([text], text, 'query');

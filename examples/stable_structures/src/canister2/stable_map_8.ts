@@ -4,10 +4,10 @@ import {
     Null,
     Opt,
     query,
-    update,
     StableBTreeMap,
-    Vec,
-    Tuple
+    Tuple,
+    update,
+    Vec
 } from 'azle';
 
 let stableMap8 = StableBTreeMap<bool, Null>(8);

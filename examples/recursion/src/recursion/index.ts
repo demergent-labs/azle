@@ -1,21 +1,22 @@
 import {
+    Canister,
     Func,
     ic,
+    int8,
     None,
+    Opt,
     Principal,
     query,
-    Canister,
+    Record,
+    Recursive,
+    serialize,
     Some,
     Tuple,
     update,
-    Vec,
-    Record,
-    Recursive,
-    int8,
     Variant,
-    Opt,
-    serialize
+    Vec
 } from 'azle';
+
 import MyFullCanister from '../recursive_canister';
 
 // These are the types that can be recursive
