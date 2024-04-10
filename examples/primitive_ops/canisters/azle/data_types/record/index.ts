@@ -19,7 +19,7 @@ export const record_init_stack = update([nat32], PerfResult, (num_inits) => {
     let i = 0;
 
     while (i < num_inits) {
-        let value: User =
+        let _value: User =
             i % 2 === 0
                 ? {
                       principal: Principal.fromText(

@@ -10,7 +10,7 @@ export const int32_init_stack = update([nat32], PerfResult, (num_inits) => {
     let i = 0;
 
     while (i < num_inits) {
-        let value: int32 = i % 2 === 0 ? 2_147_483_647 : 0;
+        let _value: int32 = i % 2 === 0 ? 2_147_483_647 : 0;
         // TODO std::convert::identity(value); consider something like Rust to ensure the value assignment above is never optimized away
         i += 1;
     }

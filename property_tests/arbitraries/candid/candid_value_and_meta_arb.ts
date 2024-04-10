@@ -71,7 +71,7 @@ export function CandidValueAndMetaArb(
         BoolArb(),
         NullArb(),
         TextArb(constraints),
-        FuncArb(constraints),
+        FuncArb(),
         PrincipalArb()
     );
 }

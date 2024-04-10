@@ -3,15 +3,7 @@
 const temporarilyDisabledRules = {
     '@typescript-eslint/ban-ts-comment': 'off', // 42 problems
     '@typescript-eslint/no-explicit-any': 'off', // 537 problems
-    '@typescript-eslint/no-unused-vars': [
-        'off',
-        {
-            argsIgnorePattern: '^_', // Ignore argument variables starting with _
-            varsIgnorePattern: '^_' // Ignore local variables starting with _
-        }
-    ], // 26 problems
     '@typescript-eslint/no-var-requires': 'off', // 14 problems
-    'no-constant-condition': 'off', // 1 problem
     'no-undef': 'off', // 79 problems
     'prefer-const': 'off' // 154 problems
 };
@@ -55,6 +47,13 @@ module.exports = {
         'prefer-arrow-callback': 'error',
         'no-var': 'error',
         eqeqeq: 'error',
+        '@typescript-eslint/no-unused-vars': [
+            'error',
+            {
+                argsIgnorePattern: '^_', // Ignore argument variables starting with _
+                varsIgnorePattern: '^_' // Ignore local variables starting with _
+            }
+        ],
         ...temporarilyDisabledRules
     }
 };

@@ -18,7 +18,7 @@ export const variant_init_stack = update([nat32], PerfResult, (num_inits) => {
     let i = 0;
 
     while (i < num_inits) {
-        let value: Reaction =
+        let _value: Reaction =
             i % 2 === 0
                 ? {
                       ThumbsUp: 2

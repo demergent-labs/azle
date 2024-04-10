@@ -10,7 +10,7 @@ export const int_init_stack = update([nat32], PerfResult, (num_inits) => {
     let i = 0;
 
     while (i < num_inits) {
-        let value: int =
+        let _value: int =
             i % 2 === 0
                 ? 170_141_183_460_469_231_731_687_303_715_884_105_727n
                 : 0n;

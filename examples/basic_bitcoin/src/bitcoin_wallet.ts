@@ -137,6 +137,7 @@ async function buildTransaction(
     // rebuild the transaction, until the fee is set to the correct amount.
     console.log('Building transaction...');
     let totalFee = 0n;
+    // eslint-disable-next-line no-constant-condition
     while (true) {
         const transaction = match(
             buildTransactionWithFee(
