@@ -10,13 +10,12 @@ export async function uploadFile(
     chunkSize: number,
     actor: UploaderActor
 ) {
+    if (!(await shouldBeUploaded(srcPath, destPath, actor))) {
+        return;
+    }
     const uploadStartTime = process.hrtime.bigint();
     const fileSize = (await stat(srcPath)).size;
     const file = await open(srcPath, 'r');
-    if (!(await shouldBeUploaded(srcPath, destPath, actor))) {
-        file.close();
-        return;
-    }
     for (let startIndex = 0; startIndex <= fileSize; startIndex += chunkSize) {
         let buffer = Buffer.alloc(chunkSize);
         const { buffer: bytesToUpload, bytesRead } = await file.read(
@@ -81,9 +80,9 @@ async function shouldBeUploaded(
     actor: UploaderActor
 ): Promise<boolean> {
     const localHash = (await hashFile(srcPath)).toString('hex');
-    const canisterHash = await actor.get_file_hash(destPath);
-    if (canisterHash.length === 0) {
+    const canisterHashOption = await actor.get_file_hash(destPath);
+    if (canisterHashOption.length === 0) {
         return true;
     }
-    return localHash !== canisterHash[0];
+    return localHash !== canisterHashOption[0];
 }
