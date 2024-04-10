@@ -106,46 +106,19 @@ export function getTests(canisterId: string): Test[] {
                 return { Ok: false };
             }
         },
-        // Permanent Assets
-        generateTest(
-            origin,
-            'photos/people/george-washington.tif',
-            'permanent'
-        ),
-        generateTest(origin, 'photos/places/dinosaurNM.jpg', 'permanent'),
-        generateTest(origin, 'photos/places/slc.jpg', 'permanent'),
-        generateTest(origin, 'photos/things/book.jpg', 'permanent'),
-        generateTest(origin, 'photos/things/utah-teapot.jpg', 'permanent'),
-        generateTest(
-            origin,
-            'text/subfolder/deep-sub-folder/deep.txt',
-            'permanent'
-        ),
-        generateTest(
-            origin,
-            'text/subfolder/sibling-deep-sub-folder/deep.txt',
-            'permanent'
-        ),
-        generateTest(origin, 'text/subfolder/other-thing.txt', 'permanent'),
-        generateTest(origin, 'text/thing.txt', 'permanent'),
-        generateTest(origin, 'text/thing.txt', 'permanent'),
-        generateTest(origin, 'text/single.txt', undefined, 'single_asset.txt'),
-
-        // Auto Generated Assets
-        //      Edge Cases
-        generateTest(origin, 'test0B', 'auto'),
-        generateTest(origin, 'test1B', 'auto'),
-        generateTest(origin, `test${120 * 1024 * 1024 + 1}B`, 'auto'),
-        generateTest(origin, 'test2000001B', 'auto'),
-        //      General Cases
-        generateTest(origin, 'test1KiB', 'auto'),
-        generateTest(origin, 'test10KiB', 'auto'),
-        generateTest(origin, 'test100KiB', 'auto'),
-        generateTest(origin, 'test1MiB', 'auto'),
-        generateTest(origin, 'test10MiB', 'auto'),
-        generateTest(origin, 'test100MiB', 'auto'),
-        generateTest(origin, 'test250MiB', 'auto'),
-        generateTest(origin, 'test1GiB', 'auto'),
+        ...generateStandardFileTests('Upload', origin),
+        {
+            name: 'redeploy',
+            prep: async () => {
+                await generateTestFileOfSize(1, 'KiB');
+                await generateTestFileOfSize(10, 'KiB');
+                await generateTestFileOfSize(100, 'KiB');
+                execSync(`dfx deploy --upgrade-unchanged`, {
+                    stdio: 'inherit'
+                });
+            }
+        },
+        ...generateStandardFileTests('Stable check', origin),
         // Manual Upload
         {
             name: 'test manual upload',
@@ -164,7 +137,7 @@ export function getTests(canisterId: string): Test[] {
                 return { Ok: (await response.json()) === true };
             }
         },
-        generateTest(origin, 'test150MiB', 'manual'),
+        generateTest('manual test', origin, 'test150MiB', 'manual'),
         // TODO CI CD isn't working with the 2GiB tests so we're just going to have this one for local tests.
         {
             name: 'deploy',
@@ -180,7 +153,79 @@ export function getTests(canisterId: string): Test[] {
             },
             skip: true
         },
-        { ...generateTest(origin, 'test2GiB', 'auto'), skip: true }
+        {
+            ...generateTest('large file', origin, 'test2GiB', 'auto'),
+            skip: true
+        }
+    ];
+}
+
+function generateStandardFileTests(label: string, origin: string): Test[] {
+    return [
+        // Permanent Assets
+        generateTest(
+            label,
+            origin,
+            'photos/people/george-washington.tif',
+            'permanent'
+        ),
+        generateTest(
+            label,
+            origin,
+            'photos/places/dinosaurNM.jpg',
+            'permanent'
+        ),
+        generateTest(label, origin, 'photos/places/slc.jpg', 'permanent'),
+        generateTest(label, origin, 'photos/things/book.jpg', 'permanent'),
+        generateTest(
+            label,
+            origin,
+            'photos/things/utah-teapot.jpg',
+            'permanent'
+        ),
+        generateTest(
+            label,
+            origin,
+            'text/subfolder/deep-sub-folder/deep.txt',
+            'permanent'
+        ),
+        generateTest(
+            label,
+            origin,
+            'text/subfolder/sibling-deep-sub-folder/deep.txt',
+            'permanent'
+        ),
+        generateTest(
+            label,
+            origin,
+            'text/subfolder/other-thing.txt',
+            'permanent'
+        ),
+        generateTest(label, origin, 'text/thing.txt', 'permanent'),
+        generateTest(label, origin, 'text/thing.txt', 'permanent'),
+        generateTest(
+            label,
+            origin,
+            'text/single.txt',
+            undefined,
+            'single_asset.txt'
+        ),
+
+        // Auto Generated Assets
+        //      Edge Cases
+        generateTest(label, origin, 'test0B', 'auto'),
+        generateTest(label, origin, 'test1B', 'auto'),
+        generateTest(label, origin, `test${120 * 1024 * 1024 + 1}B`, 'auto'),
+        generateTest(label, origin, 'test2000001B', 'auto'),
+        //      General Cases
+        generateTest(label, origin, 'test1KiB', 'auto'),
+        generateTest(label, origin, 'test10KiB', 'auto'),
+        generateTest(label, origin, 'test100KiB', 'auto'),
+        generateTest(label, origin, 'test1MiB', 'auto'),
+        generateTest(label, origin, 'test10MiB', 'auto'),
+        generateTest(label, origin, 'test100MiB', 'auto'),
+        generateTest(label, origin, 'test250MiB', 'auto'),
+        generateTest(label, origin, 'test1GiB', 'auto')
     ];
 }
 
@@ -199,13 +244,14 @@ export function getTests(canisterId: string): Test[] {
  * @returns
  */
 function generateTest(
+    label: string,
     origin: string,
     canisterPath: string,
     localDir?: string,
     localPath?: string
 ): Test {
     return {
-        name: `upload: ${canisterPath}`,
+        name: `${label}: ${canisterPath}`,
         test: async () => {
             const canisterFilePath = join('assets', canisterPath);
             const localFilePath = join(

@@ -34,7 +34,7 @@ async function getBytesToHash(
 
     // Read the bytes
     // TODO it would be great to get the size of the chunks from the canister, then we wouldn't have to every update this
-    const limit = 120 * 1024 * 1024; // Must be the same as on the canister end or hashes will not match
+    const limit = 75 * 1024 * 1024; // Must be the same as on the canister end or hashes will not match
     let buffer = Buffer.alloc(limit); // Allocate a Buffer for reading
 
     const fileReadResult = await file.read(buffer, 0, limit, position);

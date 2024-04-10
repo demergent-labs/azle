@@ -39,7 +39,7 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
             std::io::Seek::seek(&mut file, std::io::SeekFrom::Start(position)).unwrap();
 
             // Read the bytes
-            let limit = 120 * 1024 * 1024; // This limit will be determine by how much hashing an update method can do without running out of cycles. It runs out somewhere between 120 and 135
+            let limit = 75 * 1024 * 1024; // This limit will be determine by how much hashing an update method can do without running out of cycles. It runs out somewhere between 75 and 80
             // This limit must be the same as on the node side or else the hashes will not match
             let mut buffer = vec![0; limit];
             let bytes_read = std::io::Read::read(&mut file, &mut buffer).unwrap();
