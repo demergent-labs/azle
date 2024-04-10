@@ -1,9 +1,9 @@
 import { open, stat } from 'fs/promises';
 
+import { hashFile } from '../../../scripts/hash_file';
 import { Dest, Src } from '.';
 import { bytesToHumanReadable } from './bytes_to_human_readable';
 import { UploaderActor } from './uploader_actor';
-import { hashFile } from '../../../scripts/hash_file';
 
 export async function uploadFile(
     srcPath: Src,
