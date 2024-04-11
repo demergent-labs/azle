@@ -1,4 +1,5 @@
-import { ic, float64, nat32, update } from 'azle';
+import { float64, ic, nat32, update } from 'azle';
+
 import { PerfResult } from '../../perf_result';
 
 let heap_storage: { [key: string]: float64 | undefined } = {};
@@ -9,7 +10,7 @@ export const float64_init_stack = update([nat32], PerfResult, (num_inits) => {
     let i = 0;
 
     while (i < num_inits) {
-        let value = i % 2 === 0 ? Math.PI : Math.E;
+        let _value = i % 2 === 0 ? Math.PI : Math.E;
         // TODO std::convert::identity(value); consider something like Rust to ensure the value assignment above is never optimized away
         i += 1;
     }

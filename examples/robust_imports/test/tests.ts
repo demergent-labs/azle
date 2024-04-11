@@ -1,8 +1,9 @@
-import { Test } from 'azle/test';
-import { Principal } from '@dfinity/principal';
-import { execSync } from 'child_process';
-import { _SERVICE } from '../dfx_generated/robust_imports/robust_imports.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
+import { Test } from 'azle/test';
+import { execSync } from 'child_process';
+
+import { _SERVICE } from '../dfx_generated/robust_imports/robust_imports.did';
 
 export function getTests(
     robustImportsCanister: ActorSubclass<_SERVICE>
@@ -178,14 +179,18 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                 try {
                     await fruit.checkWatermelonForSeeds(false, watermelon);
                     return { Ok: false };
-                } catch (err) {}
+                } catch (err) {
+                    // continue regardless of error
+                }
                 try {
                     await fruit.checkWatermelonForSeeds(
                         true,
                         seedlessWatermelon
                     );
                     return { Ok: false };
-                } catch (err) {}
+                } catch (err) {
+                    // continue regardless of error
+                }
                 try {
                     await fruit.checkWatermelonForSeeds(
                         false,
@@ -309,11 +314,15 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                 try {
                     await fruit.dirtyIlama();
                     return { Ok: false };
-                } catch {}
+                } catch {
+                    // continue regardless of error
+                }
                 try {
                     await fruit.pickElderberry();
                     return { Ok: false };
-                } catch {}
+                } catch {
+                    // continue regardless of error
+                }
                 return {
                     Ok: !(await fruit.isFruitPrepared())
                 };
@@ -395,7 +404,9 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
                 try {
                     await canister.deepEmptyAlias();
                     return { Ok: false };
-                } catch {}
+                } catch {
+                    // continue regardless of error
+                }
                 return { Ok: true };
             }
         },

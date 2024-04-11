@@ -1,6 +1,6 @@
+import * as tf from '@tensorflow/tfjs';
 import { ic } from 'azle';
 import express from 'express';
-import * as tf from '@tensorflow/tfjs';
 
 async function init() {
     const app = express();
@@ -25,6 +25,7 @@ async function init() {
     app.get('/prediction', async (_req, res) => {
         // TODO Tokenization and prediction for this specific model have not yet been figured out
         // const prediction = model.predict(tf.tensor([]));
+        console.info(model);
 
         res.send('Prediction not yet implemented');
     });

@@ -1,11 +1,12 @@
 import fc from 'fast-check';
+
 import { HttpResponse, None } from '../../../src/lib';
-import { HttpHeadersArb } from './headers_arb';
-import { BodyArb } from './body_arb';
 import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from '../candid/corresponding_js_type';
 import { blobToSrcLiteral } from '../candid/to_src_literal/blob';
 import { stringToSrcLiteral } from '../candid/to_src_literal/string';
+import { BodyArb } from './body_arb';
+import { HttpHeadersArb } from './headers_arb';
 
 export type HttpResponseAgentResponseValue = {
     status: number;

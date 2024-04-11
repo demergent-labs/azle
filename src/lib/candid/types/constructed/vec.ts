@@ -1,8 +1,9 @@
-import { CandidType } from '../../candid_type';
-import { Parent, toIdl } from '../../to_idl';
 import { IDL } from '@dfinity/candid';
-import { encode } from '../../serde/encode';
+
+import { CandidType } from '../../candid_type';
 import { decode } from '../../serde/decode';
+import { encode } from '../../serde/encode';
+import { Parent, toIdl } from '../../to_idl';
 import { TypeMapping } from '../../type_mapping';
 
 export class AzleVec<T> {
@@ -14,8 +15,8 @@ export class AzleVec<T> {
 
     innerType: CandidType;
 
-    _azleKind: 'AzleVec' = 'AzleVec';
-    static _azleKind: 'AzleVec' = 'AzleVec';
+    _azleKind = 'AzleVec' as const;
+    static _azleKind = 'AzleVec' as const;
 
     toBytes(data: any) {
         return encode(this, data);

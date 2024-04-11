@@ -4,8 +4,8 @@ import {
     CandidValueAndMeta,
     CandidValueAndMetaArb
 } from './candid_value_and_meta_arb';
-import { VoidArb } from './primitive/void';
 import { CorrespondingJSType } from './corresponding_js_type';
+import { VoidArb } from './primitive/void';
 
 export type CandidReturnType = CorrespondingJSType | undefined;
 

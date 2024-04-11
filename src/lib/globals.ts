@@ -1,26 +1,42 @@
+import { Buffer } from 'buffer';
+import * as process from 'process';
+import { TextDecoder, TextEncoder } from 'text-encoding';
+import { URL } from 'url';
+import { v4 } from 'uuid';
+
+import { azleFetch } from './fetch';
 import { ic } from './ic';
 import { AzleIc } from './ic/types/azle_ic';
-import { Buffer } from 'buffer';
 import { jsonReplacer } from './stable_structures/stable_json';
-import * as process from 'process';
-import { v4 } from 'uuid';
-import { URL } from 'url';
-import { azleFetch } from './fetch';
 
 declare global {
+    // eslint-disable-next-line no-var
     var _azleInsideCanister: boolean;
+    // eslint-disable-next-line no-var
     var _azleWasmtimeCandidEnvironment: boolean;
+    // eslint-disable-next-line no-var
     var _azleIc: AzleIc | undefined;
+    // eslint-disable-next-line no-var
     var _azleResolveIds: { [key: string]: (buf: ArrayBuffer) => void };
+    // eslint-disable-next-line no-var
     var _azleRejectIds: { [key: string]: (err: any) => void };
+    // eslint-disable-next-line no-var
     var _azleIcTimers: { [key: string]: string };
+    // eslint-disable-next-line no-var
     var _azleTimerCallbacks: { [key: string]: () => void };
+    // eslint-disable-next-line no-var
     var _azleGuardFunctions: { [key: string]: () => any };
+    // eslint-disable-next-line no-var
     var _azleWebAssembly: any;
+    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsSubnetSize: number | undefined;
+    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsMaxResponseBytes: bigint | undefined;
+    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsCycles: bigint | undefined;
+    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsTransformMethodName: string | undefined;
+    // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsTransformContext: Uint8Array | undefined;
 }
 
@@ -46,7 +62,8 @@ if (globalThis._azleInsideCanister) {
         ...globalThis.console,
         log,
         error: log,
-        warn: log
+        warn: log,
+        info: log
     };
 
     const originalSetTimeout = setTimeout;
@@ -65,8 +82,8 @@ if (globalThis._azleInsideCanister) {
         return originalSetTimeout(handler, 0);
     };
 
-    globalThis.TextDecoder = require('text-encoding').TextDecoder;
-    globalThis.TextEncoder = require('text-encoding').TextEncoder;
+    globalThis.TextDecoder = TextDecoder;
+    globalThis.TextEncoder = TextEncoder;
     globalThis._azleIcTimers = {};
     globalThis._azleResolveIds = {};
     globalThis._azleRejectIds = {};
@@ -111,9 +128,7 @@ if (globalThis._azleInsideCanister) {
                 instantiatedSource.instance.exports
             );
 
-            for (let i = 0; i < exportEntries.length; i++) {
-                const [key, value] = exportEntries[i];
-
+            for (const [key, value] of exportEntries) {
                 if (typeof value === 'function') {
                     instantiatedSource.instance.exports[key] = value.bind({
                         instanceUuid: uuid,

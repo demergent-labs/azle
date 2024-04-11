@@ -1,4 +1,5 @@
 import { blob, float32, ic, nat32, Principal, update } from 'azle';
+
 import { PerfResult } from '../../perf_result';
 
 type User = {
@@ -18,7 +19,7 @@ export const record_init_stack = update([nat32], PerfResult, (num_inits) => {
     let i = 0;
 
     while (i < num_inits) {
-        let value: User =
+        let _value: User =
             i % 2 === 0
                 ? {
                       principal: Principal.fromText(

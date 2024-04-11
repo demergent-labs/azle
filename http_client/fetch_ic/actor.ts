@@ -91,7 +91,14 @@ export interface _SERVICE {
             upgrade: [] | [boolean];
             streaming_strategy:
                 | []
-                | [{ Callback: { token: {}; callback: [Principal, string] } }];
+                | [
+                      {
+                          Callback: {
+                              token: Uint8Array | number[];
+                              callback: [Principal, string];
+                          };
+                      }
+                  ];
             status_code: number;
         }
     >;
@@ -110,7 +117,14 @@ export interface _SERVICE {
             upgrade: [] | [boolean];
             streaming_strategy:
                 | []
-                | [{ Callback: { token: {}; callback: [Principal, string] } }];
+                | [
+                      {
+                          Callback: {
+                              token: Uint8Array | number[];
+                              callback: [Principal, string];
+                          };
+                      }
+                  ];
             status_code: number;
         }
     >;

@@ -1,18 +1,18 @@
 import {
+    blob,
     Canister,
+    nat8,
+    nat32,
+    nat64,
     Null,
     Opt,
     Principal,
     Record,
     Result,
-    Variant,
-    Vec,
-    blob,
-    nat32,
-    nat64,
-    nat8,
     text,
-    update
+    update,
+    Variant,
+    Vec
 } from 'azle';
 
 const Utxo = Record({

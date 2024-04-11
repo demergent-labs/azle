@@ -1,6 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { AzleResult, ok, Test } from 'azle/test';
 import { execSync } from 'child_process';
+
 import { _SERVICE } from './dfx_generated/candid_encoding/candid_encoding.did';
 
 export function get_tests(

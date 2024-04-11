@@ -2,8 +2,8 @@ import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 import { Principal } from '@dfinity/principal';
-import { Test } from 'azle/test';
 import { getCanisterOrigin } from 'azle/dfx';
+import { Test } from 'azle/test';
 import puppeteer from 'puppeteer';
 
 export function getTests(canisterName: string): Test[] {

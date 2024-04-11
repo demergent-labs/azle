@@ -1,5 +1,4 @@
 import { serialize } from '../';
-
 import { ThresholdKeyInfo } from './wallet';
 
 export async function signWithEcdsa(

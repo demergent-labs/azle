@@ -1,7 +1,8 @@
 import fc from 'fast-check';
+
+import { CandidValueAndMetaArb } from './candid/candid_value_and_meta_arb';
 import { UniqueIdentifierArb } from './unique_identifier_arb';
 import { createUniquePrimitiveArb } from './unique_primitive_arb';
-import { CandidValueAndMetaArb } from './candid/candid_value_and_meta_arb';
 
 type SerializableType = 'STABLE_JSON' | 'CANDID_TYPE_OBJECT';
 
@@ -66,7 +67,7 @@ function getSerializableArguments(
             ? 'stableJson'
             : keySample.src.candidTypeObject;
     const valueArgument =
-        valueSerializableType == 'STABLE_JSON'
+        valueSerializableType === 'STABLE_JSON'
             ? 'stableJson'
             : valueSample.src.candidTypeObject;
 

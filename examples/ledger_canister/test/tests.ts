@@ -1,7 +1,8 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { ok, Test } from 'azle/test';
+import { Test } from 'azle/test';
 import { execSync } from 'child_process';
+
 import { _SERVICE } from './dfx_generated/ledger_canister/ledger_canister.did';
 
 export function getTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
@@ -193,7 +194,7 @@ function getTransferErrorTests(
             name: 'deploy icpLedger',
             prep: async () => {
                 execSync(
-                    `dfx deploy icp_ledger --argument=\'(record {minting_account = "\'$(dfx ledger account-id)\'"; initial_values = vec {}; send_whitelist = vec {}})\'`,
+                    `dfx deploy icp_ledger --argument='(record {minting_account = "'$(dfx ledger account-id)'"; initial_values = vec {}; send_whitelist = vec {}})'`,
                     {
                         stdio: 'inherit'
                     }
@@ -260,7 +261,7 @@ function getTransferErrorTests(
             name: 'deploy icpLedger',
             prep: async () => {
                 execSync(
-                    `dfx deploy icp_ledger --argument=\'(record {minting_account = "\'$(dfx ledger account-id)\'"; initial_values = vec { record { "\'$(dfx ledger account-id --of-canister ledger_canister)\'"; record { e8s=100_000_000_000 } }; }; send_whitelist = vec {}})\'`,
+                    `dfx deploy icp_ledger --argument='(record {minting_account = "'$(dfx ledger account-id)'"; initial_values = vec { record { "'$(dfx ledger account-id --of-canister ledger_canister)'"; record { e8s=100_000_000_000 } }; }; send_whitelist = vec {}})'`,
                     {
                         stdio: 'inherit'
                     }

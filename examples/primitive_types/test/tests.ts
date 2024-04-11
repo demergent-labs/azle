@@ -1,7 +1,8 @@
+import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { Test } from 'azle/test';
+
 import { _SERVICE } from './dfx_generated/primitive_types/primitive_types.did';
-import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(
     primitiveTypesCanister: ActorSubclass<_SERVICE>
@@ -497,7 +498,7 @@ export function getTests(
             name: 'getEmpty',
             test: async () => {
                 try {
-                    const result = await primitiveTypesCanister.getEmpty();
+                    await primitiveTypesCanister.getEmpty();
                 } catch (error) {
                     return {
                         Ok: (error as any).message.startsWith('Call failed')
@@ -513,9 +514,7 @@ export function getTests(
             name: 'printEmpty',
             test: async () => {
                 try {
-                    const result = await primitiveTypesCanister.printEmpty(
-                        undefined as never
-                    );
+                    await primitiveTypesCanister.printEmpty(undefined as never);
                 } catch (error) {
                     return {
                         Ok: ((error as any).message as string).includes(

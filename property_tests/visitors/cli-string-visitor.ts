@@ -17,7 +17,7 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
         if (floatString.includes('.') || floatString.includes('e')) {
             return floatString;
         }
-        return floatString + '.0';
+        return `${floatString}.0`;
     }
     visitText(_t: IDL.TextClass, data: VisitorData): string {
         return `"${escapeForBash(data.value)}"`;
@@ -71,7 +71,7 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
         data: VisitorData
     ): string {
         for (const [name, type] of fields) {
-            if (data.value.hasOwnProperty(name)) {
+            if (Object.prototype.hasOwnProperty.call(data.value, name)) {
                 const value = type.accept(this, { value: data.value[name] });
                 if (value === 'null') {
                     return `variant {${name}}`;
@@ -80,7 +80,7 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
                 }
             }
         }
-        throw new Error('Variant has no data: ' + data.value);
+        throw new Error(`Variant has no data: ${data.value}`);
     }
     visitVec<T>(
         _t: IDL.VecClass<T>,
@@ -90,7 +90,7 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
         const elements = data.value.map((e: any) => {
             return ty.accept(this, { value: e });
         });
-        return 'vec {' + elements.join('; ') + '}';
+        return `vec {${elements.join('; ')}}`;
     }
     visitType<T>(t: IDL.Type<T>, data: VisitorData): string {
         return t.valueToString(data.value);

@@ -9,7 +9,7 @@
 //! * Support for address types that aren't P2PKH.
 //! * Caching spent UTXOs so that they are not reused in future transactions.
 //! * Option to set the fee.
-import { blob, ic, nat64, match, Result, Vec } from 'azle';
+import { blob, ic, match, nat64, Result, Vec } from 'azle';
 import {
     BitcoinNetwork,
     MillisatoshiPerByte,
@@ -137,6 +137,7 @@ async function buildTransaction(
     // rebuild the transaction, until the fee is set to the correct amount.
     console.log('Building transaction...');
     let totalFee = 0n;
+    // eslint-disable-next-line no-constant-condition
     while (true) {
         const transaction = match(
             buildTransactionWithFee(

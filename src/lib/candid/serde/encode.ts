@@ -1,8 +1,9 @@
 import { IDL } from '@dfinity/candid';
 
-import { AzleVec, AzleOpt, AzleTuple } from '../types/constructed';
-import { EncodeVisitor } from './visitors/encode_visitor';
 import { CandidType, toIdl, toIdlArray } from '../../candid';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { AzleOpt, AzleTuple, AzleVec } from '../types/constructed'; // Used for links in comments
+import { EncodeVisitor } from './visitors/encode_visitor';
 
 /**
  * Encodes the provided value as candid blob of the designated type.
@@ -16,9 +17,9 @@ import { CandidType, toIdl, toIdlArray } from '../../candid';
  * @param candidType either a built-in IDL data type, or an Azle-defined super-type
  * @returns candid bytes
  */
-export function encode(
+export function encode<T = any>(
     candidType: CandidType | CandidType[],
-    data: any | any[]
+    data: T | T[]
 ): Uint8Array {
     if (Array.isArray(candidType)) {
         if (Array.isArray(data)) {

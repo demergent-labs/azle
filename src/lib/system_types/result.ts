@@ -1,7 +1,8 @@
+import { IDL } from '@dfinity/candid';
+
 import { CandidType } from '../candid/candid_type';
 import { Parent, toIdl } from '../candid/to_idl';
 import { RequireExactlyOne } from '../candid/types/constructed/variant';
-import { IDL } from '@dfinity/candid';
 
 export class AzleResult<T extends CandidType, K extends CandidType> {
     constructor(ok: T, err: K) {
@@ -32,6 +33,12 @@ export type Result<Ok, Err> = RequireExactlyOne<{
     Err: Err;
 }>;
 
+// Using a namespace is the only way we can see to get Result exported as:
+// - a type
+// - a function
+// - a namespace for the Ok and Err functions
+//
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Result {
     export function Ok<T>(value: T) {
         return { Ok: value };

@@ -1,13 +1,10 @@
+import { AzleResult, Result } from '../system_types';
 import { AzleBlob, blob } from './types/constructed/blob';
-import { AzleVec } from './types/constructed/vec';
 import { AzleOpt, Opt } from './types/constructed/opt';
 import { AzleTuple } from './types/constructed/tuple';
-import { AzleNull, Null } from './types/primitive/null';
-import { AzleReserved, reserved } from './types/primitive/reserved';
-import { AzleEmpty, empty } from './types/primitive/empty';
+import { AzleVec } from './types/constructed/vec';
 import { AzleBool, bool } from './types/primitive/bool';
-import { AzleText } from './types/primitive/text';
-import { AzleVoid } from './types/primitive/void';
+import { AzleEmpty, empty } from './types/primitive/empty';
 import { AzleFloat32, float32 } from './types/primitive/floats/float32';
 import { AzleFloat64, float64 } from './types/primitive/floats/float64';
 import { AzleInt, int } from './types/primitive/ints/int';
@@ -20,7 +17,10 @@ import { AzleNat8, nat8 } from './types/primitive/nats/nat8';
 import { AzleNat16, nat16 } from './types/primitive/nats/nat16';
 import { AzleNat32, nat32 } from './types/primitive/nats/nat32';
 import { AzleNat64, nat64 } from './types/primitive/nats/nat64';
-import { AzleResult, Result } from '../system_types';
+import { AzleNull, Null } from './types/primitive/null';
+import { AzleReserved } from './types/primitive/reserved';
+import { AzleText } from './types/primitive/text';
+import { AzleVoid } from './types/primitive/void';
 import { Principal } from './types/reference/principal';
 
 // TODO I believe we have some unnecessary cases and constructs in here now

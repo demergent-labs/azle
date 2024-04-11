@@ -1,8 +1,9 @@
+import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
+
 import { ToDo } from '../src';
 // @ts-ignore
 import { _SERVICE } from './dfx_generated/simple_to_do/simple_to_do.did';
-import { ActorSubclass } from '@dfinity/agent';
 
 const FIRST_TODO_DESCRIPTION = 'Write tests for the simple to do list example';
 const SECOND_TODO_DESCRIPTION = 'Mark this todo as complete';

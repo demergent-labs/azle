@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 
-import { red, yellow, green, blue, purple } from './colors';
+import { blue, green, purple, red, yellow } from './colors';
 import { Err, Ok, Result } from './result';
 import { AzleError, DfxJson, JSCanisterConfig } from './types';
 
@@ -38,7 +38,7 @@ export function getCanisterConfig(
         ]
             .filter(([_, value]) => !value)
             .map(([field, _]) => field);
-        const fieldOrFields = missingFields.length == 1 ? 'field' : 'fields';
+        const fieldOrFields = missingFields.length === 1 ? 'field' : 'fields';
         const missingFieldNames = missingFields.join(', ');
         return Err({
             error: `Missing ${fieldOrFields} ${missingFieldNames} in ./dfx.json`,

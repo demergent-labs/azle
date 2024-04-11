@@ -9,7 +9,7 @@ export default Canister({
 
 // We implement the recursion in a helper function.
 function go(m: nat): nat {
-    if (m == 0n) {
+    if (m === 0n) {
         return 1n;
     } else {
         return m * go(m - 1n);

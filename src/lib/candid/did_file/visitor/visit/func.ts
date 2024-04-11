@@ -1,6 +1,7 @@
 import { IDL } from '@dfinity/candid';
-import { extractCandid } from '../extract_candid';
+
 import { DidVisitor, VisitorData, VisitorResult } from '../did_visitor';
+import { extractCandid } from '../extract_candid';
 
 export function visitFunc(
     t: IDL.FuncClass,
@@ -18,7 +19,7 @@ export function visitFunc(
     const args = candidArgs[0].join(', ');
     const rets = candidRets[0].join(', ');
     const annon =
-        t.annotations.length === 0 ? '' : ' ' + t.annotations.join(' ');
+        t.annotations.length === 0 ? '' : ` ${t.annotations.join(' ')}`;
     return [
         `${data.isOnService ? '' : 'func '}(${args}) -> (${rets})${annon}`,
         { ...candidArgs[1], ...candidRets[1] }

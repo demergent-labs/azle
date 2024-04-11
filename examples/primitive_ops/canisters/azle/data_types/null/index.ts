@@ -1,4 +1,5 @@
 import { ic, nat32, update } from 'azle';
+
 import { PerfResult } from '../../perf_result';
 
 let null_init_heap_storage: { [key: string]: null | undefined } = {};
@@ -9,7 +10,7 @@ export const null_init_stack = update([nat32], PerfResult, (num_inits) => {
     let i = 0;
 
     while (i < num_inits) {
-        let value: null = i % 2 === 0 ? null : null;
+        let _value: null = i % 2 === 0 ? null : null;
         // TODO std::convert::identity(value); consider something like Rust to ensure the value assignment above is never optimized away
         i += 1;
     }

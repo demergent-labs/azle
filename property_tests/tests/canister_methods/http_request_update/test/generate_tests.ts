@@ -1,5 +1,5 @@
 import { HttpRequest, HttpResponse } from 'azle';
-import { deepEqual, Named, getActor } from 'azle/property_tests';
+import { deepEqual, getActor, Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { HttpResponseAgentResponseValue } from 'azle/property_tests/arbitraries/http/response_arb';
 import { Test } from 'azle/test';

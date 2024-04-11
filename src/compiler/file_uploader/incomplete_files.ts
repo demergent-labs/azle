@@ -1,5 +1,5 @@
-import { Src, Dest } from '.';
 import { filterAsync } from '../utils/filter_async';
+import { Dest, Src } from '.';
 import { UploaderActor } from './uploader_actor';
 
 export async function getListOfIncompleteFiles(

@@ -1,7 +1,8 @@
+import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
+
 // @ts-ignore
 import { _SERVICE, Superhero } from '../src/declarations/superheroes.did';
-import { ActorSubclass } from '@dfinity/agent';
 
 export function getTests(superheroesCanister: ActorSubclass<_SERVICE>): Test[] {
     return [

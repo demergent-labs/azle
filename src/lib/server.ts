@@ -1,3 +1,11 @@
+import { Server as NodeServer, ServerResponse } from 'http';
+// @ts-ignore
+import { HttpConn } from 'http';
+// @ts-ignore
+import { IncomingMessageForServer } from 'http';
+// @ts-ignore
+import httpMessageParser from 'http-message-parser';
+
 import {
     blob,
     bool,
@@ -20,14 +28,7 @@ import {
     Variant,
     Vec
 } from '.';
-import { ServerResponse, Server as NodeServer } from 'http';
-// @ts-ignore
-import { HttpConn } from 'http';
-// @ts-ignore
-import { IncomingMessageForServer } from 'http';
 import { CanisterOptions } from './candid/types/reference/service/canister_function';
-
-const httpMessageParser = require('http-message-parser');
 
 export type HeaderField = [text, text];
 export const HeaderField = Tuple(text, text);
@@ -239,7 +240,7 @@ export async function httpHandler(
             }
         }
 
-        end(data: any) {
+        end(_data: any) {
             const startIndex =
                 this.responseData.indexOf(Buffer.from('\r\n\r\n')) + 4;
 

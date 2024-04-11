@@ -3,10 +3,10 @@ import {
     nat64,
     Opt,
     query,
-    update,
     StableBTreeMap,
-    Vec,
-    Tuple
+    Tuple,
+    update,
+    Vec
 } from 'azle';
 
 let stableMap6 = StableBTreeMap<Vec<nat64>, bool>(6);

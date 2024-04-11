@@ -1,0 +1,10 @@
+docs
+the_azle_book
+type_tests
+run_time_errors
+**/webpack.config.js
+dfx_generate
+dfx_generated
+declarations
+property_tests/tests/**/src/*
+dist

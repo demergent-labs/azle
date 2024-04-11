@@ -1,4 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const fs = require('fs-extra');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
 
 // Helper function to reorder keys in an object.
@@ -32,7 +34,12 @@ fs.readdir(dirPath, (err, folders) => {
             fs.readJson(dfxJsonPath)
                 .then((dfxConfig) => {
                     for (const canister in dfxConfig.canisters) {
-                        if (dfxConfig.canisters.hasOwnProperty(canister)) {
+                        if (
+                            Object.prototype.hasOwnProperty.call(
+                                dfxConfig.canisters,
+                                canister
+                            )
+                        ) {
                             dfxConfig.canisters[canister] = reorderKeys(
                                 dfxConfig.canisters[canister],
                                 [

@@ -1,6 +1,6 @@
-import { execSync } from 'child_process';
-import { Secp256k1KeyIdentity } from '@dfinity/identity-secp256k1';
 import { HttpAgent } from '@dfinity/agent';
+import { Secp256k1KeyIdentity } from '@dfinity/identity-secp256k1';
+import { execSync } from 'child_process';
 
 export function getCanisterId(canisterName: string): string {
     return execSync(

@@ -1,8 +1,9 @@
 import fc from 'fast-check';
-import { CorrespondingJSType } from './corresponding_js_type';
+
 import { CandidDefinition, WithShapes } from './candid_definition_arb/types';
 import { CandidValueAndMeta } from './candid_value_and_meta_arb';
 import { CandidValueConstraints, CandidValues } from './candid_values_arb';
+import { CorrespondingJSType } from './corresponding_js_type';
 import { RecursiveShapes } from './recursive';
 
 export function CandidValueAndMetaArbGenerator<

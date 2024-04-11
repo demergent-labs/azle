@@ -2,6 +2,7 @@
 
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
+
 import { createActor as createCyclesActor } from './dfx_generated/cycles';
 import { createActor as createIntermediaryActor } from './dfx_generated/intermediary';
 import { getTests } from './tests';

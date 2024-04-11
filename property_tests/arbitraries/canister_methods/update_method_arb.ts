@@ -1,18 +1,17 @@
 import fc from 'fast-check';
 
-import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
-import { CandidReturnType } from '../candid/candid_return_type_arb';
-import { CorrespondingJSType } from '../candid/corresponding_js_type';
-import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import { Test } from '../../../test';
 import { Named } from '../..';
-
+import { CandidReturnType } from '../candid/candid_return_type_arb';
+import { CandidValueAndMeta } from '../candid/candid_value_and_meta_arb';
+import { CorrespondingJSType } from '../candid/corresponding_js_type';
+import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
-    TestsGenerator,
     CallbackLocation,
+    generateCallback,
     isDefined,
-    generateCallback
+    TestsGenerator
 } from '.';
 
 export type UpdateMethod = {

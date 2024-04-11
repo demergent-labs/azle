@@ -19,22 +19,22 @@ let candidUpdateText = '';
 export default Canister({
     ...serverCanisterMethods(serverCallback),
     init: init([text, text, text, text], (param0, param1, param2, param3) => {
-        httpQueryText = param0 + '-init';
-        httpUpdateText = param1 + '-init';
+        httpQueryText = `${param0}-init`;
+        httpUpdateText = `${param1}-init`;
 
-        candidQueryText = param2 + '-init';
-        candidUpdateText = param3 + '-init';
+        candidQueryText = `${param2}-init`;
+        candidUpdateText = `${param3}-init`;
 
         setNodeServer(serverCallback());
     }),
     postUpgrade: postUpgrade(
         [text, text, text, text],
         (param0, param1, param2, param3) => {
-            httpQueryText = param0 + '-postUpgrade';
-            httpUpdateText = param1 + '-postUpgrade';
+            httpQueryText = `${param0}-postUpgrade`;
+            httpUpdateText = `${param1}-postUpgrade`;
 
-            candidQueryText = param2 + '-postUpgrade';
-            candidUpdateText = param3 + '-postUpgrade';
+            candidQueryText = `${param2}-postUpgrade`;
+            candidUpdateText = `${param3}-postUpgrade`;
 
             setNodeServer(serverCallback());
         }

@@ -1,8 +1,9 @@
 import fc from 'fast-check';
-import { Func } from '.';
-import { TextArb } from '../../primitive/text';
+
 import { CandidValues } from '../../candid_values_arb';
+import { TextArb } from '../../primitive/text';
 import { PrincipalArb } from '../principal_arb';
+import { Func } from '.';
 
 export function FuncValueArb(): fc.Arbitrary<CandidValues<Func>> {
     return fc

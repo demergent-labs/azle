@@ -1,10 +1,11 @@
 import { IDL } from '@dfinity/candid';
-import { encode } from '../../../serde/encode';
+
 import { decode } from '../../../serde/decode';
+import { encode } from '../../../serde/encode';
 
 export class AzleNat32 {
-    _azleKind: 'AzleNat32' = 'AzleNat32';
-    static _azleKind: 'AzleNat32' = 'AzleNat32';
+    _azleKind = 'AzleNat32' as const;
+    static _azleKind = 'AzleNat32' as const;
 
     static tsType: nat32;
 

@@ -1,5 +1,6 @@
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
+
 import { createActor } from '../test/dfx_generated/simple_erc20';
 import { getTests } from './tests';
 

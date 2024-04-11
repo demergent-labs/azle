@@ -1,10 +1,11 @@
 import { IDL } from '@dfinity/candid';
-import { encode } from '../../../serde/encode';
+
 import { decode } from '../../../serde/decode';
+import { encode } from '../../../serde/encode';
 
 export class AzleFloat32 {
-    _azleKind: 'AzleFloat32' = 'AzleFloat32';
-    static _azleKind: 'AzleFloat32' = 'AzleFloat32';
+    _azleKind = 'AzleFloat32' as const;
+    static _azleKind = 'AzleFloat32' as const;
 
     static tsType: float32;
 

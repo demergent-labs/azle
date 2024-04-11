@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import { open, FileReadResult } from 'fs/promises';
+import { FileReadResult, open } from 'fs/promises';
 
 export async function hashFile(path: string): Promise<Buffer> {
     return await hashFileByParts(path, 0);

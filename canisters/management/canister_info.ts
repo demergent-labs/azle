@@ -5,16 +5,17 @@
 // Some documentation changed from original work.
 
 import {
-    Record,
-    Opt,
-    Vec,
-    Principal,
-    Variant,
-    nat64,
     nat8,
-    Null
+    nat64,
+    Null,
+    Opt,
+    Principal,
+    Record,
+    Variant,
+    Vec
 } from '../../src/lib';
-import { managementCanister } from '.';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { managementCanister } from '.'; // Used for links in comments
 
 /** Argument type of {@link managementCanister.canister_info}. */
 export const CanisterInfoArgs = Record({

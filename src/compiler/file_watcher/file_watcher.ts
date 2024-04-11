@@ -2,9 +2,9 @@ import { Actor } from '@dfinity/agent';
 import { watch } from 'chokidar';
 import { readFileSync, writeFileSync } from 'fs';
 
+import { createAuthenticatedAgent, whoami } from '../../../dfx';
 import { getCanisterJavaScript } from '../get_canister_javascript';
 import { ok } from '../utils/result';
-import { createAuthenticatedAgent, whoami } from '../../../dfx';
 
 const reloadedJsPath = process.argv[2];
 const canisterId = process.argv[3];

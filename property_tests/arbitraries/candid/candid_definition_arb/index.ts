@@ -1,24 +1,25 @@
 import fc from 'fast-check';
-import {
-    CandidDefinitionArb,
-    RecursiveCandidName,
-    CandidDefinitionMemo,
-    DefinitionConstraints
-} from './types';
+
+import { DEFAULT_DEFINITION_MAX_DEPTH } from '../../config';
+import { RecursiveShapes } from '../recursive';
 import {
     COMPLEX_ARB_COUNT,
     complexCandidDefinitionMemo
 } from './complex_candid_definition_memo';
 import {
+    REC_ARB_COUNT,
+    recursiveCandidDefinitionMemo
+} from './recursive_candid_definition_memo';
+import {
     PRIM_ARB_COUNT,
     primitiveCandidDefinitionArb
 } from './simple_candid_definition_arb';
 import {
-    REC_ARB_COUNT,
-    recursiveCandidDefinitionMemo
-} from './recursive_candid_definition_memo';
-import { DEFAULT_DEFINITION_MAX_DEPTH } from '../../config';
-import { RecursiveShapes } from '../recursive';
+    CandidDefinitionArb,
+    CandidDefinitionMemo,
+    DefinitionConstraints,
+    RecursiveCandidName
+} from './types';
 
 export function candidDefinitionArb(
     recursiveShapes: RecursiveShapes,

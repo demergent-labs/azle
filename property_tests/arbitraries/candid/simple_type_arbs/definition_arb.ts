@@ -1,11 +1,12 @@
 import fc from 'fast-check';
+
+import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import {
     PrimitiveDefinition,
     WithShapes,
     WithShapesArb
 } from '../candid_definition_arb/types';
 import { SimpleCandidType } from '../candid_type';
-import { UniqueIdentifierArb } from '../../unique_identifier_arb';
 import { candidTypeToRuntimeCandidTypeObject } from './candid_type_to_azle_candid_type';
 
 export function SimpleCandidDefinitionArb(

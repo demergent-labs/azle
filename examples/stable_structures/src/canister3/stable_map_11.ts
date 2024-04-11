@@ -9,6 +9,7 @@ import {
     update,
     Vec
 } from 'azle';
+
 import { User } from '../types';
 
 let stableMap11 = StableBTreeMap<nat, User>(11);

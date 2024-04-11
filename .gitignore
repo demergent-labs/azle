@@ -1,5 +1,6 @@
 .dfx
 .DS_Store
+.eslintcache
 .vscode/*
 !.vscode/extensions.json
 dist

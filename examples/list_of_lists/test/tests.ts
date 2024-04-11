@@ -1,8 +1,9 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from '../dfx_generated/list_of_lists/list_of_lists.did';
 import { ActorSubclass } from '@dfinity/agent';
-import { deepEqual } from 'fast-equals';
 import { Principal } from '@dfinity/principal';
+import { Test } from 'azle/test';
+import { deepEqual } from 'fast-equals';
+
+import { _SERVICE } from '../dfx_generated/list_of_lists/list_of_lists.did';
 
 type DeepArray<T> = arr | Array<arr | DeepArray<T>>;
 
@@ -177,7 +178,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'listOfEmpty test',
             test: async () => {
                 try {
-                    const result = await listOfListsCanister.listOfEmpty();
+                    await listOfListsCanister.listOfEmpty();
                 } catch (error) {
                     return {
                         Ok: (error as any).message.startsWith('Call failed')
@@ -237,13 +238,6 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const expectedResult = [[[Principal.fromText('aaaaa-aa')]]];
                 const result =
                     await listOfListsCanister.listOfPrincipal(expectedResult);
-                const principalEq = (a: any, b: any) => {
-                    return (
-                        'toText' in a &&
-                        'toText' in b &&
-                        a.toText() === b.toText()
-                    );
-                };
 
                 return {
                     Ok:

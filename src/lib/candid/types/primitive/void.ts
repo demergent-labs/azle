@@ -1,10 +1,11 @@
 import { IDL } from '@dfinity/candid';
+
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
 
 export class AzleVoid {
-    _azleKind: 'AzleVoid' = 'AzleVoid';
-    static _azleKind: 'AzleVoid' = 'AzleVoid';
+    _azleKind = 'AzleVoid' as const;
+    static _azleKind = 'AzleVoid' as const;
 
     static tsType: Void;
 

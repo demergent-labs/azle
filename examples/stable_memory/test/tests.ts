@@ -1,6 +1,7 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/stable_memory/stable_memory.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/stable_memory/stable_memory.did';
 
 const PAGE_SIZE = 65_536; // This should currently remain constant
 const MAX_STABLE_MEM_PAGES = 65_536; // This will always remain constant
@@ -203,7 +204,7 @@ export function getTests(
             name: 'stable grow out of memory',
             test: async () => {
                 try {
-                    const result = await stableMemoryCanister.stableGrow(1);
+                    await stableMemoryCanister.stableGrow(1);
                 } catch (e: any) {
                     return {
                         Ok: e.toString().includes('OutOfMemory') // TODO change error messages back to nice ones once we figure that out
@@ -240,7 +241,7 @@ export function getTests(
                 // TODO we are also turning this test off because it seems like we can't grow to the max memory anymore
                 // TODO I am guessing this is because of the size of stable memory
                 try {
-                    const result = await stableMemoryCanister.stable64Grow(1n);
+                    await stableMemoryCanister.stable64Grow(1n);
                 } catch (e: any) {
                     return {
                         Ok: e.toString().includes('OutOfMemory') // TODO change error messages back to nice ones once we figure that out

@@ -1,6 +1,7 @@
 import {
     blob,
     bool,
+    CandidType,
     float32,
     float64,
     int,
@@ -14,10 +15,9 @@ import {
     nat32,
     nat64,
     Null,
-    text,
-    Void,
     Principal,
-    CandidType
+    text,
+    Void
 } from '../../../../src/lib';
 import { SimpleCandidType } from '../candid_type';
 

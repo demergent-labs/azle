@@ -1,9 +1,10 @@
-import { CandidType } from '../../candid_type';
-import { TypeMapping } from '../../type_mapping';
-import { toIdlMap, CandidMap } from './to_idl_map';
 import { IDL } from '@dfinity/candid';
+
+import { CandidType } from '../../candid_type';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
+import { TypeMapping } from '../../type_mapping';
+import { CandidMap, toIdlMap } from './to_idl_map';
 
 export type Variant<
     T extends {

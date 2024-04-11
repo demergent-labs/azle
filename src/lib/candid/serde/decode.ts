@@ -1,8 +1,9 @@
 import { IDL } from '@dfinity/candid';
 
-import { AzleVec, AzleOpt, AzleTuple } from '../types/constructed';
-import { DecodeVisitor } from './visitors/decode_visitor';
 import { CandidType, toIdl, toIdlArray } from '../../candid';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { AzleOpt, AzleTuple, AzleVec } from '../types/constructed'; // Used for links in comments
+import { DecodeVisitor } from './visitors/decode_visitor';
 
 /**
  * Decodes the provided buffer into the designated JS value.
@@ -16,10 +17,10 @@ import { CandidType, toIdl, toIdlArray } from '../../candid';
  * @param candidType either a built-in IDL data type, or an Azle-defined super-type
  * @returns the Azle representation of the data
  */
-export function decode(
+export function decode<T = any>(
     candidType: CandidType | CandidType[],
     data: ArrayBuffer
-): any | any[] {
+): T | T[] {
     if (Array.isArray(candidType)) {
         return decodeMultiple(candidType, data);
     }

@@ -1,7 +1,8 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/management_canister/management_canister.did';
 import { readFileSync } from 'fs';
+
+import { _SERVICE } from './dfx_generated/management_canister/management_canister.did';
 
 export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
@@ -23,8 +24,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                 const canisterId =
                     await managementCanister.getCreatedCanisterId();
 
-                const executeUpdateSettingsResult =
-                    await managementCanister.executeUpdateSettings(canisterId);
+                await managementCanister.executeUpdateSettings(canisterId);
 
                 const getCanisterStatusResult =
                     await managementCanister.getCanisterStatus({
@@ -74,8 +74,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const cyclesBefore = statusBefore.cycles;
 
-                const depositCyclesResult =
-                    await managementCanister.executeDepositCycles(canisterId);
+                await managementCanister.executeDepositCycles(canisterId);
 
                 const statusAfter = await managementCanister.getCanisterStatus({
                     canister_id: canisterId
@@ -94,8 +93,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                 const canisterId =
                     await managementCanister.getCreatedCanisterId();
 
-                const executeUninstallCodeResult =
-                    await managementCanister.executeUninstallCode(canisterId);
+                await managementCanister.executeUninstallCode(canisterId);
 
                 const getCanisterStatusResult =
                     await managementCanister.getCanisterStatus({
@@ -115,8 +113,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                 const canisterId =
                     await managementCanister.getCreatedCanisterId();
 
-                const executeStopCanisterResult =
-                    await managementCanister.executeStopCanister(canisterId);
+                await managementCanister.executeStopCanister(canisterId);
 
                 const getCanisterStatusResult =
                     await managementCanister.getCanisterStatus({
@@ -149,8 +146,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                     };
                 }
 
-                const executeStartCanisterResult =
-                    await managementCanister.executeStartCanister(canisterId);
+                await managementCanister.executeStartCanister(canisterId);
 
                 const getCanisterStatusAfterResult =
                     await managementCanister.getCanisterStatus({
@@ -218,11 +214,9 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                 const canisterId =
                     await managementCanister.getCreatedCanisterId();
 
-                const executeStopCanisterResult =
-                    await managementCanister.executeStopCanister(canisterId);
+                await managementCanister.executeStopCanister(canisterId);
 
-                const executeDeleteCanisterResult =
-                    await managementCanister.executeDeleteCanister(canisterId);
+                await managementCanister.executeDeleteCanister(canisterId);
 
                 return {
                     Ok: true

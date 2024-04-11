@@ -1,4 +1,5 @@
-import { ic, blob, nat32, update } from 'azle';
+import { blob, ic, nat32, update } from 'azle';
+
 import { PerfResult } from '../../perf_result';
 
 let blob_init_heap_storage: { [key: string]: blob | undefined } = {};
@@ -9,7 +10,7 @@ export const blob_init_stack = update([nat32], PerfResult, (num_inits) => {
     let i = 0;
 
     while (i < num_inits) {
-        let value: blob =
+        let _value: blob =
             i % 2 === 0
                 ? Uint8Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
                 : Uint8Array.from([]);

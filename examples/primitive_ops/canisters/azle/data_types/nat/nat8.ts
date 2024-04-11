@@ -1,4 +1,5 @@
 import { ic, nat8, nat32, update } from 'azle';
+
 import { PerfResult } from '../../perf_result';
 
 let nat8_init_heap_storage: { [key: string]: nat8 | undefined } = {};
@@ -9,7 +10,7 @@ export const nat8_init_stack = update([nat32], PerfResult, (num_inits) => {
     let i = 0;
 
     while (i < num_inits) {
-        let value: nat8 = i % 2 === 0 ? 255 : 0;
+        let _value: nat8 = i % 2 === 0 ? 255 : 0;
         // TODO std::convert::identity(value); consider something like Rust to ensure the value assignment above is never optimized away
         i += 1;
     }

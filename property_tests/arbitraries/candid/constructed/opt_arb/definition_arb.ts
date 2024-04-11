@@ -1,4 +1,6 @@
 import fc from 'fast-check';
+
+import { CandidType, Opt } from '../../../../../src/lib';
 import { UniqueIdentifierArb } from '../../../unique_identifier_arb';
 import {
     CandidDefinition,
@@ -9,8 +11,6 @@ import {
     WithShapes,
     WithShapesArb
 } from '../../candid_definition_arb/types';
-import { CandidType, Opt } from '../../../../../src/lib';
-import { RecursiveShapes } from '../../recursive';
 
 export function OptDefinitionArb(
     candidTypeArbForInnerType: RecursiveCandidDefinitionMemo,

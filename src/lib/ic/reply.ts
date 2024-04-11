@@ -1,6 +1,6 @@
 import { CandidType } from '../candid/candid_type';
-import { Void } from '../candid/types/primitive/void';
 import { encode } from '../candid/serde/encode';
+import { Void } from '../candid/types/primitive/void';
 
 /**
  * Used to manually reply to an ingress message. Intended to be used in

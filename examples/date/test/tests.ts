@@ -1,6 +1,7 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/date/date.did.d';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/date/date.did.d';
 
 // NOTE: The IC has not concept of a timezone since it's a world computer. It
 // uses UTC so getUTCDate and getDate will be the same. So when comparing times

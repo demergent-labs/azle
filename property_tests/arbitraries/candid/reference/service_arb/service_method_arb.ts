@@ -1,18 +1,18 @@
 import fc from 'fast-check';
 
-import { CandidType } from '../../candid_type';
-import {
-    CandidDefinition,
-    WithShapes,
-    WithShapesArb
-} from '../../candid_definition_arb/types';
-import { VoidDefinitionArb } from '../../primitive/void';
-import { JsFunctionNameArb } from '../../../js_function_name_arb';
 import {
     query,
     update
 } from '../../../../../src/lib/canister_methods/methods/';
 import { CanisterMethodInfo } from '../../../../../src/lib/canister_methods/types/canister_method_info';
+import { JsFunctionNameArb } from '../../../js_function_name_arb';
+import {
+    CandidDefinition,
+    WithShapes,
+    WithShapesArb
+} from '../../candid_definition_arb/types';
+import { CandidType } from '../../candid_type';
+import { VoidDefinitionArb } from '../../primitive/void';
 
 type Mode = 'query' | 'update';
 

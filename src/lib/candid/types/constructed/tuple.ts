@@ -1,8 +1,9 @@
-import { CandidType } from '../../candid_type';
-import { Parent, toIdl } from '../../to_idl';
 import { IDL } from '@dfinity/candid';
-import { encode } from '../../serde/encode';
+
+import { CandidType } from '../../candid_type';
 import { decode } from '../../serde/decode';
+import { encode } from '../../serde/encode';
+import { Parent, toIdl } from '../../to_idl';
 import { TypeMapping } from '../../type_mapping';
 
 export class AzleTuple<T extends any[]> {
@@ -16,8 +17,8 @@ export class AzleTuple<T extends any[]> {
 
     innerTypes: CandidType[];
 
-    _azleKind: 'AzleTuple' = 'AzleTuple';
-    static _azleKind: 'AzleTuple' = 'AzleTuple';
+    _azleKind = 'AzleTuple' as const;
+    static _azleKind = 'AzleTuple' as const;
 
     toBytes(data: any) {
         return encode(this, data);

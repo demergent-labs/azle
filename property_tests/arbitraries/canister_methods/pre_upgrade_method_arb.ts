@@ -1,15 +1,15 @@
 import fc from 'fast-check';
 
+import { Test } from '../../../test';
+import { VoidArb } from '../candid/primitive/void';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {
     BodyGenerator,
-    TestsGenerator,
     CallbackLocation,
+    CallbackLocationArb,
     generateCallback,
-    CallbackLocationArb
+    TestsGenerator
 } from '.';
-import { Test } from '../../../test';
-import { VoidArb } from '../candid/primitive/void';
 
 export type PreUpgradeMethod = {
     imports: Set<string>;

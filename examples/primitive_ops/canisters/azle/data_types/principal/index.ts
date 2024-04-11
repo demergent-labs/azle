@@ -1,4 +1,5 @@
 import { ic, nat32, Principal, update } from 'azle';
+
 import { PerfResult } from '../../perf_result';
 
 let principal_init_heap_storage: { [key: string]: Principal | undefined } = {};
@@ -9,7 +10,7 @@ export const principal_init_stack = update([nat32], PerfResult, (num_inits) => {
     let i = 0;
 
     while (i < num_inits) {
-        let value: Principal =
+        let _value: Principal =
             i % 2 === 0
                 ? Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
                 : Principal.fromText('aaaaa-aa');

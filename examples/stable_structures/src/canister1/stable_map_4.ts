@@ -9,6 +9,7 @@ import {
     update,
     Vec
 } from 'azle';
+
 import { User } from '../types';
 
 export let stableMap4 = StableBTreeMap<User, float32>(4);

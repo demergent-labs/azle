@@ -1,10 +1,11 @@
 import { IDL } from '@dfinity/candid';
-import { encode } from '../../../serde/encode';
+
 import { decode } from '../../../serde/decode';
+import { encode } from '../../../serde/encode';
 
 export class AzleInt {
-    _azleKind: 'AzleInt' = 'AzleInt';
-    static _azleKind: 'AzleInt' = 'AzleInt';
+    _azleKind = 'AzleInt' as const;
+    static _azleKind = 'AzleInt' as const;
 
     static tsType: int;
 

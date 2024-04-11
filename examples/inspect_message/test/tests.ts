@@ -1,6 +1,7 @@
-import { Test } from 'azle/test';
-import { _SERVICE } from './dfx_generated/inspect_message/inspect_message.did';
 import { ActorSubclass } from '@dfinity/agent';
+import { Test } from 'azle/test';
+
+import { _SERVICE } from './dfx_generated/inspect_message/inspect_message.did';
 
 export function getTests(
     inspectMessageCanister: ActorSubclass<_SERVICE>
@@ -26,7 +27,7 @@ export function getTests(
             name: 'not calling `ic.acceptMessage` in inspectMessage',
             test: async () => {
                 try {
-                    const result = await inspectMessageCanister.inaccessible();
+                    await inspectMessageCanister.inaccessible();
                     return {
                         Ok: false
                     };
@@ -43,8 +44,7 @@ export function getTests(
             name: 'throwing in `inspectMessage`',
             test: async () => {
                 try {
-                    const result =
-                        await inspectMessageCanister.alsoInaccessible();
+                    await inspectMessageCanister.alsoInaccessible();
 
                     return {
                         Ok: false

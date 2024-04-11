@@ -1,6 +1,5 @@
 import { Void } from '../candid/types/primitive/void';
 import { TimerId } from './types/timer_id';
-import { encode } from '../candid/serde/encode';
 
 /**
  * Cancels an existing timer. Does nothing if the timer has already been canceled.

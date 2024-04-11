@@ -1,10 +1,9 @@
-import fc from 'fast-check';
-
-import { StableBTreeMap } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
 import { deepEqual, getActor } from 'azle/property_tests';
-import { Test } from 'azle/test';
-import { UniqueIdentifierArb } from 'azle/property_tests/arbitraries/unique_identifier_arb';
 import { QueryMethod } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
+import { StableBTreeMap } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
+import { UniqueIdentifierArb } from 'azle/property_tests/arbitraries/unique_identifier_arb';
+import { Test } from 'azle/test';
+import fc from 'fast-check';
 
 export function GetTestArb(stableBTreeMap: StableBTreeMap) {
     return fc

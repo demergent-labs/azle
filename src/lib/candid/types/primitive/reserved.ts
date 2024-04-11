@@ -1,10 +1,11 @@
 import { IDL } from '@dfinity/candid';
-import { encode } from '../../serde/encode';
+
 import { decode } from '../../serde/decode';
+import { encode } from '../../serde/encode';
 
 export class AzleReserved {
-    _azleKind: 'AzleReserved' = 'AzleReserved';
-    static _azleKind: 'AzleReserved' = 'AzleReserved';
+    _azleKind = 'AzleReserved' as const;
+    static _azleKind = 'AzleReserved' as const;
 
     static tsType: reserved;
 

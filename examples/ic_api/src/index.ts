@@ -1,5 +1,6 @@
 import {
     blob,
+    bool,
     Canister,
     empty,
     ic,
@@ -9,11 +10,10 @@ import {
     nat32,
     nat64,
     Opt,
-    query,
-    update,
-    bool,
-    text,
     Principal,
+    query,
+    text,
+    update,
     Void
 } from 'azle';
 
@@ -57,7 +57,7 @@ export default Canister({
     argDataRaw: query(
         [blob, int8, bool, text],
         blob,
-        (arg1, arg2, arg3, arg4) => {
+        (_arg1, _arg2, _arg3, _arg4) => {
             return ic.argDataRaw();
         }
     ),
@@ -65,7 +65,7 @@ export default Canister({
     argDataRawSize: query(
         [blob, int8, bool, text],
         nat32,
-        (arg1, arg2, arg3, arg4) => {
+        (_arg1, _arg2, _arg3, _arg4) => {
             return ic.argDataRawSize();
         }
     ),

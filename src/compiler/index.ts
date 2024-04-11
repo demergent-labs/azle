@@ -4,15 +4,15 @@ import { compileRustCodeWithCandidAndCompilerInfo } from './compile_rust_code_wi
 import { setupFileWatcher } from './file_watcher/setup_file_watcher';
 import { getCandidAndCanisterMethods } from './get_candid_and_canister_methods';
 import { getCanisterJavaScript } from './get_canister_javascript';
-import { getNamesBeforeCli, getNamesAfterCli } from './get_names';
+import { getNamesAfterCli, getNamesBeforeCli } from './get_names';
 import { handleCli } from './handle_cli';
+import { logAutoreloadWarning } from './log_auto_reload_warning';
 import { prepareDockerImage } from './prepare_docker_image';
 import { prepareRustStagingArea } from './prepare_rust_staging_area';
 import { logSuccess, time, unwrap } from './utils';
 import { green } from './utils/colors';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { CompilerInfo } from './utils/types';
-import { logAutoreloadWarning } from './log_auto_reload_warning';
 
 azle();
 

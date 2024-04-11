@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { candidDefinitionMemo } from '.';
+
 import { BlobDefinitionArb } from '../constructed/blob_arb/definition_arb';
 import { OptDefinitionArb } from '../constructed/opt_arb/definition_arb';
 import { RecordDefinitionArb } from '../constructed/record_arb/definition_arb';
@@ -8,6 +8,7 @@ import { VariantDefinitionArb } from '../constructed/variant_arb/definition_arbs
 import { VecDefinitionArb } from '../constructed/vec_arb/definition_arb';
 import { FuncDefinitionArb } from '../reference/func_arb/definition_arb';
 import { ServiceDefinitionArb } from '../reference/service_arb/definition_arb';
+import { candidDefinitionMemo } from '.';
 import {
     CandidDefinitionMemo,
     DefinitionConstraints,

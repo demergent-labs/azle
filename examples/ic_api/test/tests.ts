@@ -1,9 +1,10 @@
+import { ActorSubclass } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
 import { getCanisterId } from 'azle/dfx';
 import { Test } from 'azle/test';
 import { execSync } from 'child_process';
+
 import { _SERVICE } from './dfx_generated/ic_api/ic_api.did';
-import { ActorSubclass } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
 
 export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
     return [

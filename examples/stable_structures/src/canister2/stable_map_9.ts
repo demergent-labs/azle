@@ -4,11 +4,11 @@ import {
     nat64,
     Opt,
     query,
-    update,
     StableBTreeMap,
-    Vec,
     text,
-    Tuple
+    Tuple,
+    update,
+    Vec
 } from 'azle';
 
 let stableMap9 = StableBTreeMap<float64, Vec<text>>(9);
