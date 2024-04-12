@@ -1,15 +1,14 @@
-import fc from 'fast-check';
-
 import { runPropTests } from 'azle/property_tests';
-import { CandidValueAndMetaArb } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { CandidReturnTypeArb } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
+import { CandidValueAndMetaArb } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import {
     CanisterArb,
     CanisterConfig
 } from 'azle/property_tests/arbitraries/canister_arb';
-import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
-import { QueryMethodArb } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 import { InspectMessageMethodArb } from 'azle/property_tests/arbitraries/canister_methods/inspect_message_method_arb';
+import { QueryMethodArb } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
+import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
+import fc from 'fast-check';
 
 import { CorrespondingJSType } from '../../../../arbitraries/candid/corresponding_js_type';
 import { generateTests } from './generate_tests';
@@ -80,7 +79,7 @@ function generateInspectMessageMethodBody(
     }
 
     if (behavior === 'THROW') {
-        return /*TS*/ `throw \`Method "$\{ic.methodName()\}" not allowed\``;
+        return /*TS*/ `throw \`Method "$\{ic.methodName()}" not allowed\``;
     }
 
     return /*TS*/ `ic.acceptMessage();`;
