@@ -1,6 +1,7 @@
 // import * as ecc from 'tiny-secp256k1/lib/'; // TODO we should switch to this import as soon as we have wasm support
 import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs';
 import * as bitcoin from 'bitcoinjs-lib';
+import * as bitcoinMessage from 'bitcoinjs-message';
 import { ECPairFactory } from 'ecpair';
 import express from 'express';
 
@@ -39,6 +40,135 @@ app.get('/get-private-key-wif', (req, res) => {
 });
 
 app.post('/create-transaction', (req, res) => {
+    const transaction = new bitcoin.Transaction();
+    transaction.version = 2;
+
+    const prevTxId =
+        '115e8f72f39fad874cfab0deed11a80f24f967a84079fb56ddf53ea02e308986';
+    const txHash = Buffer.from(prevTxId, 'hex').reverse();
+    transaction.addInput(txHash, 0);
+
+    const recipientAddress = '1Gokm82v6DmtwKEB8AiVhm82hyFSsEvBDK';
+    const pubKeyHash = bitcoin.address
+        .toOutputScript(recipientAddress)
+        .subarray(3, 23);
+    const scriptPubkey = bitcoin.script.compile([
+        bitcoin.opcodes.OP_DUP,
+        bitcoin.opcodes.OP_HASH160,
+        pubKeyHash,
+        bitcoin.opcodes.OP_EQUALVERIFY,
+        bitcoin.opcodes.OP_CHECKSIG
+    ]);
+    transaction.addOutput(scriptPubkey, 15000);
+
+    res.send(transaction.toBuffer().toString('hex'));
+});
+
+app.post('/sign-bitcoin-message', (req, res) => {
+    const keyPair = ECPair.fromWIF(
+        'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
+    );
+    const privateKey = keyPair.privateKey;
+    if (privateKey === undefined) {
+        throw new Error('Invalid private key');
+    }
+    const message = 'This is an example of a signed message';
+    const signature = bitcoinMessage.sign(
+        message,
+        privateKey,
+        keyPair.compressed
+    );
+    res.send(signature.toString('base64'));
+});
+
+app.post('/verify-bitcoin-message', (req, res) => {
+    const keyPair = ECPair.fromWIF(
+        'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
+    );
+
+    const privateKey = keyPair.privateKey;
+    if (privateKey === undefined) {
+        throw new Error('Invalid private key');
+    }
+    const message = 'This is an example of a signed message';
+    const signature = bitcoinMessage.sign(
+        message,
+        privateKey,
+        keyPair.compressed
+    );
+    const { address } = bitcoin.payments.p2pkh({
+        pubkey: keyPair.publicKey
+    });
+    if (address === undefined) {
+        throw new Error('Invalid address');
+    }
+    res.send(bitcoinMessage.verify(message, address, signature));
+});
+
+app.post('/fail-to-verify-bitcoin-message', (req, res) => {
+    const keyPair = ECPair.fromWIF(
+        'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
+    );
+    const wrongKeyPair = ECPair.fromWIF(
+        'L2uPYXe17xSTqbCjZvL2DsyXPCbXspvcu5mHLDYUgzdUbZGSKrSr'
+    );
+
+    const privateKey = keyPair.privateKey;
+    if (privateKey === undefined) {
+        throw new Error('Invalid private key');
+    }
+    const message = 'This is an example of a signed message';
+    const signature = bitcoinMessage.sign(
+        message,
+        privateKey,
+        keyPair.compressed
+    );
+    const { address } = bitcoin.payments.p2pkh({
+        pubkey: wrongKeyPair.publicKey
+    });
+    if (address === undefined) {
+        throw new Error('Invalid address');
+    }
+    res.send(bitcoinMessage.verify(message, address, signature));
+});
+
+// The following endpoints are not for our tests or examples but rather help to
+// illustrate some of the different features of creating transactions. Each of
+// these return the same transaction as in /create-transaction
+app.post('/create-transaction-from-known-hex', (req, res) => {
+    const transactionHex =
+        '02000000018689302ea03ef5dd56fb7940a867f9240fa811eddeb0fa4c87ad9ff3728f5e110000000000ffffffff01983a0000000000001976a914ad618cf4333b3b248f9744e8e81db2964d0ae39788ac00000000';
+    const transaction = bitcoin.Transaction.fromHex(transactionHex);
+    res.send(transaction.toBuffer().toString('hex'));
+});
+
+app.post('/create-transaction-from-deconstructed-transaction', (req, res) => {
+    const transactionHex =
+        '02000000018689302ea03ef5dd56fb7940a867f9240fa811eddeb0fa4c87ad9ff3728f5e110000000000ffffffff01983a0000000000001976a914ad618cf4333b3b248f9744e8e81db2964d0ae39788ac00000000';
+    const transaction = bitcoin.Transaction.fromHex(transactionHex);
+
+    const newTransaction = new bitcoin.Transaction();
+    newTransaction.version = 2;
+
+    for (let input of transaction.ins) {
+        newTransaction.addInput(
+            input.hash,
+            input.index,
+            input.sequence,
+            input.script
+        );
+    }
+
+    for (let output of transaction.outs) {
+        newTransaction.addOutput(output.script, output.value);
+    }
+
+    res.send(newTransaction.toBuffer().toString('hex'));
+});
+
+// bitcoinjs-lib allows for partially signed bitcoin transactions (psbt) here is
+// an example of how to use bitcoinjs-lib to create a pbst in azle.
+app.post('/create-psbt', (req, res) => {
     const validator = (
         pubkey: Buffer,
         msghash: Buffer,
@@ -47,6 +177,11 @@ app.post('/create-transaction', (req, res) => {
     const keyPair = ECPair.fromWIF(
         'L2uPYXe17xSTqbCjZvL2DsyXPCbXspvcu5mHLDYUgzdUbZGSKrSr'
     );
+    // const things = new bitcoin.Transaction();
+    // const transactionBuilder = new bitcoin.Transaction();
+    // bitcoin.Transaction.fromHex();
+    // // things.addInput()
+    // things.addOutput('1Gokm82v6DmtwKEB8AiVhm82hyFSsEvBDK', 15000);
     const psbt = new bitcoin.Psbt();
     psbt.addInput({
         // if hash is string, txid, if hash is Buffer, is reversed compared to txid
@@ -82,7 +217,8 @@ app.post('/create-transaction', (req, res) => {
     res.send(psbt.extractTransaction().toHex());
 });
 
-app.post('/sign-bitcoin-message', (req, res) => {
+// The following endpoints do signatures with the ECPair sign
+app.post('/ecpair-sign-bitcoin-message', (req, res) => {
     const keyPair = ECPair.fromWIF(
         'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
     );
@@ -90,10 +226,10 @@ app.post('/sign-bitcoin-message', (req, res) => {
     const message = Buffer.from('This is an example of a signed message');
     const hash = bitcoin.crypto.sha256(message);
     const signature = keyPair.sign(hash);
-    res.send(signature.toString('hex'));
+    res.send(signature.toString('base64'));
 });
 
-app.post('/verify-bitcoin-message', (req, res) => {
+app.post('/ecpair-verify-bitcoin-message', (req, res) => {
     const keyPair = ECPair.fromWIF(
         'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
     );
@@ -104,7 +240,7 @@ app.post('/verify-bitcoin-message', (req, res) => {
     res.send(keyPair.verify(hash, signature));
 });
 
-app.post('/fail-to-verify-bitcoin-message', (req, res) => {
+app.post('/ecpair-fail-to-verify-bitcoin-message', (req, res) => {
     const keyPair = ECPair.fromWIF(
         'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
     );

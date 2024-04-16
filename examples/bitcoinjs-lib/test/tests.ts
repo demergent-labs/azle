@@ -3,96 +3,19 @@ dns.setDefaultResultOrder('ipv4first');
 
 import { Test } from 'azle/test';
 
+import { getBitcoinTests } from '../../bitcore-lib/test/bitcoin';
+
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
-
     return [
+        ...getBitcoinTests(canisterId),
         {
-            name: '/get-address',
+            name: '/create-psbt',
             test: async () => {
                 try {
-                    const response = await fetch(`${origin}/get-address`);
-                    const responseText = await response.text();
-
-                    return {
-                        Ok:
-                            responseText ===
-                            '1PmamxRspvjCV7vDqMpzvKf92epy1utZVj'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/get-public-key',
-            test: async () => {
-                try {
-                    const response = await fetch(`${origin}/get-public-key`);
-                    const publicKey = await response.text();
-
-                    return {
-                        Ok:
-                            publicKey ===
-                            '03fad62848f1a6cde4c4d9453dadea714cbd59f1282087853de8b0c6072bec27e7'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/get-private-key',
-            test: async () => {
-                try {
-                    const response = await fetch(`${origin}/get-private-key`);
-                    const responseText = await response.text();
-
-                    return {
-                        Ok:
-                            responseText ===
-                            'b221d9dbb083a7f33428d7c2a3c3198ae925614d70210e28716ccaa7cd4ddb79'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/get-private-key-wif',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/get-private-key-wif`
-                    );
-                    const responseText = await response.text();
-
-                    return {
-                        Ok:
-                            responseText ===
-                            'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/create-transaction',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/create-transaction`,
-                        { method: 'POST' }
-                    );
+                    const response = await fetch(`${origin}/create-psbt`, {
+                        method: 'POST'
+                    });
                     const transaction = await response.text();
 
                     return {
@@ -108,7 +31,7 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: '/sign-bitcoin-message',
+            name: '/sign-bitcoin-message deterministic',
             test: async () => {
                 try {
                     const response = await fetch(
@@ -117,10 +40,11 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
+                    const expectedResult =
+                        'H/Mj0TA83ABdvOdzdrvJsSN0RzZcJjawMj8Znr+nBd3oVt9+Tky2lsJjpl0G4hRxA5xHXQD5W/w9z6vbbLwnOwo=';
+
                     return {
-                        Ok:
-                            responseText ===
-                            '076595661fbe8eee656defdcb189bdcebeaa34f8dc8115f78c11dfb6f628744b51d16b5d91ff70217084678eeadf479a045eb6530af8d042a7f521622d9a4c38'
+                        Ok: responseText === expectedResult
                     };
                 } catch (error: any) {
                     return {
@@ -130,11 +54,33 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: '/verify-bitcoin-message',
+            name: '/ecpair-sign-bitcoin-message',
             test: async () => {
                 try {
                     const response = await fetch(
-                        `${origin}/verify-bitcoin-message`,
+                        `${origin}/ecpair-sign-bitcoin-message`,
+                        { method: 'POST' }
+                    );
+                    const responseText = await response.text();
+                    const expectedResponse =
+                        'B2WVZh++ju5lbe/csYm9zr6qNPjcgRX3jBHftvYodEtR0Wtdkf9wIXCEZ47q30eaBF62Uwr40EKn9SFiLZpMOA==';
+
+                    return {
+                        Ok: responseText === expectedResponse
+                    };
+                } catch (error: any) {
+                    return {
+                        Err: error
+                    };
+                }
+            }
+        },
+        {
+            name: '/ecpair-verify-bitcoin-message',
+            test: async () => {
+                try {
+                    const response = await fetch(
+                        `${origin}/ecpair-verify-bitcoin-message`,
                         {
                             method: 'POST'
                         }
@@ -152,11 +98,11 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: '/fail-to-verify-bitcoin-message',
+            name: '/ecpair-fail-to-verify-bitcoin-message',
             test: async () => {
                 try {
                     const response = await fetch(
-                        `${origin}/fail-to-verify-bitcoin-message`,
+                        `${origin}/ecpair-fail-to-verify-bitcoin-message`,
                         {
                             method: 'POST'
                         }
