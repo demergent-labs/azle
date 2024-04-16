@@ -11,7 +11,7 @@ export function generateTests(
     functionName: string,
     params: Named<CandidValueAndMeta<CorrespondingJSType>>[],
     returnType: CandidValueAndMeta<CandidReturnType>,
-    agents: [Agent, InspectMessageBehavior][]
+    agentAndBehaviors: [Agent, InspectMessageBehavior][]
 ): Test[][] {
     const paramValues = params.map(
         (param) => param.value.value.agentArgumentValue
@@ -20,7 +20,7 @@ export function generateTests(
     const expectedResult = returnType.value.agentResponseValue;
 
     return [
-        agents.map(([agent, behavior]) => {
+        agentAndBehaviors.map(([agent, behavior]) => {
             return generateTest(
                 agent,
                 functionName,

@@ -28,7 +28,7 @@ export function getAgentHost(): string {
         : `http://127.0.0.1:${getWebServerPort()}`;
 }
 
-export async function getAnonymousAgent() {
+export async function createAnonymousAgent() {
     const agent = new HttpAgent({
         host: getAgentHost()
     });
@@ -41,12 +41,20 @@ export async function getAnonymousAgent() {
 /**
  * Returns an agent authenticated with the identity with the given name.
  *
+ * Generates a new identity with the given name if shouldGenerateIdentity and
+ * the identity doesn't already exist.
+ *
  * @param identityName
  * @returns
  */
-export async function getAuthenticatedAgent(
-    identityName: string
+export async function createAuthenticatedAgent(
+    identityName: string,
+    shouldGenerateIdentity: boolean = false
 ): Promise<HttpAgent> {
+    if (shouldGenerateIdentity && !identityExists(identityName)) {
+        generateIdentity(identityName);
+    }
+
     const agent = new HttpAgent({
         host: getAgentHost(),
         identity: getSecp256k1KeyIdentity(identityName)
@@ -62,56 +70,29 @@ export async function getAuthenticatedAgent(
 /**
  * Returns an agent authenticated with the identity with the given name.
  *
+ * Generates a new identity with the given name if shouldGenerateIdentity and
+ * the identity doesn't already exist.
+ *
  * IMPORTANT: In order to be synchronous this call will not fetch the root key.
  * If you are not on mainnet you will need to fetch the root key separately.
  *
  * @param identityName
  * @returns
  */
-export function getAuthenticatedAgentSync(identityName: string): HttpAgent {
+export function createAuthenticatedAgentSync(
+    identityName: string,
+    shouldGenerateIdentity: boolean = false
+): HttpAgent {
+    if (shouldGenerateIdentity && !identityExists(identityName)) {
+        generateIdentity(identityName);
+    }
+
     const agent = new HttpAgent({
         host: getAgentHost(),
         identity: getSecp256k1KeyIdentity(identityName)
     });
 
     return agent;
-}
-
-/**
- * Generates a new identity with the given name if there doesn't already exist
- * an identity with that name, and returns an agent authenticated with that
- * identity.
- *
- * IMPORTANT: In order to be synchronous this call will not fetch the root key.
- * If you are not on mainnet you will need to fetch the root key separately.
- *
- * @param identityName
- * @returns
- */
-export function generateAuthenticatedAgentSync(
-    identityName: string
-): HttpAgent {
-    if (!identityExists(identityName)) {
-        generateIdentity(identityName);
-    }
-    return getAuthenticatedAgentSync(identityName);
-}
-
-/**
- * Generates a new identity with the given name if there doesn't already exist
- * an identity with that name, and returns an agent authenticated with that
- * identity.
- *
- * @param identityName
- * @returns
- */
-export async function generateAuthenticatedAgent(
-    identityName: string
-): Promise<HttpAgent> {
-    if (!identityExists(identityName)) {
-        generateIdentity(identityName);
-    }
-    return await getAuthenticatedAgent(identityName);
 }
 
 export function whoami(): string {

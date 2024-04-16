@@ -1,4 +1,4 @@
-import { Agent } from '@dfinity/agent';
+import { Agent, HttpAgent } from '@dfinity/agent';
 
 import { getCanisterId } from '../dfx';
 
@@ -16,15 +16,12 @@ export function getActor(parentDir: string, agent?: Agent) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { createActor } = require(`${parentDir}/dfx_generated/canister`);
 
-    const options =
-        agent !== undefined
-            ? { agent }
-            : {
-                  agentOptions: {
-                      host: 'http://127.0.0.1:8000',
-                      verifyQuerySignatures: false // TODO Major issue: https://forum.dfinity.org/t/agent-js-0-20-0-is-released-replica-signed-query-edition/24743/16?u=lastmjs
-                  }
-              };
-
-    return createActor(getCanisterId('canister'), options);
+    return createActor(getCanisterId('canister'), {
+        agent:
+            agent ??
+            new HttpAgent({
+                host: 'http://127.0.0.1:8000',
+                verifyQuerySignatures: false // TODO Major issue: https://forum.dfinity.org/t/agent-js-0-20-0-is-released-replica-signed-query-edition/24743/16?u=lastmjs
+            })
+    });
 }
