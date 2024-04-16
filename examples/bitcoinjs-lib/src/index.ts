@@ -1,8 +1,8 @@
+// import * as ecc from 'tiny-secp256k1/lib/'; // TODO we should switch to this import as soon as we have wasm support
+import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs';
 import { Server } from 'azle';
 import * as bitcoin from 'bitcoinjs-lib';
 import { ECPairFactory } from 'ecpair';
-// import * as ecc from 'tiny-secp256k1/lib/'; // TODO we should switch to this import as soon as we have wasm support
-import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs';
 import express from 'express';
 
 export default Server(() => {

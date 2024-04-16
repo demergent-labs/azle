@@ -1,5 +1,5 @@
 import { Server } from 'azle';
-import { PrivateKey, Message, Transaction } from 'bitcore-lib';
+import { Message, PrivateKey, Transaction } from 'bitcore-lib';
 import express from 'express';
 
 export default Server(() => {
