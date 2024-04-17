@@ -20,7 +20,7 @@ Set this to `true` to enable autoreloading of your TypeScript/JavaScript code wh
 
 ## AZLE_DOCKERFILE_HASH
 
-Set this to the hash that you would like Azle to use when determining the image, container, and `wasmedge-quickjs` directory names. The image file and `wasmedge-quickjs` directory will be stored at `~/.config/azle`. The hash is the final part of each of those names.
+Set this to the hash that you would like Azle to use when determining the container image, container, and `wasmedge-quickjs` directory names. The container image file and `wasmedge-quickjs` directory will be stored at `~/.config/azle`. The hash is the final part of each of those names.
 
 ## AZLE_IDENTITY_STORAGE_MODE
 
@@ -56,7 +56,7 @@ Used for automated testing.
 
 ## AZLE_USE_DOCKERFILE
 
-Set this to `true` to force Azle to build the image locally from the internal Dockerfile instead of attempting to download the image.
+Set this to `true` to force Azle to build the container image locally from the internal Dockerfile instead of attempting to download the container image.
 
 ## AZLE_VERBOSE
 
