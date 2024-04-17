@@ -6,7 +6,7 @@
 -   [Deployment](./deployment.md)
 -   [Project Structure](./project_structure.md)
 -   [Servers](./servers.md)
--   [Assets]()
+-   [Assets](./assets.md)
 -   [Debugging]()
 -   [Limitations]()
 -   [Authentication]()
