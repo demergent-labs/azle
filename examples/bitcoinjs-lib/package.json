@@ -5,7 +5,7 @@
     },
     "dependencies": {
         "@bitcoin-js/tiny-secp256k1-asmjs": "^2.2.3",
-        "azle": "0.20.1",
+        "azle": "0.21.1",
         "bitcoinjs-lib": "^6.1.5",
         "bitcoinjs-message": "^2.2.0",
         "ecpair": "^2.1.0",
