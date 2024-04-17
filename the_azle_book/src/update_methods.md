@@ -1,6 +1,6 @@
 # Update Methods
 
-## TLDR
+## TL;DR
 
 -   Created with the `update` function
 -   Read-write

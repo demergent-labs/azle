@@ -1,6 +1,6 @@
 # Query Methods
 
-## TLDR
+## TL;DR
 
 -   Created with the `query` function
 -   Read-only

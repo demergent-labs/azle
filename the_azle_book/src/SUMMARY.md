@@ -4,6 +4,7 @@
 -   [Get Started](./get_started.md)
 -   [Examples](./rest_based_examples.md)
 -   [Deployment](./deployment.md)
+-   [Project Structure](./project_structure.md)
 -   [Servers](./servers.md)
 -   [Assets]()
 -   [Debugging]()

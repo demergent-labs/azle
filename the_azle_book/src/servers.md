@@ -1,4 +1,4 @@
-# Servers TLDR
+# Servers TL;DR
 
 Just write Node.js servers like this:
 
