@@ -15,6 +15,7 @@ app.get('/get-address', (req, res) => {
     const { address } = bitcoin.payments.p2pkh({
         pubkey: keyPair.publicKey
     });
+
     res.send(address);
 });
 
@@ -22,6 +23,7 @@ app.get('/get-public-key', (req, res) => {
     const keyPair = ECPair.fromWIF(
         'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
     );
+
     res.send(keyPair.publicKey.toString('hex'));
 });
 
@@ -29,6 +31,7 @@ app.get('/get-private-key', (req, res) => {
     const keyPair = ECPair.fromWIF(
         'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
     );
+
     res.send(keyPair.privateKey?.toString('hex'));
 });
 
@@ -36,6 +39,7 @@ app.get('/get-private-key-wif', (req, res) => {
     const keyPair = ECPair.fromWIF(
         'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
     );
+
     res.send(keyPair.toWIF());
 });
 
@@ -59,7 +63,7 @@ app.post('/create-transaction', (req, res) => {
         bitcoin.opcodes.OP_EQUALVERIFY,
         bitcoin.opcodes.OP_CHECKSIG
     ]);
-    transaction.addOutput(scriptPubkey, 15000);
+    transaction.addOutput(scriptPubkey, 15_000);
 
     res.send(transaction.toBuffer().toString('hex'));
 });
@@ -78,6 +82,7 @@ app.post('/sign-bitcoin-message', (req, res) => {
         privateKey,
         keyPair.compressed
     );
+
     res.send(signature.toString('base64'));
 });
 
@@ -102,6 +107,7 @@ app.post('/verify-bitcoin-message', (req, res) => {
     if (address === undefined) {
         throw new Error('Invalid address');
     }
+
     res.send(bitcoinMessage.verify(message, address, signature));
 });
 
@@ -129,16 +135,20 @@ app.post('/fail-to-verify-bitcoin-message', (req, res) => {
     if (address === undefined) {
         throw new Error('Invalid address');
     }
+
     res.send(bitcoinMessage.verify(message, address, signature));
 });
 
-// The following endpoints are not for our tests or examples but rather help to
-// illustrate some of the different features of creating transactions. Each of
-// these return the same transaction as in /create-transaction
+// The following endpoints (/create-transaction-from-known-hex, and
+// /create-transaction-from-deconstructed-transaction) are not for our tests or
+// examples but rather help to illustrate some of the different features of
+// creating transactions. Each of these return the same transaction as in
+// /create-transaction
 app.post('/create-transaction-from-known-hex', (req, res) => {
     const transactionHex =
         '02000000018689302ea03ef5dd56fb7940a867f9240fa811eddeb0fa4c87ad9ff3728f5e110000000000ffffffff01983a0000000000001976a914ad618cf4333b3b248f9744e8e81db2964d0ae39788ac00000000';
     const transaction = bitcoin.Transaction.fromHex(transactionHex);
+
     res.send(transaction.toBuffer().toString('hex'));
 });
 
@@ -177,11 +187,6 @@ app.post('/create-psbt', (req, res) => {
     const keyPair = ECPair.fromWIF(
         'L2uPYXe17xSTqbCjZvL2DsyXPCbXspvcu5mHLDYUgzdUbZGSKrSr'
     );
-    // const things = new bitcoin.Transaction();
-    // const transactionBuilder = new bitcoin.Transaction();
-    // bitcoin.Transaction.fromHex();
-    // // things.addInput()
-    // things.addOutput('1Gokm82v6DmtwKEB8AiVhm82hyFSsEvBDK', 15000);
     const psbt = new bitcoin.Psbt();
     psbt.addInput({
         // if hash is string, txid, if hash is Buffer, is reversed compared to txid
@@ -209,15 +214,16 @@ app.post('/create-psbt', (req, res) => {
     });
     psbt.addOutput({
         address: '1KRMKfeZcmosxALVYESdPNez1AP1mEtywp',
-        value: 80000
+        value: 80_000
     });
     psbt.signInput(0, keyPair);
     psbt.validateSignaturesOfInput(0, validator);
     psbt.finalizeAllInputs();
+
     res.send(psbt.extractTransaction().toHex());
 });
 
-// The following endpoints do signatures with the ECPair sign
+// The following endpoints sign messages with ECPair sign
 app.post('/ecpair-sign-bitcoin-message', (req, res) => {
     const keyPair = ECPair.fromWIF(
         'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
@@ -226,6 +232,7 @@ app.post('/ecpair-sign-bitcoin-message', (req, res) => {
     const message = Buffer.from('This is an example of a signed message');
     const hash = bitcoin.crypto.sha256(message);
     const signature = keyPair.sign(hash);
+
     res.send(signature.toString('base64'));
 });
 
@@ -237,6 +244,7 @@ app.post('/ecpair-verify-bitcoin-message', (req, res) => {
     const message = Buffer.from('This is an example of a signed message');
     const hash = bitcoin.crypto.sha256(message);
     const signature = keyPair.sign(hash);
+
     res.send(keyPair.verify(hash, signature));
 });
 
@@ -251,6 +259,7 @@ app.post('/ecpair-fail-to-verify-bitcoin-message', (req, res) => {
     const message = Buffer.from('This is an example of a signed message');
     const hash = bitcoin.crypto.sha256(message);
     const signature = keyPair.sign(hash);
+
     res.send(wrongKeyPair.verify(hash, signature));
 });
 

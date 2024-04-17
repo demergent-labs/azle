@@ -1,6 +1,3 @@
-import * as dns from 'node:dns';
-dns.setDefaultResultOrder('ipv4first');
-
 import { Test } from 'azle/test';
 
 import { getBitcoinTests } from './bitcoin';

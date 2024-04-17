@@ -40,11 +40,11 @@ app.post('/create-transaction', (req, res) => {
         outputIndex: 0,
         address: privateKey.toAddress(),
         script: '76a91447862fe165e6121af80d5dde1ecb478ed170565b88ac',
-        satoshis: 50000
+        satoshis: 50_000
     });
     const transaction = new Transaction()
         .from([utxo])
-        .to('1Gokm82v6DmtwKEB8AiVhm82hyFSsEvBDK', 15000)
+        .to('1Gokm82v6DmtwKEB8AiVhm82hyFSsEvBDK', 15_000)
         .sign(privateKey);
 
     res.send(transaction.toString());
