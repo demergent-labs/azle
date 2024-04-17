@@ -29,9 +29,6 @@ export function InspectMessageMethodArb(constraints: {
             VoidArb(),
             CallbackLocationArb,
             UniqueIdentifierArb('globalNames')
-            // TODO: This unique id would be better named globalScope or something
-            // But needs to match the same scope as typeDeclarations so I'm using
-            // that for now.
         )
         .map(
             ([
