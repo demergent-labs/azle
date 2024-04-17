@@ -8,6 +8,8 @@ async function pretest() {
     execSync(`dfx deploy`, {
         stdio: 'inherit'
     });
+
+    execSync(`cd ../bitcore-lib && npm install`, { stdio: 'inherit' });
 }
 
 pretest();
