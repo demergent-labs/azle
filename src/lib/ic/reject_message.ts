@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { ic } from '../../lib/ic'; // Used for links in comments
 import { text } from '../candid/types/primitive/text';
 
 /**

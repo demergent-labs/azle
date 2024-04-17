@@ -38,9 +38,23 @@ export async function createAnonymousAgent() {
     }
 }
 
+/**
+ * Returns an agent authenticated with the identity with the given name.
+ *
+ * Generates a new identity with the given name if shouldGenerateIdentity and
+ * the identity doesn't already exist.
+ *
+ * @param identityName
+ * @returns
+ */
 export async function createAuthenticatedAgent(
-    identityName: string
+    identityName: string,
+    shouldGenerateIdentity: boolean = false
 ): Promise<HttpAgent> {
+    if (shouldGenerateIdentity && !identityExists(identityName)) {
+        generateIdentity(identityName);
+    }
+
     const agent = new HttpAgent({
         host: getAgentHost(),
         identity: getSecp256k1KeyIdentity(identityName)
@@ -49,6 +63,34 @@ export async function createAuthenticatedAgent(
     if (process.env.DFX_NETWORK !== 'ic') {
         await agent.fetchRootKey();
     }
+
+    return agent;
+}
+
+/**
+ * Returns an agent authenticated with the identity with the given name.
+ *
+ * Generates a new identity with the given name if shouldGenerateIdentity and
+ * the identity doesn't already exist.
+ *
+ * IMPORTANT: In order to be synchronous this call will not fetch the root key.
+ * If you are not on mainnet you will need to fetch the root key separately.
+ *
+ * @param identityName
+ * @returns
+ */
+export function createAuthenticatedAgentSync(
+    identityName: string,
+    shouldGenerateIdentity: boolean = false
+): HttpAgent {
+    if (shouldGenerateIdentity && !identityExists(identityName)) {
+        generateIdentity(identityName);
+    }
+
+    const agent = new HttpAgent({
+        host: getAgentHost(),
+        identity: getSecp256k1KeyIdentity(identityName)
+    });
 
     return agent;
 }
