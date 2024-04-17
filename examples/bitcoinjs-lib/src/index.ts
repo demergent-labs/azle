@@ -44,7 +44,7 @@ app.get('/get-private-key-wif', (req, res) => {
 });
 
 app.post('/create-transaction', (req, res) => {
-    const transaction = new bitcoin.Transaction();
+    let transaction = new bitcoin.Transaction();
     transaction.version = 2;
 
     const prevTxId =
