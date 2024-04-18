@@ -10,7 +10,7 @@
 -   [Authentication](./authentication.md)
 -   [fetch](./fetch.md)
 -   [Databases]()
--   [npm]()
+-   [npm](./npm.md)
 -   [Cycles]()
 -   [Tokens]()
 -   [Bitcoin]()
