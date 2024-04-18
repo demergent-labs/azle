@@ -140,6 +140,7 @@ app.listen();
 
 Examples:
 
+-   [ckbtc](https://github.com/demergent-labs/azle/tree/main/examples/ckbtc)
 -   [fetch_ic](https://github.com/demergent-labs/azle/tree/main/examples/fetch_ic)
 -   [internet_identity](https://github.com/demergent-labs/azle/tree/main/examples/internet_identity)
 
