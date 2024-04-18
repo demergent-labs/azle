@@ -1,6 +1,8 @@
-# Assets
+# Assets TL;DR
 
-You can specify static assets (essentially files and folders) to be automatically included in your canister during deploy. You can specify assets using the `assets` property of your `dfx.json` file:
+You can automatically copy static assets (essentially files and folders) into your canister's filesystem during deploy by using the `assets`, `assets_large` and `build_assets` properties of the canister object in your project's `dfx.json` file.
+
+Here's an example that copies the `src/frontend/dist` directory on the deploying machine into the `dist` directory of the canister, using the `assets` and `build_assets` properties:
 
 ```json
 {
@@ -30,51 +32,22 @@ You can specify static assets (essentially files and folders) to be automaticall
 }
 ```
 
-Let's focus on the `assets` property:
+The `assets` property is an array of tuples, where the first element of the tuple is the source directory on the deploying machine, and the second element of the tuple is the destination directory in the canister. Use `assets` for total assets under ~90 MiB in size.
 
-```json
-"assets": [["src/frontend/dist", "dist"]],
-```
+The `build_assets` property allows you to specify custom terminal commands that will run before Azle copies the assets into the canister. You can use `build_assets` to build your frontend code for example. In this case we are running `npm run build`, which refers to an npm script that we have specified in our `package.json` file.
 
-We are instructing Azle to include the `src/frontend/dist` directory at the `dist` directory of the Azle canister.
+There is also an `assets_large` property that works similarly to the `assets` property, but allows for total assets up to ~2 GiB in size. We are working on increasing this limit further.
 
-Azle canisters have their own file system separate from their host (i.e. your computer). You must load files into the Azle file system somehow. Using the `assets` property of `dfx.json` is one of those ways. You can also manually upload files yourself by creating endpoints and using `fs` to write to the filesystem. To do this you will have to split all files into chunks of 2 MiB or less to upload them. We are working on a way to allow automatic uploading of files.
-
-There is a ~90 MiB limit for the `assets` property. The hard limit for a single canister will be 400 GiB currently. We are working on a way to automatically upload files for you.
+Once you have loaded assets into your canister, they are accessible from that canister's filesystem. Here's an example of using the Express static middleware to serve a frontend from the canister's filesystem:
 
 ```typescript
-import { Server } from 'azle';
-import express, { Request } from 'express';
+import express from 'express';
 
-let db = {
-    hello: ''
-};
+const app = express();
 
-export default Server(() => {
-    const app = express();
-
-    app.use(express.json());
-
-    app.get('/db', (req, res) => {
-        res.json(db);
-    });
-
-    app.post('/db/update', (req: Request<any, any, typeof db>, res) => {
-        db = req.body;
-
-        res.json(db);
-    });
-
-    app.use(express.static('/dist'));
-
-    return app.listen();
-});
-```
-
-```typescript
 app.use(express.static('/dist'));
+
+app.listen();
 ```
 
-TODO show an example of chunk uploading? Maybe we should just implement a simple chunk uploader so that they could at least do it?
-
-TODO also describe the build_assets property
+Assuming the `/dist` directory in the canister has an appropriate `index.html` file, this canister would serve a frontend at its URL when loaded in a web browser.

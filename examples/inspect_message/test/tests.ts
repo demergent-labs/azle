@@ -12,6 +12,7 @@ export function getTests(
             test: async () => {
                 try {
                     const result = await inspectMessageCanister.accessible();
+
                     return {
                         Ok: result === true
                     };
@@ -28,14 +29,13 @@ export function getTests(
             test: async () => {
                 try {
                     await inspectMessageCanister.inaccessible();
+
                     return {
                         Ok: false
                     };
-                } catch (error) {
+                } catch (error: any) {
                     return {
-                        Ok: ((error as any).message as string).includes(
-                            'IC0516'
-                        )
+                        Ok: error.message.includes('IC0406')
                     };
                 }
             }
@@ -49,11 +49,9 @@ export function getTests(
                     return {
                         Ok: false
                     };
-                } catch (error) {
+                } catch (error: any) {
                     return {
-                        Ok: ((error as any).message as string).includes(
-                            'IC0503'
-                        )
+                        Ok: error.message.includes('IC0503')
                     };
                 }
             }
