@@ -1,15 +1,17 @@
-import { execSync } from 'child_process';
+import { IOType } from 'child_process';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
 import { copySync } from 'fs-extra';
 import { join } from 'path';
 
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
+import { execSyncPretty } from './utils/exec_sync_pretty';
 import { JSCanisterConfig, Toml } from './utils/types';
 
 export function prepareRustStagingArea(
     canisterConfig: JSCanisterConfig,
     canisterPath: string,
-    canisterJavaScript: string
+    canisterJavaScript: string,
+    stdioType: IOType
 ) {
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
         canisterConfig.opt_level ?? '0'
@@ -44,7 +46,7 @@ export function prepareRustStagingArea(
         canisterConfig.build_assets !== undefined &&
         canisterConfig.build_assets !== null
     ) {
-        execSync(canisterConfig.build_assets);
+        execSyncPretty(canisterConfig.build_assets, stdioType);
     }
 
     for (const [src, dest] of canisterConfig.assets ?? []) {
