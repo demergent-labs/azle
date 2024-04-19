@@ -7,7 +7,7 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
             hash_file_by_parts(&path, 0)
         }
 
-        #[ic_cdk_macros::query(guard = is_authenticated)]
+        #[ic_cdk_macros::query(guard = guard_against_non_controllers)]
         pub fn get_file_hash(path: String) -> Option<String> {
             Some(
                 load_hashes()
@@ -19,7 +19,7 @@ pub fn get_hash_file() -> proc_macro2::TokenStream {
             )
         }
 
-        #[ic_cdk_macros::query(guard = is_authenticated)]
+        #[ic_cdk_macros::query(guard = guard_against_non_controllers)]
         pub fn get_hash_status(path: String) -> Option<(u64, u64)> {
             Some((get_bytes_hashed(&path), get_file_size(&path)?))
         }

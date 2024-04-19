@@ -6,7 +6,6 @@ import { getCandidAndCanisterMethods } from './get_candid_and_canister_methods';
 import { getCanisterJavaScript } from './get_canister_javascript';
 import { getNamesAfterCli, getNamesBeforeCli } from './get_names';
 import { handleCli } from './handle_cli';
-import { logAutoreloadWarning } from './log_auto_reload_warning';
 import { prepareDockerImage } from './prepare_docker_image';
 import { prepareRustStagingArea } from './prepare_rust_staging_area';
 import { logSuccess, time, unwrap } from './utils';
@@ -128,8 +127,6 @@ async function azle() {
     );
 
     logSuccess(canisterName, canisterId, replicaWebServerPort);
-
-    logAutoreloadWarning();
 }
 
 function createAzleDirectories() {
