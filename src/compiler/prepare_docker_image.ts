@@ -1,8 +1,9 @@
-import { execSync, IOType } from 'child_process';
+import { IOType } from 'child_process';
 import { existsSync } from 'fs';
 
 import { version as azleVersion } from '../../package.json';
 import { yellow } from './utils/colors';
+import { execSyncPretty } from './utils/exec_sync_pretty';
 
 export function prepareDockerImage(
     stdioType: IOType,
@@ -39,18 +40,14 @@ function initAndStartVm(stdioType: IOType) {
 
     // TODO detect mac and only run these commands on mac
 
-    execSync(
+    execSyncPretty(
         `if [ "$(uname -s)" != "Linux" ]; then podman machine init || true; fi`,
-        {
-            stdio: stdioType
-        }
+        stdioType
     );
 
-    execSync(
+    execSyncPretty(
         `if [ "$(uname -s)" != "Linux" ]; then podman machine start || true; fi`,
-        {
-            stdio: stdioType
-        }
+        stdioType
     );
 }
 
@@ -94,9 +91,7 @@ function hasImageAlreadyBeenLoaded(
     dockerImageName: string
 ): boolean {
     try {
-        execSync(`podman image inspect ${dockerImageName}`, {
-            stdio: stdioType
-        });
+        execSyncPretty(`podman image inspect ${dockerImageName}`, stdioType);
 
         return true;
     } catch (error) {
@@ -111,9 +106,7 @@ function loadExistingLocalImage(
     if (existsSync(dockerImagePathTar)) {
         console.info(yellow(`\nLoading image...\n`));
 
-        execSync(`podman load -i ${dockerImagePathTar}`, {
-            stdio: 'inherit'
-        });
+        execSyncPretty(`podman load -i ${dockerImagePathTar}`, 'inherit');
 
         return true;
     }
@@ -121,13 +114,9 @@ function loadExistingLocalImage(
     if (existsSync(dockerImagePathTarGz)) {
         console.info(yellow(`\nLoading image...\n`));
 
-        execSync(`gzip -d ${dockerImagePathTarGz}`, {
-            stdio: 'inherit'
-        });
+        execSyncPretty(`gzip -d ${dockerImagePathTarGz}`, 'inherit');
 
-        execSync(`podman load -i ${dockerImagePathTar}`, {
-            stdio: 'inherit'
-        });
+        execSyncPretty(`podman load -i ${dockerImagePathTar}`, 'inherit');
 
         return true;
     }
@@ -141,18 +130,17 @@ function buildAndLoadImageWithDockerfile(
 ) {
     console.info(yellow(`\nBuilding image...\n`));
 
-    execSync(
+    execSyncPretty(
         `podman build -f ${__dirname}/Dockerfile -t ${dockerImageName} ${__dirname}`,
-        {
-            stdio: 'inherit'
-        }
+        'inherit'
     );
 
     console.info(yellow(`\nSaving image...\n`));
 
-    execSync(`podman save -o ${dockerImagePathTar} ${dockerImageName}`, {
-        stdio: 'inherit'
-    });
+    execSyncPretty(
+        `podman save -o ${dockerImagePathTar} ${dockerImageName}`,
+        'inherit'
+    );
 
     console.info(yellow(`\nCompiling...`));
 }
@@ -164,11 +152,9 @@ function downloadAndLoadRemoteImage(
 ) {
     console.info(yellow(`\nDownloading image...\n`));
 
-    execSync(
+    execSyncPretty(
         `curl -L -f https://github.com/demergent-labs/azle/releases/download/${azleVersion}/${dockerImageName}.tar.gz -o ${dockerImagePathTarGz}`,
-        {
-            stdio: 'inherit'
-        }
+        'inherit'
     );
 
     loadExistingLocalImage(dockerImagePathTar, dockerImagePathTarGz);
@@ -182,19 +168,17 @@ function createAndStartContainer(
     dockerContainerName: string,
     wasmedgeQuickJsPath: string
 ) {
-    execSync(
+    execSyncPretty(
         `podman create --name ${dockerContainerName} ${dockerImageName} tail -f /dev/null || true`,
-        { stdio: stdioType }
+        stdioType
     );
 
-    execSync(`podman start ${dockerContainerName}`, {
-        stdio: stdioType
-    });
+    execSyncPretty(`podman start ${dockerContainerName}`, stdioType);
 
     if (!existsSync(wasmedgeQuickJsPath)) {
-        execSync(
+        execSyncPretty(
             `podman cp ${dockerContainerName}:/wasmedge-quickjs ${wasmedgeQuickJsPath}`,
-            { stdio: stdioType }
+            stdioType
         );
     }
 }

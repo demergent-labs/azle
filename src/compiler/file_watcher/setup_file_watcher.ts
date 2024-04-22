@@ -1,5 +1,7 @@
-import { execSync, spawn } from 'child_process';
+import { spawn } from 'child_process';
 import { join } from 'path';
+
+import { execSyncPretty } from '../utils/exec_sync_pretty';
 
 export function setupFileWatcher(
     reloadedJsPath: string,
@@ -14,7 +16,7 @@ export function setupFileWatcher(
         // TODO should we figure out why the || true
         // TODO does not result in a 0 exit code
         // TODO and look into removing the try catch?
-        execSync(`pkill -f ./file_watcher_loader.js || true`);
+        execSyncPretty(`pkill -f ./file_watcher_loader.js || true`);
     } catch (error) {
         // For some reason pkill throws even with || true
     }

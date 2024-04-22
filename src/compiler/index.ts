@@ -86,7 +86,8 @@ async function azle() {
             prepareRustStagingArea(
                 canisterConfig,
                 canisterPath,
-                canisterJavaScript
+                canisterJavaScript,
+                stdioType
             );
 
             const { candid, canisterMethods } = getCandidAndCanisterMethods(
