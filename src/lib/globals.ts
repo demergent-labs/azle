@@ -108,7 +108,16 @@ if (globalThis._azleInsideCanister) {
 
     globalThis.Buffer = Buffer;
 
-    globalThis.process = process;
+    globalThis.process = {
+        ...process,
+        stdout: {
+            write: (message: string) => console.info(message)
+        } as any,
+        stderr: {
+            write: (message: string) => console.error(message)
+        } as any
+    };
+
     globalThis.clearInterval = () => {}; // TODO should this throw an error or just not do anything? At least a warning would be good right?
 
     globalThis.global = globalThis;
@@ -144,4 +153,24 @@ if (globalThis._azleInsideCanister) {
     (globalThis as any).fetch = azleFetch;
 
     (globalThis as any).URL = URL;
+
+    // Unfortunately NestJS need RegExp.leftContext to work
+    const originalExec = RegExp.prototype.exec;
+
+    Object.defineProperty(RegExp.prototype, 'leftContext', {
+        value: '',
+        writable: true,
+        configurable: true
+    });
+
+    RegExp.prototype.exec = function (string) {
+        const match = originalExec.call(this, string);
+        if (match) {
+            RegExp.leftContext = (string ?? '').substring(0, match.index);
+        }
+        return match;
+    };
+
+    global.Intl = require('intl');
+    require('intl/locale-data/jsonp/en.js');
 }

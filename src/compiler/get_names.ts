@@ -95,6 +95,8 @@ export function getNamesAfterCli() {
         'main_reloaded.js'
     );
 
+    const npmExternal = canisterConfig.npm_external ?? [];
+
     return {
         canisterName,
         canisterPath,
@@ -105,7 +107,8 @@ export function getNamesAfterCli() {
         rustStagingCandidPath,
         rustStagingWasmPath,
         canisterId,
-        reloadedJsPath
+        reloadedJsPath,
+        npmExternal
     };
 }
 

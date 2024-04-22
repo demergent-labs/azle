@@ -7,13 +7,15 @@ import {
     TsSyntaxErrorLocation
 } from './utils/types';
 
-export function getCanisterJavaScript(
+export async function getCanisterJavaScript(
     mainPath: string,
-    wasmedgeQuickJsPath: string
-): Result<string, AzleError> {
-    const typeScriptCompilationResult = compileTypeScriptToJavaScript(
+    wasmedgeQuickJsPath: string,
+    npmExternal: string[]
+): Promise<Result<string, AzleError>> {
+    const typeScriptCompilationResult = await compileTypeScriptToJavaScript(
         mainPath,
-        wasmedgeQuickJsPath
+        wasmedgeQuickJsPath,
+        npmExternal
     );
 
     if (!ok(typeScriptCompilationResult)) {

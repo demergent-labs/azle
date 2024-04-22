@@ -40,7 +40,7 @@ async function reloadJs(
     mainPath: string,
     wasmedgeQuickJsPath: string
 ) {
-    const canisterJavaScriptResult = getCanisterJavaScript(
+    const canisterJavaScriptResult = await getCanisterJavaScript(
         mainPath,
         wasmedgeQuickJsPath
     );

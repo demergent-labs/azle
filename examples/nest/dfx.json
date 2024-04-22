@@ -1,0 +1,24 @@
+{
+    "canisters": {
+        "api": {
+            "type": "custom",
+            "main": "src/main.ts",
+            "candid": ".azle/api/main.did",
+            "candid_gen": "http",
+            "build": "npx azle api",
+            "wasm": ".azle/api/api.wasm",
+            "gzip": true,
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": ".azle/api/main.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ],
+            "npm_external": ["@nestjs/microservices", "@nestjs/websockets"]
+        }
+    }
+}
