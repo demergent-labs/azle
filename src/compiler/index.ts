@@ -61,7 +61,8 @@ async function azle() {
         canisterId,
         canisterConfig.main,
         wasmedgeQuickJsPath,
-        replicaWebServerPort
+        esmAliases,
+        esmExternals
     );
 
     await time(

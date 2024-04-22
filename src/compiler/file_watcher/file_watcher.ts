@@ -10,6 +10,8 @@ const reloadedJsPath = process.argv[2];
 const canisterId = process.argv[3];
 const mainPath = process.argv[4];
 const wasmedgeQuickJsPath = process.argv[5];
+const esmAliases = JSON.parse(process.argv[6]);
+const esmExternals = JSON.parse(process.argv[7]);
 
 // TODO https://github.com/demergent-labs/azle/issues/1664
 watch(process.cwd(), {
@@ -42,7 +44,9 @@ async function reloadJs(
 ) {
     const canisterJavaScriptResult = await getCanisterJavaScript(
         mainPath,
-        wasmedgeQuickJsPath
+        wasmedgeQuickJsPath,
+        esmAliases,
+        esmExternals
     );
 
     if (!ok(canisterJavaScriptResult)) {
