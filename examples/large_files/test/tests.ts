@@ -43,7 +43,7 @@ export function getTests(canisterId: string): Test[] {
                 } catch (err: any) {
                     return {
                         Ok: err.message.includes(
-                            'Not Authorized: must be a controller to call this method'
+                            'Not Authorized: only controllers of this canister may call this method'
                         )
                     };
                 }
@@ -62,7 +62,7 @@ export function getTests(canisterId: string): Test[] {
                 } catch (err: any) {
                     return {
                         Ok: err.message.includes(
-                            'Not Authorized: must be a controller to call this method'
+                            'Not Authorized: only controllers of this canister may call this method'
                         )
                     };
                 }
@@ -81,7 +81,7 @@ export function getTests(canisterId: string): Test[] {
                 } catch (err: any) {
                     return {
                         Ok: err.message.includes(
-                            'Not Authorized: must be a controller to call this method'
+                            'Not Authorized: only controllers of this canister may call this method'
                         )
                     };
                 }
@@ -100,7 +100,7 @@ export function getTests(canisterId: string): Test[] {
                 } catch (err: any) {
                     return {
                         Ok: err.message.includes(
-                            'Not Authorized: must be a controller to call this method'
+                            'Not Authorized: only controllers of this canister may call this method'
                         )
                     };
                 }
