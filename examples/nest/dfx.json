@@ -18,7 +18,7 @@
                     "content": "azle"
                 }
             ],
-            "npm_external": ["@nestjs/microservices", "@nestjs/websockets"]
+            "esm_externals": ["@nestjs/microservices", "@nestjs/websockets"]
         }
     }
 }

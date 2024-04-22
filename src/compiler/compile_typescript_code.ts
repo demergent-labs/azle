@@ -9,7 +9,8 @@ import { JavaScript, TypeScript } from './utils/types';
 export async function compileTypeScriptToJavaScript(
     main: string,
     wasmedgeQuickJsPath: string,
-    npmExternal: string[]
+    esmAliases: Record<string, string>,
+    esmExternals: string[]
 ): Promise<Result<JavaScript, unknown>> {
     try {
         const imports = `
@@ -64,7 +65,8 @@ export async function compileTypeScriptToJavaScript(
             ${imports}
 `,
             wasmedgeQuickJsPath,
-            npmExternal
+            esmAliases,
+            esmExternals
         );
 
         return {
@@ -78,7 +80,8 @@ export async function compileTypeScriptToJavaScript(
 export async function bundleFromString(
     ts: TypeScript,
     wasmedgeQuickJsPath: string,
-    npmExternal: string[]
+    esmAliases: Record<string, string>,
+    esmExternals: string[]
 ): Promise<JavaScript> {
     const finalWasmedgeQuickJsPath =
         process.env.AZLE_WASMEDGE_QUICKJS_DIR ?? wasmedgeQuickJsPath;
@@ -98,7 +101,7 @@ export async function bundleFromString(
 
     // These are modules that should not be included in the build from the developer side
     // These are specified in the dfx.json canister object npm_external property
-    const externalNotImplementedDev = npmExternal;
+    const externalNotImplementedDev = esmExternals;
 
     // These will cause runtime errors if their functionality is dependend upon
     const externalNotImplemented = [
@@ -147,7 +150,8 @@ export async function bundleFromString(
                 __dirname,
                 'custom_js_modules/async_hooks.ts'
             ),
-            https: path.join(__dirname, 'custom_js_modules/https.ts')
+            https: path.join(__dirname, 'custom_js_modules/https.ts'),
+            ...esmAliases
         },
         external: [...externalImplemented, ...externalNotImplemented],
         plugins: [esbuildPluginTsc()]

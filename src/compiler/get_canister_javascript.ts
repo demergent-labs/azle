@@ -10,12 +10,14 @@ import {
 export async function getCanisterJavaScript(
     mainPath: string,
     wasmedgeQuickJsPath: string,
-    npmExternal: string[]
+    esmAliases: Record<string, string>,
+    esmExternals: string[]
 ): Promise<Result<string, AzleError>> {
     const typeScriptCompilationResult = await compileTypeScriptToJavaScript(
         mainPath,
         wasmedgeQuickJsPath,
-        npmExternal
+        esmAliases,
+        esmExternals
     );
 
     if (!ok(typeScriptCompilationResult)) {

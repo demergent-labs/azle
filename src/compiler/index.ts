@@ -52,7 +52,8 @@ async function azle() {
         rustStagingWasmPath,
         canisterId,
         reloadedJsPath,
-        npmExternal
+        esmAliases,
+        esmExternals
     } = getNamesAfterCli();
 
     setupFileWatcher(
@@ -84,7 +85,8 @@ async function azle() {
                 await getCanisterJavaScript(
                     canisterConfig.main,
                     wasmedgeQuickJsPath,
-                    npmExternal
+                    esmAliases,
+                    esmExternals
                 )
             );
 
