@@ -6,8 +6,11 @@
             "candid_gen": "automatic",
             "env": ["SOME_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
             "assets": [
-                ["src/some_canister/index.did", "src/some_canister.did"],
-                ["src/nonexistent.did", "src/nonexistent.did"]
+                [
+                    ".azle/some_canister/some_canister.did",
+                    "candid/some_canister.did"
+                ],
+                ["src/nonexistent.did", "candid/nonexistent.did"]
             ],
             "declarations": {
                 "output": "test/dfx_generated/rejections",

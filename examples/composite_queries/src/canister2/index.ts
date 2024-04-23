@@ -45,7 +45,7 @@ export default Canister({
                 `icp://${getCanister3Principal()}/deepQuery`,
                 {
                     body: serialize({
-                        candidPath: `/src/canister3.did`
+                        candidPath: `/candid/canister3.did`
                     })
                 }
             );

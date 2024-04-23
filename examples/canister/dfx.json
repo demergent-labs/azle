@@ -5,7 +5,12 @@
             "main": "src/index.ts",
             "candid_gen": "automatic",
             "env": ["SOME_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [["src/some_canister.did", "src/some_canister.did"]],
+            "assets": [
+                [
+                    ".azle/some_canister/some_canister.did",
+                    "candid/some_canister.did"
+                ]
+            ],
             "declarations": {
                 "output": "test/dfx_generated/canister",
                 "node_compatibility": true

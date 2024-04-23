@@ -1,7 +1,7 @@
 {
     "canisters": {
         "counter": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/index.ts",
             "candid_gen": "automatic",
             "declarations": {

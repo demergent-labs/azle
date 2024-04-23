@@ -29,7 +29,7 @@ export default Canister({
                 `icp://${getCanister2Principal()}/transfer`,
                 {
                     body: serialize({
-                        candidPath: '/src/canister2/index.did',
+                        candidPath: '/candid/canister2.did',
                         args: [from, to, amount]
                     })
                 }
@@ -49,7 +49,7 @@ export default Canister({
                 `icp://${getCanister2Principal()}/balance`,
                 {
                     body: serialize({
-                        candidPath: '/src/canister2/index.did',
+                        candidPath: '/candid/canister2.did',
                         args: [id]
                     })
                 }
@@ -69,7 +69,7 @@ export default Canister({
                 `icp://${getCanister2Principal()}/account`,
                 {
                     body: serialize({
-                        candidPath: '/src/canister2/index.did',
+                        candidPath: '/candid/canister2.did',
                         args: [args]
                     })
                 }
@@ -93,7 +93,7 @@ export default Canister({
                 `icp://${getCanister2Principal()}/accounts`,
                 {
                     body: serialize({
-                        candidPath: '/src/canister2/index.did',
+                        candidPath: '/candid/canister2.did',
                         args: []
                     })
                 }
@@ -113,7 +113,7 @@ export default Canister({
                 `icp://${getCanister2Principal()}/trap`,
                 {
                     body: serialize({
-                        candidPath: '/src/canister2/index.did',
+                        candidPath: '/candid/canister2.did',
                         args: []
                     })
                 }

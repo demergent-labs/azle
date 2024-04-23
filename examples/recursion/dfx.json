@@ -7,8 +7,8 @@
             "env": ["MY_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
             "assets": [
                 [
-                    "src/recursive_canister/index.did",
-                    "src/recursive_canister.did"
+                    ".azle/recursive_canister/recursive_canister.did",
+                    "candid/recursive_canister.did"
                 ]
             ],
             "declarations": {

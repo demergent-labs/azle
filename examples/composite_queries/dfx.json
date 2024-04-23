@@ -11,9 +11,9 @@
                 "AZLE_TEST_FETCH"
             ],
             "assets": [
-                ["src/canister1/index.did", "src/canister1.did"],
-                ["src/canister2/index.did", "src/canister2.did"],
-                ["src/canister3/index.did", "src/canister3.did"]
+                [".azle/canister1/canister1.did", "candid/canister1.did"],
+                [".azle/canister2/canister2.did", "candid/canister2.did"],
+                [".azle/canister3/canister3.did", "candid/canister3.did"]
             ],
             "declarations": {
                 "output": "test/dfx_generated/canister1",
@@ -25,7 +25,9 @@
             "main": "src/canister2/index.ts",
             "candid_gen": "automatic",
             "env": ["CANISTER3_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [["src/canister3/index.did", "src/canister3.did"]],
+            "assets": [
+                [".azle/canister3/canister3.did", "candid/canister3.did"]
+            ],
             "declarations": {
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true

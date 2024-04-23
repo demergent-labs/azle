@@ -10,13 +10,16 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(`dfx canister create cycles`, {
+    execSync(`dfx deploy cycles`, {
         stdio: 'inherit'
     });
 
-    execSync(`CYCLES_PRINCIPAL=${getCanisterId('cycles')} dfx deploy`, {
-        stdio: 'inherit'
-    });
+    execSync(
+        `CYCLES_PRINCIPAL=${getCanisterId('cycles')} dfx deploy intermediary`,
+        {
+            stdio: 'inherit'
+        }
+    );
 
     execSync(`dfx generate`, {
         stdio: 'inherit'
