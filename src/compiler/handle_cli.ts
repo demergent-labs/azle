@@ -1,5 +1,6 @@
 import { IOType } from 'child_process';
 import { rmSync } from 'fs';
+import { join } from 'path';
 
 import { version as azleVersion } from '../../package.json';
 import { uploadFiles } from './file_uploader';
@@ -42,6 +43,12 @@ export function handleCli(
 
     if (commandName === '--version') {
         handleVersionCommand();
+
+        return true;
+    }
+
+    if (commandName === 'install-dfx-extension') {
+        installDfxExtension(stdioType);
 
         return true;
     }
@@ -108,4 +115,15 @@ async function handleUploadAssets() {
 
 function handleVersionCommand() {
     console.info(azleVersion);
+}
+
+// TODO this is just temporary
+// TODO until we either make azle an official extension in the DFINITY dfx extensions repo
+// TODO or we have a better way for the developer to install the extension locally
+function installDfxExtension(stdioType: IOType) {
+    const dfxExtensionDirectoryPath = join(__dirname, '../../dfx_extension');
+    execSyncPretty(
+        `cd ${dfxExtensionDirectoryPath} && ./install.sh`,
+        stdioType
+    );
 }
