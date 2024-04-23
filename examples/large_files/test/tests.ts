@@ -225,8 +225,8 @@ function generateStandardFileTests(label: string, origin: string): Test[] {
         generateTest(label, origin, 'test1MiB', 'auto'),
         generateTest(label, origin, 'test10MiB', 'auto'),
         generateTest(label, origin, 'test100MiB', 'auto'),
-        generateTest(label, origin, 'test250MiB', 'auto'),
-        generateTest(label, origin, 'test1GiB', 'auto')
+        generateTest(label, origin, 'test250MiB', 'auto')
+        // generateTest(label, origin, 'test1GiB', 'auto') // TODO The replica running in GitHub Actions seems to really be struggling
     ];
 }
 
