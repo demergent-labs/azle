@@ -39,6 +39,7 @@ done
 
 npm install
 npm link
+npx azle install-dfx-extension
 dfx start --background
 cd examples/hello_world
 npm install
