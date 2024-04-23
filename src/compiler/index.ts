@@ -1,4 +1,6 @@
+import { IOType } from 'child_process';
 import { mkdirSync, writeFileSync } from 'fs';
+import { join } from 'path';
 
 import { compileRustCodeWithCandidAndCompilerInfo } from './compile_rust_code_with_candid_and_compiler_info';
 import { setupFileWatcher } from './file_watcher/setup_file_watcher';
@@ -8,14 +10,23 @@ import { getNamesAfterCli, getNamesBeforeCli } from './get_names';
 import { handleCli } from './handle_cli';
 import { prepareDockerImage } from './prepare_docker_image';
 import { prepareRustStagingArea } from './prepare_rust_staging_area';
-import { logSuccess, time, unwrap } from './utils';
+import { getStdIoType, logSuccess, time, unwrap } from './utils';
 import { green } from './utils/colors';
+import { execSyncPretty } from './utils/exec_sync_pretty';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { CompilerInfo } from './utils/types';
 
 azle();
 
 async function azle() {
+    // We must run this before getNamesBeforeCli because
+    // any dfx commands require the azle extension to be installed
+    if (process.argv[2] === 'install-dfx-extension') {
+        installDfxExtension(getStdIoType());
+
+        return;
+    }
+
     const {
         stdioType,
         dockerfileHash,
@@ -133,4 +144,15 @@ async function azle() {
 function createAzleDirectories() {
     mkdirSync(GLOBAL_AZLE_CONFIG_DIR, { recursive: true });
     mkdirSync('.azle', { recursive: true });
+}
+
+// TODO this is just temporary
+// TODO until we either make azle an official extension in the DFINITY dfx extensions repo
+// TODO or we have a better way for the developer to install the extension locally
+function installDfxExtension(stdioType: IOType) {
+    const dfxExtensionDirectoryPath = join(__dirname, '../../dfx_extension');
+    execSyncPretty(
+        `cd ${dfxExtensionDirectoryPath} && ./install.sh`,
+        stdioType
+    );
 }
