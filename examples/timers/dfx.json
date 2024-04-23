@@ -1,27 +1,14 @@
 {
     "canisters": {
         "timers": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/timers.ts",
-            "candid": "src/timers.did",
-            "build": "npx azle timers",
-            "wasm": ".azle/timers/timers.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
+            "env": ["AZLE_TEST_FETCH"],
             "declarations": {
                 "output": "test/dfx_generated/timers",
                 "node_compatibility": true
-            },
-            "env": ["AZLE_TEST_FETCH"],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/timers.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

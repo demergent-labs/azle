@@ -1,26 +1,13 @@
 {
     "canisters": {
         "call_raw": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/index.ts",
-            "build": "npx azle call_raw",
-            "candid": "src/index.did",
-            "wasm": ".azle/call_raw/call_raw.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/call_raw",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

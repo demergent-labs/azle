@@ -1,51 +1,25 @@
 {
     "canisters": {
         "func_types": {
-            "type": "custom",
+            "type": "azle",
             "main": "canisters/func_types/index.ts",
-            "candid": "canisters/func_types/index.did",
-            "build": "npx azle func_types",
-            "wasm": ".azle/func_types/func_types.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
+            "env": ["NOTIFIERS_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [["canisters/notifiers/index.did", "src/notifiers.did"]],
             "declarations": {
                 "output": "test/dfx_generated/func_types",
                 "node_compatibility": true
-            },
-            "env": ["NOTIFIERS_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [["canisters/notifiers/index.did", "src/notifiers.did"]],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "canisters/func_types/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         },
         "notifiers": {
-            "type": "custom",
+            "type": "azle",
             "main": "canisters/notifiers/index.ts",
-            "candid": "canisters/notifiers/index.did",
-            "build": "npx azle notifiers",
-            "wasm": ".azle/notifiers/notifiers.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
+            "env": ["NOTIFIERS_PRINCIPAL"],
             "declarations": {
                 "output": "test/dfx_generated/notifiers",
                 "node_compatibility": true
-            },
-            "env": ["NOTIFIERS_PRINCIPAL"],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "canisters/notifiers/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

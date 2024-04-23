@@ -29,23 +29,23 @@ export function getCanisterConfig(
         });
     }
 
-    const { main, candid } = canisterConfig;
+    // const { main, candid } = canisterConfig;
 
-    if (!main || !candid) {
-        const missingFields = [
-            ['"main"', main],
-            ['"candid"', candid]
-        ]
-            .filter(([_, value]) => !value)
-            .map(([field, _]) => field);
-        const fieldOrFields = missingFields.length === 1 ? 'field' : 'fields';
-        const missingFieldNames = missingFields.join(', ');
-        return Err({
-            error: `Missing ${fieldOrFields} ${missingFieldNames} in ./dfx.json`,
-            suggestion: `Make sure your dfx.json looks similar to the following:\n\n${exampleDfxJson}`,
-            exitCode: 4
-        });
-    }
+    // if (!main || !candid) {
+    //     const missingFields = [
+    //         ['"main"', main],
+    //         ['"candid"', candid]
+    //     ]
+    //         .filter(([_, value]) => !value)
+    //         .map(([field, _]) => field);
+    //     const fieldOrFields = missingFields.length === 1 ? 'field' : 'fields';
+    //     const missingFieldNames = missingFields.join(', ');
+    //     return Err({
+    //         error: `Missing ${fieldOrFields} ${missingFieldNames} in ./dfx.json`,
+    //         suggestion: `Make sure your dfx.json looks similar to the following:\n\n${exampleDfxJson}`,
+    //         exitCode: 4
+    //     });
+    // }
 
     if (require.main?.path === undefined) {
         throw new Error(`require.main?.path must be defined`);

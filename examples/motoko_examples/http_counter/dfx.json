@@ -1,22 +1,10 @@
 {
     "canisters": {
         "http_counter": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "build": "npx azle http_counter",
-            "wasm": ".azle/http_counter/http_counter.wasm",
-            "gzip": true,
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            "candid_gen": "automatic",
+            "gzip": true
         }
     }
 }

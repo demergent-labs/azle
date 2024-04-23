@@ -1,5 +1,0 @@
-service: () -> {
-    accept: () -> (bool) query;
-    error: () -> (empty) query;
-    reject: (text) -> (empty) query;
-}
