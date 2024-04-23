@@ -108,13 +108,19 @@ if (globalThis._azleInsideCanister) {
 
     globalThis.Buffer = Buffer;
 
+    // TODO These write implementations are not correct, they are just good enough
+    // TODO to get NestJS logging looking pretty good
     globalThis.process = {
         ...process,
         stdout: {
-            write: (message: string) => console.info(message)
+            write: (message: string) => {
+                stdioWrite(message);
+            }
         } as any,
         stderr: {
-            write: (message: string) => console.error(message)
+            write: (message: string) => {
+                stdioWrite(message);
+            }
         } as any
     };
 
@@ -173,4 +179,14 @@ if (globalThis._azleInsideCanister) {
 
     global.Intl = require('intl');
     require('intl/locale-data/jsonp/en.js');
+}
+
+function stdioWrite(message: string) {
+    // eslint-disable-next-line
+    const ansiEscapeRegex = /\u001b\[.*?m/g;
+    const newlineRegex = /\n/g;
+    const messageAnsiCodesRemoved = message
+        .replace(ansiEscapeRegex, '')
+        .replace(newlineRegex, '');
+    console.info(messageAnsiCodesRemoved);
 }
