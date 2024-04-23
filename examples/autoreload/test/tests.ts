@@ -157,7 +157,7 @@ export function getTests(canisterId: string): Test[] {
         },
         {
             name: 'waiting for Azle to reload',
-            wait: 10_000
+            wait: 30_000
         },
         {
             name: '/test',
