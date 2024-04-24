@@ -5,7 +5,6 @@
             "main": "src/index.ts",
             "candid_gen": "automatic",
             "env": ["AZLE_TEST_FETCH"],
-            "assets": [[".azle/whoami/whoami.did", "candid/whoami.did"]],
             "declarations": {
                 "output": "test/dfx_generated/whoami",
                 "node_compatibility": true

@@ -114,6 +114,8 @@ async function azle() {
                 nativeCompilation
             );
 
+            addCanisterDidToAssets(canisterPath, canisterName, candid);
+
             // This is for the dfx.json candid property
             writeFileSync(candidPath, candid);
 
@@ -154,5 +156,23 @@ function installDfxExtension(stdioType: IOType) {
     execSyncPretty(
         `cd ${dfxExtensionDirectoryPath} && ./install.sh`,
         stdioType
+    );
+}
+
+function addCanisterDidToAssets(
+    canisterPath: string,
+    canisterName: string,
+    candid: string
+) {
+    writeFileSync(
+        join(
+            canisterPath,
+            'canister',
+            'src',
+            'assets',
+            'candid',
+            `${canisterName}.did`
+        ),
+        candid
     );
 }
