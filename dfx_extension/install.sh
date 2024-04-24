@@ -1,3 +1,5 @@
+#!/bin/bash
+
 DFX_CACHE_DIR="$(dfx cache show)"
 dfx cache install
 mkdir -p "$DFX_CACHE_DIR/extensions/azle"
