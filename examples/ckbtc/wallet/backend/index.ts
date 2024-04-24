@@ -35,7 +35,7 @@ export default Canister({
                 `icp://${getCkBtcPrincipal()}/icrc1_balance_of`,
                 {
                     body: serialize({
-                        candidPath: `/candid/icrc.did`,
+                        candidPath: `/candid/icp/icrc.did`,
                         args: [
                             {
                                 owner: ic.id(),
@@ -146,7 +146,7 @@ export default Canister({
                     `icp://${getCkBtcPrincipal()}/icrc1_transfer`,
                     {
                         body: serialize({
-                            candidPath: `/candid/icrc.did`,
+                            candidPath: `/candid/icp/icrc.did`,
                             args: [
                                 {
                                     from_subaccount: [

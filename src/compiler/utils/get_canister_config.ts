@@ -57,11 +57,11 @@ export function getCanisterConfig(
             ...(canisterConfig.assets ?? []),
             [
                 join(require.main?.path, 'canisters', 'icrc', 'icrc.did'),
-                join('candid', 'icrc.did')
+                join('candid', 'icp', 'icrc.did')
             ],
             [
                 join(require.main?.path, 'canisters', 'management', 'ic.did'),
-                join('candid', 'aaaaa-aa.did')
+                join('candid', 'icp', 'management.did')
             ]
         ]
     });
