@@ -29,23 +29,20 @@ export function getCanisterConfig(
         });
     }
 
-    // const { main, candid } = canisterConfig;
+    const { main } = canisterConfig;
 
-    // if (!main || !candid) {
-    //     const missingFields = [
-    //         ['"main"', main],
-    //         ['"candid"', candid]
-    //     ]
-    //         .filter(([_, value]) => !value)
-    //         .map(([field, _]) => field);
-    //     const fieldOrFields = missingFields.length === 1 ? 'field' : 'fields';
-    //     const missingFieldNames = missingFields.join(', ');
-    //     return Err({
-    //         error: `Missing ${fieldOrFields} ${missingFieldNames} in ./dfx.json`,
-    //         suggestion: `Make sure your dfx.json looks similar to the following:\n\n${exampleDfxJson}`,
-    //         exitCode: 4
-    //     });
-    // }
+    if (main === undefined) {
+        const missingFields = [['"main"', main]]
+            .filter(([_, value]) => !value)
+            .map(([field, _]) => field);
+        const fieldOrFields = missingFields.length === 1 ? 'field' : 'fields';
+        const missingFieldNames = missingFields.join(', ');
+        return Err({
+            error: `Missing ${fieldOrFields} ${missingFieldNames} in ./dfx.json`,
+            suggestion: `Make sure your dfx.json looks similar to the following:\n\n${exampleDfxJson}`,
+            exitCode: 4
+        });
+    }
 
     if (require.main?.path === undefined) {
         throw new Error(`require.main?.path must be defined`);
@@ -71,13 +68,8 @@ function colorFormattedDfxJsonExample(canisterName: string): string {
     return `    ${yellow('{')}
         ${red('"canisters"')}: ${purple('{')}
             ${red(`"${canisterName}"`)}: ${blue('{')}
-                ${red('"type"')}: ${green('"custom"')},
-                ${red('"main"')}: ${green('"src/index.ts"')},
-                ${red('"build"')}: ${green(`"npx azle ${canisterName}"`)},
-                ${red('"candid"')}: ${green('"src/index.did"')},
-                ${red('"wasm"')}: ${green(
-                    `".azle/${canisterName}/${canisterName}.wasm"`
-                )},
+                ${red('"type"')}: ${green('"azle"')},
+                ${red('"main"')}: ${green('"src/index.ts"')}
             ${blue('}')}
         ${purple('}')}
     ${yellow('}')}`;
