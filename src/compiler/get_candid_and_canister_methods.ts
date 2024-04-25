@@ -7,7 +7,7 @@ import { generateCandidAndCanisterMethods } from './generate_candid_and_canister
 import { CandidGen, CanisterMethods, CompilerInfo } from './utils/types';
 
 export function getCandidAndCanisterMethods(
-    candidGen: CandidGen,
+    candidGen: CandidGen = 'http',
     candidPath: string,
     compilerInfoPath: string,
     dockerContainerName: string,
