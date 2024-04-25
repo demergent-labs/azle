@@ -5,7 +5,7 @@
         "test": "ts-node --transpile-only --ignore=false --skip-project test/test.ts"
     },
     "dependencies": {
-        "azle": "0.21.1",
+        "azle": "0.22.0-rc.1",
         "express": "^4.18.2",
         "lit": "^3.1.1"
     },
