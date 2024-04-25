@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer';
-// import * as process from 'process';
+import * as process from 'process';
 import { TextDecoder, TextEncoder } from 'text-encoding';
 import { URL } from 'url';
 import { v4 } from 'uuid';
@@ -107,6 +107,8 @@ if (globalThis._azleInsideCanister) {
     };
 
     globalThis.Buffer = Buffer;
+
+    globalThis.process = process;
 
     // TODO These write implementations are not correct, they are just good enough
     // TODO to get NestJS logging looking pretty good
