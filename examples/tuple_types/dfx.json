@@ -1,26 +1,13 @@
 {
     "canisters": {
         "tuple_types": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "build": "npx azle tuple_types",
-            "wasm": ".azle/tuple_types/tuple_types.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/tuple_types",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

@@ -1,26 +1,13 @@
 {
     "canisters": {
         "list_of_lists": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "build": "npx azle list_of_lists",
-            "wasm": ".azle/list_of_lists/list_of_lists.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "dfx_generated/list_of_lists",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

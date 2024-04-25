@@ -1,12 +1,8 @@
 {
     "canisters": {
         "bitcoinjs": {
-            "type": "custom",
-            "main": "src/index.ts",
-            "candid": "src/index.did",
-            "build": "npx azle bitcoinjs",
-            "wasm": ".azle/bitcoinjs/bitcoinjs.wasm",
-            "gzip": true
+            "type": "azle",
+            "main": "src/index.ts"
         }
     }
 }

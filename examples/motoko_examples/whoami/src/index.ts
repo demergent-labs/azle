@@ -47,7 +47,7 @@ const WhoAmI = Canister({
                 `icp://${self.principal.toText()}/whoami`,
                 {
                     body: serialize({
-                        candidPath: `/src/whoami.did`
+                        candidPath: `/candid/whoami.did`
                     })
                 }
             );

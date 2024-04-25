@@ -1,4 +1,0 @@
-service: () -> {
-    executeCallRaw: (principal, text, text, nat64) -> (variant {Ok:text; Err:text});
-    executeCallRaw128: (principal, text, text, nat) -> (variant {Ok:text; Err:text});
-}

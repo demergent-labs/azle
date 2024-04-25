@@ -1,3 +1,0 @@
-service: () -> {
-    getInitialized: () -> (bool) query;
-}

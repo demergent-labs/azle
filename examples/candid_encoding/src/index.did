@@ -1,4 +1,0 @@
-service: () -> {
-    candidDecode: (vec nat8) -> (text) query;
-    candidEncode: (text) -> (vec nat8) query;
-}

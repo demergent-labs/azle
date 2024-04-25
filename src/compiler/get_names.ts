@@ -65,7 +65,8 @@ export function getNamesAfterCli() {
     const canisterPath = join('.azle', canisterName);
 
     const canisterConfig = unwrap(getCanisterConfig(canisterName));
-    const candidPath = canisterConfig.candid;
+    const candidPath =
+        canisterConfig.candid ?? `.azle/${canisterName}/${canisterName}.did`;
 
     const compilerInfoPath = join(
         canisterPath,

@@ -1,3 +1,0 @@
-service: (record {text; record {id:text}}) -> {
-    greetUser: () -> (text) query;
-}

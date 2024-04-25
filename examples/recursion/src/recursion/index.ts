@@ -151,7 +151,7 @@ export default Canister({
                     `icp://${myFullCanister.principal.toText()}/myQuery`,
                     {
                         body: serialize({
-                            candidPath: `/src/recursive_canister.did`,
+                            candidPath: `/candid/recursive_canister.did`,
                             args: [myFullCanister.principal]
                         })
                     }

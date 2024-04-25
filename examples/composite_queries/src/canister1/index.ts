@@ -27,7 +27,7 @@ const CompQueryCanister = Canister({
                 `icp://${getCanister2Principal()}/simpleQuery`,
                 {
                     body: serialize({
-                        candidPath: `/src/canister2.did`
+                        candidPath: `/candid/canister2.did`
                     })
                 }
             );
@@ -45,7 +45,7 @@ const CompQueryCanister = Canister({
                 `icp://${getCanister2Principal()}/manualQuery`,
                 {
                     body: serialize({
-                        candidPath: `/src/canister2.did`
+                        candidPath: `/candid/canister2.did`
                     })
                 }
             );
@@ -66,7 +66,7 @@ const CompQueryCanister = Canister({
                     `icp://${getCanister2Principal()}/manualQuery`,
                     {
                         body: serialize({
-                            candidPath: `/src/canister2.did`
+                            candidPath: `/candid/canister2.did`
                         })
                     }
                 );
@@ -86,7 +86,7 @@ const CompQueryCanister = Canister({
                 `icp://${getCanister2Principal()}/deepQuery`,
                 {
                     body: serialize({
-                        candidPath: `/src/canister2.did`
+                        candidPath: `/candid/canister2.did`
                     })
                 }
             );
@@ -104,7 +104,7 @@ const CompQueryCanister = Canister({
                 `icp://${getCanister2Principal()}/updateQuery`,
                 {
                     body: serialize({
-                        candidPath: `/src/canister2.did`
+                        candidPath: `/candid/canister2.did`
                     })
                 }
             );
@@ -122,7 +122,7 @@ const CompQueryCanister = Canister({
                 `icp://${getCanister2Principal()}/simpleQuery`,
                 {
                     body: serialize({
-                        candidPath: `/src/canister2.did`
+                        candidPath: `/candid/canister2.did`
                     })
                 }
             );
@@ -140,7 +140,7 @@ const CompQueryCanister = Canister({
                 `icp://${getCanister2Principal()}/deepQuery`,
                 {
                     body: serialize({
-                        candidPath: `/src/canister2.did`
+                        candidPath: `/candid/canister2.did`
                     })
                 }
             );
@@ -195,7 +195,7 @@ async function incCanister1(canister1: any) {
             `icp://${canister1.principal.toText()}/incCounter`,
             {
                 body: serialize({
-                    candidPath: `/src/canister1.did`
+                    candidPath: `/candid/canister1.did`
                 })
             }
         );
@@ -213,7 +213,7 @@ async function incCanister2() {
             `icp://${getCanister2Principal()}/incCounter`,
             {
                 body: serialize({
-                    candidPath: `/src/canister2.did`
+                    candidPath: `/candid/canister2.did`
                 })
             }
         );

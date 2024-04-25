@@ -1,4 +1,0 @@
-service: () -> {
-    getBlob: () -> (vec nat8) query;
-    getBlobs: () -> (vec vec nat8) query;
-}

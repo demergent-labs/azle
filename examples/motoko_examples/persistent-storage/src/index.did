@@ -1,6 +1,0 @@
-service: () -> {
-    get: () -> (nat) query;
-    getRedeployed: () -> (bool) query;
-    increment: () -> (nat);
-    reset: () -> (nat);
-}

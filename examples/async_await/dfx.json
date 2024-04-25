@@ -1,27 +1,14 @@
 {
     "canisters": {
         "async_await": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/async_await.ts",
-            "candid": "src/async_await.did",
-            "build": "npx azle async_await",
-            "wasm": ".azle/async_await/async_await.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
+            "env": ["AZLE_TEST_FETCH"],
             "declarations": {
                 "output": "test/dfx_generated/async_await",
                 "node_compatibility": true
-            },
-            "env": ["AZLE_TEST_FETCH"],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/async_await.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

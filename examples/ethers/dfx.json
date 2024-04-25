@@ -1,23 +1,8 @@
 {
     "canisters": {
         "ethers": {
-            "type": "custom",
-            "main": "src/index.ts",
-            "candid": "src/index.did",
-            "candid_gen": "http",
-            "build": "npx azle ethers",
-            "wasm": ".azle/ethers/ethers.wasm",
-            "gzip": true,
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            "type": "azle",
+            "main": "src/index.ts"
         }
     }
 }

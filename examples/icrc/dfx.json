@@ -1,27 +1,14 @@
 {
     "canisters": {
         "proxy": {
-            "type": "custom",
+            "type": "azle",
             "main": "canisters/proxy/index.ts",
-            "candid": "canisters/proxy/index.did",
-            "build": "npx azle proxy",
-            "wasm": ".azle/proxy/proxy.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
+            "env": ["ICRC_PRINCIPAL", "AZLE_TEST_FETCH"],
             "declarations": {
                 "output": "test/dfx_generated/proxy",
                 "node_compatibility": true
-            },
-            "env": ["ICRC_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "canisters/proxy/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         },
         "icrc": {
             "type": "motoko",
