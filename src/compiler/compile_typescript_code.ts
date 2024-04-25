@@ -14,7 +14,7 @@ export async function compileTypeScriptToJavaScript(
 ): Promise<Result<JavaScript, unknown>> {
     try {
         const imports = `
-            import 'reflect-metadata';
+            // import 'reflect-metadata';
 
             // Trying to make sure that all globalThis dependencies are defined
             // Before the developer imports azle on their own
