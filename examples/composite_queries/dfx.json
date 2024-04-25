@@ -11,8 +11,8 @@
                 "AZLE_TEST_FETCH"
             ],
             "assets": [
-                [".azle/canister2/canister2.did", "candid/canister2.did"],
-                [".azle/canister3/canister3.did", "candid/canister3.did"]
+                ["src/canister2/index.did", "candid/canister2.did"],
+                ["src/canister3/index.did", "candid/canister3.did"]
             ],
             "declarations": {
                 "output": "test/dfx_generated/canister1",
@@ -22,11 +22,10 @@
         "canister2": {
             "type": "azle",
             "main": "src/canister2/index.ts",
+            "candid": "src/canister2/index.did",
             "candid_gen": "automatic",
             "env": ["CANISTER3_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [
-                [".azle/canister3/canister3.did", "candid/canister3.did"]
-            ],
+            "assets": [["src/canister3/index.did", "candid/canister3.did"]],
             "declarations": {
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true
@@ -35,6 +34,7 @@
         "canister3": {
             "type": "azle",
             "main": "src/canister3/index.ts",
+            "candid": "src/canister3/index.did",
             "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/canister3",

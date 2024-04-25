@@ -3,6 +3,7 @@
         "cycles": {
             "type": "azle",
             "main": "src/cycles/index.ts",
+            "candid": "src/cycles/index.did",
             "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/cycles",
@@ -14,7 +15,7 @@
             "main": "src/intermediary/index.ts",
             "candid_gen": "automatic",
             "env": ["CYCLES_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [[".azle/cycles/cycles.did", "candid/cycles.did"]],
+            "assets": [["src/cycles/index.did", "candid/cycles.did"]],
             "declarations": {
                 "output": "test/dfx_generated/intermediary",
                 "node_compatibility": true

@@ -7,7 +7,7 @@
             "env": ["MY_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
             "assets": [
                 [
-                    ".azle/recursive_canister/recursive_canister.did",
+                    "src/recursive_canister/index.did",
                     "candid/recursive_canister.did"
                 ]
             ],
@@ -19,6 +19,7 @@
         "recursive_canister": {
             "type": "azle",
             "main": "src/recursive_canister/index.ts",
+            "candid": "src/recursive_canister/index.did",
             "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/recursive_canister",

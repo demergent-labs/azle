@@ -6,7 +6,7 @@
             "candid_gen": "automatic",
             "env": ["NOTIFIERS_PRINCIPAL", "AZLE_TEST_FETCH"],
             "assets": [
-                [".azle/notifiers/notifiers.did", "candid/notifiers.did"]
+                ["canisters/notifiers/index.did", "candid/notifiers.did"]
             ],
             "declarations": {
                 "output": "test/dfx_generated/func_types",
@@ -16,6 +16,7 @@
         "notifiers": {
             "type": "azle",
             "main": "canisters/notifiers/index.ts",
+            "candid": "canisters/notifiers/index.did",
             "candid_gen": "automatic",
             "env": ["NOTIFIERS_PRINCIPAL"],
             "declarations": {
