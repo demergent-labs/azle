@@ -113,7 +113,7 @@ export default Canister({
                 `icp://${getNotifierPrincipal()}/getNotifier`,
                 {
                     body: serialize({
-                        candidPath: `/src/notifiers.did`
+                        candidPath: `/candid/notifiers.did`
                     })
                 }
             );

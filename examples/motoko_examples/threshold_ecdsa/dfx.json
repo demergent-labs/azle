@@ -1,27 +1,14 @@
 {
     "canisters": {
         "threshold_ecdsa": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "build": "npx azle threshold_ecdsa",
-            "wasm": ".azle/threshold_ecdsa/threshold_ecdsa.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
+            "env": ["AZLE_TEST_FETCH"],
             "declarations": {
                 "output": "test/dfx_generated/threshold_ecdsa",
                 "node_compatibility": true
-            },
-            "env": ["AZLE_TEST_FETCH"],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

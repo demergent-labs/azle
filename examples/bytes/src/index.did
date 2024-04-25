@@ -1,3 +1,0 @@
-service: () -> {
-    getBytes: (vec nat8) -> (vec nat8);
-}

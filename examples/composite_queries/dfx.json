@@ -1,16 +1,9 @@
 {
     "canisters": {
         "canister1": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/canister1/index.ts",
-            "candid": "src/canister1/index.did",
-            "build": "npx azle canister1",
-            "wasm": ".azle/canister1/canister1.wasm",
-            "gzip": true,
-            "declarations": {
-                "output": "test/dfx_generated/canister1",
-                "node_compatibility": true
-            },
+            "candid_gen": "automatic",
             "env": [
                 "CANISTER1_PRINCIPAL",
                 "CANISTER2_PRINCIPAL",
@@ -18,66 +11,35 @@
                 "AZLE_TEST_FETCH"
             ],
             "assets": [
-                ["src/canister1/index.did", "src/canister1.did"],
-                ["src/canister2/index.did", "src/canister2.did"],
-                ["src/canister3/index.did", "src/canister3.did"]
+                ["src/canister2/index.did", "candid/canister2.did"],
+                ["src/canister3/index.did", "candid/canister3.did"]
             ],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/canister1/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            "declarations": {
+                "output": "test/dfx_generated/canister1",
+                "node_compatibility": true
+            }
         },
         "canister2": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/canister2/index.ts",
             "candid": "src/canister2/index.did",
-            "build": "npx azle canister2",
-            "wasm": ".azle/canister2/canister2.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
+            "env": ["CANISTER3_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [["src/canister3/index.did", "candid/canister3.did"]],
             "declarations": {
                 "output": "test/dfx_generated/canister2",
                 "node_compatibility": true
-            },
-            "env": ["CANISTER3_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [["src/canister3/index.did", "src/canister3.did"]],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/canister2/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         },
         "canister3": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/canister3/index.ts",
             "candid": "src/canister3/index.did",
-            "build": "npx azle canister3",
-            "wasm": ".azle/canister3/canister3.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/canister3",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/canister3/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

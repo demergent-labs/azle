@@ -1,50 +1,25 @@
 {
     "canisters": {
         "cycles": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/cycles/index.ts",
             "candid": "src/cycles/index.did",
-            "build": "npx azle cycles",
-            "wasm": ".azle/cycles/cycles.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/cycles",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/cycles/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         },
         "intermediary": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/intermediary/index.ts",
-            "candid": "src/intermediary/index.did",
-            "build": "npx azle intermediary",
-            "wasm": ".azle/intermediary/intermediary.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
+            "env": ["CYCLES_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [["src/cycles/index.did", "candid/cycles.did"]],
             "declarations": {
                 "output": "test/dfx_generated/intermediary",
                 "node_compatibility": true
-            },
-            "env": ["CYCLES_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [["src/cycles/index.did", "src/cycles/index.did"]],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/intermediary/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

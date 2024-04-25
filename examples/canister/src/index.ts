@@ -46,7 +46,7 @@ export default Canister({
                     `icp://${getSomeCanisterPrincipal()}/update1`,
                     {
                         body: serialize({
-                            candidPath: `/src/some_canister.did`
+                            candidPath: `/candid/some_canister.did`
                         })
                     }
                 );

@@ -59,7 +59,7 @@ const response = await fetch(
     `icp://mc6ru-gyaaa-aaaar-qaaaq-cai/icrc1_balance_of`,
     {
         body: serialize({
-            candidPath: `/candid/icrc.did`,
+            candidPath: `/candid/icp/icrc.did`,
             args: [
                 {
                     owner: ic.id(),

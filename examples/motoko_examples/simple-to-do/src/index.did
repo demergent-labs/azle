@@ -1,7 +1,0 @@
-service: () -> {
-    addTodo: (text) -> (nat);
-    clearCompleted: () -> ();
-    completeTodo: (nat) -> ();
-    getTodos: () -> (vec record {completed:bool; description:text}) query;
-    showTodos: () -> (text) query;
-}

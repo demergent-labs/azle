@@ -1,24 +1,9 @@
 {
     "canisters": {
         "fs": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "candid_gen": "http",
-            "build": "npx azle fs",
-            "wasm": ".azle/fs/fs.wasm",
-            "gzip": true,
-            "assets": [["src/image.jpg", "image.jpg"]],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            "assets": [["src/image.jpg", "image.jpg"]]
         }
     }
 }
