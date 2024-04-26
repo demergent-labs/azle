@@ -35,6 +35,11 @@ export const CanisterSettings = Record({
 });
 export type CanisterSettings = typeof CanisterSettings.tsType;
 
+export const ChunkHash = Record({
+    hash: blob
+});
+export type ChunkHash = typeof ChunkHash.tsType;
+
 /**
  * The arguments to provide to the management canister's create_canister
  * method
@@ -89,6 +94,28 @@ export const UpdateSettingsArgs = Record({
 });
 export type UpdateSettingsArgs = typeof UpdateSettingsArgs.tsType;
 
+export const UploadChunkArgs = Record({
+    canister_id: CanisterId,
+    chunk: blob
+});
+export type UploadChunkArgs = typeof UploadChunkArgs.tsType;
+
+export const UploadChunkResult = ChunkHash;
+export type UploadChunkResult = typeof UploadChunkResult.tsType;
+
+export const ClearChunkStoreArgs = Record({
+    canister_id: CanisterId
+});
+export type ClearChunkStoreArgs = typeof ClearChunkStoreArgs.tsType;
+
+export const StoredChunksArgs = Record({
+    canister_id: CanisterId
+});
+export type StoredChunksArgs = typeof StoredChunksArgs.tsType;
+
+export const StoredChunksResult = Vec(ChunkHash);
+export type StoredChunksResult = typeof StoredChunksResult.tsType;
+
 export const InstallCodeMode = Variant({
     install: Null,
     reinstall: Null,
@@ -104,6 +131,17 @@ export const InstallCodeArgs = Record({
     sender_canister_version: Opt(nat64)
 });
 export type InstallCodeArgs = typeof InstallCodeArgs.tsType;
+
+export const InstallChunkedCodeArgs = Record({
+    mode: InstallCodeMode,
+    target_canister: CanisterId,
+    storage_canister: Opt(CanisterId),
+    chunk_hashes_list: Vec(blob),
+    wasm_module_hash: blob,
+    arg: blob,
+    sender_canister_version: Opt(nat64)
+});
+export type InstallChunkedCodeArgs = typeof InstallChunkedCodeArgs.tsType;
 
 export const UninstallCodeArgs = Record({
     canister_id: CanisterId,
