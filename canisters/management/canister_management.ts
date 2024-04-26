@@ -135,7 +135,7 @@ export type InstallCodeArgs = typeof InstallCodeArgs.tsType;
 export const InstallChunkedCodeArgs = Record({
     mode: InstallCodeMode,
     target_canister: CanisterId,
-    storage_canister: Opt(CanisterId),
+    store_canister: Opt(CanisterId),
     chunk_hashes_list: Vec(blob),
     wasm_module_hash: blob,
     arg: blob,
