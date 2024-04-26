@@ -1,25 +1,13 @@
 {
     "canisters": {
         "run_time_errors": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "build": "npx azle run_time_errors",
-            "wasm": ".azle/run_time_errors/run_time_errors.wasm.gz",
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/run_time_errors",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

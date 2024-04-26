@@ -1,27 +1,14 @@
 {
     "canisters": {
         "complex_types": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/index.ts",
             "candid": "src/index.did",
             "candid_gen": "custom",
-            "build": "npx azle complex_types",
-            "wasm": ".azle/complex_types/complex_types.wasm",
-            "gzip": true,
             "declarations": {
                 "output": "test/dfx_generated/complex_types",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

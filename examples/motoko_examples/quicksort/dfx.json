@@ -1,26 +1,13 @@
 {
     "canisters": {
         "quicksort": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "build": "npx azle quicksort",
-            "wasm": ".azle/quicksort/quicksort.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/quicksort",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

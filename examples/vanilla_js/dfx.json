@@ -1,26 +1,13 @@
 {
     "canisters": {
         "vanilla_js": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/index.js",
-            "candid": "src/index.did",
-            "build": "npx azle vanilla_js",
-            "wasm": ".azle/vanilla_js/vanilla_js.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/vanilla_js",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

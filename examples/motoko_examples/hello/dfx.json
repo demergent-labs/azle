@@ -1,26 +1,13 @@
 {
     "canisters": {
         "hello": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/hello/index.ts",
-            "candid": "src/hello/index.did",
-            "build": "npx azle hello",
-            "wasm": ".azle/hello/hello.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "dfx_generated/hello",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/hello/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         },
         "hello_assets": {
             "type": "assets",

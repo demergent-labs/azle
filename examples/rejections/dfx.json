@@ -1,53 +1,28 @@
 {
     "canisters": {
         "rejections": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/rejections/index.ts",
-            "candid": "src/rejections/index.did",
-            "build": "npx azle rejections",
-            "wasm": ".azle/rejections/rejections.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
+            "env": ["SOME_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [
+                ["src/some_canister/index.did", "candid/some_canister.did"],
+                ["src/nonexistent.did", "candid/nonexistent.did"]
+            ],
             "declarations": {
                 "output": "test/dfx_generated/rejections",
                 "node_compatibility": true
-            },
-            "env": ["SOME_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [
-                ["src/some_canister/index.did", "src/some_canister.did"],
-                ["src/nonexistent.did", "src/nonexistent.did"]
-            ],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/rejections/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         },
         "some_canister": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/some_canister/index.ts",
             "candid": "src/some_canister/index.did",
-            "build": "npx azle some_canister",
-            "wasm": ".azle/some_canister/some_canister.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/some_canister",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/some_canister/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

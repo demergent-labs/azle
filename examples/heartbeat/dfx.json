@@ -1,49 +1,23 @@
 {
     "canisters": {
         "heartbeat_async": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/heartbeat_async/index.ts",
-            "candid": "src/heartbeat_async/index.did",
-            "build": "npx azle heartbeat_async",
-            "wasm": ".azle/heartbeat_async/heartbeat_async.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
+            "env": ["AZLE_TEST_FETCH"],
             "declarations": {
                 "output": "test/dfx_generated/heartbeat_async",
                 "node_compatibility": true
-            },
-            "env": ["AZLE_TEST_FETCH"],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/heartbeat_async/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         },
         "heartbeat_sync": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/heartbeat_sync/index.ts",
-            "candid": "src/heartbeat_sync/index.did",
-            "build": "npx azle heartbeat_sync",
-            "wasm": ".azle/heartbeat_sync/heartbeat_sync.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/heartbeat_sync",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/heartbeat_sync/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

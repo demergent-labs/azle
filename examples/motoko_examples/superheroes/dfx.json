@@ -1,26 +1,13 @@
 {
     "canisters": {
         "superheroes": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/superheroes/index.ts",
-            "candid": "src/superheroes/index.did",
-            "build": "npx azle superheroes",
-            "wasm": ".azle/superheroes/superheroes.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "src/declarations",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/superheroes/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         },
         "www": {
             "type": "assets",

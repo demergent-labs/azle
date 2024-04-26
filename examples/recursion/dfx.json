@@ -1,55 +1,30 @@
 {
     "canisters": {
         "recursion": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/recursion/index.ts",
-            "candid": "src/recursion/index.did",
-            "build": "npx azle recursion",
-            "wasm": ".azle/recursion/recursion.wasm",
-            "gzip": true,
-            "declarations": {
-                "output": "test/dfx_generated/recursion",
-                "node_compatibility": true
-            },
+            "candid_gen": "automatic",
             "env": ["MY_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
             "assets": [
                 [
                     "src/recursive_canister/index.did",
-                    "src/recursive_canister.did"
+                    "candid/recursive_canister.did"
                 ]
             ],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/recursion/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            "declarations": {
+                "output": "test/dfx_generated/recursion",
+                "node_compatibility": true
+            }
         },
         "recursive_canister": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/recursive_canister/index.ts",
             "candid": "src/recursive_canister/index.did",
-            "build": "npx azle recursive_canister",
-            "wasm": ".azle/recursive_canister/recursive_canister.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/recursive_canister",
                 "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/recursive_canister/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

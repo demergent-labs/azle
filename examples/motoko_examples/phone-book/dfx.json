@@ -1,26 +1,13 @@
 {
     "canisters": {
         "phone_book": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/phone_book/index.ts",
-            "candid": "src/phone_book/index.did",
-            "build": "npx azle phone_book",
-            "wasm": ".azle/phone_book/phone_book.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "src/declarations/phone_book",
                 "node_compatibility": false
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/phone_book/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         },
         "www": {
             "type": "assets",

@@ -1,5 +1,4 @@
 import { IDL } from '@dfinity/candid';
-import { existsSync } from 'fs';
 
 import { ic, Principal } from '../';
 import { getUrl } from './url';
@@ -89,10 +88,8 @@ function determineCandidPath(canisterId: string, candidPath?: string): string {
         return candidPath;
     }
 
-    const filePath = `/candid/${canisterId}.did`;
-
-    if (existsSync(filePath)) {
-        return filePath;
+    if (canisterId === 'aaaaa-aa') {
+        return `/candid/icp/management.did`;
     }
 
     throw new Error(

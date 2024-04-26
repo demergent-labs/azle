@@ -1,4 +1,0 @@
-service: () -> {
-    get: (text) -> (opt text) query;
-    set: (text, text) -> ();
-}

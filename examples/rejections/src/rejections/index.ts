@@ -33,7 +33,7 @@ export default Canister({
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://${getSomeCanisterPrincipal()}/accept`, {
                 body: serialize({
-                    candidPath: `/src/some_canister.did`
+                    candidPath: `/candid/some_canister.did`
                 })
             });
         } else {
@@ -47,7 +47,7 @@ export default Canister({
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 await fetch(`icp://rkp4c-7iaaa-aaaaa-aaaca-cai/method`, {
                     body: serialize({
-                        candidPath: `/src/nonexistent.did`
+                        candidPath: `/candid/nonexistent.did`
                     })
                 });
             } else {
@@ -64,7 +64,7 @@ export default Canister({
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 await fetch(`icp://${getSomeCanisterPrincipal()}/reject`, {
                     body: serialize({
-                        candidPath: `/src/some_canister.did`,
+                        candidPath: `/candid/some_canister.did`,
                         args: ['reject']
                     })
                 });
@@ -82,7 +82,7 @@ export default Canister({
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 await fetch(`icp://${getSomeCanisterPrincipal()}/error`, {
                     body: serialize({
-                        candidPath: `/src/some_canister.did`
+                        candidPath: `/candid/some_canister.did`
                     })
                 });
             } else {
@@ -99,7 +99,7 @@ export default Canister({
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 await fetch(`icp://${getSomeCanisterPrincipal()}/reject`, {
                     body: serialize({
-                        candidPath: `/src/some_canister.did`,
+                        candidPath: `/candid/some_canister.did`,
                         args: [message]
                     })
                 });
