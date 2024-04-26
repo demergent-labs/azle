@@ -136,7 +136,7 @@ export const InstallChunkedCodeArgs = Record({
     mode: InstallCodeMode,
     target_canister: CanisterId,
     store_canister: Opt(CanisterId),
-    chunk_hashes_list: Vec(blob),
+    chunk_hashes_list: Vec(ChunkHash),
     wasm_module_hash: blob,
     arg: blob,
     sender_canister_version: Opt(nat64)
