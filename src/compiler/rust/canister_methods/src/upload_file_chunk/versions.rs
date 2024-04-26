@@ -27,7 +27,7 @@ pub fn get_check_if_latest_version_src() -> proc_macro2::TokenStream {
             })
         }
 
-        #[ic_cdk_macros::update(guard = is_authenticated)]
+        #[ic_cdk_macros::update(guard = guard_against_non_controllers)]
         pub fn clear_file_and_info(path: String) {
             reset_for_new_upload(&path, 0).unwrap()
         }

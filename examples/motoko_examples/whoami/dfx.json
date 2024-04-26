@@ -1,28 +1,14 @@
 {
     "canisters": {
         "whoami": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "build": "npx azle whoami",
-            "wasm": ".azle/whoami/whoami.wasm",
-            "gzip": true,
+            "candid_gen": "automatic",
+            "env": ["AZLE_TEST_FETCH"],
             "declarations": {
                 "output": "test/dfx_generated/whoami",
                 "node_compatibility": true
-            },
-            "env": ["AZLE_TEST_FETCH"],
-            "assets": [["src/index.did", "src/whoami.did"]],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            }
         }
     }
 }

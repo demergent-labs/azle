@@ -1,10 +1,11 @@
-import { execSync, IOType } from 'child_process';
+import { IOType } from 'child_process';
 import { rmSync } from 'fs';
 
 import { version as azleVersion } from '../../package.json';
 import { uploadFiles } from './file_uploader';
 import { getFilesToUpload } from './file_uploader/get_files_to_upload';
 import { generateNewAzleProject } from './new_command';
+import { execSyncPretty } from './utils/exec_sync_pretty';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 
 export function handleCli(
@@ -53,9 +54,7 @@ function handleCommandNew() {
 }
 
 function handleCommandDockerfileHash(dockerfileHash: string) {
-    execSync(`echo -n "${dockerfileHash}"`, {
-        stdio: 'inherit'
-    });
+    execSyncPretty(`echo -n "${dockerfileHash}"`, 'inherit');
 }
 
 function handleCommandClean(
@@ -77,29 +76,23 @@ function handleCommandClean(
 
     console.info(`.azle directory deleted`);
 
-    execSync(
+    execSyncPretty(
         `podman stop $(podman ps --filter "name=${dockerContainerPrefix}" --format "{{.ID}}") || true`,
-        {
-            stdio: stdioType
-        }
+        stdioType
     );
 
     console.info(`azle containers stopped`);
 
-    execSync(
+    execSyncPretty(
         `podman rm $(podman ps -a --filter "name=${dockerContainerPrefix}" --format "{{.ID}}") || true`,
-        {
-            stdio: stdioType
-        }
+        stdioType
     );
 
     console.info(`azle containers removed`);
 
-    execSync(
+    execSyncPretty(
         `podman image rm $(podman images --filter "reference=${dockerImagePrefix}" --format "{{.ID}}") || true`,
-        {
-            stdio: stdioType
-        }
+        stdioType
     );
 
     console.info(`azle images removed`);

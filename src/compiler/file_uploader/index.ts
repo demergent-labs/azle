@@ -9,6 +9,10 @@ export type Src = string;
 export type Dest = string;
 
 export async function uploadFiles(canisterName: string, paths: [Src, Dest][]) {
+    if (paths.length === 0) {
+        return;
+    }
+
     const canisterId = getCanisterId(canisterName);
     const identityName = generateUploaderIdentity(canisterName);
     const actor = await createActor(canisterId, identityName);

@@ -1,25 +1,10 @@
 {
     "canisters": {
         "server": {
-            "specified_id": "bd3sg-teaaa-aaaaa-qaaba-cai",
-            "type": "custom",
+            "type": "azle",
             "main": "src/server.ts",
-            "candid": "src/candid/server.did",
-            "candid_gen": "http",
-            "build": "npx azle server",
-            "wasm": ".azle/server/server.wasm",
-            "gzip": true,
             "assets": [["src/candid/evm_rpc.did", "src/candid/evm_rpc.did"]],
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/candid/server.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            "specified_id": "bd3sg-teaaa-aaaaa-qaaba-cai"
         },
         "evm_rpc": {
             "specified_id": "be2us-64aaa-aaaaa-qaabq-cai",

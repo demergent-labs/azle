@@ -15,7 +15,7 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
         #check_if_latest_version_src
         #hash_file_src
 
-        #[ic_cdk_macros::update(guard = is_authenticated)]
+        #[ic_cdk_macros::update(guard = guard_against_non_controllers)]
         pub fn upload_file_chunk(
             dest_path: String,
             timestamp: u64,
@@ -46,11 +46,11 @@ pub fn get_upload_file_chunk() -> proc_macro2::TokenStream {
             }
         }
 
-        pub fn is_authenticated() -> Result<(), String> {
+        pub fn guard_against_non_controllers() -> Result<(), String> {
             if ic_cdk::api::is_controller(&ic_cdk::api::caller()) {
                 return Ok(());
             }
-            return Err("Not Authorized: must be a controller to call this method".to_string());
+            return Err("Not Authorized: only controllers of this canister may call this method".to_string());
         }
 
         pub fn start_hash(dest_path: String) {

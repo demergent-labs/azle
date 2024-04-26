@@ -1,6 +1,6 @@
 # Stable Structures
 
-## TLDR
+## TL;DR
 
 -   96 GiB of stable memory
 -   Persistent across upgrades

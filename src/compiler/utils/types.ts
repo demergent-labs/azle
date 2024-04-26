@@ -15,13 +15,13 @@ export type DfxJson = Readonly<{
 export type JavaScript = string;
 
 export type JSCanisterConfig = Readonly<{
-    type: 'custom';
+    type: 'azle';
     main: string;
-    build: string;
+    build?: string;
     build_assets?: string;
-    candid: string;
+    candid?: string;
     candid_gen?: CandidGen;
-    wasm: string;
+    wasm?: string;
     env?: string[];
     opt_level?: OptLevel;
     assets?: [string, string][];

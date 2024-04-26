@@ -1,0 +1,8 @@
+{
+    "canisters": {
+        "bitcore": {
+            "type": "azle",
+            "main": "src/index.ts"
+        }
+    }
+}

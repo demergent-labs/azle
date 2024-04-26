@@ -1,4 +1,3 @@
-import { execSync } from 'child_process';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 import { hashOfDirectory } from 'hash-of-directory';
@@ -11,6 +10,7 @@ import {
     getStdIoType,
     unwrap
 } from './utils';
+import { execSyncPretty } from './utils/exec_sync_pretty';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { JSCanisterConfig } from './utils/types';
 
@@ -38,7 +38,7 @@ export async function getNamesBeforeCli() {
         wasmedgeQuickJsName
     );
 
-    const replicaWebServerPort = execSync(`dfx info webserver-port`)
+    const replicaWebServerPort = execSyncPretty(`dfx info webserver-port`)
         .toString()
         .trim();
 
@@ -65,7 +65,8 @@ export function getNamesAfterCli() {
     const canisterPath = join('.azle', canisterName);
 
     const canisterConfig = unwrap(getCanisterConfig(canisterName));
-    const candidPath = canisterConfig.candid;
+    const candidPath =
+        canisterConfig.candid ?? `.azle/${canisterName}/${canisterName}.did`;
 
     const compilerInfoPath = join(
         canisterPath,

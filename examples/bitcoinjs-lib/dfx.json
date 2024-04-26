@@ -1,0 +1,8 @@
+{
+    "canisters": {
+        "bitcoinjs": {
+            "type": "azle",
+            "main": "src/index.ts"
+        }
+    }
+}
