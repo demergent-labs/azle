@@ -40,6 +40,19 @@ export function getUser(db: Database, id: number): User | null {
     }
 }
 
+export function countUsers(db: Database): number {
+    const queryExecResults = db.exec(
+        'SELECT id FROM users ORDER BY id DESC LIMIT 1'
+    );
+    const queryExecResult = queryExecResults[0] as QueryExecResult | undefined;
+
+    if (queryExecResult === undefined) {
+        return 0;
+    } else {
+        return queryExecResult.values[0][0] as number;
+    }
+}
+
 export function createUser(db: Database, userCreate: UserCreate): number {
     db.run('INSERT INTO users (username, age) VALUES (:username, :age)', {
         ':username': userCreate.username,

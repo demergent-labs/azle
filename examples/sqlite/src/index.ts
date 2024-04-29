@@ -1,24 +1,129 @@
 // TODO let's make routes for each of the User and BlogPost
-// TODO do all crud
+// TODO do all crud for User and BlogPost
 
-// TODO let's see if we can get init and post upgrade to work well
-// TODO implement stable storage and push it as far as possible
-
-import { ic, jsonStringify } from 'azle';
+import {
+    ic,
+    init,
+    jsonStringify,
+    postUpgrade,
+    preUpgrade,
+    Server,
+    setNodeServer,
+    StableBTreeMap,
+    stableJson
+} from 'azle';
 import express, { Request } from 'express';
-import initSqlJs from 'sql.js/dist/sql-asm.js';
+import initSqlJs, { Database } from 'sql.js/dist/sql-asm.js';
 import { v4 } from 'uuid';
 
-import { createUser, getUser, getUsers } from './users';
+import { countUsers, createUser, getUser, getUsers } from './users';
 
-async function init() {
+let db: Database;
+let initState: boolean = false;
+let postUpgradeState: boolean = false;
+
+const sqlSerializable = {
+    toBytes: (data: Uint8Array) => data,
+    fromBytes: (bytes: Uint8Array) => bytes
+};
+
+let stableMap = StableBTreeMap<'DATABASE', Uint8Array>(
+    0,
+    stableJson,
+    sqlSerializable
+);
+
+// TODO maybe add a param to init and post upgrade to seed the database
+// TODO with a certain number of records...
+
+// TODO oooh...we could chunk the pre and post upgrade I think with timers
+// TODO hmmm...could we though?
+export default Server(initServer, {
+    init: init([], async () => {
+        console.log('init running');
+
+        initState = true;
+
+        db = await initDb();
+
+        setNodeServer(initServer());
+    }),
+    preUpgrade: preUpgrade(() => {
+        console.log('pre upgrade running');
+
+        const start = ic.instructionCounter();
+
+        const bytes = db.export();
+
+        stableMap.insert('DATABASE', bytes);
+
+        const end = ic.instructionCounter();
+
+        const instructions = Number(end - start);
+
+        console.log('instructions', instructions);
+        console.log(`bytes: ${(bytes.length / 1_000_000).toFixed(2)} MB`);
+
+        console.log(
+            `instructions capacity: ${(
+                (instructions / 100_000_000_000) *
+                100
+            ).toFixed(2)}%`
+        );
+        console.log(
+            `bytes capacity: ${((bytes.length / 2_000_000_000) * 100).toFixed(
+                2
+            )}%`
+        );
+        console.log();
+    }),
+    postUpgrade: postUpgrade([], async () => {
+        console.log('post upgrade running');
+
+        postUpgradeState = true;
+
+        const start = ic.instructionCounter();
+
+        const bytesOpt = stableMap.get('DATABASE');
+        const bytes = bytesOpt.Some as Uint8Array;
+
+        db = await initDb(bytes);
+
+        setNodeServer(initServer());
+
+        const end = ic.instructionCounter();
+
+        const instructions = Number(end - start);
+
+        console.log('instructions', instructions);
+        console.log(`bytes: ${(bytes.length / 1_000_000).toFixed(2)} MB`);
+
+        console.log(
+            `instructions capacity: ${(
+                (instructions / 100_000_000_000) *
+                100
+            ).toFixed(2)}%`
+        );
+        console.log(
+            `bytes capacity: ${((bytes.length / 2_000_000_000) * 100).toFixed(
+                2
+            )}%`
+        );
+        console.log();
+        console.log();
+    })
+});
+
+async function initDb(
+    bytes: Uint8Array = Uint8Array.from([])
+): Promise<Database> {
     const SQL = await initSqlJs({});
 
-    let db = new SQL.Database();
+    let db = new SQL.Database(bytes);
 
-    // TODO we want to do this to save the db across upgrades
-    // TODO test how big the db can get like this
-    // db.export
+    if (bytes.length !== 0) {
+        return db;
+    }
 
     db.run(`
         CREATE TABLE users
@@ -29,9 +134,21 @@ async function init() {
             );
     `);
 
+    return db;
+}
+
+function initServer() {
     let app = express();
 
     app.use(express.json());
+
+    app.get('/init-state', (req, res) => {
+        res.json(initState);
+    });
+
+    app.get('/post-upgrade-state', (req, res) => {
+        res.json(postUpgradeState);
+    });
 
     app.get(
         '/users',
@@ -51,6 +168,10 @@ async function init() {
             }
         }
     );
+
+    app.get('/users/count', (req, res) => {
+        res.json(countUsers(db));
+    });
 
     app.get('/users/:id', (req, res) => {
         const { id } = req.params;
@@ -102,7 +223,5 @@ async function init() {
 
     // TODO also do put and patch
 
-    app.listen();
+    return app.listen();
 }
-
-init();

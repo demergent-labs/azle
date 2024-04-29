@@ -2,7 +2,8 @@
     "canisters": {
         "sqlite": {
             "type": "azle",
-            "main": "src/index.ts"
+            "main": "src/index.ts",
+            "candid_gen": "automatic"
         }
     }
 }
