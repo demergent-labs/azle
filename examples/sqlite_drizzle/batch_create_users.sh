@@ -4,7 +4,7 @@
 count=1000  # Change this number as needed
 
 # URL to which the POST request will be sent
-url="http://$(dfx canister id sqlite).localhost:8000/users/batch/1000"
+url="http://$(dfx canister id sqlite_drizzle).localhost:8000/users/batch/800"
 
 # Loop as many times as specified in the count variable
 for ((i=0; i<count; i++))
