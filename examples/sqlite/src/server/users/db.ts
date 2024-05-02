@@ -1,6 +1,6 @@
 import { Database, QueryExecResult, SqlValue } from 'sql.js/dist/sql-asm.js';
 
-type User = {
+export type User = {
     id: number;
     username: string;
     age: number;

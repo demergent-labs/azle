@@ -16,12 +16,16 @@ export function getRouter(): Router {
             req: Request<any, any, any, { limit?: string; offset?: string }>,
             res
         ) => {
-            const limit = Number(req.query.limit ?? -1);
-            const offset = Number(req.query.offset ?? 0);
+            try {
+                const limit = Number(req.query.limit ?? -1);
+                const offset = Number(req.query.offset ?? 0);
 
-            const posts = getPosts(db, limit, offset);
+                const posts = getPosts(db, limit, offset);
 
-            res.json(posts);
+                res.json(posts);
+            } catch (error) {
+                console.log(error);
+            }
         }
     );
 
@@ -30,11 +34,15 @@ export function getRouter(): Router {
     });
 
     router.get('/:id', (req, res) => {
-        const { id } = req.params;
+        try {
+            const { id } = req.params;
 
-        const post = getPost(db, Number(id));
+            const post = getPost(db, Number(id));
 
-        res.json(post);
+            res.json(post);
+        } catch (error) {
+            console.log(error);
+        }
     });
 
     router.post(

@@ -2,6 +2,7 @@
 // TODO do all crud for User and BlogPost
 // TODO maybe add a param to init and post upgrade to seed the database
 // TODO with a certain number of records...
+// TODO get rid of all random try catches
 
 import {
     init,

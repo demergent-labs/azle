@@ -3,25 +3,22 @@
 // TODO thing grouped by functionality...so maybe just server needs to be changed...
 // TODO to just be a file, and then we have users and posts directories
 
-// TODO how do we deal with joins in our little template tag thing?
-// TODO we need to add all of the joins
-
-// TODO figure out joins!!!
-
 import { Database, QueryExecResult, SqlValue } from 'sql.js/dist/sql-asm.js';
+
+import { User } from '../users/db';
 
 type Post = {
     id: number;
-    user_id: number;
     title: string;
     body: string;
+    user: User;
 };
 
-type PostCreate = Pick<Post, 'user_id' | 'title' | 'body'>;
+type PostCreate = Pick<Post, 'title' | 'body'> & { user_id: number };
 
 export function getPosts(db: Database, limit: number, offset: number): Post[] {
     const queryExecResults = db.exec(
-        `SELECT * FROM posts ORDER BY id LIMIT :limit OFFSET :offset`,
+        `SELECT * FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.id LIMIT :limit OFFSET :offset`,
         {
             ':limit': limit,
             ':offset': offset
@@ -37,9 +34,13 @@ export function getPosts(db: Database, limit: number, offset: number): Post[] {
 }
 
 export function getPost(db: Database, id: number): Post | null {
-    const queryExecResults = db.exec('SELECT * FROM posts WHERE id=:id', {
-        ':id': id
-    });
+    const queryExecResults = db.exec(
+        'SELECT * FROM posts JOIN users ON posts.user_id = users.id WHERE posts.id=:id',
+        {
+            ':id': id
+        }
+    );
+
     const queryExecResult = queryExecResults[0] as QueryExecResult | undefined;
 
     if (queryExecResult === undefined) {
@@ -82,8 +83,12 @@ export function createPost(db: Database, postCreate: PostCreate): number {
 export function convertQueryExecResultToUser(sqlValues: SqlValue[]): Post {
     return {
         id: sqlValues[0] as number,
-        user_id: sqlValues[1] as number,
         title: sqlValues[2] as string,
-        body: sqlValues[3] as string
+        body: sqlValues[3] as string,
+        user: {
+            id: sqlValues[4] as number,
+            username: sqlValues[5] as string,
+            age: sqlValues[6] as number
+        }
     };
 }

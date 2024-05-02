@@ -17,3 +17,6 @@ export async function initDb(
 
     return db;
 }
+
+// TODO make little sql.js tagged template literal here
+// TODO it just provides a simple nice abstraction

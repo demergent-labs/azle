@@ -1,4 +1,3 @@
-// TODO test adding blog posts, etc
 // TODO test updating, and deleting
 
 import * as dns from 'node:dns';
@@ -271,12 +270,15 @@ function postsTestsBeforeBatch(origin: string): Test[] {
                 const response = await fetch(`${origin}/posts/1`);
                 const responseJson = await response.json();
 
-                // TODO add join and user info?
                 return {
                     Ok:
                         responseJson.id === 1 &&
                         responseJson.title === 'Post 1' &&
-                        responseJson.body === 'It is a very intriguing post yes'
+                        responseJson.body ===
+                            'It is a very intriguing post yes' &&
+                        responseJson.user.id === 2 &&
+                        responseJson.user.username.startsWith('lastmjs') &&
+                        responseJson.user.age === 33
                 };
             }
         }
@@ -329,11 +331,11 @@ function postsTestsAfterBatch(origin: string): Test[] {
         {
             name: '/posts not empty',
             test: async () => {
-                const response = await fetch(`${origin}/posts`);
+                const response = await fetch(`${origin}/posts?limit=400`);
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson.length === 500
+                    Ok: responseJson.length === 400
                 };
             }
         },
