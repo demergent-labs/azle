@@ -3,13 +3,14 @@ import { Database, SqlValue } from 'sql.js/dist/sql-asm.js';
 import { sqlite } from '../../db';
 import { User } from '../users/db';
 
+// TODO let's really figure out these types
 type Post = {
     id: number;
     title: string;
     body: string;
     user: User;
 };
-type PostCreate = Pick<Post, 'title' | 'body'> & { user_id: number };
+type PostCreate = Omit<Post, 'id' | 'user'> & { user_id: number };
 type PostUpdate = Pick<Post, 'id'> & Partial<PostCreate>;
 
 export function getPosts(db: Database, limit: number, offset: number): Post[] {

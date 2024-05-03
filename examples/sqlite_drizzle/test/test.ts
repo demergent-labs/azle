@@ -1,7 +1,6 @@
 import { getCanisterId } from 'azle/dfx';
+import { getTests } from 'azle/examples/sqlite/test/tests';
 import { runTests } from 'azle/test';
-
-import { getTests } from './tests';
 
 const canisterId = getCanisterId('sqlite_drizzle');
 
