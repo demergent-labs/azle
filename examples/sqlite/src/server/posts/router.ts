@@ -1,12 +1,10 @@
-import { ic, jsonStringify } from 'azle';
-import express, { Request, Router } from 'express';
+import express, { Request, Response, Router } from 'express';
 import { v4 } from 'uuid';
 
 import { db } from '../../';
 import { createUser } from '../users/db';
-import { countPosts, createPost, getPost, getPosts } from './db';
+import { countPosts, createPost, getPost, getPosts, updatePost } from './db';
 
-// TODO also do put and patch
 export function getRouter(): Router {
     const router = express.Router();
 
@@ -16,16 +14,12 @@ export function getRouter(): Router {
             req: Request<any, any, any, { limit?: string; offset?: string }>,
             res
         ) => {
-            try {
-                const limit = Number(req.query.limit ?? -1);
-                const offset = Number(req.query.offset ?? 0);
+            const limit = Number(req.query.limit ?? -1);
+            const offset = Number(req.query.offset ?? 0);
 
-                const posts = getPosts(db, limit, offset);
+            const posts = getPosts(db, limit, offset);
 
-                res.json(posts);
-            } catch (error) {
-                console.log(error);
-            }
+            res.json(posts);
         }
     );
 
@@ -34,15 +28,11 @@ export function getRouter(): Router {
     });
 
     router.get('/:id', (req, res) => {
-        try {
-            const { id } = req.params;
+        const { id } = req.params;
 
-            const post = getPost(db, Number(id));
+        const post = getPost(db, Number(id));
 
-            res.json(post);
-        } catch (error) {
-            console.log(error);
-        }
+        res.json(post);
     });
 
     router.post(
@@ -50,13 +40,13 @@ export function getRouter(): Router {
         (req: Request<any, any, { title: string; body: string }>, res) => {
             const { title, body } = req.body;
 
-            const userId = createUser(db, {
+            const user = createUser(db, {
                 username: `lastmjs${v4()}`,
                 age: 33
             });
 
             const id = createPost(db, {
-                user_id: userId,
+                user_id: user.id,
                 title,
                 body
             });
@@ -66,36 +56,49 @@ export function getRouter(): Router {
     );
 
     router.post('/batch/:num', (req, res) => {
-        try {
-            const start = ic.instructionCounter();
+        const num = Number(req.params.num);
 
-            const num = Number(req.params.num);
+        for (let i = 0; i < Number(req.params.num); i++) {
+            const user = createUser(db, {
+                username: `lastmjs${v4()}`,
+                age: i
+            });
 
-            for (let i = 0; i < Number(req.params.num); i++) {
-                const userId = createUser(db, {
-                    username: `lastmjs${v4()}`,
-                    age: i
-                });
-
-                createPost(db, {
-                    user_id: userId,
-                    title: `Post ${v4()}`,
-                    body: `${v4()}${v4()}${v4()}${v4()}`
-                });
-            }
-
-            const end = ic.instructionCounter();
-
-            res.send(
-                jsonStringify({
-                    Success: `${num} posts created`,
-                    instructions: end - start
-                })
-            );
-        } catch (error) {
-            console.log('error', error);
+            createPost(db, {
+                user_id: user.id,
+                title: `Post ${v4()}`,
+                body: `${v4()}${v4()}${v4()}${v4()}`
+            });
         }
+
+        res.send({
+            Success: `${num} posts created`
+        });
     });
 
+    router.put('/', updateHandler);
+
+    router.patch('/', updateHandler);
+
     return router;
+}
+
+function updateHandler(
+    req: Request<
+        any,
+        any,
+        { id: number; user_id?: number; title?: string; body?: string }
+    >,
+    res: Response
+) {
+    const { id, user_id, title, body } = req.body;
+
+    const post = updatePost(db, {
+        id,
+        user_id,
+        title,
+        body
+    });
+
+    res.json(post);
 }

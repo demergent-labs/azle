@@ -1,11 +1,9 @@
-import { ic, jsonStringify } from 'azle';
-import express, { Request, Router } from 'express';
+import express, { Request, Response, Router } from 'express';
 import { v4 } from 'uuid';
 
 import { db } from '../../';
-import { countUsers, createUser, getUser, getUsers } from './db';
+import { countUsers, createUser, getUser, getUsers, updateUser } from './db';
 
-// TODO also do put and patch
 export function getRouter(): Router {
     const router = express.Router();
 
@@ -15,18 +13,12 @@ export function getRouter(): Router {
             req: Request<any, any, any, { limit?: string; offset?: string }>,
             res
         ) => {
-            console.log('are we even getting here?');
+            const limit = Number(req.query.limit ?? -1);
+            const offset = Number(req.query.offset ?? 0);
 
-            try {
-                const limit = Number(req.query.limit ?? -1);
-                const offset = Number(req.query.offset ?? 0);
+            const users = getUsers(db, limit, offset);
 
-                const users = getUsers(db, limit, offset);
-
-                res.json(users);
-            } catch (error) {
-                console.log(error);
-            }
+            res.json(users);
         }
     );
 
@@ -47,40 +39,48 @@ export function getRouter(): Router {
         (req: Request<any, any, { username: string; age: number }>, res) => {
             const { username, age } = req.body;
 
-            const id = createUser(db, {
+            const user = createUser(db, {
                 username,
                 age
             });
 
-            res.json(id);
+            res.json(user);
         }
     );
 
     router.post('/batch/:num', (req, res) => {
-        try {
-            const start = ic.instructionCounter();
+        const num = Number(req.params.num);
 
-            const num = Number(req.params.num);
-
-            for (let i = 0; i < Number(req.params.num); i++) {
-                createUser(db, {
-                    username: `lastmjs${v4()}`,
-                    age: i
-                });
-            }
-
-            const end = ic.instructionCounter();
-
-            res.send(
-                jsonStringify({
-                    Success: `${num} users created`,
-                    instructions: end - start
-                })
-            );
-        } catch (error) {
-            console.log('error', error);
+        for (let i = 0; i < Number(req.params.num); i++) {
+            createUser(db, {
+                username: `lastmjs${v4()}`,
+                age: i
+            });
         }
+
+        res.json({
+            Success: `${num} users created`
+        });
     });
 
+    router.put('/', updateHandler);
+
+    router.patch('/', updateHandler);
+
     return router;
+}
+
+function updateHandler(
+    req: Request<any, any, { id: number; username?: string; age?: number }>,
+    res: Response
+) {
+    const { id, username, age } = req.body;
+
+    const user = updateUser(db, {
+        id,
+        username,
+        age
+    });
+
+    res.json(user);
 }

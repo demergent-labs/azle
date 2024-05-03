@@ -1,4 +1,6 @@
-// TODO test updating, and deleting
+// TODO test deleting
+// TODO import these tests into all of the other sql examples
+// TODO I think the goal should be that they're exactly the same
 
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
@@ -146,7 +148,53 @@ function usersTestsBeforeBatch(origin: string): Test[] {
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson === 1
+                    Ok:
+                        responseJson.id === 1 &&
+                        responseJson.username === 'lastmjs' &&
+                        responseJson.age === 33
+                };
+            }
+        },
+        {
+            name: '/users put 1',
+            test: async () => {
+                const response = await fetch(`${origin}/users`, {
+                    method: 'PUT',
+                    headers: [['Content-Type', 'application/json']],
+                    body: JSON.stringify({
+                        id: 1,
+                        username: 'lastmjs_updated',
+                        age: 34
+                    })
+                });
+                const responseJson = await response.json();
+
+                return {
+                    Ok:
+                        responseJson.id === 1 &&
+                        responseJson.username === 'lastmjs_updated' &&
+                        responseJson.age === 34
+                };
+            }
+        },
+        {
+            name: '/users patch 1',
+            test: async () => {
+                const response = await fetch(`${origin}/users`, {
+                    method: 'PUT',
+                    headers: [['Content-Type', 'application/json']],
+                    body: JSON.stringify({
+                        id: 1,
+                        age: 35
+                    })
+                });
+                const responseJson = await response.json();
+
+                return {
+                    Ok:
+                        responseJson.id === 1 &&
+                        responseJson.username === 'lastmjs_updated' &&
+                        responseJson.age === 35
                 };
             }
         },
@@ -181,8 +229,8 @@ function usersTestsBeforeBatch(origin: string): Test[] {
                 return {
                     Ok:
                         responseJson.id === 1 &&
-                        responseJson.username === 'lastmjs' &&
-                        responseJson.age === 33
+                        responseJson.username === 'lastmjs_updated' &&
+                        responseJson.age === 35
                 };
             }
         }
@@ -243,6 +291,57 @@ function postsTestsBeforeBatch(origin: string): Test[] {
             }
         },
         {
+            name: '/posts put 1',
+            test: async () => {
+                const response = await fetch(`${origin}/posts`, {
+                    method: 'PUT',
+                    headers: [['Content-Type', 'application/json']],
+                    body: JSON.stringify({
+                        id: 1,
+                        user_id: 1,
+                        title: 'Post 1 title has changed',
+                        body: 'Post 1 body has changed'
+                    })
+                });
+                const responseJson = await response.json();
+
+                return {
+                    Ok:
+                        responseJson.id === 1 &&
+                        responseJson.title === 'Post 1 title has changed' &&
+                        responseJson.body === 'Post 1 body has changed' &&
+                        responseJson.user.id === 1 &&
+                        responseJson.user.username === 'lastmjs_updated' &&
+                        responseJson.user.age === 35
+                };
+            }
+        },
+        {
+            name: '/posts patch 1',
+            test: async () => {
+                const response = await fetch(`${origin}/posts`, {
+                    method: 'PUT',
+                    headers: [['Content-Type', 'application/json']],
+                    body: JSON.stringify({
+                        id: 1,
+                        title: 'Post 1 title has changed again'
+                    })
+                });
+                const responseJson = await response.json();
+
+                return {
+                    Ok:
+                        responseJson.id === 1 &&
+                        responseJson.title ===
+                            'Post 1 title has changed again' &&
+                        responseJson.body === 'Post 1 body has changed' &&
+                        responseJson.user.id === 1 &&
+                        responseJson.user.username === 'lastmjs_updated' &&
+                        responseJson.user.age === 35
+                };
+            }
+        },
+        {
             name: '/posts not empty',
             test: async () => {
                 const response = await fetch(`${origin}/posts`);
@@ -273,12 +372,12 @@ function postsTestsBeforeBatch(origin: string): Test[] {
                 return {
                     Ok:
                         responseJson.id === 1 &&
-                        responseJson.title === 'Post 1' &&
-                        responseJson.body ===
-                            'It is a very intriguing post yes' &&
-                        responseJson.user.id === 2 &&
-                        responseJson.user.username.startsWith('lastmjs') &&
-                        responseJson.user.age === 33
+                        responseJson.title ===
+                            'Post 1 title has changed again' &&
+                        responseJson.body === 'Post 1 body has changed' &&
+                        responseJson.user.id === 1 &&
+                        responseJson.user.username === 'lastmjs_updated' &&
+                        responseJson.user.age === 35
                 };
             }
         }
@@ -360,7 +459,10 @@ function postsTestsAfterBatch(origin: string): Test[] {
                     Ok:
                         responseJson.id === 500 &&
                         typeof responseJson.title === 'string' &&
-                        typeof responseJson.body === 'string'
+                        typeof responseJson.body === 'string' &&
+                        typeof responseJson.user.id === 'number' &&
+                        typeof responseJson.user.username === 'string' &&
+                        typeof responseJson.user.age === 'number'
                 };
             }
         }

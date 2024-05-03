@@ -15,6 +15,7 @@ type Post = {
 };
 
 type PostCreate = Pick<Post, 'title' | 'body'> & { user_id: number };
+type PostUpdate = Pick<Post, 'id'> & Partial<PostCreate>;
 
 export function getPosts(db: Database, limit: number, offset: number): Post[] {
     const queryExecResults = db.exec(
@@ -78,6 +79,28 @@ export function createPost(db: Database, postCreate: PostCreate): number {
     const id = db.exec('SELECT last_insert_rowid()')[0].values[0][0] as number;
 
     return id;
+}
+
+export function updatePost(db: Database, postUpdate: PostUpdate): Post {
+    db.run(
+        `UPDATE posts SET user_id = COALESCE(:user_id, user_id), title = COALESCE(:title, title), body = COALESCE(:body, body) WHERE id = :id`,
+        {
+            ':id': postUpdate.id,
+            ':user_id': postUpdate.user_id ?? null,
+            ':title': postUpdate.title ?? null,
+            ':body': postUpdate.body ?? null
+        }
+    );
+
+    const post = getPost(db, postUpdate.id);
+
+    if (post === null) {
+        throw new Error(
+            `updatePost: could not find post with id ${postUpdate.id}`
+        );
+    }
+
+    return post;
 }
 
 export function convertQueryExecResultToUser(sqlValues: SqlValue[]): Post {

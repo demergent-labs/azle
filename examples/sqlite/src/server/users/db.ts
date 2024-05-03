@@ -5,8 +5,8 @@ export type User = {
     username: string;
     age: number;
 };
-
 type UserCreate = Pick<User, 'username' | 'age'>;
+type UserUpdate = Pick<User, 'id'> & Partial<UserCreate>;
 
 export function getUsers(db: Database, limit: number, offset: number): User[] {
     const queryExecResults = db.exec(
@@ -53,7 +53,7 @@ export function countUsers(db: Database): number {
     }
 }
 
-export function createUser(db: Database, userCreate: UserCreate): number {
+export function createUser(db: Database, userCreate: UserCreate): User {
     db.run('INSERT INTO users (username, age) VALUES (:username, :age)', {
         ':username': userCreate.username,
         ':age': userCreate.age
@@ -61,7 +61,31 @@ export function createUser(db: Database, userCreate: UserCreate): number {
 
     const id = db.exec('SELECT last_insert_rowid()')[0].values[0][0] as number;
 
-    return id;
+    return {
+        ...userCreate,
+        id
+    };
+}
+
+export function updateUser(db: Database, userUpdate: UserUpdate): User {
+    db.run(
+        `UPDATE users SET username = COALESCE(:username, username), age = COALESCE(:age, age) WHERE id = :id`,
+        {
+            ':id': userUpdate.id,
+            ':username': userUpdate.username ?? null,
+            ':age': userUpdate.age ?? null
+        }
+    );
+
+    const user = getUser(db, userUpdate.id);
+
+    if (user === null) {
+        throw new Error(
+            `updateUser: could not find user with id ${userUpdate.id}`
+        );
+    }
+
+    return user;
 }
 
 export function convertQueryExecResultToUser(sqlValues: SqlValue[]): User {
