@@ -61,10 +61,13 @@ export function createUser(db: Database, userCreate: UserCreate): User {
 
     const id = db.exec('SELECT last_insert_rowid()')[0].values[0][0] as number;
 
-    return {
-        ...userCreate,
-        id
-    };
+    const user = getUser(db, id);
+
+    if (user === null) {
+        throw new Error(`updateUser: could not find user with id ${id}`);
+    }
+
+    return user;
 }
 
 export function updateUser(db: Database, userUpdate: UserUpdate): User {
@@ -86,6 +89,20 @@ export function updateUser(db: Database, userUpdate: UserUpdate): User {
     }
 
     return user;
+}
+
+export function deleteUser(db: Database, id: number): number {
+    db.run(`DELETE FROM users WHERE id = :id`, {
+        ':id': id
+    });
+
+    const user = getUser(db, id);
+
+    if (user !== null) {
+        throw new Error(`deleteUser: could not delete user with id ${id}`);
+    }
+
+    return id;
 }
 
 export function convertQueryExecResultToUser(sqlValues: SqlValue[]): User {

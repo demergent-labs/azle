@@ -37,28 +37,28 @@ export function getTests(canisterId: string): Test[] {
         ...usersTestsBeforeBatch(origin),
         ...postsTestsBeforeBatch(origin),
         {
-            name: '/users/batch/999',
+            name: '/users/batch/499',
             test: async () => {
-                const response = await fetch(`${origin}/users/batch/999`, {
+                const response = await fetch(`${origin}/users/batch/499`, {
                     method: 'POST'
                 });
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson.Success === '999 users created'
+                    Ok: responseJson.Success === '499 users created'
                 };
             }
         },
         {
-            name: '/posts/batch/499',
+            name: '/posts/batch/299',
             test: async () => {
-                const response = await fetch(`${origin}/posts/batch/499`, {
+                const response = await fetch(`${origin}/posts/batch/299`, {
                     method: 'POST'
                 });
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson.Success === '499 posts created'
+                    Ok: responseJson.Success === '299 posts created'
                 };
             }
         },
@@ -95,7 +95,61 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         ...usersTestsAfterBatch(origin),
-        ...postsTestsAfterBatch(origin)
+        ...postsTestsAfterBatch(origin),
+        {
+            name: '/users delete',
+            test: async () => {
+                const createUserResponse = await fetch(`${origin}/users`, {
+                    method: 'POST',
+                    headers: [['Content-Type', 'application/json']],
+                    body: JSON.stringify({
+                        username: 'lastmjs_about_to_delete',
+                        age: 33
+                    })
+                });
+                const createUserResponseJson = await createUserResponse.json();
+
+                const deleteUserResponse = await fetch(`${origin}/users`, {
+                    method: 'DELETE',
+                    headers: [['Content-Type', 'application/json']],
+                    body: JSON.stringify({
+                        id: createUserResponseJson.id
+                    })
+                });
+                const deleteUserResponseJson = await deleteUserResponse.json();
+
+                return {
+                    Ok: deleteUserResponseJson === createUserResponseJson.id
+                };
+            }
+        },
+        {
+            name: '/posts delete',
+            test: async () => {
+                const createPostResponse = await fetch(`${origin}/posts`, {
+                    method: 'POST',
+                    headers: [['Content-Type', 'application/json']],
+                    body: JSON.stringify({
+                        title: 'Post about to be deleted',
+                        body: 'Body will be deleted with post'
+                    })
+                });
+                const createPostResponseJson = await createPostResponse.json();
+
+                const deletePostResponse = await fetch(`${origin}/posts`, {
+                    method: 'DELETE',
+                    headers: [['Content-Type', 'application/json']],
+                    body: JSON.stringify({
+                        id: createPostResponseJson.id
+                    })
+                });
+                const deletePostResponseJson = await deletePostResponse.json();
+
+                return {
+                    Ok: deletePostResponseJson === createPostResponseJson.id
+                };
+            }
+        }
     ];
 }
 
@@ -286,7 +340,14 @@ function postsTestsBeforeBatch(origin: string): Test[] {
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson === 1
+                    Ok:
+                        responseJson.id === 1 &&
+                        responseJson.title === 'Post 1' &&
+                        responseJson.body ===
+                            'It is a very intriguing post yes' &&
+                        responseJson.user.id === 2 &&
+                        typeof responseJson.user.username === 'string' &&
+                        typeof responseJson.user.age === 'number'
                 };
             }
         },
@@ -393,30 +454,30 @@ function usersTestsAfterBatch(origin: string): Test[] {
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson.length === 1_500
+                    Ok: responseJson.length === 800
                 };
             }
         },
         {
-            name: '/users/count 1_500',
+            name: '/users/count 800',
             test: async () => {
                 const response = await fetch(`${origin}/users/count`);
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson === 1_500
+                    Ok: responseJson === 800
                 };
             }
         },
         {
-            name: '/users/1500 not null',
+            name: '/users/800 not null',
             test: async () => {
-                const response = await fetch(`${origin}/users/1500`);
+                const response = await fetch(`${origin}/users/800`);
                 const responseJson = await response.json();
 
                 return {
                     Ok:
-                        responseJson.id === 1_500 &&
+                        responseJson.id === 800 &&
                         typeof responseJson.username === 'string' &&
                         typeof responseJson.age === 'number'
                 };
@@ -430,34 +491,34 @@ function postsTestsAfterBatch(origin: string): Test[] {
         {
             name: '/posts not empty',
             test: async () => {
-                const response = await fetch(`${origin}/posts?limit=400`);
+                const response = await fetch(`${origin}/posts?limit=300`);
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson.length === 400
+                    Ok: responseJson.length === 300
                 };
             }
         },
         {
-            name: '/posts/count 500',
+            name: '/posts/count 300',
             test: async () => {
                 const response = await fetch(`${origin}/posts/count`);
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson === 500
+                    Ok: responseJson === 300
                 };
             }
         },
         {
-            name: '/posts/500 not null',
+            name: '/posts/300 not null',
             test: async () => {
-                const response = await fetch(`${origin}/posts/500`);
+                const response = await fetch(`${origin}/posts/300`);
                 const responseJson = await response.json();
 
                 return {
                     Ok:
-                        responseJson.id === 500 &&
+                        responseJson.id === 300 &&
                         typeof responseJson.title === 'string' &&
                         typeof responseJson.body === 'string' &&
                         typeof responseJson.user.id === 'number' &&

@@ -3,7 +3,14 @@ import { v4 } from 'uuid';
 
 import { db } from '../../';
 import { createUser } from '../users/db';
-import { countPosts, createPost, getPost, getPosts, updatePost } from './db';
+import {
+    countPosts,
+    createPost,
+    deletePost,
+    getPost,
+    getPosts,
+    updatePost
+} from './db';
 
 export function getRouter(): Router {
     const router = express.Router();
@@ -45,13 +52,13 @@ export function getRouter(): Router {
                 age: 33
             });
 
-            const id = createPost(db, {
+            const post = createPost(db, {
                 user_id: user.id,
                 title,
                 body
             });
 
-            res.json(id);
+            res.json(post);
         }
     );
 
@@ -79,6 +86,14 @@ export function getRouter(): Router {
     router.put('/', updateHandler);
 
     router.patch('/', updateHandler);
+
+    router.delete('/', (req: Request<any, any, { id: number }>, res) => {
+        const { id } = req.body;
+
+        const deletedId = deletePost(db, id);
+
+        res.json(deletedId);
+    });
 
     return router;
 }

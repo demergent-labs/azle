@@ -66,7 +66,7 @@ export function countPosts(db: Database): number {
     }
 }
 
-export function createPost(db: Database, postCreate: PostCreate): number {
+export function createPost(db: Database, postCreate: PostCreate): Post {
     db.run(
         'INSERT INTO posts (user_id, title, body) VALUES (:user_id, :title, :body)',
         {
@@ -78,7 +78,13 @@ export function createPost(db: Database, postCreate: PostCreate): number {
 
     const id = db.exec('SELECT last_insert_rowid()')[0].values[0][0] as number;
 
-    return id;
+    const post = getPost(db, id);
+
+    if (post === null) {
+        throw new Error(`createPost: could not post with id ${id}`);
+    }
+
+    return post;
 }
 
 export function updatePost(db: Database, postUpdate: PostUpdate): Post {
@@ -101,6 +107,20 @@ export function updatePost(db: Database, postUpdate: PostUpdate): Post {
     }
 
     return post;
+}
+
+export function deletePost(db: Database, id: number): number {
+    db.run(`DELETE FROM posts WHERE id = :id`, {
+        ':id': id
+    });
+
+    const post = getPost(db, id);
+
+    if (post !== null) {
+        throw new Error(`deletePost: could not delete post with id ${id}`);
+    }
+
+    return id;
 }
 
 export function convertQueryExecResultToUser(sqlValues: SqlValue[]): Post {

@@ -2,7 +2,14 @@ import express, { Request, Response, Router } from 'express';
 import { v4 } from 'uuid';
 
 import { db } from '../../';
-import { countUsers, createUser, getUser, getUsers, updateUser } from './db';
+import {
+    countUsers,
+    createUser,
+    deleteUser,
+    getUser,
+    getUsers,
+    updateUser
+} from './db';
 
 export function getRouter(): Router {
     const router = express.Router();
@@ -66,6 +73,14 @@ export function getRouter(): Router {
     router.put('/', updateHandler);
 
     router.patch('/', updateHandler);
+
+    router.delete('/', (req: Request<any, any, { id: number }>, res) => {
+        const { id } = req.body;
+
+        const deletedId = deleteUser(db, id);
+
+        res.json(deletedId);
+    });
 
     return router;
 }
