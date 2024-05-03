@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { getRouter as getRouterPosts } from './posts/router';
-import { getRouter as getRouterUsers } from './users/router';
+import { getRouter as getRouterPosts } from '../entities/posts/router';
+import { getRouter as getRouterUsers } from '../entities/users/router';
 
 export function initServer() {
     let app = express();

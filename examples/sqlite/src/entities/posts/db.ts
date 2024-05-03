@@ -1,8 +1,3 @@
-// TODO the db stuff should be separated out into the db...
-// TODO well actually no, I think users and posts should just be their own
-// TODO thing grouped by functionality...so maybe just server needs to be changed...
-// TODO to just be a file, and then we have users and posts directories
-
 import { Database, QueryExecResult, SqlValue } from 'sql.js/dist/sql-asm.js';
 
 import { User } from '../users/db';

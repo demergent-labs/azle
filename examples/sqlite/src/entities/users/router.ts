@@ -1,7 +1,7 @@
 import express, { Request, Response, Router } from 'express';
 import { v4 } from 'uuid';
 
-import { db } from '../../';
+import { db } from '../..';
 import {
     countUsers,
     createUser,
