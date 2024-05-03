@@ -1,4 +1,3 @@
-// TODO test deleting
 // TODO import these tests into all of the other sql examples
 // TODO I think the goal should be that they're exactly the same
 

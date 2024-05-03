@@ -8,7 +8,6 @@ import {
     postUpgrade,
     preUpgrade,
     Server,
-    setNodeServer,
     StableBTreeMap,
     stableJson
 } from 'azle';
@@ -52,8 +51,6 @@ export default Server(initServer, {
 
         db = await initDb();
         drizzleDb = drizzle(db, { schema });
-
-        setNodeServer(initServer());
     }),
     preUpgrade: preUpgrade(() => {
         console.log('pre upgrade running');
@@ -96,8 +93,6 @@ export default Server(initServer, {
 
         db = await initDb(bytes);
         drizzleDb = drizzle(db, { schema });
-
-        setNodeServer(initServer());
 
         const end = ic.instructionCounter();
 
