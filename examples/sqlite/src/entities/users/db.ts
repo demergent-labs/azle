@@ -2,7 +2,6 @@ import { Database, SqlValue } from 'sql.js/dist/sql-asm.js';
 
 import { sqlite } from '../../db';
 
-// TODO let's really figure out the typescript types for create and update
 export type User = {
     id: number;
     username: string;

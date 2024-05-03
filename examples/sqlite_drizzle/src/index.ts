@@ -16,7 +16,7 @@ import { initServer } from './server';
 let db: Database;
 export let drizzleDb: DrizzleDb;
 
-let stableMap = StableBTreeMap<'DATABASE', Uint8Array>(0, stableJson, {
+let stableDbMap = StableBTreeMap<'DATABASE', Uint8Array>(0, stableJson, {
     toBytes: (data: Uint8Array) => data,
     fromBytes: (bytes: Uint8Array) => bytes
 });
@@ -27,10 +27,10 @@ export default Server(initServer, {
         drizzleDb = drizzle(db, { schema });
     }),
     preUpgrade: preUpgrade(() => {
-        stableMap.insert('DATABASE', db.export());
+        stableDbMap.insert('DATABASE', db.export());
     }),
     postUpgrade: postUpgrade([], async () => {
-        db = await initDb(stableMap.get('DATABASE').Some);
+        db = await initDb(stableDbMap.get('DATABASE').Some);
         drizzleDb = drizzle(db, { schema });
     })
 });

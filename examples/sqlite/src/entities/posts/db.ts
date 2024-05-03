@@ -3,7 +3,6 @@ import { Database, SqlValue } from 'sql.js/dist/sql-asm.js';
 import { sqlite } from '../../db';
 import { User } from '../users/db';
 
-// TODO let's really figure out these types
 type Post = {
     id: number;
     title: string;

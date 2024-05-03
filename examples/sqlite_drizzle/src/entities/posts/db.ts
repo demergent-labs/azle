@@ -1,9 +1,23 @@
 // TODO write a converter
 
 import { desc, eq } from 'drizzle-orm';
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { DrizzleDb } from '../../db';
-import { Post, PostCreate, posts, PostUpdate, users } from '../../db/schema';
+import { User, Users } from '../users/db';
+
+// TODO figure out better types
+export const Posts = sqliteTable('posts', {
+    id: integer('id').primaryKey(),
+    title: text('title').notNull(),
+    body: text('body').notNull(),
+    user_id: integer('user_id')
+        .notNull()
+        .references(() => Users.id)
+});
+export type Post = Omit<typeof Posts.$inferSelect, 'user_id'> & { user: User };
+export type PostCreate = typeof Posts.$inferInsert;
+export type PostUpdate = Pick<Post, 'id'> & Partial<PostCreate>;
 
 export async function getPosts(
     db: DrizzleDb,
@@ -12,8 +26,8 @@ export async function getPosts(
 ): Promise<Post[]> {
     const results = await db
         .select()
-        .from(posts)
-        .innerJoin(users, eq(posts.user_id, users.id))
+        .from(Posts)
+        .innerJoin(Users, eq(Posts.user_id, Users.id))
         .limit(limit)
         .offset(offset);
 
@@ -33,9 +47,9 @@ export async function getPost(
 ): Promise<Post | null> {
     const results = await drizzleDb
         .select()
-        .from(posts)
-        .innerJoin(users, eq(posts.user_id, users.id))
-        .where(eq(posts.id, id));
+        .from(Posts)
+        .innerJoin(Users, eq(Posts.user_id, Users.id))
+        .where(eq(Posts.id, id));
     const result = results[0];
 
     if (result === undefined) {
@@ -53,10 +67,10 @@ export async function getPost(
 export async function countPosts(drizzleDb: DrizzleDb): Promise<number> {
     const results = await drizzleDb
         .select({
-            id: posts.id
+            id: Posts.id
         })
-        .from(posts)
-        .orderBy(desc(posts.id))
+        .from(Posts)
+        .orderBy(desc(Posts.id))
         .limit(1);
 
     if (results.length === 0) {
@@ -70,8 +84,8 @@ export async function createPost(
     drizzleDb: DrizzleDb,
     postCreate: PostCreate
 ): Promise<Post> {
-    const results = await drizzleDb.insert(posts).values(postCreate).returning({
-        id: posts.id
+    const results = await drizzleDb.insert(Posts).values(postCreate).returning({
+        id: Posts.id
     });
     const result = results[0];
 
@@ -89,11 +103,11 @@ export async function updatePost(
     postUpdate: PostUpdate
 ): Promise<Post> {
     const results = await drizzleDb
-        .update(posts)
+        .update(Posts)
         .set(postUpdate)
-        .where(eq(posts.id, postUpdate.id))
+        .where(eq(Posts.id, postUpdate.id))
         .returning({
-            id: posts.id
+            id: Posts.id
         });
     const result = results[0];
 
@@ -113,10 +127,10 @@ export async function deletePost(
     id: number
 ): Promise<number> {
     const results = await drizzleDb
-        .delete(posts)
-        .where(eq(posts.id, id))
+        .delete(Posts)
+        .where(eq(Posts.id, id))
         .returning({
-            id: posts.id
+            id: Posts.id
         });
     const post = results[0];
 

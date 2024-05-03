@@ -1,14 +1,25 @@
+// TODO make sure we are doing all of this in the best way possible
+
 import { desc, eq } from 'drizzle-orm';
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { DrizzleDb } from '../../db';
-import { User, UserCreate, users, UserUpdate } from '../../db/schema';
+
+export const Users = sqliteTable('users', {
+    id: integer('id').primaryKey(),
+    username: text('username').unique().notNull(),
+    age: integer('age').notNull()
+});
+export type User = typeof Users.$inferSelect;
+export type UserCreate = Omit<User, 'id'>;
+export type UserUpdate = Pick<User, 'id'> & Partial<UserCreate>;
 
 export async function getUsers(
     db: DrizzleDb,
     limit: number,
     offset: number
 ): Promise<User[]> {
-    return await db.select().from(users).limit(limit).offset(offset);
+    return await db.select().from(Users).limit(limit).offset(offset);
 }
 
 export async function getUser(
@@ -17,8 +28,8 @@ export async function getUser(
 ): Promise<User | null> {
     const results = await drizzleDb
         .select()
-        .from(users)
-        .where(eq(users.id, id));
+        .from(Users)
+        .where(eq(Users.id, id));
 
     if (results.length === 0) {
         return null;
@@ -30,10 +41,10 @@ export async function getUser(
 export async function countUsers(drizzleDb: DrizzleDb): Promise<number> {
     const results = await drizzleDb
         .select({
-            id: users.id
+            id: Users.id
         })
-        .from(users)
-        .orderBy(desc(users.id))
+        .from(Users)
+        .orderBy(desc(Users.id))
         .limit(1);
 
     if (results.length === 0) {
@@ -48,7 +59,7 @@ export async function createUser(
     userCreate: UserCreate
 ): Promise<User> {
     const results = await drizzleDb
-        .insert(users)
+        .insert(Users)
         .values(userCreate)
         .returning();
 
@@ -66,9 +77,9 @@ export async function updateUser(
     userUpdate: UserUpdate
 ): Promise<User> {
     const results = await drizzleDb
-        .update(users)
+        .update(Users)
         .set(userUpdate)
-        .where(eq(users.id, userUpdate.id))
+        .where(eq(Users.id, userUpdate.id))
         .returning();
     const user = results[0];
 
@@ -84,10 +95,10 @@ export async function deleteUser(
     id: number
 ): Promise<number> {
     const results = await drizzleDb
-        .delete(users)
-        .where(eq(users.id, id))
+        .delete(Users)
+        .where(eq(Users.id, id))
         .returning({
-            id: users.id
+            id: Users.id
         });
     const user = results[0];
 
