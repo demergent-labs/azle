@@ -1,4 +1,8 @@
-import initSqlJs, { Database } from 'sql.js/dist/sql-asm.js';
+import initSqlJs, {
+    Database,
+    QueryExecResult,
+    SqlValue
+} from 'sql.js/dist/sql-asm.js';
 
 import { migrations } from './migrations';
 
@@ -18,5 +22,26 @@ export async function initDb(
     return db;
 }
 
-// TODO make little sql.js tagged template literal here
-// TODO it just provides a simple nice abstraction
+export function sqlite<T>(strings: TemplateStringsArray, ...values: any[]) {
+    return (db: Database, converter?: (sqlValues: SqlValue[]) => T): T[] => {
+        const parameterizedQuery = strings.reduce((acc, string, index) => {
+            return `${acc}${string}${index !== strings.length - 1 ? '?' : ''}`;
+        }, '');
+
+        const valuesNullized = values.map((value) => value ?? null);
+
+        const queryExecResults = db.exec(parameterizedQuery, valuesNullized);
+
+        const queryExecResult = queryExecResults[0] as
+            | QueryExecResult
+            | undefined;
+
+        if (queryExecResult === undefined || converter === undefined) {
+            return [];
+        } else {
+            return queryExecResult.values.map((sqlValues) => {
+                return converter(sqlValues);
+            });
+        }
+    };
+}

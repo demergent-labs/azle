@@ -1,5 +1,6 @@
-import { Database, QueryExecResult, SqlValue } from 'sql.js/dist/sql-asm.js';
+import { Database, SqlValue } from 'sql.js/dist/sql-asm.js';
 
+import { sqlite } from '../../db';
 import { User } from '../users/db';
 
 type Post = {
@@ -8,70 +9,45 @@ type Post = {
     body: string;
     user: User;
 };
-
 type PostCreate = Pick<Post, 'title' | 'body'> & { user_id: number };
 type PostUpdate = Pick<Post, 'id'> & Partial<PostCreate>;
 
 export function getPosts(db: Database, limit: number, offset: number): Post[] {
-    const queryExecResults = db.exec(
-        `SELECT * FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.id LIMIT :limit OFFSET :offset`,
-        {
-            ':limit': limit,
-            ':offset': offset
-        }
-    );
-    const queryExecResult = queryExecResults[0] as QueryExecResult | undefined;
-
-    return (
-        queryExecResult?.values.map((sqlValues) => {
-            return convertQueryExecResultToUser(sqlValues);
-        }) ?? []
+    return sqlite<Post>`SELECT * FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.id LIMIT ${limit} OFFSET ${offset}`(
+        db,
+        convertPost
     );
 }
 
 export function getPost(db: Database, id: number): Post | null {
-    const queryExecResults = db.exec(
-        'SELECT * FROM posts JOIN users ON posts.user_id = users.id WHERE posts.id=:id',
-        {
-            ':id': id
-        }
-    );
+    const posts =
+        sqlite<Post>`SELECT * FROM posts JOIN users ON posts.user_id = users.id WHERE posts.id = ${id}`(
+            db,
+            convertPost
+        );
 
-    const queryExecResult = queryExecResults[0] as QueryExecResult | undefined;
-
-    if (queryExecResult === undefined) {
-        return null;
-    } else {
-        return queryExecResult.values.map((sqlValues) => {
-            return convertQueryExecResultToUser(sqlValues);
-        })[0];
-    }
+    return posts.length === 0 ? null : posts[0];
 }
 
 export function countPosts(db: Database): number {
-    const queryExecResults = db.exec(
-        'SELECT id FROM posts ORDER BY id DESC LIMIT 1'
-    );
-    const queryExecResult = queryExecResults[0] as QueryExecResult | undefined;
+    const results =
+        sqlite<number>`SELECT id FROM posts ORDER BY id DESC LIMIT 1`(
+            db,
+            (sqlValues) => sqlValues[0] as number
+        );
 
-    if (queryExecResult === undefined) {
-        return 0;
-    } else {
-        return queryExecResult.values[0][0] as number;
-    }
+    return results[0] ?? 0;
 }
 
 export function createPost(db: Database, postCreate: PostCreate): Post {
-    db.run(
-        'INSERT INTO posts (user_id, title, body) VALUES (:user_id, :title, :body)',
-        {
-            ':user_id': postCreate.user_id,
-            ':title': postCreate.title,
-            ':body': postCreate.body
-        }
+    sqlite`INSERT INTO posts (user_id, title, body) VALUES (${postCreate.user_id}, ${postCreate.title}, ${postCreate.body})`(
+        db
     );
 
-    const id = db.exec('SELECT last_insert_rowid()')[0].values[0][0] as number;
+    const id = sqlite<number>`SELECT last_insert_rowid()`(
+        db,
+        (sqlValues) => sqlValues[0] as number
+    )[0];
 
     const post = getPost(db, id);
 
@@ -83,14 +59,8 @@ export function createPost(db: Database, postCreate: PostCreate): Post {
 }
 
 export function updatePost(db: Database, postUpdate: PostUpdate): Post {
-    db.run(
-        `UPDATE posts SET user_id = COALESCE(:user_id, user_id), title = COALESCE(:title, title), body = COALESCE(:body, body) WHERE id = :id`,
-        {
-            ':id': postUpdate.id,
-            ':user_id': postUpdate.user_id ?? null,
-            ':title': postUpdate.title ?? null,
-            ':body': postUpdate.body ?? null
-        }
+    sqlite`UPDATE posts SET user_id = COALESCE(${postUpdate.user_id}, user_id), title = COALESCE(${postUpdate.title}, title), body = COALESCE(${postUpdate.body}, body) WHERE id = ${postUpdate.id}`(
+        db
     );
 
     const post = getPost(db, postUpdate.id);
@@ -105,9 +75,7 @@ export function updatePost(db: Database, postUpdate: PostUpdate): Post {
 }
 
 export function deletePost(db: Database, id: number): number {
-    db.run(`DELETE FROM posts WHERE id = :id`, {
-        ':id': id
-    });
+    sqlite`DELETE FROM posts WHERE id = ${id}`(db);
 
     const post = getPost(db, id);
 
@@ -118,7 +86,7 @@ export function deletePost(db: Database, id: number): number {
     return id;
 }
 
-export function convertQueryExecResultToUser(sqlValues: SqlValue[]): Post {
+export function convertPost(sqlValues: SqlValue[]): Post {
     return {
         id: sqlValues[0] as number,
         title: sqlValues[2] as string,
