@@ -12,9 +12,9 @@ export function getTests(canisterId: string): Test[] {
 
     return [
         {
-            name: '/init-state true',
+            name: '/init-called true',
             test: async () => {
-                const response = await fetch(`${origin}/init-state`);
+                const response = await fetch(`${origin}/init-called`);
                 const responseJson = await response.json();
 
                 return {
@@ -23,9 +23,9 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: '/post-upgrade-state false',
+            name: '/post-upgrade-called false',
             test: async () => {
-                const response = await fetch(`${origin}/post-upgrade-state`);
+                const response = await fetch(`${origin}/post-upgrade-called`);
                 const responseJson = await response.json();
 
                 return {
@@ -72,9 +72,9 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: '/init-state false',
+            name: '/init-called false',
             test: async () => {
-                const response = await fetch(`${origin}/init-state`);
+                const response = await fetch(`${origin}/init-called`);
                 const responseJson = await response.json();
 
                 return {
@@ -83,9 +83,9 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: '/post-upgrade-state true',
+            name: '/post-upgrade-called true',
             test: async () => {
-                const response = await fetch(`${origin}/post-upgrade-state`);
+                const response = await fetch(`${origin}/post-upgrade-called`);
                 const responseJson = await response.json();
 
                 return {

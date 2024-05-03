@@ -1,6 +1,5 @@
 import express from 'express';
 
-import { initState, postUpgradeState } from '../';
 import { getRouter as getRouterPosts } from './posts/router';
 import { getRouter as getRouterUsers } from './users/router';
 
@@ -12,12 +11,12 @@ export function initServer() {
     app.use('/users', getRouterUsers());
     app.use('/posts', getRouterPosts());
 
-    app.get('/init-state', (_req, res) => {
-        res.json(initState.value);
+    app.get('/init-called', (_req, res) => {
+        res.json(globalThis._azleInitCalled);
     });
 
-    app.get('/post-upgrade-state', (_req, res) => {
-        res.json(postUpgradeState.value);
+    app.get('/post-upgrade-called', (_req, res) => {
+        res.json(globalThis._azlePostUpgradeCalled);
     });
 
     return app.listen();

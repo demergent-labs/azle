@@ -38,12 +38,19 @@ declare global {
     var _azleOutgoingHttpOptionsTransformMethodName: string | undefined;
     // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsTransformContext: Uint8Array | undefined;
+    // eslint-disable-next-line no-var
+    var _azleInitCalled: boolean;
+    // eslint-disable-next-line no-var
+    var _azlePostUpgradeCalled: boolean;
 }
 
 globalThis._azleInsideCanister =
     globalThis._azleIc === undefined ? false : true;
 
 if (globalThis._azleInsideCanister) {
+    globalThis._azleInitCalled = false;
+    globalThis._azlePostUpgradeCalled = false;
+
     const log = (...args: any[]) => {
         const jsonStringifiedArgs = args
             .map((arg) => {
