@@ -52,7 +52,7 @@ export function createPost(db: Database, postCreate: PostCreate): Post {
     const post = getPost(db, id);
 
     if (post === null) {
-        throw new Error(`createPost: could not post with id ${id}`);
+        throw new Error(`createPost: could not create post with id ${id}`);
     }
 
     return post;

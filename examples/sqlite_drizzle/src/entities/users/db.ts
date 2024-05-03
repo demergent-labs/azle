@@ -1,5 +1,3 @@
-// TODO make sure we are doing all of this in the best way possible
-
 import { desc, eq } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
@@ -26,16 +24,9 @@ export async function getUser(
     drizzleDb: DrizzleDb,
     id: number
 ): Promise<User | null> {
-    const results = await drizzleDb
-        .select()
-        .from(Users)
-        .where(eq(Users.id, id));
+    const users = await drizzleDb.select().from(Users).where(eq(Users.id, id));
 
-    if (results.length === 0) {
-        return null;
-    } else {
-        return results[0];
-    }
+    return users.length === 0 ? null : users[0];
 }
 
 export async function countUsers(drizzleDb: DrizzleDb): Promise<number> {
@@ -47,26 +38,18 @@ export async function countUsers(drizzleDb: DrizzleDb): Promise<number> {
         .orderBy(desc(Users.id))
         .limit(1);
 
-    if (results.length === 0) {
-        return 0;
-    } else {
-        return results[0].id;
-    }
+    return results[0]?.id ?? 0;
 }
 
 export async function createUser(
     drizzleDb: DrizzleDb,
     userCreate: UserCreate
 ): Promise<User> {
-    const results = await drizzleDb
-        .insert(Users)
-        .values(userCreate)
-        .returning();
-
-    const user = results[0];
+    const users = await drizzleDb.insert(Users).values(userCreate).returning();
+    const user = users[0];
 
     if (user === undefined) {
-        throw new Error(`createUser failed`);
+        throw new Error(`createUser: failed`);
     }
 
     return user;
@@ -76,15 +59,15 @@ export async function updateUser(
     drizzleDb: DrizzleDb,
     userUpdate: UserUpdate
 ): Promise<User> {
-    const results = await drizzleDb
+    const users = await drizzleDb
         .update(Users)
         .set(userUpdate)
         .where(eq(Users.id, userUpdate.id))
         .returning();
-    const user = results[0];
+    const user = users[0];
 
     if (user === undefined) {
-        throw new Error(`updateUser failed for id ${userUpdate.id}`);
+        throw new Error(`updateUser: failed for id ${userUpdate.id}`);
     }
 
     return user;
@@ -94,16 +77,16 @@ export async function deleteUser(
     drizzleDb: DrizzleDb,
     id: number
 ): Promise<number> {
-    const results = await drizzleDb
+    const users = await drizzleDb
         .delete(Users)
         .where(eq(Users.id, id))
         .returning({
             id: Users.id
         });
-    const user = results[0];
+    const user = users[0];
 
     if (user === undefined) {
-        throw new Error(`deleteUser failed for id ${id}`);
+        throw new Error(`deleteUser: could not delete user with id ${id}`);
     }
 
     return user.id;
