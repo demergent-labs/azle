@@ -60,10 +60,7 @@ export async function getPublicKey(
     derivationPath: DerivationPath
 ): Promise<Buffer> {
     // Fetch the public key of the given derivation path.
-    return Buffer.from(
-        await ecdsaApi.ecdsaPublicKey(keyName, derivationPath),
-        'hex'
-    );
+    return Buffer.from(await ecdsaApi.ecdsaPublicKey(keyName, derivationPath));
 }
 
 /// Sends a transaction to the network that transfers the given amount to the

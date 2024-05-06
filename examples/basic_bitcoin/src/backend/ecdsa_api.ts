@@ -6,7 +6,9 @@ import { DerivationPath } from './types';
 export async function ecdsaPublicKey(
     keyName: string,
     derivationPath: DerivationPath
-): Promise<string> {
+): Promise<Uint8Array> {
+    // Retrieve the public key of this canister at the given derivation path
+    // from the ECDSA API.
     const response = await fetch('icp://aaaaa-aa/ecdsa_public_key', {
         body: serialize({
             args: [
@@ -21,8 +23,9 @@ export async function ecdsaPublicKey(
             ]
         })
     });
-    const ecdsaPublicKey = await response.json();
-    return Buffer.from(ecdsaPublicKey.public_key).toString('hex');
+    const ecdsaPublicKeyResult = await response.json();
+
+    return ecdsaPublicKeyResult.public_key;
 }
 
 export async function signWithECDSA(
