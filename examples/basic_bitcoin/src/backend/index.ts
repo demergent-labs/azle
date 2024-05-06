@@ -4,13 +4,13 @@ import express, { Request } from 'express';
 
 import * as bitcoinApi from './bitcoin_api';
 import * as bitcoinWallet from './bitcoin_wallet';
+import { SendRequest } from './types';
 
-export type SendRequest = {
-    destinationAddress: string;
-    amountInSatoshi: bigint;
-    utxos: string[];
-};
-
+// The bitcoin network to connect to.
+//
+// When developing locally this should be `Regtest`.
+// When deploying to the IC this should be `Testnet`.
+// `Mainnet` is currently unsupported.
 const NETWORK: BitcoinNetwork = determineNetwork(
     process.env.BITCOIN_NETWORK
 ) ?? {
@@ -73,15 +73,13 @@ app.post('/get-p2pkh-address', async (req, res) => {
 });
 
 app.post('/send', async (req: Request<any, any, any, SendRequest>, res) => {
-    const destAddress = req.query.destinationAddress;
-    const amount = BigInt(req.query.amountInSatoshi);
     const transactions = req.body;
     const txId = await bitcoinWallet.send(
         NETWORK,
         DERIVATION_PATH,
         KEY_NAME,
-        destAddress,
-        amount,
+        req.query.destinationAddress,
+        BigInt(req.query.amountInSatoshi),
         transactions
     );
 
