@@ -1,4 +1,4 @@
-import { blob, nat64, serialize, Vec } from 'azle';
+import { serialize } from 'azle';
 import {
     BitcoinNetwork,
     GetUtxosResult,
@@ -6,11 +6,11 @@ import {
 } from 'azle/canisters/management/bitcoin';
 
 // The fees for the various bitcoin endpoints.
-const GET_BALANCE_COST_CYCLES: nat64 = 100_000_000n;
-const GET_UTXOS_COST_CYCLES: nat64 = 10_000_000_000n;
-const GET_CURRENT_FEE_PERCENTILES_CYCLES: nat64 = 100_000_000n;
-const SEND_TRANSACTION_BASE_CYCLES: nat64 = 5_000_000_000n;
-const SEND_TRANSACTION_PER_BYTE_CYCLES: nat64 = 20_000_000n;
+const GET_BALANCE_COST_CYCLES = 100_000_000n;
+const GET_UTXOS_COST_CYCLES = 10_000_000_000n;
+const GET_CURRENT_FEE_PERCENTILES_CYCLES = 100_000_000n;
+const SEND_TRANSACTION_BASE_CYCLES = 5_000_000_000n;
+const SEND_TRANSACTION_PER_BYTE_CYCLES = 20_000_000n;
 
 /// Returns the balance of the given bitcoin address.
 ///
@@ -19,7 +19,7 @@ const SEND_TRANSACTION_PER_BYTE_CYCLES: nat64 = 20_000_000n;
 export async function getBalance(
     network: BitcoinNetwork,
     address: string
-): Promise<nat64> {
+): Promise<bigint> {
     const response = await fetch(`icp://aaaaa-aa/bitcoin_get_balance`, {
         body: serialize({
             args: [
@@ -67,7 +67,7 @@ export async function getUtxos(
 /// See https://internetcomputer.org/docs/current/references/ic-interface-spec/#ic-bitcoin_get_current_fee_percentiles
 export async function getCurrentFeePercentiles(
     network: BitcoinNetwork
-): Promise<Vec<MillisatoshiPerByte>> {
+): Promise<MillisatoshiPerByte[]> {
     const response = await fetch(
         `icp://aaaaa-aa/bitcoin_get_current_fee_percentiles`,
         {
@@ -90,7 +90,7 @@ export async function getCurrentFeePercentiles(
 /// See https://internetcomputer.org/docs/current/references/ic-interface-spec/#ic-bitcoin_send_transaction
 export async function sendTransaction(
     network: BitcoinNetwork,
-    transaction: blob
+    transaction: Uint8Array
 ): Promise<void> {
     const transactionFee =
         SEND_TRANSACTION_BASE_CYCLES +
