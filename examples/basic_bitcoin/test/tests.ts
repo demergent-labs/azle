@@ -5,11 +5,19 @@ import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs';
 import { jsonParse, jsonStringify } from 'azle';
 import { GetUtxosResult, Outpoint, Satoshi } from 'azle/canisters/management';
 import { Test } from 'azle/test';
-import { networks, payments, Transaction } from 'bitcoinjs-lib';
-import { execSync } from 'child_process';
+import { networks, payments } from 'bitcoinjs-lib';
 import { ECPairFactory } from 'ecpair';
 
+import {
+    generateToAddress,
+    getTotalOutput,
+    getTransaction,
+    getUtxoHashes
+} from './bitcoin';
+
 const SINGLE_BLOCK_REWARD = 5_000_000_000n;
+const FIRST_MINING_SESSION = 101;
+const SECOND_MINING_SESSION = 3;
 
 const ECPair = ECPairFactory(ecc);
 
@@ -55,10 +63,7 @@ export function getTests(canisterId: string): Test[] {
             name: 'mint BTC',
             prep: async () => {
                 const address = await getAddress(origin);
-
-                for (let i = 0; i < 101; i++) {
-                    execSync(`npm run mint --address=${address}`);
-                }
+                generateToAddress(address, FIRST_MINING_SESSION);
             }
         },
         { name: 'wait for blocks to settle', wait: 60_000 },
@@ -68,7 +73,11 @@ export function getTests(canisterId: string): Test[] {
                 const address = await getAddress(origin);
                 const balance = await getBalance(origin, address);
 
-                return { Ok: balance === SINGLE_BLOCK_REWARD * 101n };
+                return {
+                    Ok:
+                        balance ===
+                        SINGLE_BLOCK_REWARD * BigInt(FIRST_MINING_SESSION)
+                };
             }
         },
         {
@@ -86,8 +95,8 @@ export function getTests(canisterId: string): Test[] {
 
                 return {
                     Ok:
-                        utxosResult.tip_height === 101 &&
-                        utxosResult.utxos.length === 101 &&
+                        utxosResult.tip_height === FIRST_MINING_SESSION &&
+                        utxosResult.utxos.length === FIRST_MINING_SESSION &&
                         checkUtxos(utxosResult.utxos)
                 };
             }
@@ -123,26 +132,8 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: '/create-transaction',
-            test: async () => {
-                const address = getToAddress();
-                const body = jsonStringify(getUtxoHashes());
-                const response = await fetch(
-                    `${origin}/create-transaction?amountInSatoshi=${SINGLE_BLOCK_REWARD}&destinationAddress=${address}`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body
-                    }
-                );
-                const transactionHex = await response.text();
-                console.log(transactionHex);
-                return { Ok: true };
-            }
-        },
-        {
             name: '/send from canister to L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv',
-            test: async () => {
+            prep: async () => {
                 const toAddress = getToAddress();
                 const body = jsonStringify(getUtxoHashes());
                 const response = await fetch(
@@ -156,37 +147,35 @@ export function getTests(canisterId: string): Test[] {
                     }
                 );
                 lastTx = await response.text();
-
-                // TODO is there anyway to deteremine if this actually worked or just by getting the balance bellow?
-                // TODO if that is the case then we should probably get rid of the create-transaction end point and call get balance as part of this one
-                return { Ok: true };
             }
         },
         {
             name: 'mint BTC',
             prep: async () => {
-                const address = await getToAddress();
-                generateToAddress(address, 3);
+                const address = getToAddress();
+                generateToAddress(address, SECOND_MINING_SESSION);
             }
         },
         { name: 'wait for blocks to settle', wait: 60_000 },
         {
-            name: '/get-balance of L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv',
+            name: '/get-balance of L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv final',
             test: async () => {
                 const address = getToAddress();
                 const balance = await getBalance(origin, address);
 
-                const previousTransaction = Transaction.fromHex(
-                    getTxHex(lastTx)
-                );
+                const previousTransaction = getTransaction(lastTx);
 
                 const outputValue = BigInt(getTotalOutput(previousTransaction));
 
                 const inputValue = SINGLE_BLOCK_REWARD;
 
                 const fee = inputValue - outputValue;
-                const blockRewards = SINGLE_BLOCK_REWARD * 3n + fee;
+                const blockRewards =
+                    SINGLE_BLOCK_REWARD * BigInt(SECOND_MINING_SESSION) + fee;
                 const expectedBalance = SINGLE_BLOCK_REWARD / 2n + blockRewards;
+
+                console.log(balance);
+                console.log(expectedBalance);
 
                 return {
                     Ok: balance === expectedBalance
@@ -194,31 +183,39 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: '/get-balance',
+            name: '/get-balance final',
             test: async () => {
                 const address = await getAddress(origin);
                 const balance = await getBalance(origin, address);
 
-                const previousTransaction = Transaction.fromHex(
-                    getTxHex(lastTx)
-                );
+                const previousTransaction = getTransaction(lastTx);
                 const outputValue = BigInt(getTotalOutput(previousTransaction));
                 const amountSent = SINGLE_BLOCK_REWARD / 2n;
                 const inputValue = SINGLE_BLOCK_REWARD;
                 const fee = inputValue - outputValue;
-                const blockRewards = SINGLE_BLOCK_REWARD * 101n;
+                const blockRewards =
+                    SINGLE_BLOCK_REWARD * BigInt(FIRST_MINING_SESSION);
                 const expectedBalance = blockRewards - (amountSent + fee);
 
                 return { Ok: balance === expectedBalance };
             }
+        },
+        {
+            name: '/get-current-fee-percentiles',
+            test: async () => {
+                const response = await fetch(
+                    `${origin}/get-current-fee-percentiles`,
+                    { method: 'POST' }
+                );
+
+                const feePercentiles = jsonParse(await response.text());
+                console.log(feePercentiles);
+                console.log(feePercentiles.length);
+
+                return { Ok: feePercentiles.length === 101 }; // TODO is that what we are expecting it to be?
+            }
         }
     ];
-}
-
-function getTotalOutput(tx: Transaction): number {
-    return tx.outs.reduce((total, output) => {
-        return total + output.value;
-    }, 0);
 }
 
 async function getAddress(origin: string): Promise<string> {
@@ -226,109 +223,6 @@ async function getAddress(origin: string): Promise<string> {
         method: 'POST'
     });
     return await response.text();
-}
-
-function generateToAddress(address: string, blocks: number) {
-    for (let i = 0; i < blocks; i++) {
-        execSync(`npm run mint --address=${address}`);
-    }
-}
-
-function getUtxoHashes(): TransactionHashes {
-    // TODO would range() be better here?
-    return Array.from<number>({ length: 102 }).reduce((acc, _, blockHeight) => {
-        const blockHash = getblockhash(blockHeight);
-        const block = getBlock(blockHash);
-        const result = getTransactionHashAndIdFromBlock(block);
-        return { ...acc, ...result };
-    }, {} as TransactionHashes);
-}
-
-function getTxHex(txid: string): string {
-    return execSync(
-        `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getrawtransaction ${txid}`
-    )
-        .toString()
-        .trim();
-}
-
-function getblockhash(blockIndex: number): string {
-    return execSync(
-        `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getblockhash ${blockIndex}`
-    )
-        .toString()
-        .trim();
-}
-
-type Block = {
-    hash: string;
-    confirmations: number;
-    height: number;
-    version: number;
-    versionHex: string;
-    merkleroot: string;
-    time: number;
-    mediantime: number;
-    nonce: number;
-    bits: string;
-    difficulty: number;
-    chainwork: string;
-    nTx: number;
-    previousblockhash: string;
-    nextblockhash: string;
-    strippedsize: number;
-    size: number;
-    weight: number;
-    tx: Tx[];
-};
-
-type Tx = {
-    txid: string;
-    hash: string;
-    version: number;
-    size: number;
-    vsize: number;
-    weight: number;
-    locktime: number;
-    vin: [
-        {
-            coinbase: string;
-            txinwitness: string[];
-            sequence: number;
-        }
-    ];
-    vout: Vout[];
-    hex: string;
-};
-
-type Vout = {
-    value: number;
-    n: number;
-    scriptPubKey: {
-        asm: string;
-        desc: string;
-        hex: string;
-        address: string;
-        type: string;
-    };
-};
-
-function getBlock(hash: string): Block {
-    const getBlockResult = execSync(
-        `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getblock ${hash} 2`
-    )
-        .toString()
-        .trim();
-
-    return jsonParse(getBlockResult);
-}
-
-type TransactionHashes = {
-    [txid: string]: string;
-};
-
-function getTransactionHashAndIdFromBlock(block: Block): TransactionHashes {
-    return { [block.tx[0].txid]: block.tx[0].hex };
 }
 
 function getToAddress(): string {

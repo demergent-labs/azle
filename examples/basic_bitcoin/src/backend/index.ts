@@ -76,9 +76,6 @@ app.post('/send', async (req: Request<any, any, any, SendRequest>, res) => {
     const destAddress = req.query.destinationAddress;
     const amount = BigInt(req.query.amountInSatoshi);
     const transactions = req.body;
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-    console.log(`>>> Dest: ${destAddress} amount: ${amount}`);
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
     const txId = await bitcoinWallet.send(
         NETWORK,
         DERIVATION_PATH,
@@ -90,40 +87,6 @@ app.post('/send', async (req: Request<any, any, any, SendRequest>, res) => {
 
     res.send(txId);
 });
-
-app.post(
-    '/create-transaction',
-    async (req: Request<any, any, any, SendRequest>, res) => {
-        const destAddress = req.query.destinationAddress;
-        const amount = BigInt(req.query.amountInSatoshi);
-        const transactions = req.body;
-        console.log('THESE ARE THE TRANSACTIONS!!!');
-        console.log(transactions);
-        // const jsonTransactions = jsonParse(transactions);
-        console.log(
-            '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
-        );
-        console.log(`>>> Dest: ${destAddress} amount: ${amount}`);
-        console.log(
-            '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
-        );
-        const transaction = await bitcoinWallet.createSignedTransaction(
-            NETWORK,
-            DERIVATION_PATH,
-            KEY_NAME,
-            destAddress,
-            amount,
-            transactions
-        );
-
-        const result = {
-            transactionHex: transaction.toHex(),
-            transactionBuf: transaction.toBuffer().toString('hex')
-        };
-
-        res.send(result);
-    }
-);
 
 app.listen();
 

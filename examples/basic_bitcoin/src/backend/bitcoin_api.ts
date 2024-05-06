@@ -96,22 +96,15 @@ export async function sendTransaction(
         SEND_TRANSACTION_BASE_CYCLES +
         BigInt(transaction.length) * SEND_TRANSACTION_PER_BYTE_CYCLES;
 
-    try {
-        await fetch(`icp://aaaaa-aa/bitcoin_send_transaction`, {
-            body: serialize({
-                args: [
-                    {
-                        transaction,
-                        network
-                    }
-                ],
-                cycles: transactionFee
-            })
-        });
-    } catch (err: any) {
-        console.log('There was an error sending the transaction');
-        console.log(err.message);
-        console.log(err);
-        throw err;
-    }
+    await fetch(`icp://aaaaa-aa/bitcoin_send_transaction`, {
+        body: serialize({
+            args: [
+                {
+                    transaction,
+                    network
+                }
+            ],
+            cycles: transactionFee
+        })
+    });
 }

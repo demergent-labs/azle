@@ -34,6 +34,10 @@ export type ThresholdKeyInfo = {
     };
 };
 
+type TransactionHashes = {
+    [txid: string]: string;
+};
+
 /// Returns the P2PKH address of this canister at the given derivation path.
 export async function getAddress(
     network: BitcoinNetwork,
@@ -88,11 +92,7 @@ export async function send(
     return signedTransaction.getId();
 }
 
-type TransactionHashes = {
-    [txid: string]: string;
-};
-
-export async function createSignedTransaction(
+async function createSignedTransaction(
     network: BitcoinNetwork,
     derivationPath: Vec<blob>,
     keyName: string,
@@ -119,9 +119,7 @@ export async function createSignedTransaction(
     );
 
     // Sign the transaction.
-    const result = await signTransaction(transaction, keyName, derivationPath);
-    console.log('bw: createSignedTransaction: by golly I think it worked!!');
-    return result;
+    return await signTransaction(transaction, keyName, derivationPath);
 }
 
 async function getFeePerByte(network: BitcoinNetwork): Promise<nat64> {
@@ -163,7 +161,6 @@ async function buildTransaction(
     // will get the following error while it's checking the transaction:
     // 'Fee is too small: expected more than 128 but got 0'
     // So I'm going to start at 130 instead
-    console.log('bw: buildTransaction: Building transaction...');
     let totalFee = 130n;
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -177,8 +174,6 @@ async function buildTransaction(
             transactionHashes
         );
 
-        console.log('bw: buildTransaction: start signing');
-
         // Sign the transaction. In this case, we only care about the size
         // of the signed transaction.
         const signedTransaction = await signTransaction(
@@ -187,14 +182,9 @@ async function buildTransaction(
             derivationPath
         );
 
-        console.log('bw: buildTransaction: end signing');
-
         const signedTxBytesLen = BigInt(signedTransaction.byteLength());
 
         if ((signedTxBytesLen * feePerByte) / 1_000n === totalFee) {
-            console.log(
-                `bw: buildTransaction: Transaction built with fee ${totalFee}.`
-            );
             return transaction;
         } else {
             totalFee = (signedTxBytesLen * feePerByte) / 1_000n;
@@ -217,12 +207,8 @@ function buildTransactionWithFee(
     // we're using min_confirmations of 1.
     let utxosToSpend: Vec<Utxo> = [];
     let totalSpent = 0n;
-    console.log('bw: buildTransactionWithFee: start');
     for (const utxo of [...ownUtxos].reverse()) {
         if (utxosToSpend.includes(utxo)) {
-            console.log(
-                "bw: buildTransactionWithFee: CHEEKY THING it's trying to double add!!"
-            );
             continue;
         }
         totalSpent += utxo.value;
@@ -232,7 +218,6 @@ function buildTransactionWithFee(
             break;
         }
     }
-    console.log('bw: buildTransactionWithFee: collected utxos');
 
     if (totalSpent < amount + fee) {
         throw new Error(
@@ -325,16 +310,11 @@ async function signTransaction(
     ): boolean => {
         // TODO I think if we pass along the ECPair we can validate with that. See the bitcoinjs-lib /create-psbt
         console.log(
-            `bw: signTransaction: validator: pubkey: ${pubkey.toString('hex')}`
+            "Please visually inspect these to make sure they look right and that no one is trying to spend bitcoin they don't own"
         );
-        console.log(
-            `bw: signTransaction: validator: msghash: ${msghash.toString(
-                'hex'
-            )}`
-        );
-        console.log(
-            `bw: signTransaction: validator: sig: ${signature.toString('hex')}`
-        );
+        console.log(`pubkey: ${pubkey.toString('hex')}`);
+        console.log(`msghash: ${msghash.toString('hex')}`);
+        console.log(`sig: ${signature.toString('hex')}`);
         return true;
     };
     try {
