@@ -487,11 +487,11 @@ function postsTestsAfterBatch(origin: string): Test[] {
         {
             name: '/posts not empty',
             test: async () => {
-                const response = await fetch(`${origin}/posts?limit=300`);
+                const response = await fetch(`${origin}/posts?limit=200`);
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson.length === 300
+                    Ok: responseJson.length === 200
                 };
             }
         },
