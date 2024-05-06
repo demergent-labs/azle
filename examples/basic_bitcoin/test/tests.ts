@@ -1,6 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
+// import * as ecc from 'tiny-secp256k1/lib/'; // TODO we should switch to this import as soon as we have wasm support
 import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs';
 import { jsonParse, jsonStringify } from 'azle';
 import { GetUtxosResult, Outpoint, Satoshi } from 'azle/canisters/management';
