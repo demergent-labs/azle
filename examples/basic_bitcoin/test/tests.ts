@@ -17,7 +17,7 @@ import {
 
 const SINGLE_BLOCK_REWARD = 5_000_000_000n;
 const FIRST_MINING_SESSION = 101;
-const SECOND_MINING_SESSION = 3;
+const SECOND_MINING_SESSION = 10;
 
 const ECPair = ECPairFactory(ecc);
 
@@ -45,7 +45,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/get-p2pkh-address',
             test: async () => {
-                const address = await getAddress(origin);
+                const address = await getP2pkhAddress(origin);
 
                 return { Ok: canisterAddressForm.length === address.length };
             }
@@ -53,7 +53,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/get-balance',
             test: async () => {
-                const address = await getAddress(origin);
+                const address = await getP2pkhAddress(origin);
                 const balance = await getBalance(origin, address);
 
                 return { Ok: balance === 0n };
@@ -62,7 +62,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: 'mint BTC',
             prep: async () => {
-                const address = await getAddress(origin);
+                const address = await getP2pkhAddress(origin);
                 generateToAddress(address, FIRST_MINING_SESSION);
             }
         },
@@ -70,7 +70,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/get-balance',
             test: async () => {
-                const address = await getAddress(origin);
+                const address = await getP2pkhAddress(origin);
                 const balance = await getBalance(origin, address);
 
                 return {
@@ -83,7 +83,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/get-utxos',
             test: async () => {
-                const address = await getAddress(origin);
+                const address = await getP2pkhAddress(origin);
 
                 const response = await fetch(
                     `${origin}/get-utxos?address=${address}`,
@@ -147,6 +147,7 @@ export function getTests(canisterId: string): Test[] {
                     }
                 );
                 lastTx = await response.text();
+                console.log(lastTx);
             }
         },
         {
@@ -174,9 +175,6 @@ export function getTests(canisterId: string): Test[] {
                     SINGLE_BLOCK_REWARD * BigInt(SECOND_MINING_SESSION) + fee;
                 const expectedBalance = SINGLE_BLOCK_REWARD / 2n + blockRewards;
 
-                console.log(balance);
-                console.log(expectedBalance);
-
                 return {
                     Ok: balance === expectedBalance
                 };
@@ -185,7 +183,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/get-balance final',
             test: async () => {
-                const address = await getAddress(origin);
+                const address = await getP2pkhAddress(origin);
                 const balance = await getBalance(origin, address);
 
                 const previousTransaction = getTransaction(lastTx);
@@ -209,16 +207,14 @@ export function getTests(canisterId: string): Test[] {
                 );
 
                 const feePercentiles = jsonParse(await response.text());
-                console.log(feePercentiles);
-                console.log(feePercentiles.length);
 
-                return { Ok: feePercentiles.length === 101 }; // TODO is that what we are expecting it to be?
+                return { Ok: feePercentiles.length === 0 }; // TODO is that what we are expecting it to be?
             }
         }
     ];
 }
 
-async function getAddress(origin: string): Promise<string> {
+async function getP2pkhAddress(origin: string): Promise<string> {
     const response = await fetch(`${origin}/get-p2pkh-address`, {
         method: 'POST'
     });

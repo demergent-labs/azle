@@ -63,13 +63,13 @@ app.post('/get-current-fee-percentiles', async (req, res) => {
 
 /// Returns the P2PKH address of this canister at a specific derivation path.
 app.post('/get-p2pkh-address', async (req, res) => {
-    const address = await bitcoinWallet.getAddress(
+    const address = await bitcoinWallet.getP2pkhAddress(
         NETWORK,
         KEY_NAME,
         DERIVATION_PATH
     );
 
-    res.send(address.toString());
+    res.send(address);
 });
 
 app.post('/send', async (req: Request<any, any, any, SendRequest>, res) => {
