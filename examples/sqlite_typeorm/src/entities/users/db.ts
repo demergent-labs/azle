@@ -12,11 +12,7 @@ export class User extends BaseEntity {
     age: number;
 }
 
-// TODO no better way to do these types?
-export type UserCreate = {
-    username: User['username'];
-    age: User['age'];
-};
+export type UserCreate = Pick<User, 'username' | 'age'>;
 export type UserUpdate = Pick<User, 'id'> & Partial<UserCreate>;
 
 export async function getUsers(limit: number, offset: number): Promise<User[]> {

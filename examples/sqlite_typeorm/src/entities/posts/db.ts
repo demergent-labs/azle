@@ -19,17 +19,11 @@ export class Post extends BaseEntity {
     @Column()
     body: string;
 
-    // TODO make this required
     @ManyToOne(() => User)
     user: User;
 }
 
-// TODO no better way to do these types?
-export type PostCreate = {
-    title: Post['title'];
-    body: Post['body'];
-    user_id: User['id'];
-};
+export type PostCreate = Pick<Post, 'title' | 'body'> & { user_id: User['id'] };
 export type PostUpdate = Pick<Post, 'id'> & Partial<PostCreate>;
 
 export async function getPosts(limit: number, offset: number): Promise<Post[]> {
@@ -54,7 +48,7 @@ export async function getPost(id: number): Promise<Post | null> {
 }
 
 export async function countPosts(): Promise<number> {
-    return await Post.count(); // TODO might fail with a full table scan
+    return await Post.count();
 }
 
 export async function createPost(postCreate: PostCreate): Promise<Post> {
@@ -80,7 +74,6 @@ export async function updatePost(postUpdate: PostUpdate): Promise<Post> {
     await Post.update(postUpdate.id, {
         title: postUpdate.title,
         body: postUpdate.body,
-        // TODO really make sure this part works
         user: {
             id: postUpdate.id
         }
