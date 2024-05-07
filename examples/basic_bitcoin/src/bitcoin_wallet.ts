@@ -198,7 +198,7 @@ function buildTransactionWithFee(
         const txid = previousTxidHash.reverse().toString('hex');
         const nonWitnessUtxo = Buffer.from(transactionHashes[txid], 'hex');
         transaction.addInput({
-            hash: previousTxidHash,
+            hash: Buffer.from(utxo.outpoint.txid),
             index: utxo.outpoint.vout,
             nonWitnessUtxo
         });

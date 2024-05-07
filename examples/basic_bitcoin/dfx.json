@@ -1,24 +1,9 @@
 {
     "canisters": {
-        "backend": {
-            "type": "custom",
-            "main": "src/backend/index.ts",
-            "candid": "src/backend/index.did",
-            "init_arg": "(variant { regtest })",
-            "build": "npx azle backend",
-            "env": ["BITCOIN_NETWORK"],
-            "wasm": ".azle/backend/backend.wasm",
-            "gzip": true,
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/backend/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+        "basic_bitcoin": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "env": ["BITCOIN_NETWORK"]
         }
     },
     "networks": {

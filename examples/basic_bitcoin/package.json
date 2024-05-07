@@ -3,7 +3,7 @@
         "bitcoin": ".bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444",
         "ic": "dfx start --clean --host 127.0.0.1:8000 --enable-bitcoin",
         "install": "./scripts/install.sh",
-        "deploy": "dfx deploy backend --specified-id bkyz2-fmaaa-aaaaa-qaaaq-cai",
+        "deploy": "dfx deploy basic_bitcoin --specified-id bkyz2-fmaaa-aaaaa-qaaaq-cai",
         "pre_tests": "ts-node --transpile-only --ignore=false test/pretest.ts",
         "test": "BITCOIN_NETWORK=regtest npm run pre_tests && ts-node --transpile-only --ignore=false test/test.ts"
     },

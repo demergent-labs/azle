@@ -5,7 +5,7 @@ import { existsSync, rmSync } from 'fs-extra';
 
 import { getTests } from './tests';
 
-const canisterId = getCanisterId('backend');
+const canisterId = getCanisterId('basic_bitcoin');
 
 export async function whileRunningBitcoinDaemon(
     callback: () => Promise<boolean> | void
