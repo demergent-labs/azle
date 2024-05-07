@@ -100,7 +100,7 @@ export async function bundleFromString(
     const externalNotImplementedAzle: string[] = [];
 
     // These are modules that should not be included in the build from the developer side
-    // These are specified in the dfx.json canister object npm_external property
+    // These are specified in the dfx.json canister object esm_externals property
     const externalNotImplementedDev = esmExternals;
 
     // These will cause runtime errors if their functionality is dependend upon
@@ -140,12 +140,18 @@ export async function bundleFromString(
             encoding: `${finalWasmedgeQuickJsPath}/modules/encoding.js`,
             http: `${finalWasmedgeQuickJsPath}/modules/http.js`,
             os: `${finalWasmedgeQuickJsPath}/modules/os.js`,
-            // crypto: `${finalWasmedgeQuickJsPath}/modules/crypto.js`,
-            crypto: 'crypto-browserify',
-            zlib: 'crypto-browserify', // TODO wrong of course
-            'internal/deps/acorn/acorn/dist/acorn': `crypto-browserify`, // TODO this is a bug, wasmedge-quickjs should probably add these files
-            'internal/deps/acorn/acorn-walk/dist/walk': `crypto-browserify`, // TODO this is a bug, wasmedge-quickjs should probably add these files
-            perf_hooks: path.join(__dirname, 'custom_js_modules/perf_hooks.ts'), // TODO will this work across all operating systems? Might need to test on Mac
+            // crypto: `${finalWasmedgeQuickJsPath}/modules/crypto.js`, // TODO waiting on wasi-crypto
+            crypto: 'crypto-browserify', // TODO we really want the wasmedge-quickjs version once wasi-crypto is working
+            zlib: path.join(__dirname, 'custom_js_modules/zlib.ts'),
+            'internal/deps/acorn/acorn/dist/acorn': path.join(
+                __dirname,
+                'custom_js_modules/acorn/acorn.ts'
+            ), // TODO acorn stuff is a bug, wasmedge-quickjs should probably add these files
+            'internal/deps/acorn/acorn-walk/dist/walk': path.join(
+                __dirname,
+                'custom_js_modules/acorn/walk.ts'
+            ), // TODO acorn stuff is a bug, wasmedge-quickjs should probably add these files
+            perf_hooks: path.join(__dirname, 'custom_js_modules/perf_hooks.ts'),
             async_hooks: path.join(
                 __dirname,
                 'custom_js_modules/async_hooks.ts'
@@ -155,10 +161,9 @@ export async function bundleFromString(
         },
         external: [...externalImplemented, ...externalNotImplemented],
         plugins: [esbuildPluginTsc()]
-        // tsconfig: path.join(__dirname, './esbuild_tsconfig.json')
         // TODO tsconfig was here to attempt to set importsNotUsedAsValues to true to force Principal to always be bundled
         // TODO now we always bundle Principal for all code, but I am keeping this here in case we run into the problem elsewhere
-        // tsconfig: path.join( __dirname, './esbuild-tsconfig.json') // TODO this path resolution may cause problems on non-Linux systems, beware...might not be necessary now that we are using stdin
+        // tsconfig: path.join( __dirname, './esbuild-tsconfig.json')
     });
 
     const bundleArray = buildResult.outputFiles[0].contents;
