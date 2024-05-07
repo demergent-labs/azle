@@ -63,8 +63,8 @@ export async function send(
               feePercentiles[49];
 
     // Fetch our public key, P2PKH address, and UTXOs.
-    const ownAddress = await getP2pkhAddress(network, keyName, derivationPath);
     const ownPublicKey = await ecdsaApi.ecdsaPublicKey(keyName, derivationPath);
+    const ownAddress = publicKeyToP2pkhAddress(network, ownPublicKey);
 
     console.log('Fetching UTXOs...');
     // Note that pagination may have to be used to get all UTXOs for the given address.
@@ -159,7 +159,7 @@ async function buildTransaction(
 
 function buildTransactionWithFee(
     ownUtxos: Utxo[],
-    ownAddress: string, // TDO what about that ownAddress?? Would we only need it for the signing?
+    ownAddress: string,
     destAddress: string,
     amount: bigint,
     fee: bigint,
@@ -176,9 +176,6 @@ function buildTransactionWithFee(
     let utxosToSpend: Utxo[] = [];
     let totalSpent = 0n;
     for (const utxo of [...ownUtxos].reverse()) {
-        if (utxosToSpend.includes(utxo)) {
-            continue;
-        }
         totalSpent += utxo.value;
         utxosToSpend.push(utxo);
         if (totalSpent >= amount + fee) {
@@ -194,20 +191,20 @@ function buildTransactionWithFee(
     }
 
     let transaction = new Psbt({ network });
-    transaction.setVersion(2);
+    transaction.setVersion(2); // TODO check to see if we can use version 1
 
-    for (let utxo of utxosToSpend) {
-        const hash = Buffer.from(utxo.outpoint.txid).reverse();
-        const txid = hash.toString('hex');
+    for (const utxo of utxosToSpend) {
+        const previousTxidHash = Buffer.from(utxo.outpoint.txid);
+        const txid = previousTxidHash.reverse().toString('hex');
         const nonWitnessUtxo = Buffer.from(transactionHashes[txid], 'hex');
         transaction.addInput({
-            hash: Buffer.from(utxo.outpoint.txid), // TOOD if this works clean it up
+            hash: previousTxidHash,
             index: utxo.outpoint.vout,
             nonWitnessUtxo
         });
     }
 
-    const remainingAmount = totalSpent - (amount + fee);
+    const remainingAmount = totalSpent - amount - fee;
 
     transaction.addOutput({ address: destAddress, value: Number(amount) });
 
