@@ -39,3 +39,4 @@ Your electronic signature will be considered final once the commit is included i
 | Tarek Mouawad    | tarek-eg        | Germany              | March 31, 2022    |
 | Quint Daenen     | di-wu           | Belgium              | May 21, 2022      |
 | Ryan Vandersmith | rvanasa         | United States        | September 3, 2022 |
+| Shreyansh Jain   | sudoshreyansh   | India                | May 3, 2024       |
