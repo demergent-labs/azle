@@ -2,8 +2,9 @@ import { Actor, ActorMethod, ActorSubclass } from '@dfinity/agent';
 import { watch } from 'chokidar';
 import { writeFileSync } from 'fs';
 
-import { createAuthenticatedAgent, whoami } from '../../../dfx';
+import { createAuthenticatedAgent } from '../../../dfx';
 import { getCanisterJavaScript } from '../get_canister_javascript';
+import { generateUploaderIdentity } from '../uploader_identity';
 import { ok } from '../utils/result';
 
 type ActorReloadJs = ActorSubclass<_SERVICE>;
@@ -21,13 +22,14 @@ const mainPath = process.argv[4];
 const wasmedgeQuickJsPath = process.argv[5];
 const esmAliases = JSON.parse(process.argv[6]);
 const esmExternals = JSON.parse(process.argv[7]);
+const canisterName = process.argv[8];
 
 // TODO https://github.com/demergent-labs/azle/issues/1664
 watch(process.cwd(), {
     ignored: ['**/.dfx/**', '**/.azle/**', '**/node_modules/**']
 }).on('all', async (event, path) => {
     if (actor === undefined) {
-        actor = await createActorReloadJs();
+        actor = await createActorReloadJs(canisterName);
     }
 
     if (process.env.AZLE_VERBOSE === 'true') {
@@ -105,8 +107,11 @@ async function reloadJs(
     writeFileSync(reloadedJsPath, reloadedJs);
 }
 
-async function createActorReloadJs(): Promise<ActorReloadJs> {
-    const agent = await createAuthenticatedAgent(whoami());
+async function createActorReloadJs(
+    canisterName: string
+): Promise<ActorReloadJs> {
+    const identityName = generateUploaderIdentity(canisterName);
+    const agent = await createAuthenticatedAgent(identityName);
 
     return Actor.createActor(
         ({ IDL }) => {

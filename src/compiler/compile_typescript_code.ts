@@ -142,7 +142,7 @@ export async function bundleFromString(
             os: `${finalWasmedgeQuickJsPath}/modules/os.js`,
             // crypto: `${finalWasmedgeQuickJsPath}/modules/crypto.js`, // TODO waiting on wasi-crypto
             crypto: 'crypto-browserify', // TODO we really want the wasmedge-quickjs version once wasi-crypto is working
-            zlib: path.join(__dirname, 'custom_js_modules/zlib.ts'),
+            zlib: 'pako',
             'internal/deps/acorn/acorn/dist/acorn': path.join(
                 __dirname,
                 'custom_js_modules/acorn/acorn.ts'

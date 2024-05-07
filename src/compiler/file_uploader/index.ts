@@ -1,9 +1,9 @@
 import { getCanisterId } from '../../../dfx';
+import { generateUploaderIdentity } from '../uploader_identity';
 import { expandPaths } from './expand_paths';
 import { onBeforeExit } from './on_before_exit';
 import { uploadFile } from './upload_file';
 import { createActor } from './uploader_actor';
-import { generateUploaderIdentity } from './uploader_identity';
 
 export type Src = string;
 export type Dest = string;
