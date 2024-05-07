@@ -10,7 +10,7 @@ import { rm } from 'fs/promises';
 import { join } from 'path';
 import { v4 } from 'uuid';
 
-import { AZLE_UPLOADER_IDENTITY_NAME } from '../../../src/compiler/file_uploader/uploader_identity';
+import { AZLE_UPLOADER_IDENTITY_NAME } from '../../../src/compiler/uploader_identity';
 import { generateTestFileOfSize } from './generateTestFiles';
 
 export function getTests(canisterId: string): Test[] {

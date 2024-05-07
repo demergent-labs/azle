@@ -1,14 +1,21 @@
-import { buildSync } from 'esbuild';
+import { build } from 'esbuild';
+// @ts-ignore
+import { esbuildPluginTsc } from 'esbuild-plugin-tsc';
+import * as path from 'path';
 
 import { Result } from './utils/result';
 import { JavaScript, TypeScript } from './utils/types';
 
-export function compileTypeScriptToJavaScript(
+export async function compileTypeScriptToJavaScript(
     main: string,
-    wasmedgeQuickJsPath: string
-): Result<JavaScript, unknown> {
+    wasmedgeQuickJsPath: string,
+    esmAliases: Record<string, string>,
+    esmExternals: string[]
+): Promise<Result<JavaScript, unknown>> {
     try {
         const imports = `
+            import 'reflect-metadata';
+
             // Trying to make sure that all globalThis dependencies are defined
             // Before the developer imports azle on their own
             import 'azle';
@@ -53,11 +60,13 @@ export function compileTypeScriptToJavaScript(
             });
         `;
 
-        const bundledJavaScript = bundleFromString(
+        const bundledJavaScript = await bundleFromString(
             `
             ${imports}
 `,
-            wasmedgeQuickJsPath
+            wasmedgeQuickJsPath,
+            esmAliases,
+            esmExternals
         );
 
         return {
@@ -68,15 +77,40 @@ export function compileTypeScriptToJavaScript(
     }
 }
 
-export function bundleFromString(
+export async function bundleFromString(
     ts: TypeScript,
-    wasmedgeQuickJsPath: string
-): JavaScript {
+    wasmedgeQuickJsPath: string,
+    esmAliases: Record<string, string>,
+    esmExternals: string[]
+): Promise<JavaScript> {
     const finalWasmedgeQuickJsPath =
         process.env.AZLE_WASMEDGE_QUICKJS_DIR ?? wasmedgeQuickJsPath;
 
+    const externalImplemented = [
+        '_node:fs',
+        '_node:os',
+        '_node:crypto',
+        'qjs:os',
+        '_encoding',
+        'wasi_net',
+        'wasi_http'
+    ];
+
+    // These are modules that should not be included in the build from the Azle side (our side)
+    const externalNotImplementedAzle: string[] = [];
+
+    // These are modules that should not be included in the build from the developer side
+    // These are specified in the dfx.json canister object esm_externals property
+    const externalNotImplementedDev = esmExternals;
+
+    // These will cause runtime errors if their functionality is dependend upon
+    const externalNotImplemented = [
+        ...externalNotImplementedAzle,
+        ...externalNotImplementedDev
+    ];
+
     // TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
-    const buildResult = buildSync({
+    const buildResult = await build({
         stdin: {
             contents: ts,
             resolveDir: process.cwd()
@@ -106,24 +140,30 @@ export function bundleFromString(
             encoding: `${finalWasmedgeQuickJsPath}/modules/encoding.js`,
             http: `${finalWasmedgeQuickJsPath}/modules/http.js`,
             os: `${finalWasmedgeQuickJsPath}/modules/os.js`,
-            // crypto: `${finalWasmedgeQuickJsPath}/modules/crypto.js`,
-            crypto: 'crypto-browserify',
-            zlib: 'crypto-browserify', // TODO wrong of course
-            'internal/deps/acorn/acorn/dist/acorn': `crypto-browserify`, // TODO this is a bug, wasmedge-quickjs should probably add these files
-            'internal/deps/acorn/acorn-walk/dist/walk': `crypto-browserify` // TODO this is a bug, wasmedge-quickjs should probably add these files
+            // crypto: `${finalWasmedgeQuickJsPath}/modules/crypto.js`, // TODO waiting on wasi-crypto
+            crypto: 'crypto-browserify', // TODO we really want the wasmedge-quickjs version once wasi-crypto is working
+            zlib: 'pako',
+            'internal/deps/acorn/acorn/dist/acorn': path.join(
+                __dirname,
+                'custom_js_modules/acorn/acorn.ts'
+            ), // TODO acorn stuff is a bug, wasmedge-quickjs should probably add these files
+            'internal/deps/acorn/acorn-walk/dist/walk': path.join(
+                __dirname,
+                'custom_js_modules/acorn/walk.ts'
+            ), // TODO acorn stuff is a bug, wasmedge-quickjs should probably add these files
+            perf_hooks: path.join(__dirname, 'custom_js_modules/perf_hooks.ts'),
+            async_hooks: path.join(
+                __dirname,
+                'custom_js_modules/async_hooks.ts'
+            ),
+            https: path.join(__dirname, 'custom_js_modules/https.ts'),
+            ...esmAliases
         },
-        external: [
-            '_node:fs',
-            '_node:os',
-            '_node:crypto',
-            'qjs:os',
-            '_encoding',
-            'wasi_net',
-            'wasi_http'
-        ]
+        external: [...externalImplemented, ...externalNotImplemented],
+        plugins: [esbuildPluginTsc()]
         // TODO tsconfig was here to attempt to set importsNotUsedAsValues to true to force Principal to always be bundled
         // TODO now we always bundle Principal for all code, but I am keeping this here in case we run into the problem elsewhere
-        // tsconfig: path.join( __dirname, './esbuild-tsconfig.json') // TODO this path resolution may cause problems on non-Linux systems, beware...might not be necessary now that we are using stdin
+        // tsconfig: path.join( __dirname, './esbuild-tsconfig.json')
     });
 
     const bundleArray = buildResult.outputFiles[0].contents;

@@ -1,0 +1,9 @@
+{
+    "canisters": {
+        "api": {
+            "type": "azle",
+            "main": "src/main.ts",
+            "esm_externals": ["@nestjs/microservices", "@nestjs/websockets"]
+        }
+    }
+}
