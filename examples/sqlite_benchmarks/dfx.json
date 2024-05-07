@@ -1,0 +1,9 @@
+{
+    "canisters": {
+        "sqlite_benchmarks": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic"
+        }
+    }
+}
