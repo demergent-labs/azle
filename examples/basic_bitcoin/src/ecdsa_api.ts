@@ -1,11 +1,12 @@
 import { serialize } from 'azle';
 
-import { DerivationPath } from './types';
+// The fee for the `sign_with_ecdsa` endpoint using the test key.
+const SIGN_WITH_ECDSA_COST_CYCLES: bigint = 10_000_000_000n;
 
 /// Returns the ECDSA public key of this canister at the given derivation path.
 export async function ecdsaPublicKey(
     keyName: string,
-    derivationPath: DerivationPath
+    derivationPath: Uint8Array[]
 ): Promise<Uint8Array> {
     // Retrieve the public key of this canister at the given derivation path
     // from the ECDSA API.
@@ -23,14 +24,14 @@ export async function ecdsaPublicKey(
             ]
         })
     });
-    const ecdsaPublicKeyResult = await response.json();
+    const res = await response.json();
 
-    return ecdsaPublicKeyResult.public_key;
+    return res.public_key;
 }
 
 export async function signWithECDSA(
     keyName: string,
-    derivationPath: DerivationPath,
+    derivationPath: Uint8Array[],
     messageHash: Uint8Array
 ): Promise<Uint8Array> {
     const publicKeyResponse = await fetch(`icp://aaaaa-aa/sign_with_ecdsa`, {
@@ -45,10 +46,10 @@ export async function signWithECDSA(
                     }
                 }
             ],
-            cycles: 10_000_000_000n
+            cycles: SIGN_WITH_ECDSA_COST_CYCLES
         })
     });
-    const publicKeyResult = await publicKeyResponse.json();
+    const res = await publicKeyResponse.json();
 
-    return publicKeyResult.signature;
+    return res.signature;
 }

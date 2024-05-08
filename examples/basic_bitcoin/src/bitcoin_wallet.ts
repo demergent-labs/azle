@@ -14,23 +14,25 @@ import {
     Utxo
 } from 'azle/canisters/management';
 import * as bitcoin from 'bitcoinjs-lib';
-import { networks, Psbt, Transaction } from 'bitcoinjs-lib';
-import { ValidateSigFunction } from 'bitcoinjs-lib/src/psbt';
+import { Network, networks, Transaction } from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';
 
 import * as bitcoinApi from './bitcoin_api';
 import * as ecdsaApi from './ecdsa_api';
-import { BitcoinTxid, DerivationPath } from './types';
 
-type TransactionHashes = {
-    [txid: string]: string;
-};
+type SignFun = (
+    keyName: string,
+    derivationPath: Uint8Array[],
+    messageHash: Uint8Array
+) => Promise<Uint8Array> | Uint8Array;
+
+const SIG_HASH_TYPE = Transaction.SIGHASH_ALL;
 
 /// Returns the P2PKH address of this canister at the given derivation path.
 export async function getP2pkhAddress(
     network: BitcoinNetwork,
     keyName: string,
-    derivationPath: DerivationPath
+    derivationPath: Uint8Array[]
 ): Promise<string> {
     // Fetch the public key of the given derivation path.
     const publicKey = await ecdsaApi.ecdsaPublicKey(keyName, derivationPath);
@@ -44,12 +46,11 @@ export async function getP2pkhAddress(
 /// at the given derivation path.
 export async function send(
     network: BitcoinNetwork,
-    derivationPath: DerivationPath,
+    derivationPath: Uint8Array[],
     keyName: string,
     dstAddress: string,
-    amount: Satoshi,
-    transactionHashes: TransactionHashes
-): Promise<BitcoinTxid> {
+    amount: Satoshi
+): Promise<string> {
     // Get fee percentiles from previous transactions to estimate our own fee.
     const feePercentiles = await bitcoinApi.getCurrentFeePercentiles(network);
 
@@ -60,13 +61,13 @@ export async function send(
               // we use a default of 2000 millisatoshis/byte (i.e. 2 satoshi/byte)
               2_000n
             : // Choose the 50th percentile for sending fees.
-              feePercentiles[49];
+              feePercentiles[50];
 
     // Fetch our public key, P2PKH address, and UTXOs.
     const ownPublicKey = await ecdsaApi.ecdsaPublicKey(keyName, derivationPath);
     const ownAddress = publicKeyToP2pkhAddress(network, ownPublicKey);
 
-    console.log('Fetching UTXOs...');
+    console.info('Fetching UTXOs...');
     // Note that pagination may have to be used to get all UTXOs for the given address.
     // For the sake of simplicity, it is assumed here that the `utxo` field in the response
     // contains all UTXOs.
@@ -81,24 +82,29 @@ export async function send(
         dstAddress,
         amount,
         feePerByte,
-        keyName,
-        derivationPath,
-        determineNetwork(network),
-        transactionHashes
+        network
     );
 
-    // Sign the transaction.
+    console.info(`Transaction to sign: ${transaction.toHex()}`);
+
     const signedTransaction = await signTransaction(
         ownPublicKey,
+        ownAddress,
         transaction,
         keyName,
-        derivationPath
+        derivationPath,
+        ecdsaApi.signWithECDSA,
+        network
     );
-    const signedTransactionBytes = signedTransaction.toBuffer();
 
-    console.log('Sending transaction...');
+    const signedTransactionBytes = signedTransaction.toBuffer();
+    console.info(
+        `Signed transaction: ${signedTransactionBytes.toString('hex')}`
+    );
+
+    console.info('Sending transaction...');
     await bitcoinApi.sendTransaction(network, signedTransactionBytes);
-    console.log('Done.');
+    console.info('Done');
 
     return signedTransaction.getId();
 }
@@ -112,11 +118,8 @@ async function buildTransaction(
     dstAddress: string,
     amount: Satoshi,
     feePerByte: MillisatoshiPerByte,
-    keyName: string,
-    derivationPath: DerivationPath,
-    network: bitcoin.Network,
-    transactionHashes: TransactionHashes
-): Promise<Psbt> {
+    network: BitcoinNetwork
+): Promise<Transaction> {
     // We have a chicken-and-egg problem where we need to know the length
     // of the transaction in order to compute its proper fee, but we need
     // to know the proper fee in order to figure out the inputs needed for
@@ -125,6 +128,7 @@ async function buildTransaction(
     // We solve this problem iteratively. We start with a fee of zero, build
     // and sign a transaction, see what its size is, and then update the fee,
     // rebuild the transaction, until the fee is set to the correct amount.
+    console.info('Building transaction...');
     let totalFee = 0n;
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -134,22 +138,25 @@ async function buildTransaction(
             dstAddress,
             amount,
             totalFee,
-            network,
-            transactionHashes
+            network
         );
 
         // Sign the transaction. In this case, we only care about the size
         // of the signed transaction.
         const signedTransaction = await signTransaction(
             ownPublicKey,
+            ownAddress,
             transaction.clone(),
-            keyName,
-            derivationPath
+            '', // mock key name
+            [], // mock derivation path
+            mockSigner,
+            network
         );
 
         const signedTxBytesLen = BigInt(signedTransaction.byteLength());
 
         if ((signedTxBytesLen * feePerByte) / 1_000n === totalFee) {
+            console.info(`Transaction built with fee ${totalFee}.`);
             return transaction;
         } else {
             totalFee = (signedTxBytesLen * feePerByte) / 1_000n;
@@ -163,9 +170,8 @@ function buildTransactionWithFee(
     destAddress: string,
     amount: bigint,
     fee: bigint,
-    network: bitcoin.Network,
-    transactionHashes: TransactionHashes
-): Psbt {
+    network: BitcoinNetwork
+): Transaction {
     // Assume that any amount below this threshold is dust.
     const dustThreshold = 1_000n;
 
@@ -190,29 +196,28 @@ function buildTransactionWithFee(
         );
     }
 
-    let transaction = new Psbt({ network });
-    transaction.setVersion(2); // TODO check to see if we can use version 1
+    let transaction = new Transaction();
+    transaction.version = 1;
 
     for (const utxo of utxosToSpend) {
-        const previousTxidHash = Buffer.from(utxo.outpoint.txid);
-        const txid = previousTxidHash.reverse().toString('hex');
-        const nonWitnessUtxo = Buffer.from(transactionHashes[txid], 'hex');
-        transaction.addInput({
-            hash: Buffer.from(utxo.outpoint.txid),
-            index: utxo.outpoint.vout,
-            nonWitnessUtxo
-        });
+        transaction.addInput(
+            Buffer.from(utxo.outpoint.txid),
+            utxo.outpoint.vout
+        );
     }
 
     const remainingAmount = totalSpent - amount - fee;
 
-    transaction.addOutput({ address: destAddress, value: Number(amount) });
+    transaction.addOutput(
+        createScriptPubkey(destAddress, network),
+        Number(amount)
+    );
 
     if (remainingAmount >= dustThreshold) {
-        transaction.addOutput({
-            address: ownAddress,
-            value: Number(remainingAmount)
-        });
+        transaction.addOutput(
+            createScriptPubkey(ownAddress, network),
+            Number(remainingAmount)
+        );
     }
 
     return transaction;
@@ -227,53 +232,50 @@ function buildTransactionWithFee(
 // 2. `own_address` is a P2PKH address.
 async function signTransaction(
     ownPublicKey: Uint8Array,
-    transaction: Psbt,
+    ownAddress: string,
+    transaction: Transaction,
     keyName: string,
-    derivationPath: DerivationPath
+    derivationPath: Uint8Array[],
+    signer: SignFun,
+    network: BitcoinNetwork
 ): Promise<Transaction> {
-    const signer: bitcoin.SignerAsync = {
-        sign: async (hashBuffer) => {
-            const sec1 = await ecdsaApi.signWithECDSA(
-                keyName,
-                derivationPath,
-                Uint8Array.from(hashBuffer)
-            );
+    const addressVersion = bitcoin.address.fromBase58Check(ownAddress).version;
+    if (
+        addressVersion !== bitcoin.networks.bitcoin.pubKeyHash &&
+        addressVersion !== bitcoin.networks.testnet.pubKeyHash &&
+        addressVersion !== bitcoin.networks.regtest.pubKeyHash
+    ) {
+        throw new Error('This example supports signing p2pkh addresses only.');
+    }
 
-            return Buffer.from(sec1);
-        },
-        publicKey: Buffer.from(ownPublicKey)
-    };
-    const validator: ValidateSigFunction = (
-        pubkey: Buffer,
-        msghash: Buffer,
-        signature: Buffer
-    ): boolean => {
-        // TODO I think if we pass along the ECPair we can validate with that. See the bitcoinjs-lib /create-psbt
-        console.log(
-            "Please visually inspect these to make sure they look right and that no one is trying to spend bitcoin they don't own"
+    for (let i = 0; i < transaction.ins.length; i++) {
+        const sighash = transaction.hashForSignature(
+            i,
+            createScriptPubkey(ownAddress, network),
+            SIG_HASH_TYPE
         );
-        console.log(`pubkey: ${pubkey.toString('hex')}`);
-        console.log(`msghash: ${msghash.toString('hex')}`);
-        console.log(`sig: ${signature.toString('hex')}`);
-        return true;
-    };
-    await transaction.signAllInputsAsync(signer);
-    transaction.validateSignaturesOfAllInputs(validator);
-    transaction.finalizeAllInputs();
-    return transaction.extractTransaction();
-}
 
-function determineNetwork(network: BitcoinNetwork): networks.Network {
-    if (network.mainnet !== undefined) {
-        return networks.bitcoin;
+        const signature = Uint8Array.from(
+            await signer(keyName, derivationPath, sighash)
+        );
+
+        // Convert signature to DER.
+        const derSignature = sec1ToDer(signature);
+
+        const sigWithHashType = Uint8Array.from([
+            ...derSignature,
+            SIG_HASH_TYPE
+        ]);
+        const scriptSig = Uint8Array.from([
+            sigWithHashType.length,
+            ...sigWithHashType,
+            ownPublicKey.length,
+            ...ownPublicKey
+        ]);
+        transaction.setInputScript(i, Buffer.from(scriptSig));
     }
-    if (network.testnet !== undefined) {
-        return networks.testnet;
-    }
-    if (network.regtest !== undefined) {
-        return networks.regtest;
-    }
-    throw new Error(`Unknown Network: ${network}`);
+
+    return transaction;
 }
 
 // Converts a public key to a P2PKH address.
@@ -289,4 +291,74 @@ function publicKeyToP2pkhAddress(
         throw new Error('Unable to get address from the canister');
     }
     return address;
+}
+
+// A mock for rubber-stamping ECDSA signatures.
+function mockSigner(
+    _keyName: string,
+    _derivationPath: Uint8Array[],
+    _messageHash: Uint8Array
+): Uint8Array {
+    return new Uint8Array(64);
+}
+
+// Converts a SEC1 ECDSA signature to the DER format.
+function sec1ToDer(sec1Signature: Uint8Array): Uint8Array {
+    let r: Uint8Array;
+
+    if ((sec1Signature[0] & 0x80) !== 0) {
+        // r is negative. Prepend a zero byte.
+        const tmp = Uint8Array.from([0x00, ...sec1Signature.slice(0, 32)]);
+        r = tmp;
+    } else {
+        // r is positive.
+        r = sec1Signature.slice(0, 32);
+    }
+
+    let s: Uint8Array;
+
+    if ((sec1Signature[32] & 0x80) !== 0) {
+        // s is negative. Prepend a zero byte.
+        const tmp = Uint8Array.from([0x00, ...sec1Signature.slice(32)]);
+        s = tmp;
+    } else {
+        // s is positive.
+        s = sec1Signature.slice(32);
+    }
+
+    // Convert signature to DER.
+    return Uint8Array.from([
+        ...[0x30, 4 + r.length + s.length, 0x02, r.length],
+        ...r,
+        ...[0x02, s.length],
+        ...s
+    ]);
+}
+
+export function determineNetwork(network: BitcoinNetwork): Network {
+    if (network.mainnet === null) {
+        return networks.bitcoin;
+    }
+    if (network.testnet === null) {
+        return networks.testnet;
+    }
+    if (network.regtest === null) {
+        return networks.regtest;
+    }
+    throw new Error(`Unknown Network: ${network}`);
+}
+
+function createScriptPubkey(address: string, network: BitcoinNetwork): Buffer {
+    const pubKeyHash = bitcoin.address
+        .toOutputScript(address, determineNetwork(network))
+        .subarray(3, 23);
+    const result = bitcoin.script.compile([
+        bitcoin.opcodes.OP_DUP,
+        bitcoin.opcodes.OP_HASH160,
+        pubKeyHash,
+        bitcoin.opcodes.OP_EQUALVERIFY,
+        bitcoin.opcodes.OP_CHECKSIG
+    ]);
+
+    return result;
 }

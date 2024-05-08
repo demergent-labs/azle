@@ -5,14 +5,14 @@ This is an implementation of the [basic_bitcoin example](https://github.com/dfin
 ## bitcoind
 
 ```bash
-mkdir .bitcoin
-mkdir .bitcoin/data
+mkdir -p .bitcoin/data
 
-curl https://bitcoincore.org/bin/bitcoin-core-23.0/bitcoin-23.0-x86_64-linux-gnu.tar.gz -o bitcoin.tar.gz
-
-tar xzf bitcoin.tar.gz --overwrite --strip-components=1 --directory=.bitcoin/ bitcoin-23.0/bin/
-
-rm -rf bitcoin.tar.gz
+# Check if bitcoind executable exists; if not, download and extract it
+if [ ! -f ".bitcoin/bin/bitcoind" ]; then
+  curl -o bitcoin.tar.gz https://bitcoincore.org/bin/bitcoin-core-23.0/bitcoin-23.0-x86_64-linux-gnu.tar.gz
+  tar xzf bitcoin.tar.gz --overwrite --strip-components=1 --directory=.bitcoin/ bitcoin-23.0/bin/
+  rm -rf bitcoin.tar.gz
+fi
 ```
 
 # Deployment
@@ -28,13 +28,13 @@ rm -rf bitcoin.tar.gz
 
 ```bash
 # Do this in its own terminal
-dfx start --clean --host 127.0.0.1:8000 --enable-bitcoin
+dfx start --clean --host 127.0.0.1:8000
 ```
 
 ## basic_bitcion
 
 ```bash
-dfx deploy --argument='(variant { Regtest })'
+BITCOIN_NETWORK=regtest dfx deploy'
 ```
 
 # Usage

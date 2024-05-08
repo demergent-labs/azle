@@ -1,14 +1,6 @@
 #!/bin/bash
 
-# Check if .bitcoin directory exists; if not, create it
-if [ ! -d ".bitcoin" ]; then
-  mkdir .bitcoin
-fi
-
-# Check if .bitcoin/data directory exists; if not, create it
-if [ ! -d ".bitcoin/data" ]; then
-  mkdir .bitcoin/data
-fi
+mkdir -p .bitcoin/data
 
 # Check if bitcoind executable exists; if not, download and extract it
 if [ ! -f ".bitcoin/bin/bitcoind" ]; then

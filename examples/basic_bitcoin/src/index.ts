@@ -1,10 +1,9 @@
-import { jsonStringify } from 'azle';
+import { jsonParse, jsonStringify } from 'azle';
 import { BitcoinNetwork } from 'azle/canisters/management';
 import express, { Request } from 'express';
 
 import * as bitcoinApi from './bitcoin_api';
 import * as bitcoinWallet from './bitcoin_wallet';
-import { SendRequest } from './types';
 
 // The bitcoin network to connect to.
 //
@@ -34,7 +33,7 @@ app.get('/', (req, res) => {
 });
 
 /// Returns the balance of the given bitcoin address.
-app.post(
+app.get(
     '/get-balance',
     async (req: Request<any, any, any, { address: string }>, res) => {
         const balance = await bitcoinApi.getBalance(NETWORK, req.query.address);
@@ -44,7 +43,7 @@ app.post(
 );
 
 /// Returns the UTXOs of the given bitcoin address.
-app.post(
+app.get(
     '/get-utxos',
     async (req: Request<any, any, any, { address: string }>, res) => {
         const utxos = await bitcoinApi.getUtxos(NETWORK, req.query.address);
@@ -55,14 +54,14 @@ app.post(
 
 /// Returns the 100 fee percentiles measured in millisatoshi/byte.
 /// Percentiles are computed from the last 10,000 transactions (if available).
-app.post('/get-current-fee-percentiles', async (req, res) => {
+app.get('/get-current-fee-percentiles', async (req, res) => {
     const feePercentiles = await bitcoinApi.getCurrentFeePercentiles(NETWORK);
 
     res.send(jsonStringify(feePercentiles));
 });
 
 /// Returns the P2PKH address of this canister at a specific derivation path.
-app.post('/get-p2pkh-address', async (req, res) => {
+app.get('/get-p2pkh-address', async (req, res) => {
     const address = await bitcoinWallet.getP2pkhAddress(
         NETWORK,
         KEY_NAME,
@@ -72,15 +71,17 @@ app.post('/get-p2pkh-address', async (req, res) => {
     res.send(address);
 });
 
-app.post('/send', async (req: Request<any, any, any, SendRequest>, res) => {
-    const transactions = req.body;
+/// Sends the given amount of bitcoin from this canister to the given address.
+/// Returns the transaction ID.
+app.post('/send', async (req, res) => {
+    const { destinationAddress, amountInSatoshi } = req.body;
+
     const txId = await bitcoinWallet.send(
         NETWORK,
         DERIVATION_PATH,
         KEY_NAME,
-        req.query.destinationAddress,
-        BigInt(req.query.amountInSatoshi),
-        transactions
+        destinationAddress,
+        BigInt(jsonParse(JSON.stringify(amountInSatoshi)))
     );
 
     res.send(txId);
@@ -99,7 +100,9 @@ function determineKeyName(network: BitcoinNetwork): string {
     throw new Error('Invalid Bitcoin Network');
 }
 
-function determineNetwork(networkName?: string): BitcoinNetwork | undefined {
+export function determineNetwork(
+    networkName?: string
+): BitcoinNetwork | undefined {
     if (networkName === undefined) {
         return undefined;
     }

@@ -66,11 +66,21 @@ export function getTotalOutput(tx: Transaction): number {
 }
 
 export function generateToAddress(address: string, blocks: number) {
-    for (let i = 0; i < blocks; i++) {
-        execSync(
-            `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress 1 ${address}`
-        );
-    }
+    execSync(
+        `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress ${blocks} ${address}`
+    );
+}
+
+export function generate(blocks: number) {
+    execSync(
+        `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf -generate ${blocks}`
+    );
+}
+
+export function createWallet(name: string) {
+    execSync(
+        `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf createwallet ${name}`
+    );
 }
 
 export function getUtxoHashes(): TransactionHashes {

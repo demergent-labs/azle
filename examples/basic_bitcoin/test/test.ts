@@ -16,12 +16,12 @@ export async function whileRunningBitcoinDaemon(
 }
 
 async function startBitcoinDaemon(): Promise<ChildProcessWithoutNullStreams> {
-    if (existsSync(`.bitcoin/regtest`)) {
-        rmSync('.bitcoin/regtest', { recursive: true, force: true });
+    if (existsSync(`.bitcoin/data/regtest`)) {
+        rmSync('.bitcoin/data/regtest', { recursive: true, force: true });
     }
     const bitcoinDaemon = spawn('.bitcoin/bin/bitcoind', [
         `-conf=${process.cwd()}/.bitcoin.conf`,
-        `-datadir=${process.cwd()}/.bitcoin`,
+        `-datadir=${process.cwd()}/.bitcoin/data`,
         '--port=18444'
     ]);
 
@@ -37,7 +37,7 @@ async function startBitcoinDaemon(): Promise<ChildProcessWithoutNullStreams> {
         }
     });
 
-    console.log(`starting bitcoind...`);
+    console.info(`starting bitcoind...`);
     await new Promise((resolve) => setTimeout(resolve, 5000));
     return bitcoinDaemon;
 }

@@ -5,7 +5,7 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(`npm run deploy`, {
+    execSync(`dfx deploy`, {
         stdio: 'inherit'
     });
 }
