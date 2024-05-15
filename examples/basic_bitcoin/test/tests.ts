@@ -9,6 +9,7 @@ import {
     createWallet,
     generate,
     generateToAddress,
+    getMempoolCount,
     getTotalOutput,
     getTransaction
 } from './bitcoin';
@@ -129,10 +130,12 @@ export function getTests(canisterId: string): Test[] {
                 console.info(lastTx);
             }
         },
-        // TODO it might be nice to look at the mempool and wait for a transaction to show up before generating any blocks
-        { name: 'wait for transaction to appear in mempool', wait: 15_000 },
         {
-            name: '',
+            name: 'wait for transaction to appear in mempool',
+            prep: waitForMempool
+        },
+        {
+            name: 'mine a block with the latest transaction',
             prep: async () => {
                 generate(1);
             }
@@ -207,7 +210,10 @@ export function getTests(canisterId: string): Test[] {
                 console.info(lastTx);
             }
         },
-        { name: 'wait for transaction to appear in mempool', wait: 15_000 },
+        {
+            name: 'wait for transaction to appear in mempool',
+            prep: waitForMempool
+        },
         {
             name: 'mine a block for the latest transaction',
             prep: async () => {
@@ -325,4 +331,15 @@ function checkUtxos(utxos: Utxo[]): boolean {
     return utxos.every(
         (utxo) => utxo.value === SINGLE_BLOCK_REWARD && utxo.outpoint.vout === 0
     );
+}
+
+async function waitForMempool() {
+    for (let i = 0; i < 60; i++) {
+        if (getMempoolCount() > 0) {
+            console.info('done waiting');
+            return;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 1_000));
+    }
+    throw new Error('Timeout: Transaction was not added to the mempool');
 }

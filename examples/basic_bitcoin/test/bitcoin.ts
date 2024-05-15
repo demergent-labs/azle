@@ -25,6 +25,20 @@ export function createWallet(name: string) {
     );
 }
 
+export function getMempoolCount(): number {
+    const mempool = execSync(
+        `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getrawmempool true`
+    )
+        .toString()
+        .trim();
+
+    const mempoolObj = JSON.parse(mempool);
+
+    const transactionCount = Object.keys(mempoolObj).length;
+
+    return transactionCount;
+}
+
 export function getTransaction(txid: string): Transaction {
     return Transaction.fromHex(getTxHex(txid));
 }

@@ -255,23 +255,18 @@ async function signTransaction(
             SIG_HASH_TYPE
         );
 
-        const signature = Uint8Array.from(
-            await signer(keyName, derivationPath, sighash)
+        const signature = await signer(keyName, derivationPath, sighash);
+
+        const encodedSig = bitcoin.script.signature.encode(
+            Buffer.from(signature),
+            SIG_HASH_TYPE
         );
 
-        // Convert signature to DER.
-        const derSignature = sec1ToDer(signature);
+        const scriptSig = bitcoin.script.compile([
+            encodedSig,
+            Buffer.from(ownPublicKey)
+        ]);
 
-        const sigWithHashType = Uint8Array.from([
-            ...derSignature,
-            SIG_HASH_TYPE
-        ]);
-        const scriptSig = Uint8Array.from([
-            sigWithHashType.length,
-            ...sigWithHashType,
-            ownPublicKey.length,
-            ...ownPublicKey
-        ]);
         transaction.setInputScript(i, Buffer.from(scriptSig));
     }
 
@@ -299,40 +294,12 @@ function mockSigner(
     _derivationPath: Uint8Array[],
     _messageHash: Uint8Array
 ): Uint8Array {
-    return new Uint8Array(64);
-}
-
-// Converts a SEC1 ECDSA signature to the DER format.
-function sec1ToDer(sec1Signature: Uint8Array): Uint8Array {
-    let r: Uint8Array;
-
-    if ((sec1Signature[0] & 0x80) !== 0) {
-        // r is negative. Prepend a zero byte.
-        const tmp = Uint8Array.from([0x00, ...sec1Signature.slice(0, 32)]);
-        r = tmp;
-    } else {
-        // r is positive.
-        r = sec1Signature.slice(0, 32);
+    let array = new Uint8Array(64);
+    // bitcoin.script.signature.encode threw away most of the signature when it was all 0's so we need to fill it up with something
+    for (let i = 0; i < 64; i++) {
+        array[i] = i + 1;
     }
-
-    let s: Uint8Array;
-
-    if ((sec1Signature[32] & 0x80) !== 0) {
-        // s is negative. Prepend a zero byte.
-        const tmp = Uint8Array.from([0x00, ...sec1Signature.slice(32)]);
-        s = tmp;
-    } else {
-        // s is positive.
-        s = sec1Signature.slice(32);
-    }
-
-    // Convert signature to DER.
-    return Uint8Array.from([
-        ...[0x30, 4 + r.length + s.length, 0x02, r.length],
-        ...r,
-        ...[0x02, s.length],
-        ...s
-    ]);
+    return array;
 }
 
 export function determineNetwork(network: BitcoinNetwork): Network {
