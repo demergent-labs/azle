@@ -14,20 +14,19 @@ import {
     generate,
     generateToAddress,
     getTotalOutput,
-    getTransaction,
-    getUtxoHashes
+    getTransaction
 } from './bitcoin';
 
 const SINGLE_BLOCK_REWARD = 5_000_000_000n;
 const FIRST_MINING_SESSION = 101;
-const SECOND_MINING_SESSION = 40;
 const FIRST_AMOUNT_SENT = SINGLE_BLOCK_REWARD / 2n;
+const SECOND_AMOUNT_SENT = SINGLE_BLOCK_REWARD * 2n;
 
 const ECPair = ECPairFactory(ecc);
 
 let lastTx = '';
-
-// TODO adding HD wallets and showing how to use the Derivation path might be nice
+let toAddressPreviousBalance = 0n;
+let canisterPreviousBalance = 0n;
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -37,19 +36,6 @@ export function getTests(canisterId: string): Test[] {
             name: 'Set up minting wallet',
             prep: async () => {
                 createWallet('minty');
-            }
-        },
-        {
-            name: '/get-current-fee-percentiles',
-            test: async () => {
-                const response = await fetch(
-                    `${origin}/get-current-fee-percentiles`,
-                    { headers: [['X-Ic-Force-Update', 'true']] }
-                );
-
-                const feePercentiles = jsonParse(await response.text());
-
-                return { Ok: feePercentiles.length === 0 };
             }
         },
         {
@@ -145,7 +131,6 @@ export function getTests(canisterId: string): Test[] {
             prep: async () => {
                 const toAddress = getToAddress();
                 const body = jsonStringify({
-                    transactions: getUtxoHashes(),
                     amountInSatoshi: FIRST_AMOUNT_SENT,
                     destinationAddress: toAddress
                 });
@@ -158,13 +143,12 @@ export function getTests(canisterId: string): Test[] {
                 console.info(lastTx);
             }
         },
-        // Wait to insure the transaction is in the mempool before generating a new block.
         // TODO it might be nice to look at the mempool and wait for a transaction to show up before generating any blocks
-        { name: 'wait for blocks to settle', wait: 15_000 },
+        { name: 'wait for transaction to appear in mempool', wait: 15_000 },
         {
-            name: 'second mint BTC',
+            name: '',
             prep: async () => {
-                generate(SECOND_MINING_SESSION);
+                generate(1);
             }
         },
         { name: 'wait for blocks to settle', wait: 15_000 },
@@ -173,6 +157,7 @@ export function getTests(canisterId: string): Test[] {
             test: async () => {
                 const address = getToAddress();
                 const balance = await getBalance(origin, address);
+                toAddressPreviousBalance = balance;
 
                 return compareBalances(FIRST_AMOUNT_SENT, balance);
             }
@@ -182,6 +167,7 @@ export function getTests(canisterId: string): Test[] {
             test: async () => {
                 const address = await getP2pkhAddress(origin);
                 const balance = await getBalance(origin, address);
+                canisterPreviousBalance = balance;
 
                 // The expected balance of the canister's wallet is:
                 // all of it's total block mining rewards - the amount sent in the first transaction - the fee
@@ -208,7 +194,106 @@ export function getTests(canisterId: string): Test[] {
 
                 const feePercentiles = jsonParse(await response.text());
 
-                return { Ok: feePercentiles.length === 0 }; // TODO is that what we are expecting it to be?
+                return {
+                    Ok: feePercentiles.length === 101
+                };
+            }
+        },
+        {
+            name: 'mine a block for the latest transaction',
+            prep: async () => {
+                // Generate blocks to ensure that enough of the canisters block rewards are available to spend
+                generate(10);
+            }
+        },
+        {
+            name: '/send big from canister to L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv',
+            prep: async () => {
+                const toAddress = getToAddress();
+                const body = jsonStringify({
+                    amountInSatoshi: SECOND_AMOUNT_SENT,
+                    destinationAddress: toAddress
+                });
+                const response = await fetch(`${origin}/send`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body
+                });
+                lastTx = await response.text();
+                console.info(lastTx);
+            }
+        },
+        { name: 'wait for transaction to appear in mempool', wait: 15_000 },
+        {
+            name: 'mine a block for the latest transaction',
+            prep: async () => {
+                generate(1);
+            }
+        },
+        { name: 'wait for blocks to settle', wait: 15_000 },
+        {
+            name: '/get-balance of L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv big',
+            test: async () => {
+                const address = getToAddress();
+                const balance = await getBalance(origin, address);
+                const expectedBalance =
+                    toAddressPreviousBalance + SECOND_AMOUNT_SENT;
+
+                return compareBalances(expectedBalance, balance);
+            }
+        },
+        {
+            name: '/get-balance big',
+            test: async () => {
+                const address = await getP2pkhAddress(origin);
+                const balance = await getBalance(origin, address);
+
+                const fee = getFeeFromTransaction(
+                    lastTx,
+                    SINGLE_BLOCK_REWARD * 3n
+                );
+
+                const expectedBalance =
+                    canisterPreviousBalance - SECOND_AMOUNT_SENT - fee;
+
+                return compareBalances(expectedBalance, balance);
+            }
+        },
+        {
+            name: '/get-current-fee-percentiles',
+            test: async () => {
+                const response = await fetch(
+                    `${origin}/get-current-fee-percentiles`,
+                    { headers: [['X-Ic-Force-Update', 'true']] }
+                );
+
+                const feePercentiles = jsonParse(await response.text());
+
+                return {
+                    Ok: feePercentiles.length === 101
+                };
+            }
+        },
+        {
+            name: 'mine a block to see if resets the fee percentiles',
+            prep: async () => {
+                generate(1);
+            }
+        },
+        { name: 'wait for blocks to settle', wait: 15_000 },
+        {
+            name: '/get-current-fee-percentiles',
+            test: async () => {
+                const response = await fetch(
+                    `${origin}/get-current-fee-percentiles`,
+                    { headers: [['X-Ic-Force-Update', 'true']] }
+                );
+
+                const feePercentiles = jsonParse(await response.text());
+
+                return {
+                    Ok: feePercentiles.length === 0
+                };
             }
         }
     ];
