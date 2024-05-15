@@ -1,13 +1,9 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-// import * as ecc from 'tiny-secp256k1/lib/'; // TODO we should switch to this import as soon as we have wasm support
-import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs';
 import { jsonParse, jsonStringify } from 'azle';
 import { GetUtxosResult, Utxo } from 'azle/canisters/management';
 import { AzleResult, Test } from 'azle/test';
-import { networks, payments } from 'bitcoinjs-lib';
-import { ECPairFactory } from 'ecpair';
 
 import {
     createWallet,
@@ -21,8 +17,7 @@ const SINGLE_BLOCK_REWARD = 5_000_000_000n;
 const FIRST_MINING_SESSION = 101;
 const FIRST_AMOUNT_SENT = SINGLE_BLOCK_REWARD / 2n;
 const SECOND_AMOUNT_SENT = SINGLE_BLOCK_REWARD * 2n;
-
-const ECPair = ECPairFactory(ecc);
+const TO_ADDRESS = 'n4HY51WrdxATGEPqYvoNkEsTteRfuRMxpD'; // Regtest address from this WIF L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv
 
 let lastTx = '';
 let toAddressPreviousBalance = 0n;
@@ -111,17 +106,9 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: 'toAddress sanity check',
-            test: async () => {
-                const address = getToAddress();
-                return { Ok: address === 'n4HY51WrdxATGEPqYvoNkEsTteRfuRMxpD' };
-            }
-        },
-        {
             name: '/get-balance of L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv',
             test: async () => {
-                const address = getToAddress();
-                const balance = await getBalance(origin, address);
+                const balance = await getBalance(origin, TO_ADDRESS);
 
                 return compareBalances(0n, balance);
             }
@@ -129,10 +116,9 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/send from canister to L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv',
             prep: async () => {
-                const toAddress = getToAddress();
                 const body = jsonStringify({
                     amountInSatoshi: FIRST_AMOUNT_SENT,
-                    destinationAddress: toAddress
+                    destinationAddress: TO_ADDRESS
                 });
                 const response = await fetch(`${origin}/send`, {
                     method: 'POST',
@@ -155,8 +141,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/get-balance of L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv final',
             test: async () => {
-                const address = getToAddress();
-                const balance = await getBalance(origin, address);
+                const balance = await getBalance(origin, TO_ADDRESS);
                 toAddressPreviousBalance = balance;
 
                 return compareBalances(FIRST_AMOUNT_SENT, balance);
@@ -209,10 +194,9 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/send big from canister to L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv',
             prep: async () => {
-                const toAddress = getToAddress();
                 const body = jsonStringify({
                     amountInSatoshi: SECOND_AMOUNT_SENT,
-                    destinationAddress: toAddress
+                    destinationAddress: TO_ADDRESS
                 });
                 const response = await fetch(`${origin}/send`, {
                     method: 'POST',
@@ -234,8 +218,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/get-balance of L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv big',
             test: async () => {
-                const address = getToAddress();
-                const balance = await getBalance(origin, address);
+                const balance = await getBalance(origin, TO_ADDRESS);
                 const expectedBalance =
                     toAddressPreviousBalance + SECOND_AMOUNT_SENT;
 
@@ -329,20 +312,6 @@ async function getP2pkhAddress(origin: string): Promise<string> {
         headers: [['X-Ic-Force-Update', 'true']]
     });
     return await response.text();
-}
-
-function getToAddress(): string {
-    const keyPair = ECPair.fromWIF(
-        'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
-    );
-    const { address } = payments.p2pkh({
-        pubkey: keyPair.publicKey,
-        network: networks.regtest
-    });
-    if (address === undefined) {
-        throw new Error('To Address is undefined');
-    }
-    return address;
 }
 
 async function getBalance(origin: string, address: string): Promise<bigint> {
