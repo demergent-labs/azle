@@ -83,7 +83,7 @@ app.post('/send', async (req, res) => {
 
 app.listen();
 
-function determineKeyName(network: BitcoinNetwork): string {
+export function determineKeyName(network: BitcoinNetwork): string {
     if (network.mainnet === null) {
         return 'test_key_1';
     } else if (network.testnet === null) {

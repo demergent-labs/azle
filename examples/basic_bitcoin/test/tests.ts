@@ -289,7 +289,7 @@ export function getTests(canisterId: string): Test[] {
     ];
 }
 
-function compareBalances(
+export function compareBalances(
     expected: bigint,
     actual: bigint
 ): AzleResult<boolean, string> {
@@ -308,7 +308,10 @@ function compareBalances(
  * @param totalInputValue
  * @returns
  */
-function getFeeFromTransaction(txid: string, totalInputValue: bigint): bigint {
+export function getFeeFromTransaction(
+    txid: string,
+    totalInputValue: bigint
+): bigint {
     const previousTransaction = getTransaction(txid);
     const outputValue = BigInt(getTotalOutput(previousTransaction));
     return totalInputValue - outputValue;
@@ -320,27 +323,30 @@ function getTotalOutput(tx: Transaction): number {
     }, 0);
 }
 
-async function getP2pkhAddress(origin: string): Promise<string> {
+export async function getP2pkhAddress(origin: string): Promise<string> {
     const response = await fetch(`${origin}/get-p2pkh-address`, {
         headers: [['X-Ic-Force-Update', 'true']]
     });
     return await response.text();
 }
 
-async function getBalance(origin: string, address: string): Promise<bigint> {
+export async function getBalance(
+    origin: string,
+    address: string
+): Promise<bigint> {
     const response = await fetch(`${origin}/get-balance?address=${address}`, {
         headers: [['X-Ic-Force-Update', 'true']]
     });
     return jsonParse(await response.text());
 }
 
-function checkUtxos(utxos: Utxo[]): boolean {
+export function checkUtxos(utxos: Utxo[]): boolean {
     return utxos.every(
         (utxo) => utxo.value === SINGLE_BLOCK_REWARD && utxo.outpoint.vout === 0
     );
 }
 
-async function waitForMempool() {
+export async function waitForMempool() {
     for (let i = 0; i < 60; i++) {
         if (getMempoolCount() > 0) {
             console.info('done waiting');

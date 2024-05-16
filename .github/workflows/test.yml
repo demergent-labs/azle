@@ -78,6 +78,7 @@ jobs:
                     "examples/autoreload",
                     "examples/basic_bitcoin",
                     "examples/bitcoin",
+                    "examples/bitcoin_psbt",
                     "examples/bitcoinjs-lib",
                     "examples/bitcore-lib",
                     "examples/blob_array",
