@@ -43,7 +43,7 @@ export function getTests(canisterId: string): Test[] {
                 generateToAddress(address, FIRST_MINING_SESSION);
             }
         },
-        { name: 'wait for blocks to settle', wait: 60_000 },
+        { name: 'wait for blocks to settle', wait: 30_000 },
         {
             name: '/send from canister to L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv',
             prep: async () => {

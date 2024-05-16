@@ -14,6 +14,7 @@ import {
     Utxo
 } from 'azle/canisters/management';
 import {
+    address,
     payments,
     Psbt,
     Signer,
@@ -51,6 +52,7 @@ export async function send(
         .utxos;
 
     // Build the transaction that sends `amount` to the destination address.
+    console.log('here: start build');
     const transaction = await buildPsbt(
         ownPublicKey,
         ownAddress,
@@ -65,8 +67,10 @@ export async function send(
     // Sign the transaction.
     const signer = getSigner(ownPublicKey, keyName, derivationPath);
     const validator = getValidator(ECPair);
+    console.log('here: about to sign');
     const signedTransaction = await signPsbt(transaction, signer, validator);
     const signedTransactionBytes = signedTransaction.toBuffer();
+    console.log('here: finish signing');
     console.info(
         `Signed transaction: ${signedTransactionBytes.toString('hex')}`
     );
@@ -151,7 +155,7 @@ function buildPsbtWithFee(
     destAddress: string,
     amount: bigint,
     fee: bigint,
-    network: BitcoinNetwork
+    bitcoinNetwork: BitcoinNetwork
 ): Psbt {
     // Assume that any amount below this threshold is dust.
     const dustThreshold = 1_000n;
@@ -177,13 +181,18 @@ function buildPsbtWithFee(
         );
     }
 
-    let transaction = new Psbt({ network: determineNetwork(network) });
+    const network = determineNetwork(bitcoinNetwork);
+    let transaction = new Psbt({ network });
     transaction.setVersion(1);
 
     for (const utxo of utxosToSpend) {
         transaction.addInput({
             hash: Buffer.from(utxo.outpoint.txid),
-            index: utxo.outpoint.vout
+            index: utxo.outpoint.vout,
+            witnessUtxo: {
+                script: address.toOutputScript(ownAddress, network),
+                value: Number(utxo.value)
+            }
         });
     }
 
@@ -213,9 +222,13 @@ async function signPsbt(
     signer: Signer | SignerAsync,
     validator: ValidateSigFunction
 ): Promise<Transaction> {
+    console.log('signPsbt: signing all inputs');
     await transaction.signAllInputsAsync(signer);
+    console.log('signPsbt: validating');
     transaction.validateSignaturesOfAllInputs(validator);
+    console.log('signPsbt: finalizing');
     transaction.finalizeAllInputs();
+    console.log('signPsbt: extracting');
     return transaction.extractTransaction();
 }
 
