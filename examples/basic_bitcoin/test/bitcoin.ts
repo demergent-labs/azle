@@ -1,12 +1,6 @@
 import { Transaction } from 'bitcoinjs-lib';
 import { execSync } from 'child_process';
 
-export function getTotalOutput(tx: Transaction): number {
-    return tx.outs.reduce((total, output) => {
-        return total + output.value;
-    }, 0);
-}
-
 export function generateToAddress(address: string, blocks: number) {
     execSync(
         `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress ${blocks} ${address}`

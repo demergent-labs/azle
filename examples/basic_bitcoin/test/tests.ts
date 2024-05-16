@@ -4,13 +4,13 @@ dns.setDefaultResultOrder('ipv4first');
 import { jsonParse, jsonStringify } from 'azle';
 import { GetUtxosResult, Utxo } from 'azle/canisters/management';
 import { AzleResult, Test } from 'azle/test';
+import { Transaction } from 'bitcoinjs-lib';
 
 import {
     createWallet,
     generate,
     generateToAddress,
     getMempoolCount,
-    getTotalOutput,
     getTransaction
 } from './bitcoin';
 
@@ -18,9 +18,9 @@ const SINGLE_BLOCK_REWARD = 5_000_000_000n;
 const FIRST_MINING_SESSION = 101;
 const FIRST_AMOUNT_SENT = SINGLE_BLOCK_REWARD / 2n;
 const SECOND_AMOUNT_SENT = SINGLE_BLOCK_REWARD * 2n;
-const TO_ADDRESS = 'n4HY51WrdxATGEPqYvoNkEsTteRfuRMxpD'; // Regtest address from this WIF L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv
+const TO_ADDRESS = 'n4HY51WrdxATGEPqYvoNkEsTteRfuRMxpD';
 
-let lastTx = '';
+let lastTxid = '';
 let toAddressPreviousBalance = 0n;
 let canisterPreviousBalance = 0n;
 
@@ -58,7 +58,7 @@ export function getTests(canisterId: string): Test[] {
                 generateToAddress(address, FIRST_MINING_SESSION);
             }
         },
-        { name: 'wait for blocks to settle', wait: 60_000 },
+        { name: 'wait for blocks to settle', wait: 30_000 },
         {
             name: '/get-balance',
             test: async () => {
@@ -102,12 +102,12 @@ export function getTests(canisterId: string): Test[] {
 
                 const feePercentiles = jsonParse(await response.text());
 
-                // Though blocks are mined no transaction have happened yet so the list should still be empty
+                // Though blocks are mined no transactions have happened yet so the list should still be empty
                 return { Ok: feePercentiles.length === 0 };
             }
         },
         {
-            name: '/get-balance of L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv',
+            name: `/get-balance of ${TO_ADDRESS}`,
             test: async () => {
                 const balance = await getBalance(origin, TO_ADDRESS);
 
@@ -115,7 +115,7 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: '/send from canister to L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv',
+            name: `/send from canister to ${TO_ADDRESS}`,
             prep: async () => {
                 const body = jsonStringify({
                     amountInSatoshi: FIRST_AMOUNT_SENT,
@@ -126,8 +126,8 @@ export function getTests(canisterId: string): Test[] {
                     headers: { 'Content-Type': 'application/json' },
                     body
                 });
-                lastTx = await response.text();
-                console.info(lastTx);
+                lastTxid = await response.text();
+                console.info(lastTxid);
             }
         },
         {
@@ -142,7 +142,7 @@ export function getTests(canisterId: string): Test[] {
         },
         { name: 'wait for blocks to settle', wait: 15_000 },
         {
-            name: '/get-balance of L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv final',
+            name: `/get-balance of ${TO_ADDRESS} final`,
             test: async () => {
                 const balance = await getBalance(origin, TO_ADDRESS);
                 toAddressPreviousBalance = balance;
@@ -157,12 +157,12 @@ export function getTests(canisterId: string): Test[] {
                 const balance = await getBalance(origin, address);
                 canisterPreviousBalance = balance;
 
-                // The expected balance of the canister's wallet is:
-                // all of it's total block mining rewards - the amount sent in the first transaction - the fee
-
                 // At the time this transaction was made, the canister only had utxos from block rewards.
                 // The amount sent and the fee was less than the reward from minting a single block so there will be only one input and it will have the value of that reward.
-                const fee = getFeeFromTransaction(lastTx, SINGLE_BLOCK_REWARD);
+                const fee = getFeeFromTransaction(
+                    lastTxid,
+                    SINGLE_BLOCK_REWARD
+                );
 
                 const blockRewards =
                     SINGLE_BLOCK_REWARD * BigInt(FIRST_MINING_SESSION);
@@ -188,14 +188,13 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: 'mine a block for the latest transaction',
+            name: 'Generate blocks to ensure that enough of the canisters block rewards are available to spend',
             prep: async () => {
-                // Generate blocks to ensure that enough of the canisters block rewards are available to spend
                 generate(10);
             }
         },
         {
-            name: '/send big from canister to L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv',
+            name: `/send big from canister to ${TO_ADDRESS}`,
             prep: async () => {
                 const body = jsonStringify({
                     amountInSatoshi: SECOND_AMOUNT_SENT,
@@ -206,8 +205,8 @@ export function getTests(canisterId: string): Test[] {
                     headers: { 'Content-Type': 'application/json' },
                     body
                 });
-                lastTx = await response.text();
-                console.info(lastTx);
+                lastTxid = await response.text();
+                console.info(lastTxid);
             }
         },
         {
@@ -222,7 +221,7 @@ export function getTests(canisterId: string): Test[] {
         },
         { name: 'wait for blocks to settle', wait: 15_000 },
         {
-            name: '/get-balance of L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv big',
+            name: `/get-balance of ${TO_ADDRESS} big`,
             test: async () => {
                 const balance = await getBalance(origin, TO_ADDRESS);
                 const expectedBalance =
@@ -237,8 +236,10 @@ export function getTests(canisterId: string): Test[] {
                 const address = await getP2pkhAddress(origin);
                 const balance = await getBalance(origin, address);
 
+                // At the time this transaction was made, the next utxos to use will be from block rewards.
+                // The amount sent and the fee were more than the reward from minting two blocks so there will be three inputs and it will have the value of those rewards.
                 const fee = getFeeFromTransaction(
-                    lastTx,
+                    lastTxid,
                     SINGLE_BLOCK_REWARD * 3n
                 );
 
@@ -264,7 +265,7 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: 'mine a block to see if resets the fee percentiles',
+            name: 'mine a block to see if it resets the fee percentiles',
             prep: async () => {
                 generate(1);
             }
@@ -301,7 +302,7 @@ function compareBalances(
 
 /**
  * The fee is determined by finding the difference between the total value of the inputs minus the total value of the outputs
- * The value of the outputs is easily found by looking the transaction with the provided txid
+ * The value of the outputs is easily found by looking at the transaction with the provided txid
  * The value of the inputs is not easily calculated automatically and must be provided
  * @param txid
  * @param totalInputValue
@@ -311,6 +312,12 @@ function getFeeFromTransaction(txid: string, totalInputValue: bigint): bigint {
     const previousTransaction = getTransaction(txid);
     const outputValue = BigInt(getTotalOutput(previousTransaction));
     return totalInputValue - outputValue;
+}
+
+function getTotalOutput(tx: Transaction): number {
+    return tx.outs.reduce((total, output) => {
+        return total + output.value;
+    }, 0);
 }
 
 async function getP2pkhAddress(origin: string): Promise<string> {

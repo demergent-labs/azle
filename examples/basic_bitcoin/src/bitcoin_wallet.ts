@@ -132,7 +132,7 @@ async function buildTransaction(
     let totalFee = 0n;
     // eslint-disable-next-line no-constant-condition
     while (true) {
-        let transaction = buildTransactionWithFee(
+        const transaction = buildTransactionWithFee(
             ownUtxos,
             ownAddress,
             dstAddress,
@@ -206,12 +206,12 @@ function buildTransactionWithFee(
         );
     }
 
-    const remainingAmount = totalSpent - amount - fee;
-
     transaction.addOutput(
         createScriptPubkey(destAddress, network),
         Number(amount)
     );
+
+    const remainingAmount = totalSpent - amount - fee;
 
     if (remainingAmount >= dustThreshold) {
         transaction.addOutput(
@@ -294,12 +294,8 @@ function mockSigner(
     _derivationPath: Uint8Array[],
     _messageHash: Uint8Array
 ): Uint8Array {
-    let array = new Uint8Array(64);
-    // bitcoin.script.signature.encode threw away most of the signature when it was all 0's so we need to fill it up with something
-    for (let i = 0; i < 64; i++) {
-        array[i] = i + 1;
-    }
-    return array;
+    // bitcoin.script.signature.encode threw away most of the signature when it was all 0's so we need to fill it up with anything besides just 0s
+    return Uint8Array.from(new Array(64).fill(1));
 }
 
 export function determineNetwork(network: BitcoinNetwork): Network {

@@ -26,12 +26,6 @@ const app = express();
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.send(
-        `Network: ${NETWORK}, KeyName: ${KEY_NAME}, DerivationPath: ${DERIVATION_PATH}`
-    );
-});
-
 /// Returns the balance of the given bitcoin address.
 app.get(
     '/get-balance',
@@ -90,11 +84,11 @@ app.post('/send', async (req, res) => {
 app.listen();
 
 function determineKeyName(network: BitcoinNetwork): string {
-    if (network.mainnet !== undefined) {
+    if (network.mainnet === null) {
         return 'test_key_1';
-    } else if (network.testnet !== undefined) {
+    } else if (network.testnet === null) {
         return 'test_key_1';
-    } else if (network.regtest !== undefined) {
+    } else if (network.regtest === null) {
         return 'dfx_test_key';
     }
     throw new Error('Invalid Bitcoin Network');

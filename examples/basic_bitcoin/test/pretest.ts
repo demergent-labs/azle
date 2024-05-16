@@ -5,7 +5,7 @@ async function pretest() {
         stdio: 'inherit'
     });
 
-    execSync(`dfx deploy`, {
+    execSync(`BITCOIN_NETWORK=regtest dfx deploy`, {
         stdio: 'inherit'
     });
 }

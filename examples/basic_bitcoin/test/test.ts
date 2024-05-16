@@ -38,6 +38,7 @@ async function startBitcoinDaemon(): Promise<ChildProcessWithoutNullStreams> {
     });
 
     console.info(`starting bitcoind...`);
+    // This await is necessary to ensure the daemon is running
     await new Promise((resolve) => setTimeout(resolve, 5000));
     return bitcoinDaemon;
 }
