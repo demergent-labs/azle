@@ -57,6 +57,7 @@ export function getCanisterConfig(
                 join('candid', 'icp', 'icrc.did')
             ],
             [
+                // TODO use require.main instead of __dirname elsewhere
                 join(require.main?.path, 'canisters', 'management', 'ic.did'),
                 join('candid', 'icp', 'management.did')
             ]

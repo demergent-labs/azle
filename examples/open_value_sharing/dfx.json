@@ -1,0 +1,15 @@
+{
+    "canisters": {
+        "consumer": {
+            "type": "azle",
+            "main": "src/consumer.ts",
+            "specified_id": "br5f7-7uaaa-aaaaa-qaaca-cai"
+        },
+        "wallet": {
+            "type": "azle",
+            "main": "src/wallet.ts",
+            "candid_gen": "automatic",
+            "specified_id": "bw4dl-smaaa-aaaaa-qaacq-cai"
+        }
+    }
+}

@@ -7,6 +7,7 @@ import { setupFileWatcher } from './file_watcher/setup_file_watcher';
 import { getCandidAndCanisterMethods } from './get_candid_and_canister_methods';
 import { getCanisterJavaScript } from './get_canister_javascript';
 import { getNamesAfterCli, getNamesBeforeCli } from './get_names';
+import { getDependencyInfo } from './get_open_value_sharing_dependency_info';
 import { handleCli } from './handle_cli';
 import { prepareDockerImage } from './prepare_docker_image';
 import { prepareRustStagingArea } from './prepare_rust_staging_area';
@@ -120,7 +121,8 @@ async function azle() {
                 envVars,
                 rustStagingCandidPath,
                 rustStagingWasmPath,
-                nativeCompilation
+                nativeCompilation,
+                canisterPath
             );
 
             addCanisterDidToAssets(canisterPath, canisterName, candid);
@@ -133,7 +135,8 @@ async function azle() {
                 canister_methods: {
                     ...canisterMethods
                 },
-                env_vars: envVars
+                env_vars: envVars,
+                dependency_info: getDependencyInfo()
             };
 
             compileRustCodeWithCandidAndCompilerInfo(
@@ -144,7 +147,8 @@ async function azle() {
                 dockerContainerName,
                 canisterName,
                 stdioType,
-                nativeCompilation
+                nativeCompilation,
+                canisterPath
             );
         }
     );

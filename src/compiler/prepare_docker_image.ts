@@ -130,8 +130,12 @@ function buildAndLoadImageWithDockerfile(
 ) {
     console.info(yellow(`\nBuilding image...\n`));
 
+    if (require.main?.path === undefined) {
+        throw new Error(`require.main?.path must be defined`);
+    }
+
     execSyncPretty(
-        `podman build -f ${__dirname}/Dockerfile -t ${dockerImageName} ${__dirname}`,
+        `podman build -f ${__dirname}/Dockerfile -t ${dockerImageName} ${require.main?.path}`,
         'inherit'
     );
 

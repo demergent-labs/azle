@@ -17,7 +17,11 @@ import { JSCanisterConfig } from './utils/types';
 export async function getNamesBeforeCli() {
     const stdioType = getStdIoType();
 
-    const dockerfilePath = join(__dirname, 'Dockerfile');
+    if (require.main?.path === undefined) {
+        throw new Error(`require.main?.path must be defined`);
+    }
+
+    const dockerfilePath = join(require.main?.path, 'Dockerfile');
     const dockerfileHash = await getDockerfileHash(dockerfilePath);
     const dockerImagePrefix = 'azle__image__';
     const dockerImageName = `${dockerImagePrefix}${dockerfileHash}`;
@@ -65,8 +69,11 @@ export function getNamesAfterCli() {
     const canisterPath = join('.azle', canisterName);
 
     const canisterConfig = unwrap(getCanisterConfig(canisterName));
-    const candidPath =
-        canisterConfig.candid ?? `.azle/${canisterName}/${canisterName}.did`;
+    const candidPath = process.env.CANISTER_CANDID_PATH;
+
+    if (candidPath === undefined) {
+        throw new Error(`Azle: CANISTER_CANDID_PATH is not defined`);
+    }
 
     const compilerInfoPath = join(
         canisterPath,

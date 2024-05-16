@@ -22,6 +22,11 @@ export function prepareRustStagingArea(
 
     writeFileSync(`${canisterPath}/Cargo.toml`, workspaceCargoToml);
 
+    copySync(
+        join(__dirname, '..', '..', 'Cargo.lock'),
+        `${canisterPath}/Cargo.lock`
+    );
+
     // TODO not sure what to do about the cargo.lock
     // writeFileSync(`${canisterPath}/Cargo.lock`, workspaceCargoLock);
 

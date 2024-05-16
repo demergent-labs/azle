@@ -31,6 +31,7 @@ RUN touch /azle_rust_dependencies/canister/src/candid.did
 RUN mkdir /azle_rust_dependencies/canister/src/assets
 RUN echo "{\"canister_methods\":{\"queries\":[],\"updates\":[],\"callbacks\":{}},\"env_vars\":[],\"assets\":[]}" > /azle_rust_dependencies/canister/src/compiler_info.json
 RUN echo "[workspace]\nmembers = [\"canister\"]\n\n[profile.release]\nopt-level = 'z'" > /azle_rust_dependencies/Cargo.toml
+COPY Cargo.lock /azle_rust_dependencies
 
 WORKDIR /azle_rust_dependencies
 
