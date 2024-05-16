@@ -21,7 +21,6 @@
         "@bitcoin-js/tiny-secp256k1-asmjs": "^2.2.3",
         "azle": "^0.21.1",
         "bitcoinjs-lib": "^6.1.5",
-        "ecpair": "^2.1.0",
         "express": "^4.18.2",
         "tiny-secp256k1": "^2.2.3"
     },

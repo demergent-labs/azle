@@ -23,7 +23,7 @@ const FIRST_MINING_SESSION = 101;
 const FIRST_AMOUNT_SENT = SINGLE_BLOCK_REWARD / 2n;
 const TO_ADDRESS = 'n4HY51WrdxATGEPqYvoNkEsTteRfuRMxpD'; // TODO test other kinds of addresses not just p2pkh
 
-let lastTx = '';
+let lastTxid = '';
 
 // TODO adding HD wallets and showing how to use the Derivation path might be nice
 
@@ -57,8 +57,8 @@ export function getTests(canisterId: string): Test[] {
                     headers: { 'Content-Type': 'application/json' },
                     body
                 });
-                lastTx = await response.text();
-                console.info(lastTx);
+                lastTxid = await response.text();
+                console.info(lastTxid);
             }
         },
         {
@@ -86,7 +86,10 @@ export function getTests(canisterId: string): Test[] {
                 const address = await getP2wpkhAddress(origin);
                 const balance = await getBalance(origin, address);
 
-                const fee = getFeeFromTransaction(lastTx, SINGLE_BLOCK_REWARD);
+                const fee = getFeeFromTransaction(
+                    lastTxid,
+                    SINGLE_BLOCK_REWARD
+                );
 
                 const blockRewards =
                     SINGLE_BLOCK_REWARD * BigInt(FIRST_MINING_SESSION);

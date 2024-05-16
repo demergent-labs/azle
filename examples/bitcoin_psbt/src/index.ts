@@ -1,8 +1,5 @@
-// import * as ecc from 'tiny-secp256k1/lib/'; // TODO we should switch to this import as soon as we have wasm support
-import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs';
 import { jsonParse, jsonStringify } from 'azle';
 import { BitcoinNetwork } from 'azle/canisters/management';
-import { ECPairFactory } from 'ecpair';
 import express, { Request } from 'express';
 
 import { determineKeyName, determineNetwork } from '../../basic_bitcoin/src';
@@ -28,8 +25,6 @@ const KEY_NAME: string = determineKeyName(NETWORK);
 
 const app = express();
 
-const ECPair = ECPairFactory(ecc);
-
 app.use(express.json());
 
 /// Returns the balance of the given bitcoin address.
@@ -42,7 +37,17 @@ app.get(
     }
 );
 
-/// Returns the P2PKH address of this canister at a specific derivation path.
+/// Returns the UTXOs of the given bitcoin address.
+app.get(
+    '/get-utxos',
+    async (req: Request<any, any, any, { address: string }>, res) => {
+        const utxos = await bitcoinApi.getUtxos(NETWORK, req.query.address);
+
+        res.send(jsonStringify(utxos));
+    }
+);
+
+/// Returns the P2WPKH address of this canister at a specific derivation path.
 app.get('/get-p2wpkh-address', async (req, res) => {
     const address = await bitcoinPsbt.getP2wpkhAddress(
         NETWORK,
@@ -58,32 +63,14 @@ app.get('/get-p2wpkh-address', async (req, res) => {
 app.post('/send', async (req, res) => {
     const { destinationAddress, amountInSatoshi } = req.body;
 
-    try {
-        const txId = await bitcoinPsbt.send(
-            NETWORK,
-            DERIVATION_PATH,
-            KEY_NAME,
-            destinationAddress,
-            BigInt(jsonParse(JSON.stringify(amountInSatoshi))),
-            ECPair
-        );
-        res.send(txId);
-    } catch (err: any) {
-        console.log('We had an error');
-        console.log(err.message);
-        console.log(err);
-        res.send('FAILED TO SEND TRANSACTION');
-    }
+    const txId = await bitcoinPsbt.send(
+        NETWORK,
+        DERIVATION_PATH,
+        KEY_NAME,
+        destinationAddress,
+        BigInt(jsonParse(JSON.stringify(amountInSatoshi)))
+    );
+    res.send(txId);
 });
-
-/// Returns the UTXOs of the given bitcoin address.
-app.get(
-    '/get-utxos',
-    async (req: Request<any, any, any, { address: string }>, res) => {
-        const utxos = await bitcoinApi.getUtxos(NETWORK, req.query.address);
-
-        res.send(jsonStringify(utxos));
-    }
-);
 
 app.listen();

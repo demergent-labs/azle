@@ -20,7 +20,7 @@ import { Buffer } from 'buffer';
 import * as bitcoinApi from './bitcoin_api';
 import * as ecdsaApi from './ecdsa_api';
 
-type SignFun = (
+export type SignFun = (
     keyName: string,
     derivationPath: Uint8Array[],
     messageHash: Uint8Array
@@ -289,7 +289,7 @@ export function publicKeyToP2pkhAddress(
 }
 
 // A mock for rubber-stamping ECDSA signatures.
-function mockSigner(
+export function mockSigner(
     _keyName: string,
     _derivationPath: Uint8Array[],
     _messageHash: Uint8Array

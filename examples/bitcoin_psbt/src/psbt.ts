@@ -7,7 +7,7 @@
 //! * Support for address types that aren't P2PKH.
 //! * Caching spent UTXOs so that they are not reused in future transactions.
 //! * Option to set the fee.
-// import * as ecc from 'tiny-secp256k1/lib/'; // TODO we should switch to this import as soon as we have wasm support
+// import * as ecc from 'tiny-secp256k1'; // TODO we should switch to this import as soon as we have wasm support
 import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs';
 import {
     BitcoinNetwork,
@@ -15,21 +15,30 @@ import {
     Satoshi,
     Utxo
 } from 'azle/canisters/management';
-import {
-    address,
-    payments,
-    Psbt,
-    Signer,
-    SignerAsync,
-    Transaction
-} from 'bitcoinjs-lib';
+import { address, payments, Psbt, Transaction } from 'bitcoinjs-lib';
 import { ValidateSigFunction } from 'bitcoinjs-lib/src/psbt';
 import { Buffer } from 'buffer';
-import { ECPairAPI } from 'ecpair';
 
 import * as bitcoinApi from '../../basic_bitcoin/src/bitcoin_api';
-import { determineNetwork } from '../../basic_bitcoin/src/bitcoin_wallet';
+import {
+    determineNetwork,
+    mockSigner,
+    SignFun
+} from '../../basic_bitcoin/src/bitcoin_wallet';
 import * as ecdsaApi from '../../basic_bitcoin/src/ecdsa_api';
+
+/// Returns the P2PKH address of this canister at the given derivation path.
+export async function getP2wpkhAddress(
+    network: BitcoinNetwork,
+    keyName: string,
+    derivationPath: Uint8Array[]
+): Promise<string> {
+    // Fetch the public key of the given derivation path.
+    const publicKey = await ecdsaApi.ecdsaPublicKey(keyName, derivationPath);
+
+    // Compute the address.
+    return publicKeyToP2wpkhAddress(network, publicKey);
+}
 
 /// Sends a transaction to the network that transfers the given amount to the
 /// given destination, where the source of the funds is the canister itself
@@ -39,10 +48,19 @@ export async function send(
     derivationPath: Uint8Array[],
     keyName: string,
     dstAddress: string,
-    amount: Satoshi,
-    ECPair: ECPairAPI
+    amount: Satoshi
 ): Promise<string> {
-    const feePerByte = await calculateFeePerByte(network);
+    // Get fee percentiles from previous transactions to estimate our own fee.
+    const feePercentiles = await bitcoinApi.getCurrentFeePercentiles(network);
+
+    const feePerByte =
+        feePercentiles.length === 0
+            ? // There are no fee percentiles. This case can only happen on a regtest
+              // network where there are no non-coinbase transactions. In this case,
+              // we use a default of 2000 millisatoshis/byte (i.e. 2 satoshi/byte)
+              2_000n
+            : // Choose the 50th percentile for sending fees.
+              feePercentiles[50];
 
     const ownPublicKey = await ecdsaApi.ecdsaPublicKey(keyName, derivationPath);
     const ownAddress = publicKeyToP2wpkhAddress(network, ownPublicKey);
@@ -54,7 +72,6 @@ export async function send(
         .utxos;
 
     // Build the transaction that sends `amount` to the destination address.
-    console.log('here: start build');
     const transaction = await buildPsbt(
         ownPublicKey,
         ownAddress,
@@ -62,17 +79,19 @@ export async function send(
         dstAddress,
         amount,
         feePerByte,
-        network,
-        ECPair
+        network
     );
 
     // Sign the transaction.
-    const signer = getSigner(ownPublicKey, keyName, derivationPath);
-    const validator = getValidator(ECPair);
-    console.log('here: about to sign');
-    const signedTransaction = await signPsbt(transaction, signer, validator);
+    const signedTransaction = await signPsbt(
+        ownPublicKey,
+        transaction,
+        keyName,
+        derivationPath,
+        ecdsaApi.signWithECDSA,
+        validator
+    );
     const signedTransactionBytes = signedTransaction.toBuffer();
-    console.log('here: finish signing');
     console.info(
         `Signed transaction: ${signedTransactionBytes.toString('hex')}`
     );
@@ -84,19 +103,6 @@ export async function send(
     return signedTransaction.getId();
 }
 
-async function calculateFeePerByte(network: BitcoinNetwork): Promise<bigint> {
-    // Get fee percentiles from previous transactions to estimate our own fee.
-    const feePercentiles = await bitcoinApi.getCurrentFeePercentiles(network);
-
-    return feePercentiles.length === 0
-        ? // There are no fee percentiles. This case can only happen on a regtest
-          // network where there are no non-coinbase transactions. In this case,
-          // we use a default of 2000 millisatoshis/byte (i.e. 2 satoshi/byte)
-          2_000n
-        : // Choose the 50th percentile for sending fees.
-          feePercentiles[50];
-}
-
 // Builds a transaction to send the given `amount` of satoshis to the
 // destination address.
 async function buildPsbt(
@@ -106,8 +112,7 @@ async function buildPsbt(
     dstAddress: string,
     amount: Satoshi,
     feePerByte: MillisatoshiPerByte,
-    network: BitcoinNetwork,
-    ECPair: ECPairAPI
+    network: BitcoinNetwork
 ): Promise<Psbt> {
     // We have a chicken-and-egg problem where we need to know the length
     // of the transaction in order to compute its proper fee, but we need
@@ -132,12 +137,13 @@ async function buildPsbt(
 
         // Sign the transaction. In this case, we only care about the size
         // of the signed transaction.
-        const signer = getMockSigner(ownPublicKey, ECPair);
-        const validator = getMockValidator();
         const signedTransaction = await signPsbt(
+            ownPublicKey,
             transaction.clone(),
-            signer,
-            validator
+            '', // mock key name
+            [], // mock derivation path
+            mockSigner,
+            mockValidator
         );
 
         const signedTxBytesLen = BigInt(signedTransaction.byteLength());
@@ -198,9 +204,9 @@ function buildPsbtWithFee(
         });
     }
 
-    const remainingAmount = totalSpent - amount - fee;
-
     transaction.addOutput({ address: destAddress, value: Number(amount) });
+
+    const remainingAmount = totalSpent - amount - fee;
 
     if (remainingAmount >= dustThreshold) {
         transaction.addOutput({
@@ -220,28 +226,16 @@ function buildPsbtWithFee(
 // 1. All the inputs are referencing outpoints that are owned by `own_address`.
 // 2. `own_address` is a P2PKH address.
 async function signPsbt(
+    ownPublicKey: Uint8Array,
     transaction: Psbt,
-    signer: Signer | SignerAsync,
+    keyName: string,
+    derivationPath: Uint8Array[],
+    signer: SignFun,
     validator: ValidateSigFunction
 ): Promise<Transaction> {
-    console.log('signPsbt: signing all inputs');
-    await transaction.signAllInputsAsync(signer);
-    console.log('signPsbt: validating');
-    transaction.validateSignaturesOfAllInputs(validator);
-    console.log('signPsbt: finalizing');
-    transaction.finalizeAllInputs();
-    console.log('signPsbt: extracting');
-    return transaction.extractTransaction();
-}
-
-function getSigner(
-    publicKey: Uint8Array,
-    keyName: string,
-    derivationPath: Uint8Array[]
-): SignerAsync {
-    return {
+    await transaction.signAllInputsAsync({
         sign: async (hashBuffer) => {
-            const sec1 = await ecdsaApi.signWithECDSA(
+            const sec1 = await signer(
                 keyName,
                 derivationPath,
                 Uint8Array.from(hashBuffer)
@@ -249,49 +243,15 @@ function getSigner(
 
             return Buffer.from(sec1);
         },
-        publicKey: Buffer.from(publicKey)
-    };
-}
-
-function getMockSigner(ownPublicKey: Uint8Array, ECPair: ECPairAPI): Signer {
-    const _keyPair = ECPair.makeRandom();
-    return {
-        sign: (_hashBuffer) => {
-            // return keyPair.sign(hashBuffer);
-            return Buffer.from(new Array(64).fill(1));
-        },
         publicKey: Buffer.from(ownPublicKey)
-    };
+    });
+    transaction.validateSignaturesOfAllInputs(validator);
+    transaction.finalizeAllInputs();
+    return transaction.extractTransaction();
 }
 
-function getValidator(_ECPair: ECPairAPI): ValidateSigFunction {
-    return (pubkey: Buffer, msghash: Buffer, signature: Buffer): boolean => {
-        return ecc.verify(msghash, pubkey, signature);
-        // return ECPair.fromPublicKey(pubkey).verify(msghash, signature);
-    };
-}
-
-function getMockValidator(): ValidateSigFunction {
-    return (_pubkey: Buffer, _msghash: Buffer, _signature: Buffer): boolean => {
-        return true;
-    };
-}
-
-/// Returns the P2PKH address of this canister at the given derivation path.
-export async function getP2wpkhAddress(
-    network: BitcoinNetwork,
-    keyName: string,
-    derivationPath: Uint8Array[]
-): Promise<string> {
-    // Fetch the public key of the given derivation path.
-    const publicKey = await ecdsaApi.ecdsaPublicKey(keyName, derivationPath);
-
-    // Compute the address.
-    return publicKeyToP2wpkhAddress(network, publicKey);
-}
-
-// Converts a public key to a P2PKH address.
-export function publicKeyToP2wpkhAddress(
+// Converts a public key to a P2WPKH address.
+function publicKeyToP2wpkhAddress(
     network: BitcoinNetwork,
     publicKey: Uint8Array
 ): string {
@@ -303,4 +263,20 @@ export function publicKeyToP2wpkhAddress(
         throw new Error('Unable to get address from the canister');
     }
     return address;
+}
+
+function validator(
+    pubkey: Buffer,
+    msghash: Buffer,
+    signature: Buffer
+): boolean {
+    return ecc.verify(msghash, pubkey, signature);
+}
+
+function mockValidator(
+    _pubkey: Buffer,
+    _msghash: Buffer,
+    _signature: Buffer
+): boolean {
+    return true;
 }
