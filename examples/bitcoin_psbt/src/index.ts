@@ -43,7 +43,7 @@ app.get(
 );
 
 /// Returns the P2PKH address of this canister at a specific derivation path.
-app.get('/get-p2pkh-address', async (req, res) => {
+app.get('/get-p2wpkh-address', async (req, res) => {
     const address = await bitcoinPsbt.getP2wpkhAddress(
         NETWORK,
         KEY_NAME,

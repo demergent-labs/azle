@@ -13,7 +13,7 @@ import {
     compareBalances,
     getBalance,
     getFeeFromTransaction,
-    getP2pkhAddress,
+    getP2wpkhAddress,
     waitForMempool
 } from '../../basic_bitcoin/test/tests';
 import { getUtxoHashes } from './bitcoin';
@@ -21,7 +21,7 @@ import { getUtxoHashes } from './bitcoin';
 const SINGLE_BLOCK_REWARD = 5_000_000_000n;
 const FIRST_MINING_SESSION = 101;
 const FIRST_AMOUNT_SENT = SINGLE_BLOCK_REWARD / 2n;
-const TO_ADDRESS = 'n4HY51WrdxATGEPqYvoNkEsTteRfuRMxpD'; // Regtest address from this WIF L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv
+const TO_ADDRESS = 'n4HY51WrdxATGEPqYvoNkEsTteRfuRMxpD'; // TODO test other kinds of addresses not just p2pkh
 
 let lastTx = '';
 
@@ -39,13 +39,13 @@ export function getTests(canisterId: string): Test[] {
         {
             name: 'first mint BTC',
             prep: async () => {
-                const address = await getP2pkhAddress(origin);
+                const address = await getP2wpkhAddress(origin);
                 generateToAddress(address, FIRST_MINING_SESSION);
             }
         },
         { name: 'wait for blocks to settle', wait: 30_000 },
         {
-            name: '/send from canister to L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv',
+            name: `/send from canister to ${TO_ADDRESS}`,
             prep: async () => {
                 const body = jsonStringify({
                     transactions: getUtxoHashes(),
@@ -73,7 +73,7 @@ export function getTests(canisterId: string): Test[] {
         },
         { name: 'wait for blocks to settle', wait: 15_000 },
         {
-            name: '/get-balance of L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv final',
+            name: `/get-balance of ${TO_ADDRESS} final`,
             test: async () => {
                 const balance = await getBalance(origin, TO_ADDRESS);
 
@@ -83,7 +83,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/get-balance final',
             test: async () => {
-                const address = await getP2pkhAddress(origin);
+                const address = await getP2wpkhAddress(origin);
                 const balance = await getBalance(origin, address);
 
                 const fee = getFeeFromTransaction(lastTx, SINGLE_BLOCK_REWARD);

@@ -7,6 +7,8 @@
 //! * Support for address types that aren't P2PKH.
 //! * Caching spent UTXOs so that they are not reused in future transactions.
 //! * Option to set the fee.
+// import * as ecc from 'tiny-secp256k1/lib/'; // TODO we should switch to this import as soon as we have wasm support
+import * as ecc from '@bitcoin-js/tiny-secp256k1-asmjs';
 import {
     BitcoinNetwork,
     MillisatoshiPerByte,
@@ -252,18 +254,20 @@ function getSigner(
 }
 
 function getMockSigner(ownPublicKey: Uint8Array, ECPair: ECPairAPI): Signer {
-    const keyPair = ECPair.makeRandom();
+    const _keyPair = ECPair.makeRandom();
     return {
-        sign: (hashBuffer) => {
-            return keyPair.sign(hashBuffer);
+        sign: (_hashBuffer) => {
+            // return keyPair.sign(hashBuffer);
+            return Buffer.from(new Array(64).fill(1));
         },
         publicKey: Buffer.from(ownPublicKey)
     };
 }
 
-function getValidator(ECPair: ECPairAPI): ValidateSigFunction {
+function getValidator(_ECPair: ECPairAPI): ValidateSigFunction {
     return (pubkey: Buffer, msghash: Buffer, signature: Buffer): boolean => {
-        return ECPair.fromPublicKey(pubkey).verify(msghash, signature);
+        return ecc.verify(msghash, pubkey, signature);
+        // return ECPair.fromPublicKey(pubkey).verify(msghash, signature);
     };
 }
 
