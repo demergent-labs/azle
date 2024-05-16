@@ -7,8 +7,8 @@ import express, { Request } from 'express';
 
 import { determineKeyName, determineNetwork } from '../../basic_bitcoin/src';
 import * as bitcoinApi from '../../basic_bitcoin/src/bitcoin_api';
-import * as bitcoinWallet from '../../basic_bitcoin/src/bitcoin_wallet';
-import * as bitcoinPsbt from './bitcoin_psbt';
+import * as bitcoinPsbt from './psbt';
+import * as bitcoinPsbtNonSegWit from './psbt-non-segwit';
 
 // The bitcoin network to connect to.
 //
@@ -45,7 +45,7 @@ app.get(
 
 /// Returns the P2PKH address of this canister at a specific derivation path.
 app.get('/get-p2pkh-address', async (req, res) => {
-    const address = await bitcoinWallet.getP2pkhAddress(
+    const address = await bitcoinPsbt.getP2wpkhAddress(
         NETWORK,
         KEY_NAME,
         DERIVATION_PATH
@@ -59,7 +59,7 @@ app.get('/get-p2pkh-address', async (req, res) => {
 app.post('/send', async (req, res) => {
     const { transactions, destinationAddress, amountInSatoshi } = req.body;
 
-    const txId = await bitcoinPsbt.send(
+    const txId = await bitcoinPsbtNonSegWit.send(
         NETWORK,
         DERIVATION_PATH,
         KEY_NAME,
@@ -71,5 +71,15 @@ app.post('/send', async (req, res) => {
 
     res.send(txId);
 });
+
+/// Returns the UTXOs of the given bitcoin address.
+app.get(
+    '/get-utxos',
+    async (req: Request<any, any, any, { address: string }>, res) => {
+        const utxos = await bitcoinApi.getUtxos(NETWORK, req.query.address);
+
+        res.send(jsonStringify(utxos));
+    }
+);
 
 app.listen();

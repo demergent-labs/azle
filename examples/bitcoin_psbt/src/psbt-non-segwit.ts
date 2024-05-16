@@ -207,9 +207,14 @@ function buildPsbtWithFee(
     const remainingAmount = totalSpent - amount - fee;
 
     transaction.addOutput({ address: destAddress, value: Number(amount) });
+    newTransaction.addOutput({ address: destAddress, value: Number(amount) });
 
     if (remainingAmount >= dustThreshold) {
         transaction.addOutput({
+            address: ownAddress,
+            value: Number(remainingAmount)
+        });
+        newTransaction.addOutput({
             address: ownAddress,
             value: Number(remainingAmount)
         });
