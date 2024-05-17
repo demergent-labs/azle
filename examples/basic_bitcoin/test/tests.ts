@@ -188,7 +188,7 @@ export function getTests(canisterId: string): Test[] {
             }
         },
         {
-            name: 'Generate blocks to ensure that enough of the canisters block rewards are available to spend',
+            name: "Generate blocks to ensure that enough of the canister's block rewards are available to spend",
             prep: async () => {
                 generate(10);
             }

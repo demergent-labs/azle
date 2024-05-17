@@ -294,7 +294,7 @@ function mockSigner(
     _derivationPath: Uint8Array[],
     _messageHash: Uint8Array
 ): Uint8Array {
-    // bitcoin.script.signature.encode threw away most of the signature when it was all 0's so we need to fill it up with anything besides just 0s
+    // bitcoin.script.signature.encode threw away most of the signature when it was all 0s so we need to fill it up with anything besides just 0s
     return Uint8Array.from(new Array(64).fill(1));
 }
 
