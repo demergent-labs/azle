@@ -31,7 +31,7 @@ fi
 dfx start --clean --host 127.0.0.1:8000
 ```
 
-## basic_bitcion
+## basic_bitcoin
 
 ```bash
 BITCOIN_NETWORK=regtest dfx deploy'

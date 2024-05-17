@@ -13,10 +13,8 @@ import {
     compareBalances,
     getBalance,
     getFeeFromTransaction,
-    getP2wpkhAddress,
     waitForMempool
 } from '../../basic_bitcoin/test/tests';
-import { getUtxoHashes } from './bitcoin';
 
 const SINGLE_BLOCK_REWARD = 5_000_000_000n;
 const FIRST_MINING_SESSION = 101;
@@ -48,7 +46,6 @@ export function getTests(canisterId: string): Test[] {
             name: `/send from canister to ${TO_ADDRESS}`,
             prep: async () => {
                 const body = jsonStringify({
-                    transactions: getUtxoHashes(),
                     amountInSatoshi: FIRST_AMOUNT_SENT,
                     destinationAddress: TO_ADDRESS
                 });
@@ -100,4 +97,11 @@ export function getTests(canisterId: string): Test[] {
             }
         }
     ];
+}
+
+export async function getP2wpkhAddress(origin: string): Promise<string> {
+    const response = await fetch(`${origin}/get-p2wpkh-address`, {
+        headers: [['X-Ic-Force-Update', 'true']]
+    });
+    return await response.text();
 }

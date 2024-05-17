@@ -3,7 +3,7 @@ import { runTests } from 'azle/test';
 
 import { getTests } from './tests';
 
-const canisterId = getCanisterId('basic_bitcoin');
+const canisterId = getCanisterId('bitcoin_psbt');
 
 // Allows running of the tests without starting and stopping a Bitcoin daemon
 // automatically. That is to say you will need to start and stop the Bitcoin
