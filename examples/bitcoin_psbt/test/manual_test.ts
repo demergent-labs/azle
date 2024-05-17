@@ -1,7 +1,8 @@
 import { getCanisterId } from 'azle/dfx';
+import { getTests } from 'azle/examples/basic_bitcoin/test/tests';
 import { runTests } from 'azle/test';
 
-import { getTests } from './tests';
+import { getP2wpkhAddress, P2WPKH_ADDRESS_FORM } from './test';
 
 const canisterId = getCanisterId('bitcoin_psbt');
 
@@ -9,4 +10,4 @@ const canisterId = getCanisterId('bitcoin_psbt');
 // automatically. That is to say you will need to start and stop the Bitcoin
 // daemon manually. Great for running cli commands after or during the tests to
 // check the state of the test network
-runTests(getTests(canisterId));
+runTests(getTests(canisterId, getP2wpkhAddress, P2WPKH_ADDRESS_FORM));

@@ -47,6 +47,14 @@ app.get(
     }
 );
 
+/// Returns the 100 fee percentiles measured in millisatoshi/byte.
+/// Percentiles are computed from the last 10,000 transactions (if available).
+app.get('/get-current-fee-percentiles', async (req, res) => {
+    const feePercentiles = await bitcoinApi.getCurrentFeePercentiles(NETWORK);
+
+    res.send(jsonStringify(feePercentiles));
+});
+
 /// Returns the P2WPKH address of this canister at a specific derivation path.
 app.get('/get-p2wpkh-address', async (req, res) => {
     const address = await bitcoinPsbt.getP2wpkhAddress(

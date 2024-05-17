@@ -14,6 +14,7 @@ import {
     getTransaction
 } from './bitcoin';
 
+export const P2PKH_ADDRESS_FORM = 'mhVmPSYFraAYnA4ZP6KUx41P3dKgAg27Cm'; // p2pkh-address on the regtest will generally be of this form, starting with m or n and this many characters.
 const SINGLE_BLOCK_REWARD = 5_000_000_000n;
 const FIRST_MINING_SESSION = 101;
 const FIRST_AMOUNT_SENT = SINGLE_BLOCK_REWARD / 2n;
@@ -24,9 +25,14 @@ let lastTxid = '';
 let toAddressPreviousBalance = 0n;
 let canisterPreviousBalance = 0n;
 
-export function getTests(canisterId: string): Test[] {
+export type AddressFunc = (origin: string) => Promise<string>;
+
+export function getTests(
+    canisterId: string,
+    getAddress: AddressFunc,
+    addressForm: string
+): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
-    const canisterAddressForm = 'mhVmPSYFraAYnA4ZP6KUx41P3dKgAg27Cm'; // p2pkh-address on the regtest will generally be of this form, starting with m or n and this many characters.
     return [
         {
             name: 'Set up minting wallet',
@@ -37,15 +43,15 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/get-p2pkh-address',
             test: async () => {
-                const address = await getP2pkhAddress(origin);
+                const address = await getAddress(origin);
 
-                return { Ok: canisterAddressForm.length === address.length };
+                return { Ok: addressForm.length === address.length };
             }
         },
         {
             name: '/get-balance',
             test: async () => {
-                const address = await getP2pkhAddress(origin);
+                const address = await getAddress(origin);
                 const balance = await getBalance(origin, address);
 
                 return compareBalances(0n, balance);
@@ -54,7 +60,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: 'first mint BTC',
             prep: async () => {
-                const address = await getP2pkhAddress(origin);
+                const address = await getAddress(origin);
                 generateToAddress(address, FIRST_MINING_SESSION);
             }
         },
@@ -62,7 +68,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/get-balance',
             test: async () => {
-                const address = await getP2pkhAddress(origin);
+                const address = await getAddress(origin);
                 const balance = await getBalance(origin, address);
 
                 return compareBalances(
@@ -74,7 +80,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/get-utxos',
             test: async () => {
-                const address = await getP2pkhAddress(origin);
+                const address = await getAddress(origin);
 
                 const response = await fetch(
                     `${origin}/get-utxos?address=${address}`,
@@ -153,7 +159,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/get-balance final',
             test: async () => {
-                const address = await getP2pkhAddress(origin);
+                const address = await getAddress(origin);
                 const balance = await getBalance(origin, address);
                 canisterPreviousBalance = balance;
 
@@ -233,7 +239,7 @@ export function getTests(canisterId: string): Test[] {
         {
             name: '/get-balance big',
             test: async () => {
-                const address = await getP2pkhAddress(origin);
+                const address = await getAddress(origin);
                 const balance = await getBalance(origin, address);
 
                 // At the time this transaction was made, the next utxos to use will be from block rewards.
@@ -323,7 +329,7 @@ function getTotalOutput(tx: Transaction): number {
     }, 0);
 }
 
-async function getP2pkhAddress(origin: string): Promise<string> {
+export async function getP2pkhAddress(origin: string): Promise<string> {
     const response = await fetch(`${origin}/get-p2pkh-address`, {
         headers: [['X-Ic-Force-Update', 'true']]
     });
