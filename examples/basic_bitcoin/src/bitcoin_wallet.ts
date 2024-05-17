@@ -274,7 +274,7 @@ async function signTransaction(
 }
 
 // Converts a public key to a P2PKH address.
-export function publicKeyToP2pkhAddress(
+function publicKeyToP2pkhAddress(
     network: BitcoinNetwork,
     publicKey: Uint8Array
 ): string {

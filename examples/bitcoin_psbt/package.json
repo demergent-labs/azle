@@ -9,11 +9,11 @@
         "getrawmempool": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getrawmempool true",
         "getrawtransaction": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getrawtransaction $npm_config_txid",
         "help": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf help",
+        "premanualtest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "manualtest": "ts-node --transpile-only --ignore=false test/test.ts",
         "install": "./scripts/install.sh",
-        "pretest": "BITCOIN_NETWORK=regtest ts-node --transpile-only --ignore=false test/pretest.ts",
-        "test": "ts-node --transpile-only --ignore=false test/test.ts",
-        "premanualtest": "BITCOIN_NETWORK=regtest ts-node --transpile-only --ignore=false test/pretest.ts",
-        "manualtest": "ts-node --transpile-only --ignore=false test/test.ts"
+        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "test": "ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
         "@bitcoin-js/tiny-secp256k1-asmjs": "^2.2.3",

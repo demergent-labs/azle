@@ -62,9 +62,11 @@ export async function send(
             : // Choose the 50th percentile for sending fees.
               feePercentiles[50];
 
+    // Fetch our public key, P2PKH address, and UTXOs.
     const ownPublicKey = await ecdsaApi.ecdsaPublicKey(keyName, derivationPath);
     const ownAddress = publicKeyToP2wpkhAddress(network, ownPublicKey);
 
+    console.info('Fetching UTXOs...');
     // Note that pagination may have to be used to get all UTXOs for the given address.
     // For the sake of simplicity, it is assumed here that the `utxo` field in the response
     // contains all UTXOs.
@@ -72,7 +74,7 @@ export async function send(
         .utxos;
 
     // Build the transaction that sends `amount` to the destination address.
-    const transaction = await buildPsbt(
+    const transaction = await buildTransaction(
         ownPublicKey,
         ownAddress,
         ownUtxos,
@@ -82,8 +84,9 @@ export async function send(
         network
     );
 
-    // Sign the transaction.
-    const signedTransaction = await signPsbt(
+    console.info(`Transaction to sign: ${transaction.toHex()}`);
+
+    const signedTransaction = await signTransaction(
         ownPublicKey,
         transaction,
         keyName,
@@ -91,6 +94,7 @@ export async function send(
         ecdsaApi.signWithECDSA,
         validator
     );
+
     const signedTransactionBytes = signedTransaction.toBuffer();
     console.info(
         `Signed transaction: ${signedTransactionBytes.toString('hex')}`
@@ -105,7 +109,7 @@ export async function send(
 
 // Builds a transaction to send the given `amount` of satoshis to the
 // destination address.
-async function buildPsbt(
+async function buildTransaction(
     ownPublicKey: Uint8Array,
     ownAddress: string,
     ownUtxos: Utxo[],
@@ -126,7 +130,7 @@ async function buildPsbt(
     let totalFee = 0n;
     // eslint-disable-next-line no-constant-condition
     while (true) {
-        let transaction = buildPsbtWithFee(
+        const transaction = buildTransactionWithFee(
             ownUtxos,
             ownAddress,
             dstAddress,
@@ -137,7 +141,7 @@ async function buildPsbt(
 
         // Sign the transaction. In this case, we only care about the size
         // of the signed transaction.
-        const signedTransaction = await signPsbt(
+        const signedTransaction = await signTransaction(
             ownPublicKey,
             transaction.clone(),
             '', // mock key name
@@ -157,7 +161,7 @@ async function buildPsbt(
     }
 }
 
-function buildPsbtWithFee(
+function buildTransactionWithFee(
     ownUtxos: Utxo[],
     ownAddress: string,
     destAddress: string,
@@ -191,7 +195,6 @@ function buildPsbtWithFee(
 
     const network = determineNetwork(bitcoinNetwork);
     let transaction = new Psbt({ network });
-    transaction.setVersion(1);
 
     for (const utxo of utxosToSpend) {
         transaction.addInput({
@@ -225,7 +228,7 @@ function buildPsbtWithFee(
 //
 // 1. All the inputs are referencing outpoints that are owned by `own_address`.
 // 2. `own_address` is a P2PKH address.
-async function signPsbt(
+async function signTransaction(
     ownPublicKey: Uint8Array,
     transaction: Psbt,
     keyName: string,

@@ -4,7 +4,7 @@ import express, { Request } from 'express';
 
 import { determineKeyName, determineNetwork } from '../../basic_bitcoin/src';
 import * as bitcoinApi from '../../basic_bitcoin/src/bitcoin_api';
-import * as bitcoinPsbt from './bitcoin_wallet';
+import * as bitcoinWallet from './bitcoin_wallet';
 
 // The bitcoin network to connect to.
 //
@@ -57,7 +57,7 @@ app.get('/get-current-fee-percentiles', async (req, res) => {
 
 /// Returns the P2WPKH address of this canister at a specific derivation path.
 app.get('/get-p2wpkh-address', async (req, res) => {
-    const address = await bitcoinPsbt.getP2wpkhAddress(
+    const address = await bitcoinWallet.getP2wpkhAddress(
         NETWORK,
         KEY_NAME,
         DERIVATION_PATH
@@ -71,13 +71,14 @@ app.get('/get-p2wpkh-address', async (req, res) => {
 app.post('/send', async (req, res) => {
     const { destinationAddress, amountInSatoshi } = req.body;
 
-    const txId = await bitcoinPsbt.send(
+    const txId = await bitcoinWallet.send(
         NETWORK,
         DERIVATION_PATH,
         KEY_NAME,
         destinationAddress,
         BigInt(jsonParse(JSON.stringify(amountInSatoshi)))
     );
+
     res.send(txId);
 });
 
