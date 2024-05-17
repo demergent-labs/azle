@@ -57,7 +57,7 @@ You can now use the `send` function to try sending some BTC to another address, 
 .bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress 1 <your-canister-btc-address>
 ```
 
-You should see some output such as `2023-05-30T20:33:25Z CreateNewBlock(): block weight: 1804 txs: 1 fees: 454 sigops 408` in your Bitcoin node's terminal indicating that your transaction was included in the block.
+You should see some output such as `2023-05-30T20:33:25Z CreateNewBlock(): block weight: 1804 txs: 1 fees: 454 sigops 408` in your Bitcoin node's terminal (not the dfx terminal) indicating that your transaction was included in the block.
 
 Now if you call the functions with the `n2dcQfuwFw7M2UYzLfM6P7DwewsQaygb8S` address you should see a new balance, utxos, and fee percentiles.
 
