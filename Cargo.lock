@@ -225,6 +225,7 @@ dependencies = [
  "ic-stable-structures",
  "ic-wasi-polyfill",
  "include_dir",
+ "open_value_sharing",
  "serde",
  "serde_json",
  "sha2",
@@ -1062,6 +1063,16 @@ name = "once_cell"
 version = "1.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
+
+[[package]]
+name = "open_value_sharing"
+version = "0.0.0"
+dependencies = [
+ "candid",
+ "ic-cdk",
+ "serde",
+ "serde_json",
+]
 
 [[package]]
 name = "parking_lot"

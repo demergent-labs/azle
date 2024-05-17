@@ -45,6 +45,15 @@ export function prepareRustStagingArea(
         `${canisterPath}/canister_methods`
     );
 
+    if (!existsSync(`${canisterPath}/open_value_sharing`)) {
+        mkdirSync(`${canisterPath}/open_value_sharing`);
+    }
+
+    copySync(
+        `${__dirname}/rust/open_value_sharing`,
+        `${canisterPath}/open_value_sharing`
+    );
+
     writeFileSync(`${canisterPath}/canister/src/main.js`, canisterJavaScript);
 
     if (

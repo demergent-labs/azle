@@ -135,7 +135,7 @@ function buildAndLoadImageWithDockerfile(
     }
 
     execSyncPretty(
-        `podman build -f ${__dirname}/Dockerfile -t ${dockerImageName} ${require.main?.path}`,
+        `podman build -f ${require.main.path}/Dockerfile -t ${dockerImageName} ${require.main.path}`,
         'inherit'
     );
 
