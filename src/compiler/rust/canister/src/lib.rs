@@ -8,7 +8,7 @@ use ic_stable_structures::{
     DefaultMemoryImpl, StableBTreeMap, Storable,
 };
 use include_dir::{include_dir, Dir};
-use open_value_sharing::open_value_sharing_periodic_payment;
+use open_value_sharing::{open_value_sharing_periodic_payment, DependencyInfo};
 use std::fs;
 use wasmedge_quickjs::AsObject;
 
@@ -200,5 +200,16 @@ pub fn _azle_chunk() {}
 
 #[ic_cdk_macros::update]
 pub async fn _azle_open_value_sharing_periodic_payment() {
-    open_value_sharing_periodic_payment().await;
+    let dependency_info = get_dependency_info("dependency_info.json").unwrap();
+
+    open_value_sharing_periodic_payment(&dependency_info).await;
+}
+
+fn get_dependency_info(dependency_info_path: &str) -> Result<DependencyInfo, String> {
+    let dependency_info_string = std::fs::read_to_string(dependency_info_path)
+        .map_err(|err| format!("Error reading {dependency_info_path}: {err}"))?;
+    let dependency_info: DependencyInfo = serde_json::from_str(&dependency_info_string)
+        .map_err(|err| format!("Error parsing {dependency_info_path}: {err}"))?;
+
+    Ok(dependency_info)
 }

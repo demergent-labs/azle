@@ -4,6 +4,7 @@ import { copySync } from 'fs-extra';
 import { join } from 'path';
 
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
+import { getDependencyInfo } from './get_open_value_sharing_dependency_info';
 import { execSyncPretty } from './utils/exec_sync_pretty';
 import { JSCanisterConfig, Toml } from './utils/types';
 
@@ -66,4 +67,9 @@ export function prepareRustStagingArea(
     for (const [src, dest] of canisterConfig.assets ?? []) {
         copySync(src, join(canisterPath, 'canister', 'src', 'assets', dest));
     }
+
+    writeFileSync(
+        join(canisterPath, 'canister', 'src', 'assets', 'dependency_info.json'),
+        JSON.stringify(getDependencyInfo())
+    );
 }

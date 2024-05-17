@@ -1,5 +1,4 @@
 import { RequireExactlyOne } from '../../lib';
-import { DependencyInfo } from '../get_open_value_sharing_dependency_info';
 
 export type AzleError = {
     error?: string;
@@ -38,7 +37,6 @@ export type CandidGen = 'automatic' | 'custom' | 'http';
 export type CompilerInfo = {
     canister_methods: CanisterMethods;
     env_vars: [string, string][];
-    dependency_info: DependencyInfo;
 };
 
 export type CanisterMethods = {

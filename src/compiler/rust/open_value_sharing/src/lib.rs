@@ -1,36 +1,15 @@
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
-struct Dependency {
-    name: String,
-    weight: u32,
-    platform: String,
-    asset: String,
-    payment_mechanism: String,
-    custom: std::collections::HashMap<String, serde_json::Value>,
-}
+pub type DependencyInfo = Vec<DependencyLevel>;
+
+pub type DependencyLevel = Vec<Dependency>;
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
-struct CompilerInfo {
-    canister_methods: CanisterMethods,
-    env_vars: Vec<(String, String)>,
-    dependency_info: Vec<Vec<Dependency>>,
-}
-
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
-struct CanisterMethods {
-    init: Option<CanisterMethod>,
-    post_upgrade: Option<CanisterMethod>,
-    pre_upgrade: Option<CanisterMethod>,
-    inspect_message: Option<CanisterMethod>,
-    heartbeat: Option<CanisterMethod>,
-    queries: Vec<CanisterMethod>,
-    updates: Vec<CanisterMethod>,
-}
-
-#[derive(Debug, serde::Serialize, serde::Deserialize)]
-struct CanisterMethod {
-    name: String,
-    composite: Option<bool>,
-    guard_name: Option<String>,
+pub struct Dependency {
+    pub name: String,
+    pub weight: u32,
+    pub platform: String,
+    pub asset: String,
+    pub payment_mechanism: String,
+    pub custom: std::collections::HashMap<String, serde_json::Value>,
 }
 
 // TODO we should probably keep a log of payments right?
@@ -47,10 +26,8 @@ struct CanisterMethod {
 // TODO not sure if there's any practical limit though
 
 // TODO figure out how to get this to work on mainnet and locally well
-pub async fn open_value_sharing_periodic_payment() {
+pub async fn open_value_sharing_periodic_payment(dependency_info: &DependencyInfo) {
     ic_cdk::println!("open_value_sharing_periodic_payment");
-
-    let compiler_info = get_compiler_info("compiler_info.json").unwrap();
 
     let total_periodic_payment_amount = calculate_total_periodic_payment_amount().await;
 
@@ -59,7 +36,7 @@ pub async fn open_value_sharing_periodic_payment() {
         total_periodic_payment_amount
     );
 
-    for (depth, dependency_level) in compiler_info.dependency_info.iter().enumerate() {
+    for (depth, dependency_level) in dependency_info.iter().enumerate() {
         ic_cdk::println!("depth: {}", depth);
         ic_cdk::println!("dependency_level: {:#?}", dependency_level);
 
@@ -71,7 +48,7 @@ pub async fn open_value_sharing_periodic_payment() {
                 dependency_level,
                 depth,
                 total_periodic_payment_amount,
-                depth == compiler_info.dependency_info.len() - 1,
+                depth == dependency_info.len() - 1,
             );
 
             if dependency.platform == "icp" {
@@ -79,15 +56,6 @@ pub async fn open_value_sharing_periodic_payment() {
             }
         }
     }
-}
-
-fn get_compiler_info(compiler_info_path: &str) -> Result<CompilerInfo, String> {
-    let compiler_info_string = std::fs::read_to_string(compiler_info_path)
-        .map_err(|err| format!("Error reading {compiler_info_path}: {err}"))?;
-    let compiler_info: CompilerInfo = serde_json::from_str(&compiler_info_string)
-        .map_err(|err| format!("Error parsing {compiler_info_path}: {err}"))?;
-
-    Ok(compiler_info)
 }
 
 // TODO do all of the balance and previous calculation stuff here
