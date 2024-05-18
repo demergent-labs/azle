@@ -53,7 +53,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const result = await managementCanister.executeInstallCode(
                     canisterId,
-                    wasmModule as any
+                    wasmModule
                 );
 
                 return {
@@ -92,7 +92,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                 const chunkUploadResult =
                     await managementCanister.executeUploadChunk(
                         canisterId,
-                        wasmModule as any
+                        wasmModule
                     );
 
                 return {

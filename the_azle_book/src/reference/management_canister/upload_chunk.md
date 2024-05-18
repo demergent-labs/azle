@@ -7,15 +7,14 @@ Examples:
 -   [management_canister](https://github.com/demergent-labs/azle/tree/main/examples/management_canister)
 
 ```typescript
-import { Canister, ic, update } from 'azle';
+import { blob, Canister, ic, Principal, update } from 'azle';
 import {
-    UploadChunkArgs,
-    UploadChunkResult,
-    managementCanister
+    managementCanister,
+    UploadChunkResult
 } from 'azle/canisters/management';
 
 export default Canister({
-    executeUploadChunk: query(
+    executeUploadChunk: update(
         [Principal, blob],
         UploadChunkResult,
         async (canisterId, wasmChunk) => {

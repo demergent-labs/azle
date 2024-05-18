@@ -85,14 +85,14 @@ export default Canister({
     executeUploadChunk: update(
         [Principal, blob],
         ChunkHash,
-        async (canisterId, chunk): Promise<ChunkHash> => {
+        async (canisterId, chunk) => {
             if (process.env.AZLE_TEST_FETCH === 'true' || false) {
                 const response = await fetch(`icp://aaaaa-aa/upload_chunk`, {
                     body: serialize({
                         args: [
                             {
                                 canister_id: canisterId,
-                                chunk: chunk
+                                chunk
                             }
                         ]
                     })
@@ -104,7 +104,7 @@ export default Canister({
                     args: [
                         {
                             canister_id: canisterId,
-                            chunk: chunk
+                            chunk
                         }
                     ]
                 });
