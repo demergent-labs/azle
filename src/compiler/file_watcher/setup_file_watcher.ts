@@ -8,7 +8,9 @@ export function setupFileWatcher(
     canisterId: string,
     mainPath: string,
     wasmedgeQuickJsPath: string,
-    replicaWebServerPort: string
+    esmAliases: Record<string, string>,
+    esmExternals: string[],
+    canisterName: string
 ) {
     try {
         // TODO should we check that this was successful in killing
@@ -33,7 +35,9 @@ export function setupFileWatcher(
             canisterId,
             mainPath,
             wasmedgeQuickJsPath,
-            replicaWebServerPort
+            JSON.stringify(esmAliases),
+            JSON.stringify(esmExternals),
+            canisterName
         ],
         {
             detached: true,

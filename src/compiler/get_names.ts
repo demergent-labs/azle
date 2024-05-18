@@ -96,6 +96,9 @@ export function getNamesAfterCli() {
         'main_reloaded.js'
     );
 
+    const esmAliases = canisterConfig.esm_aliases ?? {};
+    const esmExternals = canisterConfig.esm_externals ?? [];
+
     return {
         canisterName,
         canisterPath,
@@ -106,7 +109,9 @@ export function getNamesAfterCli() {
         rustStagingCandidPath,
         rustStagingWasmPath,
         canisterId,
-        reloadedJsPath
+        reloadedJsPath,
+        esmAliases,
+        esmExternals
     };
 }
 
