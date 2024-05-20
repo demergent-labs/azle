@@ -1,25 +1,25 @@
 {
     "canisters": {
         "basic_bitcoin": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "build": "npx azle basic_bitcoin",
-            "wasm": ".azle/basic_bitcoin/basic_bitcoin.wasm.gz",
-            "declarations": {
-                "output": "test/dfx_generated/basic_bitcoin",
-                "node_compatibility": true
-            },
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            "env": ["BITCOIN_NETWORK"]
+        }
+    },
+    "networks": {
+        "local": {
+            "bind": "127.0.0.1:8000",
+            "type": "ephemeral",
+            "replica": {
+                "subnet_type": "system"
+            }
+        }
+    },
+    "defaults": {
+        "bitcoin": {
+            "enabled": true,
+            "nodes": ["127.0.0.1:18444"],
+            "log_level": "info"
         }
     }
 }
