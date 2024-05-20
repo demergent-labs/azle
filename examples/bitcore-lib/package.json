@@ -1,4 +1,5 @@
 {
+    "name": "bitcore-lib-example",
     "scripts": {
         "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
         "test": "ts-node --transpile-only --ignore=false test/test.ts"

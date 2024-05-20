@@ -1,8 +1,8 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { getTests as getBitcoinTests } from 'azle/examples/bitcore-lib/test/tests';
 import { Test } from 'azle/test';
+import { getTests as getBitcoinTests } from 'bitcore-lib-example/test/tests';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
