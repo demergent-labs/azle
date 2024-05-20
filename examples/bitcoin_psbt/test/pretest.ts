@@ -5,11 +5,11 @@ async function pretest() {
         stdio: 'inherit'
     });
 
+    execSync(`cd ../basic_bitcoin && npm install`, { stdio: 'inherit' });
+
     execSync(`BITCOIN_NETWORK=regtest dfx deploy`, {
         stdio: 'inherit'
     });
-
-    execSync(`cd ../basic_bitcoin && npm install`, { stdio: 'inherit' });
 }
 
 pretest();
