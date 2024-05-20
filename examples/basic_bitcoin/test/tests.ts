@@ -41,7 +41,7 @@ export function getTests(
             }
         },
         {
-            name: '/get-p2pkh-address',
+            name: '/get-address',
             test: async () => {
                 const address = await getAddress(origin);
 

@@ -15,17 +15,16 @@ import {
     Satoshi,
     Utxo
 } from 'azle/canisters/management';
-import { address, payments, Psbt, Transaction } from 'bitcoinjs-lib';
-import { ValidateSigFunction } from 'bitcoinjs-lib/src/psbt';
-import { Buffer } from 'buffer';
-
-import * as bitcoinApi from '../../basic_bitcoin/src/bitcoin_api';
+import * as bitcoinApi from 'basic_bitcoin/src/bitcoin_api';
 import {
     determineNetwork,
     mockSigner,
     SignFun
-} from '../../basic_bitcoin/src/bitcoin_wallet';
-import * as ecdsaApi from '../../basic_bitcoin/src/ecdsa_api';
+} from 'basic_bitcoin/src/bitcoin_wallet';
+import * as ecdsaApi from 'basic_bitcoin/src/ecdsa_api';
+import { address, payments, Psbt, Transaction } from 'bitcoinjs-lib';
+import { ValidateSigFunction } from 'bitcoinjs-lib/src/psbt';
+import { Buffer } from 'buffer';
 
 /// Returns the P2PKH address of this canister at the given derivation path.
 export async function getP2wpkhAddress(
