@@ -288,7 +288,7 @@ export function getTests(
                 const feePercentiles = jsonParse(await response.text());
 
                 return {
-                    Ok: feePercentiles.length === 0
+                    Ok: feePercentiles.length === 101
                 };
             }
         }
