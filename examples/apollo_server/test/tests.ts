@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
+import { equals, Test } from 'azle/test';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -11,6 +11,14 @@ export function getTests(canisterId: string): Test[] {
             name: 'query books',
             test: async () => {
                 try {
+                    const expectedResult = {
+                        data: {
+                            books: [
+                                { id: '0', title: 'The Awakening' },
+                                { id: '1', title: 'City of Glass' }
+                            ]
+                        }
+                    };
                     const response = await fetch(origin, {
                         method: 'POST',
                         headers: [['Content-Type', 'application/json']],
@@ -26,12 +34,7 @@ export function getTests(canisterId: string): Test[] {
                         })
                     });
                     const responseJson = await response.json();
-
-                    return {
-                        Ok:
-                            responseJson.data.books.length === 2 &&
-                            responseJson.data.books[0].title === 'The Awakening'
-                    };
+                    return equals(expectedResult, responseJson);
                 } catch (error: any) {
                     return {
                         Err: error
@@ -43,6 +46,9 @@ export function getTests(canisterId: string): Test[] {
             name: 'query authors',
             test: async () => {
                 try {
+                    const expectedResult = {
+                        data: { authors: [{ name: 'Jordan' }, { name: 'Ben' }] }
+                    };
                     const response = await fetch(origin, {
                         method: 'POST',
                         headers: [['Content-Type', 'application/json']],
@@ -58,11 +64,7 @@ export function getTests(canisterId: string): Test[] {
                     });
                     const responseJson = await response.json();
 
-                    return {
-                        Ok:
-                            responseJson.data.authors.length === 2 &&
-                            responseJson.data.authors[0].name === 'Jordan'
-                    };
+                    return equals(expectedResult, responseJson);
                 } catch (error: any) {
                     return {
                         Err: error

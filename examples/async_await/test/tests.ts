@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { equals, Test } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/async_await/async_await.did';
 
@@ -13,9 +13,11 @@ export function get_tests(
                 const result =
                     await async_await_canister.getRandomnessDirectly();
 
-                return {
-                    Ok: result.length === 32
-                };
+                const expectedLen = 32;
+
+                return equals(result.length, expectedLen, {
+                    errMessage: `Expected ${expectedLen} bytes of randomness; received ${result.length}`
+                });
             }
         },
         {
@@ -24,9 +26,11 @@ export function get_tests(
                 const result =
                     await async_await_canister.getRandomnessIndirectly();
 
-                return {
-                    Ok: result.length === 32
-                };
+                const expectedLen = 32;
+
+                return equals(result.length, expectedLen, {
+                    errMessage: `Expected ${expectedLen} bytes of randomness; received ${result.length}`
+                });
             }
         },
         {
@@ -35,9 +39,11 @@ export function get_tests(
                 const result =
                     await async_await_canister.getRandomnessSuperIndirectly();
 
-                return {
-                    Ok: result.length === 96
-                };
+                const expectedLen = 96;
+
+                return equals(result.length, expectedLen, {
+                    errMessage: `Expected ${expectedLen} bytes of randomness; received ${result.length}`
+                });
             }
         },
         {
@@ -45,9 +51,7 @@ export function get_tests(
             test: async () => {
                 const result = await async_await_canister.returnPromiseVoid();
 
-                return {
-                    Ok: result === undefined
-                };
+                return equals(result, undefined);
             }
         }
     ];

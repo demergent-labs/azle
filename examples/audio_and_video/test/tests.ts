@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
+import { equals, fail, failWithMessage, Test } from 'azle/test';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 
@@ -55,9 +55,7 @@ export function getTests(canisterId: string): Test[] {
                                     }`;
 
                             if (finalResult === false) {
-                                return {
-                                    Ok: false
-                                };
+                                return fail();
                             }
                         }
                     }
@@ -70,13 +68,9 @@ export function getTests(canisterId: string): Test[] {
                     rangedFileHasher.update(file);
                     const rangedFileDigest = rangedFileHasher.digest('hex');
 
-                    return {
-                        Ok: fileDigest === rangedFileDigest
-                    };
+                    return equals(rangedFileDigest, fileDigest);
                 } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return failWithMessage(error);
                 }
             }
         },
@@ -126,9 +120,7 @@ export function getTests(canisterId: string): Test[] {
                                     }`;
 
                             if (finalResult === false) {
-                                return {
-                                    Ok: false
-                                };
+                                return fail();
                             }
                         }
                     }
@@ -141,13 +133,9 @@ export function getTests(canisterId: string): Test[] {
                     rangedFileHasher.update(file);
                     const rangedFileDigest = rangedFileHasher.digest('hex');
 
-                    return {
-                        Ok: fileDigest === rangedFileDigest
-                    };
+                    return equals(rangedFileDigest, fileDigest);
                 } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return failWithMessage(error);
                 }
             }
         }

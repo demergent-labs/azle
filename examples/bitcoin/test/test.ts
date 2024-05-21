@@ -1,5 +1,5 @@
 import { getCanisterId } from 'azle/dfx';
-import { runTests, Test } from 'azle/test';
+import { createTestResult, equals, runTests, Test } from 'azle/test';
 
 import { bitcoinCli } from './bitcoin_cli';
 import { createActor } from './dfx_generated/bitcoin';
@@ -31,7 +31,7 @@ const tests: Test[] = [
 
 whileRunningBitcoinDaemon(() => runTests(tests));
 
-function testCanisterFunctionality() {
+function testCanisterFunctionality(): Test[] {
     return [
         {
             name: 'getBalance',
@@ -44,9 +44,7 @@ function testCanisterFunctionality() {
                 const blocksMinedInSetup = 101n;
                 const expectedBalance = blockReward * blocksMinedInSetup;
 
-                return {
-                    Ok: result === expectedBalance
-                };
+                return equals(result, expectedBalance);
             }
         },
         {
@@ -56,9 +54,12 @@ function testCanisterFunctionality() {
                     wallets.alice.p2wpkh
                 );
 
-                return {
-                    Ok: result.tip_height === 101 && result.utxos.length === 101
-                };
+                return createTestResult(
+                    () =>
+                        result.tip_height === 101 &&
+                        result.utxos.length === 101,
+                    `Expected tip height and number of utxos to be 101. Received ${result.tip_height} and ${result.utxos.length}`
+                );
             }
         },
         {
@@ -66,9 +67,11 @@ function testCanisterFunctionality() {
             test: async () => {
                 const result = await bitcoinCanister.getCurrentFeePercentiles();
 
-                return {
-                    Ok: result.length === 0 // TODO: This should have entries
-                };
+                return equals(
+                    result.length,
+                    0,
+                    `Expected there to be no fee percentile information before any transactions were sent. Received ${result.length}`
+                );
             }
         },
         {
@@ -89,12 +92,13 @@ function testCanisterFunctionality() {
                 const receivedAfterTransaction =
                     bitcoinCli.getReceivedByAddress(wallets.bob.p2wpkh, 0);
 
-                return {
-                    Ok:
+                return createTestResult(
+                    () =>
                         result === true &&
                         receivedBeforeTransaction === 0 &&
-                        receivedAfterTransaction === 1
-                };
+                        receivedAfterTransaction === 1,
+                    `Expected result to be true. Received: ${result}. Expected ${wallets.bob.p2wpkh} to have received 0 before the transaction was sent (received: ${receivedBeforeTransaction}) and 1 after (received: ${receivedAfterTransaction})`
+                );
             }
         }
     ];

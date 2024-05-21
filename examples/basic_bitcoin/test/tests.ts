@@ -3,7 +3,7 @@ dns.setDefaultResultOrder('ipv4first');
 
 import { jsonParse, jsonStringify } from 'azle';
 import { GetUtxosResult, Utxo } from 'azle/canisters/management';
-import { AzleResult, Test } from 'azle/test';
+import { AzleResult, equals, Test } from 'azle/test';
 import { Transaction } from 'bitcoinjs-lib';
 
 import {
@@ -21,9 +21,11 @@ const FIRST_AMOUNT_SENT = SINGLE_BLOCK_REWARD / 2n;
 const SECOND_AMOUNT_SENT = SINGLE_BLOCK_REWARD * 2n;
 const TO_ADDRESS = 'n4HY51WrdxATGEPqYvoNkEsTteRfuRMxpD';
 
-let lastTxid = '';
-let toAddressPreviousBalance = 0n;
-let canisterPreviousBalance = 0n;
+type BasicBitcoinContext = {
+    lastTxid: string;
+    toAddressPreviousBalance: bigint;
+    canisterPreviousBalance: bigint;
+};
 
 export type AddressFunc = (origin: string) => Promise<string>;
 
@@ -31,7 +33,7 @@ export function getTests(
     canisterId: string,
     getAddress: AddressFunc,
     addressForm: string
-): Test[] {
+): Test<BasicBitcoinContext>[] {
     const origin = `http://${canisterId}.localhost:8000`;
     return [
         {
@@ -45,7 +47,10 @@ export function getTests(
             test: async () => {
                 const address = await getAddress(origin);
 
-                return { Ok: addressForm.length === address.length };
+                return equals(addressForm, address, {
+                    equals: (actual: string, expected: string) =>
+                        actual.length === expected.length
+                });
             }
         },
         {
@@ -54,7 +59,7 @@ export function getTests(
                 const address = await getAddress(origin);
                 const balance = await getBalance(origin, address);
 
-                return compareBalances(0n, balance);
+                return equals(balance, 0n);
             }
         },
         {
@@ -71,9 +76,9 @@ export function getTests(
                 const address = await getAddress(origin);
                 const balance = await getBalance(origin, address);
 
-                return compareBalances(
-                    SINGLE_BLOCK_REWARD * BigInt(FIRST_MINING_SESSION),
-                    balance
+                return equals(
+                    balance,
+                    SINGLE_BLOCK_REWARD * BigInt(FIRST_MINING_SESSION)
                 );
             }
         },
@@ -90,12 +95,18 @@ export function getTests(
                     await response.text()
                 );
 
-                return {
-                    Ok:
-                        utxosResult.tip_height === FIRST_MINING_SESSION &&
-                        utxosResult.utxos.length === FIRST_MINING_SESSION &&
-                        checkUtxos(utxosResult.utxos)
-                };
+                return equals(utxosResult, FIRST_MINING_SESSION, {
+                    equals: (actual: GetUtxosResult, expected: number) => {
+                        return (
+                            actual.tip_height === expected &&
+                            actual.utxos.length === expected &&
+                            checkUtxos(actual.utxos)
+                        );
+                    },
+                    errMessage: `Expected tip height and utxo count to be ${FIRST_MINING_SESSION}.\n Received: ${jsonStringify(
+                        utxosResult
+                    )}`
+                });
             }
         },
         {
@@ -109,7 +120,7 @@ export function getTests(
                 const feePercentiles = jsonParse(await response.text());
 
                 // Though blocks are mined no transactions have happened yet so the list should still be empty
-                return { Ok: feePercentiles.length === 0 };
+                return checkFeePercentile(feePercentiles, 0);
             }
         },
         {
@@ -117,12 +128,12 @@ export function getTests(
             test: async () => {
                 const balance = await getBalance(origin, TO_ADDRESS);
 
-                return compareBalances(0n, balance);
+                return equals(balance, 0n);
             }
         },
         {
             name: `/send from canister to ${TO_ADDRESS}`,
-            prep: async () => {
+            prep: async (context) => {
                 const body = jsonStringify({
                     amountInSatoshi: FIRST_AMOUNT_SENT,
                     destinationAddress: TO_ADDRESS
@@ -132,8 +143,9 @@ export function getTests(
                     headers: { 'Content-Type': 'application/json' },
                     body
                 });
-                lastTxid = await response.text();
+                const lastTxid = await response.text();
                 console.info(lastTxid);
+                return { ...context, lastTxid };
             }
         },
         {
@@ -149,24 +161,26 @@ export function getTests(
         { name: 'wait for blocks to settle', wait: 15_000 },
         {
             name: `/get-balance of ${TO_ADDRESS} final`,
-            test: async () => {
+            test: async (context) => {
                 const balance = await getBalance(origin, TO_ADDRESS);
-                toAddressPreviousBalance = balance;
+                const toAddressPreviousBalance = balance;
 
-                return compareBalances(FIRST_AMOUNT_SENT, balance);
+                return equals(balance, FIRST_AMOUNT_SENT, {
+                    context: { ...context, toAddressPreviousBalance }
+                });
             }
         },
         {
             name: '/get-balance final',
-            test: async () => {
+            test: async (context) => {
                 const address = await getAddress(origin);
                 const balance = await getBalance(origin, address);
-                canisterPreviousBalance = balance;
+                const canisterPreviousBalance = balance;
 
                 // At the time this transaction was made, the canister only had utxos from block rewards.
                 // The amount sent and the fee was less than the reward from minting a single block so there will be only one input and it will have the value of that reward.
                 const fee = getFeeFromTransaction(
-                    lastTxid,
+                    context.lastTxid,
                     SINGLE_BLOCK_REWARD
                 );
 
@@ -175,7 +189,9 @@ export function getTests(
 
                 const expectedBalance = blockRewards - FIRST_AMOUNT_SENT - fee;
 
-                return compareBalances(expectedBalance, balance);
+                return equals(balance, expectedBalance, {
+                    context: { ...context, canisterPreviousBalance }
+                });
             }
         },
         {
@@ -188,9 +204,7 @@ export function getTests(
 
                 const feePercentiles = jsonParse(await response.text());
 
-                return {
-                    Ok: feePercentiles.length === 101
-                };
+                return checkFeePercentile(feePercentiles, 101);
             }
         },
         {
@@ -201,7 +215,7 @@ export function getTests(
         },
         {
             name: `/send big from canister to ${TO_ADDRESS}`,
-            prep: async () => {
+            prep: async (context) => {
                 const body = jsonStringify({
                     amountInSatoshi: SECOND_AMOUNT_SENT,
                     destinationAddress: TO_ADDRESS
@@ -211,8 +225,9 @@ export function getTests(
                     headers: { 'Content-Type': 'application/json' },
                     body
                 });
-                lastTxid = await response.text();
+                const lastTxid = await response.text();
                 console.info(lastTxid);
+                return { ...context, lastTxid };
             }
         },
         {
@@ -228,31 +243,31 @@ export function getTests(
         { name: 'wait for blocks to settle', wait: 15_000 },
         {
             name: `/get-balance of ${TO_ADDRESS} big`,
-            test: async () => {
+            test: async (context) => {
                 const balance = await getBalance(origin, TO_ADDRESS);
                 const expectedBalance =
-                    toAddressPreviousBalance + SECOND_AMOUNT_SENT;
+                    context.toAddressPreviousBalance + SECOND_AMOUNT_SENT;
 
-                return compareBalances(expectedBalance, balance);
+                return equals(balance, expectedBalance);
             }
         },
         {
             name: '/get-balance big',
-            test: async () => {
+            test: async (context) => {
                 const address = await getAddress(origin);
                 const balance = await getBalance(origin, address);
 
                 // At the time this transaction was made, the next utxos to use will be from block rewards.
                 // The amount sent and the fee were more than the reward from minting two blocks so there will be three inputs and it will have the value of those rewards.
                 const fee = getFeeFromTransaction(
-                    lastTxid,
+                    context.lastTxid,
                     SINGLE_BLOCK_REWARD * 3n
                 );
 
                 const expectedBalance =
-                    canisterPreviousBalance - SECOND_AMOUNT_SENT - fee;
+                    context.canisterPreviousBalance - SECOND_AMOUNT_SENT - fee;
 
-                return compareBalances(expectedBalance, balance);
+                return equals(balance, expectedBalance);
             }
         },
         {
@@ -265,9 +280,7 @@ export function getTests(
 
                 const feePercentiles = jsonParse(await response.text());
 
-                return {
-                    Ok: feePercentiles.length === 101
-                };
+                return checkFeePercentile(feePercentiles, 101);
             }
         },
         {
@@ -287,23 +300,10 @@ export function getTests(
 
                 const feePercentiles = jsonParse(await response.text());
 
-                return {
-                    Ok: feePercentiles.length === 101
-                };
+                return checkFeePercentile(feePercentiles, 101);
             }
         }
     ];
-}
-
-export function compareBalances(
-    expected: bigint,
-    actual: bigint
-): AzleResult<boolean, string> {
-    if (expected === actual) {
-        return { Ok: true };
-    } else {
-        return { Err: `Expected: ${expected}, Received: ${actual}` };
-    }
 }
 
 /**
@@ -361,4 +361,13 @@ export async function waitForMempool() {
         await new Promise((resolve) => setTimeout(resolve, 1_000));
     }
     throw new Error('Timeout: Transaction was not added to the mempool');
+}
+
+function checkFeePercentile(
+    feePercentiles: any,
+    count: number
+): AzleResult<boolean, string, BasicBitcoinContext> {
+    return equals(feePercentiles.length, count, {
+        errMessage: `Expected ${count} fee percentiles, received: ${feePercentiles.length}`
+    });
 }

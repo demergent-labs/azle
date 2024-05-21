@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
+import { equals, Test } from 'azle/test';
 import { writeFileSync } from 'fs';
 
 export const originalServerTs = `import express from 'express';
@@ -48,9 +48,7 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/test`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'test'
-                    };
+                    return equals(responseText, 'test');
                 } catch (error: any) {
                     return {
                         Err: error
@@ -75,9 +73,7 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/test-changed`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'test-changed'
-                    };
+                    return equals(responseText, 'test-changed');
                 } catch (error: any) {
                     return {
                         Err: error
@@ -102,9 +98,7 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/test`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'test'
-                    };
+                    return equals(responseText, 'test');
                 } catch (error: any) {
                     return {
                         Err: error
@@ -139,9 +133,7 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'test-changed-rapidly'
-                    };
+                    return equals(responseText, 'test-changed-rapidly');
                 } catch (error: any) {
                     return {
                         Err: error
@@ -166,9 +158,7 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/test`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'test'
-                    };
+                    return equals(responseText, 'test');
                 } catch (error: any) {
                     return {
                         Err: error

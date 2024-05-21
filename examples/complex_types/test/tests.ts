@@ -1,7 +1,15 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { createTestResult, equals, Test } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/complex_types/complex_types.did.d';
+
+const USER_1 = {
+    id: 0,
+    username: 'user1',
+    threads: [],
+    posts: [],
+    reactions: []
+};
 
 export function get_tests(
     complex_types_canister: ActorSubclass<_SERVICE>
@@ -12,9 +20,10 @@ export function get_tests(
             test: async () => {
                 const result = await complex_types_canister.getAllUsers(0);
 
-                return {
-                    Ok: result.length === 0
-                };
+                return createTestResult(
+                    () => result.length === 0,
+                    `Expected no users, received ${result.length}`
+                );
             }
         },
         {
@@ -25,14 +34,7 @@ export function get_tests(
                     0
                 );
 
-                return {
-                    Ok:
-                        result.id === '0' &&
-                        result.username === 'user1' &&
-                        result.threads.length === 0 &&
-                        result.posts.length === 0 &&
-                        result.reactions.length === 0
-                };
+                return equals(result, USER_1);
             }
         },
         {
@@ -40,15 +42,7 @@ export function get_tests(
             test: async () => {
                 const result = await complex_types_canister.getAllUsers(0);
 
-                return {
-                    Ok:
-                        result.length === 1 &&
-                        result[0].id === '0' &&
-                        result[0].username === 'user1' &&
-                        result[0].threads.length === 0 &&
-                        result[0].posts.length === 0 &&
-                        result[0].reactions.length === 0
-                };
+                return equals(result, [USER_1]);
             }
         }
     ];
