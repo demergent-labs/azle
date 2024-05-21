@@ -1,4 +1,4 @@
-import { Test } from 'azle/test';
+import { equals, Test } from 'azle/test';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -11,11 +11,10 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/get-address`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok:
-                            responseText ===
-                            '1PmamxRspvjCV7vDqMpzvKf92epy1utZVj'
-                    };
+                    return equals(
+                        responseText,
+                        '1PmamxRspvjCV7vDqMpzvKf92epy1utZVj'
+                    );
                 } catch (error: any) {
                     return {
                         Err: error
@@ -30,11 +29,10 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/get-public-key`);
                     const publicKey = await response.text();
 
-                    return {
-                        Ok:
-                            publicKey ===
-                            '03fad62848f1a6cde4c4d9453dadea714cbd59f1282087853de8b0c6072bec27e7'
-                    };
+                    return equals(
+                        publicKey,
+                        '03fad62848f1a6cde4c4d9453dadea714cbd59f1282087853de8b0c6072bec27e7'
+                    );
                 } catch (error: any) {
                     return {
                         Err: error
@@ -49,11 +47,10 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/get-private-key`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok:
-                            responseText ===
-                            'b221d9dbb083a7f33428d7c2a3c3198ae925614d70210e28716ccaa7cd4ddb79'
-                    };
+                    return equals(
+                        responseText,
+                        'b221d9dbb083a7f33428d7c2a3c3198ae925614d70210e28716ccaa7cd4ddb79'
+                    );
                 } catch (error: any) {
                     return {
                         Err: error
@@ -70,11 +67,10 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok:
-                            responseText ===
-                            'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
-                    };
+                    return equals(
+                        responseText,
+                        'L3BybjkmnMdXE6iNEaeZTjVMTHA4TvpYbQozc264Lto9yVDis2nv'
+                    );
                 } catch (error: any) {
                     return {
                         Err: error
@@ -92,11 +88,10 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const transaction = await response.text();
 
-                    return {
-                        Ok:
-                            transaction ===
-                            '02000000018689302ea03ef5dd56fb7940a867f9240fa811eddeb0fa4c87ad9ff3728f5e110000000000ffffffff01983a0000000000001976a914ad618cf4333b3b248f9744e8e81db2964d0ae39788ac00000000'
-                    };
+                    return equals(
+                        transaction,
+                        '02000000018689302ea03ef5dd56fb7940a867f9240fa811eddeb0fa4c87ad9ff3728f5e110000000000ffffffff01983a0000000000001976a914ad618cf4333b3b248f9744e8e81db2964d0ae39788ac00000000'
+                    );
                 } catch (error: any) {
                     return {
                         Err: error
@@ -114,9 +109,9 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText.length === 88
-                    };
+                    return equals(responseText.length, 88, {
+                        errMessage: `Expected signed message to be 88 characters long. Recieved ${responseText.length}`
+                    });
                 } catch (error: any) {
                     return {
                         Err: error
@@ -136,9 +131,7 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.json();
 
-                    return {
-                        Ok: responseText === true
-                    };
+                    return equals(responseText, true);
                 } catch (error: any) {
                     return {
                         Err: error
@@ -158,9 +151,7 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.json();
 
-                    return {
-                        Ok: responseText === false
-                    };
+                    return equals(responseText, false);
                 } catch (error: any) {
                     return {
                         Err: error

@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { equals, Test } from 'azle/test';
 import { readFileSync } from 'fs';
 
 import { _SERVICE } from './dfx_generated/bytes_canister/bytes_canister.did.d';
@@ -15,9 +15,7 @@ export function get_tests(bytes_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 const result = await bytes_canister.getBytes(file);
 
-                return {
-                    Ok: result.length === 1_000
-                };
+                return equals(result.length, 1_000);
             }
         },
         {
@@ -29,9 +27,7 @@ export function get_tests(bytes_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 const result = await bytes_canister.getBytes(file);
 
-                return {
-                    Ok: result.length === 10_000
-                };
+                return equals(result.length, 10_000);
             }
         },
         {
@@ -43,9 +39,7 @@ export function get_tests(bytes_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 const result = await bytes_canister.getBytes(file);
 
-                return {
-                    Ok: result.length === 100_000
-                };
+                return equals(result.length, 100_000);
             }
         },
         {
@@ -57,9 +51,7 @@ export function get_tests(bytes_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 const result = await bytes_canister.getBytes(file);
 
-                return {
-                    Ok: result.length === 1_000_000
-                };
+                return equals(result.length, 1_000_000);
             }
         },
         {
@@ -71,9 +63,7 @@ export function get_tests(bytes_canister: ActorSubclass<_SERVICE>): Test[] {
 
                 const result = await bytes_canister.getBytes(file);
 
-                return {
-                    Ok: result.length === 2_000_000
-                };
+                return equals(result.length, 2_000_000);
             }
         }
     ];

@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { ok, Test } from 'azle/test';
+import { createTestResult, Test } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/call_raw/call_raw.did';
 
@@ -16,15 +16,16 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
                     0n
                 );
 
-                if (!ok(result)) {
+                if ('Err' in result) {
                     return {
                         Err: result.Err
                     };
                 }
 
-                return {
-                    Ok: result.Ok.includes('blob')
-                };
+                return createTestResult(
+                    () => result.Ok.includes('blob'),
+                    `Expected result to be a candid blob. Received ${result.Ok}`
+                );
             }
         },
         {
@@ -37,17 +38,18 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
                     100_000_000_000n
                 );
 
-                if (!ok(result)) {
+                if ('Err' in result) {
                     return {
                         Err: result.Err
                     };
                 }
 
-                return {
-                    Ok:
+                return createTestResult(
+                    () =>
                         result.Ok.includes('record') &&
-                        result.Ok.includes('principal')
-                };
+                        result.Ok.includes('principal'),
+                    `Expected result to be a CreateCanisterResult (a record with a single field that is a principal). Received ${result.Ok}`
+                );
             }
         },
         {
@@ -60,15 +62,16 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
                     0n
                 );
 
-                if (!ok(result)) {
+                if ('Err' in result) {
                     return {
                         Err: result.Err
                     };
                 }
 
-                return {
-                    Ok: result.Ok.includes('blob')
-                };
+                return createTestResult(
+                    () => result.Ok.includes('blob'),
+                    `Expected result to be a candid blob. Received ${result.Ok}`
+                );
             }
         },
         {
@@ -81,17 +84,18 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
                     100_000_000_000n
                 );
 
-                if (!ok(result)) {
+                if ('Err' in result) {
                     return {
                         Err: result.Err
                     };
                 }
 
-                return {
-                    Ok:
+                return createTestResult(
+                    () =>
                         result.Ok.includes('record') &&
-                        result.Ok.includes('principal')
-                };
+                        result.Ok.includes('principal'),
+                    `Expected result to be a CreateCanisterResult (a record with a single field that is a principal). Received ${result.Ok}`
+                );
             }
         }
     ];
