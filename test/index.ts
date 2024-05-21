@@ -1,6 +1,9 @@
 import { execSync } from 'child_process';
-// @ts-expect-error We have no types from deep-is
-import * as deepEqual from 'deep-is';
+// TODO import deepEqual from 'deep-is' works for some
+// TODO import { deepEqual } from 'deep-is' works for others
+// TODO require seems to work for all of them
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const deepEqual = require('deep-is');
 
 import { jsonStringify } from '../src/lib';
 
