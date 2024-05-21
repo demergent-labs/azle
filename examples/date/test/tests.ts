@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { createTestResult, equals, Test } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/date/date.did.d';
 
@@ -17,9 +17,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.getDate(date.toISOString());
                 const expected = date.getUTCDate();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -30,9 +28,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.getDay(date.toISOString());
                 const expected = date.getUTCDay();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -45,9 +41,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const expected = date.getUTCFullYear();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -58,9 +52,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.getHours(date.toISOString());
                 const expected = date.getUTCHours(); // The canister's local time is UTC, thus we check with getUTCHours
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -73,9 +65,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const expected = date.getUTCMilliseconds();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -88,9 +78,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const expected = date.getUTCMinutes();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -101,9 +89,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.getMonth(date.toISOString());
                 const expected = date.getUTCMonth();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -116,9 +102,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const expected = date.getUTCSeconds();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -129,9 +113,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.getTime(date.toISOString());
                 const expected = BigInt(date.getTime());
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -145,9 +127,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const expected =
                     date.getTimezoneOffset() - date.getTimezoneOffset(); // The canister's local time is UTC, thus the timezone offset should be 0
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -160,9 +140,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const expected = date.getUTCDate();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -173,9 +151,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.getUtcDay(date.toISOString());
                 const expected = date.getUTCDay();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -188,9 +164,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const expected = date.getUTCFullYear();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -203,9 +177,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const expected = date.getUTCHours();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -218,9 +190,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const expected = date.getUTCMinutes();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -233,9 +203,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const expected = date.getUTCMonth();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -248,9 +216,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const expected = date.getUTCSeconds();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -269,9 +235,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getDate();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -290,9 +254,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getFullYear();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -311,9 +273,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getHours();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -332,9 +292,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getMilliseconds();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -353,9 +311,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getMinutes();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -374,9 +330,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getMonth();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -395,9 +349,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getSeconds();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -416,9 +368,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getTime();
 
-                return {
-                    Ok: Number(result) === expected
-                };
+                return equals(Number(result), expected);
             }
         },
         {
@@ -437,9 +387,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getUTCDate();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -458,9 +406,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getUTCFullYear();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -479,9 +425,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getUTCHours();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -500,9 +444,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getUTCMilliseconds();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -521,9 +463,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getUTCMinutes();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -542,9 +482,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getUTCMonth();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -563,9 +501,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const expected = date.getUTCSeconds();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -594,9 +530,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                     .toLocaleDateString('en-US', options)
                     .replace(/,/g, '');
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -609,9 +543,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const expected = date.toISOString();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -624,9 +556,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const expected = date.toJSON();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -649,9 +579,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                     expectedString.indexOf(' GMT')
                 );
 
-                return {
-                    Ok: resultSubstring === expectedSubstring
-                };
+                return equals(resultSubstring, expectedSubstring);
             }
         },
         {
@@ -676,9 +604,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                     expectedString.indexOf(' GMT')
                 );
 
-                return {
-                    Ok: resultSubstring === expectedSubstring
-                };
+                return equals(resultSubstring, expectedSubstring);
             }
         },
         {
@@ -691,9 +617,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const expected = date.toUTCString();
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -703,11 +627,14 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.now();
                 const timeAfter = new Date().getTime();
 
-                return {
-                    Ok:
+                return createTestResult(
+                    () =>
                         result >= BigInt(timeBefore - 30_000) &&
-                        result <= BigInt(timeAfter + 30_000)
-                };
+                        result <= BigInt(timeAfter + 30_000),
+                    `Expected result to be between ${timeBefore - 30_000} and ${
+                        timeAfter + 30_000
+                    }. Received ${result}`
+                );
             }
         },
         {
@@ -718,9 +645,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.parse(date.toISOString());
                 const expected = BigInt(Date.parse(date.toISOString()));
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         },
         {
@@ -729,9 +654,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.utc(2002, 4);
                 const expected = BigInt(Date.UTC(2002, 4));
 
-                return {
-                    Ok: result === expected
-                };
+                return equals(result, expected);
             }
         }
     ];

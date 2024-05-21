@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { equals, fail, Test } from 'azle/test';
 
 import { _SERVICE as CANISTER1_SERVICE } from './dfx_generated/canister1/canister1.did';
 import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
@@ -14,9 +14,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.balance('0');
 
-                return {
-                    Ok: result === 100n
-                };
+                return equals(result, 100n);
             }
         },
         {
@@ -27,10 +25,12 @@ export function get_tests(
                 });
 
                 return {
-                    Ok:
-                        result.length === 1 &&
-                        result[0].id === '0' &&
-                        result[0].balance === 100n
+                    Ok: {
+                        passes:
+                            result.length === 1 &&
+                            result[0].id === '0' &&
+                            result[0].balance === 100n
+                    }
                 };
             }
         },
@@ -39,9 +39,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.balance('1');
 
-                return {
-                    Ok: result === 0n
-                };
+                return equals(result, 0n);
             }
         },
         {
@@ -51,9 +49,7 @@ export function get_tests(
                     id: '1'
                 });
 
-                return {
-                    Ok: result.length === 0
-                };
+                return equals(result.length, 0);
             }
         },
         {
@@ -62,10 +58,12 @@ export function get_tests(
                 const result = await canister1.accounts();
 
                 return {
-                    Ok:
-                        result.length === 1 &&
-                        result[0].id === '0' &&
-                        result[0].balance === 100n
+                    Ok: {
+                        passes:
+                            result.length === 1 &&
+                            result[0].id === '0' &&
+                            result[0].balance === 100n
+                    }
                 };
             }
         },
@@ -74,9 +72,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.transfer('0', '1', 34n);
 
-                return {
-                    Ok: result === 34n
-                };
+                return equals(result, 34n);
             }
         },
         {
@@ -84,9 +80,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.balance('0');
 
-                return {
-                    Ok: result === 66n
-                };
+                return equals(result, 66n);
             }
         },
         {
@@ -97,10 +91,12 @@ export function get_tests(
                 });
 
                 return {
-                    Ok:
-                        result.length === 1 &&
-                        result[0].id === '0' &&
-                        result[0].balance === 66n
+                    Ok: {
+                        passes:
+                            result.length === 1 &&
+                            result[0].id === '0' &&
+                            result[0].balance === 66n
+                    }
                 };
             }
         },
@@ -109,9 +105,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.balance('1');
 
-                return {
-                    Ok: result === 34n
-                };
+                return equals(result, 34n);
             }
         },
         {
@@ -122,10 +116,12 @@ export function get_tests(
                 });
 
                 return {
-                    Ok:
-                        result.length === 1 &&
-                        result[0].id === '1' &&
-                        result[0].balance === 34n
+                    Ok: {
+                        passes:
+                            result.length === 1 &&
+                            result[0].id === '1' &&
+                            result[0].balance === 34n
+                    }
                 };
             }
         },
@@ -135,11 +131,13 @@ export function get_tests(
                 const result = await canister1.accounts();
 
                 return {
-                    Ok:
-                        result[0].id === '0' &&
-                        result[0].balance === 66n &&
-                        result[1].id === '1' &&
-                        result[1].balance === 34n
+                    Ok: {
+                        passes:
+                            result[0].id === '0' &&
+                            result[0].balance === 66n &&
+                            result[1].id === '1' &&
+                            result[1].balance === 34n
+                    }
                 };
             }
         },
@@ -149,14 +147,14 @@ export function get_tests(
                 try {
                     await canister1.trap();
 
-                    return {
-                        Ok: false
-                    };
+                    return fail();
                 } catch (error) {
                     return {
-                        Ok: (error as { message: string }).message.includes(
-                            'hahahaha'
-                        )
+                        Ok: {
+                            passes: (
+                                error as { message: string }
+                            ).message.includes('hahahaha')
+                        }
                     };
                 }
             }
@@ -166,9 +164,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister2.getNotification();
 
-                return {
-                    Ok: result === ''
-                };
+                return equals(result, '');
             }
         },
         {
@@ -176,9 +172,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.sendNotification();
 
-                return {
-                    Ok: result === undefined
-                };
+                return equals(result, undefined);
             }
         },
         {
@@ -186,9 +180,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister2.getNotification();
 
-                return {
-                    Ok: result === 'This is the notification'
-                };
+                return equals(result, 'This is the notification');
             }
         }
     ];

@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { getCanisterId } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { createTestResult, equals, failWithMessage, Test } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/canister1/canister1.did';
 
@@ -10,75 +10,64 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
             name: 'simple_composite_query test',
             test: async () => {
                 const result = await canister1.simpleCompositeQuery();
-                return {
-                    Ok: result === 'Hello from Canister 2'
-                };
+                return equals(result, 'Hello from Canister 2');
             }
         },
         {
             name: 'manual_query test',
             test: async () => {
                 const result = await canister1.manualQuery();
-                return {
-                    Ok: result === 'Hello from Canister 2 manual query'
-                };
+                return equals(result, 'Hello from Canister 2 manual query');
             }
         },
         {
             name: 'totally manual_query test',
             test: async () => {
                 const result = await canister1.totallyManualQuery();
-                return {
-                    Ok: result === 'Hello from Canister 2 manual query'
-                };
+                return equals(result, 'Hello from Canister 2 manual query');
             }
         },
         {
             name: 'deep_query test',
             test: async () => {
                 const result = await canister1.deepQuery();
-                return {
-                    Ok: result === 'Hello from Canister 3'
-                };
+                return equals(result, 'Hello from Canister 3');
             }
         },
         {
             name: 'update_query test',
             test: async () => {
+                const expectedError = `Rejection code 5, Canister ${getCanisterId(
+                    'canister2'
+                )} has no query method`;
                 try {
                     await canister1.updateQuery();
-                    return {
-                        Ok: false
-                    };
+                    return failWithMessage(
+                        `Expected to fail with ${expectedError}. Call succeeded instead`
+                    );
                 } catch (error: any) {
-                    return {
-                        Ok: error
-                            .toString()
-                            .includes(
-                                `Rejection code 5, Canister ${getCanisterId(
-                                    'canister2'
-                                )} has no query method`
-                            )
-                    };
+                    return createTestResult(
+                        () => error.toString().includes(expectedError),
+                        `Expected to fail with ${expectedError}. Received ${error.toString()}`
+                    );
                 }
             }
         },
         {
             name: 'simple_update test',
             test: async () => {
+                const expectedError =
+                    'Rejection code 5, IC0527: Composite query cannot be called in replicated mode';
                 try {
                     await canister1.simpleUpdate();
-                    return {
-                        Ok: false
-                    };
+                    return failWithMessage(
+                        `Expected to fail with ${expectedError}. Call succeeded instead`
+                    );
                 } catch (error: any) {
-                    return {
-                        Ok: error
-                            .toString()
-                            .includes(
-                                'Rejection code 5, IC0527: Composite query cannot be called in replicated mode'
-                            )
-                    };
+                    return createTestResult(
+                        () => error.toString().includes(expectedError),
+                        `Expected to fail with ${expectedError}. Received ${error.toString()}`
+                    );
                 }
             }
         },
@@ -87,18 +76,15 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await canister1.incCanister1();
 
-                return {
-                    Ok: result === 3n
-                };
+                return equals(result, 3n);
             }
         },
         {
             name: 'inc_canister2 test',
             test: async () => {
                 const result = await canister1.incCanister2();
-                return {
-                    Ok: result === 3n
-                };
+
+                return equals(result, 3n);
             }
         }
     ];

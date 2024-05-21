@@ -2,7 +2,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { getCanisterId } from 'azle/dfx';
-import { AzleResult, Test } from 'azle/test';
+import { AzleResult, equals, pass, Test } from 'azle/test';
 import { execSync } from 'child_process';
 
 // @ts-ignore
@@ -50,7 +50,9 @@ export function getTests(): Test[] {
                 config.depositAddress =
                     await config.canister.getDepositAddress();
 
-                return { Ok: config.depositAddress.length === 44 };
+                return equals(config.depositAddress.length, 44, {
+                    errMessage: `Expected the deposit address to be 44 long. Received ${config.depositAddress.length}`
+                });
             }
         },
         {
@@ -61,7 +63,9 @@ export function getTests(): Test[] {
                 config.depositAddress =
                     await config.canister.getDepositAddress();
 
-                return { Ok: config.depositAddress.length === 44 };
+                return equals(config.depositAddress.length, 44, {
+                    errMessage: `Expected the deposit address to be 44 long. Received ${config.depositAddress.length}`
+                });
             }
         },
         {
@@ -86,7 +90,7 @@ export function getTests(): Test[] {
                     return { Err: Object.keys(updateBalanceResult.Err)[0] };
                 }
 
-                return { Ok: true };
+                return pass();
             }
         },
         {
@@ -100,7 +104,7 @@ export function getTests(): Test[] {
                 if ('Err' in updateBalanceResult) {
                     const errorType = Object.keys(updateBalanceResult.Err)[0];
 
-                    return { Ok: errorType === 'NoNewUtxos' };
+                    return equals(errorType, 'NoNewUtxos');
                 }
                 return {
                     Err: `Expected principal ${config.caller} to not have new UTXOs`
@@ -134,7 +138,7 @@ export function getTests(): Test[] {
                 }
 
                 const transferIndex = tranferResult.Ok;
-                return { Ok: transferIndex === 1n };
+                return equals(transferIndex, 1n);
             }
         },
         {
@@ -178,5 +182,5 @@ async function testGetBalance(
 ): Promise<AzleResult<boolean, string>> {
     const config = db[account];
     const balance = await config.canister.getBalance();
-    return { Ok: balance === expectedBalance };
+    return equals(balance, expectedBalance);
 }

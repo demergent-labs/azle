@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { AzleResult, ok, Test } from 'azle/test';
+import { AzleResult, equals, ok, Test } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { _SERVICE } from './dfx_generated/candid_encoding/candid_encoding.did';
@@ -30,21 +30,10 @@ export function get_tests(
                     candid_string
                 );
 
-                if (!ok(candid_encoded)) {
-                    return {
-                        Err: candid_encoded.Err
-                    };
-                }
-
-                if (!ok(candid_decoded)) {
-                    return {
-                        Err: candid_decoded.Err
-                    };
-                }
-
-                return {
-                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
-                };
+                return checkEncodeAndDecodeResults(
+                    candid_encoded,
+                    candid_decoded
+                );
             }
         },
         {
@@ -60,21 +49,10 @@ export function get_tests(
                     candid_string
                 );
 
-                if (!ok(candid_encoded)) {
-                    return {
-                        Err: candid_encoded.Err
-                    };
-                }
-
-                if (!ok(candid_decoded)) {
-                    return {
-                        Err: candid_decoded.Err
-                    };
-                }
-
-                return {
-                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
-                };
+                return checkEncodeAndDecodeResults(
+                    candid_encoded,
+                    candid_decoded
+                );
             }
         },
         {
@@ -90,21 +68,10 @@ export function get_tests(
                     candid_string
                 );
 
-                if (!ok(candid_encoded)) {
-                    return {
-                        Err: candid_encoded.Err
-                    };
-                }
-
-                if (!ok(candid_decoded)) {
-                    return {
-                        Err: candid_decoded.Err
-                    };
-                }
-
-                return {
-                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
-                };
+                return checkEncodeAndDecodeResults(
+                    candid_encoded,
+                    candid_decoded
+                );
             }
         },
         {
@@ -120,21 +87,10 @@ export function get_tests(
                     candid_string
                 );
 
-                if (!ok(candid_encoded)) {
-                    return {
-                        Err: candid_encoded.Err
-                    };
-                }
-
-                if (!ok(candid_decoded)) {
-                    return {
-                        Err: candid_decoded.Err
-                    };
-                }
-
-                return {
-                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
-                };
+                return checkEncodeAndDecodeResults(
+                    candid_encoded,
+                    candid_decoded
+                );
             }
         },
         {
@@ -150,21 +106,10 @@ export function get_tests(
                     candid_string
                 );
 
-                if (!ok(candid_encoded)) {
-                    return {
-                        Err: candid_encoded.Err
-                    };
-                }
-
-                if (!ok(candid_decoded)) {
-                    return {
-                        Err: candid_decoded.Err
-                    };
-                }
-
-                return {
-                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
-                };
+                return checkEncodeAndDecodeResults(
+                    candid_encoded,
+                    candid_decoded
+                );
             }
         },
         {
@@ -180,21 +125,10 @@ export function get_tests(
                     candid_string
                 );
 
-                if (!ok(candid_encoded)) {
-                    return {
-                        Err: candid_encoded.Err
-                    };
-                }
-
-                if (!ok(candid_decoded)) {
-                    return {
-                        Err: candid_decoded.Err
-                    };
-                }
-
-                return {
-                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
-                };
+                return checkEncodeAndDecodeResults(
+                    candid_encoded,
+                    candid_decoded
+                );
             }
         },
         {
@@ -210,21 +144,10 @@ export function get_tests(
                     candid_string
                 );
 
-                if (!ok(candid_encoded)) {
-                    return {
-                        Err: candid_encoded.Err
-                    };
-                }
-
-                if (!ok(candid_decoded)) {
-                    return {
-                        Err: candid_decoded.Err
-                    };
-                }
-
-                return {
-                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
-                };
+                return checkEncodeAndDecodeResults(
+                    candid_encoded,
+                    candid_decoded
+                );
             }
         },
         {
@@ -240,21 +163,10 @@ export function get_tests(
                     candid_string
                 );
 
-                if (!ok(candid_encoded)) {
-                    return {
-                        Err: candid_encoded.Err
-                    };
-                }
-
-                if (!ok(candid_decoded)) {
-                    return {
-                        Err: candid_decoded.Err
-                    };
-                }
-
-                return {
-                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
-                };
+                return checkEncodeAndDecodeResults(
+                    candid_encoded,
+                    candid_decoded
+                );
             }
         },
         {
@@ -270,21 +182,10 @@ export function get_tests(
                     candid_string
                 );
 
-                if (!ok(candid_encoded)) {
-                    return {
-                        Err: candid_encoded.Err
-                    };
-                }
-
-                if (!ok(candid_decoded)) {
-                    return {
-                        Err: candid_decoded.Err
-                    };
-                }
-
-                return {
-                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
-                };
+                return checkEncodeAndDecodeResults(
+                    candid_encoded,
+                    candid_decoded
+                );
             }
         },
         {
@@ -318,11 +219,13 @@ export function get_tests(
                     );
 
                 return {
-                    Ok:
-                        candid_encoded.Ok === true &&
-                        candid_decoded_result.includes('record') &&
-                        candid_decoded_result.includes('John') &&
-                        candid_decoded_result.includes('Doe')
+                    Ok: {
+                        passes:
+                            candid_encoded.Ok.passes === true &&
+                            candid_decoded_result.includes('record') &&
+                            candid_decoded_result.includes('John') &&
+                            candid_decoded_result.includes('Doe')
+                    }
                 };
             }
         },
@@ -357,10 +260,12 @@ export function get_tests(
                     );
 
                 return {
-                    Ok:
-                        candid_encoded.Ok === true &&
-                        candid_decoded_result.includes('variant') &&
-                        candid_decoded_result.includes('= true')
+                    Ok: {
+                        passes:
+                            candid_encoded.Ok.passes === true &&
+                            candid_decoded_result.includes('variant') &&
+                            candid_decoded_result.includes('= true')
+                    }
                 };
             }
         },
@@ -377,21 +282,10 @@ export function get_tests(
                     candid_string
                 );
 
-                if (!ok(candid_encoded)) {
-                    return {
-                        Err: candid_encoded.Err
-                    };
-                }
-
-                if (!ok(candid_decoded)) {
-                    return {
-                        Err: candid_decoded.Err
-                    };
-                }
-
-                return {
-                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
-                };
+                return checkEncodeAndDecodeResults(
+                    candid_encoded,
+                    candid_decoded
+                );
             }
         },
         {
@@ -407,24 +301,42 @@ export function get_tests(
                     candid_string
                 );
 
-                if (!ok(candid_encoded)) {
-                    return {
-                        Err: candid_encoded.Err
-                    };
-                }
-
-                if (!ok(candid_decoded)) {
-                    return {
-                        Err: candid_decoded.Err
-                    };
-                }
-
-                return {
-                    Ok: candid_encoded.Ok === true && candid_decoded.Ok === true
-                };
+                return checkEncodeAndDecodeResults(
+                    candid_encoded,
+                    candid_decoded
+                );
             }
         }
     ];
+}
+
+function checkEncodeAndDecodeResults(
+    encodeResult: AzleResult<boolean, string>,
+    decodeResult: AzleResult<boolean, string>
+): AzleResult<boolean, string> {
+    if (!ok(encodeResult)) {
+        return {
+            Err: encodeResult.Err
+        };
+    }
+
+    if (!ok(decodeResult)) {
+        return {
+            Err: decodeResult.Err
+        };
+    }
+
+    if (!encodeResult.Ok.passes) {
+        // candid_encode_tests ought to have caught this case
+        return { Err: `Unreachable` };
+    }
+
+    if (!decodeResult.Ok.passes) {
+        // candid_decode_tests ought to have caught this case
+        return { Err: `Unreachable` };
+    }
+
+    return { Ok: { passes: true } };
 }
 
 async function candid_encode_test(
@@ -441,13 +353,7 @@ async function candid_encode_test(
 
     const result = await candid_encoding_canister.candidEncode(candid_string);
 
-    return {
-        Ok:
-            result.length === candid_encoded_byte_array.length &&
-            result.every(
-                (element, index) => element === candid_encoded_byte_array[index]
-            )
-    };
+    return equals(result, candid_encoded_byte_array);
 }
 
 async function candid_decode_test(
@@ -466,7 +372,5 @@ async function candid_decode_test(
         Uint8Array.from(candid_encoded_byte_array)
     );
 
-    return {
-        Ok: result === candid_string
-    };
+    return equals(result, candid_string);
 }

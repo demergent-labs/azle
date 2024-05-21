@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { equals, Test } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/ethereum_json_rpc/ethereum_json_rpc.did';
 
@@ -16,9 +16,7 @@ export function getTests(
 
                 const resultJson = JSON.parse(result);
 
-                return {
-                    Ok: resultJson.result === '0x9ad9e69f9d47520000'
-                };
+                return equals(resultJson.result, '0x9ad9e69f9d47520000');
             }
         },
         {
@@ -30,9 +28,7 @@ export function getTests(
 
                 const resultJson = JSON.parse(result);
 
-                return {
-                    Ok: resultJson.result === '0x405fdf7e5af85e00000'
-                };
+                return equals(resultJson.result, '0x405fdf7e5af85e00000');
             }
         },
         {
@@ -44,9 +40,7 @@ export function getTests(
 
                 const resultJson = JSON.parse(result);
 
-                return {
-                    Ok: resultJson.result === '0xfc936392801c0000'
-                };
+                return equals(resultJson.result, '0xfc936392801c0000');
             }
         },
         {
@@ -57,11 +51,10 @@ export function getTests(
 
                 const resultJson = JSON.parse(result);
 
-                return {
-                    Ok:
-                        resultJson.result.number ===
-                        `0x${Number(0).toString(16)}`
-                };
+                return equals(
+                    resultJson.result.number,
+                    `0x${Number(0).toString(16)}`
+                );
             }
         },
         {
@@ -72,11 +65,10 @@ export function getTests(
 
                 const resultJson = JSON.parse(result);
 
-                return {
-                    Ok:
-                        resultJson.result.number ===
-                        `0x${Number(1).toString(16)}`
-                };
+                return equals(
+                    resultJson.result.number,
+                    `0x${Number(1).toString(16)}`
+                );
             }
         },
         {
@@ -87,11 +79,10 @@ export function getTests(
 
                 const resultJson = JSON.parse(result);
 
-                return {
-                    Ok:
-                        resultJson.result.number ===
-                        `0x${Number(2).toString(16)}`
-                };
+                return equals(
+                    resultJson.result.number,
+                    `0x${Number(2).toString(16)}`
+                );
             }
         }
     ];

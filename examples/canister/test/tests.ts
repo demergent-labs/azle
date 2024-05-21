@@ -1,7 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { getCanisterId } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { equals, Test } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/canister/canister.did';
 
@@ -14,9 +14,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test[] {
                     Principal.fromText('aaaaa-aa')
                 );
 
-                return {
-                    Ok: result.toText() === 'aaaaa-aa'
-                };
+                return equals(result.toText(), 'aaaaa-aa');
             }
         },
         {
@@ -24,9 +22,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await canister.canisterReturnType();
 
-                return {
-                    Ok: result.toText() === getCanisterId('some_canister')
-                };
+                return equals(result.toText(), getCanisterId('some_canister'));
             }
         },
         {
@@ -34,27 +30,24 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await canister.canisterNestedReturnType();
 
-                return {
-                    Ok:
-                        result.someCanister.toText() ===
-                        getCanisterId('some_canister')
-                };
+                return equals(
+                    result.someCanister.toText(),
+                    getCanisterId('some_canister')
+                );
             }
         },
         {
             name: 'canisterList',
             test: async () => {
-                const result = await canister.canisterList([
+                const expected = [
                     Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai'),
                     Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
-                ]);
+                ];
+                const result = await canister.canisterList(expected);
 
-                return {
-                    Ok:
-                        result.length === 2 &&
-                        result[0].toText() === 'r7inp-6aaaa-aaaaa-aaabq-cai' &&
-                        result[1].toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
-                };
+                return equals(result, expected, {
+                    toString: (principal: Principal) => principal.toText()
+                });
             }
         },
         {
@@ -64,9 +57,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test[] {
                     Principal.fromText(getCanisterId('some_canister'))
                 );
 
-                return {
-                    Ok: result === 'SomeCanister update1'
-                };
+                return equals(result, 'SomeCanister update1');
             }
         }
     ];
