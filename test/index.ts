@@ -178,6 +178,7 @@ type EqualsOptions<Context> = {
     context?: Context;
 };
 
+// TODO should the type of actual and expected be the same?
 export function equals<Context>(
     actual: any,
     expected: any,
@@ -198,6 +199,10 @@ export function equals<Context>(
             Err: errMessage
         };
     }
+}
+
+export function pass(): AzleResult<boolean, string> {
+    return { Ok: { passes: true } };
 }
 
 export function fail(): AzleResult<boolean, string> {
