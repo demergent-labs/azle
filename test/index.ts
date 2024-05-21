@@ -1,26 +1,34 @@
 import { execSync } from 'child_process';
+// @ts-expect-error We have no types from deep-is
+import * as deepEqual from 'deep-is';
 
-export type Test = {
+import { jsonStringify } from '../src/lib';
+
+export type Test<Context = any> = {
     name: string;
     skip?: boolean;
     wait?: number;
-    prep?: () => Promise<any>;
-    test?: () => Promise<AzleResult<boolean, string>>;
+    prep?: (context: Context) => Promise<Context | void>;
+    test?: (context: Context) => Promise<AzleResult<boolean, string, Context>>;
 };
 
 // export type Variant<T> = Partial<T>;
 
-export type AzleResult<T, E> = Partial<{
-    Ok: T;
+export type AzleResult<T, E, Context = any> = Partial<{
+    Ok: { passes: T; context?: Context };
     Err: E;
 }>;
 
-export type Ok<T> = {
-    Ok: T;
+// type AzleTestContext = any; // TODO I think I want this to be object eventually
+
+export type Ok<T, Context> = {
+    Ok: { passes: T; context: Context };
 };
 
 // TODO let's get rid of this function in all tests and use match instead
-export function ok<T, E>(azle_result: AzleResult<T, E>): azle_result is Ok<T> {
+export function ok<T, E, Context>(
+    azle_result: AzleResult<T, E, Context>
+): azle_result is Ok<T, Context> {
     if (azle_result.Err === undefined) {
         return true;
     } else {
@@ -34,45 +42,46 @@ export async function runTests(
     tests: Test[],
     exitProcess: boolean = true
 ): Promise<boolean> {
+    let context = undefined;
     for (const test of tests) {
         try {
             if (test.skip === true) {
-                console.log(`Skipping: ${test.name}`);
+                console.info(`Skipping: ${test.name}`);
 
                 continue;
             }
 
-            console.log();
+            console.info();
 
             if (test.prep !== undefined || test.wait !== undefined) {
-                console.log(`\n${test.name}\n`);
+                console.info(`\n${test.name}\n`);
             } else {
-                console.log(`\nRunning test: ${test.name}\n`);
+                console.info(`\nRunning test: ${test.name}\n`);
             }
 
             if (test.wait !== undefined) {
-                console.log(`waiting ${test.wait} milliseconds`);
+                console.info(`waiting ${test.wait} milliseconds`);
                 await new Promise((resolve) => setTimeout(resolve, test.wait));
-                console.log('done waiting');
+                console.info('done waiting');
                 continue;
             }
 
             if (test.prep !== undefined) {
-                await test.prep();
+                context = (await test.prep(context)) ?? context;
                 continue;
             }
 
-            const result =
+            const result: AzleResult<boolean, string, any> =
                 test.test !== undefined
-                    ? await test.test()
+                    ? await test.test(context)
                     : {
                           Err: 'test is not defined'
                       };
 
             if (!ok(result)) {
-                console.log('\x1b[31m', `test: ${test.name} failed`);
-                console.log('\x1b[31m', `${result.Err}`);
-                console.log('\x1b[0m');
+                console.info('\x1b[31m', `test: ${test.name} failed`);
+                console.info('\x1b[31m', `${result.Err}`);
+                console.info('\x1b[0m');
 
                 if (exitProcess) {
                     process.exit(1);
@@ -81,9 +90,13 @@ export async function runTests(
                 }
             }
 
-            if (result.Ok !== true) {
-                console.log('\x1b[31m', `test: ${test.name} failed`);
-                console.log('\x1b[0m');
+            if (result.Ok.context !== undefined) {
+                context = result.Ok.context;
+            }
+
+            if (result.Ok.passes !== true) {
+                console.info('\x1b[31m', `test: ${test.name} failed`);
+                console.info('\x1b[0m');
 
                 if (exitProcess) {
                     process.exit(1);
@@ -92,15 +105,15 @@ export async function runTests(
                 }
             }
 
-            console.log('\x1b[32m', `test: ${test.name} passed`);
-            console.log('\x1b[0m');
+            console.info('\x1b[32m', `test: ${test.name} passed`);
+            console.info('\x1b[0m');
         } catch (error) {
-            console.log(
+            console.info(
                 '\x1b[31m',
                 `test ${test.name} failed`,
                 (error as any).toString()
             );
-            console.log('\x1b[0m');
+            console.info('\x1b[0m');
 
             if (exitProcess) {
                 process.exit(1);
@@ -153,6 +166,57 @@ export function deploy(canisterName: string, argument?: string): Test[] {
             }
         }
     ];
+}
+
+type EqualsOptions<Context> = {
+    errMessage?: string;
+    equals?: (actual: any, expected: any) => boolean;
+    toString?: (value: any) => string;
+    context?: Context;
+};
+
+export function equals<Context>(
+    actual: any,
+    expected: any,
+    options?: EqualsOptions<Context>
+): AzleResult<boolean, string, Context> {
+    const equals = options?.equals ?? deepEqual;
+    const valueToString = options?.toString ?? jsonStringify;
+
+    if (equals(actual, expected)) {
+        return { Ok: { passes: true, context: options?.context } };
+    } else {
+        const errMessage =
+            options?.errMessage ??
+            `Expected: ${valueToString(expected)}, Received: ${valueToString(
+                actual
+            )}`;
+        return {
+            Err: errMessage
+        };
+    }
+}
+
+export function fail(): AzleResult<boolean, string> {
+    return { Ok: { passes: false } };
+}
+
+export function failWithMessage(message: string): AzleResult<boolean, string> {
+    return { Err: message };
+}
+
+export function createTestResult<Context>(
+    equals: () => boolean,
+    errMessage: string,
+    context?: Context
+): AzleResult<boolean, string, Context> {
+    if (equals()) {
+        return { Ok: { passes: true, context } };
+    } else {
+        return {
+            Err: errMessage
+        };
+    }
 }
 
 export function createSnakeCaseProxy<T extends object>(
