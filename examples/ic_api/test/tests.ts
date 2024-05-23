@@ -1,7 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { getCanisterId } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { fail, Test, test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { _SERVICE } from './dfx_generated/ic_api/ic_api.did';
@@ -83,9 +83,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
                 );
                 const result = candidDecode(resultBytes);
 
-                return {
-                    Ok: result === candidString
-                };
+                return testEquality(result, candidString);
             }
         },
         {
@@ -113,9 +111,10 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
                     string
                 );
 
-                return {
-                    Ok: resultArgDataRawSize === resultArgDataRaw.length
-                };
+                return testEquality(
+                    resultArgDataRawSize,
+                    resultArgDataRaw.length
+                );
             }
         },
         {
@@ -123,9 +122,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await icApiCanister.caller();
 
-                return {
-                    Ok: result.toText() === '2vxsx-fae'
-                };
+                return testEquality(result.toText(), '2vxsx-fae');
             }
         },
         {
@@ -133,11 +130,12 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await icApiCanister.canisterBalance();
 
-                return {
-                    Ok:
-                        result > 2_000_000_000_000n &&
-                        result < 4_000_000_000_000n
-                };
+                const expectedMin = 2_000_000_000_000n;
+                const expectedMax = 4_000_000_000_000n;
+                return test(
+                    result > 2_000_000_000_000n && result < 4_000_000_000_000n,
+                    `Expected balance between ${expectedMin} and ${expectedMax}. Received: ${result}`
+                );
             }
         },
         {
@@ -145,11 +143,12 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await icApiCanister.canisterBalance128();
 
-                return {
-                    Ok:
-                        result > 2_000_000_000_000n &&
-                        result < 4_000_000_000_000n
-                };
+                const expectedMin = 2_000_000_000_000n;
+                const expectedMax = 4_000_000_000_000n;
+                return test(
+                    result > 2_000_000_000_000n && result < 4_000_000_000_000n,
+                    `Expected balance between ${expectedMin} and ${expectedMax}. Received: ${result}`
+                );
             }
         },
         {
@@ -157,9 +156,10 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await icApiCanister.canisterVersion();
 
-                return {
-                    Ok: result >= 0n
-                };
+                return test(
+                    result >= 0n,
+                    `Expected canister version to be greater or equal to 0. Received ${result}`
+                );
             }
         },
         {
@@ -167,9 +167,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await icApiCanister.dataCertificate();
 
-                return {
-                    Ok: result[0] !== undefined && result[0].length > 0
-                };
+                return test(result[0] !== undefined && result[0].length > 0);
             }
         },
         {
@@ -177,9 +175,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await icApiCanister.dataCertificateNull();
 
-                return {
-                    Ok: isNone(result)
-                };
+                return test(isNone(result));
             }
         },
         {
@@ -191,9 +187,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const result = await icApiCanister.id();
 
-                return {
-                    Ok: result.toText() === icApiCanisterId
-                };
+                return testEquality(result.toText(), icApiCanisterId);
             }
         },
         {
@@ -201,9 +195,10 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await icApiCanister.instructionCounter();
 
-                return {
-                    Ok: result > 0n
-                };
+                return test(
+                    result >= 0n,
+                    `Expected instruction counter to be greater or equal to 0. Received ${result}`
+                );
             }
         },
         {
@@ -215,9 +210,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const result = await icApiCanister.isController(principal);
 
-                return {
-                    Ok: result === true
-                };
+                return test(result);
             }
         },
         {
@@ -225,9 +218,10 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await icApiCanister.performanceCounter();
 
-                return {
-                    Ok: result > 0n
-                };
+                return test(
+                    result >= 0n,
+                    `Expected performance counter to be greater or equal to 0. Received ${result}`
+                );
             }
         },
         {
@@ -235,9 +229,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await icApiCanister.print('Hello World!');
 
-                return {
-                    Ok: result === true
-                };
+                return test(result);
             }
         },
         {
@@ -247,15 +239,12 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
                 try {
                     await icApiCanister.reject(rejectionMessage);
 
-                    return {
-                        Ok: false
-                    };
+                    return fail();
                 } catch (error) {
-                    return {
-                        Ok:
-                            (error as any).props.Code === 'CanisterReject' &&
+                    return test(
+                        (error as any).props.Code === 'CanisterReject' &&
                             (error as any).props.Message === rejectionMessage
-                    };
+                    );
                 }
             }
         },
@@ -265,9 +254,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await icApiCanister.setCertifiedData(
                     Uint8Array.from([83, 117, 114, 112, 114, 105, 115, 101, 33])
                 );
-                return {
-                    Ok: result === undefined
-                };
+                return testEquality(result, undefined);
             }
         },
         {
@@ -282,9 +269,7 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
                     difference < 0 ? difference * -1n : difference;
 
                 // The idea is to just check that the two times are within 5 seconds of each other
-                return {
-                    Ok: positiveDifference < 5 * 1_000_000_000
-                };
+                return test(positiveDifference < 5 * 1_000_000_000);
             }
         },
         {
@@ -295,17 +280,14 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
                         'here is the message'
                     );
 
-                    return {
-                        Ok: result
-                    };
+                    return fail(result.toString());
                 } catch (error) {
-                    return {
-                        Ok:
-                            (error as any).props.Message ===
-                            `IC0503: Canister ${getCanisterId(
-                                'ic_api'
-                            )} trapped explicitly: here is the message`
-                    };
+                    return testEquality(
+                        (error as any).props.Message,
+                        `IC0503: Canister ${getCanisterId(
+                            'ic_api'
+                        )} trapped explicitly: here is the message`
+                    );
                 }
             }
         }
