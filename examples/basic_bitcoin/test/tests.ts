@@ -366,7 +366,7 @@ export async function waitForMempool() {
 function checkFeePercentile(
     feePercentiles: any,
     count: number
-): AzleResult<boolean, string, BasicBitcoinContext> {
+): AzleResult<string, BasicBitcoinContext> {
     return equals(feePercentiles.length, count, {
         errMessage: `Expected ${count} fee percentiles, received: ${feePercentiles.length}`
     });

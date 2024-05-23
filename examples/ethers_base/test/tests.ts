@@ -28,7 +28,7 @@ export function getTests(canisterId: string): Test[] {
 
                 return {
                     Ok: {
-                        passes:
+                        isSuccessful:
                             responseText.startsWith('0x') &&
                             responseText.length === 42
                     }
@@ -47,7 +47,7 @@ export function getTests(canisterId: string): Test[] {
 
                 return {
                     Ok: {
-                        passes:
+                        isSuccessful:
                             responseText.startsWith('0x') &&
                             responseText.length === 42 &&
                             callerAddress !== canisterAddress
@@ -102,7 +102,8 @@ export function getTests(canisterId: string): Test[] {
                 const responseText = await response.text();
 
                 return equals(responseText, 'transaction sent with hash:', {
-                    equals: (actual, expected) => actual.startsWith(expected)
+                    customEquals: (actual, expected) =>
+                        actual.startsWith(expected)
                 });
             }
         },
@@ -138,7 +139,8 @@ export function getTests(canisterId: string): Test[] {
                 const responseText = await response.text();
 
                 return equals(responseText, 'transaction sent with hash:', {
-                    equals: (actual, expected) => actual.startsWith(expected)
+                    customEquals: (actual, expected) =>
+                        actual.startsWith(expected)
                 });
             }
         },

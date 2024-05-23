@@ -24,7 +24,7 @@ export function getTests(
 
                 return {
                     Ok: {
-                        passes:
+                        isSuccessful:
                             intermediaryCallResult > 2_500_000_000_000n &&
                             intermediaryCallResult < 4_000_000_000_000n &&
                             cyclesCallResult > 2_500_000_000_000n &&

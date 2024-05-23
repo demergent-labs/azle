@@ -220,8 +220,8 @@ export function get_tests(
 
                 return {
                     Ok: {
-                        passes:
-                            candid_encoded.Ok.passes === true &&
+                        isSuccessful:
+                            candid_encoded.Ok.isSuccessful === true &&
                             candid_decoded_result.includes('record') &&
                             candid_decoded_result.includes('John') &&
                             candid_decoded_result.includes('Doe')
@@ -261,8 +261,8 @@ export function get_tests(
 
                 return {
                     Ok: {
-                        passes:
-                            candid_encoded.Ok.passes === true &&
+                        isSuccessful:
+                            candid_encoded.Ok.isSuccessful === true &&
                             candid_decoded_result.includes('variant') &&
                             candid_decoded_result.includes('= true')
                     }
@@ -311,9 +311,9 @@ export function get_tests(
 }
 
 function checkEncodeAndDecodeResults(
-    encodeResult: AzleResult<boolean, string>,
-    decodeResult: AzleResult<boolean, string>
-): AzleResult<boolean, string> {
+    encodeResult: AzleResult<string>,
+    decodeResult: AzleResult<string>
+): AzleResult<string> {
     if (!ok(encodeResult)) {
         return {
             Err: encodeResult.Err
@@ -326,23 +326,23 @@ function checkEncodeAndDecodeResults(
         };
     }
 
-    if (!encodeResult.Ok.passes) {
+    if (!encodeResult.Ok.isSuccessful) {
         // candid_encode_tests ought to have caught this case
         return { Err: `Unreachable` };
     }
 
-    if (!decodeResult.Ok.passes) {
+    if (!decodeResult.Ok.isSuccessful) {
         // candid_decode_tests ought to have caught this case
         return { Err: `Unreachable` };
     }
 
-    return { Ok: { passes: true } };
+    return { Ok: { isSuccessful: true } };
 }
 
 async function candid_encode_test(
     candid_encoding_canister: ActorSubclass<_SERVICE>,
     candid_string: string
-): Promise<AzleResult<boolean, string>> {
+): Promise<AzleResult<string>> {
     const candid_encoded_hex_string = execSync(`didc encode '${candid_string}'`)
         .toString()
         .trim();
@@ -359,7 +359,7 @@ async function candid_encode_test(
 async function candid_decode_test(
     candid_encoding_canister: ActorSubclass<_SERVICE>,
     candid_string: string
-): Promise<AzleResult<boolean, string>> {
+): Promise<AzleResult<string>> {
     const candid_encoded_hex_string = execSync(`didc encode '${candid_string}'`)
         .toString()
         .trim();

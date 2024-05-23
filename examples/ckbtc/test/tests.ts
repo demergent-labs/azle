@@ -179,7 +179,7 @@ function createConfig(id: number): Config {
 async function testGetBalance(
     account: number,
     expectedBalance: bigint
-): Promise<AzleResult<boolean, string>> {
+): Promise<AzleResult<string>> {
     const config = db[account];
     const balance = await config.canister.getBalance();
     return equals(balance, expectedBalance);

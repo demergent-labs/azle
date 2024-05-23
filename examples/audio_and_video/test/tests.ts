@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { equals, fail, failWithMessage, Test } from 'azle/test';
+import { equals, error, fail, Test } from 'azle/test';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 
@@ -69,8 +69,8 @@ export function getTests(canisterId: string): Test[] {
                     const rangedFileDigest = rangedFileHasher.digest('hex');
 
                     return equals(rangedFileDigest, fileDigest);
-                } catch (error: any) {
-                    return failWithMessage(error);
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -134,8 +134,8 @@ export function getTests(canisterId: string): Test[] {
                     const rangedFileDigest = rangedFileHasher.digest('hex');
 
                     return equals(rangedFileDigest, fileDigest);
-                } catch (error: any) {
-                    return failWithMessage(error);
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         }

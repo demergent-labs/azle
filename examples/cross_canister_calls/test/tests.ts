@@ -26,7 +26,7 @@ export function get_tests(
 
                 return {
                     Ok: {
-                        passes:
+                        isSuccessful:
                             result.length === 1 &&
                             result[0].id === '0' &&
                             result[0].balance === 100n
@@ -59,7 +59,7 @@ export function get_tests(
 
                 return {
                     Ok: {
-                        passes:
+                        isSuccessful:
                             result.length === 1 &&
                             result[0].id === '0' &&
                             result[0].balance === 100n
@@ -92,7 +92,7 @@ export function get_tests(
 
                 return {
                     Ok: {
-                        passes:
+                        isSuccessful:
                             result.length === 1 &&
                             result[0].id === '0' &&
                             result[0].balance === 66n
@@ -117,7 +117,7 @@ export function get_tests(
 
                 return {
                     Ok: {
-                        passes:
+                        isSuccessful:
                             result.length === 1 &&
                             result[0].id === '1' &&
                             result[0].balance === 34n
@@ -132,7 +132,7 @@ export function get_tests(
 
                 return {
                     Ok: {
-                        passes:
+                        isSuccessful:
                             result[0].id === '0' &&
                             result[0].balance === 66n &&
                             result[1].id === '1' &&
@@ -151,7 +151,7 @@ export function get_tests(
                 } catch (error) {
                     return {
                         Ok: {
-                            passes: (
+                            isSuccessful: (
                                 error as { message: string }
                             ).message.includes('hahahaha')
                         }

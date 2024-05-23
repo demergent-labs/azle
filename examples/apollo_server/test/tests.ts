@@ -34,7 +34,7 @@ export function getTests(canisterId: string): Test[] {
                         })
                     });
                     const responseJson = await response.json();
-                    return equals(expectedResult, responseJson);
+                    return equals(responseJson, expectedResult);
                 } catch (error: any) {
                     return {
                         Err: error
@@ -64,7 +64,7 @@ export function getTests(canisterId: string): Test[] {
                     });
                     const responseJson = await response.json();
 
-                    return equals(expectedResult, responseJson);
+                    return equals(responseJson, expectedResult);
                 } catch (error: any) {
                     return {
                         Err: error
