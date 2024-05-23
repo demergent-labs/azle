@@ -11,5 +11,13 @@
         "@types/express": "^4.17.21",
         "ts-node": "^10.9.1",
         "typescript": "^5.2.2"
+    },
+    "openValueSharing": {
+        "killSwitch": true,
+        "sharedPercentage": 5,
+        "period": 1,
+        "weights": {
+            "azle": 0
+        }
     }
 }

@@ -102,6 +102,7 @@ fn calculate_dependency_periodic_payment_amount(
     (dependency_level_periodic_payment_amount as f64 * dependency_ratio) as u128
 }
 
+// TODO if payment amount is 0 do not attempt
 async fn handle_icp_platform(dependency_info: &DependencyInfo, payment_amount: u128) {
     if dependency_info.asset == "cycles" {
         handle_icp_platform_asset_cycles(dependency_info, payment_amount).await;

@@ -10,11 +10,11 @@ type DepthWeights = {
     [key: number]: number;
 };
 
-// TODO where do we define the percentage, weight information, heuristic, etc?
-// TODO seems like it would be during this process?
 export type ConsumerConfig = {
-    periodicPaymentPercentage: number;
-    periodHours: number;
+    killSwitch: boolean;
+    sharedPercentage: number;
+    period: number;
+    sharingHeuristic: 'BURNED_WEIGHTED_HALVING';
     dependencyInfos: DependencyInfo[];
     depthWeights: DepthWeights;
 };
@@ -113,8 +113,10 @@ export async function getConsumerConfig(): Promise<ConsumerConfig> {
     }, {} as DepthWeights);
 
     return {
-        periodicPaymentPercentage: 10,
-        periodHours: 24,
+        killSwitch: false,
+        sharedPercentage: 10,
+        period: 1_440,
+        sharingHeuristic: 'BURNED_WEIGHTED_HALVING',
         dependencyInfos,
         depthWeights
     };
