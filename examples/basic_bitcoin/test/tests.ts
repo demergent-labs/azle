@@ -114,7 +114,7 @@ export function getTests(
                 const feePercentiles = jsonParse(await response.text());
 
                 // Though blocks are mined no transactions have happened yet so the list should still be empty
-                return testEquality(feePercentiles, 0);
+                return testEquality(feePercentiles.length, 0);
             }
         },
         {
@@ -198,7 +198,7 @@ export function getTests(
 
                 const feePercentiles = jsonParse(await response.text());
 
-                return testEquality(feePercentiles, 101);
+                return testEquality(feePercentiles.length, 101);
             }
         },
         {
@@ -274,7 +274,7 @@ export function getTests(
 
                 const feePercentiles = jsonParse(await response.text());
 
-                return testEquality(feePercentiles, 101);
+                return testEquality(feePercentiles.length, 101);
             }
         },
         {
@@ -294,7 +294,7 @@ export function getTests(
 
                 const feePercentiles = jsonParse(await response.text());
 
-                return testEquality(feePercentiles, 101);
+                return testEquality(feePercentiles.length, 101);
             }
         }
     ];
