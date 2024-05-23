@@ -12,26 +12,24 @@ export type Test<Context = any> = {
     skip?: boolean;
     wait?: number;
     prep?: (context: Context) => Promise<Context | void>;
-    test?: (context: Context) => Promise<AzleResult<boolean, string, Context>>;
+    test?: (context: Context) => Promise<AzleResult<string, Context>>;
 };
 
 // export type Variant<T> = Partial<T>;
 
-export type AzleResult<T, E, Context = any> = Partial<{
-    Ok: { passes: T; context?: Context };
+export type AzleResult<E, Context = any> = Partial<{
+    Ok: { isSuccessful: boolean; message?: string; context?: Context };
     Err: E;
 }>;
 
-// type AzleTestContext = any; // TODO I think I want this to be object eventually
-
-export type Ok<T, Context> = {
-    Ok: { passes: T; context: Context };
+export type Ok<Context> = {
+    Ok: { isSuccessful: boolean; message?: string; context?: Context };
 };
 
 // TODO let's get rid of this function in all tests and use match instead
-export function ok<T, E, Context>(
-    azle_result: AzleResult<T, E, Context>
-): azle_result is Ok<T, Context> {
+export function ok<E, Context>(
+    azle_result: AzleResult<E, Context>
+): azle_result is Ok<Context> {
     if (azle_result.Err === undefined) {
         return true;
     } else {
@@ -74,7 +72,7 @@ export async function runTests(
                 continue;
             }
 
-            const result: AzleResult<boolean, string, any> =
+            const result: AzleResult<string, any> =
                 test.test !== undefined
                     ? await test.test(context)
                     : {
@@ -97,8 +95,11 @@ export async function runTests(
                 context = result.Ok.context;
             }
 
-            if (result.Ok.passes !== true) {
+            if (result.Ok.isSuccessful !== true) {
                 console.info('\x1b[31m', `test: ${test.name} failed`);
+                if (result.Ok.message !== undefined) {
+                    console.info('\x1b[31m', `${result.Ok.message}`);
+                }
                 console.info('\x1b[0m');
 
                 if (exitProcess) {
@@ -173,7 +174,7 @@ export function deploy(canisterName: string, argument?: string): Test[] {
 
 type EqualsOptions<Context> = {
     errMessage?: string;
-    equals?: (actual: any, expected: any) => boolean;
+    customEquals?: (actual: any, expected: any) => boolean;
     toString?: (value: any) => string;
     context?: Context;
 };
@@ -183,47 +184,43 @@ export function equals<Context>(
     actual: any,
     expected: any,
     options?: EqualsOptions<Context>
-): AzleResult<boolean, string, Context> {
-    const equals = options?.equals ?? deepEqual;
+): AzleResult<string, Context> {
+    const equals = options?.customEquals ?? deepEqual;
     const valueToString = options?.toString ?? jsonStringify;
 
     if (equals(actual, expected)) {
-        return { Ok: { passes: true, context: options?.context } };
+        return succeed(options?.context);
     } else {
-        const errMessage =
+        const message =
             options?.errMessage ??
             `Expected: ${valueToString(expected)}, Received: ${valueToString(
                 actual
             )}`;
-        return {
-            Err: errMessage
-        };
+        return fail(message);
     }
 }
 
-export function pass(): AzleResult<boolean, string> {
-    return { Ok: { passes: true } };
+export function succeed<Context>(context?: Context): AzleResult<string> {
+    return { Ok: { isSuccessful: true, context } };
 }
 
-export function fail(): AzleResult<boolean, string> {
-    return { Ok: { passes: false } };
+export function fail(message?: string): AzleResult<string> {
+    return { Ok: { isSuccessful: false, message } };
 }
 
-export function failWithMessage(message: string): AzleResult<boolean, string> {
+export function error(message: string): AzleResult<string> {
     return { Err: message };
 }
 
 export function createTestResult<Context>(
     equals: () => boolean,
-    errMessage: string,
+    message?: string,
     context?: Context
-): AzleResult<boolean, string, Context> {
+): AzleResult<string, Context> {
     if (equals()) {
-        return { Ok: { passes: true, context } };
+        return succeed(context);
     } else {
-        return {
-            Err: errMessage
-        };
+        return fail(message);
     }
 }
 
