@@ -6,10 +6,14 @@
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct ConsumerConfig {
-    #[serde(rename = "periodicPaymentPercentage")]
-    pub periodic_payment_percentage: u32,
-    #[serde(rename = "periodHours")]
-    pub period_hours: u32,
+    #[serde(rename = "killSwitch")]
+    pub kill_switch: bool,
+    #[serde(rename = "sharedPercentage")]
+    pub shared_percentage: u32,
+    #[serde(rename = "period")]
+    pub period: u32,
+    #[serde(rename = "sharingHeuristic")]
+    pub sharing_heuristic: String,
     #[serde(rename = "dependencyInfos")]
     pub dependency_infos: Vec<DependencyInfo>,
     #[serde(rename = "depthWeights")]
@@ -56,14 +60,18 @@ pub async fn open_value_sharing_periodic_payment(consumer_config: &ConsumerConfi
     );
 
     for dependency_info in &consumer_config.dependency_infos {
-        ic_cdk::println!("dependency_info: {:#?}", dependency_info);
-
         let dependency_periodic_payment_amount = calculate_dependency_periodic_payment_amount(
             dependency_info,
             &consumer_config.depth_weights,
             total_periodic_payment_amount,
             dependency_info.depth == (consumer_config.dependency_infos.len() - 1) as u32,
         );
+
+        if dependency_periodic_payment_amount == 0 {
+            continue;
+        }
+
+        ic_cdk::println!("dependency_info: {:#?}", dependency_info);
 
         if dependency_info.platform == "icp" {
             handle_icp_platform(&dependency_info, dependency_periodic_payment_amount).await;
@@ -102,7 +110,6 @@ fn calculate_dependency_periodic_payment_amount(
     (dependency_level_periodic_payment_amount as f64 * dependency_ratio) as u128
 }
 
-// TODO if payment amount is 0 do not attempt
 async fn handle_icp_platform(dependency_info: &DependencyInfo, payment_amount: u128) {
     if dependency_info.asset == "cycles" {
         handle_icp_platform_asset_cycles(dependency_info, payment_amount).await;

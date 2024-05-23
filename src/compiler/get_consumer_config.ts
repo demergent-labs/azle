@@ -36,7 +36,21 @@ export type DependencyDefinition = {
     custom: Record<string, any>;
 };
 
+export type OpenValueSharingConfig = {
+    killSwitch?: ConsumerConfig['killSwitch'];
+    sharedPercentage?: ConsumerConfig['sharedPercentage'];
+    period?: ConsumerConfig['period'];
+    sharingHeuristic?: ConsumerConfig['sharingHeuristic'];
+    weights?: {
+        [packageName: string]: number;
+    };
+};
+
 export async function getConsumerConfig(): Promise<ConsumerConfig> {
+    const openValueSharingConfig: OpenValueSharingConfig = JSON.parse(
+        (await readFile('./package.json')).toString()
+    ).openValueSharing;
+
     const openValueSharingNpmPackagePaths = await glob(
         'node_modules/**/.openvaluesharing.json'
     );
@@ -95,7 +109,8 @@ export async function getConsumerConfig(): Promise<ConsumerConfig> {
                 {
                     name: npmPackageName,
                     depth,
-                    weight: 1,
+                    weight:
+                        openValueSharingConfig.weights?.[npmPackageName] ?? 1,
                     ...icpDependencyDefinitionProps,
                     paymentMechanism: payment_mechanism
                 }
@@ -113,10 +128,12 @@ export async function getConsumerConfig(): Promise<ConsumerConfig> {
     }, {} as DepthWeights);
 
     return {
-        killSwitch: false,
-        sharedPercentage: 10,
-        period: 1_440,
-        sharingHeuristic: 'BURNED_WEIGHTED_HALVING',
+        killSwitch: openValueSharingConfig.killSwitch ?? true, // TODO this is off by default only for now
+        sharedPercentage: openValueSharingConfig.sharedPercentage ?? 10,
+        period: openValueSharingConfig.period ?? 1_440,
+        sharingHeuristic:
+            openValueSharingConfig.sharingHeuristic ??
+            'BURNED_WEIGHTED_HALVING',
         dependencyInfos,
         depthWeights
     };
