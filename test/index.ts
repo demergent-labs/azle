@@ -212,12 +212,12 @@ export function error(message: string): AzleResult<string> {
     return { Err: message };
 }
 
-export function createTestResult<Context>(
-    equals: () => boolean,
+export function test<Context>(
+    customTest: () => boolean,
     message?: string,
     context?: Context
 ): AzleResult<string, Context> {
-    if (equals()) {
+    if (customTest()) {
         return succeed(context);
     } else {
         return fail(message);
