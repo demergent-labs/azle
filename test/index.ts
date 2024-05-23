@@ -173,26 +173,26 @@ export function deploy(canisterName: string, argument?: string): Test[] {
 }
 
 type EqualsOptions<Context> = {
-    errMessage?: string;
-    customEquals?: (actual: any, expected: any) => boolean;
+    failMessage?: string;
+    equals?: (actual: any, expected: any) => boolean;
     toString?: (value: any) => string;
     context?: Context;
 };
 
-// TODO should the type of actual and expected be the same?
-export function equals<Context>(
-    actual: any,
-    expected: any,
+// TODO is is better test framework conformity to call this assertEqual? I'll hold off for now, it should be easy to search for all testEquality and change it, easier than assertEqual I think
+export function testEquality<Context, T = any>(
+    actual: T,
+    expected: T,
     options?: EqualsOptions<Context>
 ): AzleResult<string, Context> {
-    const equals = options?.customEquals ?? deepEqual;
+    const equals = options?.equals ?? deepEqual;
     const valueToString = options?.toString ?? jsonStringify;
 
     if (equals(actual, expected)) {
         return succeed(options?.context);
     } else {
         const message =
-            options?.errMessage ??
+            options?.failMessage ??
             `Expected: ${valueToString(expected)}, Received: ${valueToString(
                 actual
             )}`;
@@ -212,12 +212,27 @@ export function error(message: string): AzleResult<string> {
     return { Err: message };
 }
 
+// TODO when Jordan asks why we have this show call_raw, it's a great example for why we should have this guy
+// But this is quickly boiling down to sugar and we are looking at the difference between
+// return test(
+//     result.Ok.includes('blob'),
+//     `Expected result to be a candid blob. Received ${result.Ok}`
+// );
+// and
+// return {
+//     Ok: {
+//         isSuccessful: result.Ok.includes('blob'),
+//         message: `Expected result to be a candid blob. Received ${result.Ok}`
+//     }
+// };
+// TODO date has a good example of when we would want to have an error message I think
+// TODO ethers_base also
 export function test<Context>(
-    customTest: () => boolean,
+    succeeds: boolean,
     message?: string,
     context?: Context
 ): AzleResult<string, Context> {
-    if (customTest()) {
+    if (succeeds) {
         return succeed(context);
     } else {
         return fail(message);
