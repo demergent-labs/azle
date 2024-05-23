@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { jsonStringify } from 'azle';
-import { createTestResult, equals, Test } from 'azle/test';
+import { equals, Test, test } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/audio_recorder/audio_recorder.did';
 
@@ -24,7 +24,7 @@ export function get_tests(
                 const expectedUsername = 'lastmjs';
                 const expectedRecordingCount = 0;
 
-                return createTestResult<Context>(
+                return test<Context>(
                     () =>
                         user.username === expectedUsername &&
                         user.recordingIds.length === expectedRecordingCount,
@@ -55,7 +55,7 @@ export function get_tests(
 
                 const recording = result.Ok;
 
-                return createTestResult<Context>(
+                return test<Context>(
                     () =>
                         recording.audio.length === 5 &&
                         recording.name === 'First recording' &&
@@ -124,7 +124,7 @@ export function get_tests(
                 const read_users_result =
                     await audio_recorder_canister.readUsers();
 
-                return createTestResult(
+                return test(
                     () => {
                         return (
                             read_recordings_result.length === 0 &&
@@ -172,7 +172,7 @@ export function get_tests(
                 const read_recordings_after_result =
                     await audio_recorder_canister.readRecordings();
 
-                return createTestResult(() => {
+                return test(() => {
                     return (
                         read_users_before_result[0].recordingIds.length === 1 &&
                         read_recordings_before_result[0].userId.toText() ===

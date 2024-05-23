@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { createTestResult, equals, Test } from 'azle/test';
+import { equals, Test,test } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/date/date.did.d';
 
@@ -627,7 +627,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result = await dateCanister.now();
                 const timeAfter = new Date().getTime();
 
-                return createTestResult(
+                return test(
                     () =>
                         result >= BigInt(timeBefore - 30_000) &&
                         result <= BigInt(timeAfter + 30_000),
