@@ -1,13 +1,31 @@
-pub type DependencyInfo = Vec<DependencyLevel>;
-
-pub type DependencyLevel = Vec<Dependency>;
+// TODO how do we deal with multiple instances of open_value_sharing_periodic_payment existing?
+// TODO right now for example, azle automatically pulls it in
+// TODO I suppose the CDK would need to do this?
+// TODO maybe it could do it itself if it could check if
+// TODO the method already exists in the canister?
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
-pub struct Dependency {
+pub struct ConsumerConfig {
+    #[serde(rename = "periodicPaymentPercentage")]
+    pub periodic_payment_percentage: u32,
+    #[serde(rename = "periodHours")]
+    pub period_hours: u32,
+    #[serde(rename = "dependencyInfos")]
+    pub dependency_infos: Vec<DependencyInfo>,
+    #[serde(rename = "depthWeights")]
+    pub depth_weights: DepthWeights,
+}
+
+type DepthWeights = std::collections::HashMap<u32, u32>;
+
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub struct DependencyInfo {
     pub name: String,
+    pub depth: u32,
     pub weight: u32,
     pub platform: String,
     pub asset: String,
+    #[serde(rename = "paymentMechanism")]
     pub payment_mechanism: String,
     pub custom: std::collections::HashMap<String, serde_json::Value>,
 }
@@ -25,8 +43,9 @@ pub struct Dependency {
 // TODO management canister, which might be across subnets as an emulation, takes the longest
 // TODO not sure if there's any practical limit though
 
+// TODO implement the optional stuff from ConsumerConfig
 // TODO figure out how to get this to work on mainnet and locally well
-pub async fn open_value_sharing_periodic_payment(dependency_info: &DependencyInfo) {
+pub async fn open_value_sharing_periodic_payment(consumer_config: &ConsumerConfig) {
     ic_cdk::println!("open_value_sharing_periodic_payment");
 
     let total_periodic_payment_amount = calculate_total_periodic_payment_amount().await;
@@ -36,24 +55,18 @@ pub async fn open_value_sharing_periodic_payment(dependency_info: &DependencyInf
         total_periodic_payment_amount
     );
 
-    for (depth, dependency_level) in dependency_info.iter().enumerate() {
-        ic_cdk::println!("depth: {}", depth);
-        ic_cdk::println!("dependency_level: {:#?}", dependency_level);
+    for dependency_info in &consumer_config.dependency_infos {
+        ic_cdk::println!("dependency_info: {:#?}", dependency_info);
 
-        for dependency in dependency_level {
-            ic_cdk::println!("dependency: {:#?}", dependency);
+        let dependency_periodic_payment_amount = calculate_dependency_periodic_payment_amount(
+            dependency_info,
+            &consumer_config.depth_weights,
+            total_periodic_payment_amount,
+            dependency_info.depth == (consumer_config.dependency_infos.len() - 1) as u32,
+        );
 
-            let dependency_periodic_payment_amount = calculate_dependency_periodic_payment_amount(
-                dependency,
-                dependency_level,
-                depth,
-                total_periodic_payment_amount,
-                depth == dependency_info.len() - 1,
-            );
-
-            if dependency.platform == "icp" {
-                handle_icp_platform(dependency, dependency_periodic_payment_amount).await;
-            }
+        if dependency_info.platform == "icp" {
+            handle_icp_platform(&dependency_info, dependency_periodic_payment_amount).await;
         }
     }
 }
@@ -67,13 +80,12 @@ async fn calculate_total_periodic_payment_amount() -> u128 {
 // TODO for example if there is only one level you don't need to cut anything in half
 // TODO double-check the weight calculation
 fn calculate_dependency_periodic_payment_amount(
-    dependency: &Dependency,
-    dependency_level: &Vec<Dependency>,
-    depth: usize,
+    dependency_info: &DependencyInfo,
+    depth_weights: &DepthWeights,
     total_periodic_payment_amount: u128,
     bottom: bool,
 ) -> u128 {
-    let adjusted_depth = depth + if bottom { 0 } else { 1 };
+    let adjusted_depth = dependency_info.depth + if bottom { 0 } else { 1 };
 
     let dependency_level_periodic_payment_amount =
         total_periodic_payment_amount / 2_u128.pow(adjusted_depth as u32);
@@ -83,24 +95,21 @@ fn calculate_dependency_periodic_payment_amount(
         dependency_level_periodic_payment_amount
     );
 
-    let total_dependency_level_weight: u32 = dependency_level
-        .iter()
-        .map(|dependency| dependency.weight)
-        .sum();
+    let total_dependency_level_weight = *depth_weights.get(&dependency_info.depth).unwrap();
 
-    let dependency_ratio = dependency.weight as f64 / total_dependency_level_weight as f64;
+    let dependency_ratio = dependency_info.weight as f64 / total_dependency_level_weight as f64;
 
     (dependency_level_periodic_payment_amount as f64 * dependency_ratio) as u128
 }
 
-async fn handle_icp_platform(dependency: &Dependency, payment_amount: u128) {
-    if dependency.asset == "cycles" {
-        handle_icp_platform_asset_cycles(dependency, payment_amount).await;
+async fn handle_icp_platform(dependency_info: &DependencyInfo, payment_amount: u128) {
+    if dependency_info.asset == "cycles" {
+        handle_icp_platform_asset_cycles(dependency_info, payment_amount).await;
     }
 }
 
-async fn handle_icp_platform_asset_cycles(dependency: &Dependency, payment_amount: u128) {
-    let principal_string = dependency
+async fn handle_icp_platform_asset_cycles(dependency_info: &DependencyInfo, payment_amount: u128) {
+    let principal_string = dependency_info
         .custom
         .get("principal")
         .unwrap()
@@ -109,7 +118,7 @@ async fn handle_icp_platform_asset_cycles(dependency: &Dependency, payment_amoun
         .to_string();
     let principal = candid::Principal::from_text(principal_string).unwrap();
 
-    if dependency.payment_mechanism == "wallet" {
+    if dependency_info.payment_mechanism == "wallet" {
         ic_cdk::println!("wallet");
 
         ic_cdk::api::call::call_with_payment128::<(Option<()>,), ()>(
@@ -122,7 +131,7 @@ async fn handle_icp_platform_asset_cycles(dependency: &Dependency, payment_amoun
         .unwrap();
     }
 
-    if dependency.payment_mechanism == "deposit" {
+    if dependency_info.payment_mechanism == "deposit" {
         ic_cdk::println!("deposit");
 
         ic_cdk::api::management_canister::main::deposit_cycles(

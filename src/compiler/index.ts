@@ -103,7 +103,7 @@ async function azle() {
                 )
             );
 
-            prepareRustStagingArea(
+            await prepareRustStagingArea(
                 canisterConfig,
                 canisterPath,
                 canisterJavaScript,

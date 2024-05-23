@@ -8,7 +8,7 @@ use ic_stable_structures::{
     DefaultMemoryImpl, StableBTreeMap, Storable,
 };
 use include_dir::{include_dir, Dir};
-use open_value_sharing::{open_value_sharing_periodic_payment, DependencyInfo};
+use open_value_sharing::{open_value_sharing_periodic_payment, ConsumerConfig};
 use std::fs;
 use wasmedge_quickjs::AsObject;
 
@@ -200,16 +200,16 @@ pub fn _azle_chunk() {}
 
 #[ic_cdk_macros::update]
 pub async fn _azle_open_value_sharing_periodic_payment() {
-    let dependency_info = get_dependency_info("dependency_info.json").unwrap();
+    let consumer_config = get_consumer_config("consumer_config.json").unwrap();
 
-    open_value_sharing_periodic_payment(&dependency_info).await;
+    open_value_sharing_periodic_payment(&consumer_config).await;
 }
 
-fn get_dependency_info(dependency_info_path: &str) -> Result<DependencyInfo, String> {
-    let dependency_info_string = std::fs::read_to_string(dependency_info_path)
-        .map_err(|err| format!("Error reading {dependency_info_path}: {err}"))?;
-    let dependency_info: DependencyInfo = serde_json::from_str(&dependency_info_string)
-        .map_err(|err| format!("Error parsing {dependency_info_path}: {err}"))?;
+fn get_consumer_config(consumer_config_path: &str) -> Result<ConsumerConfig, String> {
+    let consumer_config_string = std::fs::read_to_string(consumer_config_path)
+        .map_err(|err| format!("Error reading {consumer_config_path}: {err}"))?;
+    let consumer_config: ConsumerConfig = serde_json::from_str(&consumer_config_string)
+        .map_err(|err| format!("Error parsing {consumer_config_path}: {err}"))?;
 
-    Ok(dependency_info)
+    Ok(consumer_config)
 }
