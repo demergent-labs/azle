@@ -7,7 +7,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
+import { createTestResult, equals, Test } from 'azle/test';
 
 let callerAddress: string;
 let canisterAddress: string;
@@ -27,9 +27,11 @@ export function getTests(canisterId: string): Test[] {
                 callerAddress = responseText;
 
                 return {
-                    Ok:
-                        responseText.startsWith('0x') &&
-                        responseText.length === 42
+                    Ok: {
+                        passes:
+                            responseText.startsWith('0x') &&
+                            responseText.length === 42
+                    }
                 };
             }
         },
@@ -44,10 +46,12 @@ export function getTests(canisterId: string): Test[] {
                 canisterAddress = responseText;
 
                 return {
-                    Ok:
-                        responseText.startsWith('0x') &&
-                        responseText.length === 42 &&
-                        callerAddress !== canisterAddress
+                    Ok: {
+                        passes:
+                            responseText.startsWith('0x') &&
+                            responseText.length === 42 &&
+                            callerAddress !== canisterAddress
+                    }
                 };
             }
         },
@@ -63,9 +67,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok: BigInt(responseJson.__bigint__) === 0n
-                };
+                return equals(responseJson.__bigint__, 0n);
             }
         },
         {
@@ -80,9 +82,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok: BigInt(responseJson.__bigint__) === 0n
-                };
+                return equals(responseJson.__bigint__, 0n);
             }
         },
         {
@@ -101,9 +101,9 @@ export function getTests(canisterId: string): Test[] {
                 );
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText.startsWith('transaction sent with hash:')
-                };
+                return equals(responseText, 'transaction sent with hash:', {
+                    equals: (actual, expected) => actual.startsWith(expected)
+                });
             }
         },
         {
@@ -118,9 +118,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok: BigInt(responseJson.__bigint__) === 100_000_000_000_000n
-                };
+                return equals(responseJson.__bigint__, 100_000_000_000_000n);
             }
         },
         {
@@ -139,9 +137,9 @@ export function getTests(canisterId: string): Test[] {
                 );
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText.startsWith('transaction sent with hash:')
-                };
+                return equals(responseText, 'transaction sent with hash:', {
+                    equals: (actual, expected) => actual.startsWith(expected)
+                });
             }
         },
         {
@@ -156,9 +154,14 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok: BigInt(responseJson.__bigint__) < 100_000_000_000_000n
-                };
+                const expetedBalance = 100_000_000_000_000n;
+
+                return createTestResult(
+                    () => BigInt(responseJson.__bigint__) < expetedBalance,
+                    `Expected balance to be less than ${expetedBalance}. Received ${BigInt(
+                        responseJson.__bigint__
+                    )}`
+                );
             }
         },
         {
@@ -173,9 +176,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok: BigInt(responseJson.__bigint__) === 7n
-                };
+                return equals(responseJson.__bigint__, 7n);
             }
         }
     ];
