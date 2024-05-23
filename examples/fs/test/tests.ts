@@ -58,7 +58,7 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return testEquality(responseText, 'write file');
+                    return testEquality(responseText, 'write file sync');
                 } catch (err: any) {
                     return error(err);
                 }
@@ -93,7 +93,7 @@ export function getTests(canisterId: string): Test[] {
 
                     return testEquality(
                         responseText,
-                        'Directory just_public created'
+                        'Directory public_sync created'
                     );
                 } catch (err: any) {
                     return error(err);
@@ -130,7 +130,7 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return testEquality(responseText, 'false');
+                    return testEquality(responseText, 'true');
                 } catch (err: any) {
                     return error(err);
                 }
@@ -145,7 +145,7 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return testEquality(responseText, 'false');
+                    return testEquality(responseText, 'true');
                 } catch (err: any) {
                     return error(err);
                 }
@@ -165,7 +165,7 @@ export function getTests(canisterId: string): Test[] {
 
                     return testEquality(
                         responseText,
-                        'File write-file.txt deleted'
+                        'File write-file-sync.txt deleted'
                     );
                 } catch (err: any) {
                     return error(err);
@@ -207,7 +207,7 @@ export function getTests(canisterId: string): Test[] {
 
                     return testEquality(
                         responseText,
-                        'Directory just_public deleted'
+                        'Directory public_sync deleted'
                     );
                 } catch (err: any) {
                     return error(err);
