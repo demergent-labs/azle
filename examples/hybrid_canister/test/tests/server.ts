@@ -1,5 +1,5 @@
 import { getCanisterId } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { error, Test, testEquality } from 'azle/test';
 
 import { createActor } from '../dfx_generated/server';
 
@@ -35,17 +35,23 @@ export function getTests(): Test[] {
                     const candidQueryText = await actor.candidQuery();
                     const candidUpdateText = await actor.candidUpdate();
 
-                    return {
-                        Ok:
-                            httpQueryResponseText === 'http-query-server' &&
-                            httpUpdateResponseText === 'http-update-server' &&
-                            candidQueryText === 'candidQueryServer' &&
-                            candidUpdateText === 'candidUpdateServer'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        [
+                            httpQueryResponseText,
+                            httpUpdateResponseText,
+                            candidQueryText,
+                            candidUpdateText
+                        ],
+
+                        [
+                            'http-query-server',
+                            'http-update-server',
+                            'candidQueryServer',
+                            'candidUpdateServer'
+                        ]
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         }

@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { equals, Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/blob_array/blob_array.did';
 
@@ -12,14 +12,14 @@ export function get_tests(blob_canister: ActorSubclass<_SERVICE>): Test[] {
             name: 'get blob',
             test: async () => {
                 const result = await blob_canister.getBlob();
-                return equals(result, HELLO_BYTES);
+                return testEquality(result, HELLO_BYTES);
             }
         },
         {
             name: 'get blobs',
             test: async () => {
                 const result = await blob_canister.getBlobs();
-                return equals(result, [HELLO_BYTES, WORLD_BYTES]);
+                return testEquality(result, [HELLO_BYTES, WORLD_BYTES]);
             }
         }
     ];

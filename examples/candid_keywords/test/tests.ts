@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { pass, Test } from 'azle/test';
+import { succeed, Test, test } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/candid_keywords/candid_keywords.did';
 
@@ -10,7 +10,7 @@ export function getTests(candid_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 await candid_canister.opt();
 
-                return pass();
+                return succeed();
             }
         },
         {
@@ -18,11 +18,7 @@ export function getTests(candid_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await candid_canister.variant();
 
-                return {
-                    Ok: {
-                        passes: 'query' in result && result.query === 'hello'
-                    }
-                };
+                return test('query' in result && result.query === 'hello');
             }
         },
         {
@@ -30,16 +26,13 @@ export function getTests(candid_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await candid_canister.candidTypes();
 
-                return {
-                    Ok: {
-                        passes:
-                            result.bool &&
-                            result.query === 'query' &&
-                            result.text === 'text' &&
-                            result.null === null &&
-                            result.record.age === 35
-                    }
-                };
+                return test(
+                    result.bool &&
+                        result.query === 'query' &&
+                        result.text === 'text' &&
+                        result.null === null &&
+                        result.record.age === 35
+                );
             }
         }
     ];

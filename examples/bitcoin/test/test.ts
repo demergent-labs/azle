@@ -1,5 +1,5 @@
 import { getCanisterId } from 'azle/dfx';
-import { createTestResult, equals, runTests, Test } from 'azle/test';
+import { runTests, Test, testEquality } from 'azle/test';
 
 import { bitcoinCli } from './bitcoin_cli';
 import { createActor } from './dfx_generated/bitcoin';
@@ -44,21 +44,19 @@ function testCanisterFunctionality(): Test[] {
                 const blocksMinedInSetup = 101n;
                 const expectedBalance = blockReward * blocksMinedInSetup;
 
-                return equals(result, expectedBalance);
+                return testEquality(result, expectedBalance);
             }
         },
         {
-            name: 'getUtxos',
+            name: 'check tip_height and length of getUtxos result',
             test: async () => {
                 const result = await bitcoinCanister.getUtxos(
                     wallets.alice.p2wpkh
                 );
 
-                return createTestResult(
-                    () =>
-                        result.tip_height === 101 &&
-                        result.utxos.length === 101,
-                    `Expected tip height and number of utxos to be 101. Received ${result.tip_height} and ${result.utxos.length}`
+                return testEquality(
+                    [result.tip_height, result.utxos.length],
+                    [101, 101]
                 );
             }
         },
@@ -67,7 +65,7 @@ function testCanisterFunctionality(): Test[] {
             test: async () => {
                 const result = await bitcoinCanister.getCurrentFeePercentiles();
 
-                return equals(
+                return testEquality(
                     result.length,
                     0,
                     `Expected there to be no fee percentile information before any transactions were sent. Received ${result.length}`
@@ -92,12 +90,13 @@ function testCanisterFunctionality(): Test[] {
                 const receivedAfterTransaction =
                     bitcoinCli.getReceivedByAddress(wallets.bob.p2wpkh, 0);
 
-                return createTestResult(
-                    () =>
-                        result === true &&
-                        receivedBeforeTransaction === 0 &&
-                        receivedAfterTransaction === 1,
-                    `Expected result to be true. Received: ${result}. Expected ${wallets.bob.p2wpkh} to have received 0 before the transaction was sent (received: ${receivedBeforeTransaction}) and 1 after (received: ${receivedAfterTransaction})`
+                return testEquality(
+                    [
+                        result,
+                        receivedBeforeTransaction,
+                        receivedAfterTransaction
+                    ],
+                    [true, 0, 1]
                 );
             }
         }

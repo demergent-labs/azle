@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { AgentError } from '@dfinity/agent/lib/cjs/errors';
-import { Test } from 'azle/test';
+import { fail, Test, test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/guard_functions/guard_functions.did';
 
@@ -14,7 +14,7 @@ export function getTests(
                 const result =
                     await guardFunctionsCanister.identifierAnnotation();
 
-                return { Ok: result };
+                return test(result);
             }
         },
         {
@@ -23,7 +23,7 @@ export function getTests(
                 const result =
                     await guardFunctionsCanister.callExpressionWithoutOptionsObject();
 
-                return { Ok: result };
+                return test(result);
             }
         },
         {
@@ -32,7 +32,7 @@ export function getTests(
                 const result =
                     await guardFunctionsCanister.callExpressionWithEmptyOptionsObject();
 
-                return { Ok: result };
+                return test(result);
             }
         },
         {
@@ -40,7 +40,7 @@ export function getTests(
             test: async () => {
                 const result = await guardFunctionsCanister.looselyGuarded();
 
-                return { Ok: result };
+                return test(result);
             }
         },
         {
@@ -49,7 +49,7 @@ export function getTests(
                 const result =
                     await guardFunctionsCanister.looselyGuardedManual();
 
-                return { Ok: result };
+                return test(result);
             }
         },
         {
@@ -58,7 +58,7 @@ export function getTests(
                 const result =
                     await guardFunctionsCanister.looselyGuardedWithGuardOptionKeyAsString();
 
-                return { Ok: result };
+                return test(result);
             }
         },
         {
@@ -69,12 +69,10 @@ export function getTests(
                     await guardFunctionsCanister.modifyStateGuarded();
                 const counterAfter = await guardFunctionsCanister.getCounter();
 
-                return {
-                    Ok:
-                        counterBefore === 0 &&
-                        methodExecuted &&
-                        counterAfter === 1
-                };
+                return testEquality(
+                    [counterBefore, methodExecuted, counterAfter],
+                    [0, true, 1]
+                );
             }
         },
         {
@@ -82,15 +80,16 @@ export function getTests(
             test: async () => {
                 try {
                     await guardFunctionsCanister.tightlyGuarded();
-                    return {
-                        Err: 'Expected tightlyGuarded function to throw'
-                    };
+                    return fail('Expected tightlyGuarded function to throw');
                 } catch (error) {
-                    return {
-                        Ok: (error as AgentError).message.includes(
-                            `Uncaught Error: Execution halted by \\"unpassable\\" guard function`
-                        )
-                    };
+                    return testEquality(
+                        (error as AgentError).message,
+                        `Uncaught Error: Execution halted by \\"unpassable\\" guard function`,
+                        {
+                            equals: (actual, expected) =>
+                                actual.includes(expected)
+                        }
+                    );
                 }
             }
         },
@@ -99,15 +98,18 @@ export function getTests(
             test: async () => {
                 try {
                     await guardFunctionsCanister.errorStringGuarded();
-                    return {
-                        Err: 'Expected errorStringGuarded function to throw'
-                    };
+                    return fail(
+                        'Expected errorStringGuarded function to throw'
+                    );
                 } catch (error) {
-                    return {
-                        Ok: (error as AgentError).message.includes(
-                            `Uncaught Error: Execution halted by \\"throw string\\" guard function`
-                        )
-                    };
+                    return testEquality(
+                        (error as AgentError).message,
+                        `Uncaught Error: Execution halted by \\"throw string\\" guard function`,
+                        {
+                            equals: (actual, expected) =>
+                                actual.includes(expected)
+                        }
+                    );
                 }
             }
         },
@@ -116,15 +118,18 @@ export function getTests(
             test: async () => {
                 try {
                     await guardFunctionsCanister.customErrorGuarded();
-                    return {
-                        Err: 'Expected customErrorGuarded function to throw'
-                    };
+                    return fail(
+                        'Expected customErrorGuarded function to throw'
+                    );
                 } catch (error) {
-                    return {
-                        Ok: (error as AgentError).message.includes(
-                            `Uncaught CustomError: Execution halted by \\"throw custom error\\" guard function`
-                        )
-                    };
+                    return testEquality(
+                        (error as AgentError).message,
+                        `Uncaught CustomError: Execution halted by \\"throw custom error\\" guard function`,
+                        {
+                            equals: (actual, expected) =>
+                                actual.includes(expected)
+                        }
+                    );
                 }
             }
         },
@@ -133,15 +138,18 @@ export function getTests(
             test: async () => {
                 try {
                     await guardFunctionsCanister.nonStringErrValueGuarded();
-                    return {
-                        Err: 'Expected nonStringErrValueGuarded function to throw'
-                    };
+                    return fail(
+                        'Expected nonStringErrValueGuarded function to throw'
+                    );
                 } catch (error) {
-                    return {
-                        Ok: (error as AgentError).message.includes(
-                            `Uncaught Error: [object Object]`
-                        )
-                    };
+                    return testEquality(
+                        (error as AgentError).message,
+                        `Uncaught Error: [object Object]`,
+                        {
+                            equals: (actual, expected) =>
+                                actual.includes(expected)
+                        }
+                    );
                 }
             }
         }

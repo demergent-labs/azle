@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
+import { Test, test, testEquality } from 'azle/test';
 
 type Header = [string, string];
 
@@ -48,15 +48,14 @@ export function getTests(canisterId: string): Test[] {
                     '*'
                 );
 
-                return {
-                    Ok:
-                        headerIsCorrectContentLength &&
+                return test(
+                    headerIsCorrectContentLength &&
                         headerIsCorrectXPoweredBy &&
                         headerIsCorrectServer &&
                         headerIsCorrectConnection &&
                         headerIsCorrectContentType &&
                         headerIsCorrectAccessControlAllowOrigin
-                };
+                );
             }
         },
         {
@@ -98,9 +97,8 @@ export function getTests(canisterId: string): Test[] {
                     '*'
                 );
 
-                return {
-                    Ok:
-                        headerIsCorrectContentLength &&
+                return test(
+                    headerIsCorrectContentLength &&
                         headerIsCorrectXPoweredBy &&
                         headerIsCorrectServer &&
                         headerIsCorrectConnection &&
@@ -114,7 +112,7 @@ export function getTests(canisterId: string): Test[] {
                         body.source === 'api' &&
                         body.type === 'cat' &&
                         body.createdAt === '2018-01-04T01:10:54.673Z'
-                };
+                );
             }
         },
         {
@@ -128,12 +126,11 @@ export function getTests(canisterId: string): Test[] {
                 );
                 const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.length === 2 &&
+                return test(
+                    responseJson.length === 2 &&
                         responseJson[0].type === 'cat' &&
                         responseJson[1].type === 'cat'
-                };
+                );
             }
         },
         {
@@ -144,9 +141,10 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok: responseJson.result === '0x9ad9e69f9d47520000'
-                };
+                return testEquality(
+                    responseJson.result,
+                    '0x9ad9e69f9d47520000'
+                );
             }
         },
         {
@@ -157,15 +155,14 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.headers['X-Azle-Request-Key-0'] ===
-                            'X-Azle-Request-Value-0' &&
+                return test(
+                    responseJson.headers['X-Azle-Request-Key-0'] ===
+                        'X-Azle-Request-Value-0' &&
                         responseJson.headers['X-Azle-Request-Key-1'] ===
                             'X-Azle-Request-Value-1' &&
                         responseJson.headers['X-Azle-Request-Key-2'] ===
                             'X-Azle-Request-Value-2'
-                };
+                );
             }
         },
         {
@@ -176,11 +173,10 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.status === 201 &&
+                return test(
+                    responseJson.status === 201 &&
                         responseJson.statusText === 'Created'
-                };
+                );
             }
         },
         {
@@ -191,11 +187,10 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.status === 205 &&
+                return test(
+                    responseJson.status === 205 &&
                         responseJson.statusText === 'Reset Content'
-                };
+                );
             }
         },
         {
@@ -206,11 +201,10 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.status === 301 &&
+                return test(
+                    responseJson.status === 301 &&
                         responseJson.statusText === 'Moved Permanently'
-                };
+                );
             }
         },
         {
@@ -221,11 +215,10 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.status === 304 &&
+                return test(
+                    responseJson.status === 304 &&
                         responseJson.statusText === 'Not Modified'
-                };
+                );
             }
         },
         {
@@ -236,11 +229,10 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.status === 401 &&
+                return test(
+                    responseJson.status === 401 &&
                         responseJson.statusText === 'Unauthorized'
-                };
+                );
             }
         },
         {
@@ -251,11 +243,10 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.status === 418 &&
+                return test(
+                    responseJson.status === 418 &&
                         responseJson.statusText === "I'm a teapot"
-                };
+                );
             }
         },
         {
@@ -266,11 +257,10 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.status === 500 &&
+                return test(
+                    responseJson.status === 500 &&
                         responseJson.statusText === 'Internal Server Error'
-                };
+                );
             }
         },
         {
@@ -281,24 +271,21 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.status === 501 &&
+                return test(
+                    responseJson.status === 501 &&
                         responseJson.statusText === 'Not Implemented'
-                };
+                );
             }
         },
         {
-            name: '/transform',
+            name: 'test length of response from /transform',
             test: async () => {
                 const response = await fetch(`${origin}/transform`, {
                     method: 'POST'
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok: responseJson.length === 0
-                };
+                return testEquality(responseJson.length, 0);
             }
         },
         {
@@ -312,9 +299,7 @@ export function getTests(canisterId: string): Test[] {
                 );
                 const { headers, body } = await response.json();
 
-                return {
-                    Ok: headers.length === 0 && body === 3
-                };
+                return test(headers.length === 0 && body === 3);
             }
         },
         {
@@ -325,11 +310,11 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok: responseJson.message.includes(
+                return test(
+                    responseJson.message.includes(
                         'Header size exceeds specified response size limit 0'
                     )
-                };
+                );
             }
         },
         {
@@ -340,11 +325,11 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return {
-                    Ok: responseJson.message.includes(
+                return test(
+                    responseJson.message.includes(
                         'http_request request sent with 0 cycles'
                     )
-                };
+                );
             }
         }
     ];

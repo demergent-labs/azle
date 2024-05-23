@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { equals, Test } from 'azle/test';
+import { error, Test, testEquality } from 'azle/test';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -16,14 +16,12 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return equals(
+                    return testEquality(
                         responseText,
                         '0x1c8aff950685c2ed4bc3174f3472287b56d9517b9c948127319a09a7a36deac8'
                     );
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -44,11 +42,9 @@ export function getTests(canisterId: string): Test[] {
                             '0xafdfd9c3d2095ef696594f6cedcae59e72dcd697e2a7521b1578140422a4f890'
                     };
 
-                    return equals(responseJson, expected);
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseJson, expected);
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         }

@@ -6,7 +6,7 @@ import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 import { getCanisterOrigin } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { Test, test } from 'azle/test';
 import puppeteer, { Browser, Page } from 'puppeteer';
 
 export function getTests(canisterName: string): Test[] {
@@ -56,9 +56,7 @@ export function getTests(canisterName: string): Test[] {
                     () => (window as any).headersArraySuccess
                 );
 
-                return {
-                    Ok: success
-                };
+                return test(success);
             }
         },
         {
@@ -72,9 +70,7 @@ export function getTests(canisterName: string): Test[] {
                     () => (window as any).headersObjectSuccess
                 );
 
-                return {
-                    Ok: success
-                };
+                return test(success);
             }
         },
         {
@@ -91,9 +87,7 @@ export function getTests(canisterName: string): Test[] {
                     () => (window as any).bodyUint8ArraySuccess
                 );
 
-                return {
-                    Ok: success
-                };
+                return test(success);
             }
         },
         {
@@ -110,9 +104,7 @@ export function getTests(canisterName: string): Test[] {
                     () => (window as any).bodyStringSuccess
                 );
 
-                return {
-                    Ok: success
-                };
+                return test(success);
             }
         },
         {
@@ -129,9 +121,7 @@ export function getTests(canisterName: string): Test[] {
                     () => (window as any).bodyArrayBufferSuccess
                 );
 
-                return {
-                    Ok: success
-                };
+                return test(success);
             }
         },
         {
@@ -148,9 +138,7 @@ export function getTests(canisterName: string): Test[] {
                     () => (window as any).bodyBlobSuccess
                 );
 
-                return {
-                    Ok: success
-                };
+                return test(success);
             }
         },
         {
@@ -167,9 +155,7 @@ export function getTests(canisterName: string): Test[] {
                     () => (window as any).bodyDataViewSuccess
                 );
 
-                return {
-                    Ok: success
-                };
+                return test(success);
             }
         },
         {
@@ -183,9 +169,7 @@ export function getTests(canisterName: string): Test[] {
                     () => (window as any).urlQueryParamsGetSuccess
                 );
 
-                return {
-                    Ok: success
-                };
+                return test(success);
             }
         },
         {
@@ -202,9 +186,7 @@ export function getTests(canisterName: string): Test[] {
                     () => (window as any).urlQueryParamsPostSuccess
                 );
 
-                return {
-                    Ok: success
-                };
+                return test(success);
             }
         },
         {
@@ -218,9 +200,7 @@ export function getTests(canisterName: string): Test[] {
                     () => (window as any).notAuthorizedGetSuccess
                 );
 
-                return {
-                    Ok: success
-                };
+                return test(success);
             }
         },
         {
@@ -237,9 +217,7 @@ export function getTests(canisterName: string): Test[] {
                     () => (window as any).notAuthorizedPostSuccess
                 );
 
-                return {
-                    Ok: success
-                };
+                return test(success);
             }
         },
         {
@@ -253,9 +231,7 @@ export function getTests(canisterName: string): Test[] {
                     () => (window as any).headSuccess
                 );
 
-                return {
-                    Ok: success
-                };
+                return test(success);
             }
         },
         {
@@ -269,9 +245,7 @@ export function getTests(canisterName: string): Test[] {
                     () => (window as any).optionsSuccess
                 );
 
-                return {
-                    Ok: success
-                };
+                return test(success);
             }
         },
         {

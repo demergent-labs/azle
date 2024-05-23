@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { equals, Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/async_await/async_await.did';
 
@@ -15,7 +15,7 @@ export function get_tests(
 
                 const expectedLen = 32;
 
-                return equals(result.length, expectedLen);
+                return testEquality(result.length, expectedLen);
             }
         },
         {
@@ -26,7 +26,7 @@ export function get_tests(
 
                 const expectedLen = 32;
 
-                return equals(result.length, expectedLen);
+                return testEquality(result.length, expectedLen);
             }
         },
         {
@@ -37,7 +37,7 @@ export function get_tests(
 
                 const expectedLen = 96;
 
-                return equals(result.length, expectedLen);
+                return testEquality(result.length, expectedLen);
             }
         },
         {
@@ -45,7 +45,7 @@ export function get_tests(
             test: async () => {
                 const result = await async_await_canister.returnPromiseVoid();
 
-                return equals(result, undefined);
+                return testEquality(result, undefined);
             }
         }
     ];

@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
+import { error, Test, testEquality } from 'azle/test';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -14,13 +14,9 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/res-send`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'Just testing res.send'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'Just testing res.send');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -31,13 +27,9 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/res-write`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'Why hello there sir'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'Why hello there sir');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -48,15 +40,12 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/file-stream`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok:
-                            responseText ===
-                            'I have written some text to this file'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        responseText,
+                        'I have written some text to this file'
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -67,13 +56,9 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/global-state`);
                     const responseJson = await response.json();
 
-                    return {
-                        Ok: JSON.stringify({}) === JSON.stringify(responseJson)
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality({}, responseJson);
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -84,16 +69,12 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/500`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok:
-                            response.status === 500 &&
-                            response.statusText === 'Internal Server Error' &&
-                            responseText === 'Internal Server Error'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        [response.status, response.statusText, responseText],
+                        [500, 'Internal Server Error', 'Internal Server Error']
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -104,13 +85,9 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/send-file`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'Does this work too?'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'Does this work too?');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -121,15 +98,12 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/test.html`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok:
-                            responseText ===
-                            '<!DOCTYPE html><html><body>HTML from the filesystem</body></html>'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        responseText,
+                        '<!DOCTYPE html><html><body>HTML from the filesystem</body></html>'
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -154,17 +128,12 @@ export function getTests(canisterId: string): Test[] {
                     const getResponse = await fetch(`${origin}/global-state`);
                     const getResponseJson = await getResponse.json();
 
-                    return {
-                        Ok:
-                            JSON.stringify(json) ===
-                                JSON.stringify(postResponseJson) &&
-                            JSON.stringify(json) ===
-                                JSON.stringify(getResponseJson)
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        [postResponseJson, getResponseJson],
+                        [json, json]
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -189,17 +158,12 @@ export function getTests(canisterId: string): Test[] {
                     const getResponse = await fetch(`${origin}/global-state`);
                     const getResponseJson = await getResponse.json();
 
-                    return {
-                        Ok:
-                            JSON.stringify(json) ===
-                                JSON.stringify(putResponseJson) &&
-                            JSON.stringify(json) ===
-                                JSON.stringify(getResponseJson)
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        [putResponseJson, getResponseJson],
+                        [json, json]
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -224,17 +188,12 @@ export function getTests(canisterId: string): Test[] {
                     const getResponse = await fetch(`${origin}/global-state`);
                     const getResponseJson = await getResponse.json();
 
-                    return {
-                        Ok:
-                            JSON.stringify(json) ===
-                                JSON.stringify(patchResponseJson) &&
-                            JSON.stringify(json) ===
-                                JSON.stringify(getResponseJson)
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        [patchResponseJson, getResponseJson],
+                        [json, json]
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -253,17 +212,12 @@ export function getTests(canisterId: string): Test[] {
                     const getResponse = await fetch(`${origin}/global-state`);
                     const getResponseJson = await getResponse.json();
 
-                    return {
-                        Ok:
-                            JSON.stringify({}) ===
-                                JSON.stringify(deleteResponseJson) &&
-                            JSON.stringify({}) ===
-                                JSON.stringify(getResponseJson)
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        [deleteResponseJson, getResponseJson],
+                        [{}, {}]
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -274,13 +228,9 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/router/user/345`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === '345'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, '345');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -293,13 +243,9 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === '657'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, '657');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         }

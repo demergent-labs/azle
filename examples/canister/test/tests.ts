@@ -1,7 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { getCanisterId } from 'azle/dfx';
-import { equals, Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/canister/canister.did';
 
@@ -14,7 +14,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test[] {
                     Principal.fromText('aaaaa-aa')
                 );
 
-                return equals(result.toText(), 'aaaaa-aa');
+                return testEquality(result.toText(), 'aaaaa-aa');
             }
         },
         {
@@ -22,7 +22,10 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await canister.canisterReturnType();
 
-                return equals(result.toText(), getCanisterId('some_canister'));
+                return testEquality(
+                    result.toText(),
+                    getCanisterId('some_canister')
+                );
             }
         },
         {
@@ -30,7 +33,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await canister.canisterNestedReturnType();
 
-                return equals(
+                return testEquality(
                     result.someCanister.toText(),
                     getCanisterId('some_canister')
                 );
@@ -45,7 +48,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test[] {
                 ];
                 const result = await canister.canisterList(expected);
 
-                return equals(result, expected, {
+                return testEquality(result, expected, {
                     toString: (principal: Principal) => principal.toText()
                 });
             }
@@ -57,7 +60,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test[] {
                     Principal.fromText(getCanisterId('some_canister'))
                 );
 
-                return equals(result, 'SomeCanister update1');
+                return testEquality(result, 'SomeCanister update1');
             }
         }
     ];

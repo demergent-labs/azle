@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { equals, Test } from 'azle/test';
+import { error, Test, testEquality } from 'azle/test';
 import { writeFileSync } from 'fs';
 
 export const originalServerTs = `import express from 'express';
@@ -48,11 +48,9 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/test`);
                     const responseText = await response.text();
 
-                    return equals(responseText, 'test');
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'test');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -73,11 +71,9 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/test-changed`);
                     const responseText = await response.text();
 
-                    return equals(responseText, 'test-changed');
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'test-changed');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -98,11 +94,9 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/test`);
                     const responseText = await response.text();
 
-                    return equals(responseText, 'test');
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'test');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -133,11 +127,9 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return equals(responseText, 'test-changed-rapidly');
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'test-changed-rapidly');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -158,11 +150,9 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/test`);
                     const responseText = await response.text();
 
-                    return equals(responseText, 'test');
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'test');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         }

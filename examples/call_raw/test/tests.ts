@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { createTestResult, Test } from 'azle/test';
+import { Test, test } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/call_raw/call_raw.did';
 
@@ -22,8 +22,8 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
                     };
                 }
 
-                return createTestResult(
-                    () => result.Ok.includes('blob'),
+                return test(
+                    result.Ok.includes('blob'),
                     `Expected result to be a candid blob. Received ${result.Ok}`
                 );
             }
@@ -44,9 +44,8 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
                     };
                 }
 
-                return createTestResult(
-                    () =>
-                        result.Ok.includes('record') &&
+                return test(
+                    result.Ok.includes('record') &&
                         result.Ok.includes('principal'),
                     `Expected result to be a CreateCanisterResult (a record with a single field that is a principal). Received ${result.Ok}`
                 );
@@ -68,8 +67,8 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
                     };
                 }
 
-                return createTestResult(
-                    () => result.Ok.includes('blob'),
+                return test(
+                    result.Ok.includes('blob'),
                     `Expected result to be a candid blob. Received ${result.Ok}`
                 );
             }
@@ -90,9 +89,8 @@ export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
                     };
                 }
 
-                return createTestResult(
-                    () =>
-                        result.Ok.includes('record') &&
+                return test(
+                    result.Ok.includes('record') &&
                         result.Ok.includes('principal'),
                     `Expected result to be a CreateCanisterResult (a record with a single field that is a principal). Received ${result.Ok}`
                 );

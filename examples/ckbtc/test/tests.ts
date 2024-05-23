@@ -2,7 +2,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { getCanisterId } from 'azle/dfx';
-import { AzleResult, equals, pass, Test } from 'azle/test';
+import { AzleResult, succeed, Test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 
 // @ts-ignore
@@ -43,29 +43,25 @@ export function getTests(): Test[] {
             }
         },
         {
-            name: 'getDepositAddress',
+            name: 'test length of getDepositAddress',
             test: async () => {
                 let config = db[0];
 
                 config.depositAddress =
                     await config.canister.getDepositAddress();
 
-                return equals(config.depositAddress.length, 44, {
-                    errMessage: `Expected the deposit address to be 44 long. Received ${config.depositAddress.length}`
-                });
+                return testEquality(config.depositAddress.length, 44);
             }
         },
         {
-            name: 'getDepositAddress',
+            name: 'test length of getDepositAddress',
             test: async () => {
                 let config = db[1];
 
                 config.depositAddress =
                     await config.canister.getDepositAddress();
 
-                return equals(config.depositAddress.length, 44, {
-                    errMessage: `Expected the deposit address to be 44 long. Received ${config.depositAddress.length}`
-                });
+                return testEquality(config.depositAddress.length, 44);
             }
         },
         {
@@ -90,7 +86,7 @@ export function getTests(): Test[] {
                     return { Err: Object.keys(updateBalanceResult.Err)[0] };
                 }
 
-                return pass();
+                return succeed();
             }
         },
         {
@@ -104,7 +100,7 @@ export function getTests(): Test[] {
                 if ('Err' in updateBalanceResult) {
                     const errorType = Object.keys(updateBalanceResult.Err)[0];
 
-                    return equals(errorType, 'NoNewUtxos');
+                    return testEquality(errorType, 'NoNewUtxos');
                 }
                 return {
                     Err: `Expected principal ${config.caller} to not have new UTXOs`
@@ -138,7 +134,7 @@ export function getTests(): Test[] {
                 }
 
                 const transferIndex = tranferResult.Ok;
-                return equals(transferIndex, 1n);
+                return testEquality(transferIndex, 1n);
             }
         },
         {
@@ -182,5 +178,5 @@ async function testGetBalance(
 ): Promise<AzleResult<string>> {
     const config = db[account];
     const balance = await config.canister.getBalance();
-    return equals(balance, expectedBalance);
+    return testEquality(balance, expectedBalance);
 }

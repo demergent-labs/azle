@@ -3,7 +3,7 @@ dns.setDefaultResultOrder('ipv4first');
 
 import { jsonParse, jsonStringify } from 'azle';
 import { GetUtxosResult, Utxo } from 'azle/canisters/management';
-import { AzleResult, equals, Test } from 'azle/test';
+import { Test, test, testEquality } from 'azle/test';
 import { Transaction } from 'bitcoinjs-lib';
 
 import {
@@ -43,14 +43,11 @@ export function getTests(
             }
         },
         {
-            name: '/get-address',
+            name: 'check length of address from /get-address',
             test: async () => {
                 const address = await getAddress(origin);
 
-                return equals(addressForm, address, {
-                    equals: (actual: string, expected: string) =>
-                        actual.length === expected.length
-                });
+                return testEquality(address.length, addressForm.length);
             }
         },
         {
@@ -59,7 +56,7 @@ export function getTests(
                 const address = await getAddress(origin);
                 const balance = await getBalance(origin, address);
 
-                return equals(balance, 0n);
+                return testEquality(balance, 0n);
             }
         },
         {
@@ -76,7 +73,7 @@ export function getTests(
                 const address = await getAddress(origin);
                 const balance = await getBalance(origin, address);
 
-                return equals(
+                return testEquality(
                     balance,
                     SINGLE_BLOCK_REWARD * BigInt(FIRST_MINING_SESSION)
                 );
@@ -95,22 +92,19 @@ export function getTests(
                     await response.text()
                 );
 
-                return equals(utxosResult, FIRST_MINING_SESSION, {
-                    equals: (actual: GetUtxosResult, expected: number) => {
-                        return (
-                            actual.tip_height === expected &&
-                            actual.utxos.length === expected &&
-                            checkUtxos(actual.utxos)
-                        );
-                    },
-                    errMessage: `Expected tip height and utxo count to be ${FIRST_MINING_SESSION}.\n Received: ${jsonStringify(
+                // TODO I mean I guess we could compare [utxoResult.tip_height, utxoResult.utxos.length, checkUtxos(utxosResult.utxos)] and [FIRST_MINING_SESSION, FIRST_MINING_SESSION, true]
+                return test(
+                    utxosResult.tip_height === FIRST_MINING_SESSION &&
+                        utxosResult.utxos.length === FIRST_MINING_SESSION &&
+                        checkUtxos(utxosResult.utxos),
+                    `Expected tip height and utxo count to be ${FIRST_MINING_SESSION}. Expected all utxos to have one output with the value of a single block reward.\n Received: ${jsonStringify(
                         utxosResult
                     )}`
-                });
+                );
             }
         },
         {
-            name: '/get-current-fee-percentiles',
+            name: 'test length of list of fee percentiles from /get-current-fee-percentiles',
             test: async () => {
                 const response = await fetch(
                     `${origin}/get-current-fee-percentiles`,
@@ -120,7 +114,7 @@ export function getTests(
                 const feePercentiles = jsonParse(await response.text());
 
                 // Though blocks are mined no transactions have happened yet so the list should still be empty
-                return checkFeePercentile(feePercentiles, 0);
+                return testEquality(feePercentiles, 0);
             }
         },
         {
@@ -128,7 +122,7 @@ export function getTests(
             test: async () => {
                 const balance = await getBalance(origin, TO_ADDRESS);
 
-                return equals(balance, 0n);
+                return testEquality(balance, 0n);
             }
         },
         {
@@ -165,7 +159,7 @@ export function getTests(
                 const balance = await getBalance(origin, TO_ADDRESS);
                 const toAddressPreviousBalance = balance;
 
-                return equals(balance, FIRST_AMOUNT_SENT, {
+                return testEquality(balance, FIRST_AMOUNT_SENT, {
                     context: { ...context, toAddressPreviousBalance }
                 });
             }
@@ -189,13 +183,13 @@ export function getTests(
 
                 const expectedBalance = blockRewards - FIRST_AMOUNT_SENT - fee;
 
-                return equals(balance, expectedBalance, {
+                return testEquality(balance, expectedBalance, {
                     context: { ...context, canisterPreviousBalance }
                 });
             }
         },
         {
-            name: '/get-current-fee-percentiles',
+            name: 'test length of list of fee percentiles from /get-current-fee-percentiles',
             test: async () => {
                 const response = await fetch(
                     `${origin}/get-current-fee-percentiles`,
@@ -204,7 +198,7 @@ export function getTests(
 
                 const feePercentiles = jsonParse(await response.text());
 
-                return checkFeePercentile(feePercentiles, 101);
+                return testEquality(feePercentiles, 101);
             }
         },
         {
@@ -248,7 +242,7 @@ export function getTests(
                 const expectedBalance =
                     context.toAddressPreviousBalance + SECOND_AMOUNT_SENT;
 
-                return equals(balance, expectedBalance);
+                return testEquality(balance, expectedBalance);
             }
         },
         {
@@ -267,11 +261,11 @@ export function getTests(
                 const expectedBalance =
                     context.canisterPreviousBalance - SECOND_AMOUNT_SENT - fee;
 
-                return equals(balance, expectedBalance);
+                return testEquality(balance, expectedBalance);
             }
         },
         {
-            name: '/get-current-fee-percentiles',
+            name: 'test length of list of fee percentiles from /get-current-fee-percentiles',
             test: async () => {
                 const response = await fetch(
                     `${origin}/get-current-fee-percentiles`,
@@ -280,7 +274,7 @@ export function getTests(
 
                 const feePercentiles = jsonParse(await response.text());
 
-                return checkFeePercentile(feePercentiles, 101);
+                return testEquality(feePercentiles, 101);
             }
         },
         {
@@ -291,7 +285,7 @@ export function getTests(
         },
         { name: 'wait for blocks to settle', wait: 15_000 },
         {
-            name: '/get-current-fee-percentiles',
+            name: 'test length of list of fee percentiles from /get-current-fee-percentiles',
             test: async () => {
                 const response = await fetch(
                     `${origin}/get-current-fee-percentiles`,
@@ -300,10 +294,17 @@ export function getTests(
 
                 const feePercentiles = jsonParse(await response.text());
 
-                return checkFeePercentile(feePercentiles, 101);
+                return testEquality(feePercentiles, 101);
             }
         }
     ];
+}
+
+export async function getP2pkhAddress(origin: string): Promise<string> {
+    const response = await fetch(`${origin}/get-p2pkh-address`, {
+        headers: [['X-Ic-Force-Update', 'true']]
+    });
+    return await response.text();
 }
 
 /**
@@ -314,10 +315,7 @@ export function getTests(
  * @param totalInputValue
  * @returns
  */
-export function getFeeFromTransaction(
-    txid: string,
-    totalInputValue: bigint
-): bigint {
+function getFeeFromTransaction(txid: string, totalInputValue: bigint): bigint {
     const previousTransaction = getTransaction(txid);
     const outputValue = BigInt(getTotalOutput(previousTransaction));
     return totalInputValue - outputValue;
@@ -329,30 +327,20 @@ function getTotalOutput(tx: Transaction): number {
     }, 0);
 }
 
-export async function getP2pkhAddress(origin: string): Promise<string> {
-    const response = await fetch(`${origin}/get-p2pkh-address`, {
-        headers: [['X-Ic-Force-Update', 'true']]
-    });
-    return await response.text();
-}
-
-export async function getBalance(
-    origin: string,
-    address: string
-): Promise<bigint> {
+async function getBalance(origin: string, address: string): Promise<bigint> {
     const response = await fetch(`${origin}/get-balance?address=${address}`, {
         headers: [['X-Ic-Force-Update', 'true']]
     });
     return jsonParse(await response.text());
 }
 
-export function checkUtxos(utxos: Utxo[]): boolean {
+function checkUtxos(utxos: Utxo[]): boolean {
     return utxos.every(
         (utxo) => utxo.value === SINGLE_BLOCK_REWARD && utxo.outpoint.vout === 0
     );
 }
 
-export async function waitForMempool() {
+async function waitForMempool() {
     for (let i = 0; i < 60; i++) {
         if (getMempoolCount() > 0) {
             console.info('done waiting');
@@ -361,13 +349,4 @@ export async function waitForMempool() {
         await new Promise((resolve) => setTimeout(resolve, 1_000));
     }
     throw new Error('Timeout: Transaction was not added to the mempool');
-}
-
-function checkFeePercentile(
-    feePercentiles: any,
-    count: number
-): AzleResult<string, BasicBitcoinContext> {
-    return equals(feePercentiles.length, count, {
-        errMessage: `Expected ${count} fee percentiles, received: ${feePercentiles.length}`
-    });
 }

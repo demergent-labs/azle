@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { equals, Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/counter/counter.did';
 
@@ -10,7 +10,7 @@ export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counter_canister.readCount();
 
-                return equals(result, 0n);
+                return testEquality(result, 0n);
             }
         },
         {
@@ -18,7 +18,7 @@ export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counter_canister.incrementCount();
 
-                return equals(result, 1n);
+                return testEquality(result, 1n);
             }
         },
         {
@@ -26,7 +26,7 @@ export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counter_canister.incrementCount();
 
-                return equals(result, 2n);
+                return testEquality(result, 2n);
             }
         },
         {
@@ -34,7 +34,7 @@ export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counter_canister.incrementCount();
 
-                return equals(result, 3n);
+                return testEquality(result, 3n);
             }
         },
         {
@@ -42,7 +42,7 @@ export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counter_canister.readCount();
 
-                return equals(result, 3n);
+                return testEquality(result, 3n);
             }
         }
     ];

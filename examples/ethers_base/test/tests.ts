@@ -7,7 +7,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { equals, Test,test } from 'azle/test';
+import { Test, test, testEquality } from 'azle/test';
 
 let callerAddress: string;
 let canisterAddress: string;
@@ -67,7 +67,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return equals(responseJson.__bigint__, 0n);
+                return testEquality(responseJson.__bigint__, 0n);
             }
         },
         {
@@ -82,7 +82,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return equals(responseJson.__bigint__, 0n);
+                return testEquality(responseJson.__bigint__, 0n);
             }
         },
         {
@@ -101,10 +101,14 @@ export function getTests(canisterId: string): Test[] {
                 );
                 const responseText = await response.text();
 
-                return equals(responseText, 'transaction sent with hash:', {
-                    customEquals: (actual, expected) =>
-                        actual.startsWith(expected)
-                });
+                return testEquality(
+                    responseText,
+                    'transaction sent with hash:',
+                    {
+                        equals: (actual, expected) =>
+                            actual.startsWith(expected)
+                    }
+                );
             }
         },
         {
@@ -119,7 +123,10 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return equals(responseJson.__bigint__, 100_000_000_000_000n);
+                return testEquality(
+                    responseJson.__bigint__,
+                    100_000_000_000_000n
+                );
             }
         },
         {
@@ -138,10 +145,14 @@ export function getTests(canisterId: string): Test[] {
                 );
                 const responseText = await response.text();
 
-                return equals(responseText, 'transaction sent with hash:', {
-                    customEquals: (actual, expected) =>
-                        actual.startsWith(expected)
-                });
+                return testEquality(
+                    responseText,
+                    'transaction sent with hash:',
+                    {
+                        equals: (actual, expected) =>
+                            actual.startsWith(expected)
+                    }
+                );
             }
         },
         {
@@ -156,11 +167,11 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                const expetedBalance = 100_000_000_000_000n;
+                const expectedBalance = 100_000_000_000_000n;
 
                 return test(
-                    () => BigInt(responseJson.__bigint__) < expetedBalance,
-                    `Expected balance to be less than ${expetedBalance}. Received ${BigInt(
+                    BigInt(responseJson.__bigint__) < expectedBalance,
+                    `Expected balance to be less than ${expectedBalance}. Received ${BigInt(
                         responseJson.__bigint__
                     )}`
                 );
@@ -178,7 +189,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseJson = await response.json();
 
-                return equals(responseJson.__bigint__, 7n);
+                return testEquality(responseJson.__bigint__, 7n);
             }
         }
     ];

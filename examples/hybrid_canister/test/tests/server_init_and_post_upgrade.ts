@@ -1,5 +1,5 @@
 import { getCanisterId } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { error, Test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { createActor } from '../dfx_generated/server_init_and_post_upgrade';
@@ -36,21 +36,23 @@ export function getTests(): Test[] {
                     const candidQueryText = await actor.candidQuery();
                     const candidUpdateText = await actor.candidUpdate();
 
-                    return {
-                        Ok:
-                            httpQueryResponseText ===
-                                'http-query-server-init-and-post-upgrade-init' &&
-                            httpUpdateResponseText ===
-                                'http-update-server-init-and-post-upgrade-init' &&
-                            candidQueryText ===
-                                'candidQueryServerInitAndPostUpgrade-init' &&
-                            candidUpdateText ===
-                                'candidUpdateServerInitAndPostUpgrade-init'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        [
+                            httpQueryResponseText,
+                            httpUpdateResponseText,
+                            candidQueryText,
+                            candidUpdateText
+                        ],
+
+                        [
+                            'http-query-server-init-and-post-upgrade-init',
+                            'http-update-server-init-and-post-upgrade-init',
+                            'candidQueryServerInitAndPostUpgrade-init',
+                            'candidUpdateServerInitAndPostUpgrade-init'
+                        ]
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -87,21 +89,23 @@ export function getTests(): Test[] {
                     const candidQueryText = await actor.candidQuery();
                     const candidUpdateText = await actor.candidUpdate();
 
-                    return {
-                        Ok:
-                            httpQueryResponseText ===
-                                'http-query-server-init-and-post-upgrade-postUpgrade' &&
-                            httpUpdateResponseText ===
-                                'http-update-server-init-and-post-upgrade-postUpgrade' &&
-                            candidQueryText ===
-                                'candidQueryServerInitAndPostUpgrade-postUpgrade' &&
-                            candidUpdateText ===
-                                'candidUpdateServerInitAndPostUpgrade-postUpgrade'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        [
+                            httpQueryResponseText,
+                            httpUpdateResponseText,
+                            candidQueryText,
+                            candidUpdateText
+                        ],
+
+                        [
+                            'http-query-server-init-and-post-upgrade-postUpgrade',
+                            'http-update-server-init-and-post-upgrade-postUpgrade',
+                            'candidQueryServerInitAndPostUpgrade-postUpgrade',
+                            'candidUpdateServerInitAndPostUpgrade-postUpgrade'
+                        ]
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         }

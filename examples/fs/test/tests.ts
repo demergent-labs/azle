@@ -3,7 +3,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
+import { error, Test, testEquality } from 'azle/test';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 
@@ -24,13 +24,9 @@ export function getTests(canisterId: string): Test[] {
                     });
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'No. files written: 1'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'No. files written: 1');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -47,13 +43,9 @@ export function getTests(canisterId: string): Test[] {
                     });
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'No. files written: 1'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'No. files written: 1');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -66,13 +58,9 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'write file sync'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'write file');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -85,13 +73,9 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'write file'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'write file');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -107,13 +91,12 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'Directory public_sync created'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        responseText,
+                        'Directory just_public created'
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -129,13 +112,12 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'Directory just_public created'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        responseText,
+                        'Directory just_public created'
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -148,13 +130,9 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'true'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'false');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -167,13 +145,9 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'true'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'false');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -189,13 +163,12 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'File write-file-sync.txt deleted'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        responseText,
+                        'File write-file.txt deleted'
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -211,13 +184,12 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'File write-file.txt deleted'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        responseText,
+                        'File write-file.txt deleted'
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -233,13 +205,12 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'Directory public_sync deleted'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        responseText,
+                        'Directory just_public deleted'
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -255,13 +226,12 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'Directory just_public deleted'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        responseText,
+                        'Directory just_public deleted'
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -274,13 +244,9 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'false'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'false');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -293,13 +259,9 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'false'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'false');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -312,13 +274,9 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'false'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'false');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -331,13 +289,9 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'false'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, 'false');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -350,13 +304,9 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === '1'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText, '1');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -385,13 +335,9 @@ export function getTests(canisterId: string): Test[] {
 
                     const digestReadStream = hasherReadStream.digest('hex');
 
-                    return {
-                        Ok: digestFile === digestReadStream
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(digestReadStream, digestFile);
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -420,13 +366,9 @@ export function getTests(canisterId: string): Test[] {
 
                     const digestReadStream = hasherReadStream.digest('hex');
 
-                    return {
-                        Ok: digestFile === digestReadStream
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(digestReadStream, digestFile);
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         }

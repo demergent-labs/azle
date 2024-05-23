@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { equals, fail, Test } from 'azle/test';
+import { fail, Test, testEquality } from 'azle/test';
 
 import { _SERVICE as CANISTER1_SERVICE } from './dfx_generated/canister1/canister1.did';
 import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
@@ -14,7 +14,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.balance('0');
 
-                return equals(result, 100n);
+                return testEquality(result, 100n);
             }
         },
         {
@@ -39,7 +39,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.balance('1');
 
-                return equals(result, 0n);
+                return testEquality(result, 0n);
             }
         },
         {
@@ -49,7 +49,7 @@ export function get_tests(
                     id: '1'
                 });
 
-                return equals(result.length, 0);
+                return testEquality(result.length, 0);
             }
         },
         {
@@ -72,7 +72,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.transfer('0', '1', 34n);
 
-                return equals(result, 34n);
+                return testEquality(result, 34n);
             }
         },
         {
@@ -80,7 +80,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.balance('0');
 
-                return equals(result, 66n);
+                return testEquality(result, 66n);
             }
         },
         {
@@ -105,7 +105,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.balance('1');
 
-                return equals(result, 34n);
+                return testEquality(result, 34n);
             }
         },
         {
@@ -164,7 +164,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister2.getNotification();
 
-                return equals(result, '');
+                return testEquality(result, '');
             }
         },
         {
@@ -172,7 +172,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister1.sendNotification();
 
-                return equals(result, undefined);
+                return testEquality(result, undefined);
             }
         },
         {
@@ -180,7 +180,7 @@ export function get_tests(
             test: async () => {
                 const result = await canister2.getNotification();
 
-                return equals(result, 'This is the notification');
+                return testEquality(result, 'This is the notification');
             }
         }
     ];

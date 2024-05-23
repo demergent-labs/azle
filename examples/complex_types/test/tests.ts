@@ -1,9 +1,10 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { createTestResult, equals, Test } from 'azle/test';
+import { Test, test, testEquality } from 'azle/test';
 
+import { User } from '../src/candid_types';
 import { _SERVICE } from './dfx_generated/complex_types/complex_types.did.d';
 
-const USER_1 = {
+const EXPECTED_USER_1: User = {
     id: 0,
     username: 'user1',
     threads: [],
@@ -20,8 +21,8 @@ export function get_tests(
             test: async () => {
                 const result = await complex_types_canister.getAllUsers(0);
 
-                return createTestResult(
-                    () => result.length === 0,
+                return test(
+                    result.length === 0,
                     `Expected no users, received ${result.length}`
                 );
             }
@@ -34,7 +35,7 @@ export function get_tests(
                     0
                 );
 
-                return equals(result, USER_1);
+                return testEquality(result, EXPECTED_USER_1);
             }
         },
         {
@@ -42,7 +43,7 @@ export function get_tests(
             test: async () => {
                 const result = await complex_types_canister.getAllUsers(0);
 
-                return equals(result, [USER_1]);
+                return testEquality(result, [EXPECTED_USER_1]);
             }
         }
     ];

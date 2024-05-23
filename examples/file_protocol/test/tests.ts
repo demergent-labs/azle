@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
+import { error, Test, testEquality } from 'azle/test';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -16,13 +16,9 @@ export function getTests(canisterId: string): Test[] {
                     );
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText.trim() === 'test0'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText.trim(), 'test0');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -39,13 +35,9 @@ export function getTests(canisterId: string): Test[] {
                     });
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText.trim() === 'test2'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText.trim(), 'test2');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -62,13 +54,9 @@ export function getTests(canisterId: string): Test[] {
                     });
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText.trim() === 'test3'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText.trim(), 'test3');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -85,13 +73,9 @@ export function getTests(canisterId: string): Test[] {
                     });
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText.trim() === 'test5'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseText.trim(), 'test5');
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         }

@@ -1,5 +1,5 @@
 import { getCanisterId } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { error, Test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { createActor } from '../dfx_generated/canister_init_and_post_upgrade';
@@ -36,17 +36,21 @@ export function getTests(): Test[] {
                     const candidQueryText = await actor.candidQuery();
                     const candidUpdateText = await actor.candidUpdate();
 
-                    return {
-                        Ok:
-                            httpQueryResponseText ===
-                                'http-query-canister-init-and-post-upgrade-init' &&
-                            httpUpdateResponseText ===
-                                'http-update-canister-init-and-post-upgrade-init' &&
-                            candidQueryText ===
-                                'candidQueryCanisterInitAndPostUpgrade-init' &&
-                            candidUpdateText ===
-                                'candidUpdateCanisterInitAndPostUpgrade-init'
-                    };
+                    return testEquality(
+                        [
+                            httpQueryResponseText,
+                            httpUpdateResponseText,
+                            candidQueryText,
+                            candidUpdateText
+                        ],
+
+                        [
+                            'http-query-canister-init-and-post-upgrade-init',
+                            'http-update-canister-init-and-post-upgrade-init',
+                            'candidQueryCanisterInitAndPostUpgrade-init',
+                            'candidUpdateCanisterInitAndPostUpgrade-init'
+                        ]
+                    );
                 } catch (error: any) {
                     return {
                         Err: error
@@ -87,21 +91,23 @@ export function getTests(): Test[] {
                     const candidQueryText = await actor.candidQuery();
                     const candidUpdateText = await actor.candidUpdate();
 
-                    return {
-                        Ok:
-                            httpQueryResponseText ===
-                                'http-query-canister-init-and-post-upgrade-postUpgrade' &&
-                            httpUpdateResponseText ===
-                                'http-update-canister-init-and-post-upgrade-postUpgrade' &&
-                            candidQueryText ===
-                                'candidQueryCanisterInitAndPostUpgrade-postUpgrade' &&
-                            candidUpdateText ===
-                                'candidUpdateCanisterInitAndPostUpgrade-postUpgrade'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        [
+                            httpQueryResponseText,
+                            httpUpdateResponseText,
+                            candidQueryText,
+                            candidUpdateText
+                        ],
+
+                        [
+                            'http-query-canister-init-and-post-upgrade-postUpgrade',
+                            'http-update-canister-init-and-post-upgrade-postUpgrade',
+                            'candidQueryCanisterInitAndPostUpgrade-postUpgrade',
+                            'candidUpdateCanisterInitAndPostUpgrade-postUpgrade'
+                        ]
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         }

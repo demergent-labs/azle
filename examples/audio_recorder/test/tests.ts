@@ -1,6 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { jsonStringify } from 'azle';
-import { equals, Test, test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/audio_recorder/audio_recorder.did';
 
@@ -24,17 +23,10 @@ export function get_tests(
                 const expectedUsername = 'lastmjs';
                 const expectedRecordingCount = 0;
 
-                return test<Context>(
-                    () =>
-                        user.username === expectedUsername &&
-                        user.recordingIds.length === expectedRecordingCount,
-                    `Expected user to have username: ${expectedUsername} and ${expectedRecordingCount}; received: ${jsonStringify(
-                        user
-                    )}`,
-                    {
-                        ...context, // TODO is this dishonest? That is context is for sure undefined at this point... But it lets me get away with not having user and recording typed as possibly undefined
-                        user
-                    }
+                return testEquality<Context>(
+                    [user.username, user.recordingIds.length],
+                    [expectedUsername, expectedRecordingCount],
+                    { context: { ...context, user } }
                 );
             }
         },
@@ -55,13 +47,13 @@ export function get_tests(
 
                 const recording = result.Ok;
 
-                return test<Context>(
-                    () =>
-                        recording.audio.length === 5 &&
-                        recording.name === 'First recording' &&
-                        recording.userId.toText() === context.user.id.toText(),
-                    `Expected `,
-                    { ...context, recording }
+                return testEquality(
+                    [
+                        recording.audio.length,
+                        recording.name,
+                        recording.userId.toText()
+                    ],
+                    [5, 'First recording', context.user.id.toText()]
                 );
             }
         },
@@ -70,7 +62,7 @@ export function get_tests(
             test: async (context) => {
                 const result = await audio_recorder_canister.readUsers();
 
-                return equals(result, [context.user]);
+                return testEquality(result, [context.user]);
             }
         },
         {
@@ -78,7 +70,7 @@ export function get_tests(
             test: async (context) => {
                 const result = await audio_recorder_canister.readRecordings();
 
-                return equals(result, [context.recording]);
+                return testEquality(result, [context.recording]);
             }
         },
         {
@@ -88,7 +80,7 @@ export function get_tests(
                     context.user.id
                 );
 
-                return equals(result, [context.user]);
+                return testEquality(result, [context.user]);
             }
         },
         {
@@ -98,7 +90,7 @@ export function get_tests(
                     context.recording.id
                 );
 
-                return equals(result, [context.recording]);
+                return testEquality(result, [context.recording]);
             }
         },
         {
@@ -124,16 +116,12 @@ export function get_tests(
                 const read_users_result =
                     await audio_recorder_canister.readUsers();
 
-                return test(
-                    () => {
-                        return (
-                            read_recordings_result.length === 0 &&
-                            read_users_result[0].recordingIds.length === 0
-                        );
-                    },
-                    `Expected recording to be deleted; received: ${jsonStringify(
-                        read_recordings_result
-                    )} ${jsonStringify(read_recordings_result)}`
+                return testEquality(
+                    [
+                        read_recordings_result.length,
+                        read_users_result[0].recordingIds.length
+                    ],
+                    [0, 0]
                 );
             }
         },
@@ -172,15 +160,15 @@ export function get_tests(
                 const read_recordings_after_result =
                     await audio_recorder_canister.readRecordings();
 
-                return test(() => {
-                    return (
-                        read_users_before_result[0].recordingIds.length === 1 &&
-                        read_recordings_before_result[0].userId.toText() ===
-                            context.user.id.toText() &&
-                        read_users_after_result.length === 0 &&
-                        read_recordings_after_result.length === 0
-                    );
-                }, `Expected user ${context.user.id.toText()} to be deleted. Received: ${read_users_after_result}`);
+                return testEquality(
+                    [
+                        read_users_before_result[0].recordingIds.length,
+                        read_recordings_before_result[0].userId.toText(),
+                        read_users_after_result.length,
+                        read_recordings_after_result.length
+                    ],
+                    [1, context.user.id.toText(), 0, 0]
+                );
             }
         }
     ];

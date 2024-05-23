@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { equals, Test } from 'azle/test';
+import { Test, test, testEquality } from 'azle/test';
 
 import { _SERVICE as CYCLESCANISTERSERVICE } from './dfx_generated/cycles/cycles.did';
 import { _SERVICE as INTERMEDIARYCANISTERSERVICE } from './dfx_generated/intermediary/intermediary.did';
@@ -22,21 +22,16 @@ export function getTests(
                 const cyclesCanister128Result =
                     await cyclesCanister.getCanisterBalance128();
 
-                return {
-                    Ok: {
-                        isSuccessful:
-                            intermediaryCallResult > 2_500_000_000_000n &&
-                            intermediaryCallResult < 4_000_000_000_000n &&
-                            cyclesCallResult > 2_500_000_000_000n &&
-                            cyclesCallResult < 4_000_000_000_000n &&
-                            intermediaryCanister128Result >
-                                2_500_000_000_000n &&
-                            intermediaryCanister128Result <
-                                4_000_000_000_000n &&
-                            cyclesCanister128Result > 2_500_000_000_000n &&
-                            cyclesCanister128Result < 4_000_000_000_000n
-                    }
-                };
+                return test(
+                    intermediaryCallResult > 2_500_000_000_000n &&
+                        intermediaryCallResult < 4_000_000_000_000n &&
+                        cyclesCallResult > 2_500_000_000_000n &&
+                        cyclesCallResult < 4_000_000_000_000n &&
+                        intermediaryCanister128Result > 2_500_000_000_000n &&
+                        intermediaryCanister128Result < 4_000_000_000_000n &&
+                        cyclesCanister128Result > 2_500_000_000_000n &&
+                        cyclesCanister128Result < 4_000_000_000_000n
+                );
             }
         },
         {
@@ -44,7 +39,7 @@ export function getTests(
             test: async () => {
                 const result = await cyclesCanister.receiveCycles();
 
-                return equals(result, 0n);
+                return testEquality(result, 0n);
             }
         },
         {
@@ -52,7 +47,7 @@ export function getTests(
             test: async () => {
                 const result = await cyclesCanister.receiveCycles128();
 
-                return equals(result, 0n);
+                return testEquality(result, 0n);
             }
         },
         {
@@ -71,7 +66,7 @@ export function getTests(
                 // const cyclesCanister128Result =
                 //     await cyclesCanister.getCanisterBalance128();
 
-                return equals(refundResult, 500_000n);
+                return testEquality(refundResult, 500_000n);
                 // intermediaryCallResult === 3_999_999_500_000n &&
                 // cyclesCallResult === 4_000_000_500_000n &&
                 // intermediaryCanister128Result === 3_999_999_500_000n &&
@@ -94,7 +89,7 @@ export function getTests(
                 // const cyclesCanister128Result =
                 //     await cyclesCanister.getCanisterBalance128();
 
-                return equals(refundResult, 500_000n);
+                return testEquality(refundResult, 500_000n);
                 // intermediaryCallResult === 3_999_999_500_000n &&
                 // cyclesCallResult === 4_000_000_500_000n &&
                 // intermediaryCanister128Result === 3_999_999_500_000n &&
@@ -118,7 +113,7 @@ export function getTests(
                 // const cyclesCanister128Result =
                 //     await cyclesCanister.getCanisterBalance128();
 
-                return equals(sendCyclesNotifyResult, undefined);
+                return testEquality(sendCyclesNotifyResult, undefined);
                 // intermediaryCallResult === 3_999_998_500_000n &&
                 // cyclesCallResult === 4_000_001_500_000n &&
                 // intermediaryCanister128Result === 3_999_998_500_000n &&
@@ -142,7 +137,7 @@ export function getTests(
                 // const cyclesCanister128Result =
                 //     await cyclesCanister.getCanisterBalance128();
 
-                return equals(sendCycles128NotifyResult, undefined);
+                return testEquality(sendCycles128NotifyResult, undefined);
                 // intermediaryCallResult === 3_999_998_500_000n &&
                 // cyclesCallResult === 4_000_001_500_000n &&
                 // intermediaryCanister128Result === 3_999_998_500_000n &&

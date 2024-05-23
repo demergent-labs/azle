@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { AzleResult, equals, ok, Test } from 'azle/test';
+import { AzleResult, ok, succeed, Test, test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { _SERVICE } from './dfx_generated/candid_encoding/candid_encoding.did';
@@ -218,15 +218,12 @@ export function get_tests(
                         Uint8Array.from(candid_encoded_byte_array)
                     );
 
-                return {
-                    Ok: {
-                        isSuccessful:
-                            candid_encoded.Ok.isSuccessful === true &&
-                            candid_decoded_result.includes('record') &&
-                            candid_decoded_result.includes('John') &&
-                            candid_decoded_result.includes('Doe')
-                    }
-                };
+                return test(
+                    candid_encoded.Ok.isSuccessful === true &&
+                        candid_decoded_result.includes('record') &&
+                        candid_decoded_result.includes('John') &&
+                        candid_decoded_result.includes('Doe')
+                );
             }
         },
         {
@@ -259,14 +256,11 @@ export function get_tests(
                         Uint8Array.from(candid_encoded_byte_array)
                     );
 
-                return {
-                    Ok: {
-                        isSuccessful:
-                            candid_encoded.Ok.isSuccessful === true &&
-                            candid_decoded_result.includes('variant') &&
-                            candid_decoded_result.includes('= true')
-                    }
-                };
+                return test(
+                    candid_encoded.Ok.isSuccessful === true &&
+                        candid_decoded_result.includes('variant') &&
+                        candid_decoded_result.includes('= true')
+                );
             }
         },
         {
@@ -336,7 +330,7 @@ function checkEncodeAndDecodeResults(
         return { Err: `Unreachable` };
     }
 
-    return { Ok: { isSuccessful: true } };
+    return succeed();
 }
 
 async function candid_encode_test(
@@ -353,7 +347,7 @@ async function candid_encode_test(
 
     const result = await candid_encoding_canister.candidEncode(candid_string);
 
-    return equals(result, candid_encoded_byte_array);
+    return testEquality(result, candid_encoded_byte_array);
 }
 
 async function candid_decode_test(
@@ -372,5 +366,5 @@ async function candid_decode_test(
         Uint8Array.from(candid_encoded_byte_array)
     );
 
-    return equals(result, candid_string);
+    return testEquality(result, candid_string);
 }
