@@ -4,7 +4,7 @@ import { copySync } from 'fs-extra';
 import { join } from 'path';
 
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
-import { getConsumerConfig } from './get_open_value_sharing_dependency_info';
+import { getConsumerConfig } from './get_consumer_config';
 import { execSyncPretty } from './utils/exec_sync_pretty';
 import { JSCanisterConfig, Toml } from './utils/types';
 
