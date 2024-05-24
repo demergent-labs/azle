@@ -13,9 +13,6 @@
         "typescript": "^5.2.2"
     },
     "openValueSharing": {
-        "weights": {
-            "azle": 9,
-            "express": 1
-        }
+        "killSwitch": false
     }
 }

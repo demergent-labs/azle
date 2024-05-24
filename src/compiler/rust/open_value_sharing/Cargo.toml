@@ -5,8 +5,8 @@ edition = "2018"
 
 [dependencies]
 serde = "1.0.202"
-serde_json = "1.0.107"
-candid = "0.10.2"
-
-# TODO this is just for logging
+serde_json = "1.0.117"
+candid = "0.10.8"
 ic-cdk = "0.12.1"
+ic-cdk-timers = "0.6.0"
+ic-stable-structures = "0.6.2"

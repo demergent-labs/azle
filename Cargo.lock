@@ -159,9 +159,9 @@ checksum = "c4872d67bab6358e59559027aa3b9157c53d9358c51423c17554809a8858e0f8"
 
 [[package]]
 name = "candid"
-version = "0.10.2"
+version = "0.10.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "39be580be172631a35cac2fc6c765f365709de459edb88121b3e7a80cce6c1ec"
+checksum = "dd5902d37352dffd8bd9177a2daa6444ce3cd0279c91763fb0171c053aa04335"
 dependencies = [
  "anyhow",
  "binread",
@@ -182,9 +182,9 @@ dependencies = [
 
 [[package]]
 name = "candid_derive"
-version = "0.6.5"
+version = "0.6.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "970c220da8aa2fa6f7ef5dbbf3ea5b620a59eb3ac107cfb95ae8c6eebdfb7a08"
+checksum = "3de398570c386726e7a59d9887b68763c481477f9a043fb998a2e09d428df1a9"
 dependencies = [
  "lazy_static",
  "proc-macro2",
@@ -1070,6 +1070,8 @@ version = "0.0.0"
 dependencies = [
  "candid",
  "ic-cdk",
+ "ic-cdk-timers",
+ "ic-stable-structures",
  "serde",
  "serde_json",
 ]
@@ -1410,9 +1412,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.107"
+version = "1.0.117"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6b420ce6e3d8bd882e9b243c6eed35dbc9a6110c9769e74b584e0d68d1f20c65"
+checksum = "455182ea6142b14f93f4bc5320a2b31c1f266b66a4a5c858b013302a5d8cbfc3"
 dependencies = [
  "itoa",
  "ryu",

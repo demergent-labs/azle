@@ -8,7 +8,9 @@ use ic_stable_structures::{
     DefaultMemoryImpl, StableBTreeMap, Storable,
 };
 use include_dir::{include_dir, Dir};
-use open_value_sharing::{open_value_sharing_periodic_payment, ConsumerConfig};
+use open_value_sharing::{
+    open_value_sharing_periodic_payment, ConsumerConfig, PeriodicPayout, PERIODIC_PAYOUTS,
+};
 use std::fs;
 use wasmedge_quickjs::AsObject;
 
@@ -198,11 +200,27 @@ fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
 #[ic_cdk_macros::update]
 pub fn _azle_chunk() {}
 
-#[ic_cdk_macros::update]
-pub async fn _azle_open_value_sharing_periodic_payment() {
-    let consumer_config = get_consumer_config("consumer_config.json").unwrap();
+// TODO should we keep this as a way to manually trigger a payment?
+// #[ic_cdk_macros::update]
+// pub async fn _azle_open_value_sharing_periodic_payment() {
+//     let consumer_config = get_consumer_config("consumer_config.json").unwrap();
 
-    open_value_sharing_periodic_payment(&consumer_config).await;
+//     open_value_sharing_periodic_payment(&consumer_config).await;
+// }
+
+#[ic_cdk_macros::query]
+pub fn _azle_open_value_sharing_last_periodic_payout() -> Option<PeriodicPayout> {
+    PERIODIC_PAYOUTS.with(|periodic_payouts| {
+        periodic_payouts
+            .borrow()
+            .last_key_value()
+            .map(|(_, &ref last_value)| last_value.clone())
+    })
+}
+
+#[ic_cdk_macros::query]
+pub fn _azle_open_value_sharing_all_periodic_payouts() -> Vec<PeriodicPayout> {
+    PERIODIC_PAYOUTS.with(|periodic_payouts| periodic_payouts.borrow().values().cloned().collect())
 }
 
 fn get_consumer_config(consumer_config_path: &str) -> Result<ConsumerConfig, String> {
