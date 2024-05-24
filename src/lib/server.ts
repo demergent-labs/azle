@@ -6,29 +6,25 @@ import { IncomingMessageForServer } from 'http';
 // @ts-ignore
 import httpMessageParser from 'http-message-parser';
 
-import {
-    blob,
-    bool,
-    CandidType,
-    Canister,
-    Func,
-    ic,
-    init,
-    Manual,
-    nat16,
-    None,
-    Opt,
-    postUpgrade,
-    query,
-    Record,
-    Some,
-    text,
-    Tuple,
-    update,
-    Variant,
-    Vec
-} from '.';
+import { CandidType } from './candid/candid_type';
+import { Manual } from './candid/manual';
+import { blob } from './candid/types/constructed/blob';
+import { None, Opt, Some } from './candid/types/constructed/opt';
+import { Record } from './candid/types/constructed/record';
+import { Tuple } from './candid/types/constructed/tuple';
+import { Variant } from './candid/types/constructed/variant';
+import { Vec } from './candid/types/constructed/vec';
+import { bool } from './candid/types/primitive/bool';
+import { nat16 } from './candid/types/primitive/nats/nat16';
+import { text } from './candid/types/primitive/text';
+import { Func } from './candid/types/reference/func';
+import { Canister } from './candid/types/reference/service/';
 import { CanisterOptions } from './candid/types/reference/service/canister_function';
+import { init } from './canister_methods/methods/init';
+import { postUpgrade } from './canister_methods/methods/post_upgrade';
+import { query } from './canister_methods/methods/query';
+import { update } from './canister_methods/methods/update';
+import { ic } from './ic';
 
 export type HeaderField = [text, text];
 export const HeaderField = Tuple(text, text);

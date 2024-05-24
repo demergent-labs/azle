@@ -5,7 +5,7 @@ import { execSync } from 'child_process';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const deepEqual = require('deep-is');
 
-import { jsonStringify } from '../src/lib';
+import { jsonStringify } from '../src/lib/json';
 
 export type Test<Context = any> = {
     name: string;
