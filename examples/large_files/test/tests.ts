@@ -4,7 +4,7 @@ dns.setDefaultResultOrder('ipv4first');
 import { generateIdentity, getCanisterId } from 'azle/dfx';
 import { hashFile } from 'azle/scripts/hash_file';
 import { createActor } from 'azle/src/compiler/file_uploader/uploader_actor';
-import { Test } from 'azle/test';
+import { error, Test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 import { rm } from 'fs/promises';
 import { join } from 'path';
@@ -283,9 +283,9 @@ function generateTest(
             const hash = await actor.get_file_hash(canisterFilePath);
 
             if (hash.length === 1) {
-                return { Ok: hash[0] === expectedHash };
+                return testEquality(hash[0], expectedHash);
             }
-            return { Err: `File not found on canister` };
+            return error(`File not found on canister`);
         }
     };
 }

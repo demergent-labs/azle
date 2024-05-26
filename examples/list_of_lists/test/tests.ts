@@ -1,24 +1,8 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { Test } from 'azle/test';
-import { deepEqual } from 'fast-equals';
+import { fail, Test, test, testEquality } from 'azle/test';
 
 import { _SERVICE } from '../dfx_generated/list_of_lists/list_of_lists.did';
-
-type DeepArray<T> = arr | Array<arr | DeepArray<T>>;
-
-type arr =
-    | BigInt64Array
-    | bigint[]
-    | number[]
-    | Int8Array
-    | Int16Array
-    | Int32Array
-    | BigInt64Array
-    | Uint8Array
-    | Uint16Array
-    | Uint32Array
-    | BigUint64Array;
 
 export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
@@ -29,9 +13,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfStringOne(expectedResult);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -44,9 +26,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfStringTwo(expectedResult);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -77,9 +57,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfStringFour(expectedResult);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -108,9 +86,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 ];
                 const result = await listOfListsCanister.listOfListOfInt8();
 
-                return {
-                    Ok: arrEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         // TODO we don't know we this just started breaking
@@ -141,9 +117,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfBool(expectedResult);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -153,9 +127,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfString(expectedResult);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -169,9 +141,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                         expectedResult
                     );
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -180,14 +150,12 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 try {
                     await listOfListsCanister.listOfEmpty();
                 } catch (error) {
-                    return {
-                        Ok: (error as any).message.startsWith('Call failed')
-                    };
+                    return test(
+                        (error as any).message.startsWith('Call failed')
+                    );
                 }
 
-                return {
-                    Ok: false
-                };
+                return fail();
             }
         },
         {
@@ -202,9 +170,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 ];
                 const result = await listOfListsCanister.listOfReserved();
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -221,15 +187,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfFunc(expectedResult);
 
-                return {
-                    Ok:
-                        expectedResult[0][0][0][0].toText() ===
-                            result[0][0][0][0].toText() &&
-                        expectedResult[0][0][0][1] === result[0][0][0][1] &&
-                        expectedResult[0][0][1][0].toText() ===
-                            result[0][0][1][0].toText() &&
-                        expectedResult[0][0][1][1] === result[0][0][1][1]
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -239,11 +197,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfPrincipal(expectedResult);
 
-                return {
-                    Ok:
-                        result[0][0][0].toText() ===
-                        expectedResult[0][0][0].toText()
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -253,9 +207,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfF64(expectedResult);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -265,11 +217,10 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfF32(expectedResult);
 
-                return {
-                    Ok:
-                        Math.round(expectedResult[0][0][0]) ===
-                        Math.round(result[0][0][0])
-                };
+                return testEquality(
+                    Math.round(result[0][0][0]),
+                    Math.round(expectedResult[0][0][0])
+                );
             }
         },
         {
@@ -285,9 +236,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfInt(expectedResult);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -297,9 +246,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfInt64(expectedResult);
 
-                return {
-                    Ok: arrEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -309,9 +256,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfInt32(expectedResult);
 
-                return {
-                    Ok: arrEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -321,9 +266,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfInt16(expectedResult);
 
-                return {
-                    Ok: arrEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -333,9 +276,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfInt8(expectedResult);
 
-                return {
-                    Ok: arrEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -345,9 +286,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfNat(expectedResult);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -357,9 +296,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfNat64(expectedResult);
 
-                return {
-                    Ok: arrEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -369,9 +306,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfNat32(expectedResult);
 
-                return {
-                    Ok: arrEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -381,9 +316,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfNat16(expectedResult);
 
-                return {
-                    Ok: arrEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -393,9 +326,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfNat8(expectedResult);
 
-                return {
-                    Ok: arrEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -421,9 +352,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfRecord(expectedResult);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -439,9 +368,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfVariant(expectedResult);
 
-                return {
-                    Ok: deepEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -453,9 +380,7 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfBlob(expectedResult);
 
-                return {
-                    Ok: arrEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -468,27 +393,8 @@ export function getTests(listOfListsCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await listOfListsCanister.listOfListOfBlob(expectedResult);
 
-                return {
-                    Ok: arrEqual(result, expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         }
     ];
-}
-
-function arrEqual<T>(a: DeepArray<T>, b: DeepArray<T>): boolean {
-    if (Array.isArray(a) && Array.isArray(b)) {
-        return (
-            a.length === b.length &&
-            (a as any).every((value: any, index: any) =>
-                arrEqual(value, (b as any)[index])
-            )
-        );
-    }
-    if (Array.isArray(a) || Array.isArray(b)) {
-        return false;
-    }
-    return (
-        a.length === b.length && a.every((value, index) => value === b[index])
-    );
 }

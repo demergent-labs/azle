@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/key_value_store/key_value_store.did';
 
@@ -12,9 +12,7 @@ export function getTests(
             test: async () => {
                 const result = await keyValueStoreCanister.get('0');
 
-                return {
-                    Ok: result.length === 0
-                };
+                return testEquality(result.length, 0);
             }
         },
         {
@@ -22,9 +20,7 @@ export function getTests(
             test: async () => {
                 const result = await keyValueStoreCanister.get('1');
 
-                return {
-                    Ok: result.length === 0
-                };
+                return testEquality(result.length, 0);
             }
         },
         {
@@ -32,9 +28,7 @@ export function getTests(
             test: async () => {
                 const result = await keyValueStoreCanister.set('0', 'zero');
 
-                return {
-                    Ok: result === undefined
-                };
+                return testEquality(result, undefined);
             }
         },
         {
@@ -42,29 +36,25 @@ export function getTests(
             test: async () => {
                 const result = await keyValueStoreCanister.set('1', 'one');
 
-                return {
-                    Ok: result === undefined
-                };
+                return testEquality(result, undefined);
             }
         },
         {
             name: 'get 0',
             test: async () => {
                 const result = await keyValueStoreCanister.get('0');
+                const expected = ['zero'];
 
-                return {
-                    Ok: result.length === 1 && result[0] === 'zero'
-                };
+                return testEquality(result, expected);
             }
         },
         {
             name: 'get 1',
             test: async () => {
                 const result = await keyValueStoreCanister.get('1');
+                const expected = ['one'];
 
-                return {
-                    Ok: result.length === 1 && result[0] === 'one'
-                };
+                return testEquality(result, expected);
             }
         }
     ];

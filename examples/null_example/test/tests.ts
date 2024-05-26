@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/null_example/null_example.did';
 
@@ -10,9 +10,7 @@ export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await nullExampleCanister.nullFunction(null);
 
-                return {
-                    Ok: result === null
-                };
+                return testEquality(result, null);
             }
         },
         {
@@ -20,9 +18,7 @@ export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await nullExampleCanister.voidIsNotNull();
 
-                return {
-                    Ok: result === undefined
-                };
+                return testEquality(result, undefined);
             }
         },
         {
@@ -37,12 +33,7 @@ export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
                     thirdItem: 3n
                 };
 
-                return {
-                    Ok:
-                        result.firstItem === record.firstItem &&
-                        result.secondItem === record.secondItem &&
-                        result.thirdItem === record.thirdItem
-                };
+                return testEquality(result, record);
             }
         },
         {
@@ -56,12 +47,7 @@ export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await nullExampleCanister.setPartiallyNullRecord(record);
 
-                return {
-                    Ok:
-                        result.firstItem === record.firstItem &&
-                        result.secondItem === record.secondItem &&
-                        result.thirdItem === record.thirdItem
-                };
+                return testEquality(result, record);
             }
         },
         {
@@ -73,11 +59,7 @@ export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
                     secondItem: null
                 };
 
-                return {
-                    Ok:
-                        result.firstItem === record.firstItem &&
-                        result.secondItem === record.secondItem
-                };
+                return testEquality(result, record);
             }
         },
         {
@@ -90,11 +72,7 @@ export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await nullExampleCanister.setSmallNullRecord(record);
 
-                return {
-                    Ok:
-                        result.firstItem === record.firstItem &&
-                        result.secondItem === record.secondItem
-                };
+                return testEquality(result, record);
             }
         },
         {
@@ -107,12 +85,7 @@ export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
                     thirdItem: null
                 };
 
-                return {
-                    Ok:
-                        result.firstItem === record.firstItem &&
-                        result.secondItem === record.secondItem &&
-                        result.thirdItem === record.thirdItem
-                };
+                return testEquality(result, record);
             }
         },
         {
@@ -126,12 +99,7 @@ export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await nullExampleCanister.setLargeNullRecord(record);
 
-                return {
-                    Ok:
-                        result.firstItem === record.firstItem &&
-                        result.secondItem === record.secondItem &&
-                        result.thirdItem === record.thirdItem
-                };
+                return testEquality(result, record);
             }
         }
     ];

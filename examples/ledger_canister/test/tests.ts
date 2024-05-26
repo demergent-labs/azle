@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { Test } from 'azle/test';
+import { Test, test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { _SERVICE } from './dfx_generated/ledger_canister/ledger_canister.did';
@@ -35,9 +35,7 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
                     ledgerCanisterAddress
                 );
 
-                return {
-                    Ok: result.e8s === 100_000_000_000n
-                };
+                return testEquality(result.e8s, 100_000_000_000n);
             }
         },
         {
@@ -45,9 +43,7 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await ledgerCanister.getTransferFee();
 
-                return {
-                    Ok: result.transfer_fee.e8s === 10_000n
-                };
+                return testEquality(result.transfer_fee.e8s, 10_000n);
             }
         },
         {
@@ -82,9 +78,8 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
                 const transfer_2 = result.blocks[1].transaction.operation[0];
                 const transfer_3 = result.blocks[2].transaction.operation[0];
 
-                return {
-                    Ok:
-                        transfer_1 !== undefined &&
+                return test(
+                    transfer_1 !== undefined &&
                         'Mint' in transfer_1 &&
                         transfer_1.Mint.amount.e8s === 100_000_000_000n &&
                         transfer_2 !== undefined &&
@@ -93,7 +88,7 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
                         transfer_3 !== undefined &&
                         'Transfer' in transfer_3 &&
                         transfer_3.Transfer.amount.e8s === 3_000_000n
-                };
+                );
             }
         },
         {
@@ -101,9 +96,7 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await ledgerCanister.getSymbol();
 
-                return {
-                    Ok: result === 'ICP'
-                };
+                return testEquality(result, 'ICP');
             }
         },
         {
@@ -111,9 +104,7 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await ledgerCanister.getName();
 
-                return {
-                    Ok: result === 'Internet Computer'
-                };
+                return testEquality(result, 'Internet Computer');
             }
         },
         {
@@ -121,9 +112,7 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await ledgerCanister.getDecimals();
 
-                return {
-                    Ok: result === 8
-                };
+                return testEquality(result, 8);
             }
         },
         {
@@ -131,9 +120,7 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await ledgerCanister.getArchives();
 
-                return {
-                    Ok: result.archives.length === 0
-                };
+                return testEquality(result.archives.length, 0);
             }
         },
         {
@@ -152,9 +139,7 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
                     []
                 );
 
-                return {
-                    Ok: 'Ok' in result && result.Ok === 3n
-                };
+                return test('Ok' in result && result.Ok === 3n);
             }
         },
         {
@@ -170,9 +155,7 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {
                     ledgerCanisterAddress
                 );
 
-                return {
-                    Ok: result.e8s === 99_999_970_000n
-                };
+                return testEquality(result.e8s, 99_999_970_000n);
             }
         }
     ];
@@ -217,12 +200,11 @@ function getTransferErrorTests(
                     []
                 );
 
-                return {
-                    Ok:
-                        'Err' in result &&
+                return test(
+                    'Err' in result &&
                         'BadFee' in result.Err &&
                         result.Err.BadFee.expected_fee.e8s === 10_000n
-                };
+                );
             }
         },
         {
@@ -241,12 +223,11 @@ function getTransferErrorTests(
                     []
                 );
 
-                return {
-                    Ok:
-                        'Err' in result &&
+                return test(
+                    'Err' in result &&
                         'InsufficientFunds' in result.Err &&
                         result.Err.InsufficientFunds.balance.e8s === 0n
-                };
+                );
             }
         },
         {
@@ -287,13 +268,12 @@ function getTransferErrorTests(
                     ]
                 );
 
-                return {
-                    Ok:
-                        'Err' in result &&
+                return test(
+                    'Err' in result &&
                         'TxTooOld' in result.Err &&
                         result.Err.TxTooOld.allowed_window_nanos ===
                             86_400_000_000_000n
-                };
+                );
             }
         },
         {
@@ -315,9 +295,9 @@ function getTransferErrorTests(
                     ]
                 );
 
-                return {
-                    Ok: 'Err' in result && 'TxCreatedInFuture' in result.Err
-                };
+                return test(
+                    'Err' in result && 'TxCreatedInFuture' in result.Err
+                );
             }
         }
         // TODO I am not sure how to invoke this error
@@ -348,9 +328,7 @@ function getAddressFromPrincipalTests(
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === address
-                };
+                return testEquality(result, address);
             }
         },
         {
@@ -365,9 +343,7 @@ function getAddressFromPrincipalTests(
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === address
-                };
+                return testEquality(result, address);
             }
         },
         {
@@ -382,9 +358,7 @@ function getAddressFromPrincipalTests(
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === address
-                };
+                return testEquality(result, address);
             }
         },
         {
@@ -399,9 +373,7 @@ function getAddressFromPrincipalTests(
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === address
-                };
+                return testEquality(result, address);
             }
         },
         {
@@ -416,9 +388,7 @@ function getAddressFromPrincipalTests(
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === address
-                };
+                return testEquality(result, address);
             }
         },
         {
@@ -433,9 +403,7 @@ function getAddressFromPrincipalTests(
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === address
-                };
+                return testEquality(result, address);
             }
         },
         {
@@ -452,9 +420,7 @@ function getAddressFromPrincipalTests(
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === address
-                };
+                return testEquality(result, address);
             }
         },
         {
@@ -471,9 +437,7 @@ function getAddressFromPrincipalTests(
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === address
-                };
+                return testEquality(result, address);
             }
         },
         {
@@ -490,9 +454,7 @@ function getAddressFromPrincipalTests(
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === address
-                };
+                return testEquality(result, address);
             }
         },
         {
@@ -509,9 +471,7 @@ function getAddressFromPrincipalTests(
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === address
-                };
+                return testEquality(result, address);
             }
         }
     ];

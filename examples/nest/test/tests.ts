@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -13,9 +13,7 @@ export function getTests(canisterId: string): Test[] {
                 const response = await fetch(`${origin}/get`);
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'get'
-                };
+                return testEquality(responseText, 'get');
             }
         },
         {
@@ -26,9 +24,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'post'
-                };
+                return testEquality(responseText, 'post');
             }
         },
         {
@@ -39,9 +35,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'put'
-                };
+                return testEquality(responseText, 'put');
             }
         },
         {
@@ -52,9 +46,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'patch'
-                };
+                return testEquality(responseText, 'patch');
             }
         },
         {
@@ -65,9 +57,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'delete'
-                };
+                return testEquality(responseText, 'delete');
             }
         },
         {
@@ -75,10 +65,11 @@ export function getTests(canisterId: string): Test[] {
             test: async () => {
                 const response = await fetch(`${origin}/json`);
                 const responseJson = await response.json();
-
-                return {
-                    Ok: responseJson.hello === 'AppJson'
+                const expected = {
+                    hello: 'AppJson'
                 };
+
+                return testEquality(responseJson, expected);
             }
         },
         {
@@ -89,9 +80,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'AppHeaderValue'
-                };
+                return testEquality(responseText, 'AppHeaderValue');
             }
         },
         {
@@ -100,12 +89,10 @@ export function getTests(canisterId: string): Test[] {
                 const response = await fetch(`${origin}/http-code`);
                 const responseText = await response.text();
 
-                return {
-                    Ok:
-                        response.status === 418 &&
-                        response.statusText === `I'm a teapot` &&
-                        responseText === `App I'm a teapot`
-                };
+                return testEquality(
+                    [response.status, response.statusText, responseText],
+                    [418, `I'm a teapot`, `App I'm a teapot`]
+                );
             }
         },
         {
@@ -114,9 +101,7 @@ export function getTests(canisterId: string): Test[] {
                 const response = await fetch(`${origin}/query?hello=AppQuery`);
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'AppQuery'
-                };
+                return testEquality(responseText, 'AppQuery');
             }
         },
         {
@@ -131,9 +116,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'AppBody'
-                };
+                return testEquality(responseText, 'AppBody');
             }
         },
         {
@@ -144,9 +127,7 @@ export function getTests(canisterId: string): Test[] {
                 );
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'AppExpressRequest'
-                };
+                return testEquality(responseText, 'AppExpressRequest');
             }
         },
         {
@@ -155,9 +136,7 @@ export function getTests(canisterId: string): Test[] {
                 const response = await fetch(`${origin}/express-response`);
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'App Express Response'
-                };
+                return testEquality(responseText, 'App Express Response');
             }
         },
         {
@@ -166,9 +145,7 @@ export function getTests(canisterId: string): Test[] {
                 const response = await fetch(`${origin}/dogs/get`);
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'dogs get'
-                };
+                return testEquality(responseText, 'dogs get');
             }
         },
         {
@@ -179,9 +156,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'dogs post'
-                };
+                return testEquality(responseText, 'dogs post');
             }
         },
         {
@@ -192,9 +167,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'dogs put'
-                };
+                return testEquality(responseText, 'dogs put');
             }
         },
         {
@@ -205,9 +178,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'dogs patch'
-                };
+                return testEquality(responseText, 'dogs patch');
             }
         },
         {
@@ -218,9 +189,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'dogs delete'
-                };
+                return testEquality(responseText, 'dogs delete');
             }
         },
         {
@@ -228,10 +197,11 @@ export function getTests(canisterId: string): Test[] {
             test: async () => {
                 const response = await fetch(`${origin}/dogs/json`);
                 const responseJson = await response.json();
-
-                return {
-                    Ok: responseJson.hello === 'DogsJson'
+                const expected = {
+                    hello: 'DogsJson'
                 };
+
+                return testEquality(responseJson, expected);
             }
         },
         {
@@ -242,9 +212,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'DogsHeaderValue'
-                };
+                return testEquality(responseText, 'DogsHeaderValue');
             }
         },
         {
@@ -253,12 +221,10 @@ export function getTests(canisterId: string): Test[] {
                 const response = await fetch(`${origin}/dogs/http-code`);
                 const responseText = await response.text();
 
-                return {
-                    Ok:
-                        response.status === 418 &&
-                        response.statusText === `I'm a teapot` &&
-                        responseText === `Dogs I'm a teapot`
-                };
+                return testEquality(
+                    [response.status, response.statusText, responseText],
+                    [418, `I'm a teapot`, `Dogs I'm a teapot`]
+                );
             }
         },
         {
@@ -269,9 +235,7 @@ export function getTests(canisterId: string): Test[] {
                 );
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'DogsQuery'
-                };
+                return testEquality(responseText, 'DogsQuery');
             }
         },
         {
@@ -286,9 +250,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'DogsBody'
-                };
+                return testEquality(responseText, 'DogsBody');
             }
         },
         {
@@ -299,9 +261,7 @@ export function getTests(canisterId: string): Test[] {
                 );
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'DogsExpressRequest'
-                };
+                return testEquality(responseText, 'DogsExpressRequest');
             }
         },
         {
@@ -310,9 +270,7 @@ export function getTests(canisterId: string): Test[] {
                 const response = await fetch(`${origin}/dogs/express-response`);
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'Dogs Express Response'
-                };
+                return testEquality(responseText, 'Dogs Express Response');
             }
         },
         {
@@ -321,9 +279,7 @@ export function getTests(canisterId: string): Test[] {
                 const response = await fetch(`${origin}/cats/get`);
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'cats get'
-                };
+                return testEquality(responseText, 'cats get');
             }
         },
         {
@@ -334,9 +290,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'cats post'
-                };
+                return testEquality(responseText, 'cats post');
             }
         },
         {
@@ -347,9 +301,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'cats put'
-                };
+                return testEquality(responseText, 'cats put');
             }
         },
         {
@@ -360,9 +312,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'cats patch'
-                };
+                return testEquality(responseText, 'cats patch');
             }
         },
         {
@@ -373,9 +323,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'cats delete'
-                };
+                return testEquality(responseText, 'cats delete');
             }
         },
         {
@@ -383,10 +331,11 @@ export function getTests(canisterId: string): Test[] {
             test: async () => {
                 const response = await fetch(`${origin}/cats/json`);
                 const responseJson = await response.json();
-
-                return {
-                    Ok: responseJson.hello === 'CatsJson'
+                const expected = {
+                    hello: 'CatsJson'
                 };
+
+                return testEquality(responseJson, expected);
             }
         },
         {
@@ -397,9 +346,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'CatsHeaderValue'
-                };
+                return testEquality(responseText, 'CatsHeaderValue');
             }
         },
         {
@@ -408,12 +355,10 @@ export function getTests(canisterId: string): Test[] {
                 const response = await fetch(`${origin}/cats/http-code`);
                 const responseText = await response.text();
 
-                return {
-                    Ok:
-                        response.status === 418 &&
-                        response.statusText === `I'm a teapot` &&
-                        responseText === `Cats I'm a teapot`
-                };
+                return testEquality(
+                    [response.status, response.statusText, responseText],
+                    [418, `I'm a teapot`, `Cats I'm a teapot`]
+                );
             }
         },
         {
@@ -424,9 +369,7 @@ export function getTests(canisterId: string): Test[] {
                 );
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'CatsQuery'
-                };
+                return testEquality(responseText, 'CatsQuery');
             }
         },
         {
@@ -441,9 +384,7 @@ export function getTests(canisterId: string): Test[] {
                 });
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'CatsBody'
-                };
+                return testEquality(responseText, 'CatsBody');
             }
         },
         {
@@ -454,9 +395,7 @@ export function getTests(canisterId: string): Test[] {
                 );
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'CatsExpressRequest'
-                };
+                return testEquality(responseText, 'CatsExpressRequest');
             }
         },
         {
@@ -465,9 +404,7 @@ export function getTests(canisterId: string): Test[] {
                 const response = await fetch(`${origin}/cats/express-response`);
                 const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'Cats Express Response'
-                };
+                return testEquality(responseText, 'Cats Express Response');
             }
         }
     ];

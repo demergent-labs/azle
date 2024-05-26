@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { Test } from 'azle/test';
+import { Test, test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/proxy/proxy.did';
 
@@ -16,9 +16,8 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
                 const [thirdDatumName, thirdDatumValue] = result[2];
                 const [fourthDatumName, fourthDatumValue] = result[3];
 
-                return {
-                    Ok:
-                        firstDatumName === 'icrc1:name' &&
+                return test(
+                    firstDatumName === 'icrc1:name' &&
                         'Text' in firstDatumValue &&
                         firstDatumValue.Text === 'Azle' &&
                         secondDatumName === 'icrc1:symbol' &&
@@ -30,7 +29,7 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
                         fourthDatumName === 'icrc1:fee' &&
                         'Nat' in fourthDatumValue &&
                         fourthDatumValue.Nat === 0n
-                };
+                );
             }
         },
         {
@@ -38,9 +37,7 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await proxyCanister.icrc1_name();
 
-                return {
-                    Ok: result === 'Azle'
-                };
+                return testEquality(result, 'Azle');
             }
         },
         {
@@ -48,9 +45,7 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await proxyCanister.icrc1_decimals();
 
-                return {
-                    Ok: result === 8
-                };
+                return testEquality(result, 8);
             }
         },
         {
@@ -58,9 +53,7 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await proxyCanister.icrc1_symbol();
 
-                return {
-                    Ok: result === 'AZLE'
-                };
+                return testEquality(result, 'AZLE');
             }
         },
         {
@@ -68,9 +61,7 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await proxyCanister.icrc1_fee();
 
-                return {
-                    Ok: result === 0n
-                };
+                return testEquality(result, 0n);
             }
         },
         {
@@ -78,9 +69,7 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await proxyCanister.icrc1_total_supply();
 
-                return {
-                    Ok: result === 1_000_000n
-                };
+                return testEquality(result, 1_000_000n);
             }
         },
         {
@@ -88,9 +77,7 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await proxyCanister.icrc1_minting_account();
 
-                return {
-                    Ok: result[0]?.owner.toText() === '2vxsx-fae'
-                };
+                return testEquality(result[0]?.owner.toText(), '2vxsx-fae');
             }
         },
         {
@@ -101,9 +88,7 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
                     subaccount: []
                 });
 
-                return {
-                    Ok: result === 1_000_000n
-                };
+                return testEquality(result, 1_000_000n);
             }
         },
         {
@@ -123,9 +108,7 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
                     created_at_time: []
                 });
 
-                return {
-                    Ok: 'Ok' in result && result.Ok === 1n
-                };
+                return test('Ok' in result && result.Ok === 1n);
             }
         },
         {
@@ -133,15 +116,14 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await proxyCanister.icrc1_supported_standards();
 
-                return {
-                    Ok:
-                        result[0].url ===
-                            'https://github.com/dfinity/ICRC-1/tree/main/standards/ICRC-1' &&
+                return test(
+                    result[0].url ===
+                        'https://github.com/dfinity/ICRC-1/tree/main/standards/ICRC-1' &&
                         result[0].name === 'ICRC-1' &&
                         result[1].url ===
                             'https://github.com/dfinity/ICRC-1/tree/main/standards/ICRC-2' &&
                         result[1].name === 'ICRC-2'
-                };
+                );
             }
         },
         {
@@ -163,16 +145,13 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
                     created_at_time: []
                 });
 
-                return {
-                    Ok: 'Ok' in result && result.Ok === 2n
-                };
+                return test('Ok' in result && result.Ok === 2n);
             }
         },
         {
             name: 'icrc2_transfer_from',
             test: async () => {
                 const result = await proxyCanister.icrc2_transfer_from({
-                    spender_subaccount: [],
                     from: {
                         owner: Principal.fromText(
                             'r7inp-6aaaa-aaaaa-aaabq-cai'
@@ -191,9 +170,7 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
                     created_at_time: []
                 });
 
-                return {
-                    Ok: 'Ok' in result && result.Ok === 3n
-                };
+                return test('Ok' in result && result.Ok === 3n);
             }
         },
         {
@@ -214,9 +191,7 @@ export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
                     }
                 });
 
-                return {
-                    Ok: result.allowance === 1n
-                };
+                return testEquality(result.allowance, 1n);
             }
         }
     ];

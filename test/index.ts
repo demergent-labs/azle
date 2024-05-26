@@ -180,6 +180,7 @@ type EqualsOptions<Context> = {
 };
 
 // TODO is is better test framework conformity to call this assertEqual? I'll hold off for now, it should be easy to search for all testEquality and change it, easier than assertEqual I think
+// TODO so based on this I think I've actually seen this in other testing frameworks, assertEquals will take two and make sure they are equals, and assert will take one boolean. Right now we have test instead of assert but it would be easy to change
 export function testEquality<Context, T = any>(
     actual: T,
     expected: T,

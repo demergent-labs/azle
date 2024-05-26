@@ -3,7 +3,7 @@ dns.setDefaultResultOrder('ipv4first');
 
 import { Principal } from '@dfinity/principal';
 import { getCanisterOrigin } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { fail, succeed, Test } from 'azle/test';
 import puppeteer from 'puppeteer';
 
 export function getTests(canisterName: string): Test[] {
@@ -73,9 +73,7 @@ export function getTests(canisterName: string): Test[] {
                 );
 
                 if (whoamiPrincipal === null) {
-                    return {
-                        Ok: false
-                    };
+                    return fail();
                 }
 
                 const whoamiPrincipalTextBefore = await mainPage.evaluate(
@@ -89,9 +87,7 @@ export function getTests(canisterName: string): Test[] {
                         whoamiPrincipalTextBefore
                     ).isAnonymous() === false
                 ) {
-                    return {
-                        Ok: false
-                    };
+                    return fail();
                 }
 
                 // TODO I do not know why this wait is required
@@ -112,16 +108,12 @@ export function getTests(canisterName: string): Test[] {
                         whoamiPrincipalTextAfter
                     ).isAnonymous() === true
                 ) {
-                    return {
-                        Ok: false
-                    };
+                    return fail();
                 }
 
                 await browser.close();
 
-                return {
-                    Ok: true
-                };
+                return succeed();
             }
         }
     ];

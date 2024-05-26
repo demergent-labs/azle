@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { fail, Test, test } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/inspect_message/inspect_message.did';
 
@@ -13,14 +13,10 @@ export function getTests(
                 try {
                     const result = await inspectMessageCanister.accessible();
 
-                    return {
-                        Ok: result === true
-                    };
+                    return test(result);
                 } catch (error) {
                     console.error(error);
-                    return {
-                        Ok: false
-                    };
+                    return fail();
                 }
             }
         },
@@ -30,13 +26,9 @@ export function getTests(
                 try {
                     await inspectMessageCanister.inaccessible();
 
-                    return {
-                        Ok: false
-                    };
+                    return fail();
                 } catch (error: any) {
-                    return {
-                        Ok: error.message.includes('IC0406')
-                    };
+                    return test(error.message.includes('IC0406'));
                 }
             }
         },
@@ -46,13 +38,9 @@ export function getTests(
                 try {
                     await inspectMessageCanister.alsoInaccessible();
 
-                    return {
-                        Ok: false
-                    };
+                    return fail();
                 } catch (error: any) {
-                    return {
-                        Ok: error.message.includes('IC0503')
-                    };
+                    return test(error.message.includes('IC0503'));
                 }
             }
         }

@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { fail, succeed, Test, test, testEquality } from 'azle/test';
 import { readFileSync } from 'fs';
 
 import { _SERVICE } from './dfx_generated/management_canister/management_canister.did';
@@ -11,11 +11,10 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await managementCanister.executeCreateCanister();
 
-                return {
-                    Ok:
-                        result.canister_id !== undefined &&
+                return test(
+                    result.canister_id !== undefined &&
                         result.canister_id !== null
-                };
+                );
             }
         },
         {
@@ -33,12 +32,13 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const canisterSettings = getCanisterStatusResult.settings;
 
-                return {
-                    Ok:
-                        canisterSettings.compute_allocation === 1n &&
-                        canisterSettings.memory_allocation === 3_000_000n &&
-                        canisterSettings.freezing_threshold === 2_000_000n
-                };
+                const actual = [
+                    canisterSettings.compute_allocation,
+                    canisterSettings.memory_allocation,
+                    canisterSettings.freezing_threshold
+                ];
+                const expected = [1n, 3_000_000n, 2_000_000n];
+                return testEquality(actual, expected);
             }
         },
         {
@@ -55,9 +55,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                     wasmModule as any
                 );
 
-                return {
-                    Ok: result
-                };
+                return test(result);
             }
         },
         {
@@ -82,9 +80,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const cyclesAfter = statusAfter.cycles;
 
-                return {
-                    Ok: cyclesAfter > cyclesBefore
-                };
+                return test(cyclesAfter > cyclesBefore);
             }
         },
         {
@@ -102,9 +98,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const canisterStatus = getCanisterStatusResult;
 
-                return {
-                    Ok: canisterStatus.module_hash.length === 0
-                };
+                return testEquality(canisterStatus.module_hash.length, 0);
             }
         },
         {
@@ -122,9 +116,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const canisterStatus = getCanisterStatusResult;
 
-                return {
-                    Ok: 'stopped' in canisterStatus.status
-                };
+                return test('stopped' in canisterStatus.status);
             }
         },
         {
@@ -141,9 +133,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                 const canisterStatusBefore = getCanisterStatusBeforeResult;
 
                 if ('stopped' in canisterStatusBefore.status === false) {
-                    return {
-                        Ok: false
-                    };
+                    return fail();
                 }
 
                 await managementCanister.executeStartCanister(canisterId);
@@ -155,9 +145,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const canisterStatusAfter = getCanisterStatusAfterResult;
 
-                return {
-                    Ok: 'running' in canisterStatusAfter.status
-                };
+                return test('running' in canisterStatusAfter.status);
             }
         },
         {
@@ -173,9 +161,8 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 const canisterStatus = getCanisterStatusResult;
 
-                return {
-                    Ok:
-                        'running' in canisterStatus.status &&
+                return test(
+                    'running' in canisterStatus.status &&
                         canisterStatus.memory_size === 342n &&
                         canisterStatus.cycles >= 800_000_000_000n &&
                         canisterStatus.settings.freezing_threshold ===
@@ -185,7 +172,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                             3_000_000n &&
                         canisterStatus.settings.compute_allocation === 1n &&
                         canisterStatus.module_hash.length === 0
-                };
+                );
             }
         },
         {
@@ -199,13 +186,14 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
                     num_requested_changes: [50n]
                 });
 
-                return {
-                    Ok:
-                        canisterInfo.total_num_changes === 3n &&
-                        canisterInfo.recent_changes.length === 3 &&
-                        canisterInfo.module_hash.length === 0 &&
-                        canisterInfo.controllers.length === 1
-                };
+                const actual = [
+                    canisterInfo.total_num_changes,
+                    canisterInfo.recent_changes.length,
+                    canisterInfo.module_hash.length,
+                    canisterInfo.controllers.length
+                ];
+                const expected = [3n, 3, 0, 1];
+                return testEquality(actual, expected);
             }
         },
         {
@@ -218,9 +206,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
 
                 await managementCanister.executeDeleteCanister(canisterId);
 
-                return {
-                    Ok: true
-                };
+                return succeed();
             }
         },
         {
@@ -228,9 +214,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await managementCanister.getRawRand();
 
-                return {
-                    Ok: result.length === 32
-                };
+                return testEquality(result.length, 32);
             }
         }
     ];

@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from '../../../test';
+import { error, Test, testEquality } from '../../../test';
 
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -14,15 +14,9 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/db`);
                     const responseJson = await response.json();
 
-                    return {
-                        Ok:
-                            JSON.stringify(responseJson) ===
-                            JSON.stringify({ hello: '' })
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseJson, { hello: '' });
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         },
@@ -39,15 +33,9 @@ export function getTests(canisterId: string): Test[] {
                     });
                     const responseJson = await response.json();
 
-                    return {
-                        Ok:
-                            JSON.stringify(responseJson) ===
-                            JSON.stringify({ hello: 'world' })
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(responseJson, { hello: 'world' });
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         }

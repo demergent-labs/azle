@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { fail, Test, test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/manual_reply/manual_reply.did';
 
@@ -12,19 +12,14 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
                 try {
                     await manualReplyCanister.manualUpdate(rejectionMessage);
 
-                    return {
-                        Ok: false
-                    };
+                    return fail();
                 } catch (error) {
-                    return {
-                        Ok:
-                            (error as Error).message.includes(
-                                'Reject code: 4'
-                            ) &&
+                    return test(
+                        (error as Error).message.includes('Reject code: 4') &&
                             (error as Error).message.includes(
                                 `Reject text: ${rejectionMessage}`
                             )
-                    };
+                    );
                 }
             }
         },
@@ -33,9 +28,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.manualUpdate('accept');
 
-                return {
-                    Ok: result === 'accept'
-                };
+                return testEquality(result, 'accept');
             }
         },
         {
@@ -46,9 +39,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
                     83, 117, 114, 112, 114, 105, 115, 101, 33
                 ];
 
-                return {
-                    Ok: result.every((byte, i) => byte === expectedResult[i])
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -56,9 +47,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.updateFloat32();
 
-                return {
-                    Ok: result.toString() === '1245.677978515625'
-                };
+                return testEquality(result.toString(), '1245.677978515625');
             }
         },
         {
@@ -66,9 +55,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.updateInt8();
 
-                return {
-                    Ok: result === -100
-                };
+                return testEquality(result, -100);
             }
         },
         {
@@ -76,9 +63,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.updateNat();
 
-                return {
-                    Ok: result === 184_467_440_737_095_516_150n
-                };
+                return testEquality(result, 184_467_440_737_095_516_150n);
             }
         },
         {
@@ -86,9 +71,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.updateNull();
 
-                return {
-                    Ok: result === null
-                };
+                return testEquality(result, null);
             }
         },
         {
@@ -96,9 +79,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.updateVoid();
 
-                return {
-                    Ok: result === undefined
-                };
+                return testEquality(result, undefined);
             }
         },
         {
@@ -122,11 +103,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
                     }
                 };
 
-                return {
-                    Ok:
-                        JSON.stringify(result) ===
-                        JSON.stringify(expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -134,9 +111,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.updateReserved();
 
-                return {
-                    Ok: result === null
-                };
+                return testEquality(result, null);
             }
         },
         {
@@ -144,19 +119,16 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.updateString();
 
-                return {
-                    Ok: result === 'hello'
-                };
+                return testEquality(result, 'hello');
             }
         },
         {
             name: 'update reply with variant',
             test: async () => {
                 const result = await manualReplyCanister.updateVariant();
+                const expected = { Toxic: null };
 
-                return {
-                    Ok: 'Toxic' in result
-                };
+                return testEquality(result, expected);
             }
         },
         {
@@ -166,15 +138,15 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
                 try {
                     await manualReplyCanister.manualQuery(rejectionMessage);
 
-                    return {
-                        Ok: false
-                    };
+                    return fail();
                 } catch (error) {
-                    return {
-                        Ok:
-                            (error as any).props.Code === 'CanisterReject' &&
-                            (error as any).props.Message === rejectionMessage
-                    };
+                    return testEquality(
+                        [
+                            (error as any).props.Code,
+                            (error as any).props.Message
+                        ],
+                        ['CanisterReject', rejectionMessage]
+                    );
                 }
             }
         },
@@ -183,9 +155,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.manualQuery('accept');
 
-                return {
-                    Ok: result === 'accept'
-                };
+                return testEquality(result, 'accept');
             }
         },
         {
@@ -196,9 +166,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
                     83, 117, 114, 112, 114, 105, 115, 101, 33
                 ];
 
-                return {
-                    Ok: result.every((byte, i) => byte === expectedResult[i])
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -206,9 +174,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.updateFloat32();
 
-                return {
-                    Ok: result.toString() === '1245.677978515625'
-                };
+                return testEquality(result.toString(), '1245.677978515625');
             }
         },
         {
@@ -216,9 +182,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.queryInt8();
 
-                return {
-                    Ok: result === -100
-                };
+                return testEquality(result, -100);
             }
         },
         {
@@ -226,9 +190,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.queryNat();
 
-                return {
-                    Ok: result === 184_467_440_737_095_516_150n
-                };
+                return testEquality(result, 184_467_440_737_095_516_150n);
             }
         },
         {
@@ -236,9 +198,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.queryNull();
 
-                return {
-                    Ok: result === null
-                };
+                return testEquality(result, null);
             }
         },
         {
@@ -246,9 +206,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.queryVoid();
 
-                return {
-                    Ok: result === undefined
-                };
+                return testEquality(result, undefined);
             }
         },
         {
@@ -272,11 +230,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
                     }
                 };
 
-                return {
-                    Ok:
-                        JSON.stringify(result) ===
-                        JSON.stringify(expectedResult)
-                };
+                return testEquality(result, expectedResult);
             }
         },
         {
@@ -284,9 +238,7 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.queryReserved();
 
-                return {
-                    Ok: result === null
-                };
+                return testEquality(result, null);
             }
         },
         {
@@ -294,19 +246,16 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await manualReplyCanister.queryString();
 
-                return {
-                    Ok: result === 'hello'
-                };
+                return testEquality(result, 'hello');
             }
         },
         {
             name: 'query reply with variant',
             test: async () => {
                 const result = await manualReplyCanister.queryVariant();
+                const expected = { Toxic: null };
 
-                return {
-                    Ok: 'Toxic' in result
-                };
+                return testEquality(result, expected);
             }
         },
         {
@@ -316,17 +265,15 @@ export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
                 const blob = 'Surprise!'
                     .split('')
                     .map((char) => char.charCodeAt(0));
-
-                return {
-                    Ok:
-                        record.int === 42n &&
-                        record.text === 'text' &&
-                        record.bool === true &&
-                        record.myBlob.every(
-                            (byte, index) => blob[index] === byte
-                        ) &&
-                        'Medium' in record.myVariant
+                const expected = {
+                    int: 42n,
+                    text: 'text',
+                    bool: true,
+                    myBlob: blob,
+                    myVariant: { Medium: null }
                 };
+
+                return testEquality(record, expected);
             }
         }
     ];
