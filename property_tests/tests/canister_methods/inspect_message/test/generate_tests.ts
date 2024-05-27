@@ -3,7 +3,7 @@ import { deepEqual, getActor, Named } from 'azle/property_tests';
 import { CandidReturnType } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
-import { Test } from 'azle/test';
+import { Test, test } from 'azle/test';
 
 import { InspectMessageBehavior } from './test';
 
@@ -56,9 +56,7 @@ function generateTest(
                 };
             } catch (error: any) {
                 if (behavior === 'RETURN') {
-                    return {
-                        Ok: error.message.includes('rejected the message')
-                    };
+                    return test(error.message.includes('rejected the message'));
                 }
 
                 if (behavior === 'THROW') {
