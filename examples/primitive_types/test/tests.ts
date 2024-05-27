@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { Test } from 'azle/test';
+import { fail, Test, test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/primitive_types/primitive_types.did';
 
@@ -13,9 +13,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getString();
 
-                return {
-                    Ok: result === 'string'
-                };
+                return testEquality(result, 'string');
             }
         },
         {
@@ -24,9 +22,7 @@ export function getTests(
                 const result =
                     await primitiveTypesCanister.printString('string');
 
-                return {
-                    Ok: result === 'string'
-                };
+                return testEquality(result, 'string');
             }
         },
         {
@@ -34,9 +30,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getText();
 
-                return {
-                    Ok: result === 'text'
-                };
+                return testEquality(result, 'text');
             }
         },
         {
@@ -44,9 +38,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.printText('text');
 
-                return {
-                    Ok: result === 'text'
-                };
+                return testEquality(result, 'text');
             }
         },
         {
@@ -54,9 +46,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getNumber();
 
-                return {
-                    Ok: result.toString() === '9007199254740991'
-                };
+                return testEquality(result.toString(), '9007199254740991');
             }
         },
         {
@@ -65,9 +55,7 @@ export function getTests(
                 const result =
                     await primitiveTypesCanister.printNumber(90071992547409.05);
 
-                return {
-                    Ok: result.toString() === '90071992547409.05'
-                };
+                return testEquality(result.toString(), '90071992547409.05');
             }
         },
         {
@@ -75,11 +63,10 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getInt();
 
-                return {
-                    Ok:
-                        result ===
-                        170_141_183_460_469_231_731_687_303_715_884_105_727n
-                };
+                return testEquality(
+                    result,
+                    170_141_183_460_469_231_731_687_303_715_884_105_727n
+                );
             }
         },
         {
@@ -90,11 +77,10 @@ export function getTests(
                         170_141_183_460_469_231_731_687_303_715_884_105_727n
                     );
 
-                return {
-                    Ok:
-                        result ===
-                        170_141_183_460_469_231_731_687_303_715_884_105_727n
-                };
+                return testEquality(
+                    result,
+                    170_141_183_460_469_231_731_687_303_715_884_105_727n
+                );
             }
         },
         {
@@ -102,9 +88,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getInt64();
 
-                return {
-                    Ok: result === 9_223_372_036_854_775_807n
-                };
+                return testEquality(result, 9_223_372_036_854_775_807n);
             }
         },
         {
@@ -115,9 +99,7 @@ export function getTests(
                         9_223_372_036_854_775_807n
                     );
 
-                return {
-                    Ok: result === 9_223_372_036_854_775_807n
-                };
+                return testEquality(result, 9_223_372_036_854_775_807n);
             }
         },
         {
@@ -125,9 +107,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getInt32();
 
-                return {
-                    Ok: result === 2_147_483_647
-                };
+                return testEquality(result, 2_147_483_647);
             }
         },
         {
@@ -136,9 +116,7 @@ export function getTests(
                 const result =
                     await primitiveTypesCanister.printInt32(2_147_483_647);
 
-                return {
-                    Ok: result === 2_147_483_647
-                };
+                return testEquality(result, 2_147_483_647);
             }
         },
         {
@@ -146,9 +124,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getInt16();
 
-                return {
-                    Ok: result === 32_767
-                };
+                return testEquality(result, 32_767);
             }
         },
         {
@@ -156,9 +132,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.printInt16(32_767);
 
-                return {
-                    Ok: result === 32_767
-                };
+                return testEquality(result, 32_767);
             }
         },
         {
@@ -166,9 +140,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getInt8();
 
-                return {
-                    Ok: result === 127
-                };
+                return testEquality(result, 127);
             }
         },
         {
@@ -176,9 +148,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.printInt8(127);
 
-                return {
-                    Ok: result === 127
-                };
+                return testEquality(result, 127);
             }
         },
         {
@@ -186,11 +156,10 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getNat();
 
-                return {
-                    Ok:
-                        result ===
-                        340_282_366_920_938_463_463_374_607_431_768_211_455n
-                };
+                return testEquality(
+                    result,
+                    340_282_366_920_938_463_463_374_607_431_768_211_455n
+                );
             }
         },
         {
@@ -201,11 +170,10 @@ export function getTests(
                         340_282_366_920_938_463_463_374_607_431_768_211_455n
                     );
 
-                return {
-                    Ok:
-                        result ===
-                        340_282_366_920_938_463_463_374_607_431_768_211_455n
-                };
+                return testEquality(
+                    result,
+                    340_282_366_920_938_463_463_374_607_431_768_211_455n
+                );
             }
         },
         {
@@ -213,9 +181,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getNat64();
 
-                return {
-                    Ok: result === 18_446_744_073_709_551_615n
-                };
+                return testEquality(result, 18_446_744_073_709_551_615n);
             }
         },
         {
@@ -226,9 +192,7 @@ export function getTests(
                         18_446_744_073_709_551_615n
                     );
 
-                return {
-                    Ok: result === 18_446_744_073_709_551_615n
-                };
+                return testEquality(result, 18_446_744_073_709_551_615n);
             }
         },
         {
@@ -236,9 +200,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getNat32();
 
-                return {
-                    Ok: result === 4_294_967_295
-                };
+                return testEquality(result, 4_294_967_295);
             }
         },
         {
@@ -247,9 +209,7 @@ export function getTests(
                 const result =
                     await primitiveTypesCanister.printNat32(4_294_967_295);
 
-                return {
-                    Ok: result === 4_294_967_295
-                };
+                return testEquality(result, 4_294_967_295);
             }
         },
         {
@@ -257,9 +217,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getNat16();
 
-                return {
-                    Ok: result === 65_535
-                };
+                return testEquality(result, 65_535);
             }
         },
         {
@@ -267,9 +225,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.printNat16(65_535);
 
-                return {
-                    Ok: result === 65_535
-                };
+                return testEquality(result, 65_535);
             }
         },
         {
@@ -277,9 +233,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getNat8();
 
-                return {
-                    Ok: result === 255
-                };
+                return testEquality(result, 255);
             }
         },
         {
@@ -287,9 +241,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.printNat8(255);
 
-                return {
-                    Ok: result === 255
-                };
+                return testEquality(result, 255);
             }
         },
         {
@@ -297,9 +249,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getFloat64();
 
-                return {
-                    Ok: result.toString() === '2.718281828459045'
-                };
+                return testEquality(result.toString(), '2.718281828459045');
             }
         },
         {
@@ -310,9 +260,7 @@ export function getTests(
                         2.718281828459045
                     );
 
-                return {
-                    Ok: result.toString() === '2.718281828459045'
-                };
+                return testEquality(result.toString(), '2.718281828459045');
             }
         },
         {
@@ -322,9 +270,7 @@ export function getTests(
                     Number.NaN
                 );
 
-                return {
-                    Ok: Number.isNaN(result)
-                };
+                return test(Number.isNaN(result));
             }
         },
         {
@@ -334,9 +280,7 @@ export function getTests(
                     Number.POSITIVE_INFINITY
                 );
 
-                return {
-                    Ok: !Number.isFinite(result)
-                };
+                return test(!Number.isFinite(result));
             }
         },
         {
@@ -346,9 +290,7 @@ export function getTests(
                     Number.NEGATIVE_INFINITY
                 );
 
-                return {
-                    Ok: !Number.isFinite(result)
-                };
+                return test(!Number.isFinite(result));
             }
         },
         {
@@ -356,10 +298,8 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getFloat32();
 
-                return {
-                    // Ok: result.toString() === '3.1415927' // TODO on the command line this is returned
-                    Ok: result.toString() === '3.1415927410125732'
-                };
+                //return testEquality(result.toString(), '3.1415927') // TODO on the command line this is returned
+                return testEquality(result.toString(), '3.1415927410125732');
             }
         },
         {
@@ -368,10 +308,8 @@ export function getTests(
                 const result =
                     await primitiveTypesCanister.printFloat32(3.1415927);
 
-                return {
-                    // Ok: result.toString() === '3.1415927' // TODO on the command line this is returned
-                    Ok: result.toString() === '3.1415927410125732'
-                };
+                // return testEquality(result.toString(),'3.1415927') // TODO on the command line this is returned
+                return testEquality(result.toString(), '3.1415927410125732');
             }
         },
         {
@@ -381,9 +319,7 @@ export function getTests(
                     Number.NaN
                 );
 
-                return {
-                    Ok: Number.isNaN(result)
-                };
+                return test(Number.isNaN(result));
             }
         },
         {
@@ -393,9 +329,7 @@ export function getTests(
                     Number.POSITIVE_INFINITY
                 );
 
-                return {
-                    Ok: !Number.isFinite(result)
-                };
+                return test(!Number.isFinite(result));
             }
         },
         {
@@ -405,9 +339,7 @@ export function getTests(
                     Number.NEGATIVE_INFINITY
                 );
 
-                return {
-                    Ok: !Number.isFinite(result)
-                };
+                return test(!Number.isFinite(result));
             }
         },
         {
@@ -415,9 +347,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getBool();
 
-                return {
-                    Ok: result === true
-                };
+                return testEquality(result, true);
             }
         },
         {
@@ -425,31 +355,30 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.printBool(false);
 
-                return {
-                    Ok: result === false
-                };
+                return testEquality(result, false);
             }
         },
         {
             name: 'getPrincipal',
             test: async () => {
                 const result = await primitiveTypesCanister.getPrincipal();
+                const expected = Principal.fromText(
+                    'rrkah-fqaaa-aaaaa-aaaaq-cai'
+                );
 
-                return {
-                    Ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
-                };
+                return testEquality(result, expected);
             }
         },
         {
             name: 'printPrincipal',
             test: async () => {
-                const result = await primitiveTypesCanister.printPrincipal(
-                    Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
+                const principal = Principal.fromText(
+                    'rrkah-fqaaa-aaaaa-aaaaq-cai'
                 );
+                const result =
+                    await primitiveTypesCanister.printPrincipal(principal);
 
-                return {
-                    Ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -457,9 +386,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getNull();
 
-                return {
-                    Ok: result === null
-                };
+                return testEquality(result, null);
             }
         },
         {
@@ -467,9 +394,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.printNull(null);
 
-                return {
-                    Ok: result === null
-                };
+                return testEquality(result, null);
             }
         },
         {
@@ -477,9 +402,7 @@ export function getTests(
             test: async () => {
                 const result = await primitiveTypesCanister.getReserved();
 
-                return {
-                    Ok: result === null
-                };
+                return testEquality(result, null);
             }
         },
         {
@@ -489,9 +412,7 @@ export function getTests(
                     Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
                 );
 
-                return {
-                    Ok: result === null
-                };
+                return testEquality(result, null);
             }
         },
         {
@@ -500,14 +421,12 @@ export function getTests(
                 try {
                     await primitiveTypesCanister.getEmpty();
                 } catch (error) {
-                    return {
-                        Ok: (error as any).message.startsWith('Call failed')
-                    };
+                    return test(
+                        (error as any).message.startsWith('Call failed')
+                    );
                 }
 
-                return {
-                    Ok: false
-                };
+                return fail();
             }
         },
         {
@@ -516,16 +435,14 @@ export function getTests(
                 try {
                     await primitiveTypesCanister.printEmpty(undefined as never);
                 } catch (error) {
-                    return {
-                        Ok: ((error as any).message as string).includes(
+                    return test(
+                        ((error as any).message as string).includes(
                             'Invalid empty argument: undefined'
                         )
-                    };
+                    );
                 }
 
-                return {
-                    Ok: false
-                };
+                return fail();
             }
         }
     ];

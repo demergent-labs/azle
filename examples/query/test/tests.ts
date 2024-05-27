@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { equals, Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 // @ts-ignore
 import { _SERVICE } from '../dfx_generated/query/query.did';
@@ -11,7 +11,7 @@ export function getTests(query_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await query_canister.simpleQuery();
 
-                return equals(result, 'This is a query function');
+                return testEquality(result, 'This is a query function');
             }
         }
     ];

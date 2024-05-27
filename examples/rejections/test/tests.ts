@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/rejections/rejections.did';
 
@@ -10,9 +10,7 @@ export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result =
                     await rejectionsCanister.getRejectionCodeNoError();
-                return {
-                    Ok: 'NoError' in result
-                };
+                return test('NoError' in result);
             }
         },
         {
@@ -20,9 +18,7 @@ export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result =
                     await rejectionsCanister.getRejectionCodeDestinationInvalid();
-                return {
-                    Ok: 'DestinationInvalid' in result
-                };
+                return test('DestinationInvalid' in result);
             }
         },
         {
@@ -30,9 +26,7 @@ export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result =
                     await rejectionsCanister.getRejectionCodeCanisterReject();
-                return {
-                    Ok: 'CanisterReject' in result
-                };
+                return test('CanisterReject' in result);
             }
         },
         {
@@ -40,9 +34,7 @@ export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result =
                     await rejectionsCanister.getRejectionCodeCanisterError();
-                return {
-                    Ok: 'CanisterError' in result
-                };
+                return test('CanisterError' in result);
             }
         },
         {
@@ -53,9 +45,7 @@ export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test[] {
                     await rejectionsCanister.getRejectionMessage(
                         rejectionMessage
                     );
-                return {
-                    Ok: result === rejectionMessage
-                };
+                return testEquality(result, rejectionMessage);
             }
         }
         // {

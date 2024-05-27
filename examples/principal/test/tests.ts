@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/principal/principal.did';
 
@@ -19,44 +19,37 @@ export function getTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'principalReturnType',
             test: async () => {
                 const result = await principalCanister.principalReturnType();
+                const expected = Principal.fromText('aaaaa-aa');
 
-                return {
-                    Ok: result.toText() === 'aaaaa-aa'
-                };
+                return testEquality(result, expected);
             }
         },
         {
             name: 'principalParam',
             test: async () => {
-                const result = await principalCanister.principalParam(
-                    Principal.fromText('aaaaa-aa')
-                );
+                const principal = Principal.fromText('aaaaa-aa');
+                const result =
+                    await principalCanister.principalParam(principal);
 
-                return {
-                    Ok: result.toText() === 'aaaaa-aa'
-                };
+                return testEquality(result, principal);
             }
         },
         {
             name: 'principalInRecord',
             test: async () => {
                 const result = await principalCanister.principalInRecord();
+                const expected = Principal.fromText('aaaaa-aa');
 
-                return {
-                    Ok: result.id.toText() === 'aaaaa-aa'
-                };
+                return testEquality(result, expected);
             }
         },
         {
             name: 'principalInVariant',
             test: async () => {
                 const result = await principalCanister.principalInVariant();
+                const expected = { WaitingOn: Principal.fromText('aaaaa-aa') };
 
-                return {
-                    Ok:
-                        'WaitingOn' in result &&
-                        result.WaitingOn.toText() === 'aaaaa-aa'
-                };
+                return testEquality(result, expected);
             }
         },
         ...fromHexTests,
@@ -80,9 +73,7 @@ function getFromHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toHex()
                 );
 
-                return {
-                    Ok: result.toHex() === principal.toHex()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -96,9 +87,7 @@ function getFromHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toHex()
                 );
 
-                return {
-                    Ok: result.toHex() === principal.toHex()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -112,9 +101,7 @@ function getFromHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toHex()
                 );
 
-                return {
-                    Ok: result.toHex() === principal.toHex()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -128,9 +115,7 @@ function getFromHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toHex()
                 );
 
-                return {
-                    Ok: result.toHex() === principal.toHex()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -144,9 +129,7 @@ function getFromHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toHex()
                 );
 
-                return {
-                    Ok: result.toHex() === principal.toHex()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -160,9 +143,7 @@ function getFromHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toHex()
                 );
 
-                return {
-                    Ok: result.toHex() === principal.toHex()
-                };
+                return testEquality(result, principal);
             }
         }
     ];
@@ -179,9 +160,7 @@ function getFromTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toText()
                 );
 
-                return {
-                    Ok: result.toText() === principal.toText()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -195,9 +174,7 @@ function getFromTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toText()
                 );
 
-                return {
-                    Ok: result.toText() === principal.toText()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -211,9 +188,7 @@ function getFromTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toText()
                 );
 
-                return {
-                    Ok: result.toText() === principal.toText()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -227,9 +202,7 @@ function getFromTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toText()
                 );
 
-                return {
-                    Ok: result.toText() === principal.toText()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -243,9 +216,7 @@ function getFromTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toText()
                 );
 
-                return {
-                    Ok: result.toText() === principal.toText()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -259,9 +230,7 @@ function getFromTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toText()
                 );
 
-                return {
-                    Ok: result.toText() === principal.toText()
-                };
+                return testEquality(result, principal);
             }
         }
     ];
@@ -278,9 +247,7 @@ function getFromBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toUint8Array()
                 );
 
-                return {
-                    Ok: result.toText() === principal.toText()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -294,9 +261,7 @@ function getFromBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toUint8Array()
                 );
 
-                return {
-                    Ok: result.toText() === principal.toText()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -310,9 +275,7 @@ function getFromBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toUint8Array()
                 );
 
-                return {
-                    Ok: result.toText() === principal.toText()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -326,9 +289,7 @@ function getFromBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toUint8Array()
                 );
 
-                return {
-                    Ok: result.toText() === principal.toText()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -342,9 +303,7 @@ function getFromBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toUint8Array()
                 );
 
-                return {
-                    Ok: result.toText() === principal.toText()
-                };
+                return testEquality(result, principal);
             }
         },
         {
@@ -358,9 +317,7 @@ function getFromBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                     principal.toUint8Array()
                 );
 
-                return {
-                    Ok: result.toText() === principal.toText()
-                };
+                return testEquality(result, principal);
             }
         }
     ];
@@ -376,9 +333,7 @@ function getToHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToHex(principal);
 
-                return {
-                    Ok: result === principal.toHex()
-                };
+                return testEquality(result, principal.toHex());
             }
         },
         {
@@ -391,9 +346,7 @@ function getToHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToHex(principal);
 
-                return {
-                    Ok: result === principal.toHex()
-                };
+                return testEquality(result, principal.toHex());
             }
         },
         {
@@ -406,9 +359,7 @@ function getToHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToHex(principal);
 
-                return {
-                    Ok: result === principal.toHex()
-                };
+                return testEquality(result, principal.toHex());
             }
         },
         {
@@ -421,9 +372,7 @@ function getToHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToHex(principal);
 
-                return {
-                    Ok: result === principal.toHex()
-                };
+                return testEquality(result, principal.toHex());
             }
         },
         {
@@ -436,9 +385,7 @@ function getToHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToHex(principal);
 
-                return {
-                    Ok: result === principal.toHex()
-                };
+                return testEquality(result, principal.toHex());
             }
         },
         {
@@ -451,9 +398,7 @@ function getToHexTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToHex(principal);
 
-                return {
-                    Ok: result === principal.toHex()
-                };
+                return testEquality(result, principal.toHex());
             }
         }
     ];
@@ -469,9 +414,7 @@ function getToTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToText(principal);
 
-                return {
-                    Ok: result === principal.toText()
-                };
+                return testEquality(result, principal.toText());
             }
         },
         {
@@ -484,9 +427,7 @@ function getToTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToText(principal);
 
-                return {
-                    Ok: result === principal.toText()
-                };
+                return testEquality(result, principal.toText());
             }
         },
         {
@@ -499,9 +440,7 @@ function getToTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToText(principal);
 
-                return {
-                    Ok: result === principal.toText()
-                };
+                return testEquality(result, principal.toText());
             }
         },
         {
@@ -514,9 +453,7 @@ function getToTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToText(principal);
 
-                return {
-                    Ok: result === principal.toText()
-                };
+                return testEquality(result, principal.toText());
             }
         },
         {
@@ -529,9 +466,7 @@ function getToTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToText(principal);
 
-                return {
-                    Ok: result === principal.toText()
-                };
+                return testEquality(result, principal.toText());
             }
         },
         {
@@ -544,9 +479,7 @@ function getToTextTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToText(principal);
 
-                return {
-                    Ok: result === principal.toText()
-                };
+                return testEquality(result, principal.toText());
             }
         }
     ];
@@ -562,12 +495,7 @@ function getToBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToBlob(principal);
 
-                return {
-                    Ok:
-                        Principal.fromUint8Array(
-                            Uint8Array.from(result)
-                        ).toText() === principal.toText()
-                };
+                return testEquality(result, principal.toUint8Array());
             }
         },
         {
@@ -580,12 +508,7 @@ function getToBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToBlob(principal);
 
-                return {
-                    Ok:
-                        Principal.fromUint8Array(
-                            Uint8Array.from(result)
-                        ).toText() === principal.toText()
-                };
+                return testEquality(result, principal.toUint8Array());
             }
         },
         {
@@ -598,12 +521,7 @@ function getToBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToBlob(principal);
 
-                return {
-                    Ok:
-                        Principal.fromUint8Array(
-                            Uint8Array.from(result)
-                        ).toText() === principal.toText()
-                };
+                return testEquality(result, principal.toUint8Array());
             }
         },
         {
@@ -616,12 +534,7 @@ function getToBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToBlob(principal);
 
-                return {
-                    Ok:
-                        Principal.fromUint8Array(
-                            Uint8Array.from(result)
-                        ).toText() === principal.toText()
-                };
+                return testEquality(result, principal.toUint8Array());
             }
         },
         {
@@ -634,12 +547,7 @@ function getToBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToBlob(principal);
 
-                return {
-                    Ok:
-                        Principal.fromUint8Array(
-                            Uint8Array.from(result)
-                        ).toText() === principal.toText()
-                };
+                return testEquality(result, principal.toUint8Array());
             }
         },
         {
@@ -652,12 +560,7 @@ function getToBlobTests(principalCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await principalCanister.principalToBlob(principal);
 
-                return {
-                    Ok:
-                        Principal.fromUint8Array(
-                            Uint8Array.from(result)
-                        ).toText() === principal.toText()
-                };
+                return testEquality(result, principal.toUint8Array());
             }
         }
     ];
@@ -677,11 +580,10 @@ function getSelfAuthenticatingTests(
                         principal.toUint8Array()
                     );
 
-                return {
-                    Ok:
-                        result.toText() ===
-                        'o2x4y-ywrji-biykr-2fpeu-oyicx-muien-gecwr-lah4c-r2tcv-rnt4q-xqe'
-                };
+                return testEquality(
+                    result.toText(),
+                    'o2x4y-ywrji-biykr-2fpeu-oyicx-muien-gecwr-lah4c-r2tcv-rnt4q-xqe'
+                );
             }
         },
         {
@@ -696,11 +598,10 @@ function getSelfAuthenticatingTests(
                         principal.toUint8Array()
                     );
 
-                return {
-                    Ok:
-                        result.toText() ===
-                        '5lxmd-uwt2d-ectu2-srh3d-l4np5-n6w32-3ctg2-pdf5v-vg5vu-do25a-oae'
-                };
+                return testEquality(
+                    result.toText(),
+                    '5lxmd-uwt2d-ectu2-srh3d-l4np5-n6w32-3ctg2-pdf5v-vg5vu-do25a-oae'
+                );
             }
         },
         {
@@ -715,11 +616,10 @@ function getSelfAuthenticatingTests(
                         principal.toUint8Array()
                     );
 
-                return {
-                    Ok:
-                        result.toText() ===
-                        'w2hw6-vz32b-dpt2b-afpwq-2ip32-hki4g-tbzcp-7zifb-suydo-jad42-5ae'
-                };
+                return testEquality(
+                    result.toText(),
+                    'w2hw6-vz32b-dpt2b-afpwq-2ip32-hki4g-tbzcp-7zifb-suydo-jad42-5ae'
+                );
             }
         },
         {
@@ -734,11 +634,10 @@ function getSelfAuthenticatingTests(
                         principal.toUint8Array()
                     );
 
-                return {
-                    Ok:
-                        result.toText() ===
-                        'vagij-vhj5f-jmcqm-6sfyr-onklf-d6rjs-oikld-4jlr6-jnf4k-a25k7-bae'
-                };
+                return testEquality(
+                    result.toText(),
+                    'w2hw6-vz32b-dpt2b-afpwq-2ip32-hki4g-tbzcp-7zifb-suydo-jad42-5ae'
+                );
             }
         },
         {
@@ -753,11 +652,10 @@ function getSelfAuthenticatingTests(
                         principal.toUint8Array()
                     );
 
-                return {
-                    Ok:
-                        result.toText() ===
-                        'hp4bt-rgpk2-27zh7-4bhef-fz4v7-zwrfd-3tbnz-wgy2i-pzjui-os54t-5ae'
-                };
+                return testEquality(
+                    result.toText(),
+                    'hp4bt-rgpk2-27zh7-4bhef-fz4v7-zwrfd-3tbnz-wgy2i-pzjui-os54t-5ae'
+                );
             }
         },
         {
@@ -772,11 +670,10 @@ function getSelfAuthenticatingTests(
                         principal.toUint8Array()
                     );
 
-                return {
-                    Ok:
-                        result.toText() ===
-                        'e5rvd-hgfjt-aclta-o3few-2p3fo-txhpm-ypb2i-ex56n-l6brh-jnvja-4ae'
-                };
+                return testEquality(
+                    result.toText(),
+                    'e5rvd-hgfjt-aclta-o3few-2p3fo-txhpm-ypb2i-ex56n-l6brh-jnvja-4ae'
+                );
             }
         }
     ];

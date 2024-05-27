@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { _SERVICE } from './dfx_generated/pre_and_post_upgrade/pre_and_post_upgrade.did';
@@ -13,9 +13,7 @@ export function getTests(
             test: async () => {
                 const result = await preAndPostUpgradeCanister.getEntries();
 
-                return {
-                    Ok: result.length === 0
-                };
+                return testEquality(result.length, 0);
             }
         },
         {
@@ -26,22 +24,16 @@ export function getTests(
                     value: 0n
                 });
 
-                return {
-                    Ok: result === undefined
-                };
+                return testEquality(result, undefined);
             }
         },
         {
             name: 'getEntries',
             test: async () => {
                 const result = await preAndPostUpgradeCanister.getEntries();
+                const expected = { '0': 0n };
 
-                return {
-                    Ok:
-                        result.length === 1 &&
-                        result[0].key === '0' &&
-                        result[0].value === 0n
-                };
+                return testEquality(result, [expected]);
             }
         },
         {
@@ -56,13 +48,9 @@ export function getTests(
             name: 'getEntries',
             test: async () => {
                 const result = await preAndPostUpgradeCanister.getEntries();
+                const expected = { '0': 1n };
 
-                return {
-                    Ok:
-                        result.length === 1 &&
-                        result[0].key === '0' &&
-                        result[0].value === 1n
-                };
+                return testEquality(result, [expected]);
             }
         }
     ];

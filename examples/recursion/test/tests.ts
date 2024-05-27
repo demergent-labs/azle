@@ -1,7 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { getCanisterId } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 
 import {
@@ -14,8 +14,14 @@ import {
     rec_10,
     rec_12,
     rec_14,
+    rec_16,
     rec_24,
-    rec_26
+    rec_26,
+    rec_28,
+    rec_32,
+    rec_33,
+    rec_34,
+    rec_36
     // @ts-ignore
 } from './dfx_generated/recursion/recursion.did';
 // @ts-ignore
@@ -32,9 +38,7 @@ export function getRecursiveCanisterTests(
             test: async () => {
                 const result = await recursive_canister.getMessage();
 
-                return {
-                    Ok: result === 'hello'
-                };
+                return testEquality(result, 'hello');
             }
         }
     ];
@@ -44,33 +48,24 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'recursive Variants',
             test: async () => {
-                const result = await recursion_canister.testRecVariant({
+                const expected = {
                     recVariant: { recVariant: { recVariant: { num: 3 } } }
-                });
-
-                return {
-                    Ok:
-                        'recVariant' in result &&
-                        'recVariant' in result.recVariant &&
-                        'recVariant' in result.recVariant.recVariant &&
-                        'num' in result.recVariant.recVariant.recVariant &&
-                        result.recVariant.recVariant.recVariant.num === 3
                 };
+                const result =
+                    await recursion_canister.testRecVariant(expected);
+
+                return testEquality(result, expected);
             }
         },
         {
             name: 'recursive Variants return type',
             test: async () => {
                 const result = await recursion_canister.testRecVariantReturn();
-
-                return {
-                    Ok:
-                        'recVariant' in result &&
-                        'recVariant' in result.recVariant &&
-                        'recVariant' in result.recVariant.recVariant &&
-                        'num' in result.recVariant.recVariant.recVariant &&
-                        result.recVariant.recVariant.recVariant.num === 12
+                const expected = {
+                    recVariant: { recVariant: { recVariant: { num: 12 } } }
                 };
+
+                return testEquality(result, expected);
             }
         },
         {
@@ -79,36 +74,36 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecRecordWithVariantReturn();
 
-                return {
-                    Ok:
-                        'varRec' in result.myVar &&
-                        'varRec' in result.myVar.varRec.myVar &&
-                        'varRec' in result.myVar.varRec.myVar &&
-                        'num' in result.myVar.varRec.myVar.varRec.myVar &&
-                        result.myVar.varRec.myVar.varRec.myVar.num === 7
+                const expecected = {
+                    myVar: {
+                        varRec: {
+                            myVar: { varRec: { myVar: { num: 7 } } }
+                        }
+                    }
                 };
+                return testEquality(result, expecected);
             }
         },
         {
             name: 'recursive records with variants',
             test: async () => {
-                const result =
-                    await recursion_canister.testRecRecordWithVariant({
-                        myVar: {
-                            varRec: {
-                                myVar: { varRec: { myVar: { num: 40 } } }
+                const expected = {
+                    myVar: {
+                        varRec: {
+                            myVar: {
+                                varRec: {
+                                    myVar: {
+                                        num: 40
+                                    }
+                                }
                             }
                         }
-                    });
-
-                return {
-                    Ok:
-                        'varRec' in result.myVar &&
-                        'varRec' in result.myVar.varRec.myVar &&
-                        'varRec' in result.myVar.varRec.myVar &&
-                        'num' in result.myVar.varRec.myVar.varRec.myVar &&
-                        result.myVar.varRec.myVar.varRec.myVar.num === 40
+                    }
                 };
+                const result =
+                    await recursion_canister.testRecRecordWithVariant(expected);
+
+                return testEquality(result, expected);
             }
         },
         {
@@ -116,68 +111,64 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result =
                     await recursion_canister.testRecTupleWithVariantReturn();
+                const expected: rec_36 = [
+                    {
+                        varTuple: [
+                            {
+                                varTuple: [{ num: 70 }, { num: 7 }]
+                            },
+                            {
+                                varTuple: [{ num: 3 }, { num: 12 }]
+                            }
+                        ]
+                    },
+                    {
+                        varTuple: [
+                            { num: 40 },
+                            {
+                                varTuple: [{ num: 5 }, { num: 10 }]
+                            }
+                        ]
+                    }
+                ];
 
-                return {
-                    Ok:
-                        'varTuple' in result[0] &&
-                        'varTuple' in result[0].varTuple[0] &&
-                        'num' in result[0].varTuple[0].varTuple[0] &&
-                        'num' in result[0].varTuple[0].varTuple[1] &&
-                        'varTuple' in result[0].varTuple[1] &&
-                        'num' in result[0].varTuple[1].varTuple[0] &&
-                        'num' in result[0].varTuple[1].varTuple[1] &&
-                        'varTuple' in result[1] &&
-                        'num' in result[1].varTuple[0] &&
-                        'varTuple' in result[1].varTuple[1] &&
-                        'num' in result[1].varTuple[1].varTuple[0] &&
-                        'num' in result[1].varTuple[1].varTuple[1] &&
-                        result[0].varTuple[0].varTuple[0].num === 70 &&
-                        result[0].varTuple[0].varTuple[1].num === 7 &&
-                        result[0].varTuple[1].varTuple[0].num === 3 &&
-                        result[0].varTuple[1].varTuple[1].num === 12 &&
-                        result[1].varTuple[0].num === 40 &&
-                        result[1].varTuple[1].varTuple[0].num === 5 &&
-                        result[1].varTuple[1].varTuple[1].num === 10
-                };
+                return testEquality(result, expected);
             }
         },
         {
             name: 'recursive records with opts',
             test: async () => {
-                const result = await recursion_canister.testRecRecordWithOpt({
+                const expected: rec_16 = {
                     myOpt: [{ myOpt: [] }]
-                });
-
-                return {
-                    Ok: result.myOpt[0]?.myOpt.length === 0
                 };
+                const result =
+                    await recursion_canister.testRecRecordWithOpt(expected);
+
+                return testEquality(result, expected);
             }
         },
         {
             name: 'recursive funcs',
             test: async () => {
-                const result = await recursion_canister.testRecFunc([
+                const expected: [Principal, string] = [
                     Principal.fromText('aaaaa-aa'),
                     'delete_canister'
-                ]);
+                ];
+                const result = await recursion_canister.testRecFunc(expected);
 
-                return {
-                    Ok:
-                        result[0].toString() === 'aaaaa-aa' &&
-                        result[1] === 'delete_canister'
-                };
+                return testEquality(result, expected);
             }
         },
         {
             name: 'recursive funcs return',
             test: async () => {
                 const result = await recursion_canister.testRecFuncReturn();
+                const expected: [Principal, string] = [
+                    Principal.fromText('aaaaa-aa'),
+                    'create_canister'
+                ];
 
-                return {
-                    Ok:
-                        result[0].toString() === 'aaaaa-aa' &&
-                        result[1] === 'create_canister'
-                };
+                return testEquality(result, expected);
             }
         },
         {
@@ -203,9 +194,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecRecordWithVec(input);
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         },
         {
@@ -215,15 +204,13 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecTupleWithVec(input);
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         },
         {
             name: 'recursive tuples with vec return',
             test: async () => {
-                const input = [
+                const input: rec_33 = [
                     [[[], [[[], []]]]],
                     [
                         [[], []],
@@ -235,9 +222,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecTupleWithVecReturn();
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         },
         {
@@ -247,21 +232,17 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecTupleWithOpt(input);
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         },
         {
             name: 'recursive tuples with opt return',
             test: async () => {
-                const input = [[], [[[], []]]];
+                const input: rec_32 = [[], [[[], []]]];
                 const result =
                     await recursion_canister.testRecTupleWithOptReturn();
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         },
         {
@@ -282,9 +263,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecRecordWithVecReturn();
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         },
         {
@@ -292,54 +271,42 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result =
                     await recursion_canister.testRecRecordWithOptReturn();
-
-                return {
-                    Ok: result.myOpt[0]?.myOpt[0]?.myOpt.length === 0
+                const expected: rec_28 = {
+                    myOpt: [
+                        {
+                            myOpt: [
+                                {
+                                    myOpt: []
+                                }
+                            ]
+                        }
+                    ]
                 };
+
+                return testEquality(result, expected);
             }
         },
         {
             name: 'recursive tuples with variants',
             test: async () => {
-                const result = await recursion_canister.testRecTupleWithVariant(
-                    [
-                        {
-                            varTuple: [
-                                { varTuple: [{ num: 70 }, { num: 7 }] },
-                                { varTuple: [{ num: 3 }, { num: 12 }] }
-                            ]
-                        },
-                        {
-                            varTuple: [
-                                { num: 40 },
-                                { varTuple: [{ num: 5 }, { num: 10 }] }
-                            ]
-                        }
-                    ]
-                );
+                const expected: rec_34 = [
+                    {
+                        varTuple: [
+                            { varTuple: [{ num: 70 }, { num: 7 }] },
+                            { varTuple: [{ num: 3 }, { num: 12 }] }
+                        ]
+                    },
+                    {
+                        varTuple: [
+                            { num: 40 },
+                            { varTuple: [{ num: 5 }, { num: 10 }] }
+                        ]
+                    }
+                ];
+                const result =
+                    await recursion_canister.testRecTupleWithVariant(expected);
 
-                return {
-                    Ok:
-                        'varTuple' in result[0] &&
-                        'varTuple' in result[0].varTuple[0] &&
-                        'num' in result[0].varTuple[0].varTuple[0] &&
-                        'num' in result[0].varTuple[0].varTuple[1] &&
-                        'varTuple' in result[0].varTuple[1] &&
-                        'num' in result[0].varTuple[1].varTuple[0] &&
-                        'num' in result[0].varTuple[1].varTuple[1] &&
-                        'varTuple' in result[1] &&
-                        'num' in result[1].varTuple[0] &&
-                        'varTuple' in result[1].varTuple[1] &&
-                        'num' in result[1].varTuple[1].varTuple[0] &&
-                        'num' in result[1].varTuple[1].varTuple[1] &&
-                        result[0].varTuple[0].varTuple[0].num === 70 &&
-                        result[0].varTuple[0].varTuple[1].num === 7 &&
-                        result[0].varTuple[1].varTuple[0].num === 3 &&
-                        result[0].varTuple[1].varTuple[1].num === 12 &&
-                        result[1].varTuple[0].num === 40 &&
-                        result[1].varTuple[1].varTuple[0].num === 5 &&
-                        result[1].varTuple[1].varTuple[1].num === 10
-                };
+                return testEquality(result, expected);
             }
         },
         {
@@ -352,9 +319,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === `(service "${principalId}")`
-                };
+                return testEquality(result, `(service "${principalId}")`);
             }
         },
         {
@@ -367,9 +332,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === `(service "${principalId}")`
-                };
+                return testEquality(result, `(service "${principalId}")`);
             }
         },
         {
@@ -382,9 +345,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === `(service "${principalId}")`
-                };
+                return testEquality(result, `(service "${principalId}")`);
             }
         },
         {
@@ -397,9 +358,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === `(service "${principalId}")`
-                };
+                return testEquality(result, `(service "${principalId}")`);
             }
         },
         {
@@ -423,9 +382,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecVecWithVariant(input);
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         },
         {
@@ -440,9 +397,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecVecWithTuple(input);
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         },
         {
@@ -452,9 +407,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecVecWithOpt(input);
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         },
         {
@@ -464,9 +417,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecVecWithVec(input);
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         },
         {
@@ -476,9 +427,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecOptWithVec(input);
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         },
         {
@@ -488,9 +437,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecOptWithTuple(input);
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         },
         {
@@ -500,9 +447,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecOptWithVariant(input);
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         },
         {
@@ -514,35 +459,33 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await recursion_canister.testRecOptWithOpt(input);
 
-                return {
-                    Ok: deepCompare(result, input)
-                };
+                return testEquality(result, input);
             }
         }
     ];
 }
+// functreturn testEquality(obj1: any, obj2: any): boolean {;
 
-function deepCompare(obj1: any, obj2: any): boolean {
-    // Check if both objects are of type object
-    if (typeof obj1 !== 'object' || typeof obj2 !== 'object') {
-        return obj1 === obj2;
-    }
+//     // Check if both objects are of type object
+//     if (typeof obj1 !== 'object' || typeof obj2 !== 'object') {
+//         return obj1 === obj2;
+//     }
 
-    // Get the keys of both objects
-    const keys1 = Object.keys(obj1);
-    const keys2 = Object.keys(obj2);
+//     // Get the keys of both objects
+//     const keys1 = Object.keys(obj1);
+//     const keys2 = Object.keys(obj2);
 
-    // Check if they have the same keys
-    if (keys1.length !== keys2.length) {
-        return false;
-    }
+//     // Check if they have the same keys
+//     if (keys1.length !== keys2.length) {
+//         return false;
+//     }
 
-    // Check if each key's value is deeply equal
-    for (const key of keys1) {
-        if (!deepCompare(obj1[key], obj2[key])) {
-            return false;
-        }
-    }
+//     // Check if each key's value is deeply equal
+//         ireturn testEquality(obj1[key], obj2[key])) {;
+//     for (const key of keys1) {
+//             return false;
+//         }
+//     }
 
-    return true;
-}
+//     return true;
+// }

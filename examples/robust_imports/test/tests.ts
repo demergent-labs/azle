@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { Test } from 'azle/test';
+import { fail, succeed, Test, test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { _SERVICE } from '../dfx_generated/robust_imports/robust_imports.did';
@@ -36,10 +36,10 @@ function getImportCoverageTests(ic: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'myVariantToMyDeepVariant',
             test: async () => {
+                const expected = { Thing: 7 };
                 const result = await ic.myVariantToMyDeepVariant({ Thing: 7 });
-                return {
-                    Ok: result.Thing === 7
-                };
+
+                return testEquality(result, expected);
             }
         },
         {
@@ -50,33 +50,26 @@ function getImportCoverageTests(ic: ActorSubclass<_SERVICE>): Test[] {
                         MyInt8: 7
                     }
                 );
-                return {
-                    Ok: 'eight' in result
-                };
+
+                return test('eight' in result);
             }
         },
         {
             name: 'returnsVec',
             test: async () => {
-                return {
-                    Ok: 7 === (await ic.returnVec())[1][3]
-                };
+                return testEquality((await ic.returnVec())[1][3], 7);
             }
         },
         {
             name: 'returnsFathomlessVec',
             test: async () => {
-                return {
-                    Ok: 7 === (await ic.returnFathomlessVec())[6]
-                };
+                return testEquality((await ic.returnFathomlessVec())[6], 7);
             }
         },
         {
             name: 'returnWeird',
             test: async () => {
-                return {
-                    Ok: -10_000n === (await ic.returnWeird())
-                };
+                return testEquality(await ic.returnWeird(), -10_000n);
             }
         },
         {
@@ -88,18 +81,15 @@ function getImportCoverageTests(ic: ActorSubclass<_SERVICE>): Test[] {
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === '(service "aaaaa-aa")'
-                };
+                return testEquality(result, '(service "aaaaa-aa")');
             }
         },
         {
             name: 'makeCavernousRecord',
             test: async () => {
                 const result = await ic.makeCavernousRecord();
-                return {
-                    Ok:
-                        result.coveredRecord.count === 10 &&
+                return test(
+                    result.coveredRecord.count === 10 &&
                         result.coveredRecord.name === 'Bob' &&
                         result.coveredRecord.type_name === 'Imported Record' &&
                         result.coveredRecord.greeting[0] === 'Hello there' &&
@@ -117,16 +107,15 @@ function getImportCoverageTests(ic: ActorSubclass<_SERVICE>): Test[] {
                         result.myTuple[0] === 'my tuple' &&
                         result.myDeepTuple[0] === 'my deep tuple' &&
                         result.myCavernousTuple[0] === 'my cavernous tuple'
-                };
+                );
             }
         },
         {
             name: 'typeCheck',
             test: async () => {
                 const result = await ic.typeCheck([[7]]);
-                return {
-                    Ok: result === 7
-                };
+
+                return testEquality(result, 7);
             }
         }
     ];
@@ -147,9 +136,11 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
             name: 'Add Sig Figs',
             test: async () => {
                 const figs = 1.234;
-                return {
-                    Ok: 1.2339999675750732 === (await fruit.addSigFigs(figs))
-                };
+
+                return testEquality(
+                    await fruit.addSigFigs(figs),
+                    1.2339999675750732
+                );
             }
         },
         {
@@ -161,9 +152,7 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === '(service "aaaaa-aa")'
-                };
+                return testEquality(result, '(service "aaaaa-aa")');
             }
         },
         {
@@ -174,11 +163,11 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                 try {
                     await fruit.checkWatermelonForSeeds(true, watermelon);
                 } catch (err) {
-                    return { Ok: false };
+                    return fail();
                 }
                 try {
                     await fruit.checkWatermelonForSeeds(false, watermelon);
-                    return { Ok: false };
+                    return fail();
                 } catch (err) {
                     // continue regardless of error
                 }
@@ -187,7 +176,7 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                         true,
                         seedlessWatermelon
                     );
-                    return { Ok: false };
+                    return fail();
                 } catch (err) {
                     // continue regardless of error
                 }
@@ -197,9 +186,10 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                         seedlessWatermelon
                     );
                 } catch (err) {
-                    return { Ok: false };
+                    return fail();
                 }
-                return { Ok: true };
+
+                return succeed();
             }
         },
         {
@@ -237,7 +227,8 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                     poisonApples,
                     oranges
                 );
-                return { Ok: result1 && !result2 };
+
+                return testEquality([result1, result2], [true, false]);
             }
         },
         {
@@ -253,24 +244,16 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                     func
                 );
 
-                return {
-                    Ok:
-                        result[0][0].toText() === 'aaaaa-aa' &&
-                        result[0][1] === 'create_canister' &&
-                        result[1][0].toText() === 'aaaaa-aa' &&
-                        result[1][1] === 'create_canister' &&
-                        result[2][0].toText() === 'aaaaa-aa' &&
-                        result[2][1] === 'create_canister'
-                };
+                return testEquality(result, [func, func, func]);
             }
         },
         {
             name: 'Get Management Peach',
             test: async () => {
                 const result = await fruit.getManagementPeach();
-                return {
-                    Ok: result.toText() === 'aaaaa-aa'
-                };
+                const expected = Principal.fromText('aaaaa-aa');
+
+                return testEquality(result, expected);
             }
         },
         {
@@ -279,9 +262,11 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                 const olives1HadAPit = await fruit.pitOlives([true]);
                 const olives2HadAPit = await fruit.pitOlives([false]);
                 const olives3HadAPit = await fruit.pitOlives([]);
-                return {
-                    Ok: olives1HadAPit && !olives2HadAPit && !olives3HadAPit
-                };
+
+                return testEquality(
+                    [olives1HadAPit, olives2HadAPit, olives3HadAPit],
+                    [true, false, false]
+                );
             }
         },
         {
@@ -289,22 +274,23 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const banana = [1];
                 const peeledBanana = await fruit.peelBanana(banana);
-                return { Ok: peeledBanana === 1 };
+
+                return testEquality(peeledBanana, 1);
             }
         },
         {
             name: 'Put the Coconut in the Lime',
             test: async () => {
-                const lime = await fruit.putTheCoconutInTheLime(8);
-                return { Ok: lime.length === 1 && lime[0] === 8 };
+                const coconut = 8;
+                const lime = await fruit.putTheCoconutInTheLime(coconut);
+
+                return testEquality(lime, [coconut]);
             }
         },
         {
             name: 'Check if Mango is tricky to eat',
             test: async () => {
-                return {
-                    Ok: await fruit.isMangoTrickyToEat()
-                };
+                return test(await fruit.isMangoTrickyToEat());
             }
         },
         {
@@ -313,19 +299,18 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
                 await fruit.removeRambutanSkins();
                 try {
                     await fruit.dirtyIlama();
-                    return { Ok: false };
+                    return fail();
                 } catch {
                     // continue regardless of error
                 }
                 try {
                     await fruit.pickElderberry();
-                    return { Ok: false };
+                    return fail();
                 } catch {
                     // continue regardless of error
                 }
-                return {
-                    Ok: !(await fruit.isFruitPrepared())
-                };
+
+                return test(!(await fruit.isFruitPrepared()));
             }
         },
         {
@@ -339,9 +324,7 @@ function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
         {
             name: 'Is Fruit Prepared? Yes!',
             test: async () => {
-                return {
-                    Ok: await fruit.isFruitPrepared()
-                };
+                return test(await fruit.isFruitPrepared());
             }
         }
     ];
@@ -359,7 +342,8 @@ function getTsPrimAliasTest(canister: ActorSubclass<_SERVICE>): Test[] {
                     7n,
                     1.23
                 );
-                return { Ok: result === undefined };
+
+                return testEquality(result, undefined);
             }
         }
     ];
@@ -381,21 +365,24 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
                     await canister.helloMixedTextAlias();
                 const deepTextAlias = await canister.helloDeepTextAlias();
                 const stirredTextAlias = await canister.helloStirredTextAlias();
-                return {
-                    Ok:
-                        textAliasResult === azleAliasResult &&
+
+                return test(
+                    textAliasResult === azleAliasResult &&
                         azleAliasResult === mixedTextAliasResult &&
                         mixedTextAliasResult === deepTextAlias &&
                         deepTextAlias === stirredTextAlias &&
-                        stirredTextAlias === textAliasResult
-                };
+                        stirredTextAlias === textAliasResult,
+                    `Expected all of the following to be the same: ${textAliasResult}, ${azleAliasResult}, ${mixedTextAliasResult}, ${deepTextAlias}, ${stirredTextAlias}`
+                );
             }
         },
         {
             name: 'Deep Blob Alias',
             test: async () => {
-                const result = await canister.getDeepBlob([7]);
-                return { Ok: result[0] === 7 };
+                const expected = [7];
+                const result = await canister.getDeepBlob(expected);
+
+                return testEquality(result, expected);
             }
         },
         {
@@ -403,41 +390,43 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 try {
                     await canister.deepEmptyAlias();
-                    return { Ok: false };
+                    return fail();
                 } catch {
                     // continue regardless of error
                 }
-                return { Ok: true };
+
+                return succeed();
             }
         },
         {
             name: 'Number Aliases',
             test: async () => {
                 const result = await canister.getNumberAliases();
-                return {
-                    Ok:
-                        result.first === 1n &&
-                        result.second === 2n &&
-                        result.third === 3 &&
-                        result.fourth === 4n &&
-                        result.fifth === 5n &&
-                        result.sixth === 6 &&
-                        result.seventh === 7 &&
-                        result.eighth === 8n &&
-                        result.ninth === 9 &&
-                        result.tenth === 10n &&
-                        result.eleventh === 11 &&
-                        result.twelfth === 12
+                const expected = {
+                    first: 1n,
+                    second: 2n,
+                    third: 3,
+                    fourth: 4n,
+                    fifth: 5n,
+                    sixth: 6,
+                    seventh: 7,
+                    eighth: 8n,
+                    ninth: 9,
+                    tenth: 10n,
+                    eleventh: 11,
+                    twelfth: 12
                 };
+
+                return testEquality(result, expected);
             }
         },
         {
             name: 'Principal Aliases',
             test: async () => {
-                const result = await canister.passPrincipal(
-                    Principal.fromText('aaaaa-aa')
-                );
-                return { Ok: result.toText() === 'aaaaa-aa' };
+                const principal = Principal.fromText('aaaaa-aa');
+                const result = await canister.passPrincipal(principal);
+
+                return testEquality(result, principal);
             }
         },
         {
@@ -448,7 +437,8 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
                 await canister.simpleDeepQuery();
                 // If these functions didn't compile correctly then they should
                 // fail when called
-                return { Ok: true };
+
+                return succeed();
             }
         },
         {
@@ -460,32 +450,35 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
                     .toString()
                     .trim();
 
-                return {
-                    Ok: result === '(service "aaaaa-aa")'
-                };
+                return testEquality(result, '(service "aaaaa-aa")');
             }
         },
         {
             name: 'Reserved Alias',
             test: async () => {
                 const result = await canister.getReservedAlias();
-                return { Ok: result === null };
+
+                return testEquality(result, null);
             }
         },
         {
             name: 'Check My Record',
             test: async () => {
                 const result = await canister.getMyRecord();
-                return {
-                    Ok:
-                        result.id === 7n &&
-                        result.name[0] === 'Bob' &&
-                        result.depth.depth === 3 &&
-                        result.tups[0] === 'Hello' &&
-                        result.tups[1] === 1.23 &&
-                        'ugly' in result.description &&
-                        result.list[0] === 1
+                const expected = {
+                    id: 7n,
+                    name: ['Bob'],
+                    depth: {
+                        depth: 3
+                    },
+                    tups: ['Hello', 1.23],
+                    description: {
+                        ugly: null
+                    },
+                    list: [1]
                 };
+
+                return testEquality(result, expected);
             }
         },
         {
@@ -497,24 +490,26 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
                     'create_canister'
                 ];
                 const result = await canister.returnFuncAlias(func);
-                return { Ok: result[0].toText() === 'aaaaa-aa' };
+
+                return testEquality(result, func);
             }
         },
         {
             name: 'Check Stable',
             test: async () => {
-                await canister.setStable(0, 'Hello');
+                const stable = 'Hello';
+                await canister.setStable(0, stable);
                 const getResult = await canister.getStable(0);
-                return {
-                    Ok: getResult[0] === 'Hello'
-                };
+
+                return testEquality(getResult, [stable]);
             }
         },
         {
             name: 'Check Manual Alias',
             test: async () => {
                 const result = await canister.getManualAlias();
-                return { Ok: result === 9.87 };
+
+                return testEquality(result, 9.87);
             }
         },
         {
@@ -525,11 +520,7 @@ function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
                     { star: true }
                 );
 
-                if ('Ok' in result) {
-                    return { Ok: true };
-                }
-
-                return { Ok: false };
+                return test('Ok' in result);
             }
         }
     ];

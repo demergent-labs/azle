@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { _SERVICE } from './dfx_generated/randomness/randomness.did';
@@ -34,9 +34,7 @@ export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test[] {
                     globalResults.add(result);
                 }
 
-                return {
-                    Ok: globalResults.size === 5
-                };
+                return testEquality(globalResults.size, 5);
             }
         },
         {
@@ -49,9 +47,7 @@ export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'getRedeployed',
             test: async () => {
                 const result = await randomnessCanister.getRedeployed();
-                return {
-                    Ok: result === true
-                };
+                return test(result);
             }
         },
         {
@@ -80,9 +76,7 @@ export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test[] {
                     globalResults.add(result);
                 }
 
-                return {
-                    Ok: globalResults.size === 10
-                };
+                return testEquality(globalResults.size, 10);
             }
         }
     ];
