@@ -1,8 +1,8 @@
 import { HttpRequest, HttpResponse } from 'azle/experimental';
-import { deepEqual, getActor, Named } from 'azle/property_tests';
+import { getActor, Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { HttpResponseAgentResponseValue } from 'azle/property_tests/arbitraries/http/response_arb';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 import { fletch } from './fletch';
 
@@ -26,9 +26,7 @@ export function generateTests(
 
                     const result = await actor['get_state']();
 
-                    return {
-                        Ok: deepEqual(result, 0)
-                    };
+                    return testEquality(result, 0);
                 }
             },
             {
@@ -54,12 +52,11 @@ export function generateTests(
                         ...expectedResponse,
                         headers: sortedExpectedHeaders
                     };
-                    const valuesAreEqual = deepEqual(
+
+                    return testEquality(
                         processedResponse,
                         processedExpectedResponse
                     );
-
-                    return { Ok: valuesAreEqual };
                 }
             },
             {
@@ -69,9 +66,7 @@ export function generateTests(
 
                     const result = await actor['get_state']();
 
-                    return {
-                        Ok: deepEqual(result, 1)
-                    };
+                    return testEquality(result, 1);
                 }
             }
         ]
