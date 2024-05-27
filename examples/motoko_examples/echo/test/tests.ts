@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 // @ts-ignore
 import { _SERVICE } from './dfx_generated/echo/echo.did';
@@ -12,9 +12,7 @@ export function getTests(echoCanister: ActorSubclass<_SERVICE>): Test[] {
                 const phrase = 'This is a test.';
                 const result = await echoCanister.say(phrase);
 
-                return {
-                    Ok: result === phrase
-                };
+                return testEquality(result, phrase);
             }
         },
         {
@@ -23,9 +21,7 @@ export function getTests(echoCanister: ActorSubclass<_SERVICE>): Test[] {
                 const phrase = '';
                 const result = await echoCanister.say(phrase);
 
-                return {
-                    Ok: result === phrase
-                };
+                return testEquality(result, phrase);
             }
         },
         {
@@ -42,9 +38,7 @@ export function getTests(echoCanister: ActorSubclass<_SERVICE>): Test[] {
             `;
                 const result = await echoCanister.say(phrase);
 
-                return {
-                    Ok: result === phrase
-                };
+                return testEquality(result, phrase);
             }
         }
     ];

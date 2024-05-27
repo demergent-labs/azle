@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { int } from 'azle';
-import { Ok, Test } from 'azle/test';
+import { AzleResult, Test, testEquality } from 'azle/test';
 
 // @ts-ignore
 import { _SERVICE } from './dfx_generated/quicksort/quicksort.did';
@@ -66,13 +66,8 @@ async function arrayIsSorted(
     quicksortCanister: ActorSubclass<_SERVICE>,
     input: int[],
     expectedValues: int[]
-): Promise<Ok<boolean>> {
+): Promise<AzleResult<string>> {
     const result = await quicksortCanister.sort(input);
-    const elementIsOrderedCorrectly = (element: int, index: number) => {
-        return element === expectedValues[index];
-    };
 
-    return {
-        Ok: result.every(elementIsOrderedCorrectly)
-    };
+    return testEquality(result, expectedValues);
 }

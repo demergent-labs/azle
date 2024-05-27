@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 // @ts-ignore
 import { _SERVICE } from './dfx_generated/factorial/factorial.did';
@@ -11,9 +11,7 @@ export function getTests(factorialCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await factorialCanister.fac(0n);
 
-                return {
-                    Ok: result === 1n
-                };
+                return testEquality(result, 1n);
             }
         },
         {
@@ -21,9 +19,7 @@ export function getTests(factorialCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await factorialCanister.fac(5n);
 
-                return {
-                    Ok: result === 120n
-                };
+                return testEquality(result, 120n);
             }
         },
         {
@@ -31,9 +27,7 @@ export function getTests(factorialCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await factorialCanister.fac(20n);
 
-                return {
-                    Ok: result === 2_432_902_008_176_640_000n
-                };
+                return testEquality(result, 2_432_902_008_176_640_000n);
             }
         }
 

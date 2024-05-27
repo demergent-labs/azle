@@ -2,7 +2,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { SignIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { getCanisterId } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { _SERVICE } from './dfx_generated/whoami/whoami.did';
@@ -34,9 +34,7 @@ export function getTests(
             test: async () => {
                 const result = await whoamiCanister.installer();
 
-                return {
-                    Ok: result.toString() === installationPrincipal
-                };
+                return testEquality(result.toString(), installationPrincipal);
             }
         },
         {
@@ -44,9 +42,7 @@ export function getTests(
             test: async () => {
                 const result = await whoamiCanister.argument();
 
-                return {
-                    Ok: result.toString() === someonePrincipal
-                };
+                return testEquality(result.toString(), someonePrincipal);
             }
         },
         {
@@ -54,9 +50,7 @@ export function getTests(
             test: async () => {
                 const result = await whoamiCanister.whoami();
 
-                return {
-                    Ok: result.toString() === callingPrincipal
-                };
+                return testEquality(result.toString(), callingPrincipal);
             }
         },
         {
@@ -64,9 +58,7 @@ export function getTests(
             test: async () => {
                 const result = await whoamiCanister.id();
 
-                return {
-                    Ok: result.toString() === canisterId
-                };
+                return testEquality(result.toString(), canisterId);
             }
         },
         {
@@ -74,9 +66,7 @@ export function getTests(
             test: async () => {
                 const result = await whoamiCanister.idQuick();
 
-                return {
-                    Ok: result.toString() === canisterId
-                };
+                return testEquality(result.toString(), canisterId);
             }
         },
         {
@@ -95,9 +85,7 @@ export function getTests(
             test: async () => {
                 const result = await whoamiCanister.argument();
 
-                return {
-                    Ok: result.toString() === callingPrincipal
-                };
+                return testEquality(result.toString(), callingPrincipal);
             }
         }
         // TODO: To make this test really robust, we would use a different identity

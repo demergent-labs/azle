@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 import { _SERVICE } from '../src/declarations/phone_book/phone_book.did';
 
@@ -17,21 +17,16 @@ export function getTests(phoneBookCanister: ActorSubclass<_SERVICE>): Test[] {
                     'Test',
                     TEST_PHONE_BOOK_RECORD
                 );
-                return {
-                    Ok: result === undefined
-                };
+
+                return testEquality(result, undefined);
             }
         },
         {
             name: 'look up',
             test: async () => {
                 const result = (await phoneBookCanister.lookup('Test'))[0];
-                return {
-                    Ok:
-                        result !== undefined &&
-                        result.desc === TEST_PHONE_BOOK_RECORD.desc &&
-                        result.phone === TEST_PHONE_BOOK_RECORD.phone
-                };
+
+                return testEquality(result, TEST_PHONE_BOOK_RECORD);
             }
         }
     ];

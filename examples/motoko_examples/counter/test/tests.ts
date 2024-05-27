@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 // @ts-ignore
 import { _SERVICE } from './dfx_generated/counter/counter.did';
@@ -11,9 +11,7 @@ export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counterCanister.get();
 
-                return {
-                    Ok: result === 0n
-                };
+                return testEquality(result, 0n);
             }
         },
         {
@@ -21,9 +19,7 @@ export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counterCanister.set(10n);
 
-                return {
-                    Ok: result === undefined
-                };
+                return testEquality(result, undefined);
             }
         },
         {
@@ -31,9 +27,7 @@ export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counterCanister.inc();
 
-                return {
-                    Ok: result === undefined
-                };
+                return testEquality(result, undefined);
             }
         },
         {
@@ -41,9 +35,7 @@ export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counterCanister.inc();
 
-                return {
-                    Ok: result === undefined
-                };
+                return testEquality(result, undefined);
             }
         },
         {
@@ -51,9 +43,7 @@ export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counterCanister.get();
 
-                return {
-                    Ok: result === 12n
-                };
+                return testEquality(result, 12n);
             }
         }
     ];

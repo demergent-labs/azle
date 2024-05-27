@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 // @ts-ignore
 import { _SERVICE } from './dfx_generated/calc/calc.did';
@@ -11,9 +11,7 @@ export function getTests(calcCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await calcCanister.add(5n);
 
-                return {
-                    Ok: result === 5n
-                };
+                return testEquality(result, 5n);
             }
         },
         {
@@ -21,9 +19,7 @@ export function getTests(calcCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await calcCanister.sub(2n);
 
-                return {
-                    Ok: result === 3n
-                };
+                return testEquality(result, 3n);
             }
         },
         {
@@ -31,9 +27,7 @@ export function getTests(calcCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await calcCanister.mul(6n);
 
-                return {
-                    Ok: result === 18n
-                };
+                return testEquality(result, 18n);
             }
         },
         {
@@ -41,9 +35,7 @@ export function getTests(calcCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await calcCanister.div(2n);
 
-                return {
-                    Ok: result.length === 1 && result[0] === 9n
-                };
+                return testEquality(result, [9n]);
             }
         },
         {
@@ -51,9 +43,7 @@ export function getTests(calcCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await calcCanister.clearall();
 
-                return {
-                    Ok: result === undefined
-                };
+                return testEquality(result, undefined);
             }
         },
         {
@@ -61,9 +51,7 @@ export function getTests(calcCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await calcCanister.add(0n);
 
-                return {
-                    Ok: result === 0n
-                };
+                return testEquality(result, 0n);
             }
         }
     ];

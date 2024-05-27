@@ -1,6 +1,6 @@
 import * as dns from 'node:dns';
 
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 dns.setDefaultResultOrder('ipv4first');
 
@@ -9,67 +9,61 @@ export function getTests(): Test[] {
         {
             name: 'init get count',
             test: async () => {
-                return {
-                    Ok: (await getCount()) === getExpectedGetCountResult(0)
-                };
+                return testEquality(
+                    await getCount(),
+                    getExpectedGetCountResult(0)
+                );
             }
         },
         {
             name: 'first increment',
             test: async () => {
-                return {
-                    Ok: (await count()) === getExpectedCountResult(1)
-                };
+                return testEquality(await count(), getExpectedCountResult(1));
             }
         },
         {
             name: 'second increment',
             test: async () => {
-                return {
-                    Ok: (await count()) === getExpectedCountResult(2)
-                };
+                return testEquality(await count(), getExpectedCountResult(2));
             }
         },
         {
             name: 'get count',
             test: async () => {
-                return {
-                    Ok: (await getCount()) === getExpectedGetCountResult(2)
-                };
+                return testEquality(
+                    await getCount(),
+                    getExpectedGetCountResult(2)
+                );
             }
         },
         {
             name: 'gzipped increment',
             test: async () => {
-                return {
-                    Ok: (await countGzip()) === 'update'
-                };
+                return testEquality(await countGzip(), 'update');
             }
         },
         {
             name: 'get gzipped count',
             test: async () => {
-                return {
-                    Ok: (await getCountGzip()) === 'query'
-                };
+                return testEquality(await getCountGzip(), 'query');
             }
         },
         {
             name: 'get streaming count',
             test: async () => {
-                return {
-                    Ok:
-                        (await getCountStream()) ===
-                        getExpectedGetCountStreamResult(3)
-                };
+                return testEquality(
+                    await getCountStream(),
+                    getExpectedGetCountStreamResult(3)
+                );
             }
         },
         {
             name: 'final get count',
             test: async () => {
-                return {
-                    Ok: (await getCount()) === getExpectedGetCountResult(3)
-                };
+                return testEquality(
+                    await getCount(),
+                    getExpectedGetCountResult(3)
+                );
             }
         }
     ];

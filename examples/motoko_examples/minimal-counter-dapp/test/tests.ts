@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 // @ts-ignore
 import { _SERVICE } from '../src/declarations/minimal_dapp/minimal_dapp.did';
@@ -11,9 +11,7 @@ export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counterCanister.getCount();
 
-                return {
-                    Ok: result === 0n
-                };
+                return testEquality(result, 0n);
             }
         },
         {
@@ -21,9 +19,7 @@ export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counterCanister.count();
 
-                return {
-                    Ok: result === 1n
-                };
+                return testEquality(result, 1n);
             }
         },
         {
@@ -31,9 +27,7 @@ export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counterCanister.count();
 
-                return {
-                    Ok: result === 2n
-                };
+                return testEquality(result, 2n);
             }
         },
         {
@@ -41,9 +35,7 @@ export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counterCanister.getCount();
 
-                return {
-                    Ok: result === 2n
-                };
+                return testEquality(result, 2n);
             }
         },
         {
@@ -51,9 +43,7 @@ export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counterCanister.reset();
 
-                return {
-                    Ok: result === 0n
-                };
+                return testEquality(result, 0n);
             }
         },
         {
@@ -61,9 +51,7 @@ export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counterCanister.getCount();
 
-                return {
-                    Ok: result === 0n
-                };
+                return testEquality(result, 0n);
             }
         },
         {
@@ -71,9 +59,7 @@ export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counterCanister.count();
 
-                return {
-                    Ok: result === 1n
-                };
+                return testEquality(result, 1n);
             }
         },
         {
@@ -81,9 +67,7 @@ export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await counterCanister.getCount();
 
-                return {
-                    Ok: result === 1n
-                };
+                return testEquality(result, 1n);
             }
         }
     ];

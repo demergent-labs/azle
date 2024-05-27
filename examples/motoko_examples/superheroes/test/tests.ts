@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, test, testEquality } from 'azle/test';
 
 // @ts-ignore
 import { _SERVICE, Superhero } from '../src/declarations/superheroes.did';
@@ -15,9 +15,7 @@ export function getTests(superheroesCanister: ActorSubclass<_SERVICE>): Test[] {
                 };
                 const result = await superheroesCanister.create(spiderman);
 
-                return {
-                    Ok: result === 0
-                };
+                return testEquality(result, 0);
             }
         },
         {
@@ -34,9 +32,7 @@ export function getTests(superheroesCanister: ActorSubclass<_SERVICE>): Test[] {
                 };
                 const result = await superheroesCanister.create(superman);
 
-                return {
-                    Ok: result === 1
-                };
+                return testEquality(result, 1);
             }
         },
         {
@@ -44,11 +40,9 @@ export function getTests(superheroesCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await superheroesCanister.read(0);
 
-                return {
-                    Ok:
-                        result[0] !== undefined &&
-                        result[0].name === 'Spiderman'
-                };
+                return testEquality(result, [
+                    { name: 'Spiderman', superpowers: [] }
+                ]);
             }
         },
         {
@@ -56,9 +50,7 @@ export function getTests(superheroesCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await superheroesCanister.read(99);
 
-                return {
-                    Ok: result.length === 0
-                };
+                return testEquality(result.length, 0);
             }
         },
         {
@@ -80,9 +72,7 @@ export function getTests(superheroesCanister: ActorSubclass<_SERVICE>): Test[] {
                 };
                 const result = await superheroesCanister.update(0, spiderman);
 
-                return {
-                    Ok: result === true
-                };
+                return test(result);
             }
         },
         {
@@ -94,9 +84,7 @@ export function getTests(superheroesCanister: ActorSubclass<_SERVICE>): Test[] {
                 };
                 const result = await superheroesCanister.update(1, superman);
 
-                return {
-                    Ok: result === true
-                };
+                return test(result);
             }
         },
         {
@@ -104,9 +92,7 @@ export function getTests(superheroesCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await superheroesCanister.deleteHero(0);
 
-                return {
-                    Ok: result === true
-                };
+                return test(result);
             }
         },
         {
@@ -114,9 +100,7 @@ export function getTests(superheroesCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await superheroesCanister.deleteHero(99);
 
-                return {
-                    Ok: result === false
-                };
+                return test(result === false);
             }
         }
     ];

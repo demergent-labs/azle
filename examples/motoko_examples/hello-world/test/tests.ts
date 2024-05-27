@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 // @ts-ignore
 import { _SERVICE } from './dfx_generated/hello_world/hello_world.did';
@@ -13,9 +13,7 @@ export function getTests(
             test: async () => {
                 const result = await hello_world_canister.main();
 
-                return {
-                    Ok: result === undefined
-                };
+                return testEquality(result, undefined);
             }
         }
     ];

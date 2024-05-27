@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 // @ts-ignore
 import { _SERVICE } from '../dfx_generated/hello/hello.did';
@@ -11,9 +11,7 @@ export function getTests(hello_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await hello_canister.greet('everyone');
 
-                return {
-                    Ok: result === 'Hello, everyone!'
-                };
+                return testEquality(result, 'Hello, everyone!');
             }
         },
         {
@@ -21,9 +19,7 @@ export function getTests(hello_canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await hello_canister.greet('');
 
-                return {
-                    Ok: result === 'Hello, !'
-                };
+                return testEquality(result, 'Hello, !');
             }
         }
     ];
