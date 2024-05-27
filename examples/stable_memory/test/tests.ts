@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { fail, Test, test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/stable_memory/stable_memory.did';
 
@@ -17,9 +17,7 @@ export function getTests(
             test: async () => {
                 const result = await stableMemoryCanister.stableSize();
 
-                return {
-                    Ok: result === 513
-                };
+                return testEquality(result, 513);
             }
         },
         {
@@ -27,9 +25,7 @@ export function getTests(
             test: async () => {
                 const result = await stableMemoryCanister.stable64Size();
 
-                return {
-                    Ok: result === 513n
-                };
+                return testEquality(result, 513n);
             }
         },
         {
@@ -40,9 +36,10 @@ export function getTests(
                 const result = await stableMemoryCanister.stableGrow(newPages);
                 const newSize = await stableMemoryCanister.stableSize();
 
-                return {
-                    Ok: result === oldSize && newPages + oldSize === newSize
-                };
+                return testEquality(
+                    [result, newSize],
+                    [oldSize, newPages + oldSize]
+                );
             }
         },
         {
@@ -54,9 +51,10 @@ export function getTests(
                     await stableMemoryCanister.stable64Grow(newPages);
                 const newSize = await stableMemoryCanister.stable64Size();
 
-                return {
-                    Ok: result === oldSize && newPages + oldSize === newSize
-                };
+                return testEquality(
+                    [result, newSize],
+                    [oldSize, newPages + oldSize]
+                );
             }
         },
         {
@@ -68,9 +66,7 @@ export function getTests(
                 // TODO the test could perhaps be more effective
                 const result = await stableMemoryCanister.stableBytes();
 
-                return {
-                    Ok: result.length === STABLE_BYTES_SIZE
-                };
+                return testEquality(result.length, STABLE_BYTES_SIZE);
             }
         },
         {
@@ -86,9 +82,7 @@ export function getTests(
                     buffer.length
                 );
 
-                return {
-                    Ok: arrayEquals(buffer, result)
-                };
+                return testEquality(result, buffer);
             }
         },
         {
@@ -104,9 +98,7 @@ export function getTests(
                     buffer.length
                 );
 
-                return {
-                    Ok: arrayEquals(buffer, result)
-                };
+                return testEquality(result, buffer);
             }
         },
         {
@@ -118,16 +110,15 @@ export function getTests(
                 try {
                     await stableMemoryCanister.stableWrite(offset, buffer);
                 } catch (error) {
-                    return {
-                        Ok: (error as any)
+                    return test(
+                        (error as any)
                             .toString()
-                            .includes('stable memory out of bounds')
-                    };
+                            .includes('stable memory out of bounds'),
+                        `Expected error to include 'stable memory out of bounds'. Received: ${error}`
+                    );
                 }
 
-                return {
-                    Ok: false
-                };
+                return fail();
             }
         },
         {
@@ -143,9 +134,7 @@ export function getTests(
                     BigInt(buffer.length)
                 );
 
-                return {
-                    Ok: arrayEquals(buffer, result)
-                };
+                return testEquality(result, buffer);
             }
         },
         {
@@ -161,9 +150,7 @@ export function getTests(
                     BigInt(buffer.length)
                 );
 
-                return {
-                    Ok: arrayEquals(buffer, result)
-                };
+                return testEquality(result, buffer);
             }
         },
         {
@@ -175,16 +162,15 @@ export function getTests(
                 try {
                     await stableMemoryCanister.stable64Write(offset, buffer);
                 } catch (error) {
-                    return {
-                        Ok: (error as any)
+                    return test(
+                        (error as any)
                             .toString()
-                            .includes('stable memory out of bounds')
-                    };
+                            .includes('stable memory out of bounds'),
+                        `Expected error to include 'stable memory out of bounds'. Received: ${error}`
+                    );
                 }
 
-                return {
-                    Ok: false
-                };
+                return fail();
             }
         },
         {
@@ -195,9 +181,10 @@ export function getTests(
                 const result = await stableMemoryCanister.stableGrow(newPages);
                 const newSize = await stableMemoryCanister.stableSize();
 
-                return {
-                    Ok: result === oldSize && newPages + oldSize === newSize
-                };
+                return testEquality(
+                    [result, newSize],
+                    [oldSize, newPages + oldSize]
+                );
             }
         },
         {
@@ -206,14 +193,14 @@ export function getTests(
                 try {
                     await stableMemoryCanister.stableGrow(1);
                 } catch (e: any) {
-                    return {
-                        Ok: e.toString().includes('OutOfMemory') // TODO change error messages back to nice ones once we figure that out
-                        // .includes('Uncaught InternalError: Out of memory')
-                    };
+                    // TODO change error messages back to nice ones once we figure that out
+                    // .includes('Uncaught InternalError: Out of memory')
+                    return test(
+                        e.toString().includes('OutOfMemory'),
+                        `Expected error to include 'OutOfMemory'. Received: ${e}`
+                    );
                 }
-                return {
-                    Err: 'canister did not run out of memory'
-                };
+                return fail('canister did not run out of memory');
             }
         },
         {
@@ -229,9 +216,10 @@ export function getTests(
                     await stableMemoryCanister.stable64Grow(newPages);
                 const newSize = await stableMemoryCanister.stable64Size();
 
-                return {
-                    Ok: result === oldSize && newPages + oldSize === newSize
-                };
+                return testEquality(
+                    [result, newSize],
+                    [oldSize, newPages + oldSize]
+                );
             }
         },
         {
@@ -243,19 +231,15 @@ export function getTests(
                 try {
                     await stableMemoryCanister.stable64Grow(1n);
                 } catch (e: any) {
-                    return {
-                        Ok: e.toString().includes('OutOfMemory') // TODO change error messages back to nice ones once we figure that out
-                        // .includes('Uncaught InternalError: Out of memory')
-                    };
+                    // TODO change error messages back to nice ones once we figure that out
+                    // .includes('Uncaught InternalError: Out of memory')
+                    return test(
+                        e.toString().includes('OutOfMemory'),
+                        `Expected error to include 'OutOfMemory'. Received: ${e}`
+                    );
                 }
-                return {
-                    Err: 'canister did not run out of memory'
-                };
+                return fail('canister did not run out of memory');
             }
         }
     ];
-}
-
-function arrayEquals(a: any[] | Uint8Array, b: any[] | Uint8Array): boolean {
-    return a.length === b.length && a.every((item, index) => item === b[index]);
 }

@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/simple_erc20/simple_erc20.did';
 
@@ -10,9 +10,7 @@ export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await simpleErc20Canister.name();
 
-                return {
-                    Ok: result === ''
-                };
+                return testEquality(result, '');
             }
         },
         {
@@ -20,9 +18,7 @@ export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await simpleErc20Canister.ticker();
 
-                return {
-                    Ok: result === ''
-                };
+                return testEquality(result, '');
             }
         },
         {
@@ -30,9 +26,7 @@ export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await simpleErc20Canister.totalSupply();
 
-                return {
-                    Ok: result === 0n
-                };
+                return testEquality(result, 0n);
             }
         },
         {
@@ -40,9 +34,7 @@ export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await simpleErc20Canister.balance('0');
 
-                return {
-                    Ok: result === 0n
-                };
+                return testEquality(result, 0n);
             }
         },
         {
@@ -55,9 +47,7 @@ export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
                     1_000_000n
                 );
 
-                return {
-                    Ok: result === true
-                };
+                return testEquality(result, true);
             }
         },
         {
@@ -65,9 +55,7 @@ export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await simpleErc20Canister.name();
 
-                return {
-                    Ok: result === 'Token'
-                };
+                return testEquality(result, 'Token');
             }
         },
         {
@@ -75,9 +63,7 @@ export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await simpleErc20Canister.ticker();
 
-                return {
-                    Ok: result === 'TOKEN'
-                };
+                return testEquality(result, 'TOKEN');
             }
         },
         {
@@ -85,9 +71,7 @@ export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await simpleErc20Canister.totalSupply();
 
-                return {
-                    Ok: result === 1_000_000n
-                };
+                return testEquality(result, 1_000_000n);
             }
         },
         {
@@ -95,9 +79,7 @@ export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await simpleErc20Canister.balance('0');
 
-                return {
-                    Ok: result === 1_000_000n
-                };
+                return testEquality(result, 1_000_000n);
             }
         },
         {
@@ -109,9 +91,7 @@ export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
                     100n
                 );
 
-                return {
-                    Ok: result === true
-                };
+                return test(result);
             }
         },
         {
@@ -119,9 +99,7 @@ export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await simpleErc20Canister.balance('0');
 
-                return {
-                    Ok: result === 999_900n
-                };
+                return testEquality(result, 999_990n);
             }
         },
         {
@@ -129,9 +107,7 @@ export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await simpleErc20Canister.balance('1');
 
-                return {
-                    Ok: result === 100n
-                };
+                return testEquality(result, 100n);
             }
         }
     ];

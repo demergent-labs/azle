@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { error, succeed, Test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/timers/timers.did';
 
@@ -18,16 +18,16 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test[] {
             name: 'get initial timer values',
             test: async () => {
                 const result = await timersCanister.statusReport();
-
-                return {
-                    Ok:
-                        result.single === false &&
-                        result.inline === 0 &&
-                        result.capture === '' &&
-                        result.repeat === 0 &&
-                        result.singleCrossCanister.length === 0 &&
-                        result.repeatCrossCanister.length === 0
+                const expected = {
+                    single: false,
+                    inline: 0,
+                    capture: '',
+                    repeat: 0,
+                    singleCrossCanister: [],
+                    repeatCrossCanister: []
                 };
+
+                return testEquality(result, expected);
             }
         },
         {
@@ -35,9 +35,7 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 timerIds = await timersCanister.setTimers(10n, 5n);
 
-                return {
-                    Ok: true
-                };
+                return succeed();
             }
         },
         {
@@ -49,15 +47,17 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await timersCanister.statusReport();
 
-                return {
-                    Ok:
-                        result.single === false &&
-                        result.inline === 0 &&
-                        result.capture === '' &&
-                        result.repeat === 1 &&
-                        result.singleCrossCanister.length === 0 &&
-                        result.repeatCrossCanister.length === 32
-                };
+                return testEquality(
+                    [
+                        result.single,
+                        result.inline,
+                        result.capture,
+                        result.repeat,
+                        result.singleCrossCanister.length,
+                        result.repeatCrossCanister.length
+                    ],
+                    [false, 0, '', 1, 0, 32]
+                );
             }
         },
         {
@@ -69,26 +69,28 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await timersCanister.statusReport();
 
-                return {
-                    Ok:
-                        result.single === true &&
-                        result.inline === 1 &&
-                        result.capture === '🚩' &&
-                        result.repeat === 2 &&
-                        result.singleCrossCanister.length === 32 &&
-                        result.repeatCrossCanister.length === 64
-                };
+                return testEquality(
+                    [
+                        result.single,
+                        result.inline,
+                        result.capture,
+                        result.repeat,
+                        result.singleCrossCanister.length,
+                        result.repeatCrossCanister.length
+                    ],
+                    [true, 1, '🚩', 2, 32, 64]
+                );
             }
         },
         {
             name: 'cancel the repeated timers',
             test: async () => {
                 if (timerIds.repeat === undefined) {
-                    return { Err: 'repeatedTimerId was never stored' };
+                    return error('repeatedTimerId was never stored');
                 }
 
                 if (timerIds.repeatCrossCanister === undefined) {
-                    return { Err: 'repeatCrossCanisterId was never stored' };
+                    return error('repeatCrossCanisterId was never stored');
                 }
 
                 await Promise.all([
@@ -96,9 +98,7 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test[] {
                     timersCanister.clearTimer(timerIds.repeatCrossCanister)
                 ]);
 
-                return {
-                    Ok: true
-                };
+                return succeed();
             }
         },
         {
@@ -110,15 +110,17 @@ export function getTests(timersCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await timersCanister.statusReport();
 
-                return {
-                    Ok:
-                        result.single === true &&
-                        result.inline === 1 &&
-                        result.capture === '🚩' &&
-                        result.repeat === 2 &&
-                        result.singleCrossCanister.length === 32 &&
-                        result.repeatCrossCanister.length === 64
-                };
+                return testEquality(
+                    [
+                        result.single,
+                        result.inline,
+                        result.capture,
+                        result.repeat,
+                        result.singleCrossCanister.length,
+                        result.repeatCrossCanister.length
+                    ],
+                    [true, 1, '🚩', 2, 32, 64]
+                );
             }
         }
     ];

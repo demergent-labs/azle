@@ -29,6 +29,7 @@ import {
 
 const PrimitiveOneTuple = Tuple(text);
 const PrimitiveTwoTuple = Tuple(text, nat64);
+export type PrimitiveTwoTuple = typeof PrimitiveTwoTuple.tsType;
 const PrimitiveThreeTuple = Tuple(text, nat64, Principal);
 
 const User = Record({
@@ -37,11 +38,13 @@ const User = Record({
 });
 
 const Header = Tuple(text, text);
+export type Header = typeof Header.tsType;
 
 const StreamingCallbackType = Variant({
     WithHeaders: Vec(Header),
     WithoutHeaders: Null
 });
+export type StreamingCallbackType = typeof StreamingCallbackType.tsType;
 
 const Reaction = Recursive(() =>
     Variant({
@@ -51,8 +54,11 @@ const Reaction = Recursive(() =>
 );
 
 const ComplexOneTuple = Tuple(PrimitiveTwoTuple);
+export type ComplexOneTuple = typeof ComplexOneTuple.tsType;
 const ComplexTwoTuple = Tuple(PrimitiveTwoTuple, User);
+export type ComplexTwoTuple = typeof ComplexTwoTuple.tsType;
 const ComplexThreeTuple = Tuple(PrimitiveTwoTuple, User, Reaction);
+export type ComplexThreeTuple = typeof ComplexThreeTuple.tsType;
 
 const HttpResponse = Record({
     headers: Vec(Header)

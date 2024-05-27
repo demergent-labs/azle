@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 // @ts-ignore
 import { _SERVICE } from '../dfx_generated/update/update.did';
@@ -12,9 +12,7 @@ export function getTests(updateCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await updateCanister.simpleUpdate('Why hello there');
 
-                return {
-                    Ok: result === undefined
-                };
+                return testEquality(result, undefined);
             }
         },
         {
@@ -22,9 +20,7 @@ export function getTests(updateCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await updateCanister.getCurrentMessage();
 
-                return {
-                    Ok: result === 'Why hello there'
-                };
+                return testEquality(result, 'Why hello there');
             }
         }
     ];

@@ -44,9 +44,7 @@ export function expectError(
     return {
         name,
         test: async () => {
-            return {
-                Ok: await testThrow(canisterMethod, expectedValue)
-            };
+            return test(await testThrow(canisterMethod, expectedValue));
         }
     };
 }

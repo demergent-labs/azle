@@ -1,8 +1,18 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
+import {
+    ComplexOneTuple,
+    ComplexThreeTuple,
+    ComplexTwoTuple,
+    Header,
+    PrimitiveTwoTuple,
+    StreamingCallbackType
+} from '../src';
 import { _SERVICE } from './dfx_generated/tuple_types/tuple_types.did';
+
+export type PrimitiveThreeTuple = [string, bigint, Principal];
 
 export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
     return [
@@ -12,9 +22,7 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await tupleTypesCanister.primitiveOneTupleReturnType();
 
-                return {
-                    Ok: result[0] === 'Hello'
-                };
+                return testEquality(result, ['Hello']);
             }
         },
         {
@@ -24,9 +32,7 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                     'Yes'
                 ]);
 
-                return {
-                    Ok: result[0] === 'Yes'
-                };
+                return testEquality(result, ['Yes']);
             }
         },
         {
@@ -35,9 +41,7 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await tupleTypesCanister.primitiveOneTupleInlineReturnType();
 
-                return {
-                    Ok: result[0] === 'Greenland'
-                };
+                return testEquality(result, ['Greenland']);
             }
         },
         {
@@ -48,9 +52,7 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                         'Rocks'
                     ]);
 
-                return {
-                    Ok: result[0] === 'Rocks'
-                };
+                return testEquality(result, ['Rocks']);
             }
         },
         {
@@ -59,22 +61,17 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await tupleTypesCanister.primitiveTwoTupleReturnType();
 
-                return {
-                    Ok: result[0] === 'Content-Type' && result[1] === 64n
-                };
+                return testEquality(result, ['Content-Type', 64n]);
             }
         },
         {
             name: 'primitiveTwoTupleParam',
             test: async () => {
-                const result = await tupleTypesCanister.primitiveTwoTupleParam([
-                    'Folly',
-                    6_433n
-                ]);
+                const tuple: PrimitiveTwoTuple = ['Folly', 6_433n];
+                const result =
+                    await tupleTypesCanister.primitiveTwoTupleParam(tuple);
 
-                return {
-                    Ok: result[0] === 'Folly' && result[1] === 6433n
-                };
+                return testEquality(result, tuple);
             }
         },
         {
@@ -83,9 +80,7 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await tupleTypesCanister.primitiveTwoTupleInlineReturnType();
 
-                return {
-                    Ok: result[0] === 'Fun' && result[1] === 'Times'
-                };
+                return testEquality(result, ['Fun', 'Times']);
             }
         },
         {
@@ -97,9 +92,7 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                         'Days'
                     ]);
 
-                return {
-                    Ok: result[0] === 'Great' && result[1] === 'Days'
-                };
+                return testEquality(result, ['Great', 'Days']);
             }
         },
         {
@@ -107,31 +100,27 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result =
                     await tupleTypesCanister.primitiveThreeTupleReturnType();
+                const expected = [
+                    'Good',
+                    454n,
+                    Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
+                ];
 
-                return {
-                    Ok:
-                        result[0] === 'Good' &&
-                        result[1] === 454n &&
-                        result[2].toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
-                };
+                return testEquality(result, expected);
             }
         },
         {
             name: 'primitiveThreeTupleParam',
             test: async () => {
+                const tuple: PrimitiveThreeTuple = [
+                    'Antarctica',
+                    41_415n,
+                    Principal.fromText('aaaaa-aa')
+                ];
                 const result =
-                    await tupleTypesCanister.primitiveThreeTupleParam([
-                        'Antarctica',
-                        41_415n,
-                        Principal.fromText('aaaaa-aa')
-                    ]);
+                    await tupleTypesCanister.primitiveThreeTupleParam(tuple);
 
-                return {
-                    Ok:
-                        result[0] === 'Antarctica' &&
-                        result[1] === 41_415n &&
-                        result[2].toText() === 'aaaaa-aa'
-                };
+                return testEquality(result, tuple);
             }
         },
         {
@@ -140,30 +129,27 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await tupleTypesCanister.primitiveThreeTupleInlineReturnType();
 
-                return {
-                    Ok:
-                        result[0] === 'Fun' &&
-                        result[1] === 101n &&
-                        result[2].toText() === 'aaaaa-aa'
-                };
+                return testEquality(result, [
+                    'Fun',
+                    101n,
+                    Principal.fromText('aaaaa-aa')
+                ]);
             }
         },
         {
             name: 'primitiveThreeTupleInlineParam',
             test: async () => {
+                const tuple: PrimitiveThreeTuple = [
+                    'Great',
+                    300n,
+                    Principal.fromText('aaaaa-aa')
+                ];
                 const result =
-                    await tupleTypesCanister.primitiveThreeTupleInlineParam([
-                        'Great',
-                        300n,
-                        Principal.fromText('aaaaa-aa')
-                    ]);
+                    await tupleTypesCanister.primitiveThreeTupleInlineParam(
+                        tuple
+                    );
 
-                return {
-                    Ok:
-                        result[0] === 'Great' &&
-                        result[1] === 300n &&
-                        result[2].toText() === 'aaaaa-aa'
-                };
+                return testEquality(result, tuple);
             }
         },
         {
@@ -171,22 +157,17 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result =
                     await tupleTypesCanister.complexOneTupleReturnType();
-
-                return {
-                    Ok: result[0][0] === 'Hello' && result[0][1] === 0n
-                };
+                return testEquality(result, [['Hello', 0n]]);
             }
         },
         {
             name: 'complexOneTupleParam',
             test: async () => {
-                const result = await tupleTypesCanister.complexOneTupleParam([
-                    ['Goodbye', 1n]
-                ]);
+                const tuple: ComplexOneTuple = [['Goodbye', 1n]];
+                const result =
+                    await tupleTypesCanister.complexOneTupleParam(tuple);
 
-                return {
-                    Ok: result[0][0] === 'Goodbye' && result[0][1] === 1n
-                };
+                return testEquality(result, tuple);
             }
         },
         {
@@ -195,22 +176,17 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await tupleTypesCanister.complexOneTupleInlineReturnType();
 
-                return {
-                    Ok: result[0][0] === 'Candy' && result[0][1] === 56n
-                };
+                return testEquality(result, [['Candy', 56n]]);
             }
         },
         {
             name: 'complexOneTupleInlineParam',
             test: async () => {
+                const tuple: ComplexOneTuple = [['Mountain', 76n]];
                 const result =
-                    await tupleTypesCanister.complexOneTupleInlineParam([
-                        ['Mountain', 76n]
-                    ]);
+                    await tupleTypesCanister.complexOneTupleInlineParam(tuple);
 
-                return {
-                    Ok: result[0][0] === 'Mountain' && result[0][1] === 76n
-                };
+                return testEquality(result, tuple);
             }
         },
         {
@@ -218,36 +194,28 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result =
                     await tupleTypesCanister.complexTwoTupleReturnType();
+                const expected = [
+                    ['Content-Type', 64n],
+                    { id: '0', primitiveTwoTuple: ['Content-Type', 64n] }
+                ];
 
-                return {
-                    Ok:
-                        result[0][0] === 'Content-Type' &&
-                        result[0][1] === 64n &&
-                        result[1].id === '0' &&
-                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
-                        result[1].primitiveTwoTuple[1] === 64n
-                };
+                return testEquality(result, expected);
             }
         },
         {
             name: 'complexTwoTupleParam',
             test: async () => {
-                const result = await tupleTypesCanister.complexTwoTupleParam([
+                const tuple: ComplexTwoTuple = [
                     ['Content-Length', 6_422n],
                     {
                         id: '1',
                         primitiveTwoTuple: ['Content-Type', 64n]
                     }
-                ]);
+                ];
+                const result =
+                    await tupleTypesCanister.complexTwoTupleParam(tuple);
 
-                return {
-                    Ok:
-                        result[0][0] === 'Content-Length' &&
-                        result[0][1] === 6_422n &&
-                        result[1].id === '1' &&
-                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
-                        result[1].primitiveTwoTuple[1] === 64n
-                };
+                return testEquality(result, tuple);
             }
         },
         {
@@ -255,20 +223,24 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result =
                     await tupleTypesCanister.complexTwoTupleInlineReturnType();
+                const expected = [
+                    ['Content-Type', 644n],
+                    { id: '444', primitiveTwoTuple: ['Content-Type', 6_422n] }
+                ];
 
-                return {
-                    Ok:
-                        result[0][0] === 'Content-Type' &&
-                        result[0][1] === 644n &&
-                        result[1].id === '444' &&
-                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
-                        result[1].primitiveTwoTuple[1] === 6_422n
-                };
+                return testEquality(result, expected);
             }
         },
         {
             name: 'complexTwoTupleInlineParam',
             test: async () => {
+                const tuple: ComplexTwoTuple = [
+                    ['Content-Length', 6_422n],
+                    {
+                        id: '1',
+                        primitiveTwoTuple: ['Content-Type', 64n]
+                    }
+                ];
                 const result =
                     await tupleTypesCanister.complexTwoTupleInlineParam([
                         ['Content-Length', 6_422n],
@@ -278,44 +250,13 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                         }
                     ]);
 
-                return {
-                    Ok:
-                        result[0][0] === 'Content-Length' &&
-                        result[0][1] === 6_422n &&
-                        result[1].id === '133' &&
-                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
-                        result[1].primitiveTwoTuple[1] === 6_224n
-                };
+                return testEquality(result, tuple);
             }
         },
         {
             name: 'complexThreeTupleReturnType',
             test: async () => {
-                const result =
-                    await tupleTypesCanister.complexThreeTupleReturnType();
-
-                return {
-                    Ok:
-                        result[0][0] === 'Content-Type' &&
-                        result[0][1] === 64n &&
-                        result[1].id === '0' &&
-                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
-                        result[1].primitiveTwoTuple[1] === 64n &&
-                        'Bad' in result[2] &&
-                        result[2].Bad[0][0] === 'Content-Type' &&
-                        result[2].Bad[0][1] === 64n &&
-                        result[2].Bad[1].id === '1' &&
-                        result[2].Bad[1].primitiveTwoTuple[0] ===
-                            'Content-Type' &&
-                        result[2].Bad[1].primitiveTwoTuple[1] === 64n &&
-                        'Good' in result[2].Bad[2]
-                };
-            }
-        },
-        {
-            name: 'complexThreeTupleParam',
-            test: async () => {
-                const result = await tupleTypesCanister.complexThreeTupleParam([
+                const expected: ComplexThreeTuple = [
                     ['Content-Type', 64n],
                     {
                         id: '0',
@@ -333,24 +274,39 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                             }
                         ]
                     }
-                ]);
+                ];
+                const result =
+                    await tupleTypesCanister.complexThreeTupleReturnType();
 
-                return {
-                    Ok:
-                        result[0][0] === 'Content-Type' &&
-                        result[0][1] === 64n &&
-                        result[1].id === '0' &&
-                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
-                        result[1].primitiveTwoTuple[1] === 64n &&
-                        'Bad' in result[2] &&
-                        result[2].Bad[0][0] === 'Content-Type' &&
-                        result[2].Bad[0][1] === 64n &&
-                        result[2].Bad[1].id === '1' &&
-                        result[2].Bad[1].primitiveTwoTuple[0] ===
-                            'Content-Type' &&
-                        result[2].Bad[1].primitiveTwoTuple[1] === 64n &&
-                        'Good' in result[2].Bad[2]
-                };
+                return testEquality(result, expected);
+            }
+        },
+        {
+            name: 'complexThreeTupleParam',
+            test: async () => {
+                const tuple: ComplexThreeTuple = [
+                    ['Content-Type', 64n],
+                    {
+                        id: '0',
+                        primitiveTwoTuple: ['Content-Type', 64n]
+                    },
+                    {
+                        Bad: [
+                            ['Content-Type', 64n],
+                            {
+                                id: '1',
+                                primitiveTwoTuple: ['Content-Type', 64n]
+                            },
+                            {
+                                Good: null
+                            }
+                        ]
+                    }
+                ];
+                const result =
+                    await tupleTypesCanister.complexThreeTupleParam(tuple);
+
+                return testEquality(result, tuple);
             }
         },
         {
@@ -359,96 +315,86 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
                 const result =
                     await tupleTypesCanister.complexThreeTupleInlineReturnType();
 
-                return {
-                    Ok:
-                        result[0][0] === 'Content-Type' &&
-                        result[0][1] === 64n &&
-                        result[1].id === '0' &&
-                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
-                        result[1].primitiveTwoTuple[1] === 64n &&
-                        'Bad' in result[2] &&
-                        result[2].Bad[0][0] === 'Content-Type' &&
-                        result[2].Bad[0][1] === 64n &&
-                        result[2].Bad[1].id === '1' &&
-                        result[2].Bad[1].primitiveTwoTuple[0] ===
-                            'Content-Type' &&
-                        result[2].Bad[1].primitiveTwoTuple[1] === 64n &&
-                        'Good' in result[2].Bad[2]
-                };
+                const expected: ComplexThreeTuple = [
+                    ['Content-Type', 64n],
+                    {
+                        id: '0',
+                        primitiveTwoTuple: ['Content-Type', 64n]
+                    },
+                    {
+                        Bad: [
+                            ['Content-Type', 64n],
+                            {
+                                id: '1',
+                                primitiveTwoTuple: ['Content-Type', 64n]
+                            },
+                            {
+                                Good: null
+                            }
+                        ]
+                    }
+                ];
+
+                return testEquality(result, expected);
             }
         },
         {
             name: 'complexThreeTupleInlineParam',
             test: async () => {
+                const tuple: ComplexThreeTuple = [
+                    ['Content-Type', 64n],
+                    {
+                        id: '0',
+                        primitiveTwoTuple: ['Content-Type', 64n]
+                    },
+                    {
+                        Bad: [
+                            ['Content-Type', 64n],
+                            {
+                                id: '1',
+                                primitiveTwoTuple: ['Content-Type', 64n]
+                            },
+                            {
+                                Good: null
+                            }
+                        ]
+                    }
+                ];
                 const result =
-                    await tupleTypesCanister.complexThreeTupleInlineParam([
-                        ['Content-Type', 64n],
-                        {
-                            id: '0',
-                            primitiveTwoTuple: ['Content-Type', 64n]
-                        },
-                        {
-                            Bad: [
-                                ['Content-Type', 64n],
-                                {
-                                    id: '1',
-                                    primitiveTwoTuple: ['Content-Type', 64n]
-                                },
-                                {
-                                    Good: null
-                                }
-                            ]
-                        }
-                    ]);
+                    await tupleTypesCanister.complexThreeTupleInlineParam(
+                        tuple
+                    );
 
-                return {
-                    Ok:
-                        result[0][0] === 'Content-Type' &&
-                        result[0][1] === 64n &&
-                        result[1].id === '0' &&
-                        result[1].primitiveTwoTuple[0] === 'Content-Type' &&
-                        result[1].primitiveTwoTuple[1] === 64n &&
-                        'Bad' in result[2] &&
-                        result[2].Bad[0][0] === 'Content-Type' &&
-                        result[2].Bad[0][1] === 64n &&
-                        result[2].Bad[1].id === '1' &&
-                        result[2].Bad[1].primitiveTwoTuple[0] ===
-                            'Content-Type' &&
-                        result[2].Bad[1].primitiveTwoTuple[1] === 64n &&
-                        'Good' in result[2].Bad[2]
-                };
+                return testEquality(result, tuple);
             }
         },
         {
             name: 'tupleArrayParamsAndReturnType',
             test: async () => {
+                const tuple: Header[] = [
+                    ['Content-Type', 'application/json'],
+                    ['Accept-Ranges', 'bytes']
+                ];
                 const result =
-                    await tupleTypesCanister.tupleArrayParamsAndReturnType([
-                        ['Content-Type', 'application/json'],
-                        ['Accept-Ranges', 'bytes']
-                    ]);
+                    await tupleTypesCanister.tupleArrayParamsAndReturnType(
+                        tuple
+                    );
 
-                return {
-                    Ok:
-                        result[0][0] === 'Content-Type' &&
-                        result[0][1] === 'application/json' &&
-                        result[1][0] === 'Accept-Ranges' &&
-                        result[1][1] === 'bytes'
-                };
+                return testEquality(result, tuple);
             }
         },
         {
             name: 'tupleArrayRecordField',
             test: async () => {
                 const result = await tupleTypesCanister.tupleArrayRecordField();
-
-                return {
-                    Ok:
-                        result.headers[0][0] === 'Content-Type' &&
-                        result.headers[0][1] === 'application/json' &&
-                        result.headers[1][0] === 'Accept-Ranges' &&
-                        result.headers[1][1] === 'bytes'
+                const tuple = {
+                    headers: [
+                        ['Content-Type', 'application/json'],
+                        ['Accept-Ranges', 'bytes']
+                    ]
                 };
+
+                return testEquality(result, tuple);
             }
         },
         {
@@ -456,34 +402,27 @@ export function getTests(tupleTypesCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result =
                     await tupleTypesCanister.tupleArrayVariantField();
-
-                return {
-                    Ok:
-                        'WithHeaders' in result &&
-                        result.WithHeaders[0][0] === 'Content-Type' &&
-                        result.WithHeaders[0][1] === 'application/json' &&
-                        result.WithHeaders[1][0] === 'Accept-Ranges' &&
-                        result.WithHeaders[1][1] === 'bytes'
+                const expected: StreamingCallbackType = {
+                    WithHeaders: [
+                        ['Content-Type', 'application/json'],
+                        ['Accept-Ranges', 'bytes']
+                    ]
                 };
+
+                return testEquality(result, expected);
             }
         },
         {
             name: 'nested tuple test',
             test: async () => {
-                const expectedResult: [[string, [number, number]], bigint] = [
+                const expected: [[string, [number, number]], bigint] = [
                     ['hello', [5, 10]],
                     123n
                 ];
                 const result =
-                    await tupleTypesCanister.nestedTupleQuery(expectedResult);
+                    await tupleTypesCanister.nestedTupleQuery(expected);
 
-                return {
-                    Ok:
-                        result[1] === expectedResult[1] &&
-                        result[0][0] === expectedResult[0][0] &&
-                        result[0][1][0] === expectedResult[0][1][0] &&
-                        result[0][1][1] === expectedResult[0][1][1]
-                };
+                return testEquality(result, expected);
             }
         }
     ];

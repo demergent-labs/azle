@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/vanilla_js/vanilla_js.did';
 
@@ -10,9 +10,7 @@ export function getTests(vanillaJsCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await vanillaJsCanister.relativeImport();
 
-                return {
-                    Ok: result === 'relative import'
-                };
+                return testEquality(result, 'relative import');
             }
         },
         {
@@ -20,11 +18,10 @@ export function getTests(vanillaJsCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await vanillaJsCanister.packageImport('hello');
 
-                return {
-                    Ok:
-                        result ===
-                        'ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193'
-                };
+                return testEquality(
+                    result,
+                    'ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193'
+                );
             }
         },
         {
@@ -32,9 +29,7 @@ export function getTests(vanillaJsCanister: ActorSubclass<_SERVICE>): Test[] {
             test: async () => {
                 const result = await vanillaJsCanister.builtin();
 
-                return {
-                    Ok: result === 11n
-                };
+                return testEquality(result, 11n);
             }
         }
     ];

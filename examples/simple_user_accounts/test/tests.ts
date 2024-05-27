@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/simple_user_accounts/simple_user_accounts.did';
 
@@ -13,9 +13,7 @@ export function getTests(
                 const result =
                     await simpleUserAccountsCanister.getUserById('0');
 
-                return {
-                    Ok: result.length === 0
-                };
+                return testEquality(result.length, 0);
             }
         },
         {
@@ -23,9 +21,7 @@ export function getTests(
             test: async () => {
                 const result = await simpleUserAccountsCanister.getAllUsers();
 
-                return {
-                    Ok: result.length === 0
-                };
+                return testEquality(result.length, 0);
             }
         },
         {
@@ -33,10 +29,9 @@ export function getTests(
             test: async () => {
                 const result =
                     await simpleUserAccountsCanister.createUser('lastmjs');
+                const expected = { id: '0', username: 'lastmjs' };
 
-                return {
-                    Ok: result.id === '0' && result.username === 'lastmjs'
-                };
+                return testEquality(result, expected);
             }
         },
         {
@@ -44,13 +39,9 @@ export function getTests(
             test: async () => {
                 const result =
                     await simpleUserAccountsCanister.getUserById('0');
+                const expected = { id: '0', username: 'lastmjs' };
 
-                return {
-                    Ok:
-                        result.length !== 0 &&
-                        result[0].id === '0' &&
-                        result[0].username === 'lastmjs'
-                };
+                return testEquality(result, [expected]);
             }
         },
         {
@@ -58,12 +49,9 @@ export function getTests(
             test: async () => {
                 const result = await simpleUserAccountsCanister.getAllUsers();
 
-                return {
-                    Ok:
-                        result.length === 1 &&
-                        result[0].id === '0' &&
-                        result[0].username === 'lastmjs'
-                };
+                const expected = { id: '0', username: 'lastmjs' };
+
+                return testEquality(result, [expected]);
             }
         }
     ];

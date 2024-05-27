@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
+import { error, Test, testEquality } from 'azle/test';
 
 // TODO no tests yet but we run the tests to make sure the model will load
 export function getTests(canisterId: string): Test[] {
@@ -15,13 +15,12 @@ export function getTests(canisterId: string): Test[] {
                     const response = await fetch(`${origin}/prediction`);
                     const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'Prediction not yet implemented'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                    return testEquality(
+                        responseText,
+                        'Prediction not yet implemented'
+                    );
+                } catch (err: any) {
+                    return error(err);
                 }
             }
         }

@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/stable_b_tree_map_instruction_threshold/stable_b_tree_map_instruction_threshold.did';
 
@@ -29,12 +29,14 @@ export function getTests(
                         1_000
                     );
 
-                return {
-                    Ok:
-                        keysResult.length === 4_000 &&
-                        valuesResult.length === 5_000 &&
-                        itemsResult.length === 1_000
-                };
+                return testEquality(
+                    [
+                        keysResult.length,
+                        valuesResult.length,
+                        itemsResult.length
+                    ],
+                    [4_000, 5_000, 1_000]
+                );
             }
         },
         {
@@ -59,12 +61,14 @@ export function getTests(
                         1_000
                     );
 
-                return {
-                    Ok:
-                        keysResult.length === 1_000 &&
-                        valuesResult.length === 1_000 &&
-                        itemsResult.length === 1_000
-                };
+                return testEquality(
+                    [
+                        keysResult.length,
+                        valuesResult.length,
+                        itemsResult.length
+                    ],
+                    [1_000, 1_000, 1_000]
+                );
             }
         },
         {
@@ -89,12 +93,14 @@ export function getTests(
                         400
                     );
 
-                return {
-                    Ok:
-                        keysResult.length === 500 &&
-                        valuesResult.length === 500 &&
-                        itemsResult.length === 400
-                };
+                return testEquality(
+                    [
+                        keysResult.length,
+                        valuesResult.length,
+                        itemsResult.length
+                    ],
+                    [500, 500, 400]
+                );
             }
         }
     ];

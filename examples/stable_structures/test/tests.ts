@@ -11,7 +11,7 @@ import {
     nat32,
     nat64
 } from 'azle';
-import { Test } from 'azle/test';
+import { Test, test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { Reaction, User } from '../src/types';
@@ -247,9 +247,10 @@ export function getTests(
                     await stableStructuresCanister_2.getRedeployed();
                 const result3 =
                     await stableStructuresCanister_3.getRedeployed();
-                return {
-                    Ok: result1 === true && result2 === true && result3 === true
-                };
+                return testEquality(
+                    [result1, result2, result3],
+                    [true, true, true]
+                );
             }
         },
         ...postRedeployTests(stableStructuresCanister_1, 0, 4),
@@ -316,9 +317,7 @@ function containsKeyReturns(
                     `stableMap${index}ContainsKey`
                 ](stableMapKey);
 
-                return {
-                    Ok: setResult === shouldContain
-                };
+                return testEquality(setResult, shouldContain);
             }
         };
     });
@@ -335,9 +334,7 @@ function getReturnsEmpty(
                     `stableMap${index}Get`
                 ](stableMapKey);
 
-                return {
-                    Ok: isEmptyOpt(getResult)
-                };
+                return test(isEmptyOpt(getResult));
             }
         };
     });
@@ -357,9 +354,7 @@ function getReturnsExpectedValue(
                     `stableMap${index}Get`
                 ](stableMapKey);
 
-                return {
-                    Ok: valueComp(getResult[0], STABLEMAPVALUES[index])
-                };
+                return test(valueComp(getResult[0], STABLEMAPVALUES[index]));
             }
         };
     });
@@ -374,9 +369,7 @@ function insert(stableStructuresCanister: ActorSubclass<_SERVICE>): Test[] {
                     `stableMap${index}Insert`
                 ](key, STABLEMAPVALUES[index]);
 
-                return {
-                    Ok: isEmptyOpt(setResult)
-                };
+                return test(isEmptyOpt(setResult));
             }
         };
     });
@@ -395,9 +388,7 @@ function isEmptyReturns(
                     `stableMap${index}IsEmpty`
                 ]();
 
-                return {
-                    Ok: result === shouldBeEmpty
-                };
+                return testEquality(result, shouldBeEmpty);
             }
         };
     });
@@ -422,9 +413,8 @@ function itemsIsLength(
                     `stableMap${index}Items`
                 ]();
 
-                return {
-                    Ok:
-                        (length === 0 && isEmptyArray(itemsResult)) ||
+                return test(
+                    (length === 0 && isEmptyArray(itemsResult)) ||
                         (length === 1 &&
                             keyComp(
                                 itemsResult[0][0],
@@ -434,7 +424,7 @@ function itemsIsLength(
                                 itemsResult[0][1],
                                 STABLEMAPVALUES[index]
                             ))
-                };
+                );
             }
         };
     });
@@ -457,12 +447,11 @@ function keysIsLength(
                     `stableMap${index}Keys`
                 ]();
 
-                return {
-                    Ok:
-                        (length === 0 && isEmptyArray(keysResult)) ||
+                return test(
+                    (length === 0 && isEmptyArray(keysResult)) ||
                         (length === 1 &&
                             keyComp(keysResult[0], STABLE_MAP_KEYS[index]))
-                };
+                );
             }
         };
     });
@@ -481,9 +470,7 @@ function lenReturns(
                     `stableMap${index}Len`
                 ]();
 
-                return {
-                    Ok: result === expectedLen
-                };
+                return testEquality(result, expectedLen);
             }
         };
     });
@@ -500,9 +487,7 @@ function remove(stableStructuresCanister: ActorSubclass<_SERVICE>): Test[] {
                     `stableMap${index}Remove`
                 ](stableMapKeys);
 
-                return {
-                    Ok: valueComp(getResult[0], STABLEMAPVALUES[index])
-                };
+                return test(valueComp(getResult[0], STABLEMAPVALUES[index]));
             }
         };
     });
@@ -525,12 +510,11 @@ function valuesIsLength(
                     `stableMap${index}Values`
                 ]();
 
-                return {
-                    Ok:
-                        (length === 0 && isEmptyArray(valuesResult)) ||
+                return test(
+                    (length === 0 && isEmptyArray(valuesResult)) ||
                         (length === 1 &&
                             valueComp(valuesResult[0], STABLEMAPVALUES[index]))
-                };
+                );
             }
         };
     });
