@@ -31,7 +31,7 @@ export function getTests(
             name: 'getEntries',
             test: async () => {
                 const result = await preAndPostUpgradeCanister.getEntries();
-                const expected = { '0': 0n };
+                const expected = { key: '0', value: 0n };
 
                 return testEquality(result, [expected]);
             }
@@ -48,7 +48,7 @@ export function getTests(
             name: 'getEntries',
             test: async () => {
                 const result = await preAndPostUpgradeCanister.getEntries();
-                const expected = { '0': 1n };
+                const expected = { key: '0', value: 1n };
 
                 return testEquality(result, [expected]);
             }
