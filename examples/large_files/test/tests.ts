@@ -4,7 +4,7 @@ dns.setDefaultResultOrder('ipv4first');
 import { generateIdentity, getCanisterId } from 'azle/dfx';
 import { hashFile } from 'azle/scripts/hash_file';
 import { createActor } from 'azle/src/compiler/file_uploader/uploader_actor';
-import { error, Test, testEquality } from 'azle/test';
+import { error, fail, Test, test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 import { rm } from 'fs/promises';
 import { join } from 'path';
@@ -41,13 +41,13 @@ export function getTests(canisterId: string): Test[] {
                         4n
                     );
                 } catch (err: any) {
-                    return {
-                        Ok: err.message.includes(
+                    return test(
+                        err.message.includes(
                             'Not Authorized: only controllers of this canister may call this method'
                         )
-                    };
+                    );
                 }
-                return { Ok: false };
+                return fail();
             }
         },
         {
@@ -60,13 +60,13 @@ export function getTests(canisterId: string): Test[] {
                 try {
                     await actor.get_hash_status('assets/test0B');
                 } catch (err: any) {
-                    return {
-                        Ok: err.message.includes(
+                    return test(
+                        err.message.includes(
                             'Not Authorized: only controllers of this canister may call this method'
                         )
-                    };
+                    );
                 }
-                return { Ok: false };
+                return fail();
             }
         },
         {
@@ -79,13 +79,13 @@ export function getTests(canisterId: string): Test[] {
                 try {
                     await actor.get_file_hash('assets/test0B');
                 } catch (err: any) {
-                    return {
-                        Ok: err.message.includes(
+                    return test(
+                        err.message.includes(
                             'Not Authorized: only controllers of this canister may call this method'
                         )
-                    };
+                    );
                 }
-                return { Ok: false };
+                return fail();
             }
         },
         {
@@ -98,13 +98,13 @@ export function getTests(canisterId: string): Test[] {
                 try {
                     await actor.clear_file_and_info('assets/test0B');
                 } catch (err: any) {
-                    return {
-                        Ok: err.message.includes(
+                    return test(
+                        err.message.includes(
                             'Not Authorized: only controllers of this canister may call this method'
                         )
-                    };
+                    );
                 }
-                return { Ok: false };
+                return fail();
             }
         },
         ...generateStandardFileTests('Upload', origin),
@@ -135,7 +135,7 @@ export function getTests(canisterId: string): Test[] {
                     `${origin}/exists?path=assets/test150MiB`
                 );
 
-                return { Ok: (await response.json()) === true };
+                return test(await response.json());
             }
         },
         generateTest('manual test', origin, 'test150MiB', 'manual'),
