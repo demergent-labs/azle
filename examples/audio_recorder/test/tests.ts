@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test, testEquality } from 'azle/test';
+import { Test, test, testEquality } from 'azle/test';
 
 import { _SERVICE } from './dfx_generated/audio_recorder/audio_recorder.did';
 
@@ -53,7 +53,16 @@ export function get_tests(
                         recording.name,
                         recording.userId.toText()
                     ],
-                    [5, 'First recording', context.user.id.toText()]
+                    [5, 'First recording', context.user.id.toText()],
+                    {
+                        context: {
+                            user: {
+                                ...context.user,
+                                recordingIds: [recording.id]
+                            },
+                            recording
+                        }
+                    }
                 );
             }
         },
@@ -70,7 +79,16 @@ export function get_tests(
             test: async (context) => {
                 const result = await audio_recorder_canister.readRecordings();
 
-                return testEquality(result, [context.recording]);
+                return test(
+                    result.length === 1 &&
+                        result[0].id.toText() ===
+                            context.recording.id.toText() &&
+                        result[0].createdAt === context.recording.createdAt &&
+                        result[0].name === context.recording.name &&
+                        result[0].userId.toText() ===
+                            context.recording.userId.toText(),
+                    `Expected: ${context.recording}. Received: ${result[0]}`
+                );
             }
         },
         {
