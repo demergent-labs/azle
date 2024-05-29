@@ -1,17 +1,32 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
+import { HttpAgent } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { Test } from 'azle/test';
 
+import {
+    _SERVICE as ActorConsumer,
+    IndividualPayout,
+    PeriodicPayout
+} from './actor_consumer';
 import { _SERVICE as ActorWallet } from './dfx_generated/wallet/wallet.did';
 
 let periodicPayout3: PeriodicPayout | undefined;
 let periodicPayout4: PeriodicPayout | undefined;
 
-// TODO fix TypeScript types here
-export function getTests(actorConsumer: any, actorWallet: ActorWallet): Test[] {
+export function getTests(
+    actorConsumer: ActorConsumer,
+    actorWallet: ActorWallet,
+    agent: HttpAgent
+): Test[] {
     return [
+        {
+            name: 'call agent.fetchRootKey()',
+            prep: async () => {
+                await agent.fetchRootKey();
+            }
+        },
         {
             name: 'consumer ovs logs should have initial 0 payment',
             test: async () => {
@@ -159,8 +174,6 @@ export function getTests(actorConsumer: any, actorWallet: ActorWallet): Test[] {
             test: async () => {
                 const results = await actorWallet.get_all_payments();
 
-                console.log('results', results);
-
                 const walletPayment0 = results[0];
                 const walletPayment1 = results[1];
                 const walletPayment2 = results[2];
@@ -244,6 +257,7 @@ export function getTests(actorConsumer: any, actorWallet: ActorWallet): Test[] {
                         periodicPayoutIsCorrect(periodicPayout3) &&
                         periodicPayout4 !== undefined &&
                         periodicPayoutIsCorrect(periodicPayout4) &&
+                        lastPeriodicPayout !== undefined &&
                         lastPeriodicPayout.total_amount ===
                             periodicPayout4.total_amount &&
                         lastPeriodicPayout.time_started ===
@@ -259,8 +273,6 @@ export function getTests(actorConsumer: any, actorWallet: ActorWallet): Test[] {
             name: 'wallet ovs logs should have 12 payments',
             test: async () => {
                 const results = await actorWallet.get_all_payments();
-
-                console.log('results', results);
 
                 const walletPayment6 = results[6];
                 const walletPayment7 = results[7];
@@ -315,26 +327,7 @@ export function getTests(actorConsumer: any, actorWallet: ActorWallet): Test[] {
     ];
 }
 
-type PeriodicPayout = {
-    time_started: bigint;
-    time_completed: bigint;
-    total_amount: bigint;
-    individual_payouts: IndividualPayout[];
-};
-
-type IndividualPayout = {
-    name: string;
-    time: bigint;
-    amount: bigint;
-    principal: Principal;
-};
-
 function periodicPayoutIsCorrect(periodicPayout: PeriodicPayout): boolean {
-    console.log(
-        'periodicPayout.individual_payouts',
-        periodicPayout.individual_payouts
-    );
-
     const individualPayout0 = periodicPayout.individual_payouts[0];
     const individualPayout1 = periodicPayout.individual_payouts[1];
     const individualPayout2 = periodicPayout.individual_payouts[2];
@@ -351,13 +344,8 @@ function periodicPayoutIsCorrect(periodicPayout: PeriodicPayout): boolean {
         );
     const individualPayout0IsCorrect =
         individualPayout0.name === 'azle' &&
-        individualPayout0.amount === individualPayout0CalculatedAmount;
-
-    console.log('individualPayout0', individualPayout0);
-    console.log(
-        'individualPayout0CalculatedAmount',
-        individualPayout0CalculatedAmount
-    );
+        individualPayout0.amount === individualPayout0CalculatedAmount &&
+        'Ok' in individualPayout0.success;
 
     const individualPayout1CalculatedAmount =
         calculateDependencyPeriodicPaymentAmount(
@@ -368,13 +356,8 @@ function periodicPayoutIsCorrect(periodicPayout: PeriodicPayout): boolean {
         );
     const individualPayout1IsCorrect =
         individualPayout1.name === 'typescript' &&
-        individualPayout1.amount === individualPayout1CalculatedAmount;
-
-    console.log('individualPayout1', individualPayout1);
-    console.log(
-        'individualPayout1CalculatedAmount',
-        individualPayout1CalculatedAmount
-    );
+        individualPayout1.amount === individualPayout1CalculatedAmount &&
+        'Ok' in individualPayout1.success;
 
     const individualPayout2CalculatedAmount =
         calculateDependencyPeriodicPaymentAmount(
@@ -385,13 +368,8 @@ function periodicPayoutIsCorrect(periodicPayout: PeriodicPayout): boolean {
         );
     const individualPayout2IsCorrect =
         individualPayout2.name === 'unpipe' &&
-        individualPayout2.amount === individualPayout2CalculatedAmount;
-
-    console.log('individualPayout2', individualPayout2);
-    console.log(
-        'individualPayout2CalculatedAmount',
-        individualPayout2CalculatedAmount
-    );
+        individualPayout2.amount === individualPayout2CalculatedAmount &&
+        'Ok' in individualPayout2.success;
 
     const individualPayout3CalculatedAmount =
         calculateDependencyPeriodicPaymentAmount(
@@ -402,13 +380,8 @@ function periodicPayoutIsCorrect(periodicPayout: PeriodicPayout): boolean {
         );
     const individualPayout3IsCorrect =
         individualPayout3.name === 'hasown' &&
-        individualPayout3.amount === individualPayout3CalculatedAmount;
-
-    console.log('individualPayout3', individualPayout3);
-    console.log(
-        'individualPayout3CalculatedAmount',
-        individualPayout3CalculatedAmount
-    );
+        individualPayout3.amount === individualPayout3CalculatedAmount &&
+        'Ok' in individualPayout3.success;
 
     const individualPayout4CalculatedAmount =
         calculateDependencyPeriodicPaymentAmount(
@@ -419,13 +392,8 @@ function periodicPayoutIsCorrect(periodicPayout: PeriodicPayout): boolean {
         );
     const individualPayout4IsCorrect =
         individualPayout4.name === 'safer-buffer' &&
-        individualPayout4.amount === individualPayout4CalculatedAmount;
-
-    console.log('individualPayout4', individualPayout4);
-    console.log(
-        'individualPayout4CalculatedAmount',
-        individualPayout4CalculatedAmount
-    );
+        individualPayout4.amount === individualPayout4CalculatedAmount &&
+        'Ok' in individualPayout4.success;
 
     const individualPayout5CalculatedAmount =
         calculateDependencyPeriodicPaymentAmount(
@@ -436,20 +404,8 @@ function periodicPayoutIsCorrect(periodicPayout: PeriodicPayout): boolean {
         );
     const individualPayout5IsCorrect =
         individualPayout5.name === 'side-channel' &&
-        individualPayout5.amount === individualPayout5CalculatedAmount;
-
-    console.log('individualPayout5', individualPayout5);
-    console.log(
-        'individualPayout5CalculatedAmount',
-        individualPayout5CalculatedAmount
-    );
-
-    console.log('individualPayout0IsCorrect', individualPayout0IsCorrect);
-    console.log('individualPayout1IsCorrect', individualPayout1IsCorrect);
-    console.log('individualPayout2IsCorrect', individualPayout2IsCorrect);
-    console.log('individualPayout3IsCorrect', individualPayout3IsCorrect);
-    console.log('individualPayout4IsCorrect', individualPayout4IsCorrect);
-    console.log('individualPayout5IsCorrect', individualPayout5IsCorrect);
+        individualPayout5.amount === individualPayout5CalculatedAmount &&
+        'Ok' in individualPayout5.success;
 
     return (
         periodicPayout.time_completed >= periodicPayout.time_started &&

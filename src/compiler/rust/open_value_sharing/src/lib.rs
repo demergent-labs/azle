@@ -36,6 +36,7 @@ pub struct IndividualPayout {
     pub time: u64,
     pub amount: u128,
     pub principal: candid::Principal,
+    pub success: Result<(), String>,
 }
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
@@ -160,6 +161,27 @@ pub async fn open_value_sharing_periodic_payment(consumer_config: &ConsumerConfi
         );
 
         if dependency_periodic_payment_amount == 0 {
+            let principal_string = dependency_info
+                .custom
+                .get("principal")
+                .ok_or_else(|| "missing 'principal' key".to_string())
+                .unwrap()
+                .as_str()
+                .ok_or_else(|| "'principal' key is not a string".to_string())
+                .unwrap()
+                .to_string();
+            let principal = candid::Principal::from_text(principal_string)
+                .map_err(|err| err.to_string())
+                .unwrap();
+
+            individual_payouts.push(IndividualPayout {
+                name: dependency_info.name.clone(),
+                time: ic_cdk::api::time(),
+                amount: 0,
+                principal,
+                success: Ok(()),
+            });
+
             continue;
         }
 
@@ -169,7 +191,28 @@ pub async fn open_value_sharing_periodic_payment(consumer_config: &ConsumerConfi
 
             match individual_payout_result {
                 Ok(individual_payout) => individual_payouts.push(individual_payout),
-                Err(message) => ic_cdk::println!("OpenValueSharing: Payout failed: {}", message),
+                Err(message) => {
+                    let principal_string = dependency_info
+                        .custom
+                        .get("principal")
+                        .ok_or_else(|| "missing 'principal' key".to_string())
+                        .unwrap()
+                        .as_str()
+                        .ok_or_else(|| "'principal' key is not a string".to_string())
+                        .unwrap()
+                        .to_string();
+                    let principal = candid::Principal::from_text(principal_string)
+                        .map_err(|err| err.to_string())
+                        .unwrap();
+
+                    return individual_payouts.push(IndividualPayout {
+                        name: dependency_info.name.clone(),
+                        time: ic_cdk::api::time(),
+                        amount: dependency_periodic_payment_amount,
+                        principal,
+                        success: Err(message),
+                    });
+                }
             };
         }
     }
@@ -283,6 +326,7 @@ async fn handle_icp_platform_asset_cycles(
             time: ic_cdk::api::time(),
             amount: payment_amount,
             principal,
+            success: Ok(()),
         });
     }
 
@@ -301,6 +345,7 @@ async fn handle_icp_platform_asset_cycles(
             time: ic_cdk::api::time(),
             amount: payment_amount,
             principal,
+            success: Ok(()),
         });
     }
 
