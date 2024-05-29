@@ -1,8 +1,18 @@
+// TODO this crate must be of the highest quality so that it can get
+// TODO incorporated into the Rust CDK and icpp
+// TODO write good tests, possibly in Rust?
+// TODO the tests should probably be in this crate standalone
+// TODO unwraps, declarativeness, data structures should be impeccable
+// TODO we should also put the Demergent Labs .openvaluesharing.json file in here
+// TODO we should also write a way to get the dependencies for Rust out
+
 // TODO how do we deal with multiple instances of open_value_sharing_periodic_payment existing?
 // TODO right now for example, azle automatically pulls it in
 // TODO I suppose the CDK would need to do this?
 // TODO maybe it could do it itself if it could check if
 // TODO the method already exists in the canister?
+
+// TODO should we also do unit tests for the Rust and TypeScript portions?
 
 use std::cell::RefCell;
 use std::collections::BTreeMap;
@@ -22,6 +32,7 @@ pub struct PeriodicPayout {
 
 #[derive(candid::CandidType, Clone)]
 pub struct IndividualPayout {
+    pub name: String,
     pub time: u64,
     pub amount: u128,
     pub principal: candid::Principal,
@@ -43,7 +54,7 @@ pub struct ConsumerConfig {
     pub depth_weights: DepthWeights,
 }
 
-type DepthWeights = std::collections::HashMap<u32, u32>;
+type DepthWeights = std::collections::BTreeMap<u32, u32>;
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct DependencyInfo {
@@ -79,6 +90,10 @@ pub async fn open_value_sharing_periodic_payment(consumer_config: &ConsumerConfi
     let time_started = ic_cdk::api::time();
 
     // TODO just for testing
+    // TODO this is actually a major issue that needs to be addressed
+    // TODO let's move this stuff to the dfx.json
+    // TODO let's introduce a custom/cdk field for all of Azle's stuff
+    // TODO CALL IT CUSTOM
     if ic_cdk::api::id().to_text() == "bw4dl-smaaa-aaaaa-qaacq-cai" {
         return;
     }
@@ -141,7 +156,7 @@ pub async fn open_value_sharing_periodic_payment(consumer_config: &ConsumerConfi
             dependency_info,
             &consumer_config.depth_weights,
             total_periodic_payment_amount,
-            dependency_info.depth == (consumer_config.dependency_infos.len() - 1) as u32,
+            dependency_info.depth == *consumer_config.depth_weights.last_key_value().unwrap().0,
         );
 
         if dependency_periodic_payment_amount == 0 {
@@ -222,9 +237,10 @@ fn calculate_dependency_periodic_payment_amount(
 
     let total_dependency_level_weight = *depth_weights.get(&dependency_info.depth).unwrap();
 
-    let dependency_ratio = dependency_info.weight as f64 / total_dependency_level_weight as f64;
+    let dependency_ratio = dependency_info.weight as u128 * total_periodic_payment_amount
+        / total_dependency_level_weight as u128;
 
-    (dependency_level_periodic_payment_amount as f64 * dependency_ratio) as u128
+    dependency_level_periodic_payment_amount * dependency_ratio / total_periodic_payment_amount
 }
 
 async fn handle_icp_platform(
@@ -263,6 +279,7 @@ async fn handle_icp_platform_asset_cycles(
         .map_err(|err| err.1)?;
 
         return Ok(IndividualPayout {
+            name: dependency_info.name.clone(),
             time: ic_cdk::api::time(),
             amount: payment_amount,
             principal,
@@ -280,6 +297,7 @@ async fn handle_icp_platform_asset_cycles(
         .map_err(|err| err.1)?;
 
         return Ok(IndividualPayout {
+            name: dependency_info.name.clone(),
             time: ic_cdk::api::time(),
             amount: payment_amount,
             principal,

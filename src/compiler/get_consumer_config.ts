@@ -1,3 +1,8 @@
+// TODO let's go rename everything and clean up all names
+// TODO then let's make all code very clean and declarative
+// TODO then let's clean up TODOs
+// TODO then let's write documentation/spec
+
 // TODO perhaps this should be its own npm package inside of the open_value_sharing repo?
 // TODO should we also put the Rust implementation in that repo?
 // TODO should we then make these a crate and an npm package?
@@ -5,6 +10,8 @@
 import { execSync } from 'child_process';
 import { readFile } from 'fs/promises';
 import { glob } from 'glob';
+
+import { yellow } from './utils/colors';
 
 type DepthWeights = {
     [key: number]: number;
@@ -120,24 +127,68 @@ export async function getConsumerConfig(): Promise<ConsumerConfig> {
         Promise.resolve([])
     );
 
-    const depthWeights = dependencyInfos.reduce((acc, dependencyInfo) => {
-        return {
-            ...acc,
-            [dependencyInfo.depth]:
-                (acc[dependencyInfo.depth] ?? 0) + dependencyInfo.weight
-        };
-    }, {} as DepthWeights);
+    console.log('dependencyInfos', dependencyInfos);
+
+    const dependencyInfosWithout0Weights = dependencyInfos.filter(
+        (dependencyInfo) => dependencyInfo.weight !== 0
+    );
+
+    // Step 1: Extract unique depths and sort them
+    const uniqueDepths = [
+        ...new Set(dependencyInfosWithout0Weights.map((info) => info.depth))
+    ].sort((a, b) => a - b);
+
+    // Step 2: Create a mapping from old depths to new normalized depths
+    const depthMapping = new Map();
+    uniqueDepths.forEach((depth, index) => {
+        depthMapping.set(depth, index);
+    });
+
+    // Step 3: Transform the dependencyInfos using the mapping
+    let normalizedDependencyInfos = dependencyInfosWithout0Weights.map(
+        (info) => ({
+            ...info,
+            depth: depthMapping.get(info.depth)
+        })
+    );
+
+    normalizedDependencyInfos.sort((a, b) => {
+        if (a.depth !== b.depth) {
+            return a.depth - b.depth;
+        } else {
+            return a.name.localeCompare(b.name);
+        }
+    });
+
+    console.log(normalizedDependencyInfos);
+
+    const depthWeights = normalizedDependencyInfos.reduce(
+        (acc, dependencyInfo) => {
+            return {
+                ...acc,
+                [dependencyInfo.depth]:
+                    (acc[dependencyInfo.depth] ?? 0) + dependencyInfo.weight
+            };
+        },
+        {} as DepthWeights
+    );
+
+    if (openValueSharingConfig?.period !== undefined) {
+        console.warn(
+            yellow(
+                `\nAzle OpenValueSharing: It is not recommended to change the period manually until cycle burn can be measured more accurately\n`
+            )
+        );
+    }
 
     return {
         killSwitch: openValueSharingConfig?.killSwitch ?? true, // TODO this is off by default only for now
         sharedPercentage: openValueSharingConfig?.sharedPercentage ?? 10,
-        period: 1, // TODO just testing this
-        // period: 1_440,
-        // period: openValueSharingConfig.period ?? 1_440, // TODO all devs to set the period once we the IC APIs allow us to query total cycle burn accurately
+        period: openValueSharingConfig?.period ?? 1_440,
         sharingHeuristic:
             openValueSharingConfig?.sharingHeuristic ??
             'BURNED_WEIGHTED_HALVING',
-        dependencyInfos,
+        dependencyInfos: normalizedDependencyInfos,
         depthWeights
     };
 }

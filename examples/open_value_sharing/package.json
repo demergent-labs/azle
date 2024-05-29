@@ -13,6 +13,13 @@
         "typescript": "^5.2.2"
     },
     "openValueSharing": {
-        "killSwitch": false
+        "killSwitch": false,
+        "period": 1,
+        "weights": {
+            "typescript": 2,
+            "has-symbols": 0,
+            "safer-buffer": 2,
+            "hasown": 3
+        }
     }
 }
