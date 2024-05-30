@@ -2,14 +2,14 @@ import { Actor, ActorMethod, HttpAgent } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { getCanisterId } from 'azle/dfx';
 
-export type PeriodicPayout = {
-    time_started: bigint;
-    time_completed: bigint;
+export type PeriodicBatch = {
+    time_start: bigint;
+    time_end: bigint;
     total_amount: bigint;
-    individual_payouts: IndividualPayout[];
+    payments: Payment[];
 };
 
-export type IndividualPayout = {
+export type Payment = {
     name: string;
     time: bigint;
     amount: bigint;
@@ -18,13 +18,13 @@ export type IndividualPayout = {
 };
 
 export interface _SERVICE {
-    _azle_open_value_sharing_last_periodic_payout: ActorMethod<
+    _azle_open_value_sharing_last_periodic_batch: ActorMethod<
         [],
-        [PeriodicPayout] | []
+        [PeriodicBatch] | []
     >;
-    _azle_open_value_sharing_all_periodic_payouts: ActorMethod<
+    _azle_open_value_sharing_all_periodic_batches: ActorMethod<
         [],
-        PeriodicPayout[]
+        PeriodicBatch[]
     >;
 }
 
@@ -34,11 +34,11 @@ export const agent = new HttpAgent({
 
 export const actorConsumer = Actor.createActor<_SERVICE>(
     ({ IDL }) => {
-        const PeriodicPayout = IDL.Record({
-            time_started: IDL.Nat64,
-            time_completed: IDL.Nat64,
+        const PeriodicBatch = IDL.Record({
+            time_start: IDL.Nat64,
+            time_end: IDL.Nat64,
             total_amount: IDL.Nat,
-            individual_payouts: IDL.Vec(
+            payments: IDL.Vec(
                 IDL.Record({
                     name: IDL.Text,
                     time: IDL.Nat64,
@@ -53,14 +53,14 @@ export const actorConsumer = Actor.createActor<_SERVICE>(
         });
 
         return IDL.Service({
-            _azle_open_value_sharing_last_periodic_payout: IDL.Func(
+            _azle_open_value_sharing_last_periodic_batch: IDL.Func(
                 [],
-                [IDL.Opt(PeriodicPayout)],
+                [IDL.Opt(PeriodicBatch)],
                 []
             ),
-            _azle_open_value_sharing_all_periodic_payouts: IDL.Func(
+            _azle_open_value_sharing_all_periodic_batches: IDL.Func(
                 [],
-                [IDL.Vec(PeriodicPayout)],
+                [IDL.Vec(PeriodicBatch)],
                 []
             )
         });

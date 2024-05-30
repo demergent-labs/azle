@@ -1,32 +1,30 @@
-// TODO let's go rename everything and clean up all names
-// TODO then let's make all code very clean and declarative
-// TODO then let's clean up TODOs
-// TODO then let's write documentation/spec
-
-// TODO perhaps this should be its own npm package inside of the open_value_sharing repo?
-// TODO should we also put the Rust implementation in that repo?
-// TODO should we then make these a crate and an npm package?
-
 import { execSync } from 'child_process';
 import { readFile } from 'fs/promises';
 import { glob } from 'glob';
 
 import { yellow } from './utils/colors';
 
-type DepthWeights = {
-    [key: number]: number;
-};
+const DEFAULT_KILL_SWITCH: Consumer['killSwitch'] = true;
+const DEFAULT_SHARED_PERCENTAGE: Consumer['sharedPercentage'] = 10;
+const DEFAULT_PERIOD: Consumer['period'] = 1_440;
+const DEFAULT_SHARING_HEURISTIC: Consumer['sharingHeuristic'] =
+    'BURNED_WEIGHTED_HALVING';
+const DEFAULT_WEIGHT: Dependency['weight'] = 1;
 
-export type ConsumerConfig = {
+export type Consumer = {
     killSwitch: boolean;
     sharedPercentage: number;
     period: number;
     sharingHeuristic: 'BURNED_WEIGHTED_HALVING';
-    dependencyInfos: DependencyInfo[];
     depthWeights: DepthWeights;
+    dependencies: Dependency[];
 };
 
-export type DependencyInfo = {
+export type DepthWeights = {
+    [key: number]: number;
+};
+
+export type Dependency = {
     name: string;
     depth: number;
     weight: number;
@@ -36,70 +34,108 @@ export type DependencyInfo = {
     custom: Record<string, any>;
 };
 
-export type DependencyDefinition = {
-    platform: string;
-    asset: string;
-    payment_mechanism: string;
-    custom: Record<string, any>;
-};
-
-export type OpenValueSharingConfig = {
-    killSwitch?: ConsumerConfig['killSwitch'];
-    sharedPercentage?: ConsumerConfig['sharedPercentage'];
-    period?: ConsumerConfig['period'];
-    sharingHeuristic?: ConsumerConfig['sharingHeuristic'];
+export type ConsumerConfig = {
+    killSwitch?: Consumer['killSwitch'];
+    sharedPercentage?: Consumer['sharedPercentage'];
+    period?: Consumer['period'];
+    sharingHeuristic?: Consumer['sharingHeuristic'];
     weights?: {
         [packageName: string]: number;
     };
 };
 
-export async function getConsumerConfig(): Promise<ConsumerConfig> {
-    const openValueSharingConfig: OpenValueSharingConfig | undefined =
-        JSON.parse(
-            (await readFile('./package.json')).toString()
-        ).openValueSharing;
+export type DependencyConfig = {
+    platform: Dependency['platform'];
+    asset: Dependency['asset'];
+    payment_mechanism: Dependency['paymentMechanism'];
+    custom: Dependency['custom'];
+};
 
-    const openValueSharingNpmPackagePaths = await glob(
+type DependencyTree = {
+    name: string;
+    dependencies?: DependenciesInTree;
+};
+
+type DependenciesInTree = {
+    [name: string]: DependencyInTree;
+};
+
+type DependencyInTree = {
+    version: string;
+    resolved: string;
+    overriden: boolean;
+    dependencies?: DependenciesInTree;
+};
+
+export async function getConsumer(): Promise<Consumer> {
+    const consumerConfig = await getConsumerConfig();
+
+    logWarningPeriod(consumerConfig);
+
+    const dependenciesUnnormalized =
+        await getDependenciesUnnormalized(consumerConfig);
+    const dependencies = normalizeDependencies(dependenciesUnnormalized);
+
+    const depthWeights = getDepthWeights(dependencies);
+
+    return {
+        killSwitch: consumerConfig?.killSwitch ?? DEFAULT_KILL_SWITCH,
+        sharedPercentage:
+            consumerConfig?.sharedPercentage ?? DEFAULT_SHARED_PERCENTAGE,
+        period: consumerConfig?.period ?? DEFAULT_PERIOD,
+        sharingHeuristic:
+            consumerConfig?.sharingHeuristic ?? DEFAULT_SHARING_HEURISTIC,
+        dependencies,
+        depthWeights
+    };
+}
+
+async function getConsumerConfig(): Promise<ConsumerConfig | undefined> {
+    return JSON.parse((await readFile('./package.json')).toString())
+        .openValueSharing;
+}
+
+function logWarningPeriod(consumerConfig?: ConsumerConfig) {
+    if (consumerConfig?.period !== undefined) {
+        console.warn(
+            yellow(
+                `\nAzle OpenValueSharing: to avoid problematic behavior, it is not currently recommended to change the period manually\n`
+            )
+        );
+    }
+}
+
+async function getDependenciesUnnormalized(
+    consumerConfig?: ConsumerConfig
+): Promise<Dependency[]> {
+    const dependencyConfigPaths = await glob(
         'node_modules/**/.openvaluesharing.json'
     );
 
-    const dependencyTree = JSON.parse(
+    const dependencyTree: DependencyTree = JSON.parse(
         execSync(`npm ls --all --json`).toString().trim()
     );
 
-    const dependencyInfos = await openValueSharingNpmPackagePaths.reduce(
-        async (acc: Promise<DependencyInfo[]>, npmPackagePath) => {
+    return await dependencyConfigPaths.reduce(
+        async (acc: Promise<Dependency[]>, dependencyConfigPath) => {
             const accResolved = await acc;
 
-            const packageJsonString = (
-                await readFile(
-                    `${npmPackagePath.replace(
-                        '/.openvaluesharing.json',
-                        ''
-                    )}/package.json`
-                )
-            ).toString();
-            const packageJson = JSON.parse(packageJsonString);
-            const npmPackageName = packageJson.name;
-
-            const dependencyDefinitions: DependencyDefinition[] = JSON.parse(
-                (await readFile(npmPackagePath)).toString()
+            const npmPackagePath = dependencyConfigPath.replace(
+                '/.openvaluesharing.json',
+                ''
             );
 
-            const icpDependencyDefinitions = dependencyDefinitions.filter(
-                (dependencyDefinition) =>
-                    dependencyDefinition.platform === 'icp'
-            );
-            // TODO explain that the dev should only have one config object per platform
-            // TODO as at least in Azle only the first ICP entry will be used
-            const icpDependencyDefinition = icpDependencyDefinitions[0];
+            const npmPackageName = await getNpmPackageName(npmPackagePath);
 
-            if (icpDependencyDefinition === undefined) {
+            const dependencyConfigIcp =
+                await getDependencyConfigIcp(dependencyConfigPath);
+
+            if (dependencyConfigIcp === undefined) {
                 return accResolved;
             }
 
-            const { payment_mechanism, ...icpDependencyDefinitionProps } =
-                icpDependencyDefinition;
+            const { payment_mechanism, ...dependencyConfigIcpProps } =
+                dependencyConfigIcp;
 
             const depth = getNpmPackageDepth(
                 dependencyTree.dependencies,
@@ -118,101 +154,60 @@ export async function getConsumerConfig(): Promise<ConsumerConfig> {
                     name: npmPackageName,
                     depth,
                     weight:
-                        openValueSharingConfig?.weights?.[npmPackageName] ?? 1,
-                    ...icpDependencyDefinitionProps,
+                        consumerConfig?.weights?.[npmPackageName] ??
+                        DEFAULT_WEIGHT,
+                    ...dependencyConfigIcpProps,
                     paymentMechanism: payment_mechanism
                 }
             ];
         },
         Promise.resolve([])
     );
+}
 
-    console.log('dependencyInfos', dependencyInfos);
+async function getNpmPackageName(npmPackagePath: string): Promise<string> {
+    const packageJsonString = (
+        await readFile(`${npmPackagePath}/package.json`)
+    ).toString();
+    const packageJson: { [key: string]: any; name: string } =
+        JSON.parse(packageJsonString);
+    const npmPackageName = packageJson.name;
 
-    const dependencyInfosWithout0Weights = dependencyInfos.filter(
-        (dependencyInfo) => dependencyInfo.weight !== 0
+    return npmPackageName;
+}
+
+async function getDependencyConfigIcp(
+    dependencyConfigPath: string
+): Promise<DependencyConfig | undefined> {
+    const dependencyConfigs: DependencyConfig[] = JSON.parse(
+        (await readFile(dependencyConfigPath)).toString()
     );
 
-    // Step 1: Extract unique depths and sort them
-    const uniqueDepths = [
-        ...new Set(dependencyInfosWithout0Weights.map((info) => info.depth))
-    ].sort((a, b) => a - b);
-
-    // Step 2: Create a mapping from old depths to new normalized depths
-    const depthMapping = new Map();
-    uniqueDepths.forEach((depth, index) => {
-        depthMapping.set(depth, index);
-    });
-
-    // Step 3: Transform the dependencyInfos using the mapping
-    let normalizedDependencyInfos = dependencyInfosWithout0Weights.map(
-        (info) => ({
-            ...info,
-            depth: depthMapping.get(info.depth)
-        })
+    const dependencyConfigsIcp = dependencyConfigs.filter(
+        (dependencyConfig) => dependencyConfig.platform === 'icp'
     );
+    const dependencyConfigIcp = dependencyConfigsIcp[0];
 
-    normalizedDependencyInfos.sort((a, b) => {
-        if (a.depth !== b.depth) {
-            return a.depth - b.depth;
-        } else {
-            return a.name.localeCompare(b.name);
-        }
-    });
-
-    console.log(normalizedDependencyInfos);
-
-    const depthWeights = normalizedDependencyInfos.reduce(
-        (acc, dependencyInfo) => {
-            return {
-                ...acc,
-                [dependencyInfo.depth]:
-                    (acc[dependencyInfo.depth] ?? 0) + dependencyInfo.weight
-            };
-        },
-        {} as DepthWeights
-    );
-
-    if (openValueSharingConfig?.period !== undefined) {
-        console.warn(
-            yellow(
-                `\nAzle OpenValueSharing: It is not recommended to change the period manually until cycle burn can be measured more accurately\n`
-            )
-        );
-    }
-
-    return {
-        killSwitch: openValueSharingConfig?.killSwitch ?? true, // TODO this is off by default only for now
-        sharedPercentage: openValueSharingConfig?.sharedPercentage ?? 10,
-        period: openValueSharingConfig?.period ?? 1_440,
-        sharingHeuristic:
-            openValueSharingConfig?.sharingHeuristic ??
-            'BURNED_WEIGHTED_HALVING',
-        dependencyInfos: normalizedDependencyInfos,
-        depthWeights
-    };
+    return dependencyConfigIcp;
 }
 
 function getNpmPackageDepth(
-    dependencies: any,
-    name: string,
+    dependencies: DependenciesInTree | undefined,
+    npmPackageName: string,
     depth: number = 0
 ): number | null {
     const finalDepth = Object.entries(dependencies ?? {}).reduce(
-        (
-            acc: number | null,
-            [dependencyName, dependencyValue]: [string, any]
-        ) => {
+        (acc: number | null, [dependencyName, dependencyValue]) => {
             if (acc !== null) {
                 return acc;
             } else {
-                if (dependencyName === name) {
+                if (dependencyName === npmPackageName) {
                     return depth;
                 }
 
                 return getNpmPackageDepth(
                     dependencyValue.dependencies,
-                    name,
+                    npmPackageName,
                     depth + 1
                 );
             }
@@ -221,4 +216,52 @@ function getNpmPackageDepth(
     );
 
     return finalDepth;
+}
+
+function normalizeDependencies(dependencies: Dependency[]): Dependency[] {
+    const dependenciesTrimmed = dependencies.filter(
+        (dependency) => dependency.weight !== 0
+    );
+
+    const uniqueDepths = [
+        ...new Set(dependenciesTrimmed.map((dependency) => dependency.depth))
+    ].sort((a, b) => a - b);
+
+    const depthMapping = uniqueDepths.reduce((map, depth, index) => {
+        return map.set(depth, index);
+    }, new Map<number, number>());
+
+    const normalizedDependencies = dependenciesTrimmed
+        .map((dependency) => {
+            const depth = depthMapping.get(dependency.depth);
+
+            if (depth === undefined) {
+                throw new Error(
+                    `Open Value Sharing: depth for package "${dependency.name}" cannot be undefined`
+                );
+            }
+
+            return {
+                ...dependency,
+                depth
+            };
+        })
+        .sort((a, b) => {
+            if (a.depth !== b.depth) {
+                return a.depth - b.depth;
+            } else {
+                return a.name.localeCompare(b.name);
+            }
+        });
+
+    return normalizedDependencies;
+}
+
+function getDepthWeights(dependencies: Dependency[]): DepthWeights {
+    return dependencies.reduce((acc: DepthWeights, dependency) => {
+        return {
+            ...acc,
+            [dependency.depth]: (acc[dependency.depth] ?? 0) + dependency.weight
+        };
+    }, {});
 }

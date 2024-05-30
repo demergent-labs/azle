@@ -7,13 +7,13 @@ import { Test } from 'azle/test';
 
 import {
     _SERVICE as ActorConsumer,
-    IndividualPayout,
-    PeriodicPayout
+    Payment,
+    PeriodicBatch
 } from './actor_consumer';
 import { _SERVICE as ActorWallet } from './dfx_generated/wallet/wallet.did';
 
-let periodicPayout3: PeriodicPayout | undefined;
-let periodicPayout4: PeriodicPayout | undefined;
+let periodicBatch3: PeriodicBatch | undefined;
+let periodicBatch4: PeriodicBatch | undefined;
 
 export function getTests(
     actorConsumer: ActorConsumer,
@@ -30,21 +30,21 @@ export function getTests(
         {
             name: 'consumer ovs logs should have initial 0 payment',
             test: async () => {
-                const lastPeriodicPayoutOpt =
-                    await actorConsumer._azle_open_value_sharing_last_periodic_payout();
-                const lastPeriodicPayout = lastPeriodicPayoutOpt[0];
+                const lastPeriodicBatchOpt =
+                    await actorConsumer._azle_open_value_sharing_last_periodic_batch();
+                const lastPeriodicBatch = lastPeriodicBatchOpt[0];
 
-                const periodicPayouts =
-                    await actorConsumer._azle_open_value_sharing_all_periodic_payouts();
+                const periodicBatches =
+                    await actorConsumer._azle_open_value_sharing_all_periodic_batches();
 
                 return {
                     Ok:
-                        lastPeriodicPayout !== undefined &&
-                        lastPeriodicPayout.total_amount === 0n &&
-                        lastPeriodicPayout.time_completed >=
-                            lastPeriodicPayout.time_started &&
-                        lastPeriodicPayout.individual_payouts.length === 0 &&
-                        periodicPayouts.length === 1
+                        lastPeriodicBatch !== undefined &&
+                        lastPeriodicBatch.total_amount === 0n &&
+                        lastPeriodicBatch.time_end >=
+                            lastPeriodicBatch.time_start &&
+                        lastPeriodicBatch.payments.length === 0 &&
+                        periodicBatches.length === 1
                 };
             }
         },
@@ -75,36 +75,34 @@ export function getTests(
         {
             name: 'consumer ovs logs should have two payments',
             test: async () => {
-                const lastPeriodicPayoutOpt =
-                    await actorConsumer._azle_open_value_sharing_last_periodic_payout();
-                const lastPeriodicPayout = lastPeriodicPayoutOpt[0];
+                const lastPeriodicBatchOpt =
+                    await actorConsumer._azle_open_value_sharing_last_periodic_batch();
+                const lastPeriodicBatch = lastPeriodicBatchOpt[0];
 
-                const periodicPayouts =
-                    await actorConsumer._azle_open_value_sharing_all_periodic_payouts();
+                const periodicBatches =
+                    await actorConsumer._azle_open_value_sharing_all_periodic_batches();
 
-                const periodicPayout1 = periodicPayouts[0];
-                const periodicPayout2 = periodicPayouts[1];
+                const periodicBatch1 = periodicBatches[0];
+                const periodicBatch2 = periodicBatches[1];
 
                 return {
                     Ok:
-                        periodicPayouts.length === 2 &&
-                        periodicPayout1.total_amount === 0n &&
-                        periodicPayout1.time_completed >=
-                            periodicPayout1.time_started &&
-                        periodicPayout1.individual_payouts.length === 0 &&
-                        periodicPayout2.total_amount === 0n &&
-                        periodicPayout2.time_completed >=
-                            periodicPayout2.time_started &&
-                        periodicPayout2.individual_payouts.length === 0 &&
-                        lastPeriodicPayout !== undefined &&
-                        lastPeriodicPayout.total_amount ===
-                            periodicPayout2.total_amount &&
-                        lastPeriodicPayout.time_started ===
-                            periodicPayout2.time_started &&
-                        lastPeriodicPayout.time_completed ===
-                            periodicPayout2.time_completed &&
-                        lastPeriodicPayout.individual_payouts.length ===
-                            periodicPayout2.individual_payouts.length
+                        periodicBatches.length === 2 &&
+                        periodicBatch1.total_amount === 0n &&
+                        periodicBatch1.time_end >= periodicBatch1.time_start &&
+                        periodicBatch1.payments.length === 0 &&
+                        periodicBatch2.total_amount === 0n &&
+                        periodicBatch2.time_end >= periodicBatch2.time_start &&
+                        periodicBatch2.payments.length === 0 &&
+                        lastPeriodicBatch !== undefined &&
+                        lastPeriodicBatch.total_amount ===
+                            periodicBatch2.total_amount &&
+                        lastPeriodicBatch.time_start ===
+                            periodicBatch2.time_start &&
+                        lastPeriodicBatch.time_end ===
+                            periodicBatch2.time_end &&
+                        lastPeriodicBatch.payments.length ===
+                            periodicBatch2.payments.length
                 };
             }
         },
@@ -133,39 +131,37 @@ export function getTests(
         {
             name: 'consumer ovs logs should have three payments',
             test: async () => {
-                const lastPeriodicPayoutOpt =
-                    await actorConsumer._azle_open_value_sharing_last_periodic_payout();
-                const lastPeriodicPayout = lastPeriodicPayoutOpt[0];
+                const lastPeriodicBatchOpt =
+                    await actorConsumer._azle_open_value_sharing_last_periodic_batch();
+                const lastPeriodicBatch = lastPeriodicBatchOpt[0];
 
-                const periodicPayouts =
-                    await actorConsumer._azle_open_value_sharing_all_periodic_payouts();
+                const periodicBatches =
+                    await actorConsumer._azle_open_value_sharing_all_periodic_batches();
 
-                const periodicPayout1 = periodicPayouts[0];
-                const periodicPayout2 = periodicPayouts[1];
-                periodicPayout3 = periodicPayouts[2];
+                const periodicBatch1 = periodicBatches[0];
+                const periodicBatch2 = periodicBatches[1];
+                periodicBatch3 = periodicBatches[2];
 
                 return {
                     Ok:
-                        periodicPayouts.length === 3 &&
-                        periodicPayout1.total_amount === 0n &&
-                        periodicPayout1.time_completed >=
-                            periodicPayout1.time_started &&
-                        periodicPayout1.individual_payouts.length === 0 &&
-                        periodicPayout2.total_amount === 0n &&
-                        periodicPayout2.time_completed >=
-                            periodicPayout2.time_started &&
-                        periodicPayout2.individual_payouts.length === 0 &&
-                        periodicPayout3 !== undefined &&
-                        periodicPayoutIsCorrect(periodicPayout3) &&
-                        lastPeriodicPayout !== undefined &&
-                        lastPeriodicPayout.total_amount ===
-                            periodicPayout3.total_amount &&
-                        lastPeriodicPayout.time_started ===
-                            periodicPayout3.time_started &&
-                        lastPeriodicPayout.time_completed ===
-                            periodicPayout3.time_completed &&
-                        lastPeriodicPayout.individual_payouts.length ===
-                            periodicPayout3.individual_payouts.length
+                        periodicBatches.length === 3 &&
+                        periodicBatch1.total_amount === 0n &&
+                        periodicBatch1.time_end >= periodicBatch1.time_start &&
+                        periodicBatch1.payments.length === 0 &&
+                        periodicBatch2.total_amount === 0n &&
+                        periodicBatch2.time_end >= periodicBatch2.time_start &&
+                        periodicBatch2.payments.length === 0 &&
+                        periodicBatch3 !== undefined &&
+                        periodicBatchIsCorrect(periodicBatch3) &&
+                        lastPeriodicBatch !== undefined &&
+                        lastPeriodicBatch.total_amount ===
+                            periodicBatch3.total_amount &&
+                        lastPeriodicBatch.time_start ===
+                            periodicBatch3.time_start &&
+                        lastPeriodicBatch.time_end ===
+                            periodicBatch3.time_end &&
+                        lastPeriodicBatch.payments.length ===
+                            periodicBatch3.payments.length
                 };
             }
         },
@@ -181,46 +177,28 @@ export function getTests(
                 const walletPayment4 = results[4];
                 const walletPayment5 = results[5];
 
-                if (periodicPayout3 === undefined) {
+                if (periodicBatch3 === undefined) {
                     return {
-                        Err: 'periodicPayout3 is not defined'
+                        Err: 'periodicBatch3 is not defined'
                     };
                 }
 
-                const individualPayout0 = periodicPayout3.individual_payouts[0];
-                const individualPayout1 = periodicPayout3.individual_payouts[1];
-                const individualPayout2 = periodicPayout3.individual_payouts[2];
-                const individualPayout3 = periodicPayout3.individual_payouts[3];
-                const individualPayout4 = periodicPayout3.individual_payouts[4];
-                const individualPayout5 = periodicPayout3.individual_payouts[5];
+                const payment0 = periodicBatch3.payments[0];
+                const payment1 = periodicBatch3.payments[1];
+                const payment2 = periodicBatch3.payments[2];
+                const payment3 = periodicBatch3.payments[3];
+                const payment4 = periodicBatch3.payments[4];
+                const payment5 = periodicBatch3.payments[5];
 
                 return {
                     Ok:
                         results.length === 6 &&
-                        walletPaymentEqualsIndividualPayment(
-                            walletPayment0,
-                            individualPayout0
-                        ) &&
-                        walletPaymentEqualsIndividualPayment(
-                            walletPayment1,
-                            individualPayout1
-                        ) &&
-                        walletPaymentEqualsIndividualPayment(
-                            walletPayment2,
-                            individualPayout2
-                        ) &&
-                        walletPaymentEqualsIndividualPayment(
-                            walletPayment3,
-                            individualPayout3
-                        ) &&
-                        walletPaymentEqualsIndividualPayment(
-                            walletPayment4,
-                            individualPayout4
-                        ) &&
-                        walletPaymentEqualsIndividualPayment(
-                            walletPayment5,
-                            individualPayout5
-                        )
+                        walletPaymentEqualsPayment(walletPayment0, payment0) &&
+                        walletPaymentEqualsPayment(walletPayment1, payment1) &&
+                        walletPaymentEqualsPayment(walletPayment2, payment2) &&
+                        walletPaymentEqualsPayment(walletPayment3, payment3) &&
+                        walletPaymentEqualsPayment(walletPayment4, payment4) &&
+                        walletPaymentEqualsPayment(walletPayment5, payment5)
                 };
             }
         },
@@ -231,41 +209,39 @@ export function getTests(
         {
             name: 'consumer ovs logs should have four payments',
             test: async () => {
-                const lastPeriodicPayoutOpt =
-                    await actorConsumer._azle_open_value_sharing_last_periodic_payout();
-                const lastPeriodicPayout = lastPeriodicPayoutOpt[0];
+                const lastPeriodicBatchOpt =
+                    await actorConsumer._azle_open_value_sharing_last_periodic_batch();
+                const lastPeriodicBatch = lastPeriodicBatchOpt[0];
 
-                const periodicPayouts =
-                    await actorConsumer._azle_open_value_sharing_all_periodic_payouts();
+                const periodicBatches =
+                    await actorConsumer._azle_open_value_sharing_all_periodic_batches();
 
-                const periodicPayout1 = periodicPayouts[0];
-                const periodicPayout2 = periodicPayouts[1];
-                const periodicPayout3 = periodicPayouts[2];
-                periodicPayout4 = periodicPayouts[3];
+                const periodicBatch1 = periodicBatches[0];
+                const periodicBatch2 = periodicBatches[1];
+                const periodicBatch3 = periodicBatches[2];
+                periodicBatch4 = periodicBatches[3];
 
                 return {
                     Ok:
-                        periodicPayouts.length === 4 &&
-                        periodicPayout1.total_amount === 0n &&
-                        periodicPayout1.time_completed >=
-                            periodicPayout1.time_started &&
-                        periodicPayout1.individual_payouts.length === 0 &&
-                        periodicPayout2.total_amount === 0n &&
-                        periodicPayout2.time_completed >=
-                            periodicPayout2.time_started &&
-                        periodicPayout2.individual_payouts.length === 0 &&
-                        periodicPayoutIsCorrect(periodicPayout3) &&
-                        periodicPayout4 !== undefined &&
-                        periodicPayoutIsCorrect(periodicPayout4) &&
-                        lastPeriodicPayout !== undefined &&
-                        lastPeriodicPayout.total_amount ===
-                            periodicPayout4.total_amount &&
-                        lastPeriodicPayout.time_started ===
-                            periodicPayout4.time_started &&
-                        lastPeriodicPayout.time_completed ===
-                            periodicPayout4.time_completed &&
-                        lastPeriodicPayout.individual_payouts.length ===
-                            periodicPayout4.individual_payouts.length
+                        periodicBatches.length === 4 &&
+                        periodicBatch1.total_amount === 0n &&
+                        periodicBatch1.time_end >= periodicBatch1.time_start &&
+                        periodicBatch1.payments.length === 0 &&
+                        periodicBatch2.total_amount === 0n &&
+                        periodicBatch2.time_end >= periodicBatch2.time_start &&
+                        periodicBatch2.payments.length === 0 &&
+                        periodicBatchIsCorrect(periodicBatch3) &&
+                        periodicBatch4 !== undefined &&
+                        periodicBatchIsCorrect(periodicBatch4) &&
+                        lastPeriodicBatch !== undefined &&
+                        lastPeriodicBatch.total_amount ===
+                            periodicBatch4.total_amount &&
+                        lastPeriodicBatch.time_start ===
+                            periodicBatch4.time_start &&
+                        lastPeriodicBatch.time_end ===
+                            periodicBatch4.time_end &&
+                        lastPeriodicBatch.payments.length ===
+                            periodicBatch4.payments.length
                 };
             }
         },
@@ -281,146 +257,122 @@ export function getTests(
                 const walletPayment10 = results[10];
                 const walletPayment11 = results[11];
 
-                if (periodicPayout4 === undefined) {
+                if (periodicBatch4 === undefined) {
                     return {
-                        Err: 'periodicPayout4 is not defined'
+                        Err: 'periodicBatch4 is not defined'
                     };
                 }
 
-                const individualPayout0 = periodicPayout4.individual_payouts[0];
-                const individualPayout1 = periodicPayout4.individual_payouts[1];
-                const individualPayout2 = periodicPayout4.individual_payouts[2];
-                const individualPayout3 = periodicPayout4.individual_payouts[3];
-                const individualPayout4 = periodicPayout4.individual_payouts[4];
-                const individualPayout5 = periodicPayout4.individual_payouts[5];
+                const payment0 = periodicBatch4.payments[0];
+                const payment1 = periodicBatch4.payments[1];
+                const payment2 = periodicBatch4.payments[2];
+                const payment3 = periodicBatch4.payments[3];
+                const payment4 = periodicBatch4.payments[4];
+                const payment5 = periodicBatch4.payments[5];
 
                 return {
                     Ok:
                         results.length === 12 &&
-                        walletPaymentEqualsIndividualPayment(
-                            walletPayment6,
-                            individualPayout0
-                        ) &&
-                        walletPaymentEqualsIndividualPayment(
-                            walletPayment7,
-                            individualPayout1
-                        ) &&
-                        walletPaymentEqualsIndividualPayment(
-                            walletPayment8,
-                            individualPayout2
-                        ) &&
-                        walletPaymentEqualsIndividualPayment(
-                            walletPayment9,
-                            individualPayout3
-                        ) &&
-                        walletPaymentEqualsIndividualPayment(
-                            walletPayment10,
-                            individualPayout4
-                        ) &&
-                        walletPaymentEqualsIndividualPayment(
-                            walletPayment11,
-                            individualPayout5
-                        )
+                        walletPaymentEqualsPayment(walletPayment6, payment0) &&
+                        walletPaymentEqualsPayment(walletPayment7, payment1) &&
+                        walletPaymentEqualsPayment(walletPayment8, payment2) &&
+                        walletPaymentEqualsPayment(walletPayment9, payment3) &&
+                        walletPaymentEqualsPayment(walletPayment10, payment4) &&
+                        walletPaymentEqualsPayment(walletPayment11, payment5)
                 };
             }
         }
     ];
 }
 
-function periodicPayoutIsCorrect(periodicPayout: PeriodicPayout): boolean {
-    const individualPayout0 = periodicPayout.individual_payouts[0];
-    const individualPayout1 = periodicPayout.individual_payouts[1];
-    const individualPayout2 = periodicPayout.individual_payouts[2];
-    const individualPayout3 = periodicPayout.individual_payouts[3];
-    const individualPayout4 = periodicPayout.individual_payouts[4];
-    const individualPayout5 = periodicPayout.individual_payouts[5];
+function periodicBatchIsCorrect(periodicBatch: PeriodicBatch): boolean {
+    const payment0 = periodicBatch.payments[0];
+    const payment1 = periodicBatch.payments[1];
+    const payment2 = periodicBatch.payments[2];
+    const payment3 = periodicBatch.payments[3];
+    const payment4 = periodicBatch.payments[4];
+    const payment5 = periodicBatch.payments[5];
 
-    const individualPayout0CalculatedAmount =
-        calculateDependencyPeriodicPaymentAmount(
-            periodicPayout.total_amount,
-            1n,
-            1n,
-            1n
-        );
-    const individualPayout0IsCorrect =
-        individualPayout0.name === 'azle' &&
-        individualPayout0.amount === individualPayout0CalculatedAmount &&
-        'Ok' in individualPayout0.success;
+    const payment0CalculatedAmount = calculatePaymentAmount(
+        periodicBatch.total_amount,
+        1n,
+        1n,
+        1n
+    );
+    const payment0IsCorrect =
+        payment0.name === 'azle' &&
+        payment0.amount === payment0CalculatedAmount &&
+        'Ok' in payment0.success;
 
-    const individualPayout1CalculatedAmount =
-        calculateDependencyPeriodicPaymentAmount(
-            periodicPayout.total_amount,
-            2n,
-            2n,
-            3n
-        );
-    const individualPayout1IsCorrect =
-        individualPayout1.name === 'typescript' &&
-        individualPayout1.amount === individualPayout1CalculatedAmount &&
-        'Ok' in individualPayout1.success;
+    const payment1CalculatedAmount = calculatePaymentAmount(
+        periodicBatch.total_amount,
+        2n,
+        2n,
+        3n
+    );
+    const payment1IsCorrect =
+        payment1.name === 'typescript' &&
+        payment1.amount === payment1CalculatedAmount &&
+        'Ok' in payment1.success;
 
-    const individualPayout2CalculatedAmount =
-        calculateDependencyPeriodicPaymentAmount(
-            periodicPayout.total_amount,
-            2n,
-            1n,
-            3n
-        );
-    const individualPayout2IsCorrect =
-        individualPayout2.name === 'unpipe' &&
-        individualPayout2.amount === individualPayout2CalculatedAmount &&
-        'Ok' in individualPayout2.success;
+    const payment2CalculatedAmount = calculatePaymentAmount(
+        periodicBatch.total_amount,
+        2n,
+        1n,
+        3n
+    );
+    const payment2IsCorrect =
+        payment2.name === 'unpipe' &&
+        payment2.amount === payment2CalculatedAmount &&
+        'Ok' in payment2.success;
 
-    const individualPayout3CalculatedAmount =
-        calculateDependencyPeriodicPaymentAmount(
-            periodicPayout.total_amount,
-            2n,
-            3n,
-            6n
-        );
-    const individualPayout3IsCorrect =
-        individualPayout3.name === 'hasown' &&
-        individualPayout3.amount === individualPayout3CalculatedAmount &&
-        'Ok' in individualPayout3.success;
+    const payment3CalculatedAmount = calculatePaymentAmount(
+        periodicBatch.total_amount,
+        2n,
+        3n,
+        6n
+    );
+    const payment3IsCorrect =
+        payment3.name === 'hasown' &&
+        payment3.amount === payment3CalculatedAmount &&
+        'Ok' in payment3.success;
 
-    const individualPayout4CalculatedAmount =
-        calculateDependencyPeriodicPaymentAmount(
-            periodicPayout.total_amount,
-            2n,
-            2n,
-            6n
-        );
-    const individualPayout4IsCorrect =
-        individualPayout4.name === 'safer-buffer' &&
-        individualPayout4.amount === individualPayout4CalculatedAmount &&
-        'Ok' in individualPayout4.success;
+    const payment4CalculatedAmount = calculatePaymentAmount(
+        periodicBatch.total_amount,
+        2n,
+        2n,
+        6n
+    );
+    const payment4IsCorrect =
+        payment4.name === 'safer-buffer' &&
+        payment4.amount === payment4CalculatedAmount &&
+        'Ok' in payment4.success;
 
-    const individualPayout5CalculatedAmount =
-        calculateDependencyPeriodicPaymentAmount(
-            periodicPayout.total_amount,
-            2n,
-            1n,
-            6n
-        );
-    const individualPayout5IsCorrect =
-        individualPayout5.name === 'side-channel' &&
-        individualPayout5.amount === individualPayout5CalculatedAmount &&
-        'Ok' in individualPayout5.success;
+    const payment5CalculatedAmount = calculatePaymentAmount(
+        periodicBatch.total_amount,
+        2n,
+        1n,
+        6n
+    );
+    const payment5IsCorrect =
+        payment5.name === 'side-channel' &&
+        payment5.amount === payment5CalculatedAmount &&
+        'Ok' in payment5.success;
 
     return (
-        periodicPayout.time_completed >= periodicPayout.time_started &&
-        periodicPayout.total_amount > 0n &&
-        periodicPayout.individual_payouts.length === 6 &&
-        individualPayout0IsCorrect &&
-        individualPayout1IsCorrect &&
-        individualPayout2IsCorrect &&
-        individualPayout3IsCorrect &&
-        individualPayout4IsCorrect &&
-        individualPayout5IsCorrect
+        periodicBatch.time_end >= periodicBatch.time_start &&
+        periodicBatch.total_amount > 0n &&
+        periodicBatch.payments.length === 6 &&
+        payment0IsCorrect &&
+        payment1IsCorrect &&
+        payment2IsCorrect &&
+        payment3IsCorrect &&
+        payment4IsCorrect &&
+        payment5IsCorrect
     );
 }
 
-function calculateDependencyPeriodicPaymentAmount(
+function calculatePaymentAmount(
     totalAmount: bigint,
     depth: bigint,
     weight: bigint,
@@ -440,13 +392,13 @@ type WalletPayment = {
     principal: Principal;
 };
 
-function walletPaymentEqualsIndividualPayment(
+function walletPaymentEqualsPayment(
     walletPayment: WalletPayment,
-    individualPayment: IndividualPayout
+    payment: Payment
 ): boolean {
     return (
-        walletPayment.amount === individualPayment.amount &&
+        walletPayment.amount === payment.amount &&
         walletPayment.principal.toText() === 'br5f7-7uaaa-aaaaa-qaaca-cai' &&
-        individualPayment.principal.toText() === 'bw4dl-smaaa-aaaaa-qaacq-cai'
+        payment.principal.toText() === 'bw4dl-smaaa-aaaaa-qaacq-cai'
     );
 }

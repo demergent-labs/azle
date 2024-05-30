@@ -4,7 +4,7 @@ import { copySync } from 'fs-extra';
 import { join } from 'path';
 
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
-import { getConsumerConfig } from './get_consumer_config';
+import { getConsumer } from './get_consumer_config';
 import { execSyncPretty } from './utils/exec_sync_pretty';
 import { JSCanisterConfig, Toml } from './utils/types';
 
@@ -68,12 +68,10 @@ export async function prepareRustStagingArea(
         copySync(src, join(canisterPath, 'canister', 'src', 'assets', dest));
     }
 
-    const consumerConfig = await getConsumerConfig();
-
-    console.log('consumerConfig', consumerConfig);
+    const consumer = await getConsumer();
 
     writeFileSync(
-        join(canisterPath, 'canister', 'src', 'assets', 'consumer_config.json'),
-        JSON.stringify(consumerConfig)
+        join(canisterPath, 'canister', 'src', 'assets', 'consumer.json'),
+        JSON.stringify(consumer)
     );
 }

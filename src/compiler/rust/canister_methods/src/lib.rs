@@ -74,13 +74,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
             initialize_js(std::str::from_utf8(MAIN_JS).unwrap(), true);
 
             ic_cdk::spawn(async {
-                let consumer_config = get_consumer_config("consumer_config.json").unwrap();
-
-                if consumer_config.kill_switch == true {
-                    return;
-                }
-
-                open_value_sharing_periodic_payment(&consumer_config).await;
+                let consumer = get_consumer("consumer.json").unwrap();
+                open_value_sharing::init(&consumer).await;
             });
         }
     };
@@ -107,13 +102,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
             initialize_js(std::str::from_utf8(MAIN_JS).unwrap(), false);
 
             ic_cdk::spawn(async {
-                let consumer_config = get_consumer_config("consumer_config.json").unwrap();
-
-                if consumer_config.kill_switch == true {
-                    return;
-                }
-
-                open_value_sharing_periodic_payment(&consumer_config).await;
+                let consumer = get_consumer("consumer.json").unwrap();
+                open_value_sharing::init(&consumer).await;
             });
         }
     };

@@ -8,9 +8,7 @@ use ic_stable_structures::{
     DefaultMemoryImpl, StableBTreeMap, Storable,
 };
 use include_dir::{include_dir, Dir};
-use open_value_sharing::{
-    open_value_sharing_periodic_payment, ConsumerConfig, PeriodicPayout, PERIODIC_PAYOUTS,
-};
+use open_value_sharing::{Consumer, PeriodicBatch, PERIODIC_BATCHES};
 use std::fs;
 use wasmedge_quickjs::AsObject;
 
@@ -209,9 +207,9 @@ pub fn _azle_chunk() {}
 // }
 
 #[ic_cdk_macros::query]
-pub fn _azle_open_value_sharing_last_periodic_payout() -> Option<PeriodicPayout> {
-    PERIODIC_PAYOUTS.with(|periodic_payouts| {
-        periodic_payouts
+pub fn _azle_open_value_sharing_last_periodic_batch() -> Option<PeriodicBatch> {
+    PERIODIC_BATCHES.with(|periodic_batches| {
+        periodic_batches
             .borrow()
             .last_key_value()
             .map(|(_, &ref last_value)| last_value.clone())
@@ -219,15 +217,15 @@ pub fn _azle_open_value_sharing_last_periodic_payout() -> Option<PeriodicPayout>
 }
 
 #[ic_cdk_macros::query]
-pub fn _azle_open_value_sharing_all_periodic_payouts() -> Vec<PeriodicPayout> {
-    PERIODIC_PAYOUTS.with(|periodic_payouts| periodic_payouts.borrow().values().cloned().collect())
+pub fn _azle_open_value_sharing_all_periodic_batches() -> Vec<PeriodicBatch> {
+    PERIODIC_BATCHES.with(|periodic_batches| periodic_batches.borrow().values().cloned().collect())
 }
 
-fn get_consumer_config(consumer_config_path: &str) -> Result<ConsumerConfig, String> {
-    let consumer_config_string = std::fs::read_to_string(consumer_config_path)
-        .map_err(|err| format!("Error reading {consumer_config_path}: {err}"))?;
-    let consumer_config: ConsumerConfig = serde_json::from_str(&consumer_config_string)
-        .map_err(|err| format!("Error parsing {consumer_config_path}: {err}"))?;
+fn get_consumer(consumer_path: &str) -> Result<Consumer, String> {
+    let consumer_string = std::fs::read_to_string(consumer_path)
+        .map_err(|err| format!("Error reading {consumer_path}: {err}"))?;
+    let consumer: Consumer = serde_json::from_str(&consumer_string)
+        .map_err(|err| format!("Error parsing {consumer_path}: {err}"))?;
 
-    Ok(consumer_config)
+    Ok(consumer)
 }
