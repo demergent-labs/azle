@@ -6,10 +6,10 @@ import { join } from 'path';
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 import { getConsumer } from './get_consumer_config';
 import { execSyncPretty } from './utils/exec_sync_pretty';
-import { JSCanisterConfig, Toml } from './utils/types';
+import { CanisterConfig, Toml } from './utils/types';
 
 export async function prepareRustStagingArea(
-    canisterConfig: JSCanisterConfig,
+    canisterConfig: CanisterConfig,
     canisterPath: string,
     canisterJavaScript: string,
     stdioType: IOType
@@ -68,7 +68,7 @@ export async function prepareRustStagingArea(
         copySync(src, join(canisterPath, 'canister', 'src', 'assets', dest));
     }
 
-    const consumer = await getConsumer();
+    const consumer = await getConsumer(canisterConfig);
 
     writeFileSync(
         join(canisterPath, 'canister', 'src', 'assets', 'consumer.json'),

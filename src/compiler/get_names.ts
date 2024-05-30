@@ -12,7 +12,7 @@ import {
 } from './utils';
 import { execSyncPretty } from './utils/exec_sync_pretty';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
-import { JSCanisterConfig } from './utils/types';
+import { CanisterConfig } from './utils/types';
 
 export async function getNamesBeforeCli() {
     const stdioType = getStdIoType();
@@ -141,7 +141,7 @@ async function getDockerfileHash(dockerfilePath: string): Promise<string> {
     return hasher.digest('hex');
 }
 
-function getEnvVars(canisterConfig: JSCanisterConfig): [string, string][] {
+function getEnvVars(canisterConfig: CanisterConfig): [string, string][] {
     const env = [...(canisterConfig.env ?? []), 'AZLE_AUTORELOAD'];
 
     return env

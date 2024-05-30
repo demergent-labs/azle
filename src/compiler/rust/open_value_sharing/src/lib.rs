@@ -1,8 +1,3 @@
-// TODO let's go rename everything and clean up all names
-// TODO then let's make all code very clean and declarative
-// TODO then let's clean up TODOs
-// TODO then let's write documentation/spec
-
 // TODO BURNED_WEIGHTED_HALVING we aren't really checking the heuristic in here
 // TODO we should check and fail if it is wrong
 
@@ -15,18 +10,17 @@
 // TODO we should also write a way to get the dependencies for Rust out
 
 // TODO how do we deal with multiple instances of open_value_sharing_periodic_payment existing?
-// TODO right now for example, azle automatically pulls it in
-// TODO I suppose the CDK would need to do this?
-// TODO maybe it could do it itself if it could check if
-// TODO the method already exists in the canister?
-
 // TODO should we also do unit tests for the Rust and TypeScript portions?
 
+use anyhow::Context;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 
+mod platforms;
+mod query_methods;
+
 thread_local! {
-    pub static CYCLE_BALANCE_PREVIOUS: RefCell<u128> = RefCell::new(0);
+    static CYCLE_BALANCE_PREVIOUS: RefCell<u128> = RefCell::new(0);
     pub static PERIODIC_BATCHES: RefCell<BTreeMap<u64, PeriodicBatch>> = RefCell::new(BTreeMap::new());
 }
 
@@ -76,68 +70,37 @@ pub struct Dependency {
     pub custom: std::collections::HashMap<String, serde_json::Value>,
 }
 
+// TODO check how many times ovs init is being called, make sure it's correct
 // TODO we need some way to store state...across upgrades
 pub async fn init(consumer: &Consumer) {
     if consumer.kill_switch == true {
         return;
     }
 
-    let time_start = ic_cdk::api::time();
-
-    // TODO just for testing
-    // TODO this is actually a major issue that needs to be addressed
-    // TODO let's move this stuff to the dfx.json
-    // TODO let's introduce a custom/cdk field for all of Azle's stuff
-    // TODO CALL IT CUSTOM
-    if ic_cdk::api::id().to_text() == "bw4dl-smaaa-aaaaa-qaacq-cai" {
-        return;
-    }
-
-    ic_cdk::println!("open_value_sharing_periodic_payment");
-
     let delay = core::time::Duration::new((consumer.period * 60) as u64, 0);
-
-    ic_cdk::println!("delay: {:#?}", delay);
-
-    let cloned_consumer = consumer.clone();
+    let consumer_cloned = consumer.clone();
 
     ic_cdk_timers::set_timer(delay, || {
         ic_cdk::spawn(async move {
-            init(&cloned_consumer).await;
+            init(&consumer_cloned).await;
         });
     });
 
-    ic_cdk::println!("open_value_sharing_periodic_payment timer set");
+    let process_batch_result = process_batch(consumer).await;
+
+    if let Err(err) = process_batch_result {
+        ic_cdk::eprintln!("OpenValueSharing: {}", err);
+    }
+}
+
+async fn process_batch(consumer: &Consumer) -> Result<(), anyhow::Error> {
+    let time_start = ic_cdk::api::time();
 
     let total_amount = calculate_total_amount(&consumer).await;
 
-    ic_cdk::println!("total_periodic_payment_amount: {}", total_amount);
-
     if total_amount == 0 {
-        PERIODIC_BATCHES.with(|periodic_batches| {
-            let mut periodic_batches = periodic_batches.borrow_mut();
-
-            let id = periodic_batches
-                .last_key_value()
-                .map(|(&last_key, _)| last_key + 1)
-                .unwrap_or(0);
-
-            periodic_batches.insert(
-                id,
-                PeriodicBatch {
-                    time_start,
-                    time_end: ic_cdk::api::time(),
-                    total_amount,
-                    payments: vec![],
-                },
-            );
-
-            if periodic_batches.len() > 1_000 {
-                periodic_batches.pop_first();
-            }
-        });
-
-        return;
+        record_periodic_batch(time_start, total_amount, vec![]);
+        return Ok(());
     }
 
     let mut payments: Vec<Payment> = vec![];
@@ -151,24 +114,11 @@ pub async fn init(consumer: &Consumer) {
         );
 
         if amount == 0 {
-            let principal_string = dependency
-                .custom
-                .get("principal")
-                .ok_or_else(|| "missing 'principal' key".to_string())
-                .unwrap()
-                .as_str()
-                .ok_or_else(|| "'principal' key is not a string".to_string())
-                .unwrap()
-                .to_string();
-            let principal = candid::Principal::from_text(principal_string)
-                .map_err(|err| err.to_string())
-                .unwrap();
-
             payments.push(Payment {
                 name: dependency.name.clone(),
                 time: ic_cdk::api::time(),
                 amount: 0,
-                principal,
+                principal: get_dependency_principal(dependency)?,
                 success: Ok(()),
             });
 
@@ -176,36 +126,47 @@ pub async fn init(consumer: &Consumer) {
         }
 
         if dependency.platform == "icp" {
-            let payment_result = handle_icp_platform(&dependency, amount).await;
+            let payment_result = platforms::icp::handle_platform_payment(&dependency, amount).await;
 
             match payment_result {
                 Ok(payment) => payments.push(payment),
-                Err(message) => {
-                    let principal_string = dependency
-                        .custom
-                        .get("principal")
-                        .ok_or_else(|| "missing 'principal' key".to_string())
-                        .unwrap()
-                        .as_str()
-                        .ok_or_else(|| "'principal' key is not a string".to_string())
-                        .unwrap()
-                        .to_string();
-                    let principal = candid::Principal::from_text(principal_string)
-                        .map_err(|err| err.to_string())
-                        .unwrap();
-
-                    return payments.push(Payment {
+                Err(err) => {
+                    payments.push(Payment {
                         name: dependency.name.clone(),
                         time: ic_cdk::api::time(),
                         amount,
-                        principal,
-                        success: Err(message),
+                        principal: get_dependency_principal(dependency)?,
+                        success: Err(err.to_string()),
                     });
                 }
             };
         }
     }
 
+    record_periodic_batch(time_start, total_amount, payments);
+
+    Ok(())
+}
+
+async fn calculate_total_amount(consumer: &Consumer) -> u128 {
+    let cycle_balance = ic_cdk::api::canister_balance128();
+    let cycle_balance_previous = CYCLE_BALANCE_PREVIOUS
+        .with(|cycle_balance_previous| cycle_balance_previous.borrow().clone());
+
+    CYCLE_BALANCE_PREVIOUS.with(|cycle_balance_previous| {
+        let mut cycle_balance_previous = cycle_balance_previous.borrow_mut();
+
+        *cycle_balance_previous = cycle_balance;
+    });
+
+    if cycle_balance >= cycle_balance_previous {
+        0
+    } else {
+        ((cycle_balance_previous - cycle_balance) * consumer.shared_percentage as u128) / 100
+    }
+}
+
+fn record_periodic_batch(time_start: u64, total_amount: u128, payments: Vec<Payment>) {
     PERIODIC_BATCHES.with(|periodic_batches| {
         let mut periodic_batches = periodic_batches.borrow_mut();
 
@@ -230,24 +191,6 @@ pub async fn init(consumer: &Consumer) {
     });
 }
 
-async fn calculate_total_amount(consumer: &Consumer) -> u128 {
-    let cycle_balance = ic_cdk::api::canister_balance128();
-    let cycle_balance_previous = CYCLE_BALANCE_PREVIOUS
-        .with(|cycle_balance_previous| cycle_balance_previous.borrow().clone());
-
-    CYCLE_BALANCE_PREVIOUS.with(|cycle_balance_previous| {
-        let mut cycle_balance_previous = cycle_balance_previous.borrow_mut();
-
-        *cycle_balance_previous = cycle_balance;
-    });
-
-    if cycle_balance >= cycle_balance_previous {
-        0
-    } else {
-        ((cycle_balance_previous - cycle_balance) * consumer.shared_percentage as u128) / 100
-    }
-}
-
 fn calculate_payment_amount(
     dependency: &Dependency,
     depth_weights: &DepthWeights,
@@ -256,88 +199,25 @@ fn calculate_payment_amount(
 ) -> u128 {
     let adjusted_depth = dependency.depth + if bottom { 0 } else { 1 };
 
-    let dependency_level_periodic_payment_amount = total_amount / 2_u128.pow(adjusted_depth as u32);
+    let total_amount_for_level = total_amount / 2_u128.pow(adjusted_depth as u32);
 
-    let total_dependency_level_weight = *depth_weights.get(&dependency.depth).unwrap();
+    let total_weight_for_level = *depth_weights.get(&dependency.depth).unwrap();
 
     let dependency_ratio =
-        dependency.weight as u128 * total_amount / total_dependency_level_weight as u128;
+        dependency.weight as u128 * total_amount / total_weight_for_level as u128;
 
-    dependency_level_periodic_payment_amount * dependency_ratio / total_amount
+    total_amount_for_level * dependency_ratio / total_amount
 }
 
-async fn handle_icp_platform(dependency: &Dependency, amount: u128) -> Result<Payment, String> {
-    if dependency.asset == "cycles" {
-        return handle_icp_platform_asset_cycles(dependency, amount).await;
-    }
-
-    Err(format!("asset {} is not supported", dependency.asset))
-}
-
-async fn handle_icp_platform_asset_cycles(
-    dependency: &Dependency,
-    amount: u128,
-) -> Result<Payment, String> {
+fn get_dependency_principal(dependency: &Dependency) -> Result<candid::Principal, anyhow::Error> {
     let principal_string = dependency
         .custom
         .get("principal")
-        .ok_or_else(|| "missing 'principal' key".to_string())?
+        .context("missing 'principal' key")?
         .as_str()
-        .ok_or_else(|| "'principal' key is not a string".to_string())?
+        .context("'principal' key is not a string".to_string())?
         .to_string();
-    let principal =
-        candid::Principal::from_text(principal_string).map_err(|err| err.to_string())?;
+    let principal = candid::Principal::from_text(principal_string)?;
 
-    if dependency.payment_mechanism == "wallet" {
-        ic_cdk::api::call::call_with_payment128::<(Option<()>,), ()>(
-            principal,
-            "wallet_receive",
-            (None,),
-            amount,
-        )
-        .await
-        .map_err(|err| err.1)?;
-
-        return Ok(Payment {
-            name: dependency.name.clone(),
-            time: ic_cdk::api::time(),
-            amount,
-            principal,
-            success: Ok(()),
-        });
-    }
-
-    if dependency.payment_mechanism == "deposit" {
-        ic_cdk::api::management_canister::main::deposit_cycles(
-            ic_cdk::api::management_canister::main::CanisterIdRecord {
-                canister_id: principal,
-            },
-            amount,
-        )
-        .await
-        .map_err(|err| err.1)?;
-
-        return Ok(Payment {
-            name: dependency.name.clone(),
-            time: ic_cdk::api::time(),
-            amount,
-            principal,
-            success: Ok(()),
-        });
-    }
-
-    // ic_cdk::println!("successfully sent {} cycles\n\n", payment_amount);
-
-    // TODO add ledger
-
-    // TODO should we error out or just log if this is not supported?
-    // ic_cdk::println!(
-    //     "payment_mechanism \"{}\" is not supported",
-    //     dependency.payment_mechanism
-    // );
-
-    Err(format!(
-        "payment mechanism {} is not supported",
-        dependency.payment_mechanism
-    ))
+    Ok(principal)
 }

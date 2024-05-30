@@ -7,6 +7,18 @@
             "declarations": {
                 "output": "test/dfx_generated/consumer",
                 "node_compatibility": true
+            },
+            "custom": {
+                "openValueSharing": {
+                    "killSwitch": false,
+                    "period": 1,
+                    "weights": {
+                        "typescript": 2,
+                        "has-symbols": 0,
+                        "safer-buffer": 2,
+                        "hasown": 3
+                    }
+                }
             }
         },
         "wallet": {

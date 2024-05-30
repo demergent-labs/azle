@@ -3,6 +3,7 @@ import { readFile } from 'fs/promises';
 import { glob } from 'glob';
 
 import { yellow } from './utils/colors';
+import { CanisterConfig } from './utils/types';
 
 const DEFAULT_KILL_SWITCH: Consumer['killSwitch'] = true;
 const DEFAULT_SHARED_PERCENTAGE: Consumer['sharedPercentage'] = 10;
@@ -67,8 +68,10 @@ type DependencyInTree = {
     dependencies?: DependenciesInTree;
 };
 
-export async function getConsumer(): Promise<Consumer> {
-    const consumerConfig = await getConsumerConfig();
+export async function getConsumer(
+    canisterConfig: CanisterConfig
+): Promise<Consumer> {
+    const consumerConfig = getConsumerConfig(canisterConfig);
 
     logWarningPeriod(consumerConfig);
 
@@ -90,16 +93,17 @@ export async function getConsumer(): Promise<Consumer> {
     };
 }
 
-async function getConsumerConfig(): Promise<ConsumerConfig | undefined> {
-    return JSON.parse((await readFile('./package.json')).toString())
-        .openValueSharing;
+function getConsumerConfig(
+    canisterConfig: CanisterConfig
+): ConsumerConfig | undefined {
+    return canisterConfig.custom?.openValueSharing;
 }
 
 function logWarningPeriod(consumerConfig?: ConsumerConfig) {
     if (consumerConfig?.period !== undefined) {
         console.warn(
             yellow(
-                `\nAzle OpenValueSharing: to avoid problematic behavior, it is not currently recommended to change the period manually\n`
+                `\nOpenValueSharing: to avoid problematic behavior, it is not currently recommended to change the period manually\n`
             )
         );
     }

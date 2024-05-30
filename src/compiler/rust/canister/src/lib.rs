@@ -198,29 +198,6 @@ fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
 #[ic_cdk_macros::update]
 pub fn _azle_chunk() {}
 
-// TODO should we keep this as a way to manually trigger a payment?
-// #[ic_cdk_macros::update]
-// pub async fn _azle_open_value_sharing_periodic_payment() {
-//     let consumer_config = get_consumer_config("consumer_config.json").unwrap();
-
-//     open_value_sharing_periodic_payment(&consumer_config).await;
-// }
-
-#[ic_cdk_macros::query]
-pub fn _azle_open_value_sharing_last_periodic_batch() -> Option<PeriodicBatch> {
-    PERIODIC_BATCHES.with(|periodic_batches| {
-        periodic_batches
-            .borrow()
-            .last_key_value()
-            .map(|(_, &ref last_value)| last_value.clone())
-    })
-}
-
-#[ic_cdk_macros::query]
-pub fn _azle_open_value_sharing_all_periodic_batches() -> Vec<PeriodicBatch> {
-    PERIODIC_BATCHES.with(|periodic_batches| periodic_batches.borrow().values().cloned().collect())
-}
-
 fn get_consumer(consumer_path: &str) -> Result<Consumer, String> {
     let consumer_string = std::fs::read_to_string(consumer_path)
         .map_err(|err| format!("Error reading {consumer_path}: {err}"))?;

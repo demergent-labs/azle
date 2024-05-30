@@ -3,11 +3,11 @@ import { join } from 'path';
 
 import { blue, green, purple, red, yellow } from './colors';
 import { Err, Ok, Result } from './result';
-import { AzleError, DfxJson, JSCanisterConfig } from './types';
+import { AzleError, CanisterConfig, DfxJson } from './types';
 
 export function getCanisterConfig(
     canisterName: string
-): Result<JSCanisterConfig, AzleError> {
+): Result<CanisterConfig, AzleError> {
     const exampleDfxJson = colorFormattedDfxJsonExample(canisterName);
 
     if (!existsSync(`dfx.json`)) {
