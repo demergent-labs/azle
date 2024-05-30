@@ -2,14 +2,13 @@ use anyhow::anyhow;
 
 use crate::{get_dependency_principal, Dependency, Payment};
 
-// TODO make the error messages a bit better
 pub async fn handle_asset_payment(
     dependency: &Dependency,
     amount: u128,
 ) -> Result<Payment, anyhow::Error> {
     let principal = get_dependency_principal(dependency)?;
 
-    if dependency.payment_mechanism == "wallet" {
+    if dependency.payment_mechanism == "wallet_receive" {
         ic_cdk::api::call::call_with_payment128::<(Option<()>,), ()>(
             principal,
             "wallet_receive",
@@ -17,18 +16,23 @@ pub async fn handle_asset_payment(
             amount,
         )
         .await
-        .map_err(|err| anyhow!(err.1))?;
+        .map_err(|(rejection_code, message)| {
+            anyhow!("RejectionCode {}: {}", rejection_code as i32, message)
+        })?;
+
+        let amount_refunded = ic_cdk::api::call::msg_cycles_refunded128();
+        let amount_final = amount - amount_refunded;
 
         return Ok(Payment {
             name: dependency.name.clone(),
             time: ic_cdk::api::time(),
-            amount,
+            amount: amount_final,
             principal,
             success: Ok(()),
         });
     }
 
-    if dependency.payment_mechanism == "deposit" {
+    if dependency.payment_mechanism == "deposit_cycles" {
         ic_cdk::api::management_canister::main::deposit_cycles(
             ic_cdk::api::management_canister::main::CanisterIdRecord {
                 canister_id: principal,
@@ -36,7 +40,9 @@ pub async fn handle_asset_payment(
             amount,
         )
         .await
-        .map_err(|err| anyhow!(err.1))?;
+        .map_err(|(rejection_code, message)| {
+            anyhow!("RejectionCode {}: {}", rejection_code as i32, message)
+        })?;
 
         return Ok(Payment {
             name: dependency.name.clone(),
@@ -47,15 +53,29 @@ pub async fn handle_asset_payment(
         });
     }
 
-    // ic_cdk::println!("successfully sent {} cycles\n\n", payment_amount);
+    // TODO add cycles ledger support, we are waiting on cycles ledger maturity
+    // if dependency.payment_mechanism == "icrc1_transfer" {
+    //     let cycles_ledger_canister_id = candid::Principal::from_text("")?;
 
-    // TODO add ledger
+    //     ic_cdk::api::call::call_with_payment128::<(Option<()>,), ()>(
+    //         cycles_ledger_canister_id,
+    //         "icrc1_transfer",
+    //         (None,), // TODO figure out types
+    //         amount,
+    //     )
+    //     .await
+    //     .map_err(|(rejection_code, message)| {
+    //         anyhow!("RejectionCode {}: {}", rejection_code as i32, message)
+    //     })?;
 
-    // TODO should we error out or just log if this is not supported?
-    // ic_cdk::println!(
-    //     "payment_mechanism \"{}\" is not supported",
-    //     dependency.payment_mechanism
-    // );
+    //     return Ok(Payment {
+    //         name: dependency.name.clone(),
+    //         time: ic_cdk::api::time(),
+    //         amount,
+    //         principal,
+    //         success: Ok(()),
+    //     });
+    // }
 
     Err(anyhow!(
         "payment mechanism {} is not supported",

@@ -1,16 +1,8 @@
-// TODO BURNED_WEIGHTED_HALVING we aren't really checking the heuristic in here
-// TODO we should check and fail if it is wrong
-
-// TODO this crate must be of the highest quality so that it can get
-// TODO incorporated into the Rust CDK and icpp
-// TODO write good tests, possibly in Rust?
 // TODO the tests should probably be in this crate standalone
-// TODO unwraps, declarativeness, data structures should be impeccable
-// TODO we should also put the Demergent Labs .openvaluesharing.json file in here
-// TODO we should also write a way to get the dependencies for Rust out
-
-// TODO how do we deal with multiple instances of open_value_sharing_periodic_payment existing?
-// TODO should we also do unit tests for the Rust and TypeScript portions?
+// TODO should we have unit tests for the node side as well?
+// TODO maybe we do that later?
+// TODO it shouldn't be too hard to write some property tests
+// TODO for the two math functions here
 
 use anyhow::Context;
 use std::cell::RefCell;
@@ -71,12 +63,29 @@ pub struct Dependency {
 }
 
 // TODO check how many times ovs init is being called, make sure it's correct
-// TODO we need some way to store state...across upgrades
 pub async fn init(consumer: &Consumer) {
     if consumer.kill_switch == true {
         return;
     }
 
+    if consumer.sharing_heuristic != "BURNED_WEIGHTED_HALVING" {
+        ic_cdk::eprintln!(
+            "OpenValueSharing: heuristic \"{}\" is not supported. Only BURNED_WEIGHTED_HALVING is currently supported",
+            consumer.sharing_heuristic
+        );
+        return;
+    }
+
+    spawn_next_timer(consumer).await;
+
+    let process_batch_result = process_batch(consumer).await;
+
+    if let Err(err) = process_batch_result {
+        ic_cdk::eprintln!("OpenValueSharing: {}", err);
+    }
+}
+
+async fn spawn_next_timer(consumer: &Consumer) {
     let delay = core::time::Duration::new((consumer.period * 60) as u64, 0);
     let consumer_cloned = consumer.clone();
 
@@ -85,12 +94,6 @@ pub async fn init(consumer: &Consumer) {
             init(&consumer_cloned).await;
         });
     });
-
-    let process_batch_result = process_batch(consumer).await;
-
-    if let Err(err) = process_batch_result {
-        ic_cdk::eprintln!("OpenValueSharing: {}", err);
-    }
 }
 
 async fn process_batch(consumer: &Consumer) -> Result<(), anyhow::Error> {
@@ -103,6 +106,12 @@ async fn process_batch(consumer: &Consumer) -> Result<(), anyhow::Error> {
         return Ok(());
     }
 
+    // We are keeping this mutation because trying to send out all payment
+    // cross-canister calls without awaiting each one sequentially might
+    // fill up the canister queue too quickly.
+    // This is a conservative and simple way to do it.
+    // We could possibly do some kind of async reduce or recursive function
+    // but this seems simple enough and seems unlikely to lead to major mutation issues
     let mut payments: Vec<Payment> = vec![];
 
     for dependency in &consumer.dependencies {
@@ -110,8 +119,13 @@ async fn process_batch(consumer: &Consumer) -> Result<(), anyhow::Error> {
             dependency,
             &consumer.depth_weights,
             total_amount,
-            dependency.depth == *consumer.depth_weights.last_key_value().unwrap().0,
-        );
+            dependency.depth
+                == *consumer
+                    .depth_weights
+                    .last_key_value()
+                    .context("depth_weights does not have a last_key_value")?
+                    .0,
+        )?;
 
         if amount == 0 {
             payments.push(Payment {
@@ -148,6 +162,7 @@ async fn process_batch(consumer: &Consumer) -> Result<(), anyhow::Error> {
     Ok(())
 }
 
+// TODO let's write property tests for this function
 async fn calculate_total_amount(consumer: &Consumer) -> u128 {
     let cycle_balance = ic_cdk::api::canister_balance128();
     let cycle_balance_previous = CYCLE_BALANCE_PREVIOUS
@@ -191,22 +206,26 @@ fn record_periodic_batch(time_start: u64, total_amount: u128, payments: Vec<Paym
     });
 }
 
+// TODO let's write property tests for this function
 fn calculate_payment_amount(
     dependency: &Dependency,
     depth_weights: &DepthWeights,
     total_amount: u128,
     bottom: bool,
-) -> u128 {
+) -> Result<u128, anyhow::Error> {
     let adjusted_depth = dependency.depth + if bottom { 0 } else { 1 };
 
     let total_amount_for_level = total_amount / 2_u128.pow(adjusted_depth as u32);
 
-    let total_weight_for_level = *depth_weights.get(&dependency.depth).unwrap();
+    let total_weight_for_level = *depth_weights.get(&dependency.depth).context(format!(
+        "depth_weights value for depth {} not found",
+        dependency.depth,
+    ))?;
 
     let dependency_ratio =
         dependency.weight as u128 * total_amount / total_weight_for_level as u128;
 
-    total_amount_for_level * dependency_ratio / total_amount
+    Ok(total_amount_for_level * dependency_ratio / total_amount)
 }
 
 fn get_dependency_principal(dependency: &Dependency) -> Result<candid::Principal, anyhow::Error> {
