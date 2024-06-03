@@ -1,54 +1,33 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 
 import { _SERVICE } from './dfx_generated/async_await/async_await.did';
 
-export function get_tests(
-    async_await_canister: ActorSubclass<_SERVICE>
-): Test[] {
-    return [
-        {
-            name: 'get_randomness_directly',
-            test: async () => {
-                const result =
-                    await async_await_canister.getRandomnessDirectly();
+export function getTests(async_await_canister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('gets randomness when awaited once', async () => {
+            const result = await async_await_canister.getRandomnessDirectly();
 
-                return {
-                    Ok: result.length === 32
-                };
-            }
-        },
-        {
-            name: 'get_randomness_indirectly',
-            test: async () => {
-                const result =
-                    await async_await_canister.getRandomnessIndirectly();
+            expect(result).toHaveLength(32);
+        });
 
-                return {
-                    Ok: result.length === 32
-                };
-            }
-        },
-        {
-            name: 'get_randomness_super_indirectly',
-            test: async () => {
-                const result =
-                    await async_await_canister.getRandomnessSuperIndirectly();
+        it('gets randomness even when there are multiple levels of awaits', async () => {
+            const result = await async_await_canister.getRandomnessIndirectly();
 
-                return {
-                    Ok: result.length === 96
-                };
-            }
-        },
-        {
-            name: 'return promise void',
-            test: async () => {
-                const result = await async_await_canister.returnPromiseVoid();
+            expect(result).toHaveLength(32);
+        });
 
-                return {
-                    Ok: result === undefined
-                };
-            }
-        }
-    ];
+        it('gets randomness even when there are multiple awaits in multiple places at multiple levels', async () => {
+            const result =
+                await async_await_canister.getRandomnessSuperIndirectly();
+
+            expect(result).toHaveLength(96);
+        }, 10_000);
+
+        it('is able to handle Promise<void>', async () => {
+            const result = await async_await_canister.returnPromiseVoid();
+
+            expect(result).toBeUndefined();
+        });
+    };
 }
