@@ -1,5 +1,5 @@
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
+import { describe } from 'azle/test/jest';
 
 import { createActor } from '../test/dfx_generated/management_canister';
 import { getTests } from './tests';
@@ -10,4 +10,4 @@ const managementCanister = createActor(getCanisterId('management_canister'), {
     }
 });
 
-runTests(getTests(managementCanister));
+describe('Azle management_canister tests', getTests(managementCanister));
