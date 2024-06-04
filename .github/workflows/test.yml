@@ -322,7 +322,7 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
-              run: AZLE_PROPTEST_NUM_RUNS=5 AZLE_PROPTEST_VERBOSE=true npm test
+              run: AZLE_PROPTEST_NUM_RUNS=5 AZLE_PROPTEST_VERBOSE=true AZLE_INTEGRATION_TEST_LINK_AZLE=true npm test
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
