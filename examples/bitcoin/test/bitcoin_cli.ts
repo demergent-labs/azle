@@ -136,6 +136,6 @@ function signRawTransactionWithWallet(hexString: string): SignedTransaction {
 
 export function cli(command: string): string {
     return execSync(
-        `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin -rpcport=18443 ${command}`
+        `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data -rpcport=18443 ${command}`
     ).toString();
 }
