@@ -1,6 +1,6 @@
 {
     "canisters": {
-        "bitcoinjs": {
+        "bitcoinjs_lib": {
             "type": "azle",
             "main": "src/index.ts"
         }
