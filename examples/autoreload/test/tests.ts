@@ -1,180 +1,81 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
+import { expect, it, please, Test, wait } from 'azle/test/jest';
 import { writeFileSync } from 'fs';
 
-export const originalServerTs = `import express from 'express';
+import {
+    originalServerTs,
+    testChangedRapidlyServerTs,
+    testChangedServerTs
+} from './server_ts';
 
-const app = express();
-
-app.get('/test', (req, res) => {
-    res.send('test');
-});
-
-app.listen();
-`;
-
-const testChangedServerTs = `import express from 'express';
-
-const app = express();
-
-app.get('/test-changed', (req, res) => {
-    res.send('test-changed');
-});
-
-app.listen();
-`;
-
-const testChangedRapidlyServerTs = `import express from 'express';
-
-const app = express();
-
-app.get('/test-changed-rapidly', (req, res) => {
-    res.send('test-changed-rapidly');
-});
-
-app.listen();
-`;
-
-export function getTests(canisterId: string): Test[] {
+export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
 
-    return [
-        {
-            name: '/test',
-            test: async () => {
-                try {
-                    const response = await fetch(`${origin}/test`);
-                    const responseText = await response.text();
+    return () => {
+        it('loads the original canister', async () => {
+            const response = await fetch(`${origin}/test`);
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'test'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: 'change file to new code',
-            prep: async () => {
-                writeFileSync('./src/server.ts', testChangedServerTs);
-            }
-        },
-        {
-            name: 'waiting for Azle to reload',
-            wait: 10_000
-        },
-        {
-            name: '/test-changed',
-            test: async () => {
-                try {
-                    const response = await fetch(`${origin}/test-changed`);
-                    const responseText = await response.text();
+            expect(responseText).toBe('test');
+        });
 
-                    return {
-                        Ok: responseText === 'test-changed'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: 'restore original file contents',
-            prep: async () => {
-                writeFileSync('./src/server.ts', originalServerTs);
-            }
-        },
-        {
-            name: 'waiting for Azle to reload',
-            wait: 10_000
-        },
-        {
-            name: '/test',
-            test: async () => {
-                try {
-                    const response = await fetch(`${origin}/test`);
-                    const responseText = await response.text();
+        please('updates file with new code', () => {
+            writeFileSync('./src/server.ts', testChangedServerTs);
+        });
 
-                    return {
-                        Ok: responseText === 'test'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: 'rapidly write to file',
-            prep: async () => {
-                for (let i = 0; i < 100; i++) {
-                    writeFileSync(
-                        './src/server.ts',
-                        testChangedRapidlyServerTs
-                    );
+        wait('for Azle to reload', 10_000);
 
-                    // chokidar seems to debounce if writes are too close together
-                    await new Promise((resolve) => setTimeout(resolve, 100));
-                }
-            }
-        },
-        {
-            name: 'waiting for Azle to reload',
-            wait: 90_000
-        },
-        {
-            name: '/test-changed-rapidly',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/test-changed-rapidly`
-                    );
-                    const responseText = await response.text();
+        it('has /test-changed endpoint after the code is reloaded', async () => {
+            const response = await fetch(`${origin}/test-changed`);
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'test-changed-rapidly'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: 'restore original file contents',
-            prep: async () => {
-                writeFileSync('./src/server.ts', originalServerTs);
-            }
-        },
-        {
-            name: 'waiting for Azle to reload',
-            wait: 60_000
-        },
-        {
-            name: '/test',
-            test: async () => {
-                try {
-                    const response = await fetch(`${origin}/test`);
-                    const responseText = await response.text();
+            expect(responseText).toBe('test-changed');
+        });
 
-                    return {
-                        Ok: responseText === 'test'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
+        please('restore original file contents', () => {
+            writeFileSync('./src/server.ts', originalServerTs);
+        });
+
+        wait('for Azle to reload', 10_000);
+
+        it('has the /test endpoint after the original contents are restored', async () => {
+            const response = await fetch(`${origin}/test`);
+            const responseText = await response.text();
+
+            expect(responseText).toBe('test');
+        });
+
+        it('rapidly changes the file', async () => {
+            for (let i = 0; i < 100; i++) {
+                writeFileSync('./src/server.ts', testChangedRapidlyServerTs);
+
+                // chokidar seems to debounce if writes are too close together
+                await new Promise((resolve) => setTimeout(resolve, 100));
             }
-        }
-    ];
+        });
+
+        wait('for Azle to reload', 90_000);
+
+        it('has the /test-changed-rapidly endpoint after the file is reloaded rapidly', async () => {
+            const response = await fetch(`${origin}/test-changed-rapidly`);
+            const responseText = await response.text();
+
+            expect(responseText).toBe('test-changed-rapidly');
+        });
+
+        please('restore original file contents', () => {
+            writeFileSync('./src/server.ts', originalServerTs);
+        });
+
+        wait('for Azle to reload', 30_000);
+
+        it('has the /test endpoint after the original contents are restored', async () => {
+            const response = await fetch(`${origin}/test`);
+            const responseText = await response.text();
+
+            expect(responseText).toMatch('test');
+        });
+    };
 }

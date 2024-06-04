@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 import { writeFileSync } from 'fs';
 
-import { originalServerTs } from './tests';
+import { originalServerTs } from './server_ts';
 
 async function pretest() {
     writeFileSync('./src/server.ts', originalServerTs);
