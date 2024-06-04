@@ -1,8 +1,10 @@
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/test/jest';
 
 import { getTests } from './tests';
 
-const canisterId = getCanisterId('bitcore');
+const canisterName = 'bitcore_lib';
 
-runTests(getTests(canisterId));
+const canisterId = getCanisterId(canisterName);
+
+runTests(canisterName, getTests(canisterId));
