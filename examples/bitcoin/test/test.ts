@@ -1,9 +1,18 @@
+import { afterAll, beforeAll } from '@jest/globals';
 import { getCanisterId } from 'azle/dfx';
-import { runTests, Test } from 'azle/test';
+import { expect, it, please, runTests, wait } from 'azle/test/jest';
 
 import { bitcoinCli } from './bitcoin_cli';
 import { createActor } from './dfx_generated/bitcoin';
-import { impureSetup, whileRunningBitcoinDaemon } from './setup';
+import {
+    BitcoinDaemon,
+    createBitcoinWallet,
+    createTransaction,
+    getEarliestUtxo,
+    mine101Blocks,
+    signTransaction,
+    startBitcoinDaemon
+} from './setup';
 import { wallets } from './wallets';
 
 const bitcoinCanister = createActor(getCanisterId('bitcoin'), {
@@ -12,93 +21,83 @@ const bitcoinCanister = createActor(getCanisterId('bitcoin'), {
     }
 });
 
-const state = {
-    signedTxHex: ''
-};
+runTests(() => {
+    let bitcoinDaemon: BitcoinDaemon;
 
-export type State = {
-    signedTxHex: string;
-};
+    beforeAll(async () => {
+        bitcoinDaemon = await startBitcoinDaemon();
+        createBitcoinWallet(wallets);
+        await mine101Blocks(wallets);
+    }, 60_000);
 
-const tests: Test[] = [
-    ...impureSetup(wallets, state),
-    {
-        name: 'wait for blockchain balance to reflect',
-        wait: 60_000
-    },
-    ...testCanisterFunctionality()
-];
+    afterAll(() => {
+        bitcoinDaemon.kill();
+    });
 
-whileRunningBitcoinDaemon(() => runTests(tests));
+    wait('for blockchain balance to reflect', 60_000);
 
-function testCanisterFunctionality() {
-    return [
-        {
-            name: 'getBalance',
-            test: async () => {
-                const result = await bitcoinCanister.getBalance(
-                    wallets.alice.p2wpkh
-                );
+    it("gets Alice's balance after initial block rewards are received", async () => {
+        const result = await bitcoinCanister.getBalance(wallets.alice.p2wpkh);
 
-                const blockReward = 5_000_000_000n;
-                const blocksMinedInSetup = 101n;
-                const expectedBalance = blockReward * blocksMinedInSetup;
+        const blockReward = 5_000_000_000n;
+        const blocksMinedInSetup = 101n;
+        const expectedBalance = blockReward * blocksMinedInSetup;
 
-                return {
-                    Ok: result === expectedBalance
-                };
-            }
-        },
-        {
-            name: 'getUtxos',
-            test: async () => {
-                const result = await bitcoinCanister.getUtxos(
-                    wallets.alice.p2wpkh
-                );
+        expect(result).toBe(expectedBalance);
+    });
 
-                return {
-                    Ok: result.tip_height === 101 && result.utxos.length === 101
-                };
-            }
-        },
-        {
-            name: 'getCurrentFeePercentiles',
-            test: async () => {
-                const result = await bitcoinCanister.getCurrentFeePercentiles();
+    it("gets Alice's Utxos", async () => {
+        const result = await bitcoinCanister.getUtxos(wallets.alice.p2wpkh);
 
-                return {
-                    Ok: result.length === 0 // TODO: This should have entries
-                };
-            }
-        },
-        {
-            name: 'sendTransaction',
-            test: async () => {
-                const receivedBeforeTransaction =
-                    bitcoinCli.getReceivedByAddress(wallets.bob.p2wpkh);
+        expect(result.tip_height).toBe(101);
+        expect(result.utxos).toHaveLength(101);
+    });
 
-                const tx_bytes = hex_string_to_bytes(state.signedTxHex);
+    it('gets an empty list of current fee percentiles since no transaction are on the test net yet', async () => {
+        const result = await bitcoinCanister.getCurrentFeePercentiles();
 
-                const result = await bitcoinCanister.sendTransaction(tx_bytes);
+        expect(result).toHaveLength(0);
+    });
 
-                bitcoinCli.generateToAddress(1, wallets.alice.p2wpkh);
+    it('sends a transaction from Alice to Bob', async () => {
+        const receivedBeforeTransaction = bitcoinCli.getReceivedByAddress(
+            wallets.bob.p2wpkh
+        );
 
-                // Wait for generated block to be pulled into replica
-                await new Promise((resolve) => setTimeout(resolve, 5000));
+        const utxo = getEarliestUtxo();
+        const rawTx = createTransaction(utxo, wallets);
+        const signedTxHex = signTransaction(rawTx);
+        const tx_bytes = hex_string_to_bytes(signedTxHex);
 
-                const receivedAfterTransaction =
-                    bitcoinCli.getReceivedByAddress(wallets.bob.p2wpkh, 0);
+        const result = await bitcoinCanister.sendTransaction(tx_bytes);
 
-                return {
-                    Ok:
-                        result === true &&
-                        receivedBeforeTransaction === 0 &&
-                        receivedAfterTransaction === 1
-                };
-            }
-        }
-    ];
-}
+        expect(result).toBe(true);
+        expect(receivedBeforeTransaction).toBe(0);
+    });
+
+    wait('for transaction to enter mempool', 60_000);
+
+    please('mine one block', () =>
+        bitcoinCli.generateToAddress(1, wallets.alice.p2wpkh)
+    );
+
+    wait('for generated block to be pulled into replica', 15_000);
+
+    it('ensures transaction was successful', () => {
+        const receivedAfterTransaction = bitcoinCli.getReceivedByAddress(
+            wallets.bob.p2wpkh,
+            0
+        );
+
+        expect(receivedAfterTransaction).toBe(1);
+    });
+
+    it('gets a list of 101 items from current fee percentiles now that a transaction is recorded', async () => {
+        const result = await bitcoinCanister.getCurrentFeePercentiles();
+
+        expect(result).toHaveLength(101);
+    });
+});
 
 /**
  * Converts a hex string into an array of bytes
