@@ -1,80 +1,28 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { describe } from '@jest/globals';
+import { expect, it, Test } from 'azle/test/jest';
 import { readFileSync } from 'fs';
 
 import { _SERVICE } from './dfx_generated/bytes_canister/bytes_canister.did.d';
 
-export function get_tests(bytes_canister: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'get_bytes 1 kb',
-            test: async () => {
+export function getTests(bytes_canister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        describe.each([
+            'example_1_kb.txt',
+            'example_10_kb.txt',
+            'example_100_kb.txt',
+            'example_1000_kb.txt',
+            'example_2000_kb.txt'
+        ])('', (fileName) => {
+            it(`gets bytes from ${fileName}`, async () => {
                 const file = Array.from(
-                    readFileSync('./test/example_files/example_1_kb.txt')
+                    readFileSync(`./test/example_files/${fileName}`)
                 );
 
-                const result = await bytes_canister.getBytes(file);
+                const result = Array.from(await bytes_canister.getBytes(file));
 
-                return {
-                    Ok: result.length === 1_000
-                };
-            }
-        },
-        {
-            name: 'get_bytes 10 kb',
-            test: async () => {
-                const file = Array.from(
-                    readFileSync('./test/example_files/example_10_kb.txt')
-                );
-
-                const result = await bytes_canister.getBytes(file);
-
-                return {
-                    Ok: result.length === 10_000
-                };
-            }
-        },
-        {
-            name: 'get_bytes 100 kb',
-            test: async () => {
-                const file = Array.from(
-                    readFileSync('./test/example_files/example_100_kb.txt')
-                );
-
-                const result = await bytes_canister.getBytes(file);
-
-                return {
-                    Ok: result.length === 100_000
-                };
-            }
-        },
-        {
-            name: 'get_bytes 1000 kb',
-            test: async () => {
-                const file = Array.from(
-                    readFileSync('./test/example_files/example_1000_kb.txt')
-                );
-
-                const result = await bytes_canister.getBytes(file);
-
-                return {
-                    Ok: result.length === 1_000_000
-                };
-            }
-        },
-        {
-            name: 'get_bytes 2000 kb',
-            test: async () => {
-                const file = Array.from(
-                    readFileSync('./test/example_files/example_2000_kb.txt')
-                );
-
-                const result = await bytes_canister.getBytes(file);
-
-                return {
-                    Ok: result.length === 2_000_000
-                };
-            }
-        }
-    ];
+                expect(result).toStrictEqual(file);
+            });
+        });
+    };
 }
