@@ -1,18 +1,27 @@
-import { runTests } from 'azle/test';
+import { afterAll, beforeAll, describe } from '@jest/globals';
+import { runTests } from 'azle/test/jest';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import { existsSync, rmSync } from 'fs-extra';
 
 import { getTests } from './tests';
 
-export async function whileRunningBitcoinDaemon(
-    callback: () => Promise<boolean> | void
-) {
-    const bitcoinDaemon = await startBitcoinDaemon();
-    await callback();
-    bitcoinDaemon.kill();
-}
+type BitcoinDaemon = ChildProcessWithoutNullStreams;
 
-async function startBitcoinDaemon(): Promise<ChildProcessWithoutNullStreams> {
+runTests('ckbtc', () => {
+    let bitcoinDaemon: BitcoinDaemon;
+
+    beforeAll(async () => {
+        bitcoinDaemon = await startBitcoinDaemon();
+    });
+
+    afterAll(() => {
+        bitcoinDaemon.kill();
+    });
+
+    describe('run ckbtc tests while bitcoin daemon is running', getTests());
+});
+
+async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
     if (existsSync(`.bitcoin/regtest`)) {
         rmSync('.bitcoin/regtest', { recursive: true, force: true });
     }
@@ -38,5 +47,3 @@ async function startBitcoinDaemon(): Promise<ChildProcessWithoutNullStreams> {
     await new Promise((resolve) => setTimeout(resolve, 5000));
     return bitcoinDaemon;
 }
-
-whileRunningBitcoinDaemon(() => runTests(getTests()));
