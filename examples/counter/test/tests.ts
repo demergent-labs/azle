@@ -1,59 +1,38 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 
 import { _SERVICE } from './dfx_generated/counter/counter.did';
 
-export function get_tests(counter_canister: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'read_count',
-            test: async () => {
-                const result = await counter_canister.readCount();
+export function getTests(counterCanister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('reads the initialized value of a global counter', async () => {
+            const result = await counterCanister.readCount();
 
-                return {
-                    Ok: result === 0n
-                };
-            }
-        },
-        {
-            name: 'increment_count',
-            test: async () => {
-                const result = await counter_canister.incrementCount();
+            expect(result).toBe(0n);
+        });
 
-                return {
-                    Ok: result === 1n
-                };
-            }
-        },
-        {
-            name: 'increment_count',
-            test: async () => {
-                const result = await counter_canister.incrementCount();
+        it('increments a global counter', async () => {
+            const result = await counterCanister.incrementCount();
 
-                return {
-                    Ok: result === 2n
-                };
-            }
-        },
-        {
-            name: 'increment_count',
-            test: async () => {
-                const result = await counter_canister.incrementCount();
+            expect(result).toBe(1n);
+        });
 
-                return {
-                    Ok: result === 3n
-                };
-            }
-        },
-        {
-            name: 'read_count',
-            test: async () => {
-                const result = await counter_canister.readCount();
+        it('increments a global counter that had previously been incremented', async () => {
+            const result = await counterCanister.incrementCount();
 
-                return {
-                    Ok: result === 3n
-                };
-            }
-        }
-    ];
+            expect(result).toBe(2n);
+        });
+
+        it('increments a global counter that had twice been previously incremented', async () => {
+            const result = await counterCanister.incrementCount();
+
+            expect(result).toBe(3n);
+        });
+
+        it('reads the count of a global counter that has had its state maintained between calls', async () => {
+            const result = await counterCanister.readCount();
+
+            expect(result).toBe(3n);
+        });
+    };
 }
