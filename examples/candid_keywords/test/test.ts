@@ -1,13 +1,15 @@
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/test/jest';
 
 import { createActor } from './dfx_generated/candid_keywords';
 import { getTests } from './tests';
 
-const queryCanister = createActor(getCanisterId('candid_keywords'), {
+const canisterName = 'candid_keywords';
+
+const queryCanister = createActor(getCanisterId(canisterName), {
     agentOptions: {
         host: 'http://127.0.0.1:8000'
     }
 });
 
-runTests(getTests(queryCanister));
+runTests(canisterName, getTests(queryCanister));
