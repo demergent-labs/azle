@@ -187,7 +187,7 @@ app.post('/create-psbt', (req, res) => {
     const keyPair = ECPair.fromWIF(
         'L2uPYXe17xSTqbCjZvL2DsyXPCbXspvcu5mHLDYUgzdUbZGSKrSr'
     );
-    const psbt = new bitcoin.Psbt();
+    let psbt = new bitcoin.Psbt();
     psbt.addInput({
         // if hash is string, txid, if hash is Buffer, is reversed compared to txid
         hash: '7d067b4a697a09d2c3cff7d4d9506c9955e93bff41bf82d439da7d030382bc3e',
