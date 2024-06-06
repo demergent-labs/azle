@@ -18,18 +18,24 @@ import { CanisterInfoArgs, CanisterInfoResult } from './canister_info';
 import {
     CanisterStatusArgs,
     CanisterStatusResult,
+    ClearChunkStoreArgs,
     CreateCanisterArgs,
     CreateCanisterResult,
     DeleteCanisterArgs,
     DepositCyclesArgs,
+    InstallChunkedCodeArgs,
     InstallCodeArgs,
     ProvisionalCreateCanisterWithCyclesArgs,
     ProvisionalCreateCanisterWithCyclesResult,
     ProvisionalTopUpCanisterArgs,
     StartCanisterArgs,
     StopCanisterArgs,
+    StoredChunksArgs,
+    StoredChunksResult,
     UninstallCodeArgs,
-    UpdateSettingsArgs
+    UpdateSettingsArgs,
+    UploadChunkArgs,
+    UploadChunkResult
 } from './canister_management';
 import { HttpRequestArgs, HttpResponse } from './http_request';
 import {
@@ -57,7 +63,11 @@ export const managementCanister = Canister({
     // canister management
     create_canister: update([CreateCanisterArgs], CreateCanisterResult),
     update_settings: update([UpdateSettingsArgs], Void),
+    upload_chunk: update([UploadChunkArgs], UploadChunkResult),
+    clear_chunk_store: update([ClearChunkStoreArgs], Void),
+    stored_chunks: update([StoredChunksArgs], StoredChunksResult),
     install_code: update([InstallCodeArgs], Void),
+    install_chunked_code: update([InstallChunkedCodeArgs], Void),
     uninstall_code: update([UninstallCodeArgs], Void),
     start_canister: update([StartCanisterArgs], Void),
     stop_canister: update([StopCanisterArgs], Void),
