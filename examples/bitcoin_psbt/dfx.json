@@ -1,6 +1,6 @@
 {
     "canisters": {
-        "basic_bitcoin": {
+        "bitcoin_psbt": {
             "type": "azle",
             "main": "src/index.ts",
             "env": ["BITCOIN_NETWORK"]

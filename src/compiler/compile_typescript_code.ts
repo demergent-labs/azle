@@ -37,14 +37,14 @@ export async function compileTypeScriptToJavaScript(
             // behave in all async situations
             setTimeout(() => {
                 const canisterMethods = CanisterMethods.default !== undefined ? CanisterMethods.default() : Server(() => globalThis._azleNodeServer)();
-                
+
                 globalThis.candidInfoFunction = () => {
                     const candidInfo = canisterMethods.getIdl([]).accept(new DidVisitor(), {
                         ...getDefaultVisitorData(),
                         isFirstService: true,
                         systemFuncs: canisterMethods.getSystemFunctionIdls()
                     });
-                
+
                     return JSON.stringify({
                         candid: toDidString(candidInfo),
                         canisterMethods: {
@@ -53,8 +53,8 @@ export async function compileTypeScriptToJavaScript(
                             ...canisterMethods
                         }
                     });
-                };            
-    
+                };
+
                 // TODO I do not know how to get the module exports yet with wasmedge_quickjs
                 globalThis.exports.canisterMethods = canisterMethods;
             });
@@ -121,6 +121,7 @@ export async function bundleFromString(
         write: false,
         logLevel: 'silent',
         target: 'es2020',
+        preserveSymlinks: true,
         alias: {
             internal: `${finalWasmedgeQuickJsPath}/modules/internal`,
             util: `${finalWasmedgeQuickJsPath}/modules/util`,

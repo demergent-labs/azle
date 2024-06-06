@@ -1,6 +1,6 @@
 # Installation
 
-This is an implementation of the [basic_bitcoin example](https://github.com/dfinity/examples/tree/master/rust/basic_bitcoin) written in TypeScript with Azle. It's focused on showing you basic ICP/Bitcoin concepts in a local development environment.
+This is a variation of the [basic_bitcoin example](https://github.com/dfinity/examples/tree/master/rust/basic_bitcoin) written in TypeScript with Azle. It's focused on showing you basic ICP/Bitcoin concepts in a local development environment. The principal difference between this and the [Azle basic_bitcoin example](https://github.com/demergent-labs/azle/tree/main/examples/basic_bitcoin) is that this example is demonstrating the use of partially signed bitcoin transactions (PSBT) and SegWit. This example also provides additional helper scripts for working with a local bitcoin node.
 
 ## bitcoind
 
@@ -31,7 +31,7 @@ fi
 dfx start --clean --host 127.0.0.1:8000
 ```
 
-## basic_bitcoin
+## bitcoin_psbt
 
 ```bash
 BITCOIN_NETWORK=regtest dfx deploy'
@@ -41,7 +41,7 @@ BITCOIN_NETWORK=regtest dfx deploy'
 
 After setting up your local Bitcoin node and deploying the canister locally, you can interact with your canister from the command-line or from the browser. To interact with your canister from the browser, use the URL displayed in the terminal after deploy, which will look something like this: `http://127.0.0.1:8000/?canisterId=bd3sg-teaaa-aaaaa-qaaba-cai&id=bkyz2-fmaaa-aaaaa-qaaaq-cai`
 
-This example provides 5 functions to call: `getBalance`, `getUtxos`, `getCurrentFeePercentiles`, `getP2PKHAddress`, and `send`.
+This example provides 5 functions to call: `getBalance`, `getUtxos`, `getCurrentFeePercentiles`, `getP2WPKHAddress`, and `send`.
 
 To create Bitcoin that can be used to test the `send` functionality, first mine 101 blocks to the address you obtain from calling `getP2PKHAddress`. You must mine 101 blocks because there is a rule in Bitcoin that block rewards cannot be spent until 100 blocks have been mined on top:
 
@@ -51,7 +51,7 @@ To create Bitcoin that can be used to test the `send` functionality, first mine 
 
 Give this process a minute or two before expecting the balance of your address to update properly.
 
-You can now use the `send` function to try sending some BTC to another address, for example to the address `n2dcQfuwFw7M2UYzLfM6P7DwewsQaygb8S`. After calling the `send` function you should receive a transaction hash such as `44fdde20b88027e6a8786689739b0fec74f9e6c86cad3f4d5c05e43a51d97445`. To make sure the transaction is included into the Bitcoin blockchain, you must mine a new block:
+You can now use the `send` function to try sending some BTC to another address, for example to the address `bcrt1qcxzt0xpf8qe3q75rsd30thrhgwzddy85f0cu4w`. After calling the `send` function you should receive a transaction hash such as `44fdde20b88027e6a8786689739b0fec74f9e6c86cad3f4d5c05e43a51d97445`. To make sure the transaction is included into the Bitcoin blockchain, you must mine a new block:
 
 ```bash
 .bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress 1 <your-canister-btc-address>
@@ -59,7 +59,7 @@ You can now use the `send` function to try sending some BTC to another address, 
 
 You should see some output such as `2023-05-30T20:33:25Z CreateNewBlock(): block weight: 1804 txs: 1 fees: 454 sigops 408` in your Bitcoin node's terminal (not the dfx terminal) indicating that your transaction was included in the block.
 
-Now if you call the functions with the `n2dcQfuwFw7M2UYzLfM6P7DwewsQaygb8S` address you should see a new balance, utxos, and fee percentiles.
+Now if you call the functions with the `bcrt1qcxzt0xpf8qe3q75rsd30thrhgwzddy85f0cu4w` address you should see a new balance, utxos, and fee percentiles.
 
 If you need more information you can view the following:
 
