@@ -1,15 +1,12 @@
-// TODO the tests should probably be in this crate standalone
-// TODO should we have unit tests for the node side as well?
-// TODO maybe we do that later?
-// TODO it shouldn't be too hard to write some property tests
-// TODO for the two math functions here
-
 use anyhow::Context;
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 
 mod platforms;
 mod query_methods;
+
+#[cfg(test)]
+mod test;
 
 thread_local! {
     static CYCLE_BALANCE_PREVIOUS: RefCell<u128> = RefCell::new(0);
@@ -162,7 +159,6 @@ async fn process_batch(consumer: &Consumer) -> Result<(), anyhow::Error> {
     Ok(())
 }
 
-// TODO let's write property tests for this function
 async fn calculate_total_amount(consumer: &Consumer) -> u128 {
     let cycle_balance = ic_cdk::api::canister_balance128();
     let cycle_balance_previous = CYCLE_BALANCE_PREVIOUS
@@ -206,7 +202,6 @@ fn record_periodic_batch(time_start: u64, total_amount: u128, payments: Vec<Paym
     });
 }
 
-// TODO let's write property tests for this function
 fn calculate_payment_amount(
     dependency: &Dependency,
     depth_weights: &DepthWeights,
