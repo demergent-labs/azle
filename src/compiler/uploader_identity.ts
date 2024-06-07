@@ -3,7 +3,7 @@ import {
     generateIdentity,
     getPrincipal,
     identityExists
-} from '../../../dfx';
+} from '../../dfx';
 
 export const AZLE_UPLOADER_IDENTITY_NAME =
     process.env.AZLE_UPLOADER_IDENTITY_NAME ?? '_azle_file_uploader_identity';

@@ -73,7 +73,8 @@ async function azle() {
         canisterConfig.main,
         wasmedgeQuickJsPath,
         esmAliases,
-        esmExternals
+        esmExternals,
+        canisterName
     );
 
     await time(
