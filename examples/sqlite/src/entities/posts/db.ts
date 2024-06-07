@@ -30,11 +30,10 @@ export function getPost(db: Database, id: number): Post | null {
 }
 
 export function countPosts(db: Database): number {
-    const results =
-        sqlite<number>`SELECT id FROM posts ORDER BY id DESC LIMIT 1`(
-            db,
-            (sqlValues) => sqlValues[0] as number
-        );
+    const results = sqlite<number>`SELECT COUNT(*) FROM posts`(
+        db,
+        (sqlValues) => sqlValues[0] as number
+    );
 
     return results[0] ?? 0;
 }
