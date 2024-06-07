@@ -5,9 +5,5 @@ export async function chunk(): Promise<void> {
         return undefined as any;
     }
 
-    try {
-        await ic.callRaw(ic.id(), '_azle_chunk', ic.candidEncode('()'), 0n);
-    } catch (error) {
-        console.log('error', error);
-    }
+    await ic.callRaw(ic.id(), '_azle_chunk', ic.candidEncode('()'), 0n);
 }

@@ -1,6 +1,6 @@
-import { Actor, ActorMethod, HttpAgent } from '@dfinity/agent';
+import { Actor, ActorMethod } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { getCanisterId } from 'azle/dfx';
+import { createAuthenticatedAgentSync, getCanisterId, whoami } from 'azle/dfx';
 
 export type PeriodicBatch = {
     time_start: bigint;
@@ -28,9 +28,7 @@ export interface _SERVICE {
     >;
 }
 
-export const agent = new HttpAgent({
-    host: 'http://127.0.0.1:8000'
-});
+export const agent = createAuthenticatedAgentSync(whoami());
 
 export const actorConsumer = Actor.createActor<_SERVICE>(
     ({ IDL }) => {

@@ -59,7 +59,6 @@ pub struct Dependency {
     pub custom: std::collections::HashMap<String, serde_json::Value>,
 }
 
-// TODO check how many times ovs init is being called, make sure it's correct
 pub async fn init(consumer: &Consumer) {
     if consumer.kill_switch == true {
         return;
