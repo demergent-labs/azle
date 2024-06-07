@@ -8,6 +8,7 @@
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "strictPropertyInitialization": false
+        "strictPropertyInitialization": false,
+        "preserveSymlinks": true
     }
 }
