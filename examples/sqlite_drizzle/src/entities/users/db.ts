@@ -1,4 +1,4 @@
-import { desc, eq } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { DrizzleDb } from '../../db';
@@ -32,13 +32,11 @@ export async function getUser(
 export async function countUsers(drizzleDb: DrizzleDb): Promise<number> {
     const results = await drizzleDb
         .select({
-            id: Users.id
+            count: count()
         })
-        .from(Users)
-        .orderBy(desc(Users.id))
-        .limit(1);
+        .from(Users);
 
-    return results[0]?.id ?? 0;
+    return results[0]?.count ?? 0;
 }
 
 export async function createUser(

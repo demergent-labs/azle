@@ -1,0 +1,18 @@
+{
+    "name": "bitcore_lib_example",
+    "scripts": {
+        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+    },
+    "dependencies": {
+        "azle": "0.21.1",
+        "bitcore-lib": "^10.0.23",
+        "express": "^4.18.2"
+    },
+    "devDependencies": {
+        "@types/bitcore-lib": "^0.15.6",
+        "@types/express": "^4.17.21",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
+    }
+}

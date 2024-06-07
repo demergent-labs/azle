@@ -27,11 +27,10 @@ export function getUser(db: Database, id: number): User | null {
 }
 
 export function countUsers(db: Database): number {
-    const results =
-        sqlite<number>`SELECT id FROM users ORDER BY id DESC LIMIT 1`(
-            db,
-            (sqlValues) => sqlValues[0] as number
-        );
+    const results = sqlite<number>`SELECT COUNT(*) FROM users`(
+        db,
+        (sqlValues) => sqlValues[0] as number
+    );
 
     return results[0] ?? 0;
 }

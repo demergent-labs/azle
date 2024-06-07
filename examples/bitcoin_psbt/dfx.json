@@ -1,0 +1,26 @@
+{
+    "canisters": {
+        "bitcoin_psbt": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "env": ["BITCOIN_NETWORK"]
+        }
+    },
+    "networks": {
+        "local": {
+            "bind": "127.0.0.1:8000",
+            "type": "ephemeral",
+            "replica": {
+                "subnet_type": "system"
+            }
+        }
+    },
+    "defaults": {
+        "bitcoin": {
+            "canister_init_arg": "(record { stability_threshold = 1000 : nat; network = variant { regtest }; blocks_source = principal \"aaaaa-aa\"; fees = record { get_utxos_base = 0 : nat; get_utxos_cycles_per_ten_instructions = 0 : nat; get_utxos_maximum = 0 : nat; get_balance = 0 : nat; get_balance_maximum = 0 : nat; get_current_fee_percentiles = 0 : nat; get_current_fee_percentiles_maximum = 0 : nat;  send_transaction_base = 0 : nat; send_transaction_per_byte = 0 : nat; }; syncing = variant { enabled }; api_access = variant { enabled }; disable_api_if_not_fully_synced = variant { enabled }})",
+            "enabled": true,
+            "nodes": ["127.0.0.1:18444"],
+            "log_level": "info"
+        }
+    }
+}

@@ -1,55 +1,55 @@
-// @ts-nocheck
+import { serialize } from 'azle';
 
-import { blob, ic, match, Opt, Vec } from 'azle';
-import { managementCanister } from 'azle/canisters/management';
+// The fee for the `sign_with_ecdsa` endpoint using the test key.
+const SIGN_WITH_ECDSA_COST_CYCLES: bigint = 10_000_000_000n;
 
 /// Returns the ECDSA public key of this canister at the given derivation path.
 export async function ecdsaPublicKey(
     keyName: string,
-    derivationPath: Vec<blob>
-): Promise<blob> {
+    derivationPath: Uint8Array[]
+): Promise<Uint8Array> {
     // Retrieve the public key of this canister at the given derivation path
     // from the ECDSA API.
-    const res = await managementCanister
-        .ecdsa_public_key({
-            canister_id: Opt.None,
-            derivation_path: derivationPath,
-            key_id: {
-                curve: {
-                    secp256k1: null
-                },
-                name: keyName
-            }
+    const response = await fetch('icp://aaaaa-aa/ecdsa_public_key', {
+        body: serialize({
+            args: [
+                {
+                    canister_id: [],
+                    derivation_path: derivationPath,
+                    key_id: {
+                        curve: { secp256k1: null },
+                        name: keyName
+                    }
+                }
+            ]
         })
-        .call();
-
-    return match(res, {
-        Ok: (ok) => ok.public_key,
-        Err: (err) => ic.trap(err)
     });
+    const res = await response.json();
+
+    return res.public_key;
 }
 
 export async function signWithECDSA(
     keyName: string,
-    derivationPath: Vec<blob>,
-    messageHash: blob
-): Promise<blob> {
-    const res = await managementCanister
-        .sign_with_ecdsa({
-            message_hash: messageHash,
-            derivation_path: derivationPath,
-            key_id: {
-                curve: {
-                    secp256k1: null
-                },
-                name: keyName
-            }
+    derivationPath: Uint8Array[],
+    messageHash: Uint8Array
+): Promise<Uint8Array> {
+    const publicKeyResponse = await fetch(`icp://aaaaa-aa/sign_with_ecdsa`, {
+        body: serialize({
+            args: [
+                {
+                    message_hash: messageHash,
+                    derivation_path: derivationPath,
+                    key_id: {
+                        curve: { secp256k1: null },
+                        name: keyName
+                    }
+                }
+            ],
+            cycles: SIGN_WITH_ECDSA_COST_CYCLES
         })
-        .cycles(10_000_000_000n)
-        .call();
-
-    return match(res, {
-        Ok: (ok) => ok.signature,
-        Err: (err) => ic.trap(err)
     });
+    const res = await publicKeyResponse.json();
+
+    return res.signature;
 }

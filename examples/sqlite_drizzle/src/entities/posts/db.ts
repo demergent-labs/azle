@@ -1,4 +1,4 @@
-import { desc, eq } from 'drizzle-orm';
+import { count, eq } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { DrizzleDb } from '../../db';
@@ -61,13 +61,11 @@ export async function getPost(
 export async function countPosts(drizzleDb: DrizzleDb): Promise<number> {
     const results = await drizzleDb
         .select({
-            id: Posts.id
+            count: count()
         })
-        .from(Posts)
-        .orderBy(desc(Posts.id))
-        .limit(1);
+        .from(Posts);
 
-    return results[0]?.id ?? 0;
+    return results[0]?.count ?? 0;
 }
 
 export async function createPost(

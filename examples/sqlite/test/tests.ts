@@ -4,6 +4,9 @@ dns.setDefaultResultOrder('ipv4first');
 import { Test } from 'azle/test';
 import { execSync } from 'child_process';
 
+const USERS_BATCH_AMOUNT = 499;
+const POSTS_BATCH_AMOUNT = 299;
+
 export function getTests(canisterId: string): Test[] {
     const origin = `http://${canisterId}.localhost:8000`;
 
@@ -33,28 +36,38 @@ export function getTests(canisterId: string): Test[] {
         ...usersTestsBeforeBatch(origin),
         ...postsTestsBeforeBatch(origin),
         {
-            name: '/users/batch/499',
+            name: `/users/batch/${USERS_BATCH_AMOUNT}`,
             test: async () => {
-                const response = await fetch(`${origin}/users/batch/499`, {
-                    method: 'POST'
-                });
+                const response = await fetch(
+                    `${origin}/users/batch/${USERS_BATCH_AMOUNT}`,
+                    {
+                        method: 'POST'
+                    }
+                );
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson.Success === '499 users created'
+                    Ok:
+                        responseJson.Success ===
+                        `${USERS_BATCH_AMOUNT} users created`
                 };
             }
         },
         {
-            name: '/posts/batch/299',
+            name: `/posts/batch/${POSTS_BATCH_AMOUNT}`,
             test: async () => {
-                const response = await fetch(`${origin}/posts/batch/299`, {
-                    method: 'POST'
-                });
+                const response = await fetch(
+                    `${origin}/posts/batch/${POSTS_BATCH_AMOUNT}`,
+                    {
+                        method: 'POST'
+                    }
+                );
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson.Success === '299 posts created'
+                    Ok:
+                        responseJson.Success ===
+                        `${POSTS_BATCH_AMOUNT} posts created`
                 };
             }
         },
@@ -442,6 +455,8 @@ function postsTestsBeforeBatch(origin: string): Test[] {
 }
 
 function usersTestsAfterBatch(origin: string): Test[] {
+    const totalNumUsers = USERS_BATCH_AMOUNT + 1 + POSTS_BATCH_AMOUNT + 1;
+
     return [
         {
             name: '/users not empty',
@@ -450,30 +465,32 @@ function usersTestsAfterBatch(origin: string): Test[] {
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson.length === 800
+                    Ok: responseJson.length === totalNumUsers
                 };
             }
         },
         {
-            name: '/users/count 800',
+            name: `/users/count ${totalNumUsers}`,
             test: async () => {
                 const response = await fetch(`${origin}/users/count`);
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson === 800
+                    Ok: responseJson === totalNumUsers
                 };
             }
         },
         {
-            name: '/users/800 not null',
+            name: `/users/${totalNumUsers} not null`,
             test: async () => {
-                const response = await fetch(`${origin}/users/800`);
+                const response = await fetch(
+                    `${origin}/users/${totalNumUsers}`
+                );
                 const responseJson = await response.json();
 
                 return {
                     Ok:
-                        responseJson.id === 800 &&
+                        responseJson.id === totalNumUsers &&
                         typeof responseJson.username === 'string' &&
                         typeof responseJson.age === 'number'
                 };
@@ -483,38 +500,43 @@ function usersTestsAfterBatch(origin: string): Test[] {
 }
 
 function postsTestsAfterBatch(origin: string): Test[] {
+    const totalNumPosts = POSTS_BATCH_AMOUNT + 1;
+    const limit = totalNumPosts - 99; // to not hit the instruction limit
+
     return [
         {
             name: '/posts not empty',
             test: async () => {
-                const response = await fetch(`${origin}/posts?limit=200`);
+                const response = await fetch(`${origin}/posts?limit=${limit}`);
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson.length === 200
+                    Ok: responseJson.length === limit
                 };
             }
         },
         {
-            name: '/posts/count 300',
+            name: `/posts/count ${totalNumPosts}`,
             test: async () => {
                 const response = await fetch(`${origin}/posts/count`);
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson === 300
+                    Ok: responseJson === totalNumPosts
                 };
             }
         },
         {
-            name: '/posts/300 not null',
+            name: `/posts/${totalNumPosts} not null`,
             test: async () => {
-                const response = await fetch(`${origin}/posts/300`);
+                const response = await fetch(
+                    `${origin}/posts/${totalNumPosts}`
+                );
                 const responseJson = await response.json();
 
                 return {
                     Ok:
-                        responseJson.id === 300 &&
+                        responseJson.id === totalNumPosts &&
                         typeof responseJson.title === 'string' &&
                         typeof responseJson.body === 'string' &&
                         typeof responseJson.user.id === 'number' &&
