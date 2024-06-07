@@ -1,0 +1,21 @@
+{
+    "scripts": {
+        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "test": "NODE_PRESERVE_SYMLINKS=1 ts-node --transpile-only --ignore=false test/test.ts"
+    },
+    "dependencies": {
+        "@bitcoin-js/tiny-secp256k1-asmjs": "^2.2.3",
+        "azle": "0.21.1",
+        "bitcoinjs-lib": "^6.1.5",
+        "bitcoinjs-message": "^2.2.0",
+        "bitcore_lib_example": "file:../bitcore_lib",
+        "ecpair": "^2.1.0",
+        "express": "^4.18.2",
+        "tiny-secp256k1": "^2.2.3"
+    },
+    "devDependencies": {
+        "@types/express": "^4.17.21",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
+    }
+}

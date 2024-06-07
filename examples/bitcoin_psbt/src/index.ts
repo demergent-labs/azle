@@ -1,8 +1,9 @@
 import { jsonParse, jsonStringify } from 'azle';
 import { BitcoinNetwork } from 'azle/canisters/management';
+import { determineKeyName, determineNetwork } from 'basic_bitcoin/src';
+import * as bitcoinApi from 'basic_bitcoin/src/bitcoin_api';
 import express, { Request } from 'express';
 
-import * as bitcoinApi from './bitcoin_api';
 import * as bitcoinWallet from './bitcoin_wallet';
 
 // The bitcoin network to connect to.
@@ -54,9 +55,9 @@ app.get('/get-current-fee-percentiles', async (req, res) => {
     res.send(jsonStringify(feePercentiles));
 });
 
-/// Returns the P2PKH address of this canister at a specific derivation path.
-app.get('/get-p2pkh-address', async (req, res) => {
-    const address = await bitcoinWallet.getP2pkhAddress(
+/// Returns the P2WPKH address of this canister at a specific derivation path.
+app.get('/get-p2wpkh-address', async (req, res) => {
+    const address = await bitcoinWallet.getP2wpkhAddress(
         NETWORK,
         KEY_NAME,
         DERIVATION_PATH
@@ -82,32 +83,3 @@ app.post('/send', async (req, res) => {
 });
 
 app.listen();
-
-export function determineKeyName(network: BitcoinNetwork): string {
-    if (network.mainnet === null) {
-        return 'test_key_1';
-    } else if (network.testnet === null) {
-        return 'test_key_1';
-    } else if (network.regtest === null) {
-        return 'dfx_test_key';
-    }
-    throw new Error('Invalid Bitcoin Network');
-}
-
-export function determineNetwork(
-    networkName?: string
-): BitcoinNetwork | undefined {
-    if (networkName === undefined) {
-        return undefined;
-    }
-    if (networkName === 'mainnet') {
-        return { mainnet: null };
-    }
-    if (networkName === 'testnet') {
-        return { testnet: null };
-    }
-    if (networkName === 'regtest') {
-        return { regtest: null };
-    }
-    throw new Error('Invalid Bitcoin Network');
-}

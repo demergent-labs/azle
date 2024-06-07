@@ -1,7 +1,4 @@
-// @ts-nocheck
-
-import { blob, ic, match, nat64, Opt, Vec } from 'azle';
-import { managementCanister } from 'azle/canisters/management';
+import { serialize } from 'azle';
 import {
     BitcoinNetwork,
     GetUtxosResult,
@@ -9,11 +6,11 @@ import {
 } from 'azle/canisters/management/bitcoin';
 
 // The fees for the various bitcoin endpoints.
-const GET_BALANCE_COST_CYCLES: nat64 = 100_000_000n;
-const GET_UTXOS_COST_CYCLES: nat64 = 10_000_000_000n;
-const GET_CURRENT_FEE_PERCENTILES_CYCLES: nat64 = 100_000_000n;
-const SEND_TRANSACTION_BASE_CYCLES: nat64 = 5_000_000_000n;
-const SEND_TRANSACTION_PER_BYTE_CYCLES: nat64 = 20_000_000n;
+const GET_BALANCE_COST_CYCLES: bigint = 100_000_000n;
+const GET_UTXOS_COST_CYCLES: bigint = 10_000_000_000n;
+const GET_CURRENT_FEE_PERCENTILES_CYCLES: bigint = 100_000_000n;
+const SEND_TRANSACTION_BASE_CYCLES: bigint = 5_000_000_000n;
+const SEND_TRANSACTION_PER_BYTE_CYCLES: bigint = 20_000_000n;
 
 /// Returns the balance of the given bitcoin address.
 ///
@@ -22,45 +19,43 @@ const SEND_TRANSACTION_PER_BYTE_CYCLES: nat64 = 20_000_000n;
 export async function getBalance(
     network: BitcoinNetwork,
     address: string
-): Promise<nat64> {
-    const balanceRes = await managementCanister
-        .bitcoin_get_balance({
-            address,
-            network,
-            min_confirmations: Opt.None
+): Promise<bigint> {
+    const balanceRes = await fetch(`icp://aaaaa-aa/bitcoin_get_balance`, {
+        body: serialize({
+            args: [
+                {
+                    address,
+                    min_confirmations: [],
+                    network
+                }
+            ],
+            cycles: GET_BALANCE_COST_CYCLES
         })
-        .cycles(GET_BALANCE_COST_CYCLES)
-        .call();
-
-    return match(balanceRes, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
     });
+    return await balanceRes.json();
 }
 
 /// Returns the UTXOs of the given bitcoin address.
 ///
-/// NOTE: Pagination is ignored in this example. If an address has many thousands
-/// of UTXOs, then subsequent calls to `bitcoin_get_utxos` are required.
-///
+/// NOTE: Relies on the `bitcoin_get_utxos` endpoint.
 /// See https://internetcomputer.org/docs/current/references/ic-interface-spec/#ic-bitcoin_get_utxos
 export async function getUtxos(
     network: BitcoinNetwork,
     address: string
 ): Promise<GetUtxosResult> {
-    const utxosRes = await managementCanister
-        .bitcoin_get_utxos({
-            address,
-            network,
-            filter: Opt.None
+    const utxoRes = await fetch(`icp://aaaaa-aa/bitcoin_get_utxos`, {
+        body: serialize({
+            args: [
+                {
+                    address,
+                    filter: [],
+                    network
+                }
+            ],
+            cycles: GET_UTXOS_COST_CYCLES
         })
-        .cycles(GET_UTXOS_COST_CYCLES)
-        .call();
-
-    return match(utxosRes, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
     });
+    return await utxoRes.json();
 }
 
 /// Returns the 100 fee percentiles measured in millisatoshi/byte.
@@ -70,18 +65,21 @@ export async function getUtxos(
 /// See https://internetcomputer.org/docs/current/references/ic-interface-spec/#ic-bitcoin_get_current_fee_percentiles
 export async function getCurrentFeePercentiles(
     network: BitcoinNetwork
-): Promise<Vec<MillisatoshiPerByte>> {
-    const res = await managementCanister
-        .bitcoin_get_current_fee_percentiles({
-            network
-        })
-        .cycles(GET_CURRENT_FEE_PERCENTILES_CYCLES)
-        .call();
-
-    return match(res, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
-    });
+): Promise<MillisatoshiPerByte[]> {
+    const res = await fetch(
+        `icp://aaaaa-aa/bitcoin_get_current_fee_percentiles`,
+        {
+            body: serialize({
+                args: [
+                    {
+                        network
+                    }
+                ],
+                cycles: GET_CURRENT_FEE_PERCENTILES_CYCLES
+            })
+        }
+    );
+    return await res.json();
 }
 
 /// Sends a (signed) transaction to the bitcoin network.
@@ -90,22 +88,21 @@ export async function getCurrentFeePercentiles(
 /// See https://internetcomputer.org/docs/current/references/ic-interface-spec/#ic-bitcoin_send_transaction
 export async function sendTransaction(
     network: BitcoinNetwork,
-    transaction: blob
+    transaction: Uint8Array
 ): Promise<void> {
     const transactionFee =
         SEND_TRANSACTION_BASE_CYCLES +
         BigInt(transaction.length) * SEND_TRANSACTION_PER_BYTE_CYCLES;
 
-    const res = await managementCanister
-        .bitcoin_send_transaction({
-            network,
-            transaction
+    await fetch(`icp://aaaaa-aa/bitcoin_send_transaction`, {
+        body: serialize({
+            args: [
+                {
+                    transaction,
+                    network
+                }
+            ],
+            cycles: transactionFee
         })
-        .cycles(transactionFee)
-        .call();
-
-    return match(res, {
-        Ok: (ok) => ok,
-        Err: (err) => ic.trap(err)
     });
 }
