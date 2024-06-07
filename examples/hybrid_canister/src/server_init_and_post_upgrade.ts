@@ -1,12 +1,4 @@
-import {
-    init,
-    postUpgrade,
-    query,
-    Server,
-    setNodeServer,
-    text,
-    update
-} from 'azle';
+import { init, postUpgrade, query, Server, text, update } from 'azle';
 import express from 'express';
 
 let httpQueryText = '';
@@ -22,8 +14,6 @@ export default Server(serverCallback, {
 
         candidQueryText = `${param2}-init`;
         candidUpdateText = `${param3}-init`;
-
-        setNodeServer(serverCallback());
     }),
     postUpgrade: postUpgrade(
         [text, text, text, text],
@@ -33,8 +23,6 @@ export default Server(serverCallback, {
 
             candidQueryText = `${param2}-postUpgrade`;
             candidUpdateText = `${param3}-postUpgrade`;
-
-            setNodeServer(serverCallback());
         }
     ),
     candidQuery: query([], text, () => {

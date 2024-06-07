@@ -1,6 +1,6 @@
 {
     "canisters": {
-        "sqlite": {
+        "sqlite_drizzle": {
             "type": "azle",
             "main": "src/index.ts",
             "candid_gen": "automatic"

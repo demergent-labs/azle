@@ -153,6 +153,7 @@ jobs:
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",
                     "examples/sqlite",
+                    "examples/sqlite_drizzle",
                     "examples/stable_b_tree_map_instruction_threshold",
                     "examples/stable_memory",
                     "examples/stable_structures",
