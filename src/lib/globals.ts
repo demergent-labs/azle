@@ -51,6 +51,8 @@ if (globalThis._azleInsideCanister) {
     globalThis._azleInitCalled = false;
     globalThis._azlePostUpgradeCalled = false;
 
+    globalThis.window = globalThis as any;
+
     const log = (...args: any[]) => {
         const jsonStringifiedArgs = args
             .map((arg) => {
