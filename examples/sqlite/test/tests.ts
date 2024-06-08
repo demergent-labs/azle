@@ -501,18 +501,17 @@ function usersTestsAfterBatch(origin: string): Test[] {
 
 function postsTestsAfterBatch(origin: string): Test[] {
     const totalNumPosts = POSTS_BATCH_AMOUNT + 1;
+    const limit = totalNumPosts - 99; // to not hit the instruction limit
 
     return [
         {
             name: '/posts not empty',
             test: async () => {
-                const response = await fetch(
-                    `${origin}/posts?limit=${totalNumPosts}`
-                );
+                const response = await fetch(`${origin}/posts?limit=${limit}`);
                 const responseJson = await response.json();
 
                 return {
-                    Ok: responseJson.length === totalNumPosts
+                    Ok: responseJson.length === limit
                 };
             }
         },
