@@ -7,11 +7,11 @@ import { Test } from 'azle/test';
 
 import { getCanisterId } from '../../../dfx';
 import {
-    _SERVICE as ActorConsumer,
+    _SERVICE as ConsumerActor,
     Payment,
     PeriodicBatch
-} from './actor_consumer';
-import { _SERVICE as ActorWallet } from './dfx_generated/wallet/wallet.did';
+} from './consumer_actor';
+import { _SERVICE as WalletActor } from './dfx_generated/wallet/wallet.did';
 
 const CONSUMER_CANISTER_ID = getCanisterId('consumer');
 const WALLET_CANISTER_ID = getCanisterId('wallet');
@@ -20,8 +20,8 @@ let periodicBatch3: PeriodicBatch | undefined;
 let periodicBatch4: PeriodicBatch | undefined;
 
 export function getTests(
-    actorConsumer: ActorConsumer,
-    actorWallet: ActorWallet,
+    consumerActor: ConsumerActor,
+    walletActor: WalletActor,
     agent: HttpAgent
 ): Test[] {
     return [
@@ -35,11 +35,11 @@ export function getTests(
             name: 'consumer ovs logs should have initial 0 payment',
             test: async () => {
                 const lastPeriodicBatchOpt =
-                    await actorConsumer._azle_open_value_sharing_last_periodic_batch();
+                    await consumerActor._azle_open_value_sharing_last_periodic_batch();
                 const lastPeriodicBatch = lastPeriodicBatchOpt[0];
 
                 const periodicBatches =
-                    await actorConsumer._azle_open_value_sharing_all_periodic_batches();
+                    await consumerActor._azle_open_value_sharing_all_periodic_batches();
 
                 return {
                     Ok:
@@ -55,7 +55,7 @@ export function getTests(
         {
             name: 'wallet ovs logs should be empty',
             test: async () => {
-                const results = await actorWallet.get_all_payments();
+                const results = await walletActor.get_all_payments();
 
                 return {
                     Ok: results.length === 0
@@ -65,7 +65,7 @@ export function getTests(
         {
             name: 'wallet whitelist should be empty',
             test: async () => {
-                const results = await actorWallet.get_whitelist();
+                const results = await walletActor.get_whitelist();
 
                 return {
                     Ok: results.length === 0
@@ -80,11 +80,11 @@ export function getTests(
             name: 'consumer ovs logs should have two payments',
             test: async () => {
                 const lastPeriodicBatchOpt =
-                    await actorConsumer._azle_open_value_sharing_last_periodic_batch();
+                    await consumerActor._azle_open_value_sharing_last_periodic_batch();
                 const lastPeriodicBatch = lastPeriodicBatchOpt[0];
 
                 const periodicBatches =
-                    await actorConsumer._azle_open_value_sharing_all_periodic_batches();
+                    await consumerActor._azle_open_value_sharing_all_periodic_batches();
 
                 const periodicBatch1 = periodicBatches[0];
                 const periodicBatch2 = periodicBatches[1];
@@ -113,7 +113,7 @@ export function getTests(
         {
             name: 'wallet ovs logs should still be empty',
             test: async () => {
-                const results = await actorWallet.get_all_payments();
+                const results = await walletActor.get_all_payments();
 
                 return {
                     Ok: results.length === 0
@@ -123,7 +123,7 @@ export function getTests(
         {
             name: 'add consumer to wallet whitelist',
             prep: async () => {
-                await actorWallet.add_to_whitelist(
+                await walletActor.add_to_whitelist(
                     Principal.fromText(CONSUMER_CANISTER_ID)
                 );
             }
@@ -136,11 +136,11 @@ export function getTests(
             name: 'consumer ovs logs should have three payments',
             test: async () => {
                 const lastPeriodicBatchOpt =
-                    await actorConsumer._azle_open_value_sharing_last_periodic_batch();
+                    await consumerActor._azle_open_value_sharing_last_periodic_batch();
                 const lastPeriodicBatch = lastPeriodicBatchOpt[0];
 
                 const periodicBatches =
-                    await actorConsumer._azle_open_value_sharing_all_periodic_batches();
+                    await consumerActor._azle_open_value_sharing_all_periodic_batches();
 
                 const periodicBatch1 = periodicBatches[0];
                 const periodicBatch2 = periodicBatches[1];
@@ -172,7 +172,7 @@ export function getTests(
         {
             name: 'wallet ovs logs should have 6 payments',
             test: async () => {
-                const results = await actorWallet.get_all_payments();
+                const results = await walletActor.get_all_payments();
 
                 const walletPayment0 = results[0];
                 const walletPayment1 = results[1];
@@ -214,11 +214,11 @@ export function getTests(
             name: 'consumer ovs logs should have four payments',
             test: async () => {
                 const lastPeriodicBatchOpt =
-                    await actorConsumer._azle_open_value_sharing_last_periodic_batch();
+                    await consumerActor._azle_open_value_sharing_last_periodic_batch();
                 const lastPeriodicBatch = lastPeriodicBatchOpt[0];
 
                 const periodicBatches =
-                    await actorConsumer._azle_open_value_sharing_all_periodic_batches();
+                    await consumerActor._azle_open_value_sharing_all_periodic_batches();
 
                 const periodicBatch1 = periodicBatches[0];
                 const periodicBatch2 = periodicBatches[1];
@@ -252,7 +252,7 @@ export function getTests(
         {
             name: 'wallet ovs logs should have 12 payments',
             test: async () => {
-                const results = await actorWallet.get_all_payments();
+                const results = await walletActor.get_all_payments();
 
                 const walletPayment6 = results[6];
                 const walletPayment7 = results[7];

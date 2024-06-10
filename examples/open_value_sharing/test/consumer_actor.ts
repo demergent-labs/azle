@@ -30,7 +30,7 @@ export interface _SERVICE {
 
 export const agent = createAuthenticatedAgentSync(whoami());
 
-export const actorConsumer = Actor.createActor<_SERVICE>(
+export const consumerActor = Actor.createActor<_SERVICE>(
     ({ IDL }) => {
         const PeriodicBatch = IDL.Record({
             time_start: IDL.Nat64,
