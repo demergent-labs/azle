@@ -55,9 +55,9 @@ export function get_tests(canister1: ActorSubclass<_SERVICE>): Test[] {
                         Ok: error
                             .toString()
                             .includes(
-                                `Rejection code 5, Canister ${getCanisterId(
+                                `Rejection code 5, Error from Canister ${getCanisterId(
                                     'canister2'
-                                )} has no query method`
+                                )}: Canister has no query method`
                             )
                     };
                 }
