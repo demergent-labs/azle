@@ -32,7 +32,7 @@ export function getTests(
             }
         },
         {
-            name: 'consumer ovs logs should have initial 0 payment',
+            name: 'consumer ovs logs should have initial 0 batch',
             test: async () => {
                 const lastPeriodicBatchOpt =
                     await consumerActor._azle_open_value_sharing_last_periodic_batch();
@@ -77,7 +77,7 @@ export function getTests(
             wait: 65_000
         },
         {
-            name: 'consumer ovs logs should have two payments',
+            name: 'consumer ovs logs should have two batches',
             test: async () => {
                 const lastPeriodicBatchOpt =
                     await consumerActor._azle_open_value_sharing_last_periodic_batch();
@@ -133,7 +133,7 @@ export function getTests(
             wait: 65_000
         },
         {
-            name: 'consumer ovs logs should have three payments',
+            name: 'consumer ovs logs should have three batches',
             test: async () => {
                 const lastPeriodicBatchOpt =
                     await consumerActor._azle_open_value_sharing_last_periodic_batch();
@@ -211,7 +211,7 @@ export function getTests(
             wait: 65_000
         },
         {
-            name: 'consumer ovs logs should have four payments',
+            name: 'consumer ovs logs should have four batches',
             test: async () => {
                 const lastPeriodicBatchOpt =
                     await consumerActor._azle_open_value_sharing_last_periodic_batch();
@@ -305,6 +305,7 @@ function periodicBatchIsCorrect(periodicBatch: PeriodicBatch): boolean {
     );
     const payment0IsCorrect =
         payment0.name === 'azle' &&
+        payment0.payment_mechanism === 'wallet_receive' &&
         payment0.amount === payment0CalculatedAmount &&
         'Ok' in payment0.success;
 
@@ -316,6 +317,7 @@ function periodicBatchIsCorrect(periodicBatch: PeriodicBatch): boolean {
     );
     const payment1IsCorrect =
         payment1.name === 'typescript' &&
+        payment0.payment_mechanism === 'wallet_receive' &&
         payment1.amount === payment1CalculatedAmount &&
         'Ok' in payment1.success;
 
@@ -327,6 +329,7 @@ function periodicBatchIsCorrect(periodicBatch: PeriodicBatch): boolean {
     );
     const payment2IsCorrect =
         payment2.name === 'unpipe' &&
+        payment0.payment_mechanism === 'wallet_receive' &&
         payment2.amount === payment2CalculatedAmount &&
         'Ok' in payment2.success;
 
@@ -338,6 +341,7 @@ function periodicBatchIsCorrect(periodicBatch: PeriodicBatch): boolean {
     );
     const payment3IsCorrect =
         payment3.name === 'hasown' &&
+        payment0.payment_mechanism === 'wallet_receive' &&
         payment3.amount === payment3CalculatedAmount &&
         'Ok' in payment3.success;
 
@@ -349,6 +353,7 @@ function periodicBatchIsCorrect(periodicBatch: PeriodicBatch): boolean {
     );
     const payment4IsCorrect =
         payment4.name === 'safer-buffer' &&
+        payment0.payment_mechanism === 'wallet_receive' &&
         payment4.amount === payment4CalculatedAmount &&
         'Ok' in payment4.success;
 
@@ -360,6 +365,7 @@ function periodicBatchIsCorrect(periodicBatch: PeriodicBatch): boolean {
     );
     const payment5IsCorrect =
         payment5.name === 'side-channel' &&
+        payment0.payment_mechanism === 'wallet_receive' &&
         payment5.amount === payment5CalculatedAmount &&
         'Ok' in payment5.success;
 

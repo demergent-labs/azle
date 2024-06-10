@@ -25,6 +25,7 @@ pub async fn handle_asset_payment(
 
         return Ok(Payment {
             name: dependency.name.clone(),
+            payment_mechanism: dependency.payment_mechanism.clone(),
             time: ic_cdk::api::time(),
             amount: amount_final,
             principal,
@@ -46,6 +47,7 @@ pub async fn handle_asset_payment(
 
         return Ok(Payment {
             name: dependency.name.clone(),
+            payment_mechanism: dependency.payment_mechanism.clone(),
             time: ic_cdk::api::time(),
             amount,
             principal,

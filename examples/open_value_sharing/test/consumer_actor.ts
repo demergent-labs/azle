@@ -11,6 +11,7 @@ export type PeriodicBatch = {
 
 export type Payment = {
     name: string;
+    payment_mechanism: string;
     time: bigint;
     amount: bigint;
     principal: Principal;
@@ -39,6 +40,7 @@ export const consumerActor = Actor.createActor<_SERVICE>(
             payments: IDL.Vec(
                 IDL.Record({
                     name: IDL.Text,
+                    payment_mechanism: IDL.Text,
                     time: IDL.Nat64,
                     amount: IDL.Nat,
                     principal: IDL.Principal,

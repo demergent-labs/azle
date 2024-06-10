@@ -25,6 +25,7 @@ pub struct PeriodicBatch {
 pub struct Payment {
     pub time: u64,
     pub name: String,
+    pub payment_mechanism: String,
     pub principal: candid::Principal,
     pub amount: u128,
     pub success: Result<(), String>,
@@ -34,6 +35,8 @@ pub struct Payment {
 pub struct Consumer {
     #[serde(rename = "killSwitch")]
     pub kill_switch: bool,
+    pub platforms: Vec<String>,
+    pub assets: Vec<String>,
     #[serde(rename = "sharedPercentage")]
     pub shared_percentage: u32,
     #[serde(rename = "period")]
@@ -64,11 +67,31 @@ pub async fn init(consumer: &Consumer) {
         return;
     }
 
+    if !consumer.platforms.contains(&"icp".to_string()) {
+        ic_cdk::eprintln!("OpenValueSharing: platform \"icp\" is not supported by the consumer");
+        return;
+    }
+
+    if !consumer.assets.contains(&"cycles".to_string()) {
+        ic_cdk::eprintln!("OpenValueSharing: asset \"cycles\" is not supported by the consumer");
+        return;
+    }
+
     if consumer.sharing_heuristic != "BURNED_WEIGHTED_HALVING" {
         ic_cdk::eprintln!(
             "OpenValueSharing: heuristic \"{}\" is not supported. Only BURNED_WEIGHTED_HALVING is currently supported",
             consumer.sharing_heuristic
         );
+        return;
+    }
+
+    if consumer.shared_percentage > 100 {
+        ic_cdk::eprintln!("OpenValueSharing: shared percentage cannot be greater than 100");
+        return;
+    }
+
+    if consumer.period == 0 {
+        ic_cdk::eprintln!("OpenValueSharing: period cannot be 0");
         return;
     }
 
@@ -126,6 +149,7 @@ async fn process_batch(consumer: &Consumer) -> Result<(), anyhow::Error> {
         if amount == 0 {
             payments.push(Payment {
                 name: dependency.name.clone(),
+                payment_mechanism: dependency.payment_mechanism.clone(),
                 time: ic_cdk::api::time(),
                 amount: 0,
                 principal: get_dependency_principal(dependency)?,
@@ -143,6 +167,7 @@ async fn process_batch(consumer: &Consumer) -> Result<(), anyhow::Error> {
                 Err(err) => {
                     payments.push(Payment {
                         name: dependency.name.clone(),
+                        payment_mechanism: dependency.payment_mechanism.clone(),
                         time: ic_cdk::api::time(),
                         amount,
                         principal: get_dependency_principal(dependency)?,

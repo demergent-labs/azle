@@ -6,6 +6,8 @@ import { yellow } from './utils/colors';
 import { CanisterConfig } from './utils/types';
 
 const DEFAULT_KILL_SWITCH: Consumer['killSwitch'] = true;
+const DEFAULT_PLATFORMS = ['icp'];
+const DEFAULT_ASSETS = ['cycles'];
 const DEFAULT_SHARED_PERCENTAGE: Consumer['sharedPercentage'] = 10;
 const DEFAULT_PERIOD: Consumer['period'] = 1_440;
 const DEFAULT_SHARING_HEURISTIC: Consumer['sharingHeuristic'] =
@@ -14,6 +16,8 @@ const DEFAULT_WEIGHT: Dependency['weight'] = 1;
 
 export type Consumer = {
     killSwitch: boolean;
+    platforms: string[];
+    assets: string[];
     sharedPercentage: number;
     period: number;
     sharingHeuristic: 'BURNED_WEIGHTED_HALVING';
@@ -37,6 +41,8 @@ export type Dependency = {
 
 export type ConsumerConfig = {
     killSwitch?: Consumer['killSwitch'];
+    platforms?: Consumer['platforms'];
+    assets?: Consumer['assets'];
     sharedPercentage?: Consumer['sharedPercentage'];
     period?: Consumer['period'];
     sharingHeuristic?: Consumer['sharingHeuristic'];
@@ -73,15 +79,46 @@ export async function getConsumer(
 ): Promise<Consumer> {
     const consumerConfig = getConsumerConfig(canisterConfig);
 
-    if (consumerConfig?.killSwitch === true) {
+    const killSwitch = consumerConfig?.killSwitch ?? DEFAULT_KILL_SWITCH;
+    const platforms = consumerConfig?.platforms ?? DEFAULT_PLATFORMS;
+    const assets = consumerConfig?.assets ?? DEFAULT_ASSETS;
+    const sharedPercentage =
+        consumerConfig?.sharedPercentage ?? DEFAULT_SHARED_PERCENTAGE;
+    const period = consumerConfig?.period ?? DEFAULT_PERIOD;
+    const sharingHeuristic =
+        consumerConfig?.sharingHeuristic ?? DEFAULT_SHARING_HEURISTIC;
+
+    if (
+        killSwitch === true ||
+        !platforms.includes('icp') ||
+        !assets.includes('cycles')
+    ) {
         return {
-            killSwitch: true,
+            killSwitch,
+            platforms,
+            assets,
             sharedPercentage: 0,
             period: DEFAULT_PERIOD,
             sharingHeuristic: 'BURNED_WEIGHTED_HALVING',
             depthWeights: {},
             dependencies: []
         };
+    }
+
+    if (sharedPercentage > 100) {
+        throw new Error(
+            `OpenValueSharing: shared percentage cannot be greater than 100`
+        );
+    }
+
+    if (period === 0) {
+        throw new Error(`OpenValueSharing: period cannot be 0`);
+    }
+
+    if (sharingHeuristic !== 'BURNED_WEIGHTED_HALVING') {
+        throw new Error(
+            `OpenValueSharing: heuristic ${DEFAULT_SHARING_HEURISTIC} is not supported. Only BURNED_WEIGHTED_HALVING is currently supported`
+        );
     }
 
     logWarningPeriod(consumerConfig);
@@ -93,12 +130,12 @@ export async function getConsumer(
     const depthWeights = getDepthWeights(dependencies);
 
     return {
-        killSwitch: consumerConfig?.killSwitch ?? DEFAULT_KILL_SWITCH,
-        sharedPercentage:
-            consumerConfig?.sharedPercentage ?? DEFAULT_SHARED_PERCENTAGE,
-        period: consumerConfig?.period ?? DEFAULT_PERIOD,
-        sharingHeuristic:
-            consumerConfig?.sharingHeuristic ?? DEFAULT_SHARING_HEURISTIC,
+        killSwitch,
+        platforms,
+        assets,
+        sharedPercentage,
+        period,
+        sharingHeuristic,
         dependencies,
         depthWeights
     };
@@ -159,7 +196,7 @@ async function getDependenciesUnnormalized(
 
             if (depth === null) {
                 throw new Error(
-                    `Open Value Sharing: could not determine depth for package "${npmPackageName}"`
+                    `OpenValueSharing: could not determine depth for package "${npmPackageName}"`
                 );
             }
 
@@ -252,7 +289,7 @@ function normalizeDependencies(dependencies: Dependency[]): Dependency[] {
 
             if (depth === undefined) {
                 throw new Error(
-                    `Open Value Sharing: depth for package "${dependency.name}" cannot be undefined`
+                    `OpenValueSharing: depth for package "${dependency.name}" cannot be undefined`
                 );
             }
 
