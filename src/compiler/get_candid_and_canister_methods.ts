@@ -4,6 +4,7 @@ import { join } from 'path';
 
 import { compileRustCodeWithCandidAndCompilerInfo } from './compile_rust_code_with_candid_and_compiler_info';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
+import { AZLE_PACKAGE_PATH } from './utils/global_paths';
 import { CandidGen, CanisterMethods, CompilerInfo } from './utils/types';
 
 export function getCandidAndCanisterMethods(
@@ -56,12 +57,8 @@ export function getCandidAndCanisterMethods(
     }
 
     if (candidGen === 'http') {
-        if (require.main?.path === undefined) {
-            throw new Error(`require.main?.path must be defined`);
-        }
-
         const candid = readFileSync(
-            join(require.main?.path, 'server.did')
+            join(AZLE_PACKAGE_PATH, 'server.did')
         ).toString();
 
         const canisterMethods: CanisterMethods = {

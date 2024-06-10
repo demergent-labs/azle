@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 import { blue, green, purple, red, yellow } from './colors';
+import { AZLE_PACKAGE_PATH } from './global_paths';
 import { Err, Ok, Result } from './result';
 import { AzleError, CanisterConfig, DfxJson } from './types';
 
@@ -44,21 +45,16 @@ export function getCanisterConfig(
         });
     }
 
-    if (require.main?.path === undefined) {
-        throw new Error(`require.main?.path must be defined`);
-    }
-
     return Ok({
         ...canisterConfig,
         assets: [
             ...(canisterConfig.assets ?? []),
             [
-                join(require.main?.path, 'canisters', 'icrc', 'icrc.did'),
+                join(AZLE_PACKAGE_PATH, 'canisters', 'icrc', 'icrc.did'),
                 join('candid', 'icp', 'icrc.did')
             ],
             [
-                // TODO use require.main instead of __dirname elsewhere
-                join(require.main?.path, 'canisters', 'management', 'ic.did'),
+                join(AZLE_PACKAGE_PATH, 'canisters', 'management', 'ic.did'),
                 join('candid', 'icp', 'management.did')
             ]
         ]

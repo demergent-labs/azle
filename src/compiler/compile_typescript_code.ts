@@ -3,6 +3,7 @@ import { build } from 'esbuild';
 import { esbuildPluginTsc } from 'esbuild-plugin-tsc';
 import * as path from 'path';
 
+import { AZLE_PACKAGE_PATH } from './utils/global_paths';
 import { Result } from './utils/result';
 import { JavaScript, TypeScript } from './utils/types';
 
@@ -109,6 +110,13 @@ export async function bundleFromString(
         ...externalNotImplementedDev
     ];
 
+    const customJsModulesPath = path.join(
+        AZLE_PACKAGE_PATH,
+        'src',
+        'compiler',
+        'custom_js_modules'
+    );
+
     // TODO tree-shaking does not seem to work with stdin. I have learned this from sad experience
     const buildResult = await build({
         stdin: {
@@ -145,26 +153,22 @@ export async function bundleFromString(
             crypto: 'crypto-browserify', // TODO we really want the wasmedge-quickjs version once wasi-crypto is working
             zlib: 'pako',
             'internal/deps/acorn/acorn/dist/acorn': path.join(
-                __dirname,
-                'custom_js_modules/acorn/acorn.ts'
+                customJsModulesPath,
+                'acorn',
+                'acorn.ts'
             ), // TODO acorn stuff is a bug, wasmedge-quickjs should probably add these files
             'internal/deps/acorn/acorn-walk/dist/walk': path.join(
-                __dirname,
-                'custom_js_modules/acorn/walk.ts'
+                customJsModulesPath,
+                'acorn',
+                'walk.ts'
             ), // TODO acorn stuff is a bug, wasmedge-quickjs should probably add these files
-            perf_hooks: path.join(__dirname, 'custom_js_modules/perf_hooks.ts'),
-            async_hooks: path.join(
-                __dirname,
-                'custom_js_modules/async_hooks.ts'
-            ),
-            https: path.join(__dirname, 'custom_js_modules/https.ts'),
+            perf_hooks: path.join(customJsModulesPath, 'perf_hooks.ts'),
+            async_hooks: path.join(customJsModulesPath, 'async_hooks.ts'),
+            https: path.join(customJsModulesPath, 'https.ts'),
             ...esmAliases
         },
         external: [...externalImplemented, ...externalNotImplemented],
         plugins: [esbuildPluginTsc()]
-        // TODO tsconfig was here to attempt to set importsNotUsedAsValues to true to force Principal to always be bundled
-        // TODO now we always bundle Principal for all code, but I am keeping this here in case we run into the problem elsewhere
-        // tsconfig: path.join( __dirname, './esbuild-tsconfig.json')
     });
 
     const bundleArray = buildResult.outputFiles[0].contents;

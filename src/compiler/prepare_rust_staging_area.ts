@@ -6,6 +6,7 @@ import { join } from 'path';
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
 import { getConsumer } from './get_consumer_config';
 import { execSyncPretty } from './utils/exec_sync_pretty';
+import { AZLE_PACKAGE_PATH } from './utils/global_paths';
 import { CanisterConfig, Toml } from './utils/types';
 
 export async function prepareRustStagingArea(
@@ -24,25 +25,25 @@ export async function prepareRustStagingArea(
     writeFileSync(`${canisterPath}/Cargo.toml`, workspaceCargoToml);
 
     copySync(
-        join(__dirname, '..', '..', 'Cargo.lock'),
+        join(AZLE_PACKAGE_PATH, 'Cargo.lock'),
         `${canisterPath}/Cargo.lock`
     );
-
-    // TODO not sure what to do about the cargo.lock
-    // writeFileSync(`${canisterPath}/Cargo.lock`, workspaceCargoLock);
 
     if (!existsSync(`${canisterPath}/canister`)) {
         mkdirSync(`${canisterPath}/canister`);
     }
 
-    copySync(`${__dirname}/rust/canister`, `${canisterPath}/canister`);
+    copySync(
+        `${AZLE_PACKAGE_PATH}/src/compiler/rust/canister`,
+        `${canisterPath}/canister`
+    );
 
     if (!existsSync(`${canisterPath}/canister_methods`)) {
         mkdirSync(`${canisterPath}/canister_methods`);
     }
 
     copySync(
-        `${__dirname}/rust/canister_methods`,
+        `${AZLE_PACKAGE_PATH}/src/compiler/rust/canister_methods`,
         `${canisterPath}/canister_methods`
     );
 
@@ -51,7 +52,7 @@ export async function prepareRustStagingArea(
     }
 
     copySync(
-        `${__dirname}/rust/open_value_sharing`,
+        `${AZLE_PACKAGE_PATH}/src/compiler/rust/open_value_sharing`,
         `${canisterPath}/open_value_sharing`
     );
 

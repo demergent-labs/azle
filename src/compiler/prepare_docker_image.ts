@@ -4,6 +4,7 @@ import { existsSync } from 'fs';
 import { version as azleVersion } from '../../package.json';
 import { yellow } from './utils/colors';
 import { execSyncPretty } from './utils/exec_sync_pretty';
+import { AZLE_PACKAGE_PATH } from './utils/global_paths';
 
 export function prepareDockerImage(
     stdioType: IOType,
@@ -130,12 +131,8 @@ function buildAndLoadImageWithDockerfile(
 ) {
     console.info(yellow(`\nBuilding image...\n`));
 
-    if (require.main?.path === undefined) {
-        throw new Error(`require.main?.path must be defined`);
-    }
-
     execSyncPretty(
-        `podman build -f ${require.main.path}/Dockerfile -t ${dockerImageName} ${require.main.path}`,
+        `podman build -f ${AZLE_PACKAGE_PATH}/Dockerfile -t ${dockerImageName} ${AZLE_PACKAGE_PATH}`,
         'inherit'
     );
 

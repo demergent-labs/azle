@@ -11,17 +11,16 @@ import {
     unwrap
 } from './utils';
 import { execSyncPretty } from './utils/exec_sync_pretty';
-import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
+import {
+    AZLE_PACKAGE_PATH,
+    GLOBAL_AZLE_CONFIG_DIR
+} from './utils/global_paths';
 import { CanisterConfig } from './utils/types';
 
 export async function getNamesBeforeCli() {
     const stdioType = getStdIoType();
 
-    if (require.main?.path === undefined) {
-        throw new Error(`require.main?.path must be defined`);
-    }
-
-    const dockerfilePath = join(require.main?.path, 'Dockerfile');
+    const dockerfilePath = join(AZLE_PACKAGE_PATH, 'Dockerfile');
     const dockerfileHash = await getDockerfileHash(dockerfilePath);
     const dockerImagePrefix = 'azle__image__';
     const dockerImageName = `${dockerImagePrefix}${dockerfileHash}`;
@@ -129,7 +128,7 @@ async function getDockerfileHash(dockerfilePath: string): Promise<string> {
 
     let hasher = createHash('sha256');
 
-    const rustDirectory = join(__dirname, 'rust');
+    const rustDirectory = join(AZLE_PACKAGE_PATH, 'src', 'compiler', 'rust');
     const rustDirectoryHash = await hashOfDirectory(rustDirectory);
 
     hasher.update(rustDirectoryHash);

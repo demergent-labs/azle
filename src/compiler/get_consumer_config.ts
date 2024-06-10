@@ -73,6 +73,17 @@ export async function getConsumer(
 ): Promise<Consumer> {
     const consumerConfig = getConsumerConfig(canisterConfig);
 
+    if (consumerConfig?.killSwitch === true) {
+        return {
+            killSwitch: true,
+            sharedPercentage: 0,
+            period: DEFAULT_PERIOD,
+            sharingHeuristic: 'BURNED_WEIGHTED_HALVING',
+            depthWeights: {},
+            dependencies: []
+        };
+    }
+
     logWarningPeriod(consumerConfig);
 
     const dependenciesUnnormalized =

@@ -5,12 +5,16 @@ import { HttpAgent } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { Test } from 'azle/test';
 
+import { getCanisterId } from '../../../dfx';
 import {
     _SERVICE as ActorConsumer,
     Payment,
     PeriodicBatch
 } from './actor_consumer';
 import { _SERVICE as ActorWallet } from './dfx_generated/wallet/wallet.did';
+
+const CONSUMER_CANISTER_ID = getCanisterId('consumer');
+const WALLET_CANISTER_ID = getCanisterId('wallet');
 
 let periodicBatch3: PeriodicBatch | undefined;
 let periodicBatch4: PeriodicBatch | undefined;
@@ -120,7 +124,7 @@ export function getTests(
             name: 'add consumer to wallet whitelist',
             prep: async () => {
                 await actorWallet.add_to_whitelist(
-                    Principal.fromText('br5f7-7uaaa-aaaaa-qaaca-cai')
+                    Principal.fromText(CONSUMER_CANISTER_ID)
                 );
             }
         },
@@ -398,7 +402,7 @@ function walletPaymentEqualsPayment(
 ): boolean {
     return (
         walletPayment.amount === payment.amount &&
-        walletPayment.principal.toText() === 'br5f7-7uaaa-aaaaa-qaaca-cai' &&
-        payment.principal.toText() === 'bw4dl-smaaa-aaaaa-qaacq-cai'
+        walletPayment.principal.toText() === CONSUMER_CANISTER_ID &&
+        payment.principal.toText() === WALLET_CANISTER_ID
     );
 }

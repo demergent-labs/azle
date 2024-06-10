@@ -1,6 +1,8 @@
 import { copySync, readFileSync, writeFileSync } from 'fs-extra';
 import { join } from 'path';
 
+import { AZLE_PACKAGE_PATH } from './utils/global_paths';
+
 export function generateNewAzleProject(azleVersion: string) {
     if (process.argv[3] === undefined) {
         console.error('You must provide a name for your Azle project');
@@ -9,14 +11,10 @@ export function generateNewAzleProject(azleVersion: string) {
 
     const projectName = process.argv[3];
 
-    if (require.main?.path === undefined) {
-        throw new Error(`require.main?.path must be defined`);
-    }
-
-    copySync(join(require.main?.path, 'examples', 'hello_world'), projectName);
+    copySync(join(AZLE_PACKAGE_PATH, 'examples', 'hello_world'), projectName);
 
     const packageJson = readFileSync(
-        join(require.main?.path, 'examples', 'hello_world', 'package.json')
+        join(AZLE_PACKAGE_PATH, 'examples', 'hello_world', 'package.json')
     ).toString();
 
     let parsedPackageJson = JSON.parse(packageJson);
