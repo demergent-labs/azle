@@ -6,281 +6,221 @@ import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
 import { getCanisterOrigin } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { expect, it, please, Test, wait } from 'azle/test/jest';
 import puppeteer, { Browser, Page } from 'puppeteer';
 
-export function getTests(canisterName: string): Test[] {
+export function getTests(canisterName: string): Test {
     const origin = getCanisterOrigin(canisterName);
 
     let browser: Browser;
     let page: Page;
     let mainPage: Page;
 
-    return [
-        {
-            name: 'Prepare browser and pages',
-            prep: async () => {
-                browser = await puppeteer.launch({
-                    headless:
-                        process.env.GITHUB_RUN_ID === undefined ? false : true
-                });
-                page = await browser.newPage();
+    return () => {
+        please('prepare browser and pages', async () => {
+            browser = await puppeteer.launch({
+                headless: process.env.GITHUB_RUN_ID === undefined ? false : true
+            });
+            page = await browser.newPage();
 
-                page.on('console', (message) => {
-                    for (const arg of message.args()) {
-                        console.info(`Puppetteer log: ${arg}`);
-                    }
-                });
+            page.on('console', (message) => {
+                for (const arg of message.args()) {
+                    console.info(`Puppetteer log: ${arg}`);
+                }
+            });
 
-                await page.goto(origin);
+            await page.goto(origin);
 
-                await iiLogin(page);
+            await iiLogin(page);
 
-                const pages = await browser.pages();
+            const pages = await browser.pages();
 
-                mainPage = pages[1];
-            }
-        },
-        {
-            name: 'Waiting for identity to be set',
-            wait: 5_000
-        },
-        {
-            name: 'Headers Array',
-            test: async () => {
-                await mainPage.click('>>> #headersArrayButton');
+            mainPage = pages[1];
+        });
 
-                await mainPage.waitForNetworkIdle();
+        wait('for identity to be set', 5_000);
 
-                const success = await page.evaluate(
-                    () => (window as any).headersArraySuccess
-                );
+        it('Headers Array', async () => {
+            await mainPage.click('>>> #headersArrayButton');
 
-                return {
-                    Ok: success
-                };
-            }
-        },
-        {
-            name: 'Headers Object',
-            test: async () => {
-                await mainPage.click('>>> #headersObjectButton');
+            await mainPage.waitForNetworkIdle();
 
-                await mainPage.waitForNetworkIdle();
+            const success = await page.evaluate(
+                () => (window as any).headersArraySuccess
+            );
 
-                const success = await page.evaluate(
-                    () => (window as any).headersObjectSuccess
-                );
+            expect(success).toBe(true);
+        });
 
-                return {
-                    Ok: success
-                };
-            }
-        },
-        {
-            name: 'Body Uint8Array',
-            test: async () => {
-                await mainPage.click('>>> #bodyUint8ArrayButton');
+        it('Headers Object', async () => {
+            await mainPage.click('>>> #headersObjectButton');
 
-                // I believe that await mainPage.waitForNetworkIdle();
-                // does not work because of the way that agent
-                // engages in polling
-                await new Promise((resolve) => setTimeout(resolve, 5_000));
+            await mainPage.waitForNetworkIdle();
 
-                const success = await page.evaluate(
-                    () => (window as any).bodyUint8ArraySuccess
-                );
+            const success = await page.evaluate(
+                () => (window as any).headersObjectSuccess
+            );
 
-                return {
-                    Ok: success
-                };
-            }
-        },
-        {
-            name: 'Body String',
-            test: async () => {
-                await mainPage.click('>>> #bodyStringButton');
+            expect(success).toBe(true);
+        });
 
-                // I believe that await mainPage.waitForNetworkIdle();
-                // does not work because of the way that agent
-                // engages in polling
-                await new Promise((resolve) => setTimeout(resolve, 5_000));
+        it('Body Uint8Array', async () => {
+            await mainPage.click('>>> #bodyUint8ArrayButton');
 
-                const success = await page.evaluate(
-                    () => (window as any).bodyStringSuccess
-                );
+            // I believe that await mainPage.waitForNetworkIdle();
+            // does not work because of the way that agent
+            // engages in polling
+            await new Promise((resolve) => setTimeout(resolve, 5_000));
 
-                return {
-                    Ok: success
-                };
-            }
-        },
-        {
-            name: 'Body ArrayBuffer',
-            test: async () => {
-                await mainPage.click('>>> #bodyArrayBufferButton');
+            const success = await page.evaluate(
+                () => (window as any).bodyUint8ArraySuccess
+            );
 
-                // I believe that await mainPage.waitForNetworkIdle();
-                // does not work because of the way that agent
-                // engages in polling
-                await new Promise((resolve) => setTimeout(resolve, 5_000));
+            expect(success).toBe(true);
+        });
 
-                const success = await page.evaluate(
-                    () => (window as any).bodyArrayBufferSuccess
-                );
+        it('Body String', async () => {
+            await mainPage.click('>>> #bodyStringButton');
 
-                return {
-                    Ok: success
-                };
-            }
-        },
-        {
-            name: 'Body Blob',
-            test: async () => {
-                await mainPage.click('>>> #bodyBlobButton');
+            // I believe that await mainPage.waitForNetworkIdle();
+            // does not work because of the way that agent
+            // engages in polling
+            await new Promise((resolve) => setTimeout(resolve, 5_000));
 
-                // I believe that await mainPage.waitForNetworkIdle();
-                // does not work because of the way that agent
-                // engages in polling
-                await new Promise((resolve) => setTimeout(resolve, 5_000));
+            const success = await page.evaluate(
+                () => (window as any).bodyStringSuccess
+            );
 
-                const success = await page.evaluate(
-                    () => (window as any).bodyBlobSuccess
-                );
+            expect(success).toBe(true);
+        });
 
-                return {
-                    Ok: success
-                };
-            }
-        },
-        {
-            name: 'Body DataView',
-            test: async () => {
-                await mainPage.click('>>> #bodyDataViewButton');
+        it('Body ArrayBuffer', async () => {
+            await mainPage.click('>>> #bodyArrayBufferButton');
 
-                // I believe that await mainPage.waitForNetworkIdle();
-                // does not work because of the way that agent
-                // engages in polling
-                await new Promise((resolve) => setTimeout(resolve, 5_000));
+            // I believe that await mainPage.waitForNetworkIdle();
+            // does not work because of the way that agent
+            // engages in polling
+            await new Promise((resolve) => setTimeout(resolve, 5_000));
 
-                const success = await page.evaluate(
-                    () => (window as any).bodyDataViewSuccess
-                );
+            const success = await page.evaluate(
+                () => (window as any).bodyArrayBufferSuccess
+            );
 
-                return {
-                    Ok: success
-                };
-            }
-        },
-        {
-            name: 'Url Query Params GET',
-            test: async () => {
-                await mainPage.click('>>> #urlQueryParamsGetButton');
+            expect(success).toBe(true);
+        });
 
-                await mainPage.waitForNetworkIdle();
+        it('Body Blob', async () => {
+            await mainPage.click('>>> #bodyBlobButton');
 
-                const success = await page.evaluate(
-                    () => (window as any).urlQueryParamsGetSuccess
-                );
+            // I believe that await mainPage.waitForNetworkIdle();
+            // does not work because of the way that agent
+            // engages in polling
+            await new Promise((resolve) => setTimeout(resolve, 5_000));
 
-                return {
-                    Ok: success
-                };
-            }
-        },
-        {
-            name: 'Url Query Params POST',
-            test: async () => {
-                await mainPage.click('>>> #urlQueryParamsPostButton');
+            const success = await page.evaluate(
+                () => (window as any).bodyBlobSuccess
+            );
 
-                // I believe that await mainPage.waitForNetworkIdle();
-                // does not work because of the way that agent
-                // engages in polling
-                await new Promise((resolve) => setTimeout(resolve, 5_000));
+            expect(success).toBe(true);
+        });
 
-                const success = await page.evaluate(
-                    () => (window as any).urlQueryParamsPostSuccess
-                );
+        it('Body DataView', async () => {
+            await mainPage.click('>>> #bodyDataViewButton');
 
-                return {
-                    Ok: success
-                };
-            }
-        },
-        {
-            name: 'Not Authorized GET',
-            test: async () => {
-                await mainPage.click('>>> #notAuthorizedGetButton');
+            // I believe that await mainPage.waitForNetworkIdle();
+            // does not work because of the way that agent
+            // engages in polling
+            await new Promise((resolve) => setTimeout(resolve, 5_000));
 
-                await mainPage.waitForNetworkIdle();
+            const success = await page.evaluate(
+                () => (window as any).bodyDataViewSuccess
+            );
 
-                const success = await page.evaluate(
-                    () => (window as any).notAuthorizedGetSuccess
-                );
+            expect(success).toBe(true);
+        });
 
-                return {
-                    Ok: success
-                };
-            }
-        },
-        {
-            name: 'Not Authorized POST',
-            test: async () => {
-                await mainPage.click('>>> #notAuthorizedPostButton');
+        it('Url Query Params GET', async () => {
+            await mainPage.click('>>> #urlQueryParamsGetButton');
 
-                // I believe that await mainPage.waitForNetworkIdle();
-                // does not work because of the way that agent
-                // engages in polling
-                await new Promise((resolve) => setTimeout(resolve, 5_000));
+            await mainPage.waitForNetworkIdle();
 
-                const success = await page.evaluate(
-                    () => (window as any).notAuthorizedPostSuccess
-                );
+            const success = await page.evaluate(
+                () => (window as any).urlQueryParamsGetSuccess
+            );
 
-                return {
-                    Ok: success
-                };
-            }
-        },
-        {
-            name: 'HEAD',
-            test: async () => {
-                await mainPage.click('>>> #headButton');
+            expect(success).toBe(true);
+        });
 
-                await mainPage.waitForNetworkIdle();
+        it('Url Query Params POST', async () => {
+            await mainPage.click('>>> #urlQueryParamsPostButton');
 
-                const success = await page.evaluate(
-                    () => (window as any).headSuccess
-                );
+            // I believe that await mainPage.waitForNetworkIdle();
+            // does not work because of the way that agent
+            // engages in polling
+            await new Promise((resolve) => setTimeout(resolve, 5_000));
 
-                return {
-                    Ok: success
-                };
-            }
-        },
-        {
-            name: 'OPTIONS',
-            test: async () => {
-                await mainPage.click('>>> #optionsButton');
+            const success = await page.evaluate(
+                () => (window as any).urlQueryParamsPostSuccess
+            );
 
-                await mainPage.waitForNetworkIdle();
+            expect(success).toBe(true);
+        });
 
-                const success = await page.evaluate(
-                    () => (window as any).optionsSuccess
-                );
+        it('Not Authorized GET', async () => {
+            await mainPage.click('>>> #notAuthorizedGetButton');
 
-                return {
-                    Ok: success
-                };
-            }
-        },
-        {
-            name: 'Close browser',
-            prep: async () => {
-                await browser.close();
-            }
-        }
-    ];
+            await mainPage.waitForNetworkIdle();
+
+            const success = await page.evaluate(
+                () => (window as any).notAuthorizedGetSuccess
+            );
+
+            expect(success).toBe(true);
+        });
+
+        it('Not Authorized POST', async () => {
+            await mainPage.click('>>> #notAuthorizedPostButton');
+
+            // I believe that await mainPage.waitForNetworkIdle();
+            // does not work because of the way that agent
+            // engages in polling
+            await new Promise((resolve) => setTimeout(resolve, 5_000));
+
+            const success = await page.evaluate(
+                () => (window as any).notAuthorizedPostSuccess
+            );
+
+            expect(success).toBe(true);
+        });
+
+        it('HEAD', async () => {
+            await mainPage.click('>>> #headButton');
+
+            await mainPage.waitForNetworkIdle();
+
+            const success = await page.evaluate(
+                () => (window as any).headSuccess
+            );
+
+            expect(success).toBe(true);
+        });
+
+        it('OPTIONS', async () => {
+            await mainPage.click('>>> #optionsButton');
+
+            await mainPage.waitForNetworkIdle();
+
+            const success = await page.evaluate(
+                () => (window as any).optionsSuccess
+            );
+
+            expect(success).toBe(true);
+        });
+
+        please('Close browser', async () => {
+            await browser.close();
+        });
+    };
 }
 
 function iiLogin(page: Page): Promise<void> {
