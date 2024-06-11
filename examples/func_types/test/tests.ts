@@ -1,142 +1,103 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { getCanisterId } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 
 import { _SERVICE } from './dfx_generated/func_types/func_types.did';
 
-export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'getStableFunc',
-            test: async () => {
-                const result = await funcTypesCanister.getStableFunc();
+type Func = [Principal, string];
 
-                return {
-                    Ok:
-                        result[0].toText() === 'aaaaa-aa' &&
-                        result[1] === 'start_canister'
-                };
-            }
-        },
-        {
-            name: 'getNullFunc',
-            test: async () => {
-                const result = await funcTypesCanister.nullFuncParam([
-                    Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
-                    'returnNull'
-                ]);
+export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('gets a func from stable memory', async () => {
+            const result = await funcTypesCanister.getStableFunc();
+            const expected = [Principal.from('aaaaa-aa'), 'start_canister'];
 
-                return {
-                    Ok:
-                        result[0].toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai' &&
-                        result[1] === 'returnNull'
-                };
-            }
-        },
-        {
-            name: 'basicFuncParam',
-            test: async () => {
-                const result = await funcTypesCanister.basicFuncParam([
-                    Principal.fromText('aaaaa-aa'),
-                    'create_canister'
-                ]);
+            expect(result).toStrictEqual(expected);
+        });
 
-                return {
-                    Ok:
-                        result[0].toText() === 'aaaaa-aa' &&
-                        result[1] === 'create_canister'
-                };
-            }
-        },
-        {
-            name: 'basicFuncParamArray',
-            test: async () => {
-                const result = await funcTypesCanister.basicFuncParamArray([
-                    [Principal.fromText('aaaaa-aa'), 'create_canister'],
-                    [Principal.fromText('aaaaa-aa'), 'update_settings'],
-                    [Principal.fromText('aaaaa-aa'), 'install_code']
-                ]);
+        it('gets a func with various null types', async () => {
+            const func: Func = [
+                Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
+                'returnNull'
+            ];
+            const result = await funcTypesCanister.nullFuncParam(func);
 
-                return {
-                    Ok:
-                        result[0][0].toText() === 'aaaaa-aa' &&
-                        result[0][1] === 'create_canister' &&
-                        result[1][0].toText() === 'aaaaa-aa' &&
-                        result[1][1] === 'update_settings' &&
-                        result[2][0].toText() === 'aaaaa-aa' &&
-                        result[2][1] === 'install_code'
-                };
-            }
-        },
-        {
-            name: 'basicFuncReturnType',
-            test: async () => {
-                const result = await funcTypesCanister.basicFuncReturnType();
+            expect(result).toStrictEqual(func);
+        });
 
-                return {
-                    Ok:
-                        result[0].toText() === 'aaaaa-aa' &&
-                        result[1] === 'create_canister'
-                };
-            }
-        },
-        {
-            name: 'basicFuncReturnTypeArray',
-            test: async () => {
-                const result =
-                    await funcTypesCanister.basicFuncReturnTypeArray();
+        it('uses a basic func as a parameter', async () => {
+            const func: Func = [
+                Principal.fromText('aaaaa-aa'),
+                'create_canister'
+            ];
+            const result = await funcTypesCanister.basicFuncParam(func);
 
-                return {
-                    Ok:
-                        result[0][0].toText() === 'aaaaa-aa' &&
-                        result[0][1] === 'create_canister' &&
-                        result[1][0].toText() === 'aaaaa-aa' &&
-                        result[1][1] === 'update_settings' &&
-                        result[2][0].toText() === 'aaaaa-aa' &&
-                        result[2][1] === 'install_code'
-                };
-            }
-        },
-        {
-            name: 'complexFuncParam',
-            test: async () => {
-                const result = await funcTypesCanister.complexFuncParam([
-                    Principal.fromText('aaaaa-aa'),
-                    'stop_canister'
-                ]);
+            expect(result).toStrictEqual(func);
+        });
 
-                return {
-                    Ok:
-                        result[0].toText() === 'aaaaa-aa' &&
-                        result[1] === 'stop_canister'
-                };
-            }
-        },
-        {
-            name: 'complexFuncReturnType',
-            test: async () => {
-                const result = await funcTypesCanister.complexFuncReturnType();
+        it('uses an array of basic funcs as a parameter', async () => {
+            const funcs: Func[] = [
+                [Principal.fromText('aaaaa-aa'), 'create_canister'],
+                [Principal.fromText('aaaaa-aa'), 'update_settings'],
+                [Principal.fromText('aaaaa-aa'), 'install_code']
+            ];
+            const result = await funcTypesCanister.basicFuncParamArray(funcs);
 
-                return {
-                    Ok:
-                        result[0].toText() === 'aaaaa-aa' &&
-                        result[1] === 'stop_canister'
-                };
-            }
-        },
-        {
-            name: 'getNotifierFromNotifiersCanister',
-            test: async () => {
-                const result =
-                    await funcTypesCanister.getNotifierFromNotifiersCanister();
+            expect(result).toStrictEqual(funcs);
+        });
 
-                return {
-                    Ok:
-                        result[0].toText() === getCanisterId('notifiers') &&
-                        result[1] === 'notify'
-                };
-            }
-        }
-    ];
+        it('uses a basic func as a return value', async () => {
+            const result = await funcTypesCanister.basicFuncReturnType();
+
+            const expected: Func = [
+                Principal.fromText('aaaaa-aa'),
+                'create_canister'
+            ];
+
+            expect(result).toStrictEqual(expected);
+        });
+
+        it('uses an array of basic funcs as a return value', async () => {
+            const result = await funcTypesCanister.basicFuncReturnTypeArray();
+
+            const expected: Func[] = [
+                [Principal.fromText('aaaaa-aa'), 'create_canister'],
+                [Principal.fromText('aaaaa-aa'), 'update_settings'],
+                [Principal.fromText('aaaaa-aa'), 'install_code']
+            ];
+
+            expect(result).toStrictEqual(expected);
+        });
+
+        it('uses a complex func as a parameter', async () => {
+            const func: Func = [
+                Principal.fromText('aaaaa-aa'),
+                'stop_canister'
+            ];
+            const result = await funcTypesCanister.complexFuncParam(func);
+
+            expect(result).toStrictEqual(func);
+        });
+
+        it('uses a complex func as a return value', async () => {
+            const result = await funcTypesCanister.complexFuncReturnType();
+
+            const expected = [Principal.fromText('aaaaa-aa'), 'stop_canister'];
+
+            expect(result).toStrictEqual(expected);
+        });
+
+        it('gets a func from a cross canister call', async () => {
+            const result =
+                await funcTypesCanister.getNotifierFromNotifiersCanister();
+
+            const expected = [
+                Principal.fromText(getCanisterId('notifiers')),
+                'notify'
+            ];
+
+            expect(result).toStrictEqual(expected);
+        });
+    };
 }
