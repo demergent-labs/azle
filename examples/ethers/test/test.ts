@@ -1,8 +1,10 @@
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/test/jest';
 
 import { getTests } from './tests';
 
-const canisterId = getCanisterId('ethers');
+const canisterName = 'ethers';
 
-runTests(getTests(canisterId));
+const canisterId = getCanisterId(canisterName);
+
+runTests(canisterName, getTests(canisterId));
