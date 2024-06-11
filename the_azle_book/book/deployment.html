@@ -176,6 +176,9 @@ sudo kill -9 627260
 <pre><code class="language-bash">dfx start --clean --host 127.0.0.1:8000
 </code></pre>
 <h2 id="deploying-to-the-local-replica"><a class="header" href="#deploying-to-the-local-replica">Deploying to the local replica</a></h2>
+<p>Make sure you have installed the <code>azle dfx extension</code> (only needs to be done once per install per version of Azle):</p>
+<pre><code class="language-bash">npx azle install-dfx-extension
+</code></pre>
 <p>To deploy all canisters defined in your <code>dfx.json</code>:</p>
 <pre><code class="language-bash">dfx deploy
 </code></pre>
@@ -201,6 +204,9 @@ curl -X POST -H &quot;Content-Type: application/json&quot; -d &quot;{ \&quot;hel
 </code></pre>
 <h2 id="deploying-to-mainnet"><a class="header" href="#deploying-to-mainnet">Deploying to mainnet</a></h2>
 <p>Assuming you are <a href="https://internetcomputer.org/docs/current/developer-docs/getting-started/cycles/cycles-wallet">setup with a cycles wallet</a>, then you are ready to deploy to mainnet.</p>
+<p>Make sure you have installed the <code>azle dfx extension</code> (only needs to be done once per install per version of Azle):</p>
+<pre><code class="language-bash">npx azle install-dfx-extension
+</code></pre>
 <p>To deploy all canisters defined in your dfx.json:</p>
 <pre><code class="language-bash">dfx deploy --network ic
 </code></pre>

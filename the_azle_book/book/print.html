@@ -211,7 +211,7 @@ SOFTWARE.
 <pre><code class="language-bash">node --version
 </code></pre>
 <p>Install the dfx command line tools for managing ICP applications:</p>
-<pre><code class="language-bash">DFX_VERSION=0.19.0 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
+<pre><code class="language-bash">DFX_VERSION=0.20.1 sh -ci &quot;$(curl -fsSL https://sdk.dfinity.org/install.sh)&quot;
 </code></pre>
 <p>Check that the installation went smoothly by looking for clean output from the following command:</p>
 <pre><code class="language-bash">dfx --version
@@ -224,6 +224,8 @@ SOFTWARE.
 cd hello_world
 
 npm install
+
+npx azle install-dfx-extension
 
 dfx start --clean --host 127.0.0.1:8000
 </code></pre>
@@ -296,6 +298,9 @@ sudo kill -9 627260
 <pre><code class="language-bash">dfx start --clean --host 127.0.0.1:8000
 </code></pre>
 <h2 id="deploying-to-the-local-replica"><a class="header" href="#deploying-to-the-local-replica">Deploying to the local replica</a></h2>
+<p>Make sure you have installed the <code>azle dfx extension</code> (only needs to be done once per install per version of Azle):</p>
+<pre><code class="language-bash">npx azle install-dfx-extension
+</code></pre>
 <p>To deploy all canisters defined in your <code>dfx.json</code>:</p>
 <pre><code class="language-bash">dfx deploy
 </code></pre>
@@ -321,6 +326,9 @@ curl -X POST -H &quot;Content-Type: application/json&quot; -d &quot;{ \&quot;hel
 </code></pre>
 <h2 id="deploying-to-mainnet"><a class="header" href="#deploying-to-mainnet">Deploying to mainnet</a></h2>
 <p>Assuming you are <a href="https://internetcomputer.org/docs/current/developer-docs/getting-started/cycles/cycles-wallet">setup with a cycles wallet</a>, then you are ready to deploy to mainnet.</p>
+<p>Make sure you have installed the <code>azle dfx extension</code> (only needs to be done once per install per version of Azle):</p>
+<pre><code class="language-bash">npx azle install-dfx-extension
+</code></pre>
 <p>To deploy all canisters defined in your dfx.json:</p>
 <pre><code class="language-bash">dfx deploy --network ic
 </code></pre>
@@ -363,32 +371,159 @@ curl -X POST -H &quot;Content-Type: application/json&quot; -d &quot;{ \&quot;hel
 └── src/
     └── api.ts
 </code></pre>
-<p>And the corresponding <code>dfx.json</code> file:</p>
+<p>For an HTTP server canister this would be the simplest corresponding <code>dfx.json</code> file:</p>
 <pre><code class="language-json">{
     &quot;canisters&quot;: {
         &quot;api&quot;: {
-            &quot;type&quot;: &quot;custom&quot;,
+            &quot;type&quot;: &quot;azle&quot;,
+            &quot;main&quot;: &quot;src/api.ts&quot;
+        }
+    }
+}
+</code></pre>
+<p>For a Candid RPC canister this would be the simplest corresponding <code>dfx.json</code> file:</p>
+<pre><code class="language-json">{
+    &quot;canisters&quot;: {
+        &quot;api&quot;: {
+            &quot;type&quot;: &quot;azle&quot;,
             &quot;main&quot;: &quot;src/api.ts&quot;,
-            &quot;candid&quot;: &quot;src/api.did&quot;,
-            &quot;candid_gen&quot;: &quot;http&quot;,
-            &quot;build&quot;: &quot;npx azle api&quot;,
-            &quot;wasm&quot;: &quot;.azle/api/api.wasm&quot;,
-            &quot;gzip&quot;: true,
-            &quot;metadata&quot;: [
-                {
-                    &quot;name&quot;: &quot;candid:service&quot;,
-                    &quot;path&quot;: &quot;src/api.did&quot;
-                },
-                {
-                    &quot;name&quot;: &quot;cdk:name&quot;,
-                    &quot;content&quot;: &quot;azle&quot;
-                }
-            ]
+            &quot;candid_gen&quot;: &quot;automatic&quot;
         }
     }
 }
 </code></pre>
 <p>Once you have created this directory structure you can <a href="./deployment.html#deploying-to-mainnet">deploy to mainnet</a> or a <a href="./deployment.html#starting-the-local-replica">locally running replica</a> by running the <code>dfx deploy</code> command in the same directory as your <code>dfx.json</code> file.</p>
+<h2 id="dfxjson"><a class="header" href="#dfxjson">dfx.json</a></h2>
+<p>The <code>dfx.json</code> file is the main ICP-specific configuration file for your canisters. The following are various examples of <code>dfx.json</code> files.</p>
+<h3 id="automatic-candid-file-generation"><a class="header" href="#automatic-candid-file-generation">Automatic Candid File Generation</a></h3>
+<p>The command-line tools <code>dfx</code> require a Candid file to deploy your canister. HTTP server canisters will automatically have their Candid files generated and stored in the <code>.azle</code> directory without any extra property in the <code>dfx.json</code> file. Candid RPC canisters must specify <code>&quot;candid_gen&quot;: &quot;automatic&quot;</code> for their Candid files to be generated automatically in the <code>.azle</code> directory:</p>
+<pre><code class="language-json">{
+    &quot;canisters&quot;: {
+        &quot;api&quot;: {
+            &quot;type&quot;: &quot;azle&quot;,
+            &quot;main&quot;: &quot;src/api.ts&quot;,
+            &quot;candid_gen&quot;: &quot;automatic&quot;
+        }
+    }
+}
+</code></pre>
+<h3 id="custom-candid-file"><a class="header" href="#custom-candid-file">Custom Candid File</a></h3>
+<p>If you would like to provide your own custom Candid file you can specify <code>&quot;candid_gen&quot;: &quot;custom&quot;</code>:</p>
+<pre><code class="language-json">{
+    &quot;canisters&quot;: {
+        &quot;api&quot;: {
+            &quot;type&quot;: &quot;azle&quot;,
+            &quot;main&quot;: &quot;src/api.ts&quot;,
+            &quot;candid&quot;: &quot;src/api.did&quot;,
+            &quot;candid_gen&quot;: &quot;custom&quot;
+        }
+    }
+}
+</code></pre>
+<h3 id="environment-variables"><a class="header" href="#environment-variables">Environment Variables</a></h3>
+<p>You can provide environment variables to Azle canisters by specifying their names in your <code>dfx.json</code> file and then accessing them through the <code>process.env</code> object in Azle.</p>
+<p>You must provide the environment variables that you want included in the same process as your <code>dfx deploy</code> command.</p>
+<p>Be aware that the environment variables that you specify in your <code>dfx.json</code> file will be included in plain text in your canister's Wasm binary.</p>
+<pre><code class="language-json">{
+    &quot;canisters&quot;: {
+        &quot;api&quot;: {
+            &quot;type&quot;: &quot;azle&quot;,
+            &quot;main&quot;: &quot;src/api.ts&quot;,
+            &quot;env&quot;: [&quot;MY_ENVIRONMENT_VARIABLE&quot;]
+        }
+    }
+}
+</code></pre>
+<h3 id="assets"><a class="header" href="#assets">Assets</a></h3>
+<p>See <a href="./assets.html">the Assets chapter</a> for more information:</p>
+<pre><code class="language-json">{
+    &quot;canisters&quot;: {
+        &quot;api&quot;: {
+            &quot;type&quot;: &quot;azle&quot;,
+            &quot;main&quot;: &quot;src/api.ts&quot;,
+            &quot;assets&quot;: [
+                [&quot;src/frontend/dist&quot;, &quot;dist&quot;],
+                [&quot;src/backend/media/audio.ogg&quot;, &quot;media/audio.ogg&quot;],
+                [&quot;src/backend/media/video.ogv&quot;, &quot;media/video.ogv&quot;]
+            ]
+        }
+    }
+}
+</code></pre>
+<h3 id="assets-large"><a class="header" href="#assets-large">Assets Large</a></h3>
+<p>See <a href="./assets.html">the Assets chapter</a> for more information:</p>
+<pre><code class="language-json">{
+    &quot;canisters&quot;: {
+        &quot;api&quot;: {
+            &quot;type&quot;: &quot;azle&quot;,
+            &quot;main&quot;: &quot;src/api.ts&quot;,
+            &quot;assets_large&quot;: [
+                [&quot;assets/auto&quot;, &quot;assets&quot;],
+                [&quot;assets/permanent&quot;, &quot;assets&quot;],
+                [&quot;assets/single_asset.txt&quot;, &quot;assets/text/single.txt&quot;]
+            ]
+        }
+    }
+}
+</code></pre>
+<h3 id="build-assets"><a class="header" href="#build-assets">Build Assets</a></h3>
+<p>See <a href="./assets.html">the Assets chapter</a> for more information:</p>
+<pre><code class="language-json">{
+    &quot;canisters&quot;: {
+        &quot;api&quot;: {
+            &quot;type&quot;: &quot;azle&quot;,
+            &quot;main&quot;: &quot;src/api.ts&quot;,
+            &quot;assets&quot;: [
+                [&quot;src/frontend/dist&quot;, &quot;dist&quot;],
+                [&quot;src/backend/media/audio.ogg&quot;, &quot;media/audio.ogg&quot;],
+                [&quot;src/backend/media/video.ogv&quot;, &quot;media/video.ogv&quot;]
+            ],
+            &quot;build_assets&quot;: &quot;npm run build&quot;
+        }
+    }
+}
+</code></pre>
+<h3 id="esm-externals"><a class="header" href="#esm-externals">ESM Externals</a></h3>
+<p>This will instruct Azle's TypeScript/JavaScript build process to ignore bundling the provided named packages.</p>
+<p>Sometimes the build process is overly eager to include packages that won't actually be used at runtime. This can be a problem if those packages wouldn't even work at runtime due to limitations in ICP or Azle. It is thus useful to be able to exclude them:</p>
+<pre><code class="language-json">{
+    &quot;canisters&quot;: {
+        &quot;api&quot;: {
+            &quot;type&quot;: &quot;azle&quot;,
+            &quot;main&quot;: &quot;src/api.ts&quot;,
+            &quot;esm_externals&quot;: [&quot;@nestjs/microservices&quot;, &quot;@nestjs/websockets&quot;]
+        }
+    }
+}
+</code></pre>
+<h3 id="esm-aliases"><a class="header" href="#esm-aliases">ESM Aliases</a></h3>
+<p>This will instruct Azle's TypeScript/JavaScript build process to alias a package name to another pacakge name.</p>
+<p>This can be useful if you need to polyfill certain packages that might not exist in Azle:</p>
+<pre><code class="language-json">{
+    &quot;canisters&quot;: {
+        &quot;api&quot;: {
+            &quot;type&quot;: &quot;azle&quot;,
+            &quot;main&quot;: &quot;src/api.ts&quot;,
+            &quot;esm_aliases&quot;: {
+                &quot;crypto&quot;: &quot;crypto-browserify&quot;
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="opt-level"><a class="header" href="#opt-level">Opt Level</a></h3>
+<p>To optimize the Wasm binary of an Azle canister, you can add the <code>opt_level</code> property to your <code>dfx.json</code> with the following options: <code>&quot;0&quot;</code>, <code>&quot;1&quot;</code>, <code>&quot;2&quot;</code>, <code>&quot;3&quot;</code>, or <code>&quot;4&quot;</code>. <code>&quot;0&quot;</code> is the default option if <code>opt_level</code> is not specified.</p>
+<p>Each option is intended to reduce the size of your Wasm binary as the value increases. Each option is likely to take longer to compile than the previous option. It is recommended to start at <code>&quot;1&quot;</code> and increase only as necessary.</p>
+<pre><code class="language-json">{
+    &quot;canisters&quot;: {
+        &quot;api&quot;: {
+            &quot;type&quot;: &quot;azle&quot;,
+            &quot;main&quot;: &quot;src/api.ts&quot;,
+            &quot;opt_level&quot;: &quot;4&quot;
+        }
+    }
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="servers-tldr"><a class="header" href="#servers-tldr">Servers TL;DR</a></h1>
 <p>Just write Node.js servers like this:</p>
 <pre><code class="language-typescript">import { createServer } from 'http';
@@ -424,6 +559,19 @@ app.post('/db/update', (req: Request&lt;any, any, typeof db&gt;, res) =&gt; {
 app.use(express.static('/dist'));
 
 app.listen();
+</code></pre>
+<p>or NestJS servers like this:</p>
+<pre><code class="language-typescript">import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
+
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+    const app = await NestFactory.create&lt;NestExpressApplication&gt;(AppModule);
+    await app.listen(3000);
+}
+
+bootstrap();
 </code></pre>
 <h1 id="servers"><a class="header" href="#servers">Servers</a></h1>
 <ul>
@@ -585,25 +733,10 @@ async function asynchronousHelloWorld() {
 <pre><code class="language-json">{
     &quot;canisters&quot;: {
         &quot;backend&quot;: {
-            &quot;type&quot;: &quot;custom&quot;,
+            &quot;type&quot;: &quot;azle&quot;,
             &quot;main&quot;: &quot;src/backend/index.ts&quot;,
-            &quot;candid&quot;: &quot;src/backend/index.did&quot;,
-            &quot;candid_gen&quot;: &quot;http&quot;,
-            &quot;build&quot;: &quot;npx azle backend&quot;,
-            &quot;wasm&quot;: &quot;.azle/backend/backend.wasm&quot;,
-            &quot;gzip&quot;: true,
             &quot;assets&quot;: [[&quot;src/frontend/dist&quot;, &quot;dist&quot;]],
-            &quot;build_assets&quot;: &quot;npm run build&quot;,
-            &quot;metadata&quot;: [
-                {
-                    &quot;name&quot;: &quot;candid:service&quot;,
-                    &quot;path&quot;: &quot;src/backend/index.did&quot;
-                },
-                {
-                    &quot;name&quot;: &quot;cdk:name&quot;,
-                    &quot;content&quot;: &quot;azle&quot;
-                }
-            ]
+            &quot;build_assets&quot;: &quot;npm run build&quot;
         }
     }
 }
@@ -1026,7 +1159,7 @@ const response = await fetch(
     `icp://mc6ru-gyaaa-aaaar-qaaaq-cai/icrc1_balance_of`,
     {
         body: serialize({
-            candidPath: `/candid/icrc.did`,
+            candidPath: `/candid/icp/icrc.did`,
             args: [
                 {
                     owner: ic.id(),
@@ -1165,17 +1298,14 @@ Let's discuss some important limitations of Azle and ICP that you are likely to 
 <li><a href="reference_http/./native_compilation.html">Native Compilation</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="autoreload"><a class="header" href="#autoreload">Autoreload</a></h1>
-<blockquote>
-<p>Deploying to mainnet with AZLE_AUTORELOAD=true will expose your canister to arbitrary untrusted JavaScript code execution</p>
-</blockquote>
 <p>You can turn on automatic reloading of your canister's final compiled JavaScript by using the <code>AZLE_AUTORELOAD</code> environment variable during deploy:</p>
 <pre><code class="language-bash">AZLE_AUTORELOAD=true dfx deploy
 </code></pre>
 <p>The autoreload feature watches all <code>.ts</code> and <code>.js</code> files recursively in the directory with your <code>dfx.json</code> file (the root directory of your project), excluding files found in <code>.azle</code>, <code>.dfx</code>, and <code>node_modules</code>.</p>
 <p>Autoreload only works properly if you do not change the methods of your canister. HTTP-based canisters will generally work well with autoreload as the query and update methods <code>http_request</code> and <code>http_request_update</code> will not need to change often. Candid-based canisters with explicit <code>query</code> and <code>update</code> methods may require manual deploys more often.</p>
 <p>Autoreload will not reload assets uploaded through the <code>assets</code> property of your <code>dfx.json</code>.</p>
-<p>It is extremely important to keep in mind that setting <code>AZLE_AUTORELOAD=true</code> will create an update method in your canister called <code>reload_js</code> that has no authorization built into it. If you deploy this to mainnet, anyone will be able to call this method and change the JavaScript of your canister.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="environment-variables"><a class="header" href="#environment-variables">Environment Variables</a></h1>
+<p>Setting <code>AZLE_AUTORELOAD=true</code> will create a new <code>dfx</code> identity and set it as a controller of your canister. By default it will be called <code>_azle_file_uploader_identity</code>. This name can be changed with the <code>AZLE_UPLOADER_IDENTITY_NAME</code> environment variable.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="environment-variables-1"><a class="header" href="#environment-variables-1">Environment Variables</a></h1>
 <ul>
 <li><a href="reference_http/environment_variables.html#azle_autoreload">AZLE_AUTORELOAD</a></li>
 <li><a href="reference_http/environment_variables.html#azle_dockerfile_hash">AZLE_DOCKERFILE_HASH</a></li>
@@ -1564,7 +1694,7 @@ setMessage: update([text], Void, (newMessage) =&gt; {
     }
 }
 </code></pre>
-<h3 id="dfxjson"><a class="header" href="#dfxjson">dfx.json</a></h3>
+<h3 id="dfxjson-1"><a class="header" href="#dfxjson-1">dfx.json</a></h3>
 <p>Create the following in <code>azle_hello_world/dfx.json</code>:</p>
 <pre><code class="language-json">{
     &quot;canisters&quot;: {
@@ -4897,9 +5027,9 @@ export default Canister({
     })
 });
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="environment-variables-1"><a class="header" href="#environment-variables-1">Environment Variables</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="environment-variables-2"><a class="header" href="#environment-variables-2">Environment Variables</a></h1>
 <p>You can provide environment variables to Azle canisters by specifying their names in your <code>dfx.json</code> file and then using the <code>process.env</code> object in Azle. Be aware that the environment variables that you specify in your <code>dfx.json</code> file will be included in plain text in your canister's Wasm binary.</p>
-<h2 id="dfxjson-1"><a class="header" href="#dfxjson-1">dfx.json</a></h2>
+<h2 id="dfxjson-2"><a class="header" href="#dfxjson-2">dfx.json</a></h2>
 <p>Modify your <code>dfx.json</code> file with the <code>env</code> property to specify which environment variables you would like included in your Azle canister's binary. In this case, <code>CANISTER1_PRINCIPAL</code> and <code>CANISTER2_PRINCIPAL</code> will be included:</p>
 <pre><code class="language-json">{
     &quot;canisters&quot;: {

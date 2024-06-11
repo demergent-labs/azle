@@ -8,25 +8,10 @@ Here's an example that copies the `src/frontend/dist` directory on the deploying
 {
     "canisters": {
         "backend": {
-            "type": "custom",
+            "type": "azle",
             "main": "src/backend/index.ts",
-            "candid": "src/backend/index.did",
-            "candid_gen": "http",
-            "build": "npx azle backend",
-            "wasm": ".azle/backend/backend.wasm",
-            "gzip": true,
             "assets": [["src/frontend/dist", "dist"]],
-            "build_assets": "npm run build",
-            "metadata": [
-                {
-                    "name": "candid:service",
-                    "path": "src/backend/index.did"
-                },
-                {
-                    "name": "cdk:name",
-                    "content": "azle"
-                }
-            ]
+            "build_assets": "npm run build"
         }
     }
 }

@@ -1,7 +1,5 @@
 # Autoreload
 
-> Deploying to mainnet with AZLE_AUTORELOAD=true will expose your canister to arbitrary untrusted JavaScript code execution
-
 You can turn on automatic reloading of your canister's final compiled JavaScript by using the `AZLE_AUTORELOAD` environment variable during deploy:
 
 ```bash
@@ -14,4 +12,4 @@ Autoreload only works properly if you do not change the methods of your canister
 
 Autoreload will not reload assets uploaded through the `assets` property of your `dfx.json`.
 
-It is extremely important to keep in mind that setting `AZLE_AUTORELOAD=true` will create an update method in your canister called `reload_js` that has no authorization built into it. If you deploy this to mainnet, anyone will be able to call this method and change the JavaScript of your canister.
+Setting `AZLE_AUTORELOAD=true` will create a new `dfx` identity and set it as a controller of your canister. By default it will be called `_azle_file_uploader_identity`. This name can be changed with the `AZLE_UPLOADER_IDENTITY_NAME` environment variable.
