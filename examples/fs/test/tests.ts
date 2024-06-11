@@ -3,432 +3,239 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 
-export function getTests(canisterId: string): Test[] {
+export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
 
-    return [
-        {
-            name: '/write-file-sync',
-            test: async () => {
-                try {
-                    const response = await fetch(`${origin}/write-file-sync`, {
-                        method: 'POST',
-                        headers: [['Content-Type', 'application/json']],
-                        body: JSON.stringify({
-                            files: [['write-file-sync.txt', 'write file sync']]
-                        })
-                    });
-                    const responseText = await response.text();
+    return () => {
+        it('executes `fs.writeFileSync` from a canister', async () => {
+            const response = await fetch(`${origin}/write-file-sync`, {
+                method: 'POST',
+                headers: [['Content-Type', 'application/json']],
+                body: JSON.stringify({
+                    files: [['write-file-sync.txt', 'write file sync']]
+                })
+            });
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'No. files written: 1'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+            expect(responseText).toBe('No. files written: 1');
+        });
+
+        it('executes `fs.writeFile` from a canister', async () => {
+            const response = await fetch(`${origin}/write-file`, {
+                method: 'POST',
+                headers: [['Content-Type', 'application/json']],
+                body: JSON.stringify({
+                    files: [['write-file.txt', 'write file']]
+                })
+            });
+            const responseText = await response.text();
+
+            expect(responseText).toBe('No. files written: 1');
+        });
+
+        it('executes `fs.readFileSync` from a canister', async () => {
+            const response = await fetch(
+                `${origin}/read-file-sync?filename=write-file-sync.txt`
+            );
+            const responseText = await response.text();
+
+            expect(responseText).toBe('write file sync');
+        });
+
+        it('executes `fs.readFile` from a canister', async () => {
+            const response = await fetch(
+                `${origin}/read-file?filename=write-file.txt`
+            );
+            const responseText = await response.text();
+
+            expect(responseText).toBe('write file');
+        });
+
+        it('executes `fs.mkdirSync` from a canister', async () => {
+            const response = await fetch(
+                `${origin}/mkdir-sync?dirname=public_sync`,
+                {
+                    method: 'POST'
                 }
-            }
-        },
-        {
-            name: '/write-file',
-            test: async () => {
-                try {
-                    const response = await fetch(`${origin}/write-file`, {
-                        method: 'POST',
-                        headers: [['Content-Type', 'application/json']],
-                        body: JSON.stringify({
-                            files: [['write-file.txt', 'write file']]
-                        })
-                    });
-                    const responseText = await response.text();
+            );
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'No. files written: 1'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+            expect(responseText).toBe('Directory public_sync created');
+        });
+
+        it('executes `fs.mkdir` from a canister', async () => {
+            const response = await fetch(
+                `${origin}/mkdir?dirname=just_public`,
+                {
+                    method: 'POST'
                 }
-            }
-        },
-        {
-            name: '/read-file-sync',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/read-file-sync?filename=write-file-sync.txt`
-                    );
-                    const responseText = await response.text();
+            );
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'write file sync'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+            expect(responseText).toBe('Directory just_public created');
+        });
+
+        it('executes `fs.existsSync` on a dir that exists on a canister', async () => {
+            const response = await fetch(
+                `${origin}/exists-sync?name=public_sync`
+            );
+            const responseText = await response.text();
+
+            expect(responseText).toBe('true');
+        });
+
+        it('executes `fs.existsSync` on a dir that exists on a canister', async () => {
+            const response = await fetch(
+                `${origin}/exists-sync?name=just_public`
+            );
+            const responseText = await response.text();
+
+            expect(responseText).toBe('true');
+        });
+
+        it('executes `fs.unlinkSync` from a canister', async () => {
+            const response = await fetch(
+                `${origin}/unlink-sync?filename=write-file-sync.txt`,
+                {
+                    method: 'POST'
                 }
-            }
-        },
-        {
-            name: '/read-file',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/read-file?filename=write-file.txt`
-                    );
-                    const responseText = await response.text();
+            );
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'write file'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+            expect(responseText).toBe('File write-file-sync.txt deleted');
+        });
+
+        it('executes `fs.unlink` from a canister', async () => {
+            const response = await fetch(
+                `${origin}/unlink?filename=write-file.txt`,
+                {
+                    method: 'POST'
                 }
-            }
-        },
-        {
-            name: '/mkdir-sync',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/mkdir-sync?dirname=public_sync`,
-                        {
-                            method: 'POST'
-                        }
-                    );
-                    const responseText = await response.text();
+            );
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'Directory public_sync created'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+            expect(responseText).toBe('File write-file.txt deleted');
+        });
+
+        it('executes `fs.rmdirSync` from a canister', async () => {
+            const response = await fetch(
+                `${origin}/rmdir-sync?dirname=public_sync`,
+                {
+                    method: 'POST'
                 }
-            }
-        },
-        {
-            name: '/mkdir',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/mkdir?dirname=just_public`,
-                        {
-                            method: 'POST'
-                        }
-                    );
-                    const responseText = await response.text();
+            );
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'Directory just_public created'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+            expect(responseText).toBe('Directory public_sync deleted');
+        });
+
+        it('executes `fs.rmdir` from a canister', async () => {
+            const response = await fetch(
+                `${origin}/rmdir?dirname=just_public`,
+                {
+                    method: 'POST'
                 }
-            }
-        },
-        {
-            name: '/exists-sync public_sync true',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/exists-sync?name=public_sync`
-                    );
-                    const responseText = await response.text();
+            );
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'true'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/exists-sync just_public true',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/exists-sync?name=just_public`
-                    );
-                    const responseText = await response.text();
+            expect(responseText).toBe('Directory just_public deleted');
+        });
 
-                    return {
-                        Ok: responseText === 'true'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/unlink-sync',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/unlink-sync?filename=write-file-sync.txt`,
-                        {
-                            method: 'POST'
-                        }
-                    );
-                    const responseText = await response.text();
+        it('executes `fs.existsSync` on a dir that no longer exists on a canister', async () => {
+            const response = await fetch(
+                `${origin}/exists-sync?name=public_sync`
+            );
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'File write-file-sync.txt deleted'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/unlink',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/unlink?filename=write-file.txt`,
-                        {
-                            method: 'POST'
-                        }
-                    );
-                    const responseText = await response.text();
+            expect(responseText).toBe('false');
+        });
 
-                    return {
-                        Ok: responseText === 'File write-file.txt deleted'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/rmdir-sync',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/rmdir-sync?dirname=public_sync`,
-                        {
-                            method: 'POST'
-                        }
-                    );
-                    const responseText = await response.text();
+        it('executes `fs.existsSync` on a dir that no longer exists on a canister', async () => {
+            const response = await fetch(
+                `${origin}/exists-sync?name=just_public`
+            );
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'Directory public_sync deleted'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/rmdir',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/rmdir?dirname=just_public`,
-                        {
-                            method: 'POST'
-                        }
-                    );
-                    const responseText = await response.text();
+            expect(responseText).toBe('false');
+        });
 
-                    return {
-                        Ok: responseText === 'Directory just_public deleted'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/exists-sync public_sync false',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/exists-sync?name=public_sync`
-                    );
-                    const responseText = await response.text();
+        it('executes `fs.existsSync` on a file that no longer exists on a canister', async () => {
+            const response = await fetch(
+                `${origin}/exists-sync?name=write-file-sync.txt`
+            );
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'false'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/exists-sync just_public false',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/exists-sync?name=just_public`
-                    );
-                    const responseText = await response.text();
+            expect(responseText).toBe('false');
+        });
 
-                    return {
-                        Ok: responseText === 'false'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/exists-sync write-file-sync.txt false',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/exists-sync?name=write-file-sync.txt`
-                    );
-                    const responseText = await response.text();
+        it('executes `fs.existsSync` on a file that no longer exists on a canister', async () => {
+            const response = await fetch(
+                `${origin}/exists-sync?name=write-file.txt`
+            );
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === 'false'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/exists-sync write-file.txt false',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/exists-sync?name=write-file.txt`
-                    );
-                    const responseText = await response.text();
+            expect(responseText).toBe('false');
+        });
 
-                    return {
-                        Ok: responseText === 'false'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/high-water-mark-boundary',
-            test: async () => {
-                try {
-                    const response = await fetch(
-                        `${origin}/high-water-mark-boundary`
-                    );
-                    const responseText = await response.text();
+        it('executes `fs.createReadStream` on a canister for a file at the high water mark boundary', async () => {
+            const response = await fetch(`${origin}/high-water-mark-boundary`);
+            const responseText = await response.text();
 
-                    return {
-                        Ok: responseText === '1'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/create-read-stream-larger-than-high-water-mark-chunked',
-            test: async () => {
-                try {
-                    let hasherFile = createHash('sha256');
+            expect(responseText).toBe('1');
+        });
 
-                    const file = readFileSync('./src/image.jpg');
+        it('executes `fs.createReadStream` on a canister for a chunked file larger than high water mark', async () => {
+            let hasherFile = createHash('sha256');
 
-                    hasherFile.update(file);
+            const file = readFileSync('./src/image.jpg');
 
-                    const digestFile = hasherFile.digest('hex');
+            hasherFile.update(file);
 
-                    const response = await fetch(
-                        `${origin}/create-read-stream-larger-than-high-water-mark-chunked`
-                    );
-                    const responseBlob = await response.blob();
+            const digestFile = hasherFile.digest('hex');
 
-                    let hasherReadStream = createHash('sha256');
+            const response = await fetch(
+                `${origin}/create-read-stream-larger-than-high-water-mark-chunked`
+            );
+            const responseBlob = await response.blob();
 
-                    hasherReadStream.update(
-                        new Uint8Array(await responseBlob.arrayBuffer())
-                    );
+            let hasherReadStream = createHash('sha256');
 
-                    const digestReadStream = hasherReadStream.digest('hex');
+            hasherReadStream.update(
+                new Uint8Array(await responseBlob.arrayBuffer())
+            );
 
-                    return {
-                        Ok: digestFile === digestReadStream
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        },
-        {
-            name: '/create-read-stream-larger-than-high-water-mark',
-            test: async () => {
-                try {
-                    let hasherFile = createHash('sha256');
+            const digestReadStream = hasherReadStream.digest('hex');
 
-                    const file = readFileSync('./src/image.jpg');
+            expect(digestReadStream).toBe(digestFile);
+        });
 
-                    hasherFile.update(file);
+        it('executes `fs.createReadStream` on a canister for a file larger than high water mark', async () => {
+            let hasherFile = createHash('sha256');
 
-                    const digestFile = hasherFile.digest('hex');
+            const file = readFileSync('./src/image.jpg');
 
-                    const response = await fetch(
-                        `${origin}/create-read-stream-larger-than-high-water-mark`
-                    );
-                    const responseBlob = await response.blob();
+            hasherFile.update(file);
 
-                    let hasherReadStream = createHash('sha256');
+            const digestFile = hasherFile.digest('hex');
 
-                    hasherReadStream.update(
-                        new Uint8Array(await responseBlob.arrayBuffer())
-                    );
+            const response = await fetch(
+                `${origin}/create-read-stream-larger-than-high-water-mark`
+            );
+            const responseBlob = await response.blob();
 
-                    const digestReadStream = hasherReadStream.digest('hex');
+            let hasherReadStream = createHash('sha256');
 
-                    return {
-                        Ok: digestFile === digestReadStream
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        }
-    ];
+            hasherReadStream.update(
+                new Uint8Array(await responseBlob.arrayBuffer())
+            );
+
+            const digestReadStream = hasherReadStream.digest('hex');
+
+            expect(digestReadStream).toBe(digestFile);
+        });
+    };
 }
