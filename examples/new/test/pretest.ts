@@ -7,6 +7,10 @@ async function pretest() {
         stdio: 'inherit'
     });
 
+    execSync(`npx -y azle@${version} install-dfx-extension`, {
+        stdio: 'inherit'
+    });
+
     execSync(`cd hello_world && dfx canister uninstall-code backend || true`, {
         stdio: 'inherit'
     });
