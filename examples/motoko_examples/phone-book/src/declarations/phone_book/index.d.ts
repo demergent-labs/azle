@@ -1,11 +1,11 @@
 import type {
-    ActorConfig,
     ActorSubclass,
-    Agent,
-    HttpAgentOptions
+    HttpAgentOptions,
+    ActorConfig,
+    Agent
 } from '@dfinity/agent';
-import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
+import type { IDL } from '@dfinity/candid';
 
 import { _SERVICE } from './phone_book.did';
 

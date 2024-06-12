@@ -1,4 +1,4 @@
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/test/jest';
 
 import { getTests } from './tests';
 
