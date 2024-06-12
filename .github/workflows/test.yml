@@ -309,7 +309,7 @@ jobs:
               run: npm link azle
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               working-directory: ${{ matrix.example_directories }}
-              run: npm exec azle install-dfx-extension # TODO find out the best way to ensure that we use the local version of azle in the node_modules directory
+              run: node_modules/.bin/azle install-dfx-extension
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               working-directory: ${{ matrix.example_directories }}
               run: dfx start --clean --background --host 127.0.0.1:8000
