@@ -1,7 +1,9 @@
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/test/jest';
 
 import { createActor } from './dfx_generated/whoami';
 import { callingIdentity, canisterId, getTests } from './tests';
+
+const canisterName = 'whoami';
 
 const whoamiCanister = createActor(canisterId, {
     agentOptions: {
@@ -10,4 +12,4 @@ const whoamiCanister = createActor(canisterId, {
     }
 });
 
-runTests(getTests(whoamiCanister, 'whoami'));
+runTests(canisterName, getTests(whoamiCanister, canisterName));

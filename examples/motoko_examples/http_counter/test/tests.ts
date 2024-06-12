@@ -1,78 +1,45 @@
 import * as dns from 'node:dns';
-
-import { Test } from 'azle/test';
-import { execSync } from 'child_process';
 dns.setDefaultResultOrder('ipv4first');
 
-export function getTests(): Test[] {
-    return [
-        {
-            name: 'init get count',
-            test: async () => {
-                return {
-                    Ok: (await getCount()) === getExpectedGetCountResult(0)
-                };
-            }
-        },
-        {
-            name: 'first increment',
-            test: async () => {
-                return {
-                    Ok: (await count()) === getExpectedCountResult(1)
-                };
-            }
-        },
-        {
-            name: 'second increment',
-            test: async () => {
-                return {
-                    Ok: (await count()) === getExpectedCountResult(2)
-                };
-            }
-        },
-        {
-            name: 'get count',
-            test: async () => {
-                return {
-                    Ok: (await getCount()) === getExpectedGetCountResult(2)
-                };
-            }
-        },
-        {
-            name: 'gzipped increment',
-            test: async () => {
-                return {
-                    Ok: (await countGzip()) === 'update'
-                };
-            }
-        },
-        {
-            name: 'get gzipped count',
-            test: async () => {
-                return {
-                    Ok: (await getCountGzip()) === 'query'
-                };
-            }
-        },
-        {
-            name: 'get streaming count',
-            test: async () => {
-                return {
-                    Ok:
-                        (await getCountStream()) ===
-                        getExpectedGetCountStreamResult(3)
-                };
-            }
-        },
-        {
-            name: 'final get count',
-            test: async () => {
-                return {
-                    Ok: (await getCount()) === getExpectedGetCountResult(3)
-                };
-            }
-        }
-    ];
+import { expect, it, Test } from 'azle/test/jest';
+import { execSync } from 'child_process';
+
+export function getTests(): Test {
+    return () => {
+        it('gets an initial count via http', async () => {
+            expect(await getCount()).toBe(getExpectedGetCountResult(0));
+        });
+
+        it('increments the counter once via http', async () => {
+            expect(await count()).toBe(getExpectedCountResult(1));
+        });
+
+        it('increments the counter twice via http', async () => {
+            expect(await count()).toBe(getExpectedCountResult(2));
+        });
+
+        it("gets the value of the counter via http after it's been incremented", async () => {
+            expect(await getCount()).toBe(getExpectedGetCountResult(2));
+        });
+
+        it('increments the counter via http with gzipped result', async () => {
+            expect(await countGzip()).toBe('update');
+        });
+
+        it('gets the value of the counter via http with gzipped result', async () => {
+            expect(await getCountGzip()).toBe('query');
+        });
+
+        it('streams the value of the counter via http', async () => {
+            expect(await getCountStream()).toBe(
+                getExpectedGetCountStreamResult(3)
+            );
+        });
+
+        it('gets the final value of the counter via http', async () => {
+            expect(await getCount()).toBe(getExpectedGetCountResult(3));
+        });
+    };
 }
 
 function getCanisterID(): string {

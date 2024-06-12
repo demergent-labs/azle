@@ -1,65 +1,47 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, please, Test } from 'azle/test/jest';
 import { execSync } from 'child_process';
 
 import { _SERVICE } from './dfx_generated/persistent_storage/persistent_storage.did';
 
 export function getTests(
     persistentStorageCanister: ActorSubclass<_SERVICE>
-): Test[] {
-    return [
-        {
-            name: 'increment',
-            test: async () => {
-                const result = await persistentStorageCanister.increment();
-                return {
-                    Ok: result === 1n
-                };
-            }
-        },
-        {
-            name: 'reset',
-            test: async () => {
-                const result = await persistentStorageCanister.reset();
-                return {
-                    Ok: result === 0n
-                };
-            }
-        },
-        {
-            name: 'increment',
-            test: async () => {
-                const result = await persistentStorageCanister.increment();
-                return {
-                    Ok: result === 1n
-                };
-            }
-        },
-        {
-            name: 'deploy',
-            prep: async () => {
-                execSync(`dfx deploy --upgrade-unchanged`, {
-                    stdio: 'inherit'
-                });
-            }
-        },
-        {
-            name: 'getRedeployed',
-            test: async () => {
-                const result = await persistentStorageCanister.getRedeployed();
-                return {
-                    Ok: result === true
-                };
-            }
-        },
-        {
-            name: 'get',
-            test: async () => {
-                const result = await persistentStorageCanister.get();
-                return {
-                    Ok: result === 1n
-                };
-            }
-        }
-    ];
+): Test {
+    return () => {
+        it('increments the counter once', async () => {
+            const result = await persistentStorageCanister.increment();
+
+            expect(result).toBe(1n);
+        });
+
+        it('resets the counter', async () => {
+            const result = await persistentStorageCanister.reset();
+
+            expect(result).toBe(0n);
+        });
+
+        it('increments the counter after reset', async () => {
+            const result = await persistentStorageCanister.increment();
+
+            expect(result).toBe(1n);
+        });
+
+        please('redeploy the canister', async () => {
+            execSync(`dfx deploy --upgrade-unchanged`, {
+                stdio: 'inherit'
+            });
+        });
+
+        it('verifies that postUpgrade was called', async () => {
+            const result = await persistentStorageCanister.getRedeployed();
+
+            expect(result).toBe(true);
+        });
+
+        it('gets the value of the counter after the canister was redeployed', async () => {
+            const result = await persistentStorageCanister.get();
+
+            expect(result).toBe(1n);
+        });
+    };
 }
