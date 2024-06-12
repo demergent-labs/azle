@@ -50,7 +50,7 @@ jobs:
             - if: contains(github.head_ref, 'release--')
               name: Install dfx
               run: |
-                  DFXVM_INIT_YES=true DFX_VERSION=0.20.0-extensioncanistertype.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  DFXVM_INIT_YES=true DFX_VERSION=0.20.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
             # TODO we should use some Action-specific bot account
             - if: contains(github.head_ref, 'release--')
@@ -154,6 +154,8 @@ jobs:
                     "examples/simple_erc20",
                     "examples/simple_user_accounts",
                     "examples/sqlite",
+                    "examples/sqlite_drizzle",
+                    "examples/sqlite_typeorm",
                     "examples/stable_b_tree_map_instruction_threshold",
                     "examples/stable_memory",
                     "examples/stable_structures",
@@ -248,7 +250,7 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               name: Install dfx
               run: |
-                  DFXVM_INIT_YES=true DFX_VERSION=0.20.0-extensioncanistertype.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+                  DFXVM_INIT_YES=true DFX_VERSION=0.20.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/cache@v3

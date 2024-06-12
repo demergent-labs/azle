@@ -302,9 +302,9 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test[] {
                     return {
                         Ok:
                             (error as any).props.Message ===
-                            `IC0503: Canister ${getCanisterId(
+                            `IC0503: Error from Canister ${getCanisterId(
                                 'ic_api'
-                            )} trapped explicitly: here is the message`
+                            )}: Canister trapped explicitly: here is the message`
                     };
                 }
             }

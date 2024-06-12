@@ -52,6 +52,12 @@ dfx start --clean --host 127.0.0.1:8000
 
 ## Deploying to the local replica
 
+Make sure you have installed the `azle dfx extension` (only needs to be done once per install per version of Azle):
+
+```bash
+npx azle install-dfx-extension
+```
+
 To deploy all canisters defined in your `dfx.json`:
 
 ```bash
@@ -91,6 +97,12 @@ curl -X POST -H "Content-Type: application/json" -d "{ \"hello\": \"world\" }" h
 ## Deploying to mainnet
 
 Assuming you are [setup with a cycles wallet](https://internetcomputer.org/docs/current/developer-docs/getting-started/cycles/cycles-wallet), then you are ready to deploy to mainnet.
+
+Make sure you have installed the `azle dfx extension` (only needs to be done once per install per version of Azle):
+
+```bash
+npx azle install-dfx-extension
+```
 
 To deploy all canisters defined in your dfx.json:
 

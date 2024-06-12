@@ -18,6 +18,8 @@ export function postUpgrade<
         callback === undefined
             ? undefined
             : (...args: any[]) => {
+                  globalThis._azlePostUpgradeCalled = true;
+
                   executeMethod(
                       'postUpgrade',
                       args,

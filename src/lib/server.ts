@@ -158,9 +158,32 @@ export function Server<T extends CanisterOptions>(
     serverCallback: ServerCallback,
     canisterOptions?: T
 ) {
+    const canisterOptionsNodeServerized = Object.entries(
+        canisterOptions ?? {}
+    ).reduce((acc, [key, value]) => {
+        const valueServerized =
+            value.mode === 'init' || value.mode === 'postUpgrade'
+                ? {
+                      ...value,
+                      callback: async (...args: any[]) => {
+                          if (value.callback !== undefined) {
+                              value.callback(...args);
+                          }
+
+                          setNodeServer(await serverCallback());
+                      }
+                  }
+                : value;
+
+        return {
+            ...acc,
+            [key]: valueServerized
+        };
+    }, {} as T);
+
     return Canister({
         ...serverCanisterMethods(serverCallback),
-        ...canisterOptions
+        ...canisterOptionsNodeServerized
     });
 }
 

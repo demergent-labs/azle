@@ -1,22 +1,31 @@
-import express from 'express';
-import initSqlJs from 'sql.js/dist/sql-asm.js';
+import {
+    init,
+    postUpgrade,
+    preUpgrade,
+    Server,
+    StableBTreeMap,
+    stableJson
+} from 'azle';
+import { Database } from 'sql.js/dist/sql-asm.js';
 
-const app = express();
+import { initDb } from './db';
+import { initServer } from './server';
 
-app.post('/', async (_req, res) => {
-    const SQL = await initSqlJs({});
+export let db: Database;
 
-    const db = new SQL.Database();
-
-    db.run(`
-        CREATE TABLE users
-            (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT NOT NULL UNIQUE
-            );
-    `);
-
-    res.send('Hello world');
+let stableDbMap = StableBTreeMap<'DATABASE', Uint8Array>(0, stableJson, {
+    toBytes: (data: Uint8Array) => data,
+    fromBytes: (bytes: Uint8Array) => bytes
 });
 
-app.listen();
+export default Server(initServer, {
+    init: init([], async () => {
+        db = await initDb();
+    }),
+    preUpgrade: preUpgrade(() => {
+        stableDbMap.insert('DATABASE', db.export());
+    }),
+    postUpgrade: postUpgrade([], async () => {
+        db = await initDb(stableDbMap.get('DATABASE').Some);
+    })
+});

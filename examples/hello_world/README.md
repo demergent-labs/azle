@@ -51,7 +51,7 @@ node --version
 Install the dfx command line tools for managing ICP applications:
 
 ```bash
-DFX_VERSION=0.19.0 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
+DFX_VERSION=0.20.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
 ```
 
 Check that the installation went smoothly by looking for clean output from the following command:
@@ -73,6 +73,8 @@ npx azle new hello_world
 cd hello_world
 
 npm install
+
+npx azle install-dfx-extension
 
 dfx start --clean --host 127.0.0.1:8000
 ```
