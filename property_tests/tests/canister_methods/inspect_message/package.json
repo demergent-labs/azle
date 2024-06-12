@@ -3,7 +3,7 @@
         "test": "ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
-        "azle": "^0.18.5"
+        "azle": "0.22.0-rc.4"
     },
     "devDependencies": {
         "ts-node": "^10.9.1",
