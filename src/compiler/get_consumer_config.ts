@@ -164,8 +164,19 @@ async function getDependenciesUnnormalized(
         'node_modules/**/.openvaluesharing.json'
     );
 
+    // TODO notice the || true here
+    // TODO this is to overcome the ELSPROBLEMS error that is thrown on an invalid tree
+    // TODO I do not understand fully why this happens from my research
+    // TODO but the tree seems to still be output even if there is an error
+    // TODO the error output goes to stderr and the JSON goes to stdout
+    // TODO so we use || true to stop the execSync from throwing
+    // TODO this could end up being an issue in the future
     const dependencyTree: DependencyTree = JSON.parse(
-        execSync(`npm ls --all --json`).toString().trim()
+        execSync(`npm ls --all --json || true`, {
+            stdio: ['pipe', 'pipe', 'ignore']
+        })
+            .toString()
+            .trim()
     );
 
     return await dependencyConfigPaths.reduce(
