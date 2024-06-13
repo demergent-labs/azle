@@ -5,18 +5,16 @@ import { runTests } from 'azle/test/jest';
 import { BitcoinDaemon, startBitcoinDaemon } from './bitcoin_daemon';
 import { getP2pkhAddress, getTests, P2PKH_ADDRESS_FORM } from './tests';
 
-const canisterName = 'basic_bitcoin';
+const canisterId = getCanisterId('basic_bitcoin');
 
-const canisterId = getCanisterId(canisterName);
+runTests(() => {
+    let bitcoinDaemon: BitcoinDaemon;
 
-let bitcoinDaemon: BitcoinDaemon;
-
-runTests(canisterName, () => {
     beforeAll(async () => {
         bitcoinDaemon = await startBitcoinDaemon();
-    });
+    }, 60_000);
 
-    afterAll(async () => {
+    afterAll(() => {
         bitcoinDaemon.kill();
     });
 
