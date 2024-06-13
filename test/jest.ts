@@ -1,37 +1,46 @@
+import * as dns from 'node:dns';
+dns.setDefaultResultOrder('ipv4first');
+
 import { describe, expect, test } from '@jest/globals';
+import { join } from 'path';
+
+import { execSyncPretty } from '../src/compiler/utils/exec_sync_pretty';
 export { expect } from '@jest/globals';
-import { dirname } from 'path';
-import {
-    createProgram,
-    findConfigFile,
-    flattenDiagnosticMessageText,
-    getPreEmitDiagnostics,
-    parseJsonConfigFileContent,
-    readConfigFile,
-    sys
-} from 'typescript';
 
 export type Test = () => void;
 
-export function runTests(
-    canisterName: string,
-    tests: Test,
-    cwd: string = process.cwd()
-) {
-    const { shouldRunTests, shouldRunTypeChecks, shouldRunBenchmark } =
+export function runTests(tests: Test, cwd: string = process.cwd()) {
+    const { shouldRunTests, shouldRunTypeChecks, shouldRunBenchmarks } =
         processEnvVars();
+
     if (shouldRunTests) {
-        describe(`Azle ${canisterName} tests`, tests);
+        describe(`tests`, tests);
     }
+
     if (shouldRunTypeChecks) {
-        describe(`Azle ${canisterName} type checks`, () => {
+        describe(`type checks`, () => {
             it('checks types', () => {
-                expect(runTypeCheck(cwd)).toHaveLength(0);
+                try {
+                    execSyncPretty(
+                        `${join(
+                            cwd,
+                            'node_modules',
+                            '.bin',
+                            'tsc'
+                        )} --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs`,
+                        'inherit'
+                    );
+                } catch {
+                    expect('Type checking failed').toBe(
+                        'Type checking to pass'
+                    );
+                }
             });
         });
     }
-    if (shouldRunBenchmark) {
-        describe(`Azle ${canisterName} benchmark`, () => {});
+
+    if (shouldRunBenchmarks) {
+        describe(`benchmarks`, () => {});
     }
 }
 
@@ -43,9 +52,8 @@ export function wait(name: string, delay: number) {
             await new Promise((resolve) => {
                 setTimeout(resolve, delay);
             });
-            expect(true);
         },
-        delay > 2_500 ? delay * 2 : 5_000 // Calling this function takes a few more milliseconds than what is specified in the delay. Since we never want the delay to time out we will add an ample amount of extra time to the timeout. Since doubling a short delay may not give us enough extra time we will have a reasonable floor.
+        delay + 1_000
     );
 }
 
@@ -79,74 +87,28 @@ export function it(
     );
 }
 
-function runTypeCheck(projectDir: string): string[] {
-    const configPath = findConfigFile(
-        projectDir,
-        sys.fileExists,
-        'tsconfig.json'
-    );
-
-    if (!configPath) {
-        throw new Error("Could not find a valid 'tsconfig.json'.");
-    }
-
-    const configFile = readConfigFile(configPath, sys.readFile);
-    const parsedCommandLine = parseJsonConfigFileContent(
-        configFile.config,
-        sys,
-        dirname(configPath)
-    );
-
-    const compilerOptions = {
-        ...parsedCommandLine.options,
-        noEmit: true,
-        skipLibCheck: true
-    };
-
-    const program = createProgram(parsedCommandLine.fileNames, compilerOptions);
-    const emitResult = program.emit();
-
-    const allDiagnostics = getPreEmitDiagnostics(program).concat(
-        emitResult.diagnostics
-    );
-
-    const errorMessages = allDiagnostics.map((diagnostic) => {
-        if (diagnostic.file !== undefined && diagnostic.start !== undefined) {
-            const { line, character } =
-                diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
-            const message = flattenDiagnosticMessageText(
-                diagnostic.messageText,
-                '\n'
-            );
-            return `${diagnostic.file.fileName} (${line + 1},${
-                character + 1
-            }): ${message}`;
-        } else {
-            return flattenDiagnosticMessageText(diagnostic.messageText, '\n');
-        }
-    });
-
-    return errorMessages;
-}
-
 function processEnvVars(): {
     shouldRunTests: boolean;
     shouldRunTypeChecks: boolean;
-    shouldRunBenchmark: boolean;
+    shouldRunBenchmarks: boolean;
 } {
-    const shouldRunTests =
-        process.env.AZLE_INTEGRATION_TEST_RUN_TESTS !== undefined;
-    const shouldRunTypeChecks =
-        process.env.AZLE_INTEGRATION_TEST_RUN_TYPE_CHECKS !== undefined;
-    const shouldRunBenchmark =
-        process.env.AZLE_INTEGRATION_TEST_RUN_BENCHMARKS !== undefined;
+    const isTestsEnvVarSet =
+        process.env.AZLE_INTEGRATION_TEST_RUN_TESTS === 'true';
+    const isTypeChecksEnvVarSet =
+        process.env.AZLE_INTEGRATION_TEST_RUN_TYPE_CHECKS === 'true';
+    const isBenchmarksEnvVarSet =
+        process.env.AZLE_INTEGRATION_TEST_RUN_BENCHMARKS === 'true';
+
+    const areNoVarsSet =
+        !isTestsEnvVarSet && !isTypeChecksEnvVarSet && !isBenchmarksEnvVarSet;
+
+    const shouldRunTests = isTestsEnvVarSet || areNoVarsSet;
+    const shouldRunTypeChecks = isTypeChecksEnvVarSet || areNoVarsSet;
+    const shouldRunBenchmarks = isBenchmarksEnvVarSet || areNoVarsSet;
 
     return {
-        shouldRunTests:
-            shouldRunTests || (!shouldRunTypeChecks && !shouldRunBenchmark),
-        shouldRunTypeChecks:
-            shouldRunTypeChecks || (!shouldRunTests && !shouldRunBenchmark),
-        shouldRunBenchmark:
-            shouldRunBenchmark || (!shouldRunTests && !shouldRunTypeChecks)
+        shouldRunTests,
+        shouldRunTypeChecks,
+        shouldRunBenchmarks
     };
 }
