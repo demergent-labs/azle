@@ -1,6 +1,3 @@
-import * as dns from 'node:dns';
-dns.setDefaultResultOrder('ipv4first');
-
 import { expect, it, please, Test, wait } from 'azle/test/jest';
 import { writeFileSync } from 'fs';
 
@@ -8,7 +5,7 @@ import {
     originalServerTs,
     testChangedRapidlyServerTs,
     testChangedServerTs
-} from './server_ts';
+} from './server_source';
 
 export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
@@ -54,7 +51,7 @@ export function getTests(canisterId: string): Test {
                 // chokidar seems to debounce if writes are too close together
                 await new Promise((resolve) => setTimeout(resolve, 100));
             }
-        });
+        }, 20_000);
 
         wait('for Azle to reload', 90_000);
 
