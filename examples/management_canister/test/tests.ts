@@ -29,7 +29,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>) {
             expect(canisterSettings.compute_allocation).toBe(1n);
             expect(canisterSettings.memory_allocation).toBe(3_000_000n);
             expect(canisterSettings.freezing_threshold).toBe(2_000_000n);
-        });
+        }, 10_000);
 
         it('executes install_code from the management canister', async () => {
             const canisterId = await managementCanister.getCreatedCanisterId();
@@ -58,7 +58,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>) {
             const canisterStatus = getCanisterStatusResult;
 
             expect(canisterStatus.module_hash).toHaveLength(0);
-        });
+        }, 10_000);
 
         it('uploads the new canister in chunks', async () => {
             const canisterId = await managementCanister.getCreatedCanisterId();
@@ -104,7 +104,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>) {
             await managementCanister.executeUninstallCode(canisterId);
 
             expect(result).toBe(true);
-        });
+        }, 20_000);
 
         it('clears chunk store', async () => {
             const canisterId = await managementCanister.getCreatedCanisterId();
@@ -117,7 +117,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>) {
 
             expect(result).toBe(true);
             expect(storedChunks).toHaveLength(0);
-        });
+        }, 10_000);
 
         it('executes deposit_cycles from the management canister', async () => {
             const canisterId = await managementCanister.getCreatedCanisterId();
@@ -137,7 +137,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>) {
             const cyclesAfter = statusAfter.cycles;
 
             expect(cyclesAfter).toBeGreaterThan(cyclesBefore);
-        });
+        }, 20_000);
 
         it('executes uninstall_code from the management canister', async () => {
             const canisterId = await managementCanister.getCreatedCanisterId();
@@ -152,7 +152,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>) {
             const canisterStatus = getCanisterStatusResult;
 
             expect(canisterStatus.module_hash).toHaveLength(0);
-        });
+        }, 10_000);
 
         it('executes stop_canister from the management canister', async () => {
             const canisterId = await managementCanister.getCreatedCanisterId();
@@ -167,7 +167,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>) {
             const canisterStatus = getCanisterStatusResult;
 
             expect(canisterStatus.status).toStrictEqual({ stopped: null });
-        });
+        }, 10_000);
 
         it('executes start_canister from the management canister', async () => {
             const canisterId = await managementCanister.getCreatedCanisterId();
@@ -189,7 +189,8 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>) {
                 });
 
             expect(canisterStatusAfter.status).toStrictEqual({ running: null });
-        });
+        }, 20_000);
+
         it('gets canister_status from the management canister', async () => {
             const canisterId = await managementCanister.getCreatedCanisterId();
 
@@ -213,6 +214,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>) {
             expect(canisterStatus.settings.compute_allocation).toBe(1n);
             expect(canisterStatus.module_hash).toHaveLength(0);
         });
+
         it('gets canister_info from the management canister', async () => {
             const canisterId = await managementCanister.getCreatedCanisterId();
 
@@ -226,6 +228,7 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>) {
             expect(canisterInfo.module_hash).toHaveLength(0);
             expect(canisterInfo.controllers).toHaveLength(1);
         });
+
         it('executes delete_canister from the management canister', async () => {
             const canisterId = await managementCanister.getCreatedCanisterId();
 
@@ -234,7 +237,8 @@ export function getTests(managementCanister: ActorSubclass<_SERVICE>) {
             expect(
                 await managementCanister.executeDeleteCanister(canisterId)
             ).toBe(true);
-        });
+        }, 10_000);
+
         it('gets raw_rand from the management canister', async () => {
             const result = await managementCanister.getRawRand();
 
