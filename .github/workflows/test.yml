@@ -140,6 +140,7 @@ jobs:
                     "examples/new",
                     "examples/notify_raw",
                     "examples/null_example",
+                    "examples/open_value_sharing",
                     "examples/optional_types",
                     "examples/outgoing_http_requests",
                     "examples/pre_and_post_upgrade",

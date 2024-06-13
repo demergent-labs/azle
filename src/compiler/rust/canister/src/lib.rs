@@ -8,6 +8,8 @@ use ic_stable_structures::{
     DefaultMemoryImpl, StableBTreeMap, Storable,
 };
 use include_dir::{include_dir, Dir};
+use open_value_sharing::{Consumer, PeriodicBatch, PERIODIC_BATCHES};
+use std::fs;
 use wasmedge_quickjs::AsObject;
 
 mod ic;
@@ -190,4 +192,17 @@ fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
             break;
         }
     }
+}
+
+// TODO will this work for queries as well?
+#[ic_cdk_macros::update]
+pub fn _azle_chunk() {}
+
+fn get_consumer(consumer_path: &str) -> Result<Consumer, String> {
+    let consumer_string = std::fs::read_to_string(consumer_path)
+        .map_err(|err| format!("Error reading {consumer_path}: {err}"))?;
+    let consumer: Consumer = serde_json::from_str(&consumer_string)
+        .map_err(|err| format!("Error parsing {consumer_path}: {err}"))?;
+
+    Ok(consumer)
 }

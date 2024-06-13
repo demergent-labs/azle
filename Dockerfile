@@ -24,13 +24,14 @@ RUN mkdir /global_target_dir
 
 # The following is to pre-compile as many dependencies as possible for Azle projects
 # We simply copy over the current Rust setup and do a cargo build
-COPY rust/ /azle_rust_dependencies
+COPY src/compiler/rust/ /azle_rust_dependencies
 
 RUN touch /azle_rust_dependencies/canister/src/main.js
 RUN touch /azle_rust_dependencies/canister/src/candid.did
 RUN mkdir /azle_rust_dependencies/canister/src/assets
 RUN echo "{\"canister_methods\":{\"queries\":[],\"updates\":[],\"callbacks\":{}},\"env_vars\":[],\"assets\":[]}" > /azle_rust_dependencies/canister/src/compiler_info.json
-RUN echo "[workspace]\nmembers = [\"canister\"]\n\n[profile.release]\nopt-level = 'z'" > /azle_rust_dependencies/Cargo.toml
+RUN echo "[workspace]\nmembers = [\"canister\", \"canister_methods\", \"open_value_sharing\"]\n\n[profile.release]\nopt-level = 'z'" > /azle_rust_dependencies/Cargo.toml
+COPY Cargo.lock /azle_rust_dependencies
 
 WORKDIR /azle_rust_dependencies
 
