@@ -1,6 +1,3 @@
-import * as dns from 'node:dns';
-dns.setDefaultResultOrder('ipv4first');
-
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test/jest';
 import { getTests } from 'basic_bitcoin/test/tests';
@@ -13,7 +10,4 @@ const canisterId = getCanisterId('bitcoin_psbt');
 // automatically. That is to say you will need to start and stop the Bitcoin
 // daemon manually. Great for running cli commands after or during the tests to
 // check the state of the test network
-runTests(
-    'manual_bitcoin_psbt',
-    getTests(canisterId, getP2wpkhAddress, P2WPKH_ADDRESS_FORM)
-);
+runTests(getTests(canisterId, getP2wpkhAddress, P2WPKH_ADDRESS_FORM));

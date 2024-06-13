@@ -1,6 +1,3 @@
-import * as dns from 'node:dns';
-dns.setDefaultResultOrder('ipv4first');
-
 import { afterAll, beforeAll, describe } from '@jest/globals';
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test/jest';
@@ -16,10 +13,10 @@ const canisterId = getCanisterId('bitcoin_psbt');
 
 let bitcoinDaemon: BitcoinDaemon;
 
-runTests('Azle bitcoin psbt tests', () => {
+runTests(() => {
     beforeAll(async () => {
         bitcoinDaemon = await startBitcoinDaemon();
-    });
+    }, 60_000);
 
     afterAll(async () => {
         bitcoinDaemon.kill();

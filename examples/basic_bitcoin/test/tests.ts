@@ -92,7 +92,7 @@ export function getTests(
             expect(utxosResult.tip_height).toBe(FIRST_MINING_SESSION);
             expect(utxosResult.utxos.length).toBe(FIRST_MINING_SESSION);
             expect(checkUtxos(utxosResult.utxos)).toBe(true);
-        });
+        }, 10_000);
 
         it('gets an empty array from /get-current-fee-percentiles since no transactions have happened yet', async () => {
             const response = await fetch(
