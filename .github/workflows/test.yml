@@ -197,7 +197,9 @@ jobs:
                     "property_tests/tests/text",
                     "property_tests/tests/tuple",
                     "property_tests/tests/variant",
-                    "property_tests/tests/vec"
+                    "property_tests/tests/vec",
+                    "tests/end_to_end/candid_rpc/class_syntax/query",
+                    "tests/end_to_end/candid_rpc/class_syntax/simple_erc20"
                   ]
                   END
                   )

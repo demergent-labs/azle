@@ -1,0 +1,14 @@
+{
+    "canisters": {
+        "simple_erc20": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid": "src/index.did",
+            "candid_gen": "custom",
+            "declarations": {
+                "output": "test/dfx_generated/simple_erc20",
+                "node_compatibility": true
+            }
+        }
+    }
+}

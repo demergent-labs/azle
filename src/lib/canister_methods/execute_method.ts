@@ -1,8 +1,8 @@
 import { CandidType } from '../candid/candid_type';
 import { decode } from '../candid/serde/decode';
 import { encode } from '../candid/serde/encode';
-import { handleUncaughtError } from '../error';
 import { ic } from '../ic';
+import { handleUncaughtError } from '../stable/error';
 import { CanisterMethodInfo } from './types/canister_method_info';
 
 export function executeMethod(
