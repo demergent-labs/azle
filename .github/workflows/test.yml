@@ -224,6 +224,7 @@ jobs:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
             AZLE_USE_DOCKERFILE: ${{ matrix.azle_source == 'repo' }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
+            AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
         strategy:
             fail-fast: false # We want to see which example tests succeed and which ones fail, we don't want one example test to cancel the rest
             matrix:
@@ -322,7 +323,7 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
-              run: AZLE_PROPTEST_NUM_RUNS=5 AZLE_PROPTEST_VERBOSE=true AZLE_INTEGRATION_TEST_LINK_AZLE=true npm test
+              run: AZLE_PROPTEST_NUM_RUNS=5 AZLE_PROPTEST_VERBOSE=true npm test
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
