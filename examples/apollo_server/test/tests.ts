@@ -16,7 +16,10 @@ export function getTests(canisterId: string): Test {
             };
             const response = await fetch(origin, {
                 method: 'POST',
-                headers: [['Content-Type', 'application/json']],
+                headers: [
+                    ['Content-Type', 'application/json'],
+                    ['X-Ic-Force-Query', 'true']
+                ],
                 body: JSON.stringify({
                     query: `
                                 query {
@@ -40,7 +43,10 @@ export function getTests(canisterId: string): Test {
 
             const response = await fetch(origin, {
                 method: 'POST',
-                headers: [['Content-Type', 'application/json']],
+                headers: [
+                    ['Content-Type', 'application/json'],
+                    ['X-Ic-Force-Query', 'true']
+                ],
                 body: JSON.stringify({
                     query: `
                                 query {
