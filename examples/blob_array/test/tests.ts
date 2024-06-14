@@ -13,6 +13,7 @@ export function getTests(blob_canister: ActorSubclass<_SERVICE>): Test {
 
             expect(result).toStrictEqual(HELLO_BYTES);
         });
+
         it('sends an array of blobs', async () => {
             const result = await blob_canister.getBlobs();
 

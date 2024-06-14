@@ -4,14 +4,14 @@ export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
 
     return () => {
-        it('gets address using a 3rd party bitcoin library', async () => {
+        it('gets address using an off-the-shelf bitcoin library', async () => {
             const response = await fetch(`${origin}/get-address`);
             const responseText = await response.text();
 
             expect(responseText).toBe('1PmamxRspvjCV7vDqMpzvKf92epy1utZVj');
         });
 
-        it('gets public key using a 3rd party bitcoin library', async () => {
+        it('gets public key using an off-the-shelf bitcoin library', async () => {
             const response = await fetch(`${origin}/get-public-key`);
             const publicKey = await response.text();
 
@@ -20,7 +20,7 @@ export function getTests(canisterId: string): Test {
             );
         });
 
-        it('gets private key using a 3rd party bitcoin library', async () => {
+        it('gets private key using an off-the-shelf bitcoin library', async () => {
             const response = await fetch(`${origin}/get-private-key`);
             const responseText = await response.text();
 
@@ -29,7 +29,7 @@ export function getTests(canisterId: string): Test {
             );
         });
 
-        it('gets private key wif using a 3rd party bitcoin library', async () => {
+        it('gets private key wif using an off-the-shelf bitcoin library', async () => {
             const response = await fetch(`${origin}/get-private-key-wif`);
             const responseText = await response.text();
 
@@ -38,7 +38,7 @@ export function getTests(canisterId: string): Test {
             );
         });
 
-        it('creates transaction using a 3rd party bitcoin library', async () => {
+        it('creates transaction using an off-the-shelf bitcoin library', async () => {
             const response = await fetch(`${origin}/create-transaction`, {
                 method: 'POST'
             });
@@ -49,7 +49,7 @@ export function getTests(canisterId: string): Test {
             );
         });
 
-        it('signs bitcoin message using a 3rd party bitcoin library', async () => {
+        it('signs bitcoin message using an off-the-shelf bitcoin library', async () => {
             const response = await fetch(`${origin}/sign-bitcoin-message`, {
                 method: 'POST'
             });
@@ -58,7 +58,7 @@ export function getTests(canisterId: string): Test {
             expect(responseText).toHaveLength(88);
         }, 10_000);
 
-        it('verifies a well signed bitcoin message using a 3rd party bitcoin library', async () => {
+        it('verifies a well signed bitcoin message using an off-the-shelf bitcoin library', async () => {
             const response = await fetch(`${origin}/verify-bitcoin-message`, {
                 method: 'POST'
             });
@@ -67,7 +67,7 @@ export function getTests(canisterId: string): Test {
             expect(responseJson).toBe(true);
         }, 10_000);
 
-        it('fails to verify a poorly signed bitcoin message using a 3rd party bitcoin library', async () => {
+        it('fails to verify a poorly signed bitcoin message using an off-the-shelf bitcoin library', async () => {
             const response = await fetch(
                 `${origin}/fail-to-verify-bitcoin-message`,
                 {
