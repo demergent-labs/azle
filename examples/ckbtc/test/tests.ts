@@ -2,7 +2,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { getCanisterId } from 'azle/dfx';
-import { AzleResult, Test } from 'azle/test';
+import { expect, it, please, Test, wait } from 'azle/test/jest';
 import { execSync } from 'child_process';
 
 // @ts-ignore
@@ -19,137 +19,104 @@ type Config = {
 
 let db: Config[] = [];
 
-export function getTests(): Test[] {
-    return [
-        {
-            name: 'Create Identities',
-            prep: async () => {
-                db = [createConfig(1), createConfig(2)];
+export function getTests(): Test {
+    return () => {
+        please('create Identities', async () => {
+            db = [createConfig(1), createConfig(2)];
 
-                console.log(`0 | ${db[0].caller}`);
-                console.log(`1 | ${db[1].caller}\n`);
+            console.info(`0 | ${db[0].caller}`);
+            console.info(`1 | ${db[1].caller}\n`);
+        });
+
+        it('gets balance for first identity', async () => {
+            return testGetBalance(0, 0n);
+        });
+
+        it('gets balance for second identity', async () => {
+            return testGetBalance(1, 0n);
+        });
+
+        it('gets deposit address for second address', async () => {
+            let config = db[0];
+
+            config.depositAddress = await config.canister.getDepositAddress();
+
+            expect(config.depositAddress).toHaveLength(44);
+        });
+
+        it('gets deposit address for second address', async () => {
+            let config = db[1];
+
+            config.depositAddress = await config.canister.getDepositAddress();
+
+            expect(config.depositAddress).toHaveLength(44);
+        });
+
+        please('mint BTC', async () => {
+            execSync(`npm run mint --address=${db[0].depositAddress}`);
+        });
+
+        wait('for transactions to settle', 60_000);
+
+        it('updates balance for first identity', async () => {
+            const config = db[0];
+
+            const updateBalanceResult = await config.canister.updateBalance();
+
+            if ('Err' in updateBalanceResult) {
+                throw new Error(Object.keys(updateBalanceResult.Err)[0]);
             }
-        },
-        {
-            name: 'getBalance',
-            test: async () => {
-                return testGetBalance(0, 0n);
-            }
-        },
-        {
-            name: 'getBalance',
-            test: async () => {
-                return testGetBalance(1, 0n);
-            }
-        },
-        {
-            name: 'getDepositAddress',
-            test: async () => {
-                let config = db[0];
 
-                config.depositAddress =
-                    await config.canister.getDepositAddress();
+            expect(true).toBe(true);
+        });
 
-                return { Ok: config.depositAddress.length === 44 };
-            }
-        },
-        {
-            name: 'getDepositAddress',
-            test: async () => {
-                let config = db[1];
+        it('fails to update balance for second identity without new utxos', async () => {
+            const config = db[1];
 
-                config.depositAddress =
-                    await config.canister.getDepositAddress();
+            const updateBalanceResult = await config.canister.updateBalance();
 
-                return { Ok: config.depositAddress.length === 44 };
-            }
-        },
-        {
-            name: 'mint BTC',
-            prep: async () => {
-                execSync(`npm run mint --address=${db[0].depositAddress}`);
-            }
-        },
-        {
-            name: 'wait for transactions to settle',
-            wait: 60_000
-        },
-        {
-            name: 'updateBalance',
-            test: async () => {
-                const config = db[0];
-
-                const updateBalanceResult =
-                    await config.canister.updateBalance();
-
-                if ('Err' in updateBalanceResult) {
-                    return { Err: Object.keys(updateBalanceResult.Err)[0] };
-                }
-
-                return { Ok: true };
-            }
-        },
-        {
-            name: 'updateBalance',
-            test: async () => {
-                const config = db[1];
-
-                const updateBalanceResult =
-                    await config.canister.updateBalance();
-
-                if ('Err' in updateBalanceResult) {
-                    const errorType = Object.keys(updateBalanceResult.Err)[0];
-
-                    return { Ok: errorType === 'NoNewUtxos' };
-                }
-                return {
-                    Err: `Expected principal ${config.caller} to not have new UTXOs`
-                };
-            }
-        },
-        {
-            name: 'getBalance',
-            test: async () => {
-                return testGetBalance(0, 4_999_999_000n);
-            }
-        },
-        {
-            name: 'getBalance',
-            test: async () => {
-                return testGetBalance(1, 0n);
-            }
-        },
-        {
-            name: 'transfer',
-            test: async () => {
-                const config = db[0];
-
-                const tranferResult = await config.canister.transfer(
-                    db[1].caller,
-                    1_000_000_000n
+            if ('Ok' in updateBalanceResult) {
+                throw new Error(
+                    `Expected principal ${config.caller} to not have new UTXOs`
                 );
+            }
+            const errorType = Object.keys(updateBalanceResult.Err)[0];
 
-                if ('Err' in tranferResult) {
-                    return { Err: Object.keys(tranferResult.Err)[0] };
-                }
+            expect(errorType).toBe('NoNewUtxos');
+        });
 
-                const transferIndex = tranferResult.Ok;
-                return { Ok: transferIndex === 1n };
+        it('gets balance for first identity', async () => {
+            return testGetBalance(0, 4_999_999_000n);
+        });
+
+        it('gets balance for second identity', async () => {
+            return testGetBalance(1, 0n);
+        });
+
+        it('transfers 1_000_000_000n from first canister to second canister', async () => {
+            const config = db[0];
+
+            const tranferResult = await config.canister.transfer(
+                db[1].caller,
+                1_000_000_000n
+            );
+
+            if ('Err' in tranferResult) {
+                throw new Error(Object.keys(tranferResult.Err)[0]);
             }
-        },
-        {
-            name: 'getBalance',
-            test: async () => {
-                return testGetBalance(0, 3_999_999_000n);
-            }
-        },
-        {
-            name: 'getBalance',
-            test: async () => {
-                return testGetBalance(1, 1_000_000_000n);
-            }
-        }
-    ];
+
+            const transferIndex = tranferResult.Ok;
+            expect(transferIndex).toBe(1n);
+        });
+
+        it('gets balance for first identity after transfer', async () => {
+            return testGetBalance(0, 3_999_999_000n);
+        });
+
+        it('gets balance for second identity after transfer', async () => {
+            return testGetBalance(1, 1_000_000_000n);
+        });
+    };
 }
 
 function createIdentity(seed: number): Identity {
@@ -175,8 +142,8 @@ function createConfig(id: number): Config {
 async function testGetBalance(
     account: number,
     expectedBalance: bigint
-): Promise<AzleResult<boolean, string>> {
+): Promise<void> {
     const config = db[account];
     const balance = await config.canister.getBalance();
-    return { Ok: balance === expectedBalance };
+    expect(balance).toBe(expectedBalance);
 }

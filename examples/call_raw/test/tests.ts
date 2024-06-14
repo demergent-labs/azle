@@ -1,98 +1,72 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { ok, Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 
 import { _SERVICE } from './dfx_generated/call_raw/call_raw.did';
 
-export function get_tests(call_raw_canister: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'execute_call_raw raw_rand',
-            test: async () => {
-                const result = await call_raw_canister.executeCallRaw(
-                    Principal.fromText('aaaaa-aa'),
-                    'raw_rand',
-                    '()',
-                    0n
-                );
+export function getTests(call_raw_canister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('calls raw rand via execute_call_raw', async () => {
+            const result = await call_raw_canister.executeCallRaw(
+                Principal.fromText('aaaaa-aa'),
+                'raw_rand',
+                '()',
+                0n
+            );
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
-
-                return {
-                    Ok: result.Ok.includes('blob')
-                };
+            if ('Err' in result) {
+                throw new Error(result.Err);
             }
-        },
-        {
-            name: 'execute_call_raw create_canister',
-            test: async () => {
-                const result = await call_raw_canister.executeCallRaw(
-                    Principal.fromText('aaaaa-aa'),
-                    'create_canister',
-                    '(record { settings = null })',
-                    100_000_000_000n
-                );
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
+            expect(result).toHaveProperty('Ok');
+            expect(result.Ok).toMatch('blob');
+        });
 
-                return {
-                    Ok:
-                        result.Ok.includes('record') &&
-                        result.Ok.includes('principal')
-                };
+        it('calls create_canister via execute_call_raw', async () => {
+            const result = await call_raw_canister.executeCallRaw(
+                Principal.fromText('aaaaa-aa'),
+                'create_canister',
+                '(record { settings = null })',
+                100_000_000_000n
+            );
+
+            if ('Err' in result) {
+                throw new Error(result.Err);
             }
-        },
-        {
-            name: 'execute_call_raw128 raw_rand',
-            test: async () => {
-                const result = await call_raw_canister.executeCallRaw128(
-                    Principal.fromText('aaaaa-aa'),
-                    'raw_rand',
-                    '()',
-                    0n
-                );
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
+            expect(result.Ok).toMatch('record');
+            expect(result.Ok).toMatch('principal');
+        });
 
-                return {
-                    Ok: result.Ok.includes('blob')
-                };
+        it('calls raw_rand via execute_call_raw128', async () => {
+            const result = await call_raw_canister.executeCallRaw128(
+                Principal.fromText('aaaaa-aa'),
+                'raw_rand',
+                '()',
+                0n
+            );
+
+            if ('Err' in result) {
+                throw new Error(result.Err);
             }
-        },
-        {
-            name: 'execute_call_raw128 create_canister',
-            test: async () => {
-                const result = await call_raw_canister.executeCallRaw128(
-                    Principal.fromText('aaaaa-aa'),
-                    'create_canister',
-                    '(record { settings = null })',
-                    100_000_000_000n
-                );
 
-                if (!ok(result)) {
-                    return {
-                        Err: result.Err
-                    };
-                }
+            expect(result.Ok).toMatch('blob');
+        });
 
-                return {
-                    Ok:
-                        result.Ok.includes('record') &&
-                        result.Ok.includes('principal')
-                };
+        it('calls create_canister via execute_call_raw128', async () => {
+            const result = await call_raw_canister.executeCallRaw128(
+                Principal.fromText('aaaaa-aa'),
+                'create_canister',
+                '(record { settings = null })',
+                100_000_000_000n
+            );
+
+            if ('Err' in result) {
+                throw new Error(result.Err);
             }
-        }
-    ];
+
+            expect(result.Ok).toMatch('record');
+            expect(result.Ok).toMatch('principal');
+        });
+    };
 }
