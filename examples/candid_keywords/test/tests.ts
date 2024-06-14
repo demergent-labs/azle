@@ -11,12 +11,14 @@ export function getTests(candid_canister: ActorSubclass<_SERVICE>): Test {
 
             expect(true).toBe(true);
         });
+
         it('returns a variant with some keyword options', async () => {
             const result = await candid_canister.variant();
 
             expect(result).toHaveProperty('query');
             expect((result as { query: string }).query).toBe('hello');
         });
+
         it('returns a record with every keyword', async () => {
             const result = await candid_canister.candidTypes();
             const expectedResult = {

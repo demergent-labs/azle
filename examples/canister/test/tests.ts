@@ -7,20 +7,20 @@ import { _SERVICE } from './dfx_generated/canister/canister.did';
 
 export function getTests(canister: ActorSubclass<_SERVICE>): Test {
     return () => {
-        it('passes a canisters as an argument', async () => {
+        it('passes a canister as an argument', async () => {
             const managementCanister = Principal.fromText('aaaaa-aa');
             const result = await canister.canisterParam(managementCanister);
 
             expect(result).toStrictEqual(managementCanister);
         });
 
-        it('receives a canisters as a return value', async () => {
+        it('receives a canister as a return value', async () => {
             const result = await canister.canisterReturnType();
 
             expect(result.toText()).toBe(getCanisterId('some_canister'));
         });
 
-        it('receive a nested canisters as a return value', async () => {
+        it('receives a nested canister as a return value', async () => {
             const result = await canister.canisterNestedReturnType();
 
             expect(result.someCanister.toText()).toBe(
@@ -28,7 +28,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
             );
         });
 
-        it('receives canisters in a list as a return value', async () => {
+        it('receives canister in a list as a return value', async () => {
             const canisterList = [
                 Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai'),
                 Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')

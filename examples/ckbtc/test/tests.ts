@@ -24,8 +24,8 @@ export function getTests(): Test {
         please('create Identities', async () => {
             db = [createConfig(1), createConfig(2)];
 
-            console.log(`0 | ${db[0].caller}`);
-            console.log(`1 | ${db[1].caller}\n`);
+            console.info(`0 | ${db[0].caller}`);
+            console.info(`1 | ${db[1].caller}\n`);
         });
 
         it('gets balance for first identity', async () => {
