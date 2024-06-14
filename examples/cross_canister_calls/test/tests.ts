@@ -32,7 +32,7 @@ export function getTests(
             expect(result).toBe(0n);
         });
 
-        it('fail to get non-existent account 1 via cross canister call', async () => {
+        it('fails to get non-existent account 1 via cross canister call', async () => {
             const result = await canister1.account({
                 id: '1'
             });

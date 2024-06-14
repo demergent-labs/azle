@@ -21,7 +21,7 @@ export function getRecTests(
     rec_init_canister: ActorSubclass<_REC_SERVICE>
 ): Test {
     return () => {
-        it('accepts a recursive structures as an argument for the init method', async () => {
+        it('accepts a recursive structure as an argument for the init method', async () => {
             const result = await rec_init_canister.countBranches();
 
             expect(result).toBe(1n);
