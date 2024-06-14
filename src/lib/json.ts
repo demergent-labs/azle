@@ -5,5 +5,11 @@ export function jsonStringify(value: any, replacer?: any, space?: any): string {
 }
 
 export function jsonParse(value: string, reviver?: any): any {
-    return JSON.parse(value, reviver ?? jsonReviver);
+    try {
+        return JSON.parse(value, reviver ?? jsonReviver);
+    } catch (error: any) {
+        throw new Error(
+            `Error parsing JSON: ${error.message}. Value: ${value}`
+        );
+    }
 }

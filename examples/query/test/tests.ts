@@ -1,20 +1,15 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 
 // @ts-ignore
 import { _SERVICE } from '../dfx_generated/query/query.did';
 
-export function getTests(query_canister: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'query',
-            test: async () => {
-                const result = await query_canister.simpleQuery();
+export function getTests(queryCanister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('makes a simple query call', async () => {
+            const result = await queryCanister.simpleQuery();
 
-                return {
-                    Ok: result === 'This is a query function'
-                };
-            }
-        }
-    ];
+            return expect(result).toBe('This is a query function');
+        });
+    };
 }
