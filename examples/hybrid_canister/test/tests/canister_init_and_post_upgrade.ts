@@ -1,10 +1,10 @@
 import { getCanisterId } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { expect, it, please, Test } from 'azle/test/jest';
 import { execSync } from 'child_process';
 
 import { createActor } from '../dfx_generated/canister_init_and_post_upgrade';
 
-export function getTests(): Test[] {
+export function getTests(): Test {
     const canisterId = getCanisterId('canister_init_and_post_upgrade');
     const origin = `http://${canisterId}.localhost:8000`;
     const actor = createActor(canisterId, {
@@ -13,97 +13,66 @@ export function getTests(): Test[] {
         }
     });
 
-    return [
-        {
-            name: 'canister_init_and_post_upgrade init',
-            test: async () => {
-                try {
-                    const httpQueryResponse = await fetch(
-                        `${origin}/http-query`
-                    );
-                    const httpQueryResponseText =
-                        await httpQueryResponse.text();
+    return () => {
+        it('properly hooks up http functionality to a canister with a developer defined init method', async () => {
+            const httpQueryResponse = await fetch(`${origin}/http-query`);
+            const httpQueryResponseText = await httpQueryResponse.text();
 
-                    const httpUpdateResponse = await fetch(
-                        `${origin}/http-update`,
-                        {
-                            method: 'POST'
-                        }
-                    );
-                    const httpUpdateResponseText =
-                        await httpUpdateResponse.text();
+            const httpUpdateResponse = await fetch(`${origin}/http-update`, {
+                method: 'POST'
+            });
+            const httpUpdateResponseText = await httpUpdateResponse.text();
 
-                    const candidQueryText = await actor.candidQuery();
-                    const candidUpdateText = await actor.candidUpdate();
+            const candidQueryText = await actor.candidQuery();
+            const candidUpdateText = await actor.candidUpdate();
 
-                    return {
-                        Ok:
-                            httpQueryResponseText ===
-                                'http-query-canister-init-and-post-upgrade-init' &&
-                            httpUpdateResponseText ===
-                                'http-update-canister-init-and-post-upgrade-init' &&
-                            candidQueryText ===
-                                'candidQueryCanisterInitAndPostUpgrade-init' &&
-                            candidUpdateText ===
-                                'candidUpdateCanisterInitAndPostUpgrade-init'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+            expect(httpQueryResponseText).toBe(
+                'http-query-canister-init-and-post-upgrade-init'
+            );
+            expect(httpUpdateResponseText).toBe(
+                'http-update-canister-init-and-post-upgrade-init'
+            );
+            expect(candidQueryText).toBe(
+                'candidQueryCanisterInitAndPostUpgrade-init'
+            );
+            expect(candidUpdateText).toBe(
+                'candidUpdateCanisterInitAndPostUpgrade-init'
+            );
+        });
+
+        please('deploy canister_init_and_post_upgrade', async () => {
+            execSync(
+                `dfx deploy --upgrade-unchanged canister_init_and_post_upgrade`,
+                {
+                    stdio: 'inherit'
                 }
-            }
-        },
-        {
-            name: 'deploy canister_init_and_post_upgrade',
-            prep: async () => {
-                execSync(
-                    `dfx deploy --upgrade-unchanged canister_init_and_post_upgrade`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-            }
-        },
-        {
-            name: 'canister_init_and_post_upgrade postUpgrade',
-            test: async () => {
-                try {
-                    const httpQueryResponse = await fetch(
-                        `${origin}/http-query`
-                    );
-                    const httpQueryResponseText =
-                        await httpQueryResponse.text();
+            );
+        });
 
-                    const httpUpdateResponse = await fetch(
-                        `${origin}/http-update`,
-                        {
-                            method: 'POST'
-                        }
-                    );
-                    const httpUpdateResponseText =
-                        await httpUpdateResponse.text();
+        it('properly hooks up http functionality to a canister with a developer defined postUpgrade method', async () => {
+            const httpQueryResponse = await fetch(`${origin}/http-query`);
+            const httpQueryResponseText = await httpQueryResponse.text();
 
-                    const candidQueryText = await actor.candidQuery();
-                    const candidUpdateText = await actor.candidUpdate();
+            const httpUpdateResponse = await fetch(`${origin}/http-update`, {
+                method: 'POST'
+            });
+            const httpUpdateResponseText = await httpUpdateResponse.text();
 
-                    return {
-                        Ok:
-                            httpQueryResponseText ===
-                                'http-query-canister-init-and-post-upgrade-postUpgrade' &&
-                            httpUpdateResponseText ===
-                                'http-update-canister-init-and-post-upgrade-postUpgrade' &&
-                            candidQueryText ===
-                                'candidQueryCanisterInitAndPostUpgrade-postUpgrade' &&
-                            candidUpdateText ===
-                                'candidUpdateCanisterInitAndPostUpgrade-postUpgrade'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        }
-    ];
+            const candidQueryText = await actor.candidQuery();
+            const candidUpdateText = await actor.candidUpdate();
+
+            expect(httpQueryResponseText).toBe(
+                'http-query-canister-init-and-post-upgrade-postUpgrade'
+            );
+            expect(httpUpdateResponseText).toBe(
+                'http-update-canister-init-and-post-upgrade-postUpgrade'
+            );
+            expect(candidQueryText).toBe(
+                'candidQueryCanisterInitAndPostUpgrade-postUpgrade'
+            );
+            expect(candidUpdateText).toBe(
+                'candidUpdateCanisterInitAndPostUpgrade-postUpgrade'
+            );
+        });
+    };
 }
