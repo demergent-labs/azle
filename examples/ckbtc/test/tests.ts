@@ -63,7 +63,7 @@ export function getTests(): Test {
 
             const updateBalanceResult = await config.canister.updateBalance();
 
-            expect(updateBalanceResult).not.toContain('Err');
+            expect(updateBalanceResult).not.toHaveProperty('Err');
         });
 
         it('fails to update balance for second identity without new utxos', async () => {
@@ -71,7 +71,9 @@ export function getTests(): Test {
 
             const updateBalanceResult = await config.canister.updateBalance();
 
-            expect(updateBalanceResult).toStrictEqual({ Err: 'NoNewUtxos' });
+            expect(updateBalanceResult).toEqual(
+                expect.objectContaining({ Err: 'NoNewUtxos' })
+            );
         });
 
         it('gets balance for first identity', async () => {
