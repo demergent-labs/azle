@@ -86,6 +86,8 @@ export function it(
         timeout
     );
 }
+it.only = test.only;
+it.skip = test.skip;
 
 function processEnvVars(): {
     shouldRunTests: boolean;
