@@ -12,12 +12,14 @@ export function getTests(echoCanister: ActorSubclass<_SERVICE>): Test {
 
             expect(result).toBe(phrase);
         });
+
         it('echoes nothing', async () => {
             const phrase = '';
             const result = await echoCanister.say(phrase);
 
             expect(result).toBe(phrase);
         });
+
         it('echoes a lot', async () => {
             const phrase = `
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do

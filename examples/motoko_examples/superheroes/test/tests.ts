@@ -63,6 +63,7 @@ export function getTests(superheroesCanister: ActorSubclass<_SERVICE>): Test {
 
             expect(result).toBe(true);
         });
+
         it('updates removing superpowers', async () => {
             const superman: Superhero = {
                 name: 'Superman',
@@ -72,11 +73,13 @@ export function getTests(superheroesCanister: ActorSubclass<_SERVICE>): Test {
 
             expect(result).toBe(true);
         });
+
         it('deletes with a valid id', async () => {
             const result = await superheroesCanister.deleteHero(0);
 
             expect(result).toBe(true);
         });
+
         it('deletes with an invalid id', async () => {
             const result = await superheroesCanister.deleteHero(99);
 

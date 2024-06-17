@@ -11,6 +11,7 @@ export function getTests(hello_canister: ActorSubclass<_SERVICE>): Test {
 
             expect(result).toBe('Hello, everyone!');
         });
+
         it('greets nobody', async () => {
             const result = await hello_canister.greet('');
 

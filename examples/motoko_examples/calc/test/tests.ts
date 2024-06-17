@@ -11,26 +11,31 @@ export function getTests(calcCanister: ActorSubclass<_SERVICE>): Test {
 
             expect(result).toBe(5n);
         });
+
         it('subtracts 2', async () => {
             const result = await calcCanister.sub(2n);
 
             expect(result).toBe(3n);
         });
+
         it('multiplies by 6', async () => {
             const result = await calcCanister.mul(6n);
 
             expect(result).toBe(18n);
         });
+
         it('divides by 2', async () => {
             const result = await calcCanister.div(2n);
 
             expect(result).toStrictEqual([9n]);
         });
+
         it('clears state', async () => {
             const result = await calcCanister.clearall();
 
             expect(result).toBeUndefined();
         });
+
         it('adds 0', async () => {
             const result = await calcCanister.add(0n);
 
