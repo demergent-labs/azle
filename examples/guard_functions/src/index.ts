@@ -19,14 +19,14 @@ export default Canister({
         return state.counter;
     }),
     noOptionsObject: query([], bool, () => {
-        console.info('callExpressionWithoutOptionsObject called');
+        console.info('noOptionsObject called');
         return true;
     }),
     emptyOptionsObject: query(
         [],
         bool,
         () => {
-            console.info('callExpressionWithEmptyOptionsObject called');
+            console.info('emptyOptionsObject called');
             return true;
         },
         {}
