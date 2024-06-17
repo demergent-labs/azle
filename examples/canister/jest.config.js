@@ -5,5 +5,6 @@ module.exports = {
     transform: {
         '^.+\\.ts$': 'ts-jest',
         '^.+\\.js$': 'ts-jest'
-    }
+    },
+    transformIgnorePatterns: ['/node_modules/(?!(azle)/)'] // Make sure azle is transformed
 };
