@@ -42,7 +42,7 @@ export function getTests(canisterName: string): Test {
 
         wait('for identity to be set', 5_000);
 
-        it('Headers Array', async () => {
+        it('supports an array of headers in the client side fetch', async () => {
             await mainPage.click('>>> #headersArrayButton');
 
             await mainPage.waitForNetworkIdle();
@@ -54,7 +54,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         });
 
-        it('Headers Object', async () => {
+        it('supports a headers object in the client side fetch', async () => {
             await mainPage.click('>>> #headersObjectButton');
 
             await mainPage.waitForNetworkIdle();
@@ -66,7 +66,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         });
 
-        it('Body Uint8Array', async () => {
+        it('supports a Uint8Array body in the client side fetch', async () => {
             await mainPage.click('>>> #bodyUint8ArrayButton');
 
             // I believe that await mainPage.waitForNetworkIdle();
@@ -81,7 +81,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         }, 10_000);
 
-        it('Body String', async () => {
+        it('supports a string body in the client side fetch', async () => {
             await mainPage.click('>>> #bodyStringButton');
 
             // I believe that await mainPage.waitForNetworkIdle();
@@ -96,7 +96,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         }, 10_000);
 
-        it('Body ArrayBuffer', async () => {
+        it('supports an ArrayBuffer body in the client side fetch', async () => {
             await mainPage.click('>>> #bodyArrayBufferButton');
 
             // I believe that await mainPage.waitForNetworkIdle();
@@ -111,7 +111,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         }, 10_000);
 
-        it('Body Blob', async () => {
+        it('supports a blob body in the client side fetch', async () => {
             await mainPage.click('>>> #bodyBlobButton');
 
             // I believe that await mainPage.waitForNetworkIdle();
@@ -126,7 +126,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         }, 10_000);
 
-        it('Body DataView', async () => {
+        it('supports a DataView body in the client side fetch', async () => {
             await mainPage.click('>>> #bodyDataViewButton');
 
             // I believe that await mainPage.waitForNetworkIdle();
@@ -141,7 +141,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         }, 10_000);
 
-        it('Url Query Params GET', async () => {
+        it('supports GET methods with URL query params in the client side fetch', async () => {
             await mainPage.click('>>> #urlQueryParamsGetButton');
 
             await mainPage.waitForNetworkIdle();
@@ -153,7 +153,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         }, 10_000);
 
-        it('Url Query Params POST', async () => {
+        it('supports POST methods with URL query params in the client side fetch', async () => {
             await mainPage.click('>>> #urlQueryParamsPostButton');
 
             // I believe that await mainPage.waitForNetworkIdle();
@@ -168,7 +168,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         }, 10_000);
 
-        it('Not Authorized GET', async () => {
+        it('returns status 401 for unauthorized GET methods in the client side fetch', async () => {
             await mainPage.click('>>> #notAuthorizedGetButton');
 
             await mainPage.waitForNetworkIdle();
@@ -180,7 +180,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         }, 10_000);
 
-        it('Not Authorized POST', async () => {
+        it('returns status 401 for unauthorized POST methods in the client side fetch', async () => {
             await mainPage.click('>>> #notAuthorizedPostButton');
 
             // I believe that await mainPage.waitForNetworkIdle();
@@ -195,7 +195,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         }, 10_000);
 
-        it('HEAD', async () => {
+        it('supports HEAD methods in the client side fetch', async () => {
             await mainPage.click('>>> #headButton');
 
             await mainPage.waitForNetworkIdle();
@@ -207,7 +207,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         });
 
-        it('OPTIONS', async () => {
+        it('supports OPTIONS methods in the client side fetch', async () => {
             await mainPage.click('>>> #optionsButton');
 
             await mainPage.waitForNetworkIdle();
@@ -219,7 +219,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         });
 
-        please('Close browser', async () => {
+        please('Close browser in the client side fetch', async () => {
             await browser.close();
         });
     };

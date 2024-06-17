@@ -25,6 +25,7 @@ export function getTests(canisterId: string): Test {
 
             expect(responseText.trim()).toBe('test2');
         });
+
         it('reads a sibling file', async () => {
             const response = await fetch(`${origin}/read-test3`, {
                 method: 'PUT',
@@ -37,6 +38,7 @@ export function getTests(canisterId: string): Test {
 
             expect(responseText.trim()).toBe('test3');
         });
+
         it('reads in a file in a grandchild directory', async () => {
             const response = await fetch(`${origin}/read-test5`, {
                 method: 'PATCH',
