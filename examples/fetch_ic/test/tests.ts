@@ -219,7 +219,7 @@ export function getTests(canisterName: string): Test {
             expect(success).toBe(true);
         });
 
-        please('Close browser in the client side fetch', async () => {
+        please('close browser in the client side fetch', async () => {
             await browser.close();
         });
     };
