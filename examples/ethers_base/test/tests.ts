@@ -43,10 +43,7 @@ export function getTests(canisterId: string): Test {
             const response = await fetch(
                 `${origin}/address-balance?address=${callerAddress}`,
                 {
-                    headers: [
-                        ['Content-Type', 'application/json'],
-                        ['X-Ic-Force-Update', 'true']
-                    ]
+                    headers: [['X-Ic-Force-Update', 'true']]
                 }
             );
             const responseJson = jsonParse(await response.text());
@@ -58,10 +55,7 @@ export function getTests(canisterId: string): Test {
             const response = await fetch(
                 `${origin}/address-balance?address=${canisterAddress}`,
                 {
-                    headers: [
-                        ['Content-Type', 'application/json'],
-                        ['X-Ic-Force-Update', 'true']
-                    ]
+                    headers: [['X-Ic-Force-Update', 'true']]
                 }
             );
             const responseJson = jsonParse(await response.text());
@@ -92,10 +86,7 @@ export function getTests(canisterId: string): Test {
             const response = await fetch(
                 `${origin}/address-balance?address=${canisterAddress}`,
                 {
-                    headers: [
-                        ['Content-Type', 'application/json'],
-                        ['X-Ic-Force-Update', 'true']
-                    ]
+                    headers: [['X-Ic-Force-Update', 'true']]
                 }
             );
             const responseJson = jsonParse(await response.text());
@@ -123,10 +114,7 @@ export function getTests(canisterId: string): Test {
             const response = await fetch(
                 `${origin}/address-balance?address=${canisterAddress}`,
                 {
-                    headers: [
-                        ['Content-Type', 'application/json'],
-                        ['X-Ic-Force-Update', 'true']
-                    ]
+                    headers: [['X-Ic-Force-Update', 'true']]
                 }
             );
             const responseJson = jsonParse(await response.text());
@@ -138,10 +126,7 @@ export function getTests(canisterId: string): Test {
             const response = await fetch(
                 `${origin}/address-balance?address=${callerAddress}`,
                 {
-                    headers: [
-                        ['Content-Type', 'application/json'],
-                        ['X-Ic-Force-Update', 'true']
-                    ]
+                    headers: [['X-Ic-Force-Update', 'true']]
                 }
             );
             const responseJson = jsonParse(await response.text());
