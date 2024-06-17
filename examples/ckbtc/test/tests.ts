@@ -92,7 +92,7 @@ export function getTests(): Test {
                 1_000_000_000n
             );
 
-            expect(transferResult).not.toContain('Err');
+            expect(transferResult).not.toHaveProperty('Err');
             expect(transferResult).toStrictEqual({ Ok: 1n });
         });
 
