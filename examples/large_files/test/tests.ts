@@ -1,233 +1,90 @@
-import * as dns from 'node:dns';
-dns.setDefaultResultOrder('ipv4first');
-
-import { generateIdentity, getCanisterId } from 'azle/dfx';
+import { afterAll, beforeAll, describe } from '@jest/globals';
+import { getCanisterId } from 'azle/dfx';
 import { hashFile } from 'azle/scripts/hash_file';
 import { createActor } from 'azle/src/compiler/file_uploader/uploader_actor';
-import { Test } from 'azle/test';
+import { expect, it, please, Test } from 'azle/test/jest';
 import { execSync } from 'child_process';
 import { rm } from 'fs/promises';
 import { join } from 'path';
-import { v4 } from 'uuid';
 
+import { Unit } from '../../../scripts/file_generator';
 import { AZLE_UPLOADER_IDENTITY_NAME } from '../../../src/compiler/uploader_identity';
-import { generateTestFileOfSize } from './generateTestFiles';
+import { getAuthorizationTests } from './authorization_tests';
+import { generateFiles, getDfxConfigFileTests } from './auto_tests';
+import { generateTestFileOfSize } from './generate_test_files';
+import { hugeFilesTests } from './huge_file_tests';
+import { manualTests } from './manual_tests';
 
-export function getTests(canisterId: string): Test[] {
+export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
-    const unauthorizedUser = `test_azle_unauthorized_${v4()}`;
 
-    return [
-        {
-            name: 'Set up unauthorized user',
-            prep: async () => {
-                generateIdentity(unauthorizedUser);
-            }
-        },
-        {
-            name: 'Unauthorized Upload from actor',
-            test: async () => {
-                const destPath = 'assets/unauthorizedAddition';
-                const actor = await createActor(
-                    getCanisterId('backend'),
-                    unauthorizedUser
-                );
-                try {
-                    await actor.upload_file_chunk(
-                        destPath,
-                        0n,
-                        0n,
-                        Uint8Array.from([1, 2, 3, 4]),
-                        4n
-                    );
-                } catch (err: any) {
-                    return {
-                        Ok: err.message.includes(
-                            'Not Authorized: only controllers of this canister may call this method'
-                        )
-                    };
-                }
-                return { Ok: false };
-            }
-        },
-        {
-            name: 'Unauthorized get hash status from actor',
-            test: async () => {
-                const actor = await createActor(
-                    getCanisterId('backend'),
-                    unauthorizedUser
-                );
-                try {
-                    await actor.get_hash_status('assets/test0B');
-                } catch (err: any) {
-                    return {
-                        Ok: err.message.includes(
-                            'Not Authorized: only controllers of this canister may call this method'
-                        )
-                    };
-                }
-                return { Ok: false };
-            }
-        },
-        {
-            name: 'Unauthorized get hash from actor',
-            test: async () => {
-                const actor = await createActor(
-                    getCanisterId('backend'),
-                    unauthorizedUser
-                );
-                try {
-                    await actor.get_file_hash('assets/test0B');
-                } catch (err: any) {
-                    return {
-                        Ok: err.message.includes(
-                            'Not Authorized: only controllers of this canister may call this method'
-                        )
-                    };
-                }
-                return { Ok: false };
-            }
-        },
-        {
-            name: 'Unauthorized clear file and info from actor',
-            test: async () => {
-                const actor = await createActor(
-                    getCanisterId('backend'),
-                    unauthorizedUser
-                );
-                try {
-                    await actor.clear_file_and_info('assets/test0B');
-                } catch (err: any) {
-                    return {
-                        Ok: err.message.includes(
-                            'Not Authorized: only controllers of this canister may call this method'
-                        )
-                    };
-                }
-                return { Ok: false };
-            }
-        },
-        ...generateStandardFileTests('Upload', origin),
-        {
-            name: 'redeploy',
-            prep: async () => {
+    return () => {
+        beforeAll(async () => {
+            // Ensure all files from previous runs are cleared out
+            await rm(join('assets', 'auto'), { recursive: true, force: true });
+        });
+        afterAll(async () => {
+            // Clear out files from this run
+            await rm(join('assets', 'auto'), { recursive: true, force: true });
+        });
+
+        describe('generate files', generateFiles());
+
+        // Now that the files are generated locally, deploy the canister (which will upload the files to the canister)
+        // This initial deploy is here instead of in pretest so that we can time how long the deploy takes
+        please(
+            'deploy the canister',
+            () => {
+                execSync(`dfx deploy`, {
+                    stdio: 'inherit'
+                });
+            },
+            15 * 60 * 1_000
+        );
+
+        describe('authorization tests', getAuthorizationTests());
+
+        describe(
+            'verify files specified in dfx.json exists after initial deploy',
+            getDfxConfigFileTests(origin)
+        );
+
+        please(
+            'modify files and redeploy',
+            async () => {
+                // TODO Upgrading is not working at the moment. This is the work around.
+                // TODO We the post install script runs it errors because the files already exist.
+                // TODO look into why those files seem to still exist
+                execSync(`dfx canister uninstall-code backend || true`, {
+                    stdio: 'inherit'
+                });
+
                 await generateTestFileOfSize(1, 'KiB');
                 await generateTestFileOfSize(10, 'KiB');
                 await generateTestFileOfSize(100, 'KiB');
                 execSync(`dfx deploy --upgrade-unchanged`, {
                     stdio: 'inherit'
                 });
-            }
-        },
-        ...generateStandardFileTests('Stable check', origin),
-        // Manual Upload
-        {
-            name: 'test manual upload',
-            test: async () => {
-                execSync(
-                    `npx azle upload-assets backend assets/manual/test150MiB assets/test150MiB`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-
-                const response = await fetch(
-                    `${origin}/exists?path=assets/test150MiB`
-                );
-
-                return { Ok: (await response.json()) === true };
-            }
-        },
-        generateTest('manual test', origin, 'test150MiB', 'manual'),
-        // TODO CI CD isn't working with the 2GiB tests so we're just going to have this one for local tests.
-        {
-            name: 'deploy',
-            prep: async () => {
-                await rm(join('assets', 'auto'), {
-                    recursive: true,
-                    force: true
-                });
-                await generateTestFileOfSize(2, 'GiB');
-                execSync(`dfx deploy --upgrade-unchanged`, {
-                    stdio: 'inherit'
-                });
             },
-            skip: true
-        },
-        {
-            ...generateTest('large file', origin, 'test2GiB', 'auto'),
-            skip: true
-        }
-    ];
+            15 * 60 * 1_000
+        );
+
+        // TODO right now the test can not tell if the files are there because they were uploaded again or if they are there because they were in stable memory. It would be good to develop a test to determine that.
+        describe(
+            'verify files specified in dfx.json exist after redeploy',
+            getDfxConfigFileTests(origin)
+        );
+
+        describe('manual upload tests', manualTests(origin));
+
+        // Run the huge file tests only once at the end so they don't slow down the rest of the test process
+        // TODO CI CD isn't working with the 2GiB or bigger tests so we're just going to have this one for local tests.
+        describe.skip('huge files tests', hugeFilesTests(origin));
+    };
 }
 
-function generateStandardFileTests(label: string, origin: string): Test[] {
-    return [
-        // Permanent Assets
-        generateTest(
-            label,
-            origin,
-            'photos/people/george-washington.tif',
-            'permanent'
-        ),
-        generateTest(
-            label,
-            origin,
-            'photos/places/dinosaurNM.jpg',
-            'permanent'
-        ),
-        generateTest(label, origin, 'photos/places/slc.jpg', 'permanent'),
-        generateTest(label, origin, 'photos/things/book.jpg', 'permanent'),
-        generateTest(
-            label,
-            origin,
-            'photos/things/utah-teapot.jpg',
-            'permanent'
-        ),
-        generateTest(
-            label,
-            origin,
-            'text/subfolder/deep-sub-folder/deep.txt',
-            'permanent'
-        ),
-        generateTest(
-            label,
-            origin,
-            'text/subfolder/sibling-deep-sub-folder/deep.txt',
-            'permanent'
-        ),
-        generateTest(
-            label,
-            origin,
-            'text/subfolder/other-thing.txt',
-            'permanent'
-        ),
-        generateTest(label, origin, 'text/thing.txt', 'permanent'),
-        generateTest(label, origin, 'text/thing.txt', 'permanent'),
-        generateTest(
-            label,
-            origin,
-            'text/single.txt',
-            undefined,
-            'single_asset.txt'
-        ),
-
-        // Auto Generated Assets
-        //      Edge Cases
-        generateTest(label, origin, 'test0B', 'auto'),
-        generateTest(label, origin, 'test1B', 'auto'),
-        generateTest(label, origin, `test${120 * 1024 * 1024 + 1}B`, 'auto'),
-        generateTest(label, origin, 'test2000001B', 'auto'),
-        //      General Cases
-        generateTest(label, origin, 'test1KiB', 'auto'),
-        generateTest(label, origin, 'test10KiB', 'auto'),
-        generateTest(label, origin, 'test100KiB', 'auto'),
-        generateTest(label, origin, 'test1MiB', 'auto'),
-        generateTest(label, origin, 'test10MiB', 'auto'),
-        generateTest(label, origin, 'test100MiB', 'auto'),
-        generateTest(label, origin, 'test250MiB', 'auto'),
-        generateTest(label, origin, 'test1GiB', 'auto')
-    ];
+export function getAutoGeneratedFileName(size: number, units: Unit): string {
+    return `test${size}${units}`;
 }
 
 /**
@@ -244,48 +101,35 @@ function generateStandardFileTests(label: string, origin: string): Test[] {
  * @param localPath
  * @returns
  */
-function generateTest(
-    label: string,
+export function verifyUpload(
     origin: string,
     canisterPath: string,
     localDir?: string,
     localPath?: string
-): Test {
-    return {
-        name: `${label}: ${canisterPath}`,
-        test: async () => {
-            const canisterFilePath = join('assets', canisterPath);
-            const localFilePath = join(
-                'assets',
-                localDir ?? '',
-                localPath ?? canisterPath
-            );
+) {
+    it(`uploads and hashes ${canisterPath}`, async () => {
+        const canisterFilePath = join('assets', canisterPath);
+        const localFilePath = join(
+            'assets',
+            localDir ?? '',
+            localPath ?? canisterPath
+        );
 
-            const expectedHash = (await hashFile(localFilePath)).toString(
-                'hex'
-            );
+        const expectedHash = (await hashFile(localFilePath)).toString('hex');
 
-            const response = await fetch(
-                `${origin}/exists?path=${canisterFilePath}`
-            );
-            const exists = await response.json();
+        const response = await fetch(
+            `${origin}/exists?path=${canisterFilePath}`
+        );
+        const exists = await response.json();
 
-            if (exists === false) {
-                return {
-                    Err: `File ${canisterFilePath} failed to upload`
-                };
-            }
+        expect(exists).toBe(true);
 
-            const actor = await createActor(
-                getCanisterId('backend'),
-                AZLE_UPLOADER_IDENTITY_NAME
-            );
-            const hash = await actor.get_file_hash(canisterFilePath);
+        const actor = await createActor(
+            getCanisterId('backend'),
+            AZLE_UPLOADER_IDENTITY_NAME
+        );
+        const hash = await actor.get_file_hash(canisterFilePath);
 
-            if (hash.length === 1) {
-                return { Ok: hash[0] === expectedHash };
-            }
-            return { Err: `File not found on canister` };
-        }
-    };
+        expect(hash).toStrictEqual([expectedHash]);
+    });
 }

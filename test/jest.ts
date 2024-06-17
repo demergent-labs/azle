@@ -71,6 +71,7 @@ export function please(
         timeout
     );
 }
+please.skip = test.skip;
 
 export function it(
     name: string,
