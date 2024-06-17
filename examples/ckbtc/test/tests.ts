@@ -63,11 +63,7 @@ export function getTests(): Test {
 
             const updateBalanceResult = await config.canister.updateBalance();
 
-            if ('Err' in updateBalanceResult) {
-                throw new Error(Object.keys(updateBalanceResult.Err)[0]);
-            }
-
-            expect(true).toBe(true);
+            expect(updateBalanceResult).not.toContain('Err');
         });
 
         it('fails to update balance for second identity without new utxos', async () => {
@@ -75,14 +71,7 @@ export function getTests(): Test {
 
             const updateBalanceResult = await config.canister.updateBalance();
 
-            if ('Ok' in updateBalanceResult) {
-                throw new Error(
-                    `Expected principal ${config.caller} to not have new UTXOs`
-                );
-            }
-            const errorType = Object.keys(updateBalanceResult.Err)[0];
-
-            expect(errorType).toBe('NoNewUtxos');
+            expect(updateBalanceResult).toStrictEqual({ Err: 'NoNewUtxos' });
         });
 
         it('gets balance for first identity', async () => {
@@ -96,17 +85,13 @@ export function getTests(): Test {
         it('transfers 1_000_000_000n from first canister to second canister', async () => {
             const config = db[0];
 
-            const tranferResult = await config.canister.transfer(
+            const transferResult = await config.canister.transfer(
                 db[1].caller,
                 1_000_000_000n
             );
 
-            if ('Err' in tranferResult) {
-                throw new Error(Object.keys(tranferResult.Err)[0]);
-            }
-
-            const transferIndex = tranferResult.Ok;
-            expect(transferIndex).toBe(1n);
+            expect(transferResult).not.toContain('Err');
+            expect(transferResult).toStrictEqual({ Ok: 1n });
         });
 
         it('gets balance for first identity after transfer', async () => {
