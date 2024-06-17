@@ -94,7 +94,7 @@ export function getTests(canisterId: string): Test {
             expect(responseJson).toBe(100_000_000_000_000n);
         }, 10_000);
 
-        it("transfer from the canister to the caller's wallet using ethers", async () => {
+        it("transfers from the canister to the caller's wallet using ethers", async () => {
             const response = await fetch(`${origin}/transfer-from-canister`, {
                 method: 'POST',
                 headers: [['Content-Type', 'application/json']],
