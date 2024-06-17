@@ -8,7 +8,7 @@ export default Server(
 
         app.use(express.json());
 
-        app.post('/fetch-head', async (_req, res) => {
+        app.get('/fetch-head', async (_req, res) => {
             const response = await fetch(
                 `https://cat-fact.herokuapp.com/facts/591f989cd369931519ce361d`,
                 {
@@ -19,7 +19,7 @@ export default Server(
             res.json(Array.from(response.headers.entries()));
         });
 
-        app.post('/fetch-get', async (_req, res) => {
+        app.get('/fetch-get', async (_req, res) => {
             const response = await fetch(
                 `https://cat-fact.herokuapp.com/facts/591f989cd369931519ce361d`
             );
@@ -30,7 +30,7 @@ export default Server(
             });
         });
 
-        app.post('/fetch-get-query-params', async (_req, res) => {
+        app.get('/fetch-get-query-params', async (_req, res) => {
             const response = await fetch(
                 `https://cat-fact.herokuapp.com/facts/random?amount=2`
             );
@@ -56,7 +56,7 @@ export default Server(
             res.json(responseJson);
         });
 
-        app.post('/request-headers', async (_req, res) => {
+        app.get('/request-headers', async (_req, res) => {
             const response = await fetch(`https://httpbin.org/headers`, {
                 headers: {
                     'X-Azle-Request-Key-0': 'X-Azle-Request-Value-0',
@@ -69,7 +69,7 @@ export default Server(
             res.json(responseJson);
         });
 
-        app.post('/get-status-201', async (_req, res) => {
+        app.get('/get-status-201', async (_req, res) => {
             const response = await fetch(`https://httpbin.org/status/201`);
 
             res.json({
@@ -89,7 +89,7 @@ export default Server(
             });
         });
 
-        app.post('/get-status-301', async (_req, res) => {
+        app.get('/get-status-301', async (_req, res) => {
             const response = await fetch(`https://httpbin.org/status/301`);
 
             res.json({
@@ -109,7 +109,7 @@ export default Server(
             });
         });
 
-        app.post('/get-status-401', async (_req, res) => {
+        app.get('/get-status-401', async (_req, res) => {
             const response = await fetch(`https://httpbin.org/status/401`);
 
             res.json({
@@ -129,7 +129,7 @@ export default Server(
             });
         });
 
-        app.post('/get-status-500', async (_req, res) => {
+        app.get('/get-status-500', async (_req, res) => {
             const response = await fetch(`https://httpbin.org/status/500`);
 
             res.json({
@@ -149,7 +149,7 @@ export default Server(
             });
         });
 
-        app.post('/transform', async (_req, res) => {
+        app.get('/transform', async (_req, res) => {
             ic.setOutgoingHttpOptions({
                 transformMethodName: 'transform'
             });
@@ -165,7 +165,7 @@ export default Server(
             res.json(Array.from(response.headers.entries()));
         });
 
-        app.post('/transform-with-context', async (_req, res) => {
+        app.get('/transform-with-context', async (_req, res) => {
             ic.setOutgoingHttpOptions({
                 transformMethodName: 'transform',
                 transformContext: Uint8Array.from([0, 1, 2])
@@ -185,7 +185,7 @@ export default Server(
             });
         });
 
-        app.post('/max-response-bytes', async (_req, res) => {
+        app.get('/max-response-bytes', async (_req, res) => {
             try {
                 ic.setOutgoingHttpOptions({
                     maxResponseBytes: 0n
@@ -204,7 +204,7 @@ export default Server(
             }
         });
 
-        app.post('/cycles', async (_req, res) => {
+        app.get('/cycles', async (_req, res) => {
             try {
                 ic.setOutgoingHttpOptions({
                     cycles: 0n

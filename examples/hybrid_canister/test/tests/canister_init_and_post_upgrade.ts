@@ -14,7 +14,7 @@ export function getTests(): Test {
     });
 
     return () => {
-        it('properly hooks up http functionality to a canister with a developer defined init method', async () => {
+        it('properly hooks up HTTP functionality to a canister with a developer defined init method', async () => {
             const httpQueryResponse = await fetch(`${origin}/http-query`);
             const httpQueryResponseText = await httpQueryResponse.text();
 
@@ -49,7 +49,7 @@ export function getTests(): Test {
             );
         });
 
-        it('properly hooks up http functionality to a canister with a developer defined postUpgrade method', async () => {
+        it('properly hooks up HTTP functionality to a canister with a developer defined postUpgrade method', async () => {
             const httpQueryResponse = await fetch(`${origin}/http-query`);
             const httpQueryResponseText = await httpQueryResponse.text();
 

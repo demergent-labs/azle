@@ -14,7 +14,7 @@ export function getTests(): Test {
     });
 
     return () => {
-        it('handles an http server canister with additional query, update, and init methods', async () => {
+        it('handles an HTTP server canister with additional query, update, and init methods', async () => {
             const httpQueryResponse = await fetch(`${origin}/http-query`);
             const httpQueryResponseText = await httpQueryResponse.text();
 
@@ -49,7 +49,7 @@ export function getTests(): Test {
             );
         });
 
-        it('handles an http server canister with additional query, update, and post_upgrade methods', async () => {
+        it('handles an HTTP server canister with additional query, update, and post_upgrade methods', async () => {
             const httpQueryResponse = await fetch(`${origin}/http-query`);
             const httpQueryResponseText = await httpQueryResponse.text();
 

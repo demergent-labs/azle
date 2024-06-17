@@ -9,7 +9,7 @@ export function getTests(canisterId: string): Test {
     return () => {
         it('fetches using the head method', async () => {
             const response = await fetch(`${origin}/fetch-head`, {
-                method: 'POST'
+                headers: [['X-Ic-Force-Update', 'true']]
             });
             const responseJson = await response.json();
 
@@ -29,7 +29,7 @@ export function getTests(canisterId: string): Test {
 
         it('fetches using the get method', async () => {
             const response = await fetch(`${origin}/fetch-get`, {
-                method: 'POST'
+                headers: [['X-Ic-Force-Update', 'true']]
             });
             const { headers, body } = await response.json();
 
@@ -63,7 +63,7 @@ export function getTests(canisterId: string): Test {
 
         it('fetches using the get method and query params', async () => {
             const response = await fetch(`${origin}/fetch-get-query-params`, {
-                method: 'POST'
+                headers: [['X-Ic-Force-Update', 'true']]
             });
             const responseJson = await response.json();
 
@@ -72,6 +72,7 @@ export function getTests(canisterId: string): Test {
             };
 
             expect(responseJson).toHaveLength(2);
+
             for (const cat of responseJson) {
                 expect(cat).toEqual(expect.objectContaining(expectedResponse));
             }
@@ -86,9 +87,9 @@ export function getTests(canisterId: string): Test {
             expect(responseJson.result).toBe('0x9ad9e69f9d47520000');
         }, 10_000);
 
-        it('fetches using the post method and headers', async () => {
+        it('fetches using the get method and headers', async () => {
             const response = await fetch(`${origin}/request-headers`, {
-                method: 'POST'
+                headers: [['X-Ic-Force-Update', 'true']]
             });
             const responseJson = await response.json();
 
@@ -105,7 +106,7 @@ export function getTests(canisterId: string): Test {
 
         it('handles status 201', async () => {
             const response = await fetch(`${origin}/get-status-201`, {
-                method: 'POST'
+                headers: [['X-Ic-Force-Update', 'true']]
             });
             const responseJson = await response.json();
 
@@ -125,7 +126,7 @@ export function getTests(canisterId: string): Test {
 
         it('handles status 301', async () => {
             const response = await fetch(`${origin}/get-status-301`, {
-                method: 'POST'
+                headers: [['X-Ic-Force-Update', 'true']]
             });
             const responseJson = await response.json();
 
@@ -145,7 +146,7 @@ export function getTests(canisterId: string): Test {
 
         it('handles status 401', async () => {
             const response = await fetch(`${origin}/get-status-401`, {
-                method: 'POST'
+                headers: [['X-Ic-Force-Update', 'true']]
             });
             const responseJson = await response.json();
 
@@ -165,7 +166,7 @@ export function getTests(canisterId: string): Test {
 
         it('handles status 500', async () => {
             const response = await fetch(`${origin}/get-status-500`, {
-                method: 'POST'
+                headers: [['X-Ic-Force-Update', 'true']]
             });
             const responseJson = await response.json();
 
@@ -185,7 +186,7 @@ export function getTests(canisterId: string): Test {
 
         it('transforms the http response', async () => {
             const response = await fetch(`${origin}/transform`, {
-                method: 'POST'
+                headers: [['X-Ic-Force-Update', 'true']]
             });
             const responseJson = await response.json();
 
@@ -194,7 +195,7 @@ export function getTests(canisterId: string): Test {
 
         it('transforms the http response with context', async () => {
             const response = await fetch(`${origin}/transform-with-context`, {
-                method: 'POST'
+                headers: [['X-Ic-Force-Update', 'true']]
             });
             const { headers, body } = await response.json();
 
@@ -204,7 +205,7 @@ export function getTests(canisterId: string): Test {
 
         it('fails to fetch if the response is larger than the specified max response bytes', async () => {
             const response = await fetch(`${origin}/max-response-bytes`, {
-                method: 'POST'
+                headers: [['X-Ic-Force-Update', 'true']]
             });
             const responseJson = await response.json();
 
@@ -216,7 +217,7 @@ export function getTests(canisterId: string): Test {
 
         it('fails to fetch if the request has no cycles attached to it', async () => {
             const response = await fetch(`${origin}/cycles`, {
-                method: 'POST'
+                headers: [['X-Ic-Force-Update', 'true']]
             });
             const responseJson = await response.json();
 

@@ -13,7 +13,7 @@ export function getTests(): Test {
     });
 
     return () => {
-        it('handles a canister with additional http functionality', async () => {
+        it('handles a canister with additional HTTP functionality', async () => {
             const httpQueryResponse = await fetch(`${origin}/http-query`);
             const httpQueryResponseText = await httpQueryResponse.text();
 

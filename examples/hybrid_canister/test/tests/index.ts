@@ -8,14 +8,14 @@ import { getTests as getTestsServerInitAndPostUpgrade } from './server_init_and_
 
 export function getTests(): Test {
     return () => {
-        describe('Canister with http endpoints', getTestsCanister());
+        describe('canister with HTTP endpoints', getTestsCanister());
         describe(
-            'Canister with http endpoints and init and postUpgrade methods',
+            'canister with HTTP endpoints and init and postUpgrade methods',
             getTestsCanisterInitAndPostUpgrade()
         );
-        describe('Server with update and query methods', getTestsServer());
+        describe('server with update and query methods', getTestsServer());
         describe(
-            'Server with update and query methods and init and postUpgrade methods',
+            'server with update and query methods and init and postUpgrade methods',
             getTestsServerInitAndPostUpgrade()
         );
     };
