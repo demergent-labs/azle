@@ -13,8 +13,7 @@
 # The basic-integration-tests matrix spins up one job per combination of example directory and code source (repo or npm).
 # The check-basic-integration-tests-success job is designed to ensure that all jobs spun up from the matrix in the basic-integration-tests have succeeded
 
-# All Examples TODO restore when https://github.com/demergent-labs/azle/issues/1192 is resolved
-# "examples/generics",
+# Restore when https://github.com/demergent-labs/azle/issues/1799 is resolved
 # "examples/run_time_errors",
 
 # TODO http_counter tests are being skipped until this is resolved: https://forum.dfinity.org/t/lookuppathabsent/23461
