@@ -7,21 +7,13 @@ export function getTests(
     guardFunctionsCanister: ActorSubclass<_SERVICE>
 ): Test {
     return () => {
-        it('successfully calls an unguarded method', async () => {
-            const result = await guardFunctionsCanister.identifierAnnotation();
-
+        it('successfully calls an unguarded method with no options object', async () => {
+            const result = await guardFunctionsCanister.noOptionsObject();
             expect(result).toBe(true);
         });
 
-        it('successfully calls an unguarded method', async () => {
-            const result =
-                await guardFunctionsCanister.callExpressionWithoutOptionsObject();
-            expect(result).toBe(true);
-        });
-
-        it('successfully calls an unguarded method', async () => {
-            const result =
-                await guardFunctionsCanister.callExpressionWithEmptyOptionsObject();
+        it('successfully calls an unguarded method with an empty options object', async () => {
+            const result = await guardFunctionsCanister.emptyOptionsObject();
 
             expect(result).toBe(true);
         });

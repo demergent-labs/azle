@@ -18,19 +18,15 @@ export default Canister({
     getCounter: query([], nat32, () => {
         return state.counter;
     }),
-    identifierAnnotation: query([], bool, () => {
-        console.log('identifierAnnotation called');
+    noOptionsObject: query([], bool, () => {
+        console.info('callExpressionWithoutOptionsObject called');
         return true;
     }),
-    callExpressionWithoutOptionsObject: query([], bool, () => {
-        console.log('callExpressionWithoutOptionsObject called');
-        return true;
-    }),
-    callExpressionWithEmptyOptionsObject: query(
+    emptyOptionsObject: query(
         [],
         bool,
         () => {
-            console.log('callExpressionWithEmptyOptionsObject called');
+            console.info('callExpressionWithEmptyOptionsObject called');
             return true;
         },
         {}
@@ -39,7 +35,7 @@ export default Canister({
         [],
         bool,
         () => {
-            console.log('looselyGuarded called');
+            console.info('looselyGuarded called');
             return true;
         },
         { guard: allowAll }
@@ -48,7 +44,7 @@ export default Canister({
         [],
         Manual(bool),
         () => {
-            console.log('looselyGuardedManual called');
+            console.info('looselyGuardedManual called');
             ic.reply(true, bool);
         },
         { manual: true, guard: allowAll }
@@ -57,16 +53,17 @@ export default Canister({
         [],
         bool,
         () => {
-            console.log('looselyGuardedWithGuardOptionKeyAsString called');
+            console.info('looselyGuardedWithGuardOptionKeyAsString called');
             return true;
         },
-        { guard: allowAll }
+        // prettier-ignore
+        { 'guard': allowAll }
     ),
     modifyStateGuarded: update(
         [],
         bool,
         () => {
-            console.log('modifyStateGuarded called');
+            console.info('modifyStateGuarded called');
             return true;
         },
         { guard: incrementCounterAndAllowAll }
@@ -75,7 +72,7 @@ export default Canister({
         [],
         bool,
         () => {
-            console.log('tightlyGuarded called');
+            console.info('tightlyGuarded called');
             return true;
         },
         { guard: unpassable }
@@ -84,7 +81,7 @@ export default Canister({
         [],
         bool,
         () => {
-            console.log('errorStringGuarded called');
+            console.info('errorStringGuarded called');
             return true;
         },
         { guard: throwString }
@@ -93,7 +90,7 @@ export default Canister({
         [],
         bool,
         () => {
-            console.log('customErrorGuarded called');
+            console.info('customErrorGuarded called');
             return true;
         },
         { guard: throwCustomError }
@@ -102,7 +99,7 @@ export default Canister({
         [],
         bool,
         () => {
-            console.log('nonStringErrValueGuarded called');
+            console.info('nonStringErrValueGuarded called');
             return true;
         },
         { guard: returnNonStringErrValue }
