@@ -4,179 +4,134 @@
 // just use a faucet like https://www.ethereum-ecosystem.com/faucets/base-sepolia to get some more
 // We should be good for a few hundred tests
 
-import * as dns from 'node:dns';
-dns.setDefaultResultOrder('ipv4first');
-
-import { Test } from 'azle/test';
+import { jsonParse } from 'azle';
+import { expect, it, Test, wait } from 'azle/test/jest';
 
 let callerAddress: string;
 let canisterAddress: string;
 
-export function getTests(canisterId: string): Test[] {
+export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
 
-    return [
-        {
-            name: '/caller-address',
-            test: async () => {
-                const response = await fetch(`${origin}/caller-address`, {
-                    method: 'POST'
-                });
-                const responseText = await response.text();
+    return () => {
+        it("gets the caller's address using ethers and ThresholdWallet", async () => {
+            const response = await fetch(`${origin}/caller-address`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const responseText = await response.text();
 
-                callerAddress = responseText;
+            callerAddress = responseText;
 
-                return {
-                    Ok:
-                        responseText.startsWith('0x') &&
-                        responseText.length === 42
-                };
-            }
-        },
-        {
-            name: '/canister-address',
-            test: async () => {
-                const response = await fetch(`${origin}/canister-address`, {
-                    method: 'POST'
-                });
-                const responseText = await response.text();
+            expect(responseText).toMatch('0x');
+            expect(responseText).toHaveLength(42);
+        });
 
-                canisterAddress = responseText;
+        it("gets the canister's address using ethers and ThresholdWallet", async () => {
+            const response = await fetch(`${origin}/canister-address`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const responseText = await response.text();
 
-                return {
-                    Ok:
-                        responseText.startsWith('0x') &&
-                        responseText.length === 42 &&
-                        callerAddress !== canisterAddress
-                };
-            }
-        },
-        {
-            name: '/address-balance caller',
-            test: async () => {
-                const response = await fetch(`${origin}/address-balance`, {
+            canisterAddress = responseText;
+
+            expect(responseText).toMatch('0x');
+            expect(responseText).toHaveLength(42);
+            expect(responseText).not.toBe(callerAddress);
+        });
+
+        it("gets the caller's balance using ethers and ThresholdWallet", async () => {
+            const response = await fetch(
+                `${origin}/address-balance?address=${callerAddress}`,
+                {
+                    headers: [['X-Ic-Force-Update', 'true']]
+                }
+            );
+            const responseJson = jsonParse(await response.text());
+
+            expect(responseJson).toBe(0n);
+        }, 10_000);
+
+        it("gets the canister's balance using ethers and ThresholdWallet", async () => {
+            const response = await fetch(
+                `${origin}/address-balance?address=${canisterAddress}`,
+                {
+                    headers: [['X-Ic-Force-Update', 'true']]
+                }
+            );
+            const responseJson = jsonParse(await response.text());
+
+            expect(responseJson).toBe(0n);
+        }, 10_000);
+
+        it('transfers from the sepolia faucet wallet to the canister wallet using ethers', async () => {
+            const response = await fetch(
+                `${origin}/transfer-from-sepolia-faucet-wallet`,
+                {
                     method: 'POST',
                     headers: [['Content-Type', 'application/json']],
                     body: JSON.stringify({
-                        address: callerAddress
+                        to: canisterAddress,
+                        value: '.0001'
                     })
-                });
-                const responseJson = await response.json();
+                }
+            );
+            const responseText = await response.text();
 
-                return {
-                    Ok: BigInt(responseJson.__bigint__) === 0n
-                };
-            }
-        },
-        {
-            name: '/address-balance canister',
-            test: async () => {
-                const response = await fetch(`${origin}/address-balance`, {
-                    method: 'POST',
-                    headers: [['Content-Type', 'application/json']],
-                    body: JSON.stringify({
-                        address: canisterAddress
-                    })
-                });
-                const responseJson = await response.json();
+            expect(responseText).toMatch('transaction sent with hash:');
+        }, 20_000);
 
-                return {
-                    Ok: BigInt(responseJson.__bigint__) === 0n
-                };
-            }
-        },
-        {
-            name: '/transfer-from-sepolia-faucet-wallet to canister wallet',
-            test: async () => {
-                const response = await fetch(
-                    `${origin}/transfer-from-sepolia-faucet-wallet`,
-                    {
-                        method: 'POST',
-                        headers: [['Content-Type', 'application/json']],
-                        body: JSON.stringify({
-                            to: canisterAddress,
-                            value: '.0001'
-                        })
-                    }
-                );
-                const responseText = await response.text();
+        wait('for funds to be available', 10_000);
 
-                return {
-                    Ok: responseText.startsWith('transaction sent with hash:')
-                };
-            }
-        },
-        {
-            name: '/address-balance canister',
-            test: async () => {
-                const response = await fetch(`${origin}/address-balance`, {
-                    method: 'POST',
-                    headers: [['Content-Type', 'application/json']],
-                    body: JSON.stringify({
-                        address: canisterAddress
-                    })
-                });
-                const responseJson = await response.json();
+        it("gets the canister's balance after transfer from faucet using ethers and ThresholdWallet", async () => {
+            const response = await fetch(
+                `${origin}/address-balance?address=${canisterAddress}`,
+                {
+                    headers: [['X-Ic-Force-Update', 'true']]
+                }
+            );
+            const responseJson = jsonParse(await response.text());
 
-                return {
-                    Ok: BigInt(responseJson.__bigint__) === 100_000_000_000_000n
-                };
-            }
-        },
-        {
-            name: '/transfer-from-canister to caller wallet',
-            test: async () => {
-                const response = await fetch(
-                    `${origin}/transfer-from-canister`,
-                    {
-                        method: 'POST',
-                        headers: [['Content-Type', 'application/json']],
-                        body: JSON.stringify({
-                            to: callerAddress,
-                            value: '.000000000000000007'
-                        })
-                    }
-                );
-                const responseText = await response.text();
+            expect(responseJson).toBe(100_000_000_000_000n);
+        }, 10_000);
 
-                return {
-                    Ok: responseText.startsWith('transaction sent with hash:')
-                };
-            }
-        },
-        {
-            name: '/address-balance canister',
-            test: async () => {
-                const response = await fetch(`${origin}/address-balance`, {
-                    method: 'POST',
-                    headers: [['Content-Type', 'application/json']],
-                    body: JSON.stringify({
-                        address: canisterAddress
-                    })
-                });
-                const responseJson = await response.json();
+        it("transfers from the canister to the caller's wallet using ethers", async () => {
+            const response = await fetch(`${origin}/transfer-from-canister`, {
+                method: 'POST',
+                headers: [['Content-Type', 'application/json']],
+                body: JSON.stringify({
+                    to: callerAddress,
+                    value: '.000000000000000007'
+                })
+            });
+            const responseText = await response.text();
 
-                return {
-                    Ok: BigInt(responseJson.__bigint__) < 100_000_000_000_000n
-                };
-            }
-        },
-        {
-            name: '/address-balance caller',
-            test: async () => {
-                const response = await fetch(`${origin}/address-balance`, {
-                    method: 'POST',
-                    headers: [['Content-Type', 'application/json']],
-                    body: JSON.stringify({
-                        address: callerAddress
-                    })
-                });
-                const responseJson = await response.json();
+            expect(responseText).toMatch('transaction sent with hash:');
+        }, 30_000);
 
-                return {
-                    Ok: BigInt(responseJson.__bigint__) === 7n
-                };
-            }
-        }
-    ];
+        wait('for funds to be available', 10_000);
+
+        it("gets the canister's balance after the transfer using ethers and ThresholdWallet", async () => {
+            const response = await fetch(
+                `${origin}/address-balance?address=${canisterAddress}`,
+                {
+                    headers: [['X-Ic-Force-Update', 'true']]
+                }
+            );
+            const responseJson = jsonParse(await response.text());
+
+            expect(responseJson).toBeLessThan(100_000_000_000_000n);
+        }, 10_000);
+
+        it("gets the caller's balance after the transfer using ethers and ThresholdWallet", async () => {
+            const response = await fetch(
+                `${origin}/address-balance?address=${callerAddress}`,
+                {
+                    headers: [['X-Ic-Force-Update', 'true']]
+                }
+            );
+            const responseJson = jsonParse(await response.text());
+
+            expect(responseJson).toBe(7n);
+        }, 10_000);
+    };
 }
