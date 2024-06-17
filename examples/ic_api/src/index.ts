@@ -18,40 +18,38 @@ import {
 } from 'azle';
 
 // TODO: See https://github.com/demergent-labs/azle/issues/496
-// type ArgDataMultipleParamsResult = {
-//     blob: blob;
-//     int: int8;
-//     boolean: bool;
-//     string: text;
-// };
+// const ArgDataMultipleParamsResult = Record({
+//     blob: blob,
+//     int: int8,
+//     boolean: bool,
+//     string: text,
+// });
 
 export default Canister({
     // // returns the argument data as an array.
-    // argDataZeroParams(): Vec<null> {
+    // argDataZeroParams: query([], Vec(Null), () => {
     //     return ic.argData();
-    // }
-    //
+    // }),
+
     // // returns the argument data as an array.
-    // argDataOneParam(arg: bool): bool {
-    //     const argData = ic.argData();
-    //     return argData[0];
-    // }
-    //
+    // argDataOneParam: query([bool], bool, () => {
+    //     return ic.argData()[0];
+    // }),
+
     // // returns the argument data as an array.
-    // argDataMultipleParams(
-    //     arg1: blob,
-    //     arg2: int8,
-    //     arg3: bool,
-    //     arg4: text
-    // ): ArgDataMultipleParamsResult {
-    //     const argData = ic.argData();
-    //     return {
-    //         blob: Uint8Array.from(argData[0]),
-    //         int: argData[1],
-    //         boolean: argData[2],
-    //         string: argData[3]
-    //     };
-    // }
+    // argDataMultipleParams: query(
+    //     [blob, int8, bool, text],
+    //     ArgDataMultipleParamsResult,
+    //     (_arg1, _arg2, _arg3, _arg4) => {
+    //         const argData = ic.argData();
+    //         return {
+    //             blob: Uint8Array.from(argData[0]),
+    //             int: argData[1],
+    //             boolean: argData[2],
+    //             string: argData[3]
+    //         };
+    //     }
+    // ),
 
     // returns the argument data as bytes.
     argDataRaw: query(
