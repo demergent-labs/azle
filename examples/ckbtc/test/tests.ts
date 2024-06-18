@@ -71,9 +71,14 @@ export function getTests(): Test {
 
             const updateBalanceResult = await config.canister.updateBalance();
 
-            expect(updateBalanceResult).toEqual(
-                expect.objectContaining({ Err: 'NoNewUtxos' })
-            );
+            expect(updateBalanceResult).toEqual({
+                Err: {
+                    NoNewUtxos: {
+                        required_confirmations: 1,
+                        current_confirmations: []
+                    }
+                }
+            });
         });
 
         it('gets balance for first identity', async () => {
