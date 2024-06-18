@@ -71,7 +71,7 @@ export function getTests(): Test {
 
             const updateBalanceResult = await config.canister.updateBalance();
 
-            expect(updateBalanceResult).toEqual({
+            expect(updateBalanceResult).toStrictEqual({
                 Err: {
                     NoNewUtxos: {
                         required_confirmations: 1,
