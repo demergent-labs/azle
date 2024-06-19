@@ -10,7 +10,7 @@ import {
     Some,
     text,
     Variant
-} from 'azle';
+} from 'azle/experimental';
 
 const User = Record({
     id: text
