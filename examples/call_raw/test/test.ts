@@ -1,8 +1,8 @@
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/test/jest';
 
 import { createActor } from '../test/dfx_generated/call_raw';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
 const callRawCanister = createActor(getCanisterId('call_raw'), {
     agentOptions: {
@@ -10,4 +10,4 @@ const callRawCanister = createActor(getCanisterId('call_raw'), {
     }
 });
 
-runTests(get_tests(callRawCanister));
+runTests(getTests(callRawCanister));

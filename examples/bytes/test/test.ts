@@ -1,8 +1,8 @@
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/test/jest';
 
 import { createActor } from './dfx_generated/bytes_canister';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
 const bytesCanister = createActor(getCanisterId('bytes_canister'), {
     agentOptions: {
@@ -10,4 +10,4 @@ const bytesCanister = createActor(getCanisterId('bytes_canister'), {
     }
 });
 
-runTests(get_tests(bytesCanister));
+runTests(getTests(bytesCanister));

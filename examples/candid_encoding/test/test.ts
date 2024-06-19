@@ -1,8 +1,8 @@
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/test/jest';
 
 import { createActor } from './dfx_generated/candid_encoding';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
 const candidEncodingCanister = createActor(getCanisterId('candid_encoding'), {
     agentOptions: {
@@ -10,4 +10,4 @@ const candidEncodingCanister = createActor(getCanisterId('candid_encoding'), {
     }
 });
 
-runTests(get_tests(candidEncodingCanister));
+runTests(getTests(candidEncodingCanister));

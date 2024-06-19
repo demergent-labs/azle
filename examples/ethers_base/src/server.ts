@@ -6,7 +6,7 @@ const app = express();
 
 app.use(express.json());
 
-app.post('/caller-address', async (_req, res) => {
+app.get('/caller-address', async (_req, res) => {
     const wallet = new ThresholdWallet(
         {
             derivationPath: [ic.caller().toUint8Array()]
@@ -17,7 +17,7 @@ app.post('/caller-address', async (_req, res) => {
     res.send(await wallet.getAddress());
 });
 
-app.post('/canister-address', async (_req, res) => {
+app.get('/canister-address', async (_req, res) => {
     const wallet = new ThresholdWallet(
         {
             derivationPath: [ic.id().toUint8Array()]
@@ -28,12 +28,12 @@ app.post('/canister-address', async (_req, res) => {
     res.send(await wallet.getAddress());
 });
 
-app.post(
+app.get(
     '/address-balance',
-    async (req: Request<any, any, { address: string }>, res) => {
+    async (req: Request<any, any, any, { address: string }>, res) => {
         const balance = await ethers
             .getDefaultProvider('https://sepolia.base.org')
-            .getBalance(req.body.address);
+            .getBalance(req.query.address);
 
         res.send(jsonStringify(balance));
     }

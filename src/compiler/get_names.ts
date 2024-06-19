@@ -11,13 +11,16 @@ import {
     unwrap
 } from './utils';
 import { execSyncPretty } from './utils/exec_sync_pretty';
-import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
-import { JSCanisterConfig } from './utils/types';
+import {
+    AZLE_PACKAGE_PATH,
+    GLOBAL_AZLE_CONFIG_DIR
+} from './utils/global_paths';
+import { CanisterConfig } from './utils/types';
 
 export async function getNamesBeforeCli() {
     const stdioType = getStdIoType();
 
-    const dockerfilePath = join(__dirname, 'Dockerfile');
+    const dockerfilePath = join(AZLE_PACKAGE_PATH, 'Dockerfile');
     const dockerfileHash = await getDockerfileHash(dockerfilePath);
     const dockerImagePrefix = 'azle__image__';
     const dockerImageName = `${dockerImagePrefix}${dockerfileHash}`;
@@ -65,8 +68,11 @@ export function getNamesAfterCli() {
     const canisterPath = join('.azle', canisterName);
 
     const canisterConfig = unwrap(getCanisterConfig(canisterName));
-    const candidPath =
-        canisterConfig.candid ?? `.azle/${canisterName}/${canisterName}.did`;
+    const candidPath = process.env.CANISTER_CANDID_PATH;
+
+    if (candidPath === undefined) {
+        throw new Error(`Azle: CANISTER_CANDID_PATH is not defined`);
+    }
 
     const compilerInfoPath = join(
         canisterPath,
@@ -122,7 +128,7 @@ async function getDockerfileHash(dockerfilePath: string): Promise<string> {
 
     let hasher = createHash('sha256');
 
-    const rustDirectory = join(__dirname, 'rust');
+    const rustDirectory = join(AZLE_PACKAGE_PATH, 'src', 'compiler', 'rust');
     const rustDirectoryHash = await hashOfDirectory(rustDirectory);
 
     hasher.update(rustDirectoryHash);
@@ -134,7 +140,7 @@ async function getDockerfileHash(dockerfilePath: string): Promise<string> {
     return hasher.digest('hex');
 }
 
-function getEnvVars(canisterConfig: JSCanisterConfig): [string, string][] {
+function getEnvVars(canisterConfig: CanisterConfig): [string, string][] {
     const env = [...(canisterConfig.env ?? []), 'AZLE_AUTORELOAD'];
 
     return env

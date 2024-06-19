@@ -4,6 +4,7 @@ import { existsSync } from 'fs';
 import { version as azleVersion } from '../../package.json';
 import { yellow } from './utils/colors';
 import { execSyncPretty } from './utils/exec_sync_pretty';
+import { AZLE_PACKAGE_PATH } from './utils/global_paths';
 
 export function prepareDockerImage(
     stdioType: IOType,
@@ -131,7 +132,7 @@ function buildAndLoadImageWithDockerfile(
     console.info(yellow(`\nBuilding image...\n`));
 
     execSyncPretty(
-        `podman build -f ${__dirname}/Dockerfile -t ${dockerImageName} ${__dirname}`,
+        `podman build -f ${AZLE_PACKAGE_PATH}/Dockerfile -t ${dockerImageName} ${AZLE_PACKAGE_PATH}`,
         'inherit'
     );
 

@@ -1,55 +1,35 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 
+import { User } from '../src/candid_types';
 import { _SERVICE } from './dfx_generated/complex_types/complex_types.did.d';
 
-export function get_tests(
-    complex_types_canister: ActorSubclass<_SERVICE>
-): Test[] {
-    return [
-        {
-            name: 'get_all_users',
-            test: async () => {
-                const result = await complex_types_canister.getAllUsers(0);
+const EXPECTED_USER_1: User = {
+    id: '0',
+    username: 'user1',
+    threads: [],
+    posts: [],
+    reactions: []
+};
 
-                return {
-                    Ok: result.length === 0
-                };
-            }
-        },
-        {
-            name: 'create_user',
-            test: async () => {
-                const result = await complex_types_canister.createUser(
-                    'user1',
-                    0
-                );
+export function getTests(complexTypesCanister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('verifies that there are no stored complex variables yet', async () => {
+            const result = await complexTypesCanister.getAllUsers(0);
 
-                return {
-                    Ok:
-                        result.id === '0' &&
-                        result.username === 'user1' &&
-                        result.threads.length === 0 &&
-                        result.posts.length === 0 &&
-                        result.reactions.length === 0
-                };
-            }
-        },
-        {
-            name: 'get_all_users',
-            test: async () => {
-                const result = await complex_types_canister.getAllUsers(0);
+            expect(result).toHaveLength(0);
+        });
 
-                return {
-                    Ok:
-                        result.length === 1 &&
-                        result[0].id === '0' &&
-                        result[0].username === 'user1' &&
-                        result[0].threads.length === 0 &&
-                        result[0].posts.length === 0 &&
-                        result[0].reactions.length === 0
-                };
-            }
-        }
-    ];
+        it('creates and stores a user with a complex type', async () => {
+            const result = await complexTypesCanister.createUser('user1', 0);
+
+            expect(result).toStrictEqual(EXPECTED_USER_1);
+        });
+
+        it('recalls the stored complex values', async () => {
+            const result = await complexTypesCanister.getAllUsers(0);
+
+            expect(result).toStrictEqual([EXPECTED_USER_1]);
+        });
+    };
 }
