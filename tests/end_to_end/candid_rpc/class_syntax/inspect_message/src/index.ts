@@ -1,7 +1,8 @@
-import { bool, Canister, ic, inspectMessage, update } from 'azle/experimental';
+import { ic, IDL, inspectMessage, update } from 'azle';
 
-export default Canister({
-    inspectMessage: inspectMessage(() => {
+export default class {
+    @inspectMessage
+    inspectMessage() {
         console.log('inspectMessage called');
 
         if (ic.methodName() === 'accessible') {
@@ -14,14 +15,20 @@ export default Canister({
         }
 
         throw `Method "${ic.methodName()}" not allowed`;
-    }),
-    accessible: update([], bool, () => {
+    }
+
+    @update([], IDL.Bool)
+    accessible() {
         return true;
-    }),
-    inaccessible: update([], bool, () => {
+    }
+
+    @update([], IDL.Bool)
+    inaccessible() {
         return false;
-    }),
-    alsoInaccessible: update([], bool, () => {
+    }
+
+    @update([], IDL.Bool)
+    alsoInaccessible() {
         return false;
-    })
-});
+    }
+}

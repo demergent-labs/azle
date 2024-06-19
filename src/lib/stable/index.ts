@@ -2,6 +2,7 @@ export * from '../ic';
 export * from '../stable_structures/stable_b_tree_map';
 export * from '../stable_structures/stable_json';
 export { init } from './init';
+export { inspectMessage } from './inspect_message';
 export { postUpgrade } from './post_upgrade';
 export { preUpgrade } from './pre_upgrade';
 export { query } from './query';
