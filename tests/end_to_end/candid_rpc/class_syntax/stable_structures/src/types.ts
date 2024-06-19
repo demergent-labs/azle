@@ -1,21 +1,26 @@
-import { Func, Null, Record, text, Variant, Vec } from 'azle';
+import { IDL, Principal } from 'azle';
 
-export const BlogPost = Record({
-    title: text
+export const Reaction = IDL.Variant({
+    Happy: IDL.Null,
+    Sad: IDL.Null
 });
-export type BlogPost = typeof BlogPost.tsType;
+export type Reaction = { Happy: null } | { Sad: null };
 
-export const Reaction = Variant({
-    Happy: Null,
-    Sad: Null
+const BlogPost = IDL.Record({
+    title: IDL.Text
 });
-export type Reaction = typeof Reaction.tsType;
+type BlogPost = {
+    title: string;
+};
 
-export const User = Record({
-    username: text,
-    posts: Vec(BlogPost)
+export const User = IDL.Record({
+    username: IDL.Text,
+    posts: IDL.Vec(BlogPost)
 });
-export type User = typeof User.tsType;
+export type User = {
+    username: string;
+    posts: BlogPost[];
+};
 
-export const Callback = Func([BlogPost], Reaction, 'update');
-export type Callback = typeof Callback.tsType;
+export const Callback = IDL.Func([BlogPost], [Reaction]);
+export type Callback = [Principal, string];

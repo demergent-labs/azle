@@ -260,6 +260,17 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
             else {
                 #post_upgrade_method_call
             }
+
+            RUNTIME.with(|runtime| {
+                let mut runtime = runtime.borrow_mut();
+                let runtime = runtime.as_mut().unwrap();
+
+                runtime.run_with_context(|context| {
+                    let assignment = if init { "globalThis._azleInitCalled = true;" } else { "globalThis._azlePostUpgradeCalled = true;" };
+
+                    context.eval_global_str(assignment.to_string());
+                });
+            });
         }
 
         #reload_js
