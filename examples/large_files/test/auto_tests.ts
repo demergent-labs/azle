@@ -51,7 +51,7 @@ export function generateFiles(): Test {
                     async () => {
                         await generateTestFileOfSize(size, units);
                     },
-                    5 * 60 * 1_000
+                    10 * 60 * 1_000
                 );
             }
         );
