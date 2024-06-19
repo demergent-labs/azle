@@ -75,7 +75,7 @@ export function getTests(canisterName: string): Test {
                 Principal.fromText(
                     whoamiPrincipalTextBefore as string
                 ).isAnonymous()
-            ).toBe(false);
+            ).toBe(true);
 
             // TODO I do not know why this wait is required
             await new Promise((resolve) => setTimeout(resolve, 5_000));
@@ -94,9 +94,9 @@ export function getTests(canisterName: string): Test {
                 Principal.fromText(
                     whoamiPrincipalTextAfter as string
                 ).isAnonymous()
-            ).toBe(true);
+            ).toBe(false);
 
             await browser.close();
-        });
+        }, 60_000);
     };
 }
