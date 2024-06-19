@@ -9,7 +9,7 @@ import {
     Tuple,
     update,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 let stableMap1 = StableBTreeMap<nat16, blob>(1);
 

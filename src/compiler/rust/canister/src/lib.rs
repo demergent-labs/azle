@@ -132,6 +132,22 @@ fn execute_js(function_name: &str, pass_arg_data: bool) {
 // Heavily inspired by https://stackoverflow.com/a/47676844
 #[no_mangle]
 pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
+    std::panic::set_hook(Box::new(|panic_info| {
+        let msg = match panic_info.payload().downcast_ref::<&str>() {
+            Some(s) => *s,
+            None => "Unknown panic message",
+        };
+        let location = if let Some(location) = panic_info.location() {
+            format!(" at {}:{}", location.file(), location.line())
+        } else {
+            " (unknown location)".to_string()
+        };
+
+        let message = &format!("Panic occurred: {}{}", msg, location);
+
+        ic_cdk::println!("{}", message);
+    }));
+
     RUNTIME.with(|runtime| {
         let mut runtime = wasmedge_quickjs::Runtime::new();
 

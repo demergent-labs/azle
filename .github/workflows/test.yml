@@ -199,7 +199,15 @@ jobs:
                     "property_tests/tests/variant",
                     "property_tests/tests/vec",
                     "tests/end_to_end/candid_rpc/class_syntax/query",
-                    "tests/end_to_end/candid_rpc/class_syntax/simple_erc20"
+                    "tests/end_to_end/candid_rpc/class_syntax/simple_erc20",
+                    "tests/end_to_end/candid_rpc/class_syntax/simple_user_accounts",
+                    "tests/end_to_end/candid_rpc/class_syntax/stable_b_tree_map_instruction_threshold",
+                    "tests/end_to_end/candid_rpc/class_syntax/stable_memory",
+                    "tests/end_to_end/candid_rpc/class_syntax/stable_structures",
+                    "tests/end_to_end/candid_rpc/class_syntax/timers",
+                    "tests/end_to_end/candid_rpc/class_syntax/tuple_types",
+                    "tests/end_to_end/candid_rpc/class_syntax/update",
+                    "tests/end_to_end/candid_rpc/class_syntax/vanilla_js"
                   ]
                   END
                   )

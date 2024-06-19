@@ -1,0 +1,14 @@
+{
+    "canisters": {
+        "stable_b_tree_map_instruction_threshold": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid": "src/index.did",
+            "candid_gen": "custom",
+            "declarations": {
+                "output": "test/dfx_generated/stable_b_tree_map_instruction_threshold",
+                "node_compatibility": true
+            }
+        }
+    }
+}

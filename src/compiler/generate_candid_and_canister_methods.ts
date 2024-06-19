@@ -27,7 +27,15 @@ export function generateCandidAndCanisterMethods(wasmFilePath: string): {
             data_certificate_copy: () => {},
             data_certificate_present: () => {},
             data_certificate_size: () => {},
-            debug_print: () => {},
+            debug_print: (ptr: number, len: number) => {
+                const memory = new Uint8Array(
+                    (wasmInstance.exports.memory as any).buffer,
+                    ptr,
+                    len
+                );
+                const message = new TextDecoder('utf8').decode(memory);
+                console.log(message);
+            },
             global_timer_set: () => {},
             instruction_counter: () => {},
             is_controller: () => {},
@@ -61,8 +69,20 @@ export function generateCandidAndCanisterMethods(wasmFilePath: string): {
             time: () => 0n,
             trap: () => {}
         }
+        // env: {
+        //     azle_log(ptr: number, len: number) {
+        //         const memory = new Uint8Array(
+        //             (wasmInstance.exports.memory as any).buffer,
+        //             ptr,
+        //             len
+        //         );
+        //         const message = new TextDecoder('utf8').decode(memory);
+        //         console.log(message);
+        //     }
+        // }
     });
 
+    // TODO can we simplify this to be more like azle_log above?
     const candidPointer = (wasmInstance.exports as any).get_candid_pointer();
 
     const memory = new Uint8Array((wasmInstance.exports.memory as any).buffer);

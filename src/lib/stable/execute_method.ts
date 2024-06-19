@@ -17,7 +17,7 @@ export function executeMethod(
     args: any[],
     callback: any,
     paramIdls: IDL.Type[],
-    returnIdl: IDL.Type,
+    returnIdl: IDL.Type | undefined,
     manual: boolean
 ) {
     const decodedArgs = IDL.decode(paramIdls, args[0]);
@@ -40,9 +40,13 @@ export function executeMethod(
         result
             .then((result: any) => {
                 if (!manual) {
-                    ic.replyRaw(
-                        new Uint8Array(IDL.encode([returnIdl], [result]))
-                    );
+                    if (returnIdl !== undefined) {
+                        ic.replyRaw(
+                            new Uint8Array(IDL.encode([returnIdl], [result]))
+                        );
+                    } else {
+                        ic.replyRaw(new Uint8Array(IDL.encode([], [])));
+                    }
                 }
             })
             .catch((error: any) => {
@@ -50,7 +54,11 @@ export function executeMethod(
             });
     } else {
         if (!manual) {
-            ic.replyRaw(new Uint8Array(IDL.encode([returnIdl], [result])));
+            if (returnIdl !== undefined) {
+                ic.replyRaw(new Uint8Array(IDL.encode([returnIdl], [result])));
+            } else {
+                ic.replyRaw(new Uint8Array(IDL.encode([], [])));
+            }
         }
     }
 }

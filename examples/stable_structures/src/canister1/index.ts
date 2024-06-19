@@ -1,4 +1,4 @@
-import { bool, Canister, postUpgrade, query } from 'azle';
+import { bool, Canister, postUpgrade, query } from 'azle/experimental';
 
 import { stableMap0Methods } from './stable_map_0';
 import { stableMap1Methods } from './stable_map_1';

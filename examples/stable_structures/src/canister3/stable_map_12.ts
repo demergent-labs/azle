@@ -8,7 +8,7 @@ import {
     Tuple,
     update,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 import { Reaction } from '../types';
 

@@ -12,7 +12,7 @@ import {
     update,
     Vec,
     Void
-} from 'azle';
+} from 'azle/experimental';
 import { v4 } from 'uuid';
 
 const SmallRecord = Record({

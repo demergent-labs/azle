@@ -1,18 +1,17 @@
+import { managementCanister } from 'azle/canisters/management';
 import {
     blob,
     bool,
     Canister,
-    Duration,
     ic,
     int8,
+    nat64,
     query,
     Record,
     text,
-    TimerId,
     update,
     Void
-} from 'azle';
-import { managementCanister } from 'azle/canisters/management';
+} from 'azle/experimental';
 
 const StatusReport = Record({
     single: bool,
@@ -25,12 +24,12 @@ const StatusReport = Record({
 type StatusReport = typeof StatusReport.tsType;
 
 const TimerIds = Record({
-    single: TimerId,
-    inline: TimerId,
-    capture: TimerId,
-    repeat: TimerId,
-    singleCrossCanister: TimerId,
-    repeatCrossCanister: TimerId
+    single: nat64,
+    inline: nat64,
+    capture: nat64,
+    repeat: nat64,
+    singleCrossCanister: nat64,
+    repeatCrossCanister: nat64
 });
 type TimerIds = typeof TimerIds.tsType;
 
@@ -44,11 +43,11 @@ let statusReport: StatusReport = {
 };
 
 export default Canister({
-    clearTimer: update([TimerId], Void, (timerId) => {
+    clearTimer: update([nat64], Void, (timerId) => {
         ic.clearTimer(timerId);
         console.log(`timer ${timerId} cancelled`);
     }),
-    setTimers: update([Duration, Duration], TimerIds, (delay, interval) => {
+    setTimers: update([nat64, nat64], TimerIds, (delay, interval) => {
         const capturedValue = '🚩';
 
         const singleId = ic.setTimer(delay, oneTimeTimerCallback);

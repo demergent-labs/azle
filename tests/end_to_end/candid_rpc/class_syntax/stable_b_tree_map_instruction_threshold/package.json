@@ -1,0 +1,16 @@
+{
+    "scripts": {
+        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+    },
+    "dependencies": {
+        "azle": "0.22.0",
+        "uuid": "^9.0.1"
+    },
+    "devDependencies": {
+        "@dfinity/agent": "^0.19.2",
+        "stable_b_tree_map_instruction_threshold_end_to_end_test_canister_syntax": "file:../../../../../examples/stable_b_tree_map_instruction_threshold",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
+    }
+}

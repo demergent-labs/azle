@@ -1,0 +1,15 @@
+{
+    "scripts": {
+        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+    },
+    "dependencies": {
+        "azle": "0.22.0"
+    },
+    "devDependencies": {
+        "@dfinity/agent": "^0.19.2",
+        "stable_structures_end_to_end_test_functional_syntax": "file:../../../../../examples/stable_structures",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
+    }
+}

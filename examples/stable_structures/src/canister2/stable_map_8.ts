@@ -8,7 +8,7 @@ import {
     Tuple,
     update,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 let stableMap8 = StableBTreeMap<bool, Null>(8);
 

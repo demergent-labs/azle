@@ -5,14 +5,14 @@ import { executeMethod } from './execute_method';
 
 export function query(
     paramIdls: IDL.Type[],
-    returnIdl: IDL.Type
+    returnIdl?: IDL.Type
 ): MethodDecorator {
     return <T>(
         target: object,
         propertyKey: string | symbol,
         descriptor: TypedPropertyDescriptor<T>
     ): TypedPropertyDescriptor<T> | void => {
-        const originalMethod = descriptor.value;
+        const originalMethod = (descriptor.value as any).bind(target);
 
         const methodCallback = (...args: any[]) => {
             executeMethod(

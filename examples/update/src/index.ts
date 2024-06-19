@@ -1,4 +1,4 @@
-import { Canister, query, text, update, Void } from 'azle';
+import { Canister, query, text, update, Void } from 'azle/experimental';
 
 let currentMessage: string = '';
 

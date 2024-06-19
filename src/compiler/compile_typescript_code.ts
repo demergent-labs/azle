@@ -31,7 +31,7 @@ export async function compileTypeScriptToJavaScript(
             export * from './${main}';
             import * as CanisterMethods from './${main}';
 
-            if (typeof CanisterMethods !== 'function') {
+            if (CanisterMethods.default.isCanister !== true) {
                 const canister = new CanisterMethods.default();
 
                 globalThis.candidInfoFunction = () => {
