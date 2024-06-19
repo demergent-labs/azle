@@ -22,7 +22,7 @@ export function getTests(canisterId: string): Test {
 
             callerAddress = responseText;
 
-            expect(responseText).toMatch('0x');
+            expect(responseText).toMatch(/^0x/);
             expect(responseText).toHaveLength(42);
         });
 
@@ -34,7 +34,7 @@ export function getTests(canisterId: string): Test {
 
             canisterAddress = responseText;
 
-            expect(responseText).toMatch('0x');
+            expect(responseText).toMatch(/^0x/);
             expect(responseText).toHaveLength(42);
             expect(responseText).not.toBe(callerAddress);
         });
