@@ -111,10 +111,7 @@ export function verifyUpload(
 ) {
     it(`uploads and hashes ${srcPath}`, async () => {
         const localPath = await getLocalPath(join('assets', srcPath), destPath);
-        console.log(`Src: ${srcPath} => Local: ${localPath}`);
         const canisterPath = join('assets', destPath);
-        console.log(`Src: ${destPath} => Local: ${canisterPath}`);
-        console.log('THIS IS THE CANISTER PATH', canisterPath);
 
         const expectedHash = (await hashFile(localPath)).toString('hex');
 
