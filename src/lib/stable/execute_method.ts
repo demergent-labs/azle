@@ -27,7 +27,7 @@ export function executeMethod(
     if (
         mode === 'init' ||
         mode === 'postUpgrade' ||
-        mode === 'inspectMessage'
+        mode === 'inspectMessage' // TODO should inspectMessage really be here?
     ) {
         return;
     }

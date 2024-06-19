@@ -3,6 +3,7 @@ export * from '../stable_structures/stable_b_tree_map';
 export * from '../stable_structures/stable_json';
 export { init } from './init';
 export { postUpgrade } from './post_upgrade';
+export { preUpgrade } from './pre_upgrade';
 export { query } from './query';
 export { update } from './update';
 export * from '@dfinity/candid';

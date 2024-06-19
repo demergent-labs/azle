@@ -1,37 +1,38 @@
 import {
-    Canister,
+    IDL,
     init,
-    nat64,
     postUpgrade,
     preUpgrade,
     query,
-    Record,
     StableBTreeMap,
-    text,
-    update,
-    Vec,
-    Void
-} from 'azle/experimental';
+    update
+} from 'azle';
 
-const Entry = Record({
-    key: text,
-    value: nat64
+const Entry = IDL.Record({
+    key: IDL.Text,
+    value: IDL.Nat64
 });
-type Entry = typeof Entry;
+type Entry = {
+    key: string;
+    value: bigint;
+};
 
-let stableStorage = StableBTreeMap<text, Vec<Entry>>(0);
+let stableStorage = StableBTreeMap<string, Entry[]>(0);
 
 let entries: {
-    [key: string]: nat64;
+    [key: string]: bigint;
 } = {};
 
-export default Canister({
-    init: init([], () => {
+export default class {
+    @init([])
+    init() {
         console.log('init');
 
         stableStorage.insert('entries', []);
-    }),
-    postUpgrade: postUpgrade([], () => {
+    }
+
+    @postUpgrade([])
+    postUpgrade() {
         console.log('postUpgrade');
 
         const stableEntriesOpt = stableStorage.get('entries');
@@ -45,8 +46,10 @@ export default Canister({
                 [entry.key]: entry.value
             };
         }, {});
-    }),
-    preUpgrade: preUpgrade(() => {
+    }
+
+    @preUpgrade
+    preUpgrade() {
         console.log('preUpgrade');
 
         stableStorage.insert(
@@ -58,16 +61,20 @@ export default Canister({
                 };
             })
         );
-    }),
-    setEntry: update([Entry], Void, (entry) => {
+    }
+
+    @update([Entry])
+    setEntry(entry: Entry) {
         entries[entry.key] = entry.value;
-    }),
-    getEntries: query([], Vec(Entry), () => {
+    }
+
+    @query([], IDL.Vec(Entry))
+    getEntries() {
         return Object.entries(entries).map((entry) => {
             return {
                 key: entry[0],
                 value: entry[1]
             };
         });
-    })
-});
+    }
+}
