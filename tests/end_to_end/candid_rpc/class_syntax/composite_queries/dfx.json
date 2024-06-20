@@ -1,0 +1,46 @@
+{
+    "canisters": {
+        "canister1": {
+            "type": "azle",
+            "main": "src/canister1/index.ts",
+            "candid": "src/canister1/index.did",
+            "candid_gen": "custom",
+            "env": [
+                "CANISTER1_PRINCIPAL",
+                "CANISTER2_PRINCIPAL",
+                "CANISTER3_PRINCIPAL",
+                "AZLE_TEST_FETCH"
+            ],
+            "assets": [
+                ["src/canister2/index.did", "candid/canister2.did"],
+                ["src/canister3/index.did", "candid/canister3.did"]
+            ],
+            "declarations": {
+                "output": "test/dfx_generated/canister1",
+                "node_compatibility": true
+            }
+        },
+        "canister2": {
+            "type": "azle",
+            "main": "src/canister2/index.ts",
+            "candid": "src/canister2/index.did",
+            "candid_gen": "custom",
+            "env": ["CANISTER3_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [["src/canister3/index.did", "candid/canister3.did"]],
+            "declarations": {
+                "output": "test/dfx_generated/canister2",
+                "node_compatibility": true
+            }
+        },
+        "canister3": {
+            "type": "azle",
+            "main": "src/canister3/index.ts",
+            "candid": "src/canister3/index.did",
+            "candid_gen": "custom",
+            "declarations": {
+                "output": "test/dfx_generated/canister3",
+                "node_compatibility": true
+            }
+        }
+    }
+}

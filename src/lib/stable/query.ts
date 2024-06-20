@@ -1,11 +1,14 @@
 import { IDL } from '@dfinity/candid';
 
-import { isAsync } from '../canister_methods/is_async';
 import { executeWithCandidSerde } from './execute_with_candid_serde';
 
 export function query(
     paramIdls: IDL.Type[],
-    returnIdl?: IDL.Type
+    returnIdl?: IDL.Type,
+    options?: {
+        composite?: boolean;
+        manual?: boolean;
+    }
 ): MethodDecorator {
     return <T>(
         target: object,
@@ -21,7 +24,7 @@ export function query(
                 originalMethod,
                 paramIdls,
                 returnIdl,
-                false // TODO implement manual check
+                options?.manual ?? false
             );
         };
 
@@ -29,7 +32,7 @@ export function query(
 
         globalThis._azleCanisterMethods.queries.push({
             name: propertyKey as string,
-            composite: isAsync(originalMethod)
+            composite: options?.composite ?? false
             // TODO implement guard
         });
 
