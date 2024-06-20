@@ -24,11 +24,7 @@ export function executeMethod(
 
     const result = getResult(decodedArgs, callback);
 
-    if (
-        mode === 'init' ||
-        mode === 'postUpgrade' ||
-        mode === 'inspectMessage'
-    ) {
+    if (mode === 'init' || mode === 'postUpgrade') {
         return;
     }
 

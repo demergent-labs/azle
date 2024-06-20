@@ -1,16 +1,14 @@
 {
-    "name": "inspect_message_end_to_end_test_functional_syntax",
     "scripts": {
         "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
-        "test": "jest"
+        "test": "ts-node --transpile-only --ignore=false test/test.ts"
     },
     "dependencies": {
         "azle": "0.22.0"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
-        "jest": "^29.7.0",
-        "ts-jest": "^29.1.5",
+        "pre_and_post_upgrade_test_functional_syntax": "file:../../../../../examples/pre_and_post_upgrade",
         "ts-node": "^10.9.1",
         "typescript": "^5.2.2"
     }

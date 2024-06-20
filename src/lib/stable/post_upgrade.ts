@@ -11,8 +11,6 @@ export function postUpgrade(paramIdls: IDL.Type[]): MethodDecorator {
         const originalMethod = (descriptor.value as any).bind(target);
 
         const methodCallback = (...args: any[]) => {
-            globalThis._azlePostUpgradeCalled = true;
-
             executeMethod(
                 'postUpgrade',
                 args,
