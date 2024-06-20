@@ -12,7 +12,7 @@ type CanisterMethodMode =
     | 'postUpgrade'
     | 'preUpgrade';
 
-export function executeMethod(
+export function executeWithCandidSerde(
     mode: CanisterMethodMode,
     args: any[],
     callback: any,

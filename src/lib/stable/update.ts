@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { executeMethod } from './execute_method';
+import { executeWithCandidSerde } from './execute_with_candid_serde';
 
 export function update(
     paramIdls: IDL.Type[],
@@ -14,7 +14,7 @@ export function update(
         const originalMethod = (descriptor.value as any).bind(target);
 
         const methodCallback = (...args: any[]) => {
-            executeMethod(
+            executeWithCandidSerde(
                 'update',
                 args,
                 originalMethod,

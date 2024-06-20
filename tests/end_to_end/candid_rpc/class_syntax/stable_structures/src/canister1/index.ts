@@ -11,7 +11,7 @@ let stableMap4 = StableBTreeMap<User, number>(4);
 export default class {
     @query([], IDL.Bool)
     getRedeployed(): boolean {
-        return globalThis._azlePostUpgradeCalled; // TODO this should be set in the Rust init and post upgrade so that they are always set
+        return globalThis._azlePostUpgradeCalled;
     }
 
     // stableMap0 methods

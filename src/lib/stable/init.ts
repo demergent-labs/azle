@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { executeMethod } from './execute_method';
+import { executeWithCandidSerde } from './execute_with_candid_serde';
 
 export function init(paramIdls: IDL.Type[]): MethodDecorator {
     return <T>(
@@ -11,7 +11,7 @@ export function init(paramIdls: IDL.Type[]): MethodDecorator {
         const originalMethod = (descriptor.value as any).bind(target);
 
         const methodCallback = (...args: any[]) => {
-            executeMethod(
+            executeWithCandidSerde(
                 'init',
                 args,
                 originalMethod,
