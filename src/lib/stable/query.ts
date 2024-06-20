@@ -1,7 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
 import { isAsync } from '../canister_methods/is_async';
-import { executeMethod } from './execute_method';
+import { executeWithCandidSerde } from './execute_with_candid_serde';
 
 export function query(
     paramIdls: IDL.Type[],
@@ -15,7 +15,7 @@ export function query(
         const originalMethod = (descriptor.value as any).bind(target);
 
         const methodCallback = (...args: any[]) => {
-            executeMethod(
+            executeWithCandidSerde(
                 'query',
                 args,
                 originalMethod,

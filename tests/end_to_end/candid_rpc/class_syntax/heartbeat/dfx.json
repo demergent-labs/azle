@@ -1,0 +1,25 @@
+{
+    "canisters": {
+        "heartbeat_async": {
+            "type": "azle",
+            "main": "src/heartbeat_async/index.ts",
+            "candid": "src/heartbeat_async/index.did",
+            "candid_gen": "custom",
+            "env": ["AZLE_TEST_FETCH"],
+            "declarations": {
+                "output": "test/dfx_generated/heartbeat_async",
+                "node_compatibility": true
+            }
+        },
+        "heartbeat_sync": {
+            "type": "azle",
+            "main": "src/heartbeat_sync/index.ts",
+            "candid": "src/heartbeat_sync/index.did",
+            "candid_gen": "custom",
+            "declarations": {
+                "output": "test/dfx_generated/heartbeat_sync",
+                "node_compatibility": true
+            }
+        }
+    }
+}

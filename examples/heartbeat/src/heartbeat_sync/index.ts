@@ -1,4 +1,4 @@
-import { bool, Canister, heartbeat, query } from 'azle';
+import { bool, Canister, heartbeat, query } from 'azle/experimental';
 
 let initialized = false;
 
