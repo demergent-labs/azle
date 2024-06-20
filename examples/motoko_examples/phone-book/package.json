@@ -6,7 +6,7 @@
         "prestart": "npm run generate",
         "generate": "dfx generate phone_book",
         "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
-        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+        "test": "jest"
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.0",
@@ -18,17 +18,19 @@
         "css-loader": "^6.0.0",
         "events": "^3.3.0",
         "html-webpack-plugin": "^5.5.0",
+        "jest": "^29.7.0",
         "process": "^0.11.10",
         "stream-browserify": "^3.0.0",
         "style-loader": "^3.3.0",
         "terser-webpack-plugin": "^5.3.0",
+        "ts-jest": "^29.1.4",
         "ts-loader": "^9.4.0",
         "ts-node": "^10.9.0",
         "typescript": "^5.2.2",
         "util": "^0.12.0",
+        "webpack": "^5.88.0",
         "webpack-cli": "^5.1.0",
-        "webpack-dev-server": "^4.15.0",
-        "webpack": "^5.88.0"
+        "webpack-dev-server": "^4.15.0"
     },
     "browserslist": [
         "last 2 chrome version",

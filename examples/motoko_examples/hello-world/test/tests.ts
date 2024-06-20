@@ -1,22 +1,15 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 
 // @ts-ignore
 import { _SERVICE } from './dfx_generated/hello_world/hello_world.did';
 
-export function getTests(
-    hello_world_canister: ActorSubclass<_SERVICE>
-): Test[] {
-    return [
-        {
-            name: 'main',
-            test: async () => {
-                const result = await hello_world_canister.main();
+export function getTests(hello_world_canister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('runs a simple hello world method', async () => {
+            const result = await hello_world_canister.main();
 
-                return {
-                    Ok: result === undefined
-                };
-            }
-        }
-    ];
+            expect(result).toBeUndefined();
+        });
+    };
 }

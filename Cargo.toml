@@ -1,2 +1,6 @@
 [workspace]
-members = ["src/compiler/rust/canister", "src/compiler/rust/canister_methods"]
+members = [
+    "src/compiler/rust/canister",
+    "src/compiler/rust/canister_methods",
+    "src/compiler/rust/open_value_sharing",
+]

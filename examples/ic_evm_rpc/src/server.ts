@@ -16,7 +16,7 @@ const app = express();
 
 app.use(express.json());
 
-app.post('/caller-address', async (_req, res) => {
+app.get('/caller-address', async (_req, res) => {
     const address = ethers.computeAddress(
         ethers.hexlify(await ecdsaPublicKey([ic.caller().toUint8Array()]))
     );
@@ -24,7 +24,7 @@ app.post('/caller-address', async (_req, res) => {
     res.send(address);
 });
 
-app.post('/canister-address', async (_req, res) => {
+app.get('/canister-address', async (_req, res) => {
     if (canisterAddress.value === null) {
         canisterAddress.value = ethers.computeAddress(
             ethers.hexlify(await ecdsaPublicKey([ic.id().toUint8Array()]))
@@ -34,10 +34,10 @@ app.post('/canister-address', async (_req, res) => {
     res.send(canisterAddress.value);
 });
 
-app.post(
+app.get(
     '/address-balance',
-    async (req: Request<any, any, { address: string }>, res) => {
-        const balance = await ethGetBalance(req.body.address);
+    async (req: Request<any, any, any, { address: string }>, res) => {
+        const balance = await ethGetBalance(req.query.address);
 
         res.send(jsonStringify(balance));
     }

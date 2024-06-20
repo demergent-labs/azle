@@ -1,8 +1,8 @@
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/test/jest';
 
 import { createActor } from './dfx_generated/async_await';
-import { get_tests } from './tests';
+import { getTests } from './tests';
 
 const asyncAwaitCanister = createActor(getCanisterId('async_await'), {
     agentOptions: {
@@ -10,4 +10,4 @@ const asyncAwaitCanister = createActor(getCanisterId('async_await'), {
     }
 });
 
-runTests(get_tests(asyncAwaitCanister));
+runTests(getTests(asyncAwaitCanister));

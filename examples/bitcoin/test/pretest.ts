@@ -1,7 +1,7 @@
 import { execSync } from 'child_process';
 
 async function pretest() {
-    execSync(`rm -rf .bitcoin/regtest`, {
+    execSync(`rm -rf .bitcoin/data/regtest`, {
         stdio: 'inherit'
     });
 

@@ -1,8 +1,8 @@
-import { ActorSubclass } from '@dfinity/agent';
-import { SignIdentity } from '@dfinity/agent';
+import { ActorSubclass, SignIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { Principal } from '@dfinity/principal';
 import { getCanisterId } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { expect, it, please, Test } from 'azle/test/jest';
 import { execSync } from 'child_process';
 
 import { _SERVICE } from './dfx_generated/whoami/whoami.did';
@@ -13,95 +13,69 @@ function createIdentity(seed: number): SignIdentity {
 }
 
 export const canisterId = getCanisterId('whoami');
+const canisterPrincipal = Principal.fromText(canisterId);
 
-const installationPrincipal = execSync(`dfx identity get-principal`)
-    .toString()
-    .trim();
+const installationPrincipal = Principal.fromText(
+    execSync(`dfx identity get-principal`).toString().trim()
+);
 
 export const callingIdentity = createIdentity(1);
-const callingPrincipal = callingIdentity.getPrincipal().toString();
+const callingPrincipal = callingIdentity.getPrincipal();
 
 const someoneIdentity = createIdentity(2);
-export const someonePrincipal = someoneIdentity.getPrincipal().toString();
+export const someonePrincipal = someoneIdentity.getPrincipal();
 
 export function getTests(
     whoamiCanister: ActorSubclass<_SERVICE>,
     canisterName: string
-): Test[] {
-    return [
-        {
-            name: 'installer',
-            test: async () => {
-                const result = await whoamiCanister.installer();
+): Test {
+    return () => {
+        it('gets the principal of the canister that installed this canister', async () => {
+            const result = await whoamiCanister.installer();
 
-                return {
-                    Ok: result.toString() === installationPrincipal
-                };
-            }
-        },
-        {
-            name: 'argument',
-            test: async () => {
-                const result = await whoamiCanister.argument();
+            expect(result).toStrictEqual(installationPrincipal);
+        });
 
-                return {
-                    Ok: result.toString() === someonePrincipal
-                };
-            }
-        },
-        {
-            name: 'whoami',
-            test: async () => {
-                const result = await whoamiCanister.whoami();
+        it('gets the principal that was provided as an init argument', async () => {
+            const result = await whoamiCanister.argument();
 
-                return {
-                    Ok: result.toString() === callingPrincipal
-                };
-            }
-        },
-        {
-            name: 'id',
-            test: async () => {
-                const result = await whoamiCanister.id();
+            expect(result).toStrictEqual(someonePrincipal);
+        });
 
-                return {
-                    Ok: result.toString() === canisterId
-                };
-            }
-        },
-        {
-            name: 'idQuick',
-            test: async () => {
-                const result = await whoamiCanister.idQuick();
+        it('gets the principal of the caller of this method', async () => {
+            const result = await whoamiCanister.whoami();
 
-                return {
-                    Ok: result.toString() === canisterId
-                };
-            }
-        },
-        {
-            name: 'redeploy',
-            prep: async () => {
-                execSync(
-                    `dfx deploy --upgrade-unchanged ${canisterName} --argument '(principal "${callingPrincipal}")'`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-            }
-        },
-        {
-            name: 'updated argument',
-            test: async () => {
-                const result = await whoamiCanister.argument();
+            expect(result).toStrictEqual(callingPrincipal);
+        });
 
-                return {
-                    Ok: result.toString() === callingPrincipal
-                };
-            }
-        }
+        it('gets the principal of this canister via cross canister call', async () => {
+            const result = await whoamiCanister.id();
+
+            expect(result).toStrictEqual(canisterPrincipal);
+        });
+
+        it('gets the principal of this canister via ic object', async () => {
+            const result = await whoamiCanister.idQuick();
+
+            expect(result).toStrictEqual(canisterPrincipal);
+        });
+
+        please('redeploy the canister', async () => {
+            execSync(
+                `dfx deploy --upgrade-unchanged ${canisterName} --argument '(principal "${callingPrincipal}")'`,
+                {
+                    stdio: 'inherit'
+                }
+            );
+        });
+
+        it('gets the principal that was provided as a postUpgrade argument', async () => {
+            const result = await whoamiCanister.argument();
+
+            expect(result).toStrictEqual(callingPrincipal);
+        });
         // TODO: To make this test really robust, we would use a different identity
         // when re-deploying the canister. Then we would assert that
         // `whoamiCanister.installer()` returns the new installer's principal.
-    ];
+    };
 }

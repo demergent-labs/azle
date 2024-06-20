@@ -3,7 +3,7 @@
     "scripts": {
         "install": "./scripts/install.sh",
         "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
-        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+        "test": "jest"
     },
     "dependencies": {
         "azle": "0.22.0",
@@ -13,6 +13,8 @@
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
         "@types/express": "^4.17.21",
+        "jest": "^29.7.0",
+        "ts-jest": "^29.1.4",
         "ts-node": "^10.9.1",
         "typescript": "^5.2.2"
     }

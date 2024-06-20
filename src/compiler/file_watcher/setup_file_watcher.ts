@@ -2,6 +2,7 @@ import { spawn } from 'child_process';
 import { join } from 'path';
 
 import { execSyncPretty } from '../utils/exec_sync_pretty';
+import { AZLE_PACKAGE_PATH } from '../utils/global_paths';
 
 export function setupFileWatcher(
     reloadedJsPath: string,
@@ -30,7 +31,13 @@ export function setupFileWatcher(
     const watcherProcess = spawn(
         'node',
         [
-            join(__dirname, './file_watcher_loader.js'),
+            join(
+                AZLE_PACKAGE_PATH,
+                'src',
+                'compiler',
+                'file_watcher',
+                'file_watcher_loader.js'
+            ),
             reloadedJsPath,
             canisterId,
             mainPath,

@@ -4,11 +4,13 @@ import { copySync } from 'fs-extra';
 import { join } from 'path';
 
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
+import { getConsumer } from './get_consumer_config';
 import { execSyncPretty } from './utils/exec_sync_pretty';
-import { JSCanisterConfig, Toml } from './utils/types';
+import { AZLE_PACKAGE_PATH } from './utils/global_paths';
+import { CanisterConfig, Toml } from './utils/types';
 
-export function prepareRustStagingArea(
-    canisterConfig: JSCanisterConfig,
+export async function prepareRustStagingArea(
+    canisterConfig: CanisterConfig,
     canisterPath: string,
     canisterJavaScript: string,
     stdioType: IOType
@@ -22,22 +24,36 @@ export function prepareRustStagingArea(
 
     writeFileSync(`${canisterPath}/Cargo.toml`, workspaceCargoToml);
 
-    // TODO not sure what to do about the cargo.lock
-    // writeFileSync(`${canisterPath}/Cargo.lock`, workspaceCargoLock);
+    copySync(
+        join(AZLE_PACKAGE_PATH, 'Cargo.lock'),
+        `${canisterPath}/Cargo.lock`
+    );
 
     if (!existsSync(`${canisterPath}/canister`)) {
         mkdirSync(`${canisterPath}/canister`);
     }
 
-    copySync(`${__dirname}/rust/canister`, `${canisterPath}/canister`);
+    copySync(
+        `${AZLE_PACKAGE_PATH}/src/compiler/rust/canister`,
+        `${canisterPath}/canister`
+    );
 
     if (!existsSync(`${canisterPath}/canister_methods`)) {
         mkdirSync(`${canisterPath}/canister_methods`);
     }
 
     copySync(
-        `${__dirname}/rust/canister_methods`,
+        `${AZLE_PACKAGE_PATH}/src/compiler/rust/canister_methods`,
         `${canisterPath}/canister_methods`
+    );
+
+    if (!existsSync(`${canisterPath}/open_value_sharing`)) {
+        mkdirSync(`${canisterPath}/open_value_sharing`);
+    }
+
+    copySync(
+        `${AZLE_PACKAGE_PATH}/src/compiler/rust/open_value_sharing`,
+        `${canisterPath}/open_value_sharing`
     );
 
     writeFileSync(`${canisterPath}/canister/src/main.js`, canisterJavaScript);
@@ -52,4 +68,11 @@ export function prepareRustStagingArea(
     for (const [src, dest] of canisterConfig.assets ?? []) {
         copySync(src, join(canisterPath, 'canister', 'src', 'assets', dest));
     }
+
+    const consumer = await getConsumer(canisterConfig);
+
+    writeFileSync(
+        join(canisterPath, 'canister', 'src', 'assets', 'consumer.json'),
+        JSON.stringify(consumer)
+    );
 }
