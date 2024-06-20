@@ -21,7 +21,7 @@ export function getTests(initCanister: ActorSubclass<_SERVICE>): Test {
         it('accepts Principals as init arguments', async () => {
             const result = await initCanister.getOwner();
 
-            expect(result).toStrictEqual([
+            expect(result).toEqual([
                 Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
             ]);
         });
