@@ -3,6 +3,7 @@ import { describe } from '@jest/globals';
 import { expect, it, please, Test } from 'azle/test/jest';
 import { execSync } from 'child_process';
 
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/candid_encoding/candid_encoding.did';
 
 export function getTests(
