@@ -1,5 +1,4 @@
 {
-    "name": "init_end_to_end_test_functional_syntax",
     "scripts": {
         "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
         "test": "jest"
@@ -9,9 +8,10 @@
     },
     "devDependencies": {
         "@dfinity/agent": "^1.4.0",
+        "init_end_to_end_test_functional_syntax": "file:../../../../../examples/init",
         "jest": "^29.7.0",
         "ts-jest": "^29.1.5",
         "ts-node": "10.7.0",
-        "typescript": "^5.4.5"
+        "typescript": "^5.2.2"
     }
 }

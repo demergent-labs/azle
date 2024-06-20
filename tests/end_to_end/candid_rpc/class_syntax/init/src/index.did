@@ -1,0 +1,5 @@
+service: (record {id:text}, variant {Fire; Wave}, principal) -> {
+    getOwner: () -> (opt principal) query;
+    getReaction: () -> (opt variant {Fire; Wave}) query;
+    getUser: () -> (opt record {id:text}) query;
+}
