@@ -1,8 +1,8 @@
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test';
+import { runTests } from 'azle/test/jest';
 
-import { createActor } from '../test/dfx_generated/counter';
-import { get_tests } from './tests';
+import { createActor } from './dfx_generated/counter';
+import { getTests } from './tests';
 
 const counterCanister = createActor(getCanisterId('counter'), {
     agentOptions: {
@@ -10,4 +10,4 @@ const counterCanister = createActor(getCanisterId('counter'), {
     }
 });
 
-runTests(get_tests(counterCanister));
+runTests(getTests(counterCanister));

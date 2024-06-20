@@ -1,9 +1,9 @@
 import { getCanisterId } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 
 import { createActor } from '../dfx_generated/server';
 
-export function getTests(): Test[] {
+export function getTests(): Test {
     const canisterId = getCanisterId('server');
     const origin = `http://${canisterId}.localhost:8000`;
     const actor = createActor(canisterId, {
@@ -12,42 +12,23 @@ export function getTests(): Test[] {
         }
     });
 
-    return [
-        {
-            name: 'server',
-            test: async () => {
-                try {
-                    const httpQueryResponse = await fetch(
-                        `${origin}/http-query`
-                    );
-                    const httpQueryResponseText =
-                        await httpQueryResponse.text();
+    return () => {
+        it('handles an HTTP server canister with additional query and update methods', async () => {
+            const httpQueryResponse = await fetch(`${origin}/http-query`);
+            const httpQueryResponseText = await httpQueryResponse.text();
 
-                    const httpUpdateResponse = await fetch(
-                        `${origin}/http-update`,
-                        {
-                            method: 'POST'
-                        }
-                    );
-                    const httpUpdateResponseText =
-                        await httpUpdateResponse.text();
+            const httpUpdateResponse = await fetch(`${origin}/http-update`, {
+                method: 'POST'
+            });
+            const httpUpdateResponseText = await httpUpdateResponse.text();
 
-                    const candidQueryText = await actor.candidQuery();
-                    const candidUpdateText = await actor.candidUpdate();
+            const candidQueryText = await actor.candidQuery();
+            const candidUpdateText = await actor.candidUpdate();
 
-                    return {
-                        Ok:
-                            httpQueryResponseText === 'http-query-server' &&
-                            httpUpdateResponseText === 'http-update-server' &&
-                            candidQueryText === 'candidQueryServer' &&
-                            candidUpdateText === 'candidUpdateServer'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        }
-    ];
+            expect(httpQueryResponseText).toBe('http-query-server');
+            expect(httpUpdateResponseText).toBe('http-update-server');
+            expect(candidQueryText).toBe('candidQueryServer');
+            expect(candidUpdateText).toBe('candidUpdateServer');
+        });
+    };
 }

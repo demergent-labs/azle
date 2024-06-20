@@ -1,7 +1,7 @@
 {
     "scripts": {
         "pre_tests": "ts-node --transpile-only --ignore=false test/pretest.ts",
-        "tests": "npm run pre_tests && ts-node --transpile-only --ignore=false test/test.ts",
+        "tests": "npm run pre_tests && jest",
         "test": "AZLE_TEST_FETCH=false npm run tests && AZLE_TEST_FETCH=true npm run tests"
     },
     "dependencies": {
@@ -10,6 +10,8 @@
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
         "@dfinity/identity": "^0.19.2",
+        "jest": "^29.7.0",
+        "ts-jest": "^29.1.4",
         "ts-node": "^10.9.1",
         "typescript": "^5.2.2"
     }

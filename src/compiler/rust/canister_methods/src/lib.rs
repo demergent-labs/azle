@@ -72,6 +72,11 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
             ASSETS_DIR.extract("/").unwrap();
 
             initialize_js(std::str::from_utf8(MAIN_JS).unwrap(), true);
+
+            ic_cdk::spawn(async {
+                let consumer = get_consumer("consumer.json").unwrap();
+                open_value_sharing::init(&consumer).await;
+            });
         }
     };
 
@@ -95,6 +100,11 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
             ASSETS_DIR.extract("/").unwrap();
 
             initialize_js(std::str::from_utf8(MAIN_JS).unwrap(), false);
+
+            ic_cdk::spawn(async {
+                let consumer = get_consumer("consumer.json").unwrap();
+                open_value_sharing::init(&consumer).await;
+            });
         }
     };
 

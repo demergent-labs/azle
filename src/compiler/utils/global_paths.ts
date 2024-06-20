@@ -5,3 +5,9 @@ export const GLOBAL_AZLE_CONFIG_DIR = resolve(
     homedir(),
     join('.config', 'azle')
 );
+
+export const AZLE_PACKAGE_PATH =
+    require.main?.path ??
+    (() => {
+        throw new Error(`Azle: azle package path cannot be undefined`);
+    })();

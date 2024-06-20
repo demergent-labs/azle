@@ -1,364 +1,229 @@
 import * as dns from 'node:dns';
 dns.setDefaultResultOrder('ipv4first');
 
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 
-type Header = [string, string];
-
-export function getTests(canisterId: string): Test[] {
+export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
 
-    return [
-        {
-            name: '/fetch-head',
-            test: async () => {
-                const response = await fetch(`${origin}/fetch-head`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+    return () => {
+        it('fetches using the head method', async () => {
+            const response = await fetch(`${origin}/fetch-head`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const responseJson = await response.json();
 
-                const headerIsCorrectContentLength = isHeaderCorrect(
-                    responseJson,
-                    'content-length',
-                    '480'
-                );
-                const headerIsCorrectXPoweredBy = isHeaderCorrect(
-                    responseJson,
-                    'x-powered-by',
-                    'Express'
-                );
-                const headerIsCorrectServer = isHeaderCorrect(
-                    responseJson,
-                    'server',
-                    'Cowboy'
-                );
-                const headerIsCorrectConnection = isHeaderCorrect(
-                    responseJson,
-                    'connection',
-                    'keep-alive'
-                );
-                const headerIsCorrectContentType = isHeaderCorrect(
-                    responseJson,
-                    'content-type',
-                    'application/json; charset=utf-8'
-                );
-                const headerIsCorrectAccessControlAllowOrigin = isHeaderCorrect(
-                    responseJson,
-                    'access-control-allow-origin',
-                    '*'
-                );
+            expect(responseJson).toContainEqual(['content-length', '480']);
+            expect(responseJson).toContainEqual(['x-powered-by', 'Express']);
+            expect(responseJson).toContainEqual(['server', 'Cowboy']);
+            expect(responseJson).toContainEqual(['connection', 'keep-alive']);
+            expect(responseJson).toContainEqual([
+                'content-type',
+                'application/json; charset=utf-8'
+            ]);
+            expect(responseJson).toContainEqual([
+                'access-control-allow-origin',
+                '*'
+            ]);
+        }, 10_000);
 
-                return {
-                    Ok:
-                        headerIsCorrectContentLength &&
-                        headerIsCorrectXPoweredBy &&
-                        headerIsCorrectServer &&
-                        headerIsCorrectConnection &&
-                        headerIsCorrectContentType &&
-                        headerIsCorrectAccessControlAllowOrigin
-                };
+        it('fetches using the get method', async () => {
+            const response = await fetch(`${origin}/fetch-get`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const { headers, body } = await response.json();
+
+            expect(headers).toContainEqual(['content-length', '480']);
+            expect(headers).toContainEqual(['x-powered-by', 'Express']);
+            expect(headers).toContainEqual(['server', 'Cowboy']);
+            expect(headers).toContainEqual(['connection', 'keep-alive']);
+            expect(headers).toContainEqual([
+                'content-type',
+                'application/json; charset=utf-8'
+            ]);
+            expect(headers).toContainEqual([
+                'access-control-allow-origin',
+                '*'
+            ]);
+
+            const expectedBody = {
+                status: {
+                    verified: true,
+                    sentCount: 1
+                },
+                _id: '591f989cd369931519ce361d',
+                text: 'In ancient Egypt, killing a cat was a crime punishable by death.',
+                source: 'api',
+                type: 'cat',
+                createdAt: '2018-01-04T01:10:54.673Z'
+            };
+
+            expect(body).toEqual(expect.objectContaining(expectedBody));
+        }, 10_000);
+
+        it('fetches using the get method and query params', async () => {
+            const response = await fetch(`${origin}/fetch-get-query-params`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const responseJson = await response.json();
+
+            const expectedResponse = {
+                type: 'cat'
+            };
+
+            expect(responseJson).toHaveLength(2);
+
+            for (const cat of responseJson) {
+                expect(cat).toEqual(expect.objectContaining(expectedResponse));
             }
-        },
-        {
-            name: '/fetch-get',
-            test: async () => {
-                const response = await fetch(`${origin}/fetch-get`, {
-                    method: 'POST'
-                });
-                const { headers, body } = await response.json();
+        }, 10_000);
 
-                const headerIsCorrectContentLength = isHeaderCorrect(
-                    headers,
-                    'content-length',
-                    '480'
-                );
-                const headerIsCorrectXPoweredBy = isHeaderCorrect(
-                    headers,
-                    'x-powered-by',
-                    'Express'
-                );
-                const headerIsCorrectServer = isHeaderCorrect(
-                    headers,
-                    'server',
-                    'Cowboy'
-                );
-                const headerIsCorrectConnection = isHeaderCorrect(
-                    headers,
-                    'connection',
-                    'keep-alive'
-                );
-                const headerIsCorrectContentType = isHeaderCorrect(
-                    headers,
-                    'content-type',
-                    'application/json; charset=utf-8'
-                );
-                const headerIsCorrectAccessControlAllowOrigin = isHeaderCorrect(
-                    headers,
-                    'access-control-allow-origin',
-                    '*'
-                );
+        it('fetches using the post method', async () => {
+            const response = await fetch(`${origin}/fetch-post`, {
+                method: 'POST'
+            });
+            const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        headerIsCorrectContentLength &&
-                        headerIsCorrectXPoweredBy &&
-                        headerIsCorrectServer &&
-                        headerIsCorrectConnection &&
-                        headerIsCorrectContentType &&
-                        headerIsCorrectAccessControlAllowOrigin &&
-                        body.status.verified === true &&
-                        body.status.sentCount === 1 &&
-                        body._id === '591f989cd369931519ce361d' &&
-                        body.text ===
-                            'In ancient Egypt, killing a cat was a crime punishable by death.' &&
-                        body.source === 'api' &&
-                        body.type === 'cat' &&
-                        body.createdAt === '2018-01-04T01:10:54.673Z'
-                };
-            }
-        },
-        {
-            name: '/fetch-get-query-params',
-            test: async () => {
-                const response = await fetch(
-                    `${origin}/fetch-get-query-params`,
-                    {
-                        method: 'POST'
-                    }
-                );
-                const responseJson = await response.json();
+            expect(responseJson.result).toBe('0x9ad9e69f9d47520000');
+        }, 10_000);
 
-                return {
-                    Ok:
-                        responseJson.length === 2 &&
-                        responseJson[0].type === 'cat' &&
-                        responseJson[1].type === 'cat'
-                };
-            }
-        },
-        {
-            name: '/fetch-post',
-            test: async () => {
-                const response = await fetch(`${origin}/fetch-post`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+        it('fetches using the get method and headers', async () => {
+            const response = await fetch(`${origin}/request-headers`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const responseJson = await response.json();
 
-                return {
-                    Ok: responseJson.result === '0x9ad9e69f9d47520000'
-                };
-            }
-        },
-        {
-            name: '/request-headers',
-            test: async () => {
-                const response = await fetch(`${origin}/request-headers`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+            const expectedHeaders = {
+                'X-Azle-Request-Key-0': 'X-Azle-Request-Value-0',
+                'X-Azle-Request-Key-1': 'X-Azle-Request-Value-1',
+                'X-Azle-Request-Key-2': 'X-Azle-Request-Value-2'
+            };
 
-                return {
-                    Ok:
-                        responseJson.headers['X-Azle-Request-Key-0'] ===
-                            'X-Azle-Request-Value-0' &&
-                        responseJson.headers['X-Azle-Request-Key-1'] ===
-                            'X-Azle-Request-Value-1' &&
-                        responseJson.headers['X-Azle-Request-Key-2'] ===
-                            'X-Azle-Request-Value-2'
-                };
-            }
-        },
-        {
-            name: '/get-status-201',
-            test: async () => {
-                const response = await fetch(`${origin}/get-status-201`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+            expect(responseJson.headers).toEqual(
+                expect.objectContaining(expectedHeaders)
+            );
+        }, 10_000);
 
-                return {
-                    Ok:
-                        responseJson.status === 201 &&
-                        responseJson.statusText === 'Created'
-                };
-            }
-        },
-        {
-            name: '/get-status-205',
-            test: async () => {
-                const response = await fetch(`${origin}/get-status-205`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+        it('handles status 201', async () => {
+            const response = await fetch(`${origin}/get-status-201`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.status === 205 &&
-                        responseJson.statusText === 'Reset Content'
-                };
-            }
-        },
-        {
-            name: '/get-status-301',
-            test: async () => {
-                const response = await fetch(`${origin}/get-status-301`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+            expect(responseJson.status).toBe(201);
+            expect(responseJson.statusText).toBe('Created');
+        }, 10_000);
 
-                return {
-                    Ok:
-                        responseJson.status === 301 &&
-                        responseJson.statusText === 'Moved Permanently'
-                };
-            }
-        },
-        {
-            name: '/get-status-304',
-            test: async () => {
-                const response = await fetch(`${origin}/get-status-304`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+        it('handles status 205', async () => {
+            const response = await fetch(`${origin}/get-status-205`, {
+                method: 'POST'
+            });
+            const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.status === 304 &&
-                        responseJson.statusText === 'Not Modified'
-                };
-            }
-        },
-        {
-            name: '/get-status-401',
-            test: async () => {
-                const response = await fetch(`${origin}/get-status-401`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+            expect(responseJson.status).toBe(205);
+            expect(responseJson.statusText).toBe('Reset Content');
+        }, 10_000);
 
-                return {
-                    Ok:
-                        responseJson.status === 401 &&
-                        responseJson.statusText === 'Unauthorized'
-                };
-            }
-        },
-        {
-            name: '/get-status-418',
-            test: async () => {
-                const response = await fetch(`${origin}/get-status-418`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+        it('handles status 301', async () => {
+            const response = await fetch(`${origin}/get-status-301`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.status === 418 &&
-                        responseJson.statusText === "I'm a teapot"
-                };
-            }
-        },
-        {
-            name: '/get-status-500',
-            test: async () => {
-                const response = await fetch(`${origin}/get-status-500`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+            expect(responseJson.status).toBe(301);
+            expect(responseJson.statusText).toBe('Moved Permanently');
+        }, 10_000);
 
-                return {
-                    Ok:
-                        responseJson.status === 500 &&
-                        responseJson.statusText === 'Internal Server Error'
-                };
-            }
-        },
-        {
-            name: '/get-status-501',
-            test: async () => {
-                const response = await fetch(`${origin}/get-status-501`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+        it('handles status 304', async () => {
+            const response = await fetch(`${origin}/get-status-304`, {
+                method: 'POST'
+            });
+            const responseJson = await response.json();
 
-                return {
-                    Ok:
-                        responseJson.status === 501 &&
-                        responseJson.statusText === 'Not Implemented'
-                };
-            }
-        },
-        {
-            name: '/transform',
-            test: async () => {
-                const response = await fetch(`${origin}/transform`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+            expect(responseJson.status).toBe(304);
+            expect(responseJson.statusText).toBe('Not Modified');
+        }, 10_000);
 
-                return {
-                    Ok: responseJson.length === 0
-                };
-            }
-        },
-        {
-            name: '/transform-with-context',
-            test: async () => {
-                const response = await fetch(
-                    `${origin}/transform-with-context`,
-                    {
-                        method: 'POST'
-                    }
-                );
-                const { headers, body } = await response.json();
+        it('handles status 401', async () => {
+            const response = await fetch(`${origin}/get-status-401`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const responseJson = await response.json();
 
-                return {
-                    Ok: headers.length === 0 && body === 3
-                };
-            }
-        },
-        {
-            name: '/max-response-bytes',
-            test: async () => {
-                const response = await fetch(`${origin}/max-response-bytes`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+            expect(responseJson.status).toBe(401);
+            expect(responseJson.statusText).toBe('Unauthorized');
+        }, 10_000);
 
-                return {
-                    Ok: responseJson.message.includes(
-                        'Header size exceeds specified response size limit 0'
-                    )
-                };
-            }
-        },
-        {
-            name: '/cycles',
-            test: async () => {
-                const response = await fetch(`${origin}/cycles`, {
-                    method: 'POST'
-                });
-                const responseJson = await response.json();
+        it('handles status 418', async () => {
+            const response = await fetch(`${origin}/get-status-418`, {
+                method: 'POST'
+            });
+            const responseJson = await response.json();
 
-                return {
-                    Ok: responseJson.message.includes(
-                        'http_request request sent with 0 cycles'
-                    )
-                };
-            }
-        }
-    ];
-}
+            expect(responseJson.status).toBe(418);
+            expect(responseJson.statusText).toBe("I'm a teapot");
+        }, 10_000);
 
-function isHeaderCorrect(
-    headers: Header[],
-    keyCorrect: string,
-    valueCorrect: string
-): boolean {
-    return (
-        headers.find(
-            ([key, value]) =>
-                key.toLowerCase() === keyCorrect && value === valueCorrect
-        ) !== undefined
-    );
+        it('handles status 500', async () => {
+            const response = await fetch(`${origin}/get-status-500`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const responseJson = await response.json();
+
+            expect(responseJson.status).toBe(500);
+            expect(responseJson.statusText).toBe('Internal Server Error');
+        }, 10_000);
+
+        it('handles status 501', async () => {
+            const response = await fetch(`${origin}/get-status-501`, {
+                method: 'POST'
+            });
+            const responseJson = await response.json();
+
+            expect(responseJson.status).toBe(501);
+            expect(responseJson.statusText).toBe('Not Implemented');
+        }, 10_000);
+
+        it('transforms the http response', async () => {
+            const response = await fetch(`${origin}/transform`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const responseJson = await response.json();
+
+            expect(responseJson).toHaveLength(0);
+        }, 10_000);
+
+        it('transforms the http response with context', async () => {
+            const response = await fetch(`${origin}/transform-with-context`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const { headers, body } = await response.json();
+
+            expect(headers).toHaveLength(0);
+            expect(body).toBe(3);
+        }, 10_000);
+
+        it('fails to fetch if the response is larger than the specified max response bytes', async () => {
+            const response = await fetch(`${origin}/max-response-bytes`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const responseJson = await response.json();
+
+            expect(responseJson).toEqual({
+                message:
+                    'Rejection code 1, Header size exceeds specified response size limit 0'
+            });
+        }, 10_000);
+
+        it('fails to fetch if the request has no cycles attached to it', async () => {
+            const response = await fetch(`${origin}/cycles`, {
+                headers: [['X-Ic-Force-Update', 'true']]
+            });
+            const responseJson = await response.json();
+
+            expect(responseJson.message).toMatch(
+                /Rejection code 4, http_request request sent with 0 cycles, but \d{1,3}(_\d{3})* cycles are required\./
+            );
+        });
+    };
 }

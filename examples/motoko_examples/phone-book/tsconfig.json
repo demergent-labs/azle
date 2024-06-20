@@ -6,6 +6,7 @@
         "jsx": "react",
         "module": "commonjs",
         "strict": true,
-        "target": "es2018"
+        "target": "ES2020",
+        "outDir": "HACK_BECAUSE_OF_ALLOW_JS"
     }
 }

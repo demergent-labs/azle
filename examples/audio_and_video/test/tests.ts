@@ -1,155 +1,101 @@
-import * as dns from 'node:dns';
-dns.setDefaultResultOrder('ipv4first');
-
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 
-export function getTests(canisterId: string): Test[] {
+export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
 
-    return [
-        {
-            name: 'audio range requests',
-            test: async () => {
-                try {
-                    const file = readFileSync('./src/backend/media/audio.ogg');
+    return () => {
+        it('makes range requests for audio', async () => {
+            const file = readFileSync('./src/backend/media/audio.ogg');
 
-                    const rangeSize = 2_000_000;
+            const rangeSize = 2_000_000;
 
-                    let rangedFile = Buffer.from([]);
+            let rangedFile = Buffer.from([]);
 
-                    for (let i = 0; i < file.length; i += rangeSize) {
-                        const response = await fetch(
-                            `${origin}/media/audio.ogg`,
-                            {
-                                headers: [
-                                    ['Range', `bytes=${i}-${i + rangeSize - 1}`]
-                                ]
-                            }
-                        );
-                        const responseBlob = await response.blob();
+            for (let i = 0; i < file.length; i += rangeSize) {
+                const response = await fetch(`${origin}/media/audio.ogg`, {
+                    headers: [['Range', `bytes=${i}-${i + rangeSize - 1}`]]
+                });
+                const responseBlob = await response.blob();
 
-                        rangedFile = Buffer.concat([
-                            rangedFile,
-                            new Uint8Array(await responseBlob.arrayBuffer())
-                        ]);
+                rangedFile = Buffer.concat([
+                    rangedFile,
+                    new Uint8Array(await responseBlob.arrayBuffer())
+                ]);
 
-                        const result =
-                            responseBlob.size === rangeSize &&
-                            response.headers.get('Content-Length') ===
-                                '2000000' &&
-                            response.headers.get('Content-Range') ===
-                                `bytes ${i}-${i + rangeSize - 1}/${
-                                    file.length
-                                }`;
+                const result =
+                    responseBlob.size === rangeSize &&
+                    response.headers.get('Content-Length') === '2000000' &&
+                    response.headers.get('Content-Range') ===
+                        `bytes ${i}-${i + rangeSize - 1}/${file.length}`;
 
-                        if (result === false) {
-                            const finalResult =
-                                responseBlob.size === 1_328_518 &&
-                                response.headers.get('Content-Length') ===
-                                    '1328518' &&
-                                response.headers.get('Content-Range') ===
-                                    `bytes ${i}-${file.length - 1}/${
-                                        file.length
-                                    }`;
-
-                            if (finalResult === false) {
-                                return {
-                                    Ok: false
-                                };
-                            }
-                        }
-                    }
-
-                    let fileHasher = createHash('sha256');
-                    fileHasher.update(file);
-                    const fileDigest = fileHasher.digest('hex');
-
-                    let rangedFileHasher = createHash('sha256');
-                    rangedFileHasher.update(file);
-                    const rangedFileDigest = rangedFileHasher.digest('hex');
-
-                    return {
-                        Ok: fileDigest === rangedFileDigest
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                if (result === false) {
+                    expect(responseBlob.size).toBe(1_328_518);
+                    expect(response.headers.get('Content-Length')).toBe(
+                        '1328518'
+                    );
+                    expect(response.headers.get('Content-Range')).toBe(
+                        `bytes ${i}-${file.length - 1}/${file.length}`
+                    );
                 }
             }
-        },
-        {
-            name: 'video range requests',
-            test: async () => {
-                try {
-                    const file = readFileSync('./src/backend/media/video.ogv');
 
-                    const rangeSize = 2_000_000;
+            let fileHasher = createHash('sha256');
+            fileHasher.update(file);
+            const fileDigest = fileHasher.digest('hex');
 
-                    let rangedFile = Buffer.from([]);
+            let rangedFileHasher = createHash('sha256');
+            rangedFileHasher.update(file);
+            const rangedFileDigest = rangedFileHasher.digest('hex');
 
-                    for (let i = 0; i < file.length; i += rangeSize) {
-                        const response = await fetch(
-                            `${origin}/media/video.ogv`,
-                            {
-                                headers: [
-                                    ['Range', `bytes=${i}-${i + rangeSize - 1}`]
-                                ]
-                            }
-                        );
-                        const responseBlob = await response.blob();
+            expect(fileDigest).toStrictEqual(rangedFileDigest);
+        });
 
-                        rangedFile = Buffer.concat([
-                            rangedFile,
-                            new Uint8Array(await responseBlob.arrayBuffer())
-                        ]);
+        it('makes range requests for video', async () => {
+            const file = readFileSync('./src/backend/media/video.ogv');
 
-                        const result =
-                            responseBlob.size === rangeSize &&
-                            response.headers.get('Content-Length') ===
-                                '2000000' &&
-                            response.headers.get('Content-Range') ===
-                                `bytes ${i}-${i + rangeSize - 1}/${
-                                    file.length
-                                }`;
+            const rangeSize = 2_000_000;
 
-                        if (result === false) {
-                            const finalResult =
-                                responseBlob.size === 180_129 &&
-                                response.headers.get('Content-Length') ===
-                                    '180129' &&
-                                response.headers.get('Content-Range') ===
-                                    `bytes ${i}-${file.length - 1}/${
-                                        file.length
-                                    }`;
+            let rangedFile = Buffer.from([]);
 
-                            if (finalResult === false) {
-                                return {
-                                    Ok: false
-                                };
-                            }
-                        }
-                    }
+            for (let i = 0; i < file.length; i += rangeSize) {
+                const response = await fetch(`${origin}/media/video.ogv`, {
+                    headers: [['Range', `bytes=${i}-${i + rangeSize - 1}`]]
+                });
+                const responseBlob = await response.blob();
 
-                    let fileHasher = createHash('sha256');
-                    fileHasher.update(file);
-                    const fileDigest = fileHasher.digest('hex');
+                rangedFile = Buffer.concat([
+                    rangedFile,
+                    new Uint8Array(await responseBlob.arrayBuffer())
+                ]);
 
-                    let rangedFileHasher = createHash('sha256');
-                    rangedFileHasher.update(file);
-                    const rangedFileDigest = rangedFileHasher.digest('hex');
+                const result =
+                    responseBlob.size === rangeSize &&
+                    response.headers.get('Content-Length') === '2000000' &&
+                    response.headers.get('Content-Range') ===
+                        `bytes ${i}-${i + rangeSize - 1}/${file.length}`;
 
-                    return {
-                        Ok: fileDigest === rangedFileDigest
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+                if (result === false) {
+                    expect(responseBlob.size).toBe(180_129);
+                    expect(response.headers.get('Content-Length')).toBe(
+                        '180129'
+                    );
+                    expect(response.headers.get('Content-Range')).toBe(
+                        `bytes ${i}-${file.length - 1}/${file.length}`
+                    );
                 }
             }
-        }
-    ];
+
+            let fileHasher = createHash('sha256');
+            fileHasher.update(file);
+            const fileDigest = fileHasher.digest('hex');
+
+            let rangedFileHasher = createHash('sha256');
+            rangedFileHasher.update(file);
+            const rangedFileDigest = rangedFileHasher.digest('hex');
+
+            expect(fileDigest).toStrictEqual(rangedFileDigest);
+        });
+    };
 }

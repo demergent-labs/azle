@@ -1,4 +1,5 @@
 import { RequireExactlyOne } from '../../lib';
+import { ConsumerConfig } from '../get_consumer_config';
 
 export type AzleError = {
     error?: string;
@@ -8,13 +9,13 @@ export type AzleError = {
 
 export type DfxJson = Readonly<{
     canisters: Readonly<{
-        [key: string]: JSCanisterConfig;
+        [key: string]: CanisterConfig;
     }>;
 }>;
 
 export type JavaScript = string;
 
-export type JSCanisterConfig = Readonly<{
+export type CanisterConfig = Readonly<{
     type: 'azle';
     main: string;
     build?: string;
@@ -28,6 +29,10 @@ export type JSCanisterConfig = Readonly<{
     assets_large?: [string, string][];
     esm_aliases?: Record<string, string>;
     esm_externals?: string[];
+    // TODO we should move all custom properties into custom in a subsequent PR
+    custom?: {
+        openValueSharing?: ConsumerConfig;
+    };
 }>;
 
 export type OptLevel = '0' | '1' | '2' | '3' | '4';

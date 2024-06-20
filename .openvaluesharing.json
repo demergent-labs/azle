@@ -1,0 +1,10 @@
+[
+    {
+        "platform": "icp",
+        "asset": "cycles",
+        "payment_mechanism": "wallet_receive",
+        "custom": {
+            "principal": "bw4dl-smaaa-aaaaa-qaacq-cai"
+        }
+    }
+]
