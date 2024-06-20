@@ -10,7 +10,7 @@ import {
     nat16,
     nat32,
     nat64
-} from 'azle';
+} from 'azle/experimental';
 import { Test } from 'azle/test';
 import { execSync } from 'child_process';
 
