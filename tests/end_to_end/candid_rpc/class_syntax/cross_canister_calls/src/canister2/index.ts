@@ -1,16 +1,4 @@
-import {
-    Canister,
-    ic,
-    nat64,
-    None,
-    Opt,
-    query,
-    Some,
-    text,
-    update,
-    Vec,
-    Void
-} from 'azle/experimental';
+import { IDL, query, trap, update } from 'azle';
 
 import { Account, AccountArgs, State } from './types';
 
@@ -24,8 +12,9 @@ let state: State = {
     notification: ''
 };
 
-export default Canister({
-    transfer: update([text, text, nat64], nat64, (from, to, amount) => {
+export default class {
+    @update([IDL.Text, IDL.Text, IDL.Nat64], IDL.Nat64)
+    transfer(from: string, to: string, amount: bigint): bigint {
         const fromAccount: Account | undefined = state.accounts[from];
         if (fromAccount === undefined) {
             state.accounts[from] = {
@@ -37,7 +26,7 @@ export default Canister({
         if (fromBalance < amount) {
             return 0n;
         }
-        const toBalance: nat64 | undefined = state.accounts[to]?.balance;
+        const toBalance: bigint | undefined = state.accounts[to]?.balance;
         if (toBalance === undefined) {
             state.accounts[to] = {
                 id: to,
@@ -47,25 +36,37 @@ export default Canister({
         state.accounts[from].balance -= amount;
         state.accounts[to].balance += amount;
         return amount;
-    }),
-    balance: query([text], nat64, (id) => {
+    }
+
+    @query([IDL.Text], IDL.Nat64)
+    balance(id: string) {
         return state.accounts[id]?.balance ?? 0n;
-    }),
-    account: query([AccountArgs], Opt(Account), (accountArgs) => {
+    }
+
+    @query([AccountArgs], IDL.Opt(Account))
+    account(accountArgs: AccountArgs): [Account] | [] {
         const account = state.accounts[accountArgs.id];
-        return account ? Some(account) : None;
-    }),
-    accounts: query([], Vec(Account), () => {
+        return account ? [account] : [];
+    }
+
+    @query([], IDL.Vec(Account))
+    accounts(): Account[] {
         return Object.values(state.accounts);
-    }),
-    trap: query([], text, () => {
-        ic.trap('hahahaha');
+    }
+
+    @query([], IDL.Empty)
+    trap(): string {
+        trap('hahahaha');
         return 'You will never get here';
-    }),
-    receiveNotification: update([text], Void, (message) => {
+    }
+
+    @update([IDL.Text])
+    receiveNotification(message: string) {
         state.notification = message;
-    }),
-    getNotification: query([], text, () => {
+    }
+
+    @query([], IDL.Text)
+    getNotification(): string {
         return state.notification;
-    })
-});
+    }
+}

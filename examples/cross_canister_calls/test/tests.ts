@@ -1,7 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
+import { getCanisterId } from 'azle/dfx';
 import { expect, it, Test } from 'azle/test/jest';
 
-import { getCanisterId } from '../../../dfx';
 import { _SERVICE as CANISTER1_SERVICE } from './dfx_generated/canister1/canister1.did';
 import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
 

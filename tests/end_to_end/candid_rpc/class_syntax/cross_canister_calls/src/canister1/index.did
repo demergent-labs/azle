@@ -1,0 +1,8 @@
+service: () -> {
+    account: (record {id:text}) -> (opt record {id:text; balance:nat64});
+    accounts: () -> (vec record {id:text; balance:nat64});
+    balance: (text) -> (nat64);
+    sendNotification: () -> ();
+    transfer: (text, text, nat64) -> (nat64);
+    trap: () -> (text);
+}
