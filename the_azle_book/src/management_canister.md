@@ -5,7 +5,7 @@ This chapter is a work in progress.
 You can access the management canister like this:
 
 ```typescript
-import { blob, Canister, ic, update } from 'azle';
+import { blob, Canister, ic, update } from 'azle/experimental';
 import { managementCanister } from 'azle/canisters/management';
 
 export default Canister({

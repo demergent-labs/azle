@@ -5,7 +5,7 @@ The `CandidType` object `nat8` corresponds to the [Candid type nat8](https://int
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, nat8, query } from 'azle';
+import { Canister, nat8, query } from 'azle/experimental';
 
 export default Canister({
     getNat8: query([], nat8, () => {

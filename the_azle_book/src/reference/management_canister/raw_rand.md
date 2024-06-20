@@ -10,7 +10,7 @@ Examples:
 -   [timers](https://github.com/demergent-labs/azle/tree/main/examples/timers)
 
 ```typescript
-import { blob, Canister, ic, update } from 'azle';
+import { blob, Canister, ic, update } from 'azle/experimental';
 import { managementCanister } from 'azle/canisters/management';
 
 export default Canister({

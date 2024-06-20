@@ -1,4 +1,4 @@
-import { Canister, nat, update } from 'azle';
+import { Canister, nat, update } from 'azle/experimental';
 
 export default Canister({
     // Calculate the product of all positive integers less than or equal to `n`.

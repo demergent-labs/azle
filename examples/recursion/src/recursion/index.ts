@@ -15,7 +15,7 @@ import {
     update,
     Variant,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 import MyFullCanister from '../recursive_canister';
 

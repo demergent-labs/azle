@@ -1,4 +1,18 @@
 import {
+    Account,
+    AllowanceArgs,
+    AllowanceResult,
+    ApproveArgs,
+    ApproveResult,
+    ICRC,
+    SupportedStandard,
+    TransferArgs,
+    TransferFromArgs,
+    TransferFromResult,
+    TransferResult,
+    Value
+} from 'azle/canisters/icrc';
+import {
     Canister,
     ic,
     init,
@@ -14,21 +28,7 @@ import {
     Tuple,
     update,
     Vec
-} from 'azle';
-import {
-    Account,
-    AllowanceArgs,
-    AllowanceResult,
-    ApproveArgs,
-    ApproveResult,
-    ICRC,
-    SupportedStandard,
-    TransferArgs,
-    TransferFromArgs,
-    TransferFromResult,
-    TransferResult,
-    Value
-} from 'azle/canisters/icrc';
+} from 'azle/experimental';
 
 let icrc: typeof ICRC;
 

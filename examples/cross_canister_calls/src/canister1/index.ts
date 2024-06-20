@@ -12,7 +12,7 @@ import {
     update,
     Vec,
     Void
-} from 'azle';
+} from 'azle/experimental';
 
 import Canister2 from '../canister2';
 import { Account, AccountArgs } from '../canister2/types';

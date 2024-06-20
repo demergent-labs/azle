@@ -11,7 +11,7 @@ import {
     text,
     Tuple,
     update
-} from 'azle';
+} from 'azle/experimental';
 
 // Note: This won't be reflected in the candid
 export type SuperheroId = nat32;

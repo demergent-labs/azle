@@ -1,4 +1,4 @@
-import { Canister, int, query, text } from 'azle';
+import { Canister, int, query, text } from 'azle/experimental';
 import { sha224 } from 'js-sha256';
 
 import { one, three, two } from './library';

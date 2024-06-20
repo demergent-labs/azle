@@ -1,4 +1,13 @@
-import { Canister, ic, int, Null, query, Record, update, Void } from 'azle';
+import {
+    Canister,
+    ic,
+    int,
+    Null,
+    query,
+    Record,
+    update,
+    Void
+} from 'azle/experimental';
 
 const PartiallyNullRecord = Record({
     firstItem: int,

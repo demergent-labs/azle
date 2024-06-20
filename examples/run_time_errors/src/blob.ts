@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { blob, query, Service } from 'azle';
+import { blob, query, Service } from 'azle/experimental';
 
 export function returnNonObjectAsInvalidBlob(): blob {
     // @ts-expect-error

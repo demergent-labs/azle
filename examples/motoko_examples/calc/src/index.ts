@@ -1,4 +1,12 @@
-import { Canister, int, None, Opt, Some, update, Void } from 'azle';
+import {
+    Canister,
+    int,
+    None,
+    Opt,
+    Some,
+    update,
+    Void
+} from 'azle/experimental';
 
 let cell: int = 0n;
 

@@ -7,7 +7,7 @@ Examples:
 -   [ic_api](https://github.com/demergent-labs/azle/tree/main/examples/ic_api)
 
 ```typescript
-import { bool, Canister, ic, Principal, query } from 'azle';
+import { bool, Canister, ic, Principal, query } from 'azle/experimental';
 
 export default Canister({
     // determines whether the given principal is a controller of the canister

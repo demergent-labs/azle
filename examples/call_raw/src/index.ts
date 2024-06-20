@@ -8,7 +8,7 @@ import {
     Result,
     text,
     update
-} from 'azle';
+} from 'azle/experimental';
 
 export default Canister({
     executeCallRaw: update(

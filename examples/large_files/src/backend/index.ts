@@ -1,4 +1,4 @@
-import { Server } from 'azle';
+import { Server } from 'azle/experimental';
 import express, { Request } from 'express';
 import { existsSync, statSync } from 'fs';
 

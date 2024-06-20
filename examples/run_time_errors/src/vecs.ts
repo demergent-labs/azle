@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { Vec } from 'azle';
+import { Vec } from 'azle/experimental';
 
 export function returnNonObjectAsInvalidVec(): Vec<string> {
     // @ts-expect-error

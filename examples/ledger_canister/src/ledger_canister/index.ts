@@ -1,4 +1,16 @@
 import {
+    Address,
+    Archives,
+    binaryAddressFromAddress,
+    GetBlocksArgs,
+    hexAddressFromPrincipal,
+    Ledger,
+    QueryBlocksResponse,
+    Tokens,
+    TransferFee,
+    TransferResult
+} from 'azle/canisters/ledger';
+import {
     Canister,
     ic,
     init,
@@ -12,19 +24,7 @@ import {
     Some,
     text,
     update
-} from 'azle';
-import {
-    Address,
-    Archives,
-    binaryAddressFromAddress,
-    GetBlocksArgs,
-    hexAddressFromPrincipal,
-    Ledger,
-    QueryBlocksResponse,
-    Tokens,
-    TransferFee,
-    TransferResult
-} from 'azle/canisters/ledger';
+} from 'azle/experimental';
 
 let icpCanister: typeof Ledger;
 

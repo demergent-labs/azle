@@ -9,7 +9,7 @@ Examples:
 -   [rejections](https://github.com/demergent-labs/azle/tree/main/examples/rejections)
 
 ```typescript
-import { Canister, empty, ic, Manual, query, text } from 'azle';
+import { Canister, empty, ic, Manual, query, text } from 'azle/experimental';
 
 export default Canister({
     reject: query(

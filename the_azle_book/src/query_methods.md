@@ -14,7 +14,7 @@
 The most basic way to expose your canister's functionality publicly is through a query method. Here's an example of a simple query method named `getString`:
 
 ```typescript
-import { Canister, query, text } from 'azle';
+import { Canister, query, text } from 'azle/experimental';
 
 export default Canister({
     getString: query([], text, () => {
@@ -42,7 +42,7 @@ dfx canister call my_canister getString
 Query methods are read-only. They do not persist any state changes. Take a look at the following example:
 
 ```typescript
-import { Canister, query, text, Void } from 'azle';
+import { Canister, query, text, Void } from 'azle/experimental';
 
 let db: {
     [key: string]: string;
@@ -62,7 +62,7 @@ This is because query methods are executed on a single node machine and do not g
 There is a limit to how much computation can be done in a single call to a query method. The current query call limit is [5 billion Wasm instructions](https://internetcomputer.org/docs/current/developer-docs/production/instruction-limits). Here's an example of a query method that runs the risk of reaching the limit:
 
 ```typescript
-import { Canister, nat32, query, text } from 'azle';
+import { Canister, nat32, query, text } from 'azle/experimental';
 
 export default Canister({
     pyramid: query([nat32], text, (levels) => {

@@ -9,7 +9,7 @@ import {
     serialize,
     text,
     update
-} from 'azle';
+} from 'azle/experimental';
 
 import Canister3 from '../canister3';
 

@@ -3,7 +3,7 @@
 This section is a work in progress.
 
 ```typescript
-import { Canister, query, text, update, Void } from 'azle';
+import { Canister, query, text, update, Void } from 'azle/experimental';
 
 let message = '';
 
