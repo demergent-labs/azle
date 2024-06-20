@@ -1,37 +1,27 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 
 // @ts-ignore
 import { _SERVICE } from './dfx_generated/echo/echo.did';
 
-export function getTests(echoCanister: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'say',
-            test: async () => {
-                const phrase = 'This is a test.';
-                const result = await echoCanister.say(phrase);
+export function getTests(echoCanister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('echoes a simple phrase', async () => {
+            const phrase = 'This is a test.';
+            const result = await echoCanister.say(phrase);
 
-                return {
-                    Ok: result === phrase
-                };
-            }
-        },
-        {
-            name: 'say nothing',
-            test: async () => {
-                const phrase = '';
-                const result = await echoCanister.say(phrase);
+            expect(result).toBe(phrase);
+        });
 
-                return {
-                    Ok: result === phrase
-                };
-            }
-        },
-        {
-            name: 'say a lot',
-            test: async () => {
-                const phrase = `
+        it('echoes nothing', async () => {
+            const phrase = '';
+            const result = await echoCanister.say(phrase);
+
+            expect(result).toBe(phrase);
+        });
+
+        it('echoes a lot', async () => {
+            const phrase = `
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
                 enim ad minim veniam, quis nostrud exercitation ullamco laboris
@@ -40,12 +30,9 @@ export function getTests(echoCanister: ActorSubclass<_SERVICE>): Test[] {
                 nulla pariatur. Excepteur sint occaecat cupidatat non proident,
                 sunt in culpa qui officia deserunt mollit anim id est laborum.
             `;
-                const result = await echoCanister.say(phrase);
+            const result = await echoCanister.say(phrase);
 
-                return {
-                    Ok: result === phrase
-                };
-            }
-        }
-    ];
+            expect(result).toBe(phrase);
+        });
+    };
 }

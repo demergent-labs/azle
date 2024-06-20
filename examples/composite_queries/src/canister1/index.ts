@@ -163,8 +163,14 @@ const CompQueryCanister = Canister({
 
         counter += 1n;
 
-        const canister1AResult = await incCanister1(self);
-        const canister1BResult = await incCanister1(self);
+        const canister1AResult = await incCanister(
+            self,
+            `/candid/canister1.did`
+        );
+        const canister1BResult = await incCanister(
+            self,
+            `/candid/canister1.did`
+        );
 
         return counter + canister1AResult + canister1BResult;
     }),
@@ -189,21 +195,17 @@ function getCanister2Principal(): string {
     throw new Error(`process.env.CANISTER2_PRINCIPAL is not defined`);
 }
 
-async function incCanister1(canister1: any) {
+async function incCanister(canister: any, candidPath: string) {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const response = await fetch(
-            `icp://${canister1.principal.toText()}/incCounter`,
-            {
-                body: serialize({
-                    candidPath: `/candid/canister1.did`
-                })
-            }
+            `icp://${canister.principal.toText()}/incCounter`,
+            { body: serialize({ candidPath }) }
         );
         const responseJson = await response.json();
 
         return responseJson;
     } else {
-        return await ic.call(canister1.incCounter);
+        return await ic.call(canister.incCounter);
     }
 }
 

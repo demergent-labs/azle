@@ -11,6 +11,7 @@ import { candidEncode } from './candid_encode';
 import { canisterBalance } from './canister_balance';
 import { canisterBalance128 } from './canister_balance_128';
 import { canisterVersion } from './canister_version';
+import { chunk } from './chunk';
 import { clearTimer } from './clear_timer';
 import { dataCertificate } from './data_certificate';
 import { id } from './id';
@@ -65,6 +66,7 @@ export const ic = {
     canisterBalance,
     canisterBalance128,
     canisterVersion,
+    chunk,
     clearTimer,
     dataCertificate,
     id,

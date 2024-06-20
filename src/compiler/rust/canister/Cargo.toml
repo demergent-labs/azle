@@ -15,15 +15,17 @@ candid = "0.10.2"
 candid_parser = "0.1.2"
 ic-stable-structures = "0.6.2"
 canister_methods = { path = "../canister_methods" }
+open_value_sharing = { path = "../open_value_sharing" }
 include_dir = "0.7.3"
 slotmap = "=1.0.6"
 wasmi = "0.31.2"
 sha2 = "0.10.8"
+serde = "1.0.202"
 serde_json = "1.0.107"
 
 # TODO transient feature can be removed once https://github.com/demergent-labs/azle/issues/1731 is resolved
 # ic-wasi-polyfill = { git = "https://github.com/wasm-forge/ic-wasi-polyfill", rev = "88bddc8190caf93a1e052f0513b5d6bc074929c3" }
-ic-wasi-polyfill = { git = "https://github.com/wasm-forge/ic-wasi-polyfill", rev = "88bddc8190caf93a1e052f0513b5d6bc074929c3" , features = [
+ic-wasi-polyfill = { git = "https://github.com/wasm-forge/ic-wasi-polyfill", rev = "88bddc8190caf93a1e052f0513b5d6bc074929c3", features = [
     "transient",
 ] }
 

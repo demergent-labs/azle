@@ -5,7 +5,6 @@ const rustKeywords = [
     'const',
     'continue',
     'crate',
-    'dyn',
     'else',
     'enum',
     'Err',
@@ -135,8 +134,12 @@ const jsKeywords = [
     'eval'
 ];
 
+// This breaks rust but it doesn't seem to be a rust keyword
+const otherKeywords = ['drop'];
+
 export const JsFunctionNameArb = fc
     .stringMatching(/^(_[a-zA-Z0-9]+|[a-zA-Z][a-zA-Z0-9]*)$/)
     .filter((sample) => !rustKeywords.includes(sample))
     .filter((sample) => !jsKeywords.includes(sample))
+    .filter((sample) => !otherKeywords.includes(sample))
     .filter((sample) => !azleKeywords.includes(sample));

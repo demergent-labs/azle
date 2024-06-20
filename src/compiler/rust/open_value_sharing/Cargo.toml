@@ -1,0 +1,17 @@
+[package]
+name = "open_value_sharing"
+version = "0.0.0"
+edition = "2018"
+
+[dependencies]
+serde = "1.0.202"
+serde_json = "1.0.117"
+candid = "0.10.8"
+ic-cdk = "0.12.1"
+ic-cdk-macros = "0.8.4"
+ic-cdk-timers = "0.6.0"
+ic-stable-structures = "0.6.2"
+anyhow = "1.0.86"
+
+[dev-dependencies]
+proptest = "1.4.0"

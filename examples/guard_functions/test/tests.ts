@@ -1,149 +1,81 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { AgentError } from '@dfinity/agent/lib/cjs/errors';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 
 import { _SERVICE } from './dfx_generated/guard_functions/guard_functions.did';
 
 export function getTests(
     guardFunctionsCanister: ActorSubclass<_SERVICE>
-): Test[] {
-    return [
-        {
-            name: 'identifierAnnotation',
-            test: async () => {
-                const result =
-                    await guardFunctionsCanister.identifierAnnotation();
+): Test {
+    return () => {
+        it('successfully calls an unguarded method with no options object', async () => {
+            const result = await guardFunctionsCanister.noOptionsObject();
+            expect(result).toBe(true);
+        });
 
-                return { Ok: result };
-            }
-        },
-        {
-            name: 'callExpressionWithoutOptionsObject',
-            test: async () => {
-                const result =
-                    await guardFunctionsCanister.callExpressionWithoutOptionsObject();
+        it('successfully calls an unguarded method with an empty options object', async () => {
+            const result = await guardFunctionsCanister.emptyOptionsObject();
 
-                return { Ok: result };
-            }
-        },
-        {
-            name: 'callExpressionWithEmptyOptionsObject',
-            test: async () => {
-                const result =
-                    await guardFunctionsCanister.callExpressionWithEmptyOptionsObject();
+            expect(result).toBe(true);
+        });
 
-                return { Ok: result };
-            }
-        },
-        {
-            name: 'looselyGuarded',
-            test: async () => {
-                const result = await guardFunctionsCanister.looselyGuarded();
+        it('successfully calls a method guarded by a function that allows all calls', async () => {
+            const result = await guardFunctionsCanister.looselyGuarded();
 
-                return { Ok: result };
-            }
-        },
-        {
-            name: 'looselyGuardedManual',
-            test: async () => {
-                const result =
-                    await guardFunctionsCanister.looselyGuardedManual();
+            expect(result).toBe(true);
+        });
 
-                return { Ok: result };
-            }
-        },
-        {
-            name: 'looselyGuardedWithGuardOptionKeyAsString',
-            test: async () => {
-                const result =
-                    await guardFunctionsCanister.looselyGuardedWithGuardOptionKeyAsString();
+        it('successfully calls a manual method guarded by a function that allows all calls', async () => {
+            const result = await guardFunctionsCanister.looselyGuardedManual();
 
-                return { Ok: result };
-            }
-        },
-        {
-            name: 'modifyStateGuarded',
-            test: async () => {
-                const counterBefore = await guardFunctionsCanister.getCounter();
-                const methodExecuted =
-                    await guardFunctionsCanister.modifyStateGuarded();
-                const counterAfter = await guardFunctionsCanister.getCounter();
+            expect(result).toBe(true);
+        });
 
-                return {
-                    Ok:
-                        counterBefore === 0 &&
-                        methodExecuted &&
-                        counterAfter === 1
-                };
-            }
-        },
-        {
-            name: 'tightlyGuarded',
-            test: async () => {
-                try {
-                    await guardFunctionsCanister.tightlyGuarded();
-                    return {
-                        Err: 'Expected tightlyGuarded function to throw'
-                    };
-                } catch (error) {
-                    return {
-                        Ok: (error as AgentError).message.includes(
-                            `Uncaught Error: Execution halted by \\"unpassable\\" guard function`
-                        )
-                    };
-                }
-            }
-        },
-        {
-            name: 'errorStringGuarded',
-            test: async () => {
-                try {
-                    await guardFunctionsCanister.errorStringGuarded();
-                    return {
-                        Err: 'Expected errorStringGuarded function to throw'
-                    };
-                } catch (error) {
-                    return {
-                        Ok: (error as AgentError).message.includes(
-                            `Uncaught Error: Execution halted by \\"throw string\\" guard function`
-                        )
-                    };
-                }
-            }
-        },
-        {
-            name: 'customErrorGuarded',
-            test: async () => {
-                try {
-                    await guardFunctionsCanister.customErrorGuarded();
-                    return {
-                        Err: 'Expected customErrorGuarded function to throw'
-                    };
-                } catch (error) {
-                    return {
-                        Ok: (error as AgentError).message.includes(
-                            `Uncaught CustomError: Execution halted by \\"throw custom error\\" guard function`
-                        )
-                    };
-                }
-            }
-        },
-        {
-            name: 'nonStringErrValueGuarded',
-            test: async () => {
-                try {
-                    await guardFunctionsCanister.nonStringErrValueGuarded();
-                    return {
-                        Err: 'Expected nonStringErrValueGuarded function to throw'
-                    };
-                } catch (error) {
-                    return {
-                        Ok: (error as AgentError).message.includes(
-                            `Uncaught Error: [object Object]`
-                        )
-                    };
-                }
-            }
-        }
-    ];
+        it('successfully calls a method guarded by a function that allows all calls', async () => {
+            const result =
+                await guardFunctionsCanister.looselyGuardedWithGuardOptionKeyAsString();
+
+            expect(result).toBe(true);
+        });
+
+        it('successfully calls a method guarded by a function that allows all calls and modifies the canister state', async () => {
+            const counterBefore = await guardFunctionsCanister.getCounter();
+            const methodExecuted =
+                await guardFunctionsCanister.modifyStateGuarded();
+            const counterAfter = await guardFunctionsCanister.getCounter();
+
+            expect(counterBefore).toBe(0);
+            expect(methodExecuted).toBe(true);
+            expect(counterAfter).toBe(1);
+        });
+
+        it("fails to call a method guarded by a function that doesn't allow any calls", async () => {
+            await expect(
+                guardFunctionsCanister.tightlyGuarded()
+            ).rejects.toThrow(
+                `Uncaught Error: Execution halted by \\"unpassable\\" guard function`
+            );
+        });
+
+        it('fails to call a method guarded by a function that always throws a string', async () => {
+            await expect(
+                guardFunctionsCanister.errorStringGuarded()
+            ).rejects.toThrow(
+                `Uncaught Error: Execution halted by \\"throw string\\" guard function`
+            );
+        });
+
+        it('fails to call a method guarded by a function that always throws a custom error', async () => {
+            await expect(
+                guardFunctionsCanister.customErrorGuarded()
+            ).rejects.toThrow(
+                `Uncaught CustomError: Execution halted by \\"throw custom error\\" guard function`
+            );
+        });
+
+        it('fails to call a method guarded by a function that always throws an object', async () => {
+            await expect(
+                guardFunctionsCanister.nonStringErrValueGuarded()
+            ).rejects.toThrow(`Uncaught Error: [object Object]`);
+        });
+    };
 }

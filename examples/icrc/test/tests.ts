@@ -1,223 +1,153 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test/jest';
 
 import { _SERVICE } from './dfx_generated/proxy/proxy.did';
 
-export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'icrc1_metadata',
-            test: async () => {
-                const result = await proxyCanister.icrc1_metadata();
+export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('gets icrc1 metadata', async () => {
+            const expectedResult = [
+                ['icrc1:name', { Text: 'Azle' }],
+                ['icrc1:symbol', { Text: 'AZLE' }],
+                ['icrc1:decimals', { Nat: 8n }],
+                ['icrc1:fee', { Nat: 0n }]
+            ];
 
-                const [firstDatumName, firstDatumValue] = result[0];
-                const [secondDatumName, secondDatumValue] = result[1];
-                const [thirdDatumName, thirdDatumValue] = result[2];
-                const [fourthDatumName, fourthDatumValue] = result[3];
+            const result = await proxyCanister.icrc1_metadata();
 
-                return {
-                    Ok:
-                        firstDatumName === 'icrc1:name' &&
-                        'Text' in firstDatumValue &&
-                        firstDatumValue.Text === 'Azle' &&
-                        secondDatumName === 'icrc1:symbol' &&
-                        'Text' in secondDatumValue &&
-                        secondDatumValue.Text === 'AZLE' &&
-                        thirdDatumName === 'icrc1:decimals' &&
-                        'Nat' in thirdDatumValue &&
-                        thirdDatumValue.Nat === 8n &&
-                        fourthDatumName === 'icrc1:fee' &&
-                        'Nat' in fourthDatumValue &&
-                        fourthDatumValue.Nat === 0n
-                };
-            }
-        },
-        {
-            name: 'icrc1_name',
-            test: async () => {
-                const result = await proxyCanister.icrc1_name();
+            expect(result).toStrictEqual(expectedResult);
+        });
 
-                return {
-                    Ok: result === 'Azle'
-                };
-            }
-        },
-        {
-            name: 'icrc1_decimals',
-            test: async () => {
-                const result = await proxyCanister.icrc1_decimals();
+        it('gets icrc1 name', async () => {
+            const result = await proxyCanister.icrc1_name();
 
-                return {
-                    Ok: result === 8
-                };
-            }
-        },
-        {
-            name: 'icrc1_symbol',
-            test: async () => {
-                const result = await proxyCanister.icrc1_symbol();
+            expect(result).toBe('Azle');
+        });
 
-                return {
-                    Ok: result === 'AZLE'
-                };
-            }
-        },
-        {
-            name: 'icrc1_fee',
-            test: async () => {
-                const result = await proxyCanister.icrc1_fee();
+        it('gets icrc1 decimals', async () => {
+            const result = await proxyCanister.icrc1_decimals();
 
-                return {
-                    Ok: result === 0n
-                };
-            }
-        },
-        {
-            name: 'icrc1_total_supply',
-            test: async () => {
-                const result = await proxyCanister.icrc1_total_supply();
+            expect(result).toBe(8);
+        });
 
-                return {
-                    Ok: result === 1_000_000n
-                };
-            }
-        },
-        {
-            name: 'icrc1_minting_account',
-            test: async () => {
-                const result = await proxyCanister.icrc1_minting_account();
+        it('gets icrc1 symbol', async () => {
+            const result = await proxyCanister.icrc1_symbol();
 
-                return {
-                    Ok: result[0]?.owner.toText() === '2vxsx-fae'
-                };
-            }
-        },
-        {
-            name: 'icrc1_balance_of',
-            test: async () => {
-                const result = await proxyCanister.icrc1_balance_of({
+            expect(result).toBe('AZLE');
+        });
+
+        it('gets icrc1 fee', async () => {
+            const result = await proxyCanister.icrc1_fee();
+
+            expect(result).toBe(0n);
+        });
+
+        it('gets icrc1 total supply', async () => {
+            const result = await proxyCanister.icrc1_total_supply();
+
+            expect(result).toBe(1_000_000n);
+        });
+
+        it('gets icrc1 minting account', async () => {
+            const result = await proxyCanister.icrc1_minting_account();
+
+            expect(result[0]?.owner.toText()).toBe('2vxsx-fae');
+        });
+
+        it('gets icrc1 balance of', async () => {
+            const result = await proxyCanister.icrc1_balance_of({
+                owner: Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai'),
+                subaccount: []
+            });
+
+            expect(result).toBe(1_000_000n);
+        });
+
+        it('sends an icrc1 transfer', async () => {
+            const result = await proxyCanister.icrc1_transfer({
+                from_subaccount: [],
+                to: {
+                    owner: Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
+                    subaccount: []
+                },
+                amount: 1n,
+                fee: [],
+                memo: [],
+                created_at_time: []
+            });
+
+            expect(result).toStrictEqual({ Ok: 1n });
+        });
+
+        it('gets icrc1 supported_standards', async () => {
+            const result = await proxyCanister.icrc1_supported_standards();
+
+            const expectedResult = [
+                {
+                    url: 'https://github.com/dfinity/ICRC-1/tree/main/standards/ICRC-1',
+                    name: 'ICRC-1'
+                },
+                {
+                    url: 'https://github.com/dfinity/ICRC-1/tree/main/standards/ICRC-2',
+                    name: 'ICRC-2'
+                }
+            ];
+
+            expect(result).toStrictEqual(expectedResult);
+        });
+
+        it('approves an icrc2 transaction', async () => {
+            const result = await proxyCanister.icrc2_approve({
+                from_subaccount: [],
+                spender: {
+                    owner: Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
+                    subaccount: []
+                },
+                amount: 1n,
+                expected_allowance: [],
+                expires_at: [],
+                fee: [],
+                memo: [],
+                created_at_time: []
+            });
+
+            expect(result).toStrictEqual({ Ok: 2n });
+        });
+
+        it('sends an icrc2 transfer', async () => {
+            const result = await proxyCanister.icrc2_transfer_from({
+                spender_subaccount: [],
+                from: {
                     owner: Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai'),
                     subaccount: []
-                });
+                },
+                to: {
+                    owner: Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
+                    subaccount: []
+                },
+                amount: 1n,
+                fee: [],
+                memo: [],
+                created_at_time: []
+            });
 
-                return {
-                    Ok: result === 1_000_000n
-                };
-            }
-        },
-        {
-            name: 'icrc1_transfer',
-            test: async () => {
-                const result = await proxyCanister.icrc1_transfer({
-                    from_subaccount: [],
-                    to: {
-                        owner: Principal.fromText(
-                            'rrkah-fqaaa-aaaaa-aaaaq-cai'
-                        ),
-                        subaccount: []
-                    },
-                    amount: 1n,
-                    fee: [],
-                    memo: [],
-                    created_at_time: []
-                });
+            expect(result).toStrictEqual({ Ok: 3n });
+        });
 
-                return {
-                    Ok: 'Ok' in result && result.Ok === 1n
-                };
-            }
-        },
-        {
-            name: 'icrc1_supported_standards',
-            test: async () => {
-                const result = await proxyCanister.icrc1_supported_standards();
+        it('gets icrc2 allowance', async () => {
+            const result = await proxyCanister.icrc2_allowance({
+                account: {
+                    owner: Principal.fromText('r7inp-6aaaa-aaaaa-aaabq-cai'),
+                    subaccount: []
+                },
+                spender: {
+                    owner: Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai'),
+                    subaccount: []
+                }
+            });
 
-                return {
-                    Ok:
-                        result[0].url ===
-                            'https://github.com/dfinity/ICRC-1/tree/main/standards/ICRC-1' &&
-                        result[0].name === 'ICRC-1' &&
-                        result[1].url ===
-                            'https://github.com/dfinity/ICRC-1/tree/main/standards/ICRC-2' &&
-                        result[1].name === 'ICRC-2'
-                };
-            }
-        },
-        {
-            name: 'icrc2_approve',
-            test: async () => {
-                const result = await proxyCanister.icrc2_approve({
-                    from_subaccount: [],
-                    spender: {
-                        owner: Principal.fromText(
-                            'rrkah-fqaaa-aaaaa-aaaaq-cai'
-                        ),
-                        subaccount: []
-                    },
-                    amount: 1n,
-                    expected_allowance: [],
-                    expires_at: [],
-                    fee: [],
-                    memo: [],
-                    created_at_time: []
-                });
-
-                return {
-                    Ok: 'Ok' in result && result.Ok === 2n
-                };
-            }
-        },
-        {
-            name: 'icrc2_transfer_from',
-            test: async () => {
-                const result = await proxyCanister.icrc2_transfer_from({
-                    spender_subaccount: [],
-                    from: {
-                        owner: Principal.fromText(
-                            'r7inp-6aaaa-aaaaa-aaabq-cai'
-                        ),
-                        subaccount: []
-                    },
-                    to: {
-                        owner: Principal.fromText(
-                            'rrkah-fqaaa-aaaaa-aaaaq-cai'
-                        ),
-                        subaccount: []
-                    },
-                    amount: 1n,
-                    fee: [],
-                    memo: [],
-                    created_at_time: []
-                });
-
-                return {
-                    Ok: 'Ok' in result && result.Ok === 3n
-                };
-            }
-        },
-        {
-            name: 'icrc2_allowance',
-            test: async () => {
-                const result = await proxyCanister.icrc2_allowance({
-                    account: {
-                        owner: Principal.fromText(
-                            'r7inp-6aaaa-aaaaa-aaabq-cai'
-                        ),
-                        subaccount: []
-                    },
-                    spender: {
-                        owner: Principal.fromText(
-                            'rrkah-fqaaa-aaaaa-aaaaq-cai'
-                        ),
-                        subaccount: []
-                    }
-                });
-
-                return {
-                    Ok: result.allowance === 1n
-                };
-            }
-        }
-    ];
+            expect(result.allowance).toBe(1n);
+        });
+    };
 }

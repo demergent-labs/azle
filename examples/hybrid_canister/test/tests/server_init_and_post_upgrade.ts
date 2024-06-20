@@ -1,10 +1,10 @@
 import { getCanisterId } from 'azle/dfx';
-import { Test } from 'azle/test';
+import { expect, it, please, Test } from 'azle/test/jest';
 import { execSync } from 'child_process';
 
 import { createActor } from '../dfx_generated/server_init_and_post_upgrade';
 
-export function getTests(): Test[] {
+export function getTests(): Test {
     const canisterId = getCanisterId('server_init_and_post_upgrade');
     const origin = `http://${canisterId}.localhost:8000`;
     const actor = createActor(canisterId, {
@@ -13,97 +13,66 @@ export function getTests(): Test[] {
         }
     });
 
-    return [
-        {
-            name: 'server_init_and_post_upgrade init',
-            test: async () => {
-                try {
-                    const httpQueryResponse = await fetch(
-                        `${origin}/http-query`
-                    );
-                    const httpQueryResponseText =
-                        await httpQueryResponse.text();
+    return () => {
+        it('handles an HTTP server canister with additional query, update, and init methods', async () => {
+            const httpQueryResponse = await fetch(`${origin}/http-query`);
+            const httpQueryResponseText = await httpQueryResponse.text();
 
-                    const httpUpdateResponse = await fetch(
-                        `${origin}/http-update`,
-                        {
-                            method: 'POST'
-                        }
-                    );
-                    const httpUpdateResponseText =
-                        await httpUpdateResponse.text();
+            const httpUpdateResponse = await fetch(`${origin}/http-update`, {
+                method: 'POST'
+            });
+            const httpUpdateResponseText = await httpUpdateResponse.text();
 
-                    const candidQueryText = await actor.candidQuery();
-                    const candidUpdateText = await actor.candidUpdate();
+            const candidQueryText = await actor.candidQuery();
+            const candidUpdateText = await actor.candidUpdate();
 
-                    return {
-                        Ok:
-                            httpQueryResponseText ===
-                                'http-query-server-init-and-post-upgrade-init' &&
-                            httpUpdateResponseText ===
-                                'http-update-server-init-and-post-upgrade-init' &&
-                            candidQueryText ===
-                                'candidQueryServerInitAndPostUpgrade-init' &&
-                            candidUpdateText ===
-                                'candidUpdateServerInitAndPostUpgrade-init'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
+            expect(httpQueryResponseText).toBe(
+                'http-query-server-init-and-post-upgrade-init'
+            );
+            expect(httpUpdateResponseText).toBe(
+                'http-update-server-init-and-post-upgrade-init'
+            );
+            expect(candidQueryText).toBe(
+                'candidQueryServerInitAndPostUpgrade-init'
+            );
+            expect(candidUpdateText).toBe(
+                'candidUpdateServerInitAndPostUpgrade-init'
+            );
+        });
+
+        please('deploy server_init_and_post_upgrade', async () => {
+            execSync(
+                `dfx deploy --upgrade-unchanged server_init_and_post_upgrade`,
+                {
+                    stdio: 'inherit'
                 }
-            }
-        },
-        {
-            name: 'deploy server_init_and_post_upgrade',
-            prep: async () => {
-                execSync(
-                    `dfx deploy --upgrade-unchanged server_init_and_post_upgrade`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-            }
-        },
-        {
-            name: 'server_init_and_post_upgrade postUpgrade',
-            test: async () => {
-                try {
-                    const httpQueryResponse = await fetch(
-                        `${origin}/http-query`
-                    );
-                    const httpQueryResponseText =
-                        await httpQueryResponse.text();
+            );
+        });
 
-                    const httpUpdateResponse = await fetch(
-                        `${origin}/http-update`,
-                        {
-                            method: 'POST'
-                        }
-                    );
-                    const httpUpdateResponseText =
-                        await httpUpdateResponse.text();
+        it('handles an HTTP server canister with additional query, update, and post_upgrade methods', async () => {
+            const httpQueryResponse = await fetch(`${origin}/http-query`);
+            const httpQueryResponseText = await httpQueryResponse.text();
 
-                    const candidQueryText = await actor.candidQuery();
-                    const candidUpdateText = await actor.candidUpdate();
+            const httpUpdateResponse = await fetch(`${origin}/http-update`, {
+                method: 'POST'
+            });
+            const httpUpdateResponseText = await httpUpdateResponse.text();
 
-                    return {
-                        Ok:
-                            httpQueryResponseText ===
-                                'http-query-server-init-and-post-upgrade-postUpgrade' &&
-                            httpUpdateResponseText ===
-                                'http-update-server-init-and-post-upgrade-postUpgrade' &&
-                            candidQueryText ===
-                                'candidQueryServerInitAndPostUpgrade-postUpgrade' &&
-                            candidUpdateText ===
-                                'candidUpdateServerInitAndPostUpgrade-postUpgrade'
-                    };
-                } catch (error: any) {
-                    return {
-                        Err: error
-                    };
-                }
-            }
-        }
-    ];
+            const candidQueryText = await actor.candidQuery();
+            const candidUpdateText = await actor.candidUpdate();
+
+            expect(httpQueryResponseText).toBe(
+                'http-query-server-init-and-post-upgrade-postUpgrade'
+            );
+            expect(httpUpdateResponseText).toBe(
+                'http-update-server-init-and-post-upgrade-postUpgrade'
+            );
+            expect(candidQueryText).toBe(
+                'candidQueryServerInitAndPostUpgrade-postUpgrade'
+            );
+            expect(candidUpdateText).toBe(
+                'candidUpdateServerInitAndPostUpgrade-postUpgrade'
+            );
+        });
+    };
 }
