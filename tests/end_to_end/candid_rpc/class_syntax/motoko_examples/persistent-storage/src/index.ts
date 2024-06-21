@@ -1,6 +1,5 @@
 import {
     bool,
-    Canister,
     ic,
     init,
     nat,

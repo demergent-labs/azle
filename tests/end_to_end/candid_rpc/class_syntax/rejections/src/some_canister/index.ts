@@ -1,6 +1,6 @@
 import {
     bool,
-    Canister,
+
     empty,
     ic,
     Manual,

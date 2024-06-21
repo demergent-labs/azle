@@ -1,4 +1,4 @@
-import { blob, Canister, query, Vec } from 'azle/experimental';
+import { blob, query, Vec } from 'azle/experimental';
 
 export default class {
     @query([], blob)

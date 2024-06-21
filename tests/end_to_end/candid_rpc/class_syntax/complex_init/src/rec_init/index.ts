@@ -1,5 +1,5 @@
 import {
-    Canister,
+
     init,
     nat,
     Null,

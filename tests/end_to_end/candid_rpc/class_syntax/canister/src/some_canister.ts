@@ -1,4 +1,4 @@
-import { bool, Canister, query, text, update } from 'azle/experimental';
+import { bool, query, text, update } from 'azle/experimental';
 
 export default class {
     @query([], bool)

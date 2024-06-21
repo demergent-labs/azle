@@ -1,4 +1,4 @@
-import { Canister, query, Void } from 'azle/experimental';
+import { query, Void } from 'azle/experimental';
 
 export default class {
     @query([], Void)

@@ -2,7 +2,6 @@
 
 import {
     bool,
-    Canister,
     None,
     Null,
     Opt,

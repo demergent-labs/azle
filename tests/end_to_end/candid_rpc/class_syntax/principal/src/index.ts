@@ -1,6 +1,5 @@
 import {
     blob,
-    Canister,
     Null,
     Principal,
     query,

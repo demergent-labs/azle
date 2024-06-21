@@ -1,5 +1,4 @@
 import {
-    Canister,
     None,
     Opt,
     query,

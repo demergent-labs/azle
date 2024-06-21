@@ -11,7 +11,6 @@ import {
     TransferResult
 } from 'azle/canisters/ledger';
 import {
-    Canister,
     ic,
     init,
     nat32,

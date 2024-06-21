@@ -14,7 +14,6 @@ import {
 import {
     blob,
     bool,
-    Canister,
     ic,
     nat,
     None,

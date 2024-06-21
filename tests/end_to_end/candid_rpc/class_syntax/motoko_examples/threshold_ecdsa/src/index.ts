@@ -1,13 +1,5 @@
 import { managementCanister } from 'azle/canisters/management';
-import {
-    blob,
-    Canister,
-    ic,
-    None,
-    Record,
-    serialize,
-    update
-} from 'azle/experimental';
+import { blob, ic, None, Record, serialize, update } from 'azle/experimental';
 
 const PublicKey = Record({
     publicKey: blob

@@ -13,7 +13,6 @@ import {
     Value
 } from 'azle/canisters/icrc';
 import {
-    Canister,
     ic,
     init,
     nat,

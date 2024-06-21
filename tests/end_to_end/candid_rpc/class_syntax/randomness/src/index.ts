@@ -1,11 +1,4 @@
-import {
-    bool,
-    Canister,
-    float64,
-    postUpgrade,
-    query,
-    update
-} from 'azle/experimental';
+import { bool, float64, postUpgrade, query, update } from 'azle/experimental';
 
 let redeployed = false;
 

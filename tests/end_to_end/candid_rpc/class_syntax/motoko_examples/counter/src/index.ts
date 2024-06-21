@@ -1,4 +1,4 @@
-import { Canister, nat, query, update, Void } from 'azle/experimental';
+import { nat, query, update, Void } from 'azle/experimental';
 
 let counter: nat = 0n;
 

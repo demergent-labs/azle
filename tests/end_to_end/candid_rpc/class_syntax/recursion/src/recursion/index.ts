@@ -1,5 +1,5 @@
 import {
-    Canister,
+
     Func,
     ic,
     int8,

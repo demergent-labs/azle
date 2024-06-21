@@ -1,5 +1,4 @@
 import {
-    Canister,
     ic,
     nat,
     nat64,

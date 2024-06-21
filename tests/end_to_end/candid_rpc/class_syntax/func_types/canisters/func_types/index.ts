@@ -1,5 +1,4 @@
 import {
-    Canister,
     Func,
     ic,
     init,

@@ -3,15 +3,7 @@ import {
     MillisatoshiPerByte,
     Satoshi
 } from 'azle/canisters/management';
-import {
-    blob,
-    bool,
-    Canister,
-    serialize,
-    text,
-    update,
-    Vec
-} from 'azle/experimental';
+import { blob, bool, serialize, text, update, Vec } from 'azle/experimental';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;

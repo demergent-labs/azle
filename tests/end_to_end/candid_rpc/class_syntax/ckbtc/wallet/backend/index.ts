@@ -5,7 +5,6 @@ import { ICRC } from 'azle/canisters/icrc';
 import { TransferError } from 'azle/canisters/icrc/icrc_1';
 import {
     blob,
-    Canister,
     ic,
     init,
     nat,

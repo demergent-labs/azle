@@ -1,6 +1,5 @@
 import {
     bool,
-    Canister,
     nat,
     query,
     Record,

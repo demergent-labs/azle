@@ -1,4 +1,4 @@
-import { blob, Canister, update } from 'azle/experimental';
+import { blob, update } from 'azle/experimental';
 
 export default class {
     @update([blob], blob)

@@ -4,7 +4,6 @@ import {
     managementCanister
 } from 'azle/canisters/management';
 import {
-    Canister,
     ic,
     Manual,
     None,

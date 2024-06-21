@@ -1,6 +1,5 @@
 import {
     blob,
-    Canister,
     nat8,
     nat32,
     nat64,

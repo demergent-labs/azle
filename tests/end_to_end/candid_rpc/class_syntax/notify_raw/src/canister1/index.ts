@@ -1,4 +1,4 @@
-import { Canister, ic, Principal, update, Void } from 'azle/experimental';
+import { ic, Principal, update, Void } from 'azle/experimental';
 
 export default class {
     @update([], Void)

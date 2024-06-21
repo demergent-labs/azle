@@ -1,4 +1,4 @@
-import { Canister, ic, nat, nat64, query, update } from 'azle/experimental';
+import { ic, nat, nat64, query, update } from 'azle/experimental';
 
 export default class {
     @update([], nat64)

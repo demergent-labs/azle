@@ -1,7 +1,6 @@
 import {
     blob,
     bool,
-    Canister,
     float32,
     ic,
     int,

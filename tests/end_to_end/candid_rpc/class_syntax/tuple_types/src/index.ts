@@ -1,5 +1,4 @@
 import {
-    Canister,
     // CallResult,
     int,
     nat8,

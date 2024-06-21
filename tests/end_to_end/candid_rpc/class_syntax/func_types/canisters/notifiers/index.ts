@@ -1,6 +1,6 @@
 import {
     blob,
-    Canister,
+
     Func,
     ic,
     Principal,

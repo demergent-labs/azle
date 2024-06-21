@@ -1,7 +1,6 @@
 import {
     blob,
     bool,
-    Canister,
     empty,
     float32,
     float64,

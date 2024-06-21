@@ -1,5 +1,5 @@
 import {
-    Canister,
+
     ic,
     init,
     postUpgrade,
