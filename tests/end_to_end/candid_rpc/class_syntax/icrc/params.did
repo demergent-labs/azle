@@ -1,0 +1,17 @@
+record {
+    initial_mints = vec {
+        record {
+            account = record {
+                owner = principal "r7inp-6aaaa-aaaaa-aaabq-cai";
+            };
+            amount = 1_000_000;
+        };
+    };
+    minting_account = record {
+        owner = principal "2vxsx-fae";
+    };
+    token_name = "Azle";
+    token_symbol = "AZLE";
+    decimals = 8;
+    transfer_fee = 0;
+}

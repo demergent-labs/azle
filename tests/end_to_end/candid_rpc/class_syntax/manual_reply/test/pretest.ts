@@ -1,6 +1,10 @@
+import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
+import { join } from 'path';
 
 async function pretest() {
+    linkAndInstallPatch(join('examples', 'manual_reply'));
+
     execSync(`dfx canister uninstall-code manual_reply || true`, {
         stdio: 'inherit'
     });

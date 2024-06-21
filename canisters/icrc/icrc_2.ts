@@ -1,4 +1,4 @@
-import { blob, nat, nat64, Null, Opt, Record, Variant } from '../../src/lib';
+import { IDL } from '../../src/lib/stable';
 import {
     BadBurn,
     BadFee,
@@ -8,90 +8,185 @@ import {
 } from './errors';
 import { Account, CreatedInFuture } from './icrc_1';
 
-export const ApproveArgs = Record({
-    from_subaccount: Opt(blob),
+export const ApproveArgs = IDL.Record({
+    from_subaccount: IDL.Opt(IDL.Vec(IDL.Nat8)),
     spender: Account,
-    amount: nat,
-    expected_allowance: Opt(nat),
-    expires_at: Opt(nat64),
-    fee: Opt(nat),
-    memo: Opt(blob),
-    created_at_time: Opt(nat64)
+    amount: IDL.Nat,
+    expected_allowance: IDL.Opt(IDL.Nat),
+    expires_at: IDL.Opt(IDL.Nat64),
+    fee: IDL.Opt(IDL.Nat),
+    memo: IDL.Opt(IDL.Vec(IDL.Nat8)),
+    created_at_time: IDL.Opt(IDL.Nat64)
 });
-export type ApproveArgs = typeof ApproveArgs.tsType;
+export type ApproveArgs = {
+    from_subaccount: [Uint8Array] | [];
+    spender: Account;
+    amount: bigint;
+    expected_allowance: [bigint] | [];
+    expires_at: [bigint] | [];
+    fee: [bigint] | [];
+    memo: [Uint8Array] | [];
+    created_at_time: [bigint] | [];
+};
 
-export const AllowanceChanged = Record({
-    current_allowance: nat
+export const AllowanceChanged = IDL.Record({
+    current_allowance: IDL.Nat
 });
-export type AllowanceChanged = typeof AllowanceChanged.tsType;
+export type AllowanceChanged = {
+    current_allowance: bigint;
+};
 
-export const Expired = Record({
-    ledger_time: nat64
+export const Expired = IDL.Record({
+    ledger_time: IDL.Nat64
 });
-export type Expired = typeof Expired.tsType;
+export type Expired = {
+    ledger_time: bigint;
+};
 
-export const InsufficientAllowance = Record({
-    allowance: nat
+export const InsufficientAllowance = IDL.Record({
+    allowance: IDL.Nat
 });
-export type InsufficientAllowance = typeof InsufficientAllowance.tsType;
+export type InsufficientAllowance = {
+    allowance: bigint;
+};
 
-export const ApproveError = Variant({
+export const ApproveError = IDL.Variant({
     BadFee,
     InsufficientFunds,
     AllowanceChanged,
     Expired,
-    TooOld: Null,
+    TooOld: IDL.Null,
     CreatedInFuture,
     Duplicate,
-    TemporarilyUnavailable: Null,
+    TemporarilyUnavailable: IDL.Null,
     GenericError: GenericError
 });
-export type ApproveError = typeof ApproveError.tsType;
+export type ApproveError =
+    | {
+          BadFee: BadFee;
+      }
+    | {
+          InsufficientFunds: InsufficientFunds;
+      }
+    | {
+          AllowanceChanged: AllowanceChanged;
+      }
+    | {
+          Expired: Expired;
+      }
+    | {
+          TooOld: null;
+      }
+    | {
+          CreatedInFuture: CreatedInFuture;
+      }
+    | {
+          Duplicate: Duplicate;
+      }
+    | {
+          TemporarilyUnavailable: null;
+      }
+    | {
+          GenericError: GenericError;
+      };
 
-export const TransferFromArgs = Record({
-    spender_subaccount: Opt(blob),
+export const TransferFromArgs = IDL.Record({
+    spender_subaccount: IDL.Opt(IDL.Vec(IDL.Nat8)),
     from: Account,
     to: Account,
-    amount: nat,
-    fee: Opt(nat),
-    memo: Opt(blob),
-    created_at_time: Opt(nat64)
+    amount: IDL.Nat,
+    fee: IDL.Opt(IDL.Nat),
+    memo: IDL.Opt(IDL.Vec(IDL.Nat8)),
+    created_at_time: IDL.Opt(IDL.Nat64)
 });
-export type TransferFromArgs = typeof TransferFromArgs.tsType;
+export type TransferFromArgs = {
+    spender_subaccount: [Uint8Array] | [];
+    from: Account;
+    to: Account;
+    amount: bigint;
+    fee: [bigint] | [];
+    memo: [Uint8Array] | [];
+    created_at_time: [bigint] | [];
+};
 
-export const TransferFromError = Variant({
+export const TransferFromError = IDL.Variant({
     BadFee,
     BadBurn,
     InsufficientFunds,
     InsufficientAllowance,
-    TooOld: Null,
+    TooOld: IDL.Null,
     CreatedInFuture,
     Duplicate,
-    TemporarilyUnavailable: Null,
+    TemporarilyUnavailable: IDL.Null,
     GenericError
 });
-export type TransferFromError = typeof TransferFromError.tsType;
+export type TransferFromError =
+    | {
+          BadFee: BadFee;
+      }
+    | {
+          BadBurn: BadBurn;
+      }
+    | {
+          InsufficientFunds: InsufficientFunds;
+      }
+    | {
+          InsufficientAllowance: InsufficientAllowance;
+      }
+    | {
+          TooOld: null;
+      }
+    | {
+          CreatedInFuture: CreatedInFuture;
+      }
+    | {
+          Duplicate: Duplicate;
+      }
+    | {
+          TemporarilyUnavailable: null;
+      }
+    | {
+          GenericError: GenericError;
+      };
 
-export const AllowanceArgs = Record({
+export const AllowanceArgs = IDL.Record({
     account: Account,
     spender: Account
 });
-export type AllowanceArgs = typeof AllowanceArgs.tsType;
+export type AllowanceArgs = {
+    account: Account;
+    spender: Account;
+};
 
-export const ApproveResult = Variant({
-    Ok: nat,
+export const ApproveResult = IDL.Variant({
+    Ok: IDL.Nat,
     Err: ApproveError
 });
-export type ApproveResult = typeof ApproveResult.tsType;
+export type ApproveResult =
+    | {
+          Ok: bigint;
+      }
+    | {
+          Err: ApproveError;
+      };
 
-export const TransferFromResult = Variant({
-    Ok: nat,
+export const TransferFromResult = IDL.Variant({
+    Ok: IDL.Nat,
     Err: TransferFromError
 });
-export type TransferFromResult = typeof TransferFromResult.tsType;
+export type TransferFromResult =
+    | {
+          Ok: bigint;
+      }
+    | {
+          Err: TransferFromError;
+      };
 
-export const AllowanceResult = Record({
-    allowance: nat,
-    expires_at: Opt(nat64)
+export const AllowanceResult = IDL.Record({
+    allowance: IDL.Nat,
+    expires_at: IDL.Opt(IDL.Nat64)
 });
-export type AllowanceResult = typeof AllowanceResult.tsType;
+export type AllowanceResult = {
+    allowance: bigint;
+    expires_at: [bigint] | [];
+};

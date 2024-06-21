@@ -1,0 +1,6 @@
+type rec_0 = func () -> (record {"int":int; "nat":nat; "opt":opt nat; "vec":vec text; "service":service {query1: () -> (bool) query; update1: () -> (text);}; "principal":principal; "blob":vec nat8; "bool":bool; "func":rec_0; "int8":int8; "nat8":nat8; "null":null; "text":text; "query":text; "nat16":nat16; "nat32":nat32; "nat64":nat64; "int16":int16; "int32":int32; "int64":int64; "variant":variant {Tag1; Tag2; Tag3:int}; "float32":float32; "float64":float64; "record":record {age:nat8; lastName:text; firstName:text}}) query;
+service: () -> {
+    candidTypes: () -> (record {"int":int; "nat":nat; "opt":opt nat; "vec":vec text; "service":service {query1: () -> (bool) query; update1: () -> (text);}; "principal":principal; "blob":vec nat8; "bool":bool; "func":rec_0; "int8":int8; "nat8":nat8; "null":null; "text":text; "query":text; "nat16":nat16; "nat32":nat32; "nat64":nat64; "int16":int16; "int32":int32; "int64":int64; "variant":variant {Tag1; Tag2; Tag3:int}; "float32":float32; "float64":float64; "record":record {age:nat8; lastName:text; firstName:text}}) query;
+    "opt": () -> () query;
+    "variant": () -> (variant {"service":text; "query":text; "nat32":text}) query;
+}

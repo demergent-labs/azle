@@ -2,6 +2,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/test';
 
 import { User } from '../src/candid_types';
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/complex_types/complex_types.did.d';
 
 const EXPECTED_USER_1: User = {

@@ -1,0 +1,163 @@
+type Account = record { owner : principal; subaccount : opt vec nat8 };
+type AccountBalanceArgs = record { account : text };
+type ArchiveInfo = record { canister_id : principal };
+type ArchiveOptions = record {
+  num_blocks_to_archive : nat64;
+  max_transactions_per_response : opt nat64;
+  trigger_threshold : nat64;
+  max_message_size_bytes : opt nat64;
+  cycles_for_archive_creation : opt nat64;
+  node_max_memory_size_bytes : opt nat64;
+  controller_id : principal;
+};
+type ArchivedBlocksRange = record {
+  callback : func (GetBlocksArgs) -> (
+      variant { Ok : BlockRange; Err : GetBlocksError },
+    ) query;
+  start : nat64;
+  length : nat64;
+};
+type Archives = record { archives : vec ArchiveInfo };
+type BinaryAccountBalanceArgs = record { account : vec nat8 };
+type BlockRange = record { blocks : vec CandidBlock };
+type CandidBlock = record {
+  transaction : CandidTransaction;
+  timestamp : TimeStamp;
+  parent_hash : opt vec nat8;
+};
+type CandidOperation = variant {
+  Approve : record {
+    fee : Tokens;
+    from : vec nat8;
+    allowance_e8s : int;
+    expires_at : opt TimeStamp;
+    spender : vec nat8;
+  };
+  Burn : record { from : vec nat8; amount : Tokens };
+  Mint : record { to : vec nat8; amount : Tokens };
+  Transfer : record {
+    to : vec nat8;
+    fee : Tokens;
+    from : vec nat8;
+    amount : Tokens;
+  };
+  TransferFrom : record {
+    to : vec nat8;
+    fee : Tokens;
+    from : vec nat8;
+    amount : Tokens;
+    spender : vec nat8;
+  };
+};
+type CandidTransaction = record {
+  memo : nat64;
+  icrc1_memo : opt vec nat8;
+  operation : opt CandidOperation;
+  created_at_time : TimeStamp;
+};
+type Decimals = record { decimals : nat32 };
+type Duration = record { secs : nat64; nanos : nat32 };
+type GetBlocksArgs = record { start : nat64; length : nat64 };
+type GetBlocksError = variant {
+  BadFirstBlockIndex : record {
+    requested_index : nat64;
+    first_valid_index : nat64;
+  };
+  Other : record { error_message : text; error_code : nat64 };
+};
+type LedgerCanisterInitPayload = record {
+  send_whitelist : vec principal;
+  token_symbol : opt text;
+  transfer_fee : opt Tokens;
+  minting_account : text;
+  transaction_window : opt Duration;
+  max_message_size_bytes : opt nat64;
+  icrc1_minting_account : opt Account;
+  archive_options : opt ArchiveOptions;
+  initial_values : vec record { text; Tokens };
+  token_name : opt text;
+};
+type MetadataValue = variant {
+  Int : int;
+  Nat : nat;
+  Blob : vec nat8;
+  Text : text;
+};
+type Name = record { name : text };
+type QueryBlocksResponse = record {
+  certificate : opt vec nat8;
+  blocks : vec CandidBlock;
+  chain_length : nat64;
+  first_block_index : nat64;
+  archived_blocks : vec ArchivedBlocksRange;
+};
+type Result = variant { Ok : nat; Err : TransferError };
+type Result_1 = variant { Ok : nat64; Err : TransferError_1 };
+type SendArgs = record {
+  to : text;
+  fee : Tokens;
+  memo : nat64;
+  from_subaccount : opt vec nat8;
+  created_at_time : opt TimeStamp;
+  amount : Tokens;
+};
+type StandardRecord = record { url : text; name : text };
+type Symbol = record { symbol : text };
+type TimeStamp = record { timestamp_nanos : nat64 };
+type Tokens = record { e8s : nat64 };
+type TransferArg = record {
+  to : Account;
+  fee : opt nat;
+  memo : opt vec nat8;
+  from_subaccount : opt vec nat8;
+  created_at_time : opt nat64;
+  amount : nat;
+};
+type TransferArgs = record {
+  to : vec nat8;
+  fee : Tokens;
+  memo : nat64;
+  from_subaccount : opt vec nat8;
+  created_at_time : opt TimeStamp;
+  amount : Tokens;
+};
+type TransferError = variant {
+  GenericError : record { message : text; error_code : nat };
+  TemporarilyUnavailable;
+  BadBurn : record { min_burn_amount : nat };
+  Duplicate : record { duplicate_of : nat };
+  BadFee : record { expected_fee : nat };
+  CreatedInFuture : record { ledger_time : nat64 };
+  TooOld;
+  InsufficientFunds : record { balance : nat };
+};
+type TransferError_1 = variant {
+  TxTooOld : record { allowed_window_nanos : nat64 };
+  BadFee : record { expected_fee : Tokens };
+  TxDuplicate : record { duplicate_of : nat64 };
+  TxCreatedInFuture;
+  InsufficientFunds : record { balance : Tokens };
+};
+type TransferFee = record { transfer_fee : Tokens };
+service : (LedgerCanisterInitPayload) -> {
+  account_balance : (BinaryAccountBalanceArgs) -> (Tokens) query;
+  account_balance_dfx : (AccountBalanceArgs) -> (Tokens) query;
+  archives : () -> (Archives) query;
+  decimals : () -> (Decimals) query;
+  icrc1_balance_of : (Account) -> (nat) query;
+  icrc1_decimals : () -> (nat8) query;
+  icrc1_fee : () -> (nat) query;
+  icrc1_metadata : () -> (vec record { text; MetadataValue }) query;
+  icrc1_minting_account : () -> (opt Account) query;
+  icrc1_name : () -> (text) query;
+  icrc1_supported_standards : () -> (vec StandardRecord) query;
+  icrc1_symbol : () -> (text) query;
+  icrc1_total_supply : () -> (nat) query;
+  icrc1_transfer : (TransferArg) -> (Result);
+  name : () -> (Name) query;
+  query_blocks : (GetBlocksArgs) -> (QueryBlocksResponse) query;
+  send_dfx : (SendArgs) -> (nat64);
+  symbol : () -> (Symbol) query;
+  transfer : (TransferArgs) -> (Result_1);
+  transfer_fee : (record {}) -> (TransferFee) query;
+}

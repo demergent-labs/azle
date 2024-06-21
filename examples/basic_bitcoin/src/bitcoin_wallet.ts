@@ -12,7 +12,7 @@ import {
     MillisatoshiPerByte,
     Satoshi,
     Utxo
-} from 'azle/canisters/management';
+} from 'azle/experimental/canisters/management';
 import * as bitcoin from 'bitcoinjs-lib';
 import { Network, networks, Transaction } from 'bitcoinjs-lib';
 import { Buffer } from 'buffer';

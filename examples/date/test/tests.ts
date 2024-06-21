@@ -1,6 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/test';
 
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/date/date.did.d';
 
 // NOTE: The IC has not concept of a timezone since it's a world computer. It

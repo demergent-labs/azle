@@ -1,0 +1,5 @@
+.azle
+.dfx
+dist
+dfx_generated
+node_modules

@@ -1,0 +1,5 @@
+.azle
+.dfx
+src/icp_ledger/ledger.wasm
+dfx_generated
+node_modules

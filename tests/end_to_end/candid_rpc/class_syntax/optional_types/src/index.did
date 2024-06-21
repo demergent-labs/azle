@@ -1,0 +1,9 @@
+service: () -> {
+    getElement: (opt opt record {id:text}) -> (opt opt record {id:text}) query;
+    getHead: () -> (opt record {elements:vec record {id:text}}) query;
+    getHeadWithElements: () -> (opt record {elements:vec record {id:text}}) query;
+    getHtml: () -> (record {head:opt record {elements:vec record {id:text}}}) query;
+    getNull: () -> (null) query;
+    getOptNull: () -> (opt text) query;
+    stringToBoolean: (opt text) -> (bool) query;
+}

@@ -1,0 +1,66 @@
+import { call, IDL, rejectCode, rejectMessage, update } from 'azle';
+
+export default class {
+    @update([], RejectionCode)
+    async getRejectionCodeNoError() {
+        await call(getSomeCanisterPrincipal(), 'accept');
+
+        return rejectCode();
+    }
+
+    @update([], RejectionCode)
+    async getRejectionCodeDestinationInvalid() {
+        try {
+            await call('rkp4c-7iaaa-aaaaa-aaaca-cai', 'method');
+        } catch (error) {
+            // continue regardless of error
+        }
+
+        return rejectCode();
+    }
+
+    @update([], RejectionCode)
+    async getRejectionCodeCanisterReject() {
+        try {
+            await call(getSomeCanisterPrincipal(), 'reject', {
+                args: ['reject']
+            });
+        } catch (error) {
+            // continue regardless of error
+        }
+
+        return rejectCode();
+    }
+
+    @update([], RejectionCode)
+    async getRejectionCodeCanisterError() {
+        try {
+            await call(getSomeCanisterPrincipal(), 'error');
+        } catch (error) {
+            // continue regardless of error
+        }
+
+        return rejectCode();
+    }
+
+    @update([IDL.Text], IDL.Text)
+    async getRejectionMessage(message: string) {
+        try {
+            await call(getSomeCanisterPrincipal(), 'reject', {
+                args: [message]
+            });
+        } catch (error) {
+            // continue regardless of error
+        }
+
+        return rejectMessage();
+    }
+}
+
+function getSomeCanisterPrincipal(): string {
+    if (process.env.SOME_CANISTER_PRINCIPAL !== undefined) {
+        return process.env.SOME_CANISTER_PRINCIPAL;
+    }
+
+    throw new Error(`process.env.SOME_CANISTER_PRINCIPAL is not defined`);
+}

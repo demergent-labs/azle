@@ -1,9 +1,4 @@
 import {
-    HttpResponse,
-    HttpTransformArgs,
-    managementCanister
-} from 'azle/canisters/management';
-import {
     Canister,
     ic,
     init,
@@ -15,6 +10,11 @@ import {
     text,
     update
 } from 'azle/experimental';
+import {
+    HttpResponse,
+    HttpTransformArgs,
+    managementCanister
+} from 'azle/experimental/canisters/management';
 
 let stableStorage = StableBTreeMap<text, text>(0);
 

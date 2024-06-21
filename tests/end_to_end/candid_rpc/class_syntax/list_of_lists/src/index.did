@@ -1,0 +1,30 @@
+service: () -> {
+    listOfBlob: (vec vec nat8) -> (vec vec nat8) query;
+    listOfBool: (vec vec vec bool) -> (vec vec vec bool) query;
+    listOfEmpty: () -> (vec vec vec empty) query;
+    listOfF32: (vec vec vec float32) -> (vec vec vec float32) query;
+    listOfF64: (vec vec vec float64) -> (vec vec vec float64) query;
+    listOfFunc: (vec vec vec func (text) -> (text) query) -> (vec vec vec func (text) -> (text) query) query;
+    listOfInt: (vec vec vec int) -> (vec vec vec int) query;
+    listOfInt16: (vec vec vec int16) -> (vec vec vec int16) query;
+    listOfInt32: (vec vec vec int32) -> (vec vec vec int32) query;
+    listOfInt64: (vec vec vec int64) -> (vec vec vec int64) query;
+    listOfInt8: (vec vec vec int8) -> (vec vec vec int8) query;
+    listOfListOfBlob: (vec vec vec nat8) -> (vec vec vec nat8) query;
+    listOfListOfInt8: () -> (vec vec vec vec vec vec vec int8) query;
+    listOfNat: (vec vec vec nat) -> (vec vec vec nat) query;
+    listOfNat16: (vec vec vec nat16) -> (vec vec vec nat16) query;
+    listOfNat32: (vec vec vec nat32) -> (vec vec vec nat32) query;
+    listOfNat64: (vec vec vec nat64) -> (vec vec vec nat64) query;
+    listOfNat8: (vec vec vec nat8) -> (vec vec vec nat8) query;
+    listOfNull: (vec vec vec null) -> (vec vec vec null) query;
+    listOfOptionString: (vec vec vec opt text) -> (vec vec vec opt text) query;
+    listOfPrincipal: (vec vec vec principal) -> (vec vec vec principal) query;
+    listOfRecord: (vec vec vec record {age:nat8; name:text}) -> (vec vec vec record {age:nat8; name:text}) query;
+    listOfReserved: () -> (vec vec vec reserved) query;
+    listOfString: (vec vec vec text) -> (vec vec vec text) query;
+    listOfStringFour: (vec vec vec vec text) -> (vec vec vec vec text) query;
+    listOfStringOne: (vec text) -> (vec text) query;
+    listOfStringTwo: (vec vec text) -> (vec vec text) query;
+    listOfVariant: (vec vec vec variant {gas; solid; liquid}) -> (vec vec vec variant {gas; solid; liquid}) query;
+}

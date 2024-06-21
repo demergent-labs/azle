@@ -1,15 +1,4 @@
-import {
-    blob,
-    int,
-    nat,
-    nat64,
-    Null,
-    Opt,
-    Principal,
-    Record,
-    text,
-    Variant
-} from '../../src/lib';
+import { IDL, Principal } from '../../src/lib/stable';
 import {
     BadBurn,
     BadFee,
@@ -19,55 +8,103 @@ import {
 } from './errors';
 
 // Number of nanoseconds since the UNIX epoch in UTC timezone.
-export const Timestamp = nat64;
-export type Timestamp = nat64;
+export const Timestamp = IDL.Nat64;
+export type Timestamp = bigint;
 
-export const Subaccount = blob;
-export type Subaccount = blob;
+export const Subaccount = IDL.Vec(IDL.Nat8);
+export type Subaccount = Uint8Array;
 
-export const Account = Record({
-    owner: Principal,
-    subaccount: Opt(Subaccount)
+export const Account = IDL.Record({
+    owner: IDL.Principal,
+    subaccount: IDL.Opt(Subaccount)
 });
-export type Account = typeof Account.tsType;
+export type Account = {
+    owner: Principal;
+    subaccount: [Subaccount] | [];
+};
 
-export const TransferArgs = Record({
-    from_subaccount: Opt(Subaccount),
+export const TransferArgs = IDL.Record({
+    from_subaccount: IDL.Opt(Subaccount),
     to: Account,
-    amount: nat,
-    fee: Opt(nat),
-    memo: Opt(blob),
-    created_at_time: Opt(Timestamp)
+    amount: IDL.Nat,
+    fee: IDL.Opt(IDL.Nat),
+    memo: IDL.Opt(IDL.Vec(IDL.Nat8)),
+    created_at_time: IDL.Opt(Timestamp)
 });
-export type TransferArgs = typeof TransferArgs.tsType;
+export type TransferArgs = {
+    from_subaccount: [Subaccount] | [];
+    to: Account;
+    amount: bigint;
+    fee: [bigint] | [];
+    memo: [Uint8Array] | [];
+    created_at_time: [Timestamp] | [];
+};
 
-export const CreatedInFuture = Record({
+export const CreatedInFuture = IDL.Record({
     ledger_time: Timestamp
 });
-export type CreatedInFuture = typeof CreatedInFuture.tsType;
+export type CreatedInFuture = {
+    ledger_time: Timestamp;
+};
 
-export const TransferError = Variant({
+export const TransferError = IDL.Variant({
     BadFee,
     BadBurn,
     InsufficientFunds,
-    TooOld: Null,
+    TooOld: IDL.Null,
     CreatedInFuture: CreatedInFuture,
     Duplicate: Duplicate,
-    TemporarilyUnavailable: Null,
+    TemporarilyUnavailable: IDL.Null,
     GenericError: GenericError
 });
-export type TransferError = typeof TransferError.tsType;
+export type TransferError =
+    | {
+          BadFee: BadFee;
+      }
+    | {
+          BadBurn: BadBurn;
+      }
+    | {
+          InsufficientFunds: InsufficientFunds;
+      }
+    | {
+          TooOld: null;
+      }
+    | {
+          CreatedInFuture: CreatedInFuture;
+      }
+    | {
+          Duplicate: Duplicate;
+      }
+    | {
+          TemporarilyUnavailable: null;
+      }
+    | {
+          GenericError: GenericError;
+      };
 
-export const TransferResult = Variant({
-    Ok: nat,
+export const TransferResult = IDL.Variant({
+    Ok: IDL.Nat,
     Err: TransferError
 });
-export type TransferResult = typeof TransferResult.tsType;
+export type TransferResult = { Ok: bigint } | { Err: TransferError };
 
-export const Value = Variant({
-    Nat: nat,
-    Int: int,
-    Text: text,
-    Blob: blob
+export const Value = IDL.Variant({
+    Nat: IDL.Nat,
+    Int: IDL.Int,
+    Text: IDL.Text,
+    Blob: IDL.Vec(IDL.Nat8)
 });
-export type Value = typeof Value.tsType;
+export type Value =
+    | {
+          Nat: bigint;
+      }
+    | {
+          Int: bigint;
+      }
+    | {
+          Text: string;
+      }
+    | {
+          Blob: Uint8Array;
+      };
