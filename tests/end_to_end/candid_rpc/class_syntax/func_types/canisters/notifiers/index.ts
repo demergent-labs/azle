@@ -1,6 +1,6 @@
 import { IDL, query } from 'azle';
 
-export const NotifierFunc = Func([IDL.Vec(IDL.Nat8)], Void, 'oneway');
+export const NotifierFunc = Func([IDL.Vec(IDL.Nat8)], 'oneway');
 export type NotifierFunc = typeof NotifierFunc.tsType;
 
 export default class {

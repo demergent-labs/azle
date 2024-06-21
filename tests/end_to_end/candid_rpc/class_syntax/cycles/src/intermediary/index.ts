@@ -31,7 +31,7 @@ export default class {
             });
         }
     }
-    @update([], Void)
+    @update([])
     sendCyclesNotify() {
         return ic.notify(cyclesCanister.receiveCycles, {
             cycles: 1_000_000n
@@ -55,7 +55,7 @@ export default class {
 
         return ic.msgCyclesRefunded128();
     }
-    @update([], Void)
+    @update([])
     sendCycles128Notify() {
         return ic.notify(cyclesCanister.receiveCycles128, {
             cycles: 1_000_000n

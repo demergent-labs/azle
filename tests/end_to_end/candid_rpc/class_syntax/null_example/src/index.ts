@@ -22,7 +22,7 @@ export default class {
     nullFunction(param) {
         return param;
     }
-    @query([], Void)
+    @query([])
     voidIsNotNull() {
         ic.print(
             'Even though they are both None in Python, for Candid null and void are different.'

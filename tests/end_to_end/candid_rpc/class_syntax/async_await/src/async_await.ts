@@ -29,7 +29,7 @@ export default class {
             ...randomness2
         ]);
     }
-    @update([], Void)
+    @update([])
     async returnPromiseVoid() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/raw_rand`);

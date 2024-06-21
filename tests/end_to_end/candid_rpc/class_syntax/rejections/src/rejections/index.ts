@@ -3,7 +3,7 @@ import { call, IDL, query, update } from 'azle';
 import SomeCanister from '../some_canister';
 
 const Nonexistent = Canister({
-    method: update([], Void)
+    method: update([])
 });
 
 let someCanister: typeof SomeCanister;

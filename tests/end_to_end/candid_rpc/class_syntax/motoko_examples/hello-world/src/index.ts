@@ -1,7 +1,7 @@
 import { IDL, query, update } from 'azle';
 
 export default class {
-    @query([], Void)
+    @query([])
     main() {
         console.log('Hello World!');
     }

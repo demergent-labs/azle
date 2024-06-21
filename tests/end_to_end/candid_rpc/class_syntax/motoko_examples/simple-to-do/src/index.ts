@@ -26,7 +26,7 @@ export default class {
 
         return id;
     }
-    @update([nat], Void)
+    @update([nat])
     completeTodo(id) {
         let todo = todos.get(id);
 
@@ -48,7 +48,7 @@ export default class {
         }
         return output;
     }
-    @update([], Void)
+    @update([])
     clearCompleted() {
         // NOTE: this syntax isn't supported in Boa. If we revert to using Boa
         // we'll need to revert the syntax to:

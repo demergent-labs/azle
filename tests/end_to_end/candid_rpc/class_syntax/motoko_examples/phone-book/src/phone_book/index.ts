@@ -9,7 +9,7 @@ export type Entry = typeof Entry.tsType;
 let phoneBook = new Map<string, Entry>();
 
 export default class {
-    @update([text, Entry], Void)
+    @update([text, Entry])
     insert(name, entry) {
         phoneBook.set(name, entry);
     }

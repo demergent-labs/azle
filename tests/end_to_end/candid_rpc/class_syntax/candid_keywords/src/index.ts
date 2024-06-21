@@ -43,7 +43,7 @@ const Candid = Record({
 });
 
 export default class {
-    @query([], Void)
+    @query([])
     opt() {}
     @query([], CandidVariant)
     variant() {

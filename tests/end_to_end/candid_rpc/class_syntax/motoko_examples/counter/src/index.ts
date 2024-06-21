@@ -7,11 +7,11 @@ export default class {
     get() {
         return counter;
     }
-    @update([nat], Void)
+    @update([nat])
     set(n) {
         counter = n;
     }
-    @update([], Void)
+    @update([])
     inc() {
         counter += 1n;
     }

@@ -82,9 +82,9 @@ export default class {
     updateNull() {
         ic.reply(null, Null);
     }
-    @update([], Void, { manual: true })
+    @update([], { manual: true })
     updateVoid() {
-        ic.reply(undefined, Void);
+        ic.reply(undefined);
     }
     @update([], Element, { manual: true })
     updateRecord() {
@@ -160,9 +160,9 @@ export default class {
     queryNull() {
         ic.reply(null, Null);
     }
-    @query([], Void, { manual: true })
+    @query([], { manual: true })
     queryVoid() {
-        ic.reply(undefined, Void);
+        ic.reply(undefined);
     }
     @query([], Element, { manual: true })
     queryRecord() {

@@ -9,7 +9,7 @@ export default class {
 
         return keyOrUndefined ? Some(keyOrUndefined) : None;
     }
-    @update([text, text], Void)
+    @update([text, text])
     set(key, value) {
         store.set(key, value);
     }

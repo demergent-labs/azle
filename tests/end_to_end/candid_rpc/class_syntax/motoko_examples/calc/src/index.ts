@@ -30,7 +30,7 @@ export default class {
             return Some(cell);
         }
     }
-    @update([], Void)
+    @update([])
     clearall() {
         cell = 0n;
     }

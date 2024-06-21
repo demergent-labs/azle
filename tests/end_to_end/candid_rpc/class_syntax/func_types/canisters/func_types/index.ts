@@ -21,7 +21,7 @@ const Reaction = Variant({
     ComplexFunc: ComplexFunc
 });
 
-const StableFunc = Func([nat64, text], Void, 'query');
+const StableFunc = Func([nat64, text], 'query');
 type StableFunc = typeof StableFunc.tsType;
 
 const NullFunc = Func(

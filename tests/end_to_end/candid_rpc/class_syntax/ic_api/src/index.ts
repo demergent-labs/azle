@@ -109,7 +109,7 @@ export default class {
         ic.reject(message);
     }
     // sets up to 32 bytes of certified data
-    @update([IDL.Vec(IDL.Nat8)], Void)
+    @update([IDL.Vec(IDL.Nat8)])
     setCertifiedData(data) {
         ic.setCertifiedData(data);
     }

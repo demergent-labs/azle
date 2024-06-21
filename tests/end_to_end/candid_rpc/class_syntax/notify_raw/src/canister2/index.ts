@@ -3,7 +3,7 @@ import { IDL, query, update } from 'azle';
 let notified: boolean = false;
 
 export default class {
-    @update([], Void)
+    @update([])
     receiveNotification() {
         notified = true;
     }

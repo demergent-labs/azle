@@ -1,7 +1,7 @@
 import { IDL, query, update } from 'azle';
 
 export default class {
-    @update([], Void)
+    @update([])
     sendNotification() {
         return ic.notifyRaw(
             Principal.fromText(
