@@ -7,7 +7,14 @@ Examples:
 -   [timers](https://github.com/demergent-labs/azle/tree/main/examples/timers)
 
 ```typescript
-import { Canister, Duration, ic, TimerId, Tuple, update } from 'azle';
+import {
+    Canister,
+    Duration,
+    ic,
+    TimerId,
+    Tuple,
+    update
+} from 'azle/experimental';
 
 export default Canister({
     setTimerIntervals: update(

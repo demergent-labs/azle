@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { bool, Record, Vec, candid, int, text } from 'azle';
+import { bool, Record, Vec, candid, int, text } from 'azle/experimental';
 
 export class OtherUserDefinedRecord extends Record {
     @candid(text)

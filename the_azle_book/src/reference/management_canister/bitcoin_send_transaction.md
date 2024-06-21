@@ -5,7 +5,7 @@ This section is a work in progress.
 Examples:
 
 ```typescript
-import { blob, bool, Canister, ic, update } from 'azle';
+import { blob, bool, Canister, ic, update } from 'azle/experimental';
 import { managementCanister } from 'azle/canisters/management';
 
 const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;

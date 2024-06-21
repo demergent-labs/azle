@@ -5,7 +5,7 @@ The `CandidType` object `int16` corresponds to the [Candid type int16](https://i
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, int16, query } from 'azle';
+import { Canister, int16, query } from 'azle/experimental';
 
 export default Canister({
     getInt16: query([], int16, () => {

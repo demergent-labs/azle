@@ -1,4 +1,4 @@
-import { blob, Canister, ic, query, text } from 'azle';
+import { blob, Canister, ic, query, text } from 'azle/experimental';
 
 export default Canister({
     // encodes a Candid string to Candid bytes

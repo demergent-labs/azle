@@ -1,6 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/test/jest';
 
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/ethereum_json_rpc/ethereum_json_rpc.did';
 
 export function getTests(

@@ -1,6 +1,15 @@
 // @ts-nocheck
 
-import { Tuple, Null, Variant, Vec, bool, candid, int, text } from 'azle';
+import {
+    Tuple,
+    Null,
+    Variant,
+    Vec,
+    bool,
+    candid,
+    int,
+    text
+} from 'azle/experimental';
 import { UserDefinedRecord } from './records';
 
 export class UserDefinedVariant extends Variant {

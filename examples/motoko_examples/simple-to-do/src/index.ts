@@ -8,7 +8,7 @@ import {
     update,
     Vec,
     Void
-} from 'azle';
+} from 'azle/experimental';
 
 export const ToDo = Record({
     description: text,

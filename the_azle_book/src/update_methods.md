@@ -15,7 +15,7 @@
 Update methods are similar to query methods, but state changes can be persisted. Here's an example of a simple update method:
 
 ```typescript
-import { Canister, nat64, update } from 'azle';
+import { Canister, nat64, update } from 'azle/experimental';
 
 let counter = 0n;
 
@@ -33,7 +33,7 @@ Because the Internet Computer (IC) persists changes with certain fault tolerance
 Due to the latency and other expenses involved with update methods, it is best to use them only when necessary. Look at the following example:
 
 ```typescript
-import { Canister, query, text, update, Void } from 'azle';
+import { Canister, query, text, update, Void } from 'azle/experimental';
 
 let message = '';
 
@@ -52,7 +52,16 @@ You'll notice that we use an update method, `setMessage`, only to perform the ch
 Keep in mind that the heap is limited to 4 GiB, and thus there is an upper bound to global variable storage capacity. You can imagine how a simple database like the following would eventually run out of memory with too many entries:
 
 ```typescript
-import { Canister, None, Opt, query, Some, text, update, Void } from 'azle';
+import {
+    Canister,
+    None,
+    Opt,
+    query,
+    Some,
+    text,
+    update,
+    Void
+} from 'azle/experimental';
 
 type Db = {
     [key: string]: string;
@@ -74,7 +83,15 @@ export default Canister({
 If you need more than 4 GiB of storage, consider taking advantage of the 96 GiB of stable memory. Stable structures like `StableBTreeMap` give you a nice API for interacting with stable memory. These data structures will be [covered in more detail later](./stable_structures.md). Here's a simple example:
 
 ```typescript
-import { Canister, Opt, query, StableBTreeMap, text, update, Void } from 'azle';
+import {
+    Canister,
+    Opt,
+    query,
+    StableBTreeMap,
+    text,
+    update,
+    Void
+} from 'azle/experimental';
 
 let db = StableBTreeMap<text, text>(0);
 
@@ -106,7 +123,7 @@ import {
     update,
     Vec,
     Void
-} from 'azle';
+} from 'azle/experimental';
 
 const Entry = Record({
     key: text,
@@ -148,7 +165,7 @@ import {
     text,
     update,
     Void
-} from 'azle';
+} from 'azle/experimental';
 
 let db = StableBTreeMap<text, text>(0);
 

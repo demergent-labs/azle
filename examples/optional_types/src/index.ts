@@ -11,7 +11,7 @@ import {
     Some,
     text,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 const Element = Record({
     id: text

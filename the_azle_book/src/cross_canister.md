@@ -35,7 +35,7 @@ import {
     Principal,
     StableBTreeMap,
     update
-} from 'azle';
+} from 'azle/experimental';
 
 let accounts = StableBTreeMap<Principal, nat64>(0);
 
@@ -65,7 +65,7 @@ function getBalance(accountOpt: Opt<nat64>): nat64 {
 Now that you have the canister definition, you can import and instantiate it in another canister:
 
 ```typescript
-import { Canister, ic, nat64, Principal, update } from 'azle';
+import { Canister, ic, nat64, Principal, update } from 'azle/experimental';
 import TokenCanister from './token_canister';
 
 const tokenCanister = TokenCanister(
@@ -84,7 +84,7 @@ export default Canister({
 If you don't have the actual definition of the token canister with the canister method implementations, you can always create your own canister definition without method implementations:
 
 ```typescript
-import { Canister, ic, nat64, Principal, update } from 'azle';
+import { Canister, ic, nat64, Principal, update } from 'azle/experimental';
 
 const TokenCanister = Canister({
     transfer: update([Principal, nat64], nat64)
@@ -118,7 +118,7 @@ import {
     Principal,
     StableBTreeMap,
     update
-} from 'azle';
+} from 'azle/experimental';
 
 let accounts = StableBTreeMap<Principal, nat64>(0);
 
@@ -153,7 +153,7 @@ function getBalance(accountOpt: Opt<nat64>): nat64 {
 `payout_canister`:
 
 ```typescript
-import { Canister, ic, nat64, Principal, update } from 'azle';
+import { Canister, ic, nat64, Principal, update } from 'azle/experimental';
 import TokenCanister from './index';
 
 const tokenCanister = TokenCanister(
@@ -184,7 +184,7 @@ Cross-canister calls can also be initiated from query methods. These are known a
 Here's an example of a composite query method:
 
 ```typescript
-import { bool, Canister, ic, Principal, query } from 'azle';
+import { bool, Canister, ic, Principal, query } from 'azle/experimental';
 
 const SomeCanister = Canister({
     queryForBoolean: query([], bool)
@@ -206,7 +206,7 @@ You can expect cross-canister calls within the same subnet to take up to a few s
 If you don't need to wait for your cross-canister call to return, you can use `notify`:
 
 ```typescript
-import { Canister, ic, Principal, update, Void } from 'azle';
+import { Canister, ic, Principal, update, Void } from 'azle/experimental';
 
 const SomeCanister = Canister({
     receiveNotification: update([], Void)
@@ -226,7 +226,7 @@ export default Canister({
 If you need to send cycles with your cross-canister call, you can add `cycles` to the `config` object of `ic.notify`:
 
 ```typescript
-import { Canister, ic, Principal, update, Void } from 'azle';
+import { Canister, ic, Principal, update, Void } from 'azle/experimental';
 
 const SomeCanister = Canister({
     receiveNotification: update([], Void)

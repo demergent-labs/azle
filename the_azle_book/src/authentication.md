@@ -122,7 +122,7 @@ export class AzleApp extends LitElement {
 Here's an example of the backend of that same simple web application:
 
 ```typescript
-import { ic } from 'azle';
+import { ic } from 'azle/experimental';
 import express from 'express';
 
 const app = express();

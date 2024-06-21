@@ -20,7 +20,7 @@ To construct your cross-canister calls to these methods, use `canister id` `aaaa
 Here's an example of doing a test cross-canister call to the `bitcoin_get_balance` method:
 
 ```typescript
-import { serialize } from 'azle';
+import { serialize } from 'azle/experimental';
 
 // ...
 
@@ -52,7 +52,7 @@ You interact with the `ckBTC` canister by calling its methods. You can do this f
 Here's an example of doing a test cross-canister call to the `ckBTC` `icrc1_balance_of` method:
 
 ```typescript
-import { ic, serialize } from 'azle';
+import { ic, serialize } from 'azle/experimental';
 
 // ...
 

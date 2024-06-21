@@ -126,7 +126,7 @@ When working with `res.json` you may run into errors because of attempting to se
 Azle has created a special function called `jsonStringify` that will serialize many ICP-specific data structures to `JSON` for you:
 
 ```typescript
-import { jsonStringify } from 'azle';
+import { jsonStringify } from 'azle/experimental';
 import express, { Request } from 'express';
 
 let db = {
@@ -159,7 +159,7 @@ If you need to add [canister methods](./query_methods.md) to your HTTP server, t
 Here's an example of a very simple HTTP server:
 
 ```typescript
-import { Server } from 'azle';
+import { Server } from 'azle/experimental';
 import express from 'express';
 
 export default Server(() => {
@@ -180,7 +180,7 @@ export default Server(() => {
 You can add canister methods like this:
 
 ```typescript
-import { query, Server, text, update } from 'azle';
+import { query, Server, text, update } from 'azle/experimental';
 import express from 'express';
 
 export default Server(
@@ -213,7 +213,7 @@ The `default` export of your `main` module must be the result of calling `Server
 The callback argument to `Server` can be asynchronous:
 
 ```typescript
-import { Server } from 'azle';
+import { Server } from 'azle/experimental';
 import { createServer } from 'http';
 
 export default Server(async () => {

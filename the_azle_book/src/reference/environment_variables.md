@@ -31,7 +31,7 @@ Modify your `dfx.json` file with the `env` property to specify which environment
 You can access the specified environment variables in Azle like so:
 
 ```typescript
-import { Canister, query, text } from 'azle';
+import { Canister, query, text } from 'azle/experimental';
 
 export default Canister({
     canister1PrincipalEnvVar: query([], text, () => {

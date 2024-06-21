@@ -7,7 +7,7 @@ The shape of the object will match the object literal passed to the `Variant` fu
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, Null, query, Variant } from 'azle';
+import { Canister, Null, query, Variant } from 'azle/experimental';
 
 const Emotion = Variant({
     Happy: Null,

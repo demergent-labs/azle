@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { Opt } from 'azle';
+import { Opt } from 'azle/experimental';
 
 export function returnNonObject(): Opt<string> {
     // @ts-expect-error

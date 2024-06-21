@@ -1,4 +1,4 @@
-import { bool, Canister, query, text, update } from 'azle';
+import { bool, Canister, query, text, update } from 'azle/experimental';
 
 export default Canister({
     query1: query([], bool, () => {

@@ -1,4 +1,4 @@
-import { Canister, ic, nat, nat64, query, update } from 'azle';
+import { Canister, ic, nat, nat64, query, update } from 'azle/experimental';
 
 export default Canister({
     receiveCycles: update([], nat64, () => {

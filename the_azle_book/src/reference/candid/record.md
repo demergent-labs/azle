@@ -7,7 +7,7 @@ The shape of the object will match the object literal passed to the `Record` fun
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, Principal, query, Record, text } from 'azle';
+import { Canister, Principal, query, Record, text } from 'azle/experimental';
 
 const User = Record({
     id: Principal,

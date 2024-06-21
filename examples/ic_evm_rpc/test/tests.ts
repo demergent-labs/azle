@@ -4,7 +4,7 @@
 // just use a faucet like https://sepolia-faucet.pk910.de/ to get some more
 // We should be good for many thousands of tests
 
-import { jsonParse } from 'azle';
+import { jsonParse } from 'azle/experimental';
 import { expect, it, Test, wait } from 'azle/test/jest';
 
 let callerAddress: string;
