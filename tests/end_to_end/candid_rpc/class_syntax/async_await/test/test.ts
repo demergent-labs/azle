@@ -1,4 +1,4 @@
-import { get_tests } from 'async_await_end_to_end_test_functional_syntax/test/tests';
+import { getTests } from 'async_await_end_to_end_test_functional_syntax/test/tests';
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
 
@@ -10,4 +10,4 @@ const asyncAwaitCanister = createActor(getCanisterId('async_await'), {
     }
 });
 
-runTests(get_tests(asyncAwaitCanister));
+runTests(getTests(asyncAwaitCanister));

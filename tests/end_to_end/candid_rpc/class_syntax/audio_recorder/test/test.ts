@@ -1,4 +1,4 @@
-import { get_tests } from 'audio_recorder_end_to_end_test_functional_syntax/test/tests';
+import { getTests } from 'audio_recorder_end_to_end_test_functional_syntax/test/tests';
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test/jest';
 
@@ -10,4 +10,4 @@ const audio_recorder_canister = createActor(getCanisterId('audio_recorder'), {
     }
 });
 
-runTests(get_tests(audio_recorder_canister));
+runTests(getTests(audio_recorder_canister));

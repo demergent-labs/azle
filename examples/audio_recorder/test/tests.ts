@@ -9,7 +9,7 @@ import { _SERVICE } from './dfx_generated/audio_recorder/audio_recorder.did';
 let global_user: any;
 let global_recording: any;
 
-export function get_tests(
+export function getTests(
     audio_recorder_canister: ActorSubclass<_SERVICE>
 ): Test {
     return () => {
