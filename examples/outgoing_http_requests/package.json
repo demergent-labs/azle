@@ -1,4 +1,5 @@
 {
+    "name": "outgoing_http_requests_end_to_end_test_functional_syntax",
     "scripts": {
         "pre_tests": "ts-node --transpile-only --ignore=false test/pretest.ts",
         "tests": "npm run pre_tests && ts-node --transpile-only --ignore=false test/test.ts",
@@ -11,7 +12,7 @@
         "@dfinity/agent": "0.11.1",
         "decode-utf8": "1.0.1",
         "ts-node": "10.7.0",
-        "typescript": "4.6.3",
+        "typescript": "^5.2.2",
         "utf8-encoder": "1.0.1"
     }
 }

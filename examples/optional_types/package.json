@@ -1,4 +1,5 @@
 {
+    "name": "optional_types_end_to_end_test_functional_syntax",
     "scripts": {
         "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
         "test": "ts-node --transpile-only --ignore=false test/test.ts"
@@ -11,6 +12,6 @@
         "@types/node-fetch": "2.6.1",
         "node-fetch": "2.6.7",
         "ts-node": "10.7.0",
-        "typescript": "4.6.3"
+        "typescript": "^5.2.2"
     }
 }
