@@ -1,4 +1,4 @@
-import { bool, float64, int, Null, query, text, Void } from 'azle/experimental';
+import { bool, float64, int, Null, query, text, Void } from 'azle';
 
 export const MyBool = bool;
 export const MyNull = Null;

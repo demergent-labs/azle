@@ -8,7 +8,7 @@ import {
     StableBTreeMap,
     text,
     update
-} from 'azle/experimental';
+} from 'azle';
 
 let stableStorage = StableBTreeMap<text, nat>(0);
 let redeployed = false;

@@ -1,4 +1,4 @@
-import { nat64, query, update } from 'azle/experimental';
+import { nat64, query, update } from 'azle';
 
 let count: nat64 = 0n;
 

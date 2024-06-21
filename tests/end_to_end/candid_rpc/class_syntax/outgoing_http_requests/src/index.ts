@@ -1,18 +1,9 @@
+import { ic, Manual, None, Principal, query, Some, text, update } from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
     managementCanister
 } from 'azle/canisters/management';
-import {
-    ic,
-    Manual,
-    None,
-    Principal,
-    query,
-    Some,
-    text,
-    update
-} from 'azle/experimental';
 
 export default class {
     @update([], text)

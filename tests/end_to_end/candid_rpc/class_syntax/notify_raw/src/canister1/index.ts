@@ -1,4 +1,4 @@
-import { ic, Principal, update, Void } from 'azle/experimental';
+import { ic, Principal, update, Void } from 'azle';
 
 export default class {
     @update([], Void)

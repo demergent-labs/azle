@@ -1,4 +1,4 @@
-import { nat32, nat64, query, text } from 'azle/experimental';
+import { nat32, nat64, query, text } from 'azle';
 
 export default class {
     @query([text], nat32)

@@ -1,17 +1,6 @@
 // TODO once the Bitcoin integration is live, add the methods and tests
 
 import {
-    CanisterInfoArgs,
-    CanisterInfoResult,
-    CanisterStatusArgs,
-    CanisterStatusResult,
-    ChunkHash,
-    CreateCanisterResult,
-    managementCanister,
-    ProvisionalCreateCanisterWithCyclesResult,
-    StoredChunksResult
-} from 'azle/canisters/management';
-import {
     blob,
     bool,
     ic,
@@ -24,7 +13,18 @@ import {
     Some,
     update,
     Vec
-} from 'azle/experimental';
+} from 'azle';
+import {
+    CanisterInfoArgs,
+    CanisterInfoResult,
+    CanisterStatusArgs,
+    CanisterStatusResult,
+    ChunkHash,
+    CreateCanisterResult,
+    managementCanister,
+    ProvisionalCreateCanisterWithCyclesResult,
+    StoredChunksResult
+} from 'azle/canisters/management';
 
 type State = {
     createdCanisterId: Principal;

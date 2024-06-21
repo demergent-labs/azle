@@ -8,7 +8,7 @@ import {
     serialize,
     update,
     Void
-} from 'azle/experimental';
+} from 'azle';
 
 import Cycles from '../cycles';
 

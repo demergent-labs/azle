@@ -1,13 +1,4 @@
-import {
-    init,
-    None,
-    Opt,
-    query,
-    Record,
-    Some,
-    text,
-    Tuple
-} from 'azle/experimental';
+import { init, None, Opt, query, Record, Some, text, Tuple } from 'azle';
 
 const User = Record({
     id: text

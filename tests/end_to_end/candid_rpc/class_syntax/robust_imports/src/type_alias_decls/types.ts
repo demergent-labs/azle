@@ -1,5 +1,5 @@
-import * as azle from 'azle/experimental';
-import { int, query, Record } from 'azle/experimental';
+import * as azle from 'azle';
+import { int, query, Record } from 'azle';
 
 import * as deep from './deep_alias';
 import { deepAlias } from './deep_alias';

@@ -1,4 +1,4 @@
-import { int } from 'azle/experimental';
+import { int } from 'azle';
 
 export const Int = {
     abs: Math.abs,

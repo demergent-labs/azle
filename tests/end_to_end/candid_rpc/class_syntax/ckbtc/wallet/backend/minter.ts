@@ -12,7 +12,7 @@ import {
     update,
     Variant,
     Vec
-} from 'azle/experimental';
+} from 'azle';
 
 const Utxo = Record({
     outpoint: Record({ txid: Vec(nat8), vout: nat32 }),

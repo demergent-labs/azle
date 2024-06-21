@@ -2,7 +2,7 @@
 // Not Named Imports
 import './azle_coverage/fruit'; // Shouldn't do anything. It's just here to make sure it doesn't do anything
 
-import { Canister } from 'azle/experimental';
+import { Canister } from 'azle';
 
 import {
     addSigFigs,

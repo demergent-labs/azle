@@ -1,4 +1,4 @@
-import { query, text } from 'azle/experimental';
+import { query, text } from 'azle';
 
 export default class {
     @query([text], text)

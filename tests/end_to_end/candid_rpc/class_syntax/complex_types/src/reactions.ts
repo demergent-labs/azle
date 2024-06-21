@@ -1,4 +1,4 @@
-import { nat32, query, text, update, Vec } from 'azle/experimental';
+import { nat32, query, text, update, Vec } from 'azle';
 
 import { Reaction, ReactionType } from './candid_types';
 import { getPostFromStatePost } from './posts';

@@ -1,4 +1,4 @@
-import { int, None, Opt, Some, update, Void } from 'azle/experimental';
+import { int, None, Opt, Some, update, Void } from 'azle';
 
 let cell: int = 0n;
 

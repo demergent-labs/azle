@@ -13,7 +13,7 @@ import {
     StableBTreeMap,
     text,
     update
-} from 'azle/experimental';
+} from 'azle';
 
 let stableStorage = StableBTreeMap<text, text>(0);
 

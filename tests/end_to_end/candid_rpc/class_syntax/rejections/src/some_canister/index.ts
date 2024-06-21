@@ -6,7 +6,7 @@ import {
     Manual,
     query,
     text
-} from 'azle/experimental';
+} from 'azle';
 
 export default class {
     @query([text], empty, { manual: true})

@@ -1,2 +1,2 @@
-import { Canister } from 'azle/experimental';
+import { Canister } from 'azle';
 export default Canister;

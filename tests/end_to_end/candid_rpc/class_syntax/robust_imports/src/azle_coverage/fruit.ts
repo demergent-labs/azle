@@ -1,4 +1,4 @@
-import { query as kiwi } from 'azle/experimental';
+import { query as kiwi } from 'azle';
 export default kiwi;
 
 export {
@@ -39,4 +39,4 @@ export {
     update as ugni,
     Void as Vanilla,
     Variant as Voavanga
-} from 'azle/experimental';
+} from 'azle';

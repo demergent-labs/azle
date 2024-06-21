@@ -18,7 +18,7 @@ import {
     query,
     reserved,
     text
-} from 'azle/experimental';
+} from 'azle';
 
 export default class {
     @query([], text)

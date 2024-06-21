@@ -1,4 +1,4 @@
-import { ic, ic as lemon, int16 as coconut } from 'azle/experimental';
+import { ic, ic as lemon, int16 as coconut } from 'azle';
 
 import kiwi, {
     banana,

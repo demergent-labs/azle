@@ -17,7 +17,7 @@ import {
     Some,
     text,
     update
-} from 'azle/experimental';
+} from 'azle';
 
 import { Minter, UpdateBalanceResult } from './minter';
 

@@ -6,7 +6,7 @@ import {
     Principal,
     query,
     Void
-} from 'azle/experimental';
+} from 'azle';
 
 export const NotifierFunc = Func([blob], Void, 'oneway');
 export type NotifierFunc = typeof NotifierFunc.tsType;

@@ -7,7 +7,7 @@ import {
     text,
     update,
     Void
-} from 'azle/experimental';
+} from 'azle';
 
 import SomeCanister from '../some_canister';
 

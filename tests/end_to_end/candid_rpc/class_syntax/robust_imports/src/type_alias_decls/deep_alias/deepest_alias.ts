@@ -1,1 +1,1 @@
-export * as deepestAlias from 'azle/experimental';
+export * as deepestAlias from 'azle';

@@ -6,7 +6,7 @@ import {
     query,
     Recursive,
     Variant
-} from 'azle/experimental';
+} from 'azle';
 
 const Node = Recursive(() =>
     Variant({

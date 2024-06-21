@@ -7,7 +7,7 @@ import {
     query,
     serialize,
     update
-} from 'azle/experimental';
+} from 'azle';
 
 // We use the zero principal but any principal could be used.
 let install: Principal = Principal.fromText('aaaaa-aa');

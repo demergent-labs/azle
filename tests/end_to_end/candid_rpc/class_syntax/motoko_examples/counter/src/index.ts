@@ -1,4 +1,4 @@
-import { nat, query, update, Void } from 'azle/experimental';
+import { nat, query, update, Void } from 'azle';
 
 let counter: nat = 0n;
 

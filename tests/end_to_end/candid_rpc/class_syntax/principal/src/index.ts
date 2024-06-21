@@ -1,12 +1,4 @@
-import {
-    blob,
-    Null,
-    Principal,
-    query,
-    Record,
-    text,
-    Variant
-} from 'azle/experimental';
+import { blob, Null, Principal, query, Record, text, Variant } from 'azle';
 
 const User = Record({
     id: Principal,

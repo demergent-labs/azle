@@ -1,4 +1,4 @@
-import { query, Void } from 'azle/experimental';
+import { query, Void } from 'azle';
 
 export default class {
     @query([], Void)

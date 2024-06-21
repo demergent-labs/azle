@@ -1,4 +1,4 @@
-import { ic, nat, nat64, query, update } from 'azle/experimental';
+import { ic, nat, nat64, query, update } from 'azle';
 
 export default class {
     @update([], nat64)

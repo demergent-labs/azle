@@ -1,4 +1,4 @@
-import { blob, ic, query, text } from 'azle/experimental';
+import { blob, ic, query, text } from 'azle';
 
 export default class {
     // encodes a Candid string to Candid bytes

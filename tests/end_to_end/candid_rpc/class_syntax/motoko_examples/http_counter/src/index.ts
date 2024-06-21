@@ -14,7 +14,7 @@ import {
     StreamingCallbackHttpResponse,
     text,
     update
-} from 'azle/experimental';
+} from 'azle';
 
 const Token = Record({
     // add whatever fields you'd like

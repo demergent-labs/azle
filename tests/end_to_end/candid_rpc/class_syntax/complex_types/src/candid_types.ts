@@ -1,4 +1,4 @@
-import { Null, Record, Recursive, text, Variant, Vec } from 'azle/experimental';
+import { Null, Record, Recursive, text, Variant, Vec } from 'azle';
 
 export const ReactionType = Variant({
     Fire: Null,

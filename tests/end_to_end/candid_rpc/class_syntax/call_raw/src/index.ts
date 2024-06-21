@@ -1,13 +1,4 @@
-import {
-    ic,
-    nat,
-    nat64,
-    Ok,
-    Principal,
-    Result,
-    text,
-    update
-} from 'azle/experimental';
+import { ic, nat, nat64, Ok, Principal, Result, text, update } from 'azle';
 
 export default class {
     @update([Principal, text, text, nat64], Result(text, text))

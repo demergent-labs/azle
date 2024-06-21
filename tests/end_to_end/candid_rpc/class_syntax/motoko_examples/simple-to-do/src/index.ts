@@ -1,13 +1,4 @@
-import {
-    bool,
-    nat,
-    query,
-    Record,
-    text,
-    update,
-    Vec,
-    Void
-} from 'azle/experimental';
+import { bool, nat, query, Record, text, update, Vec, Void } from 'azle';
 
 export const ToDo = Record({
     description: text,

@@ -1,4 +1,4 @@
-import { nat, update } from 'azle/experimental';
+import { nat, update } from 'azle';
 
 export default class {
     // Calculate the product of all positive integers less than or equal to `n`.
