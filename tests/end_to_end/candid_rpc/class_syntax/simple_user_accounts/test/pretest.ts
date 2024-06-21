@@ -1,7 +1,11 @@
+import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
+import { join } from 'path';
 import { join, resolve } from 'path';
 
 async function pretest() {
+    linkAndInstallPatch(join('examples', 'simple_user_accounts'));
+
     const azleDir = resolve(
         __dirname,
         join('..', '..', '..', '..', '..', '..')

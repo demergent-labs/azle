@@ -1,7 +1,13 @@
+import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
+import { join } from 'path';
 import { join, resolve } from 'path';
 
 async function pretest() {
+    linkAndInstallPatch(
+        join('examples', 'stable_b_tree_map_instruction_threshold')
+    );
+
     const azleDir = resolve(
         __dirname,
         join('..', '..', '..', '..', '..', '..')

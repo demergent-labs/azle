@@ -1,6 +1,10 @@
+import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
+import { join } from 'path';
 
 async function pretest() {
+    linkAndInstallPatch(join('examples', 'threshold_ecdsa'));
+
     execSync(`dfx canister uninstall-code threshold_ecdsa || true`, {
         stdio: 'inherit'
     });
