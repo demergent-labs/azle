@@ -2,10 +2,10 @@
 
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test/jest';
+import { getTests } from 'cycles_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor as createCyclesActor } from './dfx_generated/cycles';
 import { createActor as createIntermediaryActor } from './dfx_generated/intermediary';
-import { getTests } from './tests';
 
 const cyclesCanister = createCyclesActor(getCanisterId('cycles'), {
     agentOptions: {

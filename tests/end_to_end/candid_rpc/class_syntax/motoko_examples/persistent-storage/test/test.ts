@@ -1,8 +1,8 @@
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test/jest';
+import { getTests } from 'persistent-storage_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor } from './dfx_generated/persistent_storage';
-import { getTests } from './tests';
 
 const persistentStorageCanister = createActor(
     getCanisterId('persistent_storage'),

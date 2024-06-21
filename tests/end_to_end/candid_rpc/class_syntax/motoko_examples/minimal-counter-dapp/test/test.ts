@@ -1,9 +1,9 @@
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test/jest';
+import { getTests } from 'minimal-counter-dapp_end_to_end_test_functional_syntax/test/tests';
 
 // @ts-ignore
 import { createActor } from '../src/declarations/minimal_dapp';
-import { getTests } from './tests';
 
 const counterCanister = createActor(getCanisterId('minimal_dapp'), {
     agentOptions: {

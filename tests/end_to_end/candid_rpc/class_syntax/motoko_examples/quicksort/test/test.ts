@@ -1,9 +1,9 @@
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test/jest';
+import { getTests } from 'quicksort_end_to_end_test_functional_syntax/test/tests';
 
 // @ts-ignore
 import { createActor } from './dfx_generated/quicksort';
-import { getTests } from './tests';
 
 const quicksortCanister = createActor(getCanisterId('quicksort'), {
     agentOptions: {

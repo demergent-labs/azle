@@ -1,9 +1,8 @@
 import { afterAll, beforeAll, describe } from '@jest/globals';
 import { runTests } from 'azle/test/jest';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
+import { getTests } from 'ckbtc_end_to_end_test_functional_syntax/test/tests';
 import { existsSync, rmSync } from 'fs-extra';
-
-import { getTests } from './tests';
 
 type BitcoinDaemon = ChildProcessWithoutNullStreams;
 

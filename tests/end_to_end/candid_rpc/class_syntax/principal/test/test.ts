@@ -1,8 +1,8 @@
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
+import { getTests } from 'principal_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor } from '../test/dfx_generated/principal';
-import { getTests } from './tests';
 
 const principalCanister = createActor(getCanisterId('principal'), {
     agentOptions: {

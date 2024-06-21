@@ -1,8 +1,8 @@
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test/jest';
+import { getTests } from 'ic_api_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor } from './dfx_generated/ic_api';
-import { getTests } from './tests';
 
 const icApiCanister = createActor(getCanisterId('ic_api'), {
     agentOptions: {

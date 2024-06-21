@@ -1,9 +1,9 @@
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
+import { getTests } from 'notify_raw_end_to_end_test_functional_syntax/test/tests';
 
 import { createActor as createActorCanister1 } from './dfx_generated/canister1';
 import { createActor as createActorCanister2 } from './dfx_generated/canister2';
-import { getTests } from './tests';
 
 const canister1 = createActorCanister1(getCanisterId('canister1'), {
     agentOptions: {
