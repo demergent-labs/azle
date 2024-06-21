@@ -1,0 +1,10 @@
+.azle
+.dfx
+dfx_generated
+node_modules
+
+# Bitcoin
+.bitcoin/*
+!.bitcoin/.gitkeep
+*.tar.gz
+bitcoin-23.0/

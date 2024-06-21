@@ -1,0 +1,14 @@
+{
+    "canisters": {
+        "async_await": {
+            "type": "azle",
+            "main": "src/async_await.ts",
+            "candid_gen": "automatic",
+            "env": ["AZLE_TEST_FETCH"],
+            "declarations": {
+                "output": "test/dfx_generated/async_await",
+                "node_compatibility": true
+            }
+        }
+    }
+}

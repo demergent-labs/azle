@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "robust_imports": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "dfx_generated/robust_imports",
+                "node_compatibility": true
+            }
+        }
+    }
+}

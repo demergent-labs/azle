@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "manual_reply": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/manual_reply",
+                "node_compatibility": true
+            }
+        }
+    }
+}

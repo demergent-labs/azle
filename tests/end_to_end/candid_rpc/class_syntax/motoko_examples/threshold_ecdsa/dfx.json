@@ -1,0 +1,14 @@
+{
+    "canisters": {
+        "threshold_ecdsa": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "env": ["AZLE_TEST_FETCH"],
+            "declarations": {
+                "output": "test/dfx_generated/threshold_ecdsa",
+                "node_compatibility": true
+            }
+        }
+    }
+}

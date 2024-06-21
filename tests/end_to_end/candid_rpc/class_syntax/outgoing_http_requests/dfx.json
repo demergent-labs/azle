@@ -1,0 +1,14 @@
+{
+    "canisters": {
+        "outgoing_http_requests": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "env": ["AZLE_TEST_FETCH"],
+            "declarations": {
+                "output": "test/dfx_generated/outgoing_http_requests",
+                "node_compatibility": true
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "scripts": {
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "vite": "^4.4.10"
+    },
+    "dependencies": {
+        "@dfinity/auth-client": "^0.19.3",
+        "lit": "^2.8.0"
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "canisters": {
+        "complex_init": {
+            "type": "azle",
+            "main": "src/complex_init/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/complex_init",
+                "node_compatibility": true
+            }
+        },
+        "rec_init": {
+            "type": "azle",
+            "main": "src/rec_init/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/rec_init",
+                "node_compatibility": true
+            }
+        }
+    }
+}

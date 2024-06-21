@@ -1,0 +1,40 @@
+{
+    "canisters": {
+        "azle": {
+            "type": "custom",
+            "main": "canisters/azle/index.ts",
+            "candid": "canisters/azle/index.did",
+            "build": "npx azle azle",
+            "wasm": ".azle/azle/azle.wasm",
+            "gzip": true,
+            "declarations": {
+                "output": "dfx_generated/azle"
+            },
+            "metadata": [
+                {
+                    "name": "candid:service",
+                    "path": "canisters/azle/index.did"
+                },
+                {
+                    "name": "cdk:name",
+                    "content": "azle"
+                }
+            ]
+        },
+        "motoko": {
+            "type": "motoko",
+            "main": "canisters/motoko/main.mo",
+            "declarations": {
+                "output": "dfx_generated/motoko"
+            }
+        },
+        "rust": {
+            "type": "rust",
+            "candid": "canisters/rust/src/lib.did",
+            "declarations": {
+                "output": "dfx_generated/rust"
+            },
+            "package": "rust"
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "calc": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/calc",
+                "node_compatibility": true
+            }
+        }
+    }
+}

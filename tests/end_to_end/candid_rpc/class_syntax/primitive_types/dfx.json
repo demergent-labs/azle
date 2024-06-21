@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "primitive_types": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/primitive_types",
+                "node_compatibility": true
+            }
+        }
+    }
+}

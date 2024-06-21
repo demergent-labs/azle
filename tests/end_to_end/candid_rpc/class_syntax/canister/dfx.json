@@ -1,0 +1,25 @@
+{
+    "canisters": {
+        "canister": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "env": ["SOME_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [["src/some_canister.did", "candid/some_canister.did"]],
+            "declarations": {
+                "output": "test/dfx_generated/canister",
+                "node_compatibility": true
+            }
+        },
+        "some_canister": {
+            "type": "azle",
+            "main": "src/some_canister.ts",
+            "candid": "src/some_canister.did",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/some_canister",
+                "node_compatibility": true
+            }
+        }
+    }
+}

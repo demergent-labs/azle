@@ -1,0 +1,18 @@
+{
+    "canisters": {
+        "proxy": {
+            "type": "azle",
+            "main": "canisters/proxy/index.ts",
+            "candid_gen": "automatic",
+            "env": ["ICRC_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "declarations": {
+                "output": "test/dfx_generated/proxy",
+                "node_compatibility": true
+            }
+        },
+        "icrc": {
+            "type": "motoko",
+            "main": "canisters/ICRC-1/ref/ICRC1.mo"
+        }
+    }
+}

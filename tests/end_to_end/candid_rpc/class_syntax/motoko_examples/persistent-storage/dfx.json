@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "persistent_storage": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/persistent_storage",
+                "node_compatibility": true
+            }
+        }
+    }
+}

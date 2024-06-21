@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "key_value_store": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/key_value_store",
+                "node_compatibility": true
+            }
+        }
+    }
+}

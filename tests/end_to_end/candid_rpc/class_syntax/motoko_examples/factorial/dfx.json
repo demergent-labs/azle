@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "factorial": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/factorial",
+                "node_compatibility": true
+            }
+        }
+    }
+}

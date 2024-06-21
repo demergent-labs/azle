@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "call_raw": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/call_raw",
+                "node_compatibility": true
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "vanilla_js": {
+            "type": "azle",
+            "main": "src/index.js",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/vanilla_js",
+                "node_compatibility": true
+            }
+        }
+    }
+}

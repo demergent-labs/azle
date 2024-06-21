@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "hello_world": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/hello_world",
+                "node_compatibility": true
+            }
+        }
+    }
+}

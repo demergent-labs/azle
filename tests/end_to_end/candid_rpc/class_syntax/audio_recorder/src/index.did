@@ -1,0 +1,30 @@
+type User = record {
+    id: principal;
+    createdAt: nat64;
+    recordingIds: vec principal;
+    username: text;
+};
+
+type Recording = record {
+    id: principal;
+    audio: blob;
+    createdAt: nat64;
+    name: text;
+    userId: principal;
+};
+
+type AudioRecorderError = variant {
+    RecordingDoesNotExist: principal;
+    UserDoesNotExist: principal;
+};
+
+service: () -> {
+    createUser: (text) -> (User);
+    readUsers: () -> (vec User) query;
+    readUserById: (principal) -> (opt User) query;
+    deleteUser: (principal) -> (variant { Ok: User; Err: AudioRecorderError });
+    createRecording: (vec nat8, text, principal) -> (variant { Ok: Recording; Err: AudioRecorderError });
+    readRecordings: () -> (vec Recording) query;
+    readRecordingById: (principal) -> (opt Recording) query;
+    deleteRecording: (principal) -> (variant { Ok: Recording; Err: AudioRecorderError });
+}

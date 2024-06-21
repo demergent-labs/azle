@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "simple_to_do": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/simple_to_do",
+                "node_compatibility": true
+            }
+        }
+    }
+}

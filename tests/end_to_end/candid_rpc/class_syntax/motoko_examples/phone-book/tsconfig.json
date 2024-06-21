@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "jsx": "react",
+        "module": "commonjs",
+        "strict": true,
+        "target": "ES2020",
+        "outDir": "HACK_BECAUSE_OF_ALLOW_JS"
+    }
+}

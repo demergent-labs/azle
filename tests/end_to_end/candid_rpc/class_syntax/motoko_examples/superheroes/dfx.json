@@ -1,0 +1,20 @@
+{
+    "canisters": {
+        "superheroes": {
+            "type": "azle",
+            "main": "src/superheroes/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "src/declarations",
+                "node_compatibility": true
+            }
+        },
+        "www": {
+            "type": "assets",
+            "frontend": {
+                "entrypoint": "src/www/index.html"
+            },
+            "source": ["src/www/components", "dist/www/"]
+        }
+    }
+}

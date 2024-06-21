@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "null_example": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/null_example",
+                "node_compatibility": true
+            }
+        }
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "canisters": {
+        "minimal_dapp": {
+            "type": "azle",
+            "main": "src/minimal_dapp/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "src/declarations/minimal_dapp",
+                "node_compatibility": true
+            }
+        },
+        "minimal_dapp_assets": {
+            "type": "assets",
+            "frontend": {
+                "entrypoint": "src/minimal_dapp_assets/src/index.html"
+            },
+            "source": [
+                "src/minimal_dapp_assets/assets",
+                "dist/minimal_dapp_assets/"
+            ]
+        }
+    }
+}

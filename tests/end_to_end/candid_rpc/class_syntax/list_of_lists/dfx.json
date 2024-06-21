@@ -1,0 +1,13 @@
+{
+    "canisters": {
+        "list_of_lists": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "dfx_generated/list_of_lists",
+                "node_compatibility": true
+            }
+        }
+    }
+}

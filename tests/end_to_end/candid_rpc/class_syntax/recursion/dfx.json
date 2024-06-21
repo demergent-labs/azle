@@ -1,0 +1,30 @@
+{
+    "canisters": {
+        "recursion": {
+            "type": "azle",
+            "main": "src/recursion/index.ts",
+            "candid_gen": "automatic",
+            "env": ["MY_CANISTER_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "assets": [
+                [
+                    "src/recursive_canister/index.did",
+                    "candid/recursive_canister.did"
+                ]
+            ],
+            "declarations": {
+                "output": "test/dfx_generated/recursion",
+                "node_compatibility": true
+            }
+        },
+        "recursive_canister": {
+            "type": "azle",
+            "main": "src/recursive_canister/index.ts",
+            "candid": "src/recursive_canister/index.did",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "test/dfx_generated/recursive_canister",
+                "node_compatibility": true
+            }
+        }
+    }
+}

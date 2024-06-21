@@ -1,0 +1,14 @@
+{
+    "canisters": {
+        "management_canister": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid_gen": "automatic",
+            "env": ["AZLE_TEST_FETCH"],
+            "declarations": {
+                "output": "test/dfx_generated/management_canister",
+                "node_compatibility": true
+            }
+        }
+    }
+}

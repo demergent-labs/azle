@@ -1,0 +1,16 @@
+{
+    "scripts": {
+        "pre_tests": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "tests": "npm run pre_tests && ts-node --transpile-only --ignore=false test/test.ts",
+        "test": "AZLE_TEST_FETCH=false npm run tests && AZLE_TEST_FETCH=true npm run tests"
+    },
+    "dependencies": {
+        "azle": "0.22.0"
+    },
+    "devDependencies": {
+        "async_await_end_to_end_test_functional_syntax": "file:../../../../../examples/async_await",
+        "@dfinity/agent": "^0.19.2",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "canisters": {
+        "phone_book": {
+            "type": "azle",
+            "main": "src/phone_book/index.ts",
+            "candid_gen": "automatic",
+            "declarations": {
+                "output": "src/declarations/phone_book",
+                "node_compatibility": false
+            }
+        },
+        "www": {
+            "type": "assets",
+            "frontend": {
+                "entrypoint": "src/www/public/index.html"
+            },
+            "source": ["src/www/assets", "dist/www/"]
+        }
+    }
+}
