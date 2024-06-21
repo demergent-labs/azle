@@ -1,9 +1,14 @@
 import { call, IDL, update } from 'azle';
 import {
+    FUNCS,
+    GetBalanceArgs,
+    GetCurrentFeePercentilesArgs,
+    GetUtxosArgs,
     GetUtxosResult,
-    managementCanister,
     MillisatoshiPerByte,
-    Satoshi
+    PRINCIPAL,
+    Satoshi,
+    SendTransactionArgs
 } from 'azle/canisters/management';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
@@ -12,78 +17,71 @@ const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
 export default class {
     @update([IDL.Text], Satoshi)
-    async getBalance(address) {
-        return await call('aaaaa-aa', 'bitcoin_get_balance');
-        // const response = await fetch(`icp://aaaaa-aa/bitcoin_get_balance`, {
-        //     body: serialize({
-        //         args: [
-        //             {
-        //                 address,
-        //                 min_confirmations: [],
-        //                 network: { regtest: null }
-        //             }
-        //         ],
-        //         cycles: BITCOIN_API_CYCLE_COST
-        //     })
-        // });
-        // const responseJson = await response.json();
-
-        // return responseJson;
+    async getBalance(address: string) {
+        return await call(PRINCIPAL, FUNCS.bitcoin_get_balance, {
+            paramIdls: [GetBalanceArgs],
+            returnIdl: Satoshi,
+            args: [
+                {
+                    address,
+                    min_confirmations: [],
+                    network: { regtest: null }
+                }
+            ],
+            payment: BITCOIN_API_CYCLE_COST
+        });
     }
+
     @update([], Vec(MillisatoshiPerByte))
     async getCurrentFeePercentiles() {
-        const response = await fetch(
-            `icp://aaaaa-aa/bitcoin_get_current_fee_percentiles`,
+        return await call(
+            PRINCIPAL,
+            FUNCS.bitcoin_get_current_fee_percentiles,
             {
-                body: serialize({
-                    args: [
-                        {
-                            network: { regtest: null }
-                        }
-                    ],
-                    cycles: BITCOIN_API_CYCLE_COST
-                })
-            }
-        );
-        const responseJson = await response.json();
-
-        return responseJson;
-    }
-    @update([IDL.Text], GetUtxosResult)
-    async getUtxos(address) {
-        const response = await fetch(`icp://aaaaa-aa/bitcoin_get_utxos`, {
-            body: serialize({
+                paramIdls: [GetCurrentFeePercentilesArgs],
+                returnIdl: Vec(MillisatoshiPerByte),
                 args: [
                     {
-                        address,
-                        filter: [],
                         network: { regtest: null }
                     }
                 ],
-                cycles: BITCOIN_API_CYCLE_COST
-            })
-        });
-        const responseJson = await response.json();
-
-        return responseJson;
+                payment: BITCOIN_API_CYCLE_COST
+            }
+        );
     }
+
+    @update([IDL.Text], GetUtxosResult)
+    async getUtxos(address: string) {
+        return await call(PRINCIPAL, FUNCS.bitcoin_get_utxos, {
+            paramIdls: [GetUtxosArgs],
+            returnIdl: GetUtxosResult,
+            args: [
+                {
+                    address,
+                    filter: [],
+                    network: { regtest: null }
+                }
+            ],
+            payment: BITCOIN_API_CYCLE_COST
+        });
+    }
+
     @update([IDL.Vec(IDL.Nat8)], bool)
-    async sendTransaction(transaction) {
+    async sendTransaction(transaction: Uint8Array): Promise<boolean> {
         const transactionFee =
             BITCOIN_BASE_TRANSACTION_COST +
             BigInt(transaction.length) *
                 BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;
 
-        await fetch(`icp://aaaaa-aa/bitcoin_send_transaction`, {
-            body: serialize({
-                args: [
-                    {
-                        transaction,
-                        network: { regtest: null }
-                    }
-                ],
-                cycles: transactionFee
-            })
+        await call(PRINCIPAL, FUNCS.bitcoin_send_transaction, {
+            paramIdls: [SendTransactionArgs],
+            args: [
+                {
+                    transaction,
+                    network: { regtest: null }
+                }
+            ],
+            payment: transactionFee
         });
 
         return true;
