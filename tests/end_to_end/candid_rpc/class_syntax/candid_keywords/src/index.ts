@@ -38,7 +38,7 @@ const CandidVariant = Variant({ query: text, nat32: text, service: text });
 const Candid = Record({
     query: text,
     text: text,
-    blob: blob,
+    blob: IDL.Vec(IDL.Nat8),
     nat: nat,
     nat64: nat64,
     nat32: nat32,

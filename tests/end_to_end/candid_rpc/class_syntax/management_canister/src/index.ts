@@ -83,7 +83,7 @@ export default class {
 
         return true;
     }
-    @update([Principal, blob], ChunkHash)
+    @update([Principal, IDL.Vec(IDL.Nat8)], ChunkHash)
     async executeUploadChunk(canisterId, chunk) {
         if (process.env.AZLE_TEST_FETCH === 'true' || false) {
             const response = await fetch(`icp://aaaaa-aa/upload_chunk`, {
@@ -156,7 +156,7 @@ export default class {
             });
         }
     }
-    @update([Principal, blob], bool)
+    @update([Principal, IDL.Vec(IDL.Nat8)], bool)
     async executeInstallCode(canisterId, wasmModule) {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/install_code`, {
@@ -194,7 +194,7 @@ export default class {
 
         return true;
     }
-    @update([Principal, Vec(ChunkHash), blob], bool)
+    @update([Principal, Vec(ChunkHash), IDL.Vec(IDL.Nat8)], bool)
     async executeInstallChunkedCode(canisterId, chunkHashes, wasmModuleHash) {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/install_chunked_code`, {
@@ -378,7 +378,7 @@ export default class {
 
         return true;
     }
-    @update([], blob)
+    @update([], IDL.Vec(IDL.Nat8))
     async getRawRand() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(`icp://aaaaa-aa/raw_rand`);

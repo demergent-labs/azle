@@ -1,16 +1,16 @@
 import { blob, query, Vec } from 'azle';
 
 export default class {
-    @query([], blob)
+    @query([], IDL.Vec(IDL.Nat8))
     getBlob() {
         return stringToBlob('hello');
     }
-    @query([], Vec(blob))
+    @query([], Vec(IDL.Vec(IDL.Nat8)))
     getBlobs() {
         return [stringToBlob('hello'), stringToBlob('world')];
     }
 }
 
-function stringToBlob(string: string): blob {
+function stringToBlob(string: string): Uint8Array {
     return Buffer.from(string);
 }

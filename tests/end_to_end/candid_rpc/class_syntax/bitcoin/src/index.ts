@@ -65,7 +65,7 @@ export default class {
 
         return responseJson;
     }
-    @update([blob], bool)
+    @update([IDL.Vec(IDL.Nat8)], bool)
     async sendTransaction(transaction) {
         const transactionFee =
             BITCOIN_BASE_TRANSACTION_COST +

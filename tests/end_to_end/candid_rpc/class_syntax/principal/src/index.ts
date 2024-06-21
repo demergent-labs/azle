@@ -41,7 +41,7 @@ export default class {
     principalFromText(principalText) {
         return Principal.fromText(principalText);
     }
-    @query([blob], Principal)
+    @query([IDL.Vec(IDL.Nat8)], Principal)
     principalFromBlob(principalBytes) {
         return Principal.fromUint8Array(Uint8Array.from(principalBytes));
     }
@@ -53,11 +53,11 @@ export default class {
     principalToText(principal) {
         return principal.toText();
     }
-    @query([Principal], blob)
+    @query([Principal], IDL.Vec(IDL.Nat8))
     principalToBlob(principal) {
         return principal.toUint8Array();
     }
-    @query([blob], Principal)
+    @query([IDL.Vec(IDL.Nat8)], Principal)
     principalSelfAuthenticating(publicKey) {
         return Principal.selfAuthenticating(publicKey);
     }

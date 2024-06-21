@@ -1,5 +1,5 @@
 import {
-    blob,
+    IDL.Vec(IDL.Nat8),
 
     Func,
     ic,
@@ -8,7 +8,7 @@ import {
     Void
 } from 'azle';
 
-export const NotifierFunc = Func([blob], Void, 'oneway');
+export const NotifierFunc = Func([IDL.Vec(IDL.Nat8)], Void, 'oneway');
 export type NotifierFunc = typeof NotifierFunc.tsType;
 
 export default class {

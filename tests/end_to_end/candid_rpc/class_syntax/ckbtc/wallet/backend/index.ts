@@ -208,7 +208,7 @@ export default class {
     }
 }
 
-function padPrincipalWithZeros(blob: blob): blob {
+function padPrincipalWithZeros(blob: Uint8Array): Uint8Array {
     let newUin8Array = new Uint8Array(32);
     newUin8Array.set(blob);
     return newUin8Array;

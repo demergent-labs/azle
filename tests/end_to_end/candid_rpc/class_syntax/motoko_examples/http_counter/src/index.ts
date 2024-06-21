@@ -198,6 +198,6 @@ function isGzip(x: HeaderField): boolean {
     );
 }
 
-function encode(string: string): blob {
+function encode(string: string): Uint8Array {
     return Buffer.from(string, 'utf-8');
 }

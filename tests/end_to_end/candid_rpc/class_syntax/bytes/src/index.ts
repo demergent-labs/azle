@@ -1,7 +1,7 @@
 import { blob, update } from 'azle';
 
 export default class {
-    @update([blob], blob)
+    @update([IDL.Vec(IDL.Nat8)], IDL.Vec(IDL.Nat8))
     getBytes(bytes) {
         return bytes;
     }

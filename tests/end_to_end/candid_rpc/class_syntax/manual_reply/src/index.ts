@@ -1,5 +1,5 @@
 import {
-    blob,
+    IDL.Vec(IDL.Nat8),
     bool,
     float32,
     ic,
@@ -30,7 +30,7 @@ const RawReply = Record({
     int: int,
     text: text,
     bool: bool,
-    myBlob: blob,
+    myBlob: IDL.Vec(IDL.Nat8),
     myVariant: Options
 });
 type RawReply = typeof RawReply.tsType;
@@ -78,11 +78,11 @@ export default class {
 
         ic.reply(message, text);
     }
-    @update([], blob, { manual: true })
+    @update([], IDL.Vec(IDL.Nat8), { manual: true })
     updateBlob() {
         ic.reply(
             new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
-            blob
+            IDL.Vec(IDL.Nat8)
         );
     }
     @update([], float32, { manual: true })
@@ -156,11 +156,11 @@ export default class {
 
         ic.reply(message, text);
     }
-    @query([], blob, { manual: true })
+    @query([], IDL.Vec(IDL.Nat8), { manual: true })
     queryBlob() {
         ic.reply(
             new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
-            blob
+            IDL.Vec(IDL.Nat8)
         );
     }
     @query([], float32, { manual: true })

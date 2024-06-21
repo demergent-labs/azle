@@ -63,7 +63,7 @@ export const Minter = Canister({
         [
             Record({
                 owner: Opt(Principal),
-                subaccount: Opt(blob)
+                subaccount: Opt(IDL.Vec(IDL.Nat8))
             })
         ],
         text
@@ -73,7 +73,7 @@ export const Minter = Canister({
         [
             Record({
                 owner: Opt(Principal),
-                subaccount: Opt(blob)
+                subaccount: Opt(IDL.Vec(IDL.Nat8))
             })
         ],
         UpdateBalanceResult

@@ -2,11 +2,11 @@ import { managementCanister } from 'azle/canisters/management';
 import { blob, ic, None, Record, serialize, update } from 'azle';
 
 const PublicKey = Record({
-    publicKey: blob
+    publicKey: IDL.Vec(IDL.Nat8)
 });
 
 const Signature = Record({
-    signature: blob
+    signature: IDL.Vec(IDL.Nat8)
 });
 
 export default class {
@@ -17,7 +17,7 @@ export default class {
             publicKey: publicKeyResult.public_key
         };
     }
-    @update([blob], Signature)
+    @update([IDL.Vec(IDL.Nat8)], Signature)
     async sign(messageHash) {
         if (messageHash.length !== 32) {
             ic.trap('messageHash must be 32 bytes');

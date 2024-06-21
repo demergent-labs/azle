@@ -170,11 +170,11 @@ export default class {
     listOfVariant(param) {
         return param;
     }
-    @query([Vec(blob)], Vec(blob))
+    @query([Vec(IDL.Vec(IDL.Nat8))], Vec(IDL.Vec(IDL.Nat8)))
     listOfBlob(param) {
         return param;
     }
-    @query([Vec(Vec(blob))], Vec(Vec(blob)))
+    @query([Vec(Vec(IDL.Vec(IDL.Nat8)))], Vec(Vec(IDL.Vec(IDL.Nat8))))
     listOfListOfBlob(param) {
         return param;
     }

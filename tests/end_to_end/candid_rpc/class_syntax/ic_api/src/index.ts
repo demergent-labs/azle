@@ -19,7 +19,7 @@ import {
 
 // TODO: See https://github.com/demergent-labs/azle/issues/496
 // const ArgDataMultipleParamsResult = Record({
-//     blob: blob,
+//     blob: IDL.Vec(IDL.Nat8),
 //     int: int8,
 //     boolean: bool,
 //     string: text,
@@ -39,7 +39,7 @@ export default class {
     }
 
     // returns the argument data as an array.
-    @query([blob, int8, bool, text], ArgDataMultipleParamsResult)
+    @query([IDL.Vec(IDL.Nat8), int8, bool, text], ArgDataMultipleParamsResult)
     argDataMultipleParams(_arg1, _arg2, _arg3, _arg4) {
         const argData = ic.argData();
         return {
@@ -51,12 +51,12 @@ export default class {
     }
 
     // returns the argument data as bytes.
-    @query([blob, int8, bool, text], blob)
+    @query([IDL.Vec(IDL.Nat8), int8, bool, text], IDL.Vec(IDL.Nat8))
     argDataRaw(_arg1, _arg2, _arg3, _arg4) {
         return ic.argDataRaw();
     }
     // returns the length of the argument data in bytes
-    @query([blob, int8, bool, text], nat32)
+    @query([IDL.Vec(IDL.Nat8), int8, bool, text], nat32)
     argDataRawSize(_arg1, _arg2, _arg3, _arg4) {
         return ic.argDataRawSize();
     }
@@ -83,14 +83,14 @@ export default class {
     // When called from a query call, returns the data certificate
     // authenticating certified data set by this canister. Otherwise returns
     // None.
-    @query([], Opt(blob))
+    @query([], Opt(IDL.Vec(IDL.Nat8)))
     dataCertificate() {
         return ic.dataCertificate();
     }
     // When called from a query call, returns the data certificate
     // authenticating certified data set by this canister. Otherwise returns
     // None.
-    @update([], Opt(blob))
+    @update([], Opt(IDL.Vec(IDL.Nat8)))
     dataCertificateNull() {
         return ic.dataCertificate();
     }
@@ -126,7 +126,7 @@ export default class {
         ic.reject(message);
     }
     // sets up to 32 bytes of certified data
-    @update([blob], Void)
+    @update([IDL.Vec(IDL.Nat8)], Void)
     setCertifiedData(data) {
         ic.setCertifiedData(data);
     }
