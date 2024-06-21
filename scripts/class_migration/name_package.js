@@ -28,13 +28,26 @@ fs.readFile(packageJsonPath, 'utf8', (err, data) => {
         return;
     }
 
-    // Update the name field
-    packageJson.name = newName;
+    // Check if express is listed as a dependency
+    const hasExpressDependency =
+        packageJson.dependencies && packageJson.dependencies.express;
+    if (hasExpressDependency) {
+        console.log(
+            'Express is listed as a dependency. No changes will be made.'
+        );
+        return;
+    }
+
+    // Create a new object with the name field first
+    const updatedPackageJson = {
+        name: newName,
+        ...packageJson
+    };
 
     // Write the updated package.json back to the file
     fs.writeFile(
         packageJsonPath,
-        JSON.stringify(packageJson, null, 2),
+        JSON.stringify(updatedPackageJson, null, 2),
         'utf8',
         (writeErr) => {
             if (writeErr) {
