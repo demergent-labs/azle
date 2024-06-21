@@ -1,5 +1,5 @@
 {
-    "name": "pre_and_post_upgrade_test_functional_syntax",
+    "name": "pre_and_post_upgrade_end_to_end_test_functional_syntax",
     "scripts": {
         "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
         "test": "ts-node --transpile-only --ignore=false test/test.ts"
