@@ -29,7 +29,7 @@ export default class {
 
         return createCanisterResult;
     }
-    @update([Principal], bool)
+    @update([Principal], IDL.Bool)
     async executeUpdateSettings(canisterId) {
         await call(managementCanister.update_settings, {
             args: [
@@ -60,7 +60,7 @@ export default class {
             ]
         });
     }
-    @update([Principal], bool)
+    @update([Principal], IDL.Bool)
     async executeClearChunkStore(canisterId) {
         await call(managementCanister.clear_chunk_store, {
             args: [
@@ -82,7 +82,7 @@ export default class {
             ]
         });
     }
-    @update([Principal, IDL.Vec(IDL.Nat8)], bool)
+    @update([Principal, IDL.Vec(IDL.Nat8)], IDL.Bool)
     async executeInstallCode(canisterId, wasmModule) {
         await call(managementCanister.install_code, {
             args: [
@@ -101,7 +101,7 @@ export default class {
 
         return true;
     }
-    @update([Principal, IDL.Vec(ChunkHash), IDL.Vec(IDL.Nat8)], bool)
+    @update([Principal, IDL.Vec(ChunkHash), IDL.Vec(IDL.Nat8)], IDL.Bool)
     async executeInstallChunkedCode(canisterId, chunkHashes, wasmModuleHash) {
         await call(managementCanister.install_chunked_code, {
             args: [
@@ -122,7 +122,7 @@ export default class {
 
         return true;
     }
-    @update([Principal], bool)
+    @update([Principal], IDL.Bool)
     async executeUninstallCode(canisterId) {
         await call(managementCanister.uninstall_code, {
             args: [
@@ -135,7 +135,7 @@ export default class {
 
         return true;
     }
-    @update([Principal], bool)
+    @update([Principal], IDL.Bool)
     async executeStartCanister(canisterId) {
         await call(managementCanister.start_canister, {
             args: [
@@ -146,7 +146,7 @@ export default class {
         });
         return true;
     }
-    @update([Principal], bool)
+    @update([Principal], IDL.Bool)
     async executeStopCanister(canisterId) {
         await call(managementCanister.stop_canister, {
             args: [
@@ -170,7 +170,7 @@ export default class {
             args: [args]
         });
     }
-    @update([Principal], bool)
+    @update([Principal], IDL.Bool)
     async executeDeleteCanister(canisterId) {
         await call(managementCanister.delete_canister, {
             args: [
@@ -182,7 +182,7 @@ export default class {
 
         return true;
     }
-    @update([Principal], bool)
+    @update([Principal], IDL.Bool)
     async executeDepositCycles(canisterId) {
         await call(managementCanister.deposit_cycles, {
             args: [
@@ -217,7 +217,7 @@ export default class {
         );
     }
     // TODO we should test this like we test depositCycles
-    @update([Principal, nat], bool)
+    @update([Principal, nat], IDL.Bool)
     async provisionalTopUpCanister(canisterId, amount) {
         await call(managementCanister.provisional_top_up_canister, {
             args: [

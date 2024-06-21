@@ -8,7 +8,7 @@ export default class {
         { manual: true }
     ),
 
-@query([], bool)
+@query([], IDL.Bool)
     accept(){
         return true;
     }),

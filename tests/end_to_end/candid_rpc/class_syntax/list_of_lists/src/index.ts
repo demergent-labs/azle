@@ -60,7 +60,10 @@ export default class {
     listOfNull(param) {
         return param;
     }
-    @query([IDL.Vec(IDL.Vec(IDL.Vec(bool)))], IDL.Vec(IDL.Vec(IDL.Vec(bool))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(IDL.Bool)))],
+        IDL.Vec(IDL.Vec(IDL.Vec(IDL.Bool)))
+    )
     listOfBool(param) {
         return param;
     }

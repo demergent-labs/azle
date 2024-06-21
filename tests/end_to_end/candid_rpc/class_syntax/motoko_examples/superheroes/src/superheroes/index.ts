@@ -43,7 +43,7 @@ export default class {
         return superheroOrUndefined ? Some(superheroOrUndefined) : None;
     }
     // Update a superhero.
-    @update([SuperheroId, Superhero], bool)
+    @update([SuperheroId, Superhero], IDL.Bool)
     update(superheroId, superhero) {
         let result = superheroes.get(superheroId);
         if (result) {
@@ -53,7 +53,7 @@ export default class {
         return !!result;
     }
     // Delete a superhero.
-    @update([SuperheroId], bool)
+    @update([SuperheroId], IDL.Bool)
     deleteHero(superheroId) {
         let result = superheroes.get(superheroId);
         if (result) {

@@ -1,7 +1,7 @@
 import { IDL, query, update } from 'azle';
 
 export default class {
-    @query([], bool)
+    @query([], IDL.Bool)
     query1() {
         return true;
     }

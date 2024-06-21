@@ -136,11 +136,11 @@ export default class {
         console.log(typeof float32);
         return float32;
     }
-    @query([], bool)
+    @query([], IDL.Bool)
     getBool() {
         return true;
     }
-    @query([bool], bool)
+    @query([IDL.Bool], IDL.Bool)
     printBool(bool) {
         console.log(typeof bool);
         return bool;

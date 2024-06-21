@@ -5,7 +5,7 @@ import { caller, IDL, query, update } from 'azle';
 const ArgDataMultipleParamsResult = Record({
     blob: IDL.Vec(IDL.Nat8),
     int: int8,
-    boolean: bool,
+    boolean: IDL.Bool,
     string: IDL.Text,
 });
 
@@ -17,13 +17,13 @@ export default class {
     }
 
     // // returns the argument data as an array.
-    @query([bool], bool)
+    @query([IDL.Bool], IDL.Bool)
     argDataOneParam() {
         return ic.argData()[0];
     }
 
     // returns the argument data as an array.
-    @query([IDL.Vec(IDL.Nat8), int8, bool, IDL.Text], ArgDataMultipleParamsResult)
+    @query([IDL.Vec(IDL.Nat8), int8, IDL.Bool, IDL.Text], ArgDataMultipleParamsResult)
     argDataMultipleParams(_arg1, _arg2, _arg3, _arg4) {
         const argData = ic.argData();
         return {
@@ -35,12 +35,12 @@ export default class {
     }
 
     // returns the argument data as bytes.
-    @query([IDL.Vec(IDL.Nat8), int8, bool, IDL.Text], IDL.Vec(IDL.Nat8))
+    @query([IDL.Vec(IDL.Nat8), int8, IDL.Bool, IDL.Text], IDL.Vec(IDL.Nat8))
     argDataRaw(_arg1, _arg2, _arg3, _arg4) {
         return ic.argDataRaw();
     }
     // returns the length of the argument data in bytes
-    @query([IDL.Vec(IDL.Nat8), int8, bool, IDL.Text], nat32)
+    @query([IDL.Vec(IDL.Nat8), int8, IDL.Bool, IDL.Text], nat32)
     argDataRawSize(_arg1, _arg2, _arg3, _arg4) {
         return ic.argDataRawSize();
     }
@@ -90,7 +90,7 @@ export default class {
         return ic.instructionCounter();
     }
     // determines whether the given principal is a controller of the canister
-    @query([Principal], bool)
+    @query([Principal], IDL.Bool)
     isController(principal) {
         return ic.isController(principal);
     }
@@ -99,7 +99,7 @@ export default class {
         return ic.performanceCounter(0);
     }
     // prints a message through the local replica's output
-    @query([IDL.Text], bool)
+    @query([IDL.Text], IDL.Bool)
     print(message) {
         ic.print(message);
 
@@ -120,7 +120,7 @@ export default class {
         return ic.time();
     }
     // traps with a message, stopping execution and discarding all state within the call
-    @query([IDL.Text], bool)
+    @query([IDL.Text], IDL.Bool)
     trap(message) {
         ic.trap(message);
 

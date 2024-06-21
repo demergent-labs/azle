@@ -49,7 +49,7 @@ export default class {
     getOptNull() {
         return None;
     }
-    @query([Opt(IDL.Text)], bool)
+    @query([Opt(IDL.Text)], IDL.Bool)
     stringToBoolean(optString) {
         if ('None' in optString) {
             return false;

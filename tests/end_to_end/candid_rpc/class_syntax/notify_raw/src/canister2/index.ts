@@ -7,7 +7,7 @@ export default class {
     receiveNotification() {
         notified = true;
     }
-    @query([], bool)
+    @query([], IDL.Bool)
     getNotified() {
         return notified;
     }

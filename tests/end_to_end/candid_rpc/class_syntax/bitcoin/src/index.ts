@@ -66,7 +66,7 @@ export default class {
         });
     }
 
-    @update([IDL.Vec(IDL.Nat8)], bool)
+    @update([IDL.Vec(IDL.Nat8)], IDL.Bool)
     async sendTransaction(transaction: Uint8Array): Promise<boolean> {
         const transactionFee =
             BITCOIN_BASE_TRANSACTION_COST +

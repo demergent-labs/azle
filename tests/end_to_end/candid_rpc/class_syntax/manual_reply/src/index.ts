@@ -10,7 +10,7 @@ type Options = typeof Options.tsType;
 const RawReply = Record({
     int: int,
     text: IDL.Text,
-    bool: bool,
+    IDL.Bool: IDL.Bool,
     myBlob: IDL.Vec(IDL.Nat8),
     myVariant: Options
 });
@@ -123,7 +123,7 @@ export default class {
     replyRaw() {
         ic.replyRaw(
             ic.candidEncode(
-                '(record { "int" = 42; "text" = "text"; "bool" = true; "myBlob" = blob "Surprise!"; "myVariant" = variant { Medium } })'
+                '(record { "int" = 42; "text" = "text"; "IDL.Bool" = true; "myBlob" = blob "Surprise!"; "myVariant" = variant { Medium } })'
             )
         );
     }

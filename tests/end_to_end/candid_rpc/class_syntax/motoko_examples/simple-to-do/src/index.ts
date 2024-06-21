@@ -2,7 +2,7 @@ import { IDL, query, update } from 'azle';
 
 export const ToDo = Record({
     description: IDL.Text,
-    completed: bool
+    completed: IDL.Bool
 });
 export type ToDo = typeof ToDo.tsType;
 

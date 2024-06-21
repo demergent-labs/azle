@@ -7,7 +7,7 @@ export default class {
     postUpgrade() {
         redeployed = true;
     }
-    @query([], bool)
+    @query([], IDL.Bool)
     getRedeployed() {
         return redeployed;
     }

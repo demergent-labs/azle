@@ -1,7 +1,7 @@
 import { IDL, query, update } from 'azle';
 
 const MyCanister = Canister({
-    query1: query([], bool),
+    query1: query([], IDL.Bool),
     update1: update([], IDL.Text)
 });
 
@@ -27,7 +27,7 @@ const Candid = Record({
     int8: int8,
     float64: float64,
     float32: float32,
-    bool: bool,
+    bool: IDL.Bool,
     null: Null,
     vec: IDL.Vec(IDL.Text),
     opt: Opt(nat),
