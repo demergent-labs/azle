@@ -1,4 +1,7 @@
-import { HttpResponse, HttpTransformArgs } from 'azle/canisters/management';
+import {
+    HttpResponse,
+    HttpTransformArgs
+} from 'azle/experimental/canisters/management';
 import { ic, query, Server } from 'azle/experimental';
 import express from 'express';
 

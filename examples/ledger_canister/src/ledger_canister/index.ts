@@ -9,7 +9,7 @@ import {
     Tokens,
     TransferFee,
     TransferResult
-} from 'azle/canisters/ledger';
+} from 'azle/experimental/canisters/ledger';
 import {
     Canister,
     ic,

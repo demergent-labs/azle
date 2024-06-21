@@ -1,4 +1,4 @@
-import { managementCanister } from 'azle/canisters/management';
+import { managementCanister } from 'azle/experimental/canisters/management';
 import {
     blob,
     bool,

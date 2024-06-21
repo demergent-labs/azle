@@ -1,4 +1,4 @@
-import { managementCanister } from 'azle/canisters/management';
+import { managementCanister } from 'azle/experimental/canisters/management';
 import { blob, Canister, heartbeat, ic, query } from 'azle/experimental';
 
 let initialized: blob = Uint8Array.from([]);

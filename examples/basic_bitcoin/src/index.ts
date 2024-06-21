@@ -1,4 +1,4 @@
-import { BitcoinNetwork } from 'azle/canisters/management';
+import { BitcoinNetwork } from 'azle/experimental/canisters/management';
 import { jsonParse, jsonStringify } from 'azle/experimental';
 import express, { Request } from 'express';
 

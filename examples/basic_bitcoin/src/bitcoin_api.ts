@@ -2,7 +2,7 @@ import {
     BitcoinNetwork,
     GetUtxosResult,
     MillisatoshiPerByte
-} from 'azle/canisters/management/bitcoin';
+} from 'azle/experimental/canisters/management/bitcoin';
 import { serialize } from 'azle/experimental';
 
 // The fees for the various bitcoin endpoints.

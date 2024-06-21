@@ -2,7 +2,7 @@ import {
     GetUtxosResult,
     MillisatoshiPerByte,
     Satoshi
-} from 'azle/canisters/management';
+} from 'azle/experimental/canisters/management';
 import {
     blob,
     bool,

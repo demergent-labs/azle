@@ -10,7 +10,7 @@ import {
     managementCanister,
     ProvisionalCreateCanisterWithCyclesResult,
     StoredChunksResult
-} from 'azle/canisters/management';
+} from 'azle/experimental/canisters/management';
 import {
     blob,
     bool,

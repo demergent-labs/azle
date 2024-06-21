@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { HttpResponse } from 'azle/canisters/management';
+import { HttpResponse } from 'azle/experimental/canisters/management';
 import { Test } from 'azle/test';
 import decodeUtf8 from 'decode-utf8';
 

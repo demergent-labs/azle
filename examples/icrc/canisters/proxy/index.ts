@@ -11,7 +11,7 @@ import {
     TransferFromResult,
     TransferResult,
     Value
-} from 'azle/canisters/icrc';
+} from 'azle/experimental/canisters/icrc';
 import {
     Canister,
     ic,

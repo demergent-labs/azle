@@ -2,7 +2,7 @@ import {
     HttpResponse,
     HttpTransformArgs,
     managementCanister
-} from 'azle/canisters/management';
+} from 'azle/experimental/canisters/management';
 import {
     Canister,
     ic,
