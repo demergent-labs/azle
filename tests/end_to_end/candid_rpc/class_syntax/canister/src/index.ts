@@ -29,21 +29,7 @@ export default class {
     }
     @update([SomeCanister], IDL.Text)
     async canisterCrossCanisterCall(someCanister) {
-        if (process.env.AZLE_TEST_FETCH === 'true') {
-            const response = await fetch(
-                `icp://${getSomeCanisterPrincipal()}/update1`,
-                {
-                    body: serialize({
-                        candidPath: `/candid/some_canister.did`
-                    })
-                }
-            );
-            const responseJson = await response.json();
-
-            return responseJson;
-        } else {
-            return await call(someCanister.update1);
-        }
+        return await call(someCanister.update1);
     }
 }
 

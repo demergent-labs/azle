@@ -22,30 +22,14 @@ export default class {
     }
     @update([], RejectionCode)
     async getRejectionCodeNoError() {
-        if (process.env.AZLE_TEST_FETCH === 'true') {
-            await fetch(`icp://${getSomeCanisterPrincipal()}/accept`, {
-                body: serialize({
-                    candidPath: `/candid/some_canister.did`
-                })
-            });
-        } else {
-            await call(someCanister.accept);
-        }
+        await call(someCanister.accept);
 
         return ic.rejectCode();
     }
     @update([], RejectionCode)
     async getRejectionCodeDestinationInvalid() {
         try {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                await fetch(`icp://rkp4c-7iaaa-aaaaa-aaaca-cai/method`, {
-                    body: serialize({
-                        candidPath: `/candid/nonexistent.did`
-                    })
-                });
-            } else {
-                await call(nonexistentCanister.method);
-            }
+            await call(nonexistentCanister.method);
         } catch (error) {
             // continue regardless of error
         }
@@ -55,16 +39,7 @@ export default class {
     @update([], RejectionCode)
     async getRejectionCodeCanisterReject() {
         try {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                await fetch(`icp://${getSomeCanisterPrincipal()}/reject`, {
-                    body: serialize({
-                        candidPath: `/candid/some_canister.did`,
-                        args: ['reject']
-                    })
-                });
-            } else {
-                await call(someCanister.reject, { args: ['reject'] });
-            }
+            await call(someCanister.reject, { args: ['reject'] });
         } catch (error) {
             // continue regardless of error
         }
@@ -74,15 +49,7 @@ export default class {
     @update([], RejectionCode)
     async getRejectionCodeCanisterError() {
         try {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                await fetch(`icp://${getSomeCanisterPrincipal()}/error`, {
-                    body: serialize({
-                        candidPath: `/candid/some_canister.did`
-                    })
-                });
-            } else {
-                await call(someCanister.error);
-            }
+            await call(someCanister.error);
         } catch (error) {
             // continue regardless of error
         }
@@ -92,16 +59,7 @@ export default class {
     @update([IDL.Text], IDL.Text)
     async getRejectionMessage(message: string) {
         try {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                await fetch(`icp://${getSomeCanisterPrincipal()}/reject`, {
-                    body: serialize({
-                        candidPath: `/candid/some_canister.did`,
-                        args: [message]
-                    })
-                });
-            } else {
-                await call(someCanister.reject, { args: [message] });
-            }
+            await call(someCanister.reject, { args: [message] });
         } catch (error) {
             // continue regardless of error
         }

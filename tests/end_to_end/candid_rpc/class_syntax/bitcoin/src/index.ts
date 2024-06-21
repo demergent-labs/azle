@@ -1,6 +1,7 @@
-import { IDL, update } from 'azle';
+import { call, IDL, update } from 'azle';
 import {
     GetUtxosResult,
+    managementCanister,
     MillisatoshiPerByte,
     Satoshi
 } from 'azle/canisters/management';
@@ -12,21 +13,22 @@ const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 export default class {
     @update([IDL.Text], Satoshi)
     async getBalance(address) {
-        const response = await fetch(`icp://aaaaa-aa/bitcoin_get_balance`, {
-            body: serialize({
-                args: [
-                    {
-                        address,
-                        min_confirmations: [],
-                        network: { regtest: null }
-                    }
-                ],
-                cycles: BITCOIN_API_CYCLE_COST
-            })
-        });
-        const responseJson = await response.json();
+        return await call('aaaaa-aa', 'bitcoin_get_balance');
+        // const response = await fetch(`icp://aaaaa-aa/bitcoin_get_balance`, {
+        //     body: serialize({
+        //         args: [
+        //             {
+        //                 address,
+        //                 min_confirmations: [],
+        //                 network: { regtest: null }
+        //             }
+        //         ],
+        //         cycles: BITCOIN_API_CYCLE_COST
+        //     })
+        // });
+        // const responseJson = await response.json();
 
-        return responseJson;
+        // return responseJson;
     }
     @update([], Vec(MillisatoshiPerByte))
     async getCurrentFeePercentiles() {

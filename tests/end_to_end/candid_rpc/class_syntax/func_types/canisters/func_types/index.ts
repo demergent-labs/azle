@@ -94,21 +94,7 @@ export default class {
             Principal.fromText(getNotifierPrincipal())
         );
 
-        if (process.env.AZLE_TEST_FETCH === 'true') {
-            const response = await fetch(
-                `icp://${getNotifierPrincipal()}/getNotifier`,
-                {
-                    body: serialize({
-                        candidPath: `/candid/notifiers.did`
-                    })
-                }
-            );
-            const responseJson = await response.json();
-
-            return responseJson;
-        } else {
-            return await call(notifiersCanister.getNotifier);
-        }
+        return await call(notifiersCanister.getNotifier);
     }
 }
 

@@ -12,24 +12,9 @@ export default class {
     // Reports the number of cycles returned from the Cycles canister
     @update([], nat64)
     async sendCycles() {
-        if (process.env.AZLE_TEST_FETCH === 'true') {
-            const response = await fetch(
-                `icp://${getCyclesPrincipal()}/receiveCycles`,
-                {
-                    body: serialize({
-                        candidPath: '/candid/cycles.did',
-                        cycles: 1_000_000n
-                    })
-                }
-            );
-            const responseJson = await response.json();
-
-            return responseJson;
-        } else {
-            return await call(cyclesCanister.receiveCycles, {
-                cycles: 1_000_000n
-            });
-        }
+        return await call(cyclesCanister.receiveCycles, {
+            cycles: 1_000_000n
+        });
     }
     @update([])
     sendCyclesNotify() {
@@ -40,18 +25,9 @@ export default class {
     // Reports the number of cycles returned from the Cycles canister
     @update([], nat)
     async sendCycles128() {
-        if (process.env.AZLE_TEST_FETCH === 'true') {
-            await fetch(`icp://${getCyclesPrincipal()}/receiveCycles128`, {
-                body: serialize({
-                    candidPath: '/candid/cycles.did',
-                    cycles128: 1_000_000n
-                })
-            });
-        } else {
-            await call(cyclesCanister.receiveCycles128, {
-                cycles128: 1_000_000n
-            });
-        }
+        await call(cyclesCanister.receiveCycles128, {
+            cycles128: 1_000_000n
+        });
 
         return ic.msgCyclesRefunded128();
     }

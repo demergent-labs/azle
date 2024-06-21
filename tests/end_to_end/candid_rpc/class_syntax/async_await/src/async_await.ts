@@ -4,14 +4,7 @@ import { managementCanister } from 'azle/canisters/management';
 export default class {
     @update([], IDL.Vec(IDL.Nat8))
     async getRandomnessDirectly() {
-        if (process.env.AZLE_TEST_FETCH === 'true') {
-            const response = await fetch(`icp://aaaaa-aa/raw_rand`);
-            const responseJson = await response.json();
-
-            return responseJson;
-        } else {
-            return await call(managementCanister.raw_rand);
-        }
+        return await call(managementCanister.raw_rand);
     }
     @update([], IDL.Vec(IDL.Nat8))
     async getRandomnessIndirectly() {
@@ -31,11 +24,7 @@ export default class {
     }
     @update([])
     async returnPromiseVoid() {
-        if (process.env.AZLE_TEST_FETCH === 'true') {
-            await fetch(`icp://aaaaa-aa/raw_rand`);
-        } else {
-            await call(managementCanister.raw_rand);
-        }
+        await call(managementCanister.raw_rand);
     }
 }
 
@@ -52,12 +41,5 @@ async function getRandomnessLevel2(): Promise<Uint8Array> {
 }
 
 async function getRandomness(): Promise<Uint8Array> {
-    if (process.env.AZLE_TEST_FETCH === 'true') {
-        const response = await fetch(`icp://aaaaa-aa/raw_rand`);
-        const responseJson = await response.json();
-
-        return responseJson;
-    } else {
-        return await call(managementCanister.raw_rand);
-    }
+    return await call(managementCanister.raw_rand);
 }
