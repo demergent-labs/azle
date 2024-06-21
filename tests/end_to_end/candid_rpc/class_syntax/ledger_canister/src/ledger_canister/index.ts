@@ -1,17 +1,4 @@
-import {
-    ic,
-    init,
-    nat32,
-    nat64,
-    None,
-    Opt,
-    Principal,
-    query,
-    serialize,
-    Some,
-    text,
-    update
-} from 'azle';
+import { call, IDL, query, update } from 'azle';
 import {
     Address,
     Archives,
@@ -68,7 +55,7 @@ export default class {
 
             return await response.json();
         } else {
-            return await ic.call(icpCanister.transfer, {
+            return await call(icpCanister.transfer, {
                 args: [
                     {
                         memo: 0n,
@@ -110,7 +97,7 @@ export default class {
 
             return await response.json();
         } else {
-            return await ic.call(icpCanister.account_balance, {
+            return await call(icpCanister.account_balance, {
                 args: [
                     {
                         account: binaryAddressFromAddress(address)
@@ -134,7 +121,7 @@ export default class {
 
             return await response.json();
         } else {
-            return await ic.call(icpCanister.transfer_fee, { args: [{}] });
+            return await call(icpCanister.transfer_fee, { args: [{}] });
         }
     }
     @update([GetBlocksArgs], QueryBlocksResponse)
@@ -179,7 +166,7 @@ export default class {
                 first_block_index
             };
         } else {
-            return await ic.call(icpCanister.query_blocks, {
+            return await call(icpCanister.query_blocks, {
                 args: [getBlocksArgs]
             });
         }
@@ -198,7 +185,7 @@ export default class {
 
             return (await response.json()).symbol;
         } else {
-            const symbolResult = await ic.call(icpCanister.symbol);
+            const symbolResult = await call(icpCanister.symbol);
 
             return symbolResult.symbol;
         }
@@ -217,7 +204,7 @@ export default class {
 
             return (await response.json()).name;
         } else {
-            const nameResult = await ic.call(icpCanister.name);
+            const nameResult = await call(icpCanister.name);
 
             return nameResult.name;
         }
@@ -236,7 +223,7 @@ export default class {
 
             return (await response.json()).decimals;
         } else {
-            const decimalsResult = await ic.call(icpCanister.decimals);
+            const decimalsResult = await call(icpCanister.decimals);
 
             return decimalsResult.decimals;
         }
@@ -255,7 +242,7 @@ export default class {
 
             return await response.json();
         } else {
-            return await ic.call(icpCanister.archives);
+            return await call(icpCanister.archives);
         }
     }
     @query([Principal], text)

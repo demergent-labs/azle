@@ -1,16 +1,4 @@
-import {
-    bool,
-    nat32,
-    None,
-    Opt,
-    query,
-    Record,
-    Recursive,
-    Some,
-    text,
-    Tuple,
-    update
-} from 'azle';
+import { IDL, query, update } from 'azle';
 
 // Note: This won't be reflected in the candid
 export type SuperheroId = nat32;

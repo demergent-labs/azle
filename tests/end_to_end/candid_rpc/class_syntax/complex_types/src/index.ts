@@ -1,4 +1,4 @@
-import { Canister } from 'azle';
+import { IDL, query, update } from 'azle';
 
 import { createPost, getAllPosts } from './posts';
 import { createReaction, getAllReactions } from './reactions';

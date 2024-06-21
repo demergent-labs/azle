@@ -1,13 +1,4 @@
-import {
-
-    ic,
-    init,
-    postUpgrade,
-    Principal,
-    query,
-    serialize,
-    update
-} from 'azle';
+import { call, caller, IDL, query, update } from 'azle';
 
 // We use the zero principal but any principal could be used.
 let install: Principal = Principal.fromText('aaaaa-aa');
@@ -17,13 +8,13 @@ const WhoAmI = Canister({
     // Manually save the calling principal and argument for later access.
 @init([Principal])
     init(somebody){
-        install = ic.caller();
+        install = caller();
         someone = somebody;
     }
     // Manually re-save these variables after new deploys.
 @postUpgrade([Principal])
     postUpgrade(somebody){
-        install = ic.caller();
+        install = caller();
         someone = somebody;
     }
     // Return the principal identifier of the wallet canister that installed this
@@ -41,7 +32,7 @@ const WhoAmI = Canister({
     // Return the principal identifier of the caller of this method.
 @update([], Principal)
     whoami(){
-        return ic.caller();
+        return caller();
     }
     // Return the principal identifier of this canister.
 @update([], Principal)
@@ -60,7 +51,7 @@ async id(){
 
             return await response.json();
         } else {
-            return await ic.call(self.whoami);
+            return await call(self.whoami);
         }
     }
     // Return the principal identifier of this canister via the global `ic` object.

@@ -1,4 +1,4 @@
-import { IDL, Principal } from 'azle';
+import { IDL, query, update } from 'azle';
 
 export const Reaction = IDL.Variant({
     Happy: IDL.Null,

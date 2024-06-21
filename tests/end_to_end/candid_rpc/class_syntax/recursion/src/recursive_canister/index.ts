@@ -1,4 +1,4 @@
-import { init, query, Recursive, text } from 'azle';
+import { IDL, query, update } from 'azle';
 
 let myMessage = '';
 

@@ -1,4 +1,4 @@
-import { ic, int, Null, query, Record, update, Void } from 'azle';
+import { IDL, query, update } from 'azle';
 
 const PartiallyNullRecord = Record({
     firstItem: int,

@@ -1,4 +1,4 @@
-import { bool, float64, postUpgrade, query, update } from 'azle';
+import { IDL, postUpgrade, query, update } from 'azle';
 
 let redeployed = false;
 

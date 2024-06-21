@@ -1,23 +1,4 @@
-import {
-    IDL.Vec(IDL.Nat8),
-    bool,
-    float32,
-    ic,
-    int,
-    int8,
-    Manual,
-    nat,
-    nat8,
-    Null,
-    query,
-    Record,
-    reserved,
-    text,
-    update,
-    Variant,
-    Vec,
-    Void
-} from 'azle';
+import { IDL, query, update } from 'azle';
 
 const Options = Variant({
     Small: Null,

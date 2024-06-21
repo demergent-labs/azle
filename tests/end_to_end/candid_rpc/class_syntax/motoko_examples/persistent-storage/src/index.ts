@@ -1,14 +1,4 @@
-import {
-    bool,
-    ic,
-    init,
-    nat,
-    postUpgrade,
-    query,
-    StableBTreeMap,
-    text,
-    update
-} from 'azle';
+import { IDL, query, update } from 'azle';
 
 let stableStorage = StableBTreeMap<text, nat>(0);
 let redeployed = false;

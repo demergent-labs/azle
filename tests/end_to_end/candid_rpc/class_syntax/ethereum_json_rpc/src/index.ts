@@ -1,19 +1,9 @@
+import { call, IDL, query, update } from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
     managementCanister
 } from 'azle/canisters/management';
-import {
-    ic,
-    init,
-    nat32,
-    Principal,
-    query,
-    Some,
-    StableBTreeMap,
-    text,
-    update
-} from 'azle';
 
 let stableStorage = StableBTreeMap<text, text>(0);
 
@@ -76,7 +66,7 @@ async function getBalance(url: string, ethereumAddress: string) {
 
         return responseText;
     } else {
-        const httpResponse = await ic.call(managementCanister.http_request, {
+        const httpResponse = await call(managementCanister.http_request, {
             args: [
                 {
                     url,
@@ -132,7 +122,7 @@ async function getBlockByNumber(url: string, number: number) {
 
         return responseText;
     } else {
-        const httpResponse = await ic.call(managementCanister.http_request, {
+        const httpResponse = await call(managementCanister.http_request, {
             args: [
                 {
                     url,

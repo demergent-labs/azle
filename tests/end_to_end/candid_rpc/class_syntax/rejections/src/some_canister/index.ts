@@ -1,12 +1,4 @@
-import {
-    bool,
-
-    empty,
-    ic,
-    Manual,
-    query,
-    text
-} from 'azle';
+import { IDL, query, update } from 'azle';
 
 export default class {
     @query([text], empty, { manual: true})

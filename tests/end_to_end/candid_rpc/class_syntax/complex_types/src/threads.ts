@@ -1,4 +1,4 @@
-import { nat32, query, text, update, Vec } from 'azle';
+import { IDL, query, update } from 'azle';
 
 import { Thread } from './candid_types';
 import { getPostFromStatePost } from './posts';

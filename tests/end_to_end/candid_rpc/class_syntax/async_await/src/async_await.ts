@@ -1,4 +1,4 @@
-import { blob, ic, update, Void } from 'azle';
+import { call, IDL, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 export default class {
@@ -10,7 +10,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(managementCanister.raw_rand);
+            return await call(managementCanister.raw_rand);
         }
     }
     @update([], IDL.Vec(IDL.Nat8))
@@ -34,7 +34,7 @@ export default class {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/raw_rand`);
         } else {
-            await ic.call(managementCanister.raw_rand);
+            await call(managementCanister.raw_rand);
         }
     }
 }
@@ -58,6 +58,6 @@ async function getRandomness(): Promise<Uint8Array> {
 
         return responseJson;
     } else {
-        return await ic.call(managementCanister.raw_rand);
+        return await call(managementCanister.raw_rand);
     }
 }

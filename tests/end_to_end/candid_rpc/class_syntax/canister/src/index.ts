@@ -1,14 +1,4 @@
-import {
-
-    ic,
-    Principal,
-    query,
-    Record,
-    serialize,
-    text,
-    update,
-    Vec
-} from 'azle';
+import { call, IDL, query, update } from 'azle';
 
 import SomeCanister from './some_canister';
 
@@ -17,46 +7,44 @@ const Wrapper = Record({
 });
 
 export default class {
-@query([SomeCanister], SomeCanister)
-    canisterParam(someCanister){
+    @query([SomeCanister], SomeCanister)
+    canisterParam(someCanister) {
         return someCanister;
-    }),
-@query([], SomeCanister)
-    canisterReturnType(){
+    }
+    @query([], SomeCanister)
+    canisterReturnType() {
         return SomeCanister(Principal.fromText(getSomeCanisterPrincipal()));
-    }),
-@update([], Wrapper)
-    canisterNestedReturnType(){
+    }
+    @update([], Wrapper)
+    canisterNestedReturnType() {
         return {
             someCanister: SomeCanister(
                 Principal.fromText(getSomeCanisterPrincipal())
             )
         };
-    }),
+    }
     @update([Vec(SomeCanister)], Vec(SomeCanister))
-    canisterList(someCanisters){
-            return someCanisters;
-        }
-    ),
+    canisterList(someCanisters) {
+        return someCanisters;
+    }
     @update([SomeCanister], text)
     async canisterCrossCanisterCall(someCanister) {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                const response = await fetch(
-                    `icp://${getSomeCanisterPrincipal()}/update1`,
-                    {
-                        body: serialize({
-                            candidPath: `/candid/some_canister.did`
-                        })
-                    }
-                );
-                const responseJson = await response.json();
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(
+                `icp://${getSomeCanisterPrincipal()}/update1`,
+                {
+                    body: serialize({
+                        candidPath: `/candid/some_canister.did`
+                    })
+                }
+            );
+            const responseJson = await response.json();
 
-                return responseJson;
-            } else {
-                return await ic.call(someCanister.update1);
-            }
+            return responseJson;
+        } else {
+            return await call(someCanister.update1);
         }
-    )
+    }
 }
 
 function getSomeCanisterPrincipal(): string {

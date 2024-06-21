@@ -1,4 +1,4 @@
-import { blob, Null, Principal, query, Record, text, Variant } from 'azle';
+import { IDL, query, update } from 'azle';
 
 const User = Record({
     id: Principal,

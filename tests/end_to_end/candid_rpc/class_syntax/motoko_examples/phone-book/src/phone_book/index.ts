@@ -1,4 +1,4 @@
-import { None, Opt, query, Record, Some, text, update, Void } from 'azle';
+import { IDL, query, update } from 'azle';
 
 export const Entry = Record({
     desc: text,

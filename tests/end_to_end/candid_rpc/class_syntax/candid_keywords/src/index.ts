@@ -1,32 +1,4 @@
-import {
-    blob,
-    bool,
-    float32,
-    float64,
-    Func,
-    int,
-    int8,
-    int16,
-    int32,
-    int64,
-    nat,
-    nat8,
-    nat16,
-    nat32,
-    nat64,
-    None,
-    Null,
-    Opt,
-    Principal,
-    query,
-    Record,
-    Recursive,
-    text,
-    update,
-    Variant,
-    Vec,
-    Void
-} from 'azle';
+import { IDL, query, update } from 'azle';
 
 const MyCanister = Canister({
     query1: query([], bool),

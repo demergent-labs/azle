@@ -1,4 +1,4 @@
-import { None, Opt, query, Some, text, update, Void } from 'azle';
+import { IDL, query, update } from 'azle';
 
 let store: Map<string, string> = new Map();
 

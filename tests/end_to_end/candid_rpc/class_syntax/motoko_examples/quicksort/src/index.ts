@@ -1,4 +1,4 @@
-import { int, query, Vec } from 'azle';
+import { IDL, query, update } from 'azle';
 
 import { Int } from './comparison';
 import * as Quicksort from './quicksort';

@@ -1,22 +1,4 @@
-import {
-    Func,
-    ic,
-    init,
-    nat64,
-    Null,
-    Opt,
-    Principal,
-    query,
-    Record,
-    Recursive,
-    serialize,
-    StableBTreeMap,
-    text,
-    update,
-    Variant,
-    Vec,
-    Void
-} from 'azle';
+import { call, IDL, query, update } from 'azle';
 
 import Notifier, { NotifierFunc } from '../notifiers';
 
@@ -125,7 +107,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(notifiersCanister.getNotifier);
+            return await call(notifiersCanister.getNotifier);
         }
     }
 }

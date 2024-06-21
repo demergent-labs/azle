@@ -1,5 +1,5 @@
+import { call, caller, IDL, query, update } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
-import { blob, ic, None, Record, serialize, update } from 'azle';
 
 const PublicKey = Record({
     publicKey: IDL.Vec(IDL.Nat8)
@@ -32,7 +32,7 @@ export default class {
 }
 
 async function getPublicKeyResult() {
-    const caller = ic.caller().toUint8Array();
+    const caller = caller().toUint8Array();
 
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const publicKeyResponse = await fetch(
@@ -55,7 +55,7 @@ async function getPublicKeyResult() {
 
         return await publicKeyResponse.json();
     } else {
-        return await ic.call(managementCanister.ecdsa_public_key, {
+        return await call(managementCanister.ecdsa_public_key, {
             args: [
                 {
                     canister_id: None,
@@ -71,7 +71,7 @@ async function getPublicKeyResult() {
 }
 
 async function getSignatureResult(messageHash: Uint8Array) {
-    const caller = ic.caller().toUint8Array();
+    const caller = caller().toUint8Array();
 
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const publicKeyResponse = await fetch(
@@ -95,7 +95,7 @@ async function getSignatureResult(messageHash: Uint8Array) {
 
         return await publicKeyResponse.json();
     } else {
-        return await ic.call(managementCanister.sign_with_ecdsa, {
+        return await call(managementCanister.sign_with_ecdsa, {
             args: [
                 {
                     message_hash: messageHash,

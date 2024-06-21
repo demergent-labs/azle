@@ -1,23 +1,9 @@
 // TODO maybe this should be Ledger? We should look into making the Ledger
 // better using the latest Wasm and did that I know of
 
+import { IDL, query, update } from 'azle';
 import { ICRC } from 'azle/canisters/icrc';
 import { TransferError } from 'azle/canisters/icrc/icrc_1';
-import {
-    blob,
-    ic,
-    init,
-    nat,
-    nat64,
-    None,
-    postUpgrade,
-    Principal,
-    Result,
-    serialize,
-    Some,
-    text,
-    update
-} from 'azle';
 
 import { Minter, UpdateBalanceResult } from './minter';
 
@@ -47,7 +33,7 @@ export default class {
                                 owner: ic.id(),
                                 subaccount: [
                                     padPrincipalWithZeros(
-                                        ic.caller().toUint8Array()
+                                        caller().toUint8Array()
                                     )
                                 ]
                             }
@@ -59,12 +45,12 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(ckBTC.icrc1_balance_of, {
+            return await call(ckBTC.icrc1_balance_of, {
                 args: [
                     {
                         owner: ic.id(),
                         subaccount: Some(
-                            padPrincipalWithZeros(ic.caller().toUint8Array())
+                            padPrincipalWithZeros(caller().toUint8Array())
                         )
                     }
                 ]
@@ -84,7 +70,7 @@ export default class {
                                 owner: [ic.id()],
                                 subaccount: [
                                     padPrincipalWithZeros(
-                                        ic.caller().toUint8Array()
+                                        caller().toUint8Array()
                                     )
                                 ]
                             }
@@ -96,12 +82,12 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(minter.update_balance, {
+            return await call(minter.update_balance, {
                 args: [
                     {
                         owner: Some(ic.id()),
                         subaccount: Some(
-                            padPrincipalWithZeros(ic.caller().toUint8Array())
+                            padPrincipalWithZeros(caller().toUint8Array())
                         )
                     }
                 ]
@@ -121,7 +107,7 @@ export default class {
                                 owner: [ic.id()],
                                 subaccount: [
                                     padPrincipalWithZeros(
-                                        ic.caller().toUint8Array()
+                                        caller().toUint8Array()
                                     )
                                 ]
                             }
@@ -133,12 +119,12 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(minter.get_btc_address, {
+            return await call(minter.get_btc_address, {
                 args: [
                     {
                         owner: Some(ic.id()),
                         subaccount: Some(
-                            padPrincipalWithZeros(ic.caller().toUint8Array())
+                            padPrincipalWithZeros(caller().toUint8Array())
                         )
                     }
                 ]
@@ -157,7 +143,7 @@ export default class {
                             {
                                 from_subaccount: [
                                     padPrincipalWithZeros(
-                                        ic.caller().toUint8Array()
+                                        caller().toUint8Array()
                                     )
                                 ],
                                 to: {
@@ -183,11 +169,11 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(ckBTC.icrc1_transfer, {
+            return await call(ckBTC.icrc1_transfer, {
                 args: [
                     {
                         from_subaccount: Some(
-                            padPrincipalWithZeros(ic.caller().toUint8Array())
+                            padPrincipalWithZeros(caller().toUint8Array())
                         ),
                         to: {
                             owner: ic.id(),

@@ -1,30 +1,4 @@
-import {
-    blob,
-    bool,
-    empty,
-    float32,
-    float64,
-    Func,
-    int,
-    int8,
-    int16,
-    int32,
-    int64,
-    nat,
-    nat8,
-    nat16,
-    nat32,
-    nat64,
-    Null,
-    Opt,
-    Principal,
-    query,
-    Record,
-    reserved,
-    text,
-    Variant,
-    Vec
-} from 'azle';
+import { IDL, query } from 'azle';
 
 const Person = Record({
     name: text,

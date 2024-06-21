@@ -1,4 +1,4 @@
-import { blob, query, Vec } from 'azle';
+import { IDL, query, update } from 'azle';
 
 export default class {
     @query([], IDL.Vec(IDL.Nat8))

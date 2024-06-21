@@ -1,14 +1,4 @@
-import {
-    ic,
-    init,
-    nat,
-    nat64,
-    Principal,
-    query,
-    serialize,
-    update,
-    Void
-} from 'azle';
+import { IDL, query, update } from 'azle';
 
 import Cycles from '../cycles';
 
@@ -36,7 +26,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(cyclesCanister.receiveCycles, {
+            return await call(cyclesCanister.receiveCycles, {
                 cycles: 1_000_000n
             });
         }
@@ -58,7 +48,7 @@ export default class {
                 })
             });
         } else {
-            await ic.call(cyclesCanister.receiveCycles128, {
+            await call(cyclesCanister.receiveCycles128, {
                 cycles128: 1_000_000n
             });
         }

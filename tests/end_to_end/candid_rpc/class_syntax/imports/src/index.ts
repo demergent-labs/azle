@@ -1,4 +1,4 @@
-import { int, query, text } from 'azle';
+import { IDL, query, update } from 'azle';
 import { sha224 } from 'js-sha256';
 
 import { one, three, two } from './library';

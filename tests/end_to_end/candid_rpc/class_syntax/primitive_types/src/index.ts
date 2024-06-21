@@ -1,24 +1,4 @@
-import {
-    bool,
-    empty,
-    float32,
-    float64,
-    int,
-    int8,
-    int16,
-    int32,
-    int64,
-    nat,
-    nat8,
-    nat16,
-    nat32,
-    nat64,
-    Null,
-    Principal,
-    query,
-    reserved,
-    text
-} from 'azle';
+import { IDL, query } from 'azle';
 
 export default class {
     @query([], text)

@@ -1,21 +1,4 @@
-import {
-
-    Func,
-    ic,
-    int8,
-    None,
-    Opt,
-    Principal,
-    query,
-    Record,
-    Recursive,
-    serialize,
-    Some,
-    Tuple,
-    update,
-    Variant,
-    Vec
-} from 'azle';
+import { IDL, query, update } from 'azle';
 
 import MyFullCanister from '../recursive_canister';
 

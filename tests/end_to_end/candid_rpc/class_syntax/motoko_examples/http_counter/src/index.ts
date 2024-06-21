@@ -1,20 +1,4 @@
-import {
-    blob,
-    HeaderField,
-    HttpRequest,
-    HttpResponse,
-    ic,
-    init,
-    nat,
-    None,
-    query,
-    Record,
-    Some,
-    StableBTreeMap,
-    StreamingCallbackHttpResponse,
-    text,
-    update
-} from 'azle';
+import { IDL, query, update } from 'azle';
 
 const Token = Record({
     // add whatever fields you'd like

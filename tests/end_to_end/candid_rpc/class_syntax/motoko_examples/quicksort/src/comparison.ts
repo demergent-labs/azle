@@ -1,4 +1,4 @@
-import { int } from 'azle';
+import { IDL, query, update } from 'azle';
 
 export const Int = {
     abs: Math.abs,

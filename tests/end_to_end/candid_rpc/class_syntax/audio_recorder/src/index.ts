@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { ic, IDL, Principal, query, StableBTreeMap, update } from 'azle';
+import { IDL, query, update } from 'azle';
 
 const User = IDL.Record({
     id: IDL.Principal,

@@ -1,21 +1,4 @@
-import {
-    blob,
-    bool,
-
-    empty,
-    ic,
-    int8,
-    Manual,
-    nat,
-    nat32,
-    nat64,
-    Opt,
-    Principal,
-    query,
-    text,
-    update,
-    Void
-} from 'azle';
+import { caller, IDL, query, update } from 'azle';
 
 // TODO: See https://github.com/demergent-labs/azle/issues/496
 // const ArgDataMultipleParamsResult = Record({
@@ -63,7 +46,7 @@ export default class {
     // returns the principal of the identity that called this function
     @query([], Principal)
     caller() {
-        return ic.caller();
+        return caller();
     }
     // returns the amount of cycles available in the canister
     @query([], nat64)

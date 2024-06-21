@@ -1,13 +1,4 @@
-import {
-    ic,
-    init,
-    Principal,
-    RejectionCode,
-    serialize,
-    text,
-    update,
-    Void
-} from 'azle';
+import { call, IDL, query, update } from 'azle';
 
 import SomeCanister from '../some_canister';
 
@@ -38,7 +29,7 @@ export default class {
                 })
             });
         } else {
-            await ic.call(someCanister.accept);
+            await call(someCanister.accept);
         }
 
         return ic.rejectCode();
@@ -53,7 +44,7 @@ export default class {
                     })
                 });
             } else {
-                await ic.call(nonexistentCanister.method);
+                await call(nonexistentCanister.method);
             }
         } catch (error) {
             // continue regardless of error
@@ -72,7 +63,7 @@ export default class {
                     })
                 });
             } else {
-                await ic.call(someCanister.reject, { args: ['reject'] });
+                await call(someCanister.reject, { args: ['reject'] });
             }
         } catch (error) {
             // continue regardless of error
@@ -90,7 +81,7 @@ export default class {
                     })
                 });
             } else {
-                await ic.call(someCanister.error);
+                await call(someCanister.error);
             }
         } catch (error) {
             // continue regardless of error
@@ -109,7 +100,7 @@ export default class {
                     })
                 });
             } else {
-                await ic.call(someCanister.reject, { args: [message] });
+                await call(someCanister.reject, { args: [message] });
             }
         } catch (error) {
             // continue regardless of error

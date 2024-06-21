@@ -1,4 +1,4 @@
-import { bool, query, text, update } from 'azle';
+import { IDL, query, update } from 'azle';
 
 export default class {
     @query([], bool)

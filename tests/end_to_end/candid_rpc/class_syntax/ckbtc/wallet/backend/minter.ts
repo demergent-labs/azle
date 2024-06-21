@@ -1,18 +1,4 @@
-import {
-    blob,
-    nat8,
-    nat32,
-    nat64,
-    Null,
-    Opt,
-    Principal,
-    Record,
-    Result,
-    text,
-    update,
-    Variant,
-    Vec
-} from 'azle';
+import { IDL, query, update } from 'azle';
 
 const Utxo = Record({
     outpoint: Record({ txid: Vec(nat8), vout: nat32 }),

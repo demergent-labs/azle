@@ -1,19 +1,4 @@
-import {
-    ic,
-    init,
-    nat,
-    nat8,
-    None,
-    Opt,
-    Principal,
-    query,
-    serialize,
-    Some,
-    text,
-    Tuple,
-    update,
-    Vec
-} from 'azle';
+import { call, IDL, query, update } from 'azle';
 import {
     Account,
     AllowanceArgs,
@@ -51,7 +36,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(icrc.icrc1_metadata);
+            return await call(icrc.icrc1_metadata);
         }
     }
     @query([], text)
@@ -69,7 +54,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(icrc.icrc1_name);
+            return await call(icrc.icrc1_name);
         }
     }
     @query([], nat8)
@@ -87,7 +72,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(icrc.icrc1_decimals);
+            return await call(icrc.icrc1_decimals);
         }
     }
     @query([], text)
@@ -105,7 +90,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(icrc.icrc1_symbol);
+            return await call(icrc.icrc1_symbol);
         }
     }
     @query([], nat)
@@ -123,7 +108,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(icrc.icrc1_fee);
+            return await call(icrc.icrc1_fee);
         }
     }
     @query([], nat)
@@ -141,7 +126,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(icrc.icrc1_total_supply);
+            return await call(icrc.icrc1_total_supply);
         }
     }
     @query([], Opt(Account))
@@ -163,7 +148,7 @@ export default class {
                 return None;
             }
         } else {
-            return await ic.call(icrc.icrc1_minting_account);
+            return await call(icrc.icrc1_minting_account);
         }
     }
     @query([Account], nat)
@@ -189,7 +174,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(icrc.icrc1_balance_of, {
+            return await call(icrc.icrc1_balance_of, {
                 args: [account]
             });
         }
@@ -228,7 +213,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(icrc.icrc1_transfer, {
+            return await call(icrc.icrc1_transfer, {
                 args: [transferArgs]
             });
         }
@@ -248,7 +233,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(icrc.icrc1_supported_standards);
+            return await call(icrc.icrc1_supported_standards);
         }
     }
     @update([ApproveArgs], ApproveResult)
@@ -291,7 +276,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(icrc.icrc2_approve, {
+            return await call(icrc.icrc2_approve, {
                 args: [approveArgs]
             });
         }
@@ -336,7 +321,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(icrc.icrc2_transfer_from, {
+            return await call(icrc.icrc2_transfer_from, {
                 args: [transferFromArgs]
             });
         }
@@ -373,7 +358,7 @@ export default class {
 
             return responseJson;
         } else {
-            return await ic.call(icrc.icrc2_allowance, {
+            return await call(icrc.icrc2_allowance, {
                 args: [allowanceArgs]
             });
         }

@@ -1,4 +1,12 @@
-import { ic, IDL, query, update } from 'azle';
+import {
+    call,
+    clearTimer,
+    IDL,
+    query,
+    setTimer,
+    setTimerInterval,
+    update
+} from 'azle';
 import { managementCanister } from 'azle/canisters/management';
 
 const StatusReport = IDL.Record({
@@ -47,7 +55,7 @@ let statusReport: StatusReport = {
 export default class {
     @update([IDL.Nat64])
     clearTimer(timerId: bigint): void {
-        ic.clearTimer(timerId);
+        clearTimer(timerId);
         console.log(`timer ${timerId} cancelled`);
     }
 
@@ -55,29 +63,29 @@ export default class {
     setTimers(delay: bigint, interval: bigint): TimerIds {
         const capturedValue = '🚩';
 
-        const singleId = ic.setTimer(delay, oneTimeTimerCallback);
+        const singleId = setTimer(delay, oneTimeTimerCallback);
 
-        const inlineId = ic.setTimer(delay, () => {
+        const inlineId = setTimer(delay, () => {
             statusReport.inline = 1;
             console.log('Inline timer called');
         });
 
-        const captureId = ic.setTimer(delay, () => {
+        const captureId = setTimer(delay, () => {
             statusReport.capture = capturedValue;
             console.log(`Timer captured value ${capturedValue}`);
         });
 
-        const repeatId = ic.setTimerInterval(interval, () => {
+        const repeatId = setTimerInterval(interval, () => {
             statusReport.repeat++;
             console.log(`Repeating timer. Call ${statusReport.repeat}`);
         });
 
-        const singleCrossCanisterId = ic.setTimer(
+        const singleCrossCanisterId = setTimer(
             delay,
             singleCrossCanisterTimerCallback
         );
 
-        const repeatCrossCanisterId = ic.setTimerInterval(
+        const repeatCrossCanisterId = setTimerInterval(
             interval,
             repeatCrossCanisterTimerCallback
         );
@@ -125,6 +133,6 @@ async function getRandomness(): Promise<Uint8Array> {
 
         return responseJson;
     } else {
-        return await ic.call(managementCanister.raw_rand);
+        return await call(managementCanister.raw_rand);
     }
 }

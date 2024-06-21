@@ -1,4 +1,4 @@
-import { ic, Manual, None, Principal, query, Some, text, update } from 'azle';
+import { call, callRaw, IDL, query, update } from 'azle';
 import {
     HttpResponse,
     HttpTransformArgs,
@@ -20,37 +20,34 @@ export default class {
 
             return responseText;
         } else {
-            const httpResponse = await ic.call(
-                managementCanister.http_request,
-                {
-                    args: [
-                        {
-                            url: `https://xkcd.com/642/info.0.json`,
-                            max_response_bytes: Some(2_000n),
-                            method: {
-                                get: null
-                            },
-                            headers: [],
-                            body: None,
-                            transform: Some({
-                                function: [ic.id(), 'xkcdTransform'] as [
-                                    Principal,
-                                    string
-                                ],
-                                context: Uint8Array.from([])
-                            })
-                        }
-                    ],
-                    cycles: 50_000_000n
-                }
-            );
+            const httpResponse = await call(managementCanister.http_request, {
+                args: [
+                    {
+                        url: `https://xkcd.com/642/info.0.json`,
+                        max_response_bytes: Some(2_000n),
+                        method: {
+                            get: null
+                        },
+                        headers: [],
+                        body: None,
+                        transform: Some({
+                            function: [ic.id(), 'xkcdTransform'] as [
+                                Principal,
+                                string
+                            ],
+                            context: Uint8Array.from([])
+                        })
+                    }
+                ],
+                cycles: 50_000_000n
+            });
 
             return Buffer.from(httpResponse.body).toString();
         }
     }
     @update([], HttpResponse, { manual: true })
     async xkcdRaw() {
-        const httpResponse = await ic.callRaw(
+        const httpResponse = await callRaw(
             Principal.fromText('aaaaa-aa'),
             'http_request',
             ic.candidEncode(`

@@ -1,19 +1,11 @@
-import {
-    IDL.Vec(IDL.Nat8),
-
-    Func,
-    ic,
-    Principal,
-    query,
-    Void
-} from 'azle';
+import { IDL, query } from 'azle';
 
 export const NotifierFunc = Func([IDL.Vec(IDL.Nat8)], Void, 'oneway');
 export type NotifierFunc = typeof NotifierFunc.tsType;
 
 export default class {
-@query([], NotifierFunc)
-    getNotifier(){
+    @query([], NotifierFunc)
+    getNotifier() {
         return [
             Principal.fromText(
                 process.env.NOTIFIERS_PRINCIPAL ??
@@ -21,5 +13,5 @@ export default class {
             ),
             'notify'
         ];
-    })
+    }
 }

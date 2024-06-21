@@ -2,7 +2,6 @@
 
 import { ActorSubclass, HttpAgent, Identity } from '@dfinity/agent';
 import { AuthClient } from '@dfinity/auth-client';
-import { nat, nat64 } from 'azle';
 import { html, LitElement } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 
@@ -18,7 +17,7 @@ export class CkApp extends LitElement {
     walletBackend: ActorSubclass<_SERVICE> | undefined;
 
     @state()
-    balance: nat64 | undefined;
+    balance: bigint | undefined;
 
     @state()
     bitcoinDepositAddress: string | undefined;
@@ -30,7 +29,7 @@ export class CkApp extends LitElement {
     transferTo: string = '';
 
     @state()
-    transferAmount: nat = 0n;
+    transferAmount: bigint = 0n;
 
     @state()
     transferring: boolean = false;

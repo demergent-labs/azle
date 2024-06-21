@@ -1,20 +1,4 @@
-import {
-    // CallResult,
-    int,
-    nat8,
-    nat64,
-    Null,
-    Principal,
-    query,
-    Record,
-    Recursive,
-    // Service,
-    // serviceUpdate,
-    text,
-    Tuple,
-    Variant,
-    Vec
-} from 'azle';
+import { IDL, query } from 'azle';
 
 // TODO maybe we should write tests for canister and stable storage?
 // TODO for now we at least know the canister compiles

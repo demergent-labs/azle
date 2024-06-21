@@ -1,6 +1,6 @@
 // TODO let's add more examples here, really test it out
 
-import { bool, None, Null, Opt, query, Record, Some, text, Vec } from 'azle';
+import { IDL, query, update } from 'azle';
 
 const Element = Record({
     id: text

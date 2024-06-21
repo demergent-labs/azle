@@ -1,4 +1,4 @@
-import { Vec } from 'azle';
+import { IDL, query, update } from 'azle';
 
 import { ReactionType } from './candid_types';
 

@@ -1,4 +1,4 @@
-import { bool, query, update, Void } from 'azle';
+import { IDL, query, update } from 'azle';
 
 let notified: boolean = false;
 

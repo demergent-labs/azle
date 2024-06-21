@@ -1,19 +1,5 @@
 // TODO once the Bitcoin integration is live, add the methods and tests
-
-import {
-    blob,
-    bool,
-    ic,
-    nat,
-    None,
-    Opt,
-    Principal,
-    query,
-    serialize,
-    Some,
-    update,
-    Vec
-} from 'azle';
+import { call, IDL, query, update } from 'azle';
 import {
     CanisterInfoArgs,
     CanisterInfoResult,
@@ -64,7 +50,7 @@ export default class {
                 })
             });
         } else {
-            await ic.call(managementCanister.update_settings, {
+            await call(managementCanister.update_settings, {
                 args: [
                     {
                         canister_id: canisterId,
@@ -99,7 +85,7 @@ export default class {
 
             return await response.json();
         } else {
-            return await ic.call(managementCanister.upload_chunk, {
+            return await call(managementCanister.upload_chunk, {
                 args: [
                     {
                         canister_id: canisterId,
@@ -122,7 +108,7 @@ export default class {
                 })
             });
         } else {
-            await ic.call(managementCanister.clear_chunk_store, {
+            await call(managementCanister.clear_chunk_store, {
                 args: [
                     {
                         canister_id: canisterId
@@ -147,7 +133,7 @@ export default class {
             });
             return await response.json();
         } else {
-            return await ic.call(managementCanister.stored_chunks, {
+            return await call(managementCanister.stored_chunks, {
                 args: [
                     {
                         canister_id: canisterId
@@ -176,7 +162,7 @@ export default class {
                 })
             });
         } else {
-            await ic.call(managementCanister.install_code, {
+            await call(managementCanister.install_code, {
                 args: [
                     {
                         mode: {
@@ -216,7 +202,7 @@ export default class {
                 })
             });
         } else {
-            await ic.call(managementCanister.install_chunked_code, {
+            await call(managementCanister.install_chunked_code, {
                 args: [
                     {
                         mode: {
@@ -250,7 +236,7 @@ export default class {
                 })
             });
         } else {
-            await ic.call(managementCanister.uninstall_code, {
+            await call(managementCanister.uninstall_code, {
                 args: [
                     {
                         canister_id: canisterId,
@@ -271,7 +257,7 @@ export default class {
                 })
             });
         } else {
-            await ic.call(managementCanister.start_canister, {
+            await call(managementCanister.start_canister, {
                 args: [
                     {
                         canister_id: canisterId
@@ -290,7 +276,7 @@ export default class {
                 })
             });
         } else {
-            await ic.call(managementCanister.stop_canister, {
+            await call(managementCanister.stop_canister, {
                 args: [
                     {
                         canister_id: canisterId
@@ -316,7 +302,7 @@ export default class {
             });
             return await response.json();
         } else {
-            return await ic.call(managementCanister.canister_info, {
+            return await call(managementCanister.canister_info, {
                 args: [args]
             });
         }
@@ -331,7 +317,7 @@ export default class {
             });
             return await response.json();
         } else {
-            return await ic.call(managementCanister.canister_status, {
+            return await call(managementCanister.canister_status, {
                 args: [args]
             });
         }
@@ -345,7 +331,7 @@ export default class {
                 })
             });
         } else {
-            await ic.call(managementCanister.delete_canister, {
+            await call(managementCanister.delete_canister, {
                 args: [
                     {
                         canister_id: canisterId
@@ -366,7 +352,7 @@ export default class {
                 })
             });
         } else {
-            await ic.call(managementCanister.deposit_cycles, {
+            await call(managementCanister.deposit_cycles, {
                 args: [
                     {
                         canister_id: canisterId
@@ -384,7 +370,7 @@ export default class {
             const response = await fetch(`icp://aaaaa-aa/raw_rand`);
             return await response.json();
         } else {
-            return await ic.call(managementCanister.raw_rand);
+            return await call(managementCanister.raw_rand);
         }
     }
     // TODO we should test this like we test depositCycles
@@ -408,7 +394,7 @@ export default class {
             );
             return await response.json();
         } else {
-            return await ic.call(
+            return await call(
                 managementCanister.provisional_create_canister_with_cycles,
                 {
                     args: [
@@ -434,7 +420,7 @@ export default class {
                 })
             });
         } else {
-            await ic.call(managementCanister.provisional_top_up_canister, {
+            await call(managementCanister.provisional_top_up_canister, {
                 args: [
                     {
                         canister_id: canisterId,
@@ -462,7 +448,7 @@ async function createCanister() {
         });
         return await response.json();
     } else {
-        return await ic.call(managementCanister.create_canister, {
+        return await call(managementCanister.create_canister, {
             args: [{ settings: None, sender_canister_version: None }],
             cycles: 50_000_000_000_000n
         });
