@@ -5,6 +5,8 @@
         "moduleResolution": "node",
         "allowJs": true,
         "outDir": "HACK_BECAUSE_OF_ALLOW_JS",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "preserveSymlinks": true
     }
 }
