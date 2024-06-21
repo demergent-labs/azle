@@ -90,7 +90,7 @@ export default class {
         return ic.rejectCode();
     }
     @update([IDL.Text], IDL.Text)
-    async getRejectionMessage(message: text) {
+    async getRejectionMessage(message: string) {
         try {
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 await fetch(`icp://${getSomeCanisterPrincipal()}/reject`, {

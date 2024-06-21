@@ -75,7 +75,7 @@ export default class {
         return ['Fun', 'Times'];
     }
     @query([Tuple(IDL.Text, IDL.Text)], Tuple(IDL.Text, IDL.Text))
-    primitiveTwoTupleInlineParam(param: Tuple<[text, text]>) {
+    primitiveTwoTupleInlineParam(param: [string, string]) {
         return param;
     }
 
