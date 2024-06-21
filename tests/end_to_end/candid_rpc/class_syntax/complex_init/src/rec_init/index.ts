@@ -1,12 +1,4 @@
-import {
-
-    init,
-    nat,
-    Null,
-    query,
-    Recursive,
-    Variant
-} from 'azle';
+import { IDL, init, query, update } from 'azle';
 
 const Node = Recursive(() =>
     Variant({
@@ -18,15 +10,15 @@ const Node = Recursive(() =>
 let tree: typeof Node = { Leaf: null };
 
 export default class {
-@init([Node])
-    init(node){
+    @init([Node])
+    init(node) {
         tree = node;
         return undefined;
-    }),
-@query([], nat)
-    countBranches(){
+    }
+    @query([], nat)
+    countBranches() {
         return countBranches(tree);
-    })
+    }
 }
 
 function countBranches(node: typeof Node): nat {
