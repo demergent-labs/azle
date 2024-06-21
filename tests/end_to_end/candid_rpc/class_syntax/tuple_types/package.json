@@ -10,6 +10,7 @@
     "devDependencies": {
         "@dfinity/agent": "0.11.1",
         "ts-node": "10.7.0",
-        "typescript": "^5.2.2"
+        "typescript": "^5.2.2",
+        "tuple_types_end_to_end_test_functional_syntax": "file:../../../../../examples/tuple_types"
     }
 }

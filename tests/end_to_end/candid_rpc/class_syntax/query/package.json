@@ -12,6 +12,7 @@
         "query_end_to_end_test_canister_syntax": "file:../../../../../examples/query",
         "ts-jest": "^29.1.5",
         "ts-node": "10.9.0",
-        "typescript": "5.2.2"
+        "typescript": "5.2.2",
+        "query_end_to_end_test_functional_syntax": "file:../../../../../examples/query"
     }
 }

@@ -11,6 +11,7 @@
         "@dfinity/agent": "^0.19.2",
         "fast-equals": "^5.0.1",
         "ts-node": "^10.9.1",
-        "typescript": "^5.2.2"
+        "typescript": "^5.2.2",
+        "list_of_lists_end_to_end_test_functional_syntax": "file:../../../../../examples/list_of_lists"
     }
 }

@@ -11,6 +11,7 @@
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
         "ts-node": "^10.9.1",
-        "typescript": "^5.2.2"
+        "typescript": "^5.2.2",
+        "ledger_canister_end_to_end_test_functional_syntax": "file:../../../../../examples/ledger_canister"
     }
 }

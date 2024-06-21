@@ -13,6 +13,7 @@
         "jest": "^29.7.0",
         "ts-jest": "^29.1.4",
         "ts-node": "^10.9.1",
-        "typescript": "^5.2.2"
+        "typescript": "^5.2.2",
+        "ethereum_json_rpc_end_to_end_test_functional_syntax": "file:../../../../../examples/ethereum_json_rpc"
     }
 }
