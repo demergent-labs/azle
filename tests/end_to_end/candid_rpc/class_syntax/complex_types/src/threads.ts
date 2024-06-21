@@ -6,7 +6,7 @@ import { state, StateThread, StateUser } from './state';
 import { getUserFromStateUser } from './users';
 
 export const createThread = update(
-    [text, text, nat32],
+    [IDL.Text, IDL.Text, nat32],
     Thread,
     (title, authorId, joinDepth) => {
         const id = Object.keys(state.threads).length.toString();

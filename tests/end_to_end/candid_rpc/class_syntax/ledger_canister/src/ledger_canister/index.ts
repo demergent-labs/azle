@@ -171,7 +171,7 @@ export default class {
             });
         }
     }
-    @update([], text)
+    @update([], IDL.Text)
     async getSymbol() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
@@ -190,7 +190,7 @@ export default class {
             return symbolResult.symbol;
         }
     }
-    @update([], text)
+    @update([], IDL.Text)
     async getName() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
@@ -245,7 +245,7 @@ export default class {
             return await call(icpCanister.archives);
         }
     }
-    @query([Principal], text)
+    @query([Principal], IDL.Text)
     getAddressFromPrincipal(principal) {
         return hexAddressFromPrincipal(principal, 0);
     }

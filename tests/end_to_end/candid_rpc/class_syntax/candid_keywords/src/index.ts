@@ -2,14 +2,18 @@ import { IDL, query, update } from 'azle';
 
 const MyCanister = Canister({
     query1: query([], bool),
-    update1: update([], text)
+    update1: update([], IDL.Text)
 });
 
-const CandidVariant = Variant({ query: text, nat32: text, service: text });
+const CandidVariant = Variant({
+    query: IDL.Text,
+    nat32: IDL.Text,
+    service: IDL.Text
+});
 
 const Candid = Record({
-    query: text,
-    text: text,
+    query: IDL.Text,
+    text: IDL.Text,
     blob: IDL.Vec(IDL.Nat8),
     nat: nat,
     nat64: nat64,
@@ -25,11 +29,11 @@ const Candid = Record({
     float32: float32,
     bool: bool,
     null: Null,
-    vec: Vec(text),
+    vec: Vec(IDL.Text),
     opt: Opt(nat),
     record: Record({
-        firstName: text,
-        lastName: text,
+        firstName: IDL.Text,
+        lastName: IDL.Text,
         age: nat8
     }),
     variant: Variant({

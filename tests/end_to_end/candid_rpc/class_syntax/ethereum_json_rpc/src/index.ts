@@ -5,14 +5,14 @@ import {
     managementCanister
 } from 'azle/canisters/management';
 
-let stableStorage = StableBTreeMap<text, text>(0);
+let stableStorage = StableBTreeMap<IDL.Text, IDL.Text>(0);
 
 export default class {
-    @init([text])
+    @init([IDL.Text])
     init(ethereumUrl) {
         stableStorage.insert('ethereumUrl', ethereumUrl);
     }
-    @update([text], text)
+    @update([IDL.Text], IDL.Text)
     async ethGetBalance(ethereumAddress) {
         const urlOpt = stableStorage.get('ethereumUrl');
 
@@ -24,7 +24,7 @@ export default class {
 
         return await getBalance(url, ethereumAddress);
     }
-    @update([nat32], text)
+    @update([nat32], IDL.Text)
     async ethGetBlockByNumber(number) {
         const urlOpt = stableStorage.get('ethereumUrl');
 

@@ -89,7 +89,7 @@ export default class {
 
         return ic.rejectCode();
     }
-    @update([text], text)
+    @update([IDL.Text], IDL.Text)
     async getRejectionMessage(message: text) {
         try {
             if (process.env.AZLE_TEST_FETCH === 'true') {

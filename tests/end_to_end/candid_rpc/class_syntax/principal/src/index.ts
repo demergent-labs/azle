@@ -2,7 +2,7 @@ import { IDL, query, update } from 'azle';
 
 const User = Record({
     id: Principal,
-    username: text
+    username: IDL.Text
 });
 
 const Status = Variant({
@@ -33,11 +33,11 @@ export default class {
             WaitingOn: Principal.fromText('aaaaa-aa')
         };
     }
-    @query([text], Principal)
+    @query([IDL.Text], Principal)
     principalFromHex(principalHex) {
         return Principal.fromHex(principalHex);
     }
-    @query([text], Principal)
+    @query([IDL.Text], Principal)
     principalFromText(principalText) {
         return Principal.fromText(principalText);
     }
@@ -45,11 +45,11 @@ export default class {
     principalFromBlob(principalBytes) {
         return Principal.fromUint8Array(Uint8Array.from(principalBytes));
     }
-    @query([Principal], text)
+    @query([Principal], IDL.Text)
     principalToHex(principal) {
         return principal.toHex();
     }
-    @query([Principal], text)
+    @query([Principal], IDL.Text)
     principalToText(principal) {
         return principal.toText();
     }

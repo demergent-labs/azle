@@ -1,20 +1,20 @@
 import { IDL, query } from 'azle';
 
 export default class {
-    @query([], text)
+    @query([], IDL.Text)
     getString() {
         return 'string';
     }
-    @query([text], text)
+    @query([IDL.Text], IDL.Text)
     printString(string) {
         console.log(typeof string);
         return string;
     }
-    @query([], text)
+    @query([], IDL.Text)
     getText() {
         return 'text';
     }
-    @query([text], text)
+    @query([IDL.Text], IDL.Text)
     printText(text) {
         console.log(typeof text);
         return text;

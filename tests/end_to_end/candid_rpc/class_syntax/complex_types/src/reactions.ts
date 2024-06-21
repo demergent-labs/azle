@@ -6,7 +6,7 @@ import { state, StatePost, StateReaction, StateUser } from './state';
 import { getUserFromStateUser } from './users';
 
 export const createReaction = update(
-    [text, text, ReactionType, nat32],
+    [IDL.Text, IDL.Text, ReactionType, nat32],
     Reaction,
     (authorId, postId, reactionType, joinDepth) => {
         const id = Object.keys(state.reactions).length.toString();

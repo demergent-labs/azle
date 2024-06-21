@@ -2,24 +2,24 @@ import { IDL, query } from 'azle';
 
 // TODO maybe we should write tests for canister and stable storage?
 // TODO for now we at least know the canister compiles
-// type CanisterTuple1 = Tuple<[text, nat64]>;
-// type CanisterTuple2 = Tuple<[text, CanisterTuple1]>;
+// type CanisterTuple1 = Tuple<[IDL.Text, nat64]>;
+// type CanisterTuple2 = Tuple<[IDL.Text, CanisterTuple1]>;
 
 // class TestCanister extends Service {
 //     @serviceUpdate
 //     test: (param: CanisterTuple1) => CallResult<CanisterTuple2>;
 // }
 
-const PrimitiveOneTuple = Tuple(text);
-const PrimitiveTwoTuple = Tuple(text, nat64);
-const PrimitiveThreeTuple = Tuple(text, nat64, Principal);
+const PrimitiveOneTuple = Tuple(IDL.Text);
+const PrimitiveTwoTuple = Tuple(IDL.Text, nat64);
+const PrimitiveThreeTuple = Tuple(IDL.Text, nat64, Principal);
 
 const User = Record({
-    id: text,
+    id: IDL.Text,
     primitiveTwoTuple: PrimitiveTwoTuple
 });
 
-const Header = Tuple(text, text);
+const Header = Tuple(IDL.Text, IDL.Text);
 
 const StreamingCallbackType = Variant({
     WithHeaders: Vec(Header),
@@ -51,12 +51,12 @@ export default class {
         return param;
     }
 
-    @query([], Tuple(text))
+    @query([], Tuple(IDL.Text))
     primitiveOneTupleInlineReturnType() {
         return ['Greenland'];
     }
 
-    @query([Tuple(text)], Tuple(text))
+    @query([Tuple(IDL.Text)], Tuple(IDL.Text))
     primitiveOneTupleInlineParam(param) {
         return param;
     }
@@ -70,11 +70,11 @@ export default class {
         return param;
     }
 
-    @query([], Tuple(text, text))
+    @query([], Tuple(IDL.Text, IDL.Text))
     primitiveTwoTupleInlineReturnType() {
         return ['Fun', 'Times'];
     }
-    @query([Tuple(text, text)], Tuple(text, text))
+    @query([Tuple(IDL.Text, IDL.Text)], Tuple(IDL.Text, IDL.Text))
     primitiveTwoTupleInlineParam(param: Tuple<[text, text]>) {
         return param;
     }
@@ -92,12 +92,15 @@ export default class {
         return param;
     }
 
-    @query([], Tuple(text, nat64, Principal))
+    @query([], Tuple(IDL.Text, nat64, Principal))
     primitiveThreeTupleInlineReturnType() {
         return ['Fun', 101n, Principal.fromText('aaaaa-aa')];
     }
 
-    @query([Tuple(text, nat64, Principal)], Tuple(text, nat64, Principal))
+    @query(
+        [Tuple(IDL.Text, nat64, Principal)],
+        Tuple(IDL.Text, nat64, Principal)
+    )
     primitiveThreeTupleInlineParam(param) {
         return param;
     }
@@ -235,8 +238,8 @@ export default class {
         };
     }
     @query(
-        [Tuple(Tuple(text, Tuple(nat8, nat8)), int)],
-        Tuple(Tuple(text, Tuple(nat8, nat8)), int)
+        [Tuple(Tuple(IDL.Text, Tuple(nat8, nat8)), int)],
+        Tuple(Tuple(IDL.Text, Tuple(nat8, nat8)), int)
     )
     nestedTupleQuery(param) {
         return param;

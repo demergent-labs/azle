@@ -1,16 +1,16 @@
+import { IDL, update } from 'azle';
 import {
     GetUtxosResult,
     MillisatoshiPerByte,
     Satoshi
 } from 'azle/canisters/management';
-import { IDL, query, update } from 'azle';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
 const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
 export default class {
-    @update([text], Satoshi)
+    @update([IDL.Text], Satoshi)
     async getBalance(address) {
         const response = await fetch(`icp://aaaaa-aa/bitcoin_get_balance`, {
             body: serialize({
@@ -47,7 +47,7 @@ export default class {
 
         return responseJson;
     }
-    @update([text], GetUtxosResult)
+    @update([IDL.Text], GetUtxosResult)
     async getUtxos(address) {
         const response = await fetch(`icp://aaaaa-aa/bitcoin_get_utxos`, {
             body: serialize({

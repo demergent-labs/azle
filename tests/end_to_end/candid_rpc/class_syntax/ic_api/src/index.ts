@@ -1,12 +1,13 @@
 import { caller, IDL, query, update } from 'azle';
 
 // TODO: See https://github.com/demergent-labs/azle/issues/496
-// const ArgDataMultipleParamsResult = Record({
-//     blob: IDL.Vec(IDL.Nat8),
-//     int: int8,
-//     boolean: bool,
-//     string: text,
-// });
+// TODO this and related stuff should be commented out after it's converted to class syntax
+const ArgDataMultipleParamsResult = Record({
+    blob: IDL.Vec(IDL.Nat8),
+    int: int8,
+    boolean: bool,
+    string: IDL.Text,
+});
 
 export default class {
     // // returns the argument data as an array.
@@ -22,7 +23,7 @@ export default class {
     }
 
     // returns the argument data as an array.
-    @query([IDL.Vec(IDL.Nat8), int8, bool, text], ArgDataMultipleParamsResult)
+    @query([IDL.Vec(IDL.Nat8), int8, bool, IDL.Text], ArgDataMultipleParamsResult)
     argDataMultipleParams(_arg1, _arg2, _arg3, _arg4) {
         const argData = ic.argData();
         return {
@@ -34,12 +35,12 @@ export default class {
     }
 
     // returns the argument data as bytes.
-    @query([IDL.Vec(IDL.Nat8), int8, bool, text], IDL.Vec(IDL.Nat8))
+    @query([IDL.Vec(IDL.Nat8), int8, bool, IDL.Text], IDL.Vec(IDL.Nat8))
     argDataRaw(_arg1, _arg2, _arg3, _arg4) {
         return ic.argDataRaw();
     }
     // returns the length of the argument data in bytes
-    @query([IDL.Vec(IDL.Nat8), int8, bool, text], nat32)
+    @query([IDL.Vec(IDL.Nat8), int8, bool, IDL.Text], nat32)
     argDataRawSize(_arg1, _arg2, _arg3, _arg4) {
         return ic.argDataRawSize();
     }
@@ -98,13 +99,13 @@ export default class {
         return ic.performanceCounter(0);
     }
     // prints a message through the local replica's output
-    @query([text], bool)
+    @query([IDL.Text], bool)
     print(message) {
         ic.print(message);
 
         return true;
     }
-    @query([text], empty { manual: true })
+    @query([IDL.Text], empty { manual: true })
     reject(message) {
         ic.reject(message);
     }
@@ -119,7 +120,7 @@ export default class {
         return ic.time();
     }
     // traps with a message, stopping execution and discarding all state within the call
-    @query([text], bool)
+    @query([IDL.Text], bool)
     trap(message) {
         ic.trap(message);
 

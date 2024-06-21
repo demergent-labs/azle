@@ -1,7 +1,7 @@
 import { IDL, query, update } from 'azle';
 
 export const ToDo = Record({
-    description: text,
+    description: IDL.Text,
     completed: bool
 });
 export type ToDo = typeof ToDo.tsType;
@@ -15,7 +15,7 @@ export default class {
         return Array.from(todos.values());
     }
     // Returns the ID that was given to the ToDo item
-    @update([text], nat)
+    @update([IDL.Text], nat)
     addTodo(description) {
         const id = nextId;
         todos.set(id, {
@@ -37,7 +37,7 @@ export default class {
             });
         }
     }
-    @query([], text)
+    @query([], IDL.Text)
     showTodos() {
         let output = '\n___TO-DOs___';
         for (const todoEntry of [...todos]) {

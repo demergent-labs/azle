@@ -6,7 +6,7 @@ import {
 } from 'azle/canisters/management';
 
 export default class {
-    @update([], text)
+    @update([], IDL.Text)
     async xkcd() {
         if (process.env.AZLE_TEST_FETCH) {
             ic.setOutgoingHttpOptions({

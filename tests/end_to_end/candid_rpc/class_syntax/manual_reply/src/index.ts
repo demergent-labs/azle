@@ -9,7 +9,7 @@ type Options = typeof Options.tsType;
 
 const RawReply = Record({
     int: int,
-    text: text,
+    text: IDL.Text,
     bool: bool,
     myBlob: IDL.Vec(IDL.Nat8),
     myVariant: Options
@@ -23,7 +23,7 @@ const Orbital = Record({
 type Orbital = typeof Orbital.tsType;
 
 const Solid = Record({
-    element: text
+    element: IDL.Text
 });
 type Solid = typeof Solid.tsType;
 
@@ -42,7 +42,7 @@ const State = Variant({
 type State = typeof State.tsType;
 
 const Element = Record({
-    id: text,
+    id: IDL.Text,
     orbitals: Vec(Orbital),
     state: State
 });
@@ -50,14 +50,14 @@ type Element = typeof Element.tsType;
 
 export default class {
     // Updates
-    @update([text], text, { manual: true })
+    @update([IDL.Text], IDL.Text, { manual: true })
     manualUpdate(message) {
         if (message === 'reject') {
             ic.reject(message);
             return;
         }
 
-        ic.reply(message, text);
+        ic.reply(message, IDL.Text);
     }
     @update([], IDL.Vec(IDL.Nat8), { manual: true })
     updateBlob() {
@@ -110,9 +110,9 @@ export default class {
     updateReserved() {
         ic.reply(undefined, reserved);
     }
-    @update([], text, { manual: true })
+    @update([], IDL.Text, { manual: true })
     updateString() {
-        ic.reply('hello', text);
+        ic.reply('hello', IDL.Text);
     }
     @update([], Gas, { manual: true })
     updateVariant() {
@@ -128,14 +128,14 @@ export default class {
         );
     }
     // Queries
-    @query([text], text, { manual: true })
+    @query([IDL.Text], IDL.Text, { manual: true })
     manualQuery(message) {
         if (message === 'reject') {
             ic.reject(message);
             return;
         }
 
-        ic.reply(message, text);
+        ic.reply(message, IDL.Text);
     }
     @query([], IDL.Vec(IDL.Nat8), { manual: true })
     queryBlob() {
@@ -188,9 +188,9 @@ export default class {
     queryReserved() {
         ic.reply(undefined, reserved);
     }
-    @query([], text, { manual: true })
+    @query([], IDL.Text, { manual: true })
     queryString() {
-        ic.reply('hello', text);
+        ic.reply('hello', IDL.Text);
     }
     @query([], Gas, { manual: true })
     queryVariant() {

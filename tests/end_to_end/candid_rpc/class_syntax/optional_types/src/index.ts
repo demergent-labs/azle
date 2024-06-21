@@ -3,7 +3,7 @@
 import { IDL, query, update } from 'azle';
 
 const Element = Record({
-    id: text
+    id: IDL.Text
 });
 
 const Head = Record({
@@ -45,11 +45,11 @@ export default class {
     getNull() {
         return null;
     }
-    @query([], Opt(text))
+    @query([], Opt(IDL.Text))
     getOptNull() {
         return None;
     }
-    @query([Opt(text)], bool)
+    @query([Opt(IDL.Text)], bool)
     stringToBoolean(optString) {
         if ('None' in optString) {
             return false;

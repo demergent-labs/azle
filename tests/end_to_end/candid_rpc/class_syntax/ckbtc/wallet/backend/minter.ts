@@ -37,9 +37,9 @@ const UpdateBalanceError = Variant({
     AlreadyProcessing: Null,
     // The minter is overloaded, retry the request.
     // The payload contains a human-readable message explaining what caused the unavailability.
-    TemporarilyUnavailable: text,
+    TemporarilyUnavailable: IDL.Text,
     // A generic error reserved for future extensions.
-    GenericError: Record({ error_message: text, error_code: nat64 })
+    GenericError: Record({ error_message: IDL.Text, error_code: nat64 })
 });
 
 export const UpdateBalanceResult = Result(Vec(UtxoStatus), UpdateBalanceError);
@@ -52,7 +52,7 @@ export const Minter = Canister({
                 subaccount: Opt(IDL.Vec(IDL.Nat8))
             })
         ],
-        text
+        IDL.Text
     ),
 
     update_balance: update(

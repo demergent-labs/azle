@@ -2,10 +2,10 @@ import { IDL, query, update } from 'azle';
 
 const Token = Record({
     // add whatever fields you'd like
-    arbitrary_data: text
+    arbitrary_data: IDL.Text
 });
 
-let stableStorage = StableBTreeMap<text, nat>(0);
+let stableStorage = StableBTreeMap<IDL.Text, nat>(0);
 
 export default class {
     @init([])

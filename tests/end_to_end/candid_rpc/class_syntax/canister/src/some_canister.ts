@@ -5,7 +5,7 @@ export default class {
     query1() {
         return true;
     }
-    @update([], text)
+    @update([], IDL.Text)
     update1() {
         return 'SomeCanister update1';
     }

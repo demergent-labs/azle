@@ -6,23 +6,27 @@ import { getReactionFromStateReaction } from './reactions';
 import { state, StateUser } from './state';
 import { getThreadFromStateThread } from './threads';
 
-export const createUser = update([text, nat32], User, (username, joinDepth) => {
-    const id = Object.keys(state.users).length.toString();
+export const createUser = update(
+    [IDL.Text, nat32],
+    User,
+    (username, joinDepth) => {
+        const id = Object.keys(state.users).length.toString();
 
-    const stateUser: StateUser = {
-        id,
-        postIds: [],
-        reactionIds: [],
-        threadIds: [],
-        username
-    };
+        const stateUser: StateUser = {
+            id,
+            postIds: [],
+            reactionIds: [],
+            threadIds: [],
+            username
+        };
 
-    state.users[id] = stateUser;
+        state.users[id] = stateUser;
 
-    const user = getUserFromStateUser(stateUser, joinDepth);
+        const user = getUserFromStateUser(stateUser, joinDepth);
 
-    return user;
-});
+        return user;
+    }
+);
 
 export const getAllUsers = query([nat32], Vec(User), (joinDepth) => {
     return Object.values(state.users).map((stateUser) =>

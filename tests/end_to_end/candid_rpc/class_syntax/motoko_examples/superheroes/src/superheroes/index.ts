@@ -4,11 +4,11 @@ import { IDL, query, update } from 'azle';
 export type SuperheroId = nat32;
 const SuperheroId = nat32;
 
-const List = Recursive(() => Tuple(text, Opt(List)));
+const List = Recursive(() => Tuple(IDL.Text, Opt(List)));
 
 // The type of a superhero.
 const Superhero = Record({
-    name: text,
+    name: IDL.Text,
     superpowers: Opt(List)
 });
 type Superhero = typeof Superhero.tsType;

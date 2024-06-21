@@ -1,6 +1,6 @@
 import { IDL, query, update } from 'azle';
 
-let stableStorage = StableBTreeMap<text, nat>(0);
+let stableStorage = StableBTreeMap<IDL.Text, nat>(0);
 let redeployed = false;
 
 export default class {

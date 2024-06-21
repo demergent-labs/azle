@@ -1,7 +1,7 @@
 import { IDL, query } from 'azle';
 
 const Person = Record({
-    name: text,
+    name: IDL.Text,
     age: nat8
 });
 
@@ -11,18 +11,18 @@ const State = Variant({
     gas: Null
 });
 
-const BasicFunc = Func([text], text, 'query');
+const BasicFunc = Func([IDL.Text], IDL.Text, 'query');
 
 export default class {
-    @query([Vec(text)], Vec(text))
+    @query([Vec(IDL.Text)], Vec(IDL.Text))
     listOfStringOne(param) {
         return param;
     }
-    @query([Vec(Vec(text))], Vec(Vec(text)))
+    @query([Vec(Vec(IDL.Text))], Vec(Vec(IDL.Text)))
     listOfStringTwo(params) {
         return params;
     }
-    @query([Vec(Vec(Vec(Vec(text))))], Vec(Vec(Vec(Vec(text)))))
+    @query([Vec(Vec(Vec(Vec(IDL.Text))))], Vec(Vec(Vec(Vec(IDL.Text)))))
     listOfStringFour(params) {
         return params;
     }
@@ -58,11 +58,11 @@ export default class {
     listOfBool(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(text)))], Vec(Vec(Vec(text))))
+    @query([Vec(Vec(Vec(IDL.Text)))], Vec(Vec(Vec(IDL.Text))))
     listOfString(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(Opt(text))))], Vec(Vec(Vec(Opt(text)))))
+    @query([Vec(Vec(Vec(Opt(IDL.Text))))], Vec(Vec(Vec(Opt(IDL.Text)))))
     listOfOptionString(param) {
         return param;
     }

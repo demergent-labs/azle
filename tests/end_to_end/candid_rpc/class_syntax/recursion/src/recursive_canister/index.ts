@@ -4,13 +4,13 @@ let myMessage = '';
 
 const MyCanister = Recursive(() =>
     Canister({
-@init([text])
+@init([IDL.Text])
         init(message){
             myMessage = message;
         }),
 @query([MyCanister], MyCanister)
         myQuery(param)param),
-@query([], text)
+@query([], IDL.Text)
         getMessage()myMessage)
     })
 );

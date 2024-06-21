@@ -7,7 +7,7 @@ import { getThreadFromStateThread } from './threads';
 import { getUserFromStateUser } from './users';
 
 export const createPost = update(
-    [text, text, text, nat32],
+    [IDL.Text, IDL.Text, IDL.Text, nat32],
     Post,
     (authorId, text, threadId, joinDepth) => {
         const id = Object.keys(state.posts).length.toString();

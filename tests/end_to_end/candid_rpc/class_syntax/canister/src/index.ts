@@ -27,7 +27,7 @@ export default class {
     canisterList(someCanisters) {
         return someCanisters;
     }
-    @update([SomeCanister], text)
+    @update([SomeCanister], IDL.Text)
     async canisterCrossCanisterCall(someCanister) {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(

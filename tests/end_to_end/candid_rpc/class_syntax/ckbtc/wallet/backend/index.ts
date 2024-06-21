@@ -94,7 +94,7 @@ export default class {
             });
         }
     }
-    @update([], text)
+    @update([], IDL.Text)
     async getDepositAddress() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
@@ -131,7 +131,7 @@ export default class {
             });
         }
     }
-    @update([text, nat], Result(nat, TransferError))
+    @update([IDL.Text, nat], Result(nat, TransferError))
     async transfer(to, amount) {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(

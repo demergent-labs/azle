@@ -2,14 +2,14 @@ import { call, IDL, query, update } from 'azle';
 
 import Notifier, { NotifierFunc } from '../notifiers';
 
-const BasicFunc = Func([text], text, 'query');
+const BasicFunc = Func([IDL.Text], IDL.Text, 'query');
 type BasicFunc = typeof BasicFunc.tsType;
 
 const ComplexFunc = Recursive(() => Func([User, Reaction], nat64, 'update'));
 type ComplexFunc = typeof ComplexFunc.tsType;
 
 const User = Record({
-    id: text,
+    id: IDL.Text,
     basicFunc: BasicFunc,
     complexFunc: ComplexFunc
 });
@@ -21,7 +21,7 @@ const Reaction = Variant({
     ComplexFunc: ComplexFunc
 });
 
-const StableFunc = Func([nat64, text], 'query');
+const StableFunc = Func([nat64, IDL.Text], 'query');
 type StableFunc = typeof StableFunc.tsType;
 
 const NullFunc = Func(
@@ -30,7 +30,7 @@ const NullFunc = Func(
     'query'
 );
 
-let stableStorage = StableBTreeMap<text, StableFunc>(0);
+let stableStorage = StableBTreeMap<IDL.Text, StableFunc>(0);
 
 export default class {
     @init([])

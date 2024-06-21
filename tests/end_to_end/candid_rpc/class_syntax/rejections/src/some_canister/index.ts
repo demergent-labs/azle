@@ -1,7 +1,7 @@
 import { IDL, query, update } from 'azle';
 
 export default class {
-    @query([text], empty, { manual: true})
+    @query([IDL.Text], empty, { manual: true})
     reject(message){
             ic.reject(message);
         },

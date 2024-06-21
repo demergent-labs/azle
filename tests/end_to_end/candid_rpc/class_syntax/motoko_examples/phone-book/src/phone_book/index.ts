@@ -1,19 +1,19 @@
 import { IDL, query, update } from 'azle';
 
 export const Entry = Record({
-    desc: text,
-    phone: text
+    desc: IDL.Text,
+    phone: IDL.Text
 });
 export type Entry = typeof Entry.tsType;
 
 let phoneBook = new Map<string, Entry>();
 
 export default class {
-    @update([text, Entry])
+    @update([IDL.Text, Entry])
     insert(name, entry) {
         phoneBook.set(name, entry);
     }
-    @query([text], Opt(Entry))
+    @query([IDL.Text], Opt(Entry))
     lookup(name) {
         const entryOrUndefined = phoneBook.get(name);
 

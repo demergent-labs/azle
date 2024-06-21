@@ -4,19 +4,19 @@ import { sha224 } from 'js-sha256';
 import { one, three, two } from './library';
 
 export default class {
-    @query([], text)
+    @query([], IDL.Text)
     getOne() {
         return one();
     }
-    @query([], text)
+    @query([], IDL.Text)
     getTwo() {
         return two();
     }
-    @query([], text)
+    @query([], IDL.Text)
     getThree() {
         return three();
     }
-    @query([text], text)
+    @query([IDL.Text], IDL.Text)
     sha224Hash(message) {
         return sha224.update(message).hex();
     }

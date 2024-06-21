@@ -21,7 +21,7 @@ export default class {
     init() {
         icrc = ICRC(Principal.fromText(getIcrcPrincipal()));
     }
-    @query([], Vec(Tuple(text, Value)))
+    @query([], Vec(Tuple(IDL.Text, Value)))
     async icrc1_metadata() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
@@ -39,7 +39,7 @@ export default class {
             return await call(icrc.icrc1_metadata);
         }
     }
-    @query([], text)
+    @query([], IDL.Text)
     async icrc1_name() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
@@ -75,7 +75,7 @@ export default class {
             return await call(icrc.icrc1_decimals);
         }
     }
-    @query([], text)
+    @query([], IDL.Text)
     async icrc1_symbol() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(

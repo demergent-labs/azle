@@ -1,79 +1,79 @@
 import { IDL, query, update } from 'azle';
 
 export default class {
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getDate(isoString) {
         return new Date(isoString).getDate();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getDay(isoString) {
         return new Date(isoString).getDay();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getFullYear(isoString) {
         return new Date(isoString).getFullYear();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getHours(isoString) {
         return new Date(isoString).getHours();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getMilliseconds(isoString) {
         return new Date(isoString).getMilliseconds();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getMinutes(isoString) {
         return new Date(isoString).getMinutes();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getMonth(isoString) {
         return new Date(isoString).getMonth();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getSeconds(isoString) {
         return new Date(isoString).getSeconds();
     }
-    @query([text], nat64)
+    @query([IDL.Text], nat64)
     getTime(isoString) {
         return BigInt(new Date(isoString).getTime());
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getTimezoneOffset(isoString) {
         return new Date(isoString).getTimezoneOffset();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getUtcDate(isoString) {
         return new Date(isoString).getUTCDate();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getUtcDay(isoString) {
         return new Date(isoString).getUTCDay();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getUtcFullYear(isoString) {
         return new Date(isoString).getUTCFullYear();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getUtcHours(isoString) {
         return new Date(isoString).getUTCHours();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getUtcMilliseconds(isoString) {
         return new Date(isoString).getUTCMilliseconds();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getUtcMinutes(isoString) {
         return new Date(isoString).getUTCMinutes();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getUtcMonth(isoString) {
         return new Date(isoString).getUTCMonth();
     }
-    @query([text], nat32)
+    @query([IDL.Text], nat32)
     getUtcSeconds(isoString) {
         return new Date(isoString).getUTCSeconds();
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setDate(isoString, newDate) {
         let date = new Date(isoString);
 
@@ -81,7 +81,7 @@ export default class {
 
         return date.getDate();
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setFullYear(isoString, newFullYear) {
         let date = new Date(isoString);
 
@@ -89,7 +89,7 @@ export default class {
 
         return date.getFullYear();
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setHours(isoString, newHours) {
         let date = new Date(isoString);
 
@@ -97,7 +97,7 @@ export default class {
 
         return date.getHours();
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setMilliseconds(isoString, newMilliseconds) {
         let date = new Date(isoString);
 
@@ -105,7 +105,7 @@ export default class {
 
         return date.getMilliseconds();
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setMinutes(isoString, newMinutes) {
         let date = new Date(isoString);
 
@@ -113,7 +113,7 @@ export default class {
 
         return date.getMinutes();
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setMonth(isoString, newMonth) {
         let date = new Date(isoString);
 
@@ -121,7 +121,7 @@ export default class {
 
         return date.getMonth();
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setSeconds(isoString, newSeconds) {
         let date = new Date(isoString);
 
@@ -129,7 +129,7 @@ export default class {
 
         return date.getSeconds();
     }
-    @query([text, nat64], nat64)
+    @query([IDL.Text, nat64], nat64)
     setTime(isoString, newTime) {
         let date = new Date(isoString);
 
@@ -137,7 +137,7 @@ export default class {
 
         return BigInt(date.getTime());
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setUtcDate(isoString, newUtcDate) {
         let date = new Date(isoString);
 
@@ -145,7 +145,7 @@ export default class {
 
         return date.getUTCDate();
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setUtcFullYear(isoString, newUtcFullYear) {
         let date = new Date(isoString);
 
@@ -153,7 +153,7 @@ export default class {
 
         return date.getUTCFullYear();
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setUtcHours(isoString, newUtcHours) {
         let date = new Date(isoString);
 
@@ -161,7 +161,7 @@ export default class {
 
         return date.getUTCHours();
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setUtcMilliseconds(isoString, newUtcMilliseconds) {
         let date = new Date(isoString);
 
@@ -169,7 +169,7 @@ export default class {
 
         return date.getUTCMilliseconds();
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setUtcMinutes(isoString, newUtcMinutes) {
         let date = new Date(isoString);
 
@@ -177,7 +177,7 @@ export default class {
 
         return date.getUTCMinutes();
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setUtcMonth(isoString, newUtcMonth) {
         let date = new Date(isoString);
 
@@ -185,7 +185,7 @@ export default class {
 
         return date.getUTCMonth();
     }
-    @query([text, nat32], nat32)
+    @query([IDL.Text, nat32], nat32)
     setUtcSeconds(isoString, newUtcSeconds) {
         let date = new Date(isoString);
 
@@ -193,27 +193,27 @@ export default class {
 
         return date.getUTCSeconds();
     }
-    @query([text], text)
+    @query([IDL.Text], IDL.Text)
     toDateString(isoString) {
         return new Date(isoString).toDateString();
     }
-    @query([text], text)
+    @query([IDL.Text], IDL.Text)
     toISOString(isoString) {
         return new Date(isoString).toISOString();
     }
-    @query([text], text)
+    @query([IDL.Text], IDL.Text)
     toJSONString(isoString) {
         return new Date(isoString).toJSON();
     }
-    @query([text], text)
+    @query([IDL.Text], IDL.Text)
     toString(isoString) {
         return new Date(isoString).toString();
     }
-    @query([text], text)
+    @query([IDL.Text], IDL.Text)
     toTimeString(isoString) {
         return new Date(isoString).toTimeString();
     }
-    @query([text], text)
+    @query([IDL.Text], IDL.Text)
     toUtcString(isoString) {
         return new Date(isoString).toUTCString();
     }
@@ -221,7 +221,7 @@ export default class {
     now() {
         return BigInt(Date.now());
     }
-    @query([text], nat64)
+    @query([IDL.Text], nat64)
     parse(isoString) {
         return BigInt(Date.parse(isoString));
     }
