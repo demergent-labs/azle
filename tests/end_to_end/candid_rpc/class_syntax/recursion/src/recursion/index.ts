@@ -8,7 +8,7 @@ import MyFullCanister from '../recursive_canister';
 const varRecord = Recursive(() =>
     Record({ myVar: Variant({ num: int8, varRec: varRecord }) })
 );
-const vecRecord = Recursive(() => Record({ myVecRecords: Vec(vecRecord) }));
+const vecRecord = Recursive(() => Record({ myVecRecords: IDL.Vec(vecRecord) }));
 const optRecord = Recursive(() => Record({ myOpt: Opt(optRecord) }));
 // Variant
 //     Variant is the only type that can be recursive all by itself but it does need a way to end the recursion
@@ -17,19 +17,19 @@ const recVariant = Recursive(() =>
 );
 // Tuple
 const optTuple = Recursive(() => Tuple(Opt(optTuple), Opt(optTuple)));
-const vecTuple = Recursive(() => Tuple(Vec(vecTuple), Vec(vecTuple)));
+const vecTuple = Recursive(() => Tuple(IDL.Vec(vecTuple), IDL.Vec(vecTuple)));
 const varTuple = Recursive(() => Tuple(myTupleVar, myTupleVar));
 const myTupleVar = Variant({ num: int8, varTuple });
 // Vec
-const varVec = Recursive(() => Vec(Variant({ Leaf: int8, Branch: varVec })));
-const optVec = Recursive(() => Vec(Opt(optVec)));
-const tupleVec = Recursive(() => Vec(Tuple(tupleVec, tupleVec)));
-const vecVec = Recursive(() => Vec(vecVec));
+const varVec = Recursive(() => IDL.Vec(Variant({ Leaf: int8, Branch: varVec })));
+const optVec = Recursive(() => IDL.Vec(Opt(optVec)));
+const tupleVec = Recursive(() => IDL.Vec(Tuple(tupleVec, tupleVec)));
+const vecVec = Recursive(() => IDL.Vec(vecVec));
 // Opt
 const varOpt = Recursive(() => Opt(Variant({ Leaf: int8, Branch: varOpt })));
 const optOpt = Recursive(() => Opt(optOpt));
 const tupleOpt = Recursive(() => Opt(Tuple(tupleOpt, tupleOpt)));
-const vecOpt = Recursive(() => Opt(Vec(vecOpt)));
+const vecOpt = Recursive(() => Opt(IDL.Vec(vecOpt)));
 // Service
 const MyCanister = Recursive(() =>
     Canister({
@@ -53,7 +53,7 @@ export default class {
         return param;
     }
     @query([vecVec], vecVec)
-    testRecVecWithVec(param) {
+    testRecVecWithIDL.Vec(param) {
         return param;
     }
     @query([varOpt], varOpt)
@@ -69,7 +69,7 @@ export default class {
         return param;
     }
     @query([vecOpt], vecOpt)
-    testRecOptWithVec(param) {
+    testRecOptWithIDL.Vec(param) {
         return param;
     }
     @query([optRecord], optRecord)
@@ -77,7 +77,7 @@ export default class {
         return param;
     }
     @query([vecRecord], vecRecord)
-    testRecRecordWithVec(param) {
+    testRecRecordWithIDL.Vec(param) {
         return param;
     }
     @query([varRecord], varRecord)
@@ -93,7 +93,7 @@ export default class {
         return param;
     }
     @query([vecTuple], vecTuple)
-    testRecTupleWithVec(param) {
+    testRecTupleWithIDL.Vec(param) {
         return param;
     }
     @query([], optRecord)
@@ -205,7 +205,7 @@ const node0 = Variant({
             Recursive(() => node0)
         )
     }),
-    vecRec: Record({ children: Vec(Recursive(() => node0)) }),
+    vecRec: Record({ children: IDL.Vec(Recursive(() => node0)) }),
     recordRec: Record({ myVar: Recursive(() => node0) })
 });
 
@@ -216,7 +216,7 @@ const node1 = Variant({
             twins: Tuple(node1, node1)
         })
     ),
-    recVec: Recursive(() => Record({ children: Vec(node0) })),
+    recVec: Recursive(() => Record({ children: IDL.Vec(node0) })),
     recRecord: Recursive(() => Record({ myVar: node0 }))
 });
 
@@ -226,7 +226,7 @@ const node2 = Recursive(() =>
         twinChildren: Record({
             twins: Tuple(node2, node2)
         }),
-        children: Record({ children: Vec(node2) }),
+        children: Record({ children: IDL.Vec(node2) }),
         child: Record({ myVar: node2 })
     })
 );
@@ -235,7 +235,7 @@ const node3 = Recursive(() =>
     Variant({
         optChild: Opt(node3),
         twinChildren: Tuple(node3, node3),
-        children: Vec(node3),
+        children: IDL.Vec(node3),
         child: Record({ myVar: node3 })
     })
 );
@@ -243,7 +243,7 @@ const node3 = Recursive(() =>
 const node4 = Variant({
     optChild: Recursive(() => Opt(node4)),
     twinChildren: Recursive(() => Tuple(node4, node4)),
-    children: Recursive(() => Vec(node4)),
+    children: Recursive(() => IDL.Vec(node4)),
     child: Recursive(() => Record({ myVar: node4 }))
 });
 
@@ -253,6 +253,6 @@ const node5 = Variant({
         Recursive(() => node5),
         Recursive(() => node5)
     ),
-    children: Vec(Recursive(() => node5)),
+    children: IDL.Vec(Recursive(() => node5)),
     child: Record({ myVar: Recursive(() => node5) })
 });

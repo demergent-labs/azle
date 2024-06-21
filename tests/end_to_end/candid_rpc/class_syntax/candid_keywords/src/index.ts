@@ -29,7 +29,7 @@ const Candid = Record({
     float32: float32,
     bool: bool,
     null: Null,
-    vec: Vec(IDL.Text),
+    vec: IDL.Vec(IDL.Text),
     opt: Opt(nat),
     record: Record({
         firstName: IDL.Text,

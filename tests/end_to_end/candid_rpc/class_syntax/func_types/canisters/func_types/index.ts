@@ -25,7 +25,13 @@ const StableFunc = Func([nat64, IDL.Text], 'query');
 type StableFunc = typeof StableFunc.tsType;
 
 const NullFunc = Func(
-    [Opt(Null), Vec(Null), Null, Vec(Vec(Null)), Vec(Opt(Null))],
+    [
+        Opt(Null),
+        IDL.Vec(Null),
+        Null,
+        IDL.Vec(IDL.Vec(Null)),
+        IDL.Vec(Opt(Null))
+    ],
     Null,
     'query'
 );
@@ -59,7 +65,7 @@ export default class {
     nullFuncParam(nullFunc) {
         return nullFunc;
     }
-    @query([Vec(BasicFunc)], Vec(BasicFunc))
+    @query([IDL.Vec(BasicFunc)], IDL.Vec(BasicFunc))
     basicFuncParamArray(basicFunc) {
         return basicFunc;
     }
@@ -69,7 +75,7 @@ export default class {
         return [Principal.fromText('aaaaa-aa'), 'create_canister'];
     }
 
-    @query([], Vec(BasicFunc))
+    @query([], IDL.Vec(BasicFunc))
     basicFuncReturnTypeArray() {
         return [
             [Principal.fromText('aaaaa-aa'), 'create_canister'],

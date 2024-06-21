@@ -14,19 +14,25 @@ const State = Variant({
 const BasicFunc = Func([IDL.Text], IDL.Text, 'query');
 
 export default class {
-    @query([Vec(IDL.Text)], Vec(IDL.Text))
+    @query([IDL.Vec(IDL.Text)], IDL.Vec(IDL.Text))
     listOfStringOne(param) {
         return param;
     }
-    @query([Vec(Vec(IDL.Text))], Vec(Vec(IDL.Text)))
+    @query([IDL.Vec(IDL.Vec(IDL.Text))], IDL.Vec(IDL.Vec(IDL.Text)))
     listOfStringTwo(params) {
         return params;
     }
-    @query([Vec(Vec(Vec(Vec(IDL.Text))))], Vec(Vec(Vec(Vec(IDL.Text)))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(IDL.Vec(IDL.Text))))],
+        IDL.Vec(IDL.Vec(IDL.Vec(IDL.Vec(IDL.Text))))
+    )
     listOfStringFour(params) {
         return params;
     }
-    @query([], Vec(Vec(Vec(Vec(Vec(Vec(Vec(int8))))))))
+    @query(
+        [],
+        IDL.Vec(IDL.Vec(IDL.Vec(IDL.Vec(IDL.Vec(IDL.Vec(IDL.Vec(int8)))))))
+    )
     listOfListOfInt8() {
         return [
             [
@@ -50,27 +56,33 @@ export default class {
             ]
         ];
     }
-    @query([Vec(Vec(Vec(Null)))], Vec(Vec(Vec(Null))))
+    @query([IDL.Vec(IDL.Vec(IDL.Vec(Null)))], IDL.Vec(IDL.Vec(IDL.Vec(Null))))
     listOfNull(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(bool)))], Vec(Vec(Vec(bool))))
+    @query([IDL.Vec(IDL.Vec(IDL.Vec(bool)))], IDL.Vec(IDL.Vec(IDL.Vec(bool))))
     listOfBool(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(IDL.Text)))], Vec(Vec(Vec(IDL.Text))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(IDL.Text)))],
+        IDL.Vec(IDL.Vec(IDL.Vec(IDL.Text)))
+    )
     listOfString(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(Opt(IDL.Text))))], Vec(Vec(Vec(Opt(IDL.Text)))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(Opt(IDL.Text))))],
+        IDL.Vec(IDL.Vec(IDL.Vec(Opt(IDL.Text))))
+    )
     listOfOptionString(param) {
         return param;
     }
-    @query([], Vec(Vec(Vec(empty))))
+    @query([], IDL.Vec(IDL.Vec(IDL.Vec(empty))))
     listOfEmpty() {
         throw new Error('Anything you want');
     }
-    @query([], Vec(Vec(Vec(reserved))))
+    @query([], IDL.Vec(IDL.Vec(IDL.Vec(reserved))))
     listOfReserved() {
         return [
             [['A'], ['n']],
@@ -80,75 +92,93 @@ export default class {
             ]
         ];
     }
-    @query([Vec(Vec(Vec(BasicFunc)))], Vec(Vec(Vec(BasicFunc))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(BasicFunc)))],
+        IDL.Vec(IDL.Vec(IDL.Vec(BasicFunc)))
+    )
     listOfFunc(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(Principal)))], Vec(Vec(Vec(Principal))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(Principal)))],
+        IDL.Vec(IDL.Vec(IDL.Vec(Principal)))
+    )
     listOfPrincipal(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(float64)))], Vec(Vec(Vec(float64))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(float64)))],
+        IDL.Vec(IDL.Vec(IDL.Vec(float64)))
+    )
     listOfF64(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(float32)))], Vec(Vec(Vec(float32))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(float32)))],
+        IDL.Vec(IDL.Vec(IDL.Vec(float32)))
+    )
     listOfF32(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(int)))], Vec(Vec(Vec(int))))
+    @query([IDL.Vec(IDL.Vec(IDL.Vec(int)))], IDL.Vec(IDL.Vec(IDL.Vec(int))))
     listOfInt(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(int64)))], Vec(Vec(Vec(int64))))
+    @query([IDL.Vec(IDL.Vec(IDL.Vec(int64)))], IDL.Vec(IDL.Vec(IDL.Vec(int64))))
     listOfInt64(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(int32)))], Vec(Vec(Vec(int32))))
+    @query([IDL.Vec(IDL.Vec(IDL.Vec(int32)))], IDL.Vec(IDL.Vec(IDL.Vec(int32))))
     listOfInt32(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(int16)))], Vec(Vec(Vec(int16))))
+    @query([IDL.Vec(IDL.Vec(IDL.Vec(int16)))], IDL.Vec(IDL.Vec(IDL.Vec(int16))))
     listOfInt16(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(int8)))], Vec(Vec(Vec(int8))))
+    @query([IDL.Vec(IDL.Vec(IDL.Vec(int8)))], IDL.Vec(IDL.Vec(IDL.Vec(int8))))
     listOfInt8(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(nat)))], Vec(Vec(Vec(nat))))
+    @query([IDL.Vec(IDL.Vec(IDL.Vec(nat)))], IDL.Vec(IDL.Vec(IDL.Vec(nat))))
     listOfNat(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(nat64)))], Vec(Vec(Vec(nat64))))
+    @query([IDL.Vec(IDL.Vec(IDL.Vec(nat64)))], IDL.Vec(IDL.Vec(IDL.Vec(nat64))))
     listOfNat64(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(nat32)))], Vec(Vec(Vec(nat32))))
+    @query([IDL.Vec(IDL.Vec(IDL.Vec(nat32)))], IDL.Vec(IDL.Vec(IDL.Vec(nat32))))
     listOfNat32(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(nat16)))], Vec(Vec(Vec(nat16))))
+    @query([IDL.Vec(IDL.Vec(IDL.Vec(nat16)))], IDL.Vec(IDL.Vec(IDL.Vec(nat16))))
     listOfNat16(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(nat8)))], Vec(Vec(Vec(nat8))))
+    @query([IDL.Vec(IDL.Vec(IDL.Vec(nat8)))], IDL.Vec(IDL.Vec(IDL.Vec(nat8))))
     listOfNat8(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(Person)))], Vec(Vec(Vec(Person))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(Person)))],
+        IDL.Vec(IDL.Vec(IDL.Vec(Person)))
+    )
     listOfRecord(param) {
         return param;
     }
-    @query([Vec(Vec(Vec(State)))], Vec(Vec(Vec(State))))
+    @query([IDL.Vec(IDL.Vec(IDL.Vec(State)))], IDL.Vec(IDL.Vec(IDL.Vec(State))))
     listOfVariant(param) {
         return param;
     }
-    @query([Vec(IDL.Vec(IDL.Nat8))], Vec(IDL.Vec(IDL.Nat8)))
+    @query([IDL.Vec(IDL.Vec(IDL.Nat8))], IDL.Vec(IDL.Vec(IDL.Nat8)))
     listOfBlob(param) {
         return param;
     }
-    @query([Vec(Vec(IDL.Vec(IDL.Nat8)))], Vec(Vec(IDL.Vec(IDL.Nat8))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(IDL.Nat8)))],
+        IDL.Vec(IDL.Vec(IDL.Vec(IDL.Nat8)))
+    )
     listOfListOfBlob(param) {
         return param;
     }

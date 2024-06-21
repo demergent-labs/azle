@@ -101,7 +101,7 @@ export default class {
 
         return true;
     }
-    @update([Principal, Vec(ChunkHash), IDL.Vec(IDL.Nat8)], bool)
+    @update([Principal, IDL.Vec(ChunkHash), IDL.Vec(IDL.Nat8)], bool)
     async executeInstallChunkedCode(canisterId, chunkHashes, wasmModuleHash) {
         await call(managementCanister.install_chunked_code, {
             args: [

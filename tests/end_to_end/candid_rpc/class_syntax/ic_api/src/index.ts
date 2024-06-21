@@ -11,7 +11,7 @@ const ArgDataMultipleParamsResult = Record({
 
 export default class {
     // // returns the argument data as an array.
-    @query([], Vec(Null))
+    @query([], IDL.Vec(Null))
     argDataZeroParams() {
         return ic.argData();
     }

@@ -32,14 +32,14 @@ export default class {
         });
     }
 
-    @update([], Vec(MillisatoshiPerByte))
+    @update([], IDL.Vec(MillisatoshiPerByte))
     async getCurrentFeePercentiles() {
         return await call(
             PRINCIPAL,
             FUNCS.bitcoin_get_current_fee_percentiles,
             {
                 paramIdls: [GetCurrentFeePercentilesArgs],
-                returnIdl: Vec(MillisatoshiPerByte),
+                returnIdl: IDL.Vec(MillisatoshiPerByte),
                 args: [
                     {
                         network: { regtest: null }

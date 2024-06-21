@@ -1,7 +1,7 @@
 import { IDL, query, update } from 'azle';
 
 const Utxo = Record({
-    outpoint: Record({ txid: Vec(nat8), vout: nat32 }),
+    outpoint: Record({ txid: IDL.Vec(nat8), vout: nat32 }),
     value: nat64,
     height: nat32
 });
@@ -42,7 +42,10 @@ const UpdateBalanceError = Variant({
     GenericError: Record({ error_message: IDL.Text, error_code: nat64 })
 });
 
-export const UpdateBalanceResult = Result(Vec(UtxoStatus), UpdateBalanceError);
+export const UpdateBalanceResult = Result(
+    IDL.Vec(UtxoStatus),
+    UpdateBalanceError
+);
 
 export const Minter = Canister({
     get_btc_address: update(

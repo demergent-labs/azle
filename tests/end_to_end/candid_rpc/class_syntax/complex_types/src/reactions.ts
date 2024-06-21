@@ -33,11 +33,15 @@ export const createReaction = update(
     }
 );
 
-export const getAllReactions = query([nat32], Vec(Reaction), (joinDepth) => {
-    return Object.values(state.reactions).map((stateReaction) =>
-        getReactionFromStateReaction(stateReaction, joinDepth)
-    );
-});
+export const getAllReactions = query(
+    [nat32],
+    IDL.Vec(Reaction),
+    (joinDepth) => {
+        return Object.values(state.reactions).map((stateReaction) =>
+            getReactionFromStateReaction(stateReaction, joinDepth)
+        );
+    }
+);
 
 export function getReactionFromStateReaction(
     stateReaction: StateReaction,

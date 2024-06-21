@@ -23,7 +23,7 @@ export default class {
             )
         };
     }
-    @update([Vec(SomeCanister)], Vec(SomeCanister))
+    @update([IDL.Vec(SomeCanister)], IDL.Vec(SomeCanister))
     canisterList(someCanisters) {
         return someCanisters;
     }

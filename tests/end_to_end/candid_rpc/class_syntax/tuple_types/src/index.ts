@@ -22,7 +22,7 @@ const User = Record({
 const Header = Tuple(IDL.Text, IDL.Text);
 
 const StreamingCallbackType = Variant({
-    WithHeaders: Vec(Header),
+    WithHeaders: IDL.Vec(Header),
     WithoutHeaders: Null
 });
 
@@ -38,7 +38,7 @@ const ComplexTwoTuple = Tuple(PrimitiveTwoTuple, User);
 const ComplexThreeTuple = Tuple(PrimitiveTwoTuple, User, Reaction);
 
 const HttpResponse = Record({
-    headers: Vec(Header)
+    headers: IDL.Vec(Header)
 });
 
 export default class {
@@ -213,7 +213,7 @@ export default class {
         return param;
     }
 
-    @query([Vec(Header)], Vec(Header))
+    @query([IDL.Vec(Header)], IDL.Vec(Header))
     tupleArrayParamsAndReturnType(headers) {
         return headers;
     }

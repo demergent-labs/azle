@@ -1,5 +1,3 @@
-import { IDL, query, update } from 'azle';
-
 import { ReactionType } from './candid_types';
 
 // TODO this state should go on the class
@@ -28,7 +26,7 @@ export type State = {
 export type StatePost = {
     id: string;
     authorId: string;
-    reactionIds: Vec<string>;
+    reactionIds: string[];
     text: string;
     threadId: string;
 };
@@ -43,14 +41,14 @@ export type StateReaction = {
 export type StateThread = {
     id: string;
     authorId: string;
-    postIds: Vec<string>;
+    postIds: string[];
     title: string;
 };
 
 export type StateUser = {
     id: string;
-    postIds: Vec<string>;
-    reactionIds: Vec<string>;
-    threadIds: Vec<string>;
+    postIds: string[];
+    reactionIds: string[];
+    threadIds: string[];
     username: string;
 };

@@ -10,9 +10,9 @@ export type ReactionType = typeof ReactionType.tsType;
 export const User = Recursive(() =>
     Record({
         id: IDL.Text,
-        posts: Vec(Post),
-        reactions: Vec(Reaction),
-        threads: Vec(Thread),
+        posts: IDL.Vec(Post),
+        reactions: IDL.Vec(Reaction),
+        threads: IDL.Vec(Thread),
         username: IDL.Text
     })
 );
@@ -22,7 +22,7 @@ export const Post = Recursive(() =>
     Record({
         id: IDL.Text,
         author: User,
-        reactions: Vec(Reaction),
+        reactions: IDL.Vec(Reaction),
         text: IDL.Text,
         thread: Thread
     })
@@ -32,7 +32,7 @@ export type Post = typeof Post.tsType;
 export const Thread = Record({
     id: IDL.Text,
     author: User,
-    posts: Vec(Post),
+    posts: IDL.Vec(Post),
     title: IDL.Text
 });
 export type Thread = typeof Thread.tsType;

@@ -7,7 +7,7 @@ const Element = Record({
 });
 
 const Head = Record({
-    elements: Vec(Element)
+    elements: IDL.Vec(Element)
 });
 
 const Html = Record({

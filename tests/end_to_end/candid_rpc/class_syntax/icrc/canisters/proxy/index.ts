@@ -21,7 +21,7 @@ export default class {
     init() {
         icrc = ICRC(Principal.fromText(getIcrcPrincipal()));
     }
-    @query([], Vec(Tuple(IDL.Text, Value)))
+    @query([], IDL.Vec(Tuple(IDL.Text, Value)))
     async icrc1_metadata() {
         return await call(icrc.icrc1_metadata);
     }
@@ -61,7 +61,7 @@ export default class {
             args: [transferArgs]
         });
     }
-    @query([], Vec(SupportedStandard))
+    @query([], IDL.Vec(SupportedStandard))
     async icrc1_supported_standards() {
         return await call(icrc.icrc1_supported_standards);
     }

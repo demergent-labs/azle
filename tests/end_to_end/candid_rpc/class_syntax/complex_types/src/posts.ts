@@ -38,7 +38,7 @@ export const createPost = update(
     }
 );
 
-export const getAllPosts = query([nat32], Vec(Post), (joinDepth) => {
+export const getAllPosts = query([nat32], IDL.Vec(Post), (joinDepth) => {
     return Object.values(state.posts).map((statePost) =>
         getPostFromStatePost(statePost, joinDepth)
     );

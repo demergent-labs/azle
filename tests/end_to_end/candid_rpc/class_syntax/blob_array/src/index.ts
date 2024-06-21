@@ -5,7 +5,7 @@ export default class {
     getBlob() {
         return stringToBlob('hello');
     }
-    @query([], Vec(IDL.Vec(IDL.Nat8)))
+    @query([], IDL.Vec(IDL.Vec(IDL.Nat8)))
     getBlobs() {
         return [stringToBlob('hello'), stringToBlob('world')];
     }

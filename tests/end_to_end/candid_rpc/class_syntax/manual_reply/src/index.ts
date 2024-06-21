@@ -43,7 +43,7 @@ type State = typeof State.tsType;
 
 const Element = Record({
     id: IDL.Text,
-    orbitals: Vec(Orbital),
+    orbitals: IDL.Vec(Orbital),
     state: State
 });
 type Element = typeof Element.tsType;

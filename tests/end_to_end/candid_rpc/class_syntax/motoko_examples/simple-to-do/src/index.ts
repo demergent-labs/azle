@@ -10,7 +10,7 @@ let todos: Map<nat, ToDo> = new Map();
 let nextId: nat = 0n;
 
 export default class {
-    @query([], Vec(ToDo))
+    @query([], IDL.Vec(ToDo))
     getTodos() {
         return Array.from(todos.values());
     }

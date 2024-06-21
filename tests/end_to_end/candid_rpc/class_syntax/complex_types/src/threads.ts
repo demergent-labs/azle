@@ -31,7 +31,7 @@ export const createThread = update(
     }
 );
 
-export const getAllThreads = query([nat32], Vec(Thread), (joinDepth) => {
+export const getAllThreads = query([nat32], IDL.Vec(Thread), (joinDepth) => {
     return Object.values(state.threads).map((stateThread) =>
         getThreadFromStateThread(stateThread, joinDepth)
     );

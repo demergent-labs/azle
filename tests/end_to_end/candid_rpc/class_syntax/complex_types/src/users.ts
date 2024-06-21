@@ -28,7 +28,7 @@ export const createUser = update(
     }
 );
 
-export const getAllUsers = query([nat32], Vec(User), (joinDepth) => {
+export const getAllUsers = query([nat32], IDL.Vec(User), (joinDepth) => {
     return Object.values(state.users).map((stateUser) =>
         getUserFromStateUser(stateUser, joinDepth)
     );
