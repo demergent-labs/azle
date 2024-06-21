@@ -70,243 +70,151 @@ type Element = typeof Element.tsType;
 
 export default class {
     // Updates
-    manualUpdate: update(
-        [text],
-        Manual(text),
-        (message) => {
-            if (message === 'reject') {
-                ic.reject(message);
-                return;
-            }
+    @update([text], text, { manual: true })
+    manualUpdate(message) {
+        if (message === 'reject') {
+            ic.reject(message);
+            return;
+        }
 
-            ic.reply(message, text);
-        },
-        { manual: true }
-    ),
-    updateBlob: update(
-        [],
-        Manual(blob),
-        () => {
-            ic.reply(
-                new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
-                blob
-            );
-        },
-        { manual: true }
-    ),
-    updateFloat32: update(
-        [],
-        Manual(float32),
-        () => {
-            ic.reply(1245.678, float32);
-        },
-        { manual: true }
-    ),
-    updateInt8: update(
-        [],
-        Manual(int8),
-        () => {
-            ic.reply(-100, int8);
-        },
-        { manual: true }
-    ),
-    updateNat: update(
-        [],
-        Manual(nat),
-        () => {
-            ic.reply(184467440737095516150n, nat);
-        },
-        { manual: true }
-    ),
-    updateNull: update(
-        [],
-        Manual(Null),
-        () => {
-            ic.reply(null, Null);
-        },
-        { manual: true }
-    ),
-    updateVoid: update(
-        [],
-        Manual(Void),
-        () => {
-            ic.reply(undefined, Void);
-        },
-        { manual: true }
-    ),
-    updateRecord: update(
-        [],
-        Manual(Element),
-        () => {
-            const element: Element = {
-                id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
-                orbitals: [
-                    {
-                        electrons: 2,
-                        layer: 1
-                    },
-                    {
-                        electrons: 8,
-                        layer: 2
-                    }
-                ],
-                state: {
-                    Gas: { Elemental: null }
+        ic.reply(message, text);
+    }
+    @update([], blob, { manual: true })
+    updateBlob() {
+        ic.reply(
+            new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
+            blob
+        );
+    }
+    @update([], float32, { manual: true })
+    updateFloat32() {
+        ic.reply(1245.678, float32);
+    }
+    @update([], int8, { manual: true })
+    updateInt8() {
+        ic.reply(-100, int8);
+    }
+    @update([], nat, { manual: true })
+    updateNat() {
+        ic.reply(184467440737095516150n, nat);
+    }
+    @update([], Null, { manual: true })
+    updateNull() {
+        ic.reply(null, Null);
+    }
+    @update([], Void, { manual: true })
+    updateVoid() {
+        ic.reply(undefined, Void);
+    }
+    @update([], Element, { manual: true })
+    updateRecord() {
+        const element: Element = {
+            id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
+            orbitals: [
+                {
+                    electrons: 2,
+                    layer: 1
+                },
+                {
+                    electrons: 8,
+                    layer: 2
                 }
-            };
-            ic.reply(element, Element);
-        },
-        { manual: true }
-    ),
-    updateReserved: update(
-        [],
-        Manual(reserved),
-        () => {
-            ic.reply(undefined, reserved);
-        },
-        { manual: true }
-    ),
-    updateString: update(
-        [],
-        Manual(text),
-        () => {
-            ic.reply('hello', text);
-        },
-        { manual: true }
-    ),
-    updateVariant: update(
-        [],
-        Manual(Gas),
-        () => {
-            const gas = { Toxic: null };
-            ic.reply(gas, Gas);
-        },
-        { manual: true }
-    ),
-    replyRaw: update(
-        [],
-        Manual(RawReply),
-        () => {
-            ic.replyRaw(
-                ic.candidEncode(
-                    '(record { "int" = 42; "text" = "text"; "bool" = true; "myBlob" = blob "Surprise!"; "myVariant" = variant { Medium } })'
-                )
-            );
-        },
-        { manual: true }
-    ),
+            ],
+            state: {
+                Gas: { Elemental: null }
+            }
+        };
+        ic.reply(element, Element);
+    }
+    @update([], reserved, { manual: true })
+    updateReserved() {
+        ic.reply(undefined, reserved);
+    }
+    @update([], text, { manual: true })
+    updateString() {
+        ic.reply('hello', text);
+    }
+    @update([], Gas, { manual: true })
+    updateVariant() {
+        const gas = { Toxic: null };
+        ic.reply(gas, Gas);
+    }
+    @update([], RawReply, { manual: true })
+    replyRaw() {
+        ic.replyRaw(
+            ic.candidEncode(
+                '(record { "int" = 42; "text" = "text"; "bool" = true; "myBlob" = blob "Surprise!"; "myVariant" = variant { Medium } })'
+            )
+        );
+    }
     // Queries
-    manualQuery: query(
-        [text],
-        Manual(text),
-        (message) => {
-            if (message === 'reject') {
-                ic.reject(message);
-                return;
-            }
+    @query([text], text, { manual: true })
+    manualQuery(message) {
+        if (message === 'reject') {
+            ic.reject(message);
+            return;
+        }
 
-            ic.reply(message, text);
-        },
-        { manual: true }
-    ),
-    queryBlob: query(
-        [],
-        Manual(blob),
-        () => {
-            ic.reply(
-                new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
-                blob
-            );
-        },
-        { manual: true }
-    ),
-    queryFloat32: query(
-        [],
-        Manual(float32),
-        () => {
-            ic.reply(1245.678, float32);
-        },
-        { manual: true }
-    ),
-    queryInt8: query(
-        [],
-        Manual(int8),
-        () => {
-            ic.reply(-100, int8);
-        },
-        { manual: true }
-    ),
-    queryNat: query(
-        [],
-        Manual(nat),
-        () => {
-            ic.reply(184_467_440_737_095_516_150n, nat);
-        },
-        { manual: true }
-    ),
-    queryNull: query(
-        [],
-        Manual(Null),
-        () => {
-            ic.reply(null, Null);
-        },
-        { manual: true }
-    ),
-    queryVoid: query(
-        [],
-        Manual(Void),
-        () => {
-            ic.reply(undefined, Void);
-        },
-        { manual: true }
-    ),
-    queryRecord: query(
-        [],
-        Manual(Element),
-        () => {
-            const element: Element = {
-                id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
-                orbitals: [
-                    {
-                        electrons: 2,
-                        layer: 1
-                    },
-                    {
-                        electrons: 8,
-                        layer: 2
-                    }
-                ],
-                state: {
-                    Gas: { Elemental: null }
+        ic.reply(message, text);
+    }
+    @query([], blob, { manual: true })
+    queryBlob() {
+        ic.reply(
+            new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
+            blob
+        );
+    }
+    @query([], float32, { manual: true })
+    queryFloat32() {
+        ic.reply(1245.678, float32);
+    }
+    @query([], int8, { manual: true })
+    queryInt8() {
+        ic.reply(-100, int8);
+    }
+    @query([], nat, { manual: true })
+    queryNat() {
+        ic.reply(184_467_440_737_095_516_150n, nat);
+    }
+    @query([], Null, { manual: true })
+    queryNull() {
+        ic.reply(null, Null);
+    }
+    @query([], Void, { manual: true })
+    queryVoid() {
+        ic.reply(undefined, Void);
+    }
+    @query([], Element, { manual: true })
+    queryRecord() {
+        const element: Element = {
+            id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
+            orbitals: [
+                {
+                    electrons: 2,
+                    layer: 1
+                },
+                {
+                    electrons: 8,
+                    layer: 2
                 }
-            };
-            ic.reply(element, Element);
-        },
-        { manual: true }
-    ),
-    queryReserved: query(
-        [],
-        Manual(reserved),
-        () => {
-            ic.reply(undefined, reserved);
-        },
-        { manual: true }
-    ),
-    queryString: query(
-        [],
-        Manual(text),
-        () => {
-            ic.reply('hello', text);
-        },
-        { manual: true }
-    ),
-    queryVariant: query(
-        [],
-        Manual(Gas),
-        () => {
-            const gas = { Toxic: null };
-            ic.reply(gas, Gas);
-        },
-        { manual: true }
-    )
+            ],
+            state: {
+                Gas: { Elemental: null }
+            }
+        };
+        ic.reply(element, Element);
+    }
+    @query([], reserved, { manual: true })
+    queryReserved() {
+        ic.reply(undefined, reserved);
+    }
+    @query([], text, { manual: true })
+    queryString() {
+        ic.reply('hello', text);
+    }
+    @query([], Gas, { manual: true })
+    queryVariant() {
+        const gas = { Toxic: null };
+        ic.reply(gas, Gas);
+    }
 }

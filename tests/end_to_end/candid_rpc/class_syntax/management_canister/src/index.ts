@@ -36,16 +36,16 @@ let state: State = {
 };
 
 export default class {
-@update([], CreateCanisterResult)
-async executeCreateCanister(){
+    @update([], CreateCanisterResult)
+    async executeCreateCanister() {
         const createCanisterResult = await createCanister();
 
         state.createdCanisterId = createCanisterResult.canister_id;
 
         return createCanisterResult;
     }
-@update([Principal], bool)
-async executeUpdateSettings(canisterId){
+    @update([Principal], bool)
+    async executeUpdateSettings(canisterId) {
         if (process.env.AZLE_TEST_FETCH === 'true' || false) {
             await fetch(`icp://aaaaa-aa/update_settings`, {
                 body: serialize({
@@ -84,37 +84,34 @@ async executeUpdateSettings(canisterId){
 
         return true;
     }
-    executeUploadChunk: update(
-        [Principal, blob],
-        ChunkHash,
-        async (canisterId, chunk) => {
-            if (process.env.AZLE_TEST_FETCH === 'true' || false) {
-                const response = await fetch(`icp://aaaaa-aa/upload_chunk`, {
-                    body: serialize({
-                        args: [
-                            {
-                                canister_id: canisterId,
-                                chunk
-                            }
-                        ]
-                    })
-                });
-
-                return await response.json();
-            } else {
-                return await ic.call(managementCanister.upload_chunk, {
+    @update([Principal, blob], ChunkHash)
+    async executeUploadChunk(canisterId, chunk) {
+        if (process.env.AZLE_TEST_FETCH === 'true' || false) {
+            const response = await fetch(`icp://aaaaa-aa/upload_chunk`, {
+                body: serialize({
                     args: [
                         {
                             canister_id: canisterId,
                             chunk
                         }
                     ]
-                });
-            }
+                })
+            });
+
+            return await response.json();
+        } else {
+            return await ic.call(managementCanister.upload_chunk, {
+                args: [
+                    {
+                        canister_id: canisterId,
+                        chunk
+                    }
+                ]
+            });
         }
-    ),
-@update([Principal], bool)
-async executeClearChunkStore(canisterId){
+    }
+    @update([Principal], bool)
+    async executeClearChunkStore(canisterId) {
         if (process.env.AZLE_TEST_FETCH === 'true' || false) {
             await fetch(`icp://aaaaa-aa/clear_chunk_store`, {
                 body: serialize({
@@ -137,55 +134,34 @@ async executeClearChunkStore(canisterId){
 
         return true;
     }
-    getStoredChunks: update(
-        [Principal],
-        StoredChunksResult,
-        async (canisterId) => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                const response = await fetch(`icp://aaaaa-aa/stored_chunks`, {
-                    body: serialize({
-                        args: [
-                            {
-                                canister_id: canisterId
-                            }
-                        ]
-                    })
-                });
-                return await response.json();
-            } else {
-                return await ic.call(managementCanister.stored_chunks, {
+    @update([Principal], StoredChunksResult)
+    async getStoredChunks(canisterId) {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(`icp://aaaaa-aa/stored_chunks`, {
+                body: serialize({
                     args: [
                         {
                             canister_id: canisterId
                         }
                     ]
-                });
-            }
+                })
+            });
+            return await response.json();
+        } else {
+            return await ic.call(managementCanister.stored_chunks, {
+                args: [
+                    {
+                        canister_id: canisterId
+                    }
+                ]
+            });
         }
-    ),
-    executeInstallCode: update(
-        [Principal, blob],
-        bool,
-        async (canisterId, wasmModule) => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                await fetch(`icp://aaaaa-aa/install_code`, {
-                    body: serialize({
-                        args: [
-                            {
-                                mode: {
-                                    install: null
-                                },
-                                canister_id: canisterId,
-                                wasm_module: wasmModule,
-                                arg: Uint8Array.from([]),
-                                sender_canister_version: []
-                            }
-                        ],
-                        cycles: 100_000_000_000n
-                    })
-                });
-            } else {
-                await ic.call(managementCanister.install_code, {
+    }
+    @update([Principal, blob], bool)
+    async executeInstallCode(canisterId, wasmModule) {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            await fetch(`icp://aaaaa-aa/install_code`, {
+                body: serialize({
                     args: [
                         {
                             mode: {
@@ -194,63 +170,75 @@ async executeClearChunkStore(canisterId){
                             canister_id: canisterId,
                             wasm_module: wasmModule,
                             arg: Uint8Array.from([]),
-                            sender_canister_version: None
+                            sender_canister_version: []
                         }
                     ],
                     cycles: 100_000_000_000n
-                });
-            }
-
-            return true;
+                })
+            });
+        } else {
+            await ic.call(managementCanister.install_code, {
+                args: [
+                    {
+                        mode: {
+                            install: null
+                        },
+                        canister_id: canisterId,
+                        wasm_module: wasmModule,
+                        arg: Uint8Array.from([]),
+                        sender_canister_version: None
+                    }
+                ],
+                cycles: 100_000_000_000n
+            });
         }
-    ),
-    executeInstallChunkedCode: update(
-        [Principal, Vec(ChunkHash), blob],
-        bool,
-        async (canisterId, chunkHashes, wasmModuleHash) => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                await fetch(`icp://aaaaa-aa/install_chunked_code`, {
-                    body: serialize({
-                        args: [
-                            {
-                                mode: {
-                                    install: null
-                                },
-                                target_canister: canisterId,
-                                store_canister: [],
-                                chunk_hashes_list: chunkHashes,
-                                wasm_module_hash: wasmModuleHash,
-                                arg: Uint8Array.from([]),
-                                sender_canister_version: []
-                            }
-                        ],
-                        cycles: 100_000_000_000n
-                    })
-                });
-            } else {
-                await ic.call(managementCanister.install_chunked_code, {
+
+        return true;
+    }
+    @update([Principal, Vec(ChunkHash), blob], bool)
+    async executeInstallChunkedCode(canisterId, chunkHashes, wasmModuleHash) {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            await fetch(`icp://aaaaa-aa/install_chunked_code`, {
+                body: serialize({
                     args: [
                         {
                             mode: {
                                 install: null
                             },
                             target_canister: canisterId,
-                            store_canister: None,
+                            store_canister: [],
                             chunk_hashes_list: chunkHashes,
                             wasm_module_hash: wasmModuleHash,
                             arg: Uint8Array.from([]),
-                            sender_canister_version: None
+                            sender_canister_version: []
                         }
                     ],
                     cycles: 100_000_000_000n
-                });
-            }
-
-            return true;
+                })
+            });
+        } else {
+            await ic.call(managementCanister.install_chunked_code, {
+                args: [
+                    {
+                        mode: {
+                            install: null
+                        },
+                        target_canister: canisterId,
+                        store_canister: None,
+                        chunk_hashes_list: chunkHashes,
+                        wasm_module_hash: wasmModuleHash,
+                        arg: Uint8Array.from([]),
+                        sender_canister_version: None
+                    }
+                ],
+                cycles: 100_000_000_000n
+            });
         }
-    ),
-@update([Principal], bool)
-async executeUninstallCode(canisterId){
+
+        return true;
+    }
+    @update([Principal], bool)
+    async executeUninstallCode(canisterId) {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/uninstall_code`, {
                 body: serialize({
@@ -275,8 +263,8 @@ async executeUninstallCode(canisterId){
 
         return true;
     }
-@update([Principal], bool)
-async executeStartCanister(canisterId){
+    @update([Principal], bool)
+    async executeStartCanister(canisterId) {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/start_canister`, {
                 body: serialize({
@@ -294,8 +282,8 @@ async executeStartCanister(canisterId){
         }
         return true;
     }
-@update([Principal], bool)
-async executeStopCanister(canisterId){
+    @update([Principal], bool)
+    async executeStopCanister(canisterId) {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/stop_canister`, {
                 body: serialize({
@@ -314,51 +302,43 @@ async executeStopCanister(canisterId){
 
         return true;
     }
-    getCanisterInfo: update(
-        [CanisterInfoArgs],
-        CanisterInfoResult,
-        async (args) => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                const { canister_id, num_requested_changes } = args;
-                const infoArgs = {
-                    canister_id,
-                    num_requested_changes: azleOptToAgentOpt(
-                        num_requested_changes
-                    )
-                };
-                const response = await fetch(`icp://aaaaa-aa/canister_info`, {
-                    body: serialize({
-                        args: [infoArgs]
-                    })
-                });
-                return await response.json();
-            } else {
-                return await ic.call(managementCanister.canister_info, {
-                    args: [args]
-                });
-            }
+    @update([CanisterInfoArgs], CanisterInfoResult)
+    async getCanisterInfo(args) {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const { canister_id, num_requested_changes } = args;
+            const infoArgs = {
+                canister_id,
+                num_requested_changes: azleOptToAgentOpt(num_requested_changes)
+            };
+            const response = await fetch(`icp://aaaaa-aa/canister_info`, {
+                body: serialize({
+                    args: [infoArgs]
+                })
+            });
+            return await response.json();
+        } else {
+            return await ic.call(managementCanister.canister_info, {
+                args: [args]
+            });
         }
-    ),
-    getCanisterStatus: update(
-        [CanisterStatusArgs],
-        CanisterStatusResult,
-        async (args) => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                const response = await fetch(`icp://aaaaa-aa/canister_status`, {
-                    body: serialize({
-                        args: [args]
-                    })
-                });
-                return await response.json();
-            } else {
-                return await ic.call(managementCanister.canister_status, {
+    }
+    @update([CanisterStatusArgs], CanisterStatusResult)
+    async getCanisterStatus(args) {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(`icp://aaaaa-aa/canister_status`, {
+                body: serialize({
                     args: [args]
-                });
-            }
+                })
+            });
+            return await response.json();
+        } else {
+            return await ic.call(managementCanister.canister_status, {
+                args: [args]
+            });
         }
-    ),
-@update([Principal], bool)
-async executeDeleteCanister(canisterId){
+    }
+    @update([Principal], bool)
+    async executeDeleteCanister(canisterId) {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/delete_canister`, {
                 body: serialize({
@@ -377,8 +357,8 @@ async executeDeleteCanister(canisterId){
 
         return true;
     }
-@update([Principal], bool)
-async executeDepositCycles(canisterId){
+    @update([Principal], bool)
+    async executeDepositCycles(canisterId) {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/deposit_cycles`, {
                 body: serialize({
@@ -399,8 +379,8 @@ async executeDepositCycles(canisterId){
 
         return true;
     }
-@update([], blob)
-async getRawRand(){
+    @update([], blob)
+    async getRawRand() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(`icp://aaaaa-aa/raw_rand`);
             return await response.json();
@@ -409,72 +389,66 @@ async getRawRand(){
         }
     }
     // TODO we should test this like we test depositCycles
-    provisionalCreateCanisterWithCycles: update(
-        [],
-        ProvisionalCreateCanisterWithCyclesResult,
-        async () => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                const response = await fetch(
-                    `icp://aaaaa-aa/provisional_create_canister_with_cycles`,
-                    {
-                        body: serialize({
-                            args: [
-                                {
-                                    amount: [],
-                                    settings: [],
-                                    sender_canister_version: [],
-                                    specified_id: []
-                                }
-                            ]
-                        })
-                    }
-                );
-                return await response.json();
-            } else {
-                return await ic.call(
-                    managementCanister.provisional_create_canister_with_cycles,
-                    {
+    @update([], ProvisionalCreateCanisterWithCyclesResult)
+    async provisionalCreateCanisterWithCycles() {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(
+                `icp://aaaaa-aa/provisional_create_canister_with_cycles`,
+                {
+                    body: serialize({
                         args: [
                             {
-                                amount: None,
-                                settings: None,
-                                sender_canister_version: None,
-                                specified_id: None
+                                amount: [],
+                                settings: [],
+                                sender_canister_version: [],
+                                specified_id: []
                             }
                         ]
-                    }
-                );
-            }
-        }
-    ),
-    // TODO we should test this like we test depositCycles
-    provisionalTopUpCanister: update(
-        [Principal, nat],
-        bool,
-        async (canisterId, amount) => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                await fetch(`icp://aaaaa-aa/provisional_top_up_canister`, {
-                    body: serialize({
-                        args: [{ canister_id: canisterId, amount }],
-                        cycles: 10_000_000n
                     })
-                });
-            } else {
-                await ic.call(managementCanister.provisional_top_up_canister, {
+                }
+            );
+            return await response.json();
+        } else {
+            return await ic.call(
+                managementCanister.provisional_create_canister_with_cycles,
+                {
                     args: [
                         {
-                            canister_id: canisterId,
-                            amount
+                            amount: None,
+                            settings: None,
+                            sender_canister_version: None,
+                            specified_id: None
                         }
                     ]
-                });
-            }
-
-            return true;
+                }
+            );
         }
-    ),
-@query([], Principal)
-    getCreatedCanisterId(){
+    }
+    // TODO we should test this like we test depositCycles
+    @update([Principal, nat], bool)
+    async provisionalTopUpCanister(canisterId, amount) {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            await fetch(`icp://aaaaa-aa/provisional_top_up_canister`, {
+                body: serialize({
+                    args: [{ canister_id: canisterId, amount }],
+                    cycles: 10_000_000n
+                })
+            });
+        } else {
+            await ic.call(managementCanister.provisional_top_up_canister, {
+                args: [
+                    {
+                        canister_id: canisterId,
+                        amount
+                    }
+                ]
+            });
+        }
+
+        return true;
+    }
+    @query([], Principal)
+    getCreatedCanisterId() {
         return state.createdCanisterId;
     }
 }

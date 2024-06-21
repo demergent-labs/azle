@@ -9,10 +9,8 @@ import {
 } from 'azle/experimental';
 
 export default class {
-    reject: query(
-        [text],
-        Manual(empty),
-        (message) => {
+    @query([text], empty, { manual: true})
+    reject(message){
             ic.reject(message);
         },
         { manual: true }
@@ -22,11 +20,8 @@ export default class {
     accept(){
         return true;
     }),
-
-    error: query(
-        [],
-        Manual(empty),
-        () => {
+    @query([], empty, { manual: true})
+    error(){
             // This errors because neither ic.reject nor ic.reply were called
         },
         { manual: true }

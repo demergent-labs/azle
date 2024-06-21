@@ -29,74 +29,71 @@ import {
 let icpCanister: typeof Ledger;
 
 export default class {
-@init([])
-    init(){
+    @init([])
+    init() {
         icpCanister = Ledger(Principal.fromText(getIcpCanisterPrincipal()));
     }
-    executeTransfer: update(
-        [Address, nat64, nat64, Opt(nat64)],
-        TransferResult,
-        async (to, amount, fee, createdAtTime) => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                const response = await fetch(
-                    `icp://${getIcpCanisterPrincipal()}/transfer`,
-                    {
-                        body: serialize({
-                            candidPath: `/src/ledger.did`,
-                            args: [
-                                {
-                                    memo: 0n,
-                                    amount: {
-                                        e8s: amount
-                                    },
-                                    fee: {
-                                        e8s: fee
-                                    },
-                                    from_subaccount: [],
-                                    to: binaryAddressFromAddress(to),
-                                    created_at_time:
-                                        'None' in createdAtTime
-                                            ? []
-                                            : [
-                                                  {
-                                                      timestamp_nanos:
-                                                          createdAtTime.Some
-                                                  }
-                                              ]
-                                }
-                            ]
-                        })
-                    }
-                );
+    @update([Address, nat64, nat64, Opt(nat64)], TransferResult)
+    async executeTransfer(to, amount, fee, createdAtTime) {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(
+                `icp://${getIcpCanisterPrincipal()}/transfer`,
+                {
+                    body: serialize({
+                        candidPath: `/src/ledger.did`,
+                        args: [
+                            {
+                                memo: 0n,
+                                amount: {
+                                    e8s: amount
+                                },
+                                fee: {
+                                    e8s: fee
+                                },
+                                from_subaccount: [],
+                                to: binaryAddressFromAddress(to),
+                                created_at_time:
+                                    'None' in createdAtTime
+                                        ? []
+                                        : [
+                                              {
+                                                  timestamp_nanos:
+                                                      createdAtTime.Some
+                                              }
+                                          ]
+                            }
+                        ]
+                    })
+                }
+            );
 
-                return await response.json();
-            } else {
-                return await ic.call(icpCanister.transfer, {
-                    args: [
-                        {
-                            memo: 0n,
-                            amount: {
-                                e8s: amount
-                            },
-                            fee: {
-                                e8s: fee
-                            },
-                            from_subaccount: None,
-                            to: binaryAddressFromAddress(to),
-                            created_at_time:
-                                'None' in createdAtTime
-                                    ? None
-                                    : Some({
-                                          timestamp_nanos: createdAtTime.Some
-                                      })
-                        }
-                    ]
-                });
-            }
+            return await response.json();
+        } else {
+            return await ic.call(icpCanister.transfer, {
+                args: [
+                    {
+                        memo: 0n,
+                        amount: {
+                            e8s: amount
+                        },
+                        fee: {
+                            e8s: fee
+                        },
+                        from_subaccount: None,
+                        to: binaryAddressFromAddress(to),
+                        created_at_time:
+                            'None' in createdAtTime
+                                ? None
+                                : Some({
+                                      timestamp_nanos: createdAtTime.Some
+                                  })
+                    }
+                ]
+            });
         }
-    ),
-@update([Address], Tokens)
-async getAccountBalance(address){
+    }
+    @update([Address], Tokens)
+    async getAccountBalance(address) {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcpCanisterPrincipal()}/account_balance`,
@@ -123,8 +120,8 @@ async getAccountBalance(address){
             });
         }
     }
-@update([], TransferFee)
-async getTransferFee(){
+    @update([], TransferFee)
+    async getTransferFee() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcpCanisterPrincipal()}/transfer_fee`,
@@ -141,58 +138,55 @@ async getTransferFee(){
             return await ic.call(icpCanister.transfer_fee, { args: [{}] });
         }
     }
-    getBlocks: update(
-        [GetBlocksArgs],
-        QueryBlocksResponse,
-        async (getBlocksArgs) => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                const response = await fetch(
-                    `icp://${getIcpCanisterPrincipal()}/query_blocks`,
-                    {
-                        body: serialize({
-                            candidPath: `/src/ledger.did`,
-                            args: [getBlocksArgs]
-                        })
-                    }
-                );
-                const {
-                    archived_blocks,
-                    blocks,
-                    certificate,
-                    chain_length,
-                    first_block_index
-                } = await response.json();
-                const azleBlocks = blocks.map((block: any) => {
-                    const { parent_hash, timestamp, transaction } = block;
-                    const { created_at_time, memo, operation } = transaction;
-
-                    return {
-                        parent_hash: agentOptToAzleOpt(parent_hash),
-                        timestamp,
-                        transaction: {
-                            created_at_time,
-                            memo,
-                            operation: agentOptToAzleOpt(operation)
-                        }
-                    };
-                });
+    @update([GetBlocksArgs], QueryBlocksResponse)
+    async getBlocks(getBlocksArgs) {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(
+                `icp://${getIcpCanisterPrincipal()}/query_blocks`,
+                {
+                    body: serialize({
+                        candidPath: `/src/ledger.did`,
+                        args: [getBlocksArgs]
+                    })
+                }
+            );
+            const {
+                archived_blocks,
+                blocks,
+                certificate,
+                chain_length,
+                first_block_index
+            } = await response.json();
+            const azleBlocks = blocks.map((block: any) => {
+                const { parent_hash, timestamp, transaction } = block;
+                const { created_at_time, memo, operation } = transaction;
 
                 return {
-                    archived_blocks,
-                    blocks: azleBlocks,
-                    certificate: agentOptToAzleOpt(certificate),
-                    chain_length,
-                    first_block_index
+                    parent_hash: agentOptToAzleOpt(parent_hash),
+                    timestamp,
+                    transaction: {
+                        created_at_time,
+                        memo,
+                        operation: agentOptToAzleOpt(operation)
+                    }
                 };
-            } else {
-                return await ic.call(icpCanister.query_blocks, {
-                    args: [getBlocksArgs]
-                });
-            }
+            });
+
+            return {
+                archived_blocks,
+                blocks: azleBlocks,
+                certificate: agentOptToAzleOpt(certificate),
+                chain_length,
+                first_block_index
+            };
+        } else {
+            return await ic.call(icpCanister.query_blocks, {
+                args: [getBlocksArgs]
+            });
         }
-    ),
-@update([], text)
-async getSymbol(){
+    }
+    @update([], text)
+    async getSymbol() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcpCanisterPrincipal()}/symbol`,
@@ -210,8 +204,8 @@ async getSymbol(){
             return symbolResult.symbol;
         }
     }
-@update([], text)
-async getName(){
+    @update([], text)
+    async getName() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcpCanisterPrincipal()}/name`,
@@ -229,8 +223,8 @@ async getName(){
             return nameResult.name;
         }
     }
-@update([], nat32)
-async getDecimals(){
+    @update([], nat32)
+    async getDecimals() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcpCanisterPrincipal()}/decimals`,
@@ -248,8 +242,8 @@ async getDecimals(){
             return decimalsResult.decimals;
         }
     }
-@update([], Archives)
-async getArchives(){
+    @update([], Archives)
+    async getArchives() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcpCanisterPrincipal()}/archives`,
@@ -265,8 +259,8 @@ async getArchives(){
             return await ic.call(icpCanister.archives);
         }
     }
-@query([Principal], text)
-    getAddressFromPrincipal(principal){
+    @query([Principal], text)
+    getAddressFromPrincipal(principal) {
         return hexAddressFromPrincipal(principal, 0);
     }
 }

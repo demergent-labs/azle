@@ -25,12 +25,12 @@ const Token = Record({
 let stableStorage = StableBTreeMap<text, nat>(0);
 
 export default class {
-@init([])
-    init(){
+    @init([])
+    init() {
         stableStorage.insert('counter', 0n);
     }
-@query([HttpRequest], HttpResponse(Token))
-    http_request(req){
+    @query([HttpRequest], HttpResponse(Token))
+    http_request(req) {
         if (req.method === 'GET') {
             if (req.headers.find(isGzip) === undefined) {
                 if (req.url === '/stream') {
@@ -103,8 +103,8 @@ export default class {
             upgrade: None
         };
     }
-@update([HttpRequest], HttpResponse(Token))
-    http_request_update(req){
+    @update([HttpRequest], HttpResponse(Token))
+    http_request_update(req) {
         if (req.method === 'POST') {
             const counterOpt = stableStorage.get('counter');
             const counter =
@@ -158,41 +158,38 @@ export default class {
             upgrade: None
         };
     }
-    http_streaming: query(
-        [Token],
-        StreamingCallbackHttpResponse(Token),
-        (token) => {
-            switch (token.arbitrary_data) {
-                case 'start': {
-                    return {
-                        body: encode(' is '),
-                        token: Some({ arbitrary_data: 'next' })
-                    };
-                }
-                case 'next': {
-                    const counterOpt = stableStorage.get('counter');
-                    const counter =
-                        'None' in counterOpt
-                            ? ic.trap('counter does not exist')
-                            : counterOpt.Some;
+    @query([Token], StreamingCallbackHttpResponse(Token))
+    http_streaming(token) {
+        switch (token.arbitrary_data) {
+            case 'start': {
+                return {
+                    body: encode(' is '),
+                    token: Some({ arbitrary_data: 'next' })
+                };
+            }
+            case 'next': {
+                const counterOpt = stableStorage.get('counter');
+                const counter =
+                    'None' in counterOpt
+                        ? ic.trap('counter does not exist')
+                        : counterOpt.Some;
 
-                    return {
-                        body: encode(`${counter}`),
-                        token: Some({ arbitrary_data: 'last' })
-                    };
-                }
-                case 'last': {
-                    return {
-                        body: encode(' streaming\n'),
-                        token: None
-                    };
-                }
-                default: {
-                    return ic.trap('unreachable');
-                }
+                return {
+                    body: encode(`${counter}`),
+                    token: Some({ arbitrary_data: 'last' })
+                };
+            }
+            case 'last': {
+                return {
+                    body: encode(' streaming\n'),
+                    token: None
+                };
+            }
+            default: {
+                return ic.trap('unreachable');
             }
         }
-    )
+    }
 }
 
 function isGzip(x: HeaderField): boolean {

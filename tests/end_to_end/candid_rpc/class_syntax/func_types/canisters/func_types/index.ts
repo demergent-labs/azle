@@ -52,16 +52,16 @@ const NullFunc = Func(
 let stableStorage = StableBTreeMap<text, StableFunc>(0);
 
 export default class {
-@init([])
-    init(){
+    @init([])
+    init() {
         stableStorage.insert('stableFunc', [
             Principal.from('aaaaa-aa'),
             'start_canister'
         ]);
     }
 
-@query([], StableFunc)
-    getStableFunc(){
+    @query([], StableFunc)
+    getStableFunc() {
         const stableFuncOpt = stableStorage.get('stableFunc');
         if ('None' in stableFuncOpt) {
             return [Principal.from('aaaaa-aa'), 'raw_rand'];
@@ -69,31 +69,27 @@ export default class {
         return stableFuncOpt.Some;
     }
 
-@query([BasicFunc], BasicFunc)
-    basicFuncParam(basicFunc){
+    @query([BasicFunc], BasicFunc)
+    basicFuncParam(basicFunc) {
         return basicFunc;
     }
 
-@query([NullFunc], NullFunc)
-    nullFuncParam(nullFunc){
+    @query([NullFunc], NullFunc)
+    nullFuncParam(nullFunc) {
         return nullFunc;
     }
+    @query([Vec(BasicFunc)], Vec(BasicFunc))
+    basicFuncParamArray(basicFunc) {
+        return basicFunc;
+    }
 
-    basicFuncParamArray: query(
-        [Vec(BasicFunc)],
-        Vec(BasicFunc),
-        (basicFunc) => {
-            return basicFunc;
-        }
-    )
-
-@query([], BasicFunc)
-    basicFuncReturnType(){
+    @query([], BasicFunc)
+    basicFuncReturnType() {
         return [Principal.fromText('aaaaa-aa'), 'create_canister'];
     }
 
-@query([], Vec(BasicFunc))
-    basicFuncReturnTypeArray(){
+    @query([], Vec(BasicFunc))
+    basicFuncReturnTypeArray() {
         return [
             [Principal.fromText('aaaaa-aa'), 'create_canister'],
             [Principal.fromText('aaaaa-aa'), 'update_settings'],
@@ -101,18 +97,18 @@ export default class {
         ];
     }
 
-@query([ComplexFunc], ComplexFunc)
-    complexFuncParam(complexFunc){
+    @query([ComplexFunc], ComplexFunc)
+    complexFuncParam(complexFunc) {
         return complexFunc;
     }
 
-@query([], ComplexFunc)
-    complexFuncReturnType(){
+    @query([], ComplexFunc)
+    complexFuncReturnType() {
         return [Principal.fromText('aaaaa-aa'), 'stop_canister'];
     }
 
-@update([], NotifierFunc)
-async getNotifierFromNotifiersCanister(){
+    @update([], NotifierFunc)
+    async getNotifierFromNotifiersCanister() {
         const notifiersCanister = Notifier(
             Principal.fromText(getNotifierPrincipal())
         );

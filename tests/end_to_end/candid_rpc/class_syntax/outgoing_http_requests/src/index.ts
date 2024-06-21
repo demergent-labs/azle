@@ -16,8 +16,8 @@ import {
 } from 'azle/experimental';
 
 export default class {
-@update([], text)
-async xkcd(){
+    @update([], text)
+    async xkcd() {
         if (process.env.AZLE_TEST_FETCH) {
             ic.setOutgoingHttpOptions({
                 maxResponseBytes: 2_000n,
@@ -58,14 +58,12 @@ async xkcd(){
             return Buffer.from(httpResponse.body).toString();
         }
     }
-    xkcdRaw: update(
-        [],
-        Manual(HttpResponse),
-        async () => {
-            const httpResponse = await ic.callRaw(
-                Principal.fromText('aaaaa-aa'),
-                'http_request',
-                ic.candidEncode(`
+    @update([], HttpResponse, { manual: true })
+    async xkcdRaw() {
+        const httpResponse = await ic.callRaw(
+            Principal.fromText('aaaaa-aa'),
+            'http_request',
+            ic.candidEncode(`
                 (
                     record {
                         url = "https://xkcd.com/642/info.0.json";
@@ -79,15 +77,13 @@ async xkcd(){
                     }
                 )
             `),
-                50_000_000n
-            );
+            50_000_000n
+        );
 
-            ic.replyRaw(httpResponse);
-        },
-        { manual: true }
-    ),
-@query([HttpTransformArgs], HttpResponse)
-    xkcdTransform(args){
+        ic.replyRaw(httpResponse);
+    }
+    @query([HttpTransformArgs], HttpResponse)
+    xkcdTransform(args) {
         return {
             ...args.response,
             headers: []

@@ -169,10 +169,8 @@ export default class {
             )
         );
     }),
-    testRecServiceCall: update(
-        [MyFullCanister],
-        MyFullCanister,
-        async (myFullCanister) => {
+    @update([MyFullCanister], MyFullCanister)
+    async testRecServiceCall(myFullCanister) {
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 const response = await fetch(
                     `icp://${myFullCanister.principal.toText()}/myQuery`,

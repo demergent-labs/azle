@@ -27,52 +27,49 @@ const ThreeNullRecord = Record({
 });
 
 export default class {
-@query([Null], Null)
-    nullFunction(param){
+    @query([Null], Null)
+    nullFunction(param) {
         return param;
     }
-@query([], Void)
-    voidIsNotNull(){
+    @query([], Void)
+    voidIsNotNull() {
         ic.print(
             'Even though they are both None in Python, for Candid null and void are different.'
         );
     }
-@query([], PartiallyNullRecord)
-    getPartiallyNullRecord(){
+    @query([], PartiallyNullRecord)
+    getPartiallyNullRecord() {
         return {
             firstItem: 1n,
             secondItem: null,
             thirdItem: 3n
         };
     }
-    setPartiallyNullRecord: update(
-        [PartiallyNullRecord],
-        PartiallyNullRecord,
-        (param) => {
-            return param;
-        }
-    ),
-@query([], TwoNullRecord)
-    getSmallNullRecord(){
+    @update([PartiallyNullRecord], PartiallyNullRecord)
+    setPartiallyNullRecord(param) {
+        return param;
+    }
+    @query([], TwoNullRecord)
+    getSmallNullRecord() {
         return {
             firstItem: null,
             secondItem: null
         };
     }
-@update([TwoNullRecord], TwoNullRecord)
-    setSmallNullRecord(param){
+    @update([TwoNullRecord], TwoNullRecord)
+    setSmallNullRecord(param) {
         return param;
     }
-@query([], ThreeNullRecord)
-    getLargeNullRecord(){
+    @query([], ThreeNullRecord)
+    getLargeNullRecord() {
         return {
             firstItem: null,
             secondItem: null,
             thirdItem: null
         };
     }
-@update([ThreeNullRecord], ThreeNullRecord)
-    setLargeNullRecord(param){
+    @update([ThreeNullRecord], ThreeNullRecord)
+    setLargeNullRecord(param) {
         return param;
     }
 }

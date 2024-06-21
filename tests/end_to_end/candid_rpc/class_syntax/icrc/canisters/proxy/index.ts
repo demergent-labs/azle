@@ -33,12 +33,12 @@ import {
 let icrc: typeof ICRC;
 
 export default class {
-@init([])
-    init(){
+    @init([])
+    init() {
         icrc = ICRC(Principal.fromText(getIcrcPrincipal()));
     }
-@query([], Vec(Tuple(text, Value)))
-async icrc1_metadata(){
+    @query([], Vec(Tuple(text, Value)))
+    async icrc1_metadata() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_metadata`,
@@ -55,8 +55,8 @@ async icrc1_metadata(){
             return await ic.call(icrc.icrc1_metadata);
         }
     }
-@query([], text)
-async icrc1_name(){
+    @query([], text)
+    async icrc1_name() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_name`,
@@ -73,8 +73,8 @@ async icrc1_name(){
             return await ic.call(icrc.icrc1_name);
         }
     }
-@query([], nat8)
-async icrc1_decimals(){
+    @query([], nat8)
+    async icrc1_decimals() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_decimals`,
@@ -91,8 +91,8 @@ async icrc1_decimals(){
             return await ic.call(icrc.icrc1_decimals);
         }
     }
-@query([], text)
-async icrc1_symbol(){
+    @query([], text)
+    async icrc1_symbol() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_symbol`,
@@ -109,8 +109,8 @@ async icrc1_symbol(){
             return await ic.call(icrc.icrc1_symbol);
         }
     }
-@query([], nat)
-async icrc1_fee(){
+    @query([], nat)
+    async icrc1_fee() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_fee`,
@@ -127,8 +127,8 @@ async icrc1_fee(){
             return await ic.call(icrc.icrc1_fee);
         }
     }
-@query([], nat)
-async icrc1_total_supply(){
+    @query([], nat)
+    async icrc1_total_supply() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_total_supply`,
@@ -145,8 +145,8 @@ async icrc1_total_supply(){
             return await ic.call(icrc.icrc1_total_supply);
         }
     }
-@query([], Opt(Account))
-async icrc1_minting_account(){
+    @query([], Opt(Account))
+    async icrc1_minting_account() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_minting_account`,
@@ -167,8 +167,8 @@ async icrc1_minting_account(){
             return await ic.call(icrc.icrc1_minting_account);
         }
     }
-@query([Account], nat)
-async icrc1_balance_of(account){
+    @query([Account], nat)
+    async icrc1_balance_of(account) {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_balance_of`,
@@ -195,50 +195,47 @@ async icrc1_balance_of(account){
             });
         }
     }
-    icrc1_transfer: update(
-        [TransferArgs],
-        TransferResult,
-        async (transferArgs) => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                const response = await fetch(
-                    `icp://${getIcrcPrincipal()}/icrc1_transfer`,
-                    {
-                        body: serialize({
-                            candidPath: '/candid/icp/icrc.did',
-                            args: [
-                                {
-                                    ...transferArgs,
-                                    from_subaccount: azleOptToAgentOpt(
-                                        transferArgs.from_subaccount
-                                    ),
-                                    to: {
-                                        ...transferArgs.to,
-                                        subaccount: azleOptToAgentOpt(
-                                            transferArgs.to.subaccount
-                                        )
-                                    },
-                                    fee: azleOptToAgentOpt(transferArgs.fee),
-                                    memo: azleOptToAgentOpt(transferArgs.memo),
-                                    created_at_time: azleOptToAgentOpt(
-                                        transferArgs.created_at_time
+    @update([TransferArgs], TransferResult)
+    async icrc1_transfer(transferArgs) {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(
+                `icp://${getIcrcPrincipal()}/icrc1_transfer`,
+                {
+                    body: serialize({
+                        candidPath: '/candid/icp/icrc.did',
+                        args: [
+                            {
+                                ...transferArgs,
+                                from_subaccount: azleOptToAgentOpt(
+                                    transferArgs.from_subaccount
+                                ),
+                                to: {
+                                    ...transferArgs.to,
+                                    subaccount: azleOptToAgentOpt(
+                                        transferArgs.to.subaccount
                                     )
-                                }
-                            ]
-                        })
-                    }
-                );
-                const responseJson = await response.json();
+                                },
+                                fee: azleOptToAgentOpt(transferArgs.fee),
+                                memo: azleOptToAgentOpt(transferArgs.memo),
+                                created_at_time: azleOptToAgentOpt(
+                                    transferArgs.created_at_time
+                                )
+                            }
+                        ]
+                    })
+                }
+            );
+            const responseJson = await response.json();
 
-                return responseJson;
-            } else {
-                return await ic.call(icrc.icrc1_transfer, {
-                    args: [transferArgs]
-                });
-            }
+            return responseJson;
+        } else {
+            return await ic.call(icrc.icrc1_transfer, {
+                args: [transferArgs]
+            });
         }
-    ),
-@query([], Vec(SupportedStandard))
-async icrc1_supported_standards(){
+    }
+    @query([], Vec(SupportedStandard))
+    async icrc1_supported_standards() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_supported_standards`,
@@ -255,8 +252,8 @@ async icrc1_supported_standards(){
             return await ic.call(icrc.icrc1_supported_standards);
         }
     }
-@update([ApproveArgs], ApproveResult)
-async icrc2_approve(approveArgs){
+    @update([ApproveArgs], ApproveResult)
+    async icrc2_approve(approveArgs) {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc2_approve`,
@@ -300,98 +297,88 @@ async icrc2_approve(approveArgs){
             });
         }
     }
-    icrc2_transfer_from: update(
-        [TransferFromArgs],
-        TransferFromResult,
-        async (transferFromArgs) => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                const response = await fetch(
-                    `icp://${getIcrcPrincipal()}/icrc2_transfer_from`,
-                    {
-                        body: serialize({
-                            candidPath: '/candid/icp/icrc.did',
-                            args: [
-                                {
-                                    ...transferFromArgs,
-                                    spender_subaccount: azleOptToAgentOpt(
-                                        transferFromArgs.spender_subaccount
-                                    ),
-                                    from: {
-                                        ...transferFromArgs.from,
-                                        subaccount: azleOptToAgentOpt(
-                                            transferFromArgs.from.subaccount
-                                        )
-                                    },
-                                    to: {
-                                        ...transferFromArgs.to,
-                                        subaccount: azleOptToAgentOpt(
-                                            transferFromArgs.from.subaccount
-                                        )
-                                    },
-                                    fee: azleOptToAgentOpt(
-                                        transferFromArgs.fee
-                                    ),
-                                    memo: azleOptToAgentOpt(
-                                        transferFromArgs.memo
-                                    ),
-                                    created_at_time: azleOptToAgentOpt(
-                                        transferFromArgs.created_at_time
+    @update([TransferFromArgs], TransferFromResult)
+    async icrc2_transfer_from(transferFromArgs) {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(
+                `icp://${getIcrcPrincipal()}/icrc2_transfer_from`,
+                {
+                    body: serialize({
+                        candidPath: '/candid/icp/icrc.did',
+                        args: [
+                            {
+                                ...transferFromArgs,
+                                spender_subaccount: azleOptToAgentOpt(
+                                    transferFromArgs.spender_subaccount
+                                ),
+                                from: {
+                                    ...transferFromArgs.from,
+                                    subaccount: azleOptToAgentOpt(
+                                        transferFromArgs.from.subaccount
+                                    )
+                                },
+                                to: {
+                                    ...transferFromArgs.to,
+                                    subaccount: azleOptToAgentOpt(
+                                        transferFromArgs.from.subaccount
+                                    )
+                                },
+                                fee: azleOptToAgentOpt(transferFromArgs.fee),
+                                memo: azleOptToAgentOpt(transferFromArgs.memo),
+                                created_at_time: azleOptToAgentOpt(
+                                    transferFromArgs.created_at_time
+                                )
+                            }
+                        ]
+                    })
+                }
+            );
+            const responseJson = await response.json();
+
+            return responseJson;
+        } else {
+            return await ic.call(icrc.icrc2_transfer_from, {
+                args: [transferFromArgs]
+            });
+        }
+    }
+    @update([AllowanceArgs], AllowanceResult)
+    async icrc2_allowance(allowanceArgs) {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(
+                `icp://${getIcrcPrincipal()}/icrc2_allowance`,
+                {
+                    body: serialize({
+                        candidPath: '/candid/icp/icrc.did',
+                        args: [
+                            {
+                                ...allowanceArgs,
+                                account: {
+                                    ...allowanceArgs.account,
+                                    subaccount: azleOptToAgentOpt(
+                                        allowanceArgs.account.subaccount
+                                    )
+                                },
+                                spender: {
+                                    ...allowanceArgs.spender,
+                                    subaccount: azleOptToAgentOpt(
+                                        allowanceArgs.spender.subaccount
                                     )
                                 }
-                            ]
-                        })
-                    }
-                );
-                const responseJson = await response.json();
+                            }
+                        ]
+                    })
+                }
+            );
+            const responseJson = await response.json();
 
-                return responseJson;
-            } else {
-                return await ic.call(icrc.icrc2_transfer_from, {
-                    args: [transferFromArgs]
-                });
-            }
+            return responseJson;
+        } else {
+            return await ic.call(icrc.icrc2_allowance, {
+                args: [allowanceArgs]
+            });
         }
-    ),
-    icrc2_allowance: update(
-        [AllowanceArgs],
-        AllowanceResult,
-        async (allowanceArgs) => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                const response = await fetch(
-                    `icp://${getIcrcPrincipal()}/icrc2_allowance`,
-                    {
-                        body: serialize({
-                            candidPath: '/candid/icp/icrc.did',
-                            args: [
-                                {
-                                    ...allowanceArgs,
-                                    account: {
-                                        ...allowanceArgs.account,
-                                        subaccount: azleOptToAgentOpt(
-                                            allowanceArgs.account.subaccount
-                                        )
-                                    },
-                                    spender: {
-                                        ...allowanceArgs.spender,
-                                        subaccount: azleOptToAgentOpt(
-                                            allowanceArgs.spender.subaccount
-                                        )
-                                    }
-                                }
-                            ]
-                        })
-                    }
-                );
-                const responseJson = await response.json();
-
-                return responseJson;
-            } else {
-                return await ic.call(icrc.icrc2_allowance, {
-                    args: [allowanceArgs]
-                });
-            }
-        }
-    )
+    }
 }
 
 function getIcrcPrincipal(): string {

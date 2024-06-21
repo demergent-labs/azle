@@ -27,10 +27,16 @@ let ckBTC: typeof ICRC;
 let minter: typeof Minter;
 
 export default class {
-    init: init([], setupCanisters),
-    postUpgrade: postUpgrade([], setupCanisters),
-@update([], nat64)
-async getBalance(){
+    @init()
+    init() {
+        setupCanisters();
+    }
+    @postUpgrade()
+    postUpgrade() {
+        setupCanisters();
+    }
+    @update([], nat64)
+    async getBalance() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getCkBtcPrincipal()}/icrc1_balance_of`,
@@ -66,8 +72,8 @@ async getBalance(){
             });
         }
     }
-@update([], UpdateBalanceResult)
-async updateBalance(){
+    @update([], UpdateBalanceResult)
+    async updateBalance() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getMinterPrincipal()}/update_balance`,
@@ -103,8 +109,8 @@ async updateBalance(){
             });
         }
     }
-@update([], text)
-async getDepositAddress(){
+    @update([], text)
+    async getDepositAddress() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getMinterPrincipal()}/get_btc_address`,
@@ -140,72 +146,67 @@ async getDepositAddress(){
             });
         }
     }
-    transfer: update(
-        [text, nat],
-        Result(nat, TransferError),
-        async (to, amount) => {
-            if (process.env.AZLE_TEST_FETCH === 'true') {
-                const response = await fetch(
-                    `icp://${getCkBtcPrincipal()}/icrc1_transfer`,
-                    {
-                        body: serialize({
-                            candidPath: `/candid/icp/icrc.did`,
-                            args: [
-                                {
-                                    from_subaccount: [
-                                        padPrincipalWithZeros(
-                                            ic.caller().toUint8Array()
-                                        )
-                                    ],
-                                    to: {
-                                        owner: ic.id(),
-                                        subaccount: [
-                                            padPrincipalWithZeros(
-                                                Principal.fromText(
-                                                    to
-                                                ).toUint8Array()
-                                            )
-                                        ]
-                                    },
-                                    amount,
-                                    fee: [],
-                                    memo: [],
-                                    created_at_time: []
-                                }
-                            ]
-                        })
-                    }
-                );
-                const responseJson = await response.json();
-
-                return responseJson;
-            } else {
-                return await ic.call(ckBTC.icrc1_transfer, {
-                    args: [
-                        {
-                            from_subaccount: Some(
-                                padPrincipalWithZeros(
-                                    ic.caller().toUint8Array()
-                                )
-                            ),
-                            to: {
-                                owner: ic.id(),
-                                subaccount: Some(
+    @update([text, nat], Result(nat, TransferError))
+    async transfer(to, amount) {
+        if (process.env.AZLE_TEST_FETCH === 'true') {
+            const response = await fetch(
+                `icp://${getCkBtcPrincipal()}/icrc1_transfer`,
+                {
+                    body: serialize({
+                        candidPath: `/candid/icp/icrc.did`,
+                        args: [
+                            {
+                                from_subaccount: [
                                     padPrincipalWithZeros(
-                                        Principal.fromText(to).toUint8Array()
+                                        ic.caller().toUint8Array()
                                     )
+                                ],
+                                to: {
+                                    owner: ic.id(),
+                                    subaccount: [
+                                        padPrincipalWithZeros(
+                                            Principal.fromText(
+                                                to
+                                            ).toUint8Array()
+                                        )
+                                    ]
+                                },
+                                amount,
+                                fee: [],
+                                memo: [],
+                                created_at_time: []
+                            }
+                        ]
+                    })
+                }
+            );
+            const responseJson = await response.json();
+
+            return responseJson;
+        } else {
+            return await ic.call(ckBTC.icrc1_transfer, {
+                args: [
+                    {
+                        from_subaccount: Some(
+                            padPrincipalWithZeros(ic.caller().toUint8Array())
+                        ),
+                        to: {
+                            owner: ic.id(),
+                            subaccount: Some(
+                                padPrincipalWithZeros(
+                                    Principal.fromText(to).toUint8Array()
                                 )
-                            },
-                            amount,
-                            fee: None,
-                            memo: None,
-                            created_at_time: None
-                        }
-                    ]
-                });
-            }
+                            )
+                        },
+                        amount,
+                        fee: None,
+                        memo: None,
+                        created_at_time: None
+                    }
+                ]
+            });
         }
-    )
+    }
 }
 
 function padPrincipalWithZeros(blob: blob): blob {

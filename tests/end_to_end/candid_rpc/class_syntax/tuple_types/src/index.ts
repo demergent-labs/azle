@@ -59,113 +59,87 @@ const HttpResponse = Record({
 });
 
 export default class {
-@query([], PrimitiveOneTuple)
-    primitiveOneTupleReturnType(){
+    @query([], PrimitiveOneTuple)
+    primitiveOneTupleReturnType() {
         return ['Hello'];
     }
-
-    primitiveOneTupleParam: query(
-        [PrimitiveOneTuple],
-        PrimitiveOneTuple,
-        (param) => {
-            return param;
-        }
-    ),
-
-@query([], Tuple(text))
-    primitiveOneTupleInlineReturnType(){
-        return ['Greenland'];
-    }
-
-@query([Tuple(text)], Tuple(text))
-    primitiveOneTupleInlineParam(param){
+    @query([PrimitiveOneTuple], PrimitiveOneTuple)
+    primitiveOneTupleParam(param) {
         return param;
     }
 
-@query([], PrimitiveTwoTuple)
-    primitiveTwoTupleReturnType(){
+    @query([], Tuple(text))
+    primitiveOneTupleInlineReturnType() {
+        return ['Greenland'];
+    }
+
+    @query([Tuple(text)], Tuple(text))
+    primitiveOneTupleInlineParam(param) {
+        return param;
+    }
+
+    @query([], PrimitiveTwoTuple)
+    primitiveTwoTupleReturnType() {
         return ['Content-Type', 64n];
     }
-
-    primitiveTwoTupleParam: query(
-        [PrimitiveTwoTuple],
-        PrimitiveTwoTuple,
-        (param) => {
-            return param;
-        }
-    ),
-
-@query([], Tuple(text, text))
-    primitiveTwoTupleInlineReturnType(){
-        return ['Fun', 'Times'];
+    @query([PrimitiveTwoTuple], PrimitiveTwoTuple)
+    primitiveTwoTupleParam(param) {
+        return param;
     }
 
-    primitiveTwoTupleInlineParam: query(
-        [Tuple(text, text)],
-        Tuple(text, text),
-        (param: Tuple<[text, text]>) => {
-            return param;
-        }
-    ),
+    @query([], Tuple(text, text))
+    primitiveTwoTupleInlineReturnType() {
+        return ['Fun', 'Times'];
+    }
+    @query([Tuple(text, text)], Tuple(text, text))
+    primitiveTwoTupleInlineParam(param: Tuple<[text, text]>) {
+        return param;
+    }
 
-@query([], PrimitiveThreeTuple)
-    primitiveThreeTupleReturnType(){
+    @query([], PrimitiveThreeTuple)
+    primitiveThreeTupleReturnType() {
         return [
             'Good',
             454n,
             Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
         ];
     }
-
-    primitiveThreeTupleParam: query(
-        [PrimitiveThreeTuple],
-        PrimitiveThreeTuple,
-        (param) => {
-            return param;
-        }
-    ),
-
-    primitiveThreeTupleInlineReturnType: query(
-        [],
-        Tuple(text, nat64, Principal),
-        () => {
-            return ['Fun', 101n, Principal.fromText('aaaaa-aa')];
-        }
-    ),
-
-    primitiveThreeTupleInlineParam: query(
-        [Tuple(text, nat64, Principal)],
-        Tuple(text, nat64, Principal),
-        (param) => {
-            return param;
-        }
-    ),
-
-@query([], ComplexOneTuple)
-    complexOneTupleReturnType(){
-        return [['Hello', 0n]];
-    }
-
-@query([ComplexOneTuple], ComplexOneTuple)
-    complexOneTupleParam(param){
+    @query([PrimitiveThreeTuple], PrimitiveThreeTuple)
+    primitiveThreeTupleParam(param) {
         return param;
     }
 
-@query([], Tuple(PrimitiveTwoTuple))
-    complexOneTupleInlineReturnType(){
-        return [['Candy', 56n]];
+    @query([], Tuple(text, nat64, Principal))
+    primitiveThreeTupleInlineReturnType() {
+        return ['Fun', 101n, Principal.fromText('aaaaa-aa')];
     }
 
-    complexOneTupleInlineParam: query(
-        [Tuple(PrimitiveTwoTuple)],
-        Tuple(PrimitiveTwoTuple),
-        (param) => {
-            return param;
-        }
-    ),
+    @query([Tuple(text, nat64, Principal)], Tuple(text, nat64, Principal))
+    primitiveThreeTupleInlineParam(param) {
+        return param;
+    }
 
-@query([], ComplexTwoTuple)
-    complexTwoTupleReturnType(){
+    @query([], ComplexOneTuple)
+    complexOneTupleReturnType() {
+        return [['Hello', 0n]];
+    }
+
+    @query([ComplexOneTuple], ComplexOneTuple)
+    complexOneTupleParam(param) {
+        return param;
+    }
+
+    @query([], Tuple(PrimitiveTwoTuple))
+    complexOneTupleInlineReturnType() {
+        return [['Candy', 56n]];
+    }
+    @query([Tuple(PrimitiveTwoTuple)], Tuple(PrimitiveTwoTuple))
+    complexOneTupleInlineParam(param) {
+        return param;
+    }
+
+    @query([], ComplexTwoTuple)
+    complexTwoTupleReturnType() {
         return [
             ['Content-Type', 64n],
             {
@@ -175,35 +149,55 @@ export default class {
         ];
     }
 
-@query([ComplexTwoTuple], ComplexTwoTuple)
-    complexTwoTupleParam(param){
+    @query([ComplexTwoTuple], ComplexTwoTuple)
+    complexTwoTupleParam(param) {
+        return param;
+    }
+    @query([], Tuple(PrimitiveTwoTuple, User))
+    complexTwoTupleInlineReturnType() {
+        return [
+            ['Content-Type', 644n],
+            {
+                id: '444',
+                primitiveTwoTuple: ['Content-Type', 6_422n]
+            }
+        ];
+    }
+
+    @query([Tuple(PrimitiveTwoTuple, User)], Tuple(PrimitiveTwoTuple, User))
+    complexTwoTupleInlineParam(param) {
         return param;
     }
 
-    complexTwoTupleInlineReturnType: query(
-        [],
-        Tuple(PrimitiveTwoTuple, User),
-        () => {
-            return [
-                ['Content-Type', 644n],
-                {
-                    id: '444',
-                    primitiveTwoTuple: ['Content-Type', 6_422n]
-                }
-            ];
-        }
-    ),
+    @query([], ComplexThreeTuple)
+    complexThreeTupleReturnType() {
+        return [
+            ['Content-Type', 64n],
+            {
+                id: '0',
+                primitiveTwoTuple: ['Content-Type', 64n]
+            },
+            {
+                Bad: [
+                    ['Content-Type', 64n],
+                    {
+                        id: '1',
+                        primitiveTwoTuple: ['Content-Type', 64n]
+                    },
+                    {
+                        Good: null
+                    }
+                ]
+            }
+        ];
+    }
+    @query([ComplexThreeTuple], ComplexThreeTuple)
+    complexThreeTupleParam(param) {
+        return param;
+    }
 
-    complexTwoTupleInlineParam: query(
-        [Tuple(PrimitiveTwoTuple, User)],
-        Tuple(PrimitiveTwoTuple, User),
-        (param) => {
-            return param;
-        }
-    ),
-
-@query([], ComplexThreeTuple)
-    complexThreeTupleReturnType(){
+    @query([], Tuple(PrimitiveTwoTuple, User, Reaction))
+    complexThreeTupleInlineReturnType() {
         return [
             ['Content-Type', 64n],
             {
@@ -225,58 +219,21 @@ export default class {
         ];
     }
 
-    complexThreeTupleParam: query(
-        [ComplexThreeTuple],
-        ComplexThreeTuple,
-        (param) => {
-            return param;
-        }
-    ),
-
-    complexThreeTupleInlineReturnType: query(
-        [],
-        Tuple(PrimitiveTwoTuple, User, Reaction),
-        () => {
-            return [
-                ['Content-Type', 64n],
-                {
-                    id: '0',
-                    primitiveTwoTuple: ['Content-Type', 64n]
-                },
-                {
-                    Bad: [
-                        ['Content-Type', 64n],
-                        {
-                            id: '1',
-                            primitiveTwoTuple: ['Content-Type', 64n]
-                        },
-                        {
-                            Good: null
-                        }
-                    ]
-                }
-            ];
-        }
-    ),
-
-    complexThreeTupleInlineParam: query(
+    @query(
         [Tuple(PrimitiveTwoTuple, User, Reaction)],
-        Tuple(PrimitiveTwoTuple, User, Reaction),
-        (param) => {
-            return param;
-        }
-    ),
+        Tuple(PrimitiveTwoTuple, User, Reaction)
+    )
+    complexThreeTupleInlineParam(param) {
+        return param;
+    }
 
-    tupleArrayParamsAndReturnType: query(
-        [Vec(Header)],
-        Vec(Header),
-        (headers) => {
-            return headers;
-        }
-    ),
+    @query([Vec(Header)], Vec(Header))
+    tupleArrayParamsAndReturnType(headers) {
+        return headers;
+    }
 
-@query([], HttpResponse)
-    tupleArrayRecordField(){
+    @query([], HttpResponse)
+    tupleArrayRecordField() {
         return {
             headers: [
                 ['Content-Type', 'application/json'],
@@ -285,8 +242,8 @@ export default class {
         };
     }
 
-@query([], StreamingCallbackType)
-    tupleArrayVariantField(){
+    @query([], StreamingCallbackType)
+    tupleArrayVariantField() {
         return {
             WithHeaders: [
                 ['Content-Type', 'application/json'],
@@ -294,12 +251,11 @@ export default class {
             ]
         };
     }
-
-    nestedTupleQuery: query(
+    @query(
         [Tuple(Tuple(text, Tuple(nat8, nat8)), int)],
-        Tuple(Tuple(text, Tuple(nat8, nat8)), int),
-        (param) => {
-            return param;
-        }
+        Tuple(Tuple(text, Tuple(nat8, nat8)), int)
     )
+    nestedTupleQuery(param) {
+        return param;
+    }
 }

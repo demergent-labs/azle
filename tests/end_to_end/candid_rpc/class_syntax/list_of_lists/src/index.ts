@@ -41,23 +41,20 @@ const State = Variant({
 const BasicFunc = Func([text], text, 'query');
 
 export default class {
-@query([Vec(text)], Vec(text))
-    listOfStringOne(param){
+    @query([Vec(text)], Vec(text))
+    listOfStringOne(param) {
         return param;
     }
-@query([Vec(Vec(text))], Vec(Vec(text)))
-    listOfStringTwo(params){
+    @query([Vec(Vec(text))], Vec(Vec(text)))
+    listOfStringTwo(params) {
         return params;
     }
-    listOfStringFour: query(
-        [Vec(Vec(Vec(Vec(text))))],
-        Vec(Vec(Vec(Vec(text)))),
-        (params) => {
-            return params;
-        }
-    ),
-@query([], Vec(Vec(Vec(Vec(Vec(Vec(Vec(int8))))))))
-    listOfListOfInt8(){
+    @query([Vec(Vec(Vec(Vec(text))))], Vec(Vec(Vec(Vec(text)))))
+    listOfStringFour(params) {
+        return params;
+    }
+    @query([], Vec(Vec(Vec(Vec(Vec(Vec(Vec(int8))))))))
+    listOfListOfInt8() {
         return [
             [
                 [
@@ -80,31 +77,28 @@ export default class {
             ]
         ];
     }
-@query([Vec(Vec(Vec(Null)))], Vec(Vec(Vec(Null))))
-    listOfNull(param){
+    @query([Vec(Vec(Vec(Null)))], Vec(Vec(Vec(Null))))
+    listOfNull(param) {
         return param;
     }
-@query([Vec(Vec(Vec(bool)))], Vec(Vec(Vec(bool))))
-    listOfBool(param){
+    @query([Vec(Vec(Vec(bool)))], Vec(Vec(Vec(bool))))
+    listOfBool(param) {
         return param;
     }
-@query([Vec(Vec(Vec(text)))], Vec(Vec(Vec(text))))
-    listOfString(param){
+    @query([Vec(Vec(Vec(text)))], Vec(Vec(Vec(text))))
+    listOfString(param) {
         return param;
     }
-    listOfOptionString: query(
-        [Vec(Vec(Vec(Opt(text))))],
-        Vec(Vec(Vec(Opt(text)))),
-        (param) => {
-            return param;
-        }
-    ),
-@query([], Vec(Vec(Vec(empty))))
-    listOfEmpty(){
+    @query([Vec(Vec(Vec(Opt(text))))], Vec(Vec(Vec(Opt(text)))))
+    listOfOptionString(param) {
+        return param;
+    }
+    @query([], Vec(Vec(Vec(empty))))
+    listOfEmpty() {
         throw new Error('Anything you want');
     }
-@query([], Vec(Vec(Vec(reserved))))
-    listOfReserved(){
+    @query([], Vec(Vec(Vec(reserved))))
+    listOfReserved() {
         return [
             [['A'], ['n']],
             [
@@ -113,112 +107,76 @@ export default class {
             ]
         ];
     }
-    listOfFunc: query(
-        [Vec(Vec(Vec(BasicFunc)))],
-        Vec(Vec(Vec(BasicFunc))),
-        (param) => {
-            return param;
-        }
-    ),
-    listOfPrincipal: query(
-        [Vec(Vec(Vec(Principal)))],
-        Vec(Vec(Vec(Principal))),
-        (param) => {
-            return param;
-        }
-    ),
-    listOfF64: query(
-        [Vec(Vec(Vec(float64)))],
-        Vec(Vec(Vec(float64))),
-        (param) => {
-            return param;
-        }
-    ),
-    listOfF32: query(
-        [Vec(Vec(Vec(float32)))],
-        Vec(Vec(Vec(float32))),
-        (param) => {
-            return param;
-        }
-    ),
-@query([Vec(Vec(Vec(int)))], Vec(Vec(Vec(int))))
-    listOfInt(param){
+    @query([Vec(Vec(Vec(BasicFunc)))], Vec(Vec(Vec(BasicFunc))))
+    listOfFunc(param) {
         return param;
     }
-    listOfInt64: query(
-        [Vec(Vec(Vec(int64)))],
-        Vec(Vec(Vec(int64))),
-        (param) => {
-            return param;
-        }
-    ),
-    listOfInt32: query(
-        [Vec(Vec(Vec(int32)))],
-        Vec(Vec(Vec(int32))),
-        (param) => {
-            return param;
-        }
-    ),
-    listOfInt16: query(
-        [Vec(Vec(Vec(int16)))],
-        Vec(Vec(Vec(int16))),
-        (param) => {
-            return param;
-        }
-    ),
-@query([Vec(Vec(Vec(int8)))], Vec(Vec(Vec(int8))))
-    listOfInt8(param){
+    @query([Vec(Vec(Vec(Principal)))], Vec(Vec(Vec(Principal))))
+    listOfPrincipal(param) {
         return param;
     }
-@query([Vec(Vec(Vec(nat)))], Vec(Vec(Vec(nat))))
-    listOfNat(param){
+    @query([Vec(Vec(Vec(float64)))], Vec(Vec(Vec(float64))))
+    listOfF64(param) {
         return param;
     }
-    listOfNat64: query(
-        [Vec(Vec(Vec(nat64)))],
-        Vec(Vec(Vec(nat64))),
-        (param) => {
-            return param;
-        }
-    ),
-    listOfNat32: query(
-        [Vec(Vec(Vec(nat32)))],
-        Vec(Vec(Vec(nat32))),
-        (param) => {
-            return param;
-        }
-    ),
-    listOfNat16: query(
-        [Vec(Vec(Vec(nat16)))],
-        Vec(Vec(Vec(nat16))),
-        (param) => {
-            return param;
-        }
-    ),
-@query([Vec(Vec(Vec(nat8)))], Vec(Vec(Vec(nat8))))
-    listOfNat8(param){
+    @query([Vec(Vec(Vec(float32)))], Vec(Vec(Vec(float32))))
+    listOfF32(param) {
         return param;
     }
-    listOfRecord: query(
-        [Vec(Vec(Vec(Person)))],
-        Vec(Vec(Vec(Person))),
-        (param) => {
-            return param;
-        }
-    ),
-    listOfVariant: query(
-        [Vec(Vec(Vec(State)))],
-        Vec(Vec(Vec(State))),
-        (param) => {
-            return param;
-        }
-    ),
-@query([Vec(blob)], Vec(blob))
-    listOfBlob(param){
+    @query([Vec(Vec(Vec(int)))], Vec(Vec(Vec(int))))
+    listOfInt(param) {
         return param;
     }
-@query([Vec(Vec(blob))], Vec(Vec(blob)))
-    listOfListOfBlob(param){
+    @query([Vec(Vec(Vec(int64)))], Vec(Vec(Vec(int64))))
+    listOfInt64(param) {
+        return param;
+    }
+    @query([Vec(Vec(Vec(int32)))], Vec(Vec(Vec(int32))))
+    listOfInt32(param) {
+        return param;
+    }
+    @query([Vec(Vec(Vec(int16)))], Vec(Vec(Vec(int16))))
+    listOfInt16(param) {
+        return param;
+    }
+    @query([Vec(Vec(Vec(int8)))], Vec(Vec(Vec(int8))))
+    listOfInt8(param) {
+        return param;
+    }
+    @query([Vec(Vec(Vec(nat)))], Vec(Vec(Vec(nat))))
+    listOfNat(param) {
+        return param;
+    }
+    @query([Vec(Vec(Vec(nat64)))], Vec(Vec(Vec(nat64))))
+    listOfNat64(param) {
+        return param;
+    }
+    @query([Vec(Vec(Vec(nat32)))], Vec(Vec(Vec(nat32))))
+    listOfNat32(param) {
+        return param;
+    }
+    @query([Vec(Vec(Vec(nat16)))], Vec(Vec(Vec(nat16))))
+    listOfNat16(param) {
+        return param;
+    }
+    @query([Vec(Vec(Vec(nat8)))], Vec(Vec(Vec(nat8))))
+    listOfNat8(param) {
+        return param;
+    }
+    @query([Vec(Vec(Vec(Person)))], Vec(Vec(Vec(Person))))
+    listOfRecord(param) {
+        return param;
+    }
+    @query([Vec(Vec(Vec(State)))], Vec(Vec(Vec(State))))
+    listOfVariant(param) {
+        return param;
+    }
+    @query([Vec(blob)], Vec(blob))
+    listOfBlob(param) {
+        return param;
+    }
+    @query([Vec(Vec(blob))], Vec(Vec(blob)))
+    listOfListOfBlob(param) {
         return param;
     }
 }

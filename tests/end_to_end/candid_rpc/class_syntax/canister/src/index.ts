@@ -33,17 +33,13 @@ export default class {
             )
         };
     }),
-    canisterList: update(
-        [Vec(SomeCanister)],
-        Vec(SomeCanister),
-        (someCanisters) => {
+    @update([Vec(SomeCanister)], Vec(SomeCanister))
+    canisterList(someCanisters){
             return someCanisters;
         }
     ),
-    canisterCrossCanisterCall: update(
-        [SomeCanister],
-        text,
-        async (someCanister) => {
+    @update([SomeCanister], text)
+    async canisterCrossCanisterCall(someCanister) {
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 const response = await fetch(
                     `icp://${getSomeCanisterPrincipal()}/update1`,

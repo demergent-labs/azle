@@ -11,32 +11,26 @@ import {
 } from 'azle/experimental';
 
 export default class {
-    executeCallRaw: update(
-        [Principal, text, text, nat64],
-        Result(text, text),
-        async (canisterId, method, candidArgs, payment) => {
-            const result = await ic.callRaw(
-                canisterId,
-                method,
-                ic.candidEncode(candidArgs),
-                payment
-            );
+    @update([Principal, text, text, nat64], Result(text, text))
+    async executeCallRaw(canisterId, method, candidArgs, payment) {
+        const result = await ic.callRaw(
+            canisterId,
+            method,
+            ic.candidEncode(candidArgs),
+            payment
+        );
 
-            return Ok(ic.candidDecode(result));
-        }
-    ),
-    executeCallRaw128: update(
-        [Principal, text, text, nat],
-        Result(text, text),
-        async (canisterId, method, candidArgs, payment) => {
-            const result = await ic.callRaw128(
-                canisterId,
-                method,
-                ic.candidEncode(candidArgs),
-                payment
-            );
+        return Ok(ic.candidDecode(result));
+    }
+    @update([Principal, text, text, nat], Result(text, text))
+    async executeCallRaw128(canisterId, method, candidArgs, payment) {
+        const result = await ic.callRaw128(
+            canisterId,
+            method,
+            ic.candidEncode(candidArgs),
+            payment
+        );
 
-            return Ok(ic.candidDecode(result));
-        }
-    )
+        return Ok(ic.candidDecode(result));
+    }
 }
