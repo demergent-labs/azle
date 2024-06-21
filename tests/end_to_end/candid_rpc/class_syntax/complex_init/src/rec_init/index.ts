@@ -17,15 +17,17 @@ const Node = Recursive(() =>
 
 let tree: typeof Node = { Leaf: null };
 
-export default Canister({
-    init: init([Node], (node) => {
+export default class {
+@init([Node])
+    init(node){
         tree = node;
         return undefined;
     }),
-    countBranches: query([], nat, () => {
+@query([], nat)
+    countBranches(){
         return countBranches(tree);
     })
-});
+}
 
 function countBranches(node: typeof Node): nat {
     if (node.Leaf !== undefined) {

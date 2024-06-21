@@ -20,43 +20,54 @@ const Status = Variant({
     Offline: Null
 });
 
-export default Canister({
-    principalReturnType: query([], Principal, () => {
+export default class {
+    @query([], Principal)
+    principalReturnType() {
         return Principal.fromText('aaaaa-aa');
-    }),
-    principalParam: query([Principal], Principal, (principal) => {
+    }
+    @query([Principal], Principal)
+    principalParam(principal) {
         return principal;
-    }),
-    principalInRecord: query([], User, () => {
+    }
+    @query([], User)
+    principalInRecord() {
         return {
             id: Principal.fromText('aaaaa-aa'),
             username: 'lastmjs'
         };
-    }),
-    principalInVariant: query([], Status, () => {
+    }
+    @query([], Status)
+    principalInVariant() {
         return {
             WaitingOn: Principal.fromText('aaaaa-aa')
         };
-    }),
-    principalFromHex: query([text], Principal, (principalHex) => {
+    }
+    @query([text], Principal)
+    principalFromHex(principalHex) {
         return Principal.fromHex(principalHex);
-    }),
-    principalFromText: query([text], Principal, (principalText) => {
+    }
+    @query([text], Principal)
+    principalFromText(principalText) {
         return Principal.fromText(principalText);
-    }),
-    principalFromBlob: query([blob], Principal, (principalBytes) => {
+    }
+    @query([blob], Principal)
+    principalFromBlob(principalBytes) {
         return Principal.fromUint8Array(Uint8Array.from(principalBytes));
-    }),
-    principalToHex: query([Principal], text, (principal) => {
+    }
+    @query([Principal], text)
+    principalToHex(principal) {
         return principal.toHex();
-    }),
-    principalToText: query([Principal], text, (principal) => {
+    }
+    @query([Principal], text)
+    principalToText(principal) {
         return principal.toText();
-    }),
-    principalToBlob: query([Principal], blob, (principal) => {
+    }
+    @query([Principal], blob)
+    principalToBlob(principal) {
         return principal.toUint8Array();
-    }),
-    principalSelfAuthenticating: query([blob], Principal, (publicKey) => {
+    }
+    @query([blob], Principal)
+    principalSelfAuthenticating(publicKey) {
         return Principal.selfAuthenticating(publicKey);
-    })
-});
+    }
+}

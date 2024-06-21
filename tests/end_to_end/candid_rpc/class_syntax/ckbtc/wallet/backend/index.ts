@@ -26,10 +26,11 @@ let ckBTC: typeof ICRC;
 
 let minter: typeof Minter;
 
-export default Canister({
+export default class {
     init: init([], setupCanisters),
     postUpgrade: postUpgrade([], setupCanisters),
-    getBalance: update([], nat64, async () => {
+@update([], nat64)
+async getBalance(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getCkBtcPrincipal()}/icrc1_balance_of`,
@@ -64,8 +65,9 @@ export default Canister({
                 ]
             });
         }
-    }),
-    updateBalance: update([], UpdateBalanceResult, async () => {
+    }
+@update([], UpdateBalanceResult)
+async updateBalance(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getMinterPrincipal()}/update_balance`,
@@ -100,8 +102,9 @@ export default Canister({
                 ]
             });
         }
-    }),
-    getDepositAddress: update([], text, async () => {
+    }
+@update([], text)
+async getDepositAddress(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getMinterPrincipal()}/get_btc_address`,
@@ -136,7 +139,7 @@ export default Canister({
                 ]
             });
         }
-    }),
+    }
     transfer: update(
         [text, nat],
         Result(nat, TransferError),
@@ -203,7 +206,7 @@ export default Canister({
             }
         }
     )
-});
+}
 
 function padPrincipalWithZeros(blob: blob): blob {
     let newUin8Array = new Uint8Array(32);

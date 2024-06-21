@@ -9,14 +9,17 @@ import {
 
 let redeployed = false;
 
-export default Canister({
-    postUpgrade: postUpgrade([], () => {
+export default class {
+    @postUpgrade([])
+    postUpgrade() {
         redeployed = true;
-    }),
-    getRedeployed: query([], bool, () => {
+    }
+    @query([], bool)
+    getRedeployed() {
         return redeployed;
-    }),
-    randomNumber: update([], float64, () => {
+    }
+    @update([], float64)
+    randomNumber() {
         return Math.random();
-    })
-});
+    }
+}

@@ -2,13 +2,15 @@ import { Canister, nat64, query, update } from 'azle/experimental';
 
 let count: nat64 = 0n;
 
-export default Canister({
-    readCount: query([], nat64, () => {
+export default class {
+    @query([], nat64)
+    readCount() {
         return count;
-    }),
-    incrementCount: update([], nat64, () => {
+    }
+    @update([], nat64)
+    incrementCount() {
         count += 1n;
 
         return count;
-    })
-});
+    }
+}

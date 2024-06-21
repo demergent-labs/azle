@@ -2,11 +2,13 @@ import { bool, Canister, query, update, Void } from 'azle/experimental';
 
 let notified: boolean = false;
 
-export default Canister({
-    receiveNotification: update([], Void, () => {
+export default class {
+    @update([], Void)
+    receiveNotification() {
         notified = true;
-    }),
-    getNotified: query([], bool, () => {
+    }
+    @query([], bool)
+    getNotified() {
         return notified;
-    })
-});
+    }
+}

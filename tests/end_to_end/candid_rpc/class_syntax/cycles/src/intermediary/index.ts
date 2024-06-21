@@ -15,12 +15,14 @@ import Cycles from '../cycles';
 
 let cyclesCanister: typeof Cycles;
 
-export default Canister({
-    init: init([], () => {
+export default class {
+    @init([])
+    init() {
         cyclesCanister = Cycles(Principal.fromText(getCyclesPrincipal()));
-    }),
+    }
     // Reports the number of cycles returned from the Cycles canister
-    sendCycles: update([], nat64, async () => {
+    @update([], nat64)
+    async sendCycles() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getCyclesPrincipal()}/receiveCycles`,
@@ -39,14 +41,16 @@ export default Canister({
                 cycles: 1_000_000n
             });
         }
-    }),
-    sendCyclesNotify: update([], Void, () => {
+    }
+    @update([], Void)
+    sendCyclesNotify() {
         return ic.notify(cyclesCanister.receiveCycles, {
             cycles: 1_000_000n
         });
-    }),
+    }
     // Reports the number of cycles returned from the Cycles canister
-    sendCycles128: update([], nat, async () => {
+    @update([], nat)
+    async sendCycles128() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://${getCyclesPrincipal()}/receiveCycles128`, {
                 body: serialize({
@@ -61,19 +65,22 @@ export default Canister({
         }
 
         return ic.msgCyclesRefunded128();
-    }),
-    sendCycles128Notify: update([], Void, () => {
+    }
+    @update([], Void)
+    sendCycles128Notify() {
         return ic.notify(cyclesCanister.receiveCycles128, {
             cycles: 1_000_000n
         });
-    }),
-    getCanisterBalance: query([], nat64, () => {
+    }
+    @query([], nat64)
+    getCanisterBalance() {
         return ic.canisterBalance();
-    }),
-    getCanisterBalance128: query([], nat, () => {
+    }
+    @query([], nat)
+    getCanisterBalance128() {
         return ic.canisterBalance128();
-    })
-});
+    }
+}
 
 function getCyclesPrincipal(): string {
     return (

@@ -1,7 +1,8 @@
 import { Canister, query, text } from 'azle/experimental';
 
-export default Canister({
-    greet: query([text], text, (name) => {
+export default class {
+    @query([text], text)
+    greet(name) {
         return `Hello, ${name}!`;
-    })
-});
+    }
+}

@@ -68,7 +68,7 @@ const Element = Record({
 });
 type Element = typeof Element.tsType;
 
-export default Canister({
+export default class {
     // Updates
     manualUpdate: update(
         [text],
@@ -309,4 +309,4 @@ export default Canister({
         },
         { manual: true }
     )
-});
+}

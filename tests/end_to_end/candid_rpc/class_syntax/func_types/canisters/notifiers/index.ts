@@ -11,8 +11,9 @@ import {
 export const NotifierFunc = Func([blob], Void, 'oneway');
 export type NotifierFunc = typeof NotifierFunc.tsType;
 
-export default Canister({
-    getNotifier: query([], NotifierFunc, () => {
+export default class {
+@query([], NotifierFunc)
+    getNotifier(){
         return [
             Principal.fromText(
                 process.env.NOTIFIERS_PRINCIPAL ??
@@ -21,4 +22,4 @@ export default Canister({
             'notify'
         ];
     })
-});
+}

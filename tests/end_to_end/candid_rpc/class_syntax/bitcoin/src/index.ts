@@ -17,8 +17,9 @@ const BITCOIN_API_CYCLE_COST = 100_000_000n;
 const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;
 const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
-export default Canister({
-    getBalance: update([text], Satoshi, async (address) => {
+export default class {
+    @update([text], Satoshi)
+    async getBalance(address) {
         const response = await fetch(`icp://aaaaa-aa/bitcoin_get_balance`, {
             body: serialize({
                 args: [
@@ -34,8 +35,9 @@ export default Canister({
         const responseJson = await response.json();
 
         return responseJson;
-    }),
-    getCurrentFeePercentiles: update([], Vec(MillisatoshiPerByte), async () => {
+    }
+    @update([], Vec(MillisatoshiPerByte))
+    async getCurrentFeePercentiles() {
         const response = await fetch(
             `icp://aaaaa-aa/bitcoin_get_current_fee_percentiles`,
             {
@@ -52,8 +54,9 @@ export default Canister({
         const responseJson = await response.json();
 
         return responseJson;
-    }),
-    getUtxos: update([text], GetUtxosResult, async (address) => {
+    }
+    @update([text], GetUtxosResult)
+    async getUtxos(address) {
         const response = await fetch(`icp://aaaaa-aa/bitcoin_get_utxos`, {
             body: serialize({
                 args: [
@@ -69,8 +72,9 @@ export default Canister({
         const responseJson = await response.json();
 
         return responseJson;
-    }),
-    sendTransaction: update([blob], bool, async (transaction) => {
+    }
+    @update([blob], bool)
+    async sendTransaction(transaction) {
         const transactionFee =
             BITCOIN_BASE_TRANSACTION_COST +
             BigInt(transaction.length) *
@@ -89,5 +93,5 @@ export default Canister({
         });
 
         return true;
-    })
-});
+    }
+}

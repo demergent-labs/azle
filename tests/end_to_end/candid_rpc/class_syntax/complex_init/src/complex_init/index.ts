@@ -18,13 +18,15 @@ type User = typeof User.tsType;
 let greeting: text = 'Hello User';
 let user: Opt<User> = None;
 
-export default Canister({
-    init: init([Tuple(text, User)], (tuple) => {
+export default class {
+    @init([Tuple(text, User)])
+    init(tuple) {
         greeting = tuple[0];
         user = Some(tuple[1]);
         return undefined;
-    }),
-    greetUser: query([], text, () => {
+    }
+    @query([], text)
+    greetUser() {
         return `${greeting} ${user.Some?.id ?? '??'}`;
-    })
-});
+    }
+}

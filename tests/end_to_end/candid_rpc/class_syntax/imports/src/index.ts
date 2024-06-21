@@ -3,20 +3,25 @@ import { sha224 } from 'js-sha256';
 
 import { one, three, two } from './library';
 
-export default Canister({
-    getOne: query([], text, () => {
+export default class {
+    @query([], text)
+    getOne() {
         return one();
-    }),
-    getTwo: query([], text, () => {
+    }
+    @query([], text)
+    getTwo() {
         return two();
-    }),
-    getThree: query([], text, () => {
+    }
+    @query([], text)
+    getThree() {
         return three();
-    }),
-    sha224Hash: query([text], text, (message) => {
+    }
+    @query([text], text)
+    sha224Hash(message) {
         return sha224.update(message).hex();
-    }),
-    getMathMessage: query([], int, () => {
+    }
+    @query([], int)
+    getMathMessage() {
         return BigInt(Math.ceil(10.4));
-    })
-});
+    }
+}

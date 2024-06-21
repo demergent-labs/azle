@@ -1,7 +1,8 @@
 import { Canister, ic, Principal, update, Void } from 'azle/experimental';
 
-export default Canister({
-    sendNotification: update([], Void, () => {
+export default class {
+    @update([], Void)
+    sendNotification() {
         return ic.notifyRaw(
             Principal.fromText(
                 process.env.CANISTER2_PRINCIPAL ??
@@ -11,5 +12,5 @@ export default Canister({
             Uint8Array.from(ic.candidEncode('()')),
             0n
         );
-    })
-});
+    }
+}

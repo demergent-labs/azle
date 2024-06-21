@@ -1,12 +1,14 @@
 import { blob, Canister, ic, query, text } from 'azle/experimental';
 
-export default Canister({
+export default class {
     // encodes a Candid string to Candid bytes
-    candidEncode: query([text], blob, (candidString) => {
+    @query([text], blob)
+    candidEncode(candidString) {
         return ic.candidEncode(candidString);
-    }),
+    }
     // decodes Candid bytes to a Candid string
-    candidDecode: query([blob], text, (candidEncoded) => {
+    @query([blob], text)
+    candidDecode(candidEncoded) {
         return ic.candidDecode(candidEncoded);
-    })
-});
+    }
+}

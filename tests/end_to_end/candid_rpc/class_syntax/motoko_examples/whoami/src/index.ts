@@ -15,31 +15,37 @@ let someone: Principal = Principal.fromText('aaaaa-aa');
 
 const WhoAmI = Canister({
     // Manually save the calling principal and argument for later access.
-    init: init([Principal], (somebody) => {
+@init([Principal])
+    init(somebody){
         install = ic.caller();
         someone = somebody;
-    }),
+    }
     // Manually re-save these variables after new deploys.
-    postUpgrade: postUpgrade([Principal], (somebody) => {
+@postUpgrade([Principal])
+    postUpgrade(somebody){
         install = ic.caller();
         someone = somebody;
-    }),
+    }
     // Return the principal identifier of the wallet canister that installed this
     // canister.
-    installer: query([], Principal, () => {
+@query([], Principal)
+    installer(){
         return install;
-    }),
+    }
     // Return the principal identifier that was provided as an installation
     // argument to this canister.
-    argument: query([], Principal, () => {
+@query([], Principal)
+    argument(){
         return someone;
-    }),
+    }
     // Return the principal identifier of the caller of this method.
-    whoami: update([], Principal, () => {
+@update([], Principal)
+    whoami(){
         return ic.caller();
-    }),
+    }
     // Return the principal identifier of this canister.
-    id: update([], Principal, async () => {
+@update([], Principal)
+async id(){
         const self: any = WhoAmI(ic.id());
 
         if (process.env.AZLE_TEST_FETCH === 'true') {
@@ -56,14 +62,15 @@ const WhoAmI = Canister({
         } else {
             return await ic.call(self.whoami);
         }
-    }),
+    }
     // Return the principal identifier of this canister via the global `ic` object.
     // This is much quicker than `id()` above because it isn't making a cross-
     // canister call to itself. Additionally, it can now be a `Query` which means it
     // doesn't have to go through consensus.
-    idQuick: query([], Principal, () => {
+@query([], Principal)
+    idQuick(){
         return ic.id();
-    })
+    }
 });
 
 export default WhoAmI;

@@ -1,81 +1,102 @@
 import { Canister, nat32, nat64, query, text } from 'azle/experimental';
 
-export default Canister({
-    getDate: query([text], nat32, (isoString) => {
+export default class {
+@query([text], nat32)
+    getDate(isoString){
         return new Date(isoString).getDate();
-    }),
-    getDay: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getDay(isoString){
         return new Date(isoString).getDay();
-    }),
-    getFullYear: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getFullYear(isoString){
         return new Date(isoString).getFullYear();
-    }),
-    getHours: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getHours(isoString){
         return new Date(isoString).getHours();
-    }),
-    getMilliseconds: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getMilliseconds(isoString){
         return new Date(isoString).getMilliseconds();
-    }),
-    getMinutes: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getMinutes(isoString){
         return new Date(isoString).getMinutes();
-    }),
-    getMonth: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getMonth(isoString){
         return new Date(isoString).getMonth();
-    }),
-    getSeconds: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getSeconds(isoString){
         return new Date(isoString).getSeconds();
-    }),
-    getTime: query([text], nat64, (isoString) => {
+    }
+@query([text], nat64)
+    getTime(isoString){
         return BigInt(new Date(isoString).getTime());
-    }),
-    getTimezoneOffset: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getTimezoneOffset(isoString){
         return new Date(isoString).getTimezoneOffset();
-    }),
-    getUtcDate: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getUtcDate(isoString){
         return new Date(isoString).getUTCDate();
-    }),
-    getUtcDay: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getUtcDay(isoString){
         return new Date(isoString).getUTCDay();
-    }),
-    getUtcFullYear: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getUtcFullYear(isoString){
         return new Date(isoString).getUTCFullYear();
-    }),
-    getUtcHours: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getUtcHours(isoString){
         return new Date(isoString).getUTCHours();
-    }),
-    getUtcMilliseconds: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getUtcMilliseconds(isoString){
         return new Date(isoString).getUTCMilliseconds();
-    }),
-    getUtcMinutes: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getUtcMinutes(isoString){
         return new Date(isoString).getUTCMinutes();
-    }),
-    getUtcMonth: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getUtcMonth(isoString){
         return new Date(isoString).getUTCMonth();
-    }),
-    getUtcSeconds: query([text], nat32, (isoString) => {
+    }
+@query([text], nat32)
+    getUtcSeconds(isoString){
         return new Date(isoString).getUTCSeconds();
-    }),
-    setDate: query([text, nat32], nat32, (isoString, newDate) => {
+    }
+@query([text, nat32], nat32)
+    setDate(isoString, newDate){
         let date = new Date(isoString);
 
         date.setDate(newDate);
 
         return date.getDate();
-    }),
-    setFullYear: query([text, nat32], nat32, (isoString, newFullYear) => {
+    }
+@query([text, nat32], nat32)
+    setFullYear(isoString, newFullYear){
         let date = new Date(isoString);
 
         date.setFullYear(newFullYear);
 
         return date.getFullYear();
-    }),
-    setHours: query([text, nat32], nat32, (isoString, newHours) => {
+    }
+@query([text, nat32], nat32)
+    setHours(isoString, newHours){
         let date = new Date(isoString);
 
         date.setHours(newHours);
 
         return date.getHours();
-    }),
+    }
     setMilliseconds: query(
         [text, nat32],
         nat32,
@@ -87,55 +108,62 @@ export default Canister({
             return date.getMilliseconds();
         }
     ),
-    setMinutes: query([text, nat32], nat32, (isoString, newMinutes) => {
+@query([text, nat32], nat32)
+    setMinutes(isoString, newMinutes){
         let date = new Date(isoString);
 
         date.setMinutes(newMinutes);
 
         return date.getMinutes();
-    }),
-    setMonth: query([text, nat32], nat32, (isoString, newMonth) => {
+    }
+@query([text, nat32], nat32)
+    setMonth(isoString, newMonth){
         let date = new Date(isoString);
 
         date.setMonth(newMonth);
 
         return date.getMonth();
-    }),
-    setSeconds: query([text, nat32], nat32, (isoString, newSeconds) => {
+    }
+@query([text, nat32], nat32)
+    setSeconds(isoString, newSeconds){
         let date = new Date(isoString);
 
         date.setSeconds(newSeconds);
 
         return date.getSeconds();
-    }),
-    setTime: query([text, nat64], nat64, (isoString, newTime) => {
+    }
+@query([text, nat64], nat64)
+    setTime(isoString, newTime){
         let date = new Date(isoString);
 
         date.setTime(Number(newTime));
 
         return BigInt(date.getTime());
-    }),
-    setUtcDate: query([text, nat32], nat32, (isoString, newUtcDate) => {
+    }
+@query([text, nat32], nat32)
+    setUtcDate(isoString, newUtcDate){
         let date = new Date(isoString);
 
         date.setUTCDate(newUtcDate);
 
         return date.getUTCDate();
-    }),
-    setUtcFullYear: query([text, nat32], nat32, (isoString, newUtcFullYear) => {
+    }
+@query([text, nat32], nat32)
+    setUtcFullYear(isoString, newUtcFullYear){
         let date = new Date(isoString);
 
         date.setUTCFullYear(newUtcFullYear);
 
         return date.getUTCFullYear();
-    }),
-    setUtcHours: query([text, nat32], nat32, (isoString, newUtcHours) => {
+    }
+@query([text, nat32], nat32)
+    setUtcHours(isoString, newUtcHours){
         let date = new Date(isoString);
 
         date.setUTCHours(newUtcHours);
 
         return date.getUTCHours();
-    }),
+    }
     setUtcMilliseconds: query(
         [text, nat32],
         nat32,
@@ -147,52 +175,64 @@ export default Canister({
             return date.getUTCMilliseconds();
         }
     ),
-    setUtcMinutes: query([text, nat32], nat32, (isoString, newUtcMinutes) => {
+@query([text, nat32], nat32)
+    setUtcMinutes(isoString, newUtcMinutes){
         let date = new Date(isoString);
 
         date.setUTCMinutes(newUtcMinutes);
 
         return date.getUTCMinutes();
-    }),
-    setUtcMonth: query([text, nat32], nat32, (isoString, newUtcMonth) => {
+    }
+@query([text, nat32], nat32)
+    setUtcMonth(isoString, newUtcMonth){
         let date = new Date(isoString);
 
         date.setUTCMonth(newUtcMonth);
 
         return date.getUTCMonth();
-    }),
-    setUtcSeconds: query([text, nat32], nat32, (isoString, newUtcSeconds) => {
+    }
+@query([text, nat32], nat32)
+    setUtcSeconds(isoString, newUtcSeconds){
         let date = new Date(isoString);
 
         date.setUTCSeconds(newUtcSeconds);
 
         return date.getUTCSeconds();
-    }),
-    toDateString: query([text], text, (isoString) => {
+    }
+@query([text], text)
+    toDateString(isoString){
         return new Date(isoString).toDateString();
-    }),
-    toISOString: query([text], text, (isoString) => {
+    }
+@query([text], text)
+    toISOString(isoString){
         return new Date(isoString).toISOString();
-    }),
-    toJSONString: query([text], text, (isoString) => {
+    }
+@query([text], text)
+    toJSONString(isoString){
         return new Date(isoString).toJSON();
-    }),
-    toString: query([text], text, (isoString) => {
+    }
+@query([text], text)
+    toString(isoString){
         return new Date(isoString).toString();
-    }),
-    toTimeString: query([text], text, (isoString) => {
+    }
+@query([text], text)
+    toTimeString(isoString){
         return new Date(isoString).toTimeString();
-    }),
-    toUtcString: query([text], text, (isoString) => {
+    }
+@query([text], text)
+    toUtcString(isoString){
         return new Date(isoString).toUTCString();
-    }),
-    now: query([], nat64, () => {
+    }
+@query([], nat64)
+    now(){
         return BigInt(Date.now());
-    }),
-    parse: query([text], nat64, (isoString) => {
+    }
+@query([text], nat64)
+    parse(isoString){
         return BigInt(Date.parse(isoString));
-    }),
-    utc: query([nat32, nat32], nat64, (year, month) => {
+    }
+@query([nat32, nat32], nat64)
+    utc(year, month){
         return BigInt(Date.UTC(year, month));
-    })
-});
+    }
+}

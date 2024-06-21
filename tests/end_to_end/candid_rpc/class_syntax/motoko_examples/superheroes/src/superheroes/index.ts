@@ -39,36 +39,40 @@ let superheroes: Map<SuperheroId, Superhero> = new Map();
 /**
  * High-Level API
  */
-export default Canister({
+export default class {
     // Create a superhero.
-    create: update([Superhero], SuperheroId, (superhero) => {
+    @update([Superhero], SuperheroId)
+    create(superhero) {
         let superheroId = next;
         next += 1;
         superheroes.set(superheroId, superhero);
 
         return superheroId;
-    }),
+    }
     // Read a superhero.
-    read: query([SuperheroId], Opt(Superhero), (superheroId) => {
+    @query([SuperheroId], Opt(Superhero))
+    read(superheroId) {
         const superheroOrUndefined = superheroes.get(superheroId);
         return superheroOrUndefined ? Some(superheroOrUndefined) : None;
-    }),
+    }
     // Update a superhero.
-    update: update([SuperheroId, Superhero], bool, (superheroId, superhero) => {
+    @update([SuperheroId, Superhero], bool)
+    update(superheroId, superhero) {
         let result = superheroes.get(superheroId);
         if (result) {
             superheroes.set(superheroId, superhero);
         }
 
         return !!result;
-    }),
+    }
     // Delete a superhero.
-    deleteHero: update([SuperheroId], bool, (superheroId) => {
+    @update([SuperheroId], bool)
+    deleteHero(superheroId) {
         let result = superheroes.get(superheroId);
         if (result) {
             superheroes.delete(superheroId);
         }
 
         return !!result;
-    })
-});
+    }
+}

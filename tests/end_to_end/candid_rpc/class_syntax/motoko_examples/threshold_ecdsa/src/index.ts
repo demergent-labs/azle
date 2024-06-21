@@ -17,14 +17,16 @@ const Signature = Record({
     signature: blob
 });
 
-export default Canister({
-    publicKey: update([], PublicKey, async () => {
+export default class {
+    @update([], PublicKey)
+    async publicKey() {
         const publicKeyResult = await getPublicKeyResult();
         return {
             publicKey: publicKeyResult.public_key
         };
-    }),
-    sign: update([blob], Signature, async (messageHash) => {
+    }
+    @update([blob], Signature)
+    async sign(messageHash) {
         if (messageHash.length !== 32) {
             ic.trap('messageHash must be 32 bytes');
         }
@@ -34,8 +36,8 @@ export default Canister({
         return {
             signature: signatureResult.signature
         };
-    })
-});
+    }
+}
 
 async function getPublicKeyResult() {
     const caller = ic.caller().toUint8Array();

@@ -18,13 +18,15 @@ export type Entry = typeof Entry.tsType;
 
 let phoneBook = new Map<string, Entry>();
 
-export default Canister({
-    insert: update([text, Entry], Void, (name, entry) => {
+export default class {
+    @update([text, Entry], Void)
+    insert(name, entry) {
         phoneBook.set(name, entry);
-    }),
-    lookup: query([text], Opt(Entry), (name) => {
+    }
+    @query([text], Opt(Entry))
+    lookup(name) {
         const entryOrUndefined = phoneBook.get(name);
 
         return entryOrUndefined ? Some(entryOrUndefined) : None;
-    })
-});
+    }
+}

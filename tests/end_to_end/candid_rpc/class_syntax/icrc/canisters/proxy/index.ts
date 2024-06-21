@@ -32,11 +32,13 @@ import {
 
 let icrc: typeof ICRC;
 
-export default Canister({
-    init: init([], () => {
+export default class {
+@init([])
+    init(){
         icrc = ICRC(Principal.fromText(getIcrcPrincipal()));
-    }),
-    icrc1_metadata: query([], Vec(Tuple(text, Value)), async () => {
+    }
+@query([], Vec(Tuple(text, Value)))
+async icrc1_metadata(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_metadata`,
@@ -52,8 +54,9 @@ export default Canister({
         } else {
             return await ic.call(icrc.icrc1_metadata);
         }
-    }),
-    icrc1_name: query([], text, async () => {
+    }
+@query([], text)
+async icrc1_name(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_name`,
@@ -69,8 +72,9 @@ export default Canister({
         } else {
             return await ic.call(icrc.icrc1_name);
         }
-    }),
-    icrc1_decimals: query([], nat8, async () => {
+    }
+@query([], nat8)
+async icrc1_decimals(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_decimals`,
@@ -86,8 +90,9 @@ export default Canister({
         } else {
             return await ic.call(icrc.icrc1_decimals);
         }
-    }),
-    icrc1_symbol: query([], text, async () => {
+    }
+@query([], text)
+async icrc1_symbol(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_symbol`,
@@ -103,8 +108,9 @@ export default Canister({
         } else {
             return await ic.call(icrc.icrc1_symbol);
         }
-    }),
-    icrc1_fee: query([], nat, async () => {
+    }
+@query([], nat)
+async icrc1_fee(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_fee`,
@@ -120,8 +126,9 @@ export default Canister({
         } else {
             return await ic.call(icrc.icrc1_fee);
         }
-    }),
-    icrc1_total_supply: query([], nat, async () => {
+    }
+@query([], nat)
+async icrc1_total_supply(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_total_supply`,
@@ -137,8 +144,9 @@ export default Canister({
         } else {
             return await ic.call(icrc.icrc1_total_supply);
         }
-    }),
-    icrc1_minting_account: query([], Opt(Account), async () => {
+    }
+@query([], Opt(Account))
+async icrc1_minting_account(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_minting_account`,
@@ -158,8 +166,9 @@ export default Canister({
         } else {
             return await ic.call(icrc.icrc1_minting_account);
         }
-    }),
-    icrc1_balance_of: query([Account], nat, async (account) => {
+    }
+@query([Account], nat)
+async icrc1_balance_of(account){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_balance_of`,
@@ -185,7 +194,7 @@ export default Canister({
                 args: [account]
             });
         }
-    }),
+    }
     icrc1_transfer: update(
         [TransferArgs],
         TransferResult,
@@ -228,7 +237,8 @@ export default Canister({
             }
         }
     ),
-    icrc1_supported_standards: query([], Vec(SupportedStandard), async () => {
+@query([], Vec(SupportedStandard))
+async icrc1_supported_standards(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc1_supported_standards`,
@@ -244,8 +254,9 @@ export default Canister({
         } else {
             return await ic.call(icrc.icrc1_supported_standards);
         }
-    }),
-    icrc2_approve: update([ApproveArgs], ApproveResult, async (approveArgs) => {
+    }
+@update([ApproveArgs], ApproveResult)
+async icrc2_approve(approveArgs){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcrcPrincipal()}/icrc2_approve`,
@@ -288,7 +299,7 @@ export default Canister({
                 args: [approveArgs]
             });
         }
-    }),
+    }
     icrc2_transfer_from: update(
         [TransferFromArgs],
         TransferFromResult,
@@ -381,7 +392,7 @@ export default Canister({
             }
         }
     )
-});
+}
 
 function getIcrcPrincipal(): string {
     return (

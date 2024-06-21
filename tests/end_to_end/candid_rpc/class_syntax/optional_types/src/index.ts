@@ -25,18 +25,21 @@ const Html = Record({
     head: Opt(Head)
 });
 
-export default Canister({
-    getHtml: query([], Html, () => {
+export default class {
+    @query([], Html)
+    getHtml() {
         return {
             head: None
         };
-    }),
-    getHead: query([], Opt(Head), () => {
+    }
+    @query([], Opt(Head))
+    getHead() {
         return Some({
             elements: []
         });
-    }),
-    getHeadWithElements: query([], Opt(Head), () => {
+    }
+    @query([], Opt(Head))
+    getHeadWithElements() {
         return Some({
             elements: [
                 {
@@ -44,20 +47,24 @@ export default Canister({
                 }
             ]
         });
-    }),
-    getElement: query([Opt(Opt(Element))], Opt(Opt(Element)), (element) => {
+    }
+    @query([Opt(Opt(Element))], Opt(Opt(Element)))
+    getElement(element) {
         return element;
-    }),
-    getNull: query([], Null, () => {
+    }
+    @query([], Null)
+    getNull() {
         return null;
-    }),
-    getOptNull: query([], Opt(text), () => {
+    }
+    @query([], Opt(text))
+    getOptNull() {
         return None;
-    }),
-    stringToBoolean: query([Opt(text)], bool, (optString) => {
+    }
+    @query([Opt(text)], bool)
+    stringToBoolean(optString) {
         if ('None' in optString) {
             return false;
         }
         return true;
-    })
-});
+    }
+}

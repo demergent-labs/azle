@@ -35,15 +35,17 @@ let state: State = {
     createdCanisterId: Principal.fromText('aaaaa-aa')
 };
 
-export default Canister({
-    executeCreateCanister: update([], CreateCanisterResult, async () => {
+export default class {
+@update([], CreateCanisterResult)
+async executeCreateCanister(){
         const createCanisterResult = await createCanister();
 
         state.createdCanisterId = createCanisterResult.canister_id;
 
         return createCanisterResult;
-    }),
-    executeUpdateSettings: update([Principal], bool, async (canisterId) => {
+    }
+@update([Principal], bool)
+async executeUpdateSettings(canisterId){
         if (process.env.AZLE_TEST_FETCH === 'true' || false) {
             await fetch(`icp://aaaaa-aa/update_settings`, {
                 body: serialize({
@@ -81,7 +83,7 @@ export default Canister({
         }
 
         return true;
-    }),
+    }
     executeUploadChunk: update(
         [Principal, blob],
         ChunkHash,
@@ -111,7 +113,8 @@ export default Canister({
             }
         }
     ),
-    executeClearChunkStore: update([Principal], bool, async (canisterId) => {
+@update([Principal], bool)
+async executeClearChunkStore(canisterId){
         if (process.env.AZLE_TEST_FETCH === 'true' || false) {
             await fetch(`icp://aaaaa-aa/clear_chunk_store`, {
                 body: serialize({
@@ -133,7 +136,7 @@ export default Canister({
         }
 
         return true;
-    }),
+    }
     getStoredChunks: update(
         [Principal],
         StoredChunksResult,
@@ -246,7 +249,8 @@ export default Canister({
             return true;
         }
     ),
-    executeUninstallCode: update([Principal], bool, async (canisterId) => {
+@update([Principal], bool)
+async executeUninstallCode(canisterId){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/uninstall_code`, {
                 body: serialize({
@@ -270,8 +274,9 @@ export default Canister({
         }
 
         return true;
-    }),
-    executeStartCanister: update([Principal], bool, async (canisterId) => {
+    }
+@update([Principal], bool)
+async executeStartCanister(canisterId){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/start_canister`, {
                 body: serialize({
@@ -288,8 +293,9 @@ export default Canister({
             });
         }
         return true;
-    }),
-    executeStopCanister: update([Principal], bool, async (canisterId) => {
+    }
+@update([Principal], bool)
+async executeStopCanister(canisterId){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/stop_canister`, {
                 body: serialize({
@@ -307,7 +313,7 @@ export default Canister({
         }
 
         return true;
-    }),
+    }
     getCanisterInfo: update(
         [CanisterInfoArgs],
         CanisterInfoResult,
@@ -351,7 +357,8 @@ export default Canister({
             }
         }
     ),
-    executeDeleteCanister: update([Principal], bool, async (canisterId) => {
+@update([Principal], bool)
+async executeDeleteCanister(canisterId){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/delete_canister`, {
                 body: serialize({
@@ -369,8 +376,9 @@ export default Canister({
         }
 
         return true;
-    }),
-    executeDepositCycles: update([Principal], bool, async (canisterId) => {
+    }
+@update([Principal], bool)
+async executeDepositCycles(canisterId){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://aaaaa-aa/deposit_cycles`, {
                 body: serialize({
@@ -390,15 +398,16 @@ export default Canister({
         }
 
         return true;
-    }),
-    getRawRand: update([], blob, async () => {
+    }
+@update([], blob)
+async getRawRand(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(`icp://aaaaa-aa/raw_rand`);
             return await response.json();
         } else {
             return await ic.call(managementCanister.raw_rand);
         }
-    }),
+    }
     // TODO we should test this like we test depositCycles
     provisionalCreateCanisterWithCycles: update(
         [],
@@ -464,10 +473,11 @@ export default Canister({
             return true;
         }
     ),
-    getCreatedCanisterId: query([], Principal, () => {
+@query([], Principal)
+    getCreatedCanisterId(){
         return state.createdCanisterId;
-    })
-});
+    }
+}
 
 async function createCanister() {
     if (process.env.AZLE_TEST_FETCH === 'true') {

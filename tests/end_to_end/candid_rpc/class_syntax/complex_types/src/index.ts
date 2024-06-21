@@ -5,7 +5,7 @@ import { createReaction, getAllReactions } from './reactions';
 import { createThread, getAllThreads } from './threads';
 import { createUser, getAllUsers } from './users';
 
-export default Canister({
+export default class {
     createPost,
     getAllPosts,
     createReaction,
@@ -14,4 +14,4 @@ export default Canister({
     getAllThreads,
     createUser,
     getAllUsers
-});
+}

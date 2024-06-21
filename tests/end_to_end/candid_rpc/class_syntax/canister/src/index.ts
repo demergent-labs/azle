@@ -16,14 +16,17 @@ const Wrapper = Record({
     someCanister: SomeCanister
 });
 
-export default Canister({
-    canisterParam: query([SomeCanister], SomeCanister, (someCanister) => {
+export default class {
+@query([SomeCanister], SomeCanister)
+    canisterParam(someCanister){
         return someCanister;
     }),
-    canisterReturnType: query([], SomeCanister, () => {
+@query([], SomeCanister)
+    canisterReturnType(){
         return SomeCanister(Principal.fromText(getSomeCanisterPrincipal()));
     }),
-    canisterNestedReturnType: update([], Wrapper, () => {
+@update([], Wrapper)
+    canisterNestedReturnType(){
         return {
             someCanister: SomeCanister(
                 Principal.fromText(getSomeCanisterPrincipal())
@@ -58,7 +61,7 @@ export default Canister({
             }
         }
     )
-});
+}
 
 function getSomeCanisterPrincipal(): string {
     if (process.env.SOME_CANISTER_PRINCIPAL !== undefined) {

@@ -25,14 +25,16 @@ import {
 //     string: text,
 // });
 
-export default Canister({
+export default class {
     // // returns the argument data as an array.
-    // argDataZeroParams: query([], Vec(Null), () => {
+@query([], Vec(Null))
+    // argDataZeroParams(){
     //     return ic.argData();
     // }),
 
     // // returns the argument data as an array.
-    // argDataOneParam: query([bool], bool, () => {
+@query([bool], bool)
+    // argDataOneParam(){
     //     return ic.argData()[0];
     // }),
 
@@ -68,55 +70,66 @@ export default Canister({
         }
     ),
     // returns the principal of the identity that called this function
-    caller: query([], Principal, () => {
+@query([], Principal)
+    caller(){
         return ic.caller();
-    }),
+    }
     // returns the amount of cycles available in the canister
-    canisterBalance: query([], nat64, () => {
+@query([], nat64)
+    canisterBalance(){
         return ic.canisterBalance();
-    }),
+    }
     // returns the amount of cycles available in the canister
-    canisterBalance128: query([], nat, () => {
+@query([], nat)
+    canisterBalance128(){
         return ic.canisterBalance128();
-    }),
+    }
     // returns the canister's version number
-    canisterVersion: query([], nat64, () => {
+@query([], nat64)
+    canisterVersion(){
         return ic.canisterVersion();
-    }),
+    }
     // When called from a query call, returns the data certificate
     // authenticating certified data set by this canister. Otherwise returns
     // None.
-    dataCertificate: query([], Opt(blob), () => {
+@query([], Opt(blob))
+    dataCertificate(){
         return ic.dataCertificate();
-    }),
+    }
     // When called from a query call, returns the data certificate
     // authenticating certified data set by this canister. Otherwise returns
     // None.
-    dataCertificateNull: update([], Opt(blob), () => {
+@update([], Opt(blob))
+    dataCertificateNull(){
         return ic.dataCertificate();
-    }),
+    }
     // returns this canister's id
-    id: query([], Principal, () => {
+@query([], Principal)
+    id(){
         return ic.id();
-    }),
+    }
     // Returns the number of instructions that the canister executed since the last
     // entry point.
-    instructionCounter: query([], nat64, () => {
+@query([], nat64)
+    instructionCounter(){
         return ic.instructionCounter();
-    }),
+    }
     // determines whether the given principal is a controller of the canister
-    isController: query([Principal], bool, (principal) => {
+@query([Principal], bool)
+    isController(principal){
         return ic.isController(principal);
-    }),
-    performanceCounter: query([], nat64, () => {
+    }
+@query([], nat64)
+    performanceCounter(){
         return ic.performanceCounter(0);
-    }),
+    }
     // prints a message through the local replica's output
-    print: query([text], bool, (message) => {
+@query([text], bool)
+    print(message){
         ic.print(message);
 
         return true;
-    }),
+    }
     reject: query(
         [text],
         Manual(empty),
@@ -126,17 +139,20 @@ export default Canister({
         { manual: true }
     ),
     // sets up to 32 bytes of certified data
-    setCertifiedData: update([blob], Void, (data) => {
+@update([blob], Void)
+    setCertifiedData(data){
         ic.setCertifiedData(data);
-    }),
+    }
     // returns the current timestamp
-    time: query([], nat64, () => {
+@query([], nat64)
+    time(){
         return ic.time();
-    }),
+    }
     // traps with a message, stopping execution and discarding all state within the call
-    trap: query([text], bool, (message) => {
+@query([text], bool)
+    trap(message){
         ic.trap(message);
 
         return true;
-    })
-});
+    }
+}

@@ -40,13 +40,15 @@ const State = Variant({
 
 const BasicFunc = Func([text], text, 'query');
 
-export default Canister({
-    listOfStringOne: query([Vec(text)], Vec(text), (param) => {
+export default class {
+@query([Vec(text)], Vec(text))
+    listOfStringOne(param){
         return param;
-    }),
-    listOfStringTwo: query([Vec(Vec(text))], Vec(Vec(text)), (params) => {
+    }
+@query([Vec(Vec(text))], Vec(Vec(text)))
+    listOfStringTwo(params){
         return params;
-    }),
+    }
     listOfStringFour: query(
         [Vec(Vec(Vec(Vec(text))))],
         Vec(Vec(Vec(Vec(text)))),
@@ -54,7 +56,8 @@ export default Canister({
             return params;
         }
     ),
-    listOfListOfInt8: query([], Vec(Vec(Vec(Vec(Vec(Vec(Vec(int8))))))), () => {
+@query([], Vec(Vec(Vec(Vec(Vec(Vec(Vec(int8))))))))
+    listOfListOfInt8(){
         return [
             [
                 [
@@ -76,16 +79,19 @@ export default Canister({
                 [[[[Int8Array.from([3])]]], [[[Int8Array.from([4])]]]]
             ]
         ];
-    }),
-    listOfNull: query([Vec(Vec(Vec(Null)))], Vec(Vec(Vec(Null))), (param) => {
+    }
+@query([Vec(Vec(Vec(Null)))], Vec(Vec(Vec(Null))))
+    listOfNull(param){
         return param;
-    }),
-    listOfBool: query([Vec(Vec(Vec(bool)))], Vec(Vec(Vec(bool))), (param) => {
+    }
+@query([Vec(Vec(Vec(bool)))], Vec(Vec(Vec(bool))))
+    listOfBool(param){
         return param;
-    }),
-    listOfString: query([Vec(Vec(Vec(text)))], Vec(Vec(Vec(text))), (param) => {
+    }
+@query([Vec(Vec(Vec(text)))], Vec(Vec(Vec(text))))
+    listOfString(param){
         return param;
-    }),
+    }
     listOfOptionString: query(
         [Vec(Vec(Vec(Opt(text))))],
         Vec(Vec(Vec(Opt(text)))),
@@ -93,10 +99,12 @@ export default Canister({
             return param;
         }
     ),
-    listOfEmpty: query([], Vec(Vec(Vec(empty))), () => {
+@query([], Vec(Vec(Vec(empty))))
+    listOfEmpty(){
         throw new Error('Anything you want');
-    }),
-    listOfReserved: query([], Vec(Vec(Vec(reserved))), () => {
+    }
+@query([], Vec(Vec(Vec(reserved))))
+    listOfReserved(){
         return [
             [['A'], ['n']],
             [
@@ -104,7 +112,7 @@ export default Canister({
                 ['i', 'n', 'g']
             ]
         ];
-    }),
+    }
     listOfFunc: query(
         [Vec(Vec(Vec(BasicFunc)))],
         Vec(Vec(Vec(BasicFunc))),
@@ -133,9 +141,10 @@ export default Canister({
             return param;
         }
     ),
-    listOfInt: query([Vec(Vec(Vec(int)))], Vec(Vec(Vec(int))), (param) => {
+@query([Vec(Vec(Vec(int)))], Vec(Vec(Vec(int))))
+    listOfInt(param){
         return param;
-    }),
+    }
     listOfInt64: query(
         [Vec(Vec(Vec(int64)))],
         Vec(Vec(Vec(int64))),
@@ -157,12 +166,14 @@ export default Canister({
             return param;
         }
     ),
-    listOfInt8: query([Vec(Vec(Vec(int8)))], Vec(Vec(Vec(int8))), (param) => {
+@query([Vec(Vec(Vec(int8)))], Vec(Vec(Vec(int8))))
+    listOfInt8(param){
         return param;
-    }),
-    listOfNat: query([Vec(Vec(Vec(nat)))], Vec(Vec(Vec(nat))), (param) => {
+    }
+@query([Vec(Vec(Vec(nat)))], Vec(Vec(Vec(nat))))
+    listOfNat(param){
         return param;
-    }),
+    }
     listOfNat64: query(
         [Vec(Vec(Vec(nat64)))],
         Vec(Vec(Vec(nat64))),
@@ -184,9 +195,10 @@ export default Canister({
             return param;
         }
     ),
-    listOfNat8: query([Vec(Vec(Vec(nat8)))], Vec(Vec(Vec(nat8))), (param) => {
+@query([Vec(Vec(Vec(nat8)))], Vec(Vec(Vec(nat8))))
+    listOfNat8(param){
         return param;
-    }),
+    }
     listOfRecord: query(
         [Vec(Vec(Vec(Person)))],
         Vec(Vec(Vec(Person))),
@@ -201,10 +213,12 @@ export default Canister({
             return param;
         }
     ),
-    listOfBlob: query([Vec(blob)], Vec(blob), (param) => {
+@query([Vec(blob)], Vec(blob))
+    listOfBlob(param){
         return param;
-    }),
-    listOfListOfBlob: query([Vec(Vec(blob))], Vec(Vec(blob)), (param) => {
+    }
+@query([Vec(Vec(blob))], Vec(Vec(blob)))
+    listOfListOfBlob(param){
         return param;
-    })
-});
+    }
+}

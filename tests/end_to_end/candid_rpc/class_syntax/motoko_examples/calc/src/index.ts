@@ -10,31 +10,36 @@ import {
 
 let cell: int = 0n;
 
-export default Canister({
-    add: update([int], int, (n) => {
+export default class {
+    @update([int], int)
+    add(n) {
         cell += n;
 
         return cell;
-    }),
-    sub: update([int], int, (n) => {
+    }
+    @update([int], int)
+    sub(n) {
         cell -= n;
 
         return cell;
-    }),
-    mul: update([int], int, (n) => {
+    }
+    @update([int], int)
+    mul(n) {
         cell *= n;
 
         return cell;
-    }),
-    div: update([int], Opt(int), (n) => {
+    }
+    @update([int], Opt(int))
+    div(n) {
         if (n === 0n) {
             return None;
         } else {
             cell /= n;
             return Some(cell);
         }
-    }),
-    clearall: update([], Void, () => {
+    }
+    @update([], Void)
+    clearall() {
         cell = 0n;
-    })
-});
+    }
+}

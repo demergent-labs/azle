@@ -1,13 +1,15 @@
 import { blob, Canister, query, Vec } from 'azle/experimental';
 
-export default Canister({
-    getBlob: query([], blob, () => {
+export default class {
+    @query([], blob)
+    getBlob() {
         return stringToBlob('hello');
-    }),
-    getBlobs: query([], Vec(blob), () => {
+    }
+    @query([], Vec(blob))
+    getBlobs() {
         return [stringToBlob('hello'), stringToBlob('world')];
-    })
-});
+    }
+}
 
 function stringToBlob(string: string): blob {
     return Buffer.from(string);

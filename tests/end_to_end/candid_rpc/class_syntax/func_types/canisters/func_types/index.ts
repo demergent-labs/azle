@@ -51,29 +51,33 @@ const NullFunc = Func(
 
 let stableStorage = StableBTreeMap<text, StableFunc>(0);
 
-export default Canister({
-    init: init([], () => {
+export default class {
+@init([])
+    init(){
         stableStorage.insert('stableFunc', [
             Principal.from('aaaaa-aa'),
             'start_canister'
         ]);
-    }),
+    }
 
-    getStableFunc: query([], StableFunc, () => {
+@query([], StableFunc)
+    getStableFunc(){
         const stableFuncOpt = stableStorage.get('stableFunc');
         if ('None' in stableFuncOpt) {
             return [Principal.from('aaaaa-aa'), 'raw_rand'];
         }
         return stableFuncOpt.Some;
-    }),
+    }
 
-    basicFuncParam: query([BasicFunc], BasicFunc, (basicFunc) => {
+@query([BasicFunc], BasicFunc)
+    basicFuncParam(basicFunc){
         return basicFunc;
-    }),
+    }
 
-    nullFuncParam: query([NullFunc], NullFunc, (nullFunc) => {
+@query([NullFunc], NullFunc)
+    nullFuncParam(nullFunc){
         return nullFunc;
-    }),
+    }
 
     basicFuncParamArray: query(
         [Vec(BasicFunc)],
@@ -81,29 +85,34 @@ export default Canister({
         (basicFunc) => {
             return basicFunc;
         }
-    ),
+    )
 
-    basicFuncReturnType: query([], BasicFunc, () => {
+@query([], BasicFunc)
+    basicFuncReturnType(){
         return [Principal.fromText('aaaaa-aa'), 'create_canister'];
-    }),
+    }
 
-    basicFuncReturnTypeArray: query([], Vec(BasicFunc), () => {
+@query([], Vec(BasicFunc))
+    basicFuncReturnTypeArray(){
         return [
             [Principal.fromText('aaaaa-aa'), 'create_canister'],
             [Principal.fromText('aaaaa-aa'), 'update_settings'],
             [Principal.fromText('aaaaa-aa'), 'install_code']
         ];
-    }),
+    }
 
-    complexFuncParam: query([ComplexFunc], ComplexFunc, (complexFunc) => {
+@query([ComplexFunc], ComplexFunc)
+    complexFuncParam(complexFunc){
         return complexFunc;
-    }),
+    }
 
-    complexFuncReturnType: query([], ComplexFunc, () => {
+@query([], ComplexFunc)
+    complexFuncReturnType(){
         return [Principal.fromText('aaaaa-aa'), 'stop_canister'];
-    }),
+    }
 
-    getNotifierFromNotifiersCanister: update([], NotifierFunc, async () => {
+@update([], NotifierFunc)
+async getNotifierFromNotifiersCanister(){
         const notifiersCanister = Notifier(
             Principal.fromText(getNotifierPrincipal())
         );
@@ -123,8 +132,8 @@ export default Canister({
         } else {
             return await ic.call(notifiersCanister.getNotifier);
         }
-    })
-});
+    }
+}
 
 function getNotifierPrincipal(): string {
     if (process.env.NOTIFIERS_PRINCIPAL !== undefined) {

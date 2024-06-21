@@ -18,11 +18,13 @@ import {
 
 let stableStorage = StableBTreeMap<text, text>(0);
 
-export default Canister({
-    init: init([text], (ethereumUrl) => {
+export default class {
+    @init([text])
+    init(ethereumUrl) {
         stableStorage.insert('ethereumUrl', ethereumUrl);
-    }),
-    ethGetBalance: update([text], text, async (ethereumAddress) => {
+    }
+    @update([text], text)
+    async ethGetBalance(ethereumAddress) {
         const urlOpt = stableStorage.get('ethereumUrl');
 
         if ('None' in urlOpt) {
@@ -32,8 +34,9 @@ export default Canister({
         const url = urlOpt.Some;
 
         return await getBalance(url, ethereumAddress);
-    }),
-    ethGetBlockByNumber: update([nat32], text, async (number) => {
+    }
+    @update([nat32], text)
+    async ethGetBlockByNumber(number) {
         const urlOpt = stableStorage.get('ethereumUrl');
 
         if ('None' in urlOpt) {
@@ -43,14 +46,15 @@ export default Canister({
         const url = urlOpt.Some;
 
         return await getBlockByNumber(url, number);
-    }),
-    ethTransform: query([HttpTransformArgs], HttpResponse, (args) => {
+    }
+    @query([HttpTransformArgs], HttpResponse)
+    ethTransform(args) {
         return {
             ...args.response,
             headers: []
         };
-    })
-});
+    }
+}
 
 async function getBalance(url: string, ethereumAddress: string) {
     if (process.env.AZLE_TEST_FETCH === 'true') {

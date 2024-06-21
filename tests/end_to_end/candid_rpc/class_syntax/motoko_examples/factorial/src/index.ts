@@ -1,11 +1,12 @@
 import { Canister, nat, update } from 'azle/experimental';
 
-export default Canister({
+export default class {
     // Calculate the product of all positive integers less than or equal to `n`.
-    fac: update([nat], nat, (n) => {
+    @update([nat], nat)
+    fac(n) {
         return go(n);
-    })
-});
+    }
+}
 
 // We implement the recursion in a helper function.
 function go(m: nat): nat {

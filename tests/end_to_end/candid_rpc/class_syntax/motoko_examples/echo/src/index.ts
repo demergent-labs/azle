@@ -1,7 +1,8 @@
 import { Canister, query, text } from 'azle/experimental';
 
-export default Canister({
-    say: query([text], text, (phrase) => {
+export default class {
+    @query([text], text)
+    say(phrase) {
         return phrase;
-    })
-});
+    }
+}

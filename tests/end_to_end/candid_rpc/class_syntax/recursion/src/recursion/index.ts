@@ -56,25 +56,41 @@ const MyCanister = Recursive(() =>
 // Func
 const myFunc = Recursive(() => Func([myFunc], myFunc, 'query'));
 
-export default Canister({
-    testRecVecWithVariant: query([varVec], varVec, (param) => param),
-    testRecVecWithOpt: query([optVec], optVec, (param) => param),
-    testRecVecWithTuple: query([tupleVec], tupleVec, (param) => param),
-    testRecVecWithVec: query([vecVec], vecVec, (param) => param),
-    testRecOptWithVariant: query([varOpt], varOpt, (param) => param),
-    testRecOptWithOpt: query([optOpt], optOpt, (param) => param),
-    testRecOptWithTuple: query([tupleOpt], tupleOpt, (param) => param),
-    testRecOptWithVec: query([vecOpt], vecOpt, (param) => param),
-    testRecRecordWithOpt: query([optRecord], optRecord, (param) => param),
-    testRecRecordWithVec: query([vecRecord], vecRecord, (param) => param),
-    testRecRecordWithVariant: query([varRecord], varRecord, (param) => param),
-    testRecVariant: query([recVariant], recVariant, (param) => param),
-    testRecTupleWithOpt: query([optTuple], optTuple, (param) => param),
-    testRecTupleWithVec: query([vecTuple], vecTuple, (param) => param),
-    testRecRecordWithOptReturn: query([], optRecord, () => {
+export default class {
+@query([varVec], varVec)
+    testRecVecWithVariant(param)param),
+@query([optVec], optVec)
+    testRecVecWithOpt(param)param),
+@query([tupleVec], tupleVec)
+    testRecVecWithTuple(param)param),
+@query([vecVec], vecVec)
+    testRecVecWithVec(param)param),
+@query([varOpt], varOpt)
+    testRecOptWithVariant(param)param),
+@query([optOpt], optOpt)
+    testRecOptWithOpt(param)param),
+@query([tupleOpt], tupleOpt)
+    testRecOptWithTuple(param)param),
+@query([vecOpt], vecOpt)
+    testRecOptWithVec(param)param),
+@query([optRecord], optRecord)
+    testRecRecordWithOpt(param)param),
+@query([vecRecord], vecRecord)
+    testRecRecordWithVec(param)param),
+@query([varRecord], varRecord)
+    testRecRecordWithVariant(param)param),
+@query([recVariant], recVariant)
+    testRecVariant(param)param),
+@query([optTuple], optTuple)
+    testRecTupleWithOpt(param)param),
+@query([vecTuple], vecTuple)
+    testRecTupleWithVec(param)param),
+@query([], optRecord)
+    testRecRecordWithOptReturn(){
         return { myOpt: Some({ myOpt: Some({ myOpt: None }) }) };
     }),
-    testRecRecordWithVecReturn: query([], vecRecord, () => {
+@query([], vecRecord)
+    testRecRecordWithVecReturn(){
         return {
             myVecRecords: [
                 { myVecRecords: [{ myVecRecords: [] }] },
@@ -88,22 +104,26 @@ export default Canister({
             ]
         };
     }),
-    testRecRecordWithVariantReturn: query([], varRecord, () => {
+@query([], varRecord)
+    testRecRecordWithVariantReturn(){
         return {
             myVar: {
                 varRec: { myVar: { varRec: { myVar: { num: 7 } } } }
             }
         };
     }),
-    testRecVariantReturn: query([], recVariant, () => {
+@query([], recVariant)
+    testRecVariantReturn(){
         return {
             recVariant: { recVariant: { recVariant: { num: 12 } } }
         };
     }),
-    testRecTupleWithOptReturn: query([], optTuple, () => {
+@query([], optTuple)
+    testRecTupleWithOptReturn(){
         return [None, Some([None, None])];
     }),
-    testRecTupleWithVecReturn: query([], vecTuple, () => {
+@query([], vecTuple)
+    testRecTupleWithVecReturn(){
         return [
             [[[], [[[], []]]]],
             [
@@ -114,8 +134,10 @@ export default Canister({
             ]
         ];
     }),
-    testRecTupleWithVariant: query([varTuple], varTuple, (param) => param),
-    testRecTupleWithVariantReturn: query([], varTuple, () => {
+@query([varTuple], varTuple)
+    testRecTupleWithVariant(param)param),
+@query([], varTuple)
+    testRecTupleWithVariantReturn(){
         return [
             {
                 varTuple: [
@@ -126,14 +148,19 @@ export default Canister({
             { varTuple: [{ num: 40 }, { varTuple: [{ num: 5 }, { num: 10 }] }] }
         ];
     }),
-    testRecFunc: query([myFunc], myFunc, (param) => param),
-    testRecFuncReturn: query([], myFunc, () => [
+@query([myFunc], myFunc)
+    testRecFunc(param)param),
+@query([], myFunc)
+    testRecFuncReturn()[
         Principal.fromText('aaaaa-aa'),
         'create_canister'
     ]),
-    testRecServiceSimple: query([MyCanister], MyCanister, (param) => param),
-    testRecService: query([MyFullCanister], MyFullCanister, (param) => param),
-    testRecServiceReturn: query([], MyFullCanister, () => {
+@query([MyCanister], MyCanister)
+    testRecServiceSimple(param)param),
+@query([MyFullCanister], MyFullCanister)
+    testRecService(param)param),
+@query([], MyFullCanister)
+    testRecServiceReturn(){
         return MyFullCanister(
             Principal.fromText(
                 process.env.MY_CANISTER_PRINCIPAL ??
@@ -227,4 +254,4 @@ const node5 = Variant({
     ),
     children: Vec(Recursive(() => node5)),
     child: Record({ myVar: Recursive(() => node5) })
-});
+}

@@ -8,7 +8,7 @@ import {
     text
 } from 'azle/experimental';
 
-export default Canister({
+export default class {
     reject: query(
         [text],
         Manual(empty),
@@ -18,7 +18,8 @@ export default Canister({
         { manual: true }
     ),
 
-    accept: query([], bool, () => {
+@query([], bool)
+    accept(){
         return true;
     }),
 
@@ -30,4 +31,4 @@ export default Canister({
         },
         { manual: true }
     )
-});
+}

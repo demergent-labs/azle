@@ -15,8 +15,9 @@ import {
     update
 } from 'azle/experimental';
 
-export default Canister({
-    xkcd: update([], text, async () => {
+export default class {
+@update([], text)
+async xkcd(){
         if (process.env.AZLE_TEST_FETCH) {
             ic.setOutgoingHttpOptions({
                 maxResponseBytes: 2_000n,
@@ -56,7 +57,7 @@ export default Canister({
 
             return Buffer.from(httpResponse.body).toString();
         }
-    }),
+    }
     xkcdRaw: update(
         [],
         Manual(HttpResponse),
@@ -85,10 +86,11 @@ export default Canister({
         },
         { manual: true }
     ),
-    xkcdTransform: query([HttpTransformArgs], HttpResponse, (args) => {
+@query([HttpTransformArgs], HttpResponse)
+    xkcdTransform(args){
         return {
             ...args.response,
             headers: []
         };
-    })
-});
+    }
+}

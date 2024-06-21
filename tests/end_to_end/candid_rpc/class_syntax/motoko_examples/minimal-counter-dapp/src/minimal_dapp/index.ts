@@ -2,18 +2,21 @@ import { Canister, nat, query, update } from 'azle/experimental';
 
 let counter: nat = 0n;
 
-export default Canister({
-    count: update([], nat, () => {
+export default class {
+    @update([], nat)
+    count() {
         counter += 1n;
 
         return counter;
-    }),
-    getCount: query([], nat, () => {
+    }
+    @query([], nat)
+    getCount() {
         return counter;
-    }),
-    reset: update([], nat, () => {
+    }
+    @update([], nat)
+    reset() {
         counter = 0n;
 
         return counter;
-    })
-});
+    }
+}

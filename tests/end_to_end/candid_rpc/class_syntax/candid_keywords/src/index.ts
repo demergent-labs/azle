@@ -71,12 +71,15 @@ const Candid = Record({
     principal: Principal
 });
 
-export default Canister({
-    opt: query([], Void, () => {}),
-    variant: query([], CandidVariant, () => {
+export default class {
+    @query([], Void)
+    opt() {}
+    @query([], CandidVariant)
+    variant() {
         return { query: 'hello' };
-    }),
-    candidTypes: query([], Candid, () => {
+    }
+    @query([], Candid)
+    candidTypes() {
         return {
             query: 'query',
             text: 'text',
@@ -112,5 +115,5 @@ export default Canister({
             service: MyCanister(Principal.fromText('aaaaa-aa')),
             principal: Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai')
         };
-    })
-});
+    }
+}

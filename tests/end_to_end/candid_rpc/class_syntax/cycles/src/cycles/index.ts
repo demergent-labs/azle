@@ -1,17 +1,21 @@
 import { Canister, ic, nat, nat64, query, update } from 'azle/experimental';
 
-export default Canister({
-    receiveCycles: update([], nat64, () => {
+export default class {
+    @update([], nat64)
+    receiveCycles() {
         return ic.msgCyclesAccept(ic.msgCyclesAvailable() / 2n);
-    }),
+    }
     // Moves all transferred cycles to the canister
-    receiveCycles128: update([], nat, () => {
+    @update([], nat)
+    receiveCycles128() {
         return ic.msgCyclesAccept128(ic.msgCyclesAvailable128() / 2n);
-    }),
-    getCanisterBalance: query([], nat64, () => {
+    }
+    @query([], nat64)
+    getCanisterBalance() {
         return ic.canisterBalance();
-    }),
-    getCanisterBalance128: query([], nat, () => {
+    }
+    @query([], nat)
+    getCanisterBalance128() {
         return ic.canisterBalance128();
-    })
-});
+    }
+}

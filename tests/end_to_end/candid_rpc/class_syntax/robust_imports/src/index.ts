@@ -61,7 +61,7 @@ import {
     simpleQuery
 } from './type_alias_decls';
 
-export default Canister({
+export default class {
     myVariantToMyDeepVariant,
     myFathomlessVariantToMyCavernousVariant,
     returnVec,
@@ -112,4 +112,4 @@ export default Canister({
     setStable,
     getStable,
     checkPrimAliases
-});
+}

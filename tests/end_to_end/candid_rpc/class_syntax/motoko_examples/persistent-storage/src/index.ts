@@ -14,17 +14,21 @@ import {
 let stableStorage = StableBTreeMap<text, nat>(0);
 let redeployed = false;
 
-export default Canister({
-    init: init([], () => {
+export default class {
+    @init([])
+    init() {
         stableStorage.insert('counter', 0n);
-    }),
-    postUpgrade: postUpgrade([], () => {
+    }
+    @postUpgrade([])
+    postUpgrade() {
         redeployed = true;
-    }),
-    getRedeployed: query([], bool, () => {
+    }
+    @query([], bool)
+    getRedeployed() {
         return redeployed;
-    }),
-    increment: update([], nat, () => {
+    }
+    @update([], nat)
+    increment() {
         const counterOpt = stableStorage.get('counter');
         const counter =
             'None' in counterOpt
@@ -34,8 +38,9 @@ export default Canister({
         stableStorage.insert('counter', counter);
 
         return counter;
-    }),
-    get: query([], nat, () => {
+    }
+    @query([], nat)
+    get() {
         const counterOpt = stableStorage.get('counter');
         const counter =
             'None' in counterOpt
@@ -43,8 +48,9 @@ export default Canister({
                 : counterOpt.Some;
 
         return counter;
-    }),
-    reset: update([], nat, () => {
+    }
+    @update([], nat)
+    reset() {
         stableStorage.insert('counter', 0n);
 
         const counterOpt = stableStorage.get('counter');
@@ -54,5 +60,5 @@ export default Canister({
                 : counterOpt.Some;
 
         return counter;
-    })
-});
+    }
+}

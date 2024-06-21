@@ -19,8 +19,9 @@ const Nonexistent = Canister({
 let someCanister: typeof SomeCanister;
 let nonexistentCanister: typeof Nonexistent;
 
-export default Canister({
-    init: init([], () => {
+export default class {
+    @init([])
+    init() {
         someCanister = SomeCanister(
             Principal.fromText(getSomeCanisterPrincipal())
         );
@@ -28,8 +29,9 @@ export default Canister({
         nonexistentCanister = Nonexistent(
             Principal.fromText('rkp4c-7iaaa-aaaaa-aaaca-cai')
         );
-    }),
-    getRejectionCodeNoError: update([], RejectionCode, async () => {
+    }
+    @update([], RejectionCode)
+    async getRejectionCodeNoError() {
         if (process.env.AZLE_TEST_FETCH === 'true') {
             await fetch(`icp://${getSomeCanisterPrincipal()}/accept`, {
                 body: serialize({
@@ -41,8 +43,9 @@ export default Canister({
         }
 
         return ic.rejectCode();
-    }),
-    getRejectionCodeDestinationInvalid: update([], RejectionCode, async () => {
+    }
+    @update([], RejectionCode)
+    async getRejectionCodeDestinationInvalid() {
         try {
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 await fetch(`icp://rkp4c-7iaaa-aaaaa-aaaca-cai/method`, {
@@ -58,8 +61,9 @@ export default Canister({
         }
 
         return ic.rejectCode();
-    }),
-    getRejectionCodeCanisterReject: update([], RejectionCode, async () => {
+    }
+    @update([], RejectionCode)
+    async getRejectionCodeCanisterReject() {
         try {
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 await fetch(`icp://${getSomeCanisterPrincipal()}/reject`, {
@@ -76,8 +80,9 @@ export default Canister({
         }
 
         return ic.rejectCode();
-    }),
-    getRejectionCodeCanisterError: update([], RejectionCode, async () => {
+    }
+    @update([], RejectionCode)
+    async getRejectionCodeCanisterError() {
         try {
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 await fetch(`icp://${getSomeCanisterPrincipal()}/error`, {
@@ -93,8 +98,9 @@ export default Canister({
         }
 
         return ic.rejectCode();
-    }),
-    getRejectionMessage: update([text], text, async (message: text) => {
+    }
+    @update([text], text)
+    async getRejectionMessage(message: text) {
         try {
             if (process.env.AZLE_TEST_FETCH === 'true') {
                 await fetch(`icp://${getSomeCanisterPrincipal()}/reject`, {
@@ -111,8 +117,8 @@ export default Canister({
         }
 
         return ic.rejectMessage();
-    })
-});
+    }
+}
 
 function getSomeCanisterPrincipal(): string {
     if (process.env.SOME_CANISTER_PRINCIPAL !== undefined) {

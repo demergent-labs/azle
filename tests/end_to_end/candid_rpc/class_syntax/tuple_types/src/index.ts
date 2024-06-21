@@ -58,10 +58,11 @@ const HttpResponse = Record({
     headers: Vec(Header)
 });
 
-export default Canister({
-    primitiveOneTupleReturnType: query([], PrimitiveOneTuple, () => {
+export default class {
+@query([], PrimitiveOneTuple)
+    primitiveOneTupleReturnType(){
         return ['Hello'];
-    }),
+    }
 
     primitiveOneTupleParam: query(
         [PrimitiveOneTuple],
@@ -71,17 +72,20 @@ export default Canister({
         }
     ),
 
-    primitiveOneTupleInlineReturnType: query([], Tuple(text), () => {
+@query([], Tuple(text))
+    primitiveOneTupleInlineReturnType(){
         return ['Greenland'];
-    }),
+    }
 
-    primitiveOneTupleInlineParam: query([Tuple(text)], Tuple(text), (param) => {
+@query([Tuple(text)], Tuple(text))
+    primitiveOneTupleInlineParam(param){
         return param;
-    }),
+    }
 
-    primitiveTwoTupleReturnType: query([], PrimitiveTwoTuple, () => {
+@query([], PrimitiveTwoTuple)
+    primitiveTwoTupleReturnType(){
         return ['Content-Type', 64n];
-    }),
+    }
 
     primitiveTwoTupleParam: query(
         [PrimitiveTwoTuple],
@@ -91,9 +95,10 @@ export default Canister({
         }
     ),
 
-    primitiveTwoTupleInlineReturnType: query([], Tuple(text, text), () => {
+@query([], Tuple(text, text))
+    primitiveTwoTupleInlineReturnType(){
         return ['Fun', 'Times'];
-    }),
+    }
 
     primitiveTwoTupleInlineParam: query(
         [Tuple(text, text)],
@@ -103,13 +108,14 @@ export default Canister({
         }
     ),
 
-    primitiveThreeTupleReturnType: query([], PrimitiveThreeTuple, () => {
+@query([], PrimitiveThreeTuple)
+    primitiveThreeTupleReturnType(){
         return [
             'Good',
             454n,
             Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
         ];
-    }),
+    }
 
     primitiveThreeTupleParam: query(
         [PrimitiveThreeTuple],
@@ -135,17 +141,20 @@ export default Canister({
         }
     ),
 
-    complexOneTupleReturnType: query([], ComplexOneTuple, () => {
+@query([], ComplexOneTuple)
+    complexOneTupleReturnType(){
         return [['Hello', 0n]];
-    }),
+    }
 
-    complexOneTupleParam: query([ComplexOneTuple], ComplexOneTuple, (param) => {
+@query([ComplexOneTuple], ComplexOneTuple)
+    complexOneTupleParam(param){
         return param;
-    }),
+    }
 
-    complexOneTupleInlineReturnType: query([], Tuple(PrimitiveTwoTuple), () => {
+@query([], Tuple(PrimitiveTwoTuple))
+    complexOneTupleInlineReturnType(){
         return [['Candy', 56n]];
-    }),
+    }
 
     complexOneTupleInlineParam: query(
         [Tuple(PrimitiveTwoTuple)],
@@ -155,7 +164,8 @@ export default Canister({
         }
     ),
 
-    complexTwoTupleReturnType: query([], ComplexTwoTuple, () => {
+@query([], ComplexTwoTuple)
+    complexTwoTupleReturnType(){
         return [
             ['Content-Type', 64n],
             {
@@ -163,11 +173,12 @@ export default Canister({
                 primitiveTwoTuple: ['Content-Type', 64n]
             }
         ];
-    }),
+    }
 
-    complexTwoTupleParam: query([ComplexTwoTuple], ComplexTwoTuple, (param) => {
+@query([ComplexTwoTuple], ComplexTwoTuple)
+    complexTwoTupleParam(param){
         return param;
-    }),
+    }
 
     complexTwoTupleInlineReturnType: query(
         [],
@@ -191,7 +202,8 @@ export default Canister({
         }
     ),
 
-    complexThreeTupleReturnType: query([], ComplexThreeTuple, () => {
+@query([], ComplexThreeTuple)
+    complexThreeTupleReturnType(){
         return [
             ['Content-Type', 64n],
             {
@@ -211,7 +223,7 @@ export default Canister({
                 ]
             }
         ];
-    }),
+    }
 
     complexThreeTupleParam: query(
         [ComplexThreeTuple],
@@ -263,23 +275,25 @@ export default Canister({
         }
     ),
 
-    tupleArrayRecordField: query([], HttpResponse, () => {
+@query([], HttpResponse)
+    tupleArrayRecordField(){
         return {
             headers: [
                 ['Content-Type', 'application/json'],
                 ['Accept-Ranges', 'bytes']
             ]
         };
-    }),
+    }
 
-    tupleArrayVariantField: query([], StreamingCallbackType, () => {
+@query([], StreamingCallbackType)
+    tupleArrayVariantField(){
         return {
             WithHeaders: [
                 ['Content-Type', 'application/json'],
                 ['Accept-Ranges', 'bytes']
             ]
         };
-    }),
+    }
 
     nestedTupleQuery: query(
         [Tuple(Tuple(text, Tuple(nat8, nat8)), int)],
@@ -288,4 +302,4 @@ export default Canister({
             return param;
         }
     )
-});
+}

@@ -26,22 +26,25 @@ const ThreeNullRecord = Record({
     thirdItem: Null
 });
 
-export default Canister({
-    nullFunction: query([Null], Null, (param) => {
+export default class {
+@query([Null], Null)
+    nullFunction(param){
         return param;
-    }),
-    voidIsNotNull: query([], Void, () => {
+    }
+@query([], Void)
+    voidIsNotNull(){
         ic.print(
             'Even though they are both None in Python, for Candid null and void are different.'
         );
-    }),
-    getPartiallyNullRecord: query([], PartiallyNullRecord, () => {
+    }
+@query([], PartiallyNullRecord)
+    getPartiallyNullRecord(){
         return {
             firstItem: 1n,
             secondItem: null,
             thirdItem: 3n
         };
-    }),
+    }
     setPartiallyNullRecord: update(
         [PartiallyNullRecord],
         PartiallyNullRecord,
@@ -49,23 +52,27 @@ export default Canister({
             return param;
         }
     ),
-    getSmallNullRecord: query([], TwoNullRecord, () => {
+@query([], TwoNullRecord)
+    getSmallNullRecord(){
         return {
             firstItem: null,
             secondItem: null
         };
-    }),
-    setSmallNullRecord: update([TwoNullRecord], TwoNullRecord, (param) => {
+    }
+@update([TwoNullRecord], TwoNullRecord)
+    setSmallNullRecord(param){
         return param;
-    }),
-    getLargeNullRecord: query([], ThreeNullRecord, () => {
+    }
+@query([], ThreeNullRecord)
+    getLargeNullRecord(){
         return {
             firstItem: null,
             secondItem: null,
             thirdItem: null
         };
-    }),
-    setLargeNullRecord: update([ThreeNullRecord], ThreeNullRecord, (param) => {
+    }
+@update([ThreeNullRecord], ThreeNullRecord)
+    setLargeNullRecord(param){
         return param;
-    })
-});
+    }
+}

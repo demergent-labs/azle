@@ -19,12 +19,14 @@ export type ToDo = typeof ToDo.tsType;
 let todos: Map<nat, ToDo> = new Map();
 let nextId: nat = 0n;
 
-export default Canister({
-    getTodos: query([], Vec(ToDo), () => {
+export default class {
+    @query([], Vec(ToDo))
+    getTodos() {
         return Array.from(todos.values());
-    }),
+    }
     // Returns the ID that was given to the ToDo item
-    addTodo: update([text], nat, (description) => {
+    @update([text], nat)
+    addTodo(description) {
         const id = nextId;
         todos.set(id, {
             description: description,
@@ -33,8 +35,9 @@ export default Canister({
         nextId += 1n;
 
         return id;
-    }),
-    completeTodo: update([nat], Void, (id) => {
+    }
+    @update([nat], Void)
+    completeTodo(id) {
         let todo = todos.get(id);
 
         if (todo !== undefined) {
@@ -43,8 +46,9 @@ export default Canister({
                 completed: true
             });
         }
-    }),
-    showTodos: query([], text, () => {
+    }
+    @query([], text)
+    showTodos() {
         let output = '\n___TO-DOs___';
         for (const todoEntry of [...todos]) {
             output += `\n${todoEntry[1].description}`;
@@ -53,8 +57,9 @@ export default Canister({
             }
         }
         return output;
-    }),
-    clearCompleted: update([], Void, () => {
+    }
+    @update([], Void)
+    clearCompleted() {
         // NOTE: this syntax isn't supported in Boa. If we revert to using Boa
         // we'll need to revert the syntax to:
         // ```ts
@@ -64,5 +69,5 @@ export default Canister({
         // ```
         //  See: https://github.com/demergent-labs/azle/issues/574
         todos = new Map([...todos].filter(([_key, value]) => !value.completed));
-    })
-});
+    }
+}

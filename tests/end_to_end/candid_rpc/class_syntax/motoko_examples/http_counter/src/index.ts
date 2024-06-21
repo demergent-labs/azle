@@ -24,11 +24,13 @@ const Token = Record({
 
 let stableStorage = StableBTreeMap<text, nat>(0);
 
-export default Canister({
-    init: init([], () => {
+export default class {
+@init([])
+    init(){
         stableStorage.insert('counter', 0n);
-    }),
-    http_request: query([HttpRequest], HttpResponse(Token), (req) => {
+    }
+@query([HttpRequest], HttpResponse(Token))
+    http_request(req){
         if (req.method === 'GET') {
             if (req.headers.find(isGzip) === undefined) {
                 if (req.url === '/stream') {
@@ -100,8 +102,9 @@ export default Canister({
             streaming_strategy: None,
             upgrade: None
         };
-    }),
-    http_request_update: update([HttpRequest], HttpResponse(Token), (req) => {
+    }
+@update([HttpRequest], HttpResponse(Token))
+    http_request_update(req){
         if (req.method === 'POST') {
             const counterOpt = stableStorage.get('counter');
             const counter =
@@ -154,7 +157,7 @@ export default Canister({
             streaming_strategy: None,
             upgrade: None
         };
-    }),
+    }
     http_streaming: query(
         [Token],
         StreamingCallbackHttpResponse(Token),
@@ -190,7 +193,7 @@ export default Canister({
             }
         }
     )
-});
+}
 
 function isGzip(x: HeaderField): boolean {
     return (

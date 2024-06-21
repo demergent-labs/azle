@@ -10,7 +10,7 @@ import {
     update
 } from 'azle/experimental';
 
-export default Canister({
+export default class {
     executeCallRaw: update(
         [Principal, text, text, nat64],
         Result(text, text),
@@ -39,4 +39,4 @@ export default Canister({
             return Ok(ic.candidDecode(result));
         }
     )
-});
+}

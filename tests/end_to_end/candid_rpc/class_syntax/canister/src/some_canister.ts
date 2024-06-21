@@ -1,10 +1,12 @@
 import { bool, Canister, query, text, update } from 'azle/experimental';
 
-export default Canister({
-    query1: query([], bool, () => {
+export default class {
+    @query([], bool)
+    query1() {
         return true;
-    }),
-    update1: update([], text, () => {
+    }
+    @update([], text)
+    update1() {
         return 'SomeCanister update1';
-    })
-});
+    }
+}

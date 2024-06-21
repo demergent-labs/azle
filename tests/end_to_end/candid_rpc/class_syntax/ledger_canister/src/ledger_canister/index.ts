@@ -28,10 +28,11 @@ import {
 
 let icpCanister: typeof Ledger;
 
-export default Canister({
-    init: init([], () => {
+export default class {
+@init([])
+    init(){
         icpCanister = Ledger(Principal.fromText(getIcpCanisterPrincipal()));
-    }),
+    }
     executeTransfer: update(
         [Address, nat64, nat64, Opt(nat64)],
         TransferResult,
@@ -94,7 +95,8 @@ export default Canister({
             }
         }
     ),
-    getAccountBalance: update([Address], Tokens, async (address) => {
+@update([Address], Tokens)
+async getAccountBalance(address){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcpCanisterPrincipal()}/account_balance`,
@@ -120,8 +122,9 @@ export default Canister({
                 ]
             });
         }
-    }),
-    getTransferFee: update([], TransferFee, async () => {
+    }
+@update([], TransferFee)
+async getTransferFee(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcpCanisterPrincipal()}/transfer_fee`,
@@ -137,7 +140,7 @@ export default Canister({
         } else {
             return await ic.call(icpCanister.transfer_fee, { args: [{}] });
         }
-    }),
+    }
     getBlocks: update(
         [GetBlocksArgs],
         QueryBlocksResponse,
@@ -188,7 +191,8 @@ export default Canister({
             }
         }
     ),
-    getSymbol: update([], text, async () => {
+@update([], text)
+async getSymbol(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcpCanisterPrincipal()}/symbol`,
@@ -205,8 +209,9 @@ export default Canister({
 
             return symbolResult.symbol;
         }
-    }),
-    getName: update([], text, async () => {
+    }
+@update([], text)
+async getName(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcpCanisterPrincipal()}/name`,
@@ -223,8 +228,9 @@ export default Canister({
 
             return nameResult.name;
         }
-    }),
-    getDecimals: update([], nat32, async () => {
+    }
+@update([], nat32)
+async getDecimals(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcpCanisterPrincipal()}/decimals`,
@@ -241,8 +247,9 @@ export default Canister({
 
             return decimalsResult.decimals;
         }
-    }),
-    getArchives: update([], Archives, async () => {
+    }
+@update([], Archives)
+async getArchives(){
         if (process.env.AZLE_TEST_FETCH === 'true') {
             const response = await fetch(
                 `icp://${getIcpCanisterPrincipal()}/archives`,
@@ -257,11 +264,12 @@ export default Canister({
         } else {
             return await ic.call(icpCanister.archives);
         }
-    }),
-    getAddressFromPrincipal: query([Principal], text, (principal) => {
+    }
+@query([Principal], text)
+    getAddressFromPrincipal(principal){
         return hexAddressFromPrincipal(principal, 0);
-    })
-});
+    }
+}
 
 function agentOptToAzleOpt<T>(opt: [T] | []): Opt<T> {
     if (opt.length === 0) {
