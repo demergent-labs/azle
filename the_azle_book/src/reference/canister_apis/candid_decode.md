@@ -8,7 +8,7 @@ Examples:
 -   [candid_encoding](https://github.com/demergent-labs/azle/tree/main/examples/candid_encoding)
 
 ```typescript
-import { blob, Canister, ic, query, text } from 'azle';
+import { blob, Canister, ic, query, text } from 'azle/experimental';
 
 export default Canister({
     // decodes Candid bytes to a Candid string

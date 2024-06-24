@@ -4,6 +4,7 @@ import { runTests } from 'azle/test';
 import { createActor as createActorCanister1 } from './dfx_generated/canister1';
 import { createActor as createActorCanister2 } from './dfx_generated/canister2';
 import { createActor as createActorCanister3 } from './dfx_generated/canister3';
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/canister3/canister3.did';
 import { getTests } from './tests';
 

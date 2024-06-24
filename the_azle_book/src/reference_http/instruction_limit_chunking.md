@@ -13,7 +13,7 @@ Unfortunately libraries or algorithms that cannot have this call inserted easily
 Here's an example of using `ic.chunk()`:
 
 ```typescript
-import { Canister, ic, update, Void } from 'azle';
+import { Canister, ic, update, Void } from 'azle/experimental';
 
 export default Canister({
     huge_limit: update([], Void, async () => {

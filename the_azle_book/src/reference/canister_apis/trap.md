@@ -12,7 +12,7 @@ Examples:
 -   [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa)
 
 ```typescript
-import { bool, Canister, ic, query, text } from 'azle';
+import { bool, Canister, ic, query, text } from 'azle/experimental';
 
 export default Canister({
     // traps with a message, stopping execution and discarding all state within the call

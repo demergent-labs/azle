@@ -9,7 +9,7 @@ Examples:
 -   [whoami](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami)
 
 ```typescript
-import { Canister, ic, Principal, update } from 'azle';
+import { Canister, ic, Principal, update } from 'azle/experimental';
 
 export default Canister({
     // returns the principal of the identity that called this function

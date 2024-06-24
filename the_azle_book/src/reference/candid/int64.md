@@ -5,7 +5,7 @@ The `CandidType` object `int64` corresponds to the [Candid type int64](https://i
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, int64, query } from 'azle';
+import { Canister, int64, query } from 'azle/experimental';
 
 export default Canister({
     getInt64: query([], int64, () => {

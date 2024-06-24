@@ -7,7 +7,7 @@ Examples:
 -   [bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/bitcoin)
 
 ```typescript
-import { Canister, ic, update, Vec } from 'azle';
+import { Canister, ic, update, Vec } from 'azle/experimental';
 import {
     managementCanister,
     MillisatoshiPerByte

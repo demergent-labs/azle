@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { blob, empty, text } from 'azle';
+import { blob, empty, text } from 'azle/experimental';
 
 export function returnInvalidBooleanValue(): boolean {
     // @ts-expect-error

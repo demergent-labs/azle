@@ -1,4 +1,11 @@
-import { init, postUpgrade, query, Server, text, update } from 'azle';
+import {
+    init,
+    postUpgrade,
+    query,
+    Server,
+    text,
+    update
+} from 'azle/experimental';
 import express from 'express';
 
 let httpQueryText = '';

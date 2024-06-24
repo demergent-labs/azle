@@ -5,7 +5,7 @@ The `CandidType` object `int32` corresponds to the [Candid type int32](https://i
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, int32, query } from 'azle';
+import { Canister, int32, query } from 'azle/experimental';
 
 export default Canister({
     getInt32: query([], int32, () => {

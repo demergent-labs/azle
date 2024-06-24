@@ -15,8 +15,11 @@ import { Test } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { Reaction, User } from '../src/types';
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE as CANISTER1_SERVICE } from './dfx_generated/canister1/canister1.did';
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE as CANISTER2_SERVICE } from './dfx_generated/canister2/canister2.did';
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE as CANISTER3_SERVICE } from './dfx_generated/canister3/canister3.did';
 
 type _SERVICE = CANISTER1_SERVICE | CANISTER2_SERVICE | CANISTER3_SERVICE;

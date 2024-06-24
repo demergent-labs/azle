@@ -27,7 +27,7 @@ import {
     Variant,
     Vec,
     Void
-} from 'azle';
+} from 'azle/experimental';
 
 const MyCanister = Canister({
     query1: query([], bool),

@@ -7,7 +7,7 @@ Examples:
 -   [cycles](https://github.com/demergent-labs/azle/tree/main/examples/cycles)
 
 ```typescript
-import { Canister, ic, nat64, update } from 'azle';
+import { Canister, ic, nat64, update } from 'azle/experimental';
 
 export default Canister({
     // Moves all transferred cycles to the canister

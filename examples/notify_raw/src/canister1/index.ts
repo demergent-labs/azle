@@ -1,4 +1,4 @@
-import { Canister, ic, Principal, update, Void } from 'azle';
+import { Canister, ic, Principal, update, Void } from 'azle/experimental';
 
 export default Canister({
     sendNotification: update([], Void, () => {

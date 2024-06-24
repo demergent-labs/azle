@@ -7,7 +7,15 @@ The properties of this object that match the keys of the service's `query` and `
 TypeScript or JavaScript:
 
 ```typescript
-import { bool, Canister, ic, Principal, query, text, update } from 'azle';
+import {
+    bool,
+    Canister,
+    ic,
+    Principal,
+    query,
+    text,
+    update
+} from 'azle/experimental';
 
 const SomeCanister = Canister({
     query1: query([], bool),

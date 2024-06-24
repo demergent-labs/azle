@@ -1,4 +1,4 @@
-import * as azle from 'azle';
+import * as azle from 'azle/experimental';
 
 import * as types from './types';
 
@@ -23,7 +23,7 @@ const NumberAliases = azle.Record({
     twelfth: LocalNumberAlias
 });
 
-import { Result } from 'azle';
+import { Result } from 'azle/experimental';
 
 import { MixedConcreteStar } from './types';
 

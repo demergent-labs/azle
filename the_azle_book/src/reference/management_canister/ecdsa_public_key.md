@@ -7,7 +7,7 @@ Examples:
 -   [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa)
 
 ```typescript
-import { blob, Canister, ic, None, Record, update } from 'azle';
+import { blob, Canister, ic, None, Record, update } from 'azle/experimental';
 import { managementCanister } from 'azle/canisters/management';
 
 const PublicKey = Record({

@@ -23,7 +23,14 @@ Examples:
 -   [whoami](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami)
 
 ```typescript
-import { Canister, ic, init, nat64, Principal, update } from 'azle';
+import {
+    Canister,
+    ic,
+    init,
+    nat64,
+    Principal,
+    update
+} from 'azle/experimental';
 
 const TokenCanister = Canister({
     transfer: update([Principal, nat64], nat64)

@@ -8,7 +8,7 @@ Examples:
 -   [ic_api](https://github.com/demergent-labs/azle/tree/main/examples/ic_api)
 
 ```typescript
-import { Canister, ic, nat, query } from 'azle';
+import { Canister, ic, nat, query } from 'azle/experimental';
 
 export default Canister({
     // returns the amount of cycles available in the canister

@@ -7,7 +7,7 @@ Examples:
 -   [stable_memory](https://github.com/demergent-labs/azle/tree/main/examples/stable_memory)
 
 ```typescript
-import { Canister, ic, nat32, update } from 'azle';
+import { Canister, ic, nat32, update } from 'azle/experimental';
 
 export default Canister({
     stableGrow: update([nat32], nat32, (newPages) => {

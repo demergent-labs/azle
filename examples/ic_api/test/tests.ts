@@ -4,6 +4,7 @@ import { getCanisterId } from 'azle/dfx';
 import { expect, it, please, Test } from 'azle/test/jest';
 import { execSync } from 'child_process';
 
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/ic_api/ic_api.did';
 
 export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {

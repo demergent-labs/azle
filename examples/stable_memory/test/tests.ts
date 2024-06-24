@@ -1,6 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
 
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/stable_memory/stable_memory.did';
 
 const PAGE_SIZE = 65_536; // This should currently remain constant

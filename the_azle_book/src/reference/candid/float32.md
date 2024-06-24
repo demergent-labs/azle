@@ -5,7 +5,7 @@ The `CandidType` object `float32` corresponds to the [Candid type float32](https
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, float32, query } from 'azle';
+import { Canister, float32, query } from 'azle/experimental';
 
 export default Canister({
     getFloat32: query([], float32, () => {

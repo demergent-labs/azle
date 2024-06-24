@@ -1,4 +1,4 @@
-import { serialize } from 'azle';
+import { serialize } from 'azle/experimental';
 
 import { RpcSource } from '../globals';
 

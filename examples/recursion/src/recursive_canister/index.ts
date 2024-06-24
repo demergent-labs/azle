@@ -1,4 +1,4 @@
-import { Canister, init, query, Recursive, text } from 'azle';
+import { Canister, init, query, Recursive, text } from 'azle/experimental';
 
 let myMessage = '';
 

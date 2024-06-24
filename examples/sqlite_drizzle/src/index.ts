@@ -5,7 +5,7 @@ import {
     Server,
     StableBTreeMap,
     stableJson
-} from 'azle';
+} from 'azle/experimental';
 import { drizzle } from 'drizzle-orm/sql-js';
 import { Database } from 'sql.js/dist/sql-asm.js';
 

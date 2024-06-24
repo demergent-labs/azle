@@ -12,7 +12,7 @@ Examples:
 -   [whoami](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami)
 
 ```typescript
-import { Canister, init } from 'azle';
+import { Canister, init } from 'azle/experimental';
 
 export default Canister({
     init: init([], () => {

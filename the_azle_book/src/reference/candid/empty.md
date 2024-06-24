@@ -5,7 +5,7 @@ The `CandidType` object `empty` corresponds to the [Candid type empty](https://i
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, empty, query } from 'azle';
+import { Canister, empty, query } from 'azle/experimental';
 
 export default Canister({
     getEmpty: query([], empty, () => {
