@@ -6,7 +6,7 @@ import { state, StateThread, StateUser } from './state';
 import { getUserFromStateUser } from './users';
 
 export const createThread = update(
-    [IDL.Text, IDL.Text, nat32],
+    [IDL.Text, IDL.Text, IDL.Nat32],
     Thread,
     (title, authorId, joinDepth) => {
         const id = Object.keys(state.threads).length.toString();
@@ -31,15 +31,19 @@ export const createThread = update(
     }
 );
 
-export const getAllThreads = query([nat32], IDL.Vec(Thread), (joinDepth) => {
-    return Object.values(state.threads).map((stateThread) =>
-        getThreadFromStateThread(stateThread, joinDepth)
-    );
-});
+export const getAllThreads = query(
+    [IDL.Nat32],
+    IDL.Vec(Thread),
+    (joinDepth) => {
+        return Object.values(state.threads).map((stateThread) =>
+            getThreadFromStateThread(stateThread, joinDepth)
+        );
+    }
+);
 
 export function getThreadFromStateThread(
     stateThread: StateThread,
-    joinDepth: nat32
+    joinDepth: number
 ): Thread {
     const stateAuthor = state.users[stateThread.authorId];
     const author = getUserFromStateUser(stateAuthor, joinDepth);

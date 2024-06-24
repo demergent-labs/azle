@@ -217,7 +217,7 @@ export default class {
         );
     }
     // TODO we should test this like we test depositCycles
-    @update([Principal, nat], IDL.Bool)
+    @update([Principal, IDL.Nat], IDL.Bool)
     async provisionalTopUpCanister(canisterId, amount) {
         await call(managementCanister.provisional_top_up_canister, {
             args: [

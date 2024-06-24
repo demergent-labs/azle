@@ -15,11 +15,11 @@ const Candid = Record({
     query: IDL.Text,
     text: IDL.Text,
     blob: IDL.Vec(IDL.Nat8),
-    nat: nat,
-    nat64: nat64,
-    nat32: nat32,
-    nat16: nat16,
-    nat8: nat8,
+    nat: IDL.Nat,
+    nat64: IDL.Nat64,
+    nat32: IDL.Nat32,
+    nat16: IDL.Nat16,
+    nat8: IDL.Nat8,
     int: int,
     int64: int64,
     int32: int32,
@@ -30,11 +30,11 @@ const Candid = Record({
     bool: IDL.Bool,
     null: Null,
     vec: IDL.Vec(IDL.Text),
-    opt: Opt(nat),
+    opt: Opt(IDL.Nat),
     record: Record({
         firstName: IDL.Text,
         lastName: IDL.Text,
-        age: nat8
+        age: IDL.Nat8
     }),
     variant: Variant({
         Tag1: Null,

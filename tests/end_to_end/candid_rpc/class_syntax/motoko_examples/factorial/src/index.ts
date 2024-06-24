@@ -1,15 +1,15 @@
-import { IDL, query, update } from 'azle';
+import { IDL, update } from 'azle';
 
 export default class {
     // Calculate the product of all positive integers less than or equal to `n`.
-    @update([nat], nat)
-    fac(n) {
+    @update([IDL.Nat], IDL.Nat)
+    fac(n: bigint) {
         return go(n);
     }
 }
 
 // We implement the recursion in a helper function.
-function go(m: nat): nat {
+function go(m: bigint): bigint {
     if (m === 0n) {
         return 1n;
     } else {

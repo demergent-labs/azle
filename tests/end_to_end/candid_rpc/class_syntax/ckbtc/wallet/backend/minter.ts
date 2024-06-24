@@ -1,9 +1,9 @@
 import { IDL, query, update } from 'azle';
 
 const Utxo = Record({
-    outpoint: Record({ txid: IDL.Vec(nat8), vout: nat32 }),
-    value: nat64,
-    height: nat32
+    outpoint: Record({ txid: IDL.Vec(IDL.Nat8), vout: IDL.Nat32 }),
+    value: IDL.Nat64,
+    height: IDL.Nat32
 });
 
 // The result of an [update_balance] call.
@@ -21,8 +21,8 @@ const UtxoStatus = Variant({
     Checked: Utxo,
     // The UTXO passed the KYT check, and ckBTC has been minted.
     Minted: Record({
-        block_index: nat64,
-        minted_amount: nat64,
+        block_index: IDL.Nat64,
+        minted_amount: IDL.Nat64,
         utxo: Utxo
     })
 });
@@ -30,8 +30,8 @@ const UtxoStatus = Variant({
 const UpdateBalanceError = Variant({
     // There are no new UTXOs to process.
     NoNewUtxos: Record({
-        current_confirmations: Opt(nat32),
-        required_confirmations: nat32
+        current_confirmations: Opt(IDL.Nat32),
+        required_confirmations: IDL.Nat32
     }),
     // The minter is already processing another update balance request for the caller.
     AlreadyProcessing: Null,
@@ -39,7 +39,7 @@ const UpdateBalanceError = Variant({
     // The payload contains a human-readable message explaining what caused the unavailability.
     TemporarilyUnavailable: IDL.Text,
     // A generic error reserved for future extensions.
-    GenericError: Record({ error_message: IDL.Text, error_code: nat64 })
+    GenericError: Record({ error_message: IDL.Text, error_code: IDL.Nat64 })
 });
 
 export const UpdateBalanceResult = Result(

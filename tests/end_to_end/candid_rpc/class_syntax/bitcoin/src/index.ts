@@ -17,7 +17,7 @@ const BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE = 20_000_000n;
 
 export default class {
     @update([IDL.Text], Satoshi)
-    async getBalance(address: string) {
+    async getBalance(address: string): Promise<Satoshi> {
         return await call(PRINCIPAL, FUNCS.bitcoin_get_balance, {
             paramIdls: [GetBalanceArgs],
             returnIdl: Satoshi,
@@ -33,7 +33,7 @@ export default class {
     }
 
     @update([], IDL.Vec(MillisatoshiPerByte))
-    async getCurrentFeePercentiles() {
+    async getCurrentFeePercentiles(): Promise<MillisatoshiPerByte[]> {
         return await call(
             PRINCIPAL,
             FUNCS.bitcoin_get_current_fee_percentiles,
@@ -51,7 +51,7 @@ export default class {
     }
 
     @update([IDL.Text], GetUtxosResult)
-    async getUtxos(address: string) {
+    async getUtxos(address: string): Promise<GetUtxosResult> {
         return await call(PRINCIPAL, FUNCS.bitcoin_get_utxos, {
             paramIdls: [GetUtxosArgs],
             returnIdl: GetUtxosResult,

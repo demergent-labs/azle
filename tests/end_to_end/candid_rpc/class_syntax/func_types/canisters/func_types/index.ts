@@ -5,7 +5,9 @@ import Notifier, { NotifierFunc } from '../notifiers';
 const BasicFunc = Func([IDL.Text], IDL.Text, 'query');
 type BasicFunc = typeof BasicFunc.tsType;
 
-const ComplexFunc = Recursive(() => Func([User, Reaction], nat64, 'update'));
+const ComplexFunc = Recursive(() =>
+    Func([User, Reaction], IDL.Nat64, 'update')
+);
 type ComplexFunc = typeof ComplexFunc.tsType;
 
 const User = Record({
@@ -21,7 +23,7 @@ const Reaction = Variant({
     ComplexFunc: ComplexFunc
 });
 
-const StableFunc = Func([nat64, IDL.Text], 'query');
+const StableFunc = Func([IDL.Nat64, IDL.Text], 'query');
 type StableFunc = typeof StableFunc.tsType;
 
 const NullFunc = Func(

@@ -17,8 +17,8 @@ const RawReply = Record({
 type RawReply = typeof RawReply.tsType;
 
 const Orbital = Record({
-    layer: nat8,
-    electrons: nat8
+    layer: IDL.Nat8,
+    electrons: IDL.Nat8
 });
 type Orbital = typeof Orbital.tsType;
 
@@ -74,9 +74,9 @@ export default class {
     updateInt8() {
         ic.reply(-100, int8);
     }
-    @update([], nat, { manual: true })
+    @update([], IDL.Nat, { manual: true })
     updateNat() {
-        ic.reply(184467440737095516150n, nat);
+        ic.reply(184467440737095516150n, IDL.Nat);
     }
     @update([], Null, { manual: true })
     updateNull() {
@@ -152,9 +152,9 @@ export default class {
     queryInt8() {
         ic.reply(-100, int8);
     }
-    @query([], nat, { manual: true })
+    @query([], IDL.Nat, { manual: true })
     queryNat() {
-        ic.reply(184_467_440_737_095_516_150n, nat);
+        ic.reply(184_467_440_737_095_516_150n, IDL.Nat);
     }
     @query([], Null, { manual: true })
     queryNull() {

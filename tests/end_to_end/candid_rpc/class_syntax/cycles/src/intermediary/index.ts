@@ -1,4 +1,4 @@
-import { IDL, query, update } from 'azle';
+import { call, IDL, init, query, update } from 'azle';
 
 import Cycles from '../cycles';
 
@@ -10,7 +10,7 @@ export default class {
         cyclesCanister = Cycles(Principal.fromText(getCyclesPrincipal()));
     }
     // Reports the number of cycles returned from the Cycles canister
-    @update([], nat64)
+    @update([], IDL.Nat64)
     async sendCycles() {
         return await call(cyclesCanister.receiveCycles, {
             cycles: 1_000_000n
@@ -23,7 +23,7 @@ export default class {
         });
     }
     // Reports the number of cycles returned from the Cycles canister
-    @update([], nat)
+    @update([], IDL.Nat)
     async sendCycles128() {
         await call(cyclesCanister.receiveCycles128, {
             cycles128: 1_000_000n
@@ -37,11 +37,11 @@ export default class {
             cycles: 1_000_000n
         });
     }
-    @query([], nat64)
+    @query([], IDL.Nat64)
     getCanisterBalance() {
         return ic.canisterBalance();
     }
-    @query([], nat)
+    @query([], IDL.Nat)
     getCanisterBalance128() {
         return ic.canisterBalance128();
     }

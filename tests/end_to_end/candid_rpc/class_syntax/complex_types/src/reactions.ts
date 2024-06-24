@@ -6,7 +6,7 @@ import { state, StatePost, StateReaction, StateUser } from './state';
 import { getUserFromStateUser } from './users';
 
 export const createReaction = update(
-    [IDL.Text, IDL.Text, ReactionType, nat32],
+    [IDL.Text, IDL.Text, ReactionType, IDL.Nat32],
     Reaction,
     (authorId, postId, reactionType, joinDepth) => {
         const id = Object.keys(state.reactions).length.toString();
@@ -34,7 +34,7 @@ export const createReaction = update(
 );
 
 export const getAllReactions = query(
-    [nat32],
+    [IDL.Nat32],
     IDL.Vec(Reaction),
     (joinDepth) => {
         return Object.values(state.reactions).map((stateReaction) =>
@@ -45,7 +45,7 @@ export const getAllReactions = query(
 
 export function getReactionFromStateReaction(
     stateReaction: StateReaction,
-    joinDepth: nat32
+    joinDepth: number
 ): Reaction {
     const stateAuthor = state.users[stateReaction.authorId];
     const author = getUserFromStateUser(stateAuthor, joinDepth);

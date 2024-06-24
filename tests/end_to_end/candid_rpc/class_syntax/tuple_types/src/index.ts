@@ -2,7 +2,7 @@ import { IDL, query } from 'azle';
 
 // TODO maybe we should write tests for canister and stable storage?
 // TODO for now we at least know the canister compiles
-// type CanisterTuple1 = Tuple<[IDL.Text, nat64]>;
+// type CanisterTuple1 = Tuple<[IDL.Text, IDL.Nat64]>;
 // type CanisterTuple2 = Tuple<[IDL.Text, CanisterTuple1]>;
 
 // class TestCanister extends Service {
@@ -11,8 +11,8 @@ import { IDL, query } from 'azle';
 // }
 
 const PrimitiveOneTuple = Tuple(IDL.Text);
-const PrimitiveTwoTuple = Tuple(IDL.Text, nat64);
-const PrimitiveThreeTuple = Tuple(IDL.Text, nat64, Principal);
+const PrimitiveTwoTuple = Tuple(IDL.Text, IDL.Nat64);
+const PrimitiveThreeTuple = Tuple(IDL.Text, IDL.Nat64, Principal);
 
 const User = Record({
     id: IDL.Text,
@@ -92,14 +92,14 @@ export default class {
         return param;
     }
 
-    @query([], Tuple(IDL.Text, nat64, Principal))
+    @query([], Tuple(IDL.Text, IDL.Nat64, Principal))
     primitiveThreeTupleInlineReturnType() {
         return ['Fun', 101n, Principal.fromText('aaaaa-aa')];
     }
 
     @query(
-        [Tuple(IDL.Text, nat64, Principal)],
-        Tuple(IDL.Text, nat64, Principal)
+        [Tuple(IDL.Text, IDL.Nat64, Principal)],
+        Tuple(IDL.Text, IDL.Nat64, Principal)
     )
     primitiveThreeTupleInlineParam(param) {
         return param;
@@ -238,8 +238,8 @@ export default class {
         };
     }
     @query(
-        [Tuple(Tuple(IDL.Text, Tuple(nat8, nat8)), int)],
-        Tuple(Tuple(IDL.Text, Tuple(nat8, nat8)), int)
+        [Tuple(Tuple(IDL.Text, Tuple(IDL.Nat8, IDL.Nat8)), int)],
+        Tuple(Tuple(IDL.Text, Tuple(IDL.Nat8, IDL.Nat8)), int)
     )
     nestedTupleQuery(param) {
         return param;

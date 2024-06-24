@@ -29,7 +29,7 @@ export default class {
     async icrc1_name() {
         return await call(icrc.icrc1_name);
     }
-    @query([], nat8)
+    @query([], IDL.Nat8)
     async icrc1_decimals() {
         return await call(icrc.icrc1_decimals);
     }
@@ -37,11 +37,11 @@ export default class {
     async icrc1_symbol() {
         return await call(icrc.icrc1_symbol);
     }
-    @query([], nat)
+    @query([], IDL.Nat)
     async icrc1_fee() {
         return await call(icrc.icrc1_fee);
     }
-    @query([], nat)
+    @query([], IDL.Nat)
     async icrc1_total_supply() {
         return await call(icrc.icrc1_total_supply);
     }
@@ -49,7 +49,7 @@ export default class {
     async icrc1_minting_account() {
         return await call(icrc.icrc1_minting_account);
     }
-    @query([Account], nat)
+    @query([Account], IDL.Nat)
     async icrc1_balance_of(account) {
         return await call(icrc.icrc1_balance_of, {
             args: [account]

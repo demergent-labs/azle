@@ -1,232 +1,273 @@
-import { IDL, query, update } from 'azle';
+import { IDL, query } from 'azle';
 
 export default class {
-    @query([IDL.Text], nat32)
-    getDate(isoString) {
+    @query([IDL.Text], IDL.Nat32)
+    getDate(isoString: string): number {
         return new Date(isoString).getDate();
     }
-    @query([IDL.Text], nat32)
-    getDay(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getDay(isoString: string): number {
         return new Date(isoString).getDay();
     }
-    @query([IDL.Text], nat32)
-    getFullYear(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getFullYear(isoString: string): number {
         return new Date(isoString).getFullYear();
     }
-    @query([IDL.Text], nat32)
-    getHours(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getHours(isoString: string): number {
         return new Date(isoString).getHours();
     }
-    @query([IDL.Text], nat32)
-    getMilliseconds(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getMilliseconds(isoString: string): number {
         return new Date(isoString).getMilliseconds();
     }
-    @query([IDL.Text], nat32)
-    getMinutes(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getMinutes(isoString: string): number {
         return new Date(isoString).getMinutes();
     }
-    @query([IDL.Text], nat32)
-    getMonth(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getMonth(isoString: string): number {
         return new Date(isoString).getMonth();
     }
-    @query([IDL.Text], nat32)
-    getSeconds(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getSeconds(isoString: string): number {
         return new Date(isoString).getSeconds();
     }
-    @query([IDL.Text], nat64)
-    getTime(isoString) {
+
+    @query([IDL.Text], IDL.Nat64)
+    getTime(isoString: string): bigint {
         return BigInt(new Date(isoString).getTime());
     }
-    @query([IDL.Text], nat32)
-    getTimezoneOffset(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getTimezoneOffset(isoString: string): number {
         return new Date(isoString).getTimezoneOffset();
     }
-    @query([IDL.Text], nat32)
-    getUtcDate(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getUtcDate(isoString: string): number {
         return new Date(isoString).getUTCDate();
     }
-    @query([IDL.Text], nat32)
-    getUtcDay(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getUtcDay(isoString: string): number {
         return new Date(isoString).getUTCDay();
     }
-    @query([IDL.Text], nat32)
-    getUtcFullYear(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getUtcFullYear(isoString: string): number {
         return new Date(isoString).getUTCFullYear();
     }
-    @query([IDL.Text], nat32)
-    getUtcHours(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getUtcHours(isoString: string): number {
         return new Date(isoString).getUTCHours();
     }
-    @query([IDL.Text], nat32)
-    getUtcMilliseconds(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getUtcMilliseconds(isoString: string): number {
         return new Date(isoString).getUTCMilliseconds();
     }
-    @query([IDL.Text], nat32)
-    getUtcMinutes(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getUtcMinutes(isoString: string): number {
         return new Date(isoString).getUTCMinutes();
     }
-    @query([IDL.Text], nat32)
-    getUtcMonth(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getUtcMonth(isoString: string): number {
         return new Date(isoString).getUTCMonth();
     }
-    @query([IDL.Text], nat32)
-    getUtcSeconds(isoString) {
+
+    @query([IDL.Text], IDL.Nat32)
+    getUtcSeconds(isoString: string): number {
         return new Date(isoString).getUTCSeconds();
     }
-    @query([IDL.Text, nat32], nat32)
-    setDate(isoString, newDate) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setDate(isoString: string, newDate: number): number {
         let date = new Date(isoString);
 
         date.setDate(newDate);
 
         return date.getDate();
     }
-    @query([IDL.Text, nat32], nat32)
-    setFullYear(isoString, newFullYear) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setFullYear(isoString: string, newFullYear: number): number {
         let date = new Date(isoString);
 
         date.setFullYear(newFullYear);
 
         return date.getFullYear();
     }
-    @query([IDL.Text, nat32], nat32)
-    setHours(isoString, newHours) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setHours(isoString: string, newHours: number): number {
         let date = new Date(isoString);
 
         date.setHours(newHours);
 
         return date.getHours();
     }
-    @query([IDL.Text, nat32], nat32)
-    setMilliseconds(isoString, newMilliseconds) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setMilliseconds(isoString: string, newMilliseconds: number): number {
         let date = new Date(isoString);
 
         date.setMilliseconds(newMilliseconds);
 
         return date.getMilliseconds();
     }
-    @query([IDL.Text, nat32], nat32)
-    setMinutes(isoString, newMinutes) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setMinutes(isoString: string, newMinutes: number): number {
         let date = new Date(isoString);
 
         date.setMinutes(newMinutes);
 
         return date.getMinutes();
     }
-    @query([IDL.Text, nat32], nat32)
-    setMonth(isoString, newMonth) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setMonth(isoString: string, newMonth: number): number {
         let date = new Date(isoString);
 
         date.setMonth(newMonth);
 
         return date.getMonth();
     }
-    @query([IDL.Text, nat32], nat32)
-    setSeconds(isoString, newSeconds) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setSeconds(isoString: string, newSeconds: number): number {
         let date = new Date(isoString);
 
         date.setSeconds(newSeconds);
 
         return date.getSeconds();
     }
-    @query([IDL.Text, nat64], nat64)
-    setTime(isoString, newTime) {
+
+    @query([IDL.Text, IDL.Nat64], IDL.Nat64)
+    setTime(isoString: string, newTime: number) {
         let date = new Date(isoString);
 
         date.setTime(Number(newTime));
 
         return BigInt(date.getTime());
     }
-    @query([IDL.Text, nat32], nat32)
-    setUtcDate(isoString, newUtcDate) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setUtcDate(isoString: string, newUtcDate: number): number {
         let date = new Date(isoString);
 
         date.setUTCDate(newUtcDate);
 
         return date.getUTCDate();
     }
-    @query([IDL.Text, nat32], nat32)
-    setUtcFullYear(isoString, newUtcFullYear) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setUtcFullYear(isoString: string, newUtcFullYear: number): number {
         let date = new Date(isoString);
 
         date.setUTCFullYear(newUtcFullYear);
 
         return date.getUTCFullYear();
     }
-    @query([IDL.Text, nat32], nat32)
-    setUtcHours(isoString, newUtcHours) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setUtcHours(isoString: string, newUtcHours: number): number {
         let date = new Date(isoString);
 
         date.setUTCHours(newUtcHours);
 
         return date.getUTCHours();
     }
-    @query([IDL.Text, nat32], nat32)
-    setUtcMilliseconds(isoString, newUtcMilliseconds) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setUtcMilliseconds(isoString: string, newUtcMilliseconds: number): number {
         let date = new Date(isoString);
 
         date.setUTCMilliseconds(newUtcMilliseconds);
 
         return date.getUTCMilliseconds();
     }
-    @query([IDL.Text, nat32], nat32)
-    setUtcMinutes(isoString, newUtcMinutes) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setUtcMinutes(isoString: string, newUtcMinutes: number): number {
         let date = new Date(isoString);
 
         date.setUTCMinutes(newUtcMinutes);
 
         return date.getUTCMinutes();
     }
-    @query([IDL.Text, nat32], nat32)
-    setUtcMonth(isoString, newUtcMonth) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setUtcMonth(isoString: string, newUtcMonth: number): number {
         let date = new Date(isoString);
 
         date.setUTCMonth(newUtcMonth);
 
         return date.getUTCMonth();
     }
-    @query([IDL.Text, nat32], nat32)
-    setUtcSeconds(isoString, newUtcSeconds) {
+
+    @query([IDL.Text, IDL.Nat32], IDL.Nat32)
+    setUtcSeconds(isoString: string, newUtcSeconds: number): number {
         let date = new Date(isoString);
 
         date.setUTCSeconds(newUtcSeconds);
 
         return date.getUTCSeconds();
     }
+
     @query([IDL.Text], IDL.Text)
-    toDateString(isoString) {
+    toDateString(isoString: string): string {
         return new Date(isoString).toDateString();
     }
+
     @query([IDL.Text], IDL.Text)
-    toISOString(isoString) {
+    toISOString(isoString: string): string {
         return new Date(isoString).toISOString();
     }
+
     @query([IDL.Text], IDL.Text)
-    toJSONString(isoString) {
+    toJSONString(isoString: string): string {
         return new Date(isoString).toJSON();
     }
+
     @query([IDL.Text], IDL.Text)
-    toString(isoString) {
+    toString(isoString: string): string {
         return new Date(isoString).toString();
     }
+
     @query([IDL.Text], IDL.Text)
-    toTimeString(isoString) {
+    toTimeString(isoString: string): string {
         return new Date(isoString).toTimeString();
     }
+
     @query([IDL.Text], IDL.Text)
-    toUtcString(isoString) {
+    toUtcString(isoString: string): string {
         return new Date(isoString).toUTCString();
     }
-    @query([], nat64)
-    now() {
+
+    @query([], IDL.Nat64)
+    now(): bigint {
         return BigInt(Date.now());
     }
-    @query([IDL.Text], nat64)
-    parse(isoString) {
+
+    @query([IDL.Text], IDL.Nat64)
+    parse(isoString: string): bigint {
         return BigInt(Date.parse(isoString));
     }
-    @query([nat32, nat32], nat64)
-    utc(year, month) {
+
+    @query([IDL.Nat32, IDL.Nat32], IDL.Nat64)
+    utc(year: number, month: number): bigint {
         return BigInt(Date.UTC(year, month));
     }
 }

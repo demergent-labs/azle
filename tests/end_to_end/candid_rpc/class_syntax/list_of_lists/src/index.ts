@@ -2,7 +2,7 @@ import { IDL, query } from 'azle';
 
 const Person = Record({
     name: IDL.Text,
-    age: nat8
+    age: IDL.Nat8
 });
 
 const State = Variant({
@@ -143,23 +143,38 @@ export default class {
     listOfInt8(param) {
         return param;
     }
-    @query([IDL.Vec(IDL.Vec(IDL.Vec(nat)))], IDL.Vec(IDL.Vec(IDL.Vec(nat))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(IDL.Nat)))],
+        IDL.Vec(IDL.Vec(IDL.Vec(IDL.Nat)))
+    )
     listOfNat(param) {
         return param;
     }
-    @query([IDL.Vec(IDL.Vec(IDL.Vec(nat64)))], IDL.Vec(IDL.Vec(IDL.Vec(nat64))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(IDL.Nat64)))],
+        IDL.Vec(IDL.Vec(IDL.Vec(IDL.Nat64)))
+    )
     listOfNat64(param) {
         return param;
     }
-    @query([IDL.Vec(IDL.Vec(IDL.Vec(nat32)))], IDL.Vec(IDL.Vec(IDL.Vec(nat32))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(IDL.Nat32)))],
+        IDL.Vec(IDL.Vec(IDL.Vec(IDL.Nat32)))
+    )
     listOfNat32(param) {
         return param;
     }
-    @query([IDL.Vec(IDL.Vec(IDL.Vec(nat16)))], IDL.Vec(IDL.Vec(IDL.Vec(nat16))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(IDL.Nat16)))],
+        IDL.Vec(IDL.Vec(IDL.Vec(IDL.Nat16)))
+    )
     listOfNat16(param) {
         return param;
     }
-    @query([IDL.Vec(IDL.Vec(IDL.Vec(nat8)))], IDL.Vec(IDL.Vec(IDL.Vec(nat8))))
+    @query(
+        [IDL.Vec(IDL.Vec(IDL.Vec(IDL.Nat8)))],
+        IDL.Vec(IDL.Vec(IDL.Vec(IDL.Nat8)))
+    )
     listOfNat8(param) {
         return param;
     }

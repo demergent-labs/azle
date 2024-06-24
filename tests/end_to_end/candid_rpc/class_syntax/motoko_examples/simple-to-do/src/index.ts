@@ -6,8 +6,8 @@ export const ToDo = Record({
 });
 export type ToDo = typeof ToDo.tsType;
 
-let todos: Map<nat, ToDo> = new Map();
-let nextId: nat = 0n;
+let todos: Map<bigint, ToDo> = new Map();
+let nextId: bigint = 0n;
 
 export default class {
     @query([], IDL.Vec(ToDo))
@@ -15,8 +15,8 @@ export default class {
         return Array.from(todos.values());
     }
     // Returns the ID that was given to the ToDo item
-    @update([IDL.Text], nat)
-    addTodo(description) {
+    @update([IDL.Text], IDL.Nat)
+    addTodo(description: string) {
         const id = nextId;
         todos.set(id, {
             description: description,
@@ -26,8 +26,8 @@ export default class {
 
         return id;
     }
-    @update([nat])
-    completeTodo(id) {
+    @update([IDL.Nat])
+    completeTodo(id: bigint) {
         let todo = todos.get(id);
 
         if (todo !== undefined) {

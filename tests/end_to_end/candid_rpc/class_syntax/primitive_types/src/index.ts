@@ -6,7 +6,7 @@ export default class {
         return 'string';
     }
     @query([IDL.Text], IDL.Text)
-    printString(string) {
+    printString(string: string) {
         console.log(typeof string);
         return string;
     }
@@ -15,7 +15,7 @@ export default class {
         return 'text';
     }
     @query([IDL.Text], IDL.Text)
-    printText(text) {
+    printText(text: string) {
         console.log(typeof text);
         return text;
     }
@@ -73,50 +73,50 @@ export default class {
         console.log(typeof int8);
         return int8;
     }
-    @query([], nat)
+    @query([], IDL.Nat)
     getNat() {
         return 340_282_366_920_938_463_463_374_607_431_768_211_455n;
     }
-    @query([nat], nat)
+    @query([IDL.Nat], IDL.Nat)
     printNat(nat) {
         console.log(typeof nat);
         return nat;
     }
-    @query([], nat64)
+    @query([], IDL.Nat64)
     getNat64() {
         return 18_446_744_073_709_551_615n;
     }
-    @query([nat64], nat64)
+    @query([IDL.Nat64], IDL.Nat64)
     printNat64(nat64) {
         console.log(typeof nat64);
         return nat64;
     }
-    @query([], nat32)
+    @query([], IDL.Nat32)
     getNat32() {
         return 4_294_967_295;
     }
-    @query([nat32], nat32)
+    @query([IDL.Nat32], IDL.Nat32)
     printNat32(nat32) {
         console.log(typeof nat32);
         return nat32;
     }
-    @query([], nat16)
+    @query([], IDL.Nat16)
     getNat16() {
         return 65_535;
     }
-    @query([nat16], nat16)
+    @query([IDL.Nat16], IDL.Nat16)
     printNat16(nat16) {
         console.log(typeof nat16);
         return nat16;
     }
-    @query([], nat8)
+    @query([], IDL.Nat8)
     getNat8() {
         return 255;
     }
-    @query([nat8], nat8)
-    printNat8(nat8) {
-        console.log(typeof nat8);
-        return nat8;
+    @query([IDL.Nat8], IDL.Nat8)
+    printNat8(IDL.Nat8) {
+        console.log(typeof IDL.Nat8);
+        return IDL.Nat8;
     }
     @query([], float64)
     getFloat64() {

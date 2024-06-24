@@ -1,14 +1,14 @@
 import { IDL, query, update } from 'azle';
 
-let counter: nat = 0n;
+let counter: bigint = 0n;
 
 export default class {
-    @query([], nat)
+    @query([], IDL.Nat)
     get() {
         return counter;
     }
-    @update([nat])
-    set(n) {
+    @update([IDL.Nat])
+    set(n: bigint) {
         counter = n;
     }
     @update([])

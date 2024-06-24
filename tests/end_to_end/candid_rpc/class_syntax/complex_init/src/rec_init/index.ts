@@ -15,13 +15,13 @@ export default class {
         tree = node;
         return undefined;
     }
-    @query([], nat)
+    @query([], IDL.Nat)
     countBranches() {
         return countBranches(tree);
     }
 }
 
-function countBranches(node: typeof Node): nat {
+function countBranches(node: typeof Node): bigint {
     if (node.Leaf !== undefined) {
         return 1n;
     }

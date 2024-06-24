@@ -20,7 +20,7 @@ export default class {
     postUpgrade() {
         setupCanisters();
     }
-    @update([], nat64)
+    @update([], IDL.Nat64)
     async getBalance() {
         return await call(ckBTC.icrc1_balance_of, {
             args: [
@@ -59,7 +59,7 @@ export default class {
             ]
         });
     }
-    @update([IDL.Text, nat], Result(nat, TransferError))
+    @update([IDL.Text, IDL.Nat], Result(IDL.Nat, TransferError))
     async transfer(to, amount) {
         return await call(ckBTC.icrc1_transfer, {
             args: [

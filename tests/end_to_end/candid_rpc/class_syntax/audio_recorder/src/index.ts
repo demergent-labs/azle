@@ -29,17 +29,15 @@ type Recording = {
     userId: Principal;
 };
 
-function Result<T, E>(Ok: T, Err: E): IDL.RecClass {
+function Result<T extends IDL.Type<any>, E extends IDL.Type<any>>(
+    Ok: T,
+    Err: E
+): IDL.RecordClass {
     return IDL.Record({
         Ok: Ok,
         Err: Err
     });
 }
-
-type Result<Ok, Err> = {
-    Ok: Ok;
-    Err: Err;
-};
 
 const AudioRecorderError = IDL.Variant({
     RecordingDoesNotExist: IDL.Principal,

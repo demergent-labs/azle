@@ -19,7 +19,7 @@ export default class {
     init() {
         icpCanister = Ledger(Principal.fromText(getIcpCanisterPrincipal()));
     }
-    @update([Address, nat64, nat64, Opt(nat64)], TransferResult)
+    @update([Address, IDL.Nat64, IDL.Nat64, Opt(IDL.Nat64)], TransferResult)
     async executeTransfer(to, amount, fee, createdAtTime) {
         return await call(icpCanister.transfer, {
             args: [
@@ -75,7 +75,7 @@ export default class {
 
         return nameResult.name;
     }
-    @update([], nat32)
+    @update([], IDL.Nat32)
     async getDecimals() {
         const decimalsResult = await call(icpCanister.decimals);
 

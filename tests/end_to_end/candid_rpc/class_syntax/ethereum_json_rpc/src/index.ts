@@ -24,7 +24,7 @@ export default class {
 
         return await getBalance(url, ethereumAddress);
     }
-    @update([nat32], IDL.Text)
+    @update([IDL.Nat32], IDL.Text)
     async ethGetBlockByNumber(number) {
         const urlOpt = stableStorage.get('ethereumUrl');
 

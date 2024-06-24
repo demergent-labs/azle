@@ -40,7 +40,7 @@ export default class {
         return ic.argDataRaw();
     }
     // returns the length of the argument data in bytes
-    @query([IDL.Vec(IDL.Nat8), int8, IDL.Bool, IDL.Text], nat32)
+    @query([IDL.Vec(IDL.Nat8), int8, IDL.Bool, IDL.Text], IDL.Nat32)
     argDataRawSize(_arg1, _arg2, _arg3, _arg4) {
         return ic.argDataRawSize();
     }
@@ -50,17 +50,17 @@ export default class {
         return caller();
     }
     // returns the amount of cycles available in the canister
-    @query([], nat64)
+    @query([], IDL.Nat64)
     canisterBalance() {
         return ic.canisterBalance();
     }
     // returns the amount of cycles available in the canister
-    @query([], nat)
+    @query([], IDL.Nat)
     canisterBalance128() {
         return ic.canisterBalance128();
     }
     // returns the canister's version number
-    @query([], nat64)
+    @query([], IDL.Nat64)
     canisterVersion() {
         return ic.canisterVersion();
     }
@@ -85,7 +85,7 @@ export default class {
     }
     // Returns the number of instructions that the canister executed since the last
     // entry point.
-    @query([], nat64)
+    @query([], IDL.Nat64)
     instructionCounter() {
         return ic.instructionCounter();
     }
@@ -94,7 +94,7 @@ export default class {
     isController(principal) {
         return ic.isController(principal);
     }
-    @query([], nat64)
+    @query([], IDL.Nat64)
     performanceCounter() {
         return ic.performanceCounter(0);
     }
@@ -115,7 +115,7 @@ export default class {
         ic.setCertifiedData(data);
     }
     // returns the current timestamp
-    @query([], nat64)
+    @query([], IDL.Nat64)
     time() {
         return ic.time();
     }

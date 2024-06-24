@@ -1,6 +1,6 @@
-import { IDL, query, update } from 'azle';
+import { IDL, init, postUpgrade, query, trap, update } from 'azle';
 
-let stableStorage = StableBTreeMap<IDL.Text, nat>(0);
+let stableStorage = StableBTreeMap<IDL.Text, IDL.Nat>(0);
 let redeployed = false;
 
 export default class {
@@ -16,36 +16,36 @@ export default class {
     getRedeployed() {
         return redeployed;
     }
-    @update([], nat)
+    @update([], IDL.Nat)
     increment() {
         const counterOpt = stableStorage.get('counter');
         const counter =
             'None' in counterOpt
-                ? ic.trap('counter not defined')
+                ? trap('counter not defined')
                 : counterOpt.Some + 1n;
 
         stableStorage.insert('counter', counter);
 
         return counter;
     }
-    @query([], nat)
+    @query([], IDL.Nat)
     get() {
         const counterOpt = stableStorage.get('counter');
         const counter =
             'None' in counterOpt
-                ? ic.trap('counter not defined')
+                ? trap('counter not defined')
                 : counterOpt.Some;
 
         return counter;
     }
-    @update([], nat)
+    @update([], IDL.Nat)
     reset() {
         stableStorage.insert('counter', 0n);
 
         const counterOpt = stableStorage.get('counter');
         const counter =
             'None' in counterOpt
-                ? ic.trap('counter not defined')
+                ? trap('counter not defined')
                 : counterOpt.Some;
 
         return counter;
