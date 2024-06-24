@@ -1,4 +1,4 @@
-import { Vec } from 'azle';
+import { Vec } from 'azle/experimental';
 
 import { ReactionType } from './candid_types';
 

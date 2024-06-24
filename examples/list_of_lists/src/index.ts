@@ -25,7 +25,7 @@ import {
     text,
     Variant,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 const Person = Record({
     name: text,

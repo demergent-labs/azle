@@ -1,4 +1,4 @@
-import { HttpRequest, HttpResponse } from 'azle';
+import { HttpRequest, HttpResponse } from 'azle/experimental';
 import { deepEqual, Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { HttpResponseAgentResponseValue } from 'azle/property_tests/arbitraries/http/response_arb';

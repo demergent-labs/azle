@@ -1,6 +1,8 @@
 // TODO maybe this should be Ledger? We should look into making the Ledger
 // better using the latest Wasm and did that I know of
 
+import { ICRC } from 'azle/canisters/icrc';
+import { TransferError } from 'azle/canisters/icrc/icrc_1';
 import {
     blob,
     Canister,
@@ -16,9 +18,7 @@ import {
     Some,
     text,
     update
-} from 'azle';
-import { ICRC } from 'azle/canisters/icrc';
-import { TransferError } from 'azle/canisters/icrc/icrc_1';
+} from 'azle/experimental';
 
 import { Minter, UpdateBalanceResult } from './minter';
 

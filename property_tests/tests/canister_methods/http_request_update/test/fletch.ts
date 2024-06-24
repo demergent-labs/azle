@@ -1,7 +1,7 @@
 import * as dns from 'node:dns';
 
-import { HttpRequest } from 'azle';
 import { getCanisterId } from 'azle/dfx';
+import { HttpRequest } from 'azle/experimental';
 import { execSync } from 'child_process';
 dns.setDefaultResultOrder('ipv4first');
 

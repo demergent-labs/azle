@@ -7,7 +7,7 @@ It is a [variant](#variant) with `Some` and `None` cases. At runtime if the valu
 TypeScript or JavaScript:
 
 ```typescript
-import { bool, Canister, None, Opt, query, Some } from 'azle';
+import { bool, Canister, None, Opt, query, Some } from 'azle/experimental';
 
 export default Canister({
     getOptSome: query([], Opt(bool), () => {

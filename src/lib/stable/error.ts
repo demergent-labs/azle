@@ -1,4 +1,4 @@
-import { ic } from '.';
+import { ic } from '../ic';
 
 export function handleUncaughtError(rawError: any) {
     const error = rawError instanceof Error ? rawError : new Error(rawError);

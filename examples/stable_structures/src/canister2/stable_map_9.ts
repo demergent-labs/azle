@@ -9,7 +9,7 @@ import {
     Tuple,
     update,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 let stableMap9 = StableBTreeMap<float64, Vec<text>>(9);
 

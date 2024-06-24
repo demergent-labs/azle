@@ -9,6 +9,26 @@ import { ic } from './ic';
 import { AzleIc } from './ic/types/azle_ic';
 import { jsonReplacer } from './stable_structures/stable_json';
 
+type CanisterMethods = {
+    candid: string;
+    queries: CanisterMethod[];
+    updates: CanisterMethod[];
+    init?: CanisterMethod;
+    pre_upgrade?: CanisterMethod;
+    post_upgrade?: CanisterMethod;
+    heartbeat?: CanisterMethod;
+    inspect_message?: CanisterMethod;
+    callbacks: {
+        [key: string]: (...args: any) => any;
+    };
+};
+
+type CanisterMethod = {
+    name: string;
+    composite?: boolean;
+    guard?: () => void;
+};
+
 declare global {
     // eslint-disable-next-line no-var
     var _azleInsideCanister: boolean;
@@ -42,12 +62,21 @@ declare global {
     var _azleInitCalled: boolean;
     // eslint-disable-next-line no-var
     var _azlePostUpgradeCalled: boolean;
+    // eslint-disable-next-line no-var
+    var _azleCanisterMethods: CanisterMethods;
 }
 
 globalThis._azleInsideCanister =
     globalThis._azleIc === undefined ? false : true;
 
 if (globalThis._azleInsideCanister) {
+    globalThis._azleCanisterMethods = {
+        candid: '',
+        queries: [],
+        updates: [],
+        callbacks: {}
+    };
+
     globalThis._azleInitCalled = false;
     globalThis._azlePostUpgradeCalled = false;
 

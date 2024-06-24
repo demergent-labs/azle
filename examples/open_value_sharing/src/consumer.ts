@@ -1,4 +1,4 @@
-import { ic, jsonStringify, StableBTreeMap } from 'azle';
+import { ic, jsonStringify, StableBTreeMap } from 'azle/experimental';
 import express from 'express';
 
 let db = StableBTreeMap(0);

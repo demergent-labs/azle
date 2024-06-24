@@ -1,4 +1,4 @@
-import { ic, nat32, Null, Principal, update, Variant } from 'azle';
+import { ic, nat32, Null, Principal, update, Variant } from 'azle/experimental';
 
 import { PerfResult } from '../../perf_result';
 

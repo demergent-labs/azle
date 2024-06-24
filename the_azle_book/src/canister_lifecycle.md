@@ -3,7 +3,7 @@
 This chapter is a work in progress.
 
 ```typescript
-import { Canister, init, postUpgrade, preUpgrade } from 'azle';
+import { Canister, init, postUpgrade, preUpgrade } from 'azle/experimental';
 
 export default Canister({
     init: init([], () => {

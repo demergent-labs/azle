@@ -20,7 +20,7 @@ import {
     text,
     update,
     Variant
-} from 'azle';
+} from 'azle/experimental';
 
 const Options = Variant({
     High: Null,

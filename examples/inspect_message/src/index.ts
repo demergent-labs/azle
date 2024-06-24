@@ -1,4 +1,4 @@
-import { bool, Canister, ic, inspectMessage, update } from 'azle';
+import { bool, Canister, ic, inspectMessage, update } from 'azle/experimental';
 
 export default Canister({
     inspectMessage: inspectMessage(() => {

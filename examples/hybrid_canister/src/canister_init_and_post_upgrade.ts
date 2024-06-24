@@ -7,7 +7,7 @@ import {
     setNodeServer,
     text,
     update
-} from 'azle';
+} from 'azle/experimental';
 import express from 'express';
 
 let httpQueryText = '';

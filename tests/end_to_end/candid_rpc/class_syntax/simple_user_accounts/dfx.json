@@ -1,0 +1,14 @@
+{
+    "canisters": {
+        "simple_user_accounts": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid": "src/index.did",
+            "candid_gen": "custom",
+            "declarations": {
+                "output": "test/dfx_generated/simple_user_accounts",
+                "node_compatibility": true
+            }
+        }
+    }
+}

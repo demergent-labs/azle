@@ -22,7 +22,7 @@ export async function compileTypeScriptToJavaScript(
             import 'azle';
 
             // TODO remove the ethersGetUrl registration once we implement lower-level http for ethers
-            import { ethersGetUrl, ic, Server } from 'azle';
+            import { ethersGetUrl, ic, Server } from 'azle/src/lib/index';
             import { ethers } from 'ethers';
             ethers.FetchRequest.registerGetUrl(ethersGetUrl);
 
@@ -32,38 +32,63 @@ export async function compileTypeScriptToJavaScript(
             export * from './${main}';
             import * as CanisterMethods from './${main}';
 
-            // TODO This setTimeout is here to allow asynchronous operations during canister initialization
-            // for Server canisters that have chosen not to use export default Server
-            // This seems to work no matter how many async tasks are awaited, but I am still unsure about how it will
-            // behave in all async situations
-            setTimeout(() => {
-                const canisterMethods = CanisterMethods.default !== undefined ? CanisterMethods.default() : Server(() => globalThis._azleNodeServer)();
+            if (isClassSyntaxExport(CanisterMethods)) {
+                const canister = new CanisterMethods.default();
 
                 globalThis.candidInfoFunction = () => {
-                    const candidInfo = canisterMethods.getIdl([]).accept(new DidVisitor(), {
-                        ...getDefaultVisitorData(),
-                        isFirstService: true,
-                        systemFuncs: canisterMethods.getSystemFunctionIdls()
-                    });
-
                     return JSON.stringify({
-                        candid: toDidString(candidInfo),
-                        canisterMethods: {
-                            // TODO The spread is because canisterMethods is a function with properties
-                            // TODO we should probably just grab the props out that we need
-                            ...canisterMethods
-                        }
+                        candid: '',
+                        canisterMethods: globalThis._azleCanisterMethods
                     });
                 };
 
-                // TODO I do not know how to get the module exports yet with wasmedge_quickjs
-                globalThis.exports.canisterMethods = canisterMethods;
-            });
+                globalThis.exports.canisterMethods = globalThis._azleCanisterMethods;
+            }
+            else {
+                // TODO This setTimeout is here to allow asynchronous operations during canister initialization
+                // for Server canisters that have chosen not to use export default Server
+                // This seems to work no matter how many async tasks are awaited, but I am still unsure about how it will
+                // behave in all async situations
+                setTimeout(() => {
+                    const canisterMethods = CanisterMethods.default !== undefined ? CanisterMethods.default() : Server(() => globalThis._azleNodeServer)();
+
+                    globalThis.candidInfoFunction = () => {
+                        const candidInfo = canisterMethods.getIdl([]).accept(new DidVisitor(), {
+                            ...getDefaultVisitorData(),
+                            isFirstService: true,
+                            systemFuncs: canisterMethods.getSystemFunctionIdls()
+                        });
+
+                        return JSON.stringify({
+                            candid: toDidString(candidInfo),
+                            canisterMethods: {
+                                // TODO The spread is because canisterMethods is a function with properties
+                                // TODO we should probably just grab the props out that we need
+                                ...canisterMethods
+                            }
+                        });
+                    };
+
+                    // TODO I do not know how to get the module exports yet with wasmedge_quickjs
+                    globalThis.exports.canisterMethods = canisterMethods;
+                });
+            }
+        `;
+
+        const isClassSyntaxExport = `
+            function isClassSyntaxExport(module) {
+                const isNothing = module === undefined || module.default === undefined;
+                const isFunctionalSyntaxExport =
+                    module?.default?.isCanister === true ||
+                    module?.default?.isRecursive === true;
+                return !isNothing && !isFunctionalSyntaxExport;
+            }
         `;
 
         const bundledJavaScript = await bundleFromString(
             `
             ${imports}
+            ${isClassSyntaxExport}
 `,
             wasmedgeQuickJsPath,
             esmAliases,

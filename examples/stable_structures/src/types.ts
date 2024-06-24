@@ -1,4 +1,4 @@
-import { Func, Null, Record, text, Variant, Vec } from 'azle';
+import { Func, Null, Record, text, Variant, Vec } from 'azle/experimental';
 
 export const BlogPost = Record({
     title: text

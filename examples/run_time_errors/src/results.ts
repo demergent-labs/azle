@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { Result } from 'azle';
+import { Result } from 'azle/experimental';
 
 export function returnNonObjectAsInvalidResult(): Result<string, string> {
     // @ts-expect-error

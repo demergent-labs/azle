@@ -2,6 +2,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { expect, it, Test } from 'azle/test/jest';
 
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/init/init.did';
 
 export function getTests(initCanister: ActorSubclass<_SERVICE>): Test {
@@ -21,7 +22,7 @@ export function getTests(initCanister: ActorSubclass<_SERVICE>): Test {
         it('accepts Principals as init arguments', async () => {
             const result = await initCanister.getOwner();
 
-            expect(result).toStrictEqual([
+            expect(result).toEqual([
                 Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
             ]);
         });

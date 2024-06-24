@@ -5,7 +5,7 @@ The `CandidType` object `reserved` corresponds to the [Candid type reserved](htt
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, query, reserved } from 'azle';
+import { Canister, query, reserved } from 'azle/experimental';
 
 export default Canister({
     getReserved: query([], reserved, () => {

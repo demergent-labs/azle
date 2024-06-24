@@ -12,7 +12,7 @@
     "bin": {
         "azle": "./bin.js"
     },
-    "main": "./src/lib/index.ts",
+    "main": "./src/lib/stable/index.ts",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/demergent-labs/azle.git"

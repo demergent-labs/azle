@@ -5,7 +5,7 @@ The `CandidType` object `null` corresponds to the [Candid type null](https://int
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, Null, query } from 'azle';
+import { Canister, Null, query } from 'azle/experimental';
 
 export default Canister({
     getNull: query([], Null, () => {

@@ -5,7 +5,7 @@ The `CandidType` object `nat16` corresponds to the [Candid type nat16](https://i
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, nat16, query } from 'azle';
+import { Canister, nat16, query } from 'azle/experimental';
 
 export default Canister({
     getNat16: query([], nat16, () => {

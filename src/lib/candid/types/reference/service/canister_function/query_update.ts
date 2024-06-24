@@ -1,4 +1,4 @@
-import { handleUncaughtError } from '../../../../../error';
+import { handleUncaughtError } from '../../../../../stable/error';
 import { CanisterOptions } from '.';
 
 type QueryMethod = {

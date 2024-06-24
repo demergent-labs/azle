@@ -7,7 +7,16 @@ Examples:
 -   [ic_api](https://github.com/demergent-labs/azle/blob/main/examples/ic_api)
 
 ```typescript
-import { blob, bool, Canister, ic, int8, nat, query, text } from 'azle';
+import {
+    blob,
+    bool,
+    Canister,
+    ic,
+    int8,
+    nat,
+    query,
+    text
+} from 'azle/experimental';
 
 export default Canister({
     // returns the length of the argument data in bytes

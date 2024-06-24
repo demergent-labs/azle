@@ -1,4 +1,4 @@
-import { ic, jsonStringify, ThresholdWallet } from 'azle';
+import { ic, jsonStringify, ThresholdWallet } from 'azle/experimental';
 import { ethers } from 'ethers';
 import express, { Request } from 'express';
 

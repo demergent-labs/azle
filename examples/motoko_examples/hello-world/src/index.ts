@@ -1,4 +1,4 @@
-import { Canister, query, Void } from 'azle';
+import { Canister, query, Void } from 'azle/experimental';
 
 export default Canister({
     main: query([], Void, () => {

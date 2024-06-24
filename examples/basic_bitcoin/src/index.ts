@@ -1,5 +1,5 @@
-import { jsonParse, jsonStringify } from 'azle';
 import { BitcoinNetwork } from 'azle/canisters/management';
+import { jsonParse, jsonStringify } from 'azle/experimental';
 import express, { Request } from 'express';
 
 import * as bitcoinApi from './bitcoin_api';

@@ -5,7 +5,7 @@ The `CandidType` object `text` corresponds to the [Candid type text](https://int
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, query, text } from 'azle';
+import { Canister, query, text } from 'azle/experimental';
 
 export default Canister({
     getString: query([], text, () => {

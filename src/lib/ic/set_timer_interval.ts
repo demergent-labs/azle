@@ -1,8 +1,5 @@
 import { v4 } from 'uuid';
 
-import { Duration } from './types/duration';
-import { TimerId } from './types/timer_id';
-
 /**
  * Sets callback to be executed every interval. Panics if `interval` + time() is more than 2^64 - 1.
  * To cancel the interval timer, pass the returned `TimerId` to `clearTimer`.
@@ -13,9 +10,9 @@ import { TimerId } from './types/timer_id';
  * @returns the ID of the created timer. Used to cancel the timer.
  */
 export function setTimerInterval(
-    interval: Duration,
+    interval: bigint,
     callback: () => void | Promise<void>
-): TimerId {
+): bigint {
     if (globalThis._azleIc === undefined) {
         return undefined as any;
     }

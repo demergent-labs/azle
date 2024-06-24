@@ -1,4 +1,4 @@
-import { ic, jsonStringify } from 'azle';
+import { ic, jsonStringify } from 'azle/experimental';
 import { ethers } from 'ethers';
 import express, { Request } from 'express';
 

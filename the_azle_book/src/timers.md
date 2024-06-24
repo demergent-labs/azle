@@ -16,7 +16,7 @@ import {
     TimerId,
     update,
     Void
-} from 'azle';
+} from 'azle/experimental';
 import { managementCanister } from 'azle/canisters/management';
 
 const StatusReport = Record({

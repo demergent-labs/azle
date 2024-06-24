@@ -18,8 +18,6 @@ export function init<
         callback === undefined
             ? undefined
             : (...args: any[]) => {
-                  globalThis._azleInitCalled = true;
-
                   executeMethod(
                       'init',
                       args,

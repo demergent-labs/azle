@@ -8,7 +8,7 @@ import {
     text,
     update,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 type Db = {
     users: {

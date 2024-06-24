@@ -1,0 +1,3 @@
+service: () -> {
+    getInitialized: () -> (vec nat8) query;
+}

@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { Principal } from 'azle';
+import { Principal } from 'azle/experimental';
 
 export function returnStringAsInvalidPrincipal(): Principal {
     // @ts-expect-error

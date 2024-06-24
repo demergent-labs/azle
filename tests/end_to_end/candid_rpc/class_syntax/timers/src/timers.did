@@ -1,0 +1,5 @@
+service: () -> {
+    clearTimer: (nat64) -> ();
+    setTimers: (nat64, nat64) -> (record {repeat:nat64; repeatCrossCanister:nat64; inline:nat64; capture:nat64; single:nat64; singleCrossCanister:nat64});
+    statusReport: () -> (record {repeat:int8; repeatCrossCanister:vec nat8; inline:int8; capture:text; single:bool; singleCrossCanister:vec nat8}) query;
+}

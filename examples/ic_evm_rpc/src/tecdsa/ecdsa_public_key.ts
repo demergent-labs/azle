@@ -1,4 +1,4 @@
-import { serialize } from 'azle';
+import { serialize } from 'azle/experimental';
 
 export async function ecdsaPublicKey(
     derivationPath: Uint8Array[]

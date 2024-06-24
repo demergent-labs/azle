@@ -1,4 +1,13 @@
-import { blob, Canister, ic, nat32, nat64, query, update, Void } from 'azle';
+import {
+    blob,
+    Canister,
+    ic,
+    nat32,
+    nat64,
+    query,
+    update,
+    Void
+} from 'azle/experimental';
 
 const STABLE_BYTES_SIZE = 655_360;
 

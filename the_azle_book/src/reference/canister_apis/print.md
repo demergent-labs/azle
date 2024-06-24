@@ -8,7 +8,7 @@ Examples:
 -   [null_example](https://github.com/demergent-labs/azle/tree/main/examples/null_example)
 
 ```typescript
-import { bool, Canister, ic, query, text } from 'azle';
+import { bool, Canister, ic, query, text } from 'azle/experimental';
 
 export default Canister({
     // prints a message through the local replica's output

@@ -1,11 +1,10 @@
 import { Void } from '../candid/types/primitive/void';
-import { TimerId } from './types/timer_id';
 
 /**
  * Cancels an existing timer. Does nothing if the timer has already been canceled.
  * @param id The ID of the timer to be cancelled.
  */
-export function clearTimer(timerId: TimerId): Void {
+export function clearTimer(timerId: bigint): Void {
     if (globalThis._azleIc === undefined) {
         return undefined as any;
     }
