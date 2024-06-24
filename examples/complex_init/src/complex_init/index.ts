@@ -8,7 +8,7 @@ import {
     Some,
     text,
     Tuple
-} from 'azle';
+} from 'azle/experimental';
 
 const User = Record({
     id: text

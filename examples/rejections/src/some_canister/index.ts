@@ -1,4 +1,12 @@
-import { bool, Canister, empty, ic, Manual, query, text } from 'azle';
+import {
+    bool,
+    Canister,
+    empty,
+    ic,
+    Manual,
+    query,
+    text
+} from 'azle/experimental';
 
 export default Canister({
     reject: query(

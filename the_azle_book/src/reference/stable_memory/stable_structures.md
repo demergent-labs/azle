@@ -26,7 +26,7 @@ import {
     Tuple,
     update,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 const Key = nat8;
 type Key = typeof Key.tsType;

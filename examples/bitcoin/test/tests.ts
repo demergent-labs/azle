@@ -3,6 +3,7 @@ import { afterAll, beforeAll } from '@jest/globals';
 import { expect, it, please, Test, wait } from 'azle/test/jest';
 
 import { bitcoinCli } from './bitcoin_cli';
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/bitcoin/bitcoin.did';
 import {
     BitcoinDaemon,

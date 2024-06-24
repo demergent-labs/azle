@@ -5,7 +5,7 @@ The `CandidType` object `float64` corresponds to the [Candid type float64](https
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, float64, query } from 'azle';
+import { Canister, float64, query } from 'azle/experimental';
 
 export default Canister({
     getFloat64: query([], float64, () => {

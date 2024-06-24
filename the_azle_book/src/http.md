@@ -23,7 +23,7 @@ import {
     Tuple,
     Variant,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 const Token = Record({
     // add whatever fields you'd like
@@ -97,7 +97,7 @@ import {
     StableBTreeMap,
     text,
     update
-} from 'azle';
+} from 'azle/experimental';
 import {
     HttpResponse,
     HttpTransformArgs,

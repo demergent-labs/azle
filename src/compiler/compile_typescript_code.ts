@@ -32,7 +32,7 @@ export async function compileTypeScriptToJavaScript(
             export * from './${main}';
             import * as CanisterMethods from './${main}';
 
-            if (CanisterMethods.default.isCanister !== true) {
+            if (isClassSyntaxExport(CanisterMethods)) {
                 const canister = new CanisterMethods.default();
 
                 globalThis.candidInfoFunction = () => {
@@ -51,14 +51,14 @@ export async function compileTypeScriptToJavaScript(
                 // behave in all async situations
                 setTimeout(() => {
                     const canisterMethods = CanisterMethods.default !== undefined ? CanisterMethods.default() : Server(() => globalThis._azleNodeServer)();
-    
+
                     globalThis.candidInfoFunction = () => {
                         const candidInfo = canisterMethods.getIdl([]).accept(new DidVisitor(), {
                             ...getDefaultVisitorData(),
                             isFirstService: true,
                             systemFuncs: canisterMethods.getSystemFunctionIdls()
                         });
-    
+
                         return JSON.stringify({
                             candid: toDidString(candidInfo),
                             canisterMethods: {
@@ -68,16 +68,27 @@ export async function compileTypeScriptToJavaScript(
                             }
                         });
                     };
-    
+
                     // TODO I do not know how to get the module exports yet with wasmedge_quickjs
                     globalThis.exports.canisterMethods = canisterMethods;
                 });
             }
         `;
 
+        const isClassSyntaxExport = `
+            function isClassSyntaxExport(module) {
+                const isNothing = module === undefined || module.default === undefined;
+                const isFunctionalSyntaxExport =
+                    module?.default?.isCanister === true ||
+                    module?.default?.isRecursive === true;
+                return !isNothing && !isFunctionalSyntaxExport;
+            }
+        `;
+
         const bundledJavaScript = await bundleFromString(
             `
             ${imports}
+            ${isClassSyntaxExport}
 `,
             wasmedgeQuickJsPath,
             esmAliases,

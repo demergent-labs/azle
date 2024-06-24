@@ -19,7 +19,7 @@ import {
     query,
     reserved,
     text
-} from 'azle';
+} from 'azle/experimental';
 
 export default Canister({
     getString: query([], text, () => {

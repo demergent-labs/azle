@@ -1,4 +1,13 @@
-import { Canister, None, Opt, query, Some, text, update, Void } from 'azle';
+import {
+    Canister,
+    None,
+    Opt,
+    query,
+    Some,
+    text,
+    update,
+    Void
+} from 'azle/experimental';
 
 let store: Map<string, string> = new Map();
 

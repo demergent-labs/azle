@@ -2,6 +2,7 @@
 
 import { ActorSubclass } from '@dfinity/agent';
 import { Test } from 'azle/test';
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/run_time_errors/run_time_errors.did';
 
 import { getInvalidBlobTests } from './invalid_blobs';

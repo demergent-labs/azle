@@ -5,7 +5,7 @@ The `CandidType` object `Principal` corresponds to the [Candid type principal](h
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, Principal, query } from 'azle';
+import { Canister, Principal, query } from 'azle/experimental';
 
 export default Canister({
     getPrincipal: query([], Principal, () => {

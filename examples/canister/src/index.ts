@@ -8,7 +8,7 @@ import {
     text,
     update,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 import SomeCanister from './some_canister';
 

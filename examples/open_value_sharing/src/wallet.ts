@@ -13,7 +13,7 @@ import {
     update,
     Vec,
     Void
-} from 'azle';
+} from 'azle/experimental';
 
 let payments: Payment[] = [];
 

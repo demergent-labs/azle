@@ -11,7 +11,7 @@ Examples:
 -   [outgoing_http_requests](https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests)
 
 ```typescript
-import { blob, Canister, ic, query, text } from 'azle';
+import { blob, Canister, ic, query, text } from 'azle/experimental';
 
 export default Canister({
     // encodes a Candid string to Candid bytes

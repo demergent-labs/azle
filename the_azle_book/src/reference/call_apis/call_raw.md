@@ -8,7 +8,14 @@ Examples:
 -   [outgoing_http_requests](https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests)
 
 ```typescript
-import { Canister, ic, nat64, Principal, text, update } from 'azle';
+import {
+    Canister,
+    ic,
+    nat64,
+    Principal,
+    text,
+    update
+} from 'azle/experimental';
 
 export default Canister({
     executeCallRaw: update(

@@ -7,7 +7,7 @@ Examples:
 -   [ic_api](https://github.com/demergent-labs/azle/tree/main/examples/ic_api)
 
 ```typescript
-import { blob, Canister, ic, Opt, query } from 'azle';
+import { blob, Canister, ic, Opt, query } from 'azle/experimental';
 
 export default Canister({
     // When called from a query call, returns the data certificate

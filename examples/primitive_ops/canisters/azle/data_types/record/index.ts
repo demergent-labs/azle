@@ -1,4 +1,4 @@
-import { blob, float32, ic, nat32, Principal, update } from 'azle';
+import { blob, float32, ic, nat32, Principal, update } from 'azle/experimental';
 
 import { PerfResult } from '../../perf_result';
 

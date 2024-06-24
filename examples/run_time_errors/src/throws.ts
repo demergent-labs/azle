@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { ic } from 'azle';
+import { ic } from 'azle/experimental';
 import RunTimeErrorService from './index';
 
 // throw 'Uncomment this to test that errors are handled during the eval process.';

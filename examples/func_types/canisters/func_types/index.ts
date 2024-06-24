@@ -17,7 +17,7 @@ import {
     Variant,
     Vec,
     Void
-} from 'azle';
+} from 'azle/experimental';
 
 import Notifier, { NotifierFunc } from '../notifiers';
 

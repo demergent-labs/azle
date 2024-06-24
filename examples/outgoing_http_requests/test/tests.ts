@@ -3,6 +3,7 @@ import { HttpResponse } from 'azle/canisters/management';
 import { Test } from 'azle/test';
 import decodeUtf8 from 'decode-utf8';
 
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/outgoing_http_requests/outgoing_http_requests.did';
 
 export function getTests(

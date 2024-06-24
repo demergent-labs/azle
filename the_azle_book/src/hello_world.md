@@ -97,7 +97,7 @@ Open up `azle_hello_world` in your text editor (we recommend [VS Code](https://c
 Here's the main code of the project, which you should put in the `azle_hello_world/src/index.ts` file of your canister:
 
 ```typescript
-import { Canister, query, text, update, Void } from 'azle';
+import { Canister, query, text, update, Void } from 'azle/experimental';
 
 // This is a global variable that is stored on the heap
 let message = '';
@@ -118,7 +118,7 @@ export default Canister({
 Let's discuss each section of the code.
 
 ```typescript
-import { Canister, query, text, update, Void } from 'azle';
+import { Canister, query, text, update, Void } from 'azle/experimental';
 ```
 
 The code starts off by importing `Canister`, `query`, `text`, `update` and `Void` from `azle`. The `azle` module provides most of the Internet Computer (IC) APIs for your canister.

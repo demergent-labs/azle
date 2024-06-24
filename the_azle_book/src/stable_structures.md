@@ -19,7 +19,7 @@ Azle currently provides one stable structure called `StableBTreeMap`. It's simil
 Here's how to define a simple `StableBTreeMap`:
 
 ```typescript
-import { nat8, StableBTreeMap, text } from 'azle';
+import { nat8, StableBTreeMap, text } from 'azle/experimental';
 
 let map = StableBTreeMap<nat8, text>(0);
 ```
@@ -31,7 +31,7 @@ This is a `StableBTreeMap` with a key of type `nat8` and a value of type `text`.
 You may use other `Serializable objects` besides `stableJson`, and you can even create your own. Simply pass in a `Serializable object` as the second and third parameters to your `StableBTreeMap`. The second parameter is the `key` `Serializable object` and the third parameter is the `value` `Serializable object`. For example, the following `StableBTreeMap` uses the `nat8` and `text` `CandidType objects` from Azle as `Serializable objects`. These `Serializable objects` will encode and decode to and from Candid bytes:
 
 ```typescript
-import { nat8, StableBTreeMap, text } from 'azle';
+import { nat8, StableBTreeMap, text } from 'azle/experimental';
 
 let map = StableBTreeMap<nat8, text>(0, nat8, text);
 ```
@@ -78,7 +78,7 @@ import {
     Tuple,
     update,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 const Key = nat8;
 type Key = typeof Key.tsType;
@@ -147,7 +147,7 @@ import {
     update,
     Variant,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 const User = Record({
     id: Principal,
@@ -325,7 +325,7 @@ import {
     update,
     Variant,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 const User = Record({
     id: Principal,

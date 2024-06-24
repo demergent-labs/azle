@@ -7,7 +7,7 @@ Examples:
 -   [notify_raw](https://github.com/demergent-labs/azle/tree/main/examples/notify_raw)
 
 ```typescript
-import { Canister, ic, Principal, update, Void } from 'azle';
+import { Canister, ic, Principal, update, Void } from 'azle/experimental';
 
 export default Canister({
     sendNotification: update([], Void, () => {

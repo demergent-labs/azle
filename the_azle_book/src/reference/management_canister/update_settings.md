@@ -7,7 +7,15 @@ Examples:
 -   [management_canister](https://github.com/demergent-labs/azle/tree/main/examples/management_canister)
 
 ```typescript
-import { bool, Canister, ic, None, Principal, Some, update } from 'azle';
+import {
+    bool,
+    Canister,
+    ic,
+    None,
+    Principal,
+    Some,
+    update
+} from 'azle/experimental';
 import { managementCanister } from 'azle/canisters/management';
 
 export default Canister({

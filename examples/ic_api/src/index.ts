@@ -15,7 +15,7 @@ import {
     text,
     update,
     Void
-} from 'azle';
+} from 'azle/experimental';
 
 // TODO: See https://github.com/demergent-labs/azle/issues/496
 // const ArgDataMultipleParamsResult = Record({
