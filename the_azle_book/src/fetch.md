@@ -5,7 +5,7 @@ Azle canisters use a custom `fetch` implementation to perform cross-canister cal
 Here's an example of performing a cross-canister call:
 
 ```typescript
-import { serialize } from 'azle';
+import { serialize } from 'azle/experimental';
 import express from 'express';
 
 const app = express();

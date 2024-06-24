@@ -1,4 +1,4 @@
-import { bool, Canister, nat64, query, text, update } from 'azle';
+import { bool, Canister, nat64, query, text, update } from 'azle/experimental';
 
 type Account = {
     address: string;

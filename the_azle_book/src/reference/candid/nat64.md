@@ -5,7 +5,7 @@ The `CandidType` object `nat64` corresponds to the [Candid type nat64](https://i
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, nat64, query } from 'azle';
+import { Canister, nat64, query } from 'azle/experimental';
 
 export default Canister({
     getNat64: query([], nat64, () => {

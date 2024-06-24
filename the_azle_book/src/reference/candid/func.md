@@ -9,7 +9,7 @@ A `func` acts as a callback, allowing the `func` receiver to know which canister
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, Func, Principal, query, text } from 'azle';
+import { Canister, Func, Principal, query, text } from 'azle/experimental';
 
 const BasicFunc = Func([text], text, 'query');
 

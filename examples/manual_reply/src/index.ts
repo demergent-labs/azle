@@ -18,7 +18,7 @@ import {
     Variant,
     Vec,
     Void
-} from 'azle';
+} from 'azle/experimental';
 
 const Options = Variant({
     Small: Null,

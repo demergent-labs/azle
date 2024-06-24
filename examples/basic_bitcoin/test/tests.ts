@@ -1,6 +1,6 @@
 import { beforeAll } from '@jest/globals';
-import { jsonParse, jsonStringify } from 'azle';
 import { GetUtxosResult, Utxo } from 'azle/canisters/management';
+import { jsonParse, jsonStringify } from 'azle/experimental';
 import { expect, it, please, Test, wait } from 'azle/test/jest';
 import { Transaction } from 'bitcoinjs-lib';
 

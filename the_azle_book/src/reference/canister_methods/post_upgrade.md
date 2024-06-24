@@ -8,7 +8,7 @@ Examples:
 -   [whoami](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami)
 
 ```typescript
-import { Canister, postUpgrade } from 'azle';
+import { Canister, postUpgrade } from 'azle/experimental';
 
 export default Canister({
     postUpgrade: postUpgrade([], () => {

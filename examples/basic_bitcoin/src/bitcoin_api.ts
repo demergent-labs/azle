@@ -1,9 +1,9 @@
-import { serialize } from 'azle';
 import {
     BitcoinNetwork,
     GetUtxosResult,
     MillisatoshiPerByte
 } from 'azle/canisters/management/bitcoin';
+import { serialize } from 'azle/experimental';
 
 // The fees for the various bitcoin endpoints.
 const GET_BALANCE_COST_CYCLES: bigint = 100_000_000n;

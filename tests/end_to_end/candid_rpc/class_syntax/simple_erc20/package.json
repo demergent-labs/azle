@@ -10,6 +10,6 @@
         "@dfinity/agent": "0.11.1",
         "simple_erc20_end_to_end_test_canister_syntax": "file:../../../../../examples/simple_erc20",
         "ts-node": "10.7.0",
-        "typescript": "4.6.3"
+        "typescript": "^5.2.2"
     }
 }

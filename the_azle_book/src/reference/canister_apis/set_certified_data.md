@@ -7,7 +7,7 @@ Examples:
 -   [ic_api](https://github.com/demergent-labs/azle/tree/main/examples/ic_api)
 
 ```typescript
-import { blob, Canister, ic, update, Void } from 'azle';
+import { blob, Canister, ic, update, Void } from 'azle/experimental';
 
 export default Canister({
     // sets up to 32 bytes of certified data

@@ -2,6 +2,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { expect, it, Test } from 'azle/test/jest';
 
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/proxy/proxy.did';
 
 export function getTests(proxyCanister: ActorSubclass<_SERVICE>): Test {

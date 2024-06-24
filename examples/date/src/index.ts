@@ -1,4 +1,4 @@
-import { Canister, nat32, nat64, query, text } from 'azle';
+import { Canister, nat32, nat64, query, text } from 'azle/experimental';
 
 export default Canister({
     getDate: query([text], nat32, (isoString) => {

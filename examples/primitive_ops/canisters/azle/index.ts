@@ -1,4 +1,4 @@
-import { Canister, ic, update } from 'azle';
+import { Canister, ic, update } from 'azle/experimental';
 
 import { PerfResult } from './perf_result';
 

@@ -9,7 +9,7 @@ import {
     serialize,
     update,
     Void
-} from 'azle';
+} from 'azle/experimental';
 
 import Cycles from '../cycles';
 

@@ -8,7 +8,15 @@ Examples:
 -   [outgoing_http_requests](https://github.com/demergent-labs/azle/tree/main/examples/outgoing_http_requests)
 
 ```typescript
-import { Canister, ic, None, Principal, query, Some, update } from 'azle';
+import {
+    Canister,
+    ic,
+    None,
+    Principal,
+    query,
+    Some,
+    update
+} from 'azle/experimental';
 import {
     HttpResponse,
     HttpTransformArgs,

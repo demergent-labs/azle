@@ -8,7 +8,7 @@ Examples:
 -   [cycles](https://github.com/demergent-labs/azle/tree/main/examples/cycles)
 
 ```typescript
-import { Canister, ic, update, Void } from 'azle';
+import { Canister, ic, update, Void } from 'azle/experimental';
 import { otherCanister } from './otherCanister';
 
 export default Canister({

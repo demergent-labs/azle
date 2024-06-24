@@ -1,4 +1,4 @@
-import { query, Server, text, update } from 'azle';
+import { query, Server, text, update } from 'azle/experimental';
 import express from 'express';
 
 export default Server(

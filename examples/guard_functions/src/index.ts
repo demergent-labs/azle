@@ -1,4 +1,12 @@
-import { bool, Canister, ic, Manual, nat32, query, update } from 'azle';
+import {
+    bool,
+    Canister,
+    ic,
+    Manual,
+    nat32,
+    query,
+    update
+} from 'azle/experimental';
 
 import {
     allowAll,

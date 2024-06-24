@@ -3,6 +3,7 @@ import { Principal } from '@dfinity/principal';
 import { Test } from 'azle/test';
 import { execSync } from 'child_process';
 
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/ledger_canister/ledger_canister.did';
 
 export function getTests(ledgerCanister: ActorSubclass<_SERVICE>): Test[] {

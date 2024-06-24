@@ -1,6 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/test/jest';
 
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/audio_recorder/audio_recorder.did';
 
 // TODO to be more thorough we could test all of the error cases as well

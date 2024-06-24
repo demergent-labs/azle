@@ -5,7 +5,7 @@ The `CandidType` object `Vec` corresponds to the [Candid type vec](https://inter
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, int32, Vec, query } from 'azle';
+import { Canister, int32, Vec, query } from 'azle/experimental';
 
 export default Canister({
     getNumbers: query([], Vec(int32), () => {

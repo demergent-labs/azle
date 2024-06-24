@@ -1,4 +1,4 @@
-import { bool, Canister, query, update, Void } from 'azle';
+import { bool, Canister, query, update, Void } from 'azle/experimental';
 
 let notified: boolean = false;
 

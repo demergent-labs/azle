@@ -1,6 +1,12 @@
 // @ts-nocheck
 
-import { Record, registerPlugin, Result, Variant, Vec } from 'azle';
+import {
+    Record,
+    registerPlugin,
+    Result,
+    Variant,
+    Vec
+} from 'azle/experimental';
 
 type SQLite = {
     execute: (sql: string) => ExecuteResult;

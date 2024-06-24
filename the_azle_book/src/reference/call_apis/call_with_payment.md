@@ -12,7 +12,7 @@ Examples:
 -   [threshold_ecdsa](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/threshold_ecdsa)
 
 ```typescript
-import { blob, Canister, ic, Principal, update, Void } from 'azle';
+import { blob, Canister, ic, Principal, update, Void } from 'azle/experimental';
 import { managementCanister } from 'azle/canisters/management';
 
 export default Canister({

@@ -1,6 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/test/jest';
 
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/async_await/async_await.did';
 
 export function getTests(async_await_canister: ActorSubclass<_SERVICE>): Test {

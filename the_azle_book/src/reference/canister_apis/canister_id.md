@@ -11,7 +11,7 @@ Examples:
 -   [whoami](https://github.com/demergent-labs/azle/tree/main/examples/motoko_examples/whoami)
 
 ```typescript
-import { Canister, ic, Principal, query } from 'azle';
+import { Canister, ic, Principal, query } from 'azle/experimental';
 
 export default Canister({
     // returns this canister's id

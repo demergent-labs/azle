@@ -44,7 +44,7 @@ import {
     update,
     Vec,
     Void
-} from 'azle';
+} from 'azle/experimental';
 
 export default class extends Service {
     inititalized = false;

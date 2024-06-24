@@ -7,7 +7,7 @@ Examples:
 -   [bitcoin](https://github.com/demergent-labs/azle/tree/main/examples/bitcoin)
 
 ```typescript
-import { Canister, ic, None, text, update } from 'azle';
+import { Canister, ic, None, text, update } from 'azle/experimental';
 import { managementCanister, Satoshi } from 'azle/canisters/management';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;

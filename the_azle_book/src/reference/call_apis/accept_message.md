@@ -8,7 +8,7 @@ Examples:
 -   [run_time_errors](https://github.com/demergent-labs/azle/blob/main/examples/run_time_errors/src/index.ts)
 
 ```typescript
-import { Canister, ic, inspectMessage } from 'azle';
+import { Canister, ic, inspectMessage } from 'azle/experimental';
 
 export default Canister({
     inspectMessage: inspectMessage(() => {

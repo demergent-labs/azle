@@ -25,9 +25,9 @@ Import Clause breakdown
 
 */
 //1) ImportedDefaultBinding (thing) (import thing from 'thing')
-import * as azle from 'azle';
+import * as azle from 'azle/experimental';
 //6 Type import
-import { Opt, Vec as CoveredVec } from 'azle';
+import { Opt, Vec as CoveredVec } from 'azle/experimental';
 
 //2) NameSpaceImport (* as thing) (import * as thing from 'thing')
 import * as deepStar from '../types/deep';
@@ -94,19 +94,19 @@ From https://262.ecma-international.org/13.0/#sec-exports 16.2.3
 //1) export ExportFromClause FromClause ;
 //a) *
 export * from '../types/deep'; // TODO support having multiple export * from declarations
-export * from 'azle';
+export * from 'azle/experimental';
 //b) * as ModuleExportName
-export * as azle from 'azle';
+export * as azle from 'azle/experimental';
 //c) NamedExports
 //a) { }
-export {} from 'azle';
+export {} from 'azle/experimental';
 //b) { ExportList }
 //i) thing
-export { Record } from 'azle';
+export { Record } from 'azle/experimental';
 //ii) thing as other
-export { Variant as CoveredVariant } from 'azle';
+export { Variant as CoveredVariant } from 'azle/experimental';
 //iii) combos
-export { Tuple as CoveredTuple, int64 as nat8, Vec } from 'azle';
+export { Tuple as CoveredTuple, int64 as nat8, Vec } from 'azle/experimental';
 //2) export NamedExports ;
 export {};
 export { DeepVariant };
