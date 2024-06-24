@@ -87,7 +87,7 @@ export function generateCandidAndCanisterMethods(wasmFilePath: string): {
 
     const memory = new Uint8Array((wasmInstance.exports.memory as any).buffer);
 
-    let candidBytes = [];
+    let candidBytes: number[] = [];
     let i = candidPointer;
     while (memory[i] !== 0) {
         candidBytes.push(memory[i]);
