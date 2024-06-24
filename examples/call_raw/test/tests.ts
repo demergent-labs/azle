@@ -15,12 +15,7 @@ export function getTests(call_raw_canister: ActorSubclass<_SERVICE>): Test {
                 0n
             );
 
-            if ('Err' in result) {
-                throw new Error(result.Err);
-            }
-
-            expect(result).toHaveProperty('Ok');
-            expect(result.Ok).toMatch('blob');
+            expect(result).toMatch('blob');
         });
 
         it('calls create_canister via execute_call_raw', async () => {
@@ -30,13 +25,8 @@ export function getTests(call_raw_canister: ActorSubclass<_SERVICE>): Test {
                 '(record { settings = null })',
                 100_000_000_000n
             );
-
-            if ('Err' in result) {
-                throw new Error(result.Err);
-            }
-
-            expect(result.Ok).toMatch('record');
-            expect(result.Ok).toMatch('principal');
+            expect(result).toMatch('record');
+            expect(result).toMatch('principal');
         });
 
         it('calls raw_rand via execute_call_raw128', async () => {
@@ -47,11 +37,7 @@ export function getTests(call_raw_canister: ActorSubclass<_SERVICE>): Test {
                 0n
             );
 
-            if ('Err' in result) {
-                throw new Error(result.Err);
-            }
-
-            expect(result.Ok).toMatch('blob');
+            expect(result).toMatch('blob');
         });
 
         it('calls create_canister via execute_call_raw128', async () => {
@@ -62,12 +48,8 @@ export function getTests(call_raw_canister: ActorSubclass<_SERVICE>): Test {
                 100_000_000_000n
             );
 
-            if ('Err' in result) {
-                throw new Error(result.Err);
-            }
-
-            expect(result.Ok).toMatch('record');
-            expect(result.Ok).toMatch('principal');
+            expect(result).toMatch('record');
+            expect(result).toMatch('principal');
         });
     };
 }
