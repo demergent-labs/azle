@@ -2,7 +2,7 @@ import { v4 } from 'uuid'; // TODO is uuid experimental?
 
 import { IDL, Principal } from '../';
 
-export async function call<T>(
+export async function call(
     canisterId: Principal | string,
     method: string,
     options?: {
@@ -10,8 +10,9 @@ export async function call<T>(
         returnIdl?: IDL.Type;
         args?: any[];
         payment?: bigint;
+        raw?: Uint8Array;
     }
-): Promise<T> {
+): Promise<any> {
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
         if (globalThis._azleIc === undefined) {
@@ -23,15 +24,18 @@ export async function call<T>(
         const globalRejectId = `_reject_${promiseId}`;
 
         const returnIdl = options?.returnIdl;
+        const raw = options?.raw;
 
         // TODO perhaps we should be more robust
         // TODO for example, we can keep the time with these
         // TODO if they are over a certain amount old we can delete them
         globalThis._azleResolveIds[globalResolveId] = (result: ArrayBuffer) => {
-            if (returnIdl === undefined) {
-                resolve(undefined as T);
+            if (raw !== undefined) {
+                resolve(new Uint8Array(result));
+            } else if (returnIdl === undefined) {
+                resolve(undefined);
             } else {
-                resolve(IDL.decode([returnIdl], result)[0] as T);
+                resolve(IDL.decode([returnIdl], result)[0]);
             }
 
             delete globalThis._azleResolveIds[globalResolveId];
@@ -54,13 +58,15 @@ export async function call<T>(
                 ? Principal.fromText(canisterId)
                 : canisterId;
         const canisterIdBytes = canisterIdPrincipal.toUint8Array().buffer;
-        const argsRawBuffer = new Uint8Array(IDL.encode(paramIdls, args))
-            .buffer;
+        const argsRawBuffer =
+            raw === undefined
+                ? new Uint8Array(IDL.encode(paramIdls, args)).buffer
+                : raw.buffer;
         const paymentString = payment.toString();
 
         // TODO consider finally, what if deletion goes wrong
         try {
-            globalThis._azleIc.callRaw(
+            globalThis._azleIc.callRaw128(
                 promiseId,
                 canisterIdBytes,
                 method,

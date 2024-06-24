@@ -1,4 +1,5 @@
 export { call } from './call';
+export { candidDecode } from './candid_decode';
 export { candidEncode } from './candid_encode';
 export { id } from './id';
 export { notify } from './notify';
