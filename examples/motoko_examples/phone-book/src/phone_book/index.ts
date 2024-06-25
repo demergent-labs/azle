@@ -8,7 +8,7 @@ import {
     text,
     update,
     Void
-} from 'azle';
+} from 'azle/experimental';
 
 export const Entry = Record({
     desc: text,

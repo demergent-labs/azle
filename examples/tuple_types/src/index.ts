@@ -15,7 +15,7 @@ import {
     Tuple,
     Variant,
     Vec
-} from 'azle';
+} from 'azle/experimental';
 
 // TODO maybe we should write tests for canister and stable storage?
 // TODO for now we at least know the canister compiles

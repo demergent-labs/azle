@@ -1,7 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { expect, it, Test } from 'azle/test/jest';
 
-// @ts-ignore
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/factorial/factorial.did';
 
 export function getTests(factorialCanister: ActorSubclass<_SERVICE>): Test {

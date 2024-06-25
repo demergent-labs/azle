@@ -5,7 +5,7 @@ The `CandidType` object `blob` corresponds to the [Candid type blob](https://int
 TypeScript or JavaScript:
 
 ```typescript
-import { blob, Canister, query } from 'azle';
+import { blob, Canister, query } from 'azle/experimental';
 
 export default Canister({
     getBlob: query([], blob, () => {

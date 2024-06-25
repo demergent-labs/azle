@@ -7,7 +7,7 @@ Examples:
 -   [rejections](https://github.com/demergent-labs/azle/tree/main/examples/rejections)
 
 ```typescript
-import { Canister, ic, text, update } from 'azle';
+import { Canister, ic, text, update } from 'azle/experimental';
 import { otherCanister } from './other_canister';
 
 export default Canister({

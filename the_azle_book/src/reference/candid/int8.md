@@ -5,7 +5,7 @@ The `CandidType` object `int8` corresponds to the [Candid type int8](https://int
 TypeScript or JavaScript:
 
 ```typescript
-import { Canister, int8, query } from 'azle';
+import { Canister, int8, query } from 'azle/experimental';
 
 export default Canister({
     getInt8: query([], int8, () => {

@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import { func, Principal, Void } from 'azle';
+import { func, Principal, Void } from 'azle/experimental';
 
 @func([], Void, 'query')
 export class MyFunc {}

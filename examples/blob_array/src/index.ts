@@ -1,4 +1,4 @@
-import { blob, Canister, query, Vec } from 'azle';
+import { blob, Canister, query, Vec } from 'azle/experimental';
 
 export default Canister({
     getBlob: query([], blob, () => {

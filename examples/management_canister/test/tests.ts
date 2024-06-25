@@ -3,6 +3,7 @@ import { expect, it } from 'azle/test/jest';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 
+// @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/management_canister/management_canister.did';
 
 export function getTests(managementCanister: ActorSubclass<_SERVICE>) {

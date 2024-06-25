@@ -1,5 +1,5 @@
-import { blob, Canister, ic, update, Void } from 'azle';
 import { managementCanister } from 'azle/canisters/management';
+import { blob, Canister, ic, update, Void } from 'azle/experimental';
 
 export default Canister({
     getRandomnessDirectly: update([], blob, async () => {

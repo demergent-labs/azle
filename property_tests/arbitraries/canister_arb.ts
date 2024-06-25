@@ -149,7 +149,7 @@ function generateSourceCode(
     const sourceCodes = canisterMethods.map((method) => method.sourceCode);
 
     return /*TS*/ `
-        import { ${imports} } from 'azle';
+        import { ${imports} } from 'azle/experimental';
 
         // @ts-ignore
         import deepEqual from 'deep-is';

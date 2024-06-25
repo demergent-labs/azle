@@ -1,4 +1,4 @@
-import { HttpRequest } from 'azle';
+import { HttpRequest } from 'azle/experimental';
 import { Named } from 'azle/property_tests';
 import { CandidReturnType } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';

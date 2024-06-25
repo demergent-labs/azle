@@ -1,4 +1,4 @@
-import { ic } from 'azle';
+import { ic } from 'azle/experimental';
 import express from 'express';
 
 const app = express();

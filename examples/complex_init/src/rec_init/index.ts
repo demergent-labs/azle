@@ -1,4 +1,12 @@
-import { Canister, init, nat, Null, query, Recursive, Variant } from 'azle';
+import {
+    Canister,
+    init,
+    nat,
+    Null,
+    query,
+    Recursive,
+    Variant
+} from 'azle/experimental';
 
 const Node = Recursive(() =>
     Variant({

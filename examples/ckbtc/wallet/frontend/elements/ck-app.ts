@@ -2,7 +2,7 @@
 
 import { ActorSubclass, HttpAgent, Identity } from '@dfinity/agent';
 import { AuthClient } from '@dfinity/auth-client';
-import { nat, nat64 } from 'azle';
+import { nat, nat64 } from 'azle/experimental';
 import { html, LitElement } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 

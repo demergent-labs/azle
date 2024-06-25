@@ -7,7 +7,7 @@ Examples:
 -   [stable_memory](https://github.com/demergent-labs/azle/tree/main/examples/stable_memory)
 
 ```typescript
-import { blob, Canister, ic, nat64, query } from 'azle';
+import { blob, Canister, ic, nat64, query } from 'azle/experimental';
 
 export default Canister({
     stable64Read: query([nat64, nat64], blob, (offset, length) => {

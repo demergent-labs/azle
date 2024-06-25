@@ -1,4 +1,4 @@
-import { HttpRequest } from 'azle';
+import { HttpRequest } from 'azle/experimental';
 import { runPropTests } from 'azle/property_tests';
 import { RecordArb } from 'azle/property_tests/arbitraries/candid/constructed/record_arb';
 import {

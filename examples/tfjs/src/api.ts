@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import { ic } from 'azle';
+import { ic } from 'azle/experimental';
 import express from 'express';
 
 async function init() {

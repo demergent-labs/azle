@@ -5,7 +5,7 @@ The `CandidType` object `bool` corresponds to the [Candid type bool](https://int
 TypeScript or JavaScript:
 
 ```typescript
-import { bool, Canister, query } from 'azle';
+import { bool, Canister, query } from 'azle/experimental';
 
 export default Canister({
     getBool: query([], bool, () => {

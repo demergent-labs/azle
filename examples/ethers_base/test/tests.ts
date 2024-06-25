@@ -4,7 +4,7 @@
 // just use a faucet like https://www.ethereum-ecosystem.com/faucets/base-sepolia to get some more
 // We should be good for a few hundred tests
 
-import { jsonParse } from 'azle';
+import { jsonParse } from 'azle/experimental';
 import { expect, it, Test, wait } from 'azle/test/jest';
 
 let callerAddress: string;

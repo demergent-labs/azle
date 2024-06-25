@@ -28,7 +28,7 @@ import {
     Server,
     StableBTreeMap,
     stableJson
-} from 'azle';
+} from 'azle/experimental';
 import { Database } from 'sql.js/dist/sql-asm.js';
 
 import { initDb } from './db';

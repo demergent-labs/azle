@@ -13,7 +13,7 @@ import {
     nat64,
     float32,
     float64
-} from 'azle';
+} from 'azle/experimental';
 
 export function returnInvalidNumber(): number {
     // @ts-expect-error
