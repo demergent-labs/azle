@@ -2,7 +2,7 @@ import { v4 } from 'uuid'; // TODO is uuid experimental?
 
 import { IDL, Principal } from '../';
 
-export async function call(
+export async function call<T>(
     canisterId: Principal | string,
     method: string,
     options?: {
@@ -11,7 +11,7 @@ export async function call(
         args?: any[];
         payment?: bigint;
     }
-): Promise<any> {
+): Promise<T> {
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
         if (globalThis._azleIc === undefined) {
@@ -29,9 +29,9 @@ export async function call(
         // TODO if they are over a certain amount old we can delete them
         globalThis._azleResolveIds[globalResolveId] = (result: ArrayBuffer) => {
             if (returnIdl === undefined) {
-                resolve(undefined);
+                resolve(undefined as T);
             } else {
-                resolve(IDL.decode([returnIdl], result)[0]);
+                resolve(IDL.decode([returnIdl], result)[0] as T);
             }
 
             delete globalThis._azleResolveIds[globalResolveId];
