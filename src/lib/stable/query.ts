@@ -1,11 +1,16 @@
 import { IDL } from '@dfinity/candid';
 
-import { isAsync } from '../canister_methods/is_async';
 import { executeWithCandidSerde } from './execute_with_candid_serde';
+import { createGlobalGuard } from './guard';
 
 export function query(
     paramIdls: IDL.Type[],
-    returnIdl?: IDL.Type
+    returnIdl?: IDL.Type,
+    options?: {
+        composite?: boolean;
+        manual?: boolean;
+        guard?: () => void; // TODO can guard functions be async?
+    }
 ): MethodDecorator {
     return <T>(
         target: object,
@@ -21,7 +26,7 @@ export function query(
                 originalMethod,
                 paramIdls,
                 returnIdl,
-                false // TODO implement manual check
+                options?.manual ?? false
             );
         };
 
@@ -29,8 +34,11 @@ export function query(
 
         globalThis._azleCanisterMethods.queries.push({
             name: propertyKey as string,
-            composite: isAsync(originalMethod)
-            // TODO implement guard
+            composite: options?.composite ?? false,
+            guard_name:
+                options?.guard === undefined
+                    ? undefined
+                    : createGlobalGuard(options?.guard, propertyKey as string)
         });
 
         globalThis._azleCanisterMethods.callbacks[propertyKey as string] =
