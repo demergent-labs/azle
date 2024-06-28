@@ -12,7 +12,7 @@ import {
     QueryMethodArb
 } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
-import { testEquality } from 'azle/test';
+import { testEquality } from 'azle/property_tests/test';
 import fc from 'fast-check';
 
 const SimplePreUpgradeArb = PreUpgradeMethodArb({

@@ -3,7 +3,7 @@ import { getActor, Named } from 'azle/property_tests';
 import { CandidReturnType } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
-import { Test, testEquality } from 'azle/test';
+import { Test, testEquality } from 'azle/property_tests/test';
 
 import { InspectMessageBehavior } from './test';
 

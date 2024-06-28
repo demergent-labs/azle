@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Test } from '../../../test';
+import { Test } from '../../test';
 import { VoidArb } from '../candid/primitive/void';
 import { UniqueIdentifierArb } from '../unique_identifier_arb';
 import {

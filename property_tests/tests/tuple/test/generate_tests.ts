@@ -4,7 +4,7 @@ import {
     ReturnTuple,
     Tuple
 } from 'azle/property_tests/arbitraries/candid/constructed/tuple_arb';
-import { Test, testEquality } from 'azle/test';
+import { Test, testEquality } from 'azle/property_tests/test';
 
 export function generateTests(
     functionName: string,
