@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 
-import { Test } from '../../test';
+import { Test } from '../test';
 import { CliStringVisitor } from '../visitors/cli-string-visitor';
 import { CorrespondingJSType } from './candid/corresponding_js_type';
 import { InitMethod } from './canister_methods/init_method_arb';
