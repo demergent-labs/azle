@@ -80,7 +80,7 @@ export function getTests(canisterId: string): Test {
             expect(responseText).toBe('transaction sent');
         }, 20_000);
 
-        wait('wait for block time', 60_000);
+        wait('for block time', 60_000);
 
         it("gets the canister's balance after transfer from faucet using ethers and tECDSA", async () => {
             const response = await fetch(
@@ -108,7 +108,7 @@ export function getTests(canisterId: string): Test {
             expect(responseText).toBe('transaction sent');
         }, 30_000);
 
-        wait('wait for block time', 60_000);
+        wait('for block time', 60_000);
 
         it("gets the canister's balance after the transfer using ethers and tECDSA", async () => {
             const response = await fetch(
