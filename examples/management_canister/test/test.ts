@@ -1,7 +1,7 @@
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test/jest';
+import { runTests } from 'azle/test';
 
-import { createActor } from '../test/dfx_generated/management_canister';
+import { createActor } from './dfx_generated/management_canister';
 import { getTests } from './tests';
 
 const canisterName = 'management_canister';

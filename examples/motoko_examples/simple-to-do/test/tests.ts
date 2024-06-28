@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { expect, it, Test } from 'azle/test/jest';
+import { expect, it, Test } from 'azle/test';
 
 import { ToDo } from '../src';
 // @ts-ignore this path may not exist when these tests are imported into other test projects

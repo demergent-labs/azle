@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { expect, it, Test } from 'azle/test/jest';
+import { expect, it, Test } from 'azle/test';
 
 import { User } from '../src/candid_types';
 import { _SERVICE } from './dfx_generated/complex_types/complex_types.did.d';

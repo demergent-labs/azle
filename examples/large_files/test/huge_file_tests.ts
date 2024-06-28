@@ -1,5 +1,5 @@
 import { describe } from '@jest/globals';
-import { please, Test } from 'azle/test/jest';
+import { please, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { rm } from 'fs-extra';
 import { join } from 'path';

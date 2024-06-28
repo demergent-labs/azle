@@ -1,7 +1,4 @@
-import * as dns from 'node:dns';
-dns.setDefaultResultOrder('ipv4first');
-
-import { expect, it, Test } from 'azle/test/jest';
+import { expect, it, Test } from 'azle/test';
 
 export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;

@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { describe } from '@jest/globals';
-import { expect, it, Test } from 'azle/test/jest';
+import { expect, it, Test } from 'azle/test';
 import { readFileSync } from 'fs';
 
 import { _SERVICE } from './dfx_generated/bytes_canister/bytes_canister.did.d';

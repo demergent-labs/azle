@@ -1,5 +1,5 @@
 import { describe } from '@jest/globals';
-import { expect, it, Test } from 'azle/test/jest';
+import { expect, it, Test } from 'azle/test';
 import { getTests as getBitcoinTests } from 'bitcore_lib_example/test/tests';
 
 export function getTests(canisterId: string): Test {
