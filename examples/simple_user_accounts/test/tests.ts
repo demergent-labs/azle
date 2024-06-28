@@ -1,71 +1,48 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/simple_user_accounts/simple_user_accounts.did';
 
 export function getTests(
     simpleUserAccountsCanister: ActorSubclass<_SERVICE>
-): Test[] {
-    return [
-        {
-            name: 'getUserById',
-            test: async () => {
-                const result =
-                    await simpleUserAccountsCanister.getUserById('0');
+): Test {
+    return () => {
+        it('getUserById', async () => {
+            const result = await simpleUserAccountsCanister.getUserById('0');
 
-                return {
-                    Ok: result.length === 0
-                };
-            }
-        },
-        {
-            name: 'getAllUsers',
-            test: async () => {
-                const result = await simpleUserAccountsCanister.getAllUsers();
+            expect(result).toHaveLength(0);
+        });
 
-                return {
-                    Ok: result.length === 0
-                };
-            }
-        },
-        {
-            name: 'createUser',
-            test: async () => {
-                const result =
-                    await simpleUserAccountsCanister.createUser('lastmjs');
+        it('getAllUsers', async () => {
+            const result = await simpleUserAccountsCanister.getAllUsers();
 
-                return {
-                    Ok: result.id === '0' && result.username === 'lastmjs'
-                };
-            }
-        },
-        {
-            name: 'getUserById',
-            test: async () => {
-                const result =
-                    await simpleUserAccountsCanister.getUserById('0');
+            expect(result).toHaveLength(0);
+        });
 
-                return {
-                    Ok:
-                        result.length !== 0 &&
-                        result[0].id === '0' &&
-                        result[0].username === 'lastmjs'
-                };
-            }
-        },
-        {
-            name: 'getAllUsers',
-            test: async () => {
-                const result = await simpleUserAccountsCanister.getAllUsers();
+        it('createUser', async () => {
+            const result =
+                await simpleUserAccountsCanister.createUser('lastmjs');
 
-                return {
-                    Ok:
-                        result.length === 1 &&
-                        result[0].id === '0' &&
-                        result[0].username === 'lastmjs'
-                };
-            }
-        }
-    ];
+            const expectedResult = { id: '0', username: 'lastmjs' };
+
+            expect(result).toStrictEqual(expectedResult);
+        });
+
+        it('getUserById', async () => {
+            const result = await simpleUserAccountsCanister.getUserById('0');
+
+            const expectedResult = { id: '0', username: 'lastmjs' };
+
+            expect(result).toStrictEqual([expectedResult]);
+        });
+
+        it('getAllUsers', async () => {
+            const result = await simpleUserAccountsCanister.getAllUsers();
+
+            const expectedResult = { id: '0', username: 'lastmjs' };
+
+            expect(result).toStrictEqual([expectedResult]);
+        });
+    };
 }
