@@ -1,5 +1,5 @@
 {
-    "name": "simple_erc20_end_to_end_test_canister_syntax",
+    "name": "simple_erc20_end_to_end_test_functional_syntax",
     "scripts": {
         "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
         "test": "jest"
