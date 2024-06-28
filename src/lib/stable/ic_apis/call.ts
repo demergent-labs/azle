@@ -10,6 +10,7 @@ export async function call(
         returnIdl?: IDL.Type;
         args?: any[];
         payment?: bigint;
+        raw?: Uint8Array;
     }
 ): Promise<any> {
     // TODO this should use a Result remember
@@ -23,12 +24,15 @@ export async function call(
         const globalRejectId = `_reject_${promiseId}`;
 
         const returnIdl = options?.returnIdl;
+        const raw = options?.raw;
 
         // TODO perhaps we should be more robust
         // TODO for example, we can keep the time with these
         // TODO if they are over a certain amount old we can delete them
         globalThis._azleResolveIds[globalResolveId] = (result: ArrayBuffer) => {
-            if (returnIdl === undefined) {
+            if (raw !== undefined) {
+                resolve(new Uint8Array(result));
+            } else if (returnIdl === undefined) {
                 resolve(undefined);
             } else {
                 resolve(IDL.decode([returnIdl], result)[0]);
@@ -54,13 +58,15 @@ export async function call(
                 ? Principal.fromText(canisterId)
                 : canisterId;
         const canisterIdBytes = canisterIdPrincipal.toUint8Array().buffer;
-        const argsRawBuffer = new Uint8Array(IDL.encode(paramIdls, args))
-            .buffer;
+        const argsRawBuffer =
+            raw === undefined
+                ? new Uint8Array(IDL.encode(paramIdls, args)).buffer
+                : raw.buffer;
         const paymentString = payment.toString();
 
         // TODO consider finally, what if deletion goes wrong
         try {
-            globalThis._azleIc.callRaw(
+            globalThis._azleIc.callRaw128(
                 promiseId,
                 canisterIdBytes,
                 method,

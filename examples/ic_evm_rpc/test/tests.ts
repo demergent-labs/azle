@@ -5,7 +5,7 @@
 // We should be good for many thousands of tests
 
 import { jsonParse } from 'azle/experimental';
-import { expect, it, Test, wait } from 'azle/test/jest';
+import { expect, it, Test, wait } from 'azle/test';
 
 let callerAddress: string;
 let canisterAddress: string;
@@ -80,7 +80,7 @@ export function getTests(canisterId: string): Test {
             expect(responseText).toBe('transaction sent');
         }, 20_000);
 
-        wait('wait for block time', 60_000);
+        wait('for block time', 60_000);
 
         it("gets the canister's balance after transfer from faucet using ethers and tECDSA", async () => {
             const response = await fetch(
@@ -108,7 +108,7 @@ export function getTests(canisterId: string): Test {
             expect(responseText).toBe('transaction sent');
         }, 30_000);
 
-        wait('wait for block time', 60_000);
+        wait('for block time', 60_000);
 
         it("gets the canister's balance after the transfer using ethers and tECDSA", async () => {
             const response = await fetch(

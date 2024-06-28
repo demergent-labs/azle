@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { expect, it, Test } from 'azle/test/jest';
+import { expect, it, Test } from 'azle/test';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/audio_recorder/audio_recorder.did';
@@ -9,7 +9,7 @@ import { _SERVICE } from './dfx_generated/audio_recorder/audio_recorder.did';
 let global_user: any;
 let global_recording: any;
 
-export function get_tests(
+export function getTests(
     audio_recorder_canister: ActorSubclass<_SERVICE>
 ): Test {
     return () => {

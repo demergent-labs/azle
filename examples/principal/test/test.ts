@@ -1,7 +1,7 @@
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
 
-import { createActor } from '../test/dfx_generated/principal';
+import { createActor } from './dfx_generated/principal';
 import { getTests } from './tests';
 
 const principalCanister = createActor(getCanisterId('principal'), {

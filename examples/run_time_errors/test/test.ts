@@ -1,7 +1,6 @@
-// @ts-nocheck
-
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
+// @ts-ignore
 import { createActor } from './dfx_generated/run_time_errors';
 import { getTests } from './tests';
 

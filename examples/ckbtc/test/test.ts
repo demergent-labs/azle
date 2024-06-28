@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe } from '@jest/globals';
-import { runTests } from 'azle/test/jest';
+import { runTests } from 'azle/test';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import { existsSync, rmSync } from 'fs-extra';
 

@@ -1,6 +1,6 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { afterAll, beforeAll } from '@jest/globals';
-import { expect, it, please, Test, wait } from 'azle/test/jest';
+import { expect, it, please, Test, wait } from 'azle/test';
 
 import { bitcoinCli } from './bitcoin_cli';
 // @ts-ignore this path may not exist when these tests are imported into other test projects
