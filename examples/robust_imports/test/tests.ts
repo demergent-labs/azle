@@ -1,19 +1,18 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { Test } from 'azle/test';
+import { describe } from '@jest/globals';
+import { expect, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';
 
 import { _SERVICE } from '../dfx_generated/robust_imports/robust_imports.did';
 
-export function getTests(
-    robustImportsCanister: ActorSubclass<_SERVICE>
-): Test[] {
-    return [
-        ...getImportCoverageTests(robustImportsCanister),
-        ...getAzleCoverageTests(robustImportsCanister),
-        ...getTypeAliasDeclTests(robustImportsCanister),
-        ...getTsPrimAliasTest(robustImportsCanister)
-    ];
+export function getTests(robustImportsCanister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        describe('', getImportCoverageTests(robustImportsCanister));
+        describe('', getAzleCoverageTests(robustImportsCanister));
+        describe('', getTypeAliasDeclTests(robustImportsCanister));
+        describe('', getTsPrimAliasTest(robustImportsCanister));
+    };
 }
 
 /**
@@ -31,105 +30,81 @@ export function getTests(
  * @param ic
  * @returns
  */
-function getImportCoverageTests(ic: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'myVariantToMyDeepVariant',
-            test: async () => {
-                const result = await ic.myVariantToMyDeepVariant({ Thing: 7 });
-                return {
-                    Ok: result.Thing === 7
-                };
-            }
-        },
-        {
-            name: 'myFathomlessVariantToMyCavernousVariant',
-            test: async () => {
-                const result = await ic.myFathomlessVariantToMyCavernousVariant(
-                    {
-                        MyInt8: 7
-                    }
-                );
-                return {
-                    Ok: 'eight' in result
-                };
-            }
-        },
-        {
-            name: 'returnsVec',
-            test: async () => {
-                return {
-                    Ok: 7 === (await ic.returnVec())[1][3]
-                };
-            }
-        },
-        {
-            name: 'returnsFathomlessVec',
-            test: async () => {
-                return {
-                    Ok: 7 === (await ic.returnFathomlessVec())[6]
-                };
-            }
-        },
-        {
-            name: 'returnWeird',
-            test: async () => {
-                return {
-                    Ok: -10_000n === (await ic.returnWeird())
-                };
-            }
-        },
-        {
-            name: 'returnFathomlessCanister',
-            test: async () => {
-                const result = execSync(
-                    `dfx canister call robust_imports returnFathomlessCanister '(service "aaaaa-aa")'`
-                )
-                    .toString()
-                    .trim();
+function getImportCoverageTests(ic: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('myVariantToMyDeepVariant', async () => {
+            const result = await ic.myVariantToMyDeepVariant({ Thing: 7 });
 
-                return {
-                    Ok: result === '(service "aaaaa-aa")'
-                };
-            }
-        },
-        {
-            name: 'makeCavernousRecord',
-            test: async () => {
-                const result = await ic.makeCavernousRecord();
-                return {
-                    Ok:
-                        result.coveredRecord.count === 10 &&
-                        result.coveredRecord.name === 'Bob' &&
-                        result.coveredRecord.type_name === 'Imported Record' &&
-                        result.coveredRecord.greeting[0] === 'Hello there' &&
-                        result.myRecord.int1 === 20 &&
-                        result.myRecord.int2 === 30 &&
-                        result.myRecord.int3 === 40 &&
-                        result.myRecord.int4 === 50 &&
-                        result.myRecord.int5 === 60 &&
-                        result.myRecord.int6 === 70 &&
-                        result.myRecord.int7 === 80 &&
-                        result.myRecord.int8 === 90 &&
-                        result.myRecord.int9 === 100 &&
-                        result.fathomlessRecord.mytext ===
-                            'my text in a fathomless record' &&
-                        result.myTuple[0] === 'my tuple' &&
-                        result.myDeepTuple[0] === 'my deep tuple' &&
-                        result.myCavernousTuple[0] === 'my cavernous tuple'
-                };
-            }
-        },
-        {
-            name: 'typeCheck',
-            test: async () => {
-                const result = await ic.typeCheck([[7]]);
-                return {
-                    Ok: result === 7
-                };
-            }
-        }
-    ];
+            expect(result.Thing).toBe(7);
+        });
+
+        it('myFathomlessVariantToMyCavernousVariant', async () => {
+            const result = await ic.myFathomlessVariantToMyCavernousVariant({
+                MyInt8: 7
+            });
+
+            expect(result).toStrictEqual({ eight: null });
+        });
+
+        it('returnsVec', async () => {
+            expect((await ic.returnVec())[1][3]).toBe(7);
+        });
+
+        it('returnsFathomlessVec', async () => {
+            expect((await ic.returnFathomlessVec())[6]).toBe(7);
+        });
+
+        it('returnWeird', async () => {
+            expect(await ic.returnWeird()).toBe(-10_000n);
+        });
+
+        it('returnFathomlessCanister', async () => {
+            const result = execSync(
+                `dfx canister call robust_imports returnFathomlessCanister '(service "aaaaa-aa")'`
+            )
+                .toString()
+                .trim();
+
+            expect(result).toBe('(service "aaaaa-aa")');
+        });
+
+        it('makeCavernousRecord', async () => {
+            const result = await ic.makeCavernousRecord();
+            const expectedResult = {
+                coveredRecord: {
+                    count: 10,
+                    name: 'Bob',
+                    type_name: 'Imported Record',
+                    greeting: ['Hello there']
+                },
+                myRecord: {
+                    int1: 20,
+                    int2: 30,
+                    int3: 40,
+                    int4: 50,
+                    int5: 60,
+                    int6: 70,
+                    int7: 80,
+                    int8: 90,
+                    int9: 100
+                },
+                fathomlessRecord: {
+                    mytext: 'my text in a fathomless record'
+                },
+                myTuple: ['my tuple'],
+                myDeepTuple: ['my deep tuple'],
+                myCavernousTuple: ['my cavernous tuple']
+            };
+
+            expect(result).toStrictEqual(expectedResult);
+        });
+
+        it('typeCheck', async () => {
+            const result = await ic.typeCheck([[7]]);
+
+            expect(result).toBe(7);
+        });
+    };
 }
 
 /**
@@ -141,228 +116,154 @@ function getImportCoverageTests(ic: ActorSubclass<_SERVICE>): Test[] {
  * @param fruit
  * @returns
  */
-function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'Add Sig Figs',
-            test: async () => {
-                const figs = 1.234;
-                return {
-                    Ok: 1.2339999675750732 === (await fruit.addSigFigs(figs))
-                };
-            }
-        },
-        {
-            name: 'check canister',
-            test: async () => {
-                const result = execSync(
-                    `dfx canister call robust_imports checkCanister '(service "aaaaa-aa")'`
-                )
-                    .toString()
-                    .trim();
+function getAzleCoverageTests(fruit: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('Add Sig Figs', async () => {
+            const figs = 1.234;
 
-                return {
-                    Ok: result === '(service "aaaaa-aa")'
-                };
-            }
-        },
-        {
-            name: 'checkWatermelonForSeeds',
-            test: async () => {
-                const seedlessWatermelon = { Seedless: null };
-                const watermelon = { Seeds: null };
-                try {
-                    await fruit.checkWatermelonForSeeds(true, watermelon);
-                } catch (err) {
-                    return { Ok: false };
-                }
-                try {
-                    await fruit.checkWatermelonForSeeds(false, watermelon);
-                    return { Ok: false };
-                } catch (err) {
-                    // continue regardless of error
-                }
-                try {
-                    await fruit.checkWatermelonForSeeds(
-                        true,
-                        seedlessWatermelon
-                    );
-                    return { Ok: false };
-                } catch (err) {
-                    // continue regardless of error
-                }
-                try {
-                    await fruit.checkWatermelonForSeeds(
-                        false,
-                        seedlessWatermelon
-                    );
-                } catch (err) {
-                    return { Ok: false };
-                }
-                return { Ok: true };
-            }
-        },
-        {
-            name: 'Compare Apples to Oranges',
-            test: async () => {
-                const apples = {
-                    int: 1n,
-                    int8: 2,
-                    int16: 3,
-                    int32: 4,
-                    int64: 5n,
-                    starInt: 6n
-                };
-                const poisonApples = {
-                    int: -1n,
-                    int8: -2,
-                    int16: -3,
-                    int32: -4,
-                    int64: -5n,
-                    starInt: 6n
-                };
-                const oranges = {
-                    nat: 1n,
-                    nat8: 2,
-                    nat16: 3,
-                    nat32: 4,
-                    nat64: 5n,
-                    starNat: 6n
-                };
-                const result1 = await fruit.compareApplesToOranges(
-                    apples,
-                    oranges
-                );
-                const result2 = await fruit.compareApplesToOranges(
-                    poisonApples,
-                    oranges
-                );
-                return { Ok: result1 && !result2 };
-            }
-        },
-        {
-            name: 'Handle Farkleberries',
-            test: async () => {
-                const func: [Principal, string] = [
-                    Principal.fromText('aaaaa-aa'),
-                    'create_canister'
-                ];
-                const result = await fruit.handleFarkleberries(
-                    func,
-                    func,
-                    func
-                );
+            expect(await fruit.addSigFigs(figs)).toBe(1.2339999675750732);
+        });
 
-                return {
-                    Ok:
-                        result[0][0].toText() === 'aaaaa-aa' &&
-                        result[0][1] === 'create_canister' &&
-                        result[1][0].toText() === 'aaaaa-aa' &&
-                        result[1][1] === 'create_canister' &&
-                        result[2][0].toText() === 'aaaaa-aa' &&
-                        result[2][1] === 'create_canister'
-                };
-            }
-        },
-        {
-            name: 'Get Management Peach',
-            test: async () => {
-                const result = await fruit.getManagementPeach();
-                return {
-                    Ok: result.toText() === 'aaaaa-aa'
-                };
-            }
-        },
-        {
-            name: 'Pit Olives',
-            test: async () => {
-                const olives1HadAPit = await fruit.pitOlives([true]);
-                const olives2HadAPit = await fruit.pitOlives([false]);
-                const olives3HadAPit = await fruit.pitOlives([]);
-                return {
-                    Ok: olives1HadAPit && !olives2HadAPit && !olives3HadAPit
-                };
-            }
-        },
-        {
-            name: 'Peel Banana',
-            test: async () => {
-                const banana = [1];
-                const peeledBanana = await fruit.peelBanana(banana);
-                return { Ok: peeledBanana === 1 };
-            }
-        },
-        {
-            name: 'Put the Coconut in the Lime',
-            test: async () => {
-                const lime = await fruit.putTheCoconutInTheLime(8);
-                return { Ok: lime.length === 1 && lime[0] === 8 };
-            }
-        },
-        {
-            name: 'Check if Mango is tricky to eat',
-            test: async () => {
-                return {
-                    Ok: await fruit.isMangoTrickyToEat()
-                };
-            }
-        },
-        {
-            name: "Is Fruit Prepared? It shouldn't be yet",
-            test: async () => {
-                await fruit.removeRambutanSkins();
-                try {
-                    await fruit.dirtyIlama();
-                    return { Ok: false };
-                } catch {
-                    // continue regardless of error
-                }
-                try {
-                    await fruit.pickElderberry();
-                    return { Ok: false };
-                } catch {
-                    // continue regardless of error
-                }
-                return {
-                    Ok: !(await fruit.isFruitPrepared())
-                };
-            }
-        },
-        {
-            name: 'deploy',
-            prep: async () => {
-                execSync(`dfx deploy --upgrade-unchanged`, {
-                    stdio: 'inherit'
-                });
-            }
-        },
-        {
-            name: 'Is Fruit Prepared? Yes!',
-            test: async () => {
-                return {
-                    Ok: await fruit.isFruitPrepared()
-                };
-            }
-        }
-    ];
+        it('check canister', async () => {
+            const result = execSync(
+                `dfx canister call robust_imports checkCanister '(service "aaaaa-aa")'`
+            )
+                .toString()
+                .trim();
+
+            expect(result).toBe('(service "aaaaa-aa")');
+        });
+
+        it('checkWatermelonForSeeds', async () => {
+            const seedlessWatermelon = { Seedless: null };
+            const watermelon = { Seeds: null };
+
+            await expect(
+                fruit.checkWatermelonForSeeds(true, watermelon)
+            ).resolves.not.toThrow();
+            await expect(
+                fruit.checkWatermelonForSeeds(false, watermelon)
+            ).rejects.toThrow();
+            await expect(
+                fruit.checkWatermelonForSeeds(true, seedlessWatermelon)
+            ).rejects.toThrow();
+            await expect(
+                fruit.checkWatermelonForSeeds(false, seedlessWatermelon)
+            ).resolves.not.toThrow();
+        });
+
+        it('Compare Apples to Oranges', async () => {
+            const apples = {
+                int: 1n,
+                int8: 2,
+                int16: 3,
+                int32: 4,
+                int64: 5n,
+                starInt: 6n
+            };
+            const poisonApples = {
+                int: -1n,
+                int8: -2,
+                int16: -3,
+                int32: -4,
+                int64: -5n,
+                starInt: 6n
+            };
+            const oranges = {
+                nat: 1n,
+                nat8: 2,
+                nat16: 3,
+                nat32: 4,
+                nat64: 5n,
+                starNat: 6n
+            };
+            const result1 = await fruit.compareApplesToOranges(apples, oranges);
+            const result2 = await fruit.compareApplesToOranges(
+                poisonApples,
+                oranges
+            );
+
+            expect(result1).toBe(true);
+            expect(result2).toBe(false);
+        });
+
+        it('Handle Farkleberries', async () => {
+            const func: [Principal, string] = [
+                Principal.fromText('aaaaa-aa'),
+                'create_canister'
+            ];
+            const result = await fruit.handleFarkleberries(func, func, func);
+
+            expect(result).toEqual([func, func, func]);
+        });
+
+        it('Get Management Peach', async () => {
+            const result = await fruit.getManagementPeach();
+
+            expect(result.toText()).toBe('aaaaa-aa');
+        });
+
+        it('Pit Olives', async () => {
+            const olives1HadAPit = await fruit.pitOlives([true]);
+            const olives2HadAPit = await fruit.pitOlives([false]);
+            const olives3HadAPit = await fruit.pitOlives([]);
+
+            expect(olives1HadAPit).toBe(true);
+            expect(olives2HadAPit).toBe(false);
+            expect(olives3HadAPit).toBe(false);
+        });
+
+        it('Peel Banana', async () => {
+            const banana = [1];
+            const peeledBanana = await fruit.peelBanana(banana);
+
+            expect(peeledBanana).toBe(1);
+        });
+
+        it('Put the Coconut in the Lime', async () => {
+            const lime = await fruit.putTheCoconutInTheLime(8);
+
+            expect(lime.length === 1 && lime[0]).toBe(8);
+        });
+
+        it('Check if Mango is tricky to eat', async () => {
+            expect(await fruit.isMangoTrickyToEat()).toBe(true);
+        });
+
+        it("Is Fruit Prepared? It shouldn't be yet", async () => {
+            await fruit.removeRambutanSkins();
+
+            await expect(fruit.dirtyIlama()).rejects.toThrowError();
+            await expect(fruit.pickElderberry()).rejects.toThrowError();
+            expect(await fruit.isFruitPrepared()).toBe(false);
+        });
+
+        please('deploy', async () => {
+            execSync(`dfx deploy --upgrade-unchanged`, {
+                stdio: 'inherit'
+            });
+        });
+
+        it('Is Fruit Prepared? Yes!', async () => {
+            expect(await fruit.isFruitPrepared()).toBe(true);
+        });
+    };
 }
 
-function getTsPrimAliasTest(canister: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'Test TS Prim Aliases',
-            test: async () => {
-                const result = await canister.checkPrimAliases(
-                    true,
-                    null,
-                    'Hello',
-                    7n,
-                    1.23
-                );
-                return { Ok: result === undefined };
-            }
-        }
-    ];
+function getTsPrimAliasTest(canister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('Test TS Prim Aliases', async () => {
+            const result = await canister.checkPrimAliases(
+                true,
+                null,
+                'Hello',
+                7n,
+                1.23
+            );
+
+            expect(result).toBeUndefined();
+        });
+    };
 }
 
 /**
@@ -370,167 +271,130 @@ function getTsPrimAliasTest(canister: ActorSubclass<_SERVICE>): Test[] {
  * @param canister
  * @returns
  */
-function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'Text Aliases',
-            test: async () => {
-                const textAliasResult = await canister.helloTextAlias();
-                const azleAliasResult = await canister.helloAzleTextAlias();
-                const mixedTextAliasResult =
-                    await canister.helloMixedTextAlias();
-                const deepTextAlias = await canister.helloDeepTextAlias();
-                const stirredTextAlias = await canister.helloStirredTextAlias();
-                return {
-                    Ok:
-                        textAliasResult === azleAliasResult &&
-                        azleAliasResult === mixedTextAliasResult &&
-                        mixedTextAliasResult === deepTextAlias &&
-                        deepTextAlias === stirredTextAlias &&
-                        stirredTextAlias === textAliasResult
-                };
-            }
-        },
-        {
-            name: 'Deep Blob Alias',
-            test: async () => {
-                const result = await canister.getDeepBlob([7]);
-                return { Ok: result[0] === 7 };
-            }
-        },
-        {
-            name: 'Deep Empty Alias',
-            test: async () => {
-                try {
-                    await canister.deepEmptyAlias();
-                    return { Ok: false };
-                } catch {
-                    // continue regardless of error
-                }
-                return { Ok: true };
-            }
-        },
-        {
-            name: 'Number Aliases',
-            test: async () => {
-                const result = await canister.getNumberAliases();
-                return {
-                    Ok:
-                        result.first === 1n &&
-                        result.second === 2n &&
-                        result.third === 3 &&
-                        result.fourth === 4n &&
-                        result.fifth === 5n &&
-                        result.sixth === 6 &&
-                        result.seventh === 7 &&
-                        result.eighth === 8n &&
-                        result.ninth === 9 &&
-                        result.tenth === 10n &&
-                        result.eleventh === 11 &&
-                        result.twelfth === 12
-                };
-            }
-        },
-        {
-            name: 'Principal Aliases',
-            test: async () => {
-                const result = await canister.passPrincipal(
-                    Principal.fromText('aaaaa-aa')
-                );
-                return { Ok: result.toText() === 'aaaaa-aa' };
-            }
-        },
-        {
-            name: '$query Aliases',
-            test: async () => {
-                await canister.simpleQuery();
-                await canister.simpleAzleQuery();
-                await canister.simpleDeepQuery();
-                // If these functions didn't compile correctly then they should
-                // fail when called
-                return { Ok: true };
-            }
-        },
-        {
-            name: 'check canister alias',
-            test: async () => {
-                const result = execSync(
-                    `dfx canister call robust_imports checkCanisterAlias '(service "aaaaa-aa")'`
-                )
-                    .toString()
-                    .trim();
+function getTypeAliasDeclTests(canister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('Text Aliases', async () => {
+            const textAliasResult = await canister.helloTextAlias();
+            const azleAliasResult = await canister.helloAzleTextAlias();
+            const mixedTextAliasResult = await canister.helloMixedTextAlias();
+            const deepTextAlias = await canister.helloDeepTextAlias();
+            const stirredTextAlias = await canister.helloStirredTextAlias();
 
-                return {
-                    Ok: result === '(service "aaaaa-aa")'
-                };
-            }
-        },
-        {
-            name: 'Reserved Alias',
-            test: async () => {
-                const result = await canister.getReservedAlias();
-                return { Ok: result === null };
-            }
-        },
-        {
-            name: 'Check My Record',
-            test: async () => {
-                const result = await canister.getMyRecord();
-                return {
-                    Ok:
-                        result.id === 7n &&
-                        result.name[0] === 'Bob' &&
-                        result.depth.depth === 3 &&
-                        result.tups[0] === 'Hello' &&
-                        result.tups[1] === 1.23 &&
-                        'ugly' in result.description &&
-                        result.list[0] === 1
-                };
-            }
-        },
-        {
-            name: 'Return Func Alias',
+            expect(textAliasResult).toBe(azleAliasResult);
+            expect(azleAliasResult).toBe(mixedTextAliasResult);
+            expect(mixedTextAliasResult).toBe(deepTextAlias);
+            expect(deepTextAlias).toBe(stirredTextAlias);
+            expect(stirredTextAlias).toBe(textAliasResult);
+        });
 
-            test: async () => {
-                const func: [Principal, string] = [
-                    Principal.fromText('aaaaa-aa'),
-                    'create_canister'
-                ];
-                const result = await canister.returnFuncAlias(func);
-                return { Ok: result[0].toText() === 'aaaaa-aa' };
-            }
-        },
-        {
-            name: 'Check Stable',
-            test: async () => {
-                await canister.setStable(0, 'Hello');
-                const getResult = await canister.getStable(0);
-                return {
-                    Ok: getResult[0] === 'Hello'
-                };
-            }
-        },
-        {
-            name: 'Check Manual Alias',
-            test: async () => {
-                const result = await canister.getManualAlias();
-                return { Ok: result === 9.87 };
-            }
-        },
-        {
-            name: 'Check * exports for aliases',
-            test: async () => {
-                const result = await canister.compareStars(
-                    { star: true },
-                    { star: true }
-                );
+        it('Deep Blob Alias', async () => {
+            const result = await canister.getDeepBlob([7]);
 
-                if ('Ok' in result) {
-                    return { Ok: true };
-                }
+            expect(result[0]).toBe(7);
+        });
 
-                return { Ok: false };
-            }
-        }
-    ];
+        it('Deep Empty Alias', async () => {
+            await expect(canister.deepEmptyAlias()).rejects.toThrowError();
+        });
+
+        it('Number Aliases', async () => {
+            const result = await canister.getNumberAliases();
+            const expectedResult = {
+                first: 1n,
+                second: 2n,
+                third: 3,
+                fourth: 4n,
+                fifth: 5n,
+                sixth: 6,
+                seventh: 7,
+                eighth: 8n,
+                ninth: 9,
+                tenth: 10n,
+                eleventh: 11,
+                twelfth: 12
+            };
+
+            expect(result).toStrictEqual(expectedResult);
+        });
+
+        it('Principal Aliases', async () => {
+            const result = await canister.passPrincipal(
+                Principal.fromText('aaaaa-aa')
+            );
+
+            expect(result.toText()).toBe('aaaaa-aa');
+        });
+
+        it('$query Aliases', async () => {
+            await canister.simpleQuery();
+            await canister.simpleAzleQuery();
+            await canister.simpleDeepQuery();
+
+            // If these functions didn't compile correctly then they should
+            // fail when called
+            expect(true).toBe(true);
+        });
+
+        it('check canister alias', async () => {
+            const result = execSync(
+                `dfx canister call robust_imports checkCanisterAlias '(service "aaaaa-aa")'`
+            )
+                .toString()
+                .trim();
+
+            expect(result).toBe('(service "aaaaa-aa")');
+        });
+
+        it('Reserved Alias', async () => {
+            const result = await canister.getReservedAlias();
+
+            expect(result).toBeNull();
+        });
+
+        it('Check My Record', async () => {
+            const result = await canister.getMyRecord();
+            const expectedResult = {
+                id: 7n,
+                name: ['Bob'],
+                depth: { depth: 3 },
+                tups: ['Hello', 1.23],
+                description: { ugly: null },
+                list: Uint16Array.from([1, 2, 3, 4, 5, 6, 7])
+            };
+
+            expect(result).toStrictEqual(expectedResult);
+        });
+
+        it('Return Func Alias', async () => {
+            const func: [Principal, string] = [
+                Principal.fromText('aaaaa-aa'),
+                'create_canister'
+            ];
+            const result = await canister.returnFuncAlias(func);
+
+            expect(result[0].toText()).toBe('aaaaa-aa');
+        });
+
+        it('Check Stable', async () => {
+            await canister.setStable(0, 'Hello');
+            const getResult = await canister.getStable(0);
+
+            expect(getResult[0]).toBe('Hello');
+        });
+
+        it('Check Manual Alias', async () => {
+            const result = await canister.getManualAlias();
+
+            expect(result).toBe(9.87);
+        });
+
+        it('Check * exports for aliases', async () => {
+            const result = await canister.compareStars(
+                { star: true },
+                { star: true }
+            );
+
+            expect(result).toStrictEqual({ Ok: true });
+        });
+    };
 }
