@@ -1,4 +1,4 @@
-import { expect, it, Test } from 'azle/test/jest';
+import { expect, it, Test } from 'azle/test';
 import { execSync } from 'child_process';
 
 export function getTests(): Test {

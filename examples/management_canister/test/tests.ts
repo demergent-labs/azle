@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { expect, it } from 'azle/test/jest';
+import { expect, it } from 'azle/test';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 

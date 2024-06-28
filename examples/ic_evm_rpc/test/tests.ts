@@ -5,7 +5,7 @@
 // We should be good for many thousands of tests
 
 import { jsonParse } from 'azle/experimental';
-import { expect, it, Test, wait } from 'azle/test/jest';
+import { expect, it, Test, wait } from 'azle/test';
 
 let callerAddress: string;
 let canisterAddress: string;
