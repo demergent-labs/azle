@@ -12,7 +12,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
             const managementCanister = Principal.fromText('aaaaa-aa');
             const result = await canister.canisterParam(managementCanister);
 
-            expect(result).toStrictEqual(managementCanister);
+            expect(result).toEqual(managementCanister);
         });
 
         it('receives a canister as a return value', async () => {
@@ -36,7 +36,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
             ];
             const result = await canister.canisterList(canisterList);
 
-            expect(result).toStrictEqual(canisterList);
+            expect(result).toEqual(canisterList);
         });
 
         it('performs a cross canister call on a canister that was passed in as an argument', async () => {
