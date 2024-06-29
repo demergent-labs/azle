@@ -1,19 +1,15 @@
 import {
     blob,
     Canister,
-    Err,
     ic,
     nat64,
-    Ok,
     Opt,
     Principal,
     query,
     Record,
-    Result,
     StableBTreeMap,
     text,
     update,
-    Variant,
     Vec
 } from 'azle/experimental';
 
@@ -33,12 +29,6 @@ const Recording = Record({
     userId: Principal
 });
 type Recording = typeof Recording.tsType;
-
-const AudioRecorderError = Variant({
-    RecordingDoesNotExist: Principal,
-    UserDoesNotExist: Principal
-});
-type AudioRecorderError = typeof AudioRecorderError.tsType;
 
 let users = StableBTreeMap<Principal, User>(0);
 let recordings = StableBTreeMap<Principal, Recording>(1);
@@ -63,13 +53,11 @@ export default Canister({
     readUserById: query([Principal], Opt(User), (id) => {
         return users.get(id);
     }),
-    deleteUser: update([Principal], Result(User, AudioRecorderError), (id) => {
+    deleteUser: update([Principal], User, (id) => {
         const userOpt = users.get(id);
 
         if ('None' in userOpt) {
-            return Err({
-                UserDoesNotExist: id
-            });
+            throw new Error(`User does not exist: ${id.toText()}`);
         }
 
         const user = userOpt.Some;
@@ -80,18 +68,16 @@ export default Canister({
 
         users.remove(user.id);
 
-        return Ok(user);
+        return user;
     }),
     createRecording: update(
         [blob, text, Principal],
-        Result(Recording, AudioRecorderError),
+        Recording,
         (audio, name, userId) => {
             const userOpt = users.get(userId);
 
             if ('None' in userOpt) {
-                return Err({
-                    UserDoesNotExist: userId
-                });
+                throw new Error(`User does not exist: ${userId.toText()}`);
             }
 
             const user = userOpt.Some;
@@ -114,7 +100,7 @@ export default Canister({
 
             users.insert(updatedUser.id, updatedUser);
 
-            return Ok(recording);
+            return recording;
         }
     ),
     readRecordings: query([], Vec(Recording), () => {
@@ -123,43 +109,38 @@ export default Canister({
     readRecordingById: query([Principal], Opt(Recording), (id) => {
         return recordings.get(id);
     }),
-    deleteRecording: update(
-        [Principal],
-        Result(Recording, AudioRecorderError),
-        (id) => {
-            const recordingOpt = recordings.get(id);
+    deleteRecording: update([Principal], Recording, (id) => {
+        const recordingOpt = recordings.get(id);
 
-            if ('None' in recordingOpt) {
-                return Err({ RecordingDoesNotExist: id });
-            }
-
-            const recording = recordingOpt.Some;
-
-            const userOpt = users.get(recording.userId);
-
-            if ('None' in userOpt) {
-                return Err({
-                    UserDoesNotExist: recording.userId
-                });
-            }
-
-            const user = userOpt.Some;
-
-            const updatedUser: User = {
-                ...user,
-                recordingIds: user.recordingIds.filter(
-                    (recordingId) =>
-                        recordingId.toText() !== recording.id.toText()
-                )
-            };
-
-            users.insert(updatedUser.id, updatedUser);
-
-            recordings.remove(id);
-
-            return Ok(recording);
+        if ('None' in recordingOpt) {
+            throw new Error(`Recording does not exist: ${id.toText()}`);
         }
-    )
+
+        const recording = recordingOpt.Some;
+
+        const userOpt = users.get(recording.userId);
+
+        if ('None' in userOpt) {
+            throw new Error(
+                `User does not exist: ${recording.userId.toText()}`
+            );
+        }
+
+        const user = userOpt.Some;
+
+        const updatedUser: User = {
+            ...user,
+            recordingIds: user.recordingIds.filter(
+                (recordingId) => recordingId.toText() !== recording.id.toText()
+            )
+        };
+
+        users.insert(updatedUser.id, updatedUser);
+
+        recordings.remove(id);
+
+        return recording;
+    })
 });
 
 function generateId(): Principal {

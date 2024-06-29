@@ -6,140 +6,134 @@ import { _SERVICE } from './dfx_generated/audio_recorder/audio_recorder.did';
 
 // TODO to be more thorough we could test all of the error cases as well
 
-let global_user: any;
-let global_recording: any;
+let globalUser: any;
+let globalRecording: any;
 
-export function getTests(
-    audio_recorder_canister: ActorSubclass<_SERVICE>
-): Test {
+export function getTests(audioRecorderCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
         it('creates a user in stable memory', async () => {
-            const user = await audio_recorder_canister.createUser('lastmjs');
+            const user = await audioRecorderCanister.createUser('lastmjs');
 
             const expectedUsername = 'lastmjs';
             const expectedRecordingCount = 0;
 
-            global_user = user;
+            globalUser = user;
 
             expect(user.username).toBe(expectedUsername);
             expect(user.recordingIds).toHaveLength(expectedRecordingCount);
         });
 
         it('creates a recording in stable memory', async () => {
-            const result = await audio_recorder_canister.createRecording(
+            const recording = await audioRecorderCanister.createRecording(
                 Uint8Array.from([0, 1, 2, 3, 4]),
                 'First recording',
-                global_user.id
+                globalUser.id
             );
 
-            if ('Err' in result) {
-                throw new Error(JSON.stringify(result.Err, null, 2));
-            }
-
-            const recording = result.Ok;
-            global_recording = recording;
-            global_user.recordingIds = [recording.id];
+            globalRecording = recording;
+            globalUser.recordingIds = [recording.id];
 
             expect(recording.audio).toHaveLength(5);
             expect(recording.name).toBe('First recording');
-            expect(recording.userId).toStrictEqual(global_user.id);
+            expect(recording.userId).toStrictEqual(globalUser.id);
         });
 
         it('reads users from stable memory', async () => {
-            const result = await audio_recorder_canister.readUsers();
+            const result = await audioRecorderCanister.readUsers();
 
-            expect(result).toStrictEqual([global_user]);
+            expect(result).toStrictEqual([globalUser]);
         });
 
         it('reads recordings from stable memory', async () => {
-            const result = await audio_recorder_canister.readRecordings();
+            const result = await audioRecorderCanister.readRecordings();
 
             expect(result).toHaveLength(1);
-            expect(result[0].id).toStrictEqual(global_recording.id);
-            expect(result[0].createdAt).toBe(global_recording.createdAt);
-            expect(result[0].name).toBe(global_recording.name);
-            expect(result[0].userId).toStrictEqual(global_recording.userId);
+            expect(result[0].id).toStrictEqual(globalRecording.id);
+            expect(result[0].createdAt).toBe(globalRecording.createdAt);
+            expect(result[0].name).toBe(globalRecording.name);
+            expect(result[0].userId).toStrictEqual(globalRecording.userId);
         });
 
         it('reads user by id from stable memory', async () => {
-            const result = await audio_recorder_canister.readUserById(
-                global_user.id
+            const result = await audioRecorderCanister.readUserById(
+                globalUser.id
             );
 
-            expect(result).toStrictEqual([global_user]);
+            expect(result).toStrictEqual([globalUser]);
         });
 
         it('reads recording by id from stable memory', async () => {
-            const result = await audio_recorder_canister.readRecordingById(
-                global_recording.id
+            const result = await audioRecorderCanister.readRecordingById(
+                globalRecording.id
             );
 
-            expect(result).toStrictEqual([global_recording]);
+            expect(result).toStrictEqual([globalRecording]);
         });
 
         it('deletes recording from stable memory', async () => {
-            const delete_recording_result =
-                await audio_recorder_canister.deleteRecording(
-                    global_recording.id
-                );
+            const deleteRecordingResult =
+                await audioRecorderCanister.deleteRecording(globalRecording.id);
 
-            if ('Err' in delete_recording_result) {
+            if ('Err' in deleteRecordingResult) {
                 throw new Error(
-                    JSON.stringify(delete_recording_result.Err, null, 2)
+                    JSON.stringify(deleteRecordingResult.Err, null, 2)
                 );
             }
 
-            const read_recordings_result =
-                await audio_recorder_canister.readRecordings();
-            const read_users_result = await audio_recorder_canister.readUsers();
+            const readRecordingsResult =
+                await audioRecorderCanister.readRecordings();
+            const readUsersResult = await audioRecorderCanister.readUsers();
 
-            expect(read_recordings_result).toHaveLength(0);
-            expect(read_users_result).toHaveLength(1);
-            expect(read_users_result[0].recordingIds).toHaveLength(0);
+            expect(readRecordingsResult).toHaveLength(0);
+            expect(readUsersResult).toHaveLength(1);
+            expect(readUsersResult[0].recordingIds).toHaveLength(0);
         });
 
         it('deletes user from stable memory', async () => {
-            const create_recording_result =
-                await audio_recorder_canister.createRecording(
+            const createRecordingResult =
+                await audioRecorderCanister.createRecording(
                     Uint8Array.from([]),
                     'second recording',
-                    global_user.id
+                    globalUser.id
                 );
 
-            if ('Err' in create_recording_result) {
-                throw new Error(
-                    JSON.stringify(create_recording_result.Err, null, 2)
-                );
-            }
-
-            const read_users_before_result =
-                await audio_recorder_canister.readUsers();
-            const read_recordings_before_result =
-                await audio_recorder_canister.readRecordings();
-
-            const delete_user_result = await audio_recorder_canister.deleteUser(
-                global_user.id
+            expect(createRecordingResult).toEqual(
+                expect.objectContaining({
+                    userId: globalUser.id,
+                    audio: Uint8Array.from([]),
+                    name: 'second recording'
+                })
             );
 
-            if ('Err' in delete_user_result) {
-                throw new Error(
-                    JSON.stringify(delete_user_result.Err, null, 2)
-                );
-            }
+            const readUsersBeforeResult =
+                await audioRecorderCanister.readUsers();
+            const readRecordingsBeforeResult =
+                await audioRecorderCanister.readRecordings();
 
-            const read_users_after_result =
-                await audio_recorder_canister.readUsers();
-            const read_recordings_after_result =
-                await audio_recorder_canister.readRecordings();
-
-            expect(read_users_before_result).toHaveLength(1);
-            expect(read_users_before_result[0].recordingIds.length).toBe(1);
-            expect(read_recordings_before_result).toHaveLength(1);
-            expect(read_recordings_before_result[0].userId).toStrictEqual(
-                global_user.id
+            const deleteUserResult = await audioRecorderCanister.deleteUser(
+                globalUser.id
             );
-            expect(read_users_after_result).toHaveLength(0);
-            expect(read_recordings_after_result).toHaveLength(0);
+
+            expect(deleteUserResult).toEqual(
+                expect.objectContaining({
+                    id: globalUser.id,
+                    username: globalUser.username
+                })
+            );
+
+            const readUsersAfterResult =
+                await audioRecorderCanister.readUsers();
+            const readRecordingsAfterResult =
+                await audioRecorderCanister.readRecordings();
+
+            expect(readUsersBeforeResult).toHaveLength(1);
+            expect(readUsersBeforeResult[0].recordingIds.length).toBe(1);
+            expect(readRecordingsBeforeResult).toHaveLength(1);
+            expect(readRecordingsBeforeResult[0].userId).toStrictEqual(
+                globalUser.id
+            );
+            expect(readUsersAfterResult).toHaveLength(0);
+            expect(readRecordingsAfterResult).toHaveLength(0);
         });
     };
 }

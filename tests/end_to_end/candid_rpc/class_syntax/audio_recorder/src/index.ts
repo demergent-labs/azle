@@ -90,14 +90,18 @@ export default class {
         name: string,
         userId: Principal
     ): Recording {
+        console.log('You are saying we are not even getting this far?');
         const userOpt = users.get(userId);
+        console.log(1);
 
         if ('None' in userOpt) {
             throw new Error(`User does not exist: ${userId.toText()}`);
         }
 
+        console.log(2);
         const user = userOpt.Some;
 
+        console.log(3);
         const id = generateId();
         const recording: Recording = {
             id,
@@ -106,18 +110,23 @@ export default class {
             name,
             userId
         };
+        console.log(4);
 
         recordings.insert(recording.id, recording);
 
+        console.log(5);
         const updatedUser: User = {
             ...user,
             recordingIds: [...user.recordingIds, recording.id]
         };
 
+        console.log(6);
         users.insert(updatedUser.id, updatedUser);
 
+        console.log(7);
         return recording;
     }
+
     @query([], IDL.Vec(Recording))
     readRecordings(): Recording[] {
         return recordings.values();
