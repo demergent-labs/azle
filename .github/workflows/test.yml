@@ -225,7 +225,6 @@ jobs:
                     "tests/end_to_end/candid_rpc/class_syntax/init",
                     "tests/end_to_end/candid_rpc/class_syntax/inspect_message",
                     "tests/end_to_end/candid_rpc/class_syntax/key_value_store",
-                    "tests/end_to_end/candid_rpc/class_syntax/large_files",
                     "tests/end_to_end/candid_rpc/class_syntax/ledger_canister",
                     "tests/end_to_end/candid_rpc/class_syntax/list_of_lists",
                     "tests/end_to_end/candid_rpc/class_syntax/management_canister",

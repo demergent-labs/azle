@@ -1,9 +1,8 @@
 {
     "name": "func_types_end_to_end_test_functional_syntax",
     "scripts": {
-        "pre_tests": "ts-node --transpile-only --ignore=false test/pretest.ts",
-        "tests": "npm run pre_tests && jest",
-        "test": "AZLE_TEST_FETCH=false npm run tests && AZLE_TEST_FETCH=true npm run tests"
+        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "test": "jest"
     },
     "dependencies": {
         "azle": "0.22.0"

@@ -41,7 +41,7 @@ export default class {
 
     @update([], IDL.Empty)
     async trap(): Promise<never> {
-        return await call(canister2Id, 'trap');
+        return (await call(canister2Id, 'trap')) as never;
     }
 
     @update([])

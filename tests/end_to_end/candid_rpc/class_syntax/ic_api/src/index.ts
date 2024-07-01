@@ -154,7 +154,7 @@ export default class {
         return true;
     }
 
-    @query([IDL.Text], [IDL.Empty], { manual: true })
+    @query([IDL.Text], IDL.Empty, { manual: true })
     reject(message: string): void {
         reject(message);
     }
@@ -175,7 +175,5 @@ export default class {
     @query([IDL.Text], IDL.Bool)
     trap(message: string): boolean {
         trap(message);
-
-        return true;
     }
 }

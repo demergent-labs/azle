@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 async function pretest() {
-    linkAndInstallPatch(join('examples', 'composite_query'));
+    linkAndInstallPatch(join('examples', 'composite_queries'));
 
     execSync(`dfx canister uninstall-code canister1 || true`, {
         stdio: 'inherit'
