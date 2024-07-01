@@ -3,7 +3,7 @@ import { execSync } from 'child_process';
 import { join } from 'path';
 
 async function pretest() {
-    linkAndInstallPatch(join('examples', 'func_types'));
+    linkAndInstallPatch(join('examples', 'guard_functions'));
 
     execSync(`dfx canister uninstall-code guard_functions || true`, {
         stdio: 'inherit'

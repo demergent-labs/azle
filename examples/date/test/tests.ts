@@ -428,7 +428,9 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test {
         it('executes toDateString on a canister', async () => {
             const date = new Date();
 
-            const result = await dateCanister.toDateString(date.toISOString());
+            const result = await dateCanister.dateToDateString(
+                date.toISOString()
+            );
             type Options = {
                 timeZone: 'UTC';
                 weekday: 'short';
@@ -453,7 +455,9 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test {
         it('executes toIsoString on a canister', async () => {
             const date = new Date();
 
-            const result = await dateCanister.toISOString(date.toISOString());
+            const result = await dateCanister.dateToISOString(
+                date.toISOString()
+            );
             const expected = date.toISOString();
 
             expect(result).toBe(expected);
@@ -462,7 +466,9 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test {
         it('executes toJson on a canister', async () => {
             const date = new Date();
 
-            const result = await dateCanister.toJSONString(date.toISOString());
+            const result = await dateCanister.dateToJSONString(
+                date.toISOString()
+            );
             const expected = date.toJSON();
 
             expect(result).toBe(expected);
@@ -471,7 +477,7 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test {
         it('executes toString on a canister', async () => {
             const date = new Date();
 
-            const result = await dateCanister.toString(date.toISOString());
+            const result = await dateCanister.dateToString(date.toISOString());
             const resultSubstring = result.substring(0, result.indexOf(' GMT'));
 
             const expected = new Date(
@@ -489,7 +495,9 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test {
         it('executes toTimeString on a canister', async () => {
             const date = new Date();
 
-            const result = await dateCanister.toTimeString(date.toISOString());
+            const result = await dateCanister.dateToTimeString(
+                date.toISOString()
+            );
             const resultSubstring = result.substring(0, result.indexOf(' GMT'));
 
             const expected = new Date(
@@ -507,7 +515,9 @@ export function getTests(dateCanister: ActorSubclass<_SERVICE>): Test {
         it('executes toUtcString on a canister', async () => {
             const date = new Date();
 
-            const result = await dateCanister.toUtcString(date.toISOString());
+            const result = await dateCanister.dateToUtcString(
+                date.toISOString()
+            );
             const expected = date.toUTCString();
 
             expect(result).toBe(expected);

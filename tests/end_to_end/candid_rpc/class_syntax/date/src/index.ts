@@ -227,32 +227,32 @@ export default class {
     }
 
     @query([IDL.Text], IDL.Text)
-    toDateString(isoString: string): string {
+    dateToDateString(isoString: string): string {
         return new Date(isoString).toDateString();
     }
 
     @query([IDL.Text], IDL.Text)
-    toISOString(isoString: string): string {
+    dateToISOString(isoString: string): string {
         return new Date(isoString).toISOString();
     }
 
     @query([IDL.Text], IDL.Text)
-    toJSONString(isoString: string): string {
+    dateToJSONString(isoString: string): string {
         return new Date(isoString).toJSON();
     }
 
     @query([IDL.Text], IDL.Text)
-    toString(isoString: string): string {
+    dateToString(isoString: string): string {
         return new Date(isoString).toString();
     }
 
     @query([IDL.Text], IDL.Text)
-    toTimeString(isoString: string): string {
+    dateToTimeString(isoString: string): string {
         return new Date(isoString).toTimeString();
     }
 
     @query([IDL.Text], IDL.Text)
-    toUtcString(isoString: string): string {
+    dateToUtcString(isoString: string): string {
         return new Date(isoString).toUTCString();
     }
 
