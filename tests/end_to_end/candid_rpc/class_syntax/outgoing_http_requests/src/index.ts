@@ -9,12 +9,17 @@ import {
     replyRaw,
     update
 } from 'azle';
-import { HttpResponse, HttpTransformArgs } from 'azle/canisters/management';
+import {
+    HttpRequestArgs,
+    HttpResponse,
+    HttpTransformArgs
+} from 'azle/canisters/management';
 
 export default class {
     @update([], IDL.Text)
     async xkcd() {
         const httpResponse = await call('aaaaa-aa', 'http_request', {
+            paramIdls: [HttpRequestArgs],
             args: [
                 {
                     url: `https://xkcd.com/642/info.0.json`,

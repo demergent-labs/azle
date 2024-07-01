@@ -1,5 +1,4 @@
 {
-    "name": "minimal-counter-dapp",
     "version": "0.1.0",
     "description": "Reimplementation of the [Motoko Minimalistic Dapp example](https://github.com/dfinity/examples/tree/master/motoko/minimal-counter-dapp)",
     "keywords": [

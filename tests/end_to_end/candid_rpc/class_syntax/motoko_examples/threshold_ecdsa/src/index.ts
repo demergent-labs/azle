@@ -1,4 +1,10 @@
 import { call, caller, IDL, trap, update } from 'azle';
+import {
+    EcdsaPublicKeyArgs,
+    EcdsaPublicKeyResult,
+    SignWithEcdsaArgs,
+    SignWithEcdsaResult
+} from 'azle/canisters/management';
 
 const PublicKey = IDL.Record({
     publicKey: IDL.Vec(IDL.Nat8)
@@ -31,8 +37,10 @@ export default class {
     }
 }
 
-async function getPublicKeyResult() {
+async function getPublicKeyResult(): Promise<EcdsaPublicKeyResult> {
     return await call('aaaaa-aa', 'ecdsa_public_key', {
+        paramIdls: [EcdsaPublicKeyArgs],
+        returnIdl: EcdsaPublicKeyResult,
         args: [
             {
                 canister_id: [],
@@ -46,8 +54,12 @@ async function getPublicKeyResult() {
     });
 }
 
-async function getSignatureResult(messageHash: Uint8Array) {
+async function getSignatureResult(
+    messageHash: Uint8Array
+): Promise<SignWithEcdsaResult> {
     return await call('aaaaa-aa', 'sign_with_ecdsa', {
+        paramIdls: [SignWithEcdsaArgs],
+        returnIdl: SignWithEcdsaResult,
         args: [
             {
                 message_hash: messageHash,

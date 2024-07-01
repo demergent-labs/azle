@@ -1,4 +1,11 @@
-import { call, IDL, rejectCode, rejectMessage, update } from 'azle';
+import {
+    call,
+    IDL,
+    rejectCode,
+    RejectionCode,
+    rejectMessage,
+    update
+} from 'azle';
 
 export default class {
     @update([], RejectionCode)

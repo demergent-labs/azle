@@ -68,7 +68,7 @@ export default class {
         return smallRecordMap.values(0, numToReturn);
     }
 
-    @query([IDL.Nat32], IDL.Vec(IDL.IDL.Tuple(IDL.Text, SmallRecord)))
+    @query([IDL.Nat32], IDL.Vec(IDL.Tuple(IDL.Text, SmallRecord)))
     itemsSmallRecord(numToReturn: number): [string, SmallRecord][] {
         return smallRecordMap.items(0, numToReturn);
     }
@@ -97,7 +97,7 @@ export default class {
         return mediumRecordMap.values(0, numToReturn);
     }
 
-    @query([IDL.Nat32], IDL.Vec(IDL.IDL.Tuple(IDL.Text, MediumRecord)))
+    @query([IDL.Nat32], IDL.Vec(IDL.Tuple(IDL.Text, MediumRecord)))
     itemsMediumRecord(numToReturn: number): [string, MediumRecord][] {
         return mediumRecordMap.items(0, numToReturn);
     }
@@ -134,7 +134,7 @@ export default class {
         return largeRecordMap.values(0, numToReturn);
     }
 
-    @query([IDL.Nat32], IDL.Vec(IDL.IDL.Tuple(IDL.Text, LargeRecord)))
+    @query([IDL.Nat32], IDL.Vec(IDL.Tuple(IDL.Text, LargeRecord)))
     itemsLargeRecord(numToReturn: number): [string, LargeRecord][] {
         return largeRecordMap.items(0, numToReturn);
     }

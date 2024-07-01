@@ -7,6 +7,7 @@ import {
     CanisterStatusResult,
     ChunkHash,
     ClearChunkStoreArgs,
+    CreateCanisterArgs,
     CreateCanisterResult,
     DeleteCanisterArgs,
     DepositCyclesArgs,
@@ -303,6 +304,8 @@ export default class {
 
 async function createCanister(): Promise<CreateCanisterResult> {
     return await call('aaaaa-aa', 'create_canister', {
+        paramIdls: [CreateCanisterArgs],
+        returnIdl: CreateCanisterResult,
         args: [{ settings: [], sender_canister_version: [] }],
         payment: 50_000_000_000_000n
     });

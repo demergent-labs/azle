@@ -1,13 +1,19 @@
 import { call, IDL, Principal, query, update } from 'azle';
 import {
+    AccountBalanceArgs,
     Address,
     Archives,
     binaryAddressFromAddress,
+    DecimalsResult,
     GetBlocksArgs,
     hexAddressFromPrincipal,
+    NameResult,
     QueryBlocksResponse,
+    SymbolResult,
     Tokens,
+    TransferArgs,
     TransferFee,
+    TransferFeeArg,
     TransferResult
 } from 'azle/canisters/ledger';
 
@@ -20,6 +26,8 @@ export default class {
         createdAtTime: [bigint] | []
     ) {
         return await call(getIcpCanisterPrincipal(), 'transfer', {
+            paramIdls: [TransferArgs],
+            returnIdl: TransferResult,
             args: [
                 {
                     memo: 0n,
@@ -36,9 +44,12 @@ export default class {
             ]
         });
     }
+
     @update([Address], Tokens)
     async getAccountBalance(address: Address): Promise<Tokens> {
         return await call(getIcpCanisterPrincipal(), 'account_balance', {
+            paramIdls: [AccountBalanceArgs],
+            returnIdl: Tokens,
             args: [
                 {
                     account: binaryAddressFromAddress(address)
@@ -46,43 +57,63 @@ export default class {
             ]
         });
     }
+
     @update([], TransferFee)
     async getTransferFee(): Promise<TransferFee> {
         return await call(getIcpCanisterPrincipal(), 'transfer_fee', {
+            paramIdls: [TransferFeeArg],
+            returnIdl: TransferFee,
             args: [{}]
         });
     }
+
     @update([GetBlocksArgs], QueryBlocksResponse)
-    async getBlocks(getBlocksArgs): Promise<QueryBlocksResponse> {
+    async getBlocks(
+        getBlocksArgs: GetBlocksArgs
+    ): Promise<QueryBlocksResponse> {
         return await call(getIcpCanisterPrincipal(), 'query_blocks', {
+            paramIdls: [GetBlocksArgs],
+            returnIdl: QueryBlocksResponse,
             args: [getBlocksArgs]
         });
     }
+
     @update([], IDL.Text)
     async getSymbol(): Promise<string> {
-        const symbolResult = await call(getIcpCanisterPrincipal(), 'symbol');
+        const symbolResult = await call(getIcpCanisterPrincipal(), 'symbol', {
+            returnIdl: SymbolResult
+        });
 
         return symbolResult.symbol;
     }
+
     @update([], IDL.Text)
     async getName(): Promise<string> {
-        const nameResult = await call(getIcpCanisterPrincipal(), 'name');
+        const nameResult = await call(getIcpCanisterPrincipal(), 'name', {
+            returnIdl: NameResult
+        });
 
         return nameResult.name;
     }
+
     @update([], IDL.Nat32)
     async getDecimals() {
         const decimalsResult = await call(
             getIcpCanisterPrincipal(),
-            'decimals'
+            'decimals',
+            { returnIdl: DecimalsResult }
         );
 
         return decimalsResult.decimals;
     }
+
     @update([], Archives)
     async getArchives(): Promise<Archives> {
-        return await call(getIcpCanisterPrincipal(), 'archives');
+        return await call(getIcpCanisterPrincipal(), 'archives', {
+            returnIdl: Archives
+        });
     }
+
     @query([IDL.Principal], IDL.Text)
     getAddressFromPrincipal(principal: Principal): string {
         return hexAddressFromPrincipal(principal, 0);
