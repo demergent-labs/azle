@@ -26,7 +26,7 @@ type CanisterMethods = {
 type CanisterMethod = {
     name: string;
     composite?: boolean;
-    guard?: () => void;
+    guard_name?: string;
 };
 
 declare global {

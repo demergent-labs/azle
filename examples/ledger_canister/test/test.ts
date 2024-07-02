@@ -4,7 +4,7 @@
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
 
-import { createActor } from '../test/dfx_generated/ledger_canister';
+import { createActor } from './dfx_generated/ledger_canister';
 import { getTests } from './tests';
 
 const ledgerCanister = createActor(getCanisterId('ledger_canister'), {

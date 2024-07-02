@@ -1,0 +1,8 @@
+service: () -> {
+    getCanisterBalance: () -> (nat64) query;
+    getCanisterBalance128: () -> (nat) query;
+    sendCycles: () -> (nat64);
+    sendCycles128: () -> (nat);
+    sendCycles128Notify: () -> ();
+    sendCyclesNotify: () -> ();
+}

@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/stable_memory/stable_memory.did';
@@ -9,254 +9,183 @@ const MAX_STABLE_MEM_PAGES = 65_536; // This will always remain constant
 const MAX_STABLE64_MEM_PAGES = 6_553_600n; // (# Gib * 2^30) / PAGE_SIZE
 const STABLE_BYTES_SIZE = 655_360;
 
-export function getTests(
-    stableMemoryCanister: ActorSubclass<_SERVICE>
-): Test[] {
-    return [
-        {
-            name: 'stable size',
-            test: async () => {
-                const result = await stableMemoryCanister.stableSize();
+export function getTests(stableMemoryCanister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('stable size', async () => {
+            const result = await stableMemoryCanister.stableSize();
 
-                return {
-                    Ok: result === 513
-                };
-            }
-        },
-        {
-            name: 'stable64 size',
-            test: async () => {
-                const result = await stableMemoryCanister.stable64Size();
+            expect(result).toBe(513);
+        });
 
-                return {
-                    Ok: result === 513n
-                };
-            }
-        },
-        {
-            name: 'stable grow',
-            test: async () => {
-                const oldSize = await stableMemoryCanister.stableSize();
-                const newPages = 5;
-                const result = await stableMemoryCanister.stableGrow(newPages);
-                const newSize = await stableMemoryCanister.stableSize();
+        it('stable64 size', async () => {
+            const result = await stableMemoryCanister.stable64Size();
 
-                return {
-                    Ok: result === oldSize && newPages + oldSize === newSize
-                };
-            }
-        },
-        {
-            name: 'stable64 grow',
-            test: async () => {
-                const oldSize = await stableMemoryCanister.stable64Size();
-                const newPages = 5n;
-                const result =
-                    await stableMemoryCanister.stable64Grow(newPages);
-                const newSize = await stableMemoryCanister.stable64Size();
+            expect(result).toBe(513n);
+        });
 
-                return {
-                    Ok: result === oldSize && newPages + oldSize === newSize
-                };
-            }
-        },
-        {
-            name: 'stable bytes',
-            test: async () => {
-                // TODO this test used to check that the entire stable memory was empty
-                // TODO but with the stable filesystem we use with ic-wasi-polyfill
-                // TODO that is no longer the case
-                // TODO the test could perhaps be more effective
-                const result = await stableMemoryCanister.stableBytes();
+        it('stable grow', async () => {
+            const oldSize = await stableMemoryCanister.stableSize();
+            const newPages = 5;
+            const result = await stableMemoryCanister.stableGrow(newPages);
+            const newSize = await stableMemoryCanister.stableSize();
 
-                return {
-                    Ok: result.length === STABLE_BYTES_SIZE
-                };
-            }
-        },
-        {
-            name: 'stable read/write no offset',
-            test: async () => {
-                const offset = 0;
-                const buffer = [0, 1, 2, 3, 4, 5];
+            expect(result).toBe(oldSize);
+            expect(newPages + oldSize).toBe(newSize);
+        });
 
-                await stableMemoryCanister.stableWrite(offset, buffer);
+        it('stable64 grow', async () => {
+            const oldSize = await stableMemoryCanister.stable64Size();
+            const newPages = 5n;
+            const result = await stableMemoryCanister.stable64Grow(newPages);
+            const newSize = await stableMemoryCanister.stable64Size();
 
-                const result = await stableMemoryCanister.stableRead(
-                    offset,
-                    buffer.length
-                );
+            expect(result).toBe(oldSize);
+            expect(newPages + oldSize).toBe(newSize);
+        });
 
-                return {
-                    Ok: arrayEquals(buffer, result)
-                };
-            }
-        },
-        {
-            name: 'stable read/write',
-            test: async () => {
-                const offset = 5;
-                const buffer = [0, 1, 2, 3, 4, 5];
+        it('stable bytes', async () => {
+            // TODO this test used to check that the entire stable memory was empty
+            // TODO but with the stable filesystem we use with ic-wasi-polyfill
+            // TODO that is no longer the case
+            // TODO the test could perhaps be more effective
+            const result = await stableMemoryCanister.stableBytes();
 
-                await stableMemoryCanister.stableWrite(offset, buffer);
+            expect(result).toHaveLength(STABLE_BYTES_SIZE);
+        });
 
-                const result = await stableMemoryCanister.stableRead(
-                    offset,
-                    buffer.length
-                );
+        it('stable read/write no offset', async () => {
+            const offset = 0;
+            const buffer = new Uint8Array([0, 1, 2, 3, 4, 5]);
 
-                return {
-                    Ok: arrayEquals(buffer, result)
-                };
-            }
-        },
-        {
-            name: 'stable write out of bounds error',
-            test: async () => {
-                const offset = PAGE_SIZE * MAX_STABLE_MEM_PAGES - 1;
-                const buffer = [0, 1, 2, 3, 4, 5, 6];
+            await stableMemoryCanister.stableWrite(offset, buffer);
 
-                try {
-                    await stableMemoryCanister.stableWrite(offset, buffer);
-                } catch (error) {
-                    return {
-                        Ok: (error as any)
-                            .toString()
-                            .includes('stable memory out of bounds')
-                    };
-                }
+            const result = await stableMemoryCanister.stableRead(
+                offset,
+                buffer.length
+            );
 
-                return {
-                    Ok: false
-                };
-            }
-        },
-        {
-            name: 'stable64 read/write no offset',
-            test: async () => {
-                const offset = 0n;
-                const buffer = [0, 1, 2, 3, 4, 5];
+            expect(buffer).toStrictEqual(result);
+        });
 
-                await stableMemoryCanister.stable64Write(offset, buffer);
+        it('stable read/write', async () => {
+            const offset = 5;
+            const buffer = new Uint8Array([0, 1, 2, 3, 4, 5]);
 
-                const result = await stableMemoryCanister.stable64Read(
-                    offset,
-                    BigInt(buffer.length)
-                );
+            await stableMemoryCanister.stableWrite(offset, buffer);
 
-                return {
-                    Ok: arrayEquals(buffer, result)
-                };
-            }
-        },
-        {
-            name: 'stable64 read/write',
-            test: async () => {
-                const offset = 5n;
-                const buffer = [0, 1, 2, 3, 4, 5];
+            const result = await stableMemoryCanister.stableRead(
+                offset,
+                buffer.length
+            );
 
-                await stableMemoryCanister.stable64Write(offset, buffer);
+            expect(buffer).toStrictEqual(result);
+        });
 
-                const result = await stableMemoryCanister.stable64Read(
-                    offset,
-                    BigInt(buffer.length)
-                );
+        it('stable write out of bounds error', async () => {
+            const offset = PAGE_SIZE * MAX_STABLE_MEM_PAGES - 1;
+            const buffer = [0, 1, 2, 3, 4, 5, 6];
 
-                return {
-                    Ok: arrayEquals(buffer, result)
-                };
-            }
-        },
-        {
-            name: 'stable64 write out of bounds error',
-            test: async () => {
-                const offset = BigInt(PAGE_SIZE) * MAX_STABLE64_MEM_PAGES - 1n;
-                const buffer = [0, 1, 2, 3, 4, 5, 6];
+            const rejectionMessage = /.*stable memory out of bounds.*/;
+            const expectedErrorMessage = new RegExp(
+                `Call was rejected:\\s*Request ID: [a-f0-9]{64}\\s*Reject code: 5\\s*Reject text: ${rejectionMessage.source}`
+            );
 
-                try {
-                    await stableMemoryCanister.stable64Write(offset, buffer);
-                } catch (error) {
-                    return {
-                        Ok: (error as any)
-                            .toString()
-                            .includes('stable memory out of bounds')
-                    };
-                }
+            await expect(
+                stableMemoryCanister.stableWrite(offset, buffer)
+            ).rejects.toThrow(expectedErrorMessage);
+        });
 
-                return {
-                    Ok: false
-                };
-            }
-        },
-        {
-            name: 'stable grow to max',
-            test: async () => {
-                const oldSize = await stableMemoryCanister.stableSize();
-                const newPages = MAX_STABLE_MEM_PAGES - oldSize;
-                const result = await stableMemoryCanister.stableGrow(newPages);
-                const newSize = await stableMemoryCanister.stableSize();
+        it('stable64 read/write no offset', async () => {
+            const offset = 0n;
+            const buffer = new Uint8Array([0, 1, 2, 3, 4, 5]);
 
-                return {
-                    Ok: result === oldSize && newPages + oldSize === newSize
-                };
-            }
-        },
-        {
-            name: 'stable grow out of memory',
-            test: async () => {
-                try {
-                    await stableMemoryCanister.stableGrow(1);
-                } catch (e: any) {
-                    return {
-                        Ok: e.toString().includes('OutOfMemory') // TODO change error messages back to nice ones once we figure that out
-                        // .includes('Uncaught InternalError: Out of memory')
-                    };
-                }
-                return {
-                    Err: 'canister did not run out of memory'
-                };
-            }
-        },
-        {
-            name: 'stable64 grow to max',
-            skip: true,
-            test: async () => {
-                // TODO this test used to run without panicking
-                // TODO My guess is that the sizes are just too large to deal with on a local machine now
-                // TODO so for the moment we just check to make sure that get an error from calling the API
-                const oldSize = await stableMemoryCanister.stable64Size();
-                const newPages = MAX_STABLE64_MEM_PAGES - oldSize;
-                const result =
-                    await stableMemoryCanister.stable64Grow(newPages);
-                const newSize = await stableMemoryCanister.stable64Size();
+            await stableMemoryCanister.stable64Write(offset, buffer);
 
-                return {
-                    Ok: result === oldSize && newPages + oldSize === newSize
-                };
-            }
-        },
-        {
-            name: 'stable64 grow out of memory',
-            skip: true,
-            test: async () => {
-                // TODO we are also turning this test off because it seems like we can't grow to the max memory anymore
-                // TODO I am guessing this is because of the size of stable memory
-                try {
-                    await stableMemoryCanister.stable64Grow(1n);
-                } catch (e: any) {
-                    return {
-                        Ok: e.toString().includes('OutOfMemory') // TODO change error messages back to nice ones once we figure that out
-                        // .includes('Uncaught InternalError: Out of memory')
-                    };
-                }
-                return {
-                    Err: 'canister did not run out of memory'
-                };
-            }
-        }
-    ];
-}
+            const result = await stableMemoryCanister.stable64Read(
+                offset,
+                BigInt(buffer.length)
+            );
 
-function arrayEquals(a: any[] | Uint8Array, b: any[] | Uint8Array): boolean {
-    return a.length === b.length && a.every((item, index) => item === b[index]);
+            expect(buffer).toStrictEqual(result);
+        });
+
+        it('stable64 read/write', async () => {
+            const offset = 5n;
+            const buffer = new Uint8Array([0, 1, 2, 3, 4, 5]);
+
+            await stableMemoryCanister.stable64Write(offset, buffer);
+
+            const result = await stableMemoryCanister.stable64Read(
+                offset,
+                BigInt(buffer.length)
+            );
+
+            expect(buffer).toStrictEqual(result);
+        });
+
+        it('stable64 write out of bounds error', async () => {
+            const offset = BigInt(PAGE_SIZE) * MAX_STABLE64_MEM_PAGES - 1n;
+            const buffer = new Uint8Array([0, 1, 2, 3, 4, 5, 6]);
+
+            const rejectionMessage = /.*stable memory out of bounds.*/;
+            const expectedErrorMessage = new RegExp(
+                `Call was rejected:\\s*Request ID: [a-f0-9]{64}\\s*Reject code: 5\\s*Reject text: ${rejectionMessage.source}`
+            );
+
+            await expect(
+                stableMemoryCanister.stable64Write(offset, buffer)
+            ).rejects.toThrow(expectedErrorMessage);
+        });
+
+        it('stable grow to max', async () => {
+            const oldSize = await stableMemoryCanister.stableSize();
+            const newPages = MAX_STABLE_MEM_PAGES - oldSize;
+            const result = await stableMemoryCanister.stableGrow(newPages);
+            const newSize = await stableMemoryCanister.stableSize();
+
+            expect(result).toBe(oldSize);
+            expect(newPages + oldSize).toBe(newSize);
+        });
+
+        it('stable grow out of memory', async () => {
+            // TODO change error messages back to nice ones once we figure that out
+            // const rejectionMessage = /Uncaught InternalError: Out of memory/
+            const rejectionMessage = /.*OutOfMemory.*/;
+            const expectedErrorMessage = new RegExp(
+                `Call was rejected:\\s*Request ID: [a-f0-9]{64}\\s*Reject code: 5\\s*Reject text: ${rejectionMessage.source}`
+            );
+            ('OutOfMemoryCool');
+            await expect(stableMemoryCanister.stableGrow(1)).rejects.toThrow(
+                expectedErrorMessage
+            );
+        });
+
+        it.skip('stable64 grow to max', async () => {
+            // TODO this test used to run without panicking
+            // TODO My guess is that the sizes are just too large to deal with on a local machine now
+            // TODO so for the moment we just check to make sure that get an error from calling the API
+            const oldSize = await stableMemoryCanister.stable64Size();
+            const newPages = MAX_STABLE64_MEM_PAGES - oldSize;
+            const result = await stableMemoryCanister.stable64Grow(newPages);
+            const newSize = await stableMemoryCanister.stable64Size();
+
+            expect(result).toBe(oldSize);
+            expect(newPages + oldSize).toBe(newSize);
+        });
+
+        it.skip('stable64 grow out of memory', async () => {
+            // TODO we are also turning this test off because it seems like we can't grow to the max memory anymore
+            // TODO I am guessing this is because of the size of stable memory
+
+            // TODO change error messages back to nice ones once we figure that out
+            // const rejectionMessage = /Uncaught InternalError: Out of memory/
+            const rejectionMessage = /.*OutOfMemory.*/;
+            const expectedErrorMessage = new RegExp(
+                `Call was rejected:\\s*Request ID: [a-f0-9]{64}\\s*Reject code: 5\\s*Reject text: ${rejectionMessage.source}`
+            );
+            await expect(stableMemoryCanister.stable64Grow(1n)).rejects.toThrow(
+                expectedErrorMessage
+            );
+        });
+    };
 }

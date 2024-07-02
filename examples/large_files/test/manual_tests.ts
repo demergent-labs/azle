@@ -1,5 +1,5 @@
 import { describe } from '@jest/globals';
-import { expect, it, please, Test } from 'azle/test/jest';
+import { expect, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';
 import { join } from 'path';
 

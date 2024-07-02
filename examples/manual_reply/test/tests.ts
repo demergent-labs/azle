@@ -1,334 +1,218 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/manual_reply/manual_reply.did';
 
-export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'manualUpdate when calling ic.reject',
-            test: async () => {
-                const rejectionMessage = 'reject';
-                try {
-                    await manualReplyCanister.manualUpdate(rejectionMessage);
+export function getTests(manualReplyCanister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('manualUpdate when calling ic.reject', async () => {
+            const rejectionMessage = 'reject';
+            const expectedErrorMessage = new RegExp(
+                `Call was rejected:\\s*Request ID: [a-f0-9]{64}\\s*Reject code: 4\\s*Reject text: ${rejectionMessage}`
+            );
+            await expect(
+                manualReplyCanister.manualUpdate(rejectionMessage)
+            ).rejects.toThrow(expectedErrorMessage);
+        });
 
-                    return {
-                        Ok: false
-                    };
-                } catch (error) {
-                    return {
-                        Ok:
-                            (error as Error).message.includes(
-                                'Reject code: 4'
-                            ) &&
-                            (error as Error).message.includes(
-                                `Reject text: ${rejectionMessage}`
-                            )
-                    };
-                }
-            }
-        },
-        {
-            name: 'manualUpdate when calling ic.reply',
-            test: async () => {
-                const result = await manualReplyCanister.manualUpdate('accept');
+        it('manualUpdate when calling ic.reply', async () => {
+            const result = await manualReplyCanister.manualUpdate('accept');
 
-                return {
-                    Ok: result === 'accept'
-                };
-            }
-        },
-        {
-            name: 'update reply with blob',
-            test: async () => {
-                const result = await manualReplyCanister.updateBlob();
-                const expectedResult = [
-                    83, 117, 114, 112, 114, 105, 115, 101, 33
-                ];
+            expect(result).toBe('accept');
+        });
 
-                return {
-                    Ok: result.every((byte, i) => byte === expectedResult[i])
-                };
-            }
-        },
-        {
-            name: 'update reply with float32',
-            test: async () => {
-                const result = await manualReplyCanister.updateFloat32();
+        it('update reply with blob', async () => {
+            const result = await manualReplyCanister.updateBlob();
+            const expectedResult = new Uint8Array([
+                83, 117, 114, 112, 114, 105, 115, 101, 33
+            ]);
 
-                return {
-                    Ok: result.toString() === '1245.677978515625'
-                };
-            }
-        },
-        {
-            name: 'update reply with int8',
-            test: async () => {
-                const result = await manualReplyCanister.updateInt8();
+            expect(result).toStrictEqual(expectedResult);
+        });
 
-                return {
-                    Ok: result === -100
-                };
-            }
-        },
-        {
-            name: 'update reply with nat',
-            test: async () => {
-                const result = await manualReplyCanister.updateNat();
+        it('update reply with float32', async () => {
+            const result = await manualReplyCanister.updateFloat32();
 
-                return {
-                    Ok: result === 184_467_440_737_095_516_150n
-                };
-            }
-        },
-        {
-            name: 'update reply with null',
-            test: async () => {
-                const result = await manualReplyCanister.updateNull();
+            expect(result.toString()).toBe('1245.677978515625');
+        });
 
-                return {
-                    Ok: result === null
-                };
-            }
-        },
-        {
-            name: 'update reply with void',
-            test: async () => {
-                const result = await manualReplyCanister.updateVoid();
+        it('update reply with int8', async () => {
+            const result = await manualReplyCanister.updateInt8();
 
-                return {
-                    Ok: result === undefined
-                };
-            }
-        },
-        {
-            name: 'update reply with record',
-            test: async () => {
-                const result = await manualReplyCanister.updateRecord();
-                const expectedResult = {
-                    id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
-                    orbitals: [
-                        {
-                            electrons: 2,
-                            layer: 1
-                        },
-                        {
-                            electrons: 8,
-                            layer: 2
-                        }
-                    ],
-                    state: {
-                        Gas: { Elemental: null }
+            expect(result).toBe(-100);
+        });
+
+        it('update reply with nat', async () => {
+            const result = await manualReplyCanister.updateNat();
+
+            expect(result).toBe(184_467_440_737_095_516_150n);
+        });
+
+        it('update reply with null', async () => {
+            const result = await manualReplyCanister.updateNull();
+
+            expect(result).toBeNull();
+        });
+
+        it('update reply with void', async () => {
+            const result = await manualReplyCanister.updateVoid();
+
+            expect(result).toBeUndefined();
+        });
+
+        it('update reply with record', async () => {
+            const result = await manualReplyCanister.updateRecord();
+            const expectedResult = {
+                id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
+                orbitals: [
+                    {
+                        electrons: 2,
+                        layer: 1
+                    },
+                    {
+                        electrons: 8,
+                        layer: 2
                     }
-                };
-
-                return {
-                    Ok:
-                        JSON.stringify(result) ===
-                        JSON.stringify(expectedResult)
-                };
-            }
-        },
-        {
-            name: 'update reply with reserved',
-            test: async () => {
-                const result = await manualReplyCanister.updateReserved();
-
-                return {
-                    Ok: result === null
-                };
-            }
-        },
-        {
-            name: 'update reply with string',
-            test: async () => {
-                const result = await manualReplyCanister.updateString();
-
-                return {
-                    Ok: result === 'hello'
-                };
-            }
-        },
-        {
-            name: 'update reply with variant',
-            test: async () => {
-                const result = await manualReplyCanister.updateVariant();
-
-                return {
-                    Ok: 'Toxic' in result
-                };
-            }
-        },
-        {
-            name: 'manualQuery when calling ic.reject',
-            test: async () => {
-                const rejectionMessage = 'reject';
-                try {
-                    await manualReplyCanister.manualQuery(rejectionMessage);
-
-                    return {
-                        Ok: false
-                    };
-                } catch (error) {
-                    return {
-                        Ok:
-                            (error as any).props.Code === 'CanisterReject' &&
-                            (error as any).props.Message === rejectionMessage
-                    };
+                ],
+                state: {
+                    Gas: { Elemental: null }
                 }
-            }
-        },
-        {
-            name: 'manualQuery when calling ic.reply',
-            test: async () => {
-                const result = await manualReplyCanister.manualQuery('accept');
+            };
 
-                return {
-                    Ok: result === 'accept'
-                };
-            }
-        },
-        {
-            name: 'query reply with blob',
-            test: async () => {
-                const result = await manualReplyCanister.queryBlob();
-                const expectedResult = [
-                    83, 117, 114, 112, 114, 105, 115, 101, 33
-                ];
+            expect(JSON.stringify(result)).toBe(JSON.stringify(expectedResult));
+        });
 
-                return {
-                    Ok: result.every((byte, i) => byte === expectedResult[i])
-                };
-            }
-        },
-        {
-            name: 'query reply with float32',
-            test: async () => {
-                const result = await manualReplyCanister.updateFloat32();
+        it('update reply with reserved', async () => {
+            const result = await manualReplyCanister.updateReserved();
 
-                return {
-                    Ok: result.toString() === '1245.677978515625'
-                };
-            }
-        },
-        {
-            name: 'query reply with int8',
-            test: async () => {
-                const result = await manualReplyCanister.queryInt8();
+            expect(result).toBeNull();
+        });
 
-                return {
-                    Ok: result === -100
-                };
-            }
-        },
-        {
-            name: 'query reply with nat',
-            test: async () => {
-                const result = await manualReplyCanister.queryNat();
+        it('update reply with string', async () => {
+            const result = await manualReplyCanister.updateString();
 
-                return {
-                    Ok: result === 184_467_440_737_095_516_150n
-                };
-            }
-        },
-        {
-            name: 'query reply with null',
-            test: async () => {
-                const result = await manualReplyCanister.queryNull();
+            expect(result).toBe('hello');
+        });
 
-                return {
-                    Ok: result === null
-                };
-            }
-        },
-        {
-            name: 'query reply with void',
-            test: async () => {
-                const result = await manualReplyCanister.queryVoid();
+        it('update reply with variant', async () => {
+            const result = await manualReplyCanister.updateVariant();
 
-                return {
-                    Ok: result === undefined
-                };
-            }
-        },
-        {
-            name: 'query reply with record',
-            test: async () => {
-                const result = await manualReplyCanister.queryRecord();
-                const expectedResult = {
-                    id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
-                    orbitals: [
-                        {
-                            electrons: 2,
-                            layer: 1
-                        },
-                        {
-                            electrons: 8,
-                            layer: 2
-                        }
-                    ],
-                    state: {
-                        Gas: { Elemental: null }
+            expect(result).toStrictEqual({ Toxic: null });
+        });
+
+        it('manualQuery when calling ic.reject', async () => {
+            const rejectionMessage = 'reject';
+            await expect(
+                manualReplyCanister.manualQuery(rejectionMessage)
+            ).rejects.toMatchObject({
+                props: {
+                    Code: 'CanisterReject',
+                    Message: rejectionMessage
+                }
+            });
+        });
+
+        it('manualQuery when calling ic.reply', async () => {
+            const result = await manualReplyCanister.manualQuery('accept');
+
+            expect(result).toBe('accept');
+        });
+
+        it('query reply with blob', async () => {
+            const result = await manualReplyCanister.queryBlob();
+            const expectedResult = new Uint8Array([
+                83, 117, 114, 112, 114, 105, 115, 101, 33
+            ]);
+
+            expect(result).toStrictEqual(expectedResult);
+        });
+
+        it('query reply with float32', async () => {
+            const result = await manualReplyCanister.updateFloat32();
+
+            expect(result.toString()).toBe('1245.677978515625');
+        });
+
+        it('query reply with int8', async () => {
+            const result = await manualReplyCanister.queryInt8();
+
+            expect(result).toBe(-100);
+        });
+
+        it('query reply with nat', async () => {
+            const result = await manualReplyCanister.queryNat();
+
+            expect(result).toBe(184_467_440_737_095_516_150n);
+        });
+
+        it('query reply with null', async () => {
+            const result = await manualReplyCanister.queryNull();
+
+            expect(result).toBeNull();
+        });
+
+        it('query reply with void', async () => {
+            const result = await manualReplyCanister.queryVoid();
+
+            expect(result).toBeUndefined();
+        });
+
+        it('query reply with record', async () => {
+            const result = await manualReplyCanister.queryRecord();
+            const expectedResult = {
+                id: 'b0283eb7-9c0e-41e5-8089-3345e6a8fa6a',
+                orbitals: [
+                    {
+                        electrons: 2,
+                        layer: 1
+                    },
+                    {
+                        electrons: 8,
+                        layer: 2
                     }
-                };
+                ],
+                state: {
+                    Gas: { Elemental: null }
+                }
+            };
 
-                return {
-                    Ok:
-                        JSON.stringify(result) ===
-                        JSON.stringify(expectedResult)
-                };
-            }
-        },
-        {
-            name: 'query reply with reserved',
-            test: async () => {
-                const result = await manualReplyCanister.queryReserved();
+            expect(JSON.stringify(result)).toBe(JSON.stringify(expectedResult));
+        });
 
-                return {
-                    Ok: result === null
-                };
-            }
-        },
-        {
-            name: 'query reply with string',
-            test: async () => {
-                const result = await manualReplyCanister.queryString();
+        it('query reply with reserved', async () => {
+            const result = await manualReplyCanister.queryReserved();
 
-                return {
-                    Ok: result === 'hello'
-                };
-            }
-        },
-        {
-            name: 'query reply with variant',
-            test: async () => {
-                const result = await manualReplyCanister.queryVariant();
+            expect(result).toBeNull();
+        });
 
-                return {
-                    Ok: 'Toxic' in result
-                };
-            }
-        },
-        {
-            name: 'replyRaw',
-            test: async () => {
-                const record = await manualReplyCanister.replyRaw();
-                const blob = 'Surprise!'
-                    .split('')
-                    .map((char) => char.charCodeAt(0));
+        it('query reply with string', async () => {
+            const result = await manualReplyCanister.queryString();
 
-                return {
-                    Ok:
-                        record.int === 42n &&
-                        record.text === 'text' &&
-                        record.bool === true &&
-                        record.myBlob.every(
-                            (byte, index) => blob[index] === byte
-                        ) &&
-                        'Medium' in record.myVariant
-                };
-            }
-        }
-    ];
+            expect(result).toBe('hello');
+        });
+
+        it('query reply with variant', async () => {
+            const result = await manualReplyCanister.queryVariant();
+
+            expect(result).toStrictEqual({ Toxic: null });
+        });
+
+        it('replyRaw', async () => {
+            const record = await manualReplyCanister.replyRaw();
+            const blob = 'Surprise!'
+                .split('')
+                .map((char) => char.charCodeAt(0));
+
+            const expected = {
+                int: 42n,
+                text: 'text',
+                bool: true,
+                myBlob: new Uint8Array(blob),
+                myVariant: { Medium: null }
+            };
+
+            expect(record).toStrictEqual(expected);
+        });
+    };
 }

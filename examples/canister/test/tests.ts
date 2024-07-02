@@ -1,7 +1,7 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { getCanisterId } from 'azle/dfx';
-import { expect, it, Test } from 'azle/test/jest';
+import { expect, it, Test } from 'azle/test';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/canister/canister.did';
@@ -12,7 +12,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
             const managementCanister = Principal.fromText('aaaaa-aa');
             const result = await canister.canisterParam(managementCanister);
 
-            expect(result).toStrictEqual(managementCanister);
+            expect(result).toEqual(managementCanister);
         });
 
         it('receives a canister as a return value', async () => {
@@ -36,7 +36,7 @@ export function getTests(canister: ActorSubclass<_SERVICE>): Test {
             ];
             const result = await canister.canisterList(canisterList);
 
-            expect(result).toStrictEqual(canisterList);
+            expect(result).toEqual(canisterList);
         });
 
         it('performs a cross canister call on a canister that was passed in as an argument', async () => {

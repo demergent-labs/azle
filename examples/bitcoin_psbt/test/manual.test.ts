@@ -1,5 +1,5 @@
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test/jest';
+import { runTests } from 'azle/test';
 import { getTests } from 'basic_bitcoin/test/tests';
 
 import { getP2wpkhAddress, P2WPKH_ADDRESS_FORM } from './tests';

@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe } from '@jest/globals';
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test/jest';
+import { runTests } from 'azle/test';
 
 import { BitcoinDaemon, startBitcoinDaemon } from './bitcoin_daemon';
 import { getP2pkhAddress, getTests, P2PKH_ADDRESS_FORM } from './tests';

@@ -1,123 +1,75 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test';
 
+import { Element } from '../src';
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/optional_types/optional_types.did';
 
-export function getTests(
-    optionalTypesCanister: ActorSubclass<_SERVICE>
-): Test[] {
-    return [
-        {
-            name: 'getHtml',
-            test: async () => {
-                const result = await optionalTypesCanister.getHtml();
+export function getTests(optionalTypesCanister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('getHtml', async () => {
+            const result = await optionalTypesCanister.getHtml();
 
-                return {
-                    Ok: result.head.length === 0
-                };
-            }
-        },
-        {
-            name: 'getHead',
-            test: async () => {
-                const result = await optionalTypesCanister.getHead();
+            expect(result.head).toHaveLength(0);
+        });
 
-                return {
-                    Ok: result.length === 1 && result[0].elements.length === 0
-                };
-            }
-        },
-        {
-            name: 'getHeadWithElements',
-            test: async () => {
-                const result =
-                    await optionalTypesCanister.getHeadWithElements();
+        it('getHead', async () => {
+            const result = await optionalTypesCanister.getHead();
 
-                return {
-                    Ok:
-                        result.length === 1 &&
-                        result[0].elements.length === 1 &&
-                        result[0].elements[0].id === '0'
-                };
-            }
-        },
-        {
-            name: 'getElement(None)',
-            test: async () => {
-                const result = await optionalTypesCanister.getElement([]);
+            expect(result).toStrictEqual([{ elements: [] }]);
+        });
 
-                return {
-                    Ok: result.length === 0
-                };
-            }
-        },
-        {
-            name: 'getElement(Some(None))',
-            test: async () => {
-                const result = await optionalTypesCanister.getElement([[]]);
+        it('getHeadWithElements', async () => {
+            const result = await optionalTypesCanister.getHeadWithElements();
 
-                return {
-                    Ok: result.length === 1 && result[0].length === 0
-                };
-            }
-        },
-        {
-            name: 'getElement(Some(Some({ id: "0" })))',
-            test: async () => {
-                const result = await optionalTypesCanister.getElement([
-                    [{ id: '0' }]
-                ]);
+            expect(result).toStrictEqual([{ elements: [{ id: '0' }] }]);
+        });
 
-                return {
-                    Ok:
-                        result.length === 1 &&
-                        result[0].length === 1 &&
-                        result[0][0].id === '0'
-                };
-            }
-        },
-        {
-            name: 'getNull',
-            test: async () => {
-                const result = await optionalTypesCanister.getNull();
+        it('getElement(None)', async () => {
+            const element: [] = [];
+            const result = await optionalTypesCanister.getElement(element);
 
-                return {
-                    Ok: result === null
-                };
-            }
-        },
-        {
-            name: 'getOptNull',
-            test: async () => {
-                const result = await optionalTypesCanister.getOptNull();
+            expect(result).toStrictEqual(element);
+        });
 
-                return {
-                    Ok: result.length === 0
-                };
-            }
-        },
-        {
-            name: 'stringToBoolean(Some("something"))',
-            test: async () => {
-                const result = await optionalTypesCanister.stringToBoolean([
-                    'something'
-                ]);
+        it('getElement(Some(None))', async () => {
+            const element: [[]] = [[]];
+            const result = await optionalTypesCanister.getElement(element);
 
-                return {
-                    Ok: result
-                };
-            }
-        },
-        {
-            name: 'stringToBoolean(None)',
-            test: async () => {
-                const result = await optionalTypesCanister.stringToBoolean([]);
+            expect(result).toStrictEqual(element);
+        });
 
-                return {
-                    Ok: !result
-                };
-            }
-        }
-    ];
+        it('getElement(Some(Some({ id: "0" })))', async () => {
+            const element: [[Element]] = [[{ id: '0' }]];
+            const result = await optionalTypesCanister.getElement(element);
+
+            expect(result).toStrictEqual(element);
+        });
+
+        it('getNull', async () => {
+            const result = await optionalTypesCanister.getNull();
+
+            expect(result).toBeNull();
+        });
+
+        it('getOptNull', async () => {
+            const result = await optionalTypesCanister.getOptNull();
+
+            expect(result).toHaveLength(0);
+        });
+
+        it('stringToBoolean(Some("something"))', async () => {
+            const result = await optionalTypesCanister.stringToBoolean([
+                'something'
+            ]);
+
+            expect(result).toBe(true);
+        });
+
+        it('stringToBoolean(None)', async () => {
+            const result = await optionalTypesCanister.stringToBoolean([]);
+
+            expect(result).toBe(false);
+        });
+    };
 }

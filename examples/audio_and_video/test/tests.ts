@@ -1,4 +1,4 @@
-import { expect, it, Test } from 'azle/test/jest';
+import { expect, it, Test } from 'azle/test';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 

@@ -16,6 +16,7 @@ import {
 const Element = Record({
     id: text
 });
+export type Element = { id: string };
 
 const Head = Record({
     elements: Vec(Element)

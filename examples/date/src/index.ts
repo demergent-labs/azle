@@ -168,22 +168,22 @@ export default Canister({
 
         return date.getUTCSeconds();
     }),
-    toDateString: query([text], text, (isoString) => {
+    dateToDateString: query([text], text, (isoString) => {
         return new Date(isoString).toDateString();
     }),
-    toISOString: query([text], text, (isoString) => {
+    dateToISOString: query([text], text, (isoString) => {
         return new Date(isoString).toISOString();
     }),
-    toJSONString: query([text], text, (isoString) => {
+    dateToJSONString: query([text], text, (isoString) => {
         return new Date(isoString).toJSON();
     }),
-    toString: query([text], text, (isoString) => {
+    dateToString: query([text], text, (isoString) => {
         return new Date(isoString).toString();
     }),
-    toTimeString: query([text], text, (isoString) => {
+    dateToTimeString: query([text], text, (isoString) => {
         return new Date(isoString).toTimeString();
     }),
-    toUtcString: query([text], text, (isoString) => {
+    dateToUtcString: query([text], text, (isoString) => {
         return new Date(isoString).toUTCString();
     }),
     now: query([], nat64, () => {

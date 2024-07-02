@@ -1,0 +1,12 @@
+service: () -> {
+    deepQuery: () -> (text) query;
+    incCanister1: () -> (nat) query;
+    incCanister2: () -> (nat) query;
+    incCounter: () -> (nat) query;
+    manualQuery: () -> (text) query;
+    simpleCompositeQuery: () -> (text) query;
+    simpleQuery: () -> (text) query;
+    simpleUpdate: () -> (text);
+    totallyManualQuery: () -> (text) query;
+    updateQuery: () -> (text) query;
+}

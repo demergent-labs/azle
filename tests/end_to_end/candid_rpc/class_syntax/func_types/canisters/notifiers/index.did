@@ -1,0 +1,3 @@
+service: () -> {
+    getNotifier: () -> (func (vec nat8) -> () oneway) query;
+}

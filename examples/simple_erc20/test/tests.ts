@@ -1,139 +1,86 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/simple_erc20/simple_erc20.did';
 
-export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'empty name',
-            test: async () => {
-                const result = await simpleErc20Canister.name();
+export function getTests(simpleErc20Canister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('empty name', async () => {
+            const result = await simpleErc20Canister.name();
 
-                return {
-                    Ok: result === ''
-                };
-            }
-        },
-        {
-            name: 'empty ticker',
-            test: async () => {
-                const result = await simpleErc20Canister.ticker();
+            expect(result).toBe('');
+        });
 
-                return {
-                    Ok: result === ''
-                };
-            }
-        },
-        {
-            name: 'empty totalSupply',
-            test: async () => {
-                const result = await simpleErc20Canister.totalSupply();
+        it('empty ticker', async () => {
+            const result = await simpleErc20Canister.ticker();
 
-                return {
-                    Ok: result === 0n
-                };
-            }
-        },
-        {
-            name: 'empty balance of id 0',
-            test: async () => {
-                const result = await simpleErc20Canister.balance('0');
+            expect(result).toBe('');
+        });
 
-                return {
-                    Ok: result === 0n
-                };
-            }
-        },
-        {
-            name: 'initializeSupply',
-            test: async () => {
-                const result = await simpleErc20Canister.initializeSupply(
-                    'Token',
-                    '0',
-                    'TOKEN',
-                    1_000_000n
-                );
+        it('empty totalSupply', async () => {
+            const result = await simpleErc20Canister.totalSupply();
 
-                return {
-                    Ok: result === true
-                };
-            }
-        },
-        {
-            name: 'initialized name',
-            test: async () => {
-                const result = await simpleErc20Canister.name();
+            expect(result).toBe(0n);
+        });
 
-                return {
-                    Ok: result === 'Token'
-                };
-            }
-        },
-        {
-            name: 'initialized ticker',
-            test: async () => {
-                const result = await simpleErc20Canister.ticker();
+        it('empty balance of id 0', async () => {
+            const result = await simpleErc20Canister.balance('0');
 
-                return {
-                    Ok: result === 'TOKEN'
-                };
-            }
-        },
-        {
-            name: 'initialized totalSupply',
-            test: async () => {
-                const result = await simpleErc20Canister.totalSupply();
+            expect(result).toBe(0n);
+        });
 
-                return {
-                    Ok: result === 1_000_000n
-                };
-            }
-        },
-        {
-            name: 'initialized balance of id 0',
-            test: async () => {
-                const result = await simpleErc20Canister.balance('0');
+        it('initializeSupply', async () => {
+            const result = await simpleErc20Canister.initializeSupply(
+                'Token',
+                '0',
+                'TOKEN',
+                1_000_000n
+            );
 
-                return {
-                    Ok: result === 1_000_000n
-                };
-            }
-        },
-        {
-            name: 'transfer',
-            test: async () => {
-                const result = await simpleErc20Canister.transfer(
-                    '0',
-                    '1',
-                    100n
-                );
+            expect(result).toBe(true);
+        });
 
-                return {
-                    Ok: result === true
-                };
-            }
-        },
-        {
-            name: 'balance of id 0 after transfer',
-            test: async () => {
-                const result = await simpleErc20Canister.balance('0');
+        it('initialized name', async () => {
+            const result = await simpleErc20Canister.name();
 
-                return {
-                    Ok: result === 999_900n
-                };
-            }
-        },
-        {
-            name: 'balance of id 1 after transfer',
-            test: async () => {
-                const result = await simpleErc20Canister.balance('1');
+            expect(result).toBe('Token');
+        });
 
-                return {
-                    Ok: result === 100n
-                };
-            }
-        }
-    ];
+        it('initialized ticker', async () => {
+            const result = await simpleErc20Canister.ticker();
+
+            expect(result).toBe('TOKEN');
+        });
+
+        it('initialized totalSupply', async () => {
+            const result = await simpleErc20Canister.totalSupply();
+
+            expect(result).toBe(1_000_000n);
+        });
+
+        it('initialized balance of id 0', async () => {
+            const result = await simpleErc20Canister.balance('0');
+
+            expect(result).toBe(1_000_000n);
+        });
+
+        it('transfer', async () => {
+            const result = await simpleErc20Canister.transfer('0', '1', 100n);
+
+            expect(result).toBe(true);
+        });
+
+        it('balance of id 0 after transfer', async () => {
+            const result = await simpleErc20Canister.balance('0');
+
+            expect(result).toBe(999_900n);
+        });
+
+        it('balance of id 1 after transfer', async () => {
+            const result = await simpleErc20Canister.balance('1');
+
+            expect(result).toBe(100n);
+        });
+    };
 }

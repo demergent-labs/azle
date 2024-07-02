@@ -1,7 +1,7 @@
 {
     "scripts": {
         "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
-        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+        "test": "jest"
     },
     "dependencies": {
         "azle": "0.22.0"
@@ -9,6 +9,8 @@
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
         "heartbeat_end_to_end_test_functional_syntax": "file:../../../../../examples/heartbeat",
+        "jest": "^29.7.0",
+        "ts-jest": "^29.1.5",
         "ts-node": "^10.9.1",
         "typescript": "^5.2.2"
     }

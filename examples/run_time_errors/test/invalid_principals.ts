@@ -1,10 +1,7 @@
-// @ts-nocheck
-
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test';
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/run_time_errors/run_time_errors.did';
-import { expectError } from './tests';
 
 const valueIsNotAPrincipalErrorMessage =
     "TypeError: Value is not of type 'Principal'";
@@ -26,42 +23,48 @@ const textTooShortErrorMessage = `TypeError: Value is not of type 'Principal'
 
 export function getInvalidPrincipalTests(
     errorCanister: ActorSubclass<_SERVICE>
-): Test[] {
-    return [
-        expectError(
-            'return a string as an invalid Principal',
-            errorCanister.returnStringAsInvalidPrincipal,
-            valueIsNotAPrincipalErrorMessage
-        ),
-        expectError(
-            'return an empty object as an invalid Principal',
-            errorCanister.returnEmptyObjectAsInvalidPrincipal,
-            toTextNotAFunctionErrorMessage
-        ),
-        expectError(
-            'return an object where toText is not a function, as an invalid Principal',
-            errorCanister.returnInvalidToTextPropertyAsInvalidPrincipal,
-            toTextNotAFunctionErrorMessage
-        ),
-        expectError(
-            'throw in Principal.toText method, as an invalid Principal',
-            errorCanister.throwInPrincipalToTextMethodAsInvalidPrincipal,
-            customToTextErrorMessage
-        ),
-        expectError(
-            "return an object where toText doesn't return a string, as an invalid Principal",
-            errorCanister.returnInvalidToTextReturnValueAsInvalidPrincipal,
-            valueIsNotAStringErrorMessage
-        ),
-        expectError(
-            'throw when calling Principal.fromText',
-            errorCanister.throwWhenCallingPrincipalFromText,
-            invalidChecksumErrorMessage
-        ),
-        expectError(
-            'return a Principal from invalid text',
-            errorCanister.returnInvalidPrincipalFromTooShortOfText,
-            textTooShortErrorMessage
-        )
-    ];
+): Test {
+    return () => {
+        it('return a string as an invalid Principal', async () => {
+            await expect(
+                errorCanister.returnStringAsInvalidPrincipal
+            ).rejects.toThrow(valueIsNotAPrincipalErrorMessage);
+        });
+
+        it('return an empty object as an invalid Principal', async () => {
+            await expect(
+                errorCanister.returnEmptyObjectAsInvalidPrincipal
+            ).rejects.toThrow(toTextNotAFunctionErrorMessage);
+        });
+
+        it('return an object where toText is not a function, as an invalid Principal', async () => {
+            await expect(
+                errorCanister.returnInvalidToTextPropertyAsInvalidPrincipal
+            ).rejects.toThrow(toTextNotAFunctionErrorMessage);
+        });
+
+        it('throw in Principal.toText method, as an invalid Principal', async () => {
+            await expect(
+                errorCanister.throwInPrincipalToTextMethodAsInvalidPrincipal
+            ).rejects.toThrow(customToTextErrorMessage);
+        });
+
+        it("return an object where toText doesn't return a string, as an invalid Principal", async () => {
+            await expect(
+                errorCanister.returnInvalidToTextReturnValueAsInvalidPrincipal
+            ).rejects.toThrow(valueIsNotAStringErrorMessage);
+        });
+
+        it('throw when calling Principal.fromText', async () => {
+            await expect(
+                errorCanister.throwWhenCallingPrincipalFromText
+            ).rejects.toThrow(invalidChecksumErrorMessage);
+        });
+
+        it('return a Principal from invalid text', async () => {
+            await expect(
+                errorCanister.returnInvalidPrincipalFromTooShortOfText
+            ).rejects.toThrow(textTooShortErrorMessage);
+        });
+    };
 }

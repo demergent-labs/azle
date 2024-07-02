@@ -1,25 +1,15 @@
-import {
-    blob,
-    nat,
-    nat64,
-    Null,
-    Opt,
-    Principal,
-    Record,
-    Variant,
-    Vec
-} from '../../src/lib';
+import { IDL, Principal } from '../../';
 
-export const CanisterId = Principal;
+export const CanisterId = IDL.Principal;
 export type CanisterId = Principal;
 
-export const UserId = Principal;
+export const UserId = IDL.Principal;
 export type UserId = Principal;
 
-export const WasmModule = blob;
-export type WasmModule = blob;
+export const WasmModule = IDL.Vec(IDL.Nat8);
+export type WasmModule = Uint8Array;
 
-export const CanisterSettings = Record({
+export const CanisterSettings = IDL.Record({
     /**
      * A list of principals. Must be between 0 and 10 in size. This
      * value is assigned to the controllers attribute of the canister.
@@ -27,166 +17,246 @@ export const CanisterSettings = Record({
      * Default value: A list containing only the caller of the
      * {@link Management.create_canister} call
      */
-    controllers: Opt(Vec(Principal)),
-    compute_allocation: Opt(nat),
-    memory_allocation: Opt(nat),
-    freezing_threshold: Opt(nat),
-    reserved_cycles_limit: Opt(nat)
+    controllers: IDL.Opt(IDL.Vec(IDL.Principal)),
+    compute_allocation: IDL.Opt(IDL.Nat),
+    memory_allocation: IDL.Opt(IDL.Nat),
+    freezing_threshold: IDL.Opt(IDL.Nat),
+    reserved_cycles_limit: IDL.Opt(IDL.Nat)
 });
-export type CanisterSettings = typeof CanisterSettings.tsType;
+export type CanisterSettings = {
+    controllers: [Principal[]] | [];
+    compute_allocation: [bigint] | [];
+    memory_allocation: [bigint] | [];
+    freezing_threshold: [bigint] | [];
+    reserved_cycles_limit: [bigint] | [];
+};
 
-export const ChunkHash = Record({
-    hash: blob
+export const ChunkHash = IDL.Record({
+    hash: IDL.Vec(IDL.Nat8)
 });
-export type ChunkHash = typeof ChunkHash.tsType;
+export type ChunkHash = {
+    hash: Uint8Array;
+};
 
 /**
  * The arguments to provide to the management canister's create_canister
  * method
  */
-export const CreateCanisterArgs = Record({
-    settings: Opt(CanisterSettings),
-    sender_canister_version: Opt(nat64)
+export const CreateCanisterArgs = IDL.Record({
+    settings: IDL.Opt(CanisterSettings),
+    sender_canister_version: IDL.Opt(IDL.Nat64)
 });
-export type CreateCanisterArgs = typeof CreateCanisterArgs.tsType;
+export type CreateCanisterArgs = {
+    settings: [CanisterSettings] | [];
+    sender_canister_version: [bigint] | [];
+};
 
-export const CreateCanisterResult = Record({
-    canister_id: Principal
+export const CreateCanisterResult = IDL.Record({
+    canister_id: IDL.Principal
 });
-export type CreateCanisterResult = typeof CreateCanisterResult.tsType;
+export type CreateCanisterResult = {
+    canister_id: Principal;
+};
 
-export const CanisterStatus = Variant({
-    running: Null,
-    stopping: Null,
-    stopped: Null
+export const CanisterStatus = IDL.Variant({
+    running: IDL.Null,
+    stopping: IDL.Null,
+    stopped: IDL.Null
 });
-export type CanisterStatus = typeof CanisterStatus.tsType;
+export type CanisterStatus = {
+    running: null;
+    stopping: null;
+    stopped: null;
+};
 
-export const DefiniteCanisterSettings = Record({
-    controllers: Vec(Principal),
-    compute_allocation: nat,
-    memory_allocation: nat,
-    freezing_threshold: nat,
-    reserved_cycles_limit: nat
+export const DefiniteCanisterSettings = IDL.Record({
+    controllers: IDL.Vec(IDL.Principal),
+    compute_allocation: IDL.Nat,
+    memory_allocation: IDL.Nat,
+    freezing_threshold: IDL.Nat,
+    reserved_cycles_limit: IDL.Nat
 });
-export type DefiniteCanisterSettings = typeof DefiniteCanisterSettings.tsType;
+export type DefiniteCanisterSettings = {
+    controllers: Principal[];
+    compute_allocation: bigint;
+    memory_allocation: bigint;
+    freezing_threshold: bigint;
+    reserved_cycles_limit: bigint;
+};
 
-export const CanisterStatusResult = Record({
+export const CanisterStatusResult = IDL.Record({
     status: CanisterStatus,
     settings: DefiniteCanisterSettings,
-    module_hash: Opt(blob),
-    memory_size: nat,
-    cycles: nat,
-    reserved_cycles: nat,
-    idle_cycles_burned_per_day: nat
+    module_hash: IDL.Opt(IDL.Vec(IDL.Nat8)),
+    memory_size: IDL.Nat,
+    cycles: IDL.Nat,
+    reserved_cycles: IDL.Nat,
+    idle_cycles_burned_per_day: IDL.Nat
 });
-export type CanisterStatusResult = typeof CanisterStatusResult.tsType;
+export type CanisterStatusResult = {
+    status: CanisterStatus;
+    settings: DefiniteCanisterSettings;
+    module_hash: [Uint8Array] | [];
+    memory_size: bigint;
+    cycles: bigint;
+    reserved_cycles: bigint;
+    idle_cycles_burned_per_day: bigint;
+};
 
-export const CanisterStatusArgs = Record({
-    canister_id: Principal
+export const CanisterStatusArgs = IDL.Record({
+    canister_id: IDL.Principal
 });
-export type CanisterStatusArgs = typeof CanisterStatusArgs.tsType;
+export type CanisterStatusArgs = {
+    canister_id: Principal;
+};
 
-export const UpdateSettingsArgs = Record({
+export const UpdateSettingsArgs = IDL.Record({
     canister_id: CanisterId,
     settings: CanisterSettings,
-    sender_canister_version: Opt(nat64)
+    sender_canister_version: IDL.Opt(IDL.Nat64)
 });
-export type UpdateSettingsArgs = typeof UpdateSettingsArgs.tsType;
+export type UpdateSettingsArgs = {
+    canister_id: CanisterId;
+    settings: CanisterSettings;
+    sender_canister_version: [bigint] | [];
+};
 
-export const UploadChunkArgs = Record({
+export const UploadChunkArgs = IDL.Record({
     canister_id: CanisterId,
-    chunk: blob
+    chunk: IDL.Vec(IDL.Nat8)
 });
-export type UploadChunkArgs = typeof UploadChunkArgs.tsType;
+export type UploadChunkArgs = {
+    canister_id: CanisterId;
+    chunk: Uint8Array;
+};
 
 export const UploadChunkResult = ChunkHash;
-export type UploadChunkResult = typeof UploadChunkResult.tsType;
+export type UploadChunkResult = ChunkHash;
 
-export const ClearChunkStoreArgs = Record({
+export const ClearChunkStoreArgs = IDL.Record({
     canister_id: CanisterId
 });
-export type ClearChunkStoreArgs = typeof ClearChunkStoreArgs.tsType;
+export type ClearChunkStoreArgs = {
+    canister_id: CanisterId;
+};
 
-export const StoredChunksArgs = Record({
+export const StoredChunksArgs = IDL.Record({
     canister_id: CanisterId
 });
-export type StoredChunksArgs = typeof StoredChunksArgs.tsType;
+export type StoredChunksArgs = {
+    canister_id: CanisterId;
+};
 
-export const StoredChunksResult = Vec(ChunkHash);
-export type StoredChunksResult = typeof StoredChunksResult.tsType;
+export const StoredChunksResult = IDL.Vec(ChunkHash);
+export type StoredChunksResult = ChunkHash[];
 
-export const InstallCodeMode = Variant({
-    install: Null,
-    reinstall: Null,
-    upgrade: Null
+export const InstallCodeMode = IDL.Variant({
+    install: IDL.Null,
+    reinstall: IDL.Null,
+    upgrade: IDL.Null
 });
-export type InstallCodeMode = typeof InstallCodeMode.tsType;
+export type InstallCodeMode = {
+    install: null;
+    reinstall: null;
+    upgrade: null;
+};
 
-export const InstallCodeArgs = Record({
+export const InstallCodeArgs = IDL.Record({
     mode: InstallCodeMode,
     canister_id: CanisterId,
     wasm_module: WasmModule,
-    arg: blob,
-    sender_canister_version: Opt(nat64)
+    arg: IDL.Vec(IDL.Nat8),
+    sender_canister_version: IDL.Opt(IDL.Nat64)
 });
-export type InstallCodeArgs = typeof InstallCodeArgs.tsType;
+export type InstallCodeArgs = {
+    mode: InstallCodeMode;
+    canister_id: CanisterId;
+    wasm_module: WasmModule;
+    arg: Uint8Array;
+    sender_canister_version: [bigint] | [];
+};
 
-export const InstallChunkedCodeArgs = Record({
+export const InstallChunkedCodeArgs = IDL.Record({
     mode: InstallCodeMode,
     target_canister: CanisterId,
-    store_canister: Opt(CanisterId),
-    chunk_hashes_list: Vec(ChunkHash),
-    wasm_module_hash: blob,
-    arg: blob,
-    sender_canister_version: Opt(nat64)
+    store_canister: IDL.Opt(CanisterId),
+    chunk_hashes_list: IDL.Vec(ChunkHash),
+    wasm_module_hash: IDL.Vec(IDL.Nat8),
+    arg: IDL.Vec(IDL.Nat8),
+    sender_canister_version: IDL.Opt(IDL.Nat64)
 });
-export type InstallChunkedCodeArgs = typeof InstallChunkedCodeArgs.tsType;
+export type InstallChunkedCodeArgs = {
+    mode: InstallCodeMode;
+    target_canister: CanisterId;
+    store_canister: [CanisterId] | [];
+    chunk_hashes_list: ChunkHash[];
+    wasm_module_hash: Uint8Array;
+    arg: Uint8Array;
+    sender_canister_version: [bigint] | [];
+};
 
-export const UninstallCodeArgs = Record({
+export const UninstallCodeArgs = IDL.Record({
     canister_id: CanisterId,
-    sender_canister_version: Opt(nat64)
+    sender_canister_version: IDL.Opt(IDL.Nat64)
 });
-export type UninstallCodeArgs = typeof UninstallCodeArgs.tsType;
+export type UninstallCodeArgs = {
+    canister_id: CanisterId;
+    sender_canister_version: [bigint] | [];
+};
 
-export const StartCanisterArgs = Record({
+export const StartCanisterArgs = IDL.Record({
     canister_id: CanisterId
 });
-export type StartCanisterArgs = typeof StartCanisterArgs.tsType;
+export type StartCanisterArgs = {
+    canister_id: CanisterId;
+};
 
-export const StopCanisterArgs = Record({
+export const StopCanisterArgs = IDL.Record({
     canister_id: CanisterId
 });
-export type StopCanisterArgs = typeof StopCanisterArgs.tsType;
+export type StopCanisterArgs = {
+    canister_id: CanisterId;
+};
 
-export const DeleteCanisterArgs = Record({
+export const DeleteCanisterArgs = IDL.Record({
     canister_id: CanisterId
 });
-export type DeleteCanisterArgs = typeof DeleteCanisterArgs.tsType;
+export type DeleteCanisterArgs = {
+    canister_id: CanisterId;
+};
 
-export const ProvisionalCreateCanisterWithCyclesArgs = Record({
-    amount: Opt(nat),
-    settings: Opt(CanisterSettings),
-    specified_id: Opt(CanisterId),
-    sender_canister_version: Opt(nat64)
+export const ProvisionalCreateCanisterWithCyclesArgs = IDL.Record({
+    amount: IDL.Opt(IDL.Nat),
+    settings: IDL.Opt(CanisterSettings),
+    specified_id: IDL.Opt(CanisterId),
+    sender_canister_version: IDL.Opt(IDL.Nat64)
 });
-export type ProvisionalCreateCanisterWithCyclesArgs =
-    typeof ProvisionalCreateCanisterWithCyclesArgs.tsType;
+export type ProvisionalCreateCanisterWithCyclesArgs = {
+    amount: [bigint] | [];
+    settings: [CanisterSettings] | [];
+    specified_id: [CanisterId] | [];
+    sender_canister_version: [bigint] | [];
+};
 
-export const ProvisionalCreateCanisterWithCyclesResult = Record({
+export const ProvisionalCreateCanisterWithCyclesResult = IDL.Record({
     canister_id: CanisterId
 });
-export type ProvisionalCreateCanisterWithCyclesResult =
-    typeof ProvisionalCreateCanisterWithCyclesResult.tsType;
+export type ProvisionalCreateCanisterWithCyclesResult = {
+    canister_id: CanisterId;
+};
 
-export const ProvisionalTopUpCanisterArgs = Record({
+export const ProvisionalTopUpCanisterArgs = IDL.Record({
     canister_id: CanisterId,
-    amount: nat
+    amount: IDL.Nat
 });
-export type ProvisionalTopUpCanisterArgs =
-    typeof ProvisionalTopUpCanisterArgs.tsType;
+export type ProvisionalTopUpCanisterArgs = {
+    canister_id: CanisterId;
+    amount: bigint;
+};
 
-export const DepositCyclesArgs = Record({
+export const DepositCyclesArgs = IDL.Record({
     canister_id: CanisterId
 });
-export type DepositCyclesArgs = typeof DepositCyclesArgs.tsType;
+export type DepositCyclesArgs = {
+    canister_id: CanisterId;
+};

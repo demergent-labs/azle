@@ -2,7 +2,7 @@ import { ActorSubclass, SignIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
 import { getCanisterId } from 'azle/dfx';
-import { expect, it, please, Test } from 'azle/test/jest';
+import { expect, it, please, Test } from 'azle/test';
 import { execSync } from 'child_process';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
@@ -34,31 +34,31 @@ export function getTests(
         it('gets the principal of the canister that installed this canister', async () => {
             const result = await whoamiCanister.installer();
 
-            expect(result).toStrictEqual(installationPrincipal);
+            expect(result).toEqual(installationPrincipal);
         });
 
         it('gets the principal that was provided as an init argument', async () => {
             const result = await whoamiCanister.argument();
 
-            expect(result).toStrictEqual(someonePrincipal);
+            expect(result).toEqual(someonePrincipal);
         });
 
         it('gets the principal of the caller of this method', async () => {
             const result = await whoamiCanister.whoami();
 
-            expect(result).toStrictEqual(callingPrincipal);
+            expect(result).toEqual(callingPrincipal);
         });
 
         it('gets the principal of this canister via cross canister call', async () => {
             const result = await whoamiCanister.id();
 
-            expect(result).toStrictEqual(canisterPrincipal);
+            expect(result).toEqual(canisterPrincipal);
         });
 
         it('gets the principal of this canister via ic object', async () => {
             const result = await whoamiCanister.idQuick();
 
-            expect(result).toStrictEqual(canisterPrincipal);
+            expect(result).toEqual(canisterPrincipal);
         });
 
         please('redeploy the canister', async () => {
@@ -73,7 +73,7 @@ export function getTests(
         it('gets the principal that was provided as a postUpgrade argument', async () => {
             const result = await whoamiCanister.argument();
 
-            expect(result).toStrictEqual(callingPrincipal);
+            expect(result).toEqual(callingPrincipal);
         });
         // TODO: To make this test really robust, we would use a different identity
         // when re-deploying the canister. Then we would assert that
