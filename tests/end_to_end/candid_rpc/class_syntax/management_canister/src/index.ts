@@ -214,10 +214,10 @@ export default class {
     @update([CanisterStatusArgs], CanisterStatusResult)
     async getCanisterStatus(
         args: CanisterStatusArgs
-    ): Promise<CanisterInfoResult> {
+    ): Promise<CanisterStatusResult> {
         return await call('aaaaa-aa', 'canister_status', {
             paramIdls: [CanisterStatusArgs],
-            returnIdl: CanisterInfoResult,
+            returnIdl: CanisterStatusResult,
             args: [args]
         });
     }

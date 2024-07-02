@@ -25,6 +25,10 @@ export default class {
         fee: bigint,
         createdAtTime: [bigint] | []
     ) {
+        const created_at_time =
+            createdAtTime.length === 0
+                ? []
+                : [{ timestamp_nanos: createdAtTime[0] }];
         return await call(getIcpCanisterPrincipal(), 'transfer', {
             paramIdls: [TransferArgs],
             returnIdl: TransferResult,
@@ -39,7 +43,7 @@ export default class {
                     },
                     from_subaccount: [],
                     to: binaryAddressFromAddress(to),
-                    created_at_time: createdAtTime
+                    created_at_time
                 }
             ]
         });

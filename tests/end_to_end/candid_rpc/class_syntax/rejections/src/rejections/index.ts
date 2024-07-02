@@ -10,7 +10,9 @@ import {
 export default class {
     @update([], RejectionCode)
     async getRejectionCodeNoError() {
-        await call(getSomeCanisterPrincipal(), 'accept');
+        await call(getSomeCanisterPrincipal(), 'accept', {
+            returnIdl: IDL.Bool
+        });
 
         return rejectCode();
     }
@@ -30,6 +32,7 @@ export default class {
     async getRejectionCodeCanisterReject() {
         try {
             await call(getSomeCanisterPrincipal(), 'reject', {
+                paramIdls: [IDL.Text],
                 args: ['reject']
             });
         } catch (error) {
@@ -54,6 +57,7 @@ export default class {
     async getRejectionMessage(message: string) {
         try {
             await call(getSomeCanisterPrincipal(), 'reject', {
+                paramIdls: [IDL.Text],
                 args: [message]
             });
         } catch (error) {
