@@ -14,7 +14,7 @@ const importLines = [
     "import { join } from 'path';"
 ];
 
-// Line to add after async function pretest() {
+// Line to add after function pretest(): void {
 const additionalLine = `    linkAndInstallPatch(join('examples', '${currentDirectory}'));\n`;
 
 // Read the pretest.ts file
@@ -27,9 +27,9 @@ fs.readFile(pretestFilePath, 'utf8', (err, data) => {
     // Split the file content into lines
     const lines = data.split('\n');
 
-    // Find the index where async function pretest() { is defined
+    // Find the index where function pretest(): void { is defined
     const pretestIndex = lines.findIndex((line) =>
-        line.trim().startsWith('async function pretest() {')
+        line.trim().startsWith('function pretest(): void {')
     );
     if (pretestIndex === -1) {
         console.error('Async function pretest() not found in pretest.ts file.');
@@ -39,7 +39,7 @@ fs.readFile(pretestFilePath, 'utf8', (err, data) => {
     // Insert import lines at the beginning of the file
     lines.splice(0, 0, ...importLines);
 
-    // Insert additional line after async function pretest() {
+    // Insert additional line after function pretest(): void {
     lines.splice(pretestIndex + 3, 0, additionalLine);
 
     // Join the lines back into a single string

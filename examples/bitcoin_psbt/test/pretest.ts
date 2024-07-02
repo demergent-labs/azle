@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-async function pretest() {
+function pretest(): void {
     // TODO remove basic_bitcoin install and link after https://github.com/demergent-labs/azle/issues/1807 is resolved
     execSync(`cd ../basic_bitcoin && npm install`);
 

@@ -2,7 +2,7 @@ import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
 import { join } from 'path';
 
-async function pretest() {
+function pretest(): void {
     linkAndInstallPatch(join('examples', 'list_of_lists'));
 
     execSync(`dfx canister uninstall-code list_of_lists || true`, {

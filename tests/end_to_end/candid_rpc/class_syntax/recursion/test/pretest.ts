@@ -3,7 +3,7 @@ import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
 import { join } from 'path';
 
-async function pretest() {
+function pretest(): void {
     linkAndInstallPatch(join('examples', 'recursion'));
 
     execSync(`dfx canister uninstall-code recursive_canister || true`, {

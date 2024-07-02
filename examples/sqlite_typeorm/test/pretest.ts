@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-async function pretest() {
+function pretest(): void {
     // TODO replace with standard solution once class based is merged in
     execSync(`cd ../sqlite && npm install`);
     if (process.env.AZLE_END_TO_END_TEST_LINK_AZLE !== 'false') {

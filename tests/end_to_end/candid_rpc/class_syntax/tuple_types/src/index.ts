@@ -33,6 +33,13 @@ const StreamingCallbackType = IDL.Variant({
     WithHeaders: IDL.Vec(Header),
     WithoutHeaders: IDL.Null
 });
+type StreamingCallbackType =
+    | {
+          WithHeaders: Header[];
+      }
+    | {
+          WithoutHeaders: null;
+      };
 
 const Reaction = IDL.Rec();
 const ComplexThreeTuple = IDL.Rec();
@@ -59,50 +66,53 @@ type ComplexThreeTuple = [PrimitiveTwoTuple, User, Reaction];
 const HttpResponse = IDL.Record({
     headers: IDL.Vec(Header)
 });
+type HttpResponse = {
+    headers: Header[];
+};
 
 export default class {
     @query([], PrimitiveOneTuple)
-    primitiveOneTupleReturnType() {
+    primitiveOneTupleReturnType(): PrimitiveOneTuple {
         return ['Hello'];
     }
 
     @query([PrimitiveOneTuple], PrimitiveOneTuple)
-    primitiveOneTupleParam(param: PrimitiveOneTuple) {
+    primitiveOneTupleParam(param: PrimitiveOneTuple): PrimitiveOneTuple {
         return param;
     }
 
     @query([], IDL.Tuple(IDL.Text))
-    primitiveOneTupleInlineReturnType() {
+    primitiveOneTupleInlineReturnType(): [string] {
         return ['Greenland'];
     }
 
     @query([IDL.Tuple(IDL.Text)], IDL.Tuple(IDL.Text))
-    primitiveOneTupleInlineParam(param: [string]) {
+    primitiveOneTupleInlineParam(param: [string]): [string] {
         return param;
     }
 
     @query([], PrimitiveTwoTuple)
-    primitiveTwoTupleReturnType() {
+    primitiveTwoTupleReturnType(): PrimitiveTwoTuple {
         return ['Content-Type', 64n];
     }
 
     @query([PrimitiveTwoTuple], PrimitiveTwoTuple)
-    primitiveTwoTupleParam(param: PrimitiveTwoTuple) {
+    primitiveTwoTupleParam(param: PrimitiveTwoTuple): PrimitiveTwoTuple {
         return param;
     }
 
     @query([], IDL.Tuple(IDL.Text, IDL.Text))
-    primitiveTwoTupleInlineReturnType() {
+    primitiveTwoTupleInlineReturnType(): [string, string] {
         return ['Fun', 'Times'];
     }
 
     @query([IDL.Tuple(IDL.Text, IDL.Text)], IDL.Tuple(IDL.Text, IDL.Text))
-    primitiveTwoTupleInlineParam(param: [string, string]) {
+    primitiveTwoTupleInlineParam(param: [string, string]): [string, string] {
         return param;
     }
 
     @query([], PrimitiveThreeTuple)
-    primitiveThreeTupleReturnType() {
+    primitiveThreeTupleReturnType(): PrimitiveThreeTuple {
         return [
             'Good',
             454n,
@@ -111,12 +121,12 @@ export default class {
     }
 
     @query([PrimitiveThreeTuple], PrimitiveThreeTuple)
-    primitiveThreeTupleParam(param: PrimitiveThreeTuple) {
+    primitiveThreeTupleParam(param: PrimitiveThreeTuple): PrimitiveThreeTuple {
         return param;
     }
 
     @query([], IDL.Tuple(IDL.Text, IDL.Nat64, IDL.Principal))
-    primitiveThreeTupleInlineReturnType() {
+    primitiveThreeTupleInlineReturnType(): [string, bigint, Principal] {
         return ['Fun', 101n, Principal.fromText('aaaaa-aa')];
     }
 
@@ -124,32 +134,36 @@ export default class {
         [IDL.Tuple(IDL.Text, IDL.Nat64, IDL.Principal)],
         IDL.Tuple(IDL.Text, IDL.Nat64, IDL.Principal)
     )
-    primitiveThreeTupleInlineParam(param: [string, bigint, Principal]) {
+    primitiveThreeTupleInlineParam(
+        param: [string, bigint, Principal]
+    ): [string, bigint, Principal] {
         return param;
     }
 
     @query([], ComplexOneTuple)
-    complexOneTupleReturnType() {
+    complexOneTupleReturnType(): ComplexOneTuple {
         return [['Hello', 0n]];
     }
 
     @query([ComplexOneTuple], ComplexOneTuple)
-    complexOneTupleParam(param: ComplexOneTuple) {
+    complexOneTupleParam(param: ComplexOneTuple): ComplexOneTuple {
         return param;
     }
 
     @query([], IDL.Tuple(PrimitiveTwoTuple))
-    complexOneTupleInlineReturnType() {
+    complexOneTupleInlineReturnType(): [PrimitiveTwoTuple] {
         return [['Candy', 56n]];
     }
 
     @query([IDL.Tuple(PrimitiveTwoTuple)], IDL.Tuple(PrimitiveTwoTuple))
-    complexOneTupleInlineParam(param: PrimitiveTwoTuple) {
+    complexOneTupleInlineParam(
+        param: [PrimitiveTwoTuple]
+    ): [PrimitiveTwoTuple] {
         return param;
     }
 
     @query([], ComplexTwoTuple)
-    complexTwoTupleReturnType() {
+    complexTwoTupleReturnType(): ComplexTwoTuple {
         return [
             ['Content-Type', 64n],
             {
@@ -160,12 +174,12 @@ export default class {
     }
 
     @query([ComplexTwoTuple], ComplexTwoTuple)
-    complexTwoTupleParam(param: ComplexTwoTuple) {
+    complexTwoTupleParam(param: ComplexTwoTuple): ComplexTwoTuple {
         return param;
     }
 
     @query([], IDL.Tuple(PrimitiveTwoTuple, User))
-    complexTwoTupleInlineReturnType() {
+    complexTwoTupleInlineReturnType(): [PrimitiveTwoTuple, User] {
         return [
             ['Content-Type', 644n],
             {
@@ -179,12 +193,14 @@ export default class {
         [IDL.Tuple(PrimitiveTwoTuple, User)],
         IDL.Tuple(PrimitiveTwoTuple, User)
     )
-    complexTwoTupleInlineParam(param: [PrimitiveTwoTuple]) {
+    complexTwoTupleInlineParam(
+        param: [PrimitiveTwoTuple, User]
+    ): [PrimitiveTwoTuple, User] {
         return param;
     }
 
     @query([], ComplexThreeTuple)
-    complexThreeTupleReturnType() {
+    complexThreeTupleReturnType(): ComplexThreeTuple {
         return [
             ['Content-Type', 64n],
             {
@@ -207,12 +223,12 @@ export default class {
     }
 
     @query([ComplexThreeTuple], ComplexThreeTuple)
-    complexThreeTupleParam(param: ComplexThreeTuple) {
+    complexThreeTupleParam(param: ComplexThreeTuple): ComplexThreeTuple {
         return param;
     }
 
     @query([], IDL.Tuple(PrimitiveTwoTuple, User, Reaction))
-    complexThreeTupleInlineReturnType() {
+    complexThreeTupleInlineReturnType(): [PrimitiveTwoTuple, User, Reaction] {
         return [
             ['Content-Type', 64n],
             {
@@ -238,17 +254,19 @@ export default class {
         [IDL.Tuple(PrimitiveTwoTuple, User, Reaction)],
         IDL.Tuple(PrimitiveTwoTuple, User, Reaction)
     )
-    complexThreeTupleInlineParam(param: [PrimitiveTwoTuple, User, Reaction]) {
+    complexThreeTupleInlineParam(
+        param: [PrimitiveTwoTuple, User, Reaction]
+    ): [PrimitiveTwoTuple, User, Reaction] {
         return param;
     }
 
     @query([IDL.Vec(Header)], IDL.Vec(Header))
-    tupleArrayParamsAndReturnType(headers: Header[]) {
+    tupleArrayParamsAndReturnType(headers: Header[]): Header[] {
         return headers;
     }
 
     @query([], HttpResponse)
-    tupleArrayRecordField() {
+    tupleArrayRecordField(): HttpResponse {
         return {
             headers: [
                 ['Content-Type', 'application/json'],
@@ -258,7 +276,7 @@ export default class {
     }
 
     @query([], StreamingCallbackType)
-    tupleArrayVariantField() {
+    tupleArrayVariantField(): StreamingCallbackType {
         return {
             WithHeaders: [
                 ['Content-Type', 'application/json'],
@@ -276,7 +294,9 @@ export default class {
         ],
         IDL.Tuple(IDL.Tuple(IDL.Text, IDL.Tuple(IDL.Nat8, IDL.Nat8)), IDL.Int)
     )
-    nestedTupleQuery(param: [[string, [number, number]], bigint]) {
+    nestedTupleQuery(
+        param: [[string, [number, number]], bigint]
+    ): [[string, [number, number]], bigint] {
         return param;
     }
 }

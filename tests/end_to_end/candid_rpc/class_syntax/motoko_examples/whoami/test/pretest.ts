@@ -7,7 +7,7 @@ import { join } from 'path';
 const someoneIdentity = createIdentity(2);
 export const someonePrincipal = someoneIdentity.getPrincipal().toString();
 
-async function pretest() {
+function pretest(): void {
     linkAndInstallPatch(join('examples', 'motoko_examples', 'whoami'));
 
     execSync(`dfx canister uninstall-code whoami || true`, {

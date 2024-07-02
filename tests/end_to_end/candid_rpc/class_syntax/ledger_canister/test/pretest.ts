@@ -3,7 +3,7 @@ import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
 import { join } from 'path';
 
-async function pretest(icp_ledger_path: string) {
+function pretest(icp_ledger_path: string): void {
     linkAndInstallPatch(join('examples', 'ledger_canister'));
 
     execSync(`dfx canister uninstall-code icp_ledger || true`, {

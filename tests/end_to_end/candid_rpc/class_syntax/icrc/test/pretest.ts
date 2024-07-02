@@ -2,7 +2,7 @@ import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
 import { join } from 'path';
 
-async function pretest(icrcPath: string) {
+function pretest(icrcPath: string): void {
     linkAndInstallPatch(join('examples', 'icrc'));
 
     execSync(`dfx canister uninstall-code proxy || true`, {

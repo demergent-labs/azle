@@ -2,7 +2,7 @@ import { execSync } from 'child_process';
 
 import { version } from '../../../package.json';
 
-async function pretest() {
+function pretest(): void {
     execSync(`npx -y azle@${version} new hello_world`, {
         stdio: 'inherit'
     });

@@ -3,7 +3,7 @@ import { writeFileSync } from 'fs';
 
 import { originalServerTs } from './server_source';
 
-async function pretest() {
+function pretest(): void {
     writeFileSync('./src/server.ts', originalServerTs);
 
     execSync(`dfx canister uninstall-code autoreload || true`, {

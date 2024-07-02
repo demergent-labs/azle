@@ -2,7 +2,7 @@ import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
 import { join } from 'path';
 
-async function pretest() {
+function pretest(): void {
     linkAndInstallPatch(join('examples', 'candid_encoding'));
 
     execSync(`dfx canister uninstall-code candid_encoding || true`, {
