@@ -237,7 +237,7 @@ async function callHttpRequestUpdate(
     });
 }
 
-function checkGetHeadBody(method: string, body: Uint8Array) {
+function checkGetHeadBody(method: string, body: Uint8Array): void {
     if (
         (method.toLowerCase() === 'get' || method.toLowerCase() === 'head') &&
         body.length !== 0

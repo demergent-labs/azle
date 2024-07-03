@@ -4,7 +4,7 @@ import {
     ReturnTuple,
     Tuple
 } from 'azle/property_tests/arbitraries/candid/constructed/tuple_arb';
-import { Test, testEquality } from 'azle/property_tests/test';
+import { AzleResult, Test, testEquality } from 'azle/property_tests/test';
 
 export function generateTests(
     functionName: string,
@@ -17,7 +17,7 @@ export function generateTests(
         [
             {
                 name: `tuple ${functionName}`,
-                test: async () => {
+                test: async (): Promise<AzleResult> => {
                     const actor = getActor(__dirname);
 
                     const result = await actor[functionName](

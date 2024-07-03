@@ -4,7 +4,7 @@ export class AzleFetchHeaders {
         [key: string]: string;
     } = {};
 
-    [Symbol.iterator]() {
+    [Symbol.iterator](): IterableIterator<[string, string]> {
         return this.entries();
     }
 
@@ -29,16 +29,16 @@ export class AzleFetchHeaders {
 
     // TODO append seems a bit complicated to implement because we have to know which
     // TODO headers can accept multiple values
-    append() {
+    append(): void {
         throw new Error(`AzleFetchHeaders: append is not yet implemented`);
     }
 
     // TODO we do not throw here like the documentation says we should
-    delete(name: string) {
+    delete(name: string): void {
         delete this.headers[name];
     }
 
-    entries() {
+    entries(): IterableIterator<[string, string]> {
         return Object.entries(this.headers)[Symbol.iterator]();
     }
 
@@ -49,13 +49,13 @@ export class AzleFetchHeaders {
             headers: AzleFetchHeaders
         ) => any,
         thisArg: any = this // TODO is this the correct this?
-    ) {
+    ): void {
         Object.entries(this.headers).forEach(([key, value]) => {
             callback.bind(thisArg)(value, key, this);
         });
     }
 
-    get(name: string) {
+    get(name: string): string {
         return this.headers[name] ?? null;
     }
 
@@ -65,19 +65,19 @@ export class AzleFetchHeaders {
         );
     }
 
-    has(name: string) {
+    has(name: string): boolean {
         return this.headers[name] !== undefined;
     }
 
-    keys() {
+    keys(): IterableIterator<string> {
         return Object.keys(this.headers)[Symbol.iterator]();
     }
 
-    set(name: string, value: string) {
+    set(name: string, value: string): void {
         this.headers[name] = value;
     }
 
-    values() {
+    values(): IterableIterator<string> {
         return Object.values(this.headers)[Symbol.iterator]();
     }
 }

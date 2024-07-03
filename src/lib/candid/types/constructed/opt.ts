@@ -18,7 +18,7 @@ export type Opt<T> = RequireExactlyOne<{ Some: T; None: null }>;
  * @param value - the value to be wrapped
  * @returns a `Some` {@link Opt} containing the provided value
  */
-export function Some<T>(value: T) {
+export function Some<T>(value: T): Opt<T> {
     return { Some: value };
 }
 
@@ -26,7 +26,7 @@ export function Some<T>(value: T) {
 export const None = { None: null };
 
 // TODO what happens if we pass something to Opt() that can't be converted to CandidClass?
-export function Opt<T extends CandidType>(t: T) {
+export function Opt<T extends CandidType>(t: T): AzleOpt<T> {
     return new AzleOpt<T>(t);
 }
 
@@ -42,7 +42,7 @@ export class AzleOpt<T> {
     _azleKind = 'AzleOpt' as const;
     static _azleKind = 'AzleOpt' as const;
 
-    toBytes(data: any) {
+    toBytes(data: any): Uint8Array {
         return encode(this, data);
     }
 
@@ -50,7 +50,7 @@ export class AzleOpt<T> {
         return decode(this, bytes);
     }
 
-    getIdl(parents: Parent[]) {
+    getIdl(parents: Parent[]): IDL.OptClass<T> {
         return IDL.Opt(toIdl(this.innerType, parents));
     }
 }

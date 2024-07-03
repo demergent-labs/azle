@@ -44,7 +44,7 @@ export function serialize(param: {
     return param as any;
 }
 
-function logWarnings(init?: RequestInit | undefined) {
+function logWarnings(init?: RequestInit | undefined): void {
     if (init === undefined) {
         return;
     }
@@ -90,7 +90,7 @@ function logWarnings(init?: RequestInit | undefined) {
     }
 }
 
-function logWarning(method: string) {
+function logWarning(method: string): void {
     console.warn(
         `azleFetch: init.${method} has no effect when using an identity as the Authorization header`
     );

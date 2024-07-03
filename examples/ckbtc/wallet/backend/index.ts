@@ -211,7 +211,7 @@ function padPrincipalWithZeros(blob: blob): blob {
     return newUin8Array;
 }
 
-function setupCanisters() {
+function setupCanisters(): void {
     ckBTC = ICRC(
         Principal.fromText(
             process.env.CK_BTC_PRINCIPAL ??

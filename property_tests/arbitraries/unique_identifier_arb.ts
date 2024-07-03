@@ -1,3 +1,5 @@
+import fc from 'fast-check';
+
 import { JsFunctionNameArb } from './js_function_name_arb';
 
 type IdentifiersMap = {
@@ -13,7 +15,7 @@ let identifiers: IdentifiersMap = {};
  * @param key the grouping in which to keep this identifier unique
  * @returns an arbitrary identifier string
  */
-export function UniqueIdentifierArb(key: string) {
+export function UniqueIdentifierArb(key: string): fc.Arbitrary<string> {
     if (!(key in identifiers)) {
         identifiers[key] = new Set();
     }

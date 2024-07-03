@@ -100,7 +100,7 @@ function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string,
     fields: CandidDefinition[]
-) {
+): string {
     if (useTypeDeclaration === true) {
         return `typeof ${name}.tsType`;
     }
@@ -116,7 +116,7 @@ function generateCandidTypeObject(
     useTypeDeclaration: boolean,
     name: string,
     fields: CandidDefinition[]
-) {
+): string {
     if (useTypeDeclaration === true) {
         return name;
     }

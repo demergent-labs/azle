@@ -10,7 +10,7 @@ export async function uploadFile(
     destPath: Dest,
     chunkSize: number,
     actor: UploaderActor
-) {
+): Promise<void> {
     if (!(await shouldBeUploaded(srcPath, destPath, actor))) {
         return;
     }
@@ -56,7 +56,7 @@ export async function uploadFile(
     console.info();
 }
 
-async function throttle() {
+async function throttle(): Promise<void> {
     // We can only process about 4Mib per second. So if chunks are about
     // 2 MiB or less then we can only send off two per second.
     if (process.env.DFX_NETWORK === 'ic') {

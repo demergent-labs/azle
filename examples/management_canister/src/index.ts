@@ -469,7 +469,7 @@ export default Canister({
     })
 });
 
-async function createCanister() {
+async function createCanister(): Promise<any> {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const response = await fetch(`icp://aaaaa-aa/create_canister`, {
             body: serialize({

@@ -20,7 +20,7 @@ export class AzleTuple<T extends any[]> {
     _azleKind = 'AzleTuple' as const;
     static _azleKind = 'AzleTuple' as const;
 
-    toBytes(data: any) {
+    toBytes(data: any): Uint8Array {
         return encode(this, data);
     }
 
@@ -28,7 +28,7 @@ export class AzleTuple<T extends any[]> {
         return decode(this, bytes);
     }
 
-    getIdl(parents: Parent[]) {
+    getIdl(parents: Parent[]): IDL.TupleClass<any> {
         const idls = this.innerTypes.map((value) => {
             return toIdl(value, parents);
         });
@@ -36,7 +36,7 @@ export class AzleTuple<T extends any[]> {
     }
 }
 
-export function Tuple<T extends CandidType[]>(...types: T) {
+export function Tuple<T extends CandidType[]>(...types: T): AzleTuple<T> {
     return new AzleTuple<T>(types);
 }
 export type Tuple<T> = T;

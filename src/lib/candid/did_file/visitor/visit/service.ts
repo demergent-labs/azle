@@ -72,7 +72,7 @@ function getSystemMethod(
     didVisitor: DidVisitor,
     data: VisitorData
 ): [CandidDef[], CandidTypesDefs] {
-    const isInitFunction = (func: IDL.FuncClass) =>
+    const isInitFunction = (func: IDL.FuncClass): boolean =>
         func.annotations.includes(methodName);
     const result = extractCandid(
         data.systemFuncs

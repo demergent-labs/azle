@@ -29,7 +29,9 @@ export async function call(
         // TODO perhaps we should be more robust
         // TODO for example, we can keep the time with these
         // TODO if they are over a certain amount old we can delete them
-        globalThis._azleResolveIds[globalResolveId] = (result: ArrayBuffer) => {
+        globalThis._azleResolveIds[globalResolveId] = (
+            result: ArrayBuffer
+        ): void => {
             if (raw !== undefined) {
                 resolve(new Uint8Array(result));
             } else if (returnIdl === undefined) {
@@ -42,7 +44,7 @@ export async function call(
             delete globalThis._azleRejectIds[globalRejectId];
         };
 
-        globalThis._azleRejectIds[globalRejectId] = (error: any) => {
+        globalThis._azleRejectIds[globalRejectId] = (error: any): void => {
             reject(error);
 
             delete globalThis._azleResolveIds[globalResolveId];

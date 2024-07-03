@@ -15,7 +15,7 @@ export type Test<> = {
 };
 
 // TODO get rid of this union once the jest migration is complete
-type AzleResult =
+export type AzleResult =
     | Partial<{
           Ok: { isSuccessful: boolean; message?: string };
           Err: string;
@@ -169,7 +169,7 @@ export function createSnakeCaseProxy<T extends object>(
     }
 
     return new Proxy(target, {
-        get(obj, prop) {
+        get(obj, prop): any {
             const snakeCaseProp =
                 (prop as string)[0] === (prop as string)[0]?.toUpperCase()
                     ? prop
@@ -240,6 +240,6 @@ function convertKeysToSnakeCase(obj: any): any {
     return newObj;
 }
 
-function camelToSnakeCase(str: string) {
+function camelToSnakeCase(str: string): string {
     return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
 }

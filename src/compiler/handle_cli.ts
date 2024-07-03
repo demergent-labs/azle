@@ -49,11 +49,11 @@ export function handleCli(
     return false;
 }
 
-function handleCommandNew() {
+function handleCommandNew(): void {
     generateNewAzleProject(azleVersion);
 }
 
-function handleCommandDockerfileHash(dockerfileHash: string) {
+function handleCommandDockerfileHash(dockerfileHash: string): void {
     execSyncPretty(`echo -n "${dockerfileHash}"`, 'inherit');
 }
 
@@ -61,7 +61,7 @@ function handleCommandClean(
     stdioType: IOType,
     dockerImagePrefix: string,
     dockerContainerPrefix: string
-) {
+): void {
     rmSync(GLOBAL_AZLE_CONFIG_DIR, {
         recursive: true,
         force: true
@@ -98,7 +98,7 @@ function handleCommandClean(
     console.info(`azle images removed`);
 }
 
-async function handleUploadAssets() {
+async function handleUploadAssets(): Promise<void> {
     const canisterName = process.argv[3];
     const srcPath = process.argv[4];
     const destPath = process.argv[5];
@@ -106,6 +106,6 @@ async function handleUploadAssets() {
     await uploadFiles(canisterName, filesToUpload);
 }
 
-function handleVersionCommand() {
+function handleVersionCommand(): void {
     console.info(azleVersion);
 }

@@ -106,7 +106,7 @@ function generateVariableAliasDeclarations(
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string
-) {
+): string {
     if (useTypeDeclaration === true) {
         return `typeof ${name}.tsType`;
     }
@@ -118,7 +118,7 @@ function generateCandidTypeObject(
     useTypeDeclaration: boolean,
     name: string,
     serviceMethods: ServiceMethodDefinition[]
-) {
+): string {
     if (useTypeDeclaration === true) {
         return name;
     }

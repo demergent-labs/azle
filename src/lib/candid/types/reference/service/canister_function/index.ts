@@ -68,7 +68,7 @@ function createGetIdlFunction(canisterOptions: CanisterOptions) {
         const serviceFunctionInfo = canisterOptions as ServiceFunctionInfo;
 
         // We don't want init, post upgrade, etc showing up in the idl
-        const isQueryOrUpdate = (mode: string) => {
+        const isQueryOrUpdate = (mode: string): boolean => {
             return mode === 'query' || mode === 'update';
         };
 

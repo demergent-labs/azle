@@ -9,15 +9,15 @@ export class AzleFloat32 {
 
     static tsType: float32;
 
-    static toBytes(data: any) {
+    static toBytes(data: float32): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array) {
-        return decode(this, bytes);
+    static fromBytes(bytes: Uint8Array): float32 {
+        return decode<float32>(this, bytes) as float32;
     }
 
-    static getIdl() {
+    static getIdl(): IDL.FloatClass {
         return IDL.Float32;
     }
 }

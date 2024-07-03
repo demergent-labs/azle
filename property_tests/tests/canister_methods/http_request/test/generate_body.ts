@@ -32,7 +32,10 @@ export function generateBody(
     `;
 }
 
-function generateHttpMethodCheck(method: string, requestParamName: string) {
+function generateHttpMethodCheck(
+    method: string,
+    requestParamName: string
+): string {
     return `
         if (${requestParamName}.method !== '${method}') {
             throw new Error(
@@ -42,7 +45,7 @@ function generateHttpMethodCheck(method: string, requestParamName: string) {
     `;
 }
 
-function generateUrlCheck(url: string, requestParamName: string) {
+function generateUrlCheck(url: string, requestParamName: string): string {
     return `
         if (decodeURIComponent(${requestParamName}.url) !== decodeURIComponent('${escape(
             url
@@ -59,7 +62,7 @@ function generateUrlCheck(url: string, requestParamName: string) {
 function generateHeadersMap(
     headers: [string, string][],
     requestParamName: string
-) {
+): string {
     return headers.length === 0
         ? ''
         : `
@@ -69,7 +72,7 @@ function generateHeadersMap(
         `;
 }
 
-function generateHeaderChecks(headers: [string, string][]) {
+function generateHeaderChecks(headers: [string, string][]): string {
     return headers
         .map(([name, value]) => {
             if (value === '') {
@@ -80,7 +83,7 @@ function generateHeaderChecks(headers: [string, string][]) {
         .join('\n');
 }
 
-function generateEmptyHeaderCheck(name: string) {
+function generateEmptyHeaderCheck(name: string): string {
     return `if (headers['${escape(
         name
     ).toLowerCase()}'] !== undefined && headers['${escape(
@@ -124,7 +127,7 @@ function generateBodyCheck(body: Uint8Array, requestParamName: string): string {
     }`;
 }
 
-function escape(input: string) {
+function escape(input: string): string {
     return input
         .replace(/\\/g, '\\\\') // Escape backslashes
         .replace(/\$\{/g, '\\${') // Escape interpolation starts

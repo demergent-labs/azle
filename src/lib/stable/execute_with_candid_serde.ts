@@ -19,7 +19,7 @@ export function executeWithCandidSerde(
     paramIdls: IDL.Type[],
     returnIdl: IDL.Type | undefined,
     manual: boolean
-) {
+): void {
     const decodedArgs = IDL.decode(paramIdls, args[0]);
 
     const result = getResult(decodedArgs, callback);

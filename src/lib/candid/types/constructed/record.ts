@@ -17,13 +17,13 @@ export function Record<
         tsType: {} as {
             [K in keyof T]: TypeMapping<T[K]>;
         },
-        toBytes(data: any) {
+        toBytes(data: any): Uint8Array {
             return encode(this, data);
         },
         fromBytes(bytes: Uint8Array) {
             return decode(this, bytes);
         },
-        getIdl(parents: Parent[]) {
+        getIdl(parents: Parent[]): IDL.RecordClass {
             return IDL.Record(toIdlMap(obj as CandidMap, parents));
         }
     };

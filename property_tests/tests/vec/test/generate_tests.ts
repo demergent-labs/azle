@@ -1,6 +1,6 @@
 import { getActor, Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
-import { Test, testEquality } from 'azle/property_tests/test';
+import { AzleResult, Test, testEquality } from 'azle/property_tests/test';
 
 export function generateTests(
     functionName: string,
@@ -13,7 +13,7 @@ export function generateTests(
         [
             {
                 name: `vec ${functionName}`,
-                test: async () => {
+                test: async (): Promise<AzleResult> => {
                     const actor = getActor(__dirname);
 
                     const params = namedParamVecs.map(

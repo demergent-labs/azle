@@ -52,7 +52,10 @@ export default Canister({
     })
 });
 
-async function getBalance(url: string, ethereumAddress: string) {
+async function getBalance(
+    url: string,
+    ethereumAddress: string
+): Promise<string> {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         ic.setOutgoingHttpOptions({
             maxResponseBytes: 2_000n,
@@ -108,7 +111,7 @@ async function getBalance(url: string, ethereumAddress: string) {
         return Buffer.from(httpResponse.body.buffer).toString('utf-8');
     }
 }
-async function getBlockByNumber(url: string, number: number) {
+async function getBlockByNumber(url: string, number: number): Promise<string> {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         ic.setOutgoingHttpOptions({
             maxResponseBytes: 2_000n,

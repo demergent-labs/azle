@@ -7,7 +7,7 @@ export function compileRustCode(
     canisterName: string,
     stdio: IOType,
     nativeCompilation: boolean
-) {
+): void {
     if (nativeCompilation === true) {
         compileRustCodeNatively(canisterName, stdio);
     } else {
@@ -19,7 +19,7 @@ function compileRustCodeWithPodman(
     dockerContainerName: string,
     canisterName: string,
     stdio: IOType
-) {
+): void {
     execSyncPretty(
         `podman exec ${dockerContainerName} rm -rf /.azle/${canisterName}`,
         stdio
@@ -53,7 +53,7 @@ function compileRustCodeWithPodman(
     );
 }
 
-function compileRustCodeNatively(canisterName: string, stdio: IOType) {
+function compileRustCodeNatively(canisterName: string, stdio: IOType): void {
     execSyncPretty(
         `CARGO_TARGET_DIR=target cargo build --target wasm32-wasi --manifest-path .azle/${canisterName}/canister/Cargo.toml --release`,
         stdio

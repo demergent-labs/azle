@@ -69,7 +69,7 @@ app.use(express.static('/dist'));
 
 app.listen();
 
-function changeGlobalState(req: Request, res: Response) {
+function changeGlobalState(req: Request, res: Response): void {
     globalState = req.body;
 
     res.json(globalState);

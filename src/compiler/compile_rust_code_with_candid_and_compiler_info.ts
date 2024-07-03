@@ -13,7 +13,7 @@ export function compileRustCodeWithCandidAndCompilerInfo(
     canisterName: string,
     stdioType: IOType,
     nativeCompilation: boolean
-) {
+): void {
     // This is for the Rust canister to have access to the candid file
     writeFileSync(rustStagingCandidPath, candid);
 

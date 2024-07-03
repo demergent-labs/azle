@@ -3,7 +3,7 @@ import { getListOfIncompleteFiles } from './incomplete_files';
 import { getOngoingHashingJobs, OngoingHashingJob } from './ongoing_hashes';
 import { UploaderActor } from './uploader_actor';
 
-export function onBeforeExit(paths: [Src, Dest][], actor: UploaderActor) {
+export function onBeforeExit(paths: [Src, Dest][], actor: UploaderActor): void {
     let hashingComplete = false;
     let cleanUpComplete = false;
     let ongoingHashingJobs: OngoingHashingJob[] = [];
@@ -40,7 +40,10 @@ export function onBeforeExit(paths: [Src, Dest][], actor: UploaderActor) {
     });
 }
 
-async function cleanup(paths: [Src, Dest][], actor: UploaderActor) {
+async function cleanup(
+    paths: [Src, Dest][],
+    actor: UploaderActor
+): Promise<void> {
     const incompleteFiles = await getListOfIncompleteFiles(paths, actor);
     for (const [_, path] of incompleteFiles) {
         await actor.clear_file_and_info(path);

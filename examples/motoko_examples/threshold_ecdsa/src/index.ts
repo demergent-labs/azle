@@ -37,7 +37,7 @@ export default Canister({
     })
 });
 
-async function getPublicKeyResult() {
+async function getPublicKeyResult(): Promise<any> {
     const caller = ic.caller().toUint8Array();
 
     if (process.env.AZLE_TEST_FETCH === 'true') {
@@ -76,7 +76,7 @@ async function getPublicKeyResult() {
     }
 }
 
-async function getSignatureResult(messageHash: Uint8Array) {
+async function getSignatureResult(messageHash: Uint8Array): Promise<any> {
     const caller = ic.caller().toUint8Array();
 
     if (process.env.AZLE_TEST_FETCH === 'true') {

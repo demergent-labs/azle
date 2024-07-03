@@ -1,4 +1,4 @@
-function escapeStringForJavaScript(input: string) {
+function escapeStringForJavaScript(input: string): string {
     return input
         .replace(/\\/g, '\\\\') // Escape backslashes
         .replace(/'/g, "\\'") // Escape single quotes

@@ -5,7 +5,7 @@ import { areParamsCorrectlyOrdered } from 'azle/property_tests/are_params_correc
 
 export function generateBody(
     namedParams: Named<CandidValueAndMeta<CorrespondingJSType>>[]
-) {
+): string {
     const paramsAreCorrectlyOrdered = areParamsCorrectlyOrdered(namedParams);
 
     const storeVariablesGlobally = namedParams

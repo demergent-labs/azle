@@ -21,13 +21,13 @@ export function Func(
 ) {
     return {
         tsType: {} as Func,
-        toBytes(data: any) {
+        toBytes(data: Func): Uint8Array {
             return encode(this, data);
         },
-        fromBytes(bytes: Uint8Array) {
-            return decode(this, bytes);
+        fromBytes(bytes: Uint8Array): Func {
+            return decode<Func>(this, bytes) as Func;
         },
-        getIdl(parents: Parent[]) {
+        getIdl(parents: Parent[]): IDL.FuncClass {
             return IDL.Func(
                 toIdlArray(paramCandidTypes, parents),
                 toIdlArray(returnCandidTypes, parents),

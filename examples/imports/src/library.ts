@@ -1,11 +1,11 @@
-export function one() {
+export function one(): string {
     return 'one';
 }
 
-export function two() {
+export function two(): string {
     return 'two';
 }
 
-export function three() {
+export function three(): string {
     return 'three';
 }

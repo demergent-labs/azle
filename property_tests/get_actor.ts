@@ -2,7 +2,7 @@ import { Agent, HttpAgent } from '@dfinity/agent';
 
 import { getCanisterId } from '../dfx';
 
-export function getActor(parentDir: string, agent?: Agent) {
+export function getActor(parentDir: string, agent?: Agent): any {
     const resolvedPathIndex = require.resolve(
         `${parentDir}/dfx_generated/canister/index.js`
     );

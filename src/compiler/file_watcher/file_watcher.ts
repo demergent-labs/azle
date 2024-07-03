@@ -56,7 +56,7 @@ async function reloadJs(
     reloadedJsPath: string,
     mainPath: string,
     wasmedgeQuickJsPath: string
-) {
+): Promise<void> {
     const canisterJavaScriptResult = await getCanisterJavaScript(
         mainPath,
         wasmedgeQuickJsPath,

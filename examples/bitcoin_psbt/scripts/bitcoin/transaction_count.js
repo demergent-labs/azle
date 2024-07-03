@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { execSync } = require('child_process');
 

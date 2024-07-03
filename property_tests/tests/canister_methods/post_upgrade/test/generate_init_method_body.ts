@@ -7,7 +7,7 @@ import { globalInitVarName } from './global_var_name';
 
 export function generateBody(
     namedParams: Named<CandidValueAndMeta<CorrespondingJSType>>[]
-) {
+): string {
     const paramsAreCorrectlyOrdered = areParamsCorrectlyOrdered(namedParams);
 
     const storeVariablesGlobally = namedParams

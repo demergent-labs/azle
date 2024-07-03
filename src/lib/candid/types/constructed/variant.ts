@@ -22,13 +22,13 @@ export function Variant<
     return {
         ...obj,
         tsType: {} as Variant<T>,
-        toBytes(data: any) {
+        toBytes(data: any): Uint8Array {
             return encode(this, data);
         },
         fromBytes(bytes: Uint8Array) {
             return decode(this, bytes);
         },
-        getIdl(parents: any) {
+        getIdl(parents: any): IDL.VariantClass {
             return IDL.Variant(toIdlMap(obj as CandidMap, parents));
         }
     };

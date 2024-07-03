@@ -68,7 +68,7 @@ export function createTransaction(from: Utxo, wallets: Wallets): string {
     return bitcoinCli.createRawTransaction(input, outputs);
 }
 
-export function signTransaction(rawTransaction: string) {
+export function signTransaction(rawTransaction: string): string {
     console.log(' - sign transaction');
     return bitcoinCli.signRawTransactionWithWallet(rawTransaction).hex;
 }

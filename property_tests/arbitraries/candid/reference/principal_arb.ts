@@ -27,7 +27,7 @@ export function PrincipalValueArb(): fc.Arbitrary<CandidValues<Principal>> {
     return SimpleCandidValuesArb(principal(), principalToSrcLiteral);
 }
 
-function principal() {
+function principal(): fc.Arbitrary<Principal> {
     return fc
         .uint8Array({
             minLength: 29,

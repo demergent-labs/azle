@@ -2,10 +2,12 @@ import { deepEqual, getActor } from 'azle/property_tests';
 import { QueryMethod } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 import { StableBTreeMap } from 'azle/property_tests/arbitraries/stable_b_tree_map_arb';
 import { UniqueIdentifierArb } from 'azle/property_tests/arbitraries/unique_identifier_arb';
-import { Test } from 'azle/property_tests/test';
+import { AzleResult, Test } from 'azle/property_tests/test';
 import fc from 'fast-check';
 
-export function GetTestArb(stableBTreeMap: StableBTreeMap) {
+export function GetTestArb(
+    stableBTreeMap: StableBTreeMap
+): fc.Arbitrary<QueryMethod> {
     return fc
         .tuple(UniqueIdentifierArb('canisterProperties'))
         .map(([functionName]): QueryMethod => {
@@ -54,7 +56,7 @@ function generateTests(
         [
             {
                 name: `get after first deploy ${functionName}`,
-                test: async () => {
+                test: async (): Promise<AzleResult> => {
                     const actor = getActor(__dirname);
 
                     const result = await actor[functionName](
@@ -70,7 +72,7 @@ function generateTests(
         [
             {
                 name: `get after second deploy ${functionName}`,
-                test: async () => {
+                test: async (): Promise<AzleResult> => {
                     const actor = getActor(__dirname);
 
                     const result = await actor[functionName](
@@ -86,7 +88,7 @@ function generateTests(
         [
             {
                 name: `get after third deploy ${functionName}`,
-                test: async () => {
+                test: async (): Promise<AzleResult> => {
                     const actor = getActor(__dirname);
 
                     const result = await actor[functionName](

@@ -106,7 +106,7 @@ function generateValue<T extends CorrespondingJSType>(
 function generateValueLiteral<T extends CorrespondingJSType>(
     sample: CandidValues<T>[],
     innerCandidType: CandidType
-) {
+): string {
     const valueLiterals = sample.map((sample) => sample.valueLiteral).join(',');
 
     const valueLiteral = `[${valueLiterals}]`;

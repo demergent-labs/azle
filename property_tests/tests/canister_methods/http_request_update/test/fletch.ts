@@ -65,7 +65,7 @@ export function fletchSync(canisterName: string, options: HttpRequest) {
     return toResponseSync(responseBuffer);
 }
 
-function escapeForExecSync(input: string) {
+function escapeForExecSync(input: string): string {
     return input
         .replace(/\\/g, '\\\\') // Escape backslashes
         .replace(/"/g, '\\"') // Escape double quotes
@@ -73,13 +73,13 @@ function escapeForExecSync(input: string) {
         .replace(/\$/g, '\\$'); // Escape dollar signs
 }
 
-function toCurlHeadersString(headers: [string, string][]) {
+function toCurlHeadersString(headers: [string, string][]): string {
     return headers
         .map(([name, value]) => `-H ${singleQuotedString(`${name}: ${value}`)}`)
         .join(' ');
 }
 
-function singleQuotedString(input: string) {
+function singleQuotedString(input: string): string {
     const singleQuoteEscapedString = input.replace(/'/g, "'\\''");
 
     return `'${singleQuoteEscapedString}'`;

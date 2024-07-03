@@ -22,7 +22,7 @@ export function PreUpgradeMethodArb(constraints: {
     generateBody: BodyGenerator;
     generateTests: TestsGenerator;
     callbackLocation?: CallbackLocation;
-}) {
+}): fc.Arbitrary<PreUpgradeMethod> {
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),

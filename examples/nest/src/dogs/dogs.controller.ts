@@ -81,7 +81,7 @@ export class DogsController {
     }
 
     @Get('express-response')
-    expressResponse(@Res() response: Response) {
+    expressResponse(@Res() response: Response): void {
         response.send('Dogs Express Response');
     }
 }

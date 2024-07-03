@@ -26,7 +26,7 @@ export function setTimer(
 
     globalThis._azleIcTimers[timerId] = timerCallbackId;
 
-    globalThis._azleTimerCallbacks[timerCallbackId] = () => {
+    globalThis._azleTimerCallbacks[timerCallbackId] = (): void => {
         try {
             callback();
         } finally {

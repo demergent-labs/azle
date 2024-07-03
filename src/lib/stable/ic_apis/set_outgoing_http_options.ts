@@ -4,7 +4,7 @@ export function setOutgoingHttpOptions(options: {
     cycles?: bigint;
     transformMethodName?: string;
     transformContext?: Uint8Array;
-}) {
+}): void {
     globalThis._azleOutgoingHttpOptionsMaxResponseBytes =
         options.maxResponseBytes;
     globalThis._azleOutgoingHttpOptionsSubnetSize = options.subnetSize;

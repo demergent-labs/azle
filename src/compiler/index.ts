@@ -21,7 +21,7 @@ import { CompilerInfo } from './utils/types';
 
 azle();
 
-async function azle() {
+async function azle(): Promise<void> {
     // We must run this before getNamesBeforeCli because
     // any dfx commands require the azle extension to be installed
     if (process.argv[2] === 'install-dfx-extension') {
@@ -155,7 +155,7 @@ async function azle() {
     logSuccess(canisterName, canisterId, replicaWebServerPort);
 }
 
-function createAzleDirectories() {
+function createAzleDirectories(): void {
     mkdirSync(GLOBAL_AZLE_CONFIG_DIR, { recursive: true });
     mkdirSync('.azle', { recursive: true });
 }
@@ -163,7 +163,7 @@ function createAzleDirectories() {
 // TODO this is just temporary
 // TODO until we either make azle an official extension in the DFINITY dfx extensions repo
 // TODO or we have a better way for the developer to install the extension locally
-function installDfxExtension(stdioType: IOType) {
+function installDfxExtension(stdioType: IOType): void {
     const dfxExtensionDirectoryPath = join(AZLE_PACKAGE_PATH, 'dfx_extension');
     execSyncPretty(
         `cd ${dfxExtensionDirectoryPath} && ./install.sh`,
@@ -175,7 +175,7 @@ function addCanisterDidToAssets(
     canisterPath: string,
     canisterName: string,
     candid: string
-) {
+): void {
     writeFileSync(
         join(
             canisterPath,

@@ -1,7 +1,7 @@
 import { Principal } from '@dfinity/principal';
 import { Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
-import { Test, testEquality } from 'azle/property_tests/test';
+import { AzleResult, Test, testEquality } from 'azle/property_tests/test';
 import { execSync } from 'child_process';
 
 export function generateTests(
@@ -13,7 +13,7 @@ export function generateTests(
         [
             {
                 name: `service ${functionName}`,
-                test: async () => {
+                test: async (): Promise<AzleResult> => {
                     // Using execSync because the JS Agent has a bug expecting services
                     // to be ordered by hash or something.
                     // See https://forum.dfinity.org/t/topic/20885/14

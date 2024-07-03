@@ -9,15 +9,15 @@ export class AzleBlob {
 
     static tsType: blob;
 
-    static toBytes(data: any) {
+    static toBytes(data: blob): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array) {
-        return decode(this, bytes);
+    static fromBytes(bytes: Uint8Array): blob {
+        return decode(this, bytes) as blob;
     }
 
-    static getIdl() {
+    static getIdl(): IDL.VecClass<number | bigint> {
         return IDL.Vec(IDL.Nat8);
     }
 }

@@ -39,7 +39,7 @@ const StatusCodeArb = fc
 // TODO same applies to 421 status see https://github.com/demergent-labs/fourZeroSeven for more details
 // TODO https://github.com/nodejs/help/issues/4345
 
-export function HttpResponseValueArb<T>() {
+export function HttpResponseValueArb<T>(): fc.Arbitrary<HttpResponse<T>> {
     return fc
         .tuple(StatusCodeArb, HttpHeadersArb())
         .chain(([statusCode, headers]) => {

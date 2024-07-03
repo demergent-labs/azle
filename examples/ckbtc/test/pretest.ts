@@ -15,7 +15,7 @@ function pretest(): void {
     });
 }
 
-function uninstall(...canisterNames: string[]) {
+function uninstall(...canisterNames: string[]): void {
     canisterNames.forEach((canisterName) => {
         execSync(`dfx canister uninstall-code ${canisterName} || true`, {
             stdio: 'inherit'
