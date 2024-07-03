@@ -9,6 +9,8 @@ import {
 import { escapeCandidKeywords } from '../escape_candid_keywords';
 import { extractCandid } from '../extract_candid';
 
+// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function visitService(
     t: IDL.ServiceClass,
     didVisitor: DidVisitor,

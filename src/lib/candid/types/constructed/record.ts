@@ -7,6 +7,8 @@ import { Parent } from '../../to_idl';
 import { TypeMapping } from '../../type_mapping';
 import { CandidMap, toIdlMap } from './to_idl_map';
 
+// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Record<
     T extends {
         [K in keyof T]: CandidType;
@@ -20,6 +22,8 @@ export function Record<
         toBytes(data: any): Uint8Array {
             return encode(this, data);
         },
+        // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         fromBytes(bytes: Uint8Array) {
             return decode(this, bytes);
         },

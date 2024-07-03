@@ -131,6 +131,8 @@ function generateCandidTypeObject(
     return `Canister({${methods}})`;
 }
 
+// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function generateRuntimeCandidTypeObject(
     serviceMethods: ServiceMethodDefinition[]
 ) {

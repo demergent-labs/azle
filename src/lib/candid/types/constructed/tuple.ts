@@ -24,6 +24,8 @@ export class AzleTuple<T extends any[]> {
         return encode(this, data);
     }
 
+    // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     fromBytes(bytes: Uint8Array) {
         return decode(this, bytes);
     }

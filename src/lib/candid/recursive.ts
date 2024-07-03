@@ -23,6 +23,8 @@ export function Recursive(candidTypeCallback: any): any {
 
     result.azleName = name;
     result.isRecursive = true;
+    // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     result.getIdl = (parents: Parent[]) => {
         const idl = IDL.Rec();
         let filler = candidTypeCallback();

@@ -44,6 +44,8 @@ async function toResponse(response: Response): Promise<HttpResponse> {
 /**
  * A synchronous "fetch" for canisters.
  */
+// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function fletchSync(canisterName: string, options: HttpRequest) {
     const canisterId = getCanisterId(canisterName);
 
@@ -85,6 +87,8 @@ function singleQuotedString(input: string): string {
     return `'${singleQuoteEscapedString}'`;
 }
 
+// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function toResponseSync(buffer: Buffer) {
     const responseString = new TextDecoder().decode(buffer);
 

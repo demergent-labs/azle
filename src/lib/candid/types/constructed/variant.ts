@@ -14,6 +14,8 @@ export type Variant<
     [K in keyof T]: TypeMapping<T[K]>;
 }>;
 
+// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Variant<
     T extends {
         [K in keyof T]: CandidType;
@@ -25,6 +27,8 @@ export function Variant<
         toBytes(data: any): Uint8Array {
             return encode(this, data);
         },
+        // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         fromBytes(bytes: Uint8Array) {
             return decode(this, bytes);
         },
