@@ -10,23 +10,23 @@ let globalResults: Set<string> = new Set();
 export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
         it('first round', async () => {
-            const randomNumberCall_0Result =
+            const randomNumberCall0Result =
                 await randomnessCanister.randomNumber();
-            const randomNumberCall_1Result =
+            const randomNumberCall1Result =
                 await randomnessCanister.randomNumber();
-            const randomNumberCall_2Result =
+            const randomNumberCall2Result =
                 await randomnessCanister.randomNumber();
-            const randomNumberCall_3Result =
+            const randomNumberCall3Result =
                 await randomnessCanister.randomNumber();
-            const randomNumberCall_4Result =
+            const randomNumberCall4Result =
                 await randomnessCanister.randomNumber();
 
             const results = [
-                randomNumberCall_0Result.toString(),
-                randomNumberCall_1Result.toString(),
-                randomNumberCall_2Result.toString(),
-                randomNumberCall_3Result.toString(),
-                randomNumberCall_4Result.toString()
+                randomNumberCall0Result.toString(),
+                randomNumberCall1Result.toString(),
+                randomNumberCall2Result.toString(),
+                randomNumberCall3Result.toString(),
+                randomNumberCall4Result.toString()
             ];
 
             for (const result of results) {
@@ -46,23 +46,23 @@ export function getTests(randomnessCanister: ActorSubclass<_SERVICE>): Test {
         });
 
         it('second round', async () => {
-            const randomNumberCall_0Result =
+            const randomNumberCall0Result =
                 await randomnessCanister.randomNumber();
-            const randomNumberCall_1Result =
+            const randomNumberCall1Result =
                 await randomnessCanister.randomNumber();
-            const randomNumberCall_2Result =
+            const randomNumberCall2Result =
                 await randomnessCanister.randomNumber();
-            const randomNumberCall_3Result =
+            const randomNumberCall3Result =
                 await randomnessCanister.randomNumber();
-            const randomNumberCall_4Result =
+            const randomNumberCall4Result =
                 await randomnessCanister.randomNumber();
 
             const results = [
-                randomNumberCall_0Result.toString(),
-                randomNumberCall_1Result.toString(),
-                randomNumberCall_2Result.toString(),
-                randomNumberCall_3Result.toString(),
-                randomNumberCall_4Result.toString()
+                randomNumberCall0Result.toString(),
+                randomNumberCall1Result.toString(),
+                randomNumberCall2Result.toString(),
+                randomNumberCall3Result.toString(),
+                randomNumberCall4Result.toString()
             ];
 
             for (const result of results) {
