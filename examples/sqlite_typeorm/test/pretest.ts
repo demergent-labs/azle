@@ -1,11 +1,10 @@
+import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
+import { join } from 'path';
 
 function pretest(): void {
-    // TODO replace with standard solution once class based is merged in
-    execSync(`cd ../sqlite && npm install`);
-    if (process.env.AZLE_END_TO_END_TEST_LINK_AZLE !== 'false') {
-        execSync(`cd ../sqlite && npm link azle`);
-    }
+    linkAndInstallPatch(join('examples', 'sqlite'));
+
     execSync(`dfx canister uninstall-code sqlite_typeorm || true`, {
         stdio: 'inherit'
     });
