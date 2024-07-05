@@ -17,7 +17,8 @@ export function getCandidAndCanisterMethods(
     envVars: [string, string][],
     rustStagingCandidPath: string,
     rustStagingWasmPath: string,
-    nativeCompilation: boolean
+    nativeCompilation: boolean,
+    js: string
 ): {
     candid: string;
     canisterMethods: CanisterMethods;
@@ -44,7 +45,8 @@ export function getCandidAndCanisterMethods(
             dockerContainerName,
             canisterName,
             stdioType,
-            nativeCompilation
+            nativeCompilation,
+            js
         );
 
         const { candid, canisterMethods } =

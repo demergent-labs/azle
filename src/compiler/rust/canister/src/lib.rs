@@ -88,8 +88,16 @@ thread_local! {
 #[cfg(all(target_arch = "wasm32", target_os = "wasi"))]
 canister_methods!();
 
+#[no_mangle]
 #[allow(unused)]
-fn execute_js(function_name: &str, pass_arg_data: bool) {
+pub fn execute_js(function_index: i32) {
+    ic_cdk::println!("execute_js function index: {}", function_index);
+
+    // TODO hook up the function indexes somehow
+    // let function_name = "simpleQuery";
+    let function_name = &function_index.to_string();
+    let pass_arg_data = true;
+
     RUNTIME.with(|runtime| {
         let mut runtime = runtime.borrow_mut();
         let runtime = runtime.as_mut().unwrap();
@@ -161,12 +169,11 @@ pub fn get_candid_pointer() -> *mut std::os::raw::c_char {
 
             ic::register(context);
 
+            let js = get_js_code();
+
             // TODO what do we do if there is an error in here?
             context.eval_global_str("globalThis.exports = {};".to_string());
-            context.eval_module_str(
-                std::str::from_utf8(MAIN_JS).unwrap().to_string(),
-                "azle_main",
-            );
+            context.eval_module_str(std::str::from_utf8(&js).unwrap().to_string(), "azle_main");
 
             run_event_loop(context);
 
@@ -221,4 +228,33 @@ fn get_consumer(consumer_path: &str) -> Result<Consumer, String> {
         .map_err(|err| format!("Error parsing {consumer_path}: {err}"))?;
 
     Ok(consumer)
+}
+
+#[inline(never)]
+#[no_mangle]
+extern "C" fn init_js_passive_data(js_vec_location: i32) -> usize {
+    "123_456_789".parse::<usize>().unwrap() + js_vec_location as usize // TODO must be like this for weird optimization reasons
+}
+
+// TODO seems we need to do this to stop the compiler from hard-coding the result of this function where it is called
+// TODO hopefully there's a less hacky way to do this
+#[inline(never)]
+#[no_mangle]
+extern "C" fn passive_data_size() -> usize {
+    "123_456_789".parse().unwrap()
+}
+
+// TODO waiting on license inspired from https://github.com/adambratschikaye/wasm-inject-data/blob/main/src/static_wasm.rs
+#[inline(never)]
+#[no_mangle]
+pub extern "C" fn get_js_code() -> Vec<u8> {
+    let size = unsafe { passive_data_size() };
+    let mut js_vec = vec![243; size];
+    let js_vec_location = js_vec.as_mut_ptr() as i32;
+
+    unsafe {
+        init_js_passive_data(js_vec_location);
+    }
+
+    js_vec
 }

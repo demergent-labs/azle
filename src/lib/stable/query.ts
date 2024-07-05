@@ -32,6 +32,8 @@ export function query(
 
         descriptor.value = methodCallback as any;
 
+        const index = globalThis._azleCanisterMethods.queries.length;
+
         globalThis._azleCanisterMethods.queries.push({
             name: propertyKey as string,
             composite: options?.composite ?? false,
@@ -41,7 +43,7 @@ export function query(
                     : createGlobalGuard(options?.guard, propertyKey as string)
         });
 
-        globalThis._azleCanisterMethods.callbacks[propertyKey as string] =
+        globalThis._azleCanisterMethods.callbacks[index.toString()] =
             methodCallback;
 
         return descriptor;

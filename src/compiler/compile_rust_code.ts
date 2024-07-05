@@ -1,21 +1,35 @@
 import { IOType } from 'child_process';
 
+import { manipulateWasmBinary } from './manipulate_wasm_binary';
 import { execSyncPretty } from './utils/exec_sync_pretty';
 
+// TODO change this to explain that we are just manipulating the Wasm binary
+// TODO rip out all Podman stuff if possible
+// TODO make an automatic way to compile the binary and move it to the correct location
+// TODO because right now we have to manually grab the binary
 export function compileRustCode(
     dockerContainerName: string,
     canisterName: string,
     stdio: IOType,
-    nativeCompilation: boolean
+    nativeCompilation: boolean,
+    js: string
 ) {
     if (nativeCompilation === true) {
         compileRustCodeNatively(canisterName, stdio);
     } else {
-        compileRustCodeWithPodman(dockerContainerName, canisterName, stdio);
+        if (process.env.AZLE_USE_PODMAN === 'true') {
+            _compileRustCodeWithPodman(
+                dockerContainerName,
+                canisterName,
+                stdio
+            );
+        } else {
+            manipulateWasmBinary(canisterName, ['simpleQuery'], js);
+        }
     }
 }
 
-function compileRustCodeWithPodman(
+function _compileRustCodeWithPodman(
     dockerContainerName: string,
     canisterName: string,
     stdio: IOType
@@ -47,8 +61,12 @@ function compileRustCodeWithPodman(
         stdio
     );
 
+    const wasmDest =
+        process.env.AZLE_WASM_DEST ??
+        `.azle/${canisterName}/${canisterName}.wasm`;
+
     execSyncPretty(
-        `podman cp ${dockerContainerName}:/global_target_dir/wasm32-wasi/release/canister.wasm .azle/${canisterName}/${canisterName}.wasm`,
+        `podman cp ${dockerContainerName}:/global_target_dir/wasm32-wasi/release/canister.wasm ${wasmDest}`,
         stdio
     );
 }

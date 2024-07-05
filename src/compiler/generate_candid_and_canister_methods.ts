@@ -6,7 +6,7 @@ export function generateCandidAndCanisterMethods(wasmFilePath: string): {
     candid: string;
     canisterMethods: CanisterMethods;
 } {
-    const wasmBuffer = readFileSync(wasmFilePath);
+    const wasmBuffer = readFileSync(process.env.AZLE_WASM_DEST ?? wasmFilePath);
 
     const wasmModule = new WebAssembly.Module(wasmBuffer);
     const wasmInstance = new WebAssembly.Instance(wasmModule, {

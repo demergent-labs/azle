@@ -123,7 +123,8 @@ async function azle() {
                 envVars,
                 rustStagingCandidPath,
                 rustStagingWasmPath,
-                nativeCompilation
+                nativeCompilation,
+                canisterJavaScript
             );
 
             addCanisterDidToAssets(canisterPath, canisterName, candid);
@@ -147,7 +148,8 @@ async function azle() {
                 dockerContainerName,
                 canisterName,
                 stdioType,
-                nativeCompilation
+                nativeCompilation,
+                canisterJavaScript
             );
         }
     );

@@ -1,6 +1,6 @@
 import { IOType } from 'child_process';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
-import { copySync } from 'fs-extra';
+import { copySync } from 'fs-extra/esm';
 import { join } from 'path';
 
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';

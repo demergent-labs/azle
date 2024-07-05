@@ -12,7 +12,8 @@ export function compileRustCodeWithCandidAndCompilerInfo(
     dockerContainerName: string,
     canisterName: string,
     stdioType: IOType,
-    nativeCompilation: boolean
+    nativeCompilation: boolean,
+    js: string
 ) {
     // This is for the Rust canister to have access to the candid file
     writeFileSync(rustStagingCandidPath, candid);
@@ -24,6 +25,7 @@ export function compileRustCodeWithCandidAndCompilerInfo(
         dockerContainerName,
         canisterName,
         stdioType,
-        nativeCompilation
+        nativeCompilation,
+        js
     );
 }

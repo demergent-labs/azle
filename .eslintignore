@@ -8,3 +8,4 @@ dfx_generated
 declarations
 property_tests/tests/**/src/*
 dist
+THIRDPARTY.yml

@@ -1,4 +1,5 @@
-import { copySync, readFileSync, writeFileSync } from 'fs-extra';
+import { readFileSync, writeFileSync } from 'fs';
+import { copySync } from 'fs-extra/esm';
 import { join } from 'path';
 
 import { AZLE_PACKAGE_PATH } from './utils/global_paths';
