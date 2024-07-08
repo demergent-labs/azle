@@ -1,10 +1,10 @@
 import { IOType } from 'child_process';
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
+// @ts-ignore
 import { copySync } from 'fs-extra/esm';
 import { join } from 'path';
 
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
-import { getConsumer } from './get_consumer_config';
 import { execSyncPretty } from './utils/exec_sync_pretty';
 import { AZLE_PACKAGE_PATH } from './utils/global_paths';
 import { CanisterConfig, Toml } from './utils/types';
@@ -64,15 +64,4 @@ export async function prepareRustStagingArea(
     ) {
         execSyncPretty(canisterConfig.build_assets, stdioType);
     }
-
-    for (const [src, dest] of canisterConfig.assets ?? []) {
-        copySync(src, join(canisterPath, 'canister', 'src', 'assets', dest));
-    }
-
-    const consumer = await getConsumer(canisterConfig);
-
-    writeFileSync(
-        join(canisterPath, 'canister', 'src', 'assets', 'consumer.json'),
-        JSON.stringify(consumer)
-    );
 }

@@ -65,9 +65,12 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         #[no_mangle]
         #[allow(unused)]
         pub fn init(function_index: i32, pass_arg_data: i32) {
+            let env_vars_bytes = get_env_vars();
+            let env_vars: Vec<(&str, &str)> = serde_json::from_str(std::str::from_utf8(&env_vars_bytes).unwrap()).unwrap();
+
             let polyfill_memory =
                 MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
-            ic_wasi_polyfill::init_with_memory(&[], &[#(#env_vars),*], polyfill_memory);
+            ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
 
             ASSETS_DIR.extract("/").unwrap();
 
@@ -91,9 +94,12 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         #[no_mangle]
         #[allow(unused)]
         pub fn post_upgrade(function_index: i32, pass_arg_data: i32) {
+            let env_vars_bytes = get_env_vars();
+            let env_vars: Vec<(&str, &str)> = serde_json::from_str(std::str::from_utf8(&env_vars_bytes).unwrap()).unwrap();
+
             let polyfill_memory =
                 MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
-            ic_wasi_polyfill::init_with_memory(&[], &[#(#env_vars),*], polyfill_memory);
+            ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
 
             ASSETS_DIR.extract("/").unwrap();
 

@@ -26,7 +26,6 @@ export type CanisterConfig = Readonly<{
     env?: string[];
     opt_level?: OptLevel;
     assets?: [string, string][];
-    assets_large?: [string, string][];
     esm_aliases?: Record<string, string>;
     esm_externals?: string[];
     // TODO we should move all custom properties into custom in a subsequent PR

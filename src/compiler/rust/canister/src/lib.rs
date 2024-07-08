@@ -239,7 +239,7 @@ extern "C" fn init_js_passive_data(js_vec_location: i32) -> usize {
 // TODO hopefully there's a less hacky way to do this
 #[inline(never)]
 #[no_mangle]
-extern "C" fn passive_data_size() -> usize {
+extern "C" fn js_passive_data_size() -> usize {
     "123_456_789".parse().unwrap()
 }
 
@@ -247,7 +247,7 @@ extern "C" fn passive_data_size() -> usize {
 #[inline(never)]
 #[no_mangle]
 pub extern "C" fn get_js_code() -> Vec<u8> {
-    let size = unsafe { passive_data_size() };
+    let size = unsafe { js_passive_data_size() };
     let mut js_vec = vec![243; size];
     let js_vec_location = js_vec.as_mut_ptr() as i32;
 
@@ -256,4 +256,33 @@ pub extern "C" fn get_js_code() -> Vec<u8> {
     }
 
     js_vec
+}
+
+#[inline(never)]
+#[no_mangle]
+extern "C" fn init_env_vars_passive_data(js_vec_location: i32) -> usize {
+    "123_456_789".parse::<usize>().unwrap() + js_vec_location as usize // TODO must be like this for weird optimization reasons
+}
+
+// TODO seems we need to do this to stop the compiler from hard-coding the result of this function where it is called
+// TODO hopefully there's a less hacky way to do this
+#[inline(never)]
+#[no_mangle]
+extern "C" fn env_vars_passive_data_size() -> usize {
+    "123_456_789".parse().unwrap()
+}
+
+// TODO waiting on license inspired from https://github.com/adambratschikaye/wasm-inject-data/blob/main/src/static_wasm.rs
+#[inline(never)]
+#[no_mangle]
+pub extern "C" fn get_env_vars() -> Vec<u8> {
+    let size = unsafe { env_vars_passive_data_size() };
+    let mut env_vars_vec = vec![243; size];
+    let env_vars_vec_location = env_vars_vec.as_mut_ptr() as i32;
+
+    unsafe {
+        init_env_vars_passive_data(env_vars_vec_location);
+    }
+
+    env_vars_vec
 }

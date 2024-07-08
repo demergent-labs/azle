@@ -122,39 +122,37 @@ export async function manipulateWasmBinary(
         };
     });
 
-    // const lastActiveSegment = normalizedSegments[normalizedSegments.length - 1];
-
     const jsEncoded = new TextEncoder().encode(js);
-
-    // TODO so calling this breaks the memory by adding an explicit maximum amount
-    // module.setMemory(memoryInfo.initial, memoryInfo.max ?? -1, null, segments);
-    module.setMemory(
-        memoryInfo.initial,
-        memoryInfo.max ?? -1,
-        null,
-        [
-            ...normalizedSegments,
-            {
-                offset: 0,
-                data: jsEncoded,
-                passive: true
-            }
-        ],
-        undefined,
-        undefined,
-        '0'
+    const envVarsEncoded = new TextEncoder().encode(
+        JSON.stringify(compilerInfo.env_vars)
     );
 
-    module.removeFunction('passive_data_size');
+    module.setMemory(memoryInfo.initial, memoryInfo.max ?? -1, null, [
+        ...normalizedSegments,
+        {
+            offset: 0,
+            data: jsEncoded,
+            passive: true
+        },
+        {
+            offset: 0,
+            data: envVarsEncoded,
+            passive: true
+        }
+    ]);
+
+    module.removeFunction('js_passive_data_size');
     module.removeFunction('init_js_passive_data');
 
     module.addFunction(
-        'passive_data_size',
+        'js_passive_data_size',
         binaryen.none,
         binaryen.i32,
         [],
         module.i32.const(jsEncoded.byteLength)
     );
+
+    const jsPassiveDataSegmentNumber = normalizedSegments.length;
 
     module.addFunction(
         'init_js_passive_data',
@@ -163,13 +161,46 @@ export async function manipulateWasmBinary(
         [],
         module.block(null, [
             module.memory.init(
-                '2' as unknown as number, // TODO do not hard code any of these
+                jsPassiveDataSegmentNumber.toString() as unknown as number,
                 module.local.get(0, binaryen.i32),
                 module.i32.const(0),
-                module.i32.const(jsEncoded.byteLength),
-                '0'
+                module.i32.const(jsEncoded.byteLength)
             ),
-            module.data.drop('2' as unknown as number),
+            module.data.drop(
+                jsPassiveDataSegmentNumber.toString() as unknown as number
+            ),
+            module.return(module.local.get(0, binaryen.i32))
+        ])
+    );
+
+    module.removeFunction('env_vars_passive_data_size');
+    module.removeFunction('init_env_vars_passive_data');
+
+    module.addFunction(
+        'env_vars_passive_data_size',
+        binaryen.none,
+        binaryen.i32,
+        [],
+        module.i32.const(envVarsEncoded.byteLength)
+    );
+
+    const envVarsPassiveDataSegmentNumber = normalizedSegments.length + 1;
+
+    module.addFunction(
+        'init_env_vars_passive_data',
+        binaryen.createType([binaryen.i32]),
+        binaryen.i32, // TODO just to stop weird Rust optimizations
+        [],
+        module.block(null, [
+            module.memory.init(
+                envVarsPassiveDataSegmentNumber.toString() as unknown as number,
+                module.local.get(0, binaryen.i32),
+                module.i32.const(0),
+                module.i32.const(envVarsEncoded.byteLength)
+            ),
+            module.data.drop(
+                envVarsPassiveDataSegmentNumber.toString() as unknown as number
+            ),
             module.return(module.local.get(0, binaryen.i32))
         ])
     );

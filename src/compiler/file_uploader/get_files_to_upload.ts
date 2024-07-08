@@ -12,7 +12,7 @@ export function getFilesToUpload(
     if (srcPath === undefined && destPath === undefined) {
         // If both paths are undefined, look at the dfx.json for the assets to upload
         const dfxJson = unwrap(getCanisterConfig(canisterName));
-        return dfxJson.assets_large ?? [];
+        return dfxJson.assets ?? [];
     }
     throw new Error(
         'The source path and destination path must be either both defined or both undefined'
