@@ -1,5 +1,4 @@
 {
-    "name": "manual_reply_end_to_end_test_functional_syntax",
     "scripts": {
         "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
         "test": "ts-node --transpile-only --ignore=false test/test.ts"
@@ -9,6 +8,7 @@
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
+        "manual_reply_end_to_end_test_functional_syntax": "file:../../../../../examples/manual_reply",
         "ts-node": "^10.9.1",
         "typescript": "^5.2.2"
     }

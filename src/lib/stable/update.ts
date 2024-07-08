@@ -4,7 +4,10 @@ import { executeWithCandidSerde } from './execute_with_candid_serde';
 
 export function update(
     paramIdls: IDL.Type[],
-    returnIdl?: IDL.Type
+    returnIdl?: IDL.Type,
+    options?: {
+        manual?: boolean;
+    }
 ): MethodDecorator {
     return <T>(
         target: object,
@@ -20,7 +23,7 @@ export function update(
                 originalMethod,
                 paramIdls,
                 returnIdl,
-                false // TODO implement manual check
+                options?.manual ?? false
             );
         };
 

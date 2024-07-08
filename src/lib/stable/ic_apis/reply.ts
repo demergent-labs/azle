@@ -7,12 +7,16 @@ import { IDL } from '..';
  * is the generic type supplied to `Manual<T>`. Otherwise will result in an
  * uncaught `TypeError`.
  */
-export function reply<T>(data: T, type: IDL.Type<T>): void {
+export function reply<T>(data: T, type?: IDL.Type): void {
     if (globalThis._azleIc === undefined) {
         return undefined as any;
     }
 
-    return globalThis._azleIc.replyRaw(
-        new Uint8Array(IDL.encode([type], [data])).buffer
-    );
+    // TODO is void best represented as IDL.encode([], [])?
+    const encoded =
+        type === undefined
+            ? new Uint8Array(IDL.encode([], [])).buffer
+            : new Uint8Array(IDL.encode([type], [data])).buffer;
+
+    return globalThis._azleIc.replyRaw(encoded);
 }
