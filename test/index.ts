@@ -1,4 +1,3 @@
-import { execSync } from 'child_process';
 // TODO import deepEqual from 'deep-is' works for some
 // TODO import { deepEqual } from 'deep-is' works for others
 // TODO require seems to work for all of them
@@ -7,35 +6,18 @@ const deepEqual = require('deep-is');
 
 import { jsonStringify } from '../src/lib/json';
 
-export type Test<Context = any> = {
+export type Test<> = {
     name: string;
     skip?: boolean;
     wait?: number;
-    prep?: (context: Context) => Promise<Context | void>;
-    test?: (context: Context) => Promise<AzleResult<string, Context>>;
+    prep?: () => Promise<void>;
+    test?: () => Promise<AzleResult<string>>;
 };
 
-// export type Variant<T> = Partial<T>;
-
-export type AzleResult<E, Context = any> = Partial<{
-    Ok: { isSuccessful: boolean; message?: string; context?: Context };
+type AzleResult<E> = Partial<{
+    Ok: { isSuccessful: boolean; message?: string };
     Err: E;
 }>;
-
-export type Ok<Context> = {
-    Ok: { isSuccessful: boolean; message?: string; context?: Context };
-};
-
-// TODO let's get rid of this function in all tests and use match instead
-export function ok<E, Context>(
-    azle_result: AzleResult<E, Context>
-): azle_result is Ok<Context> {
-    if (azle_result.Err === undefined) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 // TODO should this just return a boolean?
 // TODO then the function calling can decide to throw or not
@@ -43,7 +25,6 @@ export async function runTests(
     tests: Test[],
     exitProcess: boolean = true
 ): Promise<boolean> {
-    let context = undefined;
     for (const test of tests) {
         try {
             if (test.skip === true) {
@@ -68,18 +49,17 @@ export async function runTests(
             }
 
             if (test.prep !== undefined) {
-                context = (await test.prep(context)) ?? context;
                 continue;
             }
 
-            const result: AzleResult<string, any> =
+            const result: AzleResult<string> =
                 test.test !== undefined
-                    ? await test.test(context)
+                    ? await test.test()
                     : {
                           Err: 'test is not defined'
                       };
 
-            if (!ok(result)) {
+            if (result.Err !== undefined || result.Ok === undefined) {
                 console.info('\x1b[31m', `test: ${test.name} failed`);
                 console.info('\x1b[31m', `${result.Err}`);
                 console.info('\x1b[0m');
@@ -89,10 +69,6 @@ export async function runTests(
                 } else {
                     return false;
                 }
-            }
-
-            if (result.Ok.context !== undefined) {
-                context = result.Ok.context;
             }
 
             if (result.Ok.isSuccessful !== true) {
@@ -130,113 +106,22 @@ export async function runTests(
     return true;
 }
 
-export function deploy(canisterName: string, argument?: string): Test[] {
-    return [
-        {
-            // TODO hopefully we can get rid of this: https://forum.dfinity.org/t/generated-declarations-in-node-js-environment-break/12686/16?u=lastmjs
-            name: 'waiting for createActor fetchRootKey',
-            wait: 5000
-        },
-        {
-            name: `create canister ${canisterName}`,
-            prep: async () => {
-                execSync(`dfx canister create ${canisterName}`, {
-                    stdio: 'inherit'
-                });
-            }
-        },
-        {
-            name: 'clear canister memory',
-            prep: async () => {
-                execSync(
-                    `dfx canister uninstall-code ${canisterName} || true`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-            }
-        },
-        {
-            name: `deploy canister ${canisterName}`,
-            prep: async () => {
-                execSync(
-                    `dfx deploy${
-                        argument === undefined ? '' : ` --argument ${argument}`
-                    } ${canisterName}`,
-                    {
-                        stdio: 'inherit'
-                    }
-                );
-            }
-        }
-    ];
-}
-
-type EqualsOptions<Context> = {
-    failMessage?: string;
-    equals?: (actual: any, expected: any) => boolean;
-    toString?: (value: any) => string;
-    context?: Context;
-};
-
 // TODO is is better test framework conformity to call this assertEqual? I'll hold off for now, it should be easy to search for all testEquality and change it, easier than assertEqual I think
 // TODO so based on this I think I've actually seen this in other testing frameworks, assertEquals will take two and make sure they are equals, and assert will take one boolean. Right now we have test instead of assert but it would be easy to change
-export function testEquality<Context, T = any>(
+export function testEquality<T = any>(
     actual: T,
-    expected: T,
-    options?: EqualsOptions<Context>
-): AzleResult<string, Context> {
-    const equals = options?.equals ?? deepEqual;
-    const valueToString = options?.toString ?? jsonStringify;
+    expected: T
+): AzleResult<string> {
+    const equals = deepEqual;
+    const valueToString = jsonStringify;
 
     if (equals(actual, expected)) {
-        return succeed(options?.context);
+        return { Ok: { isSuccessful: true } };
     } else {
-        const message =
-            options?.failMessage ??
-            `Expected: ${valueToString(expected)}, Received: ${valueToString(
-                actual
-            )}`;
-        return fail(message);
-    }
-}
-
-export function succeed<Context>(context?: Context): AzleResult<string> {
-    return { Ok: { isSuccessful: true, context } };
-}
-
-export function fail(message?: string): AzleResult<string> {
-    return { Ok: { isSuccessful: false, message } };
-}
-
-export function error(message: string): AzleResult<string> {
-    return { Err: message };
-}
-
-// TODO when Jordan asks why we have this show call_raw, it's a great example for why we should have this guy
-// But this is quickly boiling down to sugar and we are looking at the difference between
-// return test(
-//     result.Ok.includes('blob'),
-//     `Expected result to be a candid blob. Received ${result.Ok}`
-// );
-// and
-// return {
-//     Ok: {
-//         isSuccessful: result.Ok.includes('blob'),
-//         message: `Expected result to be a candid blob. Received ${result.Ok}`
-//     }
-// };
-// TODO date has a good example of when we would want to have an error message I think
-// TODO ethers_base also
-export function test<Context>(
-    succeeds: boolean,
-    message?: string,
-    context?: Context
-): AzleResult<string, Context> {
-    if (succeeds) {
-        return succeed(context);
-    } else {
-        return fail(message);
+        const message = `Expected: ${valueToString(
+            expected
+        )}, Received: ${valueToString(actual)}`;
+        return { Ok: { isSuccessful: false, message } };
     }
 }
 
