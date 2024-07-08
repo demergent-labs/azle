@@ -41,7 +41,6 @@ export function executeWithCandidSerde(
                             new Uint8Array(IDL.encode([returnIdl], [result]))
                         );
                     } else {
-                        // TODO is void best represented as IDL.encode([], [])?
                         ic.replyRaw(new Uint8Array(IDL.encode([], [])));
                     }
                 }
@@ -54,7 +53,6 @@ export function executeWithCandidSerde(
             if (returnIdl !== undefined) {
                 ic.replyRaw(new Uint8Array(IDL.encode([returnIdl], [result])));
             } else {
-                // TODO is void best represented as IDL.encode([], [])?
                 ic.replyRaw(new Uint8Array(IDL.encode([], [])));
             }
         }

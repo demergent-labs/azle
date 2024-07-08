@@ -12,7 +12,6 @@ export function reply<T>(data: T, type?: IDL.Type): void {
         return undefined as any;
     }
 
-    // TODO is void best represented as IDL.encode([], [])?
     const encoded =
         type === undefined
             ? new Uint8Array(IDL.encode([], [])).buffer
