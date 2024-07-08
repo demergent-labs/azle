@@ -14,10 +14,13 @@ export type Test<> = {
     test?: () => Promise<AzleResult<string>>;
 };
 
-type AzleResult<E> = Partial<{
-    Ok: { isSuccessful: boolean; message?: string };
-    Err: E;
-}>;
+// TODO get rid of this union once the jest migration is complete
+type AzleResult<E> =
+    | Partial<{
+          Ok: { isSuccessful: boolean; message?: string };
+          Err: E;
+      }>
+    | Partial<{ Ok: boolean; Err: E }>;
 
 // TODO should this just return a boolean?
 // TODO then the function calling can decide to throw or not
@@ -71,10 +74,20 @@ export async function runTests(
                 }
             }
 
-            if (result.Ok.isSuccessful !== true) {
+            // TODO replace this with the below commented out code once jest migration is complete
+            const message =
+                typeof result.Ok === 'object' && result.Ok !== null
+                    ? result.Ok.message
+                    : undefined;
+            const successful =
+                typeof result.Ok === 'boolean'
+                    ? result.Ok
+                    : result.Ok.isSuccessful;
+
+            if (successful !== true) {
                 console.info('\x1b[31m', `test: ${test.name} failed`);
-                if (result.Ok.message !== undefined) {
-                    console.info('\x1b[31m', `${result.Ok.message}`);
+                if (message !== undefined) {
+                    console.info('\x1b[31m', `${message}`);
                 }
                 console.info('\x1b[0m');
 
@@ -84,6 +97,21 @@ export async function runTests(
                     return false;
                 }
             }
+
+            // TODO bring this back once jest migration is complete
+            // if (result.Ok.isSuccessful !== true) {
+            //     console.info('\x1b[31m', `test: ${test.name} failed`);
+            //     if (result.Ok.message !== undefined) {
+            //         console.info('\x1b[31m', `${result.Ok.message}`);
+            //     }
+            //     console.info('\x1b[0m');
+
+            //     if (exitProcess) {
+            //         process.exit(1);
+            //     } else {
+            //         return false;
+            //     }
+            // }
 
             console.info('\x1b[32m', `test: ${test.name} passed`);
             console.info('\x1b[0m');
