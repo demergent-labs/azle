@@ -56,15 +56,15 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         .map(|(key, value)| quote!((#key, #value)))
         .collect();
 
-    let init_method_call = compiler_info.canister_methods.init.map(|init_method| {
-        let js_function_name = &init_method.name;
-
-        quote!(execute_js(#js_function_name, true);)
-    });
+    let init_method_call = compiler_info
+        .canister_methods
+        .init
+        .map(|init_method| quote!(execute_js(function_index, true);));
 
     let init_method = quote! {
-        #[ic_cdk_macros::init]
-        fn init() {
+        #[no_mangle]
+        #[allow(unused)]
+        pub fn init(function_index: i32, pass_arg_data: i32) {
             let polyfill_memory =
                 MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
             ic_wasi_polyfill::init_with_memory(&[], &[#(#env_vars),*], polyfill_memory);
@@ -73,7 +73,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
             let js = get_js_code();
 
-            initialize_js(std::str::from_utf8(&js).unwrap(), true);
+            initialize_js(std::str::from_utf8(&js).unwrap(), true, function_index, pass_arg_data);
 
             ic_cdk::spawn(async {
                 let consumer = get_consumer("consumer.json").unwrap();
@@ -82,19 +82,15 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         }
     };
 
-    let post_upgrade_method_call =
-        compiler_info
-            .canister_methods
-            .post_upgrade
-            .map(|post_upgrade_method| {
-                let js_function_name = &post_upgrade_method.name;
-
-                quote!(execute_js(#js_function_name, true);)
-            });
+    let post_upgrade_method_call = compiler_info
+        .canister_methods
+        .post_upgrade
+        .map(|post_upgrade_method| quote!(execute_js(function_index, true);));
 
     let post_upgrade_method = quote! {
-        #[ic_cdk_macros::post_upgrade]
-        fn post_upgrade() {
+        #[no_mangle]
+        #[allow(unused)]
+        pub fn post_upgrade(function_index: i32, pass_arg_data: i32) {
             let polyfill_memory =
                 MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
             ic_wasi_polyfill::init_with_memory(&[], &[#(#env_vars),*], polyfill_memory);
@@ -103,7 +99,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
             let js = get_js_code();
 
-            initialize_js(std::str::from_utf8(&js).unwrap(), false);
+            initialize_js(std::str::from_utf8(&js).unwrap(), false, function_index, pass_arg_data);
 
             ic_cdk::spawn(async {
                 let consumer = get_consumer("consumer.json").unwrap();
@@ -220,11 +216,11 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
         #post_upgrade_method
 
-        #pre_upgrade_method
+        // #pre_upgrade_method
 
-        #inspect_message_method
+        // #inspect_message_method
 
-        #heartbeat_method
+        // #heartbeat_method
 
         // #(#query_methods)*
 
@@ -237,7 +233,7 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 .to_string()
         }
 
-        fn initialize_js(js: &str, init: bool) {
+        fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i32) {
             let mut rt = wasmedge_quickjs::Runtime::new();
 
             let r = rt.run_with_context(|context| {
@@ -268,13 +264,11 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 *runtime = Some(rt);
             });
 
-            if init == true {
-                #init_method_call
-            }
-            else {
-                #post_upgrade_method_call
+            if function_index != -1 {
+                execute_js(function_index, pass_arg_data);
             }
 
+            // TODO should this only run if it the dev's init/post_upgrade method was called?
             RUNTIME.with(|runtime| {
                 let mut runtime = runtime.borrow_mut();
                 let runtime = runtime.as_mut().unwrap();

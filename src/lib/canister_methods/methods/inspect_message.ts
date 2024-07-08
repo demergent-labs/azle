@@ -15,6 +15,7 @@ export function inspectMessage(
         paramCandidTypes: [],
         returnCandidType: Void,
         async: false,
-        guard: undefined
+        guard: undefined,
+        index: globalThis._azleCanisterMethodsIndex++
     };
 }

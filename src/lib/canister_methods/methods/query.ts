@@ -39,6 +39,7 @@ export function query<
         paramCandidTypes: paramCandidTypes as unknown as CandidType[],
         returnCandidType,
         async: callback === undefined ? false : isAsync(callback),
-        guard: methodArgs?.guard
+        guard: methodArgs?.guard,
+        index: globalThis._azleCanisterMethodsIndex++
     };
 }

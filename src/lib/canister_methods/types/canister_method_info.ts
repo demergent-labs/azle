@@ -16,4 +16,5 @@ export type CanisterMethodInfo<T extends ReadonlyArray<any>, K> = {
     paramCandidTypes: any[];
     returnCandidType: any;
     guard: (() => any) | undefined;
+    index: number;
 };

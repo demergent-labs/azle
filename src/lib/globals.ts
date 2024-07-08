@@ -64,12 +64,16 @@ declare global {
     var _azlePostUpgradeCalled: boolean;
     // eslint-disable-next-line no-var
     var _azleCanisterMethods: CanisterMethods;
+    // eslint-disable-next-line no-var
+    var _azleCanisterMethodsIndex: number;
 }
 
 globalThis._azleInsideCanister =
     globalThis._azleIc === undefined ? false : true;
 
 if (globalThis._azleInsideCanister) {
+    globalThis._azleCanisterMethodsIndex = 0;
+
     globalThis._azleCanisterMethods = {
         candid: '',
         queries: [],

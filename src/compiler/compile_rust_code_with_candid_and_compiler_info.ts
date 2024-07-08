@@ -20,5 +20,11 @@ export function compileRustCodeWithCandidAndCompilerInfo(
     // TODO why not just write the dfx.json file here as well?
     writeFileSync(compilerInfoPath, JSON.stringify(compilerInfo));
 
-    compileRustCode(canisterName, stdioType, nativeCompilation, js);
+    compileRustCode(
+        canisterName,
+        stdioType,
+        nativeCompilation,
+        js,
+        compilerInfo
+    );
 }

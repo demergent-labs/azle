@@ -6,6 +6,7 @@ import { readFileSync, writeFileSync } from 'fs'; // TODO let's do async
 import { join } from 'path';
 
 import { AZLE_PACKAGE_PATH } from './utils/global_paths';
+import { CompilerInfo } from './utils/types';
 
 // TODO put the licenses in the binary? Or with Azle? Probably with Azle actually
 // TODO it would be neat to be the licenses in all Azle binaries though
@@ -13,8 +14,8 @@ import { AZLE_PACKAGE_PATH } from './utils/global_paths';
 
 export async function manipulateWasmBinary(
     canisterName: string,
-    methodInfos: string[], // TODO should this be canisterMethodInfos? How do we get that info though?
-    js: string
+    js: string,
+    compilerInfo: CompilerInfo
 ) {
     const originalWasm = readFileSync(
         join(AZLE_PACKAGE_PATH, `static_canister_template.wasm`)
@@ -27,32 +28,79 @@ export async function manipulateWasmBinary(
     //     module.emitText()
     // );
 
-    const executeJsIndex = module.getFunction('execute_js');
+    compilerInfo.canister_methods.queries.forEach(
+        ({ name: functionName, index, composite }) => {
+            addCanisterMethod(
+                module,
+                `${
+                    composite === true
+                        ? 'canister_composite_query'
+                        : 'canister_query'
+                } ${functionName}`,
+                'execute_js',
+                index,
+                true
+            );
+        }
+    );
 
-    // TODO is 0 the correct index to check for?
-    if (executeJsIndex === 0) {
-        throw new Error('execute_js function not found in the Wasm module');
+    compilerInfo.canister_methods.updates.forEach(
+        ({ name: functionName, index }) => {
+            addCanisterMethod(
+                module,
+                `canister_update ${functionName}`,
+                'execute_js',
+                index,
+                true
+            );
+        }
+    );
+
+    addCanisterMethod(
+        module,
+        'canister_init',
+        'init',
+        compilerInfo.canister_methods.init?.index ?? -1,
+        true
+    );
+
+    addCanisterMethod(
+        module,
+        'canister_post_upgrade',
+        'post_upgrade',
+        compilerInfo.canister_methods.post_upgrade?.index ?? -1,
+        true
+    );
+
+    if (compilerInfo.canister_methods.pre_upgrade !== undefined) {
+        addCanisterMethod(
+            module,
+            'canister_pre_upgrade',
+            'execute_js',
+            compilerInfo.canister_methods.pre_upgrade.index,
+            false
+        );
     }
 
-    methodInfos.forEach((functionName, index) => {
-        const exportedName = `canister_query ${functionName}`;
-
-        const funcBody = module.block(null, [
-            module.call('execute_js', [module.i32.const(index)], binaryen.none)
-        ]);
-
-        module.addFunction(
-            exportedName,
-            binaryen.none,
-            binaryen.none,
-            [],
-            funcBody
+    if (compilerInfo.canister_methods.inspect_message !== undefined) {
+        addCanisterMethod(
+            module,
+            'canister_inspect_message',
+            'execute_js',
+            compilerInfo.canister_methods.inspect_message.index,
+            true
         );
+    }
 
-        module.addFunctionExport(exportedName, exportedName);
-    });
-
-    const jsData = new Uint8Array();
+    if (compilerInfo.canister_methods.heartbeat !== undefined) {
+        addCanisterMethod(
+            module,
+            'canister_heartbeat',
+            'execute_js',
+            compilerInfo.canister_methods.heartbeat.index,
+            false
+        );
+    }
 
     const memoryInfo = module.getMemoryInfo();
 
@@ -66,8 +114,6 @@ export async function manipulateWasmBinary(
         segments.push(segment);
     }
 
-    // throw new Error(`typeof: ${segments[0].data instanceof Uint8Array}`);
-
     const normalizedSegments = segments.map((segment) => {
         return {
             offset: module.i32.const(segment.offset),
@@ -76,7 +122,7 @@ export async function manipulateWasmBinary(
         };
     });
 
-    const lastActiveSegment = normalizedSegments[normalizedSegments.length - 1];
+    // const lastActiveSegment = normalizedSegments[normalizedSegments.length - 1];
 
     const jsEncoded = new TextEncoder().encode(js);
 
@@ -99,8 +145,6 @@ export async function manipulateWasmBinary(
         '0'
     );
 
-    console.log('jsEncoded.byteLength', jsEncoded.byteLength);
-
     module.removeFunction('passive_data_size');
     module.removeFunction('init_js_passive_data');
 
@@ -119,7 +163,7 @@ export async function manipulateWasmBinary(
         [],
         module.block(null, [
             module.memory.init(
-                '2' as unknown as number,
+                '2' as unknown as number, // TODO do not hard code any of these
                 module.local.get(0, binaryen.i32),
                 module.i32.const(0),
                 module.i32.const(jsEncoded.byteLength),
@@ -140,4 +184,27 @@ export async function manipulateWasmBinary(
 
     // writeFileSync(`.azle/${canisterName}/${canisterName}.wat`, newWat);
     writeFileSync(`.azle/${canisterName}/${canisterName}.wasm`, newWasm);
+}
+
+function addCanisterMethod(
+    module: binaryen.Module,
+    exportName: string,
+    functionToCall: string,
+    index: number,
+    passArgData: boolean
+) {
+    const funcBody = module.block(null, [
+        module.call(
+            functionToCall,
+            [
+                module.i32.const(index),
+                module.i32.const(passArgData === true ? 1 : 0)
+            ],
+            binaryen.none
+        )
+    ]);
+
+    module.addFunction(exportName, binaryen.none, binaryen.none, [], funcBody);
+
+    module.addFunctionExport(exportName, exportName);
 }

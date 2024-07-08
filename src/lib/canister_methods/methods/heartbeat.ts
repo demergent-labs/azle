@@ -12,7 +12,8 @@ export function heartbeat(
         paramCandidTypes: [],
         returnCandidType: Void,
         async: isAsync(callback),
-        guard: undefined
+        guard: undefined,
+        index: globalThis._azleCanisterMethodsIndex++
     };
 }
 

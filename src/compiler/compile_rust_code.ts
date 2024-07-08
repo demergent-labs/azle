@@ -3,16 +3,15 @@ import { IOType } from 'child_process';
 import { manipulateWasmBinary } from './manipulate_wasm_binary';
 import { execSyncPretty } from './utils/exec_sync_pretty';
 import { STATIC_CANISTER_TEMPLATE_PATH } from './utils/global_paths';
+import { CompilerInfo } from './utils/types';
 
 // TODO change this to explain that we are just manipulating the Wasm binary
-// TODO rip out all Podman stuff if possible
-// TODO make an automatic way to compile the binary and move it to the correct location
-// TODO because right now we have to manually grab the binary
 export function compileRustCode(
     canisterName: string,
     stdio: IOType,
     nativeCompilation: boolean,
-    js: string
+    js: string,
+    compilerInfo: CompilerInfo
 ) {
     if (nativeCompilation === true) {
         compileRustCodeNatively(
@@ -32,7 +31,7 @@ export function compileRustCode(
     }
 
     // TODO do a check to make sure binary exists?
-    manipulateWasmBinary(canisterName, ['simpleQuery'], js);
+    manipulateWasmBinary(canisterName, js, compilerInfo);
 }
 
 function compileRustCodeNatively(

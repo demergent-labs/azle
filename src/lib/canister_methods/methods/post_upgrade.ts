@@ -34,6 +34,7 @@ export function postUpgrade<
         paramCandidTypes: paramCandidTypes as unknown as CandidType[],
         returnCandidType: Void,
         async: false,
-        guard: undefined
+        guard: undefined,
+        index: globalThis._azleCanisterMethodsIndex++
     };
 }

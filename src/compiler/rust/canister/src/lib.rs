@@ -90,13 +90,12 @@ canister_methods!();
 
 #[no_mangle]
 #[allow(unused)]
-pub fn execute_js(function_index: i32) {
-    ic_cdk::println!("execute_js function index: {}", function_index);
+pub fn execute_js(function_index: i32, pass_arg_data: i32) {
+    ic_cdk::println!("execute_js function_index: {}", function_index);
+    ic_cdk::println!("execute_js pass_arg_data: {}", pass_arg_data);
 
-    // TODO hook up the function indexes somehow
-    // let function_name = "simpleQuery";
     let function_name = &function_index.to_string();
-    let pass_arg_data = true;
+    let pass_arg_data = if pass_arg_data == 1 { true } else { false };
 
     RUNTIME.with(|runtime| {
         let mut runtime = runtime.borrow_mut();
