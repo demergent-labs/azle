@@ -1,5 +1,4 @@
 {
-    "name": "guard_functions_end_to_end_test_functional_syntax",
     "scripts": {
         "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
         "test": "jest"
@@ -9,6 +8,7 @@
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
+        "guard_functions_end_to_end_test_functional_syntax": "file:../../../../../examples/guard_functions",
         "jest": "^29.7.0",
         "ts-jest": "^29.1.4",
         "ts-node": "^10.9.1",
