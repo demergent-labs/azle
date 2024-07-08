@@ -1,9 +1,7 @@
-import { createHash } from 'crypto';
-import { readFileSync } from 'fs';
-import { hashOfDirectory } from 'hash-of-directory';
 import { join } from 'path';
 
 import { getCanisterId } from '../../dfx';
+import { version } from '../../package.json';
 import {
     getCanisterConfig,
     getCanisterName,
@@ -11,31 +9,14 @@ import {
     unwrap
 } from './utils';
 import { execSyncPretty } from './utils/exec_sync_pretty';
-import {
-    AZLE_PACKAGE_PATH,
-    GLOBAL_AZLE_CONFIG_DIR
-} from './utils/global_paths';
+import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { CanisterConfig } from './utils/types';
 
 export async function getNamesBeforeCli() {
     const stdioType = getStdIoType();
 
-    const dockerfilePath = join(AZLE_PACKAGE_PATH, 'Dockerfile');
-    const dockerfileHash = await getDockerfileHash(dockerfilePath);
-    const dockerImagePrefix = 'azle__image__';
-    const dockerImageName = `${dockerImagePrefix}${dockerfileHash}`;
-    const dockerContainerPrefix = 'azle__container__';
-    const dockerContainerName = `${dockerContainerPrefix}${dockerfileHash}`;
-    const wasmedgeQuickJsName = `wasmedge-quickjs_${dockerfileHash}`;
+    const wasmedgeQuickJsName = `wasmedge-quickjs_${version}`;
 
-    const dockerImagePathTar = join(
-        GLOBAL_AZLE_CONFIG_DIR,
-        `${dockerImageName}.tar`
-    );
-    const dockerImagePathTarGz = join(
-        GLOBAL_AZLE_CONFIG_DIR,
-        `${dockerImageName}.tar.gz`
-    );
     const wasmedgeQuickJsPath = join(
         GLOBAL_AZLE_CONFIG_DIR,
         wasmedgeQuickJsName
@@ -49,14 +30,7 @@ export async function getNamesBeforeCli() {
 
     return {
         stdioType,
-        dockerfileHash,
-        dockerImagePrefix,
-        dockerImageName,
-        dockerContainerPrefix,
-        dockerContainerName,
         wasmedgeQuickJsName,
-        dockerImagePathTar,
-        dockerImagePathTarGz,
         wasmedgeQuickJsPath,
         replicaWebServerPort,
         nativeCompilation
@@ -119,25 +93,6 @@ export function getNamesAfterCli() {
         esmAliases,
         esmExternals
     };
-}
-
-async function getDockerfileHash(dockerfilePath: string): Promise<string> {
-    if (process.env.AZLE_DOCKERFILE_HASH !== undefined) {
-        return process.env.AZLE_DOCKERFILE_HASH;
-    }
-
-    let hasher = createHash('sha256');
-
-    const rustDirectory = join(AZLE_PACKAGE_PATH, 'src', 'compiler', 'rust');
-    const rustDirectoryHash = await hashOfDirectory(rustDirectory);
-
-    hasher.update(rustDirectoryHash);
-
-    const dockerfile = readFileSync(dockerfilePath);
-
-    hasher.update(dockerfile);
-
-    return hasher.digest('hex');
 }
 
 function getEnvVars(canisterConfig: CanisterConfig): [string, string][] {

@@ -7,7 +7,8 @@
         "typecheck": "tsc --noEmit",
         "lint": "if [ \"$npm_config_fix\" ]; then eslint . --ext .js,.ts --cache --fix; else eslint . --ext .js,.ts --cache; fi",
         "prepare": "husky install",
-        "test": "test/test.sh"
+        "test": "test/test.sh",
+        "install": "./install_script.sh"
     },
     "type": "module",
     "bin": {

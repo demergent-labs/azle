@@ -8,7 +8,6 @@ import { getCandidAndCanisterMethods } from './get_candid_and_canister_methods';
 import { getCanisterJavaScript } from './get_canister_javascript';
 import { getNamesAfterCli, getNamesBeforeCli } from './get_names';
 import { handleCli } from './handle_cli';
-import { prepareDockerImage } from './prepare_docker_image';
 import { prepareRustStagingArea } from './prepare_rust_staging_area';
 import { getStdIoType, logSuccess, time, unwrap } from './utils';
 import { green } from './utils/colors';
@@ -32,24 +31,12 @@ async function azle() {
 
     const {
         stdioType,
-        dockerfileHash,
-        dockerContainerPrefix,
-        dockerImagePrefix,
-        dockerImageName,
-        dockerImagePathTar,
-        dockerImagePathTarGz,
-        dockerContainerName,
         wasmedgeQuickJsPath,
         replicaWebServerPort,
         nativeCompilation
     } = await getNamesBeforeCli();
 
-    const commandExecuted = handleCli(
-        stdioType,
-        dockerfileHash,
-        dockerContainerPrefix,
-        dockerImagePrefix
-    );
+    const commandExecuted = handleCli();
 
     if (commandExecuted === true) {
         return;
@@ -86,17 +73,6 @@ async function azle() {
         async () => {
             createAzleDirectories();
 
-            if (nativeCompilation === false) {
-                prepareDockerImage(
-                    stdioType,
-                    dockerImageName,
-                    dockerImagePathTar,
-                    dockerImagePathTarGz,
-                    dockerContainerName,
-                    wasmedgeQuickJsPath
-                );
-            }
-
             const canisterJavaScript = unwrap(
                 await getCanisterJavaScript(
                     canisterConfig.main,
@@ -117,7 +93,6 @@ async function azle() {
                 canisterConfig.candid_gen,
                 candidPath,
                 compilerInfoPath,
-                dockerContainerName,
                 canisterName,
                 stdioType,
                 envVars,
@@ -145,7 +120,6 @@ async function azle() {
                 candid,
                 compilerInfoPath,
                 compilerInfo,
-                dockerContainerName,
                 canisterName,
                 stdioType,
                 nativeCompilation,

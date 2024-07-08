@@ -9,7 +9,6 @@ import { STATIC_CANISTER_TEMPLATE_PATH } from './utils/global_paths';
 // TODO make an automatic way to compile the binary and move it to the correct location
 // TODO because right now we have to manually grab the binary
 export function compileRustCode(
-    dockerContainerName: string,
     canisterName: string,
     stdio: IOType,
     nativeCompilation: boolean,
@@ -34,48 +33,6 @@ export function compileRustCode(
 
     // TODO do a check to make sure binary exists?
     manipulateWasmBinary(canisterName, ['simpleQuery'], js);
-}
-
-function _compileRustCodeWithPodman(
-    dockerContainerName: string,
-    canisterName: string,
-    stdio: IOType
-) {
-    execSyncPretty(
-        `podman exec ${dockerContainerName} rm -rf /.azle/${canisterName}`,
-        stdio
-    );
-
-    execSyncPretty(`podman exec ${dockerContainerName} mkdir -p /.azle`, stdio);
-
-    execSyncPretty(
-        `podman exec ${dockerContainerName} mkdir -p /global_target_dir`,
-        stdio
-    );
-
-    execSyncPretty(
-        `podman cp .azle/${canisterName} ${dockerContainerName}:/.azle`,
-        stdio
-    );
-
-    execSyncPretty(
-        `podman exec -w /.azle/${canisterName} ${dockerContainerName} env CARGO_TARGET_DIR=/global_target_dir cargo build --target wasm32-wasi --manifest-path canister/Cargo.toml --release`,
-        stdio
-    );
-
-    execSyncPretty(
-        `podman exec -w /.azle/${canisterName} ${dockerContainerName} wasi2ic /global_target_dir/wasm32-wasi/release/canister.wasm /global_target_dir/wasm32-wasi/release/canister.wasm`,
-        stdio
-    );
-
-    const wasmDest =
-        process.env.AZLE_WASM_DEST ??
-        `.azle/${canisterName}/${canisterName}.wasm`;
-
-    execSyncPretty(
-        `podman cp ${dockerContainerName}:/global_target_dir/wasm32-wasi/release/canister.wasm ${wasmDest}`,
-        stdio
-    );
 }
 
 function compileRustCodeNatively(
