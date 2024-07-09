@@ -32,10 +32,6 @@ mod reply_raw;
 mod set_certified_data;
 mod set_timer;
 mod set_timer_interval;
-mod stable64_grow;
-mod stable64_read;
-mod stable64_size;
-mod stable64_write;
 mod stable_b_tree_map_contains_key;
 mod stable_b_tree_map_get;
 mod stable_b_tree_map_init;
@@ -282,41 +278,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     );
 
     ic.set(
-        "stable64Grow",
-        context
-            .new_function::<stable64_grow::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "stable64Read",
-        context
-            .new_function::<stable64_read::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "stable64Size",
-        context
-            .new_function::<stable64_size::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "stable64Write",
-        context
-            .new_function::<stable64_write::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "stableBytes",
-        context
-            .new_function::<stable_bytes::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
         "stableGrow",
         context
             .new_function::<stable_grow::NativeFunction>("")
@@ -341,6 +302,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         "stableWrite",
         context
             .new_function::<stable_write::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableBytes",
+        context
+            .new_function::<stable_bytes::NativeFunction>("")
             .into(),
     );
 

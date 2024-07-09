@@ -1,4 +1,4 @@
-import { nat32 } from '../candid/types/primitive/nats/nat32';
+import { nat64 } from '../candid/types/primitive/nats/nat64';
 
 /**
  * Reads data from the stable memory location specified by an offset
@@ -6,7 +6,7 @@ import { nat32 } from '../candid/types/primitive/nats/nat32';
  * @param length the length of buffer to read
  * @returns the raw bytes in stable memory
  */
-export function stableRead(offset: nat32, length: nat32): Uint8Array {
+export function stableRead(offset: nat64, length: nat64): Uint8Array {
     if (globalThis._azleIc === undefined) {
         return undefined as any;
     }

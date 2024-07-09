@@ -57,10 +57,6 @@ export type AzleIc = {
     stableRead: (offset: string, length: string) => ArrayBufferLike;
     stableSize: () => string;
     stableWrite: (offset: string, buf: ArrayBufferLike) => void;
-    stable64Grow: (newPages: string) => string;
-    stable64Read: (offset: string, length: string) => ArrayBufferLike;
-    stable64Size: () => string;
-    stable64Write: (offset: string, buf: ArrayBufferLike) => void;
     time: () => string;
     // These calls aren't intercepted by our IC object, they go right to the
     // rust version and come out. Since they don't need to be intercepted I am

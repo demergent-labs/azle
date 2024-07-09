@@ -66,12 +66,12 @@ export async function generateCandidAndCanisterMethods(
             stable_read: (): void => {},
             stable_size: (): void => {},
             stable_write: (): void => {},
+            time: () => 0n,
+            trap: (): void => {},
             stable64_grow: (): void => {},
             stable64_read: (): void => {},
             stable64_size: (): void => {},
-            stable64_write: (): void => {},
-            time: () => 0n,
-            trap: (): void => {}
+            stable64_write: (): void => {}
         }
         // env: {
         //     azle_log(ptr: number, len: number) {

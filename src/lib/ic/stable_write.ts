@@ -1,5 +1,5 @@
 import { blob } from '../candid/types/constructed/blob';
-import { nat32 } from '../candid/types/primitive/nats/nat32';
+import { nat64 } from '../candid/types/primitive/nats/nat64';
 
 /**
  * Writes data to the stable memory location specified by an offset
@@ -10,7 +10,7 @@ import { nat32 } from '../candid/types/primitive/nats/nat32';
  * @param offset the location at which to write
  * @param buffer the data to write
  */
-export function stableWrite(offset: nat32, buf: blob): void {
+export function stableWrite(offset: nat64, buf: blob): void {
     if (globalThis._azleIc === undefined) {
         return undefined as any;
     }

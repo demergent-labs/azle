@@ -5,10 +5,10 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * addressed memory.
  * @returns the current memory size
  */
-export function stable64Size(): nat64 {
+export function stableSize(): nat64 {
     if (globalThis._azleIc === undefined) {
         return undefined as any;
     }
 
-    return BigInt(globalThis._azleIc.stable64Size());
+    return BigInt(globalThis._azleIc.stableSize());
 }

@@ -37,10 +37,6 @@ import { setCertifiedData } from './set_certified_data';
 import { setOutgoingHttpOptions } from './set_outgoing_http_options';
 import { setTimer } from './set_timer';
 import { setTimerInterval } from './set_timer_interval';
-import { stable64Grow } from './stable_64_grow';
-import { stable64Read } from './stable_64_read';
-import { stable64Size } from './stable_64_size';
-import { stable64Write } from './stable_64_write';
 import { stableBytes } from './stable_bytes';
 import { stableGrow } from './stable_grow';
 import { stableRead } from './stable_read';
@@ -97,10 +93,6 @@ export const ic = {
     stableRead,
     stableSize,
     stableWrite,
-    stable64Grow,
-    stable64Read,
-    stable64Size,
-    stable64Write,
     time,
     trap
 };

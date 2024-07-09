@@ -11,7 +11,7 @@ impl JsFn for NativeFunction {
 
         context
             .new_string(
-                &ic_cdk::api::stable::stable_grow(new_pages_string.parse().unwrap())
+                &ic_cdk::api::stable::stable64_grow(new_pages_string.parse().unwrap())
                     .unwrap()
                     .to_string(),
             )

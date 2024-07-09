@@ -6,15 +6,15 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  * Supports 64-bit addressed memory.
  *
  * **Warning:** this will panic if `offset` + `buffer.length` exceeds the
- * current size of stable memory. Use {@link ic.stable64Grow} to request
+ * current size of stable memory. Use {@link ic.stableGrow} to request
  * more stable memory if needed.
  * @param offset the location at which to write
  * @param buffer the data to write
  */
-export function stable64Write(offset: nat64, buf: blob): void {
+export function stableWrite(offset: nat64, buf: blob): void {
     if (globalThis._azleIc === undefined) {
         return undefined as any;
     }
 
-    return globalThis._azleIc.stable64Write(offset.toString(), buf.buffer);
+    return globalThis._azleIc.stableWrite(offset.toString(), buf.buffer);
 }
