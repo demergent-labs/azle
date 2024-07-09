@@ -1,5 +1,5 @@
 import { describe } from '@jest/globals';
-import { Test } from 'azle/test/jest';
+import { Test } from 'azle/test';
 
 import { getTests as getTestsCanister } from './canister';
 import { getTests as getTestsCanisterInitAndPostUpgrade } from './canister_init_and_post_upgrade';
