@@ -1,4 +1,4 @@
-import { callRaw } from './call_raw';
+import { call } from './call';
 import { candidEncode } from './candid_encode';
 import { id } from './id';
 
@@ -7,5 +7,5 @@ export async function chunk(): Promise<void> {
         return undefined as any;
     }
 
-    await callRaw(id(), '_azle_chunk', candidEncode('()'), 0n);
+    await call(id(), '_azle_chunk', { raw: candidEncode('()'), payment: 0n });
 }
