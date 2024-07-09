@@ -3,7 +3,6 @@ import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
 
 import { createActor as createComplexActor } from './dfx_generated/complex_init';
-// @ts-ignore
 import { createActor as createRecActor } from './dfx_generated/rec_init';
 import { getRecTests, getTests } from './tests';
 
