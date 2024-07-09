@@ -1,46 +1,55 @@
-import {
-    blob,
-    Null,
-    Opt,
-    Principal,
-    Record,
-    text,
-    Variant,
-    Vec
-} from '../../src/lib';
+import { IDL, Principal } from '../..';
 
-export const EcdsaCurve = Variant({
-    secp256k1: Null
+export const EcdsaCurve = IDL.Variant({
+    secp256k1: IDL.Null
 });
-export type EcdsaCurve = typeof EcdsaCurve.tsType;
+export type EcdsaCurve = {
+    secp256k1: null;
+};
 
-export const KeyId = Record({
+export const KeyId = IDL.Record({
     curve: EcdsaCurve,
-    name: text
+    name: IDL.Text
 });
-export type KeyId = typeof KeyId.tsType;
+export type KeyId = {
+    curve: EcdsaCurve;
+    name: string;
+};
 
-export const EcdsaPublicKeyArgs = Record({
-    canister_id: Opt(Principal),
-    derivation_path: Vec(blob),
+export const EcdsaPublicKeyArgs = IDL.Record({
+    canister_id: IDL.Opt(IDL.Principal),
+    derivation_path: IDL.Vec(IDL.Vec(IDL.Nat8)),
     key_id: KeyId
 });
-export type EcdsaPublicKeyArgs = typeof EcdsaPublicKeyArgs.tsType;
+export type EcdsaPublicKeyArgs = {
+    canister_id: [Principal] | [];
+    derivation_path: Uint8Array[];
+    key_id: KeyId;
+};
 
-export const EcdsaPublicKeyResult = Record({
-    public_key: blob,
-    chain_code: blob
+export const EcdsaPublicKeyResult = IDL.Record({
+    public_key: IDL.Vec(IDL.Nat8),
+    chain_code: IDL.Vec(IDL.Nat8)
 });
-export type EcdsaPublicKeyResult = typeof EcdsaPublicKeyResult.tsType;
+export type EcdsaPublicKeyResult = {
+    public_key: Uint8Array;
+    chain_code: Uint8Array;
+};
 
-export const SignWithEcdsaArgs = Record({
-    message_hash: blob,
-    derivation_path: Vec(blob),
+export const SignWithEcdsaArgs = IDL.Record({
+    message_hash: IDL.Vec(IDL.Nat8),
+    derivation_path: IDL.Vec(IDL.Vec(IDL.Nat8)),
     key_id: KeyId
 });
-export type SignWithEcdsaArgs = typeof SignWithEcdsaArgs.tsType;
+export type SignWithEcdsaArgs = {
+    message_hash: Uint8Array;
+    derivation_path: Uint8Array[];
+    key_id: KeyId;
+};
 
-export const SignWithEcdsaResult = Record({
-    signature: blob
+export const SignWithEcdsaResult = IDL.Record({
+    signature: IDL.Vec(IDL.Nat8)
 });
-export type SignWithEcdsaResult = typeof SignWithEcdsaResult.tsType;
+export type SignWithEcdsaResult = {
+    signature: Uint8Array;
+};

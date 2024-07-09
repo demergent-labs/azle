@@ -9,15 +9,15 @@ export class AzleText {
 
     static tsType: text;
 
-    static toBytes(data: any) {
+    static toBytes(data: string): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array) {
-        return decode(this, bytes);
+    static fromBytes(bytes: Uint8Array): string {
+        return decode<string>(this, bytes) as string;
     }
 
-    static getIdl() {
+    static getIdl(): IDL.TextClass {
         return IDL.Text;
     }
 }

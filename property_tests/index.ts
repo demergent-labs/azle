@@ -18,7 +18,7 @@ export { getActor } from './get_actor';
 export async function runPropTests(
     canisterArb: fc.Arbitrary<Canister>,
     runTestsSeparately = false
-) {
+): Promise<void> {
     const defaultParams = {
         numRuns: runTestsSeparately
             ? 1

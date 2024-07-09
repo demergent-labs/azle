@@ -12,7 +12,7 @@ export function compileRustCode(
     nativeCompilation: boolean,
     js: string,
     compilerInfo: CompilerInfo
-) {
+): void {
     if (nativeCompilation === true) {
         compileRustCodeNatively(
             `.azle/${canisterName}/${canisterName}.wasm`,
@@ -38,7 +38,7 @@ function compileRustCodeNatively(
     wasmDest: string,
     canisterName: string,
     stdio: IOType
-) {
+): void {
     execSyncPretty(
         `CARGO_TARGET_DIR=target cargo build --target wasm32-wasi --manifest-path .azle/${canisterName}/canister/Cargo.toml --release`,
         stdio

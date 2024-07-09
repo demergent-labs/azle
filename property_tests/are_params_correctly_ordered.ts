@@ -4,7 +4,7 @@ import { CorrespondingJSType } from './arbitraries/candid/corresponding_js_type'
 
 export function areParamsCorrectlyOrdered<T extends CorrespondingJSType>(
     params: Named<CandidValueAndMeta<T>>[]
-) {
+): string {
     return params
         .map(({ name, value }) => {
             const areEqual = `deepEqual(

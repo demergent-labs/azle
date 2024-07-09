@@ -10,7 +10,7 @@ export function postUpgrade(paramIdls: IDL.Type[]): MethodDecorator {
     ): TypedPropertyDescriptor<T> | void => {
         const originalMethod = (descriptor.value as any).bind(target);
 
-        const methodCallback = (...args: any[]) => {
+        const methodCallback = (...args: any[]): void => {
             executeWithCandidSerde(
                 'postUpgrade',
                 args,

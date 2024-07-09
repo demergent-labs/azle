@@ -1,4 +1,5 @@
 {
+    "name": "bitcoin_end_to_end_test_functional_syntax",
     "scripts": {
         "bitcoind": ".bitcoin/bin/bitcoind -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data --port=18444",
         "bitcoin-cli": "bitcoin-cli -conf=$(pwd)/.bitcoin.conf -datadir=$(pwd)/.bitcoin/data -rpcport=18443",

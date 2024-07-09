@@ -4,7 +4,10 @@ import { dirname } from 'path';
 export type Unit = 'B' | 'KiB' | 'MiB' | 'GiB';
 
 // Function to create a file of a specific size in bytes
-export async function generateFileOfSize(path: string, sizeInBytes: number) {
+export async function generateFileOfSize(
+    path: string,
+    sizeInBytes: number
+): Promise<void> {
     await ensureDirectoryExists(path);
     await ensureFileEmptyOrCreate(path);
     await fillFileWithRandomBytes(path, sizeInBytes);
@@ -25,15 +28,18 @@ export function toBytes(numBytes: number, unit: Unit): number {
     throw new Error('Invalid Unit. Must be B, KiB, MiB, or GiB');
 }
 
-async function ensureDirectoryExists(path: string) {
+async function ensureDirectoryExists(path: string): Promise<void> {
     await mkdir(dirname(path), { recursive: true });
 }
 
-async function ensureFileEmptyOrCreate(path: string) {
+async function ensureFileEmptyOrCreate(path: string): Promise<void> {
     await writeFile(path, Buffer.from([]));
 }
 
-async function fillFileWithRandomBytes(path: string, sizeInBytes: number) {
+async function fillFileWithRandomBytes(
+    path: string,
+    sizeInBytes: number
+): Promise<void> {
     const defaultChunkSize = 1024 * 1024; // 1 MiB. Size can be adjusted. By trial and error this gave good speeds and 1MB should be small enough for most machines running this to handle
     const totalChunks = Math.ceil(sizeInBytes / defaultChunkSize);
     for (let i = 0; i < totalChunks; i++) {

@@ -1,8 +1,6 @@
 // TODO maybe this should be Ledger? We should look into making the Ledger
 // better using the latest Wasm and did that I know of
 
-import { ICRC } from 'azle/canisters/icrc';
-import { TransferError } from 'azle/canisters/icrc/icrc_1';
 import {
     blob,
     Canister,
@@ -19,6 +17,8 @@ import {
     text,
     update
 } from 'azle/experimental';
+import { ICRC } from 'azle/experimental/canisters/icrc';
+import { TransferError } from 'azle/experimental/canisters/icrc/icrc_1';
 
 import { Minter, UpdateBalanceResult } from './minter';
 
@@ -211,7 +211,7 @@ function padPrincipalWithZeros(blob: blob): blob {
     return newUin8Array;
 }
 
-function setupCanisters() {
+function setupCanisters(): void {
     ckBTC = ICRC(
         Principal.fromText(
             process.env.CK_BTC_PRINCIPAL ??

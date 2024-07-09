@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-async function pretest() {
+function pretest(): void {
     execSync(`cp ../../.openvaluesharing.json node_modules/unpipe`, {
         stdio: 'inherit'
     });

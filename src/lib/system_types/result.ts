@@ -13,7 +13,7 @@ export class AzleResult<T extends CandidType, K extends CandidType> {
     Ok: T;
     Err: K;
 
-    getIdl(parents: Parent[]) {
+    getIdl(parents: Parent[]): IDL.VariantClass {
         return IDL.Variant({
             Ok: toIdl(this.Ok, parents),
             Err: toIdl(this.Err, parents)
@@ -24,7 +24,7 @@ export class AzleResult<T extends CandidType, K extends CandidType> {
 export function Result<Ok extends CandidType, Err extends CandidType>(
     ok: Ok,
     err: Err
-) {
+): AzleResult<Ok, Err> {
     return new AzleResult<Ok, Err>(ok, err);
 }
 
@@ -40,19 +40,19 @@ export type Result<Ok, Err> = RequireExactlyOne<{
 //
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Result {
-    export function Ok<T>(value: T) {
+    export function Ok<T>(value: T): Result<T, any> {
         return { Ok: value };
     }
 
-    export function Err<T>(value: T) {
+    export function Err<T>(value: T): Result<any, T> {
         return { Err: value };
     }
 }
 
-export function Ok<T>(value: T) {
+export function Ok<T>(value: T): Result<T, any> {
     return { Ok: value };
 }
 
-export function Err<T>(value: T) {
+export function Err<T>(value: T): Result<any, T> {
     return { Err: value };
 }

@@ -8,6 +8,8 @@ export interface Serializable {
     fromBytes: (bytes: Uint8Array) => any;
 }
 
+// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function StableBTreeMap<Key = any, Value = any>(
     memoryIdNumber: nat8,
     keySerializable: Serializable = stableJson,

@@ -54,7 +54,9 @@ function generateAgentResponseValue(
     return fields.map((field) => field.agentResponseValue);
 }
 
-function generateValueLiteral(fields: CandidValues<CorrespondingJSType>[]) {
+function generateValueLiteral(
+    fields: CandidValues<CorrespondingJSType>[]
+): string {
     const fieldLiterals = fields.map((field) => field.valueLiteral).join(',\n');
 
     return `[

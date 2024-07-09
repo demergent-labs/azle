@@ -81,7 +81,7 @@ export class AppController {
     }
 
     @Get('express-response')
-    expressResponse(@Res() response: Response) {
+    expressResponse(@Res() response: Response): void {
         response.send('App Express Response');
     }
 }

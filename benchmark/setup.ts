@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-export async function run_setup(argument?: string) {
+export async function run_setup(argument?: string): Promise<void> {
     execSync(`dfx canister create azle`, {
         stdio: 'inherit'
     });

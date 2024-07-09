@@ -5,6 +5,6 @@ import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corr
 export function generateBody(
     _namedParams: Named<CandidValueAndMeta<CorrespondingJSType>>[],
     returnType: CandidValueAndMeta<CorrespondingJSType>
-) {
+): string {
     return `return ${returnType.src.valueLiteral}`;
 }

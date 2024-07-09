@@ -4,7 +4,7 @@ import { join } from 'path';
 
 import { AZLE_PACKAGE_PATH } from './utils/global_paths';
 
-export function generateNewAzleProject(azleVersion: string) {
+export function generateNewAzleProject(azleVersion: string): void {
     if (process.argv[3] === undefined) {
         console.error('You must provide a name for your Azle project');
         return;

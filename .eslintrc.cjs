@@ -36,6 +36,7 @@ module.exports = {
         '@typescript-eslint/prefer-for-of': 'error',
         'prefer-arrow-callback': 'error',
         'no-var': 'error',
+        '@typescript-eslint/explicit-function-return-type': ['error'],
         eqeqeq: 'error',
         '@typescript-eslint/no-unused-vars': [
             'error',

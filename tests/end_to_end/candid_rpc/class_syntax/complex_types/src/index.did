@@ -1,0 +1,46 @@
+type Post = record {
+    id: text;
+    author: User;
+    reactions: vec Reaction;
+    text: text;
+    thread: Thread;
+};
+
+type Reaction = record {
+    id: text;
+    author: User;
+    post: Post;
+    reactionType: ReactionType;
+};
+
+type ReactionType = variant {
+    Fire;
+    ThumbsUp;
+    ThumbsDown;
+};
+
+type Thread = record {
+    id: text;
+    author: User;
+    posts: vec Post;
+    title: text;
+};
+
+type User = record {
+    id: text;
+    posts: vec Post;
+    reactions: vec Reaction;
+    threads: vec Thread;
+    username: text;
+};
+
+service: () -> {
+    createPost: (text, text, text, nat32) -> (Post);
+    getAllPosts: (nat32) -> (vec Post) query;
+    createReaction: (text, text, ReactionType, nat32) -> (Reaction);
+    getAllReactions: (nat32) -> (vec Reaction) query;
+    createThread: (text, text, nat32) -> (Thread);
+    getAllThreads: (nat32) -> (vec Thread) query;
+    createUser: (text, nat32) -> (User);
+    getAllUsers: (nat32) -> (vec User) query;
+}

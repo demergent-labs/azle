@@ -9,15 +9,15 @@ export class AzleNat {
 
     static tsType: nat;
 
-    static toBytes(data: any) {
+    static toBytes(data: nat): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array) {
-        return decode(this, bytes);
+    static fromBytes(bytes: Uint8Array): nat {
+        return decode(this, bytes) as nat;
     }
 
-    static getIdl() {
+    static getIdl(): IDL.NatClass {
         return IDL.Nat;
     }
 }

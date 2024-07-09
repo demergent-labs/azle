@@ -6,7 +6,7 @@ export function StableJson(options?: {
     reviver?: typeof jsonReviver;
 }): Serializable {
     return {
-        toBytes(data: any) {
+        toBytes(data: any): Uint8Array {
             const result = JSON.stringify(
                 data,
                 options?.replacer ?? jsonReplacer
@@ -14,7 +14,7 @@ export function StableJson(options?: {
 
             return Uint8Array.from(Buffer.from(result));
         },
-        fromBytes(bytes: Uint8Array) {
+        fromBytes(bytes: Uint8Array): any {
             return JSON.parse(
                 Buffer.from(bytes).toString(),
                 options?.reviver ?? jsonReviver

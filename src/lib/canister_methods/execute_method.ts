@@ -12,7 +12,7 @@ export function executeMethod(
     paramCandidTypes: CandidType[],
     returnCandidType: CandidType,
     manual: boolean
-) {
+): void {
     const decodedArgs = decode(paramCandidTypes, args[0]);
 
     const result = getResult(decodedArgs, callback);
@@ -60,7 +60,7 @@ function getResult(args: any[], callback: any): any {
     }
 }
 
-function reportFinalInstructions() {
+function reportFinalInstructions(): void {
     if (process.env.AZLE_INSTRUCTION_COUNT === 'true') {
         console.log(`final instructions: ${ic.instructionCounter()}`);
     }

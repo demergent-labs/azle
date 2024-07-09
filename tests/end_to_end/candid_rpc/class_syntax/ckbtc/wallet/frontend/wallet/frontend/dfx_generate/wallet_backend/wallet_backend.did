@@ -1,0 +1,37 @@
+type ManualReply = variant { Ok : vec UtxoStatus; Err : UpdateBalanceError };
+type UpdateBalanceError = variant {
+  GenericError : _InlineUpdateBalanceErrorGenericError;
+  TemporarilyUnavailable : text;
+  AlreadyProcessing;
+  NoNewUtxos : _InlineUpdateBalanceErrorNoNewUtxos;
+};
+type Utxo = record {
+  height : nat32;
+  value : nat64;
+  outpoint : _InlineUtxoOutpoint;
+};
+type UtxoStatus = variant {
+  ValueTooSmall : Utxo;
+  Tainted : Utxo;
+  Minted : _InlineUtxoStatusMinted;
+  Checked : Utxo;
+};
+type _InlineUpdateBalanceErrorGenericError = record {
+  error_message : text;
+  error_code : nat64;
+};
+type _InlineUpdateBalanceErrorNoNewUtxos = record {
+  required_confirmations : nat32;
+  current_confirmations : opt nat32;
+};
+type _InlineUtxoOutpoint = record { txid : vec nat8; vout : nat32 };
+type _InlineUtxoStatusMinted = record {
+  minted_amount : nat64;
+  block_index : nat64;
+  utxo : Utxo;
+};
+service : () -> {
+  getBalance : () -> (nat64);
+  getDepositAddress : () -> (text);
+  updateBalance : () -> (ManualReply);
+}

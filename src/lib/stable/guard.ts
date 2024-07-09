@@ -14,7 +14,7 @@ export function createGlobalGuard(
 
     const guardName = `_azleGuard_${guardedMethodName}`;
 
-    globalThis._azleGuardFunctions[guardName] = () => {
+    globalThis._azleGuardFunctions[guardName] = (): void => {
         try {
             guard();
         } catch (error) {

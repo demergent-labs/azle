@@ -100,6 +100,9 @@ function getHttpMaxResponseBytes(): [] | [bigint] {
         : [globalThis._azleOutgoingHttpOptionsMaxResponseBytes];
 }
 
+// TODO We may need a union for the type of init.method in order to address the TODO below
+// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getHttpMethod(init?: RequestInit | undefined) {
     if (init === undefined) {
         return {

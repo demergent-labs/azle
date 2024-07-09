@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-async function pretest() {
+function pretest(): void {
     uninstall(
         'ckbtc',
         'internet_identity',
@@ -15,7 +15,7 @@ async function pretest() {
     });
 }
 
-function uninstall(...canisterNames: string[]) {
+function uninstall(...canisterNames: string[]): void {
     canisterNames.forEach((canisterName) => {
         execSync(`dfx canister uninstall-code ${canisterName} || true`, {
             stdio: 'inherit'

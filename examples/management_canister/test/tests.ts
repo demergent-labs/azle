@@ -7,7 +7,7 @@ import { readFileSync } from 'fs';
 import { _SERVICE } from './dfx_generated/management_canister/management_canister.did';
 
 export function getTests(managementCanister: ActorSubclass<_SERVICE>) {
-    return () => {
+    return (): void => {
         it('executes create_canister from the management canister', async () => {
             const result = await managementCanister.executeCreateCanister();
 

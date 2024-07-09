@@ -103,7 +103,7 @@ export function verifyUpload(
     origin: string,
     srcPath: string,
     destPath: string
-) {
+): void {
     it(`uploads and hashes ${srcPath}`, async () => {
         const localPath = join('assets', srcPath);
         const canisterPath = join('assets', destPath);

@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-async function pretest(icrcPath: string) {
+function pretest(icrcPath: string): void {
     execSync(`dfx canister uninstall-code proxy || true`, {
         stdio: 'inherit'
     });

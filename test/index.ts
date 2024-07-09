@@ -9,7 +9,7 @@ export { expect } from '@jest/globals';
 
 export type Test = () => void;
 
-export function runTests(tests: Test, cwd: string = process.cwd()) {
+export function runTests(tests: Test, cwd: string = process.cwd()): void {
     const { shouldRunTests, shouldRunTypeChecks, shouldRunBenchmarks } =
         processEnvVars();
 
@@ -44,7 +44,7 @@ export function runTests(tests: Test, cwd: string = process.cwd()) {
     }
 }
 
-export function wait(name: string, delay: number) {
+export function wait(name: string, delay: number): void {
     test(
         `wait ${name}`,
         async () => {
@@ -61,7 +61,7 @@ export function please(
     name: string,
     fn: () => void | Promise<void>,
     timeout?: number
-) {
+): void {
     test(
         `please ${name}`,
         async () => {
@@ -77,7 +77,7 @@ export function it(
     name: string,
     fn: () => void | Promise<void>,
     timeout?: number
-) {
+): void {
     test(
         `it ${name}`,
         async () => {

@@ -12,12 +12,12 @@ export class AzleApp extends LitElement {
     @property()
     whoami: string = '';
 
-    connectedCallback() {
+    connectedCallback(): void {
         super.connectedCallback();
         this.authenticate();
     }
 
-    async authenticate() {
+    async authenticate(): Promise<void> {
         const authClient = await AuthClient.create();
         const isAuthenticated = await authClient.isAuthenticated();
 
@@ -28,11 +28,11 @@ export class AzleApp extends LitElement {
         }
     }
 
-    handleIsAuthenticated(authClient: AuthClient) {
+    handleIsAuthenticated(authClient: AuthClient): void {
         this.identity = authClient.getIdentity();
     }
 
-    async handleIsNotAuthenticated(authClient: AuthClient) {
+    async handleIsNotAuthenticated(authClient: AuthClient): Promise<void> {
         await new Promise((resolve, reject) => {
             authClient.login({
                 identityProvider: import.meta.env.VITE_IDENTITY_PROVIDER,
@@ -45,7 +45,7 @@ export class AzleApp extends LitElement {
         this.identity = authClient.getIdentity();
     }
 
-    async whoamiUnauthenticated() {
+    async whoamiUnauthenticated(): Promise<void> {
         const response = await fetch(
             `${import.meta.env.VITE_CANISTER_ORIGIN}/whoami`
         );
@@ -54,7 +54,7 @@ export class AzleApp extends LitElement {
         this.whoami = responseText;
     }
 
-    async whoamiAuthenticated() {
+    async whoamiAuthenticated(): Promise<void> {
         const response = await fetch(
             `${import.meta.env.VITE_CANISTER_ORIGIN}/whoami`,
             {
@@ -67,7 +67,7 @@ export class AzleApp extends LitElement {
         this.whoami = responseText;
     }
 
-    render() {
+    render(): any {
         return html`
             <h1>Internet Identity</h1>
 

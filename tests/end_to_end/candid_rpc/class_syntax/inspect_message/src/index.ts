@@ -1,34 +1,34 @@
-import { ic, IDL, inspectMessage, update } from 'azle';
+import { acceptMessage, IDL, inspectMessage, methodName, update } from 'azle';
 
 export default class {
     @inspectMessage
-    inspectMessage() {
+    inspectMessage(): void {
         console.log('inspectMessage called');
 
-        if (ic.methodName() === 'accessible') {
-            ic.acceptMessage();
+        if (methodName() === 'accessible') {
+            acceptMessage();
             return;
         }
 
-        if (ic.methodName() === 'inaccessible') {
+        if (methodName() === 'inaccessible') {
             return;
         }
 
-        throw `Method "${ic.methodName()}" not allowed`;
+        throw `Method "${methodName()}" not allowed`;
     }
 
     @update([], IDL.Bool)
-    accessible() {
+    accessible(): boolean {
         return true;
     }
 
     @update([], IDL.Bool)
-    inaccessible() {
+    inaccessible(): boolean {
         return false;
     }
 
     @update([], IDL.Bool)
-    alsoInaccessible() {
+    alsoInaccessible(): boolean {
         return false;
     }
 }

@@ -9,12 +9,12 @@ export class AzleApp extends LitElement {
     @property()
     identity: Identity | null = null;
 
-    connectedCallback() {
+    connectedCallback(): void {
         super.connectedCallback();
         this.authenticate();
     }
 
-    async authenticate() {
+    async authenticate(): Promise<void> {
         const authClient = await AuthClient.create();
         const isAuthenticated = await authClient.isAuthenticated();
 
@@ -25,11 +25,11 @@ export class AzleApp extends LitElement {
         }
     }
 
-    handleIsAuthenticated(authClient: AuthClient) {
+    handleIsAuthenticated(authClient: AuthClient): void {
         this.identity = authClient.getIdentity();
     }
 
-    async handleIsNotAuthenticated(authClient: AuthClient) {
+    async handleIsNotAuthenticated(authClient: AuthClient): Promise<void> {
         await new Promise((resolve, reject) => {
             authClient.login({
                 identityProvider: import.meta.env.VITE_IDENTITY_PROVIDER,
@@ -42,7 +42,7 @@ export class AzleApp extends LitElement {
         this.identity = authClient.getIdentity();
     }
 
-    async headersArray() {
+    async headersArray(): Promise<void> {
         if (this.identity === null) {
             throw new Error(`Identity must be defined`);
         }
@@ -80,7 +80,7 @@ export class AzleApp extends LitElement {
         }
     }
 
-    async headersObject() {
+    async headersObject(): Promise<void> {
         if (this.identity === null) {
             throw new Error(`Identity must be defined`);
         }
@@ -118,7 +118,7 @@ export class AzleApp extends LitElement {
         }
     }
 
-    async bodyUint8Array() {
+    async bodyUint8Array(): Promise<void> {
         if (this.identity === null) {
             throw new Error(`Identity must be defined`);
         }
@@ -160,7 +160,7 @@ export class AzleApp extends LitElement {
         }
     }
 
-    async bodyString() {
+    async bodyString(): Promise<void> {
         if (this.identity === null) {
             throw new Error(`Identity must be defined`);
         }
@@ -197,7 +197,7 @@ export class AzleApp extends LitElement {
         }
     }
 
-    async bodyArrayBuffer() {
+    async bodyArrayBuffer(): Promise<void> {
         if (this.identity === null) {
             throw new Error(`Identity must be defined`);
         }
@@ -239,7 +239,7 @@ export class AzleApp extends LitElement {
         }
     }
 
-    async bodyBlob() {
+    async bodyBlob(): Promise<void> {
         if (this.identity === null) {
             throw new Error(`Identity must be defined`);
         }
@@ -283,7 +283,7 @@ export class AzleApp extends LitElement {
         }
     }
 
-    async bodyDataView() {
+    async bodyDataView(): Promise<void> {
         if (this.identity === null) {
             throw new Error(`Identity must be defined`);
         }
@@ -327,7 +327,7 @@ export class AzleApp extends LitElement {
         }
     }
 
-    async urlQueryParamsGet() {
+    async urlQueryParamsGet(): Promise<void> {
         if (this.identity === null) {
             throw new Error(`Identity must be defined`);
         }
@@ -356,7 +356,7 @@ export class AzleApp extends LitElement {
         }
     }
 
-    async urlQueryParamsPost() {
+    async urlQueryParamsPost(): Promise<void> {
         if (this.identity === null) {
             throw new Error(`Identity must be defined`);
         }
@@ -386,7 +386,7 @@ export class AzleApp extends LitElement {
         }
     }
 
-    async notAuthorizedGet() {
+    async notAuthorizedGet(): Promise<void> {
         const response = await fetch(
             `${import.meta.env.VITE_CANISTER_ORIGIN}/not-authorized-get`,
             {
@@ -399,7 +399,7 @@ export class AzleApp extends LitElement {
         }
     }
 
-    async notAuthorizedPost() {
+    async notAuthorizedPost(): Promise<void> {
         const response = await fetch(
             `${import.meta.env.VITE_CANISTER_ORIGIN}/not-authorized-post`,
             {
@@ -413,7 +413,7 @@ export class AzleApp extends LitElement {
         }
     }
 
-    async head() {
+    async head(): Promise<void> {
         const response = await fetch(
             `${import.meta.env.VITE_CANISTER_ORIGIN}/head`,
             {
@@ -434,7 +434,7 @@ export class AzleApp extends LitElement {
         }
     }
 
-    async options() {
+    async options(): Promise<void> {
         const response = await fetch(
             `${import.meta.env.VITE_CANISTER_ORIGIN}/options`,
             {
@@ -451,7 +451,7 @@ export class AzleApp extends LitElement {
         }
     }
 
-    render() {
+    render(): any {
         return html`
             <h1>Test fetchIc</h1>
 

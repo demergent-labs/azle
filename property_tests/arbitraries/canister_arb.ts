@@ -52,7 +52,7 @@ export function CanisterArb<
     configArb: fc.Arbitrary<
         CanisterConfig<ParamAgentArgumentValue, ParamAgentResponseValue>
     >
-) {
+): fc.Arbitrary<Canister> {
     return configArb.map((config): Canister => {
         const canisterMethods: CanisterMethod<
             ParamAgentArgumentValue,
@@ -128,7 +128,7 @@ export function CanisterArb<
 function generateSourceCode(
     globalDeclarations: string[],
     canisterMethods: (UpdateMethod | QueryMethod)[]
-) {
+): string {
     const imports = [
         ...new Set([
             'Canister',

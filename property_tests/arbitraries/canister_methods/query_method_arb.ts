@@ -53,7 +53,7 @@ export function QueryMethodArb<
         callbackLocation?: CallbackLocation;
         name?: string;
     }
-) {
+): fc.Arbitrary<QueryMethod> {
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),

@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-async function pretest() {
+function pretest(): void {
     execSync(`dfx canister uninstall-code simple_user_accounts || true`, {
         stdio: 'inherit'
     });

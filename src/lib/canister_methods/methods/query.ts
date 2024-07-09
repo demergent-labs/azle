@@ -22,7 +22,7 @@ export function query<
     const finalCallback =
         callback === undefined
             ? undefined
-            : (...args: any[]) => {
+            : (...args: any[]): void => {
                   executeMethod(
                       'query',
                       args,

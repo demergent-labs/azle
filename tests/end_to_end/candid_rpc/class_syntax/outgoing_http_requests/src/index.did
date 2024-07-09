@@ -1,0 +1,5 @@
+service: () -> {
+    xkcd: () -> (text);
+    xkcdRaw: () -> (record {status:nat; body:vec nat8; headers:vec record {value:text; name:text}});
+    xkcdTransform: (record {context:vec nat8; response:record {status:nat; body:vec nat8; headers:vec record {value:text; name:text}}}) -> (record {status:nat; body:vec nat8; headers:vec record {value:text; name:text}}) query;
+}

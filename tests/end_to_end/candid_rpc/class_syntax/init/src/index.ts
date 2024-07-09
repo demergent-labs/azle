@@ -19,7 +19,7 @@ let owner: [Principal] | [] = [];
 
 export default class {
     @init([User, Reaction, IDL.Principal])
-    init(initUser: User, initReaction: Reaction, initOwner: Principal) {
+    init(initUser: User, initReaction: Reaction, initOwner: Principal): void {
         user = [initUser];
         reaction = [initReaction];
         owner = [initOwner];

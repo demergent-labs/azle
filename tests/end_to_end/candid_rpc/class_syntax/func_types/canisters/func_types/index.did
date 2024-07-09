@@ -1,0 +1,14 @@
+type rec_0 = func (record {id:text; complexFunc:rec_0; basicFunc:func (text) -> (text) query}, variant {Bad; ComplexFunc:rec_0; Good; BasicFunc:func (text) -> (text) query}) -> (nat64);
+type rec_1 = func (record {id:text; complexFunc:rec_1; basicFunc:func (text) -> (text) query}, variant {Bad; ComplexFunc:rec_1; Good; BasicFunc:func (text) -> (text) query}) -> (nat64);
+type rec_2 = func (record {id:text; complexFunc:rec_2; basicFunc:func (text) -> (text) query}, variant {Bad; ComplexFunc:rec_2; Good; BasicFunc:func (text) -> (text) query}) -> (nat64);
+service: () -> {
+    basicFuncParam: (func (text) -> (text) query) -> (func (text) -> (text) query) query;
+    basicFuncParamArray: (vec func (text) -> (text) query) -> (vec func (text) -> (text) query) query;
+    basicFuncReturnType: () -> (func (text) -> (text) query) query;
+    basicFuncReturnTypeArray: () -> (vec func (text) -> (text) query) query;
+    complexFuncParam: (rec_0) -> (rec_1) query;
+    complexFuncReturnType: () -> (rec_2) query;
+    getNotifierFromNotifiersCanister: () -> (func (vec nat8) -> () oneway);
+    getStableFunc: () -> (func (nat64, text) -> () query) query;
+    nullFuncParam: (func (opt null, vec null, null, vec vec null, vec opt null) -> (null) query) -> (func (opt null, vec null, null, vec vec null, vec opt null) -> (null) query) query;
+}

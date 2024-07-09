@@ -1,4 +1,5 @@
 {
+    "name": "ethereum_json_rpc_end_to_end_test_functional_syntax",
     "scripts": {
         "pre_tests": "ETHEREUM_URL=https://rpc.ankr.com/eth ts-node --transpile-only --ignore=false test/pretest.ts",
         "tests": "ETHEREUM_URL=https://rpc.ankr.com/eth npm run pre_tests && jest",

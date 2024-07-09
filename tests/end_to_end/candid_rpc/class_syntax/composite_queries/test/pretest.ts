@@ -1,7 +1,11 @@
 import { getCanisterId } from 'azle/dfx';
+import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
+import { join } from 'path';
 
-async function pretest() {
+function pretest(): void {
+    linkAndInstallPatch(join('examples', 'composite_queries'));
+
     execSync(`dfx canister uninstall-code canister1 || true`, {
         stdio: 'inherit'
     });

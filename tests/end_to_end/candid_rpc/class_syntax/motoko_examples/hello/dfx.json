@@ -1,0 +1,29 @@
+{
+    "canisters": {
+        "hello": {
+            "type": "azle",
+            "main": "src/hello/index.ts",
+            "candid": "src/hello/index.did",
+            "candid_gen": "custom",
+            "declarations": {
+                "output": "dfx_generated/hello",
+                "node_compatibility": true
+            }
+        },
+        "hello_assets": {
+            "type": "assets",
+            "dependencies": ["hello"],
+            "frontend": {
+                "entrypoint": "src/hello_assets/src/index.html"
+            },
+            "source": ["src/hello_assets/assets", "dist/hello_assets/"]
+        }
+    },
+    "defaults": {
+        "build": {
+            "args": "",
+            "packtool": ""
+        }
+    },
+    "version": 1
+}

@@ -1,0 +1,14 @@
+{
+    "canisters": {
+        "randomness": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid": "src/index.did",
+            "candid_gen": "custom",
+            "declarations": {
+                "output": "test/dfx_generated/randomness",
+                "node_compatibility": true
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+service: () -> {
+    principalFromBlob: (vec nat8) -> (principal) query;
+    principalFromHex: (text) -> (principal) query;
+    principalFromText: (text) -> (principal) query;
+    principalInRecord: () -> (record {id:principal; username:text}) query;
+    principalInVariant: () -> (variant {Online; WaitingOn:principal; Offline}) query;
+    principalParam: (principal) -> (principal) query;
+    principalReturnType: () -> (principal) query;
+    principalSelfAuthenticating: (vec nat8) -> (principal) query;
+    principalToBlob: (principal) -> (vec nat8) query;
+    principalToHex: (principal) -> (text) query;
+    principalToText: (principal) -> (text) query;
+}

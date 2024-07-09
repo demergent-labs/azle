@@ -8,7 +8,7 @@ export type VisitorData = { value: any };
  * as dfx deploy
  */
 export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
-    visitFloat(_t: IDL.FloatClass, data: VisitorData) {
+    visitFloat(_t: IDL.FloatClass, data: VisitorData): any {
         /**
          * If a float doesn't have a decimal it won't serialize properly, so
          * while 10 is a float it won't serialize unless it's 10.0
@@ -97,7 +97,7 @@ export class CliStringVisitor extends IDL.Visitor<VisitorData, string> {
     }
 }
 
-function escapeForBash(input: string) {
+function escapeForBash(input: string): string {
     return input
         .replace(/\\/g, '\\\\') // Escape backslashes
         .replace(/'/g, "'\\''") // Escape single quotes

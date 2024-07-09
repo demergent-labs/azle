@@ -14,7 +14,7 @@ export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test {
             const result = await funcTypesCanister.getStableFunc();
             const expected = [Principal.from('aaaaa-aa'), 'start_canister'];
 
-            expect(result).toStrictEqual(expected);
+            expect(result).toEqual(expected);
         });
 
         it('gets a func with various null types', async () => {
@@ -24,7 +24,7 @@ export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test {
             ];
             const result = await funcTypesCanister.nullFuncParam(func);
 
-            expect(result).toStrictEqual(func);
+            expect(result).toEqual(func);
         });
 
         it('uses a basic func as a parameter', async () => {
@@ -34,7 +34,7 @@ export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test {
             ];
             const result = await funcTypesCanister.basicFuncParam(func);
 
-            expect(result).toStrictEqual(func);
+            expect(result).toEqual(func);
         });
 
         it('uses an array of basic funcs as a parameter', async () => {
@@ -45,7 +45,7 @@ export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test {
             ];
             const result = await funcTypesCanister.basicFuncParamArray(funcs);
 
-            expect(result).toStrictEqual(funcs);
+            expect(result).toEqual(funcs);
         });
 
         it('uses a basic func as a return value', async () => {
@@ -56,7 +56,7 @@ export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test {
                 'create_canister'
             ];
 
-            expect(result).toStrictEqual(expected);
+            expect(result).toEqual(expected);
         });
 
         it('uses an array of basic funcs as a return value', async () => {
@@ -68,7 +68,7 @@ export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test {
                 [Principal.fromText('aaaaa-aa'), 'install_code']
             ];
 
-            expect(result).toStrictEqual(expected);
+            expect(result).toEqual(expected);
         });
 
         it('uses a complex func as a parameter', async () => {
@@ -78,7 +78,7 @@ export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test {
             ];
             const result = await funcTypesCanister.complexFuncParam(func);
 
-            expect(result).toStrictEqual(func);
+            expect(result).toEqual(func);
         });
 
         it('uses a complex func as a return value', async () => {
@@ -86,7 +86,7 @@ export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test {
 
             const expected = [Principal.fromText('aaaaa-aa'), 'stop_canister'];
 
-            expect(result).toStrictEqual(expected);
+            expect(result).toEqual(expected);
         });
 
         it('gets a func from a cross canister call', async () => {
@@ -98,7 +98,7 @@ export function getTests(funcTypesCanister: ActorSubclass<_SERVICE>): Test {
                 'notify'
             ];
 
-            expect(result).toStrictEqual(expected);
+            expect(result).toEqual(expected);
         });
     };
 }

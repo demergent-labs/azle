@@ -31,93 +31,91 @@ export function getTests(
             `(principal "rrkah-fqaaa-aaaaa-aaaaq-cai")`
         ])('simple tests', (candidString) => {
             it(`candid encodes ${candidString}`, async () =>
-                await candid_encode_test(candidEncodingCanister, candidString));
+                await candidEncodeTest(candidEncodingCanister, candidString));
 
             it(`candid decodes ${candidString}`, async () =>
-                await candid_decode_test(candidEncodingCanister, candidString));
+                await candidDecodeTest(candidEncodingCanister, candidString));
         });
 
         it('candid encodes/candid decodes (record { first_name = "John"; last_name = "Doe" })', async () => {
-            const candid_string = `(record { first_name = "John"; last_name = "Doe" })`;
-            await candid_encode_test(candidEncodingCanister, candid_string);
+            const candidString = `(record { first_name = "John"; last_name = "Doe" })`;
+            await candidEncodeTest(candidEncodingCanister, candidString);
 
-            const candid_encoded_hex_string = execSync(
-                `didc encode '${candid_string}'`
+            const candidEncodedHexString = execSync(
+                `didc encode '${candidString}'`
             )
                 .toString()
                 .trim();
-            const candid_encoded_byte_array =
-                candid_encoded_hex_string
+            const candidEncodedByteArray =
+                candidEncodedHexString
                     .match(/.{1,2}/g)
                     ?.map((x) => parseInt(x, 16)) ?? [];
 
-            const candid_decoded_result =
+            const candidDecodedResult =
                 await candidEncodingCanister.candidDecode(
-                    Uint8Array.from(candid_encoded_byte_array)
+                    Uint8Array.from(candidEncodedByteArray)
                 );
 
-            expect(candid_decoded_result).toMatch('record');
-            expect(candid_decoded_result).toMatch('John');
-            expect(candid_decoded_result).toMatch('Doe');
+            expect(candidDecodedResult).toMatch('record');
+            expect(candidDecodedResult).toMatch('John');
+            expect(candidDecodedResult).toMatch('Doe');
         });
 
         it('candid encodes/candid decodes (variant { ok = true })', async () => {
-            const candid_string = `(variant { ok = true })`;
-            await candid_encode_test(candidEncodingCanister, candid_string);
+            const candidString = `(variant { ok = true })`;
+            await candidEncodeTest(candidEncodingCanister, candidString);
 
-            const candid_encoded_hex_string = execSync(
-                `didc encode '${candid_string}'`
+            const candidEncodedHexString = execSync(
+                `didc encode '${candidString}'`
             )
                 .toString()
                 .trim();
-            const candid_encoded_byte_array =
-                candid_encoded_hex_string
+            const candidEncodedByteArray =
+                candidEncodedHexString
                     .match(/.{1,2}/g)
                     ?.map((x) => parseInt(x, 16)) ?? [];
 
-            const candid_decoded_result =
+            const candidDecodedResult =
                 await candidEncodingCanister.candidDecode(
-                    Uint8Array.from(candid_encoded_byte_array)
+                    Uint8Array.from(candidEncodedByteArray)
                 );
 
-            expect(candid_decoded_result).toMatch('variant');
-            expect(candid_decoded_result).toMatch('= true');
+            expect(candidDecodedResult).toMatch('variant');
+            expect(candidDecodedResult).toMatch('= true');
         });
     };
 }
 
-async function candid_encode_test(
-    candid_encoding_canister: ActorSubclass<_SERVICE>,
-    candid_string: string
+async function candidEncodeTest(
+    candidEncodingCanister: ActorSubclass<_SERVICE>,
+    candidString: string
 ): Promise<void> {
-    const candid_encoded_hex_string = execSync(`didc encode '${candid_string}'`)
+    const candidEncodedHexString = execSync(`didc encode '${candidString}'`)
         .toString()
         .trim();
-    const candid_encoded_byte_array =
-        candid_encoded_hex_string
-            .match(/.{1,2}/g)
-            ?.map((x) => parseInt(x, 16)) ?? [];
+    const candidEncodedByteArray =
+        candidEncodedHexString.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ??
+        [];
 
-    const result = await candid_encoding_canister.candidEncode(candid_string);
+    const result = await candidEncodingCanister.candidEncode(candidString);
 
-    expect(Array.from(result)).toStrictEqual(candid_encoded_byte_array);
+    expect(Array.from(result)).toStrictEqual(candidEncodedByteArray);
 }
 
-async function candid_decode_test(
-    candid_encoding_canister: ActorSubclass<_SERVICE>,
-    candid_string: string
+async function candidDecodeTest(
+    candidEncodingCanister: ActorSubclass<_SERVICE>,
+    candidString: string
 ): Promise<void> {
-    const candid_encoded_hex_string = execSync(`didc encode '${candid_string}'`)
+    const candidEncodedHexString = execSync(`didc encode '${candidString}'`)
         .toString()
         .trim();
-    const candid_encoded_byte_array =
-        candid_encoded_hex_string
-            .match(/.{1,2}/g)
-            ?.map((x) => parseInt(x, 16)) ?? [];
+    const candidEncodedByteArray =
+        candidEncodedHexString.match(/.{1,2}/g)?.map((x) => parseInt(x, 16)) ??
+        [];
 
-    const result = await candid_encoding_canister.candidDecode(
-        Uint8Array.from(candid_encoded_byte_array)
+    const result = await candidEncodingCanister.candidDecode(
+        Uint8Array.from(candidEncodedByteArray)
     );
 
-    expect(result).toBe(candid_string);
+    expect(result).toBe(candidString);
 }

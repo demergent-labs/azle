@@ -195,7 +195,7 @@ function getCanister2Principal(): string {
     throw new Error(`process.env.CANISTER2_PRINCIPAL is not defined`);
 }
 
-async function incCanister(canister: any, candidPath: string) {
+async function incCanister(canister: any, candidPath: string): Promise<any> {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const response = await fetch(
             `icp://${canister.principal.toText()}/incCounter`,
@@ -209,7 +209,7 @@ async function incCanister(canister: any, candidPath: string) {
     }
 }
 
-async function incCanister2() {
+async function incCanister2(): Promise<any> {
     if (process.env.AZLE_TEST_FETCH === 'true') {
         const response = await fetch(
             `icp://${getCanister2Principal()}/incCounter`,

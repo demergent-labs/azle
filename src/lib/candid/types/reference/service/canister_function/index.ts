@@ -1,3 +1,5 @@
+// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { IDL } from '@dfinity/candid';
 
 import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';
@@ -68,7 +70,7 @@ function createGetIdlFunction(canisterOptions: CanisterOptions) {
         const serviceFunctionInfo = canisterOptions as ServiceFunctionInfo;
 
         // We don't want init, post upgrade, etc showing up in the idl
-        const isQueryOrUpdate = (mode: string) => {
+        const isQueryOrUpdate = (mode: string): boolean => {
             return mode === 'query' || mode === 'update';
         };
 

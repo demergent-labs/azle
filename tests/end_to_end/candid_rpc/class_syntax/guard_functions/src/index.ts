@@ -27,19 +27,19 @@ export default class {
     }
 
     @query([], IDL.Bool, {})
-    emptyOptionsObject() {
+    emptyOptionsObject(): boolean {
         console.info('emptyOptionsObject called');
         return true;
     }
 
     @query([], IDL.Bool, { guard: allowAll })
-    looselyGuarded() {
+    looselyGuarded(): boolean {
         console.info('looselyGuarded called');
         return true;
     }
 
     @query([], IDL.Bool, { manual: true, guard: allowAll })
-    looselyGuardedManual() {
+    looselyGuardedManual(): void {
         console.info('looselyGuardedManual called');
         reply(true, IDL.Bool);
     }
@@ -50,37 +50,37 @@ export default class {
         // prettier-ignore
         { 'guard': allowAll }
     )
-    looselyGuardedWithGuardOptionKeyAsString() {
+    looselyGuardedWithGuardOptionKeyAsString(): boolean {
         console.info('looselyGuardedWithGuardOptionKeyAsString called');
         return true;
     }
 
     @update([], IDL.Bool, { guard: incrementCounterAndAllowAll })
-    modifyStateGuarded() {
+    modifyStateGuarded(): boolean {
         console.info('modifyStateGuarded called');
         return true;
     }
 
     @query([], IDL.Bool, { guard: unpassable })
-    tightlyGuarded() {
+    tightlyGuarded(): boolean {
         console.info('tightlyGuarded called');
         return true;
     }
 
     @query([], IDL.Bool, { guard: throwString })
-    errorStringGuarded() {
+    errorStringGuarded(): boolean {
         console.info('errorStringGuarded called');
         return true;
     }
 
     @query([], IDL.Bool, { guard: throwCustomError })
-    customErrorGuarded() {
+    customErrorGuarded(): boolean {
         console.info('customErrorGuarded called');
         return true;
     }
 
     @query([], IDL.Bool, { guard: returnNonStringErrValue })
-    nonStringErrValueGuarded() {
+    nonStringErrValueGuarded(): boolean {
         console.info('nonStringErrValueGuarded called');
         return true;
     }

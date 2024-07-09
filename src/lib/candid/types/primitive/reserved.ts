@@ -9,15 +9,15 @@ export class AzleReserved {
 
     static tsType: reserved;
 
-    static toBytes(data: any) {
+    static toBytes(data: any): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array) {
+    static fromBytes(bytes: Uint8Array): any {
         return decode(this, bytes);
     }
 
-    static getIdl() {
+    static getIdl(): IDL.ReservedClass {
         return IDL.Reserved;
     }
 }

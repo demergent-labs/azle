@@ -1,4 +1,4 @@
-export function isAsync(originalFunction: any) {
+export function isAsync(originalFunction: any): boolean {
     if (originalFunction[Symbol.toStringTag] === 'AsyncFunction') {
         return true;
     } else if (originalFunction.constructor.name === 'AsyncFunction') {

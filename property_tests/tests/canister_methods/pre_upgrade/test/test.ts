@@ -12,7 +12,7 @@ import {
     QueryMethodArb
 } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
-import { testEquality } from 'azle/property_tests/test';
+import { AzleResult, testEquality } from 'azle/property_tests/test';
 import fc from 'fast-check';
 
 const SimplePreUpgradeArb = PreUpgradeMethodArb({
@@ -92,7 +92,7 @@ function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
             [
                 {
                     name: `pre upgrade was not called after first deploy`,
-                    test: async () => {
+                    test: async (): Promise<AzleResult> => {
                         const actor = getActor(__dirname);
                         const result = await actor.getPreUpgradeExecuted();
 
@@ -103,7 +103,7 @@ function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
             [
                 {
                     name: `pre upgrade was called after second deploy`,
-                    test: async () => {
+                    test: async (): Promise<AzleResult> => {
                         const actor = getActor(__dirname);
                         const result = await actor.getPreUpgradeExecuted();
 

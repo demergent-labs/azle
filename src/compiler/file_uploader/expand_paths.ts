@@ -3,7 +3,9 @@ import { join } from 'path';
 
 import { Dest, Src } from '.';
 
-export async function expandPaths(paths: [Src, Dest][]) {
+export async function expandPaths(
+    paths: [Src, Dest][]
+): Promise<[string, string][]> {
     return paths.reduce(
         async (accPromise: Promise<[Src, Dest][]>, [srcPath, destPath]) => {
             const acc = await accPromise;

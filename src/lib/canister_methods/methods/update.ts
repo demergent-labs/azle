@@ -21,7 +21,7 @@ export function update<
     const finalCallback =
         callback === undefined
             ? undefined
-            : (...args: any[]) => {
+            : (...args: any[]): void => {
                   executeMethod(
                       'update',
                       args,

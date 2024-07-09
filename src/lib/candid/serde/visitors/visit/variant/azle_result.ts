@@ -9,7 +9,7 @@ export function visitAzleResult(
     visitor: DecodeVisitor | EncodeVisitor,
     fields: [string, IDL.Type<any>][],
     data: VisitorData
-) {
+): Result<any, any> {
     if ('Ok' in data.js_data) {
         const OK_FIELD_INDEX = 0;
         const okField = fields[OK_FIELD_INDEX];
@@ -35,4 +35,5 @@ export function visitAzleResult(
             })
         );
     }
+    throw new Error('Invalid Result');
 }

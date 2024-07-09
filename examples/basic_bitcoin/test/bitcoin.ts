@@ -1,19 +1,19 @@
 import { Transaction } from 'bitcoinjs-lib';
 import { execSync } from 'child_process';
 
-export function generateToAddress(address: string, blocks: number) {
+export function generateToAddress(address: string, blocks: number): void {
     execSync(
         `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress ${blocks} ${address}`
     );
 }
 
-export function generate(blocks: number) {
+export function generate(blocks: number): void {
     execSync(
         `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf -generate ${blocks}`
     );
 }
 
-export function createWallet(name: string) {
+export function createWallet(name: string): void {
     execSync(
         `.bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf createwallet ${name}`
     );

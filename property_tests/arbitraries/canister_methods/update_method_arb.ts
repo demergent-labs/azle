@@ -52,7 +52,7 @@ export function UpdateMethodArb<
         callbackLocation?: CallbackLocation;
         name?: string;
     }
-) {
+): fc.Arbitrary<UpdateMethod> {
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),

@@ -22,7 +22,7 @@ export function InspectMessageMethodArb(constraints: {
     generateBody: BodyGenerator;
     generateTests: TestsGenerator;
     callbackLocation?: CallbackLocation;
-}) {
+}): fc.Arbitrary<InspectMessageMethod> {
     return fc
         .tuple(
             UniqueIdentifierArb('canisterProperties'),

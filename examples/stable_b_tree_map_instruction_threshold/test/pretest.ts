@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 
-async function pretest() {
+function pretest(): void {
     execSync(
         `dfx canister uninstall-code stable_b_tree_map_instruction_threshold || true`,
         {

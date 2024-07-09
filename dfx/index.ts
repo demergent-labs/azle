@@ -28,7 +28,7 @@ export function getAgentHost(): string {
         : `http://127.0.0.1:${getWebServerPort()}`;
 }
 
-export async function createAnonymousAgent() {
+export async function createAnonymousAgent(): Promise<void> {
     const agent = new HttpAgent({
         host: getAgentHost()
     });
@@ -185,7 +185,7 @@ export function addController(
     canisterName: string,
     identityName: string,
     principal: string
-) {
+): Buffer {
     const currentIdentity = whoami();
     console.info();
     console.info(`Adding ${identityName} as a controller for ${canisterName}`);
