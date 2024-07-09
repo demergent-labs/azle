@@ -10,11 +10,6 @@ let firstDepositAddress: string;
 
 export function getTests(configs: Config[]): Test {
     return () => {
-        please('create Identities', async () => {
-            console.info(`0 | ${configs[0].caller}`);
-            console.info(`1 | ${configs[1].caller}\n`);
-        });
-
         it('gets balance for first identity', async () => {
             await testGetBalance(configs[0].canister, 0n);
         });

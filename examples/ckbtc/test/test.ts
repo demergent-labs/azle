@@ -20,7 +20,7 @@ export type Config = {
     caller: string;
 };
 
-let configs = [createConfig(0), createConfig(1)];
+const configs = [createConfig(0), createConfig(1)];
 
 runTests(() => {
     let bitcoinDaemon: BitcoinDaemon;
