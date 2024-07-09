@@ -16,7 +16,7 @@ import {
 const Element = Record({
     id: text
 });
-export type Element = { id: string };
+export type Element = typeof Element.tsType;
 
 const Head = Record({
     elements: Vec(Element)

@@ -40,6 +40,7 @@ export function getTests(
             };
 
             expect(lastPeriodicBatch).not.toBeUndefined();
+
             if (lastPeriodicBatch !== undefined) {
                 expect(lastPeriodicBatch).toEqual(
                     expect.objectContaining(expectedResult)
@@ -151,6 +152,7 @@ export function getTests(
             const walletPayment5 = results[5];
 
             expect(periodicBatch3).not.toBeUndefined();
+
             if (periodicBatch3 !== undefined) {
                 const payment0 = periodicBatch3.payments[0];
                 const payment1 = periodicBatch3.payments[1];
@@ -214,6 +216,7 @@ export function getTests(
             const walletPayment11 = results[11];
 
             expect(periodicBatch4).not.toBeUndefined();
+
             if (periodicBatch4 !== undefined) {
                 const payment0 = periodicBatch4.payments[0];
                 const payment1 = periodicBatch4.payments[1];
