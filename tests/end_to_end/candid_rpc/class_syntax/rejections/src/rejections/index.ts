@@ -1,11 +1,37 @@
-import {
-    call,
-    IDL,
-    rejectCode,
-    RejectionCode,
-    rejectMessage,
-    update
-} from 'azle';
+import { call, IDL, rejectCode, rejectMessage, update } from 'azle';
+
+const RejectionCode = IDL.Variant({
+    NoError: IDL.Null,
+    SysFatal: IDL.Null,
+    SysTransient: IDL.Null,
+    DestinationInvalid: IDL.Null,
+    CanisterReject: IDL.Null,
+    CanisterError: IDL.Null,
+    Unknown: IDL.Null
+});
+
+type RejectionCode =
+    | {
+          NoError: null;
+      }
+    | {
+          SysFatal: null;
+      }
+    | {
+          SysTransient: null;
+      }
+    | {
+          DestinationInvalid: null;
+      }
+    | {
+          CanisterReject: null;
+      }
+    | {
+          CanisterError: null;
+      }
+    | {
+          Unknown: null;
+      };
 
 export default class {
     @update([], RejectionCode)
