@@ -23,7 +23,6 @@ export { msgCyclesAvailable128 } from './msg_cycles_available_128';
 export { msgCyclesRefunded } from './msg_cycles_refunded';
 export { msgCyclesRefunded128 } from './msg_cycles_refunded_128';
 export { notify } from './notify';
-export { notifyRaw } from './notify_raw';
 export { performanceCounter } from './performance_counter';
 export { print } from './print';
 export { reject } from './reject';

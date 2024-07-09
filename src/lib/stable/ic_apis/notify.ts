@@ -15,6 +15,7 @@ export function notify(
         paramIdls?: IDL.Type[];
         args?: any[];
         payment?: bigint;
+        raw?: Uint8Array;
     }
 ): void {
     if (globalThis._azleIc === undefined) {
@@ -24,13 +25,17 @@ export function notify(
     const paramIdls = options?.paramIdls ?? [];
     const args = options?.args ?? [];
     const payment = options?.payment ?? 0n;
+    const raw = options?.raw;
 
     const canisterIdPrincipal =
         typeof canisterId === 'string'
             ? Principal.fromText(canisterId)
             : canisterId;
     const canisterIdBytes = canisterIdPrincipal.toUint8Array().buffer;
-    const argsRawBuffer = new Uint8Array(IDL.encode(paramIdls, args)).buffer;
+    const argsRawBuffer =
+        raw === undefined
+            ? new Uint8Array(IDL.encode(paramIdls, args)).buffer
+            : raw.buffer;
     const paymentString = payment.toString();
 
     return globalThis._azleIc.notifyRaw(
