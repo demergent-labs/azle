@@ -1,4 +1,4 @@
-import { expect, it, please, Test, wait } from 'azle/test/jest';
+import { expect, it, please, Test, wait } from 'azle/test';
 import { writeFileSync } from 'fs';
 
 import {

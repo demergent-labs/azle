@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { expect, it, Test } from 'azle/test/jest';
+import { expect, it, Test } from 'azle/test';
 
 // @ts-ignore
 import { _SERVICE, Superhero } from '../src/declarations/superheroes.did';

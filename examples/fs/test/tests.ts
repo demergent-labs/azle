@@ -1,6 +1,6 @@
 // TODO Use the directory name public instead of just_public once this is resolved: https://github.com/wasm-forge/ic-wasi-polyfill/issues/15
 
-import { expect, it, Test } from 'azle/test/jest';
+import { expect, it, Test } from 'azle/test';
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 

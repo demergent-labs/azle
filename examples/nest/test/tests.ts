@@ -1,474 +1,323 @@
-import * as dns from 'node:dns';
-dns.setDefaultResultOrder('ipv4first');
+import { expect, it, Test } from 'azle/test';
 
-import { Test } from 'azle/test';
-
-export function getTests(canisterId: string): Test[] {
+export function getTests(canisterId: string): Test {
     const origin = `http://${canisterId}.localhost:8000`;
 
-    return [
-        {
-            name: 'app get',
-            test: async () => {
-                const response = await fetch(`${origin}/get`);
-                const responseText = await response.text();
+    return () => {
+        it('app get', async () => {
+            const response = await fetch(`${origin}/get`);
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'get'
-                };
-            }
-        },
-        {
-            name: 'app post',
-            test: async () => {
-                const response = await fetch(`${origin}/post`, {
-                    method: 'POST'
-                });
-                const responseText = await response.text();
+            expect(responseText).toBe('get');
+        });
 
-                return {
-                    Ok: responseText === 'post'
-                };
-            }
-        },
-        {
-            name: 'app put',
-            test: async () => {
-                const response = await fetch(`${origin}/put`, {
-                    method: 'PUT'
-                });
-                const responseText = await response.text();
+        it('app post', async () => {
+            const response = await fetch(`${origin}/post`, {
+                method: 'POST'
+            });
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'put'
-                };
-            }
-        },
-        {
-            name: 'app patch',
-            test: async () => {
-                const response = await fetch(`${origin}/patch`, {
-                    method: 'PATCH'
-                });
-                const responseText = await response.text();
+            expect(responseText).toBe('post');
+        });
 
-                return {
-                    Ok: responseText === 'patch'
-                };
-            }
-        },
-        {
-            name: 'app delete',
-            test: async () => {
-                const response = await fetch(`${origin}/delete`, {
-                    method: 'DELETE'
-                });
-                const responseText = await response.text();
+        it('app put', async () => {
+            const response = await fetch(`${origin}/put`, {
+                method: 'PUT'
+            });
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'delete'
-                };
-            }
-        },
-        {
-            name: 'app json',
-            test: async () => {
-                const response = await fetch(`${origin}/json`);
-                const responseJson = await response.json();
+            expect(responseText).toBe('put');
+        });
 
-                return {
-                    Ok: responseJson.hello === 'AppJson'
-                };
-            }
-        },
-        {
-            name: 'app header',
-            test: async () => {
-                const response = await fetch(`${origin}/header`, {
-                    headers: [['X-App-Header-Key', 'AppHeaderValue']]
-                });
-                const responseText = await response.text();
+        it('app patch', async () => {
+            const response = await fetch(`${origin}/patch`, {
+                method: 'PATCH'
+            });
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'AppHeaderValue'
-                };
-            }
-        },
-        {
-            name: 'app http-code',
-            test: async () => {
-                const response = await fetch(`${origin}/http-code`);
-                const responseText = await response.text();
+            expect(responseText).toBe('patch');
+        });
 
-                return {
-                    Ok:
-                        response.status === 418 &&
-                        response.statusText === `I'm a teapot` &&
-                        responseText === `App I'm a teapot`
-                };
-            }
-        },
-        {
-            name: 'app query',
-            test: async () => {
-                const response = await fetch(`${origin}/query?hello=AppQuery`);
-                const responseText = await response.text();
+        it('app delete', async () => {
+            const response = await fetch(`${origin}/delete`, {
+                method: 'DELETE'
+            });
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'AppQuery'
-                };
-            }
-        },
-        {
-            name: 'app body',
-            test: async () => {
-                const response = await fetch(`${origin}/body`, {
-                    method: 'POST',
-                    headers: [['Content-Type', 'Application/Json']],
-                    body: JSON.stringify({
-                        hello: 'AppBody'
-                    })
-                });
-                const responseText = await response.text();
+            expect(responseText).toBe('delete');
+        });
 
-                return {
-                    Ok: responseText === 'AppBody'
-                };
-            }
-        },
-        {
-            name: 'app express-request',
-            test: async () => {
-                const response = await fetch(
-                    `${origin}/express-request?hello=AppExpressRequest`
-                );
-                const responseText = await response.text();
+        it('app json', async () => {
+            const response = await fetch(`${origin}/json`);
+            const responseJson = await response.json();
 
-                return {
-                    Ok: responseText === 'AppExpressRequest'
-                };
-            }
-        },
-        {
-            name: 'app express-response',
-            test: async () => {
-                const response = await fetch(`${origin}/express-response`);
-                const responseText = await response.text();
+            expect(responseJson.hello).toBe('AppJson');
+        });
 
-                return {
-                    Ok: responseText === 'App Express Response'
-                };
-            }
-        },
-        {
-            name: 'dogs get',
-            test: async () => {
-                const response = await fetch(`${origin}/dogs/get`);
-                const responseText = await response.text();
+        it('app header', async () => {
+            const response = await fetch(`${origin}/header`, {
+                headers: [['X-App-Header-Key', 'AppHeaderValue']]
+            });
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'dogs get'
-                };
-            }
-        },
-        {
-            name: 'dogs post',
-            test: async () => {
-                const response = await fetch(`${origin}/dogs/post`, {
-                    method: 'POST'
-                });
-                const responseText = await response.text();
+            expect(responseText).toBe('AppHeaderValue');
+        });
 
-                return {
-                    Ok: responseText === 'dogs post'
-                };
-            }
-        },
-        {
-            name: 'dogs put',
-            test: async () => {
-                const response = await fetch(`${origin}/dogs/put`, {
-                    method: 'PUT'
-                });
-                const responseText = await response.text();
+        it('app http-code', async () => {
+            const response = await fetch(`${origin}/http-code`);
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'dogs put'
-                };
-            }
-        },
-        {
-            name: 'dogs patch',
-            test: async () => {
-                const response = await fetch(`${origin}/dogs/patch`, {
-                    method: 'PATCH'
-                });
-                const responseText = await response.text();
+            expect(response.status).toBe(418);
+            expect(response.statusText).toBe(`I'm a teapot`);
+            expect(responseText).toBe(`App I'm a teapot`);
+        });
 
-                return {
-                    Ok: responseText === 'dogs patch'
-                };
-            }
-        },
-        {
-            name: 'dogs delete',
-            test: async () => {
-                const response = await fetch(`${origin}/dogs/delete`, {
-                    method: 'DELETE'
-                });
-                const responseText = await response.text();
+        it('app query', async () => {
+            const response = await fetch(`${origin}/query?hello=AppQuery`);
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'dogs delete'
-                };
-            }
-        },
-        {
-            name: 'dogs json',
-            test: async () => {
-                const response = await fetch(`${origin}/dogs/json`);
-                const responseJson = await response.json();
+            expect(responseText).toBe('AppQuery');
+        });
 
-                return {
-                    Ok: responseJson.hello === 'DogsJson'
-                };
-            }
-        },
-        {
-            name: 'dogs header',
-            test: async () => {
-                const response = await fetch(`${origin}/dogs/header`, {
-                    headers: [['X-Dogs-Header-Key', 'DogsHeaderValue']]
-                });
-                const responseText = await response.text();
+        it('app body', async () => {
+            const response = await fetch(`${origin}/body`, {
+                method: 'POST',
+                headers: [['Content-Type', 'Application/Json']],
+                body: JSON.stringify({
+                    hello: 'AppBody'
+                })
+            });
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'DogsHeaderValue'
-                };
-            }
-        },
-        {
-            name: 'dogs http-code',
-            test: async () => {
-                const response = await fetch(`${origin}/dogs/http-code`);
-                const responseText = await response.text();
+            expect(responseText).toBe('AppBody');
+        });
 
-                return {
-                    Ok:
-                        response.status === 418 &&
-                        response.statusText === `I'm a teapot` &&
-                        responseText === `Dogs I'm a teapot`
-                };
-            }
-        },
-        {
-            name: 'dogs query',
-            test: async () => {
-                const response = await fetch(
-                    `${origin}/dogs/query?hello=DogsQuery`
-                );
-                const responseText = await response.text();
+        it('app express-request', async () => {
+            const response = await fetch(
+                `${origin}/express-request?hello=AppExpressRequest`
+            );
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'DogsQuery'
-                };
-            }
-        },
-        {
-            name: 'dogs body',
-            test: async () => {
-                const response = await fetch(`${origin}/dogs/body`, {
-                    method: 'POST',
-                    headers: [['Content-Type', 'Application/Json']],
-                    body: JSON.stringify({
-                        hello: 'DogsBody'
-                    })
-                });
-                const responseText = await response.text();
+            expect(responseText).toBe('AppExpressRequest');
+        });
 
-                return {
-                    Ok: responseText === 'DogsBody'
-                };
-            }
-        },
-        {
-            name: 'dogs express-request',
-            test: async () => {
-                const response = await fetch(
-                    `${origin}/dogs/express-request?hello=DogsExpressRequest`
-                );
-                const responseText = await response.text();
+        it('app express-response', async () => {
+            const response = await fetch(`${origin}/express-response`);
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'DogsExpressRequest'
-                };
-            }
-        },
-        {
-            name: 'dogs express-response',
-            test: async () => {
-                const response = await fetch(`${origin}/dogs/express-response`);
-                const responseText = await response.text();
+            expect(responseText).toBe('App Express Response');
+        });
 
-                return {
-                    Ok: responseText === 'Dogs Express Response'
-                };
-            }
-        },
-        {
-            name: 'cats get',
-            test: async () => {
-                const response = await fetch(`${origin}/cats/get`);
-                const responseText = await response.text();
+        it('dogs get', async () => {
+            const response = await fetch(`${origin}/dogs/get`);
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'cats get'
-                };
-            }
-        },
-        {
-            name: 'cats post',
-            test: async () => {
-                const response = await fetch(`${origin}/cats/post`, {
-                    method: 'POST'
-                });
-                const responseText = await response.text();
+            expect(responseText).toBe('dogs get');
+        });
 
-                return {
-                    Ok: responseText === 'cats post'
-                };
-            }
-        },
-        {
-            name: 'cats put',
-            test: async () => {
-                const response = await fetch(`${origin}/cats/put`, {
-                    method: 'PUT'
-                });
-                const responseText = await response.text();
+        it('dogs post', async () => {
+            const response = await fetch(`${origin}/dogs/post`, {
+                method: 'POST'
+            });
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'cats put'
-                };
-            }
-        },
-        {
-            name: 'cats patch',
-            test: async () => {
-                const response = await fetch(`${origin}/cats/patch`, {
-                    method: 'PATCH'
-                });
-                const responseText = await response.text();
+            expect(responseText).toBe('dogs post');
+        });
 
-                return {
-                    Ok: responseText === 'cats patch'
-                };
-            }
-        },
-        {
-            name: 'cats delete',
-            test: async () => {
-                const response = await fetch(`${origin}/cats/delete`, {
-                    method: 'DELETE'
-                });
-                const responseText = await response.text();
+        it('dogs put', async () => {
+            const response = await fetch(`${origin}/dogs/put`, {
+                method: 'PUT'
+            });
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'cats delete'
-                };
-            }
-        },
-        {
-            name: 'cats json',
-            test: async () => {
-                const response = await fetch(`${origin}/cats/json`);
-                const responseJson = await response.json();
+            expect(responseText).toBe('dogs put');
+        });
 
-                return {
-                    Ok: responseJson.hello === 'CatsJson'
-                };
-            }
-        },
-        {
-            name: 'cats header',
-            test: async () => {
-                const response = await fetch(`${origin}/cats/header`, {
-                    headers: [['X-Cats-Header-Key', 'CatsHeaderValue']]
-                });
-                const responseText = await response.text();
+        it('dogs patch', async () => {
+            const response = await fetch(`${origin}/dogs/patch`, {
+                method: 'PATCH'
+            });
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'CatsHeaderValue'
-                };
-            }
-        },
-        {
-            name: 'cats http-code',
-            test: async () => {
-                const response = await fetch(`${origin}/cats/http-code`);
-                const responseText = await response.text();
+            expect(responseText).toBe('dogs patch');
+        });
 
-                return {
-                    Ok:
-                        response.status === 418 &&
-                        response.statusText === `I'm a teapot` &&
-                        responseText === `Cats I'm a teapot`
-                };
-            }
-        },
-        {
-            name: 'cats query',
-            test: async () => {
-                const response = await fetch(
-                    `${origin}/cats/query?hello=CatsQuery`
-                );
-                const responseText = await response.text();
+        it('dogs delete', async () => {
+            const response = await fetch(`${origin}/dogs/delete`, {
+                method: 'DELETE'
+            });
+            const responseText = await response.text();
 
-                return {
-                    Ok: responseText === 'CatsQuery'
-                };
-            }
-        },
-        {
-            name: 'cats body',
-            test: async () => {
-                const response = await fetch(`${origin}/cats/body`, {
-                    method: 'POST',
-                    headers: [['Content-Type', 'Application/Json']],
-                    body: JSON.stringify({
-                        hello: 'CatsBody'
-                    })
-                });
-                const responseText = await response.text();
+            expect(responseText).toBe('dogs delete');
+        });
 
-                return {
-                    Ok: responseText === 'CatsBody'
-                };
-            }
-        },
-        {
-            name: 'cats express-request',
-            test: async () => {
-                const response = await fetch(
-                    `${origin}/cats/express-request?hello=CatsExpressRequest`
-                );
-                const responseText = await response.text();
+        it('dogs json', async () => {
+            const response = await fetch(`${origin}/dogs/json`);
+            const responseJson = await response.json();
 
-                return {
-                    Ok: responseText === 'CatsExpressRequest'
-                };
-            }
-        },
-        {
-            name: 'cats express-response',
-            test: async () => {
-                const response = await fetch(`${origin}/cats/express-response`);
-                const responseText = await response.text();
+            expect(responseJson.hello).toBe('DogsJson');
+        });
 
-                return {
-                    Ok: responseText === 'Cats Express Response'
-                };
-            }
-        }
-    ];
+        it('dogs header', async () => {
+            const response = await fetch(`${origin}/dogs/header`, {
+                headers: [['X-Dogs-Header-Key', 'DogsHeaderValue']]
+            });
+            const responseText = await response.text();
+
+            expect(responseText).toBe('DogsHeaderValue');
+        });
+
+        it('dogs http-code', async () => {
+            const response = await fetch(`${origin}/dogs/http-code`);
+            const responseText = await response.text();
+
+            expect(response.status).toBe(418);
+            expect(response.statusText).toBe(`I'm a teapot`);
+            expect(responseText).toBe(`Dogs I'm a teapot`);
+        });
+
+        it('dogs query', async () => {
+            const response = await fetch(
+                `${origin}/dogs/query?hello=DogsQuery`
+            );
+            const responseText = await response.text();
+
+            expect(responseText).toBe('DogsQuery');
+        });
+
+        it('dogs body', async () => {
+            const response = await fetch(`${origin}/dogs/body`, {
+                method: 'POST',
+                headers: [['Content-Type', 'Application/Json']],
+                body: JSON.stringify({
+                    hello: 'DogsBody'
+                })
+            });
+            const responseText = await response.text();
+
+            expect(responseText).toBe('DogsBody');
+        });
+
+        it('dogs express-request', async () => {
+            const response = await fetch(
+                `${origin}/dogs/express-request?hello=DogsExpressRequest`
+            );
+            const responseText = await response.text();
+
+            expect(responseText).toBe('DogsExpressRequest');
+        });
+
+        it('dogs express-response', async () => {
+            const response = await fetch(`${origin}/dogs/express-response`);
+            const responseText = await response.text();
+
+            expect(responseText).toBe('Dogs Express Response');
+        });
+
+        it('cats get', async () => {
+            const response = await fetch(`${origin}/cats/get`);
+            const responseText = await response.text();
+
+            expect(responseText).toBe('cats get');
+        });
+
+        it('cats post', async () => {
+            const response = await fetch(`${origin}/cats/post`, {
+                method: 'POST'
+            });
+            const responseText = await response.text();
+
+            expect(responseText).toBe('cats post');
+        });
+
+        it('cats put', async () => {
+            const response = await fetch(`${origin}/cats/put`, {
+                method: 'PUT'
+            });
+            const responseText = await response.text();
+
+            expect(responseText).toBe('cats put');
+        });
+
+        it('cats patch', async () => {
+            const response = await fetch(`${origin}/cats/patch`, {
+                method: 'PATCH'
+            });
+            const responseText = await response.text();
+
+            expect(responseText).toBe('cats patch');
+        });
+
+        it('cats delete', async () => {
+            const response = await fetch(`${origin}/cats/delete`, {
+                method: 'DELETE'
+            });
+            const responseText = await response.text();
+
+            expect(responseText).toBe('cats delete');
+        });
+
+        it('cats json', async () => {
+            const response = await fetch(`${origin}/cats/json`);
+            const responseJson = await response.json();
+
+            expect(responseJson.hello).toBe('CatsJson');
+        });
+
+        it('cats header', async () => {
+            const response = await fetch(`${origin}/cats/header`, {
+                headers: [['X-Cats-Header-Key', 'CatsHeaderValue']]
+            });
+            const responseText = await response.text();
+
+            expect(responseText).toBe('CatsHeaderValue');
+        });
+
+        it('cats http-code', async () => {
+            const response = await fetch(`${origin}/cats/http-code`);
+            const responseText = await response.text();
+
+            expect(response.status).toBe(418);
+            expect(response.statusText).toBe(`I'm a teapot`);
+            expect(responseText).toBe(`Cats I'm a teapot`);
+        });
+
+        it('cats query', async () => {
+            const response = await fetch(
+                `${origin}/cats/query?hello=CatsQuery`
+            );
+            const responseText = await response.text();
+
+            expect(responseText).toBe('CatsQuery');
+        });
+
+        it('cats body', async () => {
+            const response = await fetch(`${origin}/cats/body`, {
+                method: 'POST',
+                headers: [['Content-Type', 'Application/Json']],
+                body: JSON.stringify({
+                    hello: 'CatsBody'
+                })
+            });
+            const responseText = await response.text();
+
+            expect(responseText).toBe('CatsBody');
+        });
+
+        it('cats express-request', async () => {
+            const response = await fetch(
+                `${origin}/cats/express-request?hello=CatsExpressRequest`
+            );
+            const responseText = await response.text();
+
+            expect(responseText).toBe('CatsExpressRequest');
+        });
+
+        it('cats express-response', async () => {
+            const response = await fetch(`${origin}/cats/express-response`);
+            const responseText = await response.text();
+
+            expect(responseText).toBe('Cats Express Response');
+        });
+    };
 }

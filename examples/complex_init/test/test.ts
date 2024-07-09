@@ -1,10 +1,9 @@
 import { describe } from '@jest/globals';
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test/jest';
+import { runTests } from 'azle/test';
 
-import { createActor as createComplexActor } from '../test/dfx_generated/complex_init';
-// @ts-ignore
-import { createActor as createRecActor } from '../test/dfx_generated/rec_init';
+import { createActor as createComplexActor } from './dfx_generated/complex_init';
+import { createActor as createRecActor } from './dfx_generated/rec_init';
 import { getRecTests, getTests } from './tests';
 
 const complexInitCanister = createComplexActor(getCanisterId('complex_init'), {

@@ -4,9 +4,9 @@ import libraryDeepEqual from 'deep-is';
 import fc from 'fast-check';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 
-import { runTests } from '../test';
 import { Canister } from './arbitraries/canister_arb';
 import { clear as clearUniquePrimitiveArb } from './arbitraries/unique_primitive_arb';
+import { runTests } from './test';
 
 export type Named<T> = {
     name: string;

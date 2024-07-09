@@ -1,7 +1,7 @@
-import { deepEqual, getActor, Named } from 'azle/property_tests';
+import { getActor, Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/property_tests/test';
 
 export function generateTests(
     _functionName: string,
@@ -24,19 +24,10 @@ export function generateTests(
                         await actor.getPostUpgradeValues();
                     const isInitCalled = await actor.isInitCalled();
 
-                    const valuesAreEqual =
-                        deepEqual(postUpgradeValues, expectedResult) &&
-                        isInitCalled === false;
-
-                    return valuesAreEqual
-                        ? { Ok: true }
-                        : {
-                              Err: `\n
-Incorrect return value
-expected: ${expectedResult}
-received: ${postUpgradeValues}
-isInitCalled: ${isInitCalled}`
-                          };
+                    return testEquality(
+                        [postUpgradeValues, isInitCalled],
+                        [expectedResult, false]
+                    );
                 }
             }
         ]

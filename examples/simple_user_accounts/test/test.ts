@@ -1,7 +1,7 @@
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
 
-import { createActor } from '../test/dfx_generated/simple_user_accounts';
+import { createActor } from './dfx_generated/simple_user_accounts';
 import { getTests } from './tests';
 
 const simpleUserAccountsCanister = createActor(

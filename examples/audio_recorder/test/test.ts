@@ -1,8 +1,8 @@
 import { getCanisterId } from 'azle/dfx';
-import { runTests } from 'azle/test/jest';
+import { runTests } from 'azle/test';
 
-import { createActor } from '../test/dfx_generated/audio_recorder';
-import { get_tests } from './tests';
+import { createActor } from './dfx_generated/audio_recorder';
+import { getTests } from './tests';
 
 const audio_recorder_canister = createActor(getCanisterId('audio_recorder'), {
     agentOptions: {
@@ -10,4 +10,4 @@ const audio_recorder_canister = createActor(getCanisterId('audio_recorder'), {
     }
 });
 
-runTests(get_tests(audio_recorder_canister));
+runTests(getTests(audio_recorder_canister));

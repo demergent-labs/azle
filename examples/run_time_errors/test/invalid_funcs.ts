@@ -1,10 +1,7 @@
-// @ts-nocheck
-
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test';
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/run_time_errors/run_time_errors.did';
-import { expectError } from './tests';
 
 const valueIsNotAFuncErrorMessage = "TypeError: Value is not of type 'Func'";
 
@@ -32,42 +29,48 @@ const valueIsNotAStringErrorMessage = `TypeError: Value is not of type 'Func'
 
 export function getInvalidFuncTests(
     errorCanister: ActorSubclass<_SERVICE>
-): Test[] {
-    return [
-        expectError(
-            'return a non-array value as an invalid Func',
-            errorCanister.returnNonArrayValueAsInvalidFunc,
-            valueIsNotAFuncErrorMessage
-        ),
-        expectError(
-            'return an empty object as an invalid Func',
-            errorCanister.returnEmptyObjectAsInvalidFunc,
-            expectedArrayErrorMessage
-        ),
-        expectError(
-            'return an empty array as an invalid Func',
-            errorCanister.returnEmptyArrayAsInvalidFunc,
-            index0IsUndefinedErrorMessage
-        ),
-        expectError(
-            'return a non-principal value as an invalid Func',
-            errorCanister.returnNonPrincipalValueAsInvalidFunc,
-            valueIsNotOfTypePrincipalErrorMessage
-        ),
-        expectError(
-            'return an empty object for a principal as an invalid Func',
-            errorCanister.returnEmptyObjectPrincipalAsInvalidFunc,
-            propertyToTextIsNotAFunctionErrorMessage
-        ),
-        expectError(
-            'return array with only a principal as an invalid Func',
-            errorCanister.returnArrayWithOnlyPrincipalAsInvalidFunc,
-            index1IsUndefinedErrorMessage
-        ),
-        expectError(
-            'return a non-string canister method name as an invalid Func',
-            errorCanister.returnNonStringCanisterMethodNameAsInvalidFunc,
-            valueIsNotAStringErrorMessage
-        )
-    ];
+): Test {
+    return () => {
+        it('return a non-array value as an invalid Func', async () => {
+            await expect(
+                errorCanister.returnNonArrayValueAsInvalidFunc
+            ).rejects.toThrow(valueIsNotAFuncErrorMessage);
+        });
+
+        it('return an empty object as an invalid Func', async () => {
+            await expect(
+                errorCanister.returnEmptyObjectAsInvalidFunc
+            ).rejects.toThrow(expectedArrayErrorMessage);
+        });
+
+        it('return an empty array as an invalid Func', async () => {
+            await expect(
+                errorCanister.returnEmptyArrayAsInvalidFunc
+            ).rejects.toThrow(index0IsUndefinedErrorMessage);
+        });
+
+        it('return a non-principal value as an invalid Func', async () => {
+            await expect(
+                errorCanister.returnNonPrincipalValueAsInvalidFunc
+            ).rejects.toThrow(valueIsNotOfTypePrincipalErrorMessage);
+        });
+
+        it('return an empty object for a principal as an invalid Func', async () => {
+            await expect(
+                errorCanister.returnEmptyObjectPrincipalAsInvalidFunc
+            ).rejects.toThrow(propertyToTextIsNotAFunctionErrorMessage);
+        });
+
+        it('return array with only a principal as an invalid Func', async () => {
+            await expect(
+                errorCanister.returnArrayWithOnlyPrincipalAsInvalidFunc
+            ).rejects.toThrow(index1IsUndefinedErrorMessage);
+        });
+
+        it('return a non-string canister method name as an invalid Func', async () => {
+            await expect(
+                errorCanister.returnNonStringCanisterMethodNameAsInvalidFunc
+            ).rejects.toThrow(valueIsNotAStringErrorMessage);
+        });
+    };
 }

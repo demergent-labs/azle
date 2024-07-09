@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { expect, it, Test } from 'azle/test/jest';
+import { expect, it, Test } from 'azle/test';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/factorial/factorial.did';
@@ -41,6 +41,7 @@ export function getTests(factorialCanister: ActorSubclass<_SERVICE>): Test {
         });
 
         // TODO: Fails with `Canister trapped explicitly: Panicked at 'TODO needs error info'`
+        // https://forum.dfinity.org/t/error-while-trying-to-run-idl-encode-on-values-around-1-8x10-308-or-larger/32924
         it.skip('calculates 1000 factorial', async () => {
             const result = await factorialCanister.fac(1000n);
 

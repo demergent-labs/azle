@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { execSync } from 'child_process';
 
 async function pretest() {

@@ -1,139 +1,87 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/null_example/null_example.did';
 
-export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test[] {
-    return [
-        {
-            name: 'null function',
-            test: async () => {
-                const result = await nullExampleCanister.nullFunction(null);
+export function getTests(nullExampleCanister: ActorSubclass<_SERVICE>): Test {
+    return () => {
+        it('null function', async () => {
+            const result = await nullExampleCanister.nullFunction(null);
 
-                return {
-                    Ok: result === null
-                };
-            }
-        },
-        {
-            name: 'void function',
-            test: async () => {
-                const result = await nullExampleCanister.voidIsNotNull();
+            expect(result).toBeNull();
+        });
 
-                return {
-                    Ok: result === undefined
-                };
-            }
-        },
-        {
-            name: 'get partially null record',
-            test: async () => {
-                const result =
-                    await nullExampleCanister.getPartiallyNullRecord();
+        it('void function', async () => {
+            const result = await nullExampleCanister.voidIsNotNull();
 
-                const record = {
-                    firstItem: 1n,
-                    secondItem: null,
-                    thirdItem: 3n
-                };
+            expect(result).toBeUndefined();
+        });
 
-                return {
-                    Ok:
-                        result.firstItem === record.firstItem &&
-                        result.secondItem === record.secondItem &&
-                        result.thirdItem === record.thirdItem
-                };
-            }
-        },
-        {
-            name: 'set partially null record',
-            test: async () => {
-                const record = {
-                    firstItem: 5n,
-                    secondItem: null,
-                    thirdItem: 15n
-                };
-                const result =
-                    await nullExampleCanister.setPartiallyNullRecord(record);
+        it('get partially null record', async () => {
+            const result = await nullExampleCanister.getPartiallyNullRecord();
 
-                return {
-                    Ok:
-                        result.firstItem === record.firstItem &&
-                        result.secondItem === record.secondItem &&
-                        result.thirdItem === record.thirdItem
-                };
-            }
-        },
-        {
-            name: 'get small null record',
-            test: async () => {
-                const result = await nullExampleCanister.getSmallNullRecord();
-                const record = {
-                    firstItem: null,
-                    secondItem: null
-                };
+            const record = {
+                firstItem: 1n,
+                secondItem: null,
+                thirdItem: 3n
+            };
 
-                return {
-                    Ok:
-                        result.firstItem === record.firstItem &&
-                        result.secondItem === record.secondItem
-                };
-            }
-        },
-        {
-            name: 'set small null record',
-            test: async () => {
-                const record = {
-                    firstItem: null,
-                    secondItem: null
-                };
-                const result =
-                    await nullExampleCanister.setSmallNullRecord(record);
+            expect(result).toStrictEqual(record);
+        });
 
-                return {
-                    Ok:
-                        result.firstItem === record.firstItem &&
-                        result.secondItem === record.secondItem
-                };
-            }
-        },
-        {
-            name: 'get large null record',
-            test: async () => {
-                const result = await nullExampleCanister.getLargeNullRecord();
-                const record = {
-                    firstItem: null,
-                    secondItem: null,
-                    thirdItem: null
-                };
+        it('set partially null record', async () => {
+            const record = {
+                firstItem: 5n,
+                secondItem: null,
+                thirdItem: 15n
+            };
+            const result =
+                await nullExampleCanister.setPartiallyNullRecord(record);
 
-                return {
-                    Ok:
-                        result.firstItem === record.firstItem &&
-                        result.secondItem === record.secondItem &&
-                        result.thirdItem === record.thirdItem
-                };
-            }
-        },
-        {
-            name: 'set large null record',
-            test: async () => {
-                const record = {
-                    firstItem: null,
-                    secondItem: null,
-                    thirdItem: null
-                };
-                const result =
-                    await nullExampleCanister.setLargeNullRecord(record);
+            expect(result).toStrictEqual(record);
+        });
 
-                return {
-                    Ok:
-                        result.firstItem === record.firstItem &&
-                        result.secondItem === record.secondItem &&
-                        result.thirdItem === record.thirdItem
-                };
-            }
-        }
-    ];
+        it('get small null record', async () => {
+            const result = await nullExampleCanister.getSmallNullRecord();
+            const record = {
+                firstItem: null,
+                secondItem: null
+            };
+
+            expect(result).toStrictEqual(record);
+        });
+
+        it('set small null record', async () => {
+            const record = {
+                firstItem: null,
+                secondItem: null
+            };
+            const result = await nullExampleCanister.setSmallNullRecord(record);
+
+            expect(result).toStrictEqual(record);
+        });
+
+        it('get large null record', async () => {
+            const result = await nullExampleCanister.getLargeNullRecord();
+            const record = {
+                firstItem: null,
+                secondItem: null,
+                thirdItem: null
+            };
+
+            expect(result).toStrictEqual(record);
+        });
+
+        it('set large null record', async () => {
+            const record = {
+                firstItem: null,
+                secondItem: null,
+                thirdItem: null
+            };
+            const result = await nullExampleCanister.setLargeNullRecord(record);
+
+            expect(result).toStrictEqual(record);
+        });
+    };
 }

@@ -1,10 +1,10 @@
-import { deepEqual, getActor, Named } from 'azle/property_tests';
+import { getActor, Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import {
     ReturnTuple,
     Tuple
 } from 'azle/property_tests/arbitraries/candid/constructed/tuple_arb';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/property_tests/test';
 
 export function generateTests(
     functionName: string,
@@ -26,7 +26,7 @@ export function generateTests(
                         )
                     );
 
-                    return { Ok: deepEqual(result, expectedResult) };
+                    return testEquality(result, expectedResult);
                 }
             }
         ]

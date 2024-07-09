@@ -1,5 +1,5 @@
 import { ActorSubclass } from '@dfinity/agent';
-import { expect, it, Test } from 'azle/test/jest';
+import { expect, it, Test } from 'azle/test';
 
 import { _SERVICE as _COMPLEX_SERVICE } from './dfx_generated/complex_init/complex_init.did';
 // @ts-ignore

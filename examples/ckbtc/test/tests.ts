@@ -2,7 +2,7 @@ import { ActorSubclass } from '@dfinity/agent';
 import { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { getCanisterId } from 'azle/dfx';
-import { expect, it, please, Test, wait } from 'azle/test/jest';
+import { expect, it, please, Test, wait } from 'azle/test';
 import { execSync } from 'child_process';
 
 // @ts-ignore
