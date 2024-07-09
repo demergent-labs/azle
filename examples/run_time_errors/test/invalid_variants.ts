@@ -42,7 +42,7 @@ export function getInvalidVariantTests(
 
         // TODO: We should return an error if multiple-tags are included in a type
         // See https://github.com/demergent-labs/azle/issues/1128
-        it.skip('return an object with multiple tags as an invalid user-defined variant', async () => {
+        it('return an object with multiple tags as an invalid user-defined variant', async () => {
             await expect(
                 errorCanister.returnObjectWithMultipleTagsAsInvalidUserDefinedVariant
             ).rejects.toThrow(variantMustContainExactlyOnePropertyErrorMessage);

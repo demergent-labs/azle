@@ -28,7 +28,7 @@ export function getInvalidResultTests(
 
         // TODO: This should be an error
         // See https://github.com/demergent-labs/azle/issues/1128
-        it.skip('return both Ok and Err', async () => {
+        it('return both Ok and Err', async () => {
             await expect(errorCanister.returnBothOkAndErr).rejects.toThrow(
                 invalidPropertiesErrorMessage
             );

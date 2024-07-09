@@ -31,9 +31,7 @@ export function getInvalidPrimitiveTests(
             ).rejects.toThrow("TypeError: Value is not of type 'string'");
         });
 
-        // TODO: Consider saying "Value is not of type 'text'"
-        // See https://github.com/demergent-labs/azle/issues/1108
-        it.skip('return invalid text value', async () => {
+        it('return invalid text value', async () => {
             await expect(errorCanister.returnInvalidTextValue).rejects.toThrow(
                 "TypeError: Value is not of type 'string'"
             );

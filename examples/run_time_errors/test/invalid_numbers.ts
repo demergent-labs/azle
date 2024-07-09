@@ -7,9 +7,7 @@ export function getInvalidNumberTests(
     errorCanister: ActorSubclass<_SERVICE>
 ): Test {
     return () => {
-        // TODO: change this to "TypeError: Value is not of type 'number'"
-        // See https://github.com/demergent-labs/azle/issues/1108
-        it.skip('return invalid number', async () => {
+        it('return invalid number', async () => {
             await expect(errorCanister.returnInvalidNumber).rejects.toThrow(
                 "TypeError: Value is not of type 'float64'"
             );
