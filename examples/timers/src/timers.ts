@@ -1,4 +1,3 @@
-import { managementCanister } from 'azle/canisters/management';
 import {
     blob,
     bool,
@@ -12,6 +11,7 @@ import {
     update,
     Void
 } from 'azle/experimental';
+import { managementCanister } from 'azle/experimental/canisters/management';
 
 const StatusReport = Record({
     single: bool,

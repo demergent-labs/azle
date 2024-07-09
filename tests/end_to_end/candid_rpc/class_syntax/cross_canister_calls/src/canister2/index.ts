@@ -39,7 +39,7 @@ export default class {
     }
 
     @query([IDL.Text], IDL.Nat64)
-    balance(id: string) {
+    balance(id: string): bigint {
         return state.accounts[id]?.balance ?? 0n;
     }
 
@@ -55,13 +55,12 @@ export default class {
     }
 
     @query([], IDL.Empty)
-    trap(): string {
+    trap(): never {
         trap('hahahaha');
-        return 'You will never get here';
     }
 
     @update([IDL.Text])
-    receiveNotification(message: string) {
+    receiveNotification(message: string): void {
         state.notification = message;
     }
 

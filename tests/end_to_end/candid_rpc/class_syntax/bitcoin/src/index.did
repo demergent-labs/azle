@@ -1,0 +1,6 @@
+service: () -> {
+    getBalance: (text) -> (nat64);
+    getCurrentFeePercentiles: () -> (vec nat64);
+    getUtxos: (text) -> (record {next_page:opt vec nat8; tip_height:nat32; tip_block_hash:vec nat8; utxos:vec record {height:nat32; value:nat64; outpoint:record {txid:vec nat8; vout:nat32}}});
+    sendTransaction: (vec nat8) -> (bool);
+}

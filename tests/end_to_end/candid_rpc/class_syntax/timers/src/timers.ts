@@ -1,5 +1,12 @@
-import { ic, IDL, query, update } from 'azle';
-import { managementCanister } from 'azle/canisters/management';
+import {
+    call,
+    clearTimer,
+    IDL,
+    query,
+    setTimer,
+    setTimerInterval,
+    update
+} from 'azle';
 
 const StatusReport = IDL.Record({
     single: IDL.Bool,
@@ -47,7 +54,7 @@ let statusReport: StatusReport = {
 export default class {
     @update([IDL.Nat64])
     clearTimer(timerId: bigint): void {
-        ic.clearTimer(timerId);
+        clearTimer(timerId);
         console.log(`timer ${timerId} cancelled`);
     }
 
@@ -55,29 +62,29 @@ export default class {
     setTimers(delay: bigint, interval: bigint): TimerIds {
         const capturedValue = '🚩';
 
-        const singleId = ic.setTimer(delay, oneTimeTimerCallback);
+        const singleId = setTimer(delay, oneTimeTimerCallback);
 
-        const inlineId = ic.setTimer(delay, () => {
+        const inlineId = setTimer(delay, () => {
             statusReport.inline = 1;
             console.log('Inline timer called');
         });
 
-        const captureId = ic.setTimer(delay, () => {
+        const captureId = setTimer(delay, () => {
             statusReport.capture = capturedValue;
             console.log(`Timer captured value ${capturedValue}`);
         });
 
-        const repeatId = ic.setTimerInterval(interval, () => {
+        const repeatId = setTimerInterval(interval, () => {
             statusReport.repeat++;
             console.log(`Repeating timer. Call ${statusReport.repeat}`);
         });
 
-        const singleCrossCanisterId = ic.setTimer(
+        const singleCrossCanisterId = setTimer(
             delay,
             singleCrossCanisterTimerCallback
         );
 
-        const repeatCrossCanisterId = ic.setTimerInterval(
+        const repeatCrossCanisterId = setTimerInterval(
             interval,
             repeatCrossCanisterTimerCallback
         );
@@ -93,23 +100,23 @@ export default class {
     }
 
     @query([], StatusReport)
-    statusReport() {
+    statusReport(): StatusReport {
         return statusReport;
     }
 }
 
-function oneTimeTimerCallback() {
+function oneTimeTimerCallback(): void {
     statusReport.single = true;
     console.log('oneTimeTimerCallback called');
 }
 
-async function singleCrossCanisterTimerCallback() {
+async function singleCrossCanisterTimerCallback(): Promise<void> {
     console.log('singleCrossCanisterTimerCallback');
 
     statusReport.singleCrossCanister = await getRandomness();
 }
 
-async function repeatCrossCanisterTimerCallback() {
+async function repeatCrossCanisterTimerCallback(): Promise<void> {
     console.log('repeatCrossCanisterTimerCallback');
 
     statusReport.repeatCrossCanister = Uint8Array.from([
@@ -119,12 +126,5 @@ async function repeatCrossCanisterTimerCallback() {
 }
 
 async function getRandomness(): Promise<Uint8Array> {
-    if (process.env.AZLE_TEST_FETCH === 'true') {
-        const response = await fetch(`icp://aaaaa-aa/raw_rand`);
-        const responseJson = await response.json();
-
-        return responseJson;
-    } else {
-        return await ic.call(managementCanister.raw_rand);
-    }
+    return await call('aaaaa-aa', 'raw_rand', { returnIdl: IDL.Vec(IDL.Nat8) });
 }

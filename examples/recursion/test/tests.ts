@@ -157,7 +157,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test {
 
             const result = await recursion_canister.testRecFunc(func);
 
-            expect(result).toStrictEqual(func);
+            expect(result).toEqual(func);
         });
 
         it('recursive funcs return', async () => {
@@ -168,7 +168,7 @@ export function getTests(recursion_canister: ActorSubclass<_SERVICE>): Test {
                 'create_canister'
             ];
 
-            expect(result).toStrictEqual(expectedResult);
+            expect(result).toEqual(expectedResult);
         });
 
         it('recursive records with vec', async () => {

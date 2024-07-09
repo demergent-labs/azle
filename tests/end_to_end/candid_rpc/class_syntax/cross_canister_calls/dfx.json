@@ -5,7 +5,7 @@
             "main": "src/canister1/index.ts",
             "candid": "src/canister1/index.did",
             "candid_gen": "custom",
-            "env": ["CANISTER2_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "env": ["CANISTER2_PRINCIPAL"],
             "assets": [["src/canister2/index.did", "candid/canister2.did"]],
             "declarations": {
                 "output": "test/dfx_generated/canister1",

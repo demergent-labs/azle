@@ -4,13 +4,13 @@ let initialized = false;
 
 export default class {
     @heartbeat
-    heartbeat() {
+    heartbeat(): void {
         initialized = true;
         console.log('heartbeat initialized', initialized);
     }
 
     @query([], IDL.Bool)
-    getInitialized() {
+    getInitialized(): boolean {
         return initialized;
     }
 }

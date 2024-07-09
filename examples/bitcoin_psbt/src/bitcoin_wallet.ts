@@ -14,7 +14,7 @@ import {
     MillisatoshiPerByte,
     Satoshi,
     Utxo
-} from 'azle/canisters/management';
+} from 'azle/experimental/canisters/management';
 import * as bitcoinApi from 'basic_bitcoin/src/bitcoin_api';
 import {
     determineNetwork,

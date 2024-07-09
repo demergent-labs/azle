@@ -1,0 +1,10 @@
+service: () -> {
+    getLargeNullRecord: () -> (record {thirdItem:null; secondItem:null; firstItem:null}) query;
+    getPartiallyNullRecord: () -> (record {thirdItem:int; secondItem:null; firstItem:int}) query;
+    getSmallNullRecord: () -> (record {secondItem:null; firstItem:null}) query;
+    nullFunction: (null) -> (null) query;
+    setLargeNullRecord: (record {thirdItem:null; secondItem:null; firstItem:null}) -> (record {thirdItem:null; secondItem:null; firstItem:null});
+    setPartiallyNullRecord: (record {thirdItem:int; secondItem:null; firstItem:int}) -> (record {thirdItem:int; secondItem:null; firstItem:int});
+    setSmallNullRecord: (record {secondItem:null; firstItem:null}) -> (record {secondItem:null; firstItem:null});
+    voidIsNotNull: () -> () query;
+}

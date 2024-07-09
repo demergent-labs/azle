@@ -1,25 +1,9 @@
+import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
-import { join, resolve } from 'path';
+import { join } from 'path';
 
 async function pretest() {
-    const azleDir = resolve(
-        __dirname,
-        join('..', '..', '..', '..', '..', '..')
-    );
-
-    execSync(
-        `cd ${join(azleDir, 'examples', 'simple_user_accounts')} && npm install`
-    );
-
-    if (process.env.AZLE_END_TO_END_TEST_LINK_AZLE !== 'false') {
-        execSync(
-            `cd ${join(
-                azleDir,
-                'examples',
-                'simple_user_accounts'
-            )} && npm link azle`
-        );
-    }
+    linkAndInstallPatch(join('examples', 'simple_user_accounts'));
 
     execSync(`dfx canister uninstall-code simple_user_accounts || true`, {
         stdio: 'inherit'

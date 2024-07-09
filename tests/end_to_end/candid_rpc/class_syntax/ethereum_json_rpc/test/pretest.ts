@@ -1,0 +1,24 @@
+import { linkAndInstallPatch } from 'azle/test/jest_link';
+import { execSync } from 'child_process';
+import { join } from 'path';
+
+async function pretest() {
+    linkAndInstallPatch(join('examples', 'ethereum_json_rpc'));
+
+    execSync(`dfx canister uninstall-code ethereum_json_rpc || true`, {
+        stdio: 'inherit'
+    });
+
+    execSync(
+        `dfx deploy ethereum_json_rpc --argument '("${process.env.ETHEREUM_URL}")'`,
+        {
+            stdio: 'inherit'
+        }
+    );
+
+    execSync(`dfx generate`, {
+        stdio: 'inherit'
+    });
+}
+
+pretest();

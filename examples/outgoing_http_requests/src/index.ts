@@ -1,9 +1,4 @@
 import {
-    HttpResponse,
-    HttpTransformArgs,
-    managementCanister
-} from 'azle/canisters/management';
-import {
     Canister,
     ic,
     Manual,
@@ -14,6 +9,11 @@ import {
     text,
     update
 } from 'azle/experimental';
+import {
+    HttpResponse,
+    HttpTransformArgs,
+    managementCanister
+} from 'azle/experimental/canisters/management';
 
 export default Canister({
     xkcd: update([], text, async () => {

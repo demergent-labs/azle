@@ -25,14 +25,14 @@ let entries: {
 
 export default class {
     @init([])
-    init() {
+    init(): void {
         console.log('init');
 
         stableStorage.insert('entries', []);
     }
 
     @postUpgrade([])
-    postUpgrade() {
+    postUpgrade(): void {
         console.log('postUpgrade');
 
         const stableEntriesOpt = stableStorage.get('entries');
@@ -49,7 +49,7 @@ export default class {
     }
 
     @preUpgrade
-    preUpgrade() {
+    preUpgrade(): void {
         console.log('preUpgrade');
 
         stableStorage.insert(
@@ -64,12 +64,12 @@ export default class {
     }
 
     @update([Entry])
-    setEntry(entry: Entry) {
+    setEntry(entry: Entry): void {
         entries[entry.key] = entry.value;
     }
 
     @query([], IDL.Vec(Entry))
-    getEntries() {
+    getEntries(): Entry[] {
         return Object.entries(entries).map((entry) => {
             return {
                 key: entry[0],
