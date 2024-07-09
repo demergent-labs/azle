@@ -1,4 +1,4 @@
-import { deepEqual, getActor, runPropTests } from 'azle/property_tests';
+import { getActor, runPropTests } from 'azle/property_tests';
 import { CandidReturnTypeArb } from 'azle/property_tests/arbitraries/candid/candid_return_type_arb';
 import { CandidValueAndMetaArb } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
@@ -12,6 +12,7 @@ import {
     QueryMethodArb
 } from 'azle/property_tests/arbitraries/canister_methods/query_method_arb';
 import { UpdateMethodArb } from 'azle/property_tests/arbitraries/canister_methods/update_method_arb';
+import { testEquality } from 'azle/test';
 import fc from 'fast-check';
 
 const SimplePreUpgradeArb = PreUpgradeMethodArb({
@@ -95,7 +96,7 @@ function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
                         const actor = getActor(__dirname);
                         const result = await actor.getPreUpgradeExecuted();
 
-                        return { Ok: deepEqual(result, []) };
+                        return testEquality(result, []);
                     }
                 }
             ],
@@ -106,7 +107,7 @@ function generateGetPreUpgradeExecutedCanisterMethod(): QueryMethod {
                         const actor = getActor(__dirname);
                         const result = await actor.getPreUpgradeExecuted();
 
-                        return { Ok: deepEqual(result, [true]) };
+                        return testEquality(result, [true]);
                     }
                 }
             ]

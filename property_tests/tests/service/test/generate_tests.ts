@@ -1,7 +1,7 @@
 import { Principal } from '@dfinity/principal';
 import { Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
-import { Test } from 'azle/test';
+import { Test, testEquality } from 'azle/test';
 import { execSync } from 'child_process';
 
 export function generateTests(
@@ -31,11 +31,10 @@ export function generateTests(
                         .toString()
                         .trim();
 
-                    return {
-                        Ok:
-                            result ===
-                            `(service "${returnService.value.agentArgumentValue.toText()}")`
-                    };
+                    return testEquality(
+                        result,
+                        `(service "${returnService.value.agentArgumentValue.toText()}")`
+                    );
                 }
             }
         ]
