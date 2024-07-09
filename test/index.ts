@@ -11,16 +11,16 @@ export type Test<> = {
     skip?: boolean;
     wait?: number;
     prep?: () => Promise<void>;
-    test?: () => Promise<AzleResult<string>>;
+    test?: () => Promise<AzleResult>;
 };
 
 // TODO get rid of this union once the jest migration is complete
-type AzleResult<E> =
+type AzleResult =
     | Partial<{
           Ok: { isSuccessful: boolean; message?: string };
-          Err: E;
+          Err: string;
       }>
-    | Partial<{ Ok: boolean; Err: E }>;
+    | Partial<{ Ok: boolean; Err: string }>;
 
 // TODO should this just return a boolean?
 // TODO then the function calling can decide to throw or not
@@ -55,7 +55,7 @@ export async function runTests(
                 continue;
             }
 
-            const result: AzleResult<string> =
+            const result: AzleResult =
                 test.test !== undefined
                     ? await test.test()
                     : {
@@ -136,19 +136,13 @@ export async function runTests(
 
 // TODO is is better test framework conformity to call this assertEqual? I'll hold off for now, it should be easy to search for all testEquality and change it, easier than assertEqual I think
 // TODO so based on this I think I've actually seen this in other testing frameworks, assertEquals will take two and make sure they are equals, and assert will take one boolean. Right now we have test instead of assert but it would be easy to change
-export function testEquality<T = any>(
-    actual: T,
-    expected: T
-): AzleResult<string> {
-    const equals = deepEqual;
-    const valueToString = jsonStringify;
-
-    if (equals(actual, expected)) {
+export function testEquality<T = any>(actual: T, expected: T): AzleResult {
+    if (deepEqual(actual, expected)) {
         return { Ok: { isSuccessful: true } };
     } else {
-        const message = `Expected: ${valueToString(
+        const message = `Expected: ${jsonStringify(
             expected
-        )}, Received: ${valueToString(actual)}`;
+        )}, Received: ${jsonStringify(actual)}`;
         return { Ok: { isSuccessful: false, message } };
     }
 }
