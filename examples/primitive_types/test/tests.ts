@@ -1,533 +1,335 @@
 import { ActorSubclass } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { Test } from 'azle/test';
+import { expect, it, Test } from 'azle/test';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from './dfx_generated/primitive_types/primitive_types.did';
 
 export function getTests(
     primitiveTypesCanister: ActorSubclass<_SERVICE>
-): Test[] {
-    return [
-        {
-            name: 'getString',
-            test: async () => {
-                const result = await primitiveTypesCanister.getString();
+): Test {
+    return () => {
+        it('getString', async () => {
+            const result = await primitiveTypesCanister.getString();
 
-                return {
-                    Ok: result === 'string'
-                };
-            }
-        },
-        {
-            name: 'printString',
-            test: async () => {
-                const result =
-                    await primitiveTypesCanister.printString('string');
+            expect(result).toBe('string');
+        });
 
-                return {
-                    Ok: result === 'string'
-                };
-            }
-        },
-        {
-            name: 'getText',
-            test: async () => {
-                const result = await primitiveTypesCanister.getText();
+        it('printString', async () => {
+            const result = await primitiveTypesCanister.printString('string');
 
-                return {
-                    Ok: result === 'text'
-                };
-            }
-        },
-        {
-            name: 'printText',
-            test: async () => {
-                const result = await primitiveTypesCanister.printText('text');
+            expect(result).toBe('string');
+        });
 
-                return {
-                    Ok: result === 'text'
-                };
-            }
-        },
-        {
-            name: 'getNumber',
-            test: async () => {
-                const result = await primitiveTypesCanister.getNumber();
+        it('getText', async () => {
+            const result = await primitiveTypesCanister.getText();
 
-                return {
-                    Ok: result.toString() === '9007199254740991'
-                };
-            }
-        },
-        {
-            name: 'printNumber',
-            test: async () => {
-                const result =
-                    await primitiveTypesCanister.printNumber(90071992547409.05);
+            expect(result).toBe('text');
+        });
 
-                return {
-                    Ok: result.toString() === '90071992547409.05'
-                };
-            }
-        },
-        {
-            name: 'getInt',
-            test: async () => {
-                const result = await primitiveTypesCanister.getInt();
+        it('printText', async () => {
+            const result = await primitiveTypesCanister.printText('text');
 
-                return {
-                    Ok:
-                        result ===
-                        170_141_183_460_469_231_731_687_303_715_884_105_727n
-                };
-            }
-        },
-        {
-            name: 'printInt',
-            test: async () => {
-                const result =
-                    await primitiveTypesCanister.printInt(
-                        170_141_183_460_469_231_731_687_303_715_884_105_727n
-                    );
+            expect(result).toBe('text');
+        });
 
-                return {
-                    Ok:
-                        result ===
-                        170_141_183_460_469_231_731_687_303_715_884_105_727n
-                };
-            }
-        },
-        {
-            name: 'getInt64',
-            test: async () => {
-                const result = await primitiveTypesCanister.getInt64();
+        it('getNumber', async () => {
+            const result = await primitiveTypesCanister.getNumber();
 
-                return {
-                    Ok: result === 9_223_372_036_854_775_807n
-                };
-            }
-        },
-        {
-            name: 'printInt64',
-            test: async () => {
-                const result =
-                    await primitiveTypesCanister.printInt(
-                        9_223_372_036_854_775_807n
-                    );
+            expect(result.toString()).toBe('9007199254740991');
+        });
 
-                return {
-                    Ok: result === 9_223_372_036_854_775_807n
-                };
-            }
-        },
-        {
-            name: 'getInt32',
-            test: async () => {
-                const result = await primitiveTypesCanister.getInt32();
+        it('printNumber', async () => {
+            const result =
+                await primitiveTypesCanister.printNumber(90071992547409.05);
 
-                return {
-                    Ok: result === 2_147_483_647
-                };
-            }
-        },
-        {
-            name: 'printInt32',
-            test: async () => {
-                const result =
-                    await primitiveTypesCanister.printInt32(2_147_483_647);
+            expect(result.toString()).toBe('90071992547409.05');
+        });
 
-                return {
-                    Ok: result === 2_147_483_647
-                };
-            }
-        },
-        {
-            name: 'getInt16',
-            test: async () => {
-                const result = await primitiveTypesCanister.getInt16();
+        it('getInt', async () => {
+            const result = await primitiveTypesCanister.getInt();
 
-                return {
-                    Ok: result === 32_767
-                };
-            }
-        },
-        {
-            name: 'printInt16',
-            test: async () => {
-                const result = await primitiveTypesCanister.printInt16(32_767);
+            expect(result).toBe(
+                170_141_183_460_469_231_731_687_303_715_884_105_727n
+            );
+        });
 
-                return {
-                    Ok: result === 32_767
-                };
-            }
-        },
-        {
-            name: 'getInt8',
-            test: async () => {
-                const result = await primitiveTypesCanister.getInt8();
-
-                return {
-                    Ok: result === 127
-                };
-            }
-        },
-        {
-            name: 'printInt8',
-            test: async () => {
-                const result = await primitiveTypesCanister.printInt8(127);
-
-                return {
-                    Ok: result === 127
-                };
-            }
-        },
-        {
-            name: 'getNat',
-            test: async () => {
-                const result = await primitiveTypesCanister.getNat();
-
-                return {
-                    Ok:
-                        result ===
-                        340_282_366_920_938_463_463_374_607_431_768_211_455n
-                };
-            }
-        },
-        {
-            name: 'printNat',
-            test: async () => {
-                const result =
-                    await primitiveTypesCanister.printNat(
-                        340_282_366_920_938_463_463_374_607_431_768_211_455n
-                    );
-
-                return {
-                    Ok:
-                        result ===
-                        340_282_366_920_938_463_463_374_607_431_768_211_455n
-                };
-            }
-        },
-        {
-            name: 'getNat64',
-            test: async () => {
-                const result = await primitiveTypesCanister.getNat64();
-
-                return {
-                    Ok: result === 18_446_744_073_709_551_615n
-                };
-            }
-        },
-        {
-            name: 'printNat64',
-            test: async () => {
-                const result =
-                    await primitiveTypesCanister.printNat64(
-                        18_446_744_073_709_551_615n
-                    );
-
-                return {
-                    Ok: result === 18_446_744_073_709_551_615n
-                };
-            }
-        },
-        {
-            name: 'getNat32',
-            test: async () => {
-                const result = await primitiveTypesCanister.getNat32();
-
-                return {
-                    Ok: result === 4_294_967_295
-                };
-            }
-        },
-        {
-            name: 'printNat32',
-            test: async () => {
-                const result =
-                    await primitiveTypesCanister.printNat32(4_294_967_295);
-
-                return {
-                    Ok: result === 4_294_967_295
-                };
-            }
-        },
-        {
-            name: 'getNat16',
-            test: async () => {
-                const result = await primitiveTypesCanister.getNat16();
-
-                return {
-                    Ok: result === 65_535
-                };
-            }
-        },
-        {
-            name: 'printNat16',
-            test: async () => {
-                const result = await primitiveTypesCanister.printNat16(65_535);
-
-                return {
-                    Ok: result === 65_535
-                };
-            }
-        },
-        {
-            name: 'getNat8',
-            test: async () => {
-                const result = await primitiveTypesCanister.getNat8();
-
-                return {
-                    Ok: result === 255
-                };
-            }
-        },
-        {
-            name: 'printNat8',
-            test: async () => {
-                const result = await primitiveTypesCanister.printNat8(255);
-
-                return {
-                    Ok: result === 255
-                };
-            }
-        },
-        {
-            name: 'getFloat64',
-            test: async () => {
-                const result = await primitiveTypesCanister.getFloat64();
-
-                return {
-                    Ok: result.toString() === '2.718281828459045'
-                };
-            }
-        },
-        {
-            name: 'printFloat64',
-            test: async () => {
-                const result =
-                    await primitiveTypesCanister.printFloat64(
-                        2.718281828459045
-                    );
-
-                return {
-                    Ok: result.toString() === '2.718281828459045'
-                };
-            }
-        },
-        {
-            name: 'print Float64.Nan',
-            test: async () => {
-                const result = await primitiveTypesCanister.printFloat64(
-                    Number.NaN
+        it('printInt', async () => {
+            const result =
+                await primitiveTypesCanister.printInt(
+                    170_141_183_460_469_231_731_687_303_715_884_105_727n
                 );
 
-                return {
-                    Ok: Number.isNaN(result)
-                };
-            }
-        },
-        {
-            name: 'print positive Float64.Infinity',
-            test: async () => {
-                const result = await primitiveTypesCanister.printFloat64(
-                    Number.POSITIVE_INFINITY
+            expect(result).toBe(
+                170_141_183_460_469_231_731_687_303_715_884_105_727n
+            );
+        });
+
+        it('getInt64', async () => {
+            const result = await primitiveTypesCanister.getInt64();
+
+            expect(result).toBe(9_223_372_036_854_775_807n);
+        });
+
+        it('printInt64', async () => {
+            const result =
+                await primitiveTypesCanister.printInt(
+                    9_223_372_036_854_775_807n
                 );
 
-                return {
-                    Ok: !Number.isFinite(result)
-                };
-            }
-        },
-        {
-            name: 'print negative Float64.Infinity',
-            test: async () => {
-                const result = await primitiveTypesCanister.printFloat64(
-                    Number.NEGATIVE_INFINITY
+            expect(result).toBe(9_223_372_036_854_775_807n);
+        });
+
+        it('getInt32', async () => {
+            const result = await primitiveTypesCanister.getInt32();
+
+            expect(result).toBe(2_147_483_647);
+        });
+
+        it('printInt32', async () => {
+            const result =
+                await primitiveTypesCanister.printInt32(2_147_483_647);
+
+            expect(result).toBe(2_147_483_647);
+        });
+
+        it('getInt16', async () => {
+            const result = await primitiveTypesCanister.getInt16();
+
+            expect(result).toBe(32_767);
+        });
+
+        it('printInt16', async () => {
+            const result = await primitiveTypesCanister.printInt16(32_767);
+
+            expect(result).toBe(32_767);
+        });
+
+        it('getInt8', async () => {
+            const result = await primitiveTypesCanister.getInt8();
+
+            expect(result).toBe(127);
+        });
+
+        it('printInt8', async () => {
+            const result = await primitiveTypesCanister.printInt8(127);
+
+            expect(result).toBe(127);
+        });
+
+        it('getNat', async () => {
+            const result = await primitiveTypesCanister.getNat();
+
+            expect(result).toBe(
+                340_282_366_920_938_463_463_374_607_431_768_211_455n
+            );
+        });
+
+        it('printNat', async () => {
+            const result =
+                await primitiveTypesCanister.printNat(
+                    340_282_366_920_938_463_463_374_607_431_768_211_455n
                 );
 
-                return {
-                    Ok: !Number.isFinite(result)
-                };
-            }
-        },
-        {
-            name: 'getFloat32',
-            test: async () => {
-                const result = await primitiveTypesCanister.getFloat32();
+            expect(result).toBe(
+                340_282_366_920_938_463_463_374_607_431_768_211_455n
+            );
+        });
 
-                return {
-                    // Ok: result.toString() === '3.1415927' // TODO on the command line this is returned
-                    Ok: result.toString() === '3.1415927410125732'
-                };
-            }
-        },
-        {
-            name: 'printFloat32',
-            test: async () => {
-                const result =
-                    await primitiveTypesCanister.printFloat32(3.1415927);
+        it('getNat64', async () => {
+            const result = await primitiveTypesCanister.getNat64();
 
-                return {
-                    // Ok: result.toString() === '3.1415927' // TODO on the command line this is returned
-                    Ok: result.toString() === '3.1415927410125732'
-                };
-            }
-        },
-        {
-            name: 'print Float32.Nan',
-            test: async () => {
-                const result = await primitiveTypesCanister.printFloat32(
-                    Number.NaN
+            expect(result).toBe(18_446_744_073_709_551_615n);
+        });
+
+        it('printNat64', async () => {
+            const result =
+                await primitiveTypesCanister.printNat64(
+                    18_446_744_073_709_551_615n
                 );
 
-                return {
-                    Ok: Number.isNaN(result)
-                };
-            }
-        },
-        {
-            name: 'print positive Float32.Infinity',
-            test: async () => {
-                const result = await primitiveTypesCanister.printFloat32(
-                    Number.POSITIVE_INFINITY
-                );
+            expect(result).toBe(18_446_744_073_709_551_615n);
+        });
 
-                return {
-                    Ok: !Number.isFinite(result)
-                };
-            }
-        },
-        {
-            name: 'print negative Float32.Infinity',
-            test: async () => {
-                const result = await primitiveTypesCanister.printFloat32(
-                    Number.NEGATIVE_INFINITY
-                );
+        it('getNat32', async () => {
+            const result = await primitiveTypesCanister.getNat32();
 
-                return {
-                    Ok: !Number.isFinite(result)
-                };
-            }
-        },
-        {
-            name: 'getBool',
-            test: async () => {
-                const result = await primitiveTypesCanister.getBool();
+            expect(result).toBe(4_294_967_295);
+        });
 
-                return {
-                    Ok: result === true
-                };
-            }
-        },
-        {
-            name: 'printBool',
-            test: async () => {
-                const result = await primitiveTypesCanister.printBool(false);
+        it('printNat32', async () => {
+            const result =
+                await primitiveTypesCanister.printNat32(4_294_967_295);
 
-                return {
-                    Ok: result === false
-                };
-            }
-        },
-        {
-            name: 'getPrincipal',
-            test: async () => {
-                const result = await primitiveTypesCanister.getPrincipal();
+            expect(result).toBe(4_294_967_295);
+        });
 
-                return {
-                    Ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
-                };
-            }
-        },
-        {
-            name: 'printPrincipal',
-            test: async () => {
-                const result = await primitiveTypesCanister.printPrincipal(
-                    Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
-                );
+        it('getNat16', async () => {
+            const result = await primitiveTypesCanister.getNat16();
 
-                return {
-                    Ok: result.toText() === 'rrkah-fqaaa-aaaaa-aaaaq-cai'
-                };
-            }
-        },
-        {
-            name: 'getNull',
-            test: async () => {
-                const result = await primitiveTypesCanister.getNull();
+            expect(result).toBe(65_535);
+        });
 
-                return {
-                    Ok: result === null
-                };
-            }
-        },
-        {
-            name: 'printNull',
-            test: async () => {
-                const result = await primitiveTypesCanister.printNull(null);
+        it('printNat16', async () => {
+            const result = await primitiveTypesCanister.printNat16(65_535);
 
-                return {
-                    Ok: result === null
-                };
-            }
-        },
-        {
-            name: 'getReserved',
-            test: async () => {
-                const result = await primitiveTypesCanister.getReserved();
+            expect(result).toBe(65_535);
+        });
 
-                return {
-                    Ok: result === null
-                };
-            }
-        },
-        {
-            name: 'printReserved',
-            test: async () => {
-                const result = await primitiveTypesCanister.printReserved(
-                    Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
-                );
+        it('getNat8', async () => {
+            const result = await primitiveTypesCanister.getNat8();
 
-                return {
-                    Ok: result === null
-                };
-            }
-        },
-        {
-            name: 'getEmpty',
-            test: async () => {
-                try {
-                    await primitiveTypesCanister.getEmpty();
-                } catch (error) {
-                    return {
-                        Ok: (error as any).message.startsWith('Call failed')
-                    };
-                }
+            expect(result).toBe(255);
+        });
 
-                return {
-                    Ok: false
-                };
-            }
-        },
-        {
-            name: 'printEmpty',
-            test: async () => {
-                try {
-                    await primitiveTypesCanister.printEmpty(undefined as never);
-                } catch (error) {
-                    return {
-                        Ok: ((error as any).message as string).includes(
-                            'Invalid empty argument: undefined'
-                        )
-                    };
-                }
+        it('printNat8', async () => {
+            const result = await primitiveTypesCanister.printNat8(255);
 
-                return {
-                    Ok: false
-                };
-            }
-        }
-    ];
+            expect(result).toBe(255);
+        });
+
+        it('getFloat64', async () => {
+            const result = await primitiveTypesCanister.getFloat64();
+
+            expect(result.toString()).toBe('2.718281828459045');
+        });
+
+        it('printFloat64', async () => {
+            const result =
+                await primitiveTypesCanister.printFloat64(2.718281828459045);
+
+            expect(result.toString()).toBe('2.718281828459045');
+        });
+
+        it('print Float64.Nan', async () => {
+            const result = await primitiveTypesCanister.printFloat64(
+                Number.NaN
+            );
+
+            expect(result).toBeNaN();
+        });
+
+        it('print positive Float64.Infinity', async () => {
+            const result = await primitiveTypesCanister.printFloat64(
+                Number.POSITIVE_INFINITY
+            );
+
+            expect(result).toBe(Infinity);
+        });
+
+        it('print negative Float64.Infinity', async () => {
+            const result = await primitiveTypesCanister.printFloat64(
+                Number.NEGATIVE_INFINITY
+            );
+
+            expect(result).toBe(-Infinity);
+        });
+
+        it('getFloat32', async () => {
+            const result = await primitiveTypesCanister.getFloat32();
+
+            // expect(result.toString()).toBe('3.1415927') // TODO on the command line this is returned
+            expect(result.toString()).toBe('3.1415927410125732');
+        });
+
+        it('printFloat32', async () => {
+            const result = await primitiveTypesCanister.printFloat32(3.1415927);
+
+            // expect(result.toString()).toBe('3.1415927') // TODO on the command line this is returned
+            expect(result.toString()).toBe('3.1415927410125732');
+        });
+
+        it('print Float32.Nan', async () => {
+            const result = await primitiveTypesCanister.printFloat32(
+                Number.NaN
+            );
+
+            expect(result).toBeNaN();
+        });
+
+        it('print positive Float32.Infinity', async () => {
+            const result = await primitiveTypesCanister.printFloat32(
+                Number.POSITIVE_INFINITY
+            );
+
+            expect(result).toBe(Infinity);
+        });
+
+        it('print negative Float32.Infinity', async () => {
+            const result = await primitiveTypesCanister.printFloat32(
+                Number.NEGATIVE_INFINITY
+            );
+
+            expect(result).toBe(-Infinity);
+        });
+
+        it('getBool', async () => {
+            const result = await primitiveTypesCanister.getBool();
+
+            expect(result).toBe(true);
+        });
+
+        it('printBool', async () => {
+            const result = await primitiveTypesCanister.printBool(false);
+
+            expect(result).toBe(false);
+        });
+
+        it('getPrincipal', async () => {
+            const result = await primitiveTypesCanister.getPrincipal();
+
+            expect(result.toText()).toBe('rrkah-fqaaa-aaaaa-aaaaq-cai');
+        });
+
+        it('printPrincipal', async () => {
+            const result = await primitiveTypesCanister.printPrincipal(
+                Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
+            );
+
+            expect(result.toText()).toBe('rrkah-fqaaa-aaaaa-aaaaq-cai');
+        });
+
+        it('getNull', async () => {
+            const result = await primitiveTypesCanister.getNull();
+
+            expect(result).toBeNull();
+        });
+
+        it('printNull', async () => {
+            const result = await primitiveTypesCanister.printNull(null);
+
+            expect(result).toBeNull();
+        });
+
+        it('getReserved', async () => {
+            const result = await primitiveTypesCanister.getReserved();
+
+            expect(result).toBeNull();
+        });
+
+        it('printReserved', async () => {
+            const result = await primitiveTypesCanister.printReserved(
+                Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai')
+            );
+
+            expect(result).toBeNull();
+        });
+
+        it('getEmpty', async () => {
+            const rejectionMessage = 'Anything you want';
+            const canisterId = '[a-z2-7-]{27}';
+            const expectedErrorMessage = new RegExp(
+                `Call failed:\\s*Canister: ${canisterId}\\s*Method: getEmpty \\(query\\)\\s*"Status": "rejected"\\s*"Code": "CanisterError"\\s*"Message": "IC0503: Error from Canister ${canisterId}: Canister trapped explicitly: Uncaught Error: ${rejectionMessage}.*"`
+            );
+            await expect(primitiveTypesCanister.getEmpty()).rejects.toThrow(
+                expectedErrorMessage
+            );
+        });
+
+        it('printEmpty', async () => {
+            await expect(
+                primitiveTypesCanister.printEmpty(undefined as never)
+            ).rejects.toThrow(/Invalid empty argument: undefined/);
+        });
+    };
 }
