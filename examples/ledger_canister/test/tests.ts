@@ -68,21 +68,21 @@ function getSimpleTests(ledgerCanister: ActorSubclass<_SERVICE>): Test {
                 length: 100n
             });
 
-            const transfer_1 = result.blocks[0].transaction.operation[0];
-            const transfer_2 = result.blocks[1].transaction.operation[0];
-            const transfer_3 = result.blocks[2].transaction.operation[0];
+            const transfer1 = result.blocks[0].transaction.operation[0];
+            const transfer2 = result.blocks[1].transaction.operation[0];
+            const transfer3 = result.blocks[2].transaction.operation[0];
 
-            expect(transfer_1).toEqual({
+            expect(transfer1).toEqual({
                 Mint: expect.objectContaining({
                     amount: { e8s: 100_000_000_000n }
                 })
             });
-            expect(transfer_2).toEqual({
+            expect(transfer2).toEqual({
                 Transfer: expect.objectContaining({
                     amount: { e8s: 2_000_000n }
                 })
             });
-            expect(transfer_3).toEqual({
+            expect(transfer3).toEqual({
                 Transfer: expect.objectContaining({
                     amount: { e8s: 3_000_000n }
                 })
