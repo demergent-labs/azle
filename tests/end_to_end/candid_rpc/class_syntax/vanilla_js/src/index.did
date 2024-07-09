@@ -1,0 +1,5 @@
+service: () -> {
+    builtin: () -> (int) query;
+    packageImport: (text) -> (text) query;
+    relativeImport: () -> (text) query;
+}

@@ -9,15 +9,15 @@ export class AzleBool {
 
     static tsType: bool;
 
-    static toBytes(data: any) {
+    static toBytes(data: bool): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array) {
-        return decode(this, bytes);
+    static fromBytes(bytes: Uint8Array): bool {
+        return decode<bool>(this, bytes) as bool;
     }
 
-    static getIdl() {
+    static getIdl(): IDL.BoolClass {
         return IDL.Bool;
     }
 }

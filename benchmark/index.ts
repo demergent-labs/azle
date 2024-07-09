@@ -516,7 +516,7 @@ function write_reports_to_file(
     output_file: string,
     benchmark_results: BenchmarkResult[],
     num_benchmark_iterations: number
-) {
+): void {
     const markdown_report = create_markdown_report(
         benchmark_results,
         num_benchmark_iterations,

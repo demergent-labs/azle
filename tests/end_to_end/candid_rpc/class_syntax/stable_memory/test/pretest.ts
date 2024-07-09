@@ -1,19 +1,9 @@
+import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
-import { join, resolve } from 'path';
+import { join } from 'path';
 
-async function pretest() {
-    const azleDir = resolve(
-        __dirname,
-        join('..', '..', '..', '..', '..', '..')
-    );
-
-    execSync(`cd ${join(azleDir, 'examples', 'stable_memory')} && npm install`);
-
-    if (process.env.AZLE_END_TO_END_TEST_LINK_AZLE !== 'false') {
-        execSync(
-            `cd ${join(azleDir, 'examples', 'stable_memory')} && npm link azle`
-        );
-    }
+function pretest(): void {
+    linkAndInstallPatch(join('examples', 'stable_memory'));
 
     execSync(`dfx canister uninstall-code stable_memory || true`, {
         stdio: 'inherit'

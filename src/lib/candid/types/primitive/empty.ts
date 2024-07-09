@@ -9,15 +9,15 @@ export class AzleEmpty {
 
     static tsType: empty;
 
-    static toBytes(data: any) {
+    static toBytes(data: empty): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array) {
-        return decode(this, bytes);
+    static fromBytes(bytes: Uint8Array): empty {
+        return decode<empty>(this, bytes) as empty;
     }
 
-    static getIdl() {
+    static getIdl(): IDL.EmptyClass {
         return IDL.Empty;
     }
 }

@@ -1,7 +1,7 @@
 import { getCanisterId } from 'azle/dfx';
 import { execSync } from 'child_process';
 
-async function pretest() {
+function pretest(): void {
     execSync(`dfx canister uninstall-code recursive_canister || true`, {
         stdio: 'inherit'
     });

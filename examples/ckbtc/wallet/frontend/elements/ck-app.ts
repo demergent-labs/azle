@@ -35,13 +35,13 @@ export class CkApp extends LitElement {
     @state()
     transferring: boolean = false;
 
-    async connectedCallback() {
+    async connectedCallback(): Promise<void> {
         super.connectedCallback();
 
         await this.authenticate();
     }
 
-    async authenticate() {
+    async authenticate(): Promise<void> {
         const authClient = await AuthClient.create();
 
         if (await authClient.isAuthenticated()) {
@@ -62,14 +62,14 @@ export class CkApp extends LitElement {
         }
     }
 
-    initialize() {
+    initialize(): void {
         this.createWalletBackend();
 
         this.getBalance();
         this.getBitcoinDepositAddress();
     }
 
-    createWalletBackend() {
+    createWalletBackend(): void {
         const agent = new HttpAgent({
             identity: this.identity
         });
@@ -89,7 +89,7 @@ export class CkApp extends LitElement {
         this.walletBackend = walletBackend;
     }
 
-    async getBalance() {
+    async getBalance(): Promise<void> {
         if (this.walletBackend === undefined) {
             alert(`walletBackend has not been initialized`);
             return;
@@ -102,7 +102,7 @@ export class CkApp extends LitElement {
         this.balance = result;
     }
 
-    async getBitcoinDepositAddress() {
+    async getBitcoinDepositAddress(): Promise<void> {
         if (this.walletBackend === undefined) {
             alert(`walletBackend has not been initialized`);
             return;
@@ -115,7 +115,7 @@ export class CkApp extends LitElement {
         this.bitcoinDepositAddress = result;
     }
 
-    async updateBalance() {
+    async updateBalance(): Promise<void> {
         this.updatingBalance = true;
 
         if (this.walletBackend === undefined) {
@@ -132,7 +132,7 @@ export class CkApp extends LitElement {
         this.updatingBalance = false;
     }
 
-    async transfer() {
+    async transfer(): Promise<void> {
         this.transferring = true;
 
         if (this.walletBackend === undefined) {
@@ -157,7 +157,7 @@ export class CkApp extends LitElement {
         this.transferring = false;
     }
 
-    render() {
+    render(): void {
         const identityPrincipalString = this.identity
             ? this.identity.getPrincipal().toText()
             : 'Loading...';
@@ -190,14 +190,15 @@ export class CkApp extends LitElement {
                     .disabled=${this.transferring}
                     type="text"
                     .value=${this.transferTo}
-                    @input=${(e: any) => (this.transferTo = e.target.value)}
+                    @input=${(e: any): void =>
+                        (this.transferTo = e.target.value)}
                 />
                 Amount:
                 <input
                     .disabled=${this.transferring}
                     type="number"
                     .value=${this.transferAmount}
-                    @input=${(e: any) =>
+                    @input=${(e: any): void =>
                         (this.transferAmount = BigInt(e.target.value))}
                 />
                 <button

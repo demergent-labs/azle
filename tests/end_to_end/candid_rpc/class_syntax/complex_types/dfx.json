@@ -1,0 +1,14 @@
+{
+    "canisters": {
+        "complex_types": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid": "src/index.did",
+            "candid_gen": "custom",
+            "declarations": {
+                "output": "test/dfx_generated/complex_types",
+                "node_compatibility": true
+            }
+        }
+    }
+}

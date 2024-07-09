@@ -2,7 +2,7 @@ import * as azle from 'azle/experimental';
 
 import * as types from './types';
 
-function offDuty() {}
+function offDuty(): void {}
 
 const HELLO_WORLD = 'Hello, World!';
 

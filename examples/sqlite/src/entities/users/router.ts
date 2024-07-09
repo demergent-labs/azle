@@ -88,7 +88,7 @@ export function getRouter(): Router {
 function updateHandler(
     req: Request<any, any, { id: number; username?: string; age?: number }>,
     res: Response
-) {
+): void {
     const { id, username, age } = req.body;
 
     const user = updateUser(db, {

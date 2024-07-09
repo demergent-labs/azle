@@ -129,22 +129,22 @@ const STABLEMAPVALUES: [
 ];
 
 export function getTests(
-    stableStructuresCanister_1: ActorSubclass<CANISTER1_SERVICE>,
-    stableStructuresCanister_2: ActorSubclass<CANISTER2_SERVICE>,
-    stableStructuresCanister_3: ActorSubclass<CANISTER3_SERVICE>
+    stableStructuresCanister1: ActorSubclass<CANISTER1_SERVICE>,
+    stableStructuresCanister2: ActorSubclass<CANISTER2_SERVICE>,
+    stableStructuresCanister3: ActorSubclass<CANISTER3_SERVICE>
 ): Test {
     return () => {
         describe(
             'initial tests canisters 0-4',
-            preRedeployTests(stableStructuresCanister_1, 0, 4)
+            preRedeployTests(stableStructuresCanister1, 0, 4)
         );
         describe(
             'initial tests canisters 5-9',
-            preRedeployTests(stableStructuresCanister_2, 5, 9)
+            preRedeployTests(stableStructuresCanister2, 5, 9)
         );
         describe(
             'initial tests canisters 10-17',
-            preRedeployTests(stableStructuresCanister_3, 10, 17)
+            preRedeployTests(stableStructuresCanister3, 10, 17)
         );
 
         please('redeploy canisters', async () => {
@@ -154,22 +154,22 @@ export function getTests(
         });
 
         it('getRedeployed', async () => {
-            expect(await stableStructuresCanister_1.getRedeployed()).toBe(true);
-            expect(await stableStructuresCanister_2.getRedeployed()).toBe(true);
-            expect(await stableStructuresCanister_3.getRedeployed()).toBe(true);
+            expect(await stableStructuresCanister1.getRedeployed()).toBe(true);
+            expect(await stableStructuresCanister2.getRedeployed()).toBe(true);
+            expect(await stableStructuresCanister3.getRedeployed()).toBe(true);
         });
 
         describe(
             'final tests canisters 0-4',
-            postRedeployTests(stableStructuresCanister_1, 0, 4)
+            postRedeployTests(stableStructuresCanister1, 0, 4)
         );
         describe(
             'final tests canisters 5-9',
-            postRedeployTests(stableStructuresCanister_2, 5, 9)
+            postRedeployTests(stableStructuresCanister2, 5, 9)
         );
         describe(
             'final tests canisters 10-17',
-            postRedeployTests(stableStructuresCanister_3, 10, 17)
+            postRedeployTests(stableStructuresCanister3, 10, 17)
         );
     };
 }

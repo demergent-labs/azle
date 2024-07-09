@@ -1,17 +1,9 @@
+import { linkAndInstallPatch } from 'azle/test/jest_link';
 import { execSync } from 'child_process';
-import { join, resolve } from 'path';
+import { join } from 'path';
 
-async function pretest() {
-    const azleDir = resolve(
-        __dirname,
-        join('..', '..', '..', '..', '..', '..')
-    );
-
-    execSync(`cd ${join(azleDir, 'examples', 'timers')} && npm install`);
-
-    if (process.env.AZLE_END_TO_END_TEST_LINK_AZLE !== 'false') {
-        execSync(`cd ${join(azleDir, 'examples', 'timers')} && npm link azle`);
-    }
+function pretest(): void {
+    linkAndInstallPatch(join('examples', 'timers'));
 
     execSync(`dfx canister uninstall-code timers || true`, {
         stdio: 'inherit'

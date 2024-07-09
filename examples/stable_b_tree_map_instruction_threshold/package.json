@@ -1,5 +1,5 @@
 {
-    "name": "stable_b_tree_map_instruction_threshold_end_to_end_test_canister_syntax",
+    "name": "stable_b_tree_map_instruction_threshold_end_to_end_test_functional_syntax",
     "scripts": {
         "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
         "test": "jest"

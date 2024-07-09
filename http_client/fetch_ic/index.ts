@@ -42,7 +42,7 @@ export { createAgent } from './agent';
 export { getCanisterId };
 export { getHost } from './host';
 
-function logWarnings(init?: RequestInit | undefined) {
+function logWarnings(init?: RequestInit | undefined): void {
     if (init === undefined) {
         return;
     }
@@ -88,7 +88,7 @@ function logWarnings(init?: RequestInit | undefined) {
     }
 }
 
-function logWarning(method: string) {
+function logWarning(method: string): void {
     console.warn(
         `fetchIc: init.${method} has no effect when using an identity as the Authorization header`
     );

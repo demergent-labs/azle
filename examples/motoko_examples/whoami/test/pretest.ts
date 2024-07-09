@@ -5,7 +5,7 @@ import { execSync } from 'child_process';
 const someoneIdentity = createIdentity(2);
 export const someonePrincipal = someoneIdentity.getPrincipal().toString();
 
-async function pretest() {
+function pretest(): void {
     execSync(`dfx canister uninstall-code whoami || true`, {
         stdio: 'inherit'
     });

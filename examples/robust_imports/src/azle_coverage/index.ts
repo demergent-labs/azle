@@ -95,7 +95,7 @@ export const Watermelon = Voavanga({
 
 let soncoya = Soncoya<nectarine8, PreparedFruit>(0);
 
-function gatherGrapes() {
+function gatherGrapes(): void {
     const opt = soncoya.get(0);
 
     if ('None' in opt) {

@@ -81,7 +81,7 @@ export class CatsController {
     }
 
     @Get('express-response')
-    expressResponse(@Res() response: Response) {
+    expressResponse(@Res() response: Response): void {
         response.send('Cats Express Response');
     }
 }

@@ -1,0 +1,6 @@
+service: () -> {
+    getBalance: () -> (nat64);
+    getDepositAddress: () -> (text);
+    transfer: (text, nat) -> (variant {Ok:nat; Err:variant {GenericError:record {message:text; error_code:nat}; TemporarilyUnavailable; BadBurn:record {min_burn_amount:nat}; Duplicate:record {duplicate_of:nat}; BadFee:record {expected_fee:nat}; CreatedInFuture:record {ledger_time:nat64}; TooOld; InsufficientFunds:record {balance:nat}}});
+    updateBalance: () -> (variant {Ok:vec variant {ValueTooSmall:record {height:nat32; value:nat64; outpoint:record {txid:vec nat8; vout:nat32}}; Tainted:record {height:nat32; value:nat64; outpoint:record {txid:vec nat8; vout:nat32}}; Minted:record {minted_amount:nat64; block_index:nat64; utxo:record {height:nat32; value:nat64; outpoint:record {txid:vec nat8; vout:nat32}}}; Checked:record {height:nat32; value:nat64; outpoint:record {txid:vec nat8; vout:nat32}}}; Err:variant {GenericError:record {error_message:text; error_code:nat64}; TemporarilyUnavailable:text; AlreadyProcessing; NoNewUtxos:record {required_confirmations:nat32; current_confirmations:opt nat32}}});
+}

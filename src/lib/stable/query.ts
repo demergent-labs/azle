@@ -19,7 +19,7 @@ export function query(
     ): TypedPropertyDescriptor<T> | void => {
         const originalMethod = (descriptor.value as any).bind(target);
 
-        const methodCallback = (...args: any[]) => {
+        const methodCallback = (...args: any[]): void => {
             executeWithCandidSerde(
                 'query',
                 args,

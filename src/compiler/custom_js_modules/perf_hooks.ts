@@ -4,7 +4,7 @@
 // TODO it should be pretty easy and a good way to get started in the repo
 
 const performance = {
-    now: () => new Date().getTime()
+    now: (): number => new Date().getTime()
 };
 
 export { performance };

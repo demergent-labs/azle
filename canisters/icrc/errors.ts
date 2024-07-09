@@ -1,27 +1,38 @@
-import { nat, Record, text } from '../../src/lib';
+import { IDL } from '../../src/lib/stable';
 
-export const BadFee = Record({
-    expected_fee: nat
+export const BadFee = IDL.Record({
+    expected_fee: IDL.Nat
 });
-export type BadFee = typeof BadFee.tsType;
+export type BadFee = {
+    expected_fee: bigint;
+};
 
-export const BadBurn = Record({
-    min_burn_amount: nat
+export const BadBurn = IDL.Record({
+    min_burn_amount: IDL.Nat
 });
-export type BadBurn = typeof BadBurn.tsType;
+export type BadBurn = {
+    min_burn_amount: bigint;
+};
 
-export const InsufficientFunds = Record({
-    balance: nat
+export const InsufficientFunds = IDL.Record({
+    balance: IDL.Nat
 });
-export type InsufficientFunds = typeof InsufficientFunds.tsType;
+export type InsufficientFunds = {
+    balance: bigint;
+};
 
-export const Duplicate = Record({
-    duplicate_of: nat
+export const Duplicate = IDL.Record({
+    duplicate_of: IDL.Nat
 });
-export type Duplicate = typeof Duplicate.tsType;
+export type Duplicate = {
+    duplicate_of: bigint;
+};
 
-export const GenericError = Record({
-    error_code: nat,
-    message: text
+export const GenericError = IDL.Record({
+    error_code: IDL.Nat,
+    message: IDL.Text
 });
-export type GenericError = typeof GenericError.tsType;
+export type GenericError = {
+    error_code: bigint;
+    message: string;
+};

@@ -106,7 +106,7 @@ function generateVariableAliasDeclarations(
 function generateCandidTypeAnnotation(
     useTypeDeclaration: boolean,
     name: string
-) {
+): string {
     if (useTypeDeclaration === true) {
         return `typeof ${name}.tsType`;
     }
@@ -118,7 +118,7 @@ function generateCandidTypeObject(
     useTypeDeclaration: boolean,
     name: string,
     serviceMethods: ServiceMethodDefinition[]
-) {
+): string {
     if (useTypeDeclaration === true) {
         return name;
     }
@@ -131,6 +131,8 @@ function generateCandidTypeObject(
     return `Canister({${methods}})`;
 }
 
+// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function generateRuntimeCandidTypeObject(
     serviceMethods: ServiceMethodDefinition[]
 ) {

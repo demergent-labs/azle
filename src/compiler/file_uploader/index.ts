@@ -8,7 +8,10 @@ import { createActor } from './uploader_actor';
 export type Src = string;
 export type Dest = string;
 
-export async function uploadFiles(canisterName: string, paths: [Src, Dest][]) {
+export async function uploadFiles(
+    canisterName: string,
+    paths: [Src, Dest][]
+): Promise<void> {
     if (paths.length === 0) {
         return;
     }

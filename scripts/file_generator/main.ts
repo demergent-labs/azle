@@ -1,6 +1,6 @@
 import { generateFileOfSize, toBytes } from '.';
 
-async function main() {
+async function main(): Promise<void> {
     const { path, sizeInBytes } = parseArgs();
 
     await generateFileOfSize(path, sizeInBytes);
@@ -32,7 +32,7 @@ function parseArgs(): { path: string; sizeInBytes: number } {
 }
 
 // Parse size from string with optional unit suffix (KB, MB, GB)
-function parseSize(sizeString: string) {
+function parseSize(sizeString: string): number {
     const sizeRegex = /^(\d+(?:\.\d+)?)([kmgb]?)$/i;
     const match = sizeString.match(sizeRegex);
     if (!match) {

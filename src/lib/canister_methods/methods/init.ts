@@ -17,7 +17,7 @@ export function init<
     const finalCallback =
         callback === undefined
             ? undefined
-            : (...args: any[]) => {
+            : (...args: any[]): void => {
                   executeMethod(
                       'init',
                       args,

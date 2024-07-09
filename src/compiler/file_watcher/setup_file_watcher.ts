@@ -12,7 +12,7 @@ export function setupFileWatcher(
     esmAliases: Record<string, string>,
     esmExternals: string[],
     canisterName: string
-) {
+): void {
     try {
         // TODO should we check that this was successful in killing
         // TODO the process and then warn the user if not?

@@ -1,9 +1,4 @@
 import {
-    GetUtxosResult,
-    MillisatoshiPerByte,
-    Satoshi
-} from 'azle/canisters/management';
-import {
     blob,
     bool,
     Canister,
@@ -12,6 +7,11 @@ import {
     update,
     Vec
 } from 'azle/experimental';
+import {
+    GetUtxosResult,
+    MillisatoshiPerByte,
+    Satoshi
+} from 'azle/experimental/canisters/management';
 
 const BITCOIN_API_CYCLE_COST = 100_000_000n;
 const BITCOIN_BASE_TRANSACTION_COST = 5_000_000_000n;

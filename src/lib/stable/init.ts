@@ -10,7 +10,7 @@ export function init(paramIdls: IDL.Type[]): MethodDecorator {
     ): TypedPropertyDescriptor<T> | void => {
         const originalMethod = (descriptor.value as any).bind(target);
 
-        const methodCallback = (...args: any[]) => {
+        const methodCallback = (...args: any[]): void => {
             executeWithCandidSerde(
                 'init',
                 args,

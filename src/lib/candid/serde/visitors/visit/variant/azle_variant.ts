@@ -1,5 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
+import { Variant } from '../../../../types/constructed';
 import { DecodeVisitor } from '../../decode_visitor';
 import { EncodeVisitor } from '../../encode_visitor';
 import { VisitorData } from '../../types';
@@ -8,7 +9,7 @@ export function visitAzleVariant(
     visitor: DecodeVisitor | EncodeVisitor,
     fields: [string, IDL.Type<any>][],
     data: VisitorData
-) {
+): Variant<any> {
     const candidFields = fields.reduce((acc, [memberName, memberIdl]) => {
         const fieldData = data.js_data[memberName];
         const fieldClass = data.candidType[memberName];

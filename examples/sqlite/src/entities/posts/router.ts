@@ -105,7 +105,7 @@ function updateHandler(
         { id: number; user_id?: number; title?: string; body?: string }
     >,
     res: Response
-) {
+): void {
     const { id, user_id, title, body } = req.body;
 
     const post = updatePost(db, {

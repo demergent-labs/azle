@@ -5,7 +5,7 @@ import { CanisterMethodInfo } from '../types/canister_method_info';
 export function inspectMessage(
     callback: () => void | Promise<void>
 ): CanisterMethodInfo<[], Void> {
-    const finalCallback = (...args: any[]) => {
+    const finalCallback = (...args: any[]): void => {
         executeMethod('inspectMessage', args, callback, [], Void, false);
     };
 

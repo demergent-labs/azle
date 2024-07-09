@@ -8,6 +8,6 @@ export const GLOBAL_AZLE_CONFIG_DIR = resolve(
 
 export const AZLE_PACKAGE_PATH =
     require.main?.path ??
-    (() => {
+    ((): never => {
         throw new Error(`Azle: azle package path cannot be undefined`);
     })();

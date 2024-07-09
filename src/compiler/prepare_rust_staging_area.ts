@@ -14,7 +14,7 @@ export async function prepareRustStagingArea(
     canisterPath: string,
     canisterJavaScript: string,
     stdioType: IOType
-) {
+): Promise<void> {
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
         canisterConfig.opt_level ?? '0'
     );

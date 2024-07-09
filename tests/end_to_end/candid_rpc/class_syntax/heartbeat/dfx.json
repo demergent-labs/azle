@@ -5,7 +5,6 @@
             "main": "src/heartbeat_async/index.ts",
             "candid": "src/heartbeat_async/index.did",
             "candid_gen": "custom",
-            "env": ["AZLE_TEST_FETCH"],
             "declarations": {
                 "output": "test/dfx_generated/heartbeat_async",
                 "node_compatibility": true

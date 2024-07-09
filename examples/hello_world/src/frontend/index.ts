@@ -11,7 +11,7 @@ export class AzleApp extends LitElement {
         this.getDb();
     }
 
-    async getDb() {
+    async getDb(): Promise<void> {
         this.db = 'Loading...';
 
         const response = await fetch(
@@ -22,7 +22,7 @@ export class AzleApp extends LitElement {
         this.db = responseJson;
     }
 
-    async updateDb() {
+    async updateDb(): Promise<void> {
         this.db = 'Loading...';
 
         const response = await fetch(
@@ -40,7 +40,7 @@ export class AzleApp extends LitElement {
         this.db = responseJson;
     }
 
-    render() {
+    render(): any {
         return html`
             <h1>Azle Hello World</h1>
 

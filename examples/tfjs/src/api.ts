@@ -2,7 +2,7 @@ import * as tf from '@tensorflow/tfjs';
 import { ic } from 'azle/experimental';
 import express from 'express';
 
-async function init() {
+async function init(): Promise<void> {
     const app = express();
 
     app.use(express.json());

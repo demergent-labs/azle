@@ -3,7 +3,7 @@ import { createReadStream, statSync } from 'fs';
 import parseRange from 'range-parser';
 
 export function rangeResponse(maxRange: number = 3_000_000) {
-    return async (req: Request, res: Response) => {
+    return async (req: Request, res: Response): Promise<void> => {
         const filePath = req.originalUrl;
         const fileLength = statSync(filePath).size;
 

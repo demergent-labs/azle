@@ -6,61 +6,47 @@
 //
 // Some documentation changed from original work.
 
-import {
-    blob,
-    Canister,
-    Func,
-    nat,
-    nat8,
-    nat32,
-    nat64,
-    Null,
-    Opt,
-    Principal,
-    query,
-    Record,
-    text,
-    Tuple,
-    update,
-    Variant,
-    Vec
-} from '../../src/lib';
+import { IDL, Principal } from '../../';
 import * as icrc from '../icrc';
 
 // Amount of tokens, measured in 10^-8 of a token.
-export const Tokens = Record({
-    e8s: nat64
+export const Tokens = IDL.Record({
+    e8s: IDL.Nat64
 });
-export type Tokens = typeof Tokens.tsType;
+export type Tokens = {
+    e8s: bigint;
+};
 
 // Number of nanoseconds from the UNIX epoch in UTC timezone.
-export const TimeStamp = Record({
-    timestamp_nanos: nat64
+export const TimeStamp = IDL.Record({
+    timestamp_nanos: IDL.Nat64
 });
-export type TimeStamp = typeof TimeStamp.tsType;
+export type TimeStamp = {
+    timestamp_nanos: bigint;
+};
 
 // AccountIdentifier is a 32-byte array.
 // The first 4 bytes is big-endian encoding of a CRC32 checksum of the last 28 bytes.
-export const AccountIdentifier = blob;
-export type AccountIdentifier = blob;
+export const AccountIdentifier = IDL.Vec(IDL.Nat8);
+export type AccountIdentifier = Uint8Array;
 
 // Subaccount is an arbitrary 32-byte byte array.
 // Ledger uses subaccounts to compute the source address, which enables one
 // principal to control multiple ledger accounts.
-export const SubAccount = blob;
-export type SubAccount = blob;
+export const SubAccount = IDL.Vec(IDL.Nat8);
+export type SubAccount = Uint8Array;
 
 // Sequence number of a block produced by the ledger.
-export const BlockIndex = nat64;
-export type BlockIndex = nat64;
+export const BlockIndex = IDL.Nat64;
+export type BlockIndex = bigint;
 
 // An arbitrary number associated with a transaction.
 // The caller can set it in a `transfer` call as a correlation identifier.
-export const Memo = nat64;
-export type Memo = nat64;
+export const Memo = IDL.Nat64;
+export type Memo = bigint;
 
 // Arguments for the `transfer` call.
-export const TransferArgs = Record({
+export const TransferArgs = IDL.Record({
     // Transaction memo.
     // See comments for the `Memo` type.
     memo: Memo,
@@ -72,37 +58,52 @@ export const TransferArgs = Record({
     // The subaccount from which the caller wants to transfer funds.
     // If null, the ledger uses the default (all zeros) subaccount to compute the source address.
     // See comments for the `SubAccount` type.
-    from_subaccount: Opt(SubAccount),
+    from_subaccount: IDL.Opt(SubAccount),
     // The destination account.
     // If the transfer is successful, the balance of this address increases by `amount`.
     to: AccountIdentifier,
     // The point in time when the caller created this request.
     // If null, the ledger uses current IC time as the timestamp.
-    created_at_time: Opt(TimeStamp)
+    created_at_time: IDL.Opt(TimeStamp)
 });
-export type TransferArgs = typeof TransferArgs.tsType;
+export type TransferArgs = {
+    memo: Memo;
+    amount: Tokens;
+    fee: Tokens;
+    from_subaccount: [SubAccount] | [];
+    to: AccountIdentifier;
+    created_at_time: [TimeStamp] | [];
+};
 
-export const BadFee = Record({
+export const BadFee = IDL.Record({
     expected_fee: Tokens
 });
-export type BadFee = typeof BadFee.tsType;
+export type BadFee = {
+    expected_fee: Tokens;
+};
 
-export const InsufficientFunds = Record({
+export const InsufficientFunds = IDL.Record({
     balance: Tokens
 });
-export type InsufficientFunds = typeof InsufficientFunds.tsType;
+export type InsufficientFunds = {
+    balance: Tokens;
+};
 
-export const TxTooOld = Record({
-    allowed_window_nanos: nat64
+export const TxTooOld = IDL.Record({
+    allowed_window_nanos: IDL.Nat64
 });
-export type TxTooOld = typeof TxTooOld.tsType;
+export type TxTooOld = {
+    allowed_window_nanos: bigint;
+};
 
-export const TxDuplicate = Record({
+export const TxDuplicate = IDL.Record({
     duplicate_of: BlockIndex
 });
-export type TxDuplicate = typeof TxDuplicate.tsType;
+export type TxDuplicate = {
+    duplicate_of: BlockIndex;
+};
 
-export const TransferError = Variant({
+export const TransferError = IDL.Variant({
     // The fee that the caller specified in the transfer request was not the one that ledger expects.
     // The caller can change the transfer fee to the `expected_fee` and retry the request.
     BadFee: BadFee,
@@ -114,85 +115,141 @@ export const TransferError = Variant({
     TxTooOld: TxTooOld,
     // The caller specified `created_at_time` that is too far in future.
     // The caller can retry the request later.
-    TxCreatedInFuture: Null,
+    TxCreatedInFuture: IDL.Null,
     // The ledger has already executed the request.
     // `duplicate_of` field is equal to the index of the block containing the original transaction.
     TxDuplicate: TxDuplicate
 });
-export type TransferError = typeof TransferError.tsType;
+export type TransferError =
+    | {
+          BadFee: BadFee;
+      }
+    | {
+          InsufficientFunds: InsufficientFunds;
+      }
+    | {
+          TxTooOld: TxTooOld;
+      }
+    | {
+          TxCreatedInFuture: null;
+      }
+    | {
+          TxDuplicate: TxDuplicate;
+      };
 
-export const TransferResult = Variant({
-    Ok: nat64,
+export const TransferResult = IDL.Variant({
+    Ok: IDL.Nat64,
     Err: TransferError
 });
-export type TransferResult = typeof TransferResult.tsType;
+export type TransferResult =
+    | {
+          Ok: bigint;
+      }
+    | {
+          Err: TransferError;
+      };
 
 // Arguments for the `account_balance` call.
-export const AccountBalanceArgs = Record({
+export const AccountBalanceArgs = IDL.Record({
     account: AccountIdentifier
 });
-export type AccountBalanceArgs = typeof AccountBalanceArgs.tsType;
+export type AccountBalanceArgs = {
+    account: AccountIdentifier;
+};
 
-export const TransferFeeArg = Record({});
-export type TransferFeeArg = typeof TransferFeeArg.tsType;
+export const TransferFeeArg = IDL.Record({});
+export type TransferFeeArg = Record<string, never>;
 
-export const TransferFee = Record({
+export const TransferFee = IDL.Record({
     // The fee to pay to perform a transfer
     transfer_fee: Tokens
 });
-export type TransferFee = typeof TransferFee.tsType;
+export type TransferFee = {
+    transfer_fee: Tokens;
+};
 
-export const GetBlocksArgs = Record({
+export const GetBlocksArgs = IDL.Record({
     // The index of the first block to fetch.
     start: BlockIndex,
     // Max number of blocks to fetch.
-    length: nat64
+    length: IDL.Nat64
 });
-export type GetBlocksArgs = typeof GetBlocksArgs.tsType;
+export type GetBlocksArgs = {
+    start: BlockIndex;
+    length: bigint;
+};
 
-export const Mint = Record({
+export const Mint = IDL.Record({
     to: AccountIdentifier,
     amount: Tokens
 });
-export type Mint = typeof Mint.tsType;
+export type Mint = {
+    to: AccountIdentifier;
+    amount: Tokens;
+};
 
-export const Burn = Record({
+export const Burn = IDL.Record({
     from: AccountIdentifier,
     amount: Tokens
 });
-export type Burn = typeof Burn.tsType;
+export type Burn = {
+    from: AccountIdentifier;
+    amount: Tokens;
+};
 
-export const Transfer = Record({
+export const Transfer = IDL.Record({
     from: AccountIdentifier,
     to: AccountIdentifier,
     amount: Tokens,
     fee: Tokens
 });
-export type Transfer = typeof Transfer.tsType;
+export type Transfer = {
+    from: AccountIdentifier;
+    to: AccountIdentifier;
+    amount: Tokens;
+    fee: Tokens;
+};
 
-export const Operation = Variant({
+export const Operation = IDL.Variant({
     Mint: Mint,
     Burn: Burn,
     Transfer: Transfer
 });
-export type Operation = typeof Operation.tsType;
+export type Operation =
+    | {
+          Mint: Mint;
+      }
+    | {
+          Burn: Burn;
+      }
+    | {
+          Transfer: Transfer;
+      };
 
-export const Transaction = Record({
+export const Transaction = IDL.Record({
     memo: Memo,
-    operation: Opt(Operation),
+    operation: IDL.Opt(Operation),
     created_at_time: TimeStamp
 });
-export type Transaction = typeof Transaction.tsType;
+export type Transaction = {
+    memo: Memo;
+    operation: Operation | null;
+    created_at_time: TimeStamp;
+};
 
-export const Block = Record({
-    parent_hash: Opt(blob),
+export const Block = IDL.Record({
+    parent_hash: IDL.Opt(IDL.Vec(IDL.Nat8)),
     transaction: Transaction,
     timestamp: TimeStamp
 });
-export type Block = typeof Block.tsType;
+export type Block = {
+    parent_hash: Uint8Array | null;
+    transaction: Transaction;
+    timestamp: TimeStamp;
+};
 
 // A prefix of the block range specified in the [GetBlocksArgs] request.
-export const BlockRange = Record({
+export const BlockRange = IDL.Record({
     // A prefix of the requested block range.
     // The index of the first block is equal to [GetBlocksArgs.from].
     //
@@ -206,59 +263,85 @@ export const BlockRange = Record({
     // NOTE: the list of blocks can be empty if:
     // 1. [GetBlocksArgs.len] was zero.
     // 2. [GetBlocksArgs.from] was larger than the last block known to the canister.
-    blocks: Vec(Block)
+    blocks: IDL.Vec(Block)
 });
-export type BlockRange = typeof BlockRange.tsType;
+export type BlockRange = {
+    blocks: Block[];
+};
 
-export const BadFirstBlockIndex = Record({
+export const BadFirstBlockIndex = IDL.Record({
     requested_index: BlockIndex,
     first_valid_index: BlockIndex
 });
-export type BadFirstBlockIndex = typeof BadFirstBlockIndex.tsType;
+export type BadFirstBlockIndex = {
+    requested_index: BlockIndex;
+    first_valid_index: BlockIndex;
+};
 
-export const Other = Record({
-    error_code: nat64,
-    error_message: text
+export const Other = IDL.Record({
+    error_code: IDL.Nat64,
+    error_message: IDL.Text
 });
-export type Other = typeof Other.tsType;
+export type Other = {
+    error_code: bigint;
+    error_message: string;
+};
 
 // An error indicating that the arguments passed to [QueryArchiveFn] were invalid.
-export const QueryArchiveError = Variant({
+export const QueryArchiveError = IDL.Variant({
     // [GetBlocksArgs.from] argument was smaller than the first block
     // served by the canister that received the request.
     BadFirstBlockIndex: BadFirstBlockIndex,
     // Reserved for future use.
     Other: Other
 });
-export type QueryArchiveError = typeof QueryArchiveError.tsType;
+export type QueryArchiveError =
+    | {
+          BadFirstBlockIndex?: BadFirstBlockIndex;
+      }
+    | {
+          Other?: Other;
+      };
 
-export const QueryArchiveResult = Variant({
+export const QueryArchiveResult = IDL.Variant({
     // Successfully fetched zero or more blocks.
     Ok: BlockRange,
     // The [GetBlocksArgs] request was invalid.
     Err: QueryArchiveError
 });
-export type QueryArchiveResult = typeof QueryArchiveResult.tsType;
+export type QueryArchiveResult =
+    | {
+          Ok: BlockRange;
+      }
+    | {
+          Err: QueryArchiveError;
+      };
 
 // A function that is used for fetching archived ledger blocks.
-export const QueryArchiveFn = Func(
+export const QueryArchiveFn = IDL.Func(
     [GetBlocksArgs],
-    QueryArchiveResult,
-    'query'
+    [QueryArchiveResult],
+    ['query']
 );
-export type QueryArchiveFn = typeof QueryArchiveFn.tsType;
+export type QueryArchiveFn = (
+    args: GetBlocksArgs
+) => Promise<QueryArchiveResult>;
 
-export const ArchivedBlock = Record({
+export const ArchivedBlock = IDL.Record({
     // The index of the first archived block that can be fetched using the callback.
     start: BlockIndex,
     // The number of blocks that can be fetch using the callback.
-    length: nat64,
+    length: IDL.Nat64,
     // The function that should be called to fetch the archived blocks.
     // The range of the blocks accessible using this function is given by [from]
     // and [len] fields above.
     callback: QueryArchiveFn
 });
-export type ArchivedBlock = typeof ArchivedBlock.tsType;
+export type ArchivedBlock = {
+    start: BlockIndex;
+    length: bigint;
+    callback: QueryArchiveFn;
+};
 
 // The result of a "query_blocks" call.
 //
@@ -268,13 +351,13 @@ export type ArchivedBlock = typeof ArchivedBlock.tsType;
 //
 // Note: as of Q4 2021 when this interface is authored, the IC doesn't support making nested
 // query calls within a query call.
-export const QueryBlocksResponse = Record({
+export const QueryBlocksResponse = IDL.Record({
     // The total number of blocks in the chain.
     // If the chain length is positive, the index of the last block is `chain_len - 1`.
-    chain_length: nat64,
+    chain_length: IDL.Nat64,
     // System certificate for the hash of the latest block in the chain.
-    // Only present if `query_blocks` is called in a non-replicated query context.
-    certificate: Opt(blob),
+    // Only present if `query_blocks` is called in a non-replicated query conIDL.Text.
+    certificate: IDL.Opt(IDL.Vec(IDL.Nat8)),
     // List of blocks that were available in the ledger when it processed the call.
     //
     // The blocks form a contiguous range, with the first block having index
@@ -282,7 +365,7 @@ export const QueryBlocksResponse = Record({
     // [first_block_index] + len(blocks) - 1.
     //
     // The block range can be an arbitrary sub-range of the originally requested range.
-    blocks: Vec(Block),
+    blocks: IDL.Vec(Block),
     // The index of the first block in "blocks".
     // If the blocks vector is empty, the exact value of this field is not specified.
     first_block_index: BlockIndex,
@@ -291,67 +374,91 @@ export const QueryBlocksResponse = Record({
     //
     // For each entry `e` in [archived_blocks], `[e.from, e.from + len)` is a sub-range
     // of the originally requested block range.
-    archived_blocks: Vec(ArchivedBlock)
+    archived_blocks: IDL.Vec(ArchivedBlock)
 });
-export type QueryBlocksResponse = typeof QueryBlocksResponse.tsType;
+export type QueryBlocksResponse = {
+    chain_length: bigint;
+    certificate: Uint8Array | null;
+    blocks: Block[];
+    first_block_index: BlockIndex;
+    archived_blocks: ArchivedBlock[];
+};
 
-export const Archive = Record({
-    canister_id: Principal
+export const Archive = IDL.Record({
+    canister_id: IDL.Principal
 });
-export type Archive = typeof Archive.tsType;
+export type Archive = {
+    canister_id: Principal;
+};
 
-export const Archives = Record({
-    archives: Vec(Archive)
+export const Archives = IDL.Record({
+    archives: IDL.Vec(Archive)
 });
-export type Archives = typeof Archives.tsType;
+export type Archives = {
+    archives: Archive[];
+};
 
-export const SymbolResult = Record({
-    symbol: text
+export const SymbolResult = IDL.Record({
+    symbol: IDL.Text
 });
-export type SymbolResult = typeof SymbolResult.tsType;
+export type SymbolResult = {
+    symbol: string;
+};
 
-export const NameResult = Record({
-    name: text
+export const NameResult = IDL.Record({
+    name: IDL.Text
 });
-export type NameResult = typeof NameResult.tsType;
+export type NameResult = {
+    name: string;
+};
 
-export const DecimalsResult = Record({
-    decimals: nat32
+export const DecimalsResult = IDL.Record({
+    decimals: IDL.Nat32
 });
-export type DecimalsResult = typeof DecimalsResult.tsType;
+export type DecimalsResult = {
+    decimals: number;
+};
 
-export const Address = text;
-export type Address = text;
+export const Address = IDL.Text;
+export type Address = string;
 
-export const Ledger = Canister({
+export const Ledger = IDL.Service({
     // Transfers tokens from a subaccount of the caller to the destination address.
     // The source address is computed from the principal of the caller and the specified subaccount.
     // When successful, returns the index of the block containing the transaction.
-    transfer: update([TransferArgs], TransferResult),
+    transfer: IDL.Func([TransferArgs], [TransferResult]),
     // Returns the amount of Tokens on the specified account.
-    account_balance: query([AccountBalanceArgs], Tokens),
+    account_balance: IDL.Func([AccountBalanceArgs], [Tokens], ['query']),
     // Returns the current transfer_fee.
-    transfer_fee: query([TransferFeeArg], TransferFee),
+    transfer_fee: IDL.Func([TransferFeeArg], [TransferFee], ['query']),
     // Queries blocks in the specified range.
-    query_blocks: query([GetBlocksArgs], QueryBlocksResponse),
+    query_blocks: IDL.Func([GetBlocksArgs], [QueryBlocksResponse], ['query']),
     // Returns token symbol.
-    symbol: query([], SymbolResult),
+    symbol: IDL.Func([], [SymbolResult], ['query']),
     // Returns token name.
-    name: query([], NameResult),
+    name: IDL.Func([], [NameResult], ['query']),
     // Returns token decimals.
-    decimals: query([], DecimalsResult),
+    decimals: IDL.Func([], [DecimalsResult], ['query']),
     // Returns the existing archive canisters information.
-    archives: query([], Archives),
-    icrc1_metadata: query([], Vec(Tuple(text, icrc.Value))),
-    icrc1_name: query([], text),
-    icrc1_symbol: query([], text),
-    icrc1_decimals: query([], nat8),
-    icrc1_fee: query([], nat),
-    icrc1_total_supply: query([], nat),
-    icrc1_minting_account: query([], Opt(icrc.Account)),
-    icrc1_balance_of: query([icrc.Account], nat),
-    icrc1_transfer: update([icrc.TransferArgs], icrc.TransferResult),
-    icrc1_supported_standards: query([], Vec(icrc.SupportedStandard))
+    archives: IDL.Func([], [Archives], ['query']),
+    icrc1_metadata: IDL.Func(
+        [],
+        [IDL.Vec(IDL.Tuple(IDL.Text, icrc.Value))],
+        ['query']
+    ),
+    icrc1_name: IDL.Func([], [IDL.Text], ['query']),
+    icrc1_symbol: IDL.Func([], [IDL.Text], ['query']),
+    icrc1_decimals: IDL.Func([], [IDL.Nat8], ['query']),
+    icrc1_fee: IDL.Func([], [IDL.Nat], ['query']),
+    icrc1_total_supply: IDL.Func([], [IDL.Nat], ['query']),
+    icrc1_minting_account: IDL.Func([], [IDL.Opt(icrc.Account)], ['query']),
+    icrc1_balance_of: IDL.Func([icrc.Account], [IDL.Nat], ['query']),
+    icrc1_transfer: IDL.Func([icrc.TransferArgs], [icrc.TransferResult]),
+    icrc1_supported_standards: IDL.Func(
+        [],
+        [IDL.Vec(icrc.SupportedStandard)],
+        ['query']
+    )
 });
 
 export {

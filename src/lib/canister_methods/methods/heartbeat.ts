@@ -16,7 +16,7 @@ export function heartbeat(
     };
 }
 
-function executeHeartbeat(callback: any) {
+function executeHeartbeat(callback: any): void {
     const result = callback();
 
     if (

@@ -1655,7 +1655,7 @@ function generate_benchmarks_string(
     )}`;
 }
 
-function format_number_to_rust(number: string | number | bigint) {
+function format_number_to_rust(number: string | number | bigint): string {
     const number_is_negative = number.toString()[0] === '-';
     const number_is_decimal_less_than_one =
         (number_is_negative === false && Number(number) < 1) ||
@@ -1683,7 +1683,7 @@ function format_number_to_rust(number: string | number | bigint) {
     );
 }
 
-function format_number_to_usd(number: number) {
+function format_number_to_usd(number: number): string {
     return number.toLocaleString('en-US', {
         style: 'currency',
         currency: 'USD',

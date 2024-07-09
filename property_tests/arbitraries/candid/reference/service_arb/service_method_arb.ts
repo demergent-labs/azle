@@ -93,7 +93,7 @@ function generateRuntimeCandidTypeObject(
     mode: Mode,
     params: CandidDefinition[],
     returnType: CandidDefinition
-) {
+): CanisterMethodInfo<CandidType[], CandidType> {
     const queryOrUpdate = mode === 'query' ? query : update;
     const paramCandidTypeObjects = params.map(
         (param) => param.candidMeta.runtimeCandidTypeObject

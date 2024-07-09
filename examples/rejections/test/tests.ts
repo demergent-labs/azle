@@ -40,31 +40,5 @@ export function getTests(rejectionsCanister: ActorSubclass<_SERVICE>): Test {
 
             expect(result).toBe(rejectionMessage);
         });
-
-        // TODO I don't know why these were commented out in the first place
-        it.skip('result with an accept', async () => {
-            const rejectionMessage = 'custom rejection message';
-            // @ts-expect-error
-            const result = await rejectionsCanister.getResult(
-                { Accept: null },
-                rejectionMessage
-            );
-
-            expect(result).toStrictEqual({ ok: null });
-            return {
-                Ok: result.ok === null
-            };
-        });
-
-        it.skip('result with an accept', async () => {
-            const rejectionMessage = 'custom rejection message';
-            // @ts-expect-error
-            const result = await rejectionsCanister.getResult(
-                { Reject: null },
-                rejectionMessage
-            );
-
-            expect(result).toStrictEqual({ err: rejectionMessage });
-        });
     };
 }

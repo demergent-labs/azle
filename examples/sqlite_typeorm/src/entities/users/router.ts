@@ -90,7 +90,7 @@ export function getRouter(): Router {
 async function updateHandler(
     req: Request<any, any, { id: number; username?: string; age?: number }>,
     res: Response
-) {
+): Promise<void> {
     const { id, username, age } = req.body;
 
     const user = await updateUser({

@@ -29,7 +29,7 @@ export default Canister({
 
 function countBranches(node: typeof Node): nat {
     if (node.Leaf !== undefined) {
-        return 1n;
+        return 0n;
     }
-    return countBranches(node.Branch);
+    return 1n + countBranches(node.Branch);
 }

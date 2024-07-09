@@ -1,62 +1,66 @@
-import {
-    blob,
-    Func,
-    nat,
-    nat64,
-    Null,
-    Opt,
-    Record,
-    text,
-    Variant,
-    Vec
-} from '../../src/lib';
+import { IDL, Principal } from '../../';
 
-export const HttpHeader = Record({
-    name: text,
-    value: text
+export const HttpHeader = IDL.Record({
+    name: IDL.Text,
+    value: IDL.Text
 });
-export type HttpHeader = typeof HttpHeader.tsType;
+export type HttpHeader = {
+    name: string;
+    value: string;
+};
 
-export const HttpMethod = Variant({
-    get: Null,
-    head: Null,
-    post: Null
+export const HttpMethod = IDL.Variant({
+    get: IDL.Null,
+    head: IDL.Null,
+    post: IDL.Null
 });
-export type HttpMethod = typeof HttpMethod.tsType;
+export type HttpMethod =
+    | {
+          get: null;
+      }
+    | { head: null }
+    | { post: null };
 
-export const HttpResponse = Record({
+export const HttpResponse = IDL.Record({
     /**
      * The response status (e.g., 200, 404)
      */
-    status: nat,
+    status: IDL.Nat,
     /**
      * List of HTTP response headers and their corresponding values. The number
      * of headers must not exceed 64. The total number of bytes representing the
      * header names and values must not exceed 48KiB. The total number of bytes
      * representing the header names and values must not exceed 48KiB.
      */
-    headers: Vec(HttpHeader),
+    headers: IDL.Vec(HttpHeader),
     /**
      * The response's body encoded as bytes
      */
-    body: blob
+    body: IDL.Vec(IDL.Nat8)
 });
-export type HttpResponse = typeof HttpResponse.tsType;
+export type HttpResponse = {
+    status: bigint;
+    headers: HttpHeader[];
+    body: Uint8Array;
+};
 
-export const HttpTransformArgs = Record({
+export const HttpTransformArgs = IDL.Record({
     response: HttpResponse,
-    context: blob
+    context: IDL.Vec(IDL.Nat8)
 });
-export type HttpTransformArgs = typeof HttpTransformArgs.tsType;
+export type HttpTransformArgs = {
+    response: HttpResponse;
+    context: Uint8Array;
+};
 
-export const HttpTransformFunc = Func(
+export const HttpTransformFunc = IDL.Func(
     [HttpTransformArgs],
-    HttpResponse,
-    'query'
+    [HttpResponse],
+    ['query']
 );
-export type HttpTransformFunc = typeof HttpTransformFunc.tsType;
+export type HttpTransformFunc = [Principal, string];
 
-export const HttpTransform = Record({
+export const HttpTransform = IDL.Record({
     /**
      * Transforms raw responses to sanitized responses. Must be an exported
      * canister method.
@@ -66,23 +70,26 @@ export const HttpTransform = Record({
      * A byte-encoded value that is provided to the function upon
      * invocation, along with the response to be sanitized.
      */
-    context: blob
+    context: IDL.Vec(IDL.Nat8)
 });
-export type HttpTransform = typeof HttpTransform.tsType;
+export type HttpTransform = {
+    function: HttpTransformFunc;
+    context: Uint8Array;
+};
 
-export const HttpRequestArgs = Record({
+export const HttpRequestArgs = IDL.Record({
     /**
      * The requested URL. The URL must be valid according to
      * https://www.ietf.org/rfc/rfc3986.txt[RFC-3986] and its length must not
      * exceed 8192. The URL may specify a custom port number.
      */
-    url: text,
+    url: IDL.Text,
     /**
      * Specifies the maximal size of the response in bytes. If provided, the
      * value must not exceed 2MB (2,000,000B). The call will be charged based on
      * this parameter. If not provided, the maximum of 2MB will be used.
      */
-    max_response_bytes: Opt(nat64),
+    max_response_bytes: IDL.Opt(IDL.Nat64),
     /**
      * Currently, only GET, HEAD, and POST are supported
      */
@@ -93,17 +100,24 @@ export const HttpRequestArgs = Record({
      * header names and values must not exceed 48KiB. The total number of bytes
      * representing the header names and values must not exceed 48KiB.
      */
-    headers: Vec(HttpHeader),
+    headers: IDL.Vec(HttpHeader),
     /**
      * The content of the request's body
      */
-    body: Opt(blob),
+    body: IDL.Opt(IDL.Vec(IDL.Nat8)),
     /**
      * An optional function that transforms raw responses to sanitized responses,
      * and a byte-encoded context that is provided to the function upon
      * invocation, along with the response to be sanitized.
      * If provided, the calling canister itself must export this function.
      */
-    transform: Opt(HttpTransform)
+    transform: IDL.Opt(HttpTransform)
 });
-export type HttpRequestArgs = typeof HttpRequestArgs.tsType;
+export type HttpRequestArgs = {
+    url: string;
+    max_response_bytes: [bigint] | [];
+    method: HttpMethod;
+    headers: HttpHeader[];
+    body: [Uint8Array] | [];
+    transform: [HttpTransform] | [];
+};

@@ -5,7 +5,6 @@
             "main": "src/timers.ts",
             "candid": "src/timers.did",
             "candid_gen": "custom",
-            "env": ["AZLE_TEST_FETCH"],
             "declarations": {
                 "output": "test/dfx_generated/timers",
                 "node_compatibility": true

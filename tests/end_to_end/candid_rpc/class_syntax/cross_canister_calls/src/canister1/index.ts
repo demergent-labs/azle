@@ -41,11 +41,11 @@ export default class {
 
     @update([], IDL.Empty)
     async trap(): Promise<never> {
-        return await call(canister2Id, 'trap');
+        return (await call(canister2Id, 'trap')) as never;
     }
 
     @update([])
-    sendNotification() {
+    sendNotification(): void {
         return notify(canister2Id, 'receiveNotification', {
             paramIdls: [IDL.Text],
             args: ['This is the notification'],

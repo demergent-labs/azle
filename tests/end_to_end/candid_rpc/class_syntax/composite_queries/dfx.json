@@ -8,8 +8,7 @@
             "env": [
                 "CANISTER1_PRINCIPAL",
                 "CANISTER2_PRINCIPAL",
-                "CANISTER3_PRINCIPAL",
-                "AZLE_TEST_FETCH"
+                "CANISTER3_PRINCIPAL"
             ],
             "assets": [
                 ["src/canister2/index.did", "candid/canister2.did"],
@@ -25,7 +24,7 @@
             "main": "src/canister2/index.ts",
             "candid": "src/canister2/index.did",
             "candid_gen": "custom",
-            "env": ["CANISTER3_PRINCIPAL", "AZLE_TEST_FETCH"],
+            "env": ["CANISTER3_PRINCIPAL"],
             "assets": [["src/canister3/index.did", "candid/canister3.did"]],
             "declarations": {
                 "output": "test/dfx_generated/canister2",

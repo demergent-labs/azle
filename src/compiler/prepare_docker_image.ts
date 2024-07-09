@@ -13,7 +13,7 @@ export function prepareDockerImage(
     dockerImagePathTarGz: string,
     dockerContainerName: string,
     wasmedgeQuickJsPath: string
-) {
+): void {
     initAndStartVm(stdioType);
 
     loadImage(
@@ -31,7 +31,7 @@ export function prepareDockerImage(
     );
 }
 
-function initAndStartVm(stdioType: IOType) {
+function initAndStartVm(stdioType: IOType): void {
     // TODO I believe this is necessary for Mac
     // TODO If they do not need this command always run
     // TODO for example after restarts, then perhaps
@@ -57,7 +57,7 @@ function loadImage(
     dockerImageName: string,
     dockerImagePathTar: string,
     dockerImagePathTarGz: string
-) {
+): void {
     const imageHasAlreadyBeenLoaded = hasImageAlreadyBeenLoaded(
         stdioType,
         dockerImageName
@@ -128,7 +128,7 @@ function loadExistingLocalImage(
 function buildAndLoadImageWithDockerfile(
     dockerImageName: string,
     dockerImagePathTar: string
-) {
+): void {
     console.info(yellow(`\nBuilding image...\n`));
 
     execSyncPretty(
@@ -150,7 +150,7 @@ function downloadAndLoadRemoteImage(
     dockerImageName: string,
     dockerImagePathTar: string,
     dockerImagePathTarGz: string
-) {
+): void {
     console.info(yellow(`\nDownloading image...\n`));
 
     execSyncPretty(
@@ -168,7 +168,7 @@ function createAndStartContainer(
     dockerImageName: string,
     dockerContainerName: string,
     wasmedgeQuickJsPath: string
-) {
+): void {
     execSyncPretty(
         `podman create --name ${dockerContainerName} ${dockerImageName} tail -f /dev/null || true`,
         stdioType

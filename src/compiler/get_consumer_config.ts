@@ -147,7 +147,7 @@ function getConsumerConfig(
     return canisterConfig.custom?.openValueSharing;
 }
 
-function logWarningPeriod(consumerConfig?: ConsumerConfig) {
+function logWarningPeriod(consumerConfig?: ConsumerConfig): void {
     if (consumerConfig?.period !== undefined) {
         console.warn(
             yellow(

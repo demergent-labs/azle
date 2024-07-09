@@ -1,7 +1,7 @@
 import { getActor, Named } from 'azle/property_tests';
 import { CandidValueAndMeta } from 'azle/property_tests/arbitraries/candid/candid_value_and_meta_arb';
 import { CorrespondingJSType } from 'azle/property_tests/arbitraries/candid/corresponding_js_type';
-import { Test, testEquality } from 'azle/property_tests/test';
+import { AzleResult, Test, testEquality } from 'azle/property_tests/test';
 
 export function generateTests(
     _functionName: string,
@@ -17,7 +17,7 @@ export function generateTests(
         [
             {
                 name: `post upgrade method`,
-                test: async () => {
+                test: async (): Promise<AzleResult> => {
                     const actor = getActor(__dirname);
 
                     const postUpgradeValues =

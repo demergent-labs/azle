@@ -4,7 +4,9 @@ import fc from 'fast-check';
 // TODO this doesn't seem right, instead I think they should pass in a set of their own
 let samples = new Set();
 
-export function createUniquePrimitiveArb<T>(arb: fc.Arbitrary<T>) {
+export function createUniquePrimitiveArb<T>(
+    arb: fc.Arbitrary<T>
+): fc.Arbitrary<T> {
     return arb
         .filter((primitiveSample) => !samples.has(primitiveSample))
         .map((primitiveSample) => {
@@ -13,6 +15,6 @@ export function createUniquePrimitiveArb<T>(arb: fc.Arbitrary<T>) {
         });
 }
 
-export function clear() {
+export function clear(): void {
     samples = new Set();
 }

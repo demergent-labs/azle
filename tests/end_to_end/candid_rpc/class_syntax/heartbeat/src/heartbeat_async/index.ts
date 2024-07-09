@@ -4,7 +4,7 @@ let initialized: Uint8Array = Uint8Array.from([]);
 
 export default class {
     @heartbeat
-    async heartbeat() {
+    async heartbeat(): Promise<void> {
         const randomness = await getRandomness();
 
         initialized = randomness;
@@ -12,7 +12,7 @@ export default class {
     }
 
     @query([], IDL.Vec(IDL.Nat8))
-    getInitialized() {
+    getInitialized(): Uint8Array {
         return initialized;
     }
 }

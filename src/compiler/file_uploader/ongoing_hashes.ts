@@ -92,7 +92,7 @@ function updateBytes(
     };
 }
 
-function reportOngoingHashingJobs(ongoingHashInfo: OngoingHashingJob[]) {
+function reportOngoingHashingJobs(ongoingHashInfo: OngoingHashingJob[]): void {
     for (const hashInfo of ongoingHashInfo) {
         const percent =
             (Number(hashInfo.bytesHashed) / Number(hashInfo.totalBytes)) * 100;
@@ -101,7 +101,7 @@ function reportOngoingHashingJobs(ongoingHashInfo: OngoingHashingJob[]) {
     console.info();
 }
 
-function reportIncompleteHashingJobs(paths: [Src, Dest][]) {
+function reportIncompleteHashingJobs(paths: [Src, Dest][]): void {
     console.info(
         `Missing hashes for ${paths.length} files:\n${paths.join('\n')}.`
     );

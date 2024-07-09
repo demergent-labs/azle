@@ -82,7 +82,7 @@ if (globalThis._azleInsideCanister) {
 
     globalThis.window = globalThis as any;
 
-    const log = (...args: any[]) => {
+    const log = (...args: any[]): void => {
         const jsonStringifiedArgs = args
             .map((arg) => {
                 if (arg instanceof Error) {
@@ -109,7 +109,7 @@ if (globalThis._azleInsideCanister) {
     (globalThis as any).setTimeout = (
         handler: TimerHandler,
         timeout?: number
-    ) => {
+    ): number => {
         if (timeout !== undefined && timeout !== 0) {
             console.warn(
                 `Azle Warning: setTimeout may not behave as expected with milliseconds above 0; called with ${timeout} milliseconds`,
@@ -164,7 +164,7 @@ if (globalThis._azleInsideCanister) {
         } as any
     };
 
-    globalThis.clearInterval = () => {}; // TODO should this throw an error or just not do anything? At least a warning would be good right?
+    globalThis.clearInterval = (): void => {}; // TODO should this throw an error or just not do anything? At least a warning would be good right?
 
     globalThis.global = globalThis;
     (globalThis as any).self = globalThis;
@@ -209,7 +209,7 @@ if (globalThis._azleInsideCanister) {
         configurable: true
     });
 
-    RegExp.prototype.exec = function (string) {
+    RegExp.prototype.exec = function (string): RegExpExecArray | null {
         const match = originalExec.call(this, string);
         if (match) {
             RegExp.leftContext = (string ?? '').substring(0, match.index);
@@ -221,7 +221,7 @@ if (globalThis._azleInsideCanister) {
     require('intl/locale-data/jsonp/en.js');
 }
 
-function stdioWrite(message: string) {
+function stdioWrite(message: string): void {
     // eslint-disable-next-line
     const ansiEscapeRegex = /\u001b\[.*?m/g;
     const newlineRegex = /\n/g;

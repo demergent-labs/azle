@@ -44,6 +44,8 @@ async function toResponse(response: Response): Promise<HttpResponse> {
 /**
  * A synchronous "fetch" for canisters.
  */
+// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function fletchSync(canisterName: string, options: HttpRequest) {
     const canisterId = getCanisterId(canisterName);
 
@@ -65,7 +67,7 @@ export function fletchSync(canisterName: string, options: HttpRequest) {
     return toResponseSync(responseBuffer);
 }
 
-function escapeForExecSync(input: string) {
+function escapeForExecSync(input: string): string {
     return input
         .replace(/\\/g, '\\\\') // Escape backslashes
         .replace(/"/g, '\\"') // Escape double quotes
@@ -73,18 +75,20 @@ function escapeForExecSync(input: string) {
         .replace(/\$/g, '\\$'); // Escape dollar signs
 }
 
-function toCurlHeadersString(headers: [string, string][]) {
+function toCurlHeadersString(headers: [string, string][]): string {
     return headers
         .map(([name, value]) => `-H ${singleQuotedString(`${name}: ${value}`)}`)
         .join(' ');
 }
 
-function singleQuotedString(input: string) {
+function singleQuotedString(input: string): string {
     const singleQuoteEscapedString = input.replace(/'/g, "'\\''");
 
     return `'${singleQuoteEscapedString}'`;
 }
 
+// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function toResponseSync(buffer: Buffer) {
     const responseString = new TextDecoder().decode(buffer);
 

@@ -19,7 +19,7 @@ export class AzleApp extends LitElement {
     @property()
     globalStateResponse: string = JSON.stringify({});
 
-    async testResSend() {
+    async testResSend(): Promise<void> {
         this.resSendResponse = 'Loading...';
 
         const response = await fetch(`${this.canisterOrigin}/res-send`);
@@ -28,7 +28,7 @@ export class AzleApp extends LitElement {
         this.resSendResponse = responseText;
     }
 
-    async testResWrite() {
+    async testResWrite(): Promise<void> {
         this.resWriteResponse = 'Loading...';
 
         const response = await fetch(`${this.canisterOrigin}/res-write`);
@@ -37,7 +37,7 @@ export class AzleApp extends LitElement {
         this.resWriteResponse = responseText;
     }
 
-    async testFileStream() {
+    async testFileStream(): Promise<void> {
         this.fileStreamResponse = 'Loading...';
 
         const response = await fetch(`${this.canisterOrigin}/file-stream`);
@@ -46,7 +46,7 @@ export class AzleApp extends LitElement {
         this.fileStreamResponse = responseText;
     }
 
-    async testGlobalState() {
+    async testGlobalState(): Promise<void> {
         this.globalStateResponse = 'Loading...';
 
         const response = await fetch(
@@ -64,7 +64,7 @@ export class AzleApp extends LitElement {
         this.globalStateResponse = JSON.stringify(responseJson);
     }
 
-    async deleteGlobalState() {
+    async deleteGlobalState(): Promise<void> {
         this.globalStateResponse = 'Loading...';
 
         const response = await fetch(
@@ -78,7 +78,7 @@ export class AzleApp extends LitElement {
         this.globalStateResponse = JSON.stringify(responseJson);
     }
 
-    render() {
+    render(): any {
         return html`
             <h1>Azle Express App</h1>
 

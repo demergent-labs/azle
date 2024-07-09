@@ -34,6 +34,17 @@ const typeDefs = `#graphql
   }
 `;
 
+type Book = {
+    id: string;
+    title: string;
+    rating: number;
+};
+
+type Author = {
+    id: string;
+    name: string;
+};
+
 let books = [
     {
         id: '0',
@@ -62,14 +73,14 @@ const authors = [
 // This resolver retrieves books from the "books" array above.
 const resolvers = {
     Query: {
-        books: () => books,
-        authors: () => authors,
-        titles: () => {
+        books: (): Book[] => books,
+        authors: (): Author[] => authors,
+        titles: (): string[] => {
             return books.map((book) => book.title);
         }
     },
     Mutation: {
-        createBook: (parent: any, args: any) => {
+        createBook: (parent: any, args: any): Book => {
             const book = {
                 id: books.length.toString(),
                 title: args.title,
@@ -83,7 +94,7 @@ const resolvers = {
     }
 };
 
-async function init() {
+async function init(): Promise<void> {
     const app = express();
 
     const server = new ApolloServer({

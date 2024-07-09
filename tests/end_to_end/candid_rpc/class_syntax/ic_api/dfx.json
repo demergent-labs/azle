@@ -1,0 +1,14 @@
+{
+    "canisters": {
+        "ic_api": {
+            "type": "azle",
+            "main": "src/index.ts",
+            "candid": "src/index.did",
+            "candid_gen": "custom",
+            "declarations": {
+                "output": "test/dfx_generated/ic_api",
+                "node_compatibility": true
+            }
+        }
+    }
+}

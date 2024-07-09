@@ -9,15 +9,15 @@ export class AzleInt32 {
 
     static tsType: int32;
 
-    static toBytes(data: any) {
+    static toBytes(data: int32): Uint8Array {
         return encode(this, data);
     }
 
-    static fromBytes(bytes: Uint8Array) {
-        return decode(this, bytes);
+    static fromBytes(bytes: Uint8Array): int32 {
+        return decode<int32>(this, bytes) as int32;
     }
 
-    static getIdl() {
+    static getIdl(): IDL.FixedIntClass {
         return IDL.Int32;
     }
 }
