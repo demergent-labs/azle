@@ -16,7 +16,7 @@ export async function manipulateWasmBinary(
     canisterName: string,
     js: string,
     compilerInfo: CompilerInfo
-) {
+): Promise<void> {
     const originalWasm = readFileSync(
         join(AZLE_PACKAGE_PATH, `static_canister_template.wasm`)
     );
@@ -223,7 +223,7 @@ function addCanisterMethod(
     functionToCall: string,
     index: number,
     passArgData: boolean
-) {
+): void {
     const funcBody = module.block(null, [
         module.call(
             functionToCall,
