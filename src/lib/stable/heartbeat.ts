@@ -3,11 +3,14 @@ export function heartbeat<T>(
     propertyKey: string | symbol,
     descriptor: TypedPropertyDescriptor<T>
 ): TypedPropertyDescriptor<T> | void {
+    const index = globalThis._azleCanisterMethodsIndex++;
+
     globalThis._azleCanisterMethods.heartbeat = {
-        name: propertyKey as string
+        name: propertyKey as string,
+        index
     };
 
-    globalThis._azleCanisterMethods.callbacks[propertyKey as string] =
+    globalThis._azleCanisterMethods.callbacks[index.toString()] =
         descriptor.value as any;
 
     return descriptor;

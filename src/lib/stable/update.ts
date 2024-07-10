@@ -31,15 +31,18 @@ export function update(
 
         descriptor.value = methodCallback as any;
 
+        const index = globalThis._azleCanisterMethodsIndex++;
+
         globalThis._azleCanisterMethods.updates.push({
             name: propertyKey as string,
+            index,
             guard_name:
                 options?.guard === undefined
                     ? undefined
                     : createGlobalGuard(options?.guard, propertyKey as string)
         });
 
-        globalThis._azleCanisterMethods.callbacks[propertyKey as string] =
+        globalThis._azleCanisterMethods.callbacks[index.toString()] =
             methodCallback;
 
         return descriptor;

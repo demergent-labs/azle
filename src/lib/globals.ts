@@ -25,6 +25,7 @@ type CanisterMethods = {
 
 type CanisterMethod = {
     name: string;
+    index: number;
     composite?: boolean;
     guard_name?: string;
 };

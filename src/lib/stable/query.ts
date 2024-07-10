@@ -32,10 +32,11 @@ export function query(
 
         descriptor.value = methodCallback as any;
 
-        const index = globalThis._azleCanisterMethods.queries.length;
+        const index = globalThis._azleCanisterMethodsIndex++;
 
         globalThis._azleCanisterMethods.queries.push({
             name: propertyKey as string,
+            index,
             composite: options?.composite ?? false,
             guard_name:
                 options?.guard === undefined
