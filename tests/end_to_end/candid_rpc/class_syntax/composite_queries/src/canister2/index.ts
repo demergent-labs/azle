@@ -25,7 +25,7 @@ export default class {
         manual: true
     })
     manualQuery(): void {
-        reply('Hello from Canister 2 manual query', IDL.Text);
+        reply({ data: 'Hello from Canister 2 manual query', idl: IDL.Text });
     }
 
     @query([], IDL.Text, {

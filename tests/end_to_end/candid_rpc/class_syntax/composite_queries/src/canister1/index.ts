@@ -31,12 +31,12 @@ export default class {
         manual: true
     })
     async totallyManualQuery(): Promise<void> {
-        reply(
-            await call(canister2Id, 'manualQuery', {
+        reply({
+            data: await call(canister2Id, 'manualQuery', {
                 returnIdl: IDL.Text
             }),
-            IDL.Text
-        );
+            idl: IDL.Text
+        });
     }
 
     // Composite query calling another composite query

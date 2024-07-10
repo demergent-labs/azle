@@ -22,13 +22,13 @@ export function callRaw(
     payment: nat
 ): Promise<blob> {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return new Promise(() => new Uint8Array());
     }
 
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
         if (globalThis._azleIc === undefined) {
-            return undefined as any;
+            return new Uint8Array();
         }
 
         const promiseId = v4();

@@ -6,7 +6,7 @@
  */
 export function stableGrow(newPages: bigint): bigint {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return 0n;
     }
 
     return BigInt(globalThis._azleIc.stableGrow(newPages.toString()));

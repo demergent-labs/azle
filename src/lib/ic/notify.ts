@@ -40,7 +40,7 @@ export function notify<T extends (...args: any[]) => any>(
     }
 ): Void {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return undefined;
     }
 
     return method(true, notifyRaw, config?.cycles ?? 0n, config?.args ?? []);

@@ -19,7 +19,7 @@ export function notify(
     }
 ): void {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return undefined;
     }
 
     const paramIdls = options?.paramIdls ?? [];

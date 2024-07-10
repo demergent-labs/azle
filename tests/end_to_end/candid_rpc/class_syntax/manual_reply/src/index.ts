@@ -1,12 +1,4 @@
-import {
-    candidEncode,
-    IDL,
-    query,
-    reject,
-    reply,
-    replyRaw,
-    update
-} from 'azle';
+import { candidEncode, IDL, query, reject, reply, update } from 'azle';
 
 const Options = IDL.Variant({
     Small: IDL.Null,
@@ -103,40 +95,40 @@ export default class {
             return;
         }
 
-        reply(message, IDL.Text);
+        reply({ data: message, idl: IDL.Text });
     }
 
     @update([], IDL.Vec(IDL.Nat8), { manual: true })
     updateBlob(): void {
-        reply(
-            new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
-            IDL.Vec(IDL.Nat8)
-        );
+        reply({
+            data: new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
+            idl: IDL.Vec(IDL.Nat8)
+        });
     }
 
     @update([], IDL.Float32, { manual: true })
     updateFloat32(): void {
-        reply(1245.678, IDL.Float32);
+        reply({ data: 1245.678, idl: IDL.Float32 });
     }
 
     @update([], IDL.Int8, { manual: true })
     updateInt8(): void {
-        reply(-100, IDL.Int8);
+        reply({ data: -100, idl: IDL.Int8 });
     }
 
     @update([], IDL.Nat, { manual: true })
     updateNat(): void {
-        reply(184467440737095516150n, IDL.Nat);
+        reply({ data: 184467440737095516150n, idl: IDL.Nat });
     }
 
     @update([], IDL.Null, { manual: true })
     updateNull(): void {
-        reply(null, IDL.Null);
+        reply({ data: null, idl: IDL.Null });
     }
 
     @update([], undefined, { manual: true })
     updateVoid(): void {
-        reply(undefined);
+        reply({ data: undefined });
     }
 
     @update([], Element, { manual: true })
@@ -149,32 +141,32 @@ export default class {
             ],
             state: { Gas: { Elemental: null } }
         };
-        reply(element, Element);
+        reply({ data: element, idl: Element });
     }
 
     @update([], IDL.Reserved, { manual: true })
     updateReserved(): void {
-        reply(undefined, IDL.Reserved);
+        reply({ data: undefined, idl: IDL.Reserved });
     }
 
     @update([], IDL.Text, { manual: true })
     updateString(): void {
-        reply('hello', IDL.Text);
+        reply({ data: 'hello', idl: IDL.Text });
     }
 
     @update([], Gas, { manual: true })
     updateVariant(): void {
         const gas: Gas = { Toxic: null };
-        reply(gas, Gas);
+        reply({ data: gas, idl: Gas });
     }
 
     @update([], RawReply, { manual: true })
     replyRaw(): void {
-        replyRaw(
-            candidEncode(
+        reply({
+            raw: candidEncode(
                 '(record { "int" = 42; "text" = "text"; "bool" = true; "myBlob" = blob "Surprise!"; "myVariant" = variant { Medium } })'
             )
-        );
+        });
     }
 
     // Queries
@@ -185,40 +177,40 @@ export default class {
             return;
         }
 
-        reply(message, IDL.Text);
+        reply({ data: message, idl: IDL.Text });
     }
 
     @query([], IDL.Vec(IDL.Nat8), { manual: true })
     queryBlob(): void {
-        reply(
-            new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
-            IDL.Vec(IDL.Nat8)
-        );
+        reply({
+            data: new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
+            idl: IDL.Vec(IDL.Nat8)
+        });
     }
 
     @query([], IDL.Float32, { manual: true })
     queryFloat32(): void {
-        reply(1245.678, IDL.Float32);
+        reply({ data: 1245.678, idl: IDL.Float32 });
     }
 
     @query([], IDL.Int8, { manual: true })
     queryInt8(): void {
-        reply(-100, IDL.Int8);
+        reply({ data: -100, idl: IDL.Int8 });
     }
 
     @query([], IDL.Nat, { manual: true })
     queryNat(): void {
-        reply(184467440737095516150n, IDL.Nat);
+        reply({ data: 184467440737095516150n, idl: IDL.Nat });
     }
 
     @query([], IDL.Null, { manual: true })
     queryNull(): void {
-        reply(null, IDL.Null);
+        reply({ data: null, idl: IDL.Null });
     }
 
     @query([], undefined, { manual: true })
     queryVoid(): void {
-        reply(undefined);
+        reply({ data: undefined });
     }
 
     @query([], Element, { manual: true })
@@ -232,23 +224,23 @@ export default class {
             state: { Gas: { Elemental: null } }
         };
 
-        reply(element, Element);
+        reply({ data: element, idl: Element });
     }
 
     @query([], IDL.Reserved, { manual: true })
     queryReserved(): void {
-        reply(undefined, IDL.Reserved);
+        reply({ data: undefined, idl: IDL.Reserved });
     }
 
     @query([], IDL.Text, { manual: true })
     queryString(): void {
-        reply('hello', IDL.Text);
+        reply({ data: 'hello', idl: IDL.Text });
     }
 
     @query([], Gas, { manual: true })
     queryVariant(): void {
         const gas: Gas = { Toxic: null };
 
-        reply(gas, Gas);
+        reply({ data: gas, idl: Gas });
     }
 }

@@ -16,7 +16,7 @@ export async function call(
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
         if (globalThis._azleIc === undefined) {
-            return undefined as any;
+            return {};
         }
 
         const promiseId = v4();
@@ -34,10 +34,9 @@ export async function call(
         ): void => {
             if (raw !== undefined) {
                 resolve(new Uint8Array(result));
-            } else if (returnIdl === undefined) {
-                resolve(undefined);
             } else {
-                resolve(IDL.decode([returnIdl], result)[0]);
+                const idl = returnIdl === undefined ? [] : [returnIdl];
+                resolve(IDL.decode(idl, result)[0]);
             }
 
             delete globalThis._azleResolveIds[globalResolveId];

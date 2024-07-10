@@ -21,7 +21,7 @@ export function call<T extends (...args: any[]) => any>(
     }
 ): ReturnTypeOf<T> {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return {} as any;
     }
 
     const { callFunction, cycles } = getCallFunctionAndCycles(config?.cycles);

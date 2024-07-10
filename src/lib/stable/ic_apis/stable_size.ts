@@ -5,7 +5,7 @@
  */
 export function stableSize(): bigint {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return 0n;
     }
 
     return BigInt(globalThis._azleIc.stableSize());

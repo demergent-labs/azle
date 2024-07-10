@@ -10,7 +10,7 @@
  */
 export function stableWrite(offset: bigint, buf: Uint8Array): void {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return undefined;
     }
 
     return globalThis._azleIc.stableWrite(offset.toString(), buf.buffer);

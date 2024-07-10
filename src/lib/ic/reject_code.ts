@@ -7,7 +7,7 @@ import { RejectionCode } from '../system_types';
  */
 export function rejectCode(): RejectionCode {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return { Unknown: null };
     }
 
     const rejectCodeNumber = Number(globalThis._azleIc.rejectCode());

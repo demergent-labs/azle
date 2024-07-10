@@ -2,7 +2,8 @@ import { blob } from '../candid/types/constructed/blob';
 import { nat64 } from '../candid/types/primitive/nats/nat64';
 
 /**
- * Writes data to the stable memory location specified by an offset
+ * Writes data to the stable memory location specified by an offset.
+ * Supports 64-bit addressed memory.
  *
  * **Warning:** this will panic if `offset` + `buffer.length` exceeds the
  * current size of stable memory. Use {@link ic.stableGrow} to request more
@@ -12,7 +13,7 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  */
 export function stableWrite(offset: nat64, buf: blob): void {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return undefined;
     }
 
     return globalThis._azleIc.stableWrite(offset.toString(), buf.buffer);

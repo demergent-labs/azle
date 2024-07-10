@@ -22,7 +22,7 @@
  */
 export function setCertifiedData(data: Uint8Array): void {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return undefined;
     }
 
     return globalThis._azleIc.setCertifiedData(data.buffer);

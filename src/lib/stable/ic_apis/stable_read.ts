@@ -7,7 +7,7 @@
  */
 export function stableRead(offset: bigint, length: bigint): Uint8Array {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return new Uint8Array();
     }
 
     return new Uint8Array(

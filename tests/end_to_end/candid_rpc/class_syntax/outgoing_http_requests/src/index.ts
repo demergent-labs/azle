@@ -5,7 +5,7 @@ import {
     IDL,
     Principal,
     query,
-    replyRaw,
+    reply,
     update
 } from 'azle';
 import {
@@ -68,7 +68,7 @@ export default class {
             }
         );
 
-        replyRaw(httpResponse);
+        reply({ raw: httpResponse });
     }
 
     @query([HttpTransformArgs], HttpResponse)

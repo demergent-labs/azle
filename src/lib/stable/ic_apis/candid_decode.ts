@@ -5,7 +5,7 @@
  */
 export function candidDecode(candidEncoded: Uint8Array): string {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return '';
     }
 
     return globalThis._azleIc.candidDecode(candidEncoded.buffer);

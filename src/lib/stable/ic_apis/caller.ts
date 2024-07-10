@@ -6,7 +6,7 @@ import { Principal } from '../';
  */
 export function caller(): Principal {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return Principal.fromHex('0x04');
     }
 
     const callerBytes = globalThis._azleIc.caller();

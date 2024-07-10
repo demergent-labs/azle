@@ -3,49 +3,49 @@
  * we expose to the users. This is the interface for the rust functions.
  */
 export type AzleIc = {
-    argDataRaw: () => ArrayBufferLike;
+    argDataRaw: () => ArrayBuffer;
     argDataRawSize: () => string;
     callRaw: (
         promiseId: string,
-        canisterIdBytes: ArrayBufferLike,
+        canisterIdBytes: ArrayBuffer,
         method: string,
-        argsRaw: ArrayBufferLike,
+        argsRaw: ArrayBuffer,
         paymentString: string
     ) => void;
-    caller: () => ArrayBufferLike;
+    caller: () => ArrayBuffer;
     candidCompiler: (candidPath: string) => string;
-    candidDecode: (candidBytes: ArrayBufferLike) => string;
-    candidEncode: (candidString: string) => ArrayBufferLike;
+    candidDecode: (candidBytes: ArrayBuffer) => string;
+    candidEncode: (candidString: string) => ArrayBuffer;
     canisterBalance: () => string;
     canisterVersion: () => string;
     clearTimer: (timerIdString: string) => void;
-    dataCertificate: () => ArrayBufferLike | undefined;
+    dataCertificate: () => ArrayBuffer | undefined;
     id: () => string;
     instructionCounter: () => string;
-    isController: (principalBytes: ArrayBufferLike) => boolean;
+    isController: (principalBytes: ArrayBuffer) => boolean;
     msgCyclesAccept: (maxAmountString: string) => string;
     msgCyclesAvailable: () => string;
     msgCyclesRefunded: () => string;
     notifyRaw: (
-        canisterIdBytes: ArrayBufferLike,
+        canisterIdBytes: ArrayBuffer,
         method: string,
-        argsRawBuffer: ArrayBufferLike,
+        argsRawBuffer: ArrayBuffer,
         paymentString: string
     ) => void;
     performanceCounter: (counterType: string) => string;
     rejectCode: () => string;
-    replyRaw: (bytes: ArrayBufferLike) => void;
-    setCertifiedData: (dataBytes: ArrayBufferLike) => void;
+    replyRaw: (bytes: ArrayBuffer) => void;
+    setCertifiedData: (dataBytes: ArrayBuffer) => void;
     setTimer: (delayString: string, timerCallbackId: string) => string;
     setTimerInterval: (
         intervalString: string,
         timerCallbackId: string
     ) => string;
-    stableBytes: () => ArrayBufferLike;
+    stableBytes: () => ArrayBuffer;
     stableGrow: (newPages: string) => string;
-    stableRead: (offset: string, length: string) => ArrayBufferLike;
+    stableRead: (offset: string, length: string) => ArrayBuffer;
     stableSize: () => string;
-    stableWrite: (offset: string, buf: ArrayBufferLike) => void;
+    stableWrite: (offset: string, buf: ArrayBuffer) => void;
     time: () => string;
     // These calls aren't intercepted by our IC object, they go right to the
     // rust version and come out. Since they don't need to be intercepted I am
@@ -67,16 +67,16 @@ export type AzleIc = {
     stableBTreeMapInit: (memoryId: string) => void;
     stableBTreeMapContainsKey: (
         memoryId: string,
-        encodedKey: ArrayBufferLike
+        encodedKey: ArrayBuffer
     ) => boolean;
     stableBTreeMapGet: (
         memoryId: string,
-        encodedKey: ArrayBufferLike
+        encodedKey: ArrayBuffer
     ) => ArrayBuffer | undefined;
     stableBTreeMapInsert: (
         memoryId: string,
-        encodedKey: ArrayBufferLike,
-        encodedValue: ArrayBufferLike
+        encodedKey: ArrayBuffer,
+        encodedValue: ArrayBuffer
     ) => ArrayBuffer | undefined;
     stableBTreeMapIsEmpty: (memoryId: string) => boolean;
     stableBTreeMapItems: (
@@ -92,7 +92,7 @@ export type AzleIc = {
     stableBTreeMapLen: (memoryId: string) => string;
     stableBTreeMapRemove(
         memoryId: string,
-        encodedKey: ArrayBufferLike
+        encodedKey: ArrayBuffer
     ): ArrayBuffer;
     stableBTreeMapValues: (
         memoryId: string,

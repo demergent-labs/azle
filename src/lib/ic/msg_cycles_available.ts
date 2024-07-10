@@ -7,7 +7,7 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  */
 export function msgCyclesAvailable(): nat64 {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return 0n;
     }
 
     const msgCyclesAvailableAmountString =
