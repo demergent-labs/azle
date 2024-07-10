@@ -9,10 +9,10 @@
         "getrawmempool": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getrawmempool true",
         "getrawtransaction": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf getrawtransaction $npm_config_txid",
         "help": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf help",
-        "premanualtest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "premanualtest": "tsx test/pretest.ts",
         "manualtest": "jest test/manual_test.ts test/manual.test.ts",
         "install": "./scripts/install.sh",
-        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "pretest": "tsx test/pretest.ts",
         "test": "jest test/test.ts"
     },
     "dependencies": {

@@ -5,7 +5,7 @@
         "start": "webpack serve --mode development --env development",
         "prestart": "npm run generate",
         "generate": "dfx generate superheroes",
-        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "pretest": "tsx test/pretest.ts",
         "test": "jest"
     },
     "devDependencies": {

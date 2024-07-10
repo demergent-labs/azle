@@ -1,7 +1,7 @@
 {
     "name": "icrc_end_to_end_test_functional_syntax",
     "scripts": {
-        "pre_tests": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "pre_tests": "tsx test/pretest.ts",
         "tests": "npm run pre_tests && jest",
         "test": "AZLE_TEST_FETCH=false npm run tests && AZLE_TEST_FETCH=true npm run tests"
     },

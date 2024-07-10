@@ -1,7 +1,7 @@
 {
     "name": "bitcore_lib_example",
     "scripts": {
-        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "pretest": "tsx test/pretest.ts",
         "test": "jest"
     },
     "dependencies": {

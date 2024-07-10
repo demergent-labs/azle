@@ -1,7 +1,7 @@
 {
     "scripts": {
         "build": "cd src/frontend && VITE_CANISTER_ID=$(dfx canister id express) vite build",
-        "pretest": "ts-node --transpile-only --ignore=false --skip-project test/pretest.ts",
+        "pretest": "tsx --skip-project test/pretest.ts",
         "test": "jest"
     },
     "dependencies": {
