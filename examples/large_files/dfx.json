@@ -3,7 +3,7 @@
         "backend": {
             "type": "azle",
             "main": "src/backend/index.ts",
-            "assets_large": [
+            "assets": [
                 ["assets/auto", "assets"],
                 ["assets/permanent", "assets"],
                 ["assets/single_asset.txt", "assets/text/single.txt"]
