@@ -32,7 +32,7 @@ type _AzleFunctionReturnType = {
     getIdl?: (parents: Parent[]) => IDL.Type<any>;
 };
 
-type CallRawFunction = typeof ic.callRaw | typeof ic.callRaw128;
+type CallRawFunction = typeof ic.callRaw;
 type NotifyRawFunction = typeof ic.notifyRaw;
 
 type FunctionInfo = {

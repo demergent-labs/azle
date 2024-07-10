@@ -3,7 +3,6 @@ import {
     argDataRawSize,
     caller,
     canisterBalance,
-    canisterBalance128,
     canisterVersion,
     dataCertificate,
     id,
@@ -93,12 +92,6 @@ export default class {
     @query([], IDL.Nat64)
     canisterBalance(): bigint {
         return canisterBalance();
-    }
-
-    // returns the amount of cycles available in the canister
-    @query([], IDL.Nat)
-    canisterBalance128(): bigint {
-        return canisterBalance128();
     }
 
     // returns the canister's version number

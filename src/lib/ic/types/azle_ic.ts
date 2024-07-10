@@ -12,19 +12,11 @@ export type AzleIc = {
         argsRaw: ArrayBufferLike,
         paymentString: string
     ) => void;
-    callRaw128: (
-        promiseId: string,
-        canisterIdBytes: ArrayBufferLike,
-        method: string,
-        argsRaw: ArrayBufferLike,
-        paymentString: string
-    ) => void;
     caller: () => ArrayBufferLike;
     candidCompiler: (candidPath: string) => string;
     candidDecode: (candidBytes: ArrayBufferLike) => string;
     candidEncode: (candidString: string) => ArrayBufferLike;
     canisterBalance: () => string;
-    canisterBalance128: () => string;
     canisterVersion: () => string;
     clearTimer: (timerIdString: string) => void;
     dataCertificate: () => ArrayBufferLike | undefined;
@@ -32,11 +24,8 @@ export type AzleIc = {
     instructionCounter: () => string;
     isController: (principalBytes: ArrayBufferLike) => boolean;
     msgCyclesAccept: (maxAmountString: string) => string;
-    msgCyclesAccept128: (maxAmountString: string) => string;
     msgCyclesAvailable: () => string;
-    msgCyclesAvailable128: () => string;
     msgCyclesRefunded: () => string;
-    msgCyclesRefunded128: () => string;
     notifyRaw: (
         canisterIdBytes: ArrayBufferLike,
         method: string,
@@ -72,7 +61,6 @@ export type AzleIc = {
     // corresponding raw version. The rust version is never called, we don't
     // have enough info about types to do so
     call: () => never;
-    call128: () => never;
     notify: () => never;
     reply: () => never;
     // Stable B Tree Map Functions

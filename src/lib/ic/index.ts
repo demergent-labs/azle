@@ -3,13 +3,11 @@ import { argDataRaw } from './arg_data_raw';
 import { argDataRawSize } from './arg_data_raw_size';
 import { call } from './call';
 import { callRaw } from './call_raw';
-import { callRaw128 } from './call_raw_128';
 import { caller } from './caller';
 import { candidCompiler } from './candid_compiler';
 import { candidDecode } from './candid_decode';
 import { candidEncode } from './candid_encode';
 import { canisterBalance } from './canister_balance';
-import { canisterBalance128 } from './canister_balance_128';
 import { canisterVersion } from './canister_version';
 import { chunk } from './chunk';
 import { clearTimer } from './clear_timer';
@@ -19,11 +17,8 @@ import { instructionCounter } from './instruction_counter';
 import { isController } from './is_controller';
 import { methodName } from './method_name';
 import { msgCyclesAccept } from './msg_cycles_accept';
-import { msgCyclesAccept128 } from './msg_cycles_accept_128';
 import { msgCyclesAvailable } from './msg_cycles_available';
-import { msgCyclesAvailable128 } from './msg_cycles_available_128';
 import { msgCyclesRefunded } from './msg_cycles_refunded';
-import { msgCyclesRefunded128 } from './msg_cycles_refunded_128';
 import { notify } from './notify';
 import { notifyRaw } from './notify_raw';
 import { performanceCounter } from './performance_counter';
@@ -54,13 +49,11 @@ export const ic = {
     argDataRaw,
     call,
     callRaw,
-    callRaw128,
     caller,
     candidCompiler,
     candidDecode,
     candidEncode,
     canisterBalance,
-    canisterBalance128,
     canisterVersion,
     chunk,
     clearTimer,
@@ -70,11 +63,8 @@ export const ic = {
     isController,
     methodName,
     msgCyclesAccept,
-    msgCyclesAccept128,
     msgCyclesAvailable,
-    msgCyclesAvailable128,
     msgCyclesRefunded,
-    msgCyclesRefunded128,
     notify,
     notifyRaw,
     performanceCounter,

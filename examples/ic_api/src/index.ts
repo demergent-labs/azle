@@ -72,12 +72,8 @@ export default Canister({
         return ic.caller();
     }),
     // returns the amount of cycles available in the canister
-    canisterBalance: query([], nat64, () => {
+    canisterBalance: query([], nat, () => {
         return ic.canisterBalance();
-    }),
-    // returns the amount of cycles available in the canister
-    canisterBalance128: query([], nat, () => {
-        return ic.canisterBalance128();
     }),
     // returns the canister's version number
     canisterVersion: query([], nat64, () => {

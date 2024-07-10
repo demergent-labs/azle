@@ -39,7 +39,6 @@ export function serialize(param: {
     candidPath?: string;
     args?: any[];
     cycles?: number | bigint;
-    cycles128?: number | bigint;
 }): ArrayBuffer {
     return param as any;
 }

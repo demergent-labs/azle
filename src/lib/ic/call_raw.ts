@@ -2,7 +2,7 @@ import { v4 } from 'uuid';
 
 import { Principal } from '../';
 import { blob } from '../candid/types/constructed/blob';
-import { nat64 } from '../candid/types/primitive/nats/nat64';
+import { nat } from '../candid/types/primitive/nats/nat';
 import { text } from '../candid/types/primitive/text';
 
 /**
@@ -19,7 +19,7 @@ export function callRaw(
     canisterId: Principal,
     method: text,
     argsRaw: blob,
-    payment: nat64
+    payment: nat
 ): Promise<blob> {
     if (globalThis._azleIc === undefined) {
         return undefined as any;

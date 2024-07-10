@@ -68,7 +68,7 @@ export async function call(
 
         // TODO consider finally, what if deletion goes wrong
         try {
-            globalThis._azleIc.callRaw128(
+            globalThis._azleIc.callRaw(
                 promiseId,
                 canisterIdBytes,
                 method,
