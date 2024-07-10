@@ -72,16 +72,14 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
             ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
 
-            ASSETS_DIR.extract("/").unwrap();
-
             let js = get_js_code();
 
             initialize_js(std::str::from_utf8(&js).unwrap(), true, function_index, pass_arg_data);
 
-            ic_cdk::spawn(async {
-                let consumer = get_consumer("consumer.json").unwrap();
-                open_value_sharing::init(&consumer).await;
-            });
+            // ic_cdk::spawn(async {
+            //     let consumer = get_consumer("consumer.json").unwrap();
+            //     open_value_sharing::init(&consumer).await;
+            // });
         }
     };
 
@@ -101,16 +99,14 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
             ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
 
-            ASSETS_DIR.extract("/").unwrap();
-
             let js = get_js_code();
 
             initialize_js(std::str::from_utf8(&js).unwrap(), false, function_index, pass_arg_data);
 
-            ic_cdk::spawn(async {
-                let consumer = get_consumer("consumer.json").unwrap();
-                open_value_sharing::init(&consumer).await;
-            });
+            // ic_cdk::spawn(async {
+            //     let consumer = get_consumer("consumer.json").unwrap();
+            //     open_value_sharing::init(&consumer).await;
+            // });
         }
     };
 
@@ -211,26 +207,14 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
             }
         });
 
-    let reload_js = reload_js::get_reload_js(&compiler_info.env_vars);
+    let reload_js = reload_js::get_reload_js();
 
     let upload_file_chunk = upload_file_chunk::get_upload_file_chunk();
 
     quote! {
-        static ASSETS_DIR: Dir = include_dir!("$CARGO_MANIFEST_DIR/src/assets");
-
         #init_method
 
         #post_upgrade_method
-
-        // #pre_upgrade_method
-
-        // #inspect_message_method
-
-        // #heartbeat_method
-
-        // #(#query_methods)*
-
-        // #(#update_methods)*
 
         #[ic_cdk_macros::query]
         fn __get_candid_interface_tmp_hack() -> String {

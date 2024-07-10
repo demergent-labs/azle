@@ -57,16 +57,6 @@ async function azle(): Promise<void> {
         esmExternals
     } = await getNamesAfterCli();
 
-    setupFileWatcher(
-        reloadedJsPath,
-        canisterId,
-        canisterConfig.main,
-        wasmedgeQuickJsPath,
-        esmAliases,
-        esmExternals,
-        canisterName
-    );
-
     await time(
         `\nBuilding canister ${green(canisterName)}`,
         'default',
@@ -102,6 +92,17 @@ async function azle(): Promise<void> {
                     nativeCompilation,
                     canisterJavaScript
                 );
+
+            setupFileWatcher(
+                reloadedJsPath,
+                canisterId,
+                canisterConfig.main,
+                wasmedgeQuickJsPath,
+                esmAliases,
+                esmExternals,
+                canisterName,
+                canisterMethods.post_upgrade?.index ?? -1
+            );
 
             // This is for the dfx.json candid property
             await writeFile(candidPath, candid);
