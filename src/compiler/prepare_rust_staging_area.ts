@@ -1,7 +1,8 @@
 import { IOType } from 'child_process';
-import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs';
+import { existsSync } from 'fs';
+import { mkdir, rm, writeFile } from 'fs/promises';
 // @ts-ignore
-import { copySync } from 'fs-extra/esm';
+import { copy } from 'fs-extra/esm';
 import { join } from 'path';
 
 import { generateWorkspaceCargoToml } from './generate_cargo_toml_files';
@@ -19,44 +20,44 @@ export async function prepareRustStagingArea(
         canisterConfig.opt_level ?? '0'
     );
 
-    rmSync(canisterPath, { recursive: true, force: true });
-    mkdirSync(canisterPath, { recursive: true });
+    await rm(canisterPath, { recursive: true, force: true });
+    await mkdir(canisterPath, { recursive: true });
 
-    writeFileSync(`${canisterPath}/Cargo.toml`, workspaceCargoToml);
+    await writeFile(`${canisterPath}/Cargo.toml`, workspaceCargoToml);
 
-    copySync(
+    await copy(
         join(AZLE_PACKAGE_PATH, 'Cargo.lock'),
         `${canisterPath}/Cargo.lock`
     );
 
     if (!existsSync(`${canisterPath}/canister`)) {
-        mkdirSync(`${canisterPath}/canister`);
+        await mkdir(`${canisterPath}/canister`);
     }
 
-    copySync(
+    await copy(
         `${AZLE_PACKAGE_PATH}/src/compiler/rust/canister`,
         `${canisterPath}/canister`
     );
 
     if (!existsSync(`${canisterPath}/canister_methods`)) {
-        mkdirSync(`${canisterPath}/canister_methods`);
+        await mkdir(`${canisterPath}/canister_methods`);
     }
 
-    copySync(
+    await copy(
         `${AZLE_PACKAGE_PATH}/src/compiler/rust/canister_methods`,
         `${canisterPath}/canister_methods`
     );
 
     if (!existsSync(`${canisterPath}/open_value_sharing`)) {
-        mkdirSync(`${canisterPath}/open_value_sharing`);
+        await mkdir(`${canisterPath}/open_value_sharing`);
     }
 
-    copySync(
+    await copy(
         `${AZLE_PACKAGE_PATH}/src/compiler/rust/open_value_sharing`,
         `${canisterPath}/open_value_sharing`
     );
 
-    writeFileSync(`${canisterPath}/canister/src/main.js`, canisterJavaScript);
+    await writeFile(`${canisterPath}/canister/src/main.js`, canisterJavaScript);
 
     if (
         canisterConfig.build_assets !== undefined &&

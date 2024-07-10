@@ -2,7 +2,7 @@
 // import { addExport } from '@webassemblyjs/wasm-edit';
 // import { decode, encode } from '@webassemblyjs/wasm-parser';
 import binaryen from 'binaryen';
-import { readFileSync, writeFileSync } from 'fs'; // TODO let's do async
+import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 
 import { AZLE_PACKAGE_PATH } from './utils/global_paths';
@@ -17,16 +17,11 @@ export async function manipulateWasmBinary(
     js: string,
     compilerInfo: CompilerInfo
 ): Promise<void> {
-    const originalWasm = readFileSync(
+    const originalWasm = await readFile(
         join(AZLE_PACKAGE_PATH, `static_canister_template.wasm`)
     );
 
     const module = binaryen.readBinary(originalWasm);
-
-    // writeFileSync(
-    //     `.azle/${canisterName}/${canisterName}_old.wat`,
-    //     module.emitText()
-    // );
 
     compilerInfo.canister_methods.queries.forEach(
         ({ name: functionName, index, composite }) => {
@@ -205,16 +200,12 @@ export async function manipulateWasmBinary(
         ])
     );
 
-    module.validate();
+    // TODO do we need to validate? It takes some extra time
+    // module.validate();
 
     const newWasm = module.emitBinary();
 
-    // const newWat = module.emitText();
-
-    // console.log('writing binary to disk');
-
-    // writeFileSync(`.azle/${canisterName}/${canisterName}.wat`, newWat);
-    writeFileSync(`.azle/${canisterName}/${canisterName}.wasm`, newWasm);
+    await writeFile(`.azle/${canisterName}/${canisterName}.wasm`, newWasm);
 }
 
 function addCanisterMethod(

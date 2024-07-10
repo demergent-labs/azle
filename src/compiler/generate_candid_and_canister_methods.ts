@@ -1,12 +1,16 @@
-import { readFileSync } from 'fs';
+import { readFile } from 'fs/promises';
 
 import { CanisterMethods } from './utils/types';
 
-export function generateCandidAndCanisterMethods(wasmFilePath: string): {
+export async function generateCandidAndCanisterMethods(
+    wasmFilePath: string
+): Promise<{
     candid: string;
     canisterMethods: CanisterMethods;
-} {
-    const wasmBuffer = readFileSync(process.env.AZLE_WASM_DEST ?? wasmFilePath);
+}> {
+    const wasmBuffer = await readFile(
+        process.env.AZLE_WASM_DEST ?? wasmFilePath
+    );
 
     const wasmModule = new WebAssembly.Module(wasmBuffer);
     const wasmInstance = new WebAssembly.Instance(wasmModule, {

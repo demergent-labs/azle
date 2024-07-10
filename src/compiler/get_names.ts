@@ -40,11 +40,11 @@ export async function getNamesBeforeCli() {
     };
 }
 
-export function getNamesAfterCli() {
+export async function getNamesAfterCli() {
     const canisterName = unwrap(getCanisterName(process.argv));
     const canisterPath = join('.azle', canisterName);
 
-    const canisterConfig = unwrap(getCanisterConfig(canisterName));
+    const canisterConfig = unwrap(await getCanisterConfig(canisterName));
     const candidPath = process.env.CANISTER_CANDID_PATH;
 
     if (candidPath === undefined) {

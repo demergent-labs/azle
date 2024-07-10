@@ -6,13 +6,13 @@ import { STATIC_CANISTER_TEMPLATE_PATH } from './utils/global_paths';
 import { CompilerInfo } from './utils/types';
 
 // TODO change this to explain that we are just manipulating the Wasm binary
-export function compileRustCode(
+export async function compileRustCode(
     canisterName: string,
     stdio: IOType,
     nativeCompilation: boolean,
     js: string,
     compilerInfo: CompilerInfo
-): void {
+): Promise<void> {
     if (nativeCompilation === true) {
         compileRustCodeNatively(
             `.azle/${canisterName}/${canisterName}.wasm`,
@@ -30,8 +30,7 @@ export function compileRustCode(
         );
     }
 
-    // TODO do a check to make sure binary exists?
-    manipulateWasmBinary(canisterName, js, compilerInfo);
+    await manipulateWasmBinary(canisterName, js, compilerInfo);
 }
 
 function compileRustCodeNatively(

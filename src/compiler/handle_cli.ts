@@ -1,4 +1,4 @@
-import { rmSync } from 'fs';
+import { rm } from 'fs/promises';
 
 import { version as azleVersion } from '../../package.json';
 import { uploadFiles } from './file_uploader';
@@ -6,11 +6,11 @@ import { getFilesToUpload } from './file_uploader/get_files_to_upload';
 import { generateNewAzleProject } from './new_command';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 
-export function handleCli(): boolean {
+export async function handleCli(): Promise<boolean> {
     const commandName = process.argv[2];
 
     if (commandName === 'new') {
-        handleCommandNew();
+        await handleCommandNew();
 
         return true;
     }
@@ -36,33 +36,33 @@ export function handleCli(): boolean {
     return false;
 }
 
-function handleCommandNew(): void {
-    generateNewAzleProject(azleVersion);
+async function handleCommandNew(): Promise<void> {
+    await generateNewAzleProject(azleVersion);
 }
 
-function handleCommandClean(): void {
-    rmSync(GLOBAL_AZLE_CONFIG_DIR, {
+async function handleCommandClean(): Promise<void> {
+    await rm(GLOBAL_AZLE_CONFIG_DIR, {
         recursive: true,
         force: true
     });
 
     console.info(`~/.config/azle directory deleted`);
 
-    rmSync('.azle', {
+    await rm('.azle', {
         recursive: true,
         force: true
     });
 
     console.info(`.azle directory deleted`);
 
-    rmSync('.dfx', {
+    await rm('.dfx', {
         recursive: true,
         force: true
     });
 
     console.info(`.dfx directory deleted`);
 
-    rmSync('node_modules', {
+    await rm('node_modules', {
         recursive: true,
         force: true
     });
@@ -74,7 +74,11 @@ async function handleUploadAssets(): Promise<void> {
     const canisterName = process.argv[3];
     const srcPath = process.argv[4];
     const destPath = process.argv[5];
-    const filesToUpload = getFilesToUpload(canisterName, srcPath, destPath);
+    const filesToUpload = await getFilesToUpload(
+        canisterName,
+        srcPath,
+        destPath
+    );
     await uploadFiles(canisterName, filesToUpload);
 }
 

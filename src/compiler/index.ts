@@ -1,5 +1,5 @@
 import { IOType } from 'child_process';
-import { mkdirSync, writeFileSync } from 'fs';
+import { mkdir, writeFile } from 'fs/promises';
 import { join } from 'path';
 
 import { compileRustCodeWithCandidAndCompilerInfo } from './compile_rust_code_with_candid_and_compiler_info';
@@ -36,7 +36,7 @@ async function azle(): Promise<void> {
         nativeCompilation
     } = await getNamesBeforeCli();
 
-    const commandExecuted = handleCli();
+    const commandExecuted = await handleCli();
 
     if (commandExecuted === true) {
         return;
@@ -55,7 +55,7 @@ async function azle(): Promise<void> {
         reloadedJsPath,
         esmAliases,
         esmExternals
-    } = getNamesAfterCli();
+    } = await getNamesAfterCli();
 
     setupFileWatcher(
         reloadedJsPath,
@@ -89,21 +89,22 @@ async function azle(): Promise<void> {
                 stdioType
             );
 
-            const { candid, canisterMethods } = getCandidAndCanisterMethods(
-                canisterConfig.candid_gen,
-                candidPath,
-                compilerInfoPath,
-                canisterName,
-                stdioType,
-                envVars,
-                rustStagingCandidPath,
-                rustStagingWasmPath,
-                nativeCompilation,
-                canisterJavaScript
-            );
+            const { candid, canisterMethods } =
+                await getCandidAndCanisterMethods(
+                    canisterConfig.candid_gen,
+                    candidPath,
+                    compilerInfoPath,
+                    canisterName,
+                    stdioType,
+                    envVars,
+                    rustStagingCandidPath,
+                    rustStagingWasmPath,
+                    nativeCompilation,
+                    canisterJavaScript
+                );
 
             // This is for the dfx.json candid property
-            writeFileSync(candidPath, candid);
+            await writeFile(candidPath, candid);
 
             const compilerInfo: CompilerInfo = {
                 // The spread is because canisterMethods is a function with properties
@@ -113,7 +114,7 @@ async function azle(): Promise<void> {
                 env_vars: envVars
             };
 
-            compileRustCodeWithCandidAndCompilerInfo(
+            await compileRustCodeWithCandidAndCompilerInfo(
                 rustStagingCandidPath,
                 candid,
                 compilerInfoPath,
@@ -129,9 +130,11 @@ async function azle(): Promise<void> {
     logSuccess(canisterName, canisterId, replicaWebServerPort);
 }
 
-function createAzleDirectories(): void {
-    mkdirSync(GLOBAL_AZLE_CONFIG_DIR, { recursive: true });
-    mkdirSync('.azle', { recursive: true });
+async function createAzleDirectories(): Promise<void> {
+    await Promise.all([
+        mkdir(GLOBAL_AZLE_CONFIG_DIR, { recursive: true }),
+        mkdir('.azle', { recursive: true })
+    ]);
 }
 
 // TODO this is just temporary

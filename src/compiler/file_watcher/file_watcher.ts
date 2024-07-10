@@ -1,6 +1,6 @@
 import { Actor, ActorMethod, ActorSubclass } from '@dfinity/agent';
 import { watch } from 'chokidar';
-import { writeFileSync } from 'fs';
+import { writeFile } from 'fs/promises';
 
 import { createAuthenticatedAgent } from '../../../dfx';
 import { getCanisterJavaScript } from '../get_canister_javascript';
@@ -104,7 +104,7 @@ async function reloadJs(
         console.info(`Finished uploading chunks`);
     }
 
-    writeFileSync(reloadedJsPath, reloadedJs);
+    await writeFile(reloadedJsPath, reloadedJs);
 }
 
 async function createActorReloadJs(
