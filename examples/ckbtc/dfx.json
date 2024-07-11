@@ -25,7 +25,10 @@
             "main": "wallet/backend/index.ts",
             "candid_gen": "automatic",
             "env": ["CK_BTC_PRINCIPAL", "MINTER_PRINCIPAL", "AZLE_TEST_FETCH"],
-            "assets": [["minter/minter.did", "minter/minter.did"]],
+            "assets": [
+                ["minter/minter.did", "minter/minter.did"],
+                ["wallet/backend/icrc.did", "candid/icp/icrc.did"]
+            ],
             "declarations": {
                 "node_compatibility": true,
                 "output": "wallet/frontend/dfx_generated/wallet_backend"
