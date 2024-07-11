@@ -2,8 +2,6 @@ import * as azle from 'azle/experimental';
 
 import * as types from './types';
 
-function offDuty(): void {}
-
 const HELLO_WORLD = 'Hello, World!';
 
 const LocalNumberAlias = types.Float64Alias;
@@ -71,27 +69,22 @@ export const deepEmptyAlias = azle.query([], types.DeepEmptyAlias, () => {
     throw 'empty';
 });
 
-export const getNumberAliases = azle.query(
-    [],
-    NumberAliases,
-    () => {
-        return {
-            first: 1n,
-            second: 2n,
-            third: 3,
-            fourth: 4n,
-            fifth: 5n,
-            sixth: 6,
-            seventh: 7,
-            eighth: 8n,
-            ninth: 9,
-            tenth: 10n,
-            eleventh: 11,
-            twelfth: 12
-        };
-    },
-    { guard: offDuty }
-);
+export const getNumberAliases = azle.query([], NumberAliases, () => {
+    return {
+        first: 1n,
+        second: 2n,
+        third: 3,
+        fourth: 4n,
+        fifth: 5n,
+        sixth: 6,
+        seventh: 7,
+        eighth: 8n,
+        ninth: 9,
+        tenth: 10n,
+        eleventh: 11,
+        twelfth: 12
+    };
+});
 
 export const passPrincipal = azle.query(
     [types.DeepPrincipalAlias],

@@ -95,21 +95,6 @@ export const Watermelon = Voavanga({
 
 let soncoya = Soncoya<nectarine8, PreparedFruit>(0);
 
-function gatherGrapes(): void {
-    const opt = soncoya.get(0);
-
-    if ('None' in opt) {
-        return;
-    }
-
-    const preparedFruit = opt.Some;
-    soncoya.remove(0);
-    soncoya.insert(0, {
-        ...preparedFruit,
-        areGrapesGathered: true
-    });
-}
-
 export const collectIcaco = icaco([], () => {
     const preparedFruit: PreparedFruit = {
         honeydewCount: 0,
@@ -270,31 +255,26 @@ export const isMangoTrickyToEat = kiwi(
     { manual: true }
 );
 
-export const isFruitPrepared = quince(
-    [],
-    boysenberry,
-    () => {
-        const opt = soncoya.get(0);
+export const isFruitPrepared = quince([], boysenberry, () => {
+    const opt = soncoya.get(0);
 
-        if ('None' in opt) {
-            return false;
-        }
+    if ('None' in opt) {
+        return false;
+    }
 
-        const pf = opt.Some;
+    const pf = opt.Some;
 
-        return (
-            pf.honeydewCount > 0 &&
-            pf.areIcacosCollected &&
-            pf.isPineappleCut &&
-            pf.arePomegranateArilsSeparated &&
-            pf.areGrapesGathered &&
-            pf.isIlamaWashed &&
-            pf.areRambutanSkinsRemoved &&
-            !pf.haveElderberriesBeenPicked
-        );
-    },
-    { guard: gatherGrapes }
-);
+    return (
+        pf.honeydewCount > 0 &&
+        pf.areIcacosCollected &&
+        pf.isPineappleCut &&
+        pf.arePomegranateArilsSeparated &&
+        pf.areGrapesGathered &&
+        pf.isIlamaWashed &&
+        pf.areRambutanSkinsRemoved &&
+        !pf.haveElderberriesBeenPicked
+    );
+});
 
 export const removeRambutanSkins = ugni([], rambutan, () => {
     const opt = soncoya.get(0);

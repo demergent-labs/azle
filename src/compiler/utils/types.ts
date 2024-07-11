@@ -60,7 +60,6 @@ export type CanisterMethods = {
 export type CanisterMethod = {
     name: string;
     composite?: boolean;
-    guard_name?: string;
     index: number;
 };
 

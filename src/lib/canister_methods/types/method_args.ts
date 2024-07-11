@@ -1,1 +1,1 @@
-export type MethodArgs = { manual?: boolean; guard?: () => void };
+export type MethodArgs = { manual?: boolean };

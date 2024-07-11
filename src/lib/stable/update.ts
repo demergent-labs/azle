@@ -1,14 +1,12 @@
 import { IDL } from '@dfinity/candid';
 
 import { executeWithCandidSerde } from './execute_with_candid_serde';
-import { createGlobalGuard } from './guard';
 
 export function update(
     paramIdls: IDL.Type[],
     returnIdl?: IDL.Type,
     options?: {
         manual?: boolean;
-        guard?: () => void; // TODO can guard functions be async?
     }
 ): MethodDecorator {
     return <T>(
@@ -35,11 +33,7 @@ export function update(
 
         globalThis._azleCanisterMethods.updates.push({
             name: propertyKey as string,
-            index,
-            guard_name:
-                options?.guard === undefined
-                    ? undefined
-                    : createGlobalGuard(options?.guard, propertyKey as string)
+            index
         });
 
         globalThis._azleCanisterMethods.callbacks[index.toString()] =

@@ -11,7 +11,6 @@ export function preUpgrade(
         paramCandidTypes: [],
         returnCandidType: Void,
         async: isAsync(callback),
-        guard: undefined,
         index: globalThis._azleCanisterMethodsIndex++
     };
 }

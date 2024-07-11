@@ -27,7 +27,6 @@ type CanisterMethod = {
     name: string;
     index: number;
     composite?: boolean;
-    guard_name?: string;
 };
 
 declare global {
@@ -45,8 +44,6 @@ declare global {
     var _azleIcTimers: { [key: string]: string };
     // eslint-disable-next-line no-var
     var _azleTimerCallbacks: { [key: string]: () => void };
-    // eslint-disable-next-line no-var
-    var _azleGuardFunctions: { [key: string]: () => any };
     // eslint-disable-next-line no-var
     var _azleWebAssembly: any;
     // eslint-disable-next-line no-var
@@ -131,7 +128,6 @@ if (globalThis._azleInsideCanister) {
     globalThis._azleResolveIds = {};
     globalThis._azleRejectIds = {};
     globalThis._azleTimerCallbacks = {};
-    globalThis._azleGuardFunctions = {};
 
     // TODO be careful we are using a random seed of 0 I think
     // TODO the randomness is predictable
