@@ -65,8 +65,9 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         #[no_mangle]
         #[allow(unused)]
         pub fn init(function_index: i32, pass_arg_data: i32) {
-            let env_vars_bytes = get_env_vars();
-            let env_vars: Vec<(&str, &str)> = serde_json::from_str(std::str::from_utf8(&env_vars_bytes).unwrap()).unwrap();
+            let wasm_data = get_wasm_data();
+
+            let env_vars: Vec<(&str, &str)> = wasm_data.env_vars.iter().map(|(key, value)| (key.as_str(), value.as_str())).collect();
 
             let polyfill_memory =
                 MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
@@ -76,10 +77,9 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
             initialize_js(std::str::from_utf8(&js).unwrap(), true, function_index, pass_arg_data);
 
-            // ic_cdk::spawn(async {
-            //     let consumer = get_consumer("consumer.json").unwrap();
-            //     open_value_sharing::init(&consumer).await;
-            // });
+            ic_cdk::spawn(async move {
+                open_value_sharing::init(&wasm_data.consumer).await;
+            });
         }
     };
 
@@ -92,8 +92,9 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         #[no_mangle]
         #[allow(unused)]
         pub fn post_upgrade(function_index: i32, pass_arg_data: i32) {
-            let env_vars_bytes = get_env_vars();
-            let env_vars: Vec<(&str, &str)> = serde_json::from_str(std::str::from_utf8(&env_vars_bytes).unwrap()).unwrap();
+            let wasm_data = get_wasm_data();
+
+            let env_vars: Vec<(&str, &str)> = wasm_data.env_vars.iter().map(|(key, value)| (key.as_str(), value.as_str())).collect();
 
             let polyfill_memory =
                 MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
@@ -103,10 +104,9 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
 
             initialize_js(std::str::from_utf8(&js).unwrap(), false, function_index, pass_arg_data);
 
-            // ic_cdk::spawn(async {
-            //     let consumer = get_consumer("consumer.json").unwrap();
-            //     open_value_sharing::init(&consumer).await;
-            // });
+            ic_cdk::spawn(async move {
+                open_value_sharing::init(&wasm_data.consumer).await;
+            });
         }
     };
 

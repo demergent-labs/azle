@@ -9,6 +9,7 @@ use ic_stable_structures::{
 };
 use include_dir::{include_dir, Dir};
 use open_value_sharing::{Consumer, PeriodicBatch, PERIODIC_BATCHES};
+use serde::{Deserialize, Serialize};
 use std::fs;
 use wasmedge_quickjs::AsObject;
 
@@ -68,6 +69,12 @@ type Hash = Option<Vec<u8>>;
 type Timestamp = u64;
 type BytesReceived = u64;
 type BytesHashed = u64;
+
+#[derive(Debug, Serialize, Deserialize)]
+struct WasmData {
+    env_vars: Vec<(String, String)>,
+    consumer: Consumer,
+}
 
 thread_local! {
     static RUNTIME: RefCell<Option<wasmedge_quickjs::Runtime>> = RefCell::new(None);
@@ -220,15 +227,6 @@ fn run_event_loop(context: &mut wasmedge_quickjs::Context) {
 #[ic_cdk_macros::update]
 pub fn _azle_chunk() {}
 
-fn get_consumer(consumer_path: &str) -> Result<Consumer, String> {
-    let consumer_string = std::fs::read_to_string(consumer_path)
-        .map_err(|err| format!("Error reading {consumer_path}: {err}"))?;
-    let consumer: Consumer = serde_json::from_str(&consumer_string)
-        .map_err(|err| format!("Error parsing {consumer_path}: {err}"))?;
-
-    Ok(consumer)
-}
-
 #[inline(never)]
 #[no_mangle]
 extern "C" fn init_js_passive_data(js_vec_location: i32) -> usize {
@@ -260,7 +258,7 @@ pub extern "C" fn get_js_code() -> Vec<u8> {
 
 #[inline(never)]
 #[no_mangle]
-extern "C" fn init_env_vars_passive_data(js_vec_location: i32) -> usize {
+extern "C" fn init_wasm_data_passive_data(js_vec_location: i32) -> usize {
     "123_456_789".parse::<usize>().unwrap() + js_vec_location as usize // TODO must be like this for weird optimization reasons
 }
 
@@ -268,21 +266,21 @@ extern "C" fn init_env_vars_passive_data(js_vec_location: i32) -> usize {
 // TODO hopefully there's a less hacky way to do this
 #[inline(never)]
 #[no_mangle]
-extern "C" fn env_vars_passive_data_size() -> usize {
+extern "C" fn wasm_data_passive_data_size() -> usize {
     "123_456_789".parse().unwrap()
 }
 
 // TODO waiting on license inspired from https://github.com/adambratschikaye/wasm-inject-data/blob/main/src/static_wasm.rs
 #[inline(never)]
 #[no_mangle]
-pub extern "C" fn get_env_vars() -> Vec<u8> {
-    let size = unsafe { env_vars_passive_data_size() };
-    let mut env_vars_vec = vec![243; size];
-    let env_vars_vec_location = env_vars_vec.as_mut_ptr() as i32;
+pub extern "C" fn get_wasm_data() -> WasmData {
+    let size = unsafe { wasm_data_passive_data_size() };
+    let mut wasm_data_vec = vec![243; size];
+    let wasm_data_vec_location = wasm_data_vec.as_mut_ptr() as i32;
 
     unsafe {
-        init_env_vars_passive_data(env_vars_vec_location);
+        init_wasm_data_passive_data(wasm_data_vec_location);
     }
 
-    env_vars_vec
+    serde_json::from_str(std::str::from_utf8(&wasm_data_vec).unwrap()).unwrap()
 }

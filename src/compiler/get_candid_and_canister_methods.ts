@@ -5,7 +5,12 @@ import { join } from 'path';
 import { compileRustCodeWithCandidAndCompilerInfo } from './compile_rust_code_with_candid_and_compiler_info';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
 import { AZLE_PACKAGE_PATH } from './utils/global_paths';
-import { CandidGen, CanisterMethods, CompilerInfo } from './utils/types';
+import {
+    CandidGen,
+    CanisterConfig,
+    CanisterMethods,
+    CompilerInfo
+} from './utils/types';
 
 export async function getCandidAndCanisterMethods(
     candidGen: CandidGen = 'http',
@@ -17,7 +22,8 @@ export async function getCandidAndCanisterMethods(
     rustStagingCandidPath: string,
     rustStagingWasmPath: string,
     nativeCompilation: boolean,
-    js: string
+    js: string,
+    canisterConfig: CanisterConfig
 ): Promise<{
     candid: string;
     canisterMethods: CanisterMethods;
@@ -46,7 +52,8 @@ export async function getCandidAndCanisterMethods(
             canisterName,
             stdioType,
             nativeCompilation,
-            js
+            js,
+            canisterConfig
         );
 
         const { candid, canisterMethods } =

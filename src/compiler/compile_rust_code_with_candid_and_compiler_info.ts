@@ -2,7 +2,7 @@ import { IOType } from 'child_process';
 import { writeFile } from 'fs/promises';
 
 import { compileRustCode } from './compile_rust_code';
-import { CompilerInfo } from './utils/types';
+import { CanisterConfig, CompilerInfo } from './utils/types';
 
 export async function compileRustCodeWithCandidAndCompilerInfo(
     rustStagingCandidPath: string,
@@ -12,7 +12,8 @@ export async function compileRustCodeWithCandidAndCompilerInfo(
     canisterName: string,
     stdioType: IOType,
     nativeCompilation: boolean,
-    js: string
+    js: string,
+    canisterConfig: CanisterConfig
 ): Promise<void> {
     // This is for the Rust canister to have access to the candid file
     // TODO why not just write the dfx.json file here as well?
@@ -26,6 +27,7 @@ export async function compileRustCodeWithCandidAndCompilerInfo(
         stdioType,
         nativeCompilation,
         js,
-        compilerInfo
+        compilerInfo,
+        canisterConfig
     );
 }

@@ -3,7 +3,7 @@ import { IOType } from 'child_process';
 import { manipulateWasmBinary } from './manipulate_wasm_binary';
 import { execSyncPretty } from './utils/exec_sync_pretty';
 import { STATIC_CANISTER_TEMPLATE_PATH } from './utils/global_paths';
-import { CompilerInfo } from './utils/types';
+import { CanisterConfig, CompilerInfo } from './utils/types';
 
 // TODO change this to explain that we are just manipulating the Wasm binary
 export async function compileRustCode(
@@ -11,7 +11,8 @@ export async function compileRustCode(
     stdio: IOType,
     nativeCompilation: boolean,
     js: string,
-    compilerInfo: CompilerInfo
+    compilerInfo: CompilerInfo,
+    canisterConfig: CanisterConfig
 ): Promise<void> {
     if (nativeCompilation === true) {
         compileRustCodeNatively(
@@ -30,7 +31,7 @@ export async function compileRustCode(
         );
     }
 
-    await manipulateWasmBinary(canisterName, js, compilerInfo);
+    await manipulateWasmBinary(canisterName, js, compilerInfo, canisterConfig);
 }
 
 function compileRustCodeNatively(

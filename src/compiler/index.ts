@@ -90,7 +90,8 @@ async function azle(): Promise<void> {
                     rustStagingCandidPath,
                     rustStagingWasmPath,
                     nativeCompilation,
-                    canisterJavaScript
+                    canisterJavaScript,
+                    canisterConfig
                 );
 
             setupFileWatcher(
@@ -123,7 +124,8 @@ async function azle(): Promise<void> {
                 canisterName,
                 stdioType,
                 nativeCompilation,
-                canisterJavaScript
+                canisterJavaScript,
+                canisterConfig
             );
         }
     );

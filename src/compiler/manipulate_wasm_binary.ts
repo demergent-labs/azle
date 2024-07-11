@@ -5,8 +5,9 @@ import binaryen from 'binaryen';
 import { readFile, writeFile } from 'fs/promises';
 import { join } from 'path';
 
+import { getConsumer } from './get_consumer_config';
 import { AZLE_PACKAGE_PATH } from './utils/global_paths';
-import { CompilerInfo } from './utils/types';
+import { CanisterConfig, CompilerInfo } from './utils/types';
 
 // TODO put the licenses in the binary? Or with Azle? Probably with Azle actually
 // TODO it would be neat to be the licenses in all Azle binaries though
@@ -15,7 +16,8 @@ import { CompilerInfo } from './utils/types';
 export async function manipulateWasmBinary(
     canisterName: string,
     js: string,
-    compilerInfo: CompilerInfo
+    compilerInfo: CompilerInfo,
+    canisterConfig: CanisterConfig
 ): Promise<void> {
     const originalWasm = await readFile(
         join(AZLE_PACKAGE_PATH, `static_canister_template.wasm`)
@@ -117,9 +119,14 @@ export async function manipulateWasmBinary(
         };
     });
 
+    const consumer = await getConsumer(canisterConfig);
+
     const jsEncoded = new TextEncoder().encode(js);
-    const envVarsEncoded = new TextEncoder().encode(
-        JSON.stringify(compilerInfo.env_vars)
+    const wasmDataEncoded = new TextEncoder().encode(
+        JSON.stringify({
+            env_vars: compilerInfo.env_vars,
+            consumer
+        })
     );
 
     module.setMemory(memoryInfo.initial, memoryInfo.max ?? -1, null, [
@@ -131,7 +138,7 @@ export async function manipulateWasmBinary(
         },
         {
             offset: 0,
-            data: envVarsEncoded,
+            data: wasmDataEncoded,
             passive: true
         }
     ]);
@@ -168,33 +175,33 @@ export async function manipulateWasmBinary(
         ])
     );
 
-    module.removeFunction('env_vars_passive_data_size');
-    module.removeFunction('init_env_vars_passive_data');
+    module.removeFunction('wasm_data_passive_data_size');
+    module.removeFunction('init_wasm_data_passive_data');
 
     module.addFunction(
-        'env_vars_passive_data_size',
+        'wasm_data_passive_data_size',
         binaryen.none,
         binaryen.i32,
         [],
-        module.i32.const(envVarsEncoded.byteLength)
+        module.i32.const(wasmDataEncoded.byteLength)
     );
 
-    const envVarsPassiveDataSegmentNumber = normalizedSegments.length + 1;
+    const wasmDataPassiveDataSegmentNumber = normalizedSegments.length + 1;
 
     module.addFunction(
-        'init_env_vars_passive_data',
+        'init_wasm_data_passive_data',
         binaryen.createType([binaryen.i32]),
         binaryen.i32, // TODO just to stop weird Rust optimizations
         [],
         module.block(null, [
             module.memory.init(
-                envVarsPassiveDataSegmentNumber.toString() as unknown as number,
+                wasmDataPassiveDataSegmentNumber.toString() as unknown as number,
                 module.local.get(0, binaryen.i32),
                 module.i32.const(0),
-                module.i32.const(envVarsEncoded.byteLength)
+                module.i32.const(wasmDataEncoded.byteLength)
             ),
             module.data.drop(
-                envVarsPassiveDataSegmentNumber.toString() as unknown as number
+                wasmDataPassiveDataSegmentNumber.toString() as unknown as number
             ),
             module.return(module.local.get(0, binaryen.i32))
         ])
