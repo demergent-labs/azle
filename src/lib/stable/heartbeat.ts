@@ -1,5 +1,7 @@
+import { handleUncaughtError } from './error';
+
 export function heartbeat<T>(
-    _target: object,
+    target: object,
     propertyKey: string | symbol,
     descriptor: TypedPropertyDescriptor<T>
 ): TypedPropertyDescriptor<T> | void {
@@ -11,7 +13,13 @@ export function heartbeat<T>(
     };
 
     globalThis._azleCanisterMethods.callbacks[index.toString()] =
-        descriptor.value as any;
+        async (): Promise<void> => {
+            try {
+                await (descriptor.value as any).bind(target)();
+            } catch (error) {
+                handleUncaughtError(error);
+            }
+        };
 
     return descriptor;
 }
