@@ -154,7 +154,6 @@ export function getTests(stableMemoryCanister: ActorSubclass<_SERVICE>): Test {
             const expectedErrorMessage = new RegExp(
                 `Call was rejected:\\s*Request ID: [a-f0-9]{64}\\s*Reject code: 5\\s*Reject text: ${rejectionMessage.source}`
             );
-            ('OutOfMemoryCool');
             await expect(stableMemoryCanister.stableGrow(1)).rejects.toThrow(
                 expectedErrorMessage
             );

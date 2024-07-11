@@ -65,6 +65,28 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         #[no_mangle]
         #[allow(unused)]
         pub fn init(function_index: i32, pass_arg_data: i32) {
+            std::panic::set_hook(Box::new(|panic_info| {
+                let msg = if let Some(s) = panic_info.payload().downcast_ref::<&str>() {
+                    *s
+                } else if let Some(s) = panic_info.payload().downcast_ref::<String>() {
+                    s.as_str()
+                } else {
+                    "Unknown panic message"
+                };
+
+                let location = if let Some(location) = panic_info.location() {
+                    format!(" at {}:{}", location.file(), location.line())
+                } else {
+                    " (unknown location)".to_string()
+                };
+
+                let message = &format!("Panic occurred: {}{}", msg, location);
+
+                ic_cdk::println!("{}", message);
+
+                ic_cdk::trap(message);
+            }));
+
             let wasm_data = get_wasm_data();
 
             let env_vars: Vec<(&str, &str)> = wasm_data.env_vars.iter().map(|(key, value)| (key.as_str(), value.as_str())).collect();
@@ -94,6 +116,28 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
         #[no_mangle]
         #[allow(unused)]
         pub fn post_upgrade(function_index: i32, pass_arg_data: i32) {
+            std::panic::set_hook(Box::new(|panic_info| {
+                let msg = if let Some(s) = panic_info.payload().downcast_ref::<&str>() {
+                    *s
+                } else if let Some(s) = panic_info.payload().downcast_ref::<String>() {
+                    s.as_str()
+                } else {
+                    "Unknown panic message"
+                };
+
+                let location = if let Some(location) = panic_info.location() {
+                    format!(" at {}:{}", location.file(), location.line())
+                } else {
+                    " (unknown location)".to_string()
+                };
+
+                let message = &format!("Panic occurred: {}{}", msg, location);
+
+                ic_cdk::println!("{}", message);
+
+                ic_cdk::trap(message);
+            }));
+
             let wasm_data = get_wasm_data();
 
             let env_vars: Vec<(&str, &str)> = wasm_data.env_vars.iter().map(|(key, value)| (key.as_str(), value.as_str())).collect();

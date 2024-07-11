@@ -14,15 +14,6 @@ export async function compileRustCode(
     compilerInfo: CompilerInfo,
     canisterConfig: CanisterConfig
 ): Promise<void> {
-    if (nativeCompilation === true) {
-        compileRustCodeNatively(
-            `.azle/${canisterName}/${canisterName}.wasm`,
-            canisterName,
-            stdio
-        );
-        return;
-    }
-
     if (process.env.AZLE_GENERATE_STATIC_CANISTER_TEMPLATE === 'true') {
         compileRustCodeNatively(
             STATIC_CANISTER_TEMPLATE_PATH,

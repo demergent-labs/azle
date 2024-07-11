@@ -29,6 +29,7 @@ async function azle(): Promise<void> {
         return;
     }
 
+    // TODO can we just get names once?
     const {
         stdioType,
         wasmedgeQuickJsPath,
@@ -72,6 +73,7 @@ async function azle(): Promise<void> {
                 )
             );
 
+            // TODO this might should only happen if we compile
             await prepareRustStagingArea(
                 canisterConfig,
                 canisterPath,
@@ -105,6 +107,7 @@ async function azle(): Promise<void> {
                 canisterMethods.post_upgrade?.index ?? -1
             );
 
+            // TODO probably not required anymore
             // This is for the dfx.json candid property
             await writeFile(candidPath, candid);
 
