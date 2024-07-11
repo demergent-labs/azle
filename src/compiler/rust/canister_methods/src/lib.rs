@@ -73,6 +73,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
                 MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
             ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
 
+            std::fs::write("/candid/icp/management.did", &wasm_data.management_did).unwrap();
+
             let js = get_js_code();
 
             initialize_js(std::str::from_utf8(&js).unwrap(), true, function_index, pass_arg_data);
@@ -99,6 +101,8 @@ pub fn canister_methods(_: TokenStream) -> TokenStream {
             let polyfill_memory =
                 MEMORY_MANAGER_REF_CELL.with(|manager| manager.borrow().get(MemoryId::new(254)));
             ic_wasi_polyfill::init_with_memory(&[], &env_vars, polyfill_memory);
+
+            std::fs::write("/candid/icp/management.did", &wasm_data.management_did).unwrap();
 
             let js = get_js_code();
 

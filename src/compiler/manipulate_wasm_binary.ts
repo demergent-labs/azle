@@ -125,7 +125,12 @@ export async function manipulateWasmBinary(
     const wasmDataEncoded = new TextEncoder().encode(
         JSON.stringify({
             env_vars: compilerInfo.env_vars,
-            consumer
+            consumer,
+            management_did: (
+                await readFile(
+                    join(AZLE_PACKAGE_PATH, 'canisters', 'management', 'ic.did')
+                )
+            ).toString()
         })
     );
 

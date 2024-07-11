@@ -74,6 +74,7 @@ type BytesHashed = u64;
 struct WasmData {
     env_vars: Vec<(String, String)>,
     consumer: Consumer,
+    management_did: String,
 }
 
 thread_local! {
