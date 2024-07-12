@@ -27,7 +27,6 @@ import { reject } from './reject';
 import { rejectCode } from './reject_code';
 import { rejectMessage } from './reject_message';
 import { reply } from './reply';
-import { replyRaw } from './reply_raw';
 import { setCertifiedData } from './set_certified_data';
 import { setOutgoingHttpOptions } from './set_outgoing_http_options';
 import { setTimer } from './set_timer';
@@ -73,7 +72,6 @@ export const ic = {
     rejectCode,
     rejectMessage,
     reply,
-    replyRaw,
     setCertifiedData,
     setOutgoingHttpOptions,
     setTimer,

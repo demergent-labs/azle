@@ -81,7 +81,7 @@ export default Canister({
                 50_000_000n
             );
 
-            ic.replyRaw(httpResponse);
+            ic.reply({ raw: httpResponse });
         },
         { manual: true }
     ),

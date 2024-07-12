@@ -33,7 +33,7 @@ export function executeMethod(
         result
             .then((result: any) => {
                 if (!manual) {
-                    ic.replyRaw(encode(returnCandidType, result));
+                    ic.reply({ raw: encode(returnCandidType, result) });
                 }
 
                 // TODO this won't be accurate because we have most likely had
@@ -45,7 +45,7 @@ export function executeMethod(
             });
     } else {
         if (!manual) {
-            ic.replyRaw(encode(returnCandidType, result));
+            ic.reply({ raw: encode(returnCandidType, result) });
         }
 
         reportFinalInstructions();
