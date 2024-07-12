@@ -372,4 +372,5 @@ jobs:
         steps:
             - run: exit 1
 
-    basic-integration-tests-2: &basic-integration-tests
+    basic-integration-tests-2:
+        <<: *basic-integration-tests
