@@ -283,7 +283,6 @@ jobs:
         runs-on: ${{ matrix.os }}
         env:
             ETHEREUM_URL: ${{ secrets.ETHEREUM_URL }}
-            AZLE_USE_DOCKERFILE: ${{ matrix.azle_source == 'repo' }}
             AZLE_IDENTITY_STORAGE_MODE: 'plaintext'
             AZLE_END_TO_END_TEST_LINK_AZLE: ${{ matrix.azle_source == 'repo' }}
         strategy:
@@ -300,6 +299,8 @@ jobs:
                 exclude:
                     - include_npm: false
                       azle_source: npm
+                    - include_npm: true
+                      azle_source: repo
                 # If should_run_tests is false, we still want the steps of this job to execute so that check-basic-integration-tests-success will run. We do this by creating an array with one dummy element
                 example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
         steps:
