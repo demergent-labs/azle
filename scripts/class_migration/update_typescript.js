@@ -1,9 +1,6 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fs = require('fs');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require('path');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { exec } = require('child_process');
+import { exec } from 'child_process';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const tsVersion = '^5.2.2';
 
