@@ -1,0 +1,25 @@
+# Ignore everything
+*
+
+# Whitelist
+!canisters/**
+!dfx/**
+!dfx_extension/**
+!experimental/**
+!http_client/**
+!scripts/**
+!src/**
+!test/**
+!type_tests/**
+!.openvaluesharing.json
+!bin.mjs
+!install_script.sh
+!LICENSE
+!LICENSE_EXTENSION.md
+!NOTICE
+!package-lock.json
+!package.json
+!README.md
+!server.did
+!static_canister_template_licenses.yml
+!static_canister_template.wasm
