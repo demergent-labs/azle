@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fs = require('fs');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
 
 // Path to the tests.ts file
 const testsFilePath = path.join(process.cwd(), 'test', 'tests.ts');

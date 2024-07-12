@@ -1,7 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fs = require('fs');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
 
 // Path to the pretest.ts file
 const pretestFilePath = path.join(process.cwd(), 'test', 'pretest.ts');

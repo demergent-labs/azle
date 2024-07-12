@@ -1,9 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fs = require('fs');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require('path');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { exec } = require('child_process');
+#!/usr/bin/env node
+
+import { exec } from 'child_process';
+import * as fs from 'fs';
+import * as path from 'path';
 
 // Get the current directory name
 const currentDirectory = process.cwd();

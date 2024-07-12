@@ -1,7 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fs = require('fs');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
 
 // Path to the dfx.json file
 const dfxJsonPath = path.join(process.cwd(), 'dfx.json');
