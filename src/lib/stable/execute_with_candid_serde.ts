@@ -35,7 +35,9 @@ export function executeWithCandidSerde(
     ) {
         result
             .then((result: any) => {
-                reply({ data: result, idl: returnIdl });
+                if (!manual) {
+                    reply({ data: result, idl: returnIdl });
+                }
             })
             .catch((error: any) => {
                 handleUncaughtError(error);
