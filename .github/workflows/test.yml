@@ -272,7 +272,7 @@ jobs:
                   EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//'%'/'%25'}"
                   EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\n'/'%0A'}"
                   EXAMPLE_DIRECTORIES="${EXAMPLE_DIRECTORIES//$'\r'/'%0D'}"
-                  echo "::set-output name=example_directories::$EXAMPLE_DIRECTORIES"
+                  echo "::set-output name=example_directories::${{ env.FIRST_DIRECTORIES }}"
             - id: should_run_tests
               run: |
                   BRANCH_NAME="${{ github.head_ref }}"
@@ -307,9 +307,7 @@ jobs:
                     - include_npm: false
                       azle_source: npm
                 # If should_run_tests is false, we still want the steps of this job to execute so that check-basic-integration-tests-success will run. We do this by creating an array with one dummy element
-                example_directories: ${{ fromJSON(env.EXAMPLE_DIRECTORIES) }}
-                # example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && env.FIRST_DIRECTORIES || fromJSON('["dummy"]') }}
-                # example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
+                example_directories: ${{ needs.release-candidate-deploy.outputs.should_run_tests == 'true' && fromJSON(needs.release-candidate-deploy.outputs.example_directories) || fromJSON('["dummy"]') }}
         steps:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/checkout@v4
