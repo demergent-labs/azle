@@ -146,7 +146,7 @@ export default class {
 
     @update([], IDL.Reserved, { manual: true })
     updateReserved(): void {
-        reply({ data: undefined, idl: IDL.Reserved });
+        reply({ data: null, idl: IDL.Reserved });
     }
 
     @update([], IDL.Text, { manual: true })
@@ -229,7 +229,7 @@ export default class {
 
     @query([], IDL.Reserved, { manual: true })
     queryReserved(): void {
-        reply({ data: undefined, idl: IDL.Reserved });
+        reply({ data: null, idl: IDL.Reserved });
     }
 
     @query([], IDL.Text, { manual: true })
