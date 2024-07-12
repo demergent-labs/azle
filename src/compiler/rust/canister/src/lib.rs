@@ -244,8 +244,8 @@ pub extern "C" fn get_js_code() -> Vec<u8> {
 
 #[inline(never)]
 #[no_mangle]
-extern "C" fn init_wasm_data_passive_data(js_vec_location: i32) -> usize {
-    "123_456_789".parse::<usize>().unwrap() + js_vec_location as usize // TODO must be like this for weird optimization reasons
+extern "C" fn init_wasm_data_passive_data(wasm_data_vec_location: i32) -> usize {
+    "123_456_789".parse::<usize>().unwrap() + wasm_data_vec_location as usize // TODO must be like this for weird optimization reasons
 }
 
 // TODO seems we need to do this to stop the compiler from hard-coding the result of this function where it is called

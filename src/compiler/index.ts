@@ -78,9 +78,6 @@ async function azle(): Promise<void> {
                     canisterPath
                 );
 
-            // This is for the dfx.json candid property
-            await writeFile(candidPath, candid);
-
             const compilerInfo: CompilerInfo = {
                 // The spread is because canisterMethods is a function with properties
                 canister_methods: {
@@ -97,6 +94,10 @@ async function azle(): Promise<void> {
                 canisterConfig,
                 canisterPath
             );
+
+            // This is for the dfx.json candid property
+            // This must come after generateWasmBinary because it could clear the .azle directory
+            await writeFile(candidPath, candid);
 
             if (
                 canisterConfig.build_assets !== undefined &&
