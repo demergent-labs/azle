@@ -1,5 +1,5 @@
 import { IOType } from 'child_process';
-import { mkdir, writeFile } from 'fs/promises';
+import { mkdir, rm, writeFile } from 'fs/promises';
 import { join } from 'path';
 
 import { setupFileWatcher } from './file_watcher/setup_file_watcher';
@@ -11,10 +11,7 @@ import { handleCli } from './handle_cli';
 import { getStdIoType, logSuccess, time, unwrap } from './utils';
 import { green } from './utils/colors';
 import { execSyncPretty } from './utils/exec_sync_pretty';
-import {
-    AZLE_PACKAGE_PATH,
-    GLOBAL_AZLE_CONFIG_DIR
-} from './utils/global_paths';
+import { AZLE_PACKAGE_PATH } from './utils/global_paths';
 import { CompilerInfo } from './utils/types';
 
 azle();
@@ -54,7 +51,7 @@ async function azle(): Promise<void> {
         `\nBuilding canister ${green(canisterName)}`,
         'default',
         async () => {
-            createAzleDirectories();
+            createAzleDirectories(canisterPath);
 
             const canisterJavaScript = unwrap(
                 await getCanisterJavaScript(
@@ -122,11 +119,9 @@ async function azle(): Promise<void> {
     logSuccess(canisterName, canisterId, replicaWebServerPort);
 }
 
-async function createAzleDirectories(): Promise<void> {
-    await Promise.all([
-        mkdir(GLOBAL_AZLE_CONFIG_DIR, { recursive: true }),
-        mkdir('.azle', { recursive: true })
-    ]);
+async function createAzleDirectories(canisterPath: string): Promise<void> {
+    await rm(canisterPath, { recursive: true, force: true });
+    await mkdir(canisterPath, { recursive: true });
 }
 
 // TODO this is just temporary

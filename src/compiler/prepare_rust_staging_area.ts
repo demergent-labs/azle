@@ -1,5 +1,5 @@
 import { existsSync } from 'fs';
-import { mkdir, rm, writeFile } from 'fs/promises';
+import { mkdir, writeFile } from 'fs/promises';
 // @ts-ignore
 import { copy } from 'fs-extra/esm';
 import { join } from 'path';
@@ -16,9 +16,6 @@ export async function prepareRustStagingArea(
     const workspaceCargoToml: Toml = generateWorkspaceCargoToml(
         canisterConfig.opt_level ?? '0'
     );
-
-    await rm(canisterPath, { recursive: true, force: true });
-    await mkdir(canisterPath, { recursive: true });
 
     await writeFile(`${canisterPath}/Cargo.toml`, workspaceCargoToml);
 
