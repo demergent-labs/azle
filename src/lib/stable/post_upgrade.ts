@@ -23,11 +23,14 @@ export function postUpgrade(paramIdls: IDL.Type[]): MethodDecorator {
 
         descriptor.value = methodCallback as any;
 
+        const index = globalThis._azleCanisterMethodsIndex++;
+
         globalThis._azleCanisterMethods.post_upgrade = {
-            name: propertyKey as string
+            name: propertyKey as string,
+            index
         };
 
-        globalThis._azleCanisterMethods.callbacks[propertyKey as string] =
+        globalThis._azleCanisterMethods.callbacks[index.toString()] =
             methodCallback;
 
         return descriptor;

@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "test": "NODE_OPTIONS=\"--max-old-space-size=32768\" ts-node --transpile-only --ignore=false test/test.ts"
+        "test": "NODE_OPTIONS=\"--max-old-space-size=32768\" tsx test/test.ts"
     },
     "dependencies": {
         "azle": "0.22.0"

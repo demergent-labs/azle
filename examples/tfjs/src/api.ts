@@ -20,7 +20,13 @@ async function init(): Promise<void> {
         }) as any
     };
 
-    const model = await tf.loadLayersModel('file://spam/model.json');
+    let model: tf.LayersModel;
+
+    app.post('/load-model', async (_req, res) => {
+        model = await tf.loadLayersModel('file://spam/model.json');
+
+        res.send('Model loaded');
+    });
 
     app.get('/prediction', async (_req, res) => {
         // TODO Tokenization and prediction for this specific model have not yet been figured out

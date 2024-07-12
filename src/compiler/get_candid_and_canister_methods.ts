@@ -1,30 +1,36 @@
 import { IOType } from 'child_process';
-import { readFileSync } from 'fs';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
 
-import { compileRustCodeWithCandidAndCompilerInfo } from './compile_rust_code_with_candid_and_compiler_info';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
+import { generateWasmBinary } from './generate_wasm_binary';
 import { AZLE_PACKAGE_PATH } from './utils/global_paths';
-import { CandidGen, CanisterMethods, CompilerInfo } from './utils/types';
+import {
+    CandidGen,
+    CanisterConfig,
+    CanisterMethods,
+    CompilerInfo
+} from './utils/types';
 
-export function getCandidAndCanisterMethods(
+export async function getCandidAndCanisterMethods(
     candidGen: CandidGen = 'http',
     candidPath: string,
-    compilerInfoPath: string,
-    dockerContainerName: string,
     canisterName: string,
     stdioType: IOType,
     envVars: [string, string][],
-    rustStagingCandidPath: string,
     rustStagingWasmPath: string,
-    nativeCompilation: boolean
-): {
+    js: string,
+    canisterConfig: CanisterConfig,
+    canisterPath: string
+): Promise<{
     candid: string;
     canisterMethods: CanisterMethods;
-} {
+}> {
     if (candidGen === 'automatic' || candidGen === 'custom') {
         const customCandid =
-            candidGen === 'custom' ? readFileSync(candidPath).toString() : '';
+            candidGen === 'custom'
+                ? (await readFile(candidPath)).toString()
+                : '';
 
         const compilerInfo: CompilerInfo = {
             canister_methods: {
@@ -36,19 +42,17 @@ export function getCandidAndCanisterMethods(
             env_vars: envVars
         };
 
-        compileRustCodeWithCandidAndCompilerInfo(
-            rustStagingCandidPath,
-            customCandid,
-            compilerInfoPath,
-            compilerInfo,
-            dockerContainerName,
+        await generateWasmBinary(
             canisterName,
             stdioType,
-            nativeCompilation
+            js,
+            compilerInfo,
+            canisterConfig,
+            canisterPath
         );
 
         const { candid, canisterMethods } =
-            generateCandidAndCanisterMethods(rustStagingWasmPath);
+            await generateCandidAndCanisterMethods(rustStagingWasmPath);
 
         return {
             candid: candidGen === 'custom' ? customCandid : candid,
@@ -57,8 +61,8 @@ export function getCandidAndCanisterMethods(
     }
 
     if (candidGen === 'http') {
-        const candid = readFileSync(
-            join(AZLE_PACKAGE_PATH, 'server.did')
+        const candid = (
+            await readFile(join(AZLE_PACKAGE_PATH, 'server.did'))
         ).toString();
 
         const canisterMethods: CanisterMethods = {
@@ -66,16 +70,18 @@ export function getCandidAndCanisterMethods(
             queries: [
                 {
                     name: 'http_request',
+                    index: 0,
                     composite: true
                 }
             ],
             updates: [
                 {
-                    name: 'http_request_update'
+                    name: 'http_request_update',
+                    index: 1
                 }
             ],
-            init: { name: 'init' },
-            post_upgrade: { name: 'postUpgrade' },
+            init: { name: 'init', index: 2 },
+            post_upgrade: { name: 'postUpgrade', index: 3 },
             callbacks: {}
         };
 

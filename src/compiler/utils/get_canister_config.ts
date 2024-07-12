@@ -1,14 +1,13 @@
-import { existsSync, readFileSync } from 'fs';
-import { join } from 'path';
+import { existsSync } from 'fs';
+import { readFile } from 'fs/promises';
 
 import { blue, green, purple, red, yellow } from './colors';
-import { AZLE_PACKAGE_PATH } from './global_paths';
 import { Err, Ok, Result } from './result';
 import { AzleError, CanisterConfig, DfxJson } from './types';
 
-export function getCanisterConfig(
+export async function getCanisterConfig(
     canisterName: string
-): Result<CanisterConfig, AzleError> {
+): Promise<Result<CanisterConfig, AzleError>> {
     const exampleDfxJson = colorFormattedDfxJsonExample(canisterName);
 
     if (!existsSync(`dfx.json`)) {
@@ -19,7 +18,9 @@ export function getCanisterConfig(
         });
     }
 
-    const dfxJson: DfxJson = JSON.parse(readFileSync('dfx.json').toString());
+    const dfxJson: DfxJson = JSON.parse(
+        (await readFile('dfx.json')).toString()
+    );
     const canisterConfig = dfxJson.canisters[canisterName];
 
     if (!canisterConfig) {
@@ -45,20 +46,7 @@ export function getCanisterConfig(
         });
     }
 
-    return Ok({
-        ...canisterConfig,
-        assets: [
-            ...(canisterConfig.assets ?? []),
-            [
-                join(AZLE_PACKAGE_PATH, 'canisters', 'icrc', 'icrc.did'),
-                join('candid', 'icp', 'icrc.did')
-            ],
-            [
-                join(AZLE_PACKAGE_PATH, 'canisters', 'management', 'ic.did'),
-                join('candid', 'icp', 'management.did')
-            ]
-        ]
-    });
+    return Ok(canisterConfig);
 }
 
 function colorFormattedDfxJsonExample(canisterName: string): string {

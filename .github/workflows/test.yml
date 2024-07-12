@@ -41,7 +41,7 @@ jobs:
               with:
                   ref: ${{ contains(github.head_ref, 'release--') && github.event.pull_request.head.ref || github.ref }} # This is necessary for this job to be able to commit and push to the origin remote properly
                   token: ${{ secrets.LASTMJS_GITHUB_TOKEN || github.token }} # A personal GitHub token is setup as a secret so that committing and pushing to GitHub from the Action will trigger another workflow
-            - uses: actions/setup-node@v3
+            - uses: actions/setup-node@v4
               with:
                   node-version: 20
                   registry-url: https://registry.npmjs.org
@@ -63,8 +63,6 @@ jobs:
               run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
             - if: contains(github.head_ref, 'release--')
               run: git config --global user.signingkey C8B77BCBE16CD2B94B43F9C8757397B82D4ED7B0
-            - if: contains(github.head_ref, 'release--')
-              run: sudo apt-get install -y podman
             - id: example_directories
               # TODO to improve this further we might be able to create an environment variable that grabs the example directories with a glob
               # TODO we want to be able to easily include and exclude examples though
@@ -103,7 +101,6 @@ jobs:
                     "examples/file_protocol",
                     "examples/fs",
                     "examples/func_types",
-                    "examples/guard_functions",
                     "examples/heartbeat",
                     "examples/hello_world",
                     "examples/http_outcall_fetch",
@@ -218,7 +215,6 @@ jobs:
                     "tests/end_to_end/candid_rpc/class_syntax/date",
                     "tests/end_to_end/candid_rpc/class_syntax/ethereum_json_rpc",
                     "tests/end_to_end/candid_rpc/class_syntax/func_types",
-                    "tests/end_to_end/candid_rpc/class_syntax/guard_functions",
                     "tests/end_to_end/candid_rpc/class_syntax/heartbeat",
                     "tests/end_to_end/candid_rpc/class_syntax/ic_api",
                     "tests/end_to_end/candid_rpc/class_syntax/icrc",
@@ -263,7 +259,7 @@ jobs:
                     "tests/end_to_end/candid_rpc/class_syntax/stable_structures",
                     "tests/end_to_end/candid_rpc/class_syntax/timers",
                     "tests/end_to_end/candid_rpc/class_syntax/tuple_types",
-                    "tests/end_to_end/candid_rpc/class_syntax/update",
+                    "tests/end_to_end/candid_rpc/class_syntax/update"
                   ]
                   END
                   )
@@ -310,7 +306,7 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               uses: actions/checkout@v4
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              uses: actions/setup-node@v3
+              uses: actions/setup-node@v4
               with:
                   node-version: 20
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
@@ -318,32 +314,10 @@ jobs:
               run: |
                   DFXVM_INIT_YES=true DFX_VERSION=0.20.1 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
                   echo "$HOME/.local/share/dfx/bin" >> $GITHUB_PATH
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              uses: actions/cache@v3
-              with:
-                  path: /home/runner/.config/azle
-                  # path: $HOME/.config/azle
-                  key: config-azle-${{ hashFiles('src/compiler/Dockerfile', 'src/compiler/rust/**') }}
-              # This is for the --native-compilation tests
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              name: Install Rust
-              shell: bash -l {0}
-              run: |
-                  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain=1.73.0 --profile=minimal
-                  rustup target add wasm32-wasi
-              # This is for the --native-compilation tests
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              name: Install wasi2ic
-              shell: bash -l {0}
-              run: cargo install --git https://github.com/wasm-forge/wasi2ic --rev 806c3558aad24224852a9582f018178402cb3679
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.os == 'ubuntu-latest' }}
-              shell: bash -l {0}
-              run: sudo apt-get install -y podman
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.os == 'macos-latest' }}
               shell: bash -l {0}
               # The DNS server stuff is because of this: https://github.com/actions/runner-images/issues/6383
               run: |
-                  brew install podman
                   sudo networksetup -setdnsservers Ethernet 9.9.9.9
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0} # TODO figure out why this is here and comment about it
@@ -353,16 +327,6 @@ jobs:
               run: npm link
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && (matrix.azle_source == 'npm' || matrix.os == 'macos-latest') }}
               run: npx azle clean # We want to test the full curl download when testing from a clean install or mac
-            # This is for the --native-compilation tests
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              name: Install wasmedge-quickjs
-              shell: bash -l {0}
-              run: |
-                  mkdir -p /home/runner/.config/azle
-                  cd /home/runner/.config/azle
-                  git clone https://github.com/demergent-labs/wasmedge-quickjs
-                  cd wasmedge-quickjs
-                  git checkout c21ff69f442998e4cda4619166e23a9bc91418be
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               shell: bash -l {0}
               run: npm run lint
@@ -380,11 +344,6 @@ jobs:
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
               working-directory: ${{ matrix.example_directories }}
               run: dfx start --clean --background --host 127.0.0.1:8000
-              # This is to put wasmedge-quickjs in the correct location for the --native-compilation tests
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests }}
-              shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
-              run: mv /home/runner/.config/azle/wasmedge-quickjs "/home/runner/.config/azle/wasmedge-quickjs_$(npx azle dockerfile-hash)"
             - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && !contains(github.head_ref, 'release--') && !(github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'Merge pull request') && contains(github.event.head_commit.message, 'demergent-labs/release--')) }}
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
@@ -397,10 +356,6 @@ jobs:
               shell: bash -l {0}
               working-directory: ${{ matrix.example_directories }}
               run: AZLE_PROPTEST_NUM_RUNS=100 AZLE_PROPTEST_VERBOSE=true npm test
-            - if: ${{ needs.release-candidate-deploy.outputs.should_run_tests && matrix.example_directories != 'examples/new' }}
-              shell: bash -l {0}
-              working-directory: ${{ matrix.example_directories }}
-              run: $GITHUB_WORKSPACE/node_modules/.bin/tsc --noEmit --skipLibCheck --target es2020 --strict --moduleResolution node --allowJs
 
     check-basic-integration-tests-success:
         needs: basic-integration-tests

@@ -1,6 +1,6 @@
 import { Actor, ActorMethod, ActorSubclass } from '@dfinity/agent';
 import { watch } from 'chokidar';
-import { writeFileSync } from 'fs';
+import { writeFile } from 'fs/promises';
 
 import { createAuthenticatedAgent } from '../../../dfx';
 import { getCanisterJavaScript } from '../get_canister_javascript';
@@ -9,7 +9,7 @@ import { ok } from '../utils/result';
 
 type ActorReloadJs = ActorSubclass<_SERVICE>;
 interface _SERVICE {
-    reload_js: ActorMethod<[bigint, bigint, Uint8Array, bigint], void>;
+    reload_js: ActorMethod<[bigint, bigint, Uint8Array, bigint, number], void>;
 }
 
 // We have made this mutable to help with speed
@@ -23,11 +23,14 @@ const wasmedgeQuickJsPath = process.argv[5];
 const esmAliases = JSON.parse(process.argv[6]);
 const esmExternals = JSON.parse(process.argv[7]);
 const canisterName = process.argv[8];
+const postUpgradeIndex = Number(process.argv[9]);
 
 // TODO https://github.com/demergent-labs/azle/issues/1664
-watch(process.cwd(), {
-    ignored: ['**/.dfx/**', '**/.azle/**', '**/node_modules/**']
-}).on('all', async (event, path) => {
+const watcher = watch([`**/*.ts`, `**/*.js`], {
+    ignored: ['**/.dfx/**', '**/.azle/**', '**/node_modules/**', '**/target/**']
+});
+
+watcher.on('all', async (event, path) => {
     if (actor === undefined) {
         actor = await createActorReloadJs(canisterName);
     }
@@ -37,7 +40,7 @@ watch(process.cwd(), {
         console.info('path', path);
     }
 
-    if (event === 'change' && (path.endsWith('.ts') || path.endsWith('.js'))) {
+    if (event === 'change') {
         try {
             await reloadJs(
                 actor,
@@ -90,7 +93,13 @@ async function reloadJs(
         }
 
         actor
-            .reload_js(timestamp, chunkNumber, chunk, BigInt(reloadedJs.length))
+            .reload_js(
+                timestamp,
+                chunkNumber,
+                chunk,
+                BigInt(reloadedJs.length),
+                postUpgradeIndex
+            )
             .catch((error) => {
                 if (process.env.AZLE_VERBOSE === 'true') {
                     console.error(error);
@@ -104,7 +113,7 @@ async function reloadJs(
         console.info(`Finished uploading chunks`);
     }
 
-    writeFileSync(reloadedJsPath, reloadedJs);
+    await writeFile(reloadedJsPath, reloadedJs);
 }
 
 async function createActorReloadJs(
@@ -117,7 +126,13 @@ async function createActorReloadJs(
         ({ IDL }) => {
             return IDL.Service({
                 reload_js: IDL.Func(
-                    [IDL.Nat64, IDL.Nat64, IDL.Vec(IDL.Nat8), IDL.Nat64],
+                    [
+                        IDL.Nat64,
+                        IDL.Nat64,
+                        IDL.Vec(IDL.Nat8),
+                        IDL.Nat64,
+                        IDL.Int32
+                    ],
                     [],
                     []
                 )

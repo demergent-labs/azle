@@ -1,9 +1,13 @@
-import { copySync, readFileSync, writeFileSync } from 'fs-extra';
+import { readFile, writeFile } from 'fs/promises';
+// @ts-ignore
+import { copy } from 'fs-extra/esm';
 import { join } from 'path';
 
 import { AZLE_PACKAGE_PATH } from './utils/global_paths';
 
-export function generateNewAzleProject(azleVersion: string): void {
+export async function generateNewAzleProject(
+    azleVersion: string
+): Promise<void> {
     if (process.argv[3] === undefined) {
         console.error('You must provide a name for your Azle project');
         return;
@@ -11,17 +15,19 @@ export function generateNewAzleProject(azleVersion: string): void {
 
     const projectName = process.argv[3];
 
-    copySync(join(AZLE_PACKAGE_PATH, 'examples', 'hello_world'), projectName);
+    await copy(join(AZLE_PACKAGE_PATH, 'examples', 'hello_world'), projectName);
 
-    const packageJson = readFileSync(
-        join(AZLE_PACKAGE_PATH, 'examples', 'hello_world', 'package.json')
+    const packageJson = (
+        await readFile(
+            join(AZLE_PACKAGE_PATH, 'examples', 'hello_world', 'package.json')
+        )
     ).toString();
 
     let parsedPackageJson = JSON.parse(packageJson);
 
     parsedPackageJson.dependencies.azle = `^${azleVersion}`;
 
-    writeFileSync(
+    await writeFile(
         join(projectName, 'package.json'),
         JSON.stringify(parsedPackageJson, null, 4)
     );

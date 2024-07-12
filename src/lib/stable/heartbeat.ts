@@ -1,14 +1,25 @@
+import { handleUncaughtError } from './error';
+
 export function heartbeat<T>(
-    _target: object,
+    target: object,
     propertyKey: string | symbol,
     descriptor: TypedPropertyDescriptor<T>
 ): TypedPropertyDescriptor<T> | void {
+    const index = globalThis._azleCanisterMethodsIndex++;
+
     globalThis._azleCanisterMethods.heartbeat = {
-        name: propertyKey as string
+        name: propertyKey as string,
+        index
     };
 
-    globalThis._azleCanisterMethods.callbacks[propertyKey as string] =
-        descriptor.value as any;
+    globalThis._azleCanisterMethods.callbacks[index.toString()] =
+        async (): Promise<void> => {
+            try {
+                await (descriptor.value as any).bind(target)();
+            } catch (error) {
+                handleUncaughtError(error);
+            }
+        };
 
     return descriptor;
 }

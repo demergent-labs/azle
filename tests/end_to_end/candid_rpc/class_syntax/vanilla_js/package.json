@@ -1,7 +1,7 @@
 {
     "scripts": {
-        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
-        "test": "ts-node --transpile-only --ignore=false test/test.ts"
+        "pretest": "tsx test/pretest.ts",
+        "test": "tsx test/test.ts"
     },
     "dependencies": {
         "azle": "0.22.0",

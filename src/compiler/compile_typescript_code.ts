@@ -1,6 +1,5 @@
 import { build } from 'esbuild';
-// @ts-ignore
-import { esbuildPluginTsc } from 'esbuild-plugin-tsc';
+import esbuildPluginTsc from 'esbuild-plugin-tsc';
 import * as path from 'path';
 
 import { AZLE_PACKAGE_PATH } from './utils/global_paths';

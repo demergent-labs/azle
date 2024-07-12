@@ -1,35 +1,29 @@
 import { IOType } from 'child_process';
-import { rmSync } from 'fs';
+import { rm } from 'fs/promises';
+import { join } from 'path';
 
 import { version as azleVersion } from '../../package.json';
 import { uploadFiles } from './file_uploader';
 import { getFilesToUpload } from './file_uploader/get_files_to_upload';
 import { generateNewAzleProject } from './new_command';
+import { getStdIoType } from './utils';
 import { execSyncPretty } from './utils/exec_sync_pretty';
-import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
+import {
+    AZLE_PACKAGE_PATH,
+    GLOBAL_AZLE_CONFIG_DIR
+} from './utils/global_paths';
 
-export function handleCli(
-    stdioType: IOType,
-    dockerfileHash: string,
-    dockerContainerPrefix: string,
-    dockerImagePrefix: string
-): boolean {
+export async function handleCli(): Promise<boolean> {
     const commandName = process.argv[2];
 
     if (commandName === 'new') {
-        handleCommandNew();
-
-        return true;
-    }
-
-    if (commandName === 'dockerfile-hash') {
-        handleCommandDockerfileHash(dockerfileHash);
+        await handleCommandNew();
 
         return true;
     }
 
     if (commandName === 'clean') {
-        handleCommandClean(stdioType, dockerImagePrefix, dockerContainerPrefix);
+        handleCommandClean();
 
         return true;
     }
@@ -46,66 +40,72 @@ export function handleCli(
         return true;
     }
 
+    if (commandName === 'install-dfx-extension') {
+        installDfxExtension(getStdIoType());
+
+        return true;
+    }
+
     return false;
 }
 
-function handleCommandNew(): void {
-    generateNewAzleProject(azleVersion);
+async function handleCommandNew(): Promise<void> {
+    await generateNewAzleProject(azleVersion);
 }
 
-function handleCommandDockerfileHash(dockerfileHash: string): void {
-    execSyncPretty(`echo -n "${dockerfileHash}"`, 'inherit');
-}
-
-function handleCommandClean(
-    stdioType: IOType,
-    dockerImagePrefix: string,
-    dockerContainerPrefix: string
-): void {
-    rmSync(GLOBAL_AZLE_CONFIG_DIR, {
+async function handleCommandClean(): Promise<void> {
+    await rm(GLOBAL_AZLE_CONFIG_DIR, {
         recursive: true,
         force: true
     });
 
     console.info(`~/.config/azle directory deleted`);
 
-    rmSync('.azle', {
+    await rm('.azle', {
         recursive: true,
         force: true
     });
 
     console.info(`.azle directory deleted`);
 
-    execSyncPretty(
-        `podman stop $(podman ps --filter "name=${dockerContainerPrefix}" --format "{{.ID}}") || true`,
-        stdioType
-    );
+    await rm('.dfx', {
+        recursive: true,
+        force: true
+    });
 
-    console.info(`azle containers stopped`);
+    console.info(`.dfx directory deleted`);
 
-    execSyncPretty(
-        `podman rm $(podman ps -a --filter "name=${dockerContainerPrefix}" --format "{{.ID}}") || true`,
-        stdioType
-    );
+    await rm('node_modules', {
+        recursive: true,
+        force: true
+    });
 
-    console.info(`azle containers removed`);
-
-    execSyncPretty(
-        `podman image rm $(podman images --filter "reference=${dockerImagePrefix}" --format "{{.ID}}") || true`,
-        stdioType
-    );
-
-    console.info(`azle images removed`);
+    console.info(`node_modules directory deleted`);
 }
 
 async function handleUploadAssets(): Promise<void> {
     const canisterName = process.argv[3];
     const srcPath = process.argv[4];
     const destPath = process.argv[5];
-    const filesToUpload = getFilesToUpload(canisterName, srcPath, destPath);
+    const filesToUpload = await getFilesToUpload(
+        canisterName,
+        srcPath,
+        destPath
+    );
     await uploadFiles(canisterName, filesToUpload);
 }
 
 function handleVersionCommand(): void {
     console.info(azleVersion);
+}
+
+// TODO this is just temporary
+// TODO until we either make azle an official extension in the DFINITY dfx extensions repo
+// TODO or we have a better way for the developer to install the extension locally
+function installDfxExtension(stdioType: IOType): void {
+    const dfxExtensionDirectoryPath = join(AZLE_PACKAGE_PATH, 'dfx_extension');
+    execSyncPretty(
+        `cd ${dfxExtensionDirectoryPath} && ./install.sh`,
+        stdioType
+    );
 }

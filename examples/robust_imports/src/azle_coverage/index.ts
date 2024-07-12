@@ -270,31 +270,28 @@ export const isMangoTrickyToEat = kiwi(
     { manual: true }
 );
 
-export const isFruitPrepared = quince(
-    [],
-    boysenberry,
-    () => {
-        const opt = soncoya.get(0);
+export const isFruitPrepared = quince([], boysenberry, () => {
+    gatherGrapes();
 
-        if ('None' in opt) {
-            return false;
-        }
+    const opt = soncoya.get(0);
 
-        const pf = opt.Some;
+    if ('None' in opt) {
+        return false;
+    }
 
-        return (
-            pf.honeydewCount > 0 &&
-            pf.areIcacosCollected &&
-            pf.isPineappleCut &&
-            pf.arePomegranateArilsSeparated &&
-            pf.areGrapesGathered &&
-            pf.isIlamaWashed &&
-            pf.areRambutanSkinsRemoved &&
-            !pf.haveElderberriesBeenPicked
-        );
-    },
-    { guard: gatherGrapes }
-);
+    const pf = opt.Some;
+
+    return (
+        pf.honeydewCount > 0 &&
+        pf.areIcacosCollected &&
+        pf.isPineappleCut &&
+        pf.arePomegranateArilsSeparated &&
+        pf.areGrapesGathered &&
+        pf.isIlamaWashed &&
+        pf.areRambutanSkinsRemoved &&
+        !pf.haveElderberriesBeenPicked
+    );
+});
 
 export const removeRambutanSkins = ugni([], rambutan, () => {
     const opt = soncoya.get(0);

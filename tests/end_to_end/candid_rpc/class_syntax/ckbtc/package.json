@@ -19,7 +19,7 @@
         "frontend": "npx open-cli http://ryjl3-tyaaa-aaaaa-aaaba-cai.localhost:8000/",
         "mint": ".bitcoin/bin/bitcoin-cli -conf=$(pwd)/.bitcoin.conf generatetoaddress 1 $npm_config_address",
         "build": "cd wallet/frontend && npm run build",
-        "pretest": "ts-node --transpile-only --ignore=false test/pretest.ts",
+        "pretest": "tsx test/pretest.ts",
         "test": "jest"
     },
     "dependencies": {

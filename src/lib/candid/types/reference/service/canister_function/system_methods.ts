@@ -4,7 +4,7 @@ import { Parent, toIdlArray } from '../../../../index';
 import { _AzleRecursiveFunction } from '../../../../recursive';
 import { CanisterOptions, ServiceFunctionInfo } from '.';
 
-type SystemMethod = { name: string } | undefined;
+type SystemMethod = { name: string; index: number } | undefined;
 
 export function createSystemMethod(
     mode:
@@ -22,7 +22,8 @@ export function createSystemMethod(
         return undefined;
     }
     return {
-        name: methodOption[0]
+        name: methodOption[0],
+        index: methodOption[1].index
     };
 }
 

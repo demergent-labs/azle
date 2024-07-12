@@ -25,8 +25,8 @@ type CanisterMethods = {
 
 type CanisterMethod = {
     name: string;
+    index: number;
     composite?: boolean;
-    guard_name?: string;
 };
 
 declare global {
@@ -45,8 +45,6 @@ declare global {
     // eslint-disable-next-line no-var
     var _azleTimerCallbacks: { [key: string]: () => void };
     // eslint-disable-next-line no-var
-    var _azleGuardFunctions: { [key: string]: () => any };
-    // eslint-disable-next-line no-var
     var _azleWebAssembly: any;
     // eslint-disable-next-line no-var
     var _azleOutgoingHttpOptionsSubnetSize: number | undefined;
@@ -64,12 +62,16 @@ declare global {
     var _azlePostUpgradeCalled: boolean;
     // eslint-disable-next-line no-var
     var _azleCanisterMethods: CanisterMethods;
+    // eslint-disable-next-line no-var
+    var _azleCanisterMethodsIndex: number;
 }
 
 globalThis._azleInsideCanister =
     globalThis._azleIc === undefined ? false : true;
 
 if (globalThis._azleInsideCanister) {
+    globalThis._azleCanisterMethodsIndex = 0;
+
     globalThis._azleCanisterMethods = {
         candid: '',
         queries: [],
@@ -126,7 +128,6 @@ if (globalThis._azleInsideCanister) {
     globalThis._azleResolveIds = {};
     globalThis._azleRejectIds = {};
     globalThis._azleTimerCallbacks = {};
-    globalThis._azleGuardFunctions = {};
 
     // TODO be careful we are using a random seed of 0 I think
     // TODO the randomness is predictable

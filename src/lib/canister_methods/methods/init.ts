@@ -34,6 +34,6 @@ export function init<
         paramCandidTypes: paramCandidTypes as any,
         returnCandidType: Void,
         async: false,
-        guard: undefined
+        index: globalThis._azleCanisterMethodsIndex++
     };
 }

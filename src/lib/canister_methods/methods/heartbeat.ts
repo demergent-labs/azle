@@ -12,7 +12,7 @@ export function heartbeat(
         paramCandidTypes: [],
         returnCandidType: Void,
         async: isAsync(callback),
-        guard: undefined
+        index: globalThis._azleCanisterMethodsIndex++
     };
 }
 

@@ -1,7 +1,7 @@
 {
     "name": "primitive_ops_end_to_end_test_functional_syntax",
     "scripts": {
-        "benchmark": "ts-node --transpile-only --ignore=false benchmark/benchmark.ts"
+        "benchmark": "tsx benchmark/benchmark.ts"
     },
     "dependencies": {
         "azle": "^0.17.1"

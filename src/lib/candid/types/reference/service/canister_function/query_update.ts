@@ -1,15 +1,14 @@
-import { handleUncaughtError } from '../../../../../stable/error';
 import { CanisterOptions } from '.';
 
 type QueryMethod = {
     name: string;
     composite: boolean;
-    guard_name: string | undefined;
+    index: number;
 };
 
 type UpdateMethod = {
     name: string;
-    guard_name: string | undefined;
+    index: number;
 };
 
 export function createQueryMethods(
@@ -21,7 +20,7 @@ export function createQueryMethods(
             createQueryMethod(
                 methodName,
                 canisterMethod.async,
-                canisterMethod.guard
+                canisterMethod.index
             )
         );
 }
@@ -32,49 +31,25 @@ export function createUpdateMethods(
     return Object.entries(canisterOptions)
         .filter(([_name, canisterMethod]) => canisterMethod.mode === 'update')
         .map(([methodName, canisterMethod]) =>
-            createUpdateMethod(methodName, canisterMethod.guard)
+            createUpdateMethod(methodName, canisterMethod.index)
         );
 }
 
 function createQueryMethod(
     methodName: string,
     isComposite: boolean,
-    guardFunction: (() => any) | undefined
+    index: number
 ): QueryMethod {
     return {
         name: methodName,
         composite: isComposite,
-        guard_name: createGlobalGuard(guardFunction, methodName)
+        index
     };
 }
 
-function createUpdateMethod(
-    methodName: string,
-    guardFunction: (() => any) | undefined
-): UpdateMethod {
+function createUpdateMethod(methodName: string, index: number): UpdateMethod {
     return {
         name: methodName,
-        guard_name: createGlobalGuard(guardFunction, methodName)
+        index
     };
-}
-
-function createGlobalGuard(
-    guard: (() => any) | undefined,
-    guardedMethodName: string
-): string | undefined {
-    if (guard === undefined) {
-        return undefined;
-    }
-
-    const guardName = `_azleGuard_${guardedMethodName}`;
-
-    globalThis._azleGuardFunctions[guardName] = (): void => {
-        try {
-            guard();
-        } catch (error) {
-            handleUncaughtError(error);
-        }
-    };
-
-    return guardName;
 }

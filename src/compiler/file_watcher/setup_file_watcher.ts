@@ -11,7 +11,8 @@ export function setupFileWatcher(
     wasmedgeQuickJsPath: string,
     esmAliases: Record<string, string>,
     esmExternals: string[],
-    canisterName: string
+    canisterName: string,
+    postUpgradeIndex: number
 ): void {
     try {
         // TODO should we check that this was successful in killing
@@ -44,7 +45,8 @@ export function setupFileWatcher(
             wasmedgeQuickJsPath,
             JSON.stringify(esmAliases),
             JSON.stringify(esmExternals),
-            canisterName
+            canisterName,
+            postUpgradeIndex.toString()
         ],
         {
             detached: true,

@@ -115,12 +115,11 @@ function createUpdateOrQueryFunctionIdl(
 
 function createCallbacks(canisterOptions: CanisterOptions) {
     return Object.entries(canisterOptions).reduce((acc, entry) => {
-        const methodName = entry[0];
         const canisterMethod = entry[1];
 
         return {
             ...acc,
-            [methodName]: canisterMethod.callback
+            [canisterMethod.index.toString()]: canisterMethod.callback
         };
     }, {});
 }
