@@ -8,4 +8,4 @@ dfx_generated
 declarations
 property_tests/tests/**/src/*
 dist
-THIRDPARTY.yml
+static_canister_template_licenses.yml
