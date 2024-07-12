@@ -412,7 +412,8 @@ fn initialize_js(js: &str, init: bool, function_index: i32, pass_arg_data: i32) 
         execute_js(function_index, pass_arg_data);
     }
 
-    // TODO should this only run if it the dev's init/post_upgrade method was called?
+    // _azleInitCalled and _azlePostUpgradeCalled refer to Azle's own init/post_upgrade methods being called
+    // these variables do not indicate if the developer's own init/post_upgrade methods were called
     RUNTIME.with(|runtime| {
         let mut runtime = runtime.borrow_mut();
         let runtime = runtime.as_mut().unwrap();
