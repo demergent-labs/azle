@@ -6,7 +6,7 @@
         "azle": "0.22.0"
     },
     "devDependencies": {
-        "ts-node": "^10.9.1",
+        "tsx": "^4.15.7",
         "typescript": "^5.2.2"
     }
 }

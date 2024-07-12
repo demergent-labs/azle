@@ -8,7 +8,7 @@
     },
     "devDependencies": {
         "@dfinity/agent": "0.11.1",
-        "ts-node": "10.7.0",
+        "tsx": "^4.15.7",
         "typescript": "^5.2.2"
     }
 }

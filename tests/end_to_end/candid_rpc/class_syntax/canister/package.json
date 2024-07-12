@@ -8,10 +8,10 @@
     },
     "devDependencies": {
         "@dfinity/agent": "^0.21.4",
+        "canister_end_to_end_test_functional_syntax": "file:../../../../../examples/canister",
         "jest": "^29.7.0",
         "ts-jest": "^29.1.4",
-        "ts-node": "10.7.0",
-        "typescript": "^5.2.2",
-        "canister_end_to_end_test_functional_syntax": "file:../../../../../examples/canister"
+        "tsx": "^4.15.7",
+        "typescript": "^5.2.2"
     }
 }

@@ -9,7 +9,7 @@
     },
     "devDependencies": {
         "@dfinity/agent": "^0.19.2",
-        "ts-node": "^10.9.1",
+        "tsx": "^4.15.7",
         "typescript": "^5.2.2",
         "vanilla_js_end_to_end_test_functional_syntax": "file:../../../../../examples/vanilla_js"
     }
