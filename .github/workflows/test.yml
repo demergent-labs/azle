@@ -279,7 +279,7 @@ jobs:
                     echo "::set-output name=should_run_tests::true"
                   fi
 
-    basic-integration-tests: &basic-integration-tests
+    basic-integration-tests:
         needs: release-candidate-deploy
         runs-on: ${{ matrix.os }}
         env:
@@ -371,6 +371,3 @@ jobs:
         if: failure()
         steps:
             - run: exit 1
-
-    basic-integration-tests-2:
-        <<: *basic-integration-tests
