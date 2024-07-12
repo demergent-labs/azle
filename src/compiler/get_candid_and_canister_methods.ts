@@ -2,8 +2,8 @@ import { IOType } from 'child_process';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
-import { compileRustCodeWithCandidAndCompilerInfo } from './compile_rust_code_with_candid_and_compiler_info';
 import { generateCandidAndCanisterMethods } from './generate_candid_and_canister_methods';
+import { generateWasmBinary } from './generate_wasm_binary';
 import { AZLE_PACKAGE_PATH } from './utils/global_paths';
 import {
     CandidGen,
@@ -15,15 +15,13 @@ import {
 export async function getCandidAndCanisterMethods(
     candidGen: CandidGen = 'http',
     candidPath: string,
-    compilerInfoPath: string,
     canisterName: string,
     stdioType: IOType,
     envVars: [string, string][],
-    rustStagingCandidPath: string,
     rustStagingWasmPath: string,
-    nativeCompilation: boolean,
     js: string,
-    canisterConfig: CanisterConfig
+    canisterConfig: CanisterConfig,
+    canisterPath: string
 ): Promise<{
     candid: string;
     canisterMethods: CanisterMethods;
@@ -44,16 +42,13 @@ export async function getCandidAndCanisterMethods(
             env_vars: envVars
         };
 
-        await compileRustCodeWithCandidAndCompilerInfo(
-            rustStagingCandidPath,
-            customCandid,
-            compilerInfoPath,
-            compilerInfo,
+        await generateWasmBinary(
             canisterName,
             stdioType,
-            nativeCompilation,
             js,
-            canisterConfig
+            compilerInfo,
+            canisterConfig,
+            canisterPath
         );
 
         const { candid, canisterMethods } =

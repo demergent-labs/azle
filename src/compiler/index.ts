@@ -2,13 +2,12 @@ import { IOType } from 'child_process';
 import { mkdir, writeFile } from 'fs/promises';
 import { join } from 'path';
 
-import { compileRustCodeWithCandidAndCompilerInfo } from './compile_rust_code_with_candid_and_compiler_info';
 import { setupFileWatcher } from './file_watcher/setup_file_watcher';
+import { generateWasmBinary } from './generate_wasm_binary';
 import { getCandidAndCanisterMethods } from './get_candid_and_canister_methods';
 import { getCanisterJavaScript } from './get_canister_javascript';
-import { getNamesAfterCli, getNamesBeforeCli } from './get_names';
+import { getNames } from './get_names';
 import { handleCli } from './handle_cli';
-import { prepareRustStagingArea } from './prepare_rust_staging_area';
 import { getStdIoType, logSuccess, time, unwrap } from './utils';
 import { green } from './utils/colors';
 import { execSyncPretty } from './utils/exec_sync_pretty';
@@ -21,21 +20,13 @@ import { CompilerInfo } from './utils/types';
 azle();
 
 async function azle(): Promise<void> {
-    // We must run this before getNamesBeforeCli because
+    // We must run this before getNames because
     // any dfx commands require the azle extension to be installed
     if (process.argv[2] === 'install-dfx-extension') {
         installDfxExtension(getStdIoType());
 
         return;
     }
-
-    // TODO can we just get names once?
-    const {
-        stdioType,
-        wasmedgeQuickJsPath,
-        replicaWebServerPort,
-        nativeCompilation
-    } = await getNamesBeforeCli();
 
     const commandExecuted = await handleCli();
 
@@ -44,19 +35,20 @@ async function azle(): Promise<void> {
     }
 
     const {
+        stdioType,
+        wasmedgeQuickJsPath,
+        replicaWebServerPort,
         canisterName,
         canisterPath,
         canisterConfig,
         candidPath,
-        compilerInfoPath,
         envVars,
-        rustStagingCandidPath,
         rustStagingWasmPath,
         canisterId,
         reloadedJsPath,
         esmAliases,
         esmExternals
-    } = await getNamesAfterCli();
+    } = await getNames();
 
     await time(
         `\nBuilding canister ${green(canisterName)}`,
@@ -73,41 +65,19 @@ async function azle(): Promise<void> {
                 )
             );
 
-            // TODO this might should only happen if we compile
-            await prepareRustStagingArea(
-                canisterConfig,
-                canisterPath,
-                canisterJavaScript,
-                stdioType
-            );
-
             const { candid, canisterMethods } =
                 await getCandidAndCanisterMethods(
                     canisterConfig.candid_gen,
                     candidPath,
-                    compilerInfoPath,
                     canisterName,
                     stdioType,
                     envVars,
-                    rustStagingCandidPath,
                     rustStagingWasmPath,
-                    nativeCompilation,
                     canisterJavaScript,
-                    canisterConfig
+                    canisterConfig,
+                    canisterPath
                 );
 
-            setupFileWatcher(
-                reloadedJsPath,
-                canisterId,
-                canisterConfig.main,
-                wasmedgeQuickJsPath,
-                esmAliases,
-                esmExternals,
-                canisterName,
-                canisterMethods.post_upgrade?.index ?? -1
-            );
-
-            // TODO probably not required anymore
             // This is for the dfx.json candid property
             await writeFile(candidPath, candid);
 
@@ -119,16 +89,31 @@ async function azle(): Promise<void> {
                 env_vars: envVars
             };
 
-            await compileRustCodeWithCandidAndCompilerInfo(
-                rustStagingCandidPath,
-                candid,
-                compilerInfoPath,
-                compilerInfo,
+            await generateWasmBinary(
                 canisterName,
                 stdioType,
-                nativeCompilation,
                 canisterJavaScript,
-                canisterConfig
+                compilerInfo,
+                canisterConfig,
+                canisterPath
+            );
+
+            if (
+                canisterConfig.build_assets !== undefined &&
+                canisterConfig.build_assets !== null
+            ) {
+                execSyncPretty(canisterConfig.build_assets, stdioType);
+            }
+
+            setupFileWatcher(
+                reloadedJsPath,
+                canisterId,
+                canisterConfig.main,
+                wasmedgeQuickJsPath,
+                esmAliases,
+                esmExternals,
+                canisterName,
+                canisterMethods.post_upgrade?.index ?? -1
             );
         }
     );

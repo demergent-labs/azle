@@ -1,20 +1,22 @@
 import { IOType } from 'child_process';
 
 import { manipulateWasmBinary } from './manipulate_wasm_binary';
+import { prepareRustStagingArea } from './prepare_rust_staging_area';
 import { execSyncPretty } from './utils/exec_sync_pretty';
 import { STATIC_CANISTER_TEMPLATE_PATH } from './utils/global_paths';
 import { CanisterConfig, CompilerInfo } from './utils/types';
 
-// TODO change this to explain that we are just manipulating the Wasm binary
-export async function compileRustCode(
+export async function generateWasmBinary(
     canisterName: string,
     stdio: IOType,
-    nativeCompilation: boolean,
     js: string,
     compilerInfo: CompilerInfo,
-    canisterConfig: CanisterConfig
+    canisterConfig: CanisterConfig,
+    canisterPath: string
 ): Promise<void> {
-    if (process.env.AZLE_GENERATE_STATIC_CANISTER_TEMPLATE === 'true') {
+    if (process.env.AZLE_GEN_WASM === 'true') {
+        await prepareRustStagingArea(canisterConfig, canisterPath, js);
+
         compileRustCodeNatively(
             STATIC_CANISTER_TEMPLATE_PATH,
             canisterName,

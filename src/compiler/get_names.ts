@@ -15,7 +15,7 @@ import { execSyncPretty } from './utils/exec_sync_pretty';
 import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
 import { CanisterConfig } from './utils/types';
 
-export async function getNamesBeforeCli() {
+export async function getNames() {
     const stdioType = getStdIoType();
 
     const wasmedgeQuickJsName = `wasmedge-quickjs_${version}`;
@@ -29,18 +29,6 @@ export async function getNamesBeforeCli() {
         .toString()
         .trim();
 
-    const nativeCompilation = process.argv.includes('--native-compilation');
-
-    return {
-        stdioType,
-        wasmedgeQuickJsName,
-        wasmedgeQuickJsPath,
-        replicaWebServerPort,
-        nativeCompilation
-    };
-}
-
-export async function getNamesAfterCli() {
     const canisterName = unwrap(getCanisterName(process.argv));
     const canisterPath = join('.azle', canisterName);
 
@@ -51,21 +39,7 @@ export async function getNamesAfterCli() {
         throw new Error(`Azle: CANISTER_CANDID_PATH is not defined`);
     }
 
-    const compilerInfoPath = join(
-        canisterPath,
-        'canister',
-        'src',
-        'compiler_info.json'
-    );
-
     const envVars = getEnvVars(canisterConfig);
-
-    const rustStagingCandidPath = join(
-        canisterPath,
-        'canister',
-        'src',
-        'candid.did'
-    );
 
     const rustStagingWasmPath = join(canisterPath, `${canisterName}.wasm`);
 
@@ -83,13 +57,15 @@ export async function getNamesAfterCli() {
     const esmExternals = canisterConfig.esm_externals ?? [];
 
     return {
+        stdioType,
+        wasmedgeQuickJsName,
+        wasmedgeQuickJsPath,
+        replicaWebServerPort,
         canisterName,
         canisterPath,
         canisterConfig,
         candidPath,
-        compilerInfoPath,
         envVars,
-        rustStagingCandidPath,
         rustStagingWasmPath,
         canisterId,
         reloadedJsPath,

@@ -6,4 +6,4 @@ node_modules
 target
 /the_azle_book/book
 /docs
-THIRDPARTY.yml
+static_canister_template_licenses.yml
