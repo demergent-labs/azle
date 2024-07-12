@@ -28,6 +28,6 @@ export function reply<T>(input: ReplyInput<T>): void {
         const data = input.data === undefined ? [] : [input.data];
 
         // @ts-expect-error idl.d.ts specifies the wrong type for IDL.encode. It's actually a Uint8Array
-        return globalThis._azleIc.replyRaw(IDL.encode(idl, data)).buffer;
+        return globalThis._azleIc.replyRaw(IDL.encode(idl, data).buffer);
     }
 }

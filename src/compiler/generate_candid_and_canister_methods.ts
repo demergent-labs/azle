@@ -17,11 +17,13 @@ export async function generateCandidAndCanisterMethods(
         ic0: {
             accept_message: (): void => {},
             call_cycles_add: (): void => {},
+            call_cycles_add128: (): void => {},
             call_data_append: (): void => {},
             call_new: (): void => {},
             call_on_cleanup: (): void => {},
             call_perform: (): void => {},
             canister_cycle_balance: (): void => {},
+            canister_cycle_balance128: (): void => {},
             canister_self_copy: (): void => {},
             canister_self_size: (): void => {},
             canister_version: (): void => {},
@@ -46,8 +48,11 @@ export async function generateCandidAndCanisterMethods(
             msg_caller_copy: (): void => {},
             msg_caller_size: (): void => {},
             msg_cycles_accept: (): void => {},
+            msg_cycles_accept128: (): void => {},
             msg_cycles_available: (): void => {},
+            msg_cycles_available128: (): void => {},
             msg_cycles_refunded: (): void => {},
+            msg_cycles_refunded128: (): void => {},
             msg_method_name_copy: (): void => {},
             msg_method_name_size: (): void => {},
             msg_reject_code: (): void => {},
@@ -61,18 +66,12 @@ export async function generateCandidAndCanisterMethods(
             stable_read: (): void => {},
             stable_size: (): void => {},
             stable_write: (): void => {},
-            time: () => 0n,
-            trap: (): void => {},
-            // TODO I don't understand why I can't delete these.
             stable64_grow: (): void => {},
             stable64_read: (): void => {},
             stable64_size: (): void => {},
             stable64_write: (): void => {},
-            call_cycles_add128: (): void => {},
-            canister_cycle_balance128: (): void => {},
-            msg_cycles_available128: (): void => {},
-            msg_cycles_refunded128: (): void => {},
-            msg_cycles_accept128: (): void => {}
+            time: (): bigint => 0n,
+            trap: (): void => {}
         }
         // env: {
         //     azle_log(ptr: number, len: number) {

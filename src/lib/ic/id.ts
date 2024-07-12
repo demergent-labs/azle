@@ -6,7 +6,7 @@ import { Principal } from '../candid/types/reference/principal';
  */
 export function id(): Principal {
     if (globalThis._azleIc === undefined) {
-        return Principal.fromHex('0x04');
+        return Principal.fromHex('04');
     }
 
     // TODO consider bytes instead of string, just like with caller

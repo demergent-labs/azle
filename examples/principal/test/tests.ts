@@ -70,6 +70,16 @@ function getFromHexTests(principalCanister: ActorSubclass<_SERVICE>): Test {
             expect(result.toHex()).toBe(principal.toHex());
         });
 
+        it('converts the hex of the anonymous to a principal', async () => {
+            const principal = Principal.fromHex('04');
+
+            const result = await principalCanister.principalFromHex(
+                principal.toHex()
+            );
+
+            expect(result.toHex()).toBe(principal.toHex());
+        });
+
         it('converts the hex of rrkah-fqaaa-aaaaa-aaaaq-cai to a principal', async () => {
             const principal = Principal.fromText('rrkah-fqaaa-aaaaa-aaaaq-cai');
 
@@ -128,6 +138,16 @@ function getFromTextTests(principalCanister: ActorSubclass<_SERVICE>): Test {
     return () => {
         it('converts "aaaaa-aa" to a principal', async () => {
             const principal = Principal.fromText('aaaaa-aa');
+
+            const result = await principalCanister.principalFromText(
+                principal.toText()
+            );
+
+            expect(result.toText()).toBe(principal.toText());
+        });
+
+        it('converts "aaaaa-aa" to a principal', async () => {
+            const principal = Principal.fromText('2vxsx-fae');
 
             const result = await principalCanister.principalFromText(
                 principal.toText()

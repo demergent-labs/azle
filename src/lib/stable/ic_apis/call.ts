@@ -16,7 +16,7 @@ export async function call(
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
         if (globalThis._azleIc === undefined) {
-            return {};
+            return undefined;
         }
 
         const promiseId = v4();
@@ -34,9 +34,6 @@ export async function call(
         ): void => {
             if (raw !== undefined) {
                 resolve(new Uint8Array(result));
-            } else if (returnIdl === undefined) {
-                // TODO I would like to combine this else if with the else, but it's not quite working right now
-                resolve(undefined);
             } else {
                 const idl = returnIdl === undefined ? [] : [returnIdl];
                 resolve(IDL.decode(idl, result)[0]);
