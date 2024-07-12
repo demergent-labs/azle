@@ -218,7 +218,6 @@ dependencies = [
  "anyhow",
  "candid",
  "candid_parser",
- "canister_methods",
  "ic-cdk",
  "ic-cdk-macros",
  "ic-cdk-timers",
@@ -232,17 +231,6 @@ dependencies = [
  "slotmap",
  "wasmedge_quickjs",
  "wasmi",
-]
-
-[[package]]
-name = "canister_methods"
-version = "0.0.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "serde",
- "serde_json",
- "syn 2.0.63",
 ]
 
 [[package]]

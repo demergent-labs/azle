@@ -39,15 +39,6 @@ export async function prepareRustStagingArea(
         `${canisterPath}/canister`
     );
 
-    if (!existsSync(`${canisterPath}/canister_methods`)) {
-        await mkdir(`${canisterPath}/canister_methods`);
-    }
-
-    await copy(
-        `${AZLE_PACKAGE_PATH}/src/compiler/rust/canister_methods`,
-        `${canisterPath}/canister_methods`
-    );
-
     if (!existsSync(`${canisterPath}/open_value_sharing`)) {
         await mkdir(`${canisterPath}/open_value_sharing`);
     }

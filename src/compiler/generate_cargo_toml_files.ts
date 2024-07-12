@@ -29,7 +29,6 @@ export function generateWorkspaceCargoToml(optLevel: OptLevel): Toml {
         [workspace]
         members = [
             "canister",
-            "canister_methods",
             "open_value_sharing"
         ]
 
