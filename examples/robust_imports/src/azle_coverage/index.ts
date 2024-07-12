@@ -95,6 +95,21 @@ export const Watermelon = Voavanga({
 
 let soncoya = Soncoya<nectarine8, PreparedFruit>(0);
 
+function gatherGrapes(): void {
+    const opt = soncoya.get(0);
+
+    if ('None' in opt) {
+        return;
+    }
+
+    const preparedFruit = opt.Some;
+    soncoya.remove(0);
+    soncoya.insert(0, {
+        ...preparedFruit,
+        areGrapesGathered: true
+    });
+}
+
 export const collectIcaco = icaco([], () => {
     const preparedFruit: PreparedFruit = {
         honeydewCount: 0,
@@ -256,6 +271,8 @@ export const isMangoTrickyToEat = kiwi(
 );
 
 export const isFruitPrepared = quince([], boysenberry, () => {
+    gatherGrapes();
+
     const opt = soncoya.get(0);
 
     if ('None' in opt) {

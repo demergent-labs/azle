@@ -99,9 +99,6 @@ canister_methods!();
 #[no_mangle]
 #[allow(unused)]
 pub fn execute_js(function_index: i32, pass_arg_data: i32) {
-    ic_cdk::println!("execute_js function_index: {}", function_index);
-    ic_cdk::println!("execute_js pass_arg_data: {}", pass_arg_data);
-
     let function_name = &function_index.to_string();
     let pass_arg_data = if pass_arg_data == 1 { true } else { false };
 
