@@ -25,6 +25,12 @@ on:
         branches:
             - main
     pull_request: # Runs on pull requests to any branch
+env:
+    FIRST_DIRECTORIES: |
+        [
+          "examples/apollo_server",
+          "examples/async_await"
+        ]
 jobs:
     release-candidate-deploy:
         runs-on: ubuntu-latest
