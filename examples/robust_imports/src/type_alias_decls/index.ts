@@ -190,7 +190,7 @@ export const getManualAlias = azle.query(
     [],
     types.DeepManualAlias(azle.float64),
     () => {
-        azle.ic.reply({ data: 9.87, type: azle.float64 });
+        azle.ic.reply({ data: 9.87, candidType: azle.float64 });
     },
     { manual: true }
 );

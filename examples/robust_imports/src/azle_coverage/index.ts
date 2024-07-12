@@ -265,7 +265,7 @@ export const isMangoTrickyToEat = kiwi(
     [],
     Mango(boysenberry),
     () => {
-        lemon.reply(true, blackberry);
+        lemon.reply({ data: true, candidType: blackberry });
     },
     { manual: true }
 );
