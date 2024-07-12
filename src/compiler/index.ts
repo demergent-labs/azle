@@ -1,6 +1,4 @@
-import { IOType } from 'child_process';
 import { mkdir, rm, writeFile } from 'fs/promises';
-import { join } from 'path';
 
 import { setupFileWatcher } from './file_watcher/setup_file_watcher';
 import { generateWasmBinary } from './generate_wasm_binary';
@@ -8,23 +6,14 @@ import { getCandidAndCanisterMethods } from './get_candid_and_canister_methods';
 import { getCanisterJavaScript } from './get_canister_javascript';
 import { getNames } from './get_names';
 import { handleCli } from './handle_cli';
-import { getStdIoType, logSuccess, time, unwrap } from './utils';
+import { logSuccess, time, unwrap } from './utils';
 import { green } from './utils/colors';
 import { execSyncPretty } from './utils/exec_sync_pretty';
-import { AZLE_PACKAGE_PATH } from './utils/global_paths';
 import { CompilerInfo } from './utils/types';
 
 azle();
 
 async function azle(): Promise<void> {
-    // We must run this before getNames because
-    // any dfx commands require the azle extension to be installed
-    if (process.argv[2] === 'install-dfx-extension') {
-        installDfxExtension(getStdIoType());
-
-        return;
-    }
-
     const commandExecuted = await handleCli();
 
     if (commandExecuted === true) {
@@ -121,15 +110,4 @@ async function azle(): Promise<void> {
 async function createAzleDirectories(canisterPath: string): Promise<void> {
     await rm(canisterPath, { recursive: true, force: true });
     await mkdir(canisterPath, { recursive: true });
-}
-
-// TODO this is just temporary
-// TODO until we either make azle an official extension in the DFINITY dfx extensions repo
-// TODO or we have a better way for the developer to install the extension locally
-function installDfxExtension(stdioType: IOType): void {
-    const dfxExtensionDirectoryPath = join(AZLE_PACKAGE_PATH, 'dfx_extension');
-    execSyncPretty(
-        `cd ${dfxExtensionDirectoryPath} && ./install.sh`,
-        stdioType
-    );
 }

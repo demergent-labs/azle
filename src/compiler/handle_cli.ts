@@ -1,10 +1,17 @@
+import { IOType } from 'child_process';
 import { rm } from 'fs/promises';
+import { join } from 'path';
 
 import { version as azleVersion } from '../../package.json';
 import { uploadFiles } from './file_uploader';
 import { getFilesToUpload } from './file_uploader/get_files_to_upload';
 import { generateNewAzleProject } from './new_command';
-import { GLOBAL_AZLE_CONFIG_DIR } from './utils/global_paths';
+import { getStdIoType } from './utils';
+import { execSyncPretty } from './utils/exec_sync_pretty';
+import {
+    AZLE_PACKAGE_PATH,
+    GLOBAL_AZLE_CONFIG_DIR
+} from './utils/global_paths';
 
 export async function handleCli(): Promise<boolean> {
     const commandName = process.argv[2];
@@ -29,6 +36,12 @@ export async function handleCli(): Promise<boolean> {
 
     if (commandName === '--version') {
         handleVersionCommand();
+
+        return true;
+    }
+
+    if (commandName === 'install-dfx-extension') {
+        installDfxExtension(getStdIoType());
 
         return true;
     }
@@ -84,4 +97,15 @@ async function handleUploadAssets(): Promise<void> {
 
 function handleVersionCommand(): void {
     console.info(azleVersion);
+}
+
+// TODO this is just temporary
+// TODO until we either make azle an official extension in the DFINITY dfx extensions repo
+// TODO or we have a better way for the developer to install the extension locally
+function installDfxExtension(stdioType: IOType): void {
+    const dfxExtensionDirectoryPath = join(AZLE_PACKAGE_PATH, 'dfx_extension');
+    execSyncPretty(
+        `cd ${dfxExtensionDirectoryPath} && ./install.sh`,
+        stdioType
+    );
 }
