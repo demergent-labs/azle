@@ -278,7 +278,6 @@ jobs:
                   else
                     echo "::set-output name=should_run_tests::true"
                   fi
-
     basic-integration-tests:
         needs: release-candidate-deploy
         runs-on: ${{ matrix.os }}
