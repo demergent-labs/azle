@@ -1,12 +1,4 @@
-import {
-    convertOpt,
-    IDL,
-    Principal,
-    query,
-    StableBTreeMap,
-    time,
-    update
-} from 'azle';
+import { IDL, Principal, query, StableBTreeMap, time, update } from 'azle';
 
 const User = IDL.Record({
     id: IDL.Principal,
@@ -62,18 +54,23 @@ export default class {
 
     @query([IDL.Principal], IDL.Opt(User))
     readUserById(id: Principal): [User] | [] {
-        return convertOpt(users.get(id));
+        const result = users.get(id);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Principal], User)
     deleteUser(id: Principal): User {
         const userOpt = users.get(id);
 
-        if ('None' in userOpt) {
+        if (userOpt === null) {
             throw new Error(`User does not exist: ${id.toText()}`);
         }
 
-        const user = userOpt.Some;
+        const user = userOpt;
 
         user.recordingIds.forEach((recordingId) => {
             recordings.remove(recordingId);
@@ -94,12 +91,12 @@ export default class {
         const userOpt = users.get(userId);
         console.log(1);
 
-        if ('None' in userOpt) {
+        if (userOpt === null) {
             throw new Error(`User does not exist: ${userId.toText()}`);
         }
 
         console.log(2);
-        const user = userOpt.Some;
+        const user = userOpt;
 
         console.log(3);
         const id = generateId();
@@ -134,28 +131,33 @@ export default class {
 
     @query([IDL.Principal], IDL.Opt(Recording))
     readRecordingById(id: Principal): [Recording] | [] {
-        return convertOpt(recordings.get(id));
+        const result = recordings.get(id);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Principal], Recording)
     deleteRecording(id: Principal): Recording {
         const recordingOpt = recordings.get(id);
 
-        if ('None' in recordingOpt) {
+        if (recordingOpt === null) {
             throw new Error(`Recording does not exist: ${id.toText()}`);
         }
 
-        const recording = recordingOpt.Some;
+        const recording = recordingOpt;
 
         const userOpt = users.get(recording.userId);
 
-        if ('None' in userOpt) {
+        if (userOpt === null) {
             throw new Error(
                 `User does not exist: ${recording.userId.toText()}`
             );
         }
 
-        const user = userOpt.Some;
+        const user = userOpt;
 
         const updatedUser: User = {
             ...user,

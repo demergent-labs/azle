@@ -28,11 +28,11 @@ export default class {
     async ethGetBalance(ethereumAddress: string): Promise<string> {
         const urlOpt = stableStorage.get('ethereumUrl');
 
-        if ('None' in urlOpt) {
+        if (urlOpt === null) {
             throw new Error('ethereumUrl is not defined');
         }
 
-        const url = urlOpt.Some;
+        const url = urlOpt;
 
         return await getBalance(url, ethereumAddress);
     }
@@ -41,11 +41,11 @@ export default class {
     async ethGetBlockByNumber(number: number): Promise<string> {
         const urlOpt = stableStorage.get('ethereumUrl');
 
-        if ('None' in urlOpt) {
+        if (urlOpt === null) {
             throw new Error('ethereumUrl is not defined');
         }
 
-        const url = urlOpt.Some;
+        const url = urlOpt;
 
         return await getBlockByNumber(url, number);
     }
