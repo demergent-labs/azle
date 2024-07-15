@@ -12,7 +12,7 @@
     },
     "type": "module",
     "bin": {
-        "azle": "./bin.mjs"
+        "azle": "./src/compiler/index.ts"
     },
     "main": "./src/lib/stable/index.ts",
     "repository": {
