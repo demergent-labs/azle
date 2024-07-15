@@ -4,7 +4,7 @@ import { CandidType } from '../../candid_type';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
 import { TypeMapping } from '../../type_mapping';
-import { CandidMap, toIdlMap } from './to_idl_map';
+import { CandidTypeMap, toIdlTypeMap } from './to_idl_map';
 
 export type Variant<
     T extends {
@@ -32,8 +32,8 @@ export function Variant<
         fromBytes(bytes: Uint8Array) {
             return decode(this, bytes);
         },
-        getIdl(parents: any): IDL.VariantClass {
-            return IDL.Variant(toIdlMap(obj as CandidMap, parents));
+        getIdlType(parents: any): IDL.VariantClass {
+            return IDL.Variant(toIdlTypeMap(obj as CandidTypeMap, parents));
         }
     };
 }

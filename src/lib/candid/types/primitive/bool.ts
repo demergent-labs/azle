@@ -17,7 +17,7 @@ export class AzleBool {
         return decode<bool>(this, bytes) as bool;
     }
 
-    static getIdl(): IDL.BoolClass {
+    static getIdlType(): IDL.BoolClass {
         return IDL.Bool;
     }
 }

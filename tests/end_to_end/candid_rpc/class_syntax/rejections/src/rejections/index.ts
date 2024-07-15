@@ -37,7 +37,7 @@ export default class {
     @update([], RejectionCode)
     async getRejectionCodeNoError(): Promise<RejectionCode> {
         await call(getSomeCanisterPrincipal(), 'accept', {
-            returnIdl: IDL.Bool
+            returnIdlType: IDL.Bool
         });
 
         return rejectCode();
@@ -58,7 +58,7 @@ export default class {
     async getRejectionCodeCanisterReject(): Promise<RejectionCode> {
         try {
             await call(getSomeCanisterPrincipal(), 'reject', {
-                paramIdls: [IDL.Text],
+                paramIdlTypes: [IDL.Text],
                 args: ['reject']
             });
         } catch (error) {
@@ -83,7 +83,7 @@ export default class {
     async getRejectionMessage(message: string): Promise<string> {
         try {
             await call(getSomeCanisterPrincipal(), 'reject', {
-                paramIdls: [IDL.Text],
+                paramIdlTypes: [IDL.Text],
                 args: [message]
             });
         } catch (error) {

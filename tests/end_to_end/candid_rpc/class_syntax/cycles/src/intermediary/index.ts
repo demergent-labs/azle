@@ -5,7 +5,7 @@ export default class {
     @update([], IDL.Nat64)
     async sendCycles(): Promise<bigint> {
         return await call(getCyclesPrincipal(), 'receiveCycles', {
-            returnIdl: IDL.Nat64,
+            returnIdlType: IDL.Nat64,
             payment: 1_000_000n
         });
     }

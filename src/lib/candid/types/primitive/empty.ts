@@ -17,7 +17,7 @@ export class AzleEmpty {
         return decode<empty>(this, bytes) as empty;
     }
 
-    static getIdl(): IDL.EmptyClass {
+    static getIdlType(): IDL.EmptyClass {
         return IDL.Empty;
     }
 }

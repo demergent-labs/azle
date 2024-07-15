@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { CandidType, Parent, toIdlArray } from '../../index';
+import { CandidType, Parent, toIdlTypeArray } from '../../index';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
 import { Principal } from './principal';
@@ -29,10 +29,10 @@ export function Func(
         fromBytes(bytes: Uint8Array): Func {
             return decode<Func>(this, bytes) as Func;
         },
-        getIdl(parents: Parent[]): IDL.FuncClass {
+        getIdlType(parents: Parent[]): IDL.FuncClass {
             return IDL.Func(
-                toIdlArray(paramCandidTypes, parents),
-                toIdlArray(returnCandidTypes, parents),
+                toIdlTypeArray(paramCandidTypes, parents),
+                toIdlTypeArray(returnCandidTypes, parents),
                 modeToCandid[mode]
             );
         }

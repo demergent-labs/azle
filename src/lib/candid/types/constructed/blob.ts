@@ -17,7 +17,7 @@ export class AzleBlob {
         return decode(this, bytes) as blob;
     }
 
-    static getIdl(): IDL.VecClass<number | bigint> {
+    static getIdlType(): IDL.VecClass<number | bigint> {
         return IDL.Vec(IDL.Nat8);
     }
 }

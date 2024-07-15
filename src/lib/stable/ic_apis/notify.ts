@@ -12,7 +12,7 @@ export function notify(
     canisterId: Principal | string,
     method: string,
     options?: {
-        paramIdls?: IDL.Type[];
+        paramIdlTypes?: IDL.Type[];
         args?: any[];
         payment?: bigint;
         raw?: Uint8Array;
@@ -22,7 +22,7 @@ export function notify(
         return undefined;
     }
 
-    const paramIdls = options?.paramIdls ?? [];
+    const paramIdlTypes = options?.paramIdlTypes ?? [];
     const args = options?.args ?? [];
     const payment = options?.payment ?? 0n;
     const raw = options?.raw;
@@ -34,7 +34,7 @@ export function notify(
     const canisterIdBytes = canisterIdPrincipal.toUint8Array().buffer;
     const argsRawBuffer =
         raw === undefined
-            ? new Uint8Array(IDL.encode(paramIdls, args)).buffer
+            ? new Uint8Array(IDL.encode(paramIdlTypes, args)).buffer
             : raw.buffer;
     const paymentString = payment.toString();
 

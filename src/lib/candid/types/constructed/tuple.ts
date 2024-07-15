@@ -3,7 +3,7 @@ import { IDL } from '@dfinity/candid';
 import { CandidType } from '../../candid_type';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
-import { Parent, toIdl } from '../../to_idl';
+import { Parent, toIdlType } from '../../to_idl_type';
 import { TypeMapping } from '../../type_mapping';
 
 export class AzleTuple<T extends any[]> {
@@ -30,11 +30,11 @@ export class AzleTuple<T extends any[]> {
         return decode(this, bytes);
     }
 
-    getIdl(parents: Parent[]): IDL.TupleClass<any> {
-        const idls = this.innerTypes.map((value) => {
-            return toIdl(value, parents);
+    getIdlType(parents: Parent[]): IDL.TupleClass<any> {
+        const idlTypes = this.innerTypes.map((value) => {
+            return toIdlType(value, parents);
         });
-        return IDL.Tuple(...idls);
+        return IDL.Tuple(...idlTypes);
     }
 }
 

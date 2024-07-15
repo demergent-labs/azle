@@ -5,7 +5,7 @@ import { Void } from '../candid/types/primitive/void';
 type ReplyInput =
     | {
           data: any;
-          type: CandidType;
+          candidType: CandidType;
       }
     | {
           raw: Uint8Array;
@@ -38,7 +38,7 @@ export function reply(input: ReplyInput): Void {
     if ('raw' in input) {
         return globalThis._azleIc.replyRaw(input.raw.buffer);
     } else {
-        const { type, data } = input;
+        const { candidType: type, data } = input;
         return globalThis._azleIc.replyRaw(encode(type, data).buffer);
     }
 }

@@ -67,8 +67,8 @@ async function getBalance(
         PRINCIPAL,
         managementCanister.http_request,
         {
-            paramIdls: [HttpRequestArgs],
-            returnIdl: HttpResponse,
+            paramIdlTypes: [HttpRequestArgs],
+            returnIdlType: HttpResponse,
             args: [
                 {
                     url,
@@ -110,8 +110,8 @@ async function getBlockByNumber(url: string, number: number): Promise<string> {
         PRINCIPAL,
         managementCanister.http_request,
         {
-            paramIdls: [HttpRequestArgs],
-            returnIdl: HttpResponse,
+            paramIdlTypes: [HttpRequestArgs],
+            returnIdlType: HttpResponse,
             args: [
                 {
                     url,

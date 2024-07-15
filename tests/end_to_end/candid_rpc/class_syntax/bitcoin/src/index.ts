@@ -17,8 +17,8 @@ export default class {
     @update([IDL.Text], Satoshi)
     async getBalance(address: string): Promise<Satoshi> {
         return await call('aaaaa-aa', 'bitcoin_get_balance', {
-            paramIdls: [GetBalanceArgs],
-            returnIdl: Satoshi,
+            paramIdlTypes: [GetBalanceArgs],
+            returnIdlType: Satoshi,
             args: [
                 {
                     address,
@@ -33,8 +33,8 @@ export default class {
     @update([], IDL.Vec(MillisatoshiPerByte))
     async getCurrentFeePercentiles(): Promise<MillisatoshiPerByte[]> {
         return await call('aaaaa-aa', 'bitcoin_get_current_fee_percentiles', {
-            paramIdls: [GetCurrentFeePercentilesArgs],
-            returnIdl: IDL.Vec(MillisatoshiPerByte),
+            paramIdlTypes: [GetCurrentFeePercentilesArgs],
+            returnIdlType: IDL.Vec(MillisatoshiPerByte),
             args: [
                 {
                     network: { regtest: null }
@@ -47,8 +47,8 @@ export default class {
     @update([IDL.Text], GetUtxosResult)
     async getUtxos(address: string): Promise<GetUtxosResult> {
         return await call('aaaaa-aa', 'bitcoin_get_utxos', {
-            paramIdls: [GetUtxosArgs],
-            returnIdl: GetUtxosResult,
+            paramIdlTypes: [GetUtxosArgs],
+            returnIdlType: GetUtxosResult,
             args: [
                 {
                     address,
@@ -68,7 +68,7 @@ export default class {
                 BITCOIN_CYCLE_COST_PER_TRANSACTION_BYTE;
 
         await call('aaaaa-aa', 'bitcoin_send_transaction', {
-            paramIdls: [SendTransactionArgs],
+            paramIdlTypes: [SendTransactionArgs],
             args: [
                 {
                     transaction,

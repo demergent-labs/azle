@@ -16,11 +16,11 @@ export function executeWithCandidSerde(
     mode: CanisterMethodMode,
     args: any[],
     callback: any,
-    paramIdls: IDL.Type[],
-    returnIdl: IDL.Type | undefined,
+    paramIdlTypes: IDL.Type[],
+    returnIdlType: IDL.Type | undefined,
     manual: boolean
 ): void {
-    const decodedArgs = IDL.decode(paramIdls, args[0]);
+    const decodedArgs = IDL.decode(paramIdlTypes, args[0]);
 
     const result = getResult(decodedArgs, callback);
 
@@ -36,7 +36,7 @@ export function executeWithCandidSerde(
         result
             .then((result: any) => {
                 if (!manual) {
-                    reply({ data: result, idl: returnIdl });
+                    reply({ data: result, idlType: returnIdlType });
                 }
             })
             .catch((error: any) => {
@@ -44,7 +44,7 @@ export function executeWithCandidSerde(
             });
     } else {
         if (!manual) {
-            reply({ data: result, idl: returnIdl });
+            reply({ data: result, idlType: returnIdlType });
         }
     }
 }

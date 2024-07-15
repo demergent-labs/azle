@@ -4,7 +4,7 @@ export default class {
     @update([], IDL.Vec(IDL.Nat8))
     async getRandomnessDirectly(): Promise<Uint8Array> {
         return await call('aaaaa-aa', 'raw_rand', {
-            returnIdl: IDL.Vec(IDL.Nat8)
+            returnIdlType: IDL.Vec(IDL.Nat8)
         });
     }
 
@@ -28,7 +28,9 @@ export default class {
 
     @update([])
     async returnPromiseVoid(): Promise<void> {
-        await call('aaaaa-aa', 'raw_rand', { returnIdl: IDL.Vec(IDL.Nat8) });
+        await call('aaaaa-aa', 'raw_rand', {
+            returnIdlType: IDL.Vec(IDL.Nat8)
+        });
     }
 }
 
@@ -45,5 +47,7 @@ async function getRandomnessLevel2(): Promise<Uint8Array> {
 }
 
 async function getRandomness(): Promise<Uint8Array> {
-    return await call('aaaaa-aa', 'raw_rand', { returnIdl: IDL.Vec(IDL.Nat8) });
+    return await call('aaaaa-aa', 'raw_rand', {
+        returnIdlType: IDL.Vec(IDL.Nat8)
+    });
 }

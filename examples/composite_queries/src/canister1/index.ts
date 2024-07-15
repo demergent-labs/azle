@@ -72,11 +72,11 @@ const CompQueryCanister = Canister({
                 );
                 const responseJson = await response.json();
 
-                ic.reply({ data: responseJson, type: text });
+                ic.reply({ data: responseJson, candidType: text });
             } else {
                 ic.reply({
                     data: await ic.call(canister2.manualQuery),
-                    type: text
+                    candidType: text
                 });
             }
         },

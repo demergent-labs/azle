@@ -45,8 +45,8 @@ export default class {
 
 async function getPublicKeyResult(): Promise<EcdsaPublicKeyResult> {
     return await call('aaaaa-aa', 'ecdsa_public_key', {
-        paramIdls: [EcdsaPublicKeyArgs],
-        returnIdl: EcdsaPublicKeyResult,
+        paramIdlTypes: [EcdsaPublicKeyArgs],
+        returnIdlType: EcdsaPublicKeyResult,
         args: [
             {
                 canister_id: [],
@@ -64,8 +64,8 @@ async function getSignatureResult(
     messageHash: Uint8Array
 ): Promise<SignWithEcdsaResult> {
     return await call('aaaaa-aa', 'sign_with_ecdsa', {
-        paramIdls: [SignWithEcdsaArgs],
-        returnIdl: SignWithEcdsaResult,
+        paramIdlTypes: [SignWithEcdsaArgs],
+        returnIdlType: SignWithEcdsaResult,
         args: [
             {
                 message_hash: messageHash,

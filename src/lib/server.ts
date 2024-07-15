@@ -202,7 +202,7 @@ export async function httpHandler(
                 streaming_strategy: None,
                 upgrade: Some(true)
             },
-            type: HttpResponse()
+            candidType: HttpResponse()
         });
 
         return;
@@ -310,7 +310,7 @@ export async function httpHandler(
                         None: null
                     }
                 },
-                type: HttpResponse()
+                candidType: HttpResponse()
             });
         }
     }

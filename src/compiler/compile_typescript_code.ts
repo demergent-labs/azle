@@ -52,10 +52,10 @@ export async function compileTypeScriptToJavaScript(
                     const canisterMethods = CanisterMethods.default !== undefined ? CanisterMethods.default() : Server(() => globalThis._azleNodeServer)();
 
                     globalThis.candidInfoFunction = () => {
-                        const candidInfo = canisterMethods.getIdl([]).accept(new DidVisitor(), {
+                        const candidInfo = canisterMethods.getIdlType([]).accept(new DidVisitor(), {
                             ...getDefaultVisitorData(),
                             isFirstService: true,
-                            systemFuncs: canisterMethods.getSystemFunctionIdls()
+                            systemFuncs: canisterMethods.getSystemFunctionIdlTypes()
                         });
 
                         return JSON.stringify({

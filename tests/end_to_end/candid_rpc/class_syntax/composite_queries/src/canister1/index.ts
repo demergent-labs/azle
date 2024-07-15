@@ -11,7 +11,7 @@ export default class {
     })
     async simpleCompositeQuery(): Promise<string> {
         return await call(canister2Id, 'simpleQuery', {
-            returnIdl: IDL.Text
+            returnIdlType: IDL.Text
         });
     }
 
@@ -21,7 +21,7 @@ export default class {
     })
     async manualQuery(): Promise<string> {
         return await call(canister2Id, 'manualQuery', {
-            returnIdl: IDL.Text
+            returnIdlType: IDL.Text
         });
     }
 
@@ -33,9 +33,9 @@ export default class {
     async totallyManualQuery(): Promise<void> {
         reply({
             data: await call(canister2Id, 'manualQuery', {
-                returnIdl: IDL.Text
+                returnIdlType: IDL.Text
             }),
-            idl: IDL.Text
+            idlType: IDL.Text
         });
     }
 
@@ -45,7 +45,7 @@ export default class {
     })
     async deepQuery(): Promise<string> {
         return await call(canister2Id, 'deepQuery', {
-            returnIdl: IDL.Text
+            returnIdlType: IDL.Text
         });
     }
 
@@ -55,7 +55,7 @@ export default class {
     })
     async updateQuery(): Promise<string> {
         return await call(canister2Id, 'updateQuery', {
-            returnIdl: IDL.Text
+            returnIdlType: IDL.Text
         });
     }
 
@@ -63,7 +63,7 @@ export default class {
     @query([], IDL.Text)
     async simpleQuery(): Promise<string> {
         return await call(canister2Id, 'simpleQuery', {
-            returnIdl: IDL.Text
+            returnIdlType: IDL.Text
         });
     }
 
@@ -71,7 +71,7 @@ export default class {
     @update([], IDL.Text)
     async simpleUpdate(): Promise<string> {
         return await call(canister2Id, 'deepQuery', {
-            returnIdl: IDL.Text
+            returnIdlType: IDL.Text
         });
     }
 
@@ -126,12 +126,12 @@ function getCanister2Id(): string {
 
 async function incCanister(): Promise<bigint> {
     return await call(id(), 'incCounter', {
-        returnIdl: IDL.Nat
+        returnIdlType: IDL.Nat
     });
 }
 
 async function incCanister2(): Promise<bigint> {
     return await call(canister2Id, 'incCounter', {
-        returnIdl: IDL.Nat
+        returnIdlType: IDL.Nat
     });
 }

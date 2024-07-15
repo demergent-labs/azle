@@ -47,7 +47,7 @@ class WhoAmI {
     // Return the principal identifier of this canister.
     @update([], IDL.Principal)
     async id(): Promise<Principal> {
-        return await call(id(), 'whoami', { returnIdl: IDL.Principal });
+        return await call(id(), 'whoami', { returnIdlType: IDL.Principal });
     }
     // Return the principal identifier of this canister via the global `ic` object.
     // This is much quicker than `id()` above because it isn't making a cross-

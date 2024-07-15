@@ -95,35 +95,35 @@ export default class {
             return;
         }
 
-        reply({ data: message, idl: IDL.Text });
+        reply({ data: message, idlType: IDL.Text });
     }
 
     @update([], IDL.Vec(IDL.Nat8), { manual: true })
     updateBlob(): void {
         reply({
             data: new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
-            idl: IDL.Vec(IDL.Nat8)
+            idlType: IDL.Vec(IDL.Nat8)
         });
     }
 
     @update([], IDL.Float32, { manual: true })
     updateFloat32(): void {
-        reply({ data: 1245.678, idl: IDL.Float32 });
+        reply({ data: 1245.678, idlType: IDL.Float32 });
     }
 
     @update([], IDL.Int8, { manual: true })
     updateInt8(): void {
-        reply({ data: -100, idl: IDL.Int8 });
+        reply({ data: -100, idlType: IDL.Int8 });
     }
 
     @update([], IDL.Nat, { manual: true })
     updateNat(): void {
-        reply({ data: 184467440737095516150n, idl: IDL.Nat });
+        reply({ data: 184467440737095516150n, idlType: IDL.Nat });
     }
 
     @update([], IDL.Null, { manual: true })
     updateNull(): void {
-        reply({ data: null, idl: IDL.Null });
+        reply({ data: null, idlType: IDL.Null });
     }
 
     @update([], undefined, { manual: true })
@@ -141,23 +141,23 @@ export default class {
             ],
             state: { Gas: { Elemental: null } }
         };
-        reply({ data: element, idl: Element });
+        reply({ data: element, idlType: Element });
     }
 
     @update([], IDL.Reserved, { manual: true })
     updateReserved(): void {
-        reply({ data: undefined, idl: IDL.Reserved });
+        reply({ data: undefined, idlType: IDL.Reserved });
     }
 
     @update([], IDL.Text, { manual: true })
     updateString(): void {
-        reply({ data: 'hello', idl: IDL.Text });
+        reply({ data: 'hello', idlType: IDL.Text });
     }
 
     @update([], Gas, { manual: true })
     updateVariant(): void {
         const gas: Gas = { Toxic: null };
-        reply({ data: gas, idl: Gas });
+        reply({ data: gas, idlType: Gas });
     }
 
     @update([], RawReply, { manual: true })
@@ -177,35 +177,35 @@ export default class {
             return;
         }
 
-        reply({ data: message, idl: IDL.Text });
+        reply({ data: message, idlType: IDL.Text });
     }
 
     @query([], IDL.Vec(IDL.Nat8), { manual: true })
     queryBlob(): void {
         reply({
             data: new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
-            idl: IDL.Vec(IDL.Nat8)
+            idlType: IDL.Vec(IDL.Nat8)
         });
     }
 
     @query([], IDL.Float32, { manual: true })
     queryFloat32(): void {
-        reply({ data: 1245.678, idl: IDL.Float32 });
+        reply({ data: 1245.678, idlType: IDL.Float32 });
     }
 
     @query([], IDL.Int8, { manual: true })
     queryInt8(): void {
-        reply({ data: -100, idl: IDL.Int8 });
+        reply({ data: -100, idlType: IDL.Int8 });
     }
 
     @query([], IDL.Nat, { manual: true })
     queryNat(): void {
-        reply({ data: 184467440737095516150n, idl: IDL.Nat });
+        reply({ data: 184467440737095516150n, idlType: IDL.Nat });
     }
 
     @query([], IDL.Null, { manual: true })
     queryNull(): void {
-        reply({ data: null, idl: IDL.Null });
+        reply({ data: null, idlType: IDL.Null });
     }
 
     @query([], undefined, { manual: true })
@@ -224,23 +224,23 @@ export default class {
             state: { Gas: { Elemental: null } }
         };
 
-        reply({ data: element, idl: Element });
+        reply({ data: element, idlType: Element });
     }
 
     @query([], IDL.Reserved, { manual: true })
     queryReserved(): void {
-        reply({ data: undefined, idl: IDL.Reserved });
+        reply({ data: undefined, idlType: IDL.Reserved });
     }
 
     @query([], IDL.Text, { manual: true })
     queryString(): void {
-        reply({ data: 'hello', idl: IDL.Text });
+        reply({ data: 'hello', idlType: IDL.Text });
     }
 
     @query([], Gas, { manual: true })
     queryVariant(): void {
         const gas: Gas = { Toxic: null };
 
-        reply({ data: gas, idl: Gas });
+        reply({ data: gas, idlType: Gas });
     }
 }

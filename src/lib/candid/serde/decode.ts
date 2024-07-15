@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { CandidType, toIdl, toIdlArray } from '../../candid';
+import { CandidType, toIdlType, toIdlTypeArray } from '../../candid';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { AzleOpt, AzleTuple, AzleVec } from '../types/constructed'; // Used for links in comments
 import { DecodeVisitor } from './visitors/decode_visitor';
@@ -32,27 +32,28 @@ function decodeSingle(candidType: CandidType, data: ArrayBuffer): any {
     // needs to be aligned so that this isn't an error. Both are representing
     // candid IDLs, either from the @dfinity/candid library or the
     // Azle-augmented ones
-    const idl = toIdl(candidType);
+    const idlType = toIdlType(candidType);
 
-    const idlIsAzleVoid = Array.isArray(idl);
+    // The candid type was AzleVoid if when converted to an Idl Type it is []
+    const candidTypeIsAzleVoid = Array.isArray(idlType);
 
-    if (idlIsAzleVoid) {
+    if (candidTypeIsAzleVoid) {
         return undefined;
     }
 
-    const candidDecodedValue = IDL.decode([idl], data)[0] as any;
+    const candidDecodedValue = IDL.decode([idlType], data)[0] as any;
 
-    return idl.accept(new DecodeVisitor(), {
+    return idlType.accept(new DecodeVisitor(), {
         candidType: candidType,
         js_data: candidDecodedValue
     });
 }
 
 function decodeMultiple(candidTypes: CandidType[], data: ArrayBuffer): any[] {
-    const idls = toIdlArray(candidTypes);
-    const decoded = IDL.decode(idls, data);
-    return idls.map((idl, index) =>
-        idl.accept(new DecodeVisitor(), {
+    const idlTypes = toIdlTypeArray(candidTypes);
+    const decoded = IDL.decode(idlTypes, data);
+    return idlTypes.map((idlType, index) =>
+        idlType.accept(new DecodeVisitor(), {
             candidType: candidTypes[index],
             js_data: decoded[index]
         })

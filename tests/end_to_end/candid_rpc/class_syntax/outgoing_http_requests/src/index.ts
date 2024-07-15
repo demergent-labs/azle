@@ -18,8 +18,8 @@ export default class {
     @update([], IDL.Text)
     async xkcd(): Promise<string> {
         const httpResponse = await call('aaaaa-aa', 'http_request', {
-            paramIdls: [HttpRequestArgs],
-            returnIdl: HttpResponse,
+            paramIdlTypes: [HttpRequestArgs],
+            returnIdlType: HttpResponse,
             args: [
                 {
                     url: `https://xkcd.com/642/info.0.json`,

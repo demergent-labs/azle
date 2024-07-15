@@ -3,7 +3,7 @@ import { IDL } from '..';
 type ReplyInput<T> =
     | {
           data: T;
-          idl?: IDL.Type;
+          idlType?: IDL.Type;
       }
     | {
           raw: Uint8Array;
@@ -24,13 +24,13 @@ export function reply<T>(input: ReplyInput<T>): void {
     if ('raw' in input) {
         return globalThis._azleIc.replyRaw(input.raw.buffer);
     } else {
-        const idl = input.idl === undefined ? [] : [input.idl];
+        const idlType = input.idlType === undefined ? [] : [input.idlType];
         const data =
-            input.data === undefined && input.idl === undefined
+            input.data === undefined && input.idlType === undefined
                 ? []
                 : [input.data];
 
         // @ts-expect-error idl.d.ts specifies the wrong type for IDL.encode. It's actually a Uint8Array
-        return globalThis._azleIc.replyRaw(IDL.encode(idl, data).buffer);
+        return globalThis._azleIc.replyRaw(IDL.encode(idlType, data).buffer);
     }
 }

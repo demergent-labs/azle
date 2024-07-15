@@ -8,8 +8,8 @@ export default class {
     @update([IDL.Text, IDL.Text, IDL.Nat64], IDL.Nat64)
     async transfer(from: string, to: string, amount: bigint): Promise<bigint> {
         return await call(canister2Id, 'transfer', {
-            paramIdls: [IDL.Text, IDL.Text, IDL.Nat64],
-            returnIdl: IDL.Nat64,
+            paramIdlTypes: [IDL.Text, IDL.Text, IDL.Nat64],
+            returnIdlType: IDL.Nat64,
             args: [from, to, amount]
         });
     }
@@ -17,8 +17,8 @@ export default class {
     @update([IDL.Text], IDL.Nat64)
     async balance(id: string): Promise<bigint> {
         return await call(canister2Id, 'balance', {
-            paramIdls: [IDL.Text],
-            returnIdl: IDL.Nat64,
+            paramIdlTypes: [IDL.Text],
+            returnIdlType: IDL.Nat64,
             args: [id]
         });
     }
@@ -26,8 +26,8 @@ export default class {
     @update([AccountArgs], IDL.Opt(Account))
     async account(args: AccountArgs): Promise<[Account] | []> {
         return await call(canister2Id, 'account', {
-            paramIdls: [AccountArgs],
-            returnIdl: IDL.Opt(Account),
+            paramIdlTypes: [AccountArgs],
+            returnIdlType: IDL.Opt(Account),
             args: [args]
         });
     }
@@ -35,7 +35,7 @@ export default class {
     @update([], IDL.Vec(Account))
     async accounts(): Promise<Account[]> {
         return await call(canister2Id, 'accounts', {
-            returnIdl: IDL.Vec(Account)
+            returnIdlType: IDL.Vec(Account)
         });
     }
 
@@ -47,7 +47,7 @@ export default class {
     @update([])
     sendNotification(): void {
         return notify(canister2Id, 'receiveNotification', {
-            paramIdls: [IDL.Text],
+            paramIdlTypes: [IDL.Text],
             args: ['This is the notification'],
             payment: 10n
         });

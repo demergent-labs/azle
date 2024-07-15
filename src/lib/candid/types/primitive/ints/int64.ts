@@ -17,7 +17,7 @@ export class AzleInt64 {
         return decode<int64>(this, bytes) as int64;
     }
 
-    static getIdl(): IDL.FixedIntClass {
+    static getIdlType(): IDL.FixedIntClass {
         return IDL.Int64;
     }
 }
