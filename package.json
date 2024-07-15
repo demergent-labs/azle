@@ -1,6 +1,6 @@
 {
     "name": "azle",
-    "version": "0.22.0",
+    "version": "0.23.0-rc.7",
     "dfx_version": "0.18.0",
     "description": "TypeScript and JavaScript CDK for the Internet Computer",
     "scripts": {
