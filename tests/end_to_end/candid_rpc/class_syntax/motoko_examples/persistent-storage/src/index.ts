@@ -31,9 +31,7 @@ export default class {
     increment(): bigint {
         const counterOpt = stableStorage.get('counter');
         const counter =
-            'None' in counterOpt
-                ? trap('counter not defined')
-                : counterOpt.Some + 1n;
+            counterOpt === null ? trap('counter not defined') : counterOpt + 1n;
 
         stableStorage.insert('counter', counter);
 
@@ -44,9 +42,7 @@ export default class {
     get(): bigint {
         const counterOpt = stableStorage.get('counter');
         const counter =
-            'None' in counterOpt
-                ? trap('counter not defined')
-                : counterOpt.Some;
+            counterOpt === null ? trap('counter not defined') : counterOpt;
 
         return counter;
     }
@@ -57,9 +53,7 @@ export default class {
 
         const counterOpt = stableStorage.get('counter');
         const counter =
-            'None' in counterOpt
-                ? trap('counter not defined')
-                : counterOpt.Some;
+            counterOpt === null ? trap('counter not defined') : counterOpt;
 
         return counter;
     }

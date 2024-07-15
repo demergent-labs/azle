@@ -211,7 +211,12 @@ export const setStable = azle.update(
     [azle.nat16, azle.text],
     types.DeepOptAlias(azle.text),
     (key, value) => {
-        return stableMap.insert(key, value);
+        const result = stableMap.insert(key, value);
+        if (result === null) {
+            return azle.None;
+        } else {
+            return azle.Some(result);
+        }
     }
 );
 
@@ -219,6 +224,11 @@ export const getStable = azle.query(
     [azle.nat16],
     types.DeepOptAlias(azle.text),
     (key) => {
-        return stableMap.get(key);
+        const result = stableMap.get(key);
+        if (result === null) {
+            return azle.None;
+        } else {
+            return azle.Some(result);
+        }
     }
 );

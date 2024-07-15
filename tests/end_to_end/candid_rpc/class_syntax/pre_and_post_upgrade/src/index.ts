@@ -37,8 +37,7 @@ export default class {
 
         const stableEntriesOpt = stableStorage.get('entries');
 
-        const stableEntries =
-            'None' in stableEntriesOpt ? [] : stableEntriesOpt.Some;
+        const stableEntries = stableEntriesOpt === null ? [] : stableEntriesOpt;
 
         entries = stableEntries.reduce((result, entry) => {
             return {

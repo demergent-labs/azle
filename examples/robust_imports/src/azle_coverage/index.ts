@@ -98,11 +98,11 @@ let soncoya = Soncoya<nectarine8, PreparedFruit>(0);
 function gatherGrapes(): void {
     const opt = soncoya.get(0);
 
-    if ('None' in opt) {
+    if (opt === null) {
         return;
     }
 
-    const preparedFruit = opt.Some;
+    const preparedFruit = opt;
     soncoya.remove(0);
     soncoya.insert(0, {
         ...preparedFruit,
@@ -128,11 +128,11 @@ export const collectIcaco = icaco([], () => {
 export const cutPineapple = pineapple(() => {
     const opt = soncoya.get(0);
 
-    if ('None' in opt) {
+    if (opt === null) {
         return;
     }
 
-    const preparedFruit = opt.Some;
+    const preparedFruit = opt;
     soncoya.remove(0);
     soncoya.insert(0, {
         ...preparedFruit,
@@ -143,11 +143,11 @@ export const cutPineapple = pineapple(() => {
 export const separateArilsFromPith = pomegranate([], () => {
     const opt = soncoya.get(0);
 
-    if ('None' in opt) {
+    if (opt === null) {
         return;
     }
 
-    const preparedFruit = opt.Some;
+    const preparedFruit = opt;
     soncoya.remove(0);
     soncoya.insert(0, {
         ...preparedFruit,
@@ -158,11 +158,11 @@ export const separateArilsFromPith = pomegranate([], () => {
 export const buyHoneydew = honeydew(() => {
     const opt = soncoya.get(0);
 
-    if ('None' in opt) {
+    if (opt === null) {
         return;
     }
 
-    const preparedFruit = opt.Some;
+    const preparedFruit = opt;
     soncoya.remove(0);
     soncoya.insert(0, {
         ...preparedFruit,
@@ -275,11 +275,11 @@ export const isFruitPrepared = quince([], boysenberry, () => {
 
     const opt = soncoya.get(0);
 
-    if ('None' in opt) {
+    if (opt === null) {
         return false;
     }
 
-    const pf = opt.Some;
+    const pf = opt;
 
     return (
         pf.honeydewCount > 0 &&
@@ -296,11 +296,11 @@ export const isFruitPrepared = quince([], boysenberry, () => {
 export const removeRambutanSkins = ugni([], rambutan, () => {
     const opt = soncoya.get(0);
 
-    if ('None' in opt) {
+    if (opt === null) {
         return ic.trap('soncoya is None');
     }
 
-    const preparedFruit = opt.Some;
+    const preparedFruit = opt;
     soncoya.remove(0);
     soncoya.insert(0, {
         ...preparedFruit,
@@ -313,11 +313,11 @@ export const removeRambutanSkins = ugni([], rambutan, () => {
 export const dirtyIlama = ugni([], Vanilla, () => {
     const opt = soncoya.get(0);
 
-    if ('None' in opt) {
+    if (opt === null) {
         return;
     }
 
-    const preparedFruit = opt.Some;
+    const preparedFruit = opt;
     soncoya.remove(0);
     soncoya.insert(0, {
         ...preparedFruit,
@@ -328,11 +328,11 @@ export const dirtyIlama = ugni([], Vanilla, () => {
 export const pickElderberry = ugni([], elderberry, () => {
     const opt = soncoya.get(0);
 
-    if ('None' in opt) {
+    if (opt === null) {
         return ic.trap('soncoya is None');
     }
 
-    const preparedFruit = opt.Some;
+    const preparedFruit = opt;
     soncoya.remove(0);
     soncoya.insert(0, {
         ...preparedFruit,
