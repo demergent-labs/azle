@@ -64,13 +64,11 @@ export default class {
 
     @update([IDL.Principal], User)
     deleteUser(id: Principal): User {
-        const userOpt = users.get(id);
+        const user = users.get(id);
 
-        if (userOpt === null) {
+        if (user === null) {
             throw new Error(`User does not exist: ${id.toText()}`);
         }
-
-        const user = userOpt;
 
         user.recordingIds.forEach((recordingId) => {
             recordings.remove(recordingId);
@@ -87,18 +85,12 @@ export default class {
         name: string,
         userId: Principal
     ): Recording {
-        console.log('You are saying we are not even getting this far?');
-        const userOpt = users.get(userId);
-        console.log(1);
+        const user = users.get(userId);
 
-        if (userOpt === null) {
+        if (user === null) {
             throw new Error(`User does not exist: ${userId.toText()}`);
         }
 
-        console.log(2);
-        const user = userOpt;
-
-        console.log(3);
         const id = generateId();
         const recording: Recording = {
             id,
@@ -107,20 +99,16 @@ export default class {
             name,
             userId
         };
-        console.log(4);
 
         recordings.insert(recording.id, recording);
 
-        console.log(5);
         const updatedUser: User = {
             ...user,
             recordingIds: [...user.recordingIds, recording.id]
         };
 
-        console.log(6);
         users.insert(updatedUser.id, updatedUser);
 
-        console.log(7);
         return recording;
     }
 
@@ -141,23 +129,19 @@ export default class {
 
     @update([IDL.Principal], Recording)
     deleteRecording(id: Principal): Recording {
-        const recordingOpt = recordings.get(id);
+        const recording = recordings.get(id);
 
-        if (recordingOpt === null) {
+        if (recording === null) {
             throw new Error(`Recording does not exist: ${id.toText()}`);
         }
 
-        const recording = recordingOpt;
+        const user = users.get(recording.userId);
 
-        const userOpt = users.get(recording.userId);
-
-        if (userOpt === null) {
+        if (user === null) {
             throw new Error(
                 `User does not exist: ${recording.userId.toText()}`
             );
         }
-
-        const user = userOpt;
 
         const updatedUser: User = {
             ...user,

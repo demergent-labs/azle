@@ -61,13 +61,11 @@ export default Canister({
         }
     }),
     deleteUser: update([Principal], User, (id) => {
-        const userOpt = users.get(id);
+        const user = users.get(id);
 
-        if (userOpt === null) {
+        if (user === null) {
             throw new Error(`User does not exist: ${id.toText()}`);
         }
-
-        const user = userOpt;
 
         user.recordingIds.forEach((recordingId) => {
             recordings.remove(recordingId);
@@ -81,13 +79,11 @@ export default Canister({
         [blob, text, Principal],
         Recording,
         (audio, name, userId) => {
-            const userOpt = users.get(userId);
+            const user = users.get(userId);
 
-            if (userOpt === null) {
+            if (user === null) {
                 throw new Error(`User does not exist: ${userId.toText()}`);
             }
-
-            const user = userOpt;
 
             const id = generateId();
             const recording: Recording = {
@@ -122,23 +118,19 @@ export default Canister({
         }
     }),
     deleteRecording: update([Principal], Recording, (id) => {
-        const recordingOpt = recordings.get(id);
+        const recording = recordings.get(id);
 
-        if (recordingOpt === null) {
+        if (recording === null) {
             throw new Error(`Recording does not exist: ${id.toText()}`);
         }
 
-        const recording = recordingOpt;
+        const user = users.get(recording.userId);
 
-        const userOpt = users.get(recording.userId);
-
-        if (userOpt === null) {
+        if (user === null) {
             throw new Error(
                 `User does not exist: ${recording.userId.toText()}`
             );
         }
-
-        const user = userOpt;
 
         const updatedUser: User = {
             ...user,
