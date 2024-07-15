@@ -1,5 +1,3 @@
-// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { IDL } from '@dfinity/candid';
 
 import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';
@@ -45,7 +43,9 @@ export interface ServiceFunctionInfo {
     [key: string]: FunctionInfo;
 }
 
-export function createCanisterFunction(canisterOptions: CanisterOptions) {
+export function createCanisterFunction(
+    canisterOptions: CanisterOptions
+): _AzleFunctionReturnType {
     let canister = createCanisterFunctionBase(canisterOptions);
     canister.init = createSystemMethod('init', canisterOptions);
     canister.heartbeat = createSystemMethod('heartbeat', canisterOptions);
@@ -65,7 +65,9 @@ export function createCanisterFunction(canisterOptions: CanisterOptions) {
     return canister;
 }
 
-function createGetIdlTypeFunction(canisterOptions: CanisterOptions) {
+function createGetIdlTypeFunction(
+    canisterOptions: CanisterOptions
+): (parents: Parent[]) => IDL.ServiceClass {
     return (parents: Parent[]): IDL.ServiceClass => {
         const serviceFunctionInfo = canisterOptions as ServiceFunctionInfo;
 
@@ -119,7 +121,9 @@ function createUpdateOrQueryFunctionIdlType(
     return IDL.Func(paramIdlTypes, returnIdlTypes, annotations);
 }
 
-function createCallbacks(canisterOptions: CanisterOptions) {
+function createCallbacks(
+    canisterOptions: CanisterOptions
+): Record<string, ((...args: any) => any) | undefined> {
     return Object.entries(canisterOptions).reduce((acc, entry) => {
         const canisterMethod = entry[1];
 
@@ -146,7 +150,7 @@ function createCanisterFunctionBase(
                         callFunction: CallRawFunction | NotifyRawFunction,
                         cycles: bigint,
                         args: any[]
-                    ) => {
+                    ): void | Promise<any> => {
                         return serviceCall(
                             principal as any,
                             key,
@@ -166,12 +170,19 @@ function createCanisterFunctionBase(
     };
 }
 
+type ServiceCall = (
+    notify: boolean,
+    callFunction: CallRawFunction | NotifyRawFunction,
+    cycles: bigint,
+    args: any[]
+) => void | Promise<any>;
+
 function serviceCall(
     canisterId: Principal,
     methodName: string,
     paramCandidTypes: CandidType[],
     returnCandidType: CandidType
-) {
+): ServiceCall {
     return (
         notify: boolean,
         callFunction: CallRawFunction | NotifyRawFunction,
@@ -188,7 +199,7 @@ function serviceCall(
                 cycles
             );
         } else {
-            return (async () => {
+            return (async (): Promise<any> => {
                 const encodedResult = await (callFunction as CallRawFunction)(
                     canisterId,
                     methodName,
