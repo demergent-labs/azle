@@ -14,7 +14,9 @@ export function GetTestArb(
             const imports = new Set([
                 ...stableBTreeMap.imports,
                 'Opt',
-                'query'
+                'query',
+                'None',
+                'Some'
             ]);
 
             const paramCandidTypeObjects = [
@@ -42,8 +44,13 @@ export function GetTestArb(
 }
 
 function generateBody(stableBTreeMapName: string): string {
-    return `
-        return ${stableBTreeMapName}.get(param0);
+    return /*TS*/ `
+        const result = ${stableBTreeMapName}.get(param0);
+        if (result === null) {
+            return None
+        } else {
+            return Some(result)
+        }
     `;
 }
 

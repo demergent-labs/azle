@@ -14,7 +14,9 @@ export function InsertTestArb(
             const imports = new Set([
                 ...stableBTreeMap.imports,
                 'Opt',
-                'update'
+                'update',
+                'None',
+                'Some'
             ]);
 
             const paramCandidTypeObjects = [
@@ -43,8 +45,13 @@ export function InsertTestArb(
 }
 
 function generateBody(stableBTreeMapName: string): string {
-    return `
-        return ${stableBTreeMapName}.insert(param0, param1);
+    return /*TS*/ `
+        const result = ${stableBTreeMapName}.insert(param0, param1);
+        if (result === null) {
+            return None
+        } else {
+            return Some(result)
+        }
     `;
 }
 
