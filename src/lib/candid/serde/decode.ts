@@ -35,9 +35,9 @@ function decodeSingle(candidType: CandidType, data: ArrayBuffer): any {
     const idlType = toIdlType(candidType);
 
     // The candid type was AzleVoid if when converted to an Idl Type it is []
-    const candidTypeIsAzleVoid = Array.isArray(idlType);
+    const candidTypeWasAzleVoid = Array.isArray(idlType);
 
-    if (candidTypeIsAzleVoid) {
+    if (candidTypeWasAzleVoid) {
         return undefined;
     }
 

@@ -36,9 +36,9 @@ function encodeSingle(candidType: CandidType, data: any): Uint8Array {
     const idlType = toIdlType(candidType);
 
     // The candid type was AzleVoid if when converted to an Idl Type it is []
-    const candidTypeIsAzleVoid = Array.isArray(idlType);
+    const candidTypeWasAzleVoid = Array.isArray(idlType);
 
-    if (candidTypeIsAzleVoid) {
+    if (candidTypeWasAzleVoid) {
         return new Uint8Array(IDL.encode([], []));
     }
 
