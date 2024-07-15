@@ -15,7 +15,7 @@ export async function generateWasmBinary(
     canisterPath: string
 ): Promise<void> {
     if (process.env.AZLE_GEN_WASM === 'true') {
-        await prepareRustStagingArea(canisterConfig, canisterPath, js);
+        await prepareRustStagingArea(canisterConfig, canisterPath);
 
         compileRustCodeNatively(
             STATIC_CANISTER_TEMPLATE_PATH,
