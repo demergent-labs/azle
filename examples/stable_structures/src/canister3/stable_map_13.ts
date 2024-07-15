@@ -1,9 +1,11 @@
 import {
     bool,
     nat64,
+    None,
     Opt,
     Principal,
     query,
+    Some,
     StableBTreeMap,
     text,
     Tuple,
@@ -18,13 +20,23 @@ export const stableMap13Methods = {
         return stableMap13.containsKey(key);
     }),
     stableMap13Get: query([text], Opt(Principal), (key) => {
-        return stableMap13.get(key);
+        const result = stableMap13.get(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap13Insert: update(
         [text, Principal],
         Opt(Principal),
         (key, value) => {
-            return stableMap13.insert(key, value);
+            const result = stableMap13.insert(key, value);
+            if (result === null) {
+                return None;
+            } else {
+                return Some(result);
+            }
         }
     ),
     stableMap13IsEmpty: query([], bool, () => {
@@ -40,7 +52,12 @@ export const stableMap13Methods = {
         return stableMap13.len();
     }),
     stableMap13Remove: update([text], Opt(Principal), (key) => {
-        return stableMap13.remove(key);
+        const result = stableMap13.remove(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap13Values: query([], Vec(Principal), () => {
         return stableMap13.values();

@@ -1,9 +1,11 @@
 import {
     bool,
     nat64,
+    None,
     Null,
     Opt,
     query,
+    Some,
     StableBTreeMap,
     Tuple,
     update,
@@ -17,10 +19,21 @@ export const stableMap8Methods = {
         return stableMap8.containsKey(key);
     }),
     stableMap8Get: query([bool], Opt(Null), (key) => {
-        return stableMap8.get(key);
+        const result = stableMap8.get(key);
+        if (stableMap8.containsKey(key)) {
+            return Some(result);
+        } else {
+            return None;
+        }
     }),
     stableMap8Insert: update([bool, Null], Opt(Null), (key, value) => {
-        return stableMap8.insert(key, value);
+        const hasOldValue = stableMap8.containsKey(key);
+        const result = stableMap8.insert(key, value);
+        if (hasOldValue) {
+            return Some(result);
+        } else {
+            return None;
+        }
     }),
     stableMap8IsEmpty: query([], bool, () => {
         return stableMap8.isEmpty();
@@ -35,7 +48,13 @@ export const stableMap8Methods = {
         return stableMap8.len();
     }),
     stableMap8Remove: update([bool], Opt(Null), (key) => {
-        return stableMap8.remove(key);
+        const hasOldValue = stableMap8.containsKey(key);
+        const result = stableMap8.remove(key);
+        if (hasOldValue) {
+            return Some(result);
+        } else {
+            return None;
+        }
     }),
     stableMap8Values: query([], Vec(Null), () => {
         return stableMap8.values();

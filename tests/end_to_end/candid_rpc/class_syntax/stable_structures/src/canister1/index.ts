@@ -1,4 +1,4 @@
-import { convertOpt, IDL, query, StableBTreeMap, update } from 'azle';
+import { IDL, query, StableBTreeMap, update } from 'azle';
 
 import { Reaction, User } from '../types';
 
@@ -23,12 +23,22 @@ export default class {
 
     @query([IDL.Nat8], IDL.Opt(IDL.Text))
     stableMap0Get(key: number): [string] | [] {
-        return convertOpt(stableMap0.get(key));
+        const result = stableMap0.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Nat8, IDL.Text], IDL.Opt(IDL.Text))
     stableMap0Insert(key: number, value: string): [string] | [] {
-        return convertOpt(stableMap0.insert(key, value));
+        const result = stableMap0.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -53,7 +63,12 @@ export default class {
 
     @update([IDL.Nat8], IDL.Opt(IDL.Text))
     stableMap0Remove(key: number): [string] | [] {
-        return convertOpt(stableMap0.remove(key));
+        const result = stableMap0.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(IDL.Text))
@@ -70,12 +85,22 @@ export default class {
 
     @query([IDL.Nat16], IDL.Opt(IDL.Vec(IDL.Nat8)))
     stableMap1Get(key: number): [Uint8Array] | [] {
-        return convertOpt(stableMap1.get(key));
+        const result = stableMap1.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Nat16, IDL.Vec(IDL.Nat8)], IDL.Opt(IDL.Vec(IDL.Nat8)))
     stableMap1Insert(key: number, value: Uint8Array): [Uint8Array] | [] {
-        return convertOpt(stableMap1.insert(key, value));
+        const result = stableMap1.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -100,7 +125,12 @@ export default class {
 
     @update([IDL.Nat16], IDL.Opt(IDL.Vec(IDL.Nat8)))
     stableMap1Remove(key: number): [Uint8Array] | [] {
-        return convertOpt(stableMap1.remove(key));
+        const result = stableMap1.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(IDL.Vec(IDL.Nat8)))
@@ -117,12 +147,22 @@ export default class {
 
     @query([IDL.Nat32], IDL.Opt(IDL.Nat))
     stableMap2Get(key: number): [bigint] | [] {
-        return convertOpt(stableMap2.get(key));
+        const result = stableMap2.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Nat32, IDL.Nat], IDL.Opt(IDL.Nat))
     stableMap2Insert(key: number, value: bigint): [bigint] | [] {
-        return convertOpt(stableMap2.insert(key, value));
+        const result = stableMap2.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -147,7 +187,12 @@ export default class {
 
     @update([IDL.Nat32], IDL.Opt(IDL.Nat))
     stableMap2Remove(key: number): [bigint] | [] {
-        return convertOpt(stableMap2.remove(key));
+        const result = stableMap2.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(IDL.Nat))
@@ -164,12 +209,22 @@ export default class {
 
     @query([Reaction], IDL.Opt(IDL.Int))
     stableMap3Get(key: Reaction): [bigint] | [] {
-        return convertOpt(stableMap3.get(key));
+        const result = stableMap3.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([Reaction, IDL.Int], IDL.Opt(IDL.Int))
     stableMap3Insert(key: Reaction, value: bigint): [bigint] | [] {
-        return convertOpt(stableMap3.insert(key, value));
+        const result = stableMap3.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -194,7 +249,12 @@ export default class {
 
     @update([Reaction], IDL.Opt(IDL.Int))
     stableMap3Remove(key: Reaction): [bigint] | [] {
-        return convertOpt(stableMap3.remove(key));
+        const result = stableMap3.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(IDL.Int))
@@ -211,12 +271,22 @@ export default class {
 
     @query([User], IDL.Opt(IDL.Float32))
     stableMap4Get(key: User): [number] | [] {
-        return convertOpt(stableMap4.get(key));
+        const result = stableMap4.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([User, IDL.Float32], IDL.Opt(IDL.Float32))
     stableMap4Insert(key: User, value: number): [number] | [] {
-        return convertOpt(stableMap4.insert(key, value));
+        const result = stableMap4.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -241,7 +311,12 @@ export default class {
 
     @update([User], IDL.Opt(IDL.Float32))
     stableMap4Remove(key: User): [number] | [] {
-        return convertOpt(stableMap4.remove(key));
+        const result = stableMap4.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(IDL.Float32))

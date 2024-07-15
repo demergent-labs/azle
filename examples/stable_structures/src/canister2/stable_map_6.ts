@@ -1,8 +1,10 @@
 import {
     bool,
     nat64,
+    None,
     Opt,
     query,
+    Some,
     StableBTreeMap,
     Tuple,
     update,
@@ -16,10 +18,20 @@ export const stableMap6Methods = {
         return stableMap6.containsKey(key);
     }),
     stableMap6Get: query([Vec(nat64)], Opt(bool), (key) => {
-        return stableMap6.get(key);
+        const result = stableMap6.get(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap6Insert: update([Vec(nat64), bool], Opt(bool), (key, value) => {
-        return stableMap6.insert(key, value);
+        const result = stableMap6.insert(key, value);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap6IsEmpty: query([], bool, () => {
         return stableMap6.isEmpty();
@@ -34,7 +46,12 @@ export const stableMap6Methods = {
         return stableMap6.len();
     }),
     stableMap6Remove: update([Vec(nat64)], Opt(bool), (key) => {
-        return stableMap6.remove(key);
+        const result = stableMap6.remove(key);
+        if (result === null) {
+            return None;
+        } else {
+            return Some(result);
+        }
     }),
     stableMap6Values: query([], Vec(bool), () => {
         return stableMap6.values();

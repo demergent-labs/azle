@@ -1,6 +1,3 @@
-import { None, Opt, Some } from '../candid/types/constructed/opt';
-import { nat8 } from '../candid/types/primitive/nats/nat8';
-import { nat64 } from '../candid/types/primitive/nats/nat64';
 import { stableJson } from './stable_json';
 
 export interface Serializable {
@@ -11,7 +8,7 @@ export interface Serializable {
 // TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function StableBTreeMap<Key = any, Value = any>(
-    memoryIdNumber: nat8,
+    memoryIdNumber: number,
     keySerializable: Serializable = stableJson,
     valueSerializable: Serializable = stableJson
 ) {
@@ -50,7 +47,7 @@ export function StableBTreeMap<Key = any, Value = any>(
          * @param key the location from which to retrieve.
          * @returns the value associated with the given key, if it exists.
          */
-        get(key: Key): Opt<Value> {
+        get(key: Key): Value | null {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
@@ -63,10 +60,10 @@ export function StableBTreeMap<Key = any, Value = any>(
             );
 
             if (encodedResult === undefined) {
-                return None;
+                return null;
             } else {
-                return Some(
-                    valueSerializable.fromBytes(new Uint8Array(encodedResult))
+                return valueSerializable.fromBytes(
+                    new Uint8Array(encodedResult)
                 );
             }
         },
@@ -76,7 +73,7 @@ export function StableBTreeMap<Key = any, Value = any>(
          * @param value the value to insert.
          * @returns the previous value of the key, if present.
          */
-        insert(key: Key, value: Value): Opt<Value> {
+        insert(key: Key, value: Value): Value | null {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
@@ -91,10 +88,10 @@ export function StableBTreeMap<Key = any, Value = any>(
             );
 
             if (encodedResult === undefined) {
-                return None;
+                return null;
             } else {
-                return Some(
-                    valueSerializable.fromBytes(new Uint8Array(encodedResult))
+                return valueSerializable.fromBytes(
+                    new Uint8Array(encodedResult)
                 );
             }
         },
@@ -160,7 +157,7 @@ export function StableBTreeMap<Key = any, Value = any>(
          * Checks to see how many elements are in the map.
          * @returns the number of elements in the map.
          */
-        len(): nat64 {
+        len(): bigint {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
@@ -172,7 +169,7 @@ export function StableBTreeMap<Key = any, Value = any>(
          * @param key the location from which to remove.
          * @returns the previous value at the key if it exists, `null` otherwise.
          */
-        remove(key: Key): Opt<Value> {
+        remove(key: Key): Value | null {
             if (globalThis._azleIc === undefined) {
                 return undefined as any;
             }
@@ -185,10 +182,10 @@ export function StableBTreeMap<Key = any, Value = any>(
             );
 
             if (encodedValue === undefined) {
-                return None;
+                return null;
             } else {
-                return Some(
-                    valueSerializable.fromBytes(new Uint8Array(encodedValue))
+                return valueSerializable.fromBytes(
+                    new Uint8Array(encodedValue)
                 );
             }
         },

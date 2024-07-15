@@ -1,4 +1,4 @@
-import { convertOpt, IDL, query, StableBTreeMap, update } from 'azle';
+import { IDL, query, StableBTreeMap, update } from 'azle';
 
 let stableMap5 = StableBTreeMap<[string] | [], number>(5);
 let stableMap6 = StableBTreeMap<bigint[], boolean>(6);
@@ -21,12 +21,22 @@ export default class {
 
     @query([IDL.Opt(IDL.Text)], IDL.Opt(IDL.Float64))
     stableMap5Get(key: [string] | []): [number] | [] {
-        return convertOpt(stableMap5.get(key));
+        const result = stableMap5.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Opt(IDL.Text), IDL.Float64], IDL.Opt(IDL.Float64))
     stableMap5Insert(key: [string] | [], value: number): [number] | [] {
-        return convertOpt(stableMap5.insert(key, value));
+        const result = stableMap5.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -51,7 +61,12 @@ export default class {
 
     @update([IDL.Opt(IDL.Text)], IDL.Opt(IDL.Float64))
     stableMap5Remove(key: [string] | []): [number] | [] {
-        return convertOpt(stableMap5.remove(key));
+        const result = stableMap5.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(IDL.Float64))
@@ -68,12 +83,22 @@ export default class {
 
     @query([IDL.Vec(IDL.Nat64)], IDL.Opt(IDL.Bool))
     stableMap6Get(key: bigint[]): [boolean] | [] {
-        return convertOpt(stableMap6.get(key));
+        const result = stableMap6.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Vec(IDL.Nat64), IDL.Bool], IDL.Opt(IDL.Bool))
     stableMap6Insert(key: bigint[], value: boolean): [boolean] | [] {
-        return convertOpt(stableMap6.insert(key, value));
+        const result = stableMap6.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -98,7 +123,12 @@ export default class {
 
     @update([IDL.Vec(IDL.Nat64)], IDL.Opt(IDL.Bool))
     stableMap6Remove(key: bigint[]): [boolean] | [] {
-        return convertOpt(stableMap6.remove(key));
+        const result = stableMap6.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(IDL.Bool))
@@ -115,12 +145,23 @@ export default class {
 
     @query([IDL.Null], IDL.Opt(IDL.Null))
     stableMap7Get(key: null): [null] | [] {
-        return convertOpt(stableMap7.get(key));
+        const result = stableMap7.get(key);
+        if (stableMap7.containsKey(key)) {
+            return [result];
+        } else {
+            return [];
+        }
     }
 
     @update([IDL.Null, IDL.Null], IDL.Opt(IDL.Null))
     stableMap7Insert(key: null, value: null): [null] | [] {
-        return convertOpt(stableMap7.insert(key, value));
+        const hasOldValue = stableMap7.containsKey(key);
+        const result = stableMap7.insert(key, value);
+        if (hasOldValue) {
+            return [result];
+        } else {
+            return [];
+        }
     }
 
     @query([], IDL.Bool)
@@ -145,7 +186,13 @@ export default class {
 
     @update([IDL.Null], IDL.Opt(IDL.Null))
     stableMap7Remove(key: null): [null] | [] {
-        return convertOpt(stableMap7.remove(key));
+        const hasOldValue = stableMap7.containsKey(key);
+        const result = stableMap7.remove(key);
+        if (hasOldValue) {
+            return [result];
+        } else {
+            return [];
+        }
     }
 
     @query([], IDL.Vec(IDL.Null))
@@ -162,12 +209,23 @@ export default class {
 
     @query([IDL.Bool], IDL.Opt(IDL.Null))
     stableMap8Get(key: boolean): [null] | [] {
-        return convertOpt(stableMap8.get(key));
+        const result = stableMap8.get(key);
+        if (stableMap8.containsKey(key)) {
+            return [result];
+        } else {
+            return [];
+        }
     }
 
     @update([IDL.Bool, IDL.Null], IDL.Opt(IDL.Null))
     stableMap8Insert(key: boolean, value: null): [null] | [] {
-        return convertOpt(stableMap8.insert(key, value));
+        const hasOldValue = stableMap8.containsKey(key);
+        const result = stableMap8.insert(key, value);
+        if (hasOldValue) {
+            return [result];
+        } else {
+            return [];
+        }
     }
 
     @query([], IDL.Bool)
@@ -192,7 +250,13 @@ export default class {
 
     @update([IDL.Bool], IDL.Opt(IDL.Null))
     stableMap8Remove(key: boolean): [null] | [] {
-        return convertOpt(stableMap8.remove(key));
+        const hasOldValue = stableMap8.containsKey(key);
+        const result = stableMap8.remove(key);
+        if (hasOldValue) {
+            return [result];
+        } else {
+            return [];
+        }
     }
 
     @query([], IDL.Vec(IDL.Null))
@@ -209,12 +273,22 @@ export default class {
 
     @query([IDL.Float64], IDL.Opt(IDL.Vec(IDL.Text)))
     stableMap9Get(key: number): [string[]] | [] {
-        return convertOpt(stableMap9.get(key));
+        const result = stableMap9.get(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @update([IDL.Float64, IDL.Vec(IDL.Text)], IDL.Opt(IDL.Vec(IDL.Text)))
     stableMap9Insert(key: number, value: string[]): [string[]] | [] {
-        return convertOpt(stableMap9.insert(key, value));
+        const result = stableMap9.insert(key, value);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Bool)
@@ -239,7 +313,12 @@ export default class {
 
     @update([IDL.Float64], IDL.Opt(IDL.Vec(IDL.Text)))
     stableMap9Remove(key: number): [string[]] | [] {
-        return convertOpt(stableMap9.remove(key));
+        const result = stableMap9.remove(key);
+        if (result === null) {
+            return [];
+        } else {
+            return [result];
+        }
     }
 
     @query([], IDL.Vec(IDL.Vec(IDL.Text)))
