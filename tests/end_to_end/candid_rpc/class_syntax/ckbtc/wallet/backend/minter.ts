@@ -1,4 +1,4 @@
-import { IDL, Result } from 'azle';
+import { IDL } from 'azle';
 
 import {
     UpdateBalanceError,
@@ -47,11 +47,13 @@ const UpdateBalanceError = IDL.Variant({
     GenericError: IDL.Record({ error_message: IDL.Text, error_code: IDL.Nat64 })
 });
 
-export const UpdateBalanceResult = Result(
-    IDL.Vec(UtxoStatus),
-    UpdateBalanceError
-);
-export type UpdateBalanceResult = Result<UtxoStatus[], UpdateBalanceError>;
+export const UpdateBalanceResult = IDL.Variant({
+    Ok: IDL.Vec(UtxoStatus),
+    Err: UpdateBalanceError
+});
+export type UpdateBalanceResult =
+    | { Ok: UtxoStatus[] }
+    | { Err: UpdateBalanceError };
 
 export const GetBtcAddressArgs = IDL.Record({
     owner: IDL.Opt(IDL.Principal),
