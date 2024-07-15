@@ -1,16 +1,14 @@
-// TODO make this function's return type explicit https://github.com/demergent-labs/azle/issues/1860
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { IDL } from '@dfinity/candid';
 
 import { CanisterMethodInfo } from '../../../../../canister_methods/types/canister_method_info';
 import { ic } from '../../../../../ic';
-import { CandidType, Parent, toIdlArray } from '../../../../index';
+import { CandidType, Parent, toIdlTypeArray } from '../../../../index';
 import { _AzleRecursiveFunction } from '../../../../recursive';
 import { decode, encode } from '../../../../serde';
 import { Principal } from '../../principal';
 import { createQueryMethods, createUpdateMethods } from './query_update';
 import {
-    createGetSystemFunctionIdlFunction,
+    createGetSystemFunctionIdlTypeFunction,
     createSystemMethod
 } from './system_methods';
 
@@ -28,11 +26,11 @@ type _AzleFunctionReturnType = {
     queries?: any[];
     updates?: any[];
     callbacks?: any;
-    getSystemFunctionIdls?: (parents: Parent[]) => IDL.FuncClass[];
-    getIdl?: (parents: Parent[]) => IDL.Type<any>;
+    getSystemFunctionIdlTypes?: (parents: Parent[]) => IDL.FuncClass[];
+    getIdlType?: (parents: Parent[]) => IDL.Type<any>;
 };
 
-type CallRawFunction = typeof ic.callRaw | typeof ic.callRaw128;
+type CallRawFunction = typeof ic.callRaw;
 type NotifyRawFunction = typeof ic.notifyRaw;
 
 type FunctionInfo = {
@@ -41,11 +39,20 @@ type FunctionInfo = {
     returnCandidType: CandidType;
 };
 
+type ServiceCall = (
+    notify: boolean,
+    callFunction: CallRawFunction | NotifyRawFunction,
+    cycles: bigint,
+    args: any[]
+) => void | Promise<any>;
+
 export interface ServiceFunctionInfo {
     [key: string]: FunctionInfo;
 }
 
-export function createCanisterFunction(canisterOptions: CanisterOptions) {
+export function createCanisterFunction(
+    canisterOptions: CanisterOptions
+): _AzleFunctionReturnType {
     let canister = createCanisterFunctionBase(canisterOptions);
     canister.init = createSystemMethod('init', canisterOptions);
     canister.heartbeat = createSystemMethod('heartbeat', canisterOptions);
@@ -58,18 +65,20 @@ export function createCanisterFunction(canisterOptions: CanisterOptions) {
     canister.queries = createQueryMethods(canisterOptions);
     canister.updates = createUpdateMethods(canisterOptions);
     canister.callbacks = createCallbacks(canisterOptions);
-    canister.getIdl = createGetIdlFunction(canisterOptions);
-    canister.getSystemFunctionIdls =
-        createGetSystemFunctionIdlFunction(canisterOptions);
+    canister.getIdlType = createGetIdlTypeFunction(canisterOptions);
+    canister.getSystemFunctionIdlTypes =
+        createGetSystemFunctionIdlTypeFunction(canisterOptions);
 
     return canister;
 }
 
-function createGetIdlFunction(canisterOptions: CanisterOptions) {
+function createGetIdlTypeFunction(
+    canisterOptions: CanisterOptions
+): (parents: Parent[]) => IDL.ServiceClass {
     return (parents: Parent[]): IDL.ServiceClass => {
         const serviceFunctionInfo = canisterOptions as ServiceFunctionInfo;
 
-        // We don't want init, post upgrade, etc showing up in the idl
+        // We don't want init, post upgrade, etc showing up in the idl type
         const isQueryOrUpdate = (mode: string): boolean => {
             return mode === 'query' || mode === 'update';
         };
@@ -82,7 +91,7 @@ function createGetIdlFunction(canisterOptions: CanisterOptions) {
                 (accumulator, [methodName, functionInfo]) => {
                     return {
                         ...accumulator,
-                        [methodName]: createUpdateOrQueryFunctionIdl(
+                        [methodName]: createUpdateOrQueryFunctionIdlType(
                             functionInfo,
                             parents
                         )
@@ -102,18 +111,26 @@ function createAnnotation(mode: 'query' | 'update'): string[] {
     return [];
 }
 
-function createUpdateOrQueryFunctionIdl(
+function createUpdateOrQueryFunctionIdlType(
     functionInfo: FunctionInfo,
     parents: Parent[]
 ): IDL.FuncClass {
     const annotations = createAnnotation(functionInfo.mode);
-    const paramIdls = toIdlArray(functionInfo.paramCandidTypes, parents);
-    const returnIdls = toIdlArray(functionInfo.returnCandidType, parents);
+    const paramIdlTypes = toIdlTypeArray(
+        functionInfo.paramCandidTypes,
+        parents
+    );
+    const returnIdlType = toIdlTypeArray(
+        functionInfo.returnCandidType,
+        parents
+    );
 
-    return IDL.Func(paramIdls, returnIdls, annotations);
+    return IDL.Func(paramIdlTypes, returnIdlType, annotations);
 }
 
-function createCallbacks(canisterOptions: CanisterOptions) {
+function createCallbacks(
+    canisterOptions: CanisterOptions
+): Record<string, ((...args: any) => any) | undefined> {
     return Object.entries(canisterOptions).reduce((acc, entry) => {
         const canisterMethod = entry[1];
 
@@ -140,7 +157,7 @@ function createCanisterFunctionBase(
                         callFunction: CallRawFunction | NotifyRawFunction,
                         cycles: bigint,
                         args: any[]
-                    ) => {
+                    ): ReturnType<ServiceCall> => {
                         return serviceCall(
                             principal as any,
                             key,
@@ -165,7 +182,7 @@ function serviceCall(
     methodName: string,
     paramCandidTypes: CandidType[],
     returnCandidType: CandidType
-) {
+): ServiceCall {
     return (
         notify: boolean,
         callFunction: CallRawFunction | NotifyRawFunction,
@@ -182,7 +199,7 @@ function serviceCall(
                 cycles
             );
         } else {
-            return (async () => {
+            return (async (): Promise<any> => {
                 const encodedResult = await (callFunction as CallRawFunction)(
                     canisterId,
                     methodName,

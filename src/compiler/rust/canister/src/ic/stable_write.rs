@@ -15,7 +15,7 @@ impl JsFn for NativeFunction {
             panic!("conversion from JsValue to JsArrayBuffer failed")
         };
 
-        ic_cdk::api::stable::stable_write(offset_string.parse().unwrap(), &buf);
+        ic_cdk::api::stable::stable64_write(offset_string.parse().unwrap(), &buf);
 
         JsValue::UnDefined
     }

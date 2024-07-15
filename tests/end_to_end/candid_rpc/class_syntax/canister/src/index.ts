@@ -34,7 +34,7 @@ export default class {
 
     @update([Canister], IDL.Text)
     async canisterCrossCanisterCall(someCanister: Canister): Promise<string> {
-        return await call(someCanister, 'update1', { returnIdl: IDL.Text });
+        return await call(someCanister, 'update1', { returnIdlType: IDL.Text });
     }
 }
 

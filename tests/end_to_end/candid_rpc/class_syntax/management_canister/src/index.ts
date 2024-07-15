@@ -46,7 +46,7 @@ export default class {
     @update([IDL.Principal], IDL.Bool)
     async executeUpdateSettings(canisterId: Principal): Promise<boolean> {
         await call('aaaaa-aa', 'update_settings', {
-            paramIdls: [UpdateSettingsArgs],
+            paramIdlTypes: [UpdateSettingsArgs],
             args: [
                 {
                     canister_id: canisterId,
@@ -71,8 +71,8 @@ export default class {
         chunk: Uint8Array
     ): Promise<ChunkHash> {
         return await call('aaaaa-aa', 'upload_chunk', {
-            paramIdls: [UploadChunkArgs],
-            returnIdl: ChunkHash,
+            paramIdlTypes: [UploadChunkArgs],
+            returnIdlType: ChunkHash,
             args: [
                 {
                     canister_id: canisterId,
@@ -85,7 +85,7 @@ export default class {
     @update([IDL.Principal], IDL.Bool)
     async executeClearChunkStore(canisterId: Principal): Promise<boolean> {
         await call('aaaaa-aa', 'clear_chunk_store', {
-            paramIdls: [ClearChunkStoreArgs],
+            paramIdlTypes: [ClearChunkStoreArgs],
             args: [
                 {
                     canister_id: canisterId
@@ -99,8 +99,8 @@ export default class {
     @update([IDL.Principal], StoredChunksResult)
     async getStoredChunks(canisterId: Principal): Promise<StoredChunksResult> {
         return await call('aaaaa-aa', 'stored_chunks', {
-            paramIdls: [StoredChunksArgs],
-            returnIdl: StoredChunksResult,
+            paramIdlTypes: [StoredChunksArgs],
+            returnIdlType: StoredChunksResult,
             args: [
                 {
                     canister_id: canisterId
@@ -115,7 +115,7 @@ export default class {
         wasmModule: Uint8Array
     ): Promise<boolean> {
         await call('aaaaa-aa', 'install_code', {
-            paramIdls: [InstallCodeArgs],
+            paramIdlTypes: [InstallCodeArgs],
             args: [
                 {
                     mode: {
@@ -140,7 +140,7 @@ export default class {
         wasmModuleHash: Uint8Array
     ): Promise<boolean> {
         await call('aaaaa-aa', 'install_chunked_code', {
-            paramIdls: [InstallChunkedCodeArgs],
+            paramIdlTypes: [InstallChunkedCodeArgs],
             args: [
                 {
                     mode: {
@@ -163,7 +163,7 @@ export default class {
     @update([IDL.Principal], IDL.Bool)
     async executeUninstallCode(canisterId: Principal): Promise<boolean> {
         await call('aaaaa-aa', 'uninstall_code', {
-            paramIdls: [UninstallCodeArgs],
+            paramIdlTypes: [UninstallCodeArgs],
             args: [
                 {
                     canister_id: canisterId,
@@ -178,7 +178,7 @@ export default class {
     @update([IDL.Principal], IDL.Bool)
     async executeStartCanister(canisterId: Principal): Promise<boolean> {
         await call('aaaaa-aa', 'start_canister', {
-            paramIdls: [StartCanisterArgs],
+            paramIdlTypes: [StartCanisterArgs],
             args: [
                 {
                     canister_id: canisterId
@@ -191,7 +191,7 @@ export default class {
     @update([IDL.Principal], IDL.Bool)
     async executeStopCanister(canisterId: Principal): Promise<boolean> {
         await call('aaaaa-aa', 'stop_canister', {
-            paramIdls: [StopCanisterArgs],
+            paramIdlTypes: [StopCanisterArgs],
             args: [
                 {
                     canister_id: canisterId
@@ -205,8 +205,8 @@ export default class {
     @update([CanisterInfoArgs], CanisterInfoResult)
     async getCanisterInfo(args: CanisterInfoArgs): Promise<CanisterInfoResult> {
         return await call('aaaaa-aa', 'canister_info', {
-            paramIdls: [CanisterInfoArgs],
-            returnIdl: CanisterInfoResult,
+            paramIdlTypes: [CanisterInfoArgs],
+            returnIdlType: CanisterInfoResult,
             args: [args]
         });
     }
@@ -216,8 +216,8 @@ export default class {
         args: CanisterStatusArgs
     ): Promise<CanisterStatusResult> {
         return await call('aaaaa-aa', 'canister_status', {
-            paramIdls: [CanisterStatusArgs],
-            returnIdl: CanisterStatusResult,
+            paramIdlTypes: [CanisterStatusArgs],
+            returnIdlType: CanisterStatusResult,
             args: [args]
         });
     }
@@ -225,7 +225,7 @@ export default class {
     @update([IDL.Principal], IDL.Bool)
     async executeDeleteCanister(canisterId: Principal): Promise<boolean> {
         await call('aaaaa-aa', 'delete_canister', {
-            paramIdls: [DeleteCanisterArgs],
+            paramIdlTypes: [DeleteCanisterArgs],
             args: [
                 {
                     canister_id: canisterId
@@ -239,7 +239,7 @@ export default class {
     @update([IDL.Principal], IDL.Bool)
     async executeDepositCycles(canisterId: Principal): Promise<boolean> {
         await call('aaaaa-aa', 'deposit_cycles', {
-            paramIdls: [DepositCyclesArgs],
+            paramIdlTypes: [DepositCyclesArgs],
             args: [
                 {
                     canister_id: canisterId
@@ -254,7 +254,7 @@ export default class {
     @update([], IDL.Vec(IDL.Nat8))
     async getRawRand(): Promise<Uint8Array> {
         return await call('aaaaa-aa', 'raw_rand', {
-            returnIdl: IDL.Vec(IDL.Nat8)
+            returnIdlType: IDL.Vec(IDL.Nat8)
         });
     }
     // TODO we should test this like we test depositCycles
@@ -264,8 +264,8 @@ export default class {
             'aaaaa-aa',
             'provisional_create_canister_with_cycles',
             {
-                paramIdls: [ProvisionalCreateCanisterWithCyclesArgs],
-                returnIdl: ProvisionalCreateCanisterWithCyclesResult,
+                paramIdlTypes: [ProvisionalCreateCanisterWithCyclesArgs],
+                returnIdlType: ProvisionalCreateCanisterWithCyclesResult,
                 args: [
                     {
                         amount: [],
@@ -284,7 +284,7 @@ export default class {
         amount: bigint
     ): Promise<boolean> {
         await call('aaaaa-aa', 'provisional_top_up_canister', {
-            paramIdls: [ProvisionalTopUpCanisterArgs],
+            paramIdlTypes: [ProvisionalTopUpCanisterArgs],
             args: [
                 {
                     canister_id: canisterId,
@@ -304,8 +304,8 @@ export default class {
 
 async function createCanister(): Promise<CreateCanisterResult> {
     return await call('aaaaa-aa', 'create_canister', {
-        paramIdls: [CreateCanisterArgs],
-        returnIdl: CreateCanisterResult,
+        paramIdlTypes: [CreateCanisterArgs],
+        returnIdlType: CreateCanisterResult,
         args: [{ settings: [], sender_canister_version: [] }],
         payment: 50_000_000_000_000n
     });

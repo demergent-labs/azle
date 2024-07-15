@@ -3,7 +3,7 @@ import { Principal as DfinityPrincipal } from '@dfinity/principal';
 
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
-import { Parent } from '../../to_idl';
+import { Parent } from '../../to_idl_type';
 
 export class Principal extends DfinityPrincipal {
     static _azleKind = 'Principal' as const;
@@ -18,7 +18,7 @@ export class Principal extends DfinityPrincipal {
         return decode<DfinityPrincipal>(this, bytes) as DfinityPrincipal;
     }
 
-    static getIdl(_parents: Parent[]): IDL.PrincipalClass {
+    static getIdlType(_parents: Parent[]): IDL.PrincipalClass {
         return IDL.Principal;
     }
 }

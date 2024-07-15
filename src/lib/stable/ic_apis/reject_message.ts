@@ -11,7 +11,5 @@ import { rejectCode } from './reject_code'; // Used for links in comments
  * @returns the rejection message
  */
 export function rejectMessage(): string {
-    return globalThis._azleIc
-        ? globalThis._azleIc.rejectMessage()
-        : (undefined as any);
+    return globalThis._azleIc ? globalThis._azleIc.rejectMessage() : '';
 }

@@ -1,5 +1,3 @@
-// TODO basically copied into call_raw128
-
 use wasmedge_quickjs::{AsObject, Context, JsFn, JsValue};
 
 use crate::{run_event_loop, RUNTIME};
@@ -38,11 +36,11 @@ impl JsFn for NativeFunction {
         } else {
             panic!("conversion from JsValue to JsString failed")
         };
-        let payment: u64 = payment_string.parse().unwrap();
+        let payment: u128 = payment_string.parse().unwrap();
 
         ic_cdk::spawn(async move {
             let call_result =
-                ic_cdk::api::call::call_raw(canister_id, &method, &args_raw, payment).await;
+                ic_cdk::api::call::call_raw128(canister_id, &method, &args_raw, payment).await;
 
             RUNTIME.with(|runtime| {
                 let mut runtime = runtime.borrow_mut();

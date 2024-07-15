@@ -13,7 +13,7 @@ export async function fetchIcp(
     const canisterMethod = url.pathname.replace('/', '');
 
     const { body } = init ?? {};
-    const { args, cycles, cycles128 } = (body ?? {}) as any;
+    const { args, cycles } = (body ?? {}) as any;
     const candidPath = determineCandidPath(
         canisterId,
         (body as any)?.candidPath
@@ -47,20 +47,12 @@ export async function fetchIcp(
 
     const canisterPrincipal = Principal.fromText(canisterId);
 
-    const result =
-        cycles128 === undefined
-            ? await ic.callRaw(
-                  canisterPrincipal,
-                  canisterMethod,
-                  argsRaw,
-                  BigInt(cycles ?? 0)
-              )
-            : await ic.callRaw128(
-                  canisterPrincipal,
-                  canisterMethod,
-                  argsRaw,
-                  BigInt(cycles128 ?? 0)
-              );
+    const result = await ic.callRaw(
+        canisterPrincipal,
+        canisterMethod,
+        argsRaw,
+        BigInt(cycles ?? 0)
+    );
 
     const decodedResult = IDL.decode(funcIdl.retTypes, result);
 

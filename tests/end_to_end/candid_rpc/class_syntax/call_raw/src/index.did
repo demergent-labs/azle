@@ -1,4 +1,3 @@
 service: () -> {
     executeCallRaw: (principal, text, text, nat64) -> (text);
-    executeCallRaw128: (principal, text, text, nat) -> (text);
 }

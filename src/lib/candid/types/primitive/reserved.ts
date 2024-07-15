@@ -17,7 +17,7 @@ export class AzleReserved {
         return decode(this, bytes);
     }
 
-    static getIdl(): IDL.ReservedClass {
+    static getIdlType(): IDL.ReservedClass {
         return IDL.Reserved;
     }
 }

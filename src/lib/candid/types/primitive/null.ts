@@ -17,7 +17,7 @@ export class AzleNull {
         return decode<Null>(this, bytes) as Null;
     }
 
-    static getIdl(): IDL.NullClass {
+    static getIdlType(): IDL.NullClass {
         return IDL.Null;
     }
 }

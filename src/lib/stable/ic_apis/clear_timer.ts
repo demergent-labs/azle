@@ -4,7 +4,7 @@
  */
 export function clearTimer(timerId: bigint): void {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return undefined;
     }
 
     globalThis._azleIc.clearTimer(timerId.toString());

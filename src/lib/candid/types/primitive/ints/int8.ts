@@ -17,7 +17,7 @@ export class AzleInt8 {
         return decode<int8>(this, bytes) as int8;
     }
 
-    static getIdl(): IDL.FixedIntClass {
+    static getIdlType(): IDL.FixedIntClass {
         return IDL.Int8;
     }
 }

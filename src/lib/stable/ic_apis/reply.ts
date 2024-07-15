@@ -1,5 +1,14 @@
 import { IDL } from '..';
 
+type ReplyInput<T> =
+    | {
+          data: T;
+          idlType?: IDL.Type;
+      }
+    | {
+          raw: Uint8Array;
+      };
+
 /**
  * Used to manually reply to an ingress message. Intended to be used in
  * canister methods with a {@link Manual} return type.
@@ -7,15 +16,21 @@ import { IDL } from '..';
  * is the generic type supplied to `Manual<T>`. Otherwise will result in an
  * uncaught `TypeError`.
  */
-export function reply<T>(data: T, type?: IDL.Type): void {
+export function reply<T>(input: ReplyInput<T>): void {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return undefined;
     }
 
-    const encoded =
-        type === undefined
-            ? new Uint8Array(IDL.encode([], [])).buffer
-            : new Uint8Array(IDL.encode([type], [data])).buffer;
+    if ('raw' in input) {
+        return globalThis._azleIc.replyRaw(input.raw.buffer);
+    } else {
+        const idlType = input.idlType === undefined ? [] : [input.idlType];
+        const data =
+            input.data === undefined && input.idlType === undefined
+                ? []
+                : [input.data];
 
-    return globalThis._azleIc.replyRaw(encoded);
+        // @ts-expect-error idl.d.ts specifies the wrong type for IDL.encode. It's actually a Uint8Array
+        return globalThis._azleIc.replyRaw(IDL.encode(idlType, data).buffer);
+    }
 }

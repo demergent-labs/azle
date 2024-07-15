@@ -17,7 +17,7 @@ export class AzleFloat32 {
         return decode<float32>(this, bytes) as float32;
     }
 
-    static getIdl(): IDL.FloatClass {
+    static getIdlType(): IDL.FloatClass {
         return IDL.Float32;
     }
 }

@@ -8,7 +8,6 @@ export { inspectMessage } from './inspect_message';
 export { postUpgrade } from './post_upgrade';
 export { preUpgrade } from './pre_upgrade';
 export { query } from './query';
-export * from './system_types';
 export { update } from './update';
 export * from '@dfinity/candid';
 export * from '@dfinity/principal';

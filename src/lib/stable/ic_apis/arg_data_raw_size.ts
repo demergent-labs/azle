@@ -3,7 +3,5 @@
  * @returns the data size
  */
 export function argDataRawSize(): number {
-    return globalThis._azleIc
-        ? Number(globalThis._azleIc.argDataRawSize())
-        : (undefined as any);
+    return globalThis._azleIc ? Number(globalThis._azleIc.argDataRawSize()) : 0;
 }

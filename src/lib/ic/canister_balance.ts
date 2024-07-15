@@ -6,7 +6,7 @@ import { nat64 } from '../candid/types/primitive/nats/nat64';
  */
 export function canisterBalance(): nat64 {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return 0n;
     }
 
     return BigInt(globalThis._azleIc.canisterBalance());

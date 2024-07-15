@@ -79,7 +79,7 @@ export default Canister({
                 return;
             }
 
-            ic.reply(message, text);
+            ic.reply({ data: message, candidType: text });
         },
         { manual: true }
     ),
@@ -87,10 +87,12 @@ export default Canister({
         [],
         Manual(blob),
         () => {
-            ic.reply(
-                new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
-                blob
-            );
+            ic.reply({
+                data: new Uint8Array([
+                    83, 117, 114, 112, 114, 105, 115, 101, 33
+                ]),
+                candidType: blob
+            });
         },
         { manual: true }
     ),
@@ -98,7 +100,7 @@ export default Canister({
         [],
         Manual(float32),
         () => {
-            ic.reply(1245.678, float32);
+            ic.reply({ data: 1245.678, candidType: float32 });
         },
         { manual: true }
     ),
@@ -106,7 +108,7 @@ export default Canister({
         [],
         Manual(int8),
         () => {
-            ic.reply(-100, int8);
+            ic.reply({ data: -100, candidType: int8 });
         },
         { manual: true }
     ),
@@ -114,7 +116,7 @@ export default Canister({
         [],
         Manual(nat),
         () => {
-            ic.reply(184467440737095516150n, nat);
+            ic.reply({ data: 184467440737095516150n, candidType: nat });
         },
         { manual: true }
     ),
@@ -122,7 +124,7 @@ export default Canister({
         [],
         Manual(Null),
         () => {
-            ic.reply(null, Null);
+            ic.reply({ data: null, candidType: Null });
         },
         { manual: true }
     ),
@@ -130,7 +132,7 @@ export default Canister({
         [],
         Manual(Void),
         () => {
-            ic.reply(undefined, Void);
+            ic.reply({ data: undefined, candidType: Void });
         },
         { manual: true }
     ),
@@ -154,7 +156,7 @@ export default Canister({
                     Gas: { Elemental: null }
                 }
             };
-            ic.reply(element, Element);
+            ic.reply({ data: element, candidType: Element });
         },
         { manual: true }
     ),
@@ -162,7 +164,7 @@ export default Canister({
         [],
         Manual(reserved),
         () => {
-            ic.reply(undefined, reserved);
+            ic.reply({ data: undefined, candidType: reserved });
         },
         { manual: true }
     ),
@@ -170,7 +172,7 @@ export default Canister({
         [],
         Manual(text),
         () => {
-            ic.reply('hello', text);
+            ic.reply({ data: 'hello', candidType: text });
         },
         { manual: true }
     ),
@@ -179,7 +181,7 @@ export default Canister({
         Manual(Gas),
         () => {
             const gas = { Toxic: null };
-            ic.reply(gas, Gas);
+            ic.reply({ data: gas, candidType: Gas });
         },
         { manual: true }
     ),
@@ -187,11 +189,11 @@ export default Canister({
         [],
         Manual(RawReply),
         () => {
-            ic.replyRaw(
-                ic.candidEncode(
+            ic.reply({
+                raw: ic.candidEncode(
                     '(record { "int" = 42; "text" = "text"; "bool" = true; "myBlob" = blob "Surprise!"; "myVariant" = variant { Medium } })'
                 )
-            );
+            });
         },
         { manual: true }
     ),
@@ -205,7 +207,7 @@ export default Canister({
                 return;
             }
 
-            ic.reply(message, text);
+            ic.reply({ data: message, candidType: text });
         },
         { manual: true }
     ),
@@ -213,10 +215,12 @@ export default Canister({
         [],
         Manual(blob),
         () => {
-            ic.reply(
-                new Uint8Array([83, 117, 114, 112, 114, 105, 115, 101, 33]),
-                blob
-            );
+            ic.reply({
+                data: new Uint8Array([
+                    83, 117, 114, 112, 114, 105, 115, 101, 33
+                ]),
+                candidType: blob
+            });
         },
         { manual: true }
     ),
@@ -224,7 +228,7 @@ export default Canister({
         [],
         Manual(float32),
         () => {
-            ic.reply(1245.678, float32);
+            ic.reply({ data: 1245.678, candidType: float32 });
         },
         { manual: true }
     ),
@@ -232,7 +236,7 @@ export default Canister({
         [],
         Manual(int8),
         () => {
-            ic.reply(-100, int8);
+            ic.reply({ data: -100, candidType: int8 });
         },
         { manual: true }
     ),
@@ -240,7 +244,7 @@ export default Canister({
         [],
         Manual(nat),
         () => {
-            ic.reply(184_467_440_737_095_516_150n, nat);
+            ic.reply({ data: 184_467_440_737_095_516_150n, candidType: nat });
         },
         { manual: true }
     ),
@@ -248,7 +252,7 @@ export default Canister({
         [],
         Manual(Null),
         () => {
-            ic.reply(null, Null);
+            ic.reply({ data: null, candidType: Null });
         },
         { manual: true }
     ),
@@ -256,7 +260,7 @@ export default Canister({
         [],
         Manual(Void),
         () => {
-            ic.reply(undefined, Void);
+            ic.reply({ data: undefined, candidType: Void });
         },
         { manual: true }
     ),
@@ -280,7 +284,7 @@ export default Canister({
                     Gas: { Elemental: null }
                 }
             };
-            ic.reply(element, Element);
+            ic.reply({ data: element, candidType: Element });
         },
         { manual: true }
     ),
@@ -288,7 +292,7 @@ export default Canister({
         [],
         Manual(reserved),
         () => {
-            ic.reply(undefined, reserved);
+            ic.reply({ data: undefined, candidType: reserved });
         },
         { manual: true }
     ),
@@ -296,7 +300,7 @@ export default Canister({
         [],
         Manual(text),
         () => {
-            ic.reply('hello', text);
+            ic.reply({ data: 'hello', candidType: text });
         },
         { manual: true }
     ),
@@ -305,7 +309,7 @@ export default Canister({
         Manual(Gas),
         () => {
             const gas = { Toxic: null };
-            ic.reply(gas, Gas);
+            ic.reply({ data: gas, candidType: Gas });
         },
         { manual: true }
     )

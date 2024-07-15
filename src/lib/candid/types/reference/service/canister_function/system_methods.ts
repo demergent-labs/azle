@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { Parent, toIdlArray } from '../../../../index';
+import { Parent, toIdlTypeArray } from '../../../../index';
 import { _AzleRecursiveFunction } from '../../../../recursive';
 import { CanisterOptions, ServiceFunctionInfo } from '.';
 
@@ -27,7 +27,7 @@ export function createSystemMethod(
     };
 }
 
-export function createGetSystemFunctionIdlFunction(
+export function createGetSystemFunctionIdlTypeFunction(
     canisterOptions: CanisterOptions
 ) {
     return (parents: Parent[]): IDL.FuncClass[] => {
@@ -38,19 +38,22 @@ export function createGetSystemFunctionIdlFunction(
                 const mode = functionInfo.mode;
                 const isSystemMethod = !(mode === 'update' || mode === 'query');
                 if (!isSystemMethod) {
-                    // IDLs that are in update and query are already accounted for in the standard getIdl function
+                    // IDLs that are in update and query are already accounted for in the standard getIdlType function
                     return accumulator;
                 }
 
-                const paramIdls = toIdlArray(
+                const paramIdlTypes = toIdlTypeArray(
                     functionInfo.paramCandidTypes,
                     parents
                 );
-                const returnIdl = toIdlArray(
+                const returnIdlType = toIdlTypeArray(
                     functionInfo.returnCandidType,
                     parents
                 );
-                return [...accumulator, IDL.Func(paramIdls, returnIdl, [mode])];
+                return [
+                    ...accumulator,
+                    IDL.Func(paramIdlTypes, returnIdlType, [mode])
+                ];
             },
             [] as IDL.FuncClass[]
         );

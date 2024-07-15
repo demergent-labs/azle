@@ -6,7 +6,7 @@
  */
 export function dataCertificate(): [Uint8Array] | [] {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return [];
     }
 
     const rawRustValue = globalThis._azleIc.dataCertificate();

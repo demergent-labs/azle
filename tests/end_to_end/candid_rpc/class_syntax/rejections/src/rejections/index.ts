@@ -1,17 +1,43 @@
-import {
-    call,
-    IDL,
-    rejectCode,
-    RejectionCode,
-    rejectMessage,
-    update
-} from 'azle';
+import { call, IDL, rejectCode, rejectMessage, update } from 'azle';
+
+const RejectionCode = IDL.Variant({
+    NoError: IDL.Null,
+    SysFatal: IDL.Null,
+    SysTransient: IDL.Null,
+    DestinationInvalid: IDL.Null,
+    CanisterReject: IDL.Null,
+    CanisterError: IDL.Null,
+    Unknown: IDL.Null
+});
+
+type RejectionCode =
+    | {
+          NoError: null;
+      }
+    | {
+          SysFatal: null;
+      }
+    | {
+          SysTransient: null;
+      }
+    | {
+          DestinationInvalid: null;
+      }
+    | {
+          CanisterReject: null;
+      }
+    | {
+          CanisterError: null;
+      }
+    | {
+          Unknown: null;
+      };
 
 export default class {
     @update([], RejectionCode)
     async getRejectionCodeNoError(): Promise<RejectionCode> {
         await call(getSomeCanisterPrincipal(), 'accept', {
-            returnIdl: IDL.Bool
+            returnIdlType: IDL.Bool
         });
 
         return rejectCode();
@@ -32,7 +58,7 @@ export default class {
     async getRejectionCodeCanisterReject(): Promise<RejectionCode> {
         try {
             await call(getSomeCanisterPrincipal(), 'reject', {
-                paramIdls: [IDL.Text],
+                paramIdlTypes: [IDL.Text],
                 args: ['reject']
             });
         } catch (error) {
@@ -57,7 +83,7 @@ export default class {
     async getRejectionMessage(message: string): Promise<string> {
         try {
             await call(getSomeCanisterPrincipal(), 'reject', {
-                paramIdls: [IDL.Text],
+                paramIdlTypes: [IDL.Text],
                 args: [message]
             });
         } catch (error) {

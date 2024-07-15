@@ -1,7 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
-import { ic } from '../ic';
 import { handleUncaughtError } from './error';
+import { reply } from './ic_apis';
 
 type CanisterMethodMode =
     | 'query'
@@ -16,11 +16,11 @@ export function executeWithCandidSerde(
     mode: CanisterMethodMode,
     args: any[],
     callback: any,
-    paramIdls: IDL.Type[],
-    returnIdl: IDL.Type | undefined,
+    paramIdlTypes: IDL.Type[],
+    returnIdlType: IDL.Type | undefined,
     manual: boolean
 ): void {
-    const decodedArgs = IDL.decode(paramIdls, args[0]);
+    const decodedArgs = IDL.decode(paramIdlTypes, args[0]);
 
     const result = getResult(decodedArgs, callback);
 
@@ -36,13 +36,7 @@ export function executeWithCandidSerde(
         result
             .then((result: any) => {
                 if (!manual) {
-                    if (returnIdl !== undefined) {
-                        ic.replyRaw(
-                            new Uint8Array(IDL.encode([returnIdl], [result]))
-                        );
-                    } else {
-                        ic.replyRaw(new Uint8Array(IDL.encode([], [])));
-                    }
+                    reply({ data: result, idlType: returnIdlType });
                 }
             })
             .catch((error: any) => {
@@ -50,11 +44,7 @@ export function executeWithCandidSerde(
             });
     } else {
         if (!manual) {
-            if (returnIdl !== undefined) {
-                ic.replyRaw(new Uint8Array(IDL.encode([returnIdl], [result])));
-            } else {
-                ic.replyRaw(new Uint8Array(IDL.encode([], [])));
-            }
+            reply({ data: result, idlType: returnIdlType });
         }
     }
 }

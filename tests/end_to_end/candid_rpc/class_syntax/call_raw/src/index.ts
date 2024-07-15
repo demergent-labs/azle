@@ -15,19 +15,4 @@ export default class {
 
         return candidDecode(result);
     }
-
-    @update([IDL.Principal, IDL.Text, IDL.Text, IDL.Nat], IDL.Text)
-    async executeCallRaw128(
-        canisterId: Principal,
-        method: string,
-        candidArgs: string,
-        payment: bigint
-    ): Promise<string> {
-        const result = await call(canisterId, method, {
-            raw: candidEncode(candidArgs),
-            payment
-        });
-
-        return candidDecode(result);
-    }
 }

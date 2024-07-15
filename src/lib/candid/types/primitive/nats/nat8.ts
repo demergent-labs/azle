@@ -17,7 +17,7 @@ export class AzleNat8 {
         return decode<nat8>(this, bytes) as nat8;
     }
 
-    static getIdl(): IDL.FixedNatClass {
+    static getIdlType(): IDL.FixedNatClass {
         return IDL.Nat8;
     }
 }

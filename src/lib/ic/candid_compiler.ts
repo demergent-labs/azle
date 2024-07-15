@@ -7,7 +7,7 @@ import { text } from '../candid/types/primitive/text';
  */
 export function candidCompiler(candidPath: text): string {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return '';
     }
 
     return globalThis._azleIc.candidCompiler(candidPath);

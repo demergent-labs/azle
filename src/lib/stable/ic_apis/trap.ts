@@ -5,7 +5,7 @@
  */
 export function trap(message: string): never {
     if (globalThis._azleIc === undefined) {
-        return undefined as never;
+        throw new Error();
     }
 
     return globalThis._azleIc.trap(message);

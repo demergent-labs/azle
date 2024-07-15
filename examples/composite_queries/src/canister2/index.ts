@@ -35,7 +35,10 @@ export default Canister({
         [],
         Manual(text),
         () => {
-            ic.reply('Hello from Canister 2 manual query', text);
+            ic.reply({
+                data: 'Hello from Canister 2 manual query',
+                candidType: text
+            });
         },
         { manual: true }
     ),

@@ -1,20 +1,23 @@
 import { IDL } from '@dfinity/candid';
 
 import { CandidType } from '../../candid_type';
-import { Parent, toIdl } from '../../to_idl';
+import { Parent, toIdlType } from '../../to_idl_type';
 
-export type CandidMap = { [key: string]: CandidType };
-export type IdlMap = { [key: string]: IDL.Type<any> };
+export type CandidTypeMap = { [key: string]: CandidType };
+export type IdlTypeMap = { [key: string]: IDL.Type<any> };
 
-export function toIdlMap(candidMap: CandidMap, parent: Parent[]): IdlMap {
-    const idlMap: IdlMap = {};
+export function toIdlTypeMap(
+    candidMap: CandidTypeMap,
+    parent: Parent[]
+): IdlTypeMap {
+    const idlTypeMap: IdlTypeMap = {};
 
     for (const key in candidMap) {
         if (Object.prototype.hasOwnProperty.call(candidMap, key)) {
             const candidType = candidMap[key];
-            idlMap[key] = toIdl(candidType, parent);
+            idlTypeMap[key] = toIdlType(candidType, parent);
         }
     }
 
-    return idlMap;
+    return idlTypeMap;
 }

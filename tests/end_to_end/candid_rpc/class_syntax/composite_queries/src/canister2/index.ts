@@ -25,7 +25,10 @@ export default class {
         manual: true
     })
     manualQuery(): void {
-        reply('Hello from Canister 2 manual query', IDL.Text);
+        reply({
+            data: 'Hello from Canister 2 manual query',
+            idlType: IDL.Text
+        });
     }
 
     @query([], IDL.Text, {
@@ -33,7 +36,7 @@ export default class {
     })
     async deepQuery(): Promise<string> {
         return await call(canister3Id, 'deepQuery', {
-            returnIdl: IDL.Text
+            returnIdlType: IDL.Text
         });
     }
 }

@@ -5,7 +5,7 @@
  */
 export function candidCompiler(candidPath: string): string {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return '';
     }
 
     return globalThis._azleIc.candidCompiler(candidPath);

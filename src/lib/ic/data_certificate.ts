@@ -9,7 +9,7 @@ import { None, Opt, Some } from '../candid/types/constructed/opt';
  */
 export function dataCertificate(): Opt<blob> {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return None;
     }
 
     const rawRustValue = globalThis._azleIc.dataCertificate();

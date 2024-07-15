@@ -14,7 +14,7 @@ export function setTimerInterval(
     callback: () => void | Promise<void>
 ): bigint {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return 0n;
     }
 
     const timerCallbackId = `_interval_timer_${v4()}`;
