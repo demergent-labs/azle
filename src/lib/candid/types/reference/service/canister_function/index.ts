@@ -39,6 +39,13 @@ type FunctionInfo = {
     returnCandidType: CandidType;
 };
 
+type ServiceCall = (
+    notify: boolean,
+    callFunction: CallRawFunction | NotifyRawFunction,
+    cycles: bigint,
+    args: any[]
+) => void | Promise<any>;
+
 export interface ServiceFunctionInfo {
     [key: string]: FunctionInfo;
 }
@@ -113,12 +120,12 @@ function createUpdateOrQueryFunctionIdlType(
         functionInfo.paramCandidTypes,
         parents
     );
-    const returnIdlTypes = toIdlTypeArray(
+    const returnIdlType = toIdlTypeArray(
         functionInfo.returnCandidType,
         parents
     );
 
-    return IDL.Func(paramIdlTypes, returnIdlTypes, annotations);
+    return IDL.Func(paramIdlTypes, returnIdlType, annotations);
 }
 
 function createCallbacks(
@@ -150,7 +157,7 @@ function createCanisterFunctionBase(
                         callFunction: CallRawFunction | NotifyRawFunction,
                         cycles: bigint,
                         args: any[]
-                    ): void | Promise<any> => {
+                    ): ReturnType<ServiceCall> => {
                         return serviceCall(
                             principal as any,
                             key,
@@ -169,13 +176,6 @@ function createCanisterFunctionBase(
         };
     };
 }
-
-type ServiceCall = (
-    notify: boolean,
-    callFunction: CallRawFunction | NotifyRawFunction,
-    cycles: bigint,
-    args: any[]
-) => void | Promise<any>;
 
 function serviceCall(
     canisterId: Principal,
