@@ -47,16 +47,16 @@ export default Canister({
     }),
     wallet_receive: update([Opt(ReceiveOptions)], Void, (_receiveOptions) => {
         console.log('wallet_receive');
-        console.log(`cycles available: ${ic.msgCyclesAvailable128()}`);
+        console.log(`cycles available: ${ic.msgCyclesAvailable()}`);
 
         const callerInWhitelist = principalsWhitelist.includes(
             ic.caller().toText()
         );
 
         if (callerInWhitelist) {
-            const cyclesAvailable = ic.msgCyclesAvailable128();
+            const cyclesAvailable = ic.msgCyclesAvailable();
 
-            ic.msgCyclesAccept128(cyclesAvailable);
+            ic.msgCyclesAccept(cyclesAvailable);
 
             payments.push({
                 time: ic.time(),

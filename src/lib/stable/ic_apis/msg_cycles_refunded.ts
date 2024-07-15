@@ -5,7 +5,7 @@
  */
 export function msgCyclesRefunded(): bigint {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return 0n;
     }
 
     const msgCyclesRefundedAmountString =

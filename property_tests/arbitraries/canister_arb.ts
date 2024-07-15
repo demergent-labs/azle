@@ -71,7 +71,7 @@ export function CanisterArb<
         const initArgs = config.initMethod?.params.map((param) => {
             const value = param.value.value;
             return value.runtimeCandidTypeObject
-                .getIdl([])
+                .getIdlType([])
                 .accept(new CliStringVisitor(), {
                     value: value.agentArgumentValue
                 });
@@ -81,7 +81,7 @@ export function CanisterArb<
             (param) => {
                 const value = param.value.value;
                 return value.runtimeCandidTypeObject
-                    .getIdl([])
+                    .getIdlType([])
                     .accept(new CliStringVisitor(), {
                         value: value.agentArgumentValue
                     });

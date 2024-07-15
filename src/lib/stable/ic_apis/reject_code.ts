@@ -1,4 +1,25 @@
-import { RejectionCode } from '../system_types';
+type RejectionCode =
+    | {
+          NoError: null;
+      }
+    | {
+          SysFatal: null;
+      }
+    | {
+          SysTransient: null;
+      }
+    | {
+          DestinationInvalid: null;
+      }
+    | {
+          CanisterReject: null;
+      }
+    | {
+          CanisterError: null;
+      }
+    | {
+          Unknown: null;
+      };
 
 /**
  * Returns the rejection code from the most recently executed cross-canister
@@ -7,7 +28,7 @@ import { RejectionCode } from '../system_types';
  */
 export function rejectCode(): RejectionCode {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return { Unknown: null };
     }
 
     const rejectCodeNumber = Number(globalThis._azleIc.rejectCode());

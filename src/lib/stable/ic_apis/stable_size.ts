@@ -1,11 +1,12 @@
 /**
- * Gets current size of the stable memory (in WASM pages)
+ * Gets current size of the stable memory (in WASM pages). Supports 64-bit
+ * addressed memory.
  * @returns the current memory size
  */
-export function stableSize(): number {
+export function stableSize(): bigint {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return 0n;
     }
 
-    return Number(globalThis._azleIc.stableSize());
+    return BigInt(globalThis._azleIc.stableSize());
 }

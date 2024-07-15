@@ -17,7 +17,7 @@ export class AzleText {
         return decode<string>(this, bytes) as string;
     }
 
-    static getIdl(): IDL.TextClass {
+    static getIdlType(): IDL.TextClass {
         return IDL.Text;
     }
 }

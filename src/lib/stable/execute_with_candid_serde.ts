@@ -1,7 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
-import { ic } from '../ic';
 import { handleUncaughtError } from './error';
+import { reply } from './ic_apis';
 
 type CanisterMethodMode =
     | 'query'
@@ -17,7 +17,7 @@ export function executeWithCandidSerde(
     args: any[],
     callback: any,
     paramIdlTypes: IDL.Type[],
-    returnIdlTypes: IDL.Type | undefined,
+    returnIdlType: IDL.Type | undefined,
     manual: boolean
 ): void {
     const decodedArgs = IDL.decode(paramIdlTypes, args[0]);
@@ -36,15 +36,7 @@ export function executeWithCandidSerde(
         result
             .then((result: any) => {
                 if (!manual) {
-                    if (returnIdlTypes !== undefined) {
-                        ic.replyRaw(
-                            new Uint8Array(
-                                IDL.encode([returnIdlTypes], [result])
-                            )
-                        );
-                    } else {
-                        ic.replyRaw(new Uint8Array(IDL.encode([], [])));
-                    }
+                    reply({ data: result, idlType: returnIdlType });
                 }
             })
             .catch((error: any) => {
@@ -52,13 +44,7 @@ export function executeWithCandidSerde(
             });
     } else {
         if (!manual) {
-            if (returnIdlTypes !== undefined) {
-                ic.replyRaw(
-                    new Uint8Array(IDL.encode([returnIdlTypes], [result]))
-                );
-            } else {
-                ic.replyRaw(new Uint8Array(IDL.encode([], [])));
-            }
+            reply({ data: result, idlType: returnIdlType });
         }
     }
 }

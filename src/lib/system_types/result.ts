@@ -1,7 +1,7 @@
 import { IDL } from '@dfinity/candid';
 
 import { CandidType } from '../candid/candid_type';
-import { Parent, toIdl } from '../candid/to_idl';
+import { Parent, toIdlType } from '../candid/to_idl_type';
 import { RequireExactlyOne } from '../candid/types/constructed/variant';
 
 export class AzleResult<T extends CandidType, K extends CandidType> {
@@ -13,10 +13,10 @@ export class AzleResult<T extends CandidType, K extends CandidType> {
     Ok: T;
     Err: K;
 
-    getIdl(parents: Parent[]): IDL.VariantClass {
+    getIdlType(parents: Parent[]): IDL.VariantClass {
         return IDL.Variant({
-            Ok: toIdl(this.Ok, parents),
-            Err: toIdl(this.Err, parents)
+            Ok: toIdlType(this.Ok, parents),
+            Err: toIdlType(this.Err, parents)
         });
     }
 }

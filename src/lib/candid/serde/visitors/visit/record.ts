@@ -9,13 +9,13 @@ export function visitRecord(
     fields: [string, IDL.Type<any>][],
     data: VisitorData
 ): VisitorResult {
-    const candidFields = fields.reduce((acc, [memberName, memberIdl]) => {
+    const candidFields = fields.reduce((acc, [memberName, memberIdlTypes]) => {
         const fieldData = data.js_data[memberName];
         const fieldClass = data.candidType[memberName];
 
         return {
             ...acc,
-            [memberName]: memberIdl.accept(visitor, {
+            [memberName]: memberIdlTypes.accept(visitor, {
                 js_data: fieldData,
                 candidType: fieldClass
             })

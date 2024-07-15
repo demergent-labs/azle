@@ -17,7 +17,7 @@ export class AzleInt {
         return decode<int>(this, bytes) as int;
     }
 
-    static getIdl(): IDL.IntClass {
+    static getIdlType(): IDL.IntClass {
         return IDL.Int;
     }
 }

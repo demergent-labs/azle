@@ -2,13 +2,11 @@ mod accept_message;
 mod arg_data_raw;
 mod arg_data_raw_size;
 mod call_raw;
-mod call_raw128;
 mod caller;
 mod candid_compiler;
 mod candid_decode;
 mod candid_encode;
 mod canister_balance;
-mod canister_balance128;
 mod canister_version;
 mod clear_timer;
 mod data_certificate;
@@ -17,11 +15,8 @@ mod instruction_counter;
 mod is_controller;
 mod method_name;
 mod msg_cycles_accept;
-mod msg_cycles_accept128;
 mod msg_cycles_available;
-mod msg_cycles_available128;
 mod msg_cycles_refunded;
-mod msg_cycles_refunded128;
 mod notify_raw;
 mod performance_counter;
 mod print;
@@ -32,10 +27,6 @@ mod reply_raw;
 mod set_certified_data;
 mod set_timer;
 mod set_timer_interval;
-mod stable64_grow;
-mod stable64_read;
-mod stable64_size;
-mod stable64_write;
 mod stable_b_tree_map_contains_key;
 mod stable_b_tree_map_get;
 mod stable_b_tree_map_init;
@@ -87,13 +78,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     );
 
     ic.set(
-        "callRaw128",
-        context
-            .new_function::<call_raw128::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
         "caller",
         context.new_function::<caller::NativeFunction>("").into(),
     );
@@ -123,13 +107,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         "canisterBalance",
         context
             .new_function::<canister_balance::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "canisterBalance128",
-        context
-            .new_function::<canister_balance128::NativeFunction>("")
             .into(),
     );
 
@@ -185,13 +162,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     );
 
     ic.set(
-        "msgCyclesAccept128",
-        context
-            .new_function::<msg_cycles_accept128::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
         "msgCyclesAvailable",
         context
             .new_function::<msg_cycles_available::NativeFunction>("")
@@ -199,23 +169,9 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     );
 
     ic.set(
-        "msgCyclesAvailable128",
-        context
-            .new_function::<msg_cycles_available128::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
         "msgCyclesRefunded",
         context
             .new_function::<msg_cycles_refunded::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "msgCyclesRefunded128",
-        context
-            .new_function::<msg_cycles_refunded128::NativeFunction>("")
             .into(),
     );
 
@@ -282,41 +238,6 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
     );
 
     ic.set(
-        "stable64Grow",
-        context
-            .new_function::<stable64_grow::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "stable64Read",
-        context
-            .new_function::<stable64_read::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "stable64Size",
-        context
-            .new_function::<stable64_size::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "stable64Write",
-        context
-            .new_function::<stable64_write::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
-        "stableBytes",
-        context
-            .new_function::<stable_bytes::NativeFunction>("")
-            .into(),
-    );
-
-    ic.set(
         "stableGrow",
         context
             .new_function::<stable_grow::NativeFunction>("")
@@ -341,6 +262,13 @@ pub fn register(context: &mut wasmedge_quickjs::Context) {
         "stableWrite",
         context
             .new_function::<stable_write::NativeFunction>("")
+            .into(),
+    );
+
+    ic.set(
+        "stableBytes",
+        context
+            .new_function::<stable_bytes::NativeFunction>("")
             .into(),
     );
 

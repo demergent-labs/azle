@@ -17,7 +17,7 @@ export class AzleVoid {
         return decode<undefined>(this, bytes) as undefined;
     }
 
-    static getIdl(): IDL.Type<any> {
+    static getIdlType(): IDL.Type<any> {
         return [] as unknown as IDL.Type<any>;
     }
 }

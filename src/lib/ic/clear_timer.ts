@@ -6,7 +6,7 @@ import { Void } from '../candid/types/primitive/void';
  */
 export function clearTimer(timerId: bigint): Void {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return undefined;
     }
 
     globalThis._azleIc.clearTimer(timerId.toString());

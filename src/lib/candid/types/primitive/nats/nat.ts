@@ -17,7 +17,7 @@ export class AzleNat {
         return decode(this, bytes) as nat;
     }
 
-    static getIdl(): IDL.NatClass {
+    static getIdlType(): IDL.NatClass {
         return IDL.Nat;
     }
 }

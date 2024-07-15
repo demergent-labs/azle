@@ -9,7 +9,7 @@
  */
 export function performanceCounter(counterType: number): bigint {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return 0n;
     }
 
     return BigInt(

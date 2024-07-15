@@ -251,8 +251,8 @@ export default class {
         myFullCanister: MyFullCanister
     ): Promise<MyFullCanister> {
         return await call(myFullCanister, 'myQuery', {
-            paramIdls: [MyFullCanister],
-            returnIdl: MyFullCanister,
+            paramIdlTypes: [MyFullCanister],
+            returnIdlType: MyFullCanister,
             args: [myFullCanister]
         });
     }

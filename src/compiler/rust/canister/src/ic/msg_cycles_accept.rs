@@ -8,10 +8,10 @@ impl JsFn for NativeFunction {
         } else {
             panic!("conversion from JsValue to JsString failed")
         };
-        let max_amount: u64 = max_amount_string.parse().unwrap();
+        let max_amount: u128 = max_amount_string.parse().unwrap();
 
         context
-            .new_string(&ic_cdk::api::call::msg_cycles_accept(max_amount).to_string())
+            .new_string(&ic_cdk::api::call::msg_cycles_accept128(max_amount).to_string())
             .into()
     }
 }

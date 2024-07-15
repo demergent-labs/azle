@@ -28,28 +28,5 @@ export function getTests(call_raw_canister: ActorSubclass<_SERVICE>): Test {
             expect(result).toMatch('record');
             expect(result).toMatch('principal');
         });
-
-        it('calls raw_rand via execute_call_raw128', async () => {
-            const result = await call_raw_canister.executeCallRaw128(
-                Principal.fromText('aaaaa-aa'),
-                'raw_rand',
-                '()',
-                0n
-            );
-
-            expect(result).toMatch('blob');
-        });
-
-        it('calls create_canister via execute_call_raw128', async () => {
-            const result = await call_raw_canister.executeCallRaw128(
-                Principal.fromText('aaaaa-aa'),
-                'create_canister',
-                '(record { settings = null })',
-                100_000_000_000n
-            );
-
-            expect(result).toMatch('record');
-            expect(result).toMatch('principal');
-        });
     };
 }

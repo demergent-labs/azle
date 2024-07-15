@@ -113,13 +113,6 @@ export function getTests(icApiCanister: ActorSubclass<_SERVICE>): Test {
             expect(result).toBeLessThan(4_000_000_000_000n);
         });
 
-        it('calls canisterBalance128 on the ic object', async () => {
-            const result = await icApiCanister.canisterBalance128();
-
-            expect(result).toBeGreaterThan(2_000_000_000_000n);
-            expect(result).toBeLessThan(4_000_000_000_000n);
-        });
-
         it('calls canisterVersion on the ic object', async () => {
             const result = await icApiCanister.canisterVersion();
 

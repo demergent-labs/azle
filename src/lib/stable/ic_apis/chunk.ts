@@ -4,7 +4,7 @@ import { id } from './id';
 
 export async function chunk(): Promise<void> {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return undefined;
     }
 
     await call(id(), '_azle_chunk', { raw: candidEncode('()'), payment: 0n });

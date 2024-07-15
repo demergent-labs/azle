@@ -14,7 +14,7 @@ export function setTimer(
     callback: () => void | Promise<void>
 ): bigint {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return 0n;
     }
 
     const timerCallbackId = `_timer_${v4()}`;

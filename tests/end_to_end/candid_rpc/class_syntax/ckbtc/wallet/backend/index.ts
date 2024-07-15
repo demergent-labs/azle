@@ -19,8 +19,8 @@ export default class {
     @update([], IDL.Nat64)
     async getBalance(): Promise<bigint> {
         return await call(getCkBtcPrincipal(), 'icrc1_balance_of', {
-            paramIdls: [Account],
-            returnIdl: IDL.Nat,
+            paramIdlTypes: [Account],
+            returnIdlType: IDL.Nat,
             args: [
                 {
                     owner: id(),
@@ -36,8 +36,8 @@ export default class {
             getMinterPrincipal(),
             'update_balance',
             {
-                paramIdls: [UpdateBalanceArgs],
-                returnIdl: UpdateBalanceResult,
+                paramIdlTypes: [UpdateBalanceArgs],
+                returnIdlType: UpdateBalanceResult,
                 args: [
                     {
                         owner: [id()],
@@ -55,8 +55,8 @@ export default class {
     @update([], IDL.Text)
     async getDepositAddress(): Promise<string> {
         return await call(getMinterPrincipal(), 'get_btc_address', {
-            paramIdls: [GetBtcAddressArgs],
-            returnIdl: IDL.Text,
+            paramIdlTypes: [GetBtcAddressArgs],
+            returnIdlType: IDL.Text,
             args: [
                 {
                     owner: [id()],
@@ -70,8 +70,8 @@ export default class {
     @update([IDL.Text, IDL.Nat], TransferResult)
     async transfer(to: string, amount: bigint): Promise<TransferResult> {
         return await call(getCkBtcPrincipal(), 'icrc1_transfer', {
-            paramIdls: [TransferArgs],
-            returnIdl: TransferResult,
+            paramIdlTypes: [TransferArgs],
+            returnIdlType: TransferResult,
             args: [
                 {
                     from_subaccount: [

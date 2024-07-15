@@ -1,6 +1,6 @@
 import { IDL } from '@dfinity/candid';
 
-import { CandidType, toIdl, toIdlArray } from '../../candid';
+import { CandidType, toIdlType, toIdlTypeArray } from '../../candid';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { AzleOpt, AzleTuple, AzleVec } from '../types/constructed'; // Used for links in comments
 import { EncodeVisitor } from './visitors/encode_visitor';
@@ -33,30 +33,31 @@ export function encode<T = any>(
 }
 
 function encodeSingle(candidType: CandidType, data: any): Uint8Array {
-    const idl = toIdl(candidType);
+    const idlType = toIdlType(candidType);
 
-    const idlIsAzleVoid = Array.isArray(idl);
+    // The candid type was AzleVoid if when converted to an Idl Type it is []
+    const candidTypeWasAzleVoid = Array.isArray(idlType);
 
-    if (idlIsAzleVoid) {
+    if (candidTypeWasAzleVoid) {
         return new Uint8Array(IDL.encode([], []));
     }
 
-    const encodeReadyKey = idl.accept(new EncodeVisitor(), {
+    const encodeReadyKey = idlType.accept(new EncodeVisitor(), {
         candidType: candidType,
         js_data: data
     });
 
-    return new Uint8Array(IDL.encode([idl], [encodeReadyKey]));
+    return new Uint8Array(IDL.encode([idlType], [encodeReadyKey]));
 }
 
 function encodeMultiple(candidTypes: CandidType[], data: any[]): Uint8Array {
-    const idls = toIdlArray(candidTypes);
+    const idlTypes = toIdlTypeArray(candidTypes);
     const values = data.map((datum, index) =>
-        idls[index].accept(new EncodeVisitor(), {
+        idlTypes[index].accept(new EncodeVisitor(), {
             candidType: candidTypes[index],
             js_data: datum
         })
     );
 
-    return new Uint8Array(IDL.encode(idls, values));
+    return new Uint8Array(IDL.encode(idlTypes, values));
 }

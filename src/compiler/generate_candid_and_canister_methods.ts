@@ -70,7 +70,7 @@ export async function generateCandidAndCanisterMethods(
             stable64_read: (): void => {},
             stable64_size: (): void => {},
             stable64_write: (): void => {},
-            time: () => 0n,
+            time: (): bigint => 0n,
             trap: (): void => {}
         }
         // env: {

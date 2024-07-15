@@ -6,8 +6,8 @@ export async function call(
     canisterId: Principal | string,
     method: string,
     options?: {
-        paramIdls?: IDL.Type[];
-        returnIdl?: IDL.Type;
+        paramIdlTypes?: IDL.Type[];
+        returnIdlType?: IDL.Type;
         args?: any[];
         payment?: bigint;
         raw?: Uint8Array;
@@ -16,14 +16,14 @@ export async function call(
     // TODO this should use a Result remember
     return new Promise((resolve, reject) => {
         if (globalThis._azleIc === undefined) {
-            return undefined as any;
+            return undefined;
         }
 
         const promiseId = v4();
         const globalResolveId = `_resolve_${promiseId}`;
         const globalRejectId = `_reject_${promiseId}`;
 
-        const returnIdl = options?.returnIdl;
+        const returnTypeIdl = options?.returnIdlType;
         const raw = options?.raw;
 
         // TODO perhaps we should be more robust
@@ -34,10 +34,10 @@ export async function call(
         ): void => {
             if (raw !== undefined) {
                 resolve(new Uint8Array(result));
-            } else if (returnIdl === undefined) {
-                resolve(undefined);
             } else {
-                resolve(IDL.decode([returnIdl], result)[0]);
+                const idlType =
+                    returnTypeIdl === undefined ? [] : [returnTypeIdl];
+                resolve(IDL.decode(idlType, result)[0]);
             }
 
             delete globalThis._azleResolveIds[globalResolveId];
@@ -51,7 +51,7 @@ export async function call(
             delete globalThis._azleRejectIds[globalRejectId];
         };
 
-        const paramIdls = options?.paramIdls ?? [];
+        const paramIdlTypes = options?.paramIdlTypes ?? [];
         const args = options?.args ?? [];
         const payment = options?.payment ?? 0n;
 
@@ -62,13 +62,13 @@ export async function call(
         const canisterIdBytes = canisterIdPrincipal.toUint8Array().buffer;
         const argsRawBuffer =
             raw === undefined
-                ? new Uint8Array(IDL.encode(paramIdls, args)).buffer
+                ? new Uint8Array(IDL.encode(paramIdlTypes, args)).buffer
                 : raw.buffer;
         const paymentString = payment.toString();
 
         // TODO consider finally, what if deletion goes wrong
         try {
-            globalThis._azleIc.callRaw128(
+            globalThis._azleIc.callRaw(
                 promiseId,
                 canisterIdBytes,
                 method,

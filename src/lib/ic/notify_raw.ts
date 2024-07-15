@@ -19,7 +19,7 @@ export function notifyRaw(
     payment: nat
 ): Void {
     if (globalThis._azleIc === undefined) {
-        return undefined as any;
+        return undefined;
     }
 
     const canisterIdBytes = canisterId.toUint8Array().buffer;

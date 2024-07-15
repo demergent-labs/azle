@@ -3,7 +3,7 @@ import { IDL } from '@dfinity/candid';
 import { CandidType } from '../../candid_type';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
-import { Parent, toIdl } from '../../to_idl';
+import { Parent, toIdlType } from '../../to_idl_type';
 import { TypeMapping } from '../../type_mapping';
 
 export class AzleVec<T> {
@@ -26,8 +26,8 @@ export class AzleVec<T> {
         return decode<T[]>(this, bytes) as T[];
     }
 
-    getIdl(parents: Parent[]): IDL.VecClass<T> {
-        return IDL.Vec(toIdl(this.innerType, parents));
+    getIdlType(parents: Parent[]): IDL.VecClass<T> {
+        return IDL.Vec(toIdlType(this.innerType, parents));
     }
 }
 

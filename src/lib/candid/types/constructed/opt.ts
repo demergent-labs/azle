@@ -3,7 +3,7 @@ import { IDL } from '@dfinity/candid';
 import { CandidType } from '../../candid_type';
 import { decode } from '../../serde/decode';
 import { encode } from '../../serde/encode';
-import { Parent, toIdl } from '../../to_idl';
+import { Parent, toIdlType } from '../../to_idl_type';
 import { TypeMapping } from '../../type_mapping';
 import { RequireExactlyOne } from './variant';
 
@@ -52,7 +52,7 @@ export class AzleOpt<T> {
         return decode(this, bytes);
     }
 
-    getIdl(parents: Parent[]): IDL.OptClass<T> {
-        return IDL.Opt(toIdl(this.innerType, parents));
+    getIdlType(parents: Parent[]): IDL.OptClass<T> {
+        return IDL.Opt(toIdlType(this.innerType, parents));
     }
 }

@@ -194,16 +194,16 @@ export async function httpHandler(
     }
 
     if (shouldUpgrade(httpRequest, query)) {
-        ic.reply(
-            {
+        ic.reply({
+            data: {
                 status_code: 204,
                 headers: [],
                 body: Uint8Array.from([]),
                 streaming_strategy: None,
                 upgrade: Some(true)
             },
-            HttpResponse()
-        );
+            candidType: HttpResponse()
+        });
 
         return;
     }
@@ -287,8 +287,8 @@ export async function httpHandler(
             // TODO this.res.getHeaders() seems to be missing some headers like Transfer-Encoding
             // TODO also Express in Node has more headers like Date, Connection, Keep-Alive
             // TODO Conection and Keep-Alive might just not make sense in our context
-            ic.reply(
-                {
+            ic.reply({
+                data: {
                     status_code: this.res.statusCode,
                     headers: Object.entries(this.res.getHeaders())
                         .map((entry) => entry)
@@ -310,8 +310,8 @@ export async function httpHandler(
                         None: null
                     }
                 },
-                HttpResponse()
-            );
+                candidType: HttpResponse()
+            });
         }
     }
 

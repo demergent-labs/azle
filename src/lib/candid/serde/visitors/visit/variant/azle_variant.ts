@@ -10,7 +10,7 @@ export function visitAzleVariant(
     fields: [string, IDL.Type<any>][],
     data: VisitorData
 ): Variant<any> {
-    const candidFields = fields.reduce((acc, [memberName, memberIdl]) => {
+    const candidFields = fields.reduce((acc, [memberName, memberIdlTypes]) => {
         const fieldData = data.js_data[memberName];
         const fieldClass = data.candidType[memberName];
         if (fieldData === undefined) {
@@ -19,7 +19,7 @@ export function visitAzleVariant(
         }
         return {
             ...acc,
-            [memberName]: memberIdl.accept(visitor, {
+            [memberName]: memberIdlTypes.accept(visitor, {
                 candidType: fieldClass,
                 js_data: fieldData
             })
