@@ -4,6 +4,11 @@ import { join, resolve } from 'path';
 export function linkAndInstallPatch(pathRelativeToAzle: string): void {
     // TODO remove install and link after https://github.com/demergent-labs/azle/issues/1807 is resolved
 
+    console.log(
+        'process.env.AZLE_END_TO_END_TEST_LINK_AZLE',
+        process.env.AZLE_END_TO_END_TEST_LINK_AZLE
+    );
+
     if (process.env.AZLE_END_TO_END_TEST_LINK_AZLE !== 'false') {
         const azleDir = resolve(__dirname, '..');
         execSync(`cd ${join(azleDir, pathRelativeToAzle)} && npm install`);
