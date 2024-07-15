@@ -1,44 +1,26 @@
-import { handleUncaughtError } from './error';
+import { executeAndReplyWithCandidSerde } from './execute_with_candid_serde';
 
-export function heartbeat<T>(
-    target: object,
-    propertyKey: string | symbol,
-    descriptor: TypedPropertyDescriptor<T>
-): TypedPropertyDescriptor<T> | void {
+export function heartbeat<This, Args extends any[], Return>(
+    originalMethod: (this: This, ...args: Args) => Return,
+    context: ClassMethodDecoratorContext
+): void {
     const index = globalThis._azleCanisterMethodsIndex++;
 
     globalThis._azleCanisterMethods.heartbeat = {
-        name: propertyKey as string,
+        name: context.name as string,
         index
     };
 
-    globalThis._azleCanisterMethods.callbacks[index.toString()] =
-        async (): Promise<void> => {
-            try {
-                await (descriptor.value as any).bind(target)();
-            } catch (error) {
-                handleUncaughtError(error);
-            }
-        };
-
-    return descriptor;
+    globalThis._azleCanisterMethods.callbacks[index.toString()] = (
+        ...args: any[]
+    ): void => {
+        executeAndReplyWithCandidSerde(
+            'heartbeat',
+            args,
+            originalMethod.bind(globalThis._azleCanisterClassInstance),
+            [],
+            undefined,
+            false
+        );
+    };
 }
-
-// TODO do we need this?
-// TODO it would be nice if QuickJS would just panic
-// TODO on all uncaught exceptions
-// function executeHeartbeat(callback: any) {
-//     const result = callback();
-
-//     if (
-//         result !== undefined &&
-//         result !== null &&
-//         typeof result.then === 'function'
-//     ) {
-//         result.catch((error: any) => {
-//             ic.trap(error.toString());
-//         });
-//     }
-
-//     return;
-// }

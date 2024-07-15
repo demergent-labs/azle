@@ -4,27 +4,29 @@
 // TODO but it will break all of your other methods
 // TODO so do we just leave params out?
 
-import { handleUncaughtError } from './error';
+import { executeAndReplyWithCandidSerde } from './execute_with_candid_serde';
 
-export function inspectMessage<T>(
-    target: object,
-    propertyKey: string | symbol,
-    descriptor: TypedPropertyDescriptor<T>
-): TypedPropertyDescriptor<T> | void {
+export function inspectMessage<This, Args extends any[], Return>(
+    originalMethod: (this: This, ...args: Args) => Return,
+    context: ClassMethodDecoratorContext
+): void {
     const index = globalThis._azleCanisterMethodsIndex++;
 
     globalThis._azleCanisterMethods.inspect_message = {
-        name: propertyKey as string,
+        name: context.name as string,
         index
     };
 
-    globalThis._azleCanisterMethods.callbacks[index.toString()] = (): void => {
-        try {
-            (descriptor.value as any).bind(target)();
-        } catch (error) {
-            handleUncaughtError(error);
-        }
+    globalThis._azleCanisterMethods.callbacks[index.toString()] = (
+        ...args: any[]
+    ): void => {
+        executeAndReplyWithCandidSerde(
+            'inspectMessage',
+            args,
+            originalMethod.bind(globalThis._azleCanisterClassInstance),
+            [],
+            undefined,
+            false
+        );
     };
-
-    return descriptor;
 }
