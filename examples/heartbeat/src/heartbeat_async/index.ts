@@ -8,7 +8,7 @@ export default Canister({
         const randomness = await getRandomness();
 
         initialized = randomness;
-        console.log('heartbeat initialized', randomness.length);
+        console.info('heartbeat initialized', randomness.length);
     }),
     getInitialized: query([], blob, () => {
         return initialized;

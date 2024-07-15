@@ -3,7 +3,7 @@ import { acceptMessage, IDL, inspectMessage, methodName, update } from 'azle';
 export default class {
     @inspectMessage
     inspectMessage(): void {
-        console.log('inspectMessage called');
+        console.info('inspectMessage called');
 
         if (methodName() === 'accessible') {
             acceptMessage();

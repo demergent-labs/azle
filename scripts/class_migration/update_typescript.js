@@ -57,7 +57,7 @@ fs.readFile(packageJsonPath, 'utf8', (err, data) => {
                 return;
             }
 
-            console.log(
+            console.info(
                 `package.json successfully updated with TypeScript version: ${tsVersion}`
             );
 
@@ -71,8 +71,8 @@ fs.readFile(packageJsonPath, 'utf8', (err, data) => {
                         return;
                     }
 
-                    console.log('npm install completed successfully');
-                    console.log(stdout);
+                    console.info('npm install completed successfully');
+                    console.info(stdout);
 
                     // Delete node_modules if it did not exist before
                     if (!nodeModulesExists) {
@@ -85,7 +85,7 @@ fs.readFile(packageJsonPath, 'utf8', (err, data) => {
                                         `Error removing node_modules directory: ${rmErr}`
                                     );
                                 } else {
-                                    console.log(
+                                    console.info(
                                         'node_modules directory removed as it did not exist before running the script.'
                                     );
                                 }

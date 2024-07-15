@@ -33,6 +33,6 @@ fs.readFile(testFilePath, 'utf8', (err, data) => {
             return;
         }
 
-        console.log('test.ts successfully modified.');
+        console.info('test.ts successfully modified.');
     });
 });

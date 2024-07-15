@@ -74,7 +74,7 @@ export function heartbeat(canister: RunTimeErrorService): void {
 }
 
 export function inspectMessage(): void {
-    console.log('inspectMessage called');
+    console.info('inspectMessage called');
 
     if (
         ic.methodName() !== 'inaccessible' ||
@@ -114,11 +114,11 @@ export function alsoInaccessible(): boolean {
 // }
 
 // export function preUpgrade(): PreUpgrade {
-//     console.log('preUpgrade');
+//     console.info('preUpgrade');
 //     throw 'We are throwing in the pre-upgrade';
 // }
 
 // export function postUpgrade(): PostUpgrade {
-//     console.log('postUpgrade');
+//     console.info('postUpgrade');
 //     throw 'We are throwing in the post-upgrade';
 // }

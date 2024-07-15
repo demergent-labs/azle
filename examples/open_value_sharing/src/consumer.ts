@@ -17,7 +17,7 @@ app.post('/test-long-running', async (req, res) => {
         });
 
         if (i % 1_000 === 0) {
-            console.log(`1_000 records inserted`);
+            console.info(`1_000 records inserted`);
         }
 
         if (i % 30_000 === 0) {

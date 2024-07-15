@@ -8,7 +8,7 @@ export default class {
         const randomness = await getRandomness();
 
         initialized = randomness;
-        console.log('heartbeat initialized', randomness.length);
+        console.info('heartbeat initialized', randomness.length);
     }
 
     @query([], IDL.Vec(IDL.Nat8))

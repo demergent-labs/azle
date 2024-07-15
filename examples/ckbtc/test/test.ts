@@ -61,7 +61,7 @@ async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
         }
     });
 
-    console.log(`starting bitcoind...`);
+    console.info(`starting bitcoind...`);
     await new Promise((resolve) => setTimeout(resolve, 5000));
     return bitcoinDaemon;
 }

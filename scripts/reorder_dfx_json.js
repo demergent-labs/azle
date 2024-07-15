@@ -57,7 +57,7 @@ fs.readdir(dirPath, (err, folders) => {
                     return fs.writeJson(dfxJsonPath, dfxConfig, { spaces: 4 });
                 })
                 .then(() => {
-                    console.log(
+                    console.info(
                         `Successfully reordered keys in ${dfxJsonPath}`
                     );
                 })

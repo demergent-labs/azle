@@ -97,7 +97,7 @@ export class CkApp extends LitElement {
 
         const result = await this.walletBackend.getBalance();
 
-        console.log('getBalance', result);
+        console.info('getBalance', result);
 
         this.balance = result;
     }
@@ -110,7 +110,7 @@ export class CkApp extends LitElement {
 
         const result = await this.walletBackend.getDepositAddress();
 
-        console.log('getBitcoinDepositAddress', result);
+        console.info('getBitcoinDepositAddress', result);
 
         this.bitcoinDepositAddress = result;
     }
@@ -125,7 +125,7 @@ export class CkApp extends LitElement {
 
         const result = await this.walletBackend.updateBalance();
 
-        console.log('updateBalance', result);
+        console.info('updateBalance', result);
 
         await this.getBalance();
 
@@ -150,7 +150,7 @@ export class CkApp extends LitElement {
             this.transferAmount
         );
 
-        console.log('transfer', result);
+        console.info('transfer', result);
 
         await this.getBalance();
 

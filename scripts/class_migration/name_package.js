@@ -30,7 +30,7 @@ fs.readFile(packageJsonPath, 'utf8', (err, data) => {
     const hasExpressDependency =
         packageJson.dependencies && packageJson.dependencies.express;
     if (hasExpressDependency) {
-        console.log(
+        console.info(
             'Express is listed as a dependency. No changes will be made.'
         );
         return;
@@ -54,7 +54,7 @@ fs.readFile(packageJsonPath, 'utf8', (err, data) => {
                 );
                 return;
             }
-            console.log(
+            console.info(
                 `package.json successfully updated with new name: ${newName}`
             );
         }

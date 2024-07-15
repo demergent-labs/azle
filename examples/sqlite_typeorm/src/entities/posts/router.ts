@@ -38,7 +38,7 @@ export function getRouter(): Router {
 
         const post = await getPost(Number(id));
 
-        console.log('post', post);
+        console.info('post', post);
 
         res.json(post);
     });

@@ -130,9 +130,9 @@ export function deepEqual(a: any, b: any): boolean {
     const result = libraryDeepEqual(a, b);
 
     if (result === false) {
-        console.log('deepEqual returned false');
-        console.log('deepEqual value a', a);
-        console.log('deepEqual value b', b);
+        console.info('deepEqual returned false');
+        console.info('deepEqual value a', a);
+        console.info('deepEqual value b', b);
     }
 
     return result;

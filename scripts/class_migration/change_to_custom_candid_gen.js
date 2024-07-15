@@ -67,7 +67,7 @@ fs.readFile(dfxJsonPath, 'utf8', (err, data) => {
                     return;
                 }
 
-                console.log('dfx.json successfully updated.');
+                console.info('dfx.json successfully updated.');
             }
         );
     } else {

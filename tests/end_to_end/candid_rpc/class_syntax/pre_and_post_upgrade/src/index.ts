@@ -26,14 +26,14 @@ let entries: {
 export default class {
     @init([])
     init(): void {
-        console.log('init');
+        console.info('init');
 
         stableStorage.insert('entries', []);
     }
 
     @postUpgrade([])
     postUpgrade(): void {
-        console.log('postUpgrade');
+        console.info('postUpgrade');
 
         const stableEntriesOpt = stableStorage.get('entries');
 
@@ -50,7 +50,7 @@ export default class {
 
     @preUpgrade
     preUpgrade(): void {
-        console.log('preUpgrade');
+        console.info('preUpgrade');
 
         stableStorage.insert(
             'entries',

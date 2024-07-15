@@ -17,7 +17,7 @@ function getBlockTransactionCount() {
                 execSync(`${CLI} getblock ${blockHash}`).toString()
             );
             const transactionCount = blockInfo.tx.length;
-            console.log(
+            console.info(
                 `Block ${i} (${blockHash}) has ${transactionCount} transactions.`
             );
         }

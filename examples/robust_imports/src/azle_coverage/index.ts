@@ -171,7 +171,7 @@ export const buyHoneydew = honeydew(() => {
 });
 
 export const keepIlamaClean = ilama(() => {
-    console.log(`Method "${lemon.methodName()}" was called`);
+    console.info(`Method "${lemon.methodName()}" was called`);
     if (lemon.methodName() === 'dirtyIlama') {
         return;
     }

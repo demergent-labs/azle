@@ -15,7 +15,7 @@ const modifyTsConfig = (tsconfigPath) => {
             return fs.writeJson(tsconfigPath, tsconfig, { spaces: 4 });
         })
         .then(() => {
-            console.log(`Successfully modified ${tsconfigPath}`);
+            console.info(`Successfully modified ${tsconfigPath}`);
         })
         .catch((err) => {
             console.error(`Error reading or writing tsconfig.json: ${err}`);

@@ -28,13 +28,13 @@ export async function startBitcoinDaemon(): Promise<BitcoinDaemon> {
         }
     });
 
-    console.log(`starting bitcoind...`);
+    console.info(`starting bitcoind...`);
     await new Promise((resolve) => setTimeout(resolve, 5000));
     return bitcoinDaemon;
 }
 
 export function createBitcoinWallet(wallets: Wallets): void {
-    console.log(' - create bitcoin wallet');
+    console.info(' - create bitcoin wallet');
     bitcoinCli.createWallet();
     Object.entries(wallets).forEach(([name, wallet]) => {
         bitcoinCli.importPrivateKey(wallet.wif, name);
@@ -42,12 +42,12 @@ export function createBitcoinWallet(wallets: Wallets): void {
 }
 
 export async function mine101Blocks(wallets: Wallets): Promise<void> {
-    console.log(' - mine blocks');
+    console.info(' - mine blocks');
     await bitcoinCli.generateToAddress(101, wallets.alice.p2wpkh);
 }
 
 export function getEarliestUtxo(): Utxo {
-    console.log(' - get earliest utxo');
+    console.info(' - get earliest utxo');
     const utxos = bitcoinCli.listUnspent();
     if (utxos.length === 0) {
         throw "There aren't any UTXOs after mining 101 blocks. Something went wrong";
@@ -56,7 +56,7 @@ export function getEarliestUtxo(): Utxo {
 }
 
 export function createTransaction(from: Utxo, wallets: Wallets): string {
-    console.log(' - get create transaction');
+    console.info(' - get create transaction');
     const input: TxInput = {
         txid: from.txid,
         vout: from.vout
@@ -69,6 +69,6 @@ export function createTransaction(from: Utxo, wallets: Wallets): string {
 }
 
 export function signTransaction(rawTransaction: string): string {
-    console.log(' - sign transaction');
+    console.info(' - sign transaction');
     return bitcoinCli.signRawTransactionWithWallet(rawTransaction).hex;
 }

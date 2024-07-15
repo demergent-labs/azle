@@ -11,12 +11,12 @@ function initCanisterEnv() {
             path.resolve('.dfx', 'local', 'canister_ids.json')
         );
     } catch (error) {
-        console.log('No local canister_ids.json found. Continuing production');
+        console.info('No local canister_ids.json found. Continuing production');
     }
     try {
         prodCanisters = require(path.resolve('canister_ids.json'));
     } catch (error) {
-        console.log(
+        console.info(
             'No production canister_ids.json found. Continuing with local'
         );
     }

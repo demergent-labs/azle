@@ -102,7 +102,7 @@ export const simpleDeepQuery = types.Deep$queryAlias(
     [],
     types.VoidAlias,
     () => {
-        console.log(HELLO_WORLD);
+        console.info(HELLO_WORLD);
     }
 );
 
@@ -110,12 +110,12 @@ export const simpleAzleQuery = types.Azle$queryAlias(
     [],
     types.VoidAlias,
     () => {
-        console.log(HELLO_WORLD);
+        console.info(HELLO_WORLD);
     }
 );
 
 export const simpleQuery = types.$queryAlias([], types.VoidAlias, () => {
-    console.log(HELLO_WORLD);
+    console.info(HELLO_WORLD);
 });
 
 const AliasedCanister = types.DeepCanisterAlias({

@@ -103,7 +103,7 @@ function padPrincipalWithZeros(blob: Uint8Array): Uint8Array {
 
 function getCkBtcPrincipal(): string {
     if (process.env.CK_BTC_PRINCIPAL !== undefined) {
-        console.log(process.env.CK_BTC_PRINCIPAL);
+        console.info(process.env.CK_BTC_PRINCIPAL);
         return process.env.CK_BTC_PRINCIPAL;
     }
 

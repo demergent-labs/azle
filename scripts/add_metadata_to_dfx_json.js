@@ -36,7 +36,7 @@ function updateDfxJson(filePath) {
         }
 
         fs.writeFileSync(filePath, JSON.stringify(json, null, 4), 'utf8');
-        console.log(`Updated ${filePath}`);
+        console.info(`Updated ${filePath}`);
     } catch (err) {
         console.error(`Error processing file ${filePath}: ${err}`);
     }

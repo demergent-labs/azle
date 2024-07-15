@@ -40,7 +40,7 @@ fs.readFile(tsconfigPath, 'utf8', (err, data) => {
                 return;
             }
 
-            console.log(
+            console.info(
                 'tsconfig.json successfully updated with experimentalDecorators and preserveSymlinks options.'
             );
         }

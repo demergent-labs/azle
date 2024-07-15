@@ -27,12 +27,12 @@ let entries: {
 
 export default Canister({
     init: init([], () => {
-        console.log('init');
+        console.info('init');
 
         stableStorage.insert('entries', []);
     }),
     postUpgrade: postUpgrade([], () => {
-        console.log('postUpgrade');
+        console.info('postUpgrade');
 
         const stableEntriesOpt = stableStorage.get('entries');
 
@@ -47,7 +47,7 @@ export default Canister({
         }, {});
     }),
     preUpgrade: preUpgrade(() => {
-        console.log('preUpgrade');
+        console.info('preUpgrade');
 
         stableStorage.insert(
             'entries',

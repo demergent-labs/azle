@@ -9,11 +9,11 @@ const testsFilePath = path.join(process.cwd(), 'test', 'tests.ts');
 const deleteFile = (filePath) => {
     fs.unlink(filePath, (err) => {
         if (err && err.code === 'ENOENT') {
-            console.log(`File not found: ${filePath}`);
+            console.info(`File not found: ${filePath}`);
         } else if (err) {
             console.error(`Error deleting file ${filePath}: ${err}`);
         } else {
-            console.log(`Successfully deleted file: ${filePath}`);
+            console.info(`Successfully deleted file: ${filePath}`);
         }
     });
 };
