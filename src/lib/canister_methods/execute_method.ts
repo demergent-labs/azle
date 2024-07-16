@@ -13,7 +13,8 @@ export function executeMethod(
     returnCandidType: CandidType,
     manual: boolean
 ): void {
-    const decodedArgs = decode(paramCandidTypes, args[0]);
+    const decodedArgs =
+        mode === 'inspectMessage' ? args : decode(paramCandidTypes, args[0]);
 
     const result = getResult(decodedArgs, callback);
 
