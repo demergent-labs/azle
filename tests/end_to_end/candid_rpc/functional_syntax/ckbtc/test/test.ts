@@ -1,21 +1,26 @@
-import { Identity } from '@dfinity/agent';
+import { ActorSubclass, Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { afterAll, beforeAll, describe } from '@jest/globals';
 import { getCanisterId } from 'azle/dfx';
 import { runTests } from 'azle/test';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
-import { Config } from 'ckbtc_end_to_end_test_functional_syntax/test/test';
-import { getTests } from 'ckbtc_end_to_end_test_functional_syntax/test/tests';
 import { existsSync, rmSync } from 'fs-extra';
 
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { createActor } from '../wallet/frontend/dfx_generated/wallet_backend';
 // @ts-ignore this path may not exist when these tests are imported into other test projects
 import { _SERVICE } from '../wallet/frontend/dfx_generated/wallet_backend/wallet_backend.did';
-
-let configs = [createConfig(0), createConfig(1)];
+import { getTests } from './tests';
 
 type BitcoinDaemon = ChildProcessWithoutNullStreams;
+
+export type Config = {
+    identity: Identity;
+    canister: ActorSubclass<_SERVICE>;
+    caller: string;
+};
+
+const configs = [createConfig(0), createConfig(1)];
 
 runTests(() => {
     let bitcoinDaemon: BitcoinDaemon;
