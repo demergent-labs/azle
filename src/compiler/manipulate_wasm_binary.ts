@@ -85,7 +85,7 @@ export async function manipulateWasmBinary(
             'canister_inspect_message',
             'execute_js',
             compilerInfo.canister_methods.inspect_message.index,
-            true
+            false
         );
     }
 

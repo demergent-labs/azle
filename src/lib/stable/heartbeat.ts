@@ -11,12 +11,10 @@ export function heartbeat<This, Args extends any[], Return>(
         index
     };
 
-    globalThis._azleCanisterMethods.callbacks[index.toString()] = (
-        ...args: any[]
-    ): void => {
+    globalThis._azleCanisterMethods.callbacks[index.toString()] = (): void => {
         executeAndReplyWithCandidSerde(
             'heartbeat',
-            args,
+            [],
             originalMethod.bind(globalThis._azleCanisterClassInstance),
             [],
             undefined,

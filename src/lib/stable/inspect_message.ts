@@ -1,11 +1,6 @@
-// TODO inspect message can read the arguments of the call
-// TODO but it applies to all query and update calls
-// TODO the Rust CDK allows you to define parameters
-// TODO but it will break all of your other methods
-// TODO so do we just leave params out?
-
 import { executeAndReplyWithCandidSerde } from './execute_with_candid_serde';
 
+// TODO explain here in a jsdoc that the dev can get the raw args using argDataRaw
 export function inspectMessage<This, Args extends any[], Return>(
     originalMethod: (this: This, ...args: Args) => Return,
     context: ClassMethodDecoratorContext
@@ -17,12 +12,10 @@ export function inspectMessage<This, Args extends any[], Return>(
         index
     };
 
-    globalThis._azleCanisterMethods.callbacks[index.toString()] = (
-        ...args: any[]
-    ): void => {
+    globalThis._azleCanisterMethods.callbacks[index.toString()] = (): void => {
         executeAndReplyWithCandidSerde(
             'inspectMessage',
-            args,
+            [],
             originalMethod.bind(globalThis._azleCanisterClassInstance),
             [],
             undefined,
