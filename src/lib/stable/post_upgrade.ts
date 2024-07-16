@@ -1,38 +1,32 @@
 import { IDL } from '@dfinity/candid';
 
-import { executeWithCandidSerde } from './execute_with_candid_serde';
+import { executeAndReplyWithCandidSerde } from './execute_with_candid_serde';
 
-export function postUpgrade(paramIdls: IDL.Type[]): MethodDecorator {
-    return <T>(
-        target: object,
-        propertyKey: string | symbol,
-        descriptor: TypedPropertyDescriptor<T>
-    ): TypedPropertyDescriptor<T> | void => {
-        const originalMethod = (descriptor.value as any).bind(target);
-
-        const methodCallback = (...args: any[]): void => {
-            executeWithCandidSerde(
-                'postUpgrade',
-                args,
-                originalMethod,
-                paramIdls,
-                undefined,
-                false // TODO implement manual check
-            );
-        };
-
-        descriptor.value = methodCallback as any;
-
+export function postUpgrade<This, Args extends any[], Return>(
+    paramIdlTypes: IDL.Type[]
+) {
+    return (
+        originalMethod: (this: This, ...args: Args) => Return,
+        context: ClassMethodDecoratorContext
+    ): void => {
         const index = globalThis._azleCanisterMethodsIndex++;
 
         globalThis._azleCanisterMethods.post_upgrade = {
-            name: propertyKey as string,
+            name: context.name as string,
             index
         };
 
-        globalThis._azleCanisterMethods.callbacks[index.toString()] =
-            methodCallback;
-
-        return descriptor;
+        globalThis._azleCanisterMethods.callbacks[index.toString()] = (
+            ...args: any[]
+        ): void => {
+            executeAndReplyWithCandidSerde(
+                'postUpgrade',
+                args,
+                originalMethod.bind(globalThis._azleCanisterClassInstance),
+                paramIdlTypes,
+                undefined,
+                false
+            );
+        };
     };
 }

@@ -23,13 +23,13 @@ export async function handleCli(): Promise<boolean> {
     }
 
     if (commandName === 'clean') {
-        handleCommandClean();
+        await handleCommandClean();
 
         return true;
     }
 
     if (commandName === 'upload-assets') {
-        handleUploadAssets();
+        await handleUploadAssets();
 
         return true;
     }

@@ -7,6 +7,12 @@
 !dfx_extension/**
 !experimental/**
 !http_client/**
+!property_tests/arbitraries/**
+!property_tests/test/**
+!property_tests/visitors/**
+!property_tests/are_params_correctly_ordered.ts
+!property_tests/get_actor.ts
+!property_tests/index.ts
 !scripts/**
 !src/**
 !test/**

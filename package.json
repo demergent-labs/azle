@@ -12,7 +12,7 @@
     },
     "type": "module",
     "bin": {
-        "azle": "./bin.mjs"
+        "azle": "./src/compiler/index.ts"
     },
     "main": "./src/lib/stable/index.ts",
     "repository": {
@@ -37,7 +37,7 @@
         "class-validator": "^0.14.1",
         "crypto-browserify": "^3.12.0",
         "deep-is": "^0.1.4",
-        "esbuild": "^0.19.3",
+        "esbuild": "^0.23.0",
         "esbuild-plugin-tsc": "^0.4.0",
         "ethers": "^6.11.1",
         "fs-extra": "^11.2.0",
