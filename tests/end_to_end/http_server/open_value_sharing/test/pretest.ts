@@ -1,27 +1,33 @@
 import { execSync } from 'child_process';
 
 function pretest(): void {
-    execSync(`cp ../../.openvaluesharing.json node_modules/unpipe`, {
+    execSync(`cp ../../../../.openvaluesharing.json node_modules/unpipe`, {
         stdio: 'inherit'
     });
 
-    execSync(`cp ../../.openvaluesharing.json node_modules/typescript`, {
+    execSync(`cp ../../../../.openvaluesharing.json node_modules/typescript`, {
         stdio: 'inherit'
     });
 
-    execSync(`cp ../../.openvaluesharing.json node_modules/has-symbols`, {
+    execSync(`cp ../../../../.openvaluesharing.json node_modules/has-symbols`, {
         stdio: 'inherit'
     });
 
-    execSync(`cp ../../.openvaluesharing.json node_modules/side-channel`, {
-        stdio: 'inherit'
-    });
+    execSync(
+        `cp ../../../../.openvaluesharing.json node_modules/side-channel`,
+        {
+            stdio: 'inherit'
+        }
+    );
 
-    execSync(`cp ../../.openvaluesharing.json node_modules/safer-buffer`, {
-        stdio: 'inherit'
-    });
+    execSync(
+        `cp ../../../../.openvaluesharing.json node_modules/safer-buffer`,
+        {
+            stdio: 'inherit'
+        }
+    );
 
-    execSync(`cp ../../.openvaluesharing.json node_modules/hasown`, {
+    execSync(`cp ../../../../.openvaluesharing.json node_modules/hasown`, {
         stdio: 'inherit'
     });
 

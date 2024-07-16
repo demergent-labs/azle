@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the source path of the .openvaluesharing.json file
-SOURCE_PATH="../../.openvaluesharing.json"
+SOURCE_PATH="../../../../.openvaluesharing.json"
 
 # Define the target root node_modules directory
 TARGET_NODE_MODULES_DIR="node_modules"
