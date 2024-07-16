@@ -23,24 +23,20 @@ export default Canister({
         stableStorage.insert('ethereumUrl', ethereumUrl);
     }),
     ethGetBalance: update([text], text, async (ethereumAddress) => {
-        const urlOpt = stableStorage.get('ethereumUrl');
+        const url = stableStorage.get('ethereumUrl');
 
-        if (urlOpt === null) {
+        if (url === null) {
             throw new Error('ethereumUrl is not defined');
         }
-
-        const url = urlOpt;
 
         return await getBalance(url, ethereumAddress);
     }),
     ethGetBlockByNumber: update([nat32], text, async (number) => {
-        const urlOpt = stableStorage.get('ethereumUrl');
+        const url = stableStorage.get('ethereumUrl');
 
-        if (urlOpt === null) {
+        if (url === null) {
             throw new Error('ethereumUrl is not defined');
         }
-
-        const url = urlOpt;
 
         return await getBlockByNumber(url, number);
     }),

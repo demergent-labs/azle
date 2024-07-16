@@ -48,11 +48,11 @@ export default Canister({
                     };
                 }
 
-                const counterOpt = stableStorage.get('counter');
-                const counter =
-                    counterOpt === null
-                        ? ic.trap('counter does not exist')
-                        : counterOpt;
+                const counter = stableStorage.get('counter');
+
+                if (counter === null) {
+                    ic.trap('counter does not exist');
+                }
 
                 return {
                     status_code: 200,

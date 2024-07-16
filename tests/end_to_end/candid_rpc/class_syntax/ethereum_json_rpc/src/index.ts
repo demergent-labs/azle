@@ -26,13 +26,11 @@ export default class {
 
     @update([IDL.Text], IDL.Text)
     async ethGetBalance(ethereumAddress: string): Promise<string> {
-        const urlOpt = stableStorage.get('ethereumUrl');
+        const url = stableStorage.get('ethereumUrl');
 
-        if (urlOpt === null) {
+        if (url === null) {
             throw new Error('ethereumUrl is not defined');
         }
-
-        const url = urlOpt;
 
         return await getBalance(url, ethereumAddress);
     }

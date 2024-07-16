@@ -29,9 +29,13 @@ export default class {
 
     @update([], IDL.Nat)
     increment(): bigint {
-        const counterOpt = stableStorage.get('counter');
-        const counter =
-            counterOpt === null ? trap('counter not defined') : counterOpt + 1n;
+        let counter = stableStorage.get('counter');
+
+        if (counter === null) {
+            trap('counter not defined');
+        }
+
+        counter = counter + 1n;
 
         stableStorage.insert('counter', counter);
 
@@ -40,9 +44,11 @@ export default class {
 
     @query([], IDL.Nat)
     get(): bigint {
-        const counterOpt = stableStorage.get('counter');
-        const counter =
-            counterOpt === null ? trap('counter not defined') : counterOpt;
+        const counter = stableStorage.get('counter');
+
+        if (counter === null) {
+            trap('counter not defined');
+        }
 
         return counter;
     }
@@ -51,9 +57,11 @@ export default class {
     reset(): bigint {
         stableStorage.insert('counter', 0n);
 
-        const counterOpt = stableStorage.get('counter');
-        const counter =
-            counterOpt === null ? trap('counter not defined') : counterOpt;
+        const counter = stableStorage.get('counter');
+
+        if (counter === null) {
+            trap('counter not defined');
+        }
 
         return counter;
     }

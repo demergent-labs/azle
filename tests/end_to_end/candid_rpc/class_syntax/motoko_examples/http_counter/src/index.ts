@@ -128,11 +128,11 @@ export default class {
                     };
                 }
 
-                const counterOpt = stableStorage.get('counter');
-                const counter =
-                    counterOpt === null
-                        ? trap('counter does not exist')
-                        : counterOpt;
+                const counter = stableStorage.get('counter');
+
+                if (counter === null) {
+                    trap('counter does not exist');
+                }
 
                 return {
                     status_code: 200,

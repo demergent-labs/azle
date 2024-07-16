@@ -34,9 +34,11 @@ export default Canister({
     postUpgrade: postUpgrade([], () => {
         console.info('postUpgrade');
 
-        const stableEntriesOpt = stableStorage.get('entries');
+        const stableEntries = stableStorage.get('entries');
 
-        const stableEntries = stableEntriesOpt === null ? [] : stableEntriesOpt;
+        if (stableEntries === null) {
+            return;
+        }
 
         entries = stableEntries.reduce((result, entry) => {
             return {
