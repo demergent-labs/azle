@@ -3,8 +3,7 @@
         "stable_b_tree_map_instruction_threshold": {
             "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "candid_gen": "custom",
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/stable_b_tree_map_instruction_threshold",
                 "node_compatibility": true

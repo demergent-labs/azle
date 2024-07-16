@@ -3,8 +3,7 @@
         "hello_world": {
             "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "candid_gen": "custom",
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/hello_world",
                 "node_compatibility": true

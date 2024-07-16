@@ -3,8 +3,7 @@
         "simple_erc20": {
             "type": "azle",
             "main": "src/index.ts",
-            "candid": "src/index.did",
-            "candid_gen": "custom",
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/simple_erc20",
                 "node_compatibility": true

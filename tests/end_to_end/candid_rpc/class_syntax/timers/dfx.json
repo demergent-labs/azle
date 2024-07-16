@@ -3,8 +3,7 @@
         "timers": {
             "type": "azle",
             "main": "src/timers.ts",
-            "candid": "src/timers.did",
-            "candid_gen": "custom",
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/timers",
                 "node_compatibility": true

@@ -3,8 +3,7 @@
         "ledger_canister": {
             "type": "azle",
             "main": "src/ledger_canister/index.ts",
-            "candid": "src/ledger_canister/index.did",
-            "candid_gen": "custom",
+            "candid_gen": "automatic",
             "env": ["ICP_CANISTER_PRINCIPAL"],
             "assets": [["src/icp_ledger/ledger.public.did", "src/ledger.did"]],
             "declarations": {

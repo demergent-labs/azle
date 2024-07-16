@@ -3,8 +3,7 @@
         "func_types": {
             "type": "azle",
             "main": "canisters/func_types/index.ts",
-            "candid": "canisters/func_types/index.did",
-            "candid_gen": "custom",
+            "candid_gen": "automatic",
             "env": ["NOTIFIERS_PRINCIPAL"],
             "assets": [
                 ["canisters/notifiers/index.did", "candid/notifiers.did"]
@@ -18,7 +17,7 @@
             "type": "azle",
             "main": "canisters/notifiers/index.ts",
             "candid": "canisters/notifiers/index.did",
-            "candid_gen": "custom",
+            "candid_gen": "automatic",
             "env": ["NOTIFIERS_PRINCIPAL"],
             "declarations": {
                 "output": "test/dfx_generated/notifiers",

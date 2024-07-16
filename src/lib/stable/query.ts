@@ -15,12 +15,20 @@ export function query<This, Args extends any[], Return>(
         context: ClassMethodDecoratorContext
     ): void => {
         const index = globalThis._azleCanisterMethodsIndex++;
+        const name = context.name as string;
+        const composite = options?.composite ?? false;
 
         globalThis._azleCanisterMethods.queries.push({
-            name: context.name as string,
+            name,
             index,
-            composite: options?.composite ?? false
+            composite
         });
+
+        globalThis._azleCanisterMethodIdlTypes[name] = IDL.Func(
+            paramIdlTypes,
+            returnIdlType === undefined ? [] : [returnIdlType],
+            ['query']
+        );
 
         globalThis._azleCanisterMethods.callbacks[index.toString()] = (
             ...args: any[]

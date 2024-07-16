@@ -4,7 +4,7 @@
             "type": "azle",
             "main": "src/canister1/index.ts",
             "candid": "src/canister1/index.did",
-            "candid_gen": "custom",
+            "candid_gen": "automatic",
             "env": [
                 "CANISTER1_PRINCIPAL",
                 "CANISTER2_PRINCIPAL",
@@ -23,7 +23,7 @@
             "type": "azle",
             "main": "src/canister2/index.ts",
             "candid": "src/canister2/index.did",
-            "candid_gen": "custom",
+            "candid_gen": "automatic",
             "env": ["CANISTER3_PRINCIPAL"],
             "assets": [["src/canister3/index.did", "candid/canister3.did"]],
             "declarations": {
@@ -35,7 +35,7 @@
             "type": "azle",
             "main": "src/canister3/index.ts",
             "candid": "src/canister3/index.did",
-            "candid_gen": "custom",
+            "candid_gen": "automatic",
             "declarations": {
                 "output": "test/dfx_generated/canister3",
                 "node_compatibility": true
