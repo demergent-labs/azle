@@ -4,7 +4,7 @@ import { ActorSubclass, HttpAgent, Identity } from '@dfinity/agent';
 import { AuthClient } from '@dfinity/auth-client';
 import { nat, nat64 } from 'azle/experimental';
 import { html, LitElement } from 'lit';
-import { customElement, state } from 'lit/decorators';
+import { customElement, state } from 'lit/decorators.js';
 
 import { createActor } from '../dfx_generated/wallet_backend';
 import { _SERVICE } from '../dfx_generated/wallet_backend/wallet_backend.did';
