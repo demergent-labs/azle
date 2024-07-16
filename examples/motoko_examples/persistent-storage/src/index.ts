@@ -25,15 +25,15 @@ export default Canister({
         return redeployed;
     }),
     increment: update([], nat, () => {
-        let counter = stableStorage.get('counter');
+        const counter = stableStorage.get('counter');
         if (counter === null) {
             return ic.trap('counter not defined');
         }
-        counter = counter + 1n;
+        const incrementedCounter = counter + 1n;
 
-        stableStorage.insert('counter', counter);
+        stableStorage.insert('counter', incrementedCounter);
 
-        return counter;
+        return incrementedCounter;
     }),
     get: query([], nat, () => {
         const counter = stableStorage.get('counter');

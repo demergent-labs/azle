@@ -35,11 +35,11 @@ export default class {
             trap('counter not defined');
         }
 
-        counter = counter + 1n;
+        const incrementedCounter = counter + 1n;
 
-        stableStorage.insert('counter', counter);
+        stableStorage.insert('counter', incrementedCounter);
 
-        return counter;
+        return incrementedCounter;
     }
 
     @query([], IDL.Nat)
